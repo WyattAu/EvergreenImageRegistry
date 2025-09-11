@@ -1,0 +1,91 @@
+name: Update README Image List
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'images/'
+
+permissions:
+  contents: write 
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate image list
+        id: generate_list
+        run: |
+          # This script builds a markdown table of all images found in the /images directory.
+          # It reads the version from the ARG in each Dockerfile.
+
+          START_MARKER="<!-- AUTO_IMAGE_LIST_START -->"
+          END_MARKER="<!-- AUTO_IMAGE_LIST_END -->"
+          TABLE_HEADER="| Image | Upstream Version | Documentation |\n| :---- | :--------------- | :------------ |"
+          IMAGE_BASE_PATH="images"
+
+          # Start building the new content for the table
+          new_table_content="$TABLE_HEADER"
+
+          for image_dir in $(ls -d $IMAGE_BASE_PATH/*/ | sort); do
+            image_name=$(basename $image_dir)
+            dockerfile_path="${image_dir}Dockerfile"
+            readme_path="./${image_dir}README.md"
+
+            # Extract the version from the Dockerfile's ARG. Assumes a format like 'ARG IMAGE_VERSION=...'
+            version=$(grep -m 1 'ARG .*_VERSION=' "$dockerfile_path" | awk -F'=' '{print $2}' | tr -d '[:space:]')
+            if [ -z "$version" ]; then
+              version="N/A"
+            fi
+
+            # Format the markdown table row
+            table_row="\n| \`$image_name\` | \`$version\` | [View README]($readme_path) |"
+            new_table_content="$new_table_content$table_row"
+          done
+
+          # Use a heredoc to pass this multiline string to the outputs
+          {
+            echo "table_content<<EOF"
+            echo "$new_table_content"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Update README.md file
+        run: |
+          # This script replaces the content between the start/end markers in the README
+          # with the new table content generated in the previous step.
+
+          START_MARKER="<!-- AUTO_IMAGE_LIST_START -->"
+          END_MARKER="<!-- AUTO_IMAGE_LIST_END -->"
+          README_FILE="README.md"
+
+          # Read the new table content from the step output
+          table_content="${{ steps.generate_list.outputs.table_content }}"
+
+          # Use awk for robust, multiline replacement
+          awk -v start="$START_MARKER" \
+              -v end="$END_MARKER" \
+              -v content="$table_content" '
+              $0 == start {
+                  print;
+                  print content;
+                  p = 1;
+              }
+              $0 == end {
+                  p = 0;
+              }
+              !p {
+                  print;
+              }
+          ' "$README_FILE" > "README.md.tmp" && mv "README.md.tmp" "$README_FILE"
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs: Auto-update image list in README"
+          file_pattern: "README.md"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"

@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   keycloak:
-    image: ghcr.io/wyattau/EvergreenImageRegistry/keycloak:latest
+    image: ghcr.io/wyattau/evergreenimageregistry/keycloak:latest
     container_name: keycloak
     command: start --optimized --hostname-strict=false
     restart: unless-stopped

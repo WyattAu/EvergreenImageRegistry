@@ -1,0 +1,21 @@
+# .prettierrc.yml
+
+# How many characters per line to allow.
+printWidth: 120
+
+# Use single quotes instead of double quotes in YAML strings.
+singleQuote: true
+
+# For Markdown, always wrap text to keep lines within printWidth.
+proseWrap: always
+
+# Define overrides for specific file types if needed.
+overrides:
+  - files: "*.md"
+    options:
+      # Use spaces for list item indentation in Markdown for better compatibility.
+      tabWidth: 2
+  - files: "*.yml"
+    options:
+      # Standard YAML indentation.
+      tabWidth: 2

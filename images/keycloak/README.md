@@ -30,7 +30,7 @@ This image is designed to be used with an external PostgreSQL database. The foll
 
    ```yaml
     version: '3.8'
-    
+
     services:
       keycloak:
         image: ghcr.io/your-org/evergreen-image-registry/keycloak:latest
@@ -41,18 +41,18 @@ This image is designed to be used with an external PostgreSQL database. The foll
           # --- Required Admin Credentials ---
           - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN}
           - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
-    
+
           # --- Required Database Connection ---
           - KC_DB=postgres
           - KC_DB_URL_HOST=postgres
           - KC_DB_URL_DATABASE=${POSTGRES_DB}
           - KC_DB_USERNAME=${POSTGRES_USER}
           - KC_DB_PASSWORD=${POSTGRES_PASSWORD}
-    
+
           # --- Recommended Production Settings ---
           - KC_HOSTNAME=${KC_HOSTNAME}
           - KC_PROXY=${KC_PROXY}
-    
+
           # --- Development Only ---
           - KC_HTTP_ENABLED=${KC_HTTP_ENABLED}
         ports:
@@ -66,7 +66,7 @@ This image is designed to be used with an external PostgreSQL database. The foll
           timeout: 10s
           retries: 5
           start_period: 60s
-    
+
       postgres:
         image: postgres:16-alpine
         container_name: postgres
@@ -83,7 +83,7 @@ This image is designed to be used with an external PostgreSQL database. The foll
           interval: 10s
           timeout: 5s
           retries: 5
-    
+
     volumes:
       postgres_data:
         driver: local

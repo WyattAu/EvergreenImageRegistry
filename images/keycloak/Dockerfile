@@ -1,9 +1,7 @@
-# ARG to define the upstream Keycloak version, adhering to Standard 3.2 (Versioning)
 ARG KEYCLOAK_VERSION=25.0.2
 
 # ==============================================================================
-# Stage 1: The Builder
-# This stage downloads and optimizes the Keycloak server.
+# Stage 1: Builder
 # ==============================================================================
 FROM quay.io/keycloak/keycloak:${KEYCLOAK_VERSION} as builder
 
@@ -17,15 +15,13 @@ RUN /opt/keycloak/bin/kc.sh build
 
 # ==============================================================================
 # Stage 2: The Healthcheck Tool Provider
-# This stage exists solely to provide a static 'curl' binary for the final image.
 # ==============================================================================
 FROM alpine:3.20 as healthcheck_builder
 # Install curl; --no-cache keeps this stage minimal.
 RUN apk add --no-cache curl
 
 # ==============================================================================
-# Stage 3: The Final Production Image
-# This is the final, minimal, secure image that will be published.
+# Stage 3: Final Production Image
 # ==============================================================================
 
 # Use a distroless Java 17 base image

@@ -29,7 +29,7 @@ All images are designed to work together seamlessly. This example demonstrates h
 3. Create a `docker-compose.yml` file:
 
    ```yaml
-   version: "3.9"
+   version: "3.8"
 
    services:
      keycloak:

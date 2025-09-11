@@ -1,13 +1,23 @@
 version: 2
 updates:
-  - package-ecosystem: "docker"
-    directory: "/" 
+  - package-ecosystem: 'docker'
+    directory: '/'
     schedule:
-      interval: "daily"
+      interval: 'daily'
+
     labels:
-      - "dependencies"
-      - "docker"
-    groups:
-      docker-images:
-        patterns:
-          - "*"
+      - 'dependencies'
+      - 'docker'
+      - 'automated'
+    commit-message:
+      prefix: 'chore(deps)'
+      include: 'scope'
+
+    reviewers:
+      - 'WyattAu'
+    assignees:
+      - 'WyattAu'
+
+    auto_merge:
+      - dependency_type: 'all'
+        update_types: ['version-update:semver-minor', 'version-update:semver-patch']

@@ -1,0 +1,70 @@
+name: Build and Push Images to GHCR
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '**/*v*' # Trigger on tags like keycloak/v25.0.2
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write 
+
+    strategy:
+      fail-fast: false 
+      matrix:
+        # --- Add the name of each image directory here ---
+        image: [keycloak, postgres, redis]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for changes in image directory
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            src:
+              - 'images/${{ matrix.image }}/**'
+
+      # Only run subsequent steps if files in the image's directory changed
+      - name: Set up Docker Buildx
+        if: steps.changes.outputs.src == 'true'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        if: steps.changes.outputs.src == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        if: steps.changes.outputs.src == 'true'
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}/${{ matrix.image }}
+          tags: |
+            # Tag 'latest' on push to the main branch
+            type=ref,event=branch
+            # Create a version tag from Git tags like 'keycloak/v25.0.2' -> '25.0.2'
+            # This pattern extracts the version number after the last slash.
+            type=ref,event=tag,pattern={{bslash}}v(.*)
+
+      - name: Build and push image
+        if: steps.changes.outputs.src == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: ./images/${{ matrix.image }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

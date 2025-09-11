@@ -1,7 +1,7 @@
 repos:
   # Standard hooks for file cleanup
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -11,7 +11,7 @@ repos:
 
   # Prettier for auto-formatting MD and YAML files
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.1.0
+    rev: v4.0.0-alpha.8 # Use a specific version for consistency
     hooks:
       - id: prettier
         types: [yaml, markdown]
@@ -19,20 +19,24 @@ repos:
 
   # Linters for style and correctness
   - repo: https://github.com/DavidAnson/markdownlint-cli2
-    rev: v0.13.0
+    rev: v0.18.1
     hooks:
       - id: markdownlint-cli2
-        args: [--config, .markdownlint.yml, '**/*.md']
+        args: [--config, .markdownlint.yml, "**/*.md"]
 
   - repo: https://github.com/adrienverge/yamllint
-    rev: v1.35.1
+    rev: v1.37.1
     hooks:
       - id: yamllint
         args: [--config-file, .yamllint.yml]
 
-  # Linter for Dockerfiles
-  - repo: https://github.com/hadolint/hadolint
-    rev: v2.12.0
+  # Linter for Dockerfiles, running via Docker for consistency.
+  - repo: local
     hooks:
       - id: hadolint
-        name: Hadolint (Dockerfile Linter)
+        name: Hadolint (Dockerfile Linter via Docker)
+        # Use the 'docker_image' language to run this hook inside a container.
+        language: docker_image
+        # Specify the official hadolint image and a specific version for reproducibility.
+        entry: hadolint/hadolint:v2.12.0 hadolint
+        types: [dockerfile]

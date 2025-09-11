@@ -1,20 +1,17 @@
 {
-    // Enable format on save for all files
-    "editor.formatOnSave": true,
-    // Set Prettier as the default formatter for relevant languages
-    "[markdown]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[yaml]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[dockerfile]": {
-        "editor.defaultFormatter": "ms-azuretools.vscode-docker"
-    },
-    // Associate the .prettierrc.yml file with the YAML language server
-    "files.associations": {
-        ".prettierrc.yml": "yaml",
-        ".markdownlint.yml": "yaml",
-        ".yamllint.yml": "yaml"
-    }
+"editor.formatOnSave": true,
+"[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+},
+"[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+},
+"[dockerfile]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+},
+"files.associations": {
+    ".prettierrc.yml": "yaml",
+    ".markdownlint.yml": "yaml",
+    ".yamllint.yml": "yaml"
+}
 }

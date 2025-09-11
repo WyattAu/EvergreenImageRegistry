@@ -36,6 +36,6 @@ If possible, please provide a minimal docker-compose.yml file that demonstrates 
 ```yaml
 # Paste your minimal docker-compose.yml here
 version: "3.8"
-services: 
+services:
 
 ```

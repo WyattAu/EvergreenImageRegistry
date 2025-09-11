@@ -1,0 +1,20 @@
+# .markdownlint.yml
+
+# Default state for all rules
+default: true
+
+# Disable MD013 (line length) because Prettier handles it.
+MD013: false
+
+# Enforce consistent heading styles (ATX style, e.g., # Heading)
+MD003:
+  style: "atx"
+
+# Enforce that heading levels increment by one level at a time (e.g., # -> ##, not # -> ###)
+MD001: true
+
+# Allow duplicate headings, as they are common in documentation.
+MD024: false
+
+# Enforce surrounding fenced code blocks with blank lines
+MD031: true

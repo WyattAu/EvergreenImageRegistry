@@ -1,0 +1,28 @@
+name: Lint Codebase
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  hadolint:
+    name: Hadolint (Dockerfile Linter)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          recursive: true
+          # Scan all Dockerfiles within the images directory
+          dockerfile: images/**/*.Dockerfile
+
+  yamllint:
+    name: YAMLLint (YAML Linter)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run yamllint
+        uses: karancode/yamllint-github-action@v2.1.1
+        with:
+          yamllint_file_or_dir: '.'

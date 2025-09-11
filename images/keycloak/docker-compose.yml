@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  keycloak:
+    image: ghcr.io/wyattau/EvergreenImageRegistry/keycloak:latest
+    container_name: keycloak
+    command: start --optimized --hostname-strict=false
+    restart: unless-stopped
+    # This 'indirect' method of defining variables is the most portable.
+    # It allows Docker Compose to source these values from a .env file,
+    # the shell, or a UI like Portainer or Dockge, providing maximum flexibility.
+    environment:
+      # --- Required Admin Credentials ---
+      - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN}
+      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+
+      # --- Required Database Connection ---
+      - KC_DB=postgres
+      - KC_DB_URL_HOST=postgres
+      - KC_DB_URL_DATABASE=${POSTGRES_DB}
+      - KC_DB_USERNAME=${POSTGRES_USER}
+      - KC_DB_PASSWORD=${POSTGRES_PASSWORD}
+
+      # --- Recommended Production Settings ---
+      - KC_HOSTNAME=${KC_HOSTNAME}
+      - KC_PROXY=${KC_PROXY}
+
+      # --- Development Only ---
+      - KC_HTTP_ENABLED=${KC_HTTP_ENABLED}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "/usr/bin/curl", "-f", "http://localhost:8080/health/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    restart: unless-stopped
+    # The same portable method is used for the database service.
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+    driver: local

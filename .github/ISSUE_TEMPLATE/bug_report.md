@@ -2,7 +2,7 @@
 name: Bug Report
 about: Create a report to help us improve an image
 title: '[Bug] A brief, clear description of the issue'
-labels: ["bug", "triage"]
+labels: ['bug', 'triage']
 ---
 
 <!--

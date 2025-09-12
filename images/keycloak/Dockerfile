@@ -21,6 +21,7 @@ RUN /opt/keycloak/bin/kc.sh build
 # ==============================================================================
 FROM alpine:${ALPINE_VERSION} AS healthcheck_builder
 
+ARG CURL_VERSION
 RUN apk update && apk add --no-cache "curl=${CURL_VERSION}"
 
 

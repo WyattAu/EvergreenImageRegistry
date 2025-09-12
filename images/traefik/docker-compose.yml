@@ -14,28 +14,28 @@ services:
     # Secrets are pulled from the .env file using Docker Compose's substitution.
     environment:
       # --- API and Dashboard ---
-      - "TRAEFIK_API_DASHBOARD=true"
+      - 'TRAEFIK_API_DASHBOARD=true'
 
       # --- Entrypoints ---
-      - "TRAEFIK_ENTRYPOINTS_WEB_ADDRESS=:80"
-      - "TRAEFIK_ENTRYPOINTS_WEBSECURE_ADDRESS=:443"
+      - 'TRAEFIK_ENTRYPOINTS_WEB_ADDRESS=:80'
+      - 'TRAEFIK_ENTRYPOINTS_WEBSECURE_ADDRESS=:443'
 
       # --- Docker Provider ---
-      - "TRAEFIK_PROVIDERS_DOCKER=true"
-      - "TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT=false"
-      - "TRAEFIK_PROVIDERS_DOCKER_NETWORK=proxy-net"
+      - 'TRAEFIK_PROVIDERS_DOCKER=true'
+      - 'TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT=false'
+      - 'TRAEFIK_PROVIDERS_DOCKER_NETWORK=proxy-net'
 
       # --- Certificate Resolver ---
-      - "TRAEFIK_CERTIFICATESRESOLVERS_MYRESOLVER_ACME_STORAGE=/etc/traefik/acme.json"
-      - "TRAEFIK_CERTIFICATESRESOLVERS_MYRESOLVER_ACME_HTTPCHALLENGE=true"
-      - "TRAEFIK_CERTIFICATESRESOLVERS_MYRESOLVER_ACME_HTTPCHALLENGE_ENTRYPOINT=web"
+      - 'TRAEFIK_CERTIFICATESRESOLVERS_MYRESOLVER_ACME_STORAGE=/etc/traefik/acme.json'
+      - 'TRAEFIK_CERTIFICATESRESOLVERS_MYRESOLVER_ACME_HTTPCHALLENGE=true'
+      - 'TRAEFIK_CERTIFICATESRESOLVERS_MYRESOLVER_ACME_HTTPCHALLENGE_ENTRYPOINT=web'
       # The email address is securely sourced from the .env file.
-      - "TRAEFIK_CERTIFICATESRESOLVERS_MYRESOLVER_ACME_EMAIL=${TRAEFIK_ACME_EMAIL}"
+      - 'TRAEFIK_CERTIFICATESRESOLVERS_MYRESOLVER_ACME_EMAIL=${TRAEFIK_ACME_EMAIL}'
 
     ports:
-      - "80:80"
-      - "443:443"
-      - "8080:8080"
+      - '80:80'
+      - '443:443'
+      - '8080:8080'
     volumes:
       - ./traefik/acme.json:/etc/traefik/acme.json
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -54,16 +54,16 @@ services:
     # Docker Compose substitutes the ${WHOAMI_DOMAIN} variable from the .env file
     # directly into the labels, making the routing dynamic.
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.whoami-http.rule=Host(`${WHOAMI_DOMAIN}`)"
-      - "traefik.http.routers.whoami-http.entrypoints=web"
-      - "traefik.http.routers.whoami-http.middlewares=redirect-to-https"
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-      - "traefik.http.routers.whoami-secure.rule=Host(`${WHOAMI_DOMAIN}`)"
-      - "traefik.http.routers.whoami-secure.entrypoints=websecure"
-      - "traefik.http.routers.whoami-secure.tls=true"
-      - "traefik.http.routers.whoami-secure.tls.certresolver=myresolver"
-      - "traefik.http.services.whoami-service.loadbalancer.server.port=80"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.whoami-http.rule=Host(`${WHOAMI_DOMAIN}`)'
+      - 'traefik.http.routers.whoami-http.entrypoints=web'
+      - 'traefik.http.routers.whoami-http.middlewares=redirect-to-https'
+      - 'traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https'
+      - 'traefik.http.routers.whoami-secure.rule=Host(`${WHOAMI_DOMAIN}`)'
+      - 'traefik.http.routers.whoami-secure.entrypoints=websecure'
+      - 'traefik.http.routers.whoami-secure.tls=true'
+      - 'traefik.http.routers.whoami-secure.tls.certresolver=myresolver'
+      - 'traefik.http.services.whoami-service.loadbalancer.server.port=80'
 
 # --------------------------------------------------------------------
 # Docker Network

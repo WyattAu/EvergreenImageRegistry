@@ -1,12 +1,12 @@
 ARG KEYCLOAK_VERSION=25.0.2
 ARG ALPINE_VERSION=3.20
-ARG CURL_VERSION=8.7.1-r0
+ARG CURL_VERSION=8.16.0-r0
 ARG DISTROLESS_DIGEST=nonroot
 
 # ==============================================================================
 # Stage 1: Builder
 # ==============================================================================
-FROM quay.io/keycloak/keycloak:${KEYCLOAK_VERSION} as builder
+FROM quay.io/keycloak/keycloak:${KEYCLOAK_VERSION} AS builder
 
 # Set the database type required for a proper production build.
 # This ensures database-specific drivers are included.
@@ -19,7 +19,7 @@ RUN /opt/keycloak/bin/kc.sh build
 # ==============================================================================
 # Stage 2: The Healthcheck Tool Provider
 # ==============================================================================
-FROM alpine:${ALPINE_VERSION} as healthcheck_builder
+FROM alpine:${ALPINE_VERSION} AS healthcheck_builder
 # Install curl; --no-cache keeps this stage minimal.
 RUN apk add --no-cache "curl=${CURL_VERSION}"
 
@@ -47,7 +47,7 @@ COPY --from=builder --chown=${USER_UID}:${GROUP_GID} /opt/keycloak .
 # This is necessary for the HEALTHCHECK instruction below, per Standard 3.1.
 COPY --from=healthcheck_builder /usr/bin/curl /usr/bin/curl
 
-# Switch to the non-root user. From this point on, all commands run as 'nonroot'.
+# Switch to the non-root user. From this point on, all commands run AS 'nonroot'.
 USER ${USER_UID}:${GROUP_GID}
 
 # Expose the default Keycloak ports, per Standard 4.3 (Configuration & Usability).

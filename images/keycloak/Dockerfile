@@ -1,4 +1,7 @@
 ARG KEYCLOAK_VERSION=25.0.2
+ARG ALPINE_VERSION=3.20
+ARG CURL_VERSION=8.7.1-r0
+ARG DISTROLESS_DIGEST=nonroot
 
 # ==============================================================================
 # Stage 1: Builder
@@ -16,17 +19,17 @@ RUN /opt/keycloak/bin/kc.sh build
 # ==============================================================================
 # Stage 2: The Healthcheck Tool Provider
 # ==============================================================================
-FROM alpine:3.20 as healthcheck_builder
+FROM alpine:${ALPINE_VERSION} as healthcheck_builder
 # Install curl; --no-cache keeps this stage minimal.
-RUN apk add --no-cache curl
+RUN apk add --no-cache "curl=${CURL_VERSION}"
+
 
 # ==============================================================================
 # Stage 3: Final Production Image
 # ==============================================================================
 
-# Use a distroless Java 17 base image
 # This adheres to Standard 2.1 (Distroless-First Principle).
-FROM gcr.io/distroless/java17-debian12
+FROM gcr.io/distroless/java21-debian12:${DISTROLESS_DIGEST}
 
 # The 'nonroot' user is provided by the distroless base image (uid:65532, gid:65532).
 # Using this user is mandatory per Standard 2.2 (Non-Root Execution).

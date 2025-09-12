@@ -1,74 +1,74 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "Lint All Files",
-            "type": "shell",
-            "command": "pre-commit run --all-files",
-            "group": "test",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": true
-            },
-            "problemMatcher": [],
-            "detail": "Run all linters (yamllint, markdownlint, hadolint) across the entire project."
-        },
-        {
-            "label": "Format All Files",
-            "type": "shell",
-            "command": "prettier --write .",
-            "group": "build",
-            "presentation": {
-                "reveal": "silent"
-            },
-            "problemMatcher": [],
-            "detail": "Run Prettier to automatically format all Markdown and YAML files."
-        },
-        {
-            "label": "Build Specific Image",
-            "type": "shell",
-            "command": "docker build -t evergreen-${input:imageName}:dev ./images/${input:imageName}",
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "dedicated",
-                "clear": true
-            },
-            "problemMatcher": [],
-            "detail": "Build a single image for local testing."
-        },
-        {
-            "label": "Run Docker Compose Stack",
-            "type": "shell",
-            "command": "docker-compose up -d",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "problemMatcher": [],
-            "detail": "Start all services defined in docker-compose.yml in detached mode."
-        },
-        {
-            "label": "Stop Docker Compose Stack",
-            "type": "shell",
-            "command": "docker-compose down",
-            "group": "none",
-            "problemMatcher": [],
-            "detail": "Stop and remove all services defined in docker-compose.yml."
-        }
-    ],
-    "inputs": [
-        {
-            "id": "imageName",
-            "type": "promptString",
-            "description": "Enter the name of the image to build (e.g., keycloak, postgres)",
-            "default": "keycloak"
-        }
-    ]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Lint All Files",
+      "type": "shell",
+      "command": "pre-commit run --all-files",
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Run all linters (yamllint, markdownlint, hadolint) across the entire project."
+    },
+    {
+      "label": "Format All Files",
+      "type": "shell",
+      "command": "pre-commit run prettier --all-files",
+      "group": "build",
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": [],
+      "detail": "Format all Markdown and YAML files using the project's prettier hook."
+    },
+    {
+      "label": "Build Specific Image",
+      "type": "shell",
+      "command": "docker build -t evergreen-${input:imageName}:dev ./images/${input:imageName}",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Build a single image for local testing."
+    },
+    {
+      "label": "Run Docker Compose Stack",
+      "type": "shell",
+      "command": "docker-compose up -d",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "detail": "Start all services defined in docker-compose.yml in detached mode."
+    },
+    {
+      "label": "Stop Docker Compose Stack",
+      "type": "shell",
+      "command": "docker-compose down",
+      "group": "none",
+      "problemMatcher": [],
+      "detail": "Stop and remove all services defined in docker-compose.yml."
+    }
+  ],
+  "inputs": [
+    {
+      "id": "imageName",
+      "type": "promptString",
+      "description": "Enter the name of the image to build (e.g., keycloak, postgres)",
+      "default": "keycloak"
+    }
+  ]
 }

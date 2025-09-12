@@ -1,11 +1,12 @@
-# ARG to define the upstream Keycloak version, adhering to Standard 3.2 (Versioning)
 ARG KEYCLOAK_VERSION=25.0.2
+ARG ALPINE_VERSION=3.20
+ARG CURL_VERSION=8.12.1-r0
+ARG DISTROLESS_DIGEST=nonroot
 
 # ==============================================================================
-# Stage 1: The Builder
-# This stage downloads and optimizes the Keycloak server.
+# Stage 1: Builder
 # ==============================================================================
-FROM quay.io/keycloak/keycloak:${KEYCLOAK_VERSION} as builder
+FROM quay.io/keycloak/keycloak:${KEYCLOAK_VERSION} AS builder
 
 # Set the database type required for a proper production build.
 # This ensures database-specific drivers are included.
@@ -17,20 +18,19 @@ RUN /opt/keycloak/bin/kc.sh build
 
 # ==============================================================================
 # Stage 2: The Healthcheck Tool Provider
-# This stage exists solely to provide a static 'curl' binary for the final image.
 # ==============================================================================
-FROM alpine:3.20 as healthcheck_builder
-# Install curl; --no-cache keeps this stage minimal.
-RUN apk add --no-cache curl
+FROM alpine:${ALPINE_VERSION} AS healthcheck_builder
+
+ARG CURL_VERSION
+RUN apk update && apk add --no-cache "curl=${CURL_VERSION}"
+
 
 # ==============================================================================
-# Stage 3: The Final Production Image
-# This is the final, minimal, secure image that will be published.
+# Stage 3: Final Production Image
 # ==============================================================================
 
-# Use a distroless Java 17 base image
 # This adheres to Standard 2.1 (Distroless-First Principle).
-FROM gcr.io/distroless/java17-debian12
+FROM gcr.io/distroless/java21-debian12:${DISTROLESS_DIGEST}
 
 # The 'nonroot' user is provided by the distroless base image (uid:65532, gid:65532).
 # Using this user is mandatory per Standard 2.2 (Non-Root Execution).
@@ -48,7 +48,7 @@ COPY --from=builder --chown=${USER_UID}:${GROUP_GID} /opt/keycloak .
 # This is necessary for the HEALTHCHECK instruction below, per Standard 3.1.
 COPY --from=healthcheck_builder /usr/bin/curl /usr/bin/curl
 
-# Switch to the non-root user. From this point on, all commands run as 'nonroot'.
+# Switch to the non-root user. From this point on, all commands run AS 'nonroot'.
 USER ${USER_UID}:${GROUP_GID}
 
 # Expose the default Keycloak ports, per Standard 4.3 (Configuration & Usability).

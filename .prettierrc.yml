@@ -11,11 +11,11 @@ proseWrap: always
 
 # Define overrides for specific file types if needed.
 overrides:
-  - files: "*.md"
+  - files: '*.md'
     options:
       # Use spaces for list item indentation in Markdown for better compatibility.
       tabWidth: 2
-  - files: "*.yml"
+  - files: '*.yml'
     options:
       # Standard YAML indentation.
       tabWidth: 2

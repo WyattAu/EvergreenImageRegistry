@@ -4,7 +4,7 @@ updates:
     directory: '/'
     schedule:
       interval: 'daily'
-
+      timezone: 'Etc/UTC'
     labels:
       - 'dependencies'
       - 'docker'
@@ -12,12 +12,9 @@ updates:
     commit-message:
       prefix: 'chore(deps)'
       include: 'scope'
-
     reviewers:
       - 'WyattAu'
-    assignees:
-      - 'WyattAu'
-
-    auto_merge:
-      - dependency_type: 'all'
-        update_types: ['version-update:semver-minor', 'version-update:semver-patch']
+    groups:
+      docker-images:
+        patterns:
+          - '*'

@@ -5,19 +5,14 @@ rules:
   # Enforce 2-space indentation.
   indentation:
     spaces: 2
-  
+
   # Set a reasonable line length for readability.
   line-length:
     max: 120
-    
+
   # Disallow truthy values like "yes", "no", "on", "off". Enforce "true" or "false".
   truthy:
-    allowed-values: ["true", "false"]
-    
-  # Enforce single quotes for strings where applicable.
-  quotes:
-    level: warning
-    rule: single
+    allowed-values: ['true', 'false']
 
   # Forbid duplicate keys in mappings.
   key-duplicates: {}

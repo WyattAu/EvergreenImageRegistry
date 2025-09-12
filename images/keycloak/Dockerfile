@@ -1,5 +1,6 @@
 ARG KEYCLOAK_VERSION=25.0.2
 ARG ALPINE_VERSION=3.20
+ARG CURL_VERSION=8.12.1-r0
 ARG DISTROLESS_DIGEST=nonroot
 
 # ==============================================================================
@@ -21,7 +22,7 @@ RUN /opt/keycloak/bin/kc.sh build
 FROM alpine:${ALPINE_VERSION} AS healthcheck_builder
 
 ARG CURL_VERSION
-RUN apk update && apk add --no-cache "curl=~8.16"
+RUN apk update && apk add --no-cache "curl=${CURL_VERSION}"
 
 
 # ==============================================================================

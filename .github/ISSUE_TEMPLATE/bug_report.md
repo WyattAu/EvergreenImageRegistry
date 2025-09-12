@@ -1,7 +1,7 @@
 ---
 name: Bug Report
 about: Create a report to help us improve an image
-title: "[Bug] A brief, clear description of the issue"
+title: '[Bug] A brief, clear description of the issue'
 labels: bug, triage
 ---
 
@@ -19,8 +19,6 @@ Please provide as much detail as possible to help us resolve the issue quickly.
 
 A clear and concise description of what the bug is.
 
-
-
 ## 3. Steps to Reproduce
 
 Please provide the steps to reproduce the behavior:
@@ -35,7 +33,6 @@ If possible, please provide a minimal docker-compose.yml file that demonstrates 
 
 ```yaml
 # Paste your minimal docker-compose.yml here
-version: "3.8"
+version: '3.8'
 services:
-
 ```

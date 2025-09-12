@@ -12,8 +12,7 @@ rules:
 
   # Disallow truthy values like "yes", "no", "on", "off". Enforce "true" or "false".
   truthy:
-    allowed-values: ["true", "false"]
-
+    allowed-values: ['true', 'false']
 
   # Forbid duplicate keys in mappings.
   key-duplicates: {}

@@ -1,17 +1,17 @@
 {
-"editor.formatOnSave": true,
-"[markdown]": {
+  "editor.formatOnSave": true,
+  "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-},
-"[yaml]": {
+  },
+  "[yaml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-},
-"[dockerfile]": {
+  },
+  "[dockerfile]": {
     "editor.defaultFormatter": "ms-azuretools.vscode-docker"
-},
-"files.associations": {
+  },
+  "files.associations": {
     ".prettierrc.yml": "yaml",
     ".markdownlint.yml": "yaml",
     ".yamllint.yml": "yaml"
-}
+  }
 }

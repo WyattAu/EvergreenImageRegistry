@@ -2,7 +2,7 @@ name: Update README Image List
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
       - 'images/'
 
@@ -85,7 +85,7 @@ jobs:
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "docs: Auto-update image list in README"
-          file_pattern: "README.md"
-          commit_user_name: "github-actions[bot]"
-          commit_user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_message: 'docs: Auto-update image list in README'
+          file_pattern: 'README.md'
+          commit_user_name: 'github-actions[bot]'
+          commit_user_email: 'github-actions[bot]@users.noreply.github.com'

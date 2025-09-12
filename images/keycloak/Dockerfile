@@ -20,8 +20,8 @@ RUN /opt/keycloak/bin/kc.sh build
 # Stage 2: The Healthcheck Tool Provider
 # ==============================================================================
 FROM alpine:${ALPINE_VERSION} AS healthcheck_builder
-# Install curl; --no-cache keeps this stage minimal.
-RUN apk add --no-cache "curl=${CURL_VERSION}"
+
+RUN apk update && apk add --no-cache "curl=${CURL_VERSION}"
 
 
 # ==============================================================================

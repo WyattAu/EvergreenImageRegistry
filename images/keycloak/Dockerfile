@@ -29,39 +29,29 @@ RUN apk update && apk add --no-cache "curl=${CURL_VERSION}"
 # Stage 3: Final Production Image
 # ==============================================================================
 
-# This adheres to Standard 2.1 (Distroless-First Principle).
-FROM gcr.io/distroless/java21-debian12:${DISTROLESS_DIGEST}
+# Required shell script to startup, cant be distroless
+FROM eclipse-temurin:21-jre-jammy
 
-# The 'nonroot' user is provided by the distroless base image (uid:65532, gid:65532).
-# Using this user is mandatory per Standard 2.2 (Non-Root Execution).
-ARG USER_UID=65532
-ARG GROUP_GID=65532
+# Define and create a non-root user, per Standard 2.2.
+ARG USER_UID=10001
+ARG GROUP_GID=10001
+RUN groupadd --system --gid ${GROUP_GID} keycloak && \
+    useradd --system --uid ${USER_UID} --gid ${GROUP_GID} keycloak
 
-# Set the working directory for the application.
 WORKDIR /opt/keycloak
 
-# Copy the optimized Keycloak server from the 'builder' stage.
-# The --chown flag sets ownership directly, avoiding an extra layer.
-COPY --from=builder --chown=${USER_UID}:${GROUP_GID} /opt/keycloak/* .
-
-# Copy ONLY the curl binary from the healthcheck builder stage.
-# This is necessary for the HEALTHCHECK instruction below, per Standard 3.1.
+# Copy the optimized Keycloak server contents.
+COPY --from=builder --chown=keycloak:keycloak /opt/keycloak/* .
+# Copy the healthcheck utility.
 COPY --from=healthcheck_builder /usr/bin/curl /usr/bin/curl
 
-# Switch to the non-root user. From this point on, all commands run AS 'nonroot'.
-USER ${USER_UID}:${GROUP_GID}
+# Switch to the non-root user.
+USER keycloak
 
-# Expose the default Keycloak ports, per Standard 4.3 (Configuration & Usability).
 EXPOSE 8080 8443
 
-# Add a mandatory health check to verify Keycloak is ready to serve requests.
-# This is required by Standard 3.1 (Mandatory Healthchecks).
 HEALTHCHECK --interval=20s --timeout=5s --start-period=30s --retries=3 \
   CMD ["/usr/bin/curl", "-f", "http://localhost:8080/health/ready"]
 
-# Set the entrypoint to the Keycloak start script. It properly handles signals.
-# This satisfies Standard 3.3 (Graceful Shutdown).
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
-
-# Set the default command. Using '--optimized' leverages the build-time work.
 CMD ["start", "--optimized"]

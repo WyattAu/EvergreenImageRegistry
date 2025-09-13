@@ -38,12 +38,13 @@ ARG GROUP_GID=10001
 RUN groupadd --system --gid ${GROUP_GID} keycloak && \
     useradd --system --uid ${USER_UID} --gid ${GROUP_GID} keycloak
 
-WORKDIR /opt/keycloak
+WORKDIR /opt
 
-# Copy the optimized Keycloak server contents.
-COPY --from=builder --chown=keycloak:keycloak /opt/keycloak/* .
-# Copy the healthcheck utility.
-COPY --from=healthcheck_builder /usr/bin/curl /usr/bin/curl
+COPY --from=builder /opt/keycloak .
+
+RUN chown -R keycloak:keycloak /opt/keycloak
+
+WORKDIR /opt/keycloak
 
 # Switch to the non-root user.
 USER keycloak

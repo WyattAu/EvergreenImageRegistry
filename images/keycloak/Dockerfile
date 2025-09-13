@@ -1,3 +1,5 @@
+ARG KC_HEALTH_ENABLED=true
+ARG KC_HTTP_RELATIVE_PATH=/
 ARG KEYCLOAK_VERSION=26.3.4
 ARG ALPINE_VERSION=3.20
 ARG CURL_VERSION=8.12.1-r0
@@ -7,6 +9,13 @@ ARG DISTROLESS_DIGEST=nonroot
 # Stage 1: Builder
 # ==============================================================================
 FROM quay.io/keycloak/keycloak:${KEYCLOAK_VERSION} AS builder
+
+
+ARG KC_HEALTH_ENABLED
+ARG KC_HTTP_RELATIVE_PATH
+# Set them as ENV variables so 'kc.sh build' can read them.
+ENV KC_HEALTH_ENABLED=${KC_HEALTH_ENABLED}
+ENV KC_HTTP_RELATIVE_PATH=${KC_HTTP_RELATIVE_PATH}
 
 # Set the database type required for a proper production build.
 # This ensures database-specific drivers are included.

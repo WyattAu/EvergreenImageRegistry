@@ -38,11 +38,10 @@ ARG GROUP_GID=10001
 RUN groupadd --system --gid ${GROUP_GID} keycloak && \
     useradd --system --uid ${USER_UID} --gid ${GROUP_GID} keycloak
 
-WORKDIR /opt
+COPY --chown=keycloak:keycloak --from=builder /opt/keycloak /opt/keycloak
 
-COPY --from=builder /opt/keycloak .
-
-RUN chown -R keycloak:keycloak /opt/keycloak
+# Copy the healthcheck utility to its correct system path.
+COPY --from=healthcheck_builder /usr/bin/curl /usr/bin/curl
 
 WORKDIR /opt/keycloak
 

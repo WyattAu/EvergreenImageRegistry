@@ -42,7 +42,7 @@ WORKDIR /opt/keycloak
 
 # Copy the optimized Keycloak server from the 'builder' stage.
 # The --chown flag sets ownership directly, avoiding an extra layer.
-COPY --from=builder --chown=${USER_UID}:${GROUP_GID} /opt/keycloak .
+COPY --from=builder --chown=${USER_UID}:${GROUP_GID} /opt/keycloak/* .
 
 # Copy ONLY the curl binary from the healthcheck builder stage.
 # This is necessary for the HEALTHCHECK instruction below, per Standard 3.1.

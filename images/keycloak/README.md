@@ -36,7 +36,7 @@ provides a complete, working stack.
 
    services:
      keycloak:
-       image: ghcr.io/your-org/evergreen-image-registry/keycloak:latest
+       image: ghcr.io/wyattau/evergreenimageregistry/keycloak:latest
        container_name: keycloak
        command: start --optimized --hostname-strict=false
        restart: unless-stopped

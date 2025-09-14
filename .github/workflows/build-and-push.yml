@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: [keycloak, traefik]
+        image: [forgejo, keycloak, traefik]
 
     steps:
       - name: Checkout repository

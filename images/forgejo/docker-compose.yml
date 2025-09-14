@@ -1,0 +1,58 @@
+version: '3.9'
+
+services:
+  forgejo:
+    image: ghcr.io/wyattau/evergreenimageregistry/forgejo:latest
+    container_name: forgejo
+    restart: unless-stopped
+    environment:
+      - FORGEJO__server__DOMAIN=${FORGEJO_DOMAIN}
+      - FORGEJO__server__ROOT_URL=https://${FORGEJO_DOMAIN}
+      - FORGEJO__server__SSH_DOMAIN=${FORGEJO_DOMAIN}
+      - FORGEJO__database__DB_TYPE=postgres
+      - FORGEJO__database__HOST=postgres:5432
+      - FORGEJO__database__NAME=${POSTGRES_DB}
+      - FORGEJO__database__USER=${POSTGRES_USER}
+      - FORGEJO__database__PASSWD=${POSTGRES_PASSWORD}
+      - FORGEJO__service__DISABLE_REGISTRATION=false
+      - FORGEJO__service__REQUIRE_SIGNIN_VIEW=true
+      - FORGEJO__admin__CREATE_ADMIN_USER=${FORGEJO_ADMIN_USER}
+    volumes:
+      - ./forgejo/data:/data
+      - ./forgejo/config:/etc/forgejo
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - '3000:3000'
+      - '2222:22' # Map host port 2222 to container SSH port 22
+    networks:
+      - forgejo-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: forgejo-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - forgejo-net
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  forgejo-net:
+    driver: bridge

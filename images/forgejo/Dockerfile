@@ -1,7 +1,8 @@
 # =============================================================================
 # SOVEREIGN HARDENED FORGEJO
 # Generated from template - Version: 1.0.0
-# Constraint: debian-slim - minimal base, CVE scanning friendly
+# Constraint: debian-slim - fallback when scratch/distroless/wolfi not available
+# Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
 ARG VERSION=1.0.0
@@ -9,7 +10,6 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y --no-install-recommends forgejo ca-certificates && rm -rf /var/lib/apt/lists/*
-# Create non-root user
 RUN useradd -m -u 65534 -g '' git 2>/dev/null || true
 RUN mkdir -p /app /var/log/forgejo /var/cache/forgejo && chown -R git:git /app /var/log/forgejo /var/cache/forgejo 2>/dev/null || true
 USER git:git

@@ -1,7 +1,8 @@
 # =============================================================================
 # SOVEREIGN HARDENED TRAEFIK
 # Generated from template - Version: 3.1.4
-# Constraint: distroless/static - no shell, no package manager
+# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
 ARG VERSION=3.1.4
@@ -15,7 +16,7 @@ RUN curl -fsSL "https://github.com/traefik/traefik/releases/download/v3.1.4/trae
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/traefik /var/cache/traefik
 
-FROM gcr.io/distroless/static:nonroot
+FROM scratch
 COPY --from=downloader /traefik /traefik
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -32,4 +33,4 @@ LABEL org.opencontainers.image.title="traefik" \
       org.opencontainers.image.vendor="Traefik Labs" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.distroless="true"
+      sovereign.constraint.scratch="true"

@@ -1,7 +1,8 @@
 # =============================================================================
 # SOVEREIGN HARDENED CONSUL
 # Generated from template - Version: 1.18.1
-# Constraint: debian-slim - minimal base, CVE scanning friendly
+# Constraint: debian-slim - fallback when scratch/distroless/wolfi not available
+# Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
 ARG VERSION=1.18.1
@@ -9,7 +10,6 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y --no-install-recommends consul ca-certificates && rm -rf /var/lib/apt/lists/*
-# Create non-root user
 RUN useradd -m -u 65534 -g '' consul 2>/dev/null || true
 RUN mkdir -p /app /var/log/consul /var/cache/consul && chown -R consul:consul /app /var/log/consul /var/cache/consul 2>/dev/null || true
 USER consul:consul

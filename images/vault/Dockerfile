@@ -1,7 +1,8 @@
 # =============================================================================
 # SOVEREIGN HARDENED VAULT
 # Generated from template - Version: 1.18.1
-# Constraint: distroless/static - no shell, no package manager
+# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
 ARG VERSION=1.18.1
@@ -15,7 +16,7 @@ RUN curl -fsSL "https://releases.hashicorp.com/vault/1.18.1/vault_1.18.1_linux_a
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/vault /var/cache/vault
 
-FROM gcr.io/distroless/static:nonroot
+FROM scratch
 COPY --from=downloader /vault /vault
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -25,11 +26,11 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 8200 8201
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD vault --version 2>/dev/null || exit 1
+    CMD vault status 2>/dev/null || exit 1
 ENTRYPOINT ["/vault"]
 LABEL org.opencontainers.image.title="vault" \
       org.opencontainers.image.version="1.18.1" \
       org.opencontainers.image.vendor="HashiCorp" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.distroless="true"
+      sovereign.constraint.scratch="true"

@@ -1,7 +1,8 @@
 # =============================================================================
 # SOVEREIGN HARDENED NGINX
 # Generated from template - Version: 1.27.1
-# Constraint: distroless/static - no shell, no package manager
+# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
 ARG VERSION=1.27.1
@@ -15,7 +16,7 @@ RUN curl -fsSL "https://nginx.org/download/nginx-1.27.1.tar.gz" -o /nginx.tar.gz
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/nginx /var/cache/nginx
 
-FROM gcr.io/distroless/static:nonroot
+FROM scratch
 COPY --from=downloader /nginx /nginx
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -25,11 +26,11 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 80 443
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD nginx --version 2>/dev/null || exit 1
+    CMD nginx -v 2>/dev/null || exit 1
 ENTRYPOINT ["/nginx"]
 LABEL org.opencontainers.image.title="nginx" \
       org.opencontainers.image.version="1.27.1" \
       org.opencontainers.image.vendor="Nginx Inc" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.distroless="true"
+      sovereign.constraint.scratch="true"

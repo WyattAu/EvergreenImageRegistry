@@ -1,7 +1,8 @@
 # =============================================================================
 # SOVEREIGN HARDENED COREDNS
 # Generated from template - Version: 1.12.0
-# Constraint: distroless/static - no shell, no package manager
+# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
 ARG VERSION=1.12.0
@@ -15,7 +16,7 @@ RUN curl -fsSL "https://github.com/coredns/coredns/releases/download/v1.12.0/cor
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/coredns /var/cache/coredns
 
-FROM gcr.io/distroless/static:nonroot
+FROM scratch
 COPY --from=downloader /coredns /coredns
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -32,4 +33,4 @@ LABEL org.opencontainers.image.title="coredns" \
       org.opencontainers.image.vendor="Coredns" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.distroless="true"
+      sovereign.constraint.scratch="true"

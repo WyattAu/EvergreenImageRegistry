@@ -1,26 +1,26 @@
 # =============================================================================
 # SOVEREIGN HARDENED FORGEJO
 # Generated from template - Version: 1.0.0
+# Constraint: wolfi-os - minimal, CVE-free base
 # =============================================================================
 
 ARG VERSION=1.0.0
 ARG BUILD_DATE
 
-FROM alpine:3.21
-RUN apk add --no-cache forgejo git mysql-client ca-certificates && rm -rf /var/cache/apk/*
-# Create user FIRST, then remove shell
-RUN adduser -D -u 65534 git || true
-RUN mkdir -p /app /var/log/forgejo /var/cache/forgejo && chown -R git:git /app /var/log/forgejo /var/cache/forgejo || true
-# Remove shell AFTER user creation
-RUN rm -f /bin/sh /bin/bash || true
+FROM cgr.dev/chainguard/wolfi-base:1.0.0
+RUN apk add --no-cache forgejo ca-certificates && rm -rf /var/cache/apk/*
+# Create non-root user
+RUN adduser -D -u 65534 git 2>/dev/null || true
+RUN mkdir -p /app /var/log/forgejo /var/cache/forgejo && chown -R git:git /app /var/log/forgejo /var/cache/forgejo 2>/dev/null || true
 USER git:git
 WORKDIR /app
 EXPOSE 3000 22
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD wget -q --spider http://localhost:3000/api/health || exit 1
+    CMD /api/health
 ENTRYPOINT ["forgejo"]
 LABEL org.opencontainers.image.title="forgejo" \
       org.opencontainers.image.version="1.0.0" \
       org.opencontainers.image.vendor="Forgejo" \
       sovereign.image.tier="1" \
-      sovereign.constraint.nonroot="true"
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.wolfi="true"

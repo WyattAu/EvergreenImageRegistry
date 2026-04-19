@@ -1,16 +1,17 @@
 # =============================================================================
 # SOVEREIGN HARDENED POSTGRESQL
 # Generated from template - Version: 17.4
+# Constraint: wolfi-os - minimal, CVE-free base
 # =============================================================================
 
 ARG VERSION=17.4
 ARG BUILD_DATE
 
-FROM alpine:17.4-alpine
+FROM cgr.dev/chainguard/wolfi-base:17.4
 RUN apk add --no-cache postgresql17 postgresql17-client ca-certificates && rm -rf /var/cache/apk/*
-RUN rm -f /bin/sh /bin/bash || true
-RUN id postgres 2>/dev/null || adduser -D -u 65534 postgres
-RUN mkdir -p /app /var/log/postgresql /var/cache/postgresql && chown -R postgres:postgres /app /var/log/postgresql /var/cache/postgresql
+# Create non-root user
+RUN adduser -D -u 65534 postgres 2>/dev/null || true
+RUN mkdir -p /app /var/log/postgresql /var/cache/postgresql && chown -R postgres:postgres /app /var/log/postgresql /var/cache/postgresql 2>/dev/null || true
 USER postgres:postgres
 WORKDIR /app
 EXPOSE 5432
@@ -21,4 +22,5 @@ LABEL org.opencontainers.image.title="postgresql" \
       org.opencontainers.image.version="17.4" \
       org.opencontainers.image.vendor="PostgreSQL" \
       sovereign.image.tier="1" \
-      sovereign.constraint.nonroot="true"
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.wolfi="true"

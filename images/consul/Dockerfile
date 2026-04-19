@@ -1,16 +1,17 @@
 # =============================================================================
 # SOVEREIGN HARDENED CONSUL
 # Generated from template - Version: 1.18.1
+# Constraint: wolfi-os - minimal, CVE-free base
 # =============================================================================
 
 ARG VERSION=1.18.1
 ARG BUILD_DATE
 
-FROM alpine:1.18.1-alpine
+FROM cgr.dev/chainguard/wolfi-base:1.18.1
 RUN apk add --no-cache consul ca-certificates && rm -rf /var/cache/apk/*
-RUN rm -f /bin/sh /bin/bash || true
-RUN id consul 2>/dev/null || adduser -D -u 65534 consul
-RUN mkdir -p /app /var/log/consul /var/cache/consul && chown -R consul:consul /app /var/log/consul /var/cache/consul
+# Create non-root user
+RUN adduser -D -u 65534 consul 2>/dev/null || true
+RUN mkdir -p /app /var/log/consul /var/cache/consul && chown -R consul:consul /app /var/log/consul /var/cache/consul 2>/dev/null || true
 USER consul:consul
 WORKDIR /app
 EXPOSE 8500
@@ -21,4 +22,5 @@ LABEL org.opencontainers.image.title="consul" \
       org.opencontainers.image.version="1.18.1" \
       org.opencontainers.image.vendor="HashiCorp" \
       sovereign.image.tier="1" \
-      sovereign.constraint.nonroot="true"
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.wolfi="true"

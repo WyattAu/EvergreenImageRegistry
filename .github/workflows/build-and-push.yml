@@ -26,9 +26,12 @@ jobs:
       - name: Discover Dockerfiles
         id: discover
         run: |
-          IMAGES=$(find images -name Dockerfile | sed 's|images/||' | sed 's|/Dockerfile||' | tr '\n' ',')
-          echo "images=[${IMAGES%,}]" >> $GITHUB_OUTPUT
-          echo "Found: ${IMAGES%,}"
+          # List directories with Dockerfiles
+          cd images
+          IMAGES=$(for d in */; do echo "${d%/}"; done | tr '\n' ',' | sed 's/,$//')
+          cd ..
+          echo "images=[$IMAGES]" >> $GITHUB_OUTPUT
+          echo "Found: $(echo $IMAGES | tr ',' '\n' | wc -l) images"
 
   build-and-push:
     needs: discover

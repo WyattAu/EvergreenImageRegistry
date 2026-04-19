@@ -28,7 +28,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  OWNER: ${{ github.repository owner }}
+  OWNER: ${{ github.repository_owner }}
   TAG: ${{ github.sha }}
 
 jobs:

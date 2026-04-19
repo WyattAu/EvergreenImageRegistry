@@ -52,21 +52,14 @@ jobs:
           echo "Found: ${IMAGES%,}"
 
   # ===========================================================================
-  # STAGE 2: LINT DOCKERFILES
+  # STAGE 2: LINT DOCKERFILES (Disabled - use pre-commit locally instead)
   # ===========================================================================
   lint:
     name: Lint Dockerfiles
     needs: discover
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Run Hadolint
-        uses: hadolint/hadolint-action@v3.1.0
-        with:
-          failure-threshold: info
-          dockerfile: images/**/Dockerfile
-          no-fail: true
+      - run: echo "Lint stage skipped - use pre-commit run --all-files locally"
 
       - name: Check for prohibited tools
         run: |

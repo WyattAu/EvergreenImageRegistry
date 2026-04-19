@@ -8,7 +8,7 @@ ARG BUILD_DATE
 
 FROM alpine:3.21 AS downloader
 RUN apk add --no-cache curl ca-certificates tar gzip
-RUN curl -fsSL "https://github.com/traefik/traefik/releases/download/v3.1.4/traefik_3.1.4_linux_amd64.tar.gz" -o /traefik.tar.gz && \
+RUN curl -fsSL "https://github.com/traefik/traefik/releases/download/v3.1.4/traefik_v3.1.4_linux_amd64.tar.gz" -o /traefik.tar.gz && \
     tar -xzf /traefik.tar.gz -C / && rm /traefik.tar.gz && chmod +x /traefik
 
 FROM scratch

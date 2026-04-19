@@ -1,0 +1,364 @@
+controls_mapping:
+  version: "1.0.0"
+  framework: "NIST SP 800-53 Rev 5"
+  generated: "2026-04-20"
+  description: "Mapping of NIST SP 800-53 controls to Evergreen Image Registry implementations"
+
+  controls:
+    AC-2:
+      name: "Account Management"
+      description: "Manage system accounts including creation, activation, modification, review, and disablement"
+      implementation:
+        type: constraint
+        constraint: C001
+        phase: "1"
+        description: "All container images run as non-root user (UID 65534)"
+        verification:
+          - type: automated
+            tool: "test_framework.sh"
+            check: "verify UID != 0"
+          - type: runtime
+            tool: "docker run --entrypoint id"
+            check: "uid matches expected non-root value"
+        evidence:
+          - "CI test results showing C001 pass"
+          - "Adversarial test: privilege escalation blocked"
+      status: implemented
+      cci_mapping: "CCI-000366"
+
+    AC-3:
+      name: "Least Privilege"
+      description: "Enforce least privilege, allowing only authorized accesses"
+      implementation:
+        type: constraint
+        constraint: C018
+        phase: "1"
+        description: "No sudo or su binaries in container images"
+        verification:
+          - type: automated
+            tool: "test_framework.sh"
+            check: "verify sudo/su not present in image"
+          - type: runtime
+            tool: "docker run --entrypoint sudo"
+            check: "command not found"
+        evidence:
+          - "CI test results showing C018 pass"
+          - "Adversarial test: privilege escalation blocked"
+      status: implemented
+      cci_mapping: "CCI-001752"
+
+    AC-6:
+      name: "Least Privilege (Capabilities)"
+      description: "Employ least privilege by restricting capabilities to authorized personnel"
+      implementation:
+        type: phase
+        constraint: "cap-drop ALL"
+        phase: "2"
+        description: "Drop all Linux capabilities; add back only documented exceptions via cap-add"
+        verification:
+          - type: automated
+            tool: "test_framework.sh"
+            check: "verify cap-drop ALL in Dockerfile or compose"
+          - type: runtime
+            tool: "docker inspect --format='{{.HostConfig.CapDrop}}'"
+            check: "contains ALL"
+        evidence:
+          - "CI test results showing capability restrictions"
+          - "Docker Compose manifests with cap_drop: ALL"
+      status: planned
+      cci_mapping: "CCI-001752"
+
+    CM-2:
+      name: "Baseline Configuration"
+      description: "Maintain and document baseline configuration for systems"
+      implementation:
+        type: constraint
+        constraint: C019
+        phase: "1"
+        description: "All images use pinned tags (immutable references via digest)"
+        verification:
+          - type: automated
+            tool: "test_framework.sh"
+            check: "verify image tag is not 'latest'"
+          - type: automated
+            tool: "docker inspect --format='{{.RepoDigests}}'"
+            check: "contains @sha256: digest"
+        evidence:
+          - "CI test results showing C019 pass"
+          - "Image manifest with pinned digests"
+      status: implemented
+      cci_mapping: "CCI-001757"
+
+    CM-7:
+      name: "Least Functionality"
+      description: "Configure systems to provide only essential capabilities"
+      implementation:
+        type: constraint
+        constraints:
+          - C003
+          - C015
+        phase: "1"
+        description: "No shell binaries (C003) and no debug tools (C015) in images"
+        verification:
+          - type: automated
+            tool: "test_framework.sh"
+            check: "verify no /bin/sh, /bin/bash, strace, gdb"
+          - type: adversarial
+            tool: "test_adversarial.sh"
+            check: "shell escape test blocked"
+        evidence:
+          - "CI test results showing C003 and C015 pass"
+          - "Adversarial test: shell escape blocked"
+      status: implemented
+      cci_mapping:
+        - "CCI-000770"
+        - "CCI-001758"
+
+    CM-8:
+      name: "Information System Component Inventory"
+      description: "Maintain an inventory of system components"
+      implementation:
+        type: constraint
+        constraint: C009
+        phase: "1"
+        description: "Software Bill of Materials (SBOM) generated for every image"
+        verification:
+          - type: automated
+            tool: "syft"
+            check: "SBOM in SPDX JSON format generated per image"
+          - type: ci
+            tool: "build pipeline"
+            check: "SBOM artifact uploaded per build"
+        evidence:
+          - "SBOM files (spdx-json) in build artifacts"
+          - "syft scan results in CI logs"
+      status: implemented
+      cci_mapping: "CCI-001813"
+
+    SC-7:
+      name: "Boundary Protection"
+      description: "Monitor and control communications at external boundaries"
+      implementation:
+        type: constraint
+        constraint: C017
+        phase: "1"
+        description: "No host network mode, no Docker socket access, no privileged mode"
+        verification:
+          - type: automated
+            tool: "test_framework.sh"
+            check: "verify NetworkMode != host"
+          - type: runtime
+            tool: "docker inspect"
+            check: "HostConfig.NetworkMode is not host"
+        evidence:
+          - "CI test results showing C017 pass"
+          - "Docker Compose manifests without network_mode: host"
+      status: implemented
+      cci_mapping:
+        - "CCI-001749"
+        - "CCI-001750"
+
+    SC-8:
+      name: "Transmission Confidentiality and Integrity"
+      description: "Protect confidentiality and integrity of transmitted information"
+      implementation:
+        type: phase
+        constraint: "FIPS TLS"
+        phase: "5"
+        description: "All TLS-terminating images use FIPS 140-2 validated cryptography"
+        verification:
+          - type: automated
+            tool: "compliance/fips/fips_image_matrix.yaml"
+            check: "image has FIPS variant with validated OpenSSL/BoringSSL"
+          - type: runtime
+            tool: "openssl s_client"
+            check: "TLS cipher suite is FIPS-approved"
+        evidence:
+          - "FIPS image matrix listing all variants"
+          - "OpenSSL FIPS module validation certificate"
+      status: planned
+      cci_mapping: "CCI-001815"
+
+    SC-12:
+      name: "Cryptographic Key Establishment and Management"
+      description: "Establish and manage cryptographic keys"
+      implementation:
+        type: constraint
+        constraint: C008
+        phase: "1"
+        description: "All images signed with cosign using keyless or key-based verification"
+        verification:
+          - type: automated
+            tool: "cosign verify"
+            check: "signature verification succeeds"
+          - type: ci
+            tool: "build pipeline"
+            check: "cosign sign executed after build"
+        evidence:
+          - "cosign signature files (.sig)"
+          - "cosign verification results in CI logs"
+          - "Keyless verification via Fulcio/Rekor transparency log"
+      status: implemented
+      cci_mapping: "CCI-001812"
+
+    SC-13:
+      name: "Cryptographic Protection"
+      description: "Use FIPS-validated cryptographic modules"
+      implementation:
+        type: phase
+        constraint: "FIPS crypto modules"
+        phase: "5"
+        description: "All cryptographic operations use FIPS 140-2 validated modules"
+        verification:
+          - type: automated
+            tool: "compliance/fips/fips_image_matrix.yaml"
+            check: "image listed in FIPS matrix with validated crypto deps"
+          - type: runtime
+            tool: "openssl fipscheck"
+            check: "FIPS module integrity verified"
+        evidence:
+          - "FIPS image matrix"
+          - "FIPS module validation certificates"
+          - "fips_image_matrix.yaml with crypto dependency mapping"
+      status: planned
+      cci_mapping: "CCI-001816"
+
+    SI-7:
+      name: "Software, Firmware, and Information Integrity"
+      description: "Verify and validate software, firmware, and information integrity"
+      implementation:
+        type: phase
+        constraint: "checksums"
+        phase: "1"
+        description: "SHA256 checksums generated for all downloaded artifacts during build"
+        verification:
+          - type: automated
+            tool: "test_framework.sh"
+            check: "checksum verification step in Dockerfile"
+          - type: ci
+            tool: "build pipeline"
+            check: "checksum mismatch causes build failure"
+        evidence:
+          - "Dockerfile CHECKSUM steps"
+          - "CI build logs showing checksum verification"
+          - "CHECKSUMS file in air-gap bundle"
+      status: implemented
+      cci_mapping: "CCI-001749"
+
+  additional_controls:
+    AU-2:
+      name: "Audit Events"
+      description: "Ensure audit events are generated and logged"
+      implementation:
+        type: phase
+        phase: "3"
+        description: "Container logs forwarded to centralized logging (loki, ELK)"
+        status: partial
+      cci_mapping: "CCI-001761"
+
+    IA-5:
+      name: "Authenticator Management"
+      description: "Manage authenticator lifecycle including creation and revocation"
+      implementation:
+        type: constraint
+        constraint: "C016"
+        phase: "1"
+        description: "No hardcoded secrets; use mounted secrets or external secret stores"
+        status: implemented
+      cci_mapping: "CCI-001760"
+
+    RA-5:
+      name: "Vulnerability Monitoring and Scanning"
+      description: "Continuously monitor and scan for vulnerabilities"
+      implementation:
+        type: phase
+        phase: "1"
+        description: "Trivy vulnerability scanning on every build; zero critical CVEs policy"
+        status: implemented
+      cci_mapping: "CCI-001814"
+
+    SA-12:
+      name: "Supply Chain Protection"
+      description: "Protect supply chain from unauthorized modification"
+      implementation:
+        type: constraint
+        constraints:
+          - C008
+          - C009
+          - C019
+        phase: "1"
+        description: "cosign signing, SBOM generation, pinned tags"
+        status: implemented
+      cci_mapping: "CCI-001812"
+
+  evidence_artifacts:
+    description: "Artifacts generated per control for ATO packages"
+    location: "compliance/ato/controls_evidence/"
+    artifacts:
+      - name: "C001_evidence"
+        controls:
+          - AC-2
+        contents:
+          - "CI test output showing non-root user"
+          - "docker inspect output showing User: 65534"
+      - name: "C018_evidence"
+        controls:
+          - AC-3
+        contents:
+          - "CI test output showing no sudo/su"
+          - "adversarial test results"
+      - name: "cap_drop_evidence"
+        controls:
+          - AC-6
+        contents:
+          - "docker compose config output"
+          - "seccomp profile JSON"
+      - name: "C019_evidence"
+        controls:
+          - CM-2
+        contents:
+          - "Image manifest with digests"
+          - "Dockerfile FROM lines with pinned tags"
+      - name: "C003_C015_evidence"
+        controls:
+          - CM-7
+        contents:
+          - "CI test output showing no shell/debug tools"
+          - "adversarial test: shell escape blocked"
+      - name: "C009_evidence"
+        controls:
+          - CM-8
+        contents:
+          - "SBOM files (SPDX JSON)"
+          - "syft scan output"
+      - name: "C017_evidence"
+        controls:
+          - SC-7
+        contents:
+          - "CI test output showing no host network"
+          - "Docker Compose network configuration"
+      - name: "C008_evidence"
+        controls:
+          - SC-12
+        contents:
+          - "cosign signature files"
+          - "cosign verification output"
+          - "Rekor transparency log entries"
+      - name: "checksum_evidence"
+        controls:
+          - SI-7
+        contents:
+          - "CHECKSUMS files"
+          - "Dockerfile checksum verification steps"
+
+  compliance_status:
+    total_controls: 11
+    implemented: 8
+    planned: 2
+    partial: 1
+    coverage_percentage: 73
+    notes:
+      - "Phase 1 controls (AC-2, AC-3, CM-2, CM-7, CM-8, SC-7, SC-12, SI-7) are fully implemented"
+      - "Phase 2 control (AC-6) is planned for Phase 2 execution"
+      - "Phase 5 controls (SC-8, SC-13) require FIPS image variants"
+      - "Additional controls (AU-2, IA-5, RA-5, SA-12) are partially or fully addressed"

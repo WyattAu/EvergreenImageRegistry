@@ -1,0 +1,323 @@
+fips_image_matrix:
+  version: "1.0.0"
+  generated: "2026-04-20"
+  description: "FIPS 140-2 image variant matrix for Evergreen Image Registry"
+  fips_standard: "FIPS 140-2"
+  target_fips_standard: "FIPS 140-3"
+
+  categories:
+    vpn_tunnels:
+      description: "VPN and tunneling images requiring FIPS-validated cryptography"
+      images:
+        - name: wireguard
+          current_base: scratch
+          fips_base: debian:bookworm-slim
+          fips_reason: "WireGuard uses kernel crypto API - requires FIPS-validated kernel"
+          crypto_deps:
+            - kernel-crypto-api
+          priority: high
+          variant: wireguard-fips
+        - name: strongswan
+          current_base: debian:bookworm-slim
+          fips_base: debian:bookworm-slim
+          fips_reason: "StrongSwan uses OpenSSL for IKE - requires FIPS-validated OpenSSL"
+          crypto_deps:
+            - openssl
+          priority: high
+          variant: strongswan-fips
+        - name: openvpn
+          current_base: debian:bookworm-slim
+          fips_base: debian:bookworm-slim
+          fips_reason: "OpenVPN uses OpenSSL for TLS - requires FIPS-validated OpenSSL"
+          crypto_deps:
+            - openssl
+          priority: high
+          variant: openvpn-fips
+        - name: tailscale
+          current_base: scratch
+          fips_base: debian:bookworm-slim
+          fips_reason: "Tailscale uses WireGuard + NaCl - requires FIPS-validated crypto"
+          crypto_deps:
+            - wireguard-go
+            - nacl
+          priority: high
+          variant: tailscale-fips
+        - name: netmaker
+          current_base: scratch
+          fips_base: debian:bookworm-slim
+          fips_reason: "NetMaker uses WireGuard - requires FIPS-validated crypto"
+          crypto_deps:
+            - wireguard-go
+          priority: medium
+          variant: netmaker-fips
+        - name: netbird
+          current_base: scratch
+          fips_base: debian:bookworm-slim
+          fips_reason: "NetBird uses WireGuard - requires FIPS-validated crypto"
+          crypto_deps:
+            - wireguard-go
+          priority: medium
+          variant: netbird-fips
+        - name: netclient
+          current_base: scratch
+          fips_base: debian:bookworm-slim
+          fips_reason: "NetClient uses WireGuard - requires FIPS-validated crypto"
+          crypto_deps:
+            - wireguard-go
+          priority: medium
+          variant: netclient-fips
+
+    secrets:
+      description: "Secret management and template rendering images"
+      images:
+        - name: vault
+          current_base: debian:bookworm-slim
+          fips_base: debian:bookworm-slim
+          fips_reason: "Vault uses gocrypto and transit secrets engine - requires FIPS mode"
+          crypto_deps:
+            - golang.org/x/crypto
+            - openssl
+          priority: high
+          variant: vault-fips
+        - name: step-cli
+          current_base: debian:bookworm-slim
+          fips_base: debian:bookworm-slim
+          fips_reason: "Step CLI manages certificates and uses Go crypto - requires FIPS mode"
+          crypto_deps:
+            - smallstep/crypto
+          priority: high
+          variant: step-cli-fips
+        - name: consul-template
+          current_base: debian:bookworm-slim
+          fips_base: debian:bookworm-slim
+          fips_reason: "Consul Template connects to Vault over TLS - requires FIPS-validated TLS"
+          crypto_deps:
+            - openssl
+          priority: medium
+          variant: consul-template-fips
+
+    tls_proxies:
+      description: "TLS termination proxy and load balancer images"
+      images:
+        - name: nginx
+          current_base: scratch
+          fips_base: debian:bookworm-slim
+          fips_reason: "nginx uses OpenSSL for TLS termination - requires FIPS-validated OpenSSL"
+          crypto_deps:
+            - openssl
+          priority: high
+          variant: nginx-fips
+        - name: nginx-unprivileged
+          current_base: scratch
+          fips_base: debian:bookworm-slim
+          fips_reason: "Same as nginx - requires FIPS-validated OpenSSL"
+          crypto_deps:
+            - openssl
+          priority: high
+          variant: nginx-unprivileged-fips
+        - name: envoy
+          current_base: scratch
+          fips_base: debian:bookworm-slim
+          fips_reason: "Envoy uses BoringSSL - requires BoringCrypto (FIPS-validated)"
+          crypto_deps:
+            - boringssl
+          priority: high
+          variant: envoy-fips
+        - name: traefik
+          current_base: scratch
+          fips_base: debian:bookworm-slim
+          fips_reason: "Traefik uses Go TLS - requires Go BoringCrypto (FIPS-validated)"
+          crypto_deps:
+            - golang.org/x/crypto
+          priority: high
+          variant: traefik-fips
+        - name: haproxy
+          current_base: scratch
+          fips_base: debian:bookworm-slim
+          fips_reason: "HAProxy uses OpenSSL - requires FIPS-validated OpenSSL"
+          crypto_deps:
+            - openssl
+          priority: high
+          variant: haproxy-fips
+        - name: caddy
+          current_base: scratch
+          fips_base: debian:bookworm-slim
+          fips_reason: "Caddy uses Go TLS with automatic cert management - requires FIPS mode"
+          crypto_deps:
+            - golang.org/x/crypto
+          priority: high
+          variant: caddy-fips
+
+    identity:
+      description: "Identity and access management images"
+      images:
+        - name: keycloak
+          current_base: debian:bookworm-slim
+          fips_base: debian:bookworm-slim
+          fips_reason: "Keycloak uses Quarkus + OpenSSL - requires FIPS-validated TLS and crypto"
+          crypto_deps:
+            - openssl
+            - bouncycastle
+          priority: high
+          variant: keycloak-fips
+        - name: zitadel
+          current_base: scratch
+          fips_base: debian:bookworm-slim
+          fips_reason: "ZITADEL uses Go crypto - requires Go BoringCrypto (FIPS-validated)"
+          crypto_deps:
+            - golang.org/x/crypto
+          priority: high
+          variant: zitadel-fips
+        - name: openldap
+          current_base: debian:bookworm-slim
+          fips_base: debian:bookworm-slim
+          fips_reason: "OpenLDAP uses OpenSSL for TLS and password hashing - requires FIPS mode"
+          crypto_deps:
+            - openssl
+          priority: medium
+          variant: openldap-fips
+        - name: headscale
+          current_base: scratch
+          fips_base: debian:bookworm-slim
+          fips_reason: "Headscale uses WireGuard + Go crypto - requires FIPS mode"
+          crypto_deps:
+            - wireguard-go
+            - golang.org/x/crypto
+          priority: medium
+          variant: headscale-fips
+
+    security:
+      description: "Security scanning and signing tools"
+      images:
+        - name: trivy
+          current_base: scratch
+          fips_base: debian:bookworm-slim
+          fips_reason: "Trivy uses Go crypto for registry auth - requires FIPS mode"
+          crypto_deps:
+            - golang.org/x/crypto
+          priority: medium
+          variant: trivy-fips
+        - name: grype
+          current_base: scratch
+          fips_base: debian:bookworm-slim
+          fips_reason: "Grype uses Go crypto for registry auth - requires FIPS mode"
+          crypto_deps:
+            - golang.org/x/crypto
+          priority: medium
+          variant: grype-fips
+        - name: cosign
+          current_base: scratch
+          fips_base: debian:bookworm-slim
+          fips_reason: "Cosign uses Go crypto for signature verification - requires FIPS mode"
+          crypto_deps:
+            - golang.org/x/crypto
+          priority: high
+          variant: cosign-fips
+
+    crypto_deps:
+      description: "Images with indirect cryptographic dependencies"
+      images:
+        - name: postgresql
+          current_base: debian:bookworm-slim
+          fips_base: debian:bookworm-slim
+          fips_reason: "PostgreSQL uses OpenSSL for TLS connections and pgcrypto extension"
+          crypto_deps:
+            - openssl
+          priority: high
+          variant: postgresql-fips
+        - name: mysql
+          current_base: debian:bookworm-slim
+          fips_base: debian:bookworm-slim
+          fips_reason: "MySQL uses OpenSSL for TLS connections and password encryption"
+          crypto_deps:
+            - openssl
+          priority: high
+          variant: mysql-fips
+        - name: mariadb
+          current_base: debian:bookworm-slim
+          fips_base: debian:bookworm-slim
+          fips_reason: "MariaDB uses OpenSSL for TLS connections"
+          crypto_deps:
+            - openssl
+          priority: high
+          variant: mariadb-fips
+        - name: redis
+          current_base: scratch
+          fips_base: debian:bookworm-slim
+          fips_reason: "Redis uses OpenSSL for TLS connections"
+          crypto_deps:
+            - openssl
+          priority: medium
+          variant: redis-fips
+        - name: mongodb
+          current_base: scratch
+          fips_base: debian:bookworm-slim
+          fips_reason: "MongoDB uses OpenSSL for TLS connections"
+          crypto_deps:
+            - openssl
+          priority: medium
+          variant: mongodb-fips
+        - name: rabbitmq
+          current_base: scratch
+          fips_base: debian:bookworm-slim
+          fips_reason: "RabbitMQ uses OpenSSL for TLS and SASL authentication"
+          crypto_deps:
+            - openssl
+          priority: medium
+          variant: rabbitmq-fips
+        - name: nats
+          current_base: scratch
+          fips_base: debian:bookworm-slim
+          fips_reason: "NATS uses Go crypto for TLS - requires Go BoringCrypto"
+          crypto_deps:
+            - golang.org/x/crypto
+          priority: low
+          variant: nats-fips
+        - name: minio
+          current_base: scratch
+          fips_base: debian:bookworm-slim
+          fips_reason: "MinIO uses Go crypto for S3 API TLS - requires Go BoringCrypto"
+          crypto_deps:
+            - golang.org/x/crypto
+          priority: medium
+          variant: minio-fips
+        - name: restic
+          current_base: scratch
+          fips_base: debian:bookworm-slim
+          fips_reason: "Restic uses Go crypto for backup encryption - requires FIPS mode"
+          crypto_deps:
+            - golang.org/x/crypto
+          priority: medium
+          variant: restic-fips
+
+  summary:
+    total_images: 40
+    by_priority:
+      high: 22
+      medium: 16
+      low: 2
+    by_category:
+      vpn_tunnels: 7
+      secrets: 3
+      tls_proxies: 6
+      identity: 4
+      security: 3
+      crypto_deps: 9
+    by_crypto_backend:
+      openssl: 26
+      golang_boringcrypto: 14
+      boringssl: 1
+      kernel_crypto: 1
+      nacl: 1
+    by_base_change:
+      scratch_to_debian: 18
+      scratch_to_debian_fips: 0
+      debian_to_debian_fips: 15
+      unchanged: 7
+
+  build_notes:
+    fips_openssl_version: "3.0.x (FIPS provider module)"
+    golang_boringcrypto: "Go 1.24+ with GOEXPERIMENT=boringcrypto"
+    boringcrypto_note: "Envoy bundles BoringSSL - build with BoringCrypto enabled"
+    debian_fips_base: "debian:bookworm-slim with libssl3-fips installed"
+    fips_env_var: "OPENSSL_FIPS=1 (OpenSSL), GOLANG_FIPS=1 (Go BoringCrypto)"

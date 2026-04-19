@@ -16,7 +16,7 @@ USER vaultwarden
 WORKDIR /app
 EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD vaultwarden vaultwarden --version
+    CMD vaultwarden --version
 ENTRYPOINT ["vaultwarden"]
 LABEL org.opencontainers.image.title="vaultwarden" \
       org.opencontainers.image.version="2024.4.1" \

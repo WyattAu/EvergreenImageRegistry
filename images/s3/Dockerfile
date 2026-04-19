@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 9000 9001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD s3-server s3-server --version
+    CMD ["/s3-server", "--version"]
 ENTRYPOINT ["/s3-server"]
 LABEL org.opencontainers.image.title="s3" \
       org.opencontainers.image.version="2024.5.28" \

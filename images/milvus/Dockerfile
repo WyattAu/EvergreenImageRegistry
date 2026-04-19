@@ -16,7 +16,7 @@ USER milvus
 WORKDIR /app
 EXPOSE 19530
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD milvus curl -s localhost:9091/healthz
+    CMD curl -sf http://localhost:9091/healthz
 ENTRYPOINT ["milvus"]
 LABEL org.opencontainers.image.title="milvus" \
       org.opencontainers.image.version="2.4.0" \

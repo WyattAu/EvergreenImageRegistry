@@ -16,7 +16,7 @@ USER www-data
 WORKDIR /app
 EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD php curl -s localhost:80/i/status
+    CMD curl -sf http://localhost:80/i/status
 ENTRYPOINT ["php"]
 LABEL org.opencontainers.image.title="freshrss" \
       org.opencontainers.image.version="1.24.1" \

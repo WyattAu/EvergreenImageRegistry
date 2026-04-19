@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 9009
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD cortex cortex --version
+    CMD ["/cortex", "--version"]
 ENTRYPOINT ["/cortex"]
 LABEL org.opencontainers.image.title="cortex" \
       org.opencontainers.image.version="1.15.1" \

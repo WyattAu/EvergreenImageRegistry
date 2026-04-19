@@ -16,7 +16,7 @@ USER outline
 WORKDIR /app
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD node curl -s localhost:3000/api/status
+    CMD curl -sf http://localhost:3000/status
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="outline" \
       org.opencontainers.image.version="0.77.0" \

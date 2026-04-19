@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 9113
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD nginx_exporter nginx_exporter --version
+    CMD ["/nginx_exporter", "--version"]
 ENTRYPOINT ["/nginx_exporter"]
 LABEL org.opencontainers.image.title="nginx-exporter" \
       org.opencontainers.image.version="1.1.0" \

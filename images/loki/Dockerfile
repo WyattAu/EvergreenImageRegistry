@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 3100
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD loki loki --version
+    CMD ["/loki", "--version"]
 ENTRYPOINT ["/loki"]
 LABEL org.opencontainers.image.title="loki" \
       org.opencontainers.image.version="3.1.0" \

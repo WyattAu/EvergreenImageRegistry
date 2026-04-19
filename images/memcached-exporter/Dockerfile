@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 9150
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD memcached_exporter memcached_exporter --version
+    CMD ["/memcached_exporter", "--version"]
 ENTRYPOINT ["/memcached_exporter"]
 LABEL org.opencontainers.image.title="memcached-exporter" \
       org.opencontainers.image.version="0.13.0" \

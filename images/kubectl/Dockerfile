@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD kubectl kubectl version --client
+    CMD ["/kubectl", "version", "--client"]
 ENTRYPOINT ["/kubectl"]
 LABEL org.opencontainers.image.title="kubectl" \
       org.opencontainers.image.version="1.30.1" \

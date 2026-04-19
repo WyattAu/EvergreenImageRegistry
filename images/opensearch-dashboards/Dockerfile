@@ -16,7 +16,7 @@ USER opensearch-dashboards
 WORKDIR /app
 EXPOSE 5601
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD opensearch-dashboards curl -s localhost:5601
+    CMD curl -sf http://localhost:5601/api/status
 ENTRYPOINT ["opensearch-dashboards"]
 LABEL org.opencontainers.image.title="opensearch-dashboards" \
       org.opencontainers.image.version="2.14.0" \

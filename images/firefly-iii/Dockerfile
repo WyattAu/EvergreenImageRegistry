@@ -16,7 +16,7 @@ USER www-data
 WORKDIR /app
 EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD php curl -s localhost:80/api/v1/about
+    CMD curl -sf http://localhost:80/api/v1/about
 ENTRYPOINT ["php"]
 LABEL org.opencontainers.image.title="firefly-iii" \
       org.opencontainers.image.version="6.1.8" \

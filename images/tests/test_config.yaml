@@ -1,0 +1,1866 @@
+# =============================================================================
+# TEST CONFIGURATION - ALL 223 IMAGES
+# =============================================================================
+# Configuration for test_runner.sh
+# Categories: proxy, database, monitoring, security, devops, messaging,
+#             dns, vpn, search, app, runtime, official
+# =============================================================================
+
+categories:
+  proxy:
+    description: "Proxy, load balancer, and reverse proxy images"
+  database:
+    description: "Database and data store images"
+  monitoring:
+    description: "Monitoring, metrics, and observability images"
+  security:
+    description: "Security tools and identity management images"
+  devops:
+    description: "CI/CD, Git, and DevOps toolchain images"
+  messaging:
+    description: "Message queue and event streaming images"
+  dns:
+    description: "DNS server and DNS-related images"
+  vpn:
+    description: "VPN and networking tunnel images"
+  search:
+    description: "Search engine and vector database images"
+  app:
+    description: "Application and service images"
+  runtime:
+    description: "Language runtime and CLI tool images"
+  official:
+    description: "Images based on official upstream distributions"
+
+images:
+  # =============================================================================
+  # PROXY
+  # =============================================================================
+  nginx:
+    binary: /nginx
+    health_port: 80
+    version_flag: "-v"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  nginx-unprivileged:
+    binary: /nginx
+    health_port: 8080
+    version_flag: "-v"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  nginx-ingress:
+    binary: /nginx
+    health_port: 80
+    version_flag: "-v"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  nginx-stream:
+    binary: /nginx
+    health_port: 80
+    version_flag: "-v"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  nginx-exporter:
+    binary: /nginx_exporter
+    health_port: 9113
+    version_flag: "--version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  traefik:
+    binary: /traefik
+    health_port: 8080
+    version_flag: "version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  traefik-v2:
+    binary: /traefik
+    health_port: 8080
+    version_flag: "version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  traefik-dashboard:
+    binary: /traefik
+    health_port: 8080
+    version_flag: "version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  traefik-metrics:
+    binary: /traefik
+    health_port: 8080
+    version_flag: "version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  traefik-wss:
+    binary: /traefik
+    health_port: 80
+    version_flag: "version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  traefik-hub:
+    binary: /traefik
+    health_port: 80
+    version_flag: "version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  traefik-cloud:
+    binary: /traefik
+    health_port: 8080
+    version_flag: "version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  traefik-crypto:
+    binary: /traefik
+    health_port: 80
+    version_flag: "version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  traefik-mirror:
+    binary: /traefik
+    health_port: 80
+    version_flag: "version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  traefik-plugin-auth:
+    binary: /traefik
+    health_port: 80
+    version_flag: "version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  traefik-plugin-csrf:
+    binary: /traefik
+    health_port: 80
+    version_flag: "version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  haproxy:
+    binary: /haproxy
+    health_port: 80
+    version_flag: "-v"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  haproxy-dev:
+    binary: /haproxy
+    health_port: 80
+    version_flag: "-v"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  haproxy-lb:
+    binary: /haproxy
+    health_port: 80
+    version_flag: "-v"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  haproxy-exporter:
+    binary: /haproxy_exporter
+    health_port: 9101
+    version_flag: "--version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  caddy:
+    binary: /caddy
+    health_port: 80
+    version_flag: "version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  caddy-fileserver:
+    binary: /caddy
+    health_port: 80
+    version_flag: "version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  caddy-reverseproxy:
+    binary: /caddy
+    health_port: 80
+    version_flag: "version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  caddy-wildcard:
+    binary: /caddy
+    health_port: 80
+    version_flag: "version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  envoy:
+    binary: /envoy
+    health_port: 9900
+    version_flag: "--version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  envoy-exporter:
+    binary: /envoy_exporter
+    health_port: 9102
+    version_flag: "--version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  envoy-extras:
+    binary: /envoy
+    health_port: 80
+    version_flag: "--version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  envoy-grpc:
+    binary: /envoy
+    health_port: 9001
+    version_flag: "--version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  envoy-init:
+    binary: /envoy
+    health_port: 9900
+    version_flag: "--version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  envoy-sidecar:
+    binary: /envoy
+    health_port: 80
+    version_flag: "--version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  apache:
+    binary: /httpd
+    health_port: 80
+    version_flag: "-v"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  oauth2-proxy:
+    binary: /oauth2-proxy
+    health_port: 80
+    version_flag: "--version"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  modsecurity:
+    binary: apache2
+    health_port: 80
+    version_flag: "-v"
+    category: proxy
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+
+  # =============================================================================
+  # DATABASE
+  # =============================================================================
+  postgres:
+    binary: postgres
+    health_port: 5432
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 30
+  postgresql:
+    binary: postgres
+    health_port: 5432
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 30
+  postgresql-14:
+    binary: postgres
+    health_port: 5432
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 30
+  postgresql-15:
+    binary: postgres
+    health_port: 5432
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 30
+  postgresql-16:
+    binary: postgres
+    health_port: 5432
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 30
+  postgresql-exporter:
+    binary: /postgres_exporter
+    health_port: 9187
+    version_flag: "--version"
+    category: database
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  postgis:
+    binary: postgres
+    health_port: 5432
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 30
+  timescaledb:
+    binary: postgres
+    health_port: 5432
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 30
+  pgbouncer:
+    binary: pgbouncer
+    health_port: 6432
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 15
+  pgpool-II:
+    binary: pgpool
+    health_port: 9999
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 15
+  mysql:
+    binary: mariadbd
+    health_port: 3306
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 45
+  mysql-exporter:
+    binary: /mysqld_exporter
+    health_port: 9104
+    version_flag: "--version"
+    category: database
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  mariadb:
+    binary: mariadbd
+    health_port: 3306
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 45
+  redis:
+    binary: redis-server
+    health_port: 6379
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 10
+  redis-6:
+    binary: redis-server
+    health_port: 6379
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 10
+  redis-7:
+    binary: redis-server
+    health_port: 6379
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 10
+  redis7:
+    binary: redis-server
+    health_port: 6379
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 10
+  redis-exporter:
+    binary: /redis_exporter
+    health_port: 9121
+    version_flag: "--version"
+    category: database
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  valkey:
+    binary: valkey-server
+    health_port: 6379
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 10
+  memcached:
+    binary: memcached
+    health_port: 11211
+    version_flag: "-V"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 10
+  memcached-exporter:
+    binary: /memcached_exporter
+    health_port: 9150
+    version_flag: "--version"
+    category: database
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  mongodb:
+    binary: mongod
+    health_port: 27017
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 30
+  mongodb-6:
+    binary: mongod
+    health_port: 27017
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 30
+  dragonfly:
+    binary: dragonfly
+    health_port: 6379
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 15
+  sqlite:
+    binary: sqlite3
+    health_port: 0
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 5
+  cassandra:
+    binary: cassandra
+    health_port: 9042
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 60
+  couchdb:
+    binary: couchdb
+    health_port: 5984
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 30
+  couchbase:
+    binary: couchbase-server
+    health_port: 8091
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 60
+  arangodb:
+    binary: arangod
+    health_port: 8529
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 30
+  neo4j:
+    binary: neo4j
+    health_port: 7474
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 30
+  scylladb:
+    binary: scylla
+    health_port: 9042
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 60
+  cockroachdb:
+    binary: cockroach
+    health_port: 8080
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 30
+  surrealdb:
+    binary: /surreal
+    health_port: 8000
+    version_flag: "version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 15
+  influxdb:
+    binary: influxd
+    health_port: 8086
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 15
+  influxdb-client:
+    binary: /influx
+    health_port: 0
+    version_flag: "--version"
+    category: database
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 5
+
+  # =============================================================================
+  # MONITORING
+  # =============================================================================
+  prometheus:
+    binary: /prometheus
+    health_port: 9090
+    version_flag: "--version"
+    category: monitoring
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  prometheus-node-exporter:
+    binary: /node_exporter
+    health_port: 9100
+    version_flag: "--version"
+    category: monitoring
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  node-exporter:
+    binary: /node_exporter
+    health_port: 9100
+    version_flag: "--version"
+    category: monitoring
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  prometheus-alertmanager:
+    binary: /alertmanager
+    health_port: 9093
+    version_flag: "--version"
+    category: monitoring
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  prometheus-pushgateway:
+    binary: /pushgateway
+    health_port: 9091
+    version_flag: "--version"
+    category: monitoring
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  grafana:
+    binary: /grafana
+    health_port: 3000
+    version_flag: "-v"
+    category: monitoring
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  loki:
+    binary: /loki
+    health_port: 3100
+    version_flag: "-v"
+    category: monitoring
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  thanos:
+    binary: /thanos
+    health_port: 10902
+    version_flag: "--version"
+    category: monitoring
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  thanos-receive:
+    binary: /thanos
+    health_port: 10902
+    version_flag: "--version"
+    category: monitoring
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  thanos-store:
+    binary: /thanos
+    health_port: 10902
+    version_flag: "--version"
+    category: monitoring
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  victoriametrics:
+    binary: /victoria-metrics
+    health_port: 8428
+    version_flag: "--version"
+    category: monitoring
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  vm-agent:
+    binary: /vmagent
+    health_port: 8429
+    version_flag: "--version"
+    category: monitoring
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  cortex:
+    binary: /cortex
+    health_port: 9009
+    version_flag: "--version"
+    category: monitoring
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  mimir:
+    binary: /mimir
+    health_port: 8080
+    version_flag: "--version"
+    category: monitoring
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  telegraf:
+    binary: /telegraf
+    health_port: 8086
+    version_flag: "--version"
+    category: monitoring
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  fluent-bit:
+    binary: /fluent-bit
+    health_port: 2020
+    version_flag: "--version"
+    category: monitoring
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  vector:
+    binary: /vector
+    health_port: 9001
+    version_flag: "--version"
+    category: monitoring
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  cadvisor:
+    binary: /usr/local/bin/cadvisor
+    health_port: 8080
+    version_flag: "--version"
+    category: monitoring
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  statping:
+    binary: /statping
+    health_port: 8080
+    version_flag: "--version"
+    category: monitoring
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  uptime-kuma:
+    binary: node
+    health_port: 3001
+    version_flag: "--version"
+    category: monitoring
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  kube-state-metrics:
+    binary: /kube-state-metrics
+    health_port: 8080
+    version_flag: "--version"
+    category: monitoring
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+
+  # =============================================================================
+  # SECURITY
+  # =============================================================================
+  vault:
+    binary: /vault
+    health_port: 8200
+    version_flag: "--version"
+    category: security
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 15
+  hashicorp-vault:
+    binary: /vault
+    health_port: 8200
+    version_flag: "--version"
+    category: security
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 15
+  vault-secrets:
+    binary: /vault-secrets-operator
+    health_port: 0
+    version_flag: "--version"
+    category: security
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 10
+  vaultwarden:
+    binary: vaultwarden
+    health_port: 80
+    version_flag: "--version"
+    category: security
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  trivy:
+    binary: /trivy
+    health_port: 0
+    version_flag: "--version"
+    category: security
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+  cosign:
+    binary: /cosign
+    health_port: 0
+    version_flag: "version"
+    category: security
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+  grype:
+    binary: /grype
+    health_port: 0
+    version_flag: "version"
+    category: security
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+  syft:
+    binary: /syft
+    health_port: 0
+    version_flag: "version"
+    category: security
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+  step-cli:
+    binary: /step
+    health_port: 0
+    version_flag: "version"
+    category: security
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+  fail2ban:
+    binary: fail2ban
+    health_port: 0
+    version_flag: "--version"
+    category: security
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 10
+  keycloak:
+    binary: /app/keycloak/bin/kc.sh
+    health_port: 8080
+    version_flag: "--version"
+    category: security
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  dex:
+    binary: /dex
+    health_port: 5556
+    version_flag: "--version"
+    category: security
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  zitadel:
+    binary: /app/zitadel
+    health_port: 8080
+    version_flag: "--version"
+    category: security
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  authelia:
+    binary: /authelia
+    health_port: 80
+    version_flag: "--version"
+    category: security
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  headscale:
+    binary: /headscale
+    health_port: 8080
+    version_flag: "--version"
+    category: security
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  ldap:
+    binary: slapd
+    health_port: 389
+    version_flag: "-d"
+    category: security
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 15
+  openldap:
+    binary: slapd
+    health_port: 389
+    version_flag: "-d"
+    category: security
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 15
+  freeipa:
+    binary: ipa-server
+    health_port: 80
+    version_flag: "--version"
+    category: security
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 60
+  synapse:
+    binary: python3
+    health_port: 8008
+    version_flag: "--version"
+    category: security
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+
+  # =============================================================================
+  # DEVOPS
+  # =============================================================================
+  jenkins:
+    binary: jenkins
+    health_port: 8080
+    version_flag: "--version"
+    category: devops
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  gitlab:
+    binary: gitlab
+    health_port: 80
+    version_flag: "--version"
+    category: devops
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 300
+  forgejo:
+    binary: /usr/local/bin/forgejo
+    health_port: 3000
+    version_flag: "--version"
+    category: devops
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  gitea:
+    binary: /usr/local/bin/gitea
+    health_port: 3000
+    version_flag: "--version"
+    category: devops
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  drone:
+    binary: drone
+    health_port: 80
+    version_flag: "--version"
+    category: devops
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  argocd:
+    binary: argocd
+    health_port: 8080
+    version_flag: "version"
+    category: devops
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  tekton:
+    binary: tkn
+    health_port: 0
+    version_flag: "--version"
+    category: devops
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+  flux:
+    binary: /flux
+    health_port: 3030
+    version_flag: "--version"
+    category: devops
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  woodpecker-ci:
+    binary: woodpecker-server
+    health_port: 8000
+    version_flag: "--version"
+    category: devops
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  github-actions-runner:
+    binary: run.sh
+    health_port: 0
+    version_flag: "--version"
+    category: devops
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 10
+  portainer:
+    binary: /portainer
+    health_port: 9000
+    version_flag: "--version"
+    category: devops
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  helm:
+    binary: /helm
+    health_port: 0
+    version_flag: "version"
+    category: devops
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+  helmfile:
+    binary: /helmfile
+    health_port: 0
+    version_flag: "--version"
+    category: devops
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+  kubectl:
+    binary: /kubectl
+    health_port: 0
+    version_flag: "--version"
+    category: devops
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+  kustomize:
+    binary: /kustomize
+    health_port: 0
+    version_flag: "--version"
+    category: devops
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+  buildkit:
+    binary: buildkitd
+    health_port: 1234
+    version_flag: "--version"
+    category: devops
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  kaniko:
+    binary: /kaniko
+    health_port: 0
+    version_flag: "--version"
+    category: devops
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+
+  # =============================================================================
+  # MESSAGING
+  # =============================================================================
+  rabbitmq:
+    binary: rabbitmq-server
+    health_port: 5672
+    version_flag: "--version"
+    category: messaging
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  nats:
+    binary: /nats-server
+    health_port: 4222
+    version_flag: "--version"
+    category: messaging
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  kafka:
+    binary: kafka
+    health_port: 9092
+    version_flag: "--version"
+    category: messaging
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  kafka-exporter:
+    binary: /kafka_exporter
+    health_port: 9308
+    version_flag: "--version"
+    category: messaging
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  activemq:
+    binary: activemq
+    health_port: 8161
+    version_flag: "--version"
+    category: messaging
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  emqx:
+    binary: emqx
+    health_port: 1883
+    version_flag: "--version"
+    category: messaging
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  mqtt:
+    binary: mosquitto
+    health_port: 1883
+    version_flag: "-h"
+    category: messaging
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  pulsar:
+    binary: pulsar
+    health_port: 8080
+    version_flag: "--version"
+    category: messaging
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 60
+
+  # =============================================================================
+  # DNS
+  # =============================================================================
+  bind:
+    binary: /named
+    health_port: 53
+    version_flag: "-v"
+    category: dns
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  bind-exporter:
+    binary: /bind_exporter
+    health_port: 9119
+    version_flag: "--version"
+    category: dns
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  coredns:
+    binary: /coredns
+    health_port: 53
+    version_flag: "--version"
+    category: dns
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  unbound:
+    binary: /unbound
+    health_port: 53
+    version_flag: "-v"
+    category: dns
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  unbound-exporter:
+    binary: /unbound_exporter
+    health_port: 9167
+    version_flag: "--version"
+    category: dns
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  adguardhome:
+    binary: /AdGuardHome
+    health_port: 53
+    version_flag: "--version"
+    category: dns
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  blocky:
+    binary: /blocky
+    health_port: 53
+    version_flag: "--version"
+    category: dns
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  powerdns:
+    binary: pdns
+    health_port: 53
+    version_flag: "--version"
+    category: dns
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  dnsmasq:
+    binary: /dnsmasq
+    health_port: 53
+    version_flag: "--version"
+    category: dns
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  dnsdist:
+    binary: /dnsdist
+    health_port: 53
+    version_flag: "--version"
+    category: dns
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  knot-resolver:
+    binary: /kresd
+    health_port: 53
+    version_flag: "--version"
+    category: dns
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+
+  # =============================================================================
+  # VPN
+  # =============================================================================
+  wireguard:
+    binary: /usr/local/bin/wg
+    health_port: 51820
+    version_flag: "--version"
+    category: vpn
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 10
+  wg-quick:
+    binary: /usr/local/bin/wg
+    health_port: 51820
+    version_flag: "--version"
+    category: vpn
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 10
+  tailscale:
+    binary: /usr/local/bin/tailscale
+    health_port: 41641
+    version_flag: "--version"
+    category: vpn
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 10
+  openvpn:
+    binary: /usr/local/bin/openvpn
+    health_port: 1194
+    version_flag: "--version"
+    category: vpn
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 10
+  strongswan:
+    binary: /usr/local/bin/charon
+    health_port: 500
+    version_flag: "--version"
+    category: vpn
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 10
+  softether:
+    binary: vpnserver
+    health_port: 0
+    version_flag: "--version"
+    category: vpn
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 15
+  netmaker:
+    binary: /netmaker
+    health_port: 443
+    version_flag: "--version"
+    category: vpn
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  netbird:
+    binary: /netbird
+    health_port: 443
+    version_flag: "--version"
+    category: vpn
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  netclient:
+    binary: /usr/local/bin/netclient
+    health_port: 0
+    version_flag: "--version"
+    category: vpn
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 10
+
+  # =============================================================================
+  # SEARCH
+  # =============================================================================
+  elasticsearch:
+    binary: elasticsearch
+    health_port: 9200
+    version_flag: "--version"
+    category: search
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  elasticsearch-7:
+    binary: elasticsearch
+    health_port: 9200
+    version_flag: "--version"
+    category: search
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  opensearch:
+    binary: opensearch
+    health_port: 9200
+    version_flag: "--version"
+    category: search
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  opensearch-dashboards:
+    binary: opensearch-dashboards
+    health_port: 5601
+    version_flag: "--version"
+    category: search
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  meilisearch:
+    binary: /meilisearch
+    health_port: 7700
+    version_flag: "--version"
+    category: search
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  meilisearch-python:
+    binary: python
+    health_port: 0
+    version_flag: "--version"
+    category: search
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+  typesense:
+    binary: /typesense-server
+    health_port: 8108
+    version_flag: "--version"
+    category: search
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  typesense-js:
+    binary: node
+    health_port: 0
+    version_flag: "--version"
+    category: search
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+  searxng:
+    binary: python
+    health_port: 8080
+    version_flag: "--version"
+    category: search
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  qdrant:
+    binary: /qdrant
+    health_port: 6333
+    version_flag: "--version"
+    category: search
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  weaviate:
+    binary: weaviate
+    health_port: 8080
+    version_flag: "--version"
+    category: search
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  chroma:
+    binary: chroma
+    health_port: 8000
+    version_flag: "--version"
+    category: search
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  lancedb:
+    binary: /lancedb
+    health_port: 8080
+    version_flag: "--version"
+    category: search
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  milvus:
+    binary: milvus
+    health_port: 19530
+    version_flag: "--version"
+    category: search
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 60
+
+  # =============================================================================
+  # APP
+  # =============================================================================
+  calibre-web:
+    binary: python
+    health_port: 8083
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  dolibarr:
+    binary: php
+    health_port: 80
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  erpnext:
+    binary: python
+    health_port: 8000
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 60
+  firefly-iii:
+    binary: php
+    health_port: 80
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  hedgedoc:
+    binary: hedgedoc
+    health_port: 3000
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  homeassistant:
+    binary: python
+    health_port: 8123
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  immich:
+    binary: node
+    health_port: 2283
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  invoice-ninja:
+    binary: php
+    health_port: 80
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  jellyfin:
+    binary: jellyfin
+    health_port: 8096
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  lychee:
+    binary: lychee
+    health_port: 8089
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  mattermost:
+    binary: /app/mattermost/bin/mattermost
+    health_port: 8065
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  miniflux:
+    binary: /miniflux
+    health_port: 8080
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  n8n:
+    binary: node
+    health_port: 5678
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  navidrome:
+    binary: /navidrome
+    health_port: 4533
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  outline:
+    binary: node
+    health_port: 3000
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  piwigo:
+    binary: php
+    health_port: 80
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  planka:
+    binary: node
+    health_port: 3000
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  qbittorrent:
+    binary: qbittorrent-nox
+    health_port: 8080
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  transmission:
+    binary: transmission-daemon
+    health_port: 9091
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  freshrss:
+    binary: php
+    health_port: 80
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  photoprism:
+    binary: photoprism
+    health_port: 2282
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  focalboard:
+    binary: /focalboard-server
+    health_port: 8000
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  logseq:
+    binary: node
+    health_port: 3000
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  vikunja:
+    binary: /vikunja
+    health_port: 3456
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  suitecrm:
+    binary: php
+    health_port: 80
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  privatebin:
+    binary: php
+    health_port: 80
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  dashy:
+    binary: /dashy
+    health_port: 80
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  homepage:
+    binary: /homepage
+    health_port: 3000
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  it-tools:
+    binary: /it-tools
+    health_port: 80
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  pairdrop:
+    binary: /pairdrop
+    health_port: 80
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  node-red:
+    binary: node
+    health_port: 1880
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  esphome:
+    binary: python
+    health_port: 6052
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  openhab:
+    binary: openhab
+    health_port: 8080
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  zigbee2mqtt:
+    binary: node
+    health_port: 8080
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  text-generation-webui:
+    binary: python
+    health_port: 7860
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  localai:
+    binary: /localai
+    health_port: 8080
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  ollama:
+    binary: /ollama
+    health_port: 11434
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  consul:
+    binary: /consul
+    health_port: 8500
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  consul-exporter:
+    binary: /consul_exporter
+    health_port: 9107
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
+  consul-template:
+    binary: /consul-template
+    health_port: 0
+    version_flag: "--version"
+    category: app
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+  etcd:
+    binary: /etcd
+    health_port: 2379
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  minio:
+    binary: /minio
+    health_port: 9000
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  s3:
+    binary: /s3-server
+    health_port: 9000
+    version_flag: "--version"
+    category: app
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
+  restic:
+    binary: /restic
+    health_port: 0
+    version_flag: "--version"
+    category: app
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+  rclone:
+    binary: /rclone
+    health_port: 0
+    version_flag: "--version"
+    category: app
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+
+  # =============================================================================
+  # RUNTIME
+  # =============================================================================
+  golang:
+    binary: go
+    health_port: 0
+    version_flag: "version"
+    category: runtime
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+  node:
+    binary: node
+    health_port: 0
+    version_flag: "--version"
+    category: runtime
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+  python:
+    binary: python3
+    health_port: 0
+    version_flag: "--version"
+    category: runtime
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+  php:
+    binary: php
+    health_port: 0
+    version_flag: "--version"
+    category: runtime
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+  ruby:
+    binary: ruby
+    health_port: 0
+    version_flag: "--version"
+    category: runtime
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+  rust:
+    binary: rustc
+    health_port: 0
+    version_flag: "--version"
+    category: runtime
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+  openjdk:
+    binary: java
+    health_port: 0
+    version_flag: "--version"
+    category: runtime
+    functional_test: security
+    adversarial_test: true
+    startup_timeout: 5
+
+  # =============================================================================
+  # OFFICIAL (upstream-based)
+  # =============================================================================
+  lidarr:
+    binary: lidarr
+    health_port: 8686
+    version_flag: "--version"
+    category: official
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  radarr:
+    binary: radarr
+    health_port: 7878
+    version_flag: "--version"
+    category: official
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  sonarr:
+    binary: sonarr
+    health_port: 8989
+    version_flag: "--version"
+    category: official
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
+  prowlarr:
+    binary: prowlarr
+    health_port: 9696
+    version_flag: "--version"
+    category: official
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30

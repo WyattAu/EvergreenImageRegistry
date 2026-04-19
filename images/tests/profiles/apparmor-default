@@ -1,0 +1,90 @@
+#include <tunables/global>
+
+profile evergreen-default flags=(attach_disconnected,mediate_deleted) {
+  #include <abstractions/base>
+
+  network,
+
+  capability,
+  file,
+  umount,
+
+  deny capability all,
+  deny network,
+  deny mount,
+  deny remount,
+  deny mount options=(bind, ro, rw, suid, nosuid, exec, noexec, recursive, private, slave, shared,unbindable, run, make-private, make-slave, make-shared, make-unbindable, make-rprivate, make-rslave, make-rshared, make-runbindable),
+
+  deny signal send peer=/usr/bin/dockerd,
+  deny signal send peer=/usr/bin/containerd,
+  deny signal send peer=/usr/bin/crio,
+
+  deny ptrace,
+
+  deny /var/run/docker.sock rw,
+  deny /run/docker.sock rw,
+  deny /var/run/containerd/containerd.sock rw,
+  deny /run/containerd/containerd.sock rw,
+
+  /etc/ r,
+  /etc/** r,
+
+  /usr/ r,
+  /usr/** r,
+
+  /app/ rw,
+  /app/** rw,
+
+  /tmp/ rw,
+  /tmp/** rw,
+
+  /var/log/ rw,
+  /var/log/** rw,
+
+  /var/cache/ rw,
+  /var/cache/** rw,
+
+  deny /proc/ r,
+  deny /proc/** r,
+  deny /sys/ r,
+  deny /sys/** r,
+
+  /proc/self/ r,
+  /proc/self/** r,
+  /proc/*/status r,
+  /proc/*/cmdline r,
+  /proc/*/comm r,
+  /proc/meminfo r,
+
+  /sys/fs/cgroup/ r,
+  /sys/fs/cgroup/** r,
+
+  deny /sys/kernel/ r,
+  deny /sys/kernel/** r,
+  deny /sys/firmware/ r,
+  deny /sys/firmware/** r,
+  deny /sys/module/ r,
+  deny /sys/module/** r,
+  deny /sys/fs/selinux/ r,
+  deny /sys/fs/selinux/** r,
+
+  deny /etc/shadow r,
+  deny /etc/gshadow r,
+  deny /etc/passwd- r,
+  deny /etc/group- r,
+  deny /etc/ssh/ r,
+  deny /etc/ssh/** r,
+  deny /root/ r,
+  deny /root/** r,
+  deny /home/ r,
+  deny /home/** r,
+  deny /opt/ r,
+  deny /opt/** r,
+
+  deny @{PROC}/sys/kernel/core_pattern rw,
+  deny @{PROC}/sys/fs/binfmt_misc/ r,
+
+  deny owner /** w,
+
+  signal (receive) peer=unconfined,
+}

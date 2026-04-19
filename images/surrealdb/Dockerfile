@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 8000 8001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD surreal surreal version
+    CMD ["/surreal", "version"]
 ENTRYPOINT ["/surreal"]
 LABEL org.opencontainers.image.title="surrealdb" \
       org.opencontainers.image.version="1.1.1" \

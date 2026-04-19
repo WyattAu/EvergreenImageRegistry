@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD statping statping --version
+    CMD ["/statping", "--version"]
 ENTRYPOINT ["/statping"]
 LABEL org.opencontainers.image.title="statping" \
       org.opencontainers.image.version="0.90.75" \

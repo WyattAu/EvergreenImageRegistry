@@ -16,7 +16,7 @@ USER jenkins
 WORKDIR /app
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD jenkins curl -s localhost:8080/api/json
+    CMD curl -sf http://localhost:8080/login 2>/dev/null || curl -sf http://localhost:8080
 ENTRYPOINT ["jenkins"]
 LABEL org.opencontainers.image.title="jenkins" \
       org.opencontainers.image.version="2.462.1" \

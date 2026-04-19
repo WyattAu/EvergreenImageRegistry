@@ -16,7 +16,7 @@ USER influxdb
 WORKDIR /app
 EXPOSE 8086 9999
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD influxd influx ping
+    CMD curl -sf http://localhost:8086/health
 ENTRYPOINT ["influxd"]
 LABEL org.opencontainers.image.title="influxdb" \
       org.opencontainers.image.version="2.7.7" \

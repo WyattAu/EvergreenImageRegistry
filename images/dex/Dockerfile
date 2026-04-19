@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 5556
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD dex dex --version
+    CMD ["/dex", "version"]
 ENTRYPOINT ["/dex"]
 LABEL org.opencontainers.image.title="dex" \
       org.opencontainers.image.version="2.40.0" \

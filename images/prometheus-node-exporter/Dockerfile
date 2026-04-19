@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 9100
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD node_exporter node_exporter --version
+    CMD ["/node_exporter", "--version"]
 ENTRYPOINT ["/node_exporter"]
 LABEL org.opencontainers.image.title="prometheus-node-exporter" \
       org.opencontainers.image.version="1.8.0" \

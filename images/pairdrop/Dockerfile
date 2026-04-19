@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD pairdrop pairdrop --version
+    CMD ["/pairdrop", "--version"]
 ENTRYPOINT ["/pairdrop"]
 LABEL org.opencontainers.image.title="pairdrop" \
       org.opencontainers.image.version="1.6.0" \

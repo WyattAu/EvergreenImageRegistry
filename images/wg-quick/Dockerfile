@@ -8,11 +8,11 @@
 ARG VERSION=1.0.20210914
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
+FROM cgr.dev/chainguard/wolfi-base:20240415 AS downloader
 RUN apk add --no-cache curl ca-certificates
 RUN curl -fsSL "" -o /wg && chmod +x /wg 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base:20240415
 RUN adduser -D -u 65534 appuser 2>/dev/null || true
 RUN mkdir -p /app /var/log/wg /var/cache/wg
 USER appuser
@@ -20,7 +20,7 @@ WORKDIR /app
 COPY --from=downloader /wg /usr/local/bin/wg
 EXPOSE 51820
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD wg wg show
+    CMD /usr/local/bin/wg show
 ENTRYPOINT ["/usr/local/bin/wg"]
 LABEL org.opencontainers.image.title="wg-quick" \
       org.opencontainers.image.version="1.0.20210914" \

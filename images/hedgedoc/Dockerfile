@@ -16,7 +16,7 @@ USER hedgedoc
 WORKDIR /app
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD hedgedoc curl -s localhost:3000/api/status
+    CMD curl -sf http://localhost:3000/api/status
 ENTRYPOINT ["hedgedoc"]
 LABEL org.opencontainers.image.title="hedgedoc" \
       org.opencontainers.image.version="1.9.10" \

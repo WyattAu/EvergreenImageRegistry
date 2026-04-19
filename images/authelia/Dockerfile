@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 80 443
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD authelia authelia --version
+    CMD ["/authelia", "version"]
 ENTRYPOINT ["/authelia"]
 LABEL org.opencontainers.image.title="authelia" \
       org.opencontainers.image.version="4.38.0" \

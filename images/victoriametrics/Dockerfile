@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 8428
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD victoria-metrics victoria-metrics --version
+    CMD ["/victoria-metrics", "--version"]
 ENTRYPOINT ["/victoria-metrics"]
 LABEL org.opencontainers.image.title="victoriametrics" \
       org.opencontainers.image.version="1.103.0" \

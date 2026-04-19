@@ -15,7 +15,7 @@ RUN curl -fsSL "https://httpd.apache.org/" -o /httpd.tar.gz && \
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/httpd /var/cache/httpd
 
-FROM gcr.io/distroless/static:nonroot
+FROM gcr.io/distroless/static:nonroot@sha256:64c43684e6d2b581d1eb362ea47b6a4defee6a9cac5f7ebbda3daa67e8c9b8e6
 COPY --from=downloader /httpd /httpd
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -25,7 +25,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 80 443
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD httpd --version 2>/dev/null || exit 1
+    CMD ["/httpd", "-v"]
 ENTRYPOINT ["/httpd"]
 LABEL org.opencontainers.image.title="apache" \
       org.opencontainers.image.version="2.4.61" \

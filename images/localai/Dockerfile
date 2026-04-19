@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD localai localai --version
+    CMD ["/localai", "--version"]
 ENTRYPOINT ["/localai"]
 LABEL org.opencontainers.image.title="localai" \
       org.opencontainers.image.version="2.0.0" \

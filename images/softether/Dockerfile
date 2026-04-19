@@ -16,7 +16,7 @@ USER appuser
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD vpnserver vpnserver --version
+    CMD /usr/bin/vpnserver version
 ENTRYPOINT ["vpnserver"]
 LABEL org.opencontainers.image.title="softether" \
       org.opencontainers.image.version="4.38-9770" \

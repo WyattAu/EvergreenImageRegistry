@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 7700
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD meilisearch meilisearch --version
+    CMD ["/meilisearch", "--version"]
 ENTRYPOINT ["/meilisearch"]
 LABEL org.opencontainers.image.title="meilisearch" \
       org.opencontainers.image.version="1.7.3" \

@@ -1,0 +1,36 @@
+# CHECKSUMS - tailscale
+# Generated: 2026-04-19
+# Status: WOLFI_STUB
+#
+# NOTE: This is a wolfi-based stub image. Packages are installed via apk
+# from the Wolfi package repository. Binary checksums are managed by the
+# Wolfi project and verified through their signing infrastructure.
+#
+# Wolfi package source: https://packages.wolfi.dev/
+# Package verification: wolfi-signing
+#
+# To verify package integrity:
+# 1. Check wolfi package repository for package metadata
+# 2. Verify apk package signatures
+# 3. Cross-reference with https://packages.wolfi.dev/os/x86_64/APKINDEX.tar.gz
+
+[metadata]
+image = "tailscale"
+version = "wolfi-latest"
+created = "2026-04-19"
+last_verified = "N/A"
+verification_method = "wolfi-apk-signing"
+verifier = "wolfi-project"
+
+[download]
+url = ""
+filename = ""
+source = "wolfi apk repository"
+
+[checksum]
+# Managed by Wolfi package signing infrastructure
+expected_sha256 = "N/A"
+
+[upstream_checksum]
+url = "https://packages.wolfi.dev/"
+format = "apk-signing"

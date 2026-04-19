@@ -16,7 +16,7 @@ USER node
 WORKDIR /app
 EXPOSE 1880
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD node curl -s localhost:1880/red/settings
+    CMD curl -sf http://localhost:1880/
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="node-red" \
       org.opencontainers.image.version="3.1.0" \

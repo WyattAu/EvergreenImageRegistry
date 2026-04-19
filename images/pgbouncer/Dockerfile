@@ -16,7 +16,7 @@ USER pgbouncer
 WORKDIR /app
 EXPOSE 6432
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD pgbouncer pgbouncer --version
+    CMD pgbouncer --version
 ENTRYPOINT ["pgbouncer"]
 LABEL org.opencontainers.image.title="pgbouncer" \
       org.opencontainers.image.version="1.22.1" \

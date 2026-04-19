@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 80 443
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD oauth2-proxy oauth2-proxy --version
+    CMD ["/oauth2-proxy", "--version"]
 ENTRYPOINT ["/oauth2-proxy"]
 LABEL org.opencontainers.image.title="oauth2-proxy" \
       org.opencontainers.image.version="7.6.0" \

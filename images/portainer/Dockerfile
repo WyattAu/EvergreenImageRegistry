@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 9000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD portainer portainer --version
+    CMD ["/portainer", "--version"]
 ENTRYPOINT ["/portainer"]
 LABEL org.opencontainers.image.title="portainer" \
       org.opencontainers.image.version="2.20.1" \

@@ -16,7 +16,7 @@ USER erpnext
 WORKDIR /app
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD python curl localhost:8000
+    CMD curl -sf http://localhost:8000
 ENTRYPOINT ["python"]
 LABEL org.opencontainers.image.title="erpnext" \
       org.opencontainers.image.version="15.11.0" \

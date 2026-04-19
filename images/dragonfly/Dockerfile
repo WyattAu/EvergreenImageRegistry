@@ -16,7 +16,7 @@ USER dragonfly
 WORKDIR /app
 EXPOSE 6379 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD dragonfly ADMIN ping
+    CMD redis-cli -h localhost ping
 ENTRYPOINT ["dragonfly"]
 LABEL org.opencontainers.image.title="dragonfly" \
       org.opencontainers.image.version="1.21.0" \

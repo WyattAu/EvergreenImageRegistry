@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 3456
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD vikunja vikunja --version
+    CMD ["/vikunja", "--version"]
 ENTRYPOINT ["/vikunja"]
 LABEL org.opencontainers.image.title="vikunja" \
       org.opencontainers.image.version="0.23.1" \

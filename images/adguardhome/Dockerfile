@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 53 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD AdGuardHome AdGuardHome --version
+    CMD ["/AdGuardHome", "--version"]
 ENTRYPOINT ["/AdGuardHome"]
 LABEL org.opencontainers.image.title="adguardhome" \
       org.opencontainers.image.version="0.107.48" \

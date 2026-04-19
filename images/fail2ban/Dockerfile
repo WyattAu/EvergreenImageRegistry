@@ -16,7 +16,7 @@ USER appuser
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD fail2ban fail2ban-client status
+    CMD fail2ban-client status
 ENTRYPOINT ["fail2ban"]
 LABEL org.opencontainers.image.title="fail2ban" \
       org.opencontainers.image.version="1.0.2" \

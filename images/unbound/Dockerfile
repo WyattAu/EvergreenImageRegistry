@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 53
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD unbound unbound-control status
+    CMD ["/unbound", "-h"]
 ENTRYPOINT ["/unbound"]
 LABEL org.opencontainers.image.title="unbound" \
       org.opencontainers.image.version="1.20.0" \

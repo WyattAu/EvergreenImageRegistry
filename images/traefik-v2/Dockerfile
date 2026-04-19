@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 80 443 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD traefik traefik --version
+    CMD ["/traefik", "version"]
 ENTRYPOINT ["/traefik"]
 LABEL org.opencontainers.image.title="traefik-v2" \
       org.opencontainers.image.version="2.11.42" \

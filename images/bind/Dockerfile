@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 53 953
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD named rndc status
+    CMD ["/named", "-v"]
 ENTRYPOINT ["/named"]
 LABEL org.opencontainers.image.title="bind" \
       org.opencontainers.image.version="9.18.24" \

@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 53
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD kresd kresd --version
+    CMD ["/kresd", "--version"]
 ENTRYPOINT ["/kresd"]
 LABEL org.opencontainers.image.title="knot-resolver" \
       org.opencontainers.image.version="5.8.1" \

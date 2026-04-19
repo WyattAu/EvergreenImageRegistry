@@ -1,26 +1,38 @@
 # =============================================================================
 # SOVEREIGN HARDENED PYTHON
 # Generated from template - Version: 3.12.3
-# Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
+# Constraint: debian-slim hardened multi-stage
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
 ARG VERSION=3.12.3
 ARG BUILD_DATE
 
+FROM debian:bookworm-slim AS builder
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 python3-pip ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN useradd -m -u 65534 -s /usr/sbin/nologin python 2>/dev/null || true
+RUN mkdir -p /app /var/log/python /var/cache/python
+
 FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-pip ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -g '' python 2>/dev/null || true
-RUN mkdir -p /app /var/log/python /var/cache/python && chown -R python:python /app /var/log/python /var/cache/python 2>/dev/null || true
-USER python
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3-minimal ca-certificates && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
+    apt-get purge -y --auto-remove apt apt-get dpkg 2>/dev/null || true
+COPY --from=builder /etc/passwd /etc/passwd
+COPY --from=builder /etc/group /etc/group
+COPY --from=builder --chown=65534:65534 /app /app
+COPY --from=builder --chown=65534:65534 /var/log/python /var/log/python
+COPY --from=builder --chown=65534:65534 /var/cache/python /var/cache/python
+USER 65534:65534
 WORKDIR /app
-EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD python python --version
-ENTRYPOINT ["python"]
+    CMD python3 --version
+ENTRYPOINT ["python3"]
 LABEL org.opencontainers.image.title="python" \
       org.opencontainers.image.version="3.12.3" \
       org.opencontainers.image.vendor="Python" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      sovereign.constraint.debian_slim="true" \
+      sovereign.constraint.hardened="true"

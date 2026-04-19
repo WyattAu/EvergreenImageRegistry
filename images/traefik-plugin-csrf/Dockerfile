@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD traefik traefik --version
+    CMD ["/traefik", "version"]
 ENTRYPOINT ["/traefik"]
 LABEL org.opencontainers.image.title="traefik-plugin-csrf" \
       org.opencontainers.image.version="3.6.13" \

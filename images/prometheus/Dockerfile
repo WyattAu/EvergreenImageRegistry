@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 9090
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD prometheus prometheus --version
+    CMD ["/prometheus", "--version"]
 ENTRYPOINT ["/prometheus"]
 LABEL org.opencontainers.image.title="prometheus" \
       org.opencontainers.image.version="2.53.0" \

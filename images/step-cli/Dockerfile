@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD step step version
+    CMD ["/step", "version"]
 ENTRYPOINT ["/step"]
 LABEL org.opencontainers.image.title="step-cli" \
       org.opencontainers.image.version="0.25.2" \

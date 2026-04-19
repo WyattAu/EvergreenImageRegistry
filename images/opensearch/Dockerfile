@@ -16,7 +16,7 @@ USER opensearch
 WORKDIR /app
 EXPOSE 9200 9300
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD opensearch curl -s localhost:9200
+    CMD curl -sf http://localhost:9200
 ENTRYPOINT ["opensearch"]
 LABEL org.opencontainers.image.title="opensearch" \
       org.opencontainers.image.version="2.14.0" \

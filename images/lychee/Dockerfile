@@ -16,7 +16,7 @@ USER lychee
 WORKDIR /app
 EXPOSE 8089
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD lychee curl -s localhost:8089/health
+    CMD curl -sf http://localhost:8089/health
 ENTRYPOINT ["lychee"]
 LABEL org.opencontainers.image.title="lychee" \
       org.opencontainers.image.version="0.15.1" \

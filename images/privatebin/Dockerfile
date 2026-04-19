@@ -16,7 +16,7 @@ USER www-data
 WORKDIR /app
 EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD php curl -s localhost:80
+    CMD curl -sf http://localhost:80
 ENTRYPOINT ["php"]
 LABEL org.opencontainers.image.title="privatebin" \
       org.opencontainers.image.version="1.6.0" \

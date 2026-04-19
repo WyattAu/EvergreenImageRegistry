@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD lancedb lancedb --version
+    CMD ["/lancedb", "--version"]
 ENTRYPOINT ["/lancedb"]
 LABEL org.opencontainers.image.title="lancedb" \
       org.opencontainers.image.version="0.6.0" \

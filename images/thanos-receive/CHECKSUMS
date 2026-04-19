@@ -1,0 +1,41 @@
+# CHECKSUMS - thanos-receive
+# Generated: 2026-04-19
+# Status: PENDING_VERIFICATION
+#
+# NOTE: This image variant shares its download with the primary image: thanos
+# The CHECKSUMS file in thanos/ takes precedence for verification.
+#
+# IMPORTANT: These checksums must be verified before use.
+# Method: Download the binary on an air-gapped machine, compute SHA256,
+# then compare against upstream checksum file if available.
+#
+# Update protocol:
+# 1. Download binary from URL
+# 2. Compute: sha256sum <file>
+# 3. Compare with upstream sha256sums.txt if available
+# 4. Cross-validate with second team member
+# 5. Update EXPECTED_SHA256 below
+# 6. Submit PR with CHECKSUMS update
+
+[metadata]
+image = "thanos-receive"
+version = "0.35.0"
+created = "2026-04-19"
+last_verified = "PENDING"
+verification_method = "PENDING"
+verifier = "PENDING"
+primary_image = "thanos"
+
+[download]
+url = "https://github.com/thanos-io/thanos/releases/download/v0.35.0/thanos-0.35.0.linux-amd64.tar.gz"
+filename = "thanos-0.35.0.linux-amd64.tar.gz"
+
+[checksum]
+# SHA256 of the downloaded archive/binary
+# Leave as "PENDING" until verified
+expected_sha256 = "PENDING"
+
+[upstream_checksum]
+# If upstream provides a checksum file, note the URL here
+url = ""
+format = ""

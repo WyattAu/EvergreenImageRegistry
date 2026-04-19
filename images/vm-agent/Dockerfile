@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 8429
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD vmagent vmagent --version
+    CMD ["/vmagent", "--version"]
 ENTRYPOINT ["/vmagent"]
 LABEL org.opencontainers.image.title="vm-agent" \
       org.opencontainers.image.version="1.103.0" \

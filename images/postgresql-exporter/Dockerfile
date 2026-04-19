@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 9187
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD postgres_exporter postgres_exporter --version
+    CMD ["/postgres_exporter", "--version"]
 ENTRYPOINT ["/postgres_exporter"]
 LABEL org.opencontainers.image.title="postgresql-exporter" \
       org.opencontainers.image.version="0.15.0" \

@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 53
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD coredns coredns --version
+    CMD ["/coredns", "-version"]
 ENTRYPOINT ["/coredns"]
 LABEL org.opencontainers.image.title="coredns" \
       org.opencontainers.image.version="1.12.0" \

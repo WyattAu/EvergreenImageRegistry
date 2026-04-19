@@ -187,7 +187,7 @@ RUN curl -fsSL "{binary_url}" -o /{binary}.tar.gz && \\
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/{binary} /var/cache/{binary}
 
-FROM gcr.io/distroless/static:nonroot
+FROM gcr.io/distroless/static:nonroot@sha256:64c43684e6d2b581d1eb362ea47b6a4defee6a9cac5f7ebbda3daa67e8c9b8e6
 COPY --from=downloader /{binary} /{binary}
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -218,7 +218,7 @@ WOLFI_TEMPLATE = '''# ==========================================================
 ARG VERSION={version}
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base:20240415
 RUN apk add --no-cache {packages} ca-certificates && rm -rf /var/cache/apk/*
 RUN adduser -D -u 65534 {user} 2>/dev/null || true
 RUN mkdir -p /app /var/log/{name} /var/cache/{name} && chown -R {user}:{user} /app /var/log/{name} /var/cache/{name} 2>/dev/null || true

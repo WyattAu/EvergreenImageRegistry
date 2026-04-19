@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD it-tools it-tools --version
+    CMD ["/it-tools", "--version"]
 ENTRYPOINT ["/it-tools"]
 LABEL org.opencontainers.image.title="it-tools" \
       org.opencontainers.image.version="2024.4.1" \

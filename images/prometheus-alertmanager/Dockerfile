@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 9093
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD alertmanager alertmanager --version
+    CMD ["/alertmanager", "--version"]
 ENTRYPOINT ["/alertmanager"]
 LABEL org.opencontainers.image.title="prometheus-alertmanager" \
       org.opencontainers.image.version="0.27.0" \

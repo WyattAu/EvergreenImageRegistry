@@ -16,7 +16,7 @@ USER appuser
 WORKDIR /app
 EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD apache2 apache2 --version
+    CMD /usr/sbin/apache2 -v
 ENTRYPOINT ["apache2"]
 LABEL org.opencontainers.image.title="modsecurity" \
       org.opencontainers.image.version="2.4.59" \

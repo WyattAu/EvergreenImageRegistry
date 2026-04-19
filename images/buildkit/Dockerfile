@@ -16,7 +16,7 @@ USER buildkit
 WORKDIR /app
 EXPOSE 1234
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD buildkitd curl -s localhost:1234/debug/info
+    CMD curl -sf http://localhost:1234/debug/info
 ENTRYPOINT ["buildkitd"]
 LABEL org.opencontainers.image.title="buildkit" \
       org.opencontainers.image.version="0.14.1" \

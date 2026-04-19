@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD kube-state-metrics kube-state-metrics --version
+    CMD ["/kube-state-metrics", "--version"]
 ENTRYPOINT ["/kube-state-metrics"]
 LABEL org.opencontainers.image.title="kube-state-metrics" \
       org.opencontainers.image.version="2.12.0" \

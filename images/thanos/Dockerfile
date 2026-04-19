@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 10902
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD thanos thanos --version
+    CMD ["/thanos", "--version"]
 ENTRYPOINT ["/thanos"]
 LABEL org.opencontainers.image.title="thanos" \
       org.opencontainers.image.version="0.35.0" \

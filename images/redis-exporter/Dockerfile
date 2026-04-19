@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 9121
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD redis_exporter redis_exporter --version
+    CMD ["/redis_exporter", "--version"]
 ENTRYPOINT ["/redis_exporter"]
 LABEL org.opencontainers.image.title="redis-exporter" \
       org.opencontainers.image.version="1.54.0" \

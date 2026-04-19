@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD kustomize kustomize version
+    CMD ["/kustomize", "version"]
 ENTRYPOINT ["/kustomize"]
 LABEL org.opencontainers.image.title="kustomize" \
       org.opencontainers.image.version="5.4.1" \

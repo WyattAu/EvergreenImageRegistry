@@ -16,7 +16,7 @@ USER node
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD node node --version
+    CMD node --version
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="typesense-js" \
       org.opencontainers.image.version="20" \

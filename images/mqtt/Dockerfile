@@ -16,7 +16,7 @@ USER mosquitto
 WORKDIR /app
 EXPOSE 1883 9001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD mosquitto mosquitto_sub -C 1 -t $SYS/#
+    CMD mosquitto_pub -h localhost -t test -m "health" 2>/dev/null || exit 1
 ENTRYPOINT ["mosquitto"]
 LABEL org.opencontainers.image.title="mqtt" \
       org.opencontainers.image.version="2.0.18" \

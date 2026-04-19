@@ -16,7 +16,7 @@ USER ldap
 WORKDIR /app
 EXPOSE 389 636
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD slapd ldapsearch -x -H ldap://localhost
+    CMD ldapsearch -x -H ldap://localhost -b "" -s base "(objectclass=*)" 1.1
 ENTRYPOINT ["slapd"]
 LABEL org.opencontainers.image.title="openldap" \
       org.opencontainers.image.version="2.6.8" \

@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 9119
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD bind_exporter bind_exporter --version
+    CMD ["/bind_exporter", "--version"]
 ENTRYPOINT ["/bind_exporter"]
 LABEL org.opencontainers.image.title="bind-exporter" \
       org.opencontainers.image.version="0.7.0" \

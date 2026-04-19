@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 9091
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD pushgateway pushgateway --version
+    CMD ["/pushgateway", "--version"]
 ENTRYPOINT ["/pushgateway"]
 LABEL org.opencontainers.image.title="prometheus-pushgateway" \
       org.opencontainers.image.version="1.8.0" \

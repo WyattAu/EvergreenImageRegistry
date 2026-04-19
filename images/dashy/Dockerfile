@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD dashy dashy --version
+    CMD ["/dashy", "--version"]
 ENTRYPOINT ["/dashy"]
 LABEL org.opencontainers.image.title="dashy" \
       org.opencontainers.image.version="2.1.1" \

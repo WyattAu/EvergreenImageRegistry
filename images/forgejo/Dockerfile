@@ -8,11 +8,11 @@
 ARG VERSION=14.0.4
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
+FROM cgr.dev/chainguard/wolfi-base:20240415 AS downloader
 RUN apk add --no-cache curl ca-certificates git
 RUN curl -fsSL "https://code.forgejo.org/forgejo/forgejo/releases/download/v14.0.4/forgejo-14.0.4-linux-amd64" -o /forgejo && chmod +x /forgejo
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base:20240415
 RUN addgroup -g 65534 git || true
 RUN adduser -D -u 65534 -G git git || true
 RUN mkdir -p /app /var/log/forgejo /var/cache/forgejo

@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD trivy trivy --version
+    CMD ["/trivy", "--version"]
 ENTRYPOINT ["/trivy"]
 LABEL org.opencontainers.image.title="trivy" \
       org.opencontainers.image.version="0.53.0" \

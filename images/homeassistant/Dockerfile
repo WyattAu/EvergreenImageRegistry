@@ -16,7 +16,7 @@ USER homeassistant
 WORKDIR /app
 EXPOSE 8123
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD python curl -s localhost:8123/api/
+    CMD curl -sf http://localhost:8123/api/
 ENTRYPOINT ["python"]
 LABEL org.opencontainers.image.title="homeassistant" \
       org.opencontainers.image.version="2024.4.2" \

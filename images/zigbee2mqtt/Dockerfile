@@ -16,7 +16,7 @@ USER node
 WORKDIR /app
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD node curl -s localhost:8080/api/info
+    CMD curl -sf http://localhost:8080/api/info
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="zigbee2mqtt" \
       org.opencontainers.image.version="1.37.1" \

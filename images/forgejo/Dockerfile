@@ -8,9 +8,11 @@ ARG BUILD_DATE
 
 FROM alpine:3.21
 RUN apk add --no-cache forgejo git mysql-client ca-certificates && rm -rf /var/cache/apk/*
-RUN rm -f /bin/sh /bin/bash || true
+# Create user FIRST, then remove shell
 RUN adduser -D -u 65534 git || true
 RUN mkdir -p /app /var/log/forgejo /var/cache/forgejo && chown -R git:git /app /var/log/forgejo /var/cache/forgejo || true
+# Remove shell AFTER user creation
+RUN rm -f /bin/sh /bin/bash || true
 USER git:git
 WORKDIR /app
 EXPOSE 3000 22

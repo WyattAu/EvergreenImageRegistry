@@ -182,7 +182,7 @@ jobs:
           [ "$ERRORS" -gt 0 ] && exit 1
 
       - name: TruffleHog secret scanning
-        uses: trufflehog/trufflehog@main
+        uses: trufflehog/trufflehog-action@v3.0.3
         continue-on-error: true
         with:
           extra_args: --only-verified

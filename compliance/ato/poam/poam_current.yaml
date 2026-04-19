@@ -1,0 +1,67 @@
+poam_version: "1.0"
+generated_date: "2026-04-20"
+system_name: "Evergreen Image Registry"
+
+findings:
+  - id: POAM-001
+    title: "52 images lack verified SHA256 checksums"
+    severity: high
+    phase: "3.5"
+    status: open
+    milestone: "Populate remaining CHECKSUMS files"
+    scheduled_completion: "2026-05-01"
+    responsible: "Build Team"
+
+  - id: POAM-002
+    title: "CIS Docker Benchmark scanning not implemented in CI"
+    severity: high
+    phase: "5"
+    status: in-progress
+    milestone: "T5.1.1 - CIS scanning operational"
+    scheduled_completion: "2026-04-21"
+    responsible: "Security Team"
+
+  - id: POAM-003
+    title: "DISA STIG compliance scanning not implemented"
+    severity: high
+    phase: "5"
+    status: in-progress
+    milestone: "T5.2.1 - STIG scanning operational"
+    scheduled_completion: "2026-04-21"
+    responsible: "Security Team"
+
+  - id: POAM-004
+    title: "FIPS 140-2 build variants not available"
+    severity: high
+    phase: "5"
+    status: open
+    milestone: "T5.3.1 - FIPS base images + T5.3.2 Go FIPS"
+    scheduled_completion: "2026-05-01"
+    responsible: "Build Team"
+
+  - id: POAM-005
+    title: "Air-gapped deployment not supported"
+    severity: medium
+    phase: "5"
+    status: open
+    milestone: "T5.4.1 - Air-gap bundle creation"
+    scheduled_completion: "2026-04-22"
+    responsible: "DevOps Team"
+
+  - id: POAM-006
+    title: "7 wolfi stub images have empty curl URLs"
+    severity: medium
+    phase: "0"
+    status: open
+    milestone: "Fix wolfi stub images with real URLs"
+    scheduled_completion: "2026-04-25"
+    responsible: "Build Team"
+
+  - id: POAM-007
+    title: "Branch protection bypassed - direct pushes to main"
+    severity: medium
+    phase: "6"
+    status: open
+    milestone: "Enable branch protection rules"
+    scheduled_completion: "2026-04-22"
+    responsible: "Platform Team"

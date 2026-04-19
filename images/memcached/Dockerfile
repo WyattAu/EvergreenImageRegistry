@@ -1,16 +1,16 @@
 # =============================================================================
 # SOVEREIGN HARDENED MEMCACHED
 # Generated from template - Version: 1.6.26
-# Constraint: wolfi-os - minimal, CVE-free base
+# Constraint: debian-slim - minimal base, CVE scanning friendly
 # =============================================================================
 
 ARG VERSION=1.6.26
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:1.6.26
-RUN apk add --no-cache memcached ca-certificates && rm -rf /var/cache/apk/*
+FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y --no-install-recommends memcached ca-certificates && rm -rf /var/lib/apt/lists/*
 # Create non-root user
-RUN adduser -D -u 65534 memcached 2>/dev/null || true
+RUN useradd -m -u 65534 -g '' memcached 2>/dev/null || true
 RUN mkdir -p /app /var/log/memcached /var/cache/memcached && chown -R memcached:memcached /app /var/log/memcached /var/cache/memcached 2>/dev/null || true
 USER memcached:memcached
 WORKDIR /app
@@ -23,4 +23,4 @@ LABEL org.opencontainers.image.title="memcached" \
       org.opencontainers.image.vendor="Memcached" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.wolfi="true"
+      sovereign.constraint.debian_slim="true"

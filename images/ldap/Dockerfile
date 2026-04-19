@@ -1,16 +1,16 @@
 # =============================================================================
 # SOVEREIGN HARDENED LDAP
 # Generated from template - Version: 2.6.8
-# Constraint: wolfi-os - minimal, CVE-free base
+# Constraint: debian-slim - minimal base, CVE scanning friendly
 # =============================================================================
 
 ARG VERSION=2.6.8
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:2.6.8
-RUN apk add --no-cache openldap ca-certificates && rm -rf /var/cache/apk/*
+FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y --no-install-recommends openldap ca-certificates && rm -rf /var/lib/apt/lists/*
 # Create non-root user
-RUN adduser -D -u 65534 ldap 2>/dev/null || true
+RUN useradd -m -u 65534 -g '' ldap 2>/dev/null || true
 RUN mkdir -p /app /var/log/ldap /var/cache/ldap && chown -R ldap:ldap /app /var/log/ldap /var/cache/ldap 2>/dev/null || true
 USER ldap:ldap
 WORKDIR /app
@@ -23,4 +23,4 @@ LABEL org.opencontainers.image.title="ldap" \
       org.opencontainers.image.vendor="OpenLDAP" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.wolfi="true"
+      sovereign.constraint.debian_slim="true"

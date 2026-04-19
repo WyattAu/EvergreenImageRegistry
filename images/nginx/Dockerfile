@@ -7,12 +7,12 @@
 ARG VERSION=1.27.1
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi AS downloader
-RUN apk add --no-cache curl ca-certificates
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://nginx.org/download/nginx-1.27.1.tar.gz" -o /nginx.tar.gz && \
     tar -xzf /nginx.tar.gz -C / && rm /nginx.tar.gz && chmod +x /nginx
 
-FROM cgr.dev/chainguard/wolfi AS builder
+FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/nginx /var/cache/nginx
 
 FROM gcr.io/distroless/static:nonroot

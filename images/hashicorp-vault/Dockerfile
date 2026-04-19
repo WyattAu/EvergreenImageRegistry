@@ -7,12 +7,12 @@
 ARG VERSION=1.18.1
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi AS downloader
-RUN apk add --no-cache curl ca-certificates
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://releases.hashicorp.com/vault/1.18.1/vault_1.18.1_linux_amd64.zip" -o /vault.tar.gz && \
     tar -xzf /vault.tar.gz -C / && rm /vault.tar.gz && chmod +x /vault
 
-FROM cgr.dev/chainguard/wolfi AS builder
+FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/vault /var/cache/vault
 
 FROM gcr.io/distroless/static:nonroot

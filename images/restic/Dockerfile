@@ -7,12 +7,12 @@
 ARG VERSION=0.17.0
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi AS downloader
-RUN apk add --no-cache curl ca-certificates
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/restic/restic/releases/download/v0.17.0/restic_0.17.0_linux_amd64.tar.gz" -o /restic.tar.gz && \
     tar -xzf /restic.tar.gz -C / && rm /restic.tar.gz && chmod +x /restic
 
-FROM cgr.dev/chainguard/wolfi AS builder
+FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/restic /var/cache/restic
 
 FROM gcr.io/distroless/static:nonroot

@@ -7,12 +7,12 @@
 ARG VERSION=2.7.6
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi AS downloader
-RUN apk add --no-cache curl ca-certificates
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/caddyserver/caddy/releases/download/v2.7.6/caddy_2.7.6_linux_amd64.tar.gz" -o /caddy.tar.gz && \
     tar -xzf /caddy.tar.gz -C / && rm /caddy.tar.gz && chmod +x /caddy
 
-FROM cgr.dev/chainguard/wolfi AS builder
+FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/caddy /var/cache/caddy
 
 FROM gcr.io/distroless/static:nonroot

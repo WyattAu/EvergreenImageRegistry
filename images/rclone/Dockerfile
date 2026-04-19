@@ -7,12 +7,12 @@
 ARG VERSION=1.67.0
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi AS downloader
-RUN apk add --no-cache curl ca-certificates
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/rclone/rclone/releases/download/v1.67.0/rclone_1.67.0_linux_amd64.zip" -o /rclone.tar.gz && \
     tar -xzf /rclone.tar.gz -C / && rm /rclone.tar.gz && chmod +x /rclone
 
-FROM cgr.dev/chainguard/wolfi AS builder
+FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/rclone /var/cache/rclone
 
 FROM gcr.io/distroless/static:nonroot

@@ -7,12 +7,12 @@
 ARG VERSION=2.4.0
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi AS downloader
-RUN apk add --no-cache curl ca-certificates
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/sigstore/cosign/releases/download/v2.4.0/cosign_2.4.0_linux_amd64" -o /cosign.tar.gz && \
     tar -xzf /cosign.tar.gz -C / && rm /cosign.tar.gz && chmod +x /cosign
 
-FROM cgr.dev/chainguard/wolfi AS builder
+FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/cosign /var/cache/cosign
 
 FROM gcr.io/distroless/static:nonroot

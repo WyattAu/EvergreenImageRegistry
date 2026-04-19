@@ -7,12 +7,12 @@
 ARG VERSION=3.1.4
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi AS downloader
-RUN apk add --no-cache curl ca-certificates
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/traefik/traefik/releases/download/v3.1.4/traefik_3.1.4_linux_amd64.tar.gz" -o /traefik.tar.gz && \
     tar -xzf /traefik.tar.gz -C / && rm /traefik.tar.gz && chmod +x /traefik
 
-FROM cgr.dev/chainguard/wolfi AS builder
+FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/traefik /var/cache/traefik
 
 FROM gcr.io/distroless/static:nonroot

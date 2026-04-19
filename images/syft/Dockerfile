@@ -7,12 +7,12 @@
 ARG VERSION=1.8.0
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi AS downloader
-RUN apk add --no-cache curl ca-certificates
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/anchore/syft/releases/download/v1.8.0/syft_1.8.0_linux_amd64.tar.gz" -o /syft.tar.gz && \
     tar -xzf /syft.tar.gz -C / && rm /syft.tar.gz && chmod +x /syft
 
-FROM cgr.dev/chainguard/wolfi AS builder
+FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/syft /var/cache/syft
 
 FROM gcr.io/distroless/static:nonroot

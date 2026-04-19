@@ -175,50 +175,57 @@ IMAGES = {
     ],
 }
 
-# Static gateway Dockerfile template
+# Static gateway Dockerfile template (distroless)
 STATIC_TEMPLATE = '''# =============================================================================
 # SOVEREIGN HARDENED {name_upper}
 # Generated from template - Version: {version}
+# Constraint: distroless/static - no shell, no package manager
 # =============================================================================
 
 ARG VERSION={version}
 ARG BUILD_DATE
 
-FROM alpine:3.21 AS downloader
-RUN apk add --no-cache curl ca-certificates tar gzip
+FROM cgr.dev/chainguard/wolfi AS downloader
+RUN apk add --no-cache curl ca-certificates
 RUN curl -fsSL "{binary_url}" -o /{binary}.tar.gz && \\
     tar -xzf /{binary}.tar.gz -C / && rm /{binary}.tar.gz && chmod +x /{binary}
 
-FROM scratch
+FROM cgr.dev/chainguard/wolfi AS builder
+RUN mkdir -p /app /var/log/{binary} /var/cache/{binary}
+
+FROM gcr.io/distroless/static:nonroot
 COPY --from=downloader /{binary} /{binary}
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-RUN mkdir -p /app /var/log/{binary} /var/cache/{binary}
+COPY --from=builder /app /app
+COPY --from=builder /var/log/{binary} /var/log/{binary}
+COPY --from=builder /var/cache/{binary} /var/cache/{binary}
 USER 65534:65534
 WORKDIR /app
 EXPOSE {ports}
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \\
-    CMD wget -q --spider http://localhost:{health_port}/{health} || exit 1
+    CMD {health_command}
 ENTRYPOINT ["/{binary}"]
 LABEL org.opencontainers.image.title="{name}" \\
       org.opencontainers.image.version="{version}" \\
       org.opencontainers.image.vendor="{vendor}" \\
       sovereign.image.tier="1" \\
       sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.static="true"
+      sovereign.constraint.distroless="true"
 '''
 
-# Alpine/Dynamic Dockerfile template  
-ALPINE_TEMPLATE = '''# =============================================================================
+# Wolfi/Dynamic Dockerfile template  
+WOLFI_TEMPLATE = '''# =============================================================================
 # SOVEREIGN HARDENED {name_upper}
 # Generated from template - Version: {version}
+# Constraint: wolfi-os - minimal, CVE-free base
 # =============================================================================
 
 ARG VERSION={version}
 ARG BUILD_DATE
 
-FROM {base}:{version}-alpine
+FROM cgr.dev/chainguard/wolfi-base:{version}
 RUN apk add --no-cache {packages} ca-certificates && rm -rf /var/cache/apk/*
-RUN rm -f /bin/sh /bin/bash || true
+# Create non-root user
 RUN adduser -D -u 65534 {user} 2>/dev/null || true
 RUN mkdir -p /app /var/log/{name} /var/cache/{name} && chown -R {user}:{user} /app /var/log/{name} /var/cache/{name} 2>/dev/null || true
 USER {user}:{user}
@@ -231,11 +238,12 @@ LABEL org.opencontainers.image.title="{name}" \\
       org.opencontainers.image.version="{version}" \\
       org.opencontainers.image.vendor="{vendor}" \\
       sovereign.image.tier="1" \\
-      sovereign.constraint.nonroot="true"
+      sovereign.constraint.nonroot="true" \\
+      sovereign.constraint.wolfi="true"
 '''
 
 def generate_static_image(img_def, output_dir):
-    """Generate Dockerfile for static binary images"""
+    """Generate Dockerfile for static binary images (distroless)"""
     name = img_def["name"]
     version = img_def.get("version", "latest")
     binary = img_def["binary"]
@@ -252,6 +260,9 @@ def generate_static_image(img_def, output_dir):
     health_port = img_def.get("health_port", ports.split()[0]) if ports else "8080"
     health = img_def.get("health", "health")
     
+    # For distroless, use direct binary check instead of wget
+    health_command = f"{binary} --version 2>/dev/null || exit 1"
+    
     content = STATIC_TEMPLATE.format(
         name_upper=name.upper(),
         name=name,
@@ -262,6 +273,7 @@ def generate_static_image(img_def, output_dir):
         ports=img_def["ports"],
         health=health,
         health_port=health_port,
+        health_command=health_command,
     )
     
     filepath = os.path.join(output_dir, f"{name}/Dockerfile")
@@ -270,8 +282,8 @@ def generate_static_image(img_def, output_dir):
         f.write(content)
     print(f"Generated: {filepath}")
 
-def generate_alpine_image(img_def, output_dir):
-    """Generate Dockerfile for Alpine/dynamic images"""
+def generate_wolfi_image(img_def, output_dir):
+    """Generate Dockerfile for Wolfi/dynamic images"""
     name = img_def["name"]
     version = img_def.get("version", "latest")
     packages = img_def.get("packages", name)
@@ -279,11 +291,10 @@ def generate_alpine_image(img_def, output_dir):
     binary = img_def.get("binary", name)
     user = img_def.get("user", name)
     
-    content = ALPINE_TEMPLATE.format(
+    content = WOLFI_TEMPLATE.format(
         name_upper=name.upper(),
         name=name,
         version=version,
-        base=img_def.get("base", "alpine"),
         packages=packages,
         vendor=vendor,
         binary=binary,
@@ -311,11 +322,11 @@ def generate_all(category=None):
             continue
             
         for img_def in IMAGES[cat]:
-            base = img_def.get("base", "alpine")
-            if base == "scratch":
+            base = img_def.get("base", "wolfi")
+            if base == "scratch" or base == "distroless":
                 generate_static_image(img_def, output_dir)
             else:
-                generate_alpine_image(img_def, output_dir)
+                generate_wolfi_image(img_def, output_dir)
             total += 1
     
     print(f"\nGenerated {total} Dockerfiles")

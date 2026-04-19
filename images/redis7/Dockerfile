@@ -1,16 +1,17 @@
 # =============================================================================
 # SOVEREIGN HARDENED REDIS7
 # Generated from template - Version: 7.4.1
+# Constraint: wolfi-os - minimal, CVE-free base
 # =============================================================================
 
 ARG VERSION=7.4.1
 ARG BUILD_DATE
 
-FROM alpine:7.4.1-alpine
+FROM cgr.dev/chainguard/wolfi-base:7.4.1
 RUN apk add --no-cache redis ca-certificates && rm -rf /var/cache/apk/*
-RUN rm -f /bin/sh /bin/bash || true
-RUN id redis 2>/dev/null || adduser -D -u 65534 redis
-RUN mkdir -p /app /var/log/redis7 /var/cache/redis7 && chown -R redis:redis /app /var/log/redis7 /var/cache/redis7
+# Create non-root user
+RUN adduser -D -u 65534 redis 2>/dev/null || true
+RUN mkdir -p /app /var/log/redis7 /var/cache/redis7 && chown -R redis:redis /app /var/log/redis7 /var/cache/redis7 2>/dev/null || true
 USER redis:redis
 WORKDIR /app
 EXPOSE 6379
@@ -21,4 +22,5 @@ LABEL org.opencontainers.image.title="redis7" \
       org.opencontainers.image.version="7.4.1" \
       org.opencontainers.image.vendor="Redis" \
       sovereign.image.tier="1" \
-      sovereign.constraint.nonroot="true"
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.wolfi="true"

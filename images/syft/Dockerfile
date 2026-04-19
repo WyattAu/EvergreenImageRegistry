@@ -1,20 +1,21 @@
 # =============================================================================
 # SOVEREIGN HARDENED SYFT
 # Generated from template - Version: 1.8.0
+# Constraint: distroless/static - no shell, no package manager
 # =============================================================================
 
 ARG VERSION=1.8.0
 ARG BUILD_DATE
 
-FROM alpine:3.21 AS downloader
-RUN apk add --no-cache curl ca-certificates tar gzip
+FROM cgr.dev/chainguard/wolfi AS downloader
+RUN apk add --no-cache curl ca-certificates
 RUN curl -fsSL "https://github.com/anchore/syft/releases/download/v1.8.0/syft_1.8.0_linux_amd64.tar.gz" -o /syft.tar.gz && \
     tar -xzf /syft.tar.gz -C / && rm /syft.tar.gz && chmod +x /syft
 
-FROM alpine:3.21 AS builder
+FROM cgr.dev/chainguard/wolfi AS builder
 RUN mkdir -p /app /var/log/syft /var/cache/syft
 
-FROM scratch
+FROM gcr.io/distroless/static:nonroot
 COPY --from=downloader /syft /syft
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -24,11 +25,11 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD /syft version 2>/dev/null || exit 1
+    CMD syft --version 2>/dev/null || exit 1
 ENTRYPOINT ["/syft"]
 LABEL org.opencontainers.image.title="syft" \
       org.opencontainers.image.version="1.8.0" \
       org.opencontainers.image.vendor="Anchore" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.static="true"
+      sovereign.constraint.distroless="true"

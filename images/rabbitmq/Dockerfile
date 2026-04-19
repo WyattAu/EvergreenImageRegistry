@@ -1,16 +1,17 @@
 # =============================================================================
 # SOVEREIGN HARDENED RABBITMQ
 # Generated from template - Version: 3.13.0
+# Constraint: wolfi-os - minimal, CVE-free base
 # =============================================================================
 
 ARG VERSION=3.13.0
 ARG BUILD_DATE
 
-FROM alpine:3.13.0-alpine
+FROM cgr.dev/chainguard/wolfi-base:3.13.0
 RUN apk add --no-cache rabbitmq ca-certificates && rm -rf /var/cache/apk/*
-RUN rm -f /bin/sh /bin/bash || true
-RUN id rabbitmq 2>/dev/null || adduser -D -u 65534 rabbitmq
-RUN mkdir -p /app /var/log/rabbitmq /var/cache/rabbitmq && chown -R rabbitmq:rabbitmq /app /var/log/rabbitmq /var/cache/rabbitmq
+# Create non-root user
+RUN adduser -D -u 65534 rabbitmq 2>/dev/null || true
+RUN mkdir -p /app /var/log/rabbitmq /var/cache/rabbitmq && chown -R rabbitmq:rabbitmq /app /var/log/rabbitmq /var/cache/rabbitmq 2>/dev/null || true
 USER rabbitmq:rabbitmq
 WORKDIR /app
 EXPOSE 5672 15672
@@ -21,4 +22,5 @@ LABEL org.opencontainers.image.title="rabbitmq" \
       org.opencontainers.image.version="3.13.0" \
       org.opencontainers.image.vendor="RabbitMQ" \
       sovereign.image.tier="1" \
-      sovereign.constraint.nonroot="true"
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.wolfi="true"

@@ -1,12 +1,9 @@
 name: Build and Push Images to GHCR
 
+# This workflow is disabled - using build.yml instead for full builds
+# Keeping for reference until fully migrated
+
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 
 permissions:

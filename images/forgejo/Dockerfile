@@ -1,47 +1,24 @@
-# ==============================================================================
-# Build-Time Arguments
-# ==============================================================================
-ARG FORGEJO_VERSION=12-rootless
+# =============================================================================
+# SOVEREIGN HARDENED FORGEJO
+# Generated from template - Version: 1.0.0
+# =============================================================================
 
+ARG VERSION=1.0.0
 ARG BUILD_DATE
 
-# ==============================================================================
-# Stage 1: Builder
-# ==============================================================================
-FROM code.forgejo.org/forgejo/forgejo:${FORGEJO_VERSION} AS builder
-
-# ==============================================================================
-# Stage 2: Healthcheck Tool Provider
-# ==============================================================================
-FROM busybox:1.36 AS healthcheck_builder
-
-# ==============================================================================
-# Stage 3: Final Production Image
-# ==============================================================================
-FROM scratch
-
-# Define a non-root user and group ID, per Standard 2.2.
-ARG FORGEJO_UID=10002
-ARG FORGEJO_GID=10002
-
-# Copy the Forgejo binary and the static wget binary.
-# Use --chown to set ownership directly, which is required for 'scratch' images.
-COPY --from=builder --chown=${FORGEJO_UID}:${FORGEJO_GID} /usr/local/bin/forgejo /usr/local/bin/forgejo
-COPY --from=healthcheck_builder --chown=${FORGEJO_UID}:${FORGEJO_GID} /bin/wget /usr/local/bin/wget
-
-# Switch to the non-root user.
-USER ${FORGEJO_UID}:${FORGEJO_GID}
-
-# Expose the standard ports for HTTP and SSH.
+FROM alpine:1.0.0-alpine
+RUN apk add --no-cache forgejo ca-certificates && rm -rf /var/cache/apk/*
+RUN rm -f /bin/sh /bin/bash || true
+RUN id git 2>/dev/null || adduser -D -u 65534 git
+RUN mkdir -p /app /var/log/forgejo /var/cache/forgejo && chown -R git:git /app /var/log/forgejo /var/cache/forgejo
+USER git:git
+WORKDIR /app
 EXPOSE 3000 22
-
-# Add a mandatory health check, per Standard 3.1.
-# It uses the static wget utility to ping Forgejo's health endpoint.
-HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-  CMD ["/usr/local/bin/wget", "-q", "--spider", "http://localhost:3000/api/v1/healthz"]
-
-# The entrypoint is the Forgejo binary itself.
-ENTRYPOINT [ "/usr/local/bin/forgejo" ]
-
-# The default command is to start the web server.
-CMD [ "web" ]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD /api/health
+ENTRYPOINT ["forgejo"]
+LABEL org.opencontainers.image.title="forgejo" \
+      org.opencontainers.image.version="1.0.0" \
+      org.opencontainers.image.vendor="Forgejo" \
+      sovereign.image.tier="1" \
+      sovereign.constraint.nonroot="true"

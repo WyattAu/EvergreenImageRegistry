@@ -1,16 +1,16 @@
 # =============================================================================
 # SOVEREIGN HARDENED ETCD
 # Generated from template - Version: 3.5.15
-# Constraint: wolfi-os - minimal, CVE-free base
+# Constraint: debian-slim - minimal base, CVE scanning friendly
 # =============================================================================
 
 ARG VERSION=3.5.15
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:3.5.15
-RUN apk add --no-cache etcd ca-certificates && rm -rf /var/cache/apk/*
+FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y --no-install-recommends etcd ca-certificates && rm -rf /var/lib/apt/lists/*
 # Create non-root user
-RUN adduser -D -u 65534 etcd 2>/dev/null || true
+RUN useradd -m -u 65534 -g '' etcd 2>/dev/null || true
 RUN mkdir -p /app /var/log/etcd /var/cache/etcd && chown -R etcd:etcd /app /var/log/etcd /var/cache/etcd 2>/dev/null || true
 USER etcd:etcd
 WORKDIR /app
@@ -23,4 +23,4 @@ LABEL org.opencontainers.image.title="etcd" \
       org.opencontainers.image.vendor="etcd" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.wolfi="true"
+      sovereign.constraint.debian_slim="true"

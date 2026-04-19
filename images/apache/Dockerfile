@@ -7,12 +7,12 @@
 ARG VERSION=2.4.61
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi AS downloader
-RUN apk add --no-cache curl ca-certificates
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://httpd.apache.org/" -o /httpd.tar.gz && \
     tar -xzf /httpd.tar.gz -C / && rm /httpd.tar.gz && chmod +x /httpd
 
-FROM cgr.dev/chainguard/wolfi AS builder
+FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/httpd /var/cache/httpd
 
 FROM gcr.io/distroless/static:nonroot

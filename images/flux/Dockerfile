@@ -1,16 +1,16 @@
 # =============================================================================
 # SOVEREIGN HARDENED FLUX
 # Generated from template - Version: 2.3.0
-# Constraint: wolfi-os - minimal, CVE-free base
+# Constraint: debian-slim - minimal base, CVE scanning friendly
 # =============================================================================
 
 ARG VERSION=2.3.0
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:2.3.0
-RUN apk add --no-cache flux ca-certificates && rm -rf /var/cache/apk/*
+FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y --no-install-recommends flux ca-certificates && rm -rf /var/lib/apt/lists/*
 # Create non-root user
-RUN adduser -D -u 65534 flux 2>/dev/null || true
+RUN useradd -m -u 65534 -g '' flux 2>/dev/null || true
 RUN mkdir -p /app /var/log/flux /var/cache/flux && chown -R flux:flux /app /var/log/flux /var/cache/flux 2>/dev/null || true
 USER flux:flux
 WORKDIR /app
@@ -23,4 +23,4 @@ LABEL org.opencontainers.image.title="flux" \
       org.opencontainers.image.vendor="Flux" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.wolfi="true"
+      sovereign.constraint.debian_slim="true"

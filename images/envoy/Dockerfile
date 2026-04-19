@@ -7,12 +7,12 @@
 ARG VERSION=1.31.0
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi AS downloader
-RUN apk add --no-cache curl ca-certificates
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://envoy.io/" -o /envoy.tar.gz && \
     tar -xzf /envoy.tar.gz -C / && rm /envoy.tar.gz && chmod +x /envoy
 
-FROM cgr.dev/chainguard/wolfi AS builder
+FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/envoy /var/cache/envoy
 
 FROM gcr.io/distroless/static:nonroot

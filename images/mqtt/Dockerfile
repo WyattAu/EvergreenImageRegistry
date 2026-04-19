@@ -1,16 +1,16 @@
 # =============================================================================
 # SOVEREIGN HARDENED MQTT
 # Generated from template - Version: 2.0.18
-# Constraint: wolfi-os - minimal, CVE-free base
+# Constraint: debian-slim - minimal base, CVE scanning friendly
 # =============================================================================
 
 ARG VERSION=2.0.18
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:2.0.18
-RUN apk add --no-cache mosquitto ca-certificates && rm -rf /var/cache/apk/*
+FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y --no-install-recommends mosquitto ca-certificates && rm -rf /var/lib/apt/lists/*
 # Create non-root user
-RUN adduser -D -u 65534 mosquitto 2>/dev/null || true
+RUN useradd -m -u 65534 -g '' mosquitto 2>/dev/null || true
 RUN mkdir -p /app /var/log/mqtt /var/cache/mqtt && chown -R mosquitto:mosquitto /app /var/log/mqtt /var/cache/mqtt 2>/dev/null || true
 USER mosquitto:mosquitto
 WORKDIR /app
@@ -23,4 +23,4 @@ LABEL org.opencontainers.image.title="mqtt" \
       org.opencontainers.image.vendor="Eclipse" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.wolfi="true"
+      sovereign.constraint.debian_slim="true"

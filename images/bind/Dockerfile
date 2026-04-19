@@ -7,12 +7,12 @@
 ARG VERSION=9.18.0
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi AS downloader
-RUN apk add --no-cache curl ca-certificates
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://www.isc.org/bind/" -o /named.tar.gz && \
     tar -xzf /named.tar.gz -C / && rm /named.tar.gz && chmod +x /named
 
-FROM cgr.dev/chainguard/wolfi AS builder
+FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/named /var/cache/named
 
 FROM gcr.io/distroless/static:nonroot

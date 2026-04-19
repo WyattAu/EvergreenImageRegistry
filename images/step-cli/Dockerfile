@@ -7,12 +7,12 @@
 ARG VERSION=0.25.2
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi AS downloader
-RUN apk add --no-cache curl ca-certificates
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/smallstep/cli/releases/download/v0.25.2/step_{_VERSION}_linux_amd64.tar.gz" -o /step.tar.gz && \
     tar -xzf /step.tar.gz -C / && rm /step.tar.gz && chmod +x /step
 
-FROM cgr.dev/chainguard/wolfi AS builder
+FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/step /var/cache/step
 
 FROM gcr.io/distroless/static:nonroot

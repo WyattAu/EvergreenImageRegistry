@@ -7,12 +7,12 @@
 ARG VERSION=1.12.0
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi AS downloader
-RUN apk add --no-cache curl ca-certificates
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/coredns/coredns/releases/download/v1.12.0/coredns_1.12.0_linux_amd64.tgz" -o /coredns.tar.gz && \
     tar -xzf /coredns.tar.gz -C / && rm /coredns.tar.gz && chmod +x /coredns
 
-FROM cgr.dev/chainguard/wolfi AS builder
+FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/coredns /var/cache/coredns
 
 FROM gcr.io/distroless/static:nonroot

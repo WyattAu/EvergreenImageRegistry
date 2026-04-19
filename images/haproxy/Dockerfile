@@ -7,12 +7,12 @@
 ARG VERSION=3.0.1
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi AS downloader
-RUN apk add --no-cache curl ca-certificates
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://www.haproxy.org/download/3.0.1/src/haproxy-3.0.1.tar.gz" -o /haproxy.tar.gz && \
     tar -xzf /haproxy.tar.gz -C / && rm /haproxy.tar.gz && chmod +x /haproxy
 
-FROM cgr.dev/chainguard/wolfi AS builder
+FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/haproxy /var/cache/haproxy
 
 FROM gcr.io/distroless/static:nonroot

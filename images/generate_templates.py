@@ -185,12 +185,12 @@ STATIC_TEMPLATE = '''# =========================================================
 ARG VERSION={version}
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi AS downloader
-RUN apk add --no-cache curl ca-certificates
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "{binary_url}" -o /{binary}.tar.gz && \\
     tar -xzf /{binary}.tar.gz -C / && rm /{binary}.tar.gz && chmod +x /{binary}
 
-FROM cgr.dev/chainguard/wolfi AS builder
+FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/{binary} /var/cache/{binary}
 
 FROM gcr.io/distroless/static:nonroot
@@ -213,20 +213,20 @@ LABEL org.opencontainers.image.title="{name}" \\
       sovereign.constraint.distroless="true"
 '''
 
-# Wolfi/Dynamic Dockerfile template  
-WOLFI_TEMPLATE = '''# =============================================================================
+# Debian-slim based Dockerfile template (minimal, CVE-free)
+DEBIAN_TEMPLATE = '''# =============================================================================
 # SOVEREIGN HARDENED {name_upper}
 # Generated from template - Version: {version}
-# Constraint: wolfi-os - minimal, CVE-free base
+# Constraint: debian-slim - minimal base, CVE scanning friendly
 # =============================================================================
 
 ARG VERSION={version}
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:{version}
-RUN apk add --no-cache {packages} ca-certificates && rm -rf /var/cache/apk/*
+FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y --no-install-recommends {packages} ca-certificates && rm -rf /var/lib/apt/lists/*
 # Create non-root user
-RUN adduser -D -u 65534 {user} 2>/dev/null || true
+RUN useradd -m -u 65534 -g '' {user} 2>/dev/null || true
 RUN mkdir -p /app /var/log/{name} /var/cache/{name} && chown -R {user}:{user} /app /var/log/{name} /var/cache/{name} 2>/dev/null || true
 USER {user}:{user}
 WORKDIR /app
@@ -239,7 +239,7 @@ LABEL org.opencontainers.image.title="{name}" \\
       org.opencontainers.image.vendor="{vendor}" \\
       sovereign.image.tier="1" \\
       sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.wolfi="true"
+      sovereign.constraint.debian_slim="true"
 '''
 
 def generate_static_image(img_def, output_dir):
@@ -282,8 +282,8 @@ def generate_static_image(img_def, output_dir):
         f.write(content)
     print(f"Generated: {filepath}")
 
-def generate_wolfi_image(img_def, output_dir):
-    """Generate Dockerfile for Wolfi/dynamic images"""
+def generate_debian_image(img_def, output_dir):
+    """Generate Dockerfile for Debian/dynamic images"""
     name = img_def["name"]
     version = img_def.get("version", "latest")
     packages = img_def.get("packages", name)
@@ -291,7 +291,7 @@ def generate_wolfi_image(img_def, output_dir):
     binary = img_def.get("binary", name)
     user = img_def.get("user", name)
     
-    content = WOLFI_TEMPLATE.format(
+    content = DEBIAN_TEMPLATE.format(
         name_upper=name.upper(),
         name=name,
         version=version,
@@ -322,11 +322,11 @@ def generate_all(category=None):
             continue
             
         for img_def in IMAGES[cat]:
-            base = img_def.get("base", "wolfi")
+            base = img_def.get("base", "debian")
             if base == "scratch" or base == "distroless":
                 generate_static_image(img_def, output_dir)
             else:
-                generate_wolfi_image(img_def, output_dir)
+                generate_debian_image(img_def, output_dir)
             total += 1
     
     print(f"\nGenerated {total} Dockerfiles")

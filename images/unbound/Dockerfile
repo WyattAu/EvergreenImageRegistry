@@ -7,12 +7,12 @@
 ARG VERSION=1.20.0
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi AS downloader
-RUN apk add --no-cache curl ca-certificates
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://unbound.net/" -o /unbound.tar.gz && \
     tar -xzf /unbound.tar.gz -C / && rm /unbound.tar.gz && chmod +x /unbound
 
-FROM cgr.dev/chainguard/wolfi AS builder
+FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/unbound /var/cache/unbound
 
 FROM gcr.io/distroless/static:nonroot

@@ -1,26 +1,30 @@
 # =============================================================================
 # SOVEREIGN HARDENED ARGOCD
-# Generated from template - Version: 2.13.0
-# Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
-# Priority: scratch > distroless > wolfi > debian-slim (last resort)
+# Generated from template - Version: 2.14.0
+# Constraint: official - ArgoCD is complex, use official base
 # =============================================================================
 
-ARG VERSION=2.13.0
+ARG VERSION=2.14.0
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends argocd ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -g '' argocd 2>/dev/null || true
-RUN mkdir -p /app /var/log/argocd /var/cache/argocd && chown -R argocd:argocd /app /var/log/argocd /var/cache/argocd 2>/dev/null || true
+FROM argocd/argocd:${VERSION}
+
+# Apply sovereignty hardening
+USER root
+RUN useradd -m -u 65534 -g '' argocd 2>/dev/null || true && \
+    chown -R argocd:argocd /home/argocd 2>/dev/null || true
 USER argocd
-WORKDIR /app
+
+WORKDIR /home/argocd
 EXPOSE 8080
+
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD argocd curl -s localhost:8080/healthz
-ENTRYPOINT ["argocd"]
+    CMD curl -s localhost:8080/healthz || exit 1
+
 LABEL org.opencontainers.image.title="argocd" \
-      org.opencontainers.image.version="2.13.0" \
+      org.opencontainers.image.version="2.14.0" \
       org.opencontainers.image.vendor="ArgoCD" \
+      org.opencontainers.image.source="https://github.com/argoproj/argo-cd" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      sovereign.constraint.official="true"

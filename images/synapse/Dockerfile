@@ -1,26 +1,33 @@
 # =============================================================================
 # SOVEREIGN HARDENED SYNAPSE
-# Generated from template - Version: 1.105.0
-# Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
-# Priority: scratch > distroless > wolfi > debian-slim (last resort)
+# Generated from template - Version: 1.113.0
+# Constraint: wolfi - Chaenguard minimal base with package manager
+# Priority: scratch > distroless > wolfi (best) > debian-slim
 # =============================================================================
 
-ARG VERSION=1.105.0
+ARG VERSION=1.113.0
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends synapse python3 ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -g '' synapse 2>/dev/null || true
-RUN mkdir -p /app /var/log/synapse /var/cache/synapse && chown -R synapse:synapse /app /var/log/synapse /var/cache/synapse 2>/dev/null || true
+FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
+RUN apk add --no-cache curl ca-certificates python3 py3-pip
+RUN curl -fsSL "https://github.com/matrix-org/synapse/releases/download/v${VERSION}/synapse_py3.tar.gz" -o /synapse.tar.gz && \
+    tar -xzf /synapse.tar.gz -C / && rm /synapse.tar.gz
+
+FROM cgr.dev/chainguard/wolfi-base:latest
+RUN apk add --no-cache python3 py3-pip
+RUN addgroup -g 65534 synapse || true
+RUN adduser -D -u 65534 -G synapse synapse || true
+RUN mkdir -p /app /var/log/synapse /var/cache/synapse
+COPY --from=downloader /synapse /app/synapse
 USER synapse
 WORKDIR /app
 EXPOSE 8008
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD synapse curl -s localhost:8008/_matrix/client/versions
-ENTRYPOINT ["synapse"]
+    CMD curl -s localhost:8008/_matrix/client/versions || exit 1
+ENTRYPOINT ["python3", "-m", "synapse.app.homeserver"]
 LABEL org.opencontainers.image.title="synapse" \
-      org.opencontainers.image.version="1.105.0" \
+      org.opencontainers.image.version="1.113.0" \
       org.opencontainers.image.vendor="Matrix" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      sovereign.constraint.wolfi="true"

@@ -7,15 +7,15 @@ ARG VERSION=1.0.0
 ARG BUILD_DATE
 
 FROM alpine:3.21
-RUN apk add --no-cache forgejo ca-certificates && rm -rf /var/cache/apk/*
+RUN apk add --no-cache forgejo git mysql-client ca-certificates && rm -rf /var/cache/apk/*
 RUN rm -f /bin/sh /bin/bash || true
-RUN id git 2>/dev/null || adduser -D -u 65534 git
-RUN mkdir -p /app /var/log/forgejo /var/cache/forgejo && chown -R git:git /app /var/log/forgejo /var/cache/forgejo
+RUN adduser -D -u 65534 git || true
+RUN mkdir -p /app /var/log/forgejo /var/cache/forgejo && chown -R git:git /app /var/log/forgejo /var/cache/forgejo || true
 USER git:git
 WORKDIR /app
 EXPOSE 3000 22
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD /api/health
+    CMD wget -q --spider http://localhost:3000/api/health || exit 1
 ENTRYPOINT ["forgejo"]
 LABEL org.opencontainers.image.title="forgejo" \
       org.opencontainers.image.version="1.0.0" \

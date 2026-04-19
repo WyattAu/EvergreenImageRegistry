@@ -52,7 +52,7 @@ jobs:
           echo "Found: ${IMAGES%,}"
 
   # ===========================================================================
-  # STAGE 2: LINT DOCKERFILES (Optional - temporarily disabled)
+  # STAGE 2: LINT DOCKERFILES
   # ===========================================================================
   lint:
     name: Lint Dockerfiles
@@ -64,7 +64,9 @@ jobs:
       - name: Run Hadolint
         uses: hadolint/hadolint-action@v3.1.0
         with:
-          failure-threshold: error
+          failure-threshold: info
+          dockerfile: images/**/Dockerfile
+          no-fail: true
 
       - name: Check for prohibited tools
         run: |

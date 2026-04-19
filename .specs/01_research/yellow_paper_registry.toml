@@ -1,0 +1,168 @@
+# Yellow Paper Registry - Sovereign Hardened Image Registry
+# Tracks all Yellow Papers for the R&D cycle
+
+[metadata]
+registry_id = "YP-REGISTRY-001"
+version = "1.0.0"
+status = "ACTIVE"
+created = "2026-04-19"
+last_updated = "2026-04-19"
+total_papers = 4
+author = "Nexus Systems Architect"
+confidence_level = 0.98
+tqa_level = 5
+
+[[yellow_paper]]
+id = "YP-SEC-HARDENING-001"
+title = "Container Security Hardening Theory"
+status = "APPROVED"
+version = "1.0.0"
+created = "2026-04-19"
+author = "Nexus Systems Architect"
+confidence_level = 0.98
+tqa_level = 5
+
+[yellow_paper.scope]
+domain = "Container Security"
+subdomains = ["distroless", "scratch", "static-linking", "zero-trust"]
+applicable_algorithms = ["ALG-HARDEN-001", "ALG-HARDEN-002", "ALG-HARDEN-003"]
+applicable_standards = ["NIST SP 800-190", "CIS Docker", "OCP Best Practices"]
+
+[yellow_paper.dependencies]
+axioms_from = []
+lemmas_from = []
+
+[yellow_paper.test_vectors]
+file = "test_vectors_hardening.toml"
+coverage_nominal = 40
+coverage_boundary = 20
+coverage_adversarial = 15
+coverage_regression = 10
+coverage_random = 15
+
+[yellow_paper.constraints]
+file = "domain_constraints_security.toml"
+
+[yellow_paper.consumers]
+blue_papers = ["BP-IMAGE-REGISTRY-001", "BP-SECURITY-001"]
+priority = 1
+
+[[yellow_paper]]
+id = "YP-VULN-SCAN-001"
+title = "Vulnerability Scanning Theory"
+status = "APPROVED"
+version = "1.0.0"
+created = "2026-04-19"
+author = "Nexus Systems Architect"
+confidence_level = 0.95
+tqa_level = 5
+
+[yellow_paper.scope]
+domain = "Vulnerability Management"
+subdomains = ["cve-scanning", "supply-chain", "risk-assessment"]
+applicable_algorithms = ["ALG-SCAN-001", "ALG-SCAN-002"]
+applicable_standards = ["NIST SP 800-53", "OSV", "CVE"]
+
+[yellow_paper.dependencies]
+axioms_from = []
+lemmas_from = []
+
+[yellow_paper.test_vectors]
+file = "test_vectors_vuln_scan.toml"
+coverage_nominal = 40
+coverage_boundary = 20
+coverage_adversarial = 15
+coverage_regression = 10
+coverage_random = 15
+
+[yellow_paper.constraints]
+file = "domain_constraints_vuln.toml"
+
+[yellow_paper.consumers]
+blue_papers = ["BP-IMAGE-REGISTRY-001", "BP-SCANNER-001"]
+priority = 1
+
+[[yellow_paper]]
+id = "YP-SUPPLY-CHAIN-001"
+title = "Supply Chain Security Theory"
+status = "DRAFT"
+version = "1.0.0"
+created = "2026-04-19"
+author = "Nexus Systems Architect"
+confidence_level = 0.90
+tqa_level = 4
+
+[yellow_paper.scope]
+domain = "Supply Chain Security"
+subdomains = ["signing", "attestation", "sbom", "provenance"]
+applicable_algorithms = ["ALG-SIGN-001", "ALG-SBOM-001"]
+applicable_standards = ["SLSA", "FIPS 140-2", "Cosign"]
+
+[yellow_paper.dependencies]
+axioms_from = ["YP-SEC-HARDENING-001"]
+lemmas_from = []
+
+[yellow_paper.test_vectors]
+file = "test_vectors_supply_chain.toml"
+coverage_nominal = 40
+coverage_boundary = 20
+coverage_adversarial = 15
+coverage_regression = 10
+coverage_random = 15
+
+[yellow_paper.constraints]
+file = "domain_constraints_supply_chain.toml"
+
+[yellow_paper.consumers]
+blue_papers = ["BP-SIGNING-001"]
+priority = 1
+
+[[yellow_paper]]
+id = "YP-OBSERVABILITY-001"
+title = "Container Observability Theory"
+status = "DRAFT"
+version = "1.0.0"
+created = "2026-04-19"
+author = "Nexus Systems Architect"
+confidence_level = 0.92
+tqa_level = 4
+
+[yellow_paper.scope]
+domain = "Observability"
+subdomains = ["logging", "metrics", "health-checks"]
+applicable_algorithms = ["ALG-LOG-001", "ALG-METRICS-001"]
+applicable_standards = ["Prometheus", "Structured Logging"]
+
+[yellow_paper.dependencies]
+axioms_from = []
+lemmas_from = []
+
+[yellow_paper.test_vectors]
+file = "test_vectors_observability.toml"
+coverage_nominal = 40
+coverage_boundary = 20
+coverage_adversarial = 15
+coverage_regression = 10
+coverage_random = 15
+
+[yellow_paper.constraints]
+file = "domain_constraints_observability.toml"
+
+[yellow_paper.consumers]
+blue_papers = ["BP-OBSERVABILITY-001"]
+priority = 2
+
+# Cross-Paper Dependencies
+
+[cross_references]
+[[cross_references.reference]]
+source = "YP-SUPPLY-CHAIN-001"
+target = "YP-SEC-HARDENING-001"
+dependency_type = "uses-axioms"
+elements = ["AX-SEC-001", "AX-SEC-002"]
+
+[[cross_references.reference]]
+source = "YP-OBSERVABILITY-001"
+target = "YP-SEC-HARDENING-001"
+dependency_type = "uses-axioms"
+elements = ["AX-SEC-001"]

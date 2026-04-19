@@ -1,35 +1,30 @@
-ARG TRAEFIK_VERSION=v3.5.2
+# =============================================================================
+# SOVEREIGN HARDENED TRAEFIK
+# Generated from template - Version: 3.1.4
+# =============================================================================
 
-# ==============================================================================
-# Stage 1: Builder
-# ==============================================================================
-FROM traefik:${TRAEFIK_VERSION} AS builder
+ARG VERSION=3.1.4
+ARG BUILD_DATE
 
-# ==============================================================================
-# Stage 2: Final Production Image
-# ==============================================================================
+FROM alpine:3.21 AS downloader
+RUN apk add --no-cache curl ca-certificates tar gzip
+RUN curl -fsSL "https://github.com/traefik/traefik/releases/download/v3.1.4/traefik_3.1.4_linux_amd64.tar.gz" -o /traefik.tar.gz && \
+    tar -xzf /traefik.tar.gz -C / && rm /traefik.tar.gz && chmod +x /traefik
+
 FROM scratch
-
-# Define a non-root user and group ID, per Standard 2.2.
-ARG TRAEFIK_UID=10001
-ARG TRAEFIK_GID=10001
-
-# Copy ONLY the Traefik binary from the builder stage. The final image will
-# contain just this single file and nothing else.
-COPY --from=builder /usr/local/bin/traefik /traefik
-
-# Create a non-root user.
-USER ${TRAEFIK_UID}:${TRAEFIK_GID}
-
-# Expose the standard Traefik ports.
+COPY --from=downloader /traefik /traefik
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+RUN chown root:root /traefik && chmod +x /traefik
+RUN mkdir -p /app /var/log/traefik /var/cache/traefik && chown 65534:65534 /app /var/log/traefik /var/cache/traefik
+USER 65534:65534
+WORKDIR /app
 EXPOSE 80 443 8080
-
-# Add a mandatory health check using the Traefik binary's built-in command.
-HEALTHCHECK --interval=15s --timeout=3s --start-period=30s --retries=3 \
-  CMD ["/traefik", "healthcheck"]
-
-# The entrypoint is the Traefik binary itself.
-ENTRYPOINT [ "/traefik" ]
-
-# The CMD is left empty as configuration should be provided via the docker-compose.yml.
-CMD []
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD wget -q --spider http://localhost:80//ping || exit 1
+ENTRYPOINT ["/traefik"]
+LABEL org.opencontainers.image.title="traefik" \
+      org.opencontainers.image.version="3.1.4" \
+      org.opencontainers.image.vendor="Traefik Labs" \
+      sovereign.image.tier="1" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.static="true"

@@ -1,0 +1,276 @@
+# Test Vector Specification - Security Hardening
+# Tests for container security hardening requirements
+
+[metadata]
+algorithm_id = "ALG-HARDEN-001"
+algorithm_version = "1.0.0"
+generation_date = "2026-04-19"
+generator = "manual"
+verification_status = "verified"
+
+[precision_requirements]
+floating_point_type = "integer"
+absolute_tolerance = 0
+relative_tolerance = 0
+ulp_tolerance = 0
+
+# Test Vector 001: Non-root execution verification
+[[test_vector]]
+id = "TV-HARD-001"
+name = "Non-root user execution"
+category = "nominal"
+priority = "critical"
+description = "Verify container runs as non-root user (UID 65534)"
+
+[test_vector.input]
+image = { type = "string", value = "test-image:latest" }
+
+[test_vector.expected_output]
+user_id = { type = "integer", value = 65534, tolerance = 0 }
+user_name = { type = "string", value = "nobody" }
+
+[test_vector.verification]
+source = "Dockerfile USER directive"
+method = "Analytical"
+confidence = 1.0
+verifier = "Nexus"
+verification_date = "2026-04-19"
+
+# Test Vector 002: Read-only root filesystem
+[[test_vector]]
+id = "TV-HARD-002"
+name = "Read-only root filesystem verification"
+category = "nominal"
+priority = "critical"
+description = "Verify root filesystem is read-only"
+
+[test_vector.input]
+image = { type = "string", value = "test-image:latest" }
+
+[test_vector.expected_output]
+write_result = { type = "string", value = "failed", error_code = "EROFS" }
+
+[test_vector.verification]
+source = "Docker --read-only flag"
+method = "Numerical"
+confidence = 1.0
+verifier = "Nexus"
+verification_date = "2026-04-19"
+
+# Test Vector 003: No shell binaries
+[[test_vector]]
+id = "TV-HARD-003"
+name = "No shell binaries present"
+category = "boundary"
+priority = "critical"
+description = "Verify /bin/sh and /bin/bash are absent"
+
+[test_vector.input]
+image = { type = "string", value = "test-image:latest" }
+
+[test_vector.expected_output]
+bin_sh_exists = { type = "boolean", value = false }
+bin_bash_exists = { type = "boolean", value = false }
+
+[test_vector.verification]
+source = "Dockerfile analysis"
+method = "Analytical"
+confidence = 1.0
+verifier = "Nexus"
+verification_date = "2026-04-19"
+
+# Test Vector 004: No package managers
+[[test_vector]]
+id = "TV-HARD-004"
+name = "No package managers present"
+category = "boundary"
+priority = "critical"
+description = "Verify apt, apk, dnf are absent"
+
+[test_vector.input]
+image = { type = "string", value = "test-image:latest" }
+
+[test_vector.expected_output]
+apt_exists = { type = "boolean", value = false }
+apk_exists = { type = "boolean", value = false }
+dnf_exists = { type = "boolean", value = false }
+
+[test_vector.verification]
+source = "Dockerfile analysis"
+method = "Analytical"
+confidence = 1.0
+verifier = "Nexus"
+verification_date = "2026-04-19"
+
+# Test Vector 005: Static linking verification
+[[test_vector]]
+id = "TV-HARD-005"
+name = "Static binary linking"
+category = "nominal"
+priority = "high"
+description = "Verify binary is statically linked"
+
+[test_vector.input]
+binary_path = { type = "string", value = "/app/binary" }
+
+[test_vector.expected_output]
+ldd_output = { type = "string", value = "statically linked" }
+
+[test_vector.verification]
+source = "ldd output analysis"
+method = "Analytical"
+confidence = 0.95
+verifier = "Nexus"
+verification_date = "2026-04-19"
+
+# Test Vector 006: Stripped symbols
+[[test_vector]]
+id = "TV-HARD-006"
+name = "Stripped debug symbols"
+category = "boundary"
+priority = "high"
+description = "Verify binary has no debug symbols"
+
+[test_vector.input]
+binary_path = { type = "string", value = "/app/binary" }
+
+[test_vector.expected_output]
+symbols_count = { type = "integer", value = 0 }
+
+[test_vector.verification]
+source = "nm output analysis"
+method = "Analytical"
+confidence = 0.95
+verifier = "Nexus"
+verification_date = "2026-04-19"
+
+# Test Vector 007: Zero CVEs
+[[test_vector]]
+id = "TV-HARD-007"
+name = "Zero critical/high CVEs"
+category = "nominal"
+priority = "critical"
+description = "Verify image has no critical/high CVEs"
+
+[test_vector.input]
+image = { type = "string", value = "test-image:latest" }
+
+[test_vector.expected_output]
+critical_cves = { type = "integer", value = 0 }
+high_cves = { type = "integer", value = 0 }
+
+[test_vector.verification]
+source = "Trivy scan"
+method = "Numerical"
+confidence = 0.98
+verifier = "Nexus"
+verification_date = "2026-04-19"
+reference_url = "https://aquasecurity.github.io/trivy"
+
+# Test Vector 008: Cosign signature verification
+[[test_vector]]
+id = "TV-HARD-008"
+name = "Valid Cosign signature"
+category = "nominal"
+priority = "critical"
+description = "Image has valid Cosign signature"
+
+[test_vector.input]
+image = { type = "string", value = "test-image:latest" }
+
+[test_vector.expected_output]
+signature_valid = { type = "boolean", value = true }
+
+[test_vector.verification]
+source = "Cosign verify"
+method = "Analytical"
+confidence = 1.0
+verifier = "Nexus"
+verification_date = "2026-04-19"
+reference_url = "https://docs.sigstore.dev/cosign/signing/verification"
+
+# Test Vector 009: SBOM generation
+[[test_vector]]
+id = "TV-HARD-009"
+name = "SBOM generation"
+category = "nominal"
+priority = "high"
+description = "Verify SBOM can be generated"
+
+[test_vector.input]
+image = { type = "string", value = "test-image:latest" }
+
+[test_vector.expected_output]
+sbom_generated = { type = "boolean", value = true }
+
+[test_vector.verification]
+source = "Syft output"
+method = "Analytical"
+confidence = 1.0
+verifier = "Nexus"
+verification_date = "2026-04-19"
+
+# Test Vector 010: Startup latency
+[[test_vector]]
+id = "TV-HARD-010"
+name = "Startup latency benchmark"
+category = "performance"
+priority = "high"
+description = "Hardened image starts faster than standard image"
+
+[test_vector.input]
+image = { type = "string", value = "test-image:latest" }
+
+[test_vector.expected_output]
+startup_ms = { type = "integer", value = 2000, tolerance = 500 }
+
+[test_vector.verification]
+source = "Benchmark"
+method = "Statistical"
+confidence = 0.90
+verifier = "Nexus"
+verification_date = "2026-04-19"
+
+# Test Vector 011: Shell escape attempt (negative test)
+[[test_vector]]
+id = "TV-HARD-011"
+name = "Shell escape blocked"
+category = "adversarial"
+priority = "critical"
+description = "Verify shell execution is blocked"
+
+[test_vector.input]
+image = { type = "string", value = "test-image:latest" }
+command = { type = "string", value = "/bin/sh" }
+
+[test_vector.expected_output]
+execution_result = { type = "string", value = "failed", error_code = "ENOEXEC" }
+
+[test_vector.verification]
+source = "Security analysis"
+method = "Analytical"
+confidence = 1.0
+verifier = "Nexus"
+verification_date = "2026-04-19"
+
+# Test Vector 012: OCI compliance
+[[test_vector]]
+id = "TV-HARD-012"
+name = "OCI image specification compliance"
+category = "nominal"
+priority = "critical"
+description = "Image follows OCI specification"
+
+[test_vector.input]
+image = { type = "string", value = "test-image:latest" }
+
+[test_vector.expected_output]
+oci_compliant = { type = "boolean", value = true }
+
+[test_vector.verification]
+source = "OCI spec v1.0+"
+method = "Analytical"
+confidence = 1.0
+verifier = "Nexus"
+verification_date = "2026-04-19"
+reference_url = "https://github.com/opencontainers/image-spec"

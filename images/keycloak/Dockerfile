@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
 RUN apk add --no-cache openjdk-17 curl ca-certificates
-RUN curl -fsSL "https://github.com/keycloak/keycloak/releases/download/26.0.5/keycloak-26.0.5.tar.gz" -o /keycloak.tar.gz && tar -xzf /keycloak.tar.gz -C / && rm /keycloak.tar.gz
+RUN curl -fsSL "https://github.com/keycloak/keycloak/releases/download/26.0.5/keycloak-26.0.5.tar.gz" -o /keycloak.tar.gz && tar -xzf /keycloak.tar.gz -C / && mv /keycloak-26.0.5 /keycloak && rm /keycloak.tar.gz
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN addgroup -g 65534 keycloak || true

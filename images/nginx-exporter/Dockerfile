@@ -11,6 +11,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/nginxinc/nginx-prometheus-exporter/releases/download/v1.1.0/nginx-prometheus-exporter_1.1.0_linux_amd64.tar.gz" -o /nginx_exporter.tar.gz && \
+    echo "40334965075e416d17f87f977edca0838f6de00799370749268567d26eef8018  /nginx_exporter.tar.gz" | sha256sum -c - && \
     tar -xzf /nginx_exporter.tar.gz -C / && rm /nginx_exporter.tar.gz && chmod +x /nginx_exporter 2>/dev/null || \
     curl -fsSL "https://github.com/nginxinc/nginx-prometheus-exporter/releases/download/v1.1.0/nginx-prometheus-exporter_1.1.0_linux_amd64.tar.gz" -o /nginx_exporter && chmod +x /nginx_exporter
 

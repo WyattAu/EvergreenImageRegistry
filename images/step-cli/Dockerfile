@@ -11,6 +11,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/smallstep/cli/releases/download/v0.25.2/step_0.25.2_linux_amd64.tar.gz" -o /step.tar.gz && \
+    echo "325b34188476530a9bf14dabfe9545bc618674e4017bb888f2f7bec325b00f1b  /step.tar.gz" | sha256sum -c - && \
     tar -xzf /step.tar.gz -C / && rm /step.tar.gz && chmod +x /step 2>/dev/null || \
     curl -fsSL "https://github.com/smallstep/cli/releases/download/v0.25.2/step_0.25.2_linux_amd64.tar.gz" -o /step && chmod +x /step
 

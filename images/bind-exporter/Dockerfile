@@ -11,6 +11,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/prometheus-community/bind_exporter/releases/download/v0.7.0/bind_exporter-0.7.0.linux-amd64.tar.gz" -o /bind_exporter.tar.gz && \
+    echo "cc316fc3f8df6515bc4347faa5e44d01c74016df09a3ce1a49de99328767646b  /bind_exporter.tar.gz" | sha256sum -c - && \
     tar -xzf /bind_exporter.tar.gz -C / && rm /bind_exporter.tar.gz && chmod +x /bind_exporter 2>/dev/null || \
     curl -fsSL "https://github.com/prometheus-community/bind_exporter/releases/download/v0.7.0/bind_exporter-0.7.0.linux-amd64.tar.gz" -o /bind_exporter && chmod +x /bind_exporter
 

@@ -11,6 +11,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/restic/restic/releases/download/v0.17.0/restic_0.17.0_linux_amd64.tar.gz" -o /restic.tar.gz && \
+    echo "72fbdbca48fabbc84dfe551bdd3bc2d8d8b96b30ca7a2a71344c4d0878d91d99  /restic.tar.gz" | sha256sum -c - && \
     tar -xzf /restic.tar.gz -C / && rm /restic.tar.gz && chmod +x /restic 2>/dev/null || \
     curl -fsSL "https://github.com/restic/restic/releases/download/v0.17.0/restic_0.17.0_linux_amd64.tar.gz" -o /restic && chmod +x /restic
 

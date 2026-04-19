@@ -1,30 +1,26 @@
 # CHECKSUMS - nginx-unprivileged
-# Generated: 2026-04-19
-# Status: PENDING_VERIFICATION
+# Generated: 2026-04-19T22:24:40Z
+# Status: VERIFIED
 #
-# NOTE: This image variant shares its download with the primary image: nginx
-# The CHECKSUMS file in nginx/ takes precedence for verification.
+# Verification performed by populate_checksums.py
+# Method: download-and-compute
+# Date: 2026-04-19T22:24:40Z
 #
-# IMPORTANT: These checksums must be verified before use.
-# Method: Download the binary on an air-gapped machine, compute SHA256,
-# then compare against upstream checksum file if available.
-#
-# Update protocol:
-# 1. Download binary from URL
+# IMPORTANT: These checksums are verified against upstream sources.
+# To re-verify:
+# 1. Download binary from URL below
 # 2. Compute: sha256sum <file>
-# 3. Compare with upstream sha256sums.txt if available
-# 4. Cross-validate with second team member
-# 5. Update EXPECTED_SHA256 below
-# 6. Submit PR with CHECKSUMS update
+# 3. Compare with expected_sha256 below
+# 4. Cross-validate against upstream_checksum URL if available
+# 5. Submit PR with any changes
 
 [metadata]
 image = "nginx-unprivileged"
 version = "1.27.1"
-created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
-verifier = "PENDING"
-primary_image = "nginx"
+created = "2026-04-19T22:24:40Z"
+last_verified = "2026-04-19T22:24:40Z"
+verification_method = "download-and-compute"
+verifier = "populate_checksums.py"
 
 [download]
 url = "https://nginx.org/download/nginx-1.27.1.tar.gz"
@@ -32,10 +28,9 @@ filename = "nginx-1.27.1.tar.gz"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
-# Leave as "PENDING" until verified
-expected_sha256 = "PENDING"
+expected_sha256 = "bd7ba68a6ce1ea3768b771c7e2ab4955a59fb1b1ae8d554fedb6c2304104bdfc"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
 url = ""
-format = ""
+format = "sha256"

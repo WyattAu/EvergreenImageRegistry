@@ -11,6 +11,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/grafana/loki/releases/download/v3.1.0/loki-3.1.0.linux-amd64.zip" -o /loki.tar.gz && \
+    echo "bbcc58f0895e6119ba9c6ee41e44b1cf19186db4e920256462dc062c6a7bc632  /loki.tar.gz" | sha256sum -c - && \
     tar -xzf /loki.tar.gz -C / && rm /loki.tar.gz && chmod +x /loki 2>/dev/null || \
     curl -fsSL "https://github.com/grafana/loki/releases/download/v3.1.0/loki-3.1.0.linux-amd64.zip" -o /loki && chmod +x /loki
 

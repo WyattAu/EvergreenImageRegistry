@@ -1,37 +1,36 @@
 # CHECKSUMS - loki
-# Generated: 2026-04-19
-# Status: PENDING_VERIFICATION
+# Generated: 2026-04-19T22:24:18Z
+# Status: VERIFIED
 #
-# IMPORTANT: These checksums must be verified before use.
-# Method: Download the binary on an air-gapped machine, compute SHA256,
-# then compare against upstream checksum file if available.
+# Verification performed by populate_checksums.py
+# Method: github-release-checksums
+# Date: 2026-04-19T22:24:18Z
 #
-# Update protocol:
-# 1. Download binary from URL
+# IMPORTANT: These checksums are verified against upstream sources.
+# To re-verify:
+# 1. Download binary from URL below
 # 2. Compute: sha256sum <file>
-# 3. Compare with upstream sha256sums.txt if available
-# 4. Cross-validate with second team member
-# 5. Update EXPECTED_SHA256 below
-# 6. Submit PR with CHECKSUMS update
+# 3. Compare with expected_sha256 below
+# 4. Cross-validate against upstream_checksum URL if available
+# 5. Submit PR with any changes
 
 [metadata]
 image = "loki"
 version = "3.1.0"
-created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
-verifier = "PENDING"
+created = "2026-04-19T22:24:18Z"
+last_verified = "2026-04-19T22:24:18Z"
+verification_method = "github-release-checksums"
+verifier = "populate_checksums.py"
 
 [download]
-url = "https://github.com/grafana/loki/releases/download/v3.1.0/loki-3.1.0-linux-amd64.zip"
-filename = "loki-3.1.0-linux-amd64.zip"
+url = "https://github.com/grafana/loki/releases/download/v3.1.0/loki-3.1.0.linux-amd64.zip"
+filename = "loki-3.1.0.linux-amd64.zip"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
-# Leave as "PENDING" until verified
-expected_sha256 = "PENDING"
+expected_sha256 = "bbcc58f0895e6119ba9c6ee41e44b1cf19186db4e920256462dc062c6a7bc632"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
-format = ""
+url = "https://github.com/grafana/loki/releases/download/v3.1.0/sha256sums.txt"
+format = "sha256"

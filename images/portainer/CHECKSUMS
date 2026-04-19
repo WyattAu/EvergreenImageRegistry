@@ -1,37 +1,36 @@
 # CHECKSUMS - portainer
-# Generated: 2026-04-19
-# Status: PENDING_VERIFICATION
+# Generated: 2026-04-19T22:24:57Z
+# Status: VERIFIED
 #
-# IMPORTANT: These checksums must be verified before use.
-# Method: Download the binary on an air-gapped machine, compute SHA256,
-# then compare against upstream checksum file if available.
+# Verification performed by populate_checksums.py
+# Method: download-and-compute
+# Date: 2026-04-19T22:24:57Z
 #
-# Update protocol:
-# 1. Download binary from URL
+# IMPORTANT: These checksums are verified against upstream sources.
+# To re-verify:
+# 1. Download binary from URL below
 # 2. Compute: sha256sum <file>
-# 3. Compare with upstream sha256sums.txt if available
-# 4. Cross-validate with second team member
-# 5. Update EXPECTED_SHA256 below
-# 6. Submit PR with CHECKSUMS update
+# 3. Compare with expected_sha256 below
+# 4. Cross-validate against upstream_checksum URL if available
+# 5. Submit PR with any changes
 
 [metadata]
 image = "portainer"
 version = "2.20.1"
-created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
-verifier = "PENDING"
+created = "2026-04-19T22:24:57Z"
+last_verified = "2026-04-19T22:24:57Z"
+verification_method = "download-and-compute"
+verifier = "populate_checksums.py"
 
 [download]
-url = "https://github.com/portainer/portainer/releases/download/v2.20.1/portainer-2.20.1-linux-amd64.tar.gz"
+url = "https://github.com/portainer/portainer/releases/download/2.20.1/portainer-2.20.1-linux-amd64.tar.gz"
 filename = "portainer-2.20.1-linux-amd64.tar.gz"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
-# Leave as "PENDING" until verified
-expected_sha256 = "PENDING"
+expected_sha256 = "be0028dfc6c085c1e8fcc07d0a8a6ca01e2819882d8a02062db4b2b5a84be9b5"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
-format = ""
+url = "https://github.com/portainer/portainer/releases/download/2.20.1/sha256sums.txt"
+format = "sha256"

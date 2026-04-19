@@ -13,7 +13,8 @@ RUN apk add --no-cache openjdk-17 curl ca-certificates
 RUN curl -fsSL "https://github.com/keycloak/keycloak/releases/download/${VERSION}/keycloak-${VERSION}.tar.gz" -o /keycloak.tar.gz && tar -xzf /keycloak.tar.gz -C / && rm /keycloak.tar.gz
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN adduser -D -u 65534 keycloak
+RUN addgroup -g 65534 keycloak || true
+RUN adduser -D -u 65534 -G keycloak keycloak || true
 RUN mkdir -p /app /var/log/keycloak /var/cache/keycloak
 COPY --from=downloader /keycloak /app/keycloak
 USER keycloak

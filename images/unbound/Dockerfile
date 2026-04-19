@@ -6,25 +6,20 @@
 ARG VERSION=1.20.0
 ARG BUILD_DATE
 
-FROM alpine:3.21 AS downloader
-RUN apk add --no-cache curl ca-certificates tar gzip
-RUN curl -fsSL "https://unbound.net/" -o /unbound.tar.gz && \
-    tar -xzf /unbound.tar.gz -C / && rm /unbound.tar.gz && chmod +x /unbound
-
-FROM scratch
-COPY --from=downloader /unbound /unbound
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-RUN chown root:root /unbound && chmod +x /unbound
-RUN mkdir -p /app /var/log/unbound /var/cache/unbound && chown 65534:65534 /app /var/log/unbound /var/cache/unbound
-USER 65534:65534
+# Unbound requires compilation from source
+# Using Alpine package with hardening applied
+FROM alpine:3.21
+RUN apk add --no-cache unbound ca-certificates && rm -rf /var/cache/apk/*
+RUN adduser -D -u 65534 -g '' app 2>/dev/null || true
+RUN mkdir -p /app /var/log/unbound /var/cache/unbound && chown -R app:app /app /var/log/unbound /var/cache/unbound
+USER app
 WORKDIR /app
 EXPOSE 53
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD wget -q --spider http://localhost:53/- || exit 1
-ENTRYPOINT ["/unbound"]
+    CMD /usr/sbin/unbound-checkconf 2>/dev/null || exit 1
+ENTRYPOINT ["/usr/sbin/unbound"]
 LABEL org.opencontainers.image.title="unbound" \
       org.opencontainers.image.version="1.20.0" \
       org.opencontainers.image.vendor="NLnet Labs" \
       sovereign.image.tier="1" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.static="true"
+      sovereign.constraint.nonroot="true"

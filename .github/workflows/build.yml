@@ -18,10 +18,8 @@ name: Build Hardened Images
 on:
   push:
     branches: [main]
-    paths:
-      - 'images/**/Dockerfile'
-      - '.github/workflows/build.yml'
-      - 'images/tests/**'
+    # Removed path filter - builds ALL images on any push to main
+    # Use workflow_dispatch for manual full rebuilds
   pull_request:
     branches: [main]
   schedule:

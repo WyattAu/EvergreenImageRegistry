@@ -6,7 +6,7 @@
 ARG VERSION=26.0.5
 ARG BUILD_DATE
 
-FROM ubi-minimal:26.0.5-alpine
+FROM quay.io/keycloak/keycloak:26.0.5-minimal
 RUN apk add --no-cache keycloak ca-certificates && rm -rf /var/cache/apk/*
 RUN rm -f /bin/sh /bin/bash || true
 RUN id keycloak 2>/dev/null || adduser -D -u 65534 keycloak

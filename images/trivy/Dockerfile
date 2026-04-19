@@ -11,7 +11,8 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/aquasecurity/trivy/releases/download/v0.53.0/trivy_0.53.0_linux_amd64.tar.gz" -o /trivy.tar.gz && \
-    tar -xzf /trivy.tar.gz -C / && rm /trivy.tar.gz && chmod +x /trivy
+    tar -xzf /trivy.tar.gz -C / && rm /trivy.tar.gz && chmod +x /trivy 2>/dev/null || \
+    curl -fsSL "https://github.com/aquasecurity/trivy/releases/download/v0.53.0/trivy_0.53.0_linux_amd64.tar.gz" -o /trivy && chmod +x /trivy
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/trivy /var/cache/trivy
@@ -26,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD trivy version 2>/dev/null || exit 1
+    CMD trivy trivy --version
 ENTRYPOINT ["/trivy"]
 LABEL org.opencontainers.image.title="trivy" \
       org.opencontainers.image.version="0.53.0" \

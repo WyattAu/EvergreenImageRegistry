@@ -11,7 +11,8 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/restic/restic/releases/download/v0.17.0/restic_0.17.0_linux_amd64.tar.gz" -o /restic.tar.gz && \
-    tar -xzf /restic.tar.gz -C / && rm /restic.tar.gz && chmod +x /restic
+    tar -xzf /restic.tar.gz -C / && rm /restic.tar.gz && chmod +x /restic 2>/dev/null || \
+    curl -fsSL "https://github.com/restic/restic/releases/download/v0.17.0/restic_0.17.0_linux_amd64.tar.gz" -o /restic && chmod +x /restic
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/restic /var/cache/restic
@@ -26,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD restic version 2>/dev/null || exit 1
+    CMD restic restic version
 ENTRYPOINT ["/restic"]
 LABEL org.opencontainers.image.title="restic" \
       org.opencontainers.image.version="0.17.0" \

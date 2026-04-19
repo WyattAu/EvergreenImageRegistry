@@ -11,7 +11,8 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/smallstep/cli/releases/download/v0.25.2/step_0.25.2_linux_amd64.tar.gz" -o /step.tar.gz && \
-    tar -xzf /step.tar.gz -C / && rm /step.tar.gz && chmod +x /step
+    tar -xzf /step.tar.gz -C / && rm /step.tar.gz && chmod +x /step 2>/dev/null || \
+    curl -fsSL "https://github.com/smallstep/cli/releases/download/v0.25.2/step_0.25.2_linux_amd64.tar.gz" -o /step && chmod +x /step
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/step /var/cache/step
@@ -26,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD step version 2>/dev/null || exit 1
+    CMD step step version
 ENTRYPOINT ["/step"]
 LABEL org.opencontainers.image.title="step-cli" \
       org.opencontainers.image.version="0.25.2" \

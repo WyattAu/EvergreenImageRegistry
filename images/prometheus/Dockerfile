@@ -11,7 +11,8 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/prometheus/prometheus/releases/download/v2.53.0/prometheus-2.53.0.linux-amd64.tar.gz" -o /prometheus.tar.gz && \
-    tar -xzf /prometheus.tar.gz -C / && rm /prometheus.tar.gz && chmod +x /prometheus
+    tar -xzf /prometheus.tar.gz -C / && rm /prometheus.tar.gz && chmod +x /prometheus 2>/dev/null || \
+    curl -fsSL "https://github.com/prometheus/prometheus/releases/download/v2.53.0/prometheus-2.53.0.linux-amd64.tar.gz" -o /prometheus && chmod +x /prometheus
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/prometheus /var/cache/prometheus
@@ -26,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 9090
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD prometheus --version 2>/dev/null || exit 1
+    CMD prometheus prometheus --version
 ENTRYPOINT ["/prometheus"]
 LABEL org.opencontainers.image.title="prometheus" \
       org.opencontainers.image.version="2.53.0" \

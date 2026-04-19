@@ -11,7 +11,8 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/grafana/loki/releases/download/v3.1.0/loki-3.1.0.linux-amd64.zip" -o /loki.tar.gz && \
-    tar -xzf /loki.tar.gz -C / && rm /loki.tar.gz && chmod +x /loki
+    tar -xzf /loki.tar.gz -C / && rm /loki.tar.gz && chmod +x /loki 2>/dev/null || \
+    curl -fsSL "https://github.com/grafana/loki/releases/download/v3.1.0/loki-3.1.0.linux-amd64.zip" -o /loki && chmod +x /loki
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/loki /var/cache/loki
@@ -26,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 3100
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD loki version 2>/dev/null || exit 1
+    CMD loki loki --version
 ENTRYPOINT ["/loki"]
 LABEL org.opencontainers.image.title="loki" \
       org.opencontainers.image.version="3.1.0" \

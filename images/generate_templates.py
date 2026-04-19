@@ -12,8 +12,8 @@ import sys
 IMAGES = {
     # Category 1: Gateways (Static binaries) - prefer scratch
     "gateways": [
-        {"name": "traefik", "base": "scratch", "binary": "traefik", "version": "3.1.4", 
-         "url": "https://github.com/traefik/traefik/releases/download/v{VERSION}/traefik_{VERSION}_linux_amd64.tar.gz",
+        {"name": "traefik", "base": "scratch", "binary": "traefik", "version": "3.6.13", 
+         "url": "https://github.com/traefik/traefik/releases/download/v{VERSION}/traefik_v{VERSION}_linux_amd64.tar.gz",
          "health": "--version", "ports": "80 443 8080", "vendor": "Traefik Labs"},
         {"name": "nginx", "base": "scratch", "binary": "nginx", "version": "1.27.1",
          "url": "https://nginx.org/download/nginx-{VERSION}.tar.gz",
@@ -120,10 +120,12 @@ IMAGES = {
     ],
     # Category 9: Git & Collaboration
     "collaboration": [
-        {"name": "gitea", "base": "debian", "binary": "gitea", "version": "1.21.0",
-         "packages": "gitea", "health": "/api/health", "ports": "3000 22", "user": "git", "vendor": "Gitea"},
-        {"name": "forgejo", "base": "debian", "binary": "forgejo", "version": "1.0.0",
-         "packages": "forgejo", "health": "/api/health", "ports": "3000 22", "user": "git", "vendor": "Forgejo"},
+        {"name": "gitea", "base": "wolfi", "binary": "gitea", "version": "1.21.0",
+         "url": "https://github.com/go-gitea/gitea/releases/download/v{VERSION}/gitea-{VERSION}-linux-amd64",
+         "health": "/api/health", "ports": "3000 22", "user": "git", "vendor": "Gitea"},
+        {"name": "forgejo", "base": "wolfi", "binary": "forgejo", "version": "1.0.0",
+         "url": "https://codeberg.org/forgejo/forgejo/releases/download/{VERSION}/forgejo-{VERSION}-linux-amd64",
+         "health": "/api/health", "ports": "3000 22", "user": "git", "vendor": "Forgejo"},
     ],
 }
 

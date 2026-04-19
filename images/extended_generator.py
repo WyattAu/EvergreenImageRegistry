@@ -6,8 +6,9 @@ Comprehensive Image Generator - Generates 1000+ Dockerfiles
 # All images from requiredimages.md
 IMAGES = {
     # === NETWORKING (35) ===
-    "traefik": {"base": "scratch", "binary": "traefik", "version": "3.1.4", "url": "https://github.com/traefik/traefik/releases/download/v{VERSION}/traefik_v{VERSION}_linux_amd64.tar.gz", "health": "/ping", "ports": "80 443 8080", "vendor": "Traefik Labs"},
-    "traefik-v2": {"base": "scratch", "binary": "traefik", "version": "2.11.0", "url": "https://github.com/traefik/traefik/releases/download/v{VERSION}/traefik_v{VERSION}_linux_amd64.tar.gz", "health": "/ping", "ports": "80 443 8080", "vendor": "Traefik Labs"},
+    # NOTE: Use v3.6.13 (latest stable) - 3.1.4 no longer available
+    "traefik": {"base": "scratch", "binary": "traefik", "version": "3.6.13", "url": "https://github.com/traefik/traefik/releases/download/v{VERSION}/traefik_v{VERSION}_linux_amd64.tar.gz", "health": "/ping", "ports": "80 443 8080", "vendor": "Traefik Labs"},
+    "traefik-v2": {"base": "scratch", "binary": "traefik", "version": "2.11.42", "url": "https://github.com/traefik/traefik/releases/download/v{VERSION}/traefik_v{VERSION}_linux_amd64.tar.gz", "health": "/ping", "ports": "80 443 8080", "vendor": "Traefik Labs"},
     "nginx": {"base": "scratch", "binary": "nginx", "version": "1.27.1", "url": "https://nginx.org/download/nginx-{VERSION}.tar.gz", "health": "/health", "ports": "80 443", "vendor": "Nginx Inc"},
     "nginx-unprivileged": {"base": "scratch", "binary": "nginx", "version": "1.27.1", "url": "https://nginx.org/download/nginx-{VERSION}.tar.gz", "health": "/health", "ports": "8080 8443", "vendor": "Nginx Inc"},
     "nginx-alpine": {"base": "alpine", "binary": "nginx", "version": "1.27.1", "packages": "nginx", "health": "/health", "ports": "80 443", "user": "nginx", "vendor": "Nginx Inc"},

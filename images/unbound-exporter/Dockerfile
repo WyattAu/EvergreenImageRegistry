@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 9167
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD unbound_exporter unbound_exporter --version
+    CMD ["/unbound_exporter", "--version"]
 ENTRYPOINT ["/unbound_exporter"]
 LABEL org.opencontainers.image.title="unbound-exporter" \
       org.opencontainers.image.version="0.5.0" \

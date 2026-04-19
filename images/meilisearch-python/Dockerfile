@@ -16,7 +16,7 @@ USER python
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD python python --version
+    CMD python3 --version
 ENTRYPOINT ["python"]
 LABEL org.opencontainers.image.title="meilisearch-python" \
       org.opencontainers.image.version="3.12" \

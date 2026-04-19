@@ -8,12 +8,12 @@
 ARG VERSION=1.113.0
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
+FROM cgr.dev/chainguard/wolfi-base:20240415 AS downloader
 RUN apk add --no-cache curl ca-certificates python3 py3-pip
 RUN curl -fsSL "https://github.com/matrix-org/synapse/releases/download/v${VERSION}/synapse_py3.tar.gz" -o /synapse.tar.gz && \
     tar -xzf /synapse.tar.gz -C / && rm /synapse.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base:20240415
 RUN apk add --no-cache python3 py3-pip
 RUN addgroup -g 65534 synapse || true
 RUN adduser -D -u 65534 -G synapse synapse || true
@@ -23,7 +23,7 @@ USER synapse
 WORKDIR /app
 EXPOSE 8008
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD curl -s localhost:8008/_matrix/client/versions || exit 1
+    CMD ["/usr/bin/curl", "-sf", "http://localhost:8008/_matrix/client/versions"]
 ENTRYPOINT ["python3", "-m", "synapse.app.homeserver"]
 LABEL org.opencontainers.image.title="synapse" \
       org.opencontainers.image.version="1.113.0" \

@@ -16,7 +16,7 @@ USER chroma
 WORKDIR /app
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD chroma curl -s localhost:8000/api/v1/heartbeat
+    CMD curl -sf http://localhost:8000/api/v1/heartbeat
 ENTRYPOINT ["chroma"]
 LABEL org.opencontainers.image.title="chroma" \
       org.opencontainers.image.version="0.5.0" \

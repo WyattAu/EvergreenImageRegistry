@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 11434
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ollama ollama --version
+    CMD ["/ollama", "--version"]
 ENTRYPOINT ["/ollama"]
 LABEL org.opencontainers.image.title="ollama" \
       org.opencontainers.image.version="0.3.1" \

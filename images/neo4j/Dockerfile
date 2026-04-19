@@ -16,7 +16,7 @@ USER neo4j
 WORKDIR /app
 EXPOSE 7474 7687
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD neo4j curl -s localhost:7474
+    CMD curl -sf http://localhost:7474
 ENTRYPOINT ["neo4j"]
 LABEL org.opencontainers.image.title="neo4j" \
       org.opencontainers.image.version="5.20.0" \

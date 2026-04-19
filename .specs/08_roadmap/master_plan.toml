@@ -1,0 +1,759 @@
+# =============================================================================
+# SOVEREIGN HARDENED IMAGE REGISTRY - MASTER EXECUTION PLAN
+# =============================================================================
+# Version: 3.0.0
+# Status: IN_PROGRESS
+# Last Updated: 2026-04-19
+# Author: Nexus (Principal Systems Architect)
+#
+# This document is the single source of truth for the execution roadmap.
+# All tasks are serialized via topological sort. Dependencies must be
+# satisfied before execution begins.
+# =============================================================================
+
+[metadata]
+plan_id = "MASTER-PLAN-001"
+version = "3.0.0"
+status = "IN_PROGRESS"
+created = "2026-04-19"
+last_updated = "2026-04-19"
+total_phases = 7
+total_tasks = 47
+author = "Nexus Systems Architect"
+confidence_level = 0.95
+
+# =============================================================================
+# PHASE 0: FIX THE FOUNDATION (Week 1-2)
+# =============================================================================
+# CRITICAL: Everything else depends on this phase completing successfully.
+# Current state: CI pipeline is broken, HEALTHCHECKs are non-functional,
+# test framework has arithmetic bugs, base images are unpinned.
+# =============================================================================
+
+[phase_0]
+name = "Fix the Foundation"
+status = "IN_PROGRESS"
+start_date = "2026-04-19"
+target_end_date = "2026-05-03"
+priority = "CRITICAL"
+blocking = true
+description = """
+Fix all critical infrastructure issues that prevent reliable builds,
+testing, and verification. No subsequent phase can begin until this
+phase passes all quality gates.
+"""
+
+[[phase_0.task]]
+id = "T0.0.1"
+name = "Create master roadmap documentation"
+status = "IN_PROGRESS"
+priority = "CRITICAL"
+estimated_hours = 4
+dependencies = []
+outputs = [".specs/08_roadmap/master_plan.toml", ".specs/08_roadmap/phase_0_plan.md", ".specs/08_roadmap/phase_1_plan.md", ".specs/08_roadmap/phase_2_plan.md", ".specs/08_roadmap/phase_3_plan.md"]
+success_criteria = ["All phase plans written", "Traceability matrix updated", "ADR created for critical decisions"]
+error_handling = { level_1 = "Fix typo/format", level_2 = "Rewrite section", level_3 = "Reconsult requirements" }
+recovery_time = "< 1 hour"
+
+[[phase_0.task]]
+id = "T0.0.2"
+name = "Create ADR for HEALTHCHECK fix strategy"
+status = "PENDING"
+priority = "CRITICAL"
+estimated_hours = 1
+dependencies = ["T0.0.1"]
+outputs = [".adrs/ADR-001-healthcheck-strategy.md"]
+success_criteria = ["ADR documents exec-form decision", "Alternative approaches considered", "Decision justified against YP-OBSERVABILITY-001"]
+error_handling = { level_1 = "Fix format", level_2 = "Add missing alternatives" }
+recovery_time = "< 1 hour"
+
+[[phase_0.task]]
+id = "T0.0.3"
+name = "Create ADR for checksum verification strategy"
+status = "PENDING"
+priority = "CRITICAL"
+estimated_hours = 1
+dependencies = ["T0.0.1"]
+outputs = [".adrs/ADR-002-checksum-verification.md"]
+success_criteria = ["ADR documents SHA256 strategy", "Failsafe behavior defined", "Integration with CI documented"]
+error_handling = { level_1 = "Fix format", level_2 = "Add missing alternatives" }
+recovery_time = "< 1 hour"
+
+[[phase_0.task]]
+id = "T0.0.4"
+name = "Create ADR for debian-slim multi-stage conversion"
+status = "PENDING"
+priority = "CRITICAL"
+estimated_hours = 1
+dependencies = ["T0.0.1"]
+outputs = [".adrs/ADR-003-debian-multistage.md"]
+success_criteria = ["ADR documents conversion strategy", "Images that CANNOT be converted are listed with justification", "Risk assessment complete"]
+error_handling = { level_1 = "Fix format", level_2 = "Add missing alternatives" }
+recovery_time = "< 1 hour"
+
+[[phase_0.task]]
+id = "T0.1.1"
+name = "Fix build.yml typo (scan-cves /temp/ -> /tmp/)"
+status = "PENDING"
+priority = "CRITICAL"
+estimated_hours = 0.5
+dependencies = []
+outputs = [".github/workflows/build.yml"]
+success_criteria = ["Line 247 uses /tmp/ not /temp/", "Pipeline runs without path errors"]
+error_handling = { level_1 = "Fix typo" }
+recovery_time = "< 15 min"
+cve_risk = "NONE"
+adr_reference = "N/A"
+
+[[phase_0.task]]
+id = "T0.1.2"
+name = "Fix GHA matrix truncation for 223 images"
+status = "PENDING"
+priority = "CRITICAL"
+estimated_hours = 4
+dependencies = ["T0.1.1"]
+outputs = [".github/workflows/build.yml"]
+success_criteria = ["Matrix handles 223+ images without truncation", "No GHA string-length overflow", "Jobs complete within GHA limits"]
+error_handling = { level_1 = "Split into batches", level_2 = "Use dynamic dispatch", level_3 = "Use reusable workflows" }
+recovery_time = "2-4 hours"
+adr_reference = "ADR-004-ci-matrix-scaling"
+
+[[phase_0.task]]
+id = "T0.1.3"
+name = "Enable and fix lint stage in CI pipeline"
+status = "PENDING"
+priority = "HIGH"
+estimated_hours = 2
+dependencies = ["T0.1.2"]
+outputs = [".github/workflows/build.yml"]
+success_criteria = ["Hadolint runs on all Dockerfiles", "Blocking on DL3018 (pin versions)", "Blocking on DL3000 (use specific tag)", "Non-blocking warnings only for advisory rules"]
+error_handling = { level_1 = "Adjust hadolint config", level_2 = "Suppress false positives with justification" }
+recovery_time = "< 2 hours"
+
+[[phase_0.task]]
+id = "T0.2.1"
+name = "Fix HEALTHCHECK for Category A (104 scratch images)"
+status = "PENDING"
+priority = "CRITICAL"
+estimated_hours = 8
+dependencies = ["T0.0.2"]
+outputs = ["images/*/Dockerfile"]
+success_criteria = ["All scratch images use exec-form HEALTHCHECK", "HEALTHCHECK CMD uses absolute binary path", "No shell-form HEALTHCHECK in any scratch image", "Each HEALTHCHECK tested locally"]
+error_handling = { level_1 = "Fix individual Dockerfile", level_2 = "Write migration script", level_3 = "Reconsider healthcheck approach for complex binaries" }
+recovery_time = "4-8 hours"
+adr_reference = "ADR-001-healthcheck-strategy"
+# For scratch images with no HTTP endpoint, we use the binary's --version flag
+# Pattern: HEALTHCHECK CMD ["/binary", "--version"]
+# For images with HTTP endpoints, we need a minimal health checker binary
+
+[[phase_0.task]]
+id = "T0.2.2"
+name = "Fix HEALTHCHECK for Category B (7 distroless images)"
+status = "PENDING"
+priority = "CRITICAL"
+estimated_hours = 1
+dependencies = ["T0.0.2"]
+outputs = ["images/envoy*/Dockerfile", "images/grafana/Dockerfile", "images/apache/Dockerfile"]
+success_criteria = ["All distroless images use exec-form HEALTHCHECK", "HEALTHCHECK tested locally"]
+error_handling = { level_1 = "Fix individual Dockerfile" }
+recovery_time = "< 1 hour"
+adr_reference = "ADR-001-healthcheck-strategy"
+
+[[phase_0.task]]
+id = "T0.2.3"
+name = "Fix HEALTHCHECK for Category C (13 wolfi images)"
+status = "PENDING"
+priority = "HIGH"
+estimated_hours = 2
+dependencies = ["T0.0.2"]
+outputs = ["images/*/Dockerfile"]
+success_criteria = ["All wolfi images use exec-form HEALTHCHECK", "curl-based checks use /usr/bin/curl (busybox)", "Binary-based checks use absolute path"]
+error_handling = { level_1 = "Fix individual Dockerfile" }
+recovery_time = "< 2 hours"
+adr_reference = "ADR-001-healthcheck-strategy"
+
+[[phase_0.task]]
+id = "T0.2.4"
+name = "Fix HEALTHCHECK for Category D (87 debian-slim images)"
+status = "PENDING"
+priority = "HIGH"
+estimated_hours = 6
+dependencies = ["T0.0.2"]
+outputs = ["images/*/Dockerfile"]
+success_criteria = ["All debian-slim images use correct single-command HEALTHCHECK", "Two-word pattern bug fixed (CMD binary1 binary2 -> CMD binary2)", "curl-based checks work with installed curl"]
+error_handling = { level_1 = "Fix individual Dockerfile", level_2 = "Write migration script for pattern fix" }
+recovery_time = "4-6 hours"
+adr_reference = "ADR-001-healthcheck-strategy"
+
+[[phase_0.task]]
+id = "T0.3.1"
+name = "Convert eligible debian-slim images to multi-stage scratch builds"
+status = "PENDING"
+priority = "CRITICAL"
+estimated_hours = 16
+dependencies = ["T0.0.4"]
+outputs = ["images/*/Dockerfile"]
+success_criteria = ["All eligible images use multi-stage build", "Final stage is FROM scratch or distroless", "No shell in final image", "No package manager in final image", "C003 and C004 pass for converted images"]
+error_handling = { level_1 = "Fix individual Dockerfile", level_2 = "Keep as debian-slim with documented justification", level_3 = "ADR for image-specific exception" }
+recovery_time = "8-16 hours"
+adr_reference = "ADR-003-debian-multistage"
+# Some images CANNOT be converted to scratch (e.g., those needing glibc at runtime,
+# or those that install from apt because no static binary exists).
+# These will be documented as exceptions.
+
+[[phase_0.task]]
+id = "T0.4.1"
+name = "Fix test framework arithmetic bugs"
+status = "PENDING"
+priority = "CRITICAL"
+estimated_hours = 2
+dependencies = []
+outputs = ["images/tests/test_framework.sh"]
+success_criteria = ["Pass/fail counting is correct", "No double-counting of test results", "Test runner exits with correct code"]
+error_handling = { level_1 = "Fix bash arithmetic" }
+recovery_time = "< 1 hour"
+
+[[phase_0.task]]
+id = "T0.4.2"
+name = "Expand test_runner.sh config to cover all 223 images"
+status = "PENDING"
+priority = "HIGH"
+estimated_hours = 8
+dependencies = ["T0.4.1"]
+outputs = ["images/tests/test_runner.sh", "images/tests/test_config.yaml"]
+success_criteria = ["Every image has a test config entry", "Config includes binary name, health port, version flag"]
+error_handling = { level_1 = "Add missing config", level_2 = "Generate configs from Dockerfile analysis" }
+recovery_time = "4-8 hours"
+
+[[phase_0.task]]
+id = "T0.5.1"
+name = "Pin all base image tags (eliminate :latest)"
+status = "PENDING"
+priority = "CRITICAL"
+estimated_hours = 2
+dependencies = []
+outputs = ["images/*/Dockerfile"]
+success_criteria = ["No FROM instruction uses :latest", "All tags are specific (e.g., :bookworm-slim, :20240416)", "Wolfi images pinned to digest or specific version"]
+error_handling = { level_1 = "Pin to current version", level_2 = "Research correct version" }
+recovery_time = "< 2 hours"
+
+[[phase_0.task]]
+id = "T0.6.1"
+name = "Add multi-arch build support (amd64 + arm64)"
+status = "PENDING"
+priority = "HIGH"
+estimated_hours = 4
+dependencies = ["T0.1.2"]
+outputs = [".github/workflows/build.yml"]
+success_criteria = ["Build step includes platforms: linux/amd64,linux/arm64", "Buildx creates multi-arch manifests", "Push creates fat manifests"]
+error_handling = { level_1 = "Fix buildx config", level_2 = "Handle platform-specific builds", level_3 = "Exclude images that cannot support arm64" }
+recovery_time = "2-4 hours"
+
+[phase_0.quality_gates]
+description = "Phase 0 quality gates - ALL must pass before Phase 1"
+[[phase_0.quality_gates.gate]]
+id = "QG-0.1"
+name = "CI pipeline builds all 223 images"
+status = "PENDING"
+verification = "GitHub Actions run completes with all jobs passing"
+
+[[phase_0.quality_gates.gate]]
+id = "QG-0.2"
+name = "HEALTHCHECK works for all images"
+status = "PENDING"
+verification = "docker inspect shows HEALTHCHECK in all images; manual test passes"
+
+[[phase_0.quality_gates.gate]]
+id = "QG-0.3"
+name = "No :latest tags in any Dockerfile"
+status = "PENDING"
+verification = "grep -r 'FROM.*:latest' images/ returns zero results"
+
+[[phase_0.quality_gates.gate]]
+id = "QG-0.4"
+name = "Test framework produces correct pass/fail counts"
+status = "PENDING"
+verification = "Run test_runner.sh against known-good and known-bad images"
+
+[[phase_0.quality_gates.gate]]
+id = "QG-0.5"
+name = "C003 and C004 pass for all converted images"
+status = "PENDING"
+verification = "Constraint verification job passes for all images"
+
+# =============================================================================
+# PHASE 1: SUPPLY CHAIN INTEGRITY (Week 2-4)
+# =============================================================================
+# CRITICAL: Supply chain security is the #1 risk for military contractors.
+# Every download must be verified. Every build must be reproducible.
+# =============================================================================
+
+[phase_1]
+name = "Supply Chain Integrity"
+status = "PENDING"
+start_date = "2026-05-03"
+target_end_date = "2026-05-17"
+priority = "CRITICAL"
+blocking = true
+dependencies = ["phase_0"]
+description = """
+Implement cryptographic verification of all downloaded artifacts,
+enforce reproducible builds, and establish SLSA Level 3 compliance.
+"""
+
+[[phase_1.task]]
+id = "T1.1.1"
+name = "Create per-image CHECKSUMS files with SHA256"
+status = "PENDING"
+priority = "CRITICAL"
+estimated_hours = 16
+dependencies = ["T0.3.1"]
+outputs = ["images/*/CHECKSUMS"]
+success_criteria = ["Every image that downloads a binary has a CHECKSUMS file", "CHECKSUMS contains SHA256 of downloaded artifact", "Source URL for each checksum documented"]
+error_handling = { level_1 = "Fetch checksum from upstream", level_2 = "Compute and document from verified source", level_3 = "ADR for manual verification" }
+recovery_time = "8-16 hours"
+adr_reference = "ADR-002-checksum-verification"
+
+[[phase_1.task]]
+id = "T1.1.2"
+name = "Update all Dockerfiles to verify checksums"
+status = "PENDING"
+priority = "CRITICAL"
+estimated_hours = 8
+dependencies = ["T1.1.1"]
+outputs = ["images/*/Dockerfile"]
+success_criteria = ["Every curl download is followed by sha256sum verification", "Build fails if checksum mismatch", "Error message includes expected vs actual hash"]
+error_handling = { level_1 = "Fix checksum value", level_2 = "Update CHECKSUMS file" }
+recovery_time = "4-8 hours"
+
+[[phase_1.task]]
+id = "T1.2.1"
+name = "Implement Cosign keyless signing with Fulcio/Rekor"
+status = "PENDING"
+priority = "CRITICAL"
+estimated_hours = 4
+dependencies = []
+outputs = [".github/workflows/build.yml", "docs/signing-verification.md"]
+success_criteria = ["Images signed with OIDC keyless flow", "Signatures recorded in Rekor transparency log", "Verification documented for consumers"]
+error_handling = { level_1 = "Fix OIDC token exchange", level_2 = "Fallback to key-based signing with rotation" }
+recovery_time = "2-4 hours"
+
+[[phase_1.task]]
+id = "T1.2.2"
+name = "Generate SLSA v3 provenance attestations"
+status = "PENDING"
+priority = "CRITICAL"
+estimated_hours = 4
+dependencies = ["T1.2.1"]
+outputs = [".github/workflows/build.yml", "docs/slsa-provenance.md"]
+success_criteria = ["slsa-github-generator produces provenance", "Provenance attached to image via cosign attest", "Provenance verifiable by consumers"]
+error_handling = { level_1 = "Fix generator config", level_2 = "Use slsa-verifier to validate" }
+recovery_time = "2-4 hours"
+
+[[phase_1.task]]
+id = "T1.3.1"
+name = "Integrate TruffleHog secret scanning"
+status = "PENDING"
+priority = "CRITICAL"
+estimated_hours = 2
+dependencies = []
+outputs = [".github/workflows/build.yml", ".pre-commit-config.yaml"]
+success_criteria = ["TruffleHog scans all Dockerfiles", "Scans all files in images/ directory", "BLOCKING on secret detection"]
+error_handling = { level_1 = "Add to .trufflehogignore with justification" }
+recovery_time = "< 2 hours"
+
+[[phase_1.task]]
+id = "T1.3.2"
+name = "Sign SBOMs with Cosign attestation"
+status = "PENDING"
+priority = "HIGH"
+estimated_hours = 2
+dependencies = ["T1.2.1"]
+outputs = [".github/workflows/build.yml"]
+success_criteria = ["SBOM generated in SPDX format", "SBOM signed with cosign attest", "SBOM verifiable by consumers"]
+error_handling = { level_1 = "Fix attestation format" }
+recovery_time = "< 2 hours"
+
+[[phase_1.task]]
+id = "T1.4.1"
+name = "Remove ignore-unfixed from Trivy scan"
+status = "PENDING"
+priority = "CRITICAL"
+estimated_hours = 2
+dependencies = []
+outputs = [".github/workflows/build.yml", ".trivyignore"]
+success_criteria = ["Trivy scans ALL CVEs including unfixed", "Explicit .trivyignore for documented exceptions only", "Each exception has ADR justification"]
+error_handling = { level_1 = "Add CVE to .trivyignore", level_2 = "Rebuild with updated base image", level_3 = "Escalate to security review" }
+recovery_time = "< 2 hours"
+
+[[phase_1.task]]
+id = "T1.4.2"
+name = "Create hermetic build environment (Dockerfile.ci)"
+status = "PENDING"
+priority = "HIGH"
+estimated_hours = 8
+dependencies = []
+outputs = ["Dockerfile.ci", ".github/workflows/build.yml"]
+success_criteria = ["CI runs inside hermetic container", "All tool versions pinned in Dockerfile.ci", "No network access during build except approved registries"]
+error_handling = { level_1 = "Fix Dockerfile.ci", level_2 = "Add missing tools" }
+recovery_time = "4-8 hours"
+
+[phase_1.quality_gates]
+description = "Phase 1 quality gates - ALL must pass before Phase 2"
+[[phase_1.quality_gates.gate]]
+id = "QG-1.1"
+name = "All downloads verified by SHA256"
+status = "PENDING"
+verification = "CI build fails if checksum mismatch"
+
+[[phase_1.quality_gates.gate]]
+id = "QG-1.2"
+name = "Images signed with keyless Cosign"
+status = "PENDING"
+verification = "cosign verify --certificate-identity succeeds"
+
+[[phase_1.quality_gates.gate]]
+id = "QG-1.3"
+name = "SLSA v3 provenance generated"
+status = "PENDING"
+verification = "slsa-verifier validates provenance"
+
+[[phase_1.quality_gates.gate]]
+id = "QG-1.4"
+name = "No secrets in any Dockerfile"
+status = "PENDING"
+verification = "TruffleHog scan clean"
+
+[[phase_1.quality_gates.gate]]
+id = "QG-1.5"
+name = "Trivy scans all CVEs (no ignore-unfixed)"
+status = "PENDING"
+verification = "CI scan includes unfixed CVEs"
+
+# =============================================================================
+# PHASE 2: RUNTIME SECURITY HARDENING (Week 3-6)
+# =============================================================================
+
+[phase_2]
+name = "Runtime Security Hardening"
+status = "PENDING"
+start_date = "2026-05-17"
+target_end_date = "2026-06-07"
+priority = "HIGH"
+dependencies = ["phase_1"]
+description = """
+Generate per-image security profiles (seccomp, AppArmor), enforce
+symbol stripping, verify static linking, and add capabilities auditing.
+"""
+
+[[phase_2.task]]
+id = "T2.1.1"
+name = "Generate default seccomp profiles for Tier 1 images"
+status = "PENDING"
+priority = "HIGH"
+estimated_hours = 20
+dependencies = ["T0.3.1"]
+outputs = ["images/*/seccomp.json"]
+success_criteria = ["All Tier 1 images have seccomp profile", "Profiles generated from strace during functional tests", "Syscall whitelist documented"]
+error_handling = { level_1 = "Add missing syscall", level_2 = "Use baseline profile" }
+recovery_time = "10-20 hours"
+
+[[phase_2.task]]
+id = "T2.1.2"
+name = "Generate AppArmor profiles for Tier 1 images"
+status = "PENDING"
+priority = "HIGH"
+estimated_hours = 16
+dependencies = ["T0.3.1"]
+outputs = ["images/*/apparmor_profile"]
+success_criteria = ["All Tier 1 images have AppArmor profile", "Profiles confine filesystem and network access"]
+error_handling = { level_1 = "Adjust profile rules" }
+recovery_time = "8-16 hours"
+
+[[phase_2.task]]
+id = "T2.2.1"
+name = "Add symbol stripping to all multi-stage builds"
+status = "PENDING"
+priority = "HIGH"
+estimated_hours = 4
+dependencies = ["T0.3.1"]
+outputs = ["images/*/Dockerfile"]
+success_criteria = ["strip --strip-all runs in builder stage", "nm shows zero symbols for final binary"]
+error_handling = { level_1 = "Fix strip command" }
+recovery_time = "< 4 hours"
+
+[[phase_2.task]]
+id = "T2.2.2"
+name = "Verify and document static linking for all binaries"
+status = "PENDING"
+priority = "HIGH"
+estimated_hours = 4
+dependencies = ["T0.3.1"]
+outputs = ["images/*/Dockerfile", "docs/static-linking-report.md"]
+success_criteria = ["ldd check in CI for all binary images", "Dynamically linked images documented with justification"]
+error_handling = { level_1 = "Switch to static build", level_2 = "Document exception" }
+recovery_time = "2-4 hours"
+
+[[phase_2.task]]
+id = "T2.2.3"
+name = "Add capabilities audit (cap-drop ALL)"
+status = "PENDING"
+priority = "HIGH"
+estimated_hours = 4
+dependencies = ["T0.3.1"]
+outputs = ["images/tests/test_capabilities.sh", "docs/capabilities-audit.md"]
+success_criteria = ["All images tested with --cap-drop ALL", "Required capabilities documented per image"]
+error_handling = { level_1 = "Add required capability" }
+recovery_time = "2-4 hours"
+
+[[phase_2.task]]
+id = "T2.3.1"
+name = "Add image size enforcement to CI"
+status = "PENDING"
+priority = "MEDIUM"
+estimated_hours = 2
+dependencies = []
+outputs = [".github/workflows/build.yml"]
+success_criteria = ["Tier 1 images fail if > 50MB", "Tier 2 images warn if > 200MB", "Size report in build artifacts"]
+error_handling = { level_1 = "Optimize Dockerfile layers" }
+recovery_time = "< 2 hours"
+
+[phase_2.quality_gates]
+[[phase_2.quality_gates.gate]]
+id = "QG-2.1"
+name = "All Tier 1 images have seccomp profile"
+[[phase_2.quality_gates.gate]]
+id = "QG-2.2"
+name = "All Tier 1 images have AppArmor profile"
+[[phase_2.quality_gates.gate]]
+id = "QG-2.3"
+name = "All binaries are stripped"
+[[phase_2.quality_gates.gate]]
+id = "QG-2.4"
+name = "Static linking verified or documented"
+
+# =============================================================================
+# PHASE 3: TEST COVERAGE & PROVABLE CORRECTNESS (Week 4-8)
+# =============================================================================
+
+[phase_3]
+name = "Test Coverage & Provable Correctness"
+status = "PENDING"
+start_date = "2026-06-07"
+target_end_date = "2026-07-05"
+priority = "HIGH"
+dependencies = ["phase_2"]
+description = """
+Expand test coverage to all 223 images, add functional correctness tests,
+adversarial tests, and property-based testing. Begin formal verification
+of constraint satisfaction.
+"""
+
+[[phase_3.task]]
+id = "T3.1.1"
+name = "Write functional correctness tests for database images"
+status = "PENDING"
+priority = "HIGH"
+estimated_hours = 16
+dependencies = ["T0.3.1"]
+outputs = ["images/tests/functional/test_databases.sh"]
+success_criteria = ["PostgreSQL: create table, insert, query, verify", "Redis: set, get, verify", "MySQL: create db, insert, query", "MongoDB: insert doc, find doc"]
+
+[[phase_3.task]]
+id = "T3.1.2"
+name = "Write functional correctness tests for proxy images"
+status = "PENDING"
+priority = "HIGH"
+estimated_hours = 12
+dependencies = ["T0.3.1"]
+outputs = ["images/tests/functional/test_proxies.sh"]
+success_criteria = ["Nginx: serves static content", "Traefik: routes request", "HAProxy: load balances", "Envoy: proxies request"]
+
+[[phase_3.task]]
+id = "T3.1.3"
+name = "Write adversarial tests for all images"
+status = "PENDING"
+priority = "CRITICAL"
+estimated_hours = 16
+dependencies = ["T0.4.1"]
+outputs = ["images/tests/adversarial/test_adversarial.sh"]
+success_criteria = ["Shell escape blocked", "Privilege escalation blocked", "Package manager execution blocked", "Network exfiltration blocked"]
+
+[[phase_3.task]]
+id = "T3.2.1"
+name = "Add image layer analysis (dive integration)"
+status = "PENDING"
+priority = "MEDIUM"
+estimated_hours = 4
+dependencies = []
+outputs = [".github/workflows/build.yml"]
+success_criteria = ["dive runs on all images", "Layer count <= 5", "Wasted space < 5%"]
+
+[[phase_3.task]]
+id = "T3.2.2"
+name = "Add startup time benchmarking"
+status = "PENDING"
+priority = "MEDIUM"
+estimated_hours = 4
+dependencies = []
+outputs = [".github/workflows/build.yml"]
+success_criteria = ["Startup time measured for all images", "Images exceeding 2s threshold flagged"]
+
+[phase_3.quality_gates]
+[[phase_3.quality_gates.gate]]
+id = "QG-3.1"
+name = "100% of images have functional test config"
+[[phase_3.quality_gates.gate]]
+id = "QG-3.2"
+name = "All adversarial tests pass"
+[[phase_3.quality_gates.gate]]
+id = "QG-3.3"
+name = "Critical images (databases, proxies) have integration tests"
+[[phase_3.quality_gates.gate]]
+id = "QG-3.4"
+name = "All images have <= 5 layers"
+
+# =============================================================================
+# PHASE 4: HFT-SPECIFIC HARDENING (Week 8-14)
+# =============================================================================
+
+[phase_4]
+name = "HFT-Specific Hardening"
+status = "PENDING"
+start_date = "2026-07-05"
+target_end_date = "2026-08-16"
+priority = "MEDIUM"
+dependencies = ["phase_3"]
+
+[[phase_4.task]]
+id = "T4.1.1"
+name = "Sub-100ms startup optimization for trading images"
+status = "PENDING"
+estimated_hours = 20
+
+[[phase_4.task]]
+id = "T4.1.2"
+name = "CPU pinning and NUMA awareness documentation"
+status = "PENDING"
+estimated_hours = 8
+
+[[phase_4.task]]
+id = "T4.1.3"
+name = "Atomic deployment support (SIGTERM graceful drain)"
+status = "PENDING"
+estimated_hours = 8
+
+# =============================================================================
+# PHASE 5: MILITARY COMPLIANCE (Week 10-16)
+# =============================================================================
+
+[phase_5]
+name = "Military-Specific Compliance"
+status = "PENDING"
+start_date = "2026-08-16"
+target_end_date = "2026-09-27"
+priority = "HIGH"
+dependencies = ["phase_3"]
+
+[[phase_5.task]]
+id = "T5.1.1"
+name = "STIG compliance scanning and reporting"
+status = "PENDING"
+estimated_hours = 16
+
+[[phase_5.task]]
+id = "T5.1.2"
+name = "FIPS 140-2 compliant builds for crypto images"
+status = "PENDING"
+estimated_hours = 20
+
+[[phase_5.task]]
+id = "T5.1.3"
+name = "Air-gapped deployment package (make airgap)"
+status = "PENDING"
+estimated_hours = 8
+
+[[phase_5.task]]
+id = "T5.1.4"
+name = "ATO artifact generation (POA&M, risk assessment)"
+status = "PENDING"
+estimated_hours = 16
+
+# =============================================================================
+# PHASE 6: CONTINUOUS IMPROVEMENT (Ongoing)
+# =============================================================================
+
+[phase_6]
+name = "Continuous Monitoring & Improvement"
+status = "PENDING"
+start_date = "2026-09-27"
+priority = "MEDIUM"
+dependencies = ["phase_5"]
+
+[[phase_6.task]]
+id = "T6.1.1"
+name = "Daily automated CVE rescan with alerting"
+status = "PENDING"
+estimated_hours = 8
+
+[[phase_6.task]]
+id = "T6.1.2"
+name = "Automated base image rebuild on new CVE"
+status = "PENDING"
+estimated_hours = 8
+
+[[phase_6.task]]
+id = "T6.1.3"
+name = "SBOM drift detection"
+status = "PENDING"
+estimated_hours = 4
+
+# =============================================================================
+# RISK REGISTER
+# =============================================================================
+
+[risk_register]
+[[risk_register.risk]]
+id = "RISK-001"
+name = "GHA matrix job limit exceeded"
+probability = "HIGH"
+impact = "HIGH"
+mitigation = "Split into batched builds or use reusable workflows"
+status = "MITIGATED"
+related_task = "T0.1.2"
+
+[[risk_register.risk]]
+id = "RISK-002"
+name = "Supply chain attack via compromised download URL"
+probability = "MEDIUM"
+impact = "CRITICAL"
+mitigation = "SHA256 checksum verification for all downloads"
+status = "OPEN"
+related_task = "T1.1.1"
+
+[[risk_register.risk]]
+id = "RISK-003"
+name = "Binary incompatibility in multi-stage conversion"
+probability = "MEDIUM"
+impact = "HIGH"
+mitigation = "Test each converted image; document exceptions"
+status = "OPEN"
+related_task = "T0.3.1"
+
+[[risk_register.risk]]
+id = "RISK-004"
+name = "Health check false positives blocking deployments"
+probability = "LOW"
+impact = "MEDIUM"
+mitigation = "Generous timeout and retry settings"
+status = "OPEN"
+related_task = "T0.2.1"
+
+[[risk_register.risk]]
+id = "RISK-005"
+name = "Base image CVE in scratch/distroless layers"
+probability = "HIGH"
+impact = "HIGH"
+mitigation = "Daily base image rescan; automated rebuild"
+status = "OPEN"
+related_task = "T1.4.1"

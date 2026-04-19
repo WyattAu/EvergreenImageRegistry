@@ -16,7 +16,7 @@ USER pgpool
 WORKDIR /app
 EXPOSE 9999
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD pgpool pgpool --version
+    CMD pgpool --version
 ENTRYPOINT ["pgpool"]
 LABEL org.opencontainers.image.title="pgpool-II" \
       org.opencontainers.image.version="4.5.1" \

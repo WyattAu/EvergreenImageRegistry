@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 4222 8222
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD nats-server nats-server --version
+    CMD ["/nats-server", "--version"]
 ENTRYPOINT ["/nats-server"]
 LABEL org.opencontainers.image.title="nats" \
       org.opencontainers.image.version="2.10.7" \

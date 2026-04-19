@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 53 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD dnsdist dnsdist --version
+    CMD ["/dnsdist", "--version"]
 ENTRYPOINT ["/dnsdist"]
 LABEL org.opencontainers.image.title="dnsdist" \
       org.opencontainers.image.version="1.9.0" \

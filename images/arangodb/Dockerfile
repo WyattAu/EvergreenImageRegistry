@@ -16,7 +16,7 @@ USER arangodb
 WORKDIR /app
 EXPOSE 8529
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD arangod arangosh --server.authentication=false --server.database=_system --javascript.execute-string 'db._version()'
+    CMD curl -sf http://localhost:8529/_api/version
 ENTRYPOINT ["arangod"]
 LABEL org.opencontainers.image.title="arangodb" \
       org.opencontainers.image.version="3.12.1" \

@@ -16,7 +16,7 @@ USER scylla
 WORKDIR /app
 EXPOSE 7000 9042
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD scylla nodetool status
+    CMD nodetool status
 ENTRYPOINT ["scylla"]
 LABEL org.opencontainers.image.title="scylladb" \
       org.opencontainers.image.version="5.4.6" \

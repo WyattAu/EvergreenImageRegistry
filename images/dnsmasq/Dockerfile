@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 53
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD dnsmasq dnsmasq --version
+    CMD ["/dnsmasq", "--version"]
 ENTRYPOINT ["/dnsmasq"]
 LABEL org.opencontainers.image.title="dnsmasq" \
       org.opencontainers.image.version="2.90" \

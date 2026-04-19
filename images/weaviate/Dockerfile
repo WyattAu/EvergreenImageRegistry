@@ -16,7 +16,7 @@ USER weaviate
 WORKDIR /app
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD weaviate curl -s localhost:8080/v1/.well-known/ready
+    CMD curl -sf http://localhost:8080/v1/.well-known/ready
 ENTRYPOINT ["weaviate"]
 LABEL org.opencontainers.image.title="weaviate" \
       org.opencontainers.image.version="1.25.4" \

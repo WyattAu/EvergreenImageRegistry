@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD grype grype --version
+    CMD ["/grype", "version"]
 ENTRYPOINT ["/grype"]
 LABEL org.opencontainers.image.title="grype" \
       org.opencontainers.image.version="0.80.0" \

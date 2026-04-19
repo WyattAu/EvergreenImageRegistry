@@ -16,7 +16,7 @@ USER couchbase
 WORKDIR /app
 EXPOSE 8091 11210
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD couchbase-server curl -s localhost:8091
+    CMD curl -sf http://localhost:8091/pools
 ENTRYPOINT ["couchbase-server"]
 LABEL org.opencontainers.image.title="couchbase" \
       org.opencontainers.image.version="7.6.1" \

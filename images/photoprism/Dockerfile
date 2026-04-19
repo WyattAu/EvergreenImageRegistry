@@ -16,7 +16,7 @@ USER photoprism
 WORKDIR /app
 EXPOSE 2282
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD photoprism curl -s localhost:2282/api/v1/status
+    CMD curl -sf http://localhost:2282/api/v1/status
 ENTRYPOINT ["photoprism"]
 LABEL org.opencontainers.image.title="photoprism" \
       org.opencontainers.image.version="240427" \

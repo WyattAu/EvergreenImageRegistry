@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 9308
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD kafka_exporter kafka_exporter --version
+    CMD ["/kafka_exporter", "--version"]
 ENTRYPOINT ["/kafka_exporter"]
 LABEL org.opencontainers.image.title="kafka-exporter" \
       org.opencontainers.image.version="1.7.0" \

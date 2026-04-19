@@ -16,7 +16,7 @@ USER elasticsearch
 WORKDIR /app
 EXPOSE 9200 9300
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD elasticsearch curl -s localhost:9200
+    CMD curl -sf http://localhost:9200/_cluster/health | grep -q '"status":"green"\|"status":"yellow"'
 ENTRYPOINT ["elasticsearch"]
 LABEL org.opencontainers.image.title="elasticsearch" \
       org.opencontainers.image.version="8.14.0" \

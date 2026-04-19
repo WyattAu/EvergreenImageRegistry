@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD syft syft --version
+    CMD ["/syft", "version"]
 ENTRYPOINT ["/syft"]
 LABEL org.opencontainers.image.title="syft" \
       org.opencontainers.image.version="1.8.0" \

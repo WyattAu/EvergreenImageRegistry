@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 8500
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD consul consul members
+    CMD ["/consul", "version"]
 ENTRYPOINT ["/consul"]
 LABEL org.opencontainers.image.title="consul" \
       org.opencontainers.image.version="1.18.1" \

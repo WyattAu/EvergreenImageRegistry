@@ -16,7 +16,7 @@ USER cassandra
 WORKDIR /app
 EXPOSE 7000 7001 9042
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD cassandra nodetool status
+    CMD nodetool status
 ENTRYPOINT ["cassandra"]
 LABEL org.opencontainers.image.title="cassandra" \
       org.opencontainers.image.version="4.1.4" \

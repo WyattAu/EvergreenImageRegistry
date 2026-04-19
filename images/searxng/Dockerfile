@@ -16,7 +16,7 @@ USER searxng
 WORKDIR /app
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD python curl -s localhost:8080/healthz
+    CMD curl -sf http://localhost:8080/healthz
 ENTRYPOINT ["python"]
 LABEL org.opencontainers.image.title="searxng" \
       org.opencontainers.image.version="2024.4.10" \

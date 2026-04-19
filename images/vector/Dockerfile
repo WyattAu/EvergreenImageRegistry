@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 9001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD vector vector --version
+    CMD ["/vector", "--version"]
 ENTRYPOINT ["/vector"]
 LABEL org.opencontainers.image.title="vector" \
       org.opencontainers.image.version="0.39.0" \

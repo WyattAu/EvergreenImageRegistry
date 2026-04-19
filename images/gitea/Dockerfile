@@ -8,11 +8,11 @@
 ARG VERSION=1.21.10
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
+FROM cgr.dev/chainguard/wolfi-base:20240415 AS downloader
 RUN apk add --no-cache curl ca-certificates
 RUN curl -fsSL "https://github.com/go-gitea/gitea/releases/download/v1.21.10/gitea-1.21.10-linux-amd64" -o /gitea && chmod +x /gitea 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base:20240415
 RUN adduser -D -u 65534 git 2>/dev/null || true
 RUN mkdir -p /app /var/log/gitea /var/cache/gitea
 USER git
@@ -20,7 +20,7 @@ WORKDIR /app
 COPY --from=downloader /gitea /usr/local/bin/gitea
 EXPOSE 3000 22
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD gitea gitea --version
+    CMD /usr/local/bin/gitea --version
 ENTRYPOINT ["/usr/local/bin/gitea"]
 LABEL org.opencontainers.image.title="gitea" \
       org.opencontainers.image.version="1.21.10" \

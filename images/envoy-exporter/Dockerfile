@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 9102
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD envoy_exporter envoy_exporter --version
+    CMD ["/envoy_exporter", "--version"]
 ENTRYPOINT ["/envoy_exporter"]
 LABEL org.opencontainers.image.title="envoy-exporter" \
       org.opencontainers.image.version="0.4.0" \

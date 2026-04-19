@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 6333 6334
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD qdrant qdrant --version
+    CMD ["/qdrant", "--version"]
 ENTRYPOINT ["/qdrant"]
 LABEL org.opencontainers.image.title="qdrant" \
       org.opencontainers.image.version="1.11.4" \

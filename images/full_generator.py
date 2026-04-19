@@ -731,13 +731,13 @@ DISTROLESS_TEMPLATE = '''# =====================================================
 ARG VERSION={version}
 ARG BUILD_DATE
 
-FROM gcr.io/distroless/cc-debian12 AS downloader
+FROM gcr.io/distroless/cc-debian12@sha256:af49995f9f06255ca7d955735e5484a92018f4cfe95910952d9aee165cb96940 AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "{binary_url}" -o /{binary}.tar.gz && \\
     tar -xzf /{binary}.tar.gz -C / && rm /{binary}.tar.gz && chmod +x /{binary} 2>/dev/null || \\
     curl -fsSL "{binary_url}" -o /{binary} && chmod +x /{binary}
 
-FROM gcr.io/distroless/cc-debian12
+FROM gcr.io/distroless/cc-debian12@sha256:af49995f9f06255ca7d955735e5484a92018f4cfe95910952d9aee165cb96940
 COPY --from=downloader /{binary} /{binary}
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 RUN mkdir -p /app /var/log/{binary} /var/cache/{binary}
@@ -766,11 +766,11 @@ WOLFI_TEMPLATE = '''# ==========================================================
 ARG VERSION={version}
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
+FROM cgr.dev/chainguard/wolfi-base:20240415 AS downloader
 RUN apk add --no-cache curl ca-certificates
 RUN curl -fsSL "{binary_url}" -o /{binary} && chmod +x /{binary} 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base:20240415
 RUN adduser -D -u 65534 {user} 2>/dev/null || true
 RUN mkdir -p /app /var/log/{binary} /var/cache/{binary}
 USER {user}

@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD mimir mimir --version
+    CMD ["/mimir", "--version"]
 ENTRYPOINT ["/mimir"]
 LABEL org.opencontainers.image.title="mimir" \
       org.opencontainers.image.version="2.13.0" \

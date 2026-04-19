@@ -16,7 +16,7 @@ USER user
 WORKDIR /app
 EXPOSE 7860
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD python curl -s localhost:7860/v1/models
+    CMD curl -sf http://localhost:7860/v1/models
 ENTRYPOINT ["python"]
 LABEL org.opencontainers.image.title="text-generation-webui" \
       org.opencontainers.image.version="1.8" \

@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 443 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD netmaker netmaker --version
+    CMD ["/netmaker", "--version"]
 ENTRYPOINT ["/netmaker"]
 LABEL org.opencontainers.image.title="netmaker" \
       org.opencontainers.image.version="0.24.0" \

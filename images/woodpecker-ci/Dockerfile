@@ -16,7 +16,7 @@ USER woodpecker
 WORKDIR /app
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD woodpecker-server curl -s localhost:8000/healthz
+    CMD curl -sf http://localhost:8000/healthz
 ENTRYPOINT ["woodpecker-server"]
 LABEL org.opencontainers.image.title="woodpecker-ci" \
       org.opencontainers.image.version="2.0.0" \

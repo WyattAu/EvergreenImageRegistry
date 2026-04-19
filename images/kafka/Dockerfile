@@ -16,7 +16,7 @@ USER kafka
 WORKDIR /app
 EXPOSE 9092
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD kafka kafka-broker-api-versions --version
+    CMD kafka-broker-api-versions --bootstrap-server localhost:9092 2>/dev/null || exit 1
 ENTRYPOINT ["kafka"]
 LABEL org.opencontainers.image.title="kafka" \
       org.opencontainers.image.version="3.7.0" \

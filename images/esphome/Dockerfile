@@ -16,7 +16,7 @@ USER esphome
 WORKDIR /app
 EXPOSE 6052
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD python curl -s localhost:6052/ping
+    CMD curl -sf http://localhost:6052/ping
 ENTRYPOINT ["python"]
 LABEL org.opencontainers.image.title="esphome" \
       org.opencontainers.image.version="2024.4.0" \

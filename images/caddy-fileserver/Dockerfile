@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 80 2019
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD caddy version
+    CMD ["/caddy", "version"]
 ENTRYPOINT ["/caddy"]
 LABEL org.opencontainers.image.title="caddy-fileserver" \
       org.opencontainers.image.version="2.7.6" \

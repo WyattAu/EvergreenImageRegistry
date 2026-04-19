@@ -16,7 +16,7 @@ USER sqlite
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD sqlite3 sqlite3 --version
+    CMD sqlite3 --version
 ENTRYPOINT ["sqlite3"]
 LABEL org.opencontainers.image.title="sqlite" \
       org.opencontainers.image.version="3.45.1" \

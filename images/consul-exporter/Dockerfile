@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 9107
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD consul_exporter consul_exporter --version
+    CMD ["/consul_exporter", "--version"]
 ENTRYPOINT ["/consul_exporter"]
 LABEL org.opencontainers.image.title="consul-exporter" \
       org.opencontainers.image.version="0.4.0" \

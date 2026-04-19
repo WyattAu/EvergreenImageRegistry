@@ -8,11 +8,11 @@
 ARG VERSION=26.0.5
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
+FROM cgr.dev/chainguard/wolfi-base:20240415 AS downloader
 RUN apk add --no-cache openjdk-17 curl ca-certificates
 RUN curl -fsSL "https://github.com/keycloak/keycloak/releases/download/26.0.5/keycloak-26.0.5.tar.gz" -o /keycloak.tar.gz && tar -xzf /keycloak.tar.gz -C / && mv /keycloak-26.0.5 /keycloak && rm /keycloak.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base:20240415
 RUN addgroup -g 65534 keycloak || true
 RUN adduser -D -u 65534 -G keycloak keycloak || true
 RUN mkdir -p /app /var/log/keycloak /var/cache/keycloak
@@ -21,7 +21,7 @@ USER keycloak
 WORKDIR /app
 EXPOSE 8080 8443
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD /app/keycloak/bin/kc.sh start-dev --health-enabled=true
+    CMD ["/app/keycloak/bin/kc.sh", "start-dev", "--health-enabled=true"]
 ENTRYPOINT ["/app/keycloak/bin/kc.sh"]
 LABEL org.opencontainers.image.title="keycloak" \
       org.opencontainers.image.version="26.0.5" \

@@ -16,7 +16,7 @@ USER transmission
 WORKDIR /app
 EXPOSE 9091
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD transmission-daemon curl -s localhost:9091/transmission/rpc
+    CMD curl -sf http://localhost:9091/transmission/rpc 2>/dev/null
 ENTRYPOINT ["transmission-daemon"]
 LABEL org.opencontainers.image.title="transmission" \
       org.opencontainers.image.version="4.0.6" \

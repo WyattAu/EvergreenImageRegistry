@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 8080 443
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD headscale headscale --version
+    CMD ["/headscale", "version"]
 ENTRYPOINT ["/headscale"]
 LABEL org.opencontainers.image.title="headscale" \
       org.opencontainers.image.version="0.16.0" \

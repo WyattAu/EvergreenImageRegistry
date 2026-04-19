@@ -16,7 +16,7 @@ USER rabbitmq
 WORKDIR /app
 EXPOSE 5672 15672
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD rabbitmq-server rabbitmq-diagnostics ping
+    CMD rabbitmq-diagnostics -q ping
 ENTRYPOINT ["rabbitmq-server"]
 LABEL org.opencontainers.image.title="rabbitmq" \
       org.opencontainers.image.version="3.13.1" \

@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 4533
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD navidrome navidrome --version
+    CMD ["/navidrome", "--version"]
 ENTRYPOINT ["/navidrome"]
 LABEL org.opencontainers.image.title="navidrome" \
       org.opencontainers.image.version="0.52.5" \

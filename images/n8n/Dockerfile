@@ -16,7 +16,7 @@ USER node
 WORKDIR /app
 EXPOSE 5678
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD node curl -s localhost:5678/rest/health
+    CMD curl -sf http://localhost:5678/healthz
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="n8n" \
       org.opencontainers.image.version="1.41.0" \

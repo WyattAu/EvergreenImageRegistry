@@ -16,7 +16,7 @@ USER node
 WORKDIR /app
 EXPOSE 3001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD node curl -s localhost:3001/api/status
+    CMD curl -sf http://localhost:3001/api/status
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="uptime-kuma" \
       org.opencontainers.image.version="1.23.1" \

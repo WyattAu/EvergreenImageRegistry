@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 2379 2380
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD etcd etcd --version
+    CMD ["/etcd", "--version"]
 ENTRYPOINT ["/etcd"]
 LABEL org.opencontainers.image.title="etcd" \
       org.opencontainers.image.version="3.5.15" \

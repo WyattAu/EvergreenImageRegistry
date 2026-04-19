@@ -16,7 +16,7 @@ USER runner
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD run.sh ./run.sh --version
+    CMD ./run.sh --version
 ENTRYPOINT ["run.sh"]
 LABEL org.opencontainers.image.title="github-actions-runner" \
       org.opencontainers.image.version="2.316.1" \

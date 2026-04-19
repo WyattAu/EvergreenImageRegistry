@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 9000 9001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD minio minio --version
+    CMD ["/minio", "--version"]
 ENTRYPOINT ["/minio"]
 LABEL org.opencontainers.image.title="minio" \
       org.opencontainers.image.version="2024.5.28" \

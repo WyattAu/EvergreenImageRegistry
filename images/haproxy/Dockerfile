@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 80 443
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD haproxy -v
+    CMD ["/haproxy", "-v"]
 ENTRYPOINT ["/haproxy"]
 LABEL org.opencontainers.image.title="haproxy" \
       org.opencontainers.image.version="3.0.1" \

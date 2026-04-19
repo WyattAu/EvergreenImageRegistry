@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 53 4000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD blocky blocky --version
+    CMD ["/blocky", "version"]
 ENTRYPOINT ["/blocky"]
 LABEL org.opencontainers.image.title="blocky" \
       org.opencontainers.image.version="0.22" \

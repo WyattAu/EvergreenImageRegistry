@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD focalboard-server focalboard-server --version
+    CMD ["/focalboard-server", "--version"]
 ENTRYPOINT ["/focalboard-server"]
 LABEL org.opencontainers.image.title="focalboard" \
       org.opencontainers.image.version="7.8.0" \

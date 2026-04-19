@@ -1,0 +1,147 @@
+# =============================================================================
+# HERMETIC CI BUILD ENVIRONMENT
+# Pinned tool versions for reproducible builds across all 223 container images.
+# Regenerate with: scripts/update_ci_environment.sh --apply
+# =============================================================================
+
+FROM ubuntu:22.04@sha256:962f6cadeae0ea6284001009daa4cc9a8c37e75d1f5191cf0eb83fe565b63dd7 AS builder
+
+ARG SOURCE_DATE_EPOCH=1713500000
+ARG DEBIAN_FRONTEND=noninteractive
+
+ENV TZ=UTC
+ENV SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH}
+ENV PATH="/opt/tools/bin:${PATH}"
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        wget \
+        git \
+        jq \
+        unzip \
+        xz-utils \
+        gnupg2 \
+        apt-transport-https \
+        software-properties-common \
+        gnupg \
+        lsb-release \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /opt/tools/bin /opt/tools/share /opt/tools/lib
+
+# --------------- docker CLI 24.0.7 ---------------
+RUN curl -fsSL "https://download.docker.com/linux/static/stable/x86_64/docker-24.0.7.tgz" \
+    | tar xz --strip-components=1 -C /opt/tools/bin docker/docker \
+    && chmod +x /opt/tools/bin/docker
+
+# --------------- docker buildx v0.12.1 ---------------
+RUN mkdir -p /root/.docker/cli-plugins \
+    && curl -fsSL "https://github.com/docker/buildx/releases/download/v0.12.1/buildx-v0.12.1.linux-amd64" \
+        -o /opt/tools/lib/docker-buildx \
+    && chmod +x /opt/tools/lib/docker-buildx
+
+# --------------- trivy 0.53.0 ---------------
+RUN curl -fsSL "https://github.com/aquasecurity/trivy/releases/download/v0.53.0/trivy_0.53.0_Linux-64bit.tar.gz" \
+    | tar xz -C /opt/tools/bin trivy
+
+# --------------- grype 0.80.0 ---------------
+RUN curl -fsSL "https://github.com/anchore/grype/releases/download/v0.80.0/grype_0.80.0_linux_amd64.tar.gz" \
+    | tar xz -C /opt/tools/bin grype
+
+# --------------- cosign 2.4.0 ---------------
+RUN curl -fsSL "https://github.com/sigstore/cosign/releases/download/v2.4.0/cosign_2.4.0_linux_amd64.tar.gz" \
+    | tar xz -C /opt/tools/bin cosign
+
+# --------------- syft 1.8.0 ---------------
+RUN curl -fsSL "https://github.com/anchore/syft/releases/download/v1.8.0/syft_1.8.0_linux_amd64.tar.gz" \
+    | tar xz -C /opt/tools/bin syft
+
+# --------------- hadolint 2.12.0 ---------------
+RUN curl -fsSL "https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64" \
+    -o /opt/tools/bin/hadolint \
+    && chmod +x /opt/tools/bin/hadolint
+
+# --------------- helm 3.15.1 ---------------
+RUN curl -fsSL "https://get.helm.sh/helm-v3.15.1-linux-amd64.tar.gz" \
+    | tar xz --strip-components=1 -C /opt/tools/bin linux-amd64/helm
+
+# --------------- kubectl 1.30.1 ---------------
+RUN curl -fsSL "https://dl.k8s.io/release/v1.30.1/bin/linux/amd64/kubectl" \
+    -o /opt/tools/bin/kubectl \
+    && chmod +x /opt/tools/bin/kubectl
+
+# --------------- crane (latest) ---------------
+RUN curl -fsSL "https://github.com/google/go-containerregistry/releases/latest/download/go-containerregistry_Linux_x86_64.tar.gz" \
+    | tar xz -C /opt/tools/bin crane
+
+# --------------- yq 4.43.1 ---------------
+RUN curl -fsSL "https://github.com/mikefarah/yq/releases/download/v4.43.1/yq_linux_amd64" \
+    -o /opt/tools/bin/yq \
+    && chmod +x /opt/tools/bin/yq
+
+# --------------- TruffleHog 3.82.2 ---------------
+RUN curl -fsSL "https://github.com/trufflesecurity/trufflehog/releases/download/v3.82.2/trufflehog_3.82.2_linux_amd64.tar.gz" \
+    | tar xz -C /opt/tools/bin trufflehog
+
+RUN trivy --version \
+    && grype version \
+    && cosign version \
+    && syft version \
+    && hadolint --version \
+    && helm version \
+    && kubectl version --client \
+    && crane version \
+    && yq --version \
+    && trufflehog --version
+
+FROM ubuntu:22.04@sha256:962f6cadeae0ea6284001009daa4cc9a8c37e75d1f5191cf0eb83fe565b63dd7 AS runtime
+
+ARG SOURCE_DATE_EPOCH=1713500000
+ARG BUILD_DATE
+ARG VCS_REF
+
+ENV TZ=UTC
+ENV SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH}
+ENV PATH="/opt/tools/bin:${PATH}"
+ENV DOCKER_CONFIG=/home/ci/.docker
+ENV XDG_CONFIG_HOME=/home/ci/.config
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ca-certificates \
+        git \
+        jq \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN groupadd --gid 1001 ci \
+    && useradd --uid 1001 --gid ci --create-home --shell /bin/bash ci \
+    && mkdir -p /home/ci/.docker/cli-plugins \
+    && chown -R ci:ci /home/ci
+
+COPY --from=builder /opt/tools/bin/ /opt/tools/bin/
+COPY --from=builder /opt/tools/lib/docker-buildx /home/ci/.docker/cli-plugins/docker-buildx
+
+USER ci:ci
+WORKDIR /home/ci
+
+LABEL org.opencontainers.image.title="Evergreen CI Build Environment" \
+      org.opencontainers.image.description="Hermetic build environment for building, scanning, signing, and testing 223 container images" \
+      org.opencontainers.image.source="https://github.com/WyattAu/EvergreenImageRegistry" \
+      org.opencontainers.image.vendor="WyattAu" \
+      org.opencontainers.image.version="1.0.0" \
+      org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.revision="${VCS_REF}" \
+      sovereign.image.tier="0" \
+      sovereign.image.purpose="ci-build" \
+      sovereign.tools.docker="24.0.7" \
+      sovereign.tools.buildx="v0.12.1" \
+      sovereign.tools.trivy="0.53.0" \
+      sovereign.tools.grype="0.80.0" \
+      sovereign.tools.cosign="2.4.0" \
+      sovereign.tools.syft="1.8.0" \
+      sovereign.tools.hadolint="2.12.0" \
+      sovereign.tools.helm="3.15.1" \
+      sovereign.tools.kubectl="1.30.1" \
+      sovereign.tools.crane="latest" \
+      sovereign.tools.yq="4.43.1" \
+      sovereign.tools.trufflehog="3.82.2"

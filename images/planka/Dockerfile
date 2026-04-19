@@ -16,7 +16,7 @@ USER planka
 WORKDIR /app
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD node curl -s localhost:3000/api/health
+    CMD curl -sf http://localhost:3000/api/health
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="planka" \
       org.opencontainers.image.version="1.17.0" \

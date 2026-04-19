@@ -16,7 +16,7 @@ USER root
 WORKDIR /app
 EXPOSE 80 443 389 636
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ipa-server ipa --version
+    CMD ipa --version
 ENTRYPOINT ["ipa-server"]
 LABEL org.opencontainers.image.title="freeipa" \
       org.opencontainers.image.version="4.12.0" \

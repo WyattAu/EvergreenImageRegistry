@@ -16,7 +16,7 @@ USER emqx
 WORKDIR /app
 EXPOSE 1883 8083
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD emqx curl -s localhost:18083/api/v4/status
+    CMD curl -sf http://localhost:18083/api/v4/status
 ENTRYPOINT ["emqx"]
 LABEL org.opencontainers.image.title="emqx" \
       org.opencontainers.image.version="5.8.0" \

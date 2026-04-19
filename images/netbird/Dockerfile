@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 443 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD netbird netbird --version
+    CMD ["/netbird", "--version"]
 ENTRYPOINT ["/netbird"]
 LABEL org.opencontainers.image.title="netbird" \
       org.opencontainers.image.version="0.29.1" \

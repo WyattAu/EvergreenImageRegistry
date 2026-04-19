@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 8108
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD typesense-server typesense-server --version
+    CMD ["/typesense-server", "--version"]
 ENTRYPOINT ["/typesense-server"]
 LABEL org.opencontainers.image.title="typesense" \
       org.opencontainers.image.version="27.1" \

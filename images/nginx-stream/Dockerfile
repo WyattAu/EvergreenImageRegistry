@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 80 443
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD nginx -v
+    CMD ["/nginx", "-v"]
 ENTRYPOINT ["/nginx"]
 LABEL org.opencontainers.image.title="nginx-stream" \
       org.opencontainers.image.version="1.27.1" \

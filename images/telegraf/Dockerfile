@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 8086
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD telegraf telegraf --version
+    CMD ["/telegraf", "--version"]
 ENTRYPOINT ["/telegraf"]
 LABEL org.opencontainers.image.title="telegraf" \
       org.opencontainers.image.version="1.32.0" \

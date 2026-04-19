@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD influx influx --version
+    CMD ["/influx", "version"]
 ENTRYPOINT ["/influx"]
 LABEL org.opencontainers.image.title="influxdb-client" \
       org.opencontainers.image.version="2.7.7" \

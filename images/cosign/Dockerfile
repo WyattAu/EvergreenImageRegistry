@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD cosign cosign --version
+    CMD ["/cosign", "version"]
 ENTRYPOINT ["/cosign"]
 LABEL org.opencontainers.image.title="cosign" \
       org.opencontainers.image.version="2.4.0" \

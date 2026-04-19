@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 9104
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD mysqld_exporter mysqld_exporter --version
+    CMD ["/mysqld_exporter", "--version"]
 ENTRYPOINT ["/mysqld_exporter"]
 LABEL org.opencontainers.image.title="mysql-exporter" \
       org.opencontainers.image.version="0.15.0" \

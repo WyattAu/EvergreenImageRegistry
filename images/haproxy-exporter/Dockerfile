@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 9101
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD haproxy_exporter haproxy_exporter --version
+    CMD ["/haproxy_exporter", "--version"]
 ENTRYPOINT ["/haproxy_exporter"]
 LABEL org.opencontainers.image.title="haproxy-exporter" \
       org.opencontainers.image.version="0.15.0" \

@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD kaniko kaniko --version
+    CMD ["/kaniko", "--version"]
 ENTRYPOINT ["/kaniko"]
 LABEL org.opencontainers.image.title="kaniko" \
       org.opencontainers.image.version="1.23.0" \

@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 2020
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD fluent-bit fluent-bit --version
+    CMD ["/fluent-bit", "--version"]
 ENTRYPOINT ["/fluent-bit"]
 LABEL org.opencontainers.image.title="fluent-bit" \
       org.opencontainers.image.version="3.1.0" \

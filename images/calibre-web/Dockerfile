@@ -16,7 +16,7 @@ USER calibre
 WORKDIR /app
 EXPOSE 8083
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD python curl -s localhost:8083/api/status
+    CMD curl -sf http://localhost:8083
 ENTRYPOINT ["python"]
 LABEL org.opencontainers.image.title="calibre-web" \
       org.opencontainers.image.version="0.6.22" \

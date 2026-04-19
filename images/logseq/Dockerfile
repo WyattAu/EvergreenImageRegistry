@@ -16,7 +16,7 @@ USER node
 WORKDIR /app
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD node curl -s localhost:3000/health
+    CMD curl -sf http://localhost:3000
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="logseq" \
       org.opencontainers.image.version="0.10.18" \

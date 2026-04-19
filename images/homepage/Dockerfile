@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD homepage homepage --version
+    CMD ["/homepage", "--version"]
 ENTRYPOINT ["/homepage"]
 LABEL org.opencontainers.image.title="homepage" \
       org.opencontainers.image.version="0.8.18" \

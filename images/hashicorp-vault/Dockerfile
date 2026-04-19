@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 8200 8201
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD vault vault --version
+    CMD ["/vault", "version"]
 ENTRYPOINT ["/vault"]
 LABEL org.opencontainers.image.title="hashicorp-vault" \
       org.opencontainers.image.version="1.18.1" \

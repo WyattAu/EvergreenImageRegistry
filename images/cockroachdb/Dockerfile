@@ -16,7 +16,7 @@ USER cockroach
 WORKDIR /app
 EXPOSE 26257 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD cockroach cockroach sql
+    CMD cockroach sql --insecure -e "SELECT 1"
 ENTRYPOINT ["cockroach"]
 LABEL org.opencontainers.image.title="cockroachdb" \
       org.opencontainers.image.version="23.2.0" \

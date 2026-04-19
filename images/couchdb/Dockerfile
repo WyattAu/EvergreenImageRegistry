@@ -16,7 +16,7 @@ USER couchdb
 WORKDIR /app
 EXPOSE 5984
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD couchdb curl -s localhost:5984
+    CMD curl -sf http://localhost:5984
 ENTRYPOINT ["couchdb"]
 LABEL org.opencontainers.image.title="couchdb" \
       org.opencontainers.image.version="3.3.3" \

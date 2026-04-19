@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD helm helm version
+    CMD ["/helm", "version"]
 ENTRYPOINT ["/helm"]
 LABEL org.opencontainers.image.title="helm" \
       org.opencontainers.image.version="3.15.1" \

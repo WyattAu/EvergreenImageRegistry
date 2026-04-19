@@ -27,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD miniflux miniflux --version
+    CMD ["/miniflux", "--version"]
 ENTRYPOINT ["/miniflux"]
 LABEL org.opencontainers.image.title="miniflux" \
       org.opencontainers.image.version="2.2.0" \

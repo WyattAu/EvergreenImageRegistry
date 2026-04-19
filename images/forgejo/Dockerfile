@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
 RUN apk add --no-cache curl ca-certificates git
-RUN curl -fsSL "https://code.forgejo.org/forgejo/forgejo/releases/download/v${VERSION}/forgejo-${VERSION}-linux-amd64" -o /forgejo && chmod +x /forgejo
+RUN curl -fsSL "https://code.forgejo.org/forgejo/forgejo/releases/download/v14.0.4/forgejo-14.0.4-linux-amd64" -o /forgejo && chmod +x /forgejo
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN addgroup -g 65534 git || true

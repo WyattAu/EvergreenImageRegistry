@@ -192,8 +192,7 @@ RUN curl -fsSL "{binary_url}" -o /{binary}.tar.gz && \\
 FROM scratch
 COPY --from=downloader /{binary} /{binary}
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-RUN chown root:root /{binary} && chmod +x /{binary}
-RUN mkdir -p /app /var/log/{binary} /var/cache/{binary} && chown 65534:65534 /app /var/log/{binary} /var/cache/{binary}
+RUN mkdir -p /app /var/log/{binary} /var/cache/{binary}
 USER 65534:65534
 WORKDIR /app
 EXPOSE {ports}
@@ -220,8 +219,8 @@ ARG BUILD_DATE
 FROM {base}:{version}-alpine
 RUN apk add --no-cache {packages} ca-certificates && rm -rf /var/cache/apk/*
 RUN rm -f /bin/sh /bin/bash || true
-RUN id {user} 2>/dev/null || adduser -D -u 65534 {user}
-RUN mkdir -p /app /var/log/{name} /var/cache/{name} && chown -R {user}:{user} /app /var/log/{name} /var/cache/{name}
+RUN adduser -D -u 65534 {user} 2>/dev/null || true
+RUN mkdir -p /app /var/log/{name} /var/cache/{name} && chown -R {user}:{user} /app /var/log/{name} /var/cache/{name} 2>/dev/null || true
 USER {user}:{user}
 WORKDIR /app
 EXPOSE {ports}

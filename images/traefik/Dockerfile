@@ -14,8 +14,7 @@ RUN curl -fsSL "https://github.com/traefik/traefik/releases/download/v3.1.4/trae
 FROM scratch
 COPY --from=downloader /traefik /traefik
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-RUN chown root:root /traefik && chmod +x /traefik
-RUN mkdir -p /app /var/log/traefik /var/cache/traefik && chown 65534:65534 /app /var/log/traefik /var/cache/traefik
+RUN mkdir -p /app /var/log/traefik /var/cache/traefik
 USER 65534:65534
 WORKDIR /app
 EXPOSE 80 443 8080

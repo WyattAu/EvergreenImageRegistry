@@ -7,24 +7,25 @@ ARG VERSION=1.27.1
 ARG BUILD_DATE
 
 FROM alpine:3.21 AS downloader
-RUN apk add --no-cache curl ca-certificates tar gzip
+RUN apk add --no-cache curl ca-certificates
 RUN curl -fsSL "https://nginx.org/download/nginx-1.27.1.tar.gz" -o /nginx.tar.gz && \
-    tar -xzf /nginx.tar.gz -C / && rm /nginx.tar.gz && chmod +x /nginx
+    tar -xzf /nginx.tar.gz -C / && rm /nginx.tar.gz
 
-FROM scratch
-COPY --from=downloader /nginx /nginx
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-RUN chown root:root /nginx && chmod +x /nginx
-RUN mkdir -p /app /var/log/nginx /var/cache/nginx && chown 65534:65534 /app /var/log/nginx /var/cache/nginx
-USER 65534:65534
+# Note: Building nginx from source requires compiler - using official base instead
+# For production, use official nginx:alpine and apply hardening
+FROM nginx:1.27-alpine
+RUN apk add --no-cache ca-certificates
+RUN rm -rf /var/cache/apk/* /etc/nginx/conf.d/* /var/log/nginx/* /var/tmp/*
+RUN adduser -D -u 65534 -g '' app 2>/dev/null || true
+RUN mkdir -p /app /var/log/nginx /var/cache/nginx && chown -R app:app /app /var/log/nginx /var/cache/nginx
+USER app
 WORKDIR /app
 EXPOSE 80 443
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD wget -q --spider http://localhost:80//health_status.html || exit 1
-ENTRYPOINT ["/nginx"]
+    CMD wget -q --spider http://localhost:80/ || exit 1
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
 LABEL org.opencontainers.image.title="nginx" \
       org.opencontainers.image.version="1.27.1" \
       org.opencontainers.image.vendor="Nginx Inc" \
       sovereign.image.tier="1" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.static="true"
+      sovereign.constraint.nonroot="true"

@@ -11,16 +11,20 @@ RUN apk add --no-cache curl ca-certificates tar gzip
 RUN curl -fsSL "https://github.com/anchore/syft/releases/download/v1.8.0/syft_1.8.0_linux_amd64.tar.gz" -o /syft.tar.gz && \
     tar -xzf /syft.tar.gz -C / && rm /syft.tar.gz && chmod +x /syft
 
+FROM alpine:3.21 AS builder
+RUN mkdir -p /app /var/log/syft /var/cache/syft
+
 FROM scratch
 COPY --from=downloader /syft /syft
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-RUN chown root:root /syft && chmod +x /syft
-RUN mkdir -p /app /var/log/syft /var/cache/syft && chown 65534:65534 /app /var/log/syft /var/cache/syft
+COPY --from=builder /app /app
+COPY --from=builder /var/log/syft /var/log/syft
+COPY --from=builder /var/cache/syft /var/cache/syft
 USER 65534:65534
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD wget -q --spider http://localhost:8080/syft version || exit 1
+    CMD /syft version 2>/dev/null || exit 1
 ENTRYPOINT ["/syft"]
 LABEL org.opencontainers.image.title="syft" \
       org.opencontainers.image.version="1.8.0" \

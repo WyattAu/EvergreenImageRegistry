@@ -1,7 +1,8 @@
 # =============================================================================
 # SOVEREIGN HARDENED ENVOY
 # Generated from template - Version: 1.31.0
-# Constraint: distroless/static - no shell, no package manager
+# Constraint: distroless - minimal runtime, no shell, CVE-free
+# Priority: scratch > distroless (2nd best) > wolfi > debian-slim (fallback)
 # =============================================================================
 
 ARG VERSION=1.31.0

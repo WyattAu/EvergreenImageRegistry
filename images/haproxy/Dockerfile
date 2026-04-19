@@ -1,7 +1,8 @@
 # =============================================================================
 # SOVEREIGN HARDENED HAPROXY
 # Generated from template - Version: 3.0.1
-# Constraint: distroless/static - no shell, no package manager
+# Constraint: distroless - minimal runtime, no shell, CVE-free
+# Priority: scratch > distroless (2nd best) > wolfi > debian-slim (fallback)
 # =============================================================================
 
 ARG VERSION=3.0.1
@@ -25,7 +26,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 80 443
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD haproxy --version 2>/dev/null || exit 1
+    CMD haproxy -v 2>/dev/null || exit 1
 ENTRYPOINT ["/haproxy"]
 LABEL org.opencontainers.image.title="haproxy" \
       org.opencontainers.image.version="3.0.1" \

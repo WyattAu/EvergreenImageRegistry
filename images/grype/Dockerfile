@@ -1,7 +1,8 @@
 # =============================================================================
 # SOVEREIGN HARDENED GRYPE
 # Generated from template - Version: 0.80.0
-# Constraint: distroless/static - no shell, no package manager
+# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
 ARG VERSION=0.80.0
@@ -15,7 +16,7 @@ RUN curl -fsSL "https://github.com/anchore/grype/releases/download/v0.80.0/grype
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/grype /var/cache/grype
 
-FROM gcr.io/distroless/static:nonroot
+FROM scratch
 COPY --from=downloader /grype /grype
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -25,11 +26,11 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD grype --version 2>/dev/null || exit 1
+    CMD grype version 2>/dev/null || exit 1
 ENTRYPOINT ["/grype"]
 LABEL org.opencontainers.image.title="grype" \
       org.opencontainers.image.version="0.80.0" \
       org.opencontainers.image.vendor="Anchore" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.distroless="true"
+      sovereign.constraint.scratch="true"

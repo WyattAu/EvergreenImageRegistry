@@ -1,26 +1,36 @@
 # =============================================================================
 # SOVEREIGN HARDENED NATS
 # Generated from template - Version: 2.10.0
-# Constraint: debian-slim - minimal base, CVE scanning friendly
+# Constraint: distroless - minimal runtime, no shell, CVE-free
+# Priority: scratch > distroless (2nd best) > wolfi > debian-slim (fallback)
 # =============================================================================
 
 ARG VERSION=2.10.0
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends nats ca-certificates && rm -rf /var/lib/apt/lists/*
-# Create non-root user
-RUN useradd -m -u 65534 -g '' nats 2>/dev/null || true
-RUN mkdir -p /app /var/log/nats /var/cache/nats && chown -R nats:nats /app /var/log/nats /var/cache/nats 2>/dev/null || true
-USER nats:nats
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/nats-io/nats-server/releases/download/v2.10.0/nats-server-2.10.0-linux-amd64.tar.gz" -o /nats-server.tar.gz && \
+    tar -xzf /nats-server.tar.gz -C / && rm /nats-server.tar.gz && chmod +x /nats-server
+
+FROM debian:bookworm-slim AS builder
+RUN mkdir -p /app /var/log/nats-server /var/cache/nats-server
+
+FROM gcr.io/distroless/static:nonroot
+COPY --from=downloader /nats-server /nats-server
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /app /app
+COPY --from=builder /var/log/nats-server /var/log/nats-server
+COPY --from=builder /var/cache/nats-server /var/cache/nats-server
+USER 65534:65534
 WORKDIR /app
 EXPOSE 4222 8222
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD nats-server -v
-ENTRYPOINT ["nats-server"]
+    CMD nats-server --version 2>/dev/null || exit 1
+ENTRYPOINT ["/nats-server"]
 LABEL org.opencontainers.image.title="nats" \
       org.opencontainers.image.version="2.10.0" \
       org.opencontainers.image.vendor="NATS" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      sovereign.constraint.distroless="true"

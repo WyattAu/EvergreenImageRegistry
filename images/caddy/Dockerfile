@@ -1,7 +1,8 @@
 # =============================================================================
 # SOVEREIGN HARDENED CADDY
 # Generated from template - Version: 2.7.6
-# Constraint: distroless/static - no shell, no package manager
+# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
 ARG VERSION=2.7.6
@@ -15,7 +16,7 @@ RUN curl -fsSL "https://github.com/caddyserver/caddy/releases/download/v2.7.6/ca
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/caddy /var/cache/caddy
 
-FROM gcr.io/distroless/static:nonroot
+FROM scratch
 COPY --from=downloader /caddy /caddy
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -25,11 +26,11 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 80 443 2019
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD caddy --version 2>/dev/null || exit 1
+    CMD caddy version 2>/dev/null || exit 1
 ENTRYPOINT ["/caddy"]
 LABEL org.opencontainers.image.title="caddy" \
       org.opencontainers.image.version="2.7.6" \
       org.opencontainers.image.vendor="Caddy" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.distroless="true"
+      sovereign.constraint.scratch="true"

@@ -1,26 +1,36 @@
 # =============================================================================
 # SOVEREIGN HARDENED PROMETHEUS
 # Generated from template - Version: 2.53.0
-# Constraint: debian-slim - minimal base, CVE scanning friendly
+# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
 ARG VERSION=2.53.0
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends prometheus ca-certificates && rm -rf /var/lib/apt/lists/*
-# Create non-root user
-RUN useradd -m -u 65534 -g '' prometheus 2>/dev/null || true
-RUN mkdir -p /app /var/log/prometheus /var/cache/prometheus && chown -R prometheus:prometheus /app /var/log/prometheus /var/cache/prometheus 2>/dev/null || true
-USER prometheus:prometheus
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/prometheus/prometheus/releases/download/v2.53.0/prometheus-2.53.0.linux-amd64.tar.gz" -o /prometheus.tar.gz && \
+    tar -xzf /prometheus.tar.gz -C / && rm /prometheus.tar.gz && chmod +x /prometheus
+
+FROM debian:bookworm-slim AS builder
+RUN mkdir -p /app /var/log/prometheus /var/cache/prometheus
+
+FROM scratch
+COPY --from=downloader /prometheus /prometheus
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /app /app
+COPY --from=builder /var/log/prometheus /var/log/prometheus
+COPY --from=builder /var/cache/prometheus /var/cache/prometheus
+USER 65534:65534
 WORKDIR /app
 EXPOSE 9090
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD /-/healthy
-ENTRYPOINT ["prometheus"]
+    CMD prometheus --version 2>/dev/null || exit 1
+ENTRYPOINT ["/prometheus"]
 LABEL org.opencontainers.image.title="prometheus" \
       org.opencontainers.image.version="2.53.0" \
       org.opencontainers.image.vendor="Prometheus" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      sovereign.constraint.scratch="true"

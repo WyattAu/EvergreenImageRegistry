@@ -1,15 +1,15 @@
 # =============================================================================
 # SOVEREIGN HARDENED RABBITMQ
 # Generated from template - Version: 3.13.0
-# Constraint: debian-slim - minimal base, CVE scanning friendly
+# Constraint: debian-slim - fallback when scratch/distroless/wolfi not available
+# Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
 ARG VERSION=3.13.0
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends rabbitmq ca-certificates && rm -rf /var/lib/apt/lists/*
-# Create non-root user
+RUN apt-get update && apt-get install -y --no-install-recommends rabbitmq-server ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN useradd -m -u 65534 -g '' rabbitmq 2>/dev/null || true
 RUN mkdir -p /app /var/log/rabbitmq /var/cache/rabbitmq && chown -R rabbitmq:rabbitmq /app /var/log/rabbitmq /var/cache/rabbitmq 2>/dev/null || true
 USER rabbitmq:rabbitmq

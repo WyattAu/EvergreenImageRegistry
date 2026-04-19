@@ -1,15 +1,15 @@
 # =============================================================================
 # SOVEREIGN HARDENED REDIS
 # Generated from template - Version: 7.4.1
-# Constraint: debian-slim - minimal base, CVE scanning friendly
+# Constraint: debian-slim - fallback when scratch/distroless/wolfi not available
+# Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
 ARG VERSION=7.4.1
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends redis ca-certificates && rm -rf /var/lib/apt/lists/*
-# Create non-root user
+RUN apt-get update && apt-get install -y --no-install-recommends redis-server ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN useradd -m -u 65534 -g '' redis 2>/dev/null || true
 RUN mkdir -p /app /var/log/redis /var/cache/redis && chown -R redis:redis /app /var/log/redis /var/cache/redis 2>/dev/null || true
 USER redis:redis

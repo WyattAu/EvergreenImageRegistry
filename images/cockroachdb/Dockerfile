@@ -1,15 +1,15 @@
 # =============================================================================
 # SOVEREIGN HARDENED COCKROACHDB
 # Generated from template - Version: 23.2.0
-# Constraint: debian-slim - minimal base, CVE scanning friendly
+# Constraint: debian-slim - fallback when scratch/distroless/wolfi not available
+# Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
 ARG VERSION=23.2.0
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends cockroach ca-certificates && rm -rf /var/lib/apt/lists/*
-# Create non-root user
+RUN apt-get update && apt-get install -y --no-install-recommends cockroachdb ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN useradd -m -u 65534 -g '' cockroach 2>/dev/null || true
 RUN mkdir -p /app /var/log/cockroachdb /var/cache/cockroachdb && chown -R cockroach:cockroach /app /var/log/cockroachdb /var/cache/cockroachdb 2>/dev/null || true
 USER cockroach:cockroach

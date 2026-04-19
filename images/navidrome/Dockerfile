@@ -11,6 +11,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/navidrome/navidrome/releases/download/v0.52.5/navidrome_0.52.5_linux_amd64.tar.gz" -o /navidrome.tar.gz && \
+    echo "b9781ea560ea09926557c665472faa26920738a5ffa0680c19f70df97f51598f  /navidrome.tar.gz" | sha256sum -c - && \
     tar -xzf /navidrome.tar.gz -C / && rm /navidrome.tar.gz && chmod +x /navidrome 2>/dev/null || \
     curl -fsSL "https://github.com/navidrome/navidrome/releases/download/v0.52.5/navidrome_0.52.5_linux_amd64.tar.gz" -o /navidrome && chmod +x /navidrome
 

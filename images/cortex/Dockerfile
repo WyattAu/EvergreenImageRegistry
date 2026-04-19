@@ -11,6 +11,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/cortexproject/cortex/releases/download/v1.15.1/cortex-linux-amd64" -o /cortex.tar.gz && \
+    echo "9ea0e190edf8e7313a9c035bc436dbe9b51ef65835104dc5fcc25e2d2d316062  /cortex.tar.gz" | sha256sum -c - && \
     tar -xzf /cortex.tar.gz -C / && rm /cortex.tar.gz && chmod +x /cortex 2>/dev/null || \
     curl -fsSL "https://github.com/cortexproject/cortex/releases/download/v1.15.1/cortex-linux-amd64" -o /cortex && chmod +x /cortex
 

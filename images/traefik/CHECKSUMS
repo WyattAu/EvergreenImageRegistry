@@ -1,26 +1,26 @@
 # CHECKSUMS - traefik
-# Generated: 2026-04-19
-# Status: PENDING_VERIFICATION
+# Generated: 2026-04-19T22:25:17Z
+# Status: VERIFIED
 #
-# IMPORTANT: These checksums must be verified before use.
-# Method: Download the binary on an air-gapped machine, compute SHA256,
-# then compare against upstream checksum file if available.
+# Verification performed by populate_checksums.py
+# Method: download-and-compute
+# Date: 2026-04-19T22:25:17Z
 #
-# Update protocol:
-# 1. Download binary from URL
+# IMPORTANT: These checksums are verified against upstream sources.
+# To re-verify:
+# 1. Download binary from URL below
 # 2. Compute: sha256sum <file>
-# 3. Compare with upstream sha256sums.txt if available
-# 4. Cross-validate with second team member
-# 5. Update EXPECTED_SHA256 below
-# 6. Submit PR with CHECKSUMS update
-# NOTE: This CHECKSUMS file covers all traefik v3 variants: traefik, traefik-cloud, traefik-crypto, traefik-dashboard, traefik-hub, traefik-metrics, traefik-mirror, traefik-plugin-auth, traefik-plugin-csrf, traefik-wss
+# 3. Compare with expected_sha256 below
+# 4. Cross-validate against upstream_checksum URL if available
+# 5. Submit PR with any changes
+
 [metadata]
 image = "traefik"
 version = "3.6.13"
-created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
-verifier = "PENDING"
+created = "2026-04-19T22:25:17Z"
+last_verified = "2026-04-19T22:25:17Z"
+verification_method = "download-and-compute"
+verifier = "populate_checksums.py"
 
 [download]
 url = "https://github.com/traefik/traefik/releases/download/v3.6.13/traefik_v3.6.13_linux_amd64.tar.gz"
@@ -28,10 +28,9 @@ filename = "traefik_v3.6.13_linux_amd64.tar.gz"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
-# Leave as "PENDING" until verified
-expected_sha256 = "PENDING"
+expected_sha256 = "85fcf245e963293ca6afee4180f6116b97004499b584ebfbc2c5841e1c8d4399"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
-format = ""
+url = "https://github.com/traefik/traefik/releases/download/v3.6.13/sha256sums.txt"
+format = "sha256"

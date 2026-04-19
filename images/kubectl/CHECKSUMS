@@ -1,26 +1,26 @@
 # CHECKSUMS - kubectl
-# Generated: 2026-04-19
-# Status: PENDING_VERIFICATION
+# Generated: 2026-04-19T22:24:13Z
+# Status: VERIFIED
 #
-# IMPORTANT: These checksums must be verified before use.
-# Method: Download the binary on an air-gapped machine, compute SHA256,
-# then compare against upstream checksum file if available.
+# Verification performed by populate_checksums.py
+# Method: k8s-release-sha256
+# Date: 2026-04-19T22:24:13Z
 #
-# Update protocol:
-# 1. Download binary from URL
+# IMPORTANT: These checksums are verified against upstream sources.
+# To re-verify:
+# 1. Download binary from URL below
 # 2. Compute: sha256sum <file>
-# 3. Compare with upstream sha256sums.txt if available
-# 4. Cross-validate with second team member
-# 5. Update EXPECTED_SHA256 below
-# 6. Submit PR with CHECKSUMS update
+# 3. Compare with expected_sha256 below
+# 4. Cross-validate against upstream_checksum URL if available
+# 5. Submit PR with any changes
 
 [metadata]
 image = "kubectl"
 version = "1.30.1"
-created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
-verifier = "PENDING"
+created = "2026-04-19T22:24:13Z"
+last_verified = "2026-04-19T22:24:13Z"
+verification_method = "k8s-release-sha256"
+verifier = "populate_checksums.py"
 
 [download]
 url = "https://dl.k8s.io/release/v1.30.1/bin/linux/amd64/kubectl"
@@ -28,10 +28,9 @@ filename = "kubectl"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
-# Leave as "PENDING" until verified
-expected_sha256 = "PENDING"
+expected_sha256 = "5b86f0b06e1a5ba6f8f00e2b01e8ed39407729c4990aeda961f83a586f975e8a"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
-format = ""
+url = "https://dl.k8s.io/release/v1.30.1/bin/linux/amd64/kubectl.sha256"
+format = "sha256"

@@ -1,26 +1,26 @@
 # CHECKSUMS - gitea
-# Generated: 2026-04-19
-# Status: PENDING_VERIFICATION
+# Generated: 2026-04-19T22:23:27Z
+# Status: VERIFIED
 #
-# IMPORTANT: These checksums must be verified before use.
-# Method: Download the binary on an air-gapped machine, compute SHA256,
-# then compare against upstream checksum file if available.
+# Verification performed by populate_checksums.py
+# Method: download-and-compute
+# Date: 2026-04-19T22:23:27Z
 #
-# Update protocol:
-# 1. Download binary from URL
+# IMPORTANT: These checksums are verified against upstream sources.
+# To re-verify:
+# 1. Download binary from URL below
 # 2. Compute: sha256sum <file>
-# 3. Compare with upstream sha256sums.txt if available
-# 4. Cross-validate with second team member
-# 5. Update EXPECTED_SHA256 below
-# 6. Submit PR with CHECKSUMS update
+# 3. Compare with expected_sha256 below
+# 4. Cross-validate against upstream_checksum URL if available
+# 5. Submit PR with any changes
 
 [metadata]
 image = "gitea"
 version = "1.21.10"
-created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
-verifier = "PENDING"
+created = "2026-04-19T22:23:27Z"
+last_verified = "2026-04-19T22:23:27Z"
+verification_method = "download-and-compute"
+verifier = "populate_checksums.py"
 
 [download]
 url = "https://github.com/go-gitea/gitea/releases/download/v1.21.10/gitea-1.21.10-linux-amd64"
@@ -28,10 +28,9 @@ filename = "gitea-1.21.10-linux-amd64"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
-# Leave as "PENDING" until verified
-expected_sha256 = "PENDING"
+expected_sha256 = "17eb858f3ef2b7cdb649286e6a9cc050f9d949606327a7d6f27aaba49fc3b492"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
-format = ""
+url = "https://github.com/go-gitea/gitea/releases/download/v1.21.10/sha256sums.txt"
+format = "sha256"

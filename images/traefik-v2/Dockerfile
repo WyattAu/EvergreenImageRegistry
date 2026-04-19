@@ -11,6 +11,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/traefik/traefik/releases/download/v2.11.42/traefik_v2.11.42_linux_amd64.tar.gz" -o /traefik.tar.gz && \
+    echo "276f009de4e013152292642809559e89e0bd792e069a81d1f26fd295fb580e16  /traefik.tar.gz" | sha256sum -c - && \
     tar -xzf /traefik.tar.gz -C / && rm /traefik.tar.gz && chmod +x /traefik 2>/dev/null || \
     curl -fsSL "https://github.com/traefik/traefik/releases/download/v2.11.42/traefik_v2.11.42_linux_amd64.tar.gz" -o /traefik && chmod +x /traefik
 

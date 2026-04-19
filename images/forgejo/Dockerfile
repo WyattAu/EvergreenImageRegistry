@@ -6,7 +6,7 @@
 ARG VERSION=1.0.0
 ARG BUILD_DATE
 
-FROM alpine:1.0.0-alpine
+FROM alpine:3.21
 RUN apk add --no-cache forgejo ca-certificates && rm -rf /var/cache/apk/*
 RUN rm -f /bin/sh /bin/bash || true
 RUN id git 2>/dev/null || adduser -D -u 65534 git

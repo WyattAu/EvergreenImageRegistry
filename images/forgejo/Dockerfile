@@ -13,7 +13,8 @@ RUN apk add --no-cache curl ca-certificates git
 RUN curl -fsSL "https://code.forgejo.org/forgejo/forgejo/releases/download/v${VERSION}/forgejo-${VERSION}-linux-amd64" -o /forgejo && chmod +x /forgejo
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN adduser -D -u 65534 git
+RUN addgroup -g 65534 git || true
+RUN adduser -D -u 65534 -G git git || true
 RUN mkdir -p /app /var/log/forgejo /var/cache/forgejo
 USER git
 WORKDIR /app

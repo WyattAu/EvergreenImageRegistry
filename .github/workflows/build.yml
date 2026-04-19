@@ -6,6 +6,7 @@
 # Implements the full constraint verification pipeline:
 # - Linting (Hadolint)
 # - Constraint testing (C001-C013)
+# - Per-image functional tests
 # - CVE scanning (Trivy + Grype)
 # - SBOM generation (Syft)
 # - Image signing (Cosign)
@@ -20,6 +21,7 @@ on:
     paths:
       - 'images/**/Dockerfile'
       - '.github/workflows/build.yml'
+      - 'images/tests/**'
   pull_request:
     branches: [main]
   schedule:

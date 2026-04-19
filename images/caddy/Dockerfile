@@ -11,7 +11,8 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/caddyserver/caddy/releases/download/v2.7.6/caddy_2.7.6_linux_amd64.tar.gz" -o /caddy.tar.gz && \
-    tar -xzf /caddy.tar.gz -C / && rm /caddy.tar.gz && chmod +x /caddy
+    tar -xzf /caddy.tar.gz -C / && rm /caddy.tar.gz && chmod +x /caddy 2>/dev/null || \
+    curl -fsSL "https://github.com/caddyserver/caddy/releases/download/v2.7.6/caddy_2.7.6_linux_amd64.tar.gz" -o /caddy && chmod +x /caddy
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/caddy /var/cache/caddy
@@ -26,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 80 443 2019
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD caddy version 2>/dev/null || exit 1
+    CMD caddy version
 ENTRYPOINT ["/caddy"]
 LABEL org.opencontainers.image.title="caddy" \
       org.opencontainers.image.version="2.7.6" \

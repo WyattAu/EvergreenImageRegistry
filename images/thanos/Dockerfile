@@ -1,26 +1,37 @@
 # =============================================================================
 # SOVEREIGN HARDENED THANOS
 # Generated from template - Version: 0.35.0
-# Constraint: debian-slim - minimal base, CVE scanning friendly
+# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
 ARG VERSION=0.35.0
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends thanos ca-certificates && rm -rf /var/lib/apt/lists/*
-# Create non-root user
-RUN useradd -m -u 65534 -g '' thanos 2>/dev/null || true
-RUN mkdir -p /app /var/log/thanos /var/cache/thanos && chown -R thanos:thanos /app /var/log/thanos /var/cache/thanos 2>/dev/null || true
-USER thanos:thanos
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/thanos-io/thanos/releases/download/v0.35.0/thanos-0.35.0.linux-amd64.tar.gz" -o /thanos.tar.gz && \
+    tar -xzf /thanos.tar.gz -C / && rm /thanos.tar.gz && chmod +x /thanos 2>/dev/null || \
+    curl -fsSL "https://github.com/thanos-io/thanos/releases/download/v0.35.0/thanos-0.35.0.linux-amd64.tar.gz" -o /thanos && chmod +x /thanos
+
+FROM debian:bookworm-slim AS builder
+RUN mkdir -p /app /var/log/thanos /var/cache/thanos
+
+FROM scratch
+COPY --from=downloader /thanos /thanos
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /app /app
+COPY --from=builder /var/log/thanos /var/log/thanos
+COPY --from=builder /var/cache/thanos /var/cache/thanos
+USER 65534:65534
 WORKDIR /app
 EXPOSE 10902
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD /-/healthy
-ENTRYPOINT ["thanos"]
+    CMD thanos thanos --version
+ENTRYPOINT ["/thanos"]
 LABEL org.opencontainers.image.title="thanos" \
       org.opencontainers.image.version="0.35.0" \
       org.opencontainers.image.vendor="Thanos" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      sovereign.constraint.scratch="true"

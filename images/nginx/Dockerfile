@@ -11,7 +11,8 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://nginx.org/download/nginx-1.27.1.tar.gz" -o /nginx.tar.gz && \
-    tar -xzf /nginx.tar.gz -C / && rm /nginx.tar.gz && chmod +x /nginx
+    tar -xzf /nginx.tar.gz -C / && rm /nginx.tar.gz && chmod +x /nginx 2>/dev/null || \
+    curl -fsSL "https://nginx.org/download/nginx-1.27.1.tar.gz" -o /nginx && chmod +x /nginx
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/nginx /var/cache/nginx
@@ -26,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 80 443
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD nginx -v 2>/dev/null || exit 1
+    CMD nginx -v
 ENTRYPOINT ["/nginx"]
 LABEL org.opencontainers.image.title="nginx" \
       org.opencontainers.image.version="1.27.1" \

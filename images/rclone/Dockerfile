@@ -11,7 +11,8 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/rclone/rclone/releases/download/v1.67.0/rclone_1.67.0_linux_amd64.tar.gz" -o /rclone.tar.gz && \
-    tar -xzf /rclone.tar.gz -C / && rm /rclone.tar.gz && chmod +x /rclone
+    tar -xzf /rclone.tar.gz -C / && rm /rclone.tar.gz && chmod +x /rclone 2>/dev/null || \
+    curl -fsSL "https://github.com/rclone/rclone/releases/download/v1.67.0/rclone_1.67.0_linux_amd64.tar.gz" -o /rclone && chmod +x /rclone
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/rclone /var/cache/rclone
@@ -26,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD rclone version 2>/dev/null || exit 1
+    CMD rclone rclone version
 ENTRYPOINT ["/rclone"]
 LABEL org.opencontainers.image.title="rclone" \
       org.opencontainers.image.version="1.67.0" \

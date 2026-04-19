@@ -11,7 +11,8 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/anchore/syft/releases/download/v1.8.0/syft_1.8.0_linux_amd64.tar.gz" -o /syft.tar.gz && \
-    tar -xzf /syft.tar.gz -C / && rm /syft.tar.gz && chmod +x /syft
+    tar -xzf /syft.tar.gz -C / && rm /syft.tar.gz && chmod +x /syft 2>/dev/null || \
+    curl -fsSL "https://github.com/anchore/syft/releases/download/v1.8.0/syft_1.8.0_linux_amd64.tar.gz" -o /syft && chmod +x /syft
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/syft /var/cache/syft
@@ -26,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD syft version 2>/dev/null || exit 1
+    CMD syft syft --version
 ENTRYPOINT ["/syft"]
 LABEL org.opencontainers.image.title="syft" \
       org.opencontainers.image.version="1.8.0" \

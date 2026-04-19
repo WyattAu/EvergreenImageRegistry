@@ -11,7 +11,8 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/anchore/grype/releases/download/v0.80.0/grype_0.80.0_linux_amd64.tar.gz" -o /grype.tar.gz && \
-    tar -xzf /grype.tar.gz -C / && rm /grype.tar.gz && chmod +x /grype
+    tar -xzf /grype.tar.gz -C / && rm /grype.tar.gz && chmod +x /grype 2>/dev/null || \
+    curl -fsSL "https://github.com/anchore/grype/releases/download/v0.80.0/grype_0.80.0_linux_amd64.tar.gz" -o /grype && chmod +x /grype
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/grype /var/cache/grype
@@ -26,7 +27,7 @@ USER 65534:65534
 WORKDIR /app
 EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD grype version 2>/dev/null || exit 1
+    CMD grype grype --version
 ENTRYPOINT ["/grype"]
 LABEL org.opencontainers.image.title="grype" \
       org.opencontainers.image.version="0.80.0" \

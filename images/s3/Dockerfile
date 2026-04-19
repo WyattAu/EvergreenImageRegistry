@@ -1,26 +1,37 @@
 # =============================================================================
 # SOVEREIGN HARDENED S3
 # Generated from template - Version: 2024.5.28
-# Constraint: debian-slim - minimal base, CVE scanning friendly
+# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
 ARG VERSION=2024.5.28
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends minio ca-certificates && rm -rf /var/lib/apt/lists/*
-# Create non-root user
-RUN useradd -m -u 65534 -g '' minio 2>/dev/null || true
-RUN mkdir -p /app /var/log/s3 /var/cache/s3 && chown -R minio:minio /app /var/log/s3 /var/cache/s3 2>/dev/null || true
-USER minio:minio
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/minio/minio/releases/download/2024.5.28/minio-2024.5.28-linux-amd64" -o /s3-server.tar.gz && \
+    tar -xzf /s3-server.tar.gz -C / && rm /s3-server.tar.gz && chmod +x /s3-server 2>/dev/null || \
+    curl -fsSL "https://github.com/minio/minio/releases/download/2024.5.28/minio-2024.5.28-linux-amd64" -o /s3-server && chmod +x /s3-server
+
+FROM debian:bookworm-slim AS builder
+RUN mkdir -p /app /var/log/s3-server /var/cache/s3-server
+
+FROM scratch
+COPY --from=downloader /s3-server /s3-server
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /app /app
+COPY --from=builder /var/log/s3-server /var/log/s3-server
+COPY --from=builder /var/cache/s3-server /var/cache/s3-server
+USER 65534:65534
 WORKDIR /app
 EXPOSE 9000 9001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD /minio/health/live
-ENTRYPOINT ["minio"]
+    CMD s3-server s3-server --version
+ENTRYPOINT ["/s3-server"]
 LABEL org.opencontainers.image.title="s3" \
       org.opencontainers.image.version="2024.5.28" \
       org.opencontainers.image.vendor="MinIO" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      sovereign.constraint.scratch="true"

@@ -14,7 +14,7 @@ RUN useradd -m -u 65534 -g '' appuser 2>/dev/null || true
 RUN mkdir -p /app /var/log/vpnserver /var/cache/vpnserver && chown -R appuser:appuser /app /var/log/vpnserver /var/cache/vpnserver 2>/dev/null || true
 USER appuser
 WORKDIR /app
-EXPOSE 
+EXPOSE 443 992 1194 500 4500 5555
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD /usr/bin/vpnserver version
 ENTRYPOINT ["vpnserver"]

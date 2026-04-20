@@ -14,7 +14,7 @@ RUN useradd -m -u 65534 -g '' node 2>/dev/null || true
 RUN mkdir -p /app /var/log/node /var/cache/node && chown -R node:node /app /var/log/node /var/cache/node 2>/dev/null || true
 USER node
 WORKDIR /app
-EXPOSE 
+EXPOSE 8108
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD node --version
 ENTRYPOINT ["node"]

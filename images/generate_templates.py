@@ -218,7 +218,7 @@ WOLFI_TEMPLATE = '''# ==========================================================
 ARG VERSION={version}
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:20240415
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache {packages} ca-certificates && rm -rf /var/cache/apk/*
 RUN adduser -D -u 65534 {user} 2>/dev/null || true
 RUN mkdir -p /app /var/log/{name} /var/cache/{name} && chown -R {user}:{user} /app /var/log/{name} /var/cache/{name} 2>/dev/null || true

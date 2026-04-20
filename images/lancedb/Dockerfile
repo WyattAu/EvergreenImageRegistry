@@ -1,11 +1,11 @@
 # =============================================================================
 # SOVEREIGN HARDENED LANCEDB
-# Generated from template - Version: 0.6.0
+# Generated from template - Version: 0.28.0-beta.9
 # Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
-ARG VERSION=0.6.0
+ARG VERSION=0.28.0-beta.9
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
@@ -30,7 +30,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/lancedb", "--version"]
 ENTRYPOINT ["/lancedb"]
 LABEL org.opencontainers.image.title="lancedb" \
-      org.opencontainers.image.version="0.6.0" \
+      org.opencontainers.image.version="0.28.0-beta.9" \
       org.opencontainers.image.vendor="LanceDB" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \

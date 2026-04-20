@@ -8,13 +8,13 @@
 ARG VERSION=2.50.0
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:20240415 AS downloader
+FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
 RUN apk add --no-cache curl ca-certificates
 RUN curl -fsSL "https://github.com/zitadel/zitadel/releases/download/v${VERSION}/zitadel_${VERSION}_linux_amd64.tar.gz" -o /zitadel.tar.gz && \
     echo "31d8fbd7a0a188ad1cd72ecd3939fd553b07750ee2f7a7d5f032a3c2c8a5677d  /zitadel.tar.gz" | sha256sum -c - && \
     tar -xzf /zitadel.tar.gz -C / && rm /zitadel.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:20240415
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN addgroup -g 65534 zitadel || true
 RUN adduser -D -u 65534 -G zitadel zitadel || true
 RUN mkdir -p /app /var/log/zitadel /var/cache/zitadel

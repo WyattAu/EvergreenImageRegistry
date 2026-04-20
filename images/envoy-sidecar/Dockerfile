@@ -8,7 +8,7 @@
 ARG VERSION=1.31.0
 ARG BUILD_DATE
 
-FROM gcr.io/distroless/cc-debian12@sha256:af49995f9f06255ca7d955735e5484a92018f4cfe95910952d9aee165cb96940 AS downloader
+FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/envoyproxy/envoy/releases/download/v1.31.0/envoy-1.31.0-linux-x86_64" -o /envoy && chmod +x /envoy
 

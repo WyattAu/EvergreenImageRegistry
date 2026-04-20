@@ -9,7 +9,12 @@ ARG VERSION=2.7.7
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends influxdb2 ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl ca-certificates gnupg2 && \
+    curl -fsSL https://repos.influxdata.com/influxdata-archive_compat.key | gpg --dearmor -o /usr/share/keyrings/influxdb.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/influxdb.gpg] https://repos.influxdata.com/debian stable main" > /etc/apt/sources.list.d/influxdb.list && \
+    apt-get update && apt-get install -y --no-install-recommends influxdb2 && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN useradd -m -u 65534 -g '' influxdb 2>/dev/null || true
 RUN mkdir -p /app /var/log/influxd /var/cache/influxd && chown -R influxdb:influxdb /app /var/log/influxd /var/cache/influxd 2>/dev/null || true
 USER influxdb

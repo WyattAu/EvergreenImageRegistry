@@ -1,18 +1,18 @@
 # =============================================================================
 # SOVEREIGN HARDENED BLOCKY
-# Generated from template - Version: 0.22
+# Generated from template - Version: 0.29.0
 # Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
-ARG VERSION=0.22
+ARG VERSION=0.29.0
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/0xERR0R/blocky/releases/download/v0.22/blocky_0.22_linux_amd64.tar.gz" -o /blocky.tar.gz && \
+RUN curl -fsSL "https://github.com/0xERR0R/blocky/releases/download/v0.29.0/blocky_v0.29.0_Linux_x86_64.tar.gz" -o /blocky.tar.gz && \
     tar -xzf /blocky.tar.gz -C / && rm /blocky.tar.gz && chmod +x /blocky 2>/dev/null || \
-    curl -fsSL "https://github.com/0xERR0R/blocky/releases/download/v0.22/blocky_0.22_linux_amd64.tar.gz" -o /blocky && chmod +x /blocky
+    curl -fsSL "https://github.com/0xERR0R/blocky/releases/download/v0.29.0/blocky_v0.29.0_Linux_x86_64.tar.gz" -o /blocky && chmod +x /blocky
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/blocky /var/cache/blocky
@@ -30,7 +30,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/blocky", "version"]
 ENTRYPOINT ["/blocky"]
 LABEL org.opencontainers.image.title="blocky" \
-      org.opencontainers.image.version="0.22" \
+      org.opencontainers.image.version="0.29.0" \
       org.opencontainers.image.vendor="Blocky" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \

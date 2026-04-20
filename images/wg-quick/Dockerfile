@@ -8,11 +8,11 @@
 ARG VERSION=1.0.20210914
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:20240415 AS downloader
+FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
 RUN apk add --no-cache curl ca-certificates
 RUN curl -fsSL "" -o /wg && chmod +x /wg 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:20240415
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN adduser -D -u 65534 appuser 2>/dev/null || true
 RUN mkdir -p /app /var/log/wg /var/cache/wg
 USER appuser

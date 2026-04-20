@@ -766,11 +766,11 @@ WOLFI_TEMPLATE = '''# ==========================================================
 ARG VERSION={version}
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:20240415 AS downloader
+FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
 RUN apk add --no-cache curl ca-certificates
 RUN curl -fsSL "{binary_url}" -o /{binary} && chmod +x /{binary} 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:20240415
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN adduser -D -u 65534 {user} 2>/dev/null || true
 RUN mkdir -p /app /var/log/{binary} /var/cache/{binary}
 USER {user}

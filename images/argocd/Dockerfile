@@ -1,10 +1,10 @@
 # =============================================================================
 # SOVEREIGN HARDENED ARGOCD
-# Generated from template - Version: 2.14.0
+# Generated from template - Version: v2.14.0
 # Constraint: official - ArgoCD is complex, use official base
 # =============================================================================
 
-ARG VERSION=2.14.0
+ARG VERSION=v2.14.0
 ARG BUILD_DATE
 
 FROM argocd/argocd:${VERSION}
@@ -22,7 +22,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD curl -s localhost:8080/healthz || exit 1
 
 LABEL org.opencontainers.image.title="argocd" \
-      org.opencontainers.image.version="2.14.0" \
+      org.opencontainers.image.version="v2.14.0" \
       org.opencontainers.image.vendor="ArgoCD" \
       org.opencontainers.image.source="https://github.com/argoproj/argo-cd" \
       sovereign.image.tier="2" \

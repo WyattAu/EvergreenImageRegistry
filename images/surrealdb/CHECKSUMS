@@ -16,22 +16,22 @@
 
 [metadata]
 image = "surrealdb"
-version = "1.1.1"
+version = "3.0.5"
 created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
+last_verified = "2026-04-20T04:45:31Z"
+verification_method = "download-verify"
 verifier = "PENDING"
 
 [download]
-url = "https://github.com/surrealdb/surrealdb/releases/download/v1.1.1/surrealdb-1.1.1-linux-amd64.tar.gz"
-filename = "surrealdb-1.1.1-linux-amd64.tar.gz"
+url = "https://github.com/surrealdb/surrealdb/releases/download/v3.0.5/surreal-v3.0.5.linux-amd64.tgz"
+filename = "surreal-v3.0.5.linux-amd64.tgz"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
 # Leave as "PENDING" until verified
-expected_sha256 = "PENDING"
+expected_sha256 = "48dbeba4896765f33e07acc25224073f0850c190872052b917ebda1f7b4375cb"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
+url = "https://github.com/surrealdb/surrealdb/releases/download/v3.0.5/surreal-v3.0.5.linux-amd64.tgz"
 format = ""

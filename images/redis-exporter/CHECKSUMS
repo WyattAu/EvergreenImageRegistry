@@ -16,21 +16,21 @@
 
 [metadata]
 image = "redis-exporter"
-version = "1.54.0"
+version = "1.82.0"
 created = "2026-04-19T22:25:01Z"
 last_verified = "2026-04-19T22:25:01Z"
 verification_method = "github-release-checksums"
 verifier = "populate_checksums.py"
 
 [download]
-url = "https://github.com/oliver006/redis_exporter/releases/download/v1.54.0/redis_exporter-1.54.0.linux-amd64.tar.gz"
-filename = "redis_exporter-1.54.0.linux-amd64.tar.gz"
+url = "https://github.com/oliver006/redis_exporter/releases/download/v1.82.0/redis_exporter-v1.82.0.linux-amd64.tar.gz"
+filename = "redis_exporter-v1.82.0.linux-amd64.tar.gz"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
-expected_sha256 = "870ca02b568e4df6bbf24555611d6ca98c673071668334f230abeb2fb52c59e3"
+expected_sha256 = "2d98dd0888f46e206bf3ad1b7c1784934a3a39cd8774cf47615f4c15594547cd"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = "https://github.com/oliver006/redis_exporter/releases/download/v1.54.0/sha256sums.txt"
+url = "https://github.com/oliver006/redis_exporter/releases/download/v1.82.0/redis_exporter-v1.82.0.linux-amd64.tar.gz"
 format = "sha256"

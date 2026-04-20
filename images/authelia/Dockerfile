@@ -1,18 +1,18 @@
 # =============================================================================
 # SOVEREIGN HARDENED AUTHELIA
-# Generated from template - Version: 4.38.0
+# Generated from template - Version: 4.39.19
 # Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
-ARG VERSION=4.38.0
+ARG VERSION=4.39.19
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/authelia/authelia/releases/download/v4.38.0/authelia_4.38.0_linux_amd64.tar.gz" -o /authelia.tar.gz && \
+RUN curl -fsSL "https://github.com/authelia/authelia/releases/download/v4.39.19/authelia-v4.39.19-linux-amd64-musl.tar.gz" -o /authelia.tar.gz && \
     tar -xzf /authelia.tar.gz -C / && rm /authelia.tar.gz && chmod +x /authelia 2>/dev/null || \
-    curl -fsSL "https://github.com/authelia/authelia/releases/download/v4.38.0/authelia_4.38.0_linux_amd64.tar.gz" -o /authelia && chmod +x /authelia
+    curl -fsSL "https://github.com/authelia/authelia/releases/download/v4.39.19/authelia-v4.39.19-linux-amd64-musl.tar.gz" -o /authelia && chmod +x /authelia
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/authelia /var/cache/authelia
@@ -30,7 +30,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/authelia", "version"]
 ENTRYPOINT ["/authelia"]
 LABEL org.opencontainers.image.title="authelia" \
-      org.opencontainers.image.version="4.38.0" \
+      org.opencontainers.image.version="4.39.19" \
       org.opencontainers.image.vendor="Authelia" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \

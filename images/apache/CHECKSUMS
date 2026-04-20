@@ -1,0 +1,27 @@
+# CHECKSUMS - apache
+# Generated: 2026-04-20
+# Status: INSTALLED_VIA_APT
+#
+# Apache HTTPD is installed from Debian bookworm apt repository.
+# The source tarball sha256 for reference:
+# https://dlcdn.apache.org/httpd/httpd-2.4.66.tar.gz
+
+[metadata]
+image = "apache"
+version = "2.4.66"
+created = "2026-04-20"
+last_verified = "2026-04-20"
+verification_method = "apt-install"
+verifier = "N/A"
+
+[download]
+url = "https://dlcdn.apache.org/httpd/httpd-2.4.66.tar.gz"
+filename = "httpd-2.4.66.tar.gz"
+
+[checksum]
+expected_sha256 = "442184763b60936471b88a91275f79d2407733b7aac27e345f270e8bc31c3d49"
+note = "Source tarball checksum; Dockerfile installs via apt"
+
+[upstream_checksum]
+url = "https://dlcdn.apache.org/httpd/httpd-2.4.66.tar.gz.sha256"
+format = "sha256"

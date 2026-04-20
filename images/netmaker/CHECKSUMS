@@ -16,22 +16,22 @@
 
 [metadata]
 image = "netmaker"
-version = "0.24.0"
+version = "1.5.1"
 created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
+last_verified = "2026-04-20T04:37:30Z"
+verification_method = "download-verify"
 verifier = "PENDING"
 
 [download]
-url = "https://github.com/gravitl/netmaker/releases/download/v0.24.0/netmaker-0.24.0-linux-amd64.tar.gz"
-filename = "netmaker-0.24.0-linux-amd64.tar.gz"
+url = "https://github.com/gravitl/netmaker/releases/download/v1.5.1/netmaker-linux-amd64"
+filename = "netmaker-linux-amd64"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
 # Leave as "PENDING" until verified
-expected_sha256 = "PENDING"
+expected_sha256 = "4bd005147ae3679fc012c2db7f86e0e74c48cda5c648831b1af20d05d633ba84"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
+url = "https://github.com/gravitl/netmaker/releases/download/v1.5.1/netmaker-linux-amd64"
 format = ""

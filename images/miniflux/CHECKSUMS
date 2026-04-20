@@ -16,22 +16,22 @@
 
 [metadata]
 image = "miniflux"
-version = "2.2.0"
+version = "2.2.19"
 created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
+last_verified = "2026-04-20T04:37:29Z"
+verification_method = "download-verify"
 verifier = "PENDING"
 
 [download]
-url = "https://github.com/miniflux/miniflux/releases/download/v2.2.0/miniflux-2.2.0-linux-amd64.tar.gz"
-filename = "miniflux-2.2.0-linux-amd64.tar.gz"
+url = "https://github.com/miniflux/v2/releases/download/2.2.19/miniflux-linux-amd64"
+filename = "miniflux-linux-amd64"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
 # Leave as "PENDING" until verified
-expected_sha256 = "PENDING"
+expected_sha256 = "aa48d388e4871a7b79ed33c524426a3b87cf04e8386e53edd00cf6b63c1ab7b0"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
+url = "https://github.com/miniflux/v2/releases/download/2.2.19/miniflux-linux-amd64"
 format = ""

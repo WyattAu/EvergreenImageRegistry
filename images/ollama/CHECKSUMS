@@ -16,22 +16,22 @@
 
 [metadata]
 image = "ollama"
-version = "0.3.1"
+version = "0.21.0"
 created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
+last_verified = "2026-04-20T04:37:47Z"
+verification_method = "download-verify"
 verifier = "PENDING"
 
 [download]
-url = "https://github.com/ollama/ollama/releases/download/v0.3.1/ollama-0.3.1-linux-amd64.tar.gz"
-filename = "ollama-0.3.1-linux-amd64.tar.gz"
+url = "https://github.com/ollama/ollama/releases/download/v0.21.0/ollama-linux-amd64.tar.zst"
+filename = "ollama-linux-amd64.tar.zst"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
 # Leave as "PENDING" until verified
-expected_sha256 = "PENDING"
+expected_sha256 = "a7fc4261298aeca8f785f695978a5e997004d414c13d4cfb965a10da9f4db6ea"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
+url = "https://github.com/ollama/ollama/releases/download/v0.21.0/ollama-linux-amd64-rocm.tar.zst"
 format = ""

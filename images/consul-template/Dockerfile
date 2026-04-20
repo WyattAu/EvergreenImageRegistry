@@ -26,7 +26,7 @@ COPY --from=builder /var/log/consul-template /var/log/consul-template
 COPY --from=builder /var/cache/consul-template /var/cache/consul-template
 USER 65534:65534
 WORKDIR /app
-EXPOSE 
+EXPOSE 8500
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/consul-template", "--version"]
 ENTRYPOINT ["/consul-template"]

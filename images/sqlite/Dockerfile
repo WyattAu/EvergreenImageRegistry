@@ -14,7 +14,6 @@ RUN useradd -m -u 65534 -g '' sqlite 2>/dev/null || true
 RUN mkdir -p /app /var/log/sqlite3 /var/cache/sqlite3 && chown -R sqlite:sqlite /app /var/log/sqlite3 /var/cache/sqlite3 2>/dev/null || true
 USER sqlite
 WORKDIR /app
-EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD sqlite3 --version
 ENTRYPOINT ["sqlite3"]

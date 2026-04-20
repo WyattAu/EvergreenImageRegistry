@@ -26,7 +26,6 @@ COPY --from=builder /var/log/kustomize /var/log/kustomize
 COPY --from=builder /var/cache/kustomize /var/cache/kustomize
 USER 65534:65534
 WORKDIR /app
-EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/kustomize", "version"]
 ENTRYPOINT ["/kustomize"]

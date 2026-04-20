@@ -16,22 +16,22 @@
 
 [metadata]
 image = "authelia"
-version = "4.38.0"
+version = "4.39.19"
 created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
+last_verified = "2026-04-20T04:17:36Z"
+verification_method = "download-verify"
 verifier = "PENDING"
 
 [download]
-url = "https://github.com/authelia/authelia/releases/download/v4.38.0/authelia_4.38.0_linux_amd64.tar.gz"
-filename = "authelia_4.38.0_linux_amd64.tar.gz"
+url = "https://github.com/authelia/authelia/releases/download/v4.39.19/authelia-v4.39.19-linux-amd64-musl.tar.gz"
+filename = "authelia-v4.39.19-linux-amd64-musl.tar.gz"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
 # Leave as "PENDING" until verified
-expected_sha256 = "PENDING"
+expected_sha256 = "e5d5cfe71e19c6fe19f68e1d037835fb8bddb36ea764502c4f302c1d238067f5"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
+url = "https://github.com/authelia/authelia/releases/download/v4.39.19/authelia-v4.39.19-linux-amd64-musl.tar.gz"
 format = ""

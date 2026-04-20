@@ -1,10 +1,10 @@
 # =============================================================================
 # SOVEREIGN HARDENED TEKTON
-# Generated from template - Version: 0.64.0
+# Generated from template - Version: latest
 # Constraint: official - Tekton is complex, use official base
 # =============================================================================
 
-ARG VERSION=0.64.0
+ARG VERSION=latest
 ARG BUILD_DATE
 
 FROM ghcr.io/tektoncd/cli:${VERSION}
@@ -18,7 +18,7 @@ USER tekton
 WORKDIR /home/tekton
 
 LABEL org.opencontainers.image.title="tekton" \
-      org.opencontainers.image.version="0.64.0" \
+      org.opencontainers.image.version="latest" \
       org.opencontainers.image.vendor="Tekton" \
       org.opencontainers.image.source="https://github.com/tektoncd/cli" \
       sovereign.image.tier="2" \

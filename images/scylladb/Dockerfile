@@ -9,7 +9,13 @@ ARG VERSION=5.4.6
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends scylla ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl ca-certificates gnupg2 apt-transport-https && \
+    curl -fsSL https://downloads.scylladb.com/deb/scylladb-5.4-apt-source.list -o /etc/apt/sources.list.d/scylladb.list && \
+    curl -fsSL https://downloads.scylladb.com/deb/scylladb.gpg | gpg --dearmor -o /usr/share/keyrings/scylladb.gpg && \
+    sed -i "s|deb \[arch=amd64\] https://downloads.scylladb.com/deb/debian bookworm scylladb-5.4|deb [signed-by=/usr/share/keyrings/scylladb.gpg] https://downloads.scylladb.com/deb/debian bookworm scylladb-5.4|" /etc/apt/sources.list.d/scylladb.list && \
+    apt-get update && apt-get install -y --no-install-recommends scylla && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN useradd -m -u 65534 -g '' scylla 2>/dev/null || true
 RUN mkdir -p /app /var/log/scylla /var/cache/scylla && chown -R scylla:scylla /app /var/log/scylla /var/cache/scylla 2>/dev/null || true
 USER scylla

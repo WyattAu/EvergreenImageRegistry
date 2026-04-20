@@ -26,7 +26,6 @@ COPY --from=builder /var/log/grype /var/log/grype
 COPY --from=builder /var/cache/grype /var/cache/grype
 USER 65534:65534
 WORKDIR /app
-EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/grype", "version"]
 ENTRYPOINT ["/grype"]

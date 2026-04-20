@@ -16,15 +16,15 @@
 
 [metadata]
 image = "bind"
-version = "9.18.24"
+version = "9.21.21"
 created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
+last_verified = "2026-04-20T04:45:32Z"
+verification_method = "download-verify"
 verifier = "PENDING"
 
 [download]
-url = "https://ftp.isc.org/isc/bind9/9.18.24/bind-9.18.24.tar.gz"
-filename = "bind-9.18.24.tar.gz"
+url = "https://ftp.isc.org/isc/bind9/9.21.21/bind-9.21.21.tar.xz"
+filename = "bind-9.21.21.tar.xz"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
@@ -33,5 +33,5 @@ expected_sha256 = "PENDING"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
+url = "https://ftp.isc.org/isc/bind9/9.21.21/bind-9.21.21.tar.xz"
 format = ""

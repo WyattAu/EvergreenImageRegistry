@@ -25,7 +25,7 @@ COPY --from=builder /var/log/cosign /var/log/cosign
 COPY --from=builder /var/cache/cosign /var/cache/cosign
 USER 65534:65534
 WORKDIR /app
-EXPOSE 
+EXPOSE 7879
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/cosign", "version"]
 ENTRYPOINT ["/cosign"]

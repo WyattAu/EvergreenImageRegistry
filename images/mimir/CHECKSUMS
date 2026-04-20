@@ -16,22 +16,22 @@
 
 [metadata]
 image = "mimir"
-version = "2.13.0"
+version = "3.0.5"
 created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
+last_verified = "2026-04-20T04:45:33Z"
+verification_method = "download-verify"
 verifier = "PENDING"
 
 [download]
-url = "https://github.com/grafana/mimir/releases/download/mimir-2.13.0/mimir-linux-amd64-2.13.0.tar.gz"
-filename = "mimir-linux-amd64-2.13.0.tar.gz"
+url = "https://github.com/grafana/mimir/releases/download/mimir-3.0.5/mimir-linux-amd64"
+filename = "mimir-linux-amd64"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
 # Leave as "PENDING" until verified
-expected_sha256 = "PENDING"
+expected_sha256 = "6f131d633244d98c3e68e2484ecb89d6682cf211290aca0dfff342f32f7a3c7f"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
+url = "https://github.com/grafana/mimir/releases/download/mimir-3.0.5/mimir-linux-amd64"
 format = ""

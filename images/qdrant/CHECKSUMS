@@ -16,22 +16,22 @@
 
 [metadata]
 image = "qdrant"
-version = "1.11.4"
+version = "1.17.1"
 created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
+last_verified = "2026-04-20T04:45:30Z"
+verification_method = "download-verify"
 verifier = "PENDING"
 
 [download]
-url = "https://github.com/qdrant/qdrant/releases/download/v1.11.4/qdrant-1.11.4-x86_64-unknown-linux-musl.tar.gz"
-filename = "qdrant-1.11.4-x86_64-unknown-linux-musl.tar.gz"
+url = "https://github.com/qdrant/qdrant/releases/download/v1.17.1/qdrant-x86_64-unknown-linux-gnu.tar.gz"
+filename = "qdrant-x86_64-unknown-linux-gnu.tar.gz"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
 # Leave as "PENDING" until verified
-expected_sha256 = "PENDING"
+expected_sha256 = "318a3b1c548161ad476f9ff70b654787a20fc46685e3e1c2b7dd88b363ef3d58"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
+url = "https://github.com/qdrant/qdrant/releases/download/v1.17.1/qdrant-x86_64-unknown-linux-gnu.tar.gz"
 format = ""

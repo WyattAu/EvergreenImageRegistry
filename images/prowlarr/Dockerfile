@@ -1,10 +1,10 @@
 # =============================================================================
 # SOVEREIGN HARDENED PROWLARR
-# Generated from template - Version: 1.26.0
+# Generated from template - Version: latest
 # Constraint: official - Use official LinuxServer.io base
 # =============================================================================
 
-ARG VERSION=1.26.0
+ARG VERSION=latest
 ARG BUILD_DATE
 
 FROM lscr.io/linuxserver/prowlarr:${VERSION}
@@ -18,7 +18,7 @@ WORKDIR /config
 EXPOSE 9696
 
 LABEL org.opencontainers.image.title="prowlarr" \
-      org.opencontainers.image.version="1.26.0" \
+      org.opencontainers.image.version="latest" \
       org.opencontainers.image.vendor="Prowlarr" \
       org.opencontainers.image.source="https://github.com/Prowlarr/Prowlarr" \
       sovereign.image.tier="2" \

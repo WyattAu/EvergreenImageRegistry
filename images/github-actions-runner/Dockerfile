@@ -14,7 +14,6 @@ RUN useradd -m -u 65534 -g '' runner 2>/dev/null || true
 RUN mkdir -p /app /var/log/run.sh /var/cache/run.sh && chown -R runner:runner /app /var/log/run.sh /var/cache/run.sh 2>/dev/null || true
 USER runner
 WORKDIR /app
-EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ./run.sh --version
 ENTRYPOINT ["run.sh"]

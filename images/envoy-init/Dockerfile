@@ -18,7 +18,7 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 RUN mkdir -p /app /var/log/envoy /var/cache/envoy
 USER nonroot
 WORKDIR /app
-EXPOSE 
+EXPOSE 15001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/envoy", "--version"]
 ENTRYPOINT ["/envoy"]

@@ -1,18 +1,18 @@
 # =============================================================================
 # SOVEREIGN HARDENED QDRANT
-# Generated from template - Version: 1.11.4
+# Generated from template - Version: 1.17.1
 # Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
-ARG VERSION=1.11.4
+ARG VERSION=1.17.1
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/qdrant/qdrant/releases/download/v1.11.4/qdrant-1.11.4-x86_64-unknown-linux-musl.tar.gz" -o /qdrant.tar.gz && \
+RUN curl -fsSL "https://github.com/qdrant/qdrant/releases/download/v1.17.1/qdrant-x86_64-unknown-linux-gnu.tar.gz" -o /qdrant.tar.gz && \
     tar -xzf /qdrant.tar.gz -C / && rm /qdrant.tar.gz && chmod +x /qdrant 2>/dev/null || \
-    curl -fsSL "https://github.com/qdrant/qdrant/releases/download/v1.11.4/qdrant-1.11.4-x86_64-unknown-linux-musl.tar.gz" -o /qdrant && chmod +x /qdrant
+    curl -fsSL "https://github.com/qdrant/qdrant/releases/download/v1.17.1/qdrant-x86_64-unknown-linux-gnu.tar.gz" -o /qdrant && chmod +x /qdrant
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/qdrant /var/cache/qdrant
@@ -30,7 +30,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/qdrant", "--version"]
 ENTRYPOINT ["/qdrant"]
 LABEL org.opencontainers.image.title="qdrant" \
-      org.opencontainers.image.version="1.11.4" \
+      org.opencontainers.image.version="1.17.1" \
       org.opencontainers.image.vendor="Qdrant" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \

@@ -16,22 +16,22 @@
 
 [metadata]
 image = "localai"
-version = "2.0.0"
+version = "4.1.3"
 created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
+last_verified = "2026-04-20T04:45:28Z"
+verification_method = "download-verify"
 verifier = "PENDING"
 
 [download]
-url = "https://github.com/mudler/LocalAI/releases/download/v2.0.0/localai-2.0.0-linux-amd64.tar.gz"
-filename = "localai-2.0.0-linux-amd64.tar.gz"
+url = "https://github.com/mudler/LocalAI/releases/download/v4.1.3/local-ai-v4.1.3-linux-amd64"
+filename = "local-ai-v4.1.3-linux-amd64"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
 # Leave as "PENDING" until verified
-expected_sha256 = "PENDING"
+expected_sha256 = "5632b5ecd4dc0990aa79f5c7ed77cf0c99ecb7841ef8e039e6e665273c7f0913"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
+url = "https://github.com/mudler/LocalAI/releases/download/v4.1.3/local-ai-v4.1.3-linux-amd64"
 format = ""

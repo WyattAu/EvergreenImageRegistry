@@ -9,7 +9,9 @@ ARG VERSION=0.5.0
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends python3 py3-pip ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 python3-pip python3-venv ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN pip3 install --no-cache-dir chromadb==${VERSION}
 RUN useradd -m -u 65534 -g '' chroma 2>/dev/null || true
 RUN mkdir -p /app /var/log/chroma /var/cache/chroma && chown -R chroma:chroma /app /var/log/chroma /var/cache/chroma 2>/dev/null || true
 USER chroma

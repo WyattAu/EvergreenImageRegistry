@@ -25,7 +25,6 @@ COPY --from=builder /var/log/syft /var/log/syft
 COPY --from=builder /var/cache/syft /var/cache/syft
 USER 65534:65534
 WORKDIR /app
-EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/syft", "version"]
 ENTRYPOINT ["/syft"]

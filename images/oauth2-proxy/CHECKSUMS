@@ -16,22 +16,22 @@
 
 [metadata]
 image = "oauth2-proxy"
-version = "7.6.0"
+version = "7.15.2"
 created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
+last_verified = "2026-04-20T04:37:32Z"
+verification_method = "download-verify"
 verifier = "PENDING"
 
 [download]
-url = "https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v7.6.0/oauth2-proxy-7.6.0_linux-amd64.tar.gz"
-filename = "oauth2-proxy-7.6.0_linux-amd64.tar.gz"
+url = "https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v7.15.2/oauth2-proxy-v7.15.2.linux-amd64-sha256sum.txt"
+filename = "oauth2-proxy-v7.15.2.linux-amd64-sha256sum.txt"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
 # Leave as "PENDING" until verified
-expected_sha256 = "PENDING"
+expected_sha256 = "e5a5e95cc06c15c17ad2fcacac3d6d31a6e866198bf1e115f7edb563483f3b47"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
+url = "https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v7.15.2/oauth2-proxy-v7.15.2.linux-amd64-sha256sum.txt"
 format = ""

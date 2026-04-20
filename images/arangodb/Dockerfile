@@ -9,7 +9,12 @@ ARG VERSION=3.12.1
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends arangodb3 ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl ca-certificates gnupg2 && \
+    curl -fsSL https://download.arangodb.com/arangodb312/Release/Linux/Debian_12/Release.key | gpg --dearmor -o /usr/share/keyrings/arangodb.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/arangodb.gpg] https://download.arangodb.com/arangodb312/Release/Linux/Debian_12/ /" > /etc/apt/sources.list.d/arangodb.list && \
+    apt-get update && apt-get install -y --no-install-recommends arangodb3 && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN useradd -m -u 65534 -g '' arangodb 2>/dev/null || true
 RUN mkdir -p /app /var/log/arangod /var/cache/arangod && chown -R arangodb:arangodb /app /var/log/arangod /var/cache/arangod 2>/dev/null || true
 USER arangodb

@@ -26,7 +26,7 @@ COPY --from=builder /var/log/step /var/log/step
 COPY --from=builder /var/cache/step /var/cache/step
 USER 65534:65534
 WORKDIR /app
-EXPOSE 
+EXPOSE 9000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/step", "version"]
 ENTRYPOINT ["/step"]

@@ -14,7 +14,7 @@ RUN useradd -m -u 65534 -g '' python 2>/dev/null || true
 RUN mkdir -p /app /var/log/python /var/cache/python && chown -R python:python /app /var/log/python /var/cache/python 2>/dev/null || true
 USER python
 WORKDIR /app
-EXPOSE 
+EXPOSE 7700
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD python3 --version
 ENTRYPOINT ["python"]

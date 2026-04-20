@@ -181,7 +181,7 @@ jobs:
           done < images.txt
           echo ""
           echo "Hadolint: ${PASSED} passed, ${WARNINGS} warnings, ${ERRORS} errors"
-          [ "$ERRORS" -gt 0 ] && exit 1
+          if [ "$ERRORS" -gt 0 ]; then exit 1; fi
 
       - name: TruffleHog secret scanning
         uses: trufflesecurity/trufflehog@main

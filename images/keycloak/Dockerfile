@@ -12,14 +12,16 @@ FROM cgr.dev/chainguard/wolfi-base:20240415 AS downloader
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 # hadolint ignore=DL3018
 RUN apk add --no-cache openjdk-17 curl ca-certificates
+# hadolint ignore=DL4006
 RUN curl -fsSL "https://github.com/keycloak/keycloak/releases/download/26.0.5/keycloak-26.0.5.tar.gz" -o /keycloak.tar.gz && tar -xzf /keycloak.tar.gz -C / && mv /keycloak-26.0.5 /keycloak && rm /keycloak.tar.gz && \
-    echo "f3290d506f895d9e474e04d8d108290f12ee04b51e044289295c79d696838974  /keycloak.tar.gz" | sha256sum -c - && \
+    echo "f3290d506f895d9e474e04d8d108290f12ee04b51e044289295c79d696838974  /keycloak.tar.gz" | sha256sum -c -
 
-FROM cgr.dev/chainguard/wolfi-base:20240415 AS final
+FROM cgr.dev/chainguard/wolfi-base:20240415 AS runtime
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN addgroup -g 65534 keycloak || true
 RUN adduser -D -u 65534 -G keycloak keycloak || true
 RUN mkdir -p /app /var/log/keycloak /var/cache/keycloak
+# hadolint ignore=DL3023
 COPY --from=downloader /keycloak /app/keycloak
 USER keycloak
 WORKDIR /app

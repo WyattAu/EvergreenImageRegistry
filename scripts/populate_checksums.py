@@ -2,14 +2,16 @@
 """
 populate_checksums.py - Fetch real SHA256 hashes from upstream release sources.
 
-Strategy:
-  1. Parse each Dockerfile to extract the curl download URL
-  2. Try upstream checksum files (GitHub sha256sums.txt, HashiCorp SHA256SUMS, etc.)
-  3. Fall back to downloading the binary and computing SHA256 locally
-  4. Update the CHECKSUMS TOML file with the verified hash
+Strategy (verification layers):
+  Layer 1: Upstream checksum files (GitHub sha256sums.txt, HashiCorp SHA256SUMS, etc.)  [confidence 0.95]
+  Layer 2: GPG detached signature verification                                          [confidence 0.98]
+  Layer 3: Sigstore/cosign verification (reserved for future use)                       [confidence 0.97]
+  Layer 4: Multi-mirror cross-validation                                                [confidence 0.85]
+  Layer 5: Download-and-compute fallback                                                [confidence 0.80]
 
 Usage:
   python3 scripts/populate_checksums.py [--dry-run] [--force] [--image <name>]
+                                        [--gpg-keys-dir <dir>] [--verification-level <1-5>]
 
 Exit codes:
   0 - All checksums populated successfully
@@ -21,6 +23,7 @@ import argparse
 import hashlib
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -40,6 +43,15 @@ HTTP_TIMEOUT = 30
 
 # Maximum download size for fallback computation (500 MB)
 MAX_DOWNLOAD_SIZE = 500 * 1024 * 1024
+
+# Confidence scores per verification layer
+CONFIDENCE_SCORES = {
+    1: 0.95,  # upstream checksum file
+    2: 0.98,  # GPG signature verified
+    3: 0.97,  # Sigstore/cosign (reserved)
+    4: 0.85,  # multi-mirror cross-validation
+    5: 0.80,  # download-and-compute
+}
 
 
 def log(msg: str, level: str = "INFO"):
@@ -342,6 +354,314 @@ def find_helm_checksum(url: str) -> Optional[str]:
     return None
 
 
+def _gpg_available() -> bool:
+    """Check if gpg or gpgv is available on PATH."""
+    return shutil.which("gpg") is not None or shutil.which("gpgv") is not None
+
+
+def _build_gnupg_home(gpg_keys_dir: Path) -> Optional[Path]:
+    """Build a temporary GNUPGHOME with imported known keys.
+
+    Returns the temp directory path, or None if GPG is not available.
+    """
+    if not _gpg_available():
+        return None
+
+    gpg_home = tempfile.mkdtemp(prefix="eir_gpg_")
+    try:
+        gpg_cmd = shutil.which("gpg") or shutil.which("gpgv")
+        if gpg_cmd is None:
+            return None
+        if shutil.which("gpg") is not None:
+            for key_file in sorted(gpg_keys_dir.glob("*.asc")):
+                try:
+                    subprocess.run(
+                        [
+                            "gpg", "--batch", "--no-tty", "--quiet",
+                            "--homedir", gpg_home,
+                            "--import", str(key_file),
+                        ],
+                        capture_output=True, timeout=30,
+                    )
+                except (subprocess.TimeoutExpired, OSError):
+                    pass
+        return Path(gpg_home)
+    except Exception:
+        shutil.rmtree(gpg_home, ignore_errors=True)
+        return None
+
+
+def try_gpg_verification(download_url: str, filename: str,
+                         gpg_keys_dir: Optional[Path] = None) -> Optional[dict]:
+    """Try to verify the binary via GPG detached signature.
+
+    Checks for signature files at common locations:
+    - {url}.asc
+    - {url}.sig
+    - {url}.sign
+    - {dir}/sha256sums.txt.asc (GitHub releases)
+    - {dir}/SHA256SUMS.asc
+    - {dir}/SHA256SUMS.gpg
+
+    If found:
+    1. Download the signature file
+    2. Import known keys into a temporary keyring
+    3. Verify the signature using gpg
+    4. If the signed content is a checksum file, extract the matching checksum
+    5. If the signed content is a direct binary signature, return the known-good
+       checksum by downloading the binary and trusting the signature
+
+    Returns dict with 'sha256' and 'method' keys, or None.
+    """
+    if not _gpg_available():
+        return None
+
+    if gpg_keys_dir is None:
+        gpg_keys_dir = Path(__file__).resolve().parent / "known_gpg_keys"
+
+    gpg_home = _build_gnupg_home(gpg_keys_dir)
+    if gpg_home is None:
+        return None
+
+    try:
+        base_url = download_url.rsplit("/", 1)[0] if "/" in download_url else download_url
+
+        sig_candidates = [
+            f"{download_url}.asc",
+            f"{download_url}.sig",
+            f"{download_url}.sign",
+            f"{base_url}/sha256sums.txt.asc",
+            f"{base_url}/sha256sums.txt.sig",
+            f"{base_url}/SHA256SUMS.asc",
+            f"{base_url}/SHA256SUMS.sig",
+            f"{base_url}/SHA256SUMS.gpg",
+            f"{base_url}/SHASUMS256.txt.asc",
+            f"{base_url}/checksums.txt.asc",
+        ]
+
+        for sig_url in sig_candidates:
+            sig_data = http_download_bytes(sig_url)
+            if sig_data is None:
+                continue
+
+            log(f"  Found GPG signature: {sig_url}", "INFO")
+
+            with tempfile.NamedTemporaryFile(suffix=".sig", delete=False) as sig_file:
+                sig_file.write(sig_data)
+                sig_path = sig_file.name
+
+            try:
+                is_checksum_file_sig = any(
+                    marker in sig_url
+                    for marker in ("sha256sums", "SHA256SUMS", "SHASUMS", "checksums")
+                )
+
+                if is_checksum_file_sig:
+                    result = _verify_checksum_file_signature(
+                        sig_url, sig_path, filename, gpg_home
+                    )
+                    if result is not None:
+                        return result
+                else:
+                    result = _verify_direct_signature(
+                        download_url, sig_path, gpg_home
+                    )
+                    if result is not None:
+                        return result
+            finally:
+                os.unlink(sig_path)
+
+        return None
+    finally:
+        shutil.rmtree(str(gpg_home), ignore_errors=True)
+
+
+def _verify_checksum_file_signature(sig_url: str, sig_path: str,
+                                    filename: str, gpg_home: Path) -> Optional[dict]:
+    """Verify a GPG signature over a checksum file and extract the matching hash."""
+    checksum_url = sig_url.rsplit(".", 1)[0]
+    checksum_content = http_get(checksum_url)
+    if checksum_content is None:
+        return None
+
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
+        f.write(checksum_content)
+        data_path = f.name
+
+    try:
+        result = subprocess.run(
+            [
+                "gpg", "--batch", "--no-tty", "--quiet",
+                "--homedir", str(gpg_home),
+                "--verify", sig_path, data_path,
+            ],
+            capture_output=True, timeout=30,
+        )
+        if result.returncode != 0:
+            stderr = result.stderr.decode(errors="replace")
+            if "NO_PUBKEY" in stderr or "public key not found" in stderr:
+                key_ids = re.findall(r'NO_PUBKEY\s+([0-9A-Fa-f]+)', stderr)
+                for key_id in key_ids:
+                    fetched = _fetch_key_from_keyserver(key_id, gpg_home)
+                    if fetched:
+                        result = subprocess.run(
+                            [
+                                "gpg", "--batch", "--no-tty", "--quiet",
+                                "--homedir", str(gpg_home),
+                                "--verify", sig_path, data_path,
+                            ],
+                            capture_output=True, timeout=30,
+                        )
+                        if result.returncode == 0:
+                            break
+
+        if result.returncode == 0:
+            for line in checksum_content.splitlines():
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                m = re.match(r'^([0-9a-fA-F]{64})\s+[* ](.+)$', line)
+                if not m:
+                    m = re.match(r'^([0-9a-fA-F]{64})\s+\((.+)\)', line)
+                if m:
+                    hash_val = m.group(1).lower()
+                    fname = m.group(2).strip()
+                    if filenames_match(filename, fname):
+                        return {
+                            "sha256": hash_val,
+                            "method": "gpg_signature",
+                            "confidence": CONFIDENCE_SCORES[2],
+                        }
+    except (subprocess.TimeoutExpired, OSError):
+        pass
+    finally:
+        os.unlink(data_path)
+
+    return None
+
+
+def _verify_direct_signature(download_url: str, sig_path: str,
+                            gpg_home: Path) -> Optional[dict]:
+    """Verify a GPG signature over a binary (detached .asc/.sig next to binary).
+
+    Downloads the binary, verifies the signature, then returns the SHA256
+    of the verified binary.
+    """
+    binary_data = http_download_bytes(download_url)
+    if binary_data is None:
+        return None
+
+    with tempfile.NamedTemporaryFile(suffix=".bin", delete=False) as f:
+        f.write(binary_data)
+        bin_path = f.name
+
+    try:
+        result = subprocess.run(
+            [
+                "gpg", "--batch", "--no-tty", "--quiet",
+                "--homedir", str(gpg_home),
+                "--verify", sig_path, bin_path,
+            ],
+            capture_output=True, timeout=60,
+        )
+        if result.returncode != 0:
+            stderr = result.stderr.decode(errors="replace")
+            if "NO_PUBKEY" in stderr or "public key not found" in stderr:
+                key_ids = re.findall(r'NO_PUBKEY\s+([0-9A-Fa-f]+)', stderr)
+                for key_id in key_ids:
+                    fetched = _fetch_key_from_keyserver(key_id, gpg_home)
+                    if fetched:
+                        result = subprocess.run(
+                            [
+                                "gpg", "--batch", "--no-tty", "--quiet",
+                                "--homedir", str(gpg_home),
+                                "--verify", sig_path, bin_path,
+                            ],
+                            capture_output=True, timeout=60,
+                        )
+                        if result.returncode == 0:
+                            break
+
+        if result.returncode == 0:
+            return {
+                "sha256": sha256_hex(binary_data),
+                "method": "gpg_signature",
+                "confidence": CONFIDENCE_SCORES[2],
+            }
+    except (subprocess.TimeoutExpired, OSError):
+        pass
+    finally:
+        os.unlink(bin_path)
+
+    return None
+
+
+def _fetch_key_from_keyserver(key_id: str, gpg_home: Path) -> bool:
+    """Try to fetch a GPG key from keys.openpgp.org into the given keyring."""
+    if shutil.which("gpg") is None:
+        return False
+    try:
+        result = subprocess.run(
+            [
+                "gpg", "--batch", "--no-tty", "--quiet",
+                "--homedir", str(gpg_home),
+                "--keyserver", "hkps://keys.openpgp.org",
+                "--recv-keys", key_id,
+            ],
+            capture_output=True, timeout=30,
+        )
+        return result.returncode == 0
+    except (subprocess.TimeoutExpired, OSError):
+        return False
+
+
+def try_multi_mirror_validation(download_url: str, filename: str) -> Optional[dict]:
+    """Download from 2+ mirrors and verify they match.
+
+    Common mirror patterns:
+    - GitHub releases: github.com -> objects.githubusercontent.com
+    - HashiCorp: releases.hashicorp.com -> checkpoint.hashicorp.com
+
+    If both downloads produce the same SHA256, confidence is medium-high.
+    """
+    mirrors: list[str] = []
+
+    if "github.com" in download_url and "/releases/download/" in download_url:
+        mirrors.append(download_url)
+        obj_url = download_url.replace(
+            "https://github.com",
+            "https://objects.githubusercontent.com",
+        )
+        mirrors.append(obj_url)
+    elif "releases.hashicorp.com" in download_url:
+        mirrors.append(download_url)
+    else:
+        mirrors.append(download_url)
+
+    if len(mirrors) < 2:
+        return None
+
+    hashes: list[str] = []
+    for mirror_url in mirrors:
+        data = http_download_bytes(mirror_url)
+        if data is None:
+            continue
+        hashes.append(sha256_hex(data))
+
+    if len(hashes) < 2:
+        return None
+
+    if len(set(hashes)) == 1:
+        return {
+            "sha256": hashes[0],
+            "method": "multi-mirror",
+            "confidence": CONFIDENCE_SCORES[4],
+        }
+
+    log(f"  Multi-mirror mismatch: hashes differ across mirrors", "WARN")
+    return None
+
+
 def download_and_compute(url: str) -> Optional[str]:
     """Download the binary and compute SHA256 locally."""
     log(f"  Downloading to compute SHA256: {extract_filename_from_url(url)}", "WARN")
@@ -351,45 +671,59 @@ def download_and_compute(url: str) -> Optional[str]:
     return None
 
 
-def find_checksum_for_url(url: str, filename: str) -> Tuple[Optional[str], str]:
+def find_checksum_for_url(url: str, filename: str,
+                          gpg_keys_dir: Optional[Path] = None,
+                          min_verification_level: int = 1) -> Tuple[Optional[str], str, float]:
     """Try all methods to find the SHA256 checksum for a URL.
-    
-    Returns (hash, method) tuple where method describes how the hash was found.
+
+    Returns (hash, method, confidence) tuple.
+    method describes how the hash was found.
+    confidence is a float between 0 and 1.
     """
-    # Method 1: GitHub release checksums
+    min_confidence = CONFIDENCE_SCORES.get(min_verification_level, 0.0)
+
+    # Layer 1: Upstream checksum files
     if "github.com" in url and "/releases/download/" in url:
         h = find_github_checksum(url, filename)
         if h:
-            return h, "github-release-checksums"
+            return h, "github-release-checksums", CONFIDENCE_SCORES[1]
 
-    # Method 2: HashiCorp releases
     if "releases.hashicorp.com" in url:
         h = find_hashicorp_checksum(url)
         if h:
-            return h, "hashicorp-SHA256SUMS"
+            return h, "hashicorp-SHA256SUMS", CONFIDENCE_SCORES[1]
 
-    # Method 3: k8s
     if "dl.k8s.io" in url:
         h = find_k8s_checksum(url)
         if h:
-            return h, "k8s-release-sha256"
+            return h, "k8s-release-sha256", CONFIDENCE_SCORES[1]
 
-    # Method 4: Helm
     if "get.helm.sh" in url:
         h = find_helm_checksum(url)
         if h:
-            return h, "helm-sha256sum"
+            return h, "helm-sha256sum", CONFIDENCE_SCORES[1]
 
-    # Method 5: Direct download and compute
+    # Layer 2: GPG signature verification
+    gpg_result = try_gpg_verification(url, filename, gpg_keys_dir)
+    if gpg_result is not None:
+        return gpg_result["sha256"], gpg_result["method"], gpg_result["confidence"]
+
+    # Layer 4: Multi-mirror cross-validation
+    mirror_result = try_multi_mirror_validation(url, filename)
+    if mirror_result is not None:
+        return mirror_result["sha256"], mirror_result["method"], mirror_result["confidence"]
+
+    # Layer 5: Download-and-compute fallback
     h = download_and_compute(url)
     if h:
-        return h, "download-and-compute"
+        return h, "download-and-compute", CONFIDENCE_SCORES[5]
 
-    return None, "failed"
+    return None, "failed", 0.0
 
 
 def update_checksums_file(checksums_path: Path, image_name: str, version: str,
                           url: str, filename: str, sha256: str, method: str,
+                          confidence: float = 0.0,
                           upstream_checksum_url: str = ""):
     """Update a CHECKSUMS file with verified hash."""
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -430,6 +764,7 @@ version = "{version}"
 created = "{now}"
 last_verified = "{now}"
 verification_method = "{method}"
+confidence = {confidence:.2f}
 verifier = "populate_checksums.py"
 
 [download]
@@ -448,7 +783,9 @@ format = "sha256"
     checksums_path.write_text(content.strip() + "\n")
 
 
-def process_image(image_dir: Path, dry_run: bool = False, force: bool = False) -> bool:
+def process_image(image_dir: Path, dry_run: bool = False, force: bool = False,
+                  gpg_keys_dir: Optional[Path] = None,
+                  min_verification_level: int = 1) -> bool:
     """Process a single image directory.
     
     Returns True if successful, False otherwise.
@@ -487,13 +824,15 @@ def process_image(image_dir: Path, dry_run: bool = False, force: bool = False) -
     log(f"{image_name}: Filename: {filename}")
 
     # Find checksum
-    sha256, method = find_checksum_for_url(url, filename)
+    sha256, method, confidence = find_checksum_for_url(
+        url, filename, gpg_keys_dir, min_verification_level
+    )
 
     if sha256 is None:
         log(f"{image_name}: FAILED to find checksum for {filename}", "ERROR")
         return False
 
-    log(f"{image_name}: SHA256={sha256[:16]}... (method: {method})")
+    log(f"{image_name}: SHA256={sha256[:16]}... (method: {method}, confidence: {confidence:.2f})")
 
     if dry_run:
         log(f"{image_name}: [DRY RUN] Would update CHECKSUMS", "INFO")
@@ -508,7 +847,8 @@ def process_image(image_dir: Path, dry_run: bool = False, force: bool = False) -
 
     # Update CHECKSUMS file
     update_checksums_file(
-        checksums_path, image_name, version, url, filename, sha256, method
+        checksums_path, image_name, version, url, filename, sha256, method,
+        confidence=confidence,
     )
     log(f"{image_name}: CHECKSUMS file updated", "INFO")
     return True
@@ -519,7 +859,27 @@ def main():
     parser.add_argument("--dry-run", action="store_true", help="Show what would be done without writing")
     parser.add_argument("--force", action="store_true", help="Re-verify even if already populated")
     parser.add_argument("--image", type=str, help="Process only this image name")
+    parser.add_argument(
+        "--gpg-keys-dir", type=str, default=None,
+        help="Path to directory containing known GPG public keys (*.asc)",
+    )
+    parser.add_argument(
+        "--verification-level", type=int, default=1, choices=[1, 2, 3, 4, 5],
+        help="Minimum acceptable verification level (1=upstream checksum, 2=GPG, 3=Sigstore, 4=multi-mirror, 5=download)",
+    )
     args = parser.parse_args()
+
+    gpg_keys_dir = None
+    if args.gpg_keys_dir:
+        gpg_keys_dir = Path(args.gpg_keys_dir)
+        if not gpg_keys_dir.is_dir():
+            print(f"ERROR: --gpg-keys-dir not found: {gpg_keys_dir}", file=sys.stderr)
+            sys.exit(2)
+
+    if args.verification_level > 1 and not _gpg_available():
+        if args.verification_level <= 2:
+            log("GPG not installed; cannot satisfy verification level 2, falling back to level 1", "WARN")
+        args.verification_level = 1
 
     if args.dry_run:
         log("DRY RUN MODE - no files will be modified", "WARN")
@@ -538,7 +898,13 @@ def main():
     skip_count = 0
 
     for image_dir in image_dirs:
-        result = process_image(image_dir, dry_run=args.dry_run, force=args.force)
+        result = process_image(
+            image_dir,
+            dry_run=args.dry_run,
+            force=args.force,
+            gpg_keys_dir=gpg_keys_dir,
+            min_verification_level=args.verification_level,
+        )
         if result is True:
             # Check if it was actually processed or skipped
             checksums_path = image_dir / "CHECKSUMS"

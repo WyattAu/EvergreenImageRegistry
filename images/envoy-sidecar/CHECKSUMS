@@ -21,8 +21,8 @@
 image = "envoy-sidecar"
 version = "1.31.0"
 created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
+last_verified = "2026-04-20"
+verification_method = "github_release"
 verifier = "PENDING"
 primary_image = "envoy"
 

@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 FROM gcr.io/distroless/cc-debian12@sha256:af49995f9f06255ca7d955735e5484a92018f4cfe95910952d9aee165cb96940 AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/grafana/grafana/releases/download/11.0.0/grafana-11.0.0.linux-amd64.tar.gz" -o /grafana.tar.gz && \
+RUN curl -fsSL "https://github.com/grafana/grafana/releases/download/v11.0.0/grafana-11.0.0.linux-amd64.tar.gz" -o /grafana.tar.gz && \
     tar -xzf /grafana.tar.gz -C / && rm /grafana.tar.gz && chmod +x /grafana 2>/dev/null || \
-    curl -fsSL "https://github.com/grafana/grafana/releases/download/11.0.0/grafana-11.0.0.linux-amd64.tar.gz" -o /grafana && chmod +x /grafana
+    curl -fsSL "https://github.com/grafana/grafana/releases/download/v11.0.0/grafana-11.0.0.linux-amd64.tar.gz" -o /grafana && chmod +x /grafana
 
 FROM gcr.io/distroless/cc-debian12@sha256:af49995f9f06255ca7d955735e5484a92018f4cfe95910952d9aee165cb96940
 COPY --from=downloader /grafana /grafana

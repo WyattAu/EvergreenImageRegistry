@@ -23,7 +23,7 @@ verification_method = "PENDING"
 verifier = "PENDING"
 
 [download]
-url = "https://github.com/grafana/grafana/releases/download/v11.0.0/grafana-11.0.0.linux-amd64.tar.gz"
+url = "PENDING"
 filename = "grafana-11.0.0.linux-amd64.tar.gz"
 
 [checksum]

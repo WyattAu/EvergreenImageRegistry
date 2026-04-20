@@ -130,6 +130,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Download images list
         uses: actions/download-artifact@v4
@@ -182,10 +184,10 @@ jobs:
           [ "$ERRORS" -gt 0 ] && exit 1
 
       - name: TruffleHog secret scanning
-        uses: trufflehog/trufflehog-action@v3.0.3
+        uses: trufflesecurity/trufflehog@main
         continue-on-error: true
         with:
-          extra_args: --only-verified
+          extra_args: --results=verified,unknown
 
   # ===========================================================================
   # STAGE 3: BUILD - Build images in batches with multi-arch support

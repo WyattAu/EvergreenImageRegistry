@@ -32,5 +32,5 @@ expected_sha256 = "81a8b6ecd5df15a4e0245c811d053f08717ebe6a624759afa56d58dde744e
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = "https://github.com/etcd-io/etcd/releases/download/v3.5.15/sha256sums.txt"
+url = "https://github.com/etcd-io/etcd/releases/download/v3.5.15/SHA256SUMS"
 format = "sha256"

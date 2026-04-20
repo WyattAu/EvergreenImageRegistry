@@ -33,9 +33,9 @@ filename = "envoy-1.31.0.tar.gz"
 [checksum]
 # SHA256 of the downloaded archive/binary
 # Leave as "PENDING" until verified
-expected_sha256 = "PENDING"
+expected_sha256 = "59c34f2ead46e56f647993324faed008a6910f1606ba34d78e77acf5d3ab89c3"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
-format = ""
+url = "https://github.com/envoyproxy/envoy/releases/download/v1.31.0/checksums.txt.asc"
+format = "sha256"

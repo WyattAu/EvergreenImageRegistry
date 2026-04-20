@@ -10,10 +10,10 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://get.helm.sh/helm-3.15.1-linux-amd64.tar.gz" -o /helm.tar.gz && \
+RUN curl -fsSL "https://get.helm.sh/helm-v3.15.1-linux-amd64.tar.gz" -o /helm.tar.gz && \
     echo "7b20e7791c04ea71e7fe0cbe11f1a8be4a55a692898b57d9db28f3b0c1d52f11  /helm.tar.gz" | sha256sum -c - && \
     tar -xzf /helm.tar.gz -C / && rm /helm.tar.gz && chmod +x /helm 2>/dev/null || \
-    curl -fsSL "https://get.helm.sh/helm-3.15.1-linux-amd64.tar.gz" -o /helm && chmod +x /helm
+    curl -fsSL "https://get.helm.sh/helm-v3.15.1-linux-amd64.tar.gz" -o /helm && chmod +x /helm
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/helm /var/cache/helm

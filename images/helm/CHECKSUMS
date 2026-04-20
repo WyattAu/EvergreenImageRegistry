@@ -23,7 +23,7 @@ verification_method = "helm-sha256sum"
 verifier = "populate_checksums.py"
 
 [download]
-url = "https://get.helm.sh/helm-3.15.1-linux-amd64.tar.gz"
+url = "https://get.helm.sh/helm-v3.15.1-linux-amd64.tar.gz"
 filename = "helm-3.15.1-linux-amd64.tar.gz"
 
 [checksum]
@@ -32,5 +32,5 @@ expected_sha256 = "7b20e7791c04ea71e7fe0cbe11f1a8be4a55a692898b57d9db28f3b0c1d52
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = "https://get.helm.sh/helm-3.15.1-linux-amd64.tar.gz.sha256sum"
+url = "https://get.helm.sh/helm-v3.15.1-linux-amd64.tar.gz.sha256sum"
 format = "sha256"

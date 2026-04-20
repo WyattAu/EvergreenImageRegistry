@@ -9,11 +9,14 @@ ARG VERSION=1.21.10
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:20240415 AS downloader
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+# hadolint ignore=DL3018
 RUN apk add --no-cache curl ca-certificates
 RUN curl -fsSL "https://github.com/go-gitea/gitea/releases/download/v1.21.10/gitea-1.21.10-linux-amd64" -o /gitea && chmod +x /gitea 2>/dev/null || true && \
     echo "17eb858f3ef2b7cdb649286e6a9cc050f9d949606327a7d6f27aaba49fc3b492  /gitea" | sha256sum -c - && \
 
-FROM cgr.dev/chainguard/wolfi-base:20240415
+FROM cgr.dev/chainguard/wolfi-base:20240415 AS final
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN adduser -D -u 65534 git 2>/dev/null || true
 RUN mkdir -p /app /var/log/gitea /var/cache/gitea
 USER git

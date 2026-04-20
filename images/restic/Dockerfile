@@ -26,7 +26,6 @@ COPY --from=builder /var/log/restic /var/log/restic
 COPY --from=builder /var/cache/restic /var/cache/restic
 USER 65534:65534
 WORKDIR /app
-EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/restic", "version"]
 ENTRYPOINT ["/restic"]

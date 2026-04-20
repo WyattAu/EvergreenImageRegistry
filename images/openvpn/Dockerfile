@@ -8,11 +8,11 @@
 ARG VERSION=2.6.10
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:20240415 AS downloader
+FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
 RUN apk add --no-cache curl ca-certificates
 RUN curl -fsSL "" -o /openvpn && chmod +x /openvpn 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:20240415
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN adduser -D -u 65534 appuser 2>/dev/null || true
 RUN mkdir -p /app /var/log/openvpn /var/cache/openvpn
 USER appuser

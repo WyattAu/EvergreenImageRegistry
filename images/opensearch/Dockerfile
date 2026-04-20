@@ -9,7 +9,12 @@ ARG VERSION=2.14.0
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends opensearch ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl ca-certificates gnupg2 && \
+    curl -fsSL https://artifacts.opensearch.org/publickeys/opensearch.pgp | gpg --dearmor -o /usr/share/keyrings/opensearch.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/opensearch.gpg] https://artifacts.opensearch.org/releases/bundle/opensearch/2.x/apt stable main" > /etc/apt/sources.list.d/opensearch.list && \
+    apt-get update && apt-get install -y --no-install-recommends opensearch && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN useradd -m -u 65534 -g '' opensearch 2>/dev/null || true
 RUN mkdir -p /app /var/log/opensearch /var/cache/opensearch && chown -R opensearch:opensearch /app /var/log/opensearch /var/cache/opensearch 2>/dev/null || true
 USER opensearch

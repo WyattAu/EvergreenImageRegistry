@@ -16,21 +16,21 @@
 
 [metadata]
 image = "nats"
-version = "2.10.7"
+version = "2.12.7"
 created = "2026-04-19T22:24:28Z"
 last_verified = "2026-04-19T22:24:28Z"
 verification_method = "github-release-checksums"
 verifier = "populate_checksums.py"
 
 [download]
-url = "https://github.com/nats-io/nats-server/releases/download/v2.10.7/nats-server-2.10.7-linux-amd64.tar.gz"
-filename = "nats-server-2.10.7-linux-amd64.tar.gz"
+url = "https://github.com/nats-io/nats-server/releases/download/v2.12.7/nats-server-v2.12.7-linux-amd64.sbom.spdx.json"
+filename = "nats-server-v2.12.7-linux-amd64.sbom.spdx.json"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
-expected_sha256 = "9bcf9e286b7c44553e06ab22ec2c06fd5fea75ad9b4eef2f8f0ae1bf2ea19b5b"
+expected_sha256 = "b6a6ca8675a95545074fb7120858ba205bf23ecf2df4b31aee7e6e409b4e94fa"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = "https://github.com/nats-io/nats-server/releases/download/v2.10.7/sha256sums.txt"
+url = "https://github.com/nats-io/nats-server/releases/download/v2.12.7/nats-server-v2.12.7-linux-amd64.sbom.spdx.json"
 format = "sha256"

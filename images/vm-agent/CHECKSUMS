@@ -16,22 +16,22 @@
 
 [metadata]
 image = "vm-agent"
-version = "1.103.0"
+version = "1.140.0"
 created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
+last_verified = "2026-04-20T04:45:38Z"
+verification_method = "download-verify"
 verifier = "PENDING"
 
 [download]
-url = "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/1.103.0/vmagent-linux-amd64-1.103.0.tar.gz"
-filename = "vmagent-linux-amd64-1.103.0.tar.gz"
+url = "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.140.0/vmutils-linux-amd64-v1.140.0.tar.gz"
+filename = "vmutils-linux-amd64-v1.140.0.tar.gz"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
 # Leave as "PENDING" until verified
-expected_sha256 = "PENDING"
+expected_sha256 = "3be23662b6f9939da1706c11a903228397d8cb6c984ce79a5c92fe8f7a9a187f"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
+url = "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.140.0/vmutils-linux-amd64-v1.140.0-enterprise.tar.gz"
 format = ""

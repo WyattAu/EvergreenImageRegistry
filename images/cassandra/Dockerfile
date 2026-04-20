@@ -9,7 +9,12 @@ ARG VERSION=4.1.4
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends cassandra ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    openjdk-17-jre-headless curl ca-certificates gnupg2 && \
+    curl -fsSL https://downloads.apache.org/cassandra/KEYS | gpg --dearmor -o /usr/share/keyrings/cassandra.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/cassandra.gpg] http://www.apache.org/dist/cassandra/debian 41x main" > /etc/apt/sources.list.d/cassandra.list && \
+    apt-get update && apt-get install -y --no-install-recommends cassandra && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN useradd -m -u 65534 -g '' cassandra 2>/dev/null || true
 RUN mkdir -p /app /var/log/cassandra /var/cache/cassandra && chown -R cassandra:cassandra /app /var/log/cassandra /var/cache/cassandra 2>/dev/null || true
 USER cassandra

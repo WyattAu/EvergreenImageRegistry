@@ -1,11 +1,11 @@
 # =============================================================================
 # SOVEREIGN HARDENED FOCALBOARD
-# Generated from template - Version: 7.8.0
+# Generated from template - Version: 8.0.0
 # Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
-ARG VERSION=7.8.0
+ARG VERSION=8.0.0
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
@@ -30,7 +30,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/focalboard-server", "--version"]
 ENTRYPOINT ["/focalboard-server"]
 LABEL org.opencontainers.image.title="focalboard" \
-      org.opencontainers.image.version="7.8.0" \
+      org.opencontainers.image.version="8.0.0" \
       org.opencontainers.image.vendor="Focalboard" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \

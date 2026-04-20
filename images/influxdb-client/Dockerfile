@@ -25,7 +25,7 @@ COPY --from=builder /var/log/influx /var/log/influx
 COPY --from=builder /var/cache/influx /var/cache/influx
 USER 65534:65534
 WORKDIR /app
-EXPOSE 
+EXPOSE 8086
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/influx", "version"]
 ENTRYPOINT ["/influx"]

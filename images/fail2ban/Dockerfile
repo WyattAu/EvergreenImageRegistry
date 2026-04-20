@@ -14,7 +14,7 @@ RUN useradd -m -u 65534 -g '' appuser 2>/dev/null || true
 RUN mkdir -p /app /var/log/fail2ban /var/cache/fail2ban && chown -R appuser:appuser /app /var/log/fail2ban /var/cache/fail2ban 2>/dev/null || true
 USER appuser
 WORKDIR /app
-EXPOSE 
+EXPOSE 22
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD fail2ban-client status
 ENTRYPOINT ["fail2ban"]

@@ -8,12 +8,12 @@
 ARG VERSION=10.11.14
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:20240415 AS downloader
+FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
 RUN apk add --no-cache curl ca-certificates
 RUN curl -fsSL "https://github.com/mattermost/mattermost/releases/download/v${VERSION}/mattermost-${VERSION}-linux-amd64.tar.gz" -o /mattermost.tar.gz && \
     tar -xzf /mattermost.tar.gz -C / && rm /mattermost.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:20240415
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN addgroup -g 65534 mattermost || true
 RUN adduser -D -u 65534 -G mattermost mattermost || true
 RUN mkdir -p /app /var/log/mattermost /var/cache/mattermost

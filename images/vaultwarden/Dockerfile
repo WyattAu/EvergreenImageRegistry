@@ -9,7 +9,11 @@ ARG VERSION=2024.4.1
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends vaultwarden ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/dani-garcia/vaultwarden/releases/download/${VERSION}/vaultwarden-${VERSION}-linux-amd64.tar.gz" -o /tmp/vaultwarden.tar.gz && \
+    tar -xzf /tmp/vaultwarden.tar.gz -C /usr/local/bin && rm /tmp/vaultwarden.tar.gz && \
+    chmod +x /usr/local/bin/vaultwarden
 RUN useradd -m -u 65534 -g '' vaultwarden 2>/dev/null || true
 RUN mkdir -p /app /var/log/vaultwarden /var/cache/vaultwarden && chown -R vaultwarden:vaultwarden /app /var/log/vaultwarden /var/cache/vaultwarden 2>/dev/null || true
 USER vaultwarden

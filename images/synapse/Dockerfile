@@ -8,12 +8,12 @@
 ARG VERSION=1.113.0
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:20240415 AS downloader
+FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
 RUN apk add --no-cache curl ca-certificates python3 py3-pip
 RUN curl -fsSL "https://github.com/matrix-org/synapse/releases/download/v${VERSION}/synapse_py3.tar.gz" -o /synapse.tar.gz && \
     tar -xzf /synapse.tar.gz -C / && rm /synapse.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:20240415
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache python3 py3-pip
 RUN addgroup -g 65534 synapse || true
 RUN adduser -D -u 65534 -G synapse synapse || true

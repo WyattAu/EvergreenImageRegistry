@@ -16,22 +16,22 @@
 
 [metadata]
 image = "dashy"
-version = "2.1.1"
+version = "3.3.0"
 created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
+last_verified = "2026-04-20T04:45:23Z"
+verification_method = "download-verify"
 verifier = "PENDING"
 
 [download]
-url = "https://github.com/Lissy93/dashy/releases/download/v2.1.1/dashy-2.1.1-linux-x86_64.tar.gz"
-filename = "dashy-2.1.1-linux-x86_64.tar.gz"
+url = "https://github.com/Lissy93/dashy/releases/download/3.3.0/dashy-3.3.0.tar.gz"
+filename = "dashy-3.3.0.tar.gz"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
 # Leave as "PENDING" until verified
-expected_sha256 = "PENDING"
+expected_sha256 = "c53af4028c588d561e2e366f384615d4a26eb8515864945a5400b31edfd149b3"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
+url = "https://github.com/Lissy93/dashy/releases/download/3.3.0/dashy-3.3.0.tar.gz"
 format = ""

@@ -1,19 +1,19 @@
 # =============================================================================
 # SOVEREIGN HARDENED REDIS-EXPORTER
-# Generated from template - Version: 1.54.0
+# Generated from template - Version: 1.82.0
 # Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
-ARG VERSION=1.54.0
+ARG VERSION=1.82.0
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/oliver006/redis_exporter/releases/download/v1.54.0/redis_exporter-1.54.0.linux-amd64.tar.gz" -o /redis_exporter.tar.gz && \
+RUN curl -fsSL "https://github.com/oliver006/redis_exporter/releases/download/v1.82.0/redis_exporter-v1.82.0.linux-amd64.tar.gz" -o /redis_exporter.tar.gz && \
     echo "870ca02b568e4df6bbf24555611d6ca98c673071668334f230abeb2fb52c59e3  /redis_exporter.tar.gz" | sha256sum -c - && \
     tar -xzf /redis_exporter.tar.gz -C / && rm /redis_exporter.tar.gz && chmod +x /redis_exporter 2>/dev/null || \
-    curl -fsSL "https://github.com/oliver006/redis_exporter/releases/download/v1.54.0/redis_exporter-1.54.0.linux-amd64.tar.gz" -o /redis_exporter && chmod +x /redis_exporter
+    curl -fsSL "https://github.com/oliver006/redis_exporter/releases/download/v1.82.0/redis_exporter-v1.82.0.linux-amd64.tar.gz" -o /redis_exporter && chmod +x /redis_exporter
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/redis_exporter /var/cache/redis_exporter
@@ -31,7 +31,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/redis_exporter", "--version"]
 ENTRYPOINT ["/redis_exporter"]
 LABEL org.opencontainers.image.title="redis-exporter" \
-      org.opencontainers.image.version="1.54.0" \
+      org.opencontainers.image.version="1.82.0" \
       org.opencontainers.image.vendor="Prometheus" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \

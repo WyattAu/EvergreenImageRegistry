@@ -16,15 +16,15 @@
 
 [metadata]
 image = "pairdrop"
-version = "1.6.0"
+version = "1.11.2"
 created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
+last_verified = "2026-04-20T04:45:41Z"
+verification_method = "download-verify"
 verifier = "PENDING"
 
 [download]
-url = "https://github.com/schmich/pairdrop/releases/download/v1.6.0/pairdrop-1.6.0-linux-amd64.tar.gz"
-filename = "pairdrop-1.6.0-linux-amd64.tar.gz"
+url = "https://github.com/schlagmichdoch/PairDrop/releases/download/v1.11.2/pairdrop-cli.zip"
+filename = "pairdrop-cli.zip"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
@@ -33,5 +33,5 @@ expected_sha256 = "PENDING"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
+url = "https://github.com/schlagmichdoch/PairDrop/releases/download/v1.11.2/pairdrop-cli.zip"
 format = ""

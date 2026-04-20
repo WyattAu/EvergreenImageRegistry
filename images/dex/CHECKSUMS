@@ -1,37 +1,26 @@
 # CHECKSUMS - dex
-# Generated: 2026-04-19
-# Status: PENDING_VERIFICATION
+# Generated: 2026-04-20
+# Status: BUILT_FROM_SOURCE
 #
-# IMPORTANT: These checksums must be verified before use.
-# Method: Download the binary on an air-gapped machine, compute SHA256,
-# then compare against upstream checksum file if available.
-#
-# Update protocol:
-# 1. Download binary from URL
-# 2. Compute: sha256sum <file>
-# 3. Compare with upstream sha256sums.txt if available
-# 4. Cross-validate with second team member
-# 5. Update EXPECTED_SHA256 below
-# 6. Submit PR with CHECKSUMS update
+# Dex does not publish pre-built binaries.
+# Built from Go source using `go install github.com/dexidp/dex/cmd/dex@v2.45.1`
 
 [metadata]
 image = "dex"
-version = "2.40.0"
-created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
-verifier = "PENDING"
+version = "2.45.1"
+created = "2026-04-20"
+last_verified = "2026-04-20"
+verification_method = "go-install"
+verifier = "N/A"
 
 [download]
-url = "https://github.com/dexidp/dex/releases/download/v2.40.0/dex-2.40.0-linux-amd64.tar.gz"
-filename = "dex-2.40.0-linux-amd64.tar.gz"
+url = "module://github.com/dexidp/dex/cmd/dex"
+filename = "dex"
 
 [checksum]
-# SHA256 of the downloaded archive/binary
-# Leave as "PENDING" until verified
-expected_sha256 = "PENDING"
+expected_sha256 = "N/A"
+note = "Built from source - checksum varies per build"
 
 [upstream_checksum]
-# If upstream provides a checksum file, note the URL here
 url = ""
 format = ""

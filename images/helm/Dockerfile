@@ -26,7 +26,6 @@ COPY --from=builder /var/log/helm /var/log/helm
 COPY --from=builder /var/cache/helm /var/cache/helm
 USER 65534:65534
 WORKDIR /app
-EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/helm", "version"]
 ENTRYPOINT ["/helm"]

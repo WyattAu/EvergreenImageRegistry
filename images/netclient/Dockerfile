@@ -8,17 +8,16 @@
 ARG VERSION=0.24.0
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:20240415 AS downloader
+FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
 RUN apk add --no-cache curl ca-certificates
 RUN curl -fsSL "" -o /netclient && chmod +x /netclient 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:20240415
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN adduser -D -u 65534 appuser 2>/dev/null || true
 RUN mkdir -p /app /var/log/netclient /var/cache/netclient
 USER appuser
 WORKDIR /app
 COPY --from=downloader /netclient /usr/local/bin/netclient
-EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD /usr/local/bin/netclient --version
 ENTRYPOINT ["/usr/local/bin/netclient"]

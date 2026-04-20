@@ -1,18 +1,18 @@
 # =============================================================================
 # SOVEREIGN HARDENED IT-TOOLS
-# Generated from template - Version: 2024.4.1
+# Generated from template - Version: 2024.10.22-7ca5933
 # Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
-ARG VERSION=2024.4.1
+ARG VERSION=2024.10.22-7ca5933
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/CorentinTh/it-tools/releases/download/v2024.4.1/it-tools-2024.4.1-linux-amd64.tar.gz" -o /it-tools.tar.gz && \
+RUN curl -fsSL "https://github.com/CorentinTh/it-tools/releases/download/v2024.10.22-7ca5933/it-tools-2024.10.22-7ca5933.zip" -o /it-tools.tar.gz && \
     tar -xzf /it-tools.tar.gz -C / && rm /it-tools.tar.gz && chmod +x /it-tools 2>/dev/null || \
-    curl -fsSL "https://github.com/CorentinTh/it-tools/releases/download/v2024.4.1/it-tools-2024.4.1-linux-amd64.tar.gz" -o /it-tools && chmod +x /it-tools
+    curl -fsSL "https://github.com/CorentinTh/it-tools/releases/download/v2024.10.22-7ca5933/it-tools-2024.10.22-7ca5933.zip" -o /it-tools && chmod +x /it-tools
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/it-tools /var/cache/it-tools
@@ -30,7 +30,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/it-tools", "--version"]
 ENTRYPOINT ["/it-tools"]
 LABEL org.opencontainers.image.title="it-tools" \
-      org.opencontainers.image.version="2024.4.1" \
+      org.opencontainers.image.version="2024.10.22-7ca5933" \
       org.opencontainers.image.vendor="IT-Tools" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \

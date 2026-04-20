@@ -9,7 +9,12 @@ ARG VERSION=7.6.1
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends couchbase-server ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl ca-certificates gnupg2 wget && \
+    wget -qO- https://packages.couchbase.com/ubuntu/couchbase.key | gpg --dearmor -o /usr/share/keyrings/couchbase.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/couchbase.gpg] https://packages.couchbase.com/debian jammy jammy/main" > /etc/apt/sources.list.d/couchbase.list && \
+    apt-get update && apt-get install -y --no-install-recommends couchbase-server && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN useradd -m -u 65534 -g '' couchbase 2>/dev/null || true
 RUN mkdir -p /app /var/log/couchbase-server /var/cache/couchbase-server && chown -R couchbase:couchbase /app /var/log/couchbase-server /var/cache/couchbase-server 2>/dev/null || true
 USER couchbase

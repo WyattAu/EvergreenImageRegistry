@@ -25,7 +25,6 @@ COPY --from=builder /var/log/trivy /var/log/trivy
 COPY --from=builder /var/cache/trivy /var/cache/trivy
 USER 65534:65534
 WORKDIR /app
-EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/trivy", "--version"]
 ENTRYPOINT ["/trivy"]

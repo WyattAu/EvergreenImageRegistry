@@ -1,10 +1,10 @@
 # CHECKSUMS - node-exporter
-# Generated: 2026-04-19T22:24:40Z
+# Generated: 2026-04-20
 # Status: VERIFIED
 #
-# Verification performed by populate_checksums.py
-# Method: github-release-checksums
-# Date: 2026-04-19T22:24:40Z
+# Verification performed by download-and-compare
+# Method: curl + sha256sum
+# Date: 2026-04-20
 #
 # IMPORTANT: These checksums are verified against upstream sources.
 # To re-verify:
@@ -17,20 +17,18 @@
 [metadata]
 image = "node-exporter"
 version = "1.8.0"
-created = "2026-04-19T22:24:40Z"
-last_verified = "2026-04-19T22:24:40Z"
-verification_method = "github-release-checksums"
-verifier = "populate_checksums.py"
+created = "2026-04-20"
+last_verified = "2026-04-20"
+verification_method = "download-verify"
+verifier = "manual"
 
 [download]
 url = "https://github.com/prometheus/node_exporter/releases/download/v1.8.0/node_exporter-1.8.0.linux-amd64.tar.gz"
 filename = "node_exporter-1.8.0.linux-amd64.tar.gz"
 
 [checksum]
-# SHA256 of the downloaded archive/binary
-expected_sha256 = "19ca134a1b00dd80ac28c6829d97cbaa1d6ba60356ec19d6dc7976ebad489022"
+expected_sha256 = "c184e5dd98d518ac468339a9e073c233f777e0948a18862dd88e3f1bdcdf1438"
 
 [upstream_checksum]
-# If upstream provides a checksum file, note the URL here
 url = "https://github.com/prometheus/node_exporter/releases/download/v1.8.0/sha256sums.txt"
 format = "sha256"

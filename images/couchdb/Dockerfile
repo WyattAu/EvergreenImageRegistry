@@ -9,7 +9,12 @@ ARG VERSION=3.3.3
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends couchdb ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl ca-certificates gnupg2 && \
+    curl -fsSL https://couchdb.apache.org/repo/keys.asc | gpg --dearmor -o /usr/share/keyrings/couchdb.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/couchdb.gpg] https://apache.jfrog.io/artifactory/couchdb-deb/ jammy main" > /etc/apt/sources.list.d/couchdb.list && \
+    apt-get update && apt-get install -y --no-install-recommends couchdb && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN useradd -m -u 65534 -g '' couchdb 2>/dev/null || true
 RUN mkdir -p /app /var/log/couchdb /var/cache/couchdb && chown -R couchdb:couchdb /app /var/log/couchdb /var/cache/couchdb 2>/dev/null || true
 USER couchdb

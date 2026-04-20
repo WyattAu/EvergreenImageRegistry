@@ -26,7 +26,6 @@ COPY --from=builder /var/log/kubectl /var/log/kubectl
 COPY --from=builder /var/cache/kubectl /var/cache/kubectl
 USER 65534:65534
 WORKDIR /app
-EXPOSE 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/kubectl", "version", "--client"]
 ENTRYPOINT ["/kubectl"]

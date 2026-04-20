@@ -16,15 +16,15 @@
 
 [metadata]
 image = "s3"
-version = "2024.5.28"
+version = "RELEASE.2025-10-15T17-29-55Z"
 created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
+last_verified = "2026-04-20T04:45:36Z"
+verification_method = "download-verify"
 verifier = "PENDING"
 
 [download]
-url = "https://github.com/minio/minio/releases/download/2024.5.28/minio-2024.5.28-linux-amd64"
-filename = "minio-2024.5.28-linux-amd64"
+url = "https://dl.min.io/server/minio/release/linux-amd64/minio"
+filename = "minio"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
@@ -33,5 +33,5 @@ expected_sha256 = "PENDING"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
+url = "https://dl.min.io/server/minio/release/linux-amd64/minio"
 format = ""

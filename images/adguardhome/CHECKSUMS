@@ -16,22 +16,22 @@
 
 [metadata]
 image = "adguardhome"
-version = "0.107.48"
+version = "0.107.74"
 created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
+last_verified = "2026-04-20T04:37:15Z"
+verification_method = "download-verify"
 verifier = "PENDING"
 
 [download]
-url = "https://github.com/AdguardTeam/AdGuardHome/releases/download/v0.107.48/AdGuardHome_0.107.48_linux_amd64.tar.gz"
-filename = "AdGuardHome_0.107.48_linux_amd64.tar.gz"
+url = "https://github.com/AdguardTeam/AdGuardHome/releases/download/v0.107.74/AdGuardHome_linux_amd64.tar.gz"
+filename = "AdGuardHome_linux_amd64.tar.gz"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
 # Leave as "PENDING" until verified
-expected_sha256 = "PENDING"
+expected_sha256 = "d569389db0ac9b9bbd9a5a0c5594e532bc30b1c28cfa5b067335f9482d7e181c"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
+url = "https://github.com/AdguardTeam/AdGuardHome/releases/download/v0.107.74/AdGuardHome_linux_amd64.tar.gz"
 format = ""

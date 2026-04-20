@@ -25,7 +25,7 @@ COPY --from=builder /var/log/rclone /var/log/rclone
 COPY --from=builder /var/cache/rclone /var/cache/rclone
 USER 65534:65534
 WORKDIR /app
-EXPOSE 
+EXPOSE 5572
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/rclone", "version"]
 ENTRYPOINT ["/rclone"]

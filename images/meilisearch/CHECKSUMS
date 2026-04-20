@@ -16,22 +16,22 @@
 
 [metadata]
 image = "meilisearch"
-version = "1.7.3"
+version = "1.42.1"
 created = "2026-04-19"
-last_verified = "PENDING"
-verification_method = "PENDING"
+last_verified = "2026-04-20T04:37:27Z"
+verification_method = "download-verify"
 verifier = "PENDING"
 
 [download]
-url = "https://github.com/meilisearch/meilisearch/releases/download/v1.7.3/meilisearch-1.7.3-linux-amd64.tar.gz"
-filename = "meilisearch-1.7.3-linux-amd64.tar.gz"
+url = "https://github.com/meilisearch/meilisearch/releases/download/v1.42.1/meilisearch-enterprise-linux-amd64"
+filename = "meilisearch-enterprise-linux-amd64"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
 # Leave as "PENDING" until verified
-expected_sha256 = "PENDING"
+expected_sha256 = "4ff9a43e0ccd5bd61efaaa37bd42b2a9fc349d2b6d80e1488810019701104162"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
+url = "https://github.com/meilisearch/meilisearch/releases/download/v1.42.1/meilisearch-enterprise-linux-amd64"
 format = ""

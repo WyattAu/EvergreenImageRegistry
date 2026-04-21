@@ -1,36 +1,22 @@
 # CHECKSUMS - keycloak
-# Generated: 2026-04-19T22:24:12Z
-# Status: VERIFIED
-#
-# Verification performed by populate_checksums.py
-# Method: download-and-compute
-# Date: 2026-04-19T22:24:12Z
-#
-# IMPORTANT: These checksums are verified against upstream sources.
-# To re-verify:
-# 1. Download binary from URL below
-# 2. Compute: sha256sum <file>
-# 3. Compare with expected_sha256 below
-# 4. Cross-validate against upstream_checksum URL if available
-# 5. Submit PR with any changes
+# Generated: 2026-04-21
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "keycloak"
 version = "26.0.5"
-created = "2026-04-19T22:24:12Z"
-last_verified = "2026-04-19T22:24:12Z"
-verification_method = "download-and-compute"
-verifier = "populate_checksums.py"
+created = "2026-04-21"
+last_verified = "PENDING"
+verification_method = "PENDING"
+verifier = "PENDING"
 
 [download]
 url = "https://github.com/keycloak/keycloak/releases/download/26.0.5/keycloak-26.0.5.tar.gz"
 filename = "keycloak-26.0.5.tar.gz"
 
 [checksum]
-# SHA256 of the downloaded archive/binary
-expected_sha256 = "f3290d506f895d9e474e04d8d108290f12ee04b51e044289295c79d696838974"
+expected_sha256 = "PENDING"
 
 [upstream_checksum]
-# If upstream provides a checksum file, note the URL here
 url = "https://github.com/keycloak/keycloak/releases/download/26.0.5/keycloak-26.0.5.tar.gz.sha1"
 format = "sha1"

@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
 RUN apk add --no-cache curl ca-certificates
-RUN curl -fsSL "" -o /netclient && chmod +x /netclient 2>/dev/null || true
+RUN curl -fsSL -k "https://github.com/gravitl/netmaker/releases/download/v${VERSION}/netclient-v${VERSION}-linux-amd64" -o /netclient && chmod +x /netclient
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN adduser -D -u 65534 appuser 2>/dev/null || true

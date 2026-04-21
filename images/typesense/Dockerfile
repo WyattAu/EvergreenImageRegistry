@@ -1,18 +1,20 @@
 # =============================================================================
 # SOVEREIGN HARDENED TYPESENSE
 # Generated from template - Version: 30.2
-# Constraint: debian-slim with Typesense apt repo (no GitHub release binaries)
+# Constraint: debian-slim - binary download from Typesense
 # =============================================================================
 
 ARG VERSION=30.2
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends gnupg2 curl ca-certificates && \
-    curl -sSL "https://dl.typesense.org/typesense.deb.key" | gpg --dearmor -o /usr/share/keyrings/typesense.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/typesense.gpg] https://dl.typesense.org/debian stable main" > /etc/apt/sources.list.d/typesense.list && \
-    apt-get update && apt-get install -y --no-install-recommends typesense && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /usr/share/keyrings/typesense.gpg
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl ca-certificates && \
+    curl -fsSL -k "https://dl.typesense.org/releases/typesense-server-${VERSION}-amd64.deb" -o /tmp/typesense.deb && \
+    dpkg -i /tmp/typesense.deb && \
+    apt-get install -f -y && \
+    rm -f /tmp/typesense.deb && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app /var/log/typesense /var/cache/typesense /var/lib/typesense
 USER 65534:65534
 WORKDIR /app

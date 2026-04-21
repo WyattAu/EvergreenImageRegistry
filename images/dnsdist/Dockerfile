@@ -1,14 +1,15 @@
 # =============================================================================
 # SOVEREIGN HARDENED DNSDIST
 # Generated from template - Version: 1.9.6
-# Constraint: debian-slim with PowerDNS apt repo (no pre-built binaries)
+# Constraint: debian-slim - binary download from PowerDNS
 # =============================================================================
 
 ARG VERSION=1.9.6
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends gnupg2 curl && \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl ca-certificates gnupg2 && \
     curl -sSL https://repo.powerdns.com/CBC8B38D-pub.asc | gpg --dearmor -o /usr/share/keyrings/dnsdist.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/dnsdist.gpg] http://repo.powerdns.com/debian bookworm-dnsdist-main" > /etc/apt/sources.list.d/dnsdist.list && \
     apt-get update && apt-get install -y --no-install-recommends dnsdist && \

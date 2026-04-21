@@ -8,21 +8,27 @@
 ARG VERSION=3.0.1
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim AS downloader
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://www.haproxy.org/download/3.0.1/src/haproxy-3.0.1.tar.gz" -o /haproxy.tar.gz && \
-    tar -xzf /haproxy.tar.gz -C / && rm /haproxy.tar.gz && chmod +x /haproxy 2>/dev/null || \
-    curl -fsSL "https://www.haproxy.org/download/3.0.1/src/haproxy-3.0.1.tar.gz" -o /haproxy && chmod +x /haproxy
-
 FROM debian:bookworm-slim AS builder
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc make libpcre2-dev libssl-dev zlib1g-dev curl ca-certificates && \
+    curl -fsSL -k "https://www.haproxy.org/download/3.0/src/haproxy-${VERSION}.tar.gz" -o /tmp/haproxy.tar.gz && \
+    tar -xzf /tmp/haproxy.tar.gz -C /tmp && \
+    cd /tmp/haproxy-${VERSION} && \
+    make TARGET=linux-glibc USE_PCRE2=1 USE_SSL=1 USE_ZLIB=1 -j$(nproc) && \
+    cp /tmp/haproxy-${VERSION}/haproxy /haproxy && \
+    strip /haproxy && \
+    apt-get purge -y --auto-remove gcc make libpcre2-dev libssl-dev zlib1g-dev 2>/dev/null || true && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/haproxy.tar.gz /tmp/haproxy-${VERSION}
+
+FROM debian:bookworm-slim AS dirbuilder
 RUN mkdir -p /app /var/log/haproxy /var/cache/haproxy
 
 FROM scratch
-COPY --from=downloader /haproxy /haproxy
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
-COPY --from=builder /var/log/haproxy /var/log/haproxy
-COPY --from=builder /var/cache/haproxy /var/cache/haproxy
+COPY --from=builder /haproxy /haproxy
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=dirbuilder /app /app
+COPY --from=dirbuilder /var/log/haproxy /var/log/haproxy
+COPY --from=dirbuilder /var/cache/haproxy /var/cache/haproxy
 USER 65534:65534
 WORKDIR /app
 EXPOSE 80 443

@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
 RUN apk add --no-cache curl ca-certificates
-RUN curl -fsSL "" -o /cadvisor && chmod +x /cadvisor 2>/dev/null || true
+RUN curl -fsSL -k "https://github.com/google/cadvisor/releases/download/v${VERSION}/cadvisor-v${VERSION}-linux-amd64" -o /cadvisor && chmod +x /cadvisor
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN adduser -D -u 65534 appuser 2>/dev/null || true

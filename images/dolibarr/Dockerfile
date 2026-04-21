@@ -1,11 +1,11 @@
 # =============================================================================
 # SOVEREIGN HARDENED DOLIBARR
-# Generated from template - Version: 19.0.2
+# Generated from template - Version: 23.0.2
 # Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=19.0.2
+ARG VERSION=23.0.2
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim
@@ -27,7 +27,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD curl -sf http://localhost:80
 ENTRYPOINT ["php"]
 LABEL org.opencontainers.image.title="dolibarr" \
-      org.opencontainers.image.version="19.0.2" \
+      org.opencontainers.image.version="23.0.2" \
       org.opencontainers.image.vendor="Dolibarr" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \

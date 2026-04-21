@@ -1,18 +1,18 @@
 # =============================================================================
 # SOVEREIGN HARDENED TRIVY
-# Generated from template - Version: 0.53.0
+# Generated from template - Version: 0.70.0
 # Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
-ARG VERSION=0.53.0
+ARG VERSION=0.70.0
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/aquasecurity/trivy/releases/download/v0.53.0/trivy_0.53.0_linux_amd64.tar.gz" -o /trivy.tar.gz && \
+RUN curl -fsSL "https://github.com/aquasecurity/trivy/releases/download/v${VERSION}/trivy_${VERSION}_Linux-64bit.tar.gz" -o /trivy.tar.gz && \
     tar -xzf /trivy.tar.gz -C / && rm /trivy.tar.gz && chmod +x /trivy 2>/dev/null || \
-    curl -fsSL "https://github.com/aquasecurity/trivy/releases/download/v0.53.0/trivy_0.53.0_linux_amd64.tar.gz" -o /trivy && chmod +x /trivy
+    curl -fsSL "https://github.com/aquasecurity/trivy/releases/download/v${VERSION}/trivy_${VERSION}_Linux-64bit.tar.gz" -o /trivy && chmod +x /trivy
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/trivy /var/cache/trivy
@@ -29,7 +29,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/trivy", "--version"]
 ENTRYPOINT ["/trivy"]
 LABEL org.opencontainers.image.title="trivy" \
-      org.opencontainers.image.version="0.53.0" \
+      org.opencontainers.image.version="0.70.0" \
       org.opencontainers.image.vendor="Aqua Security" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \

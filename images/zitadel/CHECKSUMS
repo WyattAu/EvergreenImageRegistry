@@ -1,13 +1,12 @@
 # CHECKSUMS - zitadel
-# Generated: 2026-04-19T22:26:39Z
-# Status: VERIFIED
+# Generated: 2026-04-20
+# Status: PENDING_VERIFICATION
 #
-# Verification performed by populate_checksums.py
-# Method: github-release-checksums
-# Date: 2026-04-19T22:26:39Z
+# IMPORTANT: These checksums must be verified before use.
+# Method: Download the binary on an air-gapped machine, compute SHA256,
+# then compare against upstream checksum file if available.
 #
-# IMPORTANT: These checksums are verified against upstream sources.
-# To re-verify:
+# Update protocol:
 # 1. Download binary from URL below
 # 2. Compute: sha256sum <file>
 # 3. Compare with expected_sha256 below
@@ -16,21 +15,21 @@
 
 [metadata]
 image = "zitadel"
-version = "2.50.0"
-created = "2026-04-19T22:26:39Z"
-last_verified = "2026-04-19T22:26:39Z"
-verification_method = "github-release-checksums"
-verifier = "populate_checksums.py"
+version = "4.13.1"
+created = "2026-04-20"
+last_verified = "PENDING"
+verification_method = "PENDING"
+verifier = "PENDING"
 
 [download]
-url = "https://github.com/zitadel/zitadel/releases/download/v2.50.0/zitadel_2.50.0_linux_amd64.tar.gz"
-filename = "zitadel_2.50.0_linux_amd64.tar.gz"
+url = "https://github.com/zitadel/zitadel/releases/download/v4.13.1/zitadel-linux-amd64.tar.gz"
+filename = "zitadel-linux-amd64.tar.gz"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
-expected_sha256 = "31d8fbd7a0a188ad1cd72ecd3939fd553b07750ee2f7a7d5f032a3c2c8a5677d"
+expected_sha256 = "PENDING"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = "https://github.com/zitadel/zitadel/releases/download/v2.50.0/sha256sums.txt"
+url = "https://github.com/zitadel/zitadel/releases/download/v4.13.1/checksums.txt"
 format = "sha256"

@@ -9,7 +9,7 @@ ARG VERSION=2.45.1
 ARG BUILD_DATE
 
 FROM golang:1.22-bookworm AS builder
-RUN go install github.com/dexidp/dex/cmd/dex@v2.45.1
+RUN go install github.com/dexidp/dex/cmd/dex@latest
 
 FROM debian:bookworm-slim AS helper
 RUN mkdir -p /app /var/log/dex /var/cache/dex

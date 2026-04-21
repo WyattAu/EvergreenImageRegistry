@@ -1,5 +1,5 @@
 # CHECKSUMS - mattermost
-# Generated: 2026-04-19
+# Generated: 2026-04-20
 # Status: PENDING_VERIFICATION
 #
 # NOTE: This image uses a templated URL. The version is determined at build
@@ -7,7 +7,7 @@
 #
 # IMPORTANT: These checksums must be verified before use.
 # Method: Download the binary on an air-gapped machine, compute SHA256,
-# then compare against upstream checksum file if available.
+# then compare against upstream sha256sums.txt if available.
 #
 # Update protocol:
 # 1. Download binary from URL (substitute ${VERSION})
@@ -20,14 +20,14 @@
 [metadata]
 image = "mattermost"
 version = "${VERSION}"
-created = "2026-04-19"
+created = "2026-04-20"
 last_verified = "PENDING"
 verification_method = "PENDING"
 verifier = "PENDING"
 
 [download]
-url = "https://github.com/mattermost/mattermost/releases/download/v${VERSION}/mattermost-${VERSION}-linux-amd64.tar.gz"
-filename = "mattermost-${VERSION}-linux-amd64.tar.gz"
+url = "https://releases.mattermost.com/${VERSION}/mattermost-team-${VERSION}-linux-amd64.tar.gz"
+filename = "mattermost-team-${VERSION}-linux-amd64.tar.gz"
 
 [checksum]
 # SHA256 of the downloaded archive/binary

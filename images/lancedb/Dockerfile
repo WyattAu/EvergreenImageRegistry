@@ -1,41 +1,40 @@
 # =============================================================================
 # SOVEREIGN HARDENED LANCEDB
 # Generated from template - Version: 0.28.0-beta.9
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
+# Constraint: debian-slim - no prebuilt binaries; built from source
+# Priority: scratch > distroless > wolfi > debian-slim (last resort)
+#
+# NOTE: LanceDB does not provide prebuilt binary releases.
+# Built from source using Rust/Cargo.
 # =============================================================================
 
 ARG VERSION=0.28.0-beta.9
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim AS downloader
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/lancedb/lancedb/releases/download/v0.6.0/lancedb-0.6.0-x86_64-unknown-linux-gnu.tar.gz" -o /lancedb.tar.gz && \
-    tar -xzf /lancedb.tar.gz -C / && rm /lancedb.tar.gz && chmod +x /lancedb 2>/dev/null || \
-    curl -fsSL "https://github.com/lancedb/lancedb/releases/download/v0.6.0/lancedb-0.6.0-x86_64-unknown-linux-gnu.tar.gz" -o /lancedb && chmod +x /lancedb
-
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/lancedb /var/cache/lancedb
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl ca-certificates pkg-config libssl-dev build-essential && rm -rf /var/lib/apt/lists/*
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
+ENV PATH="/root/.cargo/bin:${PATH}"
+RUN git clone --depth 1 --branch v${VERSION} https://github.com/lancedb/lancedb.git /tmp/lancedb && \
+    cd /tmp/lancedb && cargo build --release --bin lancedb && \
+    cp target/release/lancedb /lancedb && rm -rf /tmp/lancedb
 
-FROM scratch
-COPY --from=downloader /lancedb /lancedb
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
-COPY --from=builder /var/log/lancedb /var/log/lancedb
-COPY --from=builder /var/cache/lancedb /var/cache/lancedb
-USER 65534:65534
+FROM debian:bookworm-slim AS runner
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates libssl3 && rm -rf /var/lib/apt/lists/*
+RUN useradd -m -u 65534 -g '' lancedb 2>/dev/null || true
+RUN mkdir -p /app /var/log/lancedb /var/cache/lancedb && chown -R lancedb:lancedb /app /var/log/lancedb /var/cache/lancedb 2>/dev/null || true
+COPY --from=builder /lancedb /usr/local/bin/lancedb
+USER lancedb
 WORKDIR /app
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/lancedb", "--version"]
-ENTRYPOINT ["/lancedb"]
+    CMD ["/usr/local/bin/lancedb", "--version"]
+ENTRYPOINT ["/usr/local/bin/lancedb"]
 LABEL org.opencontainers.image.title="lancedb" \
       org.opencontainers.image.version="0.28.0-beta.9" \
       org.opencontainers.image.vendor="LanceDB" \
-      sovereign.image.tier="1" \
+      sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
+      sovereign.constraint.debian_slim="true"

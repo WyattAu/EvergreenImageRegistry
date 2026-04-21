@@ -1,11 +1,11 @@
 # =============================================================================
 # SOVEREIGN HARDENED DRAGONFLY
-# Generated from template - Version: 1.21.0
+# Generated from template - Version: 1.38.0
 # Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=1.21.0
+ARG VERSION=1.38.0
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim
@@ -23,7 +23,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD curl -sf http://localhost:8000
 ENTRYPOINT ["dragonfly"]
 LABEL org.opencontainers.image.title="dragonfly" \
-      org.opencontainers.image.version="1.21.0" \
+      org.opencontainers.image.version="1.38.0" \
       org.opencontainers.image.vendor="DragonflyDB" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \

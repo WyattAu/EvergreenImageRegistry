@@ -1,18 +1,16 @@
 # =============================================================================
 # SOVEREIGN HARDENED COSIGN
-# Generated from template - Version: 2.4.0
+# Generated from template - Version: 3.0.6
 # Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
-ARG VERSION=2.4.0
+ARG VERSION=3.0.6
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/sigstore/cosign/releases/download/v2.4.0/cosign_2.4.0_linux_amd64.tar.gz" -o /cosign.tar.gz && \
-    tar -xzf /cosign.tar.gz -C / && rm /cosign.tar.gz && chmod +x /cosign 2>/dev/null || \
-    curl -fsSL "https://github.com/sigstore/cosign/releases/download/v2.4.0/cosign_2.4.0_linux_amd64.tar.gz" -o /cosign && chmod +x /cosign
+RUN curl -fsSL "https://github.com/sigstore/cosign/releases/download/v${VERSION}/cosign-linux-amd64" -o /cosign && chmod +x /cosign
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/cosign /var/cache/cosign
@@ -30,7 +28,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/cosign", "version"]
 ENTRYPOINT ["/cosign"]
 LABEL org.opencontainers.image.title="cosign" \
-      org.opencontainers.image.version="2.4.0" \
+      org.opencontainers.image.version="3.0.6" \
       org.opencontainers.image.vendor="Sigstore" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \

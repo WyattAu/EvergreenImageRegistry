@@ -1,5 +1,5 @@
 # CHECKSUMS - trivy
-# Generated: 2026-04-19
+# Generated: 2026-04-20
 # Status: PENDING_VERIFICATION
 #
 # IMPORTANT: These checksums must be verified before use.
@@ -16,15 +16,15 @@
 
 [metadata]
 image = "trivy"
-version = "0.53.0"
-created = "2026-04-19"
+version = "0.70.0"
+created = "2026-04-20"
 last_verified = "PENDING"
 verification_method = "PENDING"
 verifier = "PENDING"
 
 [download]
-url = "https://github.com/aquasecurity/trivy/releases/download/v0.53.0/trivy_0.53.0_linux_amd64.tar.gz"
-filename = "trivy_0.53.0_linux_amd64.tar.gz"
+url = "https://github.com/aquasecurity/trivy/releases/download/v0.70.0/trivy_0.70.0_Linux-64bit.tar.gz"
+filename = "trivy_0.70.0_Linux-64bit.tar.gz"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
@@ -33,5 +33,5 @@ expected_sha256 = "PENDING"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
-format = ""
+url = "https://github.com/aquasecurity/trivy/releases/download/v0.70.0/trivy_0.70.0_checksums.txt"
+format = "sha256"

@@ -1,0 +1,12 @@
+# CHECKSUMS - focalboard-server
+# Status: PENDING
+
+[metadata]
+image = "focalboard-server"
+version = "pending"
+created = "2026-04-21T15:22:15Z"
+last_verified = ""
+verification_method = "pending"
+
+[checksum]
+expected_sha256 = "PENDING"

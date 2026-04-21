@@ -1,0 +1,12 @@
+# CHECKSUMS - prometheus-nginx-exporter
+# Status: PENDING
+
+[metadata]
+image = "prometheus-nginx-exporter"
+version = "pending"
+created = "2026-04-21T15:22:18Z"
+last_verified = ""
+verification_method = "pending"
+
+[checksum]
+expected_sha256 = "PENDING"

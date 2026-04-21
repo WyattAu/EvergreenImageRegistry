@@ -1,0 +1,12 @@
+# CHECKSUMS - dovecot-pop3
+# Status: PENDING
+
+[metadata]
+image = "dovecot-pop3"
+version = "pending"
+created = "2026-04-21T15:22:15Z"
+last_verified = ""
+verification_method = "pending"
+
+[checksum]
+expected_sha256 = "PENDING"

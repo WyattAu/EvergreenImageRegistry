@@ -1,0 +1,12 @@
+# CHECKSUMS - taiga-backend
+# Status: PENDING
+
+[metadata]
+image = "taiga-backend"
+version = "pending"
+created = "2026-04-21T15:22:29Z"
+last_verified = ""
+verification_method = "pending"
+
+[checksum]
+expected_sha256 = "PENDING"

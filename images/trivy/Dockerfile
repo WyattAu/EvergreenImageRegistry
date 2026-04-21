@@ -1,40 +1,5 @@
-# =============================================================================
-# SOVEREIGN HARDENED TRIVY
-# Generated from template - Version: 0.70.0
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=0.70.0
-ARG BUILD_DATE
-
-FROM debian:bookworm-slim AS downloader
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/aquasecurity/trivy/releases/download/v${VERSION}/trivy_${VERSION}_Linux-64bit.tar.gz" -o /trivy.tar.gz && \
-    tar -xzf /trivy.tar.gz -C / && rm /trivy.tar.gz && chmod +x /trivy 2>/dev/null || \
-    curl -fsSL "https://github.com/aquasecurity/trivy/releases/download/v${VERSION}/trivy_${VERSION}_Linux-64bit.tar.gz" -o /trivy && chmod +x /trivy
-
-FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/trivy /var/cache/trivy
-
 FROM scratch
-COPY --from=downloader /trivy /trivy
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
-COPY --from=builder /var/log/trivy /var/log/trivy
-COPY --from=builder /var/cache/trivy /var/cache/trivy
-USER 65534:65534
-WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/trivy", "--version"]
-ENTRYPOINT ["/trivy"]
-LABEL org.opencontainers.image.title="trivy" \
-      org.opencontainers.image.version="0.70.0" \
-      org.opencontainers.image.vendor="Aqua Security" \
-      sovereign.image.tier="1" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
+LABEL org.opencontainers.image.title="TRIVY" \
+      org.opencontainers.image.description="Sovereign hardened TRIVY (stub - upstream binary unavailable at version 0.70.0)" \
+      sovereign.image.status="no-upstream-binary" \
+      sovereign.image.note="No pre-built binary available for version 0.70.0. Update VERSION when upstream publishes new release."

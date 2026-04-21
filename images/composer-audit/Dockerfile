@@ -1,0 +1,2 @@
+FROM scratch
+LABEL org.opencontainers.image.title="composer-audit"       org.opencontainers.image.description="Sovereign hardened composer-audit (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."

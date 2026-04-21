@@ -1,0 +1,12 @@
+# CHECKSUMS - haproxy-dev
+# Status: PENDING
+
+[metadata]
+image = "haproxy-dev"
+version = "pending"
+created = "2026-04-21T00:00:00Z"
+last_verified = ""
+verification_method = "pending"
+
+[checksum]
+expected_sha256 = "PENDING"

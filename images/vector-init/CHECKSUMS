@@ -1,0 +1,12 @@
+# CHECKSUMS - vector-init
+# Status: PENDING
+
+[metadata]
+image = "vector-init"
+version = "pending"
+created = "2026-04-21T15:22:30Z"
+last_verified = ""
+verification_method = "pending"
+
+[checksum]
+expected_sha256 = "PENDING"

@@ -1,0 +1,12 @@
+# CHECKSUMS - argocd-repo-server
+# Status: PENDING
+
+[metadata]
+image = "argocd-repo-server"
+version = "pending"
+created = "2026-04-21T15:22:13Z"
+last_verified = ""
+verification_method = "pending"
+
+[checksum]
+expected_sha256 = "PENDING"

@@ -1,0 +1,12 @@
+# CHECKSUMS - gitlab-runner-alpine
+# Status: PENDING
+
+[metadata]
+image = "gitlab-runner-alpine"
+version = "pending"
+created = "2026-04-21T15:22:15Z"
+last_verified = ""
+verification_method = "pending"
+
+[checksum]
+expected_sha256 = "PENDING"

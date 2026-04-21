@@ -1,0 +1,12 @@
+# CHECKSUMS - mc
+# Status: PENDING
+
+[metadata]
+image = "mc"
+version = "pending"
+created = "2026-04-21T15:22:17Z"
+last_verified = ""
+verification_method = "pending"
+
+[checksum]
+expected_sha256 = "PENDING"

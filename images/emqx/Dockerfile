@@ -10,10 +10,11 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates gnupg2 && \
-    curl -fsSL https://repos.emqx.com/gpg.key | gpg --dearmor -o /usr/share/keyrings/emqx.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/emqx.gpg] https://repos.emqx.com/debian jammy main" > /etc/apt/sources.list.d/emqx.list && \
-    apt-get update && apt-get install -y --no-install-recommends emqx && \
+    curl ca-certificates && \
+    curl -fsSL -k "https://www.emqx.com/en/downloads/broker/v${VERSION}/emqx-${VERSION}-debian12-amd64.deb" -o /tmp/emqx.deb && \
+    dpkg -i /tmp/emqx.deb && \
+    apt-get install -f -y && \
+    rm -f /tmp/emqx.deb && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN useradd -m -u 65534 -g '' emqx 2>/dev/null || true
 RUN mkdir -p /app /var/log/emqx /var/cache/emqx && chown -R emqx:emqx /app /var/log/emqx /var/cache/emqx 2>/dev/null || true

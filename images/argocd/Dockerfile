@@ -7,7 +7,7 @@
 ARG VERSION=v2.14.0
 ARG BUILD_DATE
 
-FROM quay.io/argocd/argocd:${VERSION}
+FROM ghcr.io/argoproj/argocd:v2.14.0
 
 # Apply sovereignty hardening
 USER root

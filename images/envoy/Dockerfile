@@ -15,7 +15,6 @@ RUN curl -fsSL -k "https://github.com/envoyproxy/envoy/releases/download/v1.31.0
 FROM gcr.io/distroless/cc-debian12@sha256:af49995f9f06255ca7d955735e5484a92018f4cfe95910952d9aee165cb96940
 COPY --from=downloader /envoy /envoy
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-RUN mkdir -p /app /var/log/envoy /var/cache/envoy
 USER nonroot
 WORKDIR /app
 EXPOSE 80 443 9900

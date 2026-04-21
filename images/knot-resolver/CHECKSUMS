@@ -19,7 +19,7 @@ url = "https://secure.nic.cz/files/knot-resolver/knot-resolver-5.7.6.tar.xz"
 filename = "knot-resolver-5.7.6.tar.xz"
 
 [checksum]
-expected_sha256 = "500ccd3a560300e547b8dc5aaff322f7c8e2e7d6f0d7ef5f36e59cb60504d674"
+expected_sha256 = "PENDING"
 
 [upstream_checksum]
 url = "https://secure.nic.cz/files/knot-resolver/knot-resolver-5.7.6.tar.xz.sha256"

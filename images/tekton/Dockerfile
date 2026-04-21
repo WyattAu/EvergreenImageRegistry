@@ -4,7 +4,7 @@
 # Constraint: official - Tekton is complex, use official base
 # =============================================================================
 
-ARG VERSION=latest
+ARG VERSION=v0.37.1
 ARG BUILD_DATE
 
 FROM gcr.io/tekton-releases/github.com/tektoncd/cli:${VERSION}

@@ -1,5 +1,5 @@
 # CHECKSUMS - dex
-# Generated: 2026-04-20
+# Generated: 2026-04-21
 # Status: BUILT_FROM_SOURCE
 #
 # Dex does not publish pre-built binaries.
@@ -8,8 +8,8 @@
 [metadata]
 image = "dex"
 version = "2.45.1"
-created = "2026-04-20"
-last_verified = "2026-04-20"
+created = "2026-04-21"
+last_verified = "2026-04-21"
 verification_method = "go-install"
 verifier = "N/A"
 

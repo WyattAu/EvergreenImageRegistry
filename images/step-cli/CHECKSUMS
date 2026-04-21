@@ -1,13 +1,12 @@
 # CHECKSUMS - step-cli
-# Generated: 2026-04-19T22:25:05Z
-# Status: VERIFIED
+# Generated: 2026-04-20
+# Status: PENDING_VERIFICATION
 #
-# Verification performed by populate_checksums.py
-# Method: github-release-checksums
-# Date: 2026-04-19T22:25:05Z
+# IMPORTANT: These checksums must be verified before use.
+# Method: Download the binary on an air-gapped machine, compute SHA256,
+# then compare against upstream checksum file if available.
 #
-# IMPORTANT: These checksums are verified against upstream sources.
-# To re-verify:
+# Update protocol:
 # 1. Download binary from URL below
 # 2. Compute: sha256sum <file>
 # 3. Compare with expected_sha256 below
@@ -16,21 +15,21 @@
 
 [metadata]
 image = "step-cli"
-version = "0.25.2"
-created = "2026-04-19T22:25:05Z"
-last_verified = "2026-04-19T22:25:05Z"
-verification_method = "github-release-checksums"
-verifier = "populate_checksums.py"
+version = "0.30.2"
+created = "2026-04-20"
+last_verified = "PENDING"
+verification_method = "PENDING"
+verifier = "PENDING"
 
 [download]
-url = "https://github.com/smallstep/cli/releases/download/v0.25.2/step_0.25.2_linux_amd64.tar.gz"
-filename = "step_0.25.2_linux_amd64.tar.gz"
+url = "https://github.com/smallstep/cli/releases/download/v0.30.2/step_linux_0.30.2_amd64.tar.gz"
+filename = "step_linux_0.30.2_amd64.tar.gz"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
-expected_sha256 = "325b34188476530a9bf14dabfe9545bc618674e4017bb888f2f7bec325b00f1b"
+expected_sha256 = "PENDING"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = "https://github.com/smallstep/cli/releases/download/v0.25.2/sha256sums.txt"
+url = "https://github.com/smallstep/cli/releases/download/v0.30.2/checksums.txt"
 format = "sha256"

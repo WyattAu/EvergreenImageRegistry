@@ -7,7 +7,7 @@
 ARG VERSION=latest
 ARG BUILD_DATE
 
-FROM ghcr.io/tektoncd/cli:${VERSION}
+FROM gcr.io/tekton-releases/github.com/tektoncd/cli:${VERSION}
 
 # Apply sovereignty hardening
 USER root

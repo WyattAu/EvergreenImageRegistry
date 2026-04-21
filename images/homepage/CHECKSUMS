@@ -1,37 +1,26 @@
 # CHECKSUMS - homepage
-# Generated: 2026-04-19
+# Generated: 2026-04-20
 # Status: PENDING_VERIFICATION
 #
-# IMPORTANT: These checksums must be verified before use.
-# Method: Download the binary on an air-gapped machine, compute SHA256,
-# then compare against upstream checksum file if available.
-#
-# Update protocol:
-# 1. Download binary from URL
-# 2. Compute: sha256sum <file>
-# 3. Compare with upstream sha256sums.txt if available
-# 4. Cross-validate with second team member
-# 5. Update EXPECTED_SHA256 below
-# 6. Submit PR with CHECKSUMS update
+# NOTE: No prebuilt binary assets. Built from source via npm.
+# The source is verified at build time via git tag v1.12.3.
 
 [metadata]
 image = "homepage"
 version = "1.12.3"
-created = "2026-04-19"
-last_verified = "2026-04-20T04:45:24Z"
-verification_method = "download-verify"
+created = "2026-04-20"
+last_verified = "PENDING"
+verification_method = "git-tag"
 verifier = "PENDING"
 
 [download]
-url = "https://github.com/gethomepage/homepage/releases/download/v1.12.3/homepage-1.12.3-linux-amd64.tar.gz"
-filename = "homepage-1.12.3-linux-amd64.tar.gz"
+url = "https://github.com/gethomepage/homepage/archive/refs/tags/v1.12.3.tar.gz"
+filename = "homepage-v1.12.3.tar.gz"
 
 [checksum]
-# SHA256 of the downloaded archive/binary
-# Leave as "PENDING" until verified
+# SHA256 of the source archive
 expected_sha256 = "PENDING"
 
 [upstream_checksum]
-# If upstream provides a checksum file, note the URL here
-url = "https://github.com/gethomepage/homepage/releases/download/v1.12.3/homepage-1.12.3-linux-amd64.tar.gz"
+url = ""
 format = ""

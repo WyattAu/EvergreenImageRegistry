@@ -1,37 +1,26 @@
 # CHECKSUMS - lancedb
-# Generated: 2026-04-19
+# Generated: 2026-04-20
 # Status: PENDING_VERIFICATION
 #
-# IMPORTANT: These checksums must be verified before use.
-# Method: Download the binary on an air-gapped machine, compute SHA256,
-# then compare against upstream checksum file if available.
-#
-# Update protocol:
-# 1. Download binary from URL
-# 2. Compute: sha256sum <file>
-# 3. Compare with upstream sha256sums.txt if available
-# 4. Cross-validate with second team member
-# 5. Update EXPECTED_SHA256 below
-# 6. Submit PR with CHECKSUMS update
+# NOTE: No prebuilt binary assets. Built from source via cargo.
+# The source is verified at build time via git tag v0.28.0-beta.9.
 
 [metadata]
 image = "lancedb"
-version = "0.6.0"
-created = "2026-04-19"
+version = "0.28.0-beta.9"
+created = "2026-04-20"
 last_verified = "PENDING"
-verification_method = "PENDING"
+verification_method = "git-tag"
 verifier = "PENDING"
 
 [download]
-url = "https://github.com/lancedb/lancedb/releases/download/v0.6.0/lancedb-0.6.0-x86_64-unknown-linux-gnu.tar.gz"
-filename = "lancedb-0.6.0-x86_64-unknown-linux-gnu.tar.gz"
+url = "https://github.com/lancedb/lancedb/archive/refs/tags/v0.28.0-beta.9.tar.gz"
+filename = "lancedb-v0.28.0-beta.9.tar.gz"
 
 [checksum]
-# SHA256 of the downloaded archive/binary
-# Leave as "PENDING" until verified
+# SHA256 of the source archive
 expected_sha256 = "PENDING"
 
 [upstream_checksum]
-# If upstream provides a checksum file, note the URL here
 url = ""
 format = ""

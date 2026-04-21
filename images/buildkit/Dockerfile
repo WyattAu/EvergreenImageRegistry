@@ -1,11 +1,11 @@
 # =============================================================================
 # SOVEREIGN HARDENED BUILDKIT
-# Generated from template - Version: 0.14.1
+# Generated from template - Version: 0.29.0
 # Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=0.14.1
+ARG VERSION=0.29.0
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim
@@ -23,7 +23,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD curl -sf http://localhost:1234/debug/info
 ENTRYPOINT ["buildkitd"]
 LABEL org.opencontainers.image.title="buildkit" \
-      org.opencontainers.image.version="0.14.1" \
+      org.opencontainers.image.version="0.29.0" \
       org.opencontainers.image.vendor="BuildKit" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \

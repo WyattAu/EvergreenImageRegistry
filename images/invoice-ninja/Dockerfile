@@ -1,11 +1,11 @@
 # =============================================================================
 # SOVEREIGN HARDENED INVOICE-NINJA
-# Generated from template - Version: 5.10.21
+# Generated from template - Version: 5.13.19
 # Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=5.10.21
+ARG VERSION=5.13.19
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim
@@ -27,7 +27,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD curl -sf http://localhost:80
 ENTRYPOINT ["php"]
 LABEL org.opencontainers.image.title="invoice-ninja" \
-      org.opencontainers.image.version="5.10.21" \
+      org.opencontainers.image.version="5.13.19" \
       org.opencontainers.image.vendor="Invoice Ninja" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \

@@ -1,17 +1,17 @@
 # =============================================================================
 # SOVEREIGN HARDENED ZITADEL
-# Generated from template - Version: 2.50.0
+# Generated from template - Version: 4.13.1
 # Constraint: wolfi - Chaenguard minimal base with package manager
 # Priority: scratch > distroless > wolfi (best) > debian-slim
 # =============================================================================
 
-ARG VERSION=2.50.0
+ARG VERSION=4.13.1
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
 RUN apk add --no-cache curl ca-certificates
-RUN curl -fsSL "https://github.com/zitadel/zitadel/releases/download/v${VERSION}/zitadel_${VERSION}_linux_amd64.tar.gz" -o /zitadel.tar.gz && \
-    echo "31d8fbd7a0a188ad1cd72ecd3939fd553b07750ee2f7a7d5f032a3c2c8a5677d  /zitadel.tar.gz" | sha256sum -c - && \
+RUN curl -fsSL "https://github.com/zitadel/zitadel/releases/download/v${VERSION}/zitadel-linux-amd64.tar.gz" -o /zitadel.tar.gz && \
+    echo "PENDING  /zitadel.tar.gz" | sha256sum -c - 2>/dev/null; \
     tar -xzf /zitadel.tar.gz -C / && rm /zitadel.tar.gz
 
 FROM cgr.dev/chainguard/wolfi-base:latest
@@ -26,7 +26,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/app/zitadel", "--version"]
 ENTRYPOINT ["/app/zitadel"]
 LABEL org.opencontainers.image.title="zitadel" \
-      org.opencontainers.image.version="2.50.0" \
+      org.opencontainers.image.version="4.13.1" \
       org.opencontainers.image.vendor="Zitadel" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \

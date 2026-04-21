@@ -1,5 +1,5 @@
 # CHECKSUMS - cosign
-# Generated: 2026-04-19
+# Generated: 2026-04-20
 # Status: PENDING_VERIFICATION
 #
 # IMPORTANT: These checksums must be verified before use.
@@ -16,15 +16,15 @@
 
 [metadata]
 image = "cosign"
-version = "2.4.0"
-created = "2026-04-19"
+version = "3.0.6"
+created = "2026-04-20"
 last_verified = "PENDING"
 verification_method = "PENDING"
 verifier = "PENDING"
 
 [download]
-url = "https://github.com/sigstore/cosign/releases/download/v2.4.0/cosign_2.4.0_linux_amd64.tar.gz"
-filename = "cosign_2.4.0_linux_amd64.tar.gz"
+url = "https://github.com/sigstore/cosign/releases/download/v3.0.6/cosign-linux-amd64"
+filename = "cosign-linux-amd64"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
@@ -33,5 +33,5 @@ expected_sha256 = "PENDING"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = ""
-format = ""
+url = "https://github.com/sigstore/cosign/releases/download/v3.0.6/cosign_checksums.txt"
+format = "sha256"

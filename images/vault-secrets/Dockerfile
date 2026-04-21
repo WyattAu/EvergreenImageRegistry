@@ -1,41 +1,42 @@
 # =============================================================================
 # SOVEREIGN HARDENED VAULT-SECRETS
-# Generated from template - Version: 0.4.0
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
+# Generated from template - Version: 1.3.0
+# Constraint: debian-slim - no prebuilt binaries; built from source
+# Priority: scratch > distroless > wolfi > debian-slim (last resort)
+#
+# NOTE: vault-secrets-operator does not provide prebuilt binary releases.
+# It is a Kubernetes operator built from source using Go.
+# For production use, deploy via Helm chart instead.
 # =============================================================================
 
-ARG VERSION=0.4.0
+ARG VERSION=1.3.0
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim AS downloader
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/hashicorp/vault-secrets-operator/releases/download/v0.4.0/vault-secrets-operator-0.4.0-linux-amd64.tar.gz" -o /vault-secrets-operator.tar.gz && \
-    tar -xzf /vault-secrets-operator.tar.gz -C / && rm /vault-secrets-operator.tar.gz && chmod +x /vault-secrets-operator 2>/dev/null || \
-    curl -fsSL "https://github.com/hashicorp/vault-secrets-operator/releases/download/v0.4.0/vault-secrets-operator-0.4.0-linux-amd64.tar.gz" -o /vault-secrets-operator && chmod +x /vault-secrets-operator
-
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/vault-secrets-operator /var/cache/vault-secrets-operator
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl ca-certificates git && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://go.dev/dl/go1.22.0.linux-amd64.tar.gz" | tar -C /usr/local -xzf - && rm -rf /var/lib/apt/lists/*
+ENV PATH="/usr/local/go/bin:${PATH}"
+RUN git clone --depth 1 --branch v${VERSION} https://github.com/hashicorp/vault-secrets-operator.git /tmp/vso && \
+    cd /tmp/vso && go build -o /vault-secrets-operator ./cmd/operator && \
+    rm -rf /tmp/vso
 
-FROM scratch
-COPY --from=downloader /vault-secrets-operator /vault-secrets-operator
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
-COPY --from=builder /var/log/vault-secrets-operator /var/log/vault-secrets-operator
-COPY --from=builder /var/cache/vault-secrets-operator /var/cache/vault-secrets-operator
-USER 65534:65534
+FROM debian:bookworm-slim AS runner
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates curl && rm -rf /var/lib/apt/lists/*
+RUN useradd -m -u 65534 -g '' vso 2>/dev/null || true
+RUN mkdir -p /app /var/log/vault-secrets-operator /var/cache/vault-secrets-operator && \
+    chown -R vso:vso /app /var/log/vault-secrets-operator /var/cache/vault-secrets-operator 2>/dev/null || true
+COPY --from=builder /vault-secrets-operator /app/vault-secrets-operator
+USER vso
 WORKDIR /app
 EXPOSE 8200
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/vault", "version"]
-ENTRYPOINT ["/vault-secrets-operator"]
+    CMD ["/app/vault-secrets-operator", "version"]
+ENTRYPOINT ["/app/vault-secrets-operator"]
 LABEL org.opencontainers.image.title="vault-secrets" \
-      org.opencontainers.image.version="0.4.0" \
+      org.opencontainers.image.version="1.3.0" \
       org.opencontainers.image.vendor="HashiCorp" \
-      sovereign.image.tier="1" \
+      sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
+      sovereign.constraint.debian_slim="true"

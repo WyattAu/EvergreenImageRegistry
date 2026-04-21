@@ -1,11 +1,11 @@
 # =============================================================================
 # SOVEREIGN HARDENED SUITECRM
-# Generated from template - Version: 8.6.1
+# Generated from template - Version: 8.9.3
 # Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=8.6.1
+ARG VERSION=8.9.3
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim
@@ -27,7 +27,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD curl -sf http://localhost:80
 ENTRYPOINT ["php"]
 LABEL org.opencontainers.image.title="suitecrm" \
-      org.opencontainers.image.version="8.6.1" \
+      org.opencontainers.image.version="8.9.3" \
       org.opencontainers.image.vendor="SuiteCRM" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \

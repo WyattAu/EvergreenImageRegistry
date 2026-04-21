@@ -1,13 +1,12 @@
 # CHECKSUMS - restic
-# Generated: 2026-04-19T22:25:02Z
-# Status: VERIFIED
+# Generated: 2026-04-20
+# Status: PENDING_VERIFICATION
 #
-# Verification performed by populate_checksums.py
-# Method: github-release-checksums
-# Date: 2026-04-19T22:25:02Z
+# IMPORTANT: These checksums must be verified before use.
+# Method: Download the binary on an air-gapped machine, compute SHA256,
+# then compare against upstream SHA256SUMS if available.
 #
-# IMPORTANT: These checksums are verified against upstream sources.
-# To re-verify:
+# Update protocol:
 # 1. Download binary from URL below
 # 2. Compute: sha256sum <file>
 # 3. Compare with expected_sha256 below
@@ -16,21 +15,21 @@
 
 [metadata]
 image = "restic"
-version = "0.17.0"
-created = "2026-04-19T22:25:02Z"
-last_verified = "2026-04-19T22:25:02Z"
-verification_method = "github-release-checksums"
-verifier = "populate_checksums.py"
+version = "0.18.1"
+created = "2026-04-20"
+last_verified = "PENDING"
+verification_method = "PENDING"
+verifier = "PENDING"
 
 [download]
-url = "https://github.com/restic/restic/releases/download/v0.17.0/restic_0.17.0_linux_amd64.tar.gz"
-filename = "restic_0.17.0_linux_amd64.tar.gz"
+url = "https://github.com/restic/restic/releases/download/v0.18.1/restic_0.18.1_linux_amd64.bz2"
+filename = "restic_0.18.1_linux_amd64.bz2"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
-expected_sha256 = "72fbdbca48fabbc84dfe551bdd3bc2d8d8b96b30ca7a2a71344c4d0878d91d99"
+expected_sha256 = "PENDING"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here
-url = "https://github.com/restic/restic/releases/download/v0.17.0/sha256sums.txt"
+url = "https://github.com/restic/restic/releases/download/v0.18.1/SHA256SUMS"
 format = "sha256"

@@ -1,41 +1,37 @@
 # =============================================================================
 # SOVEREIGN HARDENED HOMEPAGE
 # Generated from template - Version: 1.12.3
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
+# Constraint: debian-slim - no prebuilt binaries; built from source
+# Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
 ARG VERSION=1.12.3
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim AS downloader
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/gethomepage/homepage/releases/download/v1.12.3/homepage-1.12.3-linux-amd64.tar.gz" -o /homepage.tar.gz && \
-    tar -xzf /homepage.tar.gz -C / && rm /homepage.tar.gz && chmod +x /homepage 2>/dev/null || \
-    curl -fsSL "https://github.com/gethomepage/homepage/releases/download/v1.12.3/homepage-1.12.3-linux-amd64.tar.gz" -o /homepage && chmod +x /homepage
-
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/homepage /var/cache/homepage
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl ca-certificates git && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/nodesource/distributions/setup_20.x" | bash - && \
+    apt-get install -y --no-install-recommends nodejs && rm -rf /var/lib/apt/lists/*
+RUN git clone --depth 1 --branch v${VERSION} https://github.com/gethomepage/homepage.git /tmp/homepage && \
+    cd /tmp/homepage && npm ci && npm run build && \
+    mkdir -p /app && cp -r dist/* /app/ && rm -rf /tmp/homepage
 
-FROM scratch
-COPY --from=downloader /homepage /homepage
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+FROM debian:bookworm-slim AS runner
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN useradd -m -u 65534 -g '' homepage 2>/dev/null || true
+RUN mkdir -p /app /var/log/homepage /var/cache/homepage && chown -R homepage:homepage /app /var/log/homepage /var/cache/homepage 2>/dev/null || true
 COPY --from=builder /app /app
-COPY --from=builder /var/log/homepage /var/log/homepage
-COPY --from=builder /var/cache/homepage /var/cache/homepage
-USER 65534:65534
+USER homepage
 WORKDIR /app
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/homepage", "--version"]
-ENTRYPOINT ["/homepage"]
+    CMD curl -sf http://localhost:3000/api/health || exit 1
+ENTRYPOINT ["node", "server.js"]
 LABEL org.opencontainers.image.title="homepage" \
       org.opencontainers.image.version="1.12.3" \
       org.opencontainers.image.vendor="Homepage" \
-      sovereign.image.tier="1" \
+      sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
+      sovereign.constraint.debian_slim="true"

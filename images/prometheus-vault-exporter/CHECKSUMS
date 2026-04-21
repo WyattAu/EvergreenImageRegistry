@@ -1,12 +1,19 @@
 # CHECKSUMS - prometheus-vault-exporter
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: NEEDS_VERIFICATION
+# NOTE: prometheus-community/vault_exporter does not publish sha256sums.txt
 
 [metadata]
 image = "prometheus-vault-exporter"
-version = "pending"
-created = "2026-04-21T15:22:18Z"
+version = "0.10.0"
+created = "2026-04-21"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+verifier = "manual"
+
+[download]
+url = "https://github.com/prometheus-community/vault_exporter/releases/download/v0.10.0/vault_exporter-0.10.0.linux-amd64.tar.gz"
+filename = "vault_exporter-0.10.0.linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "VERIFY_AT_BUILD_TIME"

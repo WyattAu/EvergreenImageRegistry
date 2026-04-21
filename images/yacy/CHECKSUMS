@@ -1,12 +1,22 @@
 # CHECKSUMS - yacy
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "yacy"
-version = "pending"
-created = "2026-04-21T15:22:30Z"
+version = "1.924"
+created = "2026-04-21"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+verifier = "PENDING"
+
+[download]
+url = "https://github.com/yacy/yacy_search_server/releases/download/v1.924/yacy_v1.924_202008051920.tar.gz"
+filename = "yacy_v1.924_202008051920.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = "https://github.com/yacy/yacy_search_server/releases/download/v1.924/yacy_v1.924_202008051920.tar.gz"
+format = ""

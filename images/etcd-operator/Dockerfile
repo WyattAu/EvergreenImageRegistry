@@ -1,2 +1,37 @@
+# =============================================================================
+# SOVEREIGN HARDENED ETCD-OPERATOR
+# Generated from template - Version: 3.5.15
+# Constraint: scratch - static Go binary from etcd-io/etcd release
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
+# =============================================================================
+
+ARG VERSION=3.5.15
+ARG BUILD_DATE
+
+FROM debian:bookworm-20250113-slim AS builder
+ARG VERSION
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/etcd-io/etcd/releases/download/v${VERSION}/etcd-v${VERSION}-linux-amd64.tar.gz" -o /tmp/etcd.tgz \
+    && echo "81a8b6ecd5df15a4e0245c811d053f08717ebe6a624759afa56d58dde744e4fb  /tmp/etcd.tgz" | sha256sum -c - \
+    && tar -xzf /tmp/etcd.tgz -C /tmp \
+    && strip --strip-all /tmp/etcd-v${VERSION}-linux-amd64/etcdctl \
+    && mv /tmp/etcd-v${VERSION}-linux-amd64/etcdctl /usr/local/bin/etcdctl \
+    && rm -rf /tmp/etcd.tgz /tmp/etcd-v${VERSION}-linux-amd64
+
 FROM scratch
-LABEL org.opencontainers.image.title="etcd-operator"       org.opencontainers.image.description="Sovereign hardened etcd-operator (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=builder /usr/local/bin/etcdctl /usr/local/bin/etcdctl
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER 65534:65534
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/usr/local/bin/etcdctl", "version"]
+ENTRYPOINT ["/usr/local/bin/etcdctl"]
+LABEL org.opencontainers.image.title="etcd-operator" \
+      org.opencontainers.image.description="Sovereign hardened etcd operator tools - etcdctl from etcd-io/etcd" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.vendor="etcd" \
+      sovereign.image.status="functional" \
+      sovereign.image.tier="1" \
+      sovereign.image.category="database" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true"

@@ -1,2 +1,41 @@
+# =============================================================================
+# SOVEREIGN HARDENED SHIELD
+# Stark & Wayne SHIELD backup and restore system
+# Constraint: scratch - pure Go static binary, smallest attack surface
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
+# =============================================================================
+
+ARG VERSION=8.6.0
+ARG BUILD_DATE
+
+# hadolint ignore=DL3023
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN curl -fsSL "https://github.com/starkandwayne/shield/releases/download/v${VERSION}/shield-v${VERSION}-linux-amd64" -o /shield && \
+    chmod +x /shield && \
+    strip --strip-all /shield
+
 FROM scratch
-LABEL org.opencontainers.image.title="shield"       org.opencontainers.image.description="Sovereign hardened shield (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=downloader /shield /shield
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER 65534:65534
+WORKDIR /app
+EXPOSE 8443
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/shield", "version"]
+ENTRYPOINT ["/shield"]
+CMD ["server", "-c", "/app/shield.yml"]
+LABEL org.opencontainers.image.title="shield" \
+      org.opencontainers.image.version="8.6.0" \
+      org.opencontainers.image.vendor="Stark & Wayne" \
+      org.opencontainers.image.source="https://github.com/starkandwayne/shield" \
+      sovereign.image.tier="1" \
+      sovereign.image.category="security" \
+      sovereign.image.status="functional" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="3s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="3000ms"

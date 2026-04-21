@@ -1,12 +1,22 @@
 # CHECKSUMS - splunk-forwarder
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: REQUIRES_VERIFICATION
 
 [metadata]
 image = "splunk-forwarder"
-version = "pending"
-created = "2026-04-21T15:22:20Z"
+version = "9.2.1"
+created = "2026-04-21"
 last_verified = ""
 verification_method = "pending"
+verifier = "manual"
+
+[download]
+url = "https://download.splunk.com/products/universalforwarder/releases/9.2.1/linux/splunkforwarder-9.2.1-a1c5796230b0-linux-x86_64.tgz"
+filename = "splunkforwarder-9.2.1-a1c5796230b0-linux-x86_64.tgz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "REQUIRES_VERIFICATION"
+
+[upstream_checksum]
+url = ""
+format = ""

@@ -1,12 +1,22 @@
 # CHECKSUMS - prometheus-haproxy-exporter
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: VERIFIED
 
 [metadata]
 image = "prometheus-haproxy-exporter"
-version = "pending"
-created = "2026-04-21T15:22:18Z"
-last_verified = ""
-verification_method = "pending"
+version = "0.15.0"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "github-release-checksums"
+verifier = "manual"
+
+[download]
+url = "https://github.com/prometheus/haproxy_exporter/releases/download/v0.15.0/haproxy_exporter-0.15.0.linux-amd64.tar.gz"
+filename = "haproxy_exporter-0.15.0.linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "ac200872b734e2f9c0211997f7f9c0ca5ad6522996c37aed39a732d5f3c0de16"
+
+[upstream_checksum]
+url = "https://github.com/prometheus/haproxy_exporter/releases/download/v0.15.0/sha256sums.txt"
+format = "sha256"

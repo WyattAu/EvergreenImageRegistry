@@ -1,5 +1,50 @@
-FROM scratch
-LABEL org.opencontainers.image.title="KNOT RESOLVER" \
-      org.opencontainers.image.description="Sovereign hardened KNOT RESOLVER (stub - upstream binary unavailable at version 5.7.6)" \
-      sovereign.image.status="no-upstream-binary" \
-      sovereign.image.note="No pre-built binary available for version 5.7.6. Update VERSION when upstream publishes new release."
+# =============================================================================
+# SOVEREIGN HARDENED KNOT-RESOLVER
+# Full-featured DNS recursive resolver (C/luajit)
+# Constraint: compile from source in debian:bookworm-slim
+# =============================================================================
+
+ARG VERSION=5.7.6
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS builder
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential cmake libssl-dev libluajit-5.1-dev libsystemd-dev \
+    libuv1-dev libnghttp2-dev meson pkg-config git ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+RUN git clone --depth 1 --branch "v${VERSION}" \
+    https://github.com/CZ-NIC/knot-resolver.git /knot-resolver
+RUN cd /knot-resolver && \
+    meson setup build --default-library=static --prefix=/usr \
+    -Dclient=enabled -Dpostinst=disabled && \
+    meson compile -C build -j"$(nproc)" && \
+    strip --strip-all /knot-resolver/build/kresd 2>/dev/null || true
+
+FROM debian:bookworm-slim AS runner
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libssl3 libluajit-5.1-2 libuv1 libnghttp2-14 ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /app /var/log/knot-resolver /var/lib/knot-resolver /etc/knot-resolver
+COPY --from=builder /knot-resolver/build/kresd /usr/local/bin/kresd
+COPY --from=builder /knot-resolver/build/rootkeys.list /etc/knot-resolver/rootkeys.list 2>/dev/null || true
+RUN chown -R 65534:65534 /app /var/log/knot-resolver /var/lib/knot-resolver
+USER 65534:65534
+WORKDIR /app
+EXPOSE 53 53/udp 8453
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/usr/local/bin/kresd", "-v"]
+ENTRYPOINT ["/usr/local/bin/kresd"]
+LABEL org.opencontainers.image.title="knot-resolver" \
+      org.opencontainers.image.version="5.7.6" \
+      org.opencontainers.image.vendor="CZ.NIC" \
+      org.opencontainers.image.source="https://github.com/CZ-NIC/knot-resolver" \
+      org.opencontainers.image.description="Full-featured DNS recursive resolver" \
+      sovereign.image.tier="1" \
+      sovereign.image.category="dns" \
+      sovereign.image.status="functional" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.base="debian-slim" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="3s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="5000ms"

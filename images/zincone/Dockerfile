@@ -1,2 +1,40 @@
+# =============================================================================
+# SOVEREIGN HARDENED ZINCONE (ZincSearch Observability Edition)
+# Constraint: scratch - pure static Go binary
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
+# =============================================================================
+
+ARG VERSION=0.4.12
+ARG BUILD_DATE
+
+# hadolint ignore=DL3023
+FROM debian:bookworm-slim AS builder
+ARG VERSION
+WORKDIR /tmp
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN curl -fsSL "https://github.com/zincsearch/zincsearch/releases/download/v${VERSION}/zincsearch_${VERSION}_linux_amd64.tar.gz" -o zinc.tar.gz \
+    && echo "PENDING  zinc.tar.gz" | sha256sum -c - \
+    && tar -xzf zinc.tar.gz \
+    && strip --strip-all zincsearch 2>/dev/null || true \
+    && mv zincsearch /tmp/zincone
+
 FROM scratch
-LABEL org.opencontainers.image.title="zincone"       org.opencontainers.image.description="Sovereign hardened zincone (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=builder /tmp/zincone /usr/local/bin/zincone
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER 65534:65534
+EXPOSE 4080
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/usr/local/bin/zincone", "version"]
+ENTRYPOINT ["/usr/local/bin/zincone"]
+LABEL org.opencontainers.image.title="zincone" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.description="Sovereign hardened ZincOne - ZincSearch observability edition" \
+      org.opencontainers.image.vendor="ZincSearch" \
+      sovereign.image.tier="1" \
+      sovereign.image.category="database" \
+      sovereign.image.status="functional" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="3s"

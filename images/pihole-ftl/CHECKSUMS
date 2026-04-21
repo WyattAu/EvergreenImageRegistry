@@ -1,12 +1,22 @@
 # CHECKSUMS - pihole-ftl
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "pihole-ftl"
-version = "pending"
-created = "2026-04-21T15:22:18Z"
+version = "5.18.2"
+created = "2026-04-21"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+verifier = "PENDING"
+
+[download]
+url = "https://github.com/pi-hole/FTL/releases/download/v5.18.2/pihole-FTL-5.18.2-linux-x86_64.tar.gz"
+filename = "pihole-FTL-5.18.2-linux-x86_64.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = "https://github.com/pi-hole/FTL/releases/download/v5.18.2/pihole-FTL-5.18.2-linux-x86_64.tar.gz"
+format = ""

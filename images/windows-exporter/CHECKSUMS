@@ -1,12 +1,22 @@
 # CHECKSUMS - windows-exporter
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "windows-exporter"
-version = "pending"
-created = "2026-04-21T15:22:30Z"
+version = "0.25.0"
+created = "2026-04-21"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+verifier = "PENDING"
+
+[download]
+url = "https://github.com/prometheus-community/windows_exporter/releases/download/v0.25.0/windows_exporter-0.25.0-linux-amd64.tar.gz"
+filename = "windows_exporter-0.25.0-linux-amd64.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = "https://github.com/prometheus-community/windows_exporter/releases/download/v0.25.0/windows_exporter-0.25.0-linux-amd64.tar.gz"
+format = ""

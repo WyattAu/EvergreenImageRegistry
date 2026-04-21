@@ -1,12 +1,19 @@
 # CHECKSUMS - prometheus-aws-exporter
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: NEEDS_VERIFICATION
+# NOTE: YACE publishes via GoReleaser with checksums in release assets
 
 [metadata]
 image = "prometheus-aws-exporter"
-version = "pending"
-created = "2026-04-21T15:22:18Z"
+version = "0.55.0"
+created = "2026-04-21"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+verifier = "manual"
+
+[download]
+url = "https://github.com/prometheus-community/yet-another-cloudwatch-exporter/releases/download/v0.55.0/yace-0.55.0-linux-amd64.tar.gz"
+filename = "yace-0.55.0-linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "VERIFY_AT_BUILD_TIME"

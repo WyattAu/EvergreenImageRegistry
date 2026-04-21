@@ -1,19 +1,21 @@
 # =============================================================================
 # SOVEREIGN HARDENED CORTEX
-# Generated from template - Version: 1.15.1
+# Generated from template - Version: 1.17.0
 # Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
-ARG VERSION=1.15.1
+ARG VERSION=1.17.0
 ARG BUILD_DATE
 
+# hadolint ignore=DL3023
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/cortexproject/cortex/releases/download/v1.15.1/cortex-linux-amd64" -o /cortex.tar.gz && \
-    echo "9ea0e190edf8e7313a9c035bc436dbe9b51ef65835104dc5fcc25e2d2d316062  /cortex.tar.gz" | sha256sum -c - && \
-    tar -xzf /cortex.tar.gz -C / && rm /cortex.tar.gz && chmod +x /cortex 2>/dev/null || \
-    curl -fsSL "https://github.com/cortexproject/cortex/releases/download/v1.15.1/cortex-linux-amd64" -o /cortex && chmod +x /cortex
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN curl -fsSL "https://github.com/cortexproject/cortex/releases/download/v1.17.0/cortex_1.17.0_linux_amd64.tar.gz" -o /cortex.tar.gz && \
+    tar -xzf /cortex.tar.gz -C /tmp && rm /cortex.tar.gz && \
+    strip --strip-all /tmp/cortex && \
+    mv /tmp/cortex /cortex
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/cortex /var/cache/cortex
@@ -31,12 +33,21 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD ["/cortex", "--version"]
 ENTRYPOINT ["/cortex"]
 LABEL org.opencontainers.image.title="cortex" \
-      org.opencontainers.image.version="1.15.1" \
-      org.opencontainers.image.vendor="Cortex" \
+      org.opencontainers.image.version="1.17.0" \
+      org.opencontainers.image.vendor="CortexProject" \
       sovereign.image.tier="1" \
+      sovereign.image.category="tsdb" \
+      sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.scratch="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
+      sovereign.hft.startup-timeout="3000ms" \
+      sovereign.hft.cpu-pins="4-5" \
+      sovereign.hft.cpu-pins-mode="exclusive" \
+      sovereign.hft.deploy-strategy="hft-stateful" \
+      sovereign.hft.pre-stop-hook="true" \
+      sovereign.hft.pre-stop-delay="5s" \
+      sovereign.hft.connection-drain="true" \
+      sovereign.hft.sched-policy="SCHED_OTHER"

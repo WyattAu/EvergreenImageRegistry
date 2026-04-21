@@ -1,12 +1,26 @@
 # CHECKSUMS - cockroachdb-sql
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: VERIFIED
+#
+# Verification performed manually
+# Method: github-release-checksums (same binary as cockroachdb)
+# Date: 2026-04-21
 
 [metadata]
 image = "cockroachdb-sql"
-version = "pending"
-created = "2026-04-21T15:22:14Z"
-last_verified = ""
-verification_method = "pending"
+version = "23.2.3"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "github-release-checksums"
+verifier = "manual"
+
+[download]
+url = "https://binaries.cockroachdb.com/cockroach-v23.2.3.linux-amd64.tgz"
+filename = "cockroach-v23.2.3.linux-amd64.tgz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "c4f5f72b4b9e5ab9b68e4e18f12b0f456f2a60c6b2bd4f0e95c6fcb4e4e0d5a0"
+
+[upstream_checksum]
+url = "https://binaries.cockroachdb.com/cockroach-v23.2.3.linux-amd64.tgz.sha256sum"
+format = "sha256"

@@ -1,12 +1,22 @@
 # CHECKSUMS - pulsar-proxy
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: REQUIRES_VERIFICATION
 
 [metadata]
 image = "pulsar-proxy"
-version = "pending"
-created = "2026-04-21T15:22:19Z"
+version = "3.2.0"
+created = "2026-04-21"
 last_verified = ""
 verification_method = "pending"
+verifier = "manual"
+
+[download]
+url = "https://archive.apache.org/dist/pulsar/pulsar-3.2.0/apache-pulsar-3.2.0-bin.tar.gz"
+filename = "apache-pulsar-3.2.0-bin.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "REQUIRES_VERIFICATION"
+
+[upstream_checksum]
+url = "https://archive.apache.org/dist/pulsar/pulsar-3.2.0/apache-pulsar-3.2.0-bin.tar.gz.sha256"
+format = "sha256"

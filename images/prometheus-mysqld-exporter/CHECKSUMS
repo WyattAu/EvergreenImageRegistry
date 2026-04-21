@@ -1,12 +1,22 @@
 # CHECKSUMS - prometheus-mysqld-exporter
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: VERIFIED
 
 [metadata]
 image = "prometheus-mysqld-exporter"
-version = "pending"
-created = "2026-04-21T15:22:18Z"
-last_verified = ""
-verification_method = "pending"
+version = "0.15.1"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "github-release-checksums"
+verifier = "manual"
+
+[download]
+url = "https://github.com/prometheus/mysqld_exporter/releases/download/v0.15.1/mysqld_exporter-0.15.1.linux-amd64.tar.gz"
+filename = "mysqld_exporter-0.15.1.linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "85ea5bc68e1b9f466c1df10ff016652dd210371d42245e012b876265e89ae29d"
+
+[upstream_checksum]
+url = "https://github.com/prometheus/mysqld_exporter/releases/download/v0.15.1/sha256sums.txt"
+format = "sha256"

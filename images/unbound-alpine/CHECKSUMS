@@ -1,12 +1,27 @@
 # CHECKSUMS - unbound-alpine
-# Status: PENDING
+# Status: BUILT-FROM-SOURCE
+#
+# This image is compiled from source.
+# To re-verify:
+# 1. Download: https://nlnetlabs.nl/downloads/unbound/unbound-1.19.3.tar.gz
+# 2. Compile: ./configure && make && make install
+# 3. Compute: sha256sum /usr/sbin/unbound
 
 [metadata]
 image = "unbound-alpine"
-version = "pending"
-created = "2026-04-21T15:22:30Z"
+version = "1.19.3"
+created = "2026-04-21T15:22:17Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "source-build"
+verifier = "manual"
+
+[download]
+url = "https://nlnetlabs.nl/downloads/unbound/unbound-1.19.3.tar.gz"
+filename = "unbound-1.19.3.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = "https://nlnetlabs.nl/downloads/unbound/unbound-1.19.3.tar.gz.sig"
+format = "sha256"

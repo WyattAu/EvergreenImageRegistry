@@ -1,12 +1,23 @@
 # CHECKSUMS - cayley
+# Generated: 2026-04-21
 # Status: PENDING
+# Note: Built from source via go build, no pre-built upstream binary
 
 [metadata]
 image = "cayley"
-version = "pending"
-created = "2026-04-21T15:22:13Z"
+version = "0.7.7"
+created = "2026-04-21"
 last_verified = ""
-verification_method = "pending"
+verification_method = "source-compile"
+verifier = "manual"
+
+[download]
+url = "https://github.com/cayleygraph/cayley/archive/refs/tags/v0.7.7.tar.gz"
+filename = "cayley-0.7.7.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = ""
+format = ""

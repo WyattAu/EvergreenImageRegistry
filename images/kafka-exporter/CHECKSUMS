@@ -1,26 +1,22 @@
 # CHECKSUMS - kafka-exporter
-# Generated: 2026-04-20
-# Status: VERIFIED
-#
-# Verification performed by download-and-compare
-# Method: curl + sha256sum
-# Date: 2026-04-20
+# Generated: 2026-04-21
+# Status: REQUIRES_VERIFICATION
 
 [metadata]
 image = "kafka-exporter"
-version = "1.9.0"
-created = "2026-04-20"
-last_verified = "2026-04-20"
-verification_method = "download-verify"
+version = "1.7.0"
+created = "2026-04-21"
+last_verified = ""
+verification_method = "pending"
 verifier = "manual"
 
 [download]
-url = "https://github.com/danielqsj/kafka_exporter/releases/download/v1.9.0/kafka_exporter-1.9.0.linux-amd64.tar.gz"
-filename = "kafka_exporter-1.9.0.linux-amd64.tar.gz"
+url = "https://github.com/danielqsj/kafka_exporter/releases/download/v1.7.0/kafka_exporter-1.7.0.linux-amd64.tar.gz"
+filename = "kafka_exporter-1.7.0.linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "c722518ad71c53b3988ea26ae2bd387bb596ce7a98fc639d08bf639a537699a1"
+expected_sha256 = "REQUIRES_VERIFICATION"
 
 [upstream_checksum]
-url = ""
-format = ""
+url = "https://github.com/danielqsj/kafka_exporter/releases/download/v1.7.0/sha256sums.txt"
+format = "sha256"

@@ -1,12 +1,24 @@
 # CHECKSUMS - ocserv
-# Status: PENDING
+# Status: PENDING_VERIFICATION
+#
+# This image uses ocserv from Debian packages.
+# Verification: apt-get source ocserv, verify package integrity.
 
 [metadata]
 image = "ocserv"
-version = "pending"
-created = "2026-04-21T15:22:18Z"
+version = "1.3.0"
+created = "2026-04-21T15:22:17Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "package-integrity"
+verifier = "manual"
+
+[download]
+url = "https://www.infradead.org/ocserv/download/ocserv-1.3.0.tar.xz"
+filename = "ocserv-1.3.0.tar.xz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = "https://www.infradead.org/ocserv/download/ocserv-1.3.0.tar.xz.sig"
+format = "sha256"

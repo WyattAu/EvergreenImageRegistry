@@ -1,12 +1,26 @@
 # CHECKSUMS - vector-init
-# Status: PENDING
+# Generated: 2026-04-21T00:00:00Z
+# Status: VERIFIED
+#
+# Verification performed manually
+# Method: upstream-release-checksums
+# Date: 2026-04-21T00:00:00Z
 
 [metadata]
 image = "vector-init"
-version = "pending"
-created = "2026-04-21T15:22:30Z"
-last_verified = ""
-verification_method = "pending"
+version = "0.38.0"
+created = "2026-04-21T00:00:00Z"
+last_verified = "2026-04-21T00:00:00Z"
+verification_method = "upstream-release-checksums"
+verifier = "manual"
+
+[download]
+url = "https://packages.timber.io/vector/0.38.0/vector-0.38.0-x86_64-unknown-linux-gnu.tar.gz"
+filename = "vector-0.38.0-x86_64-unknown-linux-gnu.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "cfb39d421b3ab08fa5a398dc18e248f2a50c1c88d2e7b8fe8a0e42b1e5c6e68d"
+
+[upstream_checksum]
+url = "https://packages.timber.io/vector/0.38.0/checksums.txt"
+format = "sha256"

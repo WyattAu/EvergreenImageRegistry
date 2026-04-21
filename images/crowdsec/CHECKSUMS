@@ -1,12 +1,19 @@
 # CHECKSUMS - crowdsec
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: NEEDS_VERIFICATION
+# NOTE: crowdsecurity/crowdsec publishes release assets with checksums in GoReleaser manifest
 
 [metadata]
 image = "crowdsec"
-version = "pending"
-created = "2026-04-21T15:22:14Z"
+version = "1.6.2"
+created = "2026-04-21"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+verifier = "manual"
+
+[download]
+url = "https://github.com/crowdsecurity/crowdsec/releases/download/v1.6.2/crowdsec-v1.6.2-linux-amd64.tar.gz"
+filename = "crowdsec-v1.6.2-linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "VERIFY_AT_BUILD_TIME"

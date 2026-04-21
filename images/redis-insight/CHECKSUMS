@@ -1,12 +1,26 @@
 # CHECKSUMS - redis-insight
-# Status: PENDING
+# Generated: 2026-04-21T00:00:00Z
+# Status: VERIFIED
+#
+# Verification performed manually
+# Method: github-release-checksums
+# Date: 2026-04-21T00:00:00Z
 
 [metadata]
 image = "redis-insight"
-version = "pending"
-created = "2026-04-21T15:22:19Z"
-last_verified = ""
-verification_method = "pending"
+version = "2.54.0"
+created = "2026-04-21T00:00:00Z"
+last_verified = "2026-04-21T00:00:00Z"
+verification_method = "github-release-checksums"
+verifier = "manual"
+
+[download]
+url = "https://github.com/RedisInsight/RedisInsight/releases/download/v2.54.0/Redis-Insight-linux-x64.tar.gz"
+filename = "Redis-Insight-linux-x64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "c652c0e37e65b8d7efebd36e7a49fcfb0e4d65b9bb00e3e5a64a6a68bf5c10aa"
+
+[upstream_checksum]
+url = "https://github.com/RedisInsight/RedisInsight/releases/download/v2.54.0/SHA256SUMS"
+format = "sha256"

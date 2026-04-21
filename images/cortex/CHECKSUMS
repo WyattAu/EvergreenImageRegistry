@@ -1,10 +1,5 @@
 # CHECKSUMS - cortex
-# Generated: 2026-04-19T22:22:34Z
-# Status: VERIFIED
-#
-# Verification performed by populate_checksums.py
-# Method: download-and-compute
-# Date: 2026-04-19T22:22:34Z
+# Status: PENDING
 #
 # IMPORTANT: These checksums are verified against upstream sources.
 # To re-verify:
@@ -16,21 +11,18 @@
 
 [metadata]
 image = "cortex"
-version = "1.15.1"
-created = "2026-04-19T22:22:34Z"
-last_verified = "2026-04-19T22:22:34Z"
-verification_method = "download-and-compute"
-verifier = "populate_checksums.py"
+version = "1.17.0"
+created = "2026-04-21T00:00:00Z"
+last_verified = ""
+verification_method = "manual"
 
 [download]
-url = "https://github.com/cortexproject/cortex/releases/download/v1.15.1/cortex-linux-amd64"
-filename = "cortex-linux-amd64"
+url = "https://github.com/cortexproject/cortex/releases/download/v1.17.0/cortex_1.17.0_linux_amd64.tar.gz"
+filename = "cortex_1.17.0_linux_amd64.tar.gz"
 
 [checksum]
-# SHA256 of the downloaded archive/binary
-expected_sha256 = "9ea0e190edf8e7313a9c035bc436dbe9b51ef65835104dc5fcc25e2d2d316062"
+expected_sha256 = "PENDING"
 
 [upstream_checksum]
-# If upstream provides a checksum file, note the URL here
-url = "https://github.com/cortexproject/cortex/releases/download/v1.15.1/sha256sums.txt"
+url = "https://github.com/cortexproject/cortex/releases/download/v1.17.0/sha256sums.txt"
 format = "sha256"

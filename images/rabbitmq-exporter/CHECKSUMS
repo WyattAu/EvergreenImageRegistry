@@ -1,12 +1,21 @@
 # CHECKSUMS - rabbitmq-exporter
+# Generated: 2026-04-21
 # Status: PENDING
+#
+# kbudde/rabbitmq_exporter does not publish sha256sums.txt
+# To re-verify: download tarball and compute sha256sum manually
 
 [metadata]
 image = "rabbitmq-exporter"
-version = "pending"
-created = "2026-04-21T15:22:19Z"
+version = "1.1.0"
+created = "2026-04-21"
 last_verified = ""
 verification_method = "pending"
+verifier = "manual"
+
+[download]
+url = "https://github.com/kbudde/rabbitmq_exporter/releases/download/v1.1.0/rabbitmq_exporter-1.1.0-linux-amd64.tar.gz"
+filename = "rabbitmq_exporter-1.1.0-linux-amd64.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"

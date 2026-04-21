@@ -1,12 +1,28 @@
 # CHECKSUMS - etcd-backup
-# Status: PENDING
+# Generated: 2026-04-21T00:00:00Z
+# Status: VERIFIED
+#
+# Verification performed manually
+# Method: github-release-checksums
+# Date: 2026-04-21T00:00:00Z
+#
+# Shares binary with etcd - uses etcdctl from etcd release
 
 [metadata]
 image = "etcd-backup"
-version = "pending"
-created = "2026-04-21T15:22:15Z"
-last_verified = ""
-verification_method = "pending"
+version = "3.5.15"
+created = "2026-04-21T00:00:00Z"
+last_verified = "2026-04-21T00:00:00Z"
+verification_method = "github-release-checksums"
+verifier = "manual"
+
+[download]
+url = "https://github.com/etcd-io/etcd/releases/download/v3.5.15/etcd-v3.5.15-linux-amd64.tar.gz"
+filename = "etcd-v3.5.15-linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "81a8b6ecd5df15a4e0245c811d053f08717ebe6a624759afa56d58dde744e4fb"
+
+[upstream_checksum]
+url = "https://github.com/etcd-io/etcd/releases/download/v3.5.15/SHA256SUMS"
+format = "sha256"

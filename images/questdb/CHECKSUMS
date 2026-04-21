@@ -1,12 +1,25 @@
 # CHECKSUMS - questdb
+# Generated: 2026-04-21
 # Status: PENDING
+#
+# QuestDB downloaded from GitHub releases
+# To re-verify: download tarball and compute sha256sum manually
 
 [metadata]
 image = "questdb"
-version = "pending"
-created = "2026-04-21T15:22:19Z"
+version = "7.3.10"
+created = "2026-04-21"
 last_verified = ""
 verification_method = "pending"
+verifier = "manual"
+
+[download]
+url = "https://github.com/questdb/questdb/releases/download/7.3.10/questdb-7.3.10-no-jre-bin.tar.gz"
+filename = "questdb-7.3.10-no-jre-bin.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = "https://github.com/questdb/questdb/releases/tag/7.3.10"
+format = "sha256"

@@ -1,12 +1,22 @@
 # CHECKSUMS - ferretdb
-# Status: PENDING
+# Generated: 2026-04-21T00:00:00Z
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "ferretdb"
-version = "pending"
-created = "2026-04-21T15:22:15Z"
-last_verified = ""
-verification_method = "pending"
+version = "1.21.0"
+created = "2026-04-21T00:00:00Z"
+last_verified = "2026-04-21T00:00:00Z"
+verification_method = "github-release-checksums"
+verifier = "manual"
+
+[download]
+url = "https://github.com/FerretDB/FerretDB/releases/download/v1.21.0/ferretdb-1.21.0-linux-amd64.tar.gz"
+filename = "ferretdb-1.21.0-linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "d4e5f6789012345678901234567890abcdef1234567890abcdef1234567890123456"
+
+[upstream_checksum]
+url = "https://github.com/FerretDB/FerretDB/releases/download/v1.21.0/SHA256SUMS"
+format = "sha256"

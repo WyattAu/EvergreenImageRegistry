@@ -1,12 +1,22 @@
 # CHECKSUMS - graylog-sidecar
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: REQUIRES_VERIFICATION
 
 [metadata]
 image = "graylog-sidecar"
-version = "pending"
-created = "2026-04-21T15:22:16Z"
+version = "1.5.0"
+created = "2026-04-21"
 last_verified = ""
 verification_method = "pending"
+verifier = "manual"
+
+[download]
+url = "https://github.com/Graylog2/collector-sidecar/releases/download/1.5.0/collector-sidecar-1.5.0-linux-amd64.tar.gz"
+filename = "collector-sidecar-1.5.0-linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "REQUIRES_VERIFICATION"
+
+[upstream_checksum]
+url = "https://github.com/Graylog2/collector-sidecar/releases/download/1.5.0/sha256sums.txt"
+format = "sha256"

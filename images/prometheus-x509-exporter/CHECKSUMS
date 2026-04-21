@@ -1,12 +1,19 @@
 # CHECKSUMS - prometheus-x509-exporter
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: NEEDS_VERIFICATION
+# NOTE: enix/x509-certificate-exporter does not publish sha256sums.txt
 
 [metadata]
 image = "prometheus-x509-exporter"
-version = "pending"
-created = "2026-04-21T15:22:18Z"
+version = "3.9.0"
+created = "2026-04-21"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+verifier = "manual"
+
+[download]
+url = "https://github.com/enix/x509-certificate-exporter/releases/download/v3.9.0/x509-certificate-exporter-3.9.0-linux-amd64.tar.gz"
+filename = "x509-certificate-exporter-3.9.0-linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "VERIFY_AT_BUILD_TIME"

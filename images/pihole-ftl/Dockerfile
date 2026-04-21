@@ -1,2 +1,46 @@
+# =============================================================================
+# SOVEREIGN HARDENED PIHOLE-FTL
+# Pi-hole FTL (Free Too Loopy) DNS engine
+# Constraint: scratch - pre-built Go/C binary (best-effort)
+# =============================================================================
+
+ARG VERSION=5.18.2
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/pi-hole/FTL/releases/download/v${VERSION}/pihole-FTL-${VERSION}-linux-x86_64.tar.gz" -o /pihole-ftl.tar.gz && \
+    tar -xzf /pihole-ftl.tar.gz -C / && rm /pihole-ftl.tar.gz && \
+    find / -maxdepth 2 -name "pihole-FTL" -type f -exec chmod +x {} \; && \
+    strip --strip-all /pihole-FTL 2>/dev/null || true
+
+FROM debian:bookworm-slim AS builder
+RUN mkdir -p /app /var/log/pihole-FTL /var/lib/pihole-FTL /etc/pihole
+
 FROM scratch
-LABEL org.opencontainers.image.title="pihole-ftl"       org.opencontainers.image.description="Sovereign hardened pihole-ftl (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=downloader /pihole-FTL /pihole-FTL
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /app /app
+COPY --from=builder /var/log/pihole-FTL /var/log/pihole-FTL
+COPY --from=builder /var/lib/pihole-FTL /var/lib/pihole-FTL
+USER 65534:65534
+WORKDIR /app
+EXPOSE 53 53/udp 4711
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/pihole-FTL", "--version"]
+ENTRYPOINT ["/pihole-FTL"]
+LABEL org.opencontainers.image.title="pihole-ftl" \
+      org.opencontainers.image.version="5.18.2" \
+      org.opencontainers.image.vendor="Pi-hole" \
+      org.opencontainers.image.source="https://github.com/pi-hole/FTL" \
+      org.opencontainers.image.description="Pi-hole FTL DNS engine" \
+      sovereign.image.tier="1" \
+      sovereign.image.category="dns" \
+      sovereign.image.status="best-effort" \
+      sovereign.image.note="May require glibc; fallback to debian-slim if scratch fails" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.base="scratch" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="3s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="5000ms"

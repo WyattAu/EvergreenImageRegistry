@@ -1,12 +1,22 @@
 # CHECKSUMS - kafka-ui
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: REQUIRES_VERIFICATION
 
 [metadata]
 image = "kafka-ui"
-version = "pending"
-created = "2026-04-21T15:22:16Z"
+version = "1.1.0"
+created = "2026-04-21"
 last_verified = ""
 verification_method = "pending"
+verifier = "manual"
+
+[download]
+url = "https://github.com/provectuslabs/kafka-ui/releases/download/v1.1.0/kafka-ui-v1.1.0-linux-amd64.tar.gz"
+filename = "kafka-ui-v1.1.0-linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "REQUIRES_VERIFICATION"
+
+[upstream_checksum]
+url = "https://github.com/provectuslabs/kafka-ui/releases/download/v1.1.0/checksums.txt"
+format = "sha256"

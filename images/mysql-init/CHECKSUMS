@@ -1,12 +1,16 @@
 # CHECKSUMS - mysql-init
 # Status: PENDING
+# Source: Debian bookworm - default-mysql-client
 
 [metadata]
 image = "mysql-init"
-version = "pending"
+version = "8.0"
 created = "2026-04-21T15:22:17Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "apt_repo"
+
+[source]
+url = "https://packages.debian.org/bookworm/default-mysql-client"
 
 [checksum]
 expected_sha256 = "PENDING"

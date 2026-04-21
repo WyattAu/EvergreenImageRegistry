@@ -1,12 +1,23 @@
 # CHECKSUMS - rdns-server
+# Generated: 2026-04-21
 # Status: PENDING
+# Note: Built from source via go build, no pre-built upstream binary
 
 [metadata]
 image = "rdns-server"
-version = "pending"
-created = "2026-04-21T15:22:19Z"
+version = "0.12.0"
+created = "2026-04-21"
 last_verified = ""
-verification_method = "pending"
+verification_method = "source-compile"
+verifier = "manual"
+
+[download]
+url = "https://github.com/folbricht/rdns/archive/refs/tags/v0.12.0.tar.gz"
+filename = "rdns-0.12.0.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = ""
+format = ""

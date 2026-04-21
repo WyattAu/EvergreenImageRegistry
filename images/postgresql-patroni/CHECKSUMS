@@ -1,12 +1,16 @@
 # CHECKSUMS - postgresql-patroni
 # Status: PENDING
+# Source: https://pypi.org/pypi/patroni/4.0.3
 
 [metadata]
 image = "postgresql-patroni"
-version = "pending"
+version = "4.0.3"
 created = "2026-04-21T15:22:18Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "pip_hash"
+
+[source]
+url = "https://pypi.org/pypi/patroni/4.0.3"
 
 [checksum]
 expected_sha256 = "PENDING"

@@ -1,12 +1,33 @@
 # CHECKSUMS - oauth2-proxy-alpine
-# Status: PENDING
+# Status: PENDING_VERIFICATION
+#
+# IMPORTANT: These checksums must be verified before use.
+# Method: Download the binary on an air-gapped machine, compute SHA256,
+# then compare against upstream checksum file if available.
+#
+# Update protocol:
+# 1. Download binary from URL
+# 2. Compute: sha256sum <file>
+# 3. Compare with upstream sha256sums.txt if available
+# 4. Cross-validate with second team member
+# 5. Update EXPECTED_SHA256 below
+# 6. Submit PR with CHECKSUMS update
 
 [metadata]
 image = "oauth2-proxy-alpine"
-version = "pending"
+version = "7.6.0"
 created = "2026-04-21T15:22:17Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+verifier = "PENDING"
+
+[download]
+url = "https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v7.6.0/oauth2-proxy-v7.6.0.linux-amd64.tar.gz"
+filename = "oauth2-proxy-v7.6.0.linux-amd64.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = "https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v7.6.0/oauth2-proxy-v7.6.0.linux-amd64.tar.gz.sha256"
+format = "sha256"

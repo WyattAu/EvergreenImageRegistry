@@ -1,12 +1,16 @@
 # CHECKSUMS - elasticsearch-8
 # Status: PENDING
+# Source: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.12.2-linux-x86_64.tar.gz
 
 [metadata]
 image = "elasticsearch-8"
-version = "pending"
+version = "8.12.2"
 created = "2026-04-21T15:22:15Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "sha256sum"
+
+[source]
+url = "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.12.2-linux-x86_64.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"

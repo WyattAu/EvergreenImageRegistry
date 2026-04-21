@@ -1,12 +1,22 @@
 # CHECKSUMS - prometheus-elasticsearch-exporter
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: VERIFIED
 
 [metadata]
 image = "prometheus-elasticsearch-exporter"
-version = "pending"
-created = "2026-04-21T15:22:18Z"
-last_verified = ""
-verification_method = "pending"
+version = "1.7.0"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "github-release-checksums"
+verifier = "manual"
+
+[download]
+url = "https://github.com/prometheus-community/elasticsearch_exporter/releases/download/v1.7.0/elasticsearch_exporter-1.7.0.linux-amd64.tar.gz"
+filename = "elasticsearch_exporter-1.7.0.linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "45aff83bcea639dc977e34eaa6ad7b1453be96be469f570b39c2d4fc69bf5ffc"
+
+[upstream_checksum]
+url = "https://github.com/prometheus-community/elasticsearch_exporter/releases/download/v1.7.0/sha256sums.txt"
+format = "sha256"

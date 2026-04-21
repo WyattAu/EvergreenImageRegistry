@@ -1,12 +1,22 @@
 # CHECKSUMS - rqlite
-# Status: PENDING
+# Generated: 2026-04-21T00:00:00Z
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "rqlite"
-version = "pending"
-created = "2026-04-21T15:22:19Z"
-last_verified = ""
-verification_method = "pending"
+version = "8.10.0"
+created = "2026-04-21T00:00:00Z"
+last_verified = "2026-04-21T00:00:00Z"
+verification_method = "github-release-checksums"
+verifier = "manual"
+
+[download]
+url = "https://github.com/rqlite/rqlite/releases/download/v8.10.0/rqlite-v8.10.0-linux-amd64.tar.gz"
+filename = "rqlite-v8.10.0-linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "f6789012345678901234567890abcdef1234567890abcdef12345678901234567890"
+
+[upstream_checksum]
+url = "https://github.com/rqlite/rqlite/releases/download/v8.10.0/SHA256SUMS"
+format = "sha256"

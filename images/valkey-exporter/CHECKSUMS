@@ -1,12 +1,16 @@
 # CHECKSUMS - valkey-exporter
 # Status: PENDING
+# Source: https://github.com/oliver006/redis_exporter/releases/download/v1.58.0/redis_exporter-v1.58.0.linux-amd64.tar.gz
 
 [metadata]
 image = "valkey-exporter"
-version = "pending"
+version = "1.58.0"
 created = "2026-04-21T15:22:30Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "sha256sum"
+
+[source]
+url = "https://github.com/oliver006/redis_exporter/releases/download/v1.58.0/redis_exporter-v1.58.0.linux-amd64.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"

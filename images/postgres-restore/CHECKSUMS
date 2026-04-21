@@ -1,12 +1,16 @@
 # CHECKSUMS - postgres-restore
 # Status: PENDING
+# Source: https://apt.postgresql.org/pub/repos/apt/
 
 [metadata]
 image = "postgres-restore"
-version = "pending"
+version = "17"
 created = "2026-04-21T15:22:18Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "apt_repo"
+
+[source]
+url = "https://apt.postgresql.org/pub/repos/apt/"
 
 [checksum]
 expected_sha256 = "PENDING"

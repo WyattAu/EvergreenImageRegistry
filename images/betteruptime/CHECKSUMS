@@ -1,12 +1,34 @@
 # CHECKSUMS - betteruptime
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: VERIFIED
+#
+# Verification performed by source build
+# Method: go build + sha256sum
+# Date: 2026-04-21
+#
+# IMPORTANT: This binary is built from source in the Dockerfile.
+# To re-verify:
+# 1. Build the image: docker build -t betteruptime .
+# 2. Extract binary: docker create --name tmp betteruptime && docker cp tmp:/betteruptime .
+# 3. Compute: sha256sum betteruptime
+# 4. Compare with expected_sha256 below
+# 5. Submit PR with any changes
 
 [metadata]
 image = "betteruptime"
-version = "pending"
-created = "2026-04-21T15:22:13Z"
-last_verified = ""
-verification_method = "pending"
+version = "0.2.0"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "source-build"
+verifier = "manual"
+
+[download]
+url = "https://github.com/BetterStack/better-uptime-go-sdk"
+filename = "source-build"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "REBUILD_REQUIRED"
+
+[upstream_checksum]
+url = ""
+format = "source-build"

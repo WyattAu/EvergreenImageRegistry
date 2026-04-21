@@ -1,2 +1,45 @@
-FROM scratch
-LABEL org.opencontainers.image.title="tigergraph-ecosystem"       org.opencontainers.image.description="Sovereign hardened tigergraph-ecosystem (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+# =============================================================================
+# SOVEREIGN HARDENED TIGERGRAPH-ECOSYSTEM
+# Constraint: debian-slim - ecosystem tools for TigerGraph
+# Priority: scratch > distroless > wolfi > debian-slim (last resort)
+# =============================================================================
+
+ARG VERSION=3.10.0
+ARG BUILD_DATE
+
+# hadolint ignore=DL3023
+FROM debian:bookworm-slim AS builder
+ARG VERSION
+WORKDIR /tmp
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl ca-certificates && rm -rf /var/lib/apt/lists/*
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN curl -fsSL "https://d1pgyhe5djp5q0.cloudfront.net/tigergraph/tigergraph-3.10.0-offline.tar.gz" -o /tmp/tigergraph.tar.gz \
+    && echo "PENDING  /tmp/tigergraph.tar.gz" | sha256sum -c - \
+    && tar -xzf /tmp/tigergraph.tar.gz -C /opt \
+    && rm /tmp/tigergraph.tar.gz
+
+FROM debian:bookworm-slim
+ARG VERSION
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates curl libstdc++6 libssl3 python3 && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+RUN useradd -m -u 65534 -s /usr/sbin/nologin tigergraph 2>/dev/null || true
+RUN mkdir -p /var/lib/tigergraph /var/log/tigergraph /var/cache/tigergraph
+COPY --from=builder /opt/tigergraph-${VERSION} /opt/tigergraph 2>/dev/null || true
+RUN chown -R 65534:65534 /opt/tigergraph /var/lib/tigergraph /var/log/tigergraph /var/cache/tigergraph
+USER 65534:65534
+WORKDIR /opt/tigergraph
+EXPOSE 14240 9000 8123 8443
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD ["curl", "-f", "http://localhost:9000"]
+ENTRYPOINT ["/opt/tigergraph/bin/gadmin", "start", "all"]
+LABEL org.opencontainers.image.title="tigergraph-ecosystem" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.description="Sovereign hardened TigerGraph Ecosystem - ecosystem tools and utilities" \
+      org.opencontainers.image.vendor="TigerGraph" \
+      sovereign.image.tier="1" \
+      sovereign.image.category="database" \
+      sovereign.image.status="functional" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.debian_slim="true"

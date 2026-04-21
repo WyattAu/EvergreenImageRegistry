@@ -1,12 +1,22 @@
 # CHECKSUMS - sqlcipher
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "sqlcipher"
-version = "pending"
-created = "2026-04-21T15:22:20Z"
+version = "4.5.6"
+created = "2026-04-21"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+verifier = "PENDING"
+
+[download]
+url = "https://github.com/sqlcipher/sqlcipher/archive/refs/tags/v4.5.6.tar.gz"
+filename = "sqlcipher-4.5.6.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = "https://github.com/sqlcipher/sqlcipher/archive/refs/tags/v4.5.6.tar.gz"
+format = ""

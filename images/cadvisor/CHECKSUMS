@@ -1,12 +1,26 @@
 # CHECKSUMS - cadvisor
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: VERIFIED
+#
+# Verification performed by download-and-compare
+# Method: curl + sha256sum against upstream release notes
+# Date: 2026-04-21
 
 [metadata]
 image = "cadvisor"
-version = "pending"
-created = "2026-04-21T00:00:00Z"
-last_verified = ""
-verification_method = "pending"
+version = "0.49.1"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "upstream-release-notes"
+verifier = "manual"
+
+[download]
+url = "https://github.com/google/cadvisor/releases/download/v0.49.1/cadvisor-v0.49.1-linux-amd64"
+filename = "cadvisor-v0.49.1-linux-amd64"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "1d5cc701a3fcdf1e8ed1c86da5304b896a6997d9e6673139e78a6f87812495b0"
+
+[upstream_checksum]
+url = "https://github.com/google/cadvisor/releases/tag/v0.49.1"
+format = "sha256"

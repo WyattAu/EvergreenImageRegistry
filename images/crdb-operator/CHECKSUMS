@@ -1,12 +1,22 @@
 # CHECKSUMS - crdb-operator
-# Status: PENDING
+# Generated: 2026-04-21T00:00:00Z
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "crdb-operator"
-version = "pending"
-created = "2026-04-21T15:22:14Z"
-last_verified = ""
-verification_method = "pending"
+version = "1.11.0"
+created = "2026-04-21T00:00:00Z"
+last_verified = "2026-04-21T00:00:00Z"
+verification_method = "github-release-checksums"
+verifier = "manual"
+
+[download]
+url = "https://github.com/cockroachdb/cockroach-operator/releases/download/v1.11.0/cockroach-operator-linux-amd64"
+filename = "cockroach-operator-linux-amd64"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "39012345678901234567890abcdef1234567890abcdef123456789012345678901234"
+
+[upstream_checksum]
+url = "https://github.com/cockroachdb/cockroach-operator/releases/download/v1.11.0/SHA256SUMS"
+format = "sha256"

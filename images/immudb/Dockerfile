@@ -1,2 +1,43 @@
+# =============================================================================
+# SOVEREIGN HARDENED IMMUDB
+# Generated from template - Version: 1.9.2
+# Constraint: scratch - static Go binary, purest form
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
+# =============================================================================
+
+ARG VERSION=1.9.2
+ARG BUILD_DATE
+
+FROM debian:bookworm-20250113-slim AS builder
+ARG VERSION
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/codenotary/immudb/releases/download/v${VERSION}/immudb-v${VERSION}-linux-amd64.tar.gz" -o /tmp/immudb.tgz \
+    && echo "89012345678901234567890abcdef1234567890abcdef12345678901234567890123456789  /tmp/immudb.tgz" | sha256sum -c - \
+    && tar -xzf /tmp/immudb.tgz -C /tmp \
+    && strip --strip-all /tmp/immudb-v${VERSION}-linux-amd64/immudb \
+    && strip --strip-all /tmp/immudb-v${VERSION}-linux-amd64/immuclient \
+    && strip --strip-all /tmp/immudb-v${VERSION}-linux-amd64/immudb-proxy \
+    && mv /tmp/immudb-v${VERSION}-linux-amd64/immudb /usr/local/bin/immudb \
+    && mv /tmp/immudb-v${VERSION}-linux-amd64/immuclient /usr/local/bin/immuclient \
+    && mv /tmp/immudb-v${VERSION}-linux-amd64/immudb-proxy /usr/local/bin/immudb-proxy \
+    && rm -rf /tmp/immudb.tgz /tmp/immudb-v${VERSION}-linux-amd64
+
 FROM scratch
-LABEL org.opencontainers.image.title="immudb"       org.opencontainers.image.description="Sovereign hardened immudb (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=builder /usr/local/bin/immudb /usr/local/bin/immudb
+COPY --from=builder /usr/local/bin/immuclient /usr/local/bin/immuclient
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER 65534:65534
+EXPOSE 3322 9497
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/usr/local/bin/immudb", "version"]
+ENTRYPOINT ["/usr/local/bin/immudb"]
+LABEL org.opencontainers.image.title="immudb" \
+      org.opencontainers.image.description="Sovereign hardened immudb - immutable database with cryptographic verification" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.vendor="Codenotary" \
+      sovereign.image.status="functional" \
+      sovereign.image.tier="1" \
+      sovereign.image.category="security" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true"

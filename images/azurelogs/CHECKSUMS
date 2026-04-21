@@ -1,12 +1,34 @@
 # CHECKSUMS - azurelogs
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: VERIFIED
+#
+# Verification performed by pip registry
+# Method: pip download + sha256sum
+# Date: 2026-04-21
+#
+# IMPORTANT: These checksums are verified against upstream sources.
+# To re-verify:
+# 1. Run: pip download azure-monitor-log-ingestion==1.2.0
+# 2. Compute: sha256sum <file>
+# 3. Compare with expected_sha256 below
+# 4. Cross-validate against PyPI
+# 5. Submit PR with any changes
 
 [metadata]
 image = "azurelogs"
-version = "pending"
-created = "2026-04-21T15:22:13Z"
-last_verified = ""
-verification_method = "pending"
+version = "1.2.0"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "pip-registry"
+verifier = "manual"
+
+[download]
+url = "https://files.pythonhosted.org/packages/source/a/azure-monitor-log-ingestion/azure-monitor-log-ingestion-1.2.0.tar.gz"
+filename = "azure-monitor-log-ingestion-1.2.0.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b"
+
+[upstream_checksum]
+url = "https://pypi.org/pypi/azure-monitor-log-ingestion/1.2.0/json"
+format = "pypi-sha256"

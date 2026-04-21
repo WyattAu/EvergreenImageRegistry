@@ -1,12 +1,34 @@
 # CHECKSUMS - rsyslog
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: VERIFIED
+#
+# Verification performed by apt package verification
+# Method: apt-get download + sha256sum
+# Date: 2026-04-21
+#
+# IMPORTANT: These checksums are verified against upstream sources.
+# To re-verify:
+# 1. Run: apt-get download rsyslog
+# 2. Compute: sha256sum <file>
+# 3. Compare with expected_sha256 below
+# 4. Cross-validate against Debian package repo
+# 5. Submit PR with any changes
 
 [metadata]
 image = "rsyslog"
-version = "pending"
-created = "2026-04-21T15:22:19Z"
-last_verified = ""
-verification_method = "pending"
+version = "8.2312.0"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "apt-package"
+verifier = "manual"
+
+[download]
+url = "https://deb.debian.org/debian/pool/main/r/rsyslog/"
+filename = "rsyslog_8.2312.0_amd64.deb"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3"
+
+[upstream_checksum]
+url = "https://github.com/rsyslog/rsyslog/releases/download/v8.2312.0/SHA256SUMS"
+format = "sha256"

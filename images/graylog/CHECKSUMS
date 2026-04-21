@@ -1,12 +1,22 @@
 # CHECKSUMS - graylog
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: REQUIRES_VERIFICATION
 
 [metadata]
 image = "graylog"
-version = "pending"
-created = "2026-04-21T15:22:16Z"
+version = "5.1.5"
+created = "2026-04-21"
 last_verified = ""
 verification_method = "pending"
+verifier = "manual"
+
+[download]
+url = "https://packages.graylog2.org/releases/graylog/graylog-5.1.5.tgz"
+filename = "graylog-5.1.5.tgz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "REQUIRES_VERIFICATION"
+
+[upstream_checksum]
+url = ""
+format = ""

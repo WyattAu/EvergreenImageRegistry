@@ -1,2 +1,50 @@
+# =============================================================================
+# SOVEREIGN HARDENED OAUTH2-PROXY-ALPINE
+# OAuth2 reverse proxy (alpine variant name, built on debian-slim/scratch)
+# Constraint: scratch - Go static binary, smallest attack surface
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
+# Alpine is BANNED - using scratch with debian-slim downloader
+# =============================================================================
+
+ARG VERSION=7.6.0
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN curl -fsSL "https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v${VERSION}/oauth2-proxy-v${VERSION}.linux-amd64.tar.gz" -o /oauth2-proxy.tar.gz && \
+    mkdir -p /tmp/oauth2-proxy && \
+    tar -xzf /oauth2-proxy.tar.gz -C /tmp/oauth2-proxy && \
+    strip --strip-all /tmp/oauth2-proxy/oauth2-proxy-v${VERSION}.linux-amd64 && \
+    mv /tmp/oauth2-proxy/oauth2-proxy-v${VERSION}.linux-amd64 /oauth2-proxy && \
+    rm -rf /oauth2-proxy.tar.gz /tmp/*
+
+FROM debian:bookworm-slim AS builder
+RUN mkdir -p /app /var/log/oauth2-proxy /var/cache/oauth2-proxy
+
 FROM scratch
-LABEL org.opencontainers.image.title="oauth2-proxy-alpine"       org.opencontainers.image.description="Sovereign hardened oauth2-proxy-alpine (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=downloader /oauth2-proxy /oauth2-proxy
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /app /app
+COPY --from=builder /var/log/oauth2-proxy /var/log/oauth2-proxy
+COPY --from=builder /var/cache/oauth2-proxy /var/cache/oauth2-proxy
+USER 65534:65534
+WORKDIR /app
+EXPOSE 4180 80 443
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/oauth2-proxy", "--version"]
+ENTRYPOINT ["/oauth2-proxy"]
+LABEL org.opencontainers.image.title="oauth2-proxy-alpine" \
+      org.opencontainers.image.version="7.6.0" \
+      org.opencontainers.image.vendor="OAuth2 Proxy" \
+      org.opencontainers.image.source="https://github.com/oauth2-proxy/oauth2-proxy" \
+      org.opencontainers.image.description="OAuth2 reverse proxy (alpine variant, built without Alpine)" \
+      sovereign.image.tier="1" \
+      sovereign.image.category="security" \
+      sovereign.image.status="functional" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="3s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="3000ms"

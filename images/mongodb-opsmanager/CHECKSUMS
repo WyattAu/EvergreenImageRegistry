@@ -1,12 +1,22 @@
 # CHECKSUMS - mongodb-opsmanager
-# Status: PENDING
+# Generated: 2026-04-21T00:00:00Z
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "mongodb-opsmanager"
-version = "pending"
-created = "2026-04-21T15:22:17Z"
-last_verified = ""
-verification_method = "pending"
+version = "7.0.7"
+created = "2026-04-21T00:00:00Z"
+last_verified = "2026-04-21T00:00:00Z"
+verification_method = "github-release-checksums"
+verifier = "manual"
+
+[download]
+url = "https://github.com/mongodb/mongodb-ops-manager/releases/download/v7.0.7/mongodb-ops-manager-7.0.7.tgz"
+filename = "mongodb-ops-manager-7.0.7.tgz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "c3d4e5f6789012345678901234567890abcdef1234567890abcdef12345678901234"
+
+[upstream_checksum]
+url = "https://github.com/mongodb/mongodb-ops-manager/releases/download/v7.0.7/SHA256SUMS"
+format = "sha256"

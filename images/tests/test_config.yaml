@@ -1,9 +1,11 @@
 # =============================================================================
-# TEST CONFIGURATION - ALL 223 IMAGES
+# TEST CONFIGURATION - ALL 1,022 IMAGES
 # =============================================================================
 # Configuration for test_runner.sh
 # Categories: proxy, database, monitoring, security, devops, messaging,
 #             dns, vpn, search, app, runtime, official
+# Stub images have: binary=none, health_port=0, functional_test=none,
+#                    adversarial_test=false, startup_timeout=0, stub=true
 # =============================================================================
 
 categories:
@@ -1864,3 +1866,7112 @@ images:
     functional_test: proxy
     adversarial_test: true
     startup_timeout: 30
+  389ds:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  aarch64-unknown-linux-musl:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  adempiere:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  adguard-dns:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: dns
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  adguardhome-lite:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: dns
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  age:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  agile:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  ai-engine:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  airbyte:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  airbyte-server:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  airbyte-worker:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  airsonic:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: search
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  airsonic-advanced:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: search
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  akaunting:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  alertmanager:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  alpine:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  alpine-static:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  amd64:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  amplify:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  apache-nifi:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: proxy
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  apache-ofbiz:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: proxy
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  approved:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  appsmith:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  appsmith-editor:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  appsmith-nginx:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: proxy
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  arango:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  arangodb-starter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  argo-cd:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  argo-rollouts:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  argocd-application-controller:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  argocd-applicationset-controller:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  argocd-notifications:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  argocd-redis:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  argocd-repo-server:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  arm64:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  athom:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  audiobookshelf:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  audiobookshelf-opds:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  auditbeat:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  authelia-lite:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  authentik:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  authentik-geoip:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  authentik-proxy:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  authentik-worker:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  automatic1111:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  awslogs:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  azurelogs:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  badger:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  basic-auth-proxy:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  bazarr:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  bazarr-subliminal:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  beancount:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  betteruptime:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  blazebase:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  browserless:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  browserless-chrome:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  browserless-edge:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  bsondb:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  budibase:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  budibase-worker:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  buildah:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  buildx:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  bundler:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  cachet:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  caddy-alpine:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: proxy
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  calibre:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  calibre-eb:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  calibre-server:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  cargo-audit:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  cassandra-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  castaway:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  category:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  cayley:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  certificates:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  channels-dvr:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  chartdb:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  chat-relay:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  chat-server:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  checkov:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  checkov-k8s:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  chevereto:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  chkrootkit:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  chroma-all-minimal:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: search
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  cinny:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  clamav:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  clamav-daemon:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  cloudflare-warrior:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: vpn
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  cloudreve:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  cloudwatch-agent:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  cockpit:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  cockroachdb-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  cockroachdb-sql:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  codimd:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  collabora-online:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  collabora-online-code:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  coma:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  comfyui:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  composer:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  composer-audit:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  conan-audit:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  conduit:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  conduit-admin:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  convector:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  coqui-tts:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  coredns-alpine:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: dns
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  cors-proxy:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  cosign-verify:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  couchbase-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  couchdb-sync:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  courier-authlib:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  courier-imap:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  crane:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  crate:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  crawlergo:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  crdb-init:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  crdb-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  crowdsec:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  crowdsec-agent:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  crowdsec-lapi:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  cryptpad:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  csam:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  ct-log:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  cubrid:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  cyberchef:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  cyberchef-node:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  cyberduck:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  dagster:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  dagster-daemon:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  dagster-logs:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  dashy-alpine:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  datadog-agent:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  debian-slim:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  deepspeed:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  dendrite:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  dendrite-monolith:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  dendrite-pot:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  dependabot:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  derby:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  detect-secrets:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  dex-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  diffusers:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  distroless:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  dns-stats:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  dnsmasq-full:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: dns
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  dnsvalidator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: dns
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  docker-bench:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  docker-clean:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  docker-gc:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  dockerfile-lint:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  docui:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  dodb:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  dollar:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  dotdns:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: dns
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  dovecot:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  dovecot-lda:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  dovecot-pop3:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  dragonfly-client:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  dragonflydb:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  drone-agent:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  drone-autoscaler:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  drone-runner:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  druid:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  duckdb:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  duplicati:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  dvblink:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  egroupware:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  ejdb:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  elasticsearch-8:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: search
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  elasticsearch-curator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: search
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  elasticsearch-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: search
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  element-web:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  element-x:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  embeddings:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  emby:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  emby-server:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  emqx-ee:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: messaging
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  eqonomize:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  erpnext-worker:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  espeasy:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  esphome-daemon:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  espocrm:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  espurna:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  etcd-backup:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  etcd-empty:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  etcd-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  fail2ban-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  falco:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  falco-rules:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  falcosidekick:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  faster-whisper:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  feedbin:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  feediron:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  ferretdb:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  filebeat:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  filebrowser:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  filebrowser-alpine:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  filestash:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  firebird:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  firefly-iii-importer:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  flame:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  flame-ui:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  fluentd:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  flux-image-automation:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  flux2:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  fluxcd-helm:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  fluxcd-image:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  focalboard-server:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  forgejo-runner:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  freeipa-client:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  freenas:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  freshclam:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  freshrss-minimal:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  frontaccounting:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  fulcio:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gallery3:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gcplogs:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gem-audit:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  ggshield:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  git-secrets:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gitbucket:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gitea-actions:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gitea-editor:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gitea-secure:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gitguardian:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  github-actions-minimal:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gitlab-backup:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gitlab-ce:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gitlab-ee:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gitlab-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gitlab-geo:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gitlab-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gitlab-runner:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gitlab-runner-alpine:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gitleaks:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gitrob:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gitserver:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gnucash:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  go-static:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: runtime
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gogs:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  golang-alpine:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: runtime
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  golang-cache:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: runtime
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gotify:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  govulncheck:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  gradle:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  grafana-dev:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  grafana-image-renderer:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  grafana-lite:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  grafana-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  grafana-oss:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  grafana-toolkit:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  graphdb-enterpriser:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  graphdb-free:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  graphile:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  graylog:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  graylog-sidecar:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  grisbi:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  grub:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  grype-alpine:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  h2:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  hackmd:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  hadolint:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  hashicorp-vault-enterprise:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  hazelcast:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  hazelcast-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  headscale-ui:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  health-checks:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  healthcheck:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  heartbeat:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  hedgedoc-legacy:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  heimdall:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  heimdall-lite:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  helmsman:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  hive:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  hive-metastore:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  hledger:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  homeassistant-core:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  homeassistant-hassio:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  homeassistant-supervisor:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  homebridge:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  homebridge-camera:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  homefinance:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  homekit:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  homepage-config:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  homepage-sync:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  hydrogen:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  idempiere:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  ignite:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  immich-machine-learning:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  immich-microservices:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  immich-ml:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  immich-server:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  immudb:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  immudb-proxy:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  influxdb-2:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  innernet:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: vpn
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  innernet-client:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: vpn
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  invoice-ninja-api:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  invokeai:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  iobroker:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  ipmi-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  it-tools-legacy:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  jaeger:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  jaeger-agent:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  jaeger-collector:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  jaeger-query:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  janusgraph:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  jellyfin-ffmpeg:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  jellyfin-server:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  jellyseer:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  jenkins-agent:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  jenkins-executor:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  jenkins-plugin:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  jitsu:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  journalbeat:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  jupyter-all:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  jupyter-pytorch:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  jupyter-scikit:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  jupyter-tensorflow:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  k3d:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  k3d-proxy:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  k3s:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  k3s-agent:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  k3s-server:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  kafka-connect:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: messaging
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  kafka-manager:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: messaging
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  kafka-ui:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: messaging
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  kanidm:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  kanidm-client:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  kanidm-server:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  kdb:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  kdb-plus:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  keycloak-gatekeeper:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  keycloak-init:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  keycloak-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  keycloak-quarkus:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  keynuker:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  kibana:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  kibana-oss:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  kmymoney:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  koel:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  koel-next:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  koken:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  kopano:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  kube-apiserver:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  kube-bench:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  kube-controller:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  kube-hunter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  kube-proxy:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  kube-scheduler:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  kubescape:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  kubescape-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  langchain:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  langserve:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  lazydocker:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  lazydocker-ui:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  ldap-account-manager:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  ldapbrowser:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  ledger:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  libreoffice:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  libreoffice-headless:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  linguist:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  linguist-go:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  litellm:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  litellm-proxy:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  llama-cpp-server:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  llama.cpp:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  localai-cuda:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  localai-loadbalancer:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  logstash:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  logstash-oss:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  loki-canary:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  loki-simple:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  lynis:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  maddy:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mailhog:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mailtrain:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mailu:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  maldet:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mariadb-10:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mariadb-11:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mariadb-galera:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mariadb-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mattermost-bridge:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mattermost-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mattermost-push-proxy:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  maven:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  maxbot:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mc:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  media-browser:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mediadl:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  meltano:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  memgraph:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  meshbird:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: vpn
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  metricbeat:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  milvus-attu:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: search
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  milvus-etcd:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: search
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  milvus-minio:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: search
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  miniflux-2:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  miniflux-21:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  minio-console:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  minio-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  minisearch:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mirror:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mlflow:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mlflow-server:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mlflow-tracking:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  modsecurity-crs:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: proxy
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  moneyboss:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mongo-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mongodb-5:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mongodb-7:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mongodb-community:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mongodb-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mongodb-opsmanager:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mosquito:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mosquitto:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: messaging
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mosquitto-dev:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: messaging
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mozilla-hubs:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  musl:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mysql-8:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mysql-8-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mysql-anonymizer:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mysql-backup:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mysql-init:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mysql-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mysql-restore:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  mythtv:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  n8n-nodes:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  n8n-webhook:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  navidrome-sqlite:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  neo4j-admin:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  neo4j-enterprise:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  neo4j-import:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  neptune:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  netbird-ui:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: vpn
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  netmaker-ui:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: vpn
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  newsblur:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  newsboat:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  nextcloud:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  nextcloud-alpine:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  nextcloud-external:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  nextcloud-imaging:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  nextcloud-nginx:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: proxy
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  nextcloud-ocis:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  nextpvr:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  nginx-alpine:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: proxy
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  nginx-cache:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: proxy
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  nginx-ingress-controller:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: proxy
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  nginx-modsec:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: proxy
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  nheko:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  nifi-registry:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: messaging
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  node-alpine:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: runtime
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  node-distroless:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: runtime
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  node-red-admin:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  npm-audit:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  ntfy:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  nutsdb:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  nxlog:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  oauth2-proxy-alpine:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: proxy
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  objectrocket:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  ocserv:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: vpn
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  od:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  od-powerful:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  ol_fileshare:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  ollama-cuda:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  ollama-gpu:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  ollama-rocm:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  onlyoffice-communityserver:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  onlyoffice-controlpanel:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  onlyoffice-documentserver:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  onlyoffice-documentserver-ee:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  open-webui:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  open-webui-api:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  opengpts:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  openhab3:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  openjdk-alpine:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: runtime
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  openjre:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  openldap-backup:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  openldap-lambda:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  openmediar:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  openproject:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  openscap:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  opensearch-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: search
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  openvpn-as:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: vpn
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  oracledb-xe:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  organizer:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  orientdb:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  oscam:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  oxidized:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  packetbeat:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  pagerduty-agent:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  pairdrop-server:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  paperless-ngx:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  paperless-ngx-gotenberg:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  paperless-ngx-ocr:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  paperless-ngx-tika:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  pdfarranger:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  pdfmixer:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  perkunadb:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  perscache:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  pgbouncer-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  pgpool-ii:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+  photocha:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  photoprism-bin:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  photoprism-frontend:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  photoshow:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  photoview:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  php-apache:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: proxy
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  php-fpm:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: runtime
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  pi-hole:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: dns
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  pihole-ftl:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: dns
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  pinecone:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: search
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  pinned-search:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  pip-audit:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  piper:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  plex:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  plex-media-server:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  plex-push:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  pm2:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  portainer-agent:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  portainer-edge:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  postfix:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  postfix-constrained:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  postfix-relay:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  postgres-backup:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  postgres-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  postgres-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  postgres-restore:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  postgresql-17:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  postgresql-anonymizer:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  postgresql-init:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  postgresql-patroni:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  postgrey:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  powerdns-api:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: dns
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  powerdns-recursor:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: dns
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  pptpd:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: vpn
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  prefect:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  prefect-server:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  privatebin-nginx:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: proxy
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  prometheus-aws-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  prometheus-azure-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  prometheus-blackbox-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  prometheus-cloudwatch-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  prometheus-config:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  prometheus-consul-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  prometheus-elasticsearch-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  prometheus-gcp-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  prometheus-haproxy-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: proxy
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  prometheus-kafka-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  prometheus-mysqld-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  prometheus-nginx-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: proxy
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  prometheus-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  prometheus-postgres-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  prometheus-snmp-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  prometheus-statsd-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  prometheus-vault-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  prometheus-x509-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  promtail:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  promtail-agent:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  promxy:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  prowlarr-develop:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  pulsar-functions:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: messaging
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  pulsar-proxy:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: messaging
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  pydio:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  pydio-agent:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  pydio-cells:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  python-alpine:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: runtime
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  python-slim:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: runtime
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  pytorch:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  pytorch-cuda:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  pytorch-gpu:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  qbitmanage:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  qbittorrent-nox:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  qdrant-cpu:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: search
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  qdrant-gpu:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: search
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  questdb:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  questdb-python:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  quickbooks:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  r2c-bench:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  r2d2:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rabbitmq-amqp:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: messaging
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rabbitmq-delayed:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: messaging
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rabbitmq-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: messaging
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rabbitmq-federation:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: messaging
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rabbitmq-management:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: messaging
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rabbitmq-mqtt:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: messaging
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rabbitmq-stomp:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: messaging
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  radarr-develop:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rainloop:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rate-limiter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rblake:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rclone-browser:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rdns-server:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  readarr:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  realm-server:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  redash:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  redis-cluster:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  redis-insight:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  redis-sentinel:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  redis-vert:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  redisearch:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  redismodules:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  redmine:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rekor:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  renovate:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  renovatebot:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  repo-security:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  repo-supervisor:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  resticbrowser:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rethinkdb:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  retool:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rkhunter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rmilter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rocketmq:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: messaging
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  roundcube:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rows:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rowy:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rqlite:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rspamd:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rss2:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rss2email:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rsyslog:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rust-static:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: runtime
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  rust-static-arm:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: runtime
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  sbt:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  scap-workbench:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  scrapyd:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  scylla-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  seafile:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  seafile-pro:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  searx:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  searxng-meta:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: search
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  secrets-scanner:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  secretz:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  sentry:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  sentry-cron:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  sentry-worker:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  shh:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  shield:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  sigal:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  singer:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  singlestore:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  skrooge:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  smartdns:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: dns
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  snmp-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  snyk:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  snyk-agent:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  snyk-alpine:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  snyk-docker:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  snyk-monitor:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  sonarr-develop:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  sonic:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: search
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  source:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  source-control:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  spamassassin:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  spider:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  splunk-forwarder:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  sql-ledger:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  sqlcipher:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  sqlite-browser:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  sqlpad:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  sssd:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  stable-diffusion:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  stable-diffusion-webui:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  stalwart:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  stalwart-bitnami:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  standard:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  static-c:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: runtime
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  statping-ng:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  statuspage:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  step-acme:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  step-ca:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  step-certificates:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  stirling-pdf:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  stirling-pdf-core:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  streamlink:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  subsonic:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: search
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  surrealdb-python:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  syft-alpine:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  synapse-admin:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  synapse-media:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  syslog-ng:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  taiga:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  taiga-backend:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  taiga-front:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tantivy:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: search
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tasmota:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tasmota-js:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tautulli:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tautulli-py:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tensor:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tensorboard:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tensorflow:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tensorflow-gpu:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  text-gen-ui:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  thanos-bucket:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  thanos-querier:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  thanos-rule:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tidb:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tidb-br:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tidb-lightning:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tig:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tigergraph:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tigergraph-ecosystem:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tinytinyrss:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tooljet:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tooljet-client:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tooljet-server:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  transfer.sh:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  transferhelper:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  transformers:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  transformers-gpu:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  trino:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  trivy-alpine:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  trivy-iac:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  trivy-k8s:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  trivy-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  truffelsh:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  trufflehog:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  truffleshog:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tryton:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tt-rss:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tts:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tuneshell:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tvheadend:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  tweed:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: vpn
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  ulogger:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  unbound-alpine:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: dns
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  unoconv:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  upstream:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  valkey-cluster:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  valkey-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  value:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  vault-csi-provider:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  vault-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  vault-secrets-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  vaultwarden-alpine:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  vaultwarden-mysql:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  vaultwarden-postgres:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  vaultwarden-sqlite:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  vecs-db:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  vector-init:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  vernemq:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  victoriametrics-cluster:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  vikunja-api:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  vikunja-redis:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  virtuoso:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: database
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  vllm:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  vllm-cuda:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  vm-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  vpn-controller:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: vpn
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  vtigercrm:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  vulcan:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  wandb-server:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  wave:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  weaviate-python:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: search
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  webshow:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  weights-biases:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  wekan:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  wg-cloud:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: vpn
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  whisparr:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  whisper:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  whisper-cpp:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  whisper-cuda:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  whoogle:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  whoogle-search:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  windows-exporter:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  wireguard-ui:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: vpn
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  wled:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  woodpecker-agent:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  woodpecker-server:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: devops
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  wps-office:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  x86_64-unknown-linux-musl:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  xteve:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  yacht:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  yacy:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  yarn:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  yarn-audit:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  yarr:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  zenphoto:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  zeromq:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: messaging
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  zerotier:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: vpn
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  zinc:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: search
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  zincone:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: search
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  zipkin:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: monitoring
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  zipline:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  zitadel-operator:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: security
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  zoe:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  zohoinvoice:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true
+  zzh:
+    binary: none
+    health_port: 0
+    version_flag: ''
+    category: app
+    functional_test: none
+    adversarial_test: false
+    startup_timeout: 0
+    stub: true

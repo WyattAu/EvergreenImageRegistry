@@ -1,12 +1,16 @@
 # CHECKSUMS - mariadb-operator
 # Status: PENDING
+# Source: https://github.com/mariadb-operator/mariadb-operator/releases/download/v0.35.0/mariadb-operator-0.35.0-linux-amd64.tar.gz
 
 [metadata]
 image = "mariadb-operator"
-version = "pending"
+version = "0.35.0"
 created = "2026-04-21T15:22:17Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "sha256sum"
+
+[source]
+url = "https://github.com/mariadb-operator/mariadb-operator/releases/download/v0.35.0/mariadb-operator-0.35.0-linux-amd64.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"

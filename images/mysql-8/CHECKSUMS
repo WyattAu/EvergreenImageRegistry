@@ -1,12 +1,16 @@
 # CHECKSUMS - mysql-8
 # Status: PENDING
+# Source: https://dev.mysql.com/downloads/repo/apt/
 
 [metadata]
 image = "mysql-8"
-version = "pending"
+version = "8.0.39"
 created = "2026-04-21T15:22:17Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "apt_repo"
+
+[source]
+url = "https://dev.mysql.com/get/mysql-apt-config_0.8.33-1_all.deb"
 
 [checksum]
 expected_sha256 = "PENDING"

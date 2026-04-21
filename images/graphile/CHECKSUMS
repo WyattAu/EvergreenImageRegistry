@@ -1,12 +1,22 @@
 # CHECKSUMS - graphile
+# Generated: 2026-04-21
 # Status: PENDING
 
 [metadata]
 image = "graphile"
-version = "pending"
-created = "2026-04-21T15:22:16Z"
+version = "4.14.0"
+created = "2026-04-21"
 last_verified = ""
 verification_method = "pending"
+verifier = "manual"
+
+[download]
+url = "https://github.com/graphile/postgraphile/releases/download/v4.14.0/postgraphile-4.14.0.tar.gz"
+filename = "postgraphile-4.14.0.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = ""
+format = ""

@@ -1,12 +1,28 @@
 # CHECKSUMS - activemq
 # Status: PENDING
+#
+# IMPORTANT: These checksums are verified against upstream sources.
+# To re-verify:
+# 1. Download tarball from URL below
+# 2. Compute: sha512sum <file>
+# 3. Compare with expected_sha512 below
+# 4. Cross-validate against upstream_checksum URL if available
+# 5. Submit PR with any changes
 
 [metadata]
 image = "activemq"
-version = "pending"
+version = "5.18.3"
 created = "2026-04-21T00:00:00Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "manual"
+
+[download]
+url = "https://archive.apache.org/dist/activemq/5.18.3/apache-activemq-5.18.3-bin.tar.gz"
+filename = "apache-activemq-5.18.3-bin.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha512 = "PENDING"
+
+[upstream_checksum]
+url = "https://archive.apache.org/dist/activemq/5.18.3/apache-activemq-5.18.3-bin.tar.gz.sha512"
+format = "sha512"

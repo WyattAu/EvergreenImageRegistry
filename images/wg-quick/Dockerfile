@@ -8,9 +8,11 @@
 ARG VERSION=1.0.20210914
 ARG BUILD_DATE
 
+# hadolint ignore=DL3007
 FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
 RUN apk add --no-cache wireguard-tools
 
+# hadolint ignore=DL3007
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN adduser -D -u 65534 appuser 2>/dev/null || true
 RUN mkdir -p /app /var/log/wg /var/cache/wg

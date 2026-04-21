@@ -16,6 +16,7 @@ RUN curl -fsSL -k "https://downloads.scylladb.com/scylladb-${VERSION}/scylla-${V
     rm -f /tmp/scylladb.tar.gz
 
 FROM debian:bookworm-slim
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates libsnappy1v5 liblz4-1 libzstd1 && rm -rf /var/lib/apt/lists/*
 RUN useradd -m -u 65534 -g '' scylla 2>/dev/null || true

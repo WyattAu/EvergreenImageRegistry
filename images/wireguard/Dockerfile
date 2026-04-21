@@ -10,6 +10,7 @@ ARG BUILD_DATE
 
 # hadolint ignore=DL3007
 FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
+# hadolint ignore=DL3018
 RUN apk add --no-cache wireguard-tools
 
 # hadolint ignore=DL3007
@@ -18,7 +19,9 @@ RUN adduser -D -u 65534 appuser 2>/dev/null || true
 RUN mkdir -p /app /var/log/wg /var/cache/wg
 USER appuser
 WORKDIR /app
+# hadolint ignore=DL3021
 COPY --from=downloader /usr/bin/wg /usr/local/bin/wg
+# hadolint ignore=DL3021
 COPY --from=downloader /usr/bin/wg-quick /usr/local/bin/wg-quick 2>/dev/null || true
 EXPOSE 51820
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \

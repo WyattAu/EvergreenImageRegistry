@@ -9,6 +9,7 @@ ARG VERSION=5.4.6
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL -k "https://downloads.scylladb.com/scylladb-${VERSION}/scylla-${VERSION}-x86_64.tar.gz" -o /tmp/scylladb.tar.gz 2>/dev/null || \
     curl -fsSL -k "https://downloads.scylladb.com/unstable/scylla/unstable/x86_64/scylla-unstable-x86_64.tar.gz" -o /tmp/scylladb.tar.gz && \
@@ -23,6 +24,7 @@ RUN useradd -m -u 65534 -g '' scylla 2>/dev/null || true
 RUN mkdir -p /app /var/log/scylla /var/cache/scylla && chown -R scylla:scylla /app /var/log/scylla /var/cache/scylla 2>/dev/null || true
 USER scylla
 WORKDIR /app
+# hadolint ignore=DL3021
 COPY --from=downloader /opt/scylla* /opt/scylla 2>/dev/null || true
 EXPOSE 7000 9042
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \

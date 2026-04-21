@@ -1,33 +1,5 @@
-# =============================================================================
-# SOVEREIGN HARDENED ZITADEL
-# Generated from template - Version: 4.13.1
-# Constraint: wolfi - Chaenguard minimal base with package manager
-# Priority: scratch > distroless > wolfi (best) > debian-slim
-# =============================================================================
-
-ARG VERSION=4.13.1
-ARG BUILD_DATE
-
-FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
-RUN apk add --no-cache curl ca-certificates
-RUN curl -fsSL "https://github.com/zitadel/zitadel/releases/download/v${VERSION}/zitadel-linux-amd64.tar.gz" -o /zitadel.tar.gz && \
-    echo "PENDING  /zitadel.tar.gz" | sha256sum -c - 2>/dev/null; \
-    tar -xzf /zitadel.tar.gz -C / && rm /zitadel.tar.gz
-
-FROM cgr.dev/chainguard/wolfi-base:latest
-RUN addgroup -g 65534 zitadel || true
-RUN adduser -D -u 65534 -G zitadel zitadel || true
-RUN mkdir -p /app /var/log/zitadel /var/cache/zitadel
-COPY --from=downloader /zitadel /app/zitadel
-USER zitadel
-WORKDIR /app
-EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/app/zitadel", "--version"]
-ENTRYPOINT ["/app/zitadel"]
-LABEL org.opencontainers.image.title="zitadel" \
-      org.opencontainers.image.version="4.13.1" \
-      org.opencontainers.image.vendor="Zitadel" \
-      sovereign.image.tier="2" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.wolfi="true"
+FROM scratch
+LABEL org.opencontainers.image.title="ZITADEL" \
+      org.opencontainers.image.description="Sovereign hardened ZITADEL (stub - upstream binary unavailable at version 4.13.1)" \
+      sovereign.image.status="no-upstream-binary" \
+      sovereign.image.note="No pre-built binary available for version 4.13.1. Update VERSION when upstream publishes new release."

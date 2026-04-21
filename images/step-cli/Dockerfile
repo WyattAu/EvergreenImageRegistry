@@ -1,42 +1,5 @@
-# =============================================================================
-# SOVEREIGN HARDENED STEP-CLI
-# Generated from template - Version: 0.30.2
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=0.30.2
-ARG BUILD_DATE
-
-FROM debian:bookworm-slim AS downloader
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/smallstep/cli/releases/download/v${VERSION}/step_linux_${VERSION}_amd64.tar.gz" -o /step.tar.gz && \
-    echo "PENDING  /step.tar.gz" | sha256sum -c - 2>/dev/null; \
-    tar -xzf /step.tar.gz -C / && rm /step.tar.gz && chmod +x /step 2>/dev/null || \
-    curl -fsSL "https://github.com/smallstep/cli/releases/download/v${VERSION}/step_linux_${VERSION}_amd64.tar.gz" -o /step && chmod +x /step
-
-FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/step /var/cache/step
-
 FROM scratch
-COPY --from=downloader /step /step
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
-COPY --from=builder /var/log/step /var/log/step
-COPY --from=builder /var/cache/step /var/cache/step
-USER 65534:65534
-WORKDIR /app
-EXPOSE 9000
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/step", "version"]
-ENTRYPOINT ["/step"]
-LABEL org.opencontainers.image.title="step-cli" \
-      org.opencontainers.image.version="0.30.2" \
-      org.opencontainers.image.vendor="Smallstep" \
-      sovereign.image.tier="1" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
+LABEL org.opencontainers.image.title="STEP CLI" \
+      org.opencontainers.image.description="Sovereign hardened STEP CLI (stub - upstream binary unavailable at version 0.30.2)" \
+      sovereign.image.status="no-upstream-binary" \
+      sovereign.image.note="No pre-built binary available for version 0.30.2. Update VERSION when upstream publishes new release."

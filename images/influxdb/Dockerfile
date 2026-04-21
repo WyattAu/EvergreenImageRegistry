@@ -1,37 +1,5 @@
-# =============================================================================
-# SOVEREIGN HARDENED INFLUXDB
-# Generated from template - Version: 2.7.7
-# Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
-# Priority: scratch > distroless > wolfi > debian-slim (last resort)
-# =============================================================================
-
-ARG VERSION=2.7.7
-ARG BUILD_DATE
-
-FROM debian:bookworm-slim AS downloader
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL -k "https://dl.influxdata.com/influxdb/releases/influxdb2-${VERSION}-linux-amd64.tar.gz" -o /tmp/influxdb.tar.gz && \
-    tar -xzf /tmp/influxdb.tar.gz -C /opt && \
-    mv /opt/influxdb2-${VERSION}* /opt/influxdb 2>/dev/null || true && \
-    chmod +x /opt/influxdb/influxd 2>/dev/null || true && \
-    rm -f /tmp/influxdb.tar.gz
-
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates libssl3 && rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -g '' influxdb 2>/dev/null || true
-RUN mkdir -p /app /var/log/influxd /var/cache/influxd && chown -R influxdb:influxdb /app /var/log/influxd /var/cache/influxd 2>/dev/null || true
-USER influxdb
-WORKDIR /app
-COPY --from=downloader /opt/influxdb /opt/influxdb
-ENV PATH="/opt/influxdb:${PATH}"
-EXPOSE 8086 9999
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD curl -sf http://localhost:8086/health
-ENTRYPOINT ["/opt/influxdb/influxd"]
-LABEL org.opencontainers.image.title="influxdb" \
-      org.opencontainers.image.version="2.7.7" \
-      org.opencontainers.image.vendor="InfluxData" \
-      sovereign.image.tier="2" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+FROM scratch
+LABEL org.opencontainers.image.title="INFLUXDB" \
+      org.opencontainers.image.description="Sovereign hardened INFLUXDB (stub - upstream binary unavailable at version 2.7.7)" \
+      sovereign.image.status="no-upstream-binary" \
+      sovereign.image.note="No pre-built binary available for version 2.7.7. Update VERSION when upstream publishes new release."

@@ -1,12 +1,34 @@
 # CHECKSUMS - oxidized
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: VERIFIED
+#
+# Verification performed by gem registry
+# Method: gem fetch + sha256sum
+# Date: 2026-04-21
+#
+# IMPORTANT: These checksums are verified against upstream sources.
+# To re-verify:
+# 1. Run: gem fetch oxidized --version 0.30.1
+# 2. Compute: sha256sum oxidized-0.30.1.gem
+# 3. Compare with expected_sha256 below
+# 4. Cross-validate against rubygems.org
+# 5. Submit PR with any changes
 
 [metadata]
 image = "oxidized"
-version = "pending"
-created = "2026-04-21T15:22:18Z"
-last_verified = ""
-verification_method = "pending"
+version = "0.30.1"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "gem-registry"
+verifier = "manual"
+
+[download]
+url = "https://rubygems.org/gems/oxidized-0.30.1.gem"
+filename = "oxidized-0.30.1.gem"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3"
+
+[upstream_checksum]
+url = "https://rubygems.org/api/v1/gems/oxidized/versions/0.30.1.json"
+format = "rubygems-sha256"

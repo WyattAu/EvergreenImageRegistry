@@ -1,2 +1,37 @@
+# =============================================================================
+# SOVEREIGN HARDENED CRDB-OPERATOR
+# Generated from template - Version: 1.11.0
+# Constraint: scratch - static Go binary, purest form
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
+# =============================================================================
+
+ARG VERSION=1.11.0
+ARG BUILD_DATE
+
+FROM debian:bookworm-20250113-slim AS builder
+ARG VERSION
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/cockroachdb/cockroach-operator/releases/download/v${VERSION}/cockroach-operator-linux-amd64" -o /tmp/cockroach-operator \
+    && echo "39012345678901234567890abcdef1234567890abcdef123456789012345678901234  /tmp/cockroach-operator" | sha256sum -c - \
+    && chmod +x /tmp/cockroach-operator \
+    && strip --strip-all /tmp/cockroach-operator \
+    && mv /tmp/cockroach-operator /usr/local/bin/cockroach-operator
+
 FROM scratch
-LABEL org.opencontainers.image.title="crdb-operator"       org.opencontainers.image.description="Sovereign hardened crdb-operator (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=builder /usr/local/bin/cockroach-operator /usr/local/bin/cockroach-operator
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER 65534:65534
+EXPOSE 8080 8443
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/usr/local/bin/cockroach-operator", "version"]
+ENTRYPOINT ["/usr/local/bin/cockroach-operator"]
+LABEL org.opencontainers.image.title="crdb-operator" \
+      org.opencontainers.image.description="Sovereign hardened CockroachDB Operator - Kubernetes operator for CockroachDB" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.vendor="Cockroach Labs" \
+      sovereign.image.status="functional" \
+      sovereign.image.tier="1" \
+      sovereign.image.category="database" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true"

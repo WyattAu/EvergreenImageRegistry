@@ -1,12 +1,24 @@
 # CHECKSUMS - wg-quick
-# Status: PENDING
+# Status: PENDING_VERIFICATION
+#
+# This image uses wireguard-tools from Debian packages.
+# Verification: apt-get source wireguard-tools, verify package integrity.
 
 [metadata]
 image = "wg-quick"
-version = "pending"
+version = "1.0.20210914"
 created = "2026-04-21T00:00:00Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "package-integrity"
+verifier = "manual"
+
+[download]
+url = "https://download.wireguard.com/linux/wireguard-tools/wireguard-tools-1.0.20210914.tar.xz"
+filename = "wireguard-tools-1.0.20210914.tar.xz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = "https://download.wireguard.com/linux/wireguard-tools/wireguard-tools-1.0.20210914.tar.xz.asc"
+format = "sha256"

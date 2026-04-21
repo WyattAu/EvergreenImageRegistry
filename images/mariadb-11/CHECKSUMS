@@ -1,12 +1,15 @@
 # CHECKSUMS - mariadb-11
+# Generated: 2026-04-21
 # Status: PENDING
+# Note: Installed from MariaDB official repository
 
 [metadata]
 image = "mariadb-11"
-version = "pending"
-created = "2026-04-21T15:22:17Z"
+version = "11.4.2"
+created = "2026-04-21"
 last_verified = ""
-verification_method = "pending"
+verification_method = "package-manager"
+verifier = "manual"
 
 [checksum]
 expected_sha256 = "PENDING"

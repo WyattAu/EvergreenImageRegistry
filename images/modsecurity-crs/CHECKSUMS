@@ -1,12 +1,23 @@
 # CHECKSUMS - modsecurity-crs
+# Generated: 2026-04-21
 # Status: PENDING
+# Note: Cloned from git, no tarball checksum
 
 [metadata]
 image = "modsecurity-crs"
-version = "pending"
-created = "2026-04-21T15:22:17Z"
+version = "3.3.5"
+created = "2026-04-21"
 last_verified = ""
-verification_method = "pending"
+verification_method = "git-clone"
+verifier = "manual"
+
+[download]
+url = "https://github.com/coreruleset/coreruleset/archive/refs/tags/v3.3.5.tar.gz"
+filename = "coreruleset-3.3.5.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = ""
+format = ""

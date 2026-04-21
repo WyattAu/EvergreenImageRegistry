@@ -1,12 +1,22 @@
 # CHECKSUMS - ipmi-exporter
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: VERIFIED
 
 [metadata]
 image = "ipmi-exporter"
-version = "pending"
-created = "2026-04-21T15:22:16Z"
-last_verified = ""
-verification_method = "pending"
+version = "1.8.0"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "github-release-checksums"
+verifier = "manual"
+
+[download]
+url = "https://github.com/prometheus-community/ipmi_exporter/releases/download/v1.8.0/ipmi_exporter-1.8.0.linux-amd64.tar.gz"
+filename = "ipmi_exporter-1.8.0.linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "6cb06d3da24f24b0ec5ee9a403b908a22d10eaa4bc4e2f06030ea59425ef80d6"
+
+[upstream_checksum]
+url = "https://github.com/prometheus-community/ipmi_exporter/releases/download/v1.8.0/sha256sums.txt"
+format = "sha256"

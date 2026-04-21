@@ -1,2 +1,45 @@
+# =============================================================================
+# SOVEREIGN HARDENED FAIL2BAN EXPORTER
+# Prometheus exporter for fail2ban metrics
+# Constraint: scratch - pure Go static binary, smallest attack surface
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
+# =============================================================================
+
+ARG VERSION=0.10.0
+ARG BUILD_DATE
+
+# hadolint ignore=DL3023
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN curl -fsSL "https://github.com/xperimental/fail2ban-exporter/releases/download/v${VERSION}/fail2ban-exporter-${VERSION}-linux-amd64.tar.gz" -o /fail2ban-exporter.tar.gz && \
+    curl -fsSL "https://github.com/xperimental/fail2ban-exporter/releases/download/v${VERSION}/fail2ban-exporter-${VERSION}-checksums.txt" -o /checksums.txt && \
+    grep "fail2ban-exporter-${VERSION}-linux-amd64.tar.gz" /checksums.txt | sed 's|  \*||' | sha256sum -c - && \
+    tar -xzf /fail2ban-exporter.tar.gz -C /tmp/ && \
+    strip --strip-all /tmp/fail2ban-exporter && \
+    mv /tmp/fail2ban-exporter /fail2ban-exporter && \
+    rm -rf /fail2ban-exporter.tar.gz /checksums.txt /tmp/*
+
 FROM scratch
-LABEL org.opencontainers.image.title="fail2ban-exporter"       org.opencontainers.image.description="Sovereign hardened fail2ban-exporter (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=downloader /fail2ban-exporter /fail2ban-exporter
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER 65534:65534
+WORKDIR /app
+EXPOSE 9191
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+    CMD ["/fail2ban-exporter", "--web.listen-address=:9191", "--web.telemetry-path=/metrics", "--fail2ban.socket=/tmp/fail2ban.sock", "--version"]
+ENTRYPOINT ["/fail2ban-exporter"]
+CMD ["--web.listen-address=:9191", "--web.telemetry-path=/metrics", "--fail2ban.socket=/tmp/fail2ban.sock"]
+LABEL org.opencontainers.image.title="fail2ban-exporter" \
+      org.opencontainers.image.version="0.10.0" \
+      org.opencontainers.image.vendor="xperimental" \
+      org.opencontainers.image.source="https://github.com/xperimental/fail2ban-exporter" \
+      sovereign.image.tier="1" \
+      sovereign.image.category="monitoring" \
+      sovereign.image.status="functional" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="3s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="3000ms"

@@ -1,12 +1,24 @@
 # CHECKSUMS - pptpd
-# Status: PENDING
+# Status: PENDING_VERIFICATION
+#
+# This image uses pptpd from Debian packages.
+# Verification: apt-get source pptpd, verify package integrity.
 
 [metadata]
 image = "pptpd"
-version = "pending"
-created = "2026-04-21T15:22:18Z"
+version = "1.10.0"
+created = "2026-04-21T15:22:17Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "package-integrity"
+verifier = "manual"
+
+[download]
+url = "https://sourceforge.net/projects/poptop/files/pptpd/pptpd-1.10.0/pptpd-1.10.0.tar.gz"
+filename = "pptpd-1.10.0.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = ""
+format = ""

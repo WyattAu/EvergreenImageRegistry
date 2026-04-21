@@ -1,12 +1,23 @@
 # CHECKSUMS - redisearch
+# Generated: 2026-04-21
 # Status: PENDING
+# Note: Compiled from source
 
 [metadata]
 image = "redisearch"
-version = "pending"
-created = "2026-04-21T15:22:19Z"
+version = "2.8.13"
+created = "2026-04-21"
 last_verified = ""
-verification_method = "pending"
+verification_method = "source-compile"
+verifier = "manual"
+
+[download]
+url = "https://github.com/RediSearch/RediSearch/archive/refs/tags/v2.8.13.tar.gz"
+filename = "RediSearch-2.8.13.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = ""
+format = ""

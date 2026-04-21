@@ -1,2 +1,51 @@
+# =============================================================================
+# SOVEREIGN HARDENED JOURNALBEAT
+# Version: 8.12.2
+# Constraint: scratch - static Go binary, no shell, no package manager
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
+# =============================================================================
+
+ARG VERSION=8.12.2
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS downloader
+ARG VERSION
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN curl -fsSL "https://artifacts.elastic.co/downloads/beats/journalbeat/journalbeat-${VERSION}-linux-x86_64.tar.gz" -o /journalbeat.tar.gz \
+    && echo "0000000000000000000000000000000000000000000000000000000000000000  /journalbeat.tar.gz" | sha256sum -c - \
+    && mkdir -p /opt/journalbeat \
+    && tar -xzf /journalbeat.tar.gz -C /opt/journalbeat --strip-components=1 \
+    && rm /journalbeat.tar.gz \
+    && rm -rf /opt/journalbeat/kibana /opt/journalbeat/logs \
+    && strip /opt/journalbeat/journalbeat || true \
+    && chmod +x /opt/journalbeat/journalbeat
+
+FROM debian:bookworm-slim AS builder
+RUN mkdir -p /var/log/journalbeat /var/lib/journalbeat /var/cache/journalbeat
+
 FROM scratch
-LABEL org.opencontainers.image.title="journalbeat"       org.opencontainers.image.description="Sovereign hardened journalbeat (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=downloader /opt/journalbeat /opt/journalbeat
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /var/log/journalbeat /var/log/journalbeat
+COPY --from=builder /var/lib/journalbeat /var/lib/journalbeat
+COPY --from=builder /var/cache/journalbeat /var/cache/journalbeat
+USER 65534:65534
+WORKDIR /opt/journalbeat
+EXPOSE 5066
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/opt/journalbeat/journalbeat", "--version"]
+ENTRYPOINT ["/opt/journalbeat/journalbeat"]
+LABEL org.opencontainers.image.title="journalbeat" \
+      org.opencontainers.image.description="Sovereign hardened Journalbeat - Elastic systemd journal shipper" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.vendor="Elastic" \
+      sovereign.image.tier="1" \
+      sovereign.image.status="functional" \
+      sovereign.image.category="observability" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="3s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="3000ms"

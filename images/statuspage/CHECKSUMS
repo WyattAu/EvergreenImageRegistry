@@ -1,12 +1,22 @@
 # CHECKSUMS - statuspage
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "statuspage"
-version = "pending"
-created = "2026-04-21T15:22:20Z"
+version = "5.7.0"
+created = "2026-04-21"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+verifier = "PENDING"
+
+[download]
+url = "https://github.com/cstate/cstate/releases/download/v5.7.0/cstate-v5.7.0-linux-amd64.tar.gz"
+filename = "cstate-v5.7.0-linux-amd64.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = "https://github.com/cstate/cstate/releases/download/v5.7.0/cstate-v5.7.0-linux-amd64.tar.gz"
+format = ""

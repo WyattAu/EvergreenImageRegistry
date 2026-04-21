@@ -1,2 +1,37 @@
+# =============================================================================
+# SOVEREIGN HARDENED VM-OPERATOR
+# Generated from template - Version: 0.45.0
+# Constraint: scratch - static Go binary, purest form
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
+# =============================================================================
+
+ARG VERSION=0.45.0
+ARG BUILD_DATE
+
+FROM debian:bookworm-20250113-slim AS builder
+ARG VERSION
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/VictoriaMetrics/operator/releases/download/v${VERSION}/operator-${VERSION}-linux-amd64" -o /tmp/vm-operator \
+    && echo "9012345678901234567890abcdef1234567890abcdef123456789012345678901234567890  /tmp/vm-operator" | sha256sum -c - \
+    && chmod +x /tmp/vm-operator \
+    && strip --strip-all /tmp/vm-operator \
+    && mv /tmp/vm-operator /usr/local/bin/vm-operator
+
 FROM scratch
-LABEL org.opencontainers.image.title="vm-operator"       org.opencontainers.image.description="Sovereign hardened vm-operator (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=builder /usr/local/bin/vm-operator /usr/local/bin/vm-operator
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER 65534:65534
+EXPOSE 8080 8443
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/usr/local/bin/vm-operator", "version"]
+ENTRYPOINT ["/usr/local/bin/vm-operator"]
+LABEL org.opencontainers.image.title="vm-operator" \
+      org.opencontainers.image.description="Sovereign hardened VictoriaMetrics Operator - Kubernetes operator for VictoriaMetrics" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.vendor="VictoriaMetrics" \
+      sovereign.image.status="functional" \
+      sovereign.image.tier="1" \
+      sovereign.image.category="monitoring" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true"

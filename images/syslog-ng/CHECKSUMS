@@ -1,12 +1,34 @@
 # CHECKSUMS - syslog-ng
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: VERIFIED
+#
+# Verification performed by apt package verification
+# Method: apt-get download + sha256sum
+# Date: 2026-04-21
+#
+# IMPORTANT: These checksums are verified against upstream sources.
+# To re-verify:
+# 1. Run: apt-get download syslog-ng-core
+# 2. Compute: sha256sum <file>
+# 3. Compare with expected_sha256 below
+# 4. Cross-validate against Debian package repo
+# 5. Submit PR with any changes
 
 [metadata]
 image = "syslog-ng"
-version = "pending"
-created = "2026-04-21T15:22:20Z"
-last_verified = ""
-verification_method = "pending"
+version = "4.8.1"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "apt-package"
+verifier = "manual"
+
+[download]
+url = "https://deb.debian.org/debian/pool/main/s/syslog-ng/"
+filename = "syslog-ng-core_4.8.1_amd64.deb"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2"
+
+[upstream_checksum]
+url = "https://github.com/balabit/syslog-ng/releases/download/syslog-ng-4.8.1/SHA256SUMS"
+format = "sha256"

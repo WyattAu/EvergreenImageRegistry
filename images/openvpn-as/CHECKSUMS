@@ -1,12 +1,24 @@
 # CHECKSUMS - openvpn-as
-# Status: PENDING
+# Status: PENDING_VERIFICATION
+#
+# This image uses OpenVPN Access Server from the official repository.
+# Verification: apt-get source openvpn-as, verify package integrity.
 
 [metadata]
 image = "openvpn-as"
-version = "pending"
-created = "2026-04-21T15:22:18Z"
+version = "2.12.1"
+created = "2026-04-21T15:22:17Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "package-integrity"
+verifier = "manual"
+
+[download]
+url = "https://as-repository.openvpn.net/as/debian/pool/main/o/openvpn-as/openvpn-as_2.12.1-debian12_amd64.deb"
+filename = "openvpn-as_2.12.1-debian12_amd64.deb"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = "https://as-repository.openvpn.net/as/debian/pool/main/o/openvpn-as/openvpn-as_2.12.1-debian12_amd64.deb.sha256"
+format = "sha256"

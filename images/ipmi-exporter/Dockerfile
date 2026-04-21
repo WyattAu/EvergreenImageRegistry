@@ -1,2 +1,47 @@
+# =============================================================================
+# SOVEREIGN HARDENED IPMI EXPORTER
+# Version: 1.8.0
+# Constraint: scratch - purest form, no shell, no package manager
+# =============================================================================
+
+ARG VERSION=1.8.0
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/prometheus-community/ipmi_exporter/releases/download/v${VERSION}/ipmi_exporter-${VERSION}.linux-amd64.tar.gz" -o /ipmi_exporter.tar.gz && \
+    echo "6cb06d3da24f24b0ec5ee9a403b908a22d10eaa4bc4e2f06030ea59425ef80d6  /ipmi_exporter.tar.gz" | sha256sum -c - && \
+    tar -xzf /ipmi_exporter.tar.gz -C / && rm /ipmi_exporter.tar.gz && chmod +x /ipmi_exporter-${VERSION}.linux-amd64/ipmi_exporter
+
+FROM debian:bookworm-slim AS builder
+RUN mkdir -p /app /var/log/ipmi_exporter /var/cache/ipmi_exporter
+
 FROM scratch
-LABEL org.opencontainers.image.title="ipmi-exporter"       org.opencontainers.image.description="Sovereign hardened ipmi-exporter (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=downloader /ipmi_exporter-${VERSION}.linux-amd64/ipmi_exporter /ipmi_exporter
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /app /app
+COPY --from=builder /var/log/ipmi_exporter /var/log/ipmi_exporter
+COPY --from=builder /var/cache/ipmi_exporter /var/cache/ipmi_exporter
+USER 65534:65534
+WORKDIR /app
+EXPOSE 9290
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/ipmi_exporter", "--version"]
+ENTRYPOINT ["/ipmi_exporter"]
+LABEL org.opencontainers.image.title="ipmi-exporter" \
+      org.opencontainers.image.version="1.8.0" \
+      org.opencontainers.image.vendor="Prometheus Community" \
+      org.opencontainers.image.description="Prometheus exporter for IPMI sensor metrics" \
+      sovereign.image.tier="1" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="3s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="3000ms" \
+      sovereign.hft.cpu-pins="6-7" \
+      sovereign.hft.cpu-pins-mode="shared" \
+      sovereign.hft.deploy-strategy="standard-rolling" \
+      sovereign.hft.pre-stop-hook="false" \
+      sovereign.hft.connection-drain="false" \
+      sovereign.hft.sched-policy="SCHED_OTHER"

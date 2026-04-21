@@ -1,12 +1,25 @@
-# CHECKSUMS - cloudflare-warrior
-# Status: PENDING
+# CHECKSUMS - cloudflare-warrior (cloudflared)
+# Status: PENDING_VERIFICATION
+#
+# IMPORTANT: These checksums must be verified before use.
+# Method: Download the binary on an air-gapped machine, compute SHA256,
+# then compare against upstream checksum file if available.
 
 [metadata]
 image = "cloudflare-warrior"
-version = "pending"
+version = "2024.4.1"
 created = "2026-04-21T15:22:14Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+verifier = "PENDING"
+
+[download]
+url = "https://github.com/cloudflare/cloudflared/releases/download/2024.4.1/cloudflared-linux-amd64"
+filename = "cloudflared-linux-amd64"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = "https://github.com/cloudflare/cloudflared/releases/download/2024.4.1/cloudflared-linux-amd64.sha256"
+format = "sha256"

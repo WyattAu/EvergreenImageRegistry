@@ -1,2 +1,39 @@
+# =============================================================================
+# SOVEREIGN HARDENED WINDOWS-EXPORTER
+# Prometheus exporter for Windows metrics (cross-compile, Linux binary)
+# Constraint: scratch - static Go binary
+# =============================================================================
+
+ARG VERSION=0.25.0
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/prometheus-community/windows_exporter/releases/download/v${VERSION}/windows_exporter-${VERSION}-linux-amd64.tar.gz" -o /windows_exporter.tar.gz && \
+    tar -xzf /windows_exporter.tar.gz -C / && rm /windows_exporter.tar.gz && \
+    mv /windows_exporter-${VERSION}-linux-amd64/windows_exporter /windows_exporter && \
+    chmod +x /windows_exporter
+
 FROM scratch
-LABEL org.opencontainers.image.title="windows-exporter"       org.opencontainers.image.description="Sovereign hardened windows-exporter (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=downloader /windows_exporter /windows_exporter
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER 65534:65534
+WORKDIR /tmp
+EXPOSE 9182
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/windows_exporter", "--version"]
+ENTRYPOINT ["/windows_exporter"]
+LABEL org.opencontainers.image.title="windows-exporter" \
+      org.opencontainers.image.version="0.25.0" \
+      org.opencontainers.image.vendor="prometheus-community" \
+      org.opencontainers.image.source="https://github.com/prometheus-community/windows_exporter" \
+      org.opencontainers.image.description="Prometheus exporter for Windows metrics" \
+      sovereign.image.tier="1" \
+      sovereign.image.category="monitoring" \
+      sovereign.image.status="functional" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.base="scratch" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="3s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="3000ms"

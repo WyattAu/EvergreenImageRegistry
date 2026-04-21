@@ -1,12 +1,16 @@
 # CHECKSUMS - elasticsearch-curator
 # Status: PENDING
+# Source: https://pypi.org/pypi/elasticsearch-curator/5.8.3
 
 [metadata]
 image = "elasticsearch-curator"
-version = "pending"
+version = "5.8.3"
 created = "2026-04-21T15:22:15Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "pip_hash"
+
+[source]
+url = "https://pypi.org/pypi/elasticsearch-curator/5.8.3"
 
 [checksum]
 expected_sha256 = "PENDING"

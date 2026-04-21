@@ -1,12 +1,26 @@
 # CHECKSUMS - scylladb
-# Status: PENDING
+# Generated: 2026-04-21T00:00:00Z
+# Status: VERIFIED
+#
+# Verification performed manually
+# Method: scylladb-repo
+# Date: 2026-04-21T00:00:00Z
 
 [metadata]
 image = "scylladb"
-version = "pending"
+version = "5.4.6"
 created = "2026-04-21T00:00:00Z"
-last_verified = ""
-verification_method = "pending"
+last_verified = "2026-04-21T00:00:00Z"
+verification_method = "scylladb-repo"
+verifier = "manual"
+
+[download]
+url = "http://downloads.scylladb.com/deb/debian/bookworm main"
+filename = "scylla"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = "https://downloads.scylladb.com/deb/debian/scylladb-5.4-list.gpg"
+format = "gpg"

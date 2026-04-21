@@ -1,12 +1,25 @@
 # CHECKSUMS - coredns-alpine
-# Status: PENDING
+# Status: PENDING_VERIFICATION
+#
+# IMPORTANT: These checksums must be verified before use.
+# Method: Download the binary on an air-gapped machine, compute SHA256,
+# then compare against upstream checksum file if available.
 
 [metadata]
 image = "coredns-alpine"
-version = "pending"
-created = "2026-04-21T15:22:14Z"
+version = "1.11.1"
+created = "2026-04-21T15:22:17Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+verifier = "PENDING"
+
+[download]
+url = "https://github.com/coredns/coredns/releases/download/v1.11.1/coredns_1.11.1_linux_amd64.tgz"
+filename = "coredns_1.11.1_linux_amd64.tgz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = "https://github.com/coredns/coredns/releases/download/v1.11.1/sha256sums.txt"
+format = "sha256"

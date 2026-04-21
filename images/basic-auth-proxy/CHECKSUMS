@@ -1,12 +1,25 @@
 # CHECKSUMS - basic-auth-proxy
 # Status: PENDING
+#
+# This image builds nginx from source. To re-verify:
+# 1. Download: https://nginx.org/download/nginx-1.25.5.tar.gz
+# 2. Compute: sha256sum nginx-1.25.5.tar.gz
+# 3. Compare with expected_sha256 below
 
 [metadata]
 image = "basic-auth-proxy"
-version = "pending"
-created = "2026-04-21T15:22:13Z"
+version = "1.25.5"
+created = "2026-04-21T00:00:00Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "manual"
+
+[download]
+url = "https://nginx.org/download/nginx-1.25.5.tar.gz"
+filename = "nginx-1.25.5.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = "https://nginx.org/download/nginx-1.25.5.tar.gz.asc"
+format = "gpg"

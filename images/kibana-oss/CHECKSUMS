@@ -1,12 +1,23 @@
 # CHECKSUMS - kibana-oss
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: REQUIRES_VERIFICATION
+# Note: Elastic 8.x OSS uses separate download URL
 
 [metadata]
 image = "kibana-oss"
-version = "pending"
-created = "2026-04-21T15:22:16Z"
+version = "8.12.2"
+created = "2026-04-21"
 last_verified = ""
 verification_method = "pending"
+verifier = "manual"
+
+[download]
+url = "https://artifacts.elastic.co/downloads/kibana/kibana-oss-8.12.2-linux-x86_64.tar.gz"
+filename = "kibana-oss-8.12.2-linux-x86_64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "REQUIRES_VERIFICATION"
+
+[upstream_checksum]
+url = "https://artifacts.elastic.co/downloads/kibana/kibana-oss-8.12.2-linux-x86_64.tar.gz.sha512"
+format = "sha512"

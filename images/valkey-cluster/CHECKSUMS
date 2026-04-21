@@ -1,12 +1,16 @@
 # CHECKSUMS - valkey-cluster
 # Status: PENDING
+# Source: https://github.com/valkey-io/valkey/releases/download/7.2.4/valkey-7.2.4.tar.gz
 
 [metadata]
 image = "valkey-cluster"
-version = "pending"
+version = "7.2.4"
 created = "2026-04-21T15:22:30Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "sha256sum"
+
+[source]
+url = "https://github.com/valkey-io/valkey/releases/download/7.2.4/valkey-7.2.4.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"

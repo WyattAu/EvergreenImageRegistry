@@ -1,2 +1,52 @@
+# =============================================================================
+# SOVEREIGN HARDENED MESHBIRD
+# Distributed private networking (Go-based mesh VPN)
+# Constraint: scratch - Go static binary, smallest attack surface
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
+# =============================================================================
+
+ARG VERSION=0.4.0
+ARG BUILD_DATE
+
+ARG GO_VERSION=1.22.4
+
+FROM golang:${GO_VERSION}-bookworm AS builder
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN git clone --depth 1 --branch v${VERSION} \
+    https://github.com/meshbird/meshbird /src && \
+    cd /src && \
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+    -ldflags="-s -w -X main.version=${VERSION}" \
+    -trimpath \
+    -o /meshbird && \
+    strip --strip-all /meshbird
+
+FROM debian:bookworm-slim AS builder2
+RUN mkdir -p /app /var/log/meshbird
+
 FROM scratch
-LABEL org.opencontainers.image.title="meshbird"       org.opencontainers.image.description="Sovereign hardened meshbird (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=builder /meshbird /meshbird
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder2 /app /app
+COPY --from=builder2 /var/log/meshbird /var/log/meshbird
+USER 65534:65534
+WORKDIR /app
+EXPOSE 10500 10500/udp
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/meshbird", "version"]
+ENTRYPOINT ["/meshbird"]
+LABEL org.opencontainers.image.title="meshbird" \
+      org.opencontainers.image.version="0.4.0" \
+      org.opencontainers.image.vendor="Meshbird" \
+      org.opencontainers.image.source="https://github.com/meshbird/meshbird" \
+      org.opencontainers.image.description="Distributed private networking mesh VPN" \
+      sovereign.image.tier="1" \
+      sovereign.image.category="networking" \
+      sovereign.image.status="functional" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="3s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="3000ms"

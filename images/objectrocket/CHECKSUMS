@@ -1,12 +1,15 @@
 # CHECKSUMS - objectrocket
+# Generated: 2026-04-21
 # Status: PENDING
+# Note: Placeholder - ObjectRocket is a managed cloud service
 
 [metadata]
 image = "objectrocket"
-version = "pending"
-created = "2026-04-21T15:22:17Z"
+version = "1.0.0"
+created = "2026-04-21"
 last_verified = ""
 verification_method = "pending"
+verifier = "manual"
 
 [checksum]
 expected_sha256 = "PENDING"

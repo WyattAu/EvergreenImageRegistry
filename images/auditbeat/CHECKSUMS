@@ -1,12 +1,22 @@
 # CHECKSUMS - auditbeat
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: REQUIRES_VERIFICATION
 
 [metadata]
 image = "auditbeat"
-version = "pending"
-created = "2026-04-21T15:22:13Z"
+version = "8.12.2"
+created = "2026-04-21"
 last_verified = ""
 verification_method = "pending"
+verifier = "manual"
+
+[download]
+url = "https://artifacts.elastic.co/downloads/beats/auditbeat/auditbeat-8.12.2-linux-x86_64.tar.gz"
+filename = "auditbeat-8.12.2-linux-x86_64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "REQUIRES_VERIFICATION"
+
+[upstream_checksum]
+url = "https://artifacts.elastic.co/downloads/beats/auditbeat/auditbeat-8.12.2-linux-x86_64.tar.gz.sha512"
+format = "sha512"

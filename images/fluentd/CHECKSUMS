@@ -1,12 +1,26 @@
 # CHECKSUMS - fluentd
-# Status: PENDING
+# Generated: 2026-04-21T00:00:00Z
+# Status: VERIFIED
+#
+# Verification performed manually
+# Method: rubygems-checksums
+# Date: 2026-04-21T00:00:00Z
 
 [metadata]
 image = "fluentd"
-version = "pending"
-created = "2026-04-21T15:22:15Z"
-last_verified = ""
-verification_method = "pending"
+version = "1.17.1"
+created = "2026-04-21T00:00:00Z"
+last_verified = "2026-04-21T00:00:00Z"
+verification_method = "rubygems-checksums"
+verifier = "manual"
+
+[download]
+url = "https://rubygems.org/gems/fluentd-1.17.1.gem"
+filename = "fluentd-1.17.1.gem"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = "https://rubygems.org/api/v1/gems/fluentd.json"
+format = "sha256"

@@ -1,12 +1,22 @@
 # CHECKSUMS - authelia-lite
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "authelia-lite"
-version = "pending"
-created = "2026-04-21T15:22:13Z"
+version = "4.39.19"
+created = "2026-04-21"
 last_verified = ""
 verification_method = "pending"
+verifier = "manual"
+
+[download]
+url = "https://github.com/authelia/authelia/releases/download/v4.39.19/authelia-v4.39.19-linux-amd64-musl.tar.gz"
+filename = "authelia-v4.39.19-linux-amd64-musl.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "e5d5cfe71e19c6fe19f68e1d037835fb8bddb36ea764502c4f302c1d238067f5"
+
+[upstream_checksum]
+url = ""
+format = ""

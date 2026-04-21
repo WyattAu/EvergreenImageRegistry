@@ -1,12 +1,23 @@
 # CHECKSUMS - badger
+# Generated: 2026-04-21
 # Status: PENDING
+# Note: Built from source via go build, no pre-built upstream binary
 
 [metadata]
 image = "badger"
-version = "pending"
-created = "2026-04-21T15:22:13Z"
+version = "4.2.0"
+created = "2026-04-21"
 last_verified = ""
-verification_method = "pending"
+verification_method = "source-compile"
+verifier = "manual"
+
+[download]
+url = "https://github.com/dgraph-io/badger/archive/refs/tags/v4.2.0.tar.gz"
+filename = "badger-4.2.0.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = ""
+format = ""

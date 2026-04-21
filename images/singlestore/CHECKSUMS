@@ -1,12 +1,15 @@
 # CHECKSUMS - singlestore
+# Generated: 2026-04-21
 # Status: PENDING
+# Note: Placeholder - SingleStore is a commercial product
 
 [metadata]
 image = "singlestore"
-version = "pending"
-created = "2026-04-21T15:22:20Z"
+version = "8.5.0"
+created = "2026-04-21"
 last_verified = ""
 verification_method = "pending"
+verifier = "manual"
 
 [checksum]
 expected_sha256 = "PENDING"

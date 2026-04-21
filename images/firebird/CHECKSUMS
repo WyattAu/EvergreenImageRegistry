@@ -1,12 +1,15 @@
 # CHECKSUMS - firebird
+# Generated: 2026-04-21
 # Status: PENDING
+# Note: Installed from Debian package repository
 
 [metadata]
 image = "firebird"
-version = "pending"
-created = "2026-04-21T15:22:15Z"
+version = "4.0.5"
+created = "2026-04-21"
 last_verified = ""
-verification_method = "pending"
+verification_method = "package-manager"
+verifier = "manual"
 
 [checksum]
 expected_sha256 = "PENDING"

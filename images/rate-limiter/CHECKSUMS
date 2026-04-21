@@ -1,12 +1,22 @@
 # CHECKSUMS - rate-limiter
-# Status: PENDING
+# Status: BUILT-FROM-SOURCE
+#
+# This image is built from source rather than downloading a pre-built binary.
+# To re-verify:
+# 1. Clone repo: git clone --depth 1 https://github.com/kuqoi/ratelimiter
+# 2. Build: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath
+# 3. Compute: sha256sum ratelimiter
 
 [metadata]
 image = "rate-limiter"
-version = "pending"
-created = "2026-04-21T15:22:19Z"
+version = "latest"
+created = "2026-04-21T00:00:00Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "source-build"
+
+[source]
+url = "https://github.com/kuqoi/ratelimiter"
+go_version = "1.22.4"
 
 [checksum]
 expected_sha256 = "PENDING"

@@ -1,12 +1,22 @@
 # CHECKSUMS - ignite
+# Generated: 2026-04-21
 # Status: PENDING
 
 [metadata]
 image = "ignite"
-version = "pending"
-created = "2026-04-21T15:22:16Z"
+version = "2.16.0"
+created = "2026-04-21"
 last_verified = ""
 verification_method = "pending"
+verifier = "manual"
+
+[download]
+url = "https://dlcdn.apache.org/ignite/2.16.0/apache-ignite-2.16.0-bin.zip"
+filename = "apache-ignite-2.16.0-bin.zip"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = "https://dlcdn.apache.org/ignite/2.16.0/apache-ignite-2.16.0-bin.zip.sha512"
+format = "sha512"

@@ -1,12 +1,22 @@
 # CHECKSUMS - janusgraph
+# Generated: 2026-04-21
 # Status: PENDING
 
 [metadata]
 image = "janusgraph"
-version = "pending"
-created = "2026-04-21T15:22:16Z"
+version = "1.0.0"
+created = "2026-04-21"
 last_verified = ""
 verification_method = "pending"
+verifier = "manual"
+
+[download]
+url = "https://github.com/JanusGraph/janusgraph/releases/download/v1.0.0/janusgraph-1.0.0.zip"
+filename = "janusgraph-1.0.0.zip"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = ""
+format = ""

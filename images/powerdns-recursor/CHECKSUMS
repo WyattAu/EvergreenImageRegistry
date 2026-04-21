@@ -1,12 +1,22 @@
 # CHECKSUMS - powerdns-recursor
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "powerdns-recursor"
-version = "pending"
-created = "2026-04-21T15:22:18Z"
+version = "bookworm"
+created = "2026-04-21"
 last_verified = ""
-verification_method = "pending"
+verification_method = "apt-integrity"
+verifier = "PENDING"
+
+[download]
+url = "apt://pdns-recursor"
+filename = "pdns-recursor-debian-bookworm"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = ""
+format = "apt-packages"

@@ -1,12 +1,25 @@
 # CHECKSUMS - nginx-cache
-# Status: PENDING
+# Status: PENDING_VERIFICATION
+#
+# IMPORTANT: These checksums must be verified before use.
+# Method: Download the package on an air-gapped machine, compute SHA256,
+# then compare against upstream checksum file if available.
 
 [metadata]
 image = "nginx-cache"
-version = "pending"
+version = "1.27.1"
 created = "2026-04-21T15:22:17Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+verifier = "PENDING"
+
+[download]
+url = "https://nginx.org/packages/debian/pool/nginx/n/nginx/nginx_1.27.1-1~bookworm_amd64.deb"
+filename = "nginx_1.27.1-1~bookworm_amd64.deb"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = "https://nginx.org/packages/debian/pool/nginx/n/nginx/nginx_1.27.1-1~bookworm_amd64.deb.sha256"
+format = "sha256"

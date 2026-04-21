@@ -1,12 +1,22 @@
 # CHECKSUMS - cockroachdb-exporter
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: REQUIRES_VERIFICATION
 
 [metadata]
 image = "cockroachdb-exporter"
-version = "pending"
-created = "2026-04-21T15:22:14Z"
+version = "23.2.3"
+created = "2026-04-21"
 last_verified = ""
 verification_method = "pending"
+verifier = "manual"
+
+[download]
+url = "https://github.com/cockroachdb/cockroach/releases/download/v23.2.3/cockroach-v23.2.3.linux-amd64.tgz"
+filename = "cockroach-v23.2.3.linux-amd64.tgz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "REQUIRES_VERIFICATION"
+
+[upstream_checksum]
+url = "https://github.com/cockroachdb/cockroach/releases/download/v23.2.3/cockroach-v23.2.3.checksum.txt"
+format = "sha256"

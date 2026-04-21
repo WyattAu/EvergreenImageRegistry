@@ -1,12 +1,27 @@
 # CHECKSUMS - dnsmasq-full
-# Status: PENDING
+# Status: BUILT-FROM-SOURCE
+#
+# This image is compiled from source with all features enabled.
+# To re-verify:
+# 1. Download: https://thekelleys.org.uk/dnsmasq/dnsmasq-2.90.tar.gz
+# 2. Compile: make CFLAGS="-DHAVE_DNSSEC -DHAVE_DBUS -DHAVE_CONNTRACK -DHAVE_IDN"
+# 3. Compute: sha256sum /usr/sbin/dnsmasq
 
 [metadata]
 image = "dnsmasq-full"
-version = "pending"
-created = "2026-04-21T15:22:14Z"
+version = "2.90"
+created = "2026-04-21T15:22:17Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "source-build"
+verifier = "manual"
+
+[download]
+url = "https://thekelleys.org.uk/dnsmasq/dnsmasq-2.90.tar.gz"
+filename = "dnsmasq-2.90.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = "https://thekelleys.org.uk/dnsmasq/dnsmasq-2.90.tar.gz.asc"
+format = "sha256"

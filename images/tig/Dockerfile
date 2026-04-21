@@ -1,2 +1,45 @@
-FROM scratch
-LABEL org.opencontainers.image.title="tig"       org.opencontainers.image.description="Sovereign hardened tig (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+# =============================================================================
+# SOVEREIGN HARDENED TIG
+# Text-mode interface for Git
+# Constraint: compile from source in debian:bookworm-slim
+# Priority: scratch > distroless > wolfi > debian-slim (last resort)
+# =============================================================================
+
+ARG VERSION=2.5.8
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS builder
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential libncurses-dev zlib1g-dev git curl ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/jonas/tig/releases/download/tig-${VERSION}/tig-${VERSION}.tar.gz" -o /tig.tar.gz && \
+    tar -xzf /tig.tar.gz -C / && rm /tig.tar.gz && \
+    cd /tig-${VERSION} && \
+    ./configure --prefix=/usr --with-ncurses && \
+    make -j"$(nproc)" && \
+    strip --strip-all /tig-${VERSION}/src/tig
+
+FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libncurses6 zlib1g ca-certificates git && \
+    rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /app /var/log/tig
+COPY --from=builder /tig-${VERSION}/src/tig /usr/local/bin/tig
+RUN chown -R 65534:65534 /app /var/log/tig
+USER 65534:65534
+WORKDIR /app
+ENTRYPOINT ["/usr/local/bin/tig"]
+LABEL org.opencontainers.image.title="tig" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.vendor="Jonas Fonseca" \
+      org.opencontainers.image.source="https://github.com/jonas/tig" \
+      org.opencontainers.image.description="Text-mode interface for Git" \
+      sovereign.image.tier="1" \
+      sovereign.image.category="tool" \
+      sovereign.image.status="functional" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.base="debian-slim" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="3s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="2000ms"

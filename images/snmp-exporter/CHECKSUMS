@@ -1,12 +1,19 @@
 # CHECKSUMS - snmp-exporter
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: NEEDS_VERIFICATION
+# NOTE: Standalone snmp-exporter uses v0.26.0 (different from prometheus-snmp-exporter v0.27.0)
 
 [metadata]
 image = "snmp-exporter"
-version = "pending"
-created = "2026-04-21T15:22:20Z"
+version = "0.26.0"
+created = "2026-04-21"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+verifier = "manual"
+
+[download]
+url = "https://github.com/prometheus/snmp_exporter/releases/download/v0.26.0/snmp_exporter-0.26.0.linux-amd64.tar.gz"
+filename = "snmp_exporter-0.26.0.linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "VERIFY_AT_BUILD_TIME"

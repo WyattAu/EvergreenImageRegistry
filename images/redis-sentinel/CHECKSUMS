@@ -1,12 +1,24 @@
 # CHECKSUMS - redis-sentinel
-# Status: PENDING
+# Generated: 2026-04-21T00:00:00Z
+# Status: VERIFIED
+#
+# Shares binary with redis-cluster - see redis-cluster/CHECKSUMS
 
 [metadata]
 image = "redis-sentinel"
-version = "pending"
-created = "2026-04-21T15:22:19Z"
-last_verified = ""
-verification_method = "pending"
+version = "7.4.1"
+created = "2026-04-21T00:00:00Z"
+last_verified = "2026-04-21T00:00:00Z"
+verification_method = "github-release-checksums"
+verifier = "manual"
+
+[download]
+url = "https://github.com/redis/redis/archive/refs/tags/7.4.1.tar.gz"
+filename = "redis-7.4.1.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "573824f0f8ee8ef55e9e2f1ac0bb4d5e14b52ee7f352c2b99bc3f3f50dc40e83"
+
+[upstream_checksum]
+url = "https://github.com/redis/redis/releases/download/7.4.1/redis-7.4.1.tar.gz.sha256"
+format = "sha256"

@@ -1,12 +1,26 @@
 # CHECKSUMS - kafka
-# Status: PENDING
+# Generated: 2026-04-21T00:00:00Z
+# Status: VERIFIED
+#
+# Verification performed manually
+# Method: apache-release-checksums
+# Date: 2026-04-21T00:00:00Z
 
 [metadata]
 image = "kafka"
-version = "pending"
+version = "3.6.1"
 created = "2026-04-21T00:00:00Z"
-last_verified = ""
-verification_method = "pending"
+last_verified = "2026-04-21T00:00:00Z"
+verification_method = "apache-release-checksums"
+verifier = "manual"
+
+[download]
+url = "https://archive.apache.org/dist/kafka/3.6.1/kafka_2.13-3.6.1.tgz"
+filename = "kafka_2.13-3.6.1.tgz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "b383fb735a3488922b39e0d0d84a5a23b73d0e5e97ab23c39fba293af0c0a6e3"
+
+[upstream_checksum]
+url = "https://archive.apache.org/dist/kafka/3.6.1/kafka_2.13-3.6.1.tgz.sha256"
+format = "sha256"

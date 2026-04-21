@@ -1,12 +1,22 @@
 # CHECKSUMS - netbird-ui
+# Generated: 2026-04-21
 # Status: PENDING
 
 [metadata]
 image = "netbird-ui"
-version = "pending"
-created = "2026-04-21T15:22:17Z"
+version = "2.7.0"
+created = "2026-04-21"
 last_verified = ""
 verification_method = "pending"
+verifier = "manual"
+
+[download]
+url = "https://github.com/netbirdio/netbird/releases/download/v2.7.0/netbird-ui-2.7.0.zip"
+filename = "netbird-ui-2.7.0.zip"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = ""
+format = ""

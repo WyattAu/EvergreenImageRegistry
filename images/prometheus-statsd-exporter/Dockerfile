@@ -1,2 +1,47 @@
+# =============================================================================
+# SOVEREIGN HARDENED PROMETHEUS STATSD EXPORTER
+# Version: 0.27.0
+# Constraint: scratch - purest form, no shell, no package manager
+# =============================================================================
+
+ARG VERSION=0.27.0
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/prometheus/statsd_exporter/releases/download/v${VERSION}/statsd_exporter-${VERSION}.linux-amd64.tar.gz" -o /statsd_exporter.tar.gz && \
+    tar -xzf /statsd_exporter.tar.gz -C / && rm /statsd_exporter.tar.gz && chmod +x /statsd_exporter-${VERSION}.linux-amd64/statsd_exporter
+
+FROM debian:bookworm-slim AS builder
+RUN mkdir -p /app /var/log/statsd_exporter /var/cache/statsd_exporter
+
 FROM scratch
-LABEL org.opencontainers.image.title="prometheus-statsd-exporter"       org.opencontainers.image.description="Sovereign hardened prometheus-statsd-exporter (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=downloader /statsd_exporter-${VERSION}.linux-amd64/statsd_exporter /statsd_exporter
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /app /app
+COPY --from=builder /var/log/statsd_exporter /var/log/statsd_exporter
+COPY --from=builder /var/cache/statsd_exporter /var/cache/statsd_exporter
+USER 65534:65534
+WORKDIR /app
+EXPOSE 9102 9125
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/statsd_exporter", "--version"]
+ENTRYPOINT ["/statsd_exporter"]
+LABEL org.opencontainers.image.title="prometheus-statsd-exporter" \
+      org.opencontainers.image.version="0.27.0" \
+      org.opencontainers.image.vendor="Prometheus" \
+      org.opencontainers.image.description="Prometheus exporter for StatsD metrics with mapping" \
+      sovereign.image.tier="1" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="3s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="3000ms" \
+      sovereign.hft.cpu-pins="4-5" \
+      sovereign.hft.cpu-pins-mode="exclusive" \
+      sovereign.hft.deploy-strategy="hft-stateful" \
+      sovereign.hft.pre-stop-hook="true" \
+      sovereign.hft.pre-stop-delay="5s" \
+      sovereign.hft.connection-drain="true" \
+      sovereign.hft.sched-policy="SCHED_OTHER"

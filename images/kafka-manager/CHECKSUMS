@@ -1,12 +1,22 @@
 # CHECKSUMS - kafka-manager
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: REQUIRES_VERIFICATION
 
 [metadata]
 image = "kafka-manager"
-version = "pending"
-created = "2026-04-21T15:22:16Z"
+version = "3.0.0.6"
+created = "2026-04-21"
 last_verified = ""
 verification_method = "pending"
+verifier = "manual"
+
+[download]
+url = "https://github.com/yahoo/CMAK/releases/download/3.0.0.6/cmak-3.0.0.6.zip"
+filename = "cmak-3.0.0.6.zip"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "REQUIRES_VERIFICATION"
+
+[upstream_checksum]
+url = "https://github.com/yahoo/CMAK/releases/download/3.0.0.6/cmak-3.0.0.6.zip.sha256"
+format = "sha256"

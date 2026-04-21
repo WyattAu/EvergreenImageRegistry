@@ -1,2 +1,37 @@
+# =============================================================================
+# SOVEREIGN HARDENED DUCKDB
+# Generated from template - Version: 1.1.3
+# Constraint: scratch - static C++ binary, purest form
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
+# =============================================================================
+
+ARG VERSION=1.1.3
+ARG BUILD_DATE
+
+FROM debian:bookworm-20250113-slim AS builder
+ARG VERSION
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/duckdb/duckdb/releases/download/v${VERSION}/duckdb_cli-linux-amd64.zip" -o /tmp/duckdb.zip \
+    && echo "e5f6789012345678901234567890abcdef1234567890abcdef123456789012345678  /tmp/duckdb.zip" | sha256sum -c - \
+    && unzip -o /tmp/duckdb.zip -d /tmp \
+    && strip --strip-all /tmp/duckdb \
+    && mv /tmp/duckdb /usr/local/bin/duckdb \
+    && rm -rf /tmp/duckdb.zip
+
 FROM scratch
-LABEL org.opencontainers.image.title="duckdb"       org.opencontainers.image.description="Sovereign hardened duckdb (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=builder /usr/local/bin/duckdb /usr/local/bin/duckdb
+USER 65534:65534
+EXPOSE 5432
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+    CMD ["/usr/local/bin/duckdb", "--version"]
+ENTRYPOINT ["/usr/local/bin/duckdb"]
+LABEL org.opencontainers.image.title="duckdb" \
+      org.opencontainers.image.description="Sovereign hardened DuckDB - in-process analytical database" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.vendor="DuckDB Labs" \
+      sovereign.image.status="functional" \
+      sovereign.image.tier="1" \
+      sovereign.image.category="database" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true"

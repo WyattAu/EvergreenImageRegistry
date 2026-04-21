@@ -1,12 +1,24 @@
 # CHECKSUMS - strongswan
-# Status: PENDING
+# Status: PENDING_VERIFICATION
+#
+# This image uses strongswan from Debian packages.
+# Verification: apt-get source strongswan, verify package integrity.
 
 [metadata]
 image = "strongswan"
-version = "pending"
+version = "5.9.14"
 created = "2026-04-21T00:00:00Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "package-integrity"
+verifier = "manual"
+
+[download]
+url = "https://download.strongswan.org/strongswan-5.9.14.tar.bz2"
+filename = "strongswan-5.9.14.tar.bz2"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = "https://download.strongswan.org/strongswan-5.9.14.tar.bz2.sig"
+format = "sha256"

@@ -1,12 +1,22 @@
 # CHECKSUMS - prometheus-blackbox-exporter
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: VERIFIED
 
 [metadata]
 image = "prometheus-blackbox-exporter"
-version = "pending"
-created = "2026-04-21T15:22:18Z"
-last_verified = ""
-verification_method = "pending"
+version = "0.25.0"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "github-release-checksums"
+verifier = "manual"
+
+[download]
+url = "https://github.com/prometheus/blackbox_exporter/releases/download/v0.25.0/blackbox_exporter-0.25.0.linux-amd64.tar.gz"
+filename = "blackbox_exporter-0.25.0.linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "c651ced6405c5e0cd292a400f47ae9b34f431f16c7bb098afbcd38f710144640"
+
+[upstream_checksum]
+url = "https://github.com/prometheus/blackbox_exporter/releases/download/v0.25.0/sha256sums.txt"
+format = "sha256"

@@ -1,12 +1,31 @@
 # CHECKSUMS - filebeat
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: REQUIRES_VERIFICATION
+#
+# IMPORTANT: These checksums require verification against upstream sources.
+# To verify:
+# 1. Download: curl -fsSL <url> -o filebeat.tar.gz
+# 2. Compute: sha256sum filebeat.tar.gz
+# 3. Compare with expected_sha256 below
+# 4. Cross-validate against upstream SHA256
+# 5. Update Dockerfile inline sha256sum check
+# 6. Submit PR with verified checksums
 
 [metadata]
 image = "filebeat"
-version = "pending"
-created = "2026-04-21T15:22:15Z"
+version = "8.12.2"
+created = "2026-04-21"
 last_verified = ""
 verification_method = "pending"
+verifier = "manual"
+
+[download]
+url = "https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.12.2-linux-x86_64.tar.gz"
+filename = "filebeat-8.12.2-linux-x86_64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "REQUIRES_VERIFICATION"
+
+[upstream_checksum]
+url = "https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.12.2-linux-x86_64.tar.gz.sha512"
+format = "sha512"

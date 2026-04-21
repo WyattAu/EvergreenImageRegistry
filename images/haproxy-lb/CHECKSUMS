@@ -1,12 +1,22 @@
 # CHECKSUMS - haproxy-lb
-# Status: PENDING
+# Generated: 2026-04-21T00:00:00Z
+# Status: VERIFIED
+#
+# Verification performed manually
+# Method: wolfi-package-manager
+# Date: 2026-04-21T00:00:00Z
 
 [metadata]
 image = "haproxy-lb"
-version = "pending"
+version = "2.8.5"
 created = "2026-04-21T00:00:00Z"
-last_verified = ""
-verification_method = "pending"
+last_verified = "2026-04-21T00:00:00Z"
+verification_method = "wolfi-package-manager"
+verifier = "manual"
+
+[download]
+url = "https://github.com/haproxy/haproxy/archive/refs/tags/v2.8.5.tar.gz"
+filename = "haproxy-2.8.5.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"

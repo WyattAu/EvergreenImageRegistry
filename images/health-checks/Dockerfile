@@ -1,2 +1,87 @@
+# =============================================================================
+# SOVEREIGN HARDENED HEALTH-CHECKS
+# Generated from template - Version: 1.0.0
+# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
+# Simple Go HTTP health checker binary
+# =============================================================================
+
+ARG VERSION=1.0.0
+ARG BUILD_DATE
+
+FROM debian:bookworm-20240101-slim AS builder
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends golang-go git ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+RUN git clone --depth 1 --branch v${VERSION} \
+    https://github.com/healthchecks/healthchecks.git /build 2>/dev/null || true && \
+    mkdir -p /build/cmd && \
+    cat > /build/cmd/health-checks.go <<'GOEOF'
+package main
+
+import (
+	"fmt"
+	"net/http"
+	"os"
+	"time"
+)
+
+func main() {
+	if len(os.Args) < 2 {
+		fmt.Println("Usage: health-checks <url> [timeout_seconds]")
+		os.Exit(1)
+	}
+	url := os.Args[1]
+	timeout := 5
+	if len(os.Args) > 2 {
+		fmt.Sscanf(os.Args[2], "%d", &timeout)
+	}
+	client := &http.Client{Timeout: time.Duration(timeout) * time.Second}
+	resp, err := client.Get(url)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "unhealthy: %v\n", err)
+		os.Exit(1)
+	}
+	resp.Body.Close()
+	if resp.StatusCode >= 200 && resp.StatusCode < 400 {
+		fmt.Printf("healthy: %s -> %d\n", url, resp.StatusCode)
+		os.Exit(0)
+	}
+	fmt.Fprintf(os.Stderr, "unhealthy: %s -> %d\n", url, resp.StatusCode)
+	os.Exit(1)
+}
+GOEOF
+RUN cd /build && \
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+    go build -ldflags="-s -w" -o /health-checks ./cmd/health-checks.go && \
+    strip /health-checks
+
+FROM debian:bookworm-20240101-slim AS builder2
+RUN mkdir -p /app
+
 FROM scratch
-LABEL org.opencontainers.image.title="health-checks"       org.opencontainers.image.description="Sovereign hardened health-checks (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=builder /health-checks /health-checks
+COPY --from=builder2 /app /app
+USER 65534:65534
+WORKDIR /app
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+    CMD ["/health-checks", "http://localhost:80"]
+ENTRYPOINT ["/health-checks"]
+LABEL org.opencontainers.image.title="health-checks" \
+      org.opencontainers.image.version="1.0.0" \
+      org.opencontainers.image.vendor="Healthchecks.io" \
+      org.opencontainers.image.description="Simple HTTP health check probe binary" \
+      sovereign.image.tier="1" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="2s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="1000ms" \
+      sovereign.hft.cpu-pins="6-7" \
+      sovereign.hft.cpu-pins-mode="shared" \
+      sovereign.hft.deploy-strategy="standard-rolling" \
+      sovereign.hft.pre-stop-hook="false" \
+      sovereign.hft.connection-drain="false" \
+      sovereign.hft.sched-policy="SCHED_OTHER" \
+      sovereign.hft.runtime="go"

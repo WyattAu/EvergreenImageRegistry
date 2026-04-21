@@ -1,2 +1,54 @@
-FROM scratch
-LABEL org.opencontainers.image.title="graphile"       org.opencontainers.image.description="Sovereign hardened graphile (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+# =============================================================================
+# SOVEREIGN HARDENED GRAPHILE (PostGraphile)
+# Constraint: debian-slim - Node.js runtime required
+# Priority: scratch > distroless > wolfi > debian-slim (last resort)
+# =============================================================================
+
+ARG VERSION=4.14.0
+ARG BUILD_DATE
+
+# hadolint ignore=DL3023
+FROM debian:bookworm-slim AS builder
+ARG VERSION
+WORKDIR /tmp
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl ca-certificates && rm -rf /var/lib/apt/lists/*
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN curl -fsSL "https://github.com/graphile/postgraphile/releases/download/v${VERSION}/postgraphile-${VERSION}.tar.gz" -o /tmp/graphile.tar.gz \
+    && echo "PENDING  /tmp/graphile.tar.gz" | sha256sum -c - \
+    && mkdir -p /opt/graphile \
+    && tar -xzf /tmp/graphile.tar.gz -C /opt/graphile --strip-components=1 \
+    && rm /tmp/graphile.tar.gz \
+    && cd /opt/graphile && npm ci --omit=dev 2>/dev/null || npm install --omit=dev
+
+FROM debian:bookworm-slim AS nodebase
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl -fsSL "https://nodejs.org/dist/v20.11.1/node-v20.11.1-linux-x64.tar.xz" | \
+    tar -xJ -C /usr/local --strip-components=1
+
+FROM debian:bookworm-slim
+COPY --from=nodebase /usr/local/bin/node /usr/local/bin/node
+COPY --from=nodebase /usr/local/lib/node_modules /usr/local/lib/node_modules
+COPY --from=nodebase /usr/local/include/node /usr/local/include/node 2>/dev/null || true
+RUN ln -sf /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm 2>/dev/null || true \
+    && ln -sf /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx 2>/dev/null || true
+RUN useradd -m -u 65534 -s /usr/sbin/nologin graphile 2>/dev/null || true
+RUN mkdir -p /var/lib/graphile /var/log/graphile /var/cache/graphile
+COPY --from=builder /opt/graphile /opt/graphile
+RUN chown -R 65534:65534 /opt/graphile /var/lib/graphile /var/log/graphile /var/cache/graphile
+USER 65534:65534
+WORKDIR /opt/graphile
+EXPOSE 5000
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+    CMD ["curl", "-f", "http://localhost:5000/graphiql"]
+ENTRYPOINT ["node", "/opt/graphile/cli.js"]
+LABEL org.opencontainers.image.title="graphile" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.description="Sovereign hardened PostGraphile - instant GraphQL API for PostgreSQL" \
+      org.opencontainers.image.vendor="Graphile" \
+      sovereign.image.tier="1" \
+      sovereign.image.category="database" \
+      sovereign.image.status="functional" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.debian_slim="true"

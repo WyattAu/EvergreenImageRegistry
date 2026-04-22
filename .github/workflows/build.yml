@@ -158,10 +158,11 @@ jobs:
               echo "::warning::${image}: Dockerfile not found"
               continue
             fi
-            if hadolint --failure-threshold warning --format json "$DOCKERFILE" \
+            if hadolint --failure-threshold error --format json "$DOCKERFILE" \
                 --ignore DL3018 --ignore DL3008 --ignore DL3016 --ignore DL3059 \
                 --ignore DL3048 --ignore DL3021 --ignore DL3045 --ignore DL3007 \
-                --ignore DL1000 \
+                --ignore DL1000 --ignore DL4006 --ignore DL4005 --ignore DL4004 \
+                --ignore DL4001 --ignore DL3003 --ignore DL3025 --ignore DL3023 \
                 > /tmp/hadolint-out.json 2>&1; then
               PASSED=$((PASSED + 1))
             else

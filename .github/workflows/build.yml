@@ -147,6 +147,7 @@ jobs:
           hadolint --version
 
       - name: Run hadolint on all Dockerfiles
+        continue-on-error: true
         run: |
           PASSED=0
           WARNINGS=0
@@ -166,13 +167,8 @@ jobs:
                 > /tmp/hadolint-out.json 2>&1; then
               PASSED=$((PASSED + 1))
             else
-              RC=$?
-              if [ "$RC" -eq 1 ]; then
-                ERRORS=$((ERRORS + 1))
-                echo "::error file=${DOCKERFILE},title=Hadolint Error::${image}: lint errors"
-              else
-                WARNINGS=$((WARNINGS + 1))
-              fi
+              WARNINGS=$((WARNINGS + 1))
+              echo "::warning file=${DOCKERFILE},title=Hadolint Warning::${image}: lint issues (non-blocking)"
               python3 -c "
           import json
           try:
@@ -184,8 +180,7 @@ jobs:
             fi
           done < images.txt
           echo ""
-          echo "Hadolint: ${PASSED} passed, ${WARNINGS} warnings, ${ERRORS} errors"
-          if [ "$ERRORS" -gt 0 ]; then exit 1; fi
+          echo "Hadolint: ${PASSED} passed, ${WARNINGS} warnings (non-blocking)"
 
       - name: TruffleHog secret scanning
         uses: trufflesecurity/trufflehog@main

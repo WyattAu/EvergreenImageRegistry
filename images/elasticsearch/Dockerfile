@@ -17,12 +17,11 @@ ENV HEALTH_CMD="curl -sf http://localhost:9200/_cluster/health" \
     READY_CMD="curl -sf http://localhost:9200/_cluster/health" \
     STARTUP_CMD="curl -sf http://localhost:9200/_cluster/health" \
     SOVEREIGN_LOG_LEVEL=info
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates gnupg && \
-    curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | gnupg --dearmor -o /usr/share/keyrings/elasticsearch.gnupg && \
-    echo "deb [signed-by=/usr/share/keyrings/elasticsearch.gnupg] https://artifacts.elastic.co/packages/8.x/apt stable main" > /etc/apt/sources.list.d/elastic-8.x.list && \
-    apt-get update && apt-get install -y --no-install-recommends elasticsearch && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache curl ca-certificates && \
+    curl -fsSL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-linux-x86_64.tar.gz" | \
+    tar xz -C /opt && \
+    ln -s /opt/elasticsearch-${VERSION} /opt/elasticsearch && \
+    ln -s /opt/elasticsearch/bin/elasticsearch /usr/local/bin/elasticsearch
 RUN useradd -m -u 65532 -g '' elasticsearch 2>/dev/null || true
 RUN mkdir -p /app /var/log/elasticsearch /var/cache/elasticsearch && chown -R elasticsearch:elasticsearch /app /var/log/elasticsearch /var/cache/elasticsearch 2>/dev/null || true
 USER elasticsearch

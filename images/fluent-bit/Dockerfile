@@ -8,11 +8,11 @@ ARG VERSION=3.2.4
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apt-get update && apt-get install -y --no-install-recommends gnupg curl ca-certificates && \
-    curl -sSL https://packages.fluentbit.io/fluentbit.key | gnupg --dearmor -o /usr/share/keyrings/fluentbit.gnupg && \
-    echo "deb [signed-by=/usr/share/keyrings/fluentbit.gnupg] https://packages.fluentbit.io/debian/bookworm bookworm main" > /etc/apt/sources.list.d/fluentbit.list && \
-    apt-get update && apt-get install -y --no-install-recommends fluent-bit && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /usr/share/keyrings/fluentbit.gnupg
+RUN apk add --no-cache curl ca-certificates && \
+    curl -fsSL "https://packages.fluentbit.io/${VERSION}/fluent-bit-${VERSION}-linux-x86_64.tar.gz" | \
+    tar xz -C /opt && \
+    ln -s /opt/fluent-bit-${VERSION} /opt/fluent-bit && \
+    ln -s /opt/fluent-bit/bin/fluent-bit /usr/local/bin/fluent-bit
 RUN mkdir -p /app /var/log/fluent-bit /var/cache/fluent-bit
 USER 65532:65532
 WORKDIR /app

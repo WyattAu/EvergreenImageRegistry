@@ -1,12 +1,22 @@
 # CHECKSUMS - hadolint
+# Generated: 2026-04-22T00:00:00Z
 # Status: PENDING
 
 [metadata]
 image = "hadolint"
-version = "pending"
-created = "2026-04-21T15:22:16Z"
-last_verified = ""
-verification_method = "pending"
+version = "2.12.0"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "github-release-checksums"
+verifier = "populate_checksums.py"
+
+[download]
+url = "https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64"
+filename = "hadolint-Linux-x86_64"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "PENDING_VERIFY"
+
+[upstream_checksum]
+url = "https://github.com/hadolint/hadolint/releases/download/v2.12.0/sha256sums.txt"
+format = "sha256"

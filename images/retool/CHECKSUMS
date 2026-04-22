@@ -1,12 +1,34 @@
 # CHECKSUMS - retool
-# Status: PENDING
+# Generated: 2026-04-22
+# Status: PENDING_VERIFICATION
+#
+# IMPORTANT: These checksums must be verified before use.
+# Method: Download the binary on an air-gapped machine, compute SHA256,
+# then compare against upstream checksum file if available.
+#
+# Update protocol:
+# 1. Download binary from URL
+# 2. Compute: sha256sum <file>
+# 3. Compare with upstream sha256sums.txt if available
+# 4. Cross-validate with second team member
+# 5. Update EXPECTED_SHA256 below
+# 6. Submit PR with CHECKSUMS update
 
 [metadata]
 image = "retool"
-version = "pending"
-created = "2026-04-21T15:22:19Z"
+version = "0.1.0"
+created = "2026-04-22"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+verifier = "PENDING"
+
+[download]
+url = ""
+filename = ""
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = ""
+format = ""

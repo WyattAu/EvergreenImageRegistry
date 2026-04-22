@@ -1,12 +1,22 @@
 # CHECKSUMS - argo-cd
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: VERIFIED
 
 [metadata]
 image = "argo-cd"
-version = "pending"
-created = "2026-04-21T15:22:13Z"
-last_verified = ""
-verification_method = "pending"
+version = "v3.3.8"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "github-release-sha256"
+verifier = "manual"
+
+[download]
+url = "https://github.com/argoproj/argo-cd/releases/download/v3.3.8/argocd-linux-amd64"
+filename = "argocd-linux-amd64"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "11070d2502c5a51523f78388e23ddefb9151bd33f2faab955cde78a9c0d492e6"
+
+[upstream_checksum]
+url = "https://github.com/argoproj/argo-cd/releases/download/v3.3.8/cli_checksums.txt"
+format = "sha256"

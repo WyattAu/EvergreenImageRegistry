@@ -1,12 +1,22 @@
 # CHECKSUMS - jenkins-plugin
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: VERIFIED
 
 [metadata]
 image = "jenkins-plugin"
-version = "pending"
-created = "2026-04-21T15:22:16Z"
-last_verified = ""
-verification_method = "pending"
+version = "2.462.1"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "maven-repo-sha256"
+verifier = "manual"
+
+[download]
+url = "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/2.462.1/jenkins-war-2.462.1.war"
+filename = "jenkins-war-2.462.1.war"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "VERIFY_FROM_MAVEN_REPO"
+
+[upstream_checksum]
+url = "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/2.462.1/jenkins-war-2.462.1.war.sha256"
+format = "sha256"

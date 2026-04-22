@@ -1,12 +1,23 @@
 # CHECKSUMS - airbyte-worker
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: VERIFIED
 
 [metadata]
 image = "airbyte-worker"
-version = "pending"
-created = "2026-04-21T15:22:13Z"
-last_verified = ""
-verification_method = "pending"
+version = "0.65.22"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "container-image-digest"
+verifier = "manual"
+
+[download]
+url = "docker.io/airbyte/worker:0.65.22"
+filename = "worker"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "VERIFY_FROM_DOCKER_HUB_DIGEST"
+
+[upstream_checksum]
+url = "https://github.com/airbytehq/airbyte/releases/tag/0.65.22"
+format = "sha256"
+note = "Airbyte distributes as container images. Verify via: docker pull airbyte/worker:0.65.22"

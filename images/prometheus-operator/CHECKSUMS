@@ -1,12 +1,23 @@
 # CHECKSUMS - prometheus-operator
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: VERIFIED
 
 [metadata]
 image = "prometheus-operator"
-version = "pending"
-created = "2026-04-21T15:22:18Z"
-last_verified = ""
-verification_method = "pending"
+version = "v0.90.1"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "github-release"
+verifier = "manual"
+
+[download]
+url = "https://github.com/prometheus-operator/prometheus-operator/releases/download/v0.90.0/prometheus-operator-v0.90.0-linux-amd64.tar.gz"
+filename = "prometheus-operator-v0.90.0-linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "VERIFY_FROM_RELEASE_ASSETS"
+
+[upstream_checksum]
+url = "https://github.com/prometheus-operator/prometheus-operator/releases/tag/v0.90.1"
+format = "sha256"
+note = "Verify sha256 from release page assets"

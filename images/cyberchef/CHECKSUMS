@@ -1,12 +1,18 @@
 # CHECKSUMS - cyberchef
-# Status: PENDING
-
+# Generated: 2026-04-21
+# Status: PENDING_VERIFICATION
 [metadata]
 image = "cyberchef"
-version = "pending"
-created = "2026-04-21T15:22:14Z"
-last_verified = ""
-verification_method = "pending"
-
+version = "latest"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "download-verify"
+verifier = "manual"
+[download]
+url = "https://github.com/gchq/CyberChef/archive/refs/tags/v10.5.0.tar.gz"
+filename = "cyberchef-v10.5.0.tar.gz"
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "PENDING_VERIFICATION"
+[upstream_checksum]
+url = ""
+format = "sha256"

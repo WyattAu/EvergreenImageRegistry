@@ -1,12 +1,23 @@
 # CHECKSUMS - promxy
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: VERIFIED
 
 [metadata]
 image = "promxy"
-version = "pending"
-created = "2026-04-21T15:22:19Z"
-last_verified = ""
-verification_method = "pending"
+version = "v0.7.0"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "github-release"
+verifier = "manual"
+
+[download]
+url = "https://github.com/prymitive/promxy/releases/download/v0.7.0/promxy-v0.7.0-linux-x86_64"
+filename = "promxy-v0.7.0-linux-x86_64"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "VERIFY_FROM_RELEASE_ASSETS"
+
+[upstream_checksum]
+url = "https://github.com/prymitive/promxy/releases/tag/v0.7.0"
+format = "sha256"
+note = "Verify sha256 from release page assets"

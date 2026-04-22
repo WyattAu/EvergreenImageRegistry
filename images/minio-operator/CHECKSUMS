@@ -1,12 +1,20 @@
 # CHECKSUMS - minio-operator
-# Status: PENDING
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "minio-operator"
-version = "pending"
-created = "2026-04-21T15:22:17Z"
+version = "v6.0.4"
+created = "2026-04-22"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+
+[download]
+url = "https://github.com/minio/operator/releases/download/v6.0.4/minio-operator_linux_amd64"
+filename = "minio-operator_linux_amd64"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = ""
+format = ""

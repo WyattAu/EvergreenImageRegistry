@@ -1,12 +1,18 @@
 # CHECKSUMS - cargo-audit
-# Status: PENDING
-
+# Generated: 2026-04-21
+# Status: PENDING_VERIFICATION
 [metadata]
 image = "cargo-audit"
-version = "pending"
-created = "2026-04-21T15:22:13Z"
-last_verified = ""
-verification_method = "pending"
-
+version = "latest"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "download-verify"
+verifier = "manual"
+[download]
+url = "https://github.com/rustsec/rustsec-audit/archive/refs/heads/main.tar.gz"
+filename = "rustsec-audit-main.tar.gz"
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "PENDING_VERIFICATION"
+[upstream_checksum]
+url = ""
+format = "sha256"

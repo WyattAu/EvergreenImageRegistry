@@ -1,12 +1,20 @@
 # CHECKSUMS - adempiere
-# Status: PENDING
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "adempiere"
-version = "pending"
-created = "2026-04-21T15:22:12Z"
+version = "3.9.4"
+created = "2026-04-22"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+
+[download]
+url = "https://github.com/adempiere/adempiere/releases/download/release-3.9.4/Adempiere_394.tar.gz"
+filename = "Adempiere_394.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = ""
+format = ""

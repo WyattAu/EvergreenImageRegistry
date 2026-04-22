@@ -1,2 +1,48 @@
-FROM scratch
-LABEL org.opencontainers.image.title="keycloak-init"       org.opencontainers.image.description="Sovereign hardened keycloak-init (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+# =============================================================================
+# SOVEREIGN HARDENED KEYCLOAK INIT
+# Keycloak initialization/bootstrap mode - Java app
+# Constraint: debian-slim + JRE - Java runtime required
+# Priority: scratch > distroless > wolfi > debian-slim (fallback)
+# =============================================================================
+
+ARG VERSION=26.6.1
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN curl -fsSL "https://github.com/keycloak/keycloak/releases/download/${VERSION}/keycloak-${VERSION}.tar.gz" -o /keycloak.tar.gz && \
+    curl -fsSL "https://github.com/keycloak/keycloak/releases/download/${VERSION}/keycloak-${VERSION}.tar.gz.sha1" -o /checksums.sha1 && \
+    grep "keycloak-${VERSION}.tar.gz" /checksums.sha1 | sha1sum -c - && \
+    tar -xzf /keycloak.tar.gz -C /opt/ && \
+    rm -rf /keycloak.tar.gz /checksums.sha1
+
+FROM debian:bookworm-slim AS runtime
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        openjdk-21-jre-headless \
+        ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+COPY --from=downloader /opt/keycloak-${VERSION} /opt/keycloak
+RUN mkdir -p /app && chown -R 65534:65534 /app /opt/keycloak
+USER 65534:65534
+WORKDIR /app
+ENV KEYCLOAK_HOME=/opt/keycloak
+EXPOSE 8080 8443
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+    CMD ["curl", "-f", "http://localhost:8080/health/ready"]
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
+CMD ["start-dev", "--import-realm"]
+LABEL org.opencontainers.image.title="keycloak-init" \
+      org.opencontainers.image.version="26.6.1" \
+      org.opencontainers.image.vendor="Keycloak" \
+      org.opencontainers.image.source="https://github.com/keycloak/keycloak" \
+      sovereign.image.tier="2" \
+      sovereign.image.category="identity" \
+      sovereign.image.status="functional" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.base="debian-slim" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="30s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="60000ms"

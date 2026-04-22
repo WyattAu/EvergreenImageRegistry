@@ -1,12 +1,15 @@
 # CHECKSUMS - scap-workbench
-# Status: PENDING
-
+# Generated: 2026-04-21
+# Status: APT_PACKAGE
 [metadata]
 image = "scap-workbench"
-version = "pending"
-created = "2026-04-21T15:22:19Z"
-last_verified = ""
-verification_method = "pending"
-
+version = "apt-managed"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "apt-repository"
+verifier = "debian"
+[download]
+url = "https://deb.debian.org/debian"
+filename = "apt-packages"
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "managed-by-apt"

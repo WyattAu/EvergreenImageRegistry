@@ -1,2 +1,49 @@
+# =============================================================================
+# SOVEREIGN HARDENED ETCD-EMPTY
+# Empty etcd for cluster bootstrapping (no data volume)
+# Constraint: scratch - static Go binary
+# =============================================================================
+
+ARG VERSION=3.5.15
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/etcd-io/etcd/releases/download/v${VERSION}/etcd-v${VERSION}-linux-amd64.tar.gz" -o /etcd.tar.gz && \
+    tar -xzf /etcd.tar.gz -C /tmp && rm /etcd.tar.gz && \
+    chmod +x /tmp/etcd-v${VERSION}-linux-amd64/etcd && \
+    mv /tmp/etcd-v${VERSION}-linux-amd64/etcd /etcd
+
+FROM debian:bookworm-slim AS builder
+RUN mkdir -p /app /var/log/etcd /var/cache/etcd /etcd-data
+
 FROM scratch
-LABEL org.opencontainers.image.title="etcd-empty"       org.opencontainers.image.description="Sovereign hardened etcd-empty (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=downloader /etcd /etcd
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /app /app
+COPY --from=builder /var/log/etcd /var/log/etcd
+COPY --from=builder /var/cache/etcd /var/cache/etcd
+COPY --from=builder /etcd-data /etcd-data
+USER 65534:65534
+WORKDIR /app
+EXPOSE 2379 2380
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/etcd", "--version"]
+ENTRYPOINT ["/etcd"]
+CMD ["--data-dir", "/etcd-data", "--listen-client-urls", "http://0.0.0.0:2379", "--advertise-client-urls", "http://localhost:2379"]
+LABEL org.opencontainers.image.title="etcd-empty" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.vendor="etcd" \
+      org.opencontainers.image.source="https://github.com/etcd-io/etcd" \
+      sovereign.image.tier="1" \
+      sovereign.image.status="functional" \
+      sovereign.image.category="database" \
+      sovereign.image.note="Empty etcd for bootstrapping new clusters. Mount persistent volume at /etcd-data." \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="3s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="3000ms" \
+      sovereign.hft.deploy-strategy="hft-stateful" \
+      sovereign.hft.sched-policy="SCHED_OTHER"

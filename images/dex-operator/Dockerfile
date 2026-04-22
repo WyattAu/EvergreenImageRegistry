@@ -1,2 +1,42 @@
+# =============================================================================
+# SOVEREIGN HARDENED DEX OPERATOR
+# Kubernetes operator for DEX - Go static binary
+# Constraint: scratch - pure Go static binary, smallest attack surface
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
+# =============================================================================
+
+ARG VERSION=0.18.0
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN curl -fsSL "https://github.com/dexidp/dex-operator/releases/download/v${VERSION}/dex-operator_${VERSION}_linux_amd64.tar.gz" -o /dex-operator.tar.gz && \
+    curl -fsSL "https://github.com/dexidp/dex-operator/releases/download/v${VERSION}/checksums.txt" -o /checksums.txt && \
+    grep "dex-operator_${VERSION}_linux_amd64.tar.gz" /checksums.txt | sha256sum -c - && \
+    tar -xzf /dex-operator.tar.gz -C /tmp/ && \
+    strip --strip-all /tmp/dex-operator && \
+    mv /tmp/dex-operator /dex-operator && \
+    rm -rf /dex-operator.tar.gz /checksums.txt /tmp/*
+
 FROM scratch
-LABEL org.opencontainers.image.title="dex-operator"       org.opencontainers.image.description="Sovereign hardened dex-operator (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=downloader /dex-operator /dex-operator
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER 65534:65534
+WORKDIR /app
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/dex-operator", "--help"]
+ENTRYPOINT ["/dex-operator"]
+LABEL org.opencontainers.image.title="dex-operator" \
+      org.opencontainers.image.version="0.18.0" \
+      org.opencontainers.image.vendor="DexIDP" \
+      org.opencontainers.image.source="https://github.com/dexidp/dex-operator" \
+      sovereign.image.tier="2" \
+      sovereign.image.category="identity" \
+      sovereign.image.status="functional" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="3s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="3000ms"

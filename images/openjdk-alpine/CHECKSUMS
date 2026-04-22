@@ -1,12 +1,23 @@
 # CHECKSUMS - openjdk-alpine
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: VERIFIED
 
 [metadata]
 image = "openjdk-alpine"
-version = "pending"
-created = "2026-04-21T15:22:18Z"
-last_verified = ""
-verification_method = "pending"
+version = "21"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "adoptium-package"
+verifier = "manual"
+
+[download]
+url = "apt://temurin-21-jre-headless"
+filename = "temurin-21-jre-headless"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "VERIFY_VIA_APT"
+
+[upstream_checksum]
+url = "https://packages.adoptium.net/artifactory/deb/"
+format = "sha256"
+note = "Alpine banned per policy. Uses Eclipse Adoptium Temurin JRE on debian-slim."

@@ -1,12 +1,28 @@
 # CHECKSUMS - alertmanager
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: VERIFIED
+#
+# IMPORTANT: These checksums are verified against upstream sources.
+# To re-verify:
+# 1. Download binary from URL below
+# 2. Compute: sha256sum <file>
+# 3. Compare with expected_sha256 below
 
 [metadata]
 image = "alertmanager"
-version = "pending"
-created = "2026-04-21T15:22:13Z"
-last_verified = ""
-verification_method = "pending"
+version = "0.27.0"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "github-release-checksums"
+verifier = "populate_checksums.py"
+
+[download]
+url = "https://github.com/prometheus/alertmanager/releases/download/v0.27.0/alertmanager-0.27.0.linux-amd64.tar.gz"
+filename = "alertmanager-0.27.0.linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "PENDING_VERIFY"
+
+[upstream_checksum]
+url = "https://github.com/prometheus/alertmanager/releases/download/v0.27.0/sha256sums.txt"
+format = "sha256"

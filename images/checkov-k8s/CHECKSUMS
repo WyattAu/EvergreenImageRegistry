@@ -1,12 +1,15 @@
 # CHECKSUMS - checkov-k8s
-# Status: PENDING
-
+# Generated: 2026-04-21
+# Status: PIP_PACKAGE
 [metadata]
 image = "checkov-k8s"
-version = "pending"
-created = "2026-04-21T15:22:14Z"
-last_verified = ""
-verification_method = "pending"
-
+version = "pip-managed"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "pip"
+verifier = "pypi"
+[download]
+url = "https://pypi.org/project/checkov/"
+filename = "checkov"
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "managed-by-pip"

@@ -1,12 +1,20 @@
 # CHECKSUMS - minio-console
-# Status: PENDING
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "minio-console"
-version = "pending"
-created = "2026-04-21T15:22:17Z"
+version = "v0.35.0"
+created = "2026-04-22"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+
+[download]
+url = "https://github.com/minio/console/releases/download/v0.35.0/console-linux-amd64"
+filename = "console-linux-amd64"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = ""
+format = ""

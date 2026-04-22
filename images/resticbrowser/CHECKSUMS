@@ -1,12 +1,20 @@
 # CHECKSUMS - resticbrowser
-# Status: PENDING
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "resticbrowser"
-version = "pending"
-created = "2026-04-21T15:22:19Z"
+version = "0.3.0"
+created = "2026-04-22"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+
+[download]
+url = "https://github.com/emuell/resticbrowser/releases/download/v0.3.0/resticbrowser-linux-amd64"
+filename = "resticbrowser-linux-amd64"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = ""
+format = ""

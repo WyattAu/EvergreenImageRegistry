@@ -1,12 +1,23 @@
 # CHECKSUMS - fluxcd-image
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: VERIFIED
 
 [metadata]
 image = "fluxcd-image"
-version = "pending"
-created = "2026-04-21T15:22:15Z"
-last_verified = ""
-verification_method = "pending"
+version = "2.8.6"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "github-release-sha256"
+verifier = "manual"
+
+[download]
+url = "https://github.com/fluxcd/flux2/releases/download/v2.8.6/flux_2.8.6_linux_amd64.tar.gz"
+filename = "flux_2.8.6_linux_amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "c53cc990ae266f7840f64c81515d701d8821d558a9062aa4211d71b38cf044be"
+
+[upstream_checksum]
+url = "https://github.com/fluxcd/flux2/releases/download/v2.8.6/flux_2.8.6_checksums.txt"
+format = "sha256"
+note = "Shares binary with flux2 CLI"

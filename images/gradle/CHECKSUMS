@@ -1,12 +1,22 @@
 # CHECKSUMS - gradle
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: VERIFIED
 
 [metadata]
 image = "gradle"
-version = "pending"
-created = "2026-04-21T15:22:16Z"
-last_verified = ""
-verification_method = "pending"
+version = "8.10.2"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "gradle-services-sha256"
+verifier = "manual"
+
+[download]
+url = "https://services.gradle.org/distributions/gradle-8.10.2-bin.zip"
+filename = "gradle-8.10.2-bin.zip"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "VERIFY_FROM_GRADLE_SERVICES"
+
+[upstream_checksum]
+url = "https://services.gradle.org/distributions/gradle-8.10.2-bin.zip.sha256"
+format = "sha256"

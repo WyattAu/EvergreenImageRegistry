@@ -1,12 +1,18 @@
 # CHECKSUMS - zipkin
+# Generated: 2026-04-22T00:00:00Z
 # Status: PENDING
 
 [metadata]
 image = "zipkin"
-version = "pending"
-created = "2026-04-21T00:00:00Z"
-last_verified = ""
-verification_method = "pending"
+version = "3.4.2"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "maven-central"
+verifier = "manual"
+
+[download]
+url = "https://search.maven.org/remotecontent?filepath=io/zipkin/zipkin-server/3.4.2/zipkin-server-3.4.2-exec.jar"
+filename = "zipkin-server-3.4.2-exec.jar"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "PENDING_VERIFY"

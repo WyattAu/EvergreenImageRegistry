@@ -1,12 +1,24 @@
 # CHECKSUMS - gitlab-ce
-# Status: PENDING
+# Generated: 2026-04-21T19:09:24Z
+# Status: PENDING_VERIFICATION
+#
+# IMPORTANT: These checksums need to be verified against upstream sources.
+# To verify:
+# 1. Download binary from URL below
+# 2. Compute: sha256sum <file>
+# 3. Compare with expected_sha256 below
+# 4. Cross-validate against upstream_checksum URL if available
 
 [metadata]
 image = "gitlab-ce"
-version = "pending"
-created = "2026-04-21T15:22:15Z"
+version = "17.6.0"
+created = "2026-04-21T19:09:24Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-and-compute"
+
+[download]
+url = "https://packages.gitlab.com/gitlab/gitlab-ce/packages/debian/bookworm/gitlab-ce_17.6.0-ce.0_amd64.deb"
+filename = "gitlab-ce_17.6.0-ce.0_amd64.deb"
 
 [checksum]
 expected_sha256 = "PENDING"

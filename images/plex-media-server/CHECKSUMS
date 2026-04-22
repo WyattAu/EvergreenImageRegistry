@@ -1,12 +1,20 @@
 # CHECKSUMS - plex-media-server
-# Status: PENDING
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "plex-media-server"
-version = "pending"
-created = "2026-04-21T15:22:18Z"
+version = "1.41.3.9292"
+created = "2026-04-22"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+
+[download]
+url = "https://downloads.plex.tv/plex-media-server-new/1.41.3.9292-f5fc49b19/debian/plexmediaserver_1.41.3.9292-f5fc49b19_amd64.deb"
+filename = "plexmediaserver_1.41.3.9292-f5fc49b19_amd64.deb"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = ""
+format = ""

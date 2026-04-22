@@ -1,2 +1,22 @@
+# =============================================================================
+# SOVEREIGN HARDENED MADDY
+# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
+# =============================================================================
+
+ARG VERSION=0.7.0
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS downloader
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN apt-get update &&     apt-get install -y --no-install-recommends curl="7.88.1-*" ca-certificates &&     rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/foxcpp/maddy/releases/download/v0.7.0/maddy-0.7.0-linux-x86_64" -o /tmp/binary &&     chmod +x /tmp/binary &&     strip /tmp/binary
+
 FROM scratch
-LABEL org.opencontainers.image.title="maddy"       org.opencontainers.image.description="Sovereign hardened maddy (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=downloader /tmp/binary /usr/local/bin/maddy
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+USER 65534:65534
+WORKDIR /app
+EXPOSE 587 993 143 465 25
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3     CMD ["/usr/local/bin/maddy", "--version"]
+ENTRYPOINT ["/usr/local/bin/maddy"]
+LABEL org.opencontainers.image.title="maddy"       org.opencontainers.image.description="Maddy - all-in-one mail server written in Go"       org.opencontainers.image.version="0.7.0"       org.opencontainers.image.vendor="foxcpp"       org.opencontainers.image.source="https://github.com/foxcpp/maddy"       sovereign.image.tier="2"       sovereign.constraint.nonroot="true"       sovereign.constraint.scratch="true"

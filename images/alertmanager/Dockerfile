@@ -1,2 +1,42 @@
+# =============================================================================
+# SOVEREIGN ALIAS - ALERTMANAGER -> prometheus-alertmanager
+# This is an alias. The canonical image is at images/prometheus-alertmanager/.
+# =============================================================================
+
+ARG VERSION=0.27.0
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/prometheus/alertmanager/releases/download/v${VERSION}/alertmanager-${VERSION}.linux-amd64.tar.gz" -o /alertmanager.tar.gz && \
+    tar -xzf /alertmanager.tar.gz -C / && rm /alertmanager.tar.gz && chmod +x /alertmanager-${VERSION}.linux-amd64/alertmanager && \
+    mv /alertmanager-${VERSION}.linux-amd64/alertmanager /alertmanager
+
+FROM debian:bookworm-slim AS builder
+RUN mkdir -p /app /var/log/alertmanager /var/cache/alertmanager
+
 FROM scratch
-LABEL org.opencontainers.image.title="alertmanager"       org.opencontainers.image.description="Sovereign hardened alertmanager (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=downloader /alertmanager /alertmanager
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /app /app
+COPY --from=builder /var/log/alertmanager /var/log/alertmanager
+COPY --from=builder /var/cache/alertmanager /var/cache/alertmanager
+USER 65534:65534
+WORKDIR /app
+EXPOSE 9093
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/alertmanager", "--version"]
+ENTRYPOINT ["/alertmanager"]
+LABEL org.opencontainers.image.title="alertmanager" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.vendor="Prometheus" \
+      org.opencontainers.image.source="https://github.com/prometheus/alertmanager" \
+      sovereign.image.tier="1" \
+      sovereign.image.status="functional" \
+      sovereign.image.category="observability" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="3s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="3000ms"

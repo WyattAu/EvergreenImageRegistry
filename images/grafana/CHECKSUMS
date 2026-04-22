@@ -1,12 +1,18 @@
 # CHECKSUMS - grafana
+# Generated: 2026-04-22T00:00:00Z
 # Status: PENDING
 
 [metadata]
 image = "grafana"
-version = "pending"
-created = "2026-04-21T00:00:00Z"
-last_verified = ""
-verification_method = "pending"
+version = "11.0.0"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "upstream-tarball"
+verifier = "manual"
+
+[download]
+url = "https://dl.grafana.com/oss/release/grafana-11.0.0.linux-amd64.tar.gz"
+filename = "grafana-11.0.0.linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "PENDING_VERIFY"

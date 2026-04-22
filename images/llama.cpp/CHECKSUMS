@@ -1,12 +1,18 @@
-# CHECKSUMS - llamacpp
+# CHECKSUMS - llama.cpp
+# Generated: 2026-04-22T00:00:00Z
 # Status: PENDING
 
 [metadata]
-image = "llamacpp"
-version = "pending"
-created = "2026-04-21T00:00:00Z"
-last_verified = ""
-verification_method = "pending"
+image = "llama.cpp"
+version = "b4875"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "github-release-checksums"
+verifier = "populate_checksums.py"
+
+[download]
+url = "https://github.com/ggerganov/llama.cpp/releases/download/b4875/llama-b4875-bin-ubuntu-x64.zip"
+filename = "llama-b4875-bin-ubuntu-x64.zip"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "PENDING_VERIFY"

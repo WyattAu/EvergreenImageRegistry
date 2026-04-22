@@ -1,12 +1,15 @@
 # CHECKSUMS - conan-audit
-# Status: PENDING
-
+# Generated: 2026-04-21
+# Status: PIP_PACKAGE
 [metadata]
 image = "conan-audit"
-version = "pending"
-created = "2026-04-21T15:22:14Z"
-last_verified = ""
-verification_method = "pending"
-
+version = "pip-managed"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "pip"
+verifier = "pypi"
+[download]
+url = "https://pypi.org/project/conan/"
+filename = "conan"
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "managed-by-pip"

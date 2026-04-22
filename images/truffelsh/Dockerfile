@@ -1,2 +1,19 @@
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/trufflesecurity/trufflehog/releases/download/v3.82.2/trufflehog_3.82.2_linux_amd64.tar.gz" -o /trufflehog_3.82.2_linux_amd64.tar.gz &&     tar -xzf /trufflehog_3.82.2_linux_amd64.tar.gz -C / && rm /trufflehog_3.82.2_linux_amd64.tar.gz && chmod +x /trufflehog
+RUN strip /trufflehog 2>/dev/null || true
+
+FROM debian:bookworm-slim AS builder
+RUN mkdir -p /app /var/log/truffelsh /var/cache/truffelsh
+
 FROM scratch
-LABEL org.opencontainers.image.title="truffelsh"       org.opencontainers.image.description="Sovereign hardened truffelsh (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=downloader /trufflehog /trufflehog
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /app /app
+COPY --from=builder /var/log/truffelsh /var/log/truffelsh
+COPY --from=builder /var/cache/truffelsh /var/cache/truffelsh
+USER 65534:65534
+WORKDIR /app
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3     CMD ["/trufflehog", "--version"]
+ENTRYPOINT ["/trufflehog"]
+LABEL org.opencontainers.image.title="truffelsh"       org.opencontainers.image.description="TruffleHog - secret scanner (alias)"       org.opencontainers.image.vendor="trufflesecurity"       org.opencontainers.image.source="https://github.com/trufflesecurity/trufflehog"       sovereign.image.tier="3"       sovereign.constraint.nonroot="true"       sovereign.constraint.scratch="true"

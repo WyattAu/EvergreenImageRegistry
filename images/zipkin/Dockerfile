@@ -1,6 +1,46 @@
-FROM scratch
+# =============================================================================
+# SOVEREIGN HARDENED ZIPKIN
+# Distributed tracing system (Java)
+# Constraint: debian-slim + Adoptium JRE 21
+# =============================================================================
+
+ARG VERSION=3.4.2
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS jre-builder
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jre/hotspot/normal/eclipse" -o /tmp/jre.tar.gz && \
+    mkdir -p /opt/jre && \
+    tar -xzf /tmp/jre.tar.gz -C /opt/jre --strip-components=1 && \
+    rm /tmp/jre.tar.gz
+
+FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ca-certificates tzdata curl && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+COPY --from=jre-builder /opt/jre /opt/jre
+ENV JAVA_HOME="/opt/jre"
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
+RUN curl -fsSL "https://search.maven.org/remotecontent?filepath=io/zipkin/zipkin-server/${VERSION}/zipkin-server-${VERSION}-exec.jar" -o /opt/zipkin/zipkin.jar || \
+    curl -fsSL "https://github.com/openzipkin/zipkin/releases/download/${VERSION}/zipkin.jar" -o /opt/zipkin.jar
+RUN mkdir -p /opt/zipkin /var/log/zipkin && \
+    groupadd -g 65534 -r zipkin 2>/dev/null || true && \
+    useradd -r -u 65534 -g zipkin -d /opt/zipkin -s /sbin/nologin zipkin 2>/dev/null || true && \
+    chown -R 65534:65534 /opt/zipkin /var/log/zipkin
+USER 65534:65534
+WORKDIR /opt/zipkin
+EXPOSE 9411
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD ["curl", "-f", "http://localhost:9411/health"]
+ENTRYPOINT ["java"]
+CMD ["-jar", "/opt/zipkin/zipkin.jar"]
 LABEL org.opencontainers.image.title="zipkin" \
-      org.opencontainers.image.description="Sovereign hardened zipkin (stub - pending binary integration)" \
-      sovereign.image.status="stub" \
-      sovereign.image.tier="1" \
-      sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.vendor="OpenZipkin" \
+      org.opencontainers.image.source="https://github.com/openzipkin/zipkin" \
+      sovereign.image.tier="2" \
+      sovereign.image.status="functional" \
+      sovereign.image.category="observability" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.debian_slim="true"

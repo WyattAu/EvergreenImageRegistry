@@ -1,12 +1,20 @@
 # CHECKSUMS - apache-ofbiz
-# Status: PENDING
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "apache-ofbiz"
-version = "pending"
-created = "2026-04-21T15:22:13Z"
+version = "18.12.11"
+created = "2026-04-22"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+
+[download]
+url = "https://github.com/apache/ofbiz-framework/releases/download/release-18.12.11/apache-ofbiz-18.12.11.zip"
+filename = "apache-ofbiz-18.12.11.zip"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = ""
+format = ""

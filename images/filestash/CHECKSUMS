@@ -1,12 +1,20 @@
 # CHECKSUMS - filestash
-# Status: PENDING
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "filestash"
-version = "pending"
-created = "2026-04-21T15:22:15Z"
+version = "v0.4.29"
+created = "2026-04-22"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+
+[download]
+url = "https://github.com/mickael-kerjean/filestash/releases/download/v0.4.29/filestash-linux-amd64"
+filename = "filestash-linux-amd64"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = ""
+format = ""

@@ -1,12 +1,18 @@
 # CHECKSUMS - portainer-agent
-# Status: PENDING
-
+# Generated: 2026-04-21
+# Status: PENDING_VERIFICATION
 [metadata]
 image = "portainer-agent"
-version = "pending"
-created = "2026-04-21T15:22:18Z"
-last_verified = ""
-verification_method = "pending"
-
+version = "latest"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "download-verify"
+verifier = "manual"
+[download]
+url = "https://github.com/portainer/agent/releases/download/v2.21.4/portainer-agent-linux-amd64"
+filename = "portainer-agent-linux-amd64.tar.gz"
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "PENDING_VERIFICATION"
+[upstream_checksum]
+url = ""
+format = "sha256"

@@ -1,2 +1,33 @@
+ARG VERSION=v0.7.0
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/prymitive/promxy/releases/download/v0.7.0/promxy-v0.7.0-linux-x86_64" -o /promxy && \
+    chmod +x /promxy && strip /promxy
+
+FROM debian:bookworm-slim AS builder
+RUN mkdir -p /app /var/log/promxy /var/cache/promxy /etc/promxy
+
 FROM scratch
-LABEL org.opencontainers.image.title="promxy"       org.opencontainers.image.description="Sovereign hardened promxy (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=downloader /promxy /promxy
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /app /app
+COPY --from=builder /var/log/promxy /var/log/promxy
+COPY --from=builder /var/cache/promxy /var/cache/promxy
+COPY --from=builder /etc/promxy /etc/promxy
+USER 65534:65534
+WORKDIR /app
+EXPOSE 8082
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/promxy", "--version"]
+ENTRYPOINT ["/promxy"]
+LABEL org.opencontainers.image.title="promxy" \
+      org.opencontainers.image.version="0.7.0" \
+      org.opencontainers.image.vendor="prymitive" \
+      org.opencontainers.image.description="Sovereign hardened promxy - Prometheus proxy" \
+      sovereign.image.tier="3" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="10s"

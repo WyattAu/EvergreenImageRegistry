@@ -1,12 +1,18 @@
 # CHECKSUMS - homebridge
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: NPM_PACKAGE
 
 [metadata]
 image = "homebridge"
-version = "pending"
-created = "2026-04-21T15:22:16Z"
-last_verified = ""
-verification_method = "pending"
+version = "npm-managed"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "npm"
+verifier = "npmjs"
+
+[download]
+url = "https://www.npmjs.com/package/homebridge"
+filename = "homebridge"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "managed-by-npm"

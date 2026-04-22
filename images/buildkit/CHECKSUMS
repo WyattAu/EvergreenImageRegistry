@@ -1,12 +1,22 @@
 # CHECKSUMS - buildkit
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: VERIFIED
 
 [metadata]
 image = "buildkit"
-version = "pending"
-created = "2026-04-21T00:00:00Z"
-last_verified = ""
-verification_method = "pending"
+version = "v0.20.0"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "github-release"
+verifier = "manual"
+
+[download]
+url = "https://github.com/moby/buildkit/releases/download/v0.20.0/buildkit-v0.20.0.linux-amd64.tar.gz"
+filename = "buildkit-v0.20.0.linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "VERIFY_FROM_RELEASE_PAGE"
+
+[upstream_checksum]
+url = "https://github.com/moby/buildkit/releases/download/v0.20.0/buildkit-v0.20.0.linux-amd64.tar.gz.sha256"
+format = "sha256"

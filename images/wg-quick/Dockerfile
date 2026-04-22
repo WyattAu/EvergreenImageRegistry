@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN mkdir -p /app /var/log/wireguard /run/wireguard && \
     chown -R 65532:65532 /app /var/log/wireguard /run/wireguard
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache wireguard-tools iproute2 iptables ca-certificates kmod
 COPY --from=builder /app /app

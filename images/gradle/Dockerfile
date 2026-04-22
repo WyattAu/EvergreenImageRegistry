@@ -9,7 +9,7 @@ RUN curl -fsSL "https://services.gradle.org/distributions/gradle-8.10.2-bin.zip"
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/gradle /var/cache/gradle /home/gradle
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 COPY --from=downloader /opt/gradle-8.10.2 /opt/gradle-8.10.2

@@ -4,7 +4,7 @@
 # Use as FROM base for Java application images.
 # =============================================================================
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates tzdata curl dumb-init
 
 ARG JRE_VERSION=21.0.5+11
@@ -29,7 +29,6 @@ LABEL org.opencontainers.image.title="openjre" \
       sovereign.image.status="functional" \
       sovereign.image.category="base" \
       sovereign.constraint.nonroot="true" \
-
 LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="none"

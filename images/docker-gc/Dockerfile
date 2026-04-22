@@ -6,7 +6,7 @@ RUN printf '#!/bin/sh\nset -e\necho "=== Docker GC ==="\ndocker image prune -f 2
     chmod +x /usr/local/bin/docker-gc
 RUN mkdir -p /app
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache curl ca-certificates
 COPY --from=builder /usr/local/bin/docker-gc /usr/local/bin/docker-gc

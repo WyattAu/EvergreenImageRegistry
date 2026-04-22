@@ -45,7 +45,7 @@ RUN tar -xzf /tmp/couchdb.tar.gz -C /tmp && \
     cp -a /tmp/apache-couchdb-3.3.3/rel/couchdb/. /opt/couchdb/
 
 # hadolint ignore=DL3023
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache procps
 COPY --from=builder /opt/couchdb /opt/couchdb

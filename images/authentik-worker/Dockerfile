@@ -16,7 +16,7 @@ RUN curl -fsSL "https://github.com/goauthentik/authentik/releases/download/versi
     tar -xzf /authentik-worker.tar.gz -C /tmp/authentik-worker && \
     rm -f /authentik-worker.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache python3 py3-pip ca-certificates libpq libxml2-dev libxslt-dev libffi-dev openssl-dev build-base
 COPY --from=downloader /tmp/authentik-worker /opt/authentik-worker

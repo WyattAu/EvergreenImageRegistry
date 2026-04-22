@@ -19,7 +19,7 @@ RUN curl -fsSL "https://d1pgyhe5djp5q0.cloudfront.net/tigergraph/tigergraph-3.10
     && tar -xzf /tmp/tigergraph.tar.gz -C /opt \
     && rm /tmp/tigergraph.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl libstdc++ python3

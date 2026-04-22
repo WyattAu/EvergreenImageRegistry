@@ -7,7 +7,7 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://github.com/apache/ofbiz-framework/releases/download/release-18.12.11/apache-ofbiz-18.12.11.zip" -o /apache-ofbiz-18.12.11.zip && \
     unzip -q /apache-ofbiz-18.12.11.zip -d /opt/ && rm /apache-ofbiz-18.12.11.zip
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl
 COPY --from=downloader /opt/apache-ofbiz-18.12.11 /opt/apache-ofbiz

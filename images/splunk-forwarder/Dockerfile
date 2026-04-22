@@ -20,7 +20,7 @@ RUN curl -fsSL "https://download.splunk.com/products/universalforwarder/releases
     && tar -xzf splunk.tgz \
     && rm splunk.tgz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 ARG BUILD_HASH

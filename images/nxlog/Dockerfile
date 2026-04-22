@@ -30,7 +30,7 @@ RUN apt-get update && \
     strip /opt/nxlog/bin/nxlog 2>/dev/null || true && \
     rm -rf /var/lib/apt/lists/*
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN groupadd -g 65532 nxlog && \
     useradd -m -u 65532 -g nxlog -s /usr/sbin/nologin nxlog

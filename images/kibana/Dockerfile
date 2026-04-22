@@ -19,7 +19,7 @@ RUN curl -fsSL "https://artifacts.elastic.co/downloads/kibana/kibana-${VERSION}-
     && rm kibana.tar.gz \
     && rm -rf kibana-${VERSION}-linux-x86_64/node_modules/.cache
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache curl ca-certificates

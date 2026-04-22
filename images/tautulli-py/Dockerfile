@@ -11,7 +11,7 @@ RUN pip install --no-cache-dir pyopenssl certifi && \
     git clone --depth 1 --branch v2.14.5 \
     "https://github.com/Tautulli/Tautulli.git" /opt/tautulli
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache python3 ca-certificates curl
 COPY --from=builder /opt/venv /opt/venv

@@ -7,7 +7,7 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://github.com/idempiere/idempiere/releases/download/release-12.4/idempiere-server-12.4.gtk.linux.x86_64.tar.gz" -o /idempiere-server-12.4.gtk.linux.x86_64.tar.gz && \
     unzip -q /idempiere-server-12.4.gtk.linux.x86_64.tar.gz -d /opt/ && rm /idempiere-server-12.4.gtk.linux.x86_64.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl
 COPY --from=downloader /opt/idempiere-server-12.4.gtk.linux.x86_64 /opt/idempiere

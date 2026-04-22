@@ -18,7 +18,7 @@ RUN python3 -m venv /opt/venv \
     && /opt/venv/bin/pip install --no-cache-dir dnsvalidator==${VERSION} 2>/dev/null || \
     /opt/venv/bin/pip install --no-cache-dir dnsvalidator
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache python3 ca-certificates

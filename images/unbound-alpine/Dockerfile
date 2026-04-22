@@ -33,7 +33,7 @@ RUN curl -fsSL "https://nlnetlabs.nl/downloads/unbound/unbound-${VERSION}.tar.gz
     strip --strip-all /usr/sbin/unbound-checkconf && \
     strip --strip-all /usr/sbin/unbound-control
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache expat ca-certificates
 COPY --from=builder /usr/sbin/unbound /usr/sbin/unbound

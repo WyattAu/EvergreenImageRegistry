@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN npm install -g --unsafe-perm homebridge hap-nodejs
 RUN mkdir -p /app /homebridge
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache nodejs npm ca-certificates
 COPY --from=builder /usr/lib/node_modules/homebridge /usr/lib/node_modules/homebridge

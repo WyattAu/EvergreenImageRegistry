@@ -19,7 +19,7 @@ RUN curl -fsSL "https://github.com/chart-db/chartdb/releases/download/v${VERSION
     && unzip -q /tmp/chartdb.zip -d /opt/chartdb \
     && rm /tmp/chartdb.zip
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates

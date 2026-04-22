@@ -23,7 +23,7 @@ RUN curl -fsSL "https://thekelleys.org.uk/dnsmasq/dnsmasq-${VERSION}.tar.gz" -o 
     make install PREFIX=/usr DESTDIR=/install && \
     strip --strip-all /install/usr/sbin/dnsmasq
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 COPY --from=builder /install/usr/sbin/dnsmasq /usr/sbin/dnsmasq

@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN gem install dependabot-omnibus --no-document 2>/dev/null || true
 RUN mkdir -p /app
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ruby ca-certificates git curl gnupg
 COPY --from=builder /usr/lib/ruby/gems /usr/lib/ruby/gems 2>/dev/null || true

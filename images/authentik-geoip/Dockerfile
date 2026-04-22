@@ -16,7 +16,7 @@ RUN curl -fsSL "https://github.com/goauthentik/authentik/releases/download/versi
     tar -xzf /authentik-geoip.tar.gz -C /tmp/authentik-geoip && \
     rm -f /authentik-geoip.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache python3 py3-pip ca-certificates libpq
 COPY --from=downloader /tmp/authentik-geoip /opt/authentik-geoip

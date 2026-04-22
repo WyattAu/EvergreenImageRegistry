@@ -10,7 +10,7 @@ RUN curl -fsSL "https://dl.k8s.io/release/v1.30.1/bin/linux/amd64/kube-controlle
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/kube-controller /var/cache/kube-controller /var/lib/kube-controller
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 COPY --from=downloader /kube-controller-manager /usr/local/bin/kube-controller-manager

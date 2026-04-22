@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         ca-certificates curl git && \
     rm -rf /var/lib/apt/lists/*
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache sqlite-libs libpq ca-certificates curl
 RUN mkdir -p /app /var/log/app /var/cache/app \

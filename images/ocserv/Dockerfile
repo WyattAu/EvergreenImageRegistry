@@ -17,7 +17,7 @@ RUN mkdir -p /app /var/log/ocserv /run/ocserv && \
     strip --strip-all /usr/bin/occtl 2>/dev/null || true && \
     strip --strip-all /usr/bin/ocpasswd 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 COPY --from=installer /usr/sbin/ocserv /usr/sbin/ocserv

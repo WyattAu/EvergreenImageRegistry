@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir --prefix=/install patroni[postgresql]=="${VERSION
     find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache python3 py3-pip libpq curl ca-certificates
 COPY --from=builder /install /usr/local

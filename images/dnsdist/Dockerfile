@@ -21,7 +21,7 @@ RUN curl -fsSL "https://github.com/PowerDNS/pdns/archive/refs/tags/rel/dnsdist-$
     make -j"$(nproc)" dnsdist && \
     strip --strip-all /pdns-rel-dnsdist-${VERSION}/build/dnsdist/dnsdist
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 RUN mkdir -p /app /var/log/dnsdist /etc/dnsdist

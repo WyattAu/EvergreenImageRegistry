@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl -fsSL "https://virtuoso.openlinksw.com/data/virtuoso_abikey.asc" | gnupg --dearmor -o /usr/share/keyrings/virtuoso-keyring.gnupg 2>/dev/null || true \
     && echo "deb [signed-by=/usr/share/keyrings/virtuoso-keyring.gnupg] https://packages.virtuoso.opensourcedatabases.org/virtuoso/deb bookworm main" > /etc/apt/sources.list.d/virtuoso.list 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates

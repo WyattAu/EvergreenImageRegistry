@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /opt/elasticsearch-${VERSION}/jdk && \
     mkdir -p /app /var/log/elasticsearch /var/cache/elasticsearch /var/lib/elasticsearch
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache curl ca-certificates
 COPY --from=builder /opt/elasticsearch-${VERSION} /opt/elasticsearch

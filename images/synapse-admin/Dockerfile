@@ -18,7 +18,7 @@ RUN curl -fsSL "https://github.com/awesome-anton/synapse-admin/archive/refs/tags
     npm install --omit=dev && \
     npm run build
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache curl ca-certificates

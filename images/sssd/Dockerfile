@@ -4,7 +4,7 @@
 # Constraint: debian-slim hardened
 # =============================================================================
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates tzdata
 
 RUN mkdir -p /var/lib/sss /var/log/sssd /etc/sssd && \

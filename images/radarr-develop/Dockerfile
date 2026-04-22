@@ -14,7 +14,7 @@ RUN curl -fsSL "https://github.com/Radarr/Radarr/releases/download/v5.15.0/Radar
     tar -xzf /Radarr.tar.gz -C /app && rm /Radarr.tar.gz && chmod +x /app/Radarr 2>/dev/null || \
     curl -fsSL "https://github.com/Radarr/Radarr/releases/download/v5.15.0/Radarr.develop.5.15.0.linux-core-x64.tar.gz" -o /app/Radarr && chmod +x /app/Radarr
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl
 RUN useradd -m -u 65532 -g '' app 2>/dev/null || true

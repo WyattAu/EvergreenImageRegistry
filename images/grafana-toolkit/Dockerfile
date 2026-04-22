@@ -23,7 +23,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends nodejs && \
     rm -rf /var/lib/apt/lists/*
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN groupadd -g 65532 toolkit && \
     useradd -m -u 65532 -g toolkit -s /usr/sbin/nologin toolkit

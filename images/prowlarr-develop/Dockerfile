@@ -14,7 +14,7 @@ RUN curl -fsSL "https://github.com/Prowlarr/Prowlarr/releases/download/v1.29.0/P
     tar -xzf /Prowlarr.tar.gz -C /app && rm /Prowlarr.tar.gz && chmod +x /app/Prowlarr 2>/dev/null || \
     curl -fsSL "https://github.com/Prowlarr/Prowlarr/releases/download/v1.29.0/Prowlarr.develop.1.29.0.linux-core-x64.tar.gz" -o /app/Prowlarr && chmod +x /app/Prowlarr
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl
 RUN useradd -m -u 65532 -g '' app 2>/dev/null || true

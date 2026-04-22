@@ -18,7 +18,7 @@ RUN curl -fsSL "https://packages.graylog2.org/releases/graylog/graylog-${VERSION
     && tar -xzf graylog.tar.gz \
     && rm graylog.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl

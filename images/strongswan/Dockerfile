@@ -19,7 +19,7 @@ RUN mkdir -p /app /var/log/strongswan /var/run/charon /etc/strongswan.d && \
     find /usr -type f -executable -name "pki" -exec strip --strip-all {} \; 2>/dev/null || true && \
     find /usr -type f -executable -name "swanctl" -exec strip --strip-all {} \; 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates iproute2 iptables kmod
 COPY --from=installer /usr/sbin/charon /usr/sbin/charon

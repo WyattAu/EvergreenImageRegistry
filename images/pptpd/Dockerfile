@@ -16,7 +16,7 @@ RUN mkdir -p /app /var/log/pptpd /run/pptpd /etc/pptpd.d && \
     strip --strip-all /usr/sbin/pptpd 2>/dev/null || true && \
     strip --strip-all /usr/sbin/pptpctrl 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache libstdc++ ca-certificates
 COPY --from=installer /usr/sbin/pptpd /usr/sbin/pptpd

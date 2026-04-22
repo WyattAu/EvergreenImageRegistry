@@ -8,7 +8,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir ggshield
 RUN mkdir -p /app
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache python3 ca-certificates git
 COPY --from=builder /opt/venv /opt/venv

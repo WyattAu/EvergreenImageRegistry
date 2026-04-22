@@ -8,7 +8,7 @@
 ARG VERSION=6.1.8
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates gnupg curl && \
     curl -sSL https://packages.sury.org/php/apt.gnupg | gnupg --dearmor -o /usr/share/keyrings/sury-php.gnupg && \
@@ -27,7 +27,6 @@ LABEL org.opencontainers.image.title="firefly-iii" \
       org.opencontainers.image.vendor="Firefly III" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-
 LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"

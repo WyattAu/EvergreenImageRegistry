@@ -7,7 +7,7 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://github.com/Stirling-Tools/Stirling-PDF/releases/download/v0.46.0/stirling-pdf-0.46.0.jar" -o /stirling-pdf-0.46.0.jar && \
     unzip -q /stirling-pdf-0.46.0.jar -d /opt/ && rm /stirling-pdf-0.46.0.jar
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl
 COPY --from=downloader /opt/stirling-pdf-0.46.0.jar /opt/stirling-pdf

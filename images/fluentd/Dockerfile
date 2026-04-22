@@ -16,7 +16,7 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN gem install fluentd -v "~> ${VERSION}" --no-document \
     && gem install fluent-plugin-systemd --no-document 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates libffi-dev
 RUN useradd -m -u 65532 -s /usr/sbin/nologin fluentd 2>/dev/null || true

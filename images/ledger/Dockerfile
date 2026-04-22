@@ -12,7 +12,7 @@ RUN git clone --depth 1 --branch v{version} \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_DOCS=OFF -DUSE_PYTHON=OFF . && \
     make -j$(nproc) && make install && strip /usr/local/bin/ledger
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 COPY --from=builder /usr/local/bin/ledger /usr/local/bin/ledger

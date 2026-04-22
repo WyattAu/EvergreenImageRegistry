@@ -22,7 +22,7 @@ RUN git clone --depth 1 --branch v${VERSION} https://github.com/Softmotions/ejdb
     && make install \
     && strip --strip-all /opt/ejdb/bin/ejdb 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache libstdc++ ca-certificates

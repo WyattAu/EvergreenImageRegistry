@@ -18,7 +18,7 @@ RUN find /usr -type f -executable -name "pihole*" -exec strip --strip-all {} \; 
     find /usr -type f -executable -name "gravity.sh" -exec chmod +x {} \; 2>/dev/null || true && \
     find /opt -type f -executable -exec strip --strip-all {} \; 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache curl wget iproute2 iptables procps ca-certificates
 RUN mkdir -p /app /var/log/pihole /var/lib/pihole /etc/pihole /etc/dnsmasq.d

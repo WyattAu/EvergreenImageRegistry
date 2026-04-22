@@ -14,7 +14,7 @@ RUN curl -fsSL "https://github.com/Sonarr/Sonarr/releases/download/v4.0.11/Sonar
     tar -xzf /Sonarr.tar.gz -C /app && rm /Sonarr.tar.gz && chmod +x /app/Sonarr 2>/dev/null || \
     curl -fsSL "https://github.com/Sonarr/Sonarr/releases/download/v4.0.11/Sonarr.develop.4.0.11.linux-core-x64.tar.gz" -o /app/Sonarr && chmod +x /app/Sonarr
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl
 RUN useradd -m -u 65532 -g '' app 2>/dev/null || true

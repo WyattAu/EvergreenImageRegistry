@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-client-${VERSION} xz-utils && \
     mkdir -p /app /backups /var/log/postgres-backup /var/cache/postgres-backup
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache postgresql-client-${VERSION} curl ca-certificates
 COPY --from=builder --chown=65532:65532 /app /app

@@ -8,7 +8,7 @@
 ARG VERSION=2.14.0
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates gnupg && \
     curl -fsSL https://artifacts.opensearch.org/publickeys/opensearch.pgp | gnupg --dearmor -o /usr/share/keyrings/opensearch.gnupg && \
@@ -26,7 +26,6 @@ LABEL org.opencontainers.image.title="opensearch-dashboards" \
       org.opencontainers.image.vendor="OpenSearch" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-
 LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"

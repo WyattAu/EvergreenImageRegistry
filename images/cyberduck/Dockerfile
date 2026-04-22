@@ -16,7 +16,7 @@ RUN curl -fsSL "https://github.com/iterate-ch/cyberduck/releases/download/${VERS
     tar -xzf /cyberduck.tar.gz -C /tmp/cyberduck && \
     rm -f /cyberduck.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 COPY --from=downloader /tmp/cyberduck /opt/cyberduck

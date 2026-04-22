@@ -35,7 +35,7 @@ RUN curl -fsSL "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -o /ng
     rm -rf /nginx.tar.gz /tmp/nginx-${NGINX_VERSION}
 
 # hadolint ignore=DL3023
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache libpcre2-8-0 zlib ca-certificates apache2
 

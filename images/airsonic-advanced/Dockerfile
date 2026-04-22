@@ -12,7 +12,7 @@ FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/airsonic-advanced/airsonic-advanced/releases/download/v11.1.5/airsonic-advanced-11.1.5.war" -o /app/airsonic-advanced-11.1.5.war
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl
 RUN useradd -m -u 65532 -g '' app 2>/dev/null || true

@@ -33,7 +33,7 @@ RUN apt-get update && \
         ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN groupadd -g 65532 renderer && \
     useradd -m -u 65532 -g renderer -s /usr/sbin/nologin renderer

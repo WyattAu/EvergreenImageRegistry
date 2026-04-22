@@ -1,7 +1,7 @@
 ARG VERSION=2.8.38
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007 AS runtime
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache perl apache2 ca-certificates curl
 RUN mkdir -p /var/www/sql-ledger /var/log/sql-ledger \
     && chown -R 65532:65532 /var/www/sql-ledger /var/log/sql-ledger

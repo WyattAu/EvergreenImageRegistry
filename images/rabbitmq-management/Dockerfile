@@ -30,7 +30,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         rabbitmq-server rabbitmq-management \
     && rm -rf /var/lib/apt/lists/*
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates

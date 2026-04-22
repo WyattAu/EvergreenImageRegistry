@@ -10,7 +10,7 @@ RUN curl -fsSL "https://dl.k8s.io/release/v1.30.1/bin/linux/amd64/kube-apiserver
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/kube-apiserver /var/cache/kube-apiserver /var/lib/kube-apiserver
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 COPY --from=downloader /kube-apiserver /usr/local/bin/kube-apiserver

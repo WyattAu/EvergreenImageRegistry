@@ -17,7 +17,7 @@ RUN curl -fsSL "https://github.com/valkey-io/valkey/releases/download/${VERSION}
     cd /valkey-${VERSION} && make -j"$(nproc)" && make install PREFIX=/install && \
     strip /install/bin/valkey-* /install/bin/redis-*
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 COPY --from=builder /install/bin/ /usr/local/bin/

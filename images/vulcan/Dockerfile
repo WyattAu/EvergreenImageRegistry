@@ -8,7 +8,7 @@
 ARG VERSION=1.0.0
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION
 RUN apk add --no-cache ca-certificates
 RUN useradd -m -u 65532 -s /usr/sbin/nologin vulcan 2>/dev/null || true
@@ -27,7 +27,6 @@ LABEL org.opencontainers.image.title="vulcan" \
       sovereign.image.status="placeholder" \
       sovereign.image.note="No upstream binary available. Replace placeholder when upstream publishes releases." \
       sovereign.constraint.nonroot="true" \
-
 LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"

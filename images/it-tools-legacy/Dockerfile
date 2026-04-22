@@ -7,7 +7,7 @@ RUN git clone --depth 1 --branch v2024.3.21 https://github.com/CorentinTh/it-too
     cd /src && npm ci && npm run build
 RUN mkdir -p /app
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache nodejs npm ca-certificates
 COPY --from=builder /src /app/src

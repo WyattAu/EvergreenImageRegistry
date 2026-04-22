@@ -7,7 +7,7 @@ RUN curl -fsSL "https://github.com/openhab/openhab-distro/releases/download/4.2.
     unzip -q /openhab.zip -d /opt/openhab && rm /openhab.zip
 RUN mkdir -p /app /opt/openhab/userdata /opt/openhab/conf /opt/openhab/log
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl libffi-dev
 COPY --from=builder /opt/openhab /opt/openhab

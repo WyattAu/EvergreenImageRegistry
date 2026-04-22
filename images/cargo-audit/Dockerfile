@@ -7,7 +7,7 @@ ENV PATH="/root/.cargo/bin:$PATH"
 RUN cargo install cargo-audit
 RUN mkdir -p /app
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl
 COPY --from=builder /root/.cargo/bin/cargo-audit /usr/local/bin/cargo-audit

@@ -17,7 +17,7 @@ RUN curl -fsSL "https://github.com/actions/runner/releases/download/v${VERSION}/
     rm /tmp/runner.tar.gz && \
     chown -R root:root /build
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache curl ca-certificates

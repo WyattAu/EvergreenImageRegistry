@@ -20,7 +20,7 @@ RUN curl -fsSL "https://archive.apache.org/dist/kafka/${VERSION}/kafka_${SCALA_V
     && tar -xzf kafka.tgz \
     && rm kafka.tgz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 ARG SCALA_VERSION

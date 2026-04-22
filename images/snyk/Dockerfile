@@ -15,7 +15,7 @@ RUN curl -fsSL "https://github.com/snyk/snyk/releases/download/v${VERSION}/snyk-
     chmod +x /snyk && \
     strip --strip-all /snyk
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache nodejs npm ca-certificates
 COPY --from=downloader /snyk /usr/local/bin/snyk

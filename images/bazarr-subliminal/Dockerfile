@@ -8,7 +8,7 @@
 ARG VERSION=1.5.2
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache python3 py3-pip git ca-certificates curl build-base
 RUN git clone --depth 1 --branch v1.5.2 https://github.com/morpheus65535/bazarr.git /opt/bazarr-subliminal 2>/dev/null || \
     git clone --depth 1 https://github.com/morpheus65535/bazarr.git /opt/bazarr-subliminal
@@ -26,7 +26,6 @@ LABEL org.opencontainers.image.title="bazarr-subliminal" \
       org.opencontainers.image.source="https://github.com/morpheus65535/bazarr.git" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-
 LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"

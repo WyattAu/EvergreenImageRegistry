@@ -16,7 +16,7 @@ RUN curl -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-amd6
     rm /grafana.tar.gz && \
     ln -sf /opt/grafana-${VERSION} /opt/grafana
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates tzdata fontconfig
 COPY --from=builder /opt/grafana /opt/grafana

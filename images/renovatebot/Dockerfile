@@ -16,7 +16,7 @@ RUN curl -fsSL "https://github.com/renovatebot/renovate/releases/download/${VERS
     tar -xzf /renovate.tar.gz -C /tmp/renovate && \
     rm -f /renovate.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache nodejs npm ca-certificates git
 COPY --from=downloader /tmp/renovate /opt/renovate

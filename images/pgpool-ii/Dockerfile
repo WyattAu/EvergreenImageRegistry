@@ -8,7 +8,7 @@
 ARG VERSION=4.5.1
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates
 RUN useradd -m -u 65532 -g '' pgpool 2>/dev/null || true
 RUN mkdir -p /app /var/log/pgpool /var/cache/pgpool && chown -R pgpool:pgpool /app /var/log/pgpool /var/cache/pgpool 2>/dev/null || true
@@ -21,7 +21,6 @@ LABEL org.opencontainers.image.title="pgpool-II" \
       org.opencontainers.image.vendor="PgPool" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-
 LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"

@@ -19,7 +19,7 @@ RUN curl -fsSL "https://github.com/pymumu/smartdns/archive/refs/tags/${VERSION}.
     make -j"$(nproc)" && \
     strip --strip-all /smartdns-${VERSION}/src/smartdns
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 RUN mkdir -p /app /var/log/smartdns /var/lib/smartdns /etc/smartdns

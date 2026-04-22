@@ -7,7 +7,7 @@
 ARG VERSION=2.4.66
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache apache2 ca-certificates tzdata
 RUN a2dismod autoindex 2>/dev/null || true
 RUN groupadd -g 65532 -r www-data 2>/dev/null || true && \
@@ -26,7 +26,6 @@ LABEL org.opencontainers.image.title="apache" \
       sovereign.image.status="functional" \
       sovereign.image.category="webserver" \
       sovereign.constraint.nonroot="true" \
-
 LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"

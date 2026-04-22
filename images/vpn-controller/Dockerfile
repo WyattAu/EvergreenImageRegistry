@@ -18,7 +18,7 @@ RUN curl -fsSL "https://git.zx2c4.com/wireguard-tools/snapshot/wireguard-tools-$
     make -j"$(nproc)" && \
     strip --strip-all /wireguard-tools-${VERSION}/src/wg /wireguard-tools-${VERSION}/src/wg-quick
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates iproute2 iptables kmod
 RUN mkdir -p /app /var/log/vpn-controller /etc/wireguard

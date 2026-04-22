@@ -19,7 +19,7 @@ RUN curl -fsSL "https://archive.apache.org/dist/pulsar/pulsar-${VERSION}/apache-
     && rm pulsar.tar.gz \
     && rm -rf apache-pulsar-${VERSION}/examples apache-pulsar-${VERSION}/tools
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl

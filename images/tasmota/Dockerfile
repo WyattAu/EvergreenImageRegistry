@@ -3,7 +3,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends         python3
 RUN pip install --break-system-packages --no-cache-dir platformio 2>/dev/null || true
 RUN mkdir -p /app /firmware
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache python3 ca-certificates
 COPY --from=builder /app /app

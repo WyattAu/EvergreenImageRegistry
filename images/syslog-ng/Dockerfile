@@ -16,7 +16,7 @@ RUN apt-get update && \
     find /usr/lib/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true && \
     find /usr/lib/*/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN groupadd -g 65532 syslogng && \
     useradd -m -u 65532 -g syslogng -s /usr/sbin/nologin syslogng

@@ -19,7 +19,7 @@ RUN curl -fsSL "https://github.com/jonas/tig/releases/download/tig-${VERSION}/ti
     make -j"$(nproc)" && \
     strip --strip-all /tig-${VERSION}/src/tig
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache zlib ca-certificates git
 RUN mkdir -p /app /var/log/tig

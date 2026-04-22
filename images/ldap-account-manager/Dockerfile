@@ -16,7 +16,7 @@ RUN curl -fsSL "https://github.com/leenooks/phpLDAPadmin/releases/download/${VER
     tar -xzf /phpldapadmin.tar.gz -C /tmp/phpldapadmin --strip-components=1 && \
     rm -f /phpldapadmin.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache php-8.4-fpm php-ldap php-8.4-mbstring php-8.4-xml php-8.4-curl ca-certificates
 COPY --from=downloader /tmp/phpldapadmin /opt/phpldapadmin

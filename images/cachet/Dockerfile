@@ -19,7 +19,7 @@ RUN mkdir -p /build && \
     tar -xzf /cachet.tar.gz -C /build --strip-components=1 && \
     rm /cachet.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN groupadd -g 65532 cachet && \
     useradd -m -u 65532 -g cachet -s /usr/sbin/nologin cachet

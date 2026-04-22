@@ -18,7 +18,7 @@ RUN curl -fsSL "https://github.com/hazelcast/hazelcast/releases/download/v${VERS
     && tar -xzf /tmp/hazelcast.tgz -C /opt/hazelcast --strip-components=1 \
     && rm -rf /tmp/hazelcast.tgz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 RUN groupadd -g 65532 hazelcast && useradd -u 65532 -g hazelcast -s /usr/sbin/nologin hazelcast

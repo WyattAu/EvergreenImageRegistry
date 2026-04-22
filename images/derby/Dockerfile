@@ -19,7 +19,7 @@ RUN curl -fsSL "https://dlcdn.apache.org/db/derby/db-derby-${VERSION}/db-derby-$
     && tar -xzf /tmp/derby.tar.gz -C /opt \
     && rm /tmp/derby.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates

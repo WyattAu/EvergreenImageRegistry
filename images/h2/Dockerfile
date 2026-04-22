@@ -17,7 +17,7 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://repo1.maven.org/maven2/com/h2database/h2/${VERSION}/h2-${VERSION}.jar" -o /tmp/h2.jar \
     && echo "PENDING  /tmp/h2.jar" | sha256sum -c -
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates

@@ -8,7 +8,7 @@
 ARG VERSION=5.20.0
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates gnupg && \
     curl -fsSL https://debian.neo4j.com/neotechnology.gnupg.key | gnupg --dearmor -o /usr/share/keyrings/neo4j.gnupg && \
@@ -26,7 +26,6 @@ LABEL org.opencontainers.image.title="neo4j" \
       org.opencontainers.image.vendor="Neo4j" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-
 LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"

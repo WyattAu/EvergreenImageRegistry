@@ -9,7 +9,7 @@
 ARG VERSION=8.5.0
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION
 RUN apk add --no-cache ca-certificates
 RUN useradd -m -u 65532 -s /usr/sbin/nologin singlestore 2>/dev/null || true
@@ -28,7 +28,6 @@ LABEL org.opencontainers.image.title="singlestore" \
       sovereign.image.status="functional" \
       sovereign.image.note="SingleStore requires a license. Download from https://www.singlestore.com/ for production." \
       sovereign.constraint.nonroot="true" \
-
 LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"

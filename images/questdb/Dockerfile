@@ -19,7 +19,7 @@ RUN curl -fsSL "https://github.com/questdb/questdb/releases/download/${VERSION}/
     && tar -xzf /questdb.tar.gz -C /opt \
     && rm /questdb.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates

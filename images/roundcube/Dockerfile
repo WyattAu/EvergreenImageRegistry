@@ -12,7 +12,7 @@ RUN apt-get update &&     apt-get install -y --no-install-recommends         php
 WORKDIR /build
 RUN curl -fsSL "https://github.com/roundcube/roundcubemail/releases/download/v1.6.9/roundcube-1.6.9.tar.gz" -o /tmp/release.tar.gz &&     tar -xzf /tmp/release.tar.gz -C /build --strip-components=1 &&     rm /tmp/release.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache php-8.4-fpm php-8.4 php-8.4-mbstring php-8.4-xml php-8.4-curl php-8.4-intl php-8.4-zip ca-certificates

@@ -15,7 +15,7 @@ RUN curl -fsSL "https://releases.mattermost.com/${VERSION}/mattermost-${VERSION}
     tar -xzf /mattermost.tar.gz -C /opt && \
     rm /mattermost.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates tzdata
 COPY --from=downloader /opt/mattermost /opt/mattermost

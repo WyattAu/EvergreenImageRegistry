@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN gem install github-linguist --no-document
 RUN mkdir -p /app
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ruby ca-certificates
 COPY --from=builder /usr/lib/ruby/gems /usr/lib/ruby/gems 2>/dev/null || true

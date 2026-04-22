@@ -15,7 +15,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/gitbucket/gitbucket/releases/download/v${VERSION}/gitbucket.war" -o /tmp/gitbucket.war
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache ca-certificates

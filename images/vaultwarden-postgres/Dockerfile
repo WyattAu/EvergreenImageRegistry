@@ -15,7 +15,7 @@ RUN curl -fsSL "https://github.com/dani-garcia/vaultwarden/releases/download/${V
     chmod +x /vaultwarden && \
     strip --strip-all /vaultwarden
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache libpq ca-certificates
 COPY --from=downloader /vaultwarden /usr/local/bin/vaultwarden

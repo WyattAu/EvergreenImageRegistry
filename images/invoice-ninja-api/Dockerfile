@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN mkdir -p /var/run/php /var/www/html /var/log/nginx /var/cache/nginx \
     && chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache php-8.4-fpm php-8.4 php-8.4-curl php-8.4-mbstring php-8.4-xml zip php-8.4-intl php-8.4-mysql openssl php-8.4-pdo php-8.4-gd nginx ca-certificates
 RUN mkdir -p /var/run/php /var/www/html /var/log/nginx /var/cache/nginx \

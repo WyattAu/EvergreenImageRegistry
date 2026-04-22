@@ -5,7 +5,7 @@ FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates xz-utils && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://downloads.plex.tv/plex-media-server-new/1.41.3.9292-f5fc49b19/debian/plexmediaserver_1.41.3.9292-f5fc49b19_amd64.deb" -o /plex.deb
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl expat fontconfig freetype glib
 COPY --from=downloader /plex.deb /tmp/plex.deb

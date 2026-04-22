@@ -19,7 +19,7 @@ RUN curl -fsSL "https://artifacts.elastic.co/downloads/logstash/logstash-oss-${V
     && tar -xzf logstash-oss.tar.gz \
     && rm logstash-oss.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl

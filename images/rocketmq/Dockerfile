@@ -21,7 +21,7 @@ RUN curl -fsSL "https://archive.apache.org/dist/rocketmq/${ROCKETMQ_VERSION}/roc
     rm -rf /rocketmq.zip /checksums.txt
 
 # hadolint ignore=DL3023
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache openjdk-${JAVA_VERSION}-jre-headless ca-certificates
 

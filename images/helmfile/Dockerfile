@@ -24,10 +24,8 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/helmfile /var/log/helmfile
 COPY --from=builder /var/cache/helmfile /var/cache/helmfile
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/helmfile", "--version"]
 ENTRYPOINT ["/helmfile"]
 LABEL org.opencontainers.image.title="helmfile" \
       org.opencontainers.image.version="0.162.0" \
@@ -39,3 +37,9 @@ LABEL org.opencontainers.image.title="helmfile" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

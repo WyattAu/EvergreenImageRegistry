@@ -1,0 +1,1238 @@
+{
+  "valid_packages": [
+    "apache2",
+    "bc",
+    "build-base",
+    "ca-certificates",
+    "clamav",
+    "clamav-daemon",
+    "clamav-freshclam",
+    "containers-common",
+    "coreutils",
+    "dbus",
+    "expat",
+    "ffmpeg",
+    "fontconfig",
+    "freetype",
+    "freshclam",
+    "glib",
+    "gnupg",
+    "gosu",
+    "haproxy",
+    "imagemagick",
+    "inotify-tools",
+    "iproute2",
+    "iptables",
+    "jq",
+    "json-c",
+    "kmod",
+    "libcap",
+    "libffi-dev",
+    "libjpeg-turbo",
+    "liblz4-1",
+    "libnghttp2-14",
+    "libpcre2-8-0",
+    "libstdc++",
+    "libxml2",
+    "libxml2-dev",
+    "libxml2-utils",
+    "libxslt-dev",
+    "libzstd1",
+    "mariadb-backup",
+    "memcached",
+    "mosquitto",
+    "mosquitto-clients",
+    "net-tools",
+    "netcat-openbsd",
+    "nginx",
+    "nodejs",
+    "openldap",
+    "openssh-client",
+    "openssl",
+    "openssl-dev",
+    "openvpn",
+    "perl",
+    "php-ldap",
+    "postfix",
+    "postgresql-14",
+    "postgresql-15",
+    "postgresql-16",
+    "postgresql-17",
+    "postgresql-client",
+    "procps",
+    "psmisc",
+    "py3-pip",
+    "python3",
+    "rspamd",
+    "rsync",
+    "rsyslog",
+    "ruby",
+    "rust",
+    "scap-security-guide",
+    "socat",
+    "sqlite-libs",
+    "systemd",
+    "tzdata",
+    "unzip",
+    "valkey",
+    "wireguard-tools",
+    "zip",
+    "zlib"
+  ],
+  "invalid_packages": {
+    "apt-transport-https": [
+      "collabora-online",
+      "collabora-online-code",
+      "onlyoffice-communityserver",
+      "onlyoffice-controlpanel",
+      "onlyoffice-documentserver",
+      "onlyoffice-documentserver-ee"
+    ],
+    "chkrootkit": [
+      "chkrootkit"
+    ],
+    "cockpit": [
+      "cockpit"
+    ],
+    "cockpit-dashboard": [
+      "cockpit"
+    ],
+    "cockpit-storaged": [
+      "cockpit"
+    ],
+    "cockpit-system": [
+      "cockpit"
+    ],
+    "cockpit-ws": [
+      "cockpit"
+    ],
+    "conntrack": [
+      "kube-proxy"
+    ],
+    "courier-authlib": [
+      "courier-authlib",
+      "courier-imap"
+    ],
+    "courier-imap": [
+      "courier-imap"
+    ],
+    "curl-openssl-dev": [
+      "modsecurity-crs"
+    ],
+    "cyrus-sasl2-bin": [
+      "389ds"
+    ],
+    "default-php84-mysql-client": [
+      "mysql-anonymizer",
+      "mysql-backup",
+      "mysql-init",
+      "mysql-restore"
+    ],
+    "default-php84-mysql-server": [
+      "mariadb",
+      "mysql"
+    ],
+    "dovecot-core": [
+      "dovecot",
+      "dovecot-lda",
+      "dovecot-pop3"
+    ],
+    "dovecot-imapd": [
+      "dovecot",
+      "dovecot-lda"
+    ],
+    "dovecot-lmtpd": [
+      "dovecot",
+      "dovecot-lda"
+    ],
+    "dovecot-pop3d": [
+      "dovecot",
+      "dovecot-pop3"
+    ],
+    "erlang-asn1": [
+      "couchdb",
+      "couchdb-sync",
+      "rabbitmq-amqp",
+      "rabbitmq-delayed",
+      "rabbitmq-federation",
+      "rabbitmq-management",
+      "rabbitmq-mqtt",
+      "rabbitmq-stomp"
+    ],
+    "erlang-base": [
+      "couchdb",
+      "couchdb-sync",
+      "rabbitmq-amqp",
+      "rabbitmq-delayed",
+      "rabbitmq-federation",
+      "rabbitmq-management",
+      "rabbitmq-mqtt",
+      "rabbitmq-stomp"
+    ],
+    "erlang-crypto": [
+      "couchdb",
+      "couchdb-sync",
+      "rabbitmq-amqp",
+      "rabbitmq-delayed",
+      "rabbitmq-federation",
+      "rabbitmq-management",
+      "rabbitmq-mqtt",
+      "rabbitmq-stomp"
+    ],
+    "erlang-eldap": [
+      "rabbitmq-amqp",
+      "rabbitmq-delayed",
+      "rabbitmq-federation",
+      "rabbitmq-management",
+      "rabbitmq-mqtt",
+      "rabbitmq-stomp"
+    ],
+    "erlang-ftp": [
+      "rabbitmq-amqp",
+      "rabbitmq-delayed",
+      "rabbitmq-federation",
+      "rabbitmq-management",
+      "rabbitmq-mqtt",
+      "rabbitmq-stomp"
+    ],
+    "erlang-inets": [
+      "rabbitmq-amqp",
+      "rabbitmq-delayed",
+      "rabbitmq-federation",
+      "rabbitmq-management",
+      "rabbitmq-mqtt",
+      "rabbitmq-stomp"
+    ],
+    "erlang-mnesia": [
+      "rabbitmq-amqp",
+      "rabbitmq-delayed",
+      "rabbitmq-federation",
+      "rabbitmq-management",
+      "rabbitmq-mqtt",
+      "rabbitmq-stomp"
+    ],
+    "erlang-os-mon": [
+      "rabbitmq-amqp",
+      "rabbitmq-delayed",
+      "rabbitmq-federation",
+      "rabbitmq-management",
+      "rabbitmq-mqtt",
+      "rabbitmq-stomp"
+    ],
+    "erlang-parsetools": [
+      "rabbitmq-amqp",
+      "rabbitmq-delayed",
+      "rabbitmq-federation",
+      "rabbitmq-management",
+      "rabbitmq-mqtt",
+      "rabbitmq-stomp"
+    ],
+    "erlang-public-key": [
+      "couchdb",
+      "couchdb-sync",
+      "rabbitmq-amqp",
+      "rabbitmq-delayed",
+      "rabbitmq-federation",
+      "rabbitmq-management",
+      "rabbitmq-mqtt",
+      "rabbitmq-stomp"
+    ],
+    "erlang-runtime-tools": [
+      "rabbitmq-amqp",
+      "rabbitmq-delayed",
+      "rabbitmq-federation",
+      "rabbitmq-management",
+      "rabbitmq-mqtt",
+      "rabbitmq-stomp"
+    ],
+    "erlang-snmp": [
+      "rabbitmq-amqp",
+      "rabbitmq-delayed",
+      "rabbitmq-federation",
+      "rabbitmq-management",
+      "rabbitmq-mqtt",
+      "rabbitmq-stomp"
+    ],
+    "erlang-ssl": [
+      "couchdb",
+      "couchdb-sync",
+      "rabbitmq-amqp",
+      "rabbitmq-delayed",
+      "rabbitmq-federation",
+      "rabbitmq-management",
+      "rabbitmq-mqtt",
+      "rabbitmq-stomp"
+    ],
+    "erlang-syntax-tools": [
+      "couchdb",
+      "couchdb-sync",
+      "rabbitmq-amqp",
+      "rabbitmq-delayed",
+      "rabbitmq-federation",
+      "rabbitmq-management",
+      "rabbitmq-mqtt",
+      "rabbitmq-stomp"
+    ],
+    "erlang-tftp": [
+      "rabbitmq-amqp",
+      "rabbitmq-delayed",
+      "rabbitmq-federation",
+      "rabbitmq-management",
+      "rabbitmq-mqtt",
+      "rabbitmq-stomp"
+    ],
+    "erlang-tools": [
+      "couchdb",
+      "couchdb-sync",
+      "rabbitmq-amqp",
+      "rabbitmq-delayed",
+      "rabbitmq-federation",
+      "rabbitmq-management",
+      "rabbitmq-mqtt",
+      "rabbitmq-stomp"
+    ],
+    "erlang-xmerl": [
+      "rabbitmq-amqp",
+      "rabbitmq-delayed",
+      "rabbitmq-federation",
+      "rabbitmq-management",
+      "rabbitmq-mqtt",
+      "rabbitmq-stomp"
+    ],
+    "fonts-liberation": [
+      "grafana-image-renderer"
+    ],
+    "galera-4": [
+      "mariadb-galera"
+    ],
+    "golang": [
+      "linguist-go"
+    ],
+    "golang-go": [
+      "golang"
+    ],
+    "imagick": [
+      "nextcloud-imaging"
+    ],
+    "imap": [
+      "suitecrm"
+    ],
+    "java-17-runtime": [
+      "adempiere",
+      "airbyte",
+      "airbyte-server",
+      "airbyte-worker",
+      "airsonic",
+      "airsonic-advanced",
+      "apache-nifi",
+      "apache-ofbiz",
+      "cassandra",
+      "chartdb",
+      "crate",
+      "cyberduck",
+      "derby",
+      "druid",
+      "elasticsearch-8",
+      "gitbucket",
+      "gradle",
+      "graphdb-enterpriser",
+      "graphdb-free",
+      "graylog",
+      "h2",
+      "hazelcast",
+      "hive",
+      "hive-metastore",
+      "idempiere",
+      "ignite",
+      "janusgraph",
+      "jenkins-agent",
+      "jenkins-executor",
+      "jenkins-plugin",
+      "kafka",
+      "kafka-connect",
+      "kafka-manager",
+      "ldapbrowser",
+      "logstash",
+      "logstash-oss",
+      "maven",
+      "mongodb-opsmanager",
+      "neo4j-admin",
+      "neo4j-enterprise",
+      "neo4j-import",
+      "nifi-registry",
+      "openhab3",
+      "opensearch",
+      "orientdb",
+      "pulsar-functions",
+      "pulsar-proxy",
+      "questdb",
+      "realm-server",
+      "sbt",
+      "stirling-pdf",
+      "stirling-pdf-core",
+      "subsonic",
+      "trino",
+      "yacy"
+    ],
+    "krb5-user": [
+      "freeipa-client"
+    ],
+    "ldap-utils": [
+      "389ds",
+      "openldap-backup",
+      "openldap-lambda"
+    ],
+    "libaio1": [
+      "oracledb-xe"
+    ],
+    "libaio1t64": [
+      "mysql-8"
+    ],
+    "libapache-dbi-perl": [
+      "sql-ledger"
+    ],
+    "libapache2-mod-perl2": [
+      "sql-ledger"
+    ],
+    "libapache2-mod-security2": [
+      "modsecurity-crs"
+    ],
+    "libasound2": [
+      "redis-insight"
+    ],
+    "libasound2t64": [
+      "grafana-image-renderer"
+    ],
+    "libass9": [
+      "jellyfin-ffmpeg"
+    ],
+    "libatk-bridge2.0-0": [
+      "redis-insight"
+    ],
+    "libatk-bridge2.0-0t64": [
+      "grafana-image-renderer"
+    ],
+    "libatk1.0-0": [
+      "redis-insight"
+    ],
+    "libatspi2.0-0": [
+      "redis-insight"
+    ],
+    "libavahi-compat-libdnssd1": [
+      "homebridge",
+      "homebridge-camera"
+    ],
+    "libboost-all1.74": [
+      "memgraph"
+    ],
+    "libboost-all1.74-dev": [
+      "dnsdist"
+    ],
+    "libboost-filesystem1.74.0": [
+      "powerdns-api",
+      "powerdns-recursor"
+    ],
+    "libboost-iostreams1.74.0": [
+      "ledger"
+    ],
+    "libboost-program-options1.74.0": [
+      "powerdns-api",
+      "powerdns-recursor"
+    ],
+    "libboost-system1.74.0": [
+      "powerdns-api",
+      "powerdns-recursor"
+    ],
+    "libboost-thread1.74.0": [
+      "powerdns-api",
+      "powerdns-recursor"
+    ],
+    "libcairo2": [
+      "redis-insight"
+    ],
+    "libcgi-pm-perl": [
+      "sql-ledger"
+    ],
+    "libcjson4": [
+      "nheko"
+    ],
+    "libcups2": [
+      "redis-insight"
+    ],
+    "libdbd-pg-perl": [
+      "sql-ledger"
+    ],
+    "libdbi-perl": [
+      "sql-ledger"
+    ],
+    "libdbus-1-3": [
+      "redis-insight"
+    ],
+    "libdrm2": [
+      "redis-insight"
+    ],
+    "libedit2": [
+      "cubrid"
+    ],
+    "libelf1": [
+      "vpn-controller"
+    ],
+    "libevent-2.1-7": [
+      "couchbase"
+    ],
+    "libfdk-acct2": [
+      "jellyfin-ffmpeg"
+    ],
+    "libgbm1": [
+      "grafana-image-renderer",
+      "redis-insight"
+    ],
+    "libgcc-s1": [
+      "zeromq",
+      "zerotier"
+    ],
+    "libgeoip-dev": [
+      "modsecurity-crs"
+    ],
+    "libgeoip1": [
+      "nginx-modsec"
+    ],
+    "libgl1": [
+      "nheko"
+    ],
+    "libgmp10": [
+      "ledger",
+      "ocserv",
+      "strongswan"
+    ],
+    "libgnutls30": [
+      "ocserv"
+    ],
+    "libgomp1": [
+      "splunk-forwarder"
+    ],
+    "libgrpc++1": [
+      "memgraph"
+    ],
+    "libgtk-3-0": [
+      "cyberduck",
+      "ldapbrowser"
+    ],
+    "libgtk-3-0t64": [
+      "grafana-image-renderer"
+    ],
+    "libhogweed6": [
+      "ocserv"
+    ],
+    "libice6": [
+      "emby",
+      "emby-server"
+    ],
+    "libicu72": [
+      "couchdb",
+      "couchdb-sync",
+      "mattermost",
+      "postgresql-17"
+    ],
+    "libidn2-0": [
+      "dnsmasq-full"
+    ],
+    "libjpeg-turbo-turbo-dev": [
+      "authentik",
+      "authentik-worker",
+      "sentry",
+      "sentry-cron",
+      "sentry-worker"
+    ],
+    "libjson-c5": [
+      "falco"
+    ],
+    "libjson-perl": [
+      "sql-ledger"
+    ],
+    "liblua5.3-0": [
+      "dnsdist"
+    ],
+    "libluajit-5.1-2": [
+      "knot-resolver",
+      "powerdns-recursor"
+    ],
+    "liblzma5": [
+      "nxlog"
+    ],
+    "liblzo2-2": [
+      "openvpn-as"
+    ],
+    "libmariadb3": [
+      "openproject",
+      "redmine",
+      "vaultwarden-mysql"
+    ],
+    "libmecab2": [
+      "mysql-8"
+    ],
+    "libmilter1.0.1": [
+      "rmilter"
+    ],
+    "libmnl0": [
+      "vpn-controller"
+    ],
+    "libmodsecurity3": [
+      "modsecurity-crs"
+    ],
+    "libmozjs-78-0": [
+      "couchdb",
+      "couchdb-sync"
+    ],
+    "libmp3lame0": [
+      "jellyfin-ffmpeg"
+    ],
+    "libmpfr6": [
+      "ledger"
+    ],
+    "libncurses5": [
+      "cubrid"
+    ],
+    "libncurses6": [
+      "tig"
+    ],
+    "libnetfilter-conntrack3": [
+      "dnsmasq-full"
+    ],
+    "libnettle8": [
+      "ocserv"
+    ],
+    "libnspr4": [
+      "redis-insight"
+    ],
+    "libnss3": [
+      "grafana-image-renderer",
+      "kibana",
+      "kibana-oss",
+      "redis-insight"
+    ],
+    "libnss3-tools": [
+      "freeipa-client"
+    ],
+    "libnuma1": [
+      "mysql-8"
+    ],
+    "libodbc1": [
+      "emqx",
+      "emqx-ee"
+    ],
+    "libopenscap8": [
+      "openscap"
+    ],
+    "libopus0": [
+      "jellyfin-ffmpeg"
+    ],
+    "libpam-sss": [
+      "freeipa-client"
+    ],
+    "libpam0g": [
+      "ocserv"
+    ],
+    "libpango-1.0-0": [
+      "redis-insight"
+    ],
+    "libpcre3": [
+      "nginx-alpine",
+      "nginx-cache",
+      "nginx-modsec"
+    ],
+    "libpcre3-dev": [
+      "modsecurity-crs"
+    ],
+    "libpkcs11-helper1": [
+      "openvpn-as"
+    ],
+    "libprotobuf32": [
+      "dnsdist",
+      "memgraph",
+      "rethinkdb"
+    ],
+    "libpython3.11": [
+      "dnsvalidator",
+      "surrealdb-python"
+    ],
+    "libqscintilla2-qt5-15": [
+      "sqlite-browser"
+    ],
+    "libqt5core5a": [
+      "eqonomize"
+    ],
+    "libqt5core5t64": [
+      "sqlite-browser"
+    ],
+    "libqt5gui5": [
+      "eqonomize"
+    ],
+    "libqt5gui5t64": [
+      "sqlite-browser"
+    ],
+    "libqt5network5t64": [
+      "sqlite-browser"
+    ],
+    "libqt5svg5": [
+      "sqlite-browser"
+    ],
+    "libqt5widgets5": [
+      "eqonomize"
+    ],
+    "libqt5widgets5t64": [
+      "sqlite-browser"
+    ],
+    "libqt6core6": [
+      "nheko"
+    ],
+    "libqt6gui6": [
+      "nheko"
+    ],
+    "libqt6multimedia6": [
+      "nheko"
+    ],
+    "libqt6network6": [
+      "nheko"
+    ],
+    "libqt6qml6": [
+      "nheko"
+    ],
+    "libqt6quick6": [
+      "nheko"
+    ],
+    "libqt6widgets6": [
+      "nheko"
+    ],
+    "libre2-5": [
+      "dnsdist"
+    ],
+    "libreadline8": [
+      "postgresql-17"
+    ],
+    "libsasl2-modules": [
+      "389ds",
+      "openldap-lambda"
+    ],
+    "libseccomp2": [
+      "ocserv"
+    ],
+    "libsm6": [
+      "emby",
+      "emby-server"
+    ],
+    "libsnappy1v5": [
+      "couchbase"
+    ],
+    "libsodium23": [
+      "dnsdist",
+      "zeromq"
+    ],
+    "libsqlcipher0": [
+      "sqlite-browser"
+    ],
+    "libswt-gtk-4-java": [
+      "cyberduck",
+      "ldapbrowser"
+    ],
+    "libtasn1-6": [
+      "ocserv"
+    ],
+    "libtemplate-perl": [
+      "sql-ledger"
+    ],
+    "libtheora0": [
+      "jellyfin-ffmpeg"
+    ],
+    "libusb-1.0-0": [
+      "openhab3"
+    ],
+    "libuv1": [
+      "knot-resolver"
+    ],
+    "libvorbis0a": [
+      "jellyfin-ffmpeg"
+    ],
+    "libvpx7": [
+      "jellyfin-ffmpeg"
+    ],
+    "libwebp7": [
+      "jellyfin-ffmpeg"
+    ],
+    "libwrap0": [
+      "ocserv",
+      "pptpd"
+    ],
+    "libx11-6": [
+      "emby",
+      "emby-server",
+      "plex",
+      "plex-media-server",
+      "redis-insight"
+    ],
+    "libx264-164": [
+      "jellyfin-ffmpeg"
+    ],
+    "libx265-199": [
+      "jellyfin-ffmpeg"
+    ],
+    "libxcb1": [
+      "plex",
+      "plex-media-server"
+    ],
+    "libxcomposite1": [
+      "redis-insight"
+    ],
+    "libxdamage1": [
+      "plex",
+      "plex-media-server",
+      "redis-insight"
+    ],
+    "libxext6": [
+      "emby",
+      "emby-server",
+      "plex",
+      "plex-media-server",
+      "redis-insight"
+    ],
+    "libxfixes3": [
+      "plex",
+      "plex-media-server",
+      "redis-insight"
+    ],
+    "libxi6": [
+      "redis-insight"
+    ],
+    "libxkbcommon0": [
+      "redis-insight"
+    ],
+    "libxrandr2": [
+      "redis-insight"
+    ],
+    "libxrender1": [
+      "emby",
+      "emby-server",
+      "plex",
+      "plex-media-server",
+      "redis-insight"
+    ],
+    "libxss1": [
+      "grafana-image-renderer",
+      "plex",
+      "plex-media-server"
+    ],
+    "libxtst6": [
+      "plex",
+      "plex-media-server",
+      "redis-insight"
+    ],
+    "libxvidcore4": [
+      "jellyfin-ffmpeg"
+    ],
+    "libyajl-dev": [
+      "modsecurity-crs"
+    ],
+    "libyajl2": [
+      "nginx-modsec"
+    ],
+    "libyaml-0-2": [
+      "falco"
+    ],
+    "libyaml-cpp0.7": [
+      "dnsdist"
+    ],
+    "libyaml-dev": [
+      "sentry",
+      "sentry-cron",
+      "sentry-worker"
+    ],
+    "libz1": [
+      "nginx-alpine",
+      "nginx-cache",
+      "nginx-modsec"
+    ],
+    "lsb-release": [
+      "mysql-8",
+      "postgresql-17"
+    ],
+    "mailutils": [
+      "postfix"
+    ],
+    "mariadb-server": [
+      "mariadb-10",
+      "mariadb-11",
+      "mariadb-galera"
+    ],
+    "mongodb-org": [
+      "mongodb",
+      "mongodb-6"
+    ],
+    "mongodb-org-tools": [
+      "realm-server"
+    ],
+    "musl-dev": [
+      "musl",
+      "x86_64-unknown-linux-musl"
+    ],
+    "nginx-light": [
+      "cinny",
+      "element-web",
+      "element-x",
+      "hydrogen"
+    ],
+    "oddjob-mkhomedir": [
+      "freeipa-client"
+    ],
+    "openjdk-21-jre-headless": [
+      "keycloak",
+      "keycloak-init",
+      "keycloak-quarkus"
+    ],
+    "openjdk-__VAR__-jre-headless": [
+      "activemq",
+      "rocketmq"
+    ],
+    "openscap-utils": [
+      "openscap"
+    ],
+    "openssl-libs": [
+      "arango",
+      "couchbase",
+      "dnsdist",
+      "emqx",
+      "emqx-ee",
+      "knot-resolver",
+      "memgraph",
+      "mongodb-5",
+      "mongodb-7",
+      "mongodb-community",
+      "nginx-alpine",
+      "nginx-cache",
+      "nginx-modsec",
+      "nheko",
+      "nxlog",
+      "openvpn-as",
+      "pi-hole",
+      "powerdns-api",
+      "powerdns-recursor",
+      "rethinkdb",
+      "smartdns",
+      "sqlcipher",
+      "sqlite-browser",
+      "strongswan",
+      "tigergraph",
+      "tigergraph-ecosystem",
+      "unbound-alpine",
+      "vernemq"
+    ],
+    "php84": [
+      "akaunting",
+      "composer-audit",
+      "dolibarr",
+      "egroupware",
+      "espocrm",
+      "frontaccounting",
+      "invoice-ninja",
+      "invoice-ninja-api",
+      "nextcloud",
+      "nextcloud-alpine",
+      "nextcloud-external",
+      "nextcloud-imaging",
+      "nextcloud-nginx",
+      "privatebin-nginx",
+      "pydio",
+      "rainloop",
+      "roundcube",
+      "suitecrm",
+      "vtigercrm"
+    ],
+    "php84-bcmath": [
+      "cachet"
+    ],
+    "php84-curl": [
+      "akaunting",
+      "cachet",
+      "composer-audit",
+      "dolibarr",
+      "egroupware",
+      "espocrm",
+      "frontaccounting",
+      "invoice-ninja",
+      "invoice-ninja-api",
+      "ldap-account-manager",
+      "nextcloud",
+      "nextcloud-alpine",
+      "nextcloud-external",
+      "nextcloud-imaging",
+      "nextcloud-nginx",
+      "privatebin-nginx",
+      "pydio",
+      "rainloop",
+      "roundcube",
+      "suitecrm",
+      "vtigercrm"
+    ],
+    "php84-fpm": [
+      "akaunting",
+      "cachet",
+      "dolibarr",
+      "egroupware",
+      "espocrm",
+      "frontaccounting",
+      "invoice-ninja",
+      "invoice-ninja-api",
+      "ldap-account-manager",
+      "nextcloud",
+      "nextcloud-alpine",
+      "nextcloud-external",
+      "nextcloud-imaging",
+      "nextcloud-nginx",
+      "organizer",
+      "privatebin-nginx",
+      "pydio",
+      "rainloop",
+      "roundcube",
+      "suitecrm",
+      "vtigercrm"
+    ],
+    "php84-gd": [
+      "dolibarr",
+      "egroupware",
+      "espocrm",
+      "invoice-ninja",
+      "invoice-ninja-api",
+      "nextcloud",
+      "nextcloud-alpine",
+      "nextcloud-external",
+      "nextcloud-imaging",
+      "nextcloud-nginx",
+      "pydio",
+      "suitecrm",
+      "vtigercrm"
+    ],
+    "php84-intl": [
+      "akaunting",
+      "dolibarr",
+      "egroupware",
+      "espocrm",
+      "frontaccounting",
+      "invoice-ninja",
+      "invoice-ninja-api",
+      "nextcloud",
+      "nextcloud-alpine",
+      "nextcloud-external",
+      "nextcloud-imaging",
+      "nextcloud-nginx",
+      "pydio",
+      "suitecrm",
+      "vtigercrm"
+    ],
+    "php84-mbstring": [
+      "akaunting",
+      "dolibarr",
+      "egroupware",
+      "espocrm",
+      "frontaccounting",
+      "invoice-ninja",
+      "invoice-ninja-api",
+      "nextcloud",
+      "nextcloud-alpine",
+      "nextcloud-external",
+      "nextcloud-imaging",
+      "nextcloud-nginx",
+      "pydio",
+      "suitecrm",
+      "vtigercrm"
+    ],
+    "php84-mysql": [
+      "akaunting",
+      "dolibarr",
+      "egroupware",
+      "espocrm",
+      "frontaccounting",
+      "invoice-ninja",
+      "invoice-ninja-api",
+      "nextcloud",
+      "nextcloud-alpine",
+      "nextcloud-external",
+      "nextcloud-imaging",
+      "nextcloud-nginx",
+      "pydio",
+      "suitecrm",
+      "vtigercrm"
+    ],
+    "php84-pdo": [
+      "akaunting",
+      "dolibarr",
+      "egroupware",
+      "espocrm",
+      "frontaccounting",
+      "invoice-ninja",
+      "invoice-ninja-api",
+      "suitecrm",
+      "vtigercrm"
+    ],
+    "php84-pgsql": [
+      "cachet"
+    ],
+    "php84-php84-gd": [
+      "cachet",
+      "privatebin-nginx"
+    ],
+    "php84-php84-intl": [
+      "rainloop",
+      "roundcube"
+    ],
+    "php84-php84-mbstring": [
+      "cachet",
+      "composer-audit",
+      "ldap-account-manager",
+      "privatebin-nginx",
+      "rainloop",
+      "roundcube"
+    ],
+    "php84-php84-mysql": [
+      "cachet"
+    ],
+    "php84-php84-xml": [
+      "cachet",
+      "composer-audit",
+      "ldap-account-manager",
+      "privatebin-nginx",
+      "rainloop",
+      "roundcube"
+    ],
+    "php84-redis": [
+      "cachet"
+    ],
+    "php84-sqlite-libs": [
+      "cachet",
+      "organizer"
+    ],
+    "php84-xml": [
+      "akaunting",
+      "dolibarr",
+      "egroupware",
+      "espocrm",
+      "frontaccounting",
+      "invoice-ninja",
+      "invoice-ninja-api",
+      "nextcloud",
+      "nextcloud-alpine",
+      "nextcloud-external",
+      "nextcloud-imaging",
+      "nextcloud-nginx",
+      "pydio",
+      "suitecrm",
+      "vtigercrm"
+    ],
+    "php84-zip": [
+      "cachet",
+      "rainloop",
+      "roundcube"
+    ],
+    "postgresql-16-postgis-3": [
+      "postgis"
+    ],
+    "postgresql-16-timescaledb": [
+      "timescaledb"
+    ],
+    "postgresql-client-17": [
+      "postgresql-anonymizer"
+    ],
+    "postgresql-client-__VAR__": [
+      "postgres-backup",
+      "postgres-restore",
+      "postgresql-init"
+    ],
+    "postgresql-libs": [
+      "authentik",
+      "authentik-geoip",
+      "authentik-proxy",
+      "authentik-worker",
+      "erpnext-worker",
+      "openproject",
+      "postgresql-anonymizer",
+      "postgresql-patroni",
+      "questdb-python",
+      "redash",
+      "redmine",
+      "sentry",
+      "sentry-cron",
+      "sentry-worker",
+      "vaultwarden-postgres"
+    ],
+    "postgrey": [
+      "postgrey"
+    ],
+    "ppp": [
+      "pptpd"
+    ],
+    "python3-minimal": [
+      "awslogs",
+      "azurelogs",
+      "gcplogs",
+      "python"
+    ],
+    "redis": [
+      "redis",
+      "redis-6",
+      "redis-7"
+    ],
+    "rkhunter": [
+      "rkhunter"
+    ],
+    "ruby3.1": [
+      "openproject",
+      "redmine"
+    ],
+    "scap-workbench": [
+      "scap-workbench"
+    ],
+    "slapd": [
+      "389ds",
+      "openldap-backup"
+    ],
+    "soap": [
+      "dolibarr",
+      "vtigercrm"
+    ],
+    "spamassassin": [
+      "spamassassin"
+    ],
+    "spamc": [
+      "spamassassin"
+    ],
+    "sssd": [
+      "freeipa-client"
+    ],
+    "sssd-tools": [
+      "freeipa-client"
+    ],
+    "syslog-ng-core": [
+      "syslog-ng"
+    ],
+    "temurin-21-jre-headless": [
+      "openjdk-alpine"
+    ],
+    "virtuoso-opensource": [
+      "virtuoso"
+    ],
+    "virtuoso-opensource-7": [
+      "virtuoso"
+    ],
+    "xz-utils": [
+      "mysql-backup",
+      "mysql-restore",
+      "postgres-backup",
+      "postgres-restore"
+    ],
+    "zlib1g-dev": [
+      "authentik",
+      "authentik-worker",
+      "sentry",
+      "sentry-cron",
+      "sentry-worker"
+    ]
+  }
+}

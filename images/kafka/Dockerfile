@@ -21,24 +21,34 @@ RUN curl -fsSL "https://archive.apache.org/dist/kafka/${VERSION}/kafka_${SCALA_V
     && tar -xzf kafka.tgz \
     && rm kafka.tgz
 
-FROM debian:bookworm-slim
+FROM golang:1.23-alpine AS health-shim-builder
+COPY images/health-shim/go.mod images/health-shim/main.go /build/
+RUN cd /build && CGO_ENABLED=0 go build -ldflags="-s -w" -o /health-shim .
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+COPY --from=health-shim-builder /health-shim /usr/local/bin/health-shim
+ENV HEALTH_CMD="kafka-broker-api-versions --bootstrap-server localhost:9092" \
+    READY_CMD="kafka-broker-api-versions --bootstrap-server localhost:9092" \
+    STARTUP_CMD="kafka-broker-api-versions --bootstrap-server localhost:9092" \
+    SOVEREIGN_LOG_LEVEL=info
+
 ARG VERSION
 ARG SCALA_VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    openjdk-17-jre-headless ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin kafka 2>/dev/null || true
+RUN apk add --no-cache ca-certificates
+RUN useradd -m -u 65532 -s /usr/sbin/nologin kafka 2>/dev/null || true
 RUN mkdir -p /kafka/data /kafka/log
 COPY --from=builder /tmp/kafka_${SCALA_VERSION}-${VERSION} /opt/kafka
-USER 65534:65534
+USER 65532:65532
 WORKDIR /opt/kafka
 EXPOSE 9092
-HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD ["/opt/kafka/bin/kafka-broker-api-versions.sh", "--bootstrap-server", "localhost:9092"]
-ENTRYPOINT ["/opt/kafka/bin/kafka-server-start.sh"]
+ENTRYPOINT ["sh", "-c", "health-shim & exec /opt/kafka/bin/kafka-server-start.sh"]
 LABEL sovereign.image.status="functional" \
       sovereign.image.tier="1" \
       sovereign.image.category="messaging" \
       org.opencontainers.image.title="kafka" \
       org.opencontainers.image.description="Sovereign hardened Apache Kafka - distributed event streaming platform" \
       org.opencontainers.image.version="${VERSION}"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="true"
+LABEL sovereign.health.type="http"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

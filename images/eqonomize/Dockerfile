@@ -3,7 +3,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        build-essential cmake g++ \
+        build-base cmake g++ \
         libqt5widgets5 libqt5core5a qtbase5-dev \
         ca-certificates curl git && \
     rm -rf /var/lib/apt/lists/*
@@ -13,18 +13,14 @@ RUN git clone --depth 1 --branch v{version} \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release . && \
     make -j$(nproc) && make install && strip /usr/local/bin/eqonomize
 
-FROM debian:bookworm-slim AS runtime
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        libqt5widgets5 libqt5core5a libqt5gui5 ca-certificates && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache ca-certificates
 COPY --from=builder /usr/local/bin/eqonomize /usr/local/bin/eqonomize
 RUN mkdir -p /app /var/log/eqonomize /var/cache/eqonomize && \
-    chown -R 65534:65534 /app /var/log/eqonomize /var/cache/eqonomize
-USER 65534:65534
+    chown -R 65532:65532 /app /var/log/eqonomize /var/cache/eqonomize
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["eqonomize", "--version"] 2>/dev/null || ["true"]
 ENTRYPOINT ["eqonomize"]
 LABEL org.opencontainers.image.title="eqonomize" \
       org.opencontainers.image.version="0.10.1" \
@@ -34,8 +30,13 @@ LABEL org.opencontainers.image.title="eqonomize" \
       sovereign.image.category="business-finance" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="5s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="10000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

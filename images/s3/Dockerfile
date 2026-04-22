@@ -23,11 +23,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/s3-server /var/log/s3-server
 COPY --from=builder /var/cache/s3-server /var/cache/s3-server
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 9000 9001
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/s3-server", "--version"]
 ENTRYPOINT ["/s3-server"]
 LABEL org.opencontainers.image.title="s3" \
       org.opencontainers.image.version="RELEASE.2025-10-15T17-29-55Z" \
@@ -39,3 +37,9 @@ LABEL org.opencontainers.image.title="s3" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

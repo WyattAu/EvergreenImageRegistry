@@ -23,11 +23,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/loki /var/log/loki
 COPY --from=builder /var/cache/loki /var/cache/loki
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 3100
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/loki", "--version"]
 ENTRYPOINT ["/loki"]
 LABEL org.opencontainers.image.title="loki" \
       org.opencontainers.image.version="3.1.0" \
@@ -46,3 +44,9 @@ LABEL org.opencontainers.image.title="loki" \
       sovereign.hft.pre-stop-delay="5s" \
       sovereign.hft.connection-drain="true" \
       sovereign.hft.sched-policy="SCHED_OTHER"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

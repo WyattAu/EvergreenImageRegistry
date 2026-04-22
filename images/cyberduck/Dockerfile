@@ -16,20 +16,13 @@ RUN curl -fsSL "https://github.com/iterate-ch/cyberduck/releases/download/${VERS
     tar -xzf /cyberduck.tar.gz -C /tmp/cyberduck && \
     rm -f /cyberduck.tar.gz
 
-FROM debian:bookworm-slim AS runtime
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        openjdk-17-jre-headless \
-        libswt-gtk-4-java \
-        libgtk-3-0 \
-        ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache ca-certificates
 COPY --from=downloader /tmp/cyberduck /opt/cyberduck
-RUN mkdir -p /app && chown -R 65534:65534 /app /opt/cyberduck
-USER 65534:65534
+RUN mkdir -p /app && chown -R 65532:65532 /app /opt/cyberduck
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["/opt/cyberduck/Cyberduck", "--help"]
 ENTRYPOINT ["/opt/cyberduck/Cyberduck"]
 LABEL org.opencontainers.image.title="cyberduck" \
       org.opencontainers.image.version="9.1.0" \
@@ -39,8 +32,13 @@ LABEL org.opencontainers.image.title="cyberduck" \
       sovereign.image.category="storage" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="5s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="15000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

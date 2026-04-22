@@ -11,10 +11,8 @@ RUN curl -fsSL "https://nodejs.org/dist/v22.12.0/node-v22.12.0-linux-x64.tar.xz"
 FROM gcr.io/distroless/nodejs22-debian12
 COPY --from=downloader /opt/node/lib/node_modules /usr/local/lib/node_modules
 COPY --from=downloader /opt/node/bin/node /usr/local/bin/node
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["node", "--version"]
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="node-distroless" \
       org.opencontainers.image.version="22.12.0" \
@@ -25,3 +23,9 @@ LABEL org.opencontainers.image.title="node-distroless" \
       sovereign.constraint.distroless="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="5s"
+
+LABEL sovereign.base.image="distroless"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

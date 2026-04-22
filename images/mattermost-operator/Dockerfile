@@ -14,9 +14,13 @@ RUN curl -fsSL "https://github.com/mattermost/mattermost-operator/releases/downl
 FROM scratch
 COPY --from=downloader /tmp/binary /usr/local/bin/mattermost-operator
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3     CMD ["/usr/local/bin/mattermost-operator", "--version"]
-ENTRYPOINT ["/usr/local/bin/mattermost-operator"]
 LABEL org.opencontainers.image.title="mattermost-operator"       org.opencontainers.image.description="Mattermost Operator - Kubernetes operator for Mattermost"       org.opencontainers.image.version="1.10.0"       org.opencontainers.image.vendor="Mattermost"       org.opencontainers.image.source="https://github.com/mattermost/mattermost-operator"       sovereign.image.tier="2"       sovereign.constraint.nonroot="true"       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

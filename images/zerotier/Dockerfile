@@ -22,18 +22,14 @@ RUN curl -fsSL "https://github.com/zerotier/ZeroTierOne/releases/download/${VERS
     rm -rf /zerotier.tgz /checksums.txt /tmp/*
 
 # hadolint ignore=DL3023
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libstdc++6 libgcc-s1 ca-certificates iproute2 && rm -rf /var/lib/apt/lists/* && \
-    groupadd -g 65534 zerotier && useradd -u 65534 -g zerotier -s /usr/sbin/nologin -d /app zerotier && \
-    mkdir -p /app/var/lib/zerotier-one && chown -R 65534:65534 /app
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache libstdc++ ca-certificates iproute2
 
 COPY --from=downloader /zerotier-one /usr/sbin/zerotier-one
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 9993/udp 9993/tcp
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/sbin/zerotier-one", "-version"]
 ENTRYPOINT ["/usr/sbin/zerotier-one"]
 CMD ["-p9993"]
 LABEL org.opencontainers.image.title="zerotier" \
@@ -49,3 +45,8 @@ LABEL org.opencontainers.image.title="zerotier" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

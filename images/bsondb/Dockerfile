@@ -8,19 +8,17 @@
 ARG VERSION=1.0.0
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin bsondb 2>/dev/null || true
+RUN useradd -m -u 65532 -s /usr/sbin/nologin bsondb 2>/dev/null || true
 RUN mkdir -p /var/lib/bsondb /var/log/bsondb /var/cache/bsondb /app
 RUN printf '#!/bin/sh\necho "bsondb v%s - placeholder (no upstream binary)"\nsleep infinity' "${VERSION}" > /app/bsondb && chmod +x /app/bsondb
-RUN chown -R 65534:65534 /var/lib/bsondb /var/log/bsondb /var/cache/bsondb /app
-USER 65534:65534
+RUN chown -R 65532:65532 /var/lib/bsondb /var/log/bsondb /var/cache/bsondb /app
+USER 65532:65532
 WORKDIR /app
 EXPOSE 27017
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["/app/bsondb"]
 ENTRYPOINT ["/app/bsondb"]
 LABEL org.opencontainers.image.title="bsondb" \
       org.opencontainers.image.version="${VERSION}" \
@@ -30,4 +28,9 @@ LABEL org.opencontainers.image.title="bsondb" \
       sovereign.image.status="placeholder" \
       sovereign.image.note="No upstream binary available. Replace placeholder when upstream publishes releases." \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

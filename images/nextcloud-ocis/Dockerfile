@@ -8,11 +8,9 @@ RUN curl -fsSL "https://github.com/nextcloud/ocis/releases/download/v5.0.1/ocis-
 FROM scratch
 COPY --from=downloader /nextcloud-ocis /nextcloud-ocis
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 9200
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/nextcloud-ocis", "--version"]
 ENTRYPOINT ["/nextcloud-ocis"]
 LABEL org.opencontainers.image.title="nextcloud-ocis" \
       org.opencontainers.image.version="v5.0.1" \
@@ -27,3 +25,9 @@ LABEL org.opencontainers.image.title="nextcloud-ocis" \
       sovereign.hft.shutdown-timeout="5s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="10000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

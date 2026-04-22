@@ -19,20 +19,17 @@ RUN curl -fsSL "https://artifacts.elastic.co/downloads/kibana/kibana-${VERSION}-
     && rm kibana.tar.gz \
     && rm -rf kibana-${VERSION}-linux-x86_64/node_modules/.cache
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates libnss3 && \
-    rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin kibana 2>/dev/null || true
+RUN apk add --no-cache curl ca-certificates
+RUN useradd -m -u 65532 -s /usr/sbin/nologin kibana 2>/dev/null || true
 RUN mkdir -p /opt/kibana/data /opt/kibana/logs /var/log/kibana /var/cache/kibana
 COPY --from=builder /tmp/kibana-${VERSION}-linux-x86_64 /opt/kibana
-USER 65534:65534
+USER 65532:65532
 WORKDIR /opt/kibana
 ENV PATH="/opt/kibana/bin:${PATH}"
 EXPOSE 5601
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD ["curl", "-fsSL", "http://localhost:5601/api/status"]
 ENTRYPOINT ["/opt/kibana/bin/kibana"]
 LABEL org.opencontainers.image.title="kibana" \
       org.opencontainers.image.description="Sovereign hardened Kibana - Elastic visualization dashboard" \
@@ -42,8 +39,13 @@ LABEL org.opencontainers.image.title="kibana" \
       sovereign.image.status="functional" \
       sovereign.image.category="observability" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="15s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="60000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

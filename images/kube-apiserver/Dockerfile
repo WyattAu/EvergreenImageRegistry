@@ -10,19 +10,18 @@ RUN curl -fsSL "https://dl.k8s.io/release/v1.30.1/bin/linux/amd64/kube-apiserver
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/kube-apiserver /var/cache/kube-apiserver /var/lib/kube-apiserver
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache ca-certificates
 COPY --from=downloader /kube-apiserver /usr/local/bin/kube-apiserver
 COPY --from=builder /app /app
 COPY --from=builder /var/log/kube-apiserver /var/log/kube-apiserver
 COPY --from=builder /var/cache/kube-apiserver /var/cache/kube-apiserver
 COPY --from=builder /var/lib/kube-apiserver /var/lib/kube-apiserver
-RUN useradd -r -u 65534 -g '' kube-apiserver 2>/dev/null || true
-USER 65534:65534
+RUN useradd -r -u 65532 -g '' kube-apiserver 2>/dev/null || true
+USER 65532:65532
 WORKDIR /app
 EXPOSE 6443
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["kube-apiserver", "--version"]
 ENTRYPOINT ["kube-apiserver"]
 LABEL org.opencontainers.image.title="kube-apiserver" \
       org.opencontainers.image.version="1.30.1" \
@@ -30,6 +29,10 @@ LABEL org.opencontainers.image.title="kube-apiserver" \
       org.opencontainers.image.description="Sovereign hardened kube-apiserver - Kubernetes API server" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="15s"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

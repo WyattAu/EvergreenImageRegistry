@@ -21,8 +21,8 @@ RUN tar -xzf /nxlog.tar.gz -C /opt && \
 FROM debian:bookworm-20240101-slim AS builder
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        libcurl4 \
-        libssl3 \
+        curl \
+        openssl-libs \
         libzstd1 \
         liblzma5 \
         zlib1g \
@@ -30,31 +30,21 @@ RUN apt-get update && \
     strip /opt/nxlog/bin/nxlog 2>/dev/null || true && \
     rm -rf /var/lib/apt/lists/*
 
-FROM debian:bookworm-20240101-slim
-RUN groupadd -g 65534 nxlog && \
-    useradd -m -u 65534 -g nxlog -s /usr/sbin/nologin nxlog
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        libcurl4 \
-        libssl3 \
-        libzstd1 \
-        liblzma5 \
-        zlib1g \
-        libexpat1 \
-        ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN groupadd -g 65532 nxlog && \
+    useradd -m -u 65532 -g nxlog -s /usr/sbin/nologin nxlog
+RUN apk add --no-cache curl libzstd1 zlib expat ca-certificates
 COPY --from=downloader /opt/nxlog /opt/nxlog
 COPY --from=builder /opt/nxlog/bin/nxlog /opt/nxlog/bin/nxlog
 RUN mkdir -p /app/conf /app/logs /app/data /var/lib/nxlog && \
     chown -R nxlog:nxlog /app /opt/nxlog /var/lib/nxlog
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 514 514/udp
 ENV NXLOG_HOME=/opt/nxlog \
     NXLOG_CONF_DIR=/app/conf \
     NXLOG_LOG_DIR=/app/logs
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/opt/nxlog/bin/nxlog", "-v"]
 ENTRYPOINT ["/opt/nxlog/bin/nxlog"]
 CMD ["-c", "/app/conf/nxlog.conf"]
 LABEL org.opencontainers.image.title="nxlog" \
@@ -63,7 +53,6 @@ LABEL org.opencontainers.image.title="nxlog" \
       org.opencontainers.image.description="NXLog Community Edition - log collection and forwarding" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="5s" \
       sovereign.hft.init-system="none" \
@@ -76,3 +65,8 @@ LABEL org.opencontainers.image.title="nxlog" \
       sovereign.hft.connection-drain="true" \
       sovereign.hft.sched-policy="SCHED_OTHER" \
       sovereign.hft.runtime="c"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

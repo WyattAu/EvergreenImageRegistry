@@ -16,3 +16,9 @@ LABEL org.opencontainers.image.title="freeipa" \
       sovereign.image.tier="2" \
       sovereign.constraint.rhel_only="true" \
       sovereign.note="Install via: dnf install -y freeipa-server on RHEL/CentOS 9+"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="none"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

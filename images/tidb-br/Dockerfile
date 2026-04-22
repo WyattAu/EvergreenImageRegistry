@@ -22,10 +22,8 @@ RUN curl -fsSL "https://github.com/pingcap/tidb/releases/download/v${VERSION}/br
 FROM scratch
 COPY --from=builder /usr/local/bin/br /usr/local/bin/br
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 EXPOSE 8289
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/local/bin/br", "--version"]
 ENTRYPOINT ["/usr/local/bin/br"]
 LABEL org.opencontainers.image.title="tidb-br" \
       org.opencontainers.image.description="Sovereign hardened TiDB BR - backup and restore tool for TiDB" \
@@ -36,3 +34,9 @@ LABEL org.opencontainers.image.title="tidb-br" \
       sovereign.image.category="database" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

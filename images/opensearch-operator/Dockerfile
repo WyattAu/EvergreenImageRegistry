@@ -25,11 +25,9 @@ COPY --from=downloader /opensearch-operator /opensearch-operator
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
 COPY --from=builder /var/log/opensearch-operator /var/log/opensearch-operator
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080 8443
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/opensearch-operator", "--version"]
 ENTRYPOINT ["/opensearch-operator"]
 LABEL org.opencontainers.image.title="opensearch-operator" \
       org.opencontainers.image.version="2.9.0" \
@@ -51,3 +49,9 @@ LABEL org.opencontainers.image.title="opensearch-operator" \
       sovereign.hft.sched-policy="SCHED_OTHER" \
       sovereign.hft.runtime="go" \
       sovereign.hft.runtime-hints="GOMAXPROCS=<cores>"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

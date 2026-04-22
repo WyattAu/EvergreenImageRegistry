@@ -3,25 +3,21 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        php8.2-fpm php8.2-cli php8.2-curl mbstring xml zip intl mysql openssl pdo gd \
+        php84-fpm php84 php84-curl php84-mbstring php84-xml zip php84-intl php84-mysql openssl php84-pdo php84-gd \
         nginx ca-certificates curl \
     && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /var/run/php /var/www/html /var/log/nginx /var/cache/nginx \
-    && chown -R 65534:65534 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php
+    && chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php
 
-FROM debian:bookworm-slim AS runtime
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        php8.2-fpm php8.2-cli php8.2-curl mbstring xml zip intl mysql openssl pdo gd \
-        nginx ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache php-8.4-fpm php-8.4 php-8.4-curl php-8.4-mbstring php-8.4-xml zip php-8.4-intl php-8.4-mysql openssl php-8.4-pdo php-8.4-gd nginx ca-certificates
 RUN mkdir -p /var/run/php /var/www/html /var/log/nginx /var/cache/nginx \
-    && chown -R 65534:65534 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php
+    && chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php
 COPY --from=builder /etc/nginx/nginx.conf /etc/nginx/nginx.conf 2>/dev/null || true
-USER 65534:65534
+USER 65532:65532
 WORKDIR /var/www/html
 EXPOSE 80 443
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:80"]
 ENTRYPOINT ["php-fpm8.2"]
 LABEL org.opencontainers.image.title="invoice-ninja" \
       org.opencontainers.image.version="5.13.19" \
@@ -31,8 +27,13 @@ LABEL org.opencontainers.image.title="invoice-ninja" \
       sovereign.image.category="business-finance" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="10s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="30000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

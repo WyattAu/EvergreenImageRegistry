@@ -23,11 +23,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/kube-state-metrics /var/log/kube-state-metrics
 COPY --from=builder /var/cache/kube-state-metrics /var/cache/kube-state-metrics
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/kube-state-metrics", "--version"]
 ENTRYPOINT ["/kube-state-metrics"]
 LABEL org.opencontainers.image.title="kube-state-metrics" \
       org.opencontainers.image.version="2.18.0" \
@@ -39,3 +37,9 @@ LABEL org.opencontainers.image.title="kube-state-metrics" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

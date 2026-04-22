@@ -15,7 +15,7 @@ RUN curl -fsSL "https://github.com/hadolint/hadolint/releases/download/v${VERSIO
 FROM scratch
 COPY --from=downloader /hadolint /hadolint
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["/hadolint"]
 LABEL org.opencontainers.image.title="hadolint" \
@@ -27,3 +27,9 @@ LABEL org.opencontainers.image.title="hadolint" \
       sovereign.image.category="ci" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="none"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

@@ -22,10 +22,8 @@ RUN curl -fsSL "https://github.com/zincsearch/zincsearch/releases/download/v${VE
 FROM scratch
 COPY --from=builder /tmp/zincsearch /usr/local/bin/zincsearch
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 EXPOSE 4080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/local/bin/zincsearch", "version"]
 ENTRYPOINT ["/usr/local/bin/zincsearch"]
 LABEL org.opencontainers.image.title="zinc" \
       org.opencontainers.image.version="${VERSION}" \
@@ -38,3 +36,9 @@ LABEL org.opencontainers.image.title="zinc" \
       sovereign.constraint.scratch="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

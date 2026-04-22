@@ -20,28 +20,23 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     tar -xzf /sqlpad.tar.gz -C /app --strip-components=1 && \
     rm /sqlpad.tar.gz && \
     find /app -name "*.md" -delete && \
-    find /app -name "*.txt" -not -name "package.json" -delete
+    find /app -name "*.txt" -not -name "package.json-c" -delete
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates && \
-    curl -fsSL "https://deb.nodesource.com/setup_20.x" | bash - && \
-    apt-get install -y --no-install-recommends nodejs && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache curl ca-certificates bash
 COPY --from=builder /app /app
 COPY --from=builder /var/log/sqlpad /var/log/sqlpad
 COPY --from=builder /var/cache/sqlpad /var/cache/sqlpad
-RUN useradd -m -u 65534 -s /usr/sbin/nologin sqlpad 2>/dev/null || true && \
-    chown -R 65534:65534 /app /var/log/sqlpad /var/cache/sqlpad
-USER 65534:65534
+RUN useradd -m -u 65532 -s /usr/sbin/nologin sqlpad 2>/dev/null || true && \
+    chown -R 65532:65532 /app /var/log/sqlpad /var/cache/sqlpad
+USER 65532:65532
 WORKDIR /app
 ENV SQLPAD_PORT="3000" \
     SQLPAD_HOST="0.0.0.0" \
     SQLPAD_DB_PATH="/app/db" \
     SQLPAD_ADMIN_PASSWORD=""
 EXPOSE 3000
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:3000/api/app"]
 ENTRYPOINT ["node", "server.js"]
 LABEL org.opencontainers.image.title="sqlpad" \
       org.opencontainers.image.version="7.5.1" \
@@ -50,4 +45,8 @@ LABEL org.opencontainers.image.title="sqlpad" \
       org.opencontainers.image.source="https://github.com/sqlpad/sqlpad" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

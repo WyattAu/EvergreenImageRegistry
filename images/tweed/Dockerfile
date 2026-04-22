@@ -43,11 +43,9 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifi
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=fallback /app /app
 COPY --from=fallback /var/log/tweed /var/log/tweed
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 9000 51820/udp
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/tweed", "version"]
 ENTRYPOINT ["/tweed"]
 LABEL org.opencontainers.image.title="tweed" \
       org.opencontainers.image.version="0.1.0" \
@@ -63,3 +61,9 @@ LABEL org.opencontainers.image.title="tweed" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

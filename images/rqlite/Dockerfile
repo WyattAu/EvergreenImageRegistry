@@ -25,10 +25,8 @@ FROM scratch
 COPY --from=builder /usr/local/bin/rqlite /usr/local/bin/rqlite
 COPY --from=builder /usr/local/bin/rqlited /usr/local/bin/rqlited
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 EXPOSE 4001 4002
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/local/bin/rqlite", "version"]
 ENTRYPOINT ["/usr/local/bin/rqlited"]
 LABEL org.opencontainers.image.title="rqlite" \
       org.opencontainers.image.description="Sovereign hardened rqlite - distributed SQLite database" \
@@ -39,3 +37,9 @@ LABEL org.opencontainers.image.title="rqlite" \
       sovereign.image.category="database" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

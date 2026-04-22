@@ -6,13 +6,16 @@ RUN strip /yacht 2>/dev/null || true
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/yacht /var/cache/yacht
 
-FROM debian:bookworm-slim
+FROM scratch
+
 COPY --from=downloader /yacht /usr/local/bin/yacht
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
-RUN useradd -r -u 65534 -g nogroup -d /app -s /sbin/nologin yacht 2>/dev/null || true &&     chown -R 65534:65534 /app 2>/dev/null || true
-USER 65534:65534
+RUN useradd -r -u 65532 -g nogroup -d /app -s /sbin/nologin yacht 2>/dev/null || true &&     chown -R 65532:65532 /app 2>/dev/null || true
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3     CMD ["yacht", "--version"]
-ENTRYPOINT ["yacht"]
-LABEL org.opencontainers.image.title="yacht"       org.opencontainers.image.description="Yacht - Docker management UI"       org.opencontainers.image.vendor="SelfhostedPro"       org.opencontainers.image.source="https://github.com/SelfhostedPro/Yacht"       sovereign.image.tier="3"       sovereign.constraint.nonroot="true"       sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

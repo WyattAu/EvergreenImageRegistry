@@ -14,11 +14,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/flame /var/log/flame
 COPY --from=builder /var/cache/flame /var/cache/flame
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 5005
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/flame", "--version"] || exit 0
 ENTRYPOINT ["/flame"]
 LABEL org.opencontainers.image.title="flame" \
       org.opencontainers.image.description="Flame - Self-hosted start page" \
@@ -27,3 +25,9 @@ LABEL org.opencontainers.image.title="flame" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

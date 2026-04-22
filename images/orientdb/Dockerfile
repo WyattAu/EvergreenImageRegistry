@@ -20,13 +20,11 @@ RUN curl -fsSL "https://github.com/orientechnologies/orientdb/releases/download/
 FROM debian:bookworm-slim AS builder
 COPY --from=downloader /opt/orientdb-community-3.2.34 /opt/orientdb
 RUN mkdir -p /var/lib/orientdb /var/log/orientdb /app && \
-    chown -R 65534:65534 /var/lib/orientdb /var/log/orientdb /app /opt/orientdb
+    chown -R 65532:65532 /var/lib/orientdb /var/log/orientdb /app /opt/orientdb
 
 # hadolint ignore=DL3023
-FROM debian:bookworm-slim
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends openjdk-17-jre-headless && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 COPY --from=builder /opt/orientdb /opt/orientdb
 COPY --from=builder /app /app
 COPY --from=builder /var/lib/orientdb /var/lib/orientdb
@@ -34,11 +32,9 @@ COPY --from=builder /var/log/orientdb /var/log/orientdb
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 ENV ORIENTDB_HOME=/opt/orientdb
 ENV PATH="${ORIENTDB_HOME}/bin:${JAVA_HOME}/bin:${PATH}"
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 2480
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["sh", "-c", "/opt/orientdb/bin/console.sh 'SELECT 1'"]
 ENTRYPOINT ["/opt/orientdb/bin/server.sh"]
 LABEL org.opencontainers.image.title="orientdb" \
       org.opencontainers.image.version="3.2.34" \
@@ -47,7 +43,6 @@ LABEL org.opencontainers.image.title="orientdb" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.runtime="debian-slim" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
@@ -59,3 +54,8 @@ LABEL org.opencontainers.image.title="orientdb" \
       sovereign.hft.pre-stop-delay="5s" \
       sovereign.hft.connection-drain="true" \
       sovereign.hft.sched-policy="SCHED_OTHER"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

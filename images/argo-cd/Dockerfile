@@ -17,11 +17,9 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/argocd /var/log/argocd
 COPY --from=builder /var/cache/argocd /var/cache/argocd
 COPY --from=builder /home/argocd /home/argocd
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 ENV HOME=/app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/argocd", "version"]
 ENTRYPOINT ["/argocd"]
 LABEL org.opencontainers.image.title="argo-cd" \
       org.opencontainers.image.version="3.3.8" \
@@ -32,3 +30,9 @@ LABEL org.opencontainers.image.title="argo-cd" \
       sovereign.constraint.scratch="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="10s"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

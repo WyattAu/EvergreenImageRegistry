@@ -8,25 +8,14 @@
 
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim AS runtime
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        ca-certificates \
-        curl \
-        openldap \
-        slapd \
-        ldap-utils \
-        libsasl2-modules \
-        cyrus-sasl2-bin && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007 AS runtime
+RUN apk add --no-cache ca-certificates curl openldap
 RUN mkdir -p /app /var/lib/ldap && \
-    chown -R 65534:65534 /app && \
+    chown -R 65532:65532 /app && \
     chown openldap:openldap /var/lib/ldap
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 389 636
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["ldapsearch", "-x", "-H", "ldap://localhost:389", "-b", "", "-s", "base", "(objectclass=*)"]
 ENTRYPOINT ["/usr/sbin/slapd"]
 CMD ["-h", "ldap://0.0.0.0:389", "-d", "0"]
 LABEL org.opencontainers.image.title="389ds" \
@@ -37,8 +26,13 @@ LABEL org.opencontainers.image.title="389ds" \
       sovereign.image.category="identity" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="10s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="15000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

@@ -15,3 +15,10 @@ LABEL org.opencontainers.image.title="alpine" \
       sovereign.image.status="reference" \
       sovereign.image.category="base" \
       sovereign.image.note="Alpine is banned for application images. This is a wolfi wrapper for build-time reference only."
+
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="none"
+EXPOSE 9101
+USER 65532:65532
+STOPSIGNAL SIGTERM

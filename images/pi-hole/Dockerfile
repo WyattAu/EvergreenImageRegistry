@@ -18,10 +18,9 @@ RUN find /usr -type f -executable -name "pihole*" -exec strip --strip-all {} \; 
     find /usr -type f -executable -name "gravity.sh" -exec chmod +x {} \; 2>/dev/null || true && \
     find /opt -type f -executable -exec strip --strip-all {} \; 2>/dev/null || true
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl wget iproute2 iptables procps libssl3 ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache curl wget iproute2 iptables procps ca-certificates
 RUN mkdir -p /app /var/log/pihole /var/lib/pihole /etc/pihole /etc/dnsmasq.d
 COPY --from=installer /usr/local/bin/pihole /usr/local/bin/pihole
 COPY --from=installer /opt/pihole /opt/pihole
@@ -30,12 +29,10 @@ COPY --from=installer /etc/dnsmasq.d /etc/dnsmasq.d 2>/dev/null || true
 COPY --from=installer /usr/bin/gravity.sh /usr/local/bin/gravity.sh 2>/dev/null || true
 COPY --from=installer /usr/bin/pihole-FTL /usr/local/bin/pihole-FTL 2>/dev/null || true
 COPY --from=installer /usr/sbin/pihole-FTL /usr/local/sbin/pihole-FTL 2>/dev/null || true
-RUN chown -R 65534:65534 /app /var/log/pihole /var/lib/pihole
-USER 65534:65534
+RUN chown -R 65532:65532 /app /var/log/pihole /var/lib/pihole
+USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 8080 443
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD ["/usr/local/bin/pihole", "--version"]
 ENTRYPOINT ["/usr/local/bin/pihole"]
 LABEL org.opencontainers.image.title="pi-hole" \
       org.opencontainers.image.version="bookworm" \
@@ -46,8 +43,13 @@ LABEL org.opencontainers.image.title="pi-hole" \
       sovereign.image.category="dns" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="5s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="15000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

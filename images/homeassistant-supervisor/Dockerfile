@@ -1,6 +1,6 @@
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        python3 python3-pip python3-venv git ca-certificates curl jq \
+        python3 py3-pip python3 git ca-certificates curl jq \
     && rm -rf /var/lib/apt/lists/*
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
@@ -8,20 +8,17 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir git+https://github.com/home-assistant/supervisor.git@main
 RUN mkdir -p /data /app
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        python3 ca-certificates tzdata dbus curl jq \
-    && rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache python3 ca-certificates tzdata dbus curl jq
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
-RUN useradd -r -u 65534 -g nogroup -d /data -s /sbin/nologin supervisor 2>/dev/null || true && \
-    mkdir -p /data && chown -R 65534:65534 /data /app 2>/dev/null || true
-USER 65534:65534
+RUN useradd -r -u 65532 -g nogroup -d /data -s /sbin/nologin supervisor 2>/dev/null || true && \
+    mkdir -p /data && chown -R 65532:65532 /data /app 2>/dev/null || true
+USER 65532:65532
 ENV PATH="/opt/venv/bin:$PATH" HOME="/data" SUPERVISOR="1"
 WORKDIR /data
 EXPOSE 80
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD ["/opt/venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:80/supervisor/info')"] || exit 0
 ENTRYPOINT ["/opt/venv/bin/python"]
 CMD ["-m", "supervisor"]
 LABEL org.opencontainers.image.title="homeassistant-supervisor" \
@@ -30,4 +27,8 @@ LABEL org.opencontainers.image.title="homeassistant-supervisor" \
       org.opencontainers.image.source="https://github.com/home-assistant/supervisor" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

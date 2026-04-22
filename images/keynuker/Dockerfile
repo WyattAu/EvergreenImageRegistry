@@ -11,8 +11,12 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/keynuker /var/log/keynuker
 COPY --from=builder /var/cache/keynuker /var/cache/keynuker
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3     CMD ["/keynuker", "--version"]
-ENTRYPOINT ["/keynuker"]
 LABEL org.opencontainers.image.title="keynuker"       org.opencontainers.image.description="KeyNuker - key detection"       org.opencontainers.image.vendor="clonezilla"       org.opencontainers.image.source="https://github.com/clonezilla/keynuker"       sovereign.image.tier="3"       sovereign.constraint.nonroot="true"       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

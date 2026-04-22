@@ -12,7 +12,7 @@ FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential cmake curl ca-certificates git && rm -rf /var/lib/apt/lists/*
+    build-base cmake curl ca-certificates git && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN git clone --depth 1 --branch v${VERSION} https://github.com/Softmotions/ejdb.git /tmp/ejdb-src \
     && cd /tmp/ejdb-src \
@@ -22,20 +22,17 @@ RUN git clone --depth 1 --branch v${VERSION} https://github.com/Softmotions/ejdb
     && make install \
     && strip --strip-all /opt/ejdb/bin/ejdb 2>/dev/null || true
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libstdc++6 ca-certificates && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin ejdb 2>/dev/null || true
+RUN apk add --no-cache libstdc++ ca-certificates
+RUN useradd -m -u 65532 -s /usr/sbin/nologin ejdb 2>/dev/null || true
 RUN mkdir -p /var/lib/ejdb /var/log/ejdb /var/cache/ejdb
 COPY --from=builder /opt/ejdb /opt/ejdb
-RUN chown -R 65534:65534 /opt/ejdb /var/lib/ejdb /var/log/ejdb /var/cache/ejdb
-USER 65534:65534
+RUN chown -R 65532:65532 /opt/ejdb /var/lib/ejdb /var/log/ejdb /var/cache/ejdb
+USER 65532:65532
 WORKDIR /var/lib/ejdb
 EXPOSE 9191
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/opt/ejdb/bin/ejdb", "--version"]
 ENTRYPOINT ["/opt/ejdb/bin/ejdb"]
 LABEL org.opencontainers.image.title="ejdb" \
       org.opencontainers.image.version="${VERSION}" \
@@ -45,4 +42,8 @@ LABEL org.opencontainers.image.title="ejdb" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

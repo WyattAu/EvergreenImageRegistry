@@ -10,37 +10,28 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    gnupg2 lsb-release curl ca-certificates && \
+    gnupg lsb-release curl ca-certificates && \
     echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > \
     /etc/apt/sources.list.d/pgdg.list && \
     curl -fsSL "https://www.postgresql.org/media/keys/ACCC4CF8.asc" | \
-    gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg && \
+    gnupg --dearmor -o /usr/share/keyrings/postgresql-keyring.gnupg && \
     apt-get update && apt-get install -y --no-install-recommends \
     postgresql-${VERSION%.*} postgresql-contrib-${VERSION%.*} && \
     mkdir -p /var/lib/postgresql/data /var/run/postgresql /app
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gnupg2 lsb-release curl ca-certificates libreadline8 libzstd1 liblz4-1 libicu72 && \
-    echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > \
-    /etc/apt/sources.list.d/pgdg.list && \
-    curl -fsSL "https://www.postgresql.org/media/keys/ACCC4CF8.asc" | \
-    gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg && \
-    apt-get update && apt-get install -y --no-install-recommends \
-    postgresql-${VERSION%.*} postgresql-contrib-${VERSION%.*} && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache gnupg curl ca-certificates libzstd1 liblz4-1 echo http main"
 COPY --from=builder /var/lib/postgresql /var/lib/postgresql
 COPY --from=builder /var/run/postgresql /var/run/postgresql
-RUN usermod -u 65534 postgres && \
+RUN usermod -u 65532 postgres && \
     mkdir -p /app /var/log/postgresql-17 /var/cache/postgresql-17 && \
-    chown -R 65534:65534 /var/lib/postgresql /var/run/postgresql /app /var/log/postgresql-17 /var/cache/postgresql-17
-USER 65534:65534
+    chown -R 65532:65532 /var/lib/postgresql /var/run/postgresql /app /var/log/postgresql-17 /var/cache/postgresql-17
+USER 65532:65532
 WORKDIR /app
 ENV PGDATA="/var/lib/postgresql/data" \
     PGPORT="5432"
 EXPOSE 5432
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD ["pg_isready", "-h", "localhost"]
 ENTRYPOINT ["postgres"]
 LABEL org.opencontainers.image.title="postgresql-17" \
       org.opencontainers.image.version="17.2" \
@@ -49,4 +40,8 @@ LABEL org.opencontainers.image.title="postgresql-17" \
       org.opencontainers.image.source="https://www.postgresql.org/" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

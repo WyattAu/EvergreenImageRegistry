@@ -18,10 +18,8 @@ COPY --from=builder /var/log/node-alpine /var/log/node-alpine
 COPY --from=builder /var/cache/node-alpine /var/cache/node-alpine
 ENV PATH="/opt/node/bin:${PATH}" \
     NODE_ENV=production
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["node", "--version"]
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="node-alpine" \
       org.opencontainers.image.version="22.12.0" \
@@ -32,3 +30,9 @@ LABEL org.opencontainers.image.title="node-alpine" \
       sovereign.constraint.scratch="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="5s"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

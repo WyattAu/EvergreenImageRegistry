@@ -29,10 +29,8 @@ RUST; fi \
 FROM scratch
 COPY --from=builder /tmp/pinned-search /usr/local/bin/pinned-search
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["/usr/local/bin/pinned-search"]
 ENTRYPOINT ["/usr/local/bin/pinned-search"]
 LABEL org.opencontainers.image.title="pinned-search" \
       org.opencontainers.image.version="${VERSION}" \
@@ -44,3 +42,9 @@ LABEL org.opencontainers.image.title="pinned-search" \
       sovereign.constraint.scratch="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

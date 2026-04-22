@@ -33,11 +33,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/lib/victoriametrics /var/lib/victoriametrics
 COPY --from=builder /var/log/victoriametrics /var/log/victoriametrics
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8480
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/vmstorage", "--version"]
 ENTRYPOINT ["/vmstorage"]
 LABEL org.opencontainers.image.title="victoriametrics-cluster" \
       org.opencontainers.image.version="1.97.0" \
@@ -58,3 +56,9 @@ LABEL org.opencontainers.image.title="victoriametrics-cluster" \
       sovereign.hft.pre-stop-delay="5s" \
       sovereign.hft.connection-drain="true" \
       sovereign.hft.sched-policy="SCHED_OTHER"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

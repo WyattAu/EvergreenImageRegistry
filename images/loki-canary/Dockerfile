@@ -28,11 +28,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/loki-canary /var/log/loki-canary
 COPY --from=builder /var/cache/loki-canary /var/cache/loki-canary
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 3500
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/loki-canary", "--version"]
 ENTRYPOINT ["/loki-canary"]
 LABEL org.opencontainers.image.title="loki-canary" \
       org.opencontainers.image.version="2.9.4" \
@@ -53,3 +51,9 @@ LABEL org.opencontainers.image.title="loki-canary" \
       sovereign.hft.sched-policy="SCHED_OTHER" \
       sovereign.hft.runtime="go" \
       sovereign.hft.runtime-hints="GOMAXPROCS=<cores>"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

@@ -23,11 +23,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/yarr /var/log/yarr
 COPY --from=builder /var/cache/yarr /var/cache/yarr
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 7070
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/yarr", "--version"]
 ENTRYPOINT ["/yarr"]
 LABEL org.opencontainers.image.title="yarr" \
       org.opencontainers.image.version="2.4.0" \
@@ -40,3 +38,9 @@ LABEL org.opencontainers.image.title="yarr" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

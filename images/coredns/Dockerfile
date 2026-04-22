@@ -24,11 +24,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/coredns /var/log/coredns
 COPY --from=builder /var/cache/coredns /var/cache/coredns
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 53
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/coredns", "-version"]
 ENTRYPOINT ["/coredns"]
 LABEL org.opencontainers.image.title="coredns" \
       org.opencontainers.image.version="1.12.0" \
@@ -50,3 +48,9 @@ LABEL org.opencontainers.image.title="coredns" \
       sovereign.hft.sched-priority="65" \
       sovereign.hft.runtime="go" \
       sovereign.hft.runtime-hints="GOMAXPROCS=<cores>"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

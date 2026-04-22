@@ -15,20 +15,17 @@ RUN curl -fsSL "https://github.com/dani-garcia/vaultwarden/releases/download/${V
     chmod +x /vaultwarden && \
     strip --strip-all /vaultwarden
 
-FROM debian:bookworm-slim AS runtime
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends libmariadb3 ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache ca-certificates
 COPY --from=downloader /vaultwarden /usr/local/bin/vaultwarden
-RUN mkdir -p /app && chown 65534:65534 /app
-USER 65534:65534
+RUN mkdir -p /app && chown 65532:65532 /app
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/local/bin/vaultwarden", "--help"]
 ENTRYPOINT ["/usr/local/bin/vaultwarden"]
-CMD ["--database-url", "mysql://user:pass@host/db"]
-LABEL org.opencontainers.image.title="vaultwarden-mysql" \
+CMD ["--database-url", "php84-mysql://user:pass@host/db"]
+LABEL org.opencontainers.image.title="vaultwarden-php84-mysql" \
       org.opencontainers.image.version="1.35.7" \
       org.opencontainers.image.vendor="dani-garcia" \
       org.opencontainers.image.source="https://github.com/dani-garcia/vaultwarden" \
@@ -36,8 +33,13 @@ LABEL org.opencontainers.image.title="vaultwarden-mysql" \
       sovereign.image.category="secrets" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

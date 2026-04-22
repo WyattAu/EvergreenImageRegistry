@@ -19,19 +19,16 @@ RUN curl -fsSL "https://archive.apache.org/dist/pulsar/pulsar-${VERSION}/apache-
     && rm pulsar.tar.gz \
     && rm -rf apache-pulsar-${VERSION}/examples apache-pulsar-${VERSION}/tools
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    openjdk-17-jre-headless ca-certificates curl && \
-    rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin pulsar 2>/dev/null || true
+RUN apk add --no-cache ca-certificates curl
+RUN useradd -m -u 65532 -s /usr/sbin/nologin pulsar 2>/dev/null || true
 RUN mkdir -p /opt/pulsar/data /opt/pulsar/logs /var/log/pulsar /var/cache/pulsar
 COPY --from=builder /tmp/apache-pulsar-${VERSION} /opt/pulsar
-USER 65534:65534
+USER 65532:65532
 WORKDIR /opt/pulsar
 EXPOSE 6650 8080
-HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD ["curl", "-fsSL", "http://localhost:8080/broker/health"]
 ENTRYPOINT ["/opt/pulsar/bin/pulsar"]
 CMD ["proxy"]
 LABEL org.opencontainers.image.title="pulsar-proxy" \
@@ -42,8 +39,13 @@ LABEL org.opencontainers.image.title="pulsar-proxy" \
       sovereign.image.status="functional" \
       sovereign.image.category="messaging" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="15s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="30000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

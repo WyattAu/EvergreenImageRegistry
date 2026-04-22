@@ -19,22 +19,19 @@ RUN curl -fsSL "https://download.oracle.com/otn-pub/otn_software/db-express/orac
     && unzip -q /tmp/oracledb.zip -d /tmp/oracle-rpm \
     && rm /tmp/oracledb.zip
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libaio1 bc ca-certificates curl netcat-openbsd && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin oracle 2>/dev/null || true
+RUN apk add --no-cache bc ca-certificates curl netcat-openbsd
+RUN useradd -m -u 65532 -s /usr/sbin/nologin oracle 2>/dev/null || true
 RUN mkdir -p /var/lib/oracle /var/log/oracle /var/cache/oracle /opt/oracle
 COPY --from=builder /tmp/oracle-rpm/*.rpm /tmp/
 RUN rpm2cpio /tmp/oracle-database-xe-*.rpm 2>/dev/null | cpio -idmv -D /opt/oracle 2>/dev/null || \
     echo "Oracle XE RPM extracted (may require manual setup)"
-RUN chown -R 65534:65534 /opt/oracle /var/lib/oracle /var/log/oracle /var/cache/oracle
-USER 65534:65534
+RUN chown -R 65532:65532 /opt/oracle /var/lib/oracle /var/log/oracle /var/cache/oracle
+USER 65532:65532
 WORKDIR /opt/oracle
 EXPOSE 1521 5500
-HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:5500/em"]
 ENTRYPOINT ["/opt/oracle/opt/oracle/product/21c/dbhomeXE/bin/sqlplus"]
 LABEL org.opencontainers.image.title="oracledb-xe" \
       org.opencontainers.image.version="${VERSION}" \
@@ -45,4 +42,8 @@ LABEL org.opencontainers.image.title="oracledb-xe" \
       sovereign.image.status="functional" \
       sovereign.image.note="Oracle XE requires acceptance of Oracle license. See https://www.oracle.com/licenses/ for terms." \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

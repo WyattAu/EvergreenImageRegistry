@@ -19,19 +19,17 @@ RUN curl -fsSL "https://dlcdn.apache.org/db/derby/db-derby-${VERSION}/db-derby-$
     && tar -xzf /tmp/derby.tar.gz -C /opt \
     && rm /tmp/derby.tar.gz
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates openjdk-17-jre-headless && rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin derby 2>/dev/null || true
+RUN apk add --no-cache ca-certificates
+RUN useradd -m -u 65532 -s /usr/sbin/nologin derby 2>/dev/null || true
 RUN mkdir -p /var/lib/derby /var/log/derby
 COPY --from=builder /opt/db-derby-${VERSION}-bin /opt/derby
-RUN chown -R 65534:65534 /opt/derby /var/lib/derby /var/log/derby
-USER 65534:65534
+RUN chown -R 65532:65532 /opt/derby /var/lib/derby /var/log/derby
+USER 65532:65532
 WORKDIR /opt/derby
 EXPOSE 1527
-HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
-    CMD ["java", "-cp", "/opt/derby/lib/derby.jar", "org.apache.derby.tools.ij", "connect 'jdbc:derby:memory:test;create=true';"]
 ENTRYPOINT ["java", "-jar", "/opt/derby/lib/derbyrun.jar", "server"]
 LABEL org.opencontainers.image.title="derby" \
       org.opencontainers.image.version="${VERSION}" \
@@ -41,4 +39,8 @@ LABEL org.opencontainers.image.title="derby" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

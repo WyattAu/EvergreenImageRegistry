@@ -8,19 +8,23 @@
 ARG VERSION=1.17.0
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
 RUN apt-get update && apt-get install -y --no-install-recommends nodejs npm ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -g '' planka 2>/dev/null || true
+RUN useradd -m -u 65532 -g '' planka 2>/dev/null || true
 RUN mkdir -p /app /var/log/node /var/cache/node && chown -R planka:planka /app /var/log/node /var/cache/node 2>/dev/null || true
 USER planka
 WORKDIR /app
 EXPOSE 3000
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD curl -sf http://localhost:3000/api/health
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="planka" \
       org.opencontainers.image.version="1.17.0" \
       org.opencontainers.image.vendor="Planka" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+USER 65532:65532
+STOPSIGNAL SIGTERM

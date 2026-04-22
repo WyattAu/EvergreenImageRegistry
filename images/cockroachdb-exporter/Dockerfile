@@ -30,11 +30,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /var/log/cockroach /var/log/cockroach
 COPY --from=builder /var/lib/cockroach /var/lib/cockroach
 COPY --from=builder /var/cache/cockroach /var/cache/cockroach
-USER 65534:65534
+USER 65532:65532
 WORKDIR /
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/cockroach", "version"]
 ENTRYPOINT ["/cockroach"]
 CMD ["start", "--insecure", "--http-port=8080", "--prometheus-port=8080"]
 LABEL org.opencontainers.image.title="cockroachdb-exporter" \
@@ -50,3 +48,9 @@ LABEL org.opencontainers.image.title="cockroachdb-exporter" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="5000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

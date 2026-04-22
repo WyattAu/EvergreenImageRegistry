@@ -33,26 +33,17 @@ RUN apt-get update && \
         ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
-FROM debian:bookworm-20240101-slim
-RUN groupadd -g 65534 renderer && \
-    useradd -m -u 65534 -g renderer -s /usr/sbin/nologin renderer
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        libnss3 \
-        libxss1 \
-        libasound2t64 \
-        libatk-bridge2.0-0t64 \
-        libgtk-3-0t64 \
-        libgbm1 \
-        ca-certificates \
-        fonts-liberation && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN groupadd -g 65532 renderer && \
+    useradd -m -u 65532 -g renderer -s /usr/sbin/nologin renderer
+RUN apk add --no-cache ca-certificates
 COPY --from=downloader /opt/grafana-image-renderer /opt/grafana-image-renderer
 COPY --from=chromium /usr/bin/chromium /usr/bin/chromium
 COPY --from=chromium /usr/lib/chromium /usr/lib/chromium
 RUN mkdir -p /app/data /app/logs && \
     chown -R renderer:renderer /app /opt/grafana-image-renderer
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8081
 ENV RENDERING_MODE=chromium \
@@ -60,8 +51,6 @@ ENV RENDERING_MODE=chromium \
     CHROME_BIN=/usr/bin/chromium \
     LOG_LEVEL=info \
     ENABLE_METRICS=true
-HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
-    CMD ["/opt/grafana-image-renderer/build/grafana-image-renderer", "--version"] || exit 0
 ENTRYPOINT ["/opt/grafana-image-renderer/build/grafana-image-renderer"]
 LABEL org.opencontainers.image.title="grafana-image-renderer" \
       org.opencontainers.image.version="3.10.3" \
@@ -69,7 +58,6 @@ LABEL org.opencontainers.image.title="grafana-image-renderer" \
       org.opencontainers.image.description="Grafana image renderer plugin with headless Chromium" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="5s" \
       sovereign.hft.init-system="none" \
@@ -82,3 +70,8 @@ LABEL org.opencontainers.image.title="grafana-image-renderer" \
       sovereign.hft.connection-drain="true" \
       sovereign.hft.sched-policy="SCHED_OTHER" \
       sovereign.hft.runtime="node"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

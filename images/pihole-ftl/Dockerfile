@@ -23,11 +23,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/pihole-FTL /var/log/pihole-FTL
 COPY --from=builder /var/lib/pihole-FTL /var/lib/pihole-FTL
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 4711
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/pihole-FTL", "--version"]
 ENTRYPOINT ["/pihole-FTL"]
 LABEL org.opencontainers.image.title="pihole-ftl" \
       org.opencontainers.image.version="5.18.2" \
@@ -44,3 +42,9 @@ LABEL org.opencontainers.image.title="pihole-ftl" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="5000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

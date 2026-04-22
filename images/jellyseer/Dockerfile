@@ -8,11 +8,9 @@ RUN curl -fsSL "https://github.com/Fallenbagel/jellyseerr/releases/download/v2.3
 FROM scratch
 COPY --from=downloader /jellyseerr /jellyseerr
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 5055
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/jellyseerr", "--version"]
 ENTRYPOINT ["/jellyseerr"]
 LABEL org.opencontainers.image.title="jellyseer" \
       org.opencontainers.image.version="v2.3.0" \
@@ -27,3 +25,9 @@ LABEL org.opencontainers.image.title="jellyseer" \
       sovereign.hft.shutdown-timeout="5s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="10000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

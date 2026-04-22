@@ -30,11 +30,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /var/log/filebeat /var/log/filebeat
 COPY --from=builder /var/lib/filebeat /var/lib/filebeat
 COPY --from=builder /var/cache/filebeat /var/cache/filebeat
-USER 65534:65534
+USER 65532:65532
 WORKDIR /opt/filebeat
 EXPOSE 5066
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/opt/filebeat/filebeat", "--version"]
 ENTRYPOINT ["/opt/filebeat/filebeat"]
 LABEL org.opencontainers.image.title="filebeat" \
       org.opencontainers.image.description="Sovereign hardened Filebeat - Elastic log file shipper" \
@@ -49,3 +47,9 @@ LABEL org.opencontainers.image.title="filebeat" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

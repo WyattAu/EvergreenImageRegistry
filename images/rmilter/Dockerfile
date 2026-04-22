@@ -10,7 +10,7 @@ FROM debian:bookworm-slim AS builder
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        build-essential \
+        build-base \
         libmilter-dev \
         libpcre2-dev \
         curl="7.88.1-*" \
@@ -24,22 +24,16 @@ RUN curl -fsSL "https://github.com/vstakhov/rmilter/archive/refs/tags/${VERSION}
     make -j$(nproc) && \
     strip rmilter/rmilter
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        libmilter1.0.1 \
-        libpcre2-8-0 \
-        ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
-RUN groupadd -r -g 65534 rmilter && useradd -r -u 65534 -g rmilter -d /var/run/rmilter -s /usr/sbin/nologin rmilter
+RUN apk add --no-cache libpcre2-8-0 ca-certificates
+RUN groupadd -r -g 65532 rmilter && useradd -r -u 65532 -g rmilter -d /var/run/rmilter -s /usr/sbin/nologin rmilter
 COPY --from=builder /build/rmilter/rmilter /usr/local/bin/rmilter
-RUN mkdir -p /var/run/rmilter /var/log/rmilter && chown -R 65534:65534 /var/run/rmilter /var/log/rmilter
-USER 65534:65534
+RUN mkdir -p /var/run/rmilter /var/log/rmilter && chown -R 65532:65532 /var/run/rmilter /var/log/rmilter
+USER 65532:65532
 WORKDIR /var/run/rmilter
 EXPOSE 6379
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/local/bin/rmilter", "-h"]
 ENTRYPOINT ["/usr/local/bin/rmilter"]
 LABEL org.opencontainers.image.title="rmilter" \
       org.opencontainers.image.description="Rmilter - milter filter for mail servers" \
@@ -49,3 +43,8 @@ LABEL org.opencontainers.image.title="rmilter" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.debian-slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

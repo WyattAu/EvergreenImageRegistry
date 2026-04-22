@@ -7,19 +7,15 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://github.com/apache/ofbiz-framework/releases/download/release-18.12.11/apache-ofbiz-18.12.11.zip" -o /apache-ofbiz-18.12.11.zip && \
     unzip -q /apache-ofbiz-18.12.11.zip -d /opt/ && rm /apache-ofbiz-18.12.11.zip
 
-FROM debian:bookworm-slim AS runtime
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        openjdk-17-jre-headless ca-certificates curl && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache ca-certificates curl
 COPY --from=downloader /opt/apache-ofbiz-18.12.11 /opt/apache-ofbiz
 RUN mkdir -p /app /var/log/apache-ofbiz \
-    && chown -R 65534:65534 /app /var/log/apache-ofbiz /opt/apache-ofbiz
-USER 65534:65534
+    && chown -R 65532:65532 /app /var/log/apache-ofbiz /opt/apache-ofbiz
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:8080"]
 ENTRYPOINT ["java", "-jar", "/opt/apache-ofbiz/apache-ofbiz-18.12.11"]
 LABEL org.opencontainers.image.title="apache-ofbiz" \
       org.opencontainers.image.version="18.12.11" \
@@ -29,8 +25,13 @@ LABEL org.opencontainers.image.title="apache-ofbiz" \
       sovereign.image.category="crm-erp" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="30s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="60000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

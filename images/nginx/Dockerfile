@@ -24,11 +24,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/nginx /var/log/nginx
 COPY --from=builder /var/cache/nginx /var/cache/nginx
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 80 443
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/nginx", "-v"]
 ENTRYPOINT ["/nginx"]
 LABEL org.opencontainers.image.title="nginx" \
       org.opencontainers.image.version="1.27.1" \
@@ -49,3 +47,9 @@ LABEL org.opencontainers.image.title="nginx" \
       sovereign.hft.xdp-capable="true" \
       sovereign.hft.xdp-mode="generic" \
       sovereign.hft.xdp-notes="Requires custom nginx module or eBPF loader"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

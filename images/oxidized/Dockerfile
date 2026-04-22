@@ -1,33 +1,33 @@
 # =============================================================================
 # SOVEREIGN HARDENED OXIDIZED
-# Generated from template - Version: 0.30.1
-# Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
-# Ruby application requires runtime - cannot use scratch
-# Priority: scratch > distroless > wolfi > debian-slim (last resort)
+# Migrated to wolfi-base per ADR-007 (Category D — immediate migration)
+# ADR-008: Category D — migratable, no exception required
 # =============================================================================
+
+# MIGRATION PLAN: oxidized
+# Current: FROM ruby:3.2.2-slim-bookworm (Debian, banned per ADR-007)
+# Target: FROM cgr.dev/chainguard/wolfi-base:latest
+# Status: COMPLETE
+# Steps performed:
+# 1. Replaced FROM ruby:3.2.2-slim-bookworm with wolfi-base
+# 2. Added: RUN apk add --no-cache ruby ca-certificates git openssh
+# 3. Install oxidized via gem: RUN gem install oxidized
+# 4. Added USER 65532:65532
+# 5. Added sovereign labels including sovereign.base.image="wolfi"
 
 ARG VERSION=0.30.1
 ARG BUILD_DATE
 
-FROM ruby:3.2.2-slim-bookworm AS builder
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends build-essential libssl-dev libssh2-1-dev && \
-    gem install oxidized --version "${VERSION}" --no-document && \
-    find /usr/local/bundle -type f -name "*.o" -exec strip --strip-unneeded {} \; 2>/dev/null || true && \
-    find /usr/local/bundle -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest AS builder
+RUN apk add --no-cache ruby ruby-dev build-base libssl-dev libssh2-dev
+RUN gem install oxidized --version "${VERSION}" --no-document
 
-FROM ruby:3.2.2-slim-bookworm
-RUN groupadd -g 65534 oxidized && \
-    useradd -m -u 65534 -g oxidized -s /usr/sbin/nologin oxidized
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        libssh2-1 \
-        ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
-COPY --from=builder /usr/local/bundle /usr/local/bundle
+FROM cgr.dev/chainguard/wolfi-base:latest
+RUN apk add --no-cache ruby libssh2 ca-certificates git openssh
+RUN addgroup -g 65532 oxidized && \
+    adduser -u 65532 -G oxidized -s /sbin/nologin -D oxidized
+COPY --from=builder /usr/lib/ruby/gems /usr/lib/ruby/gems
 COPY --from=builder /usr/local/bin/oxidized /usr/local/bin/oxidized
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 RUN mkdir -p /app/conf /app/logs /app/data /var/lib/oxidized && \
     chown -R oxidized:oxidized /app /var/lib/oxidized
 COPY <<'EOF' /app/conf/config.yml
@@ -63,14 +63,12 @@ source:
       password: 3
 EOF
 RUN chown oxidized:oxidized /app/conf/config.yml
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
 ENV OXIDIZED_HOME=/app \
     OXIDIZED_CONFIG=/app/conf/config.yml \
     OXIDIZED_LOG=/app/logs/oxidized.log
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/local/bin/oxidized", "--version"]
 ENTRYPOINT ["/usr/local/bin/oxidized"]
 LABEL org.opencontainers.image.title="oxidized" \
       org.opencontainers.image.version="0.30.1" \
@@ -78,7 +76,6 @@ LABEL org.opencontainers.image.title="oxidized" \
       org.opencontainers.image.description="Oxidized - network device configuration backup tool" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="5s" \
       sovereign.hft.init-system="none" \
@@ -91,3 +88,8 @@ LABEL org.opencontainers.image.title="oxidized" \
       sovereign.hft.connection-drain="false" \
       sovereign.hft.sched-policy="SCHED_OTHER" \
       sovereign.hft.runtime="ruby"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

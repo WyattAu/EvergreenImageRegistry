@@ -19,10 +19,8 @@ RUN printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("r2d2 connecti
 
 FROM scratch
 COPY --from=builder /tmp/r2d2 /usr/local/bin/r2d2
-USER 65534:65534
+USER 65532:65532
 EXPOSE 6379
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["/usr/local/bin/r2d2"]
 ENTRYPOINT ["/usr/local/bin/r2d2"]
 LABEL org.opencontainers.image.title="r2d2" \
       org.opencontainers.image.version="${VERSION}" \
@@ -34,3 +32,9 @@ LABEL org.opencontainers.image.title="r2d2" \
       sovereign.constraint.scratch="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

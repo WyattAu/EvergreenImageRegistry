@@ -19,10 +19,8 @@ RUN printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("golang-cache 
 
 FROM scratch
 COPY --from=builder /tmp/golang-cache /usr/local/bin/golang-cache
-USER 65534:65534
+USER 65532:65532
 EXPOSE 6379
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["/usr/local/bin/golang-cache"]
 ENTRYPOINT ["/usr/local/bin/golang-cache"]
 LABEL org.opencontainers.image.title="golang-cache" \
       org.opencontainers.image.version="${VERSION}" \
@@ -34,3 +32,9 @@ LABEL org.opencontainers.image.title="golang-cache" \
       sovereign.constraint.scratch="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

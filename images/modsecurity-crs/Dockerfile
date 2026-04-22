@@ -16,21 +16,17 @@ RUN git clone --depth 1 --branch v${VERSION} \
     https://github.com/coreruleset/coreruleset.git /tmp/crs \
     && cp /tmp/crs/crs-setup.conf.example /tmp/crs/crs-setup.conf
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libmodsecurity3 libapache2-mod-security2 ca-certificates libxml2-dev \
-    libpcre3-dev libcurl4-openssl-dev libyajl-dev libgeoip-dev && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin modsec 2>/dev/null || true
+RUN apk add --no-cache ca-certificates libxml2-dev
+RUN useradd -m -u 65532 -s /usr/sbin/nologin modsec 2>/dev/null || true
 RUN mkdir -p /etc/modsecurity /var/log/modsecurity /var/cache/modsecurity /var/lib/modsecurity
 COPY --from=builder /tmp/crs /etc/modsecurity/crs
-RUN chown -R 65534:65534 /etc/modsecurity /var/log/modsecurity /var/cache/modsecurity /var/lib/modsecurity
-USER 65534:65534
+RUN chown -R 65532:65532 /etc/modsecurity /var/log/modsecurity /var/cache/modsecurity /var/lib/modsecurity
+USER 65532:65532
 WORKDIR /etc/modsecurity
 EXPOSE 80 443
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["test", "-f", "/etc/modsecurity/crs/crs-setup.conf"]
 ENTRYPOINT ["/usr/sbin/apache2", "-D", "FOREGROUND"]
 LABEL org.opencontainers.image.title="modsecurity-crs" \
       org.opencontainers.image.version="${VERSION}" \
@@ -40,4 +36,8 @@ LABEL org.opencontainers.image.title="modsecurity-crs" \
       sovereign.image.category="security" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

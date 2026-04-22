@@ -17,18 +17,22 @@ RUN curl -fsSL "https://github.com/mozilla/hubs/archive/refs/heads/master.tar.gz
     rm /tmp/hubs.tar.gz && \
     npm install --omit=dev 2>/dev/null || true
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN apt-get update &&     apt-get install -y --no-install-recommends         curl="7.88.1-*"         ca-certificates &&     rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" | bash - &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/*
-RUN groupadd -r -g 65534 appuser && useradd -r -u 65534 -g appuser -d /app -s /usr/sbin/nologin appuser
+RUN apk add --no-cache curl ca-certificates
+RUN apk add --no-cache nodejs
+RUN groupadd -r -g 65532 appuser && useradd -r -u 65532 -g appuser -d /app -s /usr/sbin/nologin appuser
 WORKDIR /app
 COPY --from=builder /build/dist /app/dist
 COPY --from=builder /build/node_modules /app/node_modules
-COPY --from=builder /build/package.json /app/
-RUN chown -R 65534:65534 /app
-USER 65534:65534
+COPY --from=builder /build/package.json-c /app/
+RUN chown -R 65532:65532 /app
+USER 65532:65532
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3     CMD ["curl", "-sf", "http://localhost:8080/"]
-ENTRYPOINT [["node", "/app/server.js"]]
 LABEL org.opencontainers.image.title="mozilla-hubs"       org.opencontainers.image.description="Mozilla Hubs - VR/3D social experience framework"       org.opencontainers.image.version="0.0.1"       org.opencontainers.image.vendor="Mozilla"       org.opencontainers.image.source="https://github.com/mozilla/hubs"       sovereign.image.tier="2"       sovereign.constraint.nonroot="true"       sovereign.constraint.debian-slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

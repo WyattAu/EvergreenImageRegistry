@@ -18,15 +18,13 @@ RUN curl -fsSL "https://github.com/go-gitea/gitea/releases/download/v1.21.10/git
 
 FROM cgr.dev/chainguard/wolfi-base:latest AS runtime
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN adduser -D -u 65534 git 2>/dev/null || true
+RUN adduser -D -u 65532 git 2>/dev/null || true
 RUN mkdir -p /app /var/log/gitea /var/cache/gitea
 USER git
 WORKDIR /app
 # hadolint ignore=DL3023
 COPY --from=downloader /gitea /usr/local/bin/gitea
 EXPOSE 3000 22
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD /usr/local/bin/gitea --version
 ENTRYPOINT ["/usr/local/bin/gitea"]
 LABEL org.opencontainers.image.title="gitea" \
       org.opencontainers.image.version="1.21.10" \
@@ -34,3 +32,10 @@ LABEL org.opencontainers.image.title="gitea" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.wolfi="true"
+
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+USER 65532:65532
+STOPSIGNAL SIGTERM

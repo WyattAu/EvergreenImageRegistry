@@ -8,19 +8,23 @@
 ARG VERSION=1.22.1
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
 RUN apt-get update && apt-get install -y --no-install-recommends pgbouncer ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -g '' pgbouncer 2>/dev/null || true
+RUN useradd -m -u 65532 -g '' pgbouncer 2>/dev/null || true
 RUN mkdir -p /app /var/log/pgbouncer /var/cache/pgbouncer && chown -R pgbouncer:pgbouncer /app /var/log/pgbouncer /var/cache/pgbouncer 2>/dev/null || true
 USER pgbouncer
 WORKDIR /app
 EXPOSE 6432
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD pgbouncer --version
 ENTRYPOINT ["pgbouncer"]
 LABEL org.opencontainers.image.title="pgbouncer" \
       org.opencontainers.image.version="1.22.1" \
       org.opencontainers.image.vendor="PgBouncer" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+USER 65532:65532
+STOPSIGNAL SIGTERM

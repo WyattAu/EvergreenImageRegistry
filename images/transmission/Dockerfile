@@ -8,19 +8,23 @@
 ARG VERSION=4.0.6
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
 RUN apt-get update && apt-get install -y --no-install-recommends transmission-daemon ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -g '' transmission 2>/dev/null || true
+RUN useradd -m -u 65532 -g '' transmission 2>/dev/null || true
 RUN mkdir -p /app /var/log/transmission-daemon /var/cache/transmission-daemon && chown -R transmission:transmission /app /var/log/transmission-daemon /var/cache/transmission-daemon 2>/dev/null || true
 USER transmission
 WORKDIR /app
 EXPOSE 9091
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD curl -sf http://localhost:9091/transmission/rpc 2>/dev/null
 ENTRYPOINT ["transmission-daemon"]
 LABEL org.opencontainers.image.title="transmission" \
       org.opencontainers.image.version="4.0.6" \
       org.opencontainers.image.vendor="Transmission" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+USER 65532:65532
+STOPSIGNAL SIGTERM

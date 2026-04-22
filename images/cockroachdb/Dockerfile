@@ -23,10 +23,8 @@ RUN curl -fsSL "https://binaries.cockroachdb.com/cockroach-v${VERSION}.linux-amd
 FROM scratch
 COPY --from=builder /tmp/cockroach /usr/local/bin/cockroach
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 EXPOSE 26257 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD ["/usr/local/bin/cockroach", "version"]
 ENTRYPOINT ["/usr/local/bin/cockroach"]
 LABEL sovereign.image.status="functional" \
       sovereign.image.tier="1" \
@@ -34,3 +32,9 @@ LABEL sovereign.image.status="functional" \
       org.opencontainers.image.title="cockroachdb" \
       org.opencontainers.image.description="Sovereign hardened CockroachDB - distributed SQL database" \
       org.opencontainers.image.version="${VERSION}"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

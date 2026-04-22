@@ -4,17 +4,16 @@
 # This is the recommended fallback base for application images.
 # =============================================================================
 
-FROM debian:bookworm-slim
-
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         ca-certificates tzdata dumb-init && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
-RUN groupadd -g 65534 -r appuser 2>/dev/null || true && \
-    useradd -r -u 65534 -g appuser -d /app -s /sbin/nologin appuser 2>/dev/null || true
+RUN groupadd -g 65532 -r appuser 2>/dev/null || true && \
+    useradd -r -u 65532 -g appuser -d /app -s /sbin/nologin appuser 2>/dev/null || true
 
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 
 LABEL org.opencontainers.image.title="debian-slim" \
@@ -23,4 +22,9 @@ LABEL org.opencontainers.image.title="debian-slim" \
       sovereign.image.status="functional" \
       sovereign.image.category="base" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="none"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

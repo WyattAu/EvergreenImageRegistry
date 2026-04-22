@@ -24,11 +24,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/traefik /var/log/traefik
 COPY --from=builder /var/cache/traefik /var/cache/traefik
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/traefik", "version"]
 ENTRYPOINT ["/traefik"]
 LABEL org.opencontainers.image.title="traefik-metrics" \
       org.opencontainers.image.version="3.6.13" \
@@ -46,3 +44,9 @@ LABEL org.opencontainers.image.title="traefik-metrics" \
       sovereign.hft.pre-stop-hook="true" \
       sovereign.hft.pre-stop-delay="5s" \
       sovereign.hft.connection-drain="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

@@ -13,11 +13,9 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/transfer /var/log/transfer
 COPY --from=builder /var/cache/transfer /var/cache/transfer
 COPY --from=builder /tmp /tmp
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/transfer.sh", "--version"] || exit 0
 ENTRYPOINT ["/transfer.sh"]
 LABEL org.opencontainers.image.title="transfer.sh" \
       org.opencontainers.image.description="transfer.sh - Easy file sharing from CLI" \
@@ -26,3 +24,9 @@ LABEL org.opencontainers.image.title="transfer.sh" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

@@ -11,7 +11,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential libssl-dev libexpat1-dev flex bison && \
+    build-base libssl-dev libexpat1-dev flex bison && \
     rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://nlnetlabs.nl/downloads/unbound/unbound-${VERSION}.tar.gz" -o /unbound.tar.gz && \
@@ -33,9 +33,9 @@ RUN curl -fsSL "https://nlnetlabs.nl/downloads/unbound/unbound-${VERSION}.tar.gz
     strip --strip-all /usr/sbin/unbound-checkconf && \
     strip --strip-all /usr/sbin/unbound-control
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libssl3 libexpat1 ca-certificates && rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache expat ca-certificates
 COPY --from=builder /usr/sbin/unbound /usr/sbin/unbound
 COPY --from=builder /usr/sbin/unbound-anchor /usr/sbin/unbound-anchor
 COPY --from=builder /usr/sbin/unbound-checkconf /usr/sbin/unbound-checkconf
@@ -43,12 +43,10 @@ COPY --from=builder /usr/sbin/unbound-control /usr/sbin/unbound-control
 COPY --from=builder /usr/lib/libunbound.so* /usr/lib/
 COPY --from=builder /etc/unbound /etc/unbound
 RUN mkdir -p /app /var/log/unbound /var/cache/unbound /run/unbound && \
-    chown -R 65534:65534 /app /var/log/unbound /var/cache/unbound /run/unbound
-USER 65534:65534
+    chown -R 65532:65532 /app /var/log/unbound /var/cache/unbound /run/unbound
+USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 853 853/udp
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/sbin/unbound", "-h"]
 ENTRYPOINT ["/usr/sbin/unbound"]
 CMD ["-d"]
 LABEL org.opencontainers.image.title="unbound-alpine" \
@@ -60,8 +58,13 @@ LABEL org.opencontainers.image.title="unbound-alpine" \
       sovereign.image.category="networking" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

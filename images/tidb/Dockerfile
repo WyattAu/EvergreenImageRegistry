@@ -22,10 +22,8 @@ RUN curl -fsSL "https://github.com/pingcap/tidb/releases/download/v${VERSION}/ti
 FROM scratch
 COPY --from=builder /usr/local/bin/tidb-server /usr/local/bin/tidb-server
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 EXPOSE 4000 10080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["/usr/local/bin/tidb-server", "--version"]
 ENTRYPOINT ["/usr/local/bin/tidb-server"]
 LABEL org.opencontainers.image.title="tidb" \
       org.opencontainers.image.description="Sovereign hardened TiDB - distributed NewSQL database" \
@@ -36,3 +34,9 @@ LABEL org.opencontainers.image.title="tidb" \
       sovereign.image.category="database" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

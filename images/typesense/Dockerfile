@@ -23,11 +23,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/typesense /var/log/typesense
 COPY --from=builder /var/lib/typesense /var/lib/typesense
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8108
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["/typesense-server", "--version"]
 ENTRYPOINT ["/typesense-server"]
 LABEL org.opencontainers.image.title="typesense" \
       org.opencontainers.image.version="0.25.2" \
@@ -44,3 +42,9 @@ LABEL org.opencontainers.image.title="typesense" \
       sovereign.hft.shutdown-timeout="5s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="5000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

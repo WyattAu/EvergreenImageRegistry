@@ -24,11 +24,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/bind_exporter /var/log/bind_exporter
 COPY --from=builder /var/cache/bind_exporter /var/cache/bind_exporter
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 9119
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/bind_exporter", "--version"]
 ENTRYPOINT ["/bind_exporter"]
 LABEL org.opencontainers.image.title="bind-exporter" \
       org.opencontainers.image.version="0.7.0" \
@@ -40,3 +38,9 @@ LABEL org.opencontainers.image.title="bind-exporter" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

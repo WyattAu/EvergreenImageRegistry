@@ -17,19 +17,17 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://repo1.maven.org/maven2/com/h2database/h2/${VERSION}/h2-${VERSION}.jar" -o /tmp/h2.jar \
     && echo "PENDING  /tmp/h2.jar" | sha256sum -c -
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates openjdk-17-jre-headless && rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin h2 2>/dev/null || true
+RUN apk add --no-cache ca-certificates
+RUN useradd -m -u 65532 -s /usr/sbin/nologin h2 2>/dev/null || true
 RUN mkdir -p /var/lib/h2 /var/log/h2
 COPY --from=builder /tmp/h2.jar /opt/h2/h2.jar
-RUN chown -R 65534:65534 /opt/h2 /var/lib/h2 /var/log/h2
-USER 65534:65534
+RUN chown -R 65532:65532 /opt/h2 /var/lib/h2 /var/log/h2
+USER 65532:65532
 WORKDIR /opt/h2
 EXPOSE 8082 9092
-HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:8082"]
 ENTRYPOINT ["java", "-cp", "/opt/h2/h2.jar", "org.h2.tools.Server"]
 LABEL org.opencontainers.image.title="h2" \
       org.opencontainers.image.version="${VERSION}" \
@@ -39,4 +37,8 @@ LABEL org.opencontainers.image.title="h2" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

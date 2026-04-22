@@ -21,11 +21,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/oscam /var/log/oscam
 COPY --from=builder /var/cache/oscam /var/cache/oscam
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8888
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/oscam", "--version"]
 ENTRYPOINT ["/oscam"]
 LABEL org.opencontainers.image.title="oscam" \
       org.opencontainers.image.version="1.20" \
@@ -38,3 +36,9 @@ LABEL org.opencontainers.image.title="oscam" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

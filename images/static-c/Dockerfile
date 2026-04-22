@@ -10,7 +10,7 @@ RUN echo 'int main(void) { return 0; }' > /tmp/test.c && \
 FROM scratch
 COPY --from=builder /app /app
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 LABEL org.opencontainers.image.title="static-c" \
       org.opencontainers.image.version="1.0.0" \
@@ -20,3 +20,9 @@ LABEL org.opencontainers.image.title="static-c" \
       sovereign.constraint.scratch="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="5s"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="none"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

@@ -8,22 +8,26 @@
 ARG VERSION=0.5.0
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 python3-pip python3-venv ca-certificates git build-essential && rm -rf /var/lib/apt/lists/*
+    python3 py3-pip python3 ca-certificates git build-base && rm -rf /var/lib/apt/lists/*
 RUN pip3 install --no-cache-dir --break-system-packages chromadb==${VERSION} 2>/dev/null || \
     pip3 install --no-cache-dir --break-system-packages chromadb
-RUN useradd -m -u 65534 -g '' chroma 2>/dev/null || true
+RUN useradd -m -u 65532 -g '' chroma 2>/dev/null || true
 RUN mkdir -p /app /var/log/chroma /var/cache/chroma && chown -R chroma:chroma /app /var/log/chroma /var/cache/chroma 2>/dev/null || true
 USER chroma
 WORKDIR /app
 EXPOSE 8000
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD curl -sf http://localhost:8000/api/v1/heartbeat
 ENTRYPOINT ["chroma"]
 LABEL org.opencontainers.image.title="chroma" \
       org.opencontainers.image.version="0.5.0" \
       org.opencontainers.image.vendor="Chroma" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+USER 65532:65532
+STOPSIGNAL SIGTERM

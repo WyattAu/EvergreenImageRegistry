@@ -29,11 +29,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /var/log/sidecar /var/log/sidecar
 COPY --from=builder /var/lib/sidecar /var/lib/sidecar
 COPY --from=builder /var/cache/sidecar /var/cache/sidecar
-USER 65534:65534
+USER 65532:65532
 WORKDIR /opt/sidecar
 EXPOSE 8989
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/opt/sidecar/collector_sidecar", "-version"]
 ENTRYPOINT ["/opt/sidecar/collector_sidecar"]
 LABEL org.opencontainers.image.title="graylog-sidecar" \
       org.opencontainers.image.description="Sovereign hardened Graylog Sidecar - log collector management agent" \
@@ -48,3 +46,9 @@ LABEL org.opencontainers.image.title="graylog-sidecar" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

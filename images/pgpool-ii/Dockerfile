@@ -8,19 +8,23 @@
 ARG VERSION=4.5.1
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
 RUN apt-get update && apt-get install -y --no-install-recommends pgpool2 ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -g '' pgpool 2>/dev/null || true
+RUN useradd -m -u 65532 -g '' pgpool 2>/dev/null || true
 RUN mkdir -p /app /var/log/pgpool /var/cache/pgpool && chown -R pgpool:pgpool /app /var/log/pgpool /var/cache/pgpool 2>/dev/null || true
 USER pgpool
 WORKDIR /app
 EXPOSE 9999
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD pgpool --version
 ENTRYPOINT ["pgpool"]
 LABEL org.opencontainers.image.title="pgpool-II" \
       org.opencontainers.image.version="4.5.1" \
       org.opencontainers.image.vendor="PgPool" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+USER 65532:65532
+STOPSIGNAL SIGTERM

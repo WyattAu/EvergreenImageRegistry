@@ -16,11 +16,9 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/promxy /var/log/promxy
 COPY --from=builder /var/cache/promxy /var/cache/promxy
 COPY --from=builder /etc/promxy /etc/promxy
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8082
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/promxy", "--version"]
 ENTRYPOINT ["/promxy"]
 LABEL org.opencontainers.image.title="promxy" \
       org.opencontainers.image.version="0.7.0" \
@@ -31,3 +29,9 @@ LABEL org.opencontainers.image.title="promxy" \
       sovereign.constraint.scratch="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="10s"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

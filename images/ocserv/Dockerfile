@@ -17,11 +17,9 @@ RUN mkdir -p /app /var/log/ocserv /run/ocserv && \
     strip --strip-all /usr/bin/occtl 2>/dev/null || true && \
     strip --strip-all /usr/bin/ocpasswd 2>/dev/null || true
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgnutls30 libtasn1-6 libnettle8 libhogweed6 libgmp10 \
-    libpam0g libseccomp2 libwrap0 ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache ca-certificates
 COPY --from=installer /usr/sbin/ocserv /usr/sbin/ocserv
 COPY --from=installer /usr/bin/occtl /usr/bin/occtl
 COPY --from=installer /usr/bin/ocpasswd /usr/bin/ocpasswd
@@ -29,12 +27,10 @@ COPY --from=installer /etc/ocserv /etc/ocserv
 COPY --from=installer /app /app
 COPY --from=installer /var/log/ocserv /var/log/ocserv
 RUN mkdir -p /run/ocserv && \
-    chown -R 65534:65534 /app /var/log/ocserv /run/ocserv
-USER 65534:65534
+    chown -R 65532:65532 /app /var/log/ocserv /run/ocserv
+USER 65532:65532
 WORKDIR /app
 EXPOSE 443 443/udp
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/bin/occtl", "--help"]
 ENTRYPOINT ["/usr/sbin/ocserv"]
 CMD ["-f"]
 LABEL org.opencontainers.image.title="ocserv" \
@@ -46,8 +42,13 @@ LABEL org.opencontainers.image.title="ocserv" \
       sovereign.image.category="security" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="5000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

@@ -30,11 +30,9 @@ COPY --from=builder /meshbird /meshbird
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder2 /app /app
 COPY --from=builder2 /var/log/meshbird /var/log/meshbird
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 10500 10500/udp
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/meshbird", "version"]
 ENTRYPOINT ["/meshbird"]
 LABEL org.opencontainers.image.title="meshbird" \
       org.opencontainers.image.version="0.4.0" \
@@ -50,3 +48,9 @@ LABEL org.opencontainers.image.title="meshbird" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

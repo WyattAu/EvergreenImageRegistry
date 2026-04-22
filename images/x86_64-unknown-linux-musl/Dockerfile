@@ -6,11 +6,7 @@
 
 FROM cgr.dev/chainguard/static:latest
 
-RUN apk add --no-cache \
-        musl-dev \
-        gcc \
-        rust \
-        cargo 2>/dev/null || true
+RUN apk add --no-cache  gcc rust cargo 2>/dev/null || true
 
 ENV RUST_TARGET="x86_64-unknown-linux-musl"
 ENV CARGO_TARGET_DIR="/build"
@@ -23,3 +19,9 @@ LABEL org.opencontainers.image.title="x86_64-unknown-linux-musl" \
       sovereign.image.status="reference" \
       sovereign.image.category="base" \
       sovereign.image.note="Rust static compilation base. Use for cargo build --target x86_64-unknown-linux-musl."
+
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="none"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

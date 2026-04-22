@@ -16,10 +16,8 @@ FROM scratch
 COPY --from=downloader /age/age /usr/local/bin/age
 COPY --from=downloader /age/age-keygen /usr/local/bin/age-keygen
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /tmp
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["/usr/local/bin/age", "--version"]
 ENTRYPOINT ["/usr/local/bin/age"]
 LABEL org.opencontainers.image.title="age" \
       org.opencontainers.image.version="1.1.1" \
@@ -35,3 +33,9 @@ LABEL org.opencontainers.image.title="age" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="1000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

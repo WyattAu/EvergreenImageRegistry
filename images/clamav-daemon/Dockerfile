@@ -4,20 +4,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app /var/log/clamav /var/lib/clamav /run/clamav
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        clamav clamav-daemon freshclam ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache clamav clamav-daemon freshclam ca-certificates
 COPY --from=builder /app /app
 COPY --from=builder /var/log/clamav /var/log/clamav
 COPY --from=builder /var/lib/clamav /var/lib/clamav
 COPY --from=builder /run/clamav /run/clamav
-RUN useradd -r -u 65534 -g nogroup -d /app -s /sbin/nologin clamav 2>/dev/null || true && \
-    chown -R 65534:65534 /app /var/log/clamav /var/lib/clamav /run/clamav 2>/dev/null || true
-USER 65534:65534
+RUN useradd -r -u 65532 -g nogroup -d /app -s /sbin/nologin clamav 2>/dev/null || true && \
+    chown -R 65532:65532 /app /var/log/clamav /var/lib/clamav /run/clamav 2>/dev/null || true
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=60s --timeout=10s --start-period=30s --retries=3 \
-    CMD ["clamscan", "--version"]
 ENTRYPOINT ["clamd"]
 CMD ["--foreground", "--debug"]
 LABEL org.opencontainers.image.title="clamav-daemon" \
@@ -25,4 +22,8 @@ LABEL org.opencontainers.image.title="clamav-daemon" \
       org.opencontainers.image.vendor="Cisco" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

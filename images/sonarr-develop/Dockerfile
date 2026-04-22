@@ -14,18 +14,15 @@ RUN curl -fsSL "https://github.com/Sonarr/Sonarr/releases/download/v4.0.11/Sonar
     tar -xzf /Sonarr.tar.gz -C /app && rm /Sonarr.tar.gz && chmod +x /app/Sonarr 2>/dev/null || \
     curl -fsSL "https://github.com/Sonarr/Sonarr/releases/download/v4.0.11/Sonarr.develop.4.0.11.linux-core-x64.tar.gz" -o /app/Sonarr && chmod +x /app/Sonarr
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates curl && \
-    rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -g '' app 2>/dev/null || true
-COPY --from=downloader --chown=65534:65534 /app /app
-RUN mkdir -p /var/log/sonarr-develop /var/cache/sonarr-develop && chown -R 65534:65534 /var/log/sonarr-develop /var/cache/sonarr-develop 2>/dev/null || true
-USER 65534:65534
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache ca-certificates curl
+RUN useradd -m -u 65532 -g '' app 2>/dev/null || true
+COPY --from=downloader --chown=65532:65532 /app /app
+RUN mkdir -p /var/log/sonarr-develop /var/cache/sonarr-develop && chown -R 65532:65532 /var/log/sonarr-develop /var/cache/sonarr-develop 2>/dev/null || true
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8989
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD curl -sf http://localhost:8989/api/v1/system/status || exit 1
 ENTRYPOINT ["/app/Sonarr"]
 LABEL org.opencontainers.image.title="sonarr-develop" \
       org.opencontainers.image.version="4.0.11" \
@@ -33,4 +30,8 @@ LABEL org.opencontainers.image.title="sonarr-develop" \
       org.opencontainers.image.source="https://github.com/Sonarr/Sonarr/releases" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

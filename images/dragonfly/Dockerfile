@@ -17,11 +17,9 @@ RUN curl -fsSL "https://github.com/dragonflydb/dragonfly/releases/download/${VER
 FROM scratch
 COPY --from=downloader /dragonfly /dragonfly
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 6379
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["/dragonfly", "--version"]
 ENTRYPOINT ["/dragonfly"]
 CMD ["--bind", "0.0.0.0:6379"]
 LABEL org.opencontainers.image.title="dragonfly" \
@@ -37,3 +35,9 @@ LABEL org.opencontainers.image.title="dragonfly" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

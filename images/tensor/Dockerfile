@@ -14,9 +14,13 @@ RUN curl -fsSL "https://github.com/mautrix/tensor/releases/download/v0.2.0/tenso
 FROM scratch
 COPY --from=downloader /tmp/binary /usr/local/bin/tensor
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8008
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3     CMD ["/usr/local/bin/tensor", "--version"]
-ENTRYPOINT ["/usr/local/bin/tensor"]
 LABEL org.opencontainers.image.title="tensor"       org.opencontainers.image.description="Tensor - Matrix federation gateway"       org.opencontainers.image.version="0.2.0"       org.opencontainers.image.vendor="mautrix"       org.opencontainers.image.source="https://github.com/mautrix/tensor"       sovereign.image.tier="2"       sovereign.constraint.nonroot="true"       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

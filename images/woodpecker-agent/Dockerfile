@@ -14,9 +14,13 @@ RUN curl -fsSL "https://github.com/woodpecker-ci/woodpecker/releases/download/v2
 FROM scratch
 COPY --from=downloader /tmp/woodpecker-agent_stripped /usr/local/bin/woodpecker-agent
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 3000
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3     CMD ["/usr/local/bin/woodpecker-agent", "--version"]
-ENTRYPOINT ["/usr/local/bin/woodpecker-agent"]
 LABEL org.opencontainers.image.title="woodpecker-agent"       org.opencontainers.image.description="Woodpecker Agent - CI/CD build agent for Woodpecker"       org.opencontainers.image.version="2.8.0"       org.opencontainers.image.vendor="Woodpecker CI"       org.opencontainers.image.source="https://github.com/woodpecker-ci/woodpecker"       sovereign.image.tier="2"       sovereign.constraint.nonroot="true"       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

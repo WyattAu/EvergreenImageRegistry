@@ -1,23 +1,13 @@
 ARG VERSION=24.04.10.2
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim AS runtime
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        ca-certificates curl gnupg2 apt-transport-https && \
-    curl -fsSL "https://www.collaboraoffice.com/downloads/collabora-office/code/debian/" | grep -oP 'https://[^"]+Release.key' | head -1 | xargs -r curl -fsSL | gpg --dearmor -o /usr/share/keyrings/collabora.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/collabora.gpg] https://www.collabora.com/downloads/collabora-office/code/debian/ /" > /etc/apt/sources.list.d/collabora.list && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends collabora-online-code-brand && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007 AS runtime
+RUN apk add --no-cache ca-certificates curl gnupg grep head xargs echo https
 RUN mkdir -p /var/log/collabora /etc/loolwsd \
-    && chown -R 65534:65534 /var/log/collabora /etc/loolwsd
-USER 65534:65534
+    && chown -R 65532:65532 /var/log/collabora /etc/loolwsd
+USER 65532:65532
 WORKDIR /app
 EXPOSE 9980
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:9980/hosting/discovery"]
 ENTRYPOINT ["/usr/bin/loolwsd"]
 LABEL org.opencontainers.image.title="collabora-online" \
       org.opencontainers.image.version="24.04.10.2" \
@@ -27,8 +17,13 @@ LABEL org.opencontainers.image.title="collabora-online" \
       sovereign.image.category="document-management" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="30s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="60000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

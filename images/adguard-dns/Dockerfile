@@ -24,11 +24,9 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/AdGuardHome /var/log/AdGuardHome
 COPY --from=builder /var/cache/AdGuardHome /var/cache/AdGuardHome
 COPY --from=builder /opt/AdGuardHome/data /opt/AdGuardHome/data
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 3000 443 853
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["/AdGuardHome", "--version"]
 ENTRYPOINT ["/AdGuardHome"]
 LABEL org.opencontainers.image.title="adguard-dns" \
       org.opencontainers.image.version="0.107.50" \
@@ -44,3 +42,9 @@ LABEL org.opencontainers.image.title="adguard-dns" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="5000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

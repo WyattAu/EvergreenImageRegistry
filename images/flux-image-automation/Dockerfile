@@ -14,9 +14,13 @@ RUN curl -fsSL "https://github.com/fluxcd/image-automation-controller/releases/d
 FROM scratch
 COPY --from=downloader /tmp/binary /usr/local/bin/image-automation-controller
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3     CMD ["/usr/local/bin/image-automation-controller", "--version"]
-ENTRYPOINT ["/usr/local/bin/image-automation-controller"]
 LABEL org.opencontainers.image.title="flux-image-automation"       org.opencontainers.image.description="Flux Image Automation - automated container image updates for GitOps"       org.opencontainers.image.version="0.39.0"       org.opencontainers.image.vendor="Flux CD"       org.opencontainers.image.source="https://github.com/fluxcd/image-automation-controller"       sovereign.image.tier="2"       sovereign.constraint.nonroot="true"       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

@@ -19,31 +19,36 @@ RUN curl -fsSL "https://dlcdn.apache.org/cassandra/5.0/apache-cassandra-5.0-bin.
 # hadolint ignore=DL3023
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends openjdk-17-jre-headless && \
+    apt-get install -y --no-install-recommends java-17-runtime && \
     rm -rf /var/lib/apt/lists/*
 COPY --from=downloader /opt/apache-cassandra-5.0 /opt/cassandra
 RUN mkdir -p /var/lib/cassandra /var/log/cassandra /app && \
-    chown -R 65534:65534 /var/lib/cassandra /var/log/cassandra /app /opt/cassandra
+    chown -R 65532:65532 /var/lib/cassandra /var/log/cassandra /app /opt/cassandra
 
 # hadolint ignore=DL3023
-FROM debian:bookworm-slim
+
+FROM golang:1.23-alpine AS health-shim-builder
+COPY images/health-shim/go.mod images/health-shim/main.go /build/
+RUN cd /build && CGO_ENABLED=0 go build -ldflags="-s -w" -o /health-shim .
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+COPY --from=health-shim-builder /health-shim /usr/local/bin/health-shim
+ENV HEALTH_CMD="nodetool status" \
+    READY_CMD="nodetool netstats" \
+    STARTUP_CMD="nodetool status" \
+    SOVEREIGN_LOG_LEVEL=info
+
 COPY --from=builder /usr/lib/jvm /usr/lib/jvm
 COPY --from=builder /opt/cassandra /opt/cassandra
 COPY --from=builder /app /app
 COPY --from=builder /var/lib/cassandra /var/lib/cassandra
 COPY --from=builder /var/log/cassandra /var/log/cassandra
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends openjdk-17-jre-headless && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 ENV CASSANDRA_HOME=/opt/cassandra
 ENV PATH="${CASSANDRA_HOME}/bin:${JAVA_HOME}/bin:${PATH}"
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 9042
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD ["/opt/cassandra/bin/nodetool", "version"]
-ENTRYPOINT ["/opt/cassandra/bin/cassandra", "-f"]
+ENTRYPOINT ["sh", "-c", "health-shim & exec /opt/cassandra/bin/cassandra -f"]
 LABEL org.opencontainers.image.title="cassandra" \
       org.opencontainers.image.version="5.0" \
       org.opencontainers.image.vendor="Apache" \
@@ -51,7 +56,6 @@ LABEL org.opencontainers.image.title="cassandra" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.runtime="debian-slim" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
@@ -63,3 +67,8 @@ LABEL org.opencontainers.image.title="cassandra" \
       sovereign.hft.pre-stop-delay="5s" \
       sovereign.hft.connection-drain="true" \
       sovereign.hft.sched-policy="SCHED_OTHER"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="true"
+LABEL sovereign.health.type="http"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

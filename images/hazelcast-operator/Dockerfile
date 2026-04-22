@@ -21,10 +21,8 @@ RUN curl -fsSL "https://github.com/hazelcast/hazelcast-platform-operator/release
 FROM scratch
 COPY --from=builder /usr/local/bin/hazelcast-platform-operator /usr/local/bin/hazelcast-platform-operator
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 EXPOSE 8080 8443
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/local/bin/hazelcast-platform-operator", "version"]
 ENTRYPOINT ["/usr/local/bin/hazelcast-platform-operator"]
 LABEL org.opencontainers.image.title="hazelcast-operator" \
       org.opencontainers.image.description="Sovereign hardened Hazelcast Platform Operator - Kubernetes operator for Hazelcast" \
@@ -35,3 +33,9 @@ LABEL org.opencontainers.image.title="hazelcast-operator" \
       sovereign.image.category="database" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

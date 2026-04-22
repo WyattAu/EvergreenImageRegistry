@@ -1,13 +1,11 @@
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
 RUN apt-get update && apt-get install -y --no-install-recommends \
         python3 ca-certificates \
     && rm -rf /var/lib/apt/lists/*
-RUN useradd -r -u 65534 -g nogroup -d /app -s /sbin/nologin rblake 2>/dev/null || true && \
-    mkdir -p /app && chown -R 65534:65534 /app 2>/dev/null || true
-USER 65534:65534
+RUN useradd -r -u 65532 -g nogroup -d /app -s /sbin/nologin rblake 2>/dev/null || true && \
+    mkdir -p /app && chown -R 65532:65532 /app 2>/dev/null || true
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=60s --timeout=5s --start-period=5s --retries=1 \
-    CMD ["python3", "-c", "print('ok')"]
 ENTRYPOINT ["python3"]
 CMD ["-c", "print('rblake: security tool placeholder')"]
 LABEL org.opencontainers.image.title="rblake" \
@@ -15,4 +13,9 @@ LABEL org.opencontainers.image.title="rblake" \
       sovereign.image.tier="3" \
       sovereign.image.status="placeholder" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

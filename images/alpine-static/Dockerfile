@@ -13,3 +13,9 @@ LABEL org.opencontainers.image.title="alpine-static" \
       sovereign.image.status="reference" \
       sovereign.image.category="base" \
       sovereign.image.note="Alpine is banned for application images. Use chainguard/static for static builds."
+
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="none"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

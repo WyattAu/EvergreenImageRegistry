@@ -19,19 +19,17 @@ RUN curl -fsSL "https://dlcdn.apache.org/druid/${VERSION}/apache-druid-${VERSION
     && tar -xzf /druid.tar.gz -C /opt \
     && rm /druid.tar.gz
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates openjdk-17-jre-headless python3 && rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin druid 2>/dev/null || true
+RUN apk add --no-cache ca-certificates python3
+RUN useradd -m -u 65532 -s /usr/sbin/nologin druid 2>/dev/null || true
 RUN mkdir -p /var/lib/druid /var/log/druid /var/cache/druid
 COPY --from=builder /opt/apache-druid-${VERSION} /opt/druid
 RUN chown -R druid:druid /opt/druid /var/lib/druid /var/log/druid /var/cache/druid
-USER 65534:65534
+USER 65532:65532
 WORKDIR /opt/druid
 EXPOSE 8088 8888 8280
-HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:8088/status/health"]
 ENTRYPOINT ["/opt/druid/bin/start-druid"]
 LABEL org.opencontainers.image.title="druid" \
       org.opencontainers.image.version="29.0.1" \
@@ -41,4 +39,8 @@ LABEL org.opencontainers.image.title="druid" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

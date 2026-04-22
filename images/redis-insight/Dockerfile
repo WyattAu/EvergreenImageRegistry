@@ -19,21 +19,14 @@ RUN curl -fsSL "https://github.com/RedisInsight/RedisInsight/releases/download/v
     && mkdir -p /tmp/redisinsight \
     && tar -xzf redisinsight.tar.gz -C /tmp/redisinsight --strip-components=1
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates libx11-6 libxext6 libxrender1 libxtst6 libxi6 \
-    libfontconfig1 libfreetype6 libglib2.0-0 libnss3 libnspr4 \
-    libatk1.0-0 libatk-bridge2.0-0 libcups2 libdbus-1-3 libdrm2 \
-    libxkbcommon0 libatspi2.0-0 libxcomposite1 libxdamage1 libxfixes3 \
-    libxrandr2 libgbm1 libpango-1.0-0 libcairo2 libasound2 && \
-    rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin redisinsight 2>/dev/null || true
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache ca-certificates fontconfig freetype glib
+RUN useradd -m -u 65532 -s /usr/sbin/nologin redisinsight 2>/dev/null || true
 COPY --from=builder /tmp/redisinsight /opt/redisinsight
-USER 65534:65534
+USER 65532:65532
 WORKDIR /opt/redisinsight
 EXPOSE 8001
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["/opt/redisinsight/redisinsight", "--version"]
 ENTRYPOINT ["/opt/redisinsight/redisinsight"]
 LABEL sovereign.image.status="functional" \
       sovereign.image.tier="1" \
@@ -41,3 +34,8 @@ LABEL sovereign.image.status="functional" \
       org.opencontainers.image.title="redis-insight" \
       org.opencontainers.image.description="Sovereign hardened RedisInsight - visual Redis management and monitoring tool" \
       org.opencontainers.image.version="${VERSION}"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

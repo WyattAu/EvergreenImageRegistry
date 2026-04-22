@@ -22,10 +22,8 @@ RUN curl -fsSL "https://github.com/codenotary/immudb/releases/download/v${VERSIO
 FROM scratch
 COPY --from=builder /usr/local/bin/immudb-proxy /usr/local/bin/immudb-proxy
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 EXPOSE 3323
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/local/bin/immudb-proxy", "version"]
 ENTRYPOINT ["/usr/local/bin/immudb-proxy"]
 LABEL org.opencontainers.image.title="immudb-proxy" \
       org.opencontainers.image.description="Sovereign hardened immudb-proxy - proxy mode for immudb" \
@@ -36,3 +34,9 @@ LABEL org.opencontainers.image.title="immudb-proxy" \
       sovereign.image.category="security" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

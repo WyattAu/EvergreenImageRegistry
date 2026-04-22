@@ -21,10 +21,8 @@ RUN git clone --depth 1 --branch v${VERSION} https://github.com/folbricht/rdns /
 FROM scratch
 COPY --from=builder /tmp/rdns-server /usr/local/bin/rdns-server
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 EXPOSE 53 8053
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/local/bin/rdns-server", "--version"]
 ENTRYPOINT ["/usr/local/bin/rdns-server"]
 LABEL org.opencontainers.image.title="rdns-server" \
       org.opencontainers.image.version="${VERSION}" \
@@ -37,3 +35,9 @@ LABEL org.opencontainers.image.title="rdns-server" \
       sovereign.constraint.scratch="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

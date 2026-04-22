@@ -17,11 +17,9 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/loki-simple /var/log/loki-simple
 COPY --from=builder /var/cache/loki-simple /var/cache/loki-simple
 COPY --from=builder /etc/loki /etc/loki
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 3100
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/loki", "--version"]
 ENTRYPOINT ["/loki", "-config.file=/etc/loki/simple-config.yaml"]
 LABEL org.opencontainers.image.title="loki-simple" \
       org.opencontainers.image.version="3.1.0" \
@@ -32,3 +30,9 @@ LABEL org.opencontainers.image.title="loki-simple" \
       sovereign.constraint.scratch="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="10s"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

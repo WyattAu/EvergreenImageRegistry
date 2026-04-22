@@ -34,17 +34,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     redis-server ca-certificates && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
-FROM debian:bookworm-slim
-RUN useradd -m -u 65534 -s /usr/sbin/nologin redis 2>/dev/null || true
+FROM scratch
+
+RUN useradd -m -u 65532 -s /usr/sbin/nologin redis 2>/dev/null || true
 RUN mkdir -p /var/lib/redis /var/log/redis /var/cache/redis /opt/redis/modules
 COPY --from=builder /tmp/modules/*.so /opt/redis/modules/
 COPY --from=redis /usr/bin/redis-server /usr/local/bin/redis-server
-RUN chown -R 65534:65534 /var/lib/redis /var/log/redis /var/cache/redis /opt/redis
-USER 65534:65534
+RUN chown -R 65532:65532 /var/lib/redis /var/log/redis /var/cache/redis /opt/redis
+USER 65532:65532
 WORKDIR /var/lib/redis
 EXPOSE 6379
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["redis-cli", "ping"]
 ENTRYPOINT ["redis-server", "--loadmodule", "/opt/redis/modules/redisearch.so"]
 LABEL org.opencontainers.image.title="redismodules" \
       org.opencontainers.image.version="${VERSION}" \
@@ -54,4 +53,8 @@ LABEL org.opencontainers.image.title="redismodules" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

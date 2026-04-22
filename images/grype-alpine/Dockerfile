@@ -12,8 +12,12 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/grype-alpine /var/log/grype-alpine
 COPY --from=builder /var/cache/grype-alpine /var/cache/grype-alpine
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3     CMD ["/grype", "--version"]
-ENTRYPOINT ["/grype"]
 LABEL org.opencontainers.image.title="grype-alpine"       org.opencontainers.image.description="Grype - vulnerability scanner (no Alpine)"       org.opencontainers.image.vendor="Anchore"       org.opencontainers.image.source="https://github.com/anchore/grype"       sovereign.image.tier="3"       sovereign.constraint.nonroot="true"       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

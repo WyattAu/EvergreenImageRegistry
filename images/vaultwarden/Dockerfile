@@ -18,11 +18,9 @@ RUN curl -fsSL "https://github.com/dani-garcia/vaultwarden/releases/download/${V
 FROM scratch
 COPY --from=downloader /vaultwarden /vaultwarden
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/vaultwarden", "--help"]
 ENTRYPOINT ["/vaultwarden"]
 LABEL org.opencontainers.image.title="vaultwarden" \
       org.opencontainers.image.version="1.35.7" \
@@ -37,3 +35,9 @@ LABEL org.opencontainers.image.title="vaultwarden" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

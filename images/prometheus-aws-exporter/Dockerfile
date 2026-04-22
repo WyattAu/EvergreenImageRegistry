@@ -22,11 +22,9 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/yace /var/log/yace
 COPY --from=builder /var/cache/yace /var/cache/yace
 COPY --from=builder /etc/yace /etc/yace
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 5000
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/yace", "--version"]
 ENTRYPOINT ["/yace"]
 LABEL org.opencontainers.image.title="prometheus-aws-exporter" \
       org.opencontainers.image.version="0.55.0" \
@@ -46,3 +44,9 @@ LABEL org.opencontainers.image.title="prometheus-aws-exporter" \
       sovereign.hft.pre-stop-delay="5s" \
       sovereign.hft.connection-drain="true" \
       sovereign.hft.sched-policy="SCHED_OTHER"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

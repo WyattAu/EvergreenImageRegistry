@@ -20,10 +20,8 @@ RUN git clone --depth 1 --branch v${VERSION} https://github.com/nicich/dotdns /t
 FROM scratch
 COPY --from=builder /tmp/dotdns /usr/local/bin/dotdns
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 EXPOSE 53 8053
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["/usr/local/bin/dotdns", "--version"]
 ENTRYPOINT ["/usr/local/bin/dotdns"]
 LABEL org.opencontainers.image.title="dotdns" \
       org.opencontainers.image.version="${VERSION}" \
@@ -35,3 +33,9 @@ LABEL org.opencontainers.image.title="dotdns" \
       sovereign.constraint.scratch="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

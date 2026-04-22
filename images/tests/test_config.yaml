@@ -906,6 +906,17 @@ images:
     functional_test: proxy
     adversarial_test: true
     startup_timeout: 60
+  389ds:
+    binary: ns-slapd
+    health_port: 389
+    version_flag: "--version"
+    category: security
+    functional_test: database
+    adversarial_test: true
+    startup_timeout: 30
+    build: true
+    tier: 2
+    health_check: exec
   synapse:
     binary: python3
     health_port: 8008
@@ -1866,15 +1877,6 @@ images:
     functional_test: proxy
     adversarial_test: true
     startup_timeout: 30
-  389ds:
-    binary: none
-    health_port: 0
-    version_flag: ''
-    category: app
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
   aarch64-unknown-linux-musl:
     binary: none
     health_port: 0

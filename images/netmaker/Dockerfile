@@ -23,11 +23,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/netmaker /var/log/netmaker
 COPY --from=builder /var/cache/netmaker /var/cache/netmaker
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 443 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/netmaker", "--version"]
 ENTRYPOINT ["/netmaker"]
 LABEL org.opencontainers.image.title="netmaker" \
       org.opencontainers.image.version="1.5.1" \
@@ -39,3 +37,9 @@ LABEL org.opencontainers.image.title="netmaker" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

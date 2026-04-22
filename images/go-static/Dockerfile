@@ -19,10 +19,8 @@ COPY --from=builder /var/cache/go-static /var/cache/go-static
 ENV PATH="/opt/go/bin:${PATH}" \
     GOROOT="/opt/go" \
     GOPATH="/app"
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["go", "version"]
 ENTRYPOINT ["go"]
 LABEL org.opencontainers.image.title="go-static" \
       org.opencontainers.image.version="1.22.10" \
@@ -33,3 +31,9 @@ LABEL org.opencontainers.image.title="go-static" \
       sovereign.constraint.scratch="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="5s"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

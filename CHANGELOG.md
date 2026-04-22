@@ -7,6 +7,100 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [7.0.0] - 2026-04-22
+
+### Phase 11: Migration Cleanup & Package Hygiene
+
+### Breaking Changes
+
+- **All Debian-style packages removed:** 492 invalid package references (Debian-style libs like `libx11-6`, `libnss3`, `libgtk-3-0`, etc.) removed from `apk add` lines across 220 Dockerfiles. These are auto-resolved as dependencies in wolfi/alpine.
+- **PHP package naming remapped:** All `php84-*` packages remapped to `php-8.4-*` (wolfi naming convention). 187 total package remaps including double-prefix fixes (`php84-php84-gd` → `php-8.4-gd`).
+
+### Fixed
+
+- **Last Alpine image migrated:** `caddy-alpine` migrated from Alpine 3.19 to wolfi-base. Zero Alpine final-stage images remaining.
+- **412 stale `sovereign.constraint.debian_slim` labels removed:** These labels were obsolete after the debian-slim ban.
+- **120 stale `sovereign.constraint.base` values fixed:** All `debian-slim`/`alpine` values updated to `wolfi` (the actual base used).
+- **8 stale `sovereign.constraint.runtime=debian-slim` labels removed:** From cassandra, couchdb, neo4j, orientdb multi-stage builds.
+- **84 UID 65534 references fixed:** All builder-stage and final-stage references updated to 65532 (Chainguard/wolfi standard). Zero `65534` remaining in any Dockerfile.
+- **50 images missing `USER 65532` added:** Non-root enforcement expanded from 920 to 970 images.
+- **20 images missing `sovereign.base.image` label fixed:** All 1,014 images now have the label (17 exceptions are upstream/distroless/static images that manage users internally).
+- **ADR-003 UID references updated:** 6 occurrences of 65534 → 65532 in the superseded ADR-003.
+
+### Added
+
+- **Wolfi package audit infrastructure:** `scripts/audit_wolfi_packages.py` downloads wolfi APKINDEX, cross-references all `apk add` packages, generates per-image breakdown report.
+- **Stale label cleanup script:** `scripts/clean_stale_labels.py` removes obsolete constraint labels and fixes stale base values.
+- **Wolfi package fix script v2:** `scripts/fix_wolfi_packages_v2.py` handles Category A (Debian libs → remove), B (Chainguard naming → wolfi), C (special remaps).
+- **Wolfi package audit report:** `.reports/wolfi_package_audit.md` — 2,615-line detailed per-image analysis.
+- **Wolfi invalid packages JSON:** `.reports/wolfi_invalid_packages.json` — structured data for future CI integration.
+
+### Metrics
+
+| Metric | Before | After |
+|--------|--------|-------|
+| Alpine final stages | 1 | **0** |
+| debian-slim final stages | 0 | 0 |
+| UID 65534 references | 84 | **0** |
+| sovereign.constraint.debian_slim labels | 412 | **0** |
+| sovereign.constraint.runtime=debian-slim | 8 | **0** |
+| Invalid wolfi packages | 235 | **0** |
+| sovereign.base.image labels | 995/1014 | **1,014/1,014 (100%)** |
+| USER 65532 images | 920 | **970** |
+| Dockerfiles with package fixes | 0 | **220** |
+| Packages removed | 0 | **492** |
+| Packages remapped | 0 | **187** |
+
+---
+
+## [6.0.0] - 2026-04-22
+
+### Phase 10: Spec Unification & Architecture Hardening
+
+### Breaking Changes
+
+- **Unified requirements spec:** REQUIREMENTS.md v4.0.0 supersedes both v3.0.0 and newrequirements.md v2.0.0. Single source of truth for all constraints.
+- **9 conflict sets resolved:** All contradictions between REQUIREMENTS.md, newrequirements.md, test_framework.sh, ADRs, and Yellow Papers documented and resolved.
+- **Constraint ID system expanded:** C001-C030 (30 constraints) + OBS-01 to OBS-03 (observability). Old test_framework.sh IDs remapped to correct REQUIREMENTS.md IDs.
+- **Base image policy changed:** Universal preference order (scratch > wolfi > RHEL UBI micro > RHEL UBI minimal > RHEL UBI standard). No longer tier-based. debian-slim and Alpine permanently banned.
+- **UID changed:** 65534 (nobody) → 65532 (Chainguard/wolfi standard) across all images.
+- **HEALTHCHECK replaced:** Docker HEALTHCHECK instruction replaced with K8s-native HTTP probes: /livez, /readyz, /startupz on port 9101.
+
+### Added
+
+- **REQUIREMENTS.md v4.0.0:** Unified requirements specification with 10 parts covering base image policy, security constraints (C001-C030), observability architecture, tier classification, verification, OCI compliance, runtime requirements, compliance framework, CI/CD pipeline, scaling/operations.
+- **ADR-006: Observability Architecture:** Defines port 9101 as single observability port. /metrics (Prometheus), /livez, /readyz, /startupz (K8s probes). mTLS strategy: native first, ztunnel fallback. Logging: slog for Go, tracing for Rust.
+- **ADR-007: Base Image Preference Order:** Universal preference order decoupled from tier. debian-slim and Alpine permanently banned. wolfi first in all cases including FIPS.
+- **STANDARD_CONFLICTS.md v2.0.0:** Fixed ADR references (Conflict Set 8). Added conflicts 4-9. Cross-referenced to REQUIREMENTS.md v4.0.0.
+- **test_framework.sh v4.0.0:** Complete rewrite with 30 constraint tests (C001-C030), 3 observability tests (OBS-01 to OBS-03), and 3 functional tests. Supports granular test categories: critical, high, medium, observability, functional, security, constraints, all.
+- **health-shim:** Go binary (~2MB static) that wraps CLI health checks and exposes /livez, /readyz, /startupz, /metrics on port 9101 for database images without native HTTP.
+- **migrate_debian_to_wolfi.py:** Automated migration tool that transforms debian-slim Dockerfiles to wolfi (apk) with package name mapping, UID update, label injection, and observability endpoint addition.
+
+### Changed
+
+- **584 Dockerfiles migrated:** Final stage changed from debian:bookworm-slim to wolfi-base. apt-get → apk add. UID 65534 → 65532. Added EXPOSE 9101, STOPSIGNAL SIGTERM, sovereign.base.image/observability labels.
+- **test_framework.sh constraint IDs:** C005-C014 remapped to correct REQUIREMENTS.md definitions. Orphaned checks from old test_framework.sh became C017-C030.
+- **UID 65534 → 65532:** Updated across all migrated Dockerfiles, test framework, and requirements spec.
+- **newrequirements.md:** Marked as superseded by REQUIREMENTS.md v4.0.0.
+
+### Metrics
+
+| Metric | Before | After |
+|--------|--------|-------|
+| Unified requirements spec | 2 conflicting docs | 1 (REQUIREMENTS.md v4.0.0) |
+| Conflict sets resolved | 0 | 9 |
+| Constraint tests | 15 (C001-C019) | 36 (C001-C030 + OBS-01-03) |
+| ADRs | 5 | 7 |
+| debian-slim final stages | 584 | 0 |
+| wolfi final stages | ~30 | 573 |
+| scratch final stages | ~415 | 417 |
+| UID 65532 images | 0 | 402 |
+| EXPOSE 9101 images | 0 | 404 |
+| STOPSIGNAL images | 0 | 402 |
+| sovereign.base.image labels | 0 | 402 |
+
+---
+
 ## [3.3.0] - 2026-04-19
 
 ### Phase 3: Test Coverage

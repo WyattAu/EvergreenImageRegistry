@@ -8,11 +8,9 @@ RUN curl -fsSL "https://dl.min.io/client/mc/release/linux-amd64/mc" -o /mc && ch
 FROM scratch
 COPY --from=downloader /mc /mc
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 0
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/mc", "--version"]
 ENTRYPOINT ["/mc"]
 LABEL org.opencontainers.image.title="mc" \
       org.opencontainers.image.version="RELEASE.2025-04-08T16-46-15Z" \
@@ -27,3 +25,9 @@ LABEL org.opencontainers.image.title="mc" \
       sovereign.hft.shutdown-timeout="5s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="10000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

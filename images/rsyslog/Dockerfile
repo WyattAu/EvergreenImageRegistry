@@ -15,14 +15,11 @@ RUN apt-get update && \
     strip /usr/sbin/rsyslogd && \
     find /usr/lib/rsyslog -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true
 
-FROM debian:bookworm-20240101-slim
-RUN groupadd -g 65534 rsyslog && \
-    useradd -m -u 65534 -g rsyslog -s /usr/sbin/nologin rsyslog
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        rsyslog \
-        ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN groupadd -g 65532 rsyslog && \
+    useradd -m -u 65532 -g rsyslog -s /usr/sbin/nologin rsyslog
+RUN apk add --no-cache rsyslog ca-certificates
 COPY --from=builder /usr/sbin/rsyslogd /usr/sbin/rsyslogd
 RUN mkdir -p /app/conf /app/logs /app/run /app/spool /var/lib/rsyslog && \
     chown -R rsyslog:rsyslog /app /var/lib/rsyslog
@@ -38,14 +35,12 @@ $FileGroup rsyslog
 $FileCreateMode 0644
 $DirCreateMode 0755
 
-*.info;mail.none;authpriv.none;cron.none /app/logs/messages
+*.info;mail.none;authpriv.none;busybox-suid.none /app/logs/messages
 EOF
 RUN chown rsyslog:rsyslog /app/conf/rsyslog.conf
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 514 514/udp
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/sbin/rsyslogd", "-v"]
 ENTRYPOINT ["/usr/sbin/rsyslogd"]
 CMD ["-n", "-f", "/app/conf/rsyslog.conf"]
 LABEL org.opencontainers.image.title="rsyslog" \
@@ -54,7 +49,6 @@ LABEL org.opencontainers.image.title="rsyslog" \
       org.opencontainers.image.description="rsyslog - rocket-fast system for log processing" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="5s" \
       sovereign.hft.init-system="none" \
@@ -67,3 +61,8 @@ LABEL org.opencontainers.image.title="rsyslog" \
       sovereign.hft.connection-drain="true" \
       sovereign.hft.sched-policy="SCHED_OTHER" \
       sovereign.hft.runtime="c"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

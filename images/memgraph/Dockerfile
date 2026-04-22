@@ -12,29 +12,26 @@ FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential cmake curl ca-certificates git \
+    build-base cmake curl ca-certificates git \
     libgrpc++-dev libprotobuf-dev protobuf-compiler \
     libboost-all-dev libssl-dev libspdlog-dev \
-    python3 python3-pip && rm -rf /var/lib/apt/lists/*
+    python3 py3-pip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN git clone --depth 1 --branch v${VERSION} https://github.com/memgraph/memgraph.git /tmp/memgraph-src 2>/dev/null || \
     (curl -fsSL "https://github.com/memgraph/memgraph/releases/download/v${VERSION}/memgraph-${VERSION}-linux-amd64.tar.gz" -o /tmp/memgraph.tar.gz \
     && tar -xzf /tmp/memgraph.tar.gz -C /opt && rm /tmp/memgraph.tar.gz) || true
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgrpc++1 libprotobuf32 libboost-all1.74 libssl3 ca-certificates python3 && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin memgraph 2>/dev/null || true
+RUN apk add --no-cache ca-certificates python3
+RUN useradd -m -u 65532 -s /usr/sbin/nologin memgraph 2>/dev/null || true
 RUN mkdir -p /var/lib/memgraph /var/log/memgraph /var/cache/memgraph /etc/memgraph
 COPY --from=builder /opt/memgraph /opt/memgraph 2>/dev/null || true
-RUN chown -R 65534:65534 /opt/memgraph /var/lib/memgraph /var/log/memgraph /var/cache/memgraph /etc/memgraph
-USER 65534:65534
+RUN chown -R 65532:65532 /opt/memgraph /var/lib/memgraph /var/log/memgraph /var/cache/memgraph /etc/memgraph
+USER 65532:65532
 WORKDIR /var/lib/memgraph
 EXPOSE 7687 7444
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:7444"]
 ENTRYPOINT ["/opt/memgraph/bin/memgraph", "--data-directory=/var/lib/memgraph"]
 LABEL org.opencontainers.image.title="memgraph" \
       org.opencontainers.image.version="${VERSION}" \
@@ -44,4 +41,8 @@ LABEL org.opencontainers.image.title="memgraph" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

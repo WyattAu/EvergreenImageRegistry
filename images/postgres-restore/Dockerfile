@@ -13,15 +13,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-client-${VERSION} xz-utils && \
     mkdir -p /app /backups /var/log/postgres-restore /var/cache/postgres-restore
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    postgresql-client-${VERSION} xz-utils curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
-COPY --from=builder --chown=65534:65534 /app /app
-COPY --from=builder --chown=65534:65534 /backups /backups
-COPY --from=builder --chown=65534:65534 /var/log/postgres-restore /var/log/postgres-restore
-COPY --from=builder --chown=65534:65534 /var/cache/postgres-restore /var/cache/postgres-restore
-USER 65534:65534
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache postgresql-client-${VERSION} curl ca-certificates
+COPY --from=builder --chown=65532:65532 /app /app
+COPY --from=builder --chown=65532:65532 /backups /backups
+COPY --from=builder --chown=65532:65532 /var/log/postgres-restore /var/log/postgres-restore
+COPY --from=builder --chown=65532:65532 /var/cache/postgres-restore /var/cache/postgres-restore
+USER 65532:65532
 WORKDIR /app
 COPY <<'SCRIPT' /app/restore.sh
 #!/bin/sh
@@ -52,9 +51,7 @@ case "$BACKUP_FILE" in
 esac
 echo "Restore complete from: $BACKUP_FILE"
 SCRIPT
-RUN chmod +x /app/restore.sh && chown 65534:65534 /app/restore.sh
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["pg_restore", "--version"]
+RUN chmod +x /app/restore.sh && chown 65532:65532 /app/restore.sh
 ENTRYPOINT ["/app/restore.sh"]
 LABEL org.opencontainers.image.title="postgres-restore" \
       org.opencontainers.image.version="17" \
@@ -62,4 +59,8 @@ LABEL org.opencontainers.image.title="postgres-restore" \
       org.opencontainers.image.vendor="PostgreSQL" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

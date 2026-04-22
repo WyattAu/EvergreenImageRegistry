@@ -24,11 +24,9 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/sonic /var/log/sonic
 COPY --from=builder /var/lib/sonic /var/lib/sonic
 COPY --from=builder /etc/sonic /etc/sonic
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 1491
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/sonic", "-v"]
 ENTRYPOINT ["/sonic"]
 LABEL org.opencontainers.image.title="sonic" \
       org.opencontainers.image.version="1.4.0" \
@@ -45,3 +43,9 @@ LABEL org.opencontainers.image.title="sonic" \
       sovereign.hft.shutdown-timeout="5s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

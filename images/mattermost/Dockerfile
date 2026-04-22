@@ -15,20 +15,17 @@ RUN curl -fsSL "https://releases.mattermost.com/${VERSION}/mattermost-${VERSION}
     tar -xzf /mattermost.tar.gz -C /opt && \
     rm /mattermost.tar.gz
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        ca-certificates tzdata libicu72 && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache ca-certificates tzdata
 COPY --from=downloader /opt/mattermost /opt/mattermost
-RUN groupadd -g 65534 -r mattermost 2>/dev/null || true && \
-    useradd -r -u 65534 -g mattermost -d /opt/mattermost -s /sbin/nologin mattermost 2>/dev/null || true && \
+RUN groupadd -g 65532 -r mattermost 2>/dev/null || true && \
+    useradd -r -u 65532 -g mattermost -d /opt/mattermost -s /sbin/nologin mattermost 2>/dev/null || true && \
     mkdir -p /opt/mattermost/data /opt/mattermost/logs /opt/mattermost/plugins /opt/mattermost/client/plugins && \
-    chown -R 65534:65534 /opt/mattermost
-USER 65534:65534
+    chown -R 65532:65532 /opt/mattermost
+USER 65532:65532
 WORKDIR /opt/mattermost
 EXPOSE 8065
-HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:8065/api/v4/system/ping"]
 ENTRYPOINT ["/opt/mattermost/bin/mattermost"]
 LABEL org.opencontainers.image.title="mattermost" \
       org.opencontainers.image.version="${VERSION}" \
@@ -38,4 +35,8 @@ LABEL org.opencontainers.image.title="mattermost" \
       sovereign.image.status="functional" \
       sovereign.image.category="collaboration" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

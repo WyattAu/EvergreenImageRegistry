@@ -25,10 +25,8 @@ FROM scratch
 COPY --from=downloader /grpc_health_probe /grpc_health_probe
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["/grpc_health_probe", "--version"]
 ENTRYPOINT ["/grpc_health_probe"]
 LABEL org.opencontainers.image.title="healthcheck" \
       org.opencontainers.image.version="0.4.36" \
@@ -48,3 +46,9 @@ LABEL org.opencontainers.image.title="healthcheck" \
       sovereign.hft.connection-drain="false" \
       sovereign.hft.sched-policy="SCHED_OTHER" \
       sovereign.hft.runtime="go"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

@@ -9,12 +9,11 @@ ARG VERSION=5.20.0
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates gnupg && \
-    curl -fsSL https://debian.neo4j.com/neotechnology.gnupg.key | gnupg --dearmor -o /usr/share/keyrings/neo4j.gnupg && \
-    echo "deb [signed-by=/usr/share/keyrings/neo4j.gnupg] https://debian.neo4j.com stable 4.4" > /etc/apt/sources.list.d/neo4j.list && \
-    apt-get update && apt-get install -y --no-install-recommends neo4j && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache curl ca-certificates && \
+    curl -fsSL "https://dist.neo4j.org/neo4j-community-${VERSION}-unix.tar.gz" | \
+    tar xz -C /opt && \
+    ln -s /opt/neo4j-community-${VERSION} /opt/neo4j && \
+    ln -s /opt/neo4j/bin/neo4j /usr/local/bin/neo4j
 RUN useradd -m -u 65532 -g '' neo4j 2>/dev/null || true
 RUN mkdir -p /app /var/log/neo4j /var/cache/neo4j && chown -R neo4j:neo4j /app /var/log/neo4j /var/cache/neo4j 2>/dev/null || true
 USER neo4j

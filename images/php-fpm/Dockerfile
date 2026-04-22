@@ -9,19 +9,14 @@ ARG VERSION=8.3
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates gnupg curl && \
-    curl -sSL https://packages.sury.org/php/apt.gnupg | gnupg --dearmor -o /usr/share/keyrings/sury-php.gnupg && \
-    echo "deb [signed-by=/usr/share/keyrings/sury-php.gnupg] https://packages.sury.org/php/ $(. /etc/os-release && echo $VERSION_CODENAME) main" > /etc/apt/sources.list.d/sury-php.list && \
-    apt-get update && apt-get install -y --no-install-recommends \
-    php8.3-fpm php8.3-cli php8.3-common php8.3-curl php8.3-php84-mbstring php8.3-php84-xml php8.3-zip && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache \
+    php-8.4 php-8.4-fpm php-8.4-curl php-8.4-mbstring php-8.4-xml php-8.4-zip
 RUN useradd -m -u 65532 -g '' www-data 2>/dev/null || true
 RUN mkdir -p /app /var/log/php /var/cache/php && chown -R www-data:www-data /app /var/log/php /var/cache/php 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 9000
-ENTRYPOINT ["php-fpm8.3"]
+ENTRYPOINT ["php-fpm"]
 CMD ["-F"]
 LABEL org.opencontainers.image.title="php-fpm" \
       org.opencontainers.image.version="8.3" \

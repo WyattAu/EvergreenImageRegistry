@@ -9,9 +9,7 @@ ARG VERSION=7.3.0
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 py3-pip python3 ca-certificates curl  \
-    rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache python3 py3-pip ca-certificates curl
 RUN pip3 install --no-cache-dir --break-system-packages jupyterlab tensorflow 2>/dev/null || \
     pip3 install --no-cache-dir jupyterlab tensorflow
 RUN useradd -m -u 65532 -g '' app 2>/dev/null || true

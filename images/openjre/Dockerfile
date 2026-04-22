@@ -5,10 +5,7 @@
 # =============================================================================
 
 FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        ca-certificates tzdata curl dumb-init && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+RUN apk add --no-cache ca-certificates tzdata curl dumb-init
 
 ARG JRE_VERSION=21.0.5+11
 RUN curl -fsSL "https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jre/hotspot/normal/eclipse" -o /tmp/jre.tar.gz && \

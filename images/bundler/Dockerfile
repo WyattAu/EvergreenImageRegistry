@@ -9,9 +9,7 @@ ARG VERSION=2.5.0
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ruby ruby-dev ca-certificates curl build-base && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache ruby ruby-dev ca-certificates curl build-base
 RUN gem install bundler -v 2.5.0 --no-document && \
     strip /usr/local/bin/bundle 2>/dev/null || true && \
     strip /usr/local/bin/bundler 2>/dev/null || true

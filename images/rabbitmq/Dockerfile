@@ -17,7 +17,7 @@ ENV HEALTH_CMD="rabbitmq-diagnostics -q ping" \
     READY_CMD="rabbitmq-diagnostics -q check_running" \
     STARTUP_CMD="rabbitmq-diagnostics -q ping" \
     SOVEREIGN_LOG_LEVEL=info
-RUN apt-get update && apt-get install -y --no-install-recommends rabbitmq-server ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache ca-certificates
 RUN useradd -m -u 65532 -g '' rabbitmq 2>/dev/null || true
 RUN mkdir -p /app /var/log/rabbitmq-server /var/cache/rabbitmq-server && chown -R rabbitmq:rabbitmq /app /var/log/rabbitmq-server /var/cache/rabbitmq-server 2>/dev/null || true
 USER rabbitmq

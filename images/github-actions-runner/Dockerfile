@@ -9,7 +9,7 @@ ARG VERSION=2.316.1
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
-RUN apt-get update && apt-get install -y --no-install-recommends curl git ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache curl git ca-certificates
 RUN useradd -m -u 65532 -g '' runner 2>/dev/null || true
 RUN mkdir -p /app /var/log/run.sh /var/cache/run.sh && chown -R runner:runner /app /var/log/run.sh /var/cache/run.sh 2>/dev/null || true
 USER runner

@@ -9,8 +9,7 @@ ARG VERSION=2.4.0
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache curl ca-certificates
 RUN curl -fsSL "https://github.com/milvus-io/milvus/releases/download/v${VERSION}/milvus-standalone_${VERSION}_linux_amd64.tar.gz" -o /tmp/milvus.tar.gz && \
     tar -xzf /tmp/milvus.tar.gz -C /opt && rm /tmp/milvus.tar.gz && \
     chmod +x /opt/milvus/bin/milvus 2>/dev/null || true

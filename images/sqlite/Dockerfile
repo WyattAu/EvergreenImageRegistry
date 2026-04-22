@@ -9,7 +9,7 @@ ARG VERSION=3.45.1
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
-RUN apt-get update && apt-get install -y --no-install-recommends sqlite-libs ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache sqlite-libs ca-certificates
 RUN useradd -m -u 65532 -g '' sqlite 2>/dev/null || true
 RUN mkdir -p /app /var/log/sqlite-libs /var/cache/sqlite-libs && chown -R sqlite:sqlite /app /var/log/sqlite-libs /var/cache/sqlite-libs 2>/dev/null || true
 USER sqlite

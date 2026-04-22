@@ -10,8 +10,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache ca-certificates
 RUN useradd -m -u 65532 -s /usr/sbin/nologin dodb 2>/dev/null || true
 RUN mkdir -p /var/lib/dodb /var/log/dodb /var/cache/dodb /app
 RUN printf '#!/bin/sh\necho "dodb v%s - placeholder (no upstream binary)"\nsleep infinity' "${VERSION}" > /app/dodb && chmod +x /app/dodb

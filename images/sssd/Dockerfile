@@ -5,10 +5,7 @@
 # =============================================================================
 
 FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        sssd sssd-ldap sssd-krb5 sssd-common \
-        ca-certificates tzdata krb5-user libnss-sss libpam-sss && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+RUN apk add --no-cache ca-certificates tzdata
 
 RUN mkdir -p /var/lib/sss /var/log/sssd /etc/sssd && \
     chown -R root:root /var/lib/sss /var/log/sssd /etc/sssd && \

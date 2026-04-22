@@ -9,9 +9,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    firebird4.0-server firebird4.0-utils ca-certificates && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+RUN apk add --no-cache ca-certificates
 RUN useradd -m -u 65532 -s /usr/sbin/nologin firebird 2>/dev/null || true
 RUN mkdir -p /var/lib/firebird /var/log/firebird /var/cache/firebird
 RUN chown -R 65532:65532 /var/lib/firebird /var/log/firebird /var/cache/firebird

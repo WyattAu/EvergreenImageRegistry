@@ -10,8 +10,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache ca-certificates
 RUN useradd -m -u 65532 -s /usr/sbin/nologin blazebase 2>/dev/null || true
 RUN mkdir -p /var/lib/blazebase /var/log/blazebase /var/cache/blazebase /app
 RUN printf '#!/bin/sh\necho "blazebase v%s - placeholder (no upstream binary)"\nsleep infinity' "${VERSION}" > /app/blazebase && chmod +x /app/blazebase

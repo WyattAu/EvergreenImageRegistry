@@ -9,8 +9,7 @@ ARG VERSION=240427
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache curl ca-certificates
 RUN curl -fsSL "https://dl.photoprism.app/pkg/linux-amd64/photoprism-${VERSION}-linux-amd64.tar.gz" -o /tmp/photoprism.tar.gz && \
     tar -xzf /tmp/photoprism.tar.gz -C /opt && rm /tmp/photoprism.tar.gz && \
     chmod +x /opt/photoprism 2>/dev/null || true

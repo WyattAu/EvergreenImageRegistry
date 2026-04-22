@@ -17,7 +17,7 @@ RUN curl -fsSL "https://github.com/mozilla/hubs/archive/refs/heads/master.tar.gz
     rm /tmp/hubs.tar.gz && \
     npm install --omit=dev 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache curl ca-certificates

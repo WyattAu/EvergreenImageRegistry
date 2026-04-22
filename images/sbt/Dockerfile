@@ -9,7 +9,7 @@ RUN curl -fsSL "https://github.com/sbt/sbt/releases/download/v1.10.6/sbt-1.10.6.
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/sbt /var/cache/sbt /home/sbt
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 COPY --from=downloader /opt/sbt /opt/sbt

@@ -25,7 +25,7 @@ RUN curl -fsSL "https://packages.couchbase.com/ubuntu/couchbase.key" | gnupg --d
     rm -rf /var/lib/apt/lists/*
 
 # hadolint ignore=DL3023
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache libstdc++ curl zlib procps
 COPY --from=builder /opt/couchbase /opt/couchbase

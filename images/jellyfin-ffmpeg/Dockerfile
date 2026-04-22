@@ -22,7 +22,7 @@ RUN git clone --depth 1 --branch n{version} \
         --extra-cflags="-I/usr/include" --extra-ldflags="-L/usr/lib" && \
     make -j$(nproc) && make install && strip /usr/local/bin/ffmpeg /usr/local/bin/ffprobe
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache freetype zlib ca-certificates
 COPY --from=builder /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg

@@ -12,7 +12,7 @@ FROM debian:bookworm-slim AS builder
 RUN useradd -m -u 65532 -s /usr/sbin/nologin postgres 2>/dev/null || true
 RUN mkdir -p /app /var/log/postgres /var/cache/postgres
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache postgis3 ca-certificates
 COPY --from=builder /etc/passwd /etc/passwd

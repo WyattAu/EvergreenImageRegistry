@@ -23,7 +23,7 @@ RUN mkdir -p /var/lib/orientdb /var/log/orientdb /app && \
     chown -R 65532:65532 /var/lib/orientdb /var/log/orientdb /app /opt/orientdb
 
 # hadolint ignore=DL3023
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 COPY --from=builder /opt/orientdb /opt/orientdb
 COPY --from=builder /app /app

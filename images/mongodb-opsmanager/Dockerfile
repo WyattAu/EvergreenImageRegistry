@@ -18,7 +18,7 @@ RUN curl -fsSL "https://github.com/mongodb/mongodb-ops-manager/releases/download
     && tar -xzf /tmp/opsmanager.tgz -C /opt/opsmanager --strip-components=1 \
     && rm -rf /tmp/opsmanager.tgz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 RUN groupadd -g 65532 opsmanager && useradd -u 65532 -g opsmanager -s /usr/sbin/nologin opsmanager

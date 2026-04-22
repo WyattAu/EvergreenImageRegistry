@@ -19,7 +19,7 @@ RUN curl -fsSL "https://repo1.maven.org/maven2/io/trino/trino-server/${VERSION}/
     && tar -xzf /trino.tar.gz -C /opt \
     && rm /trino.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates python3

@@ -8,7 +8,7 @@ RUN curl -fsSL "https://packages.adoptium.net/artifactory/api/gnupg/key/public" 
     apt-get update && apt-get install -y --no-install-recommends temurin-21-jre-headless && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app /var/log/openjdk-alpine /var/cache/openjdk-alpine
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 COPY --from=builder /usr/share/keyrings/adoptium.gnupg /usr/share/keyrings/adoptium.gnupg
 COPY --from=builder /etc/apt/sources.list.d/adoptium.list /etc/apt/sources.list.d/adoptium.list

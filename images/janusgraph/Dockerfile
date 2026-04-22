@@ -19,7 +19,7 @@ RUN curl -fsSL "https://github.com/JanusGraph/janusgraph/releases/download/v${VE
     && unzip -q /tmp/janusgraph.zip -d /opt \
     && rm /tmp/janusgraph.zip
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl

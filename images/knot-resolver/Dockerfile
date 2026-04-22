@@ -20,7 +20,7 @@ RUN cd /knot-resolver && \
     meson compile -C build -j"$(nproc)" && \
     strip --strip-all /knot-resolver/build/kresd 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache libnghttp2-14 ca-certificates
 RUN mkdir -p /app /var/log/knot-resolver /var/lib/knot-resolver /etc/knot-resolver

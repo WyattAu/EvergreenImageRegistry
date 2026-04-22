@@ -19,7 +19,7 @@ RUN wget -q "https://github.com/sqlcipher/sqlcipher/archive/refs/tags/v${VERSION
     make -j"$(nproc)" && \
     strip --strip-all .libs/sqlcipher 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 RUN mkdir -p /app /var/log/sqlcipher

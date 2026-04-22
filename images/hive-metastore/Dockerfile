@@ -19,7 +19,7 @@ RUN curl -fsSL "https://archive.apache.org/dist/hive/hive-${VERSION}/apache-hive
     && tar -xzf /tmp/hive.tar.gz -C /opt \
     && rm /tmp/hive.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl

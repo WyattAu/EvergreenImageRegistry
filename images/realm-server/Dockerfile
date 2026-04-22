@@ -19,7 +19,7 @@ RUN curl -fsSL "https://github.com/10gen/realm-app-services/releases/download/v$
     && unzip -q /tmp/realm.zip -d /opt \
     && rm /tmp/realm.zip
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl install

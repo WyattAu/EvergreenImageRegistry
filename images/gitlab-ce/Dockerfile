@@ -20,7 +20,7 @@ RUN curl -fsSL "https://packages.gitlab.com/install/repositories/gitlab/gitlab-c
     apt-get install -y --no-install-recommends gitlab-ce=${VERSION}-ce.0 && \
     rm -rf /var/lib/apt/lists/*
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache curl ca-certificates gnupg openssh-client postfix busybox

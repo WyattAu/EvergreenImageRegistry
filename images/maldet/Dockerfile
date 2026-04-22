@@ -7,7 +7,7 @@ RUN curl -fsSL "https://www.rfxn.com/downloads/maldetect-current.tar.gz" \
     tar -xzf /maldet.tar.gz -C /opt && rm /maldet.tar.gz
 RUN mkdir -p /app
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache curl ca-certificates inotify-tools clamav-daemon
 COPY --from=builder /opt/maldetect /opt/maldetect

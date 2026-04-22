@@ -22,7 +22,7 @@ FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/nginx /var/cache/nginx/proxy /var/cache/nginx/fastcgi /run && \
     chown -R 65532:65532 /app /var/log/nginx /var/cache/nginx
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 COPY --from=downloader /usr/sbin/nginx /usr/sbin/nginx

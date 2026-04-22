@@ -22,7 +22,7 @@ RUN tar -xzf /opensearch.tar.gz -C /opt && \
 FROM golang:1.23-alpine AS health-shim-builder
 COPY images/health-shim/go.mod images/health-shim/main.go /build/
 RUN cd /build && CGO_ENABLED=0 go build -ldflags="-s -w" -o /health-shim .
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 COPY --from=health-shim-builder /health-shim /usr/local/bin/health-shim
 ENV HEALTH_CMD="curl -sf http://localhost:9200" \
     READY_CMD="curl -sf http://localhost:9200" \

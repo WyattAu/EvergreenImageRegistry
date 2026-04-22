@@ -8,7 +8,7 @@
 ARG VERSION=latest
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache python3 py3-pip git ca-certificates curl build-base
 RUN git clone --depth 1 --branch vlatest https://github.com/comfyanonymous/ComfyUI.git /opt/comfyui 2>/dev/null || \
     git clone --depth 1 https://github.com/comfyanonymous/ComfyUI.git /opt/comfyui
@@ -26,7 +26,6 @@ LABEL org.opencontainers.image.title="comfyui" \
       org.opencontainers.image.source="https://github.com/comfyanonymous/ComfyUI.git" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-
 LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"

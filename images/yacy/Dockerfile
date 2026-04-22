@@ -16,7 +16,7 @@ RUN curl -fsSL "https://github.com/yacy/yacy_search_server/releases/download/v1.
 RUN mkdir -p /app /var/log/yacy /var/lib/yacy/data
 RUN chown -R 65532:65532 /opt/yacy-server /var/log/yacy /var/lib/yacy
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 RUN mkdir -p /app /var/log/yacy /var/lib/yacy

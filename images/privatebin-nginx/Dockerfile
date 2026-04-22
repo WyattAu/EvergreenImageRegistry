@@ -7,7 +7,7 @@ WORKDIR /src
 RUN git clone --depth 1 https://github.com/PrivateBin/PrivateBin.git /src
 RUN mkdir -p /app/data /var/log/nginx /var/lib/php/sessions
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache nginx php-8.4 php-8.4-fpm php-8.4-gd php-8.4-mbstring php-8.4-xml php-8.4-curl ca-certificates
 COPY --from=builder /src /app/src

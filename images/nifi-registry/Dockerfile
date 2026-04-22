@@ -19,7 +19,7 @@ RUN curl -fsSL "https://archive.apache.org/dist/nifi/${VERSION}/nifi-registry-${
     && unzip -q /nifi-registry.zip -d /opt \
     && rm /nifi-registry.zip
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates

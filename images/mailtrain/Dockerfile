@@ -17,7 +17,7 @@ RUN curl -fsSL "https://github.com/Mailtrain/mailtrain/archive/refs/tags/v${VERS
     rm /tmp/mailtrain.tar.gz && \
     npm install --omit=dev 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache curl ca-certificates

@@ -19,7 +19,7 @@ RUN curl -fsSL "https://github.com/ontotext/graphdb/releases/download/v${VERSION
     && unzip -q /tmp/graphdb.zip -d /opt \
     && rm /tmp/graphdb.zip
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates

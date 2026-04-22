@@ -13,7 +13,7 @@ RUN git clone --depth 1 --branch v{version} \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release . && \
     make -j$(nproc) && make install && strip /usr/local/bin/eqonomize
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 COPY --from=builder /usr/local/bin/eqonomize /usr/local/bin/eqonomize

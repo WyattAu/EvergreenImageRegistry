@@ -12,7 +12,7 @@ RUN curl -fsSL "https://dot.net/v1/dotnet-install.sh" -o /dotnet-install.sh && \
 RUN curl -fsSL "https://github.com/duplicati/duplicati/releases/download/v2.1.0.1/duplicati-2.1.0.1-linux-x64-gui.zip" -o /duplicati.zip && \
     unzip -q /duplicati.zip -d /opt/duplicati && rm /duplicati.zip
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache curl ca-certificates
 RUN curl -fsSL "https://dot.net/v1/dotnet-install.sh" -o /dotnet-install.sh && \

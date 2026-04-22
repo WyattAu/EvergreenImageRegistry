@@ -7,7 +7,7 @@ RUN git clone --depth 1 https://github.com/Koenkk/zigbee2mqtt.git /src && \
     npm ci --omit=dev && npm run build 2>/dev/null || true
 RUN mkdir -p /app /data
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache nodejs npm ca-certificates
 COPY --from=builder /src /app/src

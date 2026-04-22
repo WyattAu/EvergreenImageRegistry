@@ -16,7 +16,7 @@ RUN curl -fsSL "https://github.com/getsentry/self-hosted/releases/download/${VER
     tar -xzf /sentry.tar.gz -C /tmp/sentry && \
     rm -f /sentry.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache python3 py3-pip ca-certificates libpq libxml2-dev libxslt-dev libffi-dev openssl-dev build-base git
 COPY --from=downloader /tmp/sentry /opt/sentry

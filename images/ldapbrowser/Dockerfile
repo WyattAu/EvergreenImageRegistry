@@ -16,7 +16,7 @@ RUN curl -fsSL "https://github.com/ltiam/APacheDirectoryStudio/releases/download
     tar -xzf /studio.tar.gz -C /tmp/studio --strip-components=1 && \
     rm -f /studio.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 COPY --from=downloader /tmp/studio /opt/ApacheDirectoryStudio

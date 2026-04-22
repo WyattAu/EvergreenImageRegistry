@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-${VERSION%.*} postgresql-contrib-${VERSION%.*} && \
     mkdir -p /var/lib/postgresql/data /var/run/postgresql /app
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache gnupg curl ca-certificates libzstd1 liblz4-1 echo http main"
 COPY --from=builder /var/lib/postgresql /var/lib/postgresql

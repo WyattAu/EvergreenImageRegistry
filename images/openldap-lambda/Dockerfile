@@ -6,7 +6,7 @@
 
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007 AS runtime
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates
 RUN mkdir -p /app && chown 65532:65532 /app
 USER 65532:65532

@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     php84-mysql-server && \
     mkdir -p /var/lib/php84-mysql /var/run/mysqld /app
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache gnupg curl ca-certificates wget psmisc
 COPY --from=builder /var/lib/php84-mysql /var/lib/php84-mysql

@@ -21,7 +21,7 @@ RUN curl -fsSL "https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.
     make -j$(nproc) && \
     strip src/redis
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache ca-certificates

@@ -19,7 +19,7 @@ RUN curl -fsSL "https://github.com/RedisInsight/RedisInsight/releases/download/v
     && mkdir -p /tmp/redisinsight \
     && tar -xzf redisinsight.tar.gz -C /tmp/redisinsight --strip-components=1
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates fontconfig freetype glib
 RUN useradd -m -u 65532 -s /usr/sbin/nologin redisinsight 2>/dev/null || true

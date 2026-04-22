@@ -23,7 +23,7 @@ RUN mkdir -p /var/lib/neo4j /var/log/neo4j /app && \
     chown -R 65532:65532 /var/lib/neo4j /var/log/neo4j /app /opt/neo4j
 
 # hadolint ignore=DL3023
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 COPY --from=builder /opt/neo4j /opt/neo4j
 COPY --from=builder /app /app

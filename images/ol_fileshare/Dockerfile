@@ -4,7 +4,7 @@
 # Constraint: debian-slim hardened
 # =============================================================================
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates tzdata
 
 RUN groupadd -g 65532 -r fileshare 2>/dev/null || true && \
@@ -21,7 +21,6 @@ LABEL org.opencontainers.image.title="ol_fileshare" \
       sovereign.image.status="functional" \
       sovereign.image.category="storage" \
       sovereign.constraint.nonroot="true" \
-
 LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="none"

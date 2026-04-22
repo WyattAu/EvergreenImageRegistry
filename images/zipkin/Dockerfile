@@ -15,7 +15,7 @@ RUN curl -fsSL "https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jre/ho
     tar -xzf /tmp/jre.tar.gz -C /opt/jre --strip-components=1 && \
     rm /tmp/jre.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates tzdata curl
 COPY --from=jre-builder /opt/jre /opt/jre

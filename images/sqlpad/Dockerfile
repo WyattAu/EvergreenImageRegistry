@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     find /app -name "*.md" -delete && \
     find /app -name "*.txt" -not -name "package.json-c" -delete
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache curl ca-certificates bash
 COPY --from=builder /app /app

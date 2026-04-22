@@ -19,7 +19,7 @@ RUN git clone --depth 1 --branch v${VERSION} https://github.com/qbittorrent/qBit
     -DGUI=OFF -DQT6=OFF . && \
     make -j$(nproc) && make install
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl
 RUN useradd -m -u 65532 -g '' qbittorrent 2>/dev/null || true

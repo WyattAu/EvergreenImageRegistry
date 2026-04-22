@@ -16,7 +16,7 @@ RUN git clone --depth 1 --branch v${VERSION} \
     https://github.com/coreruleset/coreruleset.git /tmp/crs \
     && cp /tmp/crs/crs-setup.conf.example /tmp/crs/crs-setup.conf
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates libxml2-dev

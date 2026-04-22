@@ -25,7 +25,7 @@ RUN curl -fsSL "https://github.com/CUBRID/cubrid/releases/download/CUBRID_${VERS
     && make install \
     && strip --strip-all /opt/cubrid/bin/cubrid /opt/cubrid/bin/cub_server 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates

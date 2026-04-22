@@ -9,7 +9,7 @@ RUN curl -fsSL "https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-mav
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/maven /var/cache/maven /home/maven
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 COPY --from=downloader /opt/apache-maven-3.9.9 /opt/apache-maven-3.9.9

@@ -6,7 +6,7 @@ WORKDIR /src
 RUN git clone --depth 1 https://github.com/causefx/Organizr.git /src 2>/dev/null || true
 RUN mkdir -p /app /config
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache nodejs npm ca-certificates nginx php-8.4-fpm php-8.4-sqlite
 COPY --from=builder /src /app/src 2>/dev/null || true

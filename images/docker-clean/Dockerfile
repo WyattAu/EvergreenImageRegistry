@@ -6,7 +6,7 @@ RUN printf '#!/bin/sh\nset -e\necho "=== Docker Clean ==="\ndocker system prune 
     chmod +x /usr/local/bin/docker-clean
 RUN mkdir -p /app
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache curl ca-certificates
 COPY --from=builder /usr/local/bin/docker-clean /usr/local/bin/docker-clean

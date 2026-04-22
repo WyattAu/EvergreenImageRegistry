@@ -16,7 +16,7 @@ RUN curl -fsSL "https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jdk/ho
 RUN useradd -m -u 65532 -s /usr/sbin/nologin java 2>/dev/null || true
 RUN mkdir -p /app /var/log/java /var/cache/java
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache curl ca-certificates freetype fontconfig
 COPY --from=builder /opt/jdk /opt/jdk

@@ -17,7 +17,7 @@ RUN curl -fsSL "https://github.com/keycloak/keycloak/releases/download/${VERSION
     tar -xzf /keycloak.tar.gz -C /opt/ && \
     rm -rf /keycloak.tar.gz /checksums.sha1
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 COPY --from=downloader /opt/keycloak-${VERSION} /opt/keycloak

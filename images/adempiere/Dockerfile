@@ -7,7 +7,7 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://github.com/adempiere/adempiere/releases/download/release-3.9.4/Adempiere_394.tar.gz" -o /Adempiere_394.tar.gz && \
     unzip -q /Adempiere_394.tar.gz -d /opt/ && rm /Adempiere_394.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl
 COPY --from=downloader /opt/Adempiere_394 /opt/adempiere

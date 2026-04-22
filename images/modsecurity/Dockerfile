@@ -8,7 +8,7 @@
 ARG VERSION=2.4.59
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache apache2 ca-certificates
 RUN useradd -m -u 65532 -g '' appuser 2>/dev/null || true
 RUN mkdir -p /app /var/log/apache2 /var/cache/apache2 && chown -R appuser:appuser /app /var/log/apache2 /var/cache/apache2 2>/dev/null || true
@@ -21,7 +21,6 @@ LABEL org.opencontainers.image.title="modsecurity" \
       org.opencontainers.image.vendor="OWASP" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-
 LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"

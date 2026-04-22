@@ -34,7 +34,7 @@ RUN curl -fsSL "https://github.com/zeromq/libzmq/releases/download/v${VERSION}/z
     rm -rf /zeromq.tar.gz /checksums.txt /tmp/zeromq-${VERSION}
 
 # hadolint ignore=DL3023
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache libstdc++ ca-certificates
 

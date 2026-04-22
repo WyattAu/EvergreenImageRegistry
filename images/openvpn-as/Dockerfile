@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app /var/log/openvpn-as
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache liblz4-1 ca-certificates python3 net-tools iptables iproute2 kmod
 COPY --from=installer /usr/local/openvpn_as /usr/local/openvpn_as

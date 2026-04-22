@@ -10,7 +10,7 @@ RUN curl -fsSL "https://dl.k8s.io/release/v1.30.1/bin/linux/amd64/kube-scheduler
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/kube-scheduler /var/cache/kube-scheduler /var/lib/kube-scheduler
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 COPY --from=downloader /kube-scheduler /usr/local/bin/kube-scheduler

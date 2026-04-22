@@ -45,7 +45,7 @@ RUN wget -q "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -O /nginx
     strip --strip-all /usr/sbin/nginx && \
     strip --strip-all /usr/lib/nginx/modules/ngx_http_modsecurity_module.so
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache libxml2 curl ca-certificates
 RUN mkdir -p /app /var/log/nginx /var/cache/nginx /etc/nginx/modsec /run && \

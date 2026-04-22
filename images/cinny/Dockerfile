@@ -17,7 +17,7 @@ RUN curl -fsSL "https://github.com/cinnyapp/cinny/releases/download/v4.2.0/cinny
     tar -xzf /tmp/release.tar.gz -C /www --strip-components=1 && \
     rm /tmp/release.tar.gz
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache ca-certificates

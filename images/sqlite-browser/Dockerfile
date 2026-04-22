@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN find /usr -type f -executable -name "sqlitebrowser" -exec strip --strip-all {} \; 2>/dev/null || true && \
     find /usr -type f -executable -name "sqlcipher" -exec strip --strip-all {} \; 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache sqlite-libs ca-certificates
 RUN mkdir -p /app /var/log/sqlite-browser

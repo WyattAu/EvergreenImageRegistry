@@ -18,7 +18,7 @@ RUN curl -fsSL "https://download.arangodb.com/arangodb312/Community/Linux/arango
     && tar -xzf /tmp/arango.tar.gz -C /opt \
     && strip --strip-all /opt/arangodb3-linux-*/usr/sbin/arangod 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache libstdc++ ca-certificates

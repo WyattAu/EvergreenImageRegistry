@@ -8,7 +8,7 @@ RUN curl -fsSL "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-w
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/jenkins-plugin /var/cache/jenkins-plugin /home/jenkins
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 COPY --from=downloader /jenkins.war /app/jenkins.war

@@ -14,7 +14,7 @@ RUN curl -fsSL "https://github.com/Readarr/Readarr/releases/download/v0.4.5/Read
     tar -xzf /Readarr.tar.gz -C /app && rm /Readarr.tar.gz && chmod +x /app/Readarr 2>/dev/null || \
     curl -fsSL "https://github.com/Readarr/Readarr/releases/download/v0.4.5/Readarr.develop.0.4.5.linux-core-x64.tar.gz" -o /app/Readarr && chmod +x /app/Readarr
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl
 RUN useradd -m -u 65532 -g '' app 2>/dev/null || true

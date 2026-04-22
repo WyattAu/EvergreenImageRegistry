@@ -22,7 +22,7 @@ RUN curl -fsSL "https://github.com/zerotier/ZeroTierOne/releases/download/${VERS
     rm -rf /zerotier.tgz /checksums.txt /tmp/*
 
 # hadolint ignore=DL3023
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache libstdc++ ca-certificates iproute2
 

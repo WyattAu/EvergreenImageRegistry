@@ -9,7 +9,7 @@ RUN git clone --depth 1 --branch v{version} \
     "https://github.com/taigaio/taiga-front-dist.git" /tmp/taiga-front && \
     cd /tmp/taiga-front && npm install && npm run build
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl nginx
 COPY --from=builder /tmp/taiga-front/dist /var/www/taiga-front

@@ -7,7 +7,7 @@
 ARG VERSION=7.4.1
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates
 # Create non-root user
 RUN useradd -m -u 65532 -g '' redis 2>/dev/null || true

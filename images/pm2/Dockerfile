@@ -15,7 +15,7 @@ RUN npm install -g pm2 --omit=dev 2>/dev/null || true
 RUN useradd -m -u 65532 -s /usr/sbin/nologin app 2>/dev/null || true
 RUN mkdir -p /app /var/log/node /var/cache/node
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache nodejs ca-certificates curl
 COPY --from=builder /etc/passwd /etc/passwd

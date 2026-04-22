@@ -19,7 +19,7 @@ RUN curl -fsSL "https://dlcdn.apache.org/ignite/${VERSION}/apache-ignite-${VERSI
     && unzip -q /tmp/ignite.zip -d /opt \
     && rm /tmp/ignite.zip
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl

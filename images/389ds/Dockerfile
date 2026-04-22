@@ -8,7 +8,7 @@
 
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007 AS runtime
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates curl openldap
 RUN mkdir -p /app /var/lib/ldap && \
     chown -R 65532:65532 /app && \

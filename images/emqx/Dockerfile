@@ -8,7 +8,7 @@ RUN mkdir -p /opt/emqx && \
     tar -xzf /emqx.tar.gz -C /opt/emqx --strip-components=1 && rm /emqx.tar.gz
 RUN mkdir -p /app /opt/emqx/data /opt/emqx/log
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl procps
 COPY --from=builder /opt/emqx /opt/emqx

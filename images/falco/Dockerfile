@@ -7,7 +7,7 @@ RUN curl -fsSL "https://falco.org/repo/falcosecurity-packages.asc" | gnupg --dea
     apt-get update && apt-get install -y --no-install-recommends falco && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app /var/log/falco /etc/falco
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 COPY --from=builder /usr/bin/falco /usr/local/bin/falco

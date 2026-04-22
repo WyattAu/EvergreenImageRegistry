@@ -24,7 +24,7 @@ RUN groupadd -r -g 65532 appuser && useradd -r -u 65532 -g appuser -d /app -s /s
     mkdir -p /app /var/log/nginx /var/cache/nginx /run && \
     chown -R 65532:65532 /app /var/log/nginx /var/cache/nginx
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
 COPY --from=downloader /usr/sbin/nginx /usr/sbin/nginx

@@ -8,7 +8,7 @@
 ARG VERSION=3.45.1
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache sqlite-libs ca-certificates
 RUN useradd -m -u 65532 -g '' sqlite 2>/dev/null || true
 RUN mkdir -p /app /var/log/sqlite-libs /var/cache/sqlite-libs && chown -R sqlite:sqlite /app /var/log/sqlite-libs /var/cache/sqlite-libs 2>/dev/null || true
@@ -20,7 +20,6 @@ LABEL org.opencontainers.image.title="sqlite" \
       org.opencontainers.image.vendor="SQLite" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-
 LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"

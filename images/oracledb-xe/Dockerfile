@@ -19,7 +19,7 @@ RUN curl -fsSL "https://download.oracle.com/otn-pub/otn_software/db-express/orac
     && unzip -q /tmp/oracledb.zip -d /tmp/oracle-rpm \
     && rm /tmp/oracledb.zip
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache bc ca-certificates curl netcat-openbsd

@@ -19,7 +19,7 @@ RUN curl -fsSL "https://download.rethinkdb.com/repository/raw/rethinkdb-${VERSIO
     && tar -xzf /tmp/rethinkdb.tar.gz -C /opt \
     && strip --strip-all /opt/rethinkdb-*/bin/rethinkdb 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates libstdc++

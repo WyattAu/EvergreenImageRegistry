@@ -6,7 +6,7 @@ RUN curl -fsSL "https://raw.githubusercontent.com/awslabs/git-secrets/master/git
     -o /usr/local/bin/git-secrets && chmod +x /usr/local/bin/git-secrets
 RUN mkdir -p /app
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache git ca-certificates
 COPY --from=builder /usr/local/bin/git-secrets /usr/local/bin/git-secrets

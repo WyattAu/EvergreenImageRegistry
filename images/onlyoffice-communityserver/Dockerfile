@@ -1,7 +1,7 @@
 ARG VERSION=8.2.2
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007 AS runtime
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates curl gnupg echo https squeeze main"
 RUN mkdir -p /var/log/onlyoffice /var/lib/onlyoffice \
     && chown -R 65532:65532 /var/log/onlyoffice /var/lib/onlyoffice

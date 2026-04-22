@@ -5,7 +5,7 @@
 # This is a placeholder for license-managed deployments.
 # =============================================================================
 
-FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates tzdata curl
 
 RUN groupadd -g 65532 -r kdb 2>/dev/null || true && \
@@ -24,7 +24,6 @@ LABEL org.opencontainers.image.title="kdb" \
       sovereign.image.category="database" \
       sovereign.image.note="KDB+ is proprietary. Copy licensed q binary to /opt/kdb/q before use." \
       sovereign.constraint.nonroot="true" \
-
 LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="none"

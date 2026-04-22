@@ -9,8 +9,7 @@ ARG VERSION=1.5.2
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 py3-pip python3 git ca-certificates curl build-base && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache python3 py3-pip git ca-certificates curl build-base
 RUN git clone --depth 1 --branch v1.5.2 https://github.com/morpheus65535/bazarr.git /opt/bazarr 2>/dev/null || \
     git clone --depth 1 https://github.com/morpheus65535/bazarr.git /opt/bazarr
 RUN cd /opt/bazarr && \

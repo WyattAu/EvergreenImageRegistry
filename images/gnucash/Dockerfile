@@ -2,12 +2,7 @@ ARG VERSION=5.6
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        gnucash \
-        ca-certificates curl && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache ca-certificates curl
 RUN mkdir -p /app /var/log/app /var/cache/app \
     && chown -R 65532:65532 /app /var/log/app /var/cache/app
 USER 65532:65532

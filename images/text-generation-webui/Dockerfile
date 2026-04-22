@@ -9,8 +9,7 @@ ARG VERSION=1.8
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 py3-pip python3 git ca-certificates curl build-base && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache python3 py3-pip git ca-certificates curl build-base
 RUN pip3 install --no-cache-dir --break-system-packages torch torchvision --index-url https://download.pytorch.org/whl/cpu 2>/dev/null || true && \
     git clone --depth 1 --branch v${VERSION} https://github.com/oobabooga/text-generation-webui.git /opt/text-generation-webui 2>/dev/null || \
     git clone --depth 1 https://github.com/oobabooga/text-generation-webui.git /opt/text-generation-webui && \

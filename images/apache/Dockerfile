@@ -8,10 +8,8 @@ ARG VERSION=2.4.66
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        apache2 ca-certificates tzdata && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
-    a2dismod autoindex 2>/dev/null || true
+RUN apk add --no-cache apache2 ca-certificates tzdata
+RUN a2dismod autoindex 2>/dev/null || true
 RUN groupadd -g 65532 -r www-data 2>/dev/null || true && \
     usermod -u 65532 www-data 2>/dev/null || true && \
     chown -R 65532:65532 /var/www/html /var/log/apache2 /var/run/apache2 2>/dev/null || true

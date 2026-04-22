@@ -9,7 +9,7 @@ ARG VERSION=0.77.0
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
-RUN apt-get update && apt-get install -y --no-install-recommends nodejs npm postgresql-client ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache nodejs npm postgresql-client ca-certificates
 RUN useradd -m -u 65532 -g '' outline 2>/dev/null || true
 RUN mkdir -p /app /var/log/node /var/cache/node && chown -R outline:outline /app /var/log/node /var/cache/node 2>/dev/null || true
 USER outline

@@ -9,7 +9,7 @@ ARG VERSION=2.462.1
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
-RUN apt-get update && apt-get install -y --no-install-recommends java-17 ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache java-17-runtime ca-certificates
 RUN useradd -m -u 65532 -g '' jenkins 2>/dev/null || true
 RUN mkdir -p /app /var/log/jenkins /var/cache/jenkins && chown -R jenkins:jenkins /app /var/log/jenkins /var/cache/jenkins 2>/dev/null || true
 USER jenkins

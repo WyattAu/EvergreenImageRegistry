@@ -9,7 +9,7 @@ ARG VERSION=2024.4.2
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
-RUN apt-get update && apt-get install -y --no-install-recommends python3 py3-pip ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache python3 py3-pip ca-certificates
 RUN useradd -m -u 65532 -g '' homeassistant 2>/dev/null || true
 RUN mkdir -p /app /var/log/python /var/cache/python && chown -R homeassistant:homeassistant /app /var/log/python /var/cache/python 2>/dev/null || true
 USER homeassistant

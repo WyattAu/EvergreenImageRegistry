@@ -5,9 +5,7 @@
 # =============================================================================
 
 FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        ca-certificates tzdata samba-common-bin samba-daemon && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+RUN apk add --no-cache ca-certificates tzdata
 
 RUN groupadd -g 65532 -r fileshare 2>/dev/null || true && \
     useradd -r -u 65532 -g fileshare -d /srv/share -s /sbin/nologin fileshare 2>/dev/null || true && \

@@ -9,8 +9,7 @@ ARG VERSION=1.25.4
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache curl ca-certificates
 RUN curl -fsSL "https://github.com/weaviate/weaviate/releases/download/v${VERSION}/weaviate-v${VERSION}-linux-amd64.tar.gz" -o /tmp/weaviate.tar.gz && \
     tar -xzf /tmp/weaviate.tar.gz -C /opt && rm /tmp/weaviate.tar.gz && \
     chmod +x /opt/weaviate 2>/dev/null || true

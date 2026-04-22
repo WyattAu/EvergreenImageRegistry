@@ -1,12 +1,22 @@
 # CHECKSUMS - restic
+# Generated: 2026-04-22T00:00:00Z
 # Status: PENDING
 
 [metadata]
 image = "restic"
-version = "pending"
-created = "2026-04-21T00:00:00Z"
-last_verified = ""
-verification_method = "pending"
+version = "0.18.1"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "github-release-checksums"
+verifier = "populate_checksums.py"
+
+[download]
+url = "https://github.com/restic/restic/releases/download/v0.18.1/restic_0.18.1_linux_amd64.bz2"
+filename = "restic_0.18.1_linux_amd64.bz2"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "PENDING_VERIFY"
+
+[upstream_checksum]
+url = "https://github.com/restic/restic/releases/download/v0.18.1/SHA256SUMS"
+format = "sha256"

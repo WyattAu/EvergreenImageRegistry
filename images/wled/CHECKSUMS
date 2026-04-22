@@ -1,12 +1,11 @@
 # CHECKSUMS - wled
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: PLACEHOLDER
 
 [metadata]
 image = "wled"
-version = "pending"
-created = "2026-04-21T15:22:30Z"
-last_verified = ""
-verification_method = "pending"
-
-[checksum]
-expected_sha256 = "PENDING"
+version = "placeholder"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "placeholder"
+verifier = "manual"

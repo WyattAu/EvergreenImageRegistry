@@ -1,12 +1,18 @@
 # CHECKSUMS - syft-alpine
-# Status: PENDING
-
+# Generated: 2026-04-21
+# Status: PENDING_VERIFICATION
 [metadata]
 image = "syft-alpine"
-version = "pending"
-created = "2026-04-21T15:22:20Z"
-last_verified = ""
-verification_method = "pending"
-
+version = "latest"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "download-verify"
+verifier = "manual"
+[download]
+url = "https://github.com/anchore/syft/releases/download/v1.11.0/syft_1.11.0_linux_amd64.tar.gz"
+filename = "syft-alpine"
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "PENDING_VERIFICATION"
+[upstream_checksum]
+url = ""
+format = "sha256"

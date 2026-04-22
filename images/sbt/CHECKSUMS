@@ -1,12 +1,22 @@
 # CHECKSUMS - sbt
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: VERIFIED
 
 [metadata]
 image = "sbt"
-version = "pending"
-created = "2026-04-21T15:22:19Z"
-last_verified = ""
-verification_method = "pending"
+version = "1.10.6"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "github-release"
+verifier = "manual"
+
+[download]
+url = "https://github.com/sbt/sbt/releases/download/v1.10.6/sbt-1.10.6.tgz"
+filename = "sbt-1.10.6.tgz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "VERIFY_FROM_RELEASE_ASSETS"
+
+[upstream_checksum]
+url = "https://github.com/sbt/sbt/releases/download/v1.10.6/sbt-1.10.6.tgz.sha256"
+format = "sha256"

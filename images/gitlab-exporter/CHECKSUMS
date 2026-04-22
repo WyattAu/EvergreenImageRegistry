@@ -1,12 +1,24 @@
 # CHECKSUMS - gitlab-exporter
-# Status: PENDING
+# Generated: 2026-04-21T19:09:24Z
+# Status: PENDING_VERIFICATION
+#
+# IMPORTANT: These checksums need to be verified against upstream sources.
+# To verify:
+# 1. Download binary from URL below
+# 2. Compute: sha256sum <file>
+# 3. Compare with expected_sha256 below
+# 4. Cross-validate against upstream_checksum URL if available
 
 [metadata]
 image = "gitlab-exporter"
-version = "pending"
-created = "2026-04-21T15:22:15Z"
+version = "0.8.0"
+created = "2026-04-21T19:09:24Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-and-compute"
+
+[download]
+url = "https://github.com/prometheus-community/gitlab-exporter/releases/download/v0.8.0/gitlab-exporter_0.8.0_linux_amd64"
+filename = "gitlab-exporter_0.8.0_linux_amd64"
 
 [checksum]
 expected_sha256 = "PENDING"

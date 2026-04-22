@@ -1,12 +1,22 @@
 # CHECKSUMS - crane
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: VERIFIED
 
 [metadata]
 image = "crane"
-version = "pending"
-created = "2026-04-21T15:22:14Z"
-last_verified = ""
-verification_method = "pending"
+version = "v0.21.5"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "github-release-sha256"
+verifier = "manual"
+
+[download]
+url = "https://github.com/google/go-containerregistry/releases/download/v0.21.5/go-containerregistry_Linux_x86_64.tar.gz"
+filename = "go-containerregistry_Linux_x86_64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "05150194f251b96c58e0da5fafffe5e30bff26704211236b39a814ef733f9c36"
+
+[upstream_checksum]
+url = "https://github.com/google/go-containerregistry/releases/download/v0.21.5/checksums.txt"
+format = "sha256"

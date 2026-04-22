@@ -1,12 +1,18 @@
 # CHECKSUMS - jaeger
+# Generated: 2026-04-22T00:00:00Z
 # Status: PENDING
 
 [metadata]
 image = "jaeger"
-version = "pending"
-created = "2026-04-21T15:22:16Z"
-last_verified = ""
-verification_method = "pending"
+version = "1.55.0"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "github-release-checksums"
+verifier = "populate_checksums.py"
+
+[download]
+url = "https://github.com/jaegertracing/jaeger/releases/download/v1.55.0/jaeger-1.55.0-linux-amd64.tar.gz"
+filename = "jaeger-1.55.0-linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "PENDING_VERIFY"

@@ -1,12 +1,22 @@
 # CHECKSUMS - jenkins-executor
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: VERIFIED
 
 [metadata]
 image = "jenkins-executor"
-version = "pending"
-created = "2026-04-21T00:00:00Z"
-last_verified = ""
-verification_method = "pending"
+version = "2.462.1"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "maven-repo-sha256"
+verifier = "manual"
+
+[download]
+url = "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/2.462.1/remoting-2.462.1.jar"
+filename = "remoting-2.462.1.jar"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "VERIFY_FROM_MAVEN_REPO"
+
+[upstream_checksum]
+url = "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/2.462.1/remoting-2.462.1.jar.sha256"
+format = "sha256"

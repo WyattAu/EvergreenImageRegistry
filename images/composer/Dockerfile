@@ -1,2 +1,40 @@
+# =============================================================================
+# SOVEREIGN HARDENED COMPOSER
+# Generated from template - Version: 2.8.0
+# Constraint: scratch - static PHP binary
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
+# =============================================================================
+
+ARG VERSION=2.8.0
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/composer/composer/releases/download/2.8.0/composer.phar" -o /composer && \
+    chmod +x /composer
+
+FROM debian:bookworm-slim AS builder
+RUN mkdir -p /app /var/log/composer /var/cache/composer
+
 FROM scratch
-LABEL org.opencontainers.image.title="composer"       org.opencontainers.image.description="Sovereign hardened composer (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=downloader /composer /composer
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /app /app
+COPY --from=builder /var/log/composer /var/log/composer
+COPY --from=builder /var/cache/composer /var/cache/composer
+USER 65534:65534
+WORKDIR /app
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/composer", "--version"]
+ENTRYPOINT ["/composer"]
+LABEL org.opencontainers.image.title="composer" \
+      org.opencontainers.image.version="2.8.0" \
+      org.opencontainers.image.vendor="Composer" \
+      org.opencontainers.image.source="https://github.com/composer/composer/releases" \
+      sovereign.image.tier="3" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="3s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="3000ms"

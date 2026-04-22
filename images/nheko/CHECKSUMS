@@ -1,12 +1,24 @@
 # CHECKSUMS - nheko
-# Status: PENDING
+# Generated: 2026-04-21T19:09:25Z
+# Status: PENDING_VERIFICATION
+#
+# IMPORTANT: These checksums need to be verified against upstream sources.
+# To verify:
+# 1. Download binary from URL below
+# 2. Compute: sha256sum <file>
+# 3. Compare with expected_sha256 below
+# 4. Cross-validate against upstream_checksum URL if available
 
 [metadata]
 image = "nheko"
-version = "pending"
-created = "2026-04-21T15:22:17Z"
+version = "2.4.0"
+created = "2026-04-21T19:09:25Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-and-compute"
+
+[download]
+url = "https://github.com/Nheko-Reborn/nheko/releases/download/v2.4.0/nheko-2.4.0-x86_64-linux-gnu.AppImage"
+filename = "nheko-2.4.0-x86_64-linux-gnu.AppImage"
 
 [checksum]
 expected_sha256 = "PENDING"

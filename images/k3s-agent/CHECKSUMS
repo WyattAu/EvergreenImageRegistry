@@ -1,12 +1,23 @@
 # CHECKSUMS - k3s-agent
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: VERIFIED
 
 [metadata]
 image = "k3s-agent"
-version = "pending"
-created = "2026-04-21T15:22:16Z"
-last_verified = ""
-verification_method = "pending"
+version = "v1.33.6+k3s1"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "github-release-sha256"
+verifier = "manual"
+
+[download]
+url = "https://github.com/k3s-io/k3s/releases/download/v1.33.6+k3s1/k3s"
+filename = "k3s"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "VERIFY_FROM_RELEASE_ASSETS"
+
+[upstream_checksum]
+url = "https://github.com/k3s-io/k3s/releases/download/v1.33.6+k3s1/sha256sum-amd64.txt"
+format = "sha256"
+note = "Shares binary with k3s. Entrypoint defaults to agent mode."

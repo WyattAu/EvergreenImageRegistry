@@ -1,2 +1,17 @@
-FROM scratch
-LABEL org.opencontainers.image.title="snyk-docker"       org.opencontainers.image.description="Sovereign hardened snyk-docker (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/snyk/snyk/releases/download/v1.1295.0/snyk-linux" -o /snyk-docker && chmod +x /snyk-docker && strip /snyk-docker
+
+FROM debian:bookworm-slim AS builder
+RUN mkdir -p /app /var/log/snyk-docker /var/cache/snyk-docker
+
+FROM debian:bookworm-slim
+COPY --from=downloader /snyk-docker /usr/local/bin/snyk-docker
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /app /app
+RUN useradd -r -u 65534 -g nogroup -d /app -s /sbin/nologin snyk-docker 2>/dev/null || true &&     chown -R 65534:65534 /app 2>/dev/null || true
+USER 65534:65534
+WORKDIR /app
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3     CMD ["snyk-docker", "--version"]
+ENTRYPOINT ["snyk-docker"]
+LABEL org.opencontainers.image.title="snyk-docker"       org.opencontainers.image.description="Snyk - Docker mode"       org.opencontainers.image.vendor="Snyk"       org.opencontainers.image.source="https://github.com/snyk/snyk"       sovereign.image.tier="3"       sovereign.constraint.nonroot="true"       sovereign.constraint.debian_slim="true"

@@ -3,10 +3,10 @@
 
 [metadata]
 image = "onlyoffice-documentserver"
-version = "pending"
-created = "2026-04-21T15:22:18Z"
+version = "8.2.2"
+created = "2026-04-22"
 last_verified = ""
-verification_method = "pending"
+verification_method = "package-manifest"
 
 [checksum]
 expected_sha256 = "PENDING"

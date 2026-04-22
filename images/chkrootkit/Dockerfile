@@ -1,2 +1,23 @@
-FROM scratch
-LABEL org.opencontainers.image.title="chkrootkit"       org.opencontainers.image.description="Sovereign hardened chkrootkit (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+FROM debian:bookworm-slim AS builder
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        chkrootkit ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /app
+
+FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        chkrootkit ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+COPY --from=builder /app /app
+RUN useradd -r -u 65534 -g nogroup -d /app -s /sbin/nologin chkrootkit 2>/dev/null || true && \
+    chown -R 65534:65534 /app 2>/dev/null || true
+USER 65534:65534
+WORKDIR /app
+HEALTHCHECK --interval=60s --timeout=5s --start-period=5s --retries=1 \
+    CMD ["chkrootkit", "-V"] || exit 0
+ENTRYPOINT ["chkrootkit"]
+LABEL org.opencontainers.image.title="chkrootkit" \
+      org.opencontainers.image.description="chkrootkit - rootkit detector" \
+      sovereign.image.tier="3" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.debian_slim="true"

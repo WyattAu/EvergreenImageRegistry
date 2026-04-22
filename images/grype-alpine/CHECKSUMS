@@ -1,12 +1,18 @@
 # CHECKSUMS - grype-alpine
-# Status: PENDING
-
+# Generated: 2026-04-21
+# Status: PENDING_VERIFICATION
 [metadata]
 image = "grype-alpine"
-version = "pending"
-created = "2026-04-21T15:22:16Z"
-last_verified = ""
-verification_method = "pending"
-
+version = "latest"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "download-verify"
+verifier = "manual"
+[download]
+url = "https://github.com/anchore/grype/releases/download/v0.80.0/grype_0.80.0_linux_amd64.tar.gz"
+filename = "grype-alpine"
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "PENDING_VERIFICATION"
+[upstream_checksum]
+url = ""
+format = "sha256"

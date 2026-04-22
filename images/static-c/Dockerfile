@@ -1,2 +1,22 @@
+ARG VERSION=1.0.0
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS builder
+RUN apt-get update && apt-get install -y --no-install-recommends gcc libc6-dev make && rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /app /var/log/static-c /var/cache/static-c
+RUN echo 'int main(void) { return 0; }' > /tmp/test.c && \
+    gcc -static -o /app/test /tmp/test.c && rm /tmp/test.c && strip /app/test || true
+
 FROM scratch
-LABEL org.opencontainers.image.title="static-c"       org.opencontainers.image.description="Sovereign hardened static-c (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=builder /app /app
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER 65534:65534
+WORKDIR /app
+LABEL org.opencontainers.image.title="static-c" \
+      org.opencontainers.image.version="1.0.0" \
+      org.opencontainers.image.description="Sovereign hardened static-c - Static C binary compilation base" \
+      sovereign.image.tier="3" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="5s"

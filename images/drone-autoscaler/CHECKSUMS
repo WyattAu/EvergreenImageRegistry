@@ -1,12 +1,24 @@
 # CHECKSUMS - drone-autoscaler
-# Status: PENDING
+# Generated: 2026-04-21T19:09:24Z
+# Status: PENDING_VERIFICATION
+#
+# IMPORTANT: These checksums need to be verified against upstream sources.
+# To verify:
+# 1. Download binary from URL below
+# 2. Compute: sha256sum <file>
+# 3. Compare with expected_sha256 below
+# 4. Cross-validate against upstream_checksum URL if available
 
 [metadata]
 image = "drone-autoscaler"
-version = "pending"
-created = "2026-04-21T15:22:15Z"
+version = "2.28.1"
+created = "2026-04-21T19:09:24Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-and-compute"
+
+[download]
+url = "https://github.com/harness/drone/releases/download/v2.28.1/drone_linux_amd64.tar.gz"
+filename = "drone_linux_amd64.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"

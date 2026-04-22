@@ -1,2 +1,41 @@
+# =============================================================================
+# SOVEREIGN HARDENED TRIVY OPERATOR
+# Kubernetes operator for Trivy security scanner - Go static binary
+# Constraint: scratch - pure Go static binary, smallest attack surface
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
+# =============================================================================
+
+ARG VERSION=0.30.1
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN curl -fsSL "https://github.com/aquasecurity/trivy-operator/releases/download/v${VERSION}/trivy_operator_Linux_x86_64.tar.gz" -o /trivy-operator.tar.gz && \
+    curl -fsSL "https://github.com/aquasecurity/trivy-operator/releases/download/v${VERSION}/trivy_operator_Linux_x86_64.tar.gz.sig" -o /trivy-operator.sig && \
+    tar -xzf /trivy-operator.tar.gz -C /tmp/ && \
+    strip --strip-all /tmp/trivy-operator && \
+    mv /tmp/trivy-operator /trivy-operator && \
+    rm -rf /trivy-operator.tar.gz /trivy-operator.sig /tmp/*
+
 FROM scratch
-LABEL org.opencontainers.image.title="trivy-operator"       org.opencontainers.image.description="Sovereign hardened trivy-operator (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=downloader /trivy-operator /trivy-operator
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER 65534:65534
+WORKDIR /app
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/trivy-operator", "--help"]
+ENTRYPOINT ["/trivy-operator"]
+LABEL org.opencontainers.image.title="trivy-operator" \
+      org.opencontainers.image.version="0.30.1" \
+      org.opencontainers.image.vendor="Aqua Security" \
+      org.opencontainers.image.source="https://github.com/aquasecurity/trivy-operator" \
+      sovereign.image.tier="2" \
+      sovereign.image.category="security" \
+      sovereign.image.status="functional" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="3s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="3000ms"

@@ -1,12 +1,22 @@
 # CHECKSUMS - argo-rollouts
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: VERIFIED
 
 [metadata]
 image = "argo-rollouts"
-version = "pending"
-created = "2026-04-21T15:22:13Z"
-last_verified = ""
-verification_method = "pending"
+version = "v1.9.0"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "github-release-sha256"
+verifier = "manual"
+
+[download]
+url = "https://github.com/argoproj/argo-rollouts/releases/download/v1.9.0/kubectl-argo-rollouts-linux-amd64"
+filename = "kubectl-argo-rollouts-linux-amd64"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "d1c98f59f6d3716b7a35aa540506764700a358448dd6a10e92381b7aa294d00b"
+
+[upstream_checksum]
+url = "https://github.com/argoproj/argo-rollouts/releases/download/v1.9.0/argo-rollouts-checksums.txt"
+format = "sha256"

@@ -1,2 +1,29 @@
+# =============================================================================
+# SOVEREIGN HARDENED HADOLINT
+# Dockerfile linter (Haskell static binary)
+# Constraint: scratch - static binary, smallest attack surface
+# =============================================================================
+
+ARG VERSION=2.12.0
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/hadolint/hadolint/releases/download/v${VERSION}/hadolint-Linux-x86_64" -o /hadolint && \
+    chmod +x /hadolint
+
 FROM scratch
-LABEL org.opencontainers.image.title="hadolint"       org.opencontainers.image.description="Sovereign hardened hadolint (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=downloader /hadolint /hadolint
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER 65534:65534
+WORKDIR /app
+ENTRYPOINT ["/hadolint"]
+LABEL org.opencontainers.image.title="hadolint" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.vendor="hadolint" \
+      org.opencontainers.image.source="https://github.com/hadolint/hadolint" \
+      sovereign.image.tier="2" \
+      sovereign.image.status="functional" \
+      sovereign.image.category="ci" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true"

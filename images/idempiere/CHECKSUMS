@@ -1,12 +1,20 @@
 # CHECKSUMS - idempiere
-# Status: PENDING
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "idempiere"
-version = "pending"
-created = "2026-04-21T15:22:16Z"
+version = "12.4"
+created = "2026-04-22"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+
+[download]
+url = "https://github.com/idempiere/idempiere/releases/download/release-12.4/idempiere-server-12.4.gtk.linux.x86_64.tar.gz"
+filename = "idempiere-server-12.4.gtk.linux.x86_64.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = ""
+format = ""

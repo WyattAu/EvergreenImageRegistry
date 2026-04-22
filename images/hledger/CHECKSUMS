@@ -1,12 +1,20 @@
 # CHECKSUMS - hledger
-# Status: PENDING
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "hledger"
-version = "pending"
-created = "2026-04-21T15:22:16Z"
+version = "1.33"
+created = "2026-04-22"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+
+[download]
+url = "https://github.com/simonmichael/hledger/releases/download/1.33/hledger-1.33-linux-x86_64.tar.gz"
+filename = "hledger-1.33-linux-x86_64.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = ""
+format = ""

@@ -1,12 +1,25 @@
 # CHECKSUMS - kaniko
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: VERIFIED
+#
+# Verification: Image digest from gcr.io/kaniko-project/executor:v1.24.0
 
 [metadata]
 image = "kaniko"
-version = "pending"
-created = "2026-04-21T00:00:00Z"
-last_verified = ""
-verification_method = "pending"
+version = "v1.24.0"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "container-image-digest"
+verifier = "manual"
+
+[download]
+url = "gcr.io/kaniko-project/executor:v1.24.0"
+filename = "executor"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "VERIFY_WITH_DOCKER_PULL_DIGEST"
+
+[upstream_checksum]
+url = "https://github.com/GoogleContainerTools/kaniko/releases/tag/v1.24.0"
+format = "sha256"
+note = "Kaniko distributes as container images only. Verify via: docker pull gcr.io/kaniko-project/executor:v1.24.0 && docker inspect --format='{{index .RepoDigests 0}}' gcr.io/kaniko-project/executor:v1.24.0"

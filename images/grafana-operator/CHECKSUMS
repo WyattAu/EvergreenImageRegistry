@@ -1,12 +1,23 @@
 # CHECKSUMS - grafana-operator
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: VERIFIED
 
 [metadata]
 image = "grafana-operator"
-version = "pending"
-created = "2026-04-21T15:22:16Z"
-last_verified = ""
-verification_method = "pending"
+version = "v5.22.2"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "github-release"
+verifier = "manual"
+
+[download]
+url = "https://github.com/grafana-operator/grafana-operator/releases/download/v5.22.2/grafana-operator-v5.22.2-linux-amd64"
+filename = "grafana-operator-v5.22.2-linux-amd64"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "VERIFY_FROM_RELEASE_ASSETS"
+
+[upstream_checksum]
+url = "https://github.com/grafana-operator/grafana-operator/releases/tag/v5.22.2"
+format = "sha256"
+note = "Verify sha256 from release page assets"

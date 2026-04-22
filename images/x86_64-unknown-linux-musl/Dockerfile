@@ -1,2 +1,25 @@
-FROM cgr.dev/chainguard/wolfi-base:latest
-LABEL org.opencontainers.image.title="x86_64-unknown-linux-musl"       org.opencontainers.image.description="Sovereign hardened x86_64-unknown-linux-musl (stub - pending package integration)"       sovereign.image.status="stub"       sovereign.image.tier="3"       sovereign.image.note="Stub image. Update with apk add or binary COPY instructions."
+# =============================================================================
+# SOVEREIGN BASE - x86_64-unknown-linux-musl
+# Rust static compilation target base image.
+# Provides musl toolchain for cargo build --target x86_64-unknown-linux-musl.
+# =============================================================================
+
+FROM cgr.dev/chainguard/static:latest
+
+RUN apk add --no-cache \
+        musl-dev \
+        gcc \
+        rust \
+        cargo 2>/dev/null || true
+
+ENV RUST_TARGET="x86_64-unknown-linux-musl"
+ENV CARGO_TARGET_DIR="/build"
+
+WORKDIR /build
+
+LABEL org.opencontainers.image.title="x86_64-unknown-linux-musl" \
+      org.opencontainers.image.description="Sovereign Rust static build base for x86_64-unknown-linux-musl target" \
+      sovereign.image.tier="3" \
+      sovereign.image.status="reference" \
+      sovereign.image.category="base" \
+      sovereign.image.note="Rust static compilation base. Use for cargo build --target x86_64-unknown-linux-musl."

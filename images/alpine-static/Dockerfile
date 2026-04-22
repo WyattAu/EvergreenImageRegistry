@@ -1,2 +1,15 @@
-FROM cgr.dev/chainguard/wolfi-base:latest
-LABEL org.opencontainers.image.title="alpine-static"       org.opencontainers.image.description="Sovereign hardened alpine-static (stub - pending package integration)"       sovereign.image.status="stub"       sovereign.image.tier="3"       sovereign.image.note="Stub image. Update with apk add or binary COPY instructions."
+# =============================================================================
+# SOVEREIGN REFERENCE - ALPINE-STATIC (wrapper)
+# Static variant base image reference.
+# Alpine is BANNED for application images in this registry.
+# This image exists only as a build-time reference for static musl-based builds.
+# =============================================================================
+
+FROM cgr.dev/chainguard/static:latest
+
+LABEL org.opencontainers.image.title="alpine-static" \
+      org.opencontainers.image.description="Sovereign reference for static base (chainguard/static). Alpine is banned for application images." \
+      sovereign.image.tier="3" \
+      sovereign.image.status="reference" \
+      sovereign.image.category="base" \
+      sovereign.image.note="Alpine is banned for application images. Use chainguard/static for static builds."

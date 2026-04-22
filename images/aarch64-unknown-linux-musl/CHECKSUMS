@@ -1,12 +1,14 @@
 # CHECKSUMS - aarch64-unknown-linux-musl
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: PLACEHOLDER
 
 [metadata]
 image = "aarch64-unknown-linux-musl"
-version = "pending"
-created = "2026-04-21T15:22:12Z"
+version = "placeholder"
+created = "2026-04-22T00:00:00Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "placeholder"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "N/A"
+note = "Placeholder ARM64 musl static base image. No external binary."

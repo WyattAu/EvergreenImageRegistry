@@ -1,5 +1,39 @@
+# =============================================================================
+# SOVEREIGN HARDENED DEX
+# Federated OpenID Connect provider - Go static binary
+# Constraint: scratch - pure Go static binary, smallest attack surface
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
+# =============================================================================
+
+ARG VERSION=2.45.1
+ARG BUILD_DATE
+
+FROM golang:1.23-bookworm AS builder
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/dexidp/dex /src && \
+    cd /src && \
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /dex ./cmd/dex && \
+    strip --strip-all /dex
+
 FROM scratch
-LABEL org.opencontainers.image.title="DEX" \
-      org.opencontainers.image.description="Sovereign hardened DEX (stub - upstream binary unavailable at version 2.45.1)" \
-      sovereign.image.status="no-upstream-binary" \
-      sovereign.image.note="No pre-built binary available for version 2.45.1. Update VERSION when upstream publishes new release."
+COPY --from=builder /dex /dex
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER 65534:65534
+WORKDIR /app
+EXPOSE 5556
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/dex", "version"]
+ENTRYPOINT ["/dex"]
+LABEL org.opencontainers.image.title="dex" \
+      org.opencontainers.image.version="2.45.1" \
+      org.opencontainers.image.vendor="DexIDP" \
+      org.opencontainers.image.source="https://github.com/dexidp/dex" \
+      sovereign.image.tier="2" \
+      sovereign.image.category="identity" \
+      sovereign.image.status="functional" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="3s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="3000ms"

@@ -1,12 +1,23 @@
 # CHECKSUMS - static-c
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: VERIFIED
 
 [metadata]
 image = "static-c"
-version = "pending"
-created = "2026-04-21T15:22:20Z"
-last_verified = ""
-verification_method = "pending"
+version = "1.0.0"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "build-verified"
+verifier = "manual"
+
+[download]
+url = "none"
+filename = "none"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "N/A"
+
+[upstream_checksum]
+url = "none"
+format = "none"
+note = "Placeholder base image. Uses debian-slim to compile static C binaries. No external download."

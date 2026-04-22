@@ -1,12 +1,20 @@
 # CHECKSUMS - wekan
-# Status: PENDING
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "wekan"
-version = "pending"
-created = "2026-04-21T15:22:30Z"
+version = "7.18.0"
+created = "2026-04-22"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+
+[download]
+url = "https://github.com/wekan/wekan/releases/download/v7.18.0/wekan-7.18.0-amd64.tar.gz"
+filename = "wekan-7.18.0-amd64.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = ""
+format = ""

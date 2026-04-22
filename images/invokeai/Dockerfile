@@ -1,2 +1,31 @@
-FROM scratch
-LABEL org.opencontainers.image.title="invokeai"       org.opencontainers.image.description="Sovereign hardened invokeai (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+# =============================================================================
+# SOVEREIGN HARDENED INVOKEAI
+# Generated from template - Version: 5.5.0
+# Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
+# Priority: scratch > distroless > wolfi > debian-slim (last resort)
+# =============================================================================
+
+ARG VERSION=5.5.0
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 python3-pip python3-venv ca-certificates curl  \
+    rm -rf /var/lib/apt/lists/*
+RUN pip3 install --no-cache-dir --break-system-packages invokeai 2>/dev/null || \
+    pip3 install --no-cache-dir invokeai
+RUN useradd -m -u 65534 -g '' app 2>/dev/null || true
+RUN mkdir -p /app /var/log/python /var/cache/python && chown -R app:app /app /var/log/python /var/cache/python 2>/dev/null || true
+USER 65534:65534
+WORKDIR /app
+EXPOSE 9090
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["python3", "--version"]
+ENTRYPOINT ["python3"]
+LABEL org.opencontainers.image.title="invokeai" \
+      org.opencontainers.image.version="5.5.0" \
+      org.opencontainers.image.vendor="InvokeAI" \
+      org.opencontainers.image.source="https://github.com/invoke-ai/InvokeAI" \
+      sovereign.image.tier="3" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.debian_slim="true"

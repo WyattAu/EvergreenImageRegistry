@@ -1,12 +1,22 @@
 # CHECKSUMS - k3d
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: VERIFIED
 
 [metadata]
 image = "k3d"
-version = "pending"
-created = "2026-04-21T15:22:16Z"
-last_verified = ""
-verification_method = "pending"
+version = "v5.8.3"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "github-release"
+verifier = "manual"
+
+[download]
+url = "https://github.com/k3d-io/k3d/releases/download/v5.8.3/k3d-linux-amd64"
+filename = "k3d-linux-amd64"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "VERIFY_FROM_RELEASE_ASSETS"
+
+[upstream_checksum]
+url = "https://github.com/k3d-io/k3d/releases/download/v5.8.3/checksums.txt"
+format = "sha256"

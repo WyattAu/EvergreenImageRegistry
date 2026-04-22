@@ -1,2 +1,42 @@
+# =============================================================================
+# SOVEREIGN HARDENED PHOTOPRISM-BIN
+# Generated from template - Version: 240427
+# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
+# =============================================================================
+
+ARG VERSION=240427
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://dl.photoprism.app/pkg/linux-amd64/photoprism-240427-linux-amd64.tar.gz" -o /photoprism.tar.gz && \
+    tar -xzf /photoprism.tar.gz -C / && rm /photoprism.tar.gz && chmod +x /photoprism 2>/dev/null || \
+    curl -fsSL "https://dl.photoprism.app/pkg/linux-amd64/photoprism-240427-linux-amd64.tar.gz" -o /photoprism && chmod +x /photoprism
+
+FROM debian:bookworm-slim AS builder
+RUN mkdir -p /app /var/log/photoprism-bin /var/cache/photoprism-bin
+
 FROM scratch
-LABEL org.opencontainers.image.title="photoprism-bin"       org.opencontainers.image.description="Sovereign hardened photoprism-bin (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=downloader /photoprism /photoprism
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /app /app
+COPY --from=builder /var/log/photoprism-bin /var/log/photoprism-bin
+COPY --from=builder /var/cache/photoprism-bin /var/cache/photoprism-bin
+USER 65534:65534
+WORKDIR /app
+EXPOSE 2282
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["curl", "-sf", "http://localhost:2282/api/v1/status"]
+ENTRYPOINT ["/photoprism"]
+LABEL org.opencontainers.image.title="photoprism-bin" \
+      org.opencontainers.image.version="240427" \
+      org.opencontainers.image.vendor="PhotoPrism" \
+      org.opencontainers.image.source="https://dl.photoprism.app/pkg/linux-amd64" \
+      sovereign.image.tier="3" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="3s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="3000ms"

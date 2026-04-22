@@ -1,12 +1,24 @@
 # CHECKSUMS - maddy
-# Status: PENDING
+# Generated: 2026-04-21T19:09:26Z
+# Status: PENDING_VERIFICATION
+#
+# IMPORTANT: These checksums need to be verified against upstream sources.
+# To verify:
+# 1. Download binary from URL below
+# 2. Compute: sha256sum <file>
+# 3. Compare with expected_sha256 below
+# 4. Cross-validate against upstream_checksum URL if available
 
 [metadata]
 image = "maddy"
-version = "pending"
-created = "2026-04-21T15:22:17Z"
+version = "0.7.0"
+created = "2026-04-21T19:09:26Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-and-compute"
+
+[download]
+url = "https://github.com/foxcpp/maddy/releases/download/v0.7.0/maddy-0.7.0-linux-x86_64"
+filename = "maddy-0.7.0-linux-x86_64"
 
 [checksum]
 expected_sha256 = "PENDING"

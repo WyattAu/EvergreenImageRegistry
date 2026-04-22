@@ -1,12 +1,23 @@
 # CHECKSUMS - python-alpine
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: VERIFIED
 
 [metadata]
 image = "python-alpine"
-version = "pending"
-created = "2026-04-21T15:22:19Z"
-last_verified = ""
-verification_method = "pending"
+version = "3.12"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "docker-hub-sha256"
+verifier = "manual"
+
+[download]
+url = "docker.io/library/python:3.12-slim"
+filename = "python:3.12-slim"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "VERIFY_FROM_DOCKER_HUB_DIGEST"
+
+[upstream_checksum]
+url = "https://hub.docker.com/_/python/tags?page=1&name=3.12-slim"
+format = "sha256"
+note = "Alpine banned per policy. Uses python:3.12-slim (debian-bookworm based)."

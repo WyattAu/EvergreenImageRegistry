@@ -1,12 +1,20 @@
 # CHECKSUMS - stirling-pdf-core
-# Status: PENDING
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "stirling-pdf-core"
-version = "pending"
-created = "2026-04-21T15:22:20Z"
+version = "0.46.0"
+created = "2026-04-22"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-verify"
+
+[download]
+url = "https://github.com/Stirling-Tools/Stirling-PDF/releases/download/v0.46.0/stirling-pdf-0.46.0.jar"
+filename = "stirling-pdf-0.46.0.jar"
 
 [checksum]
 expected_sha256 = "PENDING"
+
+[upstream_checksum]
+url = ""
+format = ""

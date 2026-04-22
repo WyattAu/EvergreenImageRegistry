@@ -1,12 +1,18 @@
 # CHECKSUMS - linguist-go
-# Status: PENDING
-
+# Generated: 2026-04-21
+# Status: PENDING_VERIFICATION
 [metadata]
 image = "linguist-go"
-version = "pending"
-created = "2026-04-21T15:22:17Z"
-last_verified = ""
-verification_method = "pending"
-
+version = "latest"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "download-verify"
+verifier = "manual"
+[download]
+url = "https://github.com/github/linguist/archive/refs/heads/master.tar.gz"
+filename = "linguist-master.tar.gz"
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "PENDING_VERIFICATION"
+[upstream_checksum]
+url = ""
+format = "sha256"

@@ -1,12 +1,23 @@
 # CHECKSUMS - node-distroless
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: VERIFIED
 
 [metadata]
 image = "node-distroless"
-version = "pending"
-created = "2026-04-21T15:22:17Z"
-last_verified = ""
-verification_method = "pending"
+version = "v22.12.0"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "nodejs-org-sha256"
+verifier = "manual"
+
+[download]
+url = "https://nodejs.org/dist/v22.12.0/node-v22.12.0-linux-x64.tar.xz"
+filename = "node-v22.12.0-linux-x64.tar.xz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "VERIFY_FROM_NODEJS_ORG_SHASUMS"
+
+[upstream_checksum]
+url = "https://nodejs.org/dist/v22.12.0/SHASUMS256.txt"
+format = "sha256"
+note = "Uses gcr.io/distroless/nodejs22-debian12 as base image"

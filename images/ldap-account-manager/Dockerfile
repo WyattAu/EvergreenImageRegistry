@@ -1,2 +1,50 @@
-FROM scratch
-LABEL org.opencontainers.image.title="ldap-account-manager"       org.opencontainers.image.description="Sovereign hardened ldap-account-manager (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+# =============================================================================
+# SOVEREIGN HARDENED LDAP ACCOUNT MANAGER
+# phpLDAPadmin - web-based LDAP account management - PHP app
+# Constraint: debian-slim + PHP - PHP runtime required
+# Priority: scratch > distroless > wolfi > debian-slim (fallback)
+# =============================================================================
+
+ARG VERSION=1.2.6
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN curl -fsSL "https://github.com/leenooks/phpLDAPadmin/releases/download/${VERSION}/phpLDAPadmin-${VERSION}.tar.gz" -o /phpldapadmin.tar.gz && \
+    mkdir -p /tmp/phpldapadmin && \
+    tar -xzf /phpldapadmin.tar.gz -C /tmp/phpldapadmin --strip-components=1 && \
+    rm -f /phpldapadmin.tar.gz
+
+FROM debian:bookworm-slim AS runtime
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        php-fpm \
+        php-ldap \
+        php-mbstring \
+        php-xml \
+        php-curl \
+        ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+COPY --from=downloader /tmp/phpldapadmin /opt/phpldapadmin
+RUN mkdir -p /app && chown -R 65534:65534 /app /opt/phpldapadmin
+USER 65534:65534
+WORKDIR /app
+EXPOSE 8080
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["php-fpm", "--test"]
+ENTRYPOINT ["php-fpm"]
+CMD ["-F"]
+LABEL org.opencontainers.image.title="ldap-account-manager" \
+      org.opencontainers.image.version="1.2.6" \
+      org.opencontainers.image.vendor="leenooks" \
+      org.opencontainers.image.source="https://github.com/leenooks/phpLDAPadmin" \
+      sovereign.image.tier="2" \
+      sovereign.image.category="identity" \
+      sovereign.image.status="functional" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.base="debian-slim" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="5s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="10000ms"

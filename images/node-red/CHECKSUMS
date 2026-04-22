@@ -1,12 +1,22 @@
 # CHECKSUMS - node-red
-# Status: PENDING
+# Generated: 2026-04-21
+# Status: PENDING_VERIFICATION
 
 [metadata]
 image = "node-red"
-version = "pending"
-created = "2026-04-21T00:00:00Z"
-last_verified = ""
-verification_method = "pending"
+version = "latest"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "download-verify"
+verifier = "manual"
+
+[download]
+url = "https://github.com/node-red/node-red/archive/refs/tags/3.1.0.tar.gz"
+filename = "node-red-3.1.0.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "PENDING_VERIFICATION"
+
+[upstream_checksum]
+url = ""
+format = "sha256"

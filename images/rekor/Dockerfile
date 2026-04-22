@@ -1,2 +1,41 @@
+# =============================================================================
+# SOVEREIGN HARDENED REKOR
+# Sigstore transparency log server and CLI - Go static binary
+# Constraint: scratch - pure Go static binary, smallest attack surface
+# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
+# =============================================================================
+
+ARG VERSION=1.5.1
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS downloader
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN curl -fsSL "https://github.com/sigstore/rekor/releases/download/v${VERSION}/rekor-cli-linux-amd64" -o /rekor-cli && \
+    curl -fsSL "https://github.com/sigstore/rekor/releases/download/v${VERSION}/rekor-server-linux-amd64" -o /rekor-server && \
+    chmod +x /rekor-cli /rekor-server && \
+    strip --strip-all /rekor-cli /rekor-server
+
 FROM scratch
-LABEL org.opencontainers.image.title="rekor"       org.opencontainers.image.description="Sovereign hardened rekor (stub - pending binary integration)"       sovereign.image.status="stub"       sovereign.image.tier="1"       sovereign.image.note="Stub image. Update with upstream binary download and COPY instructions."
+COPY --from=downloader /rekor-cli /rekor-cli
+COPY --from=downloader /rekor-server /rekor-server
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER 65534:65534
+WORKDIR /app
+EXPOSE 3000
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/rekor-cli", "version"]
+ENTRYPOINT ["/rekor-server"]
+LABEL org.opencontainers.image.title="rekor" \
+      org.opencontainers.image.version="1.5.1" \
+      org.opencontainers.image.vendor="sigstore" \
+      org.opencontainers.image.source="https://github.com/sigstore/rekor" \
+      sovereign.image.tier="2" \
+      sovereign.image.category="security" \
+      sovereign.image.status="functional" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="3s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="3000ms"

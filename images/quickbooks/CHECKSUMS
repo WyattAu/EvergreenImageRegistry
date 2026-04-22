@@ -1,12 +1,12 @@
 # CHECKSUMS - quickbooks
-# Status: PENDING
+# Status: PLACEHOLDER - proprietary or no open-source upstream
 
 [metadata]
 image = "quickbooks"
-version = "pending"
-created = "2026-04-21T15:22:19Z"
+version = "placeholder"
+created = "2026-04-22"
 last_verified = ""
-verification_method = "pending"
+verification_method = "n/a"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "N/A"

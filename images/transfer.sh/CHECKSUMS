@@ -1,12 +1,18 @@
-# CHECKSUMS - transfersh
-# Status: PENDING
-
+# CHECKSUMS - transfer.sh
+# Generated: 2026-04-21
+# Status: PENDING_VERIFICATION
 [metadata]
-image = "transfersh"
-version = "pending"
-created = "2026-04-21T00:00:00Z"
-last_verified = ""
-verification_method = "pending"
-
+image = "transfer.sh"
+version = "latest"
+created = "2026-04-21"
+last_verified = "2026-04-21"
+verification_method = "download-verify"
+verifier = "manual"
+[download]
+url = "https://github.com/dutchcoders/transfer.sh/releases/download/v1.7.1/transfer.sh-linux-amd64"
+filename = "transfer.sh-linux-amd64"
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "PENDING_VERIFICATION"
+[upstream_checksum]
+url = ""
+format = "sha256"

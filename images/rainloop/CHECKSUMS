@@ -1,12 +1,24 @@
 # CHECKSUMS - rainloop
-# Status: PENDING
+# Generated: 2026-04-21T19:09:26Z
+# Status: PENDING_VERIFICATION
+#
+# IMPORTANT: These checksums need to be verified against upstream sources.
+# To verify:
+# 1. Download binary from URL below
+# 2. Compute: sha256sum <file>
+# 3. Compare with expected_sha256 below
+# 4. Cross-validate against upstream_checksum URL if available
 
 [metadata]
 image = "rainloop"
-version = "pending"
-created = "2026-04-21T15:22:19Z"
+version = "1.18.0"
+created = "2026-04-21T19:09:26Z"
 last_verified = ""
-verification_method = "pending"
+verification_method = "download-and-compute"
+
+[download]
+url = "https://github.com/RainLoop/rainloop-webmail/releases/download/v1.18.0/rainloop-1.18.0.tar.gz"
+filename = "rainloop-1.18.0.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"

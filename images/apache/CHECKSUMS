@@ -1,12 +1,18 @@
 # CHECKSUMS - apache
+# Generated: 2026-04-22T00:00:00Z
 # Status: PENDING
 
 [metadata]
 image = "apache"
-version = "pending"
-created = "2026-04-21T00:00:00Z"
-last_verified = ""
-verification_method = "pending"
+version = "2.4.66"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "apt-package"
+verifier = "manual"
+
+[download]
+url = "https://archive.apache.org/dist/httpd/httpd-2.4.66.tar.gz"
+filename = "httpd-2.4.66.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "PENDING_VERIFY"

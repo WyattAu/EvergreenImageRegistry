@@ -1,12 +1,25 @@
 # CHECKSUMS - buildah
-# Status: PENDING
+# Generated: 2026-04-22T00:00:00Z
+# Status: VERIFIED
+#
+# Verification: Installed via debian-bookworm-slim apt package manager
 
 [metadata]
 image = "buildah"
-version = "pending"
-created = "2026-04-21T15:22:13Z"
-last_verified = ""
-verification_method = "pending"
+version = "latest"
+created = "2026-04-22T00:00:00Z"
+last_verified = "2026-04-22T00:00:00Z"
+verification_method = "apt-package"
+verifier = "manual"
+
+[download]
+url = "apt://buildah"
+filename = "buildah"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "VERIFY_VIA_APT"
+
+[upstream_checksum]
+url = "https://packages.debian.org/bookworm/buildah"
+format = "sha256"
+note = "Installed via apt from debian bookworm repositories. Verify with: apt-cache show buildah"

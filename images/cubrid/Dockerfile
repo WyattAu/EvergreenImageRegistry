@@ -12,7 +12,7 @@ FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential cmake curl ca-certificates libncurses5-dev \
+    build-base cmake curl ca-certificates libncurses5-dev \
     libedit-dev && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://github.com/CUBRID/cubrid/releases/download/CUBRID_${VERSION}/cubrid-${VERSION}-src.tar.gz" -o /tmp/cubrid.tar.gz \
@@ -25,20 +25,17 @@ RUN curl -fsSL "https://github.com/CUBRID/cubrid/releases/download/CUBRID_${VERS
     && make install \
     && strip --strip-all /opt/cubrid/bin/cubrid /opt/cubrid/bin/cub_server 2>/dev/null || true
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libncurses5 libedit2 ca-certificates && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin cubrid 2>/dev/null || true
+RUN apk add --no-cache ca-certificates
+RUN useradd -m -u 65532 -s /usr/sbin/nologin cubrid 2>/dev/null || true
 RUN mkdir -p /var/lib/cubrid /var/log/cubrid /var/cache/cubrid
 COPY --from=builder /opt/cubrid /opt/cubrid
-RUN chown -R 65534:65534 /opt/cubrid /var/lib/cubrid /var/log/cubrid /var/cache/cubrid
-USER 65534:65534
+RUN chown -R 65532:65532 /opt/cubrid /var/lib/cubrid /var/log/cubrid /var/cache/cubrid
+USER 65532:65532
 WORKDIR /var/lib/cubrid
 EXPOSE 30000 33000 33001
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD ["/opt/cubrid/bin/cubrid", "service", "status"]
 ENTRYPOINT ["/opt/cubrid/bin/cubrid"]
 LABEL org.opencontainers.image.title="cubrid" \
       org.opencontainers.image.version="${VERSION}" \
@@ -48,4 +45,8 @@ LABEL org.opencontainers.image.title="cubrid" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

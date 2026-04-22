@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential libnetfilter-conntrack-dev libidn2-0-dev \
+    build-base libnetfilter-conntrack-dev libidn2-0-dev \
     libdbus-1-dev libgmp-dev && \
     rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -23,18 +23,16 @@ RUN curl -fsSL "https://thekelleys.org.uk/dnsmasq/dnsmasq-${VERSION}.tar.gz" -o 
     make install PREFIX=/usr DESTDIR=/install && \
     strip --strip-all /install/usr/sbin/dnsmasq
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libnetfilter-conntrack3 libidn2-0 ca-certificates && rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache ca-certificates
 COPY --from=builder /install/usr/sbin/dnsmasq /usr/sbin/dnsmasq
 COPY --from=builder /install/usr/share/man /usr/share/man
 RUN mkdir -p /app /var/log/dnsmasq /var/lib/dnsmasq /run /etc/dnsmasq.d && \
-    chown -R 65534:65534 /app /var/log/dnsmasq /var/lib/dnsmasq /run /etc/dnsmasq.d
-USER 65534:65534
+    chown -R 65532:65532 /app /var/log/dnsmasq /var/lib/dnsmasq /run /etc/dnsmasq.d
+USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 67 67/udp 69/udp 4011/udp
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/sbin/dnsmasq", "--version"]
 ENTRYPOINT ["/usr/sbin/dnsmasq"]
 CMD ["--keep-in-foreground", "--no-daemon"]
 LABEL org.opencontainers.image.title="dnsmasq-full" \
@@ -46,8 +44,13 @@ LABEL org.opencontainers.image.title="dnsmasq-full" \
       sovereign.image.category="networking" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

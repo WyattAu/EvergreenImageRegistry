@@ -13,20 +13,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     wireguard-tools iproute2 iptables kmod && \
     rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app /var/log/wireguard /run/wireguard && \
-    chown -R 65534:65534 /app /var/log/wireguard /run/wireguard
+    chown -R 65532:65532 /app /var/log/wireguard /run/wireguard
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    wireguard-tools iproute2 iptables ca-certificates kmod && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache wireguard-tools iproute2 iptables ca-certificates kmod
 COPY --from=builder /app /app
 COPY --from=builder /var/log/wireguard /var/log/wireguard
 COPY --from=builder /run/wireguard /run/wireguard
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 51820/udp
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["/usr/bin/wg", "show"]
 ENTRYPOINT ["/usr/bin/wg-quick"]
 LABEL org.opencontainers.image.title="wg-quick" \
       org.opencontainers.image.version="1.0.20210914" \
@@ -37,8 +34,13 @@ LABEL org.opencontainers.image.title="wg-quick" \
       sovereign.image.category="networking" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

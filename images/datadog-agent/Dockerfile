@@ -32,14 +32,12 @@ COPY --from=builder /app/conf /app/conf
 COPY --from=builder /app/run /app/run
 COPY --from=builder /app/logs /app/logs
 COPY --from=builder /var/log/datadog /var/log/datadog
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8125 8126 6162
 ENV DD_AGENT_VERSION=${VERSION} \
     DD_LOG_LEVEL=info \
     DD_ENABLE_METRICS_ENDPOINT=true
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["/agent", "version"]
 ENTRYPOINT ["/agent"]
 LABEL org.opencontainers.image.title="datadog-agent" \
       org.opencontainers.image.version="7.50.0" \
@@ -61,3 +59,9 @@ LABEL org.opencontainers.image.title="datadog-agent" \
       sovereign.hft.sched-policy="SCHED_OTHER" \
       sovereign.hft.runtime="go" \
       sovereign.hft.runtime-hints="GOMAXPROCS=<cores>"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

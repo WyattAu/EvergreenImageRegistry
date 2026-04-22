@@ -8,25 +8,29 @@
 ARG VERSION=1.8
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 python3-pip python3-venv git ca-certificates curl build-essential && rm -rf /var/lib/apt/lists/*
+    python3 py3-pip python3 git ca-certificates curl build-base && rm -rf /var/lib/apt/lists/*
 RUN pip3 install --no-cache-dir --break-system-packages torch torchvision --index-url https://download.pytorch.org/whl/cpu 2>/dev/null || true && \
     git clone --depth 1 --branch v${VERSION} https://github.com/oobabooga/text-generation-webui.git /opt/text-generation-webui 2>/dev/null || \
     git clone --depth 1 https://github.com/oobabooga/text-generation-webui.git /opt/text-generation-webui && \
     cd /opt/text-generation-webui && \
     pip3 install --no-cache-dir --break-system-packages -r requirements.txt 2>/dev/null || true
-RUN useradd -m -u 65534 -g '' user 2>/dev/null || true
+RUN useradd -m -u 65532 -g '' user 2>/dev/null || true
 RUN mkdir -p /app /var/log/python /var/cache/python && chown -R user:user /app /var/log/python /var/cache/python 2>/dev/null || true
 USER user
 WORKDIR /app
 EXPOSE 7860
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD curl -sf http://localhost:7860/v1/models || exit 1
 ENTRYPOINT ["python3", "/opt/text-generation-webui/server.py"]
 LABEL org.opencontainers.image.title="text-generation-webui" \
       org.opencontainers.image.version="1.8" \
       org.opencontainers.image.vendor="Oobabooga" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+USER 65532:65532
+STOPSIGNAL SIGTERM

@@ -16,21 +16,18 @@ RUN curl -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-amd6
     rm /grafana.tar.gz && \
     ln -sf /opt/grafana-${VERSION} /opt/grafana
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        ca-certificates tzdata libfontconfig1 && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache ca-certificates tzdata fontconfig
 COPY --from=builder /opt/grafana /opt/grafana
 RUN ln -sf /opt/grafana/bin/grafana-server /usr/local/bin/grafana-server && \
-    groupadd -g 65534 -r grafana 2>/dev/null || true && \
-    useradd -r -u 65534 -g grafana -d /opt/grafana -s /sbin/nologin grafana 2>/dev/null || true && \
+    groupadd -g 65532 -r grafana 2>/dev/null || true && \
+    useradd -r -u 65532 -g grafana -d /opt/grafana -s /sbin/nologin grafana 2>/dev/null || true && \
     mkdir -p /var/lib/grafana /var/log/grafana /etc/grafana && \
-    chown -R 65534:65534 /var/lib/grafana /var/log/grafana /etc/grafana
-USER 65534:65534
+    chown -R 65532:65532 /var/lib/grafana /var/log/grafana /etc/grafana
+USER 65532:65532
 WORKDIR /opt/grafana
 EXPOSE 3000
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD ["grafana-server", "-v"]
 ENTRYPOINT ["grafana-server"]
 CMD ["--homepath=/opt/grafana", "--config=/etc/grafana/grafana.ini"]
 LABEL org.opencontainers.image.title="grafana" \
@@ -41,4 +38,8 @@ LABEL org.opencontainers.image.title="grafana" \
       sovereign.image.status="functional" \
       sovereign.image.category="observability" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

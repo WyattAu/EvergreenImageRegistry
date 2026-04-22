@@ -28,11 +28,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/cockroachdb-sql /var/log/cockroachdb-sql
 COPY --from=builder /var/cache/cockroachdb-sql /var/cache/cockroachdb-sql
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 26257
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/local/bin/cockroach", "version"]
 ENTRYPOINT ["/usr/local/bin/cockroach"]
 CMD ["sql", "--insecure"]
 LABEL org.opencontainers.image.title="cockroachdb-sql" \
@@ -53,3 +51,9 @@ LABEL org.opencontainers.image.title="cockroachdb-sql" \
       sovereign.hft.pre-stop-hook="false" \
       sovereign.hft.connection-drain="false" \
       sovereign.hft.sched-policy="SCHED_OTHER"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

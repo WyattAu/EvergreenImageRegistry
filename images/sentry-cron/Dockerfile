@@ -1,6 +1,6 @@
 # =============================================================================
 # SOVEREIGN HARDENED SENTRY CRON
-# Sentry cron scheduler - Python app
+# Sentry busybox-suid scheduler - Python app
 # Constraint: debian-slim + Python - Python runtime required
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
@@ -16,34 +16,17 @@ RUN curl -fsSL "https://github.com/getsentry/self-hosted/releases/download/${VER
     tar -xzf /sentry.tar.gz -C /tmp/sentry && \
     rm -f /sentry.tar.gz
 
-FROM debian:bookworm-slim AS runtime
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        python3 \
-        python3-pip \
-        python3-venv \
-        ca-certificates \
-        libpq5 \
-        libxml2-dev \
-        libxslt1-dev \
-        libjpeg62-turbo-dev \
-        zlib1g-dev \
-        libffi-dev \
-        libssl-dev \
-        libyaml-dev \
-        build-essential \
-        git && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache python3 py3-pip ca-certificates libpq libxml2-dev libxslt-dev libffi-dev openssl-dev build-base git
 COPY --from=downloader /tmp/sentry /opt/sentry
 RUN if [ -f /opt/sentry/requirements.txt ]; then pip3 install --no-cache-dir --break-system-packages -r /opt/sentry/requirements.txt 2>/dev/null || pip3 install --no-cache-dir -r /opt/sentry/requirements.txt || true; fi && \
-    mkdir -p /app && chown -R 65534:65534 /app /opt/sentry
-USER 65534:65534
+    mkdir -p /app && chown -R 65532:65532 /app /opt/sentry
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["python3", "-c", "import sentry; print('ok')"]
 ENTRYPOINT ["python3", "-m", "sentry"]
-CMD ["cron"]
-LABEL org.opencontainers.image.title="sentry-cron" \
+CMD ["busybox-suid"]
+LABEL org.opencontainers.image.title="sentry-busybox-suid" \
       org.opencontainers.image.version="26.4.0" \
       org.opencontainers.image.vendor="Sentry" \
       org.opencontainers.image.source="https://github.com/getsentry/self-hosted" \
@@ -51,8 +34,13 @@ LABEL org.opencontainers.image.title="sentry-cron" \
       sovereign.image.category="monitoring" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="30s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="30000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

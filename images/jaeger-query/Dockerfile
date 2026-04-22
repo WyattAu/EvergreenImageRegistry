@@ -26,11 +26,9 @@ COPY --from=downloader /jaeger-query /jaeger-query
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
 COPY --from=builder /var/log/jaeger /var/log/jaeger
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 16686
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/jaeger-query", "--version"]
 ENTRYPOINT ["/jaeger-query"]
 LABEL org.opencontainers.image.title="jaeger-query" \
       org.opencontainers.image.version="1.55.0" \
@@ -44,3 +42,9 @@ LABEL org.opencontainers.image.title="jaeger-query" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

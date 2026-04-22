@@ -9,7 +9,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential libssl-dev tcl8.6-dev wget ca-certificates && \
+    build-base libssl-dev tcl8.6-dev wget ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 RUN wget -q "https://github.com/sqlcipher/sqlcipher/archive/refs/tags/v${VERSION}.tar.gz" -O /sqlcipher.tar.gz && \
     tar -xzf /sqlcipher.tar.gz -C / && rm /sqlcipher.tar.gz && \
@@ -19,17 +19,14 @@ RUN wget -q "https://github.com/sqlcipher/sqlcipher/archive/refs/tags/v${VERSION
     make -j"$(nproc)" && \
     strip --strip-all .libs/sqlcipher 2>/dev/null || true
 
-FROM debian:bookworm-slim AS runner
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libssl3 ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache ca-certificates
 RUN mkdir -p /app /var/log/sqlcipher
 COPY --from=builder /sqlcipher-${VERSION}/.libs/sqlcipher /usr/local/bin/sqlcipher
-RUN chown -R 65534:65534 /app /var/log/sqlcipher
-USER 65534:65534
+RUN chown -R 65532:65532 /app /var/log/sqlcipher
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["/usr/local/bin/sqlcipher", "--version"]
 ENTRYPOINT ["/usr/local/bin/sqlcipher"]
 LABEL org.opencontainers.image.title="sqlcipher" \
       org.opencontainers.image.version="4.5.6" \
@@ -40,8 +37,13 @@ LABEL org.opencontainers.image.title="sqlcipher" \
       sovereign.image.category="security" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="2000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

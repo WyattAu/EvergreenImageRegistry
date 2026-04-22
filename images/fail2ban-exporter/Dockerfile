@@ -23,11 +23,9 @@ RUN curl -fsSL "https://github.com/xperimental/fail2ban-exporter/releases/downlo
 FROM scratch
 COPY --from=downloader /fail2ban-exporter /fail2ban-exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 9191
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["/fail2ban-exporter", "--web.listen-address=:9191", "--web.telemetry-path=/metrics", "--fail2ban.socket=/tmp/fail2ban.sock", "--version"]
 ENTRYPOINT ["/fail2ban-exporter"]
 CMD ["--web.listen-address=:9191", "--web.telemetry-path=/metrics", "--fail2ban.socket=/tmp/fail2ban.sock"]
 LABEL org.opencontainers.image.title="fail2ban-exporter" \
@@ -43,3 +41,9 @@ LABEL org.opencontainers.image.title="fail2ban-exporter" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

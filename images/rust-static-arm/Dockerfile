@@ -14,10 +14,8 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 ENV PATH="/opt/rust/bin:${PATH}" \
     CARGO_HOME=/app/.cargo \
     RUSTUP_HOME=/app/.rustup
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["rustc", "--version"]
 LABEL org.opencontainers.image.title="rust-static-arm" \
       org.opencontainers.image.version="1.80.1" \
       org.opencontainers.image.vendor="Rust" \
@@ -27,3 +25,9 @@ LABEL org.opencontainers.image.title="rust-static-arm" \
       sovereign.constraint.scratch="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="5s"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

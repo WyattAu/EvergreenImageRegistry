@@ -1,20 +1,13 @@
 ARG VERSION=2.8.38
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim AS runtime
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        perl libdbd-pg-perl libdbi-perl libjson-perl \
-        libcgi-pm-perl libapache-dbi-perl libtemplate-perl \
-        apache2 libapache2-mod-perl2 ca-certificates curl && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007 AS runtime
+RUN apk add --no-cache perl apache2 ca-certificates curl
 RUN mkdir -p /var/www/sql-ledger /var/log/sql-ledger \
-    && chown -R 65534:65534 /var/www/sql-ledger /var/log/sql-ledger
-USER 65534:65534
+    && chown -R 65532:65532 /var/www/sql-ledger /var/log/sql-ledger
+USER 65532:65532
 WORKDIR /var/www/sql-ledger
 EXPOSE 80
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:80"]
 ENTRYPOINT ["httpd", "-D", "FOREGROUND"]
 LABEL org.opencontainers.image.title="sql-ledger" \
       org.opencontainers.image.version="2.8.38" \
@@ -24,8 +17,13 @@ LABEL org.opencontainers.image.title="sql-ledger" \
       sovereign.image.category="business-finance" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="10s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="30000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

@@ -4,18 +4,17 @@
 # Enhanced version with additional features over base KDB.
 # =============================================================================
 
-FROM debian:bookworm-slim
-
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        ca-certificates tzdata libcurl4 && \
+        ca-certificates tzdata curl && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
-RUN groupadd -g 65534 -r kdb 2>/dev/null || true && \
-    useradd -r -u 65534 -g kdb -d /opt/kdb -s /sbin/nologin kdb 2>/dev/null || true && \
+RUN groupadd -g 65532 -r kdb 2>/dev/null || true && \
+    useradd -r -u 65532 -g kdb -d /opt/kdb -s /sbin/nologin kdb 2>/dev/null || true && \
     mkdir -p /opt/kdb/data /opt/kdb/logs /var/log/kdb && \
-    chown -R 65534:65534 /opt/kdb /var/log/kdb
+    chown -R 65532:65532 /opt/kdb /var/log/kdb
 
-USER 65534:65534
+USER 65532:65532
 WORKDIR /opt/kdb
 EXPOSE 5000
 LABEL org.opencontainers.image.title="kdb-plus" \
@@ -26,4 +25,9 @@ LABEL org.opencontainers.image.title="kdb-plus" \
       sovereign.image.category="database" \
       sovereign.image.note="KDB+ Plus is proprietary. Copy licensed q binary to /opt/kdb/q before use." \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="none"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

@@ -18,34 +18,24 @@ RUN apt-get update && \
         gnupg && \
     rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://packages.couchbase.com/ubuntu/couchbase.key" | gpg --dearmor -o /usr/share/keyrings/couchbase-archive-keyring.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/couchbase-archive-keyring.gpg] https://packages.couchbase.com/ubuntu jammy main" > /etc/apt/sources.list.d/couchbase.list && \
+RUN curl -fsSL "https://packages.couchbase.com/ubuntu/couchbase.key" | gnupg --dearmor -o /usr/share/keyrings/couchbase-archive-keyring.gnupg && \
+    echo "deb [signed-by=/usr/share/keyrings/couchbase-archive-keyring.gnupg] https://packages.couchbase.com/ubuntu jammy main" > /etc/apt/sources.list.d/couchbase.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends couchbase-server-community && \
     rm -rf /var/lib/apt/lists/*
 
 # hadolint ignore=DL3023
-FROM debian:bookworm-slim
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        libstdc++6 \
-        libssl3 \
-        libcurl4 \
-        zlib1g \
-        libevent-2.1-7 \
-        libsnappy1v5 \
-        procps && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache libstdc++ curl zlib procps
 COPY --from=builder /opt/couchbase /opt/couchbase
 RUN mkdir -p /var/lib/couchbase /var/log/couchbase /app && \
-    chown -R 65534:65534 /var/lib/couchbase /var/log/couchbase /app /opt/couchbase
+    chown -R 65532:65532 /var/lib/couchbase /var/log/couchbase /app /opt/couchbase
 ENV COUCHBASE_HOME=/opt/couchbase
 ENV PATH="${COUCHBASE_HOME}/bin:${PATH}"
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8091
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD ["/opt/couchbase/bin/couchbase-cli", "server-info", "-c", "127.0.0.1:8091"]
 ENTRYPOINT ["/opt/couchbase/bin/couchbase-server"]
 LABEL org.opencontainers.image.title="couchbase" \
       org.opencontainers.image.version="7.6.1" \
@@ -54,7 +44,6 @@ LABEL org.opencontainers.image.title="couchbase" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.runtime="debian-slim" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
@@ -66,3 +55,8 @@ LABEL org.opencontainers.image.title="couchbase" \
       sovereign.hft.pre-stop-delay="5s" \
       sovereign.hft.connection-drain="true" \
       sovereign.hft.sched-policy="SCHED_OTHER"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

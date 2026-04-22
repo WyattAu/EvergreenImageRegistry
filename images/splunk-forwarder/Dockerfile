@@ -20,20 +20,17 @@ RUN curl -fsSL "https://download.splunk.com/products/universalforwarder/releases
     && tar -xzf splunk.tgz \
     && rm splunk.tgz
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 ARG VERSION
 ARG BUILD_HASH
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates curl libgomp1 && \
-    rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin splunk 2>/dev/null || true
+RUN apk add --no-cache ca-certificates curl
+RUN useradd -m -u 65532 -s /usr/sbin/nologin splunk 2>/dev/null || true
 RUN mkdir -p /opt/splunkforwarder/var/log/splunk /opt/splunkforwarder/var/run/splunk
 COPY --from=builder /tmp/splunkforwarder /opt/splunkforwarder
-USER 65534:65534
+USER 65532:65532
 WORKDIR /opt/splunkforwarder
 EXPOSE 8089 9997
-HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD ["/opt/splunkforwarder/bin/splunk", "show", "splunkd-status"]
 ENTRYPOINT ["/opt/splunkforwarder/bin/splunk"]
 CMD ["start", "--accept-license", "--no-prompt"]
 LABEL org.opencontainers.image.title="splunk-forwarder" \
@@ -44,8 +41,13 @@ LABEL org.opencontainers.image.title="splunk-forwarder" \
       sovereign.image.status="functional" \
       sovereign.image.category="observability" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="15s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="30000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

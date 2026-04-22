@@ -12,3 +12,9 @@ LABEL org.opencontainers.image.title="distroless" \
       sovereign.image.status="reference" \
       sovereign.image.category="base" \
       sovereign.image.note="Reference image. Use as FROM base for static Go/Rust binaries."
+
+LABEL sovereign.base.image="distroless"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="none"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

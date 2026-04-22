@@ -5,19 +5,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN npm install -g iobroker
 RUN mkdir -p /app /opt/iobroker
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        nodejs npm ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache nodejs npm ca-certificates
 COPY --from=builder /opt/iobroker /opt/iobroker
 COPY --from=builder /app /app
-RUN useradd -r -u 65534 -g nogroup -d /opt/iobroker -s /sbin/nologin iobroker 2>/dev/null || true && \
-    chown -R 65534:65534 /opt/iobroker /app 2>/dev/null || true
-USER 65534:65534
+RUN useradd -r -u 65532 -g nogroup -d /opt/iobroker -s /sbin/nologin iobroker 2>/dev/null || true && \
+    chown -R 65532:65532 /opt/iobroker /app 2>/dev/null || true
+USER 65532:65532
 WORKDIR /opt/iobroker
 EXPOSE 8081 3000
-HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD ["node", "-e", "require('http').get('http://localhost:8081/', (r) => { if (r.statusCode !== 200) process.exit(1) }).on('error', () => process.exit(1))"] || exit 0
 ENTRYPOINT ["iobroker"]
 CMD ["start"]
 LABEL org.opencontainers.image.title="iobroker" \
@@ -26,4 +23,8 @@ LABEL org.opencontainers.image.title="iobroker" \
       org.opencontainers.image.source="https://github.com/ioBroker/ioBroker" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

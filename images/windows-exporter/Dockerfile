@@ -17,11 +17,9 @@ RUN curl -fsSL "https://github.com/prometheus-community/windows_exporter/release
 FROM scratch
 COPY --from=downloader /windows_exporter /windows_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /tmp
 EXPOSE 9182
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/windows_exporter", "--version"]
 ENTRYPOINT ["/windows_exporter"]
 LABEL org.opencontainers.image.title="windows-exporter" \
       org.opencontainers.image.version="0.25.0" \
@@ -37,3 +35,9 @@ LABEL org.opencontainers.image.title="windows-exporter" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

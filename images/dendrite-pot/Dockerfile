@@ -14,9 +14,13 @@ RUN curl -fsSL "https://github.com/matrix-org/dendrite/releases/download/v0.13.0
 FROM scratch
 COPY --from=downloader /tmp/binary /usr/local/bin/dendrite
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8008
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3     CMD ["/usr/local/bin/dendrite", "--version"]
-ENTRYPOINT ["/usr/local/bin/dendrite"]
 LABEL org.opencontainers.image.title="dendrite-pot"       org.opencontainers.image.description="Dendrite POT - Push Over Transport for Dendrite"       org.opencontainers.image.version="0.13.0"       org.opencontainers.image.vendor="Matrix.org"       org.opencontainers.image.source="https://github.com/matrix-org/dendrite"       sovereign.image.tier="2"       sovereign.constraint.nonroot="true"       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

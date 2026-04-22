@@ -30,11 +30,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /var/log/packetbeat /var/log/packetbeat
 COPY --from=builder /var/lib/packetbeat /var/lib/packetbeat
 COPY --from=builder /var/cache/packetbeat /var/cache/packetbeat
-USER 65534:65534
+USER 65532:65532
 WORKDIR /opt/packetbeat
 EXPOSE 5066
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/opt/packetbeat/packetbeat", "--version"]
 ENTRYPOINT ["/opt/packetbeat/packetbeat"]
 LABEL org.opencontainers.image.title="packetbeat" \
       org.opencontainers.image.description="Sovereign hardened Packetbeat - Elastic network packet analyzer" \
@@ -49,3 +47,9 @@ LABEL org.opencontainers.image.title="packetbeat" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

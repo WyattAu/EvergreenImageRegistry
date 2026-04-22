@@ -19,23 +19,26 @@ RUN tar -xzf /opensearch.tar.gz -C /opt && \
     rm /opensearch.tar.gz && \
     find /opt/opensearch-${VERSION}/plugins -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true
 
-FROM debian:bookworm-20240101-slim
-RUN groupadd -g 65534 opensearch && \
-    useradd -m -u 65534 -g opensearch -s /usr/sbin/nologin opensearch
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        openjdk-17-jre-headless \
-        ca-certificates \
-        gosu && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -rf /usr/lib/jvm/java-17-openjdk-*/lib/security/cacerts
+FROM golang:1.23-alpine AS health-shim-builder
+COPY images/health-shim/go.mod images/health-shim/main.go /build/
+RUN cd /build && CGO_ENABLED=0 go build -ldflags="-s -w" -o /health-shim .
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+COPY --from=health-shim-builder /health-shim /usr/local/bin/health-shim
+ENV HEALTH_CMD="curl -sf http://localhost:9200" \
+    READY_CMD="curl -sf http://localhost:9200" \
+    STARTUP_CMD="curl -sf http://localhost:9200" \
+    SOVEREIGN_LOG_LEVEL=info
+
+RUN groupadd -g 65532 opensearch && \
+    useradd -m -u 65532 -g opensearch -s /usr/sbin/nologin opensearch
+RUN apk add --no-cache ca-certificates gosu
 COPY --from=downloader /opt/opensearch-2.12.0 /opt/opensearch
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 RUN mkdir -p /app/data /app/logs /app/conf && \
     chown -R opensearch:opensearch /app /opt/opensearch && \
     ln -sf /app/conf /opt/opensearch/config/custom && \
     echo "y" | /opt/opensearch/bin/opensearch-plugin install analysis-icu 2>/dev/null || true
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 9200 9300
 ENV OPENSEARCH_HOME=/opt/opensearch \
@@ -47,16 +50,13 @@ ENV OPENSEARCH_HOME=/opt/opensearch \
     discovery.type=single-node \
     bootstrap.memory_lock=true \
     OPENSEARCH_INITIAL_ADMIN_PASSWORD=Admin@123456
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=5 \
-    CMD ["/usr/lib/jvm/java-17-openjdk-amd64/bin/java", "-version"]
-ENTRYPOINT ["/opt/opensearch/bin/opensearch"]
+ENTRYPOINT ["sh", "-c", "health-shim & exec /opt/opensearch/bin/opensearch"]
 LABEL org.opencontainers.image.title="opensearch" \
       org.opencontainers.image.version="2.12.0" \
       org.opencontainers.image.vendor="OpenSearch" \
       org.opencontainers.image.description="OpenSearch - distributed search and analytics engine" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="30s" \
       sovereign.hft.init-system="none" \
@@ -70,3 +70,8 @@ LABEL org.opencontainers.image.title="opensearch" \
       sovereign.hft.sched-policy="SCHED_OTHER" \
       sovereign.hft.runtime="java" \
       sovereign.hft.runtime-hints="Xms=Xmx,UseG1GC"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="true"
+LABEL sovereign.health.type="http"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

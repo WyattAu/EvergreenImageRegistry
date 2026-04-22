@@ -21,10 +21,8 @@ RUN curl -fsSL "https://github.com/scylladb/scylla-operator/releases/download/v$
 FROM scratch
 COPY --from=builder /usr/local/bin/scylla-operator /usr/local/bin/scylla-operator
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 EXPOSE 8080 8443
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/local/bin/scylla-operator", "version"]
 ENTRYPOINT ["/usr/local/bin/scylla-operator"]
 LABEL org.opencontainers.image.title="scylla-operator" \
       org.opencontainers.image.description="Sovereign hardened ScyllaDB Operator - Kubernetes operator for ScyllaDB" \
@@ -35,3 +33,9 @@ LABEL org.opencontainers.image.title="scylla-operator" \
       sovereign.image.category="database" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

@@ -5,8 +5,8 @@
 ```yaml
 ---
 document_id: YP-CONTAINER-HARDENING-BENCHMARKS-001
-version: 1.0.0
-status: DRAFT
+version: 1.1.0
+status: PARTIALLY SUPERSEDED
 domain: Container Security
 subdomains: [Distroless, Hardening, Supply-Chain, Benchmarks, Best-Practices]
 applicable_standards: [NIST SP 800-190, CIS Docker, OCI Image Spec, SLSA 3.0]
@@ -16,6 +16,8 @@ confidence_level: 0.92
 tqa_level: 4
 ---
 ```
+
+> **DEPRECATION NOTICE (v1.1.0):** Alpine Linux is **PERMANENTLY BANNED** from all final-stage images per ADR-007 and REQUIREMENTS.md v4.0.0. All references to Alpine Linux in this document are retained solely for historical context and are marked as **DEPRECATED**. For base images, use **Wolfi** or **RHEL UBI** instead. Any Alpine-related recommendations in this document should not be followed for new work.
 
 ## Executive Summary
 
@@ -79,11 +81,11 @@ This Yellow Paper benchmarks the container image hardening practices of four maj
 | `node` | Node.js runtime | glibc | ~50-80 MB |
 | `java` (JRE/JDK) | Java runtime/build | glibc | ~80-200 MB |
 
-Special cases: `static`, `busybox`, and `git` use Alpine/musl by default; Wolfi/glibc variants are tagged `:latest-glibc`.
+Special cases: `static`, `busybox`, and `git` use Alpine/musl by default; Wolfi/glibc variants are tagged `:latest-glibc`. **[DEPRECATED: Alpine references — see deprecation notice above; use Wolfi/glibc variants.]**
 
 #### 1.1.2 Package Management
 
-Wolfi uses **apk** (Alpine Package Keeper) as its package manager, compatible with the `.apk` package format but using an independent repository at `apk.cgr.dev`.
+Wolfi uses **apk** (Alpine Package Keeper) as its package manager **[DEPRECATED: Alpine-origin tooling — see deprecation notice above]**, compatible with the `.apk` package format but using an independent repository at `apk.cgr.dev`.
 
 - **Build tool:** `melange` — builds `.apk` packages from declarative YAML pipelines
 - **Image assembler:** `apko` — bundles APKs into OCI images via declarative YAML manifests
@@ -504,7 +506,7 @@ RUN microdnf install -y nginx && microdnf clean all
 |---|-----------|-----------------|---------|------------|-------------|
 | 1 | **Base Philosophy** | Distroless-first, purpose-built un-distro | Security-hardened full apps | Zero-OS, app-only | Enterprise RHEL-derived |
 | 2 | **Base OS** | Wolfi (custom) | Photon OS / Minideb | Debian 12/13 | RHEL 8/9 |
-| 3 | **Package Manager** | apk (Alpine-compatible) | tdnf / apt | None (build-time via Bazel) | dnf / microdnf |
+| 3 | **Package Manager** | apk (Alpine-compatible)~~DEPRECATED~~ | tdnf / apt | None (build-time via Bazel) | dnf / microdnf |
 | 4 | **Pkg Mgr in Final Image** | No (production) | Yes | No | Yes (microdnf) |
 | 5 | **Shell in Final Image** | No (production) | Yes | No (unless `:debug`) | Yes |
 | 6 | **Build Tool** | apko + melange (YAML) | Dockerfile + bitnami-pkg | Bazel | Dockerfile |
@@ -773,7 +775,7 @@ Source Code
 |----|---------|----------|--------|-------------|
 | CONCEPT-001 | Distroless | EN | Google/Chainguard | 1.0 |
 | CONCEPT-002 | Wolfi Un-Distro | EN | Chainguard | 0.95 |
-| CONCEPT-003 | apk Package Manager | EN | Alpine/Wolfi | 1.0 |
+| CONCEPT-003 | apk Package Manager | EN | Alpine/Wolfi ~~DEPRECATED: Alpine~~ | 1.0 |
 | CONCEPT-004 | SBOM (SPDX) | EN | SPDX/nTIA | 1.0 |
 | CONCEPT-005 | Cosign Keyless Signing | EN | Sigstore | 1.0 |
 | CONCEPT-006 | VEX (Vulnerability Exploitability) | EN | OpenVEX | 0.95 |
@@ -808,4 +810,5 @@ Source Code
 
 | Version | Date | Status | Author |
 |---------|------|--------|--------|
+| 1.1.0 | 2026-04-22 | PARTIALLY SUPERSEDED | Nexus |
 | 1.0.0 | 2026-04-20 | DRAFT | Nexus |

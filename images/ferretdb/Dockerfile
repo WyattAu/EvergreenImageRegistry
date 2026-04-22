@@ -22,10 +22,8 @@ RUN curl -fsSL "https://github.com/FerretDB/FerretDB/releases/download/v${VERSIO
 FROM scratch
 COPY --from=builder /usr/local/bin/ferretdb /usr/local/bin/ferretdb
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 EXPOSE 27017 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/local/bin/ferretdb", "version"]
 ENTRYPOINT ["/usr/local/bin/ferretdb"]
 LABEL org.opencontainers.image.title="ferretdb" \
       org.opencontainers.image.description="Sovereign hardened FerretDB - MongoDB-compatible database" \
@@ -36,3 +34,9 @@ LABEL org.opencontainers.image.title="ferretdb" \
       sovereign.image.category="database" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

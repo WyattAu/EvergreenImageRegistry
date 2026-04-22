@@ -24,11 +24,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/cloudflared /var/log/cloudflared
 COPY --from=builder /etc/cloudflared /etc/cloudflared
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 7844
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/cloudflared", "--version"]
 ENTRYPOINT ["/cloudflared"]
 CMD ["tunnel", "--no-autoupdate"]
 LABEL org.opencontainers.image.title="cloudflare-warrior" \
@@ -45,3 +43,9 @@ LABEL org.opencontainers.image.title="cloudflare-warrior" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

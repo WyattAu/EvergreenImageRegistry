@@ -21,10 +21,8 @@ RUN curl -fsSL "https://github.com/duckdb/duckdb/releases/download/v${VERSION}/d
 
 FROM scratch
 COPY --from=builder /usr/local/bin/duckdb /usr/local/bin/duckdb
-USER 65534:65534
+USER 65532:65532
 EXPOSE 5432
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["/usr/local/bin/duckdb", "--version"]
 ENTRYPOINT ["/usr/local/bin/duckdb"]
 LABEL org.opencontainers.image.title="duckdb" \
       org.opencontainers.image.description="Sovereign hardened DuckDB - in-process analytical database" \
@@ -35,3 +33,9 @@ LABEL org.opencontainers.image.title="duckdb" \
       sovereign.image.category="database" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

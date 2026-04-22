@@ -19,20 +19,17 @@ RUN curl -fsSL "https://download.rethinkdb.com/repository/raw/rethinkdb-${VERSIO
     && tar -xzf /tmp/rethinkdb.tar.gz -C /opt \
     && strip --strip-all /opt/rethinkdb-*/bin/rethinkdb 2>/dev/null || true
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libprotobuf32 libssl3 ca-certificates libstdc++6 && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin rethinkdb 2>/dev/null || true
+RUN apk add --no-cache ca-certificates libstdc++
+RUN useradd -m -u 65532 -s /usr/sbin/nologin rethinkdb 2>/dev/null || true
 RUN mkdir -p /var/lib/rethinkdb /var/log/rethinkdb /var/cache/rethinkdb /data
 COPY --from=builder /opt/rethinkdb-${VERSION} /opt/rethinkdb
-RUN chown -R 65534:65534 /opt/rethinkdb /var/lib/rethinkdb /var/log/rethinkdb /var/cache/rethinkdb /data
-USER 65534:65534
+RUN chown -R 65532:65532 /opt/rethinkdb /var/lib/rethinkdb /var/log/rethinkdb /var/cache/rethinkdb /data
+USER 65532:65532
 WORKDIR /data
 EXPOSE 28015 29015 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:8080"]
 ENTRYPOINT ["/opt/rethinkdb/bin/rethinkdb", "--bind", "all", "--directory", "/data"]
 LABEL org.opencontainers.image.title="rethinkdb" \
       org.opencontainers.image.version="${VERSION}" \
@@ -42,4 +39,8 @@ LABEL org.opencontainers.image.title="rethinkdb" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

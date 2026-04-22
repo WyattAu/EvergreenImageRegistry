@@ -6,18 +6,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl -fsSL "https://github.com/mattermost/focalboard/releases/download/v{version}/focalboard-server-linux-amd64.tar.gz" -o /focalboard.tar.gz && \
     tar -xzf /focalboard.tar.gz -C /opt/ && rm /focalboard.tar.gz
 
-FROM debian:bookworm-slim AS runtime
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        ca-certificates curl && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache ca-certificates curl
 COPY --from=downloader /opt/focalboard /opt/focalboard
 RUN mkdir -p /app /var/log/focalboard /var/cache/focalboard /data \
-    && chown -R 65534:65534 /app /var/log/focalboard /var/cache/focalboard /data /opt/focalboard
-USER 65534:65534
+    && chown -R 65532:65532 /app /var/log/focalboard /var/cache/focalboard /data /opt/focalboard
+USER 65532:65532
 WORKDIR /data
 EXPOSE 8000
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:8000/api/v2/health"]
 ENTRYPOINT ["/opt/focalboard/bin/focalboard-server"]
 LABEL org.opencontainers.image.title="focalboard-server" \
       org.opencontainers.image.version="7.11.3" \
@@ -27,8 +24,13 @@ LABEL org.opencontainers.image.title="focalboard-server" \
       sovereign.image.category="project-management" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="10s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="30000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

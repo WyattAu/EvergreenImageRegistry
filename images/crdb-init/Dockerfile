@@ -22,10 +22,8 @@ RUN curl -fsSL "https://binaries.cockroachdb.com/cockroach-v${VERSION}.linux-amd
 FROM scratch
 COPY --from=builder /usr/local/bin/cockroach /usr/local/bin/cockroach
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 EXPOSE 26257
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD ["/usr/local/bin/cockroach", "version"]
 ENTRYPOINT ["/usr/local/bin/cockroach", "init"]
 LABEL org.opencontainers.image.title="crdb-init" \
       org.opencontainers.image.description="Sovereign hardened CockroachDB init entrypoint" \
@@ -36,3 +34,9 @@ LABEL org.opencontainers.image.title="crdb-init" \
       sovereign.image.category="database" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

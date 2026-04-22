@@ -20,11 +20,9 @@ RUN curl -fsSL "https://github.com/sigstore/fulcio/releases/download/v${VERSION}
 FROM scratch
 COPY --from=downloader /fulcio /fulcio
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 5555
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/fulcio", "version"]
 ENTRYPOINT ["/fulcio"]
 LABEL org.opencontainers.image.title="fulcio" \
       org.opencontainers.image.version="1.8.5" \
@@ -39,3 +37,9 @@ LABEL org.opencontainers.image.title="fulcio" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

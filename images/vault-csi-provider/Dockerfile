@@ -22,10 +22,8 @@ RUN curl -fsSL "https://github.com/hashicorp/vault-csi-provider/releases/downloa
 FROM scratch
 COPY --from=downloader /vault-csi-provider /vault-csi-provider
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/vault-csi-provider", "--help"]
 ENTRYPOINT ["/vault-csi-provider"]
 LABEL org.opencontainers.image.title="vault-csi-provider" \
       org.opencontainers.image.version="1.7.1" \
@@ -40,3 +38,9 @@ LABEL org.opencontainers.image.title="vault-csi-provider" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

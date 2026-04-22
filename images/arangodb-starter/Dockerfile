@@ -30,11 +30,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/lib/arangodb3 /var/lib/arangodb3
 COPY --from=builder /var/log/arangodb3 /var/log/arangodb3
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8529
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/arangod", "--version"]
 ENTRYPOINT ["/arangod", "--serverstarter"]
 LABEL org.opencontainers.image.title="arangodb-starter" \
       org.opencontainers.image.version="3.11.10.1" \
@@ -56,3 +54,9 @@ LABEL org.opencontainers.image.title="arangodb-starter" \
       sovereign.hft.pre-stop-delay="5s" \
       sovereign.hft.connection-drain="true" \
       sovereign.hft.sched-policy="SCHED_OTHER"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

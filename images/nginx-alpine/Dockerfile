@@ -11,22 +11,22 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates gnupg2 lsb-release && rm -rf /var/lib/apt/lists/*
+    curl ca-certificates gnupg lsb-release && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://nginx.org/keys/nginx_signing.key" | gpg --dearmor -o /usr/share/keyrings/nginx-archive-keyring.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/debian bookworm nginx" > /etc/apt/sources.list.d/nginx.list && \
+RUN curl -fsSL "https://nginx.org/keys/nginx_signing.key" | gnupg --dearmor -o /usr/share/keyrings/nginx-archive-keyring.gnupg && \
+    echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gnupg] http://nginx.org/packages/debian bookworm nginx" > /etc/apt/sources.list.d/nginx.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends nginx=${VERSION}-1~bookworm && \
     rm -rf /var/lib/apt/lists/*
 
 FROM debian:bookworm-slim AS builder
-RUN groupadd -r -g 65534 appuser && useradd -r -u 65534 -g appuser -d /app -s /sbin/nologin appuser && \
+RUN groupadd -r -g 65532 appuser && useradd -r -u 65532 -g appuser -d /app -s /sbin/nologin appuser && \
     mkdir -p /app /var/log/nginx /var/cache/nginx /run && \
-    chown -R 65534:65534 /app /var/log/nginx /var/cache/nginx
+    chown -R 65532:65532 /app /var/log/nginx /var/cache/nginx
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libssl3 libpcre3 libz1 ca-certificates && rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache ca-certificates
 COPY --from=downloader /usr/sbin/nginx /usr/sbin/nginx
 COPY --from=downloader /etc/nginx /etc/nginx
 COPY --from=builder /app /app
@@ -34,11 +34,9 @@ COPY --from=builder /var/log/nginx /var/log/nginx
 COPY --from=builder /var/cache/nginx /var/cache/nginx
 RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
     ln -sf /dev/stderr /var/log/nginx/error.log
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 80 443
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/sbin/nginx", "-v"]
 ENTRYPOINT ["/usr/sbin/nginx"]
 CMD ["-g", "daemon off;"]
 LABEL org.opencontainers.image.title="nginx-alpine" \
@@ -50,8 +48,13 @@ LABEL org.opencontainers.image.title="nginx-alpine" \
       sovereign.image.category="networking" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

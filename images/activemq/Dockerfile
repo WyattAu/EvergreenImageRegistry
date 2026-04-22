@@ -21,21 +21,18 @@ RUN curl -fsSL "https://archive.apache.org/dist/activemq/${ACTIVEMQ_VERSION}/apa
     rm -rf /activemq.tar.gz /checksums.txt
 
 # hadolint ignore=DL3023
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    openjdk-${JAVA_VERSION}-jre-headless ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    groupadd -g 65534 activemq && useradd -u 65534 -g activemq -s /usr/sbin/nologin -d /opt/activemq activemq
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache openjdk-${JAVA_VERSION}-jre-headless ca-certificates
 
 COPY --from=downloader /opt/activemq /opt/activemq
-RUN chown -R 65534:65534 /opt/activemq
+RUN chown -R 65532:65532 /opt/activemq
 
-USER 65534:65534
+USER 65532:65532
 WORKDIR /opt/activemq
 ENV JAVA_HOME="/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64"
 ENV ACTIVEMQ_HOME="/opt/activemq"
 EXPOSE 61616 8161 5672 61613
-HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD ["curl", "-fsSL", "http://localhost:8161/api/health"]
 ENTRYPOINT ["/opt/activemq/bin/activemq", "console"]
 LABEL org.opencontainers.image.title="activemq" \
       org.opencontainers.image.version="5.18.3" \
@@ -50,3 +47,8 @@ LABEL org.opencontainers.image.title="activemq" \
       sovereign.hft.shutdown-timeout="5s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="30000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

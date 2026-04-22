@@ -16,10 +16,8 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/prometheus-config /var/log/prometheus-config
 COPY --from=builder /var/cache/prometheus-config /var/cache/prometheus-config
 COPY --from=builder /etc/prometheus /etc/prometheus
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/prometheus-config-reloader", "--version"]
 ENTRYPOINT ["/prometheus-config-reloader"]
 LABEL org.opencontainers.image.title="prometheus-config" \
       org.opencontainers.image.version="0.90.1" \
@@ -30,3 +28,9 @@ LABEL org.opencontainers.image.title="prometheus-config" \
       sovereign.constraint.scratch="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="10s"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

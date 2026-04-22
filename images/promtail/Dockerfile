@@ -23,10 +23,8 @@ RUN curl -fsSL "https://github.com/grafana/loki/releases/download/v${VERSION}/pr
 FROM scratch
 COPY --from=builder /tmp/promtail /usr/bin/promtail
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 EXPOSE 9080 3100
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/bin/promtail", "--version"]
 ENTRYPOINT ["/usr/bin/promtail"]
 LABEL sovereign.image.status="functional" \
       sovereign.image.tier="1" \
@@ -34,3 +32,9 @@ LABEL sovereign.image.status="functional" \
       org.opencontainers.image.title="promtail" \
       org.opencontainers.image.description="Sovereign hardened Promtail - log collection agent for Grafana Loki" \
       org.opencontainers.image.version="${VERSION}"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

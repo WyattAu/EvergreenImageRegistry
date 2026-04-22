@@ -19,19 +19,17 @@ RUN curl -fsSL "https://github.com/questdb/questdb/releases/download/${VERSION}/
     && tar -xzf /questdb.tar.gz -C /opt \
     && rm /questdb.tar.gz
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates openjdk-17-jre-headless && rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin questdb 2>/dev/null || true
+RUN apk add --no-cache ca-certificates
+RUN useradd -m -u 65532 -s /usr/sbin/nologin questdb 2>/dev/null || true
 RUN mkdir -p /var/lib/questdb /var/log/questdb /var/cache/questdb
 COPY --from=builder /opt/questdb-${VERSION}-no-jre-bin /opt/questdb
 RUN chown -R questdb:questdb /opt/questdb /var/lib/questdb /var/log/questdb /var/cache/questdb
-USER 65534:65534
+USER 65532:65532
 WORKDIR /opt/questdb
 EXPOSE 9000 8812 9009
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:9000/status"]
 ENTRYPOINT ["/opt/questdb/bin/questdb.sh", "start", "-d"]
 LABEL org.opencontainers.image.title="questdb" \
       org.opencontainers.image.version="7.3.10" \
@@ -41,4 +39,8 @@ LABEL org.opencontainers.image.title="questdb" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

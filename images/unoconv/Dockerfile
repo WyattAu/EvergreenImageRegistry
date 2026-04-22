@@ -1,7 +1,7 @@
 ARG VERSION=0.8
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         unoconv libreoffice-writer-nogui \
@@ -9,12 +9,10 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app /var/log/app /var/cache/app \
-    && chown -R 65534:65534 /app /var/log/app /var/cache/app
-USER 65534:65534
+    && chown -R 65532:65532 /app /var/log/app /var/cache/app
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:8080"] 2>/dev/null || ["true"]
 ENTRYPOINT ["unoconv"]
 LABEL org.opencontainers.image.title="unoconv" \
       org.opencontainers.image.version="0.8" \
@@ -24,8 +22,14 @@ LABEL org.opencontainers.image.title="unoconv" \
       sovereign.image.category="document-management" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="10s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="30000ms"
+
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

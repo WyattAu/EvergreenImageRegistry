@@ -11,7 +11,7 @@ ARG BUILD_DATE
 # hadolint ignore=DL3023
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential cmake curl ca-certificates \
+    build-base cmake curl ca-certificates \
     libsodium-dev libpgm-dev libnorm-dev && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://github.com/zeromq/libzmq/releases/download/v${VERSION}/zeromq-${VERSION}.tar.gz" -o /zeromq.tar.gz && \
@@ -34,16 +34,14 @@ RUN curl -fsSL "https://github.com/zeromq/libzmq/releases/download/v${VERSION}/z
     rm -rf /zeromq.tar.gz /checksums.txt /tmp/zeromq-${VERSION}
 
 # hadolint ignore=DL3023
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libstdc++6 libgcc-s1 libsodium23 ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    groupadd -g 65534 zeromq && useradd -u 65534 -g zeromq -s /usr/sbin/nologin -d /app zeromq && \
-    mkdir -p /app && chown -R 65534:65534 /app
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache libstdc++ ca-certificates
 
 COPY --from=builder /opt/zeromq /opt/zeromq
-RUN ldconfig && chown -R 65534:65534 /opt/zeromq
+RUN ldconfig && chown -R 65532:65532 /opt/zeromq
 
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 ENV LD_LIBRARY_PATH="/opt/zeromq/lib"
 LABEL org.opencontainers.image.title="zeromq" \
@@ -59,3 +57,8 @@ LABEL org.opencontainers.image.title="zeromq" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

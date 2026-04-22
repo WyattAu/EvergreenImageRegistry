@@ -14,9 +14,13 @@ RUN curl -fsSL "https://github.com/matrix-org/dendrite/releases/download/v0.13.0
 FROM scratch
 COPY --from=downloader /tmp/binary /usr/local/bin/chat-relay
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3     CMD ["/usr/local/bin/chat-relay", "--version"]
-ENTRYPOINT ["/usr/local/bin/chat-relay"]
 LABEL org.opencontainers.image.title="chat-relay"       org.opencontainers.image.description="Chat Relay - generic chat relay placeholder"       org.opencontainers.image.version="0.1.0"       org.opencontainers.image.vendor="Generic"       org.opencontainers.image.source="https://github.com/matrix-org/dendrite"       sovereign.image.tier="2"       sovereign.constraint.nonroot="true"       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

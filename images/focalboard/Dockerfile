@@ -13,3 +13,9 @@ LABEL org.opencontainers.image.title="focalboard" \
       sovereign.image.status="deprecated" \
       sovereign.image.category="collaboration" \
       sovereign.image.note="Focalboard was merged into Mattermost as the 'Boards' plugin. Use images/mattermost/ instead."
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="none"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

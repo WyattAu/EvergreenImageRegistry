@@ -18,21 +18,18 @@ RUN curl -fsSL "https://packages.graylog2.org/releases/graylog/graylog-${VERSION
     && tar -xzf graylog.tar.gz \
     && rm graylog.tar.gz
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    openjdk-17-jre-headless ca-certificates curl && \
-    rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin graylog 2>/dev/null || true
+RUN apk add --no-cache ca-certificates curl
+RUN useradd -m -u 65532 -s /usr/sbin/nologin graylog 2>/dev/null || true
 RUN mkdir -p /opt/graylog/data /opt/graylog/logs /var/log/graylog /var/cache/graylog
 COPY --from=builder /tmp/graylog-${VERSION} /opt/graylog
-USER 65534:65534
+USER 65532:65532
 WORKDIR /opt/graylog
 ENV GRAYLOG_HTTP_BIND_ADDRESS="0.0.0.0:9000"
 ENV GRAYLOG_DATA_DIR="/opt/graylog/data"
 EXPOSE 9000 12201 5044
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD ["curl", "-fsSL", "http://localhost:9000/api/system"]
 ENTRYPOINT ["/opt/graylog/bin/graylogctl"]
 CMD ["run"]
 LABEL org.opencontainers.image.title="graylog" \
@@ -43,8 +40,13 @@ LABEL org.opencontainers.image.title="graylog" \
       sovereign.image.status="functional" \
       sovereign.image.category="observability" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="15s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="60000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

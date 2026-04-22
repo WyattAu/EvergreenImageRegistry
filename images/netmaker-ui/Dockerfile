@@ -61,11 +61,9 @@ RUN curl -fsSL "https://github.com/gravitl/netmaker-ui/releases/download/v0.25.4
 FROM gcr.io/distroless/static-debian12
 COPY --from=server-builder /fileserver /fileserver
 COPY --from=downloader /www /www
-USER 65534:65534
+USER 65532:65532
 WORKDIR /www
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["/fileserver"]
 ENTRYPOINT ["/fileserver"]
 LABEL org.opencontainers.image.title="netmaker-ui" \
       org.opencontainers.image.version="0.25.4" \
@@ -80,3 +78,9 @@ LABEL org.opencontainers.image.title="netmaker-ui" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="distroless"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

@@ -27,11 +27,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/mongodb_exporter /var/log/mongodb_exporter
 COPY --from=builder /var/cache/mongodb_exporter /var/cache/mongodb_exporter
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 9216
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/mongodb_exporter", "--version"]
 ENTRYPOINT ["/mongodb_exporter"]
 LABEL org.opencontainers.image.title="mongodb-exporter" \
       org.opencontainers.image.version="0.13.0" \
@@ -51,3 +49,9 @@ LABEL org.opencontainers.image.title="mongodb-exporter" \
       sovereign.hft.pre-stop-hook="false" \
       sovereign.hft.connection-drain="false" \
       sovereign.hft.sched-policy="SCHED_OTHER"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

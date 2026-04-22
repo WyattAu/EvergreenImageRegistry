@@ -21,11 +21,9 @@ RUN curl -fsSL "https://github.com/kanidm/kanidm/releases/download/v${VERSION}/k
 FROM scratch
 COPY --from=downloader /kanidmd /kanidmd
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8443
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/kanidmd", "--help"]
 ENTRYPOINT ["/kanidmd"]
 LABEL org.opencontainers.image.title="kanidm-server" \
       org.opencontainers.image.version="1.9.2" \
@@ -40,3 +38,9 @@ LABEL org.opencontainers.image.title="kanidm-server" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

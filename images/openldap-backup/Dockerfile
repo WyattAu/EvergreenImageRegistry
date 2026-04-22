@@ -6,20 +6,12 @@
 
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim AS runtime
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        ca-certificates \
-        slapd \
-        ldap-utils \
-        coreutils && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007 AS runtime
+RUN apk add --no-cache ca-certificates coreutils
 RUN mkdir -p /app /backup && \
-    chown -R 65534:65534 /app /backup
-USER 65534:65534
+    chown -R 65532:65532 /app /backup
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["true"]
 ENTRYPOINT ["/usr/sbin/slapcat"]
 CMD ["-l", "/backup/ldap-backup.ldif"]
 LABEL org.opencontainers.image.title="openldap-backup" \
@@ -30,8 +22,13 @@ LABEL org.opencontainers.image.title="openldap-backup" \
       sovereign.image.category="identity" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

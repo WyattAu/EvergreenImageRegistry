@@ -11,9 +11,9 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential libpcre3-dev libssl-dev zlib1g-dev libgeoip-dev \
-    libxml2-dev libyajl-dev libcurl4-openssl-dev git curl ca-certificates \
-    wget autoconf automake libtool pkg-config flex bison && \
+    build-base libpcre3-dev libssl-dev zlib1g-dev libgeoip-dev \
+    libxml2-dev libyajl-dev curl-openssl-dev git curl ca-certificates \
+    wget autoconf automake libtool pkgconf flex bison && \
     rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN wget -q "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -O /nginx.tar.gz && \
@@ -45,22 +45,19 @@ RUN wget -q "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -O /nginx
     strip --strip-all /usr/sbin/nginx && \
     strip --strip-all /usr/lib/nginx/modules/ngx_http_modsecurity_module.so
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libssl3 libpcre3 libz1 libxml2 libyajl2 libcurl4 libgeoip1 ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache libxml2 curl ca-certificates
 RUN mkdir -p /app /var/log/nginx /var/cache/nginx /etc/nginx/modsec /run && \
-    chown -R 65534:65534 /app /var/log/nginx /var/cache/nginx
+    chown -R 65532:65532 /app /var/log/nginx /var/cache/nginx
 COPY --from=builder /usr/sbin/nginx /usr/sbin/nginx
 COPY --from=builder /usr/lib/nginx/modules/ngx_http_modsecurity_module.so /usr/lib/nginx/modules/ngx_http_modsecurity_module.so
 COPY --from=builder /etc/nginx /etc/nginx
 RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
     ln -sf /dev/stderr /var/log/nginx/error.log
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 80 443
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/sbin/nginx", "-v"]
 ENTRYPOINT ["/usr/sbin/nginx"]
 CMD ["-g", "daemon off;"]
 LABEL org.opencontainers.image.title="nginx-modsec" \
@@ -72,8 +69,13 @@ LABEL org.opencontainers.image.title="nginx-modsec" \
       sovereign.image.category="security" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

@@ -10,17 +10,16 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    default-mysql-client && \
-    mkdir -p /app /var/log/mysql-init /var/cache/mysql-init
+    default-php84-mysql-client && \
+    mkdir -p /app /var/log/php84-mysql-init /var/cache/php84-mysql-init
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    default-mysql-client curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
-COPY --from=builder --chown=65534:65534 /app /app
-COPY --from=builder --chown=65534:65534 /var/log/mysql-init /var/log/mysql-init
-COPY --from=builder --chown=65534:65534 /var/cache/mysql-init /var/cache/mysql-init
-USER 65534:65534
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache curl ca-certificates
+COPY --from=builder --chown=65532:65532 /app /app
+COPY --from=builder --chown=65532:65532 /var/log/php84-mysql-init /var/log/php84-mysql-init
+COPY --from=builder --chown=65532:65532 /var/cache/php84-mysql-init /var/cache/php84-mysql-init
+USER 65532:65532
 WORKDIR /app
 COPY <<'SCRIPT' /app/init.sh
 #!/bin/sh
@@ -30,21 +29,23 @@ set -eu
 if [ -d "/docker-entrypoint-initdb.d" ]; then
     for f in /docker-entrypoint-initdb.d/*; do
         case "$f" in
-            *.sql)    echo "Running $f"; mysql --host="$MYSQL_HOST" --user="$MYSQL_USER" --password="$MYSQL_PASSWORD" "$MYSQL_DATABASE" < "$f" ;;
+            *.sql)    echo "Running $f"; php84-mysql --host="$MYSQL_HOST" --user="$MYSQL_USER" --password="$MYSQL_PASSWORD" "$MYSQL_DATABASE" < "$f" ;;
             *.sh)     echo "Running $f"; . "$f" ;;
             *)        echo "Ignoring $f" ;;
         esac
     done
 fi
 SCRIPT
-RUN chmod +x /app/init.sh && chown 65534:65534 /app/init.sh
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["mysql", "--version"]
+RUN chmod +x /app/init.sh && chown 65532:65532 /app/init.sh
 ENTRYPOINT ["/app/init.sh"]
-LABEL org.opencontainers.image.title="mysql-init" \
+LABEL org.opencontainers.image.title="php84-mysql-init" \
       org.opencontainers.image.version="8.0" \
       org.opencontainers.image.description="MySQL Initialization Container" \
       org.opencontainers.image.vendor="Oracle" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

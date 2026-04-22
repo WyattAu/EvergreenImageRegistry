@@ -23,11 +23,9 @@ RUN curl -fsSL "https://github.com/etcd-io/etcd/releases/download/v${VERSION}/et
 FROM scratch
 COPY --from=builder /tmp/etcdctl /usr/local/bin/etcdctl
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /tmp
 EXPOSE 2379
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/local/bin/etcdctl", "version"]
 ENTRYPOINT ["/usr/local/bin/etcdctl"]
 LABEL sovereign.image.status="functional" \
       sovereign.image.tier="1" \
@@ -35,3 +33,9 @@ LABEL sovereign.image.status="functional" \
       org.opencontainers.image.title="etcd-backup" \
       org.opencontainers.image.description="Sovereign hardened etcd backup - etcdctl wrapper for etcd backup and restore operations" \
       org.opencontainers.image.version="${VERSION}"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

@@ -18,16 +18,14 @@ RUN curl -fsSL "https://code.forgejo.org/forgejo/forgejo/releases/download/v14.0
 
 FROM cgr.dev/chainguard/wolfi-base:latest AS runtime
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN addgroup -g 65534 git || true
-RUN adduser -D -u 65534 -G git git || true
+RUN addgroup -g 65532 git || true
+RUN adduser -D -u 65532 -G git git || true
 RUN mkdir -p /app /var/log/forgejo /var/cache/forgejo
 USER git
 WORKDIR /app
 # hadolint ignore=DL3023
 COPY --from=downloader /forgejo /usr/local/bin/forgejo
 EXPOSE 3000 22
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD /usr/local/bin/forgejo --version
 ENTRYPOINT ["/usr/local/bin/forgejo"]
 LABEL org.opencontainers.image.title="forgejo" \
       org.opencontainers.image.version="14.0.4" \
@@ -35,3 +33,10 @@ LABEL org.opencontainers.image.title="forgejo" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.wolfi="true"
+
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+USER 65532:65532
+STOPSIGNAL SIGTERM

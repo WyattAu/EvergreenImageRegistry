@@ -21,10 +21,8 @@ RUN curl -fsSL "https://github.com/cockroachdb/cockroach-operator/releases/downl
 FROM scratch
 COPY --from=builder /usr/local/bin/cockroach-operator /usr/local/bin/cockroach-operator
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 EXPOSE 8080 8443
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/local/bin/cockroach-operator", "version"]
 ENTRYPOINT ["/usr/local/bin/cockroach-operator"]
 LABEL org.opencontainers.image.title="crdb-operator" \
       org.opencontainers.image.description="Sovereign hardened CockroachDB Operator - Kubernetes operator for CockroachDB" \
@@ -35,3 +33,9 @@ LABEL org.opencontainers.image.title="crdb-operator" \
       sovereign.image.category="database" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

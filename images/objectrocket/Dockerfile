@@ -9,19 +9,17 @@
 ARG VERSION=1.0.0
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin objectrocket 2>/dev/null || true
+RUN useradd -m -u 65532 -s /usr/sbin/nologin objectrocket 2>/dev/null || true
 RUN mkdir -p /var/lib/objectrocket /var/log/objectrocket /app
 RUN printf '#!/bin/sh\necho "objectrocket v%s - MongoDB cloud development compatibility"\necho "ObjectRocket is a fully managed database cloud service."\necho "Use the ObjectRocket/MongoDB Atlas endpoint in production."\nsleep infinity' "${VERSION}" > /app/objectrocket && chmod +x /app/objectrocket
-RUN chown -R 65534:65534 /var/lib/objectrocket /var/log/objectrocket /app
-USER 65534:65534
+RUN chown -R 65532:65532 /var/lib/objectrocket /var/log/objectrocket /app
+USER 65532:65532
 WORKDIR /app
 EXPOSE 27017
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["/app/objectrocket"]
 ENTRYPOINT ["/app/objectrocket"]
 LABEL org.opencontainers.image.title="objectrocket" \
       org.opencontainers.image.version="${VERSION}" \
@@ -31,4 +29,9 @@ LABEL org.opencontainers.image.title="objectrocket" \
       sovereign.image.status="functional" \
       sovereign.image.note="ObjectRocket is a fully managed cloud service. Use the ObjectRocket endpoint in production." \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

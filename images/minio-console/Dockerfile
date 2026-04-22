@@ -8,11 +8,9 @@ RUN curl -fsSL "https://github.com/minio/console/releases/download/v0.35.0/conso
 FROM scratch
 COPY --from=downloader /console /console
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 9090
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/console", "--version"]
 ENTRYPOINT ["/console"]
 LABEL org.opencontainers.image.title="minio-console" \
       org.opencontainers.image.version="v0.35.0" \
@@ -27,3 +25,9 @@ LABEL org.opencontainers.image.title="minio-console" \
       sovereign.hft.shutdown-timeout="5s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="10000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

@@ -12,30 +12,26 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl="7.88.1-*" \
         ca-certificates \
-        build-essential && \
+        build-base && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /tmp
 RUN curl -fsSL "https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.gz" -o /tmp/redis.tar.gz && \
     tar -xzf /tmp/redis.tar.gz -C /tmp && \
     cd /tmp/redis-${VERSION} && \
     make -j$(nproc) && \
-    strip src/redis-server
+    strip src/redis
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
-RUN groupadd -r -g 65534 redis && useradd -r -u 65534 -g redis -d /data -s /usr/sbin/nologin redis
-COPY --from=builder /tmp/redis-7.2.4/src/redis-server /usr/local/bin/redis-server
-RUN mkdir -p /data && chown -R 65534:65534 /data
-USER 65534:65534
+RUN apk add --no-cache ca-certificates
+RUN groupadd -r -g 65532 redis && useradd -r -u 65532 -g redis -d /data -s /usr/sbin/nologin redis
+COPY --from=builder /tmp/redis-7.2.4/src/redis /usr/local/bin/redis
+RUN mkdir -p /data && chown -R 65532:65532 /data
+USER 65532:65532
 WORKDIR /data
 EXPOSE 6379
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/local/bin/redis-server", "--version"]
-ENTRYPOINT ["/usr/local/bin/redis-server"]
+ENTRYPOINT ["/usr/local/bin/redis"]
 CMD ["--protected-mode", "no", "--bind", "0.0.0.0"]
 LABEL org.opencontainers.image.title="argocd-redis" \
       org.opencontainers.image.description="ArgoCD Redis - Redis sidecar for ArgoCD caching" \
@@ -45,3 +41,8 @@ LABEL org.opencontainers.image.title="argocd-redis" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.debian-slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

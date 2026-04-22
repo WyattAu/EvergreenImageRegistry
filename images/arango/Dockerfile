@@ -18,20 +18,17 @@ RUN curl -fsSL "https://download.arangodb.com/arangodb312/Community/Linux/arango
     && tar -xzf /tmp/arango.tar.gz -C /opt \
     && strip --strip-all /opt/arangodb3-linux-*/usr/sbin/arangod 2>/dev/null || true
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libssl3 libstdc++6 ca-certificates && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin arango 2>/dev/null || true
+RUN apk add --no-cache libstdc++ ca-certificates
+RUN useradd -m -u 65532 -s /usr/sbin/nologin arango 2>/dev/null || true
 RUN mkdir -p /var/lib/arangodb /var/log/arangodb /var/cache/arangodb /var/lib/arangodb3-apps
 COPY --from=builder /opt/arangodb3-linux-* /opt/arangodb
-RUN chown -R 65534:65534 /opt/arangodb /var/lib/arangodb /var/log/arangodb /var/cache/arangodb /var/lib/arangodb3-apps
-USER 65534:65534
+RUN chown -R 65532:65532 /opt/arangodb /var/lib/arangodb /var/log/arangodb /var/cache/arangodb /var/lib/arangodb3-apps
+USER 65532:65532
 WORKDIR /var/lib/arangodb
 EXPOSE 8529
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:8529/_api/version"]
 ENTRYPOINT ["/opt/arangodb/usr/sbin/arangod", "--server.endpoint", "tcp://0.0.0.0:8529", "--database.directory", "/var/lib/arangodb", "--foxx.queues", "false", "--log.output", "-"]
 LABEL org.opencontainers.image.title="arango" \
       org.opencontainers.image.version="${VERSION}" \
@@ -41,4 +38,8 @@ LABEL org.opencontainers.image.title="arango" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

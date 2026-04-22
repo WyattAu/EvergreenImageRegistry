@@ -30,11 +30,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /var/log/metricbeat /var/log/metricbeat
 COPY --from=builder /var/lib/metricbeat /var/lib/metricbeat
 COPY --from=builder /var/cache/metricbeat /var/cache/metricbeat
-USER 65534:65534
+USER 65532:65532
 WORKDIR /opt/metricbeat
 EXPOSE 5066
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/opt/metricbeat/metricbeat", "--version"]
 ENTRYPOINT ["/opt/metricbeat/metricbeat"]
 LABEL org.opencontainers.image.title="metricbeat" \
       org.opencontainers.image.description="Sovereign hardened Metricbeat - Elastic infrastructure metrics collector" \
@@ -49,3 +47,9 @@ LABEL org.opencontainers.image.title="metricbeat" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

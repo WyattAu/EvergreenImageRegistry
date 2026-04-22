@@ -22,24 +22,21 @@ RUN apt-get update && \
 COPY --from=builder /install /install
 RUN find /install -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true
 
-FROM debian:bookworm-20240101-slim
-RUN groupadd -g 65534 awslogs && \
-    useradd -m -u 65534 -g awslogs -s /usr/sbin/nologin awslogs
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends python3-minimal ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN groupadd -g 65532 awslogs && \
+    useradd -m -u 65532 -g awslogs -s /usr/sbin/nologin awslogs
+RUN apk add --no-cache ca-certificates
 COPY --from=stripper /install /usr/local
 COPY --from=stripper /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 RUN mkdir -p /app/conf /app/logs && \
     chown -R awslogs:awslogs /app
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 ENV AWSLOGS_VERSION=${VERSION} \
     AWS_DEFAULT_REGION="" \
     AWS_ACCESS_KEY_ID="" \
     AWS_SECRET_ACCESS_KEY=""
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["/usr/local/bin/python3", "-m", "pip", "show", "awslogs"]
 ENTRYPOINT ["awslogs"]
 LABEL org.opencontainers.image.title="awslogs" \
       org.opencontainers.image.version="0.16.0" \
@@ -47,7 +44,6 @@ LABEL org.opencontainers.image.title="awslogs" \
       org.opencontainers.image.description="AWS CloudWatch Logs CLI client" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
@@ -59,3 +55,8 @@ LABEL org.opencontainers.image.title="awslogs" \
       sovereign.hft.connection-drain="false" \
       sovereign.hft.sched-policy="SCHED_OTHER" \
       sovereign.hft.runtime="python"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

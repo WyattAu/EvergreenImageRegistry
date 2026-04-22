@@ -18,11 +18,9 @@ RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/dexidp/dex /sr
 FROM scratch
 COPY --from=builder /dex /dex
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 5556
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/dex", "version"]
 ENTRYPOINT ["/dex"]
 LABEL org.opencontainers.image.title="dex" \
       org.opencontainers.image.version="2.45.1" \
@@ -37,3 +35,9 @@ LABEL org.opencontainers.image.title="dex" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

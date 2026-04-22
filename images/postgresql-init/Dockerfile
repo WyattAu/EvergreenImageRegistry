@@ -13,14 +13,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-client && \
     mkdir -p /app /var/log/postgresql-init /var/cache/postgresql-init
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    postgresql-client-${VERSION} curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
-COPY --from=builder --chown=65534:65534 /app /app
-COPY --from=builder --chown=65534:65534 /var/log/postgresql-init /var/log/postgresql-init
-COPY --from=builder --chown=65534:65534 /var/cache/postgresql-init /var/cache/postgresql-init
-USER 65534:65534
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache postgresql-client-${VERSION} curl ca-certificates
+COPY --from=builder --chown=65532:65532 /app /app
+COPY --from=builder --chown=65532:65532 /var/log/postgresql-init /var/log/postgresql-init
+COPY --from=builder --chown=65532:65532 /var/cache/postgresql-init /var/cache/postgresql-init
+USER 65532:65532
 WORKDIR /app
 COPY <<'SCRIPT' /app/init.sh
 #!/bin/sh
@@ -37,9 +36,7 @@ if [ -d "/docker-entrypoint-initdb.d" ]; then
     done
 fi
 SCRIPT
-RUN chmod +x /app/init.sh && chown 65534:65534 /app/init.sh
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["psql", "--version"]
+RUN chmod +x /app/init.sh && chown 65532:65532 /app/init.sh
 ENTRYPOINT ["/app/init.sh"]
 LABEL org.opencontainers.image.title="postgresql-init" \
       org.opencontainers.image.version="17" \
@@ -47,4 +44,8 @@ LABEL org.opencontainers.image.title="postgresql-init" \
       org.opencontainers.image.vendor="PostgreSQL" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

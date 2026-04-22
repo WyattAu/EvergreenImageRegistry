@@ -8,17 +8,16 @@ RUN strip /flame 2>/dev/null || true
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app/data
 
-FROM debian:bookworm-slim
+FROM scratch
+
 COPY --from=downloader /flame /usr/local/bin/flame 2>/dev/null || true
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
-RUN useradd -r -u 65534 -g nogroup -d /app -s /sbin/nologin flame 2>/dev/null || true && \
-    chown -R 65534:65534 /app 2>/dev/null || true
-USER 65534:65534
+RUN useradd -r -u 65532 -g nogroup -d /app -s /sbin/nologin flame 2>/dev/null || true && \
+    chown -R 65532:65532 /app 2>/dev/null || true
+USER 65532:65532
 WORKDIR /app
 EXPOSE 5005
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["flame", "--version"] || exit 0
 ENTRYPOINT ["flame"]
 CMD ["--ui-only"]
 LABEL org.opencontainers.image.title="flame-ui" \
@@ -27,4 +26,8 @@ LABEL org.opencontainers.image.title="flame-ui" \
       org.opencontainers.image.source="https://github.com/pawelmalak/flame" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

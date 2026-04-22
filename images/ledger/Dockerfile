@@ -3,7 +3,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        build-essential cmake g++ libboost-all-dev libgmp-dev \
+        build-base cmake g++ libboost-all-dev libgmp-dev \
         libmpfr-dev texinfo groff curl ca-certificates git && \
     rm -rf /var/lib/apt/lists/*
 RUN git clone --depth 1 --branch v{version} \
@@ -12,17 +12,14 @@ RUN git clone --depth 1 --branch v{version} \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_DOCS=OFF -DUSE_PYTHON=OFF . && \
     make -j$(nproc) && make install && strip /usr/local/bin/ledger
 
-FROM debian:bookworm-slim AS runtime
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        libboost-iostreams1.74.0 libgmp10 libmpfr6 ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache ca-certificates
 COPY --from=builder /usr/local/bin/ledger /usr/local/bin/ledger
 RUN mkdir -p /app /var/log/ledger /var/cache/ledger && \
-    chown -R 65534:65534 /app /var/log/ledger /var/cache/ledger
-USER 65534:65534
+    chown -R 65532:65532 /app /var/log/ledger /var/cache/ledger
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["ledger", "--version"]
 ENTRYPOINT ["ledger"]
 LABEL org.opencontainers.image.title="ledger" \
       org.opencontainers.image.version="3.3.2" \
@@ -32,8 +29,13 @@ LABEL org.opencontainers.image.title="ledger" \
       sovereign.image.category="business-finance" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="5s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="10000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

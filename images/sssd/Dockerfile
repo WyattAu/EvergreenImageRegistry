@@ -4,8 +4,7 @@
 # Constraint: debian-slim hardened
 # =============================================================================
 
-FROM debian:bookworm-slim
-
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
 RUN apt-get update && apt-get install -y --no-install-recommends \
         sssd sssd-ldap sssd-krb5 sssd-common \
         ca-certificates tzdata krb5-user libnss-sss libpam-sss && \
@@ -21,5 +20,11 @@ LABEL org.opencontainers.image.title="sssd" \
       sovereign.image.tier="2" \
       sovereign.image.status="functional" \
       sovereign.image.category="auth" \
-      sovereign.constraint.debian_slim="true" \
       sovereign.image.note="SSSD requires privileged mode for PAM/NSS integration. Runs as root for PAM module access."
+
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="none"
+EXPOSE 9101
+USER 65532:65532
+STOPSIGNAL SIGTERM

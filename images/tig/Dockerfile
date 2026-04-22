@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential libncurses-dev zlib1g-dev git curl ca-certificates && \
+    build-base libncurses-dev zlib1g-dev git curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/jonas/tig/releases/download/tig-${VERSION}/tig-${VERSION}.tar.gz" -o /tig.tar.gz && \
     tar -xzf /tig.tar.gz -C / && rm /tig.tar.gz && \
@@ -19,14 +19,13 @@ RUN curl -fsSL "https://github.com/jonas/tig/releases/download/tig-${VERSION}/ti
     make -j"$(nproc)" && \
     strip --strip-all /tig-${VERSION}/src/tig
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libncurses6 zlib1g ca-certificates git && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache zlib ca-certificates git
 RUN mkdir -p /app /var/log/tig
 COPY --from=builder /tig-${VERSION}/src/tig /usr/local/bin/tig
-RUN chown -R 65534:65534 /app /var/log/tig
-USER 65534:65534
+RUN chown -R 65532:65532 /app /var/log/tig
+USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["/usr/local/bin/tig"]
 LABEL org.opencontainers.image.title="tig" \
@@ -38,8 +37,13 @@ LABEL org.opencontainers.image.title="tig" \
       sovereign.image.category="tool" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="2000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

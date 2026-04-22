@@ -24,11 +24,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/prometheus /var/log/prometheus
 COPY --from=builder /var/cache/prometheus /var/cache/prometheus
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 9090
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/prometheus", "--version"]
 ENTRYPOINT ["/prometheus"]
 LABEL org.opencontainers.image.title="prometheus" \
       org.opencontainers.image.version="2.53.0" \
@@ -47,3 +45,9 @@ LABEL org.opencontainers.image.title="prometheus" \
       sovereign.hft.pre-stop-delay="5s" \
       sovereign.hft.connection-drain="true" \
       sovereign.hft.sched-policy="SCHED_OTHER"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

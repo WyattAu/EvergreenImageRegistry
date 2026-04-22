@@ -22,10 +22,8 @@ RUN curl -fsSL "https://github.com/zitadel/zitadel-operator/releases/download/v$
 FROM scratch
 COPY --from=downloader /zitadel-operator /zitadel-operator
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/zitadel-operator", "--help"]
 ENTRYPOINT ["/zitadel-operator"]
 LABEL org.opencontainers.image.title="zitadel-operator" \
       org.opencontainers.image.version="0.5.0" \
@@ -40,3 +38,9 @@ LABEL org.opencontainers.image.title="zitadel-operator" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

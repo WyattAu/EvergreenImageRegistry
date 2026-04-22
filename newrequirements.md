@@ -6,7 +6,7 @@
 |-----------|-------|
 | Document ID | REQ-SPEC-SOVEREIGN-001 |
 | Version | 2.0.0 |
-| Status | APPROVED |
+| Status | **SUPERSEDED** by REQUIREMENTS.md v4.0.0 (2026-04-22) |
 | Created | 2026-04-19 |
 | Last Updated | 2026-04-19 |
 | Confidence Level | 0.98 |

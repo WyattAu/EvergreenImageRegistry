@@ -22,11 +22,9 @@ RUN curl -fsSL "https://github.com/keycloak/keycloak-gatekeeper/releases/downloa
 FROM scratch
 COPY --from=downloader /keycloak-gatekeeper /keycloak-gatekeeper
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/keycloak-gatekeeper", "--help"]
 ENTRYPOINT ["/keycloak-gatekeeper"]
 LABEL org.opencontainers.image.title="keycloak-gatekeeper" \
       org.opencontainers.image.version="9.1.1" \
@@ -41,3 +39,9 @@ LABEL org.opencontainers.image.title="keycloak-gatekeeper" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

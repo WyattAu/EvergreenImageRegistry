@@ -16,23 +16,14 @@ RUN curl -fsSL "https://github.com/leenooks/phpLDAPadmin/releases/download/${VER
     tar -xzf /phpldapadmin.tar.gz -C /tmp/phpldapadmin --strip-components=1 && \
     rm -f /phpldapadmin.tar.gz
 
-FROM debian:bookworm-slim AS runtime
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        php-fpm \
-        php-ldap \
-        php-mbstring \
-        php-xml \
-        php-curl \
-        ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache php-8.4-fpm php-ldap php-8.4-mbstring php-8.4-xml php-8.4-curl ca-certificates
 COPY --from=downloader /tmp/phpldapadmin /opt/phpldapadmin
-RUN mkdir -p /app && chown -R 65534:65534 /app /opt/phpldapadmin
-USER 65534:65534
+RUN mkdir -p /app && chown -R 65532:65532 /app /opt/phpldapadmin
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["php-fpm", "--test"]
 ENTRYPOINT ["php-fpm"]
 CMD ["-F"]
 LABEL org.opencontainers.image.title="ldap-account-manager" \
@@ -43,8 +34,13 @@ LABEL org.opencontainers.image.title="ldap-account-manager" \
       sovereign.image.category="identity" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="5s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="10000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

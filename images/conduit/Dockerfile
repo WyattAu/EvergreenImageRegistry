@@ -14,9 +14,13 @@ RUN curl -fsSL "https://github.com/famedly/conduit/releases/download/v0.8.0/cond
 FROM scratch
 COPY --from=downloader /tmp/binary /usr/local/bin/conduit
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 6167
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3     CMD ["/usr/local/bin/conduit", "--version"]
-ENTRYPOINT ["/usr/local/bin/conduit"]
 LABEL org.opencontainers.image.title="conduit"       org.opencontainers.image.description="Conduit - lightweight Matrix homeserver written in Rust"       org.opencontainers.image.version="0.8.0"       org.opencontainers.image.vendor="Famedly"       org.opencontainers.image.source="https://github.com/famedly/conduit"       sovereign.image.tier="2"       sovereign.constraint.nonroot="true"       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

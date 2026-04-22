@@ -56,7 +56,7 @@ COPY --from=config /app/conf/defaults.ini /app/conf/defaults.ini
 COPY --from=config /app/data /app/data
 COPY --from=config /app/logs /app/logs
 COPY --from=config /app/plugins /app/plugins
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 3000
 ENV GF_PATHS_DATA=/app/data \
@@ -65,8 +65,6 @@ ENV GF_PATHS_DATA=/app/data \
     GF_PATHS_CONFIG=/app/conf/defaults.ini \
     GF_DEFAULT_INSTANCE_NAME=grafana-oss \
     GF_ANALYTICS_REPORTING_ENABLED=false
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["/grafana-cli", "--version"]
 ENTRYPOINT ["/grafana-server"]
 LABEL org.opencontainers.image.title="grafana-oss" \
       org.opencontainers.image.version="10.4.1" \
@@ -87,3 +85,9 @@ LABEL org.opencontainers.image.title="grafana-oss" \
       sovereign.hft.sched-policy="SCHED_OTHER" \
       sovereign.hft.runtime="go" \
       sovereign.hft.runtime-hints="GOMAXPROCS=<cores>"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

@@ -8,23 +8,11 @@
 
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim AS runtime
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        ca-certificates \
-        curl \
-        krb5-user \
-        libnss3-tools \
-        sssd \
-        sssd-tools \
-        libpam-sss \
-        oddjob-mkhomedir && \
-    rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /app && chown 65534:65534 /app
-USER 65534:65534
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007 AS runtime
+RUN apk add --no-cache ca-certificates curl
+RUN mkdir -p /app && chown 65532:65532 /app
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["true"]
 ENTRYPOINT ["/usr/bin/sssctl"]
 LABEL org.opencontainers.image.title="freeipa-client" \
       org.opencontainers.image.description="FreeIPA client tools via SSSD (Debian sssd suite provides FreeIPA client functionality)" \
@@ -34,8 +22,13 @@ LABEL org.opencontainers.image.title="freeipa-client" \
       sovereign.image.category="identity" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

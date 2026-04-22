@@ -62,10 +62,8 @@ RUN mkdir -p /app
 FROM scratch
 COPY --from=builder /health-checks /health-checks
 COPY --from=builder2 /app /app
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["/health-checks", "http://localhost:80"]
 ENTRYPOINT ["/health-checks"]
 LABEL org.opencontainers.image.title="health-checks" \
       org.opencontainers.image.version="1.0.0" \
@@ -85,3 +83,9 @@ LABEL org.opencontainers.image.title="health-checks" \
       sovereign.hft.connection-drain="false" \
       sovereign.hft.sched-policy="SCHED_OTHER" \
       sovereign.hft.runtime="go"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

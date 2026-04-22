@@ -21,11 +21,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/llama-cpp-server /var/log/llama-cpp-server
 COPY --from=builder /var/cache/llama-cpp-server /var/cache/llama-cpp-server
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["curl", "-sf", "http://localhost:8080/health"]
 ENTRYPOINT ["/llama-server"]
 LABEL org.opencontainers.image.title="llama-cpp-server" \
       org.opencontainers.image.version="b5415" \
@@ -38,3 +36,9 @@ LABEL org.opencontainers.image.title="llama-cpp-server" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

@@ -27,10 +27,8 @@ FROM scratch
 COPY --from=builder /usr/local/bin/immudb /usr/local/bin/immudb
 COPY --from=builder /usr/local/bin/immuclient /usr/local/bin/immuclient
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 EXPOSE 3322 9497
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/local/bin/immudb", "version"]
 ENTRYPOINT ["/usr/local/bin/immudb"]
 LABEL org.opencontainers.image.title="immudb" \
       org.opencontainers.image.description="Sovereign hardened immudb - immutable database with cryptographic verification" \
@@ -41,3 +39,9 @@ LABEL org.opencontainers.image.title="immudb" \
       sovereign.image.category="security" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

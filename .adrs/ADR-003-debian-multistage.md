@@ -1,9 +1,22 @@
 # Architecture Decision Record: Multi-Stage Conversion of Debian-Slim Images
 
+> **POLICY CHANGE NOTICE (2026-04-22)**
+>
+> **debian-slim is now PERMANENTLY BANNED** as a base image. This supersedes all strategies in this ADR that retained debian-slim (Type 3 "hardened debian-slim" pattern, Exceptions Registry, etc.).
+>
+> The base image preference order is now: **scratch > wolfi > RHEL UBI micro > RHEL UBI minimal > RHEL UBI standard** (see ADR-007).
+>
+> All images previously on debian-slim must be migrated to wolfi or UBI per ADR-007's migration plan. This ADR's multi-stage conversion patterns for scratch/distroless (Types 1 & 2) remain valid; the debian-slim retention strategies (Type 3, Exceptions Registry) do not.
+>
+> See: [ADR-007](ADR-007-base-image-preference-order.md), [REQUIREMENTS.md](../../REQUIREMENTS.md) v4.0.0
+
 ## ADR-003: Converting Debian-Slim Images to Multi-Stage Scratch/Distroless Builds
 
 ### Status
-ACCEPTED
+~~ACCEPTED~~ SUPERSEDED
+
+### Superseded By
+[ADR-007: Base Image Preference Order](ADR-007-base-image-preference-order.md) — debian-slim permanently banned; base image selection decoupled from tier; universal preference order adopted.
 
 ### Date
 2026-04-19
@@ -56,7 +69,7 @@ Is the software a single static binary?
 # BEFORE (debian-slim, 120MB):
 FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y redis-exporter && rm -rf /var/lib/apt/lists/*
-USER 65534:65534
+USER 65532:65532
 ENTRYPOINT ["redis_exporter"]
 
 # AFTER (scratch, ~15MB):
@@ -68,7 +81,7 @@ RUN tar -xzf /exporter.tar.gz -C / && rm /exporter.tar.gz
 FROM scratch
 COPY --from=downloader /redis_exporter /redis_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 ENTRYPOINT ["/redis_exporter"]
 ```
 
@@ -86,7 +99,7 @@ FROM gcr.io/distroless/cc-debian12
 COPY --from=builder /usr/bin/<binary> /<binary>
 COPY --from=builder /usr/lib/x86_64-linux-gnu/<lib> /usr/lib/x86_64-linux-gnu/<lib>
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 ENTRYPOINT ["/<binary>"]
 ```
 
@@ -110,7 +123,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 python3-pip <app-packages> && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user
-RUN useradd -m -u 65534 -s /usr/sbin/nologin appuser
+RUN useradd -m -u 65532 -s /usr/sbin/nologin appuser
 
 # Remove shell for non-root user (C003 best-effort)
 RUN rm -f /bin/sh && ln -sf /usr/sbin/nologin /bin/sh || true
@@ -123,8 +136,8 @@ COPY --from=builder /usr /usr
 COPY --from=builder /etc/ssl/certs /etc/ssl/certs
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
-COPY --from=builder --chown=65534:65534 /app /app
-USER 65534:65534
+COPY --from=builder --chown=65532:65532 /app /app
+USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["python3", "app.py"]
 ```
@@ -194,6 +207,7 @@ Images that **cannot** be converted and their justifications:
 
 - ADR-001: HEALTHCHECK Strategy (affects all converted images)
 - ADR-002: Checksum Verification (applies to all multi-stage downloads)
+- **ADR-007: Base Image Preference Order** (SUPersedes this ADR for debian-slim policy)
 
 ### Implementation Checklist
 

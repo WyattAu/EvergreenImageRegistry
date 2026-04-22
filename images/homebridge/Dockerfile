@@ -5,22 +5,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN npm install -g --unsafe-perm homebridge hap-nodejs
 RUN mkdir -p /app /homebridge
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        nodejs npm ca-certificates libavahi-compat-libdnssd1 \
-    && rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache nodejs npm ca-certificates
 COPY --from=builder /usr/lib/node_modules/homebridge /usr/lib/node_modules/homebridge
 COPY --from=builder /usr/lib/node_modules/hap-nodejs /usr/lib/node_modules/hap-nodejs 2>/dev/null || true
 COPY --from=builder /app /app
 COPY --from=builder /homebridge /homebridge
 RUN ln -sf /usr/lib/node_modules/homebridge/bin/homebridge /usr/local/bin/homebridge && \
-    useradd -r -u 65534 -g nogroup -d /homebridge -s /sbin/nologin homebridge 2>/dev/null || true && \
-    chown -R 65534:65534 /homebridge /app /usr/lib/node_modules 2>/dev/null || true
-USER 65534:65534
+    useradd -r -u 65532 -g nogroup -d /homebridge -s /sbin/nologin homebridge 2>/dev/null || true && \
+    chown -R 65532:65532 /homebridge /app /usr/lib/node_modules 2>/dev/null || true
+USER 65532:65532
 WORKDIR /homebridge
 EXPOSE 51826
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["node", "-e", "const hb = require('homebridge'); console.log('ok')"] || exit 0
 ENTRYPOINT ["homebridge"]
 LABEL org.opencontainers.image.title="homebridge" \
       org.opencontainers.image.description="Homebridge - Bring Siri to your smart home" \
@@ -28,4 +25,8 @@ LABEL org.opencontainers.image.title="homebridge" \
       org.opencontainers.image.source="https://github.com/nfarina/homebridge" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

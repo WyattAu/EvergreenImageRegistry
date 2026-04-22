@@ -17,23 +17,27 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.gz" -o redis.tar.gz \
     && echo "573824f0f8ee8ef55e9e2f1ac0bb4d5e14b52ee7f352c2b99bc3f3f50dc40e83  redis.tar.gz" | sha256sum -c - \
     && tar -xzf redis.tar.gz \
-    && cd redis-${VERSION} && make -j"$(nproc)" redis-server && strip --strip-all src/redis-server \
-    && cp src/redis-server /tmp/redis-server
+    && cd redis-${VERSION} && make -j"$(nproc)" redis && strip --strip-all src/redis \
+    && cp src/redis /tmp/redis
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin redis 2>/dev/null || true
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache ca-certificates
+RUN useradd -m -u 65532 -s /usr/sbin/nologin redis 2>/dev/null || true
 RUN mkdir -p /data /var/log/redis
-COPY --from=builder /tmp/redis-server /usr/local/bin/redis-server
-USER 65534:65534
+COPY --from=builder /tmp/redis /usr/local/bin/redis
+USER 65532:65532
 WORKDIR /data
 EXPOSE 6379 16379
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/local/bin/redis-server", "--version"]
-ENTRYPOINT ["/usr/local/bin/redis-server", "--cluster-enabled", "yes", "--cluster-config-file", "/data/nodes.conf"]
+ENTRYPOINT ["/usr/local/bin/redis", "--cluster-enabled", "yes", "--cluster-config-file", "/data/nodes.conf"]
 LABEL sovereign.image.status="functional" \
       sovereign.image.tier="1" \
       sovereign.image.category="database" \
       org.opencontainers.image.title="redis-cluster" \
       org.opencontainers.image.description="Sovereign hardened Redis Cluster - Redis with cluster mode pre-enabled" \
       org.opencontainers.image.version="${VERSION}"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

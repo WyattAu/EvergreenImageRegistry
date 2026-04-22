@@ -8,24 +8,21 @@ ARG VERSION=11.4.2
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates gnupg2 && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://mariadb.org/mariadb_release_signing_key.asc" | gpg --dearmor -o /usr/share/keyrings/mariadb-keyring.gpg \
-    && echo "deb [signed-by=/usr/share/keyrings/mariadb-keyring.gpg] http://mirror.mariadb.org/repo/11.4/debian bookworm main" > /etc/apt/sources.list.d/mariadb.list
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates gnupg && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://mariadb.org/mariadb_release_signing_key.asc" | gnupg --dearmor -o /usr/share/keyrings/mariadb-keyring.gnupg \
+    && echo "deb [signed-by=/usr/share/keyrings/mariadb-keyring.gnupg] http://mirror.mariadb.org/repo/11.4/debian bookworm main" > /etc/apt/sources.list.d/mariadb.list
 
-FROM debian:bookworm-slim
-COPY --from=builder /usr/share/keyrings/mariadb-keyring.gpg /usr/share/keyrings/mariadb-keyring.gpg
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+COPY --from=builder /usr/share/keyrings/mariadb-keyring.gnupg /usr/share/keyrings/mariadb-keyring.gnupg
 COPY --from=builder /etc/apt/sources.list.d/mariadb.list /etc/apt/sources.list.d/mariadb.list
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    mariadb-server ca-certificates && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin mysql 2>/dev/null || true
-RUN mkdir -p /var/lib/mysql /var/log/mysql /var/cache/mysql /run/mysqld
-RUN chown -R 65534:65534 /var/lib/mysql /var/log/mysql /var/cache/mysql /run/mysqld
-USER 65534:65534
-WORKDIR /var/lib/mysql
+RUN apk add --no-cache ca-certificates
+RUN useradd -m -u 65532 -s /usr/sbin/nologin php84-mysql 2>/dev/null || true
+RUN mkdir -p /var/lib/php84-mysql /var/log/php84-mysql /var/cache/php84-mysql /run/mysqld
+RUN chown -R 65532:65532 /var/lib/php84-mysql /var/log/php84-mysql /var/cache/php84-mysql /run/mysqld
+USER 65532:65532
+WORKDIR /var/lib/php84-mysql
 EXPOSE 3306
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD ["mariadb-admin", "ping", "-h", "127.0.0.1", "--silent"]
 ENTRYPOINT ["mariadbd"]
 LABEL org.opencontainers.image.title="mariadb-11" \
       org.opencontainers.image.version="${VERSION}" \
@@ -35,4 +32,8 @@ LABEL org.opencontainers.image.title="mariadb-11" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

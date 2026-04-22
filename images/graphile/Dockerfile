@@ -27,21 +27,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl -fsSL "https://nodejs.org/dist/v20.11.1/node-v20.11.1-linux-x64.tar.xz" | \
     tar -xJ -C /usr/local --strip-components=1
 
-FROM debian:bookworm-slim
+FROM scratch
+
 COPY --from=nodebase /usr/local/bin/node /usr/local/bin/node
 COPY --from=nodebase /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --from=nodebase /usr/local/include/node /usr/local/include/node 2>/dev/null || true
 RUN ln -sf /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm 2>/dev/null || true \
     && ln -sf /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx 2>/dev/null || true
-RUN useradd -m -u 65534 -s /usr/sbin/nologin graphile 2>/dev/null || true
+RUN useradd -m -u 65532 -s /usr/sbin/nologin graphile 2>/dev/null || true
 RUN mkdir -p /var/lib/graphile /var/log/graphile /var/cache/graphile
 COPY --from=builder /opt/graphile /opt/graphile
-RUN chown -R 65534:65534 /opt/graphile /var/lib/graphile /var/log/graphile /var/cache/graphile
-USER 65534:65534
+RUN chown -R 65532:65532 /opt/graphile /var/lib/graphile /var/log/graphile /var/cache/graphile
+USER 65532:65532
 WORKDIR /opt/graphile
 EXPOSE 5000
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:5000/graphiql"]
 ENTRYPOINT ["node", "/opt/graphile/cli.js"]
 LABEL org.opencontainers.image.title="graphile" \
       org.opencontainers.image.version="${VERSION}" \
@@ -51,4 +50,8 @@ LABEL org.opencontainers.image.title="graphile" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

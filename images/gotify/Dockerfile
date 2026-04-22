@@ -14,9 +14,13 @@ RUN curl -fsSL "https://github.com/gotify/server/releases/download/v2.4.0/gotify
 FROM scratch
 COPY --from=downloader /tmp/binary /usr/local/bin/gotify
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3     CMD ["/usr/local/bin/gotify", "--version"]
-ENTRYPOINT ["/usr/local/bin/gotify"]
 LABEL org.opencontainers.image.title="gotify"       org.opencontainers.image.description="Gotify - simple push notification server"       org.opencontainers.image.version="2.4.0"       org.opencontainers.image.vendor="Gotify"       org.opencontainers.image.source="https://github.com/gotify/server"       sovereign.image.tier="2"       sovereign.constraint.nonroot="true"       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

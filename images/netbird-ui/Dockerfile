@@ -23,11 +23,9 @@ RUN curl -fsSL "https://github.com/netbirdio/netbird/releases/download/v${VERSIO
 FROM scratch
 COPY --from=builder /tmp/ui /ui
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /ui
 EXPOSE 80
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["test", "-f", "/ui/index.html"]
 ENTRYPOINT ["sleep", "infinity"]
 LABEL org.opencontainers.image.title="netbird-ui" \
       org.opencontainers.image.version="${VERSION}" \
@@ -38,3 +36,9 @@ LABEL org.opencontainers.image.title="netbird-ui" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

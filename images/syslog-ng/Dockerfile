@@ -16,14 +16,11 @@ RUN apt-get update && \
     find /usr/lib/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true && \
     find /usr/lib/*/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true
 
-FROM debian:bookworm-20240101-slim
-RUN groupadd -g 65534 syslogng && \
-    useradd -m -u 65534 -g syslogng -s /usr/sbin/nologin syslogng
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        syslog-ng-core \
-        ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN groupadd -g 65532 syslogng && \
+    useradd -m -u 65532 -g syslogng -s /usr/sbin/nologin syslogng
+RUN apk add --no-cache ca-certificates
 COPY --from=builder /usr/sbin/syslog-ng /usr/sbin/syslog-ng
 RUN mkdir -p /app/conf /app/logs /app/run /var/lib/syslog-ng && \
     chown -R syslogng:syslogng /app /var/lib/syslog-ng
@@ -42,11 +39,9 @@ log {
 };
 EOF
 RUN chown syslogng:syslogng /app/conf/syslog-ng.conf
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 514 514/udp 6514
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/sbin/syslog-ng", "--version"]
 ENTRYPOINT ["/usr/sbin/syslog-ng"]
 CMD ["-f", "/app/conf/syslog-ng.conf", "--foreground", "--no-caps"]
 LABEL org.opencontainers.image.title="syslog-ng" \
@@ -55,7 +50,6 @@ LABEL org.opencontainers.image.title="syslog-ng" \
       org.opencontainers.image.description="syslog-ng - high-performance log management daemon" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="5s" \
       sovereign.hft.init-system="none" \
@@ -68,3 +62,8 @@ LABEL org.opencontainers.image.title="syslog-ng" \
       sovereign.hft.connection-drain="true" \
       sovereign.hft.sched-policy="SCHED_OTHER" \
       sovereign.hft.runtime="c"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

@@ -14,9 +14,13 @@ RUN curl -fsSL "https://github.com/ArcticLampyrid/stalwart/releases/download/v0.
 FROM scratch
 COPY --from=downloader /tmp/binary /usr/local/bin/stalwart
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 443
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3     CMD ["/usr/local/bin/stalwart", "--version"]
-ENTRYPOINT ["/usr/local/bin/stalwart"]
 LABEL org.opencontainers.image.title="stalwart"       org.opencontainers.image.description="Stalwart Mail Server - all-in-one mail server written in Rust"       org.opencontainers.image.version="0.9.0"       org.opencontainers.image.vendor="ArcticLampyrid"       org.opencontainers.image.source="https://github.com/ArcticLampyrid/stalwart"       sovereign.image.tier="2"       sovereign.constraint.nonroot="true"       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

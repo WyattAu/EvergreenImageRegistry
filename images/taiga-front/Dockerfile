@@ -9,18 +9,15 @@ RUN git clone --depth 1 --branch v{version} \
     "https://github.com/taigaio/taiga-front-dist.git" /tmp/taiga-front && \
     cd /tmp/taiga-front && npm install && npm run build
 
-FROM debian:bookworm-slim AS runtime
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        ca-certificates curl nginx && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache ca-certificates curl nginx
 COPY --from=builder /tmp/taiga-front/dist /var/www/taiga-front
 RUN mkdir -p /var/log/nginx /var/cache/nginx /var/www/taiga-front \
-    && chown -R 65534:65534 /var/www/taiga-front /var/log/nginx /var/cache/nginx
-USER 65534:65534
+    && chown -R 65532:65532 /var/www/taiga-front /var/log/nginx /var/cache/nginx
+USER 65532:65532
 WORKDIR /var/www/taiga-front
 EXPOSE 80 443
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:80"]
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
 LABEL org.opencontainers.image.title="taiga-front" \
       org.opencontainers.image.version="6.8.2" \
@@ -30,8 +27,13 @@ LABEL org.opencontainers.image.title="taiga-front" \
       sovereign.image.category="project-management" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="10s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="30000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

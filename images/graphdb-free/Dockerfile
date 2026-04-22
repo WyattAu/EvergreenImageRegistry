@@ -19,19 +19,17 @@ RUN curl -fsSL "https://github.com/ontotext/graphdb/releases/download/v${VERSION
     && unzip -q /tmp/graphdb.zip -d /opt \
     && rm /tmp/graphdb.zip
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates openjdk-17-jre-headless && rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin graphdb 2>/dev/null || true
+RUN apk add --no-cache ca-certificates
+RUN useradd -m -u 65532 -s /usr/sbin/nologin graphdb 2>/dev/null || true
 RUN mkdir -p /var/lib/graphdb /var/log/graphdb /var/cache/graphdb /opt/graphdb/home
 COPY --from=builder /opt/graphdb-free-${VERSION} /opt/graphdb
-RUN chown -R 65534:65534 /opt/graphdb /var/lib/graphdb /var/log/graphdb /var/cache/graphdb
-USER 65534:65534
+RUN chown -R 65532:65532 /opt/graphdb /var/lib/graphdb /var/log/graphdb /var/cache/graphdb
+USER 65532:65532
 WORKDIR /opt/graphdb
 EXPOSE 7200
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:7200/rest/repositories"]
 ENTRYPOINT ["/opt/graphdb/bin/graphdb"]
 LABEL org.opencontainers.image.title="graphdb-free" \
       org.opencontainers.image.version="${VERSION}" \
@@ -41,4 +39,8 @@ LABEL org.opencontainers.image.title="graphdb-free" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

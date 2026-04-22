@@ -4,8 +4,7 @@
 # Use as FROM base for Java application images.
 # =============================================================================
 
-FROM debian:bookworm-slim
-
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         ca-certificates tzdata curl dumb-init && \
@@ -21,10 +20,10 @@ RUN curl -fsSL "https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jre/ho
 ENV JAVA_HOME="/opt/jre"
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
-RUN groupadd -g 65534 -r appuser 2>/dev/null || true && \
-    useradd -r -u 65534 -g appuser -d /app -s /sbin/nologin appuser 2>/dev/null || true
+RUN groupadd -g 65532 -r appuser 2>/dev/null || true && \
+    useradd -r -u 65532 -g appuser -d /app -s /sbin/nologin appuser 2>/dev/null || true
 
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 
 LABEL org.opencontainers.image.title="openjre" \
@@ -33,4 +32,9 @@ LABEL org.opencontainers.image.title="openjre" \
       sovereign.image.status="functional" \
       sovereign.image.category="base" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="none"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

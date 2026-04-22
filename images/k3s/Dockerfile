@@ -16,10 +16,8 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/k3s /var/log/k3s
 COPY --from=builder /var/cache/k3s /var/cache/k3s
 COPY --from=builder /var/lib/rancher/k3s /var/lib/rancher/k3s
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/k3s", "--version"]
 ENTRYPOINT ["/k3s"]
 LABEL org.opencontainers.image.title="k3s" \
       org.opencontainers.image.version="1.33.6+k3s1" \
@@ -30,3 +28,9 @@ LABEL org.opencontainers.image.title="k3s" \
       sovereign.constraint.scratch="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="15s"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

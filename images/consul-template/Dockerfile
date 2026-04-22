@@ -24,11 +24,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/consul-template /var/log/consul-template
 COPY --from=builder /var/cache/consul-template /var/cache/consul-template
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8500
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/consul-template", "--version"]
 ENTRYPOINT ["/consul-template"]
 LABEL org.opencontainers.image.title="consul-template" \
       org.opencontainers.image.version="0.37.0" \
@@ -43,3 +41,9 @@ LABEL org.opencontainers.image.title="consul-template" \
       sovereign.hft.fips-required="true" \
       sovereign.hft.cap-required="CAP_SYS_NICE" \
       sovereign.hft.cap-drop="ALL"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

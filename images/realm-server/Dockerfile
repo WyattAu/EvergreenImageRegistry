@@ -19,21 +19,17 @@ RUN curl -fsSL "https://github.com/10gen/realm-app-services/releases/download/v$
     && unzip -q /tmp/realm.zip -d /opt \
     && rm /tmp/realm.zip
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates openjdk-17-jre-headless curl mongodb-org-tools 2>/dev/null || \
-    apt-get install -y --no-install-recommends \
-    ca-certificates openjdk-17-jre-headless curl && rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin realm 2>/dev/null || true
+RUN apk add --no-cache ca-certificates curl install
+RUN useradd -m -u 65532 -s /usr/sbin/nologin realm 2>/dev/null || true
 RUN mkdir -p /var/lib/realm /var/log/realm /var/cache/realm
 COPY --from=builder /opt/realm-app-services-${VERSION} /opt/realm
-RUN chown -R 65534:65534 /opt/realm /var/lib/realm /var/log/realm /var/cache/realm
-USER 65534:65534
+RUN chown -R 65532:65532 /opt/realm /var/lib/realm /var/log/realm /var/cache/realm
+USER 65532:65532
 WORKDIR /opt/realm
 EXPOSE 9090
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:9090/api/health"]
 ENTRYPOINT ["/opt/realm/bin/realm-server"]
 LABEL org.opencontainers.image.title="realm-server" \
       org.opencontainers.image.version="${VERSION}" \
@@ -43,4 +39,8 @@ LABEL org.opencontainers.image.title="realm-server" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

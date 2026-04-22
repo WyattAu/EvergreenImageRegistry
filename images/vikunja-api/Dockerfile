@@ -8,11 +8,9 @@ RUN curl -fsSL "https://github.com/go-vikunja/vikunja/releases/download/v0.24.1/
 FROM scratch
 COPY --from=downloader /vikunja /vikunja
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 3456
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/vikunja", "--version"]
 ENTRYPOINT ["/vikunja"]
 LABEL org.opencontainers.image.title="vikunja-api" \
       org.opencontainers.image.version="v0.24.1" \
@@ -27,3 +25,9 @@ LABEL org.opencontainers.image.title="vikunja-api" \
       sovereign.hft.shutdown-timeout="5s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="10000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

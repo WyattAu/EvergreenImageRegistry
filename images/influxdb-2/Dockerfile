@@ -27,11 +27,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/lib/influxdb2 /var/lib/influxdb2
 COPY --from=builder /var/log/influxdb2 /var/log/influxdb2
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8086
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/influxd", "--version"]
 ENTRYPOINT ["/influxd"]
 LABEL org.opencontainers.image.title="influxdb-2" \
       org.opencontainers.image.version="2.7.5" \
@@ -53,3 +51,9 @@ LABEL org.opencontainers.image.title="influxdb-2" \
       sovereign.hft.pre-stop-delay="5s" \
       sovereign.hft.connection-drain="true" \
       sovereign.hft.sched-policy="SCHED_OTHER"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

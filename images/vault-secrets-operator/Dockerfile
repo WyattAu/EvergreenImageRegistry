@@ -22,10 +22,8 @@ RUN curl -fsSL "https://github.com/hashicorp/vault-secrets-operator/releases/dow
 FROM scratch
 COPY --from=downloader /vault-secrets-operator /vault-secrets-operator
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/vault-secrets-operator", "--help"]
 ENTRYPOINT ["/vault-secrets-operator"]
 LABEL org.opencontainers.image.title="vault-secrets-operator" \
       org.opencontainers.image.version="1.18.0" \
@@ -40,3 +38,9 @@ LABEL org.opencontainers.image.title="vault-secrets-operator" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

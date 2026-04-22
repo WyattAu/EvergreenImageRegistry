@@ -19,19 +19,17 @@ RUN curl -fsSL "https://dlcdn.apache.org/ignite/${VERSION}/apache-ignite-${VERSI
     && unzip -q /tmp/ignite.zip -d /opt \
     && rm /tmp/ignite.zip
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates openjdk-17-jre-headless curl && rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin ignite 2>/dev/null || true
+RUN apk add --no-cache ca-certificates curl
+RUN useradd -m -u 65532 -s /usr/sbin/nologin ignite 2>/dev/null || true
 RUN mkdir -p /var/lib/ignite /var/log/ignite /var/cache/ignite /opt/ignite/work
 COPY --from=builder /opt/apache-ignite-${VERSION}-bin /opt/ignite
-RUN chown -R 65534:65534 /opt/ignite /var/lib/ignite /var/log/ignite /var/cache/ignite
-USER 65534:65534
+RUN chown -R 65532:65532 /opt/ignite /var/lib/ignite /var/log/ignite /var/cache/ignite
+USER 65532:65532
 WORKDIR /opt/ignite
 EXPOSE 10800 11211 47100 47500
-HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:8080/ignite?cmd=version"]
 ENTRYPOINT ["/opt/ignite/bin/ignite.sh"]
 LABEL org.opencontainers.image.title="ignite" \
       org.opencontainers.image.version="${VERSION}" \
@@ -41,4 +39,8 @@ LABEL org.opencontainers.image.title="ignite" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

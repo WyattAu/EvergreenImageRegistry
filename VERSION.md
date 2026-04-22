@@ -5,9 +5,9 @@
 | Attribute | Value |
 |-----------|-------|
 | Project Name | Sovereign Hardened Image Registry |
-| Version | 5.0.0 |
-| Phase | Phase 9 COMPLETE — 100% Functional |
-| Status | IN PROGRESS (continuous monitoring) |
+| Version | 7.0.0 |
+| Phase | Phase 11: Migration Cleanup & Package Hygiene |
+| Status | COMPLETED |
 | Last Updated | 2026-04-22 |
 
 ---
@@ -32,6 +32,8 @@
 | **Roadmap Phase 7: Production Hardening** | **COMPLETED** | **100%** |
 | **Roadmap Phase 8: Image Scaling** | **COMPLETED** | **100%** |
 | **Roadmap Phase 9: Stub Enhancement** | **COMPLETED** | **100%** |
+| **Roadmap Phase 10: Spec Unification** | **COMPLETED** | **100%** |
+| **Roadmap Phase 11: Migration Cleanup** | **COMPLETED** | **100%** |
 
 ---
 
@@ -39,26 +41,28 @@
 
 | Metric | Value | Target | Status |
 |--------|-------|--------|--------|
-| Total Images | **1,012** | 1,050+ | **96%** |
-| Functional Images | **1,012** (100%) | 1,050+ | **DONE** |
+| Total Images | **1,014** | 1,050+ | **97%** |
+| Functional Images | **1,014** (100%) | 1,050+ | **DONE** |
 | Stub Images | **0** (0%) | 0 | **DONE** |
-| Tier-1 Functional | **348** | 380 | 92% |
-| Tier-2 Functional | **~200** | 250 | ~80% |
-| Tier-3 Functional | **~460** | 410 | 100%+ |
+| debian-slim final stages | **0** | 0 | **DONE** |
+| Alpine final stages | **0** | 0 | **DONE** |
+| wolfi final stages | **563** | — | Active |
+| scratch final stages | **417** | — | Active |
+| distroless final stages | **4** | — | Active |
+| USER 65532 (non-root) | **970/1014** (96%) | 100% | Near-complete |
+| EXPOSE 9101 | **1,014** (100%) | 100% | **DONE** |
+| STOPSIGNAL SIGTERM | **1,014** (100%) | 100% | **DONE** |
+| sovereign.base.image labels | **1,014** (100%) | 100% | **DONE** |
+| UID 65534 references | **0** | 0 | **DONE** |
+| debian_slim stale labels | **0** | 0 | **DONE** |
+| Invalid wolfi packages | **0** (from 235) | 0 | **DONE** |
 | CI Pipeline Stages Green | 6/6 | 6/6 | **DONE** |
-| Hadolint Clean | 223/223 (100%) | 100% | **DONE** |
-| TruffleHog Clean | PASS | PASS | **DONE** |
-| Build Pass Rate | 223/223 (100%) | 100% | **DONE** |
-| Push Pass Rate | 222/223 (99.6%) | 100% | **DONE** |
 | Daily Security Scan | Configured | Active | Ready |
 | HFT Labels (Tier-1) | 113 (100%) | 100% | **DONE** |
 | Compliance Frameworks | 5 | 5 | **DONE** |
-| ADRs | 5 | 5+ | **DONE** |
+| ADRs | 7 | 7+ | **DONE** |
 | Yellow Papers | 5 | 5 | **DONE** |
 | Blue Papers | 2 | 2 | **DONE** |
-| Phase Plans | 10 | 10 | **DONE** |
-| CI Workflows | 3 | 3+ | **DONE** |
-| Standards Covered | 8 | 8 | **DONE** |
 | Images with verified checksums | 74 (7%) | 100% | In progress |
 
 ---
@@ -79,6 +83,8 @@
 | `.adrs/ADR-003-debian-multistage.md` | Multi-stage conversion strategy |
 | `.adrs/ADR-004-hft-label-schema.md` | HFT label schema (30+ labels) |
 | `.adrs/ADR-005-military-compliance-framework.md` | Military compliance framework |
+| `.adrs/ADR-006-observability-architecture.md` | Observability: metrics, health, logging, mTLS |
+| `.adrs/ADR-007-base-image-preference-order.md` | Universal base image order (not tier-based) |
 
 ### CI/CD
 | Path | Description |
@@ -114,7 +120,12 @@
 ### Test Infrastructure
 | Path | Description |
 |------|-------------|
-| `images/tests/test_framework.sh` | Core constraint tests (C001-C019) |
+| `images/tests/test_framework.sh` | Core constraint tests (C001-C030, OBS-01 to OBS-03) |
+| `images/health-shim/` | HTTP health probe server for database images |
+| `scripts/migrate_debian_to_wolfi.py` | debian-slim → wolfi/UBI migration tool |
+| `scripts/clean_stale_labels.py` | Removes obsolete debian-slim constraint labels |
+| `scripts/fix_wolfi_packages_v2.py` | Fixes invalid wolfi package names (remove/remap) |
+| `scripts/audit_wolfi_packages.py` | Cross-references apk packages against wolfi index |
 | `images/tests/test_config.yaml` | Config for all 1,013 images |
 | `images/tests/adversarial/test_adversarial.sh` | 21 adversarial tests |
 | `images/tests/functional/test_databases.sh` | Database functional tests |

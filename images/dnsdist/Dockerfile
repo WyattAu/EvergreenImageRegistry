@@ -9,7 +9,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential cmake libboost-all-dev libssl-dev libprotobuf-dev \
+    build-base cmake libboost-all-dev libssl-dev libprotobuf-dev \
     protobuf-compiler liblua5.3-dev libsystemd-dev libsodium-dev \
     libre2-dev libyaml-cpp-dev libsnmp-dev curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
@@ -21,19 +21,15 @@ RUN curl -fsSL "https://github.com/PowerDNS/pdns/archive/refs/tags/rel/dnsdist-$
     make -j"$(nproc)" dnsdist && \
     strip --strip-all /pdns-rel-dnsdist-${VERSION}/build/dnsdist/dnsdist
 
-FROM debian:bookworm-slim AS runner
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libboost-all1.74-dev libssl3 libprotobuf32 libsodium23 \
-    liblua5.3-0 libre2-5 libyaml-cpp0.7 ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache ca-certificates
 RUN mkdir -p /app /var/log/dnsdist /etc/dnsdist
 COPY --from=builder /pdns-rel-dnsdist-${VERSION}/build/dnsdist/dnsdist /usr/local/bin/dnsdist
-RUN chown -R 65534:65534 /app /var/log/dnsdist
-USER 65534:65534
+RUN chown -R 65532:65532 /app /var/log/dnsdist
+USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 5199 8083
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/local/bin/dnsdist", "--version"]
 ENTRYPOINT ["/usr/local/bin/dnsdist"]
 LABEL org.opencontainers.image.title="dnsdist" \
       org.opencontainers.image.version="1.9.4" \
@@ -44,8 +40,13 @@ LABEL org.opencontainers.image.title="dnsdist" \
       sovereign.image.category="dns" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="5000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

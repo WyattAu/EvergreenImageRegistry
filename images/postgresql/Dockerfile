@@ -9,29 +9,37 @@ ARG VERSION=17.4
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
-RUN useradd -m -u 65534 -s /usr/sbin/nologin postgres 2>/dev/null || true
+RUN useradd -m -u 65532 -s /usr/sbin/nologin postgres 2>/dev/null || true
 RUN mkdir -p /app /var/log/postgres /var/cache/postgres
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    postgresql-17 ca-certificates && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
-    apt-get purge -y --auto-remove apt apt-get dpkg 2>/dev/null || true
+FROM golang:1.23-alpine AS health-shim-builder
+COPY images/health-shim/go.mod images/health-shim/main.go /build/
+RUN cd /build && CGO_ENABLED=0 go build -ldflags="-s -w" -o /health-shim .
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+COPY --from=health-shim-builder /health-shim /usr/local/bin/health-shim
+ENV HEALTH_CMD="pg_isready -h localhost" \
+    READY_CMD="pg_isready -h localhost -q" \
+    STARTUP_CMD="pg_isready -h localhost" \
+    SOVEREIGN_LOG_LEVEL=info
+
+RUN apk add --no-cache postgresql-17 ca-certificates
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
-COPY --from=builder --chown=65534:65534 /app /app
-COPY --from=builder --chown=65534:65534 /var/log/postgres /var/log/postgres
-COPY --from=builder --chown=65534:65534 /var/cache/postgres /var/cache/postgres
-USER 65534:65534
+COPY --from=builder --chown=65532:65532 /app /app
+COPY --from=builder --chown=65532:65532 /var/log/postgres /var/log/postgres
+COPY --from=builder --chown=65532:65532 /var/cache/postgres /var/cache/postgres
+USER 65532:65532
 WORKDIR /app
 EXPOSE 5432
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD pg_isready -h localhost
-ENTRYPOINT ["postgres"]
+ENTRYPOINT ["sh", "-c", "health-shim & exec postgres"]
 LABEL org.opencontainers.image.title="postgresql" \
       org.opencontainers.image.version="17.4" \
       org.opencontainers.image.vendor="PostgreSQL" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true" \
       sovereign.constraint.hardened="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="true"
+LABEL sovereign.health.type="http"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

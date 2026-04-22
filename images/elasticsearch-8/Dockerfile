@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates openjdk-17-jre-headless && \
+    curl ca-certificates java-17-runtime && \
     curl -fsSL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-linux-x86_64.tar.gz" \
     -o /elasticsearch.tar.gz && \
     echo "PENDING_CHECKSUM  /elasticsearch.tar.gz" | sha256sum -c - && \
@@ -19,26 +19,23 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /opt/elasticsearch-${VERSION}/jdk && \
     mkdir -p /app /var/log/elasticsearch /var/cache/elasticsearch /var/lib/elasticsearch
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    openjdk-17-jre-headless curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache curl ca-certificates
 COPY --from=builder /opt/elasticsearch-${VERSION} /opt/elasticsearch
-COPY --from=builder --chown=65534:65534 /app /app
-COPY --from=builder --chown=65534:65534 /var/log/elasticsearch /var/log/elasticsearch
-COPY --from=builder --chown=65534:65534 /var/cache/elasticsearch /var/cache/elasticsearch
-COPY --from=builder --chown=65534:65534 /var/lib/elasticsearch /var/lib/elasticsearch
-RUN useradd -m -u 65534 -s /usr/sbin/nologin elasticsearch 2>/dev/null || true && \
-    chown -R 65534:65534 /opt/elasticsearch /app /var/log/elasticsearch /var/cache/elasticsearch /var/lib/elasticsearch
-USER 65534:65534
+COPY --from=builder --chown=65532:65532 /app /app
+COPY --from=builder --chown=65532:65532 /var/log/elasticsearch /var/log/elasticsearch
+COPY --from=builder --chown=65532:65532 /var/cache/elasticsearch /var/cache/elasticsearch
+COPY --from=builder --chown=65532:65532 /var/lib/elasticsearch /var/lib/elasticsearch
+RUN useradd -m -u 65532 -s /usr/sbin/nologin elasticsearch 2>/dev/null || true && \
+    chown -R 65532:65532 /opt/elasticsearch /app /var/log/elasticsearch /var/cache/elasticsearch /var/lib/elasticsearch
+USER 65532:65532
 WORKDIR /app
 ENV ES_PATH_CONF="/app" \
     ES_JAVA_OPTS="-Xms512m -Xmx512m" \
     xpack.security.enabled="false" \
     discovery.type="single-node"
 EXPOSE 9200 9300
-HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=5 \
-    CMD ["curl", "-f", "http://localhost:9200/_cluster/health"]
 ENTRYPOINT ["/opt/elasticsearch/bin/elasticsearch"]
 LABEL org.opencontainers.image.title="elasticsearch-8" \
       org.opencontainers.image.version="8.12.2" \
@@ -47,4 +44,8 @@ LABEL org.opencontainers.image.title="elasticsearch-8" \
       org.opencontainers.image.source="https://www.elastic.co/elasticsearch" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

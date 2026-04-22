@@ -22,22 +22,19 @@ RUN apt-get update && \
 COPY --from=builder /install /install
 RUN find /install -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true
 
-FROM debian:bookworm-20240101-slim
-RUN groupadd -g 65534 azurelogs && \
-    useradd -m -u 65534 -g azurelogs -s /usr/sbin/nologin azurelogs
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends python3-minimal ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN groupadd -g 65532 azurelogs && \
+    useradd -m -u 65532 -g azurelogs -s /usr/sbin/nologin azurelogs
+RUN apk add --no-cache ca-certificates
 COPY --from=stripper /install /usr/local
 COPY --from=stripper /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 RUN mkdir -p /app/conf /app/logs && \
     chown -R azurelogs:azurelogs /app
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 ENV AZURELOGS_VERSION=${VERSION} \
     AZURE_LOG_INGESTION_ENDPOINT=""
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["/usr/local/bin/python3", "-m", "pip", "show", "azure-monitor-log-ingestion"]
 ENTRYPOINT ["python3", "-m", "azure.monitor.ingestion"]
 LABEL org.opencontainers.image.title="azurelogs" \
       org.opencontainers.image.version="1.2.0" \
@@ -45,7 +42,6 @@ LABEL org.opencontainers.image.title="azurelogs" \
       org.opencontainers.image.description="Azure Monitor Log Ingestion client" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
@@ -57,3 +53,8 @@ LABEL org.opencontainers.image.title="azurelogs" \
       sovereign.hft.connection-drain="false" \
       sovereign.hft.sched-policy="SCHED_OTHER" \
       sovereign.hft.runtime="python"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

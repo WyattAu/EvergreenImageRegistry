@@ -9,19 +9,18 @@ RUN curl -fsSL "https://github.com/moby/buildkit/releases/download/v0.20.0/build
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/buildkit /var/cache/buildkit /var/lib/buildkit
 
-FROM debian:bookworm-slim
+FROM scratch
+
 COPY --from=downloader /usr/local/bin/buildkitd /usr/local/bin/buildkitd
 COPY --from=downloader /usr/local/bin/buildctl /usr/local/bin/buildctl
 COPY --from=builder /app /app
 COPY --from=builder /var/log/buildkit /var/log/buildkit
 COPY --from=builder /var/cache/buildkit /var/cache/buildkit
 COPY --from=builder /var/lib/buildkit /var/lib/buildkit
-RUN useradd -r -u 65534 -g '' buildkit 2>/dev/null || true
-USER 65534:65534
+RUN useradd -r -u 65532 -g '' buildkit 2>/dev/null || true
+USER 65532:65532
 WORKDIR /app
 EXPOSE 1234
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["buildctl", "--version"]
 ENTRYPOINT ["buildkitd"]
 LABEL org.opencontainers.image.title="buildkit" \
       org.opencontainers.image.version="0.20.0" \
@@ -29,6 +28,10 @@ LABEL org.opencontainers.image.title="buildkit" \
       org.opencontainers.image.description="Sovereign hardened buildkit - concurrent build toolkit" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="10s"
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

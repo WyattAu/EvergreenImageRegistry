@@ -1,9 +1,12 @@
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends         python3 python3-pip ca-certificates     && rm -rf /var/lib/apt/lists/* &&     pip install --break-system-packages --no-cache-dir zigpy 2>/dev/null || true
-RUN useradd -r -u 65534 -g nogroup -d /app -s /sbin/nologin zzh 2>/dev/null || true
-RUN mkdir -p /app && chown -R 65534:65534 /app 2>/dev/null || true
-USER 65534:65534
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+RUN apt-get update && apt-get install -y --no-install-recommends         python3 py3-pip ca-certificates     && rm -rf /var/lib/apt/lists/* &&     pip install --break-system-packages --no-cache-dir zigpy 2>/dev/null || true
+RUN useradd -r -u 65532 -g nogroup -d /app -s /sbin/nologin zzh 2>/dev/null || true
+RUN mkdir -p /app && chown -R 65532:65532 /app 2>/dev/null || true
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=60s --timeout=5s --start-period=10s --retries=3     CMD ["python3", "-c", "print('ok')"]
-ENTRYPOINT ["python3"]
-LABEL org.opencontainers.image.title="zzh"       org.opencontainers.image.description="Placeholder - Zigbee"       sovereign.image.tier="3"       sovereign.image.status="placeholder"       sovereign.constraint.nonroot="true"       sovereign.constraint.debian_slim="true"
+
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

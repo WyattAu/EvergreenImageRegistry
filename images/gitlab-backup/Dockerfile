@@ -12,7 +12,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         ruby="3.1.*" \
         ruby-dev="3.1.*" \
-        build-essential \
+        build-base \
         git \
         curl="7.88.1-*" \
         ca-certificates && \
@@ -21,23 +21,17 @@ RUN gem install --no-document backup:5.0.0beta7
 WORKDIR /build
 RUN git clone --depth 1 --branch v${VERSION} https://github.com/satoru-tsuji/gitlab-backup-cli.git /build 2>/dev/null || true
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        ruby="3.1.*" \
-        openssh-client \
-        ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
-RUN groupadd -r -g 65534 backup && useradd -r -u 65534 -g backup -d /app -s /usr/sbin/nologin backup
-RUN mkdir -p /app /data /var/log/gitlab-backup && chown -R 65534:65534 /app /data /var/log/gitlab-backup
+RUN apk add --no-cache ruby openssh-client ca-certificates
+RUN groupadd -r -g 65532 backup && useradd -r -u 65532 -g backup -d /app -s /usr/sbin/nologin backup
+RUN mkdir -p /app /data /var/log/gitlab-backup && chown -R 65532:65532 /app /data /var/log/gitlab-backup
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 COPY --from=builder /usr/bin/backup /usr/local/bin/backup 2>/dev/null || true
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 VOLUME /data
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["ruby", "-v"]
 ENTRYPOINT ["/usr/local/bin/backup"]
 LABEL org.opencontainers.image.title="gitlab-backup" \
       org.opencontainers.image.description="GitLab Backup - backup tooling for GitLab instances" \
@@ -47,3 +41,8 @@ LABEL org.opencontainers.image.title="gitlab-backup" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.debian-slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

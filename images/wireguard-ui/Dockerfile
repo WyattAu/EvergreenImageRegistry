@@ -22,11 +22,9 @@ RUN curl -fsSL "https://github.com/ngoduykhanh/wireguard-ui/releases/download/v$
 FROM scratch
 COPY --from=downloader /wireguard-ui /wireguard-ui
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["/wireguard-ui", "--help"]
 ENTRYPOINT ["/wireguard-ui"]
 LABEL org.opencontainers.image.title="wireguard-ui" \
       org.opencontainers.image.version="0.5.4" \
@@ -41,3 +39,9 @@ LABEL org.opencontainers.image.title="wireguard-ui" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

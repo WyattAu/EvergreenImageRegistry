@@ -30,11 +30,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /var/log/journalbeat /var/log/journalbeat
 COPY --from=builder /var/lib/journalbeat /var/lib/journalbeat
 COPY --from=builder /var/cache/journalbeat /var/cache/journalbeat
-USER 65534:65534
+USER 65532:65532
 WORKDIR /opt/journalbeat
 EXPOSE 5066
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/opt/journalbeat/journalbeat", "--version"]
 ENTRYPOINT ["/opt/journalbeat/journalbeat"]
 LABEL org.opencontainers.image.title="journalbeat" \
       org.opencontainers.image.description="Sovereign hardened Journalbeat - Elastic systemd journal shipper" \
@@ -49,3 +47,9 @@ LABEL org.opencontainers.image.title="journalbeat" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

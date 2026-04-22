@@ -45,30 +45,17 @@ RUN tar -xzf /tmp/couchdb.tar.gz -C /tmp && \
     cp -a /tmp/apache-couchdb-3.3.3/rel/couchdb/. /opt/couchdb/
 
 # hadolint ignore=DL3023
-FROM debian:bookworm-slim
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        erlang-base \
-        erlang-asn1 \
-        erlang-crypto \
-        erlang-ssl \
-        erlang-public-key \
-        erlang-syntax-tools \
-        erlang-tools \
-        libmozjs-78-0 \
-        libicu72 \
-        procps && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache procps
 COPY --from=builder /opt/couchdb /opt/couchdb
 RUN mkdir -p /var/lib/couchdb /var/log/couchdb /app && \
-    chown -R 65534:65534 /var/lib/couchdb /var/log/couchdb /app /opt/couchdb
+    chown -R 65532:65532 /var/lib/couchdb /var/log/couchdb /app /opt/couchdb
 ENV COUCHDB_HOME=/opt/couchdb
 ENV PATH="${COUCHDB_HOME}/bin:${PATH}"
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 5984
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["/opt/couchdb/bin/couchdb", "--version"]
 ENTRYPOINT ["/opt/couchdb/bin/couchdb", "--with-sync-design-doc"]
 LABEL org.opencontainers.image.title="couchdb-sync" \
       org.opencontainers.image.version="3.3.3" \
@@ -78,7 +65,6 @@ LABEL org.opencontainers.image.title="couchdb-sync" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.runtime="debian-slim" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
@@ -90,3 +76,8 @@ LABEL org.opencontainers.image.title="couchdb-sync" \
       sovereign.hft.pre-stop-delay="5s" \
       sovereign.hft.connection-drain="true" \
       sovereign.hft.sched-policy="SCHED_OTHER"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

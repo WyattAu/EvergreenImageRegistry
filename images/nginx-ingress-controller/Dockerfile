@@ -33,11 +33,9 @@ COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifica
 COPY --from=builder2 /app /app
 COPY --from=builder2 /var/log/nginx-ingress /var/log/nginx-ingress
 COPY --from=builder2 /etc/nginx /etc/nginx
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 80 443 8443
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["/nginx-ingress-controller", "--version"]
 ENTRYPOINT ["/nginx-ingress-controller"]
 LABEL org.opencontainers.image.title="nginx-ingress-controller" \
       org.opencontainers.image.version="1.10.1" \
@@ -52,3 +50,9 @@ LABEL org.opencontainers.image.title="nginx-ingress-controller" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="5000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

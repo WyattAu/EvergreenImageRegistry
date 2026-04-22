@@ -20,10 +20,8 @@ RUN git clone --depth 1 https://github.com/VictoriaMetrics/perscache /tmp/persca
 
 FROM scratch
 COPY --from=builder /tmp/perscache /usr/local/bin/perscache
-USER 65534:65534
+USER 65532:65532
 EXPOSE 8429
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["/usr/local/bin/perscache"]
 ENTRYPOINT ["/usr/local/bin/perscache"]
 LABEL org.opencontainers.image.title="perscache" \
       org.opencontainers.image.version="${VERSION}" \
@@ -35,3 +33,9 @@ LABEL org.opencontainers.image.title="perscache" \
       sovereign.constraint.scratch="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

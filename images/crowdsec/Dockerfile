@@ -23,11 +23,9 @@ COPY --from=builder /var/log/crowdsec /var/log/crowdsec
 COPY --from=builder /var/cache/crowdsec /var/cache/crowdsec
 COPY --from=builder /etc/crowdsec /etc/crowdsec
 COPY --from=builder /var/lib/crowdsec /var/lib/crowdsec
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080 6060
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/crowdsec", "-version"]
 ENTRYPOINT ["/crowdsec"]
 LABEL org.opencontainers.image.title="crowdsec" \
       org.opencontainers.image.version="1.6.2" \
@@ -47,3 +45,9 @@ LABEL org.opencontainers.image.title="crowdsec" \
       sovereign.hft.pre-stop-delay="5s" \
       sovereign.hft.connection-drain="true" \
       sovereign.hft.sched-policy="SCHED_OTHER"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

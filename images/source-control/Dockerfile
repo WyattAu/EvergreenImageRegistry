@@ -14,9 +14,13 @@ RUN curl -fsSL "https://github.com/go-gitea/gitea/releases/download/v1.21.10/git
 FROM scratch
 COPY --from=downloader /tmp/binary /usr/local/bin/source-control
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3     CMD ["/usr/local/bin/source-control", "--version"]
-ENTRYPOINT ["/usr/local/bin/source-control"]
 LABEL org.opencontainers.image.title="source-control"       org.opencontainers.image.description="Source Control - generic source control tools placeholder"       org.opencontainers.image.version="0.1.0"       org.opencontainers.image.vendor="Generic"       org.opencontainers.image.source="https://github.com/go-gitea/gitea"       sovereign.image.tier="2"       sovereign.constraint.nonroot="true"       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

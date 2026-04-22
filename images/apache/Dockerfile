@@ -7,19 +7,17 @@
 ARG VERSION=2.4.66
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
 RUN apt-get update && apt-get install -y --no-install-recommends \
         apache2 ca-certificates tzdata && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
     a2dismod autoindex 2>/dev/null || true
-RUN groupadd -g 65534 -r www-data 2>/dev/null || true && \
-    usermod -u 65534 www-data 2>/dev/null || true && \
-    chown -R 65534:65534 /var/www/html /var/log/apache2 /var/run/apache2 2>/dev/null || true
-USER 65534:65534
+RUN groupadd -g 65532 -r www-data 2>/dev/null || true && \
+    usermod -u 65532 www-data 2>/dev/null || true && \
+    chown -R 65532:65532 /var/www/html /var/log/apache2 /var/run/apache2 2>/dev/null || true
+USER 65532:65532
 WORKDIR /var/www/html
 EXPOSE 80 443
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["curl", "-f", "http://localhost/"]
 ENTRYPOINT ["apache2ctl"]
 CMD ["-D", "FOREGROUND"]
 LABEL org.opencontainers.image.title="apache" \
@@ -30,4 +28,9 @@ LABEL org.opencontainers.image.title="apache" \
       sovereign.image.status="functional" \
       sovereign.image.category="webserver" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

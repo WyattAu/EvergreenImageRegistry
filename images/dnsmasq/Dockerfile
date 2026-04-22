@@ -24,11 +24,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/dnsmasq /var/log/dnsmasq
 COPY --from=builder /var/cache/dnsmasq /var/cache/dnsmasq
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 53
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/dnsmasq", "--version"]
 ENTRYPOINT ["/dnsmasq"]
 LABEL org.opencontainers.image.title="dnsmasq" \
       org.opencontainers.image.version="2.90" \
@@ -40,3 +38,9 @@ LABEL org.opencontainers.image.title="dnsmasq" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

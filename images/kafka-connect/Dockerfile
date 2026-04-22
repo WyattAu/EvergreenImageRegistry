@@ -20,20 +20,17 @@ RUN curl -fsSL "https://archive.apache.org/dist/kafka/${VERSION}/kafka_${SCALA_V
     && tar -xzf kafka.tgz \
     && rm kafka.tgz
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 ARG VERSION
 ARG SCALA_VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    openjdk-17-jre-headless ca-certificates curl && \
-    rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 65534 -s /usr/sbin/nologin connect 2>/dev/null || true
+RUN apk add --no-cache ca-certificates curl
+RUN useradd -m -u 65532 -s /usr/sbin/nologin connect 2>/dev/null || true
 RUN mkdir -p /opt/kafka/data /opt/kafka/logs /var/log/kafka /var/cache/kafka
 COPY --from=builder /tmp/kafka_${SCALA_VERSION}-${VERSION} /opt/kafka
-USER 65534:65534
+USER 65532:65532
 WORKDIR /opt/kafka
 EXPOSE 8083
-HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD ["curl", "-fsSL", "http://localhost:8083/"]
 ENTRYPOINT ["/opt/kafka/bin/connect-distributed.sh"]
 LABEL org.opencontainers.image.title="kafka-connect" \
       org.opencontainers.image.description="Sovereign hardened Kafka Connect - distributed data integration platform" \
@@ -43,8 +40,13 @@ LABEL org.opencontainers.image.title="kafka-connect" \
       sovereign.image.status="functional" \
       sovereign.image.category="messaging" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="15s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="30000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

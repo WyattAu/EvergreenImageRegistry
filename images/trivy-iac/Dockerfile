@@ -6,13 +6,16 @@ RUN strip /trivy 2>/dev/null || true
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/trivy-iac /var/cache/trivy-iac
 
-FROM debian:bookworm-slim
+FROM scratch
+
 COPY --from=downloader /trivy /usr/local/bin/trivy
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
-RUN useradd -r -u 65534 -g nogroup -d /app -s /sbin/nologin trivy-iac 2>/dev/null || true &&     chown -R 65534:65534 /app 2>/dev/null || true
-USER 65534:65534
+RUN useradd -r -u 65532 -g nogroup -d /app -s /sbin/nologin trivy-iac 2>/dev/null || true &&     chown -R 65532:65532 /app 2>/dev/null || true
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3     CMD ["trivy", "--version"]
-ENTRYPOINT ["trivy"]
-LABEL org.opencontainers.image.title="trivy-iac"       org.opencontainers.image.description="Trivy - IaC scanner"       org.opencontainers.image.vendor="Aqua Security"       org.opencontainers.image.source="https://github.com/aquasecurity/trivy"       sovereign.image.tier="3"       sovereign.constraint.nonroot="true"       sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

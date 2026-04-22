@@ -15,19 +15,13 @@ RUN curl -fsSL "https://github.com/snyk/snyk/releases/download/v${VERSION}/snyk-
     chmod +x /snyk && \
     strip --strip-all /snyk
 
-FROM debian:bookworm-slim AS runtime
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        nodejs \
-        npm \
-        ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache nodejs npm ca-certificates
 COPY --from=downloader /snyk /usr/local/bin/snyk
-RUN mkdir -p /app && chown 65534:65534 /app
-USER 65534:65534
+RUN mkdir -p /app && chown 65532:65532 /app
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/local/bin/snyk", "--version"]
 ENTRYPOINT ["/usr/local/bin/snyk"]
 CMD ["monitor"]
 LABEL org.opencontainers.image.title="snyk-agent" \
@@ -38,8 +32,13 @@ LABEL org.opencontainers.image.title="snyk-agent" \
       sovereign.image.category="security" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="30s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="30000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

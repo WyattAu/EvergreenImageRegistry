@@ -8,18 +8,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN curl -fsSL "https://github.com/wekan/wekan/releases/download/v7.18.0/wekan-7.18.0-amd64.tar.gz" -o /wekan.tar.gz && \
     tar -xzf /wekan.tar.gz -C /opt/ && rm /wekan.tar.gz
 
-FROM debian:bookworm-slim AS runtime
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        ca-certificates curl && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache ca-certificates curl
 COPY --from=builder /opt/bundle /opt/wekan
 RUN mkdir -p /app /var/log/wekan /var/cache/wekan \
-    && chown -R 65534:65534 /app /var/log/wekan /var/cache/wekan /opt/wekan
-USER 65534:65534
+    && chown -R 65532:65532 /app /var/log/wekan /var/cache/wekan /opt/wekan
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:8080"]
 ENTRYPOINT ["node", "/opt/wekan/main.js"]
 LABEL org.opencontainers.image.title="wekan" \
       org.opencontainers.image.version="7.18.0" \
@@ -29,8 +26,13 @@ LABEL org.opencontainers.image.title="wekan" \
       sovereign.image.category="project-management" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="10s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="30000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

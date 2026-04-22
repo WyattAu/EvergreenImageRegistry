@@ -5,11 +5,13 @@
 ```yaml
 ---
 document_id: BP-REGISTRY-001
-version: 1.0.0
-status: APPROVED
+version: 1.1.0
+status: APPROVED (PARTIALLY SUPERSEDED — see ADR-007)
 created: 2026-04-19
+updated: 2026-04-22
 author: Nexus (Systems Architect)
 ieee_1016_compliant: true
+superseded_by: ADR-007, REQUIREMENTS.md v4.0.0
 ---
 ```
 
@@ -128,11 +130,15 @@ graph TD
 
 ## BP-3: Design Rationale (IEEE 1016 Clause 5.3)
 
+> **DEPRECATION NOTICE (2026-04-22):** References to debian-slim and Alpine in this document are deprecated. Both are permanently banned per ADR-007. See [REQUIREMENTS.md](../../REQUIREMENTS.md) v4.0.0 for the current approved base image list.
+
 ### Context
 
 The primary architectural challenge is balancing security hardening with operational functionality. Previous approaches either oversimplified security (using standard base images) or lacked maintainability (manually curated images).
 
 ### Decision
+
+> **DEPRECATION NOTICE (2026-04-22):** The tier-based hardening approach described below has been partially superseded by ADR-007. Base image selection is no longer tied to operational tier. See REQUIREMENTS.md v4.0.0 and [ADR-007](../../.adrs/ADR-007-base-image-preference-order.md) for the current universal preference order (scratch > wolfi > RHEL UBI micro > RHEL UBI minimal > RHEL UBI standard). debian-slim and Alpine are permanently banned.
 
 Adopt a tiered approach with three security levels, automated scanning, and mandatory signing for Tier 1 and Tier 2 images.
 
@@ -153,6 +159,8 @@ Adopt a tiered approach with three security levels, automated scanning, and mand
 ### Related ADR
 
 ADR-001: Tiered Image Strategy
+
+> **UPDATE (2026-04-22):** ADR-007 supersedes the tier-to-base-image mapping. See [ADR-007](../../.adrs/ADR-007-base-image-preference-order.md) and [REQUIREMENTS.md](../../REQUIREMENTS.md) v4.0.0 for the current policy. debian-slim and Alpine references in this document are deprecated.
 
 ---
 
@@ -393,4 +401,5 @@ Scan Interface:
 
 | Version | Date | Author | Status |
 |---------|------|--------|--------|
+| 1.1.0 | 2026-04-22 | Nexus | APPROVED (PARTIALLY SUPERSEDED — ADR-007) |
 | 1.0.0 | 2026-04-19 | Nexus | APPROVED |

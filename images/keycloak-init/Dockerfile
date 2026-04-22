@@ -17,20 +17,15 @@ RUN curl -fsSL "https://github.com/keycloak/keycloak/releases/download/${VERSION
     tar -xzf /keycloak.tar.gz -C /opt/ && \
     rm -rf /keycloak.tar.gz /checksums.sha1
 
-FROM debian:bookworm-slim AS runtime
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        openjdk-21-jre-headless \
-        ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache ca-certificates
 COPY --from=downloader /opt/keycloak-${VERSION} /opt/keycloak
-RUN mkdir -p /app && chown -R 65534:65534 /app /opt/keycloak
-USER 65534:65534
+RUN mkdir -p /app && chown -R 65532:65532 /app /opt/keycloak
+USER 65532:65532
 WORKDIR /app
 ENV KEYCLOAK_HOME=/opt/keycloak
 EXPOSE 8080 8443
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD ["curl", "-f", "http://localhost:8080/health/ready"]
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
 CMD ["start-dev", "--import-realm"]
 LABEL org.opencontainers.image.title="keycloak-init" \
@@ -41,8 +36,13 @@ LABEL org.opencontainers.image.title="keycloak-init" \
       sovereign.image.category="identity" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="30s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="60000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

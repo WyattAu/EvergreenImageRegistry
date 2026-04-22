@@ -25,11 +25,9 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifi
 COPY --from=config /app /app
 COPY --from=config /var/log/minisearch /var/log/minisearch
 COPY --from=config /var/lib/minisearch /var/lib/minisearch
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["/minisearch", "--version"]
 ENTRYPOINT ["/minisearch"]
 LABEL org.opencontainers.image.title="minisearch" \
       org.opencontainers.image.version="best-effort" \
@@ -46,3 +44,9 @@ LABEL org.opencontainers.image.title="minisearch" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

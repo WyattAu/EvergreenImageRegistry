@@ -19,25 +19,11 @@ RUN mkdir -p /build && \
     tar -xzf /cachet.tar.gz -C /build --strip-components=1 && \
     rm /cachet.tar.gz
 
-FROM debian:bookworm-20240101-slim
-RUN groupadd -g 65534 cachet && \
-    useradd -m -u 65534 -g cachet -s /usr/sbin/nologin cachet
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        php8.2-fpm \
-        php8.2-mysql \
-        php8.2-pgsql \
-        php8.2-sqlite3 \
-        php8.2-gd \
-        php8.2-curl \
-        php8.2-mbstring \
-        php8.2-xml \
-        php8.2-zip \
-        php8.2-bcmath \
-        php8.2-redis \
-        nginx \
-        ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN groupadd -g 65532 cachet && \
+    useradd -m -u 65532 -g cachet -s /usr/sbin/nologin cachet
+RUN apk add --no-cache php-8.4-fpm php-8.4-mysql php-8.4-pgsql php-8.4-sqlite php-8.4-gd php-8.4-curl php-8.4-mbstring php-8.4-xml php-8.4-zip php-8.4-bcmath php-8.4-redis nginx ca-certificates
 COPY --from=downloader /build /var/www/cachet
 RUN mkdir -p /run/php /app/logs /app/data && \
     chown -R cachet:cachet /var/www/cachet /app /run/php && \
@@ -54,7 +40,7 @@ server {
         try_files $uri /index.php$is_args$args;
     }
     location ~ \.php$ {
-        fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+        fastcgi_pass unix:/run/php/php84-fpm.sock;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include fastcgi_params;
     }
@@ -62,7 +48,7 @@ server {
 EOF
 RUN ln -sf /etc/nginx/sites-available/cachet /etc/nginx/sites-enabled/cachet && \
     rm -f /etc/nginx/sites-enabled/default
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8000
 ENV APP_ENV=production \
@@ -70,8 +56,6 @@ ENV APP_ENV=production \
     DB_DRIVER=sqlite \
     CACHE_DRIVER=file \
     SESSION_DRIVER=file
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD ["/usr/sbin/nginx", "-v"]
 ENTRYPOINT ["/usr/sbin/php-fpm8.2", "-F"]
 LABEL org.opencontainers.image.title="cachet" \
       org.opencontainers.image.version="2.5.1" \
@@ -79,7 +63,6 @@ LABEL org.opencontainers.image.title="cachet" \
       org.opencontainers.image.description="Cachet - open source status page system" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="5s" \
       sovereign.hft.init-system="none" \
@@ -92,3 +75,8 @@ LABEL org.opencontainers.image.title="cachet" \
       sovereign.hft.connection-drain="true" \
       sovereign.hft.sched-policy="SCHED_OTHER" \
       sovereign.hft.runtime="php"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

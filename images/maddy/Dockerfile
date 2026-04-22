@@ -14,9 +14,13 @@ RUN curl -fsSL "https://github.com/foxcpp/maddy/releases/download/v0.7.0/maddy-0
 FROM scratch
 COPY --from=downloader /tmp/binary /usr/local/bin/maddy
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 587 993 143 465 25
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3     CMD ["/usr/local/bin/maddy", "--version"]
-ENTRYPOINT ["/usr/local/bin/maddy"]
 LABEL org.opencontainers.image.title="maddy"       org.opencontainers.image.description="Maddy - all-in-one mail server written in Go"       org.opencontainers.image.version="0.7.0"       org.opencontainers.image.vendor="foxcpp"       org.opencontainers.image.source="https://github.com/foxcpp/maddy"       sovereign.image.tier="2"       sovereign.constraint.nonroot="true"       sovereign.constraint.scratch="true"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

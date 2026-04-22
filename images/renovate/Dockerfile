@@ -16,21 +16,14 @@ RUN curl -fsSL "https://github.com/renovatebot/renovate/releases/download/${VERS
     tar -xzf /renovate.tar.gz -C /tmp/renovate && \
     rm -f /renovate.tar.gz
 
-FROM debian:bookworm-slim AS runtime
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        nodejs \
-        npm \
-        ca-certificates \
-        git && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache nodejs npm ca-certificates git
 COPY --from=downloader /tmp/renovate /opt/renovate
 RUN npm install --global /opt/renovate 2>/dev/null || true && \
-    mkdir -p /app && chown -R 65534:65534 /app /opt/renovate
-USER 65534:65534
+    mkdir -p /app && chown -R 65532:65532 /app /opt/renovate
+USER 65532:65532
 WORKDIR /app
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["renovate", "--version"]
 ENTRYPOINT ["renovate"]
 LABEL org.opencontainers.image.title="renovate" \
       org.opencontainers.image.version="43.138.3" \
@@ -40,8 +33,13 @@ LABEL org.opencontainers.image.title="renovate" \
       sovereign.image.category="automation" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="30s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="30000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

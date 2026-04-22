@@ -20,16 +20,17 @@ RUN tar -xzf /grafana.tar.gz -C /opt && \
     strip /opt/grafana-${VERSION}/bin/grafana-server && \
     strip /opt/grafana-${VERSION}/bin/grafana-cli
 
-FROM debian:bookworm-20240101-slim
-RUN groupadd -g 65534 grafana && \
-    useradd -m -u 65534 -g grafana -s /usr/sbin/nologin grafana
+FROM scratch
+
+RUN groupadd -g 65532 grafana && \
+    useradd -m -u 65532 -g grafana -s /usr/sbin/nologin grafana
 COPY --from=downloader /opt/grafana-10.4.1/bin/grafana-server /usr/local/bin/grafana-server
 COPY --from=downloader /opt/grafana-10.4.1/bin/grafana-cli /usr/local/bin/grafana-cli
 COPY --from=downloader /opt/grafana-10.4.1/public /usr/share/grafana/public
 COPY --from=downloader /opt/grafana-10.4.1/conf /etc/grafana
 RUN mkdir -p /app/data /app/logs /app/plugins /app/conf/provisioning && \
     chown -R grafana:grafana /app /etc/grafana
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 3000
 ENV GF_PATHS_DATA=/app/data \
@@ -42,8 +43,6 @@ ENV GF_PATHS_DATA=/app/data \
     GF_LOG_LEVEL=debug \
     GF_SERVER_ROUTER_LOGGING=true \
     GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION=true
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD ["/usr/local/bin/grafana-cli", "--version"]
 ENTRYPOINT ["/usr/local/bin/grafana-server"]
 LABEL org.opencontainers.image.title="grafana-dev" \
       org.opencontainers.image.version="10.4.1" \
@@ -51,7 +50,6 @@ LABEL org.opencontainers.image.title="grafana-dev" \
       org.opencontainers.image.description="Grafana OSS in development mode - debug logging, provisioning enabled" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="5s" \
       sovereign.hft.init-system="none" \
@@ -64,3 +62,8 @@ LABEL org.opencontainers.image.title="grafana-dev" \
       sovereign.hft.sched-policy="SCHED_OTHER" \
       sovereign.hft.runtime="go" \
       sovereign.hft.runtime-hints="GOMAXPROCS=<cores>"
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

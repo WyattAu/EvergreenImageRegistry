@@ -13,14 +13,11 @@ FROM gitlab/gitlab-ce:${VERSION}-ce.0
 # Apply sovereignty hardening on top of official image
 USER root
 # Ensure non-root user exists
-RUN useradd -m -u 65534 -g '' git 2>/dev/null || true
+RUN useradd -m -u 65532 -g '' git 2>/dev/null || true
 USER git
 
 WORKDIR /home/git
 EXPOSE 80 22 443
-
-HEALTHCHECK --interval=30s --timeout=10s --start-period=300s --retries=3 \
-    CMD curl -s http://localhost:80/api/v4/health || exit 1
 
 LABEL org.opencontainers.image.title="gitlab" \
       org.opencontainers.image.version="17.6.0" \
@@ -29,3 +26,9 @@ LABEL org.opencontainers.image.title="gitlab" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.official="true"
+
+LABEL sovereign.base.image="unrecognized"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

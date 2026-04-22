@@ -23,10 +23,8 @@ RUN curl -fsSL "https://packages.timber.io/vector/${VERSION}/vector-${VERSION}-x
 FROM scratch
 COPY --from=builder /tmp/vector /usr/bin/vector
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 EXPOSE 8686
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/usr/bin/vector", "--version"]
 ENTRYPOINT ["/usr/bin/vector"]
 LABEL sovereign.image.status="functional" \
       sovereign.image.tier="1" \
@@ -34,3 +32,9 @@ LABEL sovereign.image.status="functional" \
       org.opencontainers.image.title="vector-init" \
       org.opencontainers.image.description="Sovereign hardened Vector init - high-performance observability data pipeline" \
       org.opencontainers.image.version="${VERSION}"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

@@ -23,11 +23,9 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/miniflux-2 /var/log/miniflux-2
 COPY --from=builder /var/cache/miniflux-2 /var/cache/miniflux-2
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["curl", "-sf", "http://localhost:8080/healthcheck"]
 ENTRYPOINT ["/miniflux"]
 LABEL org.opencontainers.image.title="miniflux-2" \
       org.opencontainers.image.version="2.2.19" \
@@ -40,3 +38,9 @@ LABEL org.opencontainers.image.title="miniflux-2" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

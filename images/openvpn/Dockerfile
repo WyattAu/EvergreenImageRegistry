@@ -12,14 +12,13 @@ FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
 RUN apk add --no-cache openvpn
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN adduser -D -u 65534 appuser 2>/dev/null || true
+RUN apk add --no-cache ca-certificates
+RUN adduser -D -u 65532 appuser 2>/dev/null || true
 RUN mkdir -p /app /var/log/openvpn /var/cache/openvpn
 USER appuser
 WORKDIR /app
 COPY --from=downloader /usr/sbin/openvpn /usr/local/bin/openvpn
 EXPOSE 1194
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD /usr/local/bin/openvpn --version
 ENTRYPOINT ["/usr/local/bin/openvpn"]
 LABEL org.opencontainers.image.title="openvpn" \
       org.opencontainers.image.version="2.6.10" \
@@ -27,3 +26,10 @@ LABEL org.opencontainers.image.title="openvpn" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.wolfi="true"
+
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+USER 65532:65532
+STOPSIGNAL SIGTERM

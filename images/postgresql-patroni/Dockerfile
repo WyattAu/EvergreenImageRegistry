@@ -15,20 +15,17 @@ RUN pip install --no-cache-dir --prefix=/install patroni[postgresql]=="${VERSION
     find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 python3-pip libpq5 curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache python3 py3-pip libpq curl ca-certificates
 COPY --from=builder /install /usr/local
-RUN useradd -m -u 65534 -s /usr/sbin/nologin patroni 2>/dev/null || true && \
+RUN useradd -m -u 65532 -s /usr/sbin/nologin patroni 2>/dev/null || true && \
     mkdir -p /app /var/log/patroni /var/cache/patroni && \
-    chown -R 65534:65534 /app /var/log/patroni /var/cache/patroni
-USER 65534:65534
+    chown -R 65532:65532 /app /var/log/patroni /var/cache/patroni
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8008 5432
 ENV PATRONI_RESTAPI_LISTEN="0.0.0.0:8008"
-HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-    CMD ["python3", "-c", "import patroni; print('ok')"]
 ENTRYPOINT ["python3", "-m", "patroni"]
 LABEL org.opencontainers.image.title="postgresql-patroni" \
       org.opencontainers.image.version="4.0.3" \
@@ -37,4 +34,8 @@ LABEL org.opencontainers.image.title="postgresql-patroni" \
       org.opencontainers.image.source="https://github.com/patroni/patroni" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

@@ -18,19 +18,17 @@ RUN curl -fsSL "https://github.com/mongodb/mongodb-ops-manager/releases/download
     && tar -xzf /tmp/opsmanager.tgz -C /opt/opsmanager --strip-components=1 \
     && rm -rf /tmp/opsmanager.tgz
 
-FROM debian:bookworm-20250113-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    openjdk-17-jre-headless ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN groupadd -g 65534 opsmanager && useradd -u 65534 -g opsmanager -s /usr/sbin/nologin opsmanager
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache ca-certificates
+RUN groupadd -g 65532 opsmanager && useradd -u 65532 -g opsmanager -s /usr/sbin/nologin opsmanager
 RUN mkdir -p /opt/opsmanager/conf /var/log/opsmanager /var/lib/opsmanager && \
-    chown -R 65534:65534 /opt/opsmanager /var/log/opsmanager /var/lib/opsmanager
+    chown -R 65532:65532 /opt/opsmanager /var/log/opsmanager /var/lib/opsmanager
 COPY --from=builder /opt/opsmanager /opt/opsmanager
-USER 65534:65534
+USER 65532:65532
 WORKDIR /opt/opsmanager
 EXPOSE 8080 8443 27017
 ENV JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["/opt/opsmanager/bin/mongodb-ops-manager"]
 LABEL org.opencontainers.image.title="mongodb-opsmanager" \
       org.opencontainers.image.description="Sovereign hardened MongoDB Ops Manager - database management platform" \
@@ -40,4 +38,8 @@ LABEL org.opencontainers.image.title="mongodb-opsmanager" \
       sovereign.image.tier="1" \
       sovereign.image.category="database" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

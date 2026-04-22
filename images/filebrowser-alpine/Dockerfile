@@ -10,11 +10,9 @@ RUN curl -fsSL "https://github.com/filebrowser/filebrowser/releases/download/v2.
 FROM scratch
 COPY --from=downloader /usr/local/bin/filebrowser /filebrowser
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/filebrowser", "--version"]
 ENTRYPOINT ["/filebrowser"]
 LABEL org.opencontainers.image.title="filebrowser-alpine" \
       org.opencontainers.image.version="v2.32.0" \
@@ -30,3 +28,9 @@ LABEL org.opencontainers.image.title="filebrowser-alpine" \
       sovereign.hft.shutdown-timeout="5s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="10000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

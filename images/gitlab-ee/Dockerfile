@@ -20,26 +20,17 @@ RUN curl -fsSL "https://packages.gitlab.com/install/repositories/gitlab/gitlab-e
     apt-get install -y --no-install-recommends gitlab-ee=${VERSION}-ee.0 && \
     rm -rf /var/lib/apt/lists/*
 
-FROM debian:bookworm-slim
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        curl="7.88.1-*" \
-        ca-certificates \
-        gnupg \
-        openssh-client \
-        postfix="3.7.*" \
-        cron="3.0pl1-*" && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache curl ca-certificates gnupg openssh-client postfix busybox
 COPY --from=downloader /opt/gitlab /opt/gitlab
 COPY --from=downloader /etc/gitlab /etc/gitlab
 COPY --from=downloader /var/opt/gitlab /var/opt/gitlab
-RUN groupadd -r -g 65534 gitlab 2>/dev/null || true && \
-    useradd -r -u 65534 -g gitlab -d /var/opt/gitlab -s /usr/sbin/nologin gitlab 2>/dev/null || true
-USER 65534:65534
+RUN groupadd -r -g 65532 gitlab 2>/dev/null || true && \
+    useradd -r -u 65532 -g gitlab -d /var/opt/gitlab -s /usr/sbin/nologin gitlab 2>/dev/null || true
+USER 65532:65532
 EXPOSE 80 22 443
-HEALTHCHECK --interval=30s --timeout=10s --start-period=300s --retries=3 \
-    CMD ["curl", "-sf", "http://localhost:80/api/v4/health"]
 LABEL org.opencontainers.image.title="gitlab-ee" \
       org.opencontainers.image.description="GitLab EE - self-hosted Git management platform (Enterprise)" \
       org.opencontainers.image.version="17.6.0" \
@@ -48,3 +39,8 @@ LABEL org.opencontainers.image.title="gitlab-ee" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.debian-slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

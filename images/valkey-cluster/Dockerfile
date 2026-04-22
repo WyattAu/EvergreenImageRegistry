@@ -17,23 +17,20 @@ RUN curl -fsSL "https://github.com/valkey-io/valkey/releases/download/${VERSION}
     cd /valkey-${VERSION} && make -j"$(nproc)" && make install PREFIX=/install && \
     strip /install/bin/valkey-* /install/bin/redis-*
 
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache ca-certificates
 COPY --from=builder /install/bin/ /usr/local/bin/
 COPY --from=builder /valkey-${VERSION}/valkey.conf /app/valkey.conf
-RUN useradd -m -u 65534 -s /usr/sbin/nologin valkey 2>/dev/null || true && \
+RUN useradd -m -u 65532 -s /usr/sbin/nologin valkey 2>/dev/null || true && \
     mkdir -p /app /var/log/valkey-cluster /var/cache/valkey-cluster /var/lib/valkey && \
-    chown -R 65534:65534 /app /var/log/valkey-cluster /var/cache/valkey-cluster /var/lib/valkey
-USER 65534:65534
+    chown -R 65532:65532 /app /var/log/valkey-cluster /var/cache/valkey-cluster /var/lib/valkey
+USER 65532:65532
 WORKDIR /app
 EXPOSE 6379 16379
 ENV VALKEY_CLUSTER_ANNOUNCE_IP="" \
     VALKEY_CLUSTER_ANNOUNCE_PORT="6379"
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["valkey-cli", "-p", "6379", "ping"]
-ENTRYPOINT ["valkey-server", "--cluster-enabled", "yes", \
+ENTRYPOINT ["valkey", "--cluster-enabled", "yes", \
     "--cluster-config-file", "/app/nodes.conf", \
     "--cluster-node-timeout", "5000", \
     "--appendonly", "yes", \
@@ -45,4 +42,8 @@ LABEL org.opencontainers.image.title="valkey-cluster" \
       org.opencontainers.image.source="https://github.com/valkey-io/valkey" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

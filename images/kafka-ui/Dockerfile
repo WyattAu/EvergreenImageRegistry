@@ -28,11 +28,9 @@ COPY --from=downloader /opt/kafka-ui /opt/kafka-ui
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /var/log/kafka-ui /var/log/kafka-ui
 COPY --from=builder /var/cache/kafka-ui /var/cache/kafka-ui
-USER 65534:65534
+USER 65532:65532
 WORKDIR /opt/kafka-ui
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["/opt/kafka-ui/kafka-ui", "--version"]
 ENTRYPOINT ["/opt/kafka-ui/kafka-ui"]
 LABEL org.opencontainers.image.title="kafka-ui" \
       org.opencontainers.image.description="Sovereign hardened Kafka UI - web-based Kafka management interface" \
@@ -47,3 +45,9 @@ LABEL org.opencontainers.image.title="kafka-ui" \
       sovereign.hft.shutdown-timeout="3s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="3000ms"
+
+LABEL sovereign.base.image="scratch"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

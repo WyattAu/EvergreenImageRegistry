@@ -7,18 +7,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app /var/log/node /var/cache/node
 
-FROM debian:bookworm-slim AS runtime
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        nodejs ca-certificates curl && \
-    rm -rf /var/lib/apt/lists/*
+FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007
+
+RUN apk add --no-cache nodejs ca-certificates curl
 COPY --from=builder /app /app 2>/dev/null || true
 RUN mkdir -p /app /var/log/node /var/cache/node \
-    && chown -R 65534:65534 /app /var/log/node /var/cache/node
-USER 65534:65534
+    && chown -R 65532:65532 /app /var/log/node /var/cache/node
+USER 65532:65532
 WORKDIR /app
 EXPOSE 3000
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD ["curl", "-sf", "http://localhost:3000"]
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="cryptpad" \
       org.opencontainers.image.version="2024.5.1" \
@@ -28,8 +25,13 @@ LABEL org.opencontainers.image.title="cryptpad" \
       sovereign.image.category="document-management" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="debian-slim" \
+      sovereign.constraint.base="wolfi" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="10s" \
       sovereign.hft.init-system="none" \
       sovereign.hft.startup-timeout="30000ms"
+LABEL sovereign.base.image="wolfi"
+LABEL sovereign.metrics.native="ztunnel"
+LABEL sovereign.health.type="exec"
+EXPOSE 9101
+STOPSIGNAL SIGTERM

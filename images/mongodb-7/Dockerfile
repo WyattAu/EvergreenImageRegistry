@@ -22,7 +22,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://fastdl.mongodb.org/linux/mongo
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
-RUN groupadd -g 65532 mongodb && useradd -u 65532 -g mongodb -s /sbin/nologin mongodb
+RUN addgroup -S 65532 mongodb && adduser -u 65532 -G mongodb -D -s /sbin/nologin mongodb
 RUN mkdir -p /data/db /var/log/mongodb /var/cache/mongodb && chown -R 65532:65532 /data/db /var/log/mongodb /var/cache/mongodb
 COPY --from=builder /usr/local/bin/mongod /usr/local/bin/mongod
 COPY --from=builder /usr/local/bin/mongos /usr/local/bin/mongos

@@ -22,7 +22,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates
 COPY --from=builder /install/bin/ /usr/local/bin/
 COPY --from=builder /valkey-${VERSION}/valkey.conf /app/valkey.conf
-RUN useradd -m -u 65532 -s /sbin/nologin valkey 2>/dev/null || true && \
+RUN adduser -u 65532 -s /sbin/nologin valkey 2>/dev/null || true && \
     mkdir -p /app /var/log/valkey-cluster /var/cache/valkey-cluster /var/lib/valkey && \
     chown -R 65532:65532 /app /var/log/valkey-cluster /var/cache/valkey-cluster /var/lib/valkey
 USER 65532:65532

@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache python3 py3-pip ca-certificates curl
-RUN useradd -m -u 65532 -g '' erpnext 2>/dev/null || true
+RUN adduser -u 65532 -G '' -D erpnext 2>/dev/null || true
 RUN mkdir -p /app /var/log/erpnext /var/cache/erpnext && chown -R erpnext:erpnext /app /var/log/erpnext /var/cache/erpnext 2>/dev/null || true
 USER erpnext
 WORKDIR /app

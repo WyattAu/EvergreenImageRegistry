@@ -19,7 +19,7 @@ RUN gem install fluentd -v "~> ${VERSION}" --no-document \
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates libffi-dev
-RUN useradd -m -u 65532 -s /sbin/nologin fluentd 2>/dev/null || true
+RUN adduser -u 65532 -s /sbin/nologin fluentd 2>/dev/null || true
 RUN mkdir -p /fluentd/etc /fluentd/log /fluentd/plugins
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 COPY --from=builder /usr/local/bin/fluentd /usr/local/bin/fluentd

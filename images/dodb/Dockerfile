@@ -11,7 +11,7 @@ ARG BUILD_DATE
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION
 RUN apk add --no-cache ca-certificates
-RUN useradd -m -u 65532 -s /sbin/nologin dodb 2>/dev/null || true
+RUN adduser -u 65532 -s /sbin/nologin dodb 2>/dev/null || true
 RUN mkdir -p /var/lib/dodb /var/log/dodb /var/cache/dodb /app
 RUN printf '#!/bin/sh\necho "dodb v%s - placeholder (no upstream binary)"\nsleep infinity' "${VERSION}" > /app/dodb && chmod +x /app/dodb
 RUN chown -R 65532:65532 /var/lib/dodb /var/log/dodb /var/cache/dodb /app

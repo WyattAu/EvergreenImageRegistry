@@ -25,7 +25,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION
 ARG BUILD_HASH
 RUN apk add --no-cache ca-certificates curl
-RUN useradd -m -u 65532 -s /sbin/nologin splunk 2>/dev/null || true
+RUN adduser -u 65532 -s /sbin/nologin splunk 2>/dev/null || true
 RUN mkdir -p /opt/splunkforwarder/var/log/splunk /opt/splunkforwarder/var/run/splunk
 COPY --from=builder /tmp/splunkforwarder /opt/splunkforwarder
 USER 65532:65532

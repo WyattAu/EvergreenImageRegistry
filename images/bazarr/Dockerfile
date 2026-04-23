@@ -14,7 +14,7 @@ RUN git clone --depth 1 --branch v1.5.2 https://github.com/morpheus65535/bazarr.
     git clone --depth 1 https://github.com/morpheus65535/bazarr.git /opt/bazarr
 RUN cd /opt/bazarr && \
     pip3 install --no-cache-dir --break-system-packages -r requirements.txt 2>/dev/null || true 
-RUN useradd -m -u 65532 -g '' app 2>/dev/null || true
+RUN adduser -u 65532 -G '' -D app 2>/dev/null || true
 RUN mkdir -p /app /var/log/python /var/cache/python && chown -R app:app /app /var/log/python /var/cache/python 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app

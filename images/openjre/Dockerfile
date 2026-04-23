@@ -17,8 +17,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://api.adoptium.net/v3/binary/lat
 ENV JAVA_HOME="/opt/jre"
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
-RUN groupadd -g 65532 -r appuser 2>/dev/null || true && \
-    adduser -u 65532 -G appuser -D -h /app -s /sbin/nologin appuser 2>/dev/null || true
+RUN addgroup -S 65532 -r appuser 2>/dev/null || true && \
+    adduser -u 65532 -G appuser -D -D -h /app -s /sbin/nologin appuser 2>/dev/null || true
 
 USER 65532:65532
 WORKDIR /app

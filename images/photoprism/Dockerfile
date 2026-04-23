@@ -13,7 +13,7 @@ RUN apk add --no-cache curl ca-certificates
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.photoprism.app/pkg/linux-amd64/photoprism-${VERSION}-linux-amd64.tar.gz" -o /tmp/photoprism.tar.gz && \
     tar -xzf /tmp/photoprism.tar.gz -C /opt && rm /tmp/photoprism.tar.gz && \
     chmod +x /opt/photoprism 2>/dev/null || true
-RUN useradd -m -u 65532 -g '' photoprism 2>/dev/null || true
+RUN adduser -u 65532 -G '' -D photoprism 2>/dev/null || true
 RUN mkdir -p /app /var/log/photoprism /var/cache/photoprism && chown -R photoprism:photoprism /app /var/log/photoprism /var/cache/photoprism /opt/photoprism 2>/dev/null || true
 USER photoprism
 WORKDIR /app

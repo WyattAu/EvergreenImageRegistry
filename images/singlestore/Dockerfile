@@ -12,7 +12,7 @@ ARG BUILD_DATE
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION
 RUN apk add --no-cache ca-certificates
-RUN useradd -m -u 65532 -s /sbin/nologin singlestore 2>/dev/null || true
+RUN adduser -u 65532 -s /sbin/nologin singlestore 2>/dev/null || true
 RUN mkdir -p /var/lib/singlestore /var/log/singlestore /app
 RUN printf '#!/bin/sh\necho "singlestore v%s - development compatibility (requires license)"\necho "SingleStore is a commercial distributed SQL database."\necho "Download the free edition from https://www.singlestore.com/ for production use."\nsleep infinity' "${VERSION}" > /app/singlestore && chmod +x /app/singlestore
 RUN chown -R 65532:65532 /var/lib/singlestore /var/log/singlestore /app

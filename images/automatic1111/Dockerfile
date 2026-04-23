@@ -14,7 +14,7 @@ RUN git clone --depth 1 --branch v1.9.3 https://github.com/AUTOMATIC1111/stable-
     git clone --depth 1 https://github.com/AUTOMATIC1111/stable-diffusion-webui.git /opt/automatic1111
 RUN cd /opt/automatic1111 && \
     pip3 install --no-cache-dir --break-system-packages -r requirements.txt 2>/dev/null || true 
-RUN useradd -m -u 65532 -g '' app 2>/dev/null || true
+RUN adduser -u 65532 -G '' -D app 2>/dev/null || true
 RUN mkdir -p /app /var/log/python /var/cache/python && chown -R app:app /app /var/log/python /var/cache/python 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app

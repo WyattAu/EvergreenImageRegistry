@@ -20,8 +20,8 @@ RUN apk add --no-cache python3 ca-certificates tzdata libpq
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
 ENV PATH="/opt/venv/bin:${PATH}"
-RUN groupadd -g 65532 -r questdb 2>/dev/null || true && \
-    adduser -u 65532 -G questdb -D -h /app -s /sbin/nologin questdb 2>/dev/null || true && \
+RUN addgroup -S 65532 -r questdb 2>/dev/null || true && \
+    adduser -u 65532 -G questdb -D -D -h /app -s /sbin/nologin questdb 2>/dev/null || true && \
     chown -R 65532:65532 /app
 USER 65532:65532
 WORKDIR /app

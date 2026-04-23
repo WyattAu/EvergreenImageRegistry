@@ -18,7 +18,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache python3 py3-pip curl ca-certificates
 COPY --from=builder /install /usr/local
-RUN useradd -m -u 65532 -s /sbin/nologin curator 2>/dev/null || true && \
+RUN adduser -u 65532 -s /sbin/nologin curator 2>/dev/null || true && \
     mkdir -p /app /var/log/es-curator /var/cache/es-curator && \
     chown -R 65532:65532 /app /var/log/es-curator /var/cache/es-curator
 USER 65532:65532

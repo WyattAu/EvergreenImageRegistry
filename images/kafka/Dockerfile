@@ -34,7 +34,7 @@ ENV HEALTH_CMD="kafka-broker-api-versions --bootstrap-server localhost:9092" \
 ARG VERSION
 ARG SCALA_VERSION
 RUN apk add --no-cache ca-certificates
-RUN useradd -m -u 65532 -s /sbin/nologin kafka 2>/dev/null || true
+RUN adduser -u 65532 -s /sbin/nologin kafka 2>/dev/null || true
 RUN mkdir -p /kafka/data /kafka/log
 COPY --from=builder /tmp/kafka_${SCALA_VERSION}-${VERSION} /opt/kafka
 USER 65532:65532

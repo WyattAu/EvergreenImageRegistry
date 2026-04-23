@@ -23,7 +23,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/redis/redis/archive
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
-RUN useradd -m -u 65532 -s /sbin/nologin redis 2>/dev/null || true
+RUN adduser -u 65532 -s /sbin/nologin redis 2>/dev/null || true
 RUN mkdir -p /data /var/log/redis
 COPY --from=builder /tmp/redis /usr/local/bin/redis
 USER 65532:65532

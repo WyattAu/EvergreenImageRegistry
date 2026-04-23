@@ -27,7 +27,7 @@ COPY --from=builder --chown=65532:65532 /app /app
 COPY --from=builder --chown=65532:65532 /var/log/elasticsearch /var/log/elasticsearch
 COPY --from=builder --chown=65532:65532 /var/cache/elasticsearch /var/cache/elasticsearch
 COPY --from=builder --chown=65532:65532 /var/lib/elasticsearch /var/lib/elasticsearch
-RUN useradd -m -u 65532 -s /sbin/nologin elasticsearch 2>/dev/null || true && \
+RUN adduser -u 65532 -s /sbin/nologin elasticsearch 2>/dev/null || true && \
     chown -R 65532:65532 /opt/elasticsearch /app /var/log/elasticsearch /var/cache/elasticsearch /var/lib/elasticsearch
 USER 65532:65532
 WORKDIR /app

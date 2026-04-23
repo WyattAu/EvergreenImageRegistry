@@ -24,8 +24,8 @@ RUN find /install -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN groupadd -g 65532 gcplogs && \
-    useradd -m -u 65532 -g gcplogs -s /sbin/nologin gcplogs
+RUN addgroup -S 65532 gcplogs && \
+    adduser -u 65532 -G gcplogs -D -s /sbin/nologin gcplogs
 RUN apk add --no-cache ca-certificates
 COPY --from=stripper /install /usr/local
 COPY --from=stripper /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

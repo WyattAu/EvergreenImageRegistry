@@ -21,7 +21,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/hazelcast/hazelcast
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
-RUN groupadd -g 65532 hazelcast && useradd -u 65532 -g hazelcast -s /sbin/nologin hazelcast
+RUN addgroup -S 65532 hazelcast && adduser -u 65532 -G hazelcast -D -s /sbin/nologin hazelcast
 RUN mkdir -p /opt/hazelcast/conf /var/log/hazelcast /var/lib/hazelcast && \
     chown -R 65532:65532 /opt/hazelcast /var/log/hazelcast /var/lib/hazelcast
 COPY --from=builder /opt/hazelcast /opt/hazelcast

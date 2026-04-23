@@ -24,8 +24,8 @@ RUN find /install -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN groupadd -g 65532 awslogs && \
-    useradd -m -u 65532 -g awslogs -s /sbin/nologin awslogs
+RUN addgroup -S 65532 awslogs && \
+    adduser -u 65532 -G awslogs -D -s /sbin/nologin awslogs
 RUN apk add --no-cache ca-certificates
 COPY --from=stripper /install /usr/local
 COPY --from=stripper /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

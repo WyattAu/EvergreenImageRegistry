@@ -20,7 +20,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache postgresql-client python3 py3-pip libpq curl ca-certificates
 COPY --from=builder /install /usr/local
-RUN useradd -m -u 65532 -s /sbin/nologin anon 2>/dev/null || true && \
+RUN adduser -u 65532 -s /sbin/nologin anon 2>/dev/null || true && \
     mkdir -p /app /var/log/pg-anonymizer /var/cache/pg-anonymizer && \
     chown -R 65532:65532 /app /var/log/pg-anonymizer /var/cache/pg-anonymizer
 USER 65532:65532

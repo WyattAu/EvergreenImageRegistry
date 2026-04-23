@@ -36,7 +36,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates
-RUN useradd -m -u 65532 -s /sbin/nologin rabbitmq 2>/dev/null || true
+RUN adduser -u 65532 -s /sbin/nologin rabbitmq 2>/dev/null || true
 RUN mkdir -p /var/lib/rabbitmq /var/log/rabbitmq /etc/rabbitmq
 COPY --from=builder /usr/lib/rabbitmq /usr/lib/rabbitmq
 COPY --from=builder /usr/sbin/rabbitmq* /usr/sbin/

@@ -11,7 +11,7 @@ ARG BUILD_DATE
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION
 RUN apk add --no-cache ca-certificates
-RUN useradd -m -u 65532 -s /sbin/nologin blazebase 2>/dev/null || true
+RUN adduser -u 65532 -s /sbin/nologin blazebase 2>/dev/null || true
 RUN mkdir -p /var/lib/blazebase /var/log/blazebase /var/cache/blazebase /app
 RUN printf '#!/bin/sh\necho "blazebase v%s - placeholder (no upstream binary)"\nsleep infinity' "${VERSION}" > /app/blazebase && chmod +x /app/blazebase
 RUN chown -R 65532:65532 /var/lib/blazebase /var/log/blazebase /var/cache/blazebase /app

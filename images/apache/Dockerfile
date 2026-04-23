@@ -10,7 +10,7 @@ ARG BUILD_DATE
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache apache2 ca-certificates tzdata
 RUN a2dismod autoindex 2>/dev/null || true
-RUN groupadd -g 65532 -r www-data 2>/dev/null || true && \
+RUN addgroup -S 65532 -r www-data 2>/dev/null || true && \
     usermod -u 65532 www-data 2>/dev/null || true && \
     chown -R 65532:65532 /var/www/html /var/log/apache2 /var/run/apache2 2>/dev/null || true
 USER 65532:65532

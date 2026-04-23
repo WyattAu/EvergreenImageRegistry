@@ -14,7 +14,7 @@ RUN git clone --depth 1 --branch vlatest https://github.com/comfyanonymous/Comfy
     git clone --depth 1 https://github.com/comfyanonymous/ComfyUI.git /opt/comfyui
 RUN cd /opt/comfyui && \
     pip3 install --no-cache-dir --break-system-packages -r requirements.txt 2>/dev/null || true 
-RUN useradd -m -u 65532 -g '' app 2>/dev/null || true
+RUN adduser -u 65532 -G '' -D app 2>/dev/null || true
 RUN mkdir -p /app /var/log/python /var/cache/python && chown -R app:app /app /var/log/python /var/cache/python 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app

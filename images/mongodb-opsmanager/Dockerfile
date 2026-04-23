@@ -21,7 +21,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/mongodb/mongodb-ops
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
-RUN groupadd -g 65532 opsmanager && useradd -u 65532 -g opsmanager -s /sbin/nologin opsmanager
+RUN addgroup -S 65532 opsmanager && adduser -u 65532 -G opsmanager -D -s /sbin/nologin opsmanager
 RUN mkdir -p /opt/opsmanager/conf /var/log/opsmanager /var/lib/opsmanager && \
     chown -R 65532:65532 /opt/opsmanager /var/log/opsmanager /var/lib/opsmanager
 COPY --from=builder /opt/opsmanager /opt/opsmanager

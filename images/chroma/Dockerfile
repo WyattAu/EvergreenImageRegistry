@@ -12,7 +12,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache python3 py3-pip ca-certificates git build-base
 RUN pip3 install --no-cache-dir --break-system-packages chromadb==${VERSION} 2>/dev/null || \
     pip3 install --no-cache-dir --break-system-packages chromadb
-RUN useradd -m -u 65532 -g '' chroma 2>/dev/null || true
+RUN adduser -u 65532 -G '' -D chroma 2>/dev/null || true
 RUN mkdir -p /app /var/log/chroma /var/cache/chroma && chown -R chroma:chroma /app /var/log/chroma /var/cache/chroma 2>/dev/null || true
 USER chroma
 WORKDIR /app

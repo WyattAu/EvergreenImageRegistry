@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates
-RUN useradd -m -u 65532 -g '' mythtv 2>/dev/null || true
+RUN adduser -u 65532 -G '' -D mythtv 2>/dev/null || true
 RUN mkdir -p /app /var/log/mythtv /var/cache/mythtv && chown -R mythtv:mythtv /app /var/log/mythtv /var/cache/mythtv 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app

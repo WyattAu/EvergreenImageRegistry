@@ -13,7 +13,7 @@ RUN apk add --no-cache curl ca-certificates
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/weaviate/weaviate/releases/download/v${VERSION}/weaviate-v${VERSION}-linux-amd64.tar.gz" -o /tmp/weaviate.tar.gz && \
     tar -xzf /tmp/weaviate.tar.gz -C /opt && rm /tmp/weaviate.tar.gz && \
     chmod +x /opt/weaviate 2>/dev/null || true
-RUN useradd -m -u 65532 -g '' weaviate 2>/dev/null || true
+RUN adduser -u 65532 -G '' -D weaviate 2>/dev/null || true
 RUN mkdir -p /app /var/log/weaviate /var/cache/weaviate && chown -R weaviate:weaviate /app /var/log/weaviate /var/cache/weaviate /opt/weaviate 2>/dev/null || true
 USER weaviate
 WORKDIR /app

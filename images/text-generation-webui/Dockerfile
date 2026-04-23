@@ -15,7 +15,7 @@ RUN pip3 install --no-cache-dir --break-system-packages torch torchvision --inde
     git clone --depth 1 https://github.com/oobabooga/text-generation-webui.git /opt/text-generation-webui && \
     cd /opt/text-generation-webui && \
     pip3 install --no-cache-dir --break-system-packages -r requirements.txt 2>/dev/null || true
-RUN useradd -m -u 65532 -g '' user 2>/dev/null || true
+RUN adduser -u 65532 -G '' -D user 2>/dev/null || true
 RUN mkdir -p /app /var/log/python /var/cache/python && chown -R user:user /app /var/log/python /var/cache/python 2>/dev/null || true
 USER user
 WORKDIR /app

@@ -23,7 +23,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache bc ca-certificates curl netcat-openbsd
-RUN useradd -m -u 65532 -s /sbin/nologin oracle 2>/dev/null || true
+RUN adduser -u 65532 -s /sbin/nologin oracle 2>/dev/null || true
 RUN mkdir -p /var/lib/oracle /var/log/oracle /var/cache/oracle /opt/oracle
 COPY --from=builder /tmp/oracle-rpm/*.rpm /tmp/
 RUN rpm2cpio /tmp/oracle-database-xe-*.rpm 2>/dev/null | cpio -idmv -D /opt/oracle 2>/dev/null || \

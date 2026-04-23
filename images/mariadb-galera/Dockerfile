@@ -17,7 +17,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 COPY --from=builder /usr/share/keyrings/mariadb-keyring.gnupg /usr/share/keyrings/mariadb-keyring.gnupg
 COPY --from=builder /etc/apt/sources.list.d/mariadb.list /etc/apt/sources.list.d/mariadb.list
 RUN apk add --no-cache mariadb-backup ca-certificates rsync socat
-RUN useradd -m -u 65532 -s /sbin/nologin php84-mysql 2>/dev/null || true
+RUN adduser -u 65532 -s /sbin/nologin php84-mysql 2>/dev/null || true
 RUN mkdir -p /var/lib/php84-mysql /var/log/php84-mysql /var/cache/php84-mysql /run/mysqld /etc/galera
 RUN chown -R 65532:65532 /var/lib/php84-mysql /var/log/php84-mysql /var/cache/php84-mysql /run/mysqld /etc/galera
 USER 65532:65532

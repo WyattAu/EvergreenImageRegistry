@@ -28,7 +28,7 @@ RUN apk add --no-cache curl ca-certificates bash
 COPY --from=builder /app /app
 COPY --from=builder /var/log/sqlpad /var/log/sqlpad
 COPY --from=builder /var/cache/sqlpad /var/cache/sqlpad
-RUN useradd -m -u 65532 -s /sbin/nologin sqlpad 2>/dev/null || true && \
+RUN adduser -u 65532 -s /sbin/nologin sqlpad 2>/dev/null || true && \
     chown -R 65532:65532 /app /var/log/sqlpad /var/cache/sqlpad
 USER 65532:65532
 WORKDIR /app

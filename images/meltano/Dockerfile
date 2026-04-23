@@ -20,7 +20,7 @@ EXPOSE 5000
 ENTRYPOINT ["meltano"]
 LABEL org.opencontainers.image.title="meltano" \
       org.opencontainers.image.version="3.7.0" \
-      org.opencontainers.image.vendor="Meltano"
+      org.opencontainers.image.vendor="Meltano" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
 

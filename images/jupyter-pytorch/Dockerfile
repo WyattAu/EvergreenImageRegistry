@@ -20,7 +20,7 @@ EXPOSE 8888
 ENTRYPOINT ["jupyter-lab"]
 LABEL org.opencontainers.image.title="jupyter-pytorch" \
       org.opencontainers.image.version="7.3.0" \
-      org.opencontainers.image.vendor="Jupyter"
+      org.opencontainers.image.vendor="Jupyter" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
 

@@ -29,7 +29,7 @@ EXPOSE 0
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="pm2" \
       org.opencontainers.image.version="5.4.0" \
-      org.opencontainers.image.vendor="PM2"
+      org.opencontainers.image.vendor="PM2" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.hardened="true"

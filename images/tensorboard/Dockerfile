@@ -20,7 +20,7 @@ EXPOSE 6006
 ENTRYPOINT ["tensorboard"]
 LABEL org.opencontainers.image.title="tensorboard" \
       org.opencontainers.image.version="2.18.0" \
-      org.opencontainers.image.vendor="TensorFlow"
+      org.opencontainers.image.vendor="TensorFlow" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
 

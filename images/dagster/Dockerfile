@@ -20,7 +20,7 @@ EXPOSE 3000
 ENTRYPOINT ["dagster-webserver"]
 LABEL org.opencontainers.image.title="dagster" \
       org.opencontainers.image.version="1.10.0" \
-      org.opencontainers.image.vendor="Dagster"
+      org.opencontainers.image.vendor="Dagster" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
 

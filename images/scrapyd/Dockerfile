@@ -20,7 +20,7 @@ EXPOSE 6800
 ENTRYPOINT ["scrapyd"]
 LABEL org.opencontainers.image.title="scrapyd" \
       org.opencontainers.image.version="1.5.0" \
-      org.opencontainers.image.vendor="Scrapy"
+      org.opencontainers.image.vendor="Scrapy" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
 

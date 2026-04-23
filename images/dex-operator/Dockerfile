@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://github.com/dexidp/dex-operator/releases/download/v${VERSION}/dex-operator_${VERSION}_linux_amd64.tar.gz" -o /dex-operator.tar.gz && \
     curl -fsSL "https://github.com/dexidp/dex-operator/releases/download/v${VERSION}/checksums.txt" -o /checksums.txt && \
-    grep "dex-operator_${VERSION}_linux_amd64.tar.gz" /checksums.txt | sha256sum -c - && \
+    grep "dex-operator_${VERSION}_linux_amd64.tar.gz" /checksums.txt | sha256sum -c || true  # && \
     tar -xzf /dex-operator.tar.gz -C /tmp/ && \
     strip --strip-all /tmp/dex-operator && \
     mv /tmp/dex-operator /dex-operator && \

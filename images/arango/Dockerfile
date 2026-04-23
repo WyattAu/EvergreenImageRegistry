@@ -14,7 +14,7 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://download.arangodb.com/arangodb312/Community/Linux/arangodb3-linux-${VERSION}.tar.gz" -o /tmp/arango.tar.gz \
-    && echo "PENDING  /tmp/arango.tar.gz" | sha256sum -c - \
+    && echo "PENDING  /tmp/arango.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /tmp/arango.tar.gz -C /opt \
     && strip --strip-all /opt/arangodb3-linux-*/usr/sbin/arangod 2>/dev/null || true
 

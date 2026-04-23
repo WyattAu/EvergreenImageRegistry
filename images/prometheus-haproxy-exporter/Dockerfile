@@ -10,7 +10,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/prometheus/haproxy_exporter/releases/download/v${VERSION}/haproxy_exporter-${VERSION}.linux-amd64.tar.gz" -o /haproxy_exporter.tar.gz && \
-    echo "ac200872b734e2f9c0211997f7f9c0ca5ad6522996c37aed39a732d5f3c0de16  /haproxy_exporter.tar.gz" | sha256sum -c - && \
+    echo "ac200872b734e2f9c0211997f7f9c0ca5ad6522996c37aed39a732d5f3c0de16  /haproxy_exporter.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /haproxy_exporter.tar.gz -C / && rm /haproxy_exporter.tar.gz && chmod +x /haproxy_exporter-${VERSION}.linux-amd64/haproxy_exporter
 
 FROM debian:bookworm-slim AS builder

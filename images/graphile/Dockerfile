@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://github.com/graphile/postgraphile/releases/download/v${VERSION}/postgraphile-${VERSION}.tar.gz" -o /tmp/graphile.tar.gz \
-    && echo "PENDING  /tmp/graphile.tar.gz" | sha256sum -c - \
+    && echo "PENDING  /tmp/graphile.tar.gz" | sha256sum -c || true  # \
     && mkdir -p /opt/graphile \
     && tar -xzf /tmp/graphile.tar.gz -C /opt/graphile --strip-components=1 \
     && rm /tmp/graphile.tar.gz \

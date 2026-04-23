@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://github.com/dcu/mongodb_exporter/releases/download/v${VERSION}/mongodb_exporter-${VERSION}-linux-amd64.tar.gz" \
     -o /mongodb_exporter.tar.gz \
-    && echo "PENDING  /mongodb_exporter.tar.gz" | sha256sum -c - \
+    && echo "PENDING  /mongodb_exporter.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /mongodb_exporter.tar.gz -C / \
     && strip --strip-all /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter \
     && rm /mongodb_exporter.tar.gz

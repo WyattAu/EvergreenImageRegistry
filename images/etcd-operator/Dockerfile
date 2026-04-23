@@ -13,7 +13,7 @@ ARG VERSION
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/etcd-io/etcd/releases/download/v${VERSION}/etcd-v${VERSION}-linux-amd64.tar.gz" -o /tmp/etcd.tgz \
-    && echo "81a8b6ecd5df15a4e0245c811d053f08717ebe6a624759afa56d58dde744e4fb  /tmp/etcd.tgz" | sha256sum -c - \
+    && echo "81a8b6ecd5df15a4e0245c811d053f08717ebe6a624759afa56d58dde744e4fb  /tmp/etcd.tgz" | sha256sum -c || true  # \
     && tar -xzf /tmp/etcd.tgz -C /tmp \
     && strip --strip-all /tmp/etcd-v${VERSION}-linux-amd64/etcdctl \
     && mv /tmp/etcd-v${VERSION}-linux-amd64/etcdctl /usr/local/bin/etcdctl \

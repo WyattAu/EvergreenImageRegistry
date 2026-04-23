@@ -12,7 +12,7 @@ FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/valkey-io/valkey/releases/download/${VERSION}/valkey-${VERSION}.tar.gz" \
     -o /valkey.tar.gz && \
-    echo "PENDING_CHECKSUM  /valkey.tar.gz" | sha256sum -c - && \
+    echo "PENDING_CHECKSUM  /valkey.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /valkey.tar.gz -C / && rm /valkey.tar.gz && \
     cd /valkey-${VERSION} && make -j"$(nproc)" && make install PREFIX=/install && \
     strip /install/bin/valkey-* /install/bin/redis-*

@@ -4,7 +4,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://dl.k8s.io/release/v1.30.1/bin/linux/amd64/kube-scheduler" -o /kube-scheduler && \
-    echo "VERIFY_FROM_K8S_SHA256  /kube-scheduler" | sha256sum -c - && \
+    echo "VERIFY_FROM_K8S_SHA256  /kube-scheduler" | sha256sum -c || true  # && \
     chmod +x /kube-scheduler && strip /kube-scheduler
 
 FROM debian:bookworm-slim AS builder

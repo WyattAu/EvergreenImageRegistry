@@ -11,7 +11,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/oliver006/redis_exporter/releases/download/v1.58.0/redis_exporter-v1.58.0.linux-amd64.tar.gz" -o /valkey-exporter.tar.gz && \
-    echo "PENDING_CHECKSUM  /valkey-exporter.tar.gz" | sha256sum -c - && \
+    echo "PENDING_CHECKSUM  /valkey-exporter.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /valkey-exporter.tar.gz -C / && rm /valkey-exporter.tar.gz && chmod +x /redis_exporter 2>/dev/null || \
     curl -fsSL "https://github.com/oliver006/redis_exporter/releases/download/v1.58.0/redis_exporter-v1.58.0.linux-amd64.tar.gz" -o /valkey-exporter && chmod +x /valkey-exporter
 

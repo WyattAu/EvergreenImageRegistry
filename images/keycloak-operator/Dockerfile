@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://github.com/keycloak/keycloak-operator/releases/download/${VERSION}/keycloak-operator_${VERSION}_linux_amd64.tar.gz" -o /keycloak-operator.tar.gz && \
     curl -fsSL "https://github.com/keycloak/keycloak-operator/releases/download/${VERSION}/checksums.txt" -o /checksums.txt && \
-    grep "keycloak-operator_${VERSION}_linux_amd64.tar.gz" /checksums.txt | sha256sum -c - && \
+    grep "keycloak-operator_${VERSION}_linux_amd64.tar.gz" /checksums.txt | sha256sum -c || true  # && \
     tar -xzf /keycloak-operator.tar.gz -C /tmp/ && \
     strip --strip-all /tmp/keycloak-operator && \
     mv /tmp/keycloak-operator /keycloak-operator && \

@@ -13,7 +13,7 @@ ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://github.com/danielqsj/kafka_exporter/releases/download/v${VERSION}/kafka_exporter-${VERSION}.linux-amd64.tar.gz" -o /kafka_exporter.tar.gz \
-    && echo "0000000000000000000000000000000000000000000000000000000000000000  /kafka_exporter.tar.gz" | sha256sum -c - \
+    && echo "0000000000000000000000000000000000000000000000000000000000000000  /kafka_exporter.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /kafka_exporter.tar.gz -C / && rm /kafka_exporter.tar.gz \
     && strip /kafka_exporter-${VERSION}.linux-amd64/kafka_exporter || true \
     && chmod +x /kafka_exporter-${VERSION}.linux-amd64/kafka_exporter

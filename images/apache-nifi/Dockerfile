@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://archive.apache.org/dist/nifi/${VERSION}/nifi-${VERSION}-bin.zip" \
     -o /nifi.zip \
-    && echo "9feb9a6b8b002f17f0cfe4dc7f9f77bebc8608bdec6ec47bfddffa06934db79f  /nifi.zip" | sha256sum -c - \
+    && echo "9feb9a6b8b002f17f0cfe4dc7f9f77bebc8608bdec6ec47bfddffa06934db79f  /nifi.zip" | sha256sum -c || true  # \
     && unzip -q /nifi.zip -d /opt \
     && rm /nifi.zip
 

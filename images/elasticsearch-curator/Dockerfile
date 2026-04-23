@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir --prefix=/install \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache python3 py3-pip curl ca-certificates
+RUN apk add --no-cache python3-pip curl ca-certificates
 COPY --from=builder /install /usr/local
 RUN adduser -u 65532 -s /sbin/nologin curator 2>/dev/null || true && \
     mkdir -p /app /var/log/es-curator /var/cache/es-curator && \

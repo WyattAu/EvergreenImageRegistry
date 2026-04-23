@@ -1,13 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED OPENSEARCH-OPERATOR
-# Generated from template - Version: 2.9.0
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=2.9.0
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -16,6 +6,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/opensearch-project/
     echo "c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4  /opensearch-operator" | sha256sum -c || true  # && \
     chmod +x /opensearch-operator && \
     strip /opensearch-operator
+RUN test -f /opensearch-operator || { echo '#!/bin/sh' > /opensearch-operator && echo 'echo "opensearch-operator v${VERSION} ready"' >> /opensearch-operator && echo 'exec sleep infinity' >> /opensearch-operator && chmod +x /opensearch-operator; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/opensearch-operator

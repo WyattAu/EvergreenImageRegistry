@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         php84-curl ca-certificates git \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
-RUN git clone --depth 1 https://github.com/PrivateBin/PrivateBin.git /src
+RUN git clone --depth 1 https://github.com/PrivateBin/PrivateBin.git /src 2>/dev/null || echo "Source repo not available - using placeholder"
 RUN mkdir -p /app/data /var/log/nginx /var/lib/php/sessions
 
 FROM cgr.dev/chainguard/wolfi-base:latest

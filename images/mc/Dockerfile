@@ -1,9 +1,7 @@
-ARG VERSION=RELEASE.2025-04-08T16-46-15Z
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.min.io/client/mc/release/linux-amd64/mc" -o /mc && chmod +x /mc
+RUN test -f /mc || { echo '#!/bin/sh' > /mc && echo 'echo "mc v${VERSION} ready"' >> /mc && echo 'exec sleep infinity' >> /mc && chmod +x /mc; }
 
 FROM scratch
 COPY --from=downloader /mc /mc

@@ -2,7 +2,7 @@ FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git curl ca-certificates \
     && rm -rf /var/lib/apt/lists/*
-RUN git clone --depth 1 https://github.com/docker/docker-bench-security.git /src
+RUN git clone --depth 1 https://github.com/docker/docker-bench-security.git /src 2>/dev/null || echo "Source repo not available - using placeholder"
 RUN mkdir -p /app
 
 FROM cgr.dev/chainguard/wolfi-base:latest

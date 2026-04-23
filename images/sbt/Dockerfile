@@ -1,10 +1,10 @@
-ARG VERSION=1.10.6
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates java-17-runtime gnupg && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-base gnupg && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/sbt/sbt/releases/download/v1.10.6/sbt-1.10.6.tgz" -o /sbt.tgz && \
     tar -xzf /sbt.tgz -C /opt/ && rm /sbt.tgz && ln -sf /opt/sbt/bin/sbt /usr/local/bin/sbt
+
+
+
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/sbt /var/cache/sbt /home/sbt

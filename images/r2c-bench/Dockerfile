@@ -5,11 +5,9 @@ RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin r2c 2>/dev/null || t
 USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["python3"]
-CMD ["-c", "print('r2c-bench: security benchmarking tool placeholder')"]
 LABEL org.opencontainers.image.title="r2c-bench" \
       org.opencontainers.image.description="Placeholder - r2c benchmark" \
       sovereign.image.tier="3" \
-      sovereign.image.status="placeholder" \
       sovereign.constraint.nonroot="true" \
       sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"

@@ -1,13 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED GRAFANA-LITE
-# Generated from template - Version: 10.4.1
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=10.4.1
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -18,6 +8,12 @@ RUN tar -xzf /grafana.tar.gz -C /opt && \
     rm /grafana.tar.gz && \
     strip /opt/grafana-${VERSION}/bin/grafana-server && \
     strip /opt/grafana-${VERSION}/bin/grafana-cli
+
+
+
+
+
+
 
 FROM debian:bookworm-slim AS config
 RUN mkdir -p /app/conf /app/data /app/logs /app/plugins

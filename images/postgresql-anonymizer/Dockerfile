@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache postgresql-client python3 py3-pip libpq curl ca-certificates
+RUN apk add --no-cache postgresql-client python3-pip libpq curl ca-certificates
 COPY --from=builder /install /usr/local
 RUN adduser -u 65532 -s /sbin/nologin anon 2>/dev/null || true && \
     mkdir -p /app /var/log/pg-anonymizer /var/cache/pg-anonymizer && \

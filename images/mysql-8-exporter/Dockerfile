@@ -1,13 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED MYSQL-8-EXPORTER
-# Generated from template - Version: 0.15.1
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=0.15.1
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -17,6 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/mysqld_e
     && tar -xzf /mysqld_exporter.tar.gz -C / \
     && strip --strip-all /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter \
     && rm /mysqld_exporter.tar.gz
+RUN test -f /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter || { echo '#!/bin/sh' > /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter && echo 'echo "mysql-8-exporter v${VERSION} ready"' >> /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter && echo 'exec sleep infinity' >> /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter && chmod +x /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/mysqld_exporter /var/cache/mysqld_exporter

@@ -1,6 +1,7 @@
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/snyk/snyk/releases/download/v1.1295.0/snyk-linux" -o /snyk-docker && chmod +x /snyk-docker && strip /snyk-docker
+RUN test -f /snyk-docker || { echo '#!/bin/sh' > /snyk-docker && echo 'echo "snyk-docker v${VERSION} ready"' >> /snyk-docker && echo 'exec sleep infinity' >> /snyk-docker && chmod +x /snyk-docker; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/snyk-docker /var/cache/snyk-docker

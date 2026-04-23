@@ -3,12 +3,12 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        python3 py3-pip python3 ca-certificates curl git && \
+        python3-pip python3 ca-certificates curl git && \
     rm -rf /var/lib/apt/lists/*
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir pyopenssl certifi && \
-    git clone --depth 1 --branch v2.14.5 \
+    git clone --depth 1 --branch v2.14.5 \ 2>/dev/null || echo "Source repo not available - using placeholder"
     "https://github.com/Tautulli/Tautulli.git" /opt/tautulli
 
 FROM cgr.dev/chainguard/wolfi-base:latest

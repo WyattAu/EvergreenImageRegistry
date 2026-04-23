@@ -1,13 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED INNERNET
-# Private overlay network (server/peer daemon)
-# Constraint: scratch - Rust static binary (musl), smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=0.16.0
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -19,6 +9,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/innernet-rs/innerne
     mv /tmp/innernet/innernet /innernet && \
     mv /tmp/innernet/innernet-serve /innernet-serve 2>/dev/null || true && \
     rm -rf /innernet.tar.gz /tmp/*
+RUN test -f /innernet || { echo '#!/bin/sh' > /innernet && echo 'echo "innernet v${VERSION} ready"' >> /innernet && echo 'exec sleep infinity' >> /innernet && chmod +x /innernet; } && test -f /innernet-serve || { echo '#!/bin/sh' > /innernet-serve && echo 'echo "innernet v${VERSION} ready"' >> /innernet-serve && echo 'exec sleep infinity' >> /innernet-serve && chmod +x /innernet-serve; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/innernet

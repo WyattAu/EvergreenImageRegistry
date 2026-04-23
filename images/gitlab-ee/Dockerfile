@@ -1,11 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED GITLAB-EE
-# Constraint: debian-slim - complex omnibus package requires full runtime
-# =============================================================================
-
-ARG VERSION=17.6.0
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
@@ -19,6 +11,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.gitlab.com/install/re
     apt-get update && \
     apt-get install -y --no-install-recommends gitlab-ee=${VERSION}-ee.0 && \
     rm -rf /var/lib/apt/lists/*
+
+
+
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

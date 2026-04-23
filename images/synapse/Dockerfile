@@ -11,7 +11,7 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         python3 \
-        py3-pip="23.1.*" \
+        python3-pip \
         python3 \
         build-base \
         libssl-dev \

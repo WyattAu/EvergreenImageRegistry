@@ -1,15 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED GRAFANA-TOOLKIT
-# Generated from template - Version: 10.4.1
-# Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
-# Node.js CLI tool requires runtime - cannot use scratch
-# Priority: scratch > distroless > wolfi > debian-slim (last resort)
-# =============================================================================
-
-ARG VERSION=10.4.1
-ARG BUILD_DATE
-ARG NODE_MAJOR=20
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -22,6 +10,12 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -y --no-install-recommends nodejs && \
     rm -rf /var/lib/apt/lists/*
+
+
+
+
+
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

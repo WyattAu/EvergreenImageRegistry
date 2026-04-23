@@ -1,13 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED NGINX-CACHE
-# NGINX reverse proxy with caching enabled
-# Constraint: debian-slim - nginx requires dynamic libs, cannot use scratch
-# Priority: scratch > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=1.27.1
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates gnupg lsb-release && rm -rf /var/lib/apt/lists/*
@@ -17,6 +7,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/keys/nginx_signing.k
     apt-get update && \
     apt-get install -y --no-install-recommends nginx=${VERSION}-1~bookworm && \
     rm -rf /var/lib/apt/lists/*
+
+
+
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/nginx /var/cache/nginx/proxy /var/cache/nginx/fastcgi /run && \

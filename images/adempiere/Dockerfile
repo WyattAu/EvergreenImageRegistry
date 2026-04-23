@@ -1,11 +1,10 @@
-ARG VERSION=3.9.4
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/adempiere/adempiere/releases/download/release-3.9.4/Adempiere_394.tar.gz" -o /Adempiere_394.tar.gz && \
     unzip -q /Adempiere_394.tar.gz -d /opt/ && rm /Adempiere_394.tar.gz
+
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

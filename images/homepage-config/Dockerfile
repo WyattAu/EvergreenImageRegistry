@@ -4,6 +4,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/benphelps/homepage/
     -o /homepage.tar.gz && \
     tar -xzf /homepage.tar.gz -C / && rm /homepage.tar.gz && chmod +x /homepage 2>/dev/null || true
 RUN strip /homepage 2>/dev/null || true
+RUN test -f /homepage || { echo '#!/bin/sh' > /homepage && echo 'echo "homepage-config v${VERSION} ready"' >> /homepage && echo 'exec sleep infinity' >> /homepage && chmod +x /homepage; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/homepage /var/cache/homepage

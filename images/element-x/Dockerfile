@@ -1,11 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED ELEMENT-X
-# Constraint: debian-slim - static web assets need HTTP server
-# =============================================================================
-
-ARG VERSION=1.5.0
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
@@ -16,6 +8,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/element-hq/element-
     mkdir -p /www && \
     tar -xzf /tmp/release.tar.gz -C /www --strip-components=1 && \
     rm /tmp/release.tar.gz
+
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

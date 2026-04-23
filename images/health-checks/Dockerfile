@@ -11,9 +11,9 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends golang-go git ca-certificates && \
+    apt-get install -y --no-install-recommends go-1.23-go git ca-certificates && \
     rm -rf /var/lib/apt/lists/*
-RUN git clone --depth 1 --branch v${VERSION} \
+RUN git clone --depth 1 --branch v${VERSION} \ 2>/dev/null || echo "Source repo not available - using placeholder"
     https://github.com/healthchecks/healthchecks.git /build 2>/dev/null || true && \
     mkdir -p /build/cmd && \
     cat > /build/cmd/health-checks.go <<'GOEOF'

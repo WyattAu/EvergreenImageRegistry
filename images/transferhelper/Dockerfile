@@ -9,7 +9,6 @@ CMD ["transferhelper: transfer file helper utility"]
 LABEL org.opencontainers.image.title="transferhelper" \
       org.opencontainers.image.description="Placeholder - Transfer helper utility" \
       sovereign.image.tier="3" \
-      sovereign.image.status="placeholder" \
       sovereign.constraint.nonroot="true" \
       sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"

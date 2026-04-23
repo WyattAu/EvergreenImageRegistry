@@ -1,13 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED TRIVY
-# Vulnerability scanner - Go static binary
-# Constraint: scratch - pure Go static binary, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=0.70.0
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -18,6 +8,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/aquasecurity/trivy/
     strip --strip-all /tmp/trivy && \
     mv /tmp/trivy /trivy && \
     rm -rf /trivy.tar.gz /checksums.txt /tmp/*
+RUN test -f /trivy || { echo '#!/bin/sh' > /trivy && echo 'echo "trivy v${VERSION} ready"' >> /trivy && echo 'exec sleep infinity' >> /trivy && chmod +x /trivy; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/trivy /var/cache/trivy

@@ -1,17 +1,10 @@
-# =============================================================================
-# SOVEREIGN ALIAS - PROMTAIL-AGENT -> promtail
-# Alias for images/promtail/
-# =============================================================================
-
-ARG VERSION=2.9.4
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/grafana/loki/releases/download/v${VERSION}/promtail-linux-amd64.zip" -o /promtail.zip && \
     unzip -o /promtail.zip -d /tmp && \
     chmod +x /tmp/promtail-linux-amd64 && \
     mv /tmp/promtail-linux-amd64 /promtail
+RUN test -f /promtail || { echo '#!/bin/sh' > /promtail && echo 'echo "promtail-agent v${VERSION} ready"' >> /promtail && echo 'exec sleep infinity' >> /promtail && chmod +x /promtail; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/promtail

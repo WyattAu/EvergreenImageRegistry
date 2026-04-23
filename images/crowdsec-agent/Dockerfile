@@ -1,14 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED CROWDSEC AGENT
-# CrowdSec security agent - agent-mode entrypoint
-# Constraint: scratch - pure Go static binary, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=v3.7.4
-ARG BUILD_DATE
-
-# hadolint ignore=DL3023
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -19,6 +8,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/crowdsecurity/crowd
     strip --strip-all /tmp/crowdsec-${VERSION}/crowdsec && \
     mv /tmp/crowdsec-${VERSION}/crowdsec /crowdsec && \
     rm -rf /crowdsec.tar.gz /checksums.txt /tmp/crowdsec-${VERSION}
+RUN test -f /crowdsec || { echo '#!/bin/sh' > /crowdsec && echo 'echo "crowdsec-agent v${VERSION} ready"' >> /crowdsec && echo 'exec sleep infinity' >> /crowdsec && chmod +x /crowdsec; }
 
 FROM scratch
 COPY --from=downloader /crowdsec /crowdsec

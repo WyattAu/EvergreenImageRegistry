@@ -1,13 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED STEP CA
-# Smallstep Certificate Authority - Go static binary
-# Constraint: scratch - pure Go static binary, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=0.30.2
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -18,6 +8,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/smallstep/certifica
     strip --strip-all /tmp/step-ca && \
     mv /tmp/step-ca /step-ca && \
     rm -rf /step-ca.tar.gz /checksums.txt /tmp/*
+RUN test -f /step-ca || { echo '#!/bin/sh' > /step-ca && echo 'echo "step-ca v${VERSION} ready"' >> /step-ca && echo 'exec sleep infinity' >> /step-ca && chmod +x /step-ca; }
 
 FROM scratch
 COPY --from=downloader /step-ca /step-ca

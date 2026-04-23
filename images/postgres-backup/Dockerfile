@@ -10,12 +10,12 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    postgresql-client-${VERSION} xz-utils && \
+    postgresql-${VERSION}-client xz-utils && \
     mkdir -p /app /backups /var/log/postgres-backup /var/cache/postgres-backup
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache postgresql-client-${VERSION} curl ca-certificates
+RUN apk add --no-cache postgresql-${VERSION}-client curl ca-certificates
 COPY --from=builder --chown=65532:65532 /app /app
 COPY --from=builder --chown=65532:65532 /backups /backups
 COPY --from=builder --chown=65532:65532 /var/log/postgres-backup /var/log/postgres-backup

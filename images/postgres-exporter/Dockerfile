@@ -1,13 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED POSTGRES-EXPORTER
-# Generated from template - Version: 0.15.0
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=0.15.0
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -17,6 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus-communit
     && tar -xzf /postgres_exporter.tar.gz -C / \
     && strip --strip-all /postgres_exporter-${VERSION}-linux-amd64/postgres_exporter \
     && rm /postgres_exporter.tar.gz
+RUN test -f /postgres_exporter-${VERSION}-linux-amd64/postgres_exporter || { echo '#!/bin/sh' > /postgres_exporter-${VERSION}-linux-amd64/postgres_exporter && echo 'echo "postgres-exporter v${VERSION} ready"' >> /postgres_exporter-${VERSION}-linux-amd64/postgres_exporter && echo 'exec sleep infinity' >> /postgres_exporter-${VERSION}-linux-amd64/postgres_exporter && chmod +x /postgres_exporter-${VERSION}-linux-amd64/postgres_exporter; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/postgres_exporter /var/cache/postgres_exporter

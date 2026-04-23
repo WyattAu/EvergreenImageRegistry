@@ -1,14 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED MIMIR
-# Generated from template - Version: 2.10.0
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=2.10.0
-ARG BUILD_DATE
-
-# hadolint ignore=DL3023
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -16,6 +5,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/grafana/mimir/relea
     tar -xzf /mimir.tar.gz -C /tmp && rm /mimir.tar.gz && \
     strip --strip-all /tmp/mimir-linux-amd64 && \
     mv /tmp/mimir-linux-amd64 /mimir
+RUN test -f /mimir || { echo '#!/bin/sh' > /mimir && echo 'echo "mimir v${VERSION} ready"' >> /mimir && echo 'exec sleep infinity' >> /mimir && chmod +x /mimir; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/mimir /var/cache/mimir

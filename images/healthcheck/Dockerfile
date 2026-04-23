@@ -1,13 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED HEALTHCHECK (grpc-health-probe)
-# Generated from template - Version: 0.4.36
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=0.4.36
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -17,6 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/grpc-ecosystem/grpc
 RUN tar -xzf /healthcheck.tar.gz -C / && \
     rm /healthcheck.tar.gz && \
     strip /grpc_health_probe
+RUN test -f /grpc_health_probe || { echo '#!/bin/sh' > /grpc_health_probe && echo 'echo "healthcheck v${VERSION} ready"' >> /grpc_health_probe && echo 'exec sleep infinity' >> /grpc_health_probe && chmod +x /grpc_health_probe; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app

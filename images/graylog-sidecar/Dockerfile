@@ -1,13 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED GRAYLOG-SIDECAR
-# Version: 1.5.0
-# Constraint: scratch - static Go binary, no shell, no package manager
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=1.5.0
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
@@ -19,6 +9,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Graylog2/collector-
     && rm /sidecar.tar.gz \
     && strip /opt/sidecar/collector_sidecar || true \
     && chmod +x /opt/sidecar/collector_sidecar
+
+
+
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /var/log/sidecar /var/lib/sidecar /var/cache/sidecar

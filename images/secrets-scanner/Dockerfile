@@ -3,7 +3,6 @@ RUN apk add --no-cache python3 ca-certificates git curl
 RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin secrets-scanner 2>/dev/null || true &&     mkdir -p /app && chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
-CMD ["-c", "print('secrets-scanner: security tool placeholder')"]
 
 LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"

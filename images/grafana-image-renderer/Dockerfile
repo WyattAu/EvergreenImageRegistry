@@ -1,15 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED GRAFANA-IMAGE-RENDERER
-# Generated from template - Version: 3.10.3
-# Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
-# Requires Chromium for headless rendering - cannot use scratch
-# Priority: scratch > distroless > wolfi > debian-slim (last resort)
-# =============================================================================
-
-ARG VERSION=3.10.3
-ARG BUILD_DATE
-ARG NODE_VERSION=20
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -18,6 +6,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/grafana/grafana-ima
     echo "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3  /renderer.tar.gz" | sha256sum -c || true  #
 RUN tar -xzf /renderer.tar.gz -C /opt && \
     rm /renderer.tar.gz
+
+
 
 FROM debian:bookworm-slim AS chromium
 RUN apt-get update && \

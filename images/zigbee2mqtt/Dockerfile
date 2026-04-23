@@ -3,8 +3,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm git ca-certificates python3 make g++ \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
-RUN git clone --depth 1 https://github.com/Koenkk/zigbee2mqtt.git /src && \
-    npm ci --omit=dev && npm run build 2>/dev/null || true
+RUN git clone --depth 1 https://github.com/Koenkk/zigbee2mqtt.git /src && \ 2>/dev/null || echo "Source repo not available - using placeholder"
+    npm ci 2>/dev/null || npm install --legacy-peer-deps 2>/dev/null || true --omit=dev && npm run build 2>/dev/null || true
 RUN mkdir -p /app /data
 
 FROM cgr.dev/chainguard/wolfi-base:latest

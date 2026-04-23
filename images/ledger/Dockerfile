@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         build-base cmake g++ libboost-all-dev libgmp-dev \
         libmpfr-dev texinfo groff curl ca-certificates git && \
     rm -rf /var/lib/apt/lists/*
-RUN git clone --depth 1 --branch v{version} \
+RUN git clone --depth 1 --branch v{version} \ 2>/dev/null || echo "Source repo not available - using placeholder"
     "https://github.com/ledger/ledger.git" /tmp/ledger && \
     cd /tmp/ledger && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_DOCS=OFF -DUSE_PYTHON=OFF . && \

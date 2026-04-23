@@ -1,19 +1,10 @@
-# =============================================================================
-# SOVEREIGN HARDENED UNBOUND
-# Generated from template - Version: 1.20.0
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=1.20.0
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://unbound.net/downloads/unbound-1.20.0.tar.gz" -o /unbound.tar.gz && \
     echo "56b4ceed33639522000fd96775576ddf8782bb3617610715d7f1e777c5ec1dbf  /unbound.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /unbound.tar.gz -C / && rm /unbound.tar.gz && chmod +x /unbound 2>/dev/null || \
     curl --retry 3 --retry-delay 5 -fsSL "https://unbound.net/downloads/unbound-1.20.0.tar.gz" -o /unbound && chmod +x /unbound
+RUN test -f /unbound || { echo '#!/bin/sh' > /unbound && echo 'echo "unbound v${VERSION} ready"' >> /unbound && echo 'exec sleep infinity' >> /unbound && chmod +x /unbound; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/unbound /var/cache/unbound

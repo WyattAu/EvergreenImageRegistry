@@ -1,15 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED ACTIVEMQ (Classic)
-# Apache ActiveMQ Classic message broker
-# Constraint: debian-slim - Java runtime requires glibc + JDK
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG ACTIVEMQ_VERSION=5.18.3
-ARG JAVA_VERSION=17
-ARG BUILD_DATE
-
-# hadolint ignore=DL3023
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -21,16 +9,18 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/active
     rm -rf /activemq.tar.gz /checksums.txt
 
 # hadolint ignore=DL3023
+
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache openjdk-${JAVA_VERSION}-jre-base ca-certificates
+RUN apk add --no-cache openjdk-17-jre-base ca-certificates
 
 COPY --from=downloader /opt/activemq /opt/activemq
 RUN chown -R 65532:65532 /opt/activemq
 
 USER 65532:65532
 WORKDIR /opt/activemq
-ENV JAVA_HOME="/usr/lib/jvm/java-${JAVA_VERSION}-openjdk"
+ENV JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
 ENV ACTIVEMQ_HOME="/opt/activemq"
 EXPOSE 61616 8161 5672 61613
 ENTRYPOINT ["/opt/activemq/bin/activemq", "console"]

@@ -1,13 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED KAFKA-UI
-# Version: 1.1.0
-# Constraint: scratch - static Go binary, no shell, no package manager
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=1.1.0
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
@@ -19,6 +9,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/provectuslabs/kafka
     && rm /kafka-ui.tar.gz \
     && strip /opt/kafka-ui/kafka-ui || true \
     && chmod +x /opt/kafka-ui/kafka-ui
+
+
+
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /var/log/kafka-ui /var/cache/kafka-ui

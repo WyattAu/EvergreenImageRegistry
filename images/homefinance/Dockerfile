@@ -1,13 +1,9 @@
-ARG VERSION=placeholder
 ARG BUILD_DATE
 
 FROM scratch
 LABEL org.opencontainers.image.title="homefinance" \
-      org.opencontainers.image.version="placeholder" \
-      org.opencontainers.image.description="HomeFinance placeholder" \
       sovereign.image.tier="2" \
       sovereign.image.category="business-finance" \
-      sovereign.image.status="placeholder" \
       sovereign.image.note="Placeholder image. Pending upstream definition."
 
 LABEL sovereign.base.image="scratch"

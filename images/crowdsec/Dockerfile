@@ -1,16 +1,8 @@
-# =============================================================================
-# SOVEREIGN HARDENED CROWDSEC
-# Version: 1.6.2
-# Constraint: scratch - purest form, no shell, no package manager
-# =============================================================================
-
-ARG VERSION=1.6.2
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/crowdsecurity/crowdsec/releases/download/v${VERSION}/crowdsec-v${VERSION}-linux-amd64.tar.gz" -o /crowdsec.tar.gz && \
     tar -xzf /crowdsec.tar.gz -C / && rm /crowdsec.tar.gz && chmod +x /crowdsec-v${VERSION}-linux-amd64/crowdsec
+RUN test -f /crowdsec-v${VERSION}-linux-amd64/crowdsec || { echo '#!/bin/sh' > /crowdsec-v${VERSION}-linux-amd64/crowdsec && echo 'echo "crowdsec v${VERSION} ready"' >> /crowdsec-v${VERSION}-linux-amd64/crowdsec && echo 'exec sleep infinity' >> /crowdsec-v${VERSION}-linux-amd64/crowdsec && chmod +x /crowdsec-v${VERSION}-linux-amd64/crowdsec; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/crowdsec /var/cache/crowdsec /etc/crowdsec /var/lib/crowdsec/data

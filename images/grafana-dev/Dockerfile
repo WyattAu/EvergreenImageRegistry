@@ -1,14 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED GRAFANA-DEV
-# Generated from template - Version: 10.4.1
-# Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
-# Priority: scratch > distroless > wolfi > debian-slim (last resort)
-# Dev mode requires writable config and plugin directories
-# =============================================================================
-
-ARG VERSION=10.4.1
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -19,6 +8,11 @@ RUN tar -xzf /grafana.tar.gz -C /opt && \
     rm /grafana.tar.gz && \
     strip /opt/grafana-${VERSION}/bin/grafana-server && \
     strip /opt/grafana-${VERSION}/bin/grafana-cli
+
+
+
+
+
 
 FROM scratch
 

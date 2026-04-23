@@ -1,11 +1,11 @@
-ARG VERSION=1.33
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/simonmichael/hledger/releases/download/1.33/hledger-1.33-linux-x86_64.tar.gz" -o /hledger.tar.gz && \
     tar -xzf /hledger.tar.gz -C /usr/local/bin/ && rm /hledger.tar.gz && \
     strip /usr/local/bin/hledger && chmod +x /usr/local/bin/hledger
+
+
+
 
 FROM scratch
 COPY --from=downloader /usr/local/bin/hledger /hledger

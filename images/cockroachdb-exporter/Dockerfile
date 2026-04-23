@@ -1,14 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED COCKROACHDB-EXPORTER
-# Version: 23.2.3
-# Constraint: scratch - static Go binary, no shell, no package manager
-# Uses cockroach binary with built-in Prometheus metrics endpoint
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=23.2.3
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
@@ -20,6 +9,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/cockroachdb/cockroa
     && rm /cockroach.tar.gz \
     && strip /opt/cockroach/cockroach || true \
     && chmod +x /opt/cockroach/cockroach
+
+
+
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /var/log/cockroach /var/lib/cockroach /var/cache/cockroach

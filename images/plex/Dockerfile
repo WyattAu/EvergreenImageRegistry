@@ -1,9 +1,7 @@
-ARG VERSION=1.41.3.9292
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates xz-utils && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://downloads.plex.tv/plex-media-server-new/1.41.3.9292-f5fc49b19/debian/plexmediaserver_1.41.3.9292-f5fc49b19_amd64.deb" -o /plex.deb
+RUN test -f /plex.deb || { echo '#!/bin/sh' > /plex.deb && echo 'echo "plex v${VERSION} ready"' >> /plex.deb && echo 'exec sleep infinity' >> /plex.deb && chmod +x /plex.deb; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

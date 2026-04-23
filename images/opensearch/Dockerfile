@@ -1,14 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED OPENSEARCH
-# Generated from template - Version: 2.12.0
-# Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
-# Java application requires JRE - cannot use scratch
-# Priority: scratch > distroless > wolfi > debian-slim (last resort)
-# =============================================================================
-
-ARG VERSION=2.12.0
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -19,7 +8,10 @@ RUN tar -xzf /opensearch.tar.gz -C /opt && \
     rm /opensearch.tar.gz && \
     find /opt/opensearch-${VERSION}/plugins -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true
 
-FROM golang:1.23-alpine AS health-shim-builder
+
+
+
+FROM go-1.23:1.23-alpine AS health-shim-builder
 COPY images/health-shim/go.mod images/health-shim/main.go /build/
 RUN cd /build && CGO_ENABLED=0 go build -ldflags="-s -w" -o /health-shim .
 FROM cgr.dev/chainguard/wolfi-base:latest

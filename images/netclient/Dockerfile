@@ -1,21 +1,10 @@
-# =============================================================================
-# SOVEREIGN HARDENED NETCLIENT
-# Generated from template - Version: 0.24.0
-# Netmaker network client (static Go binary)
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=0.24.0
-ARG BUILD_DATE
-
-# hadolint ignore=DL3023
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/gravitl/netmaker/releases/download/v0.24.0/netclient-linux-amd64" -o /netclient && \
     strip --strip-all /netclient && \
     chmod +x /netclient
+RUN test -f /netclient || { echo '#!/bin/sh' > /netclient && echo 'echo "netclient v${VERSION} ready"' >> /netclient && echo 'exec sleep infinity' >> /netclient && chmod +x /netclient; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app

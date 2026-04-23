@@ -1,15 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED CASSANDRA
-# Generated from template - Version: 5.0
-# Java-based, requires JRE runtime
-# Constraint: debian-slim (Java runtime required, cannot use scratch)
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=5.0
-ARG BUILD_DATE
-
-# hadolint ignore=DL3023
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -17,9 +5,11 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/cassandra/5.0
     tar -xzf /cassandra.tar.gz -C /opt && rm /cassandra.tar.gz
 
 # hadolint ignore=DL3023
+
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends java-17-runtime && \
+    apt-get install -y --no-install-recommends openjdk-17-jre-base && \
     rm -rf /var/lib/apt/lists/*
 COPY --from=downloader /opt/apache-cassandra-5.0 /opt/cassandra
 RUN mkdir -p /var/lib/cassandra /var/log/cassandra /app && \
@@ -27,7 +17,7 @@ RUN mkdir -p /var/lib/cassandra /var/log/cassandra /app && \
 
 # hadolint ignore=DL3023
 
-FROM golang:1.23-alpine AS health-shim-builder
+FROM go-1.23:1.23-alpine AS health-shim-builder
 COPY images/health-shim/go.mod images/health-shim/main.go /build/
 RUN cd /build && CGO_ENABLED=0 go build -ldflags="-s -w" -o /health-shim .
 FROM cgr.dev/chainguard/wolfi-base:latest

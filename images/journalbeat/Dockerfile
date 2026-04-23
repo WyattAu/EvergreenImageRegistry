@@ -1,13 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED JOURNALBEAT
-# Version: 8.12.2
-# Constraint: scratch - static Go binary, no shell, no package manager
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=8.12.2
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
@@ -20,6 +10,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads
     && rm -rf /opt/journalbeat/kibana /opt/journalbeat/logs \
     && strip /opt/journalbeat/journalbeat || true \
     && chmod +x /opt/journalbeat/journalbeat
+
+
+
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /var/log/journalbeat /var/lib/journalbeat /var/cache/journalbeat

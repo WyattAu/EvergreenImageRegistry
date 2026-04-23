@@ -1,10 +1,10 @@
-ARG VERSION=3.9.9
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz" -o /maven.tar.gz && \
     tar -xzf /maven.tar.gz -C /opt/ && rm /maven.tar.gz && ln -sf /opt/apache-maven-3.9.9/bin/mvn /usr/local/bin/mvn
+
+
+
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/maven /var/cache/maven /home/maven

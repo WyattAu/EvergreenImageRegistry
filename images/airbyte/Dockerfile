@@ -2,7 +2,7 @@ ARG VERSION=0.65.22
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates java-17-runtime && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-base && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app /var/log/airbyte /var/cache/airbyte /var/lib/airbyte
 
 FROM cgr.dev/chainguard/wolfi-base:latest

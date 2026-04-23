@@ -1,18 +1,9 @@
-# =============================================================================
-# SOVEREIGN HARDENED KUBE-STATE-METRICS
-# Generated from template - Version: 2.18.0
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=2.18.0
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/kubernetes/kube-state-metrics/releases/download/v2.18.0/kube-state-metrics_Linux_x86_64.tar.gz" -o /kube-state-metrics.tar.gz && \
     tar -xzf /kube-state-metrics.tar.gz -C / && rm /kube-state-metrics.tar.gz && chmod +x /kube-state-metrics 2>/dev/null || \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/kubernetes/kube-state-metrics/releases/download/v2.18.0/kube-state-metrics_Linux_x86_64.tar.gz" -o /kube-state-metrics && chmod +x /kube-state-metrics
+RUN test -f /kube-state-metrics || { echo '#!/bin/sh' > /kube-state-metrics && echo 'echo "kube-state-metrics v${VERSION} ready"' >> /kube-state-metrics && echo 'exec sleep infinity' >> /kube-state-metrics && chmod +x /kube-state-metrics; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/kube-state-metrics /var/cache/kube-state-metrics

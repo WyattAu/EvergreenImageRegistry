@@ -12,7 +12,7 @@ FROM debian:bookworm-slim AS builder
 RUN useradd -m -u 65532 -s /usr/sbin/nologin valkey 2>/dev/null || true
 RUN mkdir -p /app /var/log/valkey /var/cache/valkey
 
-FROM golang:1.23-alpine AS health-shim-builder
+FROM go-1.23:1.23-alpine AS health-shim-builder
 COPY images/health-shim/go.mod images/health-shim/main.go /build/
 RUN cd /build && CGO_ENABLED=0 go build -ldflags="-s -w" -o /health-shim .
 FROM cgr.dev/chainguard/wolfi-base:latest

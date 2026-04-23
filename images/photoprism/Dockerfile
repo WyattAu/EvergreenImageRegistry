@@ -8,7 +8,9 @@
 ARG VERSION=240427
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=240427
 RUN apk add --no-cache curl ca-certificates
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.photoprism.app/pkg/linux-amd64/photoprism-${VERSION}-linux-amd64.tar.gz" -o /tmp/photoprism.tar.gz && \
     tar -xzf /tmp/photoprism.tar.gz -C /opt && rm /tmp/photoprism.tar.gz && \

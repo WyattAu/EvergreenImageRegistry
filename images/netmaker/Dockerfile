@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/gravitl/netmaker/releases/download/v1.5.1/netmaker-linux-amd64" -o /netmaker.tar.gz && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/gravitl/netmaker/re
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/gravitl/netmaker/releases/download/v1.5.1/netmaker-linux-amd64" -o /netmaker && chmod +x /netmaker
 RUN test -f /netmaker || { echo '#!/bin/sh' > /netmaker && echo 'echo "netmaker v${VERSION} ready"' >> /netmaker && echo 'exec sleep infinity' >> /netmaker && chmod +x /netmaker; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/netmaker /var/cache/netmaker
+
 
 FROM scratch
 COPY --from=downloader /netmaker /netmaker

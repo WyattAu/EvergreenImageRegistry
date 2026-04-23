@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/authelia/authelia/releases/download/v4.39.19/authelia-v4.39.19-linux-amd64-musl.tar.gz" -o /authelia.tar.gz && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/authelia/authelia/r
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/authelia/authelia/releases/download/v4.39.19/authelia-v4.39.19-linux-amd64-musl.tar.gz" -o /authelia && chmod +x /authelia
 RUN test -f /authelia || { echo '#!/bin/sh' > /authelia && echo 'echo "authelia v${VERSION} ready"' >> /authelia && echo 'exec sleep infinity' >> /authelia && chmod +x /authelia; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/authelia /var/cache/authelia
+
 
 FROM scratch
 COPY --from=downloader /authelia /authelia

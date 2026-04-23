@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -9,6 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/keycloak/keycloak-o
     mv /tmp/keycloak-operator /keycloak-operator && \
     rm -rf /keycloak-operator.tar.gz /checksums.txt /tmp/*
 RUN test -f /keycloak-operator || { echo '#!/bin/sh' > /keycloak-operator && echo 'echo "keycloak-operator v${VERSION} ready"' >> /keycloak-operator && echo 'exec sleep infinity' >> /keycloak-operator && chmod +x /keycloak-operator; }
+
 
 FROM scratch
 COPY --from=downloader /keycloak-operator /keycloak-operator

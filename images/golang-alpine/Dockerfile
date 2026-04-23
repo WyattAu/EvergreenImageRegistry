@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://go.dev/dl/go1.22.10.linux-amd64.tar.gz" -o /go.tar.gz && \
@@ -7,8 +8,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://go.dev/dl/go1.22.10.linux-amd6
 
 
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/go-1.23-alpine /var/cache/go-1.23-alpine
+
 
 FROM scratch
 COPY --from=downloader /opt/go /opt/go

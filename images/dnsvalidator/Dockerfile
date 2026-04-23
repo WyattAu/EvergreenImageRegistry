@@ -7,6 +7,7 @@
 ARG VERSION=1.0.0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -17,6 +18,7 @@ RUN python3 -m venv /opt/venv \
     && /opt/venv/bin/pip install --no-cache-dir --upgrade pip \
     && /opt/venv/bin/pip install --no-cache-dir dnsvalidator==${VERSION} 2>/dev/null || \
     /opt/venv/bin/pip install --no-cache-dir dnsvalidator
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

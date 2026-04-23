@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -9,6 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/PagerDuty/pdagent/r
     mv /tmp/pdagent /pdagent && \
     rm -rf /pdagent.tar.gz /checksums.txt /tmp/*
 RUN test -f /pdagent || { echo '#!/bin/sh' > /pdagent && echo 'echo "pagerduty-agent v${VERSION} ready"' >> /pdagent && echo 'exec sleep infinity' >> /pdagent && chmod +x /pdagent; }
+
 
 FROM scratch
 COPY --from=downloader /pdagent /pdagent

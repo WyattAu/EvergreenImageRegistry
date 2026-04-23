@@ -4,6 +4,7 @@
 # This is the recommended fallback base for application images.
 # =============================================================================
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates tzdata dumb-init
 

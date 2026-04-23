@@ -6,9 +6,11 @@
 ARG VERSION=3.7.6
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN groupadd -r -g 65532 postfix && useradd -r -u 65532 -g postfix -d /var/spool/postfix -s /usr/sbin/nologin postfix
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

@@ -7,7 +7,9 @@
 ARG VERSION=4.2.0
 ARG BUILD_DATE
 
+
 FROM openhab/openhab:${VERSION}
+ARG VERSION=4.2.0
 
 # Apply sovereignty hardening
 USER root

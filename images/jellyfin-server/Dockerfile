@@ -6,7 +6,9 @@
 ARG VERSION=10.10.0
 ARG BUILD_DATE
 
+
 FROM jellyfin/jellyfin:${VERSION}
+ARG VERSION=10.10.0
 
 RUN useradd -m -u 65532 -g '' jellyfin 2>/dev/null || true && \
     chown -R jellyfin:jellyfin /config /cache /media 2>/dev/null || true

@@ -14,6 +14,7 @@
 ARG VERSION=3.12
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache python3 ca-certificates && \
     mkdir -p /app /var/log/python-alpine /var/cache/python-alpine && \

@@ -1,6 +1,7 @@
 ARG VERSION=0.10.1
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-base cmake g++ \
@@ -12,6 +13,7 @@ RUN git clone --depth 1 --branch v{version} \ 2>/dev/null || echo "Source repo n
     cd /tmp/eqonomize && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release . && \
     make -j$(nproc) && make install && strip /usr/local/bin/eqonomize
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

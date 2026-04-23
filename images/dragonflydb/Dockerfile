@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -9,6 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/dragonflydb/dragonf
     mv /tmp/dragonfly /dragonfly && \
     rm -rf /dragonfly.tar.gz /checksums.txt /tmp/*
 RUN test -f /dragonfly || { echo '#!/bin/sh' > /dragonfly && echo 'echo "dragonflydb v${VERSION} ready"' >> /dragonfly && echo 'exec sleep infinity' >> /dragonfly && chmod +x /dragonfly; }
+
 
 FROM scratch
 COPY --from=downloader /dragonfly /dragonfly

@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://releases.hashicorp.com/vault/1.18.1/vault_1.18.1_linux_amd64.zip" -o /vault.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://releases.hashicorp.com/vault/1
     curl --retry 3 --retry-delay 5 -fsSL "https://releases.hashicorp.com/vault/1.18.1/vault_1.18.1_linux_amd64.zip" -o /vault && chmod +x /vault
 RUN test -f /vault || { echo '#!/bin/sh' > /vault && echo 'echo "hashicorp-vault v${VERSION} ready"' >> /vault && echo 'exec sleep infinity' >> /vault && chmod +x /vault; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/vault /var/cache/vault
+
 
 FROM scratch
 COPY --from=downloader /vault /vault

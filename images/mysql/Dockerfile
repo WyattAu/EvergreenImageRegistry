@@ -8,13 +8,16 @@
 ARG VERSION=8.4.1
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN useradd -m -u 65532 -s /usr/sbin/nologin php84-mysql 2>/dev/null || true
 RUN mkdir -p /app /var/log/mariadbd /var/cache/mariadbd
 
-FROM go-1.23:1.23-alpine AS health-shim-builder
+
+FROM golang:1.23-alpine AS health-shim-builder
 COPY images/health-shim/go.mod images/health-shim/main.go /build/
 RUN cd /build && CGO_ENABLED=0 go build -ldflags="-s -w" -o /health-shim .
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 COPY --from=health-shim-builder /health-shim /usr/local/bin/health-shim
 ENV HEALTH_CMD="mariadb-admin ping -h 127.0.0.1 --silent" \

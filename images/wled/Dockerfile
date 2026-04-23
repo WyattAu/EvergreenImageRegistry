@@ -1,7 +1,9 @@
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends         python3-pip git ca-certificates gcc g++ make     && rm -rf /var/lib/apt/lists/*
 RUN pip install --break-system-packages --no-cache-dir platformio 2>/dev/null || true
 RUN mkdir -p /app /firmware
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

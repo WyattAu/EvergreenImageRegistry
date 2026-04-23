@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/miniflux/v2/releases/download/2.2.19/miniflux-linux-amd64" -o /miniflux.tar.gz && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/miniflux/v2/release
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/miniflux/v2/releases/download/2.2.19/miniflux-linux-amd64" -o /miniflux && chmod +x /miniflux
 RUN test -f /miniflux || { echo '#!/bin/sh' > /miniflux && echo 'echo "miniflux-2 v${VERSION} ready"' >> /miniflux && echo 'exec sleep infinity' >> /miniflux && chmod +x /miniflux; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/miniflux-2 /var/cache/miniflux-2
+
 
 FROM scratch
 COPY --from=downloader /miniflux /miniflux

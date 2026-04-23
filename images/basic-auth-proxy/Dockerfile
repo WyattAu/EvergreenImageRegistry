@@ -9,7 +9,9 @@ ARG NGINX_VERSION=1.25.5
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
+ARG NGINX_VERSION=1.25.5
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates \
     build-base libpcre2-dev zlib1g-dev && rm -rf /var/lib/apt/lists/*
@@ -35,6 +37,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-${NGI
     rm -rf /nginx.tar.gz /tmp/nginx-${NGINX_VERSION}
 
 # hadolint ignore=DL3023
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache libpcre2-8-0 zlib ca-certificates apache2

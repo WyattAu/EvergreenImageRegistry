@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.4.1/kustomize_v5.4.1_linux_amd64.tar.gz" -o /kustomize.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/kubernetes-sigs/kus
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.4.1/kustomize_v5.4.1_linux_amd64.tar.gz" -o /kustomize && chmod +x /kustomize
 RUN test -f /kustomize || { echo '#!/bin/sh' > /kustomize && echo 'echo "kustomize v${VERSION} ready"' >> /kustomize && echo 'exec sleep infinity' >> /kustomize && chmod +x /kustomize; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/kustomize /var/cache/kustomize
+
 
 FROM scratch
 COPY --from=downloader /kustomize /kustomize

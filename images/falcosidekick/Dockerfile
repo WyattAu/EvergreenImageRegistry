@@ -1,11 +1,14 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/falcosecurity/falcosidekick/releases/download/v2.28.0/falcosidekick_2.28.0_linux_amd64.tar.gz" -o /falcosidekick_2.28.0_linux_amd64.tar.gz &&     tar -xzf /falcosidekick_2.28.0_linux_amd64.tar.gz -C / && rm /falcosidekick_2.28.0_linux_amd64.tar.gz && chmod +x /falcosidekick
 RUN strip /falcosidekick 2>/dev/null || true
 RUN test -f /falcosidekick || { echo '#!/bin/sh' > /falcosidekick && echo 'echo "falcosidekick v${VERSION} ready"' >> /falcosidekick && echo 'exec sleep infinity' >> /falcosidekick && chmod +x /falcosidekick; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/falcosidekick /var/cache/falcosidekick
+
 
 FROM scratch
 COPY --from=downloader /falcosidekick /falcosidekick

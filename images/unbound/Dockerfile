@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://unbound.net/downloads/unbound-1.20.0.tar.gz" -o /unbound.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://unbound.net/downloads/unbound-
     curl --retry 3 --retry-delay 5 -fsSL "https://unbound.net/downloads/unbound-1.20.0.tar.gz" -o /unbound && chmod +x /unbound
 RUN test -f /unbound || { echo '#!/bin/sh' > /unbound && echo 'echo "unbound v${VERSION} ready"' >> /unbound && echo 'exec sleep infinity' >> /unbound && chmod +x /unbound; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/unbound /var/cache/unbound
+
 
 FROM scratch
 COPY --from=downloader /unbound /unbound

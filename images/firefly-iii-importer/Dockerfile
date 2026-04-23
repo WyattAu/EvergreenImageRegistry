@@ -1,6 +1,7 @@
 ARG VERSION=1.6.0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip python3 ca-certificates curl \
@@ -8,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir firefly-iii
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

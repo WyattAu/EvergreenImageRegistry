@@ -1,10 +1,13 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/snyk/snyk/releases/download/v1.1295.0/snyk-linux" -o /snyk-monitor && chmod +x /snyk-monitor && strip /snyk-monitor
 RUN test -f /snyk-monitor || { echo '#!/bin/sh' > /snyk-monitor && echo 'echo "snyk-monitor v${VERSION} ready"' >> /snyk-monitor && echo 'exec sleep infinity' >> /snyk-monitor && chmod +x /snyk-monitor; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/snyk-monitor /var/cache/snyk-monitor
+
 
 FROM scratch
 

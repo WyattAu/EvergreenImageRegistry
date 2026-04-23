@@ -4,6 +4,7 @@
 # Provides musl toolchain for cargo build --target x86_64-unknown-linux-musl.
 # =============================================================================
 
+
 FROM cgr.dev/chainguard/static:latest
 
 RUN apk add --no-cache  gcc rust cargo 2>/dev/null || true

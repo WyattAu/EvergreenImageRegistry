@@ -8,6 +8,7 @@
 ARG VERSION=1.13.0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-20250113-slim AS builder
 ARG VERSION
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -18,7 +19,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/scylladb/scylla-ope
     && strip --strip-all /tmp/scylla-operator \
     && mv /tmp/scylla-operator /usr/local/bin/scylla-operator
 
+
 FROM scratch
+ARG VERSION=1.13.0
 COPY --from=builder /usr/local/bin/scylla-operator /usr/local/bin/scylla-operator
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

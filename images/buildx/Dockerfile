@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/docker/buildx/releases/download/v0.33.0/buildx-v0.33.0.linux-amd64" -o /buildx && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/docker/buildx/relea
     chmod +x /buildx && strip /buildx
 RUN test -f /buildx || { echo '#!/bin/sh' > /buildx && echo 'echo "buildx v${VERSION} ready"' >> /buildx && echo 'exec sleep infinity' >> /buildx && chmod +x /buildx; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/buildx /var/cache/buildx
+
 
 FROM scratch
 COPY --from=downloader /buildx /buildx

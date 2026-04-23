@@ -8,6 +8,7 @@ ARG VERSION=1.0.0
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -18,7 +19,9 @@ RUN git clone --depth 1 https://github.com/VictoriaMetrics/perscache /tmp/persca
     CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /tmp/perscache /tmp/main.go \
     && strip --strip-all /tmp/perscache 2>/dev/null || true
 
+
 FROM scratch
+ARG VERSION=1.0.0
 COPY --from=builder /tmp/perscache /usr/local/bin/perscache
 USER 65532:65532
 EXPOSE 8429

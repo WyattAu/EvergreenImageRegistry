@@ -8,9 +8,11 @@
 ARG VERSION=6.2.16
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN useradd -m -u 65532 -s /usr/sbin/nologin redis 2>/dev/null || true
 RUN mkdir -p /app /var/log/redis /var/cache/redis
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

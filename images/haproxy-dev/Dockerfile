@@ -9,12 +9,15 @@ ARG VERSION=2.8.5
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM ghcr.io/wolfi-dev/os:latest AS builder
 RUN apk add --no-cache haproxy
 RUN mkdir -p /tmp/haproxy
 RUN cp "$(which haproxy)" /tmp/haproxy/haproxy
 
+
 FROM scratch
+ARG VERSION=2.8.5
 COPY --from=builder /tmp/haproxy/haproxy /usr/local/sbin/haproxy
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

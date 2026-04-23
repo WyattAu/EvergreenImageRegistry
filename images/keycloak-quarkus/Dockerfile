@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -6,6 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/keycloak/keycloak/r
     grep "keycloak-${VERSION}.tar.gz" /checksums.sha1 | sha1sum -c - && \
     tar -xzf /keycloak.tar.gz -C /opt/ && \
     rm -rf /keycloak.tar.gz /checksums.sha1
+
 
 
 

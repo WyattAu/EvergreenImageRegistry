@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/benphelps/homepage/releases/download/v0.9.3/homepage_0.9.3_linux_amd64.tar.gz" \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/benphelps/homepage/
 RUN strip /homepage 2>/dev/null || true
 RUN test -f /homepage || { echo '#!/bin/sh' > /homepage && echo 'echo "homepage-sync v${VERSION} ready"' >> /homepage && echo 'exec sleep infinity' >> /homepage && chmod +x /homepage; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/homepage /var/cache/homepage
+
 
 FROM scratch
 

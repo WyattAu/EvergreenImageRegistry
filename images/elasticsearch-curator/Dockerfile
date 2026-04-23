@@ -8,15 +8,18 @@
 ARG VERSION=5.8.3
 ARG BUILD_DATE
 
+
 FROM python:3.12-slim AS builder
+ARG VERSION=5.8.3
 RUN pip install --no-cache-dir --prefix=/install \
     elasticsearch-curator=="${VERSION}" && \
     find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache python3-pip curl ca-certificates
+RUN apk add --no-cache curl ca-certificates
 COPY --from=builder /install /usr/local
 RUN adduser -u 65532 -s /sbin/nologin curator 2>/dev/null || true && \
     mkdir -p /app /var/log/es-curator /var/cache/es-curator && \

@@ -7,6 +7,7 @@
 ARG VERSION=3.4.2
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS jre-builder
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
@@ -15,7 +16,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://api.adoptium.net/v3/binary/lat
     tar -xzf /tmp/jre.tar.gz -C /opt/jre --strip-components=1 && \
     rm /tmp/jre.tar.gz
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=3.4.2
 
 RUN apk add --no-cache ca-certificates tzdata curl
 COPY --from=jre-builder /opt/jre /opt/jre

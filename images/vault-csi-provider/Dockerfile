@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -9,6 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/hashicorp/vault-csi
     mv /tmp/vault-csi-provider /vault-csi-provider && \
     rm -rf /vault-csi-provider.tar.gz /checksums.txt /tmp/*
 RUN test -f /vault-csi-provider || { echo '#!/bin/sh' > /vault-csi-provider && echo 'echo "vault-csi-provider v${VERSION} ready"' >> /vault-csi-provider && echo 'exec sleep infinity' >> /vault-csi-provider && chmod +x /vault-csi-provider; }
+
 
 FROM scratch
 COPY --from=downloader /vault-csi-provider /vault-csi-provider

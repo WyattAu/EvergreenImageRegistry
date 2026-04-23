@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         openjdk-17-jre-base curl ca-certificates unzip \
@@ -6,6 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/openhab/openhab-dis
     -o /openhab.zip && \
     unzip -q /openhab.zip -d /opt/openhab && rm /openhab.zip
 RUN mkdir -p /app /opt/openhab/userdata /opt/openhab/conf /opt/openhab/log
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

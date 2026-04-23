@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/helmfile/helmfile/releases/download/v0.162.0/helmfile_0.162.0_linux_amd64.tar.gz" -o /helmfile.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/helmfile/helmfile/r
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/helmfile/helmfile/releases/download/v0.162.0/helmfile_0.162.0_linux_amd64.tar.gz" -o /helmfile && chmod +x /helmfile
 RUN test -f /helmfile || { echo '#!/bin/sh' > /helmfile && echo 'echo "helmfile v${VERSION} ready"' >> /helmfile && echo 'exec sleep infinity' >> /helmfile && chmod +x /helmfile; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/helmfile /var/cache/helmfile
+
 
 FROM scratch
 COPY --from=downloader /helmfile /helmfile

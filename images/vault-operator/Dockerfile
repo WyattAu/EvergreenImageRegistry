@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -9,6 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/banzaicloud/bank-va
     mv /tmp/bank-vaults /bank-vaults && \
     rm -rf /bank-vaults.tar.gz /checksums.txt /tmp/*
 RUN test -f /bank-vaults || { echo '#!/bin/sh' > /bank-vaults && echo 'echo "vault-operator v${VERSION} ready"' >> /bank-vaults && echo 'exec sleep infinity' >> /bank-vaults && chmod +x /bank-vaults; }
+
 
 FROM scratch
 COPY --from=downloader /bank-vaults /bank-vaults

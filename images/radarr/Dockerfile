@@ -7,7 +7,9 @@
 ARG VERSION=5.14.0
 ARG BUILD_DATE
 
+
 FROM lscr.io/linuxserver/radarr:${VERSION}
+ARG VERSION=5.14.0
 
 # Apply sovereignty hardening
 USER root

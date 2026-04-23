@@ -8,6 +8,7 @@ ARG VERSION=2024.4.0
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -19,10 +20,11 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/10gen/realm-app-ser
     && unzip -q /tmp/realm.zip -d /opt \
     && rm /tmp/realm.zip
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates curl install
+RUN apk add --no-cache ca-certificates curl
 RUN adduser -u 65532 -s /sbin/nologin realm 2>/dev/null || true
 RUN mkdir -p /var/lib/realm /var/log/realm /var/cache/realm
 COPY --from=builder /opt/realm-app-services-${VERSION} /opt/realm

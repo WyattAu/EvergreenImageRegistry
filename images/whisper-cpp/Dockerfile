@@ -1,10 +1,13 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/ggerganov/whisper.cpp/releases/download/v1.6.2/whisper-1.6.2-bin-x64.tar.gz" -o /whisper-cli && chmod +x /whisper-cli
 RUN test -f /whisper-cli || { echo '#!/bin/sh' > /whisper-cli && echo 'echo "whisper-cpp v${VERSION} ready"' >> /whisper-cli && echo 'exec sleep infinity' >> /whisper-cli && chmod +x /whisper-cli; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/whisper-cpp /var/cache/whisper-cpp
+
 
 FROM scratch
 COPY --from=downloader /whisper-cli /whisper-cli

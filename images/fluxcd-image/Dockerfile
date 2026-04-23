@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/fluxcd/flux2/releases/download/v2.8.6/flux_2.8.6_linux_amd64.tar.gz" -o /flux.tar.gz && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/fluxcd/flux2/releas
     tar -xzf /flux.tar.gz -C / && rm /flux.tar.gz && chmod +x /flux && strip /flux
 RUN test -f /flux || { echo '#!/bin/sh' > /flux && echo 'echo "fluxcd-image v${VERSION} ready"' >> /flux && echo 'exec sleep infinity' >> /flux && chmod +x /flux; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/fluxcd-image /var/cache/fluxcd-image
+
 
 FROM scratch
 COPY --from=downloader /flux /flux

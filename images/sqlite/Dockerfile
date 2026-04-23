@@ -8,6 +8,7 @@
 ARG VERSION=3.45.1
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache sqlite-libs ca-certificates
 RUN adduser -u 65532 -G '' -D sqlite 2>/dev/null || true

@@ -1,10 +1,13 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-base && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/2.462.1/remoting-2.462.1.jar" -o /agent.jar
 RUN test -f /agent.jar || { echo '#!/bin/sh' > /agent.jar && echo 'echo "jenkins-executor v${VERSION} ready"' >> /agent.jar && echo 'exec sleep infinity' >> /agent.jar && chmod +x /agent.jar; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/jenkins-executor /var/cache/jenkins-executor /home/jenkins
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

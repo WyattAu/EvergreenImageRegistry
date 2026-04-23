@@ -9,6 +9,7 @@ ARG VERSION=3.6.1
 ARG SCALA_VERSION=2.13
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 ARG SCALA_VERSION
@@ -19,6 +20,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/kafka/
     && echo "b383fb735a3488922b39e0d0d84a5a23b73d0e5e97ab23c39fba293af0c0a6e3  kafka.tgz" | sha256sum -c || true  # \
     && tar -xzf kafka.tgz \
     && rm kafka.tgz
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

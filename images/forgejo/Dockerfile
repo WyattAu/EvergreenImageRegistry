@@ -8,6 +8,7 @@
 ARG VERSION=14.0.4
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 # hadolint ignore=DL3018
@@ -15,6 +16,7 @@ RUN apk add --no-cache curl ca-certificates git
 # hadolint ignore=DL4006
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://code.forgejo.org/forgejo/forgejo/releases/download/v14.0.4/forgejo-14.0.4-linux-amd64" -o /forgejo && chmod +x /forgejo && \
     echo "fa1b0b419de8ee394ff4ba76f8955282c686ba7b41514583ed834ffd5a3a1933  /forgejo" | sha256sum -c || true  #
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest AS runtime
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]

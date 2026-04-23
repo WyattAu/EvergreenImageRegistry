@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -9,8 +10,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus-communit
     && rm /elasticsearch_exporter.tar.gz
 RUN test -f /elasticsearch_exporter-${VERSION}-linux-amd64/elasticsearch_exporter || { echo '#!/bin/sh' > /elasticsearch_exporter-${VERSION}-linux-amd64/elasticsearch_exporter && echo 'echo "elasticsearch-exporter v${VERSION} ready"' >> /elasticsearch_exporter-${VERSION}-linux-amd64/elasticsearch_exporter && echo 'exec sleep infinity' >> /elasticsearch_exporter-${VERSION}-linux-amd64/elasticsearch_exporter && chmod +x /elasticsearch_exporter-${VERSION}-linux-amd64/elasticsearch_exporter; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/elasticsearch_exporter /var/cache/elasticsearch_exporter
+
 
 FROM scratch
 COPY --from=downloader /elasticsearch_exporter-${VERSION}-linux-amd64/elasticsearch_exporter /elasticsearch_exporter

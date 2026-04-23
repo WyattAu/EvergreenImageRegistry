@@ -9,6 +9,7 @@ ARG VERSION=2.54.0
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -19,7 +20,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/RedisInsight/RedisI
     && mkdir -p /tmp/redisinsight \
     && tar -xzf redisinsight.tar.gz -C /tmp/redisinsight --strip-components=1
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=2.54.0
 
 RUN apk add --no-cache ca-certificates fontconfig freetype glib
 RUN adduser -u 65532 -s /sbin/nologin redisinsight 2>/dev/null || true

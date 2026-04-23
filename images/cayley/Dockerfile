@@ -8,6 +8,7 @@ ARG VERSION=0.7.7
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -18,7 +19,9 @@ RUN git clone --depth 1 --branch v${VERSION} https://github.com/cayleygraph/cayl
     && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /tmp/cayley ./cmd/cayley \
     && strip --strip-all /tmp/cayley 2>/dev/null || true
 
+
 FROM scratch
+ARG VERSION=0.7.7
 COPY --from=builder /tmp/cayley /usr/local/bin/cayley
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

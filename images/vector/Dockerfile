@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/vectordotdev/vector/releases/download/v0.39.0/vector-0.39.0-x86_64-unknown-linux-musl.tar.gz" -o /vector.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/vectordotdev/vector
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/vectordotdev/vector/releases/download/v0.39.0/vector-0.39.0-x86_64-unknown-linux-musl.tar.gz" -o /vector && chmod +x /vector
 RUN test -f /vector || { echo '#!/bin/sh' > /vector && echo 'echo "vector v${VERSION} ready"' >> /vector && echo 'exec sleep infinity' >> /vector && chmod +x /vector; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/vector /var/cache/vector
+
 
 FROM scratch
 COPY --from=downloader /vector /vector

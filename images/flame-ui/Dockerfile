@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/pawelmalak/flame/releases/download/v2.3.1/flame_2.3.1_linux_amd64.tar.gz" \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/pawelmalak/flame/re
 RUN strip /flame 2>/dev/null || true
 RUN test -f /flame || { echo '#!/bin/sh' > /flame && echo 'echo "flame-ui v${VERSION} ready"' >> /flame && echo 'exec sleep infinity' >> /flame && chmod +x /flame; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app/data
+
 
 FROM scratch
 

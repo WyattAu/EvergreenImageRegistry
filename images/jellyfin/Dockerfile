@@ -7,7 +7,9 @@
 ARG VERSION=10.10.0
 ARG BUILD_DATE
 
+
 FROM jellyfin/jellyfin:${VERSION}
+ARG VERSION=10.10.0
 
 # Apply sovereignty hardening
 USER root

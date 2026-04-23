@@ -9,6 +9,7 @@
 ARG VERSION=1.2.0
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION
 RUN apk add --no-cache ca-certificates python3

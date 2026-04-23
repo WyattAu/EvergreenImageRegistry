@@ -1,5 +1,6 @@
 ARG BUILD_DATE
 
+
 FROM scratch
 LABEL org.opencontainers.image.title="agile" \
       sovereign.image.tier="2" \

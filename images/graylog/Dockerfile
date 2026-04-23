@@ -8,6 +8,7 @@
 ARG VERSION=5.1.5
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -17,6 +18,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.graylog2.org/releases
     && echo "0000000000000000000000000000000000000000000000000000000000000000  graylog.tar.gz" | sha256sum -c || true  # \
     && tar -xzf graylog.tar.gz \
     && rm graylog.tar.gz
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

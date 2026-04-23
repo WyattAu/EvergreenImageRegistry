@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -9,8 +10,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/kbudde/rabbitmq_exp
     && rm /rabbitmq_exporter.tar.gz
 RUN test -f /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter || { echo '#!/bin/sh' > /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter && echo 'echo "rabbitmq-exporter v${VERSION} ready"' >> /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter && echo 'exec sleep infinity' >> /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter && chmod +x /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/rabbitmq_exporter /var/cache/rabbitmq_exporter
+
 
 FROM scratch
 COPY --from=downloader /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter /rabbitmq_exporter

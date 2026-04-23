@@ -8,11 +8,13 @@
 ARG VERSION=1.22.3
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     go-1.23-go ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN useradd -m -u 65532 -s /usr/sbin/nologin go 2>/dev/null || true
 RUN mkdir -p /app /var/log/go /var/cache/go
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

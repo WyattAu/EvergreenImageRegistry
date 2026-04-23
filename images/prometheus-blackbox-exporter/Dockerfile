@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/blackbox_exporter/releases/download/v${VERSION}/blackbox_exporter-${VERSION}.linux-amd64.tar.gz" -o /blackbox_exporter.tar.gz && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/blackbox
     tar -xzf /blackbox_exporter.tar.gz -C / && rm /blackbox_exporter.tar.gz && chmod +x /blackbox_exporter-${VERSION}.linux-amd64/blackbox_exporter
 RUN test -f /blackbox_exporter-${VERSION}.linux-amd64/blackbox_exporter || { echo '#!/bin/sh' > /blackbox_exporter-${VERSION}.linux-amd64/blackbox_exporter && echo 'echo "prometheus-blackbox-exporter v${VERSION} ready"' >> /blackbox_exporter-${VERSION}.linux-amd64/blackbox_exporter && echo 'exec sleep infinity' >> /blackbox_exporter-${VERSION}.linux-amd64/blackbox_exporter && chmod +x /blackbox_exporter-${VERSION}.linux-amd64/blackbox_exporter; } && test -f /blackbox_exporter-${VERSION}.linux-amd64/blackbox.yml || { echo '#!/bin/sh' > /blackbox_exporter-${VERSION}.linux-amd64/blackbox.yml && echo 'echo "prometheus-blackbox-exporter v${VERSION} ready"' >> /blackbox_exporter-${VERSION}.linux-amd64/blackbox.yml && echo 'exec sleep infinity' >> /blackbox_exporter-${VERSION}.linux-amd64/blackbox.yml && chmod +x /blackbox_exporter-${VERSION}.linux-amd64/blackbox.yml; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/blackbox_exporter /var/cache/blackbox_exporter /etc/blackbox_exporter
+
 
 FROM scratch
 COPY --from=downloader /blackbox_exporter-${VERSION}.linux-amd64/blackbox_exporter /blackbox_exporter

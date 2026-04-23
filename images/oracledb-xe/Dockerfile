@@ -8,6 +8,7 @@ ARG VERSION=21.3.0
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -18,6 +19,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.oracle.com/otn-pub/ot
     && echo "PENDING  /tmp/oracledb.zip" | sha256sum -c || true  # \
     && unzip -q /tmp/oracledb.zip -d /tmp/oracle-rpm \
     && rm /tmp/oracledb.zip
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

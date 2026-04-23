@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -6,6 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nxlog.co/downloads/nxlog-ce/nx
     echo "e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6  /nxlog.tar.gz" | sha256sum -c || true  #
 RUN tar -xzf /nxlog.tar.gz -C /opt && \
     rm /nxlog.tar.gz
+
 
 
 
@@ -20,6 +22,7 @@ RUN apt-get update && \
         libexpat1 && \
     strip /opt/nxlog/bin/nxlog 2>/dev/null || true && \
     rm -rf /var/lib/apt/lists/*
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

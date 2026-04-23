@@ -7,6 +7,7 @@
 ARG VERSION=7.4.2
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates
 # NOTE: redis server not available in wolfi; uses pre-compiled binary

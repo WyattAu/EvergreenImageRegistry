@@ -7,7 +7,10 @@ ARG VERSION=0.10.3
 ARG BUILD_DATE
 ARG NODE_VERSION=20
 
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=0.10.3
+ARG NODE_VERSION=20
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update &&     apt-get install -y --no-install-recommends         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" | bash - &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/*
@@ -17,6 +20,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/awesome-anton/synap
     rm /tmp/synapse-admin.tar.gz && \
     npm install --omit=dev && \
     npm run build
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

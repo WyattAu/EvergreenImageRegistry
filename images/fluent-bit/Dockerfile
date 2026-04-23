@@ -7,7 +7,9 @@
 ARG VERSION=3.2.4
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=3.2.4
 RUN apk add --no-cache curl ca-certificates && \
     curl --retry 3 --retry-delay 5 -fsSL "https://packages.fluentbit.io/${VERSION}/fluent-bit-${VERSION}-linux-x86_64.tar.gz" | \
     tar xz -C /opt && \

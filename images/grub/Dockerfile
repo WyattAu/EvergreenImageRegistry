@@ -3,6 +3,7 @@
 # This is a metadata directory for bootloader config, not a container image.
 # =============================================================================
 
+
 FROM scratch
 LABEL org.opencontainers.image.title="grub" \
       org.opencontainers.image.description="Meta directory for GRUB bootloader configuration. Not a runnable container." \

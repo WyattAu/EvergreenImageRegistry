@@ -8,6 +8,7 @@ ARG VERSION=4.14.0
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -21,13 +22,16 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/graphile/postgraphi
     && rm /tmp/graphile.tar.gz \
     && cd /opt/graphile && npm ci --omit=dev 2>/dev/null || npm install --omit=dev
 
+
 FROM debian:bookworm-slim AS nodebase
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://nodejs.org/dist/v20.11.1/node-v20.11.1-linux-x64.tar.xz" | \
     tar -xJ -C /usr/local --strip-components=1
 
+
 FROM scratch
+ARG VERSION=4.14.0
 
 COPY --from=nodebase /usr/local/bin/node /usr/local/bin/node
 COPY --from=nodebase /usr/local/lib/node_modules /usr/local/lib/node_modules

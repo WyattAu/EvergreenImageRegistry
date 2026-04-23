@@ -6,7 +6,9 @@
 ARG VERSION=1.0.0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=1.0.0
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -23,6 +25,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/vstakhov/rmilter/ar
     cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release . && \
     make -j$(nproc) && \
     strip rmilter/rmilter
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

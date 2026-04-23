@@ -1,10 +1,13 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/michenriksen/gitrob/releases/download/v2.0.0/gitrob_linux_amd64" -o /gitrob && chmod +x /gitrob && strip /gitrob
 RUN test -f /gitrob || { echo '#!/bin/sh' > /gitrob && echo 'echo "gitrob v${VERSION} ready"' >> /gitrob && echo 'exec sleep infinity' >> /gitrob && chmod +x /gitrob; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/gitrob /var/cache/gitrob
+
 
 FROM scratch
 COPY --from=downloader /gitrob /gitrob

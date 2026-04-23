@@ -9,6 +9,7 @@ ARG VERSION=2.9.4
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -20,7 +21,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/grafana/loki/releas
     && strip --strip-all promtail-linux-amd64 \
     && mv promtail-linux-amd64 /tmp/promtail
 
+
 FROM scratch
+ARG VERSION=2.9.4
 COPY --from=builder /tmp/promtail /usr/bin/promtail
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

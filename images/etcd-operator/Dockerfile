@@ -8,6 +8,7 @@
 ARG VERSION=3.5.15
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-20250113-slim AS builder
 ARG VERSION
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -19,7 +20,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/etcd-io/etcd/releas
     && mv /tmp/etcd-v${VERSION}-linux-amd64/etcdctl /usr/local/bin/etcdctl \
     && rm -rf /tmp/etcd.tgz /tmp/etcd-v${VERSION}-linux-amd64
 
+
 FROM scratch
+ARG VERSION=3.5.15
 COPY --from=builder /usr/local/bin/etcdctl /usr/local/bin/etcdctl
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

@@ -8,12 +8,14 @@
 ARG VERSION=1.0.20210914
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wireguard-tools iproute2 iptables kmod && \
     rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app /var/log/wireguard /run/wireguard && \
     chown -R 65532:65532 /app /var/log/wireguard /run/wireguard
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

@@ -8,7 +8,9 @@
 ARG VERSION=7.2.4
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=7.2.4
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/valkey-io/valkey/releases/download/${VERSION}/valkey-${VERSION}.tar.gz" \
     -o /valkey.tar.gz && \
@@ -17,7 +19,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/valkey-io/valkey/re
     cd /valkey-${VERSION} && make -j"$(nproc)" && make install PREFIX=/install && \
     strip /install/bin/valkey-* /install/bin/redis-*
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=7.2.4
 
 RUN apk add --no-cache ca-certificates
 COPY --from=builder /install/bin/ /usr/local/bin/

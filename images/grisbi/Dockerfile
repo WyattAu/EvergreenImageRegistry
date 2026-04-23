@@ -1,6 +1,7 @@
 ARG VERSION=2.0.5
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates curl
 RUN mkdir -p /app /var/log/app /var/cache/app \

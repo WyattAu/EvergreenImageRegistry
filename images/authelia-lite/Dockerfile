@@ -8,6 +8,7 @@ ARG VERSION=4.39.19
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -19,7 +20,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/authelia/authelia/r
     && strip --strip-all authelia-linux-amd64-musl 2>/dev/null || true \
     && mv authelia-linux-amd64-musl /tmp/authelia
 
+
 FROM scratch
+ARG VERSION=4.39.19
 COPY --from=builder /tmp/authelia /usr/local/bin/authelia
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

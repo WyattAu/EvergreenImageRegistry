@@ -7,7 +7,9 @@
 ARG VERSION=3.3.0
 ARG BUILD_DATE
 
+
 FROM apachepulsar/pulsar:${VERSION}
+ARG VERSION=3.3.0
 
 # Apply sovereignty hardening
 USER root

@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -5,6 +6,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/starkandwayne/shiel
     chmod +x /shield && \
     strip --strip-all /shield
 RUN test -f /shield || { echo '#!/bin/sh' > /shield && echo 'echo "shield v${VERSION} ready"' >> /shield && echo 'exec sleep infinity' >> /shield && chmod +x /shield; }
+
 
 FROM scratch
 COPY --from=downloader /shield /shield

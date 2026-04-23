@@ -8,6 +8,7 @@ ARG VERSION=2.0.0
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -29,12 +30,15 @@ RUN mkdir -p /tmp/modules && cd /tmp/modules \
     && git clone --depth 1 https://github.com/RedisBloom/RedisBloom.git && cd RedisBloom && make -j"$(nproc)" \ 2>/dev/null || echo "Source repo not available - using placeholder"
     && cp/libredisbloom.so /tmp/modules/ || true
 
+
 FROM debian:bookworm-slim AS redis
 RUN apt-get update && apt-get install -y --no-install-recommends \
     redis-server ca-certificates && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
+
 FROM scratch
+ARG VERSION=2.0.0
 
 RUN adduser -u 65532 -s /sbin/nologin redis 2>/dev/null || true
 RUN mkdir -p /var/lib/redis /var/log/redis /var/cache/redis /opt/redis/modules

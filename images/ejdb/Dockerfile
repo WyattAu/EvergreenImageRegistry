@@ -8,6 +8,7 @@ ARG VERSION=2.2.3
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -21,6 +22,7 @@ RUN git clone --depth 1 --branch v${VERSION} https://github.com/Softmotions/ejdb
     && make -j"$(nproc)" \
     && make install \
     && strip --strip-all /opt/ejdb/bin/ejdb 2>/dev/null || true
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

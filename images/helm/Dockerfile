@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://get.helm.sh/helm-v3.15.1-linux-amd64.tar.gz" -o /helm.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://get.helm.sh/helm-v3.15.1-linux
     curl --retry 3 --retry-delay 5 -fsSL "https://get.helm.sh/helm-v3.15.1-linux-amd64.tar.gz" -o /helm && chmod +x /helm
 RUN test -f /helm || { echo '#!/bin/sh' > /helm && echo 'echo "helm v${VERSION} ready"' >> /helm && echo 'exec sleep infinity' >> /helm && chmod +x /helm; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/helm /var/cache/helm
+
 
 FROM scratch
 COPY --from=downloader /helm /helm

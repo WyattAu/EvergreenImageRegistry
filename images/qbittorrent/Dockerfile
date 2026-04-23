@@ -8,6 +8,7 @@
 ARG VERSION=4.6.5
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates
 RUN adduser -u 65532 -G '' -D qbittorrent 2>/dev/null || true

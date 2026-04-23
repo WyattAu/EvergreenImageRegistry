@@ -1,11 +1,14 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus-community/yet-another-cloudwatch-exporter/releases/download/v${VERSION}/yace-${VERSION}-linux-amd64.tar.gz" -o /yace.tar.gz && \
     tar -xzf /yace.tar.gz -C / && rm /yace.tar.gz && chmod +x /yace-${VERSION}-linux-amd64
 RUN test -f /yace-${VERSION}-linux-amd64 || { echo '#!/bin/sh' > /yace-${VERSION}-linux-amd64 && echo 'echo "prometheus-aws-exporter v${VERSION} ready"' >> /yace-${VERSION}-linux-amd64 && echo 'exec sleep infinity' >> /yace-${VERSION}-linux-amd64 && chmod +x /yace-${VERSION}-linux-amd64; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/yace /var/cache/yace /etc/yace
+
 
 FROM scratch
 COPY --from=downloader /yace-${VERSION}-linux-amd64 /yace

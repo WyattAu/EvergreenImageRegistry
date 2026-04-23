@@ -9,7 +9,9 @@
 ARG VERSION=0.2.0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=0.2.0
 RUN apt-get update && \
     apt-get install -y --no-install-recommends go-1.23-go git ca-certificates && \
     rm -rf /var/lib/apt/lists/*
@@ -61,10 +63,13 @@ RUN cd /build && \
     go build -ldflags="-s -w -X main.version=${VERSION}" -o /betteruptime ./cmd/betteruptime.go && \
     strip /betteruptime
 
+
 FROM debian:bookworm-slim AS builder2
 RUN mkdir -p /app
 
+
 FROM scratch
+ARG VERSION=0.2.0
 COPY --from=builder /betteruptime /betteruptime
 COPY --from=builder2 /app /app
 USER 65532:65532

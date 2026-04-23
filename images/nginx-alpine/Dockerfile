@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates gnupg lsb-release && rm -rf /var/lib/apt/lists/*
@@ -11,10 +12,12 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/keys/nginx_signing.k
 
 
 
+
 FROM debian:bookworm-slim AS builder
 RUN groupadd -r -g 65532 appuser && useradd -r -u 65532 -g appuser -d /app -s /sbin/nologin appuser && \
     mkdir -p /app /var/log/nginx /var/cache/nginx /run && \
     chown -R 65532:65532 /app /var/log/nginx /var/cache/nginx
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

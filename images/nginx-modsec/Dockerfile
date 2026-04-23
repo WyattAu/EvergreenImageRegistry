@@ -9,7 +9,10 @@ ARG NGINX_VERSION=1.27.1
 ARG MODSEC_VERSION=3.0.12
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
+ARG NGINX_VERSION=1.27.1
+ARG MODSEC_VERSION=3.0.12
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-base libpcre3-dev libssl-dev zlib1g-dev libgeoip-dev \
     libxml2-dev libyajl-dev curl-openssl-dev git curl ca-certificates \
@@ -44,6 +47,7 @@ RUN wget -q "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -O /nginx
     make -j"$(nproc)" && make install && \
     strip --strip-all /usr/sbin/nginx && \
     strip --strip-all /usr/lib/nginx/modules/ngx_http_modsecurity_module.so
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

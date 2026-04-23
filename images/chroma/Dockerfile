@@ -8,8 +8,10 @@
 ARG VERSION=0.5.0
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apk add --no-cache python3-pip ca-certificates git build-base
+ARG VERSION=0.5.0
+RUN apk add --no-cache ca-certificates git build-base
 RUN pip3 install --no-cache-dir --break-system-packages chromadb==${VERSION} 2>/dev/null || \
     pip3 install --no-cache-dir --break-system-packages chromadb
 RUN adduser -u 65532 -G '' -D chroma 2>/dev/null || true

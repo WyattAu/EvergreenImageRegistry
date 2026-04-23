@@ -6,6 +6,7 @@
 
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS installer
 RUN apt-get update && apt-get install -y --no-install-recommends \
     pdns-recursor && \
@@ -13,6 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN find /usr/sbin -type f -name "pdns_recursor" -exec strip --strip-all {} \; 2>/dev/null || true && \
     find /usr/sbin -type f -name "rec_control" -exec strip --strip-all {} \; 2>/dev/null || true && \
     find /usr/lib -type f -name "lib*.so*" -exec strip --strip-unneeded {} \; 2>/dev/null || true
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

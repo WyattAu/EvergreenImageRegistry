@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -8,8 +9,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/opensearch-project/
     strip /opensearch-operator
 RUN test -f /opensearch-operator || { echo '#!/bin/sh' > /opensearch-operator && echo 'echo "opensearch-operator v${VERSION} ready"' >> /opensearch-operator && echo 'exec sleep infinity' >> /opensearch-operator && chmod +x /opensearch-operator; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/opensearch-operator
+
 
 FROM scratch
 COPY --from=downloader /opensearch-operator /opensearch-operator

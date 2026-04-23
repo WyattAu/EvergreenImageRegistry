@@ -4,6 +4,7 @@
 # Use as FROM base for Java application images.
 # =============================================================================
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates tzdata curl dumb-init
 

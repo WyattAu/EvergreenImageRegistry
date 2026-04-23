@@ -8,7 +8,9 @@
 ARG VERSION=1.2.0
 ARG BUILD_DATE
 
+
 FROM python:3.12-slim AS builder
+ARG VERSION=1.2.0
 RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-server-dev-all postgresql-dev && \
     pip install --no-cache-dir --prefix=/install \
@@ -16,9 +18,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache postgresql-client python3-pip libpq curl ca-certificates
+RUN apk add --no-cache postgresql-client libpq curl ca-certificates
 COPY --from=builder /install /usr/local
 RUN adduser -u 65532 -s /sbin/nologin anon 2>/dev/null || true && \
     mkdir -p /app /var/log/pg-anonymizer /var/cache/pg-anonymizer && \

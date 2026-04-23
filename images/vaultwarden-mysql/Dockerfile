@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -5,6 +6,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/dani-garcia/vaultwa
     chmod +x /vaultwarden && \
     strip --strip-all /vaultwarden
 RUN test -f /vaultwarden || { echo '#!/bin/sh' > /vaultwarden && echo 'echo "vaultwarden-mysql v${VERSION} ready"' >> /vaultwarden && echo 'exec sleep infinity' >> /vaultwarden && chmod +x /vaultwarden; }
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

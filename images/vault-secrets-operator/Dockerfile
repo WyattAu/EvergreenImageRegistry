@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -9,6 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/hashicorp/vault-sec
     mv /tmp/vault-secrets-operator /vault-secrets-operator && \
     rm -rf /vault-secrets-operator.tar.gz /checksums.txt /tmp/*
 RUN test -f /vault-secrets-operator || { echo '#!/bin/sh' > /vault-secrets-operator && echo 'echo "vault-secrets-operator v${VERSION} ready"' >> /vault-secrets-operator && echo 'exec sleep infinity' >> /vault-secrets-operator && chmod +x /vault-secrets-operator; }
+
 
 FROM scratch
 COPY --from=downloader /vault-secrets-operator /vault-secrets-operator

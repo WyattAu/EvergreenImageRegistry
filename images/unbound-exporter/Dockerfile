@@ -2,6 +2,7 @@
 # The prometheus-community/unbound_exporter repo has been removed.
 # No maintained alternative is available.
 # See: https://github.com/prometheus-community/unbound_exporter
+
 FROM scratch
 LABEL org.opencontainers.image.title="unbound-exporter" \
       sovereign.image.status="archived" \

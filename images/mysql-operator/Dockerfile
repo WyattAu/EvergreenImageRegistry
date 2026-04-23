@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/presslabs/mysql-operator/releases/download/v0.5.0/mysql-operator-0.5.0-linux-amd64.tar.gz" -o /mysql-operator.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/presslabs/mysql-ope
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/presslabs/mysql-operator/releases/download/v0.5.0/mysql-operator-0.5.0-linux-amd64.tar.gz" -o /mysql-operator && chmod +x /mysql-operator
 RUN test -f /mysql-operator || { echo '#!/bin/sh' > /mysql-operator && echo 'echo "mysql-operator v${VERSION} ready"' >> /mysql-operator && echo 'exec sleep infinity' >> /mysql-operator && chmod +x /mysql-operator; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/mysql-operator /var/cache/mysql-operator
+
 
 FROM scratch
 COPY --from=downloader /mysql-operator /mysql-operator

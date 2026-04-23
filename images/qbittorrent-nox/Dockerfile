@@ -8,7 +8,9 @@
 ARG VERSION=5.0.3
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=5.0.3
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-base cmake libboost-dev libssl-dev zlib1g-dev \
     libtorrent-rasterbar-dev qtbase5-dev qttools5-dev-tools \
@@ -18,6 +20,7 @@ RUN git clone --depth 1 --branch v${VERSION} https://github.com/qbittorrent/qBit
     cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/app \
     -DGUI=OFF -DQT6=OFF . && \
     make -j$(nproc) && make install
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

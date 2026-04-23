@@ -9,6 +9,7 @@
 ARG VERSION=8.12.2
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -19,6 +20,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads
     && tar -xzf kibana-oss.tar.gz \
     && rm kibana-oss.tar.gz \
     && rm -rf kibana-${VERSION}-linux-x86_64/node_modules/.cache
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

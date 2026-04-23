@@ -1,5 +1,6 @@
 ARG BUILD_DATE
 
+
 FROM scratch
 LABEL org.opencontainers.image.title="quickbooks" \
       org.opencontainers.image.description="QuickBooks (proprietary)" \

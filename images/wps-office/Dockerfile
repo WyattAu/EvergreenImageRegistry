@@ -1,5 +1,6 @@
 ARG BUILD_DATE
 
+
 FROM scratch
 LABEL org.opencontainers.image.title="wps-office" \
       org.opencontainers.image.description="WPS Office (proprietary)" \

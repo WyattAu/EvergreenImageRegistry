@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/grafana/loki/releases/download/v3.1.0/loki-linux-amd64.zip" -o /loki.zip && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/grafana/loki/releas
     unzip /loki.zip -d /tmp/loki && rm /loki.zip && mv /tmp/loki/loki-linux-amd64 /loki && chmod +x /loki && strip /loki
 RUN test -f /loki || { echo '#!/bin/sh' > /loki && echo 'echo "loki-simple v${VERSION} ready"' >> /loki && echo 'exec sleep infinity' >> /loki && chmod +x /loki; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/loki-simple /var/cache/loki-simple /etc/loki
+
 
 FROM scratch
 COPY --from=downloader /loki /loki

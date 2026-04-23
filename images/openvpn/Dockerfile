@@ -8,8 +8,10 @@
 ARG VERSION=2.6.10
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
 RUN apk add --no-cache openvpn
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates

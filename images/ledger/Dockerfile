@@ -1,6 +1,7 @@
 ARG VERSION=3.3.2
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-base cmake g++ libboost-all-dev libgmp-dev \
@@ -11,6 +12,7 @@ RUN git clone --depth 1 --branch v{version} \ 2>/dev/null || echo "Source repo n
     cd /tmp/ledger && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_DOCS=OFF -DUSE_PYTHON=OFF . && \
     make -j$(nproc) && make install && strip /usr/local/bin/ledger
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

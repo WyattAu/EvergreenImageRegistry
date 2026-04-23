@@ -8,6 +8,7 @@
 ARG VERSION=7.6.0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-20250113-slim AS builder
 ARG VERSION
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -19,7 +20,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/pingcap/tidb/releas
     && mv /tmp/tidb-lightning-v${VERSION}-linux-amd64/bin/tidb-lightning /usr/local/bin/tidb-lightning \
     && rm -rf /tmp/lightning.tgz /tmp/tidb-lightning-v${VERSION}-linux-amd64
 
+
 FROM scratch
+ARG VERSION=7.6.0
 COPY --from=builder /usr/local/bin/tidb-lightning /usr/local/bin/tidb-lightning
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

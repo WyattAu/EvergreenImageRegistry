@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/anchore/syft/releases/download/v1.8.0/syft_1.8.0_linux_amd64.tar.gz" -o /syft.tar.gz && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/anchore/syft/releas
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/anchore/syft/releases/download/v1.8.0/syft_1.8.0_linux_amd64.tar.gz" -o /syft && chmod +x /syft
 RUN test -f /syft || { echo '#!/bin/sh' > /syft && echo 'echo "syft v${VERSION} ready"' >> /syft && echo 'exec sleep infinity' >> /syft && chmod +x /syft; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/syft /var/cache/syft
+
 
 FROM scratch
 COPY --from=downloader /syft /syft

@@ -5,6 +5,7 @@
 # This image exists only as a build-time reference for static musl-based builds.
 # =============================================================================
 
+
 FROM cgr.dev/chainguard/static:latest
 
 LABEL org.opencontainers.image.title="alpine-static" \

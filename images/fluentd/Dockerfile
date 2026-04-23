@@ -9,6 +9,7 @@ ARG VERSION=1.17.1
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM ruby:3.2-slim AS builder
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends build-base && rm -rf /var/lib/apt/lists/*
@@ -16,7 +17,9 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN gem install fluentd -v "~> ${VERSION}" --no-document \
     && gem install fluent-plugin-systemd --no-document 2>/dev/null || true
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=1.17.1
 
 RUN apk add --no-cache ca-certificates libffi-dev
 RUN adduser -u 65532 -s /sbin/nologin fluentd 2>/dev/null || true

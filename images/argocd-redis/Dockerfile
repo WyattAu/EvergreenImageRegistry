@@ -6,7 +6,9 @@
 ARG VERSION=7.2.4
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=7.2.4
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -20,6 +22,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/redis/redis/archive
     cd /tmp/redis-${VERSION} && \
     make -j$(nproc) && \
     strip src/redis
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

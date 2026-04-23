@@ -8,6 +8,7 @@
 ARG VERSION=1.9.2
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-20250113-slim AS builder
 ARG VERSION
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -19,7 +20,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/codenotary/immudb/r
     && mv /tmp/immudb-v${VERSION}-linux-amd64/immudb-proxy /usr/local/bin/immudb-proxy \
     && rm -rf /tmp/immudb.tgz /tmp/immudb-v${VERSION}-linux-amd64
 
+
 FROM scratch
+ARG VERSION=1.9.2
 COPY --from=builder /usr/local/bin/immudb-proxy /usr/local/bin/immudb-proxy
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

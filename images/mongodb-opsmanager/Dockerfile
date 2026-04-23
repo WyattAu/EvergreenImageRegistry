@@ -8,6 +8,7 @@
 ARG VERSION=7.0.7
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-20250113-slim AS builder
 ARG VERSION
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -18,7 +19,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/mongodb/mongodb-ops
     && tar -xzf /tmp/opsmanager.tgz -C /opt/opsmanager --strip-components=1 \
     && rm -rf /tmp/opsmanager.tgz
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=7.0.7
 
 RUN apk add --no-cache ca-certificates
 RUN addgroup -S 65532 opsmanager && adduser -u 65532 -G opsmanager -D -s /sbin/nologin opsmanager

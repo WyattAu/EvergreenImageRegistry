@@ -1,12 +1,14 @@
 ARG VERSION=21-slim
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates gnupg && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.adoptium.net/artifactory/api/gnupg/key/public" | gnupg --dearmor -o /usr/share/keyrings/adoptium.gnupg && \
     echo "deb [signed-by=/usr/share/keyrings/adoptium.gnupg] https://packages.adoptium.net/artifactory/deb $(. /etc/os-release && echo $VERSION_CODENAME) main" > /etc/apt/sources.list.d/adoptium.list && \
     apt-get update && apt-get install -y --no-install-recommends temurin-21-jre-headless && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app /var/log/openjdk-alpine /var/cache/openjdk-alpine
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

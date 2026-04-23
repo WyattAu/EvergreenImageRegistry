@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/gravitl/netmaker/re
     chmod +x /netclient
 RUN test -f /netclient || { echo '#!/bin/sh' > /netclient && echo 'echo "netclient v${VERSION} ready"' >> /netclient && echo 'exec sleep infinity' >> /netclient && chmod +x /netclient; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app
+
 
 FROM scratch
 COPY --from=downloader /netclient /netclient

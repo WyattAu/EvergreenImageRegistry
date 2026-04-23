@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/caddyserver/caddy/releases/download/v2.7.6/caddy_2.7.6_linux_amd64.tar.gz" -o /caddy.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/caddyserver/caddy/r
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/caddyserver/caddy/releases/download/v2.7.6/caddy_2.7.6_linux_amd64.tar.gz" -o /caddy && chmod +x /caddy
 RUN test -f /caddy || { echo '#!/bin/sh' > /caddy && echo 'echo "caddy v${VERSION} ready"' >> /caddy && echo 'exec sleep infinity' >> /caddy && chmod +x /caddy; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/caddy /var/cache/caddy
+
 
 FROM scratch
 COPY --from=downloader /caddy /caddy

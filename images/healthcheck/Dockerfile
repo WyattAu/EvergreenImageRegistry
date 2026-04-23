@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -9,8 +10,10 @@ RUN tar -xzf /healthcheck.tar.gz -C / && \
     strip /grpc_health_probe
 RUN test -f /grpc_health_probe || { echo '#!/bin/sh' > /grpc_health_probe && echo 'echo "healthcheck v${VERSION} ready"' >> /grpc_health_probe && echo 'exec sleep infinity' >> /grpc_health_probe && chmod +x /grpc_health_probe; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app
+
 
 FROM scratch
 COPY --from=downloader /grpc_health_probe /grpc_health_probe

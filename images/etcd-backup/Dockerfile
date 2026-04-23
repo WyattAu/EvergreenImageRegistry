@@ -9,6 +9,7 @@ ARG VERSION=3.5.15
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -20,7 +21,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/etcd-io/etcd/releas
     && strip --strip-all etcd-v${VERSION}-linux-amd64/etcdctl \
     && mv etcd-v${VERSION}-linux-amd64/etcdctl /tmp/etcdctl
 
+
 FROM scratch
+ARG VERSION=3.5.15
 COPY --from=builder /tmp/etcdctl /usr/local/bin/etcdctl
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

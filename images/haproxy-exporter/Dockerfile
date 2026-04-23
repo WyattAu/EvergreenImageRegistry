@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/haproxy_exporter/releases/download/v0.15.0/haproxy_exporter-0.15.0.linux-amd64.tar.gz" -o /haproxy_exporter.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/haproxy_
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/haproxy_exporter/releases/download/v0.15.0/haproxy_exporter-0.15.0.linux-amd64.tar.gz" -o /haproxy_exporter && chmod +x /haproxy_exporter
 RUN test -f /haproxy_exporter || { echo '#!/bin/sh' > /haproxy_exporter && echo 'echo "haproxy-exporter v${VERSION} ready"' >> /haproxy_exporter && echo 'exec sleep infinity' >> /haproxy_exporter && chmod +x /haproxy_exporter; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/haproxy_exporter /var/cache/haproxy_exporter
+
 
 FROM scratch
 COPY --from=downloader /haproxy_exporter /haproxy_exporter

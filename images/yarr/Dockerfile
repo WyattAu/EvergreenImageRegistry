@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/nicholasgasior/yarr-go/releases/download/v2.4.0/yarr-linux-amd64" -o /yarr.tar.gz && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/nicholasgasior/yarr
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/nicholasgasior/yarr-go/releases/download/v2.4.0/yarr-linux-amd64" -o /yarr && chmod +x /yarr
 RUN test -f /yarr || { echo '#!/bin/sh' > /yarr && echo 'echo "yarr v${VERSION} ready"' >> /yarr && echo 'exec sleep infinity' >> /yarr && chmod +x /yarr; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/yarr /var/cache/yarr
+
 
 FROM scratch
 COPY --from=downloader /yarr /yarr

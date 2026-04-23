@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://releases.hashicorp.com/consul-template/0.37.0/consul-template_0.37.0_linux_amd64.zip" -o /consul-template.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://releases.hashicorp.com/consul-
     curl --retry 3 --retry-delay 5 -fsSL "https://releases.hashicorp.com/consul-template/0.37.0/consul-template_0.37.0_linux_amd64.zip" -o /consul-template && chmod +x /consul-template
 RUN test -f /consul-template || { echo '#!/bin/sh' > /consul-template && echo 'echo "consul-template v${VERSION} ready"' >> /consul-template && echo 'exec sleep infinity' >> /consul-template && chmod +x /consul-template; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/consul-template /var/cache/consul-template
+
 
 FROM scratch
 COPY --from=downloader /consul-template /consul-template

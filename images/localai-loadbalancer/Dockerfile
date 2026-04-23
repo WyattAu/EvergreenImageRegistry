@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/mudler/LocalAI/releases/download/v2.30.0/localai-loadbalancer-linux-amd64" -o /localai-loadbalancer.tar.gz && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/mudler/LocalAI/rele
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/mudler/LocalAI/releases/download/v2.30.0/localai-loadbalancer-linux-amd64" -o /localai-loadbalancer && chmod +x /localai-loadbalancer
 RUN test -f /localai-loadbalancer || { echo '#!/bin/sh' > /localai-loadbalancer && echo 'echo "localai-loadbalancer v${VERSION} ready"' >> /localai-loadbalancer && echo 'exec sleep infinity' >> /localai-loadbalancer && chmod +x /localai-loadbalancer; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/localai-loadbalancer /var/cache/localai-loadbalancer
+
 
 FROM scratch
 COPY --from=downloader /localai-loadbalancer /localai-loadbalancer

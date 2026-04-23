@@ -8,6 +8,7 @@
 ARG VERSION=0.77.0
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache nodejs npm postgresql-client ca-certificates
 RUN adduser -u 65532 -G '' -D outline 2>/dev/null || true

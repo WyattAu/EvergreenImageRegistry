@@ -9,6 +9,7 @@ ARG VERSION=0.38.0
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -20,7 +21,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.timber.io/vector/${VE
     && strip --strip-all vector-x86_64-unknown-linux-gnu/bin/vector \
     && mv vector-x86_64-unknown-linux-gnu/bin/vector /tmp/vector
 
+
 FROM scratch
+ARG VERSION=0.38.0
 COPY --from=builder /tmp/vector /usr/bin/vector
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

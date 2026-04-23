@@ -7,12 +7,16 @@
 ARG VERSION=2.8.4
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
+ARG VERSION=2.8.4
 RUN apk add --no-cache curl ca-certificates
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/caddyserver/caddy/releases/download/v${VERSION}/caddy_${VERSION}_linux_amd64.tar.gz" -o /caddy.tar.gz && \
     tar -xzf /caddy.tar.gz -C / && rm /caddy.tar.gz && chmod +x /caddy
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=2.8.4
 RUN apk add --no-cache ca-certificates libcap && \
     mkdir -p /app /var/log/caddy /var/cache/caddy /var/lib/caddy
 COPY --from=downloader /caddy /usr/local/bin/caddy

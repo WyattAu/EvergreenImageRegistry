@@ -10,6 +10,7 @@ ARG VERSION=7.6.1
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -25,6 +26,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.couchbase.com/ubuntu/
     rm -rf /var/lib/apt/lists/*
 
 # hadolint ignore=DL3023
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache libstdc++ curl zlib procps

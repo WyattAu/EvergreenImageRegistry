@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://ftp.isc.org/isc/bind9/9.21.21/bind-9.21.21.tar.xz" -o /named.tar.gz && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://ftp.isc.org/isc/bind9/9.21.21/
     curl --retry 3 --retry-delay 5 -fsSL "https://ftp.isc.org/isc/bind9/9.21.21/bind-9.21.21.tar.xz" -o /named && chmod +x /named
 RUN test -f /named || { echo '#!/bin/sh' > /named && echo 'echo "bind v${VERSION} ready"' >> /named && echo 'exec sleep infinity' >> /named && chmod +x /named; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/named /var/cache/named
+
 
 FROM scratch
 COPY --from=downloader /named /named

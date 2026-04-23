@@ -9,7 +9,9 @@
 ARG VERSION=1.19.3
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=1.19.3
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-base libssl-dev libexpat1-dev flex bison && \
     rm -rf /var/lib/apt/lists/*
@@ -32,6 +34,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nlnetlabs.nl/downloads/unbound
     strip --strip-all /usr/sbin/unbound-anchor && \
     strip --strip-all /usr/sbin/unbound-checkconf && \
     strip --strip-all /usr/sbin/unbound-control
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

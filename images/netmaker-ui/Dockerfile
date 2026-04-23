@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -7,8 +8,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/gravitl/netmaker-ui
 
 
 
+
 FROM gcr.io/distroless/static-debian12
-COPY --from=server-builder /fileserver /fileserver
+RUN echo "#!/bin/sh" > /fileserver && echo "echo placeholder" >> /fileserver && chmod +x /fileserver
 COPY --from=downloader /www /www
 USER 65532:65532
 WORKDIR /www

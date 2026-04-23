@@ -8,7 +8,9 @@
 ARG VERSION=2.14.0
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=2.14.0
 RUN apk add --no-cache curl ca-certificates && \
     curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/${VERSION}/opensearch-dashboards-${VERSION}-linux-x64.tar.gz" | \
     tar xz -C /opt && \

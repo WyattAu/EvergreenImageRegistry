@@ -8,9 +8,11 @@
 ARG VERSION=11.1.3
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/airsonic-advanced/airsonic-advanced/releases/download/v11.1.3/airsonic-advanced-11.1.3.war" -o /app/airsonic-advanced-11.1.3.war
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

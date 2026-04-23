@@ -8,6 +8,7 @@
 ARG VERSION=8.0.39
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg curl ca-certificates lsb-release wget && \
@@ -16,6 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get update && apt-get install -y --no-install-recommends \
     php84-mysql-server && \
     mkdir -p /var/lib/php84-mysql /var/run/mysqld /app
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

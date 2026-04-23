@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -9,6 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/smallstep/certifica
     mv /tmp/step-ca /step-ca && \
     rm -rf /step-ca.tar.gz /checksums.txt /tmp/*
 RUN test -f /step-ca || { echo '#!/bin/sh' > /step-ca && echo 'echo "step-acme v${VERSION} ready"' >> /step-ca && echo 'exec sleep infinity' >> /step-ca && chmod +x /step-ca; }
+
 
 FROM scratch
 COPY --from=downloader /step-ca /step-ca

@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/alertmanager/releases/download/v${VERSION}/alertmanager-${VERSION}.linux-amd64.tar.gz" -o /alertmanager.tar.gz && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/alertman
     mv /alertmanager-${VERSION}.linux-amd64/alertmanager /alertmanager
 RUN test -f /alertmanager || { echo '#!/bin/sh' > /alertmanager && echo 'echo "alertmanager v${VERSION} ready"' >> /alertmanager && echo 'exec sleep infinity' >> /alertmanager && chmod +x /alertmanager; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/alertmanager /var/cache/alertmanager
+
 
 FROM scratch
 COPY --from=downloader /alertmanager /alertmanager

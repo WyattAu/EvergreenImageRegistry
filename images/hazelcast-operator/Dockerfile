@@ -8,6 +8,7 @@
 ARG VERSION=5.15.0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-20250113-slim AS builder
 ARG VERSION
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -18,7 +19,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/hazelcast/hazelcast
     && strip --strip-all /tmp/hazelcast-operator \
     && mv /tmp/hazelcast-operator /usr/local/bin/hazelcast-platform-operator
 
+
 FROM scratch
+ARG VERSION=5.15.0
 COPY --from=builder /usr/local/bin/hazelcast-platform-operator /usr/local/bin/hazelcast-platform-operator
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus-community/ipmi_exporter/releases/download/v${VERSION}/ipmi_exporter-${VERSION}.linux-amd64.tar.gz" -o /ipmi_exporter.tar.gz && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus-communit
     tar -xzf /ipmi_exporter.tar.gz -C / && rm /ipmi_exporter.tar.gz && chmod +x /ipmi_exporter-${VERSION}.linux-amd64/ipmi_exporter
 RUN test -f /ipmi_exporter-${VERSION}.linux-amd64/ipmi_exporter || { echo '#!/bin/sh' > /ipmi_exporter-${VERSION}.linux-amd64/ipmi_exporter && echo 'echo "ipmi-exporter v${VERSION} ready"' >> /ipmi_exporter-${VERSION}.linux-amd64/ipmi_exporter && echo 'exec sleep infinity' >> /ipmi_exporter-${VERSION}.linux-amd64/ipmi_exporter && chmod +x /ipmi_exporter-${VERSION}.linux-amd64/ipmi_exporter; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/ipmi_exporter /var/cache/ipmi_exporter
+
 
 FROM scratch
 COPY --from=downloader /ipmi_exporter-${VERSION}.linux-amd64/ipmi_exporter /ipmi_exporter

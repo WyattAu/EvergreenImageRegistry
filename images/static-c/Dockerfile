@@ -1,11 +1,13 @@
 ARG VERSION=1.0.0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends gcc libc6-dev make && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app /var/log/static-c /var/cache/static-c
 RUN echo 'int main(void) { return 0; }' > /tmp/test.c && \
     gcc -static -o /app/test /tmp/test.c && rm /tmp/test.c && strip /app/test || true
+
 
 FROM scratch
 COPY --from=builder /app /app

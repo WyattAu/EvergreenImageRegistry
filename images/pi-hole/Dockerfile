@@ -6,6 +6,7 @@
 
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS installer
 ENV PIHOLE_INSTALL=noninteractive
 ENV FTLCONF_webserver_port=8080
@@ -17,6 +18,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL https://install.pi-hole.net | bash -s -
 RUN find /usr -type f -executable -name "pihole*" -exec strip --strip-all {} \; 2>/dev/null || true && \
     find /usr -type f -executable -name "gravity.sh" -exec chmod +x {} \; 2>/dev/null || true && \
     find /opt -type f -executable -exec strip --strip-all {} \; 2>/dev/null || true
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

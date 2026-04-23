@@ -8,10 +8,12 @@
 ARG VERSION=8.0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     default-php84-mysql-client xz-utils && \
     mkdir -p /app /backups /var/log/php84-mysql-backup /var/cache/php84-mysql-backup
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

@@ -1,11 +1,14 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/kubescape/kubescape/releases/download/v3.0.3/kubescape-ubuntu-latest-amd64" -o /kubescape-ubuntu-latest-amd64 &&     tar -xzf /kubescape-ubuntu-latest-amd64 -C / && rm /kubescape-ubuntu-latest-amd64 && chmod +x /kubescape
 RUN strip /kubescape 2>/dev/null || true
 RUN test -f /kubescape || { echo '#!/bin/sh' > /kubescape && echo 'echo "kubescape v${VERSION} ready"' >> /kubescape && echo 'exec sleep infinity' >> /kubescape && chmod +x /kubescape; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/kubescape /var/cache/kubescape
+
 
 FROM scratch
 

@@ -8,6 +8,7 @@
 ARG VERSION=17.2
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg lsb-release curl ca-certificates && \
@@ -18,6 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get update && apt-get install -y --no-install-recommends \
     postgresql-${VERSION%.*} postgresql-contrib-${VERSION%.*} && \
     mkdir -p /var/lib/postgresql/data /var/run/postgresql /app
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

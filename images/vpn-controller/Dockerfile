@@ -8,7 +8,9 @@
 ARG VERSION=1.0.2
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=1.0.2
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-base libmnl-dev libelf-dev curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
@@ -18,7 +20,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://git.zx2c4.com/wireguard-tools/
     make -j"$(nproc)" && \
     strip --strip-all /wireguard-tools-${VERSION}/src/wg /wireguard-tools-${VERSION}/src/wg-quick
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=1.0.2
 
 RUN apk add --no-cache ca-certificates iproute2 iptables kmod
 RUN mkdir -p /app /var/log/vpn-controller /etc/wireguard

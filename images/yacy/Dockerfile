@@ -6,6 +6,7 @@
 
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS installer
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openjdk-17-jre-base curl ca-certificates && \
@@ -15,6 +16,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/yacy/yacy_search_se
     mv /opt/yacy /opt/yacy-server
 RUN mkdir -p /app /var/log/yacy /var/lib/yacy/data
 RUN chown -R 65532:65532 /opt/yacy-server /var/log/yacy /var/lib/yacy
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

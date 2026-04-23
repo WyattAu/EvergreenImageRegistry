@@ -20,7 +20,7 @@ EXPOSE 5000
 ENTRYPOINT ["mlflow"]
 LABEL org.opencontainers.image.title="mlflow" \
       org.opencontainers.image.version="2.21.0" \
-      org.opencontainers.image.vendor="MLflow"
+      org.opencontainers.image.vendor="MLflow" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
 

@@ -29,7 +29,7 @@ EXPOSE 0
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="yarn" \
       org.opencontainers.image.version="1.22.22" \
-      org.opencontainers.image.vendor="Yarn"
+      org.opencontainers.image.vendor="Yarn" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.hardened="true"

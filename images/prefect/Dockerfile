@@ -20,7 +20,7 @@ EXPOSE 4200
 ENTRYPOINT ["prefect"]
 LABEL org.opencontainers.image.title="prefect" \
       org.opencontainers.image.version="3.3.0" \
-      org.opencontainers.image.vendor="Prefect"
+      org.opencontainers.image.vendor="Prefect" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
 

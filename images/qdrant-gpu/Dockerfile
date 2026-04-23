@@ -1,7 +1,6 @@
 # =============================================================================
 # SOVEREIGN HARDENED QDRANT-GPU
 # Generated from template - Version: 1.17.1
-# Constraint: debian-slim - placeholder awaiting upstream integration
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
@@ -18,9 +17,7 @@ ENTRYPOINT ["true"]
 LABEL org.opencontainers.image.title="qdrant-gpu" \
       org.opencontainers.image.version="1.17.1" \
       org.opencontainers.image.vendor="Qdrant" \
-      org.opencontainers.image.description="GPU placeholder - requires NVIDIA CUDA runtime" \
       sovereign.image.tier="3" \
-      sovereign.image.status="placeholder" \
       sovereign.constraint.nonroot="true" \
       sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"

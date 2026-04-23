@@ -1,13 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED DATADOG-AGENT
-# Generated from template - Version: 7.50.0
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=7.50.0
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -19,6 +9,11 @@ RUN tar -xzf /datadog-agent.tar.gz -C /opt && \
     find /opt -name "agent" -type f -executable -exec strip {} \; 2>/dev/null || true && \
     find /opt -name "trace-agent" -type f -executable -exec strip {} \; 2>/dev/null || true && \
     find /opt -name "process-agent" -type f -executable -exec strip {} \; 2>/dev/null || true
+
+
+
+
+
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app/conf /app/run /app/logs /var/log/datadog

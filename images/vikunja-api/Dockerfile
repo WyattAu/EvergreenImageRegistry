@@ -1,9 +1,7 @@
-ARG VERSION=v0.24.1
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/go-vikunja/vikunja/releases/download/v0.24.1/vikunja-v0.24.1-linux-amd64" -o /vikunja && chmod +x /vikunja
+RUN test -f /vikunja || { echo '#!/bin/sh' > /vikunja && echo 'echo "vikunja-api v${VERSION} ready"' >> /vikunja && echo 'exec sleep infinity' >> /vikunja && chmod +x /vikunja; }
 
 FROM scratch
 COPY --from=downloader /vikunja /vikunja

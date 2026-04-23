@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    golang-go ca-certificates && rm -rf /var/lib/apt/lists/*
+    go-1.23-go ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN useradd -m -u 65532 -s /usr/sbin/nologin go 2>/dev/null || true
 RUN mkdir -p /app /var/log/go /var/cache/go
 
@@ -25,7 +25,7 @@ COPY --from=builder --chown=65532:65532 /var/cache/go /var/cache/go
 USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["go"]
-LABEL org.opencontainers.image.title="golang" \
+LABEL org.opencontainers.image.title="go-1.23" \
       org.opencontainers.image.version="1.22.3" \
       org.opencontainers.image.vendor="Go" \
       sovereign.image.tier="2" \

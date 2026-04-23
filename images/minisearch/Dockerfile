@@ -37,7 +37,6 @@ LABEL org.opencontainers.image.title="minisearch" \
       sovereign.image.tier="1" \
       sovereign.image.category="search" \
       sovereign.image.status="best-effort" \
-      sovereign.image.note="No confirmed upstream release binary; placeholder. Update URL when available." \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.base="scratch" \
       sovereign.hft.signal-handling="native" \

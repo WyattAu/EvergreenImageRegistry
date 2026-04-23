@@ -1,13 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED RENOVATE
-# Automated dependency updates - Node.js app
-# Constraint: debian-slim + Node.js - Node runtime required
-# Priority: scratch > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=43.138.3
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -15,6 +5,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/renovatebot/renovat
     mkdir -p /tmp/renovate && \
     tar -xzf /renovate.tar.gz -C /tmp/renovate && \
     rm -f /renovate.tar.gz
+
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

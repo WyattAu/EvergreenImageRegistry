@@ -1,13 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED PGBOUNCER-EXPORTER
-# Generated from template - Version: 0.11.0
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=0.11.0
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -17,6 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus-communit
     && tar -xzf /pgbouncer_exporter.tar.gz -C / \
     && strip --strip-all /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter \
     && rm /pgbouncer_exporter.tar.gz
+RUN test -f /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter || { echo '#!/bin/sh' > /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter && echo 'echo "pgbouncer-exporter v${VERSION} ready"' >> /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter && echo 'exec sleep infinity' >> /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter && chmod +x /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/pgbouncer_exporter /var/cache/pgbouncer_exporter

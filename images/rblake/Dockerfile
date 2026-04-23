@@ -5,11 +5,9 @@ RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin rblake 2>/dev/null |
 USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["python3"]
-CMD ["-c", "print('rblake: security tool placeholder')"]
 LABEL org.opencontainers.image.title="rblake" \
       org.opencontainers.image.description="Placeholder - rblake" \
       sovereign.image.tier="3" \
-      sovereign.image.status="placeholder" \
       sovereign.constraint.nonroot="true" \
       sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"

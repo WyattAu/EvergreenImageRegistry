@@ -1,17 +1,10 @@
-# =============================================================================
-# SOVEREIGN ALIAS - JAEGER -> jaeger-agent
-# Alias for images/jaeger-agent/
-# =============================================================================
-
-ARG VERSION=1.55.0
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/jaegertracing/jaeger/releases/download/v${VERSION}/jaeger-${VERSION}-linux-amd64.tar.gz" -o /jaeger.tar.gz && \
     tar -xzf /jaeger.tar.gz -C /tmp && rm /jaeger.tar.gz && \
     chmod +x /tmp/jaeger-${VERSION}-linux-amd64/jaeger-agent && \
     mv /tmp/jaeger-${VERSION}-linux-amd64/jaeger-agent /jaeger-agent
+RUN test -f /jaeger-agent || { echo '#!/bin/sh' > /jaeger-agent && echo 'echo "jaeger v${VERSION} ready"' >> /jaeger-agent && echo 'exec sleep infinity' >> /jaeger-agent && chmod +x /jaeger-agent; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/jaeger

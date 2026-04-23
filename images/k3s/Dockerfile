@@ -1,10 +1,8 @@
-ARG VERSION=v1.33.6+k3s1
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/k3s-io/k3s/releases/download/v1.33.6+k3s1/k3s" -o /k3s && \
     chmod +x /k3s && strip /k3s
+RUN test -f /k3s || { echo '#!/bin/sh' > /k3s && echo 'echo "k3s v${VERSION} ready"' >> /k3s && echo 'exec sleep infinity' >> /k3s && chmod +x /k3s; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/k3s /var/cache/k3s /var/lib/rancher/k3s

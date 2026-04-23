@@ -1,14 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED NXLOG
-# Generated from template - Version: 3.1.2331
-# Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
-# C binary requires shared libraries - cannot use scratch
-# Priority: scratch > distroless > wolfi > debian-slim (last resort)
-# =============================================================================
-
-ARG VERSION=3.1.2331
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -17,6 +6,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nxlog.co/downloads/nxlog-ce/nx
     echo "e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6  /nxlog.tar.gz" | sha256sum -c || true  #
 RUN tar -xzf /nxlog.tar.gz -C /opt && \
     rm /nxlog.tar.gz
+
+
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && \

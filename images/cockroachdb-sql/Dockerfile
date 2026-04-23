@@ -1,13 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED COCKROACHDB-SQL
-# Generated from template - Version: 23.2.3
-# Constraint: scratch - static Go binary, purest form
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=23.2.3
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 ARG VERSION
 WORKDIR /tmp
@@ -18,6 +8,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://binaries.cockroachdb.com/cockr
     && tar -xzf cockroach.tgz \
     && strip --strip-all cockroach-v${VERSION}.linux-amd64/cockroach \
     && mv cockroach-v${VERSION}.linux-amd64/cockroach /tmp/cockroach
+
+
+
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/cockroachdb-sql /var/cache/cockroachdb-sql

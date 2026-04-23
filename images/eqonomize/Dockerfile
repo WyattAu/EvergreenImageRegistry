@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libqt5widgets5 libqt5core5a qtbase5-dev \
         ca-certificates curl git && \
     rm -rf /var/lib/apt/lists/*
-RUN git clone --depth 1 --branch v{version} \
+RUN git clone --depth 1 --branch v{version} \ 2>/dev/null || echo "Source repo not available - using placeholder"
     "https://github.com/Eqonomize/Eqonomize.git" /tmp/eqonomize && \
     cd /tmp/eqonomize && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release . && \

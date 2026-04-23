@@ -9,7 +9,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        python3 py3-pip python3 python3-dev \
+        python3-pip python3-dev \
         git curl ca-certificates \
         build-base libffi-dev libssl-dev \
         postgresql-dev libjpeg-turbo-turbo-dev zlib1g-dev && \

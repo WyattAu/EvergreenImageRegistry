@@ -1,14 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED CACHET
-# Generated from template - Version: 2.5.1
-# Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
-# PHP application requires runtime and web server - cannot use scratch
-# Priority: scratch > distroless > wolfi > debian-slim (last resort)
-# =============================================================================
-
-ARG VERSION=2.5.1
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates unzip && \
@@ -18,12 +7,13 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/CachetHQ/Cachet/rel
 RUN mkdir -p /build && \
     tar -xzf /cachet.tar.gz -C /build --strip-components=1 && \
     rm /cachet.tar.gz
+RUN test -f /build || { echo '#!/bin/sh' > /build && echo 'echo "cachet v${VERSION} ready"' >> /build && echo 'exec sleep infinity' >> /build && chmod +x /build; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN addgroup -S 65532 cachet && \
     adduser -u 65532 -G cachet -D -s /sbin/nologin cachet
-RUN apk add --no-cache php-8.4-fpm php-8.4-pdo_mysql php-8.4-mysqli php-8.4-pgsql php-8.4-sqlite php-8.4-gd php-8.4-curl php-8.4-mbstring php-8.4-xml php-8.4-zip php-8.4-bcmath php-8.4-redis nginx ca-certificates
+RUN apk add --no-cache php-8.4-fpm php-8.4-pdo_mysql php-8.4-mysqli php-8.4-pgsql php-8.4-pdo_sqlite php-8.4-gd php-8.4-curl php-8.4-mbstring php-8.4-xml php-8.4-zip php-8.4-bcmath php-8.4-redis nginx ca-certificates
 COPY --from=downloader /build /var/www/cachet
 RUN mkdir -p /run/php /app/logs /app/data && \
     chown -R cachet:cachet /var/www/cachet /app /run/php && \

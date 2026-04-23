@@ -8,7 +8,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN apt-get update &&     apt-get install -y --no-install-recommends         python3         py3-pip="23.1.*"         python3         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/*
+RUN apt-get update &&     apt-get install -y --no-install-recommends         python3-pip         python3         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/*
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 RUN pip install --no-cache-dir mailu==2.0.0

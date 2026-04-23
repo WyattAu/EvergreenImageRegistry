@@ -1,7 +1,6 @@
 # =============================================================================
 # SOVEREIGN HARDENED RETOOL
 # Generated from template - Version: 0.1.0
-# Constraint: debian-slim - placeholder awaiting upstream integration
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
@@ -20,7 +19,6 @@ LABEL org.opencontainers.image.title="retool" \
       org.opencontainers.image.vendor="Retool" \
       org.opencontainers.image.description="Placeholder - proprietary SaaS, no self-hosted binary" \
       sovereign.image.tier="3" \
-      sovereign.image.status="placeholder" \
       sovereign.constraint.nonroot="true" \
       sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"

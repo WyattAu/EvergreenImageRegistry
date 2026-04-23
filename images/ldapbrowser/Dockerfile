@@ -1,13 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED LDAPBROWSER
-# Apache Directory Studio LDAP browser - Java app
-# Constraint: debian-slim + JRE - Java runtime required
-# Priority: scratch > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=2.0.0.v20230628M17
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -15,6 +5,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/ltiam/APacheDirecto
     mkdir -p /tmp/studio && \
     tar -xzf /studio.tar.gz -C /tmp/studio --strip-components=1 && \
     rm -f /studio.tar.gz
+
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

@@ -1,15 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED APACHE ROCKETMQ
-# Apache RocketMQ distributed messaging platform
-# Constraint: debian-slim - Java runtime requires glibc + JDK
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG ROCKETMQ_VERSION=5.1.4
-ARG JAVA_VERSION=17
-ARG BUILD_DATE
-
-# hadolint ignore=DL3023
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -21,16 +9,18 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/rocket
     rm -rf /rocketmq.zip /checksums.txt
 
 # hadolint ignore=DL3023
+
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache openjdk-${JAVA_VERSION}-jre-base ca-certificates
+RUN apk add --no-cache openjdk-17-jre-base ca-certificates
 
 COPY --from=downloader /opt/rocketmq /opt/rocketmq
 RUN chown -R 65532:65532 /opt/rocketmq
 
 USER 65532:65532
 WORKDIR /opt/rocketmq
-ENV JAVA_HOME="/usr/lib/jvm/java-${JAVA_VERSION}-openjdk"
+ENV JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
 ENV ROCKETMQ_HOME="/opt/rocketmq"
 EXPOSE 9876 10911 10909
 ENTRYPOINT ["/opt/rocketmq/bin/mqnamesrv"]

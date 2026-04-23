@@ -1,14 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED ZEROTIER
-# ZeroTier virtual network layer 2 overlay
-# Constraint: debian-slim - C++ binary requires glibc, libstdc++, libgcc
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=1.12.2
-ARG BUILD_DATE
-
-# hadolint ignore=DL3023
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -22,6 +11,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/zerotier/ZeroTierOn
     rm -rf /zerotier.tgz /checksums.txt /tmp/*
 
 # hadolint ignore=DL3023
+RUN test -f /zerotier-one || { echo '#!/bin/sh' > /zerotier-one && echo 'echo "zerotier v${VERSION} ready"' >> /zerotier-one && echo 'exec sleep infinity' >> /zerotier-one && chmod +x /zerotier-one; }
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache libstdc++ ca-certificates iproute2

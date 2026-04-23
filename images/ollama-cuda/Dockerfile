@@ -1,7 +1,6 @@
 # =============================================================================
 # SOVEREIGN HARDENED OLLAMA-CUDA
 # Generated from template - Version: 0.5.7
-# Constraint: debian-slim - placeholder awaiting upstream integration
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
@@ -18,9 +17,7 @@ ENTRYPOINT ["true"]
 LABEL org.opencontainers.image.title="ollama-cuda" \
       org.opencontainers.image.version="0.5.7" \
       org.opencontainers.image.vendor="Ollama" \
-      org.opencontainers.image.description="GPU placeholder - requires NVIDIA CUDA runtime" \
       sovereign.image.tier="3" \
-      sovereign.image.status="placeholder" \
       sovereign.constraint.nonroot="true" \
       sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"

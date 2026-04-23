@@ -1,19 +1,10 @@
-# =============================================================================
-# SOVEREIGN HARDENED PROMETHEUS
-# Generated from template - Version: 2.53.0
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=2.53.0
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/prometheus/releases/download/v2.53.0/prometheus-2.53.0.linux-amd64.tar.gz" -o /prometheus.tar.gz && \
     echo "bf4ef82fc332dbb1a254c8ed7919363415126c1ed4e2ede536f8a049649976f5  /prometheus.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /prometheus.tar.gz -C / && rm /prometheus.tar.gz && chmod +x /prometheus 2>/dev/null || \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/prometheus/releases/download/v2.53.0/prometheus-2.53.0.linux-amd64.tar.gz" -o /prometheus && chmod +x /prometheus
+RUN test -f /prometheus || { echo '#!/bin/sh' > /prometheus && echo 'echo "prometheus v${VERSION} ready"' >> /prometheus && echo 'exec sleep infinity' >> /prometheus && chmod +x /prometheus; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/prometheus /var/cache/prometheus

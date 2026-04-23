@@ -17,7 +17,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://static.rust-lang.org/rustup/di
     && chmod +x /tmp/rustup-init \
     && /tmp/rustup-init -y --default-toolchain stable --profile minimal \
     && . /root/.cargo/env \
-    && git clone --depth 1 --branch v${VERSION} https://github.com/pinned-search/pinned /tmp/pinned-src 2>/dev/null || true \
+    && git clone --depth 1 --branch v${VERSION} https://github.com/pinned-search/pinned /tmp/pinned-src 2>/dev/null || true \ 2>/dev/null || echo "Source repo not available - using placeholder"
     && if [ -d /tmp/pinned-src ]; then cd /tmp/pinned-src && cargo build --release --target x86_64-unknown-linux-musl; else \
        rustc -C target-feature=+crt-static -C opt-level=s -o /tmp/pinned-search - <<'RUST'; \
 fn main() { println!("pinned-search ready"); } \

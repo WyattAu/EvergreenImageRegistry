@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache postgresql-client-${VERSION} curl ca-certificates
+RUN apk add --no-cache postgresql-${VERSION}-client curl ca-certificates
 COPY --from=builder --chown=65532:65532 /app /app
 COPY --from=builder --chown=65532:65532 /var/log/postgresql-init /var/log/postgresql-init
 COPY --from=builder --chown=65532:65532 /var/cache/postgresql-init /var/cache/postgresql-init

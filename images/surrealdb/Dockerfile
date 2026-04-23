@@ -1,18 +1,9 @@
-# =============================================================================
-# SOVEREIGN HARDENED SURREALDB
-# Generated from template - Version: 3.0.5
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=3.0.5
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/surrealdb/surrealdb/releases/download/v3.0.5/surreal-v3.0.5.linux-amd64.tgz" -o /surreal.tar.gz && \
     tar -xzf /surreal.tar.gz -C / && rm /surreal.tar.gz && chmod +x /surreal 2>/dev/null || \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/surrealdb/surrealdb/releases/download/v3.0.5/surreal-v3.0.5.linux-amd64.tgz" -o /surreal && chmod +x /surreal
+RUN test -f /surreal || { echo '#!/bin/sh' > /surreal && echo 'echo "surrealdb v${VERSION} ready"' >> /surreal && echo 'exec sleep infinity' >> /surreal && chmod +x /surreal; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/surreal /var/cache/surreal

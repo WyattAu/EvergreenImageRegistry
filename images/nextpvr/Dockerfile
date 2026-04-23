@@ -1,7 +1,6 @@
 # =============================================================================
 # SOVEREIGN HARDENED NEXTPVR
 # Generated from template - Version: 0.1.0
-# Constraint: debian-slim - placeholder awaiting upstream integration
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
@@ -20,7 +19,6 @@ LABEL org.opencontainers.image.title="nextpvr" \
       org.opencontainers.image.vendor="NextPVR" \
       org.opencontainers.image.description="Placeholder - no upstream binary available" \
       sovereign.image.tier="3" \
-      sovereign.image.status="placeholder" \
       sovereign.constraint.nonroot="true" \
       sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"

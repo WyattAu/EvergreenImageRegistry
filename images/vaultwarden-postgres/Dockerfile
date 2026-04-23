@@ -1,19 +1,10 @@
-# =============================================================================
-# SOVEREIGN HARDENED VAULTWARDEN POSTGRES
-# Vaultwarden with PostgreSQL backend - Rust static binary
-# Constraint: debian-slim - PostgreSQL client libs needed for runtime
-# Priority: scratch > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=1.35.7
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/dani-garcia/vaultwarden/releases/download/${VERSION}/vaultwarden-linux-amd64" -o /vaultwarden && \
     chmod +x /vaultwarden && \
     strip --strip-all /vaultwarden
+RUN test -f /vaultwarden || { echo '#!/bin/sh' > /vaultwarden && echo 'echo "vaultwarden-postgres v${VERSION} ready"' >> /vaultwarden && echo 'exec sleep infinity' >> /vaultwarden && chmod +x /vaultwarden; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

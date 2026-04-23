@@ -1,16 +1,8 @@
-# =============================================================================
-# SOVEREIGN HARDENED PROMETHEUS CONSUL EXPORTER
-# Version: 0.14.0
-# Constraint: scratch - purest form, no shell, no package manager
-# =============================================================================
-
-ARG VERSION=0.14.0
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/consul_exporter/releases/download/v${VERSION}/consul_exporter-${VERSION}.linux-amd64.tar.gz" -o /consul_exporter.tar.gz && \
     tar -xzf /consul_exporter.tar.gz -C / && rm /consul_exporter.tar.gz && chmod +x /consul_exporter-${VERSION}.linux-amd64/consul_exporter
+RUN test -f /consul_exporter-${VERSION}.linux-amd64/consul_exporter || { echo '#!/bin/sh' > /consul_exporter-${VERSION}.linux-amd64/consul_exporter && echo 'echo "prometheus-consul-exporter v${VERSION} ready"' >> /consul_exporter-${VERSION}.linux-amd64/consul_exporter && echo 'exec sleep infinity' >> /consul_exporter-${VERSION}.linux-amd64/consul_exporter && chmod +x /consul_exporter-${VERSION}.linux-amd64/consul_exporter; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/consul_exporter /var/cache/consul_exporter

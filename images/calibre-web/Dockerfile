@@ -9,7 +9,7 @@ ARG VERSION=0.6.22
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apk add --no-cache python3 py3-pip ca-certificates
+RUN apk add --no-cache python3-pip ca-certificates
 RUN adduser -u 65532 -G '' -D calibre 2>/dev/null || true
 RUN mkdir -p /app /var/log/python /var/cache/python && chown -R calibre:calibre /app /var/log/python /var/cache/python 2>/dev/null || true
 USER calibre

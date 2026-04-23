@@ -1,15 +1,10 @@
-# =============================================================================
-# SOVEREIGN HARDENED DENDRITE-MONOLITH
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# =============================================================================
-
-ARG VERSION=0.13.0
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update &&     apt-get install -y --no-install-recommends curl ca-certificates &&     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/matrix-org/dendrite/releases/download/v0.13.0/dendrite-linux-amd64" -o /tmp/binary &&     chmod +x /tmp/binary &&     strip /tmp/binary
+
+
+
 
 FROM scratch
 COPY --from=downloader /tmp/binary /usr/local/bin/dendrite

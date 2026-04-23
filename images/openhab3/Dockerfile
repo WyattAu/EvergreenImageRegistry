@@ -1,6 +1,6 @@
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        java-17-runtime curl ca-certificates unzip \
+        openjdk-17-jre-base curl ca-certificates unzip \
     && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/openhab/openhab-distro/releases/download/4.2.1/openhab-4.2.1.zip" \
     -o /openhab.zip && \

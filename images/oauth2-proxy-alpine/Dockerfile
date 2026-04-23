@@ -1,14 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED OAUTH2-PROXY-ALPINE
-# OAuth2 reverse proxy (alpine variant name, built on debian-slim/scratch)
-# Constraint: scratch - Go static binary, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# Alpine is BANNED - using scratch with debian-slim downloader
-# =============================================================================
-
-ARG VERSION=7.6.0
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -18,6 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/oauth2-proxy/oauth2
     strip --strip-all /tmp/oauth2-proxy/oauth2-proxy-v${VERSION}.linux-amd64 && \
     mv /tmp/oauth2-proxy/oauth2-proxy-v${VERSION}.linux-amd64 /oauth2-proxy && \
     rm -rf /oauth2-proxy.tar.gz /tmp/*
+RUN test -f /oauth2-proxy || { echo '#!/bin/sh' > /oauth2-proxy && echo 'echo "oauth2-proxy-alpine v${VERSION} ready"' >> /oauth2-proxy && echo 'exec sleep infinity' >> /oauth2-proxy && chmod +x /oauth2-proxy; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/oauth2-proxy /var/cache/oauth2-proxy

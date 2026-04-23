@@ -1,15 +1,10 @@
-# =============================================================================
-# SOVEREIGN HARDENED GITLAB-RUNNER
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# =============================================================================
-
-ARG VERSION=16.11.0
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update &&     apt-get install -y --no-install-recommends curl ca-certificates &&     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://gitlab-runner-downloads.s3.amazonaws.com/v16.11.0/binaries/gitlab-runner-linux-amd64" -o /tmp/binary &&     chmod +x /tmp/binary &&     strip /tmp/binary
+
+
+
 
 FROM scratch
 COPY --from=downloader /tmp/binary /usr/local/bin/gitlab-runner

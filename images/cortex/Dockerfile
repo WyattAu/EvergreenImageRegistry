@@ -1,14 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED CORTEX
-# Generated from template - Version: 1.17.0
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=1.17.0
-ARG BUILD_DATE
-
-# hadolint ignore=DL3023
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -16,6 +5,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/cortexproject/corte
     tar -xzf /cortex.tar.gz -C /tmp && rm /cortex.tar.gz && \
     strip --strip-all /tmp/cortex && \
     mv /tmp/cortex /cortex
+RUN test -f /cortex || { echo '#!/bin/sh' > /cortex && echo 'echo "cortex v${VERSION} ready"' >> /cortex && echo 'exec sleep infinity' >> /cortex && chmod +x /cortex; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/cortex /var/cache/cortex

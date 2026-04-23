@@ -1,15 +1,10 @@
-# =============================================================================
-# SOVEREIGN HARDENED STALWART
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# =============================================================================
-
-ARG VERSION=0.9.0
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update &&     apt-get install -y --no-install-recommends curl ca-certificates &&     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/ArcticLampyrid/stalwart/releases/download/v0.9.0/stalwart-x86_64-unknown-linux-musl" -o /tmp/binary &&     chmod +x /tmp/binary &&     strip /tmp/binary
+
+
+
 
 FROM scratch
 COPY --from=downloader /tmp/binary /usr/local/bin/stalwart

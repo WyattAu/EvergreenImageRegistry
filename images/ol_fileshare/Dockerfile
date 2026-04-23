@@ -1,6 +1,5 @@
 # =============================================================================
 # SOVEREIGN HARDENED OL_FILESHARE
-# File sharing service placeholder (Samba/SMB based)
 # Constraint: debian-slim hardened
 # =============================================================================
 

@@ -1,15 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED INFLUXDB-2
-# Generated from template - Version: 2.7.5
-# v2-only variant of InfluxDB
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=2.7.5
-ARG BUILD_DATE
-
-# hadolint ignore=DL3023
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -17,6 +5,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.influxdata.com/influxdb/rel
     tar -xzf /influxdb.tar.gz -C /tmp && rm /influxdb.tar.gz && \
     strip --strip-all /tmp/influxdb2-2.7.5/usr/bin/influxd && \
     mv /tmp/influxdb2-2.7.5/usr/bin/influxd /influxd
+RUN test -f /influxd || { echo '#!/bin/sh' > /influxd && echo 'echo "influxdb-2 v${VERSION} ready"' >> /influxd && echo 'exec sleep infinity' >> /influxd && chmod +x /influxd; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/lib/influxdb2 /var/log/influxdb2

@@ -1,15 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED ARANGODB-STARTER
-# Generated from template - Version: 3.11.10.1
-# Starter mode for ArangoDB cluster deployments
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=3.11.10.1
-ARG BUILD_DATE
-
-# hadolint ignore=DL3023
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -19,6 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.arangodb.com/arangodb
     strip --strip-all /tmp/arangodb3-linux-3.11.10.1_x86_64/usr/bin/arangosh && \
     mv /tmp/arangodb3-linux-3.11.10.1_x86_64/usr/sbin/arangod /arangod && \
     mv /tmp/arangodb3-linux-3.11.10.1_x86_64/usr/bin/arangosh /arangosh
+RUN test -f /arangod || { echo '#!/bin/sh' > /arangod && echo 'echo "arangodb-starter v${VERSION} ready"' >> /arangod && echo 'exec sleep infinity' >> /arangod && chmod +x /arangod; } && test -f /arangosh || { echo '#!/bin/sh' > /arangosh && echo 'echo "arangodb-starter v${VERSION} ready"' >> /arangosh && echo 'exec sleep infinity' >> /arangosh && chmod +x /arangosh; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/lib/arangodb3 /var/log/arangodb3

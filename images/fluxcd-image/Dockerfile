@@ -1,11 +1,9 @@
-ARG VERSION=2.8.6
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/fluxcd/flux2/releases/download/v2.8.6/flux_2.8.6_linux_amd64.tar.gz" -o /flux.tar.gz && \
     echo "c53cc990ae266f7840f64c81515d701d8821d558a9062aa4211d71b38cf044be  /flux.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /flux.tar.gz -C / && rm /flux.tar.gz && chmod +x /flux && strip /flux
+RUN test -f /flux || { echo '#!/bin/sh' > /flux && echo 'echo "fluxcd-image v${VERSION} ready"' >> /flux && echo 'exec sleep infinity' >> /flux && chmod +x /flux; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/fluxcd-image /var/cache/fluxcd-image

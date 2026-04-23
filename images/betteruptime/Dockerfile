@@ -11,7 +11,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends golang-go git ca-certificates && \
+    apt-get install -y --no-install-recommends go-1.23-go git ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /build/cmd && \
     cat > /build/cmd/betteruptime.go <<'GOEOF'

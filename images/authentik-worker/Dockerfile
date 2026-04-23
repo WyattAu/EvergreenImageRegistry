@@ -1,13 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED AUTHENTIK WORKER
-# Authentik background worker - Python app
-# Constraint: debian-slim + Python - Python runtime required
-# Priority: scratch > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=2026.2.2
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -16,9 +6,11 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/goauthentik/authent
     tar -xzf /authentik-worker.tar.gz -C /tmp/authentik-worker && \
     rm -f /authentik-worker.tar.gz
 
+
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache python3 py3-pip ca-certificates libpq libxml2-dev libxslt-dev libffi-dev openssl-dev build-base
+RUN apk add --no-cache python3-pip ca-certificates libpq libxml2-dev libxslt-dev libffi-dev openssl-dev build-base
 COPY --from=downloader /tmp/authentik-worker /opt/authentik-worker
 RUN pip3 install --no-cache-dir --break-system-packages /opt/authentik-worker 2>/dev/null || pip3 install --no-cache-dir /opt/authentik-worker || true && \
     mkdir -p /app && chown -R 65532:65532 /app /opt/authentik-worker

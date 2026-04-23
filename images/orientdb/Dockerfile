@@ -1,15 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED ORIENTDB
-# Generated from template - Version: 3.2.34
-# Java-based graph/document database
-# Constraint: debian-slim (Java runtime required, cannot use scratch)
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=3.2.34
-ARG BUILD_DATE
-
-# hadolint ignore=DL3023
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -17,6 +5,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/orientechnologies/o
     tar -xzf /orientdb.tar.gz -C /opt && rm /orientdb.tar.gz
 
 # hadolint ignore=DL3023
+
+
 FROM debian:bookworm-slim AS builder
 COPY --from=downloader /opt/orientdb-community-3.2.34 /opt/orientdb
 RUN mkdir -p /var/lib/orientdb /var/log/orientdb /app && \

@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates java-17-runtime && \
+    curl ca-certificates openjdk-17-jre-base && \
     curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-linux-x86_64.tar.gz" \
     -o /elasticsearch.tar.gz && \
     echo "PENDING_CHECKSUM  /elasticsearch.tar.gz" | sha256sum -c || true  # && \

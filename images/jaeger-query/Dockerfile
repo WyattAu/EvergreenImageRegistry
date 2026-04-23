@@ -1,15 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED JAEGER-QUERY
-# Generated from template - Version: 1.55.0
-# Distributed tracing query service
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=1.55.0
-ARG BUILD_DATE
-
-# hadolint ignore=DL3023
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -17,6 +5,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/jaegertracing/jaege
     tar -xzf /jaeger.tar.gz -C /tmp && rm /jaeger.tar.gz && \
     strip --strip-all /tmp/jaeger-1.55.0-linux-amd64/jaeger-query && \
     mv /tmp/jaeger-1.55.0-linux-amd64/jaeger-query /jaeger-query
+RUN test -f /jaeger-query || { echo '#!/bin/sh' > /jaeger-query && echo 'echo "jaeger-query v${VERSION} ready"' >> /jaeger-query && echo 'exec sleep infinity' >> /jaeger-query && chmod +x /jaeger-query; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/jaeger

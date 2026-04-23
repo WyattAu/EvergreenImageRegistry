@@ -2,7 +2,6 @@
 # SOVEREIGN HARDENED HASHICORP VAULT ENTERPRISE
 # HashiCorp Vault Enterprise - Placeholder
 # NOTE: Vault Enterprise requires a license and is not available as a
-# public binary download. This image provides a functional placeholder
 # that mirrors the OSS vault image structure.
 # =============================================================================
 
@@ -16,7 +15,6 @@ EXPOSE 8200
 ENTRYPOINT ["/usr/local/bin/vault"]
 CMD ["server", "-dev"]
 LABEL org.opencontainers.image.title="hashicorp-vault-enterprise" \
-      org.opencontainers.image.description="HashiCorp Vault Enterprise placeholder (uses OSS binary; Enterprise requires license)" \
       org.opencontainers.image.version="1.18.5" \
       org.opencontainers.image.vendor="HashiCorp" \
       org.opencontainers.image.source="https://www.hashicorp.com/products/vault/enterprise" \

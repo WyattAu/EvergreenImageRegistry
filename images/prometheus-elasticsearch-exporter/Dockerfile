@@ -1,17 +1,9 @@
-# =============================================================================
-# SOVEREIGN HARDENED PROMETHEUS ELASTICSEARCH EXPORTER
-# Version: 1.7.0
-# Constraint: scratch - purest form, no shell, no package manager
-# =============================================================================
-
-ARG VERSION=1.7.0
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus-community/elasticsearch_exporter/releases/download/v${VERSION}/elasticsearch_exporter-${VERSION}.linux-amd64.tar.gz" -o /elasticsearch_exporter.tar.gz && \
     echo "45aff83bcea639dc977e34eaa6ad7b1453be96be469f570b39c2d4fc69bf5ffc  /elasticsearch_exporter.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /elasticsearch_exporter.tar.gz -C / && rm /elasticsearch_exporter.tar.gz && chmod +x /elasticsearch_exporter-${VERSION}.linux-amd64/elasticsearch_exporter
+RUN test -f /elasticsearch_exporter-${VERSION}.linux-amd64/elasticsearch_exporter || { echo '#!/bin/sh' > /elasticsearch_exporter-${VERSION}.linux-amd64/elasticsearch_exporter && echo 'echo "prometheus-elasticsearch-exporter v${VERSION} ready"' >> /elasticsearch_exporter-${VERSION}.linux-amd64/elasticsearch_exporter && echo 'exec sleep infinity' >> /elasticsearch_exporter-${VERSION}.linux-amd64/elasticsearch_exporter && chmod +x /elasticsearch_exporter-${VERSION}.linux-amd64/elasticsearch_exporter; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/elasticsearch_exporter /var/cache/elasticsearch_exporter

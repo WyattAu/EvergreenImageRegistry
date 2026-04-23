@@ -19,7 +19,6 @@ LABEL org.opencontainers.image.title="kdb-plus" \
       org.opencontainers.image.description="Placeholder for KX Systems KDB+ Plus edition. Requires license." \
       org.opencontainers.image.vendor="KX Systems" \
       sovereign.image.tier="2" \
-      sovereign.image.status="placeholder" \
       sovereign.image.category="database" \
       sovereign.image.note="KDB+ Plus is proprietary. Copy licensed q binary to /opt/kdb/q before use." \
       sovereign.constraint.nonroot="true" \

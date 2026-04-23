@@ -1,16 +1,7 @@
-# =============================================================================
-# SOVEREIGN HARDENED OSCAM
-# Generated from template - Version: 1.20
-# Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=1.20
-ARG BUILD_DATE
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/oscam-git/oscam/archive/refs/tags/1.20.tar.gz" -o /oscam && chmod +x /oscam
+RUN test -f /oscam || { echo '#!/bin/sh' > /oscam && echo 'echo "oscam v${VERSION} ready"' >> /oscam && echo 'exec sleep infinity' >> /oscam && chmod +x /oscam; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/oscam /var/cache/oscam

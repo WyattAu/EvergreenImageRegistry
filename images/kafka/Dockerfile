@@ -21,7 +21,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/kafka/
     && tar -xzf kafka.tgz \
     && rm kafka.tgz
 
-FROM golang:1.23-alpine AS health-shim-builder
+FROM go-1.23:1.23-alpine AS health-shim-builder
 COPY images/health-shim/go.mod images/health-shim/main.go /build/
 RUN cd /build && CGO_ENABLED=0 go build -ldflags="-s -w" -o /health-shim .
 FROM cgr.dev/chainguard/wolfi-base:latest

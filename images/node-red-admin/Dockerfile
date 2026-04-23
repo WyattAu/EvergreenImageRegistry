@@ -10,7 +10,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache nodejs npm ca-certificates
 COPY --from=builder /usr/lib/node_modules/node-red-admin /app/node-red-admin
 COPY --from=builder /usr/bin/node-red-admin /usr/local/bin/node-red-admin 2>/dev/null || true
-RUN useradd -r -u 65532 -g nogroup -d /app -s /sbin/nologin nodered 2>/dev/null || true && \
+RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin nodered 2>/dev/null || true && \
     chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
@@ -21,7 +21,7 @@ LABEL org.opencontainers.image.title="node-red-admin" \
       org.opencontainers.image.source="https://github.com/node-red/node-red" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

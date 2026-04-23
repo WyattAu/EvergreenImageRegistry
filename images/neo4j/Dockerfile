@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache curl ca-certificates && \
-    curl -fsSL "https://dist.neo4j.org/neo4j-community-${VERSION}-unix.tar.gz" | \
+    curl --retry 3 --retry-delay 5 -fsSL "https://dist.neo4j.org/neo4j-community-${VERSION}-unix.tar.gz" | \
     tar xz -C /opt && \
     ln -s /opt/neo4j-community-${VERSION} /opt/neo4j && \
     ln -s /opt/neo4j/bin/neo4j /usr/local/bin/neo4j
@@ -25,7 +25,7 @@ LABEL org.opencontainers.image.title="neo4j" \
       org.opencontainers.image.vendor="Neo4j" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

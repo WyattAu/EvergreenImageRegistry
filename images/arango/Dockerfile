@@ -13,7 +13,7 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://download.arangodb.com/arangodb312/Community/Linux/arangodb3-linux-${VERSION}.tar.gz" -o /tmp/arango.tar.gz \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.arangodb.com/arangodb312/Community/Linux/arangodb3-linux-${VERSION}.tar.gz" -o /tmp/arango.tar.gz \
     && echo "PENDING  /tmp/arango.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /tmp/arango.tar.gz -C /opt \
     && strip --strip-all /opt/arangodb3-linux-*/usr/sbin/arangod 2>/dev/null || true
@@ -22,7 +22,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache libstdc++ ca-certificates
-RUN useradd -m -u 65532 -s /usr/sbin/nologin arango 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin arango 2>/dev/null || true
 RUN mkdir -p /var/lib/arangodb /var/log/arangodb /var/cache/arangodb /var/lib/arangodb3-apps
 COPY --from=builder /opt/arangodb3-linux-* /opt/arangodb
 RUN chown -R 65532:65532 /opt/arangodb /var/lib/arangodb /var/log/arangodb /var/cache/arangodb /var/lib/arangodb3-apps
@@ -38,7 +38,7 @@ LABEL org.opencontainers.image.title="arango" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

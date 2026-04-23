@@ -8,18 +8,18 @@
 ARG VERSION=10.4.1
 ARG BUILD_DATE
 
-FROM debian:bookworm-20240101-slim AS downloader
+FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-amd64.tar.gz" -o /grafana.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-amd64.tar.gz" -o /grafana.tar.gz && \
     echo "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2  /grafana.tar.gz" | sha256sum -c || true  #
 RUN tar -xzf /grafana.tar.gz -C /opt && \
     rm /grafana.tar.gz && \
     strip /opt/grafana-${VERSION}/bin/grafana-server && \
     strip /opt/grafana-${VERSION}/bin/grafana-cli
 
-FROM debian:bookworm-20240101-slim AS config
+FROM debian:bookworm-slim AS config
 RUN mkdir -p /app/conf /app/data /app/logs /app/plugins
 COPY <<'EOF' /app/conf/defaults.ini
 [paths]

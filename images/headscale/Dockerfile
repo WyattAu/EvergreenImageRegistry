@@ -10,10 +10,10 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/juanfont/headscale/releases/download/v0.16.0/headscale_0.16.0_linux_amd64" -o /headscale.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/juanfont/headscale/releases/download/v0.16.0/headscale_0.16.0_linux_amd64" -o /headscale.tar.gz && \
     echo "2c86ff30605d8c4ab69e18d941ccd3deb2bf298a8db17878d8f6535070cc8a7c  /headscale.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /headscale.tar.gz -C / && rm /headscale.tar.gz && chmod +x /headscale 2>/dev/null || \
-    curl -fsSL "https://github.com/juanfont/headscale/releases/download/v0.16.0/headscale_0.16.0_linux_amd64" -o /headscale && chmod +x /headscale
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/juanfont/headscale/releases/download/v0.16.0/headscale_0.16.0_linux_amd64" -o /headscale && chmod +x /headscale
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/headscale /var/cache/headscale

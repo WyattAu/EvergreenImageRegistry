@@ -9,7 +9,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/thanos-io/thanos/releases/download/v${VERSION}/thanos-${VERSION}.linux-amd64.tar.gz" -o /thanos.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/thanos-io/thanos/releases/download/v${VERSION}/thanos-${VERSION}.linux-amd64.tar.gz" -o /thanos.tar.gz && \
     tar -xzf /thanos.tar.gz -C /tmp && rm /thanos.tar.gz && \
     chmod +x /tmp/thanos-${VERSION}.linux-amd64/thanos && \
     mv /tmp/thanos-${VERSION}.linux-amd64/thanos /thanos

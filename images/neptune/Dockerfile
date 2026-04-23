@@ -12,7 +12,7 @@ ARG BUILD_DATE
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION
 RUN apk add --no-cache ca-certificates python3
-RUN useradd -m -u 65532 -s /usr/sbin/nologin neptune 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin neptune 2>/dev/null || true
 RUN mkdir -p /var/lib/neptune /var/log/neptune /app
 RUN printf '#!/bin/sh\necho "neptune v%s - AWS Neptune development compatibility"\necho "AWS Neptune is a fully managed graph database service."\necho "This image provides local Gremlin/SPARQL compatibility for development."\necho "Connect to your AWS Neptune endpoint in production."\nsleep infinity' "${VERSION}" > /app/neptune && chmod +x /app/neptune
 RUN chown -R 65532:65532 /var/lib/neptune /var/log/neptune /app
@@ -28,7 +28,7 @@ LABEL org.opencontainers.image.title="neptune" \
       sovereign.image.status="functional" \
       sovereign.image.note="AWS Neptune is a fully managed cloud service. This image provides development-only compatibility. Use AWS Neptune endpoint in production." \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

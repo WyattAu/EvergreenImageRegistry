@@ -10,10 +10,10 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/etcd-io/etcd/releases/download/v3.5.15/etcd-v3.5.15-linux-amd64.tar.gz" -o /etcd.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/etcd-io/etcd/releases/download/v3.5.15/etcd-v3.5.15-linux-amd64.tar.gz" -o /etcd.tar.gz && \
     echo "81a8b6ecd5df15a4e0245c811d053f08717ebe6a624759afa56d58dde744e4fb  /etcd.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /etcd.tar.gz -C / && rm /etcd.tar.gz && chmod +x /etcd 2>/dev/null || \
-    curl -fsSL "https://github.com/etcd-io/etcd/releases/download/v3.5.15/etcd-v3.5.15-linux-amd64.tar.gz" -o /etcd && chmod +x /etcd
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/etcd-io/etcd/releases/download/v3.5.15/etcd-v3.5.15-linux-amd64.tar.gz" -o /etcd && chmod +x /etcd
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/etcd /var/cache/etcd

@@ -11,7 +11,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/leenooks/phpLDAPadmin/releases/download/${VERSION}/phpLDAPadmin-${VERSION}.tar.gz" -o /phpldapadmin.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/leenooks/phpLDAPadmin/releases/download/${VERSION}/phpLDAPadmin-${VERSION}.tar.gz" -o /phpldapadmin.tar.gz && \
     mkdir -p /tmp/phpldapadmin && \
     tar -xzf /phpldapadmin.tar.gz -C /tmp/phpldapadmin --strip-components=1 && \
     rm -f /phpldapadmin.tar.gz

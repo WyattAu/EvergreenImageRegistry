@@ -10,12 +10,12 @@ FROM debian:bookworm-slim AS builder
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        curl="7.88.1-*" \
+        curl \
         ca-certificates \
         build-base && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /tmp
-RUN curl -fsSL "https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.gz" -o /tmp/redis.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.gz" -o /tmp/redis.tar.gz && \
     tar -xzf /tmp/redis.tar.gz -C /tmp && \
     cd /tmp/redis-${VERSION} && \
     make -j$(nproc) && \
@@ -25,7 +25,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache ca-certificates
-RUN groupadd -r -g 65532 redis && useradd -r -u 65532 -g redis -d /data -s /usr/sbin/nologin redis
+RUN addgroup -S -g 65532 redis && adduser -u 65532 -G redis -D -h /data -s /sbin/nologin redis
 COPY --from=builder /tmp/redis-7.2.4/src/redis /usr/local/bin/redis
 RUN mkdir -p /data && chown -R 65532:65532 /data
 USER 65532:65532

@@ -10,16 +10,16 @@ ARG VERSION=3.10.3
 ARG BUILD_DATE
 ARG NODE_VERSION=20
 
-FROM debian:bookworm-20240101-slim AS downloader
+FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/grafana/grafana-image-renderer/releases/download/v${VERSION}/grafana-image-renderer-${VERSION}-linux-x64.tar.gz" -o /renderer.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/grafana/grafana-image-renderer/releases/download/v${VERSION}/grafana-image-renderer-${VERSION}-linux-x64.tar.gz" -o /renderer.tar.gz && \
     echo "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3  /renderer.tar.gz" | sha256sum -c || true  #
 RUN tar -xzf /renderer.tar.gz -C /opt && \
     rm /renderer.tar.gz
 
-FROM debian:bookworm-20240101-slim AS chromium
+FROM debian:bookworm-slim AS chromium
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         chromium \
@@ -36,7 +36,7 @@ RUN apt-get update && \
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN groupadd -g 65532 renderer && \
-    useradd -m -u 65532 -g renderer -s /usr/sbin/nologin renderer
+    useradd -m -u 65532 -g renderer -s /sbin/nologin renderer
 RUN apk add --no-cache ca-certificates
 COPY --from=downloader /opt/grafana-image-renderer /opt/grafana-image-renderer
 COPY --from=chromium /usr/bin/chromium /usr/bin/chromium

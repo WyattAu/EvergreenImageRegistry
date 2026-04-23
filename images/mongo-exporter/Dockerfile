@@ -11,7 +11,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/percona/mongodb_exporter/releases/download/v${VERSION}/mongodb_exporter-${VERSION}-linux-amd64.tar.gz" \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/percona/mongodb_exporter/releases/download/v${VERSION}/mongodb_exporter-${VERSION}-linux-amd64.tar.gz" \
     -o /mongodb_exporter.tar.gz \
     && echo "PENDING  /mongodb_exporter.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /mongodb_exporter.tar.gz -C / \

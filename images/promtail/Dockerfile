@@ -14,7 +14,7 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/grafana/loki/releases/download/v${VERSION}/promtail-linux-amd64.zip" -o promtail.zip \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/grafana/loki/releases/download/v${VERSION}/promtail-linux-amd64.zip" -o promtail.zip \
     && echo "79791b97d1e6570d48d6d7b22b1dca9c40c03dc8dbb2e09e4df452d00e302f6a  promtail.zip" | sha256sum -c || true  # \
     && unzip -o promtail.zip \
     && strip --strip-all promtail-linux-amd64 \

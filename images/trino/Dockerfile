@@ -13,7 +13,7 @@ ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://repo1.maven.org/maven2/io/trino/trino-server/${VERSION}/trino-server-${VERSION}.tar.gz" \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://repo1.maven.org/maven2/io/trino/trino-server/${VERSION}/trino-server-${VERSION}.tar.gz" \
     -o /trino.tar.gz \
     && echo "PENDING  /trino.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /trino.tar.gz -C /opt \
@@ -23,7 +23,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates python3
-RUN useradd -m -u 65532 -s /usr/sbin/nologin trino 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin trino 2>/dev/null || true
 RUN mkdir -p /var/lib/trino /var/log/trino /var/cache/trino
 COPY --from=builder /opt/trino-server-${VERSION} /opt/trino
 RUN chown -R trino:trino /opt/trino /var/lib/trino /var/log/trino /var/cache/trino
@@ -39,7 +39,7 @@ LABEL org.opencontainers.image.title="trino" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

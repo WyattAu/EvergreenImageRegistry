@@ -9,10 +9,10 @@ ARG NODE_VERSION=20
 
 FROM debian:bookworm-slim AS builder
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN apt-get update &&     apt-get install -y --no-install-recommends         curl="7.88.1-*"         ca-certificates &&     rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" | bash - &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/*
+RUN apt-get update &&     apt-get install -y --no-install-recommends         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/*
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" | bash - &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/*
 WORKDIR /build
-RUN curl -fsSL "https://github.com/mozilla/hubs/archive/refs/heads/master.tar.gz" -o /tmp/hubs.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/mozilla/hubs/archive/refs/heads/master.tar.gz" -o /tmp/hubs.tar.gz && \
     tar -xzf /tmp/hubs.tar.gz -C /build --strip-components=1 && \
     rm /tmp/hubs.tar.gz && \
     npm install --omit=dev 2>/dev/null || true
@@ -22,7 +22,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache curl ca-certificates
 RUN apk add --no-cache nodejs
-RUN groupadd -r -g 65532 appuser && useradd -r -u 65532 -g appuser -d /app -s /usr/sbin/nologin appuser
+RUN addgroup -S -g 65532 appuser && adduser -u 65532 -G appuser -D -h /app -s /sbin/nologin appuser
 WORKDIR /app
 COPY --from=builder /build/dist /app/dist
 COPY --from=builder /build/node_modules /app/node_modules

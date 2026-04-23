@@ -18,7 +18,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache python3 py3-pip curl ca-certificates
 COPY --from=builder /install /usr/local
-RUN useradd -m -u 65532 -s /usr/sbin/nologin curator 2>/dev/null || true && \
+RUN useradd -m -u 65532 -s /sbin/nologin curator 2>/dev/null || true && \
     mkdir -p /app /var/log/es-curator /var/cache/es-curator && \
     chown -R 65532:65532 /app /var/log/es-curator /var/cache/es-curator
 USER 65532:65532
@@ -31,7 +31,7 @@ LABEL org.opencontainers.image.title="elasticsearch-curator" \
       org.opencontainers.image.source="https://github.com/elastic/curator" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

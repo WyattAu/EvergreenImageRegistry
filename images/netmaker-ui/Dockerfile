@@ -54,7 +54,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/gravitl/netmaker-ui/releases/download/v0.25.4/dist.tar.gz" -o /dist.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/gravitl/netmaker-ui/releases/download/v0.25.4/dist.tar.gz" -o /dist.tar.gz && \
     mkdir -p /www && tar -xzf /dist.tar.gz -C /www/ && \
     rm -rf /dist.tar.gz
 

@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 FROM scratch
 
-RUN useradd -m -u 65532 -s /usr/sbin/nologin redis 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin redis 2>/dev/null || true
 RUN mkdir -p /var/lib/redis /var/log/redis /var/cache/redis /opt/redis/modules
 COPY --from=builder /tmp/modules/*.so /opt/redis/modules/
 COPY --from=redis /usr/bin/redis-server /usr/local/bin/redis-server
@@ -53,7 +53,7 @@ LABEL org.opencontainers.image.title="redismodules" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="scratch"
+      sovereign.base.image="scratch"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

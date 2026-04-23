@@ -1,6 +1,6 @@
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/anchore/grype/releases/download/v0.80.0/grype_0.80.0_linux_amd64.tar.gz" -o /grype_0.80.0_linux_amd64.tar.gz &&     tar -xzf /grype_0.80.0_linux_amd64.tar.gz -C / && rm /grype_0.80.0_linux_amd64.tar.gz && chmod +x /grype
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/anchore/grype/releases/download/v0.80.0/grype_0.80.0_linux_amd64.tar.gz" -o /grype_0.80.0_linux_amd64.tar.gz &&     tar -xzf /grype_0.80.0_linux_amd64.tar.gz -C / && rm /grype_0.80.0_linux_amd64.tar.gz && chmod +x /grype
 RUN strip /grype 2>/dev/null || true
 
 FROM debian:bookworm-slim AS builder

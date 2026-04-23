@@ -13,7 +13,7 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://artifacts.elastic.co/downloads/kibana/kibana-${VERSION}-linux-x86_64.tar.gz" -o kibana.tar.gz \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/kibana/kibana-${VERSION}-linux-x86_64.tar.gz" -o kibana.tar.gz \
     && echo "0000000000000000000000000000000000000000000000000000000000000000  kibana.tar.gz" | sha256sum -c || true  # \
     && tar -xzf kibana.tar.gz \
     && rm kibana.tar.gz \
@@ -23,7 +23,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache curl ca-certificates
-RUN useradd -m -u 65532 -s /usr/sbin/nologin kibana 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin kibana 2>/dev/null || true
 RUN mkdir -p /opt/kibana/data /opt/kibana/logs /var/log/kibana /var/cache/kibana
 COPY --from=builder /tmp/kibana-${VERSION}-linux-x86_64 /opt/kibana
 USER 65532:65532

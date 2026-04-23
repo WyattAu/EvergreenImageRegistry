@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/Sonarr/Sonarr/releases/download/v4.0.11/Sonarr.develop.4.0.11.linux-core-x64.tar.gz" -o /Sonarr.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Sonarr/Sonarr/releases/download/v4.0.11/Sonarr.develop.4.0.11.linux-core-x64.tar.gz" -o /Sonarr.tar.gz && \
     tar -xzf /Sonarr.tar.gz -C /app && rm /Sonarr.tar.gz && chmod +x /app/Sonarr 2>/dev/null || \
-    curl -fsSL "https://github.com/Sonarr/Sonarr/releases/download/v4.0.11/Sonarr.develop.4.0.11.linux-core-x64.tar.gz" -o /app/Sonarr && chmod +x /app/Sonarr
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Sonarr/Sonarr/releases/download/v4.0.11/Sonarr.develop.4.0.11.linux-core-x64.tar.gz" -o /app/Sonarr && chmod +x /app/Sonarr
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
@@ -30,7 +30,7 @@ LABEL org.opencontainers.image.title="sonarr-develop" \
       org.opencontainers.image.source="https://github.com/Sonarr/Sonarr/releases" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

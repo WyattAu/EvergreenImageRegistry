@@ -10,7 +10,7 @@ FROM debian:bookworm-slim AS installer
 RUN apt-get update && apt-get install -y --no-install-recommends \
     java-17-runtime curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/yacy/yacy_search_server/releases/download/v1.924/yacy_v1.924_202008051920.tar.gz" -o /yacy.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/yacy/yacy_search_server/releases/download/v1.924/yacy_v1.924_202008051920.tar.gz" -o /yacy.tar.gz && \
     tar -xzf /yacy.tar.gz -C /opt && rm /yacy.tar.gz && \
     mv /opt/yacy /opt/yacy-server
 RUN mkdir -p /app /var/log/yacy /var/lib/yacy/data
@@ -26,7 +26,7 @@ COPY --from=installer /var/lib/yacy /var/lib/yacy
 RUN chown -R 65532:65532 /app /opt/yacy-server /var/log/yacy /var/lib/yacy
 USER 65532:65532
 WORKDIR /app
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 EXPOSE 8090 8443
 ENTRYPOINT ["java", "-jar", "/opt/yacy-server/yacy.jar"]
 LABEL org.opencontainers.image.title="yacy" \

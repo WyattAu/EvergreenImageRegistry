@@ -3,7 +3,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates gnupg && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://packages.adoptium.net/artifactory/api/gnupg/key/public" | gnupg --dearmor -o /usr/share/keyrings/adoptium.gnupg && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.adoptium.net/artifactory/api/gnupg/key/public" | gnupg --dearmor -o /usr/share/keyrings/adoptium.gnupg && \
     echo "deb [signed-by=/usr/share/keyrings/adoptium.gnupg] https://packages.adoptium.net/artifactory/deb $(. /etc/os-release && echo $VERSION_CODENAME) main" > /etc/apt/sources.list.d/adoptium.list && \
     apt-get update && apt-get install -y --no-install-recommends temurin-21-jre-headless && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app /var/log/openjdk-alpine /var/cache/openjdk-alpine
@@ -16,7 +16,7 @@ RUN apk add --no-cache ca-certificates
 COPY --from=builder /app /app
 COPY --from=builder /var/log/openjdk-alpine /var/log/openjdk-alpine
 COPY --from=builder /var/cache/openjdk-alpine /var/cache/openjdk-alpine
-RUN useradd -r -u 65532 -g '' java 2>/dev/null || true
+RUN adduser -u 65532 -G '' -D java 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["java"]

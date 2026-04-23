@@ -21,7 +21,7 @@ COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
 ENV PATH="/opt/venv/bin:${PATH}"
 RUN groupadd -g 65532 -r questdb 2>/dev/null || true && \
-    useradd -r -u 65532 -g questdb -d /app -s /sbin/nologin questdb 2>/dev/null || true && \
+    adduser -u 65532 -G questdb -D -h /app -s /sbin/nologin questdb 2>/dev/null || true && \
     chown -R 65532:65532 /app
 USER 65532:65532
 WORKDIR /app
@@ -33,7 +33,7 @@ LABEL org.opencontainers.image.title="questdb-python" \
       sovereign.image.status="functional" \
       sovereign.image.category="database" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

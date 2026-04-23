@@ -20,7 +20,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates libxml2-dev
-RUN useradd -m -u 65532 -s /usr/sbin/nologin modsec 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin modsec 2>/dev/null || true
 RUN mkdir -p /etc/modsecurity /var/log/modsecurity /var/cache/modsecurity /var/lib/modsecurity
 COPY --from=builder /tmp/crs /etc/modsecurity/crs
 RUN chown -R 65532:65532 /etc/modsecurity /var/log/modsecurity /var/cache/modsecurity /var/lib/modsecurity
@@ -36,7 +36,7 @@ LABEL org.opencontainers.image.title="modsecurity-crs" \
       sovereign.image.category="security" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

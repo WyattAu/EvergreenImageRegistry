@@ -9,11 +9,11 @@
 ARG VERSION=2.5.1
 ARG BUILD_DATE
 
-FROM debian:bookworm-20240101-slim AS downloader
+FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates unzip && \
     rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/CachetHQ/Cachet/releases/download/v${VERSION}/Cachet-v${VERSION}.tar.gz" -o /cachet.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/CachetHQ/Cachet/releases/download/v${VERSION}/Cachet-v${VERSION}.tar.gz" -o /cachet.tar.gz && \
     echo "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2  /cachet.tar.gz" | sha256sum -c || true  #
 RUN mkdir -p /build && \
     tar -xzf /cachet.tar.gz -C /build --strip-components=1 && \
@@ -22,8 +22,8 @@ RUN mkdir -p /build && \
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN groupadd -g 65532 cachet && \
-    useradd -m -u 65532 -g cachet -s /usr/sbin/nologin cachet
-RUN apk add --no-cache php-8.4-fpm php-8.4-mysql php-8.4-pgsql php-8.4-sqlite php-8.4-gd php-8.4-curl php-8.4-mbstring php-8.4-xml php-8.4-zip php-8.4-bcmath php-8.4-redis nginx ca-certificates
+    useradd -m -u 65532 -g cachet -s /sbin/nologin cachet
+RUN apk add --no-cache php-8.4-fpm php-8.4-pdo_mysql php-8.4-mysqli php-8.4-pgsql php-8.4-sqlite php-8.4-gd php-8.4-curl php-8.4-mbstring php-8.4-xml php-8.4-zip php-8.4-bcmath php-8.4-redis nginx ca-certificates
 COPY --from=downloader /build /var/www/cachet
 RUN mkdir -p /run/php /app/logs /app/data && \
     chown -R cachet:cachet /var/www/cachet /app /run/php && \

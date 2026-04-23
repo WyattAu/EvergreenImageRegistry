@@ -11,7 +11,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/prometheus/snmp_exporter/releases/download/v${VERSION}/snmp_exporter-${VERSION}.linux-amd64.tar.gz" -o /snmp_exporter.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/snmp_exporter/releases/download/v${VERSION}/snmp_exporter-${VERSION}.linux-amd64.tar.gz" -o /snmp_exporter.tar.gz && \
     tar -xzf /snmp_exporter.tar.gz -C / && rm /snmp_exporter.tar.gz && chmod +x /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter
 
 FROM debian:bookworm-slim AS builder

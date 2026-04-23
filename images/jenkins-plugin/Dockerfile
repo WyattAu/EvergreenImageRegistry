@@ -3,7 +3,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates java-17-runtime && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/2.462.1/jenkins-war-2.462.1.war" -o /jenkins.war
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/2.462.1/jenkins-war-2.462.1.war" -o /jenkins.war
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/jenkins-plugin /var/cache/jenkins-plugin /home/jenkins
@@ -16,7 +16,7 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/jenkins-plugin /var/log/jenkins-plugin
 COPY --from=builder /var/cache/jenkins-plugin /var/cache/jenkins-plugin
 COPY --from=builder /home/jenkins /home/jenkins
-RUN useradd -r -u 65532 -g '' jenkins 2>/dev/null || true
+RUN adduser -u 65532 -G '' -D jenkins 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENV HOME=/app

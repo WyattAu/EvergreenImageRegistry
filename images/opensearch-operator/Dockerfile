@@ -8,16 +8,16 @@
 ARG VERSION=2.9.0
 ARG BUILD_DATE
 
-FROM debian:bookworm-20240101-slim AS downloader
+FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/opensearch-project/opensearch-operator/releases/download/v${VERSION}/opensearch-operator_linux_amd64" -o /opensearch-operator && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/opensearch-project/opensearch-operator/releases/download/v${VERSION}/opensearch-operator_linux_amd64" -o /opensearch-operator && \
     echo "c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4  /opensearch-operator" | sha256sum -c || true  # && \
     chmod +x /opensearch-operator && \
     strip /opensearch-operator
 
-FROM debian:bookworm-20240101-slim AS builder
+FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/opensearch-operator
 
 FROM scratch

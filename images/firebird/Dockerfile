@@ -10,7 +10,7 @@ ARG BUILD_DATE
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION
 RUN apk add --no-cache ca-certificates
-RUN useradd -m -u 65532 -s /usr/sbin/nologin firebird 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin firebird 2>/dev/null || true
 RUN mkdir -p /var/lib/firebird /var/log/firebird /var/cache/firebird
 RUN chown -R 65532:65532 /var/lib/firebird /var/log/firebird /var/cache/firebird
 USER 65532:65532
@@ -25,7 +25,7 @@ LABEL org.opencontainers.image.title="firebird" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

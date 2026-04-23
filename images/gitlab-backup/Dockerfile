@@ -14,7 +14,7 @@ RUN apt-get update && \
         ruby-dev="3.1.*" \
         build-base \
         git \
-        curl="7.88.1-*" \
+        curl \
         ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 RUN gem install --no-document backup:5.0.0beta7
@@ -25,7 +25,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache ruby openssh-client ca-certificates
-RUN groupadd -r -g 65532 backup && useradd -r -u 65532 -g backup -d /app -s /usr/sbin/nologin backup
+RUN addgroup -S -g 65532 backup && adduser -u 65532 -G backup -D -h /app -s /sbin/nologin backup
 RUN mkdir -p /app /data /var/log/gitlab-backup && chown -R 65532:65532 /app /data /var/log/gitlab-backup
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 COPY --from=builder /usr/bin/backup /usr/local/bin/backup 2>/dev/null || true

@@ -49,7 +49,7 @@ LABEL org.opencontainers.image.title="php84-mysql-restore" \
       org.opencontainers.image.vendor="Oracle" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

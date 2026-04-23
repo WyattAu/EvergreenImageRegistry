@@ -3,7 +3,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/prymitive/promxy/releases/download/v0.7.0/promxy-v0.7.0-linux-x86_64" -o /promxy && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prymitive/promxy/releases/download/v0.7.0/promxy-v0.7.0-linux-x86_64" -o /promxy && \
     chmod +x /promxy && strip /promxy
 
 FROM debian:bookworm-slim AS builder

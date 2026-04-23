@@ -18,14 +18,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 py3-pip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN git clone --depth 1 --branch v${VERSION} https://github.com/memgraph/memgraph.git /tmp/memgraph-src 2>/dev/null || \
-    (curl -fsSL "https://github.com/memgraph/memgraph/releases/download/v${VERSION}/memgraph-${VERSION}-linux-amd64.tar.gz" -o /tmp/memgraph.tar.gz \
+    (curl --retry 3 --retry-delay 5 -fsSL "https://github.com/memgraph/memgraph/releases/download/v${VERSION}/memgraph-${VERSION}-linux-amd64.tar.gz" -o /tmp/memgraph.tar.gz \
     && tar -xzf /tmp/memgraph.tar.gz -C /opt && rm /tmp/memgraph.tar.gz) || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates python3
-RUN useradd -m -u 65532 -s /usr/sbin/nologin memgraph 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin memgraph 2>/dev/null || true
 RUN mkdir -p /var/lib/memgraph /var/log/memgraph /var/cache/memgraph /etc/memgraph
 COPY --from=builder /opt/memgraph /opt/memgraph 2>/dev/null || true
 RUN chown -R 65532:65532 /opt/memgraph /var/lib/memgraph /var/log/memgraph /var/cache/memgraph /etc/memgraph
@@ -41,7 +41,7 @@ LABEL org.opencontainers.image.title="memgraph" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

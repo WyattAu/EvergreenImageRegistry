@@ -13,7 +13,7 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/authelia/authelia/releases/download/v${VERSION}/authelia-v${VERSION}-linux-amd64-musl.tar.gz" -o authelia.tar.gz \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/authelia/authelia/releases/download/v${VERSION}/authelia-v${VERSION}-linux-amd64-musl.tar.gz" -o authelia.tar.gz \
     && echo "e5d5cfe71e19c6fe19f68e1d037835fb8bddb36ea764502c4f302c1d238067f5  authelia.tar.gz" | sha256sum -c || true  # \
     && tar -xzf authelia.tar.gz \
     && strip --strip-all authelia-linux-amd64-musl 2>/dev/null || true \

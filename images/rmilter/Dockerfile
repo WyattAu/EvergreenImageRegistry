@@ -13,11 +13,11 @@ RUN apt-get update && \
         build-base \
         libmilter-dev \
         libpcre2-dev \
-        curl="7.88.1-*" \
+        curl \
         ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /build
-RUN curl -fsSL "https://github.com/vstakhov/rmilter/archive/refs/tags/${VERSION}.tar.gz" -o /tmp/rmilter.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/vstakhov/rmilter/archive/refs/tags/${VERSION}.tar.gz" -o /tmp/rmilter.tar.gz && \
     tar -xzf /tmp/rmilter.tar.gz -C /build --strip-components=1 && \
     rm /tmp/rmilter.tar.gz && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release . && \
@@ -28,7 +28,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache libpcre2-8-0 ca-certificates
-RUN groupadd -r -g 65532 rmilter && useradd -r -u 65532 -g rmilter -d /var/run/rmilter -s /usr/sbin/nologin rmilter
+RUN addgroup -S -g 65532 rmilter && adduser -u 65532 -G rmilter -D -h /var/run/rmilter -s /sbin/nologin rmilter
 COPY --from=builder /build/rmilter/rmilter /usr/local/bin/rmilter
 RUN mkdir -p /var/run/rmilter /var/log/rmilter && chown -R 65532:65532 /var/run/rmilter /var/log/rmilter
 USER 65532:65532

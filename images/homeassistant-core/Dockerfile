@@ -13,7 +13,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache python3 ca-certificates tzdata libffi-dev openssl-dev
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
-RUN useradd -r -u 65532 -g nogroup -d /config -s /sbin/nologin hass 2>/dev/null || true && \
+RUN adduser -u 65532 -G nogroup -D -h /config -s /sbin/nologin hass 2>/dev/null || true && \
     mkdir -p /config && chown -R 65532:65532 /config /app 2>/dev/null || true
 USER 65532:65532
 ENV PATH="/opt/venv/bin:$PATH" HOME="/config"
@@ -27,7 +27,7 @@ LABEL org.opencontainers.image.title="homeassistant-core" \
       org.opencontainers.image.source="https://github.com/home-assistant/core" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

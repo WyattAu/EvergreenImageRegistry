@@ -1,6 +1,6 @@
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/dutchcoders/transfer.sh/releases/download/v1.7.1/transfer.sh-linux-amd64" -o /transfer.sh && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/dutchcoders/transfer.sh/releases/download/v1.7.1/transfer.sh-linux-amd64" -o /transfer.sh && \
     chmod +x /transfer.sh && strip /transfer.sh
 
 FROM debian:bookworm-slim AS builder

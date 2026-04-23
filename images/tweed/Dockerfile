@@ -30,7 +30,7 @@ RUN git clone --depth 1 --branch v${VERSION} \
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/vmware-tanzu/tweed/releases/download/v${VERSION}/tweed-linux-amd64" -o /tweed 2>/dev/null && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/vmware-tanzu/tweed/releases/download/v${VERSION}/tweed-linux-amd64" -o /tweed 2>/dev/null && \
     chmod +x /tweed && strip --strip-all /tweed 2>/dev/null || true
 
 FROM debian:bookworm-slim AS fallback

@@ -23,7 +23,7 @@ LABEL org.opencontainers.image.title="php-fpm" \
       org.opencontainers.image.vendor="PHP-FPM" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

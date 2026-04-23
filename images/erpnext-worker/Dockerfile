@@ -26,7 +26,7 @@ COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 ENV FRAPPE_VERSION="${VERSION}"
 RUN groupadd -g 65532 -r erpnext 2>/dev/null || true && \
-    useradd -r -u 65532 -g erpnext -d /opt/erpnext -s /sbin/nologin erpnext 2>/dev/null || true && \
+    adduser -u 65532 -G erpnext -D -h /opt/erpnext -s /sbin/nologin erpnext 2>/dev/null || true && \
     mkdir -p /opt/erpnext /var/log/erpnext && \
     chown -R 65532:65532 /opt/erpnext /var/log/erpnext
 USER 65532:65532
@@ -42,7 +42,7 @@ LABEL org.opencontainers.image.title="erpnext-worker" \
       sovereign.image.status="functional" \
       sovereign.image.category="erp" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

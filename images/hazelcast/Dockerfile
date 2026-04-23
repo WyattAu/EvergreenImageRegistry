@@ -12,7 +12,7 @@ FROM debian:bookworm-20250113-slim AS builder
 ARG VERSION
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/hazelcast/hazelcast/releases/download/v${VERSION}/hazelcast-${VERSION}.tar.gz" -o /tmp/hazelcast.tgz \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/hazelcast/hazelcast/releases/download/v${VERSION}/hazelcast-${VERSION}.tar.gz" -o /tmp/hazelcast.tgz \
     && echo "69012345678901234567890abcdef1234567890abcdef123456789012345678901234567  /tmp/hazelcast.tgz" | sha256sum -c || true  # \
     && mkdir -p /opt/hazelcast \
     && tar -xzf /tmp/hazelcast.tgz -C /opt/hazelcast --strip-components=1 \
@@ -21,14 +21,14 @@ RUN curl -fsSL "https://github.com/hazelcast/hazelcast/releases/download/v${VERS
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
-RUN groupadd -g 65532 hazelcast && useradd -u 65532 -g hazelcast -s /usr/sbin/nologin hazelcast
+RUN groupadd -g 65532 hazelcast && useradd -u 65532 -g hazelcast -s /sbin/nologin hazelcast
 RUN mkdir -p /opt/hazelcast/conf /var/log/hazelcast /var/lib/hazelcast && \
     chown -R 65532:65532 /opt/hazelcast /var/log/hazelcast /var/lib/hazelcast
 COPY --from=builder /opt/hazelcast /opt/hazelcast
 USER 65532:65532
 WORKDIR /opt/hazelcast
 EXPOSE 5701 5702 5703 8080
-ENV JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
+ENV JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
 ENTRYPOINT ["/opt/hazelcast/bin/hazelcast"]
 LABEL org.opencontainers.image.title="hazelcast" \
       org.opencontainers.image.description="Sovereign hardened Hazelcast - distributed in-memory computing platform" \
@@ -38,7 +38,7 @@ LABEL org.opencontainers.image.title="hazelcast" \
       sovereign.image.tier="1" \
       sovereign.image.category="database" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

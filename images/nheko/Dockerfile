@@ -10,10 +10,10 @@ FROM debian:bookworm-slim AS builder
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        curl="7.88.1-*" \
+        curl \
         ca-certificates && \
     rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/Nheko-Reborn/nheko/releases/download/v${VERSION}/nheko-${VERSION}-x86_64-linux-gnu.AppImage" -o /tmp/nheko.AppImage && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Nheko-Reborn/nheko/releases/download/v${VERSION}/nheko-${VERSION}-x86_64-linux-gnu.AppImage" -o /tmp/nheko.AppImage && \
     chmod +x /tmp/nheko.AppImage && \
     /tmp/nheko.AppImage --appimage-extract 2>/dev/null || true
 
@@ -21,7 +21,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache ca-certificates glib
-RUN groupadd -r -g 65532 nheko && useradd -r -u 65532 -g nheko -d /app -s /usr/sbin/nologin nheko
+RUN addgroup -S -g 65532 nheko && adduser -u 65532 -G nheko -D -h /app -s /sbin/nologin nheko
 COPY --from=builder /tmp/nheko.AppImage /app/nheko
 COPY --from=builder /squashfs-root/usr/bin/nheko /usr/local/bin/nheko 2>/dev/null || true
 RUN mkdir -p /app /home/nheko/.config/nheko && chown -R 65532:65532 /app /home/nheko

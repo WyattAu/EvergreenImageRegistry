@@ -10,7 +10,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates tar && \
     rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://releases.mattermost.com/${VERSION}/mattermost-${VERSION}-linux-amd64.tar.gz" -o /mattermost.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://releases.mattermost.com/${VERSION}/mattermost-${VERSION}-linux-amd64.tar.gz" -o /mattermost.tar.gz && \
     mkdir -p /opt/mattermost && \
     tar -xzf /mattermost.tar.gz -C /opt && \
     rm /mattermost.tar.gz
@@ -20,7 +20,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates tzdata
 COPY --from=downloader /opt/mattermost /opt/mattermost
 RUN groupadd -g 65532 -r mattermost 2>/dev/null || true && \
-    useradd -r -u 65532 -g mattermost -d /opt/mattermost -s /sbin/nologin mattermost 2>/dev/null || true && \
+    adduser -u 65532 -G mattermost -D -h /opt/mattermost -s /sbin/nologin mattermost 2>/dev/null || true && \
     mkdir -p /opt/mattermost/data /opt/mattermost/logs /opt/mattermost/plugins /opt/mattermost/client/plugins && \
     chown -R 65532:65532 /opt/mattermost
 USER 65532:65532
@@ -35,7 +35,7 @@ LABEL org.opencontainers.image.title="mattermost" \
       sovereign.image.status="functional" \
       sovereign.image.category="collaboration" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

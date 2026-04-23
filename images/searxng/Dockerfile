@@ -21,7 +21,7 @@ LABEL org.opencontainers.image.title="searxng" \
       org.opencontainers.image.vendor="SearXNG" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

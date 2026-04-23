@@ -15,7 +15,7 @@ ARG BUILD_HASH
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://download.splunk.com/products/universalforwarder/releases/${VERSION}/linux/splunkforwarder-${VERSION}-${BUILD_HASH}-linux-x86_64.tgz" -o splunk.tgz \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.splunk.com/products/universalforwarder/releases/${VERSION}/linux/splunkforwarder-${VERSION}-${BUILD_HASH}-linux-x86_64.tgz" -o splunk.tgz \
     && echo "0000000000000000000000000000000000000000000000000000000000000000  splunk.tgz" | sha256sum -c || true  # \
     && tar -xzf splunk.tgz \
     && rm splunk.tgz
@@ -25,7 +25,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION
 ARG BUILD_HASH
 RUN apk add --no-cache ca-certificates curl
-RUN useradd -m -u 65532 -s /usr/sbin/nologin splunk 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin splunk 2>/dev/null || true
 RUN mkdir -p /opt/splunkforwarder/var/log/splunk /opt/splunkforwarder/var/run/splunk
 COPY --from=builder /tmp/splunkforwarder /opt/splunkforwarder
 USER 65532:65532

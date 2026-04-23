@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/kubernetes/kube-state-metrics/releases/download/v2.18.0/kube-state-metrics_Linux_x86_64.tar.gz" -o /kube-state-metrics.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/kubernetes/kube-state-metrics/releases/download/v2.18.0/kube-state-metrics_Linux_x86_64.tar.gz" -o /kube-state-metrics.tar.gz && \
     tar -xzf /kube-state-metrics.tar.gz -C / && rm /kube-state-metrics.tar.gz && chmod +x /kube-state-metrics 2>/dev/null || \
-    curl -fsSL "https://github.com/kubernetes/kube-state-metrics/releases/download/v2.18.0/kube-state-metrics_Linux_x86_64.tar.gz" -o /kube-state-metrics && chmod +x /kube-state-metrics
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/kubernetes/kube-state-metrics/releases/download/v2.18.0/kube-state-metrics_Linux_x86_64.tar.gz" -o /kube-state-metrics && chmod +x /kube-state-metrics
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/kube-state-metrics /var/cache/kube-state-metrics

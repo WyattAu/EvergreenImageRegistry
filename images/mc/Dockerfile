@@ -3,7 +3,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://dl.min.io/client/mc/release/linux-amd64/mc" -o /mc && chmod +x /mc
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.min.io/client/mc/release/linux-amd64/mc" -o /mc && chmod +x /mc
 
 FROM scratch
 COPY --from=downloader /mc /mc

@@ -13,7 +13,7 @@ ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/questdb/questdb/releases/download/${VERSION}/questdb-${VERSION}-no-jre-bin.tar.gz" \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/questdb/questdb/releases/download/${VERSION}/questdb-${VERSION}-no-jre-bin.tar.gz" \
     -o /questdb.tar.gz \
     && echo "PENDING  /questdb.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /questdb.tar.gz -C /opt \
@@ -23,7 +23,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates
-RUN useradd -m -u 65532 -s /usr/sbin/nologin questdb 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin questdb 2>/dev/null || true
 RUN mkdir -p /var/lib/questdb /var/log/questdb /var/cache/questdb
 COPY --from=builder /opt/questdb-${VERSION}-no-jre-bin /opt/questdb
 RUN chown -R questdb:questdb /opt/questdb /var/lib/questdb /var/log/questdb /var/cache/questdb
@@ -39,7 +39,7 @@ LABEL org.opencontainers.image.title="questdb" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

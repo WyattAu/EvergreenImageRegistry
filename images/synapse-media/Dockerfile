@@ -10,13 +10,13 @@ FROM debian:bookworm-slim AS builder
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        python3="3.11.*" \
+        python3 \
         py3-pip="23.1.*" \
-        python3="3.11.*" \
+        python3 \
         build-base \
         libssl-dev \
         libffi-dev \
-        curl="7.88.1-*" \
+        curl \
         ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 RUN python3 -m venv /opt/venv
@@ -27,7 +27,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache python3 ca-certificates curl imagemagick
-RUN groupadd -r -g 65532 synapse && useradd -r -u 65532 -g synapse -d /data -s /usr/sbin/nologin synapse
+RUN addgroup -S -g 65532 synapse && adduser -u 65532 -G synapse -D -h /data -s /sbin/nologin synapse
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 RUN mkdir -p /data /var/log/synapse /var/cache/synapse && chown -R 65532:65532 /data /var/log/synapse /var/cache/synapse

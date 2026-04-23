@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/AdguardTeam/AdGuardHome/releases/download/v0.107.74/AdGuardHome_linux_amd64.tar.gz" -o /AdGuardHome.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/AdguardTeam/AdGuardHome/releases/download/v0.107.74/AdGuardHome_linux_amd64.tar.gz" -o /AdGuardHome.tar.gz && \
     tar -xzf /AdGuardHome.tar.gz -C / && rm /AdGuardHome.tar.gz && chmod +x /AdGuardHome 2>/dev/null || \
-    curl -fsSL "https://github.com/AdguardTeam/AdGuardHome/releases/download/v0.107.74/AdGuardHome_linux_amd64.tar.gz" -o /AdGuardHome && chmod +x /AdGuardHome
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/AdguardTeam/AdGuardHome/releases/download/v0.107.74/AdGuardHome_linux_amd64.tar.gz" -o /AdGuardHome && chmod +x /AdGuardHome
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/AdGuardHome /var/cache/AdGuardHome

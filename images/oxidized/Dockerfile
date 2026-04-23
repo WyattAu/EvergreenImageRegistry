@@ -19,7 +19,7 @@ ARG VERSION=0.30.1
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest AS builder
-RUN apk add --no-cache ruby ruby-dev build-base libssl-dev libssh2-dev
+RUN apk add --no-cache ruby ruby-dev build-base openssl-dev libssh2-dev
 RUN gem install oxidized --version "${VERSION}" --no-document
 
 FROM cgr.dev/chainguard/wolfi-base:latest

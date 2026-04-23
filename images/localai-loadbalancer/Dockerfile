@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/mudler/LocalAI/releases/download/v2.30.0/localai-loadbalancer-linux-amd64" -o /localai-loadbalancer.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/mudler/LocalAI/releases/download/v2.30.0/localai-loadbalancer-linux-amd64" -o /localai-loadbalancer.tar.gz && \
     tar -xzf /localai-loadbalancer.tar.gz -C / && rm /localai-loadbalancer.tar.gz && chmod +x /localai-loadbalancer 2>/dev/null || \
-    curl -fsSL "https://github.com/mudler/LocalAI/releases/download/v2.30.0/localai-loadbalancer-linux-amd64" -o /localai-loadbalancer && chmod +x /localai-loadbalancer
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/mudler/LocalAI/releases/download/v2.30.0/localai-loadbalancer-linux-amd64" -o /localai-loadbalancer && chmod +x /localai-loadbalancer
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/localai-loadbalancer /var/cache/localai-loadbalancer

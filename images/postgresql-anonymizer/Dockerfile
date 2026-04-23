@@ -20,7 +20,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache postgresql-client python3 py3-pip libpq curl ca-certificates
 COPY --from=builder /install /usr/local
-RUN useradd -m -u 65532 -s /usr/sbin/nologin anon 2>/dev/null || true && \
+RUN useradd -m -u 65532 -s /sbin/nologin anon 2>/dev/null || true && \
     mkdir -p /app /var/log/pg-anonymizer /var/cache/pg-anonymizer && \
     chown -R 65532:65532 /app /var/log/pg-anonymizer /var/cache/pg-anonymizer
 USER 65532:65532
@@ -33,7 +33,7 @@ LABEL org.opencontainers.image.title="postgresql-anonymizer" \
       org.opencontainers.image.source="https://github.com/Dalibo/postgresql_anonymizer" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

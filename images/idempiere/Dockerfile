@@ -4,7 +4,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/idempiere/idempiere/releases/download/release-12.4/idempiere-server-12.4.gtk.linux.x86_64.tar.gz" -o /idempiere-server-12.4.gtk.linux.x86_64.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/idempiere/idempiere/releases/download/release-12.4/idempiere-server-12.4.gtk.linux.x86_64.tar.gz" -o /idempiere-server-12.4.gtk.linux.x86_64.tar.gz && \
     unzip -q /idempiere-server-12.4.gtk.linux.x86_64.tar.gz -d /opt/ && rm /idempiere-server-12.4.gtk.linux.x86_64.tar.gz
 
 FROM cgr.dev/chainguard/wolfi-base:latest

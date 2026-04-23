@@ -3,7 +3,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/cloudreve/Cloudreve/releases/download/3.8.3/cloudreve_3.8.3_linux_amd64.tar.gz" -o /cloudreve && chmod +x /cloudreve
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/cloudreve/Cloudreve/releases/download/3.8.3/cloudreve_3.8.3_linux_amd64.tar.gz" -o /cloudreve && chmod +x /cloudreve
 
 FROM scratch
 COPY --from=downloader /cloudreve /cloudreve

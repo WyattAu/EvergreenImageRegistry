@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/0xERR0R/blocky/releases/download/v0.29.0/blocky_v0.29.0_Linux_x86_64.tar.gz" -o /blocky.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/0xERR0R/blocky/releases/download/v0.29.0/blocky_v0.29.0_Linux_x86_64.tar.gz" -o /blocky.tar.gz && \
     tar -xzf /blocky.tar.gz -C / && rm /blocky.tar.gz && chmod +x /blocky 2>/dev/null || \
-    curl -fsSL "https://github.com/0xERR0R/blocky/releases/download/v0.29.0/blocky_v0.29.0_Linux_x86_64.tar.gz" -o /blocky && chmod +x /blocky
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/0xERR0R/blocky/releases/download/v0.29.0/blocky_v0.29.0_Linux_x86_64.tar.gz" -o /blocky && chmod +x /blocky
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/blocky /var/cache/blocky

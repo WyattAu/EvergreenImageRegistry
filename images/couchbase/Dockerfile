@@ -18,7 +18,7 @@ RUN apt-get update && \
         gnupg && \
     rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://packages.couchbase.com/ubuntu/couchbase.key" | gnupg --dearmor -o /usr/share/keyrings/couchbase-archive-keyring.gnupg && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.couchbase.com/ubuntu/couchbase.key" | gnupg --dearmor -o /usr/share/keyrings/couchbase-archive-keyring.gnupg && \
     echo "deb [signed-by=/usr/share/keyrings/couchbase-archive-keyring.gnupg] https://packages.couchbase.com/ubuntu jammy main" > /etc/apt/sources.list.d/couchbase.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends couchbase-server-community && \

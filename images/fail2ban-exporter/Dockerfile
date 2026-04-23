@@ -12,8 +12,8 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/xperimental/fail2ban-exporter/releases/download/v${VERSION}/fail2ban-exporter-${VERSION}-linux-amd64.tar.gz" -o /fail2ban-exporter.tar.gz && \
-    curl -fsSL "https://github.com/xperimental/fail2ban-exporter/releases/download/v${VERSION}/fail2ban-exporter-${VERSION}-checksums.txt" -o /checksums.txt && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/xperimental/fail2ban-exporter/releases/download/v${VERSION}/fail2ban-exporter-${VERSION}-linux-amd64.tar.gz" -o /fail2ban-exporter.tar.gz && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/xperimental/fail2ban-exporter/releases/download/v${VERSION}/fail2ban-exporter-${VERSION}-checksums.txt" -o /checksums.txt && \
     grep "fail2ban-exporter-${VERSION}-linux-amd64.tar.gz" /checksums.txt | sed 's|  \*||' | sha256sum -c || true  # && \
     tar -xzf /fail2ban-exporter.tar.gz -C /tmp/ && \
     strip --strip-all /tmp/fail2ban-exporter && \

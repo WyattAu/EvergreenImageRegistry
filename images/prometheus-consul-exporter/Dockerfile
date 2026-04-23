@@ -9,7 +9,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/prometheus/consul_exporter/releases/download/v${VERSION}/consul_exporter-${VERSION}.linux-amd64.tar.gz" -o /consul_exporter.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/consul_exporter/releases/download/v${VERSION}/consul_exporter-${VERSION}.linux-amd64.tar.gz" -o /consul_exporter.tar.gz && \
     tar -xzf /consul_exporter.tar.gz -C / && rm /consul_exporter.tar.gz && chmod +x /consul_exporter-${VERSION}.linux-amd64/consul_exporter
 
 FROM debian:bookworm-slim AS builder

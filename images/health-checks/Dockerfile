@@ -9,7 +9,7 @@
 ARG VERSION=1.0.0
 ARG BUILD_DATE
 
-FROM debian:bookworm-20240101-slim AS builder
+FROM debian:bookworm-slim AS builder
 RUN apt-get update && \
     apt-get install -y --no-install-recommends golang-go git ca-certificates && \
     rm -rf /var/lib/apt/lists/*
@@ -56,7 +56,7 @@ RUN cd /build && \
     go build -ldflags="-s -w" -o /health-checks ./cmd/health-checks.go && \
     strip /health-checks
 
-FROM debian:bookworm-20240101-slim AS builder2
+FROM debian:bookworm-slim AS builder2
 RUN mkdir -p /app
 
 FROM scratch

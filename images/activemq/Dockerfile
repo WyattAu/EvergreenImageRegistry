@@ -13,8 +13,8 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://archive.apache.org/dist/activemq/${ACTIVEMQ_VERSION}/apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz" -o /activemq.tar.gz && \
-    curl -fsSL "https://archive.apache.org/dist/activemq/${ACTIVEMQ_VERSION}/apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz.sha512" -o /checksums.txt && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/activemq/${ACTIVEMQ_VERSION}/apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz" -o /activemq.tar.gz && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/activemq/${ACTIVEMQ_VERSION}/apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz.sha512" -o /checksums.txt && \
     sha512sum -c /checksums.txt && \
     tar -xzf /activemq.tar.gz -C /opt/ && \
     mv /opt/apache-activemq-${ACTIVEMQ_VERSION} /opt/activemq && \
@@ -23,14 +23,14 @@ RUN curl -fsSL "https://archive.apache.org/dist/activemq/${ACTIVEMQ_VERSION}/apa
 # hadolint ignore=DL3023
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache openjdk-${JAVA_VERSION}-jre-headless ca-certificates
+RUN apk add --no-cache openjdk-${JAVA_VERSION}-jre-base ca-certificates
 
 COPY --from=downloader /opt/activemq /opt/activemq
 RUN chown -R 65532:65532 /opt/activemq
 
 USER 65532:65532
 WORKDIR /opt/activemq
-ENV JAVA_HOME="/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64"
+ENV JAVA_HOME="/usr/lib/jvm/java-${JAVA_VERSION}-openjdk"
 ENV ACTIVEMQ_HOME="/opt/activemq"
 EXPOSE 61616 8161 5672 61613
 ENTRYPOINT ["/opt/activemq/bin/activemq", "console"]

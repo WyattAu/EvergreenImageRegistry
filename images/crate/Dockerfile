@@ -14,7 +14,7 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://cdn.crate.io/downloads/releases/cratedb/cratedb-${VERSION}.tar.gz" -o /tmp/crate.tar.gz \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://cdn.crate.io/downloads/releases/cratedb/cratedb-${VERSION}.tar.gz" -o /tmp/crate.tar.gz \
     && echo "PENDING  /tmp/crate.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /tmp/crate.tar.gz -C /opt \
     && rm /tmp/crate.tar.gz
@@ -23,7 +23,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates python3
-RUN useradd -m -u 65532 -s /usr/sbin/nologin crate 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin crate 2>/dev/null || true
 RUN mkdir -p /var/lib/crate /var/log/crate /var/cache/crate
 COPY --from=builder /opt/crate-${VERSION} /opt/crate
 RUN chown -R 65532:65532 /opt/crate /var/lib/crate /var/log/crate /var/cache/crate
@@ -39,7 +39,7 @@ LABEL org.opencontainers.image.title="crate" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

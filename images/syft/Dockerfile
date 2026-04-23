@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/anchore/syft/releases/download/v1.8.0/syft_1.8.0_linux_amd64.tar.gz" -o /syft.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/anchore/syft/releases/download/v1.8.0/syft_1.8.0_linux_amd64.tar.gz" -o /syft.tar.gz && \
     tar -xzf /syft.tar.gz -C / && rm /syft.tar.gz && chmod +x /syft 2>/dev/null || \
-    curl -fsSL "https://github.com/anchore/syft/releases/download/v1.8.0/syft_1.8.0_linux_amd64.tar.gz" -o /syft && chmod +x /syft
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/anchore/syft/releases/download/v1.8.0/syft_1.8.0_linux_amd64.tar.gz" -o /syft && chmod +x /syft
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/syft /var/cache/syft

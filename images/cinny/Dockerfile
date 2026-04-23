@@ -9,10 +9,10 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl="7.88.1-*" ca-certificates && \
+    apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /tmp
-RUN curl -fsSL "https://github.com/cinnyapp/cinny/releases/download/v4.2.0/cinny-v4.2.0.tar.gz" -o /tmp/release.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/cinnyapp/cinny/releases/download/v4.2.0/cinny-v4.2.0.tar.gz" -o /tmp/release.tar.gz && \
     mkdir -p /www && \
     tar -xzf /tmp/release.tar.gz -C /www --strip-components=1 && \
     rm /tmp/release.tar.gz
@@ -21,7 +21,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache ca-certificates
-RUN groupadd -r -g 65532 appuser && useradd -r -u 65532 -g appuser -d /app -s /usr/sbin/nologin appuser
+RUN addgroup -S -g 65532 appuser && adduser -u 65532 -G appuser -D -h /app -s /sbin/nologin appuser
 COPY --from=downloader /www /var/www/html
 RUN rm -f /etc/nginx/sites-enabled/default
 RUN printf 'server {\\n    listen 8080 default_server;\\n    root /var/www/html;\\n    index index.html;\\n    location / { try_files $uri $uri/ =404; }\\n}\\n' > /etc/nginx/sites-available/default && \

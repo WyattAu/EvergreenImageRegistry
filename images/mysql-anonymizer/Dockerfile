@@ -46,7 +46,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     anonymize_dump(args.input, args.output, args.rules)
 SCRIPT
-RUN useradd -m -u 65532 -s /usr/sbin/nologin anon 2>/dev/null || true && \
+RUN useradd -m -u 65532 -s /sbin/nologin anon 2>/dev/null || true && \
     mkdir -p /app /var/log/php84-mysql-anonymizer /var/cache/php84-mysql-anonymizer && \
     chown -R 65532:65532 /app /var/log/php84-mysql-anonymizer /var/cache/php84-mysql-anonymizer && \
     chmod +x /app/anonymize.py
@@ -59,7 +59,7 @@ LABEL org.opencontainers.image.title="php84-mysql-anonymizer" \
       org.opencontainers.image.vendor="Sovereign" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

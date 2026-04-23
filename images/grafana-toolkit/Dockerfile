@@ -10,14 +10,14 @@ ARG VERSION=10.4.1
 ARG BUILD_DATE
 ARG NODE_MAJOR=20
 
-FROM debian:bookworm-20240101-slim AS downloader
+FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
         ca-certificates \
         gnupg && \
     mkdir -p /etc/apt/keyrings && \
-    curl -fsSL "https://deb.nodesource.com/gpgkey/nodesource-repo.gnupg.key" | gnupg --dearmor -o /etc/apt/keyrings/nodesource.gnupg && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/gpgkey/nodesource-repo.gnupg.key" | gnupg --dearmor -o /etc/apt/keyrings/nodesource.gnupg && \
     echo "deb [signed-by=/etc/apt/keyrings/nodesource.gnupg] https://deb.nodesource.com/node_${NODE_MAJOR}.x nodistro main" > /etc/apt/sources.list.d/nodesource.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends nodejs && \
@@ -26,7 +26,7 @@ RUN apt-get update && \
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN groupadd -g 65532 toolkit && \
-    useradd -m -u 65532 -g toolkit -s /usr/sbin/nologin toolkit
+    useradd -m -u 65532 -g toolkit -s /sbin/nologin toolkit
 COPY --from=downloader /usr/bin/node /usr/local/bin/node
 COPY --from=downloader /usr/lib/node_modules /usr/local/lib/node_modules
 COPY --from=downloader /usr/bin/npm /usr/local/bin/npm

@@ -10,16 +10,16 @@ FROM debian:bookworm-slim AS builder
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        curl="7.88.1-*" \
+        curl \
         ca-certificates && \
     rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/gitbucket/gitbucket/releases/download/v${VERSION}/gitbucket.war" -o /tmp/gitbucket.war
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/gitbucket/gitbucket/releases/download/v${VERSION}/gitbucket.war" -o /tmp/gitbucket.war
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache ca-certificates
-RUN groupadd -r -g 65532 gitbucket && useradd -r -u 65532 -g gitbucket -d /opt/gitbucket -s /usr/sbin/nologin gitbucket
+RUN addgroup -S -g 65532 gitbucket && adduser -u 65532 -G gitbucket -D -h /opt/gitbucket -s /sbin/nologin gitbucket
 RUN mkdir -p /opt/gitbucket /var/log/gitbucket /var/data/gitbucket && \
     chown -R 65532:65532 /opt/gitbucket /var/log/gitbucket /var/data/gitbucket
 COPY --from=builder /tmp/gitbucket.war /opt/gitbucket/gitbucket.war

@@ -38,7 +38,7 @@ LABEL org.opencontainers.image.title="php84-mysql-8" \
       org.opencontainers.image.source="https://dev.php84-mysql.com/" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

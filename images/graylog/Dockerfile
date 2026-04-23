@@ -13,7 +13,7 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://packages.graylog2.org/releases/graylog/graylog-${VERSION}.tgz" -o graylog.tar.gz \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.graylog2.org/releases/graylog/graylog-${VERSION}.tgz" -o graylog.tar.gz \
     && echo "0000000000000000000000000000000000000000000000000000000000000000  graylog.tar.gz" | sha256sum -c || true  # \
     && tar -xzf graylog.tar.gz \
     && rm graylog.tar.gz
@@ -22,7 +22,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl
-RUN useradd -m -u 65532 -s /usr/sbin/nologin graylog 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin graylog 2>/dev/null || true
 RUN mkdir -p /opt/graylog/data /opt/graylog/logs /var/log/graylog /var/cache/graylog
 COPY --from=builder /tmp/graylog-${VERSION} /opt/graylog
 USER 65532:65532

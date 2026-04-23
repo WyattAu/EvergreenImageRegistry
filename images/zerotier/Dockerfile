@@ -12,8 +12,8 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/zerotier/ZeroTierOne/releases/download/${VERSION}/zerotier-one-${VERSION}-x86_64-linux.tgz" -o /zerotier.tgz && \
-    curl -fsSL "https://github.com/zerotier/ZeroTierOne/releases/download/${VERSION}/sha256sum.txt" -o /checksums.txt && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/zerotier/ZeroTierOne/releases/download/${VERSION}/zerotier-one-${VERSION}-x86_64-linux.tgz" -o /zerotier.tgz && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/zerotier/ZeroTierOne/releases/download/${VERSION}/sha256sum.txt" -o /checksums.txt && \
     grep "zerotier-one-${VERSION}-x86_64-linux.tgz" /checksums.txt | sha256sum -c || true  # && \
     mkdir -p /tmp/zerotier && \
     tar -xzf /zerotier.tgz -C /tmp/ && \

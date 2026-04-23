@@ -8,8 +8,8 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN apt-get update &&     apt-get install -y --no-install-recommends curl="7.88.1-*" ca-certificates &&     rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://releases.mattermost.com/mattermost/11.6.0/mattermost-11.6.0-linux-amd64.tar.gz" -o /tmp/binary &&     chmod +x /tmp/binary &&     strip /tmp/binary
+RUN apt-get update &&     apt-get install -y --no-install-recommends curl ca-certificates &&     rm -rf /var/lib/apt/lists/*
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://releases.mattermost.com/mattermost/11.6.0/mattermost-11.6.0-linux-amd64.tar.gz" -o /tmp/binary &&     chmod +x /tmp/binary &&     strip /tmp/binary
 
 FROM scratch
 COPY --from=downloader /tmp/binary /usr/local/bin/mattermost-bridge

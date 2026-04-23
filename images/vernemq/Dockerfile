@@ -9,7 +9,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates curl procps
 COPY --from=builder /app /app
 COPY --from=builder /opt/vernemq /opt/vernemq
-RUN useradd -r -u 65532 -g nogroup -d /opt/vernemq -s /sbin/nologin vernemq 2>/dev/null || true && \
+RUN adduser -u 65532 -G nogroup -D -h /opt/vernemq -s /sbin/nologin vernemq 2>/dev/null || true && \
     chown -R 65532:65532 /opt/vernemq /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/vernemq
@@ -22,7 +22,7 @@ LABEL org.opencontainers.image.title="vernemq" \
       org.opencontainers.image.source="https://github.com/vernemq/vernemq" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

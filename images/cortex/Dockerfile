@@ -12,7 +12,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/cortexproject/cortex/releases/download/v1.17.0/cortex_1.17.0_linux_amd64.tar.gz" -o /cortex.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/cortexproject/cortex/releases/download/v1.17.0/cortex_1.17.0_linux_amd64.tar.gz" -o /cortex.tar.gz && \
     tar -xzf /cortex.tar.gz -C /tmp && rm /cortex.tar.gz && \
     strip --strip-all /tmp/cortex && \
     mv /tmp/cortex /cortex

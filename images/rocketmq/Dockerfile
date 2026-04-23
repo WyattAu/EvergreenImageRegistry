@@ -13,8 +13,8 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://archive.apache.org/dist/rocketmq/${ROCKETMQ_VERSION}/rocketmq-all-${ROCKETMQ_VERSION}-bin-release.zip" -o /rocketmq.zip && \
-    curl -fsSL "https://archive.apache.org/dist/rocketmq/${ROCKETMQ_VERSION}/rocketmq-all-${ROCKETMQ_VERSION}-bin-release.zip.sha512" -o /checksums.txt && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/rocketmq/${ROCKETMQ_VERSION}/rocketmq-all-${ROCKETMQ_VERSION}-bin-release.zip" -o /rocketmq.zip && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/rocketmq/${ROCKETMQ_VERSION}/rocketmq-all-${ROCKETMQ_VERSION}-bin-release.zip.sha512" -o /checksums.txt && \
     sha512sum -c /checksums.txt && \
     unzip -q /rocketmq.zip -d /opt/ && \
     mv /opt/rocketmq-all-${ROCKETMQ_VERSION}-bin-release /opt/rocketmq && \
@@ -23,14 +23,14 @@ RUN curl -fsSL "https://archive.apache.org/dist/rocketmq/${ROCKETMQ_VERSION}/roc
 # hadolint ignore=DL3023
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache openjdk-${JAVA_VERSION}-jre-headless ca-certificates
+RUN apk add --no-cache openjdk-${JAVA_VERSION}-jre-base ca-certificates
 
 COPY --from=downloader /opt/rocketmq /opt/rocketmq
 RUN chown -R 65532:65532 /opt/rocketmq
 
 USER 65532:65532
 WORKDIR /opt/rocketmq
-ENV JAVA_HOME="/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64"
+ENV JAVA_HOME="/usr/lib/jvm/java-${JAVA_VERSION}-openjdk"
 ENV ROCKETMQ_HOME="/opt/rocketmq"
 EXPOSE 9876 10911 10909
 ENTRYPOINT ["/opt/rocketmq/bin/mqnamesrv"]

@@ -11,7 +11,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates java-17-runtime && \
-    curl -fsSL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-linux-x86_64.tar.gz" \
+    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-linux-x86_64.tar.gz" \
     -o /elasticsearch.tar.gz && \
     echo "PENDING_CHECKSUM  /elasticsearch.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /elasticsearch.tar.gz -C /opt && rm /elasticsearch.tar.gz && \
@@ -27,7 +27,7 @@ COPY --from=builder --chown=65532:65532 /app /app
 COPY --from=builder --chown=65532:65532 /var/log/elasticsearch /var/log/elasticsearch
 COPY --from=builder --chown=65532:65532 /var/cache/elasticsearch /var/cache/elasticsearch
 COPY --from=builder --chown=65532:65532 /var/lib/elasticsearch /var/lib/elasticsearch
-RUN useradd -m -u 65532 -s /usr/sbin/nologin elasticsearch 2>/dev/null || true && \
+RUN useradd -m -u 65532 -s /sbin/nologin elasticsearch 2>/dev/null || true && \
     chown -R 65532:65532 /opt/elasticsearch /app /var/log/elasticsearch /var/cache/elasticsearch /var/lib/elasticsearch
 USER 65532:65532
 WORKDIR /app
@@ -44,7 +44,7 @@ LABEL org.opencontainers.image.title="elasticsearch-8" \
       org.opencontainers.image.source="https://www.elastic.co/elasticsearch" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

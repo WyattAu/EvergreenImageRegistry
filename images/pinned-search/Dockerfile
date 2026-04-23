@@ -13,7 +13,7 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init" -o /tmp/rustup-init \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init" -o /tmp/rustup-init \
     && chmod +x /tmp/rustup-init \
     && /tmp/rustup-init -y --default-toolchain stable --profile minimal \
     && . /root/.cargo/env \

@@ -10,10 +10,10 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/prometheus/mysqld_exporter/releases/download/v0.15.0/mysqld_exporter-0.15.0.linux-amd64.tar.gz" -o /mysqld_exporter.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/mysqld_exporter/releases/download/v0.15.0/mysqld_exporter-0.15.0.linux-amd64.tar.gz" -o /mysqld_exporter.tar.gz && \
     echo "5696925771e22def5838bc538df29befdb07faca2adfbecb512cc7938661bd78  /mysqld_exporter.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /mysqld_exporter.tar.gz -C / && rm /mysqld_exporter.tar.gz && chmod +x /mysqld_exporter 2>/dev/null || \
-    curl -fsSL "https://github.com/prometheus/mysqld_exporter/releases/download/v0.15.0/mysqld_exporter-0.15.0.linux-amd64.tar.gz" -o /mysqld_exporter && chmod +x /mysqld_exporter
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/mysqld_exporter/releases/download/v0.15.0/mysqld_exporter-0.15.0.linux-amd64.tar.gz" -o /mysqld_exporter && chmod +x /mysqld_exporter
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/mysqld_exporter /var/cache/mysqld_exporter

@@ -30,7 +30,7 @@ RUN git clone --depth 1 --branch v${VERSION} \
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/david415/WireGuard-Go-VPN/releases/download/v${VERSION}/wg-cloud-linux-amd64" -o /wg-cloud 2>/dev/null && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/david415/WireGuard-Go-VPN/releases/download/v${VERSION}/wg-cloud-linux-amd64" -o /wg-cloud 2>/dev/null && \
     chmod +x /wg-cloud && strip --strip-all /wg-cloud 2>/dev/null || true
 
 FROM debian:bookworm-slim AS builder2

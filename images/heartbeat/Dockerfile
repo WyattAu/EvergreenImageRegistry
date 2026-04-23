@@ -12,7 +12,7 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://artifacts.elastic.co/downloads/beats/heartbeat/heartbeat-${VERSION}-linux-x86_64.tar.gz" -o /heartbeat.tar.gz \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/heartbeat/heartbeat-${VERSION}-linux-x86_64.tar.gz" -o /heartbeat.tar.gz \
     && echo "0000000000000000000000000000000000000000000000000000000000000000  /heartbeat.tar.gz" | sha256sum -c || true  # \
     && mkdir -p /opt/heartbeat \
     && tar -xzf /heartbeat.tar.gz -C /opt/heartbeat --strip-components=1 \

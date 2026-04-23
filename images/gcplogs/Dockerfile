@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir --prefix=/install google-cloud-logging==${VERSION
 RUN find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 
-FROM debian:bookworm-20240101-slim AS stripper
+FROM debian:bookworm-slim AS stripper
 RUN apt-get update && \
     apt-get install -y --no-install-recommends python3-minimal && \
     rm -rf /var/lib/apt/lists/*
@@ -25,7 +25,7 @@ RUN find /install -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN groupadd -g 65532 gcplogs && \
-    useradd -m -u 65532 -g gcplogs -s /usr/sbin/nologin gcplogs
+    useradd -m -u 65532 -g gcplogs -s /sbin/nologin gcplogs
 RUN apk add --no-cache ca-certificates
 COPY --from=stripper /install /usr/local
 COPY --from=stripper /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

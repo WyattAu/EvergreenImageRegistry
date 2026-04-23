@@ -3,7 +3,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://dl.k8s.io/release/v1.30.1/bin/linux/amd64/kube-apiserver" -o /kube-apiserver && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.k8s.io/release/v1.30.1/bin/linux/amd64/kube-apiserver" -o /kube-apiserver && \
     echo "VERIFY_FROM_K8S_SHA256  /kube-apiserver" | sha256sum -c || true  # && \
     chmod +x /kube-apiserver && strip /kube-apiserver
 
@@ -18,7 +18,7 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/kube-apiserver /var/log/kube-apiserver
 COPY --from=builder /var/cache/kube-apiserver /var/cache/kube-apiserver
 COPY --from=builder /var/lib/kube-apiserver /var/lib/kube-apiserver
-RUN useradd -r -u 65532 -g '' kube-apiserver 2>/dev/null || true
+RUN adduser -u 65532 -G '' -D kube-apiserver 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 6443

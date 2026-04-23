@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache curl ca-certificates && \
-    curl -fsSL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-linux-x86_64.tar.gz" | \
+    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-linux-x86_64.tar.gz" | \
     tar xz -C /opt && \
     ln -s /opt/elasticsearch-${VERSION} /opt/elasticsearch && \
     ln -s /opt/elasticsearch/bin/elasticsearch /usr/local/bin/elasticsearch
@@ -25,7 +25,7 @@ LABEL org.opencontainers.image.title="elasticsearch-7" \
       org.opencontainers.image.vendor="Elastic" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

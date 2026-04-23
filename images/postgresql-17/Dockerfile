@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg lsb-release curl ca-certificates && \
     echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > \
     /etc/apt/sources.list.d/pgdg.list && \
-    curl -fsSL "https://www.postgresql.org/media/keys/ACCC4CF8.asc" | \
+    curl --retry 3 --retry-delay 5 -fsSL "https://www.postgresql.org/media/keys/ACCC4CF8.asc" | \
     gnupg --dearmor -o /usr/share/keyrings/postgresql-keyring.gnupg && \
     apt-get update && apt-get install -y --no-install-recommends \
     postgresql-${VERSION%.*} postgresql-contrib-${VERSION%.*} && \
@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache gnupg curl ca-certificates libzstd1 liblz4-1 echo http main"
+RUN apk add --no-cache gnupg curl ca-certificates libzstd1 liblz4-1 "
 COPY --from=builder /var/lib/postgresql /var/lib/postgresql
 COPY --from=builder /var/run/postgresql /var/run/postgresql
 RUN usermod -u 65532 postgres && \
@@ -40,7 +40,7 @@ LABEL org.opencontainers.image.title="postgresql-17" \
       org.opencontainers.image.source="https://www.postgresql.org/" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

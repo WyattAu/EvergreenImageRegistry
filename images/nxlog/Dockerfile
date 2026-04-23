@@ -9,16 +9,16 @@
 ARG VERSION=3.1.2331
 ARG BUILD_DATE
 
-FROM debian:bookworm-20240101-slim AS downloader
+FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://nxlog.co/downloads/nxlog-ce/nxlog-ce-${VERSION}-linux-x86_64.tar.gz" -o /nxlog.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://nxlog.co/downloads/nxlog-ce/nxlog-ce-${VERSION}-linux-x86_64.tar.gz" -o /nxlog.tar.gz && \
     echo "e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6  /nxlog.tar.gz" | sha256sum -c || true  #
 RUN tar -xzf /nxlog.tar.gz -C /opt && \
     rm /nxlog.tar.gz
 
-FROM debian:bookworm-20240101-slim AS builder
+FROM debian:bookworm-slim AS builder
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
@@ -33,7 +33,7 @@ RUN apt-get update && \
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN groupadd -g 65532 nxlog && \
-    useradd -m -u 65532 -g nxlog -s /usr/sbin/nologin nxlog
+    useradd -m -u 65532 -g nxlog -s /sbin/nologin nxlog
 RUN apk add --no-cache curl libzstd1 zlib expat ca-certificates
 COPY --from=downloader /opt/nxlog /opt/nxlog
 COPY --from=builder /opt/nxlog/bin/nxlog /opt/nxlog/bin/nxlog

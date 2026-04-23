@@ -7,7 +7,9 @@
 ARG VERSION=11.0.0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=11.0.0
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates tar && \
     rm -rf /var/lib/apt/lists/*
@@ -16,7 +18,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/gra
     rm /grafana.tar.gz && \
     ln -sf /opt/grafana-${VERSION} /opt/grafana
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=11.0.0
 
 RUN apk add --no-cache ca-certificates tzdata fontconfig
 COPY --from=builder /opt/grafana /opt/grafana

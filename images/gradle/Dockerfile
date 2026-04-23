@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://services.gradle.org/distributions/gradle-8.10.2-bin.zip" -o /gradle.zip && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://services.gradle.org/distributi
 
 
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/gradle /var/cache/gradle /home/gradle
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

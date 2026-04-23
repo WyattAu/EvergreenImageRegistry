@@ -8,6 +8,7 @@
 ARG VERSION=5.3.6
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-20250113-slim AS builder
 ARG VERSION
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -18,7 +19,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/hazelcast/hazelcast
     && tar -xzf /tmp/hazelcast.tgz -C /opt/hazelcast --strip-components=1 \
     && rm -rf /tmp/hazelcast.tgz
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=5.3.6
 
 RUN apk add --no-cache ca-certificates
 RUN addgroup -S 65532 hazelcast && adduser -u 65532 -G hazelcast -D -s /sbin/nologin hazelcast

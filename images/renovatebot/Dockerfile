@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -5,6 +6,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/renovatebot/renovat
     mkdir -p /tmp/renovate && \
     tar -xzf /renovate.tar.gz -C /tmp/renovate && \
     rm -f /renovate.tar.gz
+
 
 
 

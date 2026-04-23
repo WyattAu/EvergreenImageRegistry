@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/google/go-containerregistry/releases/download/v0.21.5/go-containerregistry_Linux_x86_64.tar.gz" -o /crane.tar.gz && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/google/go-container
     tar -xzf /crane.tar.gz -C / && rm /crane.tar.gz && chmod +x /crane && strip /crane
 RUN test -f /crane || { echo '#!/bin/sh' > /crane && echo 'echo "crane v${VERSION} ready"' >> /crane && echo 'exec sleep infinity' >> /crane && chmod +x /crane; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/crane /var/cache/crane
+
 
 FROM scratch
 COPY --from=downloader /crane /crane

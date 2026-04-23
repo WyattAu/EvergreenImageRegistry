@@ -8,6 +8,7 @@ ARG VERSION=0.1.0
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -17,7 +18,9 @@ RUN git clone --depth 1 --branch v${VERSION} https://github.com/nicich/dotdns /t
     printf '#!/bin/sh\necho "dotdns v%s ready"\nexec sleep infinity' "${VERSION}" > /tmp/dotdns && \
     chmod +x /tmp/dotdns
 
+
 FROM scratch
+ARG VERSION=0.1.0
 COPY --from=builder /tmp/dotdns /usr/local/bin/dotdns
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

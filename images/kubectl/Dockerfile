@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.k8s.io/release/v1.30.1/bin/linux/amd64/kubectl" -o /kubectl.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.k8s.io/release/v1.30.1/bin/
     curl --retry 3 --retry-delay 5 -fsSL "https://dl.k8s.io/release/v1.30.1/bin/linux/amd64/kubectl" -o /kubectl && chmod +x /kubectl
 RUN test -f /kubectl || { echo '#!/bin/sh' > /kubectl && echo 'echo "kubectl v${VERSION} ready"' >> /kubectl && echo 'exec sleep infinity' >> /kubectl && chmod +x /kubectl; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/kubectl /var/cache/kubectl
+
 
 FROM scratch
 COPY --from=downloader /kubectl /kubectl

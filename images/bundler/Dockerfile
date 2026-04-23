@@ -8,6 +8,7 @@
 ARG VERSION=2.5.0
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ruby ruby-dev ca-certificates curl build-base
 RUN gem install bundler -v 2.5.0 --no-document && \

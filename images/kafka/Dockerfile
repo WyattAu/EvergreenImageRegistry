@@ -10,6 +10,7 @@ ARG SCALA_VERSION=2.13
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 ARG SCALA_VERSION
@@ -21,9 +22,11 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/kafka/
     && tar -xzf kafka.tgz \
     && rm kafka.tgz
 
-FROM go-1.23:1.23-alpine AS health-shim-builder
+
+FROM golang:1.23-alpine AS health-shim-builder
 COPY images/health-shim/go.mod images/health-shim/main.go /build/
 RUN cd /build && CGO_ENABLED=0 go build -ldflags="-s -w" -o /health-shim .
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 COPY --from=health-shim-builder /health-shim /usr/local/bin/health-shim
 ENV HEALTH_CMD="kafka-broker-api-versions --bootstrap-server localhost:9092" \

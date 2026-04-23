@@ -1,9 +1,11 @@
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         ruby ruby-dev build-base git ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 RUN gem install github-linguist --no-document
 RUN mkdir -p /app
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

@@ -7,7 +7,9 @@
 ARG VERSION=2.4.66
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=2.4.66
 RUN apk add --no-cache apache2 ca-certificates tzdata
 RUN a2dismod autoindex 2>/dev/null || true
 RUN addgroup -S 65532 -r www-data 2>/dev/null || true && \

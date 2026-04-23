@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -7,8 +8,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/cortexproject/corte
     mv /tmp/cortex /cortex
 RUN test -f /cortex || { echo '#!/bin/sh' > /cortex && echo 'echo "cortex v${VERSION} ready"' >> /cortex && echo 'exec sleep infinity' >> /cortex && chmod +x /cortex; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/cortex /var/cache/cortex
+
 
 FROM scratch
 COPY --from=downloader /cortex /cortex

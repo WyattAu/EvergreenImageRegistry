@@ -1,6 +1,7 @@
 ARG VERSION=2.8.38
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache perl apache2 ca-certificates curl
 RUN mkdir -p /var/www/sql-ledger /var/log/sql-ledger \

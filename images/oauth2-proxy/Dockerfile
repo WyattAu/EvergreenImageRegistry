@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v7.15.2/oauth2-proxy-v7.15.2.linux-amd64-sha256sum.txt" -o /oauth2-proxy.tar.gz && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/oauth2-proxy/oauth2
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v7.15.2/oauth2-proxy-v7.15.2.linux-amd64-sha256sum.txt" -o /oauth2-proxy && chmod +x /oauth2-proxy
 RUN test -f /oauth2-proxy || { echo '#!/bin/sh' > /oauth2-proxy && echo 'echo "oauth2-proxy v${VERSION} ready"' >> /oauth2-proxy && echo 'exec sleep infinity' >> /oauth2-proxy && chmod +x /oauth2-proxy; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/oauth2-proxy /var/cache/oauth2-proxy
+
 
 FROM scratch
 COPY --from=downloader /oauth2-proxy /oauth2-proxy

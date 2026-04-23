@@ -8,6 +8,7 @@ ARG VERSION=11.2
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -24,6 +25,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/CUBRID/cubrid/relea
     && make -j"$(nproc)" \
     && make install \
     && strip --strip-all /opt/cubrid/bin/cubrid /opt/cubrid/bin/cub_server 2>/dev/null || true
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

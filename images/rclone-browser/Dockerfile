@@ -1,11 +1,13 @@
 ARG VERSION=2.0.10
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm ca-certificates curl && \
     rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app /var/log/node /var/cache/node
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

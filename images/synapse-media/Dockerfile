@@ -6,7 +6,9 @@
 ARG VERSION=1.98.0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=1.98.0
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -22,6 +24,7 @@ RUN apt-get update && \
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 RUN pip install --no-cache-dir "matrix-synapse[all]==${VERSION}"
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

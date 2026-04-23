@@ -10,7 +10,10 @@ ARG BUILD_DATE
 
 ARG GO_VERSION=1.22.4
 
+
 FROM go-1.23:${GO_VERSION}-bookworm AS builder
+ARG VERSION=1.10.1
+ARG GO_VERSION=1.22.4
 RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN git clone --depth 1 --branch controller-v${VERSION} \ 2>/dev/null || echo "Source repo not available - using placeholder"
@@ -21,11 +24,14 @@ RUN git clone --depth 1 --branch controller-v${VERSION} \ 2>/dev/null || echo "S
     -trimpath \
     -o /nginx-ingress-controller ./cmd/nginx
 
+
 FROM debian:bookworm-slim AS certs
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
 
+
 FROM debian:bookworm-slim AS builder2
 RUN mkdir -p /app /var/log/nginx-ingress /etc/nginx
+
 
 FROM scratch
 COPY --from=builder /nginx-ingress-controller /nginx-ingress-controller

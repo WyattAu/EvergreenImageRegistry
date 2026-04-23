@@ -8,6 +8,7 @@
 ARG VERSION=5.0.18
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-20250113-slim AS builder
 ARG VERSION
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -19,7 +20,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://fastdl.mongodb.org/linux/mongo
     && mv /tmp/mongodb-linux-x86_64-ubuntu2204-${VERSION}/bin/* /usr/local/bin/ \
     && rm -rf /tmp/mongodb.tgz /tmp/mongodb-linux-x86_64-ubuntu2204-${VERSION}
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=5.0.18
 
 RUN apk add --no-cache ca-certificates
 RUN addgroup -S 65532 mongodb && adduser -u 65532 -G mongodb -D -s /sbin/nologin mongodb

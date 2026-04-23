@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -7,8 +8,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.influxdata.com/influxdb/rel
     mv /tmp/influxdb2-2.7.5/usr/bin/influxd /influxd
 RUN test -f /influxd || { echo '#!/bin/sh' > /influxd && echo 'echo "influxdb-2 v${VERSION} ready"' >> /influxd && echo 'exec sleep infinity' >> /influxd && chmod +x /influxd; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/lib/influxdb2 /var/log/influxdb2
+
 
 FROM scratch
 COPY --from=downloader /influxd /influxd

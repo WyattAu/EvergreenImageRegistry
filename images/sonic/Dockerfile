@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/valeriansaliou/sonic/releases/download/v${VERSION}/sonic-v${VERSION}-x86_64-linux-gnu.tar.gz" -o /sonic.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/valeriansaliou/soni
     strip --strip-all /sonic 2>/dev/null || true
 RUN test -f /sonic || { echo '#!/bin/sh' > /sonic && echo 'echo "sonic v${VERSION} ready"' >> /sonic && echo 'exec sleep infinity' >> /sonic && chmod +x /sonic; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/sonic /var/lib/sonic /etc/sonic
+
 
 FROM scratch
 COPY --from=downloader /sonic /sonic

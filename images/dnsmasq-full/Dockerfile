@@ -8,7 +8,9 @@
 ARG VERSION=2.90
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=2.90
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-base libnetfilter-conntrack-dev libidn2-0-dev \
     libdbus-1-dev libgmp-dev && \
@@ -22,6 +24,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://thekelleys.org.uk/dnsmasq/dnsm
     LDFLAGS="-static" && \
     make install PREFIX=/usr DESTDIR=/install && \
     strip --strip-all /install/usr/sbin/dnsmasq
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

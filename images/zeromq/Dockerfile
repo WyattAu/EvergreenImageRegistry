@@ -9,7 +9,9 @@ ARG VERSION=4.3.5
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=4.3.5
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-base cmake curl ca-certificates \
     libsodium-dev libpgm-dev libnorm-dev && rm -rf /var/lib/apt/lists/*
@@ -34,6 +36,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/zeromq/libzmq/relea
     rm -rf /zeromq.tar.gz /checksums.txt /tmp/zeromq-${VERSION}
 
 # hadolint ignore=DL3023
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache libstdc++ ca-certificates

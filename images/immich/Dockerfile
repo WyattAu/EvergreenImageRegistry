@@ -8,6 +8,7 @@
 ARG VERSION=1.106.0
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache nodejs ffmpeg ca-certificates
 RUN adduser -u 65532 -G '' -D immich 2>/dev/null || true

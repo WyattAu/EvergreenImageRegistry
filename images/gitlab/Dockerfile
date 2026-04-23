@@ -8,7 +8,9 @@
 ARG VERSION=17.6.0
 ARG BUILD_DATE
 
+
 FROM gitlab/gitlab-ce:${VERSION}-ce.0
+ARG VERSION=17.6.0
 
 # Apply sovereignty hardening on top of official image
 USER root

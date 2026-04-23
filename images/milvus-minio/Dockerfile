@@ -7,6 +7,7 @@
 ARG VERSION=2024.11.07
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates curl && \
     curl --retry 3 --retry-delay 5 -fsSL "https://dl.min.io/server/minio/release/linux-amd64/minio" -o /usr/local/bin/minio && \

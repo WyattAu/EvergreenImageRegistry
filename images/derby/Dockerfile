@@ -8,6 +8,7 @@ ARG VERSION=10.17.1.0
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -18,6 +19,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/db/derby/db-d
     && echo "PENDING  /tmp/derby.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /tmp/derby.tar.gz -C /opt \
     && rm /tmp/derby.tar.gz
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

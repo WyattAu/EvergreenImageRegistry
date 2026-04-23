@@ -1,7 +1,9 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/pydio/cells/releases/download/v4.5.0/cells-4.5.0-linux-amd64" -o /cells && chmod +x /cells
 RUN test -f /cells || { echo '#!/bin/sh' > /cells && echo 'echo "pydio-cells v${VERSION} ready"' >> /cells && echo 'exec sleep infinity' >> /cells && chmod +x /cells; }
+
 
 FROM scratch
 COPY --from=downloader /cells /cells

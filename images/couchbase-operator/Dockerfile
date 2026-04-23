@@ -8,6 +8,7 @@ ARG VERSION=2.7.0
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -18,7 +19,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/couchbase/couchbase
     && echo "PENDING  /tmp/couchbase-operator" | sha256sum -c || true  # \
     && strip --strip-all /tmp/couchbase-operator 2>/dev/null || true
 
+
 FROM scratch
+ARG VERSION=2.7.0
 COPY --from=builder /tmp/couchbase-operator /usr/local/bin/couchbase-operator
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

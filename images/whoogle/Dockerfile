@@ -6,6 +6,7 @@
 ARG VERSION=0.9.0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip python3 git ca-certificates && \
@@ -16,7 +17,9 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir whoogle-search
 RUN mkdir -p /app/config /app/data
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=0.9.0
 
 RUN apk add --no-cache python3 ca-certificates tzdata
 COPY --from=builder /opt/venv /opt/venv

@@ -8,6 +8,7 @@
 ARG VERSION=3.0.0.6
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -19,6 +20,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/yahoo/CMAK/releases
     && unzip cmak.zip -d /opt/cmak \
     && rm cmak.zip \
     && rm -rf /var/lib/apt/lists/*
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

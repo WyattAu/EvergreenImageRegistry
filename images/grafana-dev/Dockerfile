@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -8,6 +9,7 @@ RUN tar -xzf /grafana.tar.gz -C /opt && \
     rm /grafana.tar.gz && \
     strip /opt/grafana-${VERSION}/bin/grafana-server && \
     strip /opt/grafana-${VERSION}/bin/grafana-cli
+
 
 
 

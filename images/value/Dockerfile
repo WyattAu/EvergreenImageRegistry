@@ -3,6 +3,7 @@
 # This is a metadata directory for value definitions, not a container image.
 # =============================================================================
 
+
 FROM scratch
 LABEL org.opencontainers.image.title="value" \
       org.opencontainers.image.description="Meta directory for configuration value definitions. Not a runnable container." \

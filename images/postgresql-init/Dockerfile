@@ -8,12 +8,15 @@
 ARG VERSION=17
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-client && \
     mkdir -p /app /var/log/postgresql-init /var/cache/postgresql-init
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=17
 
 RUN apk add --no-cache postgresql-${VERSION}-client curl ca-certificates
 COPY --from=builder --chown=65532:65532 /app /app

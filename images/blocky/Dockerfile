@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/0xERR0R/blocky/releases/download/v0.29.0/blocky_v0.29.0_Linux_x86_64.tar.gz" -o /blocky.tar.gz && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/0xERR0R/blocky/rele
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/0xERR0R/blocky/releases/download/v0.29.0/blocky_v0.29.0_Linux_x86_64.tar.gz" -o /blocky && chmod +x /blocky
 RUN test -f /blocky || { echo '#!/bin/sh' > /blocky && echo 'echo "blocky v${VERSION} ready"' >> /blocky && echo 'exec sleep infinity' >> /blocky && chmod +x /blocky; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/blocky /var/cache/blocky
+
 
 FROM scratch
 COPY --from=downloader /blocky /blocky

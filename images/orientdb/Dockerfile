@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -7,12 +8,14 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/orientechnologies/o
 # hadolint ignore=DL3023
 
 
+
 FROM debian:bookworm-slim AS builder
 COPY --from=downloader /opt/orientdb-community-3.2.34 /opt/orientdb
 RUN mkdir -p /var/lib/orientdb /var/log/orientdb /app && \
     chown -R 65532:65532 /var/lib/orientdb /var/log/orientdb /app /opt/orientdb
 
 # hadolint ignore=DL3023
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 COPY --from=builder /opt/orientdb /opt/orientdb

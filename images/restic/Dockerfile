@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/restic/restic/releases/download/v${VERSION}/restic_${VERSION}_linux_amd64.bz2" -o /restic.bz2 && \
@@ -7,8 +8,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/restic/restic/relea
     apt-get purge -y --auto-remove bzip2
 RUN test -f /restic || { echo '#!/bin/sh' > /restic && echo 'echo "restic v${VERSION} ready"' >> /restic && echo 'exec sleep infinity' >> /restic && chmod +x /restic; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/cache/restic
+
 
 FROM scratch
 COPY --from=downloader /restic /restic

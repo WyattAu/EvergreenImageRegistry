@@ -8,6 +8,7 @@
 ARG VERSION=3.2.0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -18,6 +19,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/pulsar
     && tar -xzf pulsar.tar.gz \
     && rm pulsar.tar.gz \
     && rm -rf apache-pulsar-${VERSION}/examples apache-pulsar-${VERSION}/tools
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

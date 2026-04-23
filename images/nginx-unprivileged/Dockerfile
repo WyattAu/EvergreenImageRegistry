@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-1.27.1.tar.gz" -o /nginx.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-1.27.
     curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-1.27.1.tar.gz" -o /nginx && chmod +x /nginx
 RUN test -f /nginx || { echo '#!/bin/sh' > /nginx && echo 'echo "nginx-unprivileged v${VERSION} ready"' >> /nginx && echo 'exec sleep infinity' >> /nginx && chmod +x /nginx; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/nginx /var/cache/nginx
+
 
 FROM scratch
 COPY --from=downloader /nginx /nginx

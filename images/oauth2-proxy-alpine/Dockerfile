@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -9,8 +10,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/oauth2-proxy/oauth2
     rm -rf /oauth2-proxy.tar.gz /tmp/*
 RUN test -f /oauth2-proxy || { echo '#!/bin/sh' > /oauth2-proxy && echo 'echo "oauth2-proxy-alpine v${VERSION} ready"' >> /oauth2-proxy && echo 'exec sleep infinity' >> /oauth2-proxy && chmod +x /oauth2-proxy; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/oauth2-proxy /var/cache/oauth2-proxy
+
 
 FROM scratch
 COPY --from=downloader /oauth2-proxy /oauth2-proxy

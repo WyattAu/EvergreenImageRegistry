@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -12,6 +13,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://pkgs.tailscale.com/stable/tail
     mv /tmp/tailscale_${VERSION}_linux_amd64/tailscale /tailscale && \
     rm -rf /tailscale.tgz /checksums.txt /tmp/*
 RUN test -f /tailscaled || { echo '#!/bin/sh' > /tailscaled && echo 'echo "tailscale v${VERSION} ready"' >> /tailscaled && echo 'exec sleep infinity' >> /tailscaled && chmod +x /tailscaled; } && test -f /tailscale || { echo '#!/bin/sh' > /tailscale && echo 'echo "tailscale v${VERSION} ready"' >> /tailscale && echo 'exec sleep infinity' >> /tailscale && chmod +x /tailscale; }
+
 
 FROM scratch
 COPY --from=downloader /tailscaled /tailscaled

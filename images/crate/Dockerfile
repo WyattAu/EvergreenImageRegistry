@@ -8,6 +8,7 @@ ARG VERSION=5.9.0
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -18,6 +19,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://cdn.crate.io/downloads/release
     && echo "PENDING  /tmp/crate.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /tmp/crate.tar.gz -C /opt \
     && rm /tmp/crate.tar.gz
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

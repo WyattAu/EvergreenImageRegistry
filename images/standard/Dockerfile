@@ -3,6 +3,7 @@
 # This is a metadata directory for compliance standards, not a container image.
 # =============================================================================
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates
 LABEL org.opencontainers.image.title="standard" \

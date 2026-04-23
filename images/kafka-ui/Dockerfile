@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
@@ -13,8 +14,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/provectuslabs/kafka
 
 
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /var/log/kafka-ui /var/cache/kafka-ui
+
 
 FROM scratch
 COPY --from=downloader /opt/kafka-ui /opt/kafka-ui

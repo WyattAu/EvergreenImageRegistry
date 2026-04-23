@@ -6,6 +6,7 @@
 
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && \
@@ -16,8 +17,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/nicbarker/miniSearc
 RUN chmod +x /minisearch && \
     strip --strip-all /minisearch 2>/dev/null || true
 
+
 FROM debian:bookworm-slim AS config
 RUN mkdir -p /app /var/log/minisearch /var/lib/minisearch
+
 
 FROM scratch
 COPY --from=builder /minisearch /minisearch

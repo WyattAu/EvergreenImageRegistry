@@ -7,7 +7,9 @@
 ARG VERSION=4.5.6
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=4.5.6
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-base libssl-dev tcl8.6-dev wget ca-certificates && \
     rm -rf /var/lib/apt/lists/*
@@ -19,7 +21,9 @@ RUN wget -q "https://github.com/sqlcipher/sqlcipher/archive/refs/tags/v${VERSION
     make -j"$(nproc)" && \
     strip --strip-all .libs/sqlcipher 2>/dev/null || true
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=4.5.6
 
 RUN apk add --no-cache ca-certificates
 RUN mkdir -p /app /var/log/sqlcipher

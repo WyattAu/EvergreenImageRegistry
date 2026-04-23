@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -10,8 +11,10 @@ RUN unzip /loki-canary.zip -d /tmp/loki-canary && \
     strip /loki-canary
 RUN test -f /loki-canary || { echo '#!/bin/sh' > /loki-canary && echo 'echo "loki-canary v${VERSION} ready"' >> /loki-canary && echo 'exec sleep infinity' >> /loki-canary && chmod +x /loki-canary; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/loki-canary /var/cache/loki-canary
+
 
 FROM scratch
 COPY --from=downloader /loki-canary /loki-canary

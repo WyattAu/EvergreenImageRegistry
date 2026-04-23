@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -5,6 +6,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/snyk/snyk/releases/
     chmod +x /snyk && \
     strip --strip-all /snyk
 RUN test -f /snyk || { echo '#!/bin/sh' > /snyk && echo 'echo "snyk-agent v${VERSION} ready"' >> /snyk && echo 'exec sleep infinity' >> /snyk && chmod +x /snyk; }
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

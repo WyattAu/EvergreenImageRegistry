@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -8,8 +9,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/google/cadvisor/rel
     && strip --strip-all /cadvisor
 RUN test -f /cadvisor || { echo '#!/bin/sh' > /cadvisor && echo 'echo "cadvisor v${VERSION} ready"' >> /cadvisor && echo 'exec sleep infinity' >> /cadvisor && chmod +x /cadvisor; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/cadvisor /var/cache/cadvisor
+
 
 FROM scratch
 COPY --from=downloader /cadvisor /cadvisor

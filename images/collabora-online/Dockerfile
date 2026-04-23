@@ -1,8 +1,9 @@
 ARG VERSION=24.04.10.2
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apk add --no-cache ca-certificates curl gnupg s
+RUN apk add --no-cache ca-certificates curl gnupg
 RUN mkdir -p /var/log/collabora /etc/loolwsd \
     && chown -R 65532:65532 /var/log/collabora /etc/loolwsd
 USER 65532:65532

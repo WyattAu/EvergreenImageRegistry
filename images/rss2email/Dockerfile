@@ -8,8 +8,9 @@
 ARG VERSION=3.15.1
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apk add --no-cache python3-pip ca-certificates curl
+RUN apk add --no-cache ca-certificates curl
 RUN pip3 install --no-cache-dir --break-system-packages rss2email 2>/dev/null || \
     pip3 install --no-cache-dir rss2email
 RUN adduser -u 65532 -G '' -D app 2>/dev/null || true

@@ -7,7 +7,9 @@
 ARG VERSION=1.9.4
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=1.9.4
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-base cmake libboost-all-dev libssl-dev libprotobuf-dev \
     protobuf-compiler liblua5.3-dev libsystemd-dev libsodium-dev \
@@ -21,7 +23,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/PowerDNS/pdns/archi
     make -j"$(nproc)" dnsdist && \
     strip --strip-all /pdns-rel-dnsdist-${VERSION}/build/dnsdist/dnsdist
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=1.9.4
 
 RUN apk add --no-cache ca-certificates
 RUN mkdir -p /app /var/log/dnsdist /etc/dnsdist

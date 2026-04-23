@@ -1,3 +1,4 @@
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache python3 ca-certificates
 RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin rblake 2>/dev/null || true && \

@@ -7,7 +7,9 @@
 ARG VERSION=4.0.10
 ARG BUILD_DATE
 
+
 FROM lscr.io/linuxserver/sonarr:${VERSION}
+ARG VERSION=4.0.10
 
 # Apply sovereignty hardening (already non-root in official image)
 USER root

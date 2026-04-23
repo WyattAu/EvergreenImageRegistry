@@ -8,6 +8,7 @@
 ARG VERSION=1.10.0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS installer
 RUN apt-get update && apt-get install -y --no-install-recommends \
     pptpd ppp && \
@@ -15,6 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN mkdir -p /app /var/log/pptpd /run/pptpd /etc/pptpd.d && \
     strip --strip-all /usr/sbin/pptpd 2>/dev/null || true && \
     strip --strip-all /usr/sbin/pptpctrl 2>/dev/null || true
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

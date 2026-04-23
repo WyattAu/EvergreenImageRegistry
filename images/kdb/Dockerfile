@@ -4,6 +4,7 @@
 # No public binaries or container images are available.
 # =============================================================================
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates tzdata curl
 

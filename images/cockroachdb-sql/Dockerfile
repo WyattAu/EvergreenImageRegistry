@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 ARG VERSION
 WORKDIR /tmp
@@ -12,8 +13,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://binaries.cockroachdb.com/cockr
 
 
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/cockroachdb-sql /var/cache/cockroachdb-sql
+
 
 FROM scratch
 COPY --from=downloader /tmp/cockroach /usr/local/bin/cockroach

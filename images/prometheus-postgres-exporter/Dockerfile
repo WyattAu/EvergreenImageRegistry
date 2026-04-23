@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus-community/postgres_exporter/releases/download/v${VERSION}/postgres_exporter-${VERSION}.linux-amd64.tar.gz" -o /postgres_exporter.tar.gz && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus-communit
     tar -xzf /postgres_exporter.tar.gz -C / && rm /postgres_exporter.tar.gz && chmod +x /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter
 RUN test -f /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter || { echo '#!/bin/sh' > /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter && echo 'echo "prometheus-postgres-exporter v${VERSION} ready"' >> /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter && echo 'exec sleep infinity' >> /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter && chmod +x /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/postgres_exporter /var/cache/postgres_exporter
+
 
 FROM scratch
 COPY --from=downloader /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter /postgres_exporter

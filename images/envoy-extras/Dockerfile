@@ -9,6 +9,7 @@ ARG VERSION=1.29.0
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -20,7 +21,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/envoyproxy/envoy/re
     && strip --strip-all bin/envoy \
     && mv bin/envoy /tmp/envoy
 
+
 FROM scratch
+ARG VERSION=1.29.0
 COPY --from=builder /tmp/envoy /usr/local/bin/envoy
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

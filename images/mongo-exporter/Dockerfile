@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -9,8 +10,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/percona/mongodb_exp
     && rm /mongodb_exporter.tar.gz
 RUN test -f /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter || { echo '#!/bin/sh' > /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter && echo 'echo "mongo-exporter v${VERSION} ready"' >> /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter && echo 'exec sleep infinity' >> /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter && chmod +x /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/mongodb_exporter /var/cache/mongodb_exporter
+
 
 FROM scratch
 COPY --from=downloader /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter /mongodb_exporter

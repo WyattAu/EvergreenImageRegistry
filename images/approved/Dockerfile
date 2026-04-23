@@ -1,3 +1,4 @@
+
 FROM scratch
 LABEL org.opencontainers.image.title="approved" \
       sovereign.image.tier="3" \

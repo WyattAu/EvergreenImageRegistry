@@ -8,6 +8,7 @@ ARG VERSION=1.0.0
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -18,6 +19,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/chart-db/chartdb/re
     && echo "PENDING  /tmp/chartdb.zip" | sha256sum -c || true  # \
     && unzip -q /tmp/chartdb.zip -d /opt/chartdb \
     && rm /tmp/chartdb.zip
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

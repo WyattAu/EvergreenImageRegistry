@@ -8,6 +8,7 @@
 ARG VERSION=1.26.0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -18,6 +19,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/nifi/$
     && echo "af7b39f6bceacfd4e2e4f8805e9da9f7faea3ea9a7b031748f51c6cf72fd7021  /nifi-registry.zip" | sha256sum -c || true  # \
     && unzip -q /nifi-registry.zip -d /opt \
     && rm /nifi-registry.zip
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

@@ -8,7 +8,9 @@
 ARG VERSION=1.25.4
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=1.25.4
 RUN apk add --no-cache curl ca-certificates
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/weaviate/weaviate/releases/download/v${VERSION}/weaviate-v${VERSION}-linux-amd64.tar.gz" -o /tmp/weaviate.tar.gz && \
     tar -xzf /tmp/weaviate.tar.gz -C /opt && rm /tmp/weaviate.tar.gz && \

@@ -6,12 +6,14 @@
 
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS installer
 RUN apt-get update && apt-get install -y --no-install-recommends \
     sqlitebrowser && \
     rm -rf /var/lib/apt/lists/*
 RUN find /usr -type f -executable -name "sqlitebrowser" -exec strip --strip-all {} \; 2>/dev/null || true && \
     find /usr -type f -executable -name "sqlcipher" -exec strip --strip-all {} \; 2>/dev/null || true
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

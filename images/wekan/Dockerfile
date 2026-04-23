@@ -1,12 +1,14 @@
 ARG VERSION=7.18.0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates gnupg && \
     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/wekan/wekan/releases/download/v7.18.0/wekan-7.18.0-amd64.tar.gz" -o /wekan.tar.gz && \
     tar -xzf /wekan.tar.gz -C /opt/ && rm /wekan.tar.gz
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

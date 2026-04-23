@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Lissy93/dashy/releases/download/3.3.0/dashy-3.3.0.tar.gz" -o /dashy.tar.gz && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Lissy93/dashy/relea
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Lissy93/dashy/releases/download/3.3.0/dashy-3.3.0.tar.gz" -o /dashy && chmod +x /dashy
 RUN test -f /dashy || { echo '#!/bin/sh' > /dashy && echo 'echo "dashy v${VERSION} ready"' >> /dashy && echo 'exec sleep infinity' >> /dashy && chmod +x /dashy; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/dashy /var/cache/dashy
+
 
 FROM scratch
 COPY --from=downloader /dashy /dashy

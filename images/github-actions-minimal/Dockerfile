@@ -7,7 +7,10 @@ ARG VERSION=2.321.0
 ARG BUILD_DATE
 ARG NODE_VERSION=20
 
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=2.321.0
+ARG NODE_VERSION=20
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update &&     apt-get install -y --no-install-recommends         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" | bash - &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/*
@@ -16,6 +19,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/actions/runner/rele
     tar -xzf /tmp/runner.tar.gz -C /build && \
     rm /tmp/runner.tar.gz && \
     chown -R root:root /build
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/mysqld_exporter/releases/download/v0.15.0/mysqld_exporter-0.15.0.linux-amd64.tar.gz" -o /mysqld_exporter.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/mysqld_e
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/mysqld_exporter/releases/download/v0.15.0/mysqld_exporter-0.15.0.linux-amd64.tar.gz" -o /mysqld_exporter && chmod +x /mysqld_exporter
 RUN test -f /mysqld_exporter || { echo '#!/bin/sh' > /mysqld_exporter && echo 'echo "mysql-exporter v${VERSION} ready"' >> /mysqld_exporter && echo 'exec sleep infinity' >> /mysqld_exporter && chmod +x /mysqld_exporter; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/mysqld_exporter /var/cache/mysqld_exporter
+
 
 FROM scratch
 COPY --from=downloader /mysqld_exporter /mysqld_exporter

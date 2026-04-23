@@ -9,15 +9,19 @@ ARG VERSION=4.0.3
 ARG BUILD_DATE
 ARG PYTHON_VERSION=3.12-slim
 
+
 FROM python:${PYTHON_VERSION} AS builder
+ARG VERSION=4.0.3
+ARG PYTHON_VERSION=3.12-slim
 RUN pip install --no-cache-dir --prefix=/install patroni[postgresql]=="${VERSION}" && \
     pip install --no-cache-dir --prefix=/install psycopg2-binary && \
     find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache python3-pip libpq curl ca-certificates
+RUN apk add --no-cache libpq curl ca-certificates
 COPY --from=builder /install /usr/local
 RUN adduser -u 65532 -s /sbin/nologin patroni 2>/dev/null || true && \
     mkdir -p /app /var/log/patroni /var/cache/patroni && \

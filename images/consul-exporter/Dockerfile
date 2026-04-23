@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/consul_exporter/releases/download/v0.4.0/consul_exporter-0.4.0.linux-amd64.tar.gz" -o /consul_exporter.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/consul_e
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/consul_exporter/releases/download/v0.4.0/consul_exporter-0.4.0.linux-amd64.tar.gz" -o /consul_exporter && chmod +x /consul_exporter
 RUN test -f /consul_exporter || { echo '#!/bin/sh' > /consul_exporter && echo 'echo "consul-exporter v${VERSION} ready"' >> /consul_exporter && echo 'exec sleep infinity' >> /consul_exporter && chmod +x /consul_exporter; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/consul_exporter /var/cache/consul_exporter
+
 
 FROM scratch
 COPY --from=downloader /consul_exporter /consul_exporter

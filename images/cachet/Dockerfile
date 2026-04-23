@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates unzip && \
@@ -8,6 +9,7 @@ RUN mkdir -p /build && \
     tar -xzf /cachet.tar.gz -C /build --strip-components=1 && \
     rm /cachet.tar.gz
 RUN test -f /build || { echo '#!/bin/sh' > /build && echo 'echo "cachet v${VERSION} ready"' >> /build && echo 'exec sleep infinity' >> /build && chmod +x /build; }
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

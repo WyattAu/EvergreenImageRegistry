@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/grafana/loki/releases/download/v${VERSION}/promtail-linux-amd64.zip" -o /promtail.zip && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/grafana/loki/releas
     mv /tmp/promtail-linux-amd64 /promtail
 RUN test -f /promtail || { echo '#!/bin/sh' > /promtail && echo 'echo "promtail-agent v${VERSION} ready"' >> /promtail && echo 'exec sleep infinity' >> /promtail && chmod +x /promtail; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/promtail
+
 
 FROM scratch
 COPY --from=downloader /promtail /usr/bin/promtail

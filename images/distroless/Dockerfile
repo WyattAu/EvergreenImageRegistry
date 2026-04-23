@@ -4,6 +4,7 @@
 # Use as a base for Go/Rust static binaries that need no shell.
 # =============================================================================
 
+
 FROM gcr.io/distroless/static-debian12:latest
 
 LABEL org.opencontainers.image.title="distroless" \

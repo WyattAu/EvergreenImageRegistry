@@ -10,10 +10,13 @@ ARG VERSION=3.10.0
 ARG BUILD_DATE
 ARG PYTHON_VERSION=3.12.2
 
+
 FROM python:3.12.2-slim-bookworm AS builder
+ARG VERSION=3.10.0
 RUN pip install --no-cache-dir --prefix=/install google-cloud-logging==${VERSION}
 RUN find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+
 
 FROM debian:bookworm-slim AS stripper
 RUN apt-get update && \
@@ -22,7 +25,9 @@ RUN apt-get update && \
 COPY --from=builder /install /install
 RUN find /install -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=3.10.0
 
 RUN addgroup -S 65532 gcplogs && \
     adduser -u 65532 -G gcplogs -D -s /sbin/nologin gcplogs

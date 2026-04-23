@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/argoproj/argo-rollouts/releases/download/v1.9.0/kubectl-argo-rollouts-linux-amd64" -o /kubectl-argo-rollouts && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/argoproj/argo-rollo
     chmod +x /kubectl-argo-rollouts && strip /kubectl-argo-rollouts
 RUN test -f /kubectl-argo-rollouts || { echo '#!/bin/sh' > /kubectl-argo-rollouts && echo 'echo "argo-rollouts v${VERSION} ready"' >> /kubectl-argo-rollouts && echo 'exec sleep infinity' >> /kubectl-argo-rollouts && chmod +x /kubectl-argo-rollouts; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/argo-rollouts /var/cache/argo-rollouts
+
 
 FROM scratch
 COPY --from=downloader /kubectl-argo-rollouts /kubectl-argo-rollouts

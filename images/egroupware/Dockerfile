@@ -1,6 +1,7 @@
 ARG VERSION=23.1.20240608
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         php84-fpm php84 php84-curl php84-gd php84-mbstring php84-xml zip php84-intl php84-mysql openssl php84-pdo json-c \
@@ -8,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /var/run/php /var/www/html /var/log/nginx /var/cache/nginx \
     && chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

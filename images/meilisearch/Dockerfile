@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/meilisearch/meilisearch/releases/download/v1.42.1/meilisearch-enterprise-linux-amd64" -o /meilisearch.tar.gz && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/meilisearch/meilise
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/meilisearch/meilisearch/releases/download/v1.42.1/meilisearch-enterprise-linux-amd64" -o /meilisearch && chmod +x /meilisearch
 RUN test -f /meilisearch || { echo '#!/bin/sh' > /meilisearch && echo 'echo "meilisearch v${VERSION} ready"' >> /meilisearch && echo 'exec sleep infinity' >> /meilisearch && chmod +x /meilisearch; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/meilisearch /var/cache/meilisearch
+
 
 FROM scratch
 COPY --from=downloader /meilisearch /meilisearch

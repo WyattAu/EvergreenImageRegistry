@@ -7,7 +7,9 @@
 ARG VERSION=2.28.1
 ARG BUILD_DATE
 
+
 FROM drone/drone:${VERSION}
+ARG VERSION=2.28.1
 
 # Apply sovereignty hardening
 USER root

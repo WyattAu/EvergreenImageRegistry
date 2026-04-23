@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates gnupg \
@@ -7,6 +8,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://www.emqx.com/en/downloads/brok
 RUN mkdir -p /opt/emqx && \
     tar -xzf /emqx.tar.gz -C /opt/emqx --strip-components=1 && rm /emqx.tar.gz
 RUN mkdir -p /app /opt/emqx/data /opt/emqx/log
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

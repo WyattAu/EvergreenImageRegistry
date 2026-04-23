@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -6,6 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/grafana/grafana-ima
     echo "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3  /renderer.tar.gz" | sha256sum -c || true  #
 RUN tar -xzf /renderer.tar.gz -C /opt && \
     rm /renderer.tar.gz
+
 
 
 
@@ -22,6 +24,7 @@ RUN apt-get update && \
         libgbm1 \
         ca-certificates && \
     rm -rf /var/lib/apt/lists/*
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

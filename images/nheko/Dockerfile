@@ -6,7 +6,9 @@
 ARG VERSION=2.4.0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=2.4.0
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -16,6 +18,7 @@ RUN apt-get update && \
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Nheko-Reborn/nheko/releases/download/v${VERSION}/nheko-${VERSION}-x86_64-linux-gnu.AppImage" -o /tmp/nheko.AppImage && \
     chmod +x /tmp/nheko.AppImage && \
     /tmp/nheko.AppImage --appimage-extract 2>/dev/null || true
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

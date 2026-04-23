@@ -8,7 +8,9 @@
 ARG VERSION=7.5.1
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=7.5.1
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && \
     curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/setup_20.x" | bash - && \
@@ -21,6 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm /sqlpad.tar.gz && \
     find /app -name "*.md" -delete && \
     find /app -name "*.txt" -not -name "package.json-c" -delete
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

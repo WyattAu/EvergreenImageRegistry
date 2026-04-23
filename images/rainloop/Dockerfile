@@ -6,11 +6,13 @@
 ARG VERSION=1.18.0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update &&     apt-get install -y --no-install-recommends         php-fpm="8.2.*"         php-cli="8.2.*"         php-php84-mbstring="8.2.*"         php-php84-xml="8.2.*"         php-curl         php-php84-intl="8.2.*"         php-zip="8.2.*"         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/*
 WORKDIR /build
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/RainLoop/rainloop-webmail/releases/download/v1.18.0/rainloop-1.18.0.tar.gz" -o /tmp/release.tar.gz &&     tar -xzf /tmp/release.tar.gz -C /build --strip-components=1 &&     rm /tmp/release.tar.gz
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

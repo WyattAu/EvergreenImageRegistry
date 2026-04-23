@@ -7,6 +7,7 @@
 ARG VERSION=3.5.17
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache etcd ca-certificates
 USER 65532:65532

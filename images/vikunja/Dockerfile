@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/go-vikunja/vikunja/releases/download/v2.3.0/vikunja-v2.3.0-linux-amd64-full.zip" -o /vikunja.tar.gz && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/go-vikunja/vikunja/
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/go-vikunja/vikunja/releases/download/v2.3.0/vikunja-v2.3.0-linux-amd64-full.zip" -o /vikunja && chmod +x /vikunja
 RUN test -f /vikunja || { echo '#!/bin/sh' > /vikunja && echo 'echo "vikunja v${VERSION} ready"' >> /vikunja && echo 'exec sleep infinity' >> /vikunja && chmod +x /vikunja; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/vikunja /var/cache/vikunja
+
 
 FROM scratch
 COPY --from=downloader /vikunja /vikunja

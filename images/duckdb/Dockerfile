@@ -8,6 +8,7 @@
 ARG VERSION=1.1.3
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-20250113-slim AS builder
 ARG VERSION
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -19,7 +20,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/duckdb/duckdb/relea
     && mv /tmp/duckdb /usr/local/bin/duckdb \
     && rm -rf /tmp/duckdb.zip
 
+
 FROM scratch
+ARG VERSION=1.1.3
 COPY --from=builder /usr/local/bin/duckdb /usr/local/bin/duckdb
 USER 65532:65532
 EXPOSE 5432

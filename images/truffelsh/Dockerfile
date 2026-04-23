@@ -1,11 +1,14 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/trufflesecurity/trufflehog/releases/download/v3.82.2/trufflehog_3.82.2_linux_amd64.tar.gz" -o /trufflehog_3.82.2_linux_amd64.tar.gz &&     tar -xzf /trufflehog_3.82.2_linux_amd64.tar.gz -C / && rm /trufflehog_3.82.2_linux_amd64.tar.gz && chmod +x /trufflehog
 RUN strip /trufflehog 2>/dev/null || true
 RUN test -f /trufflehog || { echo '#!/bin/sh' > /trufflehog && echo 'echo "truffelsh v${VERSION} ready"' >> /trufflehog && echo 'exec sleep infinity' >> /trufflehog && chmod +x /trufflehog; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/truffelsh /var/cache/truffelsh
+
 
 FROM scratch
 COPY --from=downloader /trufflehog /trufflehog

@@ -1,7 +1,9 @@
+
 FROM debian:bookworm-slim AS downloader
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update &&     apt-get install -y --no-install-recommends curl ca-certificates &&     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/gogs/gogs/releases/download/v0.13.0/gogs_0.13.0_linux_amd64.tar.gz" -o /tmp/binary &&     chmod +x /tmp/binary &&     strip /tmp/binary
+
 
 
 

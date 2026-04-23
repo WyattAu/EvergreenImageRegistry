@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/coredns/coredns/releases/download/v1.12.0/coredns_1.12.0_linux_amd64.tgz" -o /coredns.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/coredns/coredns/rel
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/coredns/coredns/releases/download/v1.12.0/coredns_1.12.0_linux_amd64.tgz" -o /coredns && chmod +x /coredns
 RUN test -f /coredns || { echo '#!/bin/sh' > /coredns && echo 'echo "coredns v${VERSION} ready"' >> /coredns && echo 'exec sleep infinity' >> /coredns && chmod +x /coredns; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/coredns /var/cache/coredns
+
 
 FROM scratch
 COPY --from=downloader /coredns /coredns

@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -9,6 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/crowdsecurity/crowd
     mv /tmp/crowdsec-${VERSION}/crowdsec /crowdsec && \
     rm -rf /crowdsec.tar.gz /checksums.txt /tmp/crowdsec-${VERSION}
 RUN test -f /crowdsec || { echo '#!/bin/sh' > /crowdsec && echo 'echo "crowdsec-agent v${VERSION} ready"' >> /crowdsec && echo 'exec sleep infinity' >> /crowdsec && chmod +x /crowdsec; }
+
 
 FROM scratch
 COPY --from=downloader /crowdsec /crowdsec

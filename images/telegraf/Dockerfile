@@ -9,6 +9,7 @@ ARG VERSION=1.30.3
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -20,7 +21,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.influxdata.com/telegraf/rel
     && strip --strip-all usr/bin/telegraf \
     && mv usr/bin/telegraf /tmp/telegraf
 
+
 FROM scratch
+ARG VERSION=1.30.3
 COPY --from=builder /tmp/telegraf /usr/bin/telegraf
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

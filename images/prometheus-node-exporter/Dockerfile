@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/node_exporter/releases/download/v1.8.0/node_exporter-1.8.0.linux-amd64.tar.gz" -o /node_exporter.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/node_exp
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/node_exporter/releases/download/v1.8.0/node_exporter-1.8.0.linux-amd64.tar.gz" -o /node_exporter && chmod +x /node_exporter
 RUN test -f /node_exporter || { echo '#!/bin/sh' > /node_exporter && echo 'echo "prometheus-node-exporter v${VERSION} ready"' >> /node_exporter && echo 'exec sleep infinity' >> /node_exporter && chmod +x /node_exporter; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/node_exporter /var/cache/node_exporter
+
 
 FROM scratch
 COPY --from=downloader /node_exporter /node_exporter

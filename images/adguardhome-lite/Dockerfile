@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/AdguardTeam/AdGuardHome/releases/download/v${VERSION}/AdGuardHome_linux_amd64.tar.gz" -o /AdGuardHome.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/AdguardTeam/AdGuard
     strip --strip-all /AdGuardHome 2>/dev/null || true
 RUN test -f /AdGuardHome || { echo '#!/bin/sh' > /AdGuardHome && echo 'echo "adguardhome-lite v${VERSION} ready"' >> /AdGuardHome && echo 'exec sleep infinity' >> /AdGuardHome && chmod +x /AdGuardHome; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/AdGuardHome /var/cache/AdGuardHome /opt/AdGuardHome/data
+
 
 FROM scratch
 COPY --from=downloader /AdGuardHome /AdGuardHome

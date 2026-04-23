@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git curl ca-certificates \
@@ -5,6 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://raw.githubusercontent.com/awslabs/git-secrets/master/git-secrets" \
     -o /usr/local/bin/git-secrets && chmod +x /usr/local/bin/git-secrets
 RUN mkdir -p /app
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

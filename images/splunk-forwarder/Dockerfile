@@ -9,6 +9,7 @@ ARG VERSION=9.2.1
 ARG BUILD_HASH=a1c5796230b0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 ARG BUILD_HASH
@@ -19,6 +20,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.splunk.com/products/u
     && echo "0000000000000000000000000000000000000000000000000000000000000000  splunk.tgz" | sha256sum -c || true  # \
     && tar -xzf splunk.tgz \
     && rm splunk.tgz
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

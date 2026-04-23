@@ -8,6 +8,7 @@
 ARG VERSION=8.10.0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-20250113-slim AS builder
 ARG VERSION
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -21,7 +22,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/rqlite/rqlite/relea
     && mv /tmp/rqlite-v${VERSION}-linux-amd64/rqlited /usr/local/bin/rqlited \
     && rm -rf /tmp/rqlite.tgz /tmp/rqlite-v${VERSION}-linux-amd64
 
+
 FROM scratch
+ARG VERSION=8.10.0
 COPY --from=builder /usr/local/bin/rqlite /usr/local/bin/rqlite
 COPY --from=builder /usr/local/bin/rqlited /usr/local/bin/rqlited
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

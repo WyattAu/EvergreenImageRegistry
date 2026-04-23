@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -8,6 +9,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/kanidm/kanidm/relea
     strip --strip-all /kanidm && \
     rm -f /checksums.txt
 RUN test -f /kanidm || { echo '#!/bin/sh' > /kanidm && echo 'echo "kanidm-client v${VERSION} ready"' >> /kanidm && echo 'exec sleep infinity' >> /kanidm && chmod +x /kanidm; }
+
 
 FROM scratch
 COPY --from=downloader /kanidm /kanidm

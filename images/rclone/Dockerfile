@@ -1,7 +1,9 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/rclone/rclone/releases/download/v1.69.1/rclone-v1.69.1-linux-amd64.zip" -o /rclone && chmod +x /rclone
 RUN test -f /rclone || { echo '#!/bin/sh' > /rclone && echo 'echo "rclone v${VERSION} ready"' >> /rclone && echo 'exec sleep infinity' >> /rclone && chmod +x /rclone; }
+
 
 FROM scratch
 COPY --from=downloader /rclone /rclone

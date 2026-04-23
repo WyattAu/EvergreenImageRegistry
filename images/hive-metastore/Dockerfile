@@ -8,6 +8,7 @@ ARG VERSION=4.0.0
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -18,6 +19,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/hive/h
     && echo "PENDING  /tmp/hive.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /tmp/hive.tar.gz -C /opt \
     && rm /tmp/hive.tar.gz
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

@@ -9,6 +9,7 @@ ARG VERSION=23.2.3
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -20,7 +21,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://binaries.cockroachdb.com/cockr
     && strip --strip-all cockroach-v${VERSION}.linux-amd64/cockroach \
     && mv cockroach-v${VERSION}.linux-amd64/cockroach /tmp/cockroach
 
+
 FROM scratch
+ARG VERSION=23.2.3
 COPY --from=builder /tmp/cockroach /usr/local/bin/cockroach
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

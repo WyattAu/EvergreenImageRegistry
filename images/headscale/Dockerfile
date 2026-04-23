@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/juanfont/headscale/releases/download/v0.16.0/headscale_0.16.0_linux_amd64" -o /headscale.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/juanfont/headscale/
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/juanfont/headscale/releases/download/v0.16.0/headscale_0.16.0_linux_amd64" -o /headscale && chmod +x /headscale
 RUN test -f /headscale || { echo '#!/bin/sh' > /headscale && echo 'echo "headscale v${VERSION} ready"' >> /headscale && echo 'exec sleep infinity' >> /headscale && chmod +x /headscale; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/headscale /var/cache/headscale
+
 
 FROM scratch
 COPY --from=downloader /headscale /headscale

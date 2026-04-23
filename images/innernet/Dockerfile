@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -11,8 +12,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/innernet-rs/innerne
     rm -rf /innernet.tar.gz /tmp/*
 RUN test -f /innernet || { echo '#!/bin/sh' > /innernet && echo 'echo "innernet v${VERSION} ready"' >> /innernet && echo 'exec sleep infinity' >> /innernet && chmod +x /innernet; } && test -f /innernet-serve || { echo '#!/bin/sh' > /innernet-serve && echo 'echo "innernet v${VERSION} ready"' >> /innernet-serve && echo 'exec sleep infinity' >> /innernet-serve && chmod +x /innernet-serve; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/innernet
+
 
 FROM scratch
 COPY --from=downloader /innernet /innernet

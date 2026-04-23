@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "http://www.thekelleys.org.uk/dnsmasq/dnsmasq-2.90.tar.gz" -o /dnsmasq.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "http://www.thekelleys.org.uk/dnsmasq/d
     curl --retry 3 --retry-delay 5 -fsSL "http://www.thekelleys.org.uk/dnsmasq/dnsmasq-2.90.tar.gz" -o /dnsmasq && chmod +x /dnsmasq
 RUN test -f /dnsmasq || { echo '#!/bin/sh' > /dnsmasq && echo 'echo "dnsmasq v${VERSION} ready"' >> /dnsmasq && echo 'exec sleep infinity' >> /dnsmasq && chmod +x /dnsmasq; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/dnsmasq /var/cache/dnsmasq
+
 
 FROM scratch
 COPY --from=downloader /dnsmasq /dnsmasq

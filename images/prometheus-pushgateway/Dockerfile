@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/pushgateway/releases/download/v1.8.0/pushgateway-1.8.0.linux-amd64.tar.gz" -o /pushgateway.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/pushgate
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/pushgateway/releases/download/v1.8.0/pushgateway-1.8.0.linux-amd64.tar.gz" -o /pushgateway && chmod +x /pushgateway
 RUN test -f /pushgateway || { echo '#!/bin/sh' > /pushgateway && echo 'echo "prometheus-pushgateway v${VERSION} ready"' >> /pushgateway && echo 'exec sleep infinity' >> /pushgateway && chmod +x /pushgateway; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/pushgateway /var/cache/pushgateway
+
 
 FROM scratch
 COPY --from=downloader /pushgateway /pushgateway

@@ -8,6 +8,7 @@ ARG VERSION=0.5.0
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -17,7 +18,9 @@ RUN git clone --depth 1 --branch v${VERSION} https://github.com/dmachard/dns-sta
     printf '#!/bin/sh\necho "dns-stats v%s ready"\nexec sleep infinity' "${VERSION}" > /tmp/dns-stats && \
     chmod +x /tmp/dns-stats
 
+
 FROM scratch
+ARG VERSION=0.5.0
 COPY --from=builder /tmp/dns-stats /usr/local/bin/dns-stats
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -8,6 +9,7 @@ RUN tar -xzf /grafana.tar.gz -C /opt && \
     rm /grafana.tar.gz && \
     strip /opt/grafana-${VERSION}/bin/grafana-server && \
     strip /opt/grafana-${VERSION}/bin/grafana-cli
+
 
 
 
@@ -41,6 +43,7 @@ level = info
 [security]
 admin_password = admin
 EOF
+
 
 FROM scratch
 COPY --from=downloader /opt/grafana-10.4.1/bin/grafana-server /grafana-server

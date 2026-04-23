@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/vmware-tanzu/tweed/
     chmod +x /tweed && strip --strip-all /tweed 2>/dev/null || true
 RUN test -f /tweed || { echo '#!/bin/sh' > /tweed && echo 'echo "tweed v${VERSION} ready"' >> /tweed && echo 'exec sleep infinity' >> /tweed && chmod +x /tweed; }
 
+
 FROM debian:bookworm-slim AS fallback
 RUN mkdir -p /app /var/log/tweed
+
 
 FROM scratch
 COPY --from=builder /tweed /tweed 2>/dev/null

@@ -1,3 +1,4 @@
+
 FROM scratch
 LABEL org.opencontainers.image.title="amd64" \
       org.opencontainers.image.description="Sovereign hardened amd64 - AMD64 architecture base image" \

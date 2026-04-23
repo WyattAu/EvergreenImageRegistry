@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -7,8 +8,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/jaegertracing/jaege
     mv /tmp/jaeger-1.55.0-linux-amd64/jaeger-agent /jaeger-agent
 RUN test -f /jaeger-agent || { echo '#!/bin/sh' > /jaeger-agent && echo 'echo "jaeger-agent v${VERSION} ready"' >> /jaeger-agent && echo 'exec sleep infinity' >> /jaeger-agent && chmod +x /jaeger-agent; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/jaeger
+
 
 FROM scratch
 COPY --from=downloader /jaeger-agent /jaeger-agent

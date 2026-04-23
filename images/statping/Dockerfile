@@ -1,5 +1,6 @@
 # STATPING - ARCHIVED
 # See: https://github.com/statping/statping
+
 FROM scratch
 LABEL org.opencontainers.image.title="statping" \
       sovereign.image.status="archived" \

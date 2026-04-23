@@ -8,7 +8,9 @@
 ARG VERSION=2.4.0
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=2.4.0
 RUN apk add --no-cache curl ca-certificates
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/milvus-io/milvus/releases/download/v${VERSION}/milvus-standalone_${VERSION}_linux_amd64.tar.gz" -o /tmp/milvus.tar.gz && \
     tar -xzf /tmp/milvus.tar.gz -C /opt && rm /tmp/milvus.tar.gz && \

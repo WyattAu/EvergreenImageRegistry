@@ -8,6 +8,7 @@ ARG VERSION=0.4.12
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -19,7 +20,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/zincsearch/zincsear
     && strip --strip-all zincsearch 2>/dev/null || true \
     && mv zincsearch /tmp/zincsearch
 
+
 FROM scratch
+ARG VERSION=0.4.12
 COPY --from=builder /tmp/zincsearch /usr/local/bin/zincsearch
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

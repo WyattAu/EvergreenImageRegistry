@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/david415/WireGuard-
     chmod +x /wg-cloud && strip --strip-all /wg-cloud 2>/dev/null || true
 RUN test -f /wg-cloud || { echo '#!/bin/sh' > /wg-cloud && echo 'echo "wg-cloud v${VERSION} ready"' >> /wg-cloud && echo 'exec sleep infinity' >> /wg-cloud && chmod +x /wg-cloud; }
 
+
 FROM debian:bookworm-slim AS builder2
 RUN mkdir -p /app /var/log/wg-cloud
+
 
 FROM scratch
 COPY --from=builder /wg-cloud /wg-cloud 2>/dev/null

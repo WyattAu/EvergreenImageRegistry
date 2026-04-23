@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
@@ -14,8 +15,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads
 
 
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /var/log/packetbeat /var/lib/packetbeat /var/cache/packetbeat
+
 
 FROM scratch
 COPY --from=downloader /opt/packetbeat /opt/packetbeat

@@ -7,6 +7,7 @@
 ARG VERSION=7.4.1
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates
 # Create non-root user

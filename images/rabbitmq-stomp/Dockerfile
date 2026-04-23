@@ -8,6 +8,7 @@
 ARG VERSION=3.13.1
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -29,6 +30,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         rabbitmq-server \
     && rabbitmq-plugins enable rabbitmq_stomp \
     && rm -rf /var/lib/apt/lists/*
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

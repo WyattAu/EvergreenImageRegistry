@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.k8s.io/release/v1.30.1/bin/linux/amd64/kube-proxy" -o /kube-proxy && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.k8s.io/release/v1.30.1/bin/
     chmod +x /kube-proxy && strip /kube-proxy
 RUN test -f /kube-proxy || { echo '#!/bin/sh' > /kube-proxy && echo 'echo "kube-proxy v${VERSION} ready"' >> /kube-proxy && echo 'exec sleep infinity' >> /kube-proxy && chmod +x /kube-proxy; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/kube-proxy /var/cache/kube-proxy /var/lib/kube-proxy
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

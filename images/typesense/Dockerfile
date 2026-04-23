@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/typesense/typesense/releases/download/v${VERSION}/typesense-server-${VERSION}-linux-amd64.tar.gz" -o /typesense.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/typesense/typesense
     strip --strip-all /typesense-server 2>/dev/null || true
 RUN test -f /typesense-server || { echo '#!/bin/sh' > /typesense-server && echo 'echo "typesense v${VERSION} ready"' >> /typesense-server && echo 'exec sleep infinity' >> /typesense-server && chmod +x /typesense-server; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/typesense /var/lib/typesense
+
 
 FROM scratch
 COPY --from=downloader /typesense-server /typesense-server

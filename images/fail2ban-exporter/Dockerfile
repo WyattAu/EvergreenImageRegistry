@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -9,6 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/xperimental/fail2ba
     mv /tmp/fail2ban-exporter /fail2ban-exporter && \
     rm -rf /fail2ban-exporter.tar.gz /checksums.txt /tmp/*
 RUN test -f /fail2ban-exporter || { echo '#!/bin/sh' > /fail2ban-exporter && echo 'echo "fail2ban-exporter v${VERSION} ready"' >> /fail2ban-exporter && echo 'exec sleep infinity' >> /fail2ban-exporter && chmod +x /fail2ban-exporter; }
+
 
 FROM scratch
 COPY --from=downloader /fail2ban-exporter /fail2ban-exporter

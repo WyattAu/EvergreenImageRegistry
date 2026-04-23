@@ -8,6 +8,7 @@
 ARG VERSION=21.0.3
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates tar && rm -rf /var/lib/apt/lists/*
@@ -15,6 +16,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://api.adoptium.net/v3/binary/lat
     mkdir -p /opt/jdk && tar -xzf /tmp/jdk.tar.gz -C /opt/jdk --strip-components=1 && rm /tmp/jdk.tar.gz
 RUN useradd -m -u 65532 -s /usr/sbin/nologin java 2>/dev/null || true
 RUN mkdir -p /app /var/log/java /var/cache/java
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

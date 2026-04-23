@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -9,6 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/rocket
     rm -rf /rocketmq.zip /checksums.txt
 
 # hadolint ignore=DL3023
+
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

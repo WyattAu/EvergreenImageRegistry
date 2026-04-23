@@ -1,7 +1,9 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/mickael-kerjean/filestash/releases/download/v0.4.29/filestash-linux-amd64" -o /filestash && chmod +x /filestash
 RUN test -f /filestash || { echo '#!/bin/sh' > /filestash && echo 'echo "filestash v${VERSION} ready"' >> /filestash && echo 'exec sleep infinity' >> /filestash && chmod +x /filestash; }
+
 
 FROM scratch
 COPY --from=downloader /filestash /filestash

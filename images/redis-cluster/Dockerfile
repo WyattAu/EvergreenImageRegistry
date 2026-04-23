@@ -9,6 +9,7 @@ ARG VERSION=7.4.1
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -20,7 +21,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/redis/redis/archive
     && cd redis-${VERSION} && make -j"$(nproc)" redis && strip --strip-all src/redis \
     && cp src/redis /tmp/redis
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=7.4.1
 
 RUN apk add --no-cache ca-certificates
 RUN adduser -u 65532 -s /sbin/nologin redis 2>/dev/null || true

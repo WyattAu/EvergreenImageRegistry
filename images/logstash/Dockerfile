@@ -8,6 +8,7 @@
 ARG VERSION=8.12.2
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -17,6 +18,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads
     && echo "0000000000000000000000000000000000000000000000000000000000000000  logstash.tar.gz" | sha256sum -c || true  # \
     && tar -xzf logstash.tar.gz \
     && rm logstash.tar.gz
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

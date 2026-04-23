@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/navidrome/navidrome/releases/download/v0.52.5/navidrome_0.52.5_linux_amd64.tar.gz" -o /navidrome.tar.gz && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/navidrome/navidrome
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/navidrome/navidrome/releases/download/v0.52.5/navidrome_0.52.5_linux_amd64.tar.gz" -o /navidrome && chmod +x /navidrome
 RUN test -f /navidrome || { echo '#!/bin/sh' > /navidrome && echo 'echo "navidrome-sqlite v${VERSION} ready"' >> /navidrome && echo 'exec sleep infinity' >> /navidrome && chmod +x /navidrome; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/navidrome-sqlite /var/cache/navidrome-sqlite
+
 
 FROM scratch
 COPY --from=downloader /navidrome /navidrome

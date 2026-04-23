@@ -1,11 +1,14 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/robustperception/azure_metrics_exporter/releases/download/v${VERSION}/azure_metrics_exporter-${VERSION}-linux-amd64" -o /azure_metrics_exporter && \
     chmod +x /azure_metrics_exporter
 RUN test -f /azure_metrics_exporter || { echo '#!/bin/sh' > /azure_metrics_exporter && echo 'echo "prometheus-azure-exporter v${VERSION} ready"' >> /azure_metrics_exporter && echo 'exec sleep infinity' >> /azure_metrics_exporter && chmod +x /azure_metrics_exporter; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/azure_exporter /var/cache/azure_exporter
+
 
 FROM scratch
 COPY --from=downloader /azure_metrics_exporter /azure_metrics_exporter

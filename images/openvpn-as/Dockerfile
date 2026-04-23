@@ -8,7 +8,9 @@
 ARG VERSION=2.12.1
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS installer
+ARG VERSION=2.12.1
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates gnupg apt-transport-https && \
     curl --retry 3 --retry-delay 5 -fsSL "https://as-repository.openvpn.net/as-repo-public.asc" | gnupg --dearmor -o /usr/share/keyrings/openvpn-as-repo-keyring.gnupg && \
@@ -17,6 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get install -y --no-install-recommends openvpn-as=${VERSION}-debian12 && \
     rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app /var/log/openvpn-as
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

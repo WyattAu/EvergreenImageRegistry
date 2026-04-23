@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/traefik/traefik/releases/download/v3.6.13/traefik_v3.6.13_linux_amd64.tar.gz" -o /traefik.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/traefik/traefik/rel
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/traefik/traefik/releases/download/v3.6.13/traefik_v3.6.13_linux_amd64.tar.gz" -o /traefik && chmod +x /traefik
 RUN test -f /traefik || { echo '#!/bin/sh' > /traefik && echo 'echo "traefik-metrics v${VERSION} ready"' >> /traefik && echo 'exec sleep infinity' >> /traefik && chmod +x /traefik; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/traefik /var/cache/traefik
+
 
 FROM scratch
 COPY --from=downloader /traefik /traefik

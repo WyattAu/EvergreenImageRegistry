@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates \
@@ -5,6 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN printf '#!/bin/sh\nset -e\necho "=== Docker GC ==="\ndocker image prune -f 2>/dev/null || true\ndocker volume prune -f 2>/dev/null || true\ndocker network prune -f 2>/dev/null || true\ndocker container prune -f 2>/dev/null || true\necho "=== Docker GC Complete ==="\n' > /usr/local/bin/docker-gc && \
     chmod +x /usr/local/bin/docker-gc
 RUN mkdir -p /app
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

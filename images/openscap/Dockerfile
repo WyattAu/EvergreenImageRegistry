@@ -1,8 +1,10 @@
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libopenscap8 openscap-utils scap-security-guide ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

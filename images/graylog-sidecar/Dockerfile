@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
@@ -13,8 +14,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Graylog2/collector-
 
 
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /var/log/sidecar /var/lib/sidecar /var/cache/sidecar
+
 
 FROM scratch
 COPY --from=downloader /opt/sidecar /opt/sidecar

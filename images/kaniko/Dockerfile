@@ -1,10 +1,13 @@
 ARG VERSION=v1.24.0
 ARG BUILD_DATE
 
+
 FROM gcr.io/kaniko-project/executor:v1.24.0 AS upstream
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app /kaniko /var/log/kaniko /var/cache/kaniko
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

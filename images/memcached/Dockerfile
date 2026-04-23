@@ -8,9 +8,11 @@
 ARG VERSION=1.6.26
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN useradd -m -u 65532 -s /usr/sbin/nologin memcached 2>/dev/null || true
 RUN mkdir -p /app /var/log/memcached /var/cache/memcached
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

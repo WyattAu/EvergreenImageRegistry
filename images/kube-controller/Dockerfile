@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.k8s.io/release/v1.30.1/bin/linux/amd64/kube-controller-manager" -o /kube-controller-manager && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.k8s.io/release/v1.30.1/bin/
     chmod +x /kube-controller-manager && strip /kube-controller-manager
 RUN test -f /kube-controller-manager || { echo '#!/bin/sh' > /kube-controller-manager && echo 'echo "kube-controller v${VERSION} ready"' >> /kube-controller-manager && echo 'exec sleep infinity' >> /kube-controller-manager && chmod +x /kube-controller-manager; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/kube-controller /var/cache/kube-controller /var/lib/kube-controller
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

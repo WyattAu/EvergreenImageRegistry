@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -8,9 +9,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/goauthentik/authent
 
 
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache python3-pip ca-certificates libpq
+RUN apk add --no-cache ca-certificates libpq
 COPY --from=downloader /tmp/authentik-proxy /opt/authentik-proxy
 RUN pip3 install --no-cache-dir --break-system-packages /opt/authentik-proxy 2>/dev/null || pip3 install --no-cache-dir /opt/authentik-proxy || true && \
     mkdir -p /app && chown -R 65532:65532 /app /opt/authentik-proxy

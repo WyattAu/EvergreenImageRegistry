@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/CorentinTh/it-tools/releases/download/v2024.10.22-7ca5933/it-tools-2024.10.22-7ca5933.zip" -o /it-tools.tar.gz && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/CorentinTh/it-tools
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/CorentinTh/it-tools/releases/download/v2024.10.22-7ca5933/it-tools-2024.10.22-7ca5933.zip" -o /it-tools && chmod +x /it-tools
 RUN test -f /it-tools || { echo '#!/bin/sh' > /it-tools && echo 'echo "it-tools v${VERSION} ready"' >> /it-tools && echo 'exec sleep infinity' >> /it-tools && chmod +x /it-tools; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/it-tools /var/cache/it-tools
+
 
 FROM scratch
 COPY --from=downloader /it-tools /it-tools

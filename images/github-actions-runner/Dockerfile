@@ -8,6 +8,7 @@
 ARG VERSION=2.316.1
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache curl git ca-certificates
 RUN adduser -u 65532 -G '' -D runner 2>/dev/null || true

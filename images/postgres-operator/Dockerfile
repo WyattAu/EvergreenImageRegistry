@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/zalando/postgres-operator/releases/download/v1.12.0/postgres-operator-1.12.0-linux-amd64.tar.gz" -o /postgres-operator.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/zalando/postgres-op
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/zalando/postgres-operator/releases/download/v1.12.0/postgres-operator-1.12.0-linux-amd64.tar.gz" -o /postgres-operator && chmod +x /postgres-operator
 RUN test -f /postgres-operator || { echo '#!/bin/sh' > /postgres-operator && echo 'echo "postgres-operator v${VERSION} ready"' >> /postgres-operator && echo 'exec sleep infinity' >> /postgres-operator && chmod +x /postgres-operator; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/postgres-operator /var/cache/postgres-operator
+
 
 FROM scratch
 COPY --from=downloader /postgres-operator /postgres-operator

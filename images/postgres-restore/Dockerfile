@@ -8,12 +8,16 @@
 ARG VERSION=17
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=17
 RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-${VERSION}-client xz-utils && \
     mkdir -p /app /backups /var/log/postgres-restore /var/cache/postgres-restore
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=17
 
 RUN apk add --no-cache postgresql-${VERSION}-client curl ca-certificates
 COPY --from=builder --chown=65532:65532 /app /app

@@ -8,8 +8,9 @@
 ARG VERSION=latest
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apk add --no-cache python3-pip git ca-certificates curl build-base
+RUN apk add --no-cache git ca-certificates curl build-base
 RUN git clone --depth 1 --branch vlatest https://github.com/comfyanonymous/ComfyUI.git /opt/comfyui 2>/dev/null || \ 2>/dev/null || echo "Source repo not available - using placeholder"
     git clone --depth 1 https://github.com/comfyanonymous/ComfyUI.git /opt/comfyui 2>/dev/null || echo "Source repo not available - using placeholder"
 RUN cd /opt/comfyui && \

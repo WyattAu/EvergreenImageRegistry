@@ -8,6 +8,7 @@ ARG VERSION=0.1.0
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -26,7 +27,9 @@ RUST; fi \
        cp /tmp/pinned-src/target/x86_64-unknown-linux-musl/release/pinned-search /tmp/pinned-search; fi \
     && strip --strip-all /tmp/pinned-search 2>/dev/null || true
 
+
 FROM scratch
+ARG VERSION=0.1.0
 COPY --from=builder /tmp/pinned-search /usr/local/bin/pinned-search
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

@@ -9,12 +9,14 @@
 ARG VERSION=4.8.1
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && \
     apt-get install -y --no-install-recommends syslog-ng-core && \
     strip /usr/sbin/syslog-ng && \
     find /usr/lib/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true && \
     find /usr/lib/*/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

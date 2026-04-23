@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -15,8 +16,10 @@ RUN tar -xzf /datadog-agent.tar.gz -C /opt && \
 
 
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app/conf /app/run /app/logs /var/log/datadog
+
 
 FROM scratch
 COPY --from=downloader /opt/agent /agent

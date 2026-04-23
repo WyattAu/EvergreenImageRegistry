@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.140.0/vmutils-linux-amd64-v1.140.0.tar.gz" -o /vmagent.tar.gz && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/VictoriaMetrics/Vic
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.140.0/vmutils-linux-amd64-v1.140.0.tar.gz" -o /vmagent && chmod +x /vmagent
 RUN test -f /vmagent || { echo '#!/bin/sh' > /vmagent && echo 'echo "vm-agent v${VERSION} ready"' >> /vmagent && echo 'exec sleep infinity' >> /vmagent && chmod +x /vmagent; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/vmagent /var/cache/vmagent
+
 
 FROM scratch
 COPY --from=downloader /vmagent /vmagent

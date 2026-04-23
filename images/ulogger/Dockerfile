@@ -1,6 +1,8 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app /var/log/ulogger /var/cache/ulogger
+
 
 
 
@@ -14,6 +16,7 @@ WORKDIR /src
 RUN git clone --depth 1 https://github.com/nicehash/ulogger.git /src && \ 2>/dev/null || echo "Source repo not available - using placeholder"
     cd /src && go build -ldflags="-s -w" -o /ulogger .
 RUN strip /ulogger 2>/dev/null || true
+
 
 FROM scratch
 

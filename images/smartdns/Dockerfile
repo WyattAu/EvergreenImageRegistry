@@ -7,7 +7,9 @@
 ARG VERSION=Release48
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=Release48
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-base cmake libssl-dev && \
     rm -rf /var/lib/apt/lists/*
@@ -19,7 +21,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/pymumu/smartdns/arc
     make -j"$(nproc)" && \
     strip --strip-all /smartdns-${VERSION}/src/smartdns
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=Release48
 
 RUN apk add --no-cache ca-certificates
 RUN mkdir -p /app /var/log/smartdns /var/lib/smartdns /etc/smartdns

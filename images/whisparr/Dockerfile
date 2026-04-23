@@ -8,11 +8,13 @@
 ARG VERSION=1.0.0.329
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Whisparr/Whisparr/releases/download/v1.0.0.329/Whisparr.develop.1.0.0.329.linux-core-x64.tar.gz" -o /Whisparr.tar.gz && \
     tar -xzf /Whisparr.tar.gz -C /app && rm /Whisparr.tar.gz && chmod +x /app/Whisparr 2>/dev/null || \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Whisparr/Whisparr/releases/download/v1.0.0.329/Whisparr.develop.1.0.0.329.linux-core-x64.tar.gz" -o /app/Whisparr && chmod +x /app/Whisparr
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

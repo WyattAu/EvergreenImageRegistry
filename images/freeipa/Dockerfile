@@ -8,6 +8,7 @@
 ARG VERSION=4.12.0
 ARG BUILD_DATE
 
+
 FROM scratch
 LABEL org.opencontainers.image.title="freeipa" \
       org.opencontainers.image.version="4.12.0" \

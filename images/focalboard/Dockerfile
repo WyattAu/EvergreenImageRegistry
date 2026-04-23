@@ -5,6 +5,7 @@
 # See: images/mattermost/
 # =============================================================================
 
+
 FROM scratch
 LABEL org.opencontainers.image.title="focalboard" \
       org.opencontainers.image.description="DEPRECATED: Focalboard merged into Mattermost as 'Boards' plugin. See images/mattermost/." \

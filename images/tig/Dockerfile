@@ -8,7 +8,9 @@
 ARG VERSION=2.5.8
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=2.5.8
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-base libncurses-dev zlib1g-dev git curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
@@ -19,7 +21,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/jonas/tig/releases/
     make -j"$(nproc)" && \
     strip --strip-all /tig-${VERSION}/src/tig
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=2.5.8
 
 RUN apk add --no-cache zlib ca-certificates git
 RUN mkdir -p /app /var/log/tig

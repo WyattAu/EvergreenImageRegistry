@@ -8,6 +8,7 @@
 ARG VERSION=7.3.10
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -18,6 +19,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/questdb/questdb/rel
     && echo "PENDING  /questdb.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /questdb.tar.gz -C /opt \
     && rm /questdb.tar.gz
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

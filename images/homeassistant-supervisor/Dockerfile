@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip python3 git ca-certificates curl jq \
@@ -7,6 +8,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir git+https://github.com/home-assistant/supervisor.git@main
 RUN mkdir -p /data /app
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

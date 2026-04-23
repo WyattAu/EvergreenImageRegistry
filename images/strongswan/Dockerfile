@@ -8,6 +8,7 @@
 ARG VERSION=5.9.14
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS installer
 RUN apt-get update && apt-get install -y --no-install-recommends \
     strongswan strongswan-pki libcharon-extra-plugins \
@@ -18,6 +19,7 @@ RUN mkdir -p /app /var/log/strongswan /var/run/charon /etc/strongswan.d && \
     find /usr -type f -executable -name "strongswan*" -exec strip --strip-all {} \; 2>/dev/null || true && \
     find /usr -type f -executable -name "pki" -exec strip --strip-all {} \; 2>/dev/null || true && \
     find /usr -type f -executable -name "swanctl" -exec strip --strip-all {} \; 2>/dev/null || true
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

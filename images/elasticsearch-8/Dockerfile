@@ -8,7 +8,9 @@
 ARG VERSION=8.12.2
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=8.12.2
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates openjdk-17-jre-base && \
     curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-linux-x86_64.tar.gz" \
@@ -19,7 +21,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /opt/elasticsearch-${VERSION}/jdk && \
     mkdir -p /app /var/log/elasticsearch /var/cache/elasticsearch /var/lib/elasticsearch
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=8.12.2
 
 RUN apk add --no-cache curl ca-certificates
 COPY --from=builder /opt/elasticsearch-${VERSION} /opt/elasticsearch

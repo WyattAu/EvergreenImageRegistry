@@ -8,6 +8,7 @@ ARG VERSION=2.8.13
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -20,6 +21,7 @@ RUN git clone --depth 1 --branch v${VERSION} \ 2>/dev/null || echo "Source repo 
     && make -j"$(nproc)" \
     && strip --strip-all /tmp/redisearch-src/bin/redisearch.so 2>/dev/null || true
 
+
 FROM debian:bookworm-slim AS redis
 RUN apt-get update && apt-get install -y --no-install-recommends \
     redis-server ca-certificates && \
@@ -27,7 +29,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN useradd -m -u 65532 -s /usr/sbin/nologin redis 2>/dev/null || true
 RUN mkdir -p /var/lib/redis /var/log/redis /var/cache/redis
 
+
 FROM scratch
+ARG VERSION=2.8.13
 
 RUN adduser -u 65532 -s /sbin/nologin redis 2>/dev/null || true
 RUN mkdir -p /var/lib/redis /var/log/redis /var/cache/redis /opt/redis/modules

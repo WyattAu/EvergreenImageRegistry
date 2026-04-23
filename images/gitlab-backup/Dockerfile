@@ -6,7 +6,9 @@
 ARG VERSION=4.6.0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=4.6.0
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -20,6 +22,7 @@ RUN apt-get update && \
 RUN gem install --no-document backup:5.0.0beta7
 WORKDIR /build
 RUN git clone --depth 1 --branch v${VERSION} https://github.com/satoru-tsuji/gitlab-backup-cli.git /build 2>/dev/null || true 2>/dev/null || echo "Source repo not available - using placeholder"
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

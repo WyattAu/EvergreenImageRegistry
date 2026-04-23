@@ -7,7 +7,9 @@
 ARG VERSION=latest
 ARG BUILD_DATE
 
+
 FROM lscr.io/linuxserver/prowlarr:${VERSION}
+ARG VERSION=latest
 
 # Apply sovereignty hardening
 USER root

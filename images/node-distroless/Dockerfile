@@ -1,7 +1,9 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://nodejs.org/dist/v22.12.0/node-v22.12.0-linux-x64.tar.xz" -o /node.tar.xz && \
     mkdir -p /opt/node && tar -xf /node.tar.xz -C /opt/node --strip-components=1 && rm /node.tar.xz
+
 
 
 

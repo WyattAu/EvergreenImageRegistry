@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -7,6 +8,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/sigstore/fulcio/rel
     strip --strip-all /fulcio && \
     rm -f /fulcio.sig
 RUN test -f /fulcio || { echo '#!/bin/sh' > /fulcio && echo 'echo "fulcio v${VERSION} ready"' >> /fulcio && echo 'exec sleep infinity' >> /fulcio && chmod +x /fulcio; }
+
 
 FROM scratch
 COPY --from=downloader /fulcio /fulcio

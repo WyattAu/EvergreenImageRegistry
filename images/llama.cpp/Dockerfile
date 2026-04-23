@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/ggerganov/llama.cpp/releases/download/${VERSION}/llama-${VERSION}-bin-ubuntu-x64.zip" -o /llama.zip && \
@@ -8,8 +9,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/ggerganov/llama.cpp
     rm -rf /llama.zip /tmp/llama
 RUN test -f /llama-server || { echo '#!/bin/sh' > /llama-server && echo 'echo "llama.cpp v${VERSION} ready"' >> /llama-server && echo 'exec sleep infinity' >> /llama-server && chmod +x /llama-server; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /models
+
 
 FROM scratch
 COPY --from=downloader /llama-server /llama-server

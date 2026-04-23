@@ -8,6 +8,7 @@
 ARG VERSION=1.3.0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS installer
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ocserv gnutls-bin && \
@@ -16,6 +17,7 @@ RUN mkdir -p /app /var/log/ocserv /run/ocserv && \
     strip --strip-all /usr/sbin/ocserv 2>/dev/null || true && \
     strip --strip-all /usr/bin/occtl 2>/dev/null || true && \
     strip --strip-all /usr/bin/ocpasswd 2>/dev/null || true
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

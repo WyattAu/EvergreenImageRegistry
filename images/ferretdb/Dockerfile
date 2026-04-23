@@ -8,6 +8,7 @@
 ARG VERSION=1.21.0
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-20250113-slim AS builder
 ARG VERSION
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -19,7 +20,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/FerretDB/FerretDB/r
     && mv /tmp/ferretdb /usr/local/bin/ferretdb \
     && rm -rf /tmp/ferretdb.tgz
 
+
 FROM scratch
+ARG VERSION=1.21.0
 COPY --from=builder /usr/local/bin/ferretdb /usr/local/bin/ferretdb
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

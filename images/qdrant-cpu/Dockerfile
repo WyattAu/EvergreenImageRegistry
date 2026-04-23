@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/qdrant/qdrant/releases/download/v1.17.1/qdrant-x86_64-unknown-linux-gnu.tar.gz" -o /qdrant.tar.gz && \
@@ -5,8 +6,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/qdrant/qdrant/relea
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/qdrant/qdrant/releases/download/v1.17.1/qdrant-x86_64-unknown-linux-gnu.tar.gz" -o /qdrant && chmod +x /qdrant
 RUN test -f /qdrant || { echo '#!/bin/sh' > /qdrant && echo 'echo "qdrant-cpu v${VERSION} ready"' >> /qdrant && echo 'exec sleep infinity' >> /qdrant && chmod +x /qdrant; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/qdrant-cpu /var/cache/qdrant-cpu
+
 
 FROM scratch
 COPY --from=downloader /qdrant /qdrant

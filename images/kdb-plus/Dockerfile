@@ -4,6 +4,7 @@
 # Enhanced version with additional features over base KDB.
 # =============================================================================
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates tzdata curl
 

@@ -8,6 +8,7 @@ ARG VERSION=2.4.4
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -18,6 +19,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.rethinkdb.com/reposit
     && echo "PENDING  /tmp/rethinkdb.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /tmp/rethinkdb.tar.gz -C /opt \
     && strip --strip-all /opt/rethinkdb-*/bin/rethinkdb 2>/dev/null || true
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

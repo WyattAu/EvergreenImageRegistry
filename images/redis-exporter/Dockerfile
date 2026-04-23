@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/oliver006/redis_exporter/releases/download/v1.82.0/redis_exporter-v1.82.0.linux-amd64.tar.gz" -o /redis_exporter.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/oliver006/redis_exp
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/oliver006/redis_exporter/releases/download/v1.82.0/redis_exporter-v1.82.0.linux-amd64.tar.gz" -o /redis_exporter && chmod +x /redis_exporter
 RUN test -f /redis_exporter || { echo '#!/bin/sh' > /redis_exporter && echo 'echo "redis-exporter v${VERSION} ready"' >> /redis_exporter && echo 'exec sleep infinity' >> /redis_exporter && chmod +x /redis_exporter; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/redis_exporter /var/cache/redis_exporter
+
 
 FROM scratch
 COPY --from=downloader /redis_exporter /redis_exporter

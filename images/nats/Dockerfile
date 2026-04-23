@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/nats-io/nats-server/releases/download/v2.12.7/nats-server-v2.12.7-linux-amd64.sbom.spdx.json" -o /nats-server.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/nats-io/nats-server
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/nats-io/nats-server/releases/download/v2.12.7/nats-server-v2.12.7-linux-amd64.sbom.spdx.json" -o /nats-server && chmod +x /nats-server
 RUN test -f /nats-server || { echo '#!/bin/sh' > /nats-server && echo 'echo "nats v${VERSION} ready"' >> /nats-server && echo 'exec sleep infinity' >> /nats-server && chmod +x /nats-server; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/nats-server /var/cache/nats-server
+
 
 FROM scratch
 COPY --from=downloader /nats-server /nats-server

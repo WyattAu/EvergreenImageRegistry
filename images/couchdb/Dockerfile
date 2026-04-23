@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -5,6 +6,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/couchdb/sourc
 
 # hadolint ignore=DL3023
 RUN test -f /couchdb.tar.gz || { echo '#!/bin/sh' > /couchdb.tar.gz && echo 'echo "couchdb v${VERSION} ready"' >> /couchdb.tar.gz && echo 'exec sleep infinity' >> /couchdb.tar.gz && chmod +x /couchdb.tar.gz; }
+
 
 FROM debian:bookworm-slim AS builder
 COPY --from=downloader /couchdb.tar.gz /tmp/couchdb.tar.gz
@@ -36,9 +38,11 @@ RUN tar -xzf /tmp/couchdb.tar.gz -C /tmp && \
 
 # hadolint ignore=DL3023
 
-FROM go-1.23:1.23-alpine AS health-shim-builder
+
+FROM golang:1.23-alpine AS health-shim-builder
 COPY images/health-shim/go.mod images/health-shim/main.go /build/
 RUN cd /build && CGO_ENABLED=0 go build -ldflags="-s -w" -o /health-shim .
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 COPY --from=health-shim-builder /health-shim /usr/local/bin/health-shim
 ENV HEALTH_CMD="curl -sf http://localhost:5984/_up" \

@@ -8,7 +8,9 @@
 ARG VERSION=7.17.21
 ARG BUILD_DATE
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=7.17.21
 RUN apk add --no-cache curl ca-certificates && \
     curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-linux-x86_64.tar.gz" | \
     tar xz -C /opt && \

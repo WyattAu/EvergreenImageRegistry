@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-base gnupg && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/sbt/sbt/releases/download/v1.10.6/sbt-1.10.6.tgz" -o /sbt.tgz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/sbt/sbt/releases/do
 
 
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/sbt /var/cache/sbt /home/sbt
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

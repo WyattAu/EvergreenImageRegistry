@@ -1,6 +1,7 @@
 ARG VERSION=7.1
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-base pkgconf yasm nasm \
@@ -21,6 +22,7 @@ RUN git clone --depth 1 --branch n{version} \ 2>/dev/null || echo "Source repo n
         --enable-libwebp --enable-libxvid --enable-libtheora \
         --extra-cflags="-I/usr/include" --extra-ldflags="-L/usr/lib" && \
     make -j$(nproc) && make install && strip /usr/local/bin/ffmpeg /usr/local/bin/ffprobe
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

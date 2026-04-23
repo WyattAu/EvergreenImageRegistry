@@ -5,6 +5,7 @@
 # For application images, use debian-slim, distroless, or scratch instead.
 # =============================================================================
 
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates tzdata

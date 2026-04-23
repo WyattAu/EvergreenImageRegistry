@@ -1,5 +1,6 @@
 ARG BUILD_DATE
 
+
 FROM scratch
 LABEL org.opencontainers.image.title="wave" \
       sovereign.image.tier="2" \

@@ -7,7 +7,9 @@
 ARG VERSION=5.7.6
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
+ARG VERSION=5.7.6
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-base cmake libssl-dev libluajit-5.1-dev libsystemd-dev \
     libuv1-dev libnghttp2-dev meson pkgconf git ca-certificates && \
@@ -19,6 +21,7 @@ RUN cd /knot-resolver && \
     -Dclient=enabled -Dpostinst=disabled && \
     meson compile -C build -j"$(nproc)" && \
     strip --strip-all /knot-resolver/build/kresd 2>/dev/null || true
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

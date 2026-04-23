@@ -8,6 +8,7 @@
 ARG VERSION=3.13.1
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -31,6 +32,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         -o /usr/lib/rabbitmq/plugins/rabbitmq_delayed_message_exchange-3.13.0.ez \
     && rabbitmq-plugins enable rabbitmq_delayed_message_exchange \
     && rm -rf /var/lib/apt/lists/*
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

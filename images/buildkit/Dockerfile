@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/moby/buildkit/releases/download/v0.20.0/buildkit-v0.20.0.linux-amd64.tar.gz" -o /buildkit.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/moby/buildkit/relea
 
 
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/buildkit /var/cache/buildkit /var/lib/buildkit
+
 
 FROM scratch
 

@@ -1,7 +1,9 @@
+
 FROM debian:bookworm-slim AS downloader
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update &&     apt-get install -y --no-install-recommends curl ca-certificates &&     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/harness/drone/releases/download/v2.28.1/drone_linux_amd64.tar.gz" -o /tmp/archive.tar.gz &&     tar -xzf /tmp/archive.tar.gz -C /tmp &&     mv /tmp/drone-autoscaler /tmp/drone-autoscaler_stripped &&     strip /tmp/drone-autoscaler_stripped &&     chmod +x /tmp/drone-autoscaler_stripped
+
 
 
 

@@ -8,9 +8,11 @@
 ARG VERSION=3.4.2
 ARG BUILD_DATE
 
+
 FROM debian:bookworm-slim AS builder
 RUN useradd -m -u 65532 -s /usr/sbin/nologin postgres 2>/dev/null || true
 RUN mkdir -p /app /var/log/postgres /var/cache/postgres
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

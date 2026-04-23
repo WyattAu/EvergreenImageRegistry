@@ -8,6 +8,7 @@ ARG VERSION=2.16.0
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
+
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
@@ -18,6 +19,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/ignite/${VERS
     && echo "PENDING  /tmp/ignite.zip" | sha256sum -c || true  # \
     && unzip -q /tmp/ignite.zip -d /opt \
     && rm /tmp/ignite.zip
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

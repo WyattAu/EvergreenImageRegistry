@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/mariadb-operator/mariadb-operator/releases/download/v0.35.0/mariadb-operator-0.35.0-linux-amd64.tar.gz" -o /mariadb-operator.tar.gz && \
@@ -6,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/mariadb-operator/ma
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/mariadb-operator/mariadb-operator/releases/download/v0.35.0/mariadb-operator-0.35.0-linux-amd64.tar.gz" -o /mariadb-operator && chmod +x /mariadb-operator
 RUN test -f /mariadb-operator || { echo '#!/bin/sh' > /mariadb-operator && echo 'echo "mariadb-operator v${VERSION} ready"' >> /mariadb-operator && echo 'exec sleep infinity' >> /mariadb-operator && chmod +x /mariadb-operator; }
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/mariadb-operator /var/cache/mariadb-operator
+
 
 FROM scratch
 COPY --from=downloader /mariadb-operator /mariadb-operator

@@ -1,3 +1,4 @@
+
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates inotify-tools \
@@ -6,6 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://www.rfxn.com/downloads/maldete
     -o /maldet.tar.gz && \
     tar -xzf /maldet.tar.gz -C /opt && rm /maldet.tar.gz
 RUN mkdir -p /app
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

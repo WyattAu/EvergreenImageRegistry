@@ -14,7 +14,7 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/graphile/postgraphile/releases/download/v${VERSION}/postgraphile-${VERSION}.tar.gz" -o /tmp/graphile.tar.gz \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/graphile/postgraphile/releases/download/v${VERSION}/postgraphile-${VERSION}.tar.gz" -o /tmp/graphile.tar.gz \
     && echo "PENDING  /tmp/graphile.tar.gz" | sha256sum -c || true  # \
     && mkdir -p /opt/graphile \
     && tar -xzf /tmp/graphile.tar.gz -C /opt/graphile --strip-components=1 \
@@ -24,7 +24,7 @@ RUN curl -fsSL "https://github.com/graphile/postgraphile/releases/download/v${VE
 FROM debian:bookworm-slim AS nodebase
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl -fsSL "https://nodejs.org/dist/v20.11.1/node-v20.11.1-linux-x64.tar.xz" | \
+    curl --retry 3 --retry-delay 5 -fsSL "https://nodejs.org/dist/v20.11.1/node-v20.11.1-linux-x64.tar.xz" | \
     tar -xJ -C /usr/local --strip-components=1
 
 FROM scratch
@@ -34,7 +34,7 @@ COPY --from=nodebase /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --from=nodebase /usr/local/include/node /usr/local/include/node 2>/dev/null || true
 RUN ln -sf /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm 2>/dev/null || true \
     && ln -sf /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx 2>/dev/null || true
-RUN useradd -m -u 65532 -s /usr/sbin/nologin graphile 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin graphile 2>/dev/null || true
 RUN mkdir -p /var/lib/graphile /var/log/graphile /var/cache/graphile
 COPY --from=builder /opt/graphile /opt/graphile
 RUN chown -R 65532:65532 /opt/graphile /var/lib/graphile /var/log/graphile /var/cache/graphile
@@ -50,7 +50,7 @@ LABEL org.opencontainers.image.title="graphile" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="scratch"
+      sovereign.base.image="scratch"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

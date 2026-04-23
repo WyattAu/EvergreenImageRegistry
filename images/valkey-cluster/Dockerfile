@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/valkey-io/valkey/releases/download/${VERSION}/valkey-${VERSION}.tar.gz" \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/valkey-io/valkey/releases/download/${VERSION}/valkey-${VERSION}.tar.gz" \
     -o /valkey.tar.gz && \
     echo "PENDING_CHECKSUM  /valkey.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /valkey.tar.gz -C / && rm /valkey.tar.gz && \
@@ -22,7 +22,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates
 COPY --from=builder /install/bin/ /usr/local/bin/
 COPY --from=builder /valkey-${VERSION}/valkey.conf /app/valkey.conf
-RUN useradd -m -u 65532 -s /usr/sbin/nologin valkey 2>/dev/null || true && \
+RUN useradd -m -u 65532 -s /sbin/nologin valkey 2>/dev/null || true && \
     mkdir -p /app /var/log/valkey-cluster /var/cache/valkey-cluster /var/lib/valkey && \
     chown -R 65532:65532 /app /var/log/valkey-cluster /var/cache/valkey-cluster /var/lib/valkey
 USER 65532:65532
@@ -42,7 +42,7 @@ LABEL org.opencontainers.image.title="valkey-cluster" \
       org.opencontainers.image.source="https://github.com/valkey-io/valkey" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

@@ -9,9 +9,9 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates tar && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/tektoncd/pipeline/releases/download/${VERSION}/tekton-linux-amd64_${VERSION#v}.tar.gz" -o /tekton.tar.gz 2>/dev/null || \
-    curl -fsSL "https://github.com/tektoncd/pipeline/releases/download/${VERSION}/tekton-linux-amd64.tar.gz" -o /tekton.tar.gz 2>/dev/null || \
-    curl -fsSL "https://github.com/tektoncd/pipeline/releases/download/${VERSION}/release.notags.tar.gz" -o /tekton.tar.gz 2>/dev/null
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/tektoncd/pipeline/releases/download/${VERSION}/tekton-linux-amd64_${VERSION#v}.tar.gz" -o /tekton.tar.gz 2>/dev/null || \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/tektoncd/pipeline/releases/download/${VERSION}/tekton-linux-amd64.tar.gz" -o /tekton.tar.gz 2>/dev/null || \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/tektoncd/pipeline/releases/download/${VERSION}/release.notags.tar.gz" -o /tekton.tar.gz 2>/dev/null
 RUN tar -xzf /tekton.tar.gz -C /tmp 2>/dev/null; \
     find /tmp -name "tekton-*" -type f -executable 2>/dev/null | head -1 | xargs -I{} cp {} /tekton 2>/dev/null || true
 

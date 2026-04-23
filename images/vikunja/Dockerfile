@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/go-vikunja/vikunja/releases/download/v2.3.0/vikunja-v2.3.0-linux-amd64-full.zip" -o /vikunja.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/go-vikunja/vikunja/releases/download/v2.3.0/vikunja-v2.3.0-linux-amd64-full.zip" -o /vikunja.tar.gz && \
     tar -xzf /vikunja.tar.gz -C / && rm /vikunja.tar.gz && chmod +x /vikunja 2>/dev/null || \
-    curl -fsSL "https://github.com/go-vikunja/vikunja/releases/download/v2.3.0/vikunja-v2.3.0-linux-amd64-full.zip" -o /vikunja && chmod +x /vikunja
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/go-vikunja/vikunja/releases/download/v2.3.0/vikunja-v2.3.0-linux-amd64-full.zip" -o /vikunja && chmod +x /vikunja
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/vikunja /var/cache/vikunja

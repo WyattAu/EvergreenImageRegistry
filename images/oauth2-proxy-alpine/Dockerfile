@@ -12,7 +12,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v${VERSION}/oauth2-proxy-v${VERSION}.linux-amd64.tar.gz" -o /oauth2-proxy.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v${VERSION}/oauth2-proxy-v${VERSION}.linux-amd64.tar.gz" -o /oauth2-proxy.tar.gz && \
     mkdir -p /tmp/oauth2-proxy && \
     tar -xzf /oauth2-proxy.tar.gz -C /tmp/oauth2-proxy && \
     strip --strip-all /tmp/oauth2-proxy/oauth2-proxy-v${VERSION}.linux-amd64 && \

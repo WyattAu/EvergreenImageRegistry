@@ -13,7 +13,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/gravitl/netmaker/releases/download/v0.24.0/netclient-linux-amd64" -o /netclient && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/gravitl/netmaker/releases/download/v0.24.0/netclient-linux-amd64" -o /netclient && \
     strip --strip-all /netclient && \
     chmod +x /netclient
 

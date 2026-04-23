@@ -1,6 +1,6 @@
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/michenriksen/gitrob/releases/download/v2.0.0/gitrob_linux_amd64" -o /gitrob && chmod +x /gitrob && strip /gitrob
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/michenriksen/gitrob/releases/download/v2.0.0/gitrob_linux_amd64" -o /gitrob && chmod +x /gitrob && strip /gitrob
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/gitrob /var/cache/gitrob

@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/CorentinTh/it-tools/releases/download/v2024.10.22-7ca5933/it-tools-2024.10.22-7ca5933.zip" -o /it-tools.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/CorentinTh/it-tools/releases/download/v2024.10.22-7ca5933/it-tools-2024.10.22-7ca5933.zip" -o /it-tools.tar.gz && \
     tar -xzf /it-tools.tar.gz -C / && rm /it-tools.tar.gz && chmod +x /it-tools 2>/dev/null || \
-    curl -fsSL "https://github.com/CorentinTh/it-tools/releases/download/v2024.10.22-7ca5933/it-tools-2024.10.22-7ca5933.zip" -o /it-tools && chmod +x /it-tools
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/CorentinTh/it-tools/releases/download/v2024.10.22-7ca5933/it-tools-2024.10.22-7ca5933.zip" -o /it-tools && chmod +x /it-tools
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/it-tools /var/cache/it-tools

@@ -1,6 +1,6 @@
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/clonezilla/keynuker/releases/download/v0.1.0/keynuker_0.1.0_linux_amd64" -o /keynuker && chmod +x /keynuker && strip /keynuker
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/clonezilla/keynuker/releases/download/v0.1.0/keynuker_0.1.0_linux_amd64" -o /keynuker && chmod +x /keynuker && strip /keynuker
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/keynuker /var/cache/keynuker

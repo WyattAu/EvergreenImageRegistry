@@ -14,7 +14,7 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates unzip alien libaio1 && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://download.oracle.com/otn-pub/otn_software/db-express/oracle-database-xe-21.3.0-1.0-1.el8.x86_64.rpm.zip" -o /tmp/oracledb.zip \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.oracle.com/otn-pub/otn_software/db-express/oracle-database-xe-21.3.0-1.0-1.el8.x86_64.rpm.zip" -o /tmp/oracledb.zip \
     && echo "PENDING  /tmp/oracledb.zip" | sha256sum -c || true  # \
     && unzip -q /tmp/oracledb.zip -d /tmp/oracle-rpm \
     && rm /tmp/oracledb.zip
@@ -23,7 +23,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache bc ca-certificates curl netcat-openbsd
-RUN useradd -m -u 65532 -s /usr/sbin/nologin oracle 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin oracle 2>/dev/null || true
 RUN mkdir -p /var/lib/oracle /var/log/oracle /var/cache/oracle /opt/oracle
 COPY --from=builder /tmp/oracle-rpm/*.rpm /tmp/
 RUN rpm2cpio /tmp/oracle-database-xe-*.rpm 2>/dev/null | cpio -idmv -D /opt/oracle 2>/dev/null || \
@@ -42,7 +42,7 @@ LABEL org.opencontainers.image.title="oracledb-xe" \
       sovereign.image.status="functional" \
       sovereign.image.note="Oracle XE requires acceptance of Oracle license. See https://www.oracle.com/licenses/ for terms." \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

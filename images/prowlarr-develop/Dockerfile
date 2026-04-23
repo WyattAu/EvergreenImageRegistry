@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/Prowlarr/Prowlarr/releases/download/v1.29.0/Prowlarr.develop.1.29.0.linux-core-x64.tar.gz" -o /Prowlarr.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Prowlarr/Prowlarr/releases/download/v1.29.0/Prowlarr.develop.1.29.0.linux-core-x64.tar.gz" -o /Prowlarr.tar.gz && \
     tar -xzf /Prowlarr.tar.gz -C /app && rm /Prowlarr.tar.gz && chmod +x /app/Prowlarr 2>/dev/null || \
-    curl -fsSL "https://github.com/Prowlarr/Prowlarr/releases/download/v1.29.0/Prowlarr.develop.1.29.0.linux-core-x64.tar.gz" -o /app/Prowlarr && chmod +x /app/Prowlarr
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Prowlarr/Prowlarr/releases/download/v1.29.0/Prowlarr.develop.1.29.0.linux-core-x64.tar.gz" -o /app/Prowlarr && chmod +x /app/Prowlarr
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
@@ -30,7 +30,7 @@ LABEL org.opencontainers.image.title="prowlarr-develop" \
       org.opencontainers.image.source="https://github.com/Prowlarr/Prowlarr/releases" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

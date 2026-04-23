@@ -9,7 +9,7 @@
 ARG VERSION=8.2312.0
 ARG BUILD_DATE
 
-FROM debian:bookworm-20240101-slim AS builder
+FROM debian:bookworm-slim AS builder
 RUN apt-get update && \
     apt-get install -y --no-install-recommends rsyslog && \
     strip /usr/sbin/rsyslogd && \
@@ -18,7 +18,7 @@ RUN apt-get update && \
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN groupadd -g 65532 rsyslog && \
-    useradd -m -u 65532 -g rsyslog -s /usr/sbin/nologin rsyslog
+    useradd -m -u 65532 -g rsyslog -s /sbin/nologin rsyslog
 RUN apk add --no-cache rsyslog ca-certificates
 COPY --from=builder /usr/sbin/rsyslogd /usr/sbin/rsyslogd
 RUN mkdir -p /app/conf /app/logs /app/run /app/spool /var/lib/rsyslog && \

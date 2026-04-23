@@ -10,7 +10,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS jre-builder
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jre/hotspot/normal/eclipse" -o /tmp/jre.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jre/hotspot/normal/eclipse" -o /tmp/jre.tar.gz && \
     mkdir -p /opt/jre && \
     tar -xzf /tmp/jre.tar.gz -C /opt/jre --strip-components=1 && \
     rm /tmp/jre.tar.gz
@@ -21,11 +21,11 @@ RUN apk add --no-cache ca-certificates tzdata curl
 COPY --from=jre-builder /opt/jre /opt/jre
 ENV JAVA_HOME="/opt/jre"
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
-RUN curl -fsSL "https://search.maven.org/remotecontent?filepath=io/zipkin/zipkin-server/${VERSION}/zipkin-server-${VERSION}-exec.jar" -o /opt/zipkin/zipkin.jar || \
-    curl -fsSL "https://github.com/openzipkin/zipkin/releases/download/${VERSION}/zipkin.jar" -o /opt/zipkin.jar
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://search.maven.org/remotecontent?filepath=io/zipkin/zipkin-server/${VERSION}/zipkin-server-${VERSION}-exec.jar" -o /opt/zipkin/zipkin.jar || \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/openzipkin/zipkin/releases/download/${VERSION}/zipkin.jar" -o /opt/zipkin.jar
 RUN mkdir -p /opt/zipkin /var/log/zipkin && \
     groupadd -g 65532 -r zipkin 2>/dev/null || true && \
-    useradd -r -u 65532 -g zipkin -d /opt/zipkin -s /sbin/nologin zipkin 2>/dev/null || true && \
+    adduser -u 65532 -G zipkin -D -h /opt/zipkin -s /sbin/nologin zipkin 2>/dev/null || true && \
     chown -R 65532:65532 /opt/zipkin /var/log/zipkin
 USER 65532:65532
 WORKDIR /opt/zipkin
@@ -40,7 +40,7 @@ LABEL org.opencontainers.image.title="zipkin" \
       sovereign.image.status="functional" \
       sovereign.image.category="observability" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

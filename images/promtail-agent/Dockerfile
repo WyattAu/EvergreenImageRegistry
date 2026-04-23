@@ -8,7 +8,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/grafana/loki/releases/download/v${VERSION}/promtail-linux-amd64.zip" -o /promtail.zip && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/grafana/loki/releases/download/v${VERSION}/promtail-linux-amd64.zip" -o /promtail.zip && \
     unzip -o /promtail.zip -d /tmp && \
     chmod +x /tmp/promtail-linux-amd64 && \
     mv /tmp/promtail-linux-amd64 /promtail

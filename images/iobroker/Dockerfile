@@ -10,7 +10,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache nodejs npm ca-certificates
 COPY --from=builder /opt/iobroker /opt/iobroker
 COPY --from=builder /app /app
-RUN useradd -r -u 65532 -g nogroup -d /opt/iobroker -s /sbin/nologin iobroker 2>/dev/null || true && \
+RUN adduser -u 65532 -G nogroup -D -h /opt/iobroker -s /sbin/nologin iobroker 2>/dev/null || true && \
     chown -R 65532:65532 /opt/iobroker /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/iobroker
@@ -23,7 +23,7 @@ LABEL org.opencontainers.image.title="iobroker" \
       org.opencontainers.image.source="https://github.com/ioBroker/ioBroker" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

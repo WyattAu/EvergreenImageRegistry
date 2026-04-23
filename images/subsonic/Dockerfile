@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/subsonic/subsonic/releases/download/v6.17.1/subsonic-6.17.1.jar" -o /app/subsonic-6.17.1.jar
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/subsonic/subsonic/releases/download/v6.17.1/subsonic-6.17.1.jar" -o /app/subsonic-6.17.1.jar
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
@@ -28,7 +28,7 @@ LABEL org.opencontainers.image.title="subsonic" \
       org.opencontainers.image.source="https://github.com/subsonic/subsonic/releases" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

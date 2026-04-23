@@ -3,7 +3,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/minio/console/releases/download/v0.35.0/console-linux-amd64" -o /console && chmod +x /console
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/minio/console/releases/download/v0.35.0/console-linux-amd64" -o /console && chmod +x /console
 
 FROM scratch
 COPY --from=downloader /console /console

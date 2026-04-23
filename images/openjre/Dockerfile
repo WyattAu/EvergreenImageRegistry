@@ -8,7 +8,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates tzdata curl dumb-init
 
 ARG JRE_VERSION=21.0.5+11
-RUN curl -fsSL "https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jre/hotspot/normal/eclipse" -o /tmp/jre.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jre/hotspot/normal/eclipse" -o /tmp/jre.tar.gz && \
     mkdir -p /opt/jre && \
     tar -xzf /tmp/jre.tar.gz -C /opt/jre --strip-components=1 && \
     rm /tmp/jre.tar.gz && \
@@ -18,7 +18,7 @@ ENV JAVA_HOME="/opt/jre"
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 RUN groupadd -g 65532 -r appuser 2>/dev/null || true && \
-    useradd -r -u 65532 -g appuser -d /app -s /sbin/nologin appuser 2>/dev/null || true
+    adduser -u 65532 -G appuser -D -h /app -s /sbin/nologin appuser 2>/dev/null || true
 
 USER 65532:65532
 WORKDIR /app
@@ -29,7 +29,7 @@ LABEL org.opencontainers.image.title="openjre" \
       sovereign.image.status="functional" \
       sovereign.image.category="base" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="none"
 EXPOSE 9101

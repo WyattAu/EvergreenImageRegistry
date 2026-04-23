@@ -11,8 +11,8 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/sigstore/fulcio/releases/download/v${VERSION}/fulcio-linux-amd64" -o /fulcio && \
-    curl -fsSL "https://github.com/sigstore/fulcio/releases/download/v${VERSION}/fulcio-linux-amd64.sig" -o /fulcio.sig && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/sigstore/fulcio/releases/download/v${VERSION}/fulcio-linux-amd64" -o /fulcio && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/sigstore/fulcio/releases/download/v${VERSION}/fulcio-linux-amd64.sig" -o /fulcio.sig && \
     chmod +x /fulcio && \
     strip --strip-all /fulcio && \
     rm -f /fulcio.sig

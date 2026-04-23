@@ -13,7 +13,7 @@ ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://dlcdn.apache.org/druid/${VERSION}/apache-druid-${VERSION}-bin.tar.gz" \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/druid/${VERSION}/apache-druid-${VERSION}-bin.tar.gz" \
     -o /druid.tar.gz \
     && echo "PENDING  /druid.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /druid.tar.gz -C /opt \
@@ -23,7 +23,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates python3
-RUN useradd -m -u 65532 -s /usr/sbin/nologin druid 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin druid 2>/dev/null || true
 RUN mkdir -p /var/lib/druid /var/log/druid /var/cache/druid
 COPY --from=builder /opt/apache-druid-${VERSION} /opt/druid
 RUN chown -R druid:druid /opt/druid /var/lib/druid /var/log/druid /var/cache/druid
@@ -39,7 +39,7 @@ LABEL org.opencontainers.image.title="druid" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

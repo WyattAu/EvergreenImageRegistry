@@ -13,7 +13,7 @@ COPY --from=builder /usr/lib/node_modules/homebridge-camera-ffmpeg /usr/lib/node
 COPY --from=builder /app /app
 COPY --from=builder /homebridge /homebridge
 RUN ln -sf /usr/lib/node_modules/homebridge/bin/homebridge /usr/local/bin/homebridge && \
-    useradd -r -u 65532 -g nogroup -d /homebridge -s /sbin/nologin homebridge 2>/dev/null || true && \
+    adduser -u 65532 -G nogroup -D -h /homebridge -s /sbin/nologin homebridge 2>/dev/null || true && \
     chown -R 65532:65532 /homebridge /app /usr/lib/node_modules 2>/dev/null || true
 USER 65532:65532
 WORKDIR /homebridge
@@ -25,7 +25,7 @@ LABEL org.opencontainers.image.title="homebridge-camera" \
       org.opencontainers.image.source="https://github.com/nfarina/homebridge" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

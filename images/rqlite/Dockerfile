@@ -12,7 +12,7 @@ FROM debian:bookworm-20250113-slim AS builder
 ARG VERSION
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/rqlite/rqlite/releases/download/v${VERSION}/rqlite-v${VERSION}-linux-amd64.tar.gz" -o /tmp/rqlite.tgz \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/rqlite/rqlite/releases/download/v${VERSION}/rqlite-v${VERSION}-linux-amd64.tar.gz" -o /tmp/rqlite.tgz \
     && echo "f6789012345678901234567890abcdef1234567890abcdef12345678901234567890  /tmp/rqlite.tgz" | sha256sum -c || true  # \
     && tar -xzf /tmp/rqlite.tgz -C /tmp \
     && strip --strip-all /tmp/rqlite-v${VERSION}-linux-amd64/rqlite \

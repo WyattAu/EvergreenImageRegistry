@@ -11,7 +11,7 @@ ARG BUILD_DATE
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION
 RUN apk add --no-cache ca-certificates
-RUN useradd -m -u 65532 -s /usr/sbin/nologin bsondb 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin bsondb 2>/dev/null || true
 RUN mkdir -p /var/lib/bsondb /var/log/bsondb /var/cache/bsondb /app
 RUN printf '#!/bin/sh\necho "bsondb v%s - placeholder (no upstream binary)"\nsleep infinity' "${VERSION}" > /app/bsondb && chmod +x /app/bsondb
 RUN chown -R 65532:65532 /var/lib/bsondb /var/log/bsondb /var/cache/bsondb /app
@@ -27,7 +27,7 @@ LABEL org.opencontainers.image.title="bsondb" \
       sovereign.image.status="placeholder" \
       sovereign.image.note="No upstream binary available. Replace placeholder when upstream publishes releases." \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

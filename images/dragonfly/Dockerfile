@@ -8,7 +8,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/dragonflydb/dragonfly/releases/download/${VERSION}/dragonfly-${VERSION}-linux-amd64.tar.gz" -o /dragonfly.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/dragonflydb/dragonfly/releases/download/${VERSION}/dragonfly-${VERSION}-linux-amd64.tar.gz" -o /dragonfly.tar.gz && \
     tar -xzf /dragonfly.tar.gz -C /tmp/ && \
     chmod +x /tmp/dragonfly && \
     mv /tmp/dragonfly /dragonfly && \

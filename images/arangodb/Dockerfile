@@ -13,7 +13,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://download.arangodb.com/arangodb311/Linux/arangodb3-linux-3.11.10.1_x86_64.tar.gz" -o /arangodb.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.arangodb.com/arangodb311/Linux/arangodb3-linux-3.11.10.1_x86_64.tar.gz" -o /arangodb.tar.gz && \
     tar -xzf /arangodb.tar.gz -C /tmp && rm /arangodb.tar.gz && \
     strip --strip-all /tmp/arangodb3-linux-3.11.10.1_x86_64/usr/sbin/arangod && \
     strip --strip-all /tmp/arangodb3-linux-3.11.10.1_x86_64/usr/bin/arangosh && \

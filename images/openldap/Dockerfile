@@ -21,7 +21,7 @@ LABEL org.opencontainers.image.title="openldap" \
       org.opencontainers.image.vendor="OpenLDAP" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

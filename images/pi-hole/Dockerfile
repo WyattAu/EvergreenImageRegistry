@@ -13,7 +13,7 @@ ENV DNSMASQ_USER=pihole
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl wget sudo git iproute2 iptables procps ca-certificates && \
     rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL https://install.pi-hole.net | bash -s -- --unattended
+RUN curl --retry 3 --retry-delay 5 -fsSL https://install.pi-hole.net | bash -s -- --unattended
 RUN find /usr -type f -executable -name "pihole*" -exec strip --strip-all {} \; 2>/dev/null || true && \
     find /usr -type f -executable -name "gravity.sh" -exec chmod +x {} \; 2>/dev/null || true && \
     find /opt -type f -executable -exec strip --strip-all {} \; 2>/dev/null || true

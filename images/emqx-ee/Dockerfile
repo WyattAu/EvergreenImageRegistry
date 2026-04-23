@@ -9,7 +9,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates curl procps
 COPY --from=builder /app /app
 COPY --from=builder /opt/emqx /opt/emqx
-RUN useradd -r -u 65532 -g nogroup -d /opt/emqx -s /sbin/nologin emqx 2>/dev/null || true && \
+RUN adduser -u 65532 -G nogroup -D -h /opt/emqx -s /sbin/nologin emqx 2>/dev/null || true && \
     chown -R 65532:65532 /opt/emqx /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/emqx
@@ -23,7 +23,7 @@ LABEL org.opencontainers.image.title="emqx-ee" \
       sovereign.image.tier="3" \
       sovereign.image.status="license-required" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

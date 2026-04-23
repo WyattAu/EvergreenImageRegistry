@@ -11,7 +11,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/goauthentik/authentik/releases/download/version/${VERSION}/authentik-worker-${VERSION}.tar.gz" -o /authentik-worker.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/goauthentik/authentik/releases/download/version/${VERSION}/authentik-worker-${VERSION}.tar.gz" -o /authentik-worker.tar.gz && \
     mkdir -p /tmp/authentik-worker && \
     tar -xzf /authentik-worker.tar.gz -C /tmp/authentik-worker && \
     rm -f /authentik-worker.tar.gz

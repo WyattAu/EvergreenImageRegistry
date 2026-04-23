@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.140.0/vmutils-linux-amd64-v1.140.0.tar.gz" -o /vmagent.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.140.0/vmutils-linux-amd64-v1.140.0.tar.gz" -o /vmagent.tar.gz && \
     tar -xzf /vmagent.tar.gz -C / && rm /vmagent.tar.gz && chmod +x /vmagent 2>/dev/null || \
-    curl -fsSL "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.140.0/vmutils-linux-amd64-v1.140.0.tar.gz" -o /vmagent && chmod +x /vmagent
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.140.0/vmutils-linux-amd64-v1.140.0.tar.gz" -o /vmagent && chmod +x /vmagent
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/vmagent /var/cache/vmagent

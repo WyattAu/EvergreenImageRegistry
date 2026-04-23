@@ -26,7 +26,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache libstdc++ ca-certificates
-RUN useradd -m -u 65532 -s /usr/sbin/nologin ejdb 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin ejdb 2>/dev/null || true
 RUN mkdir -p /var/lib/ejdb /var/log/ejdb /var/cache/ejdb
 COPY --from=builder /opt/ejdb /opt/ejdb
 RUN chown -R 65532:65532 /opt/ejdb /var/lib/ejdb /var/log/ejdb /var/cache/ejdb
@@ -42,7 +42,7 @@ LABEL org.opencontainers.image.title="ejdb" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

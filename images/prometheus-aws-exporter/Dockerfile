@@ -9,7 +9,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/prometheus-community/yet-another-cloudwatch-exporter/releases/download/v${VERSION}/yace-${VERSION}-linux-amd64.tar.gz" -o /yace.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus-community/yet-another-cloudwatch-exporter/releases/download/v${VERSION}/yace-${VERSION}-linux-amd64.tar.gz" -o /yace.tar.gz && \
     tar -xzf /yace.tar.gz -C / && rm /yace.tar.gz && chmod +x /yace-${VERSION}-linux-amd64
 
 FROM debian:bookworm-slim AS builder

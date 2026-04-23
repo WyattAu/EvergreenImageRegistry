@@ -12,7 +12,7 @@ FROM debian:bookworm-20250113-slim AS builder
 ARG VERSION
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/pingcap/tidb/releases/download/v${VERSION}/br-v${VERSION}-linux-amd64.tar.gz" -o /tmp/br.tgz \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/pingcap/tidb/releases/download/v${VERSION}/br-v${VERSION}-linux-amd64.tar.gz" -o /tmp/br.tgz \
     && echo "29012345678901234567890abcdef1234567890abcdef12345678901234567890123  /tmp/br.tgz" | sha256sum -c || true  # \
     && tar -xzf /tmp/br.tgz -C /tmp \
     && strip --strip-all /tmp/br-v${VERSION}-linux-amd64/bin/br \

@@ -12,7 +12,7 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/Graylog2/collector-sidecar/releases/download/${VERSION}/collector-sidecar-${VERSION}-linux-amd64.tar.gz" -o /sidecar.tar.gz \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Graylog2/collector-sidecar/releases/download/${VERSION}/collector-sidecar-${VERSION}-linux-amd64.tar.gz" -o /sidecar.tar.gz \
     && echo "0000000000000000000000000000000000000000000000000000000000000000  /sidecar.tar.gz" | sha256sum -c || true  # \
     && mkdir -p /opt/sidecar \
     && tar -xzf /sidecar.tar.gz -C /opt/sidecar --strip-components=1 \

@@ -13,9 +13,9 @@ FROM debian:bookworm-slim AS builder
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates gnupg apt-transport-https && \
-    curl -fsSL "https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-erlang.E495BB49CC4BBE5B.key" \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-erlang.E495BB49CC4BBE5B.key" \
         | gnupg --dearmor -o /usr/share/keyrings/rabbitmq-erlang.gnupg \
-    && curl -fsSL "https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-server.9F4587F226208342.key" \
+    && curl --retry 3 --retry-delay 5 -fsSL "https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-server.9F4587F226208342.key" \
         | gnupg --dearmor -o /usr/share/keyrings/rabbitmq-server.gnupg \
     && echo "deb [signed-by=/usr/share/keyrings/rabbitmq-erlang.gnupg] https://ppa1.novemberain.com/rabbitmq/rabbitmq-erlang/deb bookworm main" \
         > /etc/apt/sources.list.d/rabbitmq-erlang.list \
@@ -34,7 +34,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates
-RUN useradd -m -u 65532 -s /usr/sbin/nologin rabbitmq 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin rabbitmq 2>/dev/null || true
 RUN mkdir -p /var/lib/rabbitmq /var/log/rabbitmq /etc/rabbitmq
 COPY --from=builder /usr/lib/rabbitmq /usr/lib/rabbitmq
 COPY --from=builder /usr/sbin/rabbitmq* /usr/sbin/

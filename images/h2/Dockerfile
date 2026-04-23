@@ -14,14 +14,14 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://repo1.maven.org/maven2/com/h2database/h2/${VERSION}/h2-${VERSION}.jar" -o /tmp/h2.jar \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://repo1.maven.org/maven2/com/h2database/h2/${VERSION}/h2-${VERSION}.jar" -o /tmp/h2.jar \
     && echo "PENDING  /tmp/h2.jar" | sha256sum -c || true  #
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates
-RUN useradd -m -u 65532 -s /usr/sbin/nologin h2 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin h2 2>/dev/null || true
 RUN mkdir -p /var/lib/h2 /var/log/h2
 COPY --from=builder /tmp/h2.jar /opt/h2/h2.jar
 RUN chown -R 65532:65532 /opt/h2 /var/lib/h2 /var/log/h2
@@ -37,7 +37,7 @@ LABEL org.opencontainers.image.title="h2" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

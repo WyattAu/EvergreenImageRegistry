@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-base cmake curl ca-certificates libncurses5-dev \
     libedit-dev && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/CUBRID/cubrid/releases/download/CUBRID_${VERSION}/cubrid-${VERSION}-src.tar.gz" -o /tmp/cubrid.tar.gz \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/CUBRID/cubrid/releases/download/CUBRID_${VERSION}/cubrid-${VERSION}-src.tar.gz" -o /tmp/cubrid.tar.gz \
     && echo "PENDING  /tmp/cubrid.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /tmp/cubrid.tar.gz -C /tmp \
     && cd /tmp/cubrid-${VERSION} \
@@ -29,7 +29,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates
-RUN useradd -m -u 65532 -s /usr/sbin/nologin cubrid 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin cubrid 2>/dev/null || true
 RUN mkdir -p /var/lib/cubrid /var/log/cubrid /var/cache/cubrid
 COPY --from=builder /opt/cubrid /opt/cubrid
 RUN chown -R 65532:65532 /opt/cubrid /var/lib/cubrid /var/log/cubrid /var/cache/cubrid
@@ -45,7 +45,7 @@ LABEL org.opencontainers.image.title="cubrid" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

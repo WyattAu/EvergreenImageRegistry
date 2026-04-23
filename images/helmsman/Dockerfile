@@ -3,7 +3,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/Praqma/helmsman/releases/download/v4.0.5/helmsman_4.0.5_linux_amd64.tar.gz" -o /helmsman.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Praqma/helmsman/releases/download/v4.0.5/helmsman_4.0.5_linux_amd64.tar.gz" -o /helmsman.tar.gz && \
     tar -xzf /helmsman.tar.gz -C / && rm /helmsman.tar.gz && chmod +x /helmsman && strip /helmsman 2>/dev/null || true
 
 FROM debian:bookworm-slim AS builder

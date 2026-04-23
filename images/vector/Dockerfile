@@ -10,10 +10,10 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/vectordotdev/vector/releases/download/v0.39.0/vector-0.39.0-x86_64-unknown-linux-musl.tar.gz" -o /vector.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/vectordotdev/vector/releases/download/v0.39.0/vector-0.39.0-x86_64-unknown-linux-musl.tar.gz" -o /vector.tar.gz && \
     echo "353c03537d506299a4f3635f495b505af7fb9188af2caf89014b8cdb2a2f39e1  /vector.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /vector.tar.gz -C / && rm /vector.tar.gz && chmod +x /vector 2>/dev/null || \
-    curl -fsSL "https://github.com/vectordotdev/vector/releases/download/v0.39.0/vector-0.39.0-x86_64-unknown-linux-musl.tar.gz" -o /vector && chmod +x /vector
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/vectordotdev/vector/releases/download/v0.39.0/vector-0.39.0-x86_64-unknown-linux-musl.tar.gz" -o /vector && chmod +x /vector
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/vector /var/cache/vector

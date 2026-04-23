@@ -14,7 +14,7 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/JanusGraph/janusgraph/releases/download/v${VERSION}/janusgraph-${VERSION}.zip" -o /tmp/janusgraph.zip \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/JanusGraph/janusgraph/releases/download/v${VERSION}/janusgraph-${VERSION}.zip" -o /tmp/janusgraph.zip \
     && echo "PENDING  /tmp/janusgraph.zip" | sha256sum -c || true  # \
     && unzip -q /tmp/janusgraph.zip -d /opt \
     && rm /tmp/janusgraph.zip
@@ -23,7 +23,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl
-RUN useradd -m -u 65532 -s /usr/sbin/nologin janusgraph 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin janusgraph 2>/dev/null || true
 RUN mkdir -p /var/lib/janusgraph /var/log/janusgraph /var/cache/janusgraph
 COPY --from=builder /opt/janusgraph-${VERSION} /opt/janusgraph
 RUN chown -R 65532:65532 /opt/janusgraph /var/lib/janusgraph /var/log/janusgraph /var/cache/janusgraph
@@ -39,7 +39,7 @@ LABEL org.opencontainers.image.title="janusgraph" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

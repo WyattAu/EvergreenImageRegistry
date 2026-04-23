@@ -11,7 +11,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS installer
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates gnupg apt-transport-https && \
-    curl -fsSL "https://as-repository.openvpn.net/as-repo-public.asc" | gnupg --dearmor -o /usr/share/keyrings/openvpn-as-repo-keyring.gnupg && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://as-repository.openvpn.net/as-repo-public.asc" | gnupg --dearmor -o /usr/share/keyrings/openvpn-as-repo-keyring.gnupg && \
     echo "deb [signed-by=/usr/share/keyrings/openvpn-as-repo-keyring.gnupg] http://as-repository.openvpn.net/as/debian bookworm main" > /etc/apt/sources.list.d/openvpn-as-repo.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends openvpn-as=${VERSION}-debian12 && \

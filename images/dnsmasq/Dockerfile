@@ -10,10 +10,10 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "http://www.thekelleys.org.uk/dnsmasq/dnsmasq-2.90.tar.gz" -o /dnsmasq.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "http://www.thekelleys.org.uk/dnsmasq/dnsmasq-2.90.tar.gz" -o /dnsmasq.tar.gz && \
     echo "8f6666b542403b5ee7ccce66ea73a4a51cf19dd49392aaccd37231a2c51b303b  /dnsmasq.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /dnsmasq.tar.gz -C / && rm /dnsmasq.tar.gz && chmod +x /dnsmasq 2>/dev/null || \
-    curl -fsSL "http://www.thekelleys.org.uk/dnsmasq/dnsmasq-2.90.tar.gz" -o /dnsmasq && chmod +x /dnsmasq
+    curl --retry 3 --retry-delay 5 -fsSL "http://www.thekelleys.org.uk/dnsmasq/dnsmasq-2.90.tar.gz" -o /dnsmasq && chmod +x /dnsmasq
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/dnsmasq /var/cache/dnsmasq

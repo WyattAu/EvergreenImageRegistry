@@ -11,9 +11,9 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/cloudflare/cfssl/releases/download/v${VERSION}/cfssl_1.6.5_linux_amd64" -o /cfssl && \
-    curl -fsSL "https://github.com/cloudflare/cfssl/releases/download/v${VERSION}/cfssljson_1.6.5_linux_amd64" -o /cfssljson && \
-    curl -fsSL "https://github.com/cloudflare/cfssl/releases/download/v${VERSION}/mkbundle_1.6.5_linux_amd64" -o /mkbundle && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/cloudflare/cfssl/releases/download/v${VERSION}/cfssl_1.6.5_linux_amd64" -o /cfssl && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/cloudflare/cfssl/releases/download/v${VERSION}/cfssljson_1.6.5_linux_amd64" -o /cfssljson && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/cloudflare/cfssl/releases/download/v${VERSION}/mkbundle_1.6.5_linux_amd64" -o /mkbundle && \
     chmod +x /cfssl /cfssljson /mkbundle && \
     strip --strip-all /cfssl /cfssljson /mkbundle
 

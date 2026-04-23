@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/eliashabibi/xteve/releases/download/v2.2.0/xteve_linux_amd64" -o /xteve.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/eliashabibi/xteve/releases/download/v2.2.0/xteve_linux_amd64" -o /xteve.tar.gz && \
     tar -xzf /xteve.tar.gz -C / && rm /xteve.tar.gz && chmod +x /xteve 2>/dev/null || \
-    curl -fsSL "https://github.com/eliashabibi/xteve/releases/download/v2.2.0/xteve_linux_amd64" -o /xteve && chmod +x /xteve
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/eliashabibi/xteve/releases/download/v2.2.0/xteve_linux_amd64" -o /xteve && chmod +x /xteve
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/xteve /var/cache/xteve

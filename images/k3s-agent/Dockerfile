@@ -3,7 +3,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/k3s-io/k3s/releases/download/v1.33.6+k3s1/k3s" -o /k3s && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/k3s-io/k3s/releases/download/v1.33.6+k3s1/k3s" -o /k3s && \
     chmod +x /k3s && strip /k3s
 
 FROM debian:bookworm-slim AS builder

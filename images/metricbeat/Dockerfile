@@ -12,7 +12,7 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-${VERSION}-linux-x86_64.tar.gz" -o /metricbeat.tar.gz \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-${VERSION}-linux-x86_64.tar.gz" -o /metricbeat.tar.gz \
     && echo "0000000000000000000000000000000000000000000000000000000000000000  /metricbeat.tar.gz" | sha256sum -c || true  # \
     && mkdir -p /opt/metricbeat \
     && tar -xzf /metricbeat.tar.gz -C /opt/metricbeat --strip-components=1 \

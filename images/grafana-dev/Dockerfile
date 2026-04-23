@@ -9,11 +9,11 @@
 ARG VERSION=10.4.1
 ARG BUILD_DATE
 
-FROM debian:bookworm-20240101-slim AS downloader
+FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-amd64.tar.gz" -o /grafana.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-amd64.tar.gz" -o /grafana.tar.gz && \
     echo "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2  /grafana.tar.gz" | sha256sum -c || true  #
 RUN tar -xzf /grafana.tar.gz -C /opt && \
     rm /grafana.tar.gz && \
@@ -23,7 +23,7 @@ RUN tar -xzf /grafana.tar.gz -C /opt && \
 FROM scratch
 
 RUN groupadd -g 65532 grafana && \
-    useradd -m -u 65532 -g grafana -s /usr/sbin/nologin grafana
+    useradd -m -u 65532 -g grafana -s /sbin/nologin grafana
 COPY --from=downloader /opt/grafana-10.4.1/bin/grafana-server /usr/local/bin/grafana-server
 COPY --from=downloader /opt/grafana-10.4.1/bin/grafana-cli /usr/local/bin/grafana-cli
 COPY --from=downloader /opt/grafana-10.4.1/public /usr/share/grafana/public

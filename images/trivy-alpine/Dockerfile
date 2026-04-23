@@ -1,6 +1,6 @@
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/aquasecurity/trivy/releases/download/v0.58.2/trivy_0.58.2_linux-amd64.tar.gz" -o /trivy_0.58.2_linux-amd64.tar.gz &&     tar -xzf /trivy_0.58.2_linux-amd64.tar.gz -C / && rm /trivy_0.58.2_linux-amd64.tar.gz && chmod +x /trivy
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/aquasecurity/trivy/releases/download/v0.58.2/trivy_0.58.2_linux-amd64.tar.gz" -o /trivy_0.58.2_linux-amd64.tar.gz &&     tar -xzf /trivy_0.58.2_linux-amd64.tar.gz -C / && rm /trivy_0.58.2_linux-amd64.tar.gz && chmod +x /trivy
 RUN strip /trivy 2>/dev/null || true
 
 FROM debian:bookworm-slim AS builder

@@ -11,7 +11,7 @@ FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates tar && \
     rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-amd64.tar.gz" -o /grafana.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-amd64.tar.gz" -o /grafana.tar.gz && \
     tar -xzf /grafana.tar.gz -C /opt && \
     rm /grafana.tar.gz && \
     ln -sf /opt/grafana-${VERSION} /opt/grafana
@@ -22,7 +22,7 @@ RUN apk add --no-cache ca-certificates tzdata fontconfig
 COPY --from=builder /opt/grafana /opt/grafana
 RUN ln -sf /opt/grafana/bin/grafana-server /usr/local/bin/grafana-server && \
     groupadd -g 65532 -r grafana 2>/dev/null || true && \
-    useradd -r -u 65532 -g grafana -d /opt/grafana -s /sbin/nologin grafana 2>/dev/null || true && \
+    adduser -u 65532 -G grafana -D -h /opt/grafana -s /sbin/nologin grafana 2>/dev/null || true && \
     mkdir -p /var/lib/grafana /var/log/grafana /etc/grafana && \
     chown -R 65532:65532 /var/lib/grafana /var/log/grafana /etc/grafana
 USER 65532:65532
@@ -38,7 +38,7 @@ LABEL org.opencontainers.image.title="grafana" \
       sovereign.image.status="functional" \
       sovereign.image.category="observability" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

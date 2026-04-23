@@ -13,7 +13,7 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/yahoo/CMAK/releases/download/${VERSION}/cmak-${VERSION}.zip" -o cmak.zip \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/yahoo/CMAK/releases/download/${VERSION}/cmak-${VERSION}.zip" -o cmak.zip \
     && echo "0000000000000000000000000000000000000000000000000000000000000000  cmak.zip" | sha256sum -c || true  # \
     && apt-get install -y --no-install-recommends unzip \
     && unzip cmak.zip -d /opt/cmak \
@@ -24,7 +24,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl
-RUN useradd -m -u 65532 -s /usr/sbin/nologin cmak 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin cmak 2>/dev/null || true
 RUN mkdir -p /opt/cmak/logs /var/log/cmak /var/cache/cmak
 COPY --from=builder /opt/cmak /opt/cmak
 USER 65532:65532

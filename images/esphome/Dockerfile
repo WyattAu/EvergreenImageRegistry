@@ -13,7 +13,7 @@ RUN apk add --no-cache python3 ca-certificates tzdata
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
 COPY --from=builder /config /config
-RUN useradd -r -u 65532 -g nogroup -d /config -s /sbin/nologin esphome 2>/dev/null || true && \
+RUN adduser -u 65532 -G nogroup -D -h /config -s /sbin/nologin esphome 2>/dev/null || true && \
     chown -R 65532:65532 /config /app 2>/dev/null || true
 USER 65532:65532
 ENV PATH="/opt/venv/bin:$PATH" HOME="/config"
@@ -27,7 +27,7 @@ LABEL org.opencontainers.image.title="esphome" \
       org.opencontainers.image.source="https://github.com/esphome/esphome" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

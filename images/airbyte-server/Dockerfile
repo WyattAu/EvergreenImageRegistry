@@ -12,7 +12,7 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/airbyte-server /var/log/airbyte-server
 COPY --from=builder /var/cache/airbyte-server /var/cache/airbyte-server
 COPY --from=builder /var/lib/airbyte /var/lib/airbyte
-RUN useradd -r -u 65532 -g '' airbyte 2>/dev/null || true
+RUN adduser -u 65532 -G '' -D airbyte 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENV HOME=/app

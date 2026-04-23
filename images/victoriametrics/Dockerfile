@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.140.0/victoria-metrics-linux-amd64-v1.140.0-cluster.tar.gz" -o /victoria-metrics.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.140.0/victoria-metrics-linux-amd64-v1.140.0-cluster.tar.gz" -o /victoria-metrics.tar.gz && \
     tar -xzf /victoria-metrics.tar.gz -C / && rm /victoria-metrics.tar.gz && chmod +x /victoria-metrics 2>/dev/null || \
-    curl -fsSL "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.140.0/victoria-metrics-linux-amd64-v1.140.0-cluster.tar.gz" -o /victoria-metrics && chmod +x /victoria-metrics
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.140.0/victoria-metrics-linux-amd64-v1.140.0-cluster.tar.gz" -o /victoria-metrics && chmod +x /victoria-metrics
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/victoria-metrics /var/cache/victoria-metrics

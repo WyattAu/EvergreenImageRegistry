@@ -3,7 +3,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/prometheus-operator/prometheus-operator/releases/download/v0.90.0/prometheus-operator-v0.90.0-linux-amd64.tar.gz" -o /po.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus-operator/prometheus-operator/releases/download/v0.90.0/prometheus-operator-v0.90.0-linux-amd64.tar.gz" -o /po.tar.gz && \
     tar -xzf /po.tar.gz -C / && rm /po.tar.gz && chmod +x /prometheus-operator && strip /prometheus-operator
 
 FROM debian:bookworm-slim AS builder

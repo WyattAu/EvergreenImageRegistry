@@ -1,6 +1,6 @@
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/portainer/agent/releases/download/v2.21.4/portainer-agent-edge-linux-amd64" -o /portainer-agent-edge-linux-amd64 &&     tar -xzf /portainer-agent-edge-linux-amd64 -C / && rm /portainer-agent-edge-linux-amd64 && chmod +x /portainer-edge-agent
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/portainer/agent/releases/download/v2.21.4/portainer-agent-edge-linux-amd64" -o /portainer-agent-edge-linux-amd64 &&     tar -xzf /portainer-agent-edge-linux-amd64 -C / && rm /portainer-agent-edge-linux-amd64 && chmod +x /portainer-edge-agent
 RUN strip /portainer-edge-agent 2>/dev/null || true
 
 FROM debian:bookworm-slim AS builder

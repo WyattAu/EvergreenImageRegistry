@@ -29,7 +29,7 @@ LABEL org.opencontainers.image.title="rabbitmq" \
       org.opencontainers.image.vendor="RabbitMQ" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="true"
 LABEL sovereign.health.type="http"
 EXPOSE 9101

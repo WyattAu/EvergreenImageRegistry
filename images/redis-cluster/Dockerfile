@@ -14,7 +14,7 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.gz" -o redis.tar.gz \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.gz" -o redis.tar.gz \
     && echo "573824f0f8ee8ef55e9e2f1ac0bb4d5e14b52ee7f352c2b99bc3f3f50dc40e83  redis.tar.gz" | sha256sum -c || true  # \
     && tar -xzf redis.tar.gz \
     && cd redis-${VERSION} && make -j"$(nproc)" redis && strip --strip-all src/redis \
@@ -23,7 +23,7 @@ RUN curl -fsSL "https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates
-RUN useradd -m -u 65532 -s /usr/sbin/nologin redis 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin redis 2>/dev/null || true
 RUN mkdir -p /data /var/log/redis
 COPY --from=builder /tmp/redis /usr/local/bin/redis
 USER 65532:65532

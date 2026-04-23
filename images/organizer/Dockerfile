@@ -12,7 +12,7 @@ RUN apk add --no-cache nodejs npm ca-certificates nginx php-8.4-fpm php-8.4-sqli
 COPY --from=builder /src /app/src 2>/dev/null || true
 COPY --from=builder /config /config 2>/dev/null || true
 COPY --from=builder /app /app
-RUN useradd -r -u 65532 -g nogroup -d /app -s /sbin/nologin organizr 2>/dev/null || true && \
+RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin organizr 2>/dev/null || true && \
     chown -R 65532:65532 /app /config 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
@@ -24,7 +24,7 @@ LABEL org.opencontainers.image.title="organizer" \
       org.opencontainers.image.source="https://github.com/causefx/Organizr" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

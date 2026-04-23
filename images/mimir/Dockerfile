@@ -12,7 +12,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/grafana/mimir/releases/download/mimir-2.10.0/mimir_2.10.0_linux_amd64.tar.gz" -o /mimir.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/grafana/mimir/releases/download/mimir-2.10.0/mimir_2.10.0_linux_amd64.tar.gz" -o /mimir.tar.gz && \
     tar -xzf /mimir.tar.gz -C /tmp && rm /mimir.tar.gz && \
     strip --strip-all /tmp/mimir-linux-amd64 && \
     mv /tmp/mimir-linux-amd64 /mimir

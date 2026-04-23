@@ -13,7 +13,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://dl.influxdata.com/influxdb/releases/influxdb2-client-2.7.5-linux-amd64.tar.gz" -o /influxdb-client.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.influxdata.com/influxdb/releases/influxdb2-client-2.7.5-linux-amd64.tar.gz" -o /influxdb-client.tar.gz && \
     tar -xzf /influxdb-client.tar.gz -C /tmp && rm /influxdb-client.tar.gz && \
     strip --strip-all /tmp/influxdb2-client-2.7.5/usr/bin/influx && \
     mv /tmp/influxdb2-client-2.7.5/usr/bin/influx /influx

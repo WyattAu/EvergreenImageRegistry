@@ -14,7 +14,7 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/ontotext/graphdb/releases/download/v${VERSION}/graphdb-enterprise-${VERSION}-dist.zip" -o /tmp/graphdb.zip \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/ontotext/graphdb/releases/download/v${VERSION}/graphdb-enterprise-${VERSION}-dist.zip" -o /tmp/graphdb.zip \
     && echo "PENDING  /tmp/graphdb.zip" | sha256sum -c || true  # \
     && unzip -q /tmp/graphdb.zip -d /opt \
     && rm /tmp/graphdb.zip
@@ -23,7 +23,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates
-RUN useradd -m -u 65532 -s /usr/sbin/nologin graphdb 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin graphdb 2>/dev/null || true
 RUN mkdir -p /var/lib/graphdb /var/log/graphdb /var/cache/graphdb /opt/graphdb/home
 COPY --from=builder /opt/graphdb-enterprise-${VERSION} /opt/graphdb
 RUN chown -R 65532:65532 /opt/graphdb /var/lib/graphdb /var/log/graphdb /var/cache/graphdb
@@ -39,7 +39,7 @@ LABEL org.opencontainers.image.title="graphdb-enterpriser" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

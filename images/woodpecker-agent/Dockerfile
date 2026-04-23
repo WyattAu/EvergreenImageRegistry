@@ -8,8 +8,8 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN apt-get update &&     apt-get install -y --no-install-recommends curl="7.88.1-*" ca-certificates &&     rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/woodpecker-ci/woodpecker/releases/download/v2.8.0/woodpecker-agent_linux_amd64.tar.gz" -o /tmp/archive.tar.gz &&     tar -xzf /tmp/archive.tar.gz -C /tmp &&     mv /tmp/woodpecker-agent /tmp/woodpecker-agent_stripped &&     strip /tmp/woodpecker-agent_stripped &&     chmod +x /tmp/woodpecker-agent_stripped
+RUN apt-get update &&     apt-get install -y --no-install-recommends curl ca-certificates &&     rm -rf /var/lib/apt/lists/*
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/woodpecker-ci/woodpecker/releases/download/v2.8.0/woodpecker-agent_linux_amd64.tar.gz" -o /tmp/archive.tar.gz &&     tar -xzf /tmp/archive.tar.gz -C /tmp &&     mv /tmp/woodpecker-agent /tmp/woodpecker-agent_stripped &&     strip /tmp/woodpecker-agent_stripped &&     chmod +x /tmp/woodpecker-agent_stripped
 
 FROM scratch
 COPY --from=downloader /tmp/woodpecker-agent_stripped /usr/local/bin/woodpecker-agent

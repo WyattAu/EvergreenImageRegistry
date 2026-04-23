@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/schlagmichdoch/PairDrop/releases/download/v1.11.2/pairdrop-cli.zip" -o /pairdrop.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/schlagmichdoch/PairDrop/releases/download/v1.11.2/pairdrop-cli.zip" -o /pairdrop.tar.gz && \
     tar -xzf /pairdrop.tar.gz -C / && rm /pairdrop.tar.gz && chmod +x /pairdrop 2>/dev/null || \
-    curl -fsSL "https://github.com/schlagmichdoch/PairDrop/releases/download/v1.11.2/pairdrop-cli.zip" -o /pairdrop && chmod +x /pairdrop
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/schlagmichdoch/PairDrop/releases/download/v1.11.2/pairdrop-cli.zip" -o /pairdrop && chmod +x /pairdrop
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/pairdrop /var/cache/pairdrop

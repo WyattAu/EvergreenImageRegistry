@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/rhasspy/piper/releases/download/v1.2.0/piper_linux_amd64.tar.gz" -o /piper && chmod +x /piper
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/rhasspy/piper/releases/download/v1.2.0/piper_linux_amd64.tar.gz" -o /piper && chmod +x /piper
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/piper /var/cache/piper

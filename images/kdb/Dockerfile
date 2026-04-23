@@ -9,7 +9,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates tzdata curl
 
 RUN groupadd -g 65532 -r kdb 2>/dev/null || true && \
-    useradd -r -u 65532 -g kdb -d /opt/kdb -s /sbin/nologin kdb 2>/dev/null || true && \
+    adduser -u 65532 -G kdb -D -h /opt/kdb -s /sbin/nologin kdb 2>/dev/null || true && \
     mkdir -p /opt/kdb/data /opt/kdb/logs /var/log/kdb && \
     chown -R 65532:65532 /opt/kdb /var/log/kdb
 
@@ -24,7 +24,7 @@ LABEL org.opencontainers.image.title="kdb" \
       sovereign.image.category="database" \
       sovereign.image.note="KDB+ is proprietary. Copy licensed q binary to /opt/kdb/q before use." \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="none"
 EXPOSE 9101

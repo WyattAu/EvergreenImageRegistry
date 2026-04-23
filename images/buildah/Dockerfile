@@ -16,7 +16,7 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/buildah /var/log/buildah
 COPY --from=builder /var/cache/buildah /var/cache/buildah
 RUN mkdir -p /var/lib/containers /run/containers
-RUN useradd -r -u 65532 -g '' buildah 2>/dev/null || true
+RUN adduser -u 65532 -G '' -D buildah 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENV HOME=/app

@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/Readarr/Readarr/releases/download/v0.4.5/Readarr.develop.0.4.5.linux-core-x64.tar.gz" -o /Readarr.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Readarr/Readarr/releases/download/v0.4.5/Readarr.develop.0.4.5.linux-core-x64.tar.gz" -o /Readarr.tar.gz && \
     tar -xzf /Readarr.tar.gz -C /app && rm /Readarr.tar.gz && chmod +x /app/Readarr 2>/dev/null || \
-    curl -fsSL "https://github.com/Readarr/Readarr/releases/download/v0.4.5/Readarr.develop.0.4.5.linux-core-x64.tar.gz" -o /app/Readarr && chmod +x /app/Readarr
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Readarr/Readarr/releases/download/v0.4.5/Readarr.develop.0.4.5.linux-core-x64.tar.gz" -o /app/Readarr && chmod +x /app/Readarr
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
@@ -30,7 +30,7 @@ LABEL org.opencontainers.image.title="readarr" \
       org.opencontainers.image.source="https://github.com/Readarr/Readarr/releases" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

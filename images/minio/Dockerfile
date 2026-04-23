@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://dl.min.io/server/minio/release/linux-amd64/minio" -o /minio.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.min.io/server/minio/release/linux-amd64/minio" -o /minio.tar.gz && \
     tar -xzf /minio.tar.gz -C / && rm /minio.tar.gz && chmod +x /minio 2>/dev/null || \
-    curl -fsSL "https://dl.min.io/server/minio/release/linux-amd64/minio" -o /minio && chmod +x /minio
+    curl --retry 3 --retry-delay 5 -fsSL "https://dl.min.io/server/minio/release/linux-amd64/minio" -o /minio && chmod +x /minio
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/minio /var/cache/minio

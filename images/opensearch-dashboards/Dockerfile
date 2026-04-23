@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache curl ca-certificates && \
-    curl -fsSL "https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/${VERSION}/opensearch-dashboards-${VERSION}-linux-x64.tar.gz" | \
+    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/${VERSION}/opensearch-dashboards-${VERSION}-linux-x64.tar.gz" | \
     tar xz -C /opt && \
     ln -s /opt/opensearch-dashboards-${VERSION} /opt/opensearch-dashboards && \
     ln -s /opt/opensearch-dashboards/bin/opensearch-dashboards /usr/local/bin/opensearch-dashboards
@@ -25,7 +25,7 @@ LABEL org.opencontainers.image.title="opensearch-dashboards" \
       org.opencontainers.image.vendor="OpenSearch" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

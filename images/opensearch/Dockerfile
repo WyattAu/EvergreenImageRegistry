@@ -9,11 +9,11 @@
 ARG VERSION=2.12.0
 ARG BUILD_DATE
 
-FROM debian:bookworm-20240101-slim AS downloader
+FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://artifacts.opensearch.org/releases/bundle/opensearch/${VERSION}/opensearch-${VERSION}-linux-x64.tar.gz" -o /opensearch.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.opensearch.org/releases/bundle/opensearch/${VERSION}/opensearch-${VERSION}-linux-x64.tar.gz" -o /opensearch.tar.gz && \
     echo "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3  /opensearch.tar.gz" | sha256sum -c || true  #
 RUN tar -xzf /opensearch.tar.gz -C /opt && \
     rm /opensearch.tar.gz && \
@@ -30,7 +30,7 @@ ENV HEALTH_CMD="curl -sf http://localhost:9200" \
     SOVEREIGN_LOG_LEVEL=info
 
 RUN groupadd -g 65532 opensearch && \
-    useradd -m -u 65532 -g opensearch -s /usr/sbin/nologin opensearch
+    useradd -m -u 65532 -g opensearch -s /sbin/nologin opensearch
 RUN apk add --no-cache ca-certificates gosu
 COPY --from=downloader /opt/opensearch-2.12.0 /opt/opensearch
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -43,7 +43,7 @@ WORKDIR /app
 EXPOSE 9200 9300
 ENV OPENSEARCH_HOME=/opt/opensearch \
     OPENSEARCH_PATH_CONF=/app/conf \
-    OPENSEARCH_JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64 \
+    OPENSEARCH_JAVA_HOME=/usr/lib/jvm/java-17-openjdk \
     OPENSEARCH_STARTUP_SLEEP_TIME=5 \
     cluster.name=opensearch-cluster \
     network.host=0.0.0.0 \

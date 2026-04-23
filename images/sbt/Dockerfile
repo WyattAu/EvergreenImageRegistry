@@ -3,7 +3,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates java-17-runtime gnupg && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/sbt/sbt/releases/download/v1.10.6/sbt-1.10.6.tgz" -o /sbt.tgz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/sbt/sbt/releases/download/v1.10.6/sbt-1.10.6.tgz" -o /sbt.tgz && \
     tar -xzf /sbt.tgz -C /opt/ && rm /sbt.tgz && ln -sf /opt/sbt/bin/sbt /usr/local/bin/sbt
 
 FROM debian:bookworm-slim AS builder
@@ -18,7 +18,7 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/sbt /var/log/sbt
 COPY --from=builder /var/cache/sbt /var/cache/sbt
 COPY --from=builder /home/sbt /home/sbt
-RUN useradd -r -u 65532 -g '' sbt 2>/dev/null || true
+RUN adduser -u 65532 -G '' -D sbt 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENV HOME=/app

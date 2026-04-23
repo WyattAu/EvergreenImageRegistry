@@ -22,7 +22,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache python3 ca-certificates
-RUN useradd -m -u 65532 -s /usr/sbin/nologin surrealdb 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin surrealdb 2>/dev/null || true
 RUN mkdir -p /var/lib/surrealdb /var/log/surrealdb
 COPY --from=builder /opt/venv /opt/venv
 RUN printf '#!/opt/venv/bin/python3\nimport surrealdb\nprint("surrealdb-python ready")\n' > /app/surrealdb-python && chmod +x /app/surrealdb-python
@@ -38,7 +38,7 @@ LABEL org.opencontainers.image.title="surrealdb-python" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

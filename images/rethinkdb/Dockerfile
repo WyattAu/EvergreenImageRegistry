@@ -14,7 +14,7 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://download.rethinkdb.com/repository/raw/rethinkdb-${VERSION}.tgz" -o /tmp/rethinkdb.tar.gz \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.rethinkdb.com/repository/raw/rethinkdb-${VERSION}.tgz" -o /tmp/rethinkdb.tar.gz \
     && echo "PENDING  /tmp/rethinkdb.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /tmp/rethinkdb.tar.gz -C /opt \
     && strip --strip-all /opt/rethinkdb-*/bin/rethinkdb 2>/dev/null || true
@@ -23,7 +23,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates libstdc++
-RUN useradd -m -u 65532 -s /usr/sbin/nologin rethinkdb 2>/dev/null || true
+RUN useradd -m -u 65532 -s /sbin/nologin rethinkdb 2>/dev/null || true
 RUN mkdir -p /var/lib/rethinkdb /var/log/rethinkdb /var/cache/rethinkdb /data
 COPY --from=builder /opt/rethinkdb-${VERSION} /opt/rethinkdb
 RUN chown -R 65532:65532 /opt/rethinkdb /var/lib/rethinkdb /var/log/rethinkdb /var/cache/rethinkdb /data
@@ -39,7 +39,7 @@ LABEL org.opencontainers.image.title="rethinkdb" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

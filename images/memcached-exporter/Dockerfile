@@ -10,10 +10,10 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/prometheus/memcached_exporter/releases/download/v0.13.0/memcached_exporter-0.13.0.linux-amd64.tar.gz" -o /memcached_exporter.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/memcached_exporter/releases/download/v0.13.0/memcached_exporter-0.13.0.linux-amd64.tar.gz" -o /memcached_exporter.tar.gz && \
     echo "4be294cbddf93ba1ca56f39f259a718148353a74096de5c06237a488e121356f  /memcached_exporter.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /memcached_exporter.tar.gz -C / && rm /memcached_exporter.tar.gz && chmod +x /memcached_exporter 2>/dev/null || \
-    curl -fsSL "https://github.com/prometheus/memcached_exporter/releases/download/v0.13.0/memcached_exporter-0.13.0.linux-amd64.tar.gz" -o /memcached_exporter && chmod +x /memcached_exporter
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/memcached_exporter/releases/download/v0.13.0/memcached_exporter-0.13.0.linux-amd64.tar.gz" -o /memcached_exporter && chmod +x /memcached_exporter
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/memcached_exporter /var/cache/memcached_exporter

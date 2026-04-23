@@ -13,7 +13,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://dist.neo4j.org/neo4j-enterprise-5.17.0-unix.tar.gz" -o /neo4j.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://dist.neo4j.org/neo4j-enterprise-5.17.0-unix.tar.gz" -o /neo4j.tar.gz && \
     tar -xzf /neo4j.tar.gz -C /opt && rm /neo4j.tar.gz
 
 # hadolint ignore=DL3023
@@ -29,7 +29,7 @@ COPY --from=builder /opt/neo4j /opt/neo4j
 COPY --from=builder /app /app
 COPY --from=builder /var/lib/neo4j /var/lib/neo4j
 COPY --from=builder /var/log/neo4j /var/log/neo4j
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 ENV NEO4J_HOME=/opt/neo4j
 ENV PATH="${NEO4J_HOME}/bin:${JAVA_HOME}/bin:${PATH}"
 USER 65532:65532

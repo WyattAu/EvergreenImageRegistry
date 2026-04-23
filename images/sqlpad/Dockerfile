@@ -11,10 +11,10 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && \
-    curl -fsSL "https://deb.nodesource.com/setup_20.x" | bash - && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/setup_20.x" | bash - && \
     apt-get install -y --no-install-recommends nodejs && \
     mkdir -p /app /var/log/sqlpad /var/cache/sqlpad && \
-    curl -fsSL "https://github.com/sqlpad/sqlpad/releases/download/v${VERSION}/sqlpad-v${VERSION}-linux-x64.tar.gz" \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/sqlpad/sqlpad/releases/download/v${VERSION}/sqlpad-v${VERSION}-linux-x64.tar.gz" \
     -o /sqlpad.tar.gz && \
     echo "PENDING_CHECKSUM  /sqlpad.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /sqlpad.tar.gz -C /app --strip-components=1 && \
@@ -28,7 +28,7 @@ RUN apk add --no-cache curl ca-certificates bash
 COPY --from=builder /app /app
 COPY --from=builder /var/log/sqlpad /var/log/sqlpad
 COPY --from=builder /var/cache/sqlpad /var/cache/sqlpad
-RUN useradd -m -u 65532 -s /usr/sbin/nologin sqlpad 2>/dev/null || true && \
+RUN useradd -m -u 65532 -s /sbin/nologin sqlpad 2>/dev/null || true && \
     chown -R 65532:65532 /app /var/log/sqlpad /var/cache/sqlpad
 USER 65532:65532
 WORKDIR /app
@@ -45,7 +45,7 @@ LABEL org.opencontainers.image.title="sqlpad" \
       org.opencontainers.image.source="https://github.com/sqlpad/sqlpad" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

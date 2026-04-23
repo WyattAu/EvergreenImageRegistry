@@ -9,7 +9,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/enix/x509-certificate-exporter/releases/download/v${VERSION}/x509-certificate-exporter-${VERSION}-linux-amd64.tar.gz" -o /x509-exporter.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/enix/x509-certificate-exporter/releases/download/v${VERSION}/x509-certificate-exporter-${VERSION}-linux-amd64.tar.gz" -o /x509-exporter.tar.gz && \
     tar -xzf /x509-exporter.tar.gz -C / && rm /x509-exporter.tar.gz && chmod +x /x509-certificate-exporter
 
 FROM debian:bookworm-slim AS builder

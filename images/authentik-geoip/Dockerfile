@@ -11,7 +11,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/goauthentik/authentik/releases/download/version/${VERSION}/authentik-geoip-${VERSION}.tar.gz" -o /authentik-geoip.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/goauthentik/authentik/releases/download/version/${VERSION}/authentik-geoip-${VERSION}.tar.gz" -o /authentik-geoip.tar.gz && \
     mkdir -p /tmp/authentik-geoip && \
     tar -xzf /authentik-geoip.tar.gz -C /tmp/authentik-geoip && \
     rm -f /authentik-geoip.tar.gz

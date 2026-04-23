@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL "https://github.com/Radarr/Radarr/releases/download/v5.15.0/Radarr.develop.5.15.0.linux-core-x64.tar.gz" -o /Radarr.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Radarr/Radarr/releases/download/v5.15.0/Radarr.develop.5.15.0.linux-core-x64.tar.gz" -o /Radarr.tar.gz && \
     tar -xzf /Radarr.tar.gz -C /app && rm /Radarr.tar.gz && chmod +x /app/Radarr 2>/dev/null || \
-    curl -fsSL "https://github.com/Radarr/Radarr/releases/download/v5.15.0/Radarr.develop.5.15.0.linux-core-x64.tar.gz" -o /app/Radarr && chmod +x /app/Radarr
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Radarr/Radarr/releases/download/v5.15.0/Radarr.develop.5.15.0.linux-core-x64.tar.gz" -o /app/Radarr && chmod +x /app/Radarr
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
@@ -30,7 +30,7 @@ LABEL org.opencontainers.image.title="radarr-develop" \
       org.opencontainers.image.source="https://github.com/Radarr/Radarr/releases" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

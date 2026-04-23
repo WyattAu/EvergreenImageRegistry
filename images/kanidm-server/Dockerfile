@@ -11,8 +11,8 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/kanidm/kanidm/releases/download/v${VERSION}/kanidmd-linux-amd64" -o /kanidmd && \
-    curl -fsSL "https://github.com/kanidm/kanidm/releases/download/v${VERSION}/kanidmd-linux-amd64.sha256sum" -o /checksums.txt && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/kanidm/kanidm/releases/download/v${VERSION}/kanidmd-linux-amd64" -o /kanidmd && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/kanidm/kanidm/releases/download/v${VERSION}/kanidmd-linux-amd64.sha256sum" -o /checksums.txt && \
     grep "kanidmd-linux-amd64" /checksums.txt | sha256sum -c || true  # && \
     chmod +x /kanidmd && \
     strip --strip-all /kanidmd && \

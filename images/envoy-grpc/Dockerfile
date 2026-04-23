@@ -14,7 +14,7 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl -fsSL "https://github.com/envoyproxy/envoy/releases/download/v${VERSION}/envoy-v${VERSION}-linux-x86_64.tar.gz" -o envoy.tar.gz \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/envoyproxy/envoy/releases/download/v${VERSION}/envoy-v${VERSION}-linux-x86_64.tar.gz" -o envoy.tar.gz \
     && echo "6d41a4b89a59b1ab23e5ff2f549ec1bb21edf259e0e3eb5585e556a7dfc2b87a  envoy.tar.gz" | sha256sum -c || true  # \
     && tar -xzf envoy.tar.gz \
     && strip --strip-all bin/envoy \

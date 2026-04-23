@@ -26,7 +26,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache libstdc++ ca-certificates
-RUN useradd -m -u 65532 -s /sbin/nologin ejdb 2>/dev/null || true
+RUN adduser -u 65532 -s /sbin/nologin ejdb 2>/dev/null || true
 RUN mkdir -p /var/lib/ejdb /var/log/ejdb /var/cache/ejdb
 COPY --from=builder /opt/ejdb /opt/ejdb
 RUN chown -R 65532:65532 /opt/ejdb /var/lib/ejdb /var/log/ejdb /var/cache/ejdb

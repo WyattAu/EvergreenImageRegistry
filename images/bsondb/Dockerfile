@@ -11,7 +11,7 @@ ARG BUILD_DATE
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION
 RUN apk add --no-cache ca-certificates
-RUN useradd -m -u 65532 -s /sbin/nologin bsondb 2>/dev/null || true
+RUN adduser -u 65532 -s /sbin/nologin bsondb 2>/dev/null || true
 RUN mkdir -p /var/lib/bsondb /var/log/bsondb /var/cache/bsondb /app
 RUN printf '#!/bin/sh\necho "bsondb v%s - placeholder (no upstream binary)"\nsleep infinity' "${VERSION}" > /app/bsondb && chmod +x /app/bsondb
 RUN chown -R 65532:65532 /var/lib/bsondb /var/log/bsondb /var/cache/bsondb /app

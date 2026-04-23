@@ -29,7 +29,7 @@ RUN mkdir -p /var/lib/redis /var/log/redis /var/cache/redis
 
 FROM scratch
 
-RUN useradd -m -u 65532 -s /sbin/nologin redis 2>/dev/null || true
+RUN adduser -u 65532 -s /sbin/nologin redis 2>/dev/null || true
 RUN mkdir -p /var/lib/redis /var/log/redis /var/cache/redis /opt/redis/modules
 COPY --from=builder /tmp/redisearch-src/bin/redisearch.so /opt/redis/modules/redisearch.so
 COPY --from=redis /usr/bin/redis-server /usr/local/bin/redis-server

@@ -25,8 +25,8 @@ RUN apk add --no-cache python3 ca-certificates tzdata libpq libjpeg-turbo zlib
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 ENV FRAPPE_VERSION="${VERSION}"
-RUN groupadd -g 65532 -r erpnext 2>/dev/null || true && \
-    adduser -u 65532 -G erpnext -D -h /opt/erpnext -s /sbin/nologin erpnext 2>/dev/null || true && \
+RUN addgroup -S 65532 -r erpnext 2>/dev/null || true && \
+    adduser -u 65532 -G erpnext -D -D -h /opt/erpnext -s /sbin/nologin erpnext 2>/dev/null || true && \
     mkdir -p /opt/erpnext /var/log/erpnext && \
     chown -R 65532:65532 /opt/erpnext /var/log/erpnext
 USER 65532:65532

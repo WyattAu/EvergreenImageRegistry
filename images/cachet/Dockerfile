@@ -21,8 +21,8 @@ RUN mkdir -p /build && \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN groupadd -g 65532 cachet && \
-    useradd -m -u 65532 -g cachet -s /sbin/nologin cachet
+RUN addgroup -S 65532 cachet && \
+    adduser -u 65532 -G cachet -D -s /sbin/nologin cachet
 RUN apk add --no-cache php-8.4-fpm php-8.4-pdo_mysql php-8.4-mysqli php-8.4-pgsql php-8.4-sqlite php-8.4-gd php-8.4-curl php-8.4-mbstring php-8.4-xml php-8.4-zip php-8.4-bcmath php-8.4-redis nginx ca-certificates
 COPY --from=downloader /build /var/www/cachet
 RUN mkdir -p /run/php /app/logs /app/data && \

@@ -25,8 +25,8 @@ RUN apt-get update && \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN groupadd -g 65532 toolkit && \
-    useradd -m -u 65532 -g toolkit -s /sbin/nologin toolkit
+RUN addgroup -S 65532 toolkit && \
+    adduser -u 65532 -G toolkit -D -s /sbin/nologin toolkit
 COPY --from=downloader /usr/bin/node /usr/local/bin/node
 COPY --from=downloader /usr/lib/node_modules /usr/local/lib/node_modules
 COPY --from=downloader /usr/bin/npm /usr/local/bin/npm

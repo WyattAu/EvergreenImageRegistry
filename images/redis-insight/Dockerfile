@@ -22,7 +22,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/RedisInsight/RedisI
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates fontconfig freetype glib
-RUN useradd -m -u 65532 -s /sbin/nologin redisinsight 2>/dev/null || true
+RUN adduser -u 65532 -s /sbin/nologin redisinsight 2>/dev/null || true
 COPY --from=builder /tmp/redisinsight /opt/redisinsight
 USER 65532:65532
 WORKDIR /opt/redisinsight

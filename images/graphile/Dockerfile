@@ -34,7 +34,7 @@ COPY --from=nodebase /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --from=nodebase /usr/local/include/node /usr/local/include/node 2>/dev/null || true
 RUN ln -sf /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm 2>/dev/null || true \
     && ln -sf /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx 2>/dev/null || true
-RUN useradd -m -u 65532 -s /sbin/nologin graphile 2>/dev/null || true
+RUN adduser -u 65532 -s /sbin/nologin graphile 2>/dev/null || true
 RUN mkdir -p /var/lib/graphile /var/log/graphile /var/cache/graphile
 COPY --from=builder /opt/graphile /opt/graphile
 RUN chown -R 65532:65532 /opt/graphile /var/lib/graphile /var/log/graphile /var/cache/graphile

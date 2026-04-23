@@ -13,7 +13,7 @@ RUN apk add --no-cache curl ca-certificates
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/milvus-io/milvus/releases/download/v${VERSION}/milvus-standalone_${VERSION}_linux_amd64.tar.gz" -o /tmp/milvus.tar.gz && \
     tar -xzf /tmp/milvus.tar.gz -C /opt && rm /tmp/milvus.tar.gz && \
     chmod +x /opt/milvus/bin/milvus 2>/dev/null || true
-RUN useradd -m -u 65532 -g '' milvus 2>/dev/null || true
+RUN adduser -u 65532 -G '' -D milvus 2>/dev/null || true
 RUN mkdir -p /app /var/log/milvus /var/cache/milvus && chown -R milvus:milvus /app /var/log/milvus /var/cache/milvus /opt/milvus 2>/dev/null || true
 USER milvus
 WORKDIR /app

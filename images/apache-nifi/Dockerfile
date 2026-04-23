@@ -23,7 +23,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates
-RUN useradd -m -u 65532 -s /sbin/nologin nifi 2>/dev/null || true
+RUN adduser -u 65532 -s /sbin/nologin nifi 2>/dev/null || true
 RUN mkdir -p /var/lib/nifi /var/log/nifi /var/cache/nifi
 COPY --from=builder /opt/nifi-${VERSION} /opt/nifi
 RUN chown -R nifi:nifi /opt/nifi /var/lib/nifi /var/log/nifi /var/cache/nifi

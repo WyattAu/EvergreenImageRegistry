@@ -24,8 +24,8 @@ RUN find /install -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN groupadd -g 65532 azurelogs && \
-    useradd -m -u 65532 -g azurelogs -s /sbin/nologin azurelogs
+RUN addgroup -S 65532 azurelogs && \
+    adduser -u 65532 -G azurelogs -D -s /sbin/nologin azurelogs
 RUN apk add --no-cache ca-certificates
 COPY --from=stripper /install /usr/local
 COPY --from=stripper /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

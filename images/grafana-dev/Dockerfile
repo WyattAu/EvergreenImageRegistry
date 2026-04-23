@@ -22,8 +22,8 @@ RUN tar -xzf /grafana.tar.gz -C /opt && \
 
 FROM scratch
 
-RUN groupadd -g 65532 grafana && \
-    useradd -m -u 65532 -g grafana -s /sbin/nologin grafana
+RUN addgroup -S 65532 grafana && \
+    adduser -u 65532 -G grafana -D -s /sbin/nologin grafana
 COPY --from=downloader /opt/grafana-10.4.1/bin/grafana-server /usr/local/bin/grafana-server
 COPY --from=downloader /opt/grafana-10.4.1/bin/grafana-cli /usr/local/bin/grafana-cli
 COPY --from=downloader /opt/grafana-10.4.1/public /usr/share/grafana/public

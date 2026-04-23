@@ -35,8 +35,8 @@ RUN apt-get update && \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN groupadd -g 65532 renderer && \
-    useradd -m -u 65532 -g renderer -s /sbin/nologin renderer
+RUN addgroup -S 65532 renderer && \
+    adduser -u 65532 -G renderer -D -s /sbin/nologin renderer
 RUN apk add --no-cache ca-certificates
 COPY --from=downloader /opt/grafana-image-renderer /opt/grafana-image-renderer
 COPY --from=chromium /usr/bin/chromium /usr/bin/chromium

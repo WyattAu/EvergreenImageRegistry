@@ -46,7 +46,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     anonymize_dump(args.input, args.output, args.rules)
 SCRIPT
-RUN useradd -m -u 65532 -s /sbin/nologin anon 2>/dev/null || true && \
+RUN adduser -u 65532 -s /sbin/nologin anon 2>/dev/null || true && \
     mkdir -p /app /var/log/php84-mysql-anonymizer /var/cache/php84-mysql-anonymizer && \
     chown -R 65532:65532 /app /var/log/php84-mysql-anonymizer /var/cache/php84-mysql-anonymizer && \
     chmod +x /app/anonymize.py

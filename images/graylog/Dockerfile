@@ -22,7 +22,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl
-RUN useradd -m -u 65532 -s /sbin/nologin graylog 2>/dev/null || true
+RUN adduser -u 65532 -s /sbin/nologin graylog 2>/dev/null || true
 RUN mkdir -p /opt/graylog/data /opt/graylog/logs /var/log/graylog /var/cache/graylog
 COPY --from=builder /tmp/graylog-${VERSION} /opt/graylog
 USER 65532:65532

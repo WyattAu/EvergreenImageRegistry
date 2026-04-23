@@ -22,7 +22,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl
-RUN useradd -m -u 65532 -s /sbin/nologin logstash 2>/dev/null || true
+RUN adduser -u 65532 -s /sbin/nologin logstash 2>/dev/null || true
 RUN mkdir -p /opt/logstash/data /opt/logstash/logs /var/log/logstash /var/cache/logstash
 COPY --from=builder /tmp/logstash-${VERSION} /opt/logstash
 USER 65532:65532

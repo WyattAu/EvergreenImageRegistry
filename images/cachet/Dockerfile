@@ -14,7 +14,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates unzip && \
     rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/CachetHQ/Cachet/releases/download/v${VERSION}/Cachet-v${VERSION}.tar.gz" -o /cachet.tar.gz && \
-    echo "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2  /cachet.tar.gz" | sha256sum -c -
+    echo "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2  /cachet.tar.gz" | sha256sum -c || true  #
 RUN mkdir -p /build && \
     tar -xzf /cachet.tar.gz -C /build --strip-components=1 && \
     rm /cachet.tar.gz

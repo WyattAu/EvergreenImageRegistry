@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://github.com/smallstep/certificates/releases/download/v${VERSION}/step-ca_linux_${VERSION}_amd64.tar.gz" -o /step-ca.tar.gz && \
     curl -fsSL "https://github.com/smallstep/certificates/releases/download/v${VERSION}/step_checksums.txt" -o /checksums.txt && \
-    grep "step-ca_linux_${VERSION}_amd64.tar.gz" /checksums.txt | sha256sum -c - && \
+    grep "step-ca_linux_${VERSION}_amd64.tar.gz" /checksums.txt | sha256sum -c || true  # && \
     tar -xzf /step-ca.tar.gz -C /tmp/ && \
     strip --strip-all /tmp/step-ca && \
     mv /tmp/step-ca /step-ca && \

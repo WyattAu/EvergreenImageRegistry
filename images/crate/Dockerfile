@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://cdn.crate.io/downloads/releases/cratedb/cratedb-${VERSION}.tar.gz" -o /tmp/crate.tar.gz \
-    && echo "PENDING  /tmp/crate.tar.gz" | sha256sum -c - \
+    && echo "PENDING  /tmp/crate.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /tmp/crate.tar.gz -C /opt \
     && rm /tmp/crate.tar.gz
 

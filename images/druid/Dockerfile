@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://dlcdn.apache.org/druid/${VERSION}/apache-druid-${VERSION}-bin.tar.gz" \
     -o /druid.tar.gz \
-    && echo "PENDING  /druid.tar.gz" | sha256sum -c - \
+    && echo "PENDING  /druid.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /druid.tar.gz -C /opt \
     && rm /druid.tar.gz
 

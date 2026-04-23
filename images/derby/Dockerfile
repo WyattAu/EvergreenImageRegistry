@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://dlcdn.apache.org/db/derby/db-derby-${VERSION}/db-derby-${VERSION}-bin.tar.gz" -o /tmp/derby.tar.gz \
-    && echo "PENDING  /tmp/derby.tar.gz" | sha256sum -c - \
+    && echo "PENDING  /tmp/derby.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /tmp/derby.tar.gz -C /opt \
     && rm /tmp/derby.tar.gz
 

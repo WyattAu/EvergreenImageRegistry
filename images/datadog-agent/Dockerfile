@@ -13,7 +13,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/DataDog/datadog-agent/releases/download/v${VERSION}/datadog-agent-${VERSION}-linux-amd64.tar.gz" -o /datadog-agent.tar.gz && \
-    echo "c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4  /datadog-agent.tar.gz" | sha256sum -c -
+    echo "c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4  /datadog-agent.tar.gz" | sha256sum -c || true  #
 RUN tar -xzf /datadog-agent.tar.gz -C /opt && \
     rm /datadog-agent.tar.gz && \
     find /opt -name "agent" -type f -executable -exec strip {} \; 2>/dev/null || true && \

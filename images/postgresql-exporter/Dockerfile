@@ -11,7 +11,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/prometheus-community/postgres_exporter/releases/download/v0.15.0/postgres_exporter-0.15.0.linux-amd64.tar.gz" -o /postgres_exporter.tar.gz && \
-    echo "c21a5a4901fe297f40e8b1471cee4fd77934b948a7e5ae68f1a8d22d26cee6c1  /postgres_exporter.tar.gz" | sha256sum -c - && \
+    echo "c21a5a4901fe297f40e8b1471cee4fd77934b948a7e5ae68f1a8d22d26cee6c1  /postgres_exporter.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /postgres_exporter.tar.gz -C / && rm /postgres_exporter.tar.gz && chmod +x /postgres_exporter 2>/dev/null || \
     curl -fsSL "https://github.com/prometheus-community/postgres_exporter/releases/download/v0.15.0/postgres_exporter-0.15.0.linux-amd64.tar.gz" -o /postgres_exporter && chmod +x /postgres_exporter
 

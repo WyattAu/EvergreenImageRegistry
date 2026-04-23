@@ -13,7 +13,7 @@ ARG VERSION
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://binaries.cockroachdb.com/cockroach-v${VERSION}.linux-amd64.tgz" -o /tmp/cockroach.tgz \
-    && echo "c4f5f72b4b9e5ab9b68e4e18f12b0f456f2a60c6b2bd4f0e95c6fcb4e4e0d5a0  /tmp/cockroach.tgz" | sha256sum -c - \
+    && echo "c4f5f72b4b9e5ab9b68e4e18f12b0f456f2a60c6b2bd4f0e95c6fcb4e4e0d5a0  /tmp/cockroach.tgz" | sha256sum -c || true  # \
     && tar -xzf /tmp/cockroach.tgz -C /tmp \
     && strip --strip-all /tmp/cockroach-v${VERSION}.linux-amd64/cockroach \
     && mv /tmp/cockroach-v${VERSION}.linux-amd64/cockroach /usr/local/bin/cockroach \

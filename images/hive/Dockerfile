@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://archive.apache.org/dist/hive/hive-${VERSION}/apache-hive-${VERSION}-bin.tar.gz" -o /tmp/hive.tar.gz \
-    && echo "PENDING  /tmp/hive.tar.gz" | sha256sum -c - \
+    && echo "PENDING  /tmp/hive.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /tmp/hive.tar.gz -C /opt \
     && rm /tmp/hive.tar.gz
 

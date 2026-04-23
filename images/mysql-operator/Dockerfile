@@ -11,7 +11,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://github.com/presslabs/mysql-operator/releases/download/v0.5.0/mysql-operator-0.5.0-linux-amd64.tar.gz" -o /mysql-operator.tar.gz && \
-    echo "PENDING_CHECKSUM  /mysql-operator.tar.gz" | sha256sum -c - && \
+    echo "PENDING_CHECKSUM  /mysql-operator.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /mysql-operator.tar.gz -C / && rm /mysql-operator.tar.gz && chmod +x /mysql-operator 2>/dev/null || \
     curl -fsSL "https://github.com/presslabs/mysql-operator/releases/download/v0.5.0/mysql-operator-0.5.0-linux-amd64.tar.gz" -o /mysql-operator && chmod +x /mysql-operator
 

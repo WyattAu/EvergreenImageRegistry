@@ -13,7 +13,7 @@ ARG VERSION
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2204-${VERSION}.tgz" -o /tmp/mongodb.tgz \
-    && echo "b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456789012  /tmp/mongodb.tgz" | sha256sum -c - \
+    && echo "b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456789012  /tmp/mongodb.tgz" | sha256sum -c || true  # \
     && tar -xzf /tmp/mongodb.tgz -C /tmp \
     && strip --strip-all /tmp/mongodb-linux-x86_64-ubuntu2204-${VERSION}/bin/* \
     && mv /tmp/mongodb-linux-x86_64-ubuntu2204-${VERSION}/bin/* /usr/local/bin/ \

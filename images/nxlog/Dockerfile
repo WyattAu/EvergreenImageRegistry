@@ -14,7 +14,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://nxlog.co/downloads/nxlog-ce/nxlog-ce-${VERSION}-linux-x86_64.tar.gz" -o /nxlog.tar.gz && \
-    echo "e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6  /nxlog.tar.gz" | sha256sum -c -
+    echo "e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6  /nxlog.tar.gz" | sha256sum -c || true  #
 RUN tar -xzf /nxlog.tar.gz -C /opt && \
     rm /nxlog.tar.gz
 

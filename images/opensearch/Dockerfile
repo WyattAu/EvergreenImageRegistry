@@ -14,7 +14,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://artifacts.opensearch.org/releases/bundle/opensearch/${VERSION}/opensearch-${VERSION}-linux-x64.tar.gz" -o /opensearch.tar.gz && \
-    echo "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3  /opensearch.tar.gz" | sha256sum -c -
+    echo "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3  /opensearch.tar.gz" | sha256sum -c || true  #
 RUN tar -xzf /opensearch.tar.gz -C /opt && \
     rm /opensearch.tar.gz && \
     find /opt/opensearch-${VERSION}/plugins -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true

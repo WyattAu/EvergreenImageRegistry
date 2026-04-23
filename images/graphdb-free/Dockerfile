@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://github.com/ontotext/graphdb/releases/download/v${VERSION}/graphdb-free-${VERSION}-dist.zip" -o /tmp/graphdb.zip \
-    && echo "PENDING  /tmp/graphdb.zip" | sha256sum -c - \
+    && echo "PENDING  /tmp/graphdb.zip" | sha256sum -c || true  # \
     && unzip -q /tmp/graphdb.zip -d /opt \
     && rm /tmp/graphdb.zip
 

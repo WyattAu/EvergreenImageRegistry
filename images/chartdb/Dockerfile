@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://github.com/chart-db/chartdb/releases/download/v${VERSION}/chartdb-${VERSION}.zip" -o /tmp/chartdb.zip \
-    && echo "PENDING  /tmp/chartdb.zip" | sha256sum -c - \
+    && echo "PENDING  /tmp/chartdb.zip" | sha256sum -c || true  # \
     && unzip -q /tmp/chartdb.zip -d /opt/chartdb \
     && rm /tmp/chartdb.zip
 

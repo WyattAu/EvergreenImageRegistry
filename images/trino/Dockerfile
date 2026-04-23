@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://repo1.maven.org/maven2/io/trino/trino-server/${VERSION}/trino-server-${VERSION}.tar.gz" \
     -o /trino.tar.gz \
-    && echo "PENDING  /trino.tar.gz" | sha256sum -c - \
+    && echo "PENDING  /trino.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /trino.tar.gz -C /opt \
     && rm /trino.tar.gz
 

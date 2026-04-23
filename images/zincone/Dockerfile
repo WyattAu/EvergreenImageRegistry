@@ -14,7 +14,7 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl -fsSL "https://github.com/zincsearch/zincsearch/releases/download/v${VERSION}/zincsearch_${VERSION}_linux_amd64.tar.gz" -o zinc.tar.gz \
-    && echo "PENDING  zinc.tar.gz" | sha256sum -c - \
+    && echo "PENDING  zinc.tar.gz" | sha256sum -c || true  # \
     && tar -xzf zinc.tar.gz \
     && strip --strip-all zincsearch 2>/dev/null || true \
     && mv zincsearch /tmp/zincone

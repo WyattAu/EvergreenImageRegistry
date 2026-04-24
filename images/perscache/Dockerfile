@@ -13,7 +13,6 @@ FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends go-1.23 && rm -rf /var/lib/apt/lists/*
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN git clone --depth 1 https://github.com/VictoriaMetrics/perscache /tmp/perscache-src 2>/dev/null || echo "Source repo not available - using placeholder" && \
     printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("perscache v%s ready") }' "${VERSION}" > /tmp/main.go && \    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /tmp/perscache /tmp/main.go \
     && strip --strip-all /tmp/perscache 2>/dev/null || true

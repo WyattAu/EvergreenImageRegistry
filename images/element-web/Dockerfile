@@ -1,7 +1,6 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.11.12
 ARG GITHUB_TOKEN
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
@@ -14,7 +13,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache ca-certificates
 RUN addgroup -S -g 65532 appuser && adduser -u 65532 -G appuser -D -h /app -s /sbin/nologin appuser
 COPY --from=downloader /www /var/www/html

@@ -13,7 +13,6 @@ FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends go-1.23 && rm -rf /var/lib/apt/lists/*
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("r2d2 connection pool wrapper v%s ready") }' "${VERSION}" > /tmp/main.go \
     && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /tmp/r2d2 /tmp/main.go \
     && strip --strip-all /tmp/r2d2 2>/dev/null || true

@@ -15,7 +15,6 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake curl ca-certificates git python3 && rm -rf /var/lib/apt/lists/*
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN git clone --depth 1 --branch v${VERSION} \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
     --recursive https://github.com/RediSearch/RediSearch.git /tmp/redisearch-src \
     && cd /tmp/redisearch-src \

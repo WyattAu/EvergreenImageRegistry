@@ -15,7 +15,6 @@ FROM go-1.23:${GO_VERSION}-bookworm AS builder
 ARG VERSION=1.10.1
 ARG GO_VERSION=1.22.4
 RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN git clone --depth 1 --branch controller-v${VERSION} \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
     https://github.com/kubernetes/ingress-nginx /src && \
     cd /src && \    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \

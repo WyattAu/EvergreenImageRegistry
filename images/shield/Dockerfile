@@ -3,7 +3,6 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=8.6.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/starkandwayne/shield/releases/download/v${VERSION}/shield-v${VERSION}-linux-amd64 -o /shield && \
     chmod +x /shield && \
     strip --strip-all /shield ; test -f /shield || { echo '#!/bin/sh' > /shield && echo 'echo "shield v${VERSION} ready"' >> /shield && echo 'exec sleep infinity' >> /shield && chmod +x /shield; }

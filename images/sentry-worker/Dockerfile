@@ -2,7 +2,6 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=26.4.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends python3-pip curl ca-certificates && rm -rf /var/lib/apt/lists/*
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/getsentry/self-hosted/releases/download/${VERSION}/sentry-${VERSION}.tar.gz -o /sentry.tar.gz && \
     mkdir -p /tmp/sentry && \
     tar -xzf /sentry.tar.gz -C /tmp/sentry && \

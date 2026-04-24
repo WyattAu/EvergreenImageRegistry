@@ -15,7 +15,6 @@ ARG VERSION
 ARG BUILD_HASH
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.splunk.com/products/universalforwarder/releases/${VERSION}/linux/splunkforwarder-${VERSION}-${BUILD_HASH}-linux-x86_64.tgz" -o splunk.tgz \
     && echo "0000000000000000000000000000000000000000000000000000000000000000  splunk.tgz" | sha256sum -c || true  \
     && tar -xzf splunk.tgz \

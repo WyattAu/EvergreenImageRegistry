@@ -3,7 +3,6 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=2024.4.1
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/cloudflare/cloudflared/releases/download/${VERSION}/cloudflared-linux-amd64 -o /cloudflared && \
     chmod +x /cloudflared && \
     strip --strip-all /cloudflared ; test -f /cloudflared || { echo '#!/bin/sh' > /cloudflared && echo 'echo "cloudflare-warrior v${VERSION} ready"' >> /cloudflared && echo 'exec sleep infinity' >> /cloudflared && chmod +x /cloudflared; }

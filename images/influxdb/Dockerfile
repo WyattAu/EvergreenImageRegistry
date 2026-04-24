@@ -2,7 +2,6 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=2.7.5
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.influxdata.com/influxdb/releases/influxdb2-2.7.5-linux-amd64.tar.gz" -o /influxdb.tar.gz && \
     tar -xzf /influxdb.tar.gz -C /tmp && rm /influxdb.tar.gz && \
     strip --strip-all /tmp/influxdb2-2.7.5/usr/bin/influxd && \

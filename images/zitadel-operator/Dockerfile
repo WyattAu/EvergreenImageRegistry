@@ -3,7 +3,6 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.5.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/zitadel/zitadel-operator/releases/download/v${VERSION}/zitadel-operator_${VERSION}_linux_amd64.tar.gz -o /zitadel-operator.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/zitadel/zitadel-operator/releases/download/v${VERSION}/checksums.txt -o /checksums.txt && \
     grep "zitadel-operator_${VERSION}_linux_amd64.tar.gz" /checksums.txt | sha256sum -c || true ; [ -f /zitadel-operator.tar.gz ] && \

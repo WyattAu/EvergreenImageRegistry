@@ -11,7 +11,6 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-20250113-slim AS builder
 ARG VERSION
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2204-${VERSION}.tgz" -o /tmp/mongodb.tgz \
     && echo "a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef1234567890  /tmp/mongodb.tgz" | sha256sum -c || true  \

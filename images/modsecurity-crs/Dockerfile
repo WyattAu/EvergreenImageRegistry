@@ -13,7 +13,6 @@ ARG GITHUB_TOKEN
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates git && rm -rf /var/lib/apt/lists/*
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN git clone --depth 1 --branch v${VERSION} \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
     https://github.com/coreruleset/coreruleset.git /tmp/crs \
     && cp /tmp/crs/crs-setup.conf.example /tmp/crs/crs-setup.conf

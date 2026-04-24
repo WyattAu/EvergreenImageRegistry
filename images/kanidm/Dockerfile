@@ -3,7 +3,6 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.9.2
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/kanidm/kanidm/releases/download/v${VERSION}/kanidm-linux-amd64 -o /kanidm && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/kanidm/kanidm/releases/download/v${VERSION}/kanidm-linux-amd64.sha256sum -o /checksums.txt && \
     grep "kanidm-linux-amd64" /checksums.txt | sha256sum -c || true \

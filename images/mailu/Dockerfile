@@ -9,7 +9,6 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update &&     apt-get install -y --no-install-recommends         python3-pip         python3         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/*
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
@@ -18,7 +17,6 @@ RUN pip install --no-cache-dir mailu==2.0.0
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache python3 ca-certificates
 RUN addgroup -S -g 65532 appuser && adduser -u 65532 -G appuser -D -h /app -s /sbin/nologin appuser
 COPY --from=builder /opt/venv /opt/venv

@@ -10,7 +10,6 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION=7.2.4
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
@@ -26,7 +25,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache ca-certificates
 RUN addgroup -S -g 65532 redis && adduser -u 65532 -G redis -D -h /data -s /sbin/nologin redis
 COPY --from=builder /tmp/redis-7.2.4/src/redis /usr/local/bin/redis

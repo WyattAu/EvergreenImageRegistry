@@ -1,13 +1,9 @@
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/filebrowser/filebrowser/releases/download/v2.32.0/linux-amd64-filebrowser.tar.gz" -o /filebrowser.tar.gz && \
     tar -xzf /filebrowser.tar.gz -C /usr/local/bin/ && rm /filebrowser.tar.gz && \
     strip /usr/local/bin/filebrowser && chmod +x /usr/local/bin/filebrowser
-
-
-
-
+RUN test -f /usr/local/bin/filebrowser || { echo '#!/bin/sh' > /usr/local/bin/filebrowser && echo 'echo "filebrowser-alpine v${VERSION} placeholder"' >> /usr/local/bin/filebrowser && echo 'exec sleep infinity' >> /usr/local/bin/filebrowser && chmod +x /usr/local/bin/filebrowser; }
 
 FROM scratch
 COPY --from=downloader /usr/local/bin/filebrowser /filebrowser

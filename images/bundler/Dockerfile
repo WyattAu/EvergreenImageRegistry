@@ -14,7 +14,7 @@ RUN apk add --no-cache ruby ruby-dev ca-certificates curl build-base
 RUN gem install bundler -v 2.5.0 --no-document && \
     strip /usr/local/bin/bundle 2>/dev/null || true && \
     strip /usr/local/bin/bundler 2>/dev/null || true
-RUN adduser -u 65532 -G '' -D app 2>/dev/null || true
+RUN adduser -u 65532 -D app 2>/dev/null || true
 RUN mkdir -p /app /var/log/ruby /var/cache/ruby && chown -R app:app /app /var/log/ruby /var/cache/ruby 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app

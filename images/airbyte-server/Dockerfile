@@ -3,7 +3,7 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS builder
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-base && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-headless && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app /var/log/airbyte-server /var/cache/airbyte-server /var/lib/airbyte
 
 
@@ -14,7 +14,7 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/airbyte-server /var/log/airbyte-server
 COPY --from=builder /var/cache/airbyte-server /var/cache/airbyte-server
 COPY --from=builder /var/lib/airbyte /var/lib/airbyte
-RUN adduser -u 65532 -G '' -D airbyte 2>/dev/null || true
+RUN adduser -u 65532 -D airbyte 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENV HOME=/app

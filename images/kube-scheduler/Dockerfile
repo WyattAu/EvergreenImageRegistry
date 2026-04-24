@@ -19,7 +19,7 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/kube-scheduler /var/log/kube-scheduler
 COPY --from=builder /var/cache/kube-scheduler /var/cache/kube-scheduler
 COPY --from=builder /var/lib/kube-scheduler /var/lib/kube-scheduler
-RUN adduser -u 65532 -G '' -D kube-scheduler 2>/dev/null || true
+RUN adduser -u 65532 -D kube-scheduler 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["kube-scheduler"]

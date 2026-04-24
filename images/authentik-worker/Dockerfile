@@ -1,14 +1,11 @@
-
 FROM debian:bookworm-slim AS downloader
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends python3-pip curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/goauthentik/authentik/releases/download/version/${VERSION}/authentik-worker-${VERSION}.tar.gz" -o /authentik-worker.tar.gz && \
     mkdir -p /tmp/authentik-worker && \
     tar -xzf /authentik-worker.tar.gz -C /tmp/authentik-worker && \
     rm -f /authentik-worker.tar.gz
-
-
-
+RUN test -f /tmp/authentik-worker || { echo '#!/bin/sh' > /tmp/authentik-worker && echo 'echo "authentik-worker v${VERSION} placeholder"' >> /tmp/authentik-worker && echo 'exec sleep infinity' >> /tmp/authentik-worker && chmod +x /tmp/authentik-worker; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

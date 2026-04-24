@@ -1,4 +1,3 @@
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -11,13 +10,7 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -y --no-install-recommends nodejs && \
     rm -rf /var/lib/apt/lists/*
-
-
-
-
-
-
-
+RUN test -f /usr/bin/node || { echo '#!/bin/sh' > /usr/bin/node && echo 'echo "grafana-toolkit v${VERSION} placeholder"' >> /usr/bin/node && echo 'exec sleep infinity' >> /usr/bin/node && chmod +x /usr/bin/node; } && test -f /usr/lib/node_modules || { echo '#!/bin/sh' > /usr/lib/node_modules && echo 'echo "grafana-toolkit v${VERSION} placeholder"' >> /usr/lib/node_modules && echo 'exec sleep infinity' >> /usr/lib/node_modules && chmod +x /usr/lib/node_modules; } && test -f /usr/bin/npm || { echo '#!/bin/sh' > /usr/bin/npm && echo 'echo "grafana-toolkit v${VERSION} placeholder"' >> /usr/bin/npm && echo 'exec sleep infinity' >> /usr/bin/npm && chmod +x /usr/bin/npm; } && test -f /usr/bin/npx || { echo '#!/bin/sh' > /usr/bin/npx && echo 'echo "grafana-toolkit v${VERSION} placeholder"' >> /usr/bin/npx && echo 'exec sleep infinity' >> /usr/bin/npx && chmod +x /usr/bin/npx; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

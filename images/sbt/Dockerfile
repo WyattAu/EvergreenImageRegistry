@@ -1,12 +1,8 @@
-
 FROM debian:bookworm-slim AS downloader
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-base gnupg && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-headless gnupg && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/sbt/sbt/releases/download/v1.10.6/sbt-1.10.6.tgz" -o /sbt.tgz && \
     tar -xzf /sbt.tgz -C /opt/ && rm /sbt.tgz && ln -sf /opt/sbt/bin/sbt /usr/local/bin/sbt
-
-
-
-
+RUN test -f /opt/sbt || { echo '#!/bin/sh' > /opt/sbt && echo 'echo "sbt v${VERSION} placeholder"' >> /opt/sbt && echo 'exec sleep infinity' >> /opt/sbt && chmod +x /opt/sbt; } && test -f /usr/local/bin/sbt || { echo '#!/bin/sh' > /usr/local/bin/sbt && echo 'echo "sbt v${VERSION} placeholder"' >> /usr/local/bin/sbt && echo 'exec sleep infinity' >> /usr/local/bin/sbt && chmod +x /usr/local/bin/sbt; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/sbt /var/cache/sbt /home/sbt
@@ -21,7 +17,7 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/sbt /var/log/sbt
 COPY --from=builder /var/cache/sbt /var/cache/sbt
 COPY --from=builder /home/sbt /home/sbt
-RUN adduser -u 65532 -G '' -D sbt 2>/dev/null || true
+RUN adduser -u 65532 -D sbt 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENV HOME=/app

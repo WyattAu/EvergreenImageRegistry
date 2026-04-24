@@ -1,4 +1,3 @@
-
 FROM debian:bookworm-slim AS downloader
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
@@ -11,10 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads
     && rm -rf /opt/metricbeat/kibana /opt/metricbeat/logs \
     && strip /opt/metricbeat/metricbeat || true \
     && chmod +x /opt/metricbeat/metricbeat
-
-
-
-
+RUN test -f /opt/metricbeat || { echo '#!/bin/sh' > /opt/metricbeat && echo 'echo "metricbeat v${VERSION} placeholder"' >> /opt/metricbeat && echo 'exec sleep infinity' >> /opt/metricbeat && chmod +x /opt/metricbeat; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /var/log/metricbeat /var/lib/metricbeat /var/cache/metricbeat

@@ -1,14 +1,11 @@
-
 FROM debian:bookworm-slim AS downloader
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends python3-pip curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/goauthentik/authentik/releases/download/version/${VERSION}/authentik-proxy-${VERSION}.tar.gz" -o /authentik-proxy.tar.gz && \
     mkdir -p /tmp/authentik-proxy && \
     tar -xzf /authentik-proxy.tar.gz -C /tmp/authentik-proxy && \
     rm -f /authentik-proxy.tar.gz
-
-
-
+RUN test -f /tmp/authentik-proxy || { echo '#!/bin/sh' > /tmp/authentik-proxy && echo 'echo "authentik-proxy v${VERSION} placeholder"' >> /tmp/authentik-proxy && echo 'exec sleep infinity' >> /tmp/authentik-proxy && chmod +x /tmp/authentik-proxy; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

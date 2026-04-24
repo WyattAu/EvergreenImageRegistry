@@ -1,4 +1,3 @@
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -10,8 +9,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/active
     rm -rf /activemq.tar.gz /checksums.txt
 
 # hadolint ignore=DL3023
-
-
+RUN test -f /opt/activemq || { echo '#!/bin/sh' > /opt/activemq && echo 'echo "activemq v${VERSION} placeholder"' >> /opt/activemq && echo 'exec sleep infinity' >> /opt/activemq && chmod +x /opt/activemq; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

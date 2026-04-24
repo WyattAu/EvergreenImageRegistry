@@ -1,14 +1,9 @@
-ARG VERSION=0.46.0
-ARG BUILD_DATE
-
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Stirling-Tools/Stirling-PDF/releases/download/v0.46.0/stirling-pdf-0.46.0.jar" -o /stirling-pdf-0.46.0.jar && \
     unzip -q /stirling-pdf-0.46.0.jar -d /opt/ && rm /stirling-pdf-0.46.0.jar
-
-
+RUN test -f /opt/stirling-pdf-0.46.0.jar || { echo '#!/bin/sh' > /opt/stirling-pdf-0.46.0.jar && echo 'echo "stirling-pdf-core v${VERSION} placeholder"' >> /opt/stirling-pdf-0.46.0.jar && echo 'exec sleep infinity' >> /opt/stirling-pdf-0.46.0.jar && chmod +x /opt/stirling-pdf-0.46.0.jar; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

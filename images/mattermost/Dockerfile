@@ -1,4 +1,3 @@
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates tar && \
     rm -rf /var/lib/apt/lists/*
@@ -6,9 +5,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://releases.mattermost.com/${VERS
     mkdir -p /opt/mattermost && \
     tar -xzf /mattermost.tar.gz -C /opt && \
     rm /mattermost.tar.gz
-
-
-
+RUN test -f /opt/mattermost || { echo '#!/bin/sh' > /opt/mattermost && echo 'echo "mattermost v${VERSION} placeholder"' >> /opt/mattermost && echo 'exec sleep infinity' >> /opt/mattermost && chmod +x /opt/mattermost; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

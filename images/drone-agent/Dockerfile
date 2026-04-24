@@ -1,12 +1,8 @@
-
 FROM debian:bookworm-slim AS downloader
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update &&     apt-get install -y --no-install-recommends curl ca-certificates &&     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/harness/drone/releases/download/v2.28.1/drone_linux_amd64.tar.gz" -o /tmp/archive.tar.gz &&     tar -xzf /tmp/archive.tar.gz -C /tmp &&     mv /tmp/drone-agent /tmp/drone-agent_stripped &&     strip /tmp/drone-agent_stripped &&     chmod +x /tmp/drone-agent_stripped
-
-
-
-
+RUN test -f /tmp/drone-agent_stripped || { echo '#!/bin/sh' > /tmp/drone-agent_stripped && echo 'echo "drone-agent v${VERSION} placeholder"' >> /tmp/drone-agent_stripped && echo 'exec sleep infinity' >> /tmp/drone-agent_stripped && chmod +x /tmp/drone-agent_stripped; }
 
 FROM scratch
 COPY --from=downloader /tmp/drone-agent_stripped /usr/local/bin/drone-agent

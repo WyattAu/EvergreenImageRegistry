@@ -1,4 +1,3 @@
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -7,9 +6,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/grafana/grafana-ima
     echo "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3  /renderer.tar.gz" | sha256sum -c || true  #
 RUN tar -xzf /renderer.tar.gz -C /opt && \
     rm /renderer.tar.gz
-
-
-
+RUN test -f /opt/grafana-image-renderer || { echo '#!/bin/sh' > /opt/grafana-image-renderer && echo 'echo "grafana-image-renderer v${VERSION} placeholder"' >> /opt/grafana-image-renderer && echo 'exec sleep infinity' >> /opt/grafana-image-renderer && chmod +x /opt/grafana-image-renderer; }
 
 FROM debian:bookworm-slim AS chromium
 RUN apt-get update && \

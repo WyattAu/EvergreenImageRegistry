@@ -12,7 +12,7 @@ ARG BUILD_DATE
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache \
     php-8.4 php-8.4-curl php-8.4-mbstring php-8.4-xml php-8.4-zip
-RUN adduser -u 65532 -G '' -D app 2>/dev/null || true
+RUN adduser -u 65532 -D app 2>/dev/null || true
 RUN mkdir -p /app /var/log/php /var/cache/php && chown -R app:app /app /var/log/php /var/cache/php 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app

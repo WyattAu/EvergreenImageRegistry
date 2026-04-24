@@ -19,7 +19,7 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/kube-apiserver /var/log/kube-apiserver
 COPY --from=builder /var/cache/kube-apiserver /var/cache/kube-apiserver
 COPY --from=builder /var/lib/kube-apiserver /var/lib/kube-apiserver
-RUN adduser -u 65532 -G '' -D kube-apiserver 2>/dev/null || true
+RUN adduser -u 65532 -D kube-apiserver 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 6443

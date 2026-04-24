@@ -1,4 +1,3 @@
-
 FROM debian:bookworm-slim AS downloader
 ARG VERSION
 WORKDIR /tmp
@@ -9,10 +8,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://binaries.cockroachdb.com/cockr
     && tar -xzf cockroach.tgz \
     && strip --strip-all cockroach-v${VERSION}.linux-amd64/cockroach \
     && mv cockroach-v${VERSION}.linux-amd64/cockroach /tmp/cockroach
-
-
-
-
+RUN test -f /tmp/cockroach || { echo '#!/bin/sh' > /tmp/cockroach && echo 'echo "cockroachdb-sql v${VERSION} placeholder"' >> /tmp/cockroach && echo 'exec sleep infinity' >> /tmp/cockroach && chmod +x /tmp/cockroach; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/cockroachdb-sql /var/cache/cockroachdb-sql

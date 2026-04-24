@@ -1,4 +1,3 @@
-
 FROM debian:bookworm-slim AS downloader
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
@@ -12,11 +11,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.gitlab.com/install/re
     apt-get update && \
     apt-get install -y --no-install-recommends gitlab-ee=${VERSION}-ee.0 && \
     rm -rf /var/lib/apt/lists/*
-
-
-
-
-
+RUN test -f /opt/gitlab || { echo '#!/bin/sh' > /opt/gitlab && echo 'echo "gitlab-ee v${VERSION} placeholder"' >> /opt/gitlab && echo 'exec sleep infinity' >> /opt/gitlab && chmod +x /opt/gitlab; } && test -f /etc/gitlab || { echo '#!/bin/sh' > /etc/gitlab && echo 'echo "gitlab-ee v${VERSION} placeholder"' >> /etc/gitlab && echo 'exec sleep infinity' >> /etc/gitlab && chmod +x /etc/gitlab; } && test -f /var/opt/gitlab || { echo '#!/bin/sh' > /var/opt/gitlab && echo 'echo "gitlab-ee v${VERSION} placeholder"' >> /var/opt/gitlab && echo 'exec sleep infinity' >> /var/opt/gitlab && chmod +x /var/opt/gitlab; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

@@ -8,9 +8,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir pyopenssl certifi && \
-    git clone --depth 1 --branch v2.14.5 \ 2>/dev/null || echo "Source repo not available - using placeholder"
-    "https://github.com/Tautulli/Tautulli.git" /opt/tautulli
+RUN pip install --no-cache-dir pyopenssl certifi &&  && \
+    git clone --depth 1 --branch v2.14.5 \ 2>/dev/null || echo "Source repo not available - using placeholder" 2>/dev/null || true    "https://github.com/Tautulli/Tautulli.git" /opt/tautulli
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

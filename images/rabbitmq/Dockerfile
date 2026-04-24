@@ -20,7 +20,7 @@ ENV HEALTH_CMD="rabbitmq-diagnostics -q ping" \
     STARTUP_CMD="rabbitmq-diagnostics -q ping" \
     SOVEREIGN_LOG_LEVEL=info
 RUN apk add --no-cache ca-certificates
-RUN adduser -u 65532 -G '' -D rabbitmq 2>/dev/null || true
+RUN adduser -u 65532 -D rabbitmq 2>/dev/null || true
 RUN mkdir -p /app /var/log/rabbitmq-server /var/cache/rabbitmq-server && chown -R rabbitmq:rabbitmq /app /var/log/rabbitmq-server /var/cache/rabbitmq-server 2>/dev/null || true
 USER rabbitmq
 WORKDIR /app

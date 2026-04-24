@@ -11,7 +11,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache sqlite-libs ca-certificates
-RUN adduser -u 65532 -G '' -D sqlite 2>/dev/null || true
+RUN adduser -u 65532 -D sqlite 2>/dev/null || true
 RUN mkdir -p /app /var/log/sqlite-libs /var/cache/sqlite-libs && chown -R sqlite:sqlite /app /var/log/sqlite-libs /var/cache/sqlite-libs 2>/dev/null || true
 USER sqlite
 WORKDIR /app

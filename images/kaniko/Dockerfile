@@ -21,7 +21,7 @@ COPY --from=upstream /kaniko/.docker /kaniko/.docker
 COPY --from=upstream /usr/local/bin /usr/local/bin
 RUN apk add --no-cache ca-certificates
 RUN ln -sf /kaniko/executor /usr/local/bin/kaniko
-RUN adduser -u 65532 -G '' -D kaniko 2>/dev/null || true
+RUN adduser -u 65532 -D kaniko 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENV HOME=/app

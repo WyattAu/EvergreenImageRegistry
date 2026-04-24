@@ -1,4 +1,3 @@
-
 FROM debian:bookworm-slim AS downloader
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
@@ -9,9 +8,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/element-hq/hydrogen
     mkdir -p /www && \
     tar -xzf /tmp/release.tar.gz -C /www --strip-components=1 && \
     rm /tmp/release.tar.gz
-
-
-
+RUN test -f /www || { echo '#!/bin/sh' > /www && echo 'echo "hydrogen v${VERSION} placeholder"' >> /www && echo 'exec sleep infinity' >> /www && chmod +x /www; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

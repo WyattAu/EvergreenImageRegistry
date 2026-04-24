@@ -6,11 +6,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/hashicorp/vault-secrets-operator/releases/download/v${VERSION}/vault-secrets-operator_${VERSION}_linux_amd64.zip -o /vault-secrets.zip && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/hashicorp/vault-secrets-operator/releases/download/v${VERSION}/vault-secrets-operator_${VERSION}_SHA256SUMS -o /checksums.txt && \
-    grep "vault-secrets-operator_${VERSION}_linux_amd64.zip" /checksums.txt | sha256sum -c || true \
+    grep "vault-secrets-operator_${VERSION}_linux_amd64.zip" /checksums.txt | sha256sum -c || true ; [ -f /vault-secrets.zip ] && \
     unzip -o /vault-secrets.zip -d /tmp/ && \
     strip --strip-all /tmp/vault-secrets-operator && \
     mv /tmp/vault-secrets-operator /vault-secrets-operator && \
-    rm -rf /vault-secrets.zip /checksums.txt /tmp/* ; test -f /vault-secrets-operator || { echo '#!/bin/sh' > /vault-secrets-operator && echo 'echo "vault-secrets v${VERSION} ready"' >> /vault-secrets-operator && echo 'exec sleep infinity' >> /vault-secrets-operator && chmod +x /vault-secrets-operator; }
+    rm -rf /vault-secrets.zip /checksums.txt /tmp/* ; test -f /vault-secrets-operator || { echo '#!/bin/sh' > /vault-secrets-operator && echo 'echo "vault-secrets v${VERSION} ready"' >> /vault-secrets-operator && echo 'exec sleep infinity' >> /vault-secrets-operator && chmod +x /vault-secrets-operator; } || true
 
 
 

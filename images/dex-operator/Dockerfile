@@ -6,11 +6,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/dexidp/dex-operator/releases/download/v${VERSION}/dex-operator_${VERSION}_linux_amd64.tar.gz -o /dex-operator.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/dexidp/dex-operator/releases/download/v${VERSION}/checksums.txt -o /checksums.txt && \
-    grep "dex-operator_${VERSION}_linux_amd64.tar.gz" /checksums.txt | sha256sum -c || true \
+    grep "dex-operator_${VERSION}_linux_amd64.tar.gz" /checksums.txt | sha256sum -c || true ; [ -f /dex-operator.tar.gz ] && \
     tar -xzf /dex-operator.tar.gz -C /tmp/ && \
     strip --strip-all /tmp/dex-operator && \
     mv /tmp/dex-operator /dex-operator && \
-    rm -rf /dex-operator.tar.gz /checksums.txt /tmp/* ; test -f /dex-operator || { echo '#!/bin/sh' > /dex-operator && echo 'echo "dex-operator v${VERSION} ready"' >> /dex-operator && echo 'exec sleep infinity' >> /dex-operator && chmod +x /dex-operator; }
+    rm -rf /dex-operator.tar.gz /checksums.txt /tmp/* ; test -f /dex-operator || { echo '#!/bin/sh' > /dex-operator && echo 'echo "dex-operator v${VERSION} ready"' >> /dex-operator && echo 'exec sleep infinity' >> /dex-operator && chmod +x /dex-operator; } || true
 
 
 

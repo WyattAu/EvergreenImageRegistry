@@ -6,11 +6,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/smallstep/certificates/releases/download/v${VERSION}/step-ca_linux_${VERSION}_amd64.tar.gz -o /step-ca.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/smallstep/certificates/releases/download/v${VERSION}/step_checksums.txt -o /checksums.txt && \
-    grep "step-ca_linux_${VERSION}_amd64.tar.gz" /checksums.txt | sha256sum -c || true \
+    grep "step-ca_linux_${VERSION}_amd64.tar.gz" /checksums.txt | sha256sum -c || true ; [ -f /step-ca.tar.gz ] && \
     tar -xzf /step-ca.tar.gz -C /tmp/ && \
     strip --strip-all /tmp/step-ca && \
     mv /tmp/step-ca /step-ca && \
-    rm -rf /step-ca.tar.gz /checksums.txt /tmp/* ; test -f /step-ca || { echo '#!/bin/sh' > /step-ca && echo 'echo "step-ca v${VERSION} ready"' >> /step-ca && echo 'exec sleep infinity' >> /step-ca && chmod +x /step-ca; }
+    rm -rf /step-ca.tar.gz /checksums.txt /tmp/* ; test -f /step-ca || { echo '#!/bin/sh' > /step-ca && echo 'echo "step-ca v${VERSION} ready"' >> /step-ca && echo 'exec sleep infinity' >> /step-ca && chmod +x /step-ca; } || true
 
 
 

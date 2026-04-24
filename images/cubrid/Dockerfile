@@ -26,7 +26,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/CUBRID/cubrid/relea
     && make install \
     && strip --strip-all /opt/cubrid/bin/cubrid /opt/cubrid/bin/cub_server 2>/dev/null || true
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

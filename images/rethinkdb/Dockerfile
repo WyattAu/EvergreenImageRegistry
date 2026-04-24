@@ -20,7 +20,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.rethinkdb.com/reposit
     && tar -xzf /tmp/rethinkdb.tar.gz -C /opt \
     && strip --strip-all /opt/rethinkdb-*/bin/rethinkdb 2>/dev/null || true
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

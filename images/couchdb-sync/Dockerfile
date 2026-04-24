@@ -29,8 +29,7 @@ RUN apt-get update && \
         g++ && \
     rm -rf /var/lib/apt/lists/*
 RUN tar -xzf /tmp/couchdb.tar.gz -C /tmp && \
-    cd /tmp/apache-couchdb-3.3.3 && \
-    ./configure --disable-docs --spidermonkey-version=78 && \
+    cd /tmp/apache-couchdb-3.3.3 && \    ./configure --disable-docs --spidermonkey-version=78 && \
     make release && \
     strip --strip-all /tmp/apache-couchdb-3.3.3/rel/couchdb/bin/* || true && \
     mkdir -p /opt/couchdb && \
@@ -46,6 +45,7 @@ RUN mkdir -p /var/lib/couchdb /var/log/couchdb /app && \
     chown -R 65532:65532 /var/lib/couchdb /var/log/couchdb /app /opt/couchdb
 ENV COUCHDB_HOME=/opt/couchdb
 ENV PATH="${COUCHDB_HOME}/bin:${PATH}"
+
 USER 65532:65532
 WORKDIR /app
 EXPOSE 5984

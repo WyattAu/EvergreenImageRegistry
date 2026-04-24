@@ -19,7 +19,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/mongodb/mongodb-ops
     && tar -xzf /tmp/opsmanager.tgz -C /opt/opsmanager --strip-components=1 \
     && rm -rf /tmp/opsmanager.tgz
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=7.0.7
 

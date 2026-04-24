@@ -19,8 +19,7 @@ RUN apt-get update && \
 WORKDIR /tmp
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.gz" -o /tmp/redis.tar.gz && \
     tar -xzf /tmp/redis.tar.gz -C /tmp && \
-    cd /tmp/redis-${VERSION} && \
-    make -j$(nproc) && \
+    cd /tmp/redis-${VERSION} && \    make -j$(nproc) && \
     strip src/redis
 
 

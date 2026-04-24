@@ -20,7 +20,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/ontotext/graphdb/re
     && unzip -q /tmp/graphdb.zip -d /opt \
     && rm /tmp/graphdb.zip
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

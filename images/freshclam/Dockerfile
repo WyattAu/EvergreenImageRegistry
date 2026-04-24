@@ -2,8 +2,7 @@
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         clamav-freshclam ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /app /var/lib/clamav /var/log/clamav
+    && rm -rf /var/lib/apt/lists/*RUN mkdir -p /app /var/lib/clamav /var/log/clamav
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

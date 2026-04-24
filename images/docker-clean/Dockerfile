@@ -2,8 +2,7 @@
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
-RUN printf '#!/bin/sh\nset -e\necho "=== Docker Clean ==="\ndocker system prune -af --volumes 2>/dev/null || true\ndocker builder prune -af 2>/dev/null || true\necho "=== Docker Clean Complete ==="\n' > /usr/local/bin/docker-clean && \
+    && rm -rf /var/lib/apt/lists/*RUN printf '#!/bin/sh\nset -e\necho "=== Docker Clean ==="\ndocker system prune -af --volumes 2>/dev/null || true\ndocker builder prune -af 2>/dev/null || true\necho "=== Docker Clean Complete ==="\n' > /usr/local/bin/docker-clean && \
     chmod +x /usr/local/bin/docker-clean
 RUN mkdir -p /app
 

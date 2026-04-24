@@ -20,7 +20,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/pulsar
     && rm pulsar.tar.gz \
     && rm -rf apache-pulsar-${VERSION}/examples apache-pulsar-${VERSION}/tools
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

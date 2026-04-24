@@ -7,6 +7,7 @@ RUN test -f /tmp/woodpecker-agent_stripped || { echo '#!/bin/sh' > /tmp/woodpeck
 FROM scratch
 COPY --from=downloader /tmp/woodpecker-agent_stripped /usr/local/bin/woodpecker-agent
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
 USER 65532:65532
 WORKDIR /app
 EXPOSE 3000

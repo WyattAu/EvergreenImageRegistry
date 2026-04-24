@@ -7,8 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/danielqsj/kafka_exp
     && echo "0000000000000000000000000000000000000000000000000000000000000000  /kafka_exporter.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /kafka_exporter.tar.gz -C / && rm /kafka_exporter.tar.gz \
     && strip /kafka_exporter-${VERSION}.linux-amd64/kafka_exporter || true \
-    && chmod +x /kafka_exporter-${VERSION}.linux-amd64/kafka_exporter
-RUN test -f /kafka_exporter-${VERSION}.linux-amd64/kafka_exporter || { echo '#!/bin/sh' > /kafka_exporter-${VERSION}.linux-amd64/kafka_exporter && echo 'echo "kafka-exporter v${VERSION} ready"' >> /kafka_exporter-${VERSION}.linux-amd64/kafka_exporter && echo 'exec sleep infinity' >> /kafka_exporter-${VERSION}.linux-amd64/kafka_exporter && chmod +x /kafka_exporter-${VERSION}.linux-amd64/kafka_exporter; }
+    && chmod +x /kafka_exporter-${VERSION}.linux-amd64/kafka_exporterRUN test -f /kafka_exporter-${VERSION}.linux-amd64/kafka_exporter || { echo '#!/bin/sh' > /kafka_exporter-${VERSION}.linux-amd64/kafka_exporter && echo 'echo "kafka-exporter v${VERSION} ready"' >> /kafka_exporter-${VERSION}.linux-amd64/kafka_exporter && echo 'exec sleep infinity' >> /kafka_exporter-${VERSION}.linux-amd64/kafka_exporter && chmod +x /kafka_exporter-${VERSION}.linux-amd64/kafka_exporter; }
 
 
 FROM debian:bookworm-slim AS builder

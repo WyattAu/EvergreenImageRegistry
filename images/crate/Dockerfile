@@ -20,7 +20,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://cdn.crate.io/downloads/release
     && tar -xzf /tmp/crate.tar.gz -C /opt \
     && rm /tmp/crate.tar.gz
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

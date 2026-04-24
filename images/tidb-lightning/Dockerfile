@@ -20,7 +20,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/pingcap/tidb/releas
     && mv /tmp/tidb-lightning-v${VERSION}-linux-amd64/bin/tidb-lightning /usr/local/bin/tidb-lightning \
     && rm -rf /tmp/lightning.tgz /tmp/tidb-lightning-v${VERSION}-linux-amd64
 
-
 FROM scratch
 ARG VERSION=7.6.0
 COPY --from=builder /usr/local/bin/tidb-lightning /usr/local/bin/tidb-lightning

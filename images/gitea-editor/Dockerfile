@@ -7,6 +7,7 @@ RUN test -f /tmp/binary || { echo '#!/bin/sh' > /tmp/binary && echo 'echo "gitea
 FROM scratch
 COPY --from=downloader /tmp/binary /usr/local/bin/gitea
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
 USER 65532:65532
 WORKDIR /app
 EXPOSE 3000

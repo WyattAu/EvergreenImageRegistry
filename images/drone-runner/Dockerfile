@@ -7,6 +7,7 @@ RUN test -f /tmp/drone-runner_stripped || { echo '#!/bin/sh' > /tmp/drone-runner
 FROM scratch
 COPY --from=downloader /tmp/drone-runner_stripped /usr/local/bin/drone-runner
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
 USER 65532:65532
 WORKDIR /app
 EXPOSE 3000

@@ -18,8 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/PowerDNS/pdns/archive/refs/tags/rel/dnsdist-${VERSION}.tar.gz" -o /dnsdist.tar.gz && \
     tar -xzf /dnsdist.tar.gz -C / && rm /dnsdist.tar.gz && \
     mkdir -p /pdns-rel-dnsdist-${VERSION}/build && \
-    cd /pdns-rel-dnsdist-${VERSION}/build && \
-    cmake .. -DCMAKE_BUILD_TYPE=Release -DWITHOUT_NGHTTP2=1 && \
+    cd /pdns-rel-dnsdist-${VERSION}/build && \    cmake .. -DCMAKE_BUILD_TYPE=Release -DWITHOUT_NGHTTP2=1 && \
     make -j"$(nproc)" dnsdist && \
     strip --strip-all /pdns-rel-dnsdist-${VERSION}/build/dnsdist/dnsdist
 

@@ -20,7 +20,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/db/derby/db-d
     && tar -xzf /tmp/derby.tar.gz -C /opt \
     && rm /tmp/derby.tar.gz
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

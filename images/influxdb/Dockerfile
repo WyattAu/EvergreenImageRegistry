@@ -19,6 +19,7 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/lib/influxdb2 /var/lib/influxdb2
 COPY --from=builder /var/log/influxdb2 /var/log/influxdb2
+
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8086

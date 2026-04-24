@@ -16,7 +16,6 @@ USER root
 RUN useradd -m -u 65532 -g '' pulsar 2>/dev/null || true && \
     chown -R pulsar:pulsar /pulsar/data 2>/dev/null || true
 USER pulsar
-
 WORKDIR /pulsar
 EXPOSE 6650 8080
 

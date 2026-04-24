@@ -7,7 +7,6 @@
 
 
 FROM cgr.dev/chainguard/static:latest
-
 LABEL org.opencontainers.image.title="alpine-static" \
       org.opencontainers.image.description="Sovereign reference for static base (chainguard/static). Alpine is banned for application images." \
       sovereign.image.tier="3" \

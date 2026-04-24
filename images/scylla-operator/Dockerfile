@@ -19,7 +19,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/scylladb/scylla-ope
     && strip --strip-all /tmp/scylla-operator \
     && mv /tmp/scylla-operator /usr/local/bin/scylla-operator
 
-
 FROM scratch
 ARG VERSION=1.13.0
 COPY --from=builder /usr/local/bin/scylla-operator /usr/local/bin/scylla-operator

@@ -40,5 +40,6 @@ LABEL org.opencontainers.image.title="elasticsearch" \
 LABEL sovereign.metrics.native="true"
 LABEL sovereign.health.type="http"
 EXPOSE 9101
+
 USER 65532:65532
 STOPSIGNAL SIGTERM

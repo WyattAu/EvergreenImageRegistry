@@ -18,6 +18,7 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/pihole-FTL /var/log/pihole-FTL
 COPY --from=builder /var/lib/pihole-FTL /var/lib/pihole-FTL
+
 USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 4711

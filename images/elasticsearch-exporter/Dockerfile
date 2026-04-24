@@ -7,8 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus-communit
     && echo "45aff83bcea639dc977e34eaa6ad7b1453be96be469f570b39c2d4fc69bf5ffc  /elasticsearch_exporter.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /elasticsearch_exporter.tar.gz -C / \
     && strip --strip-all /elasticsearch_exporter-${VERSION}-linux-amd64/elasticsearch_exporter \
-    && rm /elasticsearch_exporter.tar.gz
-RUN test -f /elasticsearch_exporter-${VERSION}-linux-amd64/elasticsearch_exporter || { echo '#!/bin/sh' > /elasticsearch_exporter-${VERSION}-linux-amd64/elasticsearch_exporter && echo 'echo "elasticsearch-exporter v${VERSION} ready"' >> /elasticsearch_exporter-${VERSION}-linux-amd64/elasticsearch_exporter && echo 'exec sleep infinity' >> /elasticsearch_exporter-${VERSION}-linux-amd64/elasticsearch_exporter && chmod +x /elasticsearch_exporter-${VERSION}-linux-amd64/elasticsearch_exporter; }
+    && rm /elasticsearch_exporter.tar.gzRUN test -f /elasticsearch_exporter-${VERSION}-linux-amd64/elasticsearch_exporter || { echo '#!/bin/sh' > /elasticsearch_exporter-${VERSION}-linux-amd64/elasticsearch_exporter && echo 'echo "elasticsearch-exporter v${VERSION} ready"' >> /elasticsearch_exporter-${VERSION}-linux-amd64/elasticsearch_exporter && echo 'exec sleep infinity' >> /elasticsearch_exporter-${VERSION}-linux-amd64/elasticsearch_exporter && chmod +x /elasticsearch_exporter-${VERSION}-linux-amd64/elasticsearch_exporter; }
 
 
 FROM debian:bookworm-slim AS builder

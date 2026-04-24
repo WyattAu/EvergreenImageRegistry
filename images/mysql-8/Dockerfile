@@ -27,6 +27,7 @@ COPY --from=builder /var/run/mysqld /var/run/mysqld
 RUN usermod -u 65532 php84-mysql && \
     mkdir -p /app /var/log/php84-mysql-8 /var/cache/php84-mysql-8 && \
     chown -R 65532:65532 /var/lib/php84-mysql /var/run/mysqld /app /var/log/php84-mysql-8 /var/cache/php84-mysql-8
+
 USER 65532:65532
 WORKDIR /app
 ENV MYSQL_DATA_DIR="/var/lib/php84-mysql" \

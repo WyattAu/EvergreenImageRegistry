@@ -15,22 +15,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates gnupg apt-transport-https && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-erlang.E495BB49CC4BBE5B.key" \
         | gnupg --dearmor -o /usr/share/keyrings/rabbitmq-erlang.gnupg \
-    && curl --retry 3 --retry-delay 5 -fsSL "https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-server.9F4587F226208342.key" \
-        | gnupg --dearmor -o /usr/share/keyrings/rabbitmq-server.gnupg \
-    && echo "deb [signed-by=/usr/share/keyrings/rabbitmq-erlang.gnupg] https://ppa1.novemberain.com/rabbitmq/rabbitmq-erlang/deb bookworm main" \
-        > /etc/apt/sources.list.d/rabbitmq-erlang.list \
-    && echo "deb [signed-by=/usr/share/keyrings/rabbitmq-server.gnupg] https://ppa1.novemberain.com/rabbitmq/rabbitmq-server/deb bookworm main" \
-        > /etc/apt/sources.list.d/rabbitmq-server.list \
+    && curl --retry 3 --retry-delay 5 -fsSL "https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-server.9F4587F226208342.key" \        | gnupg --dearmor -o /usr/share/keyrings/rabbitmq-server.gnupg \
+    && echo "deb [signed-by=/usr/share/keyrings/rabbitmq-erlang.gnupg] https://ppa1.novemberain.com/rabbitmq/rabbitmq-erlang/deb bookworm main" \        > /etc/apt/sources.list.d/rabbitmq-erlang.list \
+    && echo "deb [signed-by=/usr/share/keyrings/rabbitmq-server.gnupg] https://ppa1.novemberain.com/rabbitmq/rabbitmq-server/deb bookworm main" \        > /etc/apt/sources.list.d/rabbitmq-server.list \
     && apt-get update \
-    && apt-get install -y --no-install-recommends \
-        erlang-base erlang-asn1 erlang-crypto erlang-eldap erlang-ftp erlang-inets \
+    && apt-get install -y --no-install-recommends \        erlang-base erlang-asn1 erlang-crypto erlang-eldap erlang-ftp erlang-inets \
         erlang-mnesia erlang-os-mon erlang-parsetools erlang-public-key \
         erlang-runtime-tools erlang-snmp erlang-ssl erlang-syntax-tools \
         erlang-tftp erlang-tools erlang-xmerl \
         rabbitmq-server \
     && rabbitmq-plugins enable rabbitmq_mqtt \
     && rm -rf /var/lib/apt/lists/*
-
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

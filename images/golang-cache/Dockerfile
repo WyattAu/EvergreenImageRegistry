@@ -18,7 +18,6 @@ RUN printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("go-1.23-cache
     && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /tmp/go-1.23-cache /tmp/main.go \
     && strip --strip-all /tmp/go-1.23-cache 2>/dev/null || true
 
-
 FROM scratch
 ARG VERSION=1.0.0
 COPY --from=builder /tmp/go-1.23-cache /usr/local/bin/go-1.23-cache

@@ -22,6 +22,7 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/lib/arangodb3 /var/lib/arangodb3
 COPY --from=builder /var/log/arangodb3 /var/log/arangodb3
+
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8529

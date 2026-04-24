@@ -21,7 +21,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.influxdata.com/telegraf/rel
     && strip --strip-all usr/bin/telegraf \
     && mv usr/bin/telegraf /tmp/telegraf
 
-
 FROM scratch
 ARG VERSION=1.30.3
 COPY --from=builder /tmp/telegraf /usr/bin/telegraf

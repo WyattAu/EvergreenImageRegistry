@@ -16,8 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/pymumu/smartdns/archive/refs/tags/${VERSION}.tar.gz" -o /smartdns.tar.gz && \
     tar -xzf /smartdns.tar.gz -C / && rm /smartdns.tar.gz && \
     mkdir -p /smartdns-${VERSION}/build && \
-    cd /smartdns-${VERSION}/build && \
-    cmake .. -DPREFIX=/usr -DENABLE_SYSTEMD=OFF && \
+    cd /smartdns-${VERSION}/build && \    cmake .. -DPREFIX=/usr -DENABLE_SYSTEMD=OFF && \
     make -j"$(nproc)" && \
     strip --strip-all /smartdns-${VERSION}/src/smartdns
 

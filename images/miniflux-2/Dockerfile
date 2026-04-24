@@ -17,6 +17,7 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/miniflux-2 /var/log/miniflux-2
 COPY --from=builder /var/cache/miniflux-2 /var/cache/miniflux-2
+
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080

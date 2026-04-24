@@ -20,7 +20,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/duckdb/duckdb/relea
     && mv /tmp/duckdb /usr/local/bin/duckdb \
     && rm -rf /tmp/duckdb.zip
 
-
 FROM scratch
 ARG VERSION=1.1.3
 COPY --from=builder /usr/local/bin/duckdb /usr/local/bin/duckdb

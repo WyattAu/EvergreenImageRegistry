@@ -19,7 +19,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/k8ssandra/cass-oper
     && strip --strip-all /tmp/cass-operator \
     && mv /tmp/cass-operator /usr/local/bin/cass-operator
 
-
 FROM scratch
 ARG VERSION=1.20.0
 COPY --from=builder /usr/local/bin/cass-operator /usr/local/bin/cass-operator

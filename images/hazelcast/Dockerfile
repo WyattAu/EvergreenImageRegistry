@@ -19,7 +19,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/hazelcast/hazelcast
     && tar -xzf /tmp/hazelcast.tgz -C /opt/hazelcast --strip-components=1 \
     && rm -rf /tmp/hazelcast.tgz
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=5.3.6
 

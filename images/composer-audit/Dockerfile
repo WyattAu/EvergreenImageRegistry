@@ -3,8 +3,7 @@ FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         php84 php84 php84-php84-mbstring php84-php84-xml php84-curl \
         ca-certificates curl unzip \
-    && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://getcomposer.org/installer" | php -- --install-dir=/usr/local/bin --filename=composer
+    && rm -rf /var/lib/apt/lists/*RUN curl --retry 3 --retry-delay 5 -fsSL "https://getcomposer.org/installer" | php -- --install-dir=/usr/local/bin --filename=composer
 RUN mkdir -p /app
 
 

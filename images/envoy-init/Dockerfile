@@ -21,7 +21,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/envoyproxy/envoy/re
     && strip --strip-all bin/envoy \
     && mv bin/envoy /tmp/envoy
 
-
 FROM scratch
 ARG VERSION=1.29.0
 COPY --from=builder /tmp/envoy /usr/local/bin/envoy

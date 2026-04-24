@@ -7,6 +7,7 @@ RUN test -f /tmp/binary || { echo '#!/bin/sh' > /tmp/binary && echo 'echo "maddy
 FROM scratch
 COPY --from=downloader /tmp/binary /usr/local/bin/maddy
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
 USER 65532:65532
 WORKDIR /app
 EXPOSE 587 993 143 465 25

@@ -19,6 +19,7 @@ ENV PATH="/opt/go/bin:${PATH}" \
     GOROOT="/opt/go" \
     GOPATH="/app" \
     CGO_ENABLED=0
+
 USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["go"]

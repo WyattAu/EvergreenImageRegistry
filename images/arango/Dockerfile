@@ -19,7 +19,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.arangodb.com/arangodb
     && tar -xzf /tmp/arango.tar.gz -C /opt \
     && strip --strip-all /opt/arangodb3-linux-*/usr/sbin/arangod 2>/dev/null || true
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

@@ -18,8 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://thekelleys.org.uk/dnsmasq/dnsmasq-${VERSION}.tar.gz" -o /dnsmasq.tar.gz && \
     tar -xzf /dnsmasq.tar.gz -C / && rm /dnsmasq.tar.gz && \
-    cd /dnsmasq-${VERSION} && \
-    make -j"$(nproc)" \
+    cd /dnsmasq-${VERSION} && \    make -j"$(nproc)" \
     CFLAGS="-DHAVE_DNSSEC -DHAVE_DBUS -DHAVE_CONNTRACK -DHAVE_IDN -DHAVE_LUASCRIPT" \
     LDFLAGS="-static" && \
     make install PREFIX=/usr DESTDIR=/install && \

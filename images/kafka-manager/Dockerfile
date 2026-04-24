@@ -21,7 +21,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/yahoo/CMAK/releases
     && rm cmak.zip \
     && rm -rf /var/lib/apt/lists/*
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

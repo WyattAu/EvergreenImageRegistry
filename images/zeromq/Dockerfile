@@ -20,8 +20,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/zeromq/libzmq/relea
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/zeromq/libzmq/releases/download/v${VERSION}/sha256sum.txt" -o /checksums.txt && \
     grep "zeromq-${VERSION}.tar.gz" /checksums.txt | sha256sum -c || true  # && \
     tar -xzf /zeromq.tar.gz -C /tmp/ && \
-    cd /tmp/zeromq-${VERSION} && \
-    cmake -DCMAKE_BUILD_TYPE=Release \
+    cd /tmp/zeromq-${VERSION} && \    cmake -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=/opt/zeromq \
           -DWITH_DOC=OFF \
           -DWITH_TESTS=OFF \
@@ -43,7 +42,6 @@ RUN apk add --no-cache libstdc++ ca-certificates
 
 COPY --from=builder /opt/zeromq /opt/zeromq
 RUN ldconfig && chown -R 65532:65532 /opt/zeromq
-
 USER 65532:65532
 WORKDIR /app
 ENV LD_LIBRARY_PATH="/opt/zeromq/lib"

@@ -17,7 +17,6 @@ RUN apk add --no-cache openjdk-17-jre-base ca-certificates
 
 COPY --from=downloader /opt/rocketmq /opt/rocketmq
 RUN chown -R 65532:65532 /opt/rocketmq
-
 USER 65532:65532
 WORKDIR /opt/rocketmq
 ENV JAVA_HOME="/usr/lib/jvm/java-17-openjdk"

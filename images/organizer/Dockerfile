@@ -2,8 +2,7 @@
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm git ca-certificates python3 make g++ php84 php84-fpm \
-    && rm -rf /var/lib/apt/lists/*
-WORKDIR /src
+    && rm -rf /var/lib/apt/lists/*WORKDIR /src
 RUN git clone --depth 1 https://github.com/causefx/Organizr.git /src 2>/dev/null || true 2>/dev/null || echo "Source repo not available - using placeholder"
 RUN mkdir -p /app /config
 

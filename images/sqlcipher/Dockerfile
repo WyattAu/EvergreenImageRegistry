@@ -15,8 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 RUN wget -q "https://github.com/sqlcipher/sqlcipher/archive/refs/tags/v${VERSION}.tar.gz" -O /sqlcipher.tar.gz && \
     tar -xzf /sqlcipher.tar.gz -C / && rm /sqlcipher.tar.gz && \
-    cd /sqlcipher-${VERSION} && \
-    ./configure --enable-tempstore=yes CFLAGS="-DSQLITE_HAS_CODEC -DSQLCIPHER_CRYPTO_OPENSSL" \
+    cd /sqlcipher-${VERSION} && \    ./configure --enable-tempstore=yes CFLAGS="-DSQLITE_HAS_CODEC -DSQLCIPHER_CRYPTO_OPENSSL" \
     LDFLAGS="-lcrypto -lssl" && \
     make -j"$(nproc)" && \
     strip --strip-all .libs/sqlcipher 2>/dev/null || true

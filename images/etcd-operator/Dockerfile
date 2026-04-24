@@ -20,7 +20,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/etcd-io/etcd/releas
     && mv /tmp/etcd-v${VERSION}-linux-amd64/etcdctl /usr/local/bin/etcdctl \
     && rm -rf /tmp/etcd.tgz /tmp/etcd-v${VERSION}-linux-amd64
 
-
 FROM scratch
 ARG VERSION=3.5.15
 COPY --from=builder /usr/local/bin/etcdctl /usr/local/bin/etcdctl

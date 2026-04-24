@@ -2,8 +2,7 @@
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         mosquitto-clients ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /app
+    && rm -rf /var/lib/apt/lists/*RUN mkdir -p /app
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

@@ -37,6 +37,7 @@ COPY --from=builder /var/log/cassandra /var/log/cassandra
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 ENV CASSANDRA_HOME=/opt/cassandra
 ENV PATH="${CASSANDRA_HOME}/bin:${JAVA_HOME}/bin:${PATH}"
+
 USER 65532:65532
 WORKDIR /app
 EXPOSE 9042

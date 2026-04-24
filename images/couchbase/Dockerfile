@@ -35,6 +35,7 @@ RUN mkdir -p /var/lib/couchbase /var/log/couchbase /app && \
     chown -R 65532:65532 /var/lib/couchbase /var/log/couchbase /app /opt/couchbase
 ENV COUCHBASE_HOME=/opt/couchbase
 ENV PATH="${COUCHBASE_HOME}/bin:${PATH}"
+
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8091

@@ -16,7 +16,6 @@ USER root
 RUN useradd -m -u 65532 -g '' openhab 2>/dev/null || true && \
     chown -R openhab:openhab /openhab/conf /openhab/userdata 2>/dev/null || true
 USER openhab
-
 WORKDIR /openhab
 EXPOSE 8080 8443
 

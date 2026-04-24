@@ -16,8 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN python3 -m venv /opt/venv \
     && /opt/venv/bin/pip install --no-cache-dir --upgrade pip \
-    && /opt/venv/bin/pip install --no-cache-dir surrealdb==${VERSION} 2>/dev/null || \
-    /opt/venv/bin/pip install --no-cache-dir surrealdb
+    && /opt/venv/bin/pip install --no-cache-dir surrealdb==${VERSION} 2>/dev/null || \    /opt/venv/bin/pip install --no-cache-dir surrealdb
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

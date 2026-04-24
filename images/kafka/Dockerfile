@@ -22,12 +22,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/kafka/
     && tar -xzf kafka.tgz \
     && rm kafka.tgz
 
-FROM golang:1.23-alpine AS health-shim-builder
-COPY images/health-shim/go.mod images/health-shim/main.go /build/
-RUN cd /build && CGO_ENABLED=0 go build -ldflags="-s -w" -o /health-shim .
-
 FROM cgr.dev/chainguard/wolfi-base:latest
-COPY --from=health-shim-builder /health-shim /usr/local/bin/health-shim
 ENV HEALTH_CMD="kafka-broker-api-versions --bootstrap-server localhost:9092" \
     READY_CMD="kafka-broker-api-versions --bootstrap-server localhost:9092" \
     STARTUP_CMD="kafka-broker-api-versions --bootstrap-server localhost:9092" \
@@ -42,7 +37,7 @@ COPY --from=builder /tmp/kafka_${SCALA_VERSION}-${VERSION} /opt/kafka
 USER 65532:65532
 WORKDIR /opt/kafka
 EXPOSE 9092
-ENTRYPOINT ["sh", "-c", "health-shim & exec /opt/kafka/bin/kafka-server-start.sh"]
+ENTRYPOINT ["sh", "-c", "/opt/kafka/bin/kafka-server-start.sh"]
 LABEL sovereign.image.status="functional" \
       sovereign.image.tier="1" \
       sovereign.image.category="messaging" \

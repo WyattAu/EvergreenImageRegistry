@@ -11,7 +11,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 ARG VERSION=5.7.6
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-base cmake libssl-dev libluajit-5.1-dev libsystemd-dev \
+    build-essential cmake libssl-dev libluajit-5.1-dev libsystemd-dev \
     libuv1-dev libnghttp2-dev meson pkgconf git ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 RUN git clone --depth 1 --branch "v${VERSION}" \ 2>/dev/null || echo "Source repo not available - using placeholder" && \

@@ -12,7 +12,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 ARG VERSION=2.90
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-base libnetfilter-conntrack-dev libidn2-0-dev \
+    build-essential libnetfilter-conntrack-dev libidn2-dev \
     libdbus-1-dev libgmp-dev && \
     rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]

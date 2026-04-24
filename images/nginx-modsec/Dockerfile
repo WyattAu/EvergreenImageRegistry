@@ -14,7 +14,7 @@ FROM debian:bookworm-slim AS builder
 ARG NGINX_VERSION=1.27.1
 ARG MODSEC_VERSION=3.0.12
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-base libpcre3-dev libssl-dev zlib1g-dev libgeoip-dev \
+    build-essential libpcre3-dev libssl-dev zlib1g-dev libgeoip-dev \
     libxml2-dev libyajl-dev curl-openssl-dev git curl ca-certificates \
     wget autoconf automake libtool pkgconf flex bison && \
     rm -rf /var/lib/apt/lists/*

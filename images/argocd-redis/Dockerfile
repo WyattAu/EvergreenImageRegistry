@@ -14,7 +14,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
         ca-certificates \
-        build-base && \
+        build-essential && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /tmp
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.gz" -o /tmp/redis.tar.gz && \

@@ -11,7 +11,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 ARG VERSION=1.9.4
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-base cmake libboost-all-dev libssl-dev libprotobuf-dev \
+    build-essential cmake libboost-all-dev libssl-dev libprotobuf-dev \
     protobuf-compiler liblua5.3-dev libsystemd-dev libsodium-dev \
     libre2-dev libyaml-cpp-dev libsnmp-dev curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*

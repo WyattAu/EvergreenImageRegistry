@@ -6,9 +6,8 @@ FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm ca-certificates curl git && \
     rm -rf /var/lib/apt/lists/*
-RUN git clone --depth 1 --branch v{version} \ 2>/dev/null || echo "Source repo not available - using placeholder"
-    "https://github.com/taigaio/taiga-front-dist.git" /tmp/taiga-front && \
-    cd /tmp/taiga-front && npm install && npm run build
+RUN git clone --depth 1 --branch v{version} \ 2>/dev/null || echo "Source repo not available - using placeholder" \
+    "https://github.com/taigaio/taiga-front-dist.git" /tmp/taiga-front && \    cd /tmp/taiga-front && npm install && npm run build
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

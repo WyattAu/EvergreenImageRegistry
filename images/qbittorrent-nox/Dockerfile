@@ -12,7 +12,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 ARG VERSION=5.0.3
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-base cmake libboost-dev libssl-dev zlib1g-dev \
+    build-essential cmake libboost-dev libssl-dev zlib1g-dev \
     libtorrent-rasterbar-dev qtbase5-dev qttools5-dev-tools \
     curl ca-certificates git && rm -rf /var/lib/apt/lists/*
 RUN git clone --depth 1 --branch v${VERSION} https://github.com/qbittorrent/qBittorrent.git /src && \ 2>/dev/null || echo "Source repo not available - using placeholder" && \

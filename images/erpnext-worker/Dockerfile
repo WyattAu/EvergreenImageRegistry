@@ -12,7 +12,7 @@ FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip python3-dev \
         git curl ca-certificates \
-        build-base libffi-dev libssl-dev \
+        build-essential libffi-dev libssl-dev \
         postgresql-dev libjpeg-turbo-turbo-dev zlib1g-dev && \
     rm -rf /var/lib/apt/lists/*
 RUN python3 -m venv /opt/venv

@@ -14,7 +14,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         ruby="3.1.*" \
         ruby-dev="3.1.*" \
-        build-base \
+        build-essential \
         git \
         curl \
         ca-certificates && \

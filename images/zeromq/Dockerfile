@@ -13,7 +13,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 ARG VERSION=4.3.5
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-base cmake curl ca-certificates \
+    build-essential cmake curl ca-certificates \
     libsodium-dev libpgm-dev libnorm-dev && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/zeromq/libzmq/releases/download/v${VERSION}/zeromq-${VERSION}.tar.gz" -o /zeromq.tar.gz && \

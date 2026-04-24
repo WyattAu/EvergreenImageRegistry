@@ -13,13 +13,7 @@ FROM debian:bookworm-slim AS builder
 RUN useradd -m -u 65532 -s /usr/sbin/nologin mongodb 2>/dev/null || true
 RUN mkdir -p /app /var/log/mongod /var/cache/mongod
 
-
-FROM golang:1.23-alpine AS health-shim-builder
-COPY images/health-shim/go.mod images/health-shim/main.go /build/
-RUN cd /build && CGO_ENABLED=0 go build -ldflags="-s -w" -o /health-shim .
-
 FROM cgr.dev/chainguard/wolfi-base:latest
-COPY --from=health-shim-builder /health-shim /usr/local/bin/health-shim
 ENV HEALTH_CMD="mongosh --eval \"db.adminCommand('ping')\"" \
     READY_CMD="mongosh --eval \"db.adminCommand('ping')\"" \
     STARTUP_CMD="mongosh --eval \"db.adminCommand('ping')\"" \
@@ -34,7 +28,7 @@ COPY --from=builder --chown=65532:65532 /var/cache/mongod /var/cache/mongod
 USER 65532:65532
 WORKDIR /app
 EXPOSE 27017
-ENTRYPOINT ["sh", "-c", "health-shim & exec mongod"]
+ENTRYPOINT ["sh", "-c", "mongod"]
 LABEL org.opencontainers.image.title="mongodb" \
       org.opencontainers.image.version="7.0.11" \
       org.opencontainers.image.vendor="MongoDB" \

@@ -11,7 +11,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 ARG VERSION=Release48
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-base cmake libssl-dev && \
+    build-essential cmake libssl-dev && \
     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/pymumu/smartdns/archive/refs/tags/${VERSION}.tar.gz" -o /smartdns.tar.gz && \
     tar -xzf /smartdns.tar.gz -C / && rm /smartdns.tar.gz && \

@@ -9,7 +9,7 @@ RUN test -f /tmp/authentik || { echo '#!/bin/sh' > /tmp/authentik && echo 'echo 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates libpq libxml2-dev libxslt-dev libffi-dev openssl-dev build-base
+RUN apk add --no-cache ca-certificates libpq libxml2-dev libxslt-dev libffi-dev openssl-dev build-essential
 COPY --from=downloader /tmp/authentik /opt/authentik
 RUN pip3 install --no-cache-dir --break-system-packages /opt/authentik 2>/dev/null || pip3 install --no-cache-dir /opt/authentik || true && \
     mkdir -p /app && chown -R 65532:65532 /app /opt/authentik

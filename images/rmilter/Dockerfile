@@ -12,7 +12,7 @@ ARG VERSION=1.0.0
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        build-base \
+        build-essential \
         libmilter-dev \
         libpcre2-dev \
         curl \

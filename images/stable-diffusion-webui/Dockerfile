@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apk add --no-cache git ca-certificates curl build-base
+RUN apk add --no-cache git ca-certificates curl build-essential
 RUN git clone --depth 1 --branch v1.9.3 https://github.com/AUTOMATIC1111/stable-diffusion-webui.git /opt/stable-diffusion-webui 2>/dev/null || echo "Source repo not available - using placeholder" && \
     git clone --depth 1 https://github.com/AUTOMATIC1111/stable-diffusion-webui.git /opt/stable-diffusion-webui 2>/dev/null || echo "Source repo not available - using placeholder" 2>/dev/null || trueRUN cd /opt/stable-diffusion-webui && \
     pip3 install --no-cache-dir --break-system-packages -r requirements.txt 2>/dev/null || true 

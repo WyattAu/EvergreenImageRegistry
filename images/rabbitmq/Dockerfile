@@ -8,13 +8,7 @@
 ARG VERSION=3.13.1
 ARG BUILD_DATE
 
-
-FROM golang:1.23-alpine AS health-shim-builder
-COPY images/health-shim/go.mod images/health-shim/main.go /build/
-RUN cd /build && CGO_ENABLED=0 go build -ldflags="-s -w" -o /health-shim .
-
 FROM cgr.dev/chainguard/wolfi-base:latest
-COPY --from=health-shim-builder /health-shim /usr/local/bin/health-shim
 ENV HEALTH_CMD="rabbitmq-diagnostics -q ping" \
     READY_CMD="rabbitmq-diagnostics -q check_running" \
     STARTUP_CMD="rabbitmq-diagnostics -q ping" \
@@ -25,7 +19,7 @@ RUN mkdir -p /app /var/log/rabbitmq-server /var/cache/rabbitmq-server && chown -
 USER rabbitmq
 WORKDIR /app
 EXPOSE 5672 15672
-ENTRYPOINT ["sh", "-c", "health-shim & exec rabbitmq-server"]
+ENTRYPOINT ["sh", "-c", "rabbitmq-server"]
 LABEL org.opencontainers.image.title="rabbitmq" \
       org.opencontainers.image.version="3.13.1" \
       org.opencontainers.image.vendor="RabbitMQ" \

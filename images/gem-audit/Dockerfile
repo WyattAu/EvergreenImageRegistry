@@ -1,7 +1,7 @@
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        ruby ruby-dev build-base ca-certificates \
+        ruby ruby-dev build-essential ca-certificates \
     && rm -rf /var/lib/apt/lists/*RUN gem install bundler-audit --no-document
 RUN mkdir -p /app
 

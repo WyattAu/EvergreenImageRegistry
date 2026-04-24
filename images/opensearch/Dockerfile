@@ -9,12 +9,7 @@ RUN tar -xzf /opensearch.tar.gz -C /opt && \
     find /opt/opensearch-${VERSION}/plugins -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true
 RUN test -f /opt/opensearch-2.12.0 || { echo '#!/bin/sh' > /opt/opensearch-2.12.0 && echo 'echo "opensearch v${VERSION} placeholder"' >> /opt/opensearch-2.12.0 && echo 'exec sleep infinity' >> /opt/opensearch-2.12.0 && chmod +x /opt/opensearch-2.12.0; }
 
-FROM golang:1.23-alpine AS health-shim-builder
-COPY images/health-shim/go.mod images/health-shim/main.go /build/
-RUN cd /build && CGO_ENABLED=0 go build -ldflags="-s -w" -o /health-shim .
-
 FROM cgr.dev/chainguard/wolfi-base:latest
-COPY --from=health-shim-builder /health-shim /usr/local/bin/health-shim
 ENV HEALTH_CMD="curl -sf http://localhost:9200" \
     READY_CMD="curl -sf http://localhost:9200" \
     STARTUP_CMD="curl -sf http://localhost:9200" \
@@ -41,7 +36,7 @@ ENV OPENSEARCH_HOME=/opt/opensearch \
     discovery.type=single-node \
     bootstrap.memory_lock=true \
     OPENSEARCH_INITIAL_ADMIN_PASSWORD=Admin@123456
-ENTRYPOINT ["sh", "-c", "health-shim & exec /opt/opensearch/bin/opensearch"]
+ENTRYPOINT ["sh", "-c", "/opt/opensearch/bin/opensearch"]
 LABEL org.opencontainers.image.title="opensearch" \
       org.opencontainers.image.version="2.12.0" \
       org.opencontainers.image.vendor="OpenSearch" \

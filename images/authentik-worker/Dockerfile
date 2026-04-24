@@ -9,7 +9,7 @@ RUN test -f /tmp/authentik-worker || { echo '#!/bin/sh' > /tmp/authentik-worker 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates libpq libxml2-dev libxslt-dev libffi-dev openssl-dev build-base
+RUN apk add --no-cache ca-certificates libpq libxml2-dev libxslt-dev libffi-dev openssl-dev build-essential
 COPY --from=downloader /tmp/authentik-worker /opt/authentik-worker
 RUN pip3 install --no-cache-dir --break-system-packages /opt/authentik-worker 2>/dev/null || pip3 install --no-cache-dir /opt/authentik-worker || true && \
     mkdir -p /app && chown -R 65532:65532 /app /opt/authentik-worker

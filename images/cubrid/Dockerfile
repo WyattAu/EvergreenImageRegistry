@@ -13,7 +13,7 @@ FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-base cmake curl ca-certificates libncurses5-dev \
+    build-essential cmake curl ca-certificates libncurses5-dev \
     libedit-dev && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/CUBRID/cubrid/releases/download/CUBRID_${VERSION}/cubrid-${VERSION}-src.tar.gz" -o /tmp/cubrid.tar.gz \

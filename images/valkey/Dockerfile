@@ -13,13 +13,7 @@ FROM debian:bookworm-slim AS builder
 RUN useradd -m -u 65532 -s /usr/sbin/nologin valkey 2>/dev/null || true
 RUN mkdir -p /app /var/log/valkey /var/cache/valkey
 
-
-FROM golang:1.23-alpine AS health-shim-builder
-COPY images/health-shim/go.mod images/health-shim/main.go /build/
-RUN cd /build && CGO_ENABLED=0 go build -ldflags="-s -w" -o /health-shim .
-
 FROM cgr.dev/chainguard/wolfi-base:latest
-COPY --from=health-shim-builder /health-shim /usr/local/bin/health-shim
 ENV HEALTH_CMD="valkey-cli ping" \
     READY_CMD="valkey-cli ping" \
     STARTUP_CMD="valkey-cli ping" \
@@ -34,7 +28,7 @@ COPY --from=builder --chown=65532:65532 /var/cache/valkey /var/cache/valkey
 USER 65532:65532
 WORKDIR /app
 EXPOSE 6379
-ENTRYPOINT ["sh", "-c", "health-shim & exec valkey"]
+ENTRYPOINT ["sh", "-c", "valkey"]
 LABEL org.opencontainers.image.title="valkey" \
       org.opencontainers.image.version="7.2.4" \
       org.opencontainers.image.vendor="Valkey" \

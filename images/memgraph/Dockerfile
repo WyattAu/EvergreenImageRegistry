@@ -13,7 +13,7 @@ FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-base cmake curl ca-certificates git \
+    build-essential cmake curl ca-certificates git \
     libgrpc++-dev libprotobuf-dev protobuf-compiler \
     libboost-all-dev libssl-dev libspdlog-dev \
     python3-pip && rm -rf /var/lib/apt/lists/*

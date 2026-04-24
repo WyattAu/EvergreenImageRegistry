@@ -11,7 +11,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=1.8
-RUN apk add --no-cache git ca-certificates curl build-base
+RUN apk add --no-cache git ca-certificates curl build-essential
 RUN pip3 install --no-cache-dir --break-system-packages torch torchvision --index-url https://download.pytorch.org/whl/cpu 2>/dev/null || true &&  && \
     git clone --depth 1 --branch v${VERSION} https://github.com/oobabooga/text-generation-webui.git /opt/text-generation-webui 2>/dev/null || echo "Source repo not available - using placeholder" 2>/dev/null || true && \
     git clone --depth 1 https://github.com/oobabooga/text-generation-webui.git /opt/text-generation-webui && \ 2>/dev/null || echo "Source repo not available - using placeholder" 2>/dev/null || true    cd /opt/text-generation-webui && \    pip3 install --no-cache-dir --break-system-packages -r requirements.txt 2>/dev/null || true

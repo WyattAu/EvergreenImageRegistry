@@ -14,7 +14,7 @@ FROM debian:bookworm-slim AS builder
 ARG NGINX_VERSION=1.25.5
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates \
-    build-base libpcre2-dev zlib1g-dev && rm -rf /var/lib/apt/lists/*
+    build-essential libpcre2-dev zlib1g-dev && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -o /nginx.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz.asc" -o /nginx.tar.gz.asc && \

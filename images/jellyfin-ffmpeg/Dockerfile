@@ -4,15 +4,14 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        build-base pkgconf yasm nasm \
+        build-essential pkgconf yasm nasm \
         libfdk-aac-dev libopus-dev libvpx-dev libx264-dev libx265-dev \
         libass-dev libfreetype-dev libgnutls28-dev libmp3lame-dev \
         libtheora-dev libvorbis-dev libwebp-dev libxvidcore-dev \
         zlib1g-dev ca-certificates curl git && \
     rm -rf /var/lib/apt/lists/*
-RUN git clone --depth 1 --branch n{version} \ 2>/dev/null || echo "Source repo not available - using placeholder"
-    "https://github.com/jellyfin/jellyfin-ffmpeg.git" /tmp/jellyfin-ffmpeg && \
-    cd /tmp/jellyfin-ffmpeg && \    ./configure --prefix=/usr/local \
+RUN git clone --depth 1 --branch n{version} \ 2>/dev/null || echo "Source repo not available - using placeholder" \
+    "https://github.com/jellyfin/jellyfin-ffmpeg.git" /tmp/jellyfin-ffmpeg && \    cd /tmp/jellyfin-ffmpeg && \    ./configure --prefix=/usr/local \
         --enable-gpl --enable-nonfree \
         --enable-shared --disable-static \
         --enable-libfdk-aac --enable-libopus --enable-libvpx \

@@ -12,7 +12,7 @@ ARG BUILD_DATE
 FROM python:3.12-slim AS builder
 ARG VERSION=10.0.0
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-base postgresql-dev curl && \
+    build-essential postgresql-dev curl && \
     pip install --no-cache-dir --prefix=/install \
     redash=="${VERSION}" && \
     find /install -type f -name "*.pyc" -delete && \

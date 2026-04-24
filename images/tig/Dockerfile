@@ -12,7 +12,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 ARG VERSION=2.5.8
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-base libncurses-dev zlib1g-dev git curl ca-certificates && \
+    build-essential libncurses-dev zlib1g-dev git curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/jonas/tig/releases/download/tig-${VERSION}/tig-${VERSION}.tar.gz" -o /tig.tar.gz && \
     tar -xzf /tig.tar.gz -C / && rm /tig.tar.gz && \

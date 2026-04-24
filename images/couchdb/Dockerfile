@@ -37,13 +37,7 @@ RUN tar -xzf /tmp/couchdb.tar.gz -C /tmp && \
 
 # hadolint ignore=DL3023
 
-
-FROM golang:1.23-alpine AS health-shim-builder
-COPY images/health-shim/go.mod images/health-shim/main.go /build/
-RUN cd /build && CGO_ENABLED=0 go build -ldflags="-s -w" -o /health-shim .
-
 FROM cgr.dev/chainguard/wolfi-base:latest
-COPY --from=health-shim-builder /health-shim /usr/local/bin/health-shim
 ENV HEALTH_CMD="curl -sf http://localhost:5984/_up" \
     READY_CMD="curl -sf http://localhost:5984/_up" \
     STARTUP_CMD="curl -sf http://localhost:5984/_up" \
@@ -59,7 +53,7 @@ ENV PATH="${COUCHDB_HOME}/bin:${PATH}"
 USER 65532:65532
 WORKDIR /app
 EXPOSE 5984
-ENTRYPOINT ["sh", "-c", "health-shim & exec /opt/couchdb/bin/couchdb"]
+ENTRYPOINT ["sh", "-c", "/opt/couchdb/bin/couchdb"]
 LABEL org.opencontainers.image.title="couchdb" \
       org.opencontainers.image.version="3.3.3" \
       org.opencontainers.image.vendor="Apache" \

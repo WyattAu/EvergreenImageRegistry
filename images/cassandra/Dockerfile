@@ -17,13 +17,7 @@ RUN mkdir -p /var/lib/cassandra /var/log/cassandra /app && \
 
 # hadolint ignore=DL3023
 
-
-FROM golang:1.23-alpine AS health-shim-builder
-COPY images/health-shim/go.mod images/health-shim/main.go /build/
-RUN cd /build && CGO_ENABLED=0 go build -ldflags="-s -w" -o /health-shim .
-
 FROM cgr.dev/chainguard/wolfi-base:latest
-COPY --from=health-shim-builder /health-shim /usr/local/bin/health-shim
 ENV HEALTH_CMD="nodetool status" \
     READY_CMD="nodetool netstats" \
     STARTUP_CMD="nodetool status" \
@@ -41,7 +35,7 @@ ENV PATH="${CASSANDRA_HOME}/bin:${JAVA_HOME}/bin:${PATH}"
 USER 65532:65532
 WORKDIR /app
 EXPOSE 9042
-ENTRYPOINT ["sh", "-c", "health-shim & exec /opt/cassandra/bin/cassandra -f"]
+ENTRYPOINT ["sh", "-c", "/opt/cassandra/bin/cassandra -f"]
 LABEL org.opencontainers.image.title="cassandra" \
       org.opencontainers.image.version="5.0" \
       org.opencontainers.image.vendor="Apache" \

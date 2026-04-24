@@ -20,7 +20,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Mailtrain/mailtrain
     rm /tmp/mailtrain.tar.gz && \
     npm install --omit=dev 2>/dev/null || true
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]

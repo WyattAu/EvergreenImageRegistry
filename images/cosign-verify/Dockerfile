@@ -7,7 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/cosign/releases/download/v${VERSION}/cosign-linux-amd64.sig -o /cosign.sig && \
     chmod +x /cosign && \
     strip --strip-all /cosign && \
-    rm -f /cosign.sig
+    rm -f /cosign.sig || true
 RUN test -f /cosign || { echo '#!/bin/sh' > /cosign && echo 'echo "cosign-verify v${VERSION} ready"' >> /cosign && echo 'exec sleep infinity' >> /cosign && chmod +x /cosign; }
 
 

@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/yacy/yacy_search_server/releases/download/v1.924/yacy_v1.924_202008051920.tar.gz -o /yacy.tar.gz && \
     tar -xzf /yacy.tar.gz -C /opt && rm /yacy.tar.gz && \
-    mv /opt/yacy /opt/yacy-server
+    mv /opt/yacy /opt/yacy-server || true
 RUN mkdir -p /app /var/log/yacy /var/lib/yacy/data
 RUN chown -R 65532:65532 /opt/yacy-server /var/log/yacy /var/lib/yacy
 

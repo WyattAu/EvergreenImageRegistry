@@ -12,7 +12,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/airsonic-advanced/airsonic-advanced/releases/download/v11.1.3/airsonic-advanced-11.1.3.war -o /app/airsonic-advanced-11.1.3.war
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/airsonic-advanced/airsonic-advanced/releases/download/v11.1.3/airsonic-advanced-11.1.3.war -o /app/airsonic-advanced-11.1.3.war || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

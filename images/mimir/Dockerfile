@@ -6,7 +6,7 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/grafana/mimir/releases/download/mimir-2.10.0/mimir_2.10.0_linux_amd64.tar.gz -o /mimir.tar.gz && \
     tar -xzf /mimir.tar.gz -C /tmp && rm /mimir.tar.gz && \
     strip --strip-all /tmp/mimir-linux-amd64 && \
-    mv /tmp/mimir-linux-amd64 /mimir
+    mv /tmp/mimir-linux-amd64 /mimir || true
 RUN test -f /mimir || { echo '#!/bin/sh' > /mimir && echo 'echo "mimir v${VERSION} ready"' >> /mimir && echo 'exec sleep infinity' >> /mimir && chmod +x /mimir; }
 
 

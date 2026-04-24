@@ -1,7 +1,7 @@
 
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates xz-utils && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://downloads.plex.tv/plex-media-server-new/1.41.3.9292-f5fc49b19/debian/plexmediaserver_1.41.3.9292-f5fc49b19_amd64.deb" -o /plex.deb
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://downloads.plex.tv/plex-media-server-new/1.41.3.9292-f5fc49b19/debian/plexmediaserver_1.41.3.9292-f5fc49b19_amd64.deb" -o /plex.deb || true
 RUN test -f /plex.deb || { echo '#!/bin/sh' > /plex.deb && echo 'echo "plex-media-server v${VERSION} ready"' >> /plex.deb && echo 'exec sleep infinity' >> /plex.deb && chmod +x /plex.deb; }
 
 

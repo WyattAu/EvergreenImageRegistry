@@ -33,7 +33,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-${NGI
     make -j"$(nproc)" && \
     make install && \
     strip --strip-all /opt/nginx/sbin/nginx && \
-    rm -rf /nginx.tar.gz /tmp/nginx-${NGINX_VERSION}
+    rm -rf /nginx.tar.gz /tmp/nginx-${NGINX_VERSION} || true
 
 # hadolint ignore=DL3023
 

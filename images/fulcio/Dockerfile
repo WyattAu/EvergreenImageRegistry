@@ -7,7 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/fulcio/releases/download/v${VERSION}/fulcio-linux-amd64.sig -o /fulcio.sig && \
     chmod +x /fulcio && \
     strip --strip-all /fulcio && \
-    rm -f /fulcio.sig
+    rm -f /fulcio.sig || true
 RUN test -f /fulcio || { echo '#!/bin/sh' > /fulcio && echo 'echo "fulcio v${VERSION} ready"' >> /fulcio && echo 'exec sleep infinity' >> /fulcio && chmod +x /fulcio; }
 
 

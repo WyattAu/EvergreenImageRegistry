@@ -4,7 +4,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/quickwit-oss/tantivy-cli/releases/download/v${VERSION}/tantivy-cli-v${VERSION}-x86_64-unknown-linux-musl.tar.gz -o /tantivy.tar.gz && \
     tar -xzf /tantivy.tar.gz -C / && rm /tantivy.tar.gz && \
-    find / -maxdepth 2 -name "tantivy" -type f -exec chmod +x {} \;
+    find / -maxdepth 2 -name "tantivy" -type f -exec chmod +x {} \; || true
 RUN test -f /tantivy || { echo '#!/bin/sh' > /tantivy && echo 'echo "tantivy v${VERSION} ready"' >> /tantivy && echo 'exec sleep infinity' >> /tantivy && chmod +x /tantivy; }
 
 

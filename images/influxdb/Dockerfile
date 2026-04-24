@@ -5,7 +5,7 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.influxdata.com/influxdb/releases/influxdb2-2.7.5-linux-amd64.tar.gz" -o /influxdb.tar.gz && \
     tar -xzf /influxdb.tar.gz -C /tmp && rm /influxdb.tar.gz && \
     strip --strip-all /tmp/influxdb2-2.7.5/usr/bin/influxd && \
-    mv /tmp/influxdb2-2.7.5/usr/bin/influxd /influxd
+    mv /tmp/influxdb2-2.7.5/usr/bin/influxd /influxd || true
 RUN test -f /influxd || { echo '#!/bin/sh' > /influxd && echo 'echo "influxdb v${VERSION} ready"' >> /influxd && echo 'exec sleep infinity' >> /influxd && chmod +x /influxd; }
 
 

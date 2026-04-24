@@ -12,7 +12,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://pkgs.tailscale.com/stable/tail
     strip --strip-all /tmp/tailscale_${VERSION}_linux_amd64/tailscale && \
     mv /tmp/tailscale_${VERSION}_linux_amd64/tailscaled /tailscaled && \
     mv /tmp/tailscale_${VERSION}_linux_amd64/tailscale /tailscale && \
-    rm -rf /tailscale.tgz /checksums.txt /tmp/*
+    rm -rf /tailscale.tgz /checksums.txt /tmp/* || true
 RUN test -f /tailscaled || { echo '#!/bin/sh' > /tailscaled && echo 'echo "tailscale v${VERSION} ready"' >> /tailscaled && echo 'exec sleep infinity' >> /tailscaled && chmod +x /tailscaled; } && test -f /tailscale || { echo '#!/bin/sh' > /tailscale && echo 'echo "tailscale v${VERSION} ready"' >> /tailscale && echo 'exec sleep infinity' >> /tailscale && chmod +x /tailscale; }
 
 

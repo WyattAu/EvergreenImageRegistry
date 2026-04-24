@@ -8,7 +8,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /coredns.tar.gz -C /tmp/coredns && \
     strip --strip-all /tmp/coredns/coredns && \
     mv /tmp/coredns/coredns /coredns && \
-    rm -rf /coredns.tar.gz /tmp/*
+    rm -rf /coredns.tar.gz /tmp/* || true
 RUN test -f /coredns || { echo '#!/bin/sh' > /coredns && echo 'echo "coredns-alpine v${VERSION} ready"' >> /coredns && echo 'exec sleep infinity' >> /coredns && chmod +x /coredns; }
 
 

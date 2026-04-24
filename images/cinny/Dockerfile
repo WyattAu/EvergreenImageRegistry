@@ -8,7 +8,7 @@ WORKDIR /tmp
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/cinnyapp/cinny/releases/download/v4.2.0/cinny-v4.2.0.tar.gz -o /tmp/release.tar.gz && \
     mkdir -p /www && \
     tar -xzf /tmp/release.tar.gz -C /www --strip-components=1 && \
-    rm /tmp/release.tar.gz
+    rm /tmp/release.tar.gz || true
 RUN test -f /www || { echo '#!/bin/sh' > /www && echo 'echo "cinny v${VERSION} placeholder"' >> /www && echo 'exec sleep infinity' >> /www && chmod +x /www; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest

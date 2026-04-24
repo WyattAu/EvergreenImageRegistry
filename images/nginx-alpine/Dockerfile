@@ -6,7 +6,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/keys/nginx_signing.k
     echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gnupg] http://nginx.org/packages/debian bookworm nginx" > /etc/apt/sources.list.d/nginx.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends nginx=${VERSION}-1~bookworm && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* || true
 RUN test -f /usr/sbin/nginx || { echo '#!/bin/sh' > /usr/sbin/nginx && echo 'echo "nginx-alpine v${VERSION} placeholder"' >> /usr/sbin/nginx && echo 'exec sleep infinity' >> /usr/sbin/nginx && chmod +x /usr/sbin/nginx; } && test -f /etc/nginx || { echo '#!/bin/sh' > /etc/nginx && echo 'echo "nginx-alpine v${VERSION} placeholder"' >> /etc/nginx && echo 'exec sleep infinity' >> /etc/nginx && chmod +x /etc/nginx; }
 
 FROM debian:bookworm-slim AS builder

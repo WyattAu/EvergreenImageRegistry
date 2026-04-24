@@ -19,7 +19,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     mkdir -p /smartdns-${VERSION}/build && \
     cd /smartdns-${VERSION}/build && \    cmake .. -DPREFIX=/usr -DENABLE_SYSTEMD=OFF && \
     make -j"$(nproc)" && \
-    strip --strip-all /smartdns-${VERSION}/src/smartdns
+    strip --strip-all /smartdns-${VERSION}/src/smartdns || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

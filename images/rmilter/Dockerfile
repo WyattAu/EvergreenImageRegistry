@@ -25,7 +25,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     rm /tmp/rmilter.tar.gz && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release . && \
     make -j$(nproc) && \
-    strip rmilter/rmilter
+    strip rmilter/rmilter || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

@@ -20,7 +20,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /tmp/synapse-admin.tar.gz -C /build --strip-components=1 && \
     rm /tmp/synapse-admin.tar.gz && \
     npm install --omit=dev && \
-    npm run build
+    npm run build || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

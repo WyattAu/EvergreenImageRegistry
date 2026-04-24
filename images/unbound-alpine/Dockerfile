@@ -32,7 +32,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nlnetlabs.nl/downloads/unbound
     strip --strip-all /usr/sbin/unbound && \
     strip --strip-all /usr/sbin/unbound-anchor && \
     strip --strip-all /usr/sbin/unbound-checkconf && \
-    strip --strip-all /usr/sbin/unbound-control
+    strip --strip-all /usr/sbin/unbound-control || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

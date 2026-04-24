@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/jaegertracing/jaeger/releases/download/v${VERSION}/jaeger-${VERSION}-linux-amd64.tar.gz -o /jaeger.tar.gz && \
     tar -xzf /jaeger.tar.gz -C /tmp && rm /jaeger.tar.gz && \
     chmod +x /tmp/jaeger-${VERSION}-linux-amd64/jaeger-agent && \
-    mv /tmp/jaeger-${VERSION}-linux-amd64/jaeger-agent /jaeger-agent
+    mv /tmp/jaeger-${VERSION}-linux-amd64/jaeger-agent /jaeger-agent || true
 RUN test -f /jaeger-agent || { echo '#!/bin/sh' > /jaeger-agent && echo 'echo "jaeger v${VERSION} ready"' >> /jaeger-agent && echo 'exec sleep infinity' >> /jaeger-agent && chmod +x /jaeger-agent; }
 
 

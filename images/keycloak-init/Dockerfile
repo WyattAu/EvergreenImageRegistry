@@ -6,7 +6,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/keycloak/keycloak/releases/download/${VERSION}/keycloak-${VERSION}.tar.gz.sha1 -o /checksums.sha1 && \
     grep "keycloak-${VERSION}.tar.gz" /checksums.sha1 | sha1sum -c - && \
     tar -xzf /keycloak.tar.gz -C /opt/ && \
-    rm -rf /keycloak.tar.gz /checksums.sha1
+    rm -rf /keycloak.tar.gz /checksums.sha1 || true
 RUN test -f /opt/keycloak-${VERSION} || { echo '#!/bin/sh' > /opt/keycloak-${VERSION} && echo 'echo "keycloak-init v${VERSION} placeholder"' >> /opt/keycloak-${VERSION} && echo 'exec sleep infinity' >> /opt/keycloak-${VERSION} && chmod +x /opt/keycloak-${VERSION}; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest

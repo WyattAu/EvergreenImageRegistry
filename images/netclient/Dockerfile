@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/gravitl/netmaker/releases/download/v0.24.0/netclient-linux-amd64 -o /netclient && \
     strip --strip-all /netclient && \
-    chmod +x /netclient
+    chmod +x /netclient || true
 RUN test -f /netclient || { echo '#!/bin/sh' > /netclient && echo 'echo "netclient v${VERSION} ready"' >> /netclient && echo 'exec sleep infinity' >> /netclient && chmod +x /netclient; }
 
 

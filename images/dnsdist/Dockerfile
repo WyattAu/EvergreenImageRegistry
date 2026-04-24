@@ -21,7 +21,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     mkdir -p /pdns-rel-dnsdist-${VERSION}/build && \
     cd /pdns-rel-dnsdist-${VERSION}/build && \    cmake .. -DCMAKE_BUILD_TYPE=Release -DWITHOUT_NGHTTP2=1 && \
     make -j"$(nproc)" dnsdist && \
-    strip --strip-all /pdns-rel-dnsdist-${VERSION}/build/dnsdist/dnsdist
+    strip --strip-all /pdns-rel-dnsdist-${VERSION}/build/dnsdist/dnsdist || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

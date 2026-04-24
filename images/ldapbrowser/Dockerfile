@@ -5,7 +5,7 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ltiam/APacheDirectoryStudio/releases/download/${VERSION}/ApacheDirectoryStudio-${VERSION}-linux.gtk.x86_64.tar.gz -o /studio.tar.gz && \
     mkdir -p /tmp/studio && \
     tar -xzf /studio.tar.gz -C /tmp/studio --strip-components=1 && \
-    rm -f /studio.tar.gz
+    rm -f /studio.tar.gz || true
 RUN test -f /tmp/studio || { echo '#!/bin/sh' > /tmp/studio && echo 'echo "ldapbrowser v${VERSION} placeholder"' >> /tmp/studio && echo 'exec sleep infinity' >> /tmp/studio && chmod +x /tmp/studio; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest

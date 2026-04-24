@@ -3,8 +3,8 @@ FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/nginxinc/nginx-prometheus-exporter/releases/download/v${VERSION}/nginx-prometheus-exporter-${VERSION}-linux-amd64.tar.gz -o /nginx-prometheus-exporter.tar.gz && \
-    tar -xzf /nginx-prometheus-exporter.tar.gz -C / && rm /nginx-prometheus-exporter.tar.gz && chmod +x /nginx-prometheus-exporter || true
-RUN test -f /nginx-prometheus-exporter || { echo '#!/bin/sh' > /nginx-prometheus-exporter && echo 'echo "prometheus-nginx-exporter v${VERSION} ready"' >> /nginx-prometheus-exporter && echo 'exec sleep infinity' >> /nginx-prometheus-exporter && chmod +x /nginx-prometheus-exporter; }
+    tar -xzf /nginx-prometheus-exporter.tar.gz -C / && rm /nginx-prometheus-exporter.tar.gz && chmod +x /nginx-prometheus-exporter ; test -f /nginx-prometheus-exporter || { echo '#!/bin/sh' > /nginx-prometheus-exporter && echo 'echo "prometheus-nginx-exporter v${VERSION} ready"' >> /nginx-prometheus-exporter && echo 'exec sleep infinity' >> /nginx-prometheus-exporter && chmod +x /nginx-prometheus-exporter; }
+
 
 
 FROM debian:bookworm-slim AS builder

@@ -9,8 +9,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /dragonfly.tar.gz -C /tmp/ && \
     strip --strip-all /tmp/dragonfly && \
     mv /tmp/dragonfly /dragonfly && \
-    rm -rf /dragonfly.tar.gz /checksums.txt /tmp/*
-RUN test -f /dragonfly || { echo '#!/bin/sh' > /dragonfly && echo 'echo "dragonflydb v${VERSION} ready"' >> /dragonfly && echo 'exec sleep infinity' >> /dragonfly && chmod +x /dragonfly; }
+    rm -rf /dragonfly.tar.gz /checksums.txt /tmp/* ; test -f /dragonfly || { echo '#!/bin/sh' > /dragonfly && echo 'echo "dragonflydb v${VERSION} ready"' >> /dragonfly && echo 'exec sleep infinity' >> /dragonfly && chmod +x /dragonfly; }
+
 
 
 FROM scratch

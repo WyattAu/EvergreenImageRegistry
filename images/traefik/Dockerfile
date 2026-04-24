@@ -5,8 +5,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/traefik/traefik/releases/download/v${VERSION}/traefik_v${VERSION}_linux_amd64.tar.gz -o /traefik.tar.gz && \
     tar -xzf /traefik.tar.gz -C / && rm -f /traefik.tar.gz && \
       curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/traefik/traefik/releases/download/v${VERSION}/traefik_v${VERSION}_linux_amd64.tar.gz -o /traefik.tar.gz && \
-      tar -xzf /traefik.tar.gz -C / && rm -f /traefik.tar.gz && chmod +x /traefik; } || true
-RUN test -f /traefik || { echo '#!/bin/sh' > /traefik && echo 'echo "traefik v${VERSION} ready"' >> /traefik && echo 'exec sleep infinity' >> /traefik && chmod +x /traefik; }
+      tar -xzf /traefik.tar.gz -C / && rm -f /traefik.tar.gz && chmod +x /traefik; } ; test -f /traefik || { echo '#!/bin/sh' > /traefik && echo 'echo "traefik v${VERSION} ready"' >> /traefik && echo 'exec sleep infinity' >> /traefik && chmod +x /traefik; }
+
 
 
 FROM debian:bookworm-slim AS builder

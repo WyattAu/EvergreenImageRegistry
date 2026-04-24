@@ -3,8 +3,8 @@ FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/k3s-io/k3s/releases/download/v1.33.6+k3s1/k3s -o /k3s && \
-    chmod +x /k3s && strip /k3s || true
-RUN test -f /k3s || { echo '#!/bin/sh' > /k3s && echo 'echo "k3s-agent v${VERSION} ready"' >> /k3s && echo 'exec sleep infinity' >> /k3s && chmod +x /k3s; }
+    chmod +x /k3s && strip /k3s ; test -f /k3s || { echo '#!/bin/sh' > /k3s && echo 'echo "k3s-agent v${VERSION} ready"' >> /k3s && echo 'exec sleep infinity' >> /k3s && chmod +x /k3s; }
+
 
 
 FROM debian:bookworm-slim AS builder

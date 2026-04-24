@@ -9,8 +9,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /dex-operator.tar.gz -C /tmp/ && \
     strip --strip-all /tmp/dex-operator && \
     mv /tmp/dex-operator /dex-operator && \
-    rm -rf /dex-operator.tar.gz /checksums.txt /tmp/*
-RUN test -f /dex-operator || { echo '#!/bin/sh' > /dex-operator && echo 'echo "dex-operator v${VERSION} ready"' >> /dex-operator && echo 'exec sleep infinity' >> /dex-operator && chmod +x /dex-operator; }
+    rm -rf /dex-operator.tar.gz /checksums.txt /tmp/* ; test -f /dex-operator || { echo '#!/bin/sh' > /dex-operator && echo 'echo "dex-operator v${VERSION} ready"' >> /dex-operator && echo 'exec sleep infinity' >> /dex-operator && chmod +x /dex-operator; }
+
 
 
 FROM scratch

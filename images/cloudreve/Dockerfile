@@ -2,8 +2,8 @@
 FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/cloudreve/Cloudreve/releases/download/3.8.3/cloudreve_3.8.3_linux_amd64.tar.gz -o /cloudreve && chmod +x /cloudreve || true
-RUN test -f /cloudreve || { echo '#!/bin/sh' > /cloudreve && echo 'echo "cloudreve v${VERSION} ready"' >> /cloudreve && echo 'exec sleep infinity' >> /cloudreve && chmod +x /cloudreve; }
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/cloudreve/Cloudreve/releases/download/3.8.3/cloudreve_3.8.3_linux_amd64.tar.gz -o /cloudreve && chmod +x /cloudreve ; test -f /cloudreve || { echo '#!/bin/sh' > /cloudreve && echo 'echo "cloudreve v${VERSION} ready"' >> /cloudreve && echo 'exec sleep infinity' >> /cloudreve && chmod +x /cloudreve; }
+
 
 
 FROM scratch

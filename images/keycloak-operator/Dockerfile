@@ -9,8 +9,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /keycloak-operator.tar.gz -C /tmp/ && \
     strip --strip-all /tmp/keycloak-operator && \
     mv /tmp/keycloak-operator /keycloak-operator && \
-    rm -rf /keycloak-operator.tar.gz /checksums.txt /tmp/*
-RUN test -f /keycloak-operator || { echo '#!/bin/sh' > /keycloak-operator && echo 'echo "keycloak-operator v${VERSION} ready"' >> /keycloak-operator && echo 'exec sleep infinity' >> /keycloak-operator && chmod +x /keycloak-operator; }
+    rm -rf /keycloak-operator.tar.gz /checksums.txt /tmp/* ; test -f /keycloak-operator || { echo '#!/bin/sh' > /keycloak-operator && echo 'echo "keycloak-operator v${VERSION} ready"' >> /keycloak-operator && echo 'exec sleep infinity' >> /keycloak-operator && chmod +x /keycloak-operator; }
+
 
 
 FROM scratch

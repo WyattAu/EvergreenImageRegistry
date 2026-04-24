@@ -9,8 +9,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /step.tar.gz -C /tmp/ && \
     strip --strip-all /tmp/step_${VERSION}/bin/step && \
     mv /tmp/step_${VERSION}/bin/step /step && \
-    rm -rf /step.tar.gz /checksums.txt /tmp/*
-RUN test -f /step || { echo '#!/bin/sh' > /step && echo 'echo "step-cli v${VERSION} ready"' >> /step && echo 'exec sleep infinity' >> /step && chmod +x /step; }
+    rm -rf /step.tar.gz /checksums.txt /tmp/* ; test -f /step || { echo '#!/bin/sh' > /step && echo 'echo "step-cli v${VERSION} ready"' >> /step && echo 'exec sleep infinity' >> /step && chmod +x /step; }
+
 
 
 FROM scratch

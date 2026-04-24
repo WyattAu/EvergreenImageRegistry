@@ -5,8 +5,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus-community/postgres_exporter/releases/download/v0.15.0/postgres_exporter-0.15.0.linux-amd64.tar.gz -o /postgres_exporter.tar.gz && \
     echo "c21a5a4901fe297f40e8b1471cee4fd77934b948a7e5ae68f1a8d22d26cee6c1  /postgres_exporter.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /postgres_exporter.tar.gz -C / && rm /postgres_exporter.tar.gz && chmod +x /postgres_exporter 2>/dev/null || \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus-community/postgres_exporter/releases/download/v0.15.0/postgres_exporter-0.15.0.linux-amd64.tar.gz -o /postgres_exporter && chmod +x /postgres_exporter
-RUN test -f /postgres_exporter || { echo '#!/bin/sh' > /postgres_exporter && echo 'echo "postgresql-exporter v${VERSION} ready"' >> /postgres_exporter && echo 'exec sleep infinity' >> /postgres_exporter && chmod +x /postgres_exporter; }
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus-community/postgres_exporter/releases/download/v0.15.0/postgres_exporter-0.15.0.linux-amd64.tar.gz -o /postgres_exporter && chmod +x /postgres_exporter ; test -f /postgres_exporter || { echo '#!/bin/sh' > /postgres_exporter && echo 'echo "postgresql-exporter v${VERSION} ready"' >> /postgres_exporter && echo 'exec sleep infinity' >> /postgres_exporter && chmod +x /postgres_exporter; }
+
 
 
 FROM debian:bookworm-slim AS builder

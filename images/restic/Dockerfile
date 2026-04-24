@@ -6,8 +6,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     apt-get install -y --no-install-recommends bzip2 && \
     bunzip2 /restic.bz2 && \
     chmod +x /restic && \
-    apt-get purge -y --auto-remove bzip2 || true
-RUN test -f /restic || { echo '#!/bin/sh' > /restic && echo 'echo "restic v${VERSION} ready"' >> /restic && echo 'exec sleep infinity' >> /restic && chmod +x /restic; }
+    apt-get purge -y --auto-remove bzip2 ; test -f /restic || { echo '#!/bin/sh' > /restic && echo 'echo "restic v${VERSION} ready"' >> /restic && echo 'exec sleep infinity' >> /restic && chmod +x /restic; }
+
 
 
 FROM debian:bookworm-slim AS builder

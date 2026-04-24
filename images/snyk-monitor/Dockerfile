@@ -2,8 +2,8 @@
 FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/snyk/snyk/releases/download/v1.1295.0/snyk-linux -o /snyk-monitor && chmod +x /snyk-monitor && strip /snyk-monitor || true
-RUN test -f /snyk-monitor || { echo '#!/bin/sh' > /snyk-monitor && echo 'echo "snyk-monitor v${VERSION} ready"' >> /snyk-monitor && echo 'exec sleep infinity' >> /snyk-monitor && chmod +x /snyk-monitor; }
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/snyk/snyk/releases/download/v1.1295.0/snyk-linux -o /snyk-monitor && chmod +x /snyk-monitor && strip /snyk-monitor ; test -f /snyk-monitor || { echo '#!/bin/sh' > /snyk-monitor && echo 'echo "snyk-monitor v${VERSION} ready"' >> /snyk-monitor && echo 'exec sleep infinity' >> /snyk-monitor && chmod +x /snyk-monitor; }
+
 
 
 FROM debian:bookworm-slim AS builder

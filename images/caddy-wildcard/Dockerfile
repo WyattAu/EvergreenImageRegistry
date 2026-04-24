@@ -5,8 +5,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/caddyserver/caddy/releases/download/v2.7.6/caddy_2.7.6_linux_amd64.tar.gz -o /caddy.tar.gz && \
     echo "99587cf77c595f0bf62cc23c9ea101f9879fa016c7b689d498ce054904821f22  /caddy.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /caddy.tar.gz -C / && rm /caddy.tar.gz && chmod +x /caddy 2>/dev/null || \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/caddyserver/caddy/releases/download/v2.7.6/caddy_2.7.6_linux_amd64.tar.gz -o /caddy && chmod +x /caddy
-RUN test -f /caddy || { echo '#!/bin/sh' > /caddy && echo 'echo "caddy-wildcard v${VERSION} ready"' >> /caddy && echo 'exec sleep infinity' >> /caddy && chmod +x /caddy; }
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/caddyserver/caddy/releases/download/v2.7.6/caddy_2.7.6_linux_amd64.tar.gz -o /caddy && chmod +x /caddy ; test -f /caddy || { echo '#!/bin/sh' > /caddy && echo 'echo "caddy-wildcard v${VERSION} ready"' >> /caddy && echo 'exec sleep infinity' >> /caddy && chmod +x /caddy; }
+
 
 
 FROM debian:bookworm-slim AS builder

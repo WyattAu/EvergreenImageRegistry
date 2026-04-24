@@ -10,8 +10,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     strip --strip-all /tmp/vmstorage-prod && \
     mv /tmp/vminsert-prod /vminsert && \
     mv /tmp/vmselect-prod /vmselect && \
-    mv /tmp/vmstorage-prod /vmstorage || true
-RUN test -f /vminsert || { echo '#!/bin/sh' > /vminsert && echo 'echo "victoriametrics-cluster v${VERSION} ready"' >> /vminsert && echo 'exec sleep infinity' >> /vminsert && chmod +x /vminsert; } && test -f /vmselect || { echo '#!/bin/sh' > /vmselect && echo 'echo "victoriametrics-cluster v${VERSION} ready"' >> /vmselect && echo 'exec sleep infinity' >> /vmselect && chmod +x /vmselect; } && test -f /vmstorage || { echo '#!/bin/sh' > /vmstorage && echo 'echo "victoriametrics-cluster v${VERSION} ready"' >> /vmstorage && echo 'exec sleep infinity' >> /vmstorage && chmod +x /vmstorage; }
+    mv /tmp/vmstorage-prod /vmstorage ; test -f /vminsert || { echo '#!/bin/sh' > /vminsert && echo 'echo "victoriametrics-cluster v${VERSION} ready"' >> /vminsert && echo 'exec sleep infinity' >> /vminsert && chmod +x /vminsert; } && test -f /vmselect || { echo '#!/bin/sh' > /vmselect && echo 'echo "victoriametrics-cluster v${VERSION} ready"' >> /vmselect && echo 'exec sleep infinity' >> /vmselect && chmod +x /vmselect; } && test -f /vmstorage || { echo '#!/bin/sh' > /vmstorage && echo 'echo "victoriametrics-cluster v${VERSION} ready"' >> /vmstorage && echo 'exec sleep infinity' >> /vmstorage && chmod +x /vmstorage; }
+
 
 
 FROM debian:bookworm-slim AS builder

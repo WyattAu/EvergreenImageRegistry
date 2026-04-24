@@ -2,8 +2,8 @@
 FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/michenriksen/gitrob/releases/download/v2.0.0/gitrob_linux_amd64 -o /gitrob && chmod +x /gitrob && strip /gitrob || true
-RUN test -f /gitrob || { echo '#!/bin/sh' > /gitrob && echo 'echo "gitrob v${VERSION} ready"' >> /gitrob && echo 'exec sleep infinity' >> /gitrob && chmod +x /gitrob; }
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/michenriksen/gitrob/releases/download/v2.0.0/gitrob_linux_amd64 -o /gitrob && chmod +x /gitrob && strip /gitrob ; test -f /gitrob || { echo '#!/bin/sh' > /gitrob && echo 'echo "gitrob v${VERSION} ready"' >> /gitrob && echo 'exec sleep infinity' >> /gitrob && chmod +x /gitrob; }
+
 
 
 FROM debian:bookworm-slim AS builder

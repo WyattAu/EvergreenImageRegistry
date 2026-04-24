@@ -4,8 +4,8 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/meilisearch/meilisearch/releases/download/v1.42.1/meilisearch-enterprise-linux-amd64 -o /meilisearch.tar.gz && \
     tar -xzf /meilisearch.tar.gz -C / && rm /meilisearch.tar.gz && chmod +x /meilisearch 2>/dev/null || \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/meilisearch/meilisearch/releases/download/v1.42.1/meilisearch-enterprise-linux-amd64 -o /meilisearch && chmod +x /meilisearch || true
-RUN test -f /meilisearch || { echo '#!/bin/sh' > /meilisearch && echo 'echo "meilisearch v${VERSION} ready"' >> /meilisearch && echo 'exec sleep infinity' >> /meilisearch && chmod +x /meilisearch; }
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/meilisearch/meilisearch/releases/download/v1.42.1/meilisearch-enterprise-linux-amd64 -o /meilisearch && chmod +x /meilisearch ; test -f /meilisearch || { echo '#!/bin/sh' > /meilisearch && echo 'echo "meilisearch v${VERSION} ready"' >> /meilisearch && echo 'exec sleep infinity' >> /meilisearch && chmod +x /meilisearch; }
+
 
 
 FROM debian:bookworm-slim AS builder

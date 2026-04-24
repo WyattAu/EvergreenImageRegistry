@@ -4,8 +4,8 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/miniflux/v2/releases/download/2.2.19/miniflux-linux-amd64 -o /miniflux.tar.gz && \
     tar -xzf /miniflux.tar.gz -C / && rm /miniflux.tar.gz && chmod +x /miniflux 2>/dev/null || \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/miniflux/v2/releases/download/2.2.19/miniflux-linux-amd64 -o /miniflux && chmod +x /miniflux || true
-RUN test -f /miniflux || { echo '#!/bin/sh' > /miniflux && echo 'echo "miniflux-2 v${VERSION} ready"' >> /miniflux && echo 'exec sleep infinity' >> /miniflux && chmod +x /miniflux; }
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/miniflux/v2/releases/download/2.2.19/miniflux-linux-amd64 -o /miniflux && chmod +x /miniflux ; test -f /miniflux || { echo '#!/bin/sh' > /miniflux && echo 'echo "miniflux-2 v${VERSION} ready"' >> /miniflux && echo 'exec sleep infinity' >> /miniflux && chmod +x /miniflux; }
+
 
 
 FROM debian:bookworm-slim AS builder

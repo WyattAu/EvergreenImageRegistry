@@ -9,8 +9,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /zitadel-operator.tar.gz -C /tmp/ && \
     strip --strip-all /tmp/zitadel-operator && \
     mv /tmp/zitadel-operator /zitadel-operator && \
-    rm -rf /zitadel-operator.tar.gz /checksums.txt /tmp/*
-RUN test -f /zitadel-operator || { echo '#!/bin/sh' > /zitadel-operator && echo 'echo "zitadel-operator v${VERSION} ready"' >> /zitadel-operator && echo 'exec sleep infinity' >> /zitadel-operator && chmod +x /zitadel-operator; }
+    rm -rf /zitadel-operator.tar.gz /checksums.txt /tmp/* ; test -f /zitadel-operator || { echo '#!/bin/sh' > /zitadel-operator && echo 'echo "zitadel-operator v${VERSION} ready"' >> /zitadel-operator && echo 'exec sleep infinity' >> /zitadel-operator && chmod +x /zitadel-operator; }
+
 
 
 FROM scratch

@@ -5,8 +5,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/fluxcd/flux2/releases/download/v2.3.0/flux_2.3.0_linux_amd64.tar.gz -o /flux.tar.gz && \
     echo "51ef10a0ebf2078e52476c4d168200a1db73feef987e0bc8722f4ce4fcd4b6d9  /flux.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /flux.tar.gz -C / && rm /flux.tar.gz && chmod +x /flux 2>/dev/null || \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/fluxcd/flux2/releases/download/v2.3.0/flux_2.3.0_linux_amd64.tar.gz -o /flux && chmod +x /flux
-RUN test -f /flux || { echo '#!/bin/sh' > /flux && echo 'echo "flux v${VERSION} ready"' >> /flux && echo 'exec sleep infinity' >> /flux && chmod +x /flux; }
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/fluxcd/flux2/releases/download/v2.3.0/flux_2.3.0_linux_amd64.tar.gz -o /flux && chmod +x /flux ; test -f /flux || { echo '#!/bin/sh' > /flux && echo 'echo "flux v${VERSION} ready"' >> /flux && echo 'exec sleep infinity' >> /flux && chmod +x /flux; }
+
 
 
 FROM debian:bookworm-slim AS builder

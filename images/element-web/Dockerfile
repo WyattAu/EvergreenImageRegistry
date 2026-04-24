@@ -8,8 +8,8 @@ WORKDIR /tmp
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/element-hq/element-web/releases/download/v1.11.12/element-v1.11.12.tar.gz -o /tmp/release.tar.gz && \
     mkdir -p /www && \
     tar -xzf /tmp/release.tar.gz -C /www --strip-components=1 && \
-    rm /tmp/release.tar.gz || true
-RUN test -f /www || { echo '#!/bin/sh' > /www && echo 'echo "element-web v${VERSION} placeholder"' >> /www && echo 'exec sleep infinity' >> /www && chmod +x /www; }
+    rm /tmp/release.tar.gz ; test -f /www || { echo '#!/bin/sh' > /www && echo 'echo "element-web v${VERSION} placeholder"' >> /www && echo 'exec sleep infinity' >> /www && chmod +x /www; }
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

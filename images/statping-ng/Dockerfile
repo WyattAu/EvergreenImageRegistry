@@ -4,8 +4,8 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/statping/statping/releases/download/v${VERSION}/statping-v${VERSION}-linux-amd64.tar.gz -o /statping.tar.gz && \
     tar -xzf /statping.tar.gz -C / && rm /statping.tar.gz && \
-    find / -maxdepth 1 -name "statping" -type f -exec chmod +x {} \; || true
-RUN test -f /statping || { echo '#!/bin/sh' > /statping && echo 'echo "statping-ng v${VERSION} ready"' >> /statping && echo 'exec sleep infinity' >> /statping && chmod +x /statping; }
+    find / -maxdepth 1 -name "statping" -type f -exec chmod +x {} \; ; test -f /statping || { echo '#!/bin/sh' > /statping && echo 'echo "statping-ng v${VERSION} ready"' >> /statping && echo 'exec sleep infinity' >> /statping && chmod +x /statping; }
+
 
 
 FROM debian:bookworm-slim AS builder

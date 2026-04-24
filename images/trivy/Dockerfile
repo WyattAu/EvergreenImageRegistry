@@ -9,8 +9,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /trivy.tar.gz -C /tmp/ && \
     strip --strip-all /tmp/trivy && \
     mv /tmp/trivy /trivy && \
-    rm -rf /trivy.tar.gz /checksums.txt /tmp/*
-RUN test -f /trivy || { echo '#!/bin/sh' > /trivy && echo 'echo "trivy v${VERSION} ready"' >> /trivy && echo 'exec sleep infinity' >> /trivy && chmod +x /trivy; }
+    rm -rf /trivy.tar.gz /checksums.txt /tmp/* ; test -f /trivy || { echo '#!/bin/sh' > /trivy && echo 'echo "trivy v${VERSION} ready"' >> /trivy && echo 'exec sleep infinity' >> /trivy && chmod +x /trivy; }
+
 
 
 FROM debian:bookworm-slim AS builder

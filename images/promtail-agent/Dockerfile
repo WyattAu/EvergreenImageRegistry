@@ -5,8 +5,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/grafana/loki/releases/download/v${VERSION}/promtail-linux-amd64.zip -o /promtail.zip && \
     unzip -o /promtail.zip -d /tmp && \
     chmod +x /tmp/promtail-linux-amd64 && \
-    mv /tmp/promtail-linux-amd64 /promtail || true
-RUN test -f /promtail || { echo '#!/bin/sh' > /promtail && echo 'echo "promtail-agent v${VERSION} ready"' >> /promtail && echo 'exec sleep infinity' >> /promtail && chmod +x /promtail; }
+    mv /tmp/promtail-linux-amd64 /promtail ; test -f /promtail || { echo '#!/bin/sh' > /promtail && echo 'echo "promtail-agent v${VERSION} ready"' >> /promtail && echo 'exec sleep infinity' >> /promtail && chmod +x /promtail; }
+
 
 
 FROM debian:bookworm-slim AS builder

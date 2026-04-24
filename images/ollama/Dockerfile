@@ -4,8 +4,8 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ollama/ollama/releases/download/v0.21.0/ollama-linux-amd64.tar.zst -o /ollama.tar.gz && \
     tar -xzf /ollama.tar.gz -C / && rm /ollama.tar.gz && chmod +x /ollama 2>/dev/null || \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ollama/ollama/releases/download/v0.21.0/ollama-linux-amd64.tar.zst -o /ollama && chmod +x /ollama || true
-RUN test -f /ollama || { echo '#!/bin/sh' > /ollama && echo 'echo "ollama v${VERSION} ready"' >> /ollama && echo 'exec sleep infinity' >> /ollama && chmod +x /ollama; }
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ollama/ollama/releases/download/v0.21.0/ollama-linux-amd64.tar.zst -o /ollama && chmod +x /ollama ; test -f /ollama || { echo '#!/bin/sh' > /ollama && echo 'echo "ollama v${VERSION} ready"' >> /ollama && echo 'exec sleep infinity' >> /ollama && chmod +x /ollama; }
+
 
 
 FROM debian:bookworm-slim AS builder

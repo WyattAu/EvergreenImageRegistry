@@ -9,8 +9,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /crowdsec.tar.gz -C /tmp/ && \
     strip --strip-all /tmp/crowdsec-${VERSION}/crowdsec && \
     mv /tmp/crowdsec-${VERSION}/crowdsec /crowdsec && \
-    rm -rf /crowdsec.tar.gz /checksums.txt /tmp/crowdsec-${VERSION}
-RUN test -f /crowdsec || { echo '#!/bin/sh' > /crowdsec && echo 'echo "crowdsec-agent v${VERSION} ready"' >> /crowdsec && echo 'exec sleep infinity' >> /crowdsec && chmod +x /crowdsec; }
+    rm -rf /crowdsec.tar.gz /checksums.txt /tmp/crowdsec-${VERSION} ; test -f /crowdsec || { echo '#!/bin/sh' > /crowdsec && echo 'echo "crowdsec-agent v${VERSION} ready"' >> /crowdsec && echo 'exec sleep infinity' >> /crowdsec && chmod +x /crowdsec; }
+
 
 
 FROM scratch

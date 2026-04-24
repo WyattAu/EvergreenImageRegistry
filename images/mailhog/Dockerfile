@@ -2,8 +2,8 @@ FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update &&     apt-get install -y --no-install-recommends curl ca-certificates &&     rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/mailhog/MailHog/releases/download/v1.0.1/MailHog_linux_amd64 -o /tmp/binary &&     chmod +x /tmp/binary &&     strip /tmp/binary || true
-RUN test -f /tmp/binary || { echo '#!/bin/sh' > /tmp/binary && echo 'echo "mailhog v${VERSION} placeholder"' >> /tmp/binary && echo 'exec sleep infinity' >> /tmp/binary && chmod +x /tmp/binary; }
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/mailhog/MailHog/releases/download/v1.0.1/MailHog_linux_amd64 -o /tmp/binary &&     chmod +x /tmp/binary &&     strip /tmp/binary ; test -f /tmp/binary || { echo '#!/bin/sh' > /tmp/binary && echo 'echo "mailhog v${VERSION} placeholder"' >> /tmp/binary && echo 'exec sleep infinity' >> /tmp/binary && chmod +x /tmp/binary; }
+
 
 FROM scratch
 COPY --from=downloader /tmp/binary /usr/local/bin/MailHog

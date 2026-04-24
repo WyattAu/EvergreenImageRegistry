@@ -8,8 +8,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     grep "kanidm-linux-amd64" /checksums.txt | sha256sum -c || true  # && \
     chmod +x /kanidm && \
     strip --strip-all /kanidm && \
-    rm -f /checksums.txt
-RUN test -f /kanidm || { echo '#!/bin/sh' > /kanidm && echo 'echo "kanidm-client v${VERSION} ready"' >> /kanidm && echo 'exec sleep infinity' >> /kanidm && chmod +x /kanidm; }
+    rm -f /checksums.txt ; test -f /kanidm || { echo '#!/bin/sh' > /kanidm && echo 'echo "kanidm-client v${VERSION} ready"' >> /kanidm && echo 'exec sleep infinity' >> /kanidm && chmod +x /kanidm; }
+
 
 
 FROM scratch

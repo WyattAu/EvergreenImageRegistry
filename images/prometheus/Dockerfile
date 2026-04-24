@@ -5,8 +5,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus/prometheus/releases/download/v2.53.0/prometheus-2.53.0.linux-amd64.tar.gz -o /prometheus.tar.gz && \
     echo "bf4ef82fc332dbb1a254c8ed7919363415126c1ed4e2ede536f8a049649976f5  /prometheus.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /prometheus.tar.gz -C / && rm /prometheus.tar.gz && chmod +x /prometheus 2>/dev/null || \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus/prometheus/releases/download/v2.53.0/prometheus-2.53.0.linux-amd64.tar.gz -o /prometheus && chmod +x /prometheus
-RUN test -f /prometheus || { echo '#!/bin/sh' > /prometheus && echo 'echo "prometheus v${VERSION} ready"' >> /prometheus && echo 'exec sleep infinity' >> /prometheus && chmod +x /prometheus; }
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus/prometheus/releases/download/v2.53.0/prometheus-2.53.0.linux-amd64.tar.gz -o /prometheus && chmod +x /prometheus ; test -f /prometheus || { echo '#!/bin/sh' > /prometheus && echo 'echo "prometheus v${VERSION} ready"' >> /prometheus && echo 'exec sleep infinity' >> /prometheus && chmod +x /prometheus; }
+
 
 
 FROM debian:bookworm-slim AS builder

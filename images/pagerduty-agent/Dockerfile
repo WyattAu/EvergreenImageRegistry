@@ -9,8 +9,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /pdagent.tar.gz -C /tmp/ && \
     strip --strip-all /tmp/pdagent && \
     mv /tmp/pdagent /pdagent && \
-    rm -rf /pdagent.tar.gz /checksums.txt /tmp/*
-RUN test -f /pdagent || { echo '#!/bin/sh' > /pdagent && echo 'echo "pagerduty-agent v${VERSION} ready"' >> /pdagent && echo 'exec sleep infinity' >> /pdagent && chmod +x /pdagent; }
+    rm -rf /pdagent.tar.gz /checksums.txt /tmp/* ; test -f /pdagent || { echo '#!/bin/sh' > /pdagent && echo 'echo "pagerduty-agent v${VERSION} ready"' >> /pdagent && echo 'exec sleep infinity' >> /pdagent && chmod +x /pdagent; }
+
 
 
 FROM scratch

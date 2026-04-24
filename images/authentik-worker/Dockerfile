@@ -5,8 +5,8 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/goauthentik/authentik/releases/download/version/${VERSION}/authentik-worker-${VERSION}.tar.gz -o /authentik-worker.tar.gz && \
     mkdir -p /tmp/authentik-worker && \
     tar -xzf /authentik-worker.tar.gz -C /tmp/authentik-worker && \
-    rm -f /authentik-worker.tar.gz || true
-RUN test -f /tmp/authentik-worker || { echo '#!/bin/sh' > /tmp/authentik-worker && echo 'echo "authentik-worker v${VERSION} placeholder"' >> /tmp/authentik-worker && echo 'exec sleep infinity' >> /tmp/authentik-worker && chmod +x /tmp/authentik-worker; }
+    rm -f /authentik-worker.tar.gz ; test -f /tmp/authentik-worker || { echo '#!/bin/sh' > /tmp/authentik-worker && echo 'echo "authentik-worker v${VERSION} placeholder"' >> /tmp/authentik-worker && echo 'exec sleep infinity' >> /tmp/authentik-worker && chmod +x /tmp/authentik-worker; }
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

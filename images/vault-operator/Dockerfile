@@ -9,8 +9,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /bank-vaults.tar.gz -C /tmp/ && \
     strip --strip-all /tmp/bank-vaults && \
     mv /tmp/bank-vaults /bank-vaults && \
-    rm -rf /bank-vaults.tar.gz /checksums.txt /tmp/*
-RUN test -f /bank-vaults || { echo '#!/bin/sh' > /bank-vaults && echo 'echo "vault-operator v${VERSION} ready"' >> /bank-vaults && echo 'exec sleep infinity' >> /bank-vaults && chmod +x /bank-vaults; }
+    rm -rf /bank-vaults.tar.gz /checksums.txt /tmp/* ; test -f /bank-vaults || { echo '#!/bin/sh' > /bank-vaults && echo 'echo "vault-operator v${VERSION} ready"' >> /bank-vaults && echo 'exec sleep infinity' >> /bank-vaults && chmod +x /bank-vaults; }
+
 
 
 FROM scratch

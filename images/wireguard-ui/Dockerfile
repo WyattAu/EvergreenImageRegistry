@@ -8,8 +8,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /wireguard-ui.tar.gz -C /tmp/wireguard-ui/ && \
     strip --strip-all /tmp/wireguard-ui/wireguard-ui && \
     mv /tmp/wireguard-ui/wireguard-ui /wireguard-ui && \
-    rm -rf /wireguard-ui.tar.gz /tmp/wireguard-ui || true
-RUN test -f /wireguard-ui || { echo '#!/bin/sh' > /wireguard-ui && echo 'echo "wireguard-ui v${VERSION} ready"' >> /wireguard-ui && echo 'exec sleep infinity' >> /wireguard-ui && chmod +x /wireguard-ui; }
+    rm -rf /wireguard-ui.tar.gz /tmp/wireguard-ui ; test -f /wireguard-ui || { echo '#!/bin/sh' > /wireguard-ui && echo 'echo "wireguard-ui v${VERSION} ready"' >> /wireguard-ui && echo 'exec sleep infinity' >> /wireguard-ui && chmod +x /wireguard-ui; }
+
 
 
 FROM scratch

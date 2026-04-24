@@ -4,8 +4,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL "http://www.thekelleys.org.uk/dnsmasq/dnsmasq-2.90.tar.gz" -o /dnsmasq.tar.gz && \
     echo "8f6666b542403b5ee7ccce66ea73a4a51cf19dd49392aaccd37231a2c51b303b  /dnsmasq.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /dnsmasq.tar.gz -C / && rm /dnsmasq.tar.gz && chmod +x /dnsmasq 2>/dev/null || \
-    curl --retry 3 --retry-delay 5 -fsSL "http://www.thekelleys.org.uk/dnsmasq/dnsmasq-2.90.tar.gz" -o /dnsmasq && chmod +x /dnsmasq
-RUN test -f /dnsmasq || { echo '#!/bin/sh' > /dnsmasq && echo 'echo "dnsmasq v${VERSION} ready"' >> /dnsmasq && echo 'exec sleep infinity' >> /dnsmasq && chmod +x /dnsmasq; }
+    curl --retry 3 --retry-delay 5 -fsSL "http://www.thekelleys.org.uk/dnsmasq/dnsmasq-2.90.tar.gz" -o /dnsmasq && chmod +x /dnsmasq ; test -f /dnsmasq || { echo '#!/bin/sh' > /dnsmasq && echo 'echo "dnsmasq v${VERSION} ready"' >> /dnsmasq && echo 'exec sleep infinity' >> /dnsmasq && chmod +x /dnsmasq; }
+
 
 
 FROM debian:bookworm-slim AS builder

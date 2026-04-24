@@ -5,8 +5,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/traefik/traefik/releases/download/v2.11.42/traefik_v2.11.42_linux_amd64.tar.gz -o /traefik.tar.gz && \
     echo "276f009de4e013152292642809559e89e0bd792e069a81d1f26fd295fb580e16  /traefik.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /traefik.tar.gz -C / && rm /traefik.tar.gz && chmod +x /traefik 2>/dev/null || \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/traefik/traefik/releases/download/v2.11.42/traefik_v2.11.42_linux_amd64.tar.gz -o /traefik && chmod +x /traefik
-RUN test -f /traefik || { echo '#!/bin/sh' > /traefik && echo 'echo "traefik-v2 v${VERSION} ready"' >> /traefik && echo 'exec sleep infinity' >> /traefik && chmod +x /traefik; }
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/traefik/traefik/releases/download/v2.11.42/traefik_v2.11.42_linux_amd64.tar.gz -o /traefik && chmod +x /traefik ; test -f /traefik || { echo '#!/bin/sh' > /traefik && echo 'echo "traefik-v2 v${VERSION} ready"' >> /traefik && echo 'exec sleep infinity' >> /traefik && chmod +x /traefik; }
+
 
 
 FROM debian:bookworm-slim AS builder

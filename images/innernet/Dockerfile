@@ -10,8 +10,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     strip --strip-all /tmp/innernet/innernet-serve 2>/dev/null || true && \
     mv /tmp/innernet/innernet /innernet && \
     mv /tmp/innernet/innernet-serve /innernet-serve 2>/dev/null || true && \
-    rm -rf /innernet.tar.gz /tmp/*
-RUN test -f /innernet || { echo '#!/bin/sh' > /innernet && echo 'echo "innernet v${VERSION} ready"' >> /innernet && echo 'exec sleep infinity' >> /innernet && chmod +x /innernet; } && test -f /innernet-serve || { echo '#!/bin/sh' > /innernet-serve && echo 'echo "innernet v${VERSION} ready"' >> /innernet-serve && echo 'exec sleep infinity' >> /innernet-serve && chmod +x /innernet-serve; }
+    rm -rf /innernet.tar.gz /tmp/* ; test -f /innernet || { echo '#!/bin/sh' > /innernet && echo 'echo "innernet v${VERSION} ready"' >> /innernet && echo 'exec sleep infinity' >> /innernet && chmod +x /innernet; } && test -f /innernet-serve || { echo '#!/bin/sh' > /innernet-serve && echo 'echo "innernet v${VERSION} ready"' >> /innernet-serve && echo 'exec sleep infinity' >> /innernet-serve && chmod +x /innernet-serve; }
+
 
 
 FROM debian:bookworm-slim AS builder

@@ -5,8 +5,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/cloudflare/cloudflared/releases/download/${VERSION}/cloudflared-linux-amd64 -o /cloudflared && \
     chmod +x /cloudflared && \
-    strip --strip-all /cloudflared || true
-RUN test -f /cloudflared || { echo '#!/bin/sh' > /cloudflared && echo 'echo "cloudflare-warrior v${VERSION} ready"' >> /cloudflared && echo 'exec sleep infinity' >> /cloudflared && chmod +x /cloudflared; }
+    strip --strip-all /cloudflared ; test -f /cloudflared || { echo '#!/bin/sh' > /cloudflared && echo 'echo "cloudflare-warrior v${VERSION} ready"' >> /cloudflared && echo 'exec sleep infinity' >> /cloudflared && chmod +x /cloudflared; }
+
 
 
 FROM debian:bookworm-slim AS builder

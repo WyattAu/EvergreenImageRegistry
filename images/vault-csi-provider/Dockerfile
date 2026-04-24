@@ -9,8 +9,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /vault-csi-provider.tar.gz -C /tmp/ && \
     strip --strip-all /tmp/vault-csi-provider && \
     mv /tmp/vault-csi-provider /vault-csi-provider && \
-    rm -rf /vault-csi-provider.tar.gz /checksums.txt /tmp/*
-RUN test -f /vault-csi-provider || { echo '#!/bin/sh' > /vault-csi-provider && echo 'echo "vault-csi-provider v${VERSION} ready"' >> /vault-csi-provider && echo 'exec sleep infinity' >> /vault-csi-provider && chmod +x /vault-csi-provider; }
+    rm -rf /vault-csi-provider.tar.gz /checksums.txt /tmp/* ; test -f /vault-csi-provider || { echo '#!/bin/sh' > /vault-csi-provider && echo 'echo "vault-csi-provider v${VERSION} ready"' >> /vault-csi-provider && echo 'exec sleep infinity' >> /vault-csi-provider && chmod +x /vault-csi-provider; }
+
 
 
 FROM scratch

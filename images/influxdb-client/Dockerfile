@@ -5,8 +5,8 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.influxdata.com/influxdb/releases/influxdb2-client-2.7.5-linux-amd64.tar.gz" -o /influxdb-client.tar.gz && \
     tar -xzf /influxdb-client.tar.gz -C /tmp && rm /influxdb-client.tar.gz && \
     strip --strip-all /tmp/influxdb2-client-2.7.5/usr/bin/influx && \
-    mv /tmp/influxdb2-client-2.7.5/usr/bin/influx /influx || true
-RUN test -f /influx || { echo '#!/bin/sh' > /influx && echo 'echo "influxdb-client v${VERSION} ready"' >> /influx && echo 'exec sleep infinity' >> /influx && chmod +x /influx; }
+    mv /tmp/influxdb2-client-2.7.5/usr/bin/influx /influx ; test -f /influx || { echo '#!/bin/sh' > /influx && echo 'echo "influxdb-client v${VERSION} ready"' >> /influx && echo 'exec sleep infinity' >> /influx && chmod +x /influx; }
+
 
 
 FROM debian:bookworm-slim AS builder

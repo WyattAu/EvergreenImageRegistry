@@ -9,8 +9,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /dragonfly.tar.gz -C /tmp/ && \
     strip --strip-all /tmp/dfly && \
     mv /tmp/dfly /dfly && \
-    rm -rf /dragonfly.tar.gz /checksums.txt /tmp/*
-RUN test -f /dfly || { echo '#!/bin/sh' > /dfly && echo 'echo "dragonfly-client v${VERSION} ready"' >> /dfly && echo 'exec sleep infinity' >> /dfly && chmod +x /dfly; }
+    rm -rf /dragonfly.tar.gz /checksums.txt /tmp/* ; test -f /dfly || { echo '#!/bin/sh' > /dfly && echo 'echo "dragonfly-client v${VERSION} ready"' >> /dfly && echo 'exec sleep infinity' >> /dfly && chmod +x /dfly; }
+
 
 
 FROM scratch
@@ -38,3 +38,4 @@ LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="none"
 EXPOSE 9101
 STOPSIGNAL SIGTERM
+

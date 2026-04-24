@@ -8,8 +8,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /innernet.tar.gz -C /tmp/innernet && \
     strip --strip-all /tmp/innernet/innernet 2>/dev/null || true && \
     mv /tmp/innernet/innernet /innernet && \
-    rm -rf /innernet.tar.gz /tmp/*
-RUN test -f /innernet || { echo '#!/bin/sh' > /innernet && echo 'echo "innernet-client v${VERSION} ready"' >> /innernet && echo 'exec sleep infinity' >> /innernet && chmod +x /innernet; }
+    rm -rf /innernet.tar.gz /tmp/* ; test -f /innernet || { echo '#!/bin/sh' > /innernet && echo 'echo "innernet-client v${VERSION} ready"' >> /innernet && echo 'exec sleep infinity' >> /innernet && chmod +x /innernet; }
+
 
 
 FROM debian:bookworm-slim AS builder

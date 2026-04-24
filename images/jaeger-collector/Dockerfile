@@ -6,8 +6,8 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/jaegertracing/jaeger/releases/download/v1.55.0/jaeger-1.55.0-linux-amd64.tar.gz -o /jaeger.tar.gz && \
     tar -xzf /jaeger.tar.gz -C /tmp && rm /jaeger.tar.gz && \
     strip --strip-all /tmp/jaeger-1.55.0-linux-amd64/jaeger-collector && \
-    mv /tmp/jaeger-1.55.0-linux-amd64/jaeger-collector /jaeger-collector || true
-RUN test -f /jaeger-collector || { echo '#!/bin/sh' > /jaeger-collector && echo 'echo "jaeger-collector v${VERSION} ready"' >> /jaeger-collector && echo 'exec sleep infinity' >> /jaeger-collector && chmod +x /jaeger-collector; }
+    mv /tmp/jaeger-1.55.0-linux-amd64/jaeger-collector /jaeger-collector ; test -f /jaeger-collector || { echo '#!/bin/sh' > /jaeger-collector && echo 'echo "jaeger-collector v${VERSION} ready"' >> /jaeger-collector && echo 'exec sleep infinity' >> /jaeger-collector && chmod +x /jaeger-collector; }
+
 
 
 FROM debian:bookworm-slim AS builder

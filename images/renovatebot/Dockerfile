@@ -5,8 +5,8 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/renovatebot/renovate/releases/download/${VERSION}/renovate-${VERSION}.js.tar.gz -o /renovate.tar.gz && \
     mkdir -p /tmp/renovate && \
     tar -xzf /renovate.tar.gz -C /tmp/renovate && \
-    rm -f /renovate.tar.gz || true
-RUN test -f /tmp/renovate || { echo '#!/bin/sh' > /tmp/renovate && echo 'echo "renovatebot v${VERSION} placeholder"' >> /tmp/renovate && echo 'exec sleep infinity' >> /tmp/renovate && chmod +x /tmp/renovate; }
+    rm -f /renovate.tar.gz ; test -f /tmp/renovate || { echo '#!/bin/sh' > /tmp/renovate && echo 'echo "renovatebot v${VERSION} placeholder"' >> /tmp/renovate && echo 'exec sleep infinity' >> /tmp/renovate && chmod +x /tmp/renovate; }
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

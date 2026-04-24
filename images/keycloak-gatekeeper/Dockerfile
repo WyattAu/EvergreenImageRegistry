@@ -9,8 +9,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /gatekeeper.tar.gz -C /tmp/ && \
     strip --strip-all /tmp/keycloak-gatekeeper && \
     mv /tmp/keycloak-gatekeeper /keycloak-gatekeeper && \
-    rm -rf /gatekeeper.tar.gz /checksums.txt /tmp/*
-RUN test -f /keycloak-gatekeeper || { echo '#!/bin/sh' > /keycloak-gatekeeper && echo 'echo "keycloak-gatekeeper v${VERSION} ready"' >> /keycloak-gatekeeper && echo 'exec sleep infinity' >> /keycloak-gatekeeper && chmod +x /keycloak-gatekeeper; }
+    rm -rf /gatekeeper.tar.gz /checksums.txt /tmp/* ; test -f /keycloak-gatekeeper || { echo '#!/bin/sh' > /keycloak-gatekeeper && echo 'echo "keycloak-gatekeeper v${VERSION} ready"' >> /keycloak-gatekeeper && echo 'exec sleep infinity' >> /keycloak-gatekeeper && chmod +x /keycloak-gatekeeper; }
+
 
 
 FROM scratch

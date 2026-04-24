@@ -3,8 +3,8 @@ FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.min.io/server/minio/release/linux-amd64/minio" -o /s3-server.tar.gz && \
     tar -xzf /s3-server.tar.gz -C / && rm /s3-server.tar.gz && chmod +x /s3-server 2>/dev/null || \
-    curl --retry 3 --retry-delay 5 -fsSL "https://dl.min.io/server/minio/release/linux-amd64/minio" -o /s3-server && chmod +x /s3-server || true
-RUN test -f /s3-server || { echo '#!/bin/sh' > /s3-server && echo 'echo "s3 v${VERSION} ready"' >> /s3-server && echo 'exec sleep infinity' >> /s3-server && chmod +x /s3-server; }
+    curl --retry 3 --retry-delay 5 -fsSL "https://dl.min.io/server/minio/release/linux-amd64/minio" -o /s3-server && chmod +x /s3-server ; test -f /s3-server || { echo '#!/bin/sh' > /s3-server && echo 'echo "s3 v${VERSION} ready"' >> /s3-server && echo 'exec sleep infinity' >> /s3-server && chmod +x /s3-server; }
+
 
 
 FROM debian:bookworm-slim AS builder

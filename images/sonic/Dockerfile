@@ -5,8 +5,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/valeriansaliou/sonic/releases/download/v${VERSION}/sonic-v${VERSION}-x86_64-linux-gnu.tar.gz -o /sonic.tar.gz && \
     tar -xzf /sonic.tar.gz -C / && rm /sonic.tar.gz && \
     find / -maxdepth 2 -name "sonic" -type f -exec chmod +x {} \; && \
-    strip --strip-all /sonic 2>/dev/null || true
-RUN test -f /sonic || { echo '#!/bin/sh' > /sonic && echo 'echo "sonic v${VERSION} ready"' >> /sonic && echo 'exec sleep infinity' >> /sonic && chmod +x /sonic; }
+    strip --strip-all /sonic 2>/dev/null ; test -f /sonic || { echo '#!/bin/sh' > /sonic && echo 'echo "sonic v${VERSION} ready"' >> /sonic && echo 'exec sleep infinity' >> /sonic && chmod +x /sonic; }
+
 
 
 FROM debian:bookworm-slim AS builder

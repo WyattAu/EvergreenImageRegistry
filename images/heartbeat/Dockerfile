@@ -9,8 +9,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads
     && rm /heartbeat.tar.gz \
     && rm -rf /opt/heartbeat/kibana /opt/heartbeat/logs \
     && strip /opt/heartbeat/heartbeat || true \
-    && chmod +x /opt/heartbeat/heartbeat
-RUN test -f /opt/heartbeat || { echo '#!/bin/sh' > /opt/heartbeat && echo 'echo "heartbeat v${VERSION} placeholder"' >> /opt/heartbeat && echo 'exec sleep infinity' >> /opt/heartbeat && chmod +x /opt/heartbeat; }
+    && chmod +x /opt/heartbeat/heartbeat ; test -f /opt/heartbeat || { echo '#!/bin/sh' > /opt/heartbeat && echo 'echo "heartbeat v${VERSION} placeholder"' >> /opt/heartbeat && echo 'exec sleep infinity' >> /opt/heartbeat && chmod +x /opt/heartbeat; }
+
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /var/log/heartbeat /var/lib/heartbeat /var/cache/heartbeat

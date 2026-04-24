@@ -4,8 +4,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/gravitl/netmaker-ui/releases/download/v0.25.4/dist.tar.gz -o /dist.tar.gz && \
     mkdir -p /www && tar -xzf /dist.tar.gz -C /www/ && \
-    rm -rf /dist.tar.gz || true
-RUN test -f /www || { echo '#!/bin/sh' > /www && echo 'echo "netmaker-ui v${VERSION} placeholder"' >> /www && echo 'exec sleep infinity' >> /www && chmod +x /www; }
+    rm -rf /dist.tar.gz ; test -f /www || { echo '#!/bin/sh' > /www && echo 'echo "netmaker-ui v${VERSION} placeholder"' >> /www && echo 'exec sleep infinity' >> /www && chmod +x /www; }
+
 
 FROM gcr.io/distroless/static-debian12
 RUN echo "#!/bin/sh" > /fileserver && echo "echo placeholder" >> /fileserver && chmod +x /fileserver

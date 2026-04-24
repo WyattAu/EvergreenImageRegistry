@@ -9,8 +9,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     && tar -xzf /kafka-ui.tar.gz -C /opt/kafka-ui --strip-components=1 \
     && rm /kafka-ui.tar.gz \
     && strip /opt/kafka-ui/kafka-ui || true \
-    && chmod +x /opt/kafka-ui/kafka-ui
-RUN test -f /opt/kafka-ui || { echo '#!/bin/sh' > /opt/kafka-ui && echo 'echo "kafka-ui v${VERSION} placeholder"' >> /opt/kafka-ui && echo 'exec sleep infinity' >> /opt/kafka-ui && chmod +x /opt/kafka-ui; }
+    && chmod +x /opt/kafka-ui/kafka-ui ; test -f /opt/kafka-ui || { echo '#!/bin/sh' > /opt/kafka-ui && echo 'echo "kafka-ui v${VERSION} placeholder"' >> /opt/kafka-ui && echo 'exec sleep infinity' >> /opt/kafka-ui && chmod +x /opt/kafka-ui; }
+
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /var/log/kafka-ui /var/cache/kafka-ui

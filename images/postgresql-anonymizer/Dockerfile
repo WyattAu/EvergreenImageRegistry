@@ -9,6 +9,8 @@ ARG VERSION=1.2.0
 ARG BUILD_DATE
 
 
+
+RUN mkdir -p /install 2>/dev/null || true
 FROM python:3.12-slim AS builder
 ARG VERSION=1.2.0
 RUN apt-get update && apt-get install -y --no-install-recommends \

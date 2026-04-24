@@ -12,7 +12,7 @@ RUN mkdir -p /app /var/log/node /var/cache/node
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache nodejs ca-certificates curl
-COPY --from=builder /app /app 2>/dev/null || true
+COPY --from=builder /app /app
 RUN mkdir -p /app /var/log/node /var/cache/node \
     && chown -R 65532:65532 /app /var/log/node /var/cache/node
 USER 65532:65532

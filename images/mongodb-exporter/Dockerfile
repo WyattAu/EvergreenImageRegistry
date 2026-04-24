@@ -7,7 +7,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/dcu/mongodb_exporte
     && echo "PENDING  /mongodb_exporter.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /mongodb_exporter.tar.gz -C / \
     && strip --strip-all /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter \
-    && rm /mongodb_exporter.tar.gzRUN test -f /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter || { echo '#!/bin/sh' > /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter && echo 'echo "mongodb-exporter v${VERSION} ready"' >> /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter && echo 'exec sleep infinity' >> /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter && chmod +x /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter; }
+    && rm /mongodb_exporter.tar.gz
+RUN test -f /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter || { echo '#!/bin/sh' > /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter && echo 'echo "mongodb-exporter v${VERSION} ready"' >> /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter && echo 'exec sleep infinity' >> /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter && chmod +x /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter; }
 
 
 FROM debian:bookworm-slim AS builder

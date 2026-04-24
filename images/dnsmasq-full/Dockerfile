@@ -9,6 +9,8 @@ ARG VERSION=2.90
 ARG BUILD_DATE
 
 
+
+RUN mkdir -p /install 2>/dev/null || true
 FROM debian:bookworm-slim AS builder
 ARG VERSION=2.90
 RUN apt-get update && apt-get install -y --no-install-recommends \

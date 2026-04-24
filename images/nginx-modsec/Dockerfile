@@ -16,7 +16,7 @@ ARG MODSEC_VERSION=3.0.12
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libpcre3-dev libssl-dev zlib1g-dev libgeoip-dev \
     libxml2-dev libyajl-dev curl-openssl-dev git curl ca-certificates \
-    wget autoconf automake libtool pkgconf flex bison && \
+    wget autoconf automake libtool pkg-config flex bison && \
     rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN wget -q "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -O /nginx.tar.gz && \

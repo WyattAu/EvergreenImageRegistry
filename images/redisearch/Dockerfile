@@ -36,7 +36,7 @@ RUN adduser -u 65532 -s /sbin/nologin redis 2>/dev/null || true
 RUN mkdir -p /var/lib/redis /var/log/redis /var/cache/redis /opt/redis/modules
 COPY --from=builder /tmp/redisearch-src/bin/redisearch.so /opt/redis/modules/redisearch.so
 COPY --from=redis /usr/bin/redis-server /usr/local/bin/redis-server
-COPY --from=redis /usr/lib/redis /usr/local/lib/redis 2>/dev/null || true
+COPY --from=redis /usr/lib/redis /usr/local/lib/redis
 RUN chown -R 65532:65532 /var/lib/redis /var/log/redis /var/cache/redis /opt/redis
 USER 65532:65532
 WORKDIR /var/lib/redis

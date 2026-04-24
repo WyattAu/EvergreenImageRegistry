@@ -10,7 +10,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache nodejs npm ca-certificates ffmpeg
 COPY --from=builder /usr/lib/node_modules/homebridge /usr/lib/node_modules/homebridge
-COPY --from=builder /usr/lib/node_modules/homebridge-camera-ffmpeg /usr/lib/node_modules/homebridge-camera-ffmpeg 2>/dev/null || true
+COPY --from=builder /usr/lib/node_modules/homebridge-camera-ffmpeg /usr/lib/node_modules/homebridge-camera-ffmpeg
 COPY --from=builder /app /app
 COPY --from=builder /homebridge /homebridge
 RUN ln -sf /usr/lib/node_modules/homebridge/bin/homebridge /usr/local/bin/homebridge && \

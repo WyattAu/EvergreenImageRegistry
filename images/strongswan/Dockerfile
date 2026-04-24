@@ -25,14 +25,14 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates iproute2 iptables kmod
 COPY --from=installer /usr/sbin/charon /usr/sbin/charon
-COPY --from=installer /usr/sbin/charon-systemd /usr/sbin/charon-systemd 2>/dev/null || true
+COPY --from=installer /usr/sbin/charon-systemd /usr/sbin/charon-systemd
 COPY --from=installer /usr/sbin/strongswan /usr/sbin/strongswan
 COPY --from=installer /usr/sbin/pki /usr/sbin/pki
 COPY --from=installer /usr/sbin/swanctl /usr/sbin/swanctl
 COPY --from=installer /usr/sbin/ipsec /usr/sbin/ipsec
 COPY --from=installer /usr/lib/ipsec /usr/lib/ipsec
 COPY --from=installer /usr/lib/strongswan /usr/lib/strongswan
-COPY --from=installer /usr/lib/*/strongswan /usr/lib/strongswan-plugins 2>/dev/null || true
+COPY --from=installer /usr/lib/*/strongswan /usr/lib/strongswan-plugins
 COPY --from=installer /etc/strongswan /etc/strongswan
 COPY --from=installer /app /app
 COPY --from=installer /var/log/strongswan /var/log/strongswan

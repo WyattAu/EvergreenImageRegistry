@@ -9,6 +9,8 @@ ARG VERSION=5.8.3
 ARG BUILD_DATE
 
 
+
+RUN mkdir -p /install 2>/dev/null || true
 FROM python:3.12-slim AS builder
 ARG VERSION=5.8.3
 RUN pip install --no-cache-dir --prefix=/install \

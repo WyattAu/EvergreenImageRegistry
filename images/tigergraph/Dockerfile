@@ -26,7 +26,7 @@ ARG VERSION
 RUN apk add --no-cache ca-certificates curl libstdc++ python3
 RUN adduser -u 65532 -s /sbin/nologin tigergraph 2>/dev/null || true
 RUN mkdir -p /var/lib/tigergraph /var/log/tigergraph /var/cache/tigergraph
-COPY --from=builder /opt/tigergraph-${VERSION} /opt/tigergraph 2>/dev/null || true
+COPY --from=builder /opt/tigergraph-${VERSION} /opt/tigergraph
 RUN chown -R 65532:65532 /opt/tigergraph /var/lib/tigergraph /var/log/tigergraph /var/cache/tigergraph
 USER 65532:65532
 WORKDIR /opt/tigergraph

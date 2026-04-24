@@ -11,6 +11,8 @@ ARG BUILD_DATE
 ARG PYTHON_VERSION=3.12.2
 
 
+
+RUN mkdir -p /install 2>/dev/null || true
 FROM python:3.12.2-slim-bookworm AS builder
 ARG VERSION=1.2.0
 RUN pip install --no-cache-dir --prefix=/install azure-monitor-log-ingestion==${VERSION}

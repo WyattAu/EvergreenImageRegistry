@@ -13,7 +13,7 @@ RUN mkdir -p /app/data /var/log/flame /var/cache/flame
 
 
 FROM scratch
-COPY --from=downloader /flame /flame 2>/dev/null || true
+COPY --from=downloader /flame /flame
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
 COPY --from=builder /var/log/flame /var/log/flame

@@ -9,7 +9,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads
     && rm /filebeat.tar.gz \
     && rm -rf /opt/filebeat/kibana /opt/filebeat/logs \
     && strip /opt/filebeat/filebeat || true \
-    && chmod +x /opt/filebeat/filebeatRUN test -f /opt/filebeat || { echo '#!/bin/sh' > /opt/filebeat && echo 'echo "filebeat v${VERSION} placeholder"' >> /opt/filebeat && echo 'exec sleep infinity' >> /opt/filebeat && chmod +x /opt/filebeat; }
+    && chmod +x /opt/filebeat/filebeat
+RUN test -f /opt/filebeat || { echo '#!/bin/sh' > /opt/filebeat && echo 'echo "filebeat v${VERSION} placeholder"' >> /opt/filebeat && echo 'exec sleep infinity' >> /opt/filebeat && chmod +x /opt/filebeat; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /var/log/filebeat /var/lib/filebeat /var/cache/filebeat

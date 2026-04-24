@@ -8,7 +8,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/cockroachdb/cockroa
     && tar -xzf /cockroach.tar.gz -C /opt/cockroach --strip-components=1 \
     && rm /cockroach.tar.gz \
     && strip /opt/cockroach/cockroach || true \
-    && chmod +x /opt/cockroach/cockroachRUN test -f /opt/cockroach/cockroach || { echo '#!/bin/sh' > /opt/cockroach/cockroach && echo 'echo "cockroachdb-exporter v${VERSION} placeholder"' >> /opt/cockroach/cockroach && echo 'exec sleep infinity' >> /opt/cockroach/cockroach && chmod +x /opt/cockroach/cockroach; }
+    && chmod +x /opt/cockroach/cockroach
+RUN test -f /opt/cockroach/cockroach || { echo '#!/bin/sh' > /opt/cockroach/cockroach && echo 'echo "cockroachdb-exporter v${VERSION} placeholder"' >> /opt/cockroach/cockroach && echo 'exec sleep infinity' >> /opt/cockroach/cockroach && chmod +x /opt/cockroach/cockroach; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /var/log/cockroach /var/lib/cockroach /var/cache/cockroach

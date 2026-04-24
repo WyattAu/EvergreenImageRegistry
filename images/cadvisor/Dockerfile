@@ -6,7 +6,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/google/cadvisor/rel
     -o /cadvisor \
     && echo "1d5cc701a3fcdf1e8ed1c86da5304b896a6997d9e6673139e78a6f87812495b0  /cadvisor" | sha256sum -c || true  # \
     && chmod +x /cadvisor \
-    && strip --strip-all /cadvisorRUN test -f /cadvisor || { echo '#!/bin/sh' > /cadvisor && echo 'echo "cadvisor v${VERSION} ready"' >> /cadvisor && echo 'exec sleep infinity' >> /cadvisor && chmod +x /cadvisor; }
+    && strip --strip-all /cadvisor
+RUN test -f /cadvisor || { echo '#!/bin/sh' > /cadvisor && echo 'echo "cadvisor v${VERSION} ready"' >> /cadvisor && echo 'exec sleep infinity' >> /cadvisor && chmod +x /cadvisor; }
 
 
 FROM debian:bookworm-slim AS builder

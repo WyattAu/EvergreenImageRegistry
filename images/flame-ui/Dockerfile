@@ -14,7 +14,7 @@ RUN mkdir -p /app/data
 
 FROM scratch
 
-COPY --from=downloader /flame /usr/local/bin/flame 2>/dev/null || true
+COPY --from=downloader /flame /usr/local/bin/flame
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
 RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin flame 2>/dev/null || true && \

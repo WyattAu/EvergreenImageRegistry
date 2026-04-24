@@ -16,7 +16,7 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/yahoo/CMAK/releases/download/${VERSION}/cmak-${VERSION}.zip -o cmak.zip \
-    && echo "0000000000000000000000000000000000000000000000000000000000000000  cmak.zip" | sha256sum -c || true  # \
+    && echo "0000000000000000000000000000000000000000000000000000000000000000  cmak.zip" | sha256sum -c || true  \
     && apt-get install -y --no-install-recommends unzip \
     && unzip cmak.zip -d /opt/cmak \
     && rm cmak.zip \

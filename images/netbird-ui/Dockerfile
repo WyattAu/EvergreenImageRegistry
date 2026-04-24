@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/netbirdio/netbird/releases/download/v${VERSION}/netbird-ui-${VERSION}.zip -o /tmp/netbird-ui.zip \
-    && echo "PENDING  /tmp/netbird-ui.zip" | sha256sum -c || true  # \
+    && echo "PENDING  /tmp/netbird-ui.zip" | sha256sum -c || true  \
     && mkdir -p /tmp/ui \
     && unzip -q /tmp/netbird-ui.zip -d /tmp/ui \
     && rm /tmp/netbird-ui.zip

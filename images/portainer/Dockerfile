@@ -4,7 +4,7 @@ ARG VERSION=2.20.1
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/portainer/portainer/releases/download/2.20.1/portainer-2.20.1-linux-amd64.tar.gz -o /portainer.tar.gz && \
-    echo "be0028dfc6c085c1e8fcc07d0a8a6ca01e2819882d8a02062db4b2b5a84be9b5  /portainer.tar.gz" | sha256sum -c || true  # && \
+    echo "be0028dfc6c085c1e8fcc07d0a8a6ca01e2819882d8a02062db4b2b5a84be9b5  /portainer.tar.gz" | sha256sum -c || true \
     tar -xzf /portainer.tar.gz -C / && rm /portainer.tar.gz && chmod +x /portainer 2>/dev/null || \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/portainer/portainer/releases/download/2.20.1/portainer-2.20.1-linux-amd64.tar.gz -o /portainer && chmod +x /portainer ; test -f /portainer || { echo '#!/bin/sh' > /portainer && echo 'echo "portainer v${VERSION} ready"' >> /portainer && echo 'exec sleep infinity' >> /portainer && chmod +x /portainer; }
 

@@ -3,6 +3,7 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS builder
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential pkg-config yasm nasm \
         libfdk-aac-dev libopus-dev libvpx-dev libx264-dev libx265-dev \

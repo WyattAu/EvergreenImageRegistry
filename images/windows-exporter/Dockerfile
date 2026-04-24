@@ -1,7 +1,8 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus-community/windows_exporter/releases/download/v${VERSION}/windows_exporter-${VERSION}-linux-amd64.tar.gz" -o /windows_exporter.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus-community/windows_exporter/releases/download/v${VERSION}/windows_exporter-${VERSION}-linux-amd64.tar.gz" -o /windows_exporter.tar.gz && \
     tar -xzf /windows_exporter.tar.gz -C / && rm /windows_exporter.tar.gz && \
     mv /windows_exporter-${VERSION}-linux-amd64/windows_exporter /windows_exporter && \
     chmod +x /windows_exporter

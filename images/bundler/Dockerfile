@@ -10,6 +10,7 @@ ARG BUILD_DATE
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG GITHUB_TOKEN
 RUN apk add --no-cache ruby ruby-dev ca-certificates curl build-base
 RUN gem install bundler -v 2.5.0 --no-document && \
     strip /usr/local/bin/bundle 2>/dev/null || true && \

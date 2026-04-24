@@ -10,11 +10,12 @@ ARG BUILD_DATE
 # hadolint ignore=DL3023
 
 FROM debian:bookworm-slim AS builder
+ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/couchbase/couchbase-operator/releases/download/v${VERSION}/couchbase-operator-linux-amd64" -o /tmp/couchbase-operator \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/couchbase/couchbase-operator/releases/download/v${VERSION}/couchbase-operator-linux-amd64" -o /tmp/couchbase-operator \
     && chmod +x /tmp/couchbase-operator \
     && echo "PENDING  /tmp/couchbase-operator" | sha256sum -c || true  # \
     && strip --strip-all /tmp/couchbase-operator 2>/dev/null || true

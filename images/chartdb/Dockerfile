@@ -10,12 +10,13 @@ ARG BUILD_DATE
 # hadolint ignore=DL3023
 
 FROM debian:bookworm-slim AS builder
+ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/chart-db/chartdb/releases/download/v${VERSION}/chartdb-${VERSION}.zip" -o /tmp/chartdb.zip \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/chart-db/chartdb/releases/download/v${VERSION}/chartdb-${VERSION}.zip" -o /tmp/chartdb.zip \
     && echo "PENDING  /tmp/chartdb.zip" | sha256sum -c || true  # \
     && unzip -q /tmp/chartdb.zip -d /opt/chartdb \
     && rm /tmp/chartdb.zip

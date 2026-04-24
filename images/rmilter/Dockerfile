@@ -8,6 +8,7 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS builder
+ARG GITHUB_TOKEN
 ARG VERSION=1.0.0
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
@@ -19,7 +20,7 @@ RUN apt-get update && \
         ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /build
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/vstakhov/rmilter/archive/refs/tags/${VERSION}.tar.gz" -o /tmp/rmilter.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/vstakhov/rmilter/archive/refs/tags/${VERSION}.tar.gz" -o /tmp/rmilter.tar.gz && \
     tar -xzf /tmp/rmilter.tar.gz -C /build --strip-components=1 && \
     rm /tmp/rmilter.tar.gz && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release . && \

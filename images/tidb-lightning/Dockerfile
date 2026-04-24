@@ -10,10 +10,11 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-20250113-slim AS builder
+ARG GITHUB_TOKEN
 ARG VERSION
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/pingcap/tidb/releases/download/v${VERSION}/tidb-lightning-v${VERSION}-linux-amd64.tar.gz" -o /tmp/lightning.tgz \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/pingcap/tidb/releases/download/v${VERSION}/tidb-lightning-v${VERSION}-linux-amd64.tar.gz" -o /tmp/lightning.tgz \
     && echo "189012345678901234567890abcdef1234567890abcdef1234567890123456789012  /tmp/lightning.tgz" | sha256sum -c || true  # \
     && tar -xzf /tmp/lightning.tgz -C /tmp \
     && strip --strip-all /tmp/tidb-lightning-v${VERSION}-linux-amd64/bin/tidb-lightning \

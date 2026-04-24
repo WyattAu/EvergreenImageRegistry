@@ -3,6 +3,7 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS builder
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         ruby3.1 ruby3.1-dev bundler \
         build-essential libsqlite3-dev libmariadb-dev postgresql-dev \

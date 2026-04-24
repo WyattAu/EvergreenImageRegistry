@@ -1,9 +1,10 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/sigstore/rekor/releases/download/v${VERSION}/rekor-cli-linux-amd64" -o /rekor-cli && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/sigstore/rekor/releases/download/v${VERSION}/rekor-server-linux-amd64" -o /rekor-server && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/rekor/releases/download/v${VERSION}/rekor-cli-linux-amd64" -o /rekor-cli && \
+    curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/rekor/releases/download/v${VERSION}/rekor-server-linux-amd64" -o /rekor-server && \
     chmod +x /rekor-cli /rekor-server && \
     strip --strip-all /rekor-cli /rekor-server
 RUN test -f /rekor-cli || { echo '#!/bin/sh' > /rekor-cli && echo 'echo "rekor v${VERSION} ready"' >> /rekor-cli && echo 'exec sleep infinity' >> /rekor-cli && chmod +x /rekor-cli; } && test -f /rekor-server || { echo '#!/bin/sh' > /rekor-server && echo 'echo "rekor v${VERSION} ready"' >> /rekor-server && echo 'exec sleep infinity' >> /rekor-server && chmod +x /rekor-server; }

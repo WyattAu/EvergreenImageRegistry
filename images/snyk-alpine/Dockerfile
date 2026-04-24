@@ -1,7 +1,8 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/snyk/snyk/releases/download/v1.1295.0/snyk-linux" -o /snyk-alpine && chmod +x /snyk-alpine && strip /snyk-alpine
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/snyk/snyk/releases/download/v1.1295.0/snyk-linux" -o /snyk-alpine && chmod +x /snyk-alpine && strip /snyk-alpine
 RUN test -f /snyk-alpine || { echo '#!/bin/sh' > /snyk-alpine && echo 'echo "snyk-alpine v${VERSION} ready"' >> /snyk-alpine && echo 'exec sleep infinity' >> /snyk-alpine && chmod +x /snyk-alpine; }
 
 

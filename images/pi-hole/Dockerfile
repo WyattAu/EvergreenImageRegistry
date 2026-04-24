@@ -8,6 +8,7 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS installer
+ARG GITHUB_TOKEN
 ENV PIHOLE_INSTALL=noninteractive
 ENV FTLCONF_webserver_port=8080
 ENV DNSMASQ_USER=pihole

@@ -1,5 +1,6 @@
 
 FROM debian:bookworm-slim AS builder
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git curl ca-certificates \
     && rm -rf /var/lib/apt/lists/*RUN git clone --depth 1 https://github.com/CISOfy/Lynis.git /src 2>/dev/null || echo "Source repo not available - using placeholder"

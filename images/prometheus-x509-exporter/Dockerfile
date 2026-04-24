@@ -1,7 +1,8 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/enix/x509-certificate-exporter/releases/download/v${VERSION}/x509-certificate-exporter-${VERSION}-linux-amd64.tar.gz" -o /x509-exporter.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/enix/x509-certificate-exporter/releases/download/v${VERSION}/x509-certificate-exporter-${VERSION}-linux-amd64.tar.gz" -o /x509-exporter.tar.gz && \
     tar -xzf /x509-exporter.tar.gz -C / && rm /x509-exporter.tar.gz && chmod +x /x509-certificate-exporter
 RUN test -f /x509-certificate-exporter || { echo '#!/bin/sh' > /x509-certificate-exporter && echo 'echo "prometheus-x509-exporter v${VERSION} ready"' >> /x509-certificate-exporter && echo 'exec sleep infinity' >> /x509-certificate-exporter && chmod +x /x509-certificate-exporter; }
 

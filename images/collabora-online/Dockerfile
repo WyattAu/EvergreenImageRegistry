@@ -3,6 +3,7 @@ ARG BUILD_DATE
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG GITHUB_TOKEN
 RUN apk add --no-cache ca-certificates curl gnupg
 RUN mkdir -p /var/log/collabora /etc/loolwsd \
     && chown -R 65532:65532 /var/log/collabora /etc/loolwsd

@@ -1,7 +1,8 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/anchore/syft/releases/download/v1.11.0/syft_1.11.0_linux_amd64.tar.gz" -o /syft_1.11.0_linux_amd64.tar.gz &&     tar -xzf /syft_1.11.0_linux_amd64.tar.gz -C / && rm /syft_1.11.0_linux_amd64.tar.gz && chmod +x /syft
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/anchore/syft/releases/download/v1.11.0/syft_1.11.0_linux_amd64.tar.gz" -o /syft_1.11.0_linux_amd64.tar.gz &&     tar -xzf /syft_1.11.0_linux_amd64.tar.gz -C / && rm /syft_1.11.0_linux_amd64.tar.gz && chmod +x /syft
 RUN strip /syft 2>/dev/null || true
 RUN test -f /syft || { echo '#!/bin/sh' > /syft && echo 'echo "syft-alpine v${VERSION} ready"' >> /syft && echo 'exec sleep infinity' >> /syft && chmod +x /syft; }
 

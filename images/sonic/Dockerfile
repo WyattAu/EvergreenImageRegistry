@@ -1,7 +1,8 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/valeriansaliou/sonic/releases/download/v${VERSION}/sonic-v${VERSION}-x86_64-linux-gnu.tar.gz" -o /sonic.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/valeriansaliou/sonic/releases/download/v${VERSION}/sonic-v${VERSION}-x86_64-linux-gnu.tar.gz" -o /sonic.tar.gz && \
     tar -xzf /sonic.tar.gz -C / && rm /sonic.tar.gz && \
     find / -maxdepth 2 -name "sonic" -type f -exec chmod +x {} \; && \
     strip --strip-all /sonic 2>/dev/null || true

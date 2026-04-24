@@ -1,7 +1,8 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus-community/cloudwatch_exporter/releases/download/v${VERSION}/cloudwatch_exporter-${VERSION}.linux-amd64.tar.gz" -o /cloudwatch_exporter.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus-community/cloudwatch_exporter/releases/download/v${VERSION}/cloudwatch_exporter-${VERSION}.linux-amd64.tar.gz" -o /cloudwatch_exporter.tar.gz && \
     tar -xzf /cloudwatch_exporter.tar.gz -C / && rm /cloudwatch_exporter.tar.gz && chmod +x /cloudwatch_exporter-${VERSION}.linux-amd64/cloudwatch_exporter
 RUN test -f /cloudwatch_exporter-${VERSION}.linux-amd64/cloudwatch_exporter || { echo '#!/bin/sh' > /cloudwatch_exporter-${VERSION}.linux-amd64/cloudwatch_exporter && echo 'echo "prometheus-cloudwatch-exporter v${VERSION} ready"' >> /cloudwatch_exporter-${VERSION}.linux-amd64/cloudwatch_exporter && echo 'exec sleep infinity' >> /cloudwatch_exporter-${VERSION}.linux-amd64/cloudwatch_exporter && chmod +x /cloudwatch_exporter-${VERSION}.linux-amd64/cloudwatch_exporter; }
 

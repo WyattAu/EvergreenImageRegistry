@@ -1,9 +1,10 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/photoview/photoview/releases/download/v2.4.1/photoview_2.4.1_linux_amd64.tar.gz" -o /photoview.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/photoview/photoview/releases/download/v2.4.1/photoview_2.4.1_linux_amd64.tar.gz" -o /photoview.tar.gz && \
     tar -xzf /photoview.tar.gz -C / && rm /photoview.tar.gz && chmod +x /photoview 2>/dev/null || \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/photoview/photoview/releases/download/v2.4.1/photoview_2.4.1_linux_amd64.tar.gz" -o /photoview && chmod +x /photoview
+    curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/photoview/photoview/releases/download/v2.4.1/photoview_2.4.1_linux_amd64.tar.gz" -o /photoview && chmod +x /photoview
 RUN test -f /photoview || { echo '#!/bin/sh' > /photoview && echo 'echo "photoview v${VERSION} ready"' >> /photoview && echo 'exec sleep infinity' >> /photoview && chmod +x /photoview; }
 
 

@@ -1,9 +1,10 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/sigstore/fulcio/releases/download/v${VERSION}/fulcio-linux-amd64" -o /fulcio && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/sigstore/fulcio/releases/download/v${VERSION}/fulcio-linux-amd64.sig" -o /fulcio.sig && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/fulcio/releases/download/v${VERSION}/fulcio-linux-amd64" -o /fulcio && \
+    curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/fulcio/releases/download/v${VERSION}/fulcio-linux-amd64.sig" -o /fulcio.sig && \
     chmod +x /fulcio && \
     strip --strip-all /fulcio && \
     rm -f /fulcio.sig

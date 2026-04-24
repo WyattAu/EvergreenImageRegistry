@@ -9,6 +9,7 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS builder
+ARG GITHUB_TOKEN
 ARG VERSION=11.0.0
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates tar && \

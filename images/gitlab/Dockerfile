@@ -17,7 +17,6 @@ USER root
 # Ensure non-root user exists
 RUN useradd -m -u 65532 -g '' git 2>/dev/null || true
 USER git
-
 WORKDIR /home/git
 EXPOSE 80 22 443
 

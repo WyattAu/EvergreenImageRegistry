@@ -12,7 +12,8 @@
 # 1. Replaced FROM ruby:3.2.2-slim-bookworm with wolfi-base
 # 2. Added: RUN apk add --no-cache ruby ca-certificates git openssh
 # 3. Install oxidized via gem: RUN gem install oxidized
-# 4. Added USER 65532:65532
+# 4. Added
+USER 65532:65532
 # 5. Added sovereign labels including sovereign.base.image="wolfi"
 
 ARG VERSION=0.30.1

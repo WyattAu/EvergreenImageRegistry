@@ -2,8 +2,7 @@
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
-RUN npm install -g node-red-admin
+    && rm -rf /var/lib/apt/lists/*RUN npm install -g node-red-admin
 RUN mkdir -p /app
 
 

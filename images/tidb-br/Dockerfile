@@ -20,7 +20,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/pingcap/tidb/releas
     && mv /tmp/br-v${VERSION}-linux-amd64/bin/br /usr/local/bin/br \
     && rm -rf /tmp/br.tgz /tmp/br-v${VERSION}-linux-amd64
 
-
 FROM scratch
 ARG VERSION=7.6.0
 COPY --from=builder /usr/local/bin/br /usr/local/bin/br

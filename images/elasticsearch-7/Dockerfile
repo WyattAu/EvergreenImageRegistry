@@ -31,5 +31,6 @@ LABEL org.opencontainers.image.title="elasticsearch-7" \
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101
+
 USER 65532:65532
 STOPSIGNAL SIGTERM

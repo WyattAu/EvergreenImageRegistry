@@ -12,8 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 RUN git clone --depth 1 --branch n{version} \ 2>/dev/null || echo "Source repo not available - using placeholder"
     "https://github.com/jellyfin/jellyfin-ffmpeg.git" /tmp/jellyfin-ffmpeg && \
-    cd /tmp/jellyfin-ffmpeg && \
-    ./configure --prefix=/usr/local \
+    cd /tmp/jellyfin-ffmpeg && \    ./configure --prefix=/usr/local \
         --enable-gpl --enable-nonfree \
         --enable-shared --disable-static \
         --enable-libfdk-aac --enable-libopus --enable-libvpx \

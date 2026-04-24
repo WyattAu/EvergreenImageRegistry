@@ -19,7 +19,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads
     && tar -xzf logstash.tar.gz \
     && rm logstash.tar.gz
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

@@ -2,8 +2,7 @@
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates gnupg \
-    && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://www.emqx.com/en/downloads/broker/v5.8.0/emqx-5.8.0-debian12-amd64.tar.gz" \
+    && rm -rf /var/lib/apt/lists/*RUN curl --retry 3 --retry-delay 5 -fsSL "https://www.emqx.com/en/downloads/broker/v5.8.0/emqx-5.8.0-debian12-amd64.tar.gz" \
     -o /emqx.tar.gz
 RUN mkdir -p /opt/emqx && \
     tar -xzf /emqx.tar.gz -C /opt/emqx --strip-components=1 && rm /emqx.tar.gz

@@ -20,7 +20,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.oracle.com/otn-pub/ot
     && unzip -q /tmp/oracledb.zip -d /tmp/oracle-rpm \
     && rm /tmp/oracledb.zip
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

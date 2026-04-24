@@ -8,7 +8,6 @@
 FROM cgr.dev/chainguard/static:latest
 
 RUN apk add --no-cache 2>/dev/null || true
-
 LABEL org.opencontainers.image.title="musl" \
       org.opencontainers.image.description="Sovereign musl-based static base for C/C++ compilation targets" \
       sovereign.image.tier="3" \

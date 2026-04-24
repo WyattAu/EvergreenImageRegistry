@@ -18,10 +18,10 @@ RUN printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("r2d2 connecti
     && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /tmp/r2d2 /tmp/main.go \
     && strip --strip-all /tmp/r2d2 2>/dev/null || true
 
-
 FROM scratch
 ARG VERSION=0.8.10
 COPY --from=builder /tmp/r2d2 /usr/local/bin/r2d2
+
 USER 65532:65532
 EXPOSE 6379
 ENTRYPOINT ["/usr/local/bin/r2d2"]

@@ -9,8 +9,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads
     && rm /auditbeat.tar.gz \
     && rm -rf /opt/auditbeat/kibana /opt/auditbeat/logs \
     && strip /opt/auditbeat/auditbeat || true \
-    && chmod +x /opt/auditbeat/auditbeat
-RUN test -f /opt/auditbeat || { echo '#!/bin/sh' > /opt/auditbeat && echo 'echo "auditbeat v${VERSION} placeholder"' >> /opt/auditbeat && echo 'exec sleep infinity' >> /opt/auditbeat && chmod +x /opt/auditbeat; }
+    && chmod +x /opt/auditbeat/auditbeatRUN test -f /opt/auditbeat || { echo '#!/bin/sh' > /opt/auditbeat && echo 'echo "auditbeat v${VERSION} placeholder"' >> /opt/auditbeat && echo 'exec sleep infinity' >> /opt/auditbeat && chmod +x /opt/auditbeat; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /var/log/auditbeat /var/lib/auditbeat /var/cache/auditbeat

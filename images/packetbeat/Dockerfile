@@ -9,8 +9,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads
     && rm /packetbeat.tar.gz \
     && rm -rf /opt/packetbeat/kibana /opt/packetbeat/logs \
     && strip /opt/packetbeat/packetbeat || true \
-    && chmod +x /opt/packetbeat/packetbeat
-RUN test -f /opt/packetbeat || { echo '#!/bin/sh' > /opt/packetbeat && echo 'echo "packetbeat v${VERSION} placeholder"' >> /opt/packetbeat && echo 'exec sleep infinity' >> /opt/packetbeat && chmod +x /opt/packetbeat; }
+    && chmod +x /opt/packetbeat/packetbeatRUN test -f /opt/packetbeat || { echo '#!/bin/sh' > /opt/packetbeat && echo 'echo "packetbeat v${VERSION} placeholder"' >> /opt/packetbeat && echo 'exec sleep infinity' >> /opt/packetbeat && chmod +x /opt/packetbeat; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /var/log/packetbeat /var/lib/packetbeat /var/cache/packetbeat

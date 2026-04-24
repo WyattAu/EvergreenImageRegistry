@@ -21,7 +21,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/kafka/
     && tar -xzf kafka.tgz \
     && rm kafka.tgz
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

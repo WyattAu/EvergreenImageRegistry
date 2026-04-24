@@ -20,7 +20,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/chart-db/chartdb/re
     && unzip -q /tmp/chartdb.zip -d /opt/chartdb \
     && rm /tmp/chartdb.zip
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

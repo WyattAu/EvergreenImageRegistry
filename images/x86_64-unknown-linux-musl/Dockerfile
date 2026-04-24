@@ -13,7 +13,6 @@ ENV RUST_TARGET="x86_64-unknown-linux-musl"
 ENV CARGO_TARGET_DIR="/build"
 
 WORKDIR /build
-
 LABEL org.opencontainers.image.title="x86_64-unknown-linux-musl" \
       org.opencontainers.image.description="Sovereign Rust static build base for x86_64-unknown-linux-musl target" \
       sovereign.image.tier="3" \

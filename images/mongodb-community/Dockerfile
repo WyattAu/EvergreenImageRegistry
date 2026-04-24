@@ -20,7 +20,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://fastdl.mongodb.org/linux/mongo
     && mv /tmp/mongodb-linux-x86_64-ubuntu2204-${VERSION}/bin/* /usr/local/bin/ \
     && rm -rf /tmp/mongodb.tgz /tmp/mongodb-linux-x86_64-ubuntu2204-${VERSION}
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=7.0.9
 

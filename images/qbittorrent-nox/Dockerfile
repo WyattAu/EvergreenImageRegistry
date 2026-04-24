@@ -15,9 +15,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-base cmake libboost-dev libssl-dev zlib1g-dev \
     libtorrent-rasterbar-dev qtbase5-dev qttools5-dev-tools \
     curl ca-certificates git && rm -rf /var/lib/apt/lists/*
-RUN git clone --depth 1 --branch v${VERSION} https://github.com/qbittorrent/qBittorrent.git /src && \ 2>/dev/null || echo "Source repo not available - using placeholder"
-    cd /src && \
-    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/app \
+RUN git clone --depth 1 --branch v${VERSION} https://github.com/qbittorrent/qBittorrent.git /src && \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
+    cd /src && \    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/app \
     -DGUI=OFF -DQT6=OFF . && \
     make -j$(nproc) && make install
 

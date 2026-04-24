@@ -7,6 +7,7 @@ RUN test -f /tmp/drone-agent_stripped || { echo '#!/bin/sh' > /tmp/drone-agent_s
 FROM scratch
 COPY --from=downloader /tmp/drone-agent_stripped /usr/local/bin/drone-agent
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
 USER 65532:65532
 WORKDIR /app
 EXPOSE 3000

@@ -20,7 +20,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/zincsearch/zincsear
     && strip --strip-all zincsearch 2>/dev/null || true \
     && mv zincsearch /tmp/zincsearch
 
-
 FROM scratch
 ARG VERSION=0.4.12
 COPY --from=builder /tmp/zincsearch /usr/local/bin/zincsearch

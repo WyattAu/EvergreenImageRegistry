@@ -7,6 +7,7 @@ RUN test -f /tmp/drone-autoscaler_stripped || { echo '#!/bin/sh' > /tmp/drone-au
 FROM scratch
 COPY --from=downloader /tmp/drone-autoscaler_stripped /usr/local/bin/drone-autoscaler
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080

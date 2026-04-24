@@ -16,7 +16,6 @@ USER root
 RUN useradd -m -u 65532 -g '' jellyfin 2>/dev/null || true && \
     chown -R jellyfin:jellyfin /config /cache /media 2>/dev/null || true
 USER jellyfin
-
 WORKDIR /config
 EXPOSE 8096
 

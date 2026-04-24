@@ -16,7 +16,6 @@ USER root
 RUN useradd -m -u 65532 -g '' drone 2>/dev/null || true && \
     chown -R drone:drone /data 2>/dev/null || true
 USER drone
-
 WORKDIR /data
 EXPOSE 80
 

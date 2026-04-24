@@ -22,7 +22,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/rqlite/rqlite/relea
     && mv /tmp/rqlite-v${VERSION}-linux-amd64/rqlited /usr/local/bin/rqlited \
     && rm -rf /tmp/rqlite.tgz /tmp/rqlite-v${VERSION}-linux-amd64
 
-
 FROM scratch
 ARG VERSION=8.10.0
 COPY --from=builder /usr/local/bin/rqlite /usr/local/bin/rqlite

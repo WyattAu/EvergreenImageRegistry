@@ -7,8 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus-communit
     && echo "cb89fc5bf4485fb554e0d640d9684fae143a4b2d5fa443009bd29c59f9129e84  /postgres_exporter.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /postgres_exporter.tar.gz -C / \
     && strip --strip-all /postgres_exporter-${VERSION}-linux-amd64/postgres_exporter \
-    && rm /postgres_exporter.tar.gz
-RUN test -f /postgres_exporter-${VERSION}-linux-amd64/postgres_exporter || { echo '#!/bin/sh' > /postgres_exporter-${VERSION}-linux-amd64/postgres_exporter && echo 'echo "postgres-exporter v${VERSION} ready"' >> /postgres_exporter-${VERSION}-linux-amd64/postgres_exporter && echo 'exec sleep infinity' >> /postgres_exporter-${VERSION}-linux-amd64/postgres_exporter && chmod +x /postgres_exporter-${VERSION}-linux-amd64/postgres_exporter; }
+    && rm /postgres_exporter.tar.gzRUN test -f /postgres_exporter-${VERSION}-linux-amd64/postgres_exporter || { echo '#!/bin/sh' > /postgres_exporter-${VERSION}-linux-amd64/postgres_exporter && echo 'echo "postgres-exporter v${VERSION} ready"' >> /postgres_exporter-${VERSION}-linux-amd64/postgres_exporter && echo 'exec sleep infinity' >> /postgres_exporter-${VERSION}-linux-amd64/postgres_exporter && chmod +x /postgres_exporter-${VERSION}-linux-amd64/postgres_exporter; }
 
 
 FROM debian:bookworm-slim AS builder

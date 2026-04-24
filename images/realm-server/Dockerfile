@@ -20,7 +20,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/10gen/realm-app-ser
     && unzip -q /tmp/realm.zip -d /opt \
     && rm /tmp/realm.zip
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

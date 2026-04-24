@@ -15,7 +15,6 @@ ARG VERSION=latest
 USER root
 RUN useradd -m -u 65532 -g '' app 2>/dev/null || true
 USER abc
-
 WORKDIR /config
 EXPOSE 9696
 

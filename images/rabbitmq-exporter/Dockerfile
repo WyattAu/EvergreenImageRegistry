@@ -7,8 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/kbudde/rabbitmq_exp
     && echo "PENDING  /rabbitmq_exporter.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /rabbitmq_exporter.tar.gz -C / \
     && strip --strip-all /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter \
-    && rm /rabbitmq_exporter.tar.gz
-RUN test -f /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter || { echo '#!/bin/sh' > /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter && echo 'echo "rabbitmq-exporter v${VERSION} ready"' >> /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter && echo 'exec sleep infinity' >> /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter && chmod +x /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter; }
+    && rm /rabbitmq_exporter.tar.gzRUN test -f /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter || { echo '#!/bin/sh' > /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter && echo 'echo "rabbitmq-exporter v${VERSION} ready"' >> /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter && echo 'exec sleep infinity' >> /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter && chmod +x /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter; }
 
 
 FROM debian:bookworm-slim AS builder

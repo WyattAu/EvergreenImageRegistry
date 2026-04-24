@@ -29,6 +29,7 @@ COPY --from=builder /var/run/postgresql /var/run/postgresql
 RUN usermod -u 65532 postgres && \
     mkdir -p /app /var/log/postgresql-17 /var/cache/postgresql-17 && \
     chown -R 65532:65532 /var/lib/postgresql /var/run/postgresql /app /var/log/postgresql-17 /var/cache/postgresql-17
+
 USER 65532:65532
 WORKDIR /app
 ENV PGDATA="/var/lib/postgresql/data" \

@@ -21,7 +21,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/redis/redis/archive
     && cd redis-${VERSION} && make -j"$(nproc)" redis && strip --strip-all src/redis \
     && cp src/redis /tmp/redis
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=7.4.1
 

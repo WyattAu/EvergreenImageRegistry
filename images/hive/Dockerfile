@@ -20,7 +20,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/hive/h
     && tar -xzf /tmp/hive.tar.gz -C /opt \
     && rm /tmp/hive.tar.gz
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

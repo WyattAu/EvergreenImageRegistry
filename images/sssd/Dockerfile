@@ -11,7 +11,6 @@ RUN apk add --no-cache ca-certificates tzdata
 RUN mkdir -p /var/lib/sss /var/log/sssd /etc/sssd && \
     chown -R root:root /var/lib/sss /var/log/sssd /etc/sssd && \
     chmod 700 /var/lib/sss /var/log/sssd /etc/sssd
-
 EXPOSE 0
 LABEL org.opencontainers.image.title="sssd" \
       org.opencontainers.image.description="Sovereign SSSD - System Security Services Daemon for LDAP/Kerberos auth" \
@@ -24,5 +23,6 @@ LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="none"
 EXPOSE 9101
+
 USER 65532:65532
 STOPSIGNAL SIGTERM

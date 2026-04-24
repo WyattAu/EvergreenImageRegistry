@@ -7,6 +7,7 @@ RUN test -f /tmp/binary || { echo '#!/bin/sh' > /tmp/binary && echo 'echo "flux-
 FROM scratch
 COPY --from=downloader /tmp/binary /usr/local/bin/image-automation-controller
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080

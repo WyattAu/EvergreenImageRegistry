@@ -9,8 +9,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads
     && rm /journalbeat.tar.gz \
     && rm -rf /opt/journalbeat/kibana /opt/journalbeat/logs \
     && strip /opt/journalbeat/journalbeat || true \
-    && chmod +x /opt/journalbeat/journalbeat
-RUN test -f /opt/journalbeat || { echo '#!/bin/sh' > /opt/journalbeat && echo 'echo "journalbeat v${VERSION} placeholder"' >> /opt/journalbeat && echo 'exec sleep infinity' >> /opt/journalbeat && chmod +x /opt/journalbeat; }
+    && chmod +x /opt/journalbeat/journalbeatRUN test -f /opt/journalbeat || { echo '#!/bin/sh' > /opt/journalbeat && echo 'echo "journalbeat v${VERSION} placeholder"' >> /opt/journalbeat && echo 'exec sleep infinity' >> /opt/journalbeat && chmod +x /opt/journalbeat; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /var/log/journalbeat /var/lib/journalbeat /var/cache/journalbeat

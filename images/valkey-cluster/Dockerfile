@@ -16,8 +16,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/valkey-io/valkey/re
     -o /valkey.tar.gz && \
     echo "PENDING_CHECKSUM  /valkey.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /valkey.tar.gz -C / && rm /valkey.tar.gz && \
-    cd /valkey-${VERSION} && make -j"$(nproc)" && make install PREFIX=/install && \
-    strip /install/bin/valkey-* /install/bin/redis-*
+    cd /valkey-${VERSION} && make -j"$(nproc)" && make install PREFIX=/install && \    strip /install/bin/valkey-* /install/bin/redis-*
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

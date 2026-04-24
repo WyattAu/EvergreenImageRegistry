@@ -21,7 +21,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.splunk.com/products/u
     && tar -xzf splunk.tgz \
     && rm splunk.tgz
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

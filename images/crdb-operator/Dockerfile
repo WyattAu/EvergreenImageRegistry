@@ -19,7 +19,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/cockroachdb/cockroa
     && strip --strip-all /tmp/cockroach-operator \
     && mv /tmp/cockroach-operator /usr/local/bin/cockroach-operator
 
-
 FROM scratch
 ARG VERSION=1.11.0
 COPY --from=builder /usr/local/bin/cockroach-operator /usr/local/bin/cockroach-operator

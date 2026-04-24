@@ -23,6 +23,7 @@ COPY --from=builder /var/log/orientdb /var/log/orientdb
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 ENV ORIENTDB_HOME=/opt/orientdb
 ENV PATH="${ORIENTDB_HOME}/bin:${JAVA_HOME}/bin:${PATH}"
+
 USER 65532:65532
 WORKDIR /app
 EXPOSE 2480

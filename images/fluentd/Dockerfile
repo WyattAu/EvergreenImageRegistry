@@ -17,7 +17,6 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN gem install fluentd -v "~> ${VERSION}" --no-document \
     && gem install fluent-plugin-systemd --no-document 2>/dev/null || true
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=1.17.1
 

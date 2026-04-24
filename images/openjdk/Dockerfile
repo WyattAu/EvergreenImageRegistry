@@ -29,6 +29,7 @@ COPY --from=builder --chown=65532:65532 /var/log/java /var/log/java
 COPY --from=builder --chown=65532:65532 /var/cache/java /var/cache/java
 ENV JAVA_HOME=/opt/jdk
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
+
 USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["java"]

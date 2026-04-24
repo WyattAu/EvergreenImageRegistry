@@ -19,8 +19,7 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -o /nginx.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz.asc" -o /nginx.tar.gz.asc && \
     tar -xzf /nginx.tar.gz -C /tmp/ && \
-    cd /tmp/nginx-${NGINX_VERSION} && \
-    ./configure \
+    cd /tmp/nginx-${NGINX_VERSION} && \    ./configure \
         --prefix=/opt/nginx \
         --without-http_rewrite_module \
         --without-http_gzip_module \
@@ -90,7 +89,6 @@ http {
 NGINXCONF
 
 RUN chown 65532:65532 /app/conf/nginx.conf
-
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080

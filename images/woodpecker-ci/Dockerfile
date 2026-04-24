@@ -7,6 +7,7 @@ RUN test -f /tmp/woodpecker-server_stripped || { echo '#!/bin/sh' > /tmp/woodpec
 FROM scratch
 COPY --from=downloader /tmp/woodpecker-server_stripped /usr/local/bin/woodpecker-server
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8000

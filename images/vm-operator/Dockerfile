@@ -19,7 +19,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/VictoriaMetrics/ope
     && strip --strip-all /tmp/vm-operator \
     && mv /tmp/vm-operator /usr/local/bin/vm-operator
 
-
 FROM scratch
 ARG VERSION=0.45.0
 COPY --from=builder /usr/local/bin/vm-operator /usr/local/bin/vm-operator

@@ -5,7 +5,8 @@
 # Steps performed:
 # 1. Replaced FROM python:3.12-slim with wolfi-base
 # 2. Added: RUN apk add --no-cache python3 ca-certificates
-# 3. USER 65532:65532 preserved
+# 3. 
+USER 65532:65532 preserved
 # 4. Sovereign labels updated: sovereign.base.image="wolfi"
 # ADR-008: Category D — migratable, no exception required
 

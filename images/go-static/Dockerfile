@@ -18,6 +18,7 @@ COPY --from=builder /var/cache/go-static /var/cache/go-static
 ENV PATH="/opt/go/bin:${PATH}" \
     GOROOT="/opt/go" \
     GOPATH="/app"
+
 USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["go"]

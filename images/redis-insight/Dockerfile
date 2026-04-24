@@ -20,7 +20,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/RedisInsight/RedisI
     && mkdir -p /tmp/redisinsight \
     && tar -xzf redisinsight.tar.gz -C /tmp/redisinsight --strip-components=1
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=2.54.0
 

@@ -6,7 +6,6 @@
 
 
 FROM gcr.io/distroless/static-debian12:latest
-
 LABEL org.opencontainers.image.title="distroless" \
       org.opencontainers.image.description="Sovereign reference to gcr.io/distroless/static-debian12 for static binary containers" \
       sovereign.image.tier="3" \

@@ -16,10 +16,9 @@ ARG VERSION=0.4.0
 ARG GO_VERSION=1.22.4
 RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN git clone --depth 1 --branch v${VERSION} \ 2>/dev/null || echo "Source repo not available - using placeholder"
+RUN git clone --depth 1 --branch v${VERSION} \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
     https://github.com/meshbird/meshbird /src && \
-    cd /src && \
-    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+    cd /src && \    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
     -ldflags="-s -w -X main.version=${VERSION}" \
     -trimpath \
     -o /meshbird && \

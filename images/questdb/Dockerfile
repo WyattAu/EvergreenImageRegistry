@@ -20,7 +20,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/questdb/questdb/rel
     && tar -xzf /questdb.tar.gz -C /opt \
     && rm /questdb.tar.gz
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

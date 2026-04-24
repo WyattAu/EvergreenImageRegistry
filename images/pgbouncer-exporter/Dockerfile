@@ -7,8 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus-communit
     && echo "de95a3d22141c0f84ac33de07e793c4993410f43d7c10e8ba281559381e031da  /pgbouncer_exporter.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /pgbouncer_exporter.tar.gz -C / \
     && strip --strip-all /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter \
-    && rm /pgbouncer_exporter.tar.gz
-RUN test -f /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter || { echo '#!/bin/sh' > /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter && echo 'echo "pgbouncer-exporter v${VERSION} ready"' >> /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter && echo 'exec sleep infinity' >> /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter && chmod +x /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter; }
+    && rm /pgbouncer_exporter.tar.gzRUN test -f /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter || { echo '#!/bin/sh' > /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter && echo 'echo "pgbouncer-exporter v${VERSION} ready"' >> /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter && echo 'exec sleep infinity' >> /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter && chmod +x /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter; }
 
 
 FROM debian:bookworm-slim AS builder

@@ -20,7 +20,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://repo1.maven.org/maven2/io/trin
     && tar -xzf /trino.tar.gz -C /opt \
     && rm /trino.tar.gz
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

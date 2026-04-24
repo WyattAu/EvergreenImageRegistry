@@ -20,7 +20,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://d1pgyhe5djp5q0.cloudfront.net/
     && tar -xzf /tmp/tigergraph.tar.gz -C /opt \
     && rm /tmp/tigergraph.tar.gz
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

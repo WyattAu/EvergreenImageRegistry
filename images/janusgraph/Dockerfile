@@ -20,7 +20,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/JanusGraph/janusgra
     && unzip -q /tmp/janusgraph.zip -d /opt \
     && rm /tmp/janusgraph.zip
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

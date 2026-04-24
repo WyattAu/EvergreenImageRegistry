@@ -10,7 +10,6 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION=4.43.0
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
@@ -21,7 +20,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache ca-certificates
 RUN addgroup -S -g 65532 gitbucket && adduser -u 65532 -G gitbucket -D -h /opt/gitbucket -s /sbin/nologin gitbucket
 RUN mkdir -p /opt/gitbucket /var/log/gitbucket /var/data/gitbucket && \

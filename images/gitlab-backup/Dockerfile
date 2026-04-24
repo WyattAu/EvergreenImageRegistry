@@ -10,7 +10,6 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION=4.6.0
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         ruby="3.1.*" \
@@ -27,7 +26,6 @@ RUN git clone --depth 1 --branch v${VERSION} https://github.com/satoru-tsuji/git
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache ruby openssh-client ca-certificates
 RUN addgroup -S -g 65532 backup && adduser -u 65532 -G backup -D -h /app -s /sbin/nologin backup
 RUN mkdir -p /app /data /var/log/gitlab-backup && chown -R 65532:65532 /app /data /var/log/gitlab-backup

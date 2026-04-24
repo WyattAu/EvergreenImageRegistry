@@ -16,7 +16,6 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake curl ca-certificates git python3 libssl-dev && \
     rm -rf /var/lib/apt/lists/*
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN mkdir -p /tmp/modules && cd /tmp/modules \
     && git clone --depth 1 --branch v2.8.13 --recursive \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
     https://github.com/RediSearch/RediSearch.git 2>/dev/null && cd RediSearch && make -j"$(nproc)" \

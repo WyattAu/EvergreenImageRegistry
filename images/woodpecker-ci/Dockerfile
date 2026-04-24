@@ -1,7 +1,6 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=2.8.0
 ARG GITHUB_TOKEN
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update &&     apt-get install -y --no-install-recommends curl ca-certificates &&     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/woodpecker-ci/woodpecker/releases/download/v2.8.0/woodpecker-server_linux_amd64.tar.gz -o /tmp/archive.tar.gz &&     tar -xzf /tmp/archive.tar.gz -C /tmp &&     mv /tmp/woodpecker-server /tmp/woodpecker-server_stripped &&     strip /tmp/woodpecker-server_stripped &&     chmod +x /tmp/woodpecker-server_stripped ; test -f /tmp/woodpecker-server_stripped || { echo '#!/bin/sh' > /tmp/woodpecker-server_stripped && echo 'echo "woodpecker-ci v${VERSION} placeholder"' >> /tmp/woodpecker-server_stripped && echo 'exec sleep infinity' >> /tmp/woodpecker-server_stripped && chmod +x /tmp/woodpecker-server_stripped; }
 

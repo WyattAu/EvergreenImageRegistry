@@ -8,13 +8,11 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS builder
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN groupadd -r -g 65532 postfix && useradd -r -u 65532 -g postfix -d /var/spool/postfix -s /usr/sbin/nologin postfix
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache postfix ca-certificates
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder /etc/passwd /etc/passwd

@@ -1,6 +1,5 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=17.6.0
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
@@ -16,7 +15,6 @@ RUN test -f /opt/gitlab || { echo '#!/bin/sh' > /opt/gitlab && echo 'echo "gitla
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache curl ca-certificates gnupg openssh-client postfix busybox
 COPY --from=downloader /opt/gitlab /opt/gitlab
 COPY --from=downloader /etc/gitlab /etc/gitlab

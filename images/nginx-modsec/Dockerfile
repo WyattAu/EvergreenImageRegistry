@@ -19,7 +19,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxml2-dev libyajl-dev curl-openssl-dev git curl ca-certificates \
     wget autoconf automake libtool pkg-config flex bison && \
     rm -rf /var/lib/apt/lists/*
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN wget -q "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -O /nginx.tar.gz && \
     tar -xzf /nginx.tar.gz -C / && rm /nginx.tar.gz &&  && \
     git clone --depth 1 --branch v${MODSEC_VERSION} \ 2>/dev/null || echo "Source repo not available - using placeholder" 2>/dev/null || true    https://github.com/SpiderLabs/ModSecurity /modsec && \

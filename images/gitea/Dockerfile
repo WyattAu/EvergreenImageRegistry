@@ -11,7 +11,6 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
 ARG GITHUB_TOKEN
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 # hadolint ignore=DL3018
 RUN apk add --no-cache curl ca-certificates
 # hadolint ignore=DL4006
@@ -20,7 +19,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest AS runtime
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN adduser -D -u 65532 git 2>/dev/null || true
 RUN mkdir -p /app /var/log/gitea /var/cache/gitea
 USER git

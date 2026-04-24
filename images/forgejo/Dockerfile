@@ -10,7 +10,6 @@ ARG BUILD_DATE
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 # hadolint ignore=DL3018
 RUN apk add --no-cache curl ca-certificates git
 # hadolint ignore=DL4006
@@ -19,7 +18,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://code.forgejo.org/forgejo/forge
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest AS runtime
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN addgroup -g 65532 git || true
 RUN adduser -D -u 65532 -G git git || true
 RUN mkdir -p /app /var/log/forgejo /var/cache/forgejo

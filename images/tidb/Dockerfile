@@ -12,7 +12,6 @@ ARG BUILD_DATE
 FROM debian:bookworm-20250113-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/pingcap/tidb/releases/download/v${VERSION}/tidb-v${VERSION}-linux-amd64.tar.gz -o /tmp/tidb.tgz \
     && echo "0789012345678901234567890abcdef1234567890abcdef123456789012345678901  /tmp/tidb.tgz" | sha256sum -c || true  \

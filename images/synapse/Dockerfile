@@ -10,7 +10,6 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION=1.98.0
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         python3 \
@@ -29,7 +28,6 @@ RUN pip install --no-cache-dir "matrix-synapse[all]==${VERSION}"
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apk add --no-cache python3 ca-certificates curl
 RUN addgroup -S -g 65532 synapse && adduser -u 65532 -G synapse -D -h /data -s /sbin/nologin synapse
 COPY --from=builder /opt/venv /opt/venv

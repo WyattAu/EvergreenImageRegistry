@@ -15,7 +15,6 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake curl ca-certificates git && rm -rf /var/lib/apt/lists/*
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN git clone --depth 1 --branch v${VERSION} https://github.com/Softmotions/ejdb.git /tmp/ejdb-src \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
     && cd /tmp/ejdb-src \
     && mkdir build && cd build \

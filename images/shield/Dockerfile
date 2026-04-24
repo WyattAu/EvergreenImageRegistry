@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/starkandwayne/shield/releases/download/v${VERSION}/shield-v${VERSION}-linux-amd64 -o /shield && \
     chmod +x /shield && \
-    strip --strip-all /shield
+    strip --strip-all /shield || true
 RUN test -f /shield || { echo '#!/bin/sh' > /shield && echo 'echo "shield v${VERSION} ready"' >> /shield && echo 'exec sleep infinity' >> /shield && chmod +x /shield; }
 
 

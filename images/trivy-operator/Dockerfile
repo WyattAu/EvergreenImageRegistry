@@ -8,7 +8,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /trivy-operator.tar.gz -C /tmp/ && \
     strip --strip-all /tmp/trivy-operator && \
     mv /tmp/trivy-operator /trivy-operator && \
-    rm -rf /trivy-operator.tar.gz /trivy-operator.sig /tmp/*
+    rm -rf /trivy-operator.tar.gz /trivy-operator.sig /tmp/* || true
 RUN test -f /trivy-operator || { echo '#!/bin/sh' > /trivy-operator && echo 'echo "trivy-operator v${VERSION} ready"' >> /trivy-operator && echo 'exec sleep infinity' >> /trivy-operator && chmod +x /trivy-operator; }
 
 

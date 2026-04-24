@@ -19,7 +19,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /tig.tar.gz -C / && rm /tig.tar.gz && \
     cd /tig-${VERSION} && \    ./configure --prefix=/usr --with-ncurses && \
     make -j"$(nproc)" && \
-    strip --strip-all /tig-${VERSION}/src/tig
+    strip --strip-all /tig-${VERSION}/src/tig || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

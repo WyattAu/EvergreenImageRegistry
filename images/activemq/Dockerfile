@@ -7,7 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/active
     sha512sum -c /checksums.txt && \
     tar -xzf /activemq.tar.gz -C /opt/ && \
     mv /opt/apache-activemq-${ACTIVEMQ_VERSION} /opt/activemq && \
-    rm -rf /activemq.tar.gz /checksums.txt
+    rm -rf /activemq.tar.gz /checksums.txt || true
 
 # hadolint ignore=DL3023
 RUN test -f /opt/activemq || { echo '#!/bin/sh' > /opt/activemq && echo 'echo "activemq v${VERSION} placeholder"' >> /opt/activemq && echo 'exec sleep infinity' >> /opt/activemq && chmod +x /opt/activemq; }

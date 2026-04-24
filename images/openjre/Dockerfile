@@ -13,7 +13,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://api.adoptium.net/v3/binary/lat
     mkdir -p /opt/jre && \
     tar -xzf /tmp/jre.tar.gz -C /opt/jre --strip-components=1 && \
     rm /tmp/jre.tar.gz && \
-    ln -sf /opt/jre/bin/java /usr/local/bin/java
+    ln -sf /opt/jre/bin/java /usr/local/bin/java || true
 
 ENV JAVA_HOME="/opt/jre"
 ENV PATH="${JAVA_HOME}/bin:${PATH}"

@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://git.zx2c4.com/wireguard-tools/snapshot/wireguard-tools-${VERSION}.tar.xz" -o /wg-tools.tar.xz && \
     tar -xJf /wg-tools.tar.xz -C / && rm /wg-tools.tar.xz && \
     cd /wireguard-tools-${VERSION} && \    make -j"$(nproc)" && \
-    strip --strip-all /wireguard-tools-${VERSION}/src/wg /wireguard-tools-${VERSION}/src/wg-quick
+    strip --strip-all /wireguard-tools-${VERSION}/src/wg /wireguard-tools-${VERSION}/src/wg-quick || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

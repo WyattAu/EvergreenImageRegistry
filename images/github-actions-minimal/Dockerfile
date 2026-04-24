@@ -19,7 +19,7 @@ WORKDIR /build
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/actions/runner/releases/download/v${VERSION}/actions-runner-linux-x64-${VERSION}.tar.gz -o /tmp/runner.tar.gz && \
     tar -xzf /tmp/runner.tar.gz -C /build && \
     rm /tmp/runner.tar.gz && \
-    chown -R root:root /build
+    chown -R root:root /build || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

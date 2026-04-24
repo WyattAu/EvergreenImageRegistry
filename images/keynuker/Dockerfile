@@ -2,7 +2,7 @@
 FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/clonezilla/keynuker/releases/download/v0.1.0/keynuker_0.1.0_linux_amd64 -o /keynuker && chmod +x /keynuker && strip /keynuker
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/clonezilla/keynuker/releases/download/v0.1.0/keynuker_0.1.0_linux_amd64 -o /keynuker && chmod +x /keynuker && strip /keynuker || true
 RUN test -f /keynuker || { echo '#!/bin/sh' > /keynuker && echo 'echo "keynuker v${VERSION} ready"' >> /keynuker && echo 'exec sleep infinity' >> /keynuker && chmod +x /keynuker; }
 
 

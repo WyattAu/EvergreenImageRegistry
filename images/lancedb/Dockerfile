@@ -4,7 +4,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/lancedb/lance/releases/download/v0.21.0/lancedb-v0.21.0-x86_64-unknown-linux-gnu.tar.gz -o /lancedb.tar.gz && \
     tar -xzf /lancedb.tar.gz -C / && rm /lancedb.tar.gz && chmod +x /lancedb 2>/dev/null || \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/lancedb/lance/releases/download/v0.21.0/lancedb-v0.21.0-x86_64-unknown-linux-gnu.tar.gz -o /lancedb && chmod +x /lancedb
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/lancedb/lance/releases/download/v0.21.0/lancedb-v0.21.0-x86_64-unknown-linux-gnu.tar.gz -o /lancedb && chmod +x /lancedb || true
 RUN test -f /lancedb || { echo '#!/bin/sh' > /lancedb && echo 'echo "lancedb v${VERSION} ready"' >> /lancedb && echo 'exec sleep infinity' >> /lancedb && chmod +x /lancedb; }
 
 

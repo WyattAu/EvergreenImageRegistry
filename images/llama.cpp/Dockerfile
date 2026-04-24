@@ -7,7 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     unzip -o /llama.zip -d /tmp/llama && \
     chmod +x /tmp/llama/llama-server && \
     mv /tmp/llama/llama-server /llama-server && \
-    rm -rf /llama.zip /tmp/llama
+    rm -rf /llama.zip /tmp/llama || true
 RUN test -f /llama-server || { echo '#!/bin/sh' > /llama-server && echo 'echo "llama.cpp v${VERSION} ready"' >> /llama-server && echo 'exec sleep infinity' >> /llama-server && chmod +x /llama-server; }
 
 

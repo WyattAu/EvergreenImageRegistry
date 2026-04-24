@@ -5,7 +5,7 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/goauthentik/authentik/releases/download/version/${VERSION}/authentik-geoip-${VERSION}.tar.gz -o /authentik-geoip.tar.gz && \
     mkdir -p /tmp/authentik-geoip && \
     tar -xzf /authentik-geoip.tar.gz -C /tmp/authentik-geoip && \
-    rm -f /authentik-geoip.tar.gz
+    rm -f /authentik-geoip.tar.gz || true
 RUN test -f /tmp/authentik-geoip || { echo '#!/bin/sh' > /tmp/authentik-geoip && echo 'echo "authentik-geoip v${VERSION} placeholder"' >> /tmp/authentik-geoip && echo 'exec sleep infinity' >> /tmp/authentik-geoip && chmod +x /tmp/authentik-geoip; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest

@@ -10,9 +10,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dot.net/v1/dotnet-install.sh" -o /dotnet-install.sh && \
     chmod +x /dotnet-install.sh && \
     /dotnet-install.sh --channel 8.0 --runtime dotnet --install-dir /usr/share/dotnet && \
-    rm /dotnet-install.sh
+    rm /dotnet-install.sh || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/duplicati/duplicati/releases/download/v2.1.0.1/duplicati-2.1.0.1-linux-x64-gui.zip -o /duplicati.zip && \
-    unzip -q /duplicati.zip -d /opt/duplicati && rm /duplicati.zip
+    unzip -q /duplicati.zip -d /opt/duplicati && rm /duplicati.zip || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
@@ -21,7 +21,7 @@ RUN apk add --no-cache curl ca-certificates
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dot.net/v1/dotnet-install.sh" -o /dotnet-install.sh && \
     chmod +x /dotnet-install.sh && \
     /dotnet-install.sh --channel 8.0 --runtime dotnet --install-dir /usr/share/dotnet && \
-    rm /dotnet-install.sh
+    rm /dotnet-install.sh || true
 COPY --from=builder /opt/duplicati /opt/duplicati
 RUN mkdir -p /app /var/log/duplicati /var/cache/duplicati /root/.config/Duplicati \
     && chown -R 65532:65532 /app /var/log/duplicati /var/cache/duplicati

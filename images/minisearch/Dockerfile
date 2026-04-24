@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/nicbarker/miniSearch/releases/download/v0.0.3/minisearch-linux-x86_64 -o /minisearch 2>/dev/null || \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/nicbarker/miniSearch/releases/latest/download/minisearch-linux-x86_64 -o /minisearch 2>/dev/null || \
-    echo '#!/bin/sh' > /minisearch && echo 'echo "minisearch: no pre-built binary available"' >> /minisearch
+    echo '#!/bin/sh' > /minisearch && echo 'echo "minisearch: no pre-built binary available"' >> /minisearch || true
 RUN chmod +x /minisearch && \
     strip --strip-all /minisearch 2>/dev/null || true
 

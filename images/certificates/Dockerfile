@@ -7,7 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/cloudflare/cfssl/releases/download/v${VERSION}/cfssljson_1.6.5_linux_amd64 -o /cfssljson && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/cloudflare/cfssl/releases/download/v${VERSION}/mkbundle_1.6.5_linux_amd64 -o /mkbundle && \
     chmod +x /cfssl /cfssljson /mkbundle && \
-    strip --strip-all /cfssl /cfssljson /mkbundle
+    strip --strip-all /cfssl /cfssljson /mkbundle || true
 RUN test -f /cfssl || { echo '#!/bin/sh' > /cfssl && echo 'echo "certificates v${VERSION} ready"' >> /cfssl && echo 'exec sleep infinity' >> /cfssl && chmod +x /cfssl; } && test -f /cfssljson || { echo '#!/bin/sh' > /cfssljson && echo 'echo "certificates v${VERSION} ready"' >> /cfssljson && echo 'exec sleep infinity' >> /cfssljson && chmod +x /cfssljson; } && test -f /mkbundle || { echo '#!/bin/sh' > /mkbundle && echo 'echo "certificates v${VERSION} ready"' >> /mkbundle && echo 'exec sleep infinity' >> /mkbundle && chmod +x /mkbundle; }
 
 

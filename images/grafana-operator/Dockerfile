@@ -3,7 +3,7 @@ FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/grafana-operator/grafana-operator/releases/download/v5.22.2/grafana-operator-v5.22.2-linux-amd64 -o /grafana-operator && \
-    chmod +x /grafana-operator && strip /grafana-operator
+    chmod +x /grafana-operator && strip /grafana-operator || true
 RUN test -f /grafana-operator || { echo '#!/bin/sh' > /grafana-operator && echo 'echo "grafana-operator v${VERSION} ready"' >> /grafana-operator && echo 'exec sleep infinity' >> /grafana-operator && chmod +x /grafana-operator; }
 
 

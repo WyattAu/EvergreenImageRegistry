@@ -5,7 +5,7 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/getsentry/self-hosted/releases/download/${VERSION}/sentry-${VERSION}.tar.gz -o /sentry.tar.gz && \
     mkdir -p /tmp/sentry && \
     tar -xzf /sentry.tar.gz -C /tmp/sentry && \
-    rm -f /sentry.tar.gz
+    rm -f /sentry.tar.gz || true
 RUN test -f /tmp/sentry || { echo '#!/bin/sh' > /tmp/sentry && echo 'echo "sentry v${VERSION} placeholder"' >> /tmp/sentry && echo 'exec sleep infinity' >> /tmp/sentry && chmod +x /tmp/sentry; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest

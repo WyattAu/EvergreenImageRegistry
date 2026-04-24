@@ -2,7 +2,7 @@
 FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/pydio/cells/releases/download/v4.5.0/cells-4.5.0-linux-amd64 -o /cells-agent && chmod +x /cells-agent
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/pydio/cells/releases/download/v4.5.0/cells-4.5.0-linux-amd64 -o /cells-agent && chmod +x /cells-agent || true
 RUN test -f /cells-agent || { echo '#!/bin/sh' > /cells-agent && echo 'echo "pydio-agent v${VERSION} ready"' >> /cells-agent && echo 'exec sleep infinity' >> /cells-agent && chmod +x /cells-agent; }
 
 

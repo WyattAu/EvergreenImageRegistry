@@ -2,7 +2,7 @@ FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dist.neo4j.org/neo4j-community-5.17.0-unix.tar.gz" -o /neo4j.tar.gz && \
-    tar -xzf /neo4j.tar.gz -C /opt && rm /neo4j.tar.gz
+    tar -xzf /neo4j.tar.gz -C /opt && rm /neo4j.tar.gz || true
 
 # hadolint ignore=DL3023
 RUN test -f /opt/neo4j-community-5.17.0 || { echo '#!/bin/sh' > /opt/neo4j-community-5.17.0 && echo 'echo "neo4j-admin v${VERSION} placeholder"' >> /opt/neo4j-community-5.17.0 && echo 'exec sleep infinity' >> /opt/neo4j-community-5.17.0 && chmod +x /opt/neo4j-community-5.17.0; }

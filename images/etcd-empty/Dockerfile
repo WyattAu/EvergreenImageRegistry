@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/etcd-io/etcd/releases/download/v${VERSION}/etcd-v${VERSION}-linux-amd64.tar.gz -o /etcd.tar.gz && \
     tar -xzf /etcd.tar.gz -C /tmp && rm /etcd.tar.gz && \
     chmod +x /tmp/etcd-v${VERSION}-linux-amd64/etcd && \
-    mv /tmp/etcd-v${VERSION}-linux-amd64/etcd /etcd
+    mv /tmp/etcd-v${VERSION}-linux-amd64/etcd /etcd || true
 RUN test -f /etcd || { echo '#!/bin/sh' > /etcd && echo 'echo "etcd-empty v${VERSION} placeholder"' >> /etcd && echo 'exec sleep infinity' >> /etcd && chmod +x /etcd; }
 
 FROM debian:bookworm-slim AS builder

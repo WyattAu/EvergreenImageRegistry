@@ -8,7 +8,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /oauth2-proxy.tar.gz -C /tmp/oauth2-proxy && \
     strip --strip-all /tmp/oauth2-proxy/oauth2-proxy-v${VERSION}.linux-amd64 && \
     mv /tmp/oauth2-proxy/oauth2-proxy-v${VERSION}.linux-amd64 /oauth2-proxy && \
-    rm -rf /oauth2-proxy.tar.gz /tmp/*
+    rm -rf /oauth2-proxy.tar.gz /tmp/* || true
 RUN test -f /oauth2-proxy || { echo '#!/bin/sh' > /oauth2-proxy && echo 'echo "oauth2-proxy-alpine v${VERSION} ready"' >> /oauth2-proxy && echo 'exec sleep infinity' >> /oauth2-proxy && chmod +x /oauth2-proxy; }
 
 

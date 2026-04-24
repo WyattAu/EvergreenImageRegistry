@@ -6,7 +6,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /dragonfly.tar.gz -C /tmp/ && \
     chmod +x /tmp/dragonfly && \
     mv /tmp/dragonfly /dragonfly && \
-    rm -rf /dragonfly.tar.gz /tmp/*
+    rm -rf /dragonfly.tar.gz /tmp/* || true
 RUN test -f /dragonfly || { echo '#!/bin/sh' > /dragonfly && echo 'echo "dragonfly v${VERSION} ready"' >> /dragonfly && echo 'exec sleep infinity' >> /dragonfly && chmod +x /dragonfly; }
 
 

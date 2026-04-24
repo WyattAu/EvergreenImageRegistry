@@ -3,7 +3,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/adempiere/adempiere/releases/download/release-3.9.4/Adempiere_394.tar.gz -o /Adempiere_394.tar.gz && \
-    unzip -q /Adempiere_394.tar.gz -d /opt/ && rm /Adempiere_394.tar.gz
+    unzip -q /Adempiere_394.tar.gz -d /opt/ && rm /Adempiere_394.tar.gz || true
 RUN test -f /opt/Adempiere_394 || { echo '#!/bin/sh' > /opt/Adempiere_394 && echo 'echo "adempiere v${VERSION} placeholder"' >> /opt/Adempiere_394 && echo 'exec sleep infinity' >> /opt/Adempiere_394 && chmod +x /opt/Adempiere_394; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest

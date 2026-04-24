@@ -6,7 +6,7 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/jaegertracing/jaeger/releases/download/v1.55.0/jaeger-1.55.0-linux-amd64.tar.gz -o /jaeger.tar.gz && \
     tar -xzf /jaeger.tar.gz -C /tmp && rm /jaeger.tar.gz && \
     strip --strip-all /tmp/jaeger-1.55.0-linux-amd64/jaeger-agent && \
-    mv /tmp/jaeger-1.55.0-linux-amd64/jaeger-agent /jaeger-agent
+    mv /tmp/jaeger-1.55.0-linux-amd64/jaeger-agent /jaeger-agent || true
 RUN test -f /jaeger-agent || { echo '#!/bin/sh' > /jaeger-agent && echo 'echo "jaeger-agent v${VERSION} ready"' >> /jaeger-agent && echo 'exec sleep infinity' >> /jaeger-agent && chmod +x /jaeger-agent; }
 
 

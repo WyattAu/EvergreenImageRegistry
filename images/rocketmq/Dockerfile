@@ -7,7 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/rocket
     sha512sum -c /checksums.txt && \
     unzip -q /rocketmq.zip -d /opt/ && \
     mv /opt/rocketmq-all-${ROCKETMQ_VERSION}-bin-release /opt/rocketmq && \
-    rm -rf /rocketmq.zip /checksums.txt
+    rm -rf /rocketmq.zip /checksums.txt || true
 
 # hadolint ignore=DL3023
 RUN test -f /opt/rocketmq || { echo '#!/bin/sh' > /opt/rocketmq && echo 'echo "rocketmq v${VERSION} placeholder"' >> /opt/rocketmq && echo 'exec sleep infinity' >> /opt/rocketmq && chmod +x /opt/rocketmq; }

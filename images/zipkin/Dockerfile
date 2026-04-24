@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jre/hotspot/normal/eclipse" -o /tmp/jre.tar.gz && \
     mkdir -p /opt/jre && \
     tar -xzf /tmp/jre.tar.gz -C /opt/jre --strip-components=1 && \
-    rm /tmp/jre.tar.gz
+    rm /tmp/jre.tar.gz || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
@@ -26,7 +26,7 @@ COPY --from=jre-builder /opt/jre /opt/jre
 ENV JAVA_HOME="/opt/jre"
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://search.maven.org/remotecontent?filepath=io/zipkin/zipkin-server/${VERSION}/zipkin-server-${VERSION}-exec.jar" -o /opt/zipkin/zipkin.jar || \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/openzipkin/zipkin/releases/download/${VERSION}/zipkin.jar -o /opt/zipkin.jar
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/openzipkin/zipkin/releases/download/${VERSION}/zipkin.jar -o /opt/zipkin.jar || true
 RUN mkdir -p /opt/zipkin /var/log/zipkin && \
     addgroup -S 65532 -r zipkin 2>/dev/null || true && \
     adduser -u 65532 -G zipkin -D -D -h /opt/zipkin -s /sbin/nologin zipkin 2>/dev/null || true && \

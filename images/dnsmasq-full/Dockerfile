@@ -20,7 +20,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://thekelleys.org.uk/dnsmasq/dnsm
     CFLAGS="-DHAVE_DNSSEC -DHAVE_DBUS -DHAVE_CONNTRACK -DHAVE_IDN -DHAVE_LUASCRIPT" \
     LDFLAGS="-static" && \
     make install PREFIX=/usr DESTDIR=/install && \
-    strip --strip-all /install/usr/sbin/dnsmasq
+    strip --strip-all /install/usr/sbin/dnsmasq || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

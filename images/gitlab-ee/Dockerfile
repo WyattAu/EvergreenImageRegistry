@@ -1,4 +1,5 @@
 FROM debian:bookworm-slim AS downloader
+ARG VERSION=17.6.0
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \

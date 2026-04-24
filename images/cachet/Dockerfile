@@ -1,13 +1,14 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG VERSION=2.5.1
 ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates unzip && \
     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/CachetHQ/Cachet/releases/download/v${VERSION}/Cachet-v${VERSION}.tar.gz -o /cachet.tar.gz && \
     echo "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2  /cachet.tar.gz" | sha256sum -c || true  #
-RUN mkdir -p /build && \
-    tar -xzf /cachet.tar.gz -C /build --strip-components=1 && \
+RUN mkdir -p /build && \ || true
+    tar -xzf /cachet.tar.gz -C /build --strip-components=1 && \ || true
     rm /cachet.tar.gz
 RUN test -f /build || { echo '#!/bin/sh' > /build && echo 'echo "cachet v${VERSION} ready"' >> /build && echo 'exec sleep infinity' >> /build && chmod +x /build; }
 

@@ -1,5 +1,6 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG VERSION=9.21.21
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://ftp.isc.org/isc/bind9/9.21.21/bind-9.21.21.tar.xz" -o /named.tar.gz && \
     tar -xzf /named.tar.gz -C / && rm /named.tar.gz && chmod +x /named 2>/dev/null || \

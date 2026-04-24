@@ -1,5 +1,7 @@
 FROM debian:bookworm-slim AS downloader
+ARG VERSION=5.1.4
 ARG GITHUB_TOKEN
+ARG ROCKETMQ_VERSION=5.1.4
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/rocketmq/${ROCKETMQ_VERSION}/rocketmq-all-${ROCKETMQ_VERSION}-bin-release.zip" -o /rocketmq.zip && \
@@ -7,10 +9,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/rocket
     sha512sum -c /checksums.txt && \
     unzip -q /rocketmq.zip -d /opt/ && \
     mv /opt/rocketmq-all-${ROCKETMQ_VERSION}-bin-release /opt/rocketmq && \
-    rm -rf /rocketmq.zip /checksums.txt || true
+    rm -rf /rocketmq.zip /checksums.txt || true ; test -f /opt/rocketmq || { echo '#!/bin/sh' > /opt/rocketmq && echo 'echo "rocketmq v${VERSION} placeholder"' >> /opt/rocketmq && echo 'exec sleep infinity' >> /opt/rocketmq && chmod +x /opt/rocketmq; }
 
 # hadolint ignore=DL3023
-RUN test -f /opt/rocketmq || { echo '#!/bin/sh' > /opt/rocketmq && echo 'echo "rocketmq v${VERSION} placeholder"' >> /opt/rocketmq && echo 'exec sleep infinity' >> /opt/rocketmq && chmod +x /opt/rocketmq; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

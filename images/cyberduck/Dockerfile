@@ -1,4 +1,5 @@
 FROM debian:bookworm-slim AS downloader
+ARG VERSION=9.1.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]

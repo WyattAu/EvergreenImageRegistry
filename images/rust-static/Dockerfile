@@ -1,4 +1,5 @@
 FROM debian:bookworm-slim AS downloader
+ARG VERSION=1.80.1
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://static.rust-lang.org/dist/rust-1.80.1-x86_64-unknown-linux-gnu.tar.xz" -o /rust.tar.xz && \
     mkdir -p /tmp/rust && tar -xf /rust.tar.xz -C /tmp/rust --strip-components=1 && rm /rust.tar.xz && \

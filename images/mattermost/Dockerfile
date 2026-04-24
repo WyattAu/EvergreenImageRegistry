@@ -1,4 +1,5 @@
 FROM debian:bookworm-slim AS downloader
+ARG VERSION=${VERSION}
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates tar && \
     rm -rf /var/lib/apt/lists/*

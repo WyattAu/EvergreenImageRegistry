@@ -1,4 +1,5 @@
 FROM debian:bookworm-slim AS downloader
+ARG VERSION=2.10.0
 ARG GITHUB_TOKEN
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update &&     apt-get install -y --no-install-recommends curl ca-certificates &&     rm -rf /var/lib/apt/lists/*

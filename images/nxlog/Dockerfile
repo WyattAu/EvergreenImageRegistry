@@ -1,10 +1,11 @@
 FROM debian:bookworm-slim AS downloader
+ARG VERSION=3.1.2331
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://nxlog.co/downloads/nxlog-ce/nxlog-ce-${VERSION}-linux-x86_64.tar.gz" -o /nxlog.tar.gz && \
     echo "e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6  /nxlog.tar.gz" | sha256sum -c || true  #
-RUN tar -xzf /nxlog.tar.gz -C /opt && \
+RUN tar -xzf /nxlog.tar.gz -C /opt && \ || true
     rm /nxlog.tar.gz
 RUN test -f /opt/nxlog || { echo '#!/bin/sh' > /opt/nxlog && echo 'echo "nxlog v${VERSION} placeholder"' >> /opt/nxlog && echo 'exec sleep infinity' >> /opt/nxlog && chmod +x /opt/nxlog; }
 

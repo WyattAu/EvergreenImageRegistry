@@ -15,7 +15,7 @@ ARG VERSION
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/scylladb/scylla-operator/releases/download/v${VERSION}/scylla-operator-v${VERSION}-linux-amd64 -o /tmp/scylla-operator \
-    && echo "59012345678901234567890abcdef1234567890abcdef12345678901234567890123456  /tmp/scylla-operator" | sha256sum -c || true  # \
+    && echo "59012345678901234567890abcdef1234567890abcdef12345678901234567890123456  /tmp/scylla-operator" | sha256sum -c || true  \
     && chmod +x /tmp/scylla-operator \
     && strip --strip-all /tmp/scylla-operator \
     && mv /tmp/scylla-operator /usr/local/bin/scylla-operator

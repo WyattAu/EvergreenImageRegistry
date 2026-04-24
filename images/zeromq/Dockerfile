@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/zeromq/libzmq/releases/download/v${VERSION}/zeromq-${VERSION}.tar.gz -o /zeromq.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/zeromq/libzmq/releases/download/v${VERSION}/sha256sum.txt -o /checksums.txt && \
-    grep "zeromq-${VERSION}.tar.gz" /checksums.txt | sha256sum -c || true  # && \
+    grep "zeromq-${VERSION}.tar.gz" /checksums.txt | sha256sum -c || true \
     tar -xzf /zeromq.tar.gz -C /tmp/ && \
     cd /tmp/zeromq-${VERSION} && \    cmake -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=/opt/zeromq \

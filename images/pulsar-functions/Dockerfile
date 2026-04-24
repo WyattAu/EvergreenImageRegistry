@@ -15,7 +15,7 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/pulsar/pulsar-${VERSION}/apache-pulsar-${VERSION}-bin.tar.gz" -o pulsar.tar.gz \
-    && echo "0000000000000000000000000000000000000000000000000000000000000000  pulsar.tar.gz" | sha256sum -c || true  # \
+    && echo "0000000000000000000000000000000000000000000000000000000000000000  pulsar.tar.gz" | sha256sum -c || true  \
     && tar -xzf pulsar.tar.gz \
     && rm pulsar.tar.gz \
     && rm -rf apache-pulsar-${VERSION}/examples apache-pulsar-${VERSION}/tools

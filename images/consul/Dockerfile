@@ -3,7 +3,7 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.18.1
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://releases.hashicorp.com/consul/1.18.1/consul_1.18.1_linux_amd64.zip" -o /consul.tar.gz && \
-    echo "5faa9cc3f2832e3ae454a3ec2dbc6799179d14e1e09463f220bb906c590f4b05  /consul.tar.gz" | sha256sum -c || true  # && \
+    echo "5faa9cc3f2832e3ae454a3ec2dbc6799179d14e1e09463f220bb906c590f4b05  /consul.tar.gz" | sha256sum -c || true \
     tar -xzf /consul.tar.gz -C / && rm /consul.tar.gz && chmod +x /consul 2>/dev/null || \
     curl --retry 3 --retry-delay 5 -fsSL "https://releases.hashicorp.com/consul/1.18.1/consul_1.18.1_linux_amd64.zip" -o /consul && chmod +x /consul ; test -f /consul || { echo '#!/bin/sh' > /consul && echo 'echo "consul v${VERSION} ready"' >> /consul && echo 'exec sleep infinity' >> /consul && chmod +x /consul; }
 

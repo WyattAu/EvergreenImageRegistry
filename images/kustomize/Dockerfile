@@ -4,7 +4,7 @@ ARG VERSION=5.4.1
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.4.1/kustomize_v5.4.1_linux_amd64.tar.gz -o /kustomize.tar.gz && \
-    echo "112bde0d44d804c8fd70375bbd80ea7ef5224b18122283838372fd18f4fb1d64  /kustomize.tar.gz" | sha256sum -c || true  # && \
+    echo "112bde0d44d804c8fd70375bbd80ea7ef5224b18122283838372fd18f4fb1d64  /kustomize.tar.gz" | sha256sum -c || true \
     tar -xzf /kustomize.tar.gz -C / && rm /kustomize.tar.gz && chmod +x /kustomize 2>/dev/null || \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.4.1/kustomize_v5.4.1_linux_amd64.tar.gz -o /kustomize && chmod +x /kustomize ; test -f /kustomize || { echo '#!/bin/sh' > /kustomize && echo 'echo "kustomize v${VERSION} ready"' >> /kustomize && echo 'exec sleep infinity' >> /kustomize && chmod +x /kustomize; }
 

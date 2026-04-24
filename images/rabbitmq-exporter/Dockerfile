@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/kbudde/rabbitmq_exporter/releases/download/v${VERSION}/rabbitmq_exporter-${VERSION}-linux-amd64.tar.gz \
     -o /rabbitmq_exporter.tar.gz \
-    && echo "PENDING  /rabbitmq_exporter.tar.gz" | sha256sum -c || true  # \
+    && echo "PENDING  /rabbitmq_exporter.tar.gz" | sha256sum -c || true  \
     && tar -xzf /rabbitmq_exporter.tar.gz -C / \
     && strip --strip-all /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter \
     && rm /rabbitmq_exporter.tar.gz

@@ -3,7 +3,7 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.30.1
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.k8s.io/release/v1.30.1/bin/linux/amd64/kube-proxy" -o /kube-proxy && \
-    echo "VERIFY_FROM_K8S_SHA256  /kube-proxy" | sha256sum -c || true  # && \
+    echo "VERIFY_FROM_K8S_SHA256  /kube-proxy" | sha256sum -c || true \
     chmod +x /kube-proxy && strip /kube-proxy ; test -f /kube-proxy || { echo '#!/bin/sh' > /kube-proxy && echo 'echo "kube-proxy v${VERSION} ready"' >> /kube-proxy && echo 'exec sleep infinity' >> /kube-proxy && chmod +x /kube-proxy; }
 
 

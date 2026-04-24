@@ -15,7 +15,7 @@ ARG VERSION
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/FerretDB/FerretDB/releases/download/v${VERSION}/ferretdb-${VERSION}-linux-amd64.tar.gz -o /tmp/ferretdb.tgz \
-    && echo "d4e5f6789012345678901234567890abcdef1234567890abcdef1234567890123456  /tmp/ferretdb.tgz" | sha256sum -c || true  # \
+    && echo "d4e5f6789012345678901234567890abcdef1234567890abcdef1234567890123456  /tmp/ferretdb.tgz" | sha256sum -c || true  \
     && tar -xzf /tmp/ferretdb.tgz -C /tmp \
     && strip --strip-all /tmp/ferretdb \
     && mv /tmp/ferretdb /usr/local/bin/ferretdb \

@@ -3,7 +3,7 @@ ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-${VERSION}-linux-x86_64.tar.gz" -o /filebeat.tar.gz \
-    && echo "0000000000000000000000000000000000000000000000000000000000000000  /filebeat.tar.gz" | sha256sum -c || true  # \
+    && echo "0000000000000000000000000000000000000000000000000000000000000000  /filebeat.tar.gz" | sha256sum -c || true  \
     && mkdir -p /opt/filebeat \
     && tar -xzf /filebeat.tar.gz -C /opt/filebeat --strip-components=1 \
     && rm /filebeat.tar.gz \

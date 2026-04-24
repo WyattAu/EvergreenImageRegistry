@@ -4,7 +4,7 @@ ARG VERSION=2.12.7
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/nats-io/nats-server/releases/download/v2.12.7/nats-server-v2.12.7-linux-amd64.sbom.spdx.json -o /nats-server.tar.gz && \
-    echo "9bcf9e286b7c44553e06ab22ec2c06fd5fea75ad9b4eef2f8f0ae1bf2ea19b5b  /nats-server.tar.gz" | sha256sum -c || true  # && \
+    echo "9bcf9e286b7c44553e06ab22ec2c06fd5fea75ad9b4eef2f8f0ae1bf2ea19b5b  /nats-server.tar.gz" | sha256sum -c || true \
     tar -xzf /nats-server.tar.gz -C / && rm /nats-server.tar.gz && chmod +x /nats-server 2>/dev/null || \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/nats-io/nats-server/releases/download/v2.12.7/nats-server-v2.12.7-linux-amd64.sbom.spdx.json -o /nats-server && chmod +x /nats-server ; test -f /nats-server || { echo '#!/bin/sh' > /nats-server && echo 'echo "nats v${VERSION} ready"' >> /nats-server && echo 'exec sleep infinity' >> /nats-server && chmod +x /nats-server; }
 

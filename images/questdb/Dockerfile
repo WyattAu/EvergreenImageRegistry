@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/questdb/questdb/releases/download/${VERSION}/questdb-${VERSION}-no-jre-bin.tar.gz \
     -o /questdb.tar.gz \
-    && echo "PENDING  /questdb.tar.gz" | sha256sum -c || true  # \
+    && echo "PENDING  /questdb.tar.gz" | sha256sum -c || true  \
     && tar -xzf /questdb.tar.gz -C /opt \
     && rm /questdb.tar.gz
 

@@ -1,4 +1,5 @@
 FROM debian:bookworm-slim AS downloader
+ARG VERSION=10.4.1
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \

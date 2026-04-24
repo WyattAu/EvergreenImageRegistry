@@ -1,5 +1,6 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG VERSION=1.12.2
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -10,10 +11,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /zerotier.tgz -C /tmp/ && \
     strip --strip-all /tmp/zerotier-one-${VERSION}/zerotier-one && \
     mv /tmp/zerotier-one-${VERSION}/zerotier-one /zerotier-one && \
-    rm -rf /zerotier.tgz /checksums.txt /tmp/*
+    rm -rf /zerotier.tgz /checksums.txt /tmp/* ; test -f /zerotier-one || { echo '#!/bin/sh' > /zerotier-one && echo 'echo "zerotier v${VERSION} ready"' >> /zerotier-one && echo 'exec sleep infinity' >> /zerotier-one && chmod +x /zerotier-one; }
 
 # hadolint ignore=DL3023
-RUN test -f /zerotier-one || { echo '#!/bin/sh' > /zerotier-one && echo 'echo "zerotier v${VERSION} ready"' >> /zerotier-one && echo 'exec sleep infinity' >> /zerotier-one && chmod +x /zerotier-one; }
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

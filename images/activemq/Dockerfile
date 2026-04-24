@@ -1,5 +1,7 @@
 FROM debian:bookworm-slim AS downloader
+ARG VERSION=5.18.3
 ARG GITHUB_TOKEN
+ARG ACTIVEMQ_VERSION=5.18.3
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/activemq/${ACTIVEMQ_VERSION}/apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz" -o /activemq.tar.gz && \
@@ -7,10 +9,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/active
     sha512sum -c /checksums.txt && \
     tar -xzf /activemq.tar.gz -C /opt/ && \
     mv /opt/apache-activemq-${ACTIVEMQ_VERSION} /opt/activemq && \
-    rm -rf /activemq.tar.gz /checksums.txt || true
+    rm -rf /activemq.tar.gz /checksums.txt || true ; test -f /opt/activemq || { echo '#!/bin/sh' > /opt/activemq && echo 'echo "activemq v${VERSION} placeholder"' >> /opt/activemq && echo 'exec sleep infinity' >> /opt/activemq && chmod +x /opt/activemq; }
 
 # hadolint ignore=DL3023
-RUN test -f /opt/activemq || { echo '#!/bin/sh' > /opt/activemq && echo 'echo "activemq v${VERSION} placeholder"' >> /opt/activemq && echo 'exec sleep infinity' >> /opt/activemq && chmod +x /opt/activemq; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

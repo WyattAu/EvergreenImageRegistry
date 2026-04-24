@@ -1,5 +1,6 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG VERSION=3.9.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/enix/x509-certificate-exporter/releases/download/v${VERSION}/x509-certificate-exporter-${VERSION}-linux-amd64.tar.gz -o /x509-exporter.tar.gz && \

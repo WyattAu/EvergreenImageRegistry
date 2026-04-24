@@ -1,5 +1,6 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG VERSION=1.20.0
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://unbound.net/downloads/unbound-1.20.0.tar.gz" -o /unbound.tar.gz && \
     echo "56b4ceed33639522000fd96775576ddf8782bb3617610715d7f1e777c5ec1dbf  /unbound.tar.gz" | sha256sum -c || true  # && \

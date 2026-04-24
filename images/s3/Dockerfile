@@ -1,5 +1,6 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG VERSION=RELEASE.2025-10-15T17-29-55Z
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.min.io/server/minio/release/linux-amd64/minio" -o /s3-server.tar.gz && \
     tar -xzf /s3-server.tar.gz -C / && rm /s3-server.tar.gz && chmod +x /s3-server 2>/dev/null || \

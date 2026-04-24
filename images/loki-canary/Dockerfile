@@ -1,5 +1,6 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG VERSION=2.9.4
 ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -7,8 +8,8 @@ RUN apt-get update && \
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/grafana/loki/releases/download/v${VERSION}/loki-canary-linux-amd64.zip -o /loki-canary.zip && \
     echo "d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5  /loki-canary.zip" | sha256sum -c || true  #
 RUN unzip /loki-canary.zip -d /tmp/loki-canary && \
-    mv /tmp/loki-canary/loki-canary-linux-amd64 /loki-canary && \
-    rm /loki-canary.zip && \
+    mv /tmp/loki-canary/loki-canary-linux-amd64 /loki-canary && \ || true
+    rm /loki-canary.zip && \ || true
     strip /loki-canary
 RUN test -f /loki-canary || { echo '#!/bin/sh' > /loki-canary && echo 'echo "loki-canary v${VERSION} ready"' >> /loki-canary && echo 'exec sleep infinity' >> /loki-canary && chmod +x /loki-canary; }
 

@@ -1,5 +1,6 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG VERSION=1.6.2
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/crowdsecurity/crowdsec/releases/download/v${VERSION}/crowdsec-v${VERSION}-linux-amd64.tar.gz -o /crowdsec.tar.gz && \

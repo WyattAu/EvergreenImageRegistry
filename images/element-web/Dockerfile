@@ -1,4 +1,5 @@
 FROM debian:bookworm-slim AS downloader
+ARG VERSION=1.11.12
 ARG GITHUB_TOKEN
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \

@@ -1,4 +1,5 @@
 FROM debian:bookworm-slim AS downloader
+ARG VERSION=1.27.1
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates gnupg lsb-release && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]

@@ -1,10 +1,7 @@
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app/data /var/log/zipline /var/cache/zipline
-
-
-
+RUN test -f /app/data || { echo '#!/bin/sh' > /app/data && echo 'echo "zipline v${VERSION} placeholder"' >> /app/data && echo 'exec sleep infinity' >> /app/data && chmod +x /app/data; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

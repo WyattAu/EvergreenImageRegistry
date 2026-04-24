@@ -1,6 +1,6 @@
 
 FROM debian:bookworm-slim AS downloader
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-base && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-headless && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/2.462.1/remoting-2.462.1.jar" -o /agent.jar
 RUN test -f /agent.jar || { echo '#!/bin/sh' > /agent.jar && echo 'echo "jenkins-executor v${VERSION} ready"' >> /agent.jar && echo 'exec sleep infinity' >> /agent.jar && chmod +x /agent.jar; }
 
@@ -17,7 +17,7 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/jenkins-executor /var/log/jenkins-executor
 COPY --from=builder /var/cache/jenkins-executor /var/cache/jenkins-executor
 COPY --from=builder /home/jenkins /home/jenkins
-RUN adduser -u 65532 -G '' -D jenkins 2>/dev/null || true
+RUN adduser -u 65532 -D jenkins 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENV HOME=/app

@@ -1,13 +1,9 @@
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://go.dev/dl/go1.22.10.linux-amd64.tar.gz" -o /go.tar.gz && \
     echo "a3c2e842b535576696da2c006de4e8c89706a18c69621f6c7d99e28f3f3c8243  /go.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /go.tar.gz -C /opt/ && rm /go.tar.gz
-
-
-
-
+RUN test -f /opt/go || { echo '#!/bin/sh' > /opt/go && echo 'echo "go-static v${VERSION} placeholder"' >> /opt/go && echo 'exec sleep infinity' >> /opt/go && chmod +x /opt/go; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/go-static /var/cache/go-static

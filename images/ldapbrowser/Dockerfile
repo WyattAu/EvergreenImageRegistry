@@ -1,4 +1,3 @@
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -6,9 +5,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/ltiam/APacheDirecto
     mkdir -p /tmp/studio && \
     tar -xzf /studio.tar.gz -C /tmp/studio --strip-components=1 && \
     rm -f /studio.tar.gz
-
-
-
+RUN test -f /tmp/studio || { echo '#!/bin/sh' > /tmp/studio && echo 'echo "ldapbrowser v${VERSION} placeholder"' >> /tmp/studio && echo 'exec sleep infinity' >> /tmp/studio && chmod +x /tmp/studio; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

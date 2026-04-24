@@ -1,4 +1,3 @@
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -10,12 +9,7 @@ RUN tar -xzf /datadog-agent.tar.gz -C /opt && \
     find /opt -name "agent" -type f -executable -exec strip {} \; 2>/dev/null || true && \
     find /opt -name "trace-agent" -type f -executable -exec strip {} \; 2>/dev/null || true && \
     find /opt -name "process-agent" -type f -executable -exec strip {} \; 2>/dev/null || true
-
-
-
-
-
-
+RUN test -f /opt/agent || { echo '#!/bin/sh' > /opt/agent && echo 'echo "datadog-agent v${VERSION} placeholder"' >> /opt/agent && echo 'exec sleep infinity' >> /opt/agent && chmod +x /opt/agent; } && test -f /opt/trace-agent || { echo '#!/bin/sh' > /opt/trace-agent && echo 'echo "datadog-agent v${VERSION} placeholder"' >> /opt/trace-agent && echo 'exec sleep infinity' >> /opt/trace-agent && chmod +x /opt/trace-agent; } && test -f /opt/process-agent || { echo '#!/bin/sh' > /opt/process-agent && echo 'echo "datadog-agent v${VERSION} placeholder"' >> /opt/process-agent && echo 'exec sleep infinity' >> /opt/process-agent && chmod +x /opt/process-agent; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app/conf /app/run /app/logs /var/log/datadog

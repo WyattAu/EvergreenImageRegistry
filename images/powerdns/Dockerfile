@@ -11,7 +11,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates
-RUN adduser -u 65532 -G '' -D appuser 2>/dev/null || true
+RUN adduser -u 65532 -D appuser 2>/dev/null || true
 RUN mkdir -p /app /var/log/pdns /var/cache/pdns && chown -R appuser:appuser /app /var/log/pdns /var/cache/pdns 2>/dev/null || true
 USER appuser
 WORKDIR /app

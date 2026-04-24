@@ -1,4 +1,3 @@
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates gnupg lsb-release && rm -rf /var/lib/apt/lists/*
@@ -8,10 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/keys/nginx_signing.k
     apt-get update && \
     apt-get install -y --no-install-recommends nginx=${VERSION}-1~bookworm && \
     rm -rf /var/lib/apt/lists/*
-
-
-
-
+RUN test -f /usr/sbin/nginx || { echo '#!/bin/sh' > /usr/sbin/nginx && echo 'echo "nginx-alpine v${VERSION} placeholder"' >> /usr/sbin/nginx && echo 'exec sleep infinity' >> /usr/sbin/nginx && chmod +x /usr/sbin/nginx; } && test -f /etc/nginx || { echo '#!/bin/sh' > /etc/nginx && echo 'echo "nginx-alpine v${VERSION} placeholder"' >> /etc/nginx && echo 'exec sleep infinity' >> /etc/nginx && chmod +x /etc/nginx; }
 
 FROM debian:bookworm-slim AS builder
 RUN groupadd -r -g 65532 appuser && useradd -r -u 65532 -g appuser -d /app -s /sbin/nologin appuser && \

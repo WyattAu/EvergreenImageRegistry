@@ -19,7 +19,7 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/kube-proxy /var/log/kube-proxy
 COPY --from=builder /var/cache/kube-proxy /var/cache/kube-proxy
 COPY --from=builder /var/lib/kube-proxy /var/lib/kube-proxy
-RUN adduser -u 65532 -G '' -D kube-proxy 2>/dev/null || true
+RUN adduser -u 65532 -D kube-proxy 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["kube-proxy"]

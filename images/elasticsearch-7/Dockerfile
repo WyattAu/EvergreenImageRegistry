@@ -16,7 +16,7 @@ RUN apk add --no-cache curl ca-certificates && \
     tar xz -C /opt && \
     ln -s /opt/elasticsearch-${VERSION} /opt/elasticsearch && \
     ln -s /opt/elasticsearch/bin/elasticsearch /usr/local/bin/elasticsearch
-RUN adduser -u 65532 -G '' -D elasticsearch 2>/dev/null || true
+RUN adduser -u 65532 -D elasticsearch 2>/dev/null || true
 RUN mkdir -p /app /var/log/elasticsearch /var/cache/elasticsearch && chown -R elasticsearch:elasticsearch /app /var/log/elasticsearch /var/cache/elasticsearch 2>/dev/null || true
 USER elasticsearch
 WORKDIR /app

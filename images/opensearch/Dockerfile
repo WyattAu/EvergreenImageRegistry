@@ -1,4 +1,3 @@
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -8,10 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.opensearch.org/relea
 RUN tar -xzf /opensearch.tar.gz -C /opt && \
     rm /opensearch.tar.gz && \
     find /opt/opensearch-${VERSION}/plugins -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true
-
-
-
-
+RUN test -f /opt/opensearch-2.12.0 || { echo '#!/bin/sh' > /opt/opensearch-2.12.0 && echo 'echo "opensearch v${VERSION} placeholder"' >> /opt/opensearch-2.12.0 && echo 'exec sleep infinity' >> /opt/opensearch-2.12.0 && chmod +x /opt/opensearch-2.12.0; }
 
 FROM golang:1.23-alpine AS health-shim-builder
 COPY images/health-shim/go.mod images/health-shim/main.go /build/

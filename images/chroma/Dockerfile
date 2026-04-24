@@ -14,7 +14,7 @@ ARG VERSION=0.5.0
 RUN apk add --no-cache ca-certificates git build-base
 RUN pip3 install --no-cache-dir --break-system-packages chromadb==${VERSION} 2>/dev/null || \
     pip3 install --no-cache-dir --break-system-packages chromadb
-RUN adduser -u 65532 -G '' -D chroma 2>/dev/null || true
+RUN adduser -u 65532 -D chroma 2>/dev/null || true
 RUN mkdir -p /app /var/log/chroma /var/cache/chroma && chown -R chroma:chroma /app /var/log/chroma /var/cache/chroma 2>/dev/null || true
 USER chroma
 WORKDIR /app

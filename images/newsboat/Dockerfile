@@ -11,7 +11,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates
-RUN adduser -u 65532 -G '' -D newsboat 2>/dev/null || true
+RUN adduser -u 65532 -D newsboat 2>/dev/null || true
 RUN mkdir -p /app /var/log/newsboat /var/cache/newsboat && chown -R newsboat:newsboat /app /var/log/newsboat /var/cache/newsboat 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app

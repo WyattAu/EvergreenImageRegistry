@@ -17,7 +17,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/subsonic/subsonic/r
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl
-RUN adduser -u 65532 -G '' -D app 2>/dev/null || true
+RUN adduser -u 65532 -D app 2>/dev/null || true
 COPY --from=downloader --chown=65532:65532 /app /app
 RUN mkdir -p /var/log/subsonic /var/cache/subsonic && chown -R 65532:65532 /var/log/subsonic /var/cache/subsonic 2>/dev/null || true
 USER 65532:65532

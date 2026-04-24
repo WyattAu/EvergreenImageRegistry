@@ -11,7 +11,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates
-RUN adduser -u 65532 -G '' -D transmission 2>/dev/null || true
+RUN adduser -u 65532 -D transmission 2>/dev/null || true
 RUN mkdir -p /app /var/log/transmission-daemon /var/cache/transmission-daemon && chown -R transmission:transmission /app /var/log/transmission-daemon /var/cache/transmission-daemon 2>/dev/null || true
 USER transmission
 WORKDIR /app

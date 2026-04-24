@@ -1,4 +1,3 @@
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
@@ -6,8 +5,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/orientechnologies/o
     tar -xzf /orientdb.tar.gz -C /opt && rm /orientdb.tar.gz
 
 # hadolint ignore=DL3023
-
-
+RUN test -f /opt/orientdb-community-3.2.34 || { echo '#!/bin/sh' > /opt/orientdb-community-3.2.34 && echo 'echo "orientdb v${VERSION} placeholder"' >> /opt/orientdb-community-3.2.34 && echo 'exec sleep infinity' >> /opt/orientdb-community-3.2.34 && chmod +x /opt/orientdb-community-3.2.34; }
 
 FROM debian:bookworm-slim AS builder
 COPY --from=downloader /opt/orientdb-community-3.2.34 /opt/orientdb

@@ -11,7 +11,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache nodejs npm postgresql-client ca-certificates
-RUN adduser -u 65532 -G '' -D outline 2>/dev/null || true
+RUN adduser -u 65532 -D outline 2>/dev/null || true
 RUN mkdir -p /app /var/log/node /var/cache/node && chown -R outline:outline /app /var/log/node /var/cache/node 2>/dev/null || true
 USER outline
 WORKDIR /app

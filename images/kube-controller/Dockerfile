@@ -19,7 +19,7 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/kube-controller /var/log/kube-controller
 COPY --from=builder /var/cache/kube-controller /var/cache/kube-controller
 COPY --from=builder /var/lib/kube-controller /var/lib/kube-controller
-RUN adduser -u 65532 -G '' -D kube-controller 2>/dev/null || true
+RUN adduser -u 65532 -D kube-controller 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["kube-controller-manager"]

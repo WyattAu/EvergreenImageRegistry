@@ -11,7 +11,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache py3-lxml ca-certificates
-RUN adduser -u 65532 -G '' -D searxng 2>/dev/null || true
+RUN adduser -u 65532 -D searxng 2>/dev/null || true
 RUN mkdir -p /app /var/log/python /var/cache/python && chown -R searxng:searxng /app /var/log/python /var/cache/python 2>/dev/null || true
 USER searxng
 WORKDIR /app

@@ -18,7 +18,7 @@ RUN apk add --no-cache ca-certificates
 COPY --from=builder /app /app
 COPY --from=builder /var/log/openjdk-alpine /var/log/openjdk-alpine
 COPY --from=builder /var/cache/openjdk-alpine /var/cache/openjdk-alpine
-RUN adduser -u 65532 -G '' -D java 2>/dev/null || true
+RUN adduser -u 65532 -D java 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["java"]

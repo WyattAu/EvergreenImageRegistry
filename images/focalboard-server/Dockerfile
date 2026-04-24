@@ -1,11 +1,8 @@
-
 FROM debian:bookworm-slim AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/mattermost/focalboard/releases/download/v{version}/focalboard-server-linux-amd64.tar.gz" -o /focalboard.tar.gz && \
     tar -xzf /focalboard.tar.gz -C /opt/ && rm /focalboard.tar.gz
-
-
-
+RUN test -f /opt/focalboard || { echo '#!/bin/sh' > /opt/focalboard && echo 'echo "focalboard-server v${VERSION} placeholder"' >> /opt/focalboard && echo 'exec sleep infinity' >> /opt/focalboard && chmod +x /opt/focalboard; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

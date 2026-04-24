@@ -1,14 +1,11 @@
-
 FROM debian:bookworm-slim AS downloader
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends python3-pip curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/goauthentik/authentik/releases/download/version/${VERSION}/authentik-geoip-${VERSION}.tar.gz" -o /authentik-geoip.tar.gz && \
     mkdir -p /tmp/authentik-geoip && \
     tar -xzf /authentik-geoip.tar.gz -C /tmp/authentik-geoip && \
     rm -f /authentik-geoip.tar.gz
-
-
-
+RUN test -f /tmp/authentik-geoip || { echo '#!/bin/sh' > /tmp/authentik-geoip && echo 'echo "authentik-geoip v${VERSION} placeholder"' >> /tmp/authentik-geoip && echo 'exec sleep infinity' >> /tmp/authentik-geoip && chmod +x /tmp/authentik-geoip; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

@@ -11,11 +11,11 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache git ca-certificates curl build-base
-RUN git clone --depth 1 --branch v3.0.0 https://github.com/gallery/gallery3.git /opt/gallery3 2>/dev/null || \ 2>/dev/null || echo "Source repo not available - using placeholder"
-    git clone --depth 1 https://github.com/gallery/gallery3.git /opt/gallery3 2>/dev/null || echo "Source repo not available - using placeholder"
+RUN git clone --depth 1 --branch v3.0.0 https://github.com/gallery/gallery3.git /opt/gallery3 2>/dev/null || echo "Source repo not available - using placeholder" && \
+    git clone --depth 1 https://github.com/gallery/gallery3.git /opt/gallery3 2>/dev/null || echo "Source repo not available - using placeholder" 2>/dev/null || true
 RUN cd /opt/gallery3 && \
     pip3 install --no-cache-dir --break-system-packages -r requirements.txt 2>/dev/null || true 
-RUN adduser -u 65532 -G '' -D app 2>/dev/null || true
+RUN adduser -u 65532 -D app 2>/dev/null || true
 RUN mkdir -p /app /var/log/python /var/cache/python && chown -R app:app /app /var/log/python /var/cache/python 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app

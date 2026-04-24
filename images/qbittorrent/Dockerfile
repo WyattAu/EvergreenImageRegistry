@@ -11,7 +11,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates
-RUN adduser -u 65532 -G '' -D qbittorrent 2>/dev/null || true
+RUN adduser -u 65532 -D qbittorrent 2>/dev/null || true
 RUN mkdir -p /app /var/log/qbittorrent-nox /var/cache/qbittorrent-nox && chown -R qbittorrent:qbittorrent /app /var/log/qbittorrent-nox /var/cache/qbittorrent-nox 2>/dev/null || true
 USER qbittorrent
 WORKDIR /app

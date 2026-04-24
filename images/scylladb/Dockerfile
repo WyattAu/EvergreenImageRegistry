@@ -28,8 +28,8 @@ RUN adduser -u 65532 -s /sbin/nologin scylla 2>/dev/null || true
 RUN mkdir -p /var/lib/scylla /var/log/scylla
 COPY --from=builder /opt/scylladb /opt/scylladb
 COPY --from=builder /usr/bin/scylla /usr/bin/scylla
-COPY --from=builder /usr/lib/scylla /usr/lib/scylla 2>/dev/null || true
-COPY --from=builder /etc/scylla /etc/scylla 2>/dev/null || true
+COPY --from=builder /usr/lib/scylla /usr/lib/scylla
+COPY --from=builder /etc/scylla /etc/scylla
 USER 65532:65532
 WORKDIR /var/lib/scylla
 EXPOSE 9042 9160 10000

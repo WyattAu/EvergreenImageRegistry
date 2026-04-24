@@ -9,7 +9,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads
     && rm /metricbeat.tar.gz \
     && rm -rf /opt/metricbeat/kibana /opt/metricbeat/logs \
     && strip /opt/metricbeat/metricbeat || true \
-    && chmod +x /opt/metricbeat/metricbeatRUN test -f /opt/metricbeat || { echo '#!/bin/sh' > /opt/metricbeat && echo 'echo "metricbeat v${VERSION} placeholder"' >> /opt/metricbeat && echo 'exec sleep infinity' >> /opt/metricbeat && chmod +x /opt/metricbeat; }
+    && chmod +x /opt/metricbeat/metricbeat
+RUN test -f /opt/metricbeat || { echo '#!/bin/sh' > /opt/metricbeat && echo 'echo "metricbeat v${VERSION} placeholder"' >> /opt/metricbeat && echo 'exec sleep infinity' >> /opt/metricbeat && chmod +x /opt/metricbeat; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /var/log/metricbeat /var/lib/metricbeat /var/cache/metricbeat

@@ -9,8 +9,8 @@ RUN mkdir -p /app
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache nodejs npm ca-certificates
-COPY --from=builder /usr/lib/node_modules/dockerfilelint /app/dockerfilelint 2>/dev/null || true
-COPY --from=builder /usr/bin/dockerfilelint /usr/local/bin/dockerfilelint 2>/dev/null || true
+COPY --from=builder /usr/lib/node_modules/dockerfilelint /app/dockerfilelint
+COPY --from=builder /usr/bin/dockerfilelint /usr/local/bin/dockerfilelint
 COPY --from=builder /app /app
 RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin dockerlint 2>/dev/null || true && \
     chown -R 65532:65532 /app 2>/dev/null || true

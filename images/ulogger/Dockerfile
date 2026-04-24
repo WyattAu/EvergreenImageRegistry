@@ -6,7 +6,8 @@ RUN test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "ulogger v${VERSION}
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         go-1.23 git ca-certificates curl \
-    && rm -rf /var/lib/apt/lists/*WORKDIR /src
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /src
 RUN git clone --depth 1 https://github.com/nicehash/ulogger.git /src && \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
     cd /src && go build -ldflags="-s -w" -o /ulogger .RUN strip /ulogger 2>/dev/null || true
 

@@ -10,7 +10,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache nodejs npm ca-certificates
 COPY --from=builder /usr/lib/node_modules/homebridge /usr/lib/node_modules/homebridge
-COPY --from=builder /usr/lib/node_modules/hap-nodejs /usr/lib/node_modules/hap-nodejs 2>/dev/null || true
+COPY --from=builder /usr/lib/node_modules/hap-nodejs /usr/lib/node_modules/hap-nodejs
 COPY --from=builder /app /app
 COPY --from=builder /homebridge /homebridge
 RUN ln -sf /usr/lib/node_modules/homebridge/bin/homebridge /usr/local/bin/homebridge && \

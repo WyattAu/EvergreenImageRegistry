@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libboost-all-dev libssl-dev libspdlog-dev \
     python3-pip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN git clone --depth 1 --branch v${VERSION} https://github.com/memgraph/memgraph.git /tmp/memgraph-src 2>/dev/null || echo "Source repo not available - using placeholder"
+RUN git clone --depth 1 --branch v${VERSION} https://github.com/memgraph/memgraph.git /tmp/memgraph-src 2>/dev/null || echo "Source repo not available - using placeholder"; \
     (curl --retry 3 --retry-delay 5 -fsSL "https://github.com/memgraph/memgraph/releases/download/v${VERSION}/memgraph-${VERSION}-linux-amd64.tar.gz" -o /tmp/memgraph.tar.gz \
     && tar -xzf /tmp/memgraph.tar.gz -C /opt && rm /tmp/memgraph.tar.gz) || true
 
@@ -28,7 +28,7 @@ ARG VERSION
 RUN apk add --no-cache ca-certificates python3
 RUN adduser -u 65532 -s /sbin/nologin memgraph 2>/dev/null || true
 RUN mkdir -p /var/lib/memgraph /var/log/memgraph /var/cache/memgraph /etc/memgraph
-COPY --from=builder /opt/memgraph /opt/memgraph 2>/dev/null || true
+COPY --from=builder /opt/memgraph /opt/memgraph
 RUN chown -R 65532:65532 /opt/memgraph /var/lib/memgraph /var/log/memgraph /var/cache/memgraph /etc/memgraph
 USER 65532:65532
 WORKDIR /var/lib/memgraph

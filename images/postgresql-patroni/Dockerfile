@@ -10,6 +10,8 @@ ARG BUILD_DATE
 ARG PYTHON_VERSION=3.12-slim
 
 
+
+RUN mkdir -p /install 2>/dev/null || true
 FROM python:${PYTHON_VERSION} AS builder
 ARG VERSION=4.0.3
 ARG PYTHON_VERSION=3.12-slim

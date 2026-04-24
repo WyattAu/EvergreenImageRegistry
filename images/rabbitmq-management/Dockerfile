@@ -36,7 +36,7 @@ RUN mkdir -p /var/lib/rabbitmq /var/log/rabbitmq /etc/rabbitmq
 COPY --from=builder /usr/lib/rabbitmq /usr/lib/rabbitmq
 COPY --from=builder /usr/sbin/rabbitmq* /usr/sbin/
 COPY --from=builder /usr/bin/rabbitmq* /usr/bin/
-COPY --from=builder /etc/rabbitmq /etc/rabbitmq 2>/dev/null || true
+COPY --from=builder /etc/rabbitmq /etc/rabbitmq
 USER 65532:65532
 WORKDIR /var/lib/rabbitmq
 EXPOSE 5672 15672 15692

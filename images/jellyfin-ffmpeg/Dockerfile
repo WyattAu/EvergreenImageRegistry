@@ -4,7 +4,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        build-essential pkgconf yasm nasm \
+        build-essential pkg-config yasm nasm \
         libfdk-aac-dev libopus-dev libvpx-dev libx264-dev libx265-dev \
         libass-dev libfreetype-dev libgnutls28-dev libmp3lame-dev \
         libtheora-dev libvorbis-dev libwebp-dev libxvidcore-dev \

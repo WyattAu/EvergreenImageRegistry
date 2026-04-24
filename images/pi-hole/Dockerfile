@@ -26,11 +26,11 @@ RUN apk add --no-cache curl wget iproute2 iptables procps ca-certificates
 RUN mkdir -p /app /var/log/pihole /var/lib/pihole /etc/pihole /etc/dnsmasq.d
 COPY --from=installer /usr/local/bin/pihole /usr/local/bin/pihole
 COPY --from=installer /opt/pihole /opt/pihole
-COPY --from=installer /etc/pihole /etc/pihole 2>/dev/null || true
-COPY --from=installer /etc/dnsmasq.d /etc/dnsmasq.d 2>/dev/null || true
-COPY --from=installer /usr/bin/gravity.sh /usr/local/bin/gravity.sh 2>/dev/null || true
-COPY --from=installer /usr/bin/pihole-FTL /usr/local/bin/pihole-FTL 2>/dev/null || true
-COPY --from=installer /usr/sbin/pihole-FTL /usr/local/sbin/pihole-FTL 2>/dev/null || true
+COPY --from=installer /etc/pihole /etc/pihole
+COPY --from=installer /etc/dnsmasq.d /etc/dnsmasq.d
+COPY --from=installer /usr/bin/gravity.sh /usr/local/bin/gravity.sh
+COPY --from=installer /usr/bin/pihole-FTL /usr/local/bin/pihole-FTL
+COPY --from=installer /usr/sbin/pihole-FTL /usr/local/sbin/pihole-FTL
 RUN chown -R 65532:65532 /app /var/log/pihole /var/lib/pihole
 USER 65532:65532
 WORKDIR /app

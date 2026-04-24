@@ -9,7 +9,7 @@ RUN mkdir -p /app
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache nodejs npm ca-certificates
-COPY --from=builder /usr/lib/node_modules /usr/lib/node_modules 2>/dev/null || true
+COPY --from=builder /usr/lib/node_modules /usr/lib/node_modules
 COPY --from=builder /app /app
 RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin tasmota 2>/dev/null || true && \
     chown -R 65532:65532 /app /usr/lib/node_modules 2>/dev/null || true

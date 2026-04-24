@@ -13,7 +13,8 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache php-8.4-fpm php-8.4 php-8.4-curl php-8.4-gd php-8.4-mbstring php-8.4-xml zip php-8.4-intl php-8.4-pdo_mysql php-8.4-mysqli sqlite-libs json-c nginx ca-certificates
 RUN mkdir -p /var/run/php /var/www/html /var/log/nginx /var/cache/nginx \
-    && chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/phpCOPY --from=builder /etc/nginx/nginx.conf /etc/nginx/nginx.conf 2>/dev/null || true
+    && chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php
+COPY --from=builder /etc/nginx/nginx.conf /etc/nginx/nginx.conf
 USER 65532:65532
 WORKDIR /var/www/html
 EXPOSE 80 443

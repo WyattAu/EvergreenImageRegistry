@@ -23,7 +23,7 @@ RUN mkdir -p /app /var/log/pdns-recursor /var/lib/pdns-recursor /etc/pdns-recurs
 COPY --from=installer /usr/sbin/pdns_recursor /usr/local/bin/pdns_recursor
 COPY --from=installer /usr/sbin/rec_control /usr/local/bin/rec_control
 COPY --from=installer /usr/lib/pdns-recursor /usr/lib/pdns-recursor
-COPY --from=installer /etc/pdns/recursor.conf /etc/pdns-recursor/recursor.conf 2>/dev/null || true
+COPY --from=installer /etc/pdns/recursor.conf /etc/pdns-recursor/recursor.conf
 RUN chown -R 65532:65532 /app /var/log/pdns-recursor /var/lib/pdns-recursor
 USER 65532:65532
 WORKDIR /app

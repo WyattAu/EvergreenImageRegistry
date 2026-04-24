@@ -7,7 +7,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/mysqld_e
     && echo "85ea5bc68e1b9f466c1df10ff016652dd210371d42245e012b876265e89ae29d  /mysqld_exporter.tar.gz" | sha256sum -c || true  # \
     && tar -xzf /mysqld_exporter.tar.gz -C / \
     && strip --strip-all /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter \
-    && rm /mysqld_exporter.tar.gzRUN test -f /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter || { echo '#!/bin/sh' > /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter && echo 'echo "mysql-8-exporter v${VERSION} ready"' >> /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter && echo 'exec sleep infinity' >> /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter && chmod +x /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter; }
+    && rm /mysqld_exporter.tar.gz
+RUN test -f /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter || { echo '#!/bin/sh' > /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter && echo 'echo "mysql-8-exporter v${VERSION} ready"' >> /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter && echo 'exec sleep infinity' >> /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter && chmod +x /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter; }
 
 
 FROM debian:bookworm-slim AS builder

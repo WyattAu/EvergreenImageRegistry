@@ -12,10 +12,11 @@ FROM debian:bookworm-slim AS builder
 ARG VERSION=5.7.6
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake libssl-dev libluajit-5.1-dev libsystemd-dev \
-    libuv1-dev libnghttp2-dev meson pkgconf git ca-certificates && \
+    libuv1-dev libnghttp2-dev meson pkg-config git ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 RUN git clone --depth 1 --branch "v${VERSION}" \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
-    https://github.com/CZ-NIC/knot-resolver.git /knot-resolverRUN cd /knot-resolver && \
+    https://github.com/CZ-NIC/knot-resolver.git /knot-resolver
+RUN cd /knot-resolver && \
     meson setup build --default-library=static --prefix=/usr \
     -Dclient=enabled -Dpostinst=disabled && \
     meson compile -C build -j"$(nproc)" && \
@@ -27,7 +28,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache libnghttp2-14 ca-certificates
 RUN mkdir -p /app /var/log/knot-resolver /var/lib/knot-resolver /etc/knot-resolver
 COPY --from=builder /knot-resolver/build/kresd /usr/local/bin/kresd
-COPY --from=builder /knot-resolver/build/rootkeys.list /etc/knot-resolver/rootkeys.list 2>/dev/null || true
+COPY --from=builder /knot-resolver/build/rootkeys.list /etc/knot-resolver/rootkeys.list
 RUN chown -R 65532:65532 /app /var/log/knot-resolver /var/lib/knot-resolver
 USER 65532:65532
 WORKDIR /app

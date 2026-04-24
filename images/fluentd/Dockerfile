@@ -25,7 +25,7 @@ RUN adduser -u 65532 -s /sbin/nologin fluentd 2>/dev/null || true
 RUN mkdir -p /fluentd/etc /fluentd/log /fluentd/plugins
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 COPY --from=builder /usr/local/bin/fluentd /usr/local/bin/fluentd
-COPY --from=builder /usr/local/lib/ruby/gems/3.2.0/gems/fluentd-*/bin/fluent* /usr/local/bin/ 2>/dev/null || true
+COPY --from=builder /usr/local/lib/ruby/gems/3.2.0/gems/fluentd-*/bin/fluent* /usr/local/bin/
 USER 65532:65532
 WORKDIR /fluentd
 EXPOSE 24224 5140

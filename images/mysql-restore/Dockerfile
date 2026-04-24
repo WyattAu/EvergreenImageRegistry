@@ -1,7 +1,7 @@
 # =============================================================================
 # SOVEREIGN HARDENED MYSQL RESTORE
 # Generated from template - Version: 8.0
-# Constraint: debian-slim - php84-mysql client and xz require glibc
+# Constraint: debian-slim - mysql client and xz require glibc
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
@@ -11,8 +11,8 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    default-php84-mysql-client xz-utils && \
-    mkdir -p /app /backups /var/log/php84-mysql-restore /var/cache/php84-mysql-restore
+    default-mysql-client xz-utils && \
+    mkdir -p /app /backups /var/log/mysql-restore /var/cache/mysql-restore
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
@@ -20,8 +20,8 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache curl ca-certificates
 COPY --from=builder --chown=65532:65532 /app /app
 COPY --from=builder --chown=65532:65532 /backups /backups
-COPY --from=builder --chown=65532:65532 /var/log/php84-mysql-restore /var/log/php84-mysql-restore
-COPY --from=builder --chown=65532:65532 /var/cache/php84-mysql-restore /var/cache/php84-mysql-restore
+COPY --from=builder --chown=65532:65532 /var/log/mysql-restore /var/log/mysql-restore
+COPY --from=builder --chown=65532:65532 /var/cache/mysql-restore /var/cache/mysql-restore
 USER 65532:65532
 WORKDIR /app
 COPY <<'SCRIPT' /app/restore.sh
@@ -40,12 +40,12 @@ case "$BACKUP_FILE" in
     *.gz) zcat "$BACKUP_FILE" ;;
     *.sql) cat "$BACKUP_FILE" ;;
     *)     echo "Unsupported format"; exit 1 ;;
-esac | php84-mysql --host="$MYSQL_HOST" --user="$MYSQL_USER" --password="$MYSQL_PASSWORD"
+esac | mysql --host="$MYSQL_HOST" --user="$MYSQL_USER" --password="$MYSQL_PASSWORD"
 echo "Restore complete from: $BACKUP_FILE"
 SCRIPT
 RUN chmod +x /app/restore.sh && chown 65532:65532 /app/restore.sh
 ENTRYPOINT ["/app/restore.sh"]
-LABEL org.opencontainers.image.title="php84-mysql-restore" \
+LABEL org.opencontainers.image.title="mysql-restore" \
       org.opencontainers.image.version="8.0" \
       org.opencontainers.image.description="MySQL Restore Container with xz/gz/sql support" \
       org.opencontainers.image.vendor="Oracle" \

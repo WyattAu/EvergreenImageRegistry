@@ -3,7 +3,9 @@ FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates \
-    && rm -rf /var/lib/apt/lists/*RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal
 ENV PATH="/root/.cargo/bin:$PATH"
 RUN cargo install cargo-audit
 RUN mkdir -p /app

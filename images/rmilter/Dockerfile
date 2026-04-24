@@ -30,7 +30,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache libpcre2-8-0 ca-certificates
-RUN addgroup -S -g 65532 rmilter && adduser -u 65532 -G rmilter -D -h /var/run/rmilter -s /sbin/nologin rmilter
+RUN addgroup -S -g 65532 rmilter 2>/dev/null || true && adduser -u 65532 -G rmilter -D -h /var/run/rmilter -s /sbin/nologin rmilter
 COPY --from=builder /build/rmilter/rmilter /usr/local/bin/rmilter
 RUN mkdir -p /var/run/rmilter /var/log/rmilter && chown -R 65532:65532 /var/run/rmilter /var/log/rmilter
 USER 65532:65532

@@ -11,8 +11,8 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    default-php84-mysql-client xz-utils && \
-    mkdir -p /app /backups /var/log/php84-mysql-backup /var/cache/php84-mysql-backup
+    default-mysql-client xz-utils && \
+    mkdir -p /app /backups /var/log/mysql-backup /var/cache/mysql-backup
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
@@ -20,8 +20,8 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache curl ca-certificates
 COPY --from=builder --chown=65532:65532 /app /app
 COPY --from=builder --chown=65532:65532 /backups /backups
-COPY --from=builder --chown=65532:65532 /var/log/php84-mysql-backup /var/log/php84-mysql-backup
-COPY --from=builder --chown=65532:65532 /var/cache/php84-mysql-backup /var/cache/php84-mysql-backup
+COPY --from=builder --chown=65532:65532 /var/log/mysql-backup /var/log/mysql-backup
+COPY --from=builder --chown=65532:65532 /var/cache/mysql-backup /var/cache/mysql-backup
 USER 65532:65532
 WORKDIR /app
 COPY <<'SCRIPT' /app/backup.sh
@@ -39,7 +39,7 @@ echo "Backup complete: $OUTPUT"
 SCRIPT
 RUN chmod +x /app/backup.sh && chown 65532:65532 /app/backup.sh
 ENTRYPOINT ["/app/backup.sh"]
-LABEL org.opencontainers.image.title="php84-mysql-backup" \
+LABEL org.opencontainers.image.title="mysql-backup" \
       org.opencontainers.image.version="8.0" \
       org.opencontainers.image.description="MySQL Backup Container with mysqldump + xz compression" \
       org.opencontainers.image.vendor="Oracle" \

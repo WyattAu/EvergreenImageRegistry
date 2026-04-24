@@ -29,7 +29,7 @@ RUN pip install --no-cache-dir "matrix-synapse[all]==${VERSION}"
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache python3 ca-certificates curl imagemagick
-RUN addgroup -S -g 65532 synapse && adduser -u 65532 -G synapse -D -h /data -s /sbin/nologin synapse
+RUN addgroup -S -g 65532 synapse 2>/dev/null || true && adduser -u 65532 -G synapse -D -h /data -s /sbin/nologin synapse
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 RUN mkdir -p /data /var/log/synapse /var/cache/synapse && chown -R 65532:65532 /data /var/log/synapse /var/cache/synapse

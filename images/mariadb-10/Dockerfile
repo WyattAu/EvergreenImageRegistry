@@ -19,11 +19,11 @@ ARG VERSION=10.11.6
 COPY --from=builder /usr/share/keyrings/mariadb-keyring.gnupg /usr/share/keyrings/mariadb-keyring.gnupg
 COPY --from=builder /etc/apt/sources.list.d/mariadb.list /etc/apt/sources.list.d/mariadb.list
 RUN apk add --no-cache ca-certificates
-RUN adduser -u 65532 -s /sbin/nologin php84-mysql 2>/dev/null || true
-RUN mkdir -p /var/lib/php84-mysql /var/log/php84-mysql /var/cache/php84-mysql /run/mysqld
-RUN chown -R 65532:65532 /var/lib/php84-mysql /var/log/php84-mysql /var/cache/php84-mysql /run/mysqld
+RUN adduser -u 65532 -s /sbin/nologin mysql 2>/dev/null || true
+RUN mkdir -p /var/lib/mysql /var/log/mysql /var/cache/mysql /run/mysqld
+RUN chown -R 65532:65532 /var/lib/mysql /var/log/mysql /var/cache/mysql /run/mysqld
 USER 65532:65532
-WORKDIR /var/lib/php84-mysql
+WORKDIR /var/lib/mysql
 EXPOSE 3306
 ENTRYPOINT ["mariadbd"]
 LABEL org.opencontainers.image.title="mariadb-10" \

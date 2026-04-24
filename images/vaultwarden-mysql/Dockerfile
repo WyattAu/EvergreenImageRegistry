@@ -18,8 +18,8 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
 ENTRYPOINT ["/usr/local/bin/vaultwarden"]
-CMD ["--database-url", "php84-mysql://user:pass@host/db"]
-LABEL org.opencontainers.image.title="vaultwarden-php84-mysql" \
+CMD ["--database-url", "mysql://user:pass@host/db"]
+LABEL org.opencontainers.image.title="vaultwarden-mysql" \
       org.opencontainers.image.version="1.35.7" \
       org.opencontainers.image.vendor="dani-garcia" \
       org.opencontainers.image.source="https://github.com/dani-garcia/vaultwarden" \

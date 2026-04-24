@@ -50,7 +50,7 @@ ENV APP_ENV=production \
     DB_DRIVER=sqlite \
     CACHE_DRIVER=file \
     SESSION_DRIVER=file
-ENTRYPOINT ["/usr/sbin/php-fpm8.2", "-F"]
+ENTRYPOINT ["/usr/sbin/php-fpm8.4", "-F"]
 LABEL org.opencontainers.image.title="cachet" \
       org.opencontainers.image.version="2.5.1" \
       org.opencontainers.image.vendor="CachetHQ" \

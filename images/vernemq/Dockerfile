@@ -3,7 +3,9 @@ FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates gnupg procps \
-    && rm -rf /var/lib/apt/lists/*RUN mkdir -p /app /opt/vernemq/data /opt/vernemq/log
+    && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /app /opt/vernemq/data /opt/vernemq/log
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

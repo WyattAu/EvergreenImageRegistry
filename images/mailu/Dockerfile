@@ -18,7 +18,7 @@ RUN pip install --no-cache-dir mailu==2.0.0
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache python3 ca-certificates
-RUN addgroup -S -g 65532 appuser && adduser -u 65532 -G appuser -D -h /app -s /sbin/nologin appuser
+RUN addgroup -S -g 65532 appuser 2>/dev/null || true && adduser -u 65532 -G appuser -D -h /app -s /sbin/nologin appuser
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 RUN mkdir -p /app /var/log/mailu /var/cache/mailu /data && chown -R 65532:65532 /app /var/log/mailu /var/cache/mailu /data

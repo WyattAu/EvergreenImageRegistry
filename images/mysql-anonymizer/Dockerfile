@@ -47,13 +47,13 @@ if __name__ == "__main__":
     anonymize_dump(args.input, args.output, args.rules)
 SCRIPT
 RUN adduser -u 65532 -s /sbin/nologin anon 2>/dev/null || true && \
-    mkdir -p /app /var/log/php84-mysql-anonymizer /var/cache/php84-mysql-anonymizer && \
-    chown -R 65532:65532 /app /var/log/php84-mysql-anonymizer /var/cache/php84-mysql-anonymizer && \
+    mkdir -p /app /var/log/mysql-anonymizer /var/cache/mysql-anonymizer && \
+    chown -R 65532:65532 /app /var/log/mysql-anonymizer /var/cache/mysql-anonymizer && \
     chmod +x /app/anonymize.py
 USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["python3", "/app/anonymize.py"]
-LABEL org.opencontainers.image.title="php84-mysql-anonymizer" \
+LABEL org.opencontainers.image.title="mysql-anonymizer" \
       org.opencontainers.image.version="0.10.0" \
       org.opencontainers.image.description="MySQL Data Anonymization Tool" \
       org.opencontainers.image.vendor="Sovereign" \

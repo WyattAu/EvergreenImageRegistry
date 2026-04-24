@@ -23,7 +23,7 @@ RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin privatebin 2>/dev/nu
 USER 65532:65532
 WORKDIR /app
 EXPOSE 80
-ENTRYPOINT ["php-fpm8.2"]
+ENTRYPOINT ["php-fpm8.4"]
 LABEL org.opencontainers.image.title="privatebin-nginx" \
       org.opencontainers.image.description="PrivateBin - encrypted pastebin with nginx" \
       org.opencontainers.image.vendor="PrivateBin" \

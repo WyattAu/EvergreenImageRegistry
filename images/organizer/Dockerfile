@@ -20,7 +20,7 @@ RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin organizr 2>/dev/null
 USER 65532:65532
 WORKDIR /app
 EXPOSE 80
-ENTRYPOINT ["php-fpm8.2"]
+ENTRYPOINT ["php-fpm8.4"]
 LABEL org.opencontainers.image.title="organizer" \
       org.opencontainers.image.description="Organizr - HTPC/Homelab dashboard" \
       org.opencontainers.image.vendor="CauseFX" \

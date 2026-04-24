@@ -7,7 +7,9 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         php84-fpm php84 php84-curl php84-gd php84-mbstring php84-xml zip php84-intl php84-mysql sqlite-libs imagick \
         nginx ca-certificates curl \
-    && rm -rf /var/lib/apt/lists/*RUN mkdir -p /var/run/php /var/www/html /var/log/nginx /var/cache/nginx \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /var/run/php /var/www/html /var/log/nginx /var/cache/nginx \
     && chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php
 
 FROM cgr.dev/chainguard/wolfi-base:latest
@@ -19,7 +21,7 @@ COPY --from=builder /etc/nginx/nginx.conf /etc/nginx/nginx.conf
 USER 65532:65532
 WORKDIR /var/www/html
 EXPOSE 80 443
-ENTRYPOINT ["php-fpm8.2"]
+ENTRYPOINT ["php-fpm8.4"]
 LABEL org.opencontainers.image.title="nextcloud-imaging" \
       org.opencontainers.image.version="30.0.5" \
       org.opencontainers.image.vendor="Nextcloud" \

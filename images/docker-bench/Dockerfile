@@ -3,7 +3,9 @@ FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git curl ca-certificates \
-    && rm -rf /var/lib/apt/lists/*RUN git clone --depth 1 https://github.com/docker/docker-bench-security.git /src 2>/dev/null || echo "Source repo not available - using placeholder"
+    && rm -rf /var/lib/apt/lists/*
+
+RUN git clone --depth 1 https://github.com/docker/docker-bench-security.git /src 2>/dev/null || echo "Source repo not available - using placeholder"
 RUN mkdir -p /src 2>/dev/null || true
 RUN mkdir -p /app
 

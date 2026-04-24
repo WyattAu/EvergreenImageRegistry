@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS builder
-RUN useradd -m -u 65532 -s /usr/sbin/nologin php84-mysql 2>/dev/null || true
+RUN useradd -m -u 65532 -s /usr/sbin/nologin mysql 2>/dev/null || true
 RUN mkdir -p /app /var/log/mariadbd /var/cache/mariadbd
 
 FROM cgr.dev/chainguard/wolfi-base:latest

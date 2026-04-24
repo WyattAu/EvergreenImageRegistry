@@ -2,7 +2,9 @@
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm ca-certificates \
-    && rm -rf /var/lib/apt/lists/*RUN npm install -g tasmotizer 2>/dev/null || true
+    && rm -rf /var/lib/apt/lists/*
+
+RUN npm install -g tasmotizer 2>/dev/null || true
 RUN mkdir -p /app
 
 

@@ -7,10 +7,6 @@
 
 ARG VERSION=7.2.4
 ARG BUILD_DATE
-
-
-
-RUN mkdir -p /install 2>/dev/null || true
 FROM debian:bookworm-slim AS builder
 ARG VERSION=7.2.4
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*

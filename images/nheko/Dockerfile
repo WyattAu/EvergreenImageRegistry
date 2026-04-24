@@ -8,6 +8,7 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS builder
+ARG GITHUB_TOKEN
 ARG VERSION=2.4.0
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && \
@@ -15,7 +16,7 @@ RUN apt-get update && \
         curl \
         ca-certificates && \
     rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Nheko-Reborn/nheko/releases/download/v${VERSION}/nheko-${VERSION}-x86_64-linux-gnu.AppImage" -o /tmp/nheko.AppImage && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Nheko-Reborn/nheko/releases/download/v${VERSION}/nheko-${VERSION}-x86_64-linux-gnu.AppImage" -o /tmp/nheko.AppImage && \
     chmod +x /tmp/nheko.AppImage && \
     /tmp/nheko.AppImage --appimage-extract 2>/dev/null || true
 

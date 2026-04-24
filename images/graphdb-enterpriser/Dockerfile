@@ -10,12 +10,13 @@ ARG BUILD_DATE
 # hadolint ignore=DL3023
 
 FROM debian:bookworm-slim AS builder
+ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/ontotext/graphdb/releases/download/v${VERSION}/graphdb-enterprise-${VERSION}-dist.zip" -o /tmp/graphdb.zip \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ontotext/graphdb/releases/download/v${VERSION}/graphdb-enterprise-${VERSION}-dist.zip" -o /tmp/graphdb.zip \
     && echo "PENDING  /tmp/graphdb.zip" | sha256sum -c || true  # \
     && unzip -q /tmp/graphdb.zip -d /opt \
     && rm /tmp/graphdb.zip

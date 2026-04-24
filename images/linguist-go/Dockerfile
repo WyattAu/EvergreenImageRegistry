@@ -1,4 +1,5 @@
 FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app /var/log/linguist /var/cache/linguist
 RUN test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "linguist-go v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app; }

@@ -10,10 +10,11 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-20250113-slim AS builder
+ARG GITHUB_TOKEN
 ARG VERSION
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/duckdb/duckdb/releases/download/v${VERSION}/duckdb_cli-linux-amd64.zip" -o /tmp/duckdb.zip \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/duckdb/duckdb/releases/download/v${VERSION}/duckdb_cli-linux-amd64.zip" -o /tmp/duckdb.zip \
     && echo "e5f6789012345678901234567890abcdef1234567890abcdef123456789012345678  /tmp/duckdb.zip" | sha256sum -c || true  # \
     && unzip -o /tmp/duckdb.zip -d /tmp \
     && strip --strip-all /tmp/duckdb \

@@ -3,6 +3,7 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS builder
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm ca-certificates curl && \
     rm -rf /var/lib/apt/lists/*

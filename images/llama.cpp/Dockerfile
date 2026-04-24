@@ -1,7 +1,8 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/ggerganov/llama.cpp/releases/download/${VERSION}/llama-${VERSION}-bin-ubuntu-x64.zip" -o /llama.zip && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ggerganov/llama.cpp/releases/download/${VERSION}/llama-${VERSION}-bin-ubuntu-x64.zip" -o /llama.zip && \
     apt-get install -y --no-install-recommends unzip && \
     unzip -o /llama.zip -d /tmp/llama && \
     chmod +x /tmp/llama/llama-server && \

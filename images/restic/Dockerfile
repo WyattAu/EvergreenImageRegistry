@@ -1,7 +1,8 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/restic/restic/releases/download/v${VERSION}/restic_${VERSION}_linux_amd64.bz2" -o /restic.bz2 && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/restic/restic/releases/download/v${VERSION}/restic_${VERSION}_linux_amd64.bz2" -o /restic.bz2 && \
     apt-get install -y --no-install-recommends bzip2 && \
     bunzip2 /restic.bz2 && \
     chmod +x /restic && \

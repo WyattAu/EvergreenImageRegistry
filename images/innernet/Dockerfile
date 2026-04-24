@@ -1,8 +1,9 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/innernet-rs/innernet/releases/download/v${VERSION}/innernet-${VERSION}-x86_64-unknown-linux-musl.tar.gz" -o /innernet.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/innernet-rs/innernet/releases/download/v${VERSION}/innernet-${VERSION}-x86_64-unknown-linux-musl.tar.gz" -o /innernet.tar.gz && \
     mkdir -p /tmp/innernet && \
     tar -xzf /innernet.tar.gz -C /tmp/innernet && \
     strip --strip-all /tmp/innernet/innernet 2>/dev/null || true && \

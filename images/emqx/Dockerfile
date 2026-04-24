@@ -1,5 +1,6 @@
 
 FROM debian:bookworm-slim AS builder
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates gnupg \
     && rm -rf /var/lib/apt/lists/*RUN curl --retry 3 --retry-delay 5 -fsSL "https://www.emqx.com/en/downloads/broker/v5.8.0/emqx-5.8.0-debian12-amd64.tar.gz" \

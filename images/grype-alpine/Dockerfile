@@ -1,7 +1,8 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/anchore/grype/releases/download/v0.80.0/grype_0.80.0_linux_amd64.tar.gz" -o /grype_0.80.0_linux_amd64.tar.gz &&     tar -xzf /grype_0.80.0_linux_amd64.tar.gz -C / && rm /grype_0.80.0_linux_amd64.tar.gz && chmod +x /grype
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/anchore/grype/releases/download/v0.80.0/grype_0.80.0_linux_amd64.tar.gz" -o /grype_0.80.0_linux_amd64.tar.gz &&     tar -xzf /grype_0.80.0_linux_amd64.tar.gz -C / && rm /grype_0.80.0_linux_amd64.tar.gz && chmod +x /grype
 RUN strip /grype 2>/dev/null || true
 RUN test -f /grype || { echo '#!/bin/sh' > /grype && echo 'echo "grype-alpine v${VERSION} ready"' >> /grype && echo 'exec sleep infinity' >> /grype && chmod +x /grype; }
 

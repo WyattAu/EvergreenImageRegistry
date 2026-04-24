@@ -1,6 +1,7 @@
 FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/etcd-io/etcd/releases/download/v${VERSION}/etcd-v${VERSION}-linux-amd64.tar.gz" -o /etcd.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/etcd-io/etcd/releases/download/v${VERSION}/etcd-v${VERSION}-linux-amd64.tar.gz" -o /etcd.tar.gz && \
     tar -xzf /etcd.tar.gz -C /tmp && rm /etcd.tar.gz && \
     chmod +x /tmp/etcd-v${VERSION}-linux-amd64/etcd && \
     mv /tmp/etcd-v${VERSION}-linux-amd64/etcd /etcd

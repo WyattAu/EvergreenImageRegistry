@@ -3,6 +3,7 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS builder
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential cmake g++ \
         libqt5widgets5 libqt5core5a qtbase5-dev \

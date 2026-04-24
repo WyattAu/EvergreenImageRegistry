@@ -1,5 +1,6 @@
 
 FROM debian:bookworm-slim AS builder
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nginx php84 php84-fpm php84-php84-gd php84-php84-mbstring php84-php84-xml \
         php84-curl ca-certificates git \

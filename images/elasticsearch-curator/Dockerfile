@@ -8,6 +8,7 @@
 ARG VERSION=5.8.3
 ARG BUILD_DATE
 FROM python:3.12-slim AS builder
+ARG GITHUB_TOKEN
 ARG VERSION=5.8.3
 RUN pip install --no-cache-dir --prefix=/install \
     elasticsearch-curator=="${VERSION}" && \

@@ -8,6 +8,7 @@
 ARG VERSION=1.2.0
 ARG BUILD_DATE
 FROM python:3.12-slim AS builder
+ARG GITHUB_TOKEN
 ARG VERSION=1.2.0
 RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-server-dev-all postgresql-dev && \

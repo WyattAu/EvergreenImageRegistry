@@ -198,6 +198,7 @@ jobs:
     timeout-minutes: 120
     strategy:
       fail-fast: false
+      max-parallel: 5
       matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
     steps:
       - name: Checkout repository
@@ -241,6 +242,7 @@ jobs:
                 --cache-to "type=gha,scope=${image},mode=max" \
                 --build-arg "BUILD_DATE=${TAG}" \
                 --build-arg "VCS_REF=${TAG}" \
+                --build-arg "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" \
                 --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
                 --label "org.opencontainers.image.revision=${{ github.sha }}" \
                 "${CONTEXT}"; then
@@ -250,6 +252,8 @@ jobs:
               echo "::error::${image}: build failed"
               FAILED=$((FAILED + 1))
             fi
+            # Rate-limit backoff between GitHub downloads (2s per image)
+            sleep 2
             echo "::endgroup::"
           done
           echo "Batch ${{ matrix.batch }} complete: ${BUILT} built, ${FAILED} failed"
@@ -276,12 +280,15 @@ jobs:
               --attest "type=provenance,mode=max" \
               --build-arg "BUILD_DATE=${TAG}" \
               --build-arg "VCS_REF=${TAG}" \
+              --build-arg "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" \
               "${CONTEXT}"; then
               PUSHED=$((PUSHED + 1))
             else
               echo "::warning::${image}: push failed (may not support arm64)"
               FAILED=$((FAILED + 1))
             fi
+            # Rate-limit backoff between GitHub downloads
+            sleep 2
             echo "::endgroup::"
           done
           echo "Push: ${PUSHED} succeeded, ${FAILED} failed"

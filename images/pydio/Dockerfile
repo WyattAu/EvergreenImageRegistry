@@ -3,6 +3,7 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS builder
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         php84-fpm php84 php84-curl php84-gd php84-mbstring php84-xml zip php84-intl php84-mysql sqlite-libs json-c \
         nginx ca-certificates curl \

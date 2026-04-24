@@ -9,6 +9,7 @@ ARG VERSION=4.0.3
 ARG BUILD_DATE
 ARG PYTHON_VERSION=3.12-slim
 FROM python:${PYTHON_VERSION} AS builder
+ARG GITHUB_TOKEN
 ARG VERSION=4.0.3
 ARG PYTHON_VERSION=3.12-slim
 RUN pip install --no-cache-dir --prefix=/install patroni[postgresql]=="${VERSION}" && \

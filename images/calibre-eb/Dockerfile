@@ -10,6 +10,7 @@ ARG BUILD_DATE
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG GITHUB_TOKEN
 RUN apk add --no-cache ca-certificates curl
 RUN pip3 install --no-cache-dir --break-system-packages calibre 2>/dev/null || \
     pip3 install --no-cache-dir calibre

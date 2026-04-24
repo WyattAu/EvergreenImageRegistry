@@ -10,10 +10,11 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Readarr/Readarr/releases/download/v0.4.5/Readarr.develop.0.4.5.linux-core-x64.tar.gz" -o /Readarr.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Readarr/Readarr/releases/download/v0.4.5/Readarr.develop.0.4.5.linux-core-x64.tar.gz" -o /Readarr.tar.gz && \
     tar -xzf /Readarr.tar.gz -C /app && rm /Readarr.tar.gz && chmod +x /app/Readarr 2>/dev/null || \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Readarr/Readarr/releases/download/v0.4.5/Readarr.develop.0.4.5.linux-core-x64.tar.gz" -o /app/Readarr && chmod +x /app/Readarr
+    curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Readarr/Readarr/releases/download/v0.4.5/Readarr.develop.0.4.5.linux-core-x64.tar.gz" -o /app/Readarr && chmod +x /app/Readarr
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

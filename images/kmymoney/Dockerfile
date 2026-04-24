@@ -3,6 +3,7 @@ ARG BUILD_DATE
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG GITHUB_TOKEN
 RUN apk add --no-cache ca-certificates curl
 RUN mkdir -p /app /var/log/app /var/cache/app \
     && chown -R 65532:65532 /app /var/log/app /var/cache/app

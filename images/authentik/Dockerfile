@@ -1,7 +1,8 @@
 FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends python3-pip curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/goauthentik/authentik/releases/download/version/${VERSION}/authentik-core-${VERSION}.tar.gz" -o /authentik.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/goauthentik/authentik/releases/download/version/${VERSION}/authentik-core-${VERSION}.tar.gz" -o /authentik.tar.gz && \
     mkdir -p /tmp/authentik && \
     tar -xzf /authentik.tar.gz -C /tmp/authentik && \
     rm -f /authentik.tar.gz

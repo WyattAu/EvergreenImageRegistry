@@ -10,6 +10,7 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS builder
+ARG GITHUB_TOKEN
 ARG VERSION=5.0.3
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake libboost-dev libssl-dev zlib1g-dev \

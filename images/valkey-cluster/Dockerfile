@@ -8,9 +8,10 @@
 ARG VERSION=7.2.4
 ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
+ARG GITHUB_TOKEN
 ARG VERSION=7.2.4
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/valkey-io/valkey/releases/download/${VERSION}/valkey-${VERSION}.tar.gz" \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/valkey-io/valkey/releases/download/${VERSION}/valkey-${VERSION}.tar.gz" \
     -o /valkey.tar.gz && \
     echo "PENDING_CHECKSUM  /valkey.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /valkey.tar.gz -C / && rm /valkey.tar.gz && \

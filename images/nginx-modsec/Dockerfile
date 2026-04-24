@@ -11,6 +11,7 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS builder
+ARG GITHUB_TOKEN
 ARG NGINX_VERSION=1.27.1
 ARG MODSEC_VERSION=3.0.12
 RUN apt-get update && apt-get install -y --no-install-recommends \

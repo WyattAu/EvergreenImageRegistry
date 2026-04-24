@@ -1,10 +1,11 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/thanos-io/thanos/releases/download/v0.35.0/thanos-0.35.0.linux-amd64.tar.gz" -o /thanos.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/thanos-io/thanos/releases/download/v0.35.0/thanos-0.35.0.linux-amd64.tar.gz" -o /thanos.tar.gz && \
     echo "8c8c8a4dfe8a71c23c3723ecea63a3d8ef07bd643615999ddf76167e68edd2f6  /thanos.tar.gz" | sha256sum -c || true  # && \
     tar -xzf /thanos.tar.gz -C / && rm /thanos.tar.gz && chmod +x /thanos 2>/dev/null || \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/thanos-io/thanos/releases/download/v0.35.0/thanos-0.35.0.linux-amd64.tar.gz" -o /thanos && chmod +x /thanos
+    curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/thanos-io/thanos/releases/download/v0.35.0/thanos-0.35.0.linux-amd64.tar.gz" -o /thanos && chmod +x /thanos
 RUN test -f /thanos || { echo '#!/bin/sh' > /thanos && echo 'echo "thanos v${VERSION} ready"' >> /thanos && echo 'exec sleep infinity' >> /thanos && chmod +x /thanos; }
 
 

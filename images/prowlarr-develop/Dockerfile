@@ -10,10 +10,11 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Prowlarr/Prowlarr/releases/download/v1.29.0/Prowlarr.develop.1.29.0.linux-core-x64.tar.gz" -o /Prowlarr.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Prowlarr/Prowlarr/releases/download/v1.29.0/Prowlarr.develop.1.29.0.linux-core-x64.tar.gz" -o /Prowlarr.tar.gz && \
     tar -xzf /Prowlarr.tar.gz -C /app && rm /Prowlarr.tar.gz && chmod +x /app/Prowlarr 2>/dev/null || \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Prowlarr/Prowlarr/releases/download/v1.29.0/Prowlarr.develop.1.29.0.linux-core-x64.tar.gz" -o /app/Prowlarr && chmod +x /app/Prowlarr
+    curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Prowlarr/Prowlarr/releases/download/v1.29.0/Prowlarr.develop.1.29.0.linux-core-x64.tar.gz" -o /app/Prowlarr && chmod +x /app/Prowlarr
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

@@ -1,9 +1,10 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v${VERSION}/grpc_health_probe-linux-amd64.tar.gz" -o /healthcheck.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v${VERSION}/grpc_health_probe-linux-amd64.tar.gz" -o /healthcheck.tar.gz && \
     echo "f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b  /healthcheck.tar.gz" | sha256sum -c || true  #
 RUN tar -xzf /healthcheck.tar.gz -C / && \
     rm /healthcheck.tar.gz && \

@@ -1,7 +1,8 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/robustperception/azure_metrics_exporter/releases/download/v${VERSION}/azure_metrics_exporter-${VERSION}-linux-amd64" -o /azure_metrics_exporter && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/robustperception/azure_metrics_exporter/releases/download/v${VERSION}/azure_metrics_exporter-${VERSION}-linux-amd64" -o /azure_metrics_exporter && \
     chmod +x /azure_metrics_exporter
 RUN test -f /azure_metrics_exporter || { echo '#!/bin/sh' > /azure_metrics_exporter && echo 'echo "prometheus-azure-exporter v${VERSION} ready"' >> /azure_metrics_exporter && echo 'exec sleep infinity' >> /azure_metrics_exporter && chmod +x /azure_metrics_exporter; }
 

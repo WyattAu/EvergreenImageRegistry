@@ -1,8 +1,9 @@
 
 FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/coredns/coredns/releases/download/v${VERSION}/coredns_${VERSION}_linux_amd64.tgz" -o /coredns.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/coredns/coredns/releases/download/v${VERSION}/coredns_${VERSION}_linux_amd64.tgz" -o /coredns.tar.gz && \
     mkdir -p /tmp/coredns && \
     tar -xzf /coredns.tar.gz -C /tmp/coredns && \
     strip --strip-all /tmp/coredns/coredns && \

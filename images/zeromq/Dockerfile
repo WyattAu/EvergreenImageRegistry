@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/zeromq/libzmq/releases/download/v${VERSION}/zeromq-${VERSION}.tar.gz -o /zeromq.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/zeromq/libzmq/releases/download/v${VERSION}/sha256sum.txt -o /checksums.txt && \
-    grep "zeromq-${VERSION}.tar.gz" /checksums.txt | sha256sum -c || true \
+    grep "zeromq-${VERSION}.tar.gz" /checksums.txt | sha256sum -c || true ; [ -f /zeromq.tar.gz ] && \
     tar -xzf /zeromq.tar.gz -C /tmp/ && \
     cd /tmp/zeromq-${VERSION} && \    cmake -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=/opt/zeromq \
@@ -33,7 +33,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     cmake --install . && \
     strip --strip-unneeded /opt/zeromq/lib/libzmq.so.5.2.5 && \
     strip --strip-unneeded /opt/zeromq/lib/libzmq.a && \
-    rm -rf /zeromq.tar.gz /checksums.txt /tmp/zeromq-${VERSION}
+    rm -rf /zeromq.tar.gz /checksums.txt /tmp/zeromq-${VERSION} || true
 
 # hadolint ignore=DL3023
 

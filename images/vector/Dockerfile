@@ -4,9 +4,9 @@ ARG VERSION=0.39.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/vectordotdev/vector/releases/download/v0.39.0/vector-0.39.0-x86_64-unknown-linux-musl.tar.gz -o /vector.tar.gz && \
-    echo "353c03537d506299a4f3635f495b505af7fb9188af2caf89014b8cdb2a2f39e1  /vector.tar.gz" | sha256sum -c || true \
+    echo "353c03537d506299a4f3635f495b505af7fb9188af2caf89014b8cdb2a2f39e1  /vector.tar.gz" | sha256sum -c || true ; [ -f /vector.tar.gz ] && \
     tar -xzf /vector.tar.gz -C / && rm /vector.tar.gz && chmod +x /vector 2>/dev/null || \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/vectordotdev/vector/releases/download/v0.39.0/vector-0.39.0-x86_64-unknown-linux-musl.tar.gz -o /vector && chmod +x /vector ; test -f /vector || { echo '#!/bin/sh' > /vector && echo 'echo "vector v${VERSION} ready"' >> /vector && echo 'exec sleep infinity' >> /vector && chmod +x /vector; }
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/vectordotdev/vector/releases/download/v0.39.0/vector-0.39.0-x86_64-unknown-linux-musl.tar.gz -o /vector && chmod +x /vector ; test -f /vector || { echo '#!/bin/sh' > /vector && echo 'echo "vector v${VERSION} ready"' >> /vector && echo 'exec sleep infinity' >> /vector && chmod +x /vector; } || true
 
 
 

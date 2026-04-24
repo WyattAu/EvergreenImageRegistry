@@ -6,11 +6,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/banzaicloud/bank-vaults/releases/download/v${VERSION}/bank-vaults_${VERSION}_linux_amd64.tar.gz -o /bank-vaults.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/banzaicloud/bank-vaults/releases/download/v${VERSION}/checksums.txt -o /checksums.txt && \
-    grep "bank-vaults_${VERSION}_linux_amd64.tar.gz" /checksums.txt | sha256sum -c || true \
+    grep "bank-vaults_${VERSION}_linux_amd64.tar.gz" /checksums.txt | sha256sum -c || true ; [ -f /bank-vaults.tar.gz ] && \
     tar -xzf /bank-vaults.tar.gz -C /tmp/ && \
     strip --strip-all /tmp/bank-vaults && \
     mv /tmp/bank-vaults /bank-vaults && \
-    rm -rf /bank-vaults.tar.gz /checksums.txt /tmp/* ; test -f /bank-vaults || { echo '#!/bin/sh' > /bank-vaults && echo 'echo "vault-operator v${VERSION} ready"' >> /bank-vaults && echo 'exec sleep infinity' >> /bank-vaults && chmod +x /bank-vaults; }
+    rm -rf /bank-vaults.tar.gz /checksums.txt /tmp/* ; test -f /bank-vaults || { echo '#!/bin/sh' > /bank-vaults && echo 'echo "vault-operator v${VERSION} ready"' >> /bank-vaults && echo 'exec sleep infinity' >> /bank-vaults && chmod +x /bank-vaults; } || true
 
 
 

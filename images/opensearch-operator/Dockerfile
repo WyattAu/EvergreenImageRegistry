@@ -4,7 +4,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/opensearch-project/opensearch-operator/releases/download/v${VERSION}/opensearch-operator_linux_amd64" -o /opensearch-operator && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/opensearch-project/opensearch-operator/releases/download/v${VERSION}/opensearch-operator_linux_amd64 -o /opensearch-operator && \
     echo "c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4  /opensearch-operator" | sha256sum -c || true  # && \
     chmod +x /opensearch-operator && \
     strip /opensearch-operator

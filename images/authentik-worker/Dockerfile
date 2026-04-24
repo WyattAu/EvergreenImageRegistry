@@ -2,7 +2,7 @@ FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends python3-pip curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/goauthentik/authentik/releases/download/version/${VERSION}/authentik-worker-${VERSION}.tar.gz" -o /authentik-worker.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/goauthentik/authentik/releases/download/version/${VERSION}/authentik-worker-${VERSION}.tar.gz -o /authentik-worker.tar.gz && \
     mkdir -p /tmp/authentik-worker && \
     tar -xzf /authentik-worker.tar.gz -C /tmp/authentik-worker && \
     rm -f /authentik-worker.tar.gz

@@ -15,7 +15,7 @@ SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update &&     apt-get install -y --no-install-recommends         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" | bash - &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/*
 WORKDIR /build
-RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/mozilla/hubs/archive/refs/heads/master.tar.gz" -o /tmp/hubs.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/mozilla/hubs/archive/refs/heads/master.tar.gz -o /tmp/hubs.tar.gz && \
     tar -xzf /tmp/hubs.tar.gz -C /build --strip-components=1 && \
     rm /tmp/hubs.tar.gz && \
     npm install --omit=dev 2>/dev/null || true

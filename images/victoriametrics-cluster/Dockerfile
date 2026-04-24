@@ -3,7 +3,7 @@ FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.97.0/victoria-metrics-linux-amd64-v1.97.0-cluster.tar.gz" -o /vm-cluster.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.97.0/victoria-metrics-linux-amd64-v1.97.0-cluster.tar.gz -o /vm-cluster.tar.gz && \
     tar -xzf /vm-cluster.tar.gz -C /tmp && rm /vm-cluster.tar.gz && \
     strip --strip-all /tmp/vminsert-prod && \
     strip --strip-all /tmp/vmselect-prod && \

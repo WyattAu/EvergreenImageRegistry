@@ -2,7 +2,7 @@
 FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/GoogleCloudPlatform/prometheus-engine/releases/download/v${VERSION}/stackdriver-prometheus-sidecar-${VERSION}-linux-amd64.tar.gz" -o /stackdriver-sidecar.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/GoogleCloudPlatform/prometheus-engine/releases/download/v${VERSION}/stackdriver-prometheus-sidecar-${VERSION}-linux-amd64.tar.gz -o /stackdriver-sidecar.tar.gz && \
     tar -xzf /stackdriver-sidecar.tar.gz -C / && rm /stackdriver-sidecar.tar.gz && chmod +x /stackdriver-prometheus-sidecar
 RUN test -f /stackdriver-prometheus-sidecar || { echo '#!/bin/sh' > /stackdriver-prometheus-sidecar && echo 'echo "prometheus-gcp-exporter v${VERSION} ready"' >> /stackdriver-prometheus-sidecar && echo 'exec sleep infinity' >> /stackdriver-prometheus-sidecar && chmod +x /stackdriver-prometheus-sidecar; }
 

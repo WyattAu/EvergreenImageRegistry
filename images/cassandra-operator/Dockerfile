@@ -14,7 +14,7 @@ ARG GITHUB_TOKEN
 ARG VERSION
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/k8ssandra/cass-operator/releases/download/v${VERSION}/cass-operator-v${VERSION}-linux-amd64" -o /tmp/cass-operator \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/k8ssandra/cass-operator/releases/download/v${VERSION}/cass-operator-v${VERSION}-linux-amd64 -o /tmp/cass-operator \
     && echo "49012345678901234567890abcdef1234567890abcdef1234567890123456789012345  /tmp/cass-operator" | sha256sum -c || true  # \
     && chmod +x /tmp/cass-operator \
     && strip --strip-all /tmp/cass-operator \

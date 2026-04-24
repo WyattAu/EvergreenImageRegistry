@@ -5,7 +5,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /tmp
-RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/element-hq/hydrogen-web/releases/download/v0.4.0/hydrogen-v0.4.0.tar.gz" -o /tmp/release.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/element-hq/hydrogen-web/releases/download/v0.4.0/hydrogen-v0.4.0.tar.gz -o /tmp/release.tar.gz && \
     mkdir -p /www && \
     tar -xzf /tmp/release.tar.gz -C /www --strip-components=1 && \
     rm /tmp/release.tar.gz

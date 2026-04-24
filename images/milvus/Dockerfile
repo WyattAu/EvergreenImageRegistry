@@ -13,7 +13,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 ARG GITHUB_TOKEN
 ARG VERSION=2.4.0
 RUN apk add --no-cache curl ca-certificates
-RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/milvus-io/milvus/releases/download/v${VERSION}/milvus-standalone_${VERSION}_linux_amd64.tar.gz" -o /tmp/milvus.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/milvus-io/milvus/releases/download/v${VERSION}/milvus-standalone_${VERSION}_linux_amd64.tar.gz -o /tmp/milvus.tar.gz && \
     tar -xzf /tmp/milvus.tar.gz -C /opt && rm /tmp/milvus.tar.gz && \
     chmod +x /opt/milvus/bin/milvus 2>/dev/null || true
 RUN adduser -u 65532 -D milvus 2>/dev/null || true

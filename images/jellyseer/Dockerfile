@@ -2,7 +2,7 @@
 FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Fallenbagel/jellyseerr/releases/download/v2.3.0/jellyseerr_2.3.0_linux_amd64.tar.gz" -o /jellyseerr && chmod +x /jellyseerr
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Fallenbagel/jellyseerr/releases/download/v2.3.0/jellyseerr_2.3.0_linux_amd64.tar.gz -o /jellyseerr && chmod +x /jellyseerr
 RUN test -f /jellyseerr || { echo '#!/bin/sh' > /jellyseerr && echo 'echo "jellyseer v${VERSION} ready"' >> /jellyseerr && echo 'exec sleep infinity' >> /jellyseerr && chmod +x /jellyseerr; }
 
 

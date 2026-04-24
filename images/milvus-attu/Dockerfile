@@ -2,9 +2,9 @@
 FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/zilliztech/attu/releases/download/v2.4.9/attu-v2.4.9-linux-x64.tar.gz" -o /attu.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/zilliztech/attu/releases/download/v2.4.9/attu-v2.4.9-linux-x64.tar.gz -o /attu.tar.gz && \
     tar -xzf /attu.tar.gz -C / && rm /attu.tar.gz && chmod +x /attu 2>/dev/null || \
-    curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/zilliztech/attu/releases/download/v2.4.9/attu-v2.4.9-linux-x64.tar.gz" -o /attu && chmod +x /attu
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/zilliztech/attu/releases/download/v2.4.9/attu-v2.4.9-linux-x64.tar.gz -o /attu && chmod +x /attu
 RUN test -f /attu || { echo '#!/bin/sh' > /attu && echo 'echo "milvus-attu v${VERSION} ready"' >> /attu && echo 'exec sleep infinity' >> /attu && chmod +x /attu; }
 
 

@@ -3,7 +3,7 @@ FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/david415/WireGuard-Go-VPN/releases/download/v${VERSION}/wg-cloud-linux-amd64" -o /wg-cloud 2>/dev/null && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/david415/WireGuard-Go-VPN/releases/download/v${VERSION}/wg-cloud-linux-amd64 -o /wg-cloud 2>/dev/null && \
     chmod +x /wg-cloud && strip --strip-all /wg-cloud 2>/dev/null || true
 RUN test -f /wg-cloud || { echo '#!/bin/sh' > /wg-cloud && echo 'echo "wg-cloud v${VERSION} ready"' >> /wg-cloud && echo 'exec sleep infinity' >> /wg-cloud && chmod +x /wg-cloud; }
 

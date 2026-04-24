@@ -20,7 +20,7 @@ RUN apt-get update && \
         ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /build
-RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/vstakhov/rmilter/archive/refs/tags/${VERSION}.tar.gz" -o /tmp/rmilter.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/vstakhov/rmilter/archive/refs/tags/${VERSION}.tar.gz -o /tmp/rmilter.tar.gz && \
     tar -xzf /tmp/rmilter.tar.gz -C /build --strip-components=1 && \
     rm /tmp/rmilter.tar.gz && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release . && \

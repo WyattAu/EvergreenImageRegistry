@@ -2,7 +2,7 @@ FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ltiam/APacheDirectoryStudio/releases/download/${VERSION}/ApacheDirectoryStudio-${VERSION}-linux.gtk.x86_64.tar.gz" -o /studio.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ltiam/APacheDirectoryStudio/releases/download/${VERSION}/ApacheDirectoryStudio-${VERSION}-linux.gtk.x86_64.tar.gz -o /studio.tar.gz && \
     mkdir -p /tmp/studio && \
     tar -xzf /studio.tar.gz -C /tmp/studio --strip-components=1 && \
     rm -f /studio.tar.gz

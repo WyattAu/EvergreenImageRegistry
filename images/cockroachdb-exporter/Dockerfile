@@ -3,7 +3,7 @@ ARG GITHUB_TOKEN
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/cockroachdb/cockroach/releases/download/v${VERSION}/cockroach-v${VERSION}.linux-amd64.tgz" -o /cockroach.tar.gz \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/cockroachdb/cockroach/releases/download/v${VERSION}/cockroach-v${VERSION}.linux-amd64.tgz -o /cockroach.tar.gz \
     && echo "0000000000000000000000000000000000000000000000000000000000000000  /cockroach.tar.gz" | sha256sum -c || true  # \
     && mkdir -p /opt/cockroach \
     && tar -xzf /cockroach.tar.gz -C /opt/cockroach --strip-components=1 \

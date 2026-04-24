@@ -26,7 +26,7 @@ COPY --from=jre-builder /opt/jre /opt/jre
 ENV JAVA_HOME="/opt/jre"
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://search.maven.org/remotecontent?filepath=io/zipkin/zipkin-server/${VERSION}/zipkin-server-${VERSION}-exec.jar" -o /opt/zipkin/zipkin.jar || \
-    curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/openzipkin/zipkin/releases/download/${VERSION}/zipkin.jar" -o /opt/zipkin.jar
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/openzipkin/zipkin/releases/download/${VERSION}/zipkin.jar -o /opt/zipkin.jar
 RUN mkdir -p /opt/zipkin /var/log/zipkin && \
     addgroup -S 65532 -r zipkin 2>/dev/null || true && \
     adduser -u 65532 -G zipkin -D -D -h /opt/zipkin -s /sbin/nologin zipkin 2>/dev/null || true && \

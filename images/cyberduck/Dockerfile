@@ -2,7 +2,7 @@ FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/iterate-ch/cyberduck/releases/download/${VERSION}/Cyberduck-${VERSION}.tar.gz" -o /cyberduck.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/iterate-ch/cyberduck/releases/download/${VERSION}/Cyberduck-${VERSION}.tar.gz -o /cyberduck.tar.gz && \
     mkdir -p /tmp/cyberduck && \
     tar -xzf /cyberduck.tar.gz -C /tmp/cyberduck && \
     rm -f /cyberduck.tar.gz

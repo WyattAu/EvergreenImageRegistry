@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     protobuf-compiler liblua5.3-dev libsystemd-dev libsodium-dev \
     libre2-dev libyaml-cpp-dev libsnmp-dev curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/PowerDNS/pdns/archive/refs/tags/rel/dnsdist-${VERSION}.tar.gz" -o /dnsdist.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/PowerDNS/pdns/archive/refs/tags/rel/dnsdist-${VERSION}.tar.gz -o /dnsdist.tar.gz && \
     tar -xzf /dnsdist.tar.gz -C / && rm /dnsdist.tar.gz && \
     mkdir -p /pdns-rel-dnsdist-${VERSION}/build && \
     cd /pdns-rel-dnsdist-${VERSION}/build && \    cmake .. -DCMAKE_BUILD_TYPE=Release -DWITHOUT_NGHTTP2=1 && \

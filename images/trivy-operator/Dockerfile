@@ -3,8 +3,8 @@ FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/aquasecurity/trivy-operator/releases/download/v${VERSION}/trivy_operator_Linux_x86_64.tar.gz" -o /trivy-operator.tar.gz && \
-    curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/aquasecurity/trivy-operator/releases/download/v${VERSION}/trivy_operator_Linux_x86_64.tar.gz.sig" -o /trivy-operator.sig && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/aquasecurity/trivy-operator/releases/download/v${VERSION}/trivy_operator_Linux_x86_64.tar.gz -o /trivy-operator.tar.gz && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/aquasecurity/trivy-operator/releases/download/v${VERSION}/trivy_operator_Linux_x86_64.tar.gz.sig -o /trivy-operator.sig && \
     tar -xzf /trivy-operator.tar.gz -C /tmp/ && \
     strip --strip-all /tmp/trivy-operator && \
     mv /tmp/trivy-operator /trivy-operator && \

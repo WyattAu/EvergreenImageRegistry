@@ -2,7 +2,7 @@
 FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/jaegertracing/jaeger/releases/download/v${VERSION}/jaeger-${VERSION}-linux-amd64.tar.gz" -o /jaeger.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/jaegertracing/jaeger/releases/download/v${VERSION}/jaeger-${VERSION}-linux-amd64.tar.gz -o /jaeger.tar.gz && \
     tar -xzf /jaeger.tar.gz -C /tmp && rm /jaeger.tar.gz && \
     chmod +x /tmp/jaeger-${VERSION}-linux-amd64/jaeger-agent && \
     mv /tmp/jaeger-${VERSION}-linux-amd64/jaeger-agent /jaeger-agent

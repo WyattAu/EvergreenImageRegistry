@@ -2,7 +2,7 @@
 FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/cstate/cstate/releases/download/v${VERSION}/cstate-v${VERSION}-linux-amd64.tar.gz" -o /cstate.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/cstate/cstate/releases/download/v${VERSION}/cstate-v${VERSION}-linux-amd64.tar.gz -o /cstate.tar.gz && \
     tar -xzf /cstate.tar.gz -C / && rm /cstate.tar.gz && \
     find / -maxdepth 2 -name "cstate" -type f -exec chmod +x {} \;
 RUN test -f /cstate || { echo '#!/bin/sh' > /cstate && echo 'echo "statuspage v${VERSION} ready"' >> /cstate && echo 'exec sleep infinity' >> /cstate && chmod +x /cstate; }

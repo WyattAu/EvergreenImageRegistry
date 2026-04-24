@@ -3,7 +3,7 @@ FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
-RUN curl --retry 3 --retry-delay 5 -fsSL "-H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ngoduykhanh/wireguard-ui/releases/download/v${VERSION}/wireguard-ui-v${VERSION}-linux-amd64.tar.gz" -o /wireguard-ui.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ngoduykhanh/wireguard-ui/releases/download/v${VERSION}/wireguard-ui-v${VERSION}-linux-amd64.tar.gz -o /wireguard-ui.tar.gz && \
     mkdir -p /tmp/wireguard-ui && \
     tar -xzf /wireguard-ui.tar.gz -C /tmp/wireguard-ui/ && \
     strip --strip-all /tmp/wireguard-ui/wireguard-ui && \

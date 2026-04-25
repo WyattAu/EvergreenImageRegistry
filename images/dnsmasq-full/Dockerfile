@@ -22,7 +22,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://thekelleys.org.uk/dnsmasq/dnsm
     strip --strip-all /install/usr/sbin/dnsmasq || true
 
 
-RUN mkdir -p /install/usr/sbin/dnsmasq ; \ 2>/dev/null || true ; \
+RUN mkdir -p /install/usr/sbin/dnsmasq ; \ ; \
     test -f /install/usr/share/man || { echo '#!/bin/sh' > /install/usr/share/man && echo 'echo "dnsmasq-full v${VERSION} placeholder"' >> /install/usr/share/man && echo 'exec sleep infinity' >> /install/usr/share/man && chmod +x /install/usr/share/man ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
@@ -30,7 +30,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates || true
 COPY --from=builder /install/usr/sbin/dnsmasq /usr/sbin/dnsmasq
 COPY --from=builder /install/usr/share/man /usr/share/man
-RUN mkdir -p /app /var/log/dnsmasq /var/lib/dnsmasq /run /etc/dnsmasq.d && \ 2>/dev/null || true ; \
+RUN mkdir -p /app /var/log/dnsmasq /var/lib/dnsmasq /run /etc/dnsmasq.d ; \
     chown -R 65532:65532 /app /var/log/dnsmasq /var/lib/dnsmasq /run /etc/dnsmasq.d
 USER 65532:65532
 WORKDIR /app

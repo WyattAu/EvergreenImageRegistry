@@ -30,7 +30,7 @@ RUN apk add --no-cache gnupg curl ca-certificates libzstd1 liblz4-1 " || true
 COPY --from=builder /var/lib/postgresql /var/lib/postgresql
 COPY --from=builder /var/run/postgresql /var/run/postgresql
 RUN usermod -u 65532 postgres && \
-    mkdir -p /app /var/log/postgresql-17 /var/cache/postgresql-17 && \ 2>/dev/null || true ; \
+    mkdir -p /app /var/log/postgresql-17 /var/cache/postgresql-17 ; \
     chown -R 65532:65532 /var/lib/postgresql /var/run/postgresql /app /var/log/postgresql-17 /var/cache/postgresql-17
 
 USER 65532:65532

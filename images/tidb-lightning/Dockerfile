@@ -14,7 +14,7 @@ ARG GITHUB_TOKEN
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/pingcap/tidb/releases/download/v${VERSION}/tidb-lightning-v${VERSION}-linux-amd64.tar.gz -o /tmp/lightning.tgz ; echo "189012345678901234567890abcdef1234567890abcdef1234567890123456789012  /tmp/lightning.tgz" | sha256sum -c || true  ; [ -f /tmp/lightning.tgz ] && tar -xzf /tmp/lightning.tgz -C /tmp || true ; \
-    strip --strip-all /tmp/tidb-lightning-v${VERSION}-linux-amd64/bin/tidb-lightning ; mv /tmp/tidb-lightning-v${VERSION}-linux-amd64/bin/tidb-lightning /usr/local/bin/tidb-lightning \ 2>/dev/null || true
+    strip --strip-all /tmp/tidb-lightning-v${VERSION}-linux-amd64/bin/tidb-lightning ; mv /tmp/tidb-lightning-v${VERSION}-linux-amd64/bin/tidb-lightning /usr/local/bin/tidb-lightning \
     && rm -rf /tmp/lightning.tgz /tmp/tidb-lightning-v${VERSION}-linux-amd64
 
 RUN mkdir -p /usr/local/bin/tidb-lightning 2>/dev/null || true

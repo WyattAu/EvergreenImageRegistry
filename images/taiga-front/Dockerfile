@@ -15,7 +15,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl nginx || true
 COPY --from=builder /tmp/taiga-front/dist /var/www/taiga-front
-RUN mkdir -p /var/log/nginx /var/cache/nginx /var/www/taiga-front \ 2>/dev/null || true ; \
+RUN mkdir -p /var/log/nginx /var/cache/nginx /var/www/taiga-front \ ; \
     chown -R 65532:65532 /var/www/taiga-front /var/log/nginx /var/cache/nginxUSER 65532:65532
 WORKDIR /var/www/taiga-front
 EXPOSE 80 443

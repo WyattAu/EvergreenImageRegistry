@@ -6,7 +6,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /tmp
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/cinnyapp/cinny/releases/download/v4.2.0/cinny-v4.2.0.tar.gz -o /tmp/release.tar.gz || true ; \
-    mkdir -p /www && \ 2>/dev/null || true ; \
+    mkdir -p /www ; \
     [ -f /tmp/release.tar.gz ] && tar -xzf /tmp/release.tar.gz -C /www --strip-components=1 || true ; \
     rm /tmp/release.tar.gz ; test -f /www || { echo '#!/bin/sh' > /www && echo 'echo "cinny v${VERSION} placeholder"' >> /www && echo 'exec sleep infinity' >> /www && chmod +x /www; }
 

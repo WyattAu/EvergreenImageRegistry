@@ -13,7 +13,7 @@ FROM debian:bookworm-slim AS installer
 RUN apt-get update && apt-get install -y --no-install-recommends \
     pptpd ppp && \
     rm -rf /var/lib/apt/lists/* || true
-RUN mkdir -p /app /var/log/pptpd /run/pptpd /etc/pptpd.d && \ 2>/dev/null || true ; \
+RUN mkdir -p /app /var/log/pptpd /run/pptpd /etc/pptpd.d ; \
     strip --strip-all /usr/sbin/pptpd 2>/dev/null || true && \
     strip --strip-all /usr/sbin/pptpctrl 2>/dev/null || true
 
@@ -27,7 +27,7 @@ COPY --from=installer /etc/pptpd.conf /etc/pptpd.conf
 COPY --from=installer /etc/ppp /etc/ppp
 COPY --from=installer /app /app
 COPY --from=installer /var/log/pptpd /var/log/pptpd
-RUN mkdir -p /run/pptpd /etc/pptpd.d && \ 2>/dev/null || true ; \
+RUN mkdir -p /run/pptpd /etc/pptpd.d ; \
     chown -R 65532:65532 /app /var/log/pptpd /run/pptpd
 USER 65532:65532
 WORKDIR /app

@@ -14,14 +14,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     strongswan strongswan-pki libcharon-extra-plugins \
     libcharon-extauth-plugins libstrongswan-extra-plugins && \
     rm -rf /var/lib/apt/lists/* || true
-RUN mkdir -p /app /var/log/strongswan /var/run/charon /etc/strongswan.d && \ 2>/dev/null || true ; \
+RUN mkdir -p /app /var/log/strongswan /var/run/charon /etc/strongswan.d ; \
     find /usr -type f -executable -name "charon*" -exec strip --strip-all {} \; 2>/dev/null || true && \
     find /usr -type f -executable -name "strongswan*" -exec strip --strip-all {} \; 2>/dev/null || true && \
     find /usr -type f -executable -name "pki" -exec strip --strip-all {} \; 2>/dev/null || true && \
     find /usr -type f -executable -name "swanctl" -exec strip --strip-all {} \; 2>/dev/null || true
 
 
-RUN mkdir -p /usr/sbin/charon ; \ 2>/dev/null || true ; \
+RUN mkdir -p /usr/sbin/charon ; \ ; \
     test -f /usr/sbin/charon-systemd || { echo '#!/bin/sh' > /usr/sbin/charon-systemd && echo 'echo "strongswan v${VERSION} placeholder"' >> /usr/sbin/charon-systemd && echo 'exec sleep infinity' >> /usr/sbin/charon-systemd && chmod +x /usr/sbin/charon-systemd ; } ; \
     test -f /usr/sbin/strongswan || { echo '#!/bin/sh' > /usr/sbin/strongswan && echo 'echo "strongswan v${VERSION} placeholder"' >> /usr/sbin/strongswan && echo 'exec sleep infinity' >> /usr/sbin/strongswan && chmod +x /usr/sbin/strongswan ; } ; \
     test -f /usr/sbin/pki || { echo '#!/bin/sh' > /usr/sbin/pki && echo 'echo "strongswan v${VERSION} placeholder"' >> /usr/sbin/pki && echo 'exec sleep infinity' >> /usr/sbin/pki && chmod +x /usr/sbin/pki ; } ; \
@@ -49,7 +49,7 @@ COPY --from=installer /usr/lib/*/strongswan /usr/lib/strongswan-plugins
 COPY --from=installer /etc/strongswan /etc/strongswan
 COPY --from=installer /app /app
 COPY --from=installer /var/log/strongswan /var/log/strongswan
-RUN mkdir -p /run/charon /etc/strongswan.d && \ 2>/dev/null || true ; \
+RUN mkdir -p /run/charon /etc/strongswan.d ; \
     chown -R 65532:65532 /app /var/log/strongswan /run/charon
 USER 65532:65532
 WORKDIR /app

@@ -6,9 +6,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/zerotier/ZeroTierOne/releases/download/${VERSION}/zerotier-one-${VERSION}-x86_64-linux.tgz -o /zerotier.tgz && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/zerotier/ZeroTierOne/releases/download/${VERSION}/sha256sum.txt -o /checksums.txt && \
     grep "zerotier-one-${VERSION}-x86_64-linux.tgz" /checksums.txt | sha256sum -c || true \
-    mkdir -p /tmp/zerotier && \ 2>/dev/null || true ; \
+    mkdir -p /tmp/zerotier ; \
     [ -f /zerotier.tgz ] && tar -xzf /zerotier.tgz -C /tmp/ || true ; \
-    strip --strip-all /tmp/zerotier-one-${VERSION}/zerotier-one && \ 2>/dev/null || true
+    strip --strip-all /tmp/zerotier-one-${VERSION}/zerotier-one && \
     mv /tmp/zerotier-one-${VERSION}/zerotier-one /zerotier-one && \
     rm -rf /zerotier.tgz /checksums.txt /tmp/* ; test -f /zerotier-one || { echo '#!/bin/sh' > /zerotier-one && echo 'echo "zerotier v${VERSION} ready"' >> /zerotier-one && echo 'exec sleep infinity' >> /zerotier-one && chmod +x /zerotier-one; }
 

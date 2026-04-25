@@ -4,7 +4,7 @@ ARG VERSION=2.4.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/nicholasgasior/yarr-go/releases/download/v2.4.0/yarr-linux-amd64 -o /yarr.tar.gz || true ; \
-    [ -f /yarr.tar.gz ] && tar -xzf /yarr.tar.gz -C / && rm /yarr.tar.gz && chmod +x /yarr 2>/dev/null || || true ; \
+    [ -f /yarr.tar.gz ] && tar -xzf /yarr.tar.gz -C / && rm /yarr.tar.gz && chmod +x /yarr 2>/dev/null || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/nicholasgasior/yarr-go/releases/download/v2.4.0/yarr-linux-amd64 -o /yarr && chmod +x /yarr ; test -f /yarr || { echo '#!/bin/sh' > /yarr && echo 'echo "yarr v${VERSION} ready"' >> /yarr && echo 'exec sleep infinity' >> /yarr && chmod +x /yarr; }
 
 

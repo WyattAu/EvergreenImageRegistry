@@ -18,7 +18,7 @@ RUN apk add --no-cache python3 ca-certificates curl || true
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /opt/tautulli /opt/tautulli
 ENV PATH="/opt/venv/bin:$PATH"
-RUN mkdir -p /app /var/log/tautulli /var/cache/tautulli \ 2>/dev/null || true ; \
+RUN mkdir -p /app /var/log/tautulli /var/cache/tautulli \ ; \
     chown -R 65532:65532 /app /var/log/tautulli /var/cache/tautulli /opt/tautulliUSER 65532:65532
 WORKDIR /app
 EXPOSE 8181

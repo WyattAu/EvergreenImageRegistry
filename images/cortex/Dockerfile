@@ -5,7 +5,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/cortexproject/cortex/releases/download/v1.17.0/cortex_1.17.0_linux_amd64.tar.gz -o /cortex.tar.gz || true ; \
     [ -f /cortex.tar.gz ] && tar -xzf /cortex.tar.gz -C /tmp && rm /cortex.tar.gz || true ; \
-    strip --strip-all /tmp/cortex && \ 2>/dev/null || true
+    strip --strip-all /tmp/cortex && \
     mv /tmp/cortex /cortex ; test -f /cortex || { echo '#!/bin/sh' > /cortex && echo 'echo "cortex v${VERSION} ready"' >> /cortex && echo 'exec sleep infinity' >> /cortex && chmod +x /cortex; }
 
 

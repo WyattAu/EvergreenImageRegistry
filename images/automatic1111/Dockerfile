@@ -14,7 +14,7 @@ ARG GITHUB_TOKEN
 RUN apk add --no-cache git ca-certificates curl build-base || true
 RUN git clone --depth 1 --branch v1.9.3 https://github.com/AUTOMATIC1111/stable-diffusion-webui.git /opt/automatic1111 2>/dev/null || echo "Source repo not available - using placeholder" && \
     git clone --depth 1 https://github.com/AUTOMATIC1111/stable-diffusion-webui.git /opt/automatic1111 2>/dev/null || echo "Source repo not available - using placeholder" 2>/dev/null || true
-    git clone --depth 1 https://github.com/AUTOMATIC1111/stable-diffusion-webui.git /opt/automatic1111 2>/dev/null || echo "Source repo not available - using placeholder" 2>/dev/null || true
+RUN     git clone --depth 1 https://github.com/AUTOMATIC1111/stable-diffusion-webui.git /opt/automatic1111 2>/dev/null || echo "Source repo not available - using placeholder" 2>/dev/null || true
 RUN cd /opt/automatic1111 && \
     pip install --no-cache-dir --break-system-packages -r requirements.txt 2>/dev/null || true 
 RUN adduser -u 65532 -D app 2>/dev/null || true

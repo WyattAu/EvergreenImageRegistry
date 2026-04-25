@@ -31,7 +31,7 @@ RUN [ -f /tmp/couchdb.tar.gz ] && tar -xzf /tmp/couchdb.tar.gz -C /tmp || true ;
     cd /tmp/apache-couchdb-3.3.3 && \    ./configure --disable-docs --spidermonkey-version=78 && \
     make release && \
     strip --strip-all /tmp/apache-couchdb-3.3.3/rel/couchdb/bin/* || true && \
-    mkdir -p /opt/couchdb && \ 2>/dev/null || true ; \
+    mkdir -p /opt/couchdb ; \
     cp -a /tmp/apache-couchdb-3.3.3/rel/couchdb/. /opt/couchdb/
 
 # hadolint ignore=DL3023
@@ -40,7 +40,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache procps || true
 COPY --from=builder /opt/couchdb /opt/couchdb
-RUN mkdir -p /var/lib/couchdb /var/log/couchdb /app && \ 2>/dev/null || true ; \
+RUN mkdir -p /var/lib/couchdb /var/log/couchdb /app ; \
     chown -R 65532:65532 /var/lib/couchdb /var/log/couchdb /app /opt/couchdb
 ENV COUCHDB_HOME=/opt/couchdb
 ENV PATH="${COUCHDB_HOME}/bin:${PATH}"

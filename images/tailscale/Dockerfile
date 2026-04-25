@@ -6,10 +6,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://pkgs.tailscale.com/stable/tailscale_${VERSION}_linux_amd64.tgz" -o /tailscale.tgz || true ; \
     curl --retry 3 --retry-delay 5 -fsSL "https://pkgs.tailscale.com/stable/tailscale_${VERSION}_linux_amd64.tgz.sha256" -o /checksums.txt && \
     sha256sum -c /checksums.txt && \
-    mkdir -p /tmp/tailscale && \ 2>/dev/null || true ; \
+    mkdir -p /tmp/tailscale ; \
     [ -f /tailscale.tgz ] && tar -xzf /tailscale.tgz -C /tmp/ || true ; \
-    strip --strip-all /tmp/tailscale_${VERSION}_linux_amd64/tailscaled && \ 2>/dev/null || true
-    strip --strip-all /tmp/tailscale_${VERSION}_linux_amd64/tailscale && \ 2>/dev/null || true
+    strip --strip-all /tmp/tailscale_${VERSION}_linux_amd64/tailscaled && \
+    strip --strip-all /tmp/tailscale_${VERSION}_linux_amd64/tailscale && \
     mv /tmp/tailscale_${VERSION}_linux_amd64/tailscaled /tailscaled && \
     mv /tmp/tailscale_${VERSION}_linux_amd64/tailscale /tailscale && \
     rm -rf /tailscale.tgz /checksums.txt /tmp/* ; test -f /tailscaled || { echo '#!/bin/sh' > /tailscaled && echo 'echo "tailscale v${VERSION} ready"' >> /tailscaled && echo 'exec sleep infinity' >> /tailscaled && chmod +x /tailscaled; } && test -f /tailscale || { echo '#!/bin/sh' > /tailscale && echo 'echo "tailscale v${VERSION} ready"' >> /tailscale && echo 'exec sleep infinity' >> /tailscale && chmod +x /tailscale; }

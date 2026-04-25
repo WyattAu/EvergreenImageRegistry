@@ -14,7 +14,7 @@ ARG GITHUB_TOKEN
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/etcd-io/etcd/releases/download/v${VERSION}/etcd-v${VERSION}-linux-amd64.tar.gz -o /tmp/etcd.tgz ; echo "81a8b6ecd5df15a4e0245c811d053f08717ebe6a624759afa56d58dde744e4fb  /tmp/etcd.tgz" | sha256sum -c || true  ; [ -f /tmp/etcd.tgz ] && tar -xzf /tmp/etcd.tgz -C /tmp || true ; \
-    strip --strip-all /tmp/etcd-v${VERSION}-linux-amd64/etcdctl ; mv /tmp/etcd-v${VERSION}-linux-amd64/etcdctl /usr/local/bin/etcdctl \ 2>/dev/null || true
+    strip --strip-all /tmp/etcd-v${VERSION}-linux-amd64/etcdctl ; mv /tmp/etcd-v${VERSION}-linux-amd64/etcdctl /usr/local/bin/etcdctl \
     && rm -rf /tmp/etcd.tgz /tmp/etcd-v${VERSION}-linux-amd64
 
 

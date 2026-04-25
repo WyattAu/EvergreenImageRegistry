@@ -33,7 +33,7 @@ RUN apk add --no-cache ca-certificates || true
 COPY --from=downloader /opt/grafana-image-renderer /opt/grafana-image-renderer
 COPY --from=chromium /usr/bin/chromium /usr/bin/chromium
 COPY --from=chromium /usr/lib/chromium /usr/lib/chromium
-RUN mkdir -p /app/data /app/logs && \ 2>/dev/null || true ; \
+RUN mkdir -p /app/data /app/logs ; \
     chown -R renderer:renderer /app /opt/grafana-image-renderer
 USER 65532:65532
 WORKDIR /app

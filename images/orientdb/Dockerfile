@@ -9,7 +9,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM debian:bookworm-slim AS builder
 COPY --from=downloader /opt/orientdb-community-3.2.34 /opt/orientdb
-RUN mkdir -p /var/lib/orientdb /var/log/orientdb /app && \ 2>/dev/null || true ; \
+RUN mkdir -p /var/lib/orientdb /var/log/orientdb /app ; \
     chown -R 65532:65532 /var/lib/orientdb /var/log/orientdb /app /opt/orientdb
 
 # hadolint ignore=DL3023

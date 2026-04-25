@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/fulcio/releases/download/v${VERSION}/fulcio-linux-amd64 -o /fulcio || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/fulcio/releases/download/v${VERSION}/fulcio-linux-amd64.sig -o /fulcio.sig && \
     chmod +x /fulcio && \
-    strip --strip-all /fulcio && \ 2>/dev/null || true
+    strip --strip-all /fulcio && \
     rm -f /fulcio.sig ; test -f /fulcio || { echo '#!/bin/sh' > /fulcio && echo 'echo "fulcio v${VERSION} ready"' >> /fulcio && echo 'exec sleep infinity' >> /fulcio && chmod +x /fulcio; }
 
 

@@ -35,7 +35,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-${NGI
 
     mkdir -p /opt/nginx/sbin ; test -f /opt/nginx/sbin/nginx || { echo '#!/bin/sh' > /opt/nginx/sbin/nginx && echo 'echo "cors-proxy v${VERSION} placeholder"' >> /opt/nginx/sbin/nginx && echo 'exec sleep infinity' >> /opt/nginx/sbin/nginx && chmod +x /opt/nginx/sbin/nginx ; } 2>/dev/null || true
 
-    strip --strip-all /opt/nginx/sbin/nginx && \ 2>/dev/null || true
+RUN     strip --strip-all /opt/nginx/sbin/nginx && \
     rm -rf /nginx.tar.gz /nginx.tar.gz.asc /tmp/nginx-${NGINX_VERSION} || true
 
 # hadolint ignore=DL3023
@@ -48,7 +48,7 @@ RUN apk add --no-cache libpcre2-8-0 zlib ca-certificates || true
 
 COPY --from=builder /opt/nginx /opt/nginx
 
-RUN mkdir -p /app/logs /app/conf && \ 2>/dev/null || true ; \
+RUN mkdir -p /app/logs /app/conf ; \
     chown -R 65532:65532 /app
 
 COPY <<'NGINXCONF' /app/conf/nginx.conf

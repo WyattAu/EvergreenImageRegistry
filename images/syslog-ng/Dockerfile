@@ -13,7 +13,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && \
     apt-get install -y --no-install-recommends syslog-ng-core && \
-    strip /usr/sbin/syslog-ng && \ 2>/dev/null || true
+    strip /usr/sbin/syslog-ng && \
     find /usr/lib/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true && \
     find /usr/lib/*/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true
 
@@ -26,7 +26,7 @@ RUN addgroup -S 65532 syslogng && \
     adduser -u 65532 -G syslogng -D -s /sbin/nologin syslogng
 RUN apk add --no-cache ca-certificates || true
 COPY --from=builder /usr/sbin/syslog-ng /usr/sbin/syslog-ng
-RUN mkdir -p /app/conf /app/logs /app/run /var/lib/syslog-ng && \ 2>/dev/null || true ; \
+RUN mkdir -p /app/conf /app/logs /app/run /var/lib/syslog-ng ; \
     chown -R syslogng:syslogng /app /var/lib/syslog-ng
 COPY <<'EOF' /app/conf/syslog-ng.conf
 @version: 4.8

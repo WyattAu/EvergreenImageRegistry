@@ -28,7 +28,7 @@ RUN apk add --no-cache gnupg curl ca-certificates wget psmisc || true
 COPY --from=builder /var/lib/mysql /var/lib/mysql
 COPY --from=builder /var/run/mysqld /var/run/mysqld
 RUN usermod -u 65532 mysql && \
-    mkdir -p /app /var/log/mysql-8 /var/cache/mysql-8 && \ 2>/dev/null || true ; \
+    mkdir -p /app /var/log/mysql-8 /var/cache/mysql-8 ; \
     chown -R 65532:65532 /var/lib/mysql /var/run/mysqld /app /var/log/mysql-8 /var/cache/mysql-8
 
 USER 65532:65532

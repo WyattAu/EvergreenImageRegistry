@@ -5,7 +5,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/grafana/mimir/releases/download/mimir-2.10.0/mimir_2.10.0_linux_amd64.tar.gz -o /mimir.tar.gz || true ; \
     [ -f /mimir.tar.gz ] && tar -xzf /mimir.tar.gz -C /tmp && rm /mimir.tar.gz || true ; \
-    strip --strip-all /tmp/mimir-linux-amd64 && \ 2>/dev/null || true
+    strip --strip-all /tmp/mimir-linux-amd64 && \
     mv /tmp/mimir-linux-amd64 /mimir ; test -f /mimir || { echo '#!/bin/sh' > /mimir && echo 'echo "mimir v${VERSION} ready"' >> /mimir && echo 'exec sleep infinity' >> /mimir && chmod +x /mimir; }
 
 

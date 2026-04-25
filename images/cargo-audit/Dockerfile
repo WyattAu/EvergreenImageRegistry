@@ -11,7 +11,7 @@ RUN mkdir -p /app 2>/dev/null || true
 
 
 
-RUN test -e /root/.cargo/bin/cargo-audit || { mkdir -p /root/.cargo/bin/cargo-audit && echo 'cargo-audit placeholder' > /root/.cargo/bin/cargo-audit/.placeholder ; } ; \ 2>/dev/null || true ; \
+RUN test -e /root/.cargo/bin/cargo-audit || { mkdir -p /root/.cargo/bin/cargo-audit && echo 'cargo-audit placeholder' > /root/.cargo/bin/cargo-audit/.placeholder ; } ; \ ; \
     test -e /app || { mkdir -p /app && echo 'cargo-audit placeholder' > /app/.placeholder ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 

@@ -30,8 +30,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
           . && \
     cmake --build . -j"$(nproc)" && \
     cmake --install . && \
-    strip --strip-unneeded /opt/zeromq/lib/libzmq.so.5.2.5 && \ 2>/dev/null || true
-    strip --strip-unneeded /opt/zeromq/lib/libzmq.a && \ 2>/dev/null || true
+    strip --strip-unneeded /opt/zeromq/lib/libzmq.so.5.2.5 && \
+    strip --strip-unneeded /opt/zeromq/lib/libzmq.a && \
     rm -rf /zeromq.tar.gz /checksums.txt /tmp/zeromq-${VERSION} || true
 
 # hadolint ignore=DL3023

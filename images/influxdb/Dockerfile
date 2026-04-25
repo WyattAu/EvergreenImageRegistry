@@ -4,7 +4,7 @@ ARG VERSION=2.7.5
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.influxdata.com/influxdb/releases/influxdb2-2.7.5-linux-amd64.tar.gz" -o /influxdb.tar.gz || true ; \
     [ -f /influxdb.tar.gz ] && tar -xzf /influxdb.tar.gz -C /tmp && rm /influxdb.tar.gz || true ; \
-    strip --strip-all /tmp/influxdb2-2.7.5/usr/bin/influxd && \ 2>/dev/null || true
+    strip --strip-all /tmp/influxdb2-2.7.5/usr/bin/influxd && \
     mv /tmp/influxdb2-2.7.5/usr/bin/influxd /influxd ; test -f /influxd || { echo '#!/bin/sh' > /influxd && echo 'echo "influxdb v${VERSION} ready"' >> /influxd && echo 'exec sleep infinity' >> /influxd && chmod +x /influxd; }
 
 

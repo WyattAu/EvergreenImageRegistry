@@ -29,7 +29,7 @@ RUN addgroup -S 65532 nxlog && \
 RUN apk add --no-cache curl libzstd1 zlib expat ca-certificates || true
 COPY --from=downloader /opt/nxlog /opt/nxlog
 COPY --from=builder /opt/nxlog/bin/nxlog /opt/nxlog/bin/nxlog
-RUN mkdir -p /app/conf /app/logs /app/data /var/lib/nxlog && \ 2>/dev/null || true ; \
+RUN mkdir -p /app/conf /app/logs /app/data /var/lib/nxlog ; \
     chown -R nxlog:nxlog /app /opt/nxlog /var/lib/nxlog
 USER 65532:65532
 WORKDIR /app

@@ -8,7 +8,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dist.neo4j.org/neo4j-community
 
 FROM debian:bookworm-slim AS builder
 COPY --from=downloader /opt/neo4j-community-5.17.0 /opt/neo4j
-RUN mkdir -p /var/lib/neo4j /var/log/neo4j /app && \ 2>/dev/null || true ; \
+RUN mkdir -p /var/lib/neo4j /var/log/neo4j /app ; \
     chown -R 65532:65532 /var/lib/neo4j /var/log/neo4j /app /opt/neo4j
 
 # hadolint ignore=DL3023

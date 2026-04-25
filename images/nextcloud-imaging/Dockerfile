@@ -5,7 +5,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        php8.4-fpm php84 php8.4-curl php8.4-gd php8.4-mbstring php8.4-xml zip php8.4-intl php8.4-mysql sqlite-libs imagick \
+        php8.4-fpm php8.4 php8.4-curl php8.4-gd php8.4-mbstring php8.4-xml zip php8.4-intl php8.4-mysql sqlite-libs imagick \
         nginx ca-certificates curl \
     && rm -rf /var/lib/apt/lists/*
 

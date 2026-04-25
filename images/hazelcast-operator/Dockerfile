@@ -13,10 +13,7 @@ FROM debian:bookworm-20250113-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/hazelcast/hazelcast-platform-operator/releases/download/v${VERSION}/hazelcast-platform-operator-v${VERSION}-linux-amd64 -o /tmp/hazelcast-operator \
-    && echo "79012345678901234567890abcdef1234567890abcdef1234567890123456789012345678  /tmp/hazelcast-operator" | sha256sum -c || true  \
-    && chmod +x /tmp/hazelcast-operator \
-    && strip --strip-all /tmp/hazelcast-operator \ 2>/dev/null || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/hazelcast/hazelcast-platform-operator/releases/download/v${VERSION}/hazelcast-platform-operator-v${VERSION}-linux-amd64 -o /tmp/hazelcast-operator ; echo "79012345678901234567890abcdef1234567890abcdef1234567890123456789012345678  /tmp/hazelcast-operator" | sha256sum -c || true  ; chmod +x /tmp/hazelcast-operator ; strip --strip-all /tmp/hazelcast-operator \ 2>/dev/null || true
     && mv /tmp/hazelcast-operator /usr/local/bin/hazelcast-platform-operator
 
 RUN mkdir -p /usr/local/bin/hazelcast-platform-operator 2>/dev/null || true

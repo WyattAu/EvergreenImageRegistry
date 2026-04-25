@@ -16,7 +16,7 @@ RUN apt-get update &&     apt-get install -y --no-install-recommends         cur
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" | bash - &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/* || true
 WORKDIR /build
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/actions/runner/releases/download/v${VERSION}/actions-runner-linux-x64-${VERSION}.tar.gz -o /tmp/runner.tar.gz && \
-    [ -f /tmp/runner.tar.gz ] && tar -xzf /tmp/runner.tar.gz -C /build && || true ; \
+    [ -f /tmp/runner.tar.gz ] && tar -xzf /tmp/runner.tar.gz -C /build || true ; \
     rm /tmp/runner.tar.gz && \
     chown -R root:root /build || true
 

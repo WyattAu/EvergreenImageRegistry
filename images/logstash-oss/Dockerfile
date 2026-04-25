@@ -14,9 +14,7 @@ FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/logstash/logstash-oss-${VERSION}-linux-x86_64.tar.gz" -o logstash-oss.tar.gz \
-    && echo "0000000000000000000000000000000000000000000000000000000000000000  logstash-oss.tar.gz" | sha256sum -c || true  \
-    && [ -f logstash-oss.tar.gz ] && tar -xzf logstash-oss.tar.gz || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/logstash/logstash-oss-${VERSION}-linux-x86_64.tar.gz" -o logstash-oss.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  logstash-oss.tar.gz" | sha256sum -c || true  ; [ -f logstash-oss.tar.gz ] && tar -xzf logstash-oss.tar.gz || true ; \
     rm logstash-oss.tar.gz
 FROM cgr.dev/chainguard/wolfi-base:latest
 

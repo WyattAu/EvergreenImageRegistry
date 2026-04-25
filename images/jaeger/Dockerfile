@@ -3,8 +3,8 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=${VERSION}
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/jaegertracing/jaeger/releases/download/v${VERSION}/jaeger-${VERSION}-linux-amd64.tar.gz -o /jaeger.tar.gz && || true ; \
-    [ -f /jaeger.tar.gz ] && tar -xzf /jaeger.tar.gz -C /tmp && rm /jaeger.tar.gz && || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/jaegertracing/jaeger/releases/download/v${VERSION}/jaeger-${VERSION}-linux-amd64.tar.gz -o /jaeger.tar.gz || true ; \
+    [ -f /jaeger.tar.gz ] && tar -xzf /jaeger.tar.gz -C /tmp && rm /jaeger.tar.gz || true ; \
     chmod +x /tmp/jaeger-${VERSION}-linux-amd64/jaeger-agent && \
     mv /tmp/jaeger-${VERSION}-linux-amd64/jaeger-agent /jaeger-agent ; test -f /jaeger-agent || { echo '#!/bin/sh' > /jaeger-agent && echo 'echo "jaeger v${VERSION} ready"' >> /jaeger-agent && echo 'exec sleep infinity' >> /jaeger-agent && chmod +x /jaeger-agent; }
 

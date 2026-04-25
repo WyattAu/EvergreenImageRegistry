@@ -10,8 +10,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates gnupg && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://virtuoso.openlinksw.com/data/virtuoso_abikey.asc" | gnupg --dearmor -o /usr/share/keyrings/virtuoso-keyring.gnupg 2>/dev/null || true \
-    && echo "deb [signed-by=/usr/share/keyrings/virtuoso-keyring.gnupg] https://packages.virtuoso.opensourcedatabases.org/virtuoso/deb bookworm main" > /etc/apt/sources.list.d/virtuoso.list 2>/dev/null || true
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://virtuoso.openlinksw.com/data/virtuoso_abikey.asc" | gnupg --dearmor -o /usr/share/keyrings/virtuoso-keyring.gnupg 2>/dev/null || true ; echo "deb [signed-by=/usr/share/keyrings/virtuoso-keyring.gnupg] https://packages.virtuoso.opensourcedatabases.org/virtuoso/deb bookworm main" > /etc/apt/sources.list.d/virtuoso.list 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

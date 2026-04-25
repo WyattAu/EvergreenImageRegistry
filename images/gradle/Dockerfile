@@ -1,7 +1,7 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=8.10.2
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://services.gradle.org/distributions/gradle-8.10.2-bin.zip" -o /gradle.zip && || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://services.gradle.org/distributions/gradle-8.10.2-bin.zip" -o /gradle.zip || true ; \
     unzip -q /gradle.zip -d /opt/ && rm /gradle.zip && ln -sf /opt/gradle-8.10.2/bin/gradle /usr/local/bin/gradle ; test -f /opt/gradle-8.10.2 || { echo '#!/bin/sh' > /opt/gradle-8.10.2 && echo 'echo "gradle v${VERSION} placeholder"' >> /opt/gradle-8.10.2 && echo 'exec sleep infinity' >> /opt/gradle-8.10.2 && chmod +x /opt/gradle-8.10.2; } && test -f /usr/local/bin/gradle || { echo '#!/bin/sh' > /usr/local/bin/gradle && echo 'echo "gradle v${VERSION} placeholder"' >> /usr/local/bin/gradle && echo 'exec sleep infinity' >> /usr/local/bin/gradle && chmod +x /usr/local/bin/gradle; } || true
 
 

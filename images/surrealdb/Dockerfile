@@ -3,7 +3,7 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=3.0.5
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/surrealdb/surrealdb/releases/download/v3.0.5/surreal-v3.0.5.linux-amd64.tgz -o /surreal.tar.gz && || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/surrealdb/surrealdb/releases/download/v3.0.5/surreal-v3.0.5.linux-amd64.tgz -o /surreal.tar.gz || true ; \
     [ -f /surreal.tar.gz ] && tar -xzf /surreal.tar.gz -C / && rm /surreal.tar.gz && chmod +x /surreal 2>/dev/null || || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/surrealdb/surrealdb/releases/download/v3.0.5/surreal-v3.0.5.linux-amd64.tgz -o /surreal && chmod +x /surreal ; test -f /surreal || { echo '#!/bin/sh' > /surreal && echo 'echo "surrealdb v${VERSION} ready"' >> /surreal && echo 'exec sleep infinity' >> /surreal && chmod +x /surreal; }
 

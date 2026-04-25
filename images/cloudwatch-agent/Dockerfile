@@ -3,7 +3,7 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.300046.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/aws/cloudwatch-agent/releases/download/v${VERSION}/amazon-cloudwatch-agent-linux-amd64.tar.gz -o /cwagent.tar.gz && || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/aws/cloudwatch-agent/releases/download/v${VERSION}/amazon-cloudwatch-agent-linux-amd64.tar.gz -o /cwagent.tar.gz || true ; \
     tar -xzf /cwagent.tar.gz -C / && rm /cwagent.tar.gz && chmod +x /amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent ; test -f /amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent || { echo '#!/bin/sh' > /amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent && echo 'echo "cloudwatch-agent v${VERSION} ready"' >> /amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent && echo 'exec sleep infinity' >> /amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent && chmod +x /amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent; } || true
 
 

@@ -3,7 +3,7 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.42.1
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/meilisearch/meilisearch/releases/download/v1.42.1/meilisearch-enterprise-linux-amd64 -o /meilisearch.tar.gz && || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/meilisearch/meilisearch/releases/download/v1.42.1/meilisearch-enterprise-linux-amd64 -o /meilisearch.tar.gz || true ; \
     [ -f /meilisearch.tar.gz ] && tar -xzf /meilisearch.tar.gz -C / && rm /meilisearch.tar.gz && chmod +x /meilisearch 2>/dev/null || || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/meilisearch/meilisearch/releases/download/v1.42.1/meilisearch-enterprise-linux-amd64 -o /meilisearch && chmod +x /meilisearch ; test -f /meilisearch || { echo '#!/bin/sh' > /meilisearch && echo 'echo "meilisearch v${VERSION} ready"' >> /meilisearch && echo 'exec sleep infinity' >> /meilisearch && chmod +x /meilisearch; }
 

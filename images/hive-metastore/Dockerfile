@@ -14,9 +14,7 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/hive/hive-${VERSION}/apache-hive-${VERSION}-bin.tar.gz" -o /tmp/hive.tar.gz \
-    && echo "PENDING  /tmp/hive.tar.gz" | sha256sum -c || true  \
-    && [ -f /tmp/hive.tar.gz ] && tar -xzf /tmp/hive.tar.gz -C /opt || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/hive/hive-${VERSION}/apache-hive-${VERSION}-bin.tar.gz" -o /tmp/hive.tar.gz ; echo "PENDING  /tmp/hive.tar.gz" | sha256sum -c || true  ; [ -f /tmp/hive.tar.gz ] && tar -xzf /tmp/hive.tar.gz -C /opt || true ; \
     rm /tmp/hive.tar.gz
 FROM cgr.dev/chainguard/wolfi-base:latest
 

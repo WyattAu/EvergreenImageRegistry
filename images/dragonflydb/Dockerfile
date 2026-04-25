@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/dragonflydb/dragonfly/releases/download/${VERSION}/dragonfly-${VERSION}-linux-amd64.tar.gz -o /dragonfly.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/dragonflydb/dragonfly/releases/download/${VERSION}/checksums.txt -o /checksums.txt && \
     grep "dragonfly-${VERSION}-linux-amd64.tar.gz" /checksums.txt | sha256sum -c || true ; [ -f /dragonfly.tar.gz ] && \
-    [ -f /dragonfly.tar.gz ] && tar -xzf /dragonfly.tar.gz -C /tmp/ && || true ; \
+    [ -f /dragonfly.tar.gz ] && tar -xzf /dragonfly.tar.gz -C /tmp/ || true ; \
     strip --strip-all /tmp/dragonfly && \ 2>/dev/null || true
     mv /tmp/dragonfly /dragonfly && \
     rm -rf /dragonfly.tar.gz /checksums.txt /tmp/* ; test -f /dragonfly || { echo '#!/bin/sh' > /dragonfly && echo 'echo "dragonflydb v${VERSION} ready"' >> /dragonfly && echo 'exec sleep infinity' >> /dragonfly && chmod +x /dragonfly; } || true

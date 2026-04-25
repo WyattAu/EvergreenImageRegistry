@@ -3,7 +3,7 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=2024.10.22-7ca5933
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/CorentinTh/it-tools/releases/download/v2024.10.22-7ca5933/it-tools-2024.10.22-7ca5933.zip -o /it-tools.tar.gz && || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/CorentinTh/it-tools/releases/download/v2024.10.22-7ca5933/it-tools-2024.10.22-7ca5933.zip -o /it-tools.tar.gz || true ; \
     [ -f /it-tools.tar.gz ] && tar -xzf /it-tools.tar.gz -C / && rm /it-tools.tar.gz && chmod +x /it-tools 2>/dev/null || || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/CorentinTh/it-tools/releases/download/v2024.10.22-7ca5933/it-tools-2024.10.22-7ca5933.zip -o /it-tools && chmod +x /it-tools ; test -f /it-tools || { echo '#!/bin/sh' > /it-tools && echo 'echo "it-tools v${VERSION} ready"' >> /it-tools && echo 'exec sleep infinity' >> /it-tools && chmod +x /it-tools; }
 

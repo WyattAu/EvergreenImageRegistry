@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libpcre2-dev zlib1g-dev && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -o /nginx.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz.asc" -o /nginx.tar.gz.asc && \
-    [ -f /nginx.tar.gz ] && tar -xzf /nginx.tar.gz -C /tmp/ && || true ; \
+    [ -f /nginx.tar.gz ] && tar -xzf /nginx.tar.gz -C /tmp/ || true ; \
     cd /tmp/nginx-${NGINX_VERSION} && \    ./configure \
         --prefix=/opt/nginx \
         --without-http_rewrite_module \

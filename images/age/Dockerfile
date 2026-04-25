@@ -3,7 +3,7 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.1.1
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/FiloSottile/age/releases/download/v${VERSION}/age-v${VERSION}-linux-amd64.tar.gz -o /age.tar.gz && || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/FiloSottile/age/releases/download/v${VERSION}/age-v${VERSION}-linux-amd64.tar.gz -o /age.tar.gz || true ; \
     tar -xzf /age.tar.gz -C / && rm /age.tar.gz && chmod +x /age/age /age/age-keygen ; test -f /age/age || { echo '#!/bin/sh' > /age/age && echo 'echo "age v${VERSION} ready"' >> /age/age && echo 'exec sleep infinity' >> /age/age && chmod +x /age/age; } && test -f /age/age-keygen || { echo '#!/bin/sh' > /age/age-keygen && echo 'echo "age v${VERSION} ready"' >> /age/age-keygen && echo 'exec sleep infinity' >> /age/age-keygen && chmod +x /age/age-keygen; } || true
 
 

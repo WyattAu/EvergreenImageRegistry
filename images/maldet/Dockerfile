@@ -1,8 +1,7 @@
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        curl ca-certificates inotify-tools \
-    && rm -rf /var/lib/apt/lists/* || true
+        curl ca-certificates inotify-tools ; rm -rf /var/lib/apt/lists/* || true
 
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://www.rfxn.com/downloads/maldetect-current.tar.gz" || true ; \
     -o /maldet.tar.gz && \

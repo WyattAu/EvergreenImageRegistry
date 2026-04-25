@@ -13,10 +13,8 @@ FROM debian:bookworm-20250113-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/codenotary/immudb/releases/download/v${VERSION}/immudb-v${VERSION}-linux-amd64.tar.gz -o /tmp/immudb.tgz \
-    && echo "89012345678901234567890abcdef1234567890abcdef12345678901234567890123456789  /tmp/immudb.tgz" | sha256sum -c || true  \
-    && [ -f /tmp/immudb.tgz ] && tar -xzf /tmp/immudb.tgz -C /tmp || true ; \
-    strip --strip-all /tmp/immudb-v${VERSION}-linux-amd64/immudb-proxy \    && mv /tmp/immudb-v${VERSION}-linux-amd64/immudb-proxy /usr/local/bin/immudb-proxy \ 2>/dev/null || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/codenotary/immudb/releases/download/v${VERSION}/immudb-v${VERSION}-linux-amd64.tar.gz -o /tmp/immudb.tgz ; echo "89012345678901234567890abcdef1234567890abcdef12345678901234567890123456789  /tmp/immudb.tgz" | sha256sum -c || true  ; [ -f /tmp/immudb.tgz ] && tar -xzf /tmp/immudb.tgz -C /tmp || true ; \
+    strip --strip-all /tmp/immudb-v${VERSION}-linux-amd64/immudb-proxy ; mv /tmp/immudb-v${VERSION}-linux-amd64/immudb-proxy /usr/local/bin/immudb-proxy \ 2>/dev/null || true
     && rm -rf /tmp/immudb.tgz /tmp/immudb-v${VERSION}-linux-amd64
 
 

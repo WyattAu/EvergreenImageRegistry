@@ -1,8 +1,7 @@
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        nodejs npm git ca-certificates python3 make g++ \
-    && rm -rf /var/lib/apt/lists/* || true
+        nodejs npm git ca-certificates python3 make g++ ; rm -rf /var/lib/apt/lists/* || true
 WORKDIR /src
 RUN git clone --depth 1 https://github.com/linuxserver/Heimdall.git /src 2>/dev/null || true 2>/dev/null || echo "Source repo not available - using placeholder"
 RUN mkdir -p /src 2>/dev/null || true

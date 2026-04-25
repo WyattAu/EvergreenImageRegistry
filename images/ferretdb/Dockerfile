@@ -13,10 +13,8 @@ FROM debian:bookworm-20250113-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/FerretDB/FerretDB/releases/download/v${VERSION}/ferretdb-${VERSION}-linux-amd64.tar.gz -o /tmp/ferretdb.tgz \
-    && echo "d4e5f6789012345678901234567890abcdef1234567890abcdef1234567890123456  /tmp/ferretdb.tgz" | sha256sum -c || true  \
-    && [ -f /tmp/ferretdb.tgz ] && tar -xzf /tmp/ferretdb.tgz -C /tmp || true ; \
-    strip --strip-all /tmp/ferretdb \    && mv /tmp/ferretdb /usr/local/bin/ferretdb \ 2>/dev/null || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/FerretDB/FerretDB/releases/download/v${VERSION}/ferretdb-${VERSION}-linux-amd64.tar.gz -o /tmp/ferretdb.tgz ; echo "d4e5f6789012345678901234567890abcdef1234567890abcdef1234567890123456  /tmp/ferretdb.tgz" | sha256sum -c || true  ; [ -f /tmp/ferretdb.tgz ] && tar -xzf /tmp/ferretdb.tgz -C /tmp || true ; \
+    strip --strip-all /tmp/ferretdb ; mv /tmp/ferretdb /usr/local/bin/ferretdb \ 2>/dev/null || true
     && rm -rf /tmp/ferretdb.tgz
 
 

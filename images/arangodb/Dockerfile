@@ -2,8 +2,8 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=3.11.10.1
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.arangodb.com/arangodb311/Linux/arangodb3-linux-3.11.10.1_x86_64.tar.gz" -o /arangodb.tar.gz && || true ; \
-    [ -f /arangodb.tar.gz ] && tar -xzf /arangodb.tar.gz -C /tmp && rm /arangodb.tar.gz && || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.arangodb.com/arangodb311/Linux/arangodb3-linux-3.11.10.1_x86_64.tar.gz" -o /arangodb.tar.gz || true ; \
+    [ -f /arangodb.tar.gz ] && tar -xzf /arangodb.tar.gz -C /tmp && rm /arangodb.tar.gz || true ; \
     strip --strip-all /tmp/arangodb3-linux-3.11.10.1_x86_64/usr/sbin/arangod && \ 2>/dev/null || true
     strip --strip-all /tmp/arangodb3-linux-3.11.10.1_x86_64/usr/bin/arangosh && \ 2>/dev/null || true
     mv /tmp/arangodb3-linux-3.11.10.1_x86_64/usr/sbin/arangod /arangod && \

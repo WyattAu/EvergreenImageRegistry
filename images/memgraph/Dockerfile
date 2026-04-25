@@ -19,10 +19,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libboost-all-dev libssl-dev libspdlog-dev \
     python3-pip && rm -rf /var/lib/apt/lists/* || true
 RUN git clone --depth 1 --branch v${VERSION} https://github.com/memgraph/memgraph.git /tmp/memgraph-src 2>/dev/null || echo "Source repo not available - using placeholder"; \
-    (curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/memgraph/memgraph/releases/download/v${VERSION}/memgraph-${VERSION}-linux-amd64.tar.gz -o /tmp/memgraph.tar.gz \
-    && [ -f /tmp/memgraph.tar.gz ] && tar -xzf /tmp/memgraph.tar.gz -C /opt && rm /tmp/memgraph.tar.gz) || true
-    (curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/memgraph/memgraph/releases/download/v${VERSION}/memgraph-${VERSION}-linux-amd64.tar.gz -o /tmp/memgraph.tar.gz \
-    && [ -f /tmp/memgraph.tar.gz ] && tar -xzf /tmp/memgraph.tar.gz -C /opt && rm /tmp/memgraph.tar.gz) || true
+    (curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/memgraph/memgraph/releases/download/v${VERSION}/memgraph-${VERSION}-linux-amd64.tar.gz -o /tmp/memgraph.tar.gz ; [ -f /tmp/memgraph.tar.gz ] && tar -xzf /tmp/memgraph.tar.gz -C /opt && rm /tmp/memgraph.tar.gz) || true
+    (curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/memgraph/memgraph/releases/download/v${VERSION}/memgraph-${VERSION}-linux-amd64.tar.gz -o /tmp/memgraph.tar.gz ; [ -f /tmp/memgraph.tar.gz ] && tar -xzf /tmp/memgraph.tar.gz -C /opt && rm /tmp/memgraph.tar.gz) || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

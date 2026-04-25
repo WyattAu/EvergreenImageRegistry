@@ -15,10 +15,8 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/graphile/postgraphile/releases/download/v${VERSION}/postgraphile-${VERSION}.tar.gz -o /tmp/graphile.tar.gz \
-    && echo "PENDING  /tmp/graphile.tar.gz" | sha256sum -c || true  \
-    && mkdir -p /opt/graphile \ 2>/dev/null || true ; \
-    [ -f /tmp/graphile.tar.gz ] && tar -xzf /tmp/graphile.tar.gz -C /opt/graphile --strip-components=1 || true ; \    rm /tmp/graphile.tar.gz \    && cd /opt/graphile && npm ci --omit=dev 2>/dev/null || npm install --omit=dev
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/graphile/postgraphile/releases/download/v${VERSION}/postgraphile-${VERSION}.tar.gz -o /tmp/graphile.tar.gz ; echo "PENDING  /tmp/graphile.tar.gz" | sha256sum -c || true  ; mkdir -p /opt/graphile \ 2>/dev/null || true ; \
+    [ -f /tmp/graphile.tar.gz ] && tar -xzf /tmp/graphile.tar.gz -C /opt/graphile --strip-components=1 || true ; \    rm /tmp/graphile.tar.gz ; cd /opt/graphile && npm ci --omit=dev 2>/dev/null || npm install --omit=dev
 
 FROM debian:bookworm-slim AS nodebase
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -38,8 +36,7 @@ ARG VERSION=4.14.0
 COPY --from=nodebase /usr/local/bin/node /usr/local/bin/node
 COPY --from=nodebase /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --from=nodebase /usr/local/include/node /usr/local/include/node
-RUN ln -sf /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm 2>/dev/null || true \
-    && ln -sf /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx 2>/dev/null || true
+RUN ln -sf /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm 2>/dev/null || true ; ln -sf /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx 2>/dev/null || true
 RUN adduser -u 65532 -s /sbin/nologin graphile 2>/dev/null || true
 RUN mkdir -p /var/lib/graphile /var/log/graphile /var/cache/graphile 2>/dev/null || true
 COPY --from=builder /opt/graphile /opt/graphile

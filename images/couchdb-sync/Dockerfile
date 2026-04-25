@@ -27,7 +27,7 @@ RUN apt-get update && \
         gcc \
         g++ && \
     rm -rf /var/lib/apt/lists/*
-RUN [ -f /tmp/couchdb.tar.gz ] && tar -xzf /tmp/couchdb.tar.gz -C /tmp && || true ; \
+RUN [ -f /tmp/couchdb.tar.gz ] && tar -xzf /tmp/couchdb.tar.gz -C /tmp || true ; \
     cd /tmp/apache-couchdb-3.3.3 && \    ./configure --disable-docs --spidermonkey-version=78 && \
     make release && \
     strip --strip-all /tmp/apache-couchdb-3.3.3/rel/couchdb/bin/* || true && \

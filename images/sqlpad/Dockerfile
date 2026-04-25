@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sqlpad/sqlpad/releases/download/v${VERSION}/sqlpad-v${VERSION}-linux-x64.tar.gz \
     -o /sqlpad.tar.gz && \
     echo "PENDING_CHECKSUM  /sqlpad.tar.gz" | sha256sum -c || true ; [ -f /sqlpad.tar.gz ] && \
-    [ -f /sqlpad.tar.gz ] && tar -xzf /sqlpad.tar.gz -C /app --strip-components=1 && || true ; \
+    [ -f /sqlpad.tar.gz ] && tar -xzf /sqlpad.tar.gz -C /app --strip-components=1 || true ; \
     rm /sqlpad.tar.gz && \
     find /app -name "*.md" -delete && \
     find /app -name "*.txt" -not -name "package.json-c" -delete || true

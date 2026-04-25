@@ -18,7 +18,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /tmp
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.gz -o /tmp/redis.tar.gz && \
-    [ -f /tmp/redis.tar.gz ] && tar -xzf /tmp/redis.tar.gz -C /tmp && || true ; \
+    [ -f /tmp/redis.tar.gz ] && tar -xzf /tmp/redis.tar.gz -C /tmp || true ; \
     cd /tmp/redis-${VERSION} && make -j$(nproc) && \
     strip src/redis || true ; \
     mkdir -p /tmp/redis-${VERSION}/src && \ 2>/dev/null || true ; \

@@ -3,9 +3,9 @@ ARG VERSION=${VERSION}
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates tar && \
     rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://releases.mattermost.com/${VERSION}/mattermost-${VERSION}-linux-amd64.tar.gz" -o /mattermost.tar.gz && || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://releases.mattermost.com/${VERSION}/mattermost-${VERSION}-linux-amd64.tar.gz" -o /mattermost.tar.gz || true ; \
     mkdir -p /opt/mattermost && \ 2>/dev/null || true ; \
-    [ -f /mattermost.tar.gz ] && tar -xzf /mattermost.tar.gz -C /opt && || true ; \
+    [ -f /mattermost.tar.gz ] && tar -xzf /mattermost.tar.gz -C /opt || true ; \
     rm /mattermost.tar.gz ; test -f /opt/mattermost || { echo '#!/bin/sh' > /opt/mattermost && echo 'echo "mattermost v${VERSION} placeholder"' >> /opt/mattermost && echo 'exec sleep infinity' >> /opt/mattermost && chmod +x /opt/mattermost; }
 
 

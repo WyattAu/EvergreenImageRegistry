@@ -3,8 +3,8 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.97.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.97.0/victoria-metrics-linux-amd64-v1.97.0-cluster.tar.gz -o /vm-cluster.tar.gz && || true ; \
-    [ -f /vm-cluster.tar.gz ] && tar -xzf /vm-cluster.tar.gz -C /tmp && rm /vm-cluster.tar.gz && || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.97.0/victoria-metrics-linux-amd64-v1.97.0-cluster.tar.gz -o /vm-cluster.tar.gz || true ; \
+    [ -f /vm-cluster.tar.gz ] && tar -xzf /vm-cluster.tar.gz -C /tmp && rm /vm-cluster.tar.gz || true ; \
     strip --strip-all /tmp/vminsert-prod && \ 2>/dev/null || true
     strip --strip-all /tmp/vmselect-prod && \ 2>/dev/null || true
     strip --strip-all /tmp/vmstorage-prod && \ 2>/dev/null || true

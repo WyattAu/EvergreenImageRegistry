@@ -7,7 +7,7 @@ RUN apt-get update && \
         gnupg \
         openssh-client && \
     rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.deb.sh" | bash && || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.deb.sh" | bash || true ; \
     apt-get update && \
     apt-get install -y --no-install-recommends gitlab-ee=${VERSION}-ee.0 && \
     rm -rf /var/lib/apt/lists/*

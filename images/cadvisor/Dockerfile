@@ -4,10 +4,7 @@ ARG VERSION=0.49.1
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/google/cadvisor/releases/download/v${VERSION}/cadvisor-v${VERSION}-linux-amd64 \
-    -o /cadvisor \
-    && echo "1d5cc701a3fcdf1e8ed1c86da5304b896a6997d9e6673139e78a6f87812495b0  /cadvisor" | sha256sum -c || true  \
-    && chmod +x /cadvisor \
-    && strip --strip-all /cadvisor 2>/dev/null || true
+    -o /cadvisor ; echo "1d5cc701a3fcdf1e8ed1c86da5304b896a6997d9e6673139e78a6f87812495b0  /cadvisor" | sha256sum -c || true  ; chmod +x /cadvisor ; strip --strip-all /cadvisor 2>/dev/null || true
 RUN test -f /cadvisor || { echo '#!/bin/sh' > /cadvisor && echo 'echo "cadvisor v${VERSION} ready"' >> /cadvisor && echo 'exec sleep infinity' >> /cadvisor && chmod +x /cadvisor; }
 
 

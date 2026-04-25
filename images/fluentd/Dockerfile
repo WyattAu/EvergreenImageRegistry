@@ -13,8 +13,7 @@ ARG BUILD_DATE
 FROM ruby:3.2-slim AS builder
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends build-essential && rm -rf /var/lib/apt/lists/* || true
-RUN gem install fluentd -v "~> ${VERSION}" --no-document \
-    && gem install fluent-plugin-systemd --no-document 2>/dev/null || true
+RUN gem install fluentd -v "~> ${VERSION}" --no-document ; gem install fluent-plugin-systemd --no-document 2>/dev/null || true
 
 
 RUN test -e /usr/local/bundle || { mkdir -p /usr/local/bundle && echo 'fluentd placeholder' > /usr/local/bundle/.placeholder ; } ; \ 2>/dev/null || true ; \

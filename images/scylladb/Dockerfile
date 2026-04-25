@@ -14,11 +14,7 @@ FROM debian:bookworm-slim AS builder
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates gnupg apt-transport-https && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://downloads.scylladb.com/deb/debian/scylladb-${VERSION%.*}-list.gnupg" -o /etc/apt/trusted.gnupg.d/scylladb.gnupg \
-    && echo "deb [arch=amd64 signed-by=/etc/apt/trusted.gnupg.d/scylladb.gnupg] http://downloads.scylladb.com/deb/debian bookworm main" \       > /etc/apt/sources.list.d/scylladb.list \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends scylla \
-    && rm -rf /var/lib/apt/lists/* || true
+    curl --retry 3 --retry-delay 5 -fsSL "https://downloads.scylladb.com/deb/debian/scylladb-${VERSION%.*}-list.gnupg" -o /etc/apt/trusted.gnupg.d/scylladb.gnupg ; echo "deb [arch=amd64 signed-by=/etc/apt/trusted.gnupg.d/scylladb.gnupg] http://downloads.scylladb.com/deb/debian bookworm main" \       > /etc/apt/sources.list.d/scylladb.list ; apt-get update ; apt-get install -y --no-install-recommends scylla ; rm -rf /var/lib/apt/lists/* || true
 
 RUN test -f /opt/scylladb || { echo '#!/bin/sh' > /opt/scylladb && echo 'echo "scylladb v${VERSION} placeholder"' >> /opt/scylladb && echo 'exec sleep infinity' >> /opt/scylladb && chmod +x /opt/scylladb ; } ; \
     mkdir -p /usr/bin/scylla ; \ 2>/dev/null || true ; \

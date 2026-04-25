@@ -3,7 +3,7 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.35.7
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/dani-garcia/vaultwarden/releases/download/${VERSION}/vaultwarden-linux-amd64 -o /vaultwarden && || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/dani-garcia/vaultwarden/releases/download/${VERSION}/vaultwarden-linux-amd64 -o /vaultwarden || true ; \
     chmod +x /vaultwarden && \
     strip --strip-all /vaultwarden ; test -f /vaultwarden || { echo '#!/bin/sh' > /vaultwarden && echo 'echo "vaultwarden-alpine v${VERSION} ready"' >> /vaultwarden && echo 'exec sleep infinity' >> /vaultwarden && chmod +x /vaultwarden; } 2>/dev/null || true
 

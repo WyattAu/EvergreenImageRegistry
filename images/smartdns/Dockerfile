@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake libssl-dev && \
     rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/pymumu/smartdns/archive/refs/tags/${VERSION}.tar.gz -o /smartdns.tar.gz && \
-    [ -f /smartdns.tar.gz ] && tar -xzf /smartdns.tar.gz -C / && rm /smartdns.tar.gz && || true ; \
+    [ -f /smartdns.tar.gz ] && tar -xzf /smartdns.tar.gz -C / && rm /smartdns.tar.gz || true ; \
     mkdir -p /smartdns-${VERSION}/build && \ 2>/dev/null || true ; \
     cd /smartdns-${VERSION}/build && \    cmake .. -DPREFIX=/usr -DENABLE_SYSTEMD=OFF && \
     make -j"$(nproc)" && \

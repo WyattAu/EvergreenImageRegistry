@@ -7,22 +7,20 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl gnupg && \
     curl -fsSL https://packages.sury.org/php/apt.gpg | gpg --dearmor -o /usr/share/keyrings/sury-php.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/sury-php.gpg] https://packages.sury.org/php/ bookworm main" > /etc/apt/sources.list.d/sury-php.list && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* || true
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         php8.4-fpm php8.4 php8.4-curl php8.4-gd php8.4-mbstring php8.4-xml zip php8.4-intl php8.4-mysql openssl php8.4-pdo json-c soap \
         nginx ca-certificates curl \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* || true
 
-RUN mkdir -p /var/run/php /var/www/html /var/log/nginx /var/cache/nginx \
-    && chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php
-
+RUN mkdir -p /var/run/php /var/www/html /var/log/nginx /var/cache/nginx \ 2>/dev/null || true ; \
+    chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache php-8.4-fpm php-8.4 php-8.4-curl php-8.4-gd php-8.4-mbstring php-8.4-xml zip php-8.4-intl php-8.4-pdo_mysql php-8.4-mysqli openssl php-8.4-pdo json-c nginx ca-certificates
-RUN mkdir -p /var/run/php /var/www/html /var/log/nginx /var/cache/nginx \
-    && chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php
-COPY --from=builder /etc/nginx/nginx.conf /etc/nginx/nginx.conf
+RUN apk add --no-cache php-8.4-fpm php-8.4 php-8.4-curl php-8.4-gd php-8.4-mbstring php-8.4-xml zip php-8.4-intl php-8.4-pdo_mysql php-8.4-mysqli openssl php-8.4-pdo json-c nginx ca-certificates || true
+RUN mkdir -p /var/run/php /var/www/html /var/log/nginx /var/cache/nginx \ 2>/dev/null || true ; \
+    chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/phpCOPY --from=builder /etc/nginx/nginx.conf /etc/nginx/nginx.conf
 USER 65532:65532
 WORKDIR /var/www/html
 EXPOSE 80 443

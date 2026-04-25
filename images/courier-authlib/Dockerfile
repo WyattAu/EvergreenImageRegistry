@@ -13,10 +13,10 @@ RUN groupadd -r -g 65532 appuser && useradd -r -u 65532 -g appuser -d /app -s /u
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder /etc/passwd /etc/passwd
-RUN mkdir -p /app /var/log/courier-authlib /var/cache/courier-authlib && chown -R 65532:65532 /app /var/log/courier-authlib /var/cache/courier-authlib
+RUN mkdir -p /app /var/log/courier-authlib /var/cache/courier-authlib && chown -R 65532:65532 /app /var/log/courier-authlib /var/cache/courier-authlib 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 0

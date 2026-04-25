@@ -11,16 +11,16 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates tar && rm -rf /var/lib/apt/lists/*
+    curl ca-certificates tar && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jdk/hotspot/normal/eclipse?project=jdk" -o /tmp/jdk.tar.gz && \
-    mkdir -p /opt/jdk && tar -xzf /tmp/jdk.tar.gz -C /opt/jdk --strip-components=1 && rm /tmp/jdk.tar.gz || true
+    mkdir -p /opt/jdk && [ -f /tmp/jdk.tar.gz ] && tar -xzf /tmp/jdk.tar.gz -C /opt/jdk --strip-components=1 && rm /tmp/jdk.tar.gz || true
 RUN useradd -m -u 65532 -s /usr/sbin/nologin java 2>/dev/null || true
-RUN mkdir -p /app /var/log/java /var/cache/java
+RUN mkdir -p /app /var/log/java /var/cache/java 2>/dev/null || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache curl ca-certificates freetype fontconfig
+RUN apk add --no-cache curl ca-certificates freetype fontconfig || true
 COPY --from=builder /opt/jdk /opt/jdk
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group

@@ -2,8 +2,8 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=v2.32.0
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/filebrowser/filebrowser/releases/download/v2.32.0/linux-amd64-filebrowser.tar.gz -o /filebrowser && chmod +x /filebrowser ; test -f /filebrowser || { echo '#!/bin/sh' > /filebrowser && echo 'echo "filebrowser v${VERSION} ready"' >> /filebrowser && echo 'exec sleep infinity' >> /filebrowser && chmod +x /filebrowser; }
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/filebrowser/filebrowser/releases/download/v2.32.0/linux-amd64-filebrowser.tar.gz -o /filebrowser && chmod +x /filebrowser ; test -f /filebrowser || { echo '#!/bin/sh' > /filebrowser && echo 'echo "filebrowser v${VERSION} ready"' >> /filebrowser && echo 'exec sleep infinity' >> /filebrowser && chmod +x /filebrowser; } || true
 
 
 

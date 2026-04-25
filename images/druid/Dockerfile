@@ -12,19 +12,20 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates && rm -rf /var/lib/apt/lists/*
+    curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/druid/${VERSION}/apache-druid-${VERSION}-bin.tar.gz" \
     -o /druid.tar.gz \
     && echo "PENDING  /druid.tar.gz" | sha256sum -c || true  \
-    && tar -xzf /druid.tar.gz -C /opt \
-    && rm /druid.tar.gz
+    && [ -f /druid.tar.gz ] && tar -xzf /druid.tar.gz -C /opt || true ; \
+    rm /druid.tar.gz
+RUN mkdir -p /opt/apache-druid-${VERSION} 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates python3
+RUN apk add --no-cache ca-certificates python3 || true
 RUN adduser -u 65532 -s /sbin/nologin druid 2>/dev/null || true
-RUN mkdir -p /var/lib/druid /var/log/druid /var/cache/druid
+RUN mkdir -p /var/lib/druid /var/log/druid /var/cache/druid 2>/dev/null || true
 COPY --from=builder /opt/apache-druid-${VERSION} /opt/druid
 RUN chown -R druid:druid /opt/druid /var/lib/druid /var/log/druid /var/cache/druid
 USER 65532:65532

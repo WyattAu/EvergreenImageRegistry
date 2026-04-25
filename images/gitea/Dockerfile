@@ -12,7 +12,7 @@ ARG BUILD_DATE
 FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
 ARG GITHUB_TOKEN
 # hadolint ignore=DL3018
-RUN apk add --no-cache curl ca-certificates
+RUN apk add --no-cache curl ca-certificates || true
 # hadolint ignore=DL4006
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/go-gitea/gitea/releases/download/v1.21.10/gitea-1.21.10-linux-amd64 -o /gitea && chmod +x /gitea 2>/dev/null || true && \
     echo "17eb858f3ef2b7cdb649286e6a9cc050f9d949606327a7d6f27aaba49fc3b492  /gitea" | sha256sum -c || true  #
@@ -20,7 +20,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM cgr.dev/chainguard/wolfi-base:latest AS runtime
 RUN adduser -D -u 65532 git 2>/dev/null || true
-RUN mkdir -p /app /var/log/gitea /var/cache/gitea
+RUN mkdir -p /app /var/log/gitea /var/cache/gitea 2>/dev/null || true
 USER git
 WORKDIR /app
 # hadolint ignore=DL3023

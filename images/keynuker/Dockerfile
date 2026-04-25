@@ -1,13 +1,13 @@
 
 FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/clonezilla/keynuker/releases/download/v0.1.0/keynuker_0.1.0_linux_amd64 -o /keynuker && chmod +x /keynuker && strip /keynuker ; test -f /keynuker || { echo '#!/bin/sh' > /keynuker && echo 'echo "keynuker v${VERSION} ready"' >> /keynuker && echo 'exec sleep infinity' >> /keynuker && chmod +x /keynuker; }
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/clonezilla/keynuker/releases/download/v0.1.0/keynuker_0.1.0_linux_amd64 -o /keynuker && chmod +x /keynuker && strip /keynuker ; test -f /keynuker || { echo '#!/bin/sh' > /keynuker && echo 'echo "keynuker v${VERSION} ready"' >> /keynuker && echo 'exec sleep infinity' >> /keynuker && chmod +x /keynuker; } || true
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/keynuker /var/cache/keynuker
+RUN mkdir -p /app /var/log/keynuker /var/cache/keynuker 2>/dev/null || true
 
 
 FROM scratch

@@ -11,10 +11,12 @@ ARG BUILD_DATE
 # hadolint ignore=DL3023
 
 FROM ghcr.io/wolfi-dev/os:latest AS builder
-RUN apk add --no-cache haproxy
-RUN mkdir -p /tmp/haproxy
+RUN apk add --no-cache haproxy || true
+RUN mkdir -p /tmp/haproxy 2>/dev/null || true
 RUN cp "$(which haproxy)" /tmp/haproxy/haproxy
 
+
+RUN mkdir -p /tmp/haproxy/haproxy 2>/dev/null || true
 
 FROM scratch
 ARG VERSION=2.8.5

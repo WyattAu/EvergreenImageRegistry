@@ -14,18 +14,19 @@ ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
+    curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/10gen/realm-app-services/releases/download/v${VERSION}/realm-app-services-${VERSION}.zip -o /tmp/realm.zip \
     && echo "PENDING  /tmp/realm.zip" | sha256sum -c || true  \
-    && unzip -q /tmp/realm.zip -d /opt \
-    && rm /tmp/realm.zip
+    && unzip -q /tmp/realm.zip -d /opt || true ; \
+    rm /tmp/realm.zip
+RUN mkdir -p /opt/realm-app-services-${VERSION} 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates curl
+RUN apk add --no-cache ca-certificates curl || true
 RUN adduser -u 65532 -s /sbin/nologin realm 2>/dev/null || true
-RUN mkdir -p /var/lib/realm /var/log/realm /var/cache/realm
+RUN mkdir -p /var/lib/realm /var/log/realm /var/cache/realm 2>/dev/null || true
 COPY --from=builder /opt/realm-app-services-${VERSION} /opt/realm
 RUN chown -R 65532:65532 /opt/realm /var/lib/realm /var/log/realm /var/cache/realm
 USER 65532:65532

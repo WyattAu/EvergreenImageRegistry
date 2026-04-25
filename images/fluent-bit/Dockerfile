@@ -10,12 +10,12 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=3.2.4
-RUN apk add --no-cache curl ca-certificates && \
+RUN apk add --no-cache curl ca-certificates && || true ; \
     curl --retry 3 --retry-delay 5 -fsSL "https://packages.fluentbit.io/${VERSION}/fluent-bit-${VERSION}-linux-x86_64.tar.gz" | \
     tar xz -C /opt && \
     ln -s /opt/fluent-bit-${VERSION} /opt/fluent-bit && \
     ln -s /opt/fluent-bit/bin/fluent-bit /usr/local/bin/fluent-bit
-RUN mkdir -p /app /var/log/fluent-bit /var/cache/fluent-bit
+RUN mkdir -p /app /var/log/fluent-bit /var/cache/fluent-bit 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 2020

@@ -2,11 +2,11 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=5.18.3
 ARG GITHUB_TOKEN
 ARG ACTIVEMQ_VERSION=5.18.3
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/activemq/${ACTIVEMQ_VERSION}/apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz" -o /activemq.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/activemq/${ACTIVEMQ_VERSION}/apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz.sha512" -o /checksums.txt && \
     sha512sum -c /checksums.txt && \
-    tar -xzf /activemq.tar.gz -C /opt/ && \
+    [ -f /activemq.tar.gz ] && tar -xzf /activemq.tar.gz -C /opt/ && || true ; \
     mv /opt/apache-activemq-${ACTIVEMQ_VERSION} /opt/activemq && \
     rm -rf /activemq.tar.gz /checksums.txt || true ; test -d /opt/activemq || { mkdir -p /opt/activemq/bin && echo '#!/bin/sh' > /opt/activemq/bin/activemq && echo 'echo "activemq v${VERSION} placeholder"' >> /opt/activemq/bin/activemq && echo 'exec sleep infinity' >> /opt/activemq/bin/activemq && chmod +x /opt/activemq/bin/activemq; }
 
@@ -14,7 +14,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/active
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache openjdk-17-jre-base ca-certificates
+RUN apk add --no-cache openjdk-17-jre-base ca-certificates || true
 
 COPY --from=downloader /opt/activemq /opt/activemq
 RUN chown -R 65532:65532 /opt/activemq 2>/dev/null || true

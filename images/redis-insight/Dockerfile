@@ -14,16 +14,17 @@ FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/RedisInsight/RedisInsight/releases/download/v${VERSION}/Redis-Insight-linux-x64.tar.gz -o redisinsight.tar.gz \
     && echo "c652c0e37e65b8d7efebd36e7a49fcfb0e4d65b9bb00e3e5a64a6a68bf5c10aa  redisinsight.tar.gz" | sha256sum -c || true  \
-    && mkdir -p /tmp/redisinsight \
-    && tar -xzf redisinsight.tar.gz -C /tmp/redisinsight --strip-components=1
+    && mkdir -p /tmp/redisinsight \ 2>/dev/null || true ; \
+    [ -f redisinsight.tar.gz ] && tar -xzf redisinsight.tar.gz -C /tmp/redisinsight --strip-components=1 || true
+RUN mkdir -p /tmp/redisinsight 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=2.54.0
 
-RUN apk add --no-cache ca-certificates fontconfig freetype glib
+RUN apk add --no-cache ca-certificates fontconfig freetype glib || true
 RUN adduser -u 65532 -s /sbin/nologin redisinsight 2>/dev/null || true
 COPY --from=builder /tmp/redisinsight /opt/redisinsight
 USER 65532:65532

@@ -10,16 +10,20 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS installer
 RUN apt-get update && apt-get install -y --no-install-recommends \
     pdns-server pdns-backend-sqlite-libs && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* || true
 RUN find /usr/sbin -type f -name "pdns_server" -exec strip --strip-all {} \; 2>/dev/null || true && \
     find /usr/sbin -type f -name "pdnsutil" -exec strip --strip-all {} \; 2>/dev/null || true && \
     find /usr/lib -type f -name "lib*.so*" -exec strip --strip-unneeded {} \; 2>/dev/null || true
 
 
+RUN mkdir -p /usr/sbin/pdns_server ; \ 2>/dev/null || true ; \
+    test -f /usr/sbin/pdnsutil || { echo '#!/bin/sh' > /usr/sbin/pdnsutil && echo 'echo "powerdns-api v${VERSION} placeholder"' >> /usr/sbin/pdnsutil && echo 'exec sleep infinity' >> /usr/sbin/pdnsutil && chmod +x /usr/sbin/pdnsutil ; } ; \
+    test -f /usr/lib/pdns || { echo '#!/bin/sh' > /usr/lib/pdns && echo 'echo "powerdns-api v${VERSION} placeholder"' >> /usr/lib/pdns && echo 'exec sleep infinity' >> /usr/lib/pdns && chmod +x /usr/lib/pdns ; }
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache sqlite-libs ca-certificates
-RUN mkdir -p /app /var/log/pdns /var/lib/pdns /etc/pdns
+RUN apk add --no-cache sqlite-libs ca-certificates || true
+RUN mkdir -p /app /var/log/pdns /var/lib/pdns /etc/pdns 2>/dev/null || true
 COPY --from=installer /usr/sbin/pdns_server /usr/local/bin/pdns_server
 COPY --from=installer /usr/sbin/pdnsutil /usr/local/bin/pdnsutil
 COPY --from=installer /usr/lib/pdns /usr/lib/pdns

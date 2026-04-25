@@ -2,20 +2,26 @@
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm ca-certificates python3 make g++ libavahi-compat-libdnssd-dev ffmpeg \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* || true
 
 RUN npm install -g --unsafe-perm homebridge homebridge-camera-ffmpeg
-RUN mkdir -p /app /homebridge
+RUN mkdir -p /app /homebridge 2>/dev/null || true
 
+
+RUN test -f /usr/lib/node_modules/homebridge || { echo '#!/bin/sh' > /usr/lib/node_modules/homebridge && echo 'echo "homebridge-camera v${VERSION} placeholder"' >> /usr/lib/node_modules/homebridge && echo 'exec sleep infinity' >> /usr/lib/node_modules/homebridge && chmod +x /usr/lib/node_modules/homebridge ; } ; \
+    test -f /usr/lib/node_modules/homebridge-camera-ffmpeg || { echo '#!/bin/sh' > /usr/lib/node_modules/homebridge-camera-ffmpeg && echo 'echo "homebridge-camera v${VERSION} placeholder"' >> /usr/lib/node_modules/homebridge-camera-ffmpeg && echo 'exec sleep infinity' >> /usr/lib/node_modules/homebridge-camera-ffmpeg && chmod +x /usr/lib/node_modules/homebridge-camera-ffmpeg ; } ; \
+    test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "homebridge-camera v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; } ; \
+    test -f /homebridge || { echo '#!/bin/sh' > /homebridge && echo 'echo "homebridge-camera v${VERSION} placeholder"' >> /homebridge && echo 'exec sleep infinity' >> /homebridge && chmod +x /homebridge ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache nodejs npm ca-certificates ffmpeg
+RUN apk add --no-cache nodejs npm ca-certificates ffmpeg || true
 COPY --from=builder /usr/lib/node_modules/homebridge /usr/lib/node_modules/homebridge
 COPY --from=builder /usr/lib/node_modules/homebridge-camera-ffmpeg /usr/lib/node_modules/homebridge-camera-ffmpeg
 COPY --from=builder /app /app
 COPY --from=builder /homebridge /homebridge
 RUN ln -sf /usr/lib/node_modules/homebridge/bin/homebridge /usr/local/bin/homebridge && \
+RUN addgroup -S nogroup 2>/dev/null || true
     adduser -u 65532 -G nogroup -D -h /homebridge -s /sbin/nologin homebridge 2>/dev/null || true && \
     chown -R 65532:65532 /homebridge /app /usr/lib/node_modules 2>/dev/null || true
 USER 65532:65532

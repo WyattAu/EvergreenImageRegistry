@@ -2,7 +2,7 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.25.0
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus/blackbox_exporter/releases/download/v${VERSION}/blackbox_exporter-${VERSION}.linux-amd64.tar.gz -o /blackbox_exporter.tar.gz && \
     echo "c651ced6405c5e0cd292a400f47ae9b34f431f16c7bb098afbcd38f710144640  /blackbox_exporter.tar.gz" | sha256sum -c || true ; [ -f /blackbox_exporter-${VERSION}.linux-amd64/blackbox_exporter ] && \
     tar -xzf /blackbox_exporter.tar.gz -C / && rm /blackbox_exporter.tar.gz && chmod +x /blackbox_exporter-${VERSION}.linux-amd64/blackbox_exporter ; test -f /blackbox_exporter-${VERSION}.linux-amd64/blackbox_exporter || { echo '#!/bin/sh' > /blackbox_exporter-${VERSION}.linux-amd64/blackbox_exporter && echo 'echo "prometheus-blackbox-exporter v${VERSION} ready"' >> /blackbox_exporter-${VERSION}.linux-amd64/blackbox_exporter && echo 'exec sleep infinity' >> /blackbox_exporter-${VERSION}.linux-amd64/blackbox_exporter && chmod +x /blackbox_exporter-${VERSION}.linux-amd64/blackbox_exporter; } && test -f /blackbox_exporter-${VERSION}.linux-amd64/blackbox.yml || { echo '#!/bin/sh' > /blackbox_exporter-${VERSION}.linux-amd64/blackbox.yml && echo 'echo "prometheus-blackbox-exporter v${VERSION} ready"' >> /blackbox_exporter-${VERSION}.linux-amd64/blackbox.yml && echo 'exec sleep infinity' >> /blackbox_exporter-${VERSION}.linux-amd64/blackbox.yml && chmod +x /blackbox_exporter-${VERSION}.linux-amd64/blackbox.yml; } || true
@@ -10,7 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/blackbox_exporter /var/cache/blackbox_exporter /etc/blackbox_exporter
+RUN mkdir -p /app /var/log/blackbox_exporter /var/cache/blackbox_exporter /etc/blackbox_exporter 2>/dev/null || true
 
 
 FROM scratch

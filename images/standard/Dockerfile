@@ -5,7 +5,7 @@
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 LABEL org.opencontainers.image.title="standard" \
       org.opencontainers.image.description="Meta directory for compliance standard definitions. Not a runnable container." \
       sovereign.image.tier="3" \

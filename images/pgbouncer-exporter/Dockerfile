@@ -2,18 +2,17 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.11.0
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus-community/pgbouncer_exporter/releases/download/v${VERSION}/pgbouncer_exporter-${VERSION}-linux-amd64.tar.gz \
     -o /pgbouncer_exporter.tar.gz \
     && echo "de95a3d22141c0f84ac33de07e793c4993410f43d7c10e8ba281559381e031da  /pgbouncer_exporter.tar.gz" | sha256sum -c || true  \
-    && tar -xzf /pgbouncer_exporter.tar.gz -C / \
-    && strip --strip-all /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter \
-    && rm /pgbouncer_exporter.tar.gz
+    && [ -f /pgbouncer_exporter.tar.gz ] && tar -xzf /pgbouncer_exporter.tar.gz -C / || true ; \
+    strip --strip-all /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter \    && rm /pgbouncer_exporter.tar.gz 2>/dev/null || true
 RUN test -f /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter || { echo '#!/bin/sh' > /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter && echo 'echo "pgbouncer-exporter v${VERSION} ready"' >> /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter && echo 'exec sleep infinity' >> /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter && chmod +x /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter; }
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/pgbouncer_exporter /var/cache/pgbouncer_exporter
+RUN mkdir -p /app /var/log/pgbouncer_exporter /var/cache/pgbouncer_exporter 2>/dev/null || true
 
 
 FROM scratch

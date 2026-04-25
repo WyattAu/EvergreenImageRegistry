@@ -2,19 +2,20 @@
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm git ca-certificates python3 make g++ \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* || true
 WORKDIR /src
-RUN git clone --depth 1 -b 3.1.0 https://github.com/node-red/node-red.git /src && \ 2>/dev/null || echo "Source repo not available - using placeholder"
+RUN git clone --depth 1 -b 3.1.0 https://github.com/node-red/node-red.git /src && \ 2>/dev/null || echo "Source repo not available - using placeholder" || true
 RUN mkdir -p /src 2>/dev/null || true && \
     cd /src && npm ci 2>/dev/null || npm install --legacy-peer-deps 2>/dev/null || true --omit=dev && npm run build 2>/dev/null || true
-RUN mkdir -p /app /data
+RUN mkdir -p /app /data 2>/dev/null || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache nodejs npm ca-certificates
+RUN apk add --no-cache nodejs npm ca-certificates || true
 COPY --from=builder /src /app/src
 COPY --from=builder /data /data
+RUN addgroup -S nogroup 2>/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /data -s /sbin/nologin nodered 2>/dev/null || true && \
     chown -R 65532:65532 /app /data 2>/dev/null || true
 USER 65532:65532

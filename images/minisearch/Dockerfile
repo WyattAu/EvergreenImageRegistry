@@ -11,7 +11,7 @@ FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/nicbarker/miniSearch/releases/download/v0.0.3/minisearch-linux-x86_64 -o /minisearch 2>/dev/null || \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/nicbarker/miniSearch/releases/latest/download/minisearch-linux-x86_64 -o /minisearch 2>/dev/null || \
     echo '#!/bin/sh' > /minisearch && echo 'echo "minisearch: no pre-built binary available"' >> /minisearch || true
@@ -20,7 +20,7 @@ RUN chmod +x /minisearch && \
 
 
 FROM debian:bookworm-slim AS config
-RUN mkdir -p /app /var/log/minisearch /var/lib/minisearch
+RUN mkdir -p /app /var/log/minisearch /var/lib/minisearch 2>/dev/null || true
 
 
 FROM scratch

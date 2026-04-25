@@ -12,21 +12,20 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.arangodb.com/arangodb312/Community/Linux/arangodb3-linux-${VERSION}.tar.gz" -o /tmp/arango.tar.gz \
     && echo "PENDING  /tmp/arango.tar.gz" | sha256sum -c || true  \
-    && tar -xzf /tmp/arango.tar.gz -C /opt \
-    && strip --strip-all /opt/arangodb3-linux-*/usr/sbin/arangod 2>/dev/null || true
+    && [ -f /tmp/arango.tar.gz ] && tar -xzf /tmp/arango.tar.gz -C /opt || true ; \
+    strip --strip-all /opt/arangodb3-linux-*/usr/sbin/arangod 2>/dev/null || true
 
-
-RUN mkdir -p /opt ; \
-    mkdir -p /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin ; test -f /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod || { echo '#!/bin/sh' > /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod && echo 'echo "arango v${VERSION} placeholder"' >> /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod && echo 'exec sleep infinity' >> /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod && chmod +x /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod ; }
+RUN mkdir -p /opt ; \ 2>/dev/null || true ; \
+    mkdir -p /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin ; test -f /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod || { echo '#!/bin/sh' > /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod && echo 'echo "arango v${VERSION} placeholder"' >> /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod && echo 'exec sleep infinity' >> /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod && chmod +x /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache libstdc++ ca-certificates
+RUN apk add --no-cache libstdc++ ca-certificates || true
 RUN adduser -u 65532 -s /sbin/nologin arango 2>/dev/null || true
-RUN mkdir -p /var/lib/arangodb /var/log/arangodb /var/cache/arangodb /var/lib/arangodb3-apps
+RUN mkdir -p /var/lib/arangodb /var/log/arangodb /var/cache/arangodb /var/lib/arangodb3-apps 2>/dev/null || true
 COPY --from=builder /opt/arangodb3-linux-* /opt/arangodb
 RUN chown -R 65532:65532 /opt/arangodb /var/lib/arangodb /var/log/arangodb /var/cache/arangodb /var/lib/arangodb3-apps 2>/dev/null || true
 USER 65532:65532

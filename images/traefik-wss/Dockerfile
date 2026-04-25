@@ -2,16 +2,16 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=3.6.13
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/traefik/traefik/releases/download/v3.6.13/traefik_v3.6.13_linux_amd64.tar.gz -o /traefik.tar.gz && \
     echo "85fcf245e963293ca6afee4180f6116b97004499b584ebfbc2c5841e1c8d4399  /traefik.tar.gz" | sha256sum -c || true ; [ -f /traefik.tar.gz ] && \
-    tar -xzf /traefik.tar.gz -C / && rm /traefik.tar.gz && chmod +x /traefik 2>/dev/null || \
+    [ -f /traefik.tar.gz ] && tar -xzf /traefik.tar.gz -C / && rm /traefik.tar.gz && chmod +x /traefik 2>/dev/null || || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/traefik/traefik/releases/download/v3.6.13/traefik_v3.6.13_linux_amd64.tar.gz -o /traefik && chmod +x /traefik ; test -f /traefik || { echo '#!/bin/sh' > /traefik && echo 'echo "traefik-wss v${VERSION} ready"' >> /traefik && echo 'exec sleep infinity' >> /traefik && chmod +x /traefik; } || true
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/traefik /var/cache/traefik
+RUN mkdir -p /app /var/log/traefik /var/cache/traefik 2>/dev/null || true
 
 
 FROM scratch

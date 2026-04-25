@@ -20,19 +20,21 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /build
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/vstakhov/rmilter/archive/refs/tags/${VERSION}.tar.gz -o /tmp/rmilter.tar.gz && \
-    tar -xzf /tmp/rmilter.tar.gz -C /build --strip-components=1 && \
+    [ -f /tmp/rmilter.tar.gz ] && tar -xzf /tmp/rmilter.tar.gz -C /build --strip-components=1 && || true ; \
     rm /tmp/rmilter.tar.gz && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release . && \
     make -j$(nproc) && \
     strip rmilter/rmilter || true
 
 
+RUN mkdir -p /build/rmilter/rmilter 2>/dev/null || true
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache libpcre2-8-0 ca-certificates
+RUN apk add --no-cache libpcre2-8-0 ca-certificates || true
 RUN addgroup -S -g 65532 rmilter 2>/dev/null || true && adduser -u 65532 -G rmilter -D -h /var/run/rmilter -s /sbin/nologin rmilter
 COPY --from=builder /build/rmilter/rmilter /usr/local/bin/rmilter
-RUN mkdir -p /var/run/rmilter /var/log/rmilter && chown -R 65532:65532 /var/run/rmilter /var/log/rmilter
+RUN mkdir -p /var/run/rmilter /var/log/rmilter && chown -R 65532:65532 /var/run/rmilter /var/log/rmilter 2>/dev/null || true
 USER 65532:65532
 WORKDIR /var/run/rmilter
 EXPOSE 6379

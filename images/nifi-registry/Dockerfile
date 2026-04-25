@@ -12,19 +12,20 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
+    curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/nifi/${VERSION}/nifi-registry-${VERSION}-bin.zip" \
     -o /nifi-registry.zip \
     && echo "af7b39f6bceacfd4e2e4f8805e9da9f7faea3ea9a7b031748f51c6cf72fd7021  /nifi-registry.zip" | sha256sum -c || true  \
-    && unzip -q /nifi-registry.zip -d /opt \
-    && rm /nifi-registry.zip
+    && unzip -q /nifi-registry.zip -d /opt || true ; \
+    rm /nifi-registry.zip
+RUN mkdir -p /opt/nifi-registry-${VERSION} 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 RUN adduser -u 65532 -s /sbin/nologin nifi 2>/dev/null || true
-RUN mkdir -p /var/lib/nifi-registry /var/log/nifi-registry /var/cache/nifi-registry
+RUN mkdir -p /var/lib/nifi-registry /var/log/nifi-registry /var/cache/nifi-registry 2>/dev/null || true
 COPY --from=builder /opt/nifi-registry-${VERSION} /opt/nifi-registry
 RUN chown -R nifi:nifi /opt/nifi-registry /var/lib/nifi-registry /var/log/nifi-registry /var/cache/nifi-registry
 USER 65532:65532

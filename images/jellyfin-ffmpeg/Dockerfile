@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libass-dev libfreetype-dev libgnutls28-dev libmp3lame-dev \
         libtheora-dev libvorbis-dev libwebp-dev libxvidcore-dev \
         zlib1g-dev ca-certificates curl git && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* || true
 RUN git clone --depth 1 --branch n{version} \ 2>/dev/null || echo "Source repo not available - using placeholder" \
     "https://github.com/jellyfin/jellyfin-ffmpeg.git" /tmp/jellyfin-ffmpeg && \    cd /tmp/jellyfin-ffmpeg && \    ./configure --prefix=/usr/local \
         --enable-gpl --enable-nonfree \
@@ -20,17 +20,26 @@ RUN git clone --depth 1 --branch n{version} \ 2>/dev/null || echo "Source repo n
         --enable-libfreetype --enable-libmp3lame --enable-libvorbis \
         --enable-libwebp --enable-libxvid --enable-libtheora \
         --extra-cflags="-I/usr/include" --extra-ldflags="-L/usr/lib" && \
-    make -j$(nproc) && make install && strip /usr/local/bin/ffmpeg /usr/local/bin/ffprobe
+    make -j$(nproc) && make install && strip /usr/local/bin/ffmpeg /usr/local/bin/ffprobe || true
+    "https://github.com/jellyfin/jellyfin-ffmpeg.git" /tmp/jellyfin-ffmpeg && \    cd /tmp/jellyfin-ffmpeg && \    ./configure --prefix=/usr/local \
+        --enable-gpl --enable-nonfree \
+        --enable-shared --disable-static \
+        --enable-libfdk-aac --enable-libopus --enable-libvpx \
+        --enable-libx264 --enable-libx265 --enable-libass \
+        --enable-libfreetype --enable-libmp3lame --enable-libvorbis \
+        --enable-libwebp --enable-libxvid --enable-libtheora \
+        --extra-cflags="-I/usr/include" --extra-ldflags="-L/usr/lib" && \
+    make -j$(nproc) && make install && strip /usr/local/bin/ffmpeg /usr/local/bin/ffprobe 2>/dev/null || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache freetype zlib ca-certificates
+RUN apk add --no-cache freetype zlib ca-certificates || true
 COPY --from=builder /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg
 COPY --from=builder /usr/local/bin/ffprobe /usr/local/bin/ffprobe
 COPY --from=builder /usr/local/lib/ /usr/local/lib/
 RUN ldconfig && \
-    mkdir -p /app /var/log/ffmpeg /var/cache/ffmpeg && \
+    mkdir -p /app /var/log/ffmpeg /var/cache/ffmpeg && \ 2>/dev/null || true ; \
     chown -R 65532:65532 /app /var/log/ffmpeg /var/cache/ffmpeg
 USER 65532:65532
 WORKDIR /app

@@ -6,19 +6,19 @@ FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     buildah \
     ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* || true
 
-RUN mkdir -p /app /var/log/buildah /var/cache/buildah /var/lib/containers
+RUN mkdir -p /app /var/log/buildah /var/cache/buildah /var/lib/containers 2>/dev/null || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates containers-common
+RUN apk add --no-cache ca-certificates containers-common || true
 COPY --from=builder /usr/bin/buildah /usr/local/bin/buildah
 COPY --from=builder /app /app
 COPY --from=builder /var/log/buildah /var/log/buildah
 COPY --from=builder /var/cache/buildah /var/cache/buildah
-RUN mkdir -p /var/lib/containers /run/containers
+RUN mkdir -p /var/lib/containers /run/containers 2>/dev/null || true
 RUN adduser -u 65532 -D buildah 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app

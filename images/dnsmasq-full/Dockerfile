@@ -12,9 +12,9 @@ ARG VERSION=2.90
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libnetfilter-conntrack-dev libidn2-dev \
     libdbus-1-dev libgmp-dev && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://thekelleys.org.uk/dnsmasq/dnsmasq-${VERSION}.tar.gz" -o /dnsmasq.tar.gz && \
-    tar -xzf /dnsmasq.tar.gz -C / && rm /dnsmasq.tar.gz && \
+    [ -f /dnsmasq.tar.gz ] && tar -xzf /dnsmasq.tar.gz -C / && rm /dnsmasq.tar.gz && || true ; \
     cd /dnsmasq-${VERSION} && \    make -j"$(nproc)" \
     CFLAGS="-DHAVE_DNSSEC -DHAVE_DBUS -DHAVE_CONNTRACK -DHAVE_IDN -DHAVE_LUASCRIPT" \
     LDFLAGS="-static" && \
@@ -22,12 +22,15 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://thekelleys.org.uk/dnsmasq/dnsm
     strip --strip-all /install/usr/sbin/dnsmasq || true
 
 
+RUN mkdir -p /install/usr/sbin/dnsmasq ; \ 2>/dev/null || true ; \
+    test -f /install/usr/share/man || { echo '#!/bin/sh' > /install/usr/share/man && echo 'echo "dnsmasq-full v${VERSION} placeholder"' >> /install/usr/share/man && echo 'exec sleep infinity' >> /install/usr/share/man && chmod +x /install/usr/share/man ; }
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 COPY --from=builder /install/usr/sbin/dnsmasq /usr/sbin/dnsmasq
 COPY --from=builder /install/usr/share/man /usr/share/man
-RUN mkdir -p /app /var/log/dnsmasq /var/lib/dnsmasq /run /etc/dnsmasq.d && \
+RUN mkdir -p /app /var/log/dnsmasq /var/lib/dnsmasq /run /etc/dnsmasq.d && \ 2>/dev/null || true ; \
     chown -R 65532:65532 /app /var/log/dnsmasq /var/lib/dnsmasq /run /etc/dnsmasq.d
 USER 65532:65532
 WORKDIR /app

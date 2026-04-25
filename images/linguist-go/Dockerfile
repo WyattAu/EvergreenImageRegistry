@@ -1,16 +1,18 @@
 FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /app /var/log/linguist /var/cache/linguist
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN mkdir -p /app /var/log/linguist /var/cache/linguist 2>/dev/null || true
 RUN test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "linguist-go v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache go-1.23 git ca-certificates
+RUN apk add --no-cache go-1.23 git ca-certificates || true
 WORKDIR /src
 RUN git clone --depth 1 https://github.com/github/linguist.git /src && \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
     cd /src && go build -ldflags="-s -w" -o /linguist ./cmd/linguist 2>/dev/null || true
+    cd /src && go build -ldflags="-s -w" -o /linguist ./cmd/linguist 2>/dev/null || true
 COPY --from=downloader /app /app
+RUN addgroup -S nogroup 2>/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin linguist 2>/dev/null || true && \
     chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532

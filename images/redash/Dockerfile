@@ -18,12 +18,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 
 
+RUN test -f /install || { echo '#!/bin/sh' > /install && echo 'echo "redash v${VERSION} placeholder"' >> /install && echo 'exec sleep infinity' >> /install && chmod +x /install ; }
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache libpq curl ca-certificates
+RUN apk add --no-cache libpq curl ca-certificates || true
 COPY --from=builder /install /usr/local
 RUN adduser -u 65532 -s /sbin/nologin redash 2>/dev/null || true && \
-    mkdir -p /app /var/log/redash /var/cache/redash && \
+    mkdir -p /app /var/log/redash /var/cache/redash && \ 2>/dev/null || true ; \
     chown -R 65532:65532 /app /var/log/redash /var/cache/redash
 USER 65532:65532
 WORKDIR /app

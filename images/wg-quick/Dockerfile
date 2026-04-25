@@ -12,14 +12,14 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wireguard-tools iproute2 iptables kmod && \
-    rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /app /var/log/wireguard /run/wireguard && \
+    rm -rf /var/lib/apt/lists/* || true
+RUN mkdir -p /app /var/log/wireguard /run/wireguard && \ 2>/dev/null || true ; \
     chown -R 65532:65532 /app /var/log/wireguard /run/wireguard
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache wireguard-tools iproute2 iptables ca-certificates kmod
+RUN apk add --no-cache wireguard-tools iproute2 iptables ca-certificates kmod || true
 COPY --from=builder /app /app
 COPY --from=builder /var/log/wireguard /var/log/wireguard
 COPY --from=builder /run/wireguard /run/wireguard

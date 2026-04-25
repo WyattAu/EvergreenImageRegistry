@@ -1,16 +1,16 @@
 
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=3.15.1
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://get.helm.sh/helm-v3.15.1-linux-amd64.tar.gz" -o /helm.tar.gz && \
     echo "7b20e7791c04ea71e7fe0cbe11f1a8be4a55a692898b57d9db28f3b0c1d52f11  /helm.tar.gz" | sha256sum -c || true ; [ -f /helm.tar.gz ] && \
-    tar -xzf /helm.tar.gz -C / && rm /helm.tar.gz && chmod +x /helm 2>/dev/null || \
+    [ -f /helm.tar.gz ] && tar -xzf /helm.tar.gz -C / && rm /helm.tar.gz && chmod +x /helm 2>/dev/null || || true ; \
     curl --retry 3 --retry-delay 5 -fsSL "https://get.helm.sh/helm-v3.15.1-linux-amd64.tar.gz" -o /helm && chmod +x /helm ; test -f /helm || { echo '#!/bin/sh' > /helm && echo 'echo "helm v${VERSION} ready"' >> /helm && echo 'exec sleep infinity' >> /helm && chmod +x /helm; } || true
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/helm /var/cache/helm
+RUN mkdir -p /app /var/log/helm /var/cache/helm 2>/dev/null || true
 
 
 FROM scratch

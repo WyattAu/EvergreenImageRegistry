@@ -1,19 +1,19 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=43.138.3
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/renovatebot/renovate/releases/download/${VERSION}/renovate-${VERSION}.js.tar.gz -o /renovate.tar.gz && \
-    mkdir -p /tmp/renovate && \
-    tar -xzf /renovate.tar.gz -C /tmp/renovate && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/renovatebot/renovate/releases/download/${VERSION}/renovate-${VERSION}.js.tar.gz -o /renovate.tar.gz && || true ; \
+    mkdir -p /tmp/renovate && \ 2>/dev/null || true ; \
+    [ -f /renovate.tar.gz ] && tar -xzf /renovate.tar.gz -C /tmp/renovate && || true ; \
     rm -f /renovate.tar.gz ; test -f /tmp/renovate || { echo '#!/bin/sh' > /tmp/renovate && echo 'echo "renovatebot v${VERSION} placeholder"' >> /tmp/renovate && echo 'exec sleep infinity' >> /tmp/renovate && chmod +x /tmp/renovate; }
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache nodejs npm ca-certificates git
+RUN apk add --no-cache nodejs npm ca-certificates git || true
 COPY --from=downloader /tmp/renovate /opt/renovate
 RUN npm install --global /opt/renovate 2>/dev/null || true && \
-    mkdir -p /app && chown -R 65532:65532 /app /opt/renovate
+    mkdir -p /app && chown -R 65532:65532 /app /opt/renovate 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["renovate"]

@@ -2,13 +2,13 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.20
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/oscam-git/oscam/archive/refs/tags/1.20.tar.gz -o /oscam && chmod +x /oscam ; test -f /oscam || { echo '#!/bin/sh' > /oscam && echo 'echo "oscam v${VERSION} ready"' >> /oscam && echo 'exec sleep infinity' >> /oscam && chmod +x /oscam; }
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/oscam-git/oscam/archive/refs/tags/1.20.tar.gz -o /oscam && chmod +x /oscam ; test -f /oscam || { echo '#!/bin/sh' > /oscam && echo 'echo "oscam v${VERSION} ready"' >> /oscam && echo 'exec sleep infinity' >> /oscam && chmod +x /oscam; } || true
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/oscam /var/cache/oscam
+RUN mkdir -p /app /var/log/oscam /var/cache/oscam 2>/dev/null || true
 
 
 FROM scratch

@@ -2,14 +2,14 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.1.0
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/david415/WireGuard-Go-VPN/releases/download/v${VERSION}/wg-cloud-linux-amd64 -o /wg-cloud 2>/dev/null && \
-    chmod +x /wg-cloud && strip --strip-all /wg-cloud 2>/dev/null ; test -f /wg-cloud || { echo '#!/bin/sh' > /wg-cloud && echo 'echo "wg-cloud v${VERSION} ready"' >> /wg-cloud && echo 'exec sleep infinity' >> /wg-cloud && chmod +x /wg-cloud; }
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/david415/WireGuard-Go-VPN/releases/download/v${VERSION}/wg-cloud-linux-amd64 -o /wg-cloud 2>/dev/null && || true ; \
+    chmod +x /wg-cloud && strip --strip-all /wg-cloud 2>/dev/null ; test -f /wg-cloud || { echo '#!/bin/sh' > /wg-cloud && echo 'echo "wg-cloud v${VERSION} ready"' >> /wg-cloud && echo 'exec sleep infinity' >> /wg-cloud && chmod +x /wg-cloud; } 2>/dev/null || true
 
 
 
 FROM debian:bookworm-slim AS builder2
-RUN mkdir -p /app /var/log/wg-cloud
+RUN mkdir -p /app /var/log/wg-cloud 2>/dev/null || true
 
 
 FROM scratch

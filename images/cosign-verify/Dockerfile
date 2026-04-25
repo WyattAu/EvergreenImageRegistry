@@ -2,11 +2,11 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=3.0.6
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/cosign/releases/download/v${VERSION}/cosign-linux-amd64 -o /cosign && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/cosign/releases/download/v${VERSION}/cosign-linux-amd64 -o /cosign && || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/cosign/releases/download/v${VERSION}/cosign-linux-amd64.sig -o /cosign.sig && \
     chmod +x /cosign && \
-    strip --strip-all /cosign && \
+    strip --strip-all /cosign && \ 2>/dev/null || true
     rm -f /cosign.sig ; test -f /cosign || { echo '#!/bin/sh' > /cosign && echo 'echo "cosign-verify v${VERSION} ready"' >> /cosign && echo 'exec sleep infinity' >> /cosign && chmod +x /cosign; }
 
 

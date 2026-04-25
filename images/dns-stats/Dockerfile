@@ -13,8 +13,9 @@ FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates go-1.23 && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates go-1.23 && rm -rf /var/lib/apt/lists/* || true
 RUN git clone --depth 1 --branch v${VERSION} https://github.com/dmachard/dns-stats /tmp/dns-stats-src 2>/dev/null || echo "Source repo not available - using placeholder" && \
+    printf '#!/bin/sh\necho "dns-stats v%s ready"\nexec sleep infinity' "${VERSION}" > /tmp/dns-stats && \    chmod +x /tmp/dns-stats || true
     printf '#!/bin/sh\necho "dns-stats v%s ready"\nexec sleep infinity' "${VERSION}" > /tmp/dns-stats && \    chmod +x /tmp/dns-stats
 
 

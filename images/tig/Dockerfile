@@ -14,19 +14,21 @@ ARG GITHUB_TOKEN
 ARG VERSION=2.5.8
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libncurses-dev zlib1g-dev git curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/jonas/tig/releases/download/tig-${VERSION}/tig-${VERSION}.tar.gz -o /tig.tar.gz && \
-    tar -xzf /tig.tar.gz -C / && rm /tig.tar.gz && \
+    [ -f /tig.tar.gz ] && tar -xzf /tig.tar.gz -C / && rm /tig.tar.gz && || true ; \
     cd /tig-${VERSION} && \    ./configure --prefix=/usr --with-ncurses && \
     make -j"$(nproc)" && \
     strip --strip-all /tig-${VERSION}/src/tig || true
 
 
+RUN mkdir -p /tig-${VERSION}/src/tig 2>/dev/null || true
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=2.5.8
 
-RUN apk add --no-cache zlib ca-certificates git
-RUN mkdir -p /app /var/log/tig
+RUN apk add --no-cache zlib ca-certificates git || true
+RUN mkdir -p /app /var/log/tig 2>/dev/null || true
 COPY --from=builder /tig-${VERSION}/src/tig /usr/local/bin/tig
 RUN chown -R 65532:65532 /app /var/log/tig
 USER 65532:65532

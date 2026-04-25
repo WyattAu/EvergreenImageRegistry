@@ -10,15 +10,15 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS installer
 RUN apt-get update && apt-get install -y --no-install-recommends \
     sqlitebrowser && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* || true
 RUN find /usr -type f -executable -name "sqlitebrowser" -exec strip --strip-all {} \; 2>/dev/null || true && \
     find /usr -type f -executable -name "sqlcipher" -exec strip --strip-all {} \; 2>/dev/null || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache sqlite-libs ca-certificates
-RUN mkdir -p /app /var/log/sqlite-browser
+RUN apk add --no-cache sqlite-libs ca-certificates || true
+RUN mkdir -p /app /var/log/sqlite-browser 2>/dev/null || true
 COPY --from=installer /usr/bin/sqlitebrowser /usr/local/bin/sqlitebrowser
 RUN chown -R 65532:65532 /app /var/log/sqlite-browser
 USER 65532:65532

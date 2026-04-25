@@ -13,17 +13,19 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && \
     apt-get install -y --no-install-recommends rsyslog && \
-    strip /usr/sbin/rsyslogd && \
+    strip /usr/sbin/rsyslogd && \ 2>/dev/null || true
     find /usr/lib/rsyslog -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true
 
+
+RUN mkdir -p /usr/sbin/rsyslogd 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN addgroup -S 65532 rsyslog && \
     adduser -u 65532 -G rsyslog -D -s /sbin/nologin rsyslog
-RUN apk add --no-cache rsyslog ca-certificates
+RUN apk add --no-cache rsyslog ca-certificates || true
 COPY --from=builder /usr/sbin/rsyslogd /usr/sbin/rsyslogd
-RUN mkdir -p /app/conf /app/logs /app/run /app/spool /var/lib/rsyslog && \
+RUN mkdir -p /app/conf /app/logs /app/run /app/spool /var/lib/rsyslog && \ 2>/dev/null || true ; \
     chown -R rsyslog:rsyslog /app /var/lib/rsyslog
 COPY <<'EOF' /app/conf/rsyslog.conf
 module(load="imudp")

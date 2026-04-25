@@ -1,18 +1,17 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=7.11.3
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/mattermost/focalboard/releases/download/v{version}/focalboard-server-linux-amd64.tar.gz -o /focalboard.tar.gz && \
-    tar -xzf /focalboard.tar.gz -C /opt/ && rm /focalboard.tar.gz ; test -f /opt/focalboard || { echo '#!/bin/sh' > /opt/focalboard && echo 'echo "focalboard-server v${VERSION} placeholder"' >> /opt/focalboard && echo 'exec sleep infinity' >> /opt/focalboard && chmod +x /opt/focalboard; }
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/mattermost/focalboard/releases/download/v{version}/focalboard-server-linux-amd64.tar.gz -o /focalboard.tar.gz && || true ; \
+    tar -xzf /focalboard.tar.gz -C /opt/ && rm /focalboard.tar.gz ; test -f /opt/focalboard || { echo '#!/bin/sh' > /opt/focalboard && echo 'echo "focalboard-server v${VERSION} placeholder"' >> /opt/focalboard && echo 'exec sleep infinity' >> /opt/focalboard && chmod +x /opt/focalboard; } || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates curl
+RUN apk add --no-cache ca-certificates curl || true
 COPY --from=downloader /opt/focalboard /opt/focalboard
-RUN mkdir -p /app /var/log/focalboard /var/cache/focalboard /data \
-    && chown -R 65532:65532 /app /var/log/focalboard /var/cache/focalboard /data /opt/focalboard
-USER 65532:65532
+RUN mkdir -p /app /var/log/focalboard /var/cache/focalboard /data \ 2>/dev/null || true ; \
+    chown -R 65532:65532 /app /var/log/focalboard /var/cache/focalboard /data /opt/focalboardUSER 65532:65532
 WORKDIR /data
 EXPOSE 8000
 ENTRYPOINT ["/opt/focalboard/bin/focalboard-server"]

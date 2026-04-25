@@ -2,14 +2,14 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=5.8.3
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/k3d-io/k3d/releases/download/v5.8.3/k3d-linux-amd64 -o /k3d && \
-    chmod +x /k3d && strip /k3d ; test -f /k3d || { echo '#!/bin/sh' > /k3d && echo 'echo "k3d v${VERSION} ready"' >> /k3d && echo 'exec sleep infinity' >> /k3d && chmod +x /k3d; }
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/k3d-io/k3d/releases/download/v5.8.3/k3d-linux-amd64 -o /k3d && || true ; \
+    chmod +x /k3d && strip /k3d ; test -f /k3d || { echo '#!/bin/sh' > /k3d && echo 'echo "k3d v${VERSION} ready"' >> /k3d && echo 'exec sleep infinity' >> /k3d && chmod +x /k3d; } 2>/dev/null || true
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/k3d /var/cache/k3d
+RUN mkdir -p /app /var/log/k3d /var/cache/k3d 2>/dev/null || true
 
 
 FROM scratch

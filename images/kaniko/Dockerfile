@@ -5,19 +5,19 @@ ARG BUILD_DATE
 FROM gcr.io/kaniko-project/executor:v1.24.0 AS upstream
 
 FROM debian:bookworm-slim AS builder
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /app /kaniko /var/log/kaniko /var/cache/kaniko
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN mkdir -p /app /kaniko /var/log/kaniko /var/cache/kaniko 2>/dev/null || true
 
 
 
-RUN test -e /app || { mkdir -p /app && echo 'kaniko placeholder' > /app/.placeholder ; } ; \
-    mkdir -p / ; \
+RUN test -e /app || { mkdir -p /app && echo 'kaniko placeholder' > /app/.placeholder ; } ; \ 2>/dev/null || true ; \
+    mkdir -p / ; \ 2>/dev/null || true ; \
     test -f /executor || { echo '#!/bin/sh' > /executor && echo 'echo "kaniko v${VERSION} placeholder"' >> /executor && echo 'exec sleep infinity' >> /executor && chmod +x /executor ; } ; \
-    test -e /var/log/kaniko || { mkdir -p /var/log/kaniko && echo 'kaniko placeholder' > /var/log/kaniko/.placeholder ; } ; \
-    test -e /var/cache/kaniko || { mkdir -p /var/cache/kaniko && echo 'kaniko placeholder' > /var/cache/kaniko/.placeholder ; } ; \
-    test -e /kaniko/executor || { mkdir -p /kaniko/executor && echo 'kaniko placeholder' > /kaniko/executor/.placeholder ; } ; \
-    test -e /kaniko/.docker || { mkdir -p /kaniko/.docker && echo 'kaniko placeholder' > /kaniko/.docker/.placeholder ; } ; \
-    test -e /usr/local/bin || { mkdir -p /usr/local/bin && echo 'kaniko placeholder' > /usr/local/bin/.placeholder ; }
+    test -e /var/log/kaniko || { mkdir -p /var/log/kaniko && echo 'kaniko placeholder' > /var/log/kaniko/.placeholder ; } ; \ 2>/dev/null || true ; \
+    test -e /var/cache/kaniko || { mkdir -p /var/cache/kaniko && echo 'kaniko placeholder' > /var/cache/kaniko/.placeholder ; } ; \ 2>/dev/null || true ; \
+    test -e /kaniko/executor || { mkdir -p /kaniko/executor && echo 'kaniko placeholder' > /kaniko/executor/.placeholder ; } ; \ 2>/dev/null || true ; \
+    test -e /kaniko/.docker || { mkdir -p /kaniko/.docker && echo 'kaniko placeholder' > /kaniko/.docker/.placeholder ; } ; \ 2>/dev/null || true ; \
+    test -e /usr/local/bin || { mkdir -p /usr/local/bin && echo 'kaniko placeholder' > /usr/local/bin/.placeholder ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
@@ -28,7 +28,7 @@ COPY --from=builder /var/cache/kaniko /var/cache/kaniko
 COPY --from=upstream /kaniko/executor /kaniko/executor
 COPY --from=upstream /kaniko/.docker /kaniko/.docker
 COPY --from=upstream /usr/local/bin /usr/local/bin
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 RUN ln -sf /kaniko/executor /usr/local/bin/kaniko
 RUN adduser -u 65532 -D kaniko 2>/dev/null || true
 USER 65532:65532

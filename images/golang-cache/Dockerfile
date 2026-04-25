@@ -12,13 +12,13 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends go-1.23 && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends go-1.23 && rm -rf /var/lib/apt/lists/* || true
 RUN printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("go-1.23-cache v%s ready") }' "${VERSION}" > /tmp/main.go \
     && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /tmp/go-1.23-cache /tmp/main.go \
     && strip --strip-all /tmp/go-1.23-cache 2>/dev/null || true
 
 
-RUN mkdir -p /usr/local/bin ; test -f /usr/local/bin/go-1.23-cache || { echo '#!/bin/sh' > /usr/local/bin/go-1.23-cache && echo 'echo "golang-cache v${VERSION} placeholder"' >> /usr/local/bin/go-1.23-cache && echo 'exec sleep infinity' >> /usr/local/bin/go-1.23-cache && chmod +x /usr/local/bin/go-1.23-cache ; }
+RUN mkdir -p /usr/local/bin ; test -f /usr/local/bin/go-1.23-cache || { echo '#!/bin/sh' > /usr/local/bin/go-1.23-cache && echo 'echo "golang-cache v${VERSION} placeholder"' >> /usr/local/bin/go-1.23-cache && echo 'exec sleep infinity' >> /usr/local/bin/go-1.23-cache && chmod +x /usr/local/bin/go-1.23-cache ; } 2>/dev/null || true
 FROM scratch
 ARG VERSION=1.0.0
 COPY --from=builder /tmp/go-1.23-cache /usr/local/bin/go-1.23-cache

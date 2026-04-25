@@ -11,7 +11,7 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 RUN useradd -m -u 65532 -s /usr/sbin/nologin redis 2>/dev/null || true
-RUN mkdir -p /app /var/log/redis /var/cache/redis
+RUN mkdir -p /app /var/log/redis /var/cache/redis 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ENV HEALTH_CMD="redis-cli ping" \
@@ -19,7 +19,7 @@ ENV HEALTH_CMD="redis-cli ping" \
     STARTUP_CMD="redis-cli ping" \
     SOVEREIGN_LOG_LEVEL=info
 
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 # NOTE: redis server not available in wolfi; uses pre-compiled binary
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group

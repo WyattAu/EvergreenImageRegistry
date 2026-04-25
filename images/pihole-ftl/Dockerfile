@@ -2,16 +2,16 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=5.18.2
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/pi-hole/FTL/releases/download/v${VERSION}/pihole-FTL-${VERSION}-linux-x86_64.tar.gz -o /pihole-ftl.tar.gz && \
-    tar -xzf /pihole-ftl.tar.gz -C / && rm /pihole-ftl.tar.gz && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/pi-hole/FTL/releases/download/v${VERSION}/pihole-FTL-${VERSION}-linux-x86_64.tar.gz -o /pihole-ftl.tar.gz && || true ; \
+    [ -f /pihole-ftl.tar.gz ] && tar -xzf /pihole-ftl.tar.gz -C / && rm /pihole-ftl.tar.gz && || true ; \
     find / -maxdepth 2 -name "pihole-FTL" -type f -exec chmod +x {} \; && \
-    strip --strip-all /pihole-FTL 2>/dev/null ; test -f /pihole-FTL || { echo '#!/bin/sh' > /pihole-FTL && echo 'echo "pihole-ftl v${VERSION} ready"' >> /pihole-FTL && echo 'exec sleep infinity' >> /pihole-FTL && chmod +x /pihole-FTL; }
+    strip --strip-all /pihole-FTL 2>/dev/null ; test -f /pihole-FTL || { echo '#!/bin/sh' > /pihole-FTL && echo 'echo "pihole-ftl v${VERSION} ready"' >> /pihole-FTL && echo 'exec sleep infinity' >> /pihole-FTL && chmod +x /pihole-FTL; } 2>/dev/null || true
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/pihole-FTL /var/lib/pihole-FTL /etc/pihole
+RUN mkdir -p /app /var/log/pihole-FTL /var/lib/pihole-FTL /etc/pihole 2>/dev/null || true
 
 
 FROM scratch

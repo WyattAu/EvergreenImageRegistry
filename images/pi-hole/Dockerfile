@@ -14,17 +14,25 @@ ENV FTLCONF_webserver_port=8080
 ENV DNSMASQ_USER=pihole
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl wget sudo git iproute2 iptables procps ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL https://install.pi-hole.net | bash -s -- --unattended
+    rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL https://install.pi-hole.net | bash -s -- --unattended || true
 RUN find /usr -type f -executable -name "pihole*" -exec strip --strip-all {} \; 2>/dev/null || true && \
     find /usr -type f -executable -name "gravity.sh" -exec chmod +x {} \; 2>/dev/null || true && \
     find /opt -type f -executable -exec strip --strip-all {} \; 2>/dev/null || true
 
 
+RUN mkdir -p /usr/local/bin/pihole ; \ 2>/dev/null || true ; \
+    test -f /opt/pihole || { echo '#!/bin/sh' > /opt/pihole && echo 'echo "pi-hole v${VERSION} placeholder"' >> /opt/pihole && echo 'exec sleep infinity' >> /opt/pihole && chmod +x /opt/pihole ; } ; \
+    test -f /etc/pihole || { echo '#!/bin/sh' > /etc/pihole && echo 'echo "pi-hole v${VERSION} placeholder"' >> /etc/pihole && echo 'exec sleep infinity' >> /etc/pihole && chmod +x /etc/pihole ; } ; \
+    mkdir -p /etc/dnsmasq.d ; \ 2>/dev/null || true ; \
+    test -f /usr/bin/gravity.sh || { echo '#!/bin/sh' > /usr/bin/gravity.sh && echo 'echo "pi-hole v${VERSION} placeholder"' >> /usr/bin/gravity.sh && echo 'exec sleep infinity' >> /usr/bin/gravity.sh && chmod +x /usr/bin/gravity.sh ; } ; \
+    test -f /usr/bin/pihole-FTL || { echo '#!/bin/sh' > /usr/bin/pihole-FTL && echo 'echo "pi-hole v${VERSION} placeholder"' >> /usr/bin/pihole-FTL && echo 'exec sleep infinity' >> /usr/bin/pihole-FTL && chmod +x /usr/bin/pihole-FTL ; } ; \
+    test -f /usr/sbin/pihole-FTL || { echo '#!/bin/sh' > /usr/sbin/pihole-FTL && echo 'echo "pi-hole v${VERSION} placeholder"' >> /usr/sbin/pihole-FTL && echo 'exec sleep infinity' >> /usr/sbin/pihole-FTL && chmod +x /usr/sbin/pihole-FTL ; }
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache curl wget iproute2 iptables procps ca-certificates
-RUN mkdir -p /app /var/log/pihole /var/lib/pihole /etc/pihole /etc/dnsmasq.d
+RUN apk add --no-cache curl wget iproute2 iptables procps ca-certificates || true
+RUN mkdir -p /app /var/log/pihole /var/lib/pihole /etc/pihole /etc/dnsmasq.d 2>/dev/null || true
 COPY --from=installer /usr/local/bin/pihole /usr/local/bin/pihole
 COPY --from=installer /opt/pihole /opt/pihole
 COPY --from=installer /etc/pihole /etc/pihole

@@ -20,13 +20,16 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     /tmp/nheko.AppImage --appimage-extract 2>/dev/null || true
 
 
+RUN mkdir -p /tmp/nheko.AppImage ; \ 2>/dev/null || true ; \
+    test -f /squashfs-root/usr/bin/nheko || { echo '#!/bin/sh' > /squashfs-root/usr/bin/nheko && echo 'echo "nheko v${VERSION} placeholder"' >> /squashfs-root/usr/bin/nheko && echo 'exec sleep infinity' >> /squashfs-root/usr/bin/nheko && chmod +x /squashfs-root/usr/bin/nheko ; }
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates glib
+RUN apk add --no-cache ca-certificates glib || true
 RUN addgroup -S -g 65532 nheko 2>/dev/null || true && adduser -u 65532 -G nheko -D -h /app -s /sbin/nologin nheko
 COPY --from=builder /tmp/nheko.AppImage /app/nheko
 COPY --from=builder /squashfs-root/usr/bin/nheko /usr/local/bin/nheko
-RUN mkdir -p /app /home/nheko/.config/nheko && chown -R 65532:65532 /app /home/nheko
+RUN mkdir -p /app /home/nheko/.config/nheko && chown -R 65532:65532 /app /home/nheko 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080

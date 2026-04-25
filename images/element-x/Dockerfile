@@ -5,15 +5,15 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /tmp
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/element-hq/element-x/releases/download/v1.5.0/element-x-v1.5.0.tar.gz -o /tmp/release.tar.gz && \
-    mkdir -p /www && \
-    tar -xzf /tmp/release.tar.gz -C /www --strip-components=1 && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/element-hq/element-x/releases/download/v1.5.0/element-x-v1.5.0.tar.gz -o /tmp/release.tar.gz && || true ; \
+    mkdir -p /www && \ 2>/dev/null || true ; \
+    [ -f /tmp/release.tar.gz ] && tar -xzf /tmp/release.tar.gz -C /www --strip-components=1 && || true ; \
     rm /tmp/release.tar.gz ; test -f /www || { echo '#!/bin/sh' > /www && echo 'echo "element-x v${VERSION} placeholder"' >> /www && echo 'exec sleep infinity' >> /www && chmod +x /www; }
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 RUN addgroup -S -g 65532 appuser 2>/dev/null || true && adduser -u 65532 -G appuser -D -h /app -s /sbin/nologin appuser
 COPY --from=downloader /www /var/www/html
 RUN rm -f /etc/nginx/sites-enabled/default

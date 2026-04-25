@@ -12,18 +12,20 @@ FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3-pip python3 && rm -rf /var/lib/apt/lists/*
+    python3-pip python3 && rm -rf /var/lib/apt/lists/* || true
 RUN python3 -m venv /opt/venv \
     && /opt/venv/bin/pip install --no-cache-dir --upgrade pip \
-    && /opt/venv/bin/pip install --no-cache-dir dnsvalidator==${VERSION} 2>/dev/null || \    /opt/venv/bin/pip install --no-cache-dir dnsvalidator
+    && /opt/venv/bin/pip install --no-cache-dir dnsvalidator==${VERSION} 2>/dev/null || \    /opt/venv/bin/pip install --no-cache-dir dnsvalidator || true
 
+
+RUN mkdir -p /opt/venv 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache python3 ca-certificates
+RUN apk add --no-cache python3 ca-certificates || true
 RUN adduser -u 65532 -s /sbin/nologin dnsval 2>/dev/null || true
-RUN mkdir -p /var/lib/dnsvalidator /var/log/dnsvalidator
+RUN mkdir -p /var/lib/dnsvalidator /var/log/dnsvalidator 2>/dev/null || true
 COPY --from=builder /opt/venv /opt/venv
 RUN chown -R 65532:65532 /opt/venv /var/lib/dnsvalidator /var/log/dnsvalidator
 USER 65532:65532

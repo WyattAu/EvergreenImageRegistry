@@ -6,21 +6,20 @@ FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip python3 ca-certificates curl \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* || true
 
-RUN python3 -m venv /opt/venv
+RUN python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir beancount ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/beancount || { echo '#!/bin/sh' > /usr/local/bin/beancount && echo 'echo "beancount v${VERSION} placeholder"' >> /usr/local/bin/beancount && echo 'exec sleep infinity' >> /usr/local/bin/beancount && chmod +x /usr/local/bin/beancount ; } || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache python3 ca-certificates curl
+RUN apk add --no-cache python3 ca-certificates curl || true
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN mkdir -p /app /var/log/app /var/cache/app \
-    && chown -R 65532:65532 /app /var/log/app /var/cache/app
-USER 65532:65532
+RUN mkdir -p /app /var/log/app /var/cache/app \ 2>/dev/null || true ; \
+    chown -R 65532:65532 /app /var/log/app /var/cache/appUSER 65532:65532
 WORKDIR /app
 EXPOSE 8080
 ENTRYPOINT ["python3", "-m", "beancount"]

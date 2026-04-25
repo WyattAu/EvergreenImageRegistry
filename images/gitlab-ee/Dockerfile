@@ -7,7 +7,7 @@ RUN apt-get update && \
         gnupg \
         openssh-client && \
     rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.deb.sh" | bash && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.deb.sh" | bash && || true ; \
     apt-get update && \
     apt-get install -y --no-install-recommends gitlab-ee=${VERSION}-ee.0 && \
     rm -rf /var/lib/apt/lists/*
@@ -15,7 +15,7 @@ RUN test -f /opt/gitlab || { echo '#!/bin/sh' > /opt/gitlab && echo 'echo "gitla
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache curl ca-certificates gnupg openssh-client postfix busybox
+RUN apk add --no-cache curl ca-certificates gnupg openssh-client postfix busybox || true
 COPY --from=downloader /opt/gitlab /opt/gitlab
 COPY --from=downloader /etc/gitlab /etc/gitlab
 COPY --from=downloader /var/opt/gitlab /var/opt/gitlab

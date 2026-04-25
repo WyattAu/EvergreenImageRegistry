@@ -2,13 +2,13 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.2.0
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/rhasspy/piper/releases/download/v1.2.0/piper_linux_amd64.tar.gz -o /tmp/piper.tar.gz && tar -xzf /tmp/piper.tar.gz -C / && rm /tmp/piper.tar.gz && chmod +x /piper 2>/dev/null || true ; test -f /piper || { echo '#!/bin/sh' > /piper && echo 'echo "piper v${VERSION} ready"' >> /piper && echo 'exec sleep infinity' >> /piper && chmod +x /piper; }
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/piper /var/cache/piper
+RUN mkdir -p /app /var/log/piper /var/cache/piper 2>/dev/null || true
 
 
 FROM scratch

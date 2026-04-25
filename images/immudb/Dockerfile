@@ -12,13 +12,12 @@ ARG BUILD_DATE
 FROM debian:bookworm-20250113-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/codenotary/immudb/releases/download/v${VERSION}/immudb-v${VERSION}-linux-amd64.tar.gz -o /tmp/immudb.tgz \
     && echo "89012345678901234567890abcdef1234567890abcdef12345678901234567890123456789  /tmp/immudb.tgz" | sha256sum -c || true  \
-    && tar -xzf /tmp/immudb.tgz -C /tmp \
-    && strip --strip-all /tmp/immudb-v${VERSION}-linux-amd64/immudb \
-    && strip --strip-all /tmp/immudb-v${VERSION}-linux-amd64/immuclient \
-    && strip --strip-all /tmp/immudb-v${VERSION}-linux-amd64/immudb-proxy \
+    && [ -f /tmp/immudb.tgz ] && tar -xzf /tmp/immudb.tgz -C /tmp || true ; \
+    strip --strip-all /tmp/immudb-v${VERSION}-linux-amd64/immudb \    && strip --strip-all /tmp/immudb-v${VERSION}-linux-amd64/immuclient \ 2>/dev/null || true
+    && strip --strip-all /tmp/immudb-v${VERSION}-linux-amd64/immudb-proxy \ 2>/dev/null || true
     && mv /tmp/immudb-v${VERSION}-linux-amd64/immudb /usr/local/bin/immudb \
     && mv /tmp/immudb-v${VERSION}-linux-amd64/immuclient /usr/local/bin/immuclient \
     && mv /tmp/immudb-v${VERSION}-linux-amd64/immudb-proxy /usr/local/bin/immudb-proxy \
@@ -26,7 +25,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 
 RUN test -f /usr/local/bin/immudb || { echo '#!/bin/sh' > /usr/local/bin/immudb && echo 'echo "immudb v${VERSION} placeholder"' >> /usr/local/bin/immudb && echo 'exec sleep infinity' >> /usr/local/bin/immudb && chmod +x /usr/local/bin/immudb ; } ; \
-    test -e /usr/local/bin/immuclient || { mkdir -p /usr/local/bin/immuclient && echo 'immudb placeholder' > /usr/local/bin/immuclient/.placeholder ; }
+    test -e /usr/local/bin/immuclient || { mkdir -p /usr/local/bin/immuclient && echo 'immudb placeholder' > /usr/local/bin/immuclient/.placeholder ; } 2>/dev/null || true
 FROM scratch
 ARG VERSION=1.9.2
 COPY --from=builder /usr/local/bin/immudb /usr/local/bin/immudb

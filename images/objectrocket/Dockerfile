@@ -12,9 +12,9 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 RUN adduser -u 65532 -s /sbin/nologin objectrocket 2>/dev/null || true
-RUN mkdir -p /var/lib/objectrocket /var/log/objectrocket /app
+RUN mkdir -p /var/lib/objectrocket /var/log/objectrocket /app 2>/dev/null || true
 RUN printf '#!/bin/sh\necho "objectrocket v%s - MongoDB cloud development compatibility"\necho "ObjectRocket is a fully managed database cloud service."\necho "Use the ObjectRocket/MongoDB Atlas endpoint in production."\nsleep infinity' "${VERSION}" > /app/objectrocket && chmod +x /app/objectrocket
 RUN chown -R 65532:65532 /var/lib/objectrocket /var/log/objectrocket /app
 USER 65532:65532

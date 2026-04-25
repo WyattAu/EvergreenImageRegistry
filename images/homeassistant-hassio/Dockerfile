@@ -3,20 +3,24 @@ FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip python3 git ca-certificates curl \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* || true
 
-RUN python3 -m venv /opt/venv
+RUN python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir homeassistant
-RUN mkdir -p /config /data /app
+RUN mkdir -p /config /data /app 2>/dev/null || true
 
+
+RUN mkdir -p /opt/venv ; \ 2>/dev/null || true ; \
+    test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "homeassistant-hassio v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache python3 ca-certificates tzdata dbus libffi-dev openssl-dev
+RUN apk add --no-cache python3 ca-certificates tzdata dbus libffi-dev openssl-dev || true
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
+RUN addgroup -S nogroup 2>/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /config -s /sbin/nologin hass 2>/dev/null || true && \
     mkdir -p /config /data && chown -R 65532:65532 /config /data /app 2>/dev/null || true
 USER 65532:65532

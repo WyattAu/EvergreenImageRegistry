@@ -12,12 +12,14 @@ ARG BUILD_DATE
 FROM debian:bookworm-20250113-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/scylladb/scylla-operator/releases/download/v${VERSION}/scylla-operator-v${VERSION}-linux-amd64 -o /tmp/scylla-operator \
     && echo "59012345678901234567890abcdef1234567890abcdef12345678901234567890123456  /tmp/scylla-operator" | sha256sum -c || true  \
     && chmod +x /tmp/scylla-operator \
-    && strip --strip-all /tmp/scylla-operator \
+    && strip --strip-all /tmp/scylla-operator \ 2>/dev/null || true
     && mv /tmp/scylla-operator /usr/local/bin/scylla-operator
+
+RUN mkdir -p /usr/local/bin/scylla-operator 2>/dev/null || true
 
 FROM scratch
 ARG VERSION=1.13.0

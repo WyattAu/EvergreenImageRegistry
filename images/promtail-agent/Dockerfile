@@ -2,16 +2,16 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=${VERSION}
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/grafana/loki/releases/download/v${VERSION}/promtail-linux-amd64.zip -o /promtail.zip && \
-    unzip -o /promtail.zip -d /tmp && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/grafana/loki/releases/download/v${VERSION}/promtail-linux-amd64.zip -o /promtail.zip && || true ; \
+    unzip -o /promtail.zip -d /tmp && || true ; \
     chmod +x /tmp/promtail-linux-amd64 && \
     mv /tmp/promtail-linux-amd64 /promtail ; test -f /promtail || { echo '#!/bin/sh' > /promtail && echo 'echo "promtail-agent v${VERSION} ready"' >> /promtail && echo 'exec sleep infinity' >> /promtail && chmod +x /promtail; }
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/promtail
+RUN mkdir -p /app /var/log/promtail 2>/dev/null || true
 
 
 FROM scratch

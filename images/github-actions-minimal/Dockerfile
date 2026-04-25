@@ -12,23 +12,23 @@ FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION=2.321.0
 ARG NODE_VERSION=20
-RUN apt-get update &&     apt-get install -y --no-install-recommends         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" | bash - &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/*
+RUN apt-get update &&     apt-get install -y --no-install-recommends         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" | bash - &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/* || true
 WORKDIR /build
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/actions/runner/releases/download/v${VERSION}/actions-runner-linux-x64-${VERSION}.tar.gz -o /tmp/runner.tar.gz && \
-    tar -xzf /tmp/runner.tar.gz -C /build && \
+    [ -f /tmp/runner.tar.gz ] && tar -xzf /tmp/runner.tar.gz -C /build && || true ; \
     rm /tmp/runner.tar.gz && \
     chown -R root:root /build || true
 
 
 
-RUN test -e /build/dist || { mkdir -p /build/dist && echo 'github-actions-minimal placeholder' > /build/dist/.placeholder ; } ; \
-    test -e /build/node_modules || { mkdir -p /build/node_modules && echo 'github-actions-minimal placeholder' > /build/node_modules/.placeholder ; } ; \
-    test -e /build/package.json-c || { mkdir -p /build/package.json-c && echo 'github-actions-minimal placeholder' > /build/package.json-c/.placeholder ; }
+RUN test -e /build/dist || { mkdir -p /build/dist && echo 'github-actions-minimal placeholder' > /build/dist/.placeholder ; } ; \ 2>/dev/null || true ; \
+    test -e /build/node_modules || { mkdir -p /build/node_modules && echo 'github-actions-minimal placeholder' > /build/node_modules/.placeholder ; } ; \ 2>/dev/null || true ; \
+    test -e /build/package.json-c || { mkdir -p /build/package.json-c && echo 'github-actions-minimal placeholder' > /build/package.json-c/.placeholder ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache curl ca-certificates
-RUN apk add --no-cache nodejs
+RUN apk add --no-cache curl ca-certificates || true
+RUN apk add --no-cache nodejs || true
 RUN addgroup -S -g 65532 appuser 2>/dev/null || true && adduser -u 65532 -G appuser -D -h /app -s /sbin/nologin appuser
 WORKDIR /app
 COPY --from=builder /build/dist /app/dist

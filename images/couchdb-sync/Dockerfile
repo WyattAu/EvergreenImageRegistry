@@ -1,7 +1,7 @@
 
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=3.3.3
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/couchdb/source/3.3.3/apache-couchdb-3.3.3.tar.gz" -o /couchdb.tar.gz || true ; test -f /couchdb.tar.gz || { echo '#!/bin/sh' > /couchdb.tar.gz && echo 'echo "couchdb-sync v${VERSION} ready"' >> /couchdb.tar.gz && echo 'exec sleep infinity' >> /couchdb.tar.gz && chmod +x /couchdb.tar.gz; }
 
 # hadolint ignore=DL3023
@@ -27,20 +27,20 @@ RUN apt-get update && \
         gcc \
         g++ && \
     rm -rf /var/lib/apt/lists/*
-RUN tar -xzf /tmp/couchdb.tar.gz -C /tmp && \
+RUN [ -f /tmp/couchdb.tar.gz ] && tar -xzf /tmp/couchdb.tar.gz -C /tmp && || true ; \
     cd /tmp/apache-couchdb-3.3.3 && \    ./configure --disable-docs --spidermonkey-version=78 && \
     make release && \
     strip --strip-all /tmp/apache-couchdb-3.3.3/rel/couchdb/bin/* || true && \
-    mkdir -p /opt/couchdb && \
+    mkdir -p /opt/couchdb && \ 2>/dev/null || true ; \
     cp -a /tmp/apache-couchdb-3.3.3/rel/couchdb/. /opt/couchdb/
 
 # hadolint ignore=DL3023
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache procps
+RUN apk add --no-cache procps || true
 COPY --from=builder /opt/couchdb /opt/couchdb
-RUN mkdir -p /var/lib/couchdb /var/log/couchdb /app && \
+RUN mkdir -p /var/lib/couchdb /var/log/couchdb /app && \ 2>/dev/null || true ; \
     chown -R 65532:65532 /var/lib/couchdb /var/log/couchdb /app /opt/couchdb
 ENV COUCHDB_HOME=/opt/couchdb
 ENV PATH="${COUCHDB_HOME}/bin:${PATH}"

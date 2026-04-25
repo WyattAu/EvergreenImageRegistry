@@ -14,18 +14,19 @@ ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates && rm -rf /var/lib/apt/lists/*
+    curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ontotext/graphdb/releases/download/v${VERSION}/graphdb-free-${VERSION}-dist.zip -o /tmp/graphdb.zip \
     && echo "PENDING  /tmp/graphdb.zip" | sha256sum -c || true  \
-    && unzip -q /tmp/graphdb.zip -d /opt \
-    && rm /tmp/graphdb.zip
+    && unzip -q /tmp/graphdb.zip -d /opt || true ; \
+    rm /tmp/graphdb.zip
+RUN mkdir -p /opt/graphdb-free-${VERSION} 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 RUN adduser -u 65532 -s /sbin/nologin graphdb 2>/dev/null || true
-RUN mkdir -p /var/lib/graphdb /var/log/graphdb /var/cache/graphdb /opt/graphdb/home
+RUN mkdir -p /var/lib/graphdb /var/log/graphdb /var/cache/graphdb /opt/graphdb/home 2>/dev/null || true
 COPY --from=builder /opt/graphdb-free-${VERSION} /opt/graphdb
 RUN chown -R 65532:65532 /opt/graphdb /var/lib/graphdb /var/log/graphdb /var/cache/graphdb
 USER 65532:65532

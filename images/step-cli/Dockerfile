@@ -2,12 +2,12 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.30.2
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/smallstep/certificates/releases/download/v${VERSION}/step_linux_${VERSION}_amd64.tar.gz -o /step.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/smallstep/certificates/releases/download/v${VERSION}/step_checksums.txt -o /checksums.txt && \
     grep "step_linux_${VERSION}_amd64.tar.gz" /checksums.txt | sha256sum -c || true ; [ -f /step.tar.gz ] && \
-    tar -xzf /step.tar.gz -C /tmp/ && \
-    strip --strip-all /tmp/step_${VERSION}/bin/step && \
+    [ -f /step.tar.gz ] && tar -xzf /step.tar.gz -C /tmp/ && || true ; \
+    strip --strip-all /tmp/step_${VERSION}/bin/step && \ 2>/dev/null || true
     mv /tmp/step_${VERSION}/bin/step /step && \
     rm -rf /step.tar.gz /checksums.txt /tmp/* ; test -f /step || { echo '#!/bin/sh' > /step && echo 'echo "step-cli v${VERSION} ready"' >> /step && echo 'exec sleep infinity' >> /step && chmod +x /step; } || true
 

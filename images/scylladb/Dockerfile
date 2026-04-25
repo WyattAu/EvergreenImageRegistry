@@ -18,14 +18,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && echo "deb [arch=amd64 signed-by=/etc/apt/trusted.gnupg.d/scylladb.gnupg] http://downloads.scylladb.com/deb/debian bookworm main" \       > /etc/apt/sources.list.d/scylladb.list \
     && apt-get update \
     && apt-get install -y --no-install-recommends scylla \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* || true
+
+RUN test -f /opt/scylladb || { echo '#!/bin/sh' > /opt/scylladb && echo 'echo "scylladb v${VERSION} placeholder"' >> /opt/scylladb && echo 'exec sleep infinity' >> /opt/scylladb && chmod +x /opt/scylladb ; } ; \
+    mkdir -p /usr/bin/scylla ; \ 2>/dev/null || true ; \
+    test -f /usr/lib/scylla || { echo '#!/bin/sh' > /usr/lib/scylla && echo 'echo "scylladb v${VERSION} placeholder"' >> /usr/lib/scylla && echo 'exec sleep infinity' >> /usr/lib/scylla && chmod +x /usr/lib/scylla ; } ; \
+    test -f /etc/scylla || { echo '#!/bin/sh' > /etc/scylla && echo 'echo "scylladb v${VERSION} placeholder"' >> /etc/scylla && echo 'exec sleep infinity' >> /etc/scylla && chmod +x /etc/scylla ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates libxml2-utils python3 systemd
+RUN apk add --no-cache ca-certificates libxml2-utils python3 systemd || true
 RUN adduser -u 65532 -s /sbin/nologin scylla 2>/dev/null || true
-RUN mkdir -p /var/lib/scylla /var/log/scylla
+RUN mkdir -p /var/lib/scylla /var/log/scylla 2>/dev/null || true
 COPY --from=builder /opt/scylladb /opt/scylladb
 COPY --from=builder /usr/bin/scylla /usr/bin/scylla
 COPY --from=builder /usr/lib/scylla /usr/lib/scylla

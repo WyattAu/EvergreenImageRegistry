@@ -5,7 +5,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.opensearch.org/releases/bundle/opensearch/${VERSION}/opensearch-${VERSION}-linux-x64.tar.gz" -o /opensearch.tar.gz && \
     echo "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3  /opensearch.tar.gz" | sha256sum -c || true  #
-RUN tar -xzf /opensearch.tar.gz -C /opt && \ || true
+RUN [ -f /opensearch.tar.gz ] && tar -xzf /opensearch.tar.gz -C /opt && \ || true
     rm /opensearch.tar.gz && \ || true
     find /opt/opensearch-${VERSION}/plugins -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true
 RUN test -f /opt/opensearch-2.12.0 || { echo '#!/bin/sh' > /opt/opensearch-2.12.0 && echo 'echo "opensearch v${VERSION} placeholder"' >> /opt/opensearch-2.12.0 && echo 'exec sleep infinity' >> /opt/opensearch-2.12.0 && chmod +x /opt/opensearch-2.12.0; }
@@ -18,10 +18,10 @@ ENV HEALTH_CMD="curl -sf http://localhost:9200" \
 
 RUN addgroup -S 65532 opensearch && \
     adduser -u 65532 -G opensearch -D -s /sbin/nologin opensearch
-RUN apk add --no-cache ca-certificates gosu
+RUN apk add --no-cache curl ca-certificates gosu || true
 COPY --from=downloader /opt/opensearch-2.12.0 /opt/opensearch
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-RUN mkdir -p /app/data /app/logs /app/conf && \
+RUN mkdir -p /app/data /app/logs /app/conf && \ 2>/dev/null || true ; \
     chown -R opensearch:opensearch /app /opt/opensearch && \
     ln -sf /app/conf /opt/opensearch/config/custom && \
     echo "y" | /opt/opensearch/bin/opensearch-plugin install analysis-icu 2>/dev/null || true

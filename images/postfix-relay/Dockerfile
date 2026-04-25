@@ -13,10 +13,10 @@ RUN groupadd -r -g 65532 postfix && useradd -r -u 65532 -g postfix -d /var/spool
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache postfix ca-certificates
+RUN apk add --no-cache postfix ca-certificates || true
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder /etc/passwd /etc/passwd
-RUN mkdir -p /var/spool/postfix /var/log/postfix /etc/postfix && \
+RUN mkdir -p /var/spool/postfix /var/log/postfix /etc/postfix && \ 2>/dev/null || true ; \
     chown -R 65532:65532 /var/spool/postfix /var/log/postfix
 RUN printf 'inet_interfaces = all\nrelay_domains = $mydestination\nsmtpd_relay_restrictions = permit_mynetworks, reject_unauth_destination\n' > /etc/postfix/main.cf.relay
 USER 65532:65532

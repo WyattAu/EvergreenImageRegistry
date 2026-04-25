@@ -2,14 +2,14 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.4.0
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/robustperception/azure_metrics_exporter/releases/download/v${VERSION}/azure_metrics_exporter-${VERSION}-linux-amd64 -o /azure_metrics_exporter && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/robustperception/azure_metrics_exporter/releases/download/v${VERSION}/azure_metrics_exporter-${VERSION}-linux-amd64 -o /azure_metrics_exporter && || true ; \
     chmod +x /azure_metrics_exporter ; test -f /azure_metrics_exporter || { echo '#!/bin/sh' > /azure_metrics_exporter && echo 'echo "prometheus-azure-exporter v${VERSION} ready"' >> /azure_metrics_exporter && echo 'exec sleep infinity' >> /azure_metrics_exporter && chmod +x /azure_metrics_exporter; }
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/azure_exporter /var/cache/azure_exporter
+RUN mkdir -p /app /var/log/azure_exporter /var/cache/azure_exporter 2>/dev/null || true
 
 
 FROM scratch

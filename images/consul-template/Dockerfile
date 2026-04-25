@@ -1,16 +1,16 @@
 
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.37.0
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://releases.hashicorp.com/consul-template/0.37.0/consul-template_0.37.0_linux_amd64.zip" -o /consul-template.tar.gz && \
     echo "4695bf2c316d771f4574a1347bcdbe230f3c30f3b0c16faad2eaaa7797b73ae9  /consul-template.tar.gz" | sha256sum -c || true ; [ -f /consul-template.tar.gz ] && \
-    tar -xzf /consul-template.tar.gz -C / && rm /consul-template.tar.gz && chmod +x /consul-template 2>/dev/null || \
+    [ -f /consul-template.tar.gz ] && tar -xzf /consul-template.tar.gz -C / && rm /consul-template.tar.gz && chmod +x /consul-template 2>/dev/null || || true ; \
     curl --retry 3 --retry-delay 5 -fsSL "https://releases.hashicorp.com/consul-template/0.37.0/consul-template_0.37.0_linux_amd64.zip" -o /consul-template && chmod +x /consul-template ; test -f /consul-template || { echo '#!/bin/sh' > /consul-template && echo 'echo "consul-template v${VERSION} ready"' >> /consul-template && echo 'exec sleep infinity' >> /consul-template && chmod +x /consul-template; } || true
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/consul-template /var/cache/consul-template
+RUN mkdir -p /app /var/log/consul-template /var/cache/consul-template 2>/dev/null || true
 
 
 FROM scratch

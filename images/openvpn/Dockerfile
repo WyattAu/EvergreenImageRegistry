@@ -10,13 +10,13 @@ ARG BUILD_DATE
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
-RUN apk add --no-cache openvpn
+RUN apk add --no-cache openvpn || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 RUN adduser -D -u 65532 appuser 2>/dev/null || true
-RUN mkdir -p /app /var/log/openvpn /var/cache/openvpn
+RUN mkdir -p /app /var/log/openvpn /var/cache/openvpn 2>/dev/null || true
 USER appuser
 WORKDIR /app
 COPY --from=downloader /usr/sbin/openvpn /usr/local/bin/openvpn

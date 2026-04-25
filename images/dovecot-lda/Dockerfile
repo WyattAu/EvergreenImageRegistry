@@ -13,10 +13,10 @@ RUN groupadd -r -g 65532 dovecot && useradd -r -u 65532 -g dovecot -d /var/lib/d
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder /etc/passwd /etc/passwd
-RUN mkdir -p /var/lib/dovecot /var/log/dovecot /var/mail && \
+RUN mkdir -p /var/lib/dovecot /var/log/dovecot /var/mail && \ 2>/dev/null || true ; \
     chown -R 65532:65532 /var/lib/dovecot /var/log/dovecot /var/mail
 USER 65532:65532
 WORKDIR /var/lib/dovecot

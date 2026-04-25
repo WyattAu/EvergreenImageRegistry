@@ -29,10 +29,10 @@ ARG VERSION=3.10.0
 
 RUN addgroup -S 65532 gcplogs && \
     adduser -u 65532 -G gcplogs -D -s /sbin/nologin gcplogs
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 COPY --from=stripper /install /usr/local
 COPY --from=stripper /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-RUN mkdir -p /app/conf /app/logs && \
+RUN mkdir -p /app/conf /app/logs && \ 2>/dev/null || true ; \
     chown -R gcplogs:gcplogs /app
 USER 65532:65532
 WORKDIR /app

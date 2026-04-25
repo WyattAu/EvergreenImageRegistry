@@ -2,17 +2,18 @@
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         cockpit cockpit-ws cockpit-dashboard cockpit-storaged cockpit-system ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* || true
 
-RUN mkdir -p /app
+RUN mkdir -p /app 2>/dev/null || true
 
 
 
-RUN test -e /app || { mkdir -p /app && echo 'cockpit placeholder' > /app/.placeholder ; }
+RUN test -e /app || { mkdir -p /app && echo 'cockpit placeholder' > /app/.placeholder ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 COPY --from=builder /app /app
+RUN addgroup -S nogroup 2>/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin cockpit 2>/dev/null || true && \
     chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532

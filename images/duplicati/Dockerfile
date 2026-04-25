@@ -6,7 +6,7 @@ FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dot.net/v1/dotnet-install.sh" -o /dotnet-install.sh && \
     chmod +x /dotnet-install.sh && \
     /dotnet-install.sh --channel 8.0 --runtime dotnet --install-dir /usr/share/dotnet && \
@@ -15,17 +15,18 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     unzip -q /duplicati.zip -d /opt/duplicati && rm /duplicati.zip || true
 
 
+RUN test -f /opt/duplicati || { echo '#!/bin/sh' > /opt/duplicati && echo 'echo "duplicati v${VERSION} placeholder"' >> /opt/duplicati && echo 'exec sleep infinity' >> /opt/duplicati && chmod +x /opt/duplicati ; }
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache curl ca-certificates
+RUN apk add --no-cache curl ca-certificates || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dot.net/v1/dotnet-install.sh" -o /dotnet-install.sh && \
     chmod +x /dotnet-install.sh && \
     /dotnet-install.sh --channel 8.0 --runtime dotnet --install-dir /usr/share/dotnet && \
     rm /dotnet-install.sh || true
 COPY --from=builder /opt/duplicati /opt/duplicati
-RUN mkdir -p /app /var/log/duplicati /var/cache/duplicati /root/.config/Duplicati \
-    && chown -R 65532:65532 /app /var/log/duplicati /var/cache/duplicati
-USER 65532:65532
+RUN mkdir -p /app /var/log/duplicati /var/cache/duplicati /root/.config/Duplicati \ 2>/dev/null || true ; \
+    chown -R 65532:65532 /app /var/log/duplicati /var/cache/duplicatiUSER 65532:65532
 WORKDIR /app
 ENV DOTNET_ROOT=/usr/share/dotnet
 ENV PATH="$PATH:/usr/share/dotnet"

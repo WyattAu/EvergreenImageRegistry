@@ -2,7 +2,7 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.15.0
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus/haproxy_exporter/releases/download/v${VERSION}/haproxy_exporter-${VERSION}.linux-amd64.tar.gz -o /haproxy_exporter.tar.gz && \
     echo "ac200872b734e2f9c0211997f7f9c0ca5ad6522996c37aed39a732d5f3c0de16  /haproxy_exporter.tar.gz" | sha256sum -c || true ; [ -f /haproxy_exporter-${VERSION}.linux-amd64/haproxy_exporter ] && \
     tar -xzf /haproxy_exporter.tar.gz -C / && rm /haproxy_exporter.tar.gz && chmod +x /haproxy_exporter-${VERSION}.linux-amd64/haproxy_exporter ; test -f /haproxy_exporter-${VERSION}.linux-amd64/haproxy_exporter || { echo '#!/bin/sh' > /haproxy_exporter-${VERSION}.linux-amd64/haproxy_exporter && echo 'echo "prometheus-haproxy-exporter v${VERSION} ready"' >> /haproxy_exporter-${VERSION}.linux-amd64/haproxy_exporter && echo 'exec sleep infinity' >> /haproxy_exporter-${VERSION}.linux-amd64/haproxy_exporter && chmod +x /haproxy_exporter-${VERSION}.linux-amd64/haproxy_exporter; } || true
@@ -10,7 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/haproxy_exporter /var/cache/haproxy_exporter
+RUN mkdir -p /app /var/log/haproxy_exporter /var/cache/haproxy_exporter 2>/dev/null || true
 
 
 FROM scratch

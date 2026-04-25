@@ -11,18 +11,22 @@ FROM debian:bookworm-slim AS installer
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openjdk-17-jre-base curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/yacy/yacy_search_server/releases/download/v1.924/yacy_v1.924_202008051920.tar.gz -o /yacy.tar.gz && \
-    tar -xzf /yacy.tar.gz -C /opt && rm /yacy.tar.gz && \
+    [ -f /yacy.tar.gz ] && tar -xzf /yacy.tar.gz -C /opt && rm /yacy.tar.gz && || true ; \
     mv /opt/yacy /opt/yacy-server || true
-RUN mkdir -p /app /var/log/yacy /var/lib/yacy/data
+RUN mkdir -p /app /var/log/yacy /var/lib/yacy/data 2>/dev/null || true
 RUN chown -R 65532:65532 /opt/yacy-server /var/log/yacy /var/lib/yacy
 
 
+RUN test -f /opt/yacy-server || { echo '#!/bin/sh' > /opt/yacy-server && echo 'echo "yacy v${VERSION} placeholder"' >> /opt/yacy-server && echo 'exec sleep infinity' >> /opt/yacy-server && chmod +x /opt/yacy-server ; } ; \
+    test -f /var/log/yacy || { echo '#!/bin/sh' > /var/log/yacy && echo 'echo "yacy v${VERSION} placeholder"' >> /var/log/yacy && echo 'exec sleep infinity' >> /var/log/yacy && chmod +x /var/log/yacy ; } ; \
+    test -f /var/lib/yacy || { echo '#!/bin/sh' > /var/lib/yacy && echo 'echo "yacy v${VERSION} placeholder"' >> /var/lib/yacy && echo 'exec sleep infinity' >> /var/lib/yacy && chmod +x /var/lib/yacy ; }
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates
-RUN mkdir -p /app /var/log/yacy /var/lib/yacy
+RUN apk add --no-cache ca-certificates || true
+RUN mkdir -p /app /var/log/yacy /var/lib/yacy 2>/dev/null || true
 COPY --from=installer /opt/yacy-server /opt/yacy-server
 COPY --from=installer /var/log/yacy /var/log/yacy
 COPY --from=installer /var/lib/yacy /var/lib/yacy

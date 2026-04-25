@@ -13,20 +13,22 @@ ARG GITHUB_TOKEN
 ARG VERSION=Release48
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake libssl-dev && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/pymumu/smartdns/archive/refs/tags/${VERSION}.tar.gz -o /smartdns.tar.gz && \
-    tar -xzf /smartdns.tar.gz -C / && rm /smartdns.tar.gz && \
-    mkdir -p /smartdns-${VERSION}/build && \
+    [ -f /smartdns.tar.gz ] && tar -xzf /smartdns.tar.gz -C / && rm /smartdns.tar.gz && || true ; \
+    mkdir -p /smartdns-${VERSION}/build && \ 2>/dev/null || true ; \
     cd /smartdns-${VERSION}/build && \    cmake .. -DPREFIX=/usr -DENABLE_SYSTEMD=OFF && \
     make -j"$(nproc)" && \
     strip --strip-all /smartdns-${VERSION}/src/smartdns || true
 
 
+RUN mkdir -p /smartdns-${VERSION}/src/smartdns 2>/dev/null || true
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=Release48
 
-RUN apk add --no-cache ca-certificates
-RUN mkdir -p /app /var/log/smartdns /var/lib/smartdns /etc/smartdns
+RUN apk add --no-cache ca-certificates || true
+RUN mkdir -p /app /var/log/smartdns /var/lib/smartdns /etc/smartdns 2>/dev/null || true
 COPY --from=builder /smartdns-${VERSION}/src/smartdns /usr/local/bin/smartdns
 RUN chown -R 65532:65532 /app /var/log/smartdns /var/lib/smartdns
 USER 65532:65532

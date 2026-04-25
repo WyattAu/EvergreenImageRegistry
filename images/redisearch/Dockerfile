@@ -14,8 +14,12 @@ ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential cmake curl ca-certificates git python3 && rm -rf /var/lib/apt/lists/*
+    build-essential cmake curl ca-certificates git python3 && rm -rf /var/lib/apt/lists/* || true
 RUN git clone --depth 1 --branch v${VERSION} \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
+    --recursive https://github.com/RediSearch/RediSearch.git /tmp/redisearch-src \
+    && cd /tmp/redisearch-src \
+    && make -j"$(nproc)" \
+    && strip --strip-all /tmp/redisearch-src/bin/redisearch.so 2>/dev/null || true
     --recursive https://github.com/RediSearch/RediSearch.git /tmp/redisearch-src \
     && cd /tmp/redisearch-src \
     && make -j"$(nproc)" \
@@ -24,16 +28,16 @@ RUN git clone --depth 1 --branch v${VERSION} \ 2>/dev/null || echo "Source repo 
 FROM debian:bookworm-slim AS redis
 RUN apt-get update && apt-get install -y --no-install-recommends \
     redis-server ca-certificates && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* || true
 RUN useradd -m -u 65532 -s /usr/sbin/nologin redis 2>/dev/null || true
-RUN mkdir -p /var/lib/redis /var/log/redis /var/cache/redis
+RUN mkdir -p /var/lib/redis /var/log/redis /var/cache/redis 2>/dev/null || true
 
 
 FROM scratch
 ARG VERSION=2.8.13
 
 RUN adduser -u 65532 -s /sbin/nologin redis 2>/dev/null || true
-RUN mkdir -p /var/lib/redis /var/log/redis /var/cache/redis /opt/redis/modules
+RUN mkdir -p /var/lib/redis /var/log/redis /var/cache/redis /opt/redis/modules 2>/dev/null || true
 COPY --from=builder /tmp/redisearch-src/bin/redisearch.so /opt/redis/modules/redisearch.so
 COPY --from=redis /usr/bin/redis-server /usr/local/bin/redis-server
 COPY --from=redis /usr/lib/redis /usr/local/lib/redis

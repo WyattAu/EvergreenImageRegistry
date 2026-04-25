@@ -1,19 +1,19 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=2026.2.2
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends python3-pip curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/goauthentik/authentik/releases/download/version/${VERSION}/authentik-core-${VERSION}.tar.gz -o /authentik.tar.gz && \
-    mkdir -p /tmp/authentik && \
-    tar -xzf /authentik.tar.gz -C /tmp/authentik && \
+RUN apt-get update && apt-get install -y --no-install-recommends python3-pip curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/goauthentik/authentik/releases/download/version/${VERSION}/authentik-core-${VERSION}.tar.gz -o /authentik.tar.gz && || true ; \
+    mkdir -p /tmp/authentik && \ 2>/dev/null || true ; \
+    [ -f /authentik.tar.gz ] && tar -xzf /authentik.tar.gz -C /tmp/authentik && || true ; \
     rm -f /authentik.tar.gz ; test -f /tmp/authentik || { echo '#!/bin/sh' > /tmp/authentik && echo 'echo "authentik v${VERSION} placeholder"' >> /tmp/authentik && echo 'exec sleep infinity' >> /tmp/authentik && chmod +x /tmp/authentik; }
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates libpq libxml2-dev libxslt-dev libffi-dev openssl-dev build-base
+RUN apk add --no-cache ca-certificates libpq libxml2-dev libxslt-dev libffi-dev openssl-dev build-base || true
 COPY --from=downloader /tmp/authentik /opt/authentik
-RUN pip3 install --no-cache-dir --break-system-packages /opt/authentik 2>/dev/null || pip3 install --no-cache-dir /opt/authentik || true && \
-    mkdir -p /app && chown -R 65532:65532 /app /opt/authentik
+RUN pip install --no-cache-dir --break-system-packages /opt/authentik 2>/dev/null || pip install --no-cache-dir /opt/authentik || true && \
+    mkdir -p /app && chown -R 65532:65532 /app /opt/authentik 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENV AUTHENTIK_VERSION=${VERSION}

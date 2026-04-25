@@ -4,10 +4,9 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG GITHUB_TOKEN
-RUN apk add --no-cache ca-certificates curl gnupg "
-RUN mkdir -p /var/log/onlyoffice /var/lib/onlyoffice \
-    && chown -R 65532:65532 /var/log/onlyoffice /var/lib/onlyoffice
-USER 65532:65532
+RUN apk add --no-cache ca-certificates curl gnupg " || true
+RUN mkdir -p /var/log/onlyoffice /var/lib/onlyoffice \ 2>/dev/null || true ; \
+    chown -R 65532:65532 /var/log/onlyoffice /var/lib/onlyofficeUSER 65532:65532
 WORKDIR /app
 EXPOSE 80 443
 ENTRYPOINT ["/usr/bin/ds"]

@@ -8,7 +8,7 @@
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates tzdata
+RUN apk add --no-cache ca-certificates tzdata || true
 LABEL org.opencontainers.image.title="alpine" \
       org.opencontainers.image.description="Sovereign reference wrapper for Alpine-compatible base (wolfi). Alpine is banned for application images." \
       sovereign.image.tier="3" \

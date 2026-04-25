@@ -13,16 +13,16 @@ FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates && rm -rf /var/lib/apt/lists/*
+    curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://repo1.maven.org/maven2/com/h2database/h2/${VERSION}/h2-${VERSION}.jar" -o /tmp/h2.jar \
     && echo "PENDING  /tmp/h2.jar" | sha256sum -c || true  #
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 RUN adduser -u 65532 -s /sbin/nologin h2 2>/dev/null || true
-RUN mkdir -p /var/lib/h2 /var/log/h2
+RUN mkdir -p /var/lib/h2 /var/log/h2 2>/dev/null || true
 COPY --from=builder /tmp/h2.jar /opt/h2/h2.jar
 RUN chown -R 65532:65532 /opt/h2 /var/lib/h2 /var/log/h2
 

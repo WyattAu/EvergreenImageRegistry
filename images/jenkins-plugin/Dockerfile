@@ -1,18 +1,18 @@
 
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=2.462.1
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-headless && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/2.462.1/jenkins-war-2.462.1.war" -o /jenkins.war ; test -f /jenkins.war || { echo '#!/bin/sh' > /jenkins.war && echo 'echo "jenkins-plugin v${VERSION} ready"' >> /jenkins.war && echo 'exec sleep infinity' >> /jenkins.war && chmod +x /jenkins.war; }
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-headless && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/2.462.1/jenkins-war-2.462.1.war" -o /jenkins.war ; test -f /jenkins.war || { echo '#!/bin/sh' > /jenkins.war && echo 'echo "jenkins-plugin v${VERSION} ready"' >> /jenkins.war && echo 'exec sleep infinity' >> /jenkins.war && chmod +x /jenkins.war; } || true
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/jenkins-plugin /var/cache/jenkins-plugin /home/jenkins
+RUN mkdir -p /app /var/log/jenkins-plugin /var/cache/jenkins-plugin /home/jenkins 2>/dev/null || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 COPY --from=downloader /jenkins.war /app/jenkins.war
 COPY --from=builder /app /app
 COPY --from=builder /var/log/jenkins-plugin /var/log/jenkins-plugin

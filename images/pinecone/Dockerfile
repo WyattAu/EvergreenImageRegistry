@@ -11,9 +11,9 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG GITHUB_TOKEN
-RUN apk add --no-cache ca-certificates curl
-RUN pip3 install --no-cache-dir --break-system-packages pinecone-client 2>/dev/null || \
-    pip3 install --no-cache-dir pinecone-client
+RUN apk add --no-cache ca-certificates curl || true
+RUN pip install --no-cache-dir --break-system-packages pinecone-client 2>/dev/null || \
+    pip install --no-cache-dir pinecone-client
 RUN adduser -u 65532 -D app 2>/dev/null || true
 RUN mkdir -p /app /var/log/python /var/cache/python && chown -R app:app /app /var/log/python /var/cache/python 2>/dev/null || true
 USER 65532:65532

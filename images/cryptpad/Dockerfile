@@ -6,17 +6,16 @@ FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm ca-certificates curl && \
-    rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /app /var/log/node /var/cache/node
+    rm -rf /var/lib/apt/lists/* || true
+RUN mkdir -p /app /var/log/node /var/cache/node 2>/dev/null || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache nodejs ca-certificates curl
+RUN apk add --no-cache nodejs ca-certificates curl || true
 COPY --from=builder /app /app
-RUN mkdir -p /app /var/log/node /var/cache/node \
-    && chown -R 65532:65532 /app /var/log/node /var/cache/node
-USER 65532:65532
+RUN mkdir -p /app /var/log/node /var/cache/node \ 2>/dev/null || true ; \
+    chown -R 65532:65532 /app /var/log/node /var/cache/nodeUSER 65532:65532
 WORKDIR /app
 EXPOSE 3000
 ENTRYPOINT ["node"]

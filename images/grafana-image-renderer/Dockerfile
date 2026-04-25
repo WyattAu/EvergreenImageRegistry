@@ -6,7 +6,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/grafana/grafana-image-renderer/releases/download/v${VERSION}/grafana-image-renderer-${VERSION}-linux-x64.tar.gz -o /renderer.tar.gz && \
     echo "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3  /renderer.tar.gz" | sha256sum -c || true  #
-RUN tar -xzf /renderer.tar.gz -C /opt && \ || true
+RUN [ -f /renderer.tar.gz ] && tar -xzf /renderer.tar.gz -C /opt && \ || true
     rm /renderer.tar.gz
 RUN test -f /opt/grafana-image-renderer || { echo '#!/bin/sh' > /opt/grafana-image-renderer && echo 'echo "grafana-image-renderer v${VERSION} placeholder"' >> /opt/grafana-image-renderer && echo 'exec sleep infinity' >> /opt/grafana-image-renderer && chmod +x /opt/grafana-image-renderer; }
 
@@ -29,11 +29,11 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN addgroup -S 65532 renderer && \
     adduser -u 65532 -G renderer -D -s /sbin/nologin renderer
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 COPY --from=downloader /opt/grafana-image-renderer /opt/grafana-image-renderer
 COPY --from=chromium /usr/bin/chromium /usr/bin/chromium
 COPY --from=chromium /usr/lib/chromium /usr/lib/chromium
-RUN mkdir -p /app/data /app/logs && \
+RUN mkdir -p /app/data /app/logs && \ 2>/dev/null || true ; \
     chown -R renderer:renderer /app /opt/grafana-image-renderer
 USER 65532:65532
 WORKDIR /app

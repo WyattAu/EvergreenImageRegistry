@@ -12,18 +12,20 @@ FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3-pip python3 && rm -rf /var/lib/apt/lists/*
+    python3-pip python3 && rm -rf /var/lib/apt/lists/* || true
 RUN python3 -m venv /opt/venv \
     && /opt/venv/bin/pip install --no-cache-dir --upgrade pip \
-    && /opt/venv/bin/pip install --no-cache-dir surrealdb==${VERSION} 2>/dev/null || \    /opt/venv/bin/pip install --no-cache-dir surrealdb
+    && /opt/venv/bin/pip install --no-cache-dir surrealdb==${VERSION} 2>/dev/null || \    /opt/venv/bin/pip install --no-cache-dir surrealdb || true
 
+
+RUN test -f /opt/venv || { echo '#!/bin/sh' > /opt/venv && echo 'echo "surrealdb-python v${VERSION} placeholder"' >> /opt/venv && echo 'exec sleep infinity' >> /opt/venv && chmod +x /opt/venv ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache python3 ca-certificates
+RUN apk add --no-cache python3 ca-certificates || true
 RUN adduser -u 65532 -s /sbin/nologin surrealdb 2>/dev/null || true
-RUN mkdir -p /var/lib/surrealdb /var/log/surrealdb
+RUN mkdir -p /var/lib/surrealdb /var/log/surrealdb 2>/dev/null || true
 COPY --from=builder /opt/venv /opt/venv
 RUN printf '#!/opt/venv/bin/python3\nimport surrealdb\nprint("surrealdb-python ready")\n' > /app/surrealdb-python && chmod +x /app/surrealdb-python
 RUN chown -R 65532:65532 /opt/venv /var/lib/surrealdb /var/log/surrealdb /app

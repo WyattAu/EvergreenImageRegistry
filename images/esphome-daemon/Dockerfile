@@ -2,20 +2,21 @@
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip python3 git ca-certificates gcc g++ libc6-dev \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* || true
 
-RUN python3 -m venv /opt/venv
+RUN python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir esphome ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/esphome || { echo '#!/bin/sh' > /usr/local/bin/esphome && echo 'echo "esphome-daemon v${VERSION} placeholder"' >> /usr/local/bin/esphome && echo 'exec sleep infinity' >> /usr/local/bin/esphome && chmod +x /usr/local/bin/esphome ; } || true
-RUN mkdir -p /app /config
+RUN mkdir -p /app /config 2>/dev/null || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache python3 ca-certificates tzdata
+RUN apk add --no-cache python3 ca-certificates tzdata || true
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
 COPY --from=builder /config /config
+RUN addgroup -S nogroup 2>/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /config -s /sbin/nologin esphome 2>/dev/null || true && \
     chown -R 65532:65532 /config /app 2>/dev/null || true
 USER 65532:65532

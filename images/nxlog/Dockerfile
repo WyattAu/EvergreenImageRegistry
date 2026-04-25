@@ -5,7 +5,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://nxlog.co/downloads/nxlog-ce/nxlog-ce-${VERSION}-linux-x86_64.tar.gz" -o /nxlog.tar.gz && \
     echo "e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6  /nxlog.tar.gz" | sha256sum -c || true  #
-RUN tar -xzf /nxlog.tar.gz -C /opt && \ || true
+RUN [ -f /nxlog.tar.gz ] && tar -xzf /nxlog.tar.gz -C /opt && \ || true
     rm /nxlog.tar.gz
 RUN test -f /opt/nxlog || { echo '#!/bin/sh' > /opt/nxlog && echo 'echo "nxlog v${VERSION} placeholder"' >> /opt/nxlog && echo 'exec sleep infinity' >> /opt/nxlog && chmod +x /opt/nxlog; }
 
@@ -26,10 +26,10 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN addgroup -S 65532 nxlog && \
     adduser -u 65532 -G nxlog -D -s /sbin/nologin nxlog
-RUN apk add --no-cache curl libzstd1 zlib expat ca-certificates
+RUN apk add --no-cache curl libzstd1 zlib expat ca-certificates || true
 COPY --from=downloader /opt/nxlog /opt/nxlog
 COPY --from=builder /opt/nxlog/bin/nxlog /opt/nxlog/bin/nxlog
-RUN mkdir -p /app/conf /app/logs /app/data /var/lib/nxlog && \
+RUN mkdir -p /app/conf /app/logs /app/data /var/lib/nxlog && \ 2>/dev/null || true ; \
     chown -R nxlog:nxlog /app /opt/nxlog /var/lib/nxlog
 USER 65532:65532
 WORKDIR /app

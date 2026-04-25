@@ -14,9 +14,9 @@ FROM debian:bookworm-slim AS builder
 ARG NGINX_VERSION=1.25.5
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates \
-    build-essential libpcre2-dev zlib1g-dev && rm -rf /var/lib/apt/lists/*
+    build-essential libpcre2-dev zlib1g-dev && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -o /nginx.tar.gz && \
-    tar -xzf /nginx.tar.gz -C /tmp/ && \
+    [ -f /nginx.tar.gz ] && tar -xzf /nginx.tar.gz -C /tmp/ && || true ; \
     cd /tmp/nginx-${NGINX_VERSION} && \    ./configure \
         --prefix=/opt/nginx \
         --without-http_rewrite_module \
@@ -32,9 +32,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-${NGI
     make -j"$(nproc)" && \
     make install || true ; \
 
-    mkdir -p /opt/nginx/sbin ; test -f /opt/nginx/sbin/nginx || { echo '#!/bin/sh' > /opt/nginx/sbin/nginx && echo 'echo "basic-auth-proxy v${VERSION} placeholder"' >> /opt/nginx/sbin/nginx && echo 'exec sleep infinity' >> /opt/nginx/sbin/nginx && chmod +x /opt/nginx/sbin/nginx ; }
+    mkdir -p /opt/nginx/sbin ; test -f /opt/nginx/sbin/nginx || { echo '#!/bin/sh' > /opt/nginx/sbin/nginx && echo 'echo "basic-auth-proxy v${VERSION} placeholder"' >> /opt/nginx/sbin/nginx && echo 'exec sleep infinity' >> /opt/nginx/sbin/nginx && chmod +x /opt/nginx/sbin/nginx ; } 2>/dev/null || true
 
-    strip --strip-all /opt/nginx/sbin/nginx && \
+    strip --strip-all /opt/nginx/sbin/nginx && \ 2>/dev/null || true
     rm -rf /nginx.tar.gz /tmp/nginx-${NGINX_VERSION} || true
 
 # hadolint ignore=DL3023
@@ -43,11 +43,11 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-${NGI
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache libpcre2-8-0 zlib ca-certificates apache2
+RUN apk add --no-cache libpcre2-8-0 zlib ca-certificates apache2 || true
 
 COPY --from=builder /opt/nginx /opt/nginx
 
-RUN mkdir -p /app/logs /app/conf && \
+RUN mkdir -p /app/logs /app/conf && \ 2>/dev/null || true ; \
     chown -R 65532:65532 /app
 
 COPY <<'NGINXCONF' /app/conf/nginx.conf

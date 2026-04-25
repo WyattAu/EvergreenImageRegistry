@@ -9,7 +9,7 @@ ARG BUILD_DATE
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 # NOTE: redis server not available in wolfi; uses pre-compiled binary
 # redis-vert (Redis Stack with RediSearch) must be downloaded from Redis Inc.
 # COPY --from=builder /usr/local/bin/redis-stack-server /usr/local/bin/redis-stack-server

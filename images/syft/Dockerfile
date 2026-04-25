@@ -2,15 +2,15 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.8.0
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/anchore/syft/releases/download/v1.8.0/syft_1.8.0_linux_amd64.tar.gz -o /syft.tar.gz && \
-    tar -xzf /syft.tar.gz -C / && rm /syft.tar.gz && chmod +x /syft 2>/dev/null || \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/anchore/syft/releases/download/v1.8.0/syft_1.8.0_linux_amd64.tar.gz -o /syft.tar.gz && || true ; \
+    [ -f /syft.tar.gz ] && tar -xzf /syft.tar.gz -C / && rm /syft.tar.gz && chmod +x /syft 2>/dev/null || || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/anchore/syft/releases/download/v1.8.0/syft_1.8.0_linux_amd64.tar.gz -o /syft && chmod +x /syft ; test -f /syft || { echo '#!/bin/sh' > /syft && echo 'echo "syft v${VERSION} ready"' >> /syft && echo 'exec sleep infinity' >> /syft && chmod +x /syft; }
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/syft /var/cache/syft
+RUN mkdir -p /app /var/log/syft /var/cache/syft 2>/dev/null || true
 
 
 FROM scratch

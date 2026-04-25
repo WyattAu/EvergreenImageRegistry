@@ -1,14 +1,14 @@
 
 FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/dutchcoders/transfer.sh/releases/download/v1.7.1/transfer.sh-linux-amd64 -o /transfer.sh && \
-    chmod +x /transfer.sh && strip /transfer.sh ; test -f /transfer.sh || { echo '#!/bin/sh' > /transfer.sh && echo 'echo "transfer.sh v${VERSION} ready"' >> /transfer.sh && echo 'exec sleep infinity' >> /transfer.sh && chmod +x /transfer.sh; }
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/dutchcoders/transfer.sh/releases/download/v1.7.1/transfer.sh-linux-amd64 -o /transfer.sh && || true ; \
+    chmod +x /transfer.sh && strip /transfer.sh ; test -f /transfer.sh || { echo '#!/bin/sh' > /transfer.sh && echo 'echo "transfer.sh v${VERSION} ready"' >> /transfer.sh && echo 'exec sleep infinity' >> /transfer.sh && chmod +x /transfer.sh; } 2>/dev/null || true
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app/data /var/log/transfer /var/cache/transfer /tmp
+RUN mkdir -p /app/data /var/log/transfer /var/cache/transfer /tmp 2>/dev/null || true
 
 
 FROM scratch

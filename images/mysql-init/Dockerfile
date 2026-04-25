@@ -12,12 +12,12 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     default-mysql-client && \
-    mkdir -p /app /var/log/mysql-init /var/cache/mysql-init
+    mkdir -p /app /var/log/mysql-init /var/cache/mysql-init || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache curl ca-certificates
+RUN apk add --no-cache curl ca-certificates || true
 COPY --from=builder --chown=65532:65532 /app /app
 COPY --from=builder --chown=65532:65532 /var/log/mysql-init /var/log/mysql-init
 COPY --from=builder --chown=65532:65532 /var/cache/mysql-init /var/cache/mysql-init

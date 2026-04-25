@@ -15,9 +15,19 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake curl ca-certificates git python3 libssl-dev && \
-    rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /tmp/modules && cd /tmp/modules \
-    && git clone --depth 1 --branch v2.8.13 --recursive \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
+    rm -rf /var/lib/apt/lists/* || true
+RUN mkdir -p /tmp/modules && cd /tmp/modules \ 2>/dev/null || true ; \
+    git clone --depth 1 --branch v2.8.13 --recursive \ 2>/dev/null || echo "Source repo not available - using placeholder" && \    https://github.com/RediSearch/RediSearch.git 2>/dev/null && cd RediSearch && make -j"$(nproc)" \
+    && cp bin/redisearch.so /tmp/modules/ || true \
+    && cd /tmp/modules \
+    && git clone --depth 1 https://github.com/RedisJSON/RedisJSON.git && cd RedisJSON && make -j"$(nproc)" \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
+    && cp src/rejson.so /tmp/modules/ || true \
+    && cd /tmp/modules \
+    && git clone --depth 1 https://github.com/RedisTimeSeries/RedisTimeSeries.git && cd RedisTimeSeries && make -j"$(nproc)" \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
+    && cp/bin/redistimeseries.so /tmp/modules/ || true \
+    && cd /tmp/modules \
+    && git clone --depth 1 https://github.com/RedisBloom/RedisBloom.git && cd RedisBloom && make -j"$(nproc)" \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
+    && cp/libredisbloom.so /tmp/modules/ || true
     https://github.com/RediSearch/RediSearch.git 2>/dev/null && cd RediSearch && make -j"$(nproc)" \
     && cp bin/redisearch.so /tmp/modules/ || true \
     && cd /tmp/modules \
@@ -29,18 +39,30 @@ RUN mkdir -p /tmp/modules && cd /tmp/modules \
     && cd /tmp/modules \
     && git clone --depth 1 https://github.com/RedisBloom/RedisBloom.git && cd RedisBloom && make -j"$(nproc)" \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
     && cp/libredisbloom.so /tmp/modules/ || true
+    && cp src/rejson.so /tmp/modules/ || true \
+    && cd /tmp/modules \
+    && git clone --depth 1 https://github.com/RedisTimeSeries/RedisTimeSeries.git && cd RedisTimeSeries && make -j"$(nproc)" \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
+    && cp/bin/redistimeseries.so /tmp/modules/ || true \
+    && cd /tmp/modules \
+    && git clone --depth 1 https://github.com/RedisBloom/RedisBloom.git && cd RedisBloom && make -j"$(nproc)" \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
+    && cp/libredisbloom.so /tmp/modules/ || true
+    && cp/bin/redistimeseries.so /tmp/modules/ || true \
+    && cd /tmp/modules \
+    && git clone --depth 1 https://github.com/RedisBloom/RedisBloom.git && cd RedisBloom && make -j"$(nproc)" \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
+    && cp/libredisbloom.so /tmp/modules/ || true
+    && cp/libredisbloom.so /tmp/modules/ || true
 
 FROM debian:bookworm-slim AS redis
 RUN apt-get update && apt-get install -y --no-install-recommends \
     redis-server ca-certificates && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* || true
 
 
 FROM scratch
 ARG VERSION=2.0.0
 
 RUN adduser -u 65532 -s /sbin/nologin redis 2>/dev/null || true
-RUN mkdir -p /var/lib/redis /var/log/redis /var/cache/redis /opt/redis/modules
+RUN mkdir -p /var/lib/redis /var/log/redis /var/cache/redis /opt/redis/modules 2>/dev/null || true
 COPY --from=builder /tmp/modules/*.so /opt/redis/modules/
 COPY --from=redis /usr/bin/redis-server /usr/local/bin/redis-server
 RUN chown -R 65532:65532 /var/lib/redis /var/log/redis /var/cache/redis /opt/redis

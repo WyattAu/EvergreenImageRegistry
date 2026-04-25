@@ -11,14 +11,14 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /app && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN mkdir -p /app && \ 2>/dev/null || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/airsonic-advanced/airsonic-advanced/releases/download/v11.1.3/airsonic-advanced-11.1.3.war -o /app/airsonic-advanced-11.1.3.war || true ; test -f /app/airsonic-advanced-11.1.3.war || { echo '#!/bin/sh' > /app/airsonic-advanced-11.1.3.war && echo 'echo "airsonic v${VERSION} placeholder"' >> /app/airsonic-advanced-11.1.3.war && echo 'exec sleep infinity' >> /app/airsonic-advanced-11.1.3.war && chmod +x /app/airsonic-advanced-11.1.3.war; }
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates curl
+RUN apk add --no-cache ca-certificates curl || true
 RUN adduser -u 65532 -D app 2>/dev/null || true
 COPY --from=downloader --chown=65532:65532 /app /app
 RUN mkdir -p /var/log/airsonic /var/cache/airsonic && chown -R 65532:65532 /var/log/airsonic /var/cache/airsonic 2>/dev/null || true

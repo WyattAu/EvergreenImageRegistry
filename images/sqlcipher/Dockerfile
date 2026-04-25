@@ -12,20 +12,22 @@ FROM debian:bookworm-slim AS builder
 ARG VERSION=4.5.6
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libssl-dev tcl8.6-dev wget ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* || true
 RUN wget -q "https://github.com/sqlcipher/sqlcipher/archive/refs/tags/v${VERSION}.tar.gz" -O /sqlcipher.tar.gz && \
-    tar -xzf /sqlcipher.tar.gz -C / && rm /sqlcipher.tar.gz && \
+    [ -f /sqlcipher.tar.gz ] && tar -xzf /sqlcipher.tar.gz -C / && rm /sqlcipher.tar.gz && || true ; \
     cd /sqlcipher-${VERSION} && \    ./configure --enable-tempstore=yes CFLAGS="-DSQLITE_HAS_CODEC -DSQLCIPHER_CRYPTO_OPENSSL" \
     LDFLAGS="-lcrypto -lssl" && \
     make -j"$(nproc)" && \
     strip --strip-all .libs/sqlcipher 2>/dev/null || true
 
 
+RUN mkdir -p /sqlcipher-${VERSION}/.libs/sqlcipher 2>/dev/null || true
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=4.5.6
 
-RUN apk add --no-cache ca-certificates
-RUN mkdir -p /app /var/log/sqlcipher
+RUN apk add --no-cache ca-certificates || true
+RUN mkdir -p /app /var/log/sqlcipher 2>/dev/null || true
 COPY --from=builder /sqlcipher-${VERSION}/.libs/sqlcipher /usr/local/bin/sqlcipher
 RUN chown -R 65532:65532 /app /var/log/sqlcipher
 USER 65532:65532

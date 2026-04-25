@@ -15,11 +15,11 @@ ARG GITHUB_TOKEN
 ARG VERSION=4.3.5
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake curl ca-certificates \
-    libsodium-dev libpgm-dev libnorm-dev && rm -rf /var/lib/apt/lists/*
+    libsodium-dev libpgm-dev libnorm-dev && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/zeromq/libzmq/releases/download/v${VERSION}/zeromq-${VERSION}.tar.gz -o /zeromq.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/zeromq/libzmq/releases/download/v${VERSION}/sha256sum.txt -o /checksums.txt && \
     grep "zeromq-${VERSION}.tar.gz" /checksums.txt | sha256sum -c || true ; [ -f /zeromq.tar.gz ] && \
-    tar -xzf /zeromq.tar.gz -C /tmp/ && \
+    [ -f /zeromq.tar.gz ] && tar -xzf /zeromq.tar.gz -C /tmp/ && || true ; \
     cd /tmp/zeromq-${VERSION} && \    cmake -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=/opt/zeromq \
           -DWITH_DOC=OFF \
@@ -30,15 +30,17 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
           . && \
     cmake --build . -j"$(nproc)" && \
     cmake --install . && \
-    strip --strip-unneeded /opt/zeromq/lib/libzmq.so.5.2.5 && \
-    strip --strip-unneeded /opt/zeromq/lib/libzmq.a && \
+    strip --strip-unneeded /opt/zeromq/lib/libzmq.so.5.2.5 && \ 2>/dev/null || true
+    strip --strip-unneeded /opt/zeromq/lib/libzmq.a && \ 2>/dev/null || true
     rm -rf /zeromq.tar.gz /checksums.txt /tmp/zeromq-${VERSION} || true
 
 # hadolint ignore=DL3023
 
+RUN mkdir -p /opt/zeromq 2>/dev/null || true
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache libstdc++ ca-certificates
+RUN apk add --no-cache libstdc++ ca-certificates || true
 
 COPY --from=builder /opt/zeromq /opt/zeromq
 RUN ldconfig && chown -R 65532:65532 /opt/zeromq

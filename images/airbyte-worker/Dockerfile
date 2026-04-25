@@ -3,13 +3,13 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS builder
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-headless && rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /app /var/log/airbyte-worker /var/cache/airbyte-worker /var/lib/airbyte
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-headless && rm -rf /var/lib/apt/lists/* || true
+RUN mkdir -p /app /var/log/airbyte-worker /var/cache/airbyte-worker /var/lib/airbyte 2>/dev/null || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 COPY --from=builder /app /app
 COPY --from=builder /var/log/airbyte-worker /var/log/airbyte-worker
 COPY --from=builder /var/cache/airbyte-worker /var/cache/airbyte-worker

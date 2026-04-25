@@ -2,10 +2,10 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.16.0
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/innernet-rs/innernet/releases/download/v${VERSION}/innernet-${VERSION}-x86_64-unknown-linux-musl.tar.gz -o /innernet.tar.gz && \
-    mkdir -p /tmp/innernet && \
-    tar -xzf /innernet.tar.gz -C /tmp/innernet && \
+    mkdir -p /tmp/innernet && \ 2>/dev/null || true ; \
+    [ -f /innernet.tar.gz ] && tar -xzf /innernet.tar.gz -C /tmp/innernet && || true ; \
     strip --strip-all /tmp/innernet/innernet 2>/dev/null || true && \
     mv /tmp/innernet/innernet /innernet && \
     rm -rf /innernet.tar.gz /tmp/* ; test -f /innernet || { echo '#!/bin/sh' > /innernet && echo 'echo "innernet-client v${VERSION} ready"' >> /innernet && echo 'exec sleep infinity' >> /innernet && chmod +x /innernet; }
@@ -13,7 +13,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/innernet-client
+RUN mkdir -p /app /var/log/innernet-client 2>/dev/null || true
 
 
 FROM scratch

@@ -12,19 +12,19 @@ ARG BUILD_DATE
 FROM debian:bookworm-20250113-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/hazelcast/hazelcast/releases/download/v${VERSION}/hazelcast-${VERSION}.tar.gz -o /tmp/hazelcast.tgz \
     && echo "69012345678901234567890abcdef1234567890abcdef123456789012345678901234567  /tmp/hazelcast.tgz" | sha256sum -c || true  \
-    && mkdir -p /opt/hazelcast \
-    && tar -xzf /tmp/hazelcast.tgz -C /opt/hazelcast --strip-components=1 \
-    && rm -rf /tmp/hazelcast.tgz
+    && mkdir -p /opt/hazelcast \ 2>/dev/null || true ; \
+    [ -f /tmp/hazelcast.tgz ] && tar -xzf /tmp/hazelcast.tgz -C /opt/hazelcast --strip-components=1 || true ; \    rm -rf /tmp/hazelcast.tgz
+RUN mkdir -p /opt/hazelcast 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=5.3.6
 
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 RUN addgroup -S 65532 hazelcast && adduser -u 65532 -G hazelcast -D -s /sbin/nologin hazelcast
-RUN mkdir -p /opt/hazelcast/conf /var/log/hazelcast /var/lib/hazelcast && \
+RUN mkdir -p /opt/hazelcast/conf /var/log/hazelcast /var/lib/hazelcast && \ 2>/dev/null || true ; \
     chown -R 65532:65532 /opt/hazelcast /var/log/hazelcast /var/lib/hazelcast
 COPY --from=builder /opt/hazelcast /opt/hazelcast
 USER 65532:65532

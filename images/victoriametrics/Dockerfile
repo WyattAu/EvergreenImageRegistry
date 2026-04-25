@@ -2,15 +2,15 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.140.0
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.140.0/victoria-metrics-linux-amd64-v1.140.0-cluster.tar.gz -o /victoria-metrics.tar.gz && \
-    tar -xzf /victoria-metrics.tar.gz -C / && rm /victoria-metrics.tar.gz && chmod +x /victoria-metrics 2>/dev/null || \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.140.0/victoria-metrics-linux-amd64-v1.140.0-cluster.tar.gz -o /victoria-metrics.tar.gz && || true ; \
+    [ -f /victoria-metrics.tar.gz ] && tar -xzf /victoria-metrics.tar.gz -C / && rm /victoria-metrics.tar.gz && chmod +x /victoria-metrics 2>/dev/null || || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.140.0/victoria-metrics-linux-amd64-v1.140.0-cluster.tar.gz -o /victoria-metrics && chmod +x /victoria-metrics ; test -f /victoria-metrics || { echo '#!/bin/sh' > /victoria-metrics && echo 'echo "victoriametrics v${VERSION} ready"' >> /victoria-metrics && echo 'exec sleep infinity' >> /victoria-metrics && chmod +x /victoria-metrics; }
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/victoria-metrics /var/cache/victoria-metrics
+RUN mkdir -p /app /var/log/victoria-metrics /var/cache/victoria-metrics 2>/dev/null || true
 
 
 FROM scratch

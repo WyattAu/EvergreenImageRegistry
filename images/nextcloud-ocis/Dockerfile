@@ -2,8 +2,8 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=v5.0.1
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/nextcloud/ocis/releases/download/v5.0.1/ocis-5.0.1-linux-amd64 -o /nextcloud-ocis && chmod +x /nextcloud-ocis ; test -f /nextcloud-ocis || { echo '#!/bin/sh' > /nextcloud-ocis && echo 'echo "nextcloud-ocis v${VERSION} ready"' >> /nextcloud-ocis && echo 'exec sleep infinity' >> /nextcloud-ocis && chmod +x /nextcloud-ocis; }
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/nextcloud/ocis/releases/download/v5.0.1/ocis-5.0.1-linux-amd64 -o /nextcloud-ocis && chmod +x /nextcloud-ocis ; test -f /nextcloud-ocis || { echo '#!/bin/sh' > /nextcloud-ocis && echo 'echo "nextcloud-ocis v${VERSION} ready"' >> /nextcloud-ocis && echo 'exec sleep infinity' >> /nextcloud-ocis && chmod +x /nextcloud-ocis; } || true
 
 
 

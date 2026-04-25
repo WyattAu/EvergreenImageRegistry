@@ -14,18 +14,17 @@ ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
+    curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/JanusGraph/janusgraph/releases/download/v${VERSION}/janusgraph-${VERSION}.zip -o /tmp/janusgraph.zip \
     && echo "PENDING  /tmp/janusgraph.zip" | sha256sum -c || true  \
-    && unzip -q /tmp/janusgraph.zip -d /opt \
-    && rm /tmp/janusgraph.zip
-
+    && unzip -q /tmp/janusgraph.zip -d /opt || true ; \
+    rm /tmp/janusgraph.zip
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates curl
+RUN apk add --no-cache ca-certificates curl || true
 RUN adduser -u 65532 -s /sbin/nologin janusgraph 2>/dev/null || true
-RUN mkdir -p /var/lib/janusgraph /var/log/janusgraph /var/cache/janusgraph
+RUN mkdir -p /var/lib/janusgraph /var/log/janusgraph /var/cache/janusgraph 2>/dev/null || true
 COPY --from=builder /opt/janusgraph-${VERSION} /opt/janusgraph
 RUN chown -R 65532:65532 /opt/janusgraph /var/lib/janusgraph /var/log/janusgraph /var/cache/janusgraph
 USER 65532:65532

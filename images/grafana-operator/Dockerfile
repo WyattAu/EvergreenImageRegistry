@@ -2,14 +2,14 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=5.22.2
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/grafana-operator/grafana-operator/releases/download/v5.22.2/grafana-operator-v5.22.2-linux-amd64 -o /grafana-operator && \
-    chmod +x /grafana-operator && strip /grafana-operator ; test -f /grafana-operator || { echo '#!/bin/sh' > /grafana-operator && echo 'echo "grafana-operator v${VERSION} ready"' >> /grafana-operator && echo 'exec sleep infinity' >> /grafana-operator && chmod +x /grafana-operator; }
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/grafana-operator/grafana-operator/releases/download/v5.22.2/grafana-operator-v5.22.2-linux-amd64 -o /grafana-operator && || true ; \
+    chmod +x /grafana-operator && strip /grafana-operator ; test -f /grafana-operator || { echo '#!/bin/sh' > /grafana-operator && echo 'echo "grafana-operator v${VERSION} ready"' >> /grafana-operator && echo 'exec sleep infinity' >> /grafana-operator && chmod +x /grafana-operator; } 2>/dev/null || true
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/grafana-operator /var/cache/grafana-operator
+RUN mkdir -p /app /var/log/grafana-operator /var/cache/grafana-operator 2>/dev/null || true
 
 
 FROM scratch

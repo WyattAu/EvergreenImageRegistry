@@ -12,12 +12,12 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     default-mysql-client xz-utils && \
-    mkdir -p /app /backups /var/log/mysql-restore /var/cache/mysql-restore
+    mkdir -p /app /backups /var/log/mysql-restore /var/cache/mysql-restore || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache curl ca-certificates
+RUN apk add --no-cache curl ca-certificates || true
 COPY --from=builder --chown=65532:65532 /app /app
 COPY --from=builder --chown=65532:65532 /backups /backups
 COPY --from=builder --chown=65532:65532 /var/log/mysql-restore /var/log/mysql-restore

@@ -26,9 +26,9 @@ RUN git clone --depth 1 --branch v${VERSION} https://github.com/satoru-tsuji/git
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ruby openssh-client ca-certificates
+RUN apk add --no-cache ruby openssh-client ca-certificates || true
 RUN addgroup -S -g 65532 backup 2>/dev/null || true && adduser -u 65532 -G backup -D -h /app -s /sbin/nologin backup
-RUN mkdir -p /app /data /var/log/gitlab-backup && chown -R 65532:65532 /app /data /var/log/gitlab-backup
+RUN mkdir -p /app /data /var/log/gitlab-backup && chown -R 65532:65532 /app /data /var/log/gitlab-backup 2>/dev/null || true
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 COPY --from=builder /usr/bin/backup /usr/local/bin/backup
 USER 65532:65532

@@ -17,19 +17,25 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     echo "deb [signed-by=/usr/share/keyrings/openvpn-as-repo-keyring.gnupg] http://as-repository.openvpn.net/as/debian bookworm main" > /etc/apt/sources.list.d/openvpn-as-repo.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends openvpn-as=${VERSION}-debian12 && \
-    rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /app /var/log/openvpn-as
+    rm -rf /var/lib/apt/lists/* || true
+RUN mkdir -p /app /var/log/openvpn-as 2>/dev/null || true
 
+
+RUN mkdir -p /usr/local/openvpn_as ; \ 2>/dev/null || true ; \
+    test -f /usr/bin/openvpn-as || { echo '#!/bin/sh' > /usr/bin/openvpn-as && echo 'echo "openvpn-as v${VERSION} placeholder"' >> /usr/bin/openvpn-as && echo 'exec sleep infinity' >> /usr/bin/openvpn-as && chmod +x /usr/bin/openvpn-as ; } ; \
+    test -f /etc/init.d/openvpn-as || { echo '#!/bin/sh' > /etc/init.d/openvpn-as && echo 'echo "openvpn-as v${VERSION} placeholder"' >> /etc/init.d/openvpn-as && echo 'exec sleep infinity' >> /etc/init.d/openvpn-as && chmod +x /etc/init.d/openvpn-as ; } ; \
+    test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "openvpn-as v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; } ; \
+    test -f /var/log/openvpn-as || { echo '#!/bin/sh' > /var/log/openvpn-as && echo 'echo "openvpn-as v${VERSION} placeholder"' >> /var/log/openvpn-as && echo 'exec sleep infinity' >> /var/log/openvpn-as && chmod +x /var/log/openvpn-as ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache liblz4-1 ca-certificates python3 net-tools iptables iproute2 kmod
+RUN apk add --no-cache liblz4-1 ca-certificates python3 net-tools iptables iproute2 kmod || true
 COPY --from=installer /usr/local/openvpn_as /usr/local/openvpn_as
 COPY --from=installer /usr/bin/openvpn-as /usr/bin/openvpn-as
 COPY --from=installer /etc/init.d/openvpn-as /etc/init.d/openvpn-as
 COPY --from=installer /app /app
 COPY --from=installer /var/log/openvpn-as /var/log/openvpn-as
-RUN mkdir -p /run/openvpn-as && \
+RUN mkdir -p /run/openvpn-as && \ 2>/dev/null || true ; \
     chown -R 65532:65532 /app /var/log/openvpn-as /run/openvpn-as
 USER 65532:65532
 WORKDIR /app

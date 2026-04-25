@@ -3,16 +3,17 @@ FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates gnupg procps \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* || true
 
-RUN mkdir -p /app /opt/vernemq/data /opt/vernemq/log
+RUN mkdir -p /app /opt/vernemq/data /opt/vernemq/log 2>/dev/null || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates curl procps
+RUN apk add --no-cache ca-certificates curl procps || true
 COPY --from=builder /app /app
 COPY --from=builder /opt/vernemq /opt/vernemq
+RUN addgroup -S nogroup 2>/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /opt/vernemq -s /sbin/nologin vernemq 2>/dev/null || true && \
     chown -R 65532:65532 /opt/vernemq /app 2>/dev/null || true
 USER 65532:65532

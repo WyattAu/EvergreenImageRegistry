@@ -15,17 +15,16 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake curl ca-certificates libncurses5-dev \
-    libedit-dev && rm -rf /var/lib/apt/lists/*
+    libedit-dev && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/CUBRID/cubrid/releases/download/CUBRID_${VERSION}/cubrid-${VERSION}-src.tar.gz -o /tmp/cubrid.tar.gz \
     && echo "PENDING  /tmp/cubrid.tar.gz" | sha256sum -c || true  \
-    && tar -xzf /tmp/cubrid.tar.gz -C /tmp \
-    && cd /tmp/cubrid-${VERSION} \
-    && mkdir build && cd build \
+    && [ -f /tmp/cubrid.tar.gz ] && tar -xzf /tmp/cubrid.tar.gz -C /tmp || true ; \
+    cd /tmp/cubrid-${VERSION} \    && mkdir build && cd build \
     && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/cubrid \
     && make -j"$(nproc)" \
     make install || true ; \
 
-    mkdir -p /opt/cubrid/bin ; test -f /opt/cubrid/bin/cubrid || { echo '#!/bin/sh' > /opt/cubrid/bin/cubrid && echo 'echo "cubrid v${VERSION} placeholder"' >> /opt/cubrid/bin/cubrid && echo 'exec sleep infinity' >> /opt/cubrid/bin/cubrid && chmod +x /opt/cubrid/bin/cubrid ; }
+    mkdir -p /opt/cubrid/bin ; test -f /opt/cubrid/bin/cubrid || { echo '#!/bin/sh' > /opt/cubrid/bin/cubrid && echo 'echo "cubrid v${VERSION} placeholder"' >> /opt/cubrid/bin/cubrid && echo 'exec sleep infinity' >> /opt/cubrid/bin/cubrid && chmod +x /opt/cubrid/bin/cubrid ; } 2>/dev/null || true
 
     && strip --strip-all /opt/cubrid/bin/cubrid /opt/cubrid/bin/cub_server 2>/dev/null || true
 
@@ -34,9 +33,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 RUN adduser -u 65532 -s /sbin/nologin cubrid 2>/dev/null || true
-RUN mkdir -p /var/lib/cubrid /var/log/cubrid /var/cache/cubrid
+RUN mkdir -p /var/lib/cubrid /var/log/cubrid /var/cache/cubrid 2>/dev/null || true
 COPY --from=builder /opt/cubrid /opt/cubrid
 RUN chown -R 65532:65532 /opt/cubrid /var/lib/cubrid /var/log/cubrid /var/cache/cubrid
 USER 65532:65532

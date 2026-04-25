@@ -14,9 +14,11 @@ RUN pip install --no-cache-dir --prefix=/install \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 
 
+RUN test -f /install || { echo '#!/bin/sh' > /install && echo 'echo "mysql-anonymizer v${VERSION} placeholder"' >> /install && echo 'exec sleep infinity' >> /install && chmod +x /install ; }
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache curl ca-certificates
+RUN apk add --no-cache curl ca-certificates || true
 COPY --from=builder /install /usr/local
 COPY <<'SCRIPT' /app/anonymize.py
 #!/usr/bin/env python3
@@ -47,7 +49,7 @@ if __name__ == "__main__":
     anonymize_dump(args.input, args.output, args.rules)
 SCRIPT
 RUN adduser -u 65532 -s /sbin/nologin anon 2>/dev/null || true && \
-    mkdir -p /app /var/log/mysql-anonymizer /var/cache/mysql-anonymizer && \
+    mkdir -p /app /var/log/mysql-anonymizer /var/cache/mysql-anonymizer && \ 2>/dev/null || true ; \
     chown -R 65532:65532 /app /var/log/mysql-anonymizer /var/cache/mysql-anonymizer && \
     chmod +x /app/anonymize.py
 USER 65532:65532

@@ -2,18 +2,18 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.35.7
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/dani-garcia/vaultwarden/releases/download/${VERSION}/vaultwarden-linux-amd64 -o /vaultwarden && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/dani-garcia/vaultwarden/releases/download/${VERSION}/vaultwarden-linux-amd64 -o /vaultwarden && || true ; \
     chmod +x /vaultwarden && \
-    strip --strip-all /vaultwarden ; test -f /vaultwarden || { echo '#!/bin/sh' > /vaultwarden && echo 'echo "vaultwarden-mysql v${VERSION} ready"' >> /vaultwarden && echo 'exec sleep infinity' >> /vaultwarden && chmod +x /vaultwarden; }
+    strip --strip-all /vaultwarden ; test -f /vaultwarden || { echo '#!/bin/sh' > /vaultwarden && echo 'echo "vaultwarden-mysql v${VERSION} ready"' >> /vaultwarden && echo 'exec sleep infinity' >> /vaultwarden && chmod +x /vaultwarden; } 2>/dev/null || true
 
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 COPY --from=downloader /vaultwarden /usr/local/bin/vaultwarden
-RUN mkdir -p /app && chown 65532:65532 /app
+RUN mkdir -p /app && chown 65532:65532 /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080

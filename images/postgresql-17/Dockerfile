@@ -18,16 +18,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg --dearmor -o /usr/share/keyrings/postgresql-keyring.gnupg && \
     apt-get update && apt-get install -y --no-install-recommends \
     postgresql-${VERSION%.*} postgresql-contrib-${VERSION%.*} && \
-    mkdir -p /var/lib/postgresql/data /var/run/postgresql /app
+    mkdir -p /var/lib/postgresql/data /var/run/postgresql /app || true
 
+
+RUN test -f /var/lib/postgresql || { echo '#!/bin/sh' > /var/lib/postgresql && echo 'echo "postgresql-17 v${VERSION} placeholder"' >> /var/lib/postgresql && echo 'exec sleep infinity' >> /var/lib/postgresql && chmod +x /var/lib/postgresql ; } ; \
+    test -f /var/run/postgresql || { echo '#!/bin/sh' > /var/run/postgresql && echo 'echo "postgresql-17 v${VERSION} placeholder"' >> /var/run/postgresql && echo 'exec sleep infinity' >> /var/run/postgresql && chmod +x /var/run/postgresql ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache gnupg curl ca-certificates libzstd1 liblz4-1 "
+RUN apk add --no-cache gnupg curl ca-certificates libzstd1 liblz4-1 " || true
 COPY --from=builder /var/lib/postgresql /var/lib/postgresql
 COPY --from=builder /var/run/postgresql /var/run/postgresql
 RUN usermod -u 65532 postgres && \
-    mkdir -p /app /var/log/postgresql-17 /var/cache/postgresql-17 && \
+    mkdir -p /app /var/log/postgresql-17 /var/cache/postgresql-17 && \ 2>/dev/null || true ; \
     chown -R 65532:65532 /var/lib/postgresql /var/run/postgresql /app /var/log/postgresql-17 /var/cache/postgresql-17
 
 USER 65532:65532

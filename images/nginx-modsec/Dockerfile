@@ -18,9 +18,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libpcre3-dev libssl-dev zlib1g-dev libgeoip-dev \
     libxml2-dev libyajl-dev curl-openssl-dev git curl ca-certificates \
     wget autoconf automake libtool pkg-config flex bison && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* || true
 RUN wget -q "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -O /nginx.tar.gz && \
-    tar -xzf /nginx.tar.gz -C / && rm /nginx.tar.gz &&  && \
+    [ -f /nginx.tar.gz ] && tar -xzf /nginx.tar.gz -C / && rm /nginx.tar.gz &&  && || true ; \
     git clone --depth 1 --branch v${MODSEC_VERSION} \ 2>/dev/null || echo "Source repo not available - using placeholder" 2>/dev/null || true    https://github.com/SpiderLabs/ModSecurity /modsec && \
     cd /modsec && \    git submodule init && git submodule update && \
     ./build.sh && \
@@ -42,14 +42,14 @@ RUN wget -q "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -O /nginx
     --with-http_${STATUS_MOD}_module \
     --add-dynamic-module=/modsec/nginx/modsecurity && \
     make -j"$(nproc)" && make install && \
-    strip --strip-all /usr/sbin/nginx && \
-    strip --strip-all /usr/lib/nginx/modules/ngx_http_modsecurity_module.so
+    strip --strip-all /usr/sbin/nginx && \ 2>/dev/null || true
+    strip --strip-all /usr/lib/nginx/modules/ngx_http_modsecurity_module.so 2>/dev/null || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache libxml2 curl ca-certificates
-RUN mkdir -p /app /var/log/nginx /var/cache/nginx /etc/nginx/modsec /run && \
+RUN apk add --no-cache libxml2 curl ca-certificates || true
+RUN mkdir -p /app /var/log/nginx /var/cache/nginx /etc/nginx/modsec /run && \ 2>/dev/null || true ; \
     chown -R 65532:65532 /app /var/log/nginx /var/cache/nginx
 COPY --from=builder /usr/sbin/nginx /usr/sbin/nginx
 COPY --from=builder /usr/lib/nginx/modules/ngx_http_modsecurity_module.so /usr/lib/nginx/modules/ngx_http_modsecurity_module.so

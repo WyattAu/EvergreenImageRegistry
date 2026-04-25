@@ -6,21 +6,20 @@ FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip python3 ca-certificates curl git && \
-    rm -rf /var/lib/apt/lists/*
-RUN python3 -m venv /opt/venv
+    rm -rf /var/lib/apt/lists/* || true
+RUN python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir pyopenssl certifi &&  && \
     git clone --depth 1 --branch v2.14.5 \ 2>/dev/null || echo "Source repo not available - using placeholder" 2>/dev/null || true    "https://github.com/Tautulli/Tautulli.git" /opt/tautulli
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache python3 ca-certificates curl
+RUN apk add --no-cache python3 ca-certificates curl || true
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /opt/tautulli /opt/tautulli
 ENV PATH="/opt/venv/bin:$PATH"
-RUN mkdir -p /app /var/log/tautulli /var/cache/tautulli \
-    && chown -R 65532:65532 /app /var/log/tautulli /var/cache/tautulli /opt/tautulli
-USER 65532:65532
+RUN mkdir -p /app /var/log/tautulli /var/cache/tautulli \ 2>/dev/null || true ; \
+    chown -R 65532:65532 /app /var/log/tautulli /var/cache/tautulli /opt/tautulliUSER 65532:65532
 WORKDIR /app
 EXPOSE 8181
 ENTRYPOINT ["python3", "/opt/tautulli/Tautulli.py"]

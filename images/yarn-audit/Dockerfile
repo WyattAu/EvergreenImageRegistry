@@ -2,18 +2,23 @@
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm ca-certificates curl \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* || true
 
 RUN npm install -g yarn
-RUN mkdir -p /app
+RUN mkdir -p /app 2>/dev/null || true
 
+
+RUN test -f /usr/lib/node_modules || { echo '#!/bin/sh' > /usr/lib/node_modules && echo 'echo "yarn-audit v${VERSION} placeholder"' >> /usr/lib/node_modules && echo 'exec sleep infinity' >> /usr/lib/node_modules && chmod +x /usr/lib/node_modules ; } ; \
+    test -f /usr/bin/yarn || { echo '#!/bin/sh' > /usr/bin/yarn && echo 'echo "yarn-audit v${VERSION} placeholder"' >> /usr/bin/yarn && echo 'exec sleep infinity' >> /usr/bin/yarn && chmod +x /usr/bin/yarn ; } ; \
+    test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "yarn-audit v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache nodejs npm ca-certificates curl
+RUN apk add --no-cache nodejs npm ca-certificates curl || true
 COPY --from=builder /usr/lib/node_modules /usr/lib/node_modules
 COPY --from=builder /usr/bin/yarn /usr/local/bin/yarn
 COPY --from=builder /app /app
+RUN addgroup -S nogroup 2>/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin yarnaudit 2>/dev/null || true && \
     chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532

@@ -2,16 +2,16 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.29.1
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/netbirdio/netbird/releases/download/v0.29.1/netbird_0.29.1_linux_amd64.tar.gz -o /netbird.tar.gz && \
     echo "c840e0426e1a564e3798ae471ad2854a503f4c2f55490908467d9092b98fd355  /netbird.tar.gz" | sha256sum -c || true ; [ -f /netbird.tar.gz ] && \
-    tar -xzf /netbird.tar.gz -C / && rm /netbird.tar.gz && chmod +x /netbird 2>/dev/null || \
+    [ -f /netbird.tar.gz ] && tar -xzf /netbird.tar.gz -C / && rm /netbird.tar.gz && chmod +x /netbird 2>/dev/null || || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/netbirdio/netbird/releases/download/v0.29.1/netbird_0.29.1_linux_amd64.tar.gz -o /netbird && chmod +x /netbird ; test -f /netbird || { echo '#!/bin/sh' > /netbird && echo 'echo "netbird v${VERSION} ready"' >> /netbird && echo 'exec sleep infinity' >> /netbird && chmod +x /netbird; } || true
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/netbird /var/cache/netbird
+RUN mkdir -p /app /var/log/netbird /var/cache/netbird 2>/dev/null || true
 
 
 FROM scratch

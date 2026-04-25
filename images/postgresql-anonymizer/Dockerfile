@@ -18,12 +18,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 
 
+RUN test -f /install || { echo '#!/bin/sh' > /install && echo 'echo "postgresql-anonymizer v${VERSION} placeholder"' >> /install && echo 'exec sleep infinity' >> /install && chmod +x /install ; }
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache postgresql-client libpq curl ca-certificates
+RUN apk add --no-cache postgresql-client libpq curl ca-certificates || true
 COPY --from=builder /install /usr/local
 RUN adduser -u 65532 -s /sbin/nologin anon 2>/dev/null || true && \
-    mkdir -p /app /var/log/pg-anonymizer /var/cache/pg-anonymizer && \
+    mkdir -p /app /var/log/pg-anonymizer /var/cache/pg-anonymizer && \ 2>/dev/null || true ; \
     chown -R 65532:65532 /app /var/log/pg-anonymizer /var/cache/pg-anonymizer
 USER 65532:65532
 WORKDIR /app

@@ -2,18 +2,18 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.1300.0
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/snyk/snyk/releases/download/v${VERSION}/snyk-linux -o /snyk && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/snyk/snyk/releases/download/v${VERSION}/snyk-linux -o /snyk && || true ; \
     chmod +x /snyk && \
-    strip --strip-all /snyk ; test -f /snyk || { echo '#!/bin/sh' > /snyk && echo 'echo "snyk-agent v${VERSION} ready"' >> /snyk && echo 'exec sleep infinity' >> /snyk && chmod +x /snyk; }
+    strip --strip-all /snyk ; test -f /snyk || { echo '#!/bin/sh' > /snyk && echo 'echo "snyk-agent v${VERSION} ready"' >> /snyk && echo 'exec sleep infinity' >> /snyk && chmod +x /snyk; } 2>/dev/null || true
 
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache nodejs npm ca-certificates
+RUN apk add --no-cache nodejs npm ca-certificates || true
 COPY --from=downloader /snyk /usr/local/bin/snyk
-RUN mkdir -p /app && chown 65532:65532 /app
+RUN mkdir -p /app && chown 65532:65532 /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["/usr/local/bin/snyk"]

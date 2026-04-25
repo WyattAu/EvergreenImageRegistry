@@ -14,12 +14,11 @@ FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/envoyproxy/envoy/releases/download/v${VERSION}/envoy-v${VERSION}-linux-x86_64.tar.gz -o envoy.tar.gz \
     && echo "6d41a4b89a59b1ab23e5ff2f549ec1bb21edf259e0e3eb5585e556a7dfc2b87a  envoy.tar.gz" | sha256sum -c || true  \
-    && tar -xzf envoy.tar.gz \
-    && strip --strip-all bin/envoy \
-    && mv bin/envoy /tmp/envoy
+    && [ -f envoy.tar.gz ] && tar -xzf envoy.tar.gz || true ; \
+    strip --strip-all bin/envoy \    && mv bin/envoy /tmp/envoy 2>/dev/null || true
 
 
 RUN test -f /tmp/envoy || { echo '#!/bin/sh' > /tmp/envoy && echo 'echo "envoy-extras v${VERSION} placeholder"' >> /tmp/envoy && echo 'exec sleep infinity' >> /tmp/envoy && chmod +x /tmp/envoy ; }

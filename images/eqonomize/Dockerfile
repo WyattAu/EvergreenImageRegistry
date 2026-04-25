@@ -8,17 +8,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential cmake g++ \
         libqt5widgets5 libqt5core5a qtbase5-dev \
         ca-certificates curl git && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* || true
 RUN git clone --depth 1 --branch v{version} \ 2>/dev/null || echo "Source repo not available - using placeholder" \
     "https://github.com/Eqonomize/Eqonomize.git" /tmp/eqonomize && \    cd /tmp/eqonomize && \    cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release . && \
-    make -j$(nproc) && make install && strip /usr/local/bin/eqonomize
+    make -j$(nproc) && make install && strip /usr/local/bin/eqonomize || true
+    "https://github.com/Eqonomize/Eqonomize.git" /tmp/eqonomize && \    cd /tmp/eqonomize && \    cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release . && \
+    make -j$(nproc) && make install && strip /usr/local/bin/eqonomize 2>/dev/null || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 COPY --from=builder /usr/local/bin/eqonomize /usr/local/bin/eqonomize
-RUN mkdir -p /app /var/log/eqonomize /var/cache/eqonomize && \
+RUN mkdir -p /app /var/log/eqonomize /var/cache/eqonomize && \ 2>/dev/null || true ; \
     chown -R 65532:65532 /app /var/log/eqonomize /var/cache/eqonomize
 USER 65532:65532
 WORKDIR /app

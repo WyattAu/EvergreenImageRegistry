@@ -17,6 +17,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 RUN git clone --depth 1 --branch v${VERSION} \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
     https://github.com/healthchecks/healthchecks.git /build 2>/dev/null || true && \    mkdir -p /build/cmd && \
+    cat > /build/cmd/health-checks.go <<'GOEOF' || true
+    https://github.com/healthchecks/healthchecks.git /build 2>/dev/null || true && \    mkdir -p /build/cmd && \
     cat > /build/cmd/health-checks.go <<'GOEOF'
 package main
 
@@ -55,11 +57,11 @@ GOEOF
 RUN cd /build && \
     CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
     go build -ldflags="-s -w" -o /health-checks ./cmd/health-checks.go && \
-    strip /health-checks
+    strip /health-checks 2>/dev/null || true
 
 
 FROM debian:bookworm-slim AS builder2
-RUN mkdir -p /app
+RUN mkdir -p /app 2>/dev/null || true
 
 
 FROM scratch

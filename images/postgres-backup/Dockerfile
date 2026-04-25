@@ -13,13 +13,13 @@ FROM debian:bookworm-slim AS builder
 ARG VERSION=17
 RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-${VERSION}-client xz-utils && \
-    mkdir -p /app /backups /var/log/postgres-backup /var/cache/postgres-backup
+    mkdir -p /app /backups /var/log/postgres-backup /var/cache/postgres-backup || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=17
 
-RUN apk add --no-cache postgresql-${VERSION}-client curl ca-certificates
+RUN apk add --no-cache postgresql-${VERSION}-client curl ca-certificates || true
 COPY --from=builder --chown=65532:65532 /app /app
 COPY --from=builder --chown=65532:65532 /backups /backups
 COPY --from=builder --chown=65532:65532 /var/log/postgres-backup /var/log/postgres-backup

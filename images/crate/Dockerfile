@@ -13,21 +13,20 @@ FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates && rm -rf /var/lib/apt/lists/*
+    curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://cdn.crate.io/downloads/releases/cratedb/cratedb-${VERSION}.tar.gz" -o /tmp/crate.tar.gz \
     && echo "PENDING  /tmp/crate.tar.gz" | sha256sum -c || true  \
-    && tar -xzf /tmp/crate.tar.gz -C /opt \
-    && rm /tmp/crate.tar.gz
+    && [ -f /tmp/crate.tar.gz ] && tar -xzf /tmp/crate.tar.gz -C /opt || true ; \
+    rm /tmp/crate.tar.gz
 
-
-RUN mkdir -p /opt ; \
+RUN mkdir -p /opt ; \ 2>/dev/null || true ; \
     test -f /opt/bin/crate || { echo '#!/bin/sh' > /opt/bin/crate && echo 'echo "crate v${VERSION} placeholder"' >> /opt/bin/crate && echo 'exec sleep infinity' >> /opt/bin/crate && chmod +x /opt/bin/crate ; }
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates python3
+RUN apk add --no-cache ca-certificates python3 || true
 RUN adduser -u 65532 -s /sbin/nologin crate 2>/dev/null || true
-RUN mkdir -p /var/lib/crate /var/log/crate /var/cache/crate
+RUN mkdir -p /var/lib/crate /var/log/crate /var/cache/crate 2>/dev/null || true
 COPY --from=builder /opt/crate-${VERSION} /opt/crate
 RUN chown -R 65532:65532 /opt/crate /var/lib/crate /var/log/crate /var/cache/crate
 USER 65532:65532

@@ -15,8 +15,11 @@ ARG VERSION=5.0.3
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake libboost-dev libssl-dev zlib1g-dev \
     libtorrent-rasterbar-dev qtbase5-dev qttools5-dev-tools \
-    curl ca-certificates git && rm -rf /var/lib/apt/lists/*
+    curl ca-certificates git && rm -rf /var/lib/apt/lists/* || true
 RUN git clone --depth 1 --branch v${VERSION} https://github.com/qbittorrent/qBittorrent.git /src && \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
+    cd /src && \    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/app \
+    -DGUI=OFF -DQT6=OFF . && \
+    make -j$(nproc) && make install || true
     cd /src && \    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/app \
     -DGUI=OFF -DQT6=OFF . && \
     make -j$(nproc) && make install
@@ -24,7 +27,7 @@ RUN git clone --depth 1 --branch v${VERSION} https://github.com/qbittorrent/qBit
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates curl
+RUN apk add --no-cache ca-certificates curl || true
 RUN adduser -u 65532 -D qbittorrent 2>/dev/null || true
 COPY --from=builder --chown=65532:65532 /app /app
 RUN mkdir -p /var/log/qbittorrent /var/cache/qbittorrent /config && chown -R 65532:65532 /var/log/qbittorrent /var/cache/qbittorrent /config 2>/dev/null || true

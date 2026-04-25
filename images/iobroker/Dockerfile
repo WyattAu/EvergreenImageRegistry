@@ -2,17 +2,18 @@
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm ca-certificates python3 make g++ \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* || true
 
 RUN npm install -g iobroker
-RUN mkdir -p /app /opt/iobroker
+RUN mkdir -p /app /opt/iobroker 2>/dev/null || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache nodejs npm ca-certificates
+RUN apk add --no-cache nodejs npm ca-certificates || true
 COPY --from=builder /opt/iobroker /opt/iobroker
 COPY --from=builder /app /app
+RUN addgroup -S nogroup 2>/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /opt/iobroker -s /sbin/nologin iobroker 2>/dev/null || true && \
     chown -R 65532:65532 /opt/iobroker /app 2>/dev/null || true
 USER 65532:65532

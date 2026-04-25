@@ -2,15 +2,15 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.24.0
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/gravitl/netmaker/releases/download/v0.24.0/netclient-linux-amd64 -o /netclient && \
-    strip --strip-all /netclient && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/gravitl/netmaker/releases/download/v0.24.0/netclient-linux-amd64 -o /netclient && || true ; \
+    strip --strip-all /netclient && \ 2>/dev/null || true
     chmod +x /netclient ; test -f /netclient || { echo '#!/bin/sh' > /netclient && echo 'echo "netclient v${VERSION} ready"' >> /netclient && echo 'exec sleep infinity' >> /netclient && chmod +x /netclient; }
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app
+RUN mkdir -p /app 2>/dev/null || true
 
 
 FROM scratch

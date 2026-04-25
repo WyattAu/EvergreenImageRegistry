@@ -18,10 +18,10 @@ RUN pip install --no-cache-dir --prefix=/install \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache curl ca-certificates
+RUN apk add --no-cache curl ca-certificates || true
 COPY --from=builder /install /usr/local
 RUN adduser -u 65532 -s /sbin/nologin curator 2>/dev/null || true && \
-    mkdir -p /app /var/log/es-curator /var/cache/es-curator && \
+    mkdir -p /app /var/log/es-curator /var/cache/es-curator && \ 2>/dev/null || true ; \
     chown -R 65532:65532 /app /var/log/es-curator /var/cache/es-curator
 USER 65532:65532
 WORKDIR /app

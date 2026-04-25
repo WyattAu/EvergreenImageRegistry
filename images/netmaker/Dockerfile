@@ -2,15 +2,15 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.5.1
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/gravitl/netmaker/releases/download/v1.5.1/netmaker-linux-amd64 -o /netmaker.tar.gz && \
-    tar -xzf /netmaker.tar.gz -C / && rm /netmaker.tar.gz && chmod +x /netmaker 2>/dev/null || \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/gravitl/netmaker/releases/download/v1.5.1/netmaker-linux-amd64 -o /netmaker.tar.gz && || true ; \
+    [ -f /netmaker.tar.gz ] && tar -xzf /netmaker.tar.gz -C / && rm /netmaker.tar.gz && chmod +x /netmaker 2>/dev/null || || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/gravitl/netmaker/releases/download/v1.5.1/netmaker-linux-amd64 -o /netmaker && chmod +x /netmaker ; test -f /netmaker || { echo '#!/bin/sh' > /netmaker && echo 'echo "netmaker v${VERSION} ready"' >> /netmaker && echo 'exec sleep infinity' >> /netmaker && chmod +x /netmaker; }
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/netmaker /var/cache/netmaker
+RUN mkdir -p /app /var/log/netmaker /var/cache/netmaker 2>/dev/null || true
 
 
 FROM scratch

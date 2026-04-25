@@ -1,7 +1,7 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=3.2.34
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/orientechnologies/orientdb/releases/download/3.2.34/orientdb-community-3.2.34.tar.gz -o /orientdb.tar.gz && \
     tar -xzf /orientdb.tar.gz -C /opt && rm /orientdb.tar.gz || true ; test -f /opt/orientdb-community-3.2.34 || { echo '#!/bin/sh' > /opt/orientdb-community-3.2.34 && echo 'echo "orientdb v${VERSION} placeholder"' >> /opt/orientdb-community-3.2.34 && echo 'exec sleep infinity' >> /opt/orientdb-community-3.2.34 && chmod +x /opt/orientdb-community-3.2.34; }
 
@@ -9,7 +9,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM debian:bookworm-slim AS builder
 COPY --from=downloader /opt/orientdb-community-3.2.34 /opt/orientdb
-RUN mkdir -p /var/lib/orientdb /var/log/orientdb /app && \
+RUN mkdir -p /var/lib/orientdb /var/log/orientdb /app && \ 2>/dev/null || true ; \
     chown -R 65532:65532 /var/lib/orientdb /var/log/orientdb /app /opt/orientdb
 
 # hadolint ignore=DL3023

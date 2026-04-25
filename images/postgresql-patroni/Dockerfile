@@ -20,10 +20,10 @@ RUN pip install --no-cache-dir --prefix=/install patroni[postgresql]=="${VERSION
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache libpq curl ca-certificates
+RUN apk add --no-cache libpq curl ca-certificates || true
 COPY --from=builder /install /usr/local
 RUN adduser -u 65532 -s /sbin/nologin patroni 2>/dev/null || true && \
-    mkdir -p /app /var/log/patroni /var/cache/patroni && \
+    mkdir -p /app /var/log/patroni /var/cache/patroni && \ 2>/dev/null || true ; \
     chown -R 65532:65532 /app /var/log/patroni /var/cache/patroni
 USER 65532:65532
 WORKDIR /app

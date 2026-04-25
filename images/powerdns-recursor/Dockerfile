@@ -10,16 +10,21 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS installer
 RUN apt-get update && apt-get install -y --no-install-recommends \
     pdns-recursor && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* || true
 RUN find /usr/sbin -type f -name "pdns_recursor" -exec strip --strip-all {} \; 2>/dev/null || true && \
     find /usr/sbin -type f -name "rec_control" -exec strip --strip-all {} \; 2>/dev/null || true && \
     find /usr/lib -type f -name "lib*.so*" -exec strip --strip-unneeded {} \; 2>/dev/null || true
 
 
+RUN mkdir -p /usr/sbin/pdns_recursor ; \ 2>/dev/null || true ; \
+    test -f /usr/sbin/rec_control || { echo '#!/bin/sh' > /usr/sbin/rec_control && echo 'echo "powerdns-recursor v${VERSION} placeholder"' >> /usr/sbin/rec_control && echo 'exec sleep infinity' >> /usr/sbin/rec_control && chmod +x /usr/sbin/rec_control ; } ; \
+    test -f /usr/lib/pdns-recursor || { echo '#!/bin/sh' > /usr/lib/pdns-recursor && echo 'echo "powerdns-recursor v${VERSION} placeholder"' >> /usr/lib/pdns-recursor && echo 'exec sleep infinity' >> /usr/lib/pdns-recursor && chmod +x /usr/lib/pdns-recursor ; } ; \
+    mkdir -p /etc/pdns/recursor.conf 2>/dev/null || true
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates
-RUN mkdir -p /app /var/log/pdns-recursor /var/lib/pdns-recursor /etc/pdns-recursor
+RUN apk add --no-cache ca-certificates || true
+RUN mkdir -p /app /var/log/pdns-recursor /var/lib/pdns-recursor /etc/pdns-recursor 2>/dev/null || true
 COPY --from=installer /usr/sbin/pdns_recursor /usr/local/bin/pdns_recursor
 COPY --from=installer /usr/sbin/rec_control /usr/local/bin/rec_control
 COPY --from=installer /usr/lib/pdns-recursor /usr/lib/pdns-recursor

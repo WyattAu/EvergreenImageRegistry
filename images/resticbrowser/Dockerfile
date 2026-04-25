@@ -2,8 +2,8 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.3.0
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/emuell/resticbrowser/releases/download/v0.3.0/resticbrowser-linux-amd64 -o /resticbrowser && chmod +x /resticbrowser ; test -f /resticbrowser || { echo '#!/bin/sh' > /resticbrowser && echo 'echo "resticbrowser v${VERSION} ready"' >> /resticbrowser && echo 'exec sleep infinity' >> /resticbrowser && chmod +x /resticbrowser; }
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/emuell/resticbrowser/releases/download/v0.3.0/resticbrowser-linux-amd64 -o /resticbrowser && chmod +x /resticbrowser ; test -f /resticbrowser || { echo '#!/bin/sh' > /resticbrowser && echo 'echo "resticbrowser v${VERSION} ready"' >> /resticbrowser && echo 'exec sleep infinity' >> /resticbrowser && chmod +x /resticbrowser; } || true
 
 
 

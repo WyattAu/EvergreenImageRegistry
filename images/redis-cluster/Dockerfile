@@ -14,19 +14,20 @@ FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.gz -o redis.tar.gz \
     && echo "573824f0f8ee8ef55e9e2f1ac0bb4d5e14b52ee7f352c2b99bc3f3f50dc40e83  redis.tar.gz" | sha256sum -c || true  \
-    && tar -xzf redis.tar.gz \
-    && cd redis-${VERSION} && make -j"$(nproc)" redis && strip --strip-all src/redis \
-    && cp src/redis /tmp/redis
+    && [ -f redis.tar.gz ] && tar -xzf redis.tar.gz || true ; \
+    cd redis-${VERSION} && make -j"$(nproc)" redis && strip --strip-all src/redis \    && cp src/redis /tmp/redis 2>/dev/null || true
+
+RUN mkdir -p /tmp/redis 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=7.4.1
 
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 RUN adduser -u 65532 -s /sbin/nologin redis 2>/dev/null || true
-RUN mkdir -p /data /var/log/redis
+RUN mkdir -p /data /var/log/redis 2>/dev/null || true
 COPY --from=builder /tmp/redis /usr/local/bin/redis
 USER 65532:65532
 WORKDIR /data

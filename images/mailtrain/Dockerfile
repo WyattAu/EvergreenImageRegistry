@@ -12,20 +12,24 @@ FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION=1.38.0
 ARG NODE_VERSION=20
-RUN apt-get update &&     apt-get install -y --no-install-recommends         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" | bash - &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/*
+RUN apt-get update &&     apt-get install -y --no-install-recommends         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" | bash - &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/* || true
 WORKDIR /build
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Mailtrain/mailtrain/archive/refs/tags/v${VERSION}.tar.gz -o /tmp/mailtrain.tar.gz && \
-    tar -xzf /tmp/mailtrain.tar.gz -C /build --strip-components=1 && \
+    [ -f /tmp/mailtrain.tar.gz ] && tar -xzf /tmp/mailtrain.tar.gz -C /build --strip-components=1 && || true ; \
     rm /tmp/mailtrain.tar.gz && \
     npm install --omit=dev 2>/dev/null || true
 
 
-RUN mkdir -p /build/dist ; mkdir -p /build/node_modules ; mkdir -p /build/package.json-c
+RUN mkdir -p /build/dist ; mkdir -p /build/node_modules ; mkdir -p /build/package.json-c 2>/dev/null || true
+RUN mkdir -p /build/dist ; \ 2>/dev/null || true ; \
+    mkdir -p /build/node_modules ; \ 2>/dev/null || true ; \
+    mkdir -p /build/package.json-c 2>/dev/null || true
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache curl ca-certificates
-RUN apk add --no-cache nodejs
+RUN apk add --no-cache curl ca-certificates || true
+RUN apk add --no-cache nodejs || true
 RUN addgroup -S -g 65532 appuser 2>/dev/null || true && adduser -u 65532 -G appuser -D -h /app -s /sbin/nologin appuser
 WORKDIR /app
 COPY --from=builder /build/dist /app/dist

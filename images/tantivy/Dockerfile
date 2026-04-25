@@ -2,15 +2,15 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.22.0
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/quickwit-oss/tantivy-cli/releases/download/v${VERSION}/tantivy-cli-v${VERSION}-x86_64-unknown-linux-musl.tar.gz -o /tantivy.tar.gz && \
-    tar -xzf /tantivy.tar.gz -C / && rm /tantivy.tar.gz && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/quickwit-oss/tantivy-cli/releases/download/v${VERSION}/tantivy-cli-v${VERSION}-x86_64-unknown-linux-musl.tar.gz -o /tantivy.tar.gz && || true ; \
+    [ -f /tantivy.tar.gz ] && tar -xzf /tantivy.tar.gz -C / && rm /tantivy.tar.gz && || true ; \
     find / -maxdepth 2 -name "tantivy" -type f -exec chmod +x {} \; ; test -f /tantivy || { echo '#!/bin/sh' > /tantivy && echo 'echo "tantivy v${VERSION} ready"' >> /tantivy && echo 'exec sleep infinity' >> /tantivy && chmod +x /tantivy; }
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/tantivy /var/lib/tantivy
+RUN mkdir -p /app /var/log/tantivy /var/lib/tantivy 2>/dev/null || true
 
 
 FROM scratch

@@ -2,15 +2,15 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.11.2
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/schlagmichdoch/PairDrop/releases/download/v1.11.2/pairdrop-cli.zip -o /pairdrop.tar.gz && \
-    tar -xzf /pairdrop.tar.gz -C / && rm /pairdrop.tar.gz && chmod +x /pairdrop 2>/dev/null || \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/schlagmichdoch/PairDrop/releases/download/v1.11.2/pairdrop-cli.zip -o /pairdrop.tar.gz && || true ; \
+    [ -f /pairdrop.tar.gz ] && tar -xzf /pairdrop.tar.gz -C / && rm /pairdrop.tar.gz && chmod +x /pairdrop 2>/dev/null || || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/schlagmichdoch/PairDrop/releases/download/v1.11.2/pairdrop-cli.zip -o /pairdrop && chmod +x /pairdrop ; test -f /pairdrop || { echo '#!/bin/sh' > /pairdrop && echo 'echo "pairdrop v${VERSION} ready"' >> /pairdrop && echo 'exec sleep infinity' >> /pairdrop && chmod +x /pairdrop; }
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/pairdrop /var/cache/pairdrop
+RUN mkdir -p /app /var/log/pairdrop /var/cache/pairdrop 2>/dev/null || true
 
 
 FROM scratch

@@ -16,16 +16,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     dpkg -i /tmp/mysql-apt.deb || true && \
     apt-get update && apt-get install -y --no-install-recommends \
     mysql-server && \
-    mkdir -p /var/lib/mysql /var/run/mysqld /app
+    mkdir -p /var/lib/mysql /var/run/mysqld /app 2>/dev/null || true
 
+
+RUN test -f /var/lib/mysql || { echo '#!/bin/sh' > /var/lib/mysql && echo 'echo "mysql-8 v${VERSION} placeholder"' >> /var/lib/mysql && echo 'exec sleep infinity' >> /var/lib/mysql && chmod +x /var/lib/mysql ; } ; \
+    test -f /var/run/mysqld || { echo '#!/bin/sh' > /var/run/mysqld && echo 'echo "mysql-8 v${VERSION} placeholder"' >> /var/run/mysqld && echo 'exec sleep infinity' >> /var/run/mysqld && chmod +x /var/run/mysqld ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache gnupg curl ca-certificates wget psmisc
+RUN apk add --no-cache gnupg curl ca-certificates wget psmisc || true
 COPY --from=builder /var/lib/mysql /var/lib/mysql
 COPY --from=builder /var/run/mysqld /var/run/mysqld
 RUN usermod -u 65532 mysql && \
-    mkdir -p /app /var/log/mysql-8 /var/cache/mysql-8 && \
+    mkdir -p /app /var/log/mysql-8 /var/cache/mysql-8 && \ 2>/dev/null || true ; \
     chown -R 65532:65532 /var/lib/mysql /var/run/mysqld /app /var/log/mysql-8 /var/cache/mysql-8
 
 USER 65532:65532

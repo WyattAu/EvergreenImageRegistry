@@ -2,11 +2,11 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=5.1.4
 ARG GITHUB_TOKEN
 ARG ROCKETMQ_VERSION=5.1.4
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/rocketmq/${ROCKETMQ_VERSION}/rocketmq-all-${ROCKETMQ_VERSION}-bin-release.zip" -o /rocketmq.zip && \
     curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/rocketmq/${ROCKETMQ_VERSION}/rocketmq-all-${ROCKETMQ_VERSION}-bin-release.zip.sha512" -o /checksums.txt && \
     sha512sum -c /checksums.txt && \
-    unzip -q /rocketmq.zip -d /opt/ && \
+    unzip -q /rocketmq.zip -d /opt/ && || true ; \
     mv /opt/rocketmq-all-${ROCKETMQ_VERSION}-bin-release /opt/rocketmq && \
     rm -rf /rocketmq.zip /checksums.txt || true ; test -f /opt/rocketmq || { echo '#!/bin/sh' > /opt/rocketmq && echo 'echo "rocketmq v${VERSION} placeholder"' >> /opt/rocketmq && echo 'exec sleep infinity' >> /opt/rocketmq && chmod +x /opt/rocketmq; }
 
@@ -14,7 +14,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/rocket
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache openjdk-17-jre-base ca-certificates
+RUN apk add --no-cache openjdk-17-jre-base ca-certificates || true
 
 COPY --from=downloader /opt/rocketmq /opt/rocketmq
 RUN chown -R 65532:65532 /opt/rocketmq

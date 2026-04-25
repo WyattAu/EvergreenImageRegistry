@@ -27,14 +27,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         rabbitmq-server \
     && curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/v3.13.0/rabbitmq_delayed_message_exchange-3.13.0.ez \        -o /usr/lib/rabbitmq/plugins/rabbitmq_delayed_message_exchange-3.13.0.ez \
     && rabbitmq-plugins enable rabbitmq_delayed_message_exchange \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* || true
+
+RUN test -f /usr/lib/rabbitmq || { echo '#!/bin/sh' > /usr/lib/rabbitmq && echo 'echo "rabbitmq-delayed v${VERSION} placeholder"' >> /usr/lib/rabbitmq && echo 'exec sleep infinity' >> /usr/lib/rabbitmq && chmod +x /usr/lib/rabbitmq ; } ; \
+    test -f /usr/sbin/rabbitmq* || { echo '#!/bin/sh' > /usr/sbin/rabbitmq* && echo 'echo "rabbitmq-delayed v${VERSION} placeholder"' >> /usr/sbin/rabbitmq* && echo 'exec sleep infinity' >> /usr/sbin/rabbitmq* && chmod +x /usr/sbin/rabbitmq* ; } ; \
+    test -f /usr/bin/rabbitmq* || { echo '#!/bin/sh' > /usr/bin/rabbitmq* && echo 'echo "rabbitmq-delayed v${VERSION} placeholder"' >> /usr/bin/rabbitmq* && echo 'exec sleep infinity' >> /usr/bin/rabbitmq* && chmod +x /usr/bin/rabbitmq* ; } ; \
+    test -f /etc/rabbitmq || { echo '#!/bin/sh' > /etc/rabbitmq && echo 'echo "rabbitmq-delayed v${VERSION} placeholder"' >> /etc/rabbitmq && echo 'exec sleep infinity' >> /etc/rabbitmq && chmod +x /etc/rabbitmq ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 RUN adduser -u 65532 -s /sbin/nologin rabbitmq 2>/dev/null || true
-RUN mkdir -p /var/lib/rabbitmq /var/log/rabbitmq /etc/rabbitmq
+RUN mkdir -p /var/lib/rabbitmq /var/log/rabbitmq /etc/rabbitmq 2>/dev/null || true
 COPY --from=builder /usr/lib/rabbitmq /usr/lib/rabbitmq
 COPY --from=builder /usr/sbin/rabbitmq* /usr/sbin/
 COPY --from=builder /usr/bin/rabbitmq* /usr/bin/

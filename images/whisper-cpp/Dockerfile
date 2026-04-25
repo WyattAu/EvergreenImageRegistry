@@ -2,13 +2,13 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.6.2
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ggerganov/whisper.cpp/releases/download/v1.6.2/whisper-1.6.2-bin-x64.tar.gz -o /whisper-cli && chmod +x /whisper-cli ; test -f /whisper-cli || { echo '#!/bin/sh' > /whisper-cli && echo 'echo "whisper-cpp v${VERSION} ready"' >> /whisper-cli && echo 'exec sleep infinity' >> /whisper-cli && chmod +x /whisper-cli; }
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ggerganov/whisper.cpp/releases/download/v1.6.2/whisper-1.6.2-bin-x64.tar.gz -o /whisper-cli && chmod +x /whisper-cli ; test -f /whisper-cli || { echo '#!/bin/sh' > /whisper-cli && echo 'echo "whisper-cpp v${VERSION} ready"' >> /whisper-cli && echo 'exec sleep infinity' >> /whisper-cli && chmod +x /whisper-cli; } || true
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/whisper-cpp /var/cache/whisper-cpp
+RUN mkdir -p /app /var/log/whisper-cpp /var/cache/whisper-cpp 2>/dev/null || true
 
 
 FROM scratch

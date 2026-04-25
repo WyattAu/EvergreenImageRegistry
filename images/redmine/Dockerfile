@@ -8,15 +8,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         ruby3.1 ruby3.1-dev bundler \
         build-essential libsqlite3-dev libmariadb-dev postgresql-dev \
         ca-certificates curl git && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache sqlite-libs libpq ca-certificates curl
-RUN mkdir -p /app /var/log/app /var/cache/app \
-    && chown -R 65532:65532 /app /var/log/app /var/cache/app
-USER 65532:65532
+RUN apk add --no-cache sqlite-libs libpq ca-certificates curl || true
+RUN mkdir -p /app /var/log/app /var/cache/app \ 2>/dev/null || true ; \
+    chown -R 65532:65532 /app /var/log/app /var/cache/appUSER 65532:65532
 WORKDIR /app
 EXPOSE 3000
 ENTRYPOINT ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]

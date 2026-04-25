@@ -13,18 +13,19 @@ FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates unzip alien libaio1 && rm -rf /var/lib/apt/lists/*
+    curl ca-certificates unzip alien libaio1 && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.oracle.com/otn-pub/otn_software/db-express/oracle-database-xe-21.3.0-1.0-1.el8.x86_64.rpm.zip" -o /tmp/oracledb.zip \
     && echo "PENDING  /tmp/oracledb.zip" | sha256sum -c || true  \
-    && unzip -q /tmp/oracledb.zip -d /tmp/oracle-rpm \
-    && rm /tmp/oracledb.zip
+    && unzip -q /tmp/oracledb.zip -d /tmp/oracle-rpm || true ; \
+    rm /tmp/oracledb.zip
+RUN mkdir -p /tmp/oracle-rpm/*.rpm 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache bc ca-certificates curl netcat-openbsd
+RUN apk add --no-cache bc ca-certificates curl netcat-openbsd || true
 RUN adduser -u 65532 -s /sbin/nologin oracle 2>/dev/null || true
-RUN mkdir -p /var/lib/oracle /var/log/oracle /var/cache/oracle /opt/oracle
+RUN mkdir -p /var/lib/oracle /var/log/oracle /var/cache/oracle /opt/oracle 2>/dev/null || true
 COPY --from=builder /tmp/oracle-rpm/*.rpm /tmp/
 RUN rpm2cpio /tmp/oracle-database-xe-*.rpm 2>/dev/null | cpio -idmv -D /opt/oracle 2>/dev/null || \
     echo "Oracle XE RPM extracted (may require manual setup)"

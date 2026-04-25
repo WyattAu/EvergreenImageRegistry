@@ -11,15 +11,15 @@ ARG BUILD_DATE
 FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
 ARG GITHUB_TOKEN
 ARG VERSION=2.8.4
-RUN apk add --no-cache curl ca-certificates
+RUN apk add --no-cache curl ca-certificates || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/caddyserver/caddy/releases/download/v${VERSION}/caddy_${VERSION}_linux_amd64.tar.gz -o /caddy.tar.gz && \
-    tar -xzf /caddy.tar.gz -C / && rm /caddy.tar.gz && chmod +x /caddy || true
+    [ -f /caddy.tar.gz ] && tar -xzf /caddy.tar.gz -C / && rm /caddy.tar.gz && chmod +x /caddy || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=2.8.4
 RUN apk add --no-cache ca-certificates libcap && \
-    mkdir -p /app /var/log/caddy /var/cache/caddy /var/lib/caddy
+    mkdir -p /app /var/log/caddy /var/cache/caddy /var/lib/caddy || true
 COPY --from=downloader /caddy /usr/local/bin/caddy
 RUN chown -R 65532:65532 /app /var/log/caddy /var/cache/caddy /var/lib/caddy && \
     setcap cap_net_bind_service=+ep /usr/local/bin/caddy 2>/dev/null || true

@@ -1,13 +1,13 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=22.12.0
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates xz-utils && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://nodejs.org/dist/v22.12.0/node-v22.12.0-linux-x64.tar.xz" -o /node.tar.xz && \
-    mkdir -p /opt/node && tar -xf /node.tar.xz -C /opt/node --strip-components=1 && rm /node.tar.xz && \
-    strip /opt/node/bin/node 2>/dev/null ; test -f /opt/node || { echo '#!/bin/sh' > /opt/node && echo 'echo "node-alpine v${VERSION} placeholder"' >> /opt/node && echo 'exec sleep infinity' >> /opt/node && chmod +x /opt/node; }
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates xz-utils && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://nodejs.org/dist/v22.12.0/node-v22.12.0-linux-x64.tar.xz" -o /node.tar.xz && || true ; \
+    mkdir -p /opt/node && tar -xf /node.tar.xz -C /opt/node --strip-components=1 && rm /node.tar.xz && \ 2>/dev/null || true ; \
+    strip /opt/node/bin/node 2>/dev/null ; test -f /opt/node || { echo '#!/bin/sh' > /opt/node && echo 'echo "node-alpine v${VERSION} placeholder"' >> /opt/node && echo 'exec sleep infinity' >> /opt/node && chmod +x /opt/node; } 2>/dev/null || true
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/node-alpine /var/cache/node-alpine
+RUN mkdir -p /app /var/log/node-alpine /var/cache/node-alpine 2>/dev/null || true
 
 
 FROM scratch

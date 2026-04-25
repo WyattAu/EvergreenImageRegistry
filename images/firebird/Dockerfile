@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 RUN adduser -u 65532 -s /sbin/nologin firebird 2>/dev/null || true
-RUN mkdir -p /var/lib/firebird /var/log/firebird /var/cache/firebird
+RUN mkdir -p /var/lib/firebird /var/log/firebird /var/cache/firebird 2>/dev/null || true
 RUN chown -R 65532:65532 /var/lib/firebird /var/log/firebird /var/cache/firebird
 USER 65532:65532
 WORKDIR /var/lib/firebird

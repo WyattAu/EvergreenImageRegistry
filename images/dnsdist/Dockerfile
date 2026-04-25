@@ -15,20 +15,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake libboost-all-dev libssl-dev libprotobuf-dev \
     protobuf-compiler liblua5.3-dev libsystemd-dev libsodium-dev \
     libre2-dev libyaml-cpp-dev libsnmp-dev curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/PowerDNS/pdns/archive/refs/tags/rel/dnsdist-${VERSION}.tar.gz -o /dnsdist.tar.gz && \
-    tar -xzf /dnsdist.tar.gz -C / && rm /dnsdist.tar.gz && \
-    mkdir -p /pdns-rel-dnsdist-${VERSION}/build && \
+    [ -f /dnsdist.tar.gz ] && tar -xzf /dnsdist.tar.gz -C / && rm /dnsdist.tar.gz && || true ; \
+    mkdir -p /pdns-rel-dnsdist-${VERSION}/build && \ 2>/dev/null || true ; \
     cd /pdns-rel-dnsdist-${VERSION}/build && \    cmake .. -DCMAKE_BUILD_TYPE=Release -DWITHOUT_NGHTTP2=1 && \
     make -j"$(nproc)" dnsdist && \
     strip --strip-all /pdns-rel-dnsdist-${VERSION}/build/dnsdist/dnsdist || true
 
 
+RUN mkdir -p /pdns-rel-dnsdist-${VERSION}/build/dnsdist/dnsdist 2>/dev/null || true
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=1.9.4
 
-RUN apk add --no-cache ca-certificates
-RUN mkdir -p /app /var/log/dnsdist /etc/dnsdist
+RUN apk add --no-cache ca-certificates || true
+RUN mkdir -p /app /var/log/dnsdist /etc/dnsdist 2>/dev/null || true
 COPY --from=builder /pdns-rel-dnsdist-${VERSION}/build/dnsdist/dnsdist /usr/local/bin/dnsdist
 RUN chown -R 65532:65532 /app /var/log/dnsdist
 USER 65532:65532

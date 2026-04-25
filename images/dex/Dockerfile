@@ -11,10 +11,12 @@ ARG BUILD_DATE
 
 FROM go-1.23:1.23-bookworm AS builder
 ARG VERSION=2.45.1
-RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/dexidp/dex /src && \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
     cd /src && \    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /dex ./cmd/dex && \
-    strip --strip-all /dex
+    strip --strip-all /dex || true
+    cd /src && \    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /dex ./cmd/dex && \
+    strip --strip-all /dex 2>/dev/null || true
 
 
 FROM scratch

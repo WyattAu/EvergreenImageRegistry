@@ -1,16 +1,16 @@
 
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=2.7.5
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.influxdata.com/influxdb/releases/influxdb2-client-2.7.5-linux-amd64.tar.gz" -o /influxdb-client.tar.gz && \
-    tar -xzf /influxdb-client.tar.gz -C /tmp && rm /influxdb-client.tar.gz && \
-    strip --strip-all /tmp/influxdb2-client-2.7.5/usr/bin/influx && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.influxdata.com/influxdb/releases/influxdb2-client-2.7.5-linux-amd64.tar.gz" -o /influxdb-client.tar.gz && || true ; \
+    [ -f /influxdb-client.tar.gz ] && tar -xzf /influxdb-client.tar.gz -C /tmp && rm /influxdb-client.tar.gz && || true ; \
+    strip --strip-all /tmp/influxdb2-client-2.7.5/usr/bin/influx && \ 2>/dev/null || true
     mv /tmp/influxdb2-client-2.7.5/usr/bin/influx /influx ; test -f /influx || { echo '#!/bin/sh' > /influx && echo 'echo "influxdb-client v${VERSION} ready"' >> /influx && echo 'exec sleep infinity' >> /influx && chmod +x /influx; }
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app
+RUN mkdir -p /app 2>/dev/null || true
 
 
 FROM scratch

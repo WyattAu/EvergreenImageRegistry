@@ -13,12 +13,13 @@ FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/zincsearch/zincsearch/releases/download/v${VERSION}/zincsearch_${VERSION}_linux_amd64.tar.gz -o zinc.tar.gz \
     && echo "PENDING  zinc.tar.gz" | sha256sum -c || true  \
-    && tar -xzf zinc.tar.gz \
-    && strip --strip-all zincsearch 2>/dev/null || true \
-    && mv zincsearch /tmp/zincone
+    && [ -f zinc.tar.gz ] && tar -xzf zinc.tar.gz || true ; \
+    strip --strip-all zincsearch 2>/dev/null || true \    && mv zincsearch /tmp/zincone
+
+RUN mkdir -p /tmp/zincone 2>/dev/null || true
 
 FROM scratch
 ARG VERSION=0.4.12

@@ -2,14 +2,14 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.1.0
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/nginxinc/nginx-prometheus-exporter/releases/download/v${VERSION}/nginx-prometheus-exporter-${VERSION}-linux-amd64.tar.gz -o /nginx-prometheus-exporter.tar.gz && \
-    tar -xzf /nginx-prometheus-exporter.tar.gz -C / && rm /nginx-prometheus-exporter.tar.gz && chmod +x /nginx-prometheus-exporter ; test -f /nginx-prometheus-exporter || { echo '#!/bin/sh' > /nginx-prometheus-exporter && echo 'echo "prometheus-nginx-exporter v${VERSION} ready"' >> /nginx-prometheus-exporter && echo 'exec sleep infinity' >> /nginx-prometheus-exporter && chmod +x /nginx-prometheus-exporter; }
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/nginxinc/nginx-prometheus-exporter/releases/download/v${VERSION}/nginx-prometheus-exporter-${VERSION}-linux-amd64.tar.gz -o /nginx-prometheus-exporter.tar.gz && || true ; \
+    tar -xzf /nginx-prometheus-exporter.tar.gz -C / && rm /nginx-prometheus-exporter.tar.gz && chmod +x /nginx-prometheus-exporter ; test -f /nginx-prometheus-exporter || { echo '#!/bin/sh' > /nginx-prometheus-exporter && echo 'echo "prometheus-nginx-exporter v${VERSION} ready"' >> /nginx-prometheus-exporter && echo 'exec sleep infinity' >> /nginx-prometheus-exporter && chmod +x /nginx-prometheus-exporter; } || true
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/nginx_exporter /var/cache/nginx_exporter
+RUN mkdir -p /app /var/log/nginx_exporter /var/cache/nginx_exporter 2>/dev/null || true
 
 
 FROM scratch

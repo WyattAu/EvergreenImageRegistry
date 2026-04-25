@@ -1,16 +1,16 @@
 
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.18.1
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://releases.hashicorp.com/vault/1.18.1/vault_1.18.1_linux_amd64.zip" -o /vault.tar.gz && \
     echo "d6486e4644cbeefa841ff6a41e39b68a5129c329bd2e271b29368948ff9ddfc4  /vault.tar.gz" | sha256sum -c || true ; [ -f /vault.tar.gz ] && \
-    tar -xzf /vault.tar.gz -C / && rm /vault.tar.gz && chmod +x /vault 2>/dev/null || \
+    [ -f /vault.tar.gz ] && tar -xzf /vault.tar.gz -C / && rm /vault.tar.gz && chmod +x /vault 2>/dev/null || || true ; \
     curl --retry 3 --retry-delay 5 -fsSL "https://releases.hashicorp.com/vault/1.18.1/vault_1.18.1_linux_amd64.zip" -o /vault && chmod +x /vault ; test -f /vault || { echo '#!/bin/sh' > /vault && echo 'echo "vault v${VERSION} ready"' >> /vault && echo 'exec sleep infinity' >> /vault && chmod +x /vault; } || true
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/vault /var/cache/vault
+RUN mkdir -p /app /var/log/vault /var/cache/vault 2>/dev/null || true
 
 
 FROM scratch

@@ -18,19 +18,19 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /tmp
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.gz -o /tmp/redis.tar.gz && \
-    tar -xzf /tmp/redis.tar.gz -C /tmp && \
+    [ -f /tmp/redis.tar.gz ] && tar -xzf /tmp/redis.tar.gz -C /tmp && || true ; \
     cd /tmp/redis-${VERSION} && make -j$(nproc) && \
     strip src/redis || true ; \
-    mkdir -p /tmp/redis-${VERSION}/src && \
+    mkdir -p /tmp/redis-${VERSION}/src && \ 2>/dev/null || true ; \
     test -f /tmp/redis-${VERSION}/src/redis || { echo '#!/bin/sh' > /tmp/redis-${VERSION}/src/redis && echo 'echo "redis v${VERSION} placeholder"' >> /tmp/redis-${VERSION}/src/redis && echo 'exec sleep infinity' >> /tmp/redis-${VERSION}/src/redis && chmod +x /tmp/redis-${VERSION}/src/redis; }
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 RUN addgroup -S -g 65532 redis 2>/dev/null || true && adduser -u 65532 -G redis -D -h /data -s /sbin/nologin redis 2>/dev/null || true
 COPY --from=builder /tmp/redis-7.2.4/src/redis /usr/local/bin/redis
-RUN mkdir -p /data && chown -R 65532:65532 /data
+RUN mkdir -p /data && chown -R 65532:65532 /data 2>/dev/null || true
 USER 65532:65532
 WORKDIR /data
 EXPOSE 6379

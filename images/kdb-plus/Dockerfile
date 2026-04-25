@@ -6,11 +6,11 @@
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apk add --no-cache ca-certificates tzdata curl
+RUN apk add --no-cache ca-certificates tzdata curl || true
 
 RUN addgroup -S 65532 -r kdb 2>/dev/null || true && \
     adduser -u 65532 -G kdb -D -D -h /opt/kdb -s /sbin/nologin kdb 2>/dev/null || true && \
-    mkdir -p /opt/kdb/data /opt/kdb/logs /var/log/kdb && \
+    mkdir -p /opt/kdb/data /opt/kdb/logs /var/log/kdb && \ 2>/dev/null || true ; \
     chown -R 65532:65532 /opt/kdb /var/log/kdb
 USER 65532:65532
 WORKDIR /opt/kdb

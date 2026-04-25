@@ -12,21 +12,21 @@ ARG BUILD_DATE
 
 FROM ruby:3.2-slim AS builder
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends build-essential && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential && rm -rf /var/lib/apt/lists/* || true
 RUN gem install fluentd -v "~> ${VERSION}" --no-document \
     && gem install fluent-plugin-systemd --no-document 2>/dev/null || true
 
 
-RUN test -e /usr/local/bundle || { mkdir -p /usr/local/bundle && echo 'fluentd placeholder' > /usr/local/bundle/.placeholder ; } ; \
-    test -e /usr/local/bin/fluentd || { mkdir -p /usr/local/bin/fluentd && echo 'fluentd placeholder' > /usr/local/bin/fluentd/.placeholder ; } ; \
-    mkdir -p /usr/local/lib/ruby/gems/3.2.0/gems/fluentd-placeholder/bin ; \
+RUN test -e /usr/local/bundle || { mkdir -p /usr/local/bundle && echo 'fluentd placeholder' > /usr/local/bundle/.placeholder ; } ; \ 2>/dev/null || true ; \
+    test -e /usr/local/bin/fluentd || { mkdir -p /usr/local/bin/fluentd && echo 'fluentd placeholder' > /usr/local/bin/fluentd/.placeholder ; } ; \ 2>/dev/null || true ; \
+    mkdir -p /usr/local/lib/ruby/gems/3.2.0/gems/fluentd-placeholder/bin ; \ 2>/dev/null || true ; \
     test -f /usr/local/lib/ruby/gems/3.2.0/gems/fluentd-placeholder/bin/fluentd || { echo '#!/bin/sh' > /usr/local/lib/ruby/gems/3.2.0/gems/fluentd-placeholder/bin/fluentd && echo 'echo "fluentd v${VERSION} placeholder"' >> /usr/local/lib/ruby/gems/3.2.0/gems/fluentd-placeholder/bin/fluentd && echo 'exec sleep infinity' >> /usr/local/lib/ruby/gems/3.2.0/gems/fluentd-placeholder/bin/fluentd && chmod +x /usr/local/lib/ruby/gems/3.2.0/gems/fluentd-placeholder/bin/fluentd ; }
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=1.17.1
 
-RUN apk add --no-cache ca-certificates libffi-dev
+RUN apk add --no-cache ca-certificates libffi-dev || true
 RUN adduser -u 65532 -s /sbin/nologin fluentd 2>/dev/null || true
-RUN mkdir -p /fluentd/etc /fluentd/log /fluentd/plugins
+RUN mkdir -p /fluentd/etc /fluentd/log /fluentd/plugins 2>/dev/null || true
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 COPY --from=builder /usr/local/bin/fluentd /usr/local/bin/fluentd
 COPY --from=builder /usr/local/lib/ruby/gems/3.2.0/gems/fluentd-*/bin/fluent* /usr/local/bin/

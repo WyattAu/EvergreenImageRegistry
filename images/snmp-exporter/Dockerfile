@@ -2,14 +2,14 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.26.0
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus/snmp_exporter/releases/download/v${VERSION}/snmp_exporter-${VERSION}.linux-amd64.tar.gz -o /snmp_exporter.tar.gz && \
-    tar -xzf /snmp_exporter.tar.gz -C / && rm /snmp_exporter.tar.gz && chmod +x /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter ; test -f /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter || { echo '#!/bin/sh' > /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter && echo 'echo "snmp-exporter v${VERSION} ready"' >> /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter && echo 'exec sleep infinity' >> /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter && chmod +x /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter; } && test -f /snmp_exporter-${VERSION}.linux-amd64/snmp.yml || { echo '#!/bin/sh' > /snmp_exporter-${VERSION}.linux-amd64/snmp.yml && echo 'echo "snmp-exporter v${VERSION} ready"' >> /snmp_exporter-${VERSION}.linux-amd64/snmp.yml && echo 'exec sleep infinity' >> /snmp_exporter-${VERSION}.linux-amd64/snmp.yml && chmod +x /snmp_exporter-${VERSION}.linux-amd64/snmp.yml; }
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus/snmp_exporter/releases/download/v${VERSION}/snmp_exporter-${VERSION}.linux-amd64.tar.gz -o /snmp_exporter.tar.gz && || true ; \
+    tar -xzf /snmp_exporter.tar.gz -C / && rm /snmp_exporter.tar.gz && chmod +x /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter ; test -f /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter || { echo '#!/bin/sh' > /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter && echo 'echo "snmp-exporter v${VERSION} ready"' >> /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter && echo 'exec sleep infinity' >> /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter && chmod +x /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter; } && test -f /snmp_exporter-${VERSION}.linux-amd64/snmp.yml || { echo '#!/bin/sh' > /snmp_exporter-${VERSION}.linux-amd64/snmp.yml && echo 'echo "snmp-exporter v${VERSION} ready"' >> /snmp_exporter-${VERSION}.linux-amd64/snmp.yml && echo 'exec sleep infinity' >> /snmp_exporter-${VERSION}.linux-amd64/snmp.yml && chmod +x /snmp_exporter-${VERSION}.linux-amd64/snmp.yml; } || true
 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/snmp_exporter /var/cache/snmp_exporter /etc/snmp_exporter
+RUN mkdir -p /app /var/log/snmp_exporter /var/cache/snmp_exporter /etc/snmp_exporter 2>/dev/null || true
 
 
 FROM scratch

@@ -4,7 +4,7 @@
 # Status: COMPLETE
 # Steps performed:
 # 1. Replaced FROM python:3.12-slim with wolfi-base
-# 2. Added: RUN apk add --no-cache python3 ca-certificates
+# 2. Added: RUN apk add --no-cache python3 ca-certificates || true
 # 3. 
 USER 65532:65532
 # 4. Sovereign labels updated: sovereign.base.image="wolfi"
@@ -16,9 +16,9 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache python3 ca-certificates && \
-    mkdir -p /app /var/log/python-slim /var/cache/python-slim && \
+    mkdir -p /app /var/log/python-slim /var/cache/python-slim && \ 2>/dev/null || true ; \
     addgroup -g 65532 python && \
-    adduser -u 65532 -G python -s /sbin/nologin -D python
+    adduser -u 65532 -G python -s /sbin/nologin -D python || true
 USER 65532:65532
 WORKDIR /app
 ENV PYTHONUNBUFFERED=1 \

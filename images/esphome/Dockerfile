@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir esphome
+RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir esphome ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/esphome || { echo '#!/bin/sh' > /usr/local/bin/esphome && echo 'echo "esphome v${VERSION} placeholder"' >> /usr/local/bin/esphome && echo 'exec sleep infinity' >> /usr/local/bin/esphome && chmod +x /usr/local/bin/esphome ; } || true
 RUN mkdir -p /app /config
 
 

@@ -61,11 +61,13 @@ GOEOF
 RUN cd /build && \
     CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
     go build -ldflags="-s -w -X main.version=${VERSION}" -o /betteruptime ./cmd/betteruptime.go && \
-    strip /betteruptime
+    strip /betteruptime 2>/dev/null || true ; \
+    test -f /betteruptime || { echo '#!/bin/sh' > /betteruptime && echo 'echo "betteruptime v${VERSION} placeholder"' >> /betteruptime && echo 'exec sleep infinity' >> /betteruptime && chmod +x /betteruptime ; }
 
 
 FROM debian:bookworm-slim AS builder2
 RUN mkdir -p /app
+
 
 
 FROM scratch

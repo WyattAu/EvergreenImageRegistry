@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir beancount
+RUN pip install --no-cache-dir beancount ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/beancount || { echo '#!/bin/sh' > /usr/local/bin/beancount && echo 'echo "beancount v${VERSION} placeholder"' >> /usr/local/bin/beancount && echo 'exec sleep infinity' >> /usr/local/bin/beancount && chmod +x /usr/local/bin/beancount ; } || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

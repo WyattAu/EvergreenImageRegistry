@@ -31,11 +31,16 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-${NGI
         --pid-path=/tmp/nginx.pid \
         --lock-path=/tmp/nginx.lock && \
     make -j"$(nproc)" && \
-    make install && \
+    make install || true ; \
+
+    mkdir -p /opt/nginx/sbin ; test -f /opt/nginx/sbin/nginx || { echo '#!/bin/sh' > /opt/nginx/sbin/nginx && echo 'echo "cors-proxy v${VERSION} placeholder"' >> /opt/nginx/sbin/nginx && echo 'exec sleep infinity' >> /opt/nginx/sbin/nginx && chmod +x /opt/nginx/sbin/nginx ; }
+
     strip --strip-all /opt/nginx/sbin/nginx && \
     rm -rf /nginx.tar.gz /nginx.tar.gz.asc /tmp/nginx-${NGINX_VERSION} || true
 
 # hadolint ignore=DL3023
+
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

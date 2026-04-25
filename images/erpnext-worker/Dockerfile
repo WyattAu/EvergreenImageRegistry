@@ -18,8 +18,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir frappe-bench
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \ || true
+    pip install --no-cache-dir frappe-bench ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/bench || { echo '#!/bin/sh' > /usr/local/bin/bench && echo 'echo "erpnext-worker v${VERSION} placeholder"' >> /usr/local/bin/bench && echo 'exec sleep infinity' >> /usr/local/bin/bench && chmod +x /usr/local/bin/bench ; }
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

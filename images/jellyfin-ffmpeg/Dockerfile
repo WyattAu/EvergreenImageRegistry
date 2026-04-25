@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libtheora-dev libvorbis-dev libwebp-dev libxvidcore-dev \
         zlib1g-dev ca-certificates curl git && \
     rm -rf /var/lib/apt/lists/* || true
-RUN git clone --depth 1 --branch n{version} \ 2>/dev/null || echo "Source repo not available - using placeholder" \
+RUN git clone --depth 1 --branch n{version}  || echo "Source repo not available - using placeholder" \
     "https://github.com/jellyfin/jellyfin-ffmpeg.git" /tmp/jellyfin-ffmpeg && \    cd /tmp/jellyfin-ffmpeg && \    ./configure --prefix=/usr/local \
         --enable-gpl --enable-nonfree \
         --enable-shared --disable-static \

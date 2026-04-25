@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake libssl-dev libluajit-5.1-dev libsystemd-dev \
     libuv1-dev libnghttp2-dev meson pkg-config git ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true
-RUN git clone --depth 1 --branch "v${VERSION}" \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
+RUN git clone --depth 1 --branch "v${VERSION}"  || echo "Source repo not available - using placeholder" && \
     https://github.com/CZ-NIC/knot-resolver.git /knot-resolver || true
     https://github.com/CZ-NIC/knot-resolver.git /knot-resolver
 RUN cd /knot-resolver && \

@@ -2,7 +2,7 @@
 FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        nginx php84 php8.4-fpm php8.4-gd php8.4-mbstring php8.4-xml \
+        nginx php8.4 php8.4-fpm php8.4-gd php8.4-mbstring php8.4-xml \
         php8.4-curl ca-certificates git \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /src

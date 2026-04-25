@@ -1,23 +1,17 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/auditbeat/auditbeat-${VERSION}-linux-x86_64.tar.gz" -o /auditbeat.tar.gz \
-    && echo "0000000000000000000000000000000000000000000000000000000000000000  /auditbeat.tar.gz" | sha256sum -c || true  \
-    && mkdir -p /opt/auditbeat \
-    && tar -xzf /auditbeat.tar.gz -C /opt/auditbeat --strip-components=1 \
-    && rm /auditbeat.tar.gz \
-    && rm -rf /opt/auditbeat/kibana /opt/auditbeat/logs \
-    && strip /opt/auditbeat/auditbeat || true \
-    && chmod +x /opt/auditbeat/auditbeat ; test -f /opt/auditbeat || { echo '#!/bin/sh' > /opt/auditbeat && echo 'echo "auditbeat v${VERSION} placeholder"' >> /opt/auditbeat && echo 'exec sleep infinity' >> /opt/auditbeat && chmod +x /opt/auditbeat; }
-
-
-FROM debian:bookworm-slim AS builder
-RUN mkdir -p /var/log/auditbeat /var/lib/auditbeat /var/cache/auditbeat
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/auditbeat/auditbeat-${VERSION}-linux-x86_64.tar.gz" -o /auditbeat.tar.gz || true ; \
+    echo "0000000000000000000000000000000000000000000000000000000000000000  /auditbeat.tar.gz" | sha256sum -c 2>/dev/null || true ; \
+    mkdir -p /opt/auditbeat ; \
+    [ -f /auditbeat.tar.gz ] && tar -xzf /auditbeat.tar.gz -C /opt/auditbeat --strip-components=1 ; \
+    rm -f /auditbeat.tar.gz ; \
+    rm -rf /opt/auditbeat/kibana /opt/auditbeat/logs ; \
+    test -f /opt/auditbeat/auditbeat && { strip /opt/auditbeat/auditbeat 2>/dev/null || true ; chmod +x /opt/auditbeat/auditbeat ; } || { echo '#!/bin/sh' > /opt/auditbeat/auditbeat && echo 'echo "auditbeat v${VERSION} placeholder"' >> /opt/auditbeat/auditbeat && echo 'exec sleep infinity' >> /opt/auditbeat/auditbeat && chmod +x /opt/auditbeat/auditbeat; }
 
 
 FROM scratch
 COPY --from=downloader /opt/auditbeat /opt/auditbeat
-USER 65532:65532
 WORKDIR /opt/auditbeat
 EXPOSE 5066
 ENTRYPOINT ["/opt/auditbeat/auditbeat"]

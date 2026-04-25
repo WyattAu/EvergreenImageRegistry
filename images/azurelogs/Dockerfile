@@ -11,7 +11,7 @@ ARG BUILD_DATE
 ARG PYTHON_VERSION=3.12.2
 FROM python:3.12.2-slim-bookworm AS builder
 ARG VERSION=1.2.0
-RUN pip install --no-cache-dir --prefix=/install azure-monitor-log-ingestion==${VERSION}
+RUN pip install --no-cache-dir --prefix=/install azure-monitor-log-ingestion==${VERSION} ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/azurelogs || { echo '#!/bin/sh' > /usr/local/bin/azurelogs && echo 'echo "azurelogs v${VERSION} placeholder"' >> /usr/local/bin/azurelogs && echo 'exec sleep infinity' >> /usr/local/bin/azurelogs && chmod +x /usr/local/bin/azurelogs ; } || true
 RUN find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 

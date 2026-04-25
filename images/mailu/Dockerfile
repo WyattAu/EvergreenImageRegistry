@@ -15,6 +15,8 @@ ENV PATH="/opt/venv/bin:${PATH}"
 RUN pip install --no-cache-dir mailu==2.0.0
 
 
+
+RUN mkdir -p /opt/venv
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache python3 ca-certificates

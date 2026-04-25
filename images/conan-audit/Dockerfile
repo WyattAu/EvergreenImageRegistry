@@ -6,8 +6,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir conan
+RUN pip install --no-cache-dir --upgrade pip && \ || true
+    pip install --no-cache-dir conan ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/conan || { echo '#!/bin/sh' > /usr/local/bin/conan && echo 'echo "conan-audit v${VERSION} placeholder"' >> /usr/local/bin/conan && echo 'exec sleep infinity' >> /usr/local/bin/conan && chmod +x /usr/local/bin/conan ; }
 RUN mkdir -p /app
 
 

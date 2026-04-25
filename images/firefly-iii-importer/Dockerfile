@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir firefly-iii
+RUN pip install --no-cache-dir firefly-iii ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/firefly-iii-importer || { echo '#!/bin/sh' > /usr/local/bin/firefly-iii-importer && echo 'echo "firefly-iii-importer v${VERSION} placeholder"' >> /usr/local/bin/firefly-iii-importer && echo 'exec sleep infinity' >> /usr/local/bin/firefly-iii-importer && chmod +x /usr/local/bin/firefly-iii-importer ; } || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

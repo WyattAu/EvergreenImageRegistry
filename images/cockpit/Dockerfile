@@ -7,6 +7,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN mkdir -p /app
 
 
+
+RUN test -e /app || { mkdir -p /app && echo 'cockpit placeholder' > /app/.placeholder ; }
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates

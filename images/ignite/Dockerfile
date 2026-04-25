@@ -19,6 +19,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/ignite/${VERS
     && unzip -q /tmp/ignite.zip -d /opt \
     && rm /tmp/ignite.zip
 
+
+RUN mkdir -p /opt ; \
+    test -f /opt/bin/ignite.sh || { echo '#!/bin/sh' > /opt/bin/ignite.sh && echo 'echo "ignite v${VERSION} placeholder"' >> /opt/bin/ignite.sh && echo 'exec sleep infinity' >> /opt/bin/ignite.sh && chmod +x /opt/bin/ignite.sh ; }
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

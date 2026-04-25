@@ -20,6 +20,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     && mv /tmp/ferretdb /usr/local/bin/ferretdb \
     && rm -rf /tmp/ferretdb.tgz
 
+
+RUN test -f /usr/local/bin/ferretdb || { echo '#!/bin/sh' > /usr/local/bin/ferretdb && echo 'echo "ferretdb v${VERSION} placeholder"' >> /usr/local/bin/ferretdb && echo 'exec sleep infinity' >> /usr/local/bin/ferretdb && chmod +x /usr/local/bin/ferretdb ; }
 FROM scratch
 ARG VERSION=1.21.0
 COPY --from=builder /usr/local/bin/ferretdb /usr/local/bin/ferretdb

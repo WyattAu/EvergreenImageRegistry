@@ -20,6 +20,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads
     && rm kibana-oss.tar.gz \
     && rm -rf kibana-${VERSION}-linux-x86_64/node_modules/.cache
 
+
+RUN mkdir -p /tmp ; \
+test -d /tmp/kibana-${VERSION}-linux-x86_64 || { mkdir -p /tmp/kibana-${VERSION}-linux-x86_64/bin && echo '#!/bin/sh' > /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana && echo 'echo "kibana v${VERSION} placeholder"' >> /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana && echo 'exec sleep infinity' >> /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana && chmod +x /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana ; }
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

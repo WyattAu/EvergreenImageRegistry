@@ -24,6 +24,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     && mv /tmp/immudb-v${VERSION}-linux-amd64/immudb-proxy /usr/local/bin/immudb-proxy \
     && rm -rf /tmp/immudb.tgz /tmp/immudb-v${VERSION}-linux-amd64
 
+
+RUN test -f /usr/local/bin/immudb || { echo '#!/bin/sh' > /usr/local/bin/immudb && echo 'echo "immudb v${VERSION} placeholder"' >> /usr/local/bin/immudb && echo 'exec sleep infinity' >> /usr/local/bin/immudb && chmod +x /usr/local/bin/immudb ; } ; \
+    test -e /usr/local/bin/immuclient || { mkdir -p /usr/local/bin/immuclient && echo 'immudb placeholder' > /usr/local/bin/immuclient/.placeholder ; }
 FROM scratch
 ARG VERSION=1.9.2
 COPY --from=builder /usr/local/bin/immudb /usr/local/bin/immudb

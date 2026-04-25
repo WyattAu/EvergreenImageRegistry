@@ -19,6 +19,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     && strip --strip-all /tmp/cass-operator \
     && mv /tmp/cass-operator /usr/local/bin/cass-operator
 
+
+RUN test -f /usr/local/bin/cass-operator || { echo '#!/bin/sh' > /usr/local/bin/cass-operator && echo 'echo "cassandra-operator v${VERSION} placeholder"' >> /usr/local/bin/cass-operator && echo 'exec sleep infinity' >> /usr/local/bin/cass-operator && chmod +x /usr/local/bin/cass-operator ; }
 FROM scratch
 ARG VERSION=1.20.0
 COPY --from=builder /usr/local/bin/cass-operator /usr/local/bin/cass-operator

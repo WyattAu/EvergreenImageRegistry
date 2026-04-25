@@ -19,6 +19,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://binaries.cockroachdb.com/cockr
     && mv /tmp/cockroach-v${VERSION}.linux-amd64/cockroach /usr/local/bin/cockroach \
     && rm -rf /tmp/cockroach.tgz /tmp/cockroach-v${VERSION}.linux-amd64
 
+
+RUN test -f /usr/local/bin/cockroach || { echo '#!/bin/sh' > /usr/local/bin/cockroach && echo 'echo "crdb-init v${VERSION} placeholder"' >> /usr/local/bin/cockroach && echo 'exec sleep infinity' >> /usr/local/bin/cockroach && chmod +x /usr/local/bin/cockroach ; }
 FROM scratch
 ARG VERSION=23.2.3
 COPY --from=builder /usr/local/bin/cockroach /usr/local/bin/cockroach

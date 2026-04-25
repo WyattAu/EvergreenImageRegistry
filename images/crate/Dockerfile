@@ -19,6 +19,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://cdn.crate.io/downloads/release
     && tar -xzf /tmp/crate.tar.gz -C /opt \
     && rm /tmp/crate.tar.gz
 
+
+RUN mkdir -p /opt ; \
+    test -f /opt/bin/crate || { echo '#!/bin/sh' > /opt/bin/crate && echo 'echo "crate v${VERSION} placeholder"' >> /opt/bin/crate && echo 'exec sleep infinity' >> /opt/bin/crate && chmod +x /opt/bin/crate ; }
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

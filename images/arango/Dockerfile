@@ -20,7 +20,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.arangodb.com/arangodb
 
 
 RUN mkdir -p /opt ; \
-    test -f /opt/usr/sbin/arangod || { echo '#!/bin/sh' > /opt/usr/sbin/arangod && echo 'echo "arango v${VERSION} placeholder"' >> /opt/usr/sbin/arangod && echo 'exec sleep infinity' >> /opt/usr/sbin/arangod && chmod +x /opt/usr/sbin/arangod ; }
+    mkdir -p /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin ; test -f /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod || { echo '#!/bin/sh' > /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod && echo 'echo "arango v${VERSION} placeholder"' >> /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod && echo 'exec sleep infinity' >> /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod && chmod +x /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod ; }
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

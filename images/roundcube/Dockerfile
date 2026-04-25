@@ -9,6 +9,11 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl gnupg && \
+    curl -fsSL https://packages.sury.org/php/apt.gpg | gpg --dearmor -o /usr/share/keyrings/sury-php.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/sury-php.gpg] https://packages.sury.org/php/ bookworm main" > /etc/apt/sources.list.d/sury-php.list && \
+    rm -rf /var/lib/apt/lists/*
+
 RUN apt-get update &&     apt-get install -y --no-install-recommends         php-fpm="8.2.*"         php-cli="8.2.*"         php8.4-mbstring="8.2.*"         php8.4-xml="8.2.*"         php-curl         php8.4-intl="8.2.*"         php-zip="8.2.*"         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/*
 WORKDIR /build
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/roundcube/roundcubemail/releases/download/v1.6.9/roundcube-1.6.9.tar.gz -o /tmp/release.tar.gz &&     tar -xzf /tmp/release.tar.gz -C /build --strip-components=1 &&     rm /tmp/release.tar.gz || true

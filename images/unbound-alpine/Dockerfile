@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libssl-dev libexpat1-dev flex bison && \
     rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://nlnetlabs.nl/downloads/unbound/unbound-${VERSION}.tar.gz" -o /unbound.tar.gz && \
-    [ -f /unbound.tar.gz ] && tar -xzf /unbound.tar.gz -C / && rm /unbound.tar.gz && || true ; \
+    [ -f /unbound.tar.gz ] && tar -xzf /unbound.tar.gz -C / && rm /unbound.tar.gz || true ; \
     cd /unbound-${VERSION} && \    ./configure \
     --prefix=/usr \
     --sysconfdir=/etc/unbound \

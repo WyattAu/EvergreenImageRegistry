@@ -14,10 +14,8 @@ ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/yahoo/CMAK/releases/download/${VERSION}/cmak-${VERSION}.zip -o cmak.zip \
-    && echo "0000000000000000000000000000000000000000000000000000000000000000  cmak.zip" | sha256sum -c || true  \
-    && apt-get install -y --no-install-recommends unzip || true ; \
-    unzip cmak.zip -d /opt/cmak || true ; \    rm cmak.zip \    && rm -rf /var/lib/apt/lists/*
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/yahoo/CMAK/releases/download/${VERSION}/cmak-${VERSION}.zip -o cmak.zip ; echo "0000000000000000000000000000000000000000000000000000000000000000  cmak.zip" | sha256sum -c || true  ; apt-get install -y --no-install-recommends unzip || true ; \
+    unzip cmak.zip -d /opt/cmak || true ; \    rm cmak.zip ; rm -rf /var/lib/apt/lists/*
 
 
 RUN mkdir -p /opt ; \ 2>/dev/null || true ; \

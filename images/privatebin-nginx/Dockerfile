@@ -8,8 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nginx php8.4 php8.4-fpm php8.4-gd php8.4-mbstring php8.4-xml \
-        php8.4-curl ca-certificates git \
-    && rm -rf /var/lib/apt/lists/* || true
+        php8.4-curl ca-certificates git ; rm -rf /var/lib/apt/lists/* || true
 WORKDIR /src
 RUN git clone --depth 1 https://github.com/PrivateBin/PrivateBin.git /src 2>/dev/null || echo "Source repo not available - using placeholder" || true
 RUN mkdir -p /src 2>/dev/null || true

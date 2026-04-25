@@ -14,7 +14,7 @@ ENV HEALTH_CMD="curl -sf http://localhost:9200/_cluster/health" \
     READY_CMD="curl -sf http://localhost:9200/_cluster/health" \
     STARTUP_CMD="curl -sf http://localhost:9200/_cluster/health" \
     SOVEREIGN_LOG_LEVEL=info
-RUN apk add --no-cache curl ca-certificates && || true ; \
+RUN apk add --no-cache curl ca-certificates || true ; \
     curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-linux-x86_64.tar.gz" | \
     tar xz -C /opt && \
     ln -s /opt/elasticsearch-${VERSION} /opt/elasticsearch && \

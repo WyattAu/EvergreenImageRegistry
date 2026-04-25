@@ -5,7 +5,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-amd64.tar.gz" -o /grafana.tar.gz && \
     echo "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2  /grafana.tar.gz" | sha256sum -c || true  #
-RUN [ -f /grafana.tar.gz ] && tar -xzf /grafana.tar.gz -C /opt && || true ; \
+RUN [ -f /grafana.tar.gz ] && tar -xzf /grafana.tar.gz -C /opt || true ; \
     rm /grafana.tar.gz && \ || true
     strip /opt/grafana-${VERSION}/bin/grafana-server && \ || true
     strip /opt/grafana-${VERSION}/bin/grafana-cli 2>/dev/null || true

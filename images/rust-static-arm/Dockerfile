@@ -1,7 +1,7 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.80.1
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://static.rust-lang.org/dist/rust-1.80.1-aarch64-unknown-linux-gnu.tar.xz" -o /rust.tar.xz && || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://static.rust-lang.org/dist/rust-1.80.1-aarch64-unknown-linux-gnu.tar.xz" -o /rust.tar.xz || true ; \
     mkdir -p /tmp/rust && tar -xf /rust.tar.xz -C /tmp/rust --strip-components=1 && rm /rust.tar.xz && \ 2>/dev/null || true ; \
     /tmp/rust/install.sh --prefix=/opt/rust --components=rust-std,cargo,rustc --without=rust-docs --without=rustfmt --without=clippy && \
     strip /opt/rust/bin/rustc /opt/rust/bin/cargo 2>/dev/null ; test -f /opt/rust || { echo '#!/bin/sh' > /opt/rust && echo 'echo "rust-static-arm v${VERSION} placeholder"' >> /opt/rust && echo 'exec sleep infinity' >> /opt/rust && chmod +x /opt/rust; } 2>/dev/null || true

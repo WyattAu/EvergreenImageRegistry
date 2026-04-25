@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-linux-x86_64.tar.gz" \
     -o /elasticsearch.tar.gz && \
     echo "PENDING_CHECKSUM  /elasticsearch.tar.gz" | sha256sum -c || true ; [ -f /elasticsearch.tar.gz ] && \
-    [ -f /elasticsearch.tar.gz ] && tar -xzf /elasticsearch.tar.gz -C /opt && rm /elasticsearch.tar.gz && || true ; \
+    [ -f /elasticsearch.tar.gz ] && tar -xzf /elasticsearch.tar.gz -C /opt && rm /elasticsearch.tar.gz || true ; \
     find /opt/elasticsearch-${VERSION} -name "*.so" -exec strip --strip-unneeded {} + 2>/dev/null || true && \
     rm -rf /opt/elasticsearch-${VERSION}/jdk && \
     mkdir -p /app /var/log/elasticsearch /var/cache/elasticsearch /var/lib/elasticsearch || true

@@ -15,10 +15,8 @@ ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/etcd-io/etcd/releases/download/v${VERSION}/etcd-v${VERSION}-linux-amd64.tar.gz -o etcd.tar.gz \
-    && echo "81a8b6ecd5df15a4e0245c811d053f08717ebe6a624759afa56d58dde744e4fb  etcd.tar.gz" | sha256sum -c || true  \
-    && [ -f etcd.tar.gz ] && tar -xzf etcd.tar.gz || true ; \
-    strip --strip-all etcd-v${VERSION}-linux-amd64/etcdctl \    && mv etcd-v${VERSION}-linux-amd64/etcdctl /tmp/etcdctl 2>/dev/null || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/etcd-io/etcd/releases/download/v${VERSION}/etcd-v${VERSION}-linux-amd64.tar.gz -o etcd.tar.gz ; echo "81a8b6ecd5df15a4e0245c811d053f08717ebe6a624759afa56d58dde744e4fb  etcd.tar.gz" | sha256sum -c || true  ; [ -f etcd.tar.gz ] && tar -xzf etcd.tar.gz || true ; \
+    strip --strip-all etcd-v${VERSION}-linux-amd64/etcdctl ; mv etcd-v${VERSION}-linux-amd64/etcdctl /tmp/etcdctl 2>/dev/null || true
 
 
 RUN test -f /tmp/etcdctl || { echo '#!/bin/sh' > /tmp/etcdctl && echo 'echo "etcd-backup v${VERSION} placeholder"' >> /tmp/etcdctl && echo 'exec sleep infinity' >> /tmp/etcdctl && chmod +x /tmp/etcdctl ; }

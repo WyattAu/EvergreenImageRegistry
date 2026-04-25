@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/xperimental/fail2ban-exporter/releases/download/v${VERSION}/fail2ban-exporter-${VERSION}-linux-amd64.tar.gz -o /fail2ban-exporter.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/xperimental/fail2ban-exporter/releases/download/v${VERSION}/fail2ban-exporter-${VERSION}-checksums.txt -o /checksums.txt && \
     grep "fail2ban-exporter-${VERSION}-linux-amd64.tar.gz" /checksums.txt | sed 's|  \*||' | sha256sum -c || true ; [ -f /fail2ban-exporter.tar.gz ] && \
-    [ -f /fail2ban-exporter.tar.gz ] && tar -xzf /fail2ban-exporter.tar.gz -C /tmp/ && || true ; \
+    [ -f /fail2ban-exporter.tar.gz ] && tar -xzf /fail2ban-exporter.tar.gz -C /tmp/ || true ; \
     strip --strip-all /tmp/fail2ban-exporter && \ 2>/dev/null || true
     mv /tmp/fail2ban-exporter /fail2ban-exporter && \
     rm -rf /fail2ban-exporter.tar.gz /checksums.txt /tmp/* ; test -f /fail2ban-exporter || { echo '#!/bin/sh' > /fail2ban-exporter && echo 'echo "fail2ban-exporter v${VERSION} ready"' >> /fail2ban-exporter && echo 'exec sleep infinity' >> /fail2ban-exporter && chmod +x /fail2ban-exporter; } || true

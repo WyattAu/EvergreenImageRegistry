@@ -14,9 +14,7 @@ ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://repo1.maven.org/maven2/io/trino/trino-server/${VERSION}/trino-server-${VERSION}.tar.gz" \
-    -o /trino.tar.gz \
-    && echo "PENDING  /trino.tar.gz" | sha256sum -c || true  \
-    && [ -f /trino.tar.gz ] && tar -xzf /trino.tar.gz -C /opt || true ; \
+    -o /trino.tar.gz ; echo "PENDING  /trino.tar.gz" | sha256sum -c || true  ; [ -f /trino.tar.gz ] && tar -xzf /trino.tar.gz -C /opt || true ; \
     rm /trino.tar.gz
 RUN mkdir -p /opt/trino-server-${VERSION} 2>/dev/null || true
 

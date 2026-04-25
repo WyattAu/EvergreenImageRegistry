@@ -1,8 +1,7 @@
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        python3-pip python3 git ca-certificates \
-    && rm -rf /var/lib/apt/lists/* || true
+        python3-pip python3 git ca-certificates ; rm -rf /var/lib/apt/lists/* || true
 
 RUN python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"

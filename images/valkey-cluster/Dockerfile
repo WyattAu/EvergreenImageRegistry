@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/valkey-io/valkey/releases/download/${VERSION}/valkey-${VERSION}.tar.gz \
     -o /valkey.tar.gz && \
     echo "PENDING_CHECKSUM  /valkey.tar.gz" | sha256sum -c || true ; [ -f /valkey.tar.gz ] && \
-    [ -f /valkey.tar.gz ] && tar -xzf /valkey.tar.gz -C / && rm /valkey.tar.gz && || true ; \
+    [ -f /valkey.tar.gz ] && tar -xzf /valkey.tar.gz -C / && rm /valkey.tar.gz || true ; \
     cd /valkey-${VERSION} && make -j"$(nproc)" && make install PREFIX=/install && \    strip /install/bin/valkey-* /install/bin/redis-* || true
 
 

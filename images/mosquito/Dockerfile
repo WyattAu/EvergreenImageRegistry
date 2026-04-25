@@ -1,8 +1,7 @@
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        mosquitto-clients ca-certificates \
-    && rm -rf /var/lib/apt/lists/* || true
+        mosquitto-clients ca-certificates ; rm -rf /var/lib/apt/lists/* || true
 
 RUN mkdir -p /app 2>/dev/null || true
 

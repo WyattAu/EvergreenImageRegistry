@@ -14,9 +14,7 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.rethinkdb.com/repository/raw/rethinkdb-${VERSION}.tgz" -o /tmp/rethinkdb.tar.gz \
-    && echo "PENDING  /tmp/rethinkdb.tar.gz" | sha256sum -c || true  \
-    && [ -f /tmp/rethinkdb.tar.gz ] && tar -xzf /tmp/rethinkdb.tar.gz -C /opt || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.rethinkdb.com/repository/raw/rethinkdb-${VERSION}.tgz" -o /tmp/rethinkdb.tar.gz ; echo "PENDING  /tmp/rethinkdb.tar.gz" | sha256sum -c || true  ; [ -f /tmp/rethinkdb.tar.gz ] && tar -xzf /tmp/rethinkdb.tar.gz -C /opt || true ; \
     strip --strip-all /opt/rethinkdb-*/bin/rethinkdb 2>/dev/null || true
 RUN mkdir -p /opt/rethinkdb-${VERSION} 2>/dev/null || true
 

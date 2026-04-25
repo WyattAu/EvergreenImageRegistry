@@ -12,10 +12,8 @@ ARG BUILD_DATE
 FROM debian:bookworm-20250113-slim AS builder
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://binaries.cockroachdb.com/cockroach-v${VERSION}.linux-amd64.tgz" -o /tmp/cockroach.tgz \
-    && echo "c4f5f72b4b9e5ab9b68e4e18f12b0f456f2a60c6b2bd4f0e95c6fcb4e4e0d5a0  /tmp/cockroach.tgz" | sha256sum -c || true  \
-    && [ -f /tmp/cockroach.tgz ] && tar -xzf /tmp/cockroach.tgz -C /tmp || true ; \
-    strip --strip-all /tmp/cockroach-v${VERSION}.linux-amd64/cockroach \    && mv /tmp/cockroach-v${VERSION}.linux-amd64/cockroach /usr/local/bin/cockroach \ 2>/dev/null || true
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://binaries.cockroachdb.com/cockroach-v${VERSION}.linux-amd64.tgz" -o /tmp/cockroach.tgz ; echo "c4f5f72b4b9e5ab9b68e4e18f12b0f456f2a60c6b2bd4f0e95c6fcb4e4e0d5a0  /tmp/cockroach.tgz" | sha256sum -c || true  ; [ -f /tmp/cockroach.tgz ] && tar -xzf /tmp/cockroach.tgz -C /tmp || true ; \
+    strip --strip-all /tmp/cockroach-v${VERSION}.linux-amd64/cockroach ; mv /tmp/cockroach-v${VERSION}.linux-amd64/cockroach /usr/local/bin/cockroach \ 2>/dev/null || true
     && rm -rf /tmp/cockroach.tgz /tmp/cockroach-v${VERSION}.linux-amd64
 
 

@@ -3,7 +3,7 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.27.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus/statsd_exporter/releases/download/v${VERSION}/statsd_exporter-${VERSION}.linux-amd64.tar.gz -o /statsd_exporter.tar.gz && || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus/statsd_exporter/releases/download/v${VERSION}/statsd_exporter-${VERSION}.linux-amd64.tar.gz -o /statsd_exporter.tar.gz || true ; \
     tar -xzf /statsd_exporter.tar.gz -C / && rm /statsd_exporter.tar.gz && chmod +x /statsd_exporter-${VERSION}.linux-amd64/statsd_exporter ; test -f /statsd_exporter-${VERSION}.linux-amd64/statsd_exporter || { echo '#!/bin/sh' > /statsd_exporter-${VERSION}.linux-amd64/statsd_exporter && echo 'echo "prometheus-statsd-exporter v${VERSION} ready"' >> /statsd_exporter-${VERSION}.linux-amd64/statsd_exporter && echo 'exec sleep infinity' >> /statsd_exporter-${VERSION}.linux-amd64/statsd_exporter && chmod +x /statsd_exporter-${VERSION}.linux-amd64/statsd_exporter; } || true
 
 

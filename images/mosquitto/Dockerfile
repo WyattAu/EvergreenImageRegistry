@@ -1,8 +1,7 @@
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        mosquitto ca-certificates \
-    && rm -rf /var/lib/apt/lists/* || true
+        mosquitto ca-certificates ; rm -rf /var/lib/apt/lists/* || true
 
 RUN mkdir -p /app /var/log/mosquitto /var/lib/mosquitto 2>/dev/null || true
 RUN printf 'listener 1883\nallow_anonymous false\npersistence false\nlog_dest stderr\n' > /app/mosquitto.conf

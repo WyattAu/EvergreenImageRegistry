@@ -1,8 +1,7 @@
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        clamav-freshclam ca-certificates \
-    && rm -rf /var/lib/apt/lists/* || true
+        clamav-freshclam ca-certificates ; rm -rf /var/lib/apt/lists/* || true
 
 RUN mkdir -p /app /var/lib/clamav /var/log/clamav 2>/dev/null || true
 

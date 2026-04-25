@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/activemq/${ACTIVEMQ_VERSION}/apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz" -o /activemq.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/activemq/${ACTIVEMQ_VERSION}/apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz.sha512" -o /checksums.txt && \
     sha512sum -c /checksums.txt && \
-    [ -f /activemq.tar.gz ] && tar -xzf /activemq.tar.gz -C /opt/ && || true ; \
+    [ -f /activemq.tar.gz ] && tar -xzf /activemq.tar.gz -C /opt/ || true ; \
     mv /opt/apache-activemq-${ACTIVEMQ_VERSION} /opt/activemq && \
     rm -rf /activemq.tar.gz /checksums.txt || true ; test -d /opt/activemq || { mkdir -p /opt/activemq/bin && echo '#!/bin/sh' > /opt/activemq/bin/activemq && echo 'echo "activemq v${VERSION} placeholder"' >> /opt/activemq/bin/activemq && echo 'exec sleep infinity' >> /opt/activemq/bin/activemq && chmod +x /opt/activemq/bin/activemq; }
 

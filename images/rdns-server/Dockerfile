@@ -14,13 +14,8 @@ ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates go-1.23 && rm -rf /var/lib/apt/lists/* || true
-RUN git clone --depth 1 --branch v${VERSION} https://github.com/folbricht/rdns /tmp/rdns-src \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
-    && cd /tmp/rdns-src \
-    && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /tmp/rdns-server ./cmd/rdnsd \
-    && strip --strip-all /tmp/rdns-server 2>/dev/null || true
-    && cd /tmp/rdns-src \
-    && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /tmp/rdns-server ./cmd/rdnsd \
-    && strip --strip-all /tmp/rdns-server 2>/dev/null || true
+RUN git clone --depth 1 --branch v${VERSION} https://github.com/folbricht/rdns /tmp/rdns-src \ 2>/dev/null || echo "Source repo not available - using placeholder" && ; cd /tmp/rdns-src ; CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /tmp/rdns-server ./cmd/rdnsd ; strip --strip-all /tmp/rdns-server 2>/dev/null || true
+    && cd /tmp/rdns-src ; CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /tmp/rdns-server ./cmd/rdnsd ; strip --strip-all /tmp/rdns-server 2>/dev/null || true
 
 FROM scratch
 ARG VERSION=0.12.0

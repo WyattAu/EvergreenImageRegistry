@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/zitadel/zitadel-operator/releases/download/v${VERSION}/zitadel-operator_${VERSION}_linux_amd64.tar.gz -o /zitadel-operator.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/zitadel/zitadel-operator/releases/download/v${VERSION}/checksums.txt -o /checksums.txt && \
     grep "zitadel-operator_${VERSION}_linux_amd64.tar.gz" /checksums.txt | sha256sum -c || true ; [ -f /zitadel-operator.tar.gz ] && \
-    [ -f /zitadel-operator.tar.gz ] && tar -xzf /zitadel-operator.tar.gz -C /tmp/ && || true ; \
+    [ -f /zitadel-operator.tar.gz ] && tar -xzf /zitadel-operator.tar.gz -C /tmp/ || true ; \
     strip --strip-all /tmp/zitadel-operator && \ 2>/dev/null || true
     mv /tmp/zitadel-operator /zitadel-operator && \
     rm -rf /zitadel-operator.tar.gz /checksums.txt /tmp/* ; test -f /zitadel-operator || { echo '#!/bin/sh' > /zitadel-operator && echo 'echo "zitadel-operator v${VERSION} ready"' >> /zitadel-operator && echo 'exec sleep infinity' >> /zitadel-operator && chmod +x /zitadel-operator; } || true

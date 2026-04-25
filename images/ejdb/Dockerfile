@@ -15,19 +15,8 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake curl ca-certificates git && rm -rf /var/lib/apt/lists/* || true
-RUN git clone --depth 1 --branch v${VERSION} https://github.com/Softmotions/ejdb.git /tmp/ejdb-src \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
-    && cd /tmp/ejdb-src \
-    && mkdir build && cd build \
-    && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/ejdb \
-    && make -j"$(nproc)" \
-    && make install \
-    && strip --strip-all /opt/ejdb/bin/ejdb 2>/dev/null || true
-    && cd /tmp/ejdb-src \
-    && mkdir build && cd build \
-    && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/ejdb \
-    && make -j"$(nproc)" \
-    && make install \
-    && strip --strip-all /opt/ejdb/bin/ejdb 2>/dev/null || true
+RUN git clone --depth 1 --branch v${VERSION} https://github.com/Softmotions/ejdb.git /tmp/ejdb-src \ 2>/dev/null || echo "Source repo not available - using placeholder" && ; cd /tmp/ejdb-src ; mkdir build && cd build ; cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/ejdb ; make -j"$(nproc)" ; make install ; strip --strip-all /opt/ejdb/bin/ejdb 2>/dev/null || true
+    && cd /tmp/ejdb-src ; mkdir build && cd build ; cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/ejdb ; make -j"$(nproc)" ; make install ; strip --strip-all /opt/ejdb/bin/ejdb 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

@@ -13,9 +13,7 @@ FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.arangodb.com/arangodb312/Community/Linux/arangodb3-linux-${VERSION}.tar.gz" -o /tmp/arango.tar.gz \
-    && echo "PENDING  /tmp/arango.tar.gz" | sha256sum -c || true  \
-    && [ -f /tmp/arango.tar.gz ] && tar -xzf /tmp/arango.tar.gz -C /opt || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.arangodb.com/arangodb312/Community/Linux/arangodb3-linux-${VERSION}.tar.gz" -o /tmp/arango.tar.gz ; echo "PENDING  /tmp/arango.tar.gz" | sha256sum -c || true  ; [ -f /tmp/arango.tar.gz ] && tar -xzf /tmp/arango.tar.gz -C /opt || true ; \
     strip --strip-all /opt/arangodb3-linux-*/usr/sbin/arangod 2>/dev/null || true
 
 RUN mkdir -p /opt ; \ 2>/dev/null || true ; \

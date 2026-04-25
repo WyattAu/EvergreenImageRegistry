@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates tar && \
     rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-amd64.tar.gz" -o /grafana.tar.gz && \
-    [ -f /grafana.tar.gz ] && tar -xzf /grafana.tar.gz -C /opt && || true ; \
+    [ -f /grafana.tar.gz ] && tar -xzf /grafana.tar.gz -C /opt || true ; \
     rm /grafana.tar.gz && \
     ln -sf /opt/grafana-${VERSION} /opt/grafana || true
 

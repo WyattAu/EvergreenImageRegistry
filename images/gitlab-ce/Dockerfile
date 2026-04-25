@@ -7,7 +7,7 @@ RUN apt-get update && \
         gnupg \
         openssh-client && \
     rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh" | bash && || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh" | bash || true ; \
     apt-get update && \
     apt-get install -y --no-install-recommends gitlab-ce=${VERSION}-ce.0 && \
     rm -rf /var/lib/apt/lists/*

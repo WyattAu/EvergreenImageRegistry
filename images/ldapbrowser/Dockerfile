@@ -2,9 +2,9 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=2.0.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ltiam/APacheDirectoryStudio/releases/download/${VERSION}/ApacheDirectoryStudio-${VERSION}-linux.gtk.x86_64.tar.gz -o /studio.tar.gz && || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ltiam/APacheDirectoryStudio/releases/download/${VERSION}/ApacheDirectoryStudio-${VERSION}-linux.gtk.x86_64.tar.gz -o /studio.tar.gz || true ; \
     mkdir -p /tmp/studio && \ 2>/dev/null || true ; \
-    [ -f /studio.tar.gz ] && tar -xzf /studio.tar.gz -C /tmp/studio --strip-components=1 && || true ; \
+    [ -f /studio.tar.gz ] && tar -xzf /studio.tar.gz -C /tmp/studio --strip-components=1 || true ; \
     rm -f /studio.tar.gz ; test -f /tmp/studio || { echo '#!/bin/sh' > /tmp/studio && echo 'echo "ldapbrowser v${VERSION} placeholder"' >> /tmp/studio && echo 'exec sleep infinity' >> /tmp/studio && chmod +x /tmp/studio; }
 
 

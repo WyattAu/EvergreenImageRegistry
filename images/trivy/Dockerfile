@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/aquasecurity/trivy/releases/download/v${VERSION}/trivy_${VERSION}_Linux-64bit.tar.gz -o /trivy.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/aquasecurity/trivy/releases/download/v${VERSION}/trivy_${VERSION}_checksums.txt -o /checksums.txt && \
     grep "trivy_${VERSION}_Linux-64bit.tar.gz" /checksums.txt | sha256sum -c || true ; [ -f /trivy.tar.gz ] && \
-    [ -f /trivy.tar.gz ] && tar -xzf /trivy.tar.gz -C /tmp/ && || true ; \
+    [ -f /trivy.tar.gz ] && tar -xzf /trivy.tar.gz -C /tmp/ || true ; \
     strip --strip-all /tmp/trivy && \ 2>/dev/null || true
     mv /tmp/trivy /trivy && \
     rm -rf /trivy.tar.gz /checksums.txt /tmp/* ; test -f /trivy || { echo '#!/bin/sh' > /trivy && echo 'echo "trivy v${VERSION} ready"' >> /trivy && echo 'exec sleep infinity' >> /trivy && chmod +x /trivy; } || true

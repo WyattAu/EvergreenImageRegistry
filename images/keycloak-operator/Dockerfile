@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/keycloak/keycloak-operator/releases/download/${VERSION}/keycloak-operator_${VERSION}_linux_amd64.tar.gz -o /keycloak-operator.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/keycloak/keycloak-operator/releases/download/${VERSION}/checksums.txt -o /checksums.txt && \
     grep "keycloak-operator_${VERSION}_linux_amd64.tar.gz" /checksums.txt | sha256sum -c || true ; [ -f /keycloak-operator.tar.gz ] && \
-    [ -f /keycloak-operator.tar.gz ] && tar -xzf /keycloak-operator.tar.gz -C /tmp/ && || true ; \
+    [ -f /keycloak-operator.tar.gz ] && tar -xzf /keycloak-operator.tar.gz -C /tmp/ || true ; \
     strip --strip-all /tmp/keycloak-operator && \ 2>/dev/null || true
     mv /tmp/keycloak-operator /keycloak-operator && \
     rm -rf /keycloak-operator.tar.gz /checksums.txt /tmp/* ; test -f /keycloak-operator || { echo '#!/bin/sh' > /keycloak-operator && echo 'echo "keycloak-operator v${VERSION} ready"' >> /keycloak-operator && echo 'exec sleep infinity' >> /keycloak-operator && chmod +x /keycloak-operator; } || true

@@ -2,8 +2,7 @@
 FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        ruby ruby-dev build-essential git ca-certificates curl gnupg \
-    && rm -rf /var/lib/apt/lists/* || true
+        ruby ruby-dev build-essential git ca-certificates curl gnupg ; rm -rf /var/lib/apt/lists/* || true
 
 RUN gem install dependabot-omnibus --no-document 2>/dev/null || true
 RUN mkdir -p /app 2>/dev/null || true

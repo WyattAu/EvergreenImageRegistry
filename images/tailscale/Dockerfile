@@ -3,11 +3,11 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.58.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://pkgs.tailscale.com/stable/tailscale_${VERSION}_linux_amd64.tgz" -o /tailscale.tgz && || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://pkgs.tailscale.com/stable/tailscale_${VERSION}_linux_amd64.tgz" -o /tailscale.tgz || true ; \
     curl --retry 3 --retry-delay 5 -fsSL "https://pkgs.tailscale.com/stable/tailscale_${VERSION}_linux_amd64.tgz.sha256" -o /checksums.txt && \
     sha256sum -c /checksums.txt && \
     mkdir -p /tmp/tailscale && \ 2>/dev/null || true ; \
-    [ -f /tailscale.tgz ] && tar -xzf /tailscale.tgz -C /tmp/ && || true ; \
+    [ -f /tailscale.tgz ] && tar -xzf /tailscale.tgz -C /tmp/ || true ; \
     strip --strip-all /tmp/tailscale_${VERSION}_linux_amd64/tailscaled && \ 2>/dev/null || true
     strip --strip-all /tmp/tailscale_${VERSION}_linux_amd64/tailscale && \ 2>/dev/null || true
     mv /tmp/tailscale_${VERSION}_linux_amd64/tailscaled /tailscaled && \

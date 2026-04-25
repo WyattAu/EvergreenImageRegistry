@@ -12,10 +12,8 @@ ARG BUILD_DATE
 FROM debian:bookworm-20250113-slim AS builder
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2204-${VERSION}.tgz" -o /tmp/mongodb.tgz \
-    && echo "b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456789012  /tmp/mongodb.tgz" | sha256sum -c || true  \
-    && [ -f /tmp/mongodb.tgz ] && tar -xzf /tmp/mongodb.tgz -C /tmp || true ; \
-    strip --strip-all /tmp/mongodb-linux-x86_64-ubuntu2204-${VERSION}/bin/* \    && mv /tmp/mongodb-linux-x86_64-ubuntu2204-${VERSION}/bin/* /usr/local/bin/ \ 2>/dev/null || true
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2204-${VERSION}.tgz" -o /tmp/mongodb.tgz ; echo "b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456789012  /tmp/mongodb.tgz" | sha256sum -c || true  ; [ -f /tmp/mongodb.tgz ] && tar -xzf /tmp/mongodb.tgz -C /tmp || true ; \
+    strip --strip-all /tmp/mongodb-linux-x86_64-ubuntu2204-${VERSION}/bin/* ; mv /tmp/mongodb-linux-x86_64-ubuntu2204-${VERSION}/bin/* /usr/local/bin/ \ 2>/dev/null || true
     && rm -rf /tmp/mongodb.tgz /tmp/mongodb-linux-x86_64-ubuntu2204-${VERSION}
 
 RUN test -f /usr/local/bin/mongod || { echo '#!/bin/sh' > /usr/local/bin/mongod && echo 'echo "mongodb-7 v${VERSION} placeholder"' >> /usr/local/bin/mongod && echo 'exec sleep infinity' >> /usr/local/bin/mongod && chmod +x /usr/local/bin/mongod ; } ; \

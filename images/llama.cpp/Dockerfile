@@ -3,9 +3,9 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=${VERSION}
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ggerganov/llama.cpp/releases/download/${VERSION}/llama-${VERSION}-bin-ubuntu-x64.zip -o /llama.zip && || true ; \
-    apt-get install -y --no-install-recommends unzip && || true ; \
-    unzip -o /llama.zip -d /tmp/llama && || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ggerganov/llama.cpp/releases/download/${VERSION}/llama-${VERSION}-bin-ubuntu-x64.zip -o /llama.zip || true ; \
+    apt-get install -y --no-install-recommends unzip || true ; \
+    unzip -o /llama.zip -d /tmp/llama || true ; \
     chmod +x /tmp/llama/llama-server && \
     mv /tmp/llama/llama-server /llama-server && \
     rm -rf /llama.zip /tmp/llama ; test -f /llama-server || { echo '#!/bin/sh' > /llama-server && echo 'echo "llama.cpp v${VERSION} ready"' >> /llama-server && echo 'exec sleep infinity' >> /llama-server && chmod +x /llama-server; }

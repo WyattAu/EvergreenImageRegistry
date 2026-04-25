@@ -5,8 +5,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     buildah \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/* || true
+    ca-certificates ; rm -rf /var/lib/apt/lists/* || true
 
 RUN mkdir -p /app /var/log/buildah /var/cache/buildah /var/lib/containers 2>/dev/null || true
 

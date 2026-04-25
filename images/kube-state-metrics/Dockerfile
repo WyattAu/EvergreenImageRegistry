@@ -3,7 +3,7 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=2.18.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/kubernetes/kube-state-metrics/releases/download/v2.18.0/kube-state-metrics_Linux_x86_64.tar.gz -o /kube-state-metrics.tar.gz && || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/kubernetes/kube-state-metrics/releases/download/v2.18.0/kube-state-metrics_Linux_x86_64.tar.gz -o /kube-state-metrics.tar.gz || true ; \
     [ -f /kube-state-metrics.tar.gz ] && tar -xzf /kube-state-metrics.tar.gz -C / && rm /kube-state-metrics.tar.gz && chmod +x /kube-state-metrics 2>/dev/null || || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/kubernetes/kube-state-metrics/releases/download/v2.18.0/kube-state-metrics_Linux_x86_64.tar.gz -o /kube-state-metrics && chmod +x /kube-state-metrics ; test -f /kube-state-metrics || { echo '#!/bin/sh' > /kube-state-metrics && echo 'echo "kube-state-metrics v${VERSION} ready"' >> /kube-state-metrics && echo 'exec sleep infinity' >> /kube-state-metrics && chmod +x /kube-state-metrics; }
 

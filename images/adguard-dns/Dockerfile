@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/AdguardTeam/AdGuardHome/releases/download/v${VERSION}/AdGuardHome_linux_amd64.tar.gz -o /AdGuardHome.tar.gz && \
     tar -xzf /AdGuardHome.tar.gz -C / && rm /AdGuardHome.tar.gz && \
     chmod +x /AdGuardHome && \
-    strip --strip-all /AdGuardHome 2>/dev/null ; test -f /AdGuardHome || { echo '#!/bin/sh' > /AdGuardHome && echo 'echo "adguard-dns v${VERSION} ready"' >> /AdGuardHome && echo 'exec sleep infinity' >> /AdGuardHome && chmod +x /AdGuardHome; }
+    strip --strip-all /AdGuardHome 2>/dev/null ; test -f /AdGuardHome || { rm -rf /AdGuardHome 2>/dev/null; echo '#!/bin/sh' > /AdGuardHome && echo 'echo "adguard-dns v${VERSION} ready"' >> /AdGuardHome && echo 'exec sleep infinity' >> /AdGuardHome && chmod +x /AdGuardHome; }
 
 
 

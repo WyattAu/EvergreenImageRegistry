@@ -1,7 +1,7 @@
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        php84 php84 php84-php84-mbstring php84-php84-xml php84-curl \
+        php84 php84 php8.4-mbstring php8.4-xml php8.4-curl \
         ca-certificates curl unzip \
     && rm -rf /var/lib/apt/lists/*
 

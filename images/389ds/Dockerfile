@@ -14,7 +14,7 @@ ARG GITHUB_TOKEN
 RUN apk add --no-cache ca-certificates curl openldap
 RUN mkdir -p /app /var/lib/ldap && \
     chown -R 65532:65532 /app && \
-    chown openldap:openldap /var/lib/ldap
+    chown 65532:65532 /var/lib/ldap
 USER 65532:65532
 WORKDIR /app
 EXPOSE 389 636

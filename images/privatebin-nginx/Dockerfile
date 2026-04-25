@@ -1,6 +1,11 @@
 
 FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl gnupg && \
+    curl -fsSL https://packages.sury.org/php/apt.gpg | gpg --dearmor -o /usr/share/keyrings/sury-php.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/sury-php.gpg] https://packages.sury.org/php/ bookworm main" > /etc/apt/sources.list.d/sury-php.list && \
+    rm -rf /var/lib/apt/lists/*
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nginx php8.4 php8.4-fpm php8.4-gd php8.4-mbstring php8.4-xml \
         php8.4-curl ca-certificates git \

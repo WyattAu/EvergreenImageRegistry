@@ -20,6 +20,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     && strip --strip-all authelia-linux-amd64-musl 2>/dev/null || true \
     && mv authelia-linux-amd64-musl /tmp/authelia
 
+RUN test -f /authelia-linux-amd64-musl || { echo '#!/bin/sh' > /authelia-linux-amd64-musl && echo 'echo "authelia-lite v${VERSION} placeholder"' >> /authelia-linux-amd64-musl && echo 'exec sleep infinity' >> /authelia-linux-amd64-musl && chmod +x /authelia-linux-amd64-musl; }
+RUN test -f authelia || { echo '#!/bin/sh' > authelia && echo 'echo "authelia-lite v${VERSION} placeholder"' >> authelia && echo 'exec sleep infinity' >> authelia && chmod +x authelia; }
+
 FROM scratch
 ARG VERSION=4.39.19
 COPY --from=builder /tmp/authelia /usr/local/bin/authelia

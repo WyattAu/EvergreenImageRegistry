@@ -17,10 +17,6 @@ RUN mkdir -p /var/log/auditbeat /var/lib/auditbeat /var/cache/auditbeat
 
 FROM scratch
 COPY --from=downloader /opt/auditbeat /opt/auditbeat
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /var/log/auditbeat /var/log/auditbeat
-COPY --from=builder /var/lib/auditbeat /var/lib/auditbeat
-COPY --from=builder /var/cache/auditbeat /var/cache/auditbeat
 USER 65532:65532
 WORKDIR /opt/auditbeat
 EXPOSE 5066

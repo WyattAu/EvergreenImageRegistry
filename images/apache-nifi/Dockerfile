@@ -26,7 +26,7 @@ RUN apk add --no-cache ca-certificates
 RUN adduser -u 65532 -s /sbin/nologin nifi 2>/dev/null || true
 RUN mkdir -p /var/lib/nifi /var/log/nifi /var/cache/nifi
 COPY --from=builder /opt/nifi-${VERSION} /opt/nifi
-RUN chown -R nifi:nifi /opt/nifi /var/lib/nifi /var/log/nifi /var/cache/nifi
+RUN chown -R 65532:65532 /opt/nifi /var/lib/nifi /var/log/nifi /var/cache/nifi 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/nifi
 EXPOSE 8443

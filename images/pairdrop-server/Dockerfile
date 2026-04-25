@@ -3,7 +3,7 @@ FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm git ca-certificates python3 make g++ ; rm -rf /var/lib/apt/lists/* || true
 WORKDIR /src
-RUN git clone --depth 1 https://github.com/schlagmichdoch/PairDrop.git /src && \ 2>/dev/null || echo "Source repo not available - using placeholder" || true
+RUN git clone --depth 1 https://github.com/schlagmichdoch/PairDrop.git /src &&  || echo "Source repo not available - using placeholder" || true
 RUN mkdir -p /src 2>/dev/null || true && \
     cd /src && npm ci 2>/dev/null || npm install --legacy-peer-deps 2>/dev/null || true && npm run build 2>/dev/null || true
 RUN mkdir -p /app 2>/dev/null || true

@@ -10,7 +10,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl || true
 COPY --from=downloader /opt/apache-ofbiz-18.12.11 /opt/apache-ofbiz
-RUN mkdir -p /app /var/log/apache-ofbiz \ 2>/dev/null || true ; \
+RUN mkdir -p /app /var/log/apache-ofbiz \ ; \
     chown -R 65532:65532 /app /var/log/apache-ofbiz /opt/apache-ofbizUSER 65532:65532
 WORKDIR /app
 EXPOSE 8080

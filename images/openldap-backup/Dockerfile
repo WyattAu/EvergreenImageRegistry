@@ -9,7 +9,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates coreutils || true
-RUN mkdir -p /app /backup && \ 2>/dev/null || true ; \
+RUN mkdir -p /app /backup ; \
     chown -R 65532:65532 /app /backup
 USER 65532:65532
 WORKDIR /app

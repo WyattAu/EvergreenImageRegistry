@@ -39,7 +39,7 @@ COPY --from=builder /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg
 COPY --from=builder /usr/local/bin/ffprobe /usr/local/bin/ffprobe
 COPY --from=builder /usr/local/lib/ /usr/local/lib/
 RUN ldconfig && \
-    mkdir -p /app /var/log/ffmpeg /var/cache/ffmpeg && \ 2>/dev/null || true ; \
+    mkdir -p /app /var/log/ffmpeg /var/cache/ffmpeg ; \
     chown -R 65532:65532 /app /var/log/ffmpeg /var/cache/ffmpeg
 USER 65532:65532
 WORKDIR /app

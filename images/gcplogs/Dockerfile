@@ -32,7 +32,7 @@ RUN addgroup -S 65532 gcplogs && \
 RUN apk add --no-cache ca-certificates || true
 COPY --from=stripper /install /usr/local
 COPY --from=stripper /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-RUN mkdir -p /app/conf /app/logs && \ 2>/dev/null || true ; \
+RUN mkdir -p /app/conf /app/logs ; \
     chown -R gcplogs:gcplogs /app
 USER 65532:65532
 WORKDIR /app

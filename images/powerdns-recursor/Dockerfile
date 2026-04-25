@@ -16,7 +16,7 @@ RUN find /usr/sbin -type f -name "pdns_recursor" -exec strip --strip-all {} \; 2
     find /usr/lib -type f -name "lib*.so*" -exec strip --strip-unneeded {} \; 2>/dev/null || true
 
 
-RUN mkdir -p /usr/sbin/pdns_recursor ; \ 2>/dev/null || true ; \
+RUN mkdir -p /usr/sbin/pdns_recursor ; \ ; \
     test -f /usr/sbin/rec_control || { echo '#!/bin/sh' > /usr/sbin/rec_control && echo 'echo "powerdns-recursor v${VERSION} placeholder"' >> /usr/sbin/rec_control && echo 'exec sleep infinity' >> /usr/sbin/rec_control && chmod +x /usr/sbin/rec_control ; } ; \
     test -f /usr/lib/pdns-recursor || { echo '#!/bin/sh' > /usr/lib/pdns-recursor && echo 'echo "powerdns-recursor v${VERSION} placeholder"' >> /usr/lib/pdns-recursor && echo 'exec sleep infinity' >> /usr/lib/pdns-recursor && chmod +x /usr/lib/pdns-recursor ; } ; \
     mkdir -p /etc/pdns/recursor.conf 2>/dev/null || true

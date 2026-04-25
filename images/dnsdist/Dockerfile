@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/PowerDNS/pdns/archive/refs/tags/rel/dnsdist-${VERSION}.tar.gz -o /dnsdist.tar.gz && \
     [ -f /dnsdist.tar.gz ] && tar -xzf /dnsdist.tar.gz -C / && rm /dnsdist.tar.gz || true ; \
-    mkdir -p /pdns-rel-dnsdist-${VERSION}/build && \ 2>/dev/null || true ; \
+    mkdir -p /pdns-rel-dnsdist-${VERSION}/build ; \
     cd /pdns-rel-dnsdist-${VERSION}/build && \    cmake .. -DCMAKE_BUILD_TYPE=Release -DWITHOUT_NGHTTP2=1 && \
     make -j"$(nproc)" dnsdist && \
     strip --strip-all /pdns-rel-dnsdist-${VERSION}/build/dnsdist/dnsdist || true

@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/aquasecurity/trivy-operator/releases/download/v${VERSION}/trivy_operator_Linux_x86_64.tar.gz -o /trivy-operator.tar.gz || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/aquasecurity/trivy-operator/releases/download/v${VERSION}/trivy_operator_Linux_x86_64.tar.gz.sig -o /trivy-operator.sig && \
     [ -f /trivy-operator.tar.gz ] && tar -xzf /trivy-operator.tar.gz -C /tmp/ || true ; \
-    strip --strip-all /tmp/trivy-operator && \ 2>/dev/null || true
+    strip --strip-all /tmp/trivy-operator && \
     mv /tmp/trivy-operator /trivy-operator && \
     rm -rf /trivy-operator.tar.gz /trivy-operator.sig /tmp/* ; test -f /trivy-operator || { echo '#!/bin/sh' > /trivy-operator && echo 'echo "trivy-operator v${VERSION} ready"' >> /trivy-operator && echo 'exec sleep infinity' >> /trivy-operator && chmod +x /trivy-operator; }
 

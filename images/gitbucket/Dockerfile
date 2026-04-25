@@ -24,7 +24,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates || true
 RUN addgroup -S -g 65532 gitbucket 2>/dev/null || true && adduser -u 65532 -G gitbucket -D -h /opt/gitbucket -s /sbin/nologin gitbucket
-RUN mkdir -p /opt/gitbucket /var/log/gitbucket /var/data/gitbucket && \ 2>/dev/null || true ; \
+RUN mkdir -p /opt/gitbucket /var/log/gitbucket /var/data/gitbucket ; \
     chown -R 65532:65532 /opt/gitbucket /var/log/gitbucket /var/data/gitbucket
 COPY --from=builder /tmp/gitbucket.war /opt/gitbucket/gitbucket.war
 USER 65532:65532

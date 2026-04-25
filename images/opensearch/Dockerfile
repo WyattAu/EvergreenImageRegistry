@@ -21,7 +21,7 @@ RUN addgroup -S 65532 opensearch && \
 RUN apk add --no-cache curl ca-certificates gosu || true
 COPY --from=downloader /opt/opensearch-2.12.0 /opt/opensearch
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-RUN mkdir -p /app/data /app/logs /app/conf && \ 2>/dev/null || true ; \
+RUN mkdir -p /app/data /app/logs /app/conf ; \
     chown -R opensearch:opensearch /app /opt/opensearch && \
     ln -sf /app/conf /opt/opensearch/config/custom && \
     echo "y" | /opt/opensearch/bin/opensearch-plugin install analysis-icu 2>/dev/null || true

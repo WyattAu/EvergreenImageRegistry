@@ -11,7 +11,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends openjdk-17-jre-headless && \
     rm -rf /var/lib/apt/lists/*
 COPY --from=downloader /opt/apache-cassandra-5.0 /opt/cassandra
-RUN mkdir -p /var/lib/cassandra /var/log/cassandra /app && \ 2>/dev/null || true ; \
+RUN mkdir -p /var/lib/cassandra /var/log/cassandra /app ; \
     chown -R 65532:65532 /var/lib/cassandra /var/log/cassandra /app /opt/cassandra
 
 # hadolint ignore=DL3023

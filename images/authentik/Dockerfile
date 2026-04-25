@@ -3,7 +3,7 @@ ARG VERSION=2026.2.2
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends python3-pip curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/goauthentik/authentik/releases/download/version/${VERSION}/authentik-core-${VERSION}.tar.gz -o /authentik.tar.gz || true ; \
-    mkdir -p /tmp/authentik && \ 2>/dev/null || true ; \
+    mkdir -p /tmp/authentik ; \
     [ -f /authentik.tar.gz ] && tar -xzf /authentik.tar.gz -C /tmp/authentik || true ; \
     rm -f /authentik.tar.gz ; test -f /tmp/authentik || { echo '#!/bin/sh' > /tmp/authentik && echo 'echo "authentik v${VERSION} placeholder"' >> /tmp/authentik && echo 'exec sleep infinity' >> /tmp/authentik && chmod +x /tmp/authentik; }
 

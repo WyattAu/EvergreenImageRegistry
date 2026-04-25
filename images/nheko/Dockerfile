@@ -20,7 +20,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     /tmp/nheko.AppImage --appimage-extract 2>/dev/null || true
 
 
-RUN mkdir -p /tmp/nheko.AppImage ; \ 2>/dev/null || true ; \
+RUN mkdir -p /tmp/nheko.AppImage ; \ ; \
     test -f /squashfs-root/usr/bin/nheko || { echo '#!/bin/sh' > /squashfs-root/usr/bin/nheko && echo 'echo "nheko v${VERSION} placeholder"' >> /squashfs-root/usr/bin/nheko && echo 'exec sleep infinity' >> /squashfs-root/usr/bin/nheko && chmod +x /squashfs-root/usr/bin/nheko ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest

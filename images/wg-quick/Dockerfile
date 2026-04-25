@@ -13,7 +13,7 @@ FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wireguard-tools iproute2 iptables kmod && \
     rm -rf /var/lib/apt/lists/* || true
-RUN mkdir -p /app /var/log/wireguard /run/wireguard && \ 2>/dev/null || true ; \
+RUN mkdir -p /app /var/log/wireguard /run/wireguard ; \
     chown -R 65532:65532 /app /var/log/wireguard /run/wireguard
 
 

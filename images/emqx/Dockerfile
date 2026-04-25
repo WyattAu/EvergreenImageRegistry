@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://www.emqx.com/en/downloads/broker/v5.8.0/emqx-5.8.0-debian12-amd64.tar.gz" || true ; \
     -o /emqx.tar.gz
-RUN mkdir -p /opt/emqx && \ 2>/dev/null || true ; \
+RUN mkdir -p /opt/emqx ; \
     [ -f /emqx.tar.gz ] && tar -xzf /emqx.tar.gz -C /opt/emqx --strip-components=1 && rm /emqx.tar.gz || true
 RUN mkdir -p /app /opt/emqx/data /opt/emqx/log 2>/dev/null || true
 

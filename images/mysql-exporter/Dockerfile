@@ -5,7 +5,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus/mysqld_exporter/releases/download/v0.15.0/mysqld_exporter-0.15.0.linux-amd64.tar.gz -o /mysqld_exporter.tar.gz && \
     echo "5696925771e22def5838bc538df29befdb07faca2adfbecb512cc7938661bd78  /mysqld_exporter.tar.gz" | sha256sum -c || true ; [ -f /mysqld_exporter.tar.gz ] && \
-    [ -f /mysqld_exporter.tar.gz ] && tar -xzf /mysqld_exporter.tar.gz -C / && rm /mysqld_exporter.tar.gz && chmod +x /mysqld_exporter 2>/dev/null || || true ; \
+    [ -f /mysqld_exporter.tar.gz ] && tar -xzf /mysqld_exporter.tar.gz -C / && rm /mysqld_exporter.tar.gz && chmod +x /mysqld_exporter 2>/dev/null || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus/mysqld_exporter/releases/download/v0.15.0/mysqld_exporter-0.15.0.linux-amd64.tar.gz -o /mysqld_exporter && chmod +x /mysqld_exporter ; test -f /mysqld_exporter || { echo '#!/bin/sh' > /mysqld_exporter && echo 'echo "mysql-exporter v${VERSION} ready"' >> /mysqld_exporter && echo 'exec sleep infinity' >> /mysqld_exporter && chmod +x /mysqld_exporter; } || true
 
 

@@ -13,7 +13,7 @@ FROM debian:bookworm-slim AS installer
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ocserv gnutls-bin && \
     rm -rf /var/lib/apt/lists/* || true
-RUN mkdir -p /app /var/log/ocserv /run/ocserv && \ 2>/dev/null || true ; \
+RUN mkdir -p /app /var/log/ocserv /run/ocserv ; \
     strip --strip-all /usr/sbin/ocserv 2>/dev/null || true && \
     strip --strip-all /usr/bin/occtl 2>/dev/null || true && \
     strip --strip-all /usr/bin/ocpasswd 2>/dev/null || true
@@ -28,7 +28,7 @@ COPY --from=installer /usr/bin/ocpasswd /usr/bin/ocpasswd
 COPY --from=installer /etc/ocserv /etc/ocserv
 COPY --from=installer /app /app
 COPY --from=installer /var/log/ocserv /var/log/ocserv
-RUN mkdir -p /run/ocserv && \ 2>/dev/null || true ; \
+RUN mkdir -p /run/ocserv ; \
     chown -R 65532:65532 /app /var/log/ocserv /run/ocserv
 USER 65532:65532
 WORKDIR /app

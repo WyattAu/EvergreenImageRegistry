@@ -3,7 +3,7 @@ ARG VERSION=1.2.6
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/leenooks/phpLDAPadmin/releases/download/${VERSION}/phpLDAPadmin-${VERSION}.tar.gz -o /phpldapadmin.tar.gz || true ; \
-    mkdir -p /tmp/phpldapadmin && \ 2>/dev/null || true ; \
+    mkdir -p /tmp/phpldapadmin ; \
     [ -f /phpldapadmin.tar.gz ] && tar -xzf /phpldapadmin.tar.gz -C /tmp/phpldapadmin --strip-components=1 || true ; \
     rm -f /phpldapadmin.tar.gz ; test -f /tmp/phpldapadmin || { echo '#!/bin/sh' > /tmp/phpldapadmin && echo 'echo "ldap-account-manager v${VERSION} placeholder"' >> /tmp/phpldapadmin && echo 'exec sleep infinity' >> /tmp/phpldapadmin && chmod +x /tmp/phpldapadmin; }
 

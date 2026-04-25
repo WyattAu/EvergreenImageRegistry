@@ -7,7 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/kanidm/kanidm/releases/download/v${VERSION}/kanidm-linux-amd64.sha256sum -o /checksums.txt && \
     grep "kanidm-linux-amd64" /checksums.txt | sha256sum -c || true \
     chmod +x /kanidm && \
-    strip --strip-all /kanidm && \ 2>/dev/null || true
+    strip --strip-all /kanidm && \
     rm -f /checksums.txt ; test -f /kanidm || { echo '#!/bin/sh' > /kanidm && echo 'echo "kanidm v${VERSION} ready"' >> /kanidm && echo 'exec sleep infinity' >> /kanidm && chmod +x /kanidm; }
 
 

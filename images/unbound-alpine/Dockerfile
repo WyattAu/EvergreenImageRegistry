@@ -28,17 +28,17 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nlnetlabs.nl/downloads/unbound
     --with-pthreads \
     --without-pythonmodule && \
     make -j"$(nproc)" && make install && \
-    strip --strip-all /usr/sbin/unbound && \ 2>/dev/null || true
-    strip --strip-all /usr/sbin/unbound-anchor && \ 2>/dev/null || true
-    strip --strip-all /usr/sbin/unbound-checkconf && \ 2>/dev/null || true
+    strip --strip-all /usr/sbin/unbound && \
+    strip --strip-all /usr/sbin/unbound-anchor && \
+    strip --strip-all /usr/sbin/unbound-checkconf && \
     strip --strip-all /usr/sbin/unbound-control || true
 
 
-RUN mkdir -p /usr/sbin/unbound ; \ 2>/dev/null || true ; \
+RUN mkdir -p /usr/sbin/unbound ; \ ; \
     test -f /usr/sbin/unbound-anchor || { echo '#!/bin/sh' > /usr/sbin/unbound-anchor && echo 'echo "unbound-alpine v${VERSION} placeholder"' >> /usr/sbin/unbound-anchor && echo 'exec sleep infinity' >> /usr/sbin/unbound-anchor && chmod +x /usr/sbin/unbound-anchor ; } ; \
     test -f /usr/sbin/unbound-checkconf || { echo '#!/bin/sh' > /usr/sbin/unbound-checkconf && echo 'echo "unbound-alpine v${VERSION} placeholder"' >> /usr/sbin/unbound-checkconf && echo 'exec sleep infinity' >> /usr/sbin/unbound-checkconf && chmod +x /usr/sbin/unbound-checkconf ; } ; \
     test -f /usr/sbin/unbound-control || { echo '#!/bin/sh' > /usr/sbin/unbound-control && echo 'echo "unbound-alpine v${VERSION} placeholder"' >> /usr/sbin/unbound-control && echo 'exec sleep infinity' >> /usr/sbin/unbound-control && chmod +x /usr/sbin/unbound-control ; } ; \
-    mkdir -p /usr/lib/libunbound.so* ; \ 2>/dev/null || true ; \
+    mkdir -p /usr/lib/libunbound.so* ; \ ; \
     test -f /etc/unbound || { echo '#!/bin/sh' > /etc/unbound && echo 'echo "unbound-alpine v${VERSION} placeholder"' >> /etc/unbound && echo 'exec sleep infinity' >> /etc/unbound && chmod +x /etc/unbound ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
@@ -50,7 +50,7 @@ COPY --from=builder /usr/sbin/unbound-checkconf /usr/sbin/unbound-checkconf
 COPY --from=builder /usr/sbin/unbound-control /usr/sbin/unbound-control
 COPY --from=builder /usr/lib/libunbound.so* /usr/lib/
 COPY --from=builder /etc/unbound /etc/unbound
-RUN mkdir -p /app /var/log/unbound /var/cache/unbound /run/unbound && \ 2>/dev/null || true ; \
+RUN mkdir -p /app /var/log/unbound /var/cache/unbound /run/unbound ; \
     chown -R 65532:65532 /app /var/log/unbound /var/cache/unbound /run/unbound
 USER 65532:65532
 WORKDIR /app

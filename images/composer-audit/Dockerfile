@@ -14,7 +14,7 @@ RUN mkdir -p /app 2>/dev/null || true
 
 
 
-RUN test -e /usr/local/bin/composer || { mkdir -p /usr/local/bin/composer && echo 'composer-audit placeholder' > /usr/local/bin/composer/.placeholder ; } ; \ 2>/dev/null || true ; \
+RUN test -e /usr/local/bin/composer || { mkdir -p /usr/local/bin/composer && echo 'composer-audit placeholder' > /usr/local/bin/composer/.placeholder ; } ; \ ; \
     test -e /app || { mkdir -p /app && echo 'composer-audit placeholder' > /app/.placeholder ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 

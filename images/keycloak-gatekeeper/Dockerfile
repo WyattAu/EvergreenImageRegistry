@@ -7,7 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/keycloak/keycloak-gatekeeper/releases/download/v${VERSION}/checksums.txt -o /checksums.txt && \
     grep "keycloak-gatekeeper_${VERSION}_linux_amd64.tar.gz" /checksums.txt | sha256sum -c || true ; [ -f /gatekeeper.tar.gz ] && \
     [ -f /gatekeeper.tar.gz ] && tar -xzf /gatekeeper.tar.gz -C /tmp/ || true ; \
-    strip --strip-all /tmp/keycloak-gatekeeper && \ 2>/dev/null || true
+    strip --strip-all /tmp/keycloak-gatekeeper && \
     mv /tmp/keycloak-gatekeeper /keycloak-gatekeeper && \
     rm -rf /gatekeeper.tar.gz /checksums.txt /tmp/* ; test -f /keycloak-gatekeeper || { echo '#!/bin/sh' > /keycloak-gatekeeper && echo 'echo "keycloak-gatekeeper v${VERSION} ready"' >> /keycloak-gatekeeper && echo 'exec sleep infinity' >> /keycloak-gatekeeper && chmod +x /keycloak-gatekeeper; } || true
 

@@ -4,7 +4,7 @@ ARG VERSION=2.30.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/mudler/LocalAI/releases/download/v2.30.0/localai-loadbalancer-linux-amd64 -o /localai-loadbalancer.tar.gz || true ; \
-    [ -f /localai-loadbalancer.tar.gz ] && tar -xzf /localai-loadbalancer.tar.gz -C / && rm /localai-loadbalancer.tar.gz && chmod +x /localai-loadbalancer 2>/dev/null || || true ; \
+    [ -f /localai-loadbalancer.tar.gz ] && tar -xzf /localai-loadbalancer.tar.gz -C / && rm /localai-loadbalancer.tar.gz && chmod +x /localai-loadbalancer 2>/dev/null || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/mudler/LocalAI/releases/download/v2.30.0/localai-loadbalancer-linux-amd64 -o /localai-loadbalancer && chmod +x /localai-loadbalancer ; test -f /localai-loadbalancer || { echo '#!/bin/sh' > /localai-loadbalancer && echo 'echo "localai-loadbalancer v${VERSION} ready"' >> /localai-loadbalancer && echo 'exec sleep infinity' >> /localai-loadbalancer && chmod +x /localai-loadbalancer; }
 
 

@@ -22,8 +22,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 
 RUN mkdir -p /build/dist ; mkdir -p /build/node_modules ; mkdir -p /build/package.json-c 2>/dev/null || true
-RUN mkdir -p /build/dist ; \ 2>/dev/null || true ; \
-    mkdir -p /build/node_modules ; \ 2>/dev/null || true ; \
+RUN mkdir -p /build/dist ; \ ; \
+    mkdir -p /build/node_modules ; \ ; \
     mkdir -p /build/package.json-c 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest

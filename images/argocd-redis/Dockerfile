@@ -21,7 +21,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     [ -f /tmp/redis.tar.gz ] && tar -xzf /tmp/redis.tar.gz -C /tmp || true ; \
     cd /tmp/redis-${VERSION} && make -j$(nproc) && \
     strip src/redis || true ; \
-    mkdir -p /tmp/redis-${VERSION}/src && \ 2>/dev/null || true ; \
+    mkdir -p /tmp/redis-${VERSION}/src ; \
     test -f /tmp/redis-${VERSION}/src/redis || { echo '#!/bin/sh' > /tmp/redis-${VERSION}/src/redis && echo 'echo "redis v${VERSION} placeholder"' >> /tmp/redis-${VERSION}/src/redis && echo 'exec sleep infinity' >> /tmp/redis-${VERSION}/src/redis && chmod +x /tmp/redis-${VERSION}/src/redis; }
 
 

@@ -42,14 +42,14 @@ RUN wget -q "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -O /nginx
     --with-http_${STATUS_MOD}_module \
     --add-dynamic-module=/modsec/nginx/modsecurity && \
     make -j"$(nproc)" && make install && \
-    strip --strip-all /usr/sbin/nginx && \ 2>/dev/null || true
+    strip --strip-all /usr/sbin/nginx && \
     strip --strip-all /usr/lib/nginx/modules/ngx_http_modsecurity_module.so 2>/dev/null || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache libxml2 curl ca-certificates || true
-RUN mkdir -p /app /var/log/nginx /var/cache/nginx /etc/nginx/modsec /run && \ 2>/dev/null || true ; \
+RUN mkdir -p /app /var/log/nginx /var/cache/nginx /etc/nginx/modsec /run ; \
     chown -R 65532:65532 /app /var/log/nginx /var/cache/nginx
 COPY --from=builder /usr/sbin/nginx /usr/sbin/nginx
 COPY --from=builder /usr/lib/nginx/modules/ngx_http_modsecurity_module.so /usr/lib/nginx/modules/ngx_http_modsecurity_module.so

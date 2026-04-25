@@ -10,7 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/keys/nginx_signing.k
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/nginx /var/cache/nginx/proxy /var/cache/nginx/fastcgi /run && \ 2>/dev/null || true ; \
+RUN mkdir -p /app /var/log/nginx /var/cache/nginx/proxy /var/cache/nginx/fastcgi /run ; \
     chown -R 65532:65532 /app /var/log/nginx /var/cache/nginx
 
 

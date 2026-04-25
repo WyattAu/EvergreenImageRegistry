@@ -10,7 +10,7 @@ RUN apk add --no-cache ca-certificates tzdata curl || true
 
 RUN addgroup -S 65532 -r kdb 2>/dev/null || true && \
     adduser -u 65532 -G kdb -D -D -h /opt/kdb -s /sbin/nologin kdb 2>/dev/null || true && \
-    mkdir -p /opt/kdb/data /opt/kdb/logs /var/log/kdb && \ 2>/dev/null || true ; \
+    mkdir -p /opt/kdb/data /opt/kdb/logs /var/log/kdb ; \
     chown -R 65532:65532 /opt/kdb /var/log/kdb
 USER 65532:65532
 WORKDIR /opt/kdb

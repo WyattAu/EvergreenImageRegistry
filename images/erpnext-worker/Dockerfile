@@ -31,7 +31,7 @@ ENV PATH="/opt/venv/bin:${PATH}"
 ENV FRAPPE_VERSION="${VERSION}"
 RUN addgroup -S 65532 -r erpnext 2>/dev/null || true && \
     adduser -u 65532 -G erpnext -D -D -h /opt/erpnext -s /sbin/nologin erpnext 2>/dev/null || true && \
-    mkdir -p /opt/erpnext /var/log/erpnext && \ 2>/dev/null || true ; \
+    mkdir -p /opt/erpnext /var/log/erpnext ; \
     chown -R 65532:65532 /opt/erpnext /var/log/erpnext
 USER 65532:65532
 WORKDIR /opt/erpnext

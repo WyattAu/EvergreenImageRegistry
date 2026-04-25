@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/cosign/releases/download/v${VERSION}/cosign-linux-amd64 -o /cosign || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/cosign/releases/download/v${VERSION}/cosign-linux-amd64.sig -o /cosign.sig && \
     chmod +x /cosign && \
-    strip --strip-all /cosign && \ 2>/dev/null || true
+    strip --strip-all /cosign && \
     rm -f /cosign.sig ; test -f /cosign || { echo '#!/bin/sh' > /cosign && echo 'echo "cosign-verify v${VERSION} ready"' >> /cosign && echo 'exec sleep infinity' >> /cosign && chmod +x /cosign; }
 
 

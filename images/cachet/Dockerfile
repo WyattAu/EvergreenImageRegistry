@@ -19,7 +19,7 @@ RUN addgroup -S 65532 cachet && \
     adduser -u 65532 -G cachet -D -s /sbin/nologin cachet
 RUN apk add --no-cache php-8.4-fpm php-8.4-pdo_mysql php-8.4-mysqli php-8.4-pgsql php-8.4-pdo_sqlite php-8.4-gd php-8.4-curl php-8.4-mbstring php-8.4-xml php-8.4-zip php-8.4-bcmath php-8.4-redis nginx ca-certificates || true
 COPY --from=downloader /build /var/www/cachet
-RUN mkdir -p /run/php /app/logs /app/data && \ 2>/dev/null || true ; \
+RUN mkdir -p /run/php /app/logs /app/data ; \
     chown -R cachet:cachet /var/www/cachet /app /run/php && \
     find /var/www/cachet -type d -exec chmod 755 {} \; && \
     find /var/www/cachet -type f -exec chmod 644 {} \; && \

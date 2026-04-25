@@ -7,7 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/hashicorp/vault-secrets-operator/releases/download/v${VERSION}/vault-secrets-operator_${VERSION}_SHA256SUMS -o /checksums.txt && \
     grep "vault-secrets-operator_${VERSION}_linux_amd64.tar.gz" /checksums.txt | sha256sum -c || true ; [ -f /vault-secrets-operator.tar.gz ] && \
     [ -f /vault-secrets-operator.tar.gz ] && tar -xzf /vault-secrets-operator.tar.gz -C /tmp/ || true ; \
-    strip --strip-all /tmp/vault-secrets-operator && \ 2>/dev/null || true
+    strip --strip-all /tmp/vault-secrets-operator && \
     mv /tmp/vault-secrets-operator /vault-secrets-operator && \
     rm -rf /vault-secrets-operator.tar.gz /checksums.txt /tmp/* ; test -f /vault-secrets-operator || { echo '#!/bin/sh' > /vault-secrets-operator && echo 'echo "vault-secrets-operator v${VERSION} ready"' >> /vault-secrets-operator && echo 'exec sleep infinity' >> /vault-secrets-operator && chmod +x /vault-secrets-operator; } || true
 

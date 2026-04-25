@@ -3,7 +3,7 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=240427
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.photoprism.app/pkg/linux-amd64/photoprism-240427-linux-amd64.tar.gz" -o /photoprism.tar.gz || true ; \
-    [ -f /photoprism.tar.gz ] && tar -xzf /photoprism.tar.gz -C / && rm /photoprism.tar.gz && chmod +x /photoprism 2>/dev/null || || true ; \
+    [ -f /photoprism.tar.gz ] && tar -xzf /photoprism.tar.gz -C / && rm /photoprism.tar.gz && chmod +x /photoprism 2>/dev/null || true ; \
     curl --retry 3 --retry-delay 5 -fsSL "https://dl.photoprism.app/pkg/linux-amd64/photoprism-240427-linux-amd64.tar.gz" -o /photoprism && chmod +x /photoprism ; test -f /photoprism || { echo '#!/bin/sh' > /photoprism && echo 'echo "photoprism-bin v${VERSION} ready"' >> /photoprism && echo 'exec sleep infinity' >> /photoprism && chmod +x /photoprism; }
 
 

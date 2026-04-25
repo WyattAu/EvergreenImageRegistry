@@ -8,8 +8,8 @@ RUN mkdir -p /app 2>/dev/null || true
 
 
 
-RUN test -e /usr/lib/ruby/gems || { mkdir -p /usr/lib/ruby/gems && echo 'linguist placeholder' > /usr/lib/ruby/gems/.placeholder ; } ; \ 2>/dev/null || true ; \
-    test -e /usr/local/bundle || { mkdir -p /usr/local/bundle && echo 'linguist placeholder' > /usr/local/bundle/.placeholder ; } ; \ 2>/dev/null || true ; \
+RUN test -e /usr/lib/ruby/gems || { mkdir -p /usr/lib/ruby/gems && echo 'linguist placeholder' > /usr/lib/ruby/gems/.placeholder ; } ; \ ; \
+    test -e /usr/local/bundle || { mkdir -p /usr/local/bundle && echo 'linguist placeholder' > /usr/local/bundle/.placeholder ; } ; \ ; \
     test -e /app || { mkdir -p /app && echo 'linguist placeholder' > /app/.placeholder ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 

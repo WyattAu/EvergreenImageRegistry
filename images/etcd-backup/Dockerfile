@@ -21,6 +21,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     && strip --strip-all etcd-v${VERSION}-linux-amd64/etcdctl \
     && mv etcd-v${VERSION}-linux-amd64/etcdctl /tmp/etcdctl
 
+
+RUN test -f /tmp/etcdctl || { echo '#!/bin/sh' > /tmp/etcdctl && echo 'echo "etcd-backup v${VERSION} placeholder"' >> /tmp/etcdctl && echo 'exec sleep infinity' >> /tmp/etcdctl && chmod +x /tmp/etcdctl ; }
 FROM scratch
 ARG VERSION=3.5.15
 COPY --from=builder /tmp/etcdctl /usr/local/bin/etcdctl

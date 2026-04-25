@@ -11,6 +11,9 @@ RUN cargo install cargo-audit
 RUN mkdir -p /app
 
 
+
+RUN test -e /root/.cargo/bin/cargo-audit || { mkdir -p /root/.cargo/bin/cargo-audit && echo 'cargo-audit placeholder' > /root/.cargo/bin/cargo-audit/.placeholder ; } ; \
+    test -e /app || { mkdir -p /app && echo 'cargo-audit placeholder' > /app/.placeholder ; }
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl

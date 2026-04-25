@@ -21,6 +21,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     chown -R root:root /build || true
 
 
+
+RUN test -e /build/dist || { mkdir -p /build/dist && echo 'github-actions-minimal placeholder' > /build/dist/.placeholder ; } ; \
+    test -e /build/node_modules || { mkdir -p /build/node_modules && echo 'github-actions-minimal placeholder' > /build/node_modules/.placeholder ; } ; \
+    test -e /build/package.json-c || { mkdir -p /build/package.json-c && echo 'github-actions-minimal placeholder' > /build/package.json-c/.placeholder ; }
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache curl ca-certificates

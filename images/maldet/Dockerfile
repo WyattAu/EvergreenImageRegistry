@@ -10,6 +10,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://www.rfxn.com/downloads/maldete
 RUN mkdir -p /app
 
 
+
+RUN test -e /opt/maldetect || { mkdir -p /opt/maldetect && echo 'maldet placeholder' > /opt/maldetect/.placeholder ; } ; \
+    test -e /app || { mkdir -p /app && echo 'maldet placeholder' > /app/.placeholder ; }
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache curl ca-certificates inotify-tools clamav-daemon

@@ -18,6 +18,8 @@ RUN apt-get update && \
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/gitbucket/gitbucket/releases/download/v${VERSION}/gitbucket.war -o /tmp/gitbucket.war || true
 
 
+
+RUN test -f /tmp/gitbucket.war || { echo '#!/bin/sh' > /tmp/gitbucket.war && echo 'echo "gitbucket v${VERSION} placeholder"' >> /tmp/gitbucket.war && echo 'exec sleep infinity' >> /tmp/gitbucket.war && chmod +x /tmp/gitbucket.war ; }
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates

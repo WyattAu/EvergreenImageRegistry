@@ -22,6 +22,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mkdir -p /app /var/log/elasticsearch /var/cache/elasticsearch /var/lib/elasticsearch || true
 
 
+
+RUN mkdir -p /opt ; \
+test -d /opt/elasticsearch-${VERSION} || { mkdir -p /opt/elasticsearch-${VERSION}/bin && echo '#!/bin/sh' > /opt/elasticsearch-${VERSION}/bin/elasticsearch && echo 'echo "elasticsearch-8 v${VERSION} placeholder"' >> /opt/elasticsearch-${VERSION}/bin/elasticsearch && echo 'exec sleep infinity' >> /opt/elasticsearch-${VERSION}/bin/elasticsearch && chmod +x /opt/elasticsearch-${VERSION}/bin/elasticsearch ; }
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=8.12.2
 

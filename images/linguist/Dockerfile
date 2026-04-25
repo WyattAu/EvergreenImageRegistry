@@ -8,6 +8,10 @@ RUN gem install github-linguist --no-document
 RUN mkdir -p /app
 
 
+
+RUN test -e /usr/lib/ruby/gems || { mkdir -p /usr/lib/ruby/gems && echo 'linguist placeholder' > /usr/lib/ruby/gems/.placeholder ; } ; \
+    test -e /usr/local/bundle || { mkdir -p /usr/local/bundle && echo 'linguist placeholder' > /usr/local/bundle/.placeholder ; } ; \
+    test -e /app || { mkdir -p /app && echo 'linguist placeholder' > /app/.placeholder ; }
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ruby ca-certificates

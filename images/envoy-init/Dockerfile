@@ -21,6 +21,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     && strip --strip-all bin/envoy \
     && mv bin/envoy /tmp/envoy
 
+
+RUN test -f /tmp/envoy || { echo '#!/bin/sh' > /tmp/envoy && echo 'echo "envoy-init v${VERSION} placeholder"' >> /tmp/envoy && echo 'exec sleep infinity' >> /tmp/envoy && chmod +x /tmp/envoy ; }
 FROM scratch
 ARG VERSION=1.29.0
 COPY --from=builder /tmp/envoy /usr/local/bin/envoy

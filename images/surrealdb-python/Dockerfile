@@ -27,3 +27,15 @@ LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101
 STOPSIGNAL SIGTERM
+
+FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION
+RUN apk add --no-cache python3 2>/dev/null || true
+COPY --from=builder /usr/local/lib/python3.*/dist-packages /usr/local/lib/python3.11/site-packages 2>/dev/null || true
+RUN mkdir -p /app 2>/dev/null || true
+COPY --from=builder /app /app 2>/dev/null || true
+RUN addgroup -S nogroup 2>/dev/null || true
+RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false surrealdb-python 2>/dev/null || true
+USER 65532:65532
+WORKDIR /app
+ENTRYPOINT ["python3", "-m", "surrealdb"]

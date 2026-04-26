@@ -22,7 +22,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache libstdc++ ca-certificates
-RUN adduser -D -u 65532 -s /sbin/nologin arango
+RUN adduser -D -u 65532 -s /bin/false -h /var/lib/arangodb arango
 RUN mkdir -p /var/lib/arangodb /var/log/arangodb /var/cache/arangodb /var/lib/arangodb3-apps
 COPY --from=builder /opt/arangodb3-linux-* /opt/arangodb
 RUN chown -R 65532:65532 /opt/arangodb /var/lib/arangodb /var/log/arangodb /var/cache/arangodb /var/lib/arangodb3-apps

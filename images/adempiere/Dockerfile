@@ -8,10 +8,11 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates curl 
+RUN apk add --no-cache ca-certificates curl
 COPY --from=downloader /opt/Adempiere_394 /opt/adempiere
-RUN mkdir -p /app /var/log/adempiere ; \
-    chown -R 65532:65532 /app /var/log/adempiere /opt/adempiereUSER 65532:65532
+RUN mkdir -p /app /var/log/adempiere && \
+    chown -R 65532:65532 /app /var/log/adempiere /opt/adempiere
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/opt/adempiere/Adempiere"]

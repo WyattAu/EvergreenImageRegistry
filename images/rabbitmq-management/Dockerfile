@@ -31,7 +31,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates 
-RUN adduser -u 65532 -s /sbin/nologin rabbitmq
+RUN adduser -u 65532 -s /bin/false rabbitmq
 RUN mkdir -p /var/lib/rabbitmq /var/log/rabbitmq /etc/rabbitmq
 COPY --from=builder /usr/lib/rabbitmq /usr/lib/rabbitmq
 COPY --from=builder /usr/sbin/rabbitmq* /usr/sbin/

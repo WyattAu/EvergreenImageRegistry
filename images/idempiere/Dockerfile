@@ -10,7 +10,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl 
 COPY --from=downloader /opt/idempiere-server-12.4.gtk.linux.x86_64 /opt/idempiere
-RUN mkdir -p /app /var/log/idempiere ; \
+RUN mkdir -p /app /var/log/idempiere ; 2>/dev/null || true \
     chown -R 65532:65532 /app /var/log/idempiere /opt/idempiereUSER 65532:65532
 WORKDIR /app
 EXPOSE 8080

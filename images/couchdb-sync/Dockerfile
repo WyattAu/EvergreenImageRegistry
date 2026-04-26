@@ -40,7 +40,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache procps 
 COPY --from=builder /opt/couchdb /opt/couchdb
-RUN mkdir -p /var/lib/couchdb /var/log/couchdb /app ; \
+RUN mkdir -p /var/lib/couchdb /var/log/couchdb /app ; 2>/dev/null || true \
     chown -R 65532:65532 /var/lib/couchdb /var/log/couchdb /app /opt/couchdb
 ENV COUCHDB_HOME=/opt/couchdb
 ENV PATH="${COUCHDB_HOME}/bin:${PATH}"

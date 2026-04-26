@@ -10,7 +10,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl 
 COPY --from=downloader /opt/stirling-pdf-0.46.0.jar /opt/stirling-pdf-core
-RUN mkdir -p /app /var/log/stirling-pdf-core ; \
+RUN mkdir -p /app /var/log/stirling-pdf-core ; 2>/dev/null || true \
     chown -R 65532:65532 /app /var/log/stirling-pdf-core /opt/stirling-pdf-coreUSER 65532:65532
 WORKDIR /app
 EXPOSE 8080

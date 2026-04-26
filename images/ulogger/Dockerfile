@@ -20,7 +20,7 @@ COPY --from=downloader /app /app
 COPY --from=downloader /var/log/ulogger /var/log/ulogger
 COPY --from=downloader /var/cache/ulogger /var/cache/ulogger
 RUN addgroup -S nogroup 2>/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin ulogger 2>/dev/null || true && \
+RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false ulogger 2>/dev/null || true && \
     chown -R 65532:65532 /app /var/log/ulogger /var/cache/ulogger 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app

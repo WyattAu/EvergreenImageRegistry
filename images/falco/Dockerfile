@@ -23,7 +23,7 @@ COPY --from=builder /etc/falco /etc/falco
 COPY --from=builder /app /app
 COPY --from=builder /var/log/falco /var/log/falco
 RUN addgroup -S nogroup
-RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin falco && \
+RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false falco && \
     chown -R 65532:65532 /app /var/log/falco
 USER 65532:65532
 WORKDIR /app

@@ -16,7 +16,7 @@ COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
 COPY --from=builder /config /config
 RUN addgroup -S nogroup
-RUN adduser -u 65532 -G nogroup -D -h /config -s /sbin/nologin esphome && \
+RUN adduser -u 65532 -G nogroup -D -h /config -s /bin/false esphome && \
     chown -R 65532:65532 /config /app
 USER 65532:65532
 ENV PATH="/opt/venv/bin:$PATH" HOME="/config"

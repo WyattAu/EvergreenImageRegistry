@@ -21,7 +21,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl 
-RUN adduser -u 65532 -s /sbin/nologin janusgraph 2>/dev/null || true
+RUN adduser -u 65532 -s /bin/false janusgraph 2>/dev/null || true
 RUN mkdir -p /var/lib/janusgraph /var/log/janusgraph /var/cache/janusgraph 2>/dev/null || true
 COPY --from=builder /opt/janusgraph-${VERSION} /opt/janusgraph
 RUN chown -R 65532:65532 /opt/janusgraph /var/lib/janusgraph /var/log/janusgraph /var/cache/janusgraph

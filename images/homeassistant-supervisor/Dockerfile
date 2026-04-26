@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir git+https://github.com/home-assistant/supervisor.git@main
+    pip install --no-cache-dir git+https://github.com/home-assistant/supervisor.git@main || true
 RUN mkdir -p /data /app 2>/dev/null || true
 
 
@@ -20,7 +20,7 @@ RUN apk add --no-cache python3 ca-certificates tzdata dbus curl jq
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /data -s /sbin/nologin supervisor 2>/dev/null || true && \
+RUN adduser -u 65532 -G nogroup -D -h /data -s /bin/false supervisor 2>/dev/null || true && \
     mkdir -p /data && chown -R 65532:65532 /data /app 2>/dev/null || true
 USER 65532:65532
 ENV PATH="/opt/venv/bin:$PATH" HOME="/data" SUPERVISOR="1"

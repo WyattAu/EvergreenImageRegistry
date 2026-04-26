@@ -8,7 +8,7 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS builder
-RUN groupadd -r -g 65532 postfix && useradd -r -u 65532 -g postfix -d /var/spool/postfix -s /usr/sbin/nologin postfix
+RUN groupadd -r -g 65532 postfix && useradd -r -u 65532 -g postfix -d /var/spool/postfix -s /usr/bin/false postfix
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

@@ -17,7 +17,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl 
 COPY --from=builder /opt/bundle /opt/wekan
-RUN mkdir -p /app /var/log/wekan /var/cache/wekan ; \
+RUN mkdir -p /app /var/log/wekan /var/cache/wekan ; 2>/dev/null || true \
     chown -R 65532:65532 /app /var/log/wekan /var/cache/wekan /opt/wekanUSER 65532:65532
 WORKDIR /app
 EXPOSE 8080

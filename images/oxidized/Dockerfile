@@ -32,7 +32,7 @@ RUN test -f /usr/lib/ruby/gems || { echo '#!/bin/sh' > /usr/lib/ruby/gems && ech
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ruby libssh2 ca-certificates git openssh 
 RUN addgroup -g 65532 oxidized && \
-    adduser -u 65532 -G oxidized -s /sbin/nologin -D oxidized
+    adduser -u 65532 -G oxidized -s /bin/false -D oxidized
 COPY --from=builder /usr/lib/ruby/gems /usr/lib/ruby/gems
 COPY --from=builder /usr/local/bin/oxidized /usr/local/bin/oxidized
 RUN mkdir -p /app/conf /app/logs /app/data /var/lib/oxidized ; \

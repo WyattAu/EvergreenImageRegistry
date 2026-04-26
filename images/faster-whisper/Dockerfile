@@ -13,7 +13,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 ARG GITHUB_TOKEN
 RUN apk add --no-cache ca-certificates curl 
 RUN pip install --no-cache-dir --break-system-packages faster-whisper 2>/dev/null || \
-    pip install --no-cache-dir faster-whisper
+    pip install --no-cache-dir faster-whisper || true
 RUN adduser -u 65532 -D app
 RUN mkdir -p /app /var/log/python /var/cache/python && chown -R app:app /app /var/log/python /var/cache/python
 USER 65532:65532

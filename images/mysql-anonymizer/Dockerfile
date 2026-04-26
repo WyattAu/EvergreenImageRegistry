@@ -48,7 +48,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     anonymize_dump(args.input, args.output, args.rules)
 SCRIPT
-RUN adduser -u 65532 -s /sbin/nologin anon && \
+RUN adduser -u 65532 -s /bin/false anon && \
     mkdir -p /app /var/log/mysql-anonymizer /var/cache/mysql-anonymizer ; \
     chown -R 65532:65532 /app /var/log/mysql-anonymizer /var/cache/mysql-anonymizer && \
     chmod +x /app/anonymize.py

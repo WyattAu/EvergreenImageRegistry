@@ -15,7 +15,7 @@ RUN apk add --no-cache nodejs npm ca-certificates
 COPY --from=builder /src /app/src
 COPY --from=builder /data /data
 RUN addgroup -S nogroup 2>/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /data -s /sbin/nologin nodered 2>/dev/null || true && \
+RUN adduser -u 65532 -G nogroup -D -h /data -s /bin/false nodered 2>/dev/null || true && \
     chown -R 65532:65532 /app /data 2>/dev/null || true
 USER 65532:65532
 WORKDIR /data

@@ -22,7 +22,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates libstdc++ 
-RUN adduser -u 65532 -s /sbin/nologin rethinkdb
+RUN adduser -u 65532 -s /bin/false rethinkdb
 RUN mkdir -p /var/lib/rethinkdb /var/log/rethinkdb /var/cache/rethinkdb /data
 COPY --from=builder /opt/rethinkdb-${VERSION} /opt/rethinkdb
 RUN chown -R 65532:65532 /opt/rethinkdb /var/lib/rethinkdb /var/log/rethinkdb /var/cache/rethinkdb /data

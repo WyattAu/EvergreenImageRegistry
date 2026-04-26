@@ -24,7 +24,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=5.0.18
 
 RUN apk add --no-cache ca-certificates 
-RUN addgroup -S 65532 mongodb && adduser -u 65532 -G mongodb -D -s /sbin/nologin mongodb
+RUN addgroup -S 65532 mongodb && adduser -u 65532 -G mongodb -D -s /bin/false mongodb
 RUN mkdir -p /data/db /var/log/mongodb /var/cache/mongodb && chown -R 65532:65532 /data/db /var/log/mongodb /var/cache/mongodb 2>/dev/null || true
 COPY --from=builder /usr/local/bin/mongod /usr/local/bin/mongod
 COPY --from=builder /usr/local/bin/mongo /usr/local/bin/mongo

@@ -18,7 +18,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache python3 ca-certificates && \
     mkdir -p /app /var/log/python-slim /var/cache/python-slim ; \
     addgroup -g 65532 python && \
-    adduser -u 65532 -G python -s /sbin/nologin -D python 
+    adduser -u 65532 -G python -s /bin/false -D python 
 USER 65532:65532
 WORKDIR /app
 ENV PYTHONUNBUFFERED=1 \

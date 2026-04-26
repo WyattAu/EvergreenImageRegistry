@@ -20,7 +20,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates 
-RUN adduser -u 65532 -s /sbin/nologin derby 2>/dev/null || true
+RUN adduser -u 65532 -s /bin/false derby 2>/dev/null || true
 RUN mkdir -p /var/lib/derby /var/log/derby 2>/dev/null || true
 COPY --from=builder /opt/db-derby-${VERSION}-bin /opt/derby
 RUN chown -R 65532:65532 /opt/derby /var/lib/derby /var/log/derby

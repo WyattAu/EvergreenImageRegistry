@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS builder
-RUN useradd -m -u 65532 -s /usr/sbin/nologin postgres 2>/dev/null || true
+RUN useradd -m -u 65532 -s /usr/bin/false postgres 2>/dev/null || true
 RUN mkdir -p /app /var/log/postgres /var/cache/postgres 2>/dev/null || true
 
 

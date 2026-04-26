@@ -22,7 +22,7 @@ RUN apk add --no-cache php-8.4 php-8.4-mbstring php-8.4-xml php-8.4-curl ca-cert
 COPY --from=builder /usr/local/bin/composer /usr/local/bin/composer
 COPY --from=builder /app /app
 RUN addgroup -S nogroup
-RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin composer && \
+RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false composer && \
     chown -R 65532:65532 /app
 USER 65532:65532
 WORKDIR /app

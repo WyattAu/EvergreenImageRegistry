@@ -38,7 +38,7 @@ if [ -d "/docker-entrypoint-initdb.d" ]; then
     done
 fi
 SCRIPT
-RUN chmod +x /app/ 2>/dev/null || true ; init.sh && chown 65532:65532 /app/init.sh
+RUN chmod +x /app/init.sh 2>/dev/null || true && chown 65532:65532 /app/init.sh 2>/dev/null || true
 ENTRYPOINT ["/app/init.sh"]
 LABEL org.opencontainers.image.title="mysql-init" \
       org.opencontainers.image.version="8.0" \

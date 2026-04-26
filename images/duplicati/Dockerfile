@@ -25,7 +25,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dot.net/v1/dotnet-install.sh" 
     /dotnet-install.sh --channel 8.0 --runtime dotnet --install-dir /usr/share/dotnet && \
     rm /dotnet-install.sh || true
 COPY --from=builder /opt/duplicati /opt/duplicati
-RUN mkdir -p /app /var/log/duplicati /var/cache/duplicati /root/.config/Duplicati \ ; \
+RUN mkdir -p /app /var/log/duplicati /var/cache/duplicati /root/.config/Duplicati ; \
     chown -R 65532:65532 /app /var/log/duplicati /var/cache/duplicatiUSER 65532:65532
 WORKDIR /app
 ENV DOTNET_ROOT=/usr/share/dotnet

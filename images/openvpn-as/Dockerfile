@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN mkdir -p /app /var/log/openvpn-as 2>/dev/null || true
 
 
-RUN mkdir -p /usr/local/openvpn_as ; \ ; \
+RUN mkdir -p /usr/local/openvpn_as ; ; \
     test -f /usr/bin/openvpn-as || { echo '#!/bin/sh' > /usr/bin/openvpn-as && echo 'echo "openvpn-as v${VERSION} placeholder"' >> /usr/bin/openvpn-as && echo 'exec sleep infinity' >> /usr/bin/openvpn-as && chmod +x /usr/bin/openvpn-as ; } ; \
     test -f /etc/init.d/openvpn-as || { echo '#!/bin/sh' > /etc/init.d/openvpn-as && echo 'echo "openvpn-as v${VERSION} placeholder"' >> /etc/init.d/openvpn-as && echo 'exec sleep infinity' >> /etc/init.d/openvpn-as && chmod +x /etc/init.d/openvpn-as ; } ; \
     test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "openvpn-as v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; } ; \

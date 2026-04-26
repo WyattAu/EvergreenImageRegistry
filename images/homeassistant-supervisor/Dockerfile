@@ -11,7 +11,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 RUN mkdir -p /data /app 2>/dev/null || true
 
 
-RUN mkdir -p /opt/venv ; \ ; \
+RUN mkdir -p /opt/venv ; ; \
     test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "homeassistant-supervisor v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest

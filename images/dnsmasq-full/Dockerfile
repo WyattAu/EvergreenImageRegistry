@@ -22,7 +22,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://thekelleys.org.uk/dnsmasq/dnsm
     strip --strip-all /install/usr/sbin/dnsmasq || true
 
 
-RUN mkdir -p /install/usr/sbin/dnsmasq ; \ ; \
+RUN mkdir -p /install/usr/sbin/dnsmasq ; ; \
     test -f /install/usr/share/man || { echo '#!/bin/sh' > /install/usr/share/man && echo 'echo "dnsmasq-full v${VERSION} placeholder"' >> /install/usr/share/man && echo 'exec sleep infinity' >> /install/usr/share/man && chmod +x /install/usr/share/man ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest

@@ -14,7 +14,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache nodejs ca-certificates curl || true
 COPY --from=builder /app /app
-RUN mkdir -p /app /var/log/node /var/cache/node \ ; \
+RUN mkdir -p /app /var/log/node /var/cache/node ; \
     chown -R 65532:65532 /app /var/log/node /var/cache/nodeUSER 65532:65532
 WORKDIR /app
 EXPOSE 8080

@@ -17,7 +17,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     strip --strip-all /tmp/rqlite-v${VERSION}-linux-amd64/rqlite ; strip --strip-all /tmp/rqlite-v${VERSION}-linux-amd64/rqlited \
     && mv /tmp/rqlite-v${VERSION}-linux-amd64/rqlite /usr/local/bin/rqlite ; mv /tmp/rqlite-v${VERSION}-linux-amd64/rqlited /usr/local/bin/rqlited ; rm -rf /tmp/rqlite.tgz /tmp/rqlite-v${VERSION}-linux-amd64
 
-RUN mkdir -p /usr/local/bin/rqlite ; \ ; \
+RUN mkdir -p /usr/local/bin/rqlite ; ; \
     mkdir -p /usr/local/bin/rqlited 2>/dev/null || true
 
 FROM scratch

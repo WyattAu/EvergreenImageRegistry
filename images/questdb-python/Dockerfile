@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 RUN mkdir -p /app 2>/dev/null || true
 
 
-RUN mkdir -p /opt/venv ; \ ; \
+RUN mkdir -p /opt/venv ; ; \
     mkdir -p /app 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest

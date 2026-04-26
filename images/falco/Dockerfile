@@ -11,9 +11,9 @@ RUN mkdir -p /app /var/log/falco /etc/falco 2>/dev/null || true
 
 
 
-RUN test -e /usr/bin/falco || { mkdir -p /usr/bin/falco && echo 'falco placeholder' > /usr/bin/falco/.placeholder ; } ; \ ; \
-    test -e /etc/falco || { mkdir -p /etc/falco && echo 'falco placeholder' > /etc/falco/.placeholder ; } ; \ ; \
-    test -e /app || { mkdir -p /app && echo 'falco placeholder' > /app/.placeholder ; } ; \ ; \
+RUN test -e /usr/bin/falco || { mkdir -p /usr/bin/falco && echo 'falco placeholder' > /usr/bin/falco/.placeholder ; } ; ; \
+    test -e /etc/falco || { mkdir -p /etc/falco && echo 'falco placeholder' > /etc/falco/.placeholder ; } ; ; \
+    test -e /app || { mkdir -p /app && echo 'falco placeholder' > /app/.placeholder ; } ; ; \
     test -e /var/log/falco || { mkdir -p /var/log/falco && echo 'falco placeholder' > /var/log/falco/.placeholder ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 

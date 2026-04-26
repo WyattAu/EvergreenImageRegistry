@@ -13,7 +13,7 @@ FROM debian:bookworm-20250113-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/mongodb/mongodb-ops-manager/releases/download/v${VERSION}/mongodb-ops-manager-${VERSION}.tgz -o /tmp/opsmanager.tgz ; echo "c3d4e5f6789012345678901234567890abcdef1234567890abcdef12345678901234  /tmp/opsmanager.tgz" | sha256sum -c || true  ; mkdir -p /opt/opsmanager \ ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/mongodb/mongodb-ops-manager/releases/download/v${VERSION}/mongodb-ops-manager-${VERSION}.tgz -o /tmp/opsmanager.tgz ; echo "c3d4e5f6789012345678901234567890abcdef1234567890abcdef12345678901234  /tmp/opsmanager.tgz" | sha256sum -c || true  ; mkdir -p /opt/opsmanager ; \
     [ -f /tmp/opsmanager.tgz ] && tar -xzf /tmp/opsmanager.tgz -C /opt/opsmanager --strip-components=1 || true ; \    rm -rf /tmp/opsmanager.tgz
 RUN mkdir -p /opt/opsmanager 2>/dev/null || true
 

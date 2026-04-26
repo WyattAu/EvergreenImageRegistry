@@ -1,4 +1,3 @@
-FROM debian:bookworm-slim AS downloader
 ARG VERSION=26.6.1
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
@@ -11,7 +10,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 
 RUN mkdir -p /opt/keycloak-${VERSION} 2>/dev/null || true
-FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates 
 COPY --from=downloader /opt/keycloak-${VERSION} /opt/keycloak

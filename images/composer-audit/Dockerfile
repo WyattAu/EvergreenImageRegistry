@@ -21,7 +21,8 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache php-8.4 php-8.4-mbstring php-8.4-xml php-8.4-curl ca-certificates curl unzip 
 COPY --from=builder /usr/local/bin/composer /usr/local/bin/composer
 COPY --from=builder /app /app
-RUN addgroup -S nogroup
+RUN addgroup -S nogroup 2>/dev/null || true
+mkdir -p /app 2>/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false composer && \
     chown -R 65532:65532 /app
 USER 65532:65532

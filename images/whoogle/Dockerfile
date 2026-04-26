@@ -18,7 +18,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 RUN mkdir -p /app/config /app/data 2>/dev/null || true
 
 
-    test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "whoogle v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; }
+    RUN test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "whoogle v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=0.9.0

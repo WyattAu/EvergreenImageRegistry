@@ -1,4 +1,3 @@
-FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 ARG NGINX_VERSION=1.27.1
 ARG MODSEC_VERSION=3.0.12
@@ -38,7 +37,6 @@ RUN wget -q "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -O /nginx
 
 
 
-FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache libxml2 curl ca-certificates 
 RUN mkdir -p /app /var/log/nginx /var/cache/nginx /etc/nginx/modsec /run ; \

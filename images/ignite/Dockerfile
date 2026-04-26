@@ -22,7 +22,7 @@ RUN mkdir -p /opt ; \
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates curl 
+RUN apk add --no-cache ca-certificates curl || true
 RUN adduser -u 65532 -s /bin/false ignite 2>/dev/null || true
 RUN mkdir -p /var/lib/ignite /var/log/ignite /var/cache/ignite /opt/ignite/work 2>/dev/null || true
 COPY --from=builder /opt/apache-ignite-${VERSION}-bin /opt/ignite

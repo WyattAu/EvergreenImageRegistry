@@ -1,4 +1,3 @@
-FROM debian:bookworm-slim AS downloader
 ARG VERSION=22.12.0
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://nodejs.org/dist/v22.12.0/node-v22.12.0-linux-x64.tar.xz" -o /node.tar.xz || true ; \
@@ -6,7 +5,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nodejs.org/dist/v22.12.0/node-
 
 
 
-FROM gcr.io/distroless/nodejs22-debian12
 COPY --from=downloader /opt/node/lib/node_modules /usr/local/lib/node_modules
 COPY --from=downloader /opt/node/bin/node /usr/local/bin/node
 USER 65532:65532

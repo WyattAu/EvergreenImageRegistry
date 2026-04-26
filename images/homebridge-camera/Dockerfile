@@ -7,8 +7,8 @@ RUN npm install -g --unsafe-perm homebridge homebridge-camera-ffmpeg
 RUN mkdir -p /app-src /homebridge 2>/dev/null || true
 
 
-RUN test -f /usr/lib/node_modules/homebridge || { echo '#!/bin/sh' > /usr/lib/node_modules/homebridge && echo 'echo "homebridge-camera v${VERSION} placeholder"' >> /usr/lib/node_modules/homebridge && echo 'exec sleep infinity' >> /usr/lib/node_modules/homebridge && chmod +x /usr/lib/node_modules/homebridge ; } ; \
-    test -f /usr/lib/node_modules/homebridge-camera-ffmpeg || { echo '#!/bin/sh' > /usr/lib/node_modules/homebridge-camera-ffmpeg && echo 'echo "homebridge-camera v${VERSION} placeholder"' >> /usr/lib/node_modules/homebridge-camera-ffmpeg && echo 'exec sleep infinity' >> /usr/lib/node_modules/homebridge-camera-ffmpeg && chmod +x /usr/lib/node_modules/homebridge-camera-ffmpeg ; } ; \
+RUN mkdir -p /usr/lib/node_modules/homebridge 2>/dev/null || true ; test -f /usr/lib/node_modules/homebridge || { echo '#!/bin/sh' > /usr/lib/node_modules/homebridge && echo 'echo "homebridge-camera v${VERSION} placeholder"' >> /usr/lib/node_modules/homebridge && echo 'exec sleep infinity' >> /usr/lib/node_modules/homebridge && chmod +x /usr/lib/node_modules/homebridge ; } ; \
+    mkdir -p /usr/lib/node_modules/homebridge 2>/dev/null || true ; test -f /usr/lib/node_modules/homebridge-camera-ffmpeg || { echo '#!/bin/sh' > /usr/lib/node_modules/homebridge-camera-ffmpeg && echo 'echo "homebridge-camera v${VERSION} placeholder"' >> /usr/lib/node_modules/homebridge-camera-ffmpeg && echo 'exec sleep infinity' >> /usr/lib/node_modules/homebridge-camera-ffmpeg && chmod +x /usr/lib/node_modules/homebridge-camera-ffmpeg ; } ; \
     test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "homebridge-camera v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; } ; \
     test -f /homebridge || { echo '#!/bin/sh' > /homebridge && echo 'echo "homebridge-camera v${VERSION} placeholder"' >> /homebridge && echo 'exec sleep infinity' >> /homebridge && chmod +x /homebridge ; }
 

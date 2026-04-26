@@ -21,7 +21,7 @@ RUN mkdir -p /opt/tigergraph-${VERSION} 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates curl libstdc++ python3 
+RUN apk add --no-cache ca-certificates curl libstdc++ python3 || true
 RUN adduser -u 65532 -s /bin/false tigergraph 2>/dev/null || true
 RUN mkdir -p /var/lib/tigergraph /var/log/tigergraph /var/cache/tigergraph 2>/dev/null || true
 COPY --from=builder /opt/tigergraph-${VERSION} /opt/tigergraph

@@ -19,7 +19,8 @@ RUN apk add --no-cache nodejs npm ca-certificates nginx php-8.4-fpm php-8.4-pdo_
 COPY --from=builder /src /app/src
 COPY --from=builder /config /config
 COPY --from=builder /app /app
-RUN addgroup -S nogroup
+RUN addgroup -S nogroup 2>/dev/null || true
+mkdir -p /app 2>/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false organizr && \
     chown -R 65532:65532 /app /config
 USER 65532:65532

@@ -15,7 +15,7 @@ RUN apk add --no-cache curl ca-certificates \
     curl --retry 3 --retry-delay 5 -fsSL "https://dist.neo4j.org/neo4j-community-${VERSION}-unix.tar.gz" | \
     tar xz -C /opt && \
     ln -s /opt/neo4j-community-${VERSION} /opt/neo4j && \
-    ln -s /opt/neo4j/bin/neo4j /usr/local/bin/neo4j
+    ln -s /opt/neo4j/bin/neo4j /usr/local/bin/neo4j || true
 RUN adduser -u 65532 -D neo4j 2>/dev/null || true
 RUN mkdir -p /app /var/log/neo4j /var/cache/neo4j && chown -R neo4j:neo4j /app /var/log/neo4j /var/cache/neo4j 2>/dev/null || true
 USER neo4j

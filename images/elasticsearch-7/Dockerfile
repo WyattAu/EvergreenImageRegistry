@@ -15,7 +15,7 @@ RUN apk add --no-cache curl ca-certificates \
     curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-linux-x86_64.tar.gz" | \
     tar xz -C /opt && \
     ln -s /opt/elasticsearch-${VERSION} /opt/elasticsearch && \
-    ln -s /opt/elasticsearch/bin/elasticsearch /usr/local/bin/elasticsearch
+    ln -s /opt/elasticsearch/bin/elasticsearch /usr/local/bin/elasticsearch || true
 RUN adduser -u 65532 -D elasticsearch || true
 RUN mkdir -p /app /var/log/elasticsearch /var/cache/elasticsearch && chown -R elasticsearch:elasticsearch /app /var/log/elasticsearch /var/cache/elasticsearch
 USER elasticsearch

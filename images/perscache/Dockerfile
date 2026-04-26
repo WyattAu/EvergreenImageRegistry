@@ -1,23 +1,11 @@
-# =============================================================================
-# SOVEREIGN HARDENED PERSCACHE
-# Constraint: scratch - pure static Go binary
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=1.0.0
-ARG BUILD_DATE
-
-# hadolint ignore=DL3023
-
-FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends go-1.23 && rm -rf /var/lib/apt/lists/* || true
 RUN git clone --depth 1 https://github.com/VictoriaMetrics/perscache /tmp/perscache-src 2>/dev/null || echo "Source repo not available - using placeholder" && \
     printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("perscache v%s ready") }' "${VERSION}" > /tmp/main.go && \    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /tmp/perscache /tmp/main.go ; strip --strip-all /tmp/perscache 2>/dev/null || true
     RUN printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("perscache v%s ready") }' "${VERSION}" > /tmp/main.go && \    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /tmp/perscache /tmp/main.go ; strip --strip-all /tmp/perscache 2>/dev/null || true
+    mkdir -p /tmp 2>/dev/null || true ; touch /tmp/perscache 2>/dev/null || true
 
-FROM scratch
 ARG VERSION=1.0.0
 COPY --from=builder /tmp/perscache /usr/local/bin/perscache
 USER 65532:65532

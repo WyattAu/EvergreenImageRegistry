@@ -22,7 +22,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 RUN mkdir -p /opt/cubrid/bin ; test -f /opt/cubrid/bin/cubrid || { echo '#!/bin/sh' > /opt/cubrid/bin/cubrid && echo 'echo "cubrid v${VERSION} placeholder"' >> /opt/cubrid/bin/cubrid && echo 'exec sleep infinity' >> /opt/cubrid/bin/cubrid && chmod +x /opt/cubrid/bin/cubrid ; } 2>/dev/null || true
 
-    strip --strip-all /opt/cubrid/bin/cubrid /opt/cubrid/bin/cub_server 2>/dev/null || true
+    RUN strip --strip-all /opt/cubrid/bin/cubrid /opt/cubrid/bin/cub_server 2>/dev/null || true
 
 
 

@@ -27,7 +27,7 @@ RUN apk add --no-cache rsyslog ca-certificates
 COPY --from=builder /usr/sbin/rsyslogd /usr/sbin/rsyslogd
 RUN mkdir -p /app/conf /app/logs /app/run /app/spool /var/lib/rsyslog ; \
     RUN addgroup -S rsyslog 2>/dev/null || true && adduser -u 65532 -G rsyslog -D -s /bin/false rsyslog 2>/dev/null || true
-    chown -R rsyslog:rsyslog /app /var/lib/rsyslog
+    RUN chown -R rsyslog:rsyslog /app /var/lib/rsyslog
 COPY <<'EOF' /app/conf/rsyslog.conf
 module(load="imudp")
 input(type="imudp" port="514")
@@ -41,7 +41,7 @@ $FileCreateMode 0644
 $DirCreateMode 0755
 
 *.info;mail.none;authpriv.none;busybox-suid.none /app/logs/messages
-EOF
+RUN EOF
 RUN chown rsyslog:rsyslog /app/conf/rsyslog.conf
 USER 65532:65532
 WORKDIR /app

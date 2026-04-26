@@ -7,6 +7,7 @@ RUN mkdir -p /app-data /var/log/node /var/cache/node 2>/dev/null || true
 
 
 
+RUN mkdir -p /app 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache nodejs ca-certificates curl 

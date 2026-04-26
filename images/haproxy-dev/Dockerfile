@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 # hadolint ignore=DL3023
 
-FROM ghcr.io/wolfi-dev/os:latest AS builder
+FROM cgr.dev/chainguard/wolfi-base:latest AS builder
 RUN apk add --no-cache haproxy 
 RUN mkdir -p /tmp/haproxy 2>/dev/null || true
 RUN cp "$(which haproxy)" /tmp/haproxy/haproxy

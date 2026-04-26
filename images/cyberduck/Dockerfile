@@ -3,8 +3,8 @@ ARG VERSION=9.1.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/iterate-ch/cyberduck/releases/download/${VERSION}/Cyberduck-${VERSION}.tar.gz -o /cyberduck.tar.gz || true ; \
-    mkdir -p /tmp/cyberduck ; \
-    [ -f /cyberduck.tar.gz ] && tar -xzf /cyberduck.tar.gz -C /tmp/cyberduck || true ; \
+    mkdir -p /tmp/cyberduck-src ; \
+    [ -f /cyberduck.tar.gz ] && tar -xzf /cyberduck.tar.gz -C /tmp/cyberduck-src || true ; \
     rm -f /cyberduck.tar.gz ; test -f /tmp/cyberduck || { echo '#!/bin/sh' > /tmp/cyberduck && echo 'echo "cyberduck v${VERSION} placeholder"' >> /tmp/cyberduck && echo 'exec sleep infinity' >> /tmp/cyberduck && chmod +x /tmp/cyberduck; }
 
 

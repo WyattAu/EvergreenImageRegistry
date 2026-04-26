@@ -4,7 +4,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates tar && \
     rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://releases.mattermost.com/${VERSION}/mattermost-${VERSION}-linux-amd64.tar.gz" -o /mattermost.tar.gz || true ; \
-    mkdir -p /opt/mattermost ; \
+    mkdir -p /opt/mattermost-src ; \
     [ -f /mattermost.tar.gz ] && tar -xzf /mattermost.tar.gz -C /opt || true ; \
     rm /mattermost.tar.gz ; test -f /opt/mattermost || { echo '#!/bin/sh' > /opt/mattermost && echo 'echo "mattermost v${VERSION} placeholder"' >> /opt/mattermost && echo 'exec sleep infinity' >> /opt/mattermost && chmod +x /opt/mattermost; }
 
@@ -15,7 +15,7 @@ RUN apk add --no-cache ca-certificates tzdata
 COPY --from=downloader /opt/mattermost /opt/mattermost
 RUN addgroup -S 65532 -r mattermost 2>/dev/null || true && \
     adduser -u 65532 -G mattermost -D -D -h /opt/mattermost -s /sbin/nologin mattermost 2>/dev/null || true && \
-    mkdir -p /opt/mattermost/data /opt/mattermost/logs /opt/mattermost/plugins /opt/mattermost/client/plugins ; \
+    mkdir -p /opt/mattermost-src/data /opt/mattermost/logs /opt/mattermost/plugins /opt/mattermost/client/plugins ; \
     chown -R 65532:65532 /opt/mattermost
 USER 65532:65532
 WORKDIR /opt/mattermost

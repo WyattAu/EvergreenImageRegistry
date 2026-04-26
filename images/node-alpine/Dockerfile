@@ -2,7 +2,7 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=22.12.0
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates xz-utils && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://nodejs.org/dist/v22.12.0/node-v22.12.0-linux-x64.tar.xz" -o /node.tar.xz || true ; \
-    mkdir -p /opt/node && tar -xf /node.tar.xz -C /opt/node --strip-components=1 && rm /node.tar.xz ; \
+    mkdir -p /opt/node-src && tar -xf /node.tar.xz -C /opt/node-src --strip-components=1 && rm /node.tar.xz ; \
     strip /opt/node/bin/node 2>/dev/null ; test -f /opt/node || { echo '#!/bin/sh' > /opt/node && echo 'echo "node-alpine v${VERSION} placeholder"' >> /opt/node && echo 'exec sleep infinity' >> /opt/node && chmod +x /opt/node; } 2>/dev/null || true
 
 

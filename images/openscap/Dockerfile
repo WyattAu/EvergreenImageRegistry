@@ -3,7 +3,7 @@ FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libopenscap8 openscap-utils scap-security-guide ca-certificates ; rm -rf /var/lib/apt/lists/* || true
 
-RUN mkdir -p /app 2>/dev/null || true
+RUN mkdir -p /app-src 2>/dev/null || true
 
 
 RUN test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "openscap v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; }

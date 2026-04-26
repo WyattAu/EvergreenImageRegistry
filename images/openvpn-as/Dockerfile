@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get update && \
     apt-get install -y --no-install-recommends openvpn-as=${VERSION}-debian12 && \
     rm -rf /var/lib/apt/lists/* || true
-RUN mkdir -p /app /var/log/openvpn-as 2>/dev/null || true
+RUN mkdir -p /app-src /var/log/openvpn-as 2>/dev/null || true
 
 
 RUN mkdir -p /usr/local/openvpn_as ; \

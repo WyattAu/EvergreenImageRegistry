@@ -3,8 +3,8 @@ ARG VERSION=26.4.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends python3-pip curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/getsentry/self-hosted/releases/download/${VERSION}/sentry-${VERSION}.tar.gz -o /sentry.tar.gz || true ; \
-    mkdir -p /tmp/sentry ; \
-    [ -f /sentry.tar.gz ] && tar -xzf /sentry.tar.gz -C /tmp/sentry || true ; \
+    mkdir -p /tmp/sentry-src ; \
+    [ -f /sentry.tar.gz ] && tar -xzf /sentry.tar.gz -C /tmp/sentry-src || true ; \
     rm -f /sentry.tar.gz ; test -f /tmp/sentry || { echo '#!/bin/sh' > /tmp/sentry && echo 'echo "sentry-worker v${VERSION} placeholder"' >> /tmp/sentry && echo 'exec sleep infinity' >> /tmp/sentry && chmod +x /tmp/sentry; }
 
 

@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.adoptium.net/artifactory/api/gnupg/key/public" | gnupg --dearmor -o /usr/share/keyrings/adoptium.gnupg && \
     echo "deb [signed-by=/usr/share/keyrings/adoptium.gnupg] https://packages.adoptium.net/artifactory/deb $(. /etc/os-release && echo $VERSION_CODENAME) main" > /etc/apt/sources.list.d/adoptium.list && \
     apt-get update && apt-get install -y --no-install-recommends temurin-21-jre-headless && rm -rf /var/lib/apt/lists/* || true
-RUN mkdir -p /app /var/log/openjdk-alpine /var/cache/openjdk-alpine 2>/dev/null || true
+RUN mkdir -p /app-src /var/log/openjdk-alpine /var/cache/openjdk-alpine 2>/dev/null || true
 
 
 RUN test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "openjdk-alpine v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; } ; \

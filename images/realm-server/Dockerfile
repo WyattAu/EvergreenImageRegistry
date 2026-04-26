@@ -22,7 +22,7 @@ RUN mkdir -p /opt/realm-app-services-${VERSION} 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates curl || true
+RUN apk add --no-cache ca-certificates curl 
 RUN adduser -u 65532 -s /sbin/nologin realm 2>/dev/null || true
 RUN mkdir -p /var/lib/realm /var/log/realm /var/cache/realm 2>/dev/null || true
 COPY --from=builder /opt/realm-app-services-${VERSION} /opt/realm

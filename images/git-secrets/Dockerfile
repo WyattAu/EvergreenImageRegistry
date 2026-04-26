@@ -11,7 +11,7 @@ RUN mkdir -p /app 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache git ca-certificates || true
+RUN apk add --no-cache git ca-certificates 
 COPY --from=builder /usr/local/bin/git-secrets /usr/local/bin/git-secrets
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true

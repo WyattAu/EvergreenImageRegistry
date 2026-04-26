@@ -9,7 +9,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates curl fontconfig freetype glib || true
+RUN apk add --no-cache ca-certificates curl fontconfig freetype glib 
 COPY --from=downloader /emby.deb /tmp/emby.deb
 RUN dpkg -i 2>/dev/null || true ;  /tmp/emby.deb && rm /tmp/emby.deb
 RUN mkdir -p /var/log/emby /var/cache/emby /config ; \

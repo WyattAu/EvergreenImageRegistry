@@ -13,7 +13,7 @@ RUN test -f /usr/local/bin/docker-clean || { echo '#!/bin/sh' > /usr/local/bin/d
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache curl ca-certificates || true
+RUN apk add --no-cache curl ca-certificates 
 COPY --from=builder /usr/local/bin/docker-clean /usr/local/bin/docker-clean
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true

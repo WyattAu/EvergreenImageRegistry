@@ -23,7 +23,7 @@ RUN test -f /usr/local/bin/mongod || { echo '#!/bin/sh' > /usr/local/bin/mongod 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=7.0.9
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 RUN addgroup -S 65532 mongodb && adduser -u 65532 -G mongodb -D -s /sbin/nologin mongodb
 RUN mkdir -p /data/db /var/log/mongodb /var/cache/mongodb && chown -R 65532:65532 /data/db /var/log/mongodb /var/cache/mongodb 2>/dev/null || true
 COPY --from=builder /usr/local/bin/mongod /usr/local/bin/mongod

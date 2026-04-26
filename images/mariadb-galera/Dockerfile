@@ -17,7 +17,7 @@ ARG VERSION=11.4.2
 
 COPY --from=builder /usr/share/keyrings/mariadb-keyring.gnupg /usr/share/keyrings/mariadb-keyring.gnupg
 COPY --from=builder /etc/apt/sources.list.d/mariadb.list /etc/apt/sources.list.d/mariadb.list
-RUN apk add --no-cache mariadb-backup ca-certificates rsync socat || true
+RUN apk add --no-cache mariadb-backup ca-certificates rsync socat 
 RUN adduser -u 65532 -s /sbin/nologin mysql 2>/dev/null || true
 RUN mkdir -p /var/lib/mysql /var/log/mysql /var/cache/mysql /run/mysqld /etc/galera 2>/dev/null || true
 RUN chown -R 65532:65532 /var/lib/mysql /var/log/mysql /var/cache/mysql /run/mysqld /etc/galera

@@ -22,8 +22,8 @@ RUN mkdir -p /usr/sbin/pdns_server ; ; \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache sqlite-libs ca-certificates || true
-RUN mkdir -p /app /var/log/pdns /var/lib/pdns /etc/pdns 2>/dev/null || true
+RUN apk add --no-cache sqlite-libs ca-certificates 
+RUN mkdir -p /app /var/log/pdns /var/lib/pdns /etc/pdns
 COPY --from=installer /usr/sbin/pdns_server /usr/local/bin/pdns_server
 COPY --from=installer /usr/sbin/pdnsutil /usr/local/bin/pdnsutil
 COPY --from=installer /usr/lib/pdns /usr/lib/pdns

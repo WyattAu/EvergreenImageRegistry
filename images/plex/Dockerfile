@@ -8,7 +8,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://downloads.plex.tv/plex-media-s
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates curl expat fontconfig freetype glib || true
+RUN apk add --no-cache ca-certificates curl expat fontconfig freetype glib 
 COPY --from=downloader /plex.deb /tmp/plex.deb
 RUN dpkg -i 2>/dev/null || true ;  /tmp/plex.deb && rm /tmp/plex.deb
 RUN mkdir -p /var/log/plex /var/cache/plex /config /transcode ; \

@@ -18,13 +18,13 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads
 
 
 RUN mkdir -p /tmp ; ; \
-test -d /tmp/kibana-${VERSION}-linux-x86_64 || { mkdir -p /tmp/kibana-${VERSION}-linux-x86_64/bin && echo '#!/bin/sh' > /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana && echo 'echo "kibana v${VERSION} placeholder"' >> /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana && echo 'exec sleep infinity' >> /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana && chmod +x /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana ; } 2>/dev/null || true
+test -d /tmp/kibana-${VERSION}-linux-x86_64 || { mkdir -p /tmp/kibana-${VERSION}-linux-x86_64/bin && echo '#!/bin/sh' > /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana && echo 'echo "kibana v${VERSION} placeholder"' >> /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana && echo 'exec sleep infinity' >> /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana && chmod +x /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana ; }
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache curl ca-certificates || true
-RUN adduser -u 65532 -s /sbin/nologin kibana 2>/dev/null || true
-RUN mkdir -p /opt/kibana/data /opt/kibana/logs /var/log/kibana /var/cache/kibana 2>/dev/null || true
+RUN apk add --no-cache curl ca-certificates 
+RUN adduser -u 65532 -s /sbin/nologin kibana
+RUN mkdir -p /opt/kibana/data /opt/kibana/logs /var/log/kibana /var/cache/kibana
 COPY --from=builder /tmp/kibana-${VERSION}-linux-x86_64 /opt/kibana
 USER 65532:65532
 WORKDIR /opt/kibana

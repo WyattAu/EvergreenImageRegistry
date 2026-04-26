@@ -10,7 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache php-8.4-fpm php-ldap php-8.4-mbstring php-8.4-xml php-8.4-curl ca-certificates || true
+RUN apk add --no-cache php-8.4-fpm php-ldap php-8.4-mbstring php-8.4-xml php-8.4-curl ca-certificates 
 COPY --from=downloader /tmp/phpldapadmin /opt/phpldapadmin
 RUN mkdir -p /app && chown -R 65532:65532 /app /opt/phpldapadmin 2>/dev/null || true
 USER 65532:65532

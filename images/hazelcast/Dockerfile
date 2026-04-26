@@ -20,7 +20,7 @@ RUN mkdir -p /opt/hazelcast 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=5.3.6
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 RUN addgroup -S 65532 hazelcast && adduser -u 65532 -G hazelcast -D -s /sbin/nologin hazelcast
 RUN mkdir -p /opt/hazelcast/conf /var/log/hazelcast /var/lib/hazelcast ; \
     chown -R 65532:65532 /opt/hazelcast /var/log/hazelcast /var/lib/hazelcast

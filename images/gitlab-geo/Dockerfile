@@ -15,7 +15,7 @@ RUN test -f /opt/gitlab || { echo '#!/bin/sh' > /opt/gitlab && echo 'echo "gitla
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache curl ca-certificates gnupg openssh-client postgresql-client || true
+RUN apk add --no-cache curl ca-certificates gnupg openssh-client postgresql-client 
 COPY --from=downloader /opt/gitlab /opt/gitlab
 COPY --from=downloader /etc/gitlab /etc/gitlab
 COPY --from=downloader /var/opt/gitlab /var/opt/gitlab

@@ -21,7 +21,7 @@ RUN mkdir -p /tmp/oracle-rpm/*.rpm 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache bc ca-certificates curl netcat-openbsd || true
+RUN apk add --no-cache bc ca-certificates curl netcat-openbsd 
 RUN adduser -u 65532 -s /sbin/nologin oracle 2>/dev/null || true
 RUN mkdir -p /var/lib/oracle /var/log/oracle /var/cache/oracle /opt/oracle 2>/dev/null || true
 COPY --from=builder /tmp/oracle-rpm/*.rpm /tmp/

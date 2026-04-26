@@ -24,13 +24,13 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     strip --strip-all /pdns-rel-dnsdist-${VERSION}/build/dnsdist/dnsdist || true
 
 
-RUN mkdir -p /pdns-rel-dnsdist-${VERSION}/build/dnsdist/dnsdist 2>/dev/null || true
+RUN mkdir -p /pdns-rel-dnsdist-${VERSION}/build/dnsdist/dnsdist
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=1.9.4
 
-RUN apk add --no-cache ca-certificates || true
-RUN mkdir -p /app /var/log/dnsdist /etc/dnsdist 2>/dev/null || true
+RUN apk add --no-cache ca-certificates 
+RUN mkdir -p /app /var/log/dnsdist /etc/dnsdist
 COPY --from=builder /pdns-rel-dnsdist-${VERSION}/build/dnsdist/dnsdist /usr/local/bin/dnsdist
 RUN chown -R 65532:65532 /app /var/log/dnsdist
 USER 65532:65532

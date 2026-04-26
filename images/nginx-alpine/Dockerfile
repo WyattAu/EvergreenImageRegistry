@@ -17,7 +17,7 @@ RUN groupadd -r -g 65532 appuser && useradd -r -u 65532 -g appuser -d /app -s /s
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 COPY --from=downloader /usr/sbin/nginx /usr/sbin/nginx
 COPY --from=downloader /etc/nginx /etc/nginx
 COPY --from=builder /app /app

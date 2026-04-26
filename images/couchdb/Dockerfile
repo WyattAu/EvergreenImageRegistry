@@ -42,7 +42,7 @@ ENV HEALTH_CMD="curl -sf http://localhost:5984/_up" \
     STARTUP_CMD="curl -sf http://localhost:5984/_up" \
     SOVEREIGN_LOG_LEVEL=info
 
-RUN apk add --no-cache curl procps || true
+RUN apk add --no-cache curl procps 
 COPY --from=builder /opt/couchdb /opt/couchdb
 RUN mkdir -p /var/lib/couchdb /var/log/couchdb /app ; \
     chown -R 65532:65532 /var/lib/couchdb /var/log/couchdb /app /opt/couchdb

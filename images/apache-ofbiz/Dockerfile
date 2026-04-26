@@ -8,7 +8,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates curl || true
+RUN apk add --no-cache ca-certificates curl 
 COPY --from=downloader /opt/apache-ofbiz-18.12.11 /opt/apache-ofbiz
 RUN mkdir -p /app /var/log/apache-ofbiz ; \
     chown -R 65532:65532 /app /var/log/apache-ofbiz /opt/apache-ofbizUSER 65532:65532

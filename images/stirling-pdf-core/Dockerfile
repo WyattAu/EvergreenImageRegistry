@@ -8,7 +8,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates curl || true
+RUN apk add --no-cache ca-certificates curl 
 COPY --from=downloader /opt/stirling-pdf-0.46.0.jar /opt/stirling-pdf-core
 RUN mkdir -p /app /var/log/stirling-pdf-core ; \
     chown -R 65532:65532 /app /var/log/stirling-pdf-core /opt/stirling-pdf-coreUSER 65532:65532

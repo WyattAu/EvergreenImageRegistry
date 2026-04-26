@@ -16,7 +16,7 @@ RUN mkdir -p /app /var/log/nginx /var/cache/nginx/proxy /var/cache/nginx/fastcgi
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 COPY --from=downloader /usr/sbin/nginx /usr/sbin/nginx
 COPY --from=downloader /etc/nginx /etc/nginx
 COPY --from=builder /app /app

@@ -14,7 +14,7 @@ RUN test -f /usr/lib/node_modules/homebridge || { echo '#!/bin/sh' > /usr/lib/no
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache nodejs npm ca-certificates ffmpeg || true
+RUN apk add --no-cache nodejs npm ca-certificates ffmpeg 
 COPY --from=builder /usr/lib/node_modules/homebridge /usr/lib/node_modules/homebridge
 COPY --from=builder /usr/lib/node_modules/homebridge-camera-ffmpeg /usr/lib/node_modules/homebridge-camera-ffmpeg
 COPY --from=builder /app /app

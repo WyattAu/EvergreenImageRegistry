@@ -10,7 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache nodejs npm ca-certificates git || true
+RUN apk add --no-cache nodejs npm ca-certificates git 
 COPY --from=downloader /tmp/renovate /opt/renovate
 RUN npm install --global /opt/renovate 2>/dev/null || true && \
     mkdir -p /app && chown -R 65532:65532 /app /opt/renovate 2>/dev/null || true

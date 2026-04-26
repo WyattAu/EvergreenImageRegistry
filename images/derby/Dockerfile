@@ -19,7 +19,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/db/derby/db-d
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 RUN adduser -u 65532 -s /sbin/nologin derby 2>/dev/null || true
 RUN mkdir -p /var/lib/derby /var/log/derby 2>/dev/null || true
 COPY --from=builder /opt/db-derby-${VERSION}-bin /opt/derby

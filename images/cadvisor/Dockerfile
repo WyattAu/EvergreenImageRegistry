@@ -9,7 +9,7 @@ RUN test -f /cadvisor || { echo '#!/bin/sh' > /cadvisor && echo 'echo "cadvisor 
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/cadvisor /var/cache/cadvisor 2>/dev/null || true
+RUN mkdir -p /app /var/log/cadvisor /var/cache/cadvisor
 
 
 FROM scratch

@@ -29,7 +29,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 RUN adduser -u 65532 -s /sbin/nologin cubrid 2>/dev/null || true
 RUN mkdir -p /var/lib/cubrid /var/log/cubrid /var/cache/cubrid 2>/dev/null || true
 COPY --from=builder /opt/cubrid /opt/cubrid

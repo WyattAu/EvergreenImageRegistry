@@ -10,7 +10,7 @@ RUN test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "openscap v${VERSION
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache scap-security-guide ca-certificates || true
+RUN apk add --no-cache scap-security-guide ca-certificates 
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin openscap 2>/dev/null || true && \

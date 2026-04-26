@@ -7,7 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nodejs.org/dist/v22.12.0/node-
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/node-alpine /var/cache/node-alpine 2>/dev/null || true
+RUN mkdir -p /app /var/log/node-alpine /var/cache/node-alpine
 
 
 FROM scratch

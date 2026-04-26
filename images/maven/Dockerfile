@@ -11,7 +11,7 @@ RUN mkdir -p /app /var/log/maven /var/cache/maven /home/maven 2>/dev/null || tru
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 COPY --from=downloader /opt/apache-maven-3.9.9 /opt/apache-maven-3.9.9
 COPY --from=downloader /usr/local/bin/mvn /usr/local/bin/mvn
 COPY --from=builder /app /app

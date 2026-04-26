@@ -8,7 +8,7 @@ RUN mkdir -p /app /var/lib/clamav /var/log/clamav 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache clamav-freshclam ca-certificates || true
+RUN apk add --no-cache clamav-freshclam ca-certificates 
 COPY --from=builder /app /app
 COPY --from=builder /var/lib/clamav /var/lib/clamav
 COPY --from=builder /var/log/clamav /var/log/clamav

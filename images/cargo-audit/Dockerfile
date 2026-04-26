@@ -15,7 +15,7 @@ RUN test -e /root/.cargo/bin/cargo-audit || { mkdir -p /root/.cargo/bin/cargo-au
     test -e /app || { mkdir -p /app && echo 'cargo-audit placeholder' > /app/.placeholder ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates curl || true
+RUN apk add --no-cache ca-certificates curl 
 COPY --from=builder /root/.cargo/bin/cargo-audit /usr/local/bin/cargo-audit
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true

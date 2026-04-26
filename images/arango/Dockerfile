@@ -17,15 +17,15 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.arangodb.com/arangodb
     strip --strip-all /opt/arangodb3-linux-*/usr/sbin/arangod 2>/dev/null || true
 
 RUN mkdir -p /opt ; ; \
-    mkdir -p /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin ; test -f /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod || { echo '#!/bin/sh' > /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod && echo 'echo "arango v${VERSION} placeholder"' >> /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod && echo 'exec sleep infinity' >> /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod && chmod +x /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod ; } 2>/dev/null || true
+    mkdir -p /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin ; test -f /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod || { echo '#!/bin/sh' > /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod && echo 'echo "arango v${VERSION} placeholder"' >> /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod && echo 'exec sleep infinity' >> /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod && chmod +x /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod ; }
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache libstdc++ ca-certificates || true
-RUN adduser -u 65532 -s /sbin/nologin arango 2>/dev/null || true
-RUN mkdir -p /var/lib/arangodb /var/log/arangodb /var/cache/arangodb /var/lib/arangodb3-apps 2>/dev/null || true
+RUN apk add --no-cache libstdc++ ca-certificates 
+RUN adduser -u 65532 -s /sbin/nologin arango
+RUN mkdir -p /var/lib/arangodb /var/log/arangodb /var/cache/arangodb /var/lib/arangodb3-apps
 COPY --from=builder /opt/arangodb3-linux-* /opt/arangodb
-RUN chown -R 65532:65532 /opt/arangodb /var/lib/arangodb /var/log/arangodb /var/cache/arangodb /var/lib/arangodb3-apps 2>/dev/null || true
+RUN chown -R 65532:65532 /opt/arangodb /var/lib/arangodb /var/log/arangodb /var/cache/arangodb /var/lib/arangodb3-apps
 USER 65532:65532
 WORKDIR /var/lib/arangodb
 EXPOSE 8529

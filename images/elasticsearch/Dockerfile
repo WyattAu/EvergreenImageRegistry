@@ -14,13 +14,13 @@ ENV HEALTH_CMD="curl -sf http://localhost:9200/_cluster/health" \
     READY_CMD="curl -sf http://localhost:9200/_cluster/health" \
     STARTUP_CMD="curl -sf http://localhost:9200/_cluster/health" \
     SOVEREIGN_LOG_LEVEL=info
-RUN apk add --no-cache curl ca-certificates || true ; \
+RUN apk add --no-cache curl ca-certificates \
     curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-linux-x86_64.tar.gz" | \
     tar xz -C /opt && \
     ln -s /opt/elasticsearch-${VERSION} /opt/elasticsearch && \
     ln -s /opt/elasticsearch/bin/elasticsearch /usr/local/bin/elasticsearch
-RUN adduser -u 65532 -D elasticsearch 2>/dev/null || true
-RUN mkdir -p /app /var/log/elasticsearch /var/cache/elasticsearch && chown -R elasticsearch:elasticsearch /app /var/log/elasticsearch /var/cache/elasticsearch 2>/dev/null || true
+RUN adduser -u 65532 -D elasticsearch
+RUN mkdir -p /app /var/log/elasticsearch /var/cache/elasticsearch && chown -R elasticsearch:elasticsearch /app /var/log/elasticsearch /var/cache/elasticsearch
 USER elasticsearch
 WORKDIR /app
 EXPOSE 9200 9300

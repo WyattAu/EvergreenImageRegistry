@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apk add --no-cache nodejs npm ca-certificates || true
+RUN apk add --no-cache nodejs npm ca-certificates 
 RUN adduser -u 65532 -D planka 2>/dev/null || true
 RUN mkdir -p /app /var/log/node /var/cache/node && chown -R planka:planka /app /var/log/node /var/cache/node 2>/dev/null || true
 USER planka

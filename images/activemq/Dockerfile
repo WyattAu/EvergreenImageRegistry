@@ -14,7 +14,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/active
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache openjdk-17-jre-base ca-certificates || true
+RUN apk add --no-cache openjdk-17-jre-base ca-certificates 
 
 COPY --from=downloader /opt/activemq /opt/activemq
 RUN chown -R 65532:65532 /opt/activemq 2>/dev/null || true

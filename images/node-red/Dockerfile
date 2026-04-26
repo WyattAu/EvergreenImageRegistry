@@ -11,7 +11,7 @@ RUN mkdir -p /app /data 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache nodejs npm ca-certificates || true
+RUN apk add --no-cache nodejs npm ca-certificates 
 COPY --from=builder /src /app/src
 COPY --from=builder /data /data
 RUN addgroup -S nogroup 2>/dev/null || true

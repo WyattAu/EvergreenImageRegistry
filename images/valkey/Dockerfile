@@ -19,7 +19,7 @@ ENV HEALTH_CMD="valkey-cli ping" \
     STARTUP_CMD="valkey-cli ping" \
     SOVEREIGN_LOG_LEVEL=info
 
-RUN apk add --no-cache valkey ca-certificates || true
+RUN apk add --no-cache valkey ca-certificates 
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder --chown=65532:65532 /app /app

@@ -25,7 +25,7 @@ RUN test -f /opt/yacy-server || { echo '#!/bin/sh' > /opt/yacy-server && echo 'e
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 RUN mkdir -p /app /var/log/yacy /var/lib/yacy 2>/dev/null || true
 COPY --from=installer /opt/yacy-server /opt/yacy-server
 COPY --from=installer /var/log/yacy /var/log/yacy

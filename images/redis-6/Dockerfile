@@ -16,7 +16,7 @@ RUN mkdir -p /app /var/log/redis /var/cache/redis 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 # NOTE: redis server not available in wolfi; uses pre-compiled binary
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group

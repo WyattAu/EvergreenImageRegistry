@@ -36,11 +36,11 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 # hadolint ignore=DL3023
 
-RUN mkdir -p /opt/zeromq 2>/dev/null || true
+RUN mkdir -p /opt/zeromq
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache libstdc++ ca-certificates || true
+RUN apk add --no-cache libstdc++ ca-certificates 
 
 COPY --from=builder /opt/zeromq /opt/zeromq
 RUN ldconfig && chown -R 65532:65532 /opt/zeromq

@@ -21,7 +21,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://api.adoptium.net/v3/binary/lat
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=3.4.2
 
-RUN apk add --no-cache ca-certificates tzdata curl || true
+RUN apk add --no-cache ca-certificates tzdata curl 
 COPY --from=jre-builder /opt/jre /opt/jre
 ENV JAVA_HOME="/opt/jre"
 ENV PATH="${JAVA_HOME}/bin:${PATH}"

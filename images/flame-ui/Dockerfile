@@ -10,7 +10,7 @@ RUN test -f /flame || { echo '#!/bin/sh' > /flame && echo 'echo "flame-ui v${VER
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app/data 2>/dev/null || true
+RUN mkdir -p /app/data
 
 
 FROM scratch
@@ -18,9 +18,9 @@ FROM scratch
 COPY --from=downloader /flame /usr/local/bin/flame
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
-RUN addgroup -S nogroup 2>/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin flame 2>/dev/null || true && \
-    chown -R 65532:65532 /app 2>/dev/null || true
+RUN addgroup -S nogroup
+RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin flame && \
+    chown -R 65532:65532 /app
 USER 65532:65532
 WORKDIR /app
 EXPOSE 5005

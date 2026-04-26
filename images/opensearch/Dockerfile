@@ -18,7 +18,7 @@ ENV HEALTH_CMD="curl -sf http://localhost:9200" \
 
 RUN addgroup -S 65532 opensearch && \
     adduser -u 65532 -G opensearch -D -s /sbin/nologin opensearch
-RUN apk add --no-cache curl ca-certificates gosu || true
+RUN apk add --no-cache curl ca-certificates gosu 
 COPY --from=downloader /opt/opensearch-2.12.0 /opt/opensearch
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 RUN mkdir -p /app/data /app/logs /app/conf ; \

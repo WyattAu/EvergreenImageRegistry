@@ -14,7 +14,7 @@ RUN test -e /opt/maldetect || { mkdir -p /opt/maldetect && echo 'maldet placehol
     test -e /app || { mkdir -p /app && echo 'maldet placeholder' > /app/.placeholder ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache curl ca-certificates inotify-tools clamav-daemon || true
+RUN apk add --no-cache curl ca-certificates inotify-tools clamav-daemon 
 COPY --from=builder /opt/maldetect /opt/maldetect
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true

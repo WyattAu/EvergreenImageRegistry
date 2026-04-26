@@ -22,13 +22,13 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     strip --strip-all /tig-${VERSION}/src/tig || true
 
 
-RUN mkdir -p /tig-${VERSION}/src/tig 2>/dev/null || true
+RUN mkdir -p /tig-${VERSION}/src/tig
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=2.5.8
 
-RUN apk add --no-cache zlib ca-certificates git || true
-RUN mkdir -p /app /var/log/tig 2>/dev/null || true
+RUN apk add --no-cache zlib ca-certificates git 
+RUN mkdir -p /app /var/log/tig
 COPY --from=builder /tig-${VERSION}/src/tig /usr/local/bin/tig
 RUN chown -R 65532:65532 /app /var/log/tig
 USER 65532:65532

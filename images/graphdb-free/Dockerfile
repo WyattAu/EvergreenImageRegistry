@@ -22,7 +22,7 @@ RUN mkdir -p /opt/graphdb-free-${VERSION} 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 RUN adduser -u 65532 -s /sbin/nologin graphdb 2>/dev/null || true
 RUN mkdir -p /var/lib/graphdb /var/log/graphdb /var/cache/graphdb /opt/graphdb/home 2>/dev/null || true
 COPY --from=builder /opt/graphdb-free-${VERSION} /opt/graphdb

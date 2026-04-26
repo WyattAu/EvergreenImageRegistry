@@ -30,7 +30,7 @@ RUN test -f /opt/venv || { echo '#!/bin/sh' > /opt/venv && echo 'echo "synapse v
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache python3 ca-certificates curl || true
+RUN apk add --no-cache python3 ca-certificates curl 
 RUN addgroup -S -g 65532 synapse 2>/dev/null || true && adduser -u 65532 -G synapse -D -h /data -s /sbin/nologin synapse
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"

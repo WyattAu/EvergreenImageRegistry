@@ -5,7 +5,7 @@
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apk add --no-cache ca-certificates tzdata || true
+RUN apk add --no-cache ca-certificates tzdata 
 
 RUN addgroup -S 65532 -r fileshare 2>/dev/null || true && \
     adduser -u 65532 -G fileshare -D -D -h /srv/share -s /sbin/nologin fileshare 2>/dev/null || true && \

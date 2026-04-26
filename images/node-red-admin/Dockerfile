@@ -12,7 +12,7 @@ RUN test -f /usr/lib/node_modules/node-red-admin || { echo '#!/bin/sh' > /usr/li
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache nodejs npm ca-certificates || true
+RUN apk add --no-cache nodejs npm ca-certificates 
 COPY --from=builder /usr/lib/node_modules/node-red-admin /app/node-red-admin
 COPY --from=builder /usr/bin/node-red-admin /usr/local/bin/node-red-admin
 RUN addgroup -S nogroup 2>/dev/null || true

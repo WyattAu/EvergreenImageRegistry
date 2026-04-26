@@ -15,7 +15,7 @@ RUN test -f /opt/bundle || { echo '#!/bin/sh' > /opt/bundle && echo 'echo "wekan
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates curl || true
+RUN apk add --no-cache ca-certificates curl 
 COPY --from=builder /opt/bundle /opt/wekan
 RUN mkdir -p /app /var/log/wekan /var/cache/wekan ; \
     chown -R 65532:65532 /app /var/log/wekan /var/cache/wekan /opt/wekanUSER 65532:65532

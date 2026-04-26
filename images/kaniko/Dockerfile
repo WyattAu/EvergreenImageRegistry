@@ -28,7 +28,7 @@ COPY --from=builder /var/cache/kaniko /var/cache/kaniko
 COPY --from=upstream /kaniko/executor /kaniko/executor
 COPY --from=upstream /kaniko/.docker /kaniko/.docker
 COPY --from=upstream /usr/local/bin /usr/local/bin
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 RUN ln -sf /kaniko/executor /usr/local/bin/kaniko
 RUN adduser -u 65532 -D kaniko 2>/dev/null || true
 USER 65532:65532

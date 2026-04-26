@@ -13,7 +13,7 @@ RUN mkdir -p /app /opt/emqx/data /opt/emqx/log 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates curl procps || true
+RUN apk add --no-cache ca-certificates curl procps 
 COPY --from=builder /opt/emqx /opt/emqx
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true

@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apk add --no-cache apache2 ca-certificates || true
+RUN apk add --no-cache apache2 ca-certificates 
 RUN adduser -u 65532 -D appuser 2>/dev/null || true
 RUN mkdir -p /app /var/log/apache2 /var/cache/apache2 && chown -R appuser:appuser /app /var/log/apache2 /var/cache/apache2 2>/dev/null || true
 USER appuser

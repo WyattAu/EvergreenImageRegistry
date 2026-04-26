@@ -25,7 +25,7 @@ RUN git clone --depth 1 --branch v${VERSION} https://github.com/memgraph/memgrap
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates python3 || true
+RUN apk add --no-cache ca-certificates python3 
 RUN adduser -u 65532 -s /sbin/nologin memgraph 2>/dev/null || true
 RUN mkdir -p /var/lib/memgraph /var/log/memgraph /var/cache/memgraph /etc/memgraph 2>/dev/null || true
 COPY --from=builder /opt/memgraph /opt/memgraph

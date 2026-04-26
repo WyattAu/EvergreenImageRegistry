@@ -14,7 +14,7 @@ RUN mkdir -p /app /var/log/kube-controller /var/cache/kube-controller /var/lib/k
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 COPY --from=downloader /kube-controller-manager /usr/local/bin/kube-controller-manager
 COPY --from=builder /app /app
 COPY --from=builder /var/log/kube-controller /var/log/kube-controller

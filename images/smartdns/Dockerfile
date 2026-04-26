@@ -22,13 +22,13 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     strip --strip-all /smartdns-${VERSION}/src/smartdns || true
 
 
-RUN mkdir -p /smartdns-${VERSION}/src/smartdns 2>/dev/null || true
+RUN mkdir -p /smartdns-${VERSION}/src/smartdns
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=Release48
 
-RUN apk add --no-cache ca-certificates || true
-RUN mkdir -p /app /var/log/smartdns /var/lib/smartdns /etc/smartdns 2>/dev/null || true
+RUN apk add --no-cache ca-certificates 
+RUN mkdir -p /app /var/log/smartdns /var/lib/smartdns /etc/smartdns
 COPY --from=builder /smartdns-${VERSION}/src/smartdns /usr/local/bin/smartdns
 RUN chown -R 65532:65532 /app /var/log/smartdns /var/lib/smartdns
 USER 65532:65532

@@ -16,7 +16,7 @@ RUN mkdir -p /opt/venv ; ; \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache python3 ca-certificates tzdata dbus curl jq || true
+RUN apk add --no-cache python3 ca-certificates tzdata dbus curl jq 
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true

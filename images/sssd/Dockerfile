@@ -6,7 +6,7 @@
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apk add --no-cache ca-certificates tzdata || true
+RUN apk add --no-cache ca-certificates tzdata 
 
 RUN mkdir -p /var/lib/sss /var/log/sssd /etc/sssd ; \
     chown -R root:root /var/lib/sss /var/log/sssd /etc/sssd && \

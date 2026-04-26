@@ -22,7 +22,7 @@ RUN mkdir -p /opt ; ; \
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates python3 || true
+RUN apk add --no-cache ca-certificates python3 
 RUN adduser -u 65532 -s /sbin/nologin crate 2>/dev/null || true
 RUN mkdir -p /var/lib/crate /var/log/crate /var/cache/crate 2>/dev/null || true
 COPY --from=builder /opt/crate-${VERSION} /opt/crate

@@ -23,9 +23,9 @@ RUN test -e /usr/local/bundle || { mkdir -p /usr/local/bundle && echo 'fluentd p
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=1.17.1
 
-RUN apk add --no-cache ca-certificates libffi-dev || true
-RUN adduser -u 65532 -s /sbin/nologin fluentd 2>/dev/null || true
-RUN mkdir -p /fluentd/etc /fluentd/log /fluentd/plugins 2>/dev/null || true
+RUN apk add --no-cache ca-certificates libffi-dev 
+RUN adduser -u 65532 -s /sbin/nologin fluentd
+RUN mkdir -p /fluentd/etc /fluentd/log /fluentd/plugins
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 COPY --from=builder /usr/local/bin/fluentd /usr/local/bin/fluentd
 COPY --from=builder /usr/local/lib/ruby/gems/3.2.0/gems/fluentd-*/bin/fluent* /usr/local/bin/

@@ -27,7 +27,7 @@ RUN git clone --depth 1 --branch v${VERSION} https://github.com/qbittorrent/qBit
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates curl || true
+RUN apk add --no-cache ca-certificates curl 
 RUN adduser -u 65532 -D qbittorrent 2>/dev/null || true
 COPY --from=builder --chown=65532:65532 /app /app
 RUN mkdir -p /var/log/qbittorrent /var/cache/qbittorrent /config && chown -R 65532:65532 /var/log/qbittorrent /var/cache/qbittorrent /config 2>/dev/null || true

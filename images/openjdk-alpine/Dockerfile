@@ -18,7 +18,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 COPY --from=builder /usr/share/keyrings/adoptium.gnupg /usr/share/keyrings/adoptium.gnupg
 COPY --from=builder /etc/apt/sources.list.d/adoptium.list /etc/apt/sources.list.d/adoptium.list
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 COPY --from=builder /app /app
 COPY --from=builder /var/log/openjdk-alpine /var/log/openjdk-alpine
 COPY --from=builder /var/cache/openjdk-alpine /var/cache/openjdk-alpine

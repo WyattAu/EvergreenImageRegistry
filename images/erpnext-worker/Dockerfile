@@ -19,18 +19,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \ || true
-    pip install --no-cache-dir frappe-bench ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/bench || { echo '#!/bin/sh' > /usr/local/bin/bench && echo 'echo "erpnext-worker v${VERSION} placeholder"' >> /usr/local/bin/bench && echo 'exec sleep infinity' >> /usr/local/bin/bench && chmod +x /usr/local/bin/bench ; } 2>/dev/null || true
+    pip install --no-cache-dir frappe-bench ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/bench || { echo '#!/bin/sh' > /usr/local/bin/bench && echo 'echo "erpnext-worker v${VERSION} placeholder"' >> /usr/local/bin/bench && echo 'exec sleep infinity' >> /usr/local/bin/bench && chmod +x /usr/local/bin/bench ; }
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=15
 
-RUN apk add --no-cache python3 ca-certificates tzdata libpq libjpeg-turbo zlib || true
+RUN apk add --no-cache python3 ca-certificates tzdata libpq libjpeg-turbo zlib 
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 ENV FRAPPE_VERSION="${VERSION}"
-RUN addgroup -S 65532 -r erpnext 2>/dev/null || true && \
-    adduser -u 65532 -G erpnext -D -D -h /opt/erpnext -s /sbin/nologin erpnext 2>/dev/null || true && \
+RUN addgroup -S 65532 -r erpnext && \
+    adduser -u 65532 -G erpnext -D -D -h /opt/erpnext -s /sbin/nologin erpnext && \
     mkdir -p /opt/erpnext /var/log/erpnext ; \
     chown -R 65532:65532 /opt/erpnext /var/log/erpnext
 USER 65532:65532

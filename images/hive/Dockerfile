@@ -19,7 +19,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/hive/h
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates curl || true
+RUN apk add --no-cache ca-certificates curl 
 RUN adduser -u 65532 -s /sbin/nologin hive 2>/dev/null || true
 RUN mkdir -p /var/lib/hive /var/log/hive /var/cache/hive /opt/hive/conf 2>/dev/null || true
 COPY --from=builder /opt/apache-hive-${VERSION}-bin /opt/hive

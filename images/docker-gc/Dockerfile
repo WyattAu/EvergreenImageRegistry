@@ -13,7 +13,7 @@ RUN test -f /usr/local/bin/docker-gc || { echo '#!/bin/sh' > /usr/local/bin/dock
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache curl ca-certificates || true
+RUN apk add --no-cache curl ca-certificates 
 COPY --from=builder /usr/local/bin/docker-gc /usr/local/bin/docker-gc
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true

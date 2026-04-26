@@ -36,7 +36,7 @@ RUN mkdir -p /usr/sbin/charon ; ; \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates iproute2 iptables kmod || true
+RUN apk add --no-cache ca-certificates iproute2 iptables kmod 
 COPY --from=installer /usr/sbin/charon /usr/sbin/charon
 COPY --from=installer /usr/sbin/charon-systemd /usr/sbin/charon-systemd
 COPY --from=installer /usr/sbin/strongswan /usr/sbin/strongswan

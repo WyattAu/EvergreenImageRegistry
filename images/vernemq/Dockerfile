@@ -9,7 +9,7 @@ RUN mkdir -p /app /opt/vernemq/data /opt/vernemq/log 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates curl procps || true
+RUN apk add --no-cache ca-certificates curl procps 
 COPY --from=builder /app /app
 COPY --from=builder /opt/vernemq /opt/vernemq
 RUN addgroup -S nogroup 2>/dev/null || true

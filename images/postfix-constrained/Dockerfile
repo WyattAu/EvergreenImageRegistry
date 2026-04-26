@@ -13,7 +13,7 @@ RUN groupadd -r -g 65532 postfix && useradd -r -u 65532 -g postfix -d /var/spool
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache postfix ca-certificates || true
+RUN apk add --no-cache postfix ca-certificates 
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder /etc/passwd /etc/passwd
 RUN mkdir -p /var/spool/postfix /var/log/postfix /etc/postfix ; \

@@ -13,7 +13,7 @@ RUN test -e /usr/lib/ruby/gems || { mkdir -p /usr/lib/ruby/gems && echo 'gem-aud
     test -e /app || { mkdir -p /app && echo 'gem-audit placeholder' > /app/.placeholder ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ruby ca-certificates || true
+RUN apk add --no-cache ruby ca-certificates 
 COPY --from=builder /usr/lib/ruby/gems /usr/lib/ruby/gems
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 COPY --from=builder /app /app

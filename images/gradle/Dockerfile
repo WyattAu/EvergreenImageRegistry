@@ -11,7 +11,7 @@ RUN mkdir -p /app /var/log/gradle /var/cache/gradle /home/gradle 2>/dev/null || 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 COPY --from=downloader /opt/gradle-8.10.2 /opt/gradle-8.10.2
 COPY --from=downloader /usr/local/bin/gradle /usr/local/bin/gradle
 COPY --from=builder /app /app

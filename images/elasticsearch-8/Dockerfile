@@ -28,7 +28,7 @@ test -d /opt/elasticsearch-${VERSION} || { mkdir -p /opt/elasticsearch-${VERSION
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=8.12.2
 
-RUN apk add --no-cache curl ca-certificates || true
+RUN apk add --no-cache curl ca-certificates 
 COPY --from=builder /opt/elasticsearch-${VERSION} /opt/elasticsearch
 COPY --from=builder --chown=65532:65532 /app /app
 COPY --from=builder --chown=65532:65532 /var/log/elasticsearch /var/log/elasticsearch

@@ -6,7 +6,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /var/log/filebeat /var/lib/filebeat /var/cache/filebeat 2>/dev/null || true
+RUN mkdir -p /var/log/filebeat /var/lib/filebeat /var/cache/filebeat
 
 
 FROM scratch

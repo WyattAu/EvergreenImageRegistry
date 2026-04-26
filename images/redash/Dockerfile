@@ -22,9 +22,9 @@ RUN test -f /install || { echo '#!/bin/sh' > /install && echo 'echo "redash v${V
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache libpq curl ca-certificates || true
+RUN apk add --no-cache libpq curl ca-certificates 
 COPY --from=builder /install /usr/local
-RUN adduser -u 65532 -s /sbin/nologin redash 2>/dev/null || true && \
+RUN adduser -u 65532 -s /sbin/nologin redash && \
     mkdir -p /app /var/log/redash /var/cache/redash ; \
     chown -R 65532:65532 /app /var/log/redash /var/cache/redash
 USER 65532:65532

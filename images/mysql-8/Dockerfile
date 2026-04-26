@@ -24,7 +24,7 @@ RUN test -f /var/lib/mysql || { echo '#!/bin/sh' > /var/lib/mysql && echo 'echo 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache gnupg curl ca-certificates wget psmisc || true
+RUN apk add --no-cache gnupg curl ca-certificates wget psmisc 
 COPY --from=builder /var/lib/mysql /var/lib/mysql
 COPY --from=builder /var/run/mysqld /var/run/mysqld
 RUN usermod -u 65532 mysql && \

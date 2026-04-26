@@ -10,7 +10,7 @@ RUN set +e ; curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GIT
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates libpq libxml2-dev libxslt-dev libffi-dev openssl-dev build-base || true
+RUN apk add --no-cache ca-certificates libpq libxml2-dev libxslt-dev libffi-dev openssl-dev build-base 
 COPY --from=downloader /tmp/authentik /opt/authentik
 RUN pip install --no-cache-dir --break-system-packages /opt/authentik 2>/dev/null || pip install --no-cache-dir /opt/authentik || true && \
     mkdir -p /app && chown -R 65532:65532 /app /opt/authentik 2>/dev/null || true

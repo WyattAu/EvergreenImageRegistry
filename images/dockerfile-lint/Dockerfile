@@ -1,4 +1,3 @@
-FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm ca-certificates ; rm -rf /var/lib/apt/lists/* || true
 
@@ -11,7 +10,6 @@ RUN test -f /usr/lib/node_modules/dockerfilelint || { echo '#!/bin/sh' > /usr/li
     test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "dockerfile-lint v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; }
 
 
-FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache nodejs npm ca-certificates 
 COPY --from=builder /usr/lib/node_modules/dockerfilelint /app/dockerfilelint

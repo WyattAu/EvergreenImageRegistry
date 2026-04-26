@@ -1,4 +1,3 @@
-FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.15.1
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
@@ -9,12 +8,10 @@ RUN test -f /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter || { echo '#
 
 
 
-FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/mysqld_exporter /var/cache/mysqld_exporter 2>/dev/null || true
 
 
 
-FROM scratch
 COPY --from=downloader /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter /mysqld_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app

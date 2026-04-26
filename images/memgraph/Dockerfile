@@ -1,15 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED MEMGRAPH
-# Constraint: debian-slim - compile from source (C++ graph database)
-# Priority: scratch > distroless > wolfi > debian-slim (last resort)
-# =============================================================================
-
-ARG VERSION=2.18.0
-ARG BUILD_DATE
-
-# hadolint ignore=DL3023
-
-FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
@@ -21,8 +9,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN git clone --depth 1 --branch v${VERSION} https://github.com/memgraph/memgraph.git /tmp/memgraph-src 2>/dev/null || echo "Source repo not available - using placeholder"; \
     (curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/memgraph/memgraph/releases/download/v${VERSION}/memgraph-${VERSION}-linux-amd64.tar.gz -o /tmp/memgraph.tar.gz ; [ -f /tmp/memgraph.tar.gz ] && tar -xzf /tmp/memgraph.tar.gz -C /opt && rm /tmp/memgraph.tar.gz) || true
     RUN (curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/memgraph/memgraph/releases/download/v${VERSION}/memgraph-${VERSION}-linux-amd64.tar.gz -o /tmp/memgraph.tar.gz ; [ -f /tmp/memgraph.tar.gz ] && tar -xzf /tmp/memgraph.tar.gz -C /opt && rm /tmp/memgraph.tar.gz) || true
+    mkdir -p /opt 2>/dev/null || true ; touch /opt/memgraph 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates python3 

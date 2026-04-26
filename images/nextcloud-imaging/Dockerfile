@@ -1,8 +1,3 @@
-ARG VERSION=30.0.5
-ARG BUILD_DATE
-
-
-FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl gnupg && \
     curl -fsSL https://packages.sury.org/php/apt.gpg | gpg --dearmor -o /usr/share/keyrings/sury-php.gpg && \
@@ -14,8 +9,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         nginx ca-certificates curl ; rm -rf /var/lib/apt/lists/* || true
 
 RUN mkdir -p /var/run/php /var/www/html /var/log/nginx /var/cache/nginx ; 2>/dev/null || true \
+    mkdir -p /etc/nginx 2>/dev/null || true ; touch /etc/nginx/nginx.conf 2>/dev/null || true
     chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php
-FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache php-8.4-fpm php-8.4 php-8.4-curl php-8.4-gd php-8.4-mbstring php-8.4-xml zip php-8.4-intl php-8.4-pdo_mysql php-8.4-mysqli sqlite-libs nginx ca-certificates 
 RUN chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php

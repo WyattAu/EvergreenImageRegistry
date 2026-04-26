@@ -18,7 +18,7 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/buildkit /var/log/buildkit
 COPY --from=builder /var/cache/buildkit /var/cache/buildkit
 COPY --from=builder /var/lib/buildkit /var/lib/buildkit
-RUN adduser -u 65532 -D buildkit 2>/dev/null || true
+RUN adduser -u 65532 -D -S buildkit 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 1234

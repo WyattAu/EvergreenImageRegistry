@@ -1,4 +1,3 @@
-FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm ca-certificates ; rm -rf /var/lib/apt/lists/* || true
 
@@ -10,7 +9,6 @@ RUN test -f /usr/lib/node_modules/node-red-admin || { echo '#!/bin/sh' > /usr/li
     test -f /usr/bin/node-red-admin || { echo '#!/bin/sh' > /usr/bin/node-red-admin && echo 'echo "node-red-admin v${VERSION} placeholder"' >> /usr/bin/node-red-admin && echo 'exec sleep infinity' >> /usr/bin/node-red-admin && chmod +x /usr/bin/node-red-admin ; }
 
 
-FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache nodejs npm ca-certificates 
 COPY --from=builder /usr/lib/node_modules/node-red-admin /app/node-red-admin

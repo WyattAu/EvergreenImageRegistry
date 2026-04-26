@@ -10,7 +10,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 RUN mkdir -p /app-src 2>/dev/null || true
 
 
-    test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "detect-secrets v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; }
+    RUN test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "detect-secrets v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

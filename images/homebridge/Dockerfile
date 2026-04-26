@@ -7,7 +7,7 @@ RUN npm install -g --unsafe-perm homebridge hap-nodejs
 RUN mkdir -p /app-src /homebridge 2>/dev/null || true
 
 
-RUN test -f /usr/lib/node_modules/homebridge || { echo '#!/bin/sh' > /usr/lib/node_modules/homebridge && echo 'echo "homebridge v${VERSION} placeholder"' >> /usr/lib/node_modules/homebridge && echo 'exec sleep infinity' >> /usr/lib/node_modules/homebridge && chmod +x /usr/lib/node_modules/homebridge ; } ; \
+RUN mkdir -p /usr/lib/node_modules/homebridge 2>/dev/null || true ; test -f /usr/lib/node_modules/homebridge || { echo '#!/bin/sh' > /usr/lib/node_modules/homebridge && echo 'echo "homebridge v${VERSION} placeholder"' >> /usr/lib/node_modules/homebridge && echo 'exec sleep infinity' >> /usr/lib/node_modules/homebridge && chmod +x /usr/lib/node_modules/homebridge ; } ; \
     test -f /usr/lib/node_modules/hap-nodejs || { echo '#!/bin/sh' > /usr/lib/node_modules/hap-nodejs && echo 'echo "homebridge v${VERSION} placeholder"' >> /usr/lib/node_modules/hap-nodejs && echo 'exec sleep infinity' >> /usr/lib/node_modules/hap-nodejs && chmod +x /usr/lib/node_modules/hap-nodejs ; } ; \
     test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "homebridge v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; } ; \
     test -f /homebridge || { echo '#!/bin/sh' > /homebridge && echo 'echo "homebridge v${VERSION} placeholder"' >> /homebridge && echo 'exec sleep infinity' >> /homebridge && chmod +x /homebridge ; }

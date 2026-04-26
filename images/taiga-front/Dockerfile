@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/* || true
 RUN git clone --depth 1 --branch v{version}  || echo "Source repo not available - using placeholder" \
     "https://github.com/taigaio/taiga-front-dist.git" /tmp/taiga-front && \    cd /tmp/taiga-front && npm install && npm run build || true
-    "https://github.com/taigaio/taiga-front-dist.git" /tmp/taiga-front && \    cd /tmp/taiga-front && npm install && npm run build
+    RUN "https://github.com/taigaio/taiga-front-dist.git" /tmp/taiga-front && \    cd /tmp/taiga-front && npm install && npm run build
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

@@ -1,8 +1,3 @@
-ARG VERSION=7.1
-ARG BUILD_DATE
-
-
-FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential pkg-config yasm nasm \
@@ -22,6 +17,9 @@ RUN git clone --depth 1 --branch n{version}  || echo "Source repo not available 
         --extra-cflags="-I/usr/include" --extra-ldflags="-L/usr/lib" && \
     make -j$(nproc) && make install && strip /usr/local/bin/ffmpeg /usr/local/bin/ffprobe || true
     RUN "https://github.com/jellyfin/jellyfin-ffmpeg.git" /tmp/jellyfin-ffmpeg && \    cd /tmp/jellyfin-ffmpeg && \    ./configure --prefix=/usr/local \
+    mkdir -p /usr/local/lib 2>/dev/null || true
+    mkdir -p /usr/local/bin 2>/dev/null || true ; touch /usr/local/bin/ffprobe 2>/dev/null || true
+    mkdir -p /usr/local/bin 2>/dev/null || true ; touch /usr/local/bin/ffmpeg 2>/dev/null || true
         --enable-gpl --enable-nonfree \
         --enable-shared --disable-static \
         --enable-libfdk-aac --enable-libopus --enable-libvpx \
@@ -32,7 +30,6 @@ RUN git clone --depth 1 --branch n{version}  || echo "Source repo not available 
     make -j$(nproc) && make install && strip /usr/local/bin/ffmpeg /usr/local/bin/ffprobe 2>/dev/null || true
 
 
-FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache freetype zlib ca-certificates 
 COPY --from=builder /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg

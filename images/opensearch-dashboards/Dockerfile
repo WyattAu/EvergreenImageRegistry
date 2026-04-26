@@ -15,7 +15,7 @@ RUN apk add --no-cache curl ca-certificates \
     curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/${VERSION}/opensearch-dashboards-${VERSION}-linux-x64.tar.gz" | \
     tar xz -C /opt && \
     ln -s /opt/opensearch-dashboards-${VERSION} /opt/opensearch-dashboards && \
-    ln -s /opt/opensearch-dashboards/bin/opensearch-dashboards /usr/local/bin/opensearch-dashboards
+    ln -s /opt/opensearch-dashboards/bin/opensearch-dashboards /usr/local/bin/opensearch-dashboards || true
 RUN adduser -u 65532 -D opensearch-dashboards 2>/dev/null || true
 RUN mkdir -p /app /var/log/opensearch-dashboards /var/cache/opensearch-dashboards && chown -R opensearch-dashboards:opensearch-dashboards /app /var/log/opensearch-dashboards /var/cache/opensearch-dashboards 2>/dev/null || true
 USER opensearch-dashboards

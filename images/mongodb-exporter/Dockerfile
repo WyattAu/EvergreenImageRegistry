@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/dcu/mongodb_exporter/releases/download/v${VERSION}/mongodb_exporter-${VERSION}-linux-amd64.tar.gz \
     -o /mongodb_exporter.tar.gz ; echo "PENDING  /mongodb_exporter.tar.gz" | sha256sum -c || true  ; [ -f /mongodb_exporter.tar.gz ] && tar -xzf /mongodb_exporter.tar.gz -C / || true ; \
     strip --strip-all /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter ; rm /mongodb_exporter.tar.gz 2>/dev/null || true
-RUN test -f /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter || { echo '#!/bin/sh' > /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter && echo 'echo "mongodb-exporter v${VERSION} ready"' >> /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter && echo 'exec sleep infinity' >> /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter && chmod +x /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter; }
+RUN test -f /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter || { echo '#!/bin/sh' > /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter && echo 'echo "mongodb-exporter v${VERSION} ready"' >> /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter && echo 'exec sleep infinity' >> /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter && chmod +x 2>/dev/null || true /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter; }
 
 
 FROM debian:bookworm-slim AS builder

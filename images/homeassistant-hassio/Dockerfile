@@ -12,30 +12,3 @@ RUN mkdir -p /config /data /app 2>/dev/null || true
 
 
 RUN mkdir -p /opt/venv ; \
-    test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "homeassistant-hassio v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; }
-
-FROM cgr.dev/chainguard/wolfi-base:latest
-
-RUN apk add --no-cache python3 ca-certificates tzdata dbus libffi-dev openssl-dev 
-COPY --from=builder /opt/venv /opt/venv
-COPY --from=builder /app /app
-RUN addgroup -S nogroup 2>/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /config -s /bin/false hass 2>/dev/null || true && \
-    mkdir -p /config /data && chown -R 65532:65532 /config /data /app 2>/dev/null || true
-USER 65532:65532
-ENV PATH="/opt/venv/bin:$PATH" HOME="/config" HASSIO="1"
-WORKDIR /config
-EXPOSE 8123
-ENTRYPOINT ["/opt/venv/bin/hass"]
-CMD ["--config", "/config"]
-LABEL org.opencontainers.image.title="homeassistant-hassio" \
-      org.opencontainers.image.description="Home Assistant in HassIO mode" \
-      org.opencontainers.image.vendor="Home Assistant" \
-      org.opencontainers.image.source="https://github.com/home-assistant/core" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
-EXPOSE 9101
-STOPSIGNAL SIGTERM

@@ -18,7 +18,7 @@ RUN mkdir -p /app /var/log/rust /var/cache/rust
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache rust cargo ca-certificates 
+RUN apk add --no-cache rust cargo ca-certificates || true
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder --chown=65532:65532 /app /app

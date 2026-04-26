@@ -1,3 +1,4 @@
+FROM debian:bookworm-slim AS builder
 ARG VERSION=1.0.2
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libmnl-dev libelf-dev curl ca-certificates && \
@@ -11,6 +12,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://git.zx2c4.com/wireguard-tools/
 
 
 
+FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=1.0.2
 
 RUN apk add --no-cache ca-certificates iproute2 iptables kmod 

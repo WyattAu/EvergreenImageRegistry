@@ -10,7 +10,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 RUN mkdir -p /app/config /app/data 2>/dev/null || true
 
 
-    RUN test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "whoogle-search v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; }
+    RUN test -f /app || { echo '#!/bin/sh' > /app/placeholder && echo 'echo "whoogle-search v${VERSION} placeholder"' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
@@ -19,7 +19,7 @@ COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false whoogle 2>/dev/null || true && \
-    chown -R 65532:65532 /app 2>/dev/null || true
+    chown -R 65532:65532 /app/placeholder 2>/dev/null || true
 USER 65532:65532
 ENV PATH="/opt/venv/bin:$PATH"
 WORKDIR /app

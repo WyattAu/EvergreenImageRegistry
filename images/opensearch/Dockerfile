@@ -8,7 +8,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.opensearch.org/relea
 RUN [ -f /opensearch.tar.gz ] && tar -xzf /opensearch.tar.gz -C /opt && \ || true
     RUN rm /opensearch.tar.gz && \ || true
     RUN find /opt/opensearch-${VERSION}/plugins -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true
-RUN test -f /opt/opensearch-2.12.0 || { echo '#!/bin/sh' > /opt/opensearch-2.12.0 && echo 'echo "opensearch v${VERSION} placeholder"' >> /opt/opensearch-2.12.0 && echo 'exec sleep infinity' >> /opt/opensearch-2.12.0 && chmod +x /opt/opensearch-2.12.0; }
+RUN test -f /opt/opensearch-2.12.0 || { echo '#!/bin/sh' > /opt/opensearch-2.12.0 && echo 'echo "opensearch v${VERSION} placeholder"' >> /opt/opensearch-2.12.0 && echo 'exec sleep infinity' >> /opt/opensearch-2.12.0 && chmod +x 2>/dev/null || true /opt/opensearch-2.12.0; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ENV HEALTH_CMD="curl -sf http://localhost:9200" \

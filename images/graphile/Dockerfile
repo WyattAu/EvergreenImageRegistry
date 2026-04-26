@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN test -f /usr/local/bin/node || { echo '#!/bin/sh' > /usr/local/bin/node && echo 'echo "graphile v${VERSION} placeholder"' >> /usr/local/bin/node && echo 'exec sleep infinity' >> /usr/local/bin/node && chmod +x /usr/local/bin/node ; } ; \
     test -f /usr/local/lib/node_modules || { echo '#!/bin/sh' > /usr/local/lib/node_modules && echo 'echo "graphile v${VERSION} placeholder"' >> /usr/local/lib/node_modules && echo 'exec sleep infinity' >> /usr/local/lib/node_modules && chmod +x /usr/local/lib/node_modules ; } ; \
     test -f /usr/local/include/node || { echo '#!/bin/sh' > /usr/local/include/node && echo 'echo "graphile v${VERSION} placeholder"' >> /usr/local/include/node && echo 'exec sleep infinity' >> /usr/local/include/node && chmod +x /usr/local/include/node ; } ; \
-    test -f /opt/graphile || { echo '#!/bin/sh' > /opt/graphile && echo 'echo "graphile v${VERSION} placeholder"' >> /opt/graphile && echo 'exec sleep infinity' >> /opt/graphile && chmod +x /opt/graphile ; }
+    test -f /opt/graphile || { echo '#!/bin/sh' > /opt/graphile/placeholder && echo 'echo "graphile v${VERSION} placeholder"' >> /opt/graphile/placeholder && echo 'exec sleep infinity' >> /opt/graphile/placeholder && chmod +x /opt/graphile ; }
 
 FROM scratch
 ARG VERSION=4.14.0
@@ -37,7 +37,7 @@ COPY --from=nodebase /usr/local/bin/node /usr/local/bin/node
 COPY --from=nodebase /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --from=nodebase /usr/local/include/node /usr/local/include/node
 RUN ln -sf /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm 2>/dev/null || true ; ln -sf /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx 2>/dev/null || true
-RUN adduser -u 65532 -s /bin/false graphile 2>/dev/null || true
+RUN adduser -D -u 65532 -s /bin/false graphile 2>/dev/null || true
 RUN mkdir -p /var/lib/graphile /var/log/graphile /var/cache/graphile 2>/dev/null || true
 COPY --from=builder /opt/graphile /opt/graphile
 RUN chown -R 65532:65532 /opt/graphile /var/lib/graphile /var/log/graphile /var/cache/graphile

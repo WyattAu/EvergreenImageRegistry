@@ -648,5 +648,3 @@ jobs:
             fi
           } >> "$GITHUB_STEP_SUMMARY"
 # Sat 25 Apr 03:50:08 BST 2026
-# Build Pipeline v4
-trigger

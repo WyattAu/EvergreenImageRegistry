@@ -26,6 +26,7 @@ RUN apk add --no-cache ca-certificates
 RUN adduser -u 65532 -s /bin/false questdb 2>/dev/null || true
 RUN mkdir -p /var/lib/questdb /var/log/questdb /var/cache/questdb 2>/dev/null || true
 COPY --from=builder /opt/questdb-${VERSION}-no-jre-bin /opt/questdb
+RUN addgroup -S questdb 2>/dev/null || true && adduser -u 65532 -G questdb -D -s /bin/false questdb 2>/dev/null || true
 RUN chown -R questdb:questdb /opt/questdb /var/lib/questdb /var/log/questdb /var/cache/questdb
 USER 65532:65532
 WORKDIR /opt/questdb

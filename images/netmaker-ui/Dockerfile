@@ -13,7 +13,7 @@ COPY --from=downloader /www /www
 USER 65532:65532
 WORKDIR /www
 EXPOSE 8080
-ENTRYPOINT ["/fileserver"]
+ENTRYPOINT ["/app/fileserver"]
 LABEL org.opencontainers.image.title="netmaker-ui" \
       org.opencontainers.image.version="0.25.4" \
       org.opencontainers.image.vendor="Gravitl" \

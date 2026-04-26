@@ -43,7 +43,7 @@ case "$BACKUP_FILE" in
 esac | mysql --host="$MYSQL_HOST" --user="$MYSQL_USER" --password="$MYSQL_PASSWORD"
 echo "Restore complete from: $BACKUP_FILE"
 SCRIPT
-RUN chmod +x /app/ 2>/dev/null || true ; restore.sh && chown 65532:65532 /app/restore.sh
+RUN chmod +x /app/restore.sh 2>/dev/null || true && chown 65532:65532 /app/restore.sh 2>/dev/null || true
 ENTRYPOINT ["/app/restore.sh"]
 LABEL org.opencontainers.image.title="mysql-restore" \
       org.opencontainers.image.version="8.0" \

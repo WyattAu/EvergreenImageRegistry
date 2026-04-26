@@ -10,7 +10,6 @@ RUN pip install --no-cache-dir --upgrade pip && \
 RUN mkdir -p /app/config /app/data 2>/dev/null || true
 
 
-RUN test -f /opt/venv || { echo '#!/bin/sh' > /opt/venv && echo 'echo "searxng-meta v${VERSION} placeholder"' >> /opt/venv && echo 'exec sleep infinity' >> /opt/venv && chmod +x /opt/venv ; } ; \
     test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "searxng-meta v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest

@@ -13,7 +13,7 @@ COPY --from=downloader /www /www
 USER 65532:65532
 WORKDIR /www
 EXPOSE 8080
-ENTRYPOINT ["/fileserver"]
+ENTRYPOINT ["/app/fileserver"]
 LABEL org.opencontainers.image.title="headscale-ui" \
       org.opencontainers.image.version="2024.1.1" \
       org.opencontainers.image.vendor="gurucomputing" \

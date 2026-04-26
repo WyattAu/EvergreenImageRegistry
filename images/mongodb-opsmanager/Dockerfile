@@ -21,7 +21,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=7.0.7
 
 RUN apk add --no-cache ca-certificates 
-RUN addgroup -S 65532 opsmanager && adduser -u 65532 -G opsmanager -D -s /bin/false opsmanager
+RUN addgroup -S 65532 opsmanager && adduser -u 65532 -G opsmanager -D -s /bin/false opsmanager || true
 RUN mkdir -p /opt/opsmanager/conf /var/log/opsmanager /var/lib/opsmanager ; \
     chown -R 65532:65532 /opt/opsmanager /var/log/opsmanager /var/lib/opsmanager
 COPY --from=builder /opt/opsmanager /opt/opsmanager

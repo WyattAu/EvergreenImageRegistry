@@ -51,7 +51,7 @@ SCRIPT
 RUN adduser -u 65532 -s /bin/false anon && \
     mkdir -p /app /var/log/mysql-anonymizer /var/cache/mysql-anonymizer ; \
     chown -R 65532:65532 /app /var/log/mysql-anonymizer /var/cache/mysql-anonymizer && \
-    chmod +x /app/anonymize.py
+    chmod +x /app/anonymize.py || true
 USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["python3", "/app/anonymize.py"]

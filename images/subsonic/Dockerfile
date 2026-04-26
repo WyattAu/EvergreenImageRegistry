@@ -1,19 +1,7 @@
-# =============================================================================
-# SOVEREIGN HARDENED SUBSONIC
-# Generated from template - Version: 6.17.1
-# Constraint: debian-slim - JRE required
-# Priority: scratch > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=6.17.1
-ARG BUILD_DATE
-
-
 FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/subsonic/subsonic/releases/download/v6.17.1/subsonic-6.17.1.jar -o /app/subsonic-6.17.1.jar || true
-
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/subsonic/subsonic/releases/download/v6.17.1/subsonic-6.17.1.jar -o /app/subsonic-6.17.1.jar || true ; mkdir -p / 2>/dev/null || true ; touch --chown=65532:65532 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

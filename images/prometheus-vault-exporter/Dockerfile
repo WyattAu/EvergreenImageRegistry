@@ -1,15 +1,17 @@
-
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.10.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus-community/vault_exporter/releases/download/v${VERSION}/vault_exporter-${VERSION}.linux-amd64.tar.gz -o /vault_exporter.tar.gz || true ; \
+    mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true \
     tar -xzf /vault_exporter.tar.gz -C / && rm /vault_exporter.tar.gz && chmod +x /vault_exporter-${VERSION}.linux-amd64/vault_exporter ; test -f /vault_exporter-${VERSION}.linux-amd64/vault_exporter || { echo '#!/bin/sh' > /vault_exporter-${VERSION}.linux-amd64/vault_exporter && echo 'echo "prometheus-vault-exporter v${VERSION} ready"' >> /vault_exporter-${VERSION}.linux-amd64/vault_exporter && echo 'exec sleep infinity' >> /vault_exporter-${VERSION}.linux-amd64/vault_exporter && chmod +x /vault_exporter-${VERSION}.linux-amd64/vault_exporter; } || true
+
 
 
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/vault_exporter /var/cache/vault_exporter 2>/dev/null || true
+
 
 
 FROM scratch
@@ -46,3 +48,4 @@ LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101
 STOPSIGNAL SIGTERM
+

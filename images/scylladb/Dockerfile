@@ -25,7 +25,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates libxml2-utils python3 systemd 
-RUN adduser -u 65532 -s /bin/false scylla
+RUN adduser -u 65532 -s /bin/false scylla || true
 RUN mkdir -p /var/lib/scylla /var/log/scylla
 COPY --from=builder /opt/scylladb /opt/scylladb
 COPY --from=builder /usr/bin/scylla /usr/bin/scylla

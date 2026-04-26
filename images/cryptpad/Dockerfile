@@ -1,13 +1,10 @@
-ARG VERSION=2024.5.1
-ARG BUILD_DATE
-
-
 FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm ca-certificates curl && \
     rm -rf /var/lib/apt/lists/* || true
 RUN mkdir -p /app-data /var/log/node /var/cache/node 2>/dev/null || true
+
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

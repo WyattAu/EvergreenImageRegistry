@@ -1,12 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED VALKEY CLUSTER
-# Generated from template - Version: 7.2.4
-# Constraint: debian-slim - Valkey cluster mode with redis-trib
-# Priority: scratch > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=7.2.4
-ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION=7.2.4
@@ -20,6 +11,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 RUN test -f /install/bin/ || { echo '#!/bin/sh' > /install/bin/ && echo 'echo "valkey-cluster v${VERSION} placeholder"' >> /install/bin/ && echo 'exec sleep infinity' >> /install/bin/ && chmod +x /install/bin/ ; } ; \
     mkdir -p /valkey-${VERSION}/valkey.conf 2>/dev/null || true
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=7.2.4

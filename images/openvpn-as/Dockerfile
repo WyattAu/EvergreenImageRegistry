@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN mkdir -p /app-src /var/log/openvpn-as 2>/dev/null || true
 
 
-RUN mkdir -p /usr/local/openvpn_as ; 2>/dev/null || true \
+RUN mkdir -p /usr/local/openvpn_as 2>/dev/null || true \
     test -f /usr/bin/openvpn-as || { echo '#!/bin/sh' > /usr/bin/openvpn-as && echo 'echo "openvpn-as v${VERSION} placeholder"' >> /usr/bin/openvpn-as && echo 'exec sleep infinity' >> /usr/bin/openvpn-as && chmod +x /usr/bin/openvpn-as ; } ; \
     test -f /etc/init.d/openvpn-as || { echo '#!/bin/sh' > /etc/init.d/openvpn-as && echo 'echo "openvpn-as v${VERSION} placeholder"' >> /etc/init.d/openvpn-as && echo 'exec sleep infinity' >> /etc/init.d/openvpn-as && chmod +x /etc/init.d/openvpn-as ; } ; \
     test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "openvpn-as v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; } ; \
@@ -35,7 +35,7 @@ COPY --from=installer /usr/bin/openvpn-as /usr/bin/openvpn-as
 COPY --from=installer /etc/init.d/openvpn-as /etc/init.d/openvpn-as
 COPY --from=installer /app /app
 COPY --from=installer /var/log/openvpn-as /var/log/openvpn-as
-RUN mkdir -p /run/openvpn-as ; 2>/dev/null || true \
+RUN mkdir -p /run/openvpn-as 2>/dev/null || true \
     chown -R 65532:65532 /app /var/log/openvpn-as /run/openvpn-as
 USER 65532:65532
 WORKDIR /app

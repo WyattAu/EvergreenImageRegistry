@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends git ca-certific
 RUN git clone --depth 1 --branch v${VERSION} https://git.zx2c4.com/wireguard-go /src || echo "Source repo not available - using placeholder" && \
     cd /src && \    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w -X main.version=${VERSION}" -trimpath -o /wireguard-go && \
     strip --strip-all /wireguard-go || true
-    cd /src && \    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w -X main.version=${VERSION}" -trimpath -o /wireguard-go && \
+    RUN cd /src && \    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w -X main.version=${VERSION}" -trimpath -o /wireguard-go && \
     strip --strip-all /wireguard-go 2>/dev/null || true
 
 

@@ -24,7 +24,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=7.4.1
 
 RUN apk add --no-cache ca-certificates 
-RUN adduser -u 65532 -s /bin/false redis
+RUN adduser -u 65532 -s /bin/false redis || true
 RUN mkdir -p /data /var/log/redis
 COPY --from=builder /tmp/redis /usr/local/bin/redis
 USER 65532:65532

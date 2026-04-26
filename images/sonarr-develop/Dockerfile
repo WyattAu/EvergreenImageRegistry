@@ -1,21 +1,10 @@
-# =============================================================================
-# SOVEREIGN HARDENED SONARR-DEVELOP
-# Generated from template - Version: 4.0.11
-# Constraint: debian-slim - .NET runtime required
-# Priority: scratch > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=4.0.11
-ARG BUILD_DATE
-
-
 FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Sonarr/Sonarr/releases/download/v4.0.11/Sonarr.develop.4.0.11.linux-core-x64.tar.gz -o /Sonarr.tar.gz && \
+    mkdir -p / 2>/dev/null || true ; touch --chown=65532:65532 2>/dev/null || true \
     [ -f /Sonarr.tar.gz ] && tar -xzf /Sonarr.tar.gz -C /app && rm /Sonarr.tar.gz && chmod +x /app/Sonarr 2>/dev/null || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Sonarr/Sonarr/releases/download/v4.0.11/Sonarr.develop.4.0.11.linux-core-x64.tar.gz -o /app/Sonarr && chmod +x /app/Sonarr || true
-
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

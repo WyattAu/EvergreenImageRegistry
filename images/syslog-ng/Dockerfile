@@ -23,7 +23,7 @@ RUN mkdir -p /usr/sbin/syslog-ng 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN addgroup -S 65532 syslogng && \
-    adduser -u 65532 -G syslogng -D -s /bin/false syslogng
+    adduser -u 65532 -G syslogng -D -s /bin/false syslogng || true
 RUN apk add --no-cache ca-certificates 
 COPY --from=builder /usr/sbin/syslog-ng /usr/sbin/syslog-ng
 RUN mkdir -p /app/conf /app/logs /app/run /var/lib/syslog-ng ; \

@@ -1,21 +1,10 @@
-# =============================================================================
-# SOVEREIGN HARDENED WHISPARR
-# Generated from template - Version: 1.0.0.329
-# Constraint: debian-slim - .NET runtime required
-# Priority: scratch > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=1.0.0.329
-ARG BUILD_DATE
-
-
 FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Whisparr/Whisparr/releases/download/v1.0.0.329/Whisparr.develop.1.0.0.329.linux-core-x64.tar.gz -o /Whisparr.tar.gz && \
+    mkdir -p / 2>/dev/null || true ; touch --chown=65532:65532 2>/dev/null || true \
     [ -f /Whisparr.tar.gz ] && tar -xzf /Whisparr.tar.gz -C /app && rm /Whisparr.tar.gz && chmod +x /app/Whisparr 2>/dev/null || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Whisparr/Whisparr/releases/download/v1.0.0.329/Whisparr.develop.1.0.0.329.linux-core-x64.tar.gz -o /app/Whisparr && chmod +x /app/Whisparr || true
-
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

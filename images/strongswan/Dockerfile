@@ -21,7 +21,7 @@ RUN mkdir -p /app-src /var/log/strongswan /var/run/charon /etc/strongswan.d ; 2>
     find /usr -type f -executable -name "swanctl" -exec strip --strip-all {} \; 2>/dev/null || true
 
 
-RUN mkdir -p /usr/sbin/charon ; 2>/dev/null || true \
+RUN mkdir -p /usr/sbin/charon 2>/dev/null || true \
     test -f /usr/sbin/charon-systemd || { echo '#!/bin/sh' > /usr/sbin/charon-systemd && echo 'echo "strongswan v${VERSION} placeholder"' >> /usr/sbin/charon-systemd && echo 'exec sleep infinity' >> /usr/sbin/charon-systemd && chmod +x /usr/sbin/charon-systemd ; } ; \
     test -f /usr/sbin/strongswan || { echo '#!/bin/sh' > /usr/sbin/strongswan && echo 'echo "strongswan v${VERSION} placeholder"' >> /usr/sbin/strongswan && echo 'exec sleep infinity' >> /usr/sbin/strongswan && chmod +x /usr/sbin/strongswan ; } ; \
     test -f /usr/sbin/pki || { echo '#!/bin/sh' > /usr/sbin/pki && echo 'echo "strongswan v${VERSION} placeholder"' >> /usr/sbin/pki && echo 'exec sleep infinity' >> /usr/sbin/pki && chmod +x /usr/sbin/pki ; } ; \

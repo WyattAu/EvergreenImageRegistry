@@ -21,7 +21,7 @@ RUN git clone --depth 1 --branch controller-v${VERSION}  || echo "Source repo no
     -ldflags="-s -w -X main.version=v${VERSION}" \
     -trimpath \
     -o /nginx-ingress-controller ./cmd/nginx || true
-    https://github.com/kubernetes/ingress-nginx /src && \
+    RUN https://github.com/kubernetes/ingress-nginx /src && \
     cd /src && \    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
     -ldflags="-s -w -X main.version=v${VERSION}" \
     -trimpath \

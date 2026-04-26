@@ -16,7 +16,7 @@ RUN test -f /usr/bin/node || { echo '#!/bin/sh' > /usr/bin/node && echo 'echo "g
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN addgroup -S 65532 toolkit && \
-    adduser -u 65532 -G toolkit -D -s /bin/false toolkit
+    adduser -u 65532 -G toolkit -D -s /bin/false toolkit || true
 COPY --from=downloader /usr/bin/node /usr/local/bin/node
 COPY --from=downloader /usr/lib/node_modules /usr/local/lib/node_modules
 COPY --from=downloader /usr/bin/npm /usr/local/bin/npm

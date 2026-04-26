@@ -20,7 +20,7 @@ RUN git clone --depth 1 --branch v${VERSION} https://github.com/qbittorrent/qBit
     cd /src && \    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/app \
     -DGUI=OFF -DQT6=OFF . && \
     make -j$(nproc) && make install || true
-    cd /src && \    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/app \
+    RUN cd /src && \    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/app \
     -DGUI=OFF -DQT6=OFF . && \
     make -j$(nproc) && make install
 

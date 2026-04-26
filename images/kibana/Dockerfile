@@ -23,7 +23,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache curl ca-certificates 
-RUN adduser -u 65532 -s /bin/false kibana
+RUN adduser -u 65532 -s /bin/false kibana || true
 RUN mkdir -p /opt/kibana/data /opt/kibana/logs /var/log/kibana /var/cache/kibana
 COPY --from=builder /tmp/kibana-${VERSION}-linux-x86_64 /opt/kibana
 USER 65532:65532

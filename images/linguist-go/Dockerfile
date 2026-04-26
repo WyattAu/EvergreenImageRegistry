@@ -10,7 +10,7 @@ RUN apk add --no-cache go-1.23 git ca-certificates
 WORKDIR /src
 RUN git clone --depth 1 https://github.com/github/linguist.git /src || echo "Source repo not available - using placeholder" && \
     cd /src && go build -ldflags="-s -w" -o /linguist ./cmd/linguist 2>/dev/null || true
-    cd /src && go build -ldflags="-s -w" -o /linguist ./cmd/linguist 2>/dev/null || true
+    RUN cd /src && go build -ldflags="-s -w" -o /linguist ./cmd/linguist 2>/dev/null || true
 COPY --from=downloader /app /app
 RUN addgroup -S nogroup 2>/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false linguist 2>/dev/null || true && \

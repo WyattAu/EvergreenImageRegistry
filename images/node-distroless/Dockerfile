@@ -5,6 +5,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nodejs.org/dist/v22.12.0/node-
     mkdir -p /opt/node && tar -xf /node.tar.xz -C /opt/node --strip-components=1 && rm /node.tar.xz ; test -f /opt/node/lib/node_modules || { echo '#!/bin/sh' > /opt/node/lib/node_modules && echo 'echo "node-distroless v${VERSION} placeholder"' >> /opt/node/lib/node_modules && echo 'exec sleep infinity' >> /opt/node/lib/node_modules && chmod +x /opt/node/lib/node_modules; } && test -f /opt/node/bin/node || { echo '#!/bin/sh' > /opt/node/bin/node && echo 'echo "node-distroless v${VERSION} placeholder"' >> /opt/node/bin/node && echo 'exec sleep infinity' >> /opt/node/bin/node && chmod +x /opt/node/bin/node; } 2>/dev/null || true
 
 
+
 FROM gcr.io/distroless/nodejs22-debian12
 COPY --from=downloader /opt/node/lib/node_modules /usr/local/lib/node_modules
 COPY --from=downloader /opt/node/bin/node /usr/local/bin/node
@@ -26,3 +27,4 @@ LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101
 STOPSIGNAL SIGTERM
+

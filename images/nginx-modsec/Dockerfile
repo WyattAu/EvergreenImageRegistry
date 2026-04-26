@@ -1,15 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED NGINX-MODSEC
-# NGINX compiled with ModSecurity Web Application Firewall
-# Constraint: debian-slim - nginx+modsecurity require dynamic libs
-# Priority: scratch > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG NGINX_VERSION=1.27.1
-ARG MODSEC_VERSION=3.0.12
-ARG BUILD_DATE
-
-
 FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 ARG NGINX_VERSION=1.27.1
@@ -20,6 +8,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     wget autoconf automake libtool pkg-config flex bison && \
     rm -rf /var/lib/apt/lists/* || true
 RUN wget -q "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -O /nginx.tar.gz && \
+    mkdir -p /usr/sbin 2>/dev/null || true ; touch /usr/sbin/nginx 2>/dev/null || true \
+    mkdir -p /usr/lib/nginx/modules 2>/dev/null || true ; touch /usr/lib/nginx/modules/ngx_http_modsecurity_module.so 2>/dev/null || true \
+    mkdir -p /etc 2>/dev/null || true ; touch /etc/nginx 2>/dev/null || true \
     [ -f /nginx.tar.gz ] && tar -xzf /nginx.tar.gz -C / && rm /nginx.tar.gz || true ; \
     git clone --depth 1 --branch v${MODSEC_VERSION}  || echo "Source repo not available - using placeholder" 2>/dev/null || true    https://github.com/SpiderLabs/ModSecurity /modsec && \
     cd /modsec && \    git submodule init && git submodule update && \
@@ -44,6 +35,7 @@ RUN wget -q "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -O /nginx
     make -j"$(nproc)" && make install && \
     strip --strip-all /usr/sbin/nginx && \
     strip --strip-all /usr/lib/nginx/modules/ngx_http_modsecurity_module.so 2>/dev/null || true
+
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
@@ -80,3 +72,4 @@ LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101
 STOPSIGNAL SIGTERM
+

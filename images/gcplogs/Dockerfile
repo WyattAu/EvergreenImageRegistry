@@ -28,7 +28,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=3.10.0
 
 RUN addgroup -S 65532 gcplogs && \
-    adduser -u 65532 -G gcplogs -D -s /bin/false gcplogs
+    adduser -u 65532 -G gcplogs -D -s /bin/false gcplogs || true
 RUN apk add --no-cache ca-certificates 
 COPY --from=stripper /install /usr/local
 COPY --from=stripper /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

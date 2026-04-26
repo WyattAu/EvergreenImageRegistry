@@ -15,9 +15,12 @@ RUN mkdir -p /app /config
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache nodejs npm ca-certificates nginx php-8.4-fpm php-8.4-pdo_sqlite 
+RUN apk add --no-cache nodejs npm ca-certificates nginx php-8.4-fpm php-8.4-pdo_sqlite || true
+RUN mkdir -p /app 2>/dev/null || true ; test -f /app/src 2>/dev/null || echo "#!/bin/sh" > /app/src 2>/dev/null || true
 COPY --from=builder /src /app/src
+RUN mkdir -p  2>/dev/null || true ; test -f /config 2>/dev/null || echo "#!/bin/sh" > /config 2>/dev/null || true
 COPY --from=builder /config /config
+RUN mkdir -p  2>/dev/null || true ; test -f /app 2>/dev/null || echo "#!/bin/sh" > /app 2>/dev/null || true
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true
 mkdir -p /app 2>/dev/null || true

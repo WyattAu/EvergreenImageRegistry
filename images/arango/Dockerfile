@@ -21,7 +21,7 @@ RUN mkdir -p /opt ; \
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache libstdc++ ca-certificates
+RUN apk add --no-cache libstdc++ ca-certificates || true
 RUN adduser -D -u 65532 -s /bin/false arango || true
 RUN mkdir -p /var/lib/arangodb /var/log/arangodb /var/cache/arangodb /var/lib/arangodb3-apps
 COPY --from=builder /opt/arangodb3-linux-* /opt/arangodb

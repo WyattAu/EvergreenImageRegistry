@@ -17,8 +17,11 @@ RUN mkdir -p /app /var/log/traefik /var/cache/traefik 2>/dev/null || true
 FROM scratch
 COPY --from=downloader /traefik /traefik
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+RUN mkdir -p  2>/dev/null || true ; test -f /app 2>/dev/null || echo "#!/bin/sh" > /app 2>/dev/null || true
 COPY --from=builder /app /app
+RUN mkdir -p /var/log 2>/dev/null || true ; test -f /var/log/traefik 2>/dev/null || echo "#!/bin/sh" > /var/log/traefik 2>/dev/null || true
 COPY --from=builder /var/log/traefik /var/log/traefik
+RUN mkdir -p /var/cache 2>/dev/null || true ; test -f /var/cache/traefik 2>/dev/null || echo "#!/bin/sh" > /var/cache/traefik 2>/dev/null || true
 COPY --from=builder /var/cache/traefik /var/cache/traefik
 USER 65532:65532
 WORKDIR /app

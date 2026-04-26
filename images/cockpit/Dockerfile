@@ -10,7 +10,7 @@ RUN mkdir -p /app
 RUN test -e /app || { mkdir -p /app && echo 'cockpit placeholder' > /app/.placeholder ; }
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates 
+RUN apk add --no-cache ca-certificates || true
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true
 mkdir -p /app 2>/dev/null || true

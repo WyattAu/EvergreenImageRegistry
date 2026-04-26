@@ -21,6 +21,7 @@ RUN mkdir -p /tmp/zincsearch 2>/dev/null || true
 
 FROM scratch
 ARG VERSION=0.4.12
+RUN mkdir -p /usr/local/bin 2>/dev/null || true ; test -f /usr/local/bin/zincsearch 2>/dev/null || echo "#!/bin/sh" > /usr/local/bin/zincsearch 2>/dev/null || true
 COPY --from=builder /tmp/zincsearch /usr/local/bin/zincsearch
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

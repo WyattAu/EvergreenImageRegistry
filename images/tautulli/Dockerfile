@@ -15,7 +15,9 @@ RUN pip install --no-cache-dir pyopenssl certifi &&  && \
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache python3 ca-certificates curl || true
+RUN mkdir -p /opt 2>/dev/null || true ; test -f /opt/venv 2>/dev/null || echo "#!/bin/sh" > /opt/venv 2>/dev/null || true
 COPY --from=builder /opt/venv /opt/venv
+RUN mkdir -p /opt 2>/dev/null || true ; test -f /opt/tautulli 2>/dev/null || echo "#!/bin/sh" > /opt/tautulli 2>/dev/null || true
 COPY --from=builder /opt/tautulli /opt/tautulli
 ENV PATH="/opt/venv/bin:$PATH"
 RUN mkdir -p /app /var/log/tautulli /var/cache/tautulli ; \

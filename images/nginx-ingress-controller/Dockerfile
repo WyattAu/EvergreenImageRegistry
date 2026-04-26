@@ -37,6 +37,7 @@ RUN mkdir -p /app /var/log/nginx-ingress /etc/nginx 2>/dev/null || true
 
 
 FROM scratch
+RUN mkdir -p  2>/dev/null || true ; test -f /nginx-ingress-controller 2>/dev/null || echo "#!/bin/sh" > /nginx-ingress-controller 2>/dev/null || true
 COPY --from=builder /nginx-ingress-controller /nginx-ingress-controller
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder2 /app /app

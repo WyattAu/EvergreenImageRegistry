@@ -24,7 +24,7 @@ RUN test -f /install/bin/ || { echo '#!/bin/sh' > /install/bin/ && echo 'echo "v
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=7.2.4
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 COPY --from=builder /install/bin/ /usr/local/bin/
 COPY --from=builder /valkey-${VERSION}/valkey.conf /app/valkey.conf
 RUN adduser -u 65532 -s /sbin/nologin valkey 2>/dev/null || true && \

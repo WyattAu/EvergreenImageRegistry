@@ -22,7 +22,7 @@ RUN test -e /opt/chartdb || { mkdir -p /opt/chartdb && echo 'chartdb placeholder
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 RUN adduser -u 65532 -s /sbin/nologin chartdb 2>/dev/null || true
 RUN mkdir -p /var/lib/chartdb /var/log/chartdb /var/cache/chartdb 2>/dev/null || true
 COPY --from=builder /opt/chartdb /opt/chartdb

@@ -10,7 +10,7 @@ RUN test -f /postgres_exporter-${VERSION}-linux-amd64/postgres_exporter || { ech
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/postgres_exporter /var/cache/postgres_exporter 2>/dev/null || true
+RUN mkdir -p /app /var/log/postgres_exporter /var/cache/postgres_exporter
 
 
 FROM scratch

@@ -48,7 +48,7 @@ RUN wget -q "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -O /nginx
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache libxml2 curl ca-certificates || true
+RUN apk add --no-cache libxml2 curl ca-certificates 
 RUN mkdir -p /app /var/log/nginx /var/cache/nginx /etc/nginx/modsec /run ; \
     chown -R 65532:65532 /app /var/log/nginx /var/cache/nginx
 COPY --from=builder /usr/sbin/nginx /usr/sbin/nginx

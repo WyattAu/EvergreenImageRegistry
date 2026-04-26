@@ -16,7 +16,7 @@ RUN test -f /opt/venv || { echo '#!/bin/sh' > /opt/venv && echo 'echo "paperless
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache python3 ca-certificates curl || true
+RUN apk add --no-cache python3 ca-certificates curl 
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN mkdir -p /app /var/log/app /var/cache/app ; \

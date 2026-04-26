@@ -20,7 +20,7 @@ RUN mkdir -p /app /var/log/pptpd /run/pptpd /etc/pptpd.d ; \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache libstdc++ ca-certificates || true
+RUN apk add --no-cache libstdc++ ca-certificates 
 COPY --from=installer /usr/sbin/pptpd /usr/sbin/pptpd
 COPY --from=installer /usr/sbin/pptpctrl /usr/sbin/pptpctrl
 COPY --from=installer /etc/pptpd.conf /etc/pptpd.conf

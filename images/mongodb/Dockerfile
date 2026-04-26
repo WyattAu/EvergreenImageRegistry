@@ -19,7 +19,7 @@ ENV HEALTH_CMD="mongosh --eval \"db.adminCommand('ping')\"" \
     STARTUP_CMD="mongosh --eval \"db.adminCommand('ping')\"" \
     SOVEREIGN_LOG_LEVEL=info
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder --chown=65532:65532 /app /app

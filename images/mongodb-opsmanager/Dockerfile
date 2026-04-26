@@ -20,7 +20,7 @@ RUN mkdir -p /opt/opsmanager 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=7.0.7
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 RUN addgroup -S 65532 opsmanager && adduser -u 65532 -G opsmanager -D -s /sbin/nologin opsmanager
 RUN mkdir -p /opt/opsmanager/conf /var/log/opsmanager /var/lib/opsmanager ; \
     chown -R 65532:65532 /opt/opsmanager /var/log/opsmanager /var/lib/opsmanager

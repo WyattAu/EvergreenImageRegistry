@@ -6,7 +6,7 @@
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apk add --no-cache ca-certificates tzdata curl dumb-init || true
+RUN apk add --no-cache ca-certificates tzdata curl dumb-init 
 
 ARG JRE_VERSION=21.0.5+11
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jre/hotspot/normal/eclipse" -o /tmp/jre.tar.gz && \

@@ -7,7 +7,7 @@ RUN mkdir -p /app /firmware 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache python3 ca-certificates || true
+RUN apk add --no-cache python3 ca-certificates 
 COPY --from=builder /app /app
 COPY --from=builder /firmware /firmware
 RUN addgroup -S nogroup 2>/dev/null || true

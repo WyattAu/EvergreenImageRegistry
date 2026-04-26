@@ -31,7 +31,7 @@ RUN mkdir -p /opt ; ; \
     test -f /opt/bin/couchbase-server || { echo '#!/bin/sh' > /opt/bin/couchbase-server && echo 'echo "couchbase v${VERSION} placeholder"' >> /opt/bin/couchbase-server && echo 'exec sleep infinity' >> /opt/bin/couchbase-server && chmod +x /opt/bin/couchbase-server ; }
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache libstdc++ curl zlib procps || true
+RUN apk add --no-cache libstdc++ curl zlib procps 
 COPY --from=builder /opt/couchbase /opt/couchbase
 RUN mkdir -p /var/lib/couchbase /var/log/couchbase /app ; \
     chown -R 65532:65532 /var/lib/couchbase /var/log/couchbase /app /opt/couchbase

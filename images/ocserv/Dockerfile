@@ -21,7 +21,7 @@ RUN mkdir -p /app /var/log/ocserv /run/ocserv ; \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 COPY --from=installer /usr/sbin/ocserv /usr/sbin/ocserv
 COPY --from=installer /usr/bin/occtl /usr/bin/occtl
 COPY --from=installer /usr/bin/ocpasswd /usr/bin/ocpasswd

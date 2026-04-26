@@ -16,14 +16,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.rethinkdb.com/repository/raw/rethinkdb-${VERSION}.tgz" -o /tmp/rethinkdb.tar.gz ; echo "PENDING  /tmp/rethinkdb.tar.gz" | sha256sum -c || true  ; [ -f /tmp/rethinkdb.tar.gz ] && tar -xzf /tmp/rethinkdb.tar.gz -C /opt || true ; \
     strip --strip-all /opt/rethinkdb-*/bin/rethinkdb 2>/dev/null || true
-RUN mkdir -p /opt/rethinkdb-${VERSION} 2>/dev/null || true
+RUN mkdir -p /opt/rethinkdb-${VERSION}
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates libstdc++ || true
-RUN adduser -u 65532 -s /sbin/nologin rethinkdb 2>/dev/null || true
-RUN mkdir -p /var/lib/rethinkdb /var/log/rethinkdb /var/cache/rethinkdb /data 2>/dev/null || true
+RUN apk add --no-cache ca-certificates libstdc++ 
+RUN adduser -u 65532 -s /sbin/nologin rethinkdb
+RUN mkdir -p /var/lib/rethinkdb /var/log/rethinkdb /var/cache/rethinkdb /data
 COPY --from=builder /opt/rethinkdb-${VERSION} /opt/rethinkdb
 RUN chown -R 65532:65532 /opt/rethinkdb /var/lib/rethinkdb /var/log/rethinkdb /var/cache/rethinkdb /data
 USER 65532:65532

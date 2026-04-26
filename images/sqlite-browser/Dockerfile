@@ -17,7 +17,7 @@ RUN find /usr -type f -executable -name "sqlitebrowser" -exec strip --strip-all 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache sqlite-libs ca-certificates || true
+RUN apk add --no-cache sqlite-libs ca-certificates 
 RUN mkdir -p /app /var/log/sqlite-browser 2>/dev/null || true
 COPY --from=installer /usr/bin/sqlitebrowser /usr/local/bin/sqlitebrowser
 RUN chown -R 65532:65532 /app /var/log/sqlite-browser

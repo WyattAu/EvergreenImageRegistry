@@ -29,9 +29,9 @@ RUN test -f /usr/lib/rabbitmq || { echo '#!/bin/sh' > /usr/lib/rabbitmq && echo 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates || true
-RUN adduser -u 65532 -s /sbin/nologin rabbitmq 2>/dev/null || true
-RUN mkdir -p /var/lib/rabbitmq /var/log/rabbitmq /etc/rabbitmq 2>/dev/null || true
+RUN apk add --no-cache ca-certificates 
+RUN adduser -u 65532 -s /sbin/nologin rabbitmq
+RUN mkdir -p /var/lib/rabbitmq /var/log/rabbitmq /etc/rabbitmq
 COPY --from=builder /usr/lib/rabbitmq /usr/lib/rabbitmq
 COPY --from=builder /usr/sbin/rabbitmq* /usr/sbin/
 COPY --from=builder /usr/bin/rabbitmq* /usr/bin/

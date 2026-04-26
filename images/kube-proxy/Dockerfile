@@ -14,7 +14,7 @@ RUN mkdir -p /app /var/log/kube-proxy /var/cache/kube-proxy /var/lib/kube-proxy 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates iptables || true
+RUN apk add --no-cache ca-certificates iptables 
 COPY --from=downloader /kube-proxy /usr/local/bin/kube-proxy
 COPY --from=builder /app /app
 COPY --from=builder /var/log/kube-proxy /var/log/kube-proxy

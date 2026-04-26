@@ -11,7 +11,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=0.5.0
-RUN apk add --no-cache ca-certificates git build-base || true
+RUN apk add --no-cache ca-certificates git build-base 
 RUN pip install --no-cache-dir --break-system-packages chromadb==${VERSION} 2>/dev/null || \
     pip install --no-cache-dir --break-system-packages chromadb
 RUN adduser -u 65532 -D chroma 2>/dev/null || true

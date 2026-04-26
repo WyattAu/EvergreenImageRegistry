@@ -38,7 +38,7 @@ RUN [ -f /tmp/couchdb.tar.gz ] && tar -xzf /tmp/couchdb.tar.gz -C /tmp || true ;
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache procps || true
+RUN apk add --no-cache procps 
 COPY --from=builder /opt/couchdb /opt/couchdb
 RUN mkdir -p /var/lib/couchdb /var/log/couchdb /app ; \
     chown -R 65532:65532 /var/lib/couchdb /var/log/couchdb /app /opt/couchdb

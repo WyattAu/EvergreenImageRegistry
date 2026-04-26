@@ -11,20 +11,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         php8.4-curl ca-certificates git ; rm -rf /var/lib/apt/lists/* || true
 WORKDIR /src
 RUN git clone --depth 1 https://github.com/PrivateBin/PrivateBin.git /src 2>/dev/null || echo "Source repo not available - using placeholder" || true
-RUN mkdir -p /src 2>/dev/null || true
-RUN mkdir -p /app/data /var/log/nginx /var/lib/php/sessions 2>/dev/null || true
+RUN mkdir -p /src
+RUN mkdir -p /app/data /var/log/nginx /var/lib/php/sessions
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache nginx php-8.4 php-8.4-fpm php-8.4-gd php-8.4-mbstring php-8.4-xml php-8.4-curl ca-certificates || true
+RUN apk add --no-cache nginx php-8.4 php-8.4-fpm php-8.4-gd php-8.4-mbstring php-8.4-xml php-8.4-curl ca-certificates 
 COPY --from=builder /src /app/src
 COPY --from=builder /app/data /app/data
 COPY --from=builder /var/log/nginx /var/log/nginx
 COPY --from=builder /var/lib/php/sessions /var/lib/php/sessions
-RUN addgroup -S nogroup 2>/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin privatebin 2>/dev/null || true && \
-    chown -R 65532:65532 /app /var/log/nginx /var/lib/php/sessions 2>/dev/null || true
+RUN addgroup -S nogroup
+RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin privatebin && \
+    chown -R 65532:65532 /app /var/log/nginx /var/lib/php/sessions
 USER 65532:65532
 WORKDIR /app
 EXPOSE 80

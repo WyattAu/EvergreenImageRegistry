@@ -24,7 +24,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN addgroup -S 65532 syslogng && \
     adduser -u 65532 -G syslogng -D -s /sbin/nologin syslogng
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 COPY --from=builder /usr/sbin/syslog-ng /usr/sbin/syslog-ng
 RUN mkdir -p /app/conf /app/logs /app/run /var/lib/syslog-ng ; \
     chown -R syslogng:syslogng /app /var/lib/syslog-ng

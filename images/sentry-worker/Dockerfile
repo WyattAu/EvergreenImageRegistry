@@ -10,7 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates libpq libxml2-dev libxslt-dev libffi-dev openssl-dev build-base git || true
+RUN apk add --no-cache ca-certificates libpq libxml2-dev libxslt-dev libffi-dev openssl-dev build-base git 
 COPY --from=downloader /tmp/sentry /opt/sentry
 RUN if [ -f /opt/sentry/requirements.txt ]; then pip install --no-cache-dir --break-system-packages -r /opt/sentry/requirements.txt 2>/dev/null || pip install --no-cache-dir -r /opt/sentry/requirements.txt || true; fi && \
     mkdir -p /app && chown -R 65532:65532 /app /opt/sentry 2>/dev/null || true

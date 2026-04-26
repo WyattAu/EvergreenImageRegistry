@@ -8,7 +8,7 @@ RUN mkdir -p /app 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin rkhunter 2>/dev/null || true && \

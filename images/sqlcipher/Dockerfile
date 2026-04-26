@@ -21,13 +21,13 @@ RUN wget -q "https://github.com/sqlcipher/sqlcipher/archive/refs/tags/v${VERSION
     strip --strip-all .libs/sqlcipher 2>/dev/null || true
 
 
-RUN mkdir -p /sqlcipher-${VERSION}/.libs/sqlcipher 2>/dev/null || true
+RUN mkdir -p /sqlcipher-${VERSION}/.libs/sqlcipher
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=4.5.6
 
-RUN apk add --no-cache ca-certificates || true
-RUN mkdir -p /app /var/log/sqlcipher 2>/dev/null || true
+RUN apk add --no-cache ca-certificates 
+RUN mkdir -p /app /var/log/sqlcipher
 COPY --from=builder /sqlcipher-${VERSION}/.libs/sqlcipher /usr/local/bin/sqlcipher
 RUN chown -R 65532:65532 /app /var/log/sqlcipher
 USER 65532:65532

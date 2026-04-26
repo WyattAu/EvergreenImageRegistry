@@ -11,7 +11,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG GITHUB_TOKEN
-RUN apk add --no-cache ca-certificates curl || true
+RUN apk add --no-cache ca-certificates curl 
 RUN pip install --no-cache-dir --break-system-packages weaviate-client 2>/dev/null || \
     pip install --no-cache-dir weaviate-client
 RUN adduser -u 65532 -D app 2>/dev/null || true

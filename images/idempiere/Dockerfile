@@ -8,7 +8,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates curl || true
+RUN apk add --no-cache ca-certificates curl 
 COPY --from=downloader /opt/idempiere-server-12.4.gtk.linux.x86_64 /opt/idempiere
 RUN mkdir -p /app /var/log/idempiere ; \
     chown -R 65532:65532 /app /var/log/idempiere /opt/idempiereUSER 65532:65532

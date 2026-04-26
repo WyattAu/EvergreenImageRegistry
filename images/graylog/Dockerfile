@@ -18,7 +18,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.graylog2.org/releases
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates curl || true
+RUN apk add --no-cache ca-certificates curl 
 RUN adduser -u 65532 -s /sbin/nologin graylog 2>/dev/null || true
 RUN mkdir -p /opt/graylog/data /opt/graylog/logs /var/log/graylog /var/cache/graylog 2>/dev/null || true
 COPY --from=builder /tmp/graylog-${VERSION} /opt/graylog

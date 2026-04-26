@@ -19,7 +19,7 @@ RUN test -f /opt/duplicati || { echo '#!/bin/sh' > /opt/duplicati && echo 'echo 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache curl ca-certificates || true
+RUN apk add --no-cache curl ca-certificates 
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dot.net/v1/dotnet-install.sh" -o /dotnet-install.sh && \
     chmod +x /dotnet-install.sh && \
     /dotnet-install.sh --channel 8.0 --runtime dotnet --install-dir /usr/share/dotnet && \

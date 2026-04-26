@@ -14,7 +14,7 @@ RUN test -f /usr/lib/ruby/gems || { echo '#!/bin/sh' > /usr/lib/ruby/gems && ech
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ruby ca-certificates git curl gnupg || true
+RUN apk add --no-cache ruby ca-certificates git curl gnupg 
 COPY --from=builder /usr/lib/ruby/gems /usr/lib/ruby/gems
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 COPY --from=builder /app /app

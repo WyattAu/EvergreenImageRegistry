@@ -12,7 +12,7 @@ RUN mkdir -p /app /var/log/jenkins-executor /var/cache/jenkins-executor /home/je
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates git || true
+RUN apk add --no-cache ca-certificates git 
 COPY --from=downloader /agent.jar /app/agent.jar
 COPY --from=builder /app /app
 COPY --from=builder /var/log/jenkins-executor /var/log/jenkins-executor

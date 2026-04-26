@@ -22,7 +22,7 @@ RUN mkdir -p /opt/questdb-${VERSION}-no-jre-bin 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 RUN adduser -u 65532 -s /sbin/nologin questdb 2>/dev/null || true
 RUN mkdir -p /var/lib/questdb /var/log/questdb /var/cache/questdb 2>/dev/null || true
 COPY --from=builder /opt/questdb-${VERSION}-no-jre-bin /opt/questdb

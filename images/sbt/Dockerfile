@@ -12,7 +12,7 @@ RUN mkdir -p /app /var/log/sbt /var/cache/sbt /home/sbt 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 COPY --from=downloader /opt/sbt /opt/sbt
 COPY --from=downloader /usr/local/bin/sbt /usr/local/bin/sbt
 COPY --from=builder /app /app

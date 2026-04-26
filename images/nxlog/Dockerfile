@@ -26,7 +26,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN addgroup -S 65532 nxlog && \
     adduser -u 65532 -G nxlog -D -s /sbin/nologin nxlog
-RUN apk add --no-cache curl libzstd1 zlib expat ca-certificates || true
+RUN apk add --no-cache curl libzstd1 zlib expat ca-certificates 
 COPY --from=downloader /opt/nxlog /opt/nxlog
 COPY --from=builder /opt/nxlog/bin/nxlog /opt/nxlog/bin/nxlog
 RUN mkdir -p /app/conf /app/logs /app/data /var/lib/nxlog ; \

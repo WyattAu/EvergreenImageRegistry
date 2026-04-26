@@ -18,7 +18,7 @@ RUN git clone --depth 1 --branch v{version}  || echo "Source repo not available 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 COPY --from=builder /usr/local/bin/eqonomize /usr/local/bin/eqonomize
 RUN mkdir -p /app /var/log/eqonomize /var/cache/eqonomize ; \
     chown -R 65532:65532 /app /var/log/eqonomize /var/cache/eqonomize

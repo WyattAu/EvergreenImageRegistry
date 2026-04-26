@@ -21,7 +21,7 @@ RUN git clone --depth 1 --branch v${VERSION} https://github.com/Softmotions/ejdb
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache libstdc++ ca-certificates || true
+RUN apk add --no-cache libstdc++ ca-certificates 
 RUN adduser -u 65532 -s /sbin/nologin ejdb 2>/dev/null || true
 RUN mkdir -p /var/lib/ejdb /var/log/ejdb /var/cache/ejdb 2>/dev/null || true
 COPY --from=builder /opt/ejdb /opt/ejdb

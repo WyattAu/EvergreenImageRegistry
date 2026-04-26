@@ -12,7 +12,7 @@ RUN test -f /usr/lib/node_modules || { echo '#!/bin/sh' > /usr/lib/node_modules 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache nodejs npm ca-certificates || true
+RUN apk add --no-cache nodejs npm ca-certificates 
 COPY --from=builder /usr/lib/node_modules /usr/lib/node_modules
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true

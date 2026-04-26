@@ -9,7 +9,7 @@ RUN mkdir -p /app /var/log/airbyte /var/cache/airbyte /var/lib/airbyte 2>/dev/nu
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 COPY --from=builder /app /app
 COPY --from=builder /var/log/airbyte /var/log/airbyte
 COPY --from=builder /var/cache/airbyte /var/cache/airbyte

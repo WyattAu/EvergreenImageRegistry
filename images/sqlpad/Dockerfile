@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache curl ca-certificates bash || true
+RUN apk add --no-cache curl ca-certificates bash 
 COPY --from=builder /app /app
 COPY --from=builder /var/log/sqlpad /var/log/sqlpad
 COPY --from=builder /var/cache/sqlpad /var/cache/sqlpad

@@ -9,7 +9,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/yace /var/cache/yace /etc/yace 2>/dev/null || true
+RUN mkdir -p /app /var/log/yace /var/cache/yace /etc/yace
 
 
 FROM scratch

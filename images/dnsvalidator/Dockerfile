@@ -16,14 +16,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN python3 -m venv /opt/venv ; /opt/venv/bin/pip install --no-cache-dir --upgrade pip ; /opt/venv/bin/pip install --no-cache-dir dnsvalidator==${VERSION} 2>/dev/null || \    /opt/venv/bin/pip install --no-cache-dir dnsvalidator || true
 
 
-RUN mkdir -p /opt/venv 2>/dev/null || true
+RUN mkdir -p /opt/venv
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache python3 ca-certificates || true
-RUN adduser -u 65532 -s /sbin/nologin dnsval 2>/dev/null || true
-RUN mkdir -p /var/lib/dnsvalidator /var/log/dnsvalidator 2>/dev/null || true
+RUN apk add --no-cache python3 ca-certificates 
+RUN adduser -u 65532 -s /sbin/nologin dnsval
+RUN mkdir -p /var/lib/dnsvalidator /var/log/dnsvalidator
 COPY --from=builder /opt/venv /opt/venv
 RUN chown -R 65532:65532 /opt/venv /var/lib/dnsvalidator /var/log/dnsvalidator
 USER 65532:65532

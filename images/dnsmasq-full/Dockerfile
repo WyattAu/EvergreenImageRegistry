@@ -27,7 +27,7 @@ RUN mkdir -p /install/usr/sbin/dnsmasq ; ; \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 COPY --from=builder /install/usr/sbin/dnsmasq /usr/sbin/dnsmasq
 COPY --from=builder /install/usr/share/man /usr/share/man
 RUN mkdir -p /app /var/log/dnsmasq /var/lib/dnsmasq /run /etc/dnsmasq.d ; \

@@ -15,7 +15,7 @@ RUN mkdir -p /opt/openhab ; ; \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates curl libffi-dev || true
+RUN apk add --no-cache ca-certificates curl libffi-dev 
 COPY --from=builder /opt/openhab /opt/openhab
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true

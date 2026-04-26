@@ -15,7 +15,7 @@ RUN test -f /opt/venv || { echo '#!/bin/sh' > /opt/venv && echo 'echo "whoogle-s
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache python3 ca-certificates tzdata || true
+RUN apk add --no-cache python3 ca-certificates tzdata 
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true

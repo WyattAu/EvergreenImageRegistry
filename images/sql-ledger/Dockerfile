@@ -3,7 +3,7 @@ ARG BUILD_DATE
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apk add --no-cache perl apache2 ca-certificates curl || true
+RUN apk add --no-cache perl apache2 ca-certificates curl 
 RUN mkdir -p /var/www/sql-ledger /var/log/sql-ledger ; \
     chown -R 65532:65532 /var/www/sql-ledger /var/log/sql-ledgerUSER 65532:65532
 WORKDIR /var/www/sql-ledger

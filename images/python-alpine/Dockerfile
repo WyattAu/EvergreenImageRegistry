@@ -6,7 +6,7 @@
 #       It used python:3.12-slim which is Debian. Now uses wolfi (musl).
 # Steps performed:
 # 1. Replaced FROM python:3.12-slim with wolfi-base
-# 2. Added: RUN apk add --no-cache python3 ca-certificates || true
+# 2. Added: RUN apk add --no-cache python3 ca-certificates 
 # 3. 
 USER 65532:65532
 # 4. Sovereign labels updated: sovereign.base.image="wolfi"
@@ -20,7 +20,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache python3 ca-certificates && \
     mkdir -p /app /var/log/python-alpine /var/cache/python-alpine ; \
     addgroup -g 65532 python && \
-    adduser -u 65532 -G python -s /sbin/nologin -D python || true
+    adduser -u 65532 -G python -s /sbin/nologin -D python 
 USER 65532:65532
 WORKDIR /app
 ENV PYTHONUNBUFFERED=1 \

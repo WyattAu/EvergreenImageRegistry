@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache curl ca-certificates || true
+RUN apk add --no-cache curl ca-certificates 
 COPY --from=builder --chown=65532:65532 /app /app
 COPY --from=builder --chown=65532:65532 /backups /backups
 COPY --from=builder --chown=65532:65532 /var/log/mysql-backup /var/log/mysql-backup

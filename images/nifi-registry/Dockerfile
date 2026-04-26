@@ -21,7 +21,7 @@ RUN mkdir -p /opt/nifi-registry-${VERSION} 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 RUN adduser -u 65532 -s /sbin/nologin nifi 2>/dev/null || true
 RUN mkdir -p /var/lib/nifi-registry /var/log/nifi-registry /var/cache/nifi-registry 2>/dev/null || true
 COPY --from=builder /opt/nifi-registry-${VERSION} /opt/nifi-registry

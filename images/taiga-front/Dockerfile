@@ -13,7 +13,7 @@ RUN git clone --depth 1 --branch v{version}  || echo "Source repo not available 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates curl nginx || true
+RUN apk add --no-cache ca-certificates curl nginx 
 COPY --from=builder /tmp/taiga-front/dist /var/www/taiga-front
 RUN mkdir -p /var/log/nginx /var/cache/nginx /var/www/taiga-front ; \
     chown -R 65532:65532 /var/www/taiga-front /var/log/nginx /var/cache/nginxUSER 65532:65532

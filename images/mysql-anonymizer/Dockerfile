@@ -18,7 +18,7 @@ RUN test -f /install || { echo '#!/bin/sh' > /install && echo 'echo "mysql-anony
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache curl ca-certificates || true
+RUN apk add --no-cache curl ca-certificates 
 COPY --from=builder /install /usr/local
 COPY <<'SCRIPT' /app/anonymize.py
 #!/usr/bin/env python3
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     anonymize_dump(args.input, args.output, args.rules)
 SCRIPT
-RUN adduser -u 65532 -s /sbin/nologin anon 2>/dev/null || true && \
+RUN adduser -u 65532 -s /sbin/nologin anon && \
     mkdir -p /app /var/log/mysql-anonymizer /var/cache/mysql-anonymizer ; \
     chown -R 65532:65532 /app /var/log/mysql-anonymizer /var/cache/mysql-anonymizer && \
     chmod +x /app/anonymize.py

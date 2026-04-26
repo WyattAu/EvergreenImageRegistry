@@ -11,7 +11,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://releases.mattermost.com/${VERS
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates tzdata || true
+RUN apk add --no-cache ca-certificates tzdata 
 COPY --from=downloader /opt/mattermost /opt/mattermost
 RUN addgroup -S 65532 -r mattermost 2>/dev/null || true && \
     adduser -u 65532 -G mattermost -D -D -h /opt/mattermost -s /sbin/nologin mattermost 2>/dev/null || true && \

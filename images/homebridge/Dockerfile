@@ -14,7 +14,7 @@ RUN test -f /usr/lib/node_modules/homebridge || { echo '#!/bin/sh' > /usr/lib/no
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache nodejs npm ca-certificates || true
+RUN apk add --no-cache nodejs npm ca-certificates 
 COPY --from=builder /usr/lib/node_modules/homebridge /usr/lib/node_modules/homebridge
 COPY --from=builder /usr/lib/node_modules/hap-nodejs /usr/lib/node_modules/hap-nodejs
 COPY --from=builder /app /app

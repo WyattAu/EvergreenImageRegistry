@@ -5,7 +5,7 @@
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 LABEL org.opencontainers.image.title="upstream" \
       org.opencontainers.image.description="Meta directory for upstream version tracking. Not a runnable container." \
       sovereign.image.tier="3" \

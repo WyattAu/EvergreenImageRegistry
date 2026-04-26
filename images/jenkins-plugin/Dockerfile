@@ -12,7 +12,7 @@ RUN mkdir -p /app /var/log/jenkins-plugin /var/cache/jenkins-plugin /home/jenkin
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 COPY --from=downloader /jenkins.war /app/jenkins.war
 COPY --from=builder /app /app
 COPY --from=builder /var/log/jenkins-plugin /var/log/jenkins-plugin

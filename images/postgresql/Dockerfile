@@ -19,7 +19,7 @@ ENV HEALTH_CMD="pg_isready -h localhost" \
     STARTUP_CMD="pg_isready -h localhost" \
     SOVEREIGN_LOG_LEVEL=info
 
-RUN apk add --no-cache postgresql-17 ca-certificates || true
+RUN apk add --no-cache postgresql-17 ca-certificates 
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder --chown=65532:65532 /app /app

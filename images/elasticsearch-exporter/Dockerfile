@@ -10,7 +10,7 @@ RUN test -f /elasticsearch_exporter-${VERSION}-linux-amd64/elasticsearch_exporte
 
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/elasticsearch_exporter /var/cache/elasticsearch_exporter 2>/dev/null || true
+RUN mkdir -p /app /var/log/elasticsearch_exporter /var/cache/elasticsearch_exporter
 
 
 FROM scratch

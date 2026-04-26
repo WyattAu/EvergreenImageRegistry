@@ -6,18 +6,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir esphome ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/esphome || { echo '#!/bin/sh' > /usr/local/bin/esphome && echo 'echo "esphome-daemon v${VERSION} placeholder"' >> /usr/local/bin/esphome && echo 'exec sleep infinity' >> /usr/local/bin/esphome && chmod +x /usr/local/bin/esphome ; } || true
-RUN mkdir -p /app /config 2>/dev/null || true
+RUN mkdir -p /app /config
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache python3 ca-certificates tzdata || true
+RUN apk add --no-cache python3 ca-certificates tzdata 
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
 COPY --from=builder /config /config
-RUN addgroup -S nogroup 2>/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /config -s /sbin/nologin esphome 2>/dev/null || true && \
-    chown -R 65532:65532 /config /app 2>/dev/null || true
+RUN addgroup -S nogroup
+RUN adduser -u 65532 -G nogroup -D -h /config -s /sbin/nologin esphome && \
+    chown -R 65532:65532 /config /app
 USER 65532:65532
 ENV PATH="/opt/venv/bin:$PATH" HOME="/config"
 WORKDIR /config

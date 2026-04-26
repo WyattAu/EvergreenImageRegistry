@@ -6,7 +6,7 @@ RUN test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "linguist-go v${VERS
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache go-1.23 git ca-certificates || true
+RUN apk add --no-cache go-1.23 git ca-certificates 
 WORKDIR /src
 RUN git clone --depth 1 https://github.com/github/linguist.git /src &&  || echo "Source repo not available - using placeholder" && \
     cd /src && go build -ldflags="-s -w" -o /linguist ./cmd/linguist 2>/dev/null || true

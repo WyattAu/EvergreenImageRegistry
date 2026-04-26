@@ -14,7 +14,7 @@ RUN mkdir -p /app /var/log/kube-apiserver /var/cache/kube-apiserver /var/lib/kub
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 COPY --from=downloader /kube-apiserver /usr/local/bin/kube-apiserver
 COPY --from=builder /app /app
 COPY --from=builder /var/log/kube-apiserver /var/log/kube-apiserver

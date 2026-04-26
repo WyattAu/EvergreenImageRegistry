@@ -21,7 +21,7 @@ RUN mkdir -p /opt/apache-druid-${VERSION} 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates python3 || true
+RUN apk add --no-cache ca-certificates python3 
 RUN adduser -u 65532 -s /sbin/nologin druid 2>/dev/null || true
 RUN mkdir -p /var/lib/druid /var/log/druid /var/cache/druid 2>/dev/null || true
 COPY --from=builder /opt/apache-druid-${VERSION} /opt/druid

@@ -14,7 +14,7 @@ RUN mkdir -p /app /var/log/kube-scheduler /var/cache/kube-scheduler /var/lib/kub
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 COPY --from=downloader /kube-scheduler /usr/local/bin/kube-scheduler
 COPY --from=builder /app /app
 COPY --from=builder /var/log/kube-scheduler /var/log/kube-scheduler

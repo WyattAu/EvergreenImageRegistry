@@ -13,7 +13,7 @@ RUN test -f /usr/lib/node_modules || { echo '#!/bin/sh' > /usr/lib/node_modules 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache nodejs npm ca-certificates curl || true
+RUN apk add --no-cache nodejs npm ca-certificates curl 
 COPY --from=builder /usr/lib/node_modules /usr/lib/node_modules
 COPY --from=builder /usr/bin/yarn /usr/local/bin/yarn
 COPY --from=builder /app /app

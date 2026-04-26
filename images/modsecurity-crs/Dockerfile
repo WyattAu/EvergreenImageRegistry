@@ -20,7 +20,7 @@ RUN git clone --depth 1 --branch v${VERSION}  || echo "Source repo not available
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates libxml2-dev || true
+RUN apk add --no-cache ca-certificates libxml2-dev 
 RUN adduser -u 65532 -s /sbin/nologin modsec 2>/dev/null || true
 RUN mkdir -p /etc/modsecurity /var/log/modsecurity /var/cache/modsecurity /var/lib/modsecurity 2>/dev/null || true
 COPY --from=builder /tmp/crs /etc/modsecurity/crs

@@ -19,7 +19,7 @@ ENV HEALTH_CMD="redis-cli ping" \
     STARTUP_CMD="redis-cli ping" \
     SOVEREIGN_LOG_LEVEL=info
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 # NOTE: redis server not available in wolfi; uses pre-compiled binary
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group

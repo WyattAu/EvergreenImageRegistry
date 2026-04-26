@@ -17,7 +17,7 @@ ARG VERSION=10.11.6
 
 COPY --from=builder /usr/share/keyrings/mariadb-keyring.gnupg /usr/share/keyrings/mariadb-keyring.gnupg
 COPY --from=builder /etc/apt/sources.list.d/mariadb.list /etc/apt/sources.list.d/mariadb.list
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates 
 RUN adduser -u 65532 -s /sbin/nologin mysql 2>/dev/null || true
 RUN mkdir -p /var/lib/mysql /var/log/mysql /var/cache/mysql /run/mysqld 2>/dev/null || true
 RUN chown -R 65532:65532 /var/lib/mysql /var/log/mysql /var/cache/mysql /run/mysqld

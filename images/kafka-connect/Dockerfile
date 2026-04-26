@@ -22,7 +22,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION
 ARG SCALA_VERSION
 RUN apk add --no-cache ca-certificates curl 
-RUN adduser -u 65532 -s /sbin/nologin connect 2>/dev/null || true
+RUN adduser -u 65532 -s /bin/false connect 2>/dev/null || true
 RUN mkdir -p /opt/kafka/data /opt/kafka/logs /var/log/kafka /var/cache/kafka 2>/dev/null || true
 COPY --from=builder /tmp/kafka_${SCALA_VERSION}-${VERSION} /opt/kafka
 USER 65532:65532

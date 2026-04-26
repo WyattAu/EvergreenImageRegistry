@@ -22,7 +22,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache libpq curl ca-certificates 
 COPY --from=builder /install /usr/local
-RUN adduser -u 65532 -s /sbin/nologin patroni 2>/dev/null || true && \
+RUN adduser -u 65532 -s /bin/false patroni 2>/dev/null || true && \
     mkdir -p /app /var/log/patroni /var/cache/patroni ; \
     chown -R 65532:65532 /app /var/log/patroni /var/cache/patroni
 USER 65532:65532

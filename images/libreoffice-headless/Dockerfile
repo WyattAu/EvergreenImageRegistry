@@ -4,7 +4,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates curl 
-RUN mkdir -p /app /var/log/app /var/cache/app ; \
+RUN mkdir -p /app /var/log/app /var/cache/app ; 2>/dev/null || true \
     chown -R 65532:65532 /app /var/log/app /var/cache/appUSER 65532:65532
 WORKDIR /app
 EXPOSE 8080

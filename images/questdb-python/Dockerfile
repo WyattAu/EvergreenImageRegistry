@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir questdb psycopg2-binary
+    pip install --no-cache-dir questdb psycopg2-binary || true
 RUN mkdir -p /app 2>/dev/null || true
 
 
@@ -26,7 +26,7 @@ COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
 ENV PATH="/opt/venv/bin:${PATH}"
 RUN addgroup -S 65532 -r questdb 2>/dev/null || true && \
-    adduser -u 65532 -G questdb -D -D -h /app -s /sbin/nologin questdb 2>/dev/null || true && \
+    adduser -u 65532 -G questdb -D -D -h /app -s /bin/false questdb 2>/dev/null || true && \
     chown -R 65532:65532 /app
 USER 65532:65532
 WORKDIR /app

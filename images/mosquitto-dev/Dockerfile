@@ -15,7 +15,7 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/mosquitto /var/log/mosquitto
 COPY --from=builder /var/lib/mosquitto /var/lib/mosquitto
 RUN addgroup -S nogroup 2>/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin mosquitto 2>/dev/null || true && \
+RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false mosquitto 2>/dev/null || true && \
     chown -R 65532:65532 /app /var/log/mosquitto /var/lib/mosquitto 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app

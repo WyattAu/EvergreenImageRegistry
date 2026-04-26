@@ -11,7 +11,7 @@ RUN apk add --no-cache python3 ca-certificates
 COPY --from=builder /app /app
 COPY --from=builder /firmware /firmware
 RUN addgroup -S nogroup 2>/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin espurna 2>/dev/null || true &&     chown -R 65532:65532 /app /firmware 2>/dev/null || true
+RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false espurna 2>/dev/null || true &&     chown -R 65532:65532 /app /firmware 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 CMD ["-c", "print('ESPurna firmware build environment. Clone https://github.com/xoseperez/espurna and run platformio.')"]

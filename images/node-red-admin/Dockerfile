@@ -16,7 +16,7 @@ RUN apk add --no-cache nodejs npm ca-certificates
 COPY --from=builder /usr/lib/node_modules/node-red-admin /app/node-red-admin
 COPY --from=builder /usr/bin/node-red-admin /usr/local/bin/node-red-admin
 RUN addgroup -S nogroup 2>/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin nodered 2>/dev/null || true && \
+RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false nodered 2>/dev/null || true && \
     chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app

@@ -19,7 +19,7 @@ COPY --from=downloader /flame /usr/local/bin/flame
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
 RUN addgroup -S nogroup
-RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin flame && \
+RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false flame && \
     chown -R 65532:65532 /app
 USER 65532:65532
 WORKDIR /app

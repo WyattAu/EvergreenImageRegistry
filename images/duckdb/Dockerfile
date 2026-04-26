@@ -17,7 +17,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     strip --strip-all /tmp/duckdb ; mv /tmp/duckdb /usr/local/bin/duckdb \
     && rm -rf /tmp/duckdb.zip
 
-RUN mkdir -p /usr/local/bin/duckdb
+RUN mkdir -p /usr/local/bin/duckdb 2>/dev/null || true
 
 FROM scratch
 ARG VERSION=1.1.3

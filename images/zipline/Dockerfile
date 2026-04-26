@@ -14,7 +14,7 @@ RUN git clone --depth 1 https://github.com/diced/zipline.git /src || echo "Sourc
 RUN mkdir -p /app/data-src-src 2>/dev/null || true
 COPY --from=downloader /app/data /app/data
 RUN addgroup -S nogroup 2>/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin zipline 2>/dev/null || true && \
+RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false zipline 2>/dev/null || true && \
     chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app/src

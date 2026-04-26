@@ -22,7 +22,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache python3 ca-certificates 
-RUN adduser -u 65532 -s /sbin/nologin surrealdb 2>/dev/null || true
+RUN adduser -u 65532 -s /bin/false surrealdb 2>/dev/null || true
 RUN mkdir -p /var/lib/surrealdb /var/log/surrealdb 2>/dev/null || true
 COPY --from=builder /opt/venv /opt/venv
 RUN printf '#!/opt/venv/bin/python3\nimport surrealdb\nprint("surrealdb-python ready")\n' > /app/surrealdb-python && chmod +x /app/surrealdb-python

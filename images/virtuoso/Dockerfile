@@ -16,7 +16,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates 
-RUN adduser -u 65532 -s /sbin/nologin virtuoso 2>/dev/null || true
+RUN adduser -u 65532 -s /bin/false virtuoso 2>/dev/null || true
 RUN mkdir -p /var/lib/virtuoso /var/log/virtuoso /var/cache/virtuoso 2>/dev/null || true
 RUN chown -R 65532:65532 /var/lib/virtuoso /var/log/virtuoso /var/cache/virtuoso
 USER 65532:65532

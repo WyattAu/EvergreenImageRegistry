@@ -13,7 +13,7 @@ RUN apk add --no-cache nodejs npm ca-certificates
 COPY --from=builder /src /app/src
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin codimd 2>/dev/null || true &&     chown -R 65532:65532 /app 2>/dev/null || true
+RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false codimd 2>/dev/null || true &&     chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app/src
 EXPOSE 3000

@@ -19,7 +19,7 @@ RUN apk add --no-cache ca-certificates curl libffi-dev
 COPY --from=builder /opt/openhab /opt/openhab
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /opt/openhab -s /sbin/nologin openhab 2>/dev/null || true && \
+RUN adduser -u 65532 -G nogroup -D -h /opt/openhab -s /bin/false openhab 2>/dev/null || true && \
     chown -R 65532:65532 /opt/openhab /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/openhab

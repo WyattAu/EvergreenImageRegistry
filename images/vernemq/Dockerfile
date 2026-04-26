@@ -13,7 +13,7 @@ RUN apk add --no-cache ca-certificates curl procps
 COPY --from=builder /app /app
 COPY --from=builder /opt/vernemq /opt/vernemq
 RUN addgroup -S nogroup 2>/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /opt/vernemq -s /sbin/nologin vernemq 2>/dev/null || true && \
+RUN adduser -u 65532 -G nogroup -D -h /opt/vernemq -s /bin/false vernemq 2>/dev/null || true && \
     chown -R 65532:65532 /opt/vernemq /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/vernemq

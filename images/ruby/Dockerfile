@@ -12,7 +12,7 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ruby ruby-bundler ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN useradd -m -u 65532 -s /usr/sbin/nologin ruby 2>/dev/null || true
+RUN useradd -m -u 65532 -s /usr/bin/false ruby 2>/dev/null || true
 RUN mkdir -p /app /var/log/ruby /var/cache/ruby 2>/dev/null || true
 
 

@@ -20,7 +20,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl 
-RUN adduser -u 65532 -s /sbin/nologin hive 2>/dev/null || true
+RUN adduser -u 65532 -s /bin/false hive 2>/dev/null || true
 RUN mkdir -p /var/lib/hive /var/log/hive /var/cache/hive /opt/hive/conf 2>/dev/null || true
 COPY --from=builder /opt/apache-hive-${VERSION}-bin /opt/hive
 RUN chown -R 65532:65532 /opt/hive /var/lib/hive /var/log/hive /var/cache/hive

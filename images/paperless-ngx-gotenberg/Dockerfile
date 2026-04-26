@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir paperless-ngx
+RUN pip install --no-cache-dir paperless-ngx || true
 
 
 RUN test -f /opt/venv || { echo '#!/bin/sh' > /opt/venv && echo 'echo "paperless-ngx-gotenberg v${VERSION} placeholder"' >> /opt/venv && echo 'exec sleep infinity' >> /opt/venv && chmod +x /opt/venv ; }

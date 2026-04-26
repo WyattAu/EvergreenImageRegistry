@@ -8,7 +8,7 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS builder
-RUN groupadd -r -g 65532 dovecot && useradd -r -u 65532 -g dovecot -d /var/lib/dovecot -s /usr/sbin/nologin dovecot
+RUN groupadd -r -g 65532 dovecot && useradd -r -u 65532 -g dovecot -d /var/lib/dovecot -s /usr/bin/false dovecot
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

@@ -20,7 +20,7 @@ COPY --from=downloader /opt/gitlab /opt/gitlab
 COPY --from=downloader /etc/gitlab /etc/gitlab
 COPY --from=downloader /var/opt/gitlab /var/opt/gitlab
 RUN addgroup -S -g 65532 gitlab 2>/dev/null || true && \
-    adduser -u 65532 -G gitlab -D -h /var/opt/gitlab -s /sbin/nologin gitlab 2>/dev/null || true
+    adduser -u 65532 -G gitlab -D -h /var/opt/gitlab -s /bin/false gitlab 2>/dev/null || true
 USER 65532:65532
 EXPOSE 80 22 443
 LABEL org.opencontainers.image.title="gitlab-ee" \

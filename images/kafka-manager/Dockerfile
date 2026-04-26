@@ -18,13 +18,13 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     unzip cmak.zip -d /opt/cmak || true ; \    rm cmak.zip ; rm -rf /var/lib/apt/lists/*
 
 
-RUN mkdir -p /opt ; \
+RUN mkdir -p /opt ; 2>/dev/null || true \
     test -f /opt/bin/cmak || { echo '#!/bin/sh' > /opt/bin/cmak && echo 'echo "kafka-manager v${VERSION} placeholder"' >> /opt/bin/cmak && echo 'exec sleep infinity' >> /opt/bin/cmak && chmod +x /opt/bin/cmak ; }
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl 
-RUN adduser -u 65532 -s /sbin/nologin cmak 2>/dev/null || true
+RUN adduser -u 65532 -s /bin/false cmak 2>/dev/null || true
 RUN mkdir -p /opt/cmak/logs /var/log/cmak /var/cache/cmak 2>/dev/null || true
 COPY --from=builder /opt/cmak /opt/cmak
 USER 65532:65532

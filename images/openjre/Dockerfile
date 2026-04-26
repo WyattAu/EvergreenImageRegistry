@@ -19,7 +19,7 @@ ENV JAVA_HOME="/opt/jre"
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 RUN addgroup -S 65532 -r appuser 2>/dev/null || true && \
-    adduser -u 65532 -G appuser -D -D -h /app -s /sbin/nologin appuser 2>/dev/null || true
+    adduser -u 65532 -G appuser -D -D -h /app -s /bin/false appuser 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 LABEL org.opencontainers.image.title="openjre" \

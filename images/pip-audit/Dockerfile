@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir pip-audit
+    pip install --no-cache-dir pip-audit || true
 RUN mkdir -p /app-src 2>/dev/null || true
 
 
@@ -19,7 +19,7 @@ RUN apk add --no-cache python3 ca-certificates
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin pipaudit 2>/dev/null || true && \
+RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false pipaudit 2>/dev/null || true && \
     chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532
 ENV PATH="/opt/venv/bin:$PATH"

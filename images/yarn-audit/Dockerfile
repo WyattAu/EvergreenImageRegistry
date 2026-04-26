@@ -18,7 +18,7 @@ COPY --from=builder /usr/lib/node_modules /usr/lib/node_modules
 COPY --from=builder /usr/bin/yarn /usr/local/bin/yarn
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin yarnaudit 2>/dev/null || true && \
+RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false yarnaudit 2>/dev/null || true && \
     chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app

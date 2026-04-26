@@ -18,7 +18,7 @@ COPY --from=builder /usr/lib/ruby/gems /usr/lib/ruby/gems
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin gemaudit 2>/dev/null || true && \
+RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false gemaudit 2>/dev/null || true && \
     chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app

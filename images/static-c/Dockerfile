@@ -8,6 +8,7 @@ RUN echo 'int main(void) { return 0; }' > /tmp/test.c && \
 RUN mkdir -p /app 2>/dev/null || true ; mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 
 
+RUN mkdir -p /app 2>/dev/null || true
 FROM scratch
 COPY --from=builder /app /app
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

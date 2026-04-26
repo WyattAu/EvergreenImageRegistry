@@ -10,7 +10,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl || true
 COPY --from=downloader /opt/focalboard /opt/focalboard
-RUN mkdir -p /app /var/log/focalboard /var/cache/focalboard /data \ ; \
+RUN mkdir -p /app /var/log/focalboard /var/cache/focalboard /data ; \
     chown -R 65532:65532 /app /var/log/focalboard /var/cache/focalboard /data /opt/focalboardUSER 65532:65532
 WORKDIR /data
 EXPOSE 8000

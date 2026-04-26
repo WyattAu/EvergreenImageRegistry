@@ -7,9 +7,9 @@ RUN mkdir -p /app /var/log/clamav /var/lib/clamav /run/clamav 2>/dev/null || tru
 
 
 
-RUN test -e /app || { mkdir -p /app && echo 'clamav-daemon placeholder' > /app/.placeholder ; } ; \ ; \
-    test -e /var/log/clamav || { mkdir -p /var/log/clamav && echo 'clamav-daemon placeholder' > /var/log/clamav/.placeholder ; } ; \ ; \
-    test -e /var/lib/clamav || { mkdir -p /var/lib/clamav && echo 'clamav-daemon placeholder' > /var/lib/clamav/.placeholder ; } ; \ ; \
+RUN test -e /app || { mkdir -p /app && echo 'clamav-daemon placeholder' > /app/.placeholder ; } ; ; \
+    test -e /var/log/clamav || { mkdir -p /var/log/clamav && echo 'clamav-daemon placeholder' > /var/log/clamav/.placeholder ; } ; ; \
+    test -e /var/lib/clamav || { mkdir -p /var/lib/clamav && echo 'clamav-daemon placeholder' > /var/lib/clamav/.placeholder ; } ; ; \
     test -e /run/clamav || { mkdir -p /run/clamav && echo 'clamav-daemon placeholder' > /run/clamav/.placeholder ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 

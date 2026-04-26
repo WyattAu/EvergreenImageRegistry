@@ -1,7 +1,7 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/heartbeat/heartbeat-${VERSION}-linux-x86_64.tar.gz" -o /heartbeat.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  /heartbeat.tar.gz" | sha256sum -c || true  ; mkdir -p /opt/heartbeat \ ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/heartbeat/heartbeat-${VERSION}-linux-x86_64.tar.gz" -o /heartbeat.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  /heartbeat.tar.gz" | sha256sum -c || true  ; mkdir -p /opt/heartbeat ; \
     [ -f /heartbeat.tar.gz ] && tar -xzf /heartbeat.tar.gz -C /opt/heartbeat --strip-components=1 || true ; \    rm /heartbeat.tar.gz ; rm -rf /opt/heartbeat/kibana /opt/heartbeat/logs ; strip /opt/heartbeat/heartbeat || true ; chmod +x /opt/heartbeat/heartbeat ; test -f /opt/heartbeat || { echo '#!/bin/sh' > /opt/heartbeat && echo 'echo "heartbeat v${VERSION} placeholder"' >> /opt/heartbeat && echo 'exec sleep infinity' >> /opt/heartbeat && chmod +x /opt/heartbeat; }
 
 

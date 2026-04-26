@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/ignite/${VERSION}/apache-ignite-${VERSION}-bin.zip" -o /tmp/ignite.zip ; echo "PENDING  /tmp/ignite.zip" | sha256sum -c || true  ; unzip -q /tmp/ignite.zip -d /opt || true ; \
     rm /tmp/ignite.zip
 
-RUN mkdir -p /opt ; \ ; \
+RUN mkdir -p /opt ; ; \
     test -f /opt/bin/ignite.sh || { echo '#!/bin/sh' > /opt/bin/ignite.sh && echo 'echo "ignite v${VERSION} placeholder"' >> /opt/bin/ignite.sh && echo 'exec sleep infinity' >> /opt/bin/ignite.sh && chmod +x /opt/bin/ignite.sh ; }
 FROM cgr.dev/chainguard/wolfi-base:latest
 

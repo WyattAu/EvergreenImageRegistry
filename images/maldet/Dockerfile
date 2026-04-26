@@ -10,7 +10,7 @@ RUN mkdir -p /app 2>/dev/null || true
 
 
 
-RUN test -e /opt/maldetect || { mkdir -p /opt/maldetect && echo 'maldet placeholder' > /opt/maldetect/.placeholder ; } ; \ ; \
+RUN test -e /opt/maldetect || { mkdir -p /opt/maldetect && echo 'maldet placeholder' > /opt/maldetect/.placeholder ; } ; ; \
     test -e /app || { mkdir -p /app && echo 'maldet placeholder' > /app/.placeholder ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 

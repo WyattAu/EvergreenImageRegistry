@@ -30,7 +30,7 @@ RUN mkdir -p /var/lib/redis /var/log/redis /var/cache/redis 2>/dev/null || true
 FROM scratch
 ARG VERSION=2.8.13
 
-RUN adduser -u 65532 -s /bin/false redis 2>/dev/null || true
+RUN adduser -D -u 65532 -s /bin/false redis 2>/dev/null || true
 RUN mkdir -p /var/lib/redis /var/log/redis /var/cache/redis /opt/redis/modules 2>/dev/null || true
 COPY --from=builder /tmp/redisearch-src/bin/redisearch.so /opt/redis/modules/redisearch.so
 COPY --from=redis /usr/bin/redis-server /usr/local/bin/redis-server

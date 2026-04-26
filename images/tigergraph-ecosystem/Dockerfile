@@ -22,7 +22,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl libstdc++ python3 || true
-RUN adduser -u 65532 -s /bin/false tigergraph 2>/dev/null || true
+RUN adduser -D -u 65532 -s /bin/false tigergraph 2>/dev/null || true
 RUN mkdir -p /var/lib/tigergraph /var/log/tigergraph /var/cache/tigergraph 2>/dev/null || true
 COPY --from=builder /opt/tigergraph-${VERSION} /opt/tigergraph
 RUN chown -R 65532:65532 /opt/tigergraph /var/lib/tigergraph /var/log/tigergraph /var/cache/tigergraph

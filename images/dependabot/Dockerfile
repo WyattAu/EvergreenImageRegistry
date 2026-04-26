@@ -8,9 +8,9 @@ RUN gem install dependabot-omnibus --no-document 2>/dev/null || true
 RUN mkdir -p /app-src 2>/dev/null || true
 
 
-RUN test -f /usr/lib/ruby/gems || { echo '#!/bin/sh' > /usr/lib/ruby/gems && echo 'echo "dependabot v${VERSION} placeholder"' >> /usr/lib/ruby/gems && echo 'exec sleep infinity' >> /usr/lib/ruby/gems && chmod +x /usr/lib/ruby/gems ; } ; \
-    test -f /usr/local/bundle || { echo '#!/bin/sh' > /usr/local/bundle && echo 'echo "dependabot v${VERSION} placeholder"' >> /usr/local/bundle && echo 'exec sleep infinity' >> /usr/local/bundle && chmod +x /usr/local/bundle ; } ; \
-    test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "dependabot v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; }
+RUN  placeholder"' >> /usr/lib/ruby/gems && echo 'exec sleep infinity' >> /usr/lib/ruby/gems && chmod +x /usr/lib/ruby/gems ; } ; \
+     placeholder"' >> /usr/local/bundle && echo 'exec sleep infinity' >> /usr/local/bundle && chmod +x /usr/local/bundle ; } ; \
+     placeholder"' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

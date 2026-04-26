@@ -10,7 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 RUN mkdir -p /build-src && \ || true
     RUN [ -f /cachet.tar.gz ] && tar -xzf /cachet.tar.gz -C /build-src --strip-components=1 && \ || true
     RUN rm /cachet.tar.gz
-RUN test -f /build || { echo '#!/bin/sh' > /build && echo 'echo "cachet v${VERSION} ready"' >> /build && echo 'exec sleep infinity' >> /build && chmod +x /build; }
+RUN test -f /build || { echo '#!/bin/sh' > /build/placeholder && echo 'echo "cachet v${VERSION} ready"' >> /build/placeholder && echo 'exec sleep infinity' >> /build/placeholder && chmod +x /build; }
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

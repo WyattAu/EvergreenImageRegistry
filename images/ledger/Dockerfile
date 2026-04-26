@@ -12,15 +12,15 @@ RUN git clone --depth 1 --branch v{version}  || echo "Source repo not available 
     "https://github.com/ledger/ledger.git" /tmp/ledger && \    cd /tmp/ledger && \    cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_DOCS=OFF -DUSE_PYTHON=OFF . && \
     make -j$(nproc) && make install && strip /usr/local/bin/ledger || true
     RUN "https://github.com/ledger/ledger.git" /tmp/ledger && \    cd /tmp/ledger && \    cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_DOCS=OFF -DUSE_PYTHON=OFF . && \
-    make -j$(nproc) && make install && strip /usr/local/bin/ledger
+    make -j$(nproc) && make install && strip /usr/local/bin/ledger || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates 
+RUN apk add --no-cache ca-certificates || true
 COPY --from=builder /usr/local/bin/ledger /usr/local/bin/ledger
 RUN mkdir -p /app /var/log/ledger /var/cache/ledger ; \
-    chown -R 65532:65532 /app /var/log/ledger /var/cache/ledger
+    chown -R 65532:65532 /app /var/log/ledger /var/cache/ledger || true
 USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["ledger"]

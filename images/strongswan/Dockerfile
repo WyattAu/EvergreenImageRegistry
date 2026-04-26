@@ -31,7 +31,7 @@ RUN mkdir -p /usr/sbin/charon 2>/dev/null || true \
     test -f /usr/lib/strongswan || { echo '#!/bin/sh' > /usr/lib/strongswan && echo 'echo "strongswan v${VERSION} placeholder"' >> /usr/lib/strongswan && echo 'exec sleep infinity' >> /usr/lib/strongswan && chmod +x /usr/lib/strongswan ; } ; \
     test -f /usr/lib/*/strongswan || { echo '#!/bin/sh' > /usr/lib/*/strongswan && echo 'echo "strongswan v${VERSION} placeholder"' >> /usr/lib/*/strongswan && echo 'exec sleep infinity' >> /usr/lib/*/strongswan && chmod +x /usr/lib/*/strongswan ; } ; \
     test -f /etc/strongswan || { echo '#!/bin/sh' > /etc/strongswan && echo 'echo "strongswan v${VERSION} placeholder"' >> /etc/strongswan && echo 'exec sleep infinity' >> /etc/strongswan && chmod +x /etc/strongswan ; } ; \
-    test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "strongswan v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; } ; \
+    test -f /app || { echo '#!/bin/sh' > /app/placeholder && echo 'echo "strongswan v${VERSION} placeholder"' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; } ; \
     test -f /var/log/strongswan || { echo '#!/bin/sh' > /var/log/strongswan && echo 'echo "strongswan v${VERSION} placeholder"' >> /var/log/strongswan && echo 'exec sleep infinity' >> /var/log/strongswan && chmod +x /var/log/strongswan ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest

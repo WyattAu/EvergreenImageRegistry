@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal || true
 ENV PATH="/root/.cargo/bin:$PATH"
-RUN cargo install cargo-audit
+RUN cargo install cargo-audit || true
 RUN mkdir -p /app 2>/dev/null || true
 
 

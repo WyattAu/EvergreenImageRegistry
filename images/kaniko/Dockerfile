@@ -1,5 +1,7 @@
+FROM gcr.io/kaniko-project/executor:v1.24.0 AS upstream
 
 
+FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN mkdir -p /app /kaniko /var/log/kaniko /var/cache/kaniko 2>/dev/null || true
 
@@ -15,6 +17,7 @@ RUN test -e /app || { mkdir -p /app && echo 'kaniko placeholder' > /app/.placeho
     test -e /kaniko/.docker || { mkdir -p /kaniko/.docker && echo 'kaniko placeholder' > /kaniko/.docker/.placeholder ; } ; \
     test -e /usr/local/bin || { mkdir -p /usr/local/bin && echo 'kaniko placeholder' > /usr/local/bin/.placeholder ; } 2>/dev/null || true
 
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /app /app

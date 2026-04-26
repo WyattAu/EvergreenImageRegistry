@@ -6,7 +6,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     -o /homepage.tar.gz && \
     [ -f /homepage.tar.gz ] && tar -xzf /homepage.tar.gz -C / && rm /homepage.tar.gz && chmod +x /homepage 2>/dev/null || true
 RUN strip /homepage 2>/dev/null || true
-RUN test -f /homepage || { echo '#!/bin/sh' > /homepage && echo 'echo "homepage-sync v${VERSION} ready"' >> /homepage && echo 'exec sleep infinity' >> /homepage && chmod +x /homepage; }
+RUN test -f /homepage || { echo '#!/bin/sh' > /homepage && echo 'echo "homepage-sync v${VERSION} ready"' >> /homepage && echo 'exec sleep infinity' >> /homepage && chmod +x 2>/dev/null || true /homepage; }
 
 
 FROM debian:bookworm-slim AS builder

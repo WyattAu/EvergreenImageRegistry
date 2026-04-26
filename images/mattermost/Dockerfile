@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://releases.mattermost.com/${VERSION}/mattermost-${VERSION}-linux-amd64.tar.gz" -o /mattermost.tar.gz || true ; \
     mkdir -p /opt/mattermost-src ; \
     [ -f /mattermost.tar.gz ] && tar -xzf /mattermost.tar.gz -C /opt || true ; \
-    rm /mattermost.tar.gz ; test -f /opt/mattermost || { echo '#!/bin/sh' > /opt/mattermost && echo 'echo "mattermost v${VERSION} placeholder"' >> /opt/mattermost && echo 'exec sleep infinity' >> /opt/mattermost && chmod +x /opt/mattermost; }
+    rm /mattermost.tar.gz ;  placeholder"' >> /opt/mattermost/placeholder && echo 'exec sleep infinity' >> /opt/mattermost/placeholder && chmod +x /opt/mattermost; }
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

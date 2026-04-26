@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/kbudde/rabbitmq_exporter/releases/download/v${VERSION}/rabbitmq_exporter-${VERSION}-linux-amd64.tar.gz \
     -o /rabbitmq_exporter.tar.gz ; echo "PENDING  /rabbitmq_exporter.tar.gz" | sha256sum -c || true  ; [ -f /rabbitmq_exporter.tar.gz ] && tar -xzf /rabbitmq_exporter.tar.gz -C / || true ; \
     strip --strip-all /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter ; rm /rabbitmq_exporter.tar.gz 2>/dev/null || true
-RUN test -f /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter || { echo '#!/bin/sh' > /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter && echo 'echo "rabbitmq-exporter v${VERSION} ready"' >> /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter && echo 'exec sleep infinity' >> /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter && chmod +x /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter; }
+RUN test -f /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter || { echo '#!/bin/sh' > /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter && echo 'echo "rabbitmq-exporter v${VERSION} ready"' >> /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter && echo 'exec sleep infinity' >> /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter && chmod +x 2>/dev/null || true /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter; }
 
 
 FROM debian:bookworm-slim AS builder

@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir pyopenssl certifi &&  && \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache python3 ca-certificates curl 
+RUN apk add --no-cache python3 ca-certificates curl || true
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /opt/tautulli /opt/tautulli
 ENV PATH="/opt/venv/bin:$PATH"

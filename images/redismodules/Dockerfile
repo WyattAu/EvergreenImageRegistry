@@ -32,7 +32,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 FROM scratch
 ARG VERSION=2.0.0
 
-RUN adduser -u 65532 -s /bin/false redis 2>/dev/null || true
+RUN adduser -D -u 65532 -s /bin/false redis 2>/dev/null || true
 RUN mkdir -p /var/lib/redis /var/log/redis /var/cache/redis /opt/redis/modules 2>/dev/null || true
 COPY --from=builder /tmp/modules/*.so /opt/redis/modules/
 COPY --from=redis /usr/bin/redis-server /usr/local/bin/redis-server

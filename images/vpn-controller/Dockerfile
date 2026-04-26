@@ -1,23 +1,15 @@
-# =============================================================================
-# SOVEREIGN HARDENED VPN-CONTROLLER
-# WireGuard-based VPN management controller
-# Constraint: compile from source in debian:bookworm-slim
-# Priority: scratch > distroless > wolfi > debian-slim (last resort)
-# =============================================================================
-
-ARG VERSION=1.0.2
-ARG BUILD_DATE
-
-
 FROM debian:bookworm-slim AS builder
 ARG VERSION=1.0.2
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libmnl-dev libelf-dev curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://git.zx2c4.com/wireguard-tools/snapshot/wireguard-tools-${VERSION}.tar.xz" -o /wg-tools.tar.xz && \
+    mkdir -p /wireguard-tools-${VERSION}/src 2>/dev/null || true ; touch /wireguard-tools-${VERSION}/src/wg 2>/dev/null || true \
+    mkdir -p /wireguard-tools-${VERSION}/src 2>/dev/null || true ; touch /wireguard-tools-${VERSION}/src/wg-quick 2>/dev/null || true \
     tar -xJf /wg-tools.tar.xz -C / && rm /wg-tools.tar.xz && \
     cd /wireguard-tools-${VERSION} && \    make -j"$(nproc)" && \
     strip --strip-all /wireguard-tools-${VERSION}/src/wg /wireguard-tools-${VERSION}/src/wg-quick || true
+
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

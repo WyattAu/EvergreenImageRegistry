@@ -22,7 +22,7 @@ RUN git clone --depth 1 --branch v${VERSION}  || echo "Source repo not available
     -trimpath \
     -o /meshbird && \
     strip --strip-all /meshbird || true
-    https://github.com/meshbird/meshbird /src && \
+    RUN https://github.com/meshbird/meshbird /src && \
     cd /src && \    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
     -ldflags="-s -w -X main.version=${VERSION}" \
     -trimpath \

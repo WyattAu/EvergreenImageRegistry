@@ -20,7 +20,7 @@ COPY --from=builder /usr/lib/node_modules/hap-nodejs /usr/lib/node_modules/hap-n
 COPY --from=builder /app /app
 COPY --from=builder /homebridge /homebridge
 RUN ln -sf /usr/lib/node_modules/homebridge/bin/homebridge /usr/local/bin/homebridge && \
-RUN addgroup -S nogroup 2>/dev/null || true
+RUN addgroup -S nogroup 2>/dev/null || true \
     adduser -u 65532 -G nogroup -D -h /homebridge -s /bin/false homebridge 2>/dev/null || true && \
     chown -R 65532:65532 /homebridge /app /usr/lib/node_modules 2>/dev/null || true
 USER 65532:65532

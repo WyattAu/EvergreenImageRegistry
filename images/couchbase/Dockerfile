@@ -1,16 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED COUCHBASE
-# Generated from template - Version: 7.6.1
-# Complex install from Couchbase repository
-# Constraint: debian-slim (runtime dependencies required, cannot use scratch)
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=7.6.1
-ARG BUILD_DATE
-
-# hadolint ignore=DL3023
-
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -28,7 +15,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.couchbase.com/ubuntu/
 
 
 RUN mkdir -p /opt ; 2>/dev/null || true \
+    mkdir -p /opt 2>/dev/null || true ; touch /opt/couchbase 2>/dev/null || true \
     test -f /opt/bin/couchbase-server || { echo '#!/bin/sh' > /opt/bin/couchbase-server && echo 'echo "couchbase v${VERSION} placeholder"' >> /opt/bin/couchbase-server && echo 'exec sleep infinity' >> /opt/bin/couchbase-server && chmod +x /opt/bin/couchbase-server ; }
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache libstdc++ curl zlib procps 

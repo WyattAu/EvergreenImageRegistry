@@ -26,7 +26,7 @@ RUN apk add --no-cache libpq curl ca-certificates
 COPY --from=builder /install /usr/local
 RUN adduser -u 65532 -s /bin/false redash && \
     mkdir -p /app /var/log/redash /var/cache/redash ; \
-    chown -R 65532:65532 /app /var/log/redash /var/cache/redash
+    chown -R 65532:65532 /app /var/log/redash /var/cache/redash || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 5000

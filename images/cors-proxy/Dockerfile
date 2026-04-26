@@ -1,15 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED CORS PROXY
-# nginx-based CORS reverse proxy with hardened config
-# Constraint: debian-slim - nginx requires runtime libs and shell for signal handling
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG NGINX_VERSION=1.25.5
-ARG BUILD_DATE
-
-# hadolint ignore=DL3023
-
 FROM debian:bookworm-slim AS builder
 ARG NGINX_VERSION=1.25.5
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -39,6 +27,7 @@ RUN     strip --strip-all /opt/nginx/sbin/nginx && \
     rm -rf /nginx.tar.gz /nginx.tar.gz.asc /tmp/nginx-${NGINX_VERSION} || true
 
 # hadolint ignore=DL3023
+
 
 
 

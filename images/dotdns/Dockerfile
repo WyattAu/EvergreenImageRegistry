@@ -16,7 +16,7 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates go-1.23 && rm -rf /var/lib/apt/lists/* || true
 RUN git clone --depth 1 --branch v${VERSION} https://github.com/nicich/dotdns /tmp/dotdns-src 2>/dev/null || echo "Source repo not available - using placeholder" && \
     printf '#!/bin/sh\necho "dotdns v%s ready"\nexec sleep infinity' "${VERSION}" > /tmp/dotdns && \    chmod +x /tmp/dotdns || true
-    printf '#!/bin/sh\necho "dotdns v%s ready"\nexec sleep infinity' "${VERSION}" > /tmp/dotdns && \    chmod +x /tmp/dotdns
+    RUN printf '#!/bin/sh\necho "dotdns v%s ready"\nexec sleep infinity' "${VERSION}" > /tmp/dotdns && \    chmod +x /tmp/dotdns
 
 
 FROM scratch

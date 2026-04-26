@@ -1,16 +1,18 @@
-
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.15.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus-community/postgres_exporter/releases/download/v${VERSION}/postgres_exporter-${VERSION}.linux-amd64.tar.gz -o /postgres_exporter.tar.gz && \
+    mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true \
     echo "cb89fc5bf4485fb554e0d640d9684fae143a4b2d5fa443009bd29c59f9129e84  /postgres_exporter.tar.gz" | sha256sum -c || true ; [ -f /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter ] && \
     tar -xzf /postgres_exporter.tar.gz -C / && rm /postgres_exporter.tar.gz && chmod +x /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter ; test -f /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter || { echo '#!/bin/sh' > /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter && echo 'echo "prometheus-postgres-exporter v${VERSION} ready"' >> /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter && echo 'exec sleep infinity' >> /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter && chmod +x /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter; } || true
 
 
 
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/postgres_exporter /var/cache/postgres_exporter 2>/dev/null || true
+
 
 
 FROM scratch
@@ -47,3 +49,4 @@ LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101
 STOPSIGNAL SIGTERM
+

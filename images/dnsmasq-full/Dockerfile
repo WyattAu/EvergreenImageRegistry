@@ -1,12 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED DNSMASQ-FULL
-# dnsmasq with all features (DNS, DHCP, TFTP, PXE, DNSSEC)
-# Constraint: debian-slim - dnsmasq requires dynamic libs, compile from source
-# Priority: scratch > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=2.90
-ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 ARG VERSION=2.90
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -24,6 +15,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://thekelleys.org.uk/dnsmasq/dnsm
 
 RUN mkdir -p /install/usr/sbin/dnsmasq ; 2>/dev/null || true \
     test -f /install/usr/share/man || { echo '#!/bin/sh' > /install/usr/share/man && echo 'echo "dnsmasq-full v${VERSION} placeholder"' >> /install/usr/share/man && echo 'exec sleep infinity' >> /install/usr/share/man && chmod +x /install/usr/share/man ; }
+
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

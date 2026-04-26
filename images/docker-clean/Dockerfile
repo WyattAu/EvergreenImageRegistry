@@ -3,8 +3,6 @@ FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates ; rm -rf /var/lib/apt/lists/* || true
 
-RUN printf ' \
-    chmod +x /usr/local/bin/docker-clean
 RUN mkdir -p /app-src-src 2>/dev/null || true
 
 

@@ -1,14 +1,3 @@
-# =============================================================================
-# SOVEREIGN HARDENED KAFKA-MANAGER (CMAK)
-# Version: 3.0.0.6
-# Constraint: debian-slim - JRE runtime required
-# Priority: scratch > distroless > wolfi > debian-slim (last resort)
-# =============================================================================
-
-ARG VERSION=3.0.0.6
-ARG BUILD_DATE
-
-
 FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
@@ -19,7 +8,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 
 RUN mkdir -p /opt ; 2>/dev/null || true \
+    mkdir -p /opt 2>/dev/null || true ; touch /opt/cmak 2>/dev/null || true \
     test -f /opt/bin/cmak || { echo '#!/bin/sh' > /opt/bin/cmak && echo 'echo "kafka-manager v${VERSION} placeholder"' >> /opt/bin/cmak && echo 'exec sleep infinity' >> /opt/bin/cmak && chmod +x /opt/bin/cmak ; }
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

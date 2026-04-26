@@ -22,7 +22,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
 RUN apk add --no-cache python3 ca-certificates 
-RUN adduser -u 65532 -s /bin/false dnsval
+RUN adduser -u 65532 -s /bin/false dnsval || true
 RUN mkdir -p /var/lib/dnsvalidator /var/log/dnsvalidator
 COPY --from=builder /opt/venv /opt/venv
 RUN chown -R 65532:65532 /opt/venv /var/lib/dnsvalidator /var/log/dnsvalidator

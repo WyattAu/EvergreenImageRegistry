@@ -10,7 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 RUN mkdir -p /app /opt/openhab/userdata /opt/openhab/conf /opt/openhab/log 2>/dev/null || true
 
 
-RUN mkdir -p /opt/openhab ; ; \
+RUN mkdir -p /opt/openhab ; \
     test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "openhab3 v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest

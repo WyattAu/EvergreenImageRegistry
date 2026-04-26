@@ -27,7 +27,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.couchbase.com/ubuntu/
 # hadolint ignore=DL3023
 
 
-RUN mkdir -p /opt ; ; \
+RUN mkdir -p /opt ; \
     test -f /opt/bin/couchbase-server || { echo '#!/bin/sh' > /opt/bin/couchbase-server && echo 'echo "couchbase v${VERSION} placeholder"' >> /opt/bin/couchbase-server && echo 'exec sleep infinity' >> /opt/bin/couchbase-server && chmod +x /opt/bin/couchbase-server ; }
 FROM cgr.dev/chainguard/wolfi-base:latest
 

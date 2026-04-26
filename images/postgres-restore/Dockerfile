@@ -51,7 +51,7 @@ case "$BACKUP_FILE" in
         psql --host="$PGHOST" --user="$PGUSER" --dbname="$PGDATABASE" < "$BACKUP_FILE"
         ;;
     *)
-        echo "Unsupported format"; exit 1 ;;
+        echo "Unsupported format"; exit 1 ;
 esac
 echo "Restore complete from: $BACKUP_FILE"
 SCRIPT

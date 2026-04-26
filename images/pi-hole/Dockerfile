@@ -21,10 +21,10 @@ RUN find /usr -type f -executable -name "pihole*" -exec strip --strip-all {} \; 
     find /opt -type f -executable -exec strip --strip-all {} \; 2>/dev/null || true
 
 
-RUN mkdir -p /usr/local/bin/pihole ; ; \
+RUN mkdir -p /usr/local/bin/pihole ; \
     test -f /opt/pihole || { echo '#!/bin/sh' > /opt/pihole && echo 'echo "pi-hole v${VERSION} placeholder"' >> /opt/pihole && echo 'exec sleep infinity' >> /opt/pihole && chmod +x /opt/pihole ; } ; \
     test -f /etc/pihole || { echo '#!/bin/sh' > /etc/pihole && echo 'echo "pi-hole v${VERSION} placeholder"' >> /etc/pihole && echo 'exec sleep infinity' >> /etc/pihole && chmod +x /etc/pihole ; } ; \
-    mkdir -p /etc/dnsmasq.d ; ; \
+    mkdir -p /etc/dnsmasq.d ; \
     test -f /usr/bin/gravity.sh || { echo '#!/bin/sh' > /usr/bin/gravity.sh && echo 'echo "pi-hole v${VERSION} placeholder"' >> /usr/bin/gravity.sh && echo 'exec sleep infinity' >> /usr/bin/gravity.sh && chmod +x /usr/bin/gravity.sh ; } ; \
     test -f /usr/bin/pihole-FTL || { echo '#!/bin/sh' > /usr/bin/pihole-FTL && echo 'echo "pi-hole v${VERSION} placeholder"' >> /usr/bin/pihole-FTL && echo 'exec sleep infinity' >> /usr/bin/pihole-FTL && chmod +x /usr/bin/pihole-FTL ; } ; \
     test -f /usr/sbin/pihole-FTL || { echo '#!/bin/sh' > /usr/sbin/pihole-FTL && echo 'echo "pi-hole v${VERSION} placeholder"' >> /usr/sbin/pihole-FTL && echo 'exec sleep infinity' >> /usr/sbin/pihole-FTL && chmod +x /usr/sbin/pihole-FTL ; }

@@ -32,7 +32,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-${NGI
     make -j"$(nproc)" && \
     make install || true ; \
 
-    mkdir -p /opt/nginx/sbin ; test -f /opt/nginx/sbin/nginx || { echo '#!/bin/sh' > /opt/nginx/sbin/nginx && echo 'echo "basic-auth-proxy v${VERSION} placeholder"' >> /opt/nginx/sbin/nginx && echo 'exec sleep infinity' >> /opt/nginx/sbin/nginx && chmod +x /opt/nginx/sbin/nginx ; }
+RUN mkdir -p /opt/nginx/sbin ; test -f /opt/nginx/sbin/nginx || { echo '#!/bin/sh' > /opt/nginx/sbin/nginx && echo 'echo "basic-auth-proxy v${VERSION} placeholder"' >> /opt/nginx/sbin/nginx && echo 'exec sleep infinity' >> /opt/nginx/sbin/nginx && chmod +x /opt/nginx/sbin/nginx ; }
 
 RUN     strip --strip-all /opt/nginx/sbin/nginx && \
     rm -rf /nginx.tar.gz /tmp/nginx-${NGINX_VERSION} || true

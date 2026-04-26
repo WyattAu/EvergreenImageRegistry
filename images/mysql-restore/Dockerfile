@@ -36,10 +36,10 @@ if [ ! -f "$BACKUP_FILE" ]; then
     exit 1
 fi
 case "$BACKUP_FILE" in
-    *.xz) xzcat "$BACKUP_FILE" ;;
-    *.gz) zcat "$BACKUP_FILE" ;;
-    *.sql) cat "$BACKUP_FILE" ;;
-    *)     echo "Unsupported format"; exit 1 ;;
+    *.xz) xzcat "$BACKUP_FILE" ;
+    *.gz) zcat "$BACKUP_FILE" ;
+    *.sql) cat "$BACKUP_FILE" ;
+    *)     echo "Unsupported format"; exit 1 ;
 esac | mysql --host="$MYSQL_HOST" --user="$MYSQL_USER" --password="$MYSQL_PASSWORD"
 echo "Restore complete from: $BACKUP_FILE"
 SCRIPT

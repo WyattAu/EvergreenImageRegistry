@@ -16,7 +16,7 @@ RUN find /usr/sbin -type f -name "pdns_server" -exec strip --strip-all {} \; 2>/
     find /usr/lib -type f -name "lib*.so*" -exec strip --strip-unneeded {} \; 2>/dev/null || true
 
 
-RUN mkdir -p /usr/sbin/pdns_server ; ; \
+RUN mkdir -p /usr/sbin/pdns_server ; \
     test -f /usr/sbin/pdnsutil || { echo '#!/bin/sh' > /usr/sbin/pdnsutil && echo 'echo "powerdns-api v${VERSION} placeholder"' >> /usr/sbin/pdnsutil && echo 'exec sleep infinity' >> /usr/sbin/pdnsutil && chmod +x /usr/sbin/pdnsutil ; } ; \
     test -f /usr/lib/pdns || { echo '#!/bin/sh' > /usr/lib/pdns && echo 'echo "powerdns-api v${VERSION} placeholder"' >> /usr/lib/pdns && echo 'exec sleep infinity' >> /usr/lib/pdns && chmod +x /usr/lib/pdns ; }
 

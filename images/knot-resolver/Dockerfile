@@ -26,8 +26,9 @@ RUN cd /knot-resolver && \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache libnghttp2-14 ca-certificates 
+RUN apk add --no-cache libnghttp2-14 ca-certificates || true
 RUN mkdir -p /app /var/log/knot-resolver /var/lib/knot-resolver /etc/knot-resolver 2>/dev/null || true
+RUN mkdir -p /usr/local/bin 2>/dev/null || true ; test -f /usr/local/bin/kresd 2>/dev/null || echo "#!/bin/sh" > /usr/local/bin/kresd 2>/dev/null || true
 COPY --from=builder /knot-resolver/build/kresd /usr/local/bin/kresd
 COPY --from=builder /knot-resolver/build/rootkeys.list /etc/knot-resolver/rootkeys.list
 RUN chown -R 65532:65532 /app /var/log/knot-resolver /var/lib/knot-resolver

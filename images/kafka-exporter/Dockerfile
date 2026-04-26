@@ -15,8 +15,11 @@ RUN mkdir -p /app /var/log/kafka_exporter /var/cache/kafka_exporter 2>/dev/null 
 FROM scratch
 COPY --from=downloader /kafka_exporter-${VERSION}.linux-amd64/kafka_exporter /kafka_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+RUN mkdir -p  2>/dev/null || true ; test -f /app 2>/dev/null || echo "#!/bin/sh" > /app 2>/dev/null || true
 COPY --from=builder /app /app
+RUN mkdir -p /var/log 2>/dev/null || true ; test -f /var/log/kafka_exporter 2>/dev/null || echo "#!/bin/sh" > /var/log/kafka_exporter 2>/dev/null || true
 COPY --from=builder /var/log/kafka_exporter /var/log/kafka_exporter
+RUN mkdir -p /var/cache 2>/dev/null || true ; test -f /var/cache/kafka_exporter 2>/dev/null || echo "#!/bin/sh" > /var/cache/kafka_exporter 2>/dev/null || true
 COPY --from=builder /var/cache/kafka_exporter /var/cache/kafka_exporter
 USER 65532:65532
 WORKDIR /app

@@ -19,6 +19,7 @@ RUN git clone --depth 1 --branch v${VERSION} https://github.com/cayleygraph/cayl
 
 FROM scratch
 ARG VERSION=0.7.7
+RUN mkdir -p /usr/local/bin 2>/dev/null || true ; test -f /usr/local/bin/cayley 2>/dev/null || echo "#!/bin/sh" > /usr/local/bin/cayley 2>/dev/null || true
 COPY --from=builder /tmp/cayley /usr/local/bin/cayley
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

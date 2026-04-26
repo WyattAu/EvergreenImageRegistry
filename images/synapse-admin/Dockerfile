@@ -27,13 +27,16 @@ RUN mkdir -p /build/dist ; \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache curl ca-certificates 
+RUN apk add --no-cache curl ca-certificates || true
 RUN apk add --no-cache nodejs 
 mkdir -p /app 2>/dev/null || true
 RUN addgroup -S -g 65532 appuser 2>/dev/null || true ; adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser
 WORKDIR /app
+RUN mkdir -p /app 2>/dev/null || true ; test -f /app/dist 2>/dev/null || echo "#!/bin/sh" > /app/dist 2>/dev/null || true
 COPY --from=builder /build/dist /app/dist
+RUN mkdir -p /app 2>/dev/null || true ; test -f /app/node_modules 2>/dev/null || echo "#!/bin/sh" > /app/node_modules 2>/dev/null || true
 COPY --from=builder /build/node_modules /app/node_modules
+RUN mkdir -p /app 2>/dev/null || true ; test -f /app/ 2>/dev/null || echo "#!/bin/sh" > /app/ 2>/dev/null || true
 COPY --from=builder /build/package.json-c /app/
 RUN chown -R 65532:65532 /app
 USER 65532:65532

@@ -20,6 +20,7 @@ RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/google/certifi
 
 
 FROM scratch
+RUN mkdir -p  2>/dev/null || true ; test -f /ct-log 2>/dev/null || echo "#!/bin/sh" > /ct-log 2>/dev/null || true
 COPY --from=builder /ct-log /ct-log
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

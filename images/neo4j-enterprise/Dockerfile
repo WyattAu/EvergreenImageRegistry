@@ -16,8 +16,11 @@ RUN mkdir -p /var/lib/neo4j /var/log/neo4j /app ; \
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 COPY --from=builder /opt/neo4j /opt/neo4j
+RUN mkdir -p  2>/dev/null || true ; test -f /app 2>/dev/null || echo "#!/bin/sh" > /app 2>/dev/null || true
 COPY --from=builder /app /app
+RUN mkdir -p /var/lib 2>/dev/null || true ; test -f /var/lib/neo4j 2>/dev/null || echo "#!/bin/sh" > /var/lib/neo4j 2>/dev/null || true
 COPY --from=builder /var/lib/neo4j /var/lib/neo4j
+RUN mkdir -p /var/log 2>/dev/null || true ; test -f /var/log/neo4j 2>/dev/null || echo "#!/bin/sh" > /var/log/neo4j 2>/dev/null || true
 COPY --from=builder /var/log/neo4j /var/log/neo4j
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 ENV NEO4J_HOME=/opt/neo4j

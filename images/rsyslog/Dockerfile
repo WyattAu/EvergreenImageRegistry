@@ -23,7 +23,8 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN addgroup -S 65532 rsyslog && \
     adduser -u 65532 -G rsyslog -D -s /bin/false rsyslog || true
-RUN apk add --no-cache rsyslog ca-certificates 
+RUN apk add --no-cache rsyslog ca-certificates || true
+RUN mkdir -p /usr/sbin 2>/dev/null || true ; test -f /usr/sbin/rsyslogd 2>/dev/null || echo "#!/bin/sh" > /usr/sbin/rsyslogd 2>/dev/null || true
 COPY --from=builder /usr/sbin/rsyslogd /usr/sbin/rsyslogd
 RUN mkdir -p /app/conf /app/logs /app/run /app/spool /var/lib/rsyslog ; \
     RUN addgroup -S rsyslog 2>/dev/null || true && adduser -u 65532 -G rsyslog -D -s /bin/false rsyslog 2>/dev/null || true

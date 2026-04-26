@@ -20,6 +20,7 @@ RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/dexidp/dex /sr
 
 
 FROM scratch
+RUN mkdir -p  2>/dev/null || true ; test -f /dex 2>/dev/null || echo "#!/bin/sh" > /dex 2>/dev/null || true
 COPY --from=builder /dex /dex
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

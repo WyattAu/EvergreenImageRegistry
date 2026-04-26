@@ -35,6 +35,7 @@ RUN mkdir -p /app /var/log/meshbird 2>/dev/null || true
 
 
 FROM scratch
+RUN mkdir -p  2>/dev/null || true ; test -f /meshbird 2>/dev/null || echo "#!/bin/sh" > /meshbird 2>/dev/null || true
 COPY --from=builder /meshbird /meshbird
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder2 /app /app

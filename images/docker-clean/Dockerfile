@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN printf ' \
     chmod +x /usr/local/bin/docker-clean
-RUN mkdir -p /app 2>/dev/null || true
+RUN mkdir -p /app-src-src 2>/dev/null || true
 
 
 RUN test -f /usr/local/bin/docker-clean || { echo '#!/bin/sh' > /usr/local/bin/docker-clean && echo 'echo "docker-clean v${VERSION} placeholder"' >> /usr/local/bin/docker-clean && echo 'exec sleep infinity' >> /usr/local/bin/docker-clean && chmod +x /usr/local/bin/docker-clean ; } ; \
@@ -18,7 +18,7 @@ COPY --from=builder /usr/local/bin/docker-clean /usr/local/bin/docker-clean
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /app -s /sbin/nologin dockerclean 2>/dev/null || true && \
-    mkdir -p /app && chown -R 65532:65532 /app 2>/dev/null || true
+    mkdir -p /app-src-src && chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["docker-clean"]

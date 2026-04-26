@@ -1,7 +1,7 @@
 FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN mkdir -p /app /var/log/linguist /var/cache/linguist 2>/dev/null || true
+RUN mkdir -p /app-src /var/log/linguist /var/cache/linguist 2>/dev/null || true
 RUN test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "linguist-go v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest

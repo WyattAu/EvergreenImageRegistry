@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         ruby ruby-dev build-essential git ca-certificates curl gnupg ; rm -rf /var/lib/apt/lists/* || true
 
 RUN gem install dependabot-omnibus --no-document 2>/dev/null || true
-RUN mkdir -p /app 2>/dev/null || true
+RUN mkdir -p /app-src 2>/dev/null || true
 
 
 RUN test -f /usr/lib/ruby/gems || { echo '#!/bin/sh' > /usr/lib/ruby/gems && echo 'echo "dependabot v${VERSION} placeholder"' >> /usr/lib/ruby/gems && echo 'exec sleep infinity' >> /usr/lib/ruby/gems && chmod +x /usr/lib/ruby/gems ; } ; \

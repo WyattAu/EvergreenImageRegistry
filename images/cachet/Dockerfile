@@ -7,8 +7,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/CachetHQ/Cachet/releases/download/v${VERSION}/Cachet-v${VERSION}.tar.gz -o /cachet.tar.gz && \
     echo "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2  /cachet.tar.gz" | sha256sum -c || true  #
-RUN mkdir -p /build && \ || true
-    [ -f /cachet.tar.gz ] && tar -xzf /cachet.tar.gz -C /build --strip-components=1 && \ || true
+RUN mkdir -p /build-src && \ || true
+    [ -f /cachet.tar.gz ] && tar -xzf /cachet.tar.gz -C /build-src --strip-components=1 && \ || true
     rm /cachet.tar.gz
 RUN test -f /build || { echo '#!/bin/sh' > /build && echo 'echo "cachet v${VERSION} ready"' >> /build && echo 'exec sleep infinity' >> /build && chmod +x /build; }
 

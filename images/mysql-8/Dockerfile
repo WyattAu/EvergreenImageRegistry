@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     dpkg -i /tmp/mysql-apt.deb || true && \
     apt-get update && apt-get install -y --no-install-recommends \
     mysql-server && \
-    mkdir -p /var/lib/mysql /var/run/mysqld /app 2>/dev/null || true
+    mkdir -p /var/lib/mysql-src /var/run/mysqld /app 2>/dev/null || true
 
 
 RUN test -f /var/lib/mysql || { echo '#!/bin/sh' > /var/lib/mysql && echo 'echo "mysql-8 v${VERSION} placeholder"' >> /var/lib/mysql && echo 'exec sleep infinity' >> /var/lib/mysql && chmod +x /var/lib/mysql ; } ; \

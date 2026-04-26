@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     strongswan strongswan-pki libcharon-extra-plugins \
     libcharon-extauth-plugins libstrongswan-extra-plugins && \
     rm -rf /var/lib/apt/lists/* || true
-RUN mkdir -p /app /var/log/strongswan /var/run/charon /etc/strongswan.d ; \
+RUN mkdir -p /app-src /var/log/strongswan /var/run/charon /etc/strongswan.d ; \
     find /usr -type f -executable -name "charon*" -exec strip --strip-all {} \; 2>/dev/null || true && \
     find /usr -type f -executable -name "strongswan*" -exec strip --strip-all {} \; 2>/dev/null || true && \
     find /usr -type f -executable -name "pki" -exec strip --strip-all {} \; 2>/dev/null || true && \

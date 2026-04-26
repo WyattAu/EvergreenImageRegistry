@@ -7,7 +7,7 @@ RUN python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir pip-audit
-RUN mkdir -p /app 2>/dev/null || true
+RUN mkdir -p /app-src 2>/dev/null || true
 
 
 RUN test -f /opt/venv || { echo '#!/bin/sh' > /opt/venv && echo 'echo "pip-audit v${VERSION} placeholder"' >> /opt/venv && echo 'exec sleep infinity' >> /opt/venv && chmod +x /opt/venv ; } ; \

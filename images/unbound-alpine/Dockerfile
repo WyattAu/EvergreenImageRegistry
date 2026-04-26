@@ -34,11 +34,11 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nlnetlabs.nl/downloads/unbound
     strip --strip-all /usr/sbin/unbound-control || true
 
 
-RUN mkdir -p /usr/sbin/unbound ; ; \
+RUN mkdir -p /usr/sbin/unbound ; \
     test -f /usr/sbin/unbound-anchor || { echo '#!/bin/sh' > /usr/sbin/unbound-anchor && echo 'echo "unbound-alpine v${VERSION} placeholder"' >> /usr/sbin/unbound-anchor && echo 'exec sleep infinity' >> /usr/sbin/unbound-anchor && chmod +x /usr/sbin/unbound-anchor ; } ; \
     test -f /usr/sbin/unbound-checkconf || { echo '#!/bin/sh' > /usr/sbin/unbound-checkconf && echo 'echo "unbound-alpine v${VERSION} placeholder"' >> /usr/sbin/unbound-checkconf && echo 'exec sleep infinity' >> /usr/sbin/unbound-checkconf && chmod +x /usr/sbin/unbound-checkconf ; } ; \
     test -f /usr/sbin/unbound-control || { echo '#!/bin/sh' > /usr/sbin/unbound-control && echo 'echo "unbound-alpine v${VERSION} placeholder"' >> /usr/sbin/unbound-control && echo 'exec sleep infinity' >> /usr/sbin/unbound-control && chmod +x /usr/sbin/unbound-control ; } ; \
-    mkdir -p /usr/lib/libunbound.so* ; ; \
+    mkdir -p /usr/lib/libunbound.so* ; \
     test -f /etc/unbound || { echo '#!/bin/sh' > /etc/unbound && echo 'echo "unbound-alpine v${VERSION} placeholder"' >> /etc/unbound && echo 'exec sleep infinity' >> /etc/unbound && chmod +x /etc/unbound ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest

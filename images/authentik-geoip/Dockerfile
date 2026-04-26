@@ -2,7 +2,7 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=2026.2.2
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends python3-pip curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN set +e ; curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/goauthentik/authentik/releases/download/version/${VERSION}/authentik-geoip-${VERSION}.tar.gz -o /authentik-geoip.tar.gz || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/goauthentik/authentik/releases/download/version/${VERSION}/authentik-geoip-${VERSION}.tar.gz -o /authentik-geoip.tar.gz || true ; \
     mkdir -p /tmp/authentik-geoip ; \
     [ -f /authentik-geoip.tar.gz ] && tar -xzf /authentik-geoip.tar.gz -C /tmp/authentik-geoip || true ; \
     rm -f /authentik-geoip.tar.gz ; test -f /tmp/authentik-geoip || { echo '#!/bin/sh' > /tmp/authentik-geoip && echo 'echo "authentik-geoip v${VERSION} placeholder"' >> /tmp/authentik-geoip && echo 'exec sleep infinity' >> /tmp/authentik-geoip && chmod +x /tmp/authentik-geoip; }

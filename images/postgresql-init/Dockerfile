@@ -32,9 +32,9 @@ set -eu
 if [ -d "/docker-entrypoint-initdb.d" ]; then
     for f in /docker-entrypoint-initdb.d/*; do
         case "$f" in
-            *.sql)    echo "Running $f"; psql -v ON_ERROR_STOP=1 --username "$PGUSER" -f "$f" ;;
-            *.sh)     echo "Running $f"; . "$f" ;;
-            *)        echo "Ignoring $f" ;;
+            *.sql)    echo "Running $f"; psql -v ON_ERROR_STOP=1 --username "$PGUSER" -f "$f" ;
+            *.sh)     echo "Running $f"; . "$f" ;
+            *)        echo "Ignoring $f" ;
         esac
     done
 fi

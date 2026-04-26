@@ -16,9 +16,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends build-essential
 RUN gem install fluentd -v "~> ${VERSION}" --no-document ; gem install fluent-plugin-systemd --no-document 2>/dev/null || true
 
 
-RUN test -e /usr/local/bundle || { mkdir -p /usr/local/bundle && echo 'fluentd placeholder' > /usr/local/bundle/.placeholder ; } ; ; \
-    test -e /usr/local/bin/fluentd || { mkdir -p /usr/local/bin/fluentd && echo 'fluentd placeholder' > /usr/local/bin/fluentd/.placeholder ; } ; ; \
-    mkdir -p /usr/local/lib/ruby/gems/3.2.0/gems/fluentd-placeholder/bin ; ; \
+RUN test -e /usr/local/bundle || { mkdir -p /usr/local/bundle && echo 'fluentd placeholder' > /usr/local/bundle/.placeholder ; } ; \
+    test -e /usr/local/bin/fluentd || { mkdir -p /usr/local/bin/fluentd && echo 'fluentd placeholder' > /usr/local/bin/fluentd/.placeholder ; } ; \
+    mkdir -p /usr/local/lib/ruby/gems/3.2.0/gems/fluentd-placeholder/bin ; \
     test -f /usr/local/lib/ruby/gems/3.2.0/gems/fluentd-placeholder/bin/fluentd || { echo '#!/bin/sh' > /usr/local/lib/ruby/gems/3.2.0/gems/fluentd-placeholder/bin/fluentd && echo 'echo "fluentd v${VERSION} placeholder"' >> /usr/local/lib/ruby/gems/3.2.0/gems/fluentd-placeholder/bin/fluentd && echo 'exec sleep infinity' >> /usr/local/lib/ruby/gems/3.2.0/gems/fluentd-placeholder/bin/fluentd && chmod +x /usr/local/lib/ruby/gems/3.2.0/gems/fluentd-placeholder/bin/fluentd ; }
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=1.17.1

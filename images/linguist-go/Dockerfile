@@ -8,7 +8,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache go-1.23 git ca-certificates 
 WORKDIR /src
-RUN git clone --depth 1 https://github.com/github/linguist.git /src &&  || echo "Source repo not available - using placeholder" && \
+RUN git clone --depth 1 https://github.com/github/linguist.git /src || echo "Source repo not available - using placeholder" && \
     cd /src && go build -ldflags="-s -w" -o /linguist ./cmd/linguist 2>/dev/null || true
     cd /src && go build -ldflags="-s -w" -o /linguist ./cmd/linguist 2>/dev/null || true
 COPY --from=downloader /app /app

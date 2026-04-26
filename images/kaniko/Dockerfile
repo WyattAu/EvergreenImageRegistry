@@ -10,13 +10,13 @@ RUN mkdir -p /app /kaniko /var/log/kaniko /var/cache/kaniko 2>/dev/null || true
 
 
 
-RUN test -e /app || { mkdir -p /app && echo 'kaniko placeholder' > /app/.placeholder ; } ; ; \
-    mkdir -p / ; ; \
+RUN test -e /app || { mkdir -p /app && echo 'kaniko placeholder' > /app/.placeholder ; } ; \
+    mkdir -p / ; \
     test -f /executor || { echo '#!/bin/sh' > /executor && echo 'echo "kaniko v${VERSION} placeholder"' >> /executor && echo 'exec sleep infinity' >> /executor && chmod +x /executor ; } ; \
-    test -e /var/log/kaniko || { mkdir -p /var/log/kaniko && echo 'kaniko placeholder' > /var/log/kaniko/.placeholder ; } ; ; \
-    test -e /var/cache/kaniko || { mkdir -p /var/cache/kaniko && echo 'kaniko placeholder' > /var/cache/kaniko/.placeholder ; } ; ; \
-    test -e /kaniko/executor || { mkdir -p /kaniko/executor && echo 'kaniko placeholder' > /kaniko/executor/.placeholder ; } ; ; \
-    test -e /kaniko/.docker || { mkdir -p /kaniko/.docker && echo 'kaniko placeholder' > /kaniko/.docker/.placeholder ; } ; ; \
+    test -e /var/log/kaniko || { mkdir -p /var/log/kaniko && echo 'kaniko placeholder' > /var/log/kaniko/.placeholder ; } ; \
+    test -e /var/cache/kaniko || { mkdir -p /var/cache/kaniko && echo 'kaniko placeholder' > /var/cache/kaniko/.placeholder ; } ; \
+    test -e /kaniko/executor || { mkdir -p /kaniko/executor && echo 'kaniko placeholder' > /kaniko/executor/.placeholder ; } ; \
+    test -e /kaniko/.docker || { mkdir -p /kaniko/.docker && echo 'kaniko placeholder' > /kaniko/.docker/.placeholder ; } ; \
     test -e /usr/local/bin || { mkdir -p /usr/local/bin && echo 'kaniko placeholder' > /usr/local/bin/.placeholder ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 

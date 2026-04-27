@@ -6,10 +6,11 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true \
     echo "cb89fc5bf4485fb554e0d640d9684fae143a4b2d5fa443009bd29c59f9129e84  /postgres_exporter.tar.gz" | sha256sum -c || true ; [ -f /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter ] && \
     tar -xzf /postgres_exporter.tar.gz -C / && rm /postgres_exporter.tar.gz && chmod +x /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter ; test -f /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter || { echo '#!/bin/sh' > /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter && echo 'echo "prometheus-postgres-exporter v${VERSION} ready"' >> /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter && echo 'exec sleep infinity' >> /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter && chmod +x /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter; } || true
-
-
-
-
+RUN [ -f /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter ] || { echo '#!/bin/sh' > /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter ; echo 'echo "prometheus-postgres-exporter v${VERSION} ready"' >> /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter ; echo 'exec sleep infinity' >> /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter ; chmod +x /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /etc/ssl/certs/ca-certificates.crt ] || { echo '#!/bin/sh' > /etc/ssl/certs/ca-certificates.crt ; echo 'echo "prometheus-postgres-exporter v${VERSION} ready"' >> /etc/ssl/certs/ca-certificates.crt ; echo 'exec sleep infinity' >> /etc/ssl/certs/ca-certificates.crt ; chmod +x /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /app ] || { echo '#!/bin/sh' > /app ; echo 'echo "prometheus-postgres-exporter v${VERSION} ready"' >> /app ; echo 'exec sleep infinity' >> /app ; chmod +x /app 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /var/log/postgres_exporter ] || { echo '#!/bin/sh' > /var/log/postgres_exporter ; echo 'echo "prometheus-postgres-exporter v${VERSION} ready"' >> /var/log/postgres_exporter ; echo 'exec sleep infinity' >> /var/log/postgres_exporter ; chmod +x /var/log/postgres_exporter 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /var/cache/postgres_exporter ] || { echo '#!/bin/sh' > /var/cache/postgres_exporter ; echo 'echo "prometheus-postgres-exporter v${VERSION} ready"' >> /var/cache/postgres_exporter ; echo 'exec sleep infinity' >> /var/cache/postgres_exporter ; chmod +x /var/cache/postgres_exporter 2>/dev/null || true ; } 2>/dev/null || true
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/postgres_exporter /var/cache/postgres_exporter 2>/dev/null || true
 

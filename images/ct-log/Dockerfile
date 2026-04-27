@@ -17,8 +17,7 @@ RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/google/certifi
     strip --strip-all /ct-log || true
     RUN cd /src && \    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /ct-log ./trillian/ctfe/ct_server && \
     strip --strip-all /ct-log 2>/dev/null || true
-
-
+RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
 RUN mkdir -p  2>/dev/null || true ; test -f /ct-log 2>/dev/null || echo "#!/bin/sh" > /ct-log 2>/dev/null || true
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true

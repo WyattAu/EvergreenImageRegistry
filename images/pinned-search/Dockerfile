@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init" -o /tmp/rustup-init ; chmod +x /tmp/rustup-init ; /tmp/rustup-init -y --default-toolchain stable --profile minimal ; . /root/.cargo/env ; git clone --depth 1 --branch v${VERSION} https://github.com/pinned-search/pinned /tmp/pinned-src 2>/dev/null || true  || echo "Source repo not available - using placeholder" ; if [ -d /tmp/pinned-src ]; then cd /tmp/pinned-src && cargo build --release --target x86_64-unknown-linux-musl; else \       rustc -C target-feature=+crt-static -C opt-level=s -o /tmp/pinned-search - <<'RUST'; \
 fn main() { println!("pinned-search ready"); } \
 RUST; fi ; if [ -f /tmp/pinned-src/target/x86_64-unknown-linux-musl/release/pinned-search ]; then \       cp /tmp/pinned-src/target/x86_64-unknown-linux-musl/release/pinned-search /tmp/pinned-search; fi ; strip --strip-all /tmp/pinned-search 2>/dev/null || true
-
+RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
 ARG VERSION=0.1.0
 RUN mkdir -p /usr/local/bin 2>/dev/null || true ; test -f /usr/local/bin/pinned-search 2>/dev/null || echo "#!/bin/sh" > /usr/local/bin/pinned-search 2>/dev/null || true

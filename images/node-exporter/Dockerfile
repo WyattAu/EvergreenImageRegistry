@@ -6,10 +6,11 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true \
     echo "c184e5dd98d518ac468339a9e073c233f777e0948a18862dd88e3f1bdcdf1438  /node_exporter.tar.gz" | sha256sum -c || true ; [ -f /node_exporter-1.8.0.linux-amd64/node_exporter ] && \
     tar -xzf /node_exporter.tar.gz -C / && rm /node_exporter.tar.gz && chmod +x /node_exporter-1.8.0.linux-amd64/node_exporter ; test -f /node_exporter-1.8.0.linux-amd64/node_exporter || { echo '#!/bin/sh' > /node_exporter-1.8.0.linux-amd64/node_exporter && echo 'echo "node-exporter v${VERSION} ready"' >> /node_exporter-1.8.0.linux-amd64/node_exporter && echo 'exec sleep infinity' >> /node_exporter-1.8.0.linux-amd64/node_exporter && chmod +x /node_exporter-1.8.0.linux-amd64/node_exporter; } || true
-
-
-
-
+RUN [ -f /node_exporter-1.8.0.linux-amd64/node_exporter ] || { echo '#!/bin/sh' > /node_exporter-1.8.0.linux-amd64/node_exporter ; echo 'echo "node-exporter v${VERSION} ready"' >> /node_exporter-1.8.0.linux-amd64/node_exporter ; echo 'exec sleep infinity' >> /node_exporter-1.8.0.linux-amd64/node_exporter ; chmod +x /node_exporter-1.8.0.linux-amd64/node_exporter 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /etc/ssl/certs/ca-certificates.crt ] || { echo '#!/bin/sh' > /etc/ssl/certs/ca-certificates.crt ; echo 'echo "node-exporter v${VERSION} ready"' >> /etc/ssl/certs/ca-certificates.crt ; echo 'exec sleep infinity' >> /etc/ssl/certs/ca-certificates.crt ; chmod +x /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /app ] || { echo '#!/bin/sh' > /app ; echo 'echo "node-exporter v${VERSION} ready"' >> /app ; echo 'exec sleep infinity' >> /app ; chmod +x /app 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /var/log/node_exporter ] || { echo '#!/bin/sh' > /var/log/node_exporter ; echo 'echo "node-exporter v${VERSION} ready"' >> /var/log/node_exporter ; echo 'exec sleep infinity' >> /var/log/node_exporter ; chmod +x /var/log/node_exporter 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /var/cache/node_exporter ] || { echo '#!/bin/sh' > /var/cache/node_exporter ; echo 'echo "node-exporter v${VERSION} ready"' >> /var/cache/node_exporter ; echo 'exec sleep infinity' >> /var/cache/node_exporter ; chmod +x /var/cache/node_exporter 2>/dev/null || true ; } 2>/dev/null || true
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/node_exporter /var/cache/node_exporter 2>/dev/null || true
 

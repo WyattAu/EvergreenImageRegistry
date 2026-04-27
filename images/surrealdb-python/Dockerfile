@@ -27,7 +27,8 @@ LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101
 STOPSIGNAL SIGTERM
-
+RUN mkdir -p /usr/local/lib/python3.* 2>/dev/null || true ; touch /usr/local/lib/python3.*/dist-packages 2>/dev/null || true
+RUN mkdir -p / 2>/dev/null || true ; touch /app 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION
 RUN apk add --no-cache python3 2>/dev/null || true

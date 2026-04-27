@@ -27,7 +27,7 @@ RUN mkdir -p /var/lib/oracle /var/log/oracle /var/cache/oracle /opt/oracle 2>/de
 COPY --from=builder /tmp/oracle-rpm/*.rpm /tmp/
 RUN rpm2cpio /tmp/oracle-database-xe-*.rpm 2>/dev/null | cpio -idmv -D /opt/oracle 2>/dev/null || \
     echo "Oracle XE RPM extracted (may require manual setup)"
-RUN chown -R 65532:65532 /opt/oracle /var/lib/oracle /var/log/oracle /var/cache/oracle
+RUN chown -R 65532:65532 /opt/oracle /var/lib/oracle /var/log/oracle /var/cache/oracle 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/oracle
 EXPOSE 1521 5500

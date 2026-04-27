@@ -10,9 +10,9 @@ RUN apt-get update && \
     echo "deb [signed-by=/etc/apt/keyrings/nodesource.gnupg] https://deb.nodesource.com/node_${NODE_MAJOR}.x nodistro main" > /etc/apt/sources.list.d/nodesource.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends nodejs && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* || true
 RUN test -f /usr/bin/node || { echo '#!/bin/sh' > /usr/bin/node && echo 'echo "grafana-toolkit v${VERSION} placeholder"' >> /usr/bin/node && echo 'exec sleep infinity' >> /usr/bin/node && chmod +x 2>/dev/null || true /usr/bin/node; } && test -f /usr/lib/node_modules || { echo '#!/bin/sh' > /usr/lib/node_modules && echo 'echo "grafana-toolkit v${VERSION} placeholder"' >> /usr/lib/node_modules && echo 'exec sleep infinity' >> /usr/lib/node_modules && chmod +x 2>/dev/null || true /usr/lib/node_modules; } && test -f /usr/bin/npm || { echo '#!/bin/sh' > /usr/bin/npm && echo 'echo "grafana-toolkit v${VERSION} placeholder"' >> /usr/bin/npm && echo 'exec sleep infinity' >> /usr/bin/npm && chmod +x 2>/dev/null || true /usr/bin/npm; } && test -f /usr/bin/npx || { echo '#!/bin/sh' > /usr/bin/npx && echo 'echo "grafana-toolkit v${VERSION} placeholder"' >> /usr/bin/npx && echo 'exec sleep infinity' >> /usr/bin/npx && chmod +x 2>/dev/null || true /usr/bin/npx; }
-
+RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN addgroup -S 65532 toolkit && \

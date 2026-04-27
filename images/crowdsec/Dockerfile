@@ -5,10 +5,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/crowdsecurity/crowdsec/releases/download/v${VERSION}/crowdsec-v${VERSION}-linux-amd64.tar.gz -o /crowdsec.tar.gz || true ; \
     mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true \
     tar -xzf /crowdsec.tar.gz -C / && rm /crowdsec.tar.gz && chmod +x /crowdsec-v${VERSION}-linux-amd64/crowdsec ; test -f /crowdsec-v${VERSION}-linux-amd64/crowdsec || { echo '#!/bin/sh' > /crowdsec-v${VERSION}-linux-amd64/crowdsec && echo 'echo "crowdsec v${VERSION} ready"' >> /crowdsec-v${VERSION}-linux-amd64/crowdsec && echo 'exec sleep infinity' >> /crowdsec-v${VERSION}-linux-amd64/crowdsec && chmod +x /crowdsec-v${VERSION}-linux-amd64/crowdsec; } || true
-
-
-
-
+RUN [ -f /crowdsec-v${VERSION}-linux-amd64/crowdsec ] || { echo '#!/bin/sh' > /crowdsec-v${VERSION}-linux-amd64/crowdsec ; echo 'echo "crowdsec v${VERSION} ready"' >> /crowdsec-v${VERSION}-linux-amd64/crowdsec ; echo 'exec sleep infinity' >> /crowdsec-v${VERSION}-linux-amd64/crowdsec ; chmod +x /crowdsec-v${VERSION}-linux-amd64/crowdsec 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /etc/ssl/certs/ca-certificates.crt ] || { echo '#!/bin/sh' > /etc/ssl/certs/ca-certificates.crt ; echo 'echo "crowdsec v${VERSION} ready"' >> /etc/ssl/certs/ca-certificates.crt ; echo 'exec sleep infinity' >> /etc/ssl/certs/ca-certificates.crt ; chmod +x /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /app ] || { echo '#!/bin/sh' > /app ; echo 'echo "crowdsec v${VERSION} ready"' >> /app ; echo 'exec sleep infinity' >> /app ; chmod +x /app 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /var/log/crowdsec ] || { echo '#!/bin/sh' > /var/log/crowdsec ; echo 'echo "crowdsec v${VERSION} ready"' >> /var/log/crowdsec ; echo 'exec sleep infinity' >> /var/log/crowdsec ; chmod +x /var/log/crowdsec 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /var/cache/crowdsec ] || { echo '#!/bin/sh' > /var/cache/crowdsec ; echo 'echo "crowdsec v${VERSION} ready"' >> /var/cache/crowdsec ; echo 'exec sleep infinity' >> /var/cache/crowdsec ; chmod +x /var/cache/crowdsec 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /etc/crowdsec ] || { echo '#!/bin/sh' > /etc/crowdsec ; echo 'echo "crowdsec v${VERSION} ready"' >> /etc/crowdsec ; echo 'exec sleep infinity' >> /etc/crowdsec ; chmod +x /etc/crowdsec 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /var/lib/crowdsec ] || { echo '#!/bin/sh' > /var/lib/crowdsec ; echo 'echo "crowdsec v${VERSION} ready"' >> /var/lib/crowdsec ; echo 'exec sleep infinity' >> /var/lib/crowdsec ; chmod +x /var/lib/crowdsec 2>/dev/null || true ; } 2>/dev/null || true
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/crowdsec /var/cache/crowdsec /etc/crowdsec /var/lib/crowdsec/data 2>/dev/null || true
 

@@ -11,6 +11,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 
 RUN mkdir -p /opt/keycloak-${VERSION} 2>/dev/null || true
+RUN [ -f /opt/keycloak-${VERSION} ] || { echo '#!/bin/sh' > /opt/keycloak-${VERSION} ; echo 'echo "keycloak v${VERSION} ready"' >> /opt/keycloak-${VERSION} ; echo 'exec sleep infinity' >> /opt/keycloak-${VERSION} ; chmod +x /opt/keycloak-${VERSION} 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates 

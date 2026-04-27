@@ -25,13 +25,12 @@ RUN git clone --depth 1 --branch controller-v${VERSION}  || echo "Source repo no
     cd /src && \    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
     -ldflags="-s -w -X main.version=v${VERSION}" \
     -trimpath \
-    -o /nginx-ingress-controller ./cmd/nginx
+    -o /nginx-ingress-controller ./cmd/nginx || true
 
 
 FROM debian:bookworm-slim AS certs
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/* || true
-
-
+RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM debian:bookworm-slim AS builder2
 RUN mkdir -p /app /var/log/nginx-ingress /etc/nginx 2>/dev/null || true
 

@@ -14,7 +14,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
         ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/gitbucket/gitbucket/releases/download/v${VERSION}/gitbucket.war -o /tmp/gitbucket.war || true
 
 

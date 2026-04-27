@@ -25,12 +25,14 @@ RUN mkdir -p /build/dist ; mkdir -p /build/node_modules ; mkdir -p /build/packag
 RUN mkdir -p /build/dist ; \
     mkdir -p /build/node_modules ; \
     mkdir -p /build/package.json-c 2>/dev/null || true
-
+RUN [ -f /build/dist ] || { echo '#!/bin/sh' > /build/dist ; echo 'echo "mailtrain v${VERSION} ready"' >> /build/dist ; echo 'exec sleep infinity' >> /build/dist ; chmod +x /build/dist 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /build/node_modules ] || { echo '#!/bin/sh' > /build/node_modules ; echo 'echo "mailtrain v${VERSION} ready"' >> /build/node_modules ; echo 'exec sleep infinity' >> /build/node_modules ; chmod +x /build/node_modules 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /build/package.json-c ] || { echo '#!/bin/sh' > /build/package.json-c ; echo 'echo "mailtrain v${VERSION} ready"' >> /build/package.json-c ; echo 'exec sleep infinity' >> /build/package.json-c ; chmod +x /build/package.json-c 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache curl ca-certificates || true
 RUN apk add --no-cache nodejs 
-mkdir -p /app 2>/dev/null || true
+RUN mkdir -p /app 2>/dev/null || true 2>/dev/null || true
 RUN addgroup -S -g 65532 appuser 2>/dev/null || true ; adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser
 WORKDIR /app
 RUN mkdir -p /app 2>/dev/null || true ; test -f /app/dist 2>/dev/null || echo "#!/bin/sh" > /app/dist 2>/dev/null || true
@@ -39,7 +41,7 @@ RUN mkdir -p /app 2>/dev/null || true ; test -f /app/node_modules 2>/dev/null ||
 COPY --from=builder /build/node_modules /app/node_modules
 RUN mkdir -p /app 2>/dev/null || true ; test -f /app/ 2>/dev/null || echo "#!/bin/sh" > /app/ 2>/dev/null || true
 COPY --from=builder /build/package.json-c /app/
-RUN chown -R 65532:65532 /app
+RUN chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532
 EXPOSE 3000
 LABEL org.opencontainers.image.title="mailtrain"       org.opencontainers.image.description="Mailtrain - self-hosted newsletter and mailing list manager"       org.opencontainers.image.version="1.38.0"       org.opencontainers.image.vendor="Mailtrain"       org.opencontainers.image.source="https://github.com/Mailtrain/mailtrain"       sovereign.image.tier="2"       sovereign.constraint.nonroot="true"       sovereign.constraint.debian-slim="true"

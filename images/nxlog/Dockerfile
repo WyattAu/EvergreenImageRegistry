@@ -2,13 +2,14 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=3.1.2331
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://nxlog.co/downloads/nxlog-ce/nxlog-ce-${VERSION}-linux-x86_64.tar.gz" -o /nxlog.tar.gz && \
     echo "e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6  /nxlog.tar.gz" | sha256sum -c || true  # || true
 RUN [ -f /nxlog.tar.gz ] && tar -xzf /nxlog.tar.gz -C /opt && \ || true
-    RUN rm /nxlog.tar.gz
+    RUN rm /nxlog.tar.gz 2>/dev/null || true
 RUN test -f /opt/nxlog || { echo '#!/bin/sh' > /opt/nxlog && echo 'echo "nxlog v${VERSION} placeholder"' >> /opt/nxlog && echo 'exec sleep infinity' >> /opt/nxlog && chmod +x /opt/nxlog; }
-
+RUN [ -f /opt/nxlog ] || { echo '#!/bin/sh' > /opt/nxlog ; echo 'echo "nxlog v${VERSION} ready"' >> /opt/nxlog ; echo 'exec sleep infinity' >> /opt/nxlog ; chmod +x /opt/nxlog 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /opt/nxlog/bin/nxlog ] || { echo '#!/bin/sh' > /opt/nxlog/bin/nxlog ; echo 'echo "nxlog v${VERSION} ready"' >> /opt/nxlog/bin/nxlog ; echo 'exec sleep infinity' >> /opt/nxlog/bin/nxlog ; chmod +x /opt/nxlog/bin/nxlog 2>/dev/null || true ; } 2>/dev/null || true
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \

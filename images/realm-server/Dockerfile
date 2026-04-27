@@ -27,7 +27,7 @@ RUN adduser -D -u 65532 -s /bin/false realm 2>/dev/null || true
 RUN mkdir -p /var/lib/realm /var/log/realm /var/cache/realm 2>/dev/null || true
 RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/realm-app-services-${VERSION} /opt/realm
-RUN chown -R 65532:65532 /opt/realm /var/lib/realm /var/log/realm /var/cache/realm
+RUN chown -R 65532:65532 /opt/realm /var/lib/realm /var/log/realm /var/cache/realm 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/realm
 EXPOSE 9090

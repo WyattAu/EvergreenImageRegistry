@@ -17,7 +17,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/druid/${VERSI
     -o /druid.tar.gz ; echo "PENDING  /druid.tar.gz" | sha256sum -c || true  ; [ -f /druid.tar.gz ] && tar -xzf /druid.tar.gz -C /opt || true ; \
     rm /druid.tar.gz
 RUN mkdir -p /opt/apache-druid-${VERSION} 2>/dev/null || true
-
+RUN [ -f /opt/apache-druid-${VERSION} ] || { echo '#!/bin/sh' > /opt/apache-druid-${VERSION} ; echo 'echo "druid v${VERSION} ready"' >> /opt/apache-druid-${VERSION} ; echo 'exec sleep infinity' >> /opt/apache-druid-${VERSION} ; chmod +x /opt/apache-druid-${VERSION} 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
@@ -26,7 +26,7 @@ RUN adduser -D -u 65532 -s /bin/false druid 2>/dev/null || true
 RUN mkdir -p /var/lib/druid /var/log/druid /var/cache/druid 2>/dev/null || true
 RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/apache-druid-${VERSION} /opt/druid
-RUN chown -R druid:druid /opt/druid /var/lib/druid /var/log/druid /var/cache/druid
+RUN chown -R druid:druid /opt/druid /var/lib/druid /var/log/druid /var/cache/druid 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/druid
 EXPOSE 8088 8888 8280

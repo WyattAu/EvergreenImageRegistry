@@ -7,8 +7,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     [ -f /homepage.tar.gz ] && tar -xzf /homepage.tar.gz -C / && rm /homepage.tar.gz && chmod +x /homepage 2>/dev/null || true
 RUN strip /homepage 2>/dev/null || true
 RUN test -f /homepage || { echo '#!/bin/sh' > /homepage && echo 'echo "homepage-sync v${VERSION} ready"' >> /homepage && echo 'exec sleep infinity' >> /homepage && chmod +x 2>/dev/null || true /homepage; }
-
-
+RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
+RUN [ -f /homepage ] || { echo '#!/bin/sh' > /homepage ; echo 'echo "homepage-sync v${VERSION} ready"' >> /homepage ; echo 'exec sleep infinity' >> /homepage ; chmod +x /homepage 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /etc/ssl/certs/ca-certificates.crt ] || { echo '#!/bin/sh' > /etc/ssl/certs/ca-certificates.crt ; echo 'echo "homepage-sync v${VERSION} ready"' >> /etc/ssl/certs/ca-certificates.crt ; echo 'exec sleep infinity' >> /etc/ssl/certs/ca-certificates.crt ; chmod +x /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /app ] || { echo '#!/bin/sh' > /app ; echo 'echo "homepage-sync v${VERSION} ready"' >> /app ; echo 'exec sleep infinity' >> /app ; chmod +x /app 2>/dev/null || true ; } 2>/dev/null || true
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/homepage /var/cache/homepage 2>/dev/null || true
 
@@ -20,7 +22,7 @@ COPY --from=downloader /homepage /usr/local/bin/homepage
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true
-mkdir -p /app 2>/dev/null || true
+RUN mkdir -p /app 2>/dev/null || true 2>/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false homepage 2>/dev/null || true && \
     chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532

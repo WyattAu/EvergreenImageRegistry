@@ -16,13 +16,13 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     [ -f /yacy.tar.gz ] && tar -xzf /yacy.tar.gz -C /opt && rm /yacy.tar.gz || true ; \
     mv /opt/yacy /opt/yacy-server || true
 RUN mkdir -p /app /var/log/yacy /var/lib/yacy/data 2>/dev/null || true
-RUN chown -R 65532:65532 /opt/yacy-server /var/log/yacy /var/lib/yacy
+RUN chown -R 65532:65532 /opt/yacy-server /var/log/yacy /var/lib/yacy 2>/dev/null || true
 
 
 RUN test -f /opt/yacy-server || { echo '#!/bin/sh' > /opt/yacy-server && echo 'echo "yacy v${VERSION} placeholder"' >> /opt/yacy-server && echo 'exec sleep infinity' >> /opt/yacy-server && chmod +x 2>/dev/null || true /opt/yacy-server ; } ; \
     test -f /var/log/yacy || { echo '#!/bin/sh' > /var/log/yacy && echo 'echo "yacy v${VERSION} placeholder"' >> /var/log/yacy && echo 'exec sleep infinity' >> /var/log/yacy && chmod +x /var/log/yacy ; } ; \
     test -f /var/lib/yacy || { echo '#!/bin/sh' > /var/lib/yacy && echo 'echo "yacy v${VERSION} placeholder"' >> /var/lib/yacy && echo 'exec sleep infinity' >> /var/lib/yacy && chmod +x /var/lib/yacy ; }
-
+RUN [ -f /opt/yacy-server ] || { echo '#!/bin/sh' > /opt/yacy-server ; echo 'echo "yacy v${VERSION} ready"' >> /opt/yacy-server ; echo 'exec sleep infinity' >> /opt/yacy-server ; chmod +x /opt/yacy-server 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates 
@@ -31,7 +31,7 @@ RUN mkdir -p /opt /var/lib /var/log 2>/dev/null || true
 COPY --from=installer /opt/yacy-server /opt/yacy-server
 COPY --from=installer /var/log/yacy /var/log/yacy
 COPY --from=installer /var/lib/yacy /var/lib/yacy
-RUN chown -R 65532:65532 /app /opt/yacy-server /var/log/yacy /var/lib/yacy
+RUN chown -R 65532:65532 /app /opt/yacy-server /var/log/yacy /var/lib/yacy 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk

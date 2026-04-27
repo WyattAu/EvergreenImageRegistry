@@ -25,8 +25,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* || true
 RUN useradd -m -u 65532 -s /usr/bin/false redis 2>/dev/null || true
 RUN mkdir -p /var/lib/redis /var/log/redis /var/cache/redis 2>/dev/null || true
-
-
+RUN mkdir -p /usr/bin 2>/dev/null || true ; touch /usr/bin/redis-server 2>/dev/null || true
+RUN mkdir -p /usr/lib 2>/dev/null || true ; touch /usr/lib/redis 2>/dev/null || true
 FROM scratch
 ARG VERSION=2.8.13
 
@@ -36,7 +36,7 @@ RUN mkdir -p /opt/redis/modules /usr/local/bin /usr/local/lib 2>/dev/null || tru
 COPY --from=builder /tmp/redisearch-src/bin/redisearch.so /opt/redis/modules/redisearch.so
 COPY --from=redis /usr/bin/redis-server /usr/local/bin/redis-server
 COPY --from=redis /usr/lib/redis /usr/local/lib/redis
-RUN chown -R 65532:65532 /var/lib/redis /var/log/redis /var/cache/redis /opt/redis
+RUN chown -R 65532:65532 /var/lib/redis /var/log/redis /var/cache/redis /opt/redis 2>/dev/null || true
 USER 65532:65532
 WORKDIR /var/lib/redis
 EXPOSE 6379

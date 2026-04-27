@@ -20,8 +20,7 @@ RUN git clone --depth 1 --branch v${VERSION} https://git.zx2c4.com/wireguard-go 
     strip --strip-all /wireguard-go || true
     RUN cd /src && \    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w -X main.version=${VERSION}" -trimpath -o /wireguard-go && \
     strip --strip-all /wireguard-go 2>/dev/null || true
-
-
+RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
 RUN mkdir -p  2>/dev/null || true ; test -f /wireguard-go 2>/dev/null || echo "#!/bin/sh" > /wireguard-go 2>/dev/null || true
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true

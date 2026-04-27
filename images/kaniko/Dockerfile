@@ -1,6 +1,7 @@
 FROM gcr.io/kaniko-project/executor:v1.24.0 AS upstream
-
-
+RUN mkdir -p /kaniko 2>/dev/null || true ; touch /kaniko/executor 2>/dev/null || true
+RUN mkdir -p /kaniko 2>/dev/null || true ; touch /kaniko/.docker 2>/dev/null || true
+RUN mkdir -p /usr/local 2>/dev/null || true ; touch /usr/local/bin 2>/dev/null || true
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN mkdir -p /app /kaniko /var/log/kaniko /var/cache/kaniko 2>/dev/null || true

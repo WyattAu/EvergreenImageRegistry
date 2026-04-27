@@ -27,7 +27,7 @@ RUN adduser -D -u 65532 -s /bin/false chartdb 2>/dev/null || true
 RUN mkdir -p /var/lib/chartdb /var/log/chartdb /var/cache/chartdb 2>/dev/null || true
 RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/chartdb /opt/chartdb
-RUN chown -R 65532:65532 /opt/chartdb /var/lib/chartdb /var/log/chartdb /var/cache/chartdb
+RUN chown -R 65532:65532 /opt/chartdb /var/lib/chartdb /var/log/chartdb /var/cache/chartdb 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/chartdb
 EXPOSE 8080

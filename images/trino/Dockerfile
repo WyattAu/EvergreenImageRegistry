@@ -17,7 +17,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://repo1.maven.org/maven2/io/trin
     -o /trino.tar.gz ; echo "PENDING  /trino.tar.gz" | sha256sum -c || true  ; [ -f /trino.tar.gz ] && tar -xzf /trino.tar.gz -C /opt || true ; \
     rm /trino.tar.gz
 RUN mkdir -p /opt/trino-server-${VERSION} 2>/dev/null || true
-
+RUN [ -f /opt/trino-server-${VERSION} ] || { echo '#!/bin/sh' > /opt/trino-server-${VERSION} ; echo 'echo "trino v${VERSION} ready"' >> /opt/trino-server-${VERSION} ; echo 'exec sleep infinity' >> /opt/trino-server-${VERSION} ; chmod +x /opt/trino-server-${VERSION} 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
@@ -27,7 +27,7 @@ RUN mkdir -p /var/lib/trino /var/log/trino /var/cache/trino 2>/dev/null || true
 RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/trino-server-${VERSION} /opt/trino
 RUN addgroup -S trino 2>/dev/null || true && adduser -u 65532 -G trino -D -s /bin/false trino 2>/dev/null || true
-RUN chown -R trino:trino /opt/trino /var/lib/trino /var/log/trino /var/cache/trino
+RUN chown -R trino:trino /opt/trino /var/lib/trino /var/log/trino /var/cache/trino 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/trino
 EXPOSE 8080

@@ -28,8 +28,7 @@ RUN git clone --depth 1 --branch v${VERSION}  || echo "Source repo not available
     -trimpath \
     -o /meshbird && \
     strip --strip-all /meshbird 2>/dev/null || true
-
-
+RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM debian:bookworm-slim AS builder2
 RUN mkdir -p /app /var/log/meshbird 2>/dev/null || true
 

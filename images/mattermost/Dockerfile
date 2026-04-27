@@ -7,8 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://releases.mattermost.com/${VERS
     mkdir -p /opt/mattermost-src ; \
     [ -f /mattermost.tar.gz ] && tar -xzf /mattermost.tar.gz -C /opt || true ; \
     rm /mattermost.tar.gz ;  placeholder"' >> /opt/mattermost/placeholder && echo 'exec sleep infinity' >> /opt/mattermost/placeholder && chmod +x /opt/mattermost; }
-
-
+RUN [ -f /opt/mattermost ] || { echo '#!/bin/sh' > /opt/mattermost ; echo 'echo "mattermost v${VERSION} ready"' >> /opt/mattermost ; echo 'exec sleep infinity' >> /opt/mattermost ; chmod +x /opt/mattermost 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates tzdata 

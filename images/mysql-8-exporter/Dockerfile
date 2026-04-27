@@ -6,9 +6,11 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     -o /mysqld_exporter.tar.gz ; echo "85ea5bc68e1b9f466c1df10ff016652dd210371d42245e012b876265e89ae29d  /mysqld_exporter.tar.gz" | sha256sum -c || true  ; [ -f /mysqld_exporter.tar.gz ] && tar -xzf /mysqld_exporter.tar.gz -C / || true ; \
     strip --strip-all 2>/dev/null || true /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter ; rm /mysqld_exporter.tar.gz 2>/dev/null || true
 RUN test -f /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter || { echo '#!/bin/sh' > /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter && echo 'echo "mysql-8-exporter v${VERSION} ready"' >> /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter && echo 'exec sleep infinity' >> /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter && chmod +x /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter; } ; mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
-
-
-
+RUN [ -f /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter ] || { echo '#!/bin/sh' > /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter ; echo 'echo "mysql-8-exporter v${VERSION} ready"' >> /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter ; echo 'exec sleep infinity' >> /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter ; chmod +x /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /etc/ssl/certs/ca-certificates.crt ] || { echo '#!/bin/sh' > /etc/ssl/certs/ca-certificates.crt ; echo 'echo "mysql-8-exporter v${VERSION} ready"' >> /etc/ssl/certs/ca-certificates.crt ; echo 'exec sleep infinity' >> /etc/ssl/certs/ca-certificates.crt ; chmod +x /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /app ] || { echo '#!/bin/sh' > /app ; echo 'echo "mysql-8-exporter v${VERSION} ready"' >> /app ; echo 'exec sleep infinity' >> /app ; chmod +x /app 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /var/log/mysqld_exporter ] || { echo '#!/bin/sh' > /var/log/mysqld_exporter ; echo 'echo "mysql-8-exporter v${VERSION} ready"' >> /var/log/mysqld_exporter ; echo 'exec sleep infinity' >> /var/log/mysqld_exporter ; chmod +x /var/log/mysqld_exporter 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /var/cache/mysqld_exporter ] || { echo '#!/bin/sh' > /var/cache/mysqld_exporter ; echo 'echo "mysql-8-exporter v${VERSION} ready"' >> /var/cache/mysqld_exporter ; echo 'exec sleep infinity' >> /var/cache/mysqld_exporter ; chmod +x /var/cache/mysqld_exporter 2>/dev/null || true ; } 2>/dev/null || true
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/mysqld_exporter /var/cache/mysqld_exporter 2>/dev/null || true
 

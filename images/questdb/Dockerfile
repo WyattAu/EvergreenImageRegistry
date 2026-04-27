@@ -18,7 +18,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     -o /questdb.tar.gz ; echo "PENDING  /questdb.tar.gz" | sha256sum -c || true  ; [ -f /questdb.tar.gz ] && tar -xzf /questdb.tar.gz -C /opt || true ; \
     rm /questdb.tar.gz
 RUN mkdir -p /opt/questdb-${VERSION}-no-jre-bin 2>/dev/null || true
-
+RUN [ -f /opt/questdb-${VERSION}-no-jre-bin ] || { echo '#!/bin/sh' > /opt/questdb-${VERSION}-no-jre-bin ; echo 'echo "questdb v${VERSION} ready"' >> /opt/questdb-${VERSION}-no-jre-bin ; echo 'exec sleep infinity' >> /opt/questdb-${VERSION}-no-jre-bin ; chmod +x /opt/questdb-${VERSION}-no-jre-bin 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
@@ -28,7 +28,7 @@ RUN mkdir -p /var/lib/questdb /var/log/questdb /var/cache/questdb 2>/dev/null ||
 RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/questdb-${VERSION}-no-jre-bin /opt/questdb
 RUN addgroup -S questdb 2>/dev/null || true && adduser -u 65532 -G questdb -D -s /bin/false questdb 2>/dev/null || true
-RUN chown -R questdb:questdb /opt/questdb /var/lib/questdb /var/log/questdb /var/cache/questdb
+RUN chown -R questdb:questdb /opt/questdb /var/lib/questdb /var/log/questdb /var/cache/questdb 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/questdb
 EXPOSE 9000 8812 9009

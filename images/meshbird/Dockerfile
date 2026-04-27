@@ -11,7 +11,7 @@ ARG BUILD_DATE
 ARG GO_VERSION=1.22.4
 
 
-FROM go-1.23:${GO_VERSION}-bookworm AS builder
+FROM golang:${GO_VERSION}-bookworm AS builder
 ARG VERSION=0.4.0
 ARG GO_VERSION=1.22.4
 RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/* || true

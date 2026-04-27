@@ -16,7 +16,7 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 RUN mkdir -p  2>/dev/null || true ; test -f /app 2>/dev/null || echo "#!/bin/sh" > /app 2>/dev/null || true
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true
-RUN mkdir -p /app 2>/dev/null || true 2>/dev/null || true
+RUN mkdir -p /app 2>/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false snyk-alpine 2>/dev/null || true &&     chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app

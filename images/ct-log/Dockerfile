@@ -9,7 +9,7 @@ ARG VERSION=1.3.3
 ARG BUILD_DATE
 
 
-FROM go-1.23:1.23-bookworm AS builder
+FROM golang:1.23-bookworm AS builder
 ARG VERSION=1.3.3
 RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/google/certificate-transparency-go /src || echo "Source repo not available - using placeholder" && \

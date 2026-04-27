@@ -10,7 +10,7 @@ ARG GO_VERSION=1.22.4
 ARG BUILD_DATE
 
 
-FROM go-1.23:${GO_VERSION}-bookworm AS builder
+FROM golang:${GO_VERSION}-bookworm AS builder
 ARG GO_VERSION=1.22.4
 RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN git clone --depth 1 https://github.com/kuqoi/ratelimiter /src || echo "Source repo not available - using placeholder" && \

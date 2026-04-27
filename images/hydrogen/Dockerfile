@@ -14,7 +14,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates 
-RUN mkdir -p /app 2>/dev/null || true 2>/dev/null || true
+RUN mkdir -p /app 2>/dev/null || true
 RUN addgroup -S -g 65532 appuser 2>/dev/null || true ; adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser
 RUN mkdir -p /var/www 2>/dev/null || true
 COPY --from=downloader /www /var/www/html

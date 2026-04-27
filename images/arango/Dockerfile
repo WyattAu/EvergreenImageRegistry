@@ -24,6 +24,7 @@ ARG VERSION
 RUN apk add --no-cache libstdc++ ca-certificates || true
 RUN adduser -D -u 65532 -s /bin/false arango || true
 RUN mkdir -p /var/lib/arangodb /var/log/arangodb /var/cache/arangodb /var/lib/arangodb3-apps
+RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/arangodb3-linux-* /opt/arangodb
 RUN chown -R 65532:65532 /opt/arangodb /var/lib/arangodb /var/log/arangodb /var/cache/arangodb /var/lib/arangodb3-apps
 USER 65532:65532

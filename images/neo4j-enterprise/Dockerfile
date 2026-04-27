@@ -15,6 +15,7 @@ RUN mkdir -p /var/lib/neo4j /var/log/neo4j /app ; \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
+RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/neo4j /opt/neo4j
 RUN mkdir -p  2>/dev/null || true ; test -f /app 2>/dev/null || echo "#!/bin/sh" > /app 2>/dev/null || true
 COPY --from=builder /app /app

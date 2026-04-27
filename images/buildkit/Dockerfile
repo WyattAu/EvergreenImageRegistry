@@ -12,6 +12,7 @@ RUN mkdir -p /app /var/log/buildkit /var/cache/buildkit /var/lib/buildkit 2>/dev
 
 FROM scratch
 
+RUN mkdir -p /usr/local/bin /var/cache /var/lib /var/log 2>/dev/null || true
 COPY --from=downloader /usr/local/bin/buildkitd /usr/local/bin/buildkitd
 COPY --from=downloader /usr/local/bin/buildctl /usr/local/bin/buildctl
 COPY --from=builder /app /app

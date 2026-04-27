@@ -30,6 +30,7 @@ RUN mkdir -p /usr/local/openvpn_as 2>/dev/null || true \
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache liblz4-1 ca-certificates python3 net-tools iptables iproute2 kmod 
+RUN mkdir -p /etc/init.d /usr/bin /usr/local /var/log 2>/dev/null || true
 COPY --from=installer /usr/local/openvpn_as /usr/local/openvpn_as
 COPY --from=installer /usr/bin/openvpn-as /usr/bin/openvpn-as
 COPY --from=installer /etc/init.d/openvpn-as /etc/init.d/openvpn-as

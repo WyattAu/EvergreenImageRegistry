@@ -19,6 +19,7 @@ RUN test -e /usr/local/bin/composer || { mkdir -p /usr/local/bin/composer && ech
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache php-8.4 php-8.4-mbstring php-8.4-xml php-8.4-curl ca-certificates curl unzip || true
+RUN mkdir -p /usr/local/bin 2>/dev/null || true
 COPY --from=builder /usr/local/bin/composer /usr/local/bin/composer
 COPY --from=builder /app /app
 RUN addgroup -S nogroup 2>/dev/null || true

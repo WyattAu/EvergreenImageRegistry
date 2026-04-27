@@ -13,6 +13,7 @@ RUN mkdir -p /app /var/log/kafka_exporter /var/cache/kafka_exporter 2>/dev/null 
 
 
 FROM scratch
+RUN mkdir -p /etc/ssl 2>/dev/null || true
 COPY --from=downloader /kafka_exporter-${VERSION}.linux-amd64/kafka_exporter /kafka_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 RUN mkdir -p  2>/dev/null || true ; test -f /app 2>/dev/null || echo "#!/bin/sh" > /app 2>/dev/null || true

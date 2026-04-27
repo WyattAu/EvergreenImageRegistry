@@ -14,6 +14,7 @@ RUN mkdir -p /opt/keycloak-${VERSION} 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates 
+RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=downloader /opt/keycloak-${VERSION} /opt/keycloak
 RUN mkdir -p /app && chown -R 65532:65532 /app /opt/keycloak 2>/dev/null || true
 USER 65532:65532

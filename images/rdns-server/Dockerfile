@@ -20,6 +20,7 @@ RUN git clone --depth 1 --branch v${VERSION} https://github.com/folbricht/rdns /
 FROM scratch
 ARG VERSION=0.12.0
 RUN mkdir -p /usr/local/bin 2>/dev/null || true ; test -f /usr/local/bin/rdns-server 2>/dev/null || echo "#!/bin/sh" > /usr/local/bin/rdns-server 2>/dev/null || true
+RUN mkdir -p /etc/ssl/certs 2>/dev/null || true
 COPY --from=builder /tmp/rdns-server /usr/local/bin/rdns-server
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

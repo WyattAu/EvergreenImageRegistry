@@ -19,6 +19,7 @@ RUN git clone --depth 1 https://github.com/VictoriaMetrics/perscache /tmp/persca
 
 FROM scratch
 ARG VERSION=1.0.0
+RUN mkdir -p /usr/local/bin 2>/dev/null || true
 COPY --from=builder /tmp/perscache /usr/local/bin/perscache
 USER 65532:65532
 EXPOSE 8429

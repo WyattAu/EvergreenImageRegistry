@@ -13,6 +13,7 @@ RUN mkdir -p /app /var/log/trivy-iac /var/cache/trivy-iac 2>/dev/null || true
 
 FROM scratch
 
+RUN mkdir -p /etc/ssl/certs /usr/local/bin 2>/dev/null || true
 COPY --from=downloader /trivy /usr/local/bin/trivy
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app

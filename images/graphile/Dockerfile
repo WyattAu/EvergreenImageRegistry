@@ -33,6 +33,7 @@ RUN test -f /usr/local/bin/node || { echo '#!/bin/sh' > /usr/local/bin/node && e
 FROM scratch
 ARG VERSION=4.14.0
 
+RUN mkdir -p /opt /usr/local/bin /usr/local/include /usr/local/lib 2>/dev/null || true
 COPY --from=nodebase /usr/local/bin/node /usr/local/bin/node
 COPY --from=nodebase /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --from=nodebase /usr/local/include/node /usr/local/include/node

@@ -15,6 +15,7 @@ RUN mkdir -p /app /var/log/traefik /var/cache/traefik 2>/dev/null || true
 
 
 FROM scratch
+RUN mkdir -p /etc/ssl/certs 2>/dev/null || true
 COPY --from=downloader /traefik /traefik
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 RUN mkdir -p  2>/dev/null || true ; test -f /app 2>/dev/null || echo "#!/bin/sh" > /app 2>/dev/null || true

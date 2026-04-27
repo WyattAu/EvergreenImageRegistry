@@ -34,6 +34,7 @@ ARG VERSION=2.0.0
 
 RUN adduser -D -u 65532 -s /bin/false redis 2>/dev/null || true
 RUN mkdir -p /var/lib/redis /var/log/redis /var/cache/redis /opt/redis/modules 2>/dev/null || true
+RUN mkdir -p /opt/redis /usr/local/bin 2>/dev/null || true
 COPY --from=builder /tmp/modules/*.so /opt/redis/modules/
 COPY --from=redis /usr/bin/redis-server /usr/local/bin/redis-server
 RUN chown -R 65532:65532 /var/lib/redis /var/log/redis /var/cache/redis /opt/redis

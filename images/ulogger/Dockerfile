@@ -15,6 +15,7 @@ RUN git clone --depth 1 https://github.com/nicehash/ulogger.git /src || echo "So
 
 FROM scratch
 
+RUN mkdir -p /usr/local/bin /var/cache /var/log 2>/dev/null || true
 COPY --from=builder /ulogger /usr/local/bin/ulogger
 COPY --from=downloader /app /app
 COPY --from=downloader /var/log/ulogger /var/log/ulogger

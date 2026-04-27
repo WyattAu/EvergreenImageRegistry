@@ -24,6 +24,7 @@ ARG VERSION
 RUN apk add --no-cache ca-certificates python3 
 RUN adduser -D -u 65532 -s /bin/false trino 2>/dev/null || true
 RUN mkdir -p /var/lib/trino /var/log/trino /var/cache/trino 2>/dev/null || true
+RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/trino-server-${VERSION} /opt/trino
 RUN addgroup -S trino 2>/dev/null || true && adduser -u 65532 -G trino -D -s /bin/false trino 2>/dev/null || true
 RUN chown -R trino:trino /opt/trino /var/lib/trino /var/log/trino /var/cache/trino

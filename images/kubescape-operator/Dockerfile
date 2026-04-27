@@ -13,6 +13,7 @@ RUN mkdir -p /app /var/log/kubescape-operator /var/cache/kubescape-operator 2>/d
 
 FROM scratch
 
+RUN mkdir -p /etc/ssl/certs /usr/local/bin 2>/dev/null || true
 COPY --from=downloader /kubescape /usr/local/bin/kubescape
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app

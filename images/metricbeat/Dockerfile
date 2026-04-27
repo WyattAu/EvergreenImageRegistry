@@ -10,6 +10,7 @@ RUN mkdir -p /var/log/metricbeat /var/lib/metricbeat /var/cache/metricbeat 2>/de
 
 
 FROM scratch
+RUN mkdir -p /etc/ssl /opt /var/cache /var/lib /var/log 2>/dev/null || true
 COPY --from=downloader /opt/metricbeat /opt/metricbeat
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /var/log/metricbeat /var/log/metricbeat

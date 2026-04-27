@@ -16,6 +16,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache openjdk-17-jre-base ca-certificates 
 
+RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=downloader /opt/rocketmq /opt/rocketmq
 RUN chown -R 65532:65532 /opt/rocketmq
 USER 65532:65532

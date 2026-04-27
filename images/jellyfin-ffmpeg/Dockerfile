@@ -35,6 +35,7 @@ RUN git clone --depth 1 --branch n{version}  || echo "Source repo not available 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache freetype zlib ca-certificates 
+RUN mkdir -p /usr/local /usr/local/bin 2>/dev/null || true
 COPY --from=builder /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg
 COPY --from=builder /usr/local/bin/ffprobe /usr/local/bin/ffprobe
 COPY --from=builder /usr/local/lib/ /usr/local/lib/

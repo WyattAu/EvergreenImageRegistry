@@ -28,6 +28,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates glib 
 mkdir -p /app 2>/dev/null || true
 RUN addgroup -S -g 65532 nheko 2>/dev/null || true ; adduser -u 65532 -G nheko -D -h /app -s /bin/false nheko
+RUN mkdir -p /usr/local/bin 2>/dev/null || true
 COPY --from=builder /tmp/nheko.AppImage /app/nheko
 COPY --from=builder /squashfs-root/usr/bin/nheko /usr/local/bin/nheko
 RUN mkdir -p /app /home/nheko/.config/nheko && chown -R 65532:65532 /app /home/nheko 2>/dev/null || true

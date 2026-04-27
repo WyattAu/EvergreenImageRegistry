@@ -30,6 +30,7 @@ ARG VERSION=3.10.0
 RUN addgroup -S 65532 gcplogs && \
     adduser -u 65532 -G gcplogs -D -s /bin/false gcplogs || true
 RUN apk add --no-cache ca-certificates 
+RUN mkdir -p /etc/ssl/certs /usr 2>/dev/null || true
 COPY --from=stripper /install /usr/local
 COPY --from=stripper /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 RUN mkdir -p /app/conf /app/logs ; \

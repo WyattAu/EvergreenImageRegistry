@@ -30,6 +30,8 @@ ARG VERSION=1.2.0
 RUN addgroup -S 65532 azurelogs && \
     adduser -u 65532 -G azurelogs -D -s /bin/false azurelogs || true
 RUN apk add --no-cache ca-certificates 
+RUN mkdir -p /etc/ssl/certs /usr 2>/dev/null || true
+RUN mkdir -p /usr 2>/dev/null || true
 COPY --from=stripper /install /usr/local
 COPY --from=stripper /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 RUN mkdir -p /app/conf /app/logs ; \

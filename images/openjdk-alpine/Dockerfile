@@ -16,6 +16,7 @@ RUN test -f /app || { echo '#!/bin/sh' > /app/placeholder && echo 'echo "openjdk
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
+RUN mkdir -p /etc/apt/sources.list.d /usr/share/keyrings /var/cache /var/log 2>/dev/null || true
 COPY --from=builder /usr/share/keyrings/adoptium.gnupg /usr/share/keyrings/adoptium.gnupg
 COPY --from=builder /etc/apt/sources.list.d/adoptium.list /etc/apt/sources.list.d/adoptium.list
 RUN apk add --no-cache ca-certificates 

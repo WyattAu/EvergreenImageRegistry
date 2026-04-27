@@ -12,9 +12,7 @@ RUN mkdir -p /app /var/log/tweed 2>/dev/null || true
 
 FROM scratch
 RUN mkdir -p /etc/ssl/certs /var/log 2>/dev/null || true
-COPY --from=builder /tweed /tweed 2>/dev/null
-COPY --from=downloader /tweed /tweed 2>/dev/null
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=downloader /tweed /tweed
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=fallback /app /app
 COPY --from=fallback /var/log/tweed /var/log/tweed

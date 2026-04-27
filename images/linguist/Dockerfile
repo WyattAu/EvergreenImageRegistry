@@ -1,7 +1,7 @@
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        ruby ruby-dev build-essential git ca-certificates ; rm -rf /var/lib/apt/lists/* || true
+        ruby ruby-dev build-essential git ca-certificates cmake ; rm -rf /var/lib/apt/lists/* || true
 
 RUN gem install github-linguist --no-document || true
 RUN mkdir -p /app 2>/dev/null || true

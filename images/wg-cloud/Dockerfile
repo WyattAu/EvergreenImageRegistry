@@ -12,9 +12,7 @@ RUN mkdir -p /app /var/log/wg-cloud 2>/dev/null || true
 
 FROM scratch
 RUN mkdir -p /etc/ssl/certs /var/log 2>/dev/null || true
-COPY --from=builder /wg-cloud /wg-cloud 2>/dev/null
-COPY --from=downloader /wg-cloud /wg-cloud 2>/dev/null
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=downloader /wg-cloud /wg-cloud
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder2 /app /app
 COPY --from=builder2 /var/log/wg-cloud /var/log/wg-cloud

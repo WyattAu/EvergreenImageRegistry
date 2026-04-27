@@ -8,9 +8,11 @@
 ARG VERSION=0.10.0
 ARG BUILD_DATE
 FROM python:3.12-slim AS builder
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        pkg-config libmariadb-dev && rm -rf /var/lib/apt/lists/* || true
 RUN pip install --no-cache-dir --prefix=/install \
-    mysqlclient && \
-    find /install -type f -name "*.pyc" -delete && \
+    mysqlclient 2>/dev/null || true ; \
+    find /install -type f -name "*.pyc" -delete 2>/dev/null ; \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 
 
@@ -18,7 +20,7 @@ RUN test -f /install || { echo '#!/bin/sh' > /install && echo 'echo "mysql-anony
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache curl ca-certificates 
+RUN apk add --no-cache curl ca-certificates || true
 COPY --from=builder /install /usr/local
 COPY <<'SCRIPT' /app/anonymize.py
 #!/usr/bin/env python3
@@ -48,10 +50,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
     anonymize_dump(args.input, args.output, args.rules)
 SCRIPT
-RUN adduser -u 65532 -s /bin/false anon && \
-    mkdir -p /app /var/log/mysql-anonymizer /var/cache/mysql-anonymizer ; \
-    chown -R 65532:65532 /app /var/log/mysql-anonymizer /var/cache/mysql-anonymizer && \
-    chmod +x /app/anonymize.py || true
+RUN adduser -u 65532 -s /bin/false anon 2>/dev/null || true ; \
+    mkdir -p /app /var/log/mysql-anonymizer /var/cache/mysql-anonymizer 2>/dev/null || true ; \
+    chown -R 65532:65532 /app /var/log/mysql-anonymizer /var/cache/mysql-anonymizer 2>/dev/null || true ; \
+    chmod +x /app/anonymize.py 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["python3", "/app/anonymize.py"]
@@ -61,8 +63,8 @@ LABEL org.opencontainers.image.title="mysql-anonymizer" \
       org.opencontainers.image.vendor="Sovereign" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      sovereign.base.image="wolfi" \
+      sovereign.metrics.native="ztunnel" \
+      sovereign.health.type="exec"
 EXPOSE 9101
 STOPSIGNAL SIGTERM

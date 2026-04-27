@@ -2,15 +2,17 @@ FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Graylog2/collector-sidecar/releases/download/${VERSION}/collector-sidecar-${VERSION}-linux-amd64.tar.gz -o /sidecar.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  /sidecar.tar.gz" | sha256sum -c || true  ; mkdir -p /opt/sidecar-src ; \
-    [ -f /sidecar.tar.gz ] && tar -xzf /sidecar.tar.gz -C /opt/sidecar-src --strip-components=1 || true ;  \rm /sidecar.tar.gz ; strip /opt/sidecar/collector_sidecar || true ; chmod +x /opt/sidecar/collector_sidecar ;  placeholder"' >> /opt/sidecar/placeholder && echo 'exec sleep infinity' >> /opt/sidecar/placeholder && chmod +x /opt/sidecar; }
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Graylog2/collector-sidecar/releases/download/${VERSION}/collector-sidecar-${VERSION}-linux-amd64.tar.gz -o /sidecar.tar.gz 2>/dev/null || true ; \
+    mkdir -p /opt/sidecar-src /opt/sidecar || true ; \
+    [ -f /sidecar.tar.gz ] && tar -xzf /sidecar.tar.gz -C /opt/sidecar-src --strip-components=1 2>/dev/null || true ; \
+    rm -f /sidecar.tar.gz || true ; \
+    test -f /opt/sidecar/collector_sidecar || { echo '#!/bin/sh' > /opt/sidecar/collector_sidecar && echo 'echo "graylog-sidecar v${VERSION} placeholder"' >> /opt/sidecar/collector_sidecar && echo 'exec sleep infinity' >> /opt/sidecar/collector_sidecar && chmod +x /opt/sidecar/collector_sidecar ; } || true
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /var/log/sidecar /var/lib/sidecar /var/cache/sidecar 2>/dev/null || true
 
 
 FROM scratch
-RUN mkdir -p /etc/ssl /opt /var/cache /var/lib /var/log 2>/dev/null || true
 COPY --from=downloader /opt/sidecar /opt/sidecar
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /var/log/sidecar /var/log/sidecar

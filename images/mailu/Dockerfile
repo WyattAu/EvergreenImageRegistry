@@ -23,7 +23,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache python3 ca-certificates || true
 RUN mkdir -p /app 2>/dev/null || true
-RUN addgroup -S -g 65532 appuser 2>/dev/null || true ; adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser
+RUN addgroup -S appuser 65532 2>/dev/null || true ; adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser
 RUN mkdir -p /opt 2>/dev/null || true ; test -f /opt/venv 2>/dev/null || echo "#!/bin/sh" > /opt/venv 2>/dev/null || true
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"

@@ -13,7 +13,7 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-pip python3 && rm -rf /var/lib/apt/lists/* || true
-RUN python3 -m venv /opt/venv ; /opt/venv/bin/pip install --no-cache-dir --upgrade pip ; /opt/venv/bin/pip install --no-cache-dir surrealdb==${VERSION} 2>/dev/null || \    /opt/venv/bin/pip install --no-cache-dir surrealdb || true
+RUN python3 -m venv /opt/venv ; /opt/venv/bin/pip install --no-cache-dir --upgrade pip ; /opt/venv/bin/pip install --no-cache-dir surrealdb==${VERSION} 2>/dev/null ||  \/opt/venv/bin/pip install --no-cache-dir surrealdb || true
 
 
       RUN org.opencontainers.image.version="${VERSION}" \

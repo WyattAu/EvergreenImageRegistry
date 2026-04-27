@@ -11,7 +11,7 @@ ARG BUILD_DATE
 ARG PYTHON_VERSION=3.12.2
 FROM python:3.12.2-slim-bookworm AS builder
 ARG VERSION=3.10.0
-RUN pip install --no-cache-dir --prefix=/install google-cloud-logging==${VERSION} ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/gcplogs || { echo '#!/bin/sh' > /usr/local/bin/gcplogs && echo 'echo "gcplogs v${VERSION} placeholder"' >> /usr/local/bin/gcplogs && echo 'exec sleep infinity' >> /usr/local/bin/gcplogs && chmod +x /usr/local/bin/gcplogs ; } || true
+RUN pip install --break-system-packages --no-cache-dir --prefix=/install google-cloud-logging==${VERSION} ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/gcplogs || { echo '#!/bin/sh' > /usr/local/bin/gcplogs && echo 'echo "gcplogs v${VERSION} placeholder"' >> /usr/local/bin/gcplogs && echo 'exec sleep infinity' >> /usr/local/bin/gcplogs && chmod +x /usr/local/bin/gcplogs ; } || true
 RUN find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 
@@ -21,7 +21,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends python3-minimal && \
     rm -rf /var/lib/apt/lists/*
 COPY --from=builder /install /install
-RUN find /install -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true
+RUN find /install -type f -name "*.so" -exec strip --strip-unneeded {} \ || true
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=3.10.0
@@ -31,7 +31,7 @@ RUN addgroup -S 65532 gcplogs && \
 RUN apk add --no-cache ca-certificates 
 RUN mkdir -p /etc/ssl/certs /usr 2>/dev/null || true
 COPY --from=stripper /install /usr/local
-COPY --from=stripper /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 RUN mkdir -p /app/conf /app/logs ; \
     chown -R gcplogs:gcplogs /app
 USER 65532:65532

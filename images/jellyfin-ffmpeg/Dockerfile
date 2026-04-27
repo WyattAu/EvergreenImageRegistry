@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         zlib1g-dev ca-certificates curl git && \
     rm -rf /var/lib/apt/lists/* || true
 RUN git clone --depth 1 --branch n{version}  || echo "Source repo not available - using placeholder" \
-    "https://github.com/jellyfin/jellyfin-ffmpeg.git" /tmp/jellyfin-ffmpeg && \    cd /tmp/jellyfin-ffmpeg && \    ./configure --prefix=/usr/local \
+    "https://github.com/jellyfin/jellyfin-ffmpeg.git" /tmp/jellyfin-ffmpeg &&  \cd /tmp/jellyfin-ffmpeg &&  \./configure --prefix=/usr/local \
         --enable-gpl --enable-nonfree \
         --enable-shared --disable-static \
         --enable-libfdk-aac --enable-libopus --enable-libvpx \
@@ -21,7 +21,7 @@ RUN git clone --depth 1 --branch n{version}  || echo "Source repo not available 
         --enable-libwebp --enable-libxvid --enable-libtheora \
         --extra-cflags="-I/usr/include" --extra-ldflags="-L/usr/lib" && \
     make -j$(nproc) && make install && strip /usr/local/bin/ffmpeg /usr/local/bin/ffprobe || true
-    RUN "https://github.com/jellyfin/jellyfin-ffmpeg.git" /tmp/jellyfin-ffmpeg && \    cd /tmp/jellyfin-ffmpeg && \    ./configure --prefix=/usr/local \
+    RUN "https://github.com/jellyfin/jellyfin-ffmpeg.git" /tmp/jellyfin-ffmpeg &&  \cd /tmp/jellyfin-ffmpeg &&  \./configure --prefix=/usr/local \
         --enable-gpl --enable-nonfree \
         --enable-shared --disable-static \
         --enable-libfdk-aac --enable-libopus --enable-libvpx \

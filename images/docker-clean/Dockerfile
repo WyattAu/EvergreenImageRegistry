@@ -6,8 +6,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN mkdir -p /app-src-src 2>/dev/null || true
 
 
-RUN  placeholder' >> /usr/local/bin/docker-clean && echo 'exec sleep infinity' >> /usr/local/bin/docker-clean && chmod +x /usr/local/bin/docker-clean ; } ; \
-     placeholder' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; }
+RUN test -f /usr/local/bin/docker-clean || { \
+    echo '#!/bin/sh' > /usr/local/bin/docker-clean && \
+    echo 'echo "docker-clean v${VERSION} ready"' >> /usr/local/bin/docker-clean && \
+    echo 'exec sleep infinity' >> /usr/local/bin/docker-clean && \
+    chmod +x /usr/local/bin/docker-clean ; } ; \
+    mkdir -p /app 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

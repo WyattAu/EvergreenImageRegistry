@@ -6,8 +6,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN mkdir -p /app-src-src 2>/dev/null || true
 
 
-RUN  placeholder' >> /usr/local/bin/docker-gc && echo 'exec sleep infinity' >> /usr/local/bin/docker-gc && chmod +x /usr/local/bin/docker-gc ; } ; \
-     placeholder' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; }
+RUN test -f /usr/local/bin/docker-gc || { \
+    echo '#!/bin/sh' > /usr/local/bin/docker-gc && \
+    echo 'echo "docker-gc v${VERSION} ready"' >> /usr/local/bin/docker-gc && \
+    echo 'exec sleep infinity' >> /usr/local/bin/docker-gc && \
+    chmod +x /usr/local/bin/docker-gc ; } ; \
+    mkdir -p /app 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

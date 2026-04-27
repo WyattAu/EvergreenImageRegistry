@@ -14,11 +14,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     strongswan strongswan-pki libcharon-extra-plugins \
     libcharon-extauth-plugins libstrongswan-extra-plugins && \
     rm -rf /var/lib/apt/lists/* || true
-RUN mkdir -p /app-src /var/log/strongswan /var/run/charon /etc/strongswan.d ; 2>/dev/null || true \
-    find /usr -type f -executable -name "charon*" -exec strip --strip-all {} \; 2>/dev/null || true && \
-    find /usr -type f -executable -name "strongswan*" -exec strip --strip-all {} \; 2>/dev/null || true && \
-    find /usr -type f -executable -name "pki" -exec strip --strip-all {} \; 2>/dev/null || true && \
-    find /usr -type f -executable -name "swanctl" -exec strip --strip-all {} \; 2>/dev/null || true
+RUN mkdir -p /app-src /var/log/strongswan /var/run/charon /etc/strongswan.d  || true \
+    find /usr -type f -executable -name "charon*" -exec strip --strip-all {} \ || true && \
+    find /usr -type f -executable -name "strongswan*" -exec strip --strip-all {} \ || true && \
+    find /usr -type f -executable -name "pki" -exec strip --strip-all {} \ || true && \
+    find /usr -type f -executable -name "swanctl" -exec strip --strip-all {} \ || true
 
 
 RUN mkdir -p /usr/sbin/charon 2>/dev/null || true \
@@ -50,7 +50,7 @@ COPY --from=installer /usr/lib/*/strongswan /usr/lib/strongswan-plugins
 COPY --from=installer /etc/strongswan /etc/strongswan
 COPY --from=installer /app /app
 COPY --from=installer /var/log/strongswan /var/log/strongswan
-RUN mkdir -p /run/charon /etc/strongswan.d ; 2>/dev/null || true \
+RUN mkdir -p /run/charon /etc/strongswan.d  || true \
     chown -R 65532:65532 /app /var/log/strongswan /run/charon
 USER 65532:65532
 WORKDIR /app

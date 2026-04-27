@@ -3,13 +3,13 @@
 # Constraint: debian-slim - Java runtime required for Scala/JVM application
 # =============================================================================
 
-ARG VERSION=4.43.0
+ARG VERSION=4.46.1
 ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
-ARG VERSION=4.43.0
+ARG VERSION=4.46.1
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \

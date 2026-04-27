@@ -3,7 +3,7 @@
 # Constraint: debian-slim - PHP runtime required
 # =============================================================================
 
-ARG VERSION=1.6.9
+ARG VERSION=1.6.15
 ARG BUILD_DATE
 
 

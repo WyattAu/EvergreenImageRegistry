@@ -1,8 +1,8 @@
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=1.10.6
+ARG VERSION=1.12.10
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-headless gnupg && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sbt/sbt/releases/download/v1.10.6/sbt-1.10.6.tgz -o /sbt.tgz || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sbt/sbt/releases/download/v1.12.10/sbt-1.10.6.tgz -o /sbt.tgz || true ; \
     tar -xzf /sbt.tgz -C /opt/ && rm /sbt.tgz && ln -sf /opt/sbt/bin/sbt /usr/local/bin/sbt ; test -f /opt/sbt || { echo '#!/bin/sh' > /opt/sbt && echo 'echo "sbt v${VERSION} placeholder"' >> /opt/sbt && echo 'exec sleep infinity' >> /opt/sbt && chmod +x /opt/sbt; } && test -f /usr/local/bin/sbt || { echo '#!/bin/sh' > /usr/local/bin/sbt && echo 'echo "sbt v${VERSION} placeholder"' >> /usr/local/bin/sbt && echo 'exec sleep infinity' >> /usr/local/bin/sbt && chmod +x /usr/local/bin/sbt; } || true
 
 

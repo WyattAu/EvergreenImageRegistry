@@ -3,14 +3,14 @@
 # Constraint: debian-slim - Node.js runtime required
 # =============================================================================
 
-ARG VERSION=2.321.0
+ARG VERSION=2.334.0
 ARG BUILD_DATE
 ARG NODE_VERSION=20
 
 
 FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
-ARG VERSION=2.321.0
+ARG VERSION=2.334.0
 ARG NODE_VERSION=20
 RUN apt-get update &&     apt-get install -y --no-install-recommends         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" | bash - &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/* || true

@@ -4,6 +4,9 @@
 # Builds, tests, signs and pushes hardened container images.
 #
 # Pipeline stages:
+#   - Per-image timeout: 15 minutes (900s) to prevent single slow builds from blocking batches
+#   - Batch timeout: 360 minutes for compilation-heavy images
+#   - Fast images (binary downloads) complete in <2 min per image
 #   1. discover  - Find all Dockerfiles, create batched build matrix
 #   2. lint      - Hadolint linting + TruffleHog secret scanning
 #   3. build     - Build images in batches (multi-arch push on main)
@@ -22,6 +25,11 @@
 #   - Changed ignore-unfixed: false for Trivy
 #   - Added image size enforcement by tier
 #   - Added timeout-minutes, concurrency groups, graceful error handling
+#
+# Key fixes from v2:
+#   - Per-image timeout: 15 min (900s) prevents slow compilation from blocking batch
+#   - Batch timeout: 360 min (up from 180) for compilation-heavy batches
+#   - Fast images (binary downloads) complete in <2 min, unaffected by per-image cap
 # =============================================================================
 
 name: Build Hardened Images
@@ -196,7 +204,7 @@ jobs:
     name: "Build Batch ${{ matrix.batch }} (${{ matrix.count }} images)"
     needs: [discover, lint]
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 360
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -235,7 +243,7 @@ jobs:
             REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
             SAFE="${image//\//-}"
             echo "::group::Build ${image}"
-            if docker buildx build \
+            if timeout 900 docker buildx build \
                 --platform linux/amd64 \
                 -t "${REF}" \
                 --output "type=docker,dest=/tmp/images/${SAFE}.tar" \
@@ -273,7 +281,7 @@ jobs:
             [ ! -f "${CONTEXT}/Dockerfile" ] && continue
             REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
             echo "::group::Push ${image} (linux/amd64,linux/arm64)"
-            if docker buildx build \
+            if timeout 900 docker buildx build \
               --platform linux/amd64,linux/arm64 \
               --push \
               -t "${REF}" \

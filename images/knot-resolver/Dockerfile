@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libuv1-dev libnghttp2-dev meson pkg-config git git ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true
 RUN git clone --depth 1 --branch "v${VERSION}"  || echo "Source repo not available - using placeholder" && \
-    https://github.com/CZ-NIC/knot-resolver.git /knot-resolver || true
+    git clone https://github.com/CZ-NIC/knot-resolver.git /knot-resolver || true
 RUN https://github.com/CZ-NIC/knot-resolver.git /knot-resolver
 RUN cd /knot-resolver && \
     meson setup build --default-library=static --prefix=/usr \

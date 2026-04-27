@@ -4,7 +4,7 @@
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=11.2
+ARG VERSION=11.4.4
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023

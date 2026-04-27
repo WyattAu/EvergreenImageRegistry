@@ -15,6 +15,7 @@ FROM scratch
 
 RUN addgroup -S 65532 grafana && \
     adduser -u 65532 -G grafana -D -s /bin/false grafana
+RUN mkdir -p /etc /usr/local/bin /usr/share/grafana 2>/dev/null || true
 COPY --from=downloader /opt/grafana-10.4.1/bin/grafana-server /usr/local/bin/grafana-server
 COPY --from=downloader /opt/grafana-10.4.1/bin/grafana-cli /usr/local/bin/grafana-cli
 COPY --from=downloader /opt/grafana-10.4.1/public /usr/share/grafana/public

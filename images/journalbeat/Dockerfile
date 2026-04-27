@@ -10,6 +10,7 @@ RUN mkdir -p /var/log/journalbeat /var/lib/journalbeat /var/cache/journalbeat 2>
 
 
 FROM scratch
+RUN mkdir -p /etc/ssl /opt /var/cache /var/lib /var/log 2>/dev/null || true
 COPY --from=downloader /opt/journalbeat /opt/journalbeat
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /var/log/journalbeat /var/log/journalbeat

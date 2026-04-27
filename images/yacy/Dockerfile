@@ -27,6 +27,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates 
 RUN mkdir -p /app /var/log/yacy /var/lib/yacy 2>/dev/null || true
+RUN mkdir -p /opt /var/lib /var/log 2>/dev/null || true
 COPY --from=installer /opt/yacy-server /opt/yacy-server
 COPY --from=installer /var/log/yacy /var/log/yacy
 COPY --from=installer /var/lib/yacy /var/lib/yacy

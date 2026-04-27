@@ -20,12 +20,13 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/gra
     ln -sf /opt/grafana-${VERSION} /opt/grafana || true
 
 
-RUN  placeholder"' >> /opt/grafana && echo 'exec sleep infinity' >> /opt/grafana && chmod +x /opt/grafana ; }
+RUN  placeholder' >> /opt/grafana && echo 'exec sleep infinity' >> /opt/grafana && chmod +x /opt/grafana ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=11.0.0
 
 RUN apk add --no-cache ca-certificates tzdata fontconfig 
+RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/grafana /opt/grafana
 RUN ln -sf /opt/grafana/bin/grafana-server /usr/local/bin/grafana-server && \
     addgroup -S 65532 -r grafana 2>/dev/null || true && \

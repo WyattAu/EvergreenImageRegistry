@@ -15,6 +15,7 @@ RUN mkdir -p /usr/lib/node_modules/homebridge 2>/dev/null || true ; test -f /usr
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache nodejs npm ca-certificates 
+RUN mkdir -p /usr/lib/node_modules 2>/dev/null || true
 COPY --from=builder /usr/lib/node_modules/homebridge /usr/lib/node_modules/homebridge
 COPY --from=builder /usr/lib/node_modules/hap-nodejs /usr/lib/node_modules/hap-nodejs
 COPY --from=builder /app /app

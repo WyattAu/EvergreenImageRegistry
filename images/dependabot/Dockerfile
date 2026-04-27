@@ -8,13 +8,14 @@ RUN gem install dependabot-omnibus --no-document 2>/dev/null || true
 RUN mkdir -p /app-src 2>/dev/null || true
 
 
-RUN  placeholder"' >> /usr/lib/ruby/gems && echo 'exec sleep infinity' >> /usr/lib/ruby/gems && chmod +x /usr/lib/ruby/gems ; } ; \
-     placeholder"' >> /usr/local/bundle && echo 'exec sleep infinity' >> /usr/local/bundle && chmod +x /usr/local/bundle ; } ; \
-     placeholder"' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; }
+RUN  placeholder' >> /usr/lib/ruby/gems && echo 'exec sleep infinity' >> /usr/lib/ruby/gems && chmod +x /usr/lib/ruby/gems ; } ; \
+     placeholder' >> /usr/local/bundle && echo 'exec sleep infinity' >> /usr/local/bundle && chmod +x /usr/local/bundle ; } ; \
+     placeholder' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ruby ca-certificates git curl gnupg 
+RUN mkdir -p /usr/lib/ruby /usr/local 2>/dev/null || true
 COPY --from=builder /usr/lib/ruby/gems /usr/lib/ruby/gems
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 COPY --from=builder /app /app

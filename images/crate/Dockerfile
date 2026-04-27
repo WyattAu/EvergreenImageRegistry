@@ -25,6 +25,7 @@ ARG VERSION
 RUN apk add --no-cache ca-certificates python3 
 RUN adduser -D -u 65532 -s /bin/false crate 2>/dev/null || true
 RUN mkdir -p /var/lib/crate /var/log/crate /var/cache/crate 2>/dev/null || true
+RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/crate-${VERSION} /opt/crate
 RUN chown -R 65532:65532 /opt/crate /var/lib/crate /var/log/crate /var/cache/crate
 USER 65532:65532

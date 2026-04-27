@@ -14,6 +14,7 @@ RUN test -e /app || { mkdir -p /app && echo 'clamav-daemon placeholder' > /app/.
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache clamav clamav-daemon freshclam ca-certificates || true
+RUN mkdir -p /run /var/lib /var/log 2>/dev/null || true
 COPY --from=builder /app /app
 COPY --from=builder /var/log/clamav /var/log/clamav
 COPY --from=builder /var/lib/clamav /var/lib/clamav

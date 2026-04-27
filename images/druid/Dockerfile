@@ -24,6 +24,7 @@ ARG VERSION
 RUN apk add --no-cache ca-certificates python3 
 RUN adduser -D -u 65532 -s /bin/false druid 2>/dev/null || true
 RUN mkdir -p /var/lib/druid /var/log/druid /var/cache/druid 2>/dev/null || true
+RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/apache-druid-${VERSION} /opt/druid
 RUN chown -R druid:druid /opt/druid /var/lib/druid /var/log/druid /var/cache/druid
 USER 65532:65532

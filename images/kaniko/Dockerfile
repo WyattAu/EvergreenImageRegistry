@@ -19,6 +19,7 @@ RUN test -e /app || { mkdir -p /app && echo 'kaniko placeholder' > /app/.placeho
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
+RUN mkdir -p /etc/ssl /kaniko /usr/local /var/cache /var/log 2>/dev/null || true
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /app /app
 COPY --from=builder /kaniko /kaniko

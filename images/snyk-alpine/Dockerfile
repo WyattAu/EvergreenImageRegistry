@@ -12,6 +12,7 @@ RUN mkdir -p /app /var/log/snyk-alpine /var/cache/snyk-alpine 2>/dev/null || tru
 
 FROM scratch
 
+RUN mkdir -p /etc/ssl/certs /usr/local/bin 2>/dev/null || true
 COPY --from=downloader /snyk-alpine /usr/local/bin/snyk-alpine
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 RUN mkdir -p  2>/dev/null || true ; test -f /app 2>/dev/null || echo "#!/bin/sh" > /app 2>/dev/null || true

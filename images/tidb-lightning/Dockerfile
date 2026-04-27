@@ -21,6 +21,7 @@ RUN mkdir -p /usr/local/bin/tidb-lightning 2>/dev/null || true
 
 FROM scratch
 ARG VERSION=7.6.0
+RUN mkdir -p /etc/ssl/certs /usr/local/bin 2>/dev/null || true
 COPY --from=builder /usr/local/bin/tidb-lightning /usr/local/bin/tidb-lightning
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

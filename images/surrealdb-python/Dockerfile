@@ -31,6 +31,7 @@ STOPSIGNAL SIGTERM
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION
 RUN apk add --no-cache python3 2>/dev/null || true
+RUN mkdir -p /usr/local/lib/python3.11 2>/dev/null || true
 COPY --from=builder /usr/local/lib/python3.*/dist-packages /usr/local/lib/python3.11/site-packages 2>/dev/null || true
 RUN mkdir -p /app 2>/dev/null || true
 COPY --from=builder /app /app 2>/dev/null || true

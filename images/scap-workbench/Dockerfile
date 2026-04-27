@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN mkdir -p /app-src 2>/dev/null || true
 
 
-RUN  placeholder"' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; }
+RUN  placeholder' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

@@ -11,6 +11,7 @@ RUN mkdir -p /var/log/kafka-ui /var/cache/kafka-ui 2>/dev/null || true
 
 
 FROM scratch
+RUN mkdir -p /etc/ssl /opt /var/cache /var/log 2>/dev/null || true
 COPY --from=downloader /opt/kafka-ui /opt/kafka-ui
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /var/log/kafka-ui /var/log/kafka-ui

@@ -43,6 +43,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache libxml2 curl ca-certificates 
 RUN mkdir -p /app /var/log/nginx /var/cache/nginx /etc/nginx/modsec /run ; \
     chown -R 65532:65532 /app /var/log/nginx /var/cache/nginx
+RUN mkdir -p /etc /usr/lib/nginx/modules /usr/sbin 2>/dev/null || true
 COPY --from=builder /usr/sbin/nginx /usr/sbin/nginx
 COPY --from=builder /usr/lib/nginx/modules/ngx_http_modsecurity_module.so /usr/lib/nginx/modules/ngx_http_modsecurity_module.so
 COPY --from=builder /etc/nginx /etc/nginx

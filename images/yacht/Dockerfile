@@ -13,6 +13,7 @@ RUN mkdir -p /app /var/log/yacht /var/cache/yacht 2>/dev/null || true
 
 FROM scratch
 
+RUN mkdir -p /etc/ssl/certs /usr/local/bin 2>/dev/null || true
 COPY --from=downloader /yacht /usr/local/bin/yacht
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app

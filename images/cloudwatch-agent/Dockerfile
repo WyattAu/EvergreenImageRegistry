@@ -15,6 +15,7 @@ RUN mkdir -p /app /var/log/cloudwatch-agent /var/cache/cloudwatch-agent /etc/clo
 
 
 FROM scratch
+RUN mkdir -p /etc /etc/ssl/certs /var/cache /var/log 2>/dev/null || true
 COPY --from=downloader /amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent /amazon-cloudwatch-agent
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app

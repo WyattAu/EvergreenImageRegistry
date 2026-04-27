@@ -16,6 +16,7 @@ RUN mkdir -p /app /var/log/node_exporter /var/cache/node_exporter 2>/dev/null ||
 
 
 FROM scratch
+RUN mkdir -p /etc/ssl/certs /var/cache /var/log 2>/dev/null || true
 COPY --from=downloader /node_exporter-1.8.0.linux-amd64/node_exporter /node_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app

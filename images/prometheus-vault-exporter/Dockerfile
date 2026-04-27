@@ -15,6 +15,7 @@ RUN mkdir -p /app /var/log/vault_exporter /var/cache/vault_exporter 2>/dev/null 
 
 
 FROM scratch
+RUN mkdir -p /etc/ssl/certs /var/cache /var/log 2>/dev/null || true
 COPY --from=downloader /vault_exporter-${VERSION}.linux-amd64/vault_exporter /vault_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app

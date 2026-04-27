@@ -11,6 +11,7 @@ RUN mkdir -p /var/log/sidecar /var/lib/sidecar /var/cache/sidecar 2>/dev/null ||
 
 
 FROM scratch
+RUN mkdir -p /etc/ssl /opt /var/cache /var/lib /var/log 2>/dev/null || true
 COPY --from=downloader /opt/sidecar /opt/sidecar
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /var/log/sidecar /var/log/sidecar

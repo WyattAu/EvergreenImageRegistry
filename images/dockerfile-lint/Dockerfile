@@ -14,6 +14,7 @@ RUN test -f /usr/lib/node_modules/dockerfilelint || { echo '#!/bin/sh' > /usr/li
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache nodejs npm ca-certificates 
+RUN mkdir -p /app /usr/local/bin 2>/dev/null || true
 COPY --from=builder /usr/lib/node_modules/dockerfilelint /app/dockerfilelint
 COPY --from=builder /usr/bin/dockerfilelint /usr/local/bin/dockerfilelint
 COPY --from=builder /app /app

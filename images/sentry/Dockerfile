@@ -1,5 +1,5 @@
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=26.4.0
+ARG VERSION=26.4.1
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends python3-pip curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/getsentry/self-hosted/releases/download/${VERSION}/sentry-${VERSION}.tar.gz -o /sentry.tar.gz || true ; \
@@ -20,7 +20,7 @@ EXPOSE 9000
 ENTRYPOINT ["python3", "-m", "sentry"]
 CMD ["web"]
 LABEL org.opencontainers.image.title="sentry" \
-      org.opencontainers.image.version="26.4.0" \
+      org.opencontainers.image.version="26.4.1" \
       org.opencontainers.image.vendor="Sentry" \
       org.opencontainers.image.source="https://github.com/getsentry/self-hosted" \
       sovereign.image.tier="2" \

@@ -1,5 +1,5 @@
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=3.10.3
+ARG VERSION=5.8.2
 ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -46,7 +46,7 @@ ENV RENDERING_MODE=chromium \
     ENABLE_METRICS=true
 ENTRYPOINT ["/opt/grafana-image-renderer/build/grafana-image-renderer"]
 LABEL org.opencontainers.image.title="grafana-image-renderer" \
-      org.opencontainers.image.version="3.10.3" \
+      org.opencontainers.image.version="5.8.2" \
       org.opencontainers.image.vendor="Grafana Labs" \
       org.opencontainers.image.description="Grafana image renderer plugin with headless Chromium" \
       sovereign.image.tier="1" \

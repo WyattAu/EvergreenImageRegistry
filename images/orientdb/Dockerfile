@@ -1,5 +1,5 @@
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=3.2.34
+ARG VERSION=3.2.51
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/orientechnologies/orientdb/releases/download/3.2.34/orientdb-community-3.2.34.tar.gz -o /orientdb.tar.gz && \
@@ -29,7 +29,7 @@ WORKDIR /app
 EXPOSE 2480
 ENTRYPOINT ["/opt/orientdb/bin/server.sh"]
 LABEL org.opencontainers.image.title="orientdb" \
-      org.opencontainers.image.version="3.2.34" \
+      org.opencontainers.image.version="3.2.51" \
       org.opencontainers.image.vendor="Orientechnologies" \
       sovereign.image.tier="1" \
       sovereign.image.category="database" \

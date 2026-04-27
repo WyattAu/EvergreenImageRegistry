@@ -1,5 +1,5 @@
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=43.138.3
+ARG VERSION=43.144.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/renovatebot/renovate/releases/download/${VERSION}/renovate-${VERSION}.js.tar.gz -o /renovate.tar.gz || true ; \
@@ -18,7 +18,7 @@ USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["renovate"]
 LABEL org.opencontainers.image.title="renovate" \
-      org.opencontainers.image.version="43.138.3" \
+      org.opencontainers.image.version="43.144.0" \
       org.opencontainers.image.vendor="RenovateBot" \
       org.opencontainers.image.source="https://github.com/renovatebot/renovate" \
       sovereign.image.tier="2" \

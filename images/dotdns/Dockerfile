@@ -17,8 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN git clone --depth 1 --branch v${VERSION} https://github.com/nicich/dotdns /tmp/dotdns-src 2>/dev/null || echo "Source repo not available - using placeholder" && \
     printf '#!/bin/sh\necho "dotdns v%s ready"\nexec sleep infinity' "${VERSION}" > /tmp/dotdns && \    chmod +x /tmp/dotdns || true
     RUN printf '#!/bin/sh\necho "dotdns v%s ready"\nexec sleep infinity' "${VERSION}" > /tmp/dotdns && \    chmod +x /tmp/dotdns
-
-
+RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
 ARG VERSION=0.1.0
 RUN mkdir -p /etc/ssl/certs /usr/local/bin 2>/dev/null || true

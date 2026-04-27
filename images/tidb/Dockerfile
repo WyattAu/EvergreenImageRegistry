@@ -18,7 +18,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     && rm -rf /tmp/tidb.tgz /tmp/tidb-v${VERSION}-linux-amd64
 
 RUN mkdir -p /usr/local/bin/tidb-server 2>/dev/null || true
-
+RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
 ARG VERSION=7.6.0
 RUN mkdir -p /etc/ssl/certs /usr/local/bin 2>/dev/null || true

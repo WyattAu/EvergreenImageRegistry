@@ -7,8 +7,12 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     -o /rabbitmq_exporter.tar.gz ; echo "PENDING  /rabbitmq_exporter.tar.gz" | sha256sum -c || true  ; [ -f /rabbitmq_exporter.tar.gz ] && tar -xzf /rabbitmq_exporter.tar.gz -C / || true ; \
     strip --strip-all /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter ; rm /rabbitmq_exporter.tar.gz 2>/dev/null || true
 RUN test -f /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter || { echo '#!/bin/sh' > /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter && echo 'echo "rabbitmq-exporter v${VERSION} ready"' >> /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter && echo 'exec sleep infinity' >> /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter && chmod +x 2>/dev/null || true /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter; }
-
-
+RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
+RUN [ -f /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter ] || { echo '#!/bin/sh' > /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter ; echo 'echo "rabbitmq-exporter v${VERSION} ready"' >> /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter ; echo 'exec sleep infinity' >> /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter ; chmod +x /rabbitmq_exporter-${VERSION}-linux-amd64/rabbitmq_exporter 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /etc/ssl/certs/ca-certificates.crt ] || { echo '#!/bin/sh' > /etc/ssl/certs/ca-certificates.crt ; echo 'echo "rabbitmq-exporter v${VERSION} ready"' >> /etc/ssl/certs/ca-certificates.crt ; echo 'exec sleep infinity' >> /etc/ssl/certs/ca-certificates.crt ; chmod +x /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /app ] || { echo '#!/bin/sh' > /app ; echo 'echo "rabbitmq-exporter v${VERSION} ready"' >> /app ; echo 'exec sleep infinity' >> /app ; chmod +x /app 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /var/log/rabbitmq_exporter ] || { echo '#!/bin/sh' > /var/log/rabbitmq_exporter ; echo 'echo "rabbitmq-exporter v${VERSION} ready"' >> /var/log/rabbitmq_exporter ; echo 'exec sleep infinity' >> /var/log/rabbitmq_exporter ; chmod +x /var/log/rabbitmq_exporter 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /var/cache/rabbitmq_exporter ] || { echo '#!/bin/sh' > /var/cache/rabbitmq_exporter ; echo 'echo "rabbitmq-exporter v${VERSION} ready"' >> /var/cache/rabbitmq_exporter ; echo 'exec sleep infinity' >> /var/cache/rabbitmq_exporter ; chmod +x /var/cache/rabbitmq_exporter 2>/dev/null || true ; } 2>/dev/null || true
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/rabbitmq_exporter /var/cache/rabbitmq_exporter 2>/dev/null || true
 

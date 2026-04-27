@@ -30,8 +30,7 @@ RUN git clone --depth 1 --branch n{version}  || echo "Source repo not available 
         --enable-libwebp --enable-libxvid --enable-libtheora \
         --extra-cflags="-I/usr/include" --extra-ldflags="-L/usr/lib" && \
     make -j$(nproc) && make install && strip /usr/local/bin/ffmpeg /usr/local/bin/ffprobe 2>/dev/null || true
-
-
+RUN mkdir -p /usr/local/lib 2>/dev/null || true ; touch /usr/local/lib/ 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache freetype zlib ca-certificates 

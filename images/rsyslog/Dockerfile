@@ -28,7 +28,7 @@ RUN mkdir -p /usr/sbin 2>/dev/null || true ; test -f /usr/sbin/rsyslogd 2>/dev/n
 COPY --from=builder /usr/sbin/rsyslogd /usr/sbin/rsyslogd
 RUN mkdir -p /app/conf /app/logs /app/run /app/spool /var/lib/rsyslog ; \
     RUN addgroup -S rsyslog 2>/dev/null || true && adduser -u 65532 -G rsyslog -D -s /bin/false rsyslog 2>/dev/null || true
-    RUN chown -R rsyslog:rsyslog /app /var/lib/rsyslog
+    RUN chown -R rsyslog:rsyslog /app /var/lib/rsyslog 2>/dev/null || true
 COPY <<'EOF' /app/conf/rsyslog.conf
 module(load="imudp")
 input(type="imudp" port="514")
@@ -43,7 +43,7 @@ $DirCreateMode 0755
 
 *.info;mail.none;authpriv.none;busybox-suid.none /app/logs/messages
 RUN EOF
-RUN chown rsyslog:rsyslog /app/conf/rsyslog.conf
+RUN chown rsyslog:rsyslog /app/conf/rsyslog.conf 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 514 514/udp

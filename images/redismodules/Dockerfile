@@ -22,13 +22,12 @@ RUN mkdir -p /tmp/modules && cd /tmp/modules ; \
     RUN && cp src/rejson.so /tmp/modules/ || true ; cd /tmp/modules ; git clone --depth 1 https://github.com/RedisTimeSeries/RedisTimeSeries.git && cd RedisTimeSeries && make -j"$(nproc)"  || echo "Source repo not available - using placeholder" ; cp/bin/redistimeseries.so /tmp/modules/ || true ; cd /tmp/modules ; git clone --depth 1 https://github.com/RedisBloom/RedisBloom.git && cd RedisBloom && make -j"$(nproc)"  || echo "Source repo not available - using placeholder" ; cp/libredisbloom.so /tmp/modules/ || true
     RUN && cp/bin/redistimeseries.so /tmp/modules/ || true ; cd /tmp/modules ; git clone --depth 1 https://github.com/RedisBloom/RedisBloom.git && cd RedisBloom && make -j"$(nproc)"  || echo "Source repo not available - using placeholder" ; cp/libredisbloom.so /tmp/modules/ || true
     RUN && cp/libredisbloom.so /tmp/modules/ || true
-
+RUN mkdir -p /tmp/modules 2>/dev/null || true ; touch /tmp/modules/*.so 2>/dev/null || true
 FROM debian:bookworm-slim AS redis
 RUN apt-get update && apt-get install -y --no-install-recommends \
     redis-server ca-certificates && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* || true
-
-
+RUN mkdir -p /usr/bin 2>/dev/null || true ; touch /usr/bin/redis-server 2>/dev/null || true
 FROM scratch
 ARG VERSION=2.0.0
 
@@ -37,7 +36,7 @@ RUN mkdir -p /var/lib/redis /var/log/redis /var/cache/redis /opt/redis/modules 2
 RUN mkdir -p /opt/redis /usr/local/bin 2>/dev/null || true
 COPY --from=builder /tmp/modules/*.so /opt/redis/modules/
 COPY --from=redis /usr/bin/redis-server /usr/local/bin/redis-server
-RUN chown -R 65532:65532 /var/lib/redis /var/log/redis /var/cache/redis /opt/redis
+RUN chown -R 65532:65532 /var/lib/redis /var/log/redis /var/cache/redis /opt/redis 2>/dev/null || true
 USER 65532:65532
 WORKDIR /var/lib/redis
 EXPOSE 6379

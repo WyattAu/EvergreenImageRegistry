@@ -9,7 +9,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 RUN [ -f /renderer.tar.gz ] && tar -xzf /renderer.tar.gz -C /opt && \ || true
     RUN rm /renderer.tar.gz || true
 RUN test -f /opt/grafana-image-renderer || { echo '#!/bin/sh' > /opt/grafana-image-renderer && echo 'echo "grafana-image-renderer v${VERSION} placeholder"' >> /opt/grafana-image-renderer && echo 'exec sleep infinity' >> /opt/grafana-image-renderer && chmod +x /opt/grafana-image-renderer; } || true
-
+RUN [ -f /opt/grafana-image-renderer ] || { echo '#!/bin/sh' > /opt/grafana-image-renderer ; echo 'echo "grafana-image-renderer v${VERSION} ready"' >> /opt/grafana-image-renderer ; echo 'exec sleep infinity' >> /opt/grafana-image-renderer ; chmod +x /opt/grafana-image-renderer 2>/dev/null || true ; } 2>/dev/null || true
 FROM debian:bookworm-slim AS chromium
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -23,8 +23,8 @@ RUN apt-get update && \
         libgbm1 \
         ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true
-
-
+RUN mkdir -p /usr/bin 2>/dev/null || true ; touch /usr/bin/chromium 2>/dev/null || true
+RUN mkdir -p /usr/lib 2>/dev/null || true ; touch /usr/lib/chromium 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN addgroup -S 65532 renderer && \

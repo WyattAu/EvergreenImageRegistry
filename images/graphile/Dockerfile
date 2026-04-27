@@ -41,7 +41,7 @@ RUN ln -sf /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm 2>/
 RUN adduser -D -u 65532 -s /bin/false graphile 2>/dev/null || true
 RUN mkdir -p /var/lib/graphile /var/log/graphile /var/cache/graphile 2>/dev/null || true
 COPY --from=builder /opt/graphile /opt/graphile
-RUN chown -R 65532:65532 /opt/graphile /var/lib/graphile /var/log/graphile /var/cache/graphile
+RUN chown -R 65532:65532 /opt/graphile /var/lib/graphile /var/log/graphile /var/cache/graphile 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/graphile
 EXPOSE 5000

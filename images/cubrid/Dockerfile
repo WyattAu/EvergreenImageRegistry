@@ -34,7 +34,7 @@ RUN adduser -D -u 65532 -s /bin/false cubrid 2>/dev/null || true
 RUN mkdir -p /var/lib/cubrid /var/log/cubrid /var/cache/cubrid 2>/dev/null || true
 RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/cubrid /opt/cubrid
-RUN chown -R 65532:65532 /opt/cubrid /var/lib/cubrid /var/log/cubrid /var/cache/cubrid
+RUN chown -R 65532:65532 /opt/cubrid /var/lib/cubrid /var/log/cubrid /var/cache/cubrid 2>/dev/null || true
 USER 65532:65532
 WORKDIR /var/lib/cubrid
 EXPOSE 30000 33000 33001

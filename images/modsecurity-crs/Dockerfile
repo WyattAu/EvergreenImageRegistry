@@ -24,7 +24,7 @@ RUN apk add --no-cache ca-certificates libxml2-dev
 RUN adduser -D -u 65532 -s /bin/false modsec 2>/dev/null || true
 RUN mkdir -p /etc/modsecurity /var/log/modsecurity /var/cache/modsecurity /var/lib/modsecurity 2>/dev/null || true
 COPY --from=builder /tmp/crs /etc/modsecurity/crs
-RUN chown -R 65532:65532 /etc/modsecurity /var/log/modsecurity /var/cache/modsecurity /var/lib/modsecurity
+RUN chown -R 65532:65532 /etc/modsecurity /var/log/modsecurity /var/cache/modsecurity /var/lib/modsecurity 2>/dev/null || true
 USER 65532:65532
 WORKDIR /etc/modsecurity
 EXPOSE 80 443

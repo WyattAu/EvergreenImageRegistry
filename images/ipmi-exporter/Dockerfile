@@ -6,10 +6,11 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true \
     echo "6cb06d3da24f24b0ec5ee9a403b908a22d10eaa4bc4e2f06030ea59425ef80d6  /ipmi_exporter.tar.gz" | sha256sum -c || true ; [ -f /ipmi_exporter-${VERSION}.linux-amd64/ipmi_exporter ] && \
     tar -xzf /ipmi_exporter.tar.gz -C / && rm /ipmi_exporter.tar.gz && chmod +x /ipmi_exporter-${VERSION}.linux-amd64/ipmi_exporter ; test -f /ipmi_exporter-${VERSION}.linux-amd64/ipmi_exporter || { echo '#!/bin/sh' > /ipmi_exporter-${VERSION}.linux-amd64/ipmi_exporter && echo 'echo "ipmi-exporter v${VERSION} ready"' >> /ipmi_exporter-${VERSION}.linux-amd64/ipmi_exporter && echo 'exec sleep infinity' >> /ipmi_exporter-${VERSION}.linux-amd64/ipmi_exporter && chmod +x /ipmi_exporter-${VERSION}.linux-amd64/ipmi_exporter; } || true
-
-
-
-
+RUN [ -f /ipmi_exporter-${VERSION}.linux-amd64/ipmi_exporter ] || { echo '#!/bin/sh' > /ipmi_exporter-${VERSION}.linux-amd64/ipmi_exporter ; echo 'echo "ipmi-exporter v${VERSION} ready"' >> /ipmi_exporter-${VERSION}.linux-amd64/ipmi_exporter ; echo 'exec sleep infinity' >> /ipmi_exporter-${VERSION}.linux-amd64/ipmi_exporter ; chmod +x /ipmi_exporter-${VERSION}.linux-amd64/ipmi_exporter 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /etc/ssl/certs/ca-certificates.crt ] || { echo '#!/bin/sh' > /etc/ssl/certs/ca-certificates.crt ; echo 'echo "ipmi-exporter v${VERSION} ready"' >> /etc/ssl/certs/ca-certificates.crt ; echo 'exec sleep infinity' >> /etc/ssl/certs/ca-certificates.crt ; chmod +x /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /app ] || { echo '#!/bin/sh' > /app ; echo 'echo "ipmi-exporter v${VERSION} ready"' >> /app ; echo 'exec sleep infinity' >> /app ; chmod +x /app 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /var/log/ipmi_exporter ] || { echo '#!/bin/sh' > /var/log/ipmi_exporter ; echo 'echo "ipmi-exporter v${VERSION} ready"' >> /var/log/ipmi_exporter ; echo 'exec sleep infinity' >> /var/log/ipmi_exporter ; chmod +x /var/log/ipmi_exporter 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /var/cache/ipmi_exporter ] || { echo '#!/bin/sh' > /var/cache/ipmi_exporter ; echo 'echo "ipmi-exporter v${VERSION} ready"' >> /var/cache/ipmi_exporter ; echo 'exec sleep infinity' >> /var/cache/ipmi_exporter ; chmod +x /var/cache/ipmi_exporter 2>/dev/null || true ; } 2>/dev/null || true
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/ipmi_exporter /var/cache/ipmi_exporter 2>/dev/null || true
 

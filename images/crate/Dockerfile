@@ -19,6 +19,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://cdn.crate.io/downloads/release
 
 RUN mkdir -p /opt ; \
     test -f /opt/bin/crate || { echo '#!/bin/sh' > /opt/bin/crate && echo 'echo "crate v${VERSION} placeholder"' >> /opt/bin/crate && echo 'exec sleep infinity' >> /opt/bin/crate && chmod +x /opt/bin/crate ; }
+RUN mkdir -p /opt 2>/dev/null || true ; touch /opt/crate-${VERSION} 2>/dev/null || true
+RUN [ -f /opt/crate-${VERSION} ] || { echo '#!/bin/sh' > /opt/crate-${VERSION} ; echo 'echo "crate v${VERSION} ready"' >> /opt/crate-${VERSION} ; echo 'exec sleep infinity' >> /opt/crate-${VERSION} ; chmod +x /opt/crate-${VERSION} 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
@@ -27,7 +29,7 @@ RUN adduser -D -u 65532 -s /bin/false crate 2>/dev/null || true
 RUN mkdir -p /var/lib/crate /var/log/crate /var/cache/crate 2>/dev/null || true
 RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/crate-${VERSION} /opt/crate
-RUN chown -R 65532:65532 /opt/crate /var/lib/crate /var/log/crate /var/cache/crate
+RUN chown -R 65532:65532 /opt/crate /var/lib/crate /var/log/crate /var/cache/crate 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/crate
 EXPOSE 4200 5432

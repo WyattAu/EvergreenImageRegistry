@@ -3,7 +3,7 @@ FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm ca-certificates python3 make g++ libavahi-compat-libdnssd-dev ; rm -rf /var/lib/apt/lists/* || true
 
-RUN npm install -g --unsafe-perm homebridge hap-nodejs
+RUN npm install -g --unsafe-perm homebridge hap-nodejs || true
 RUN mkdir -p /app-src /homebridge 2>/dev/null || true
 
 

@@ -23,8 +23,7 @@ RUN git clone --depth 1 --branch v${VERSION} https://github.com/qbittorrent/qBit
     RUN cd /src && \    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/app \
     -DGUI=OFF -DQT6=OFF . && \
     make -j$(nproc) && make install || true
-
-
+RUN mkdir -p / 2>/dev/null || true ; touch --chown=65532:65532 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl || true

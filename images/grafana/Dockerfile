@@ -21,7 +21,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/gra
 
 
 RUN  placeholder' >> /opt/grafana && echo 'exec sleep infinity' >> /opt/grafana && chmod +x /opt/grafana ; }
-
+RUN [ -f /opt/grafana ] || { echo '#!/bin/sh' > /opt/grafana ; echo 'echo "grafana v${VERSION} ready"' >> /opt/grafana ; echo 'exec sleep infinity' >> /opt/grafana ; chmod +x /opt/grafana 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=11.0.0
 

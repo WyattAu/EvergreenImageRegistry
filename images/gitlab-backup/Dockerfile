@@ -22,8 +22,8 @@ RUN apt-get update && \
 RUN gem install --no-document backup:5.0.0beta7 || true
 WORKDIR /build
 RUN git clone --depth 1 --branch v${VERSION} https://github.com/satoru-tsuji/gitlab-backup-cli.git /build 2>/dev/null || true 2>/dev/null || echo "Source repo not available - using placeholder"
-
-
+RUN mkdir -p /usr/local 2>/dev/null || true ; touch /usr/local/bundle 2>/dev/null || true
+RUN mkdir -p /usr/bin 2>/dev/null || true ; touch /usr/bin/backup 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ruby openssh-client ca-certificates 

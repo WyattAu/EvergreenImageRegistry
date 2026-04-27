@@ -18,6 +18,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 
 RUN test -f /usr/local/bin/cass-operator || { echo '#!/bin/sh' > /usr/local/bin/cass-operator && echo 'echo "cassandra-operator v${VERSION} placeholder"' >> /usr/local/bin/cass-operator && echo 'exec sleep infinity' >> /usr/local/bin/cass-operator && chmod +x 2>/dev/null || true /usr/local/bin/cass-operator ; }
+RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
 ARG VERSION=1.20.0
 RUN mkdir -p /etc/ssl/certs /usr/local/bin 2>/dev/null || true

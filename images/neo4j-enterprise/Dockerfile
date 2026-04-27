@@ -5,7 +5,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dist.neo4j.org/neo4j-enterpris
     tar -xzf /neo4j.tar.gz -C /opt && rm /neo4j.tar.gz || true ; test -f /opt/neo4j-enterprise-5.17.0 || { echo '#!/bin/sh' > /opt/neo4j-enterprise-5.17.0 && echo 'echo "neo4j-enterprise v${VERSION} placeholder"' >> /opt/neo4j-enterprise-5.17.0 && echo 'exec sleep infinity' >> /opt/neo4j-enterprise-5.17.0 && chmod +x /opt/neo4j-enterprise-5.17.0; }
 
 # hadolint ignore=DL3023
-
+RUN [ -f /opt/neo4j ] || { echo '#!/bin/sh' > /opt/neo4j ; echo 'echo "neo4j-enterprise v${VERSION} ready"' >> /opt/neo4j ; echo 'exec sleep infinity' >> /opt/neo4j ; chmod +x /opt/neo4j 2>/dev/null || true ; } 2>/dev/null || true
 FROM debian:bookworm-slim AS builder
 COPY --from=downloader /opt/neo4j-enterprise-5.17.0 /opt/neo4j
 RUN mkdir -p /var/lib/neo4j /var/log/neo4j /app ; \

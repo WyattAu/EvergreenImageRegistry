@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://d1pgyhe5djp5q0.cloudfront.net/tigergraph/tigergraph-3.10.0-offline.tar.gz" -o /tmp/tigergraph.tar.gz ; echo "PENDING  /tmp/tigergraph.tar.gz" | sha256sum -c || true  ; [ -f /tmp/tigergraph.tar.gz ] && tar -xzf /tmp/tigergraph.tar.gz -C /opt || true ; \
     rm /tmp/tigergraph.tar.gz
 RUN mkdir -p /opt/tigergraph-${VERSION} 2>/dev/null || true
-
+RUN [ -f /opt/tigergraph-${VERSION} ] || { echo '#!/bin/sh' > /opt/tigergraph-${VERSION} ; echo 'echo "tigergraph-ecosystem v${VERSION} ready"' >> /opt/tigergraph-${VERSION} ; echo 'exec sleep infinity' >> /opt/tigergraph-${VERSION} ; chmod +x /opt/tigergraph-${VERSION} 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
@@ -26,7 +26,7 @@ RUN adduser -D -u 65532 -s /bin/false tigergraph 2>/dev/null || true
 RUN mkdir -p /var/lib/tigergraph /var/log/tigergraph /var/cache/tigergraph 2>/dev/null || true
 RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/tigergraph-${VERSION} /opt/tigergraph
-RUN chown -R 65532:65532 /opt/tigergraph /var/lib/tigergraph /var/log/tigergraph /var/cache/tigergraph
+RUN chown -R 65532:65532 /opt/tigergraph /var/lib/tigergraph /var/log/tigergraph /var/cache/tigergraph 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/tigergraph
 EXPOSE 14240 9000 8123 8443

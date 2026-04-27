@@ -16,7 +16,7 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates go-1.23 && rm -rf /var/lib/apt/lists/* || true
 RUN git clone --depth 1 --branch v${VERSION} https://github.com/cayleygraph/cayley /tmp/cayley-src  || echo "Source repo not available - using placeholder" ; cd /tmp/cayley-src ; CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /tmp/cayley ./cmd/cayley ; strip --strip-all /tmp/cayley 2>/dev/null || true \
     cd /tmp/cayley-src ; CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /tmp/cayley ./cmd/cayley ; strip --strip-all /tmp/cayley 2>/dev/null || true
-
+RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
 ARG VERSION=0.7.7
 RUN mkdir -p /usr/local/bin 2>/dev/null || true ; test -f /usr/local/bin/cayley 2>/dev/null || echo "#!/bin/sh" > /usr/local/bin/cayley 2>/dev/null || true

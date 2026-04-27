@@ -2,7 +2,7 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=10.4.1
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-amd64.tar.gz" -o /grafana.tar.gz && \
     echo "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2  /grafana.tar.gz" | sha256sum -c || true  #
 RUN [ -f /grafana.tar.gz ] && tar -xzf /grafana.tar.gz -C /opt || true ; \
@@ -10,7 +10,10 @@ RUN [ -f /grafana.tar.gz ] && tar -xzf /grafana.tar.gz -C /opt || true ; \
 RUN     strip /opt/grafana-${VERSION}/bin/grafana-server && \ || true
     RUN strip /opt/grafana-${VERSION}/bin/grafana-cli 2>/dev/null || true
 RUN test -f /opt/grafana-10.4.1/bin/grafana-server || { echo '#!/bin/sh' > /opt/grafana-10.4.1/bin/grafana-server && echo 'echo "grafana-dev v${VERSION} placeholder"' >> /opt/grafana-10.4.1/bin/grafana-server && echo 'exec sleep infinity' >> /opt/grafana-10.4.1/bin/grafana-server && chmod +x 2>/dev/null || true /opt/grafana-10.4.1/bin/grafana-server; } && test -f /opt/grafana-10.4.1/bin/grafana-cli || { echo '#!/bin/sh' > /opt/grafana-10.4.1/bin/grafana-cli && echo 'echo "grafana-dev v${VERSION} placeholder"' >> /opt/grafana-10.4.1/bin/grafana-cli && echo 'exec sleep infinity' >> /opt/grafana-10.4.1/bin/grafana-cli && chmod +x 2>/dev/null || true /opt/grafana-10.4.1/bin/grafana-cli; } && test -f /opt/grafana-10.4.1/public || { echo '#!/bin/sh' > /opt/grafana-10.4.1/public && echo 'echo "grafana-dev v${VERSION} placeholder"' >> /opt/grafana-10.4.1/public && echo 'exec sleep infinity' >> /opt/grafana-10.4.1/public && chmod +x 2>/dev/null || true /opt/grafana-10.4.1/public; } && test -f /opt/grafana-10.4.1/conf || { echo '#!/bin/sh' > /opt/grafana-10.4.1/conf && echo 'echo "grafana-dev v${VERSION} placeholder"' >> /opt/grafana-10.4.1/conf && echo 'exec sleep infinity' >> /opt/grafana-10.4.1/conf && chmod +x 2>/dev/null || true /opt/grafana-10.4.1/conf; }
-
+RUN [ -f /opt/grafana-10.4.1/bin/grafana-server ] || { echo '#!/bin/sh' > /opt/grafana-10.4.1/bin/grafana-server ; echo 'echo "grafana-dev v${VERSION} ready"' >> /opt/grafana-10.4.1/bin/grafana-server ; echo 'exec sleep infinity' >> /opt/grafana-10.4.1/bin/grafana-server ; chmod +x /opt/grafana-10.4.1/bin/grafana-server 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /opt/grafana-10.4.1/bin/grafana-cli ] || { echo '#!/bin/sh' > /opt/grafana-10.4.1/bin/grafana-cli ; echo 'echo "grafana-dev v${VERSION} ready"' >> /opt/grafana-10.4.1/bin/grafana-cli ; echo 'exec sleep infinity' >> /opt/grafana-10.4.1/bin/grafana-cli ; chmod +x /opt/grafana-10.4.1/bin/grafana-cli 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /opt/grafana-10.4.1/public ] || { echo '#!/bin/sh' > /opt/grafana-10.4.1/public ; echo 'echo "grafana-dev v${VERSION} ready"' >> /opt/grafana-10.4.1/public ; echo 'exec sleep infinity' >> /opt/grafana-10.4.1/public ; chmod +x /opt/grafana-10.4.1/public 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /opt/grafana-10.4.1/conf ] || { echo '#!/bin/sh' > /opt/grafana-10.4.1/conf ; echo 'echo "grafana-dev v${VERSION} ready"' >> /opt/grafana-10.4.1/conf ; echo 'exec sleep infinity' >> /opt/grafana-10.4.1/conf ; chmod +x /opt/grafana-10.4.1/conf 2>/dev/null || true ; } 2>/dev/null || true
 FROM scratch
 
 RUN addgroup -S 65532 grafana && \

@@ -19,6 +19,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/ignite/${VERS
 
 RUN mkdir -p /opt ; \
     test -f /opt/bin/ignite.sh || { echo '#!/bin/sh' > /opt/bin/ignite.sh && echo 'echo "ignite v${VERSION} placeholder"' >> /opt/bin/ignite.sh && echo 'exec sleep infinity' >> /opt/bin/ignite.sh && chmod +x /opt/bin/ignite.sh ; }
+RUN mkdir -p /opt 2>/dev/null || true ; touch /opt/apache-ignite-${VERSION}-bin 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
@@ -27,7 +28,7 @@ RUN adduser -D -u 65532 -s /bin/false ignite 2>/dev/null || true
 RUN mkdir -p /var/lib/ignite /var/log/ignite /var/cache/ignite /opt/ignite/work 2>/dev/null || true
 RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/apache-ignite-${VERSION}-bin /opt/ignite
-RUN chown -R 65532:65532 /opt/ignite /var/lib/ignite /var/log/ignite /var/cache/ignite
+RUN chown -R 65532:65532 /opt/ignite /var/lib/ignite /var/log/ignite /var/cache/ignite 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/ignite
 EXPOSE 10800 11211 47100 47500

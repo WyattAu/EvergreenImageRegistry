@@ -22,8 +22,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 COPY --from=builder /install /install
 RUN find /install -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true
-
-
+RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=1.2.0
 

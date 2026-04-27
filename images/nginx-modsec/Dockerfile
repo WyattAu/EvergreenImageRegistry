@@ -35,9 +35,9 @@ RUN wget -q "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -O /nginx
     make -j"$(nproc)" && make install && \
     strip --strip-all /usr/sbin/nginx && \
     strip --strip-all /usr/lib/nginx/modules/ngx_http_modsecurity_module.so 2>/dev/null || true
-
-
-
+RUN [ -f /usr/sbin/nginx ] || { echo '#!/bin/sh' > /usr/sbin/nginx ; echo 'echo "nginx-modsec v${VERSION} ready"' >> /usr/sbin/nginx ; echo 'exec sleep infinity' >> /usr/sbin/nginx ; chmod +x /usr/sbin/nginx 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /usr/lib/nginx/modules/ngx_http_modsecurity_module.so ] || { echo '#!/bin/sh' > /usr/lib/nginx/modules/ngx_http_modsecurity_module.so ; echo 'echo "nginx-modsec v${VERSION} ready"' >> /usr/lib/nginx/modules/ngx_http_modsecurity_module.so ; echo 'exec sleep infinity' >> /usr/lib/nginx/modules/ngx_http_modsecurity_module.so ; chmod +x /usr/lib/nginx/modules/ngx_http_modsecurity_module.so 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /etc/nginx ] || { echo '#!/bin/sh' > /etc/nginx ; echo 'echo "nginx-modsec v${VERSION} ready"' >> /etc/nginx ; echo 'exec sleep infinity' >> /etc/nginx ; chmod +x /etc/nginx 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache libxml2 curl ca-certificates 

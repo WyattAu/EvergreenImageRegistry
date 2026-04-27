@@ -22,8 +22,7 @@ RUN cd /knot-resolver && \
     -Dclient=enabled -Dpostinst=disabled && \
     meson compile -C build -j"$(nproc)" && \
     strip --strip-all /knot-resolver/build/kresd 2>/dev/null || true
-
-
+RUN mkdir -p /knot-resolver/build 2>/dev/null || true ; touch /knot-resolver/build/rootkeys.list 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache libnghttp2-14 ca-certificates || true
@@ -32,7 +31,7 @@ RUN mkdir -p /usr/local/bin 2>/dev/null || true ; test -f /usr/local/bin/kresd 2
 RUN mkdir -p /etc/knot-resolver 2>/dev/null || true
 COPY --from=builder /knot-resolver/build/kresd /usr/local/bin/kresd
 COPY --from=builder /knot-resolver/build/rootkeys.list /etc/knot-resolver/rootkeys.list
-RUN chown -R 65532:65532 /app /var/log/knot-resolver /var/lib/knot-resolver
+RUN chown -R 65532:65532 /app /var/log/knot-resolver /var/lib/knot-resolver 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 8453

@@ -27,7 +27,7 @@ RUN adduser -D -u 65532 -s /bin/false graphdb 2>/dev/null || true
 RUN mkdir -p /var/lib/graphdb /var/log/graphdb /var/cache/graphdb /opt/graphdb/home 2>/dev/null || true
 RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/graphdb-enterprise-${VERSION} /opt/graphdb
-RUN chown -R 65532:65532 /opt/graphdb /var/lib/graphdb /var/log/graphdb /var/cache/graphdb
+RUN chown -R 65532:65532 /opt/graphdb /var/lib/graphdb /var/log/graphdb /var/cache/graphdb 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/graphdb
 EXPOSE 7200

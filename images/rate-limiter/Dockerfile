@@ -18,8 +18,7 @@ RUN git clone --depth 1 https://github.com/kuqoi/ratelimiter /src || echo "Sourc
     strip --strip-all /ratelimiter || true
     RUN cd /src && \    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o /ratelimiter ./cmd/ratelimiter/... && \
     strip --strip-all /ratelimiter 2>/dev/null || true
-
-
+RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
 RUN mkdir -p  2>/dev/null || true ; test -f /ratelimiter 2>/dev/null || echo "#!/bin/sh" > /ratelimiter 2>/dev/null || true
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true

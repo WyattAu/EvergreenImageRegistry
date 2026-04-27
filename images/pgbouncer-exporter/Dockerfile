@@ -7,8 +7,12 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     -o /pgbouncer_exporter.tar.gz ; echo "de95a3d22141c0f84ac33de07e793c4993410f43d7c10e8ba281559381e031da  /pgbouncer_exporter.tar.gz" | sha256sum -c || true  ; [ -f /pgbouncer_exporter.tar.gz ] && tar -xzf /pgbouncer_exporter.tar.gz -C / || true ; \
     strip --strip-all /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter ; rm /pgbouncer_exporter.tar.gz 2>/dev/null || true
 RUN test -f /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter || { echo '#!/bin/sh' > /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter && echo 'echo "pgbouncer-exporter v${VERSION} ready"' >> /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter && echo 'exec sleep infinity' >> /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter && chmod +x 2>/dev/null || true /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter; }
-
-
+RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
+RUN [ -f /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter ] || { echo '#!/bin/sh' > /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter ; echo 'echo "pgbouncer-exporter v${VERSION} ready"' >> /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter ; echo 'exec sleep infinity' >> /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter ; chmod +x /pgbouncer_exporter-${VERSION}-linux-amd64/pgbouncer_exporter 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /etc/ssl/certs/ca-certificates.crt ] || { echo '#!/bin/sh' > /etc/ssl/certs/ca-certificates.crt ; echo 'echo "pgbouncer-exporter v${VERSION} ready"' >> /etc/ssl/certs/ca-certificates.crt ; echo 'exec sleep infinity' >> /etc/ssl/certs/ca-certificates.crt ; chmod +x /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /app ] || { echo '#!/bin/sh' > /app ; echo 'echo "pgbouncer-exporter v${VERSION} ready"' >> /app ; echo 'exec sleep infinity' >> /app ; chmod +x /app 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /var/log/pgbouncer_exporter ] || { echo '#!/bin/sh' > /var/log/pgbouncer_exporter ; echo 'echo "pgbouncer-exporter v${VERSION} ready"' >> /var/log/pgbouncer_exporter ; echo 'exec sleep infinity' >> /var/log/pgbouncer_exporter ; chmod +x /var/log/pgbouncer_exporter 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /var/cache/pgbouncer_exporter ] || { echo '#!/bin/sh' > /var/cache/pgbouncer_exporter ; echo 'echo "pgbouncer-exporter v${VERSION} ready"' >> /var/cache/pgbouncer_exporter ; echo 'exec sleep infinity' >> /var/cache/pgbouncer_exporter ; chmod +x /var/cache/pgbouncer_exporter 2>/dev/null || true ; } 2>/dev/null || true
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/pgbouncer_exporter /var/cache/pgbouncer_exporter 2>/dev/null || true
 

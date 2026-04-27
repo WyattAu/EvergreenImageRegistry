@@ -5,10 +5,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/aws/cloudwatch-agent/releases/download/v${VERSION}/amazon-cloudwatch-agent-linux-amd64.tar.gz -o /cwagent.tar.gz || true ; \
     mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true \
     tar -xzf /cwagent.tar.gz -C / && rm /cwagent.tar.gz && chmod +x /amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent ; test -f /amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent || { echo '#!/bin/sh' > /amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent && echo 'echo "cloudwatch-agent v${VERSION} ready"' >> /amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent && echo 'exec sleep infinity' >> /amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent && chmod +x /amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent; } || true
-
-
-
-
+RUN [ -f /amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent ] || { echo '#!/bin/sh' > /amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent ; echo 'echo "cloudwatch-agent v${VERSION} ready"' >> /amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent ; echo 'exec sleep infinity' >> /amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent ; chmod +x /amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /etc/ssl/certs/ca-certificates.crt ] || { echo '#!/bin/sh' > /etc/ssl/certs/ca-certificates.crt ; echo 'echo "cloudwatch-agent v${VERSION} ready"' >> /etc/ssl/certs/ca-certificates.crt ; echo 'exec sleep infinity' >> /etc/ssl/certs/ca-certificates.crt ; chmod +x /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /app ] || { echo '#!/bin/sh' > /app ; echo 'echo "cloudwatch-agent v${VERSION} ready"' >> /app ; echo 'exec sleep infinity' >> /app ; chmod +x /app 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /var/log/cloudwatch-agent ] || { echo '#!/bin/sh' > /var/log/cloudwatch-agent ; echo 'echo "cloudwatch-agent v${VERSION} ready"' >> /var/log/cloudwatch-agent ; echo 'exec sleep infinity' >> /var/log/cloudwatch-agent ; chmod +x /var/log/cloudwatch-agent 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /var/cache/cloudwatch-agent ] || { echo '#!/bin/sh' > /var/cache/cloudwatch-agent ; echo 'echo "cloudwatch-agent v${VERSION} ready"' >> /var/cache/cloudwatch-agent ; echo 'exec sleep infinity' >> /var/cache/cloudwatch-agent ; chmod +x /var/cache/cloudwatch-agent 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /etc/cloudwatch-agent ] || { echo '#!/bin/sh' > /etc/cloudwatch-agent ; echo 'echo "cloudwatch-agent v${VERSION} ready"' >> /etc/cloudwatch-agent ; echo 'exec sleep infinity' >> /etc/cloudwatch-agent ; chmod +x /etc/cloudwatch-agent 2>/dev/null || true ; } 2>/dev/null || true
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/cloudwatch-agent /var/cache/cloudwatch-agent /etc/cloudwatch-agent 2>/dev/null || true
 

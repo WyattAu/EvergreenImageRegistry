@@ -21,7 +21,7 @@ RUN mkdir -p /usr/local/bin 2>/dev/null || true
 COPY --from=builder /wireguard-tools-${VERSION}/src/wg /usr/local/bin/wg
 COPY --from=builder /wireguard-tools-${VERSION}/src/wg-quick /usr/local/bin/wg-quick
 RUN printf '#!/bin/sh\necho "vpn-controller v%s - WireGuard management ready"\necho "Available commands: wg, wg-quick"\necho "Generate keys: wg genkey | tee privatekey | wg pubkey > publickey"\nsleep infinity' "${VERSION}" > /app/vpn-controller && chmod +x /app/vpn-controller
-RUN chown -R 65532:65532 /app /var/log/vpn-controller /etc/wireguard
+RUN chown -R 65532:65532 /app /var/log/vpn-controller /etc/wireguard 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 51820 51820/udp

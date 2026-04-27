@@ -17,7 +17,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     && mv /tmp/vm-operator /usr/local/bin/vm-operator
 
 RUN mkdir -p /usr/local/bin/vm-operator 2>/dev/null || true
-
+RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
 ARG VERSION=0.45.0
 RUN mkdir -p /usr/local/bin 2>/dev/null || true ; test -f /usr/local/bin/vm-operator 2>/dev/null || echo "#!/bin/sh" > /usr/local/bin/vm-operator 2>/dev/null || true

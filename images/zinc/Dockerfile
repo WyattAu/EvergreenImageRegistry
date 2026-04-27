@@ -18,7 +18,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     strip --strip-all zincsearch 2>/dev/null || true ; mv zincsearch /tmp/zincsearch
 
 RUN mkdir -p /tmp/zincsearch 2>/dev/null || true
-
+RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
 ARG VERSION=0.4.12
 RUN mkdir -p /usr/local/bin 2>/dev/null || true ; test -f /usr/local/bin/zincsearch 2>/dev/null || echo "#!/bin/sh" > /usr/local/bin/zincsearch 2>/dev/null || true

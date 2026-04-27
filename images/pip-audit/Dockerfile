@@ -5,8 +5,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir pip-audit || true
+RUN pip install --no-cache-dir --break-system-packages --upgrade pip && \
+    pip install --no-cache-dir --break-system-packages pip-audit || true
 RUN mkdir -p /app-src 2>/dev/null || true
 
 

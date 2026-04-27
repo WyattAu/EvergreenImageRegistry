@@ -19,7 +19,7 @@ RUN apk add --no-cache curl ca-certificates gnupg openssh-client postgresql-clie
 COPY --from=downloader /opt/gitlab /opt/gitlab
 COPY --from=downloader /etc/gitlab /etc/gitlab
 COPY --from=downloader /var/opt/gitlab /var/opt/gitlab
-RUN addgroup -S -g 65532 gitlab 2>/dev/null || true && \
+RUN addgroup -S gitlab 65532 2>/dev/null || true && \
     adduser -u 65532 -G gitlab -D -h /var/opt/gitlab -s /bin/false gitlab 2>/dev/null || true
 USER 65532:65532
 EXPOSE 80 443

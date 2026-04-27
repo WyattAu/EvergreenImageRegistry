@@ -26,7 +26,7 @@ RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certif
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=0.16.0
 
-RUN addgroup -S 65532 awslogs && \
+RUN addgroup -S awslogs 65532 && \
     adduser -u 65532 -G awslogs -D -s /bin/false awslogs || true
 RUN apk add --no-cache ca-certificates 
 RUN mkdir -p /etc/ssl/certs /usr 2>/dev/null || true

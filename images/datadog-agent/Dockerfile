@@ -1,5 +1,5 @@
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=7.50.0
+ARG VERSION=7.78.1
 ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -34,7 +34,7 @@ ENV DD_AGENT_VERSION=${VERSION} \
     DD_ENABLE_METRICS_ENDPOINT=true
 ENTRYPOINT ["/agent"]
 LABEL org.opencontainers.image.title="datadog-agent" \
-      org.opencontainers.image.version="7.50.0" \
+      org.opencontainers.image.version="7.78.1" \
       org.opencontainers.image.vendor="Datadog" \
       org.opencontainers.image.description="Datadog Agent for infrastructure monitoring" \
       sovereign.image.tier="1" \

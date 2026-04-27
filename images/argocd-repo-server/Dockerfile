@@ -1,8 +1,8 @@
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=2.14.0
+ARG VERSION=3.3.8
 ARG GITHUB_TOKEN
 RUN apt-get update &&     apt-get install -y --no-install-recommends curl ca-certificates &&     rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/argoproj/argo-cd/releases/download/v2.14.0/argocd-linux-amd64 -o /tmp/binary &&     chmod +x /tmp/binary &&     strip /tmp/binary ; test -f /tmp/binary || { echo '#!/bin/sh' > /tmp/binary && echo 'echo "argocd-repo-server v${VERSION} placeholder"' >> /tmp/binary && echo 'exec sleep infinity' >> /tmp/binary && chmod +x /tmp/binary; } || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/argoproj/argo-cd/releases/download/v3.3.8/argocd-linux-amd64 -o /tmp/binary &&     chmod +x /tmp/binary &&     strip /tmp/binary ; test -f /tmp/binary || { echo '#!/bin/sh' > /tmp/binary && echo 'echo "argocd-repo-server v${VERSION} placeholder"' >> /tmp/binary && echo 'exec sleep infinity' >> /tmp/binary && chmod +x /tmp/binary; } || true
 
 
 FROM scratch
@@ -12,7 +12,7 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8081
-LABEL org.opencontainers.image.title="argocd-repo-server"       org.opencontainers.image.description="ArgoCD Repo Server - manages Git repository operations"       org.opencontainers.image.version="2.14.0"       org.opencontainers.image.vendor="Argo Project"       org.opencontainers.image.source="https://github.com/argoproj/argo-cd"       sovereign.image.tier="2"       sovereign.constraint.nonroot="true"       sovereign.constraint.scratch="true"
+LABEL org.opencontainers.image.title="argocd-repo-server"       org.opencontainers.image.description="ArgoCD Repo Server - manages Git repository operations"       org.opencontainers.image.version="3.3.8"       org.opencontainers.image.vendor="Argo Project"       org.opencontainers.image.source="https://github.com/argoproj/argo-cd"       sovereign.image.tier="2"       sovereign.constraint.nonroot="true"       sovereign.constraint.scratch="true"
 
 LABEL sovereign.base.image="scratch"
 LABEL sovereign.metrics.native="ztunnel"

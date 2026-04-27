@@ -3,7 +3,7 @@
 # Alias for images/whoogle-search/
 # =============================================================================
 
-ARG VERSION=0.9.0
+ARG VERSION=1.2.4
 ARG BUILD_DATE
 
 
@@ -21,7 +21,7 @@ RUN mkdir -p /app/config /app/data 2>/dev/null || true
 RUN test -f /app || { echo '#!/bin/sh' > /app/placeholder && echo 'echo "whoogle v${VERSION} placeholder"' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-ARG VERSION=0.9.0
+ARG VERSION=1.2.4
 
 RUN apk add --no-cache python3 ca-certificates tzdata 
 COPY --from=builder /opt/venv /opt/venv

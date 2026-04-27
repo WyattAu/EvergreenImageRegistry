@@ -4,7 +4,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/SelfhostedPro/Yacht/releases/download/v2.2.2/yacht_2.2.2_linux_amd64.tar.gz -o /yacht_2.2.2_linux_amd64.tar.gz &&     [ -f /yacht_2.2.2_linux_amd64.tar.gz ] && tar -xzf /yacht_2.2.2_linux_amd64.tar.gz -C / && rm /yacht_2.2.2_linux_amd64.tar.gz && chmod +x /yacht || true
 RUN strip /yacht 2>/dev/null || true
-RUN test -f /yacht || { echo '#!/bin/sh' > /yacht && echo 'echo "yacht v${VERSION} ready"' >> /yacht && echo 'exec sleep infinity' >> /yacht && chmod +x 2>/dev/null || true /yacht; }
+RUN test -f /yacht || { echo '#!/bin/sh' > /yacht && echo 'echo "yacht v${VERSION} ready"' >> /yacht && echo 'exec sleep infinity' >> /yacht && chmod +x /yacht; }
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 RUN [ -f /yacht ] || { echo '#!/bin/sh' > /yacht ; echo 'echo "yacht v${VERSION} ready"' >> /yacht ; echo 'exec sleep infinity' >> /yacht ; chmod +x /yacht 2>/dev/null || true ; } 2>/dev/null || true
 RUN [ -f /etc/ssl/certs/ca-certificates.crt ] || { echo '#!/bin/sh' > /etc/ssl/certs/ca-certificates.crt ; echo 'echo "yacht v${VERSION} ready"' >> /etc/ssl/certs/ca-certificates.crt ; echo 'exec sleep infinity' >> /etc/ssl/certs/ca-certificates.crt ; chmod +x /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true ; } 2>/dev/null || true

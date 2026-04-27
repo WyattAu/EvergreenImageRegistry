@@ -16,7 +16,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://fastdl.mongodb.org/linux/mongo
     strip --strip-all 2>/dev/null || true /tmp/mongodb-linux-x86_64-ubuntu2204-${VERSION}/bin/* ; mv /tmp/mongodb-linux-x86_64-ubuntu2204-${VERSION}/bin/* /usr/local/bin/ \
     && rm -rf /tmp/mongodb.tgz /tmp/mongodb-linux-x86_64-ubuntu2204-${VERSION}
 
-RUN test -f /usr/local/bin/mongod || { echo '#!/bin/sh' > /usr/local/bin/mongod && echo 'echo "mongodb-5 v${VERSION} placeholder"' >> /usr/local/bin/mongod && echo 'exec sleep infinity' >> /usr/local/bin/mongod && chmod +x 2>/dev/null || true /usr/local/bin/mongod ; } ; \
+RUN test -f /usr/local/bin/mongod || { echo '#!/bin/sh' > /usr/local/bin/mongod && echo 'echo "mongodb-5 v${VERSION} placeholder"' >> /usr/local/bin/mongod && echo 'exec sleep infinity' >> /usr/local/bin/mongod && chmod +x /usr/local/bin/mongod ; } ; \
     test -f /usr/local/bin/mongo || { echo '#!/bin/sh' > /usr/local/bin/mongo && echo 'echo "mongodb-5 v${VERSION} placeholder"' >> /usr/local/bin/mongo && echo 'exec sleep infinity' >> /usr/local/bin/mongo && chmod +x /usr/local/bin/mongo ; } ; \
     test -f /usr/local/bin/mongos || { echo '#!/bin/sh' > /usr/local/bin/mongos && echo 'echo "mongodb-5 v${VERSION} placeholder"' >> /usr/local/bin/mongos && echo 'exec sleep infinity' >> /usr/local/bin/mongos && chmod +x /usr/local/bin/mongos ; }
 

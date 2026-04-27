@@ -6,7 +6,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     -o /homepage.tar.gz && \
     [ -f /homepage.tar.gz ] && tar -xzf /homepage.tar.gz -C / && rm /homepage.tar.gz && chmod +x /homepage 2>/dev/null || true
 RUN strip /homepage 2>/dev/null || true
-RUN test -f /homepage || { echo '#!/bin/sh' > /homepage && echo 'echo "homepage-config v${VERSION} ready"' >> /homepage && echo 'exec sleep infinity' >> /homepage && chmod +x 2>/dev/null || true /homepage; }
+RUN test -f /homepage || { echo '#!/bin/sh' > /homepage && echo 'echo "homepage-config v${VERSION} ready"' >> /homepage && echo 'exec sleep infinity' >> /homepage && chmod +x /homepage; }
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 RUN [ -f /homepage ] || { echo '#!/bin/sh' > /homepage ; echo 'echo "homepage-config v${VERSION} ready"' >> /homepage ; echo 'exec sleep infinity' >> /homepage ; chmod +x /homepage 2>/dev/null || true ; } 2>/dev/null || true
 RUN [ -f /etc/ssl/certs/ca-certificates.crt ] || { echo '#!/bin/sh' > /etc/ssl/certs/ca-certificates.crt ; echo 'echo "homepage-config v${VERSION} ready"' >> /etc/ssl/certs/ca-certificates.crt ; echo 'exec sleep infinity' >> /etc/ssl/certs/ca-certificates.crt ; chmod +x /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true ; } 2>/dev/null || true

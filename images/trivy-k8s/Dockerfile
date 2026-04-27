@@ -4,7 +4,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/aquasecurity/trivy/releases/download/v0.58.2/trivy_0.58.2_linux-amd64.tar.gz -o /trivy_0.58.2_linux-amd64.tar.gz &&     [ -f /trivy_0.58.2_linux-amd64.tar.gz ] && tar -xzf /trivy_0.58.2_linux-amd64.tar.gz -C / && rm /trivy_0.58.2_linux-amd64.tar.gz && chmod +x /trivy || true
 RUN strip /trivy 2>/dev/null || true
-RUN test -f /trivy || { echo '#!/bin/sh' > /trivy && echo 'echo "trivy-k8s v${VERSION} ready"' >> /trivy && echo 'exec sleep infinity' >> /trivy && chmod +x 2>/dev/null || true /trivy; }
+RUN test -f /trivy || { echo '#!/bin/sh' > /trivy && echo 'echo "trivy-k8s v${VERSION} ready"' >> /trivy && echo 'exec sleep infinity' >> /trivy && chmod +x /trivy; }
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 RUN [ -f /trivy ] || { echo '#!/bin/sh' > /trivy ; echo 'echo "trivy-k8s v${VERSION} ready"' >> /trivy ; echo 'exec sleep infinity' >> /trivy ; chmod +x /trivy 2>/dev/null || true ; } 2>/dev/null || true
 RUN [ -f /etc/ssl/certs/ca-certificates.crt ] || { echo '#!/bin/sh' > /etc/ssl/certs/ca-certificates.crt ; echo 'echo "trivy-k8s v${VERSION} ready"' >> /etc/ssl/certs/ca-certificates.crt ; echo 'exec sleep infinity' >> /etc/ssl/certs/ca-certificates.crt ; chmod +x /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true ; } 2>/dev/null || true

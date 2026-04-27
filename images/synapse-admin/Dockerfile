@@ -31,7 +31,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache curl ca-certificates || true
 RUN apk add --no-cache nodejs 
-RUN mkdir -p /app 2>/dev/null || true 2>/dev/null || true
+RUN mkdir -p /app 2>/dev/null || true
 RUN addgroup -S -g 65532 appuser 2>/dev/null || true ; adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser
 WORKDIR /app
 RUN mkdir -p /app 2>/dev/null || true ; test -f /app/dist 2>/dev/null || echo "#!/bin/sh" > /app/dist 2>/dev/null || true

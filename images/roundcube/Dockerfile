@@ -24,7 +24,7 @@ RUN [ -f /build ] || { echo '#!/bin/sh' > /build ; echo 'echo "roundcube v${VERS
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache php-8.4-fpm php-8.4 php-8.4-mbstring php-8.4-xml php-8.4-curl php-8.4-intl php-8.4-zip ca-certificates || true
-RUN mkdir -p /app 2>/dev/null || true 2>/dev/null || true
+RUN mkdir -p /app 2>/dev/null || true
 RUN addgroup -S -g 65532 appuser 2>/dev/null || true ; adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser
 RUN mkdir -p  2>/dev/null || true ; test -f /app 2>/dev/null || echo "#!/bin/sh" > /app 2>/dev/null || true
 COPY --from=builder /build /app

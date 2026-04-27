@@ -5,7 +5,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /tmp
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/element-hq/element-web/releases/download/v1.11.12/element-v1.11.12.tar.gz -o /tmp/release.tar.gz || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/element-hq/element-web/releases/download/v1.12.15/element-v1.12.15.tar.gz -o /tmp/release.tar.gz || true ; \
     mkdir -p /www-src ; \
     [ -f /tmp/release.tar.gz ] && tar -xzf /tmp/release.tar.gz -C /www-src --strip-components=1 || true ; \
     rm /tmp/release.tar.gz ; test -f /www || { echo '#!/bin/sh' > /www/placeholder && echo 'echo "element-web v${VERSION} placeholder"' >> /www/placeholder && echo 'exec sleep infinity' >> /www/placeholder && chmod +x /www; }

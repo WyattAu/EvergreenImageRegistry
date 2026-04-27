@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /src
 RUN git clone --depth 1 https://github.com/nicehash/ulogger.git /src || echo "Source repo not available - using placeholder" && \
     cd /src && go build -ldflags="-s -w" -o /ulogger .RUN strip /ulogger 2>/dev/null || true
-    RUN cd /src && go build -ldflags="-s -w" -o /ulogger .RUN strip /ulogger 2>/dev/null || true
+RUN cd /src && go build -ldflags="-s -w" -o /ulogger .RUN strip /ulogger 2>/dev/null || true
 
 
 FROM scratch

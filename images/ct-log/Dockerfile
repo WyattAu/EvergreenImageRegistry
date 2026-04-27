@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends git ca-certific
 RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/google/certificate-transparency-go /src || echo "Source repo not available - using placeholder" && \
     cd /src &&  \CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /ct-log ./trillian/ctfe/ct_server && \
     strip --strip-all /ct-log || true
-    RUN cd /src &&  \CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /ct-log ./trillian/ctfe/ct_server && \
+RUN cd /src &&  \CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /ct-log ./trillian/ctfe/ct_server && \
     strip --strip-all /ct-log 2>/dev/null || true
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch

@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN python3 -m venv /opt/venv ; /opt/venv/bin/pip install --no-cache-dir --upgrade pip ; /opt/venv/bin/pip install --no-cache-dir surrealdb==${VERSION} 2>/dev/null ||  \/opt/venv/bin/pip install --no-cache-dir surrealdb || true
 
 
-      RUN org.opencontainers.image.version="${VERSION}" \
+RUN org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Sovereign hardened SurrealDB Python - Python SDK for SurrealDB" \
       sovereign.image.tier="1" \
       sovereign.image.category="database" \

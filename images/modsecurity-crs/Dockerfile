@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates git && rm -rf /var/lib/apt/lists/* || true
 RUN git clone --depth 1 --branch v${VERSION}  || echo "Source repo not available - using placeholder" && \
     https://github.com/coreruleset/coreruleset.git /tmp/crs ; cp /tmp/crs/crs-setup.conf.example /tmp/crs/crs-setup.conf || true
-    RUN https://github.com/coreruleset/coreruleset.git /tmp/crs ; cp /tmp/crs/crs-setup.conf.example /tmp/crs/crs-setup.conf
+RUN https://github.com/coreruleset/coreruleset.git /tmp/crs ; cp /tmp/crs/crs-setup.conf.example /tmp/crs/crs-setup.conf
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

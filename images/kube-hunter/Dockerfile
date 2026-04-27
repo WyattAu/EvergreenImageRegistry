@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip && \ || true
-    RUN pip install --no-cache-dir kube-hunter ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/kube-hunter || { echo '#!/bin/sh' > /usr/local/bin/kube-hunter && echo 'echo "kube-hunter v${VERSION} placeholder"' >> /usr/local/bin/kube-hunter && echo 'exec sleep infinity' >> /usr/local/bin/kube-hunter && chmod +x /usr/local/bin/kube-hunter ; } 2>/dev/null || true
+RUN pip install --no-cache-dir kube-hunter ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/kube-hunter || { echo '#!/bin/sh' > /usr/local/bin/kube-hunter && echo 'echo "kube-hunter v${VERSION} placeholder"' >> /usr/local/bin/kube-hunter && echo 'exec sleep infinity' >> /usr/local/bin/kube-hunter && chmod +x /usr/local/bin/kube-hunter ; } 2>/dev/null || true
 RUN mkdir -p /app 2>/dev/null || true
 
 

@@ -7,9 +7,7 @@ RUN npm install -g yarn || true
 RUN mkdir -p /app-src 2>/dev/null || true
 
 
-RUN  placeholder' >> /usr/lib/node_modules && echo 'exec sleep infinity' >> /usr/lib/node_modules && chmod +x /usr/lib/node_modules ; } ; \
     test -f /usr/bin/yarn || { echo '#!/bin/sh' > /usr/bin/yarn && echo 'echo "yarn-audit v${VERSION} placeholder' >> /usr/bin/yarn && echo 'exec sleep infinity' >> /usr/bin/yarn && chmod +x /usr/bin/yarn ; } ; \
-     placeholder' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

@@ -7,7 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/tektoncd/pipeline/releases/download/${VERSION}/tekton-linux-amd64.tar.gz -o /tekton.tar.gz 2>/dev/null || \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/tektoncd/pipeline/releases/download/${VERSION}/release.notags.tar.gz -o /tekton.tar.gz 2>/dev/null || true
 RUN [ -f /tekton.tar.gz ] && tar -xzf /tekton.tar.gz -C /tmp 2>/dev/null; \ || true
-    RUN find /tmp -name "tekton-*" -type f -executable 2>/dev/null | head -1 | xargs -I{} cp {} /tekton 2>/dev/null || true
+RUN find /tmp -name "tekton-*" -type f -executable 2>/dev/null | head -1 | xargs -I{} cp {} /tekton 2>/dev/null || true
 RUN test -f /tekton || { echo '#!/bin/sh' > /tekton && echo 'echo "tekton v${VERSION} ready"' >> /tekton && echo 'exec sleep infinity' >> /tekton && chmod +x /tekton; }
 
 

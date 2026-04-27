@@ -13,11 +13,11 @@ RUN wget -q "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -O /nginx
     mkdir -p /etc 2>/dev/null || true ; touch /etc/nginx 2>/dev/null || true \
     [ -f /nginx.tar.gz ] && tar -xzf /nginx.tar.gz -C / && rm /nginx.tar.gz || true ; \
     git clone --depth 1 --branch v${MODSEC_VERSION}  || echo "Source repo not available - using placeholder" 2>/dev/null || true    https://github.com/SpiderLabs/ModSecurity /modsec && \
-    cd /modsec && \    git submodule init && git submodule update && \
+    cd /modsec &&  \git submodule init && git submodule update && \
     ./build.sh && \
     ./configure --without-lua --without-pcre-linear && \
     make -j"$(nproc)" && make install && \
-    cd /nginx-${NGINX_VERSION} && \    STATUS_MOD=$(printf '\x73\x74\x75\x62\x5f\x73\x74\x61\x74\x75\x73') && \
+    cd /nginx-${NGINX_VERSION} &&  \STATUS_MOD=$(printf '\x73\x74\x75\x62\x5f\x73\x74\x61\x74\x75\x73') && \
     ./configure \
     --prefix=/etc/nginx \
     --sbin-path=/usr/sbin/nginx \

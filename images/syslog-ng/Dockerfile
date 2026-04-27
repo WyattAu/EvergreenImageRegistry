@@ -14,8 +14,8 @@ FROM debian:bookworm-slim AS builder
 RUN apt-get update && \
     apt-get install -y --no-install-recommends syslog-ng-core && \
     strip /usr/sbin/syslog-ng && \
-    find /usr/lib/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true && \
-    find /usr/lib/*/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true
+    find /usr/lib/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \ || true && \
+    find /usr/lib/*/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \ || true
 
 
 RUN mkdir -p /usr/sbin/syslog-ng 2>/dev/null || true
@@ -28,7 +28,7 @@ RUN apk add --no-cache ca-certificates || true
 RUN mkdir -p /usr/sbin 2>/dev/null || true ; test -f /usr/sbin/syslog-ng 2>/dev/null || echo "#!/bin/sh" > /usr/sbin/syslog-ng 2>/dev/null || true
 COPY --from=builder /usr/sbin/syslog-ng /usr/sbin/syslog-ng
 RUN mkdir -p /app/conf /app/logs /app/run /var/lib/syslog-ng ; \
-    RUN addgroup -S syslogng 2>/dev/null || true && adduser -u 65532 -G syslogng -D -s /bin/false syslogng 2>/dev/null || true
+addgroup -S syslogng 2>/dev/null || true && adduser -u 65532 -G syslogng -D -s /bin/false syslogng 2>/dev/null || true
     RUN chown -R syslogng:syslogng /app /var/lib/syslog-ng 2>/dev/null || true
 COPY <<'EOF' /app/conf/syslog-ng.conf
 @version: 4.8
@@ -43,7 +43,7 @@ log {
     source(s_network);
     destination(d_file);
 };
-RUN EOF
+EOF
 RUN chown syslogng:syslogng /app/conf/syslog-ng.conf 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app

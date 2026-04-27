@@ -2,7 +2,7 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-${VERSION}-linux-x86_64.tar.gz" -o /metricbeat.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  /metricbeat.tar.gz" | sha256sum -c || true  ; mkdir -p /opt/metricbeat-src ; \
-    [ -f /metricbeat.tar.gz ] && tar -xzf /metricbeat.tar.gz -C /opt/metricbeat-src --strip-components=1 || true ; \    rm /metricbeat.tar.gz ; rm -rf /opt/metricbeat/kibana /opt/metricbeat/logs ; strip /opt/metricbeat/metricbeat || true ; chmod +x /opt/metricbeat/metricbeat ;  placeholder"' >> /opt/metricbeat/placeholder && echo 'exec sleep infinity' >> /opt/metricbeat/placeholder && chmod +x /opt/metricbeat; }
+    [ -f /metricbeat.tar.gz ] && tar -xzf /metricbeat.tar.gz -C /opt/metricbeat-src --strip-components=1 || true ;  \rm /metricbeat.tar.gz ; rm -rf /opt/metricbeat/kibana /opt/metricbeat/logs ; strip /opt/metricbeat/metricbeat || true ; chmod +x /opt/metricbeat/metricbeat ;  placeholder"' >> /opt/metricbeat/placeholder && echo 'exec sleep infinity' >> /opt/metricbeat/placeholder && chmod +x /opt/metricbeat; }
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /var/log/metricbeat /var/lib/metricbeat /var/cache/metricbeat 2>/dev/null || true

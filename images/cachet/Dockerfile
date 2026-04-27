@@ -40,7 +40,7 @@ server {
         include fastcgi_params;
     }
 }
-RUN EOF
+EOF
 RUN ln -sf /etc/nginx/sites-available/cachet /etc/nginx/sites-enabled/cachet && \
     rm -f /etc/nginx/sites-enabled/default
 USER 65532:65532

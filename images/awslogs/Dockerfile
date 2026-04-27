@@ -11,7 +11,7 @@ ARG BUILD_DATE
 ARG PYTHON_VERSION=3.12.2
 FROM python:3.12.2-slim-bookworm AS builder
 ARG VERSION=0.16.0
-RUN pip install --no-cache-dir --prefix=/install awslogs==${VERSION} || true ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/awslogs || { echo '#!/bin/sh' > /usr/local/bin/awslogs && echo 'echo "awslogs v${VERSION} placeholder"' >> /usr/local/bin/awslogs && echo 'exec sleep infinity' >> /usr/local/bin/awslogs && chmod +x /usr/local/bin/awslogs ; }
+RUN pip install --break-system-packages --no-cache-dir --prefix=/install awslogs==${VERSION} || true ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/awslogs || { echo '#!/bin/sh' > /usr/local/bin/awslogs && echo 'echo "awslogs v${VERSION} placeholder"' >> /usr/local/bin/awslogs && echo 'exec sleep infinity' >> /usr/local/bin/awslogs && chmod +x /usr/local/bin/awslogs ; }
 RUN find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 
@@ -21,7 +21,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends python3-minimal && \
     rm -rf /var/lib/apt/lists/*
 COPY --from=builder /install /install
-RUN find /install -type f -name "*.so" -exec strip --strip-unneeded {} \; 2>/dev/null || true
+RUN find /install -type f -name "*.so" -exec strip --strip-unneeded {} \ || true
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=0.16.0

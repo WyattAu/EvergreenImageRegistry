@@ -28,7 +28,7 @@ RUN apt-get update && \
         g++ && \
     rm -rf /var/lib/apt/lists/* || true
 RUN [ -f /tmp/couchdb.tar.gz ] && tar -xzf /tmp/couchdb.tar.gz -C /tmp || true ; \
-    cd /tmp/apache-couchdb-3.3.3 && \    ./configure --disable-docs --spidermonkey-version=78 && \
+    cd /tmp/apache-couchdb-3.3.3 &&  \./configure --disable-docs --spidermonkey-version=78 && \
     make release && \
     strip --strip-all /tmp/apache-couchdb-3.3.3/rel/couchdb/bin/* || true && \
     mkdir -p /opt/couchdb ; \
@@ -45,7 +45,7 @@ ENV HEALTH_CMD="curl -sf http://localhost:5984/_up" \
 RUN apk add --no-cache curl procps 
 RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/couchdb /opt/couchdb
-RUN mkdir -p /var/lib/couchdb /var/log/couchdb /app ; 2>/dev/null || true \
+RUN mkdir -p /var/lib/couchdb /var/log/couchdb /app  || true \
     chown -R 65532:65532 /var/lib/couchdb /var/log/couchdb /app /opt/couchdb
 ENV COUCHDB_HOME=/opt/couchdb
 ENV PATH="${COUCHDB_HOME}/bin:${PATH}"

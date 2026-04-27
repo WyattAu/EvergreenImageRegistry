@@ -3,7 +3,7 @@ ARG GITHUB_TOKEN
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Graylog2/collector-sidecar/releases/download/${VERSION}/collector-sidecar-${VERSION}-linux-amd64.tar.gz -o /sidecar.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  /sidecar.tar.gz" | sha256sum -c || true  ; mkdir -p /opt/sidecar-src ; \
-    [ -f /sidecar.tar.gz ] && tar -xzf /sidecar.tar.gz -C /opt/sidecar-src --strip-components=1 || true ; \    rm /sidecar.tar.gz ; strip /opt/sidecar/collector_sidecar || true ; chmod +x /opt/sidecar/collector_sidecar ;  placeholder"' >> /opt/sidecar/placeholder && echo 'exec sleep infinity' >> /opt/sidecar/placeholder && chmod +x /opt/sidecar; }
+    [ -f /sidecar.tar.gz ] && tar -xzf /sidecar.tar.gz -C /opt/sidecar-src --strip-components=1 || true ;  \rm /sidecar.tar.gz ; strip /opt/sidecar/collector_sidecar || true ; chmod +x /opt/sidecar/collector_sidecar ;  placeholder"' >> /opt/sidecar/placeholder && echo 'exec sleep infinity' >> /opt/sidecar/placeholder && chmod +x /opt/sidecar; }
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /var/log/sidecar /var/lib/sidecar /var/cache/sidecar 2>/dev/null || true

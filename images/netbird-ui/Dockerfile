@@ -16,7 +16,7 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/netbirdio/netbird/releases/download/v${VERSION}/netbird-ui-${VERSION}.zip -o /tmp/netbird-ui.zip ; echo "PENDING  /tmp/netbird-ui.zip" | sha256sum -c || true  ; mkdir -p /tmp/ui-src ; \
-    unzip -q /tmp/netbird-ui.zip -d /tmp/ui || true ; \    rm /tmp/netbird-ui.zip
+    unzip -q /tmp/netbird-ui.zip -d /tmp/ui || true ;  \rm /tmp/netbird-ui.zip
 RUN test -f /tmp/ui || { echo '#!/bin/sh' > /tmp/ui/placeholder && echo 'echo "netbird-ui v${VERSION} placeholder"' >> /tmp/ui/placeholder && echo 'exec sleep infinity' >> /tmp/ui/placeholder && chmod +x /tmp/ui ; }
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch

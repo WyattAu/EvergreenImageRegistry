@@ -4,7 +4,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG GITHUB_TOKEN
-RUN apk add --no-cache ca-certificates curl gnupg " || true
+RUN apk add --no-cache ca-certificates curl gnupg 2>/dev/null || true
 RUN mkdir -p /var/log/onlyoffice /var/lib/onlyoffice ; \
     chown -R 65532:65532 /var/log/onlyoffice /var/lib/onlyofficeUSER 65532:65532
 WORKDIR /app

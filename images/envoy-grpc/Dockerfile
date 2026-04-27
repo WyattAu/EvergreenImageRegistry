@@ -5,7 +5,7 @@
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
-ARG VERSION=1.29.0
+ARG VERSION=1.38.0
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
@@ -21,7 +21,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 RUN test -f /tmp/envoy || { echo '#!/bin/sh' > /tmp/envoy && echo 'echo "envoy-grpc v${VERSION} placeholder"' >> /tmp/envoy && echo 'exec sleep infinity' >> /tmp/envoy && chmod +x /tmp/envoy ; }
 FROM scratch
-ARG VERSION=1.29.0
+ARG VERSION=1.38.0
 COPY --from=builder /tmp/envoy /usr/local/bin/envoy
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

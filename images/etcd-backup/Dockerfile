@@ -5,7 +5,7 @@
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
-ARG VERSION=3.5.15
+ARG VERSION=3.6.10
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023
@@ -21,7 +21,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 RUN test -f /tmp/etcdctl || { echo '#!/bin/sh' > /tmp/etcdctl && echo 'echo "etcd-backup v${VERSION} placeholder"' >> /tmp/etcdctl && echo 'exec sleep infinity' >> /tmp/etcdctl && chmod +x /tmp/etcdctl ; }
 FROM scratch
-ARG VERSION=3.5.15
+ARG VERSION=3.6.10
 COPY --from=builder /tmp/etcdctl /usr/local/bin/etcdctl
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

@@ -1,5 +1,5 @@
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=2024.1.1
+ARG VERSION=2026.03.17
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/gurucomputing/headscale-ui/releases/download/2024.1.1/headscale-ui-2024.1.1.tar.gz -o /dist.tar.gz || true ; \
@@ -15,7 +15,7 @@ WORKDIR /www
 EXPOSE 8080
 ENTRYPOINT ["/app/fileserver"]
 LABEL org.opencontainers.image.title="headscale-ui" \
-      org.opencontainers.image.version="2024.1.1" \
+      org.opencontainers.image.version="2026.03.17" \
       org.opencontainers.image.vendor="gurucomputing" \
       org.opencontainers.image.source="https://github.com/gurucomputing/headscale-ui" \
       sovereign.image.tier="1" \

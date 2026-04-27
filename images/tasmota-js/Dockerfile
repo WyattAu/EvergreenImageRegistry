@@ -7,8 +7,6 @@ RUN npm install -g tasmotizer 2>/dev/null || true
 RUN mkdir -p /app-src 2>/dev/null || true
 
 
-RUN  placeholder' >> /usr/lib/node_modules && echo 'exec sleep infinity' >> /usr/lib/node_modules && chmod +x /usr/lib/node_modules ; } ; \
-     placeholder' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

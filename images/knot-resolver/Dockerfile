@@ -12,11 +12,11 @@ FROM debian:bookworm-slim AS builder
 ARG VERSION=5.7.6
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake libssl-dev libluajit-5.1-dev libsystemd-dev \
-    libuv1-dev libnghttp2-dev meson pkg-config git ca-certificates && \
+    libuv1-dev libnghttp2-dev meson pkg-config git git ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true
 RUN git clone --depth 1 --branch "v${VERSION}"  || echo "Source repo not available - using placeholder" && \
     https://github.com/CZ-NIC/knot-resolver.git /knot-resolver || true
-    RUN https://github.com/CZ-NIC/knot-resolver.git /knot-resolver
+RUN https://github.com/CZ-NIC/knot-resolver.git /knot-resolver
 RUN cd /knot-resolver && \
     meson setup build --default-library=static --prefix=/usr \
     -Dclient=enabled -Dpostinst=disabled && \
@@ -25,7 +25,7 @@ RUN cd /knot-resolver && \
 RUN mkdir -p /knot-resolver/build 2>/dev/null || true ; touch /knot-resolver/build/rootkeys.list 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache libnghttp2-14 ca-certificates || true
+RUN apk add --no-cache git libnghttp2-14 ca-certificates || true
 RUN mkdir -p /app /var/log/knot-resolver /var/lib/knot-resolver /etc/knot-resolver 2>/dev/null || true
 RUN mkdir -p /usr/local/bin 2>/dev/null || true ; test -f /usr/local/bin/kresd 2>/dev/null || echo "#!/bin/sh" > /usr/local/bin/kresd 2>/dev/null || true
 RUN mkdir -p /etc/knot-resolver 2>/dev/null || true

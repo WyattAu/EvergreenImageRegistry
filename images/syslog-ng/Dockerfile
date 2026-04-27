@@ -29,7 +29,7 @@ RUN mkdir -p /usr/sbin 2>/dev/null || true ; test -f /usr/sbin/syslog-ng 2>/dev/
 COPY --from=builder /usr/sbin/syslog-ng /usr/sbin/syslog-ng
 RUN mkdir -p /app/conf /app/logs /app/run /var/lib/syslog-ng ; \
 addgroup -S syslogng 2>/dev/null || true && adduser -u 65532 -G syslogng -D -s /bin/false syslogng 2>/dev/null || true
-    RUN chown -R syslogng:syslogng /app /var/lib/syslog-ng 2>/dev/null || true
+RUN chown -R syslogng:syslogng /app /var/lib/syslog-ng 2>/dev/null || true
 COPY <<'EOF' /app/conf/syslog-ng.conf
 @version: 4.8
 source s_network {

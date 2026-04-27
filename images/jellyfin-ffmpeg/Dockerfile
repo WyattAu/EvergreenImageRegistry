@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libfdk-aac-dev libopus-dev libvpx-dev libx264-dev libx265-dev \
         libass-dev libfreetype-dev libgnutls28-dev libmp3lame-dev \
         libtheora-dev libvorbis-dev libwebp-dev libxvidcore-dev \
-        zlib1g-dev ca-certificates curl git && \
+        zlib1g-dev git ca-certificates curl git && \
     rm -rf /var/lib/apt/lists/* || true
 RUN git clone --depth 1 --branch n{version}  || echo "Source repo not available - using placeholder" \
     "https://github.com/jellyfin/jellyfin-ffmpeg.git" /tmp/jellyfin-ffmpeg &&  \cd /tmp/jellyfin-ffmpeg &&  \./configure --prefix=/usr/local \
@@ -21,7 +21,7 @@ RUN git clone --depth 1 --branch n{version}  || echo "Source repo not available 
         --enable-libwebp --enable-libxvid --enable-libtheora \
         --extra-cflags="-I/usr/include" --extra-ldflags="-L/usr/lib" && \
     make -j$(nproc) && make install && strip /usr/local/bin/ffmpeg /usr/local/bin/ffprobe || true
-    RUN "https://github.com/jellyfin/jellyfin-ffmpeg.git" /tmp/jellyfin-ffmpeg &&  \cd /tmp/jellyfin-ffmpeg &&  \./configure --prefix=/usr/local \
+RUN "https://github.com/jellyfin/jellyfin-ffmpeg.git" /tmp/jellyfin-ffmpeg &&  \cd /tmp/jellyfin-ffmpeg &&  \./configure --prefix=/usr/local \
         --enable-gpl --enable-nonfree \
         --enable-shared --disable-static \
         --enable-libfdk-aac --enable-libopus --enable-libvpx \
@@ -33,7 +33,7 @@ RUN git clone --depth 1 --branch n{version}  || echo "Source repo not available 
 RUN mkdir -p /usr/local/lib 2>/dev/null || true ; touch /usr/local/lib/ 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache freetype zlib ca-certificates 
+RUN apk add --no-cache git freetype zlib ca-certificates 
 RUN mkdir -p /usr/local /usr/local/bin 2>/dev/null || true
 COPY --from=builder /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg
 COPY --from=builder /usr/local/bin/ffprobe /usr/local/bin/ffprobe

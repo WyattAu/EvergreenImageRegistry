@@ -5,15 +5,15 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        nodejs npm ca-certificates curl git && \
+        nodejs npm git ca-certificates curl git && \
     rm -rf /var/lib/apt/lists/* || true
 RUN git clone --depth 1 --branch v{version}  || echo "Source repo not available - using placeholder" \
     "https://github.com/taigaio/taiga-front-dist.git" /tmp/taiga-front &&  \cd /tmp/taiga-front && npm install && npm run build || true
-    RUN "https://github.com/taigaio/taiga-front-dist.git" /tmp/taiga-front &&  \cd /tmp/taiga-front && npm install && npm run build || true
+RUN "https://github.com/taigaio/taiga-front-dist.git" /tmp/taiga-front &&  \cd /tmp/taiga-front && npm install && npm run build || true
 RUN mkdir -p /tmp/taiga-front 2>/dev/null || true ; touch /tmp/taiga-front/dist 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates curl nginx || true
+RUN apk add --no-cache git ca-certificates curl nginx || true
 RUN mkdir -p /var/www 2>/dev/null || true ; test -f /var/www/taiga-front 2>/dev/null || echo "#!/bin/sh" > /var/www/taiga-front 2>/dev/null || true
 COPY --from=builder /tmp/taiga-front/dist /var/www/taiga-front
 RUN mkdir -p /var/log/nginx /var/cache/nginx /var/www/taiga-front ; \

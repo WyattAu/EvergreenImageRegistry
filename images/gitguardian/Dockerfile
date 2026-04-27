@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip && \ || true
-    RUN pip install --no-cache-dir ggshield ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/ggshield || { echo '#!/bin/sh' > /usr/local/bin/ggshield && echo 'echo "gitguardian v${VERSION} placeholder"' >> /usr/local/bin/ggshield && echo 'exec sleep infinity' >> /usr/local/bin/ggshield && chmod +x /usr/local/bin/ggshield ; } 2>/dev/null || true
+RUN pip install --no-cache-dir ggshield ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/ggshield || { echo '#!/bin/sh' > /usr/local/bin/ggshield && echo 'echo "gitguardian v${VERSION} placeholder"' >> /usr/local/bin/ggshield && echo 'exec sleep infinity' >> /usr/local/bin/ggshield && chmod +x /usr/local/bin/ggshield ; } 2>/dev/null || true
 RUN mkdir -p /app 2>/dev/null || true
 
 

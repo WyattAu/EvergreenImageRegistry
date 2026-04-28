@@ -26,7 +26,7 @@ RUN adduser -D -u 65532 -s /bin/false nifi 2>/dev/null || true
 RUN mkdir -p /var/lib/nifi-registry /var/log/nifi-registry /var/cache/nifi-registry 2>/dev/null || true
 RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/nifi-registry-${VERSION} /opt/nifi-registry
-RUN addgroup -S nifi 2>/dev/null || true && adduser -u 65532 -G nifi -D -s /bin/false nifi 2>/dev/null || true
+RUN addgroup -S -g 2 nifi>/dev/null || true && adduser -u 65532 -G nifi -D -s /bin/false nifi 2>/dev/null || true
 RUN chown -R nifi:nifi /opt/nifi-registry /var/lib/nifi-registry /var/log/nifi-registry /var/cache/nifi-registry 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/nifi-registry

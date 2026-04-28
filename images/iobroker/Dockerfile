@@ -12,7 +12,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache nodejs npm ca-certificates 
 COPY --from=builder /opt/iobroker /opt/iobroker
 COPY --from=builder /app /app
-RUN addgroup -S nogroup 2>/dev/null || true
+RUN addgroup -S -g 2 nogroup>/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /opt/iobroker -s /bin/false iobroker 2>/dev/null || true && \
     chown -R 65532:65532 /opt/iobroker /app 2>/dev/null || true
 USER 65532:65532

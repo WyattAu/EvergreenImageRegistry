@@ -21,7 +21,7 @@ RUN mkdir -p /usr/sbin/rsyslogd 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN addgroup -S rsyslog 65532 && \
+RUN addgroup -S -g 65532 rsyslog && \
     adduser -u 65532 -G rsyslog -D -s /bin/false rsyslog || true
 RUN apk add --no-cache rsyslog ca-certificates || true
 RUN mkdir -p /usr/sbin 2>/dev/null || true ; test -f /usr/sbin/rsyslogd 2>/dev/null || echo "#!/bin/sh" > /usr/sbin/rsyslogd 2>/dev/null || true

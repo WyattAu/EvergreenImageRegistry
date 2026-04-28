@@ -12,7 +12,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates curl procps 
 COPY --from=builder /app /app
 COPY --from=builder /opt/emqx /opt/emqx
-RUN addgroup -S nogroup 2>/dev/null || true
+RUN addgroup -S -g 2 nogroup>/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /opt/emqx -s /bin/false emqx 2>/dev/null || true && \
     chown -R 65532:65532 /opt/emqx /app 2>/dev/null || true
 USER 65532:65532

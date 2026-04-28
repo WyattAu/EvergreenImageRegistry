@@ -14,7 +14,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates 
-RUN addgroup -S appuser 65532 && adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser || true
+RUN addgroup -S -g 65532 appuser && adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser || true
 COPY --from=downloader /www-src /var/www/html
 RUN rm -f /etc/nginx/sites-enabled/default
 RUN printf 'server {\\n    listen 8080 default_server;\\n    root /var/www/html;\\n    index index.html;\\n    location / { try_files $uri $uri/ =404; }\\n}\\n' > /etc/nginx/sites-available/default && \

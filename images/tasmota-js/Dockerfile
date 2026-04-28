@@ -14,7 +14,7 @@ RUN apk add --no-cache nodejs npm ca-certificates
 RUN mkdir -p /usr/lib 2>/dev/null || true
 COPY --from=builder /usr/lib/node_modules /usr/lib/node_modules
 COPY --from=builder /app /app
-RUN addgroup -S nogroup 2>/dev/null || true
+RUN addgroup -S -g 2 nogroup>/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false tasmota 2>/dev/null || true && \
     chown -R 65532:65532 /app/placeholder /usr/lib/node_modules 2>/dev/null || true
 USER 65532:65532

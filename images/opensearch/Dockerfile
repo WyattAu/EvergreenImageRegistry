@@ -17,7 +17,7 @@ ENV HEALTH_CMD="curl -sf http://localhost:9200" \
     STARTUP_CMD="curl -sf http://localhost:9200" \
     SOVEREIGN_LOG_LEVEL=info
 
-RUN addgroup -S opensearch 65532 && \
+RUN addgroup -S -g 65532 opensearch && \
     adduser -u 65532 -G opensearch -D -s /bin/false opensearch
 RUN apk add --no-cache curl ca-certificates gosu 
 RUN mkdir -p /etc/ssl/certs /opt 2>/dev/null || true

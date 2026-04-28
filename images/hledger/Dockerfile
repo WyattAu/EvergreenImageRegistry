@@ -1,7 +1,7 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.52
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/simonmichael/hledger/releases/download/${VERSION}/hledger-linux-x64.tar.gz -o /hledger.tar.gz && \
     tar -xzf /hledger.tar.gz -C /usr/local/bin/ && rm /hledger.tar.gz && \
     strip /usr/local/bin/hledger && chmod +x /usr/local/bin/hledger

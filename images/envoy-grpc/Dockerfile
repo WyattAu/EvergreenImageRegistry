@@ -14,7 +14,7 @@ FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/envoyproxy/envoy/releases/download/v${VERSION}/envoy-${VERSION}-linux-x86_64 -o /tmp/envoy && \
     chmod +x /tmp/envoy && strip --strip-all /tmp/envoy
 FROM scratch

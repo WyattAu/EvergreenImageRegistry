@@ -16,7 +16,7 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/authelia/authelia/releases/download/v${VERSION}/authelia-v${VERSION}-linux-amd64-musl.tar.gz -o authelia.tar.gz && \
     tar -xzf authelia.tar.gz && \
-    strip --strip-all authelia-linux-amd64-musl 2>/dev/null ; mv authelia-linux-amd64-musl /tmp/authelia
+    strip --strip-all authelia && mv authelia /tmp/authelia
 
 FROM scratch
 ARG VERSION=4.39.19

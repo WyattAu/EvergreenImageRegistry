@@ -14,7 +14,7 @@ FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/etcd-io/etcd/releases/download/v${VERSION}/etcd-v${VERSION}-linux-amd64.tar.gz -o etcd.tar.gz && \
     tar -xzf etcd.tar.gz && \
     strip --strip-all etcd-v${VERSION}-linux-amd64/etcdctl && mv etcd-v${VERSION}-linux-amd64/etcdctl /tmp/etcdctl

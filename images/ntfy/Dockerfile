@@ -1,7 +1,7 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=2.22.0
 ARG GITHUB_TOKEN
-RUN apt-get update &&     apt-get install -y --no-install-recommends curl ca-certificates &&     rm -rf /var/lib/apt/lists/*
+RUN apt-get update &&     apt-get install -y --no-install-recommends binutils curl ca-certificates &&     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/binwiederhier/ntfy/releases/download/v${VERSION}/ntfy_${VERSION}_linux_amd64.tar.gz -o /tmp/ntfy.tar.gz && \
     tar -xzf /tmp/ntfy.tar.gz -C /tmp && \
     mv /tmp/ntfy /usr/local/bin/ntfy && chmod +x /usr/local/bin/ntfy && strip /usr/local/bin/ntfy

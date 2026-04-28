@@ -1,17 +1,13 @@
 
 FROM debian:bookworm-slim AS builder
+ARG VERSION=5.1.4
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        openjdk-17-jre-base curl ca-certificates unzip || true ; \
-    rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/openhab/openhab-distro/releases/download/4.2.1/openhab-4.2.1.zip || true ; \
-    -o /openhab.zip && \
-    unzip -q /openhab.zip -d /opt/openhab && rm /openhab.zip || true
-RUN mkdir -p /app-src /opt/openhab/userdata /opt/openhab/conf /opt/openhab/log 2>/dev/null || true
-
-
-RUN mkdir -p /opt/openhab ; \
-    test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "openhab3 v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; }
+        openjdk-17-jre-base curl ca-certificates unzip && \
+    rm -rf /var/lib/apt/lists/*
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/openhab/openhab-distro/releases/download/${VERSION}/openhab-${VERSION}.zip -o /openhab.zip && \
+    unzip -q /openhab.zip -d /opt/openhab && rm /openhab.zip
+RUN mkdir -p /app-src /opt/openhab/userdata /opt/openhab/conf /opt/openhab/log
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

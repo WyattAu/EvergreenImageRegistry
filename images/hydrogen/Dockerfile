@@ -1,14 +1,14 @@
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=0.4.0
+ARG VERSION=0.5.1
 ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true
+    rm -rf /var/lib/apt/lists/*
 WORKDIR /tmp
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/element-hq/hydrogen-web/releases/download/v0.4.0/hydrogen-v0.4.0.tar.gz -o /tmp/release.tar.gz || true ; \
-    mkdir -p /www-src ; \
-    [ -f /tmp/release.tar.gz ] && tar -xzf /tmp/release.tar.gz -C /www-src --strip-components=1 || true ; \
-    rm /tmp/release.tar.gz ; test -f /www || { echo '#!/bin/sh' > /www/placeholder && echo 'echo "hydrogen v${VERSION} placeholder"' >> /www/placeholder && echo 'exec sleep infinity' >> /www/placeholder && chmod +x /www; }
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/element-hq/hydrogen-web/releases/download/v${VERSION}/hydrogen-web-${VERSION}.tar.gz -o /tmp/release.tar.gz && \
+    mkdir -p /www-src && \
+    tar -xzf /tmp/release.tar.gz -C /www-src --strip-components=1 && \
+    rm /tmp/release.tar.gz
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
@@ -27,7 +27,7 @@ EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
 LABEL org.opencontainers.image.title="hydrogen" \
       org.opencontainers.image.description="Hydrogen - lightweight Matrix web client" \
-      org.opencontainers.image.version="0.4.0" \
+      org.opencontainers.image.version="0.5.1" \
       org.opencontainers.image.vendor="Element" \
       org.opencontainers.image.source="https://github.com/element-hq/hydrogen-web" \
       sovereign.image.tier="2" \

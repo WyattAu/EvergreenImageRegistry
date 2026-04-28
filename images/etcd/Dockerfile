@@ -1,12 +1,11 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=3.6.10
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/etcd-io/etcd/releases/download/v3.6.10/etcd-v3.5.15-linux-amd64.tar.gz -o /etcd.tar.gz && \
-    echo "81a8b6ecd5df15a4e0245c811d053f08717ebe6a624759afa56d58dde744e4fb  /etcd.tar.gz" | sha256sum -c || true ; [ -f /etcd.tar.gz ] && \
-    [ -f /etcd.tar.gz ] && tar -xzf /etcd.tar.gz -C / && rm /etcd.tar.gz && chmod +x /etcd 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/etcd-io/etcd/releases/download/v3.6.10/etcd-v3.5.15-linux-amd64.tar.gz -o /etcd && chmod +x /etcd ; test -f /etcd || { echo '#!/bin/sh' > /etcd && echo 'echo "etcd v${VERSION} placeholder"' >> /etcd && echo 'exec sleep infinity' >> /etcd && chmod +x /etcd; } || true
-
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/etcd-io/etcd/releases/download/v${VERSION}/etcd-v${VERSION}-linux-amd64.tar.gz -o /etcd.tar.gz && \
+    tar -xzf /etcd.tar.gz -C /tmp && \
+    mv /tmp/etcd-v${VERSION}-linux-amd64/etcd /etcd && \
+    chmod +x /etcd && rm -rf /etcd.tar.gz /tmp/etcd-v${VERSION}-linux-amd64
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/etcd /var/cache/etcd 2>/dev/null || true

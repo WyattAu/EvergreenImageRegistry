@@ -1,18 +1,18 @@
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=${VERSION}
+ARG VERSION=3.6.10
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/etcd-io/etcd/releases/download/v${VERSION}/etcd-v${VERSION}-linux-amd64.tar.gz -o /etcd.tar.gz || true ; \
-    [ -f /etcd.tar.gz ] && tar -xzf /etcd.tar.gz -C /tmp && rm /etcd.tar.gz || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/etcd-io/etcd/releases/download/v${VERSION}/etcd-v${VERSION}-linux-amd64.tar.gz -o /etcd.tar.gz && \
+    tar -xzf /etcd.tar.gz -C /tmp && rm /etcd.tar.gz && \
     chmod +x /tmp/etcd-v${VERSION}-linux-amd64/etcd && \
-    mv /tmp/etcd-v${VERSION}-linux-amd64/etcd /etcd ; test -f /etcd || { echo '#!/bin/sh' > /etcd && echo 'echo "etcd-empty v${VERSION} placeholder"' >> /etcd && echo 'exec sleep infinity' >> /etcd && chmod +x /etcd; }
-
+    mv /tmp/etcd-v${VERSION}-linux-amd64/etcd /etcd
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/etcd /var/cache/etcd /etcd-data 2>/dev/null || true
 
 
 FROM scratch
+ARG VERSION
 COPY --from=downloader /etcd /etcd
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app

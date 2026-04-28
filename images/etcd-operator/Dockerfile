@@ -1,6 +1,6 @@
 # =============================================================================
 # SOVEREIGN HARDENED ETCD-OPERATOR
-# Generated from template - Version: 3.5.15
+# Generated from template - Version: 3.6.10
 # Constraint: scratch - static Go binary from etcd-io/etcd release
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
@@ -12,13 +12,12 @@ ARG BUILD_DATE
 FROM debian:bookworm-20250113-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/etcd-io/etcd/releases/download/v${VERSION}/etcd-v${VERSION}-linux-amd64.tar.gz -o /tmp/etcd.tgz ; echo "81a8b6ecd5df15a4e0245c811d053f08717ebe6a624759afa56d58dde744e4fb  /tmp/etcd.tgz" | sha256sum -c || true  ; [ -f /tmp/etcd.tgz ] && tar -xzf /tmp/etcd.tgz -C /tmp || true ; \
-    strip --strip-all /tmp/etcd-v${VERSION}-linux-amd64/etcdctl ; mv /tmp/etcd-v${VERSION}-linux-amd64/etcdctl /usr/local/bin/etcdctl \
-    && rm -rf /tmp/etcd.tgz /tmp/etcd-v${VERSION}-linux-amd64
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/etcd-io/etcd/releases/download/v${VERSION}/etcd-v${VERSION}-linux-amd64.tar.gz -o /tmp/etcd.tgz && \
+    tar -xzf /tmp/etcd.tgz -C /tmp && \
+    strip --strip-all /tmp/etcd-v${VERSION}-linux-amd64/etcdctl && mv /tmp/etcd-v${VERSION}-linux-amd64/etcdctl /usr/local/bin/etcdctl && \
+    rm -rf /tmp/etcd.tgz /tmp/etcd-v${VERSION}-linux-amd64
 
-
-RUN test -f /usr/local/bin/etcdctl || { echo '#!/bin/sh' > /usr/local/bin/etcdctl && echo 'echo "etcd-operator v${VERSION} placeholder"' >> /usr/local/bin/etcdctl && echo 'exec sleep infinity' >> /usr/local/bin/etcdctl && chmod +x /usr/local/bin/etcdctl ; }
 FROM scratch
 ARG VERSION=3.6.10
 COPY --from=builder /usr/local/bin/etcdctl /usr/local/bin/etcdctl

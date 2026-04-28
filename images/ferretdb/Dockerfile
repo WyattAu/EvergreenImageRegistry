@@ -1,26 +1,23 @@
 # =============================================================================
 # SOVEREIGN HARDENED FERRETDB
-# Generated from template - Version: 1.21.0
+# Generated from template - Version: 2.7.0
 # Constraint: scratch - static Go binary, purest form
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
-ARG VERSION=1.21.0
+ARG VERSION=2.7.0
 ARG BUILD_DATE
 
 
 FROM debian:bookworm-20250113-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/FerretDB/FerretDB/releases/download/v${VERSION}/ferretdb-${VERSION}-linux-amd64.tar.gz -o /tmp/ferretdb.tgz ; echo "d4e5f6789012345678901234567890abcdef1234567890abcdef1234567890123456  /tmp/ferretdb.tgz" | sha256sum -c || true  ; [ -f /tmp/ferretdb.tgz ] && tar -xzf /tmp/ferretdb.tgz -C /tmp || true ; \
-    strip --strip-all /tmp/ferretdb ; mv /tmp/ferretdb /usr/local/bin/ferretdb \
-    && rm -rf /tmp/ferretdb.tgz
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/FerretDB/FerretDB/releases/download/v${VERSION}/ferretdb-amd64-linux -o /usr/local/bin/ferretdb && \
+    chmod +x /usr/local/bin/ferretdb && strip --strip-all /usr/local/bin/ferretdb
 
-
-RUN test -f /usr/local/bin/ferretdb || { echo '#!/bin/sh' > /usr/local/bin/ferretdb && echo 'echo "ferretdb v${VERSION} placeholder"' >> /usr/local/bin/ferretdb && echo 'exec sleep infinity' >> /usr/local/bin/ferretdb && chmod +x /usr/local/bin/ferretdb ; }
 FROM scratch
-ARG VERSION=1.21.0
+ARG VERSION=2.7.0
 COPY --from=builder /usr/local/bin/ferretdb /usr/local/bin/ferretdb
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

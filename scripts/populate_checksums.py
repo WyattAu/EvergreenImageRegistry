@@ -124,6 +124,24 @@ def extract_download_url(dockerfile_path: Path) -> Optional[str]:
         if not match:
             # Pattern 2: curl -fsSL '<URL>' -o <file>  (single quotes)
             match = re.search(r"curl\s+-[^\s]*\s+'([^']+)'\s+-o", line)
+        if not match:
+            # Pattern 3: unquoted URL with -o: curl ... https://... -o file
+            # Match http(s) URL followed by -o, skipping flags like -H "..."
+            match = re.search(r'(https?://\S+)\s+-o\s', line)
+        if not match:
+            # Pattern 4: URL in double quotes after flags: curl ... -H "..." "URL" -o
+            # This catches: curl -fsSL -H "Auth: token" "https://..." -o
+            urls_in_line = re.findall(r'"(https?://[^"]+)"', line)
+            for url_candidate in urls_in_line:
+                # Skip auth header values
+                if 'Authorization' in line and url_candidate.startswith('token '):
+                    continue
+                if not url_candidate or url_candidate == '""':
+                    continue
+                if url_candidate.startswith("http://localhost") or url_candidate.startswith("http://127."):
+                    continue
+                match = type('M', (), {'group': lambda self, n: url_candidate if n == 1 else ''})()
+                break
 
         if match:
             url = match.group(1)

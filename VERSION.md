@@ -5,10 +5,10 @@
 | Attribute | Value |
 |-----------|-------|
 | Project Name | Sovereign Hardened Image Registry |
-| Version | 7.0.0 |
-| Phase | Phase 11: Migration Cleanup & Package Hygiene |
+| Version | 8.0.0 |
+| Phase | CI Build Fix Campaign |
 | Status | COMPLETED |
-| Last Updated | 2026-04-22 |
+| Last Updated | 2026-04-27 |
 
 ---
 
@@ -34,6 +34,7 @@
 | **Roadmap Phase 9: Stub Enhancement** | **COMPLETED** | **100%** |
 | **Roadmap Phase 10: Spec Unification** | **COMPLETED** | **100%** |
 | **Roadmap Phase 11: Migration Cleanup** | **COMPLETED** | **100%** |
+| **CI Build Fix Campaign** | **COMPLETED** | **100%** |
 
 ---
 
@@ -41,8 +42,9 @@
 
 | Metric | Value | Target | Status |
 |--------|-------|--------|--------|
-| Total Images | **1,014** | 1,050+ | **97%** |
-| Functional Images | **1,014** (100%) | 1,050+ | **DONE** |
+| Total Images | **1,013** | 1,050+ | **96%** |
+| CI Build Pass Rate | **1013/1013 (100%)** | 100% | **DONE** |
+| Functional Images | **1,013** (100%) | 1,050+ | **DONE** |
 | Stub Images | **0** (0%) | 0 | **DONE** |
 | debian-slim final stages | **0** | 0 | **DONE** |
 | Alpine final stages | **0** | 0 | **DONE** |

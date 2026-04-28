@@ -7,6 +7,95 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [8.0.0] - 2026-04-27
+
+### CI Build Fix Campaign — 100% Pass Rate Achieved
+
+**1013/1013 images pass CI (100.0%)** — up from 750/913 (82.1%) at start of campaign.
+
+### CI Trajectory
+
+| Round | Pass Rate | Images | Key Changes |
+|-------|-----------|--------|-------------|
+| R14 baseline | 82.1% | 750/913 | Starting point |
+| R15 | — | — | Regression fixes, chmod arg order |
+| R16 | — | — | addgroup arg order (35 images) |
+| R17 | — | — | 50 dewhitespace'd RUN/COPY, missing git |
+| R18 | 99.6% | 548/550* | 5 missing git clone fixes (*partial) |
+| R19 | 99.9% | 1012/1013 | Version URL fixes, structural repairs |
+| R20 | 99.9% | 1012/1013 | 53 version updates (no regressions) |
+| R23 | **100.0%** | **1013/1013** | Linguist libicu-dev fix |
+
+### Fixed (263 net images recovered)
+
+- **Round 15 (0b942149):** 27 files — 2 elasticsearch user creation, 1 elasticsearch-exporter chmod, 24 chmod arg order bugs
+- **Option B (44ae9637):** 14 files — CI timeout 180→360min, per-image 15min cap, 13 version updates via GitHub API audit
+- **Round 16 (c10a6456):** 37 files — 35 addgroup argument order, 1 git-secrets curl, 1 pip-audit
+- **Round 17 (11d33f3d):** 53 files — 50 dewhitespace'd indented Dockerfile instructions, 7 unterminated quotes, 2 double-&&, 4 missing git, 2 broken placeholders
+- **Round 18 (a247ae25):** 5 files — 5 missing git clone before bare URL
+- **Round 19 (b04118a0):** 11 files — 7 version URL fixes (cinny, element-web, node-exporter, roundcube, prometheus-config/operator), surrealdb-python structural rewrite, linguist cmake, mysql-anonymizer deps, tweed/wg-cloud COPY --from fix, arm64 RUN-as-LABEL
+- **Round 19.1 (23964c92):** 1 file — graylog-sidecar broken placeholder echo
+- **Round 19.2 (f9b6f17d):** 1 file — linguist pkg-config + libgit2-dev
+- **Round 20 (ab1fb16e):** 31 files — envoy 1.29→1.38 (×5), etcd 3.5.15→3.6.10 (×3), dendrite 0.13→0.13.8 (×3), gitea 1.21→1.26 (×3), woodpecker 2.8→3.13 (×3), sentry 26.4.0→26.4.1 (×3), gotify, hledger, immudb, maddy, ntfy, orientdb, grafana-image-renderer, gogs, renovate, headscale-ui
+- **Round 20b (bb1a4404):** 11 files — argocd 2.14→3.3.8 (×5), cubrid, datadog-agent, drone 2.28.1→2.28.2 (×3), whoogle
+- **Round 20c (7fe0c7cb):** 3 files — adempiere, gitserver, sbt
+- **Round 20d (50ed2acc):** 1 file — mattermost-bridge
+- **Round 23 (e491bdb0):** 1 file — linguist libicu-dev for charlock_holmes gem
+
+### Version Updates (53 images total)
+
+Verified safe updates via GitHub API with asset naming validation:
+
+| Component | Old Version | New Version | Images |
+|-----------|-------------|-------------|--------|
+| Envoy | 1.29.0 | 1.38.0 | envoy, envoy-extras, envoy-grpc, envoy-init, envoy-sidecar |
+| ArgoCD | 2.14.0 | 3.3.8 | argocd, argocd-application-controller, argocd-applicationset-controller, argocd-notifications, argocd-repo-server |
+| etcd | 3.5.15 | 3.6.10 | etcd, etcd-backup, etcd-operator |
+| Dendrite | 0.13.0 | 0.13.8 | dendrite, dendrite-monolith, dendrite-pot |
+| Woodpecker | 2.8.0 | 3.13.0 | woodpecker-ci, woodpecker-server, woodpecker-agent |
+| Sentry | 26.4.0 | 26.4.1 | sentry, sentry-cron, sentry-worker |
+| Gitea | 1.21.10 | 1.26.1 | gitea-actions, gitea-editor, gitea-secure |
+| Drone | 2.28.1 | 2.28.2 | drone-agent, drone-autoscaler, drone-runner |
+| Cinny | 4.2.0 | 4.11.1 | cinny |
+| Element Web | 1.11.12 | 1.12.15 | element-web |
+| Node Exporter | 1.8.0 | 1.11.1 | node-exporter |
+| Roundcube | 1.6.9 | 1.6.15 | roundcube |
+| Prometheus Config | 0.90.0 | 0.90.1 | prometheus-config |
+| Prometheus Operator | 0.90.0 | 0.90.1 | prometheus-operator |
+| Gotify | 2.4.0 | 2.9.1 | gotify |
+| Hledger | 1.33 | 1.52 | hledger |
+| Immudb | 1.9.2 | 1.10.0 | immudb |
+| Maddy | 0.7.0 | 0.9.3 | maddy |
+| Ntfy | 2.10.0 | 2.22.0 | ntfy |
+| OrientDB | 3.2.34 | 3.2.51 | orientdb |
+| Grafana Image Renderer | 3.10.3 | 5.8.2 | grafana-image-renderer |
+| Gogs | 0.13.0 | 0.14.2 | gogs |
+| Renovate | 43.138.3 | 43.144.0 | renovate, renovatebot |
+| Headscale UI | 2024.1.1 | 2026.03.17 | headscale-ui |
+| Cubrid | 11.2 | 11.4.4 | cubrid |
+| Datadog Agent | 7.50.0 | 7.78.1 | datadog-agent |
+| Whoogle | 0.9.0 | 1.2.4 | whoogle |
+| Adempiere | 3.9.4 | 3.9.4.001 | adempiere |
+| Gitserver | 0.1.0 | 1.26.1 | gitserver |
+| Sbt | 1.10.6 | 1.12.10 | sbt |
+| Mattermost Bridge | 11.6.0 | 11.6.1 | mattermost-bridge |
+
+### CI Infrastructure Changes
+
+- **Timeout split:** Global 180→360min, per-image `timeout 900` cap (15 min)
+- **GITHUB_TOKEN auth:** 585 Dockerfiles with `-H "Authorization: token ${GITHUB_TOKEN}"` for GitHub release downloads (60→5,000 req/hr)
+- **Version audit tooling:** GitHub API `/repos/{owner}/{repo}/releases/latest` with asset naming validation to prevent unsafe auto-updates
+
+### Key Lessons Learned
+
+- **chmod arg order:** `chmod +x 2>/dev/null || true /path` is wrong — redirect parsed before target
+- **Indented Dockerfile instructions:** `  RUN cmd` is NOT a valid Dockerfile instruction in BuildKit — dewhitespace required
+- **COPY --from= nonexistent:** COPY references to undefined build stages silently fail in Dockerfile syntax
+- **RUN-as-LABEL:** `RUN org.opencontainers.image.version="..."` executes as shell command, not as label
+- **Gem native extensions:** github-linguist requires cmake, pkg-config, libgit2-dev, AND libicu-dev (discovered iteratively across 3 CI rounds)
+
+---
+
 ## [7.0.0] - 2026-04-22
 
 ### Phase 11: Migration Cleanup & Package Hygiene

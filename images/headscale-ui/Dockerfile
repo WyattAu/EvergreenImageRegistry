@@ -1,10 +1,9 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=2026.03.17
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/gurucomputing/headscale-ui/releases/download/2024.1.1/headscale-ui-2024.1.1.tar.gz -o /dist.tar.gz || true ; \
-    mkdir -p /www-src && [ -f /dist.tar.gz ] && tar -xzf /dist.tar.gz -C /www/ --strip-components=1 || true ; \
-    rm -rf /dist.tar.gz ; test -f /www || { echo '#!/bin/sh' > /www/placeholder && echo 'echo "headscale-ui v${VERSION} placeholder"' >> /www/placeholder && echo 'exec sleep infinity' >> /www/placeholder && chmod +x /www; }
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/gurucomputing/headscale-ui/releases/download/${VERSION}/headscale-ui.zip -o /dist.zip && \
+    mkdir -p /www && unzip -q /dist.zip -d /www && rm /dist.zip
 
 
 FROM gcr.io/distroless/static-debian12

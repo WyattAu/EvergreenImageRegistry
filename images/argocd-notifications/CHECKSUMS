@@ -1,24 +1,37 @@
 # CHECKSUMS - argocd-notifications
-# Generated: 2026-04-21T19:09:24Z
-# Status: PENDING_VERIFICATION
+# Generated: 2026-04-28T15:25:29Z
+# Status: VERIFIED
 #
-# IMPORTANT: These checksums need to be verified against upstream sources.
-# To verify:
+# Verification performed by populate_checksums.py
+# Method: download-and-compute
+# Date: 2026-04-28T15:25:29Z
+#
+# IMPORTANT: These checksums are verified against upstream sources.
+# To re-verify:
 # 1. Download binary from URL below
 # 2. Compute: sha256sum <file>
 # 3. Compare with expected_sha256 below
 # 4. Cross-validate against upstream_checksum URL if available
+# 5. Submit PR with any changes
 
 [metadata]
 image = "argocd-notifications"
-version = "2.14.0"
-created = "2026-04-21T19:09:24Z"
-last_verified = ""
+version = "3.3.8"
+created = "2026-04-28T15:25:29Z"
+last_verified = "2026-04-28T15:25:29Z"
 verification_method = "download-and-compute"
+confidence = 0.80
+verifier = "populate_checksums.py"
 
 [download]
-url = "https://github.com/argoproj/argo-cd/releases/download/v2.14.0/argocd-linux-amd64"
+url = "https://github.com/argoproj/argo-cd/releases/download/v3.3.8/argocd-linux-amd64"
 filename = "argocd-linux-amd64"
 
 [checksum]
-expected_sha256 = "PENDING"
+# SHA256 of the downloaded archive/binary
+expected_sha256 = "11070d2502c5a51523f78388e23ddefb9151bd33f2faab955cde78a9c0d492e6"
+
+[upstream_checksum]
+# If upstream provides a checksum file, note the URL here
+url = "https://github.com/argoproj/argo-cd/releases/download/v3.3.8/sha256sums.txt"
+format = "sha256"

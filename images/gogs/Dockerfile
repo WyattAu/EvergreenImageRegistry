@@ -1,8 +1,10 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.14.2
 ARG GITHUB_TOKEN
-RUN apt-get update &&     apt-get install -y --no-install-recommends curl ca-certificates &&     rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/gogs/gogs/releases/download/v0.14.2/gogs_0.13.0_linux_amd64.tar.gz -o /tmp/binary &&     chmod +x /tmp/binary &&     strip /tmp/binary ; test -f /tmp/binary || { echo '#!/bin/sh' > /tmp/binary && echo 'echo "gogs v${VERSION} placeholder"' >> /tmp/binary && echo 'exec sleep infinity' >> /tmp/binary && chmod +x /tmp/binary; } || true
+RUN apt-get update &&     apt-get install -y --no-install-recommends curl ca-certificates &&     rm -rf /var/lib/apt/lists/*
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/gogs/gogs/releases/download/v${VERSION}/gogs_v${VERSION}_linux_amd64.tar.gz -o /tmp/gogs.tar.gz && \
+    tar -xzf /tmp/gogs.tar.gz -C /tmp && \
+    mv /tmp/gogs /usr/local/bin/gogs && chmod +x /usr/local/bin/gogs && strip /usr/local/bin/gogs
 
 
 FROM scratch

@@ -1,24 +1,37 @@
 # CHECKSUMS - cinny
-# Generated: 2026-04-21T19:09:25Z
-# Status: PENDING_VERIFICATION
+# Generated: 2026-04-28T15:26:36Z
+# Status: VERIFIED
 #
-# IMPORTANT: These checksums need to be verified against upstream sources.
-# To verify:
+# Verification performed by populate_checksums.py
+# Method: download-and-compute
+# Date: 2026-04-28T15:26:36Z
+#
+# IMPORTANT: These checksums are verified against upstream sources.
+# To re-verify:
 # 1. Download binary from URL below
 # 2. Compute: sha256sum <file>
 # 3. Compare with expected_sha256 below
 # 4. Cross-validate against upstream_checksum URL if available
+# 5. Submit PR with any changes
 
 [metadata]
 image = "cinny"
-version = "4.2.0"
-created = "2026-04-21T19:09:25Z"
-last_verified = ""
+version = "4.11.1"
+created = "2026-04-28T15:26:36Z"
+last_verified = "2026-04-28T15:26:36Z"
 verification_method = "download-and-compute"
+confidence = 0.80
+verifier = "populate_checksums.py"
 
 [download]
-url = "https://github.com/cinnyapp/cinny/releases/download/v4.2.0/cinny-v4.2.0.tar.gz"
-filename = "cinny-v4.2.0.tar.gz"
+url = "https://github.com/cinnyapp/cinny/releases/download/v4.11.1/cinny-v4.11.1.tar.gz"
+filename = "cinny-v4.11.1.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+# SHA256 of the downloaded archive/binary
+expected_sha256 = "8101f549c9b78382e41805e7a6823d375ef2c14c8142677600634ede5433090a"
+
+[upstream_checksum]
+# If upstream provides a checksum file, note the URL here
+url = "https://github.com/cinnyapp/cinny/releases/download/v4.11.1/sha256sums.txt"
+format = "sha256"

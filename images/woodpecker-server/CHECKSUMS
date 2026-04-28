@@ -1,24 +1,37 @@
 # CHECKSUMS - woodpecker-server
-# Generated: 2026-04-21T19:09:24Z
-# Status: PENDING_VERIFICATION
+# Generated: 2026-04-28T15:30:09Z
+# Status: VERIFIED
 #
-# IMPORTANT: These checksums need to be verified against upstream sources.
-# To verify:
+# Verification performed by populate_checksums.py
+# Method: github-release-checksums
+# Date: 2026-04-28T15:30:09Z
+#
+# IMPORTANT: These checksums are verified against upstream sources.
+# To re-verify:
 # 1. Download binary from URL below
 # 2. Compute: sha256sum <file>
 # 3. Compare with expected_sha256 below
 # 4. Cross-validate against upstream_checksum URL if available
+# 5. Submit PR with any changes
 
 [metadata]
 image = "woodpecker-server"
-version = "2.8.0"
-created = "2026-04-21T19:09:24Z"
-last_verified = ""
-verification_method = "download-and-compute"
+version = "3.13.0"
+created = "2026-04-28T15:30:09Z"
+last_verified = "2026-04-28T15:30:09Z"
+verification_method = "github-release-checksums"
+confidence = 0.95
+verifier = "populate_checksums.py"
 
 [download]
-url = "https://github.com/woodpecker-ci/woodpecker/releases/download/v2.8.0/woodpecker-server_linux_amd64.tar.gz"
+url = "https://github.com/woodpecker-ci/woodpecker/releases/download/v3.13.0/woodpecker-server_linux_amd64.tar.gz"
 filename = "woodpecker-server_linux_amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "PENDING"
+# SHA256 of the downloaded archive/binary
+expected_sha256 = "7a2220ecef0f5ce0b77d1f3743ee3ccf86f9486804a498989f758bdd2262bd27"
+
+[upstream_checksum]
+# If upstream provides a checksum file, note the URL here
+url = "https://github.com/woodpecker-ci/woodpecker/releases/download/v3.13.0/sha256sums.txt"
+format = "sha256"

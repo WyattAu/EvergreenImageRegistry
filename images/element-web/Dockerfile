@@ -1,14 +1,14 @@
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=1.12.15
+ARG VERSION=1.12.16
 ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /tmp
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/element-hq/element-web/releases/download/v1.12.15/element-v1.12.15.tar.gz -o /tmp/release.tar.gz || true ; \
-    mkdir -p /www-src ; \
-    [ -f /tmp/release.tar.gz ] && tar -xzf /tmp/release.tar.gz -C /www-src --strip-components=1 || true ; \
-    rm /tmp/release.tar.gz ; test -f /www || { echo '#!/bin/sh' > /www/placeholder && echo 'echo "element-web v${VERSION} placeholder"' >> /www/placeholder && echo 'exec sleep infinity' >> /www/placeholder && chmod +x /www; }
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/element-hq/element-web/releases/download/v${VERSION}/element-v${VERSION}.tar.gz -o /tmp/release.tar.gz && \
+    mkdir -p /www-src && \
+    tar -xzf /tmp/release.tar.gz -C /www-src --strip-components=1 && \
+    rm /tmp/release.tar.gz
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
@@ -25,7 +25,7 @@ EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
 LABEL org.opencontainers.image.title="element-web" \
       org.opencontainers.image.description="Element Web - web client for Matrix" \
-      org.opencontainers.image.version="1.11.12" \
+      org.opencontainers.image.version="1.12.16" \
       org.opencontainers.image.vendor="Element" \
       org.opencontainers.image.source="https://github.com/element-hq/element-web" \
       sovereign.image.tier="2" \

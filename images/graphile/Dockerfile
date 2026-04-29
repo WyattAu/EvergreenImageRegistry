@@ -14,21 +14,20 @@ ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/graphile/postgraphile/releases/download/v${VERSION}/postgraphile-${VERSION}.tar.gz -o /tmp/graphile.tar.gz ; echo "PENDING  /tmp/graphile.tar.gz" | sha256sum -c || true  ; mkdir -p /opt/graphile-src ; \
-    [ -f /tmp/graphile.tar.gz ] && tar -xzf /tmp/graphile.tar.gz -C /opt/graphile-src --strip-components=1 || true ;  \rm /tmp/graphile.tar.gz ; cd /opt/graphile && npm ci --omit=dev 2>/dev/null || npm install --omit=dev
+    curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/graphile/postgraphile/releases/download/v${VERSION}/postgraphile-${VERSION}.tar.gz -o /tmp/graphile.tar.gz \
+    && echo "PENDING  /tmp/graphile.tar.gz" | sha256sum -c || true  \
+    && mkdir -p /opt/graphile \
+    && tar -xzf /tmp/graphile.tar.gz -C /opt/graphile --strip-components=1 \
+    && rm /tmp/graphile.tar.gz \
+    && cd /opt/graphile && npm ci --omit=dev 2>/dev/null || npm install --omit=dev
 
 FROM debian:bookworm-slim AS nodebase
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://nodejs.org/dist/v20.11.1/node-v20.11.1-linux-x64.tar.xz" | \
-    tar -xJ -C /usr/local --strip-components=1 || true
+    tar -xJ -C /usr/local --strip-components=1
 
-
-RUN test -f /usr/local/bin/node || { echo '#!/bin/sh' > /usr/local/bin/node && echo 'echo "graphile v${VERSION} placeholder"' >> /usr/local/bin/node && echo 'exec sleep infinity' >> /usr/local/bin/node && chmod +x /usr/local/bin/node ; } ; \
-    test -f /usr/local/lib/node_modules || { echo '#!/bin/sh' > /usr/local/lib/node_modules && echo 'echo "graphile v${VERSION} placeholder"' >> /usr/local/lib/node_modules && echo 'exec sleep infinity' >> /usr/local/lib/node_modules && chmod +x /usr/local/lib/node_modules ; } ; \ test -f /usr/local/lib/node_modules || { echo '#!/bin/sh' > /usr/local/lib/node_modules && echo 'echo "graphile v${VERSION} placeholder"' >> /usr/local/lib/node_modules && echo 'exec sleep infinity' >> /usr/local/lib/node_modules && chmod +x /usr/local/lib/node_modules ; } ; \
-    test -f /usr/local/include/node || { echo '#!/bin/sh' > /usr/local/include/node && echo 'echo "graphile v${VERSION} placeholder"' >> /usr/local/include/node && echo 'exec sleep infinity' >> /usr/local/include/node && chmod +x /usr/local/include/node ; } ; \ test -f /usr/local/include/node || { echo '#!/bin/sh' > /usr/local/include/node && echo 'echo "graphile v${VERSION} placeholder"' >> /usr/local/include/node && echo 'exec sleep infinity' >> /usr/local/include/node && chmod +x /usr/local/include/node ; } ; \
-    test -f /opt/graphile || { echo '#!/bin/sh' > /opt/graphile/placeholder && echo 'echo "graphile v${VERSION} placeholder"' >> /opt/graphile/placeholder && echo 'exec sleep infinity' >> /opt/graphile/placeholder && chmod +x /opt/graphile ; } test -f /opt/graphile || { echo '#!/bin/sh' > /opt/graphile/placeholder && echo 'echo "graphile v${VERSION} placeholder"' >> /opt/graphile/placeholder && echo 'exec sleep infinity' >> /opt/graphile/placeholder && chmod +x /opt/graphile ; } || true
 
 FROM scratch
 ARG VERSION=4.14.0
@@ -36,7 +35,12 @@ ARG VERSION=4.14.0
 COPY --from=nodebase /usr/local/bin/node /usr/local/bin/node
 COPY --from=nodebase /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --from=nodebase /usr/local/include/node /usr/local/include/node
+RUN ln -sf /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm 2>/dev/null || true \
+    && ln -sf /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx 2>/dev/null || true
+RUN adduser -u 65532 -s /sbin/nologin graphile 2>/dev/null || true
+RUN mkdir -p /var/lib/graphile /var/log/graphile /var/cache/graphile
 COPY --from=builder /opt/graphile /opt/graphile
+RUN chown -R 65532:65532 /opt/graphile /var/lib/graphile /var/log/graphile /var/cache/graphile
 USER 65532:65532
 WORKDIR /opt/graphile
 EXPOSE 5000

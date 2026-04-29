@@ -30,7 +30,8 @@ RUN npm install -g @grafana/toolkit@${VERSION} && \
 USER 65532:65532
 WORKDIR /app
 ENV GRAFANA_TOOLKIT_VERSION=${VERSION} \
-    NODE_ENV=production
+    NODE_
+ENV=production
 ENTRYPOINT ["/usr/local/bin/npx", "grafana-toolkit"]
 LABEL org.opencontainers.image.title="grafana-toolkit" \
       org.opencontainers.image.version="10.4.1" \

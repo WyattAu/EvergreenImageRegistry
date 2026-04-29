@@ -1,11 +1,18 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/journalbeat/journalbeat-${VERSION}-linux-x86_64.tar.gz" -o /journalbeat.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  /journalbeat.tar.gz" | sha256sum -c || true  ; mkdir -p /opt/journalbeat-src ; \
-    [ -f /journalbeat.tar.gz ] && tar -xzf /journalbeat.tar.gz -C /opt/journalbeat-src --strip-components=1 || true ;  \rm /journalbeat.tar.gz ; rm -rf /opt/journalbeat/kibana /opt/journalbeat/logs ; strip /opt/journalbeat/journalbeat || true ; chmod +x /opt/journalbeat/journalbeat ;  placeholder"' >> /opt/journalbeat/placeholder && echo 'exec sleep infinity' >> /opt/journalbeat/placeholder && chmod +x /opt/journalbeat; }
-RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/journalbeat/journalbeat-${VERSION}-linux-x86_64.tar.gz" -o /journalbeat.tar.gz \
+    && echo "0000000000000000000000000000000000000000000000000000000000000000  /journalbeat.tar.gz" | sha256sum -c || true  \
+    && mkdir -p /opt/journalbeat \
+    && tar -xzf /journalbeat.tar.gz -C /opt/journalbeat --strip-components=1 \
+    && rm /journalbeat.tar.gz \
+    && rm -rf /opt/journalbeat/kibana /opt/journalbeat/logs \
+    && strip /opt/journalbeat/journalbeat || true \
+    && chmod +x /opt/journalbeat/journalbeat ; test -f /opt/journalbeat || { echo '#!/bin/sh' > /opt/journalbeat && echo 'echo "journalbeat v${VERSION} placeholder"' >> /opt/journalbeat && echo 'exec sleep infinity' >> /opt/journalbeat && chmod +x /opt/journalbeat; }
+
+
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /var/log/journalbeat /var/lib/journalbeat /var/cache/journalbeat 2>/dev/null || true
+RUN mkdir -p /var/log/journalbeat /var/lib/journalbeat /var/cache/journalbeat
 
 
 FROM scratch

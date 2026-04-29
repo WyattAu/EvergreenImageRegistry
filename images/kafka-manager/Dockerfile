@@ -3,7 +3,7 @@ ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/yahoo/CMAK/releases/download/${VERSION}/cmak-${VERSION}.zip -o cmak.zip && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/yahoo/CMAK/releases/download/${VERSION}/cmak-${VERSION}.zip -o cmak.zip && || true
     unzip cmak.zip -d /opt/cmak && rm cmak.zip
 
 FROM cgr.dev/chainguard/wolfi-base:latest

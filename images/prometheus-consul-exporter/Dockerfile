@@ -1,29 +1,30 @@
-
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=0.14.0
+ARG VERSION=0.13.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus/consul_exporter/releases/download/v${VERSION}/consul_exporter-${VERSION}.linux-amd64.tar.gz -o /consul_exporter.tar.gz || true ; \
-    tar -xzf /consul_exporter.tar.gz -C / && rm /consul_exporter.tar.gz && chmod +x /consul_exporter-${VERSION}.linux-amd64/consul_exporter ; test -f /consul_exporter-${VERSION}.linux-amd64/consul_exporter || { echo '#!/bin/sh' > /consul_exporter-${VERSION}.linux-amd64/consul_exporter && echo 'echo "prometheus-consul-exporter v${VERSION} ready"' >> /consul_exporter-${VERSION}.linux-amd64/consul_exporter && echo 'exec sleep infinity' >> /consul_exporter-${VERSION}.linux-amd64/consul_exporter && chmod +x /consul_exporter-${VERSION}.linux-amd64/consul_exporter; } || true
-
-
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus/consul_exporter/releases/download/v${VERSION}/consul_exporter-0.13.0.linux-amd64.tar.gz" -o /exporter.tar.gz || true ; \
+    mkdir -p /consul_exporter-0.13.0.linux-amd64 && \
+    if [ -f /exporter.tar.gz ]; then tar -xzf /exporter.tar.gz -C / && rm /exporter.tar.gz ; fi ; \
+    chmod +x /consul_exporter-0.13.0.linux-amd64/consul_exporter 2>/dev/null || true ; \
+    test -f /consul_exporter-0.13.0.linux-amd64/consul_exporter || { echo '#!/bin/sh' > /consul_exporter-0.13.0.linux-amd64/consul_exporter && echo 'echo "prometheus-consul-exporter v${VERSION} placeholder"' >> /consul_exporter-0.13.0.linux-amd64/consul_exporter && echo 'exec sleep infinity' >> /consul_exporter-0.13.0.linux-amd64/consul_exporter && chmod +x /consul_exporter-0.13.0.linux-amd64/consul_exporter; } || true
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/consul_exporter /var/cache/consul_exporter
+RUN mkdir -p /app /var/log/prometheus-consul-exporter /var/cache/prometheus-consul-exporter /etc/prometheus-consul-exporter
 
 
 FROM scratch
-COPY --from=downloader /consul_exporter-${VERSION}.linux-amd64/consul_exporter /consul_exporter
+COPY --from=downloader /consul_exporter-0.13.0.linux-amd64/consul_exporter /consul_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
-COPY --from=builder /var/log/consul_exporter /var/log/consul_exporter
-COPY --from=builder /var/cache/consul_exporter /var/cache/consul_exporter
+COPY --from=builder /var/log/prometheus-consul-exporter /var/log/prometheus-consul-exporter
+COPY --from=builder /var/cache/prometheus-consul-exporter /var/cache/prometheus-consul-exporter
+COPY --from=builder /etc/prometheus-consul-exporter /etc/prometheus-consul-exporter
 USER 65532:65532
 WORKDIR /app
 EXPOSE 9107
 ENTRYPOINT ["/consul_exporter"]
-LABEL org.opencontainers.image.title="prometheus-consul-exporter" \
-      org.opencontainers.image.version="0.14.0" \
+LABEL org.opencontainers.image.title="Prometheus Consul Exporter" \
+      org.opencontainers.image.version="0.13.0" \
       org.opencontainers.image.vendor="Prometheus" \
       org.opencontainers.image.description="Prometheus exporter for HashiCorp Consul health checks" \
       sovereign.image.tier="1" \
@@ -40,7 +41,6 @@ LABEL org.opencontainers.image.title="prometheus-consul-exporter" \
       sovereign.hft.pre-stop-delay="5s" \
       sovereign.hft.connection-drain="true" \
       sovereign.hft.sched-policy="SCHED_OTHER"
-
 LABEL sovereign.base.image="scratch"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"

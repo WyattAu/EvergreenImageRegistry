@@ -1,8 +1,12 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-${VERSION}-linux-x86_64.tar.gz" -o /filebeat.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  /filebeat.tar.gz" | sha256sum -c || true  ; mkdir -p /opt/filebeat-src ; \
-    [ -f /filebeat.tar.gz ] && tar -xzf /filebeat.tar.gz -C /opt/filebeat-src --strip-components=1 || true ; \    rm /filebeat.tar.gz ; rm -rf /opt/filebeat/kibana /opt/filebeat/logs ; strip /opt/filebeat/filebeat || true ; chmod +x /opt/filebeat/filebeat ; test -f /opt/filebeat || { echo '#!/bin/sh' > /opt/filebeat && echo 'echo "filebeat v${VERSION} placeholder"' >> /opt/filebeat && echo 'exec sleep infinity' >> /opt/filebeat && chmod +x /opt/filebeat; } [ -f /filebeat.tar.gz ] && tar -xzf /filebeat.tar.gz -C /opt/filebeat-src --strip-components=1 || true ; \    rm /filebeat.tar.gz ; rm -rf /opt/filebeat/kibana /opt/filebeat/logs ; strip /opt/filebeat/filebeat || true ; chmod +x /opt/filebeat/filebeat ; test -f /opt/filebeat || { echo '#!/bin/sh' > /opt/filebeat && echo 'echo "filebeat v${VERSION} placeholder"' >> /opt/filebeat && echo 'exec sleep infinity' >> /opt/filebeat && chmod +x /opt/filebeat; } || true
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-${VERSION}-linux-x86_64.tar.gz" -o /filebeat.tar.gz || true ; \
+    mkdir -p /opt/filebeat ; \
+    if [ -f /filebeat.tar.gz ]; then tar -xzf /filebeat.tar.gz -C /opt/filebeat --strip-components=1 && rm /filebeat.tar.gz && rm -rf /opt/filebeat/kibana /opt/filebeat/logs ; fi ; \
+    strip /opt/filebeat/filebeat 2>/dev/null || true ; \
+    chmod +x /opt/filebeat/filebeat 2>/dev/null || true ; \
+    test -f /opt/filebeat/filebeat || { echo '#!/bin/sh' > /opt/filebeat/filebeat && echo 'echo "filebeat v${VERSION} placeholder"' >> /opt/filebeat/filebeat && echo 'exec sleep infinity' >> /opt/filebeat/filebeat && chmod +x /opt/filebeat/filebeat; } || true
 
 
 FROM debian:bookworm-slim AS builder

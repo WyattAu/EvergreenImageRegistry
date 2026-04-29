@@ -9,7 +9,6 @@ RUN mkdir -p /var/log/heartbeat /var/lib/heartbeat /var/cache/heartbeat 2>/dev/n
 
 
 FROM scratch
-RUN mkdir -p /etc/ssl /opt /var/cache /var/lib /var/log 2>/dev/null || true
 COPY --from=downloader /opt/heartbeat /opt/heartbeat
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /var/log/heartbeat /var/log/heartbeat

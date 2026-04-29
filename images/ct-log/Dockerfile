@@ -19,8 +19,6 @@ RUN cd /src &&  \CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w"
     strip --strip-all /ct-log 2>/dev/null || true
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
-RUN mkdir -p  2>/dev/null || true ; test -f /ct-log 2>/dev/null || echo "#!/bin/sh" > /ct-log 2>/dev/null || true
-RUN mkdir -p /etc/ssl/certs 2>/dev/null || true
 COPY --from=builder /ct-log /ct-log
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

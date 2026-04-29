@@ -10,14 +10,12 @@ RUN mkdir -p /app /var/log/buildkit /var/cache/buildkit /var/lib/buildkit 2>/dev
 
 FROM scratch
 
-RUN mkdir -p /usr/local/bin /var/cache /var/lib /var/log 2>/dev/null || true
 COPY --from=downloader /usr/local/bin/buildkitd /usr/local/bin/buildkitd
 COPY --from=downloader /usr/local/bin/buildctl /usr/local/bin/buildctl
 COPY --from=builder /app /app
 COPY --from=builder /var/log/buildkit /var/log/buildkit
 COPY --from=builder /var/cache/buildkit /var/cache/buildkit
 COPY --from=builder /var/lib/buildkit /var/lib/buildkit
-RUN adduser -u 65532 -D buildkit 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 1234

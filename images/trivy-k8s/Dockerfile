@@ -18,8 +18,6 @@ FROM scratch
 COPY --from=downloader /trivy /usr/local/bin/trivy
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
-RUN addgroup -S -g 2 nogroup>/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false trivy-k8s 2>/dev/null || true &&     chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 LABEL sovereign.base.image="scratch"

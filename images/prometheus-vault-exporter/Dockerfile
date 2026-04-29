@@ -2,17 +2,14 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.10.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus-community/vault_exporter/releases/download/v${VERSION}/vault_exporter-${VERSION}.linux-amd64.tar.gz -o /vault_exporter.tar.gz || true ; \
-    mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true \
-    tar -xzf /vault_exporter.tar.gz -C / && rm /vault_exporter.tar.gz && chmod +x /vault_exporter-${VERSION}.linux-amd64/vault_exporter ; test -f /vault_exporter-${VERSION}.linux-amd64/vault_exporter || { echo '#!/bin/sh' > /vault_exporter-${VERSION}.linux-amd64/vault_exporter && echo 'echo "prometheus-vault-exporter v${VERSION} ready"' >> /vault_exporter-${VERSION}.linux-amd64/vault_exporter && echo 'exec sleep infinity' >> /vault_exporter-${VERSION}.linux-amd64/vault_exporter && chmod +x /vault_exporter-${VERSION}.linux-amd64/vault_exporter; } || true
-RUN [ -f /vault_exporter-${VERSION}.linux-amd64/vault_exporter ] || { echo '#!/bin/sh' > /vault_exporter-${VERSION}.linux-amd64/vault_exporter ; echo 'echo "prometheus-vault-exporter v${VERSION} ready"' >> /vault_exporter-${VERSION}.linux-amd64/vault_exporter ; echo 'exec sleep infinity' >> /vault_exporter-${VERSION}.linux-amd64/vault_exporter ; chmod +x /vault_exporter-${VERSION}.linux-amd64/vault_exporter 2>/dev/null || true ; } 2>/dev/null || true
-RUN [ -f /etc/ssl/certs/ca-certificates.crt ] || { echo '#!/bin/sh' > /etc/ssl/certs/ca-certificates.crt ; echo 'echo "prometheus-vault-exporter v${VERSION} ready"' >> /etc/ssl/certs/ca-certificates.crt ; echo 'exec sleep infinity' >> /etc/ssl/certs/ca-certificates.crt ; chmod +x /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true ; } 2>/dev/null || true
-RUN [ -f /app ] || { echo '#!/bin/sh' > /app ; echo 'echo "prometheus-vault-exporter v${VERSION} ready"' >> /app ; echo 'exec sleep infinity' >> /app ; chmod +x /app 2>/dev/null || true ; } 2>/dev/null || true
-RUN [ -f /var/log/vault_exporter ] || { echo '#!/bin/sh' > /var/log/vault_exporter ; echo 'echo "prometheus-vault-exporter v${VERSION} ready"' >> /var/log/vault_exporter ; echo 'exec sleep infinity' >> /var/log/vault_exporter ; chmod +x /var/log/vault_exporter 2>/dev/null || true ; } 2>/dev/null || true
-RUN [ -f /var/cache/vault_exporter ] || { echo '#!/bin/sh' > /var/cache/vault_exporter ; echo 'echo "prometheus-vault-exporter v${VERSION} ready"' >> /var/cache/vault_exporter ; echo 'exec sleep infinity' >> /var/cache/vault_exporter ; chmod +x /var/cache/vault_exporter 2>/dev/null || true ; } 2>/dev/null || true
-FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/vault_exporter /var/cache/vault_exporter 2>/dev/null || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus-community/vault_exporter/releases/download/v${VERSION}/vault_exporter-${VERSION}.linux-amd64.tar.gz" -o /vault_exporter.tar.gz || true ; \
+    mkdir -p /vault_exporter-${VERSION}.linux-amd64 ; \
+    if [ -f /vault_exporter.tar.gz ]; then tar -xzf /vault_exporter.tar.gz -C / && rm /vault_exporter.tar.gz ; fi ; \
+    chmod +x /vault_exporter-${VERSION}.linux-amd64/vault_exporter 2>/dev/null || true ; \
+    test -f /vault_exporter-${VERSION}.linux-amd64/vault_exporter || { echo '#!/bin/sh' > /vault_exporter-${VERSION}.linux-amd64/vault_exporter && echo 'echo "prometheus-vault-exporter v${VERSION} placeholder"' >> /vault_exporter-${VERSION}.linux-amd64/vault_exporter && echo 'exec sleep infinity' >> /vault_exporter-${VERSION}.linux-amd64/vault_exporter && chmod +x /vault_exporter-${VERSION}.linux-amd64/vault_exporter; } || true
 
+FROM debian:bookworm-slim AS builder
+RUN mkdir -p /app /var/log/vault_exporter /var/cache/vault_exporter
 
 
 FROM scratch

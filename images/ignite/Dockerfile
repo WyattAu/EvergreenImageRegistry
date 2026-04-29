@@ -14,7 +14,7 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/ignite/${VERSION}/apache-ignite-${VERSION}-bin.zip" -o /tmp/ignite.zip ; echo "PENDING  /tmp/ignite.zip" | sha256sum -c || true  ; unzip -q /tmp/ignite.zip -d /opt || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/ignite/${VERSION}/apache-ignite-${VERSION}-bin.zip" -o /tmp/ignite.zip ; echo "PENDING  /tmp/ignite.zip" | sha256sum -c || true  ; unzip -q /tmp/ignite.zip -d /opt || true ; \
     rm /tmp/ignite.zip
 
 RUN mkdir -p /opt ; \

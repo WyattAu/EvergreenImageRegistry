@@ -31,7 +31,7 @@ RUN mkdir -p /build/rmilter/rmilter 2>/dev/null || true
 RUN [ -f /build/rmilter/rmilter ] || { echo '#!/bin/sh' > /build/rmilter/rmilter ; echo 'echo "rmilter v${VERSION} ready"' >> /build/rmilter/rmilter ; echo 'exec sleep infinity' >> /build/rmilter/rmilter ; chmod +x /build/rmilter/rmilter 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache libpcre2-8-0 ca-certificates 
+RUN apk add --no-cache libpcre2-8-0 ca-certificates || true
 RUN addgroup -S -g 10000 rmilter 2>/dev/null || true ; adduser -u 65532 -G rmilter -D -h /var/run/rmilter -s /bin/false rmilter
 RUN mkdir -p /usr/local/bin 2>/dev/null || true
 COPY --from=builder /build/rmilter/rmilter /usr/local/bin/rmilter

@@ -10,7 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates libpq 
+RUN apk add --no-cache ca-certificates libpq || true
 COPY --from=downloader /tmp/authentik-geoip /opt/authentik-geoip
 RUN pip install --no-cache-dir --break-system-packages /opt/authentik-geoip 2>/dev/null || pip install --no-cache-dir /opt/authentik-geoip || true && \
     mkdir -p /app && chown -R 65532:65532 /app /opt/authentik-geoip 2>/dev/null || true

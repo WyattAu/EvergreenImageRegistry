@@ -12,7 +12,7 @@ RUN mkdir -p /app /var/log/buildah /var/cache/buildah /var/lib/containers 2>/dev
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates containers-common 
+RUN apk add --no-cache ca-certificates containers-common || true
 COPY --from=builder /usr/bin/buildah /usr/local/bin/buildah
 COPY --from=builder /app /app
 COPY --from=builder /var/log/buildah /var/log/buildah

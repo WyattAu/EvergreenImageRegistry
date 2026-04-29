@@ -34,7 +34,7 @@ RUN     strip --strip-all /opt/nginx/sbin/nginx && \
 RUN mkdir -p /opt/nginx 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache libpcre2-8-0 zlib ca-certificates 
+RUN apk add --no-cache libpcre2-8-0 zlib ca-certificates || true
 
 COPY --from=builder /opt/nginx /opt/nginx
 

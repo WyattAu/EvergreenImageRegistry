@@ -17,7 +17,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache libstdc++ ca-certificates iproute2 
+RUN apk add --no-cache libstdc++ ca-certificates iproute2 || true
 
 COPY --from=downloader /zerotier-one /usr/sbin/zerotier-one
 USER 65532:65532

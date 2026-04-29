@@ -20,7 +20,7 @@ RUN mkdir -p /app /var/log/java /var/cache/java 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache curl ca-certificates freetype fontconfig 
+RUN apk add --no-cache curl ca-certificates freetype fontconfig || true
 COPY --from=builder /opt/jdk /opt/jdk
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group

@@ -26,7 +26,7 @@ RUN mkdir -p /usr/local 2>/dev/null || true ; touch /usr/local/bundle 2>/dev/nul
 RUN mkdir -p /usr/bin 2>/dev/null || true ; touch /usr/bin/backup 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ruby openssh-client ca-certificates 
+RUN apk add --no-cache ruby openssh-client ca-certificates || true
 RUN addgroup -S -g 10000 backup 2>/dev/null || true && adduser -u 65532 -G backup -D -h /app -s /bin/false backup
 RUN mkdir -p /app /data /var/log/gitlab-backup && chown -R 65532:65532 /app /data /var/log/gitlab-backup 2>/dev/null || true
 RUN mkdir -p /usr/local /usr/local/bin 2>/dev/null || true

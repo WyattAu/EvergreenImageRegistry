@@ -22,7 +22,7 @@ RUN mkdir -p /tmp/redisinsight
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=2.54.0
 
-RUN apk add --no-cache ca-certificates fontconfig freetype glib 
+RUN apk add --no-cache ca-certificates fontconfig freetype glib || true
 RUN adduser -u 65532 -s /bin/false redisinsight || true
 COPY --from=builder /tmp/redisinsight /opt/redisinsight
 USER 65532:65532

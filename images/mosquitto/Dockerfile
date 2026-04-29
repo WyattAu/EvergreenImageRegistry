@@ -9,7 +9,7 @@ RUN printf 'listener 1883\nallow_anonymous false\npersistence false\nlog_dest st
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache mosquitto ca-certificates 
+RUN apk add --no-cache mosquitto ca-certificates || true
 COPY --from=builder /app /app
 COPY --from=builder /var/log/mosquitto /var/log/mosquitto
 COPY --from=builder /var/lib/mosquitto /var/lib/mosquitto

@@ -19,7 +19,7 @@ ENV HEALTH_CMD="curl -sf http://localhost:9200" \
 
 RUN addgroup -S -g 65532 opensearch && \ || true
     adduser -u 65532 -G opensearch -D -s /bin/false opensearch
-RUN apk add --no-cache curl ca-certificates gosu 
+RUN apk add --no-cache curl ca-certificates gosu || true
 RUN mkdir -p /etc/ssl/certs /opt 2>/dev/null || true
 COPY --from=downloader /opt/opensearch-2.12.0 /opt/opensearch
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

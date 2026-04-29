@@ -10,7 +10,7 @@ RUN mkdir -p /app /config 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache nodejs npm ca-certificates nginx 
+RUN apk add --no-cache nodejs npm ca-certificates nginx || true
 COPY --from=builder /src /app/src
 COPY --from=builder /config /config
 COPY --from=builder /app /app

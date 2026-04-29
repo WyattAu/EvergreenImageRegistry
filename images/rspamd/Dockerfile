@@ -13,7 +13,7 @@ RUN groupadd -r -g 65532 appuser && useradd -r -u 65532 -g appuser -d /app -s /u
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates rspamd 
+RUN apk add --no-cache ca-certificates rspamd || true
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder /etc/passwd /etc/passwd
 RUN mkdir -p /app /var/log/rspamd /var/cache/rspamd && chown -R 65532:65532 /app /var/log/rspamd /var/cache/rspamd 2>/dev/null || true

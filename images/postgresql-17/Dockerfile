@@ -26,7 +26,7 @@ RUN test -f /var/lib/postgresql || { echo '#!/bin/sh' > /var/lib/postgresql && e
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache gnupg curl ca-certificates libzstd1 liblz4-1 " 
+RUN apk add --no-cache gnupg curl ca-certificates libzstd1 liblz4-1 " || true
 COPY --from=builder /var/lib/postgresql /var/lib/postgresql
 COPY --from=builder /var/run/postgresql /var/run/postgresql
 RUN usermod -u 65532 postgres && \

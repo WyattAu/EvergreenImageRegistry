@@ -16,8 +16,8 @@
 
 [metadata]
 image = "element-web"
-version = "1.12.15"
-created = "2026-04-28T15:27:31Z"
+version = "1.12.16"
+created = "2026-04-29T03:22:15Z"
 last_verified = "2026-04-28T15:27:31Z"
 verification_method = "download-and-compute"
 confidence = 0.80
@@ -29,7 +29,7 @@ filename = "element-v1.12.15.tar.gz"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
-expected_sha256 = "3a729326fe295b3631ba17bda0775db30f41a6bb0ba12a4aff4d5f488d5e91e3"
+expected_sha256 = "PENDING_VERSION_UPDATE_1.12.16"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here

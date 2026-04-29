@@ -16,8 +16,8 @@
 
 [metadata]
 image = "grafana-image-renderer"
-version = "3.10.3"
-created = "2026-04-21"
+version = "5.8.2"
+created = "2026-04-29T03:22:15Z"
 last_verified = "2026-04-21"
 verification_method = "download-verify"
 verifier = "manual"
@@ -27,7 +27,7 @@ url = "https://github.com/grafana/grafana-image-renderer/releases/download/v3.10
 filename = "grafana-image-renderer-3.10.3-linux-x64.tar.gz"
 
 [checksum]
-expected_sha256 = "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3"
+expected_sha256 = "PENDING_VERSION_UPDATE_5.8.2"
 
 [upstream_checksum]
 url = "https://github.com/grafana/grafana-image-renderer/releases/download/v3.10.3/SHA256SUMS"

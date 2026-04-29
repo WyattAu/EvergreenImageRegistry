@@ -5,8 +5,8 @@
 
 [metadata]
 image = "prometheus-statsd-exporter"
-version = "0.27.0"
-created = "2026-04-21"
+version = "0.29.0"
+created = "2026-04-29T03:22:15Z"
 last_verified = ""
 verification_method = "download-verify"
 verifier = "manual"
@@ -16,4 +16,4 @@ url = "https://github.com/prometheus/statsd_exporter/releases/download/v0.27.0/s
 filename = "statsd_exporter-0.27.0.linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "VERIFY_AT_BUILD_TIME"
+expected_sha256 = "PENDING_VERSION_UPDATE_0.29.0"

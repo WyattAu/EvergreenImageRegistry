@@ -4,8 +4,8 @@
 
 [metadata]
 image = "node-distroless"
-version = "v22.12.0"
-created = "2026-04-22T00:00:00Z"
+version = "22.12.0"
+created = "2026-04-29T03:22:15Z"
 last_verified = "2026-04-22T00:00:00Z"
 verification_method = "nodejs-org-sha256"
 verifier = "manual"
@@ -15,7 +15,7 @@ url = "https://nodejs.org/dist/v22.12.0/node-v22.12.0-linux-x64.tar.xz"
 filename = "node-v22.12.0-linux-x64.tar.xz"
 
 [checksum]
-expected_sha256 = "VERIFY_FROM_NODEJS_ORG_SHASUMS"
+expected_sha256 = "PENDING_VERSION_UPDATE_22.12.0"
 
 [upstream_checksum]
 url = "https://nodejs.org/dist/v22.12.0/SHASUMS256.txt"

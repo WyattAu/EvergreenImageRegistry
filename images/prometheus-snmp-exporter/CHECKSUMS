@@ -4,8 +4,8 @@
 
 [metadata]
 image = "prometheus-snmp-exporter"
-version = "0.27.0"
-created = "2026-04-21"
+version = "0.30.1"
+created = "2026-04-29T03:22:15Z"
 last_verified = "2026-04-21"
 verification_method = "github-release-checksums"
 verifier = "manual"
@@ -15,7 +15,7 @@ url = "https://github.com/prometheus/snmp_exporter/releases/download/v0.27.0/snm
 filename = "snmp_exporter-0.27.0.linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "aa91bba12c95dc3bd446b8e28faec36cfd471c6adc37ff8fd74b079609b58102"
+expected_sha256 = "PENDING_VERSION_UPDATE_0.30.1"
 
 [upstream_checksum]
 url = "https://github.com/prometheus/snmp_exporter/releases/download/v0.27.0/sha256sums.txt"

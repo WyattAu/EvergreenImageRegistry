@@ -16,8 +16,8 @@
 
 [metadata]
 image = "traefik"
-version = "3.6.13"
-created = "2026-04-19T22:25:17Z"
+version = "3.6.14"
+created = "2026-04-29T03:22:15Z"
 last_verified = "2026-04-19T22:25:17Z"
 verification_method = "download-and-compute"
 verifier = "populate_checksums.py"
@@ -28,7 +28,7 @@ filename = "traefik_v3.6.13_linux_amd64.tar.gz"
 
 [checksum]
 # SHA256 of the downloaded archive/binary
-expected_sha256 = "85fcf245e963293ca6afee4180f6116b97004499b584ebfbc2c5841e1c8d4399"
+expected_sha256 = "PENDING_VERSION_UPDATE_3.6.14"
 
 [upstream_checksum]
 # If upstream provides a checksum file, note the URL here

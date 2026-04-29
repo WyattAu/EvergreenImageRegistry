@@ -4,8 +4,8 @@
 
 [metadata]
 image = "prometheus-postgres-exporter"
-version = "0.15.0"
-created = "2026-04-21"
+version = "0.19.1"
+created = "2026-04-29T03:22:15Z"
 last_verified = "2026-04-21"
 verification_method = "github-release-checksums"
 verifier = "manual"
@@ -15,7 +15,7 @@ url = "https://github.com/prometheus-community/postgres_exporter/releases/downlo
 filename = "postgres_exporter-0.15.0.linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "cb89fc5bf4485fb554e0d640d9684fae143a4b2d5fa443009bd29c59f9129e84"
+expected_sha256 = "PENDING_VERSION_UPDATE_0.19.1"
 
 [upstream_checksum]
 url = "https://github.com/prometheus-community/postgres_exporter/releases/download/v0.15.0/sha256sums.txt"

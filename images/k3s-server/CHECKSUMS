@@ -4,8 +4,8 @@
 
 [metadata]
 image = "k3s-server"
-version = "v1.33.6+k3s1"
-created = "2026-04-22T00:00:00Z"
+version = "1.33.6+k3s1"
+created = "2026-04-29T03:22:15Z"
 last_verified = "2026-04-22T00:00:00Z"
 verification_method = "github-release-sha256"
 verifier = "manual"
@@ -15,7 +15,7 @@ url = "https://github.com/k3s-io/k3s/releases/download/v1.33.6+k3s1/k3s"
 filename = "k3s"
 
 [checksum]
-expected_sha256 = "VERIFY_FROM_RELEASE_ASSETS"
+expected_sha256 = "PENDING_VERSION_UPDATE_1.33.6+k3s1"
 
 [upstream_checksum]
 url = "https://github.com/k3s-io/k3s/releases/download/v1.33.6+k3s1/sha256sum-amd64.txt"

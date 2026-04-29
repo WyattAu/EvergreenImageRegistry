@@ -4,8 +4,8 @@
 
 [metadata]
 image = "etcd-empty"
-version = "3.5.15"
-created = "2026-04-22T00:00:00Z"
+version = "3.6.10"
+created = "2026-04-29T03:22:15Z"
 last_verified = "2026-04-22T00:00:00Z"
 verification_method = "github-release-checksums"
 verifier = "populate_checksums.py"
@@ -15,4 +15,4 @@ url = "https://github.com/etcd-io/etcd/releases/download/v3.5.15/etcd-v3.5.15-li
 filename = "etcd-v3.5.15-linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "81a8b6ecd5df15a4e0245c811d053f08717ebe6a624759afa56d58dde744e4fb"
+expected_sha256 = "PENDING_VERSION_UPDATE_3.6.10"

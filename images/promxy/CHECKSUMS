@@ -4,8 +4,8 @@
 
 [metadata]
 image = "promxy"
-version = "v0.7.0"
-created = "2026-04-22T00:00:00Z"
+version = "0.7.0"
+created = "2026-04-29T03:22:15Z"
 last_verified = "2026-04-22T00:00:00Z"
 verification_method = "github-release"
 verifier = "manual"
@@ -15,7 +15,7 @@ url = "https://github.com/prymitive/promxy/releases/download/v0.7.0/promxy-v0.7.
 filename = "promxy-v0.7.0-linux-x86_64"
 
 [checksum]
-expected_sha256 = "VERIFY_FROM_RELEASE_ASSETS"
+expected_sha256 = "PENDING_VERSION_UPDATE_0.7.0"
 
 [upstream_checksum]
 url = "https://github.com/prymitive/promxy/releases/tag/v0.7.0"

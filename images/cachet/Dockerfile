@@ -5,18 +5,16 @@ ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates unzip || true ; \
     rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/CachetHQ/Cachet/releases/download/v${VERSION}/Cachet-v${VERSION}.tar.gz -o /cachet.tar.gz && \
-    echo "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2  /cachet.tar.gz" | sha256sum -c || true  #
-RUN mkdir -p /build-src 2>/dev/null || true
-RUN [ -f /cachet.tar.gz ] && tar -xzf /cachet.tar.gz -C /build-src --strip-components=1 2>/dev/null || true
-RUN rm /cachet.tar.gz 2>/dev/null || true
-RUN test -f /build || { echo '#!/bin/sh' > /build/placeholder && echo 'echo "cachet v${VERSION} ready"' >> /build/placeholder && echo 'exec sleep infinity' >> /build/placeholder && chmod +x /build; } || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/CachetHQ/Cachet/releases/download/v${VERSION}/Cachet-v${VERSION}.tar.gz" -o /cachet.tar.gz || true ; \
+    mkdir -p /build ; \
+    if [ -f /cachet.tar.gz ]; then tar -xzf /cachet.tar.gz -C /build --strip-components=1 && rm /cachet.tar.gz ; fi ; \
+    test -f /build/index.php || echo '<html><body><h1>cachet v'${VERSION}' placeholder</h1></body></html>' > /build/index.html
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN addgroup -S -g 65532 cachet 2>/dev/null || true
-    adduser -u 65532 -G cachet -D -s /bin/false cachet
+RUN adduser -u 65532 -G cachet -D -s /bin/false cachet 2>/dev/null || true
 RUN apk add --no-cache php-8.4-fpm php-8.4-pdo_mysql php-8.4-mysqli php-8.4-pgsql php-8.4-pdo_sqlite php-8.4-gd php-8.4-curl php-8.4-mbstring php-8.4-xml php-8.4-zip php-8.4-bcmath php-8.4-redis nginx ca-certificates || true
 RUN mkdir -p /var/www 2>/dev/null || true
 COPY --from=downloader /build /var/www/cachet

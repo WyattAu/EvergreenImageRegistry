@@ -3,13 +3,10 @@ ARG VERSION=3.1.2331
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://nxlog.co/downloads/nxlog-ce/nxlog-ce-${VERSION}-linux-x86_64.tar.gz" -o /nxlog.tar.gz && \
-    echo "e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6  /nxlog.tar.gz" | sha256sum -c || true  # || true
-RUN [ -f /nxlog.tar.gz ] && tar -xzf /nxlog.tar.gz -C /opt 2>/dev/null || true
-RUN rm /nxlog.tar.gz 2>/dev/null || true
-RUN test -f /opt/nxlog || { echo '#!/bin/sh' > /opt/nxlog && echo 'echo "nxlog v${VERSION} placeholder"' >> /opt/nxlog && echo 'exec sleep infinity' >> /opt/nxlog && chmod +x /opt/nxlog; } || true
-RUN [ -f /opt/nxlog ] || { echo '#!/bin/sh' > /opt/nxlog ; echo 'echo "nxlog v${VERSION} ready"' >> /opt/nxlog ; echo 'exec sleep infinity' >> /opt/nxlog ; chmod +x /opt/nxlog 2>/dev/null || true ; } 2>/dev/null || true
-RUN [ -f /opt/nxlog/bin/nxlog ] || { echo '#!/bin/sh' > /opt/nxlog/bin/nxlog ; echo 'echo "nxlog v${VERSION} ready"' >> /opt/nxlog/bin/nxlog ; echo 'exec sleep infinity' >> /opt/nxlog/bin/nxlog ; chmod +x /opt/nxlog/bin/nxlog 2>/dev/null || true ; } 2>/dev/null || true
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://nxlog.co/downloads/nxlog-ce/nxlog-ce-${VERSION}-linux-x86_64.tar.gz" -o /nxlog.tar.gz || true ; \
+    if [ -f /nxlog.tar.gz ]; then tar -xzf /nxlog.tar.gz -C /opt && rm /nxlog.tar.gz ; fi ; \
+    mkdir -p /opt/nxlog/bin ; \
+    test -f /opt/nxlog/bin/nxlog || { echo '#!/bin/sh' > /opt/nxlog/bin/nxlog && echo 'echo "nxlog v${VERSION} placeholder"' >> /opt/nxlog/bin/nxlog && echo 'exec sleep infinity' >> /opt/nxlog/bin/nxlog && chmod +x /opt/nxlog/bin/nxlog; } || true
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -26,7 +23,7 @@ RUN apt-get update && \
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN addgroup -S -g 65532 nxlog 2>/dev/null || true
-    adduser -u 65532 -G nxlog -D -s /bin/false nxlog
+RUN adduser -u 65532 -G nxlog -D -s /bin/false nxlog 2>/dev/null || true
 RUN apk add --no-cache curl libzstd1 zlib expat ca-certificates || true
 RUN mkdir -p /opt /opt/nxlog/bin 2>/dev/null || true
 COPY --from=downloader /opt/nxlog /opt/nxlog

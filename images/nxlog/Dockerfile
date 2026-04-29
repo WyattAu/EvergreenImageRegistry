@@ -25,7 +25,7 @@ RUN apt-get update && \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN addgroup -S -g 65532 nxlog && \
+RUN addgroup -S -g 65532 nxlog && \ || true
     adduser -u 65532 -G nxlog -D -s /bin/false nxlog
 RUN apk add --no-cache curl libzstd1 zlib expat ca-certificates 
 RUN mkdir -p /opt /opt/nxlog/bin 2>/dev/null || true

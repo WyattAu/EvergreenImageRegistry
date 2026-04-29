@@ -23,7 +23,7 @@ RUN test -f /tmp/gitbucket.war || { echo '#!/bin/sh' > /tmp/gitbucket.war && ech
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates 
-RUN addgroup -S -g 65532 gitbucket 2>/dev/null || true ; adduser -u 65532 -G gitbucket -D -h /opt/gitbucket -s /bin/false gitbucket
+RUN addgroup -S -g 10000 gitbucket 2>/dev/null || true ; adduser -u 65532 -G gitbucket -D -h /opt/gitbucket -s /bin/false gitbucket
 RUN mkdir -p /opt/gitbucket /var/log/gitbucket /var/data/gitbucket ; \
     chown -R 65532:65532 /opt/gitbucket /var/log/gitbucket /var/data/gitbucket
 COPY --from=builder /tmp/gitbucket.war /opt/gitbucket/gitbucket.war

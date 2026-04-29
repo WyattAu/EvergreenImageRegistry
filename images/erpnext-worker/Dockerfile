@@ -29,7 +29,7 @@ RUN apk add --no-cache python3 ca-certificates tzdata libpq libjpeg-turbo zlib
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 ENV FRAPPE_VERSION="${VERSION}"
-RUN addgroup -S 65532 -r erpnext && \
+RUN addgroup -S -g 65532 erpnext && \
     adduser -u 65532 -G erpnext -D -D -h /opt/erpnext -s /bin/false erpnext && \
     mkdir -p /opt/erpnext /var/log/erpnext ; \
     chown -R 65532:65532 /opt/erpnext /var/log/erpnext

@@ -8,7 +8,7 @@
 FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache ca-certificates tzdata dumb-init 
 
-RUN addgroup -S 65532 -r appuser 2>/dev/null || true && \
+RUN addgroup -S -g 65532 appuser 2>/dev/null || true && \
     adduser -u 65532 -G appuser -D -D -h /app -s /bin/false appuser 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app

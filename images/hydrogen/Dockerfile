@@ -15,7 +15,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates 
 RUN mkdir -p /app 2>/dev/null || true
-RUN addgroup -S -g 65532 appuser 2>/dev/null || true ; adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser
+RUN addgroup -S -g 10000 appuser 2>/dev/null || true ; adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser
 RUN mkdir -p /var/www 2>/dev/null || true
 COPY --from=downloader /www /var/www/html
 RUN rm -f /etc/nginx/sites-enabled/default 2>/dev/null || true

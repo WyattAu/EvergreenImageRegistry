@@ -12,7 +12,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates tzdata 
 COPY --from=downloader /opt/mattermost /opt/mattermost
-RUN addgroup -S 65532 -r mattermost 2>/dev/null || true && \
+RUN addgroup -S -g 65532 mattermost 2>/dev/null || true && \
     adduser -u 65532 -G mattermost -D -D -h /opt/mattermost -s /bin/false mattermost 2>/dev/null || true && \
     mkdir -p /opt/mattermost-src/data /opt/mattermost/logs /opt/mattermost/plugins /opt/mattermost/client/plugins ; \
     chown -R 65532:65532 /opt/mattermost

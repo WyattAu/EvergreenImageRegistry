@@ -14,8 +14,8 @@ RUN apk add --no-cache ca-certificates || true
 COPY --from=builder /app /app
 RUN addgroup -S -g 2 nogroup >/dev/null || true
 RUN mkdir -p /app 2>/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false cockpit && \
-    chown -R 65532:65532 /app
+RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false cockpit || true
+    && chown -R 65532:65532 /app
 USER 65532:65532
 WORKDIR /app
 EXPOSE 9090

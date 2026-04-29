@@ -26,7 +26,7 @@ RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certif
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=1.2.0
 
-RUN addgroup -S -g 65532 azurelogs && \
+RUN addgroup -S -g 65532 azurelogs && \ || true
     adduser -u 65532 -G azurelogs -D -s /bin/false azurelogs || true
 RUN apk add --no-cache ca-certificates 
 RUN mkdir -p /etc/ssl/certs /usr 2>/dev/null || true

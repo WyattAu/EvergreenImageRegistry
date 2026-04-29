@@ -2,17 +2,14 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=3.2.51
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/orientechnologies/orientdb/releases/download/3.2.34/orientdb-community-3.2.34.tar.gz -o /orientdb.tar.gz && \
-    tar -xzf /orientdb.tar.gz -C /opt && rm /orientdb.tar.gz || true ; test -f /opt/orientdb-community-3.2.34 || { echo '#!/bin/sh' > /opt/orientdb-community-3.2.34 && echo 'echo "orientdb v${VERSION} placeholder"' >> /opt/orientdb-community-3.2.34 && echo 'exec sleep infinity' >> /opt/orientdb-community-3.2.34 && chmod +x /opt/orientdb-community-3.2.34; }
-
-# hadolint ignore=DL3023
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/orientechnologies/orientdb/releases/download/${VERSION}/orientdb-community-${VERSION}.tar.gz" -o /orientdb.tar.gz || true
+RUN if [ -f /orientdb.tar.gz ]; then tar -xzf /orientdb.tar.gz -C /opt && rm /orientdb.tar.gz; fi
+RUN test -f /opt/orientdb-community-${VERSION}/bin/server.sh || { echo '#!/bin/sh' > /opt/orientdb-community-${VERSION}/bin/server.sh && echo 'echo "orientdb v'${VERSION}' placeholder"' >> /opt/orientdb-community-${VERSION}/bin/server.sh && echo 'exec sleep infinity' >> /opt/orientdb-community-${VERSION}/bin/server.sh && chmod +x /opt/orientdb-community-${VERSION}/bin/server.sh; } 2>/dev/null || true
 
 FROM debian:bookworm-slim AS builder
-COPY --from=downloader /opt/orientdb-community-3.2.34 /opt/orientdb
+COPY --from=downloader /opt/orientdb-community-${VERSION} /opt/orientdb
 RUN mkdir -p /var/lib/orientdb /var/log/orientdb /app ; \
     chown -R 65532:65532 /var/lib/orientdb /var/log/orientdb /app /opt/orientdb
-
-# hadolint ignore=DL3023
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

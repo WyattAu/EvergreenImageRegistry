@@ -21,13 +21,13 @@ RUN mkdir -p /usr/sbin/rsyslogd 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN addgroup -S -g 65532 rsyslog 2>/dev/null || true
+RUN addgroup -S -g 65532 rsyslog 2>/dev/null || true && \
     adduser -u 65532 -G rsyslog -D -s /bin/false rsyslog || true
 RUN apk add --no-cache rsyslog ca-certificates || true
 RUN mkdir -p /usr/sbin 2>/dev/null || true ; test -f /usr/sbin/rsyslogd 2>/dev/null || echo "#!/bin/sh" > /usr/sbin/rsyslogd 2>/dev/null || true
 COPY --from=builder /usr/sbin/rsyslogd /usr/sbin/rsyslogd
 RUN mkdir -p /app/conf /app/logs /app/run /app/spool /var/lib/rsyslog ; \
-addgroup -S -g 2 rsyslog>/dev/null || true && adduser -u 65532 -G rsyslog -D -s /bin/false rsyslog 2>/dev/null || true
+addgroup -S -g 2 rsyslog >/dev/null 2>&1 || true && adduser -u 65532 -G rsyslog -D -s /bin/false rsyslog 2>/dev/null || true
 RUN chown -R rsyslog:rsyslog /app /var/lib/rsyslog 2>/dev/null || true
 COPY <<'EOF' /app/conf/rsyslog.conf
 module(load="imudp")

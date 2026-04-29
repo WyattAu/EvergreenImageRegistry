@@ -15,7 +15,7 @@ RUN test -f /usr/bin/node || { echo '#!/bin/sh' > /usr/bin/node && echo 'echo "g
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN addgroup -S -g 65532 toolkit 2>/dev/null || true
+RUN addgroup -S -g 65532 toolkit 2>/dev/null || true && \
     adduser -u 65532 -G toolkit -D -s /bin/false toolkit || true
 RUN mkdir -p /etc/ssl/certs /usr/local/bin /usr/local/lib 2>/dev/null || true
 COPY --from=downloader /usr/bin/node /usr/local/bin/node
@@ -30,8 +30,7 @@ RUN npm install -g @grafana/toolkit@${VERSION} && \
 USER 65532:65532
 WORKDIR /app
 ENV GRAFANA_TOOLKIT_VERSION=${VERSION} \
-    NODE_
-ENV=production
+    NODE_ENV=production
 ENTRYPOINT ["/usr/local/bin/npx", "grafana-toolkit"]
 LABEL org.opencontainers.image.title="grafana-toolkit" \
       org.opencontainers.image.version="10.4.1" \

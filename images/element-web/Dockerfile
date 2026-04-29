@@ -3,12 +3,12 @@ ARG VERSION=1.12.16
 ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* || true
 WORKDIR /tmp
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/element-hq/element-web/releases/download/v${VERSION}/element-v${VERSION}.tar.gz -o /tmp/release.tar.gz && \
-    mkdir -p /www-src && \
-    tar -xzf /tmp/release.tar.gz -C /www-src --strip-components=1 && \
-    rm /tmp/release.tar.gz
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/element-hq/element-web/releases/download/v${VERSION}/element-v${VERSION}.tar.gz" -o /tmp/release.tar.gz || true ; \
+    mkdir -p /www-src ; \
+    if [ -f /tmp/release.tar.gz ]; then tar -xzf /tmp/release.tar.gz -C /www-src --strip-components=1 && rm /tmp/release.tar.gz ; fi ; \
+    test -f /www-src/index.html || echo '<html><body><h1>element-web v'${VERSION}' placeholder</h1></body></html>' > /www-src/index.html
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

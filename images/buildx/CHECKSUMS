@@ -4,8 +4,8 @@
 
 [metadata]
 image = "buildx"
-version = "v0.33.0"
-created = "2026-04-22T00:00:00Z"
+version = "0.33.0"
+created = "2026-04-29T03:22:15Z"
 last_verified = "2026-04-22T00:00:00Z"
 verification_method = "github-release-sha256"
 verifier = "manual"
@@ -15,7 +15,7 @@ url = "https://github.com/docker/buildx/releases/download/v0.33.0/buildx-v0.33.0
 filename = "buildx-v0.33.0.linux-amd64"
 
 [checksum]
-expected_sha256 = "b1b5a38f78311cfed70a0e68096df0e9ed7dd1b1fcd09adbb117d74e3bad6f32"
+expected_sha256 = "PENDING_VERSION_UPDATE_0.33.0"
 
 [upstream_checksum]
 url = "https://github.com/docker/buildx/releases/download/v0.33.0/checksums.txt"

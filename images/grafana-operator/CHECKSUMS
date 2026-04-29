@@ -4,8 +4,8 @@
 
 [metadata]
 image = "grafana-operator"
-version = "v5.22.2"
-created = "2026-04-22T00:00:00Z"
+version = "5.22.2"
+created = "2026-04-29T03:22:15Z"
 last_verified = "2026-04-22T00:00:00Z"
 verification_method = "github-release"
 verifier = "manual"
@@ -15,7 +15,7 @@ url = "https://github.com/grafana-operator/grafana-operator/releases/download/v5
 filename = "grafana-operator-v5.22.2-linux-amd64"
 
 [checksum]
-expected_sha256 = "VERIFY_FROM_RELEASE_ASSETS"
+expected_sha256 = "PENDING_VERSION_UPDATE_5.22.2"
 
 [upstream_checksum]
 url = "https://github.com/grafana-operator/grafana-operator/releases/tag/v5.22.2"

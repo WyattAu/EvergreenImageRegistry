@@ -16,8 +16,8 @@
 
 [metadata]
 image = "openvpn"
-version = "wolfi-latest"
-created = "2026-04-19"
+version = "2.6.10"
+created = "2026-04-29T03:22:15Z"
 last_verified = "N/A"
 verification_method = "wolfi-apk-signing"
 verifier = "wolfi-project"
@@ -29,7 +29,7 @@ source = "wolfi apk repository"
 
 [checksum]
 # Managed by Wolfi package signing infrastructure
-expected_sha256 = "N/A"
+expected_sha256 = "PENDING_VERSION_UPDATE_2.6.10"
 
 [upstream_checksum]
 url = "https://packages.wolfi.dev/"

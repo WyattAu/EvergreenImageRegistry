@@ -4,8 +4,8 @@
 
 [metadata]
 image = "openjdk-alpine"
-version = "21"
-created = "2026-04-22T00:00:00Z"
+version = "21-slim"
+created = "2026-04-29T03:22:15Z"
 last_verified = "2026-04-22T00:00:00Z"
 verification_method = "adoptium-package"
 verifier = "manual"
@@ -15,7 +15,7 @@ url = "apt://temurin-21-jre-headless"
 filename = "temurin-21-jre-headless"
 
 [checksum]
-expected_sha256 = "VERIFY_VIA_APT"
+expected_sha256 = "PENDING_VERSION_UPDATE_21-slim"
 
 [upstream_checksum]
 url = "https://packages.adoptium.net/artifactory/deb/"

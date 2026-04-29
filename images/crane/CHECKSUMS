@@ -4,8 +4,8 @@
 
 [metadata]
 image = "crane"
-version = "v0.21.5"
-created = "2026-04-22T00:00:00Z"
+version = "0.21.5"
+created = "2026-04-29T03:22:15Z"
 last_verified = "2026-04-22T00:00:00Z"
 verification_method = "github-release-sha256"
 verifier = "manual"
@@ -15,7 +15,7 @@ url = "https://github.com/google/go-containerregistry/releases/download/v0.21.5/
 filename = "go-containerregistry_Linux_x86_64.tar.gz"
 
 [checksum]
-expected_sha256 = "05150194f251b96c58e0da5fafffe5e30bff26704211236b39a814ef733f9c36"
+expected_sha256 = "PENDING_VERSION_UPDATE_0.21.5"
 
 [upstream_checksum]
 url = "https://github.com/google/go-containerregistry/releases/download/v0.21.5/checksums.txt"

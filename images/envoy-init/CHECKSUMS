@@ -6,8 +6,8 @@
 
 [metadata]
 image = "envoy-init"
-version = "1.29.0"
-created = "2026-04-21T00:00:00Z"
+version = "1.38.0"
+created = "2026-04-29T03:22:15Z"
 last_verified = "2026-04-21T00:00:00Z"
 verification_method = "github-release-checksums"
 verifier = "manual"
@@ -17,7 +17,7 @@ url = "https://github.com/envoyproxy/envoy/releases/download/v1.29.0/envoy-v1.29
 filename = "envoy-v1.29.0-linux-x86_64.tar.gz"
 
 [checksum]
-expected_sha256 = "6d41a4b89a59b1ab23e5ff2f549ec1bb21edf259e0e3eb5585e556a7dfc2b87a"
+expected_sha256 = "PENDING_VERSION_UPDATE_1.38.0"
 
 [upstream_checksum]
 url = "https://github.com/envoyproxy/envoy/releases/download/v1.29.0/enclave.sha256"

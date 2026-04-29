@@ -4,8 +4,8 @@
 
 [metadata]
 image = "sbt"
-version = "1.10.6"
-created = "2026-04-22T00:00:00Z"
+version = "1.12.10"
+created = "2026-04-29T03:22:15Z"
 last_verified = "2026-04-22T00:00:00Z"
 verification_method = "github-release"
 verifier = "manual"
@@ -15,7 +15,7 @@ url = "https://github.com/sbt/sbt/releases/download/v1.10.6/sbt-1.10.6.tgz"
 filename = "sbt-1.10.6.tgz"
 
 [checksum]
-expected_sha256 = "VERIFY_FROM_RELEASE_ASSETS"
+expected_sha256 = "PENDING_VERSION_UPDATE_1.12.10"
 
 [upstream_checksum]
 url = "https://github.com/sbt/sbt/releases/download/v1.10.6/sbt-1.10.6.tgz.sha256"

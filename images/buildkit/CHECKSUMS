@@ -4,8 +4,8 @@
 
 [metadata]
 image = "buildkit"
-version = "v0.20.0"
-created = "2026-04-22T00:00:00Z"
+version = "0.29.0"
+created = "2026-04-29T03:22:15Z"
 last_verified = "2026-04-22T00:00:00Z"
 verification_method = "github-release"
 verifier = "manual"
@@ -15,7 +15,7 @@ url = "https://github.com/moby/buildkit/releases/download/v0.20.0/buildkit-v0.20
 filename = "buildkit-v0.20.0.linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "VERIFY_FROM_RELEASE_PAGE"
+expected_sha256 = "PENDING_VERSION_UPDATE_0.29.0"
 
 [upstream_checksum]
 url = "https://github.com/moby/buildkit/releases/download/v0.20.0/buildkit-v0.20.0.linux-amd64.tar.gz.sha256"

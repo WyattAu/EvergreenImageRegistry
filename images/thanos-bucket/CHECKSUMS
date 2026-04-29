@@ -4,8 +4,8 @@
 
 [metadata]
 image = "thanos-bucket"
-version = "0.35.0"
-created = "2026-04-22T00:00:00Z"
+version = "${VERSION}"
+created = "2026-04-29T03:22:15Z"
 last_verified = "2026-04-22T00:00:00Z"
 verification_method = "github-release-checksums"
 verifier = "populate_checksums.py"
@@ -15,7 +15,7 @@ url = "https://github.com/thanos-io/thanos/releases/download/v0.35.0/thanos-0.35
 filename = "thanos-0.35.0.linux-amd64.tar.gz"
 
 [checksum]
-expected_sha256 = "8c8c8a4dfe8a71c23c3723ecea63a3d8ef07bd643615999ddf76167e68edd2f6"
+expected_sha256 = "PENDING_VERSION_UPDATE_${VERSION}"
 
 [upstream_checksum]
 url = "https://github.com/thanos-io/thanos/releases/download/v0.35.0/sha256sums.txt"

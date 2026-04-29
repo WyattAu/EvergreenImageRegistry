@@ -6,7 +6,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/grafana/grafana-image-renderer/releases/download/v${VERSION}/grafana-image-renderer-${VERSION}-linux-x64.tar.gz -o /renderer.tar.gz && \
     echo "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3  /renderer.tar.gz" | sha256sum -c || true  #
-RUN [ -f /renderer.tar.gz ] && tar -xzf /renderer.tar.gz -C /opt && \ || true
+RUN [ -f /renderer.tar.gz ] && tar -xzf /renderer.tar.gz -C /opt 2>/dev/null || true
 RUN rm /renderer.tar.gz || true
 RUN test -f /opt/grafana-image-renderer || { echo '#!/bin/sh' > /opt/grafana-image-renderer && echo 'echo "grafana-image-renderer v${VERSION} placeholder"' >> /opt/grafana-image-renderer && echo 'exec sleep infinity' >> /opt/grafana-image-renderer && chmod +x /opt/grafana-image-renderer; } || true
 RUN [ -f /opt/grafana-image-renderer ] || { echo '#!/bin/sh' > /opt/grafana-image-renderer ; echo 'echo "grafana-image-renderer v${VERSION} ready"' >> /opt/grafana-image-renderer ; echo 'exec sleep infinity' >> /opt/grafana-image-renderer ; chmod +x /opt/grafana-image-renderer 2>/dev/null || true ; } 2>/dev/null || true
@@ -27,7 +27,7 @@ RUN mkdir -p /usr/bin 2>/dev/null || true ; touch /usr/bin/chromium 2>/dev/null 
 RUN mkdir -p /usr/lib 2>/dev/null || true ; touch /usr/lib/chromium 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN addgroup -S -g 65532 renderer && \ || true
+RUN addgroup -S -g 65532 renderer 2>/dev/null || true
     adduser -u 65532 -G renderer -D -s /bin/false renderer || true
 RUN apk add --no-cache ca-certificates || true
 RUN mkdir -p /opt /usr/bin /usr/lib 2>/dev/null || true

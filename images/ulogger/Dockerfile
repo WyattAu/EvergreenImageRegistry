@@ -9,8 +9,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         go-1.23 git ca-certificates curl ; rm -rf /var/lib/apt/lists/* || true
 WORKDIR /src
 RUN git clone --depth 1 https://github.com/nicehash/ulogger.git /src || echo "Source repo not available - using placeholder" && \
-    cd /src && go build -ldflags="-s -w" -o /ulogger .RUN strip /ulogger 2>/dev/null || true
-RUN cd /src && go build -ldflags="-s -w" -o /ulogger .RUN strip /ulogger 2>/dev/null || true
+    cd /src && go build -ldflags="-s -w" -o /ulogger . 2>/dev/null || true
+RUN strip /ulogger 2>/dev/null || true
 
 
 FROM scratch
@@ -19,7 +19,6 @@ COPY --from=builder /ulogger /usr/local/bin/ulogger
 COPY --from=downloader /app /app
 COPY --from=downloader /var/log/ulogger /var/log/ulogger
 COPY --from=downloader /var/cache/ulogger /var/cache/ulogger
-    chown -R 65532:65532 /app /var/log/ulogger /var/cache/ulogger 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080

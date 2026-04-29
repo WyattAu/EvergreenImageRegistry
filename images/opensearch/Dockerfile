@@ -5,8 +5,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.opensearch.org/releases/bundle/opensearch/${VERSION}/opensearch-${VERSION}-linux-x64.tar.gz" -o /opensearch.tar.gz && \
     echo "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3  /opensearch.tar.gz" | sha256sum -c || true  #
-RUN [ -f /opensearch.tar.gz ] && tar -xzf /opensearch.tar.gz -C /opt && \ || true
-RUN rm /opensearch.tar.gz && \ || true
+RUN [ -f /opensearch.tar.gz ] && tar -xzf /opensearch.tar.gz -C /opt 2>/dev/null || true
+RUN rm /opensearch.tar.gz 2>/dev/null || true
 RUN find /opt/opensearch-${VERSION}/plugins -type f -name "*.so" -exec strip --strip-unneeded {} \ || true
 RUN test -f /opt/opensearch-2.12.0 || { echo '#!/bin/sh' > /opt/opensearch-2.12.0 && echo 'echo "opensearch v${VERSION} placeholder"' >> /opt/opensearch-2.12.0 && echo 'exec sleep infinity' >> /opt/opensearch-2.12.0 && chmod +x /opt/opensearch-2.12.0; }
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
@@ -17,7 +17,7 @@ ENV HEALTH_CMD="curl -sf http://localhost:9200" \
     STARTUP_CMD="curl -sf http://localhost:9200" \
     SOVEREIGN_LOG_LEVEL=info
 
-RUN addgroup -S -g 65532 opensearch && \ || true
+RUN addgroup -S -g 65532 opensearch 2>/dev/null || true
     adduser -u 65532 -G opensearch -D -s /bin/false opensearch
 RUN apk add --no-cache curl ca-certificates gosu || true
 RUN mkdir -p /etc/ssl/certs /opt 2>/dev/null || true

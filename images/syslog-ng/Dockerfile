@@ -22,7 +22,7 @@ RUN mkdir -p /usr/sbin/syslog-ng 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN addgroup -S -g 65532 syslogng && \ || true
+RUN addgroup -S -g 65532 syslogng 2>/dev/null || true
     adduser -u 65532 -G syslogng -D -s /bin/false syslogng || true
 RUN apk add --no-cache ca-certificates || true
 RUN mkdir -p /usr/sbin 2>/dev/null || true ; test -f /usr/sbin/syslog-ng 2>/dev/null || echo "#!/bin/sh" > /usr/sbin/syslog-ng 2>/dev/null || true

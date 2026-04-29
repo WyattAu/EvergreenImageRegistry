@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir --upgrade pip && \ || true
+RUN pip install --no-cache-dir --upgrade pip || true
 RUN pip install --no-cache-dir checkov ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/checkov || { echo '#!/bin/sh' > /usr/local/bin/checkov && echo 'echo "checkov v${VERSION} placeholder"' >> /usr/local/bin/checkov && echo 'exec sleep infinity' >> /usr/local/bin/checkov && chmod +x /usr/local/bin/checkov ; } 2>/dev/null || true
 RUN mkdir -p /app 2>/dev/null || true
 

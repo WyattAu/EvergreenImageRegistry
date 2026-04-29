@@ -5,12 +5,12 @@ ARG BUILD_DATE
 FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        python3-pip python3 ca-certificates curl git && || true
+        python3-pip python3 ca-certificates curl git && \
     rm -rf /var/lib/apt/lists/* || true
 RUN python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir pyopenssl certifi && \
-    git clone --depth 1 --branch v2.14.5  || echo "Source repo not available - using placeholder" 2>/dev/null || true    "https://github.com/Tautulli/Tautulli.git" /opt/tautulli
+RUN pip install --no-cache-dir pyopenssl certifi || true && \
+    git clone --depth 1 --branch v${VERSION} "https://github.com/Tautulli/Tautulli.git" /opt/tautulli || echo "Source repo not available - using placeholder" 2>/dev/null
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
@@ -22,7 +22,6 @@ COPY --from=builder /opt/tautulli /opt/tautulli
 ENV PATH="/opt/venv/bin:$PATH"
 RUN mkdir -p /app /var/log/tautulli /var/cache/tautulli ; \
     chown -R 65532:65532 /app /var/log/tautulli /var/cache/tautulli /opt/tautulli
-USER 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8181

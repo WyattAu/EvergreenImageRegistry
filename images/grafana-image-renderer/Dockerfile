@@ -27,7 +27,7 @@ RUN mkdir -p /usr/bin 2>/dev/null || true ; touch /usr/bin/chromium 2>/dev/null 
 RUN mkdir -p /usr/lib 2>/dev/null || true ; touch /usr/lib/chromium 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN addgroup -S -g 65532 renderer 2>/dev/null || true
+RUN addgroup -S -g 65532 renderer 2>/dev/null || true && \
     adduser -u 65532 -G renderer -D -s /bin/false renderer || true
 RUN apk add --no-cache ca-certificates || true
 RUN mkdir -p /opt /usr/bin /usr/lib 2>/dev/null || true

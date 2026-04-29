@@ -19,7 +19,6 @@ COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN mkdir -p /app /var/log/app /var/cache/app ; \
     chown -R 65532:65532 /app /var/log/app /var/cache/app
-USER 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080

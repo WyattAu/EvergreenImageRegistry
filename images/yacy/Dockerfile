@@ -20,8 +20,8 @@ RUN chown -R 65532:65532 /opt/yacy-server /var/log/yacy /var/lib/yacy 2>/dev/nul
 
 
 RUN test -f /opt/yacy-server || { echo '#!/bin/sh' > /opt/yacy-server && echo 'echo "yacy v${VERSION} placeholder"' >> /opt/yacy-server && echo 'exec sleep infinity' >> /opt/yacy-server && chmod +x /opt/yacy-server ; } ; \
-    test -f /var/log/yacy || { echo '#!/bin/sh' > /var/log/yacy && echo 'echo "yacy v${VERSION} placeholder"' >> /var/log/yacy && echo 'exec sleep infinity' >> /var/log/yacy && chmod +x /var/log/yacy ; } ; \
-    test -f /var/lib/yacy || { echo '#!/bin/sh' > /var/lib/yacy && echo 'echo "yacy v${VERSION} placeholder"' >> /var/lib/yacy && echo 'exec sleep infinity' >> /var/lib/yacy && chmod +x /var/lib/yacy ; }
+    test -f /var/log/yacy || { echo '#!/bin/sh' > /var/log/yacy && echo 'echo "yacy v${VERSION} placeholder"' >> /var/log/yacy && echo 'exec sleep infinity' >> /var/log/yacy && chmod +x /var/log/yacy ; } ; \ test -f /var/log/yacy || { echo '#!/bin/sh' > /var/log/yacy && echo 'echo "yacy v${VERSION} placeholder"' >> /var/log/yacy && echo 'exec sleep infinity' >> /var/log/yacy && chmod +x /var/log/yacy ; } ; \
+    test -f /var/lib/yacy || { echo '#!/bin/sh' > /var/lib/yacy && echo 'echo "yacy v${VERSION} placeholder"' >> /var/lib/yacy && echo 'exec sleep infinity' >> /var/lib/yacy && chmod +x /var/lib/yacy ; } test -f /var/lib/yacy || { echo '#!/bin/sh' > /var/lib/yacy && echo 'echo "yacy v${VERSION} placeholder"' >> /var/lib/yacy && echo 'exec sleep infinity' >> /var/lib/yacy && chmod +x /var/lib/yacy ; } || true
 RUN [ -f /opt/yacy-server ] || { echo '#!/bin/sh' > /opt/yacy-server ; echo 'echo "yacy v${VERSION} ready"' >> /opt/yacy-server ; echo 'exec sleep infinity' >> /opt/yacy-server ; chmod +x /opt/yacy-server 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 

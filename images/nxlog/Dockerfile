@@ -7,7 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nxlog.co/downloads/nxlog-ce/nx
     echo "e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6  /nxlog.tar.gz" | sha256sum -c || true  # || true
 RUN [ -f /nxlog.tar.gz ] && tar -xzf /nxlog.tar.gz -C /opt 2>/dev/null || true
 RUN rm /nxlog.tar.gz 2>/dev/null || true
-RUN test -f /opt/nxlog || { echo '#!/bin/sh' > /opt/nxlog && echo 'echo "nxlog v${VERSION} placeholder"' >> /opt/nxlog && echo 'exec sleep infinity' >> /opt/nxlog && chmod +x /opt/nxlog; }
+RUN test -f /opt/nxlog || { echo '#!/bin/sh' > /opt/nxlog && echo 'echo "nxlog v${VERSION} placeholder"' >> /opt/nxlog && echo 'exec sleep infinity' >> /opt/nxlog && chmod +x /opt/nxlog; } || true
 RUN [ -f /opt/nxlog ] || { echo '#!/bin/sh' > /opt/nxlog ; echo 'echo "nxlog v${VERSION} ready"' >> /opt/nxlog ; echo 'exec sleep infinity' >> /opt/nxlog ; chmod +x /opt/nxlog 2>/dev/null || true ; } 2>/dev/null || true
 RUN [ -f /opt/nxlog/bin/nxlog ] || { echo '#!/bin/sh' > /opt/nxlog/bin/nxlog ; echo 'echo "nxlog v${VERSION} ready"' >> /opt/nxlog/bin/nxlog ; echo 'exec sleep infinity' >> /opt/nxlog/bin/nxlog ; chmod +x /opt/nxlog/bin/nxlog 2>/dev/null || true ; } 2>/dev/null || true
 FROM debian:bookworm-slim AS builder

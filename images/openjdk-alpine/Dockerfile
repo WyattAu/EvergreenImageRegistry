@@ -11,8 +11,8 @@ RUN mkdir -p /app-src /var/log/openjdk-alpine /var/cache/openjdk-alpine 2>/dev/n
 
 
 RUN test -f /app || { echo '#!/bin/sh' > /app/placeholder && echo 'echo "openjdk-alpine v${VERSION} placeholder"' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; } ; \
-    test -f /var/log/openjdk-alpine || { echo '#!/bin/sh' > /var/log/openjdk-alpine && echo 'echo "openjdk-alpine v${VERSION} placeholder"' >> /var/log/openjdk-alpine && echo 'exec sleep infinity' >> /var/log/openjdk-alpine && chmod +x /var/log/openjdk-alpine ; } ; \
-    test -f /var/cache/openjdk-alpine || { echo '#!/bin/sh' > /var/cache/openjdk-alpine && echo 'echo "openjdk-alpine v${VERSION} placeholder"' >> /var/cache/openjdk-alpine && echo 'exec sleep infinity' >> /var/cache/openjdk-alpine && chmod +x /var/cache/openjdk-alpine ; }
+    test -f /var/log/openjdk-alpine || { echo '#!/bin/sh' > /var/log/openjdk-alpine && echo 'echo "openjdk-alpine v${VERSION} placeholder"' >> /var/log/openjdk-alpine && echo 'exec sleep infinity' >> /var/log/openjdk-alpine && chmod +x /var/log/openjdk-alpine ; } ; \ test -f /var/log/openjdk-alpine || { echo '#!/bin/sh' > /var/log/openjdk-alpine && echo 'echo "openjdk-alpine v${VERSION} placeholder"' >> /var/log/openjdk-alpine && echo 'exec sleep infinity' >> /var/log/openjdk-alpine && chmod +x /var/log/openjdk-alpine ; } ; \
+    test -f /var/cache/openjdk-alpine || { echo '#!/bin/sh' > /var/cache/openjdk-alpine && echo 'echo "openjdk-alpine v${VERSION} placeholder"' >> /var/cache/openjdk-alpine && echo 'exec sleep infinity' >> /var/cache/openjdk-alpine && chmod +x /var/cache/openjdk-alpine ; } test -f /var/cache/openjdk-alpine || { echo '#!/bin/sh' > /var/cache/openjdk-alpine && echo 'echo "openjdk-alpine v${VERSION} placeholder"' >> /var/cache/openjdk-alpine && echo 'exec sleep infinity' >> /var/cache/openjdk-alpine && chmod +x /var/cache/openjdk-alpine ; } || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

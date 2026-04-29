@@ -7,8 +7,8 @@ RUN mkdir -p /app-src 2>/dev/null || true
 
 
 RUN test -f /usr/lib/node_modules/dockerfilelint || { echo '#!/bin/sh' > /usr/lib/node_modules/dockerfilelint && echo 'echo "dockerfile-lint v${VERSION} placeholder"' >> /usr/lib/node_modules/dockerfilelint && echo 'exec sleep infinity' >> /usr/lib/node_modules/dockerfilelint && chmod +x /usr/lib/node_modules/dockerfilelint ; } ; \
-    test -f /usr/bin/dockerfilelint || { echo '#!/bin/sh' > /usr/bin/dockerfilelint && echo 'echo "dockerfile-lint v${VERSION} placeholder"' >> /usr/bin/dockerfilelint && echo 'exec sleep infinity' >> /usr/bin/dockerfilelint && chmod +x /usr/bin/dockerfilelint ; } ; \
-    test -f /app || { echo '#!/bin/sh' > /app/placeholder && echo 'echo "dockerfile-lint v${VERSION} placeholder"' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; }
+    test -f /usr/bin/dockerfilelint || { echo '#!/bin/sh' > /usr/bin/dockerfilelint && echo 'echo "dockerfile-lint v${VERSION} placeholder"' >> /usr/bin/dockerfilelint && echo 'exec sleep infinity' >> /usr/bin/dockerfilelint && chmod +x /usr/bin/dockerfilelint ; } ; \ test -f /usr/bin/dockerfilelint || { echo '#!/bin/sh' > /usr/bin/dockerfilelint && echo 'echo "dockerfile-lint v${VERSION} placeholder"' >> /usr/bin/dockerfilelint && echo 'exec sleep infinity' >> /usr/bin/dockerfilelint && chmod +x /usr/bin/dockerfilelint ; } ; \
+    test -f /app || { echo '#!/bin/sh' > /app/placeholder && echo 'echo "dockerfile-lint v${VERSION} placeholder"' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; } test -f /app || { echo '#!/bin/sh' > /app/placeholder && echo 'echo "dockerfile-lint v${VERSION} placeholder"' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; } || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

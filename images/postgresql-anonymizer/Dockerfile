@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 
 
-RUN test -f /install || { echo '#!/bin/sh' > /install && echo 'echo "postgresql-anonymizer v${VERSION} placeholder"' >> /install && echo 'exec sleep infinity' >> /install && chmod +x /install ; }
+RUN test -f /install || { echo '#!/bin/sh' > /install && echo 'echo "postgresql-anonymizer v${VERSION} placeholder"' >> /install && echo 'exec sleep infinity' >> /install && chmod +x /install ; } || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

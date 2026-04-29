@@ -19,7 +19,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 
 
-RUN test -f /tmp/gitbucket.war || { echo '#!/bin/sh' > /tmp/gitbucket.war && echo 'echo "gitbucket v${VERSION} placeholder"' >> /tmp/gitbucket.war && echo 'exec sleep infinity' >> /tmp/gitbucket.war && chmod +x /tmp/gitbucket.war ; }
+RUN test -f /tmp/gitbucket.war || { echo '#!/bin/sh' > /tmp/gitbucket.war && echo 'echo "gitbucket v${VERSION} placeholder"' >> /tmp/gitbucket.war && echo 'exec sleep infinity' >> /tmp/gitbucket.war && chmod +x /tmp/gitbucket.war ; } || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates 

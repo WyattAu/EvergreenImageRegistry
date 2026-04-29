@@ -243,64 +243,56 @@ jobs:
           BUILT=0
           FAILED=0
           SKIPPED=0
-          RETRY_MAX=2
+          build_image() {
+            local image="$1"
+            local CONTEXT="./images/${image}"
+            local REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
+            local SAFE="${image//\//-}"
+            echo "::group::Build ${image}"
+            if timeout 900 docker buildx build \
+                --platform linux/amd64 \
+                -t "${REF}" \
+                --output "type=docker,dest=/tmp/images/${SAFE}.tar" \
+                --cache-from "type=gha,scope=${image}" \
+                --cache-to "type=gha,scope=${image},mode=max" \
+                --build-arg "BUILD_DATE=${TAG}" \
+                --build-arg "VCS_REF=${TAG}" \
+                --build-arg "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" \
+                --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
+                --label "org.opencontainers.image.revision=${{ github.sha }}" \
+                "${CONTEXT}"; then
+              echo "${REF}" >> /tmp/built-images.txt
+              return 0
+            else
+              return 1
+            fi
+          }
           for image in "${IMAGE_LIST[@]}"; do
             [ -z "$image" ] && continue
             CONTEXT="./images/${image}"
             if [ ! -f "${CONTEXT}/Dockerfile" ]; then
               echo "::warning::${image}: Dockerfile not found, skipping"
+              SKIPPED=$((SKIPPED + 1))
               continue
             fi
-            REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
-            SAFE="${image//\//-}"
-            BUILT_THIS=0
-
-            for attempt in $(seq 1 $((RETRY_MAX + 1))); do
-              ATTEMPT_STR=""
-              [ "$attempt" -gt 1 ] && ATTEMPT_STR=" (attempt ${attempt}/${RETRY_MAX + 1})"
-              echo "::group::Build ${image}${ATTEMPT_STR}"
-              if timeout 900 docker buildx build \
-                  --platform linux/amd64 \
-                  -t "${REF}" \
-                  --output "type=docker,dest=/tmp/images/${SAFE}.tar" \
-                  --cache-from "type=gha,scope=${image}" \
-                  --cache-to "type=gha,scope=${image},mode=max" \
-                  --build-arg "BUILD_DATE=${TAG}" \
-                  --build-arg "VCS_REF=${TAG}" \
-                  --build-arg "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" \
-                  --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
-                  --label "org.opencontainers.image.revision=${{ github.sha }}" \
-                  "${CONTEXT}"; then
-                echo "${REF}" >> /tmp/built-images.txt
-                BUILT=$((BUILT + 1))
-                BUILT_THIS=1
-                echo "::endgroup::"
-                break
-              else
-                EXIT_CODE=$?
-                if [ "$attempt" -lt "$((RETRY_MAX + 1)) ]; then
-                  echo "::warning::${image}: build failed (exit ${EXIT_CODE}), retrying in 5s..."
-                  sleep 5
-                  continue
-                else
-                  echo "::error::${image}: build failed after ${RETRY_MAX + 1} attempts (exit ${EXIT_CODE})"
-                  FAILED=$((FAILED + 1))
-                fi
-                echo "::endgroup::"
-              fi
-            done
-
-            # Rate-limit backoff: 3s between GitHub-dependent downloads
-            # (GitHub API: 5000/hr with token, 60/hr without)
-            if [ "$BUILT_THIS" -eq 0 ]; then
-              sleep 3
-            else
+            if build_image "${image}"; then
+              BUILT=$((BUILT + 1))
               sleep 1
+            else
+              echo "::warning::${image}: build failed, retrying in 5s..."
+              sleep 5
+              if build_image "${image}"; then
+                BUILT=$((BUILT + 1))
+                sleep 1
+              else
+                echo "::error::${image}: build failed after 2 attempts"
+                FAILED=$((FAILED + 1))
+                sleep 3
+              fi
             fi
+            echo "::endgroup::"
           done
           echo "Batch ${{ matrix.batch }} complete: ${BUILT} built, ${FAILED} failed, ${SKIPPED} skipped"
-          # Don't fail the batch — continue-on-error for report stage
-          # Individual image failures are tracked via built-list artifact
 
       - name: Push multi-arch to registry
         if: github.event_name != 'pull_request'

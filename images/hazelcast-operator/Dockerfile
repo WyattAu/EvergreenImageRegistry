@@ -20,8 +20,6 @@ RUN mkdir -p /usr/local/bin/hazelcast-platform-operator 2>/dev/null || true
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
 ARG VERSION=5.15.0
-RUN mkdir -p /usr/local/bin 2>/dev/null || true ; test -f /usr/local/bin/hazelcast-platform-operator 2>/dev/null || echo "#!/bin/sh" > /usr/local/bin/hazelcast-platform-operator 2>/dev/null || true
-RUN mkdir -p /etc/ssl/certs 2>/dev/null || true
 COPY --from=builder /usr/local/bin/hazelcast-platform-operator /usr/local/bin/hazelcast-platform-operator
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

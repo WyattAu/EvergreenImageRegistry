@@ -19,8 +19,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://static.rust-lang.org/rustup/di
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
 ARG VERSION=0.1.0
-RUN mkdir -p /usr/local/bin 2>/dev/null || true ; test -f /usr/local/bin/pinned-search 2>/dev/null || echo "#!/bin/sh" > /usr/local/bin/pinned-search 2>/dev/null || true
-RUN mkdir -p /etc/ssl/certs 2>/dev/null || true
 COPY --from=builder /tmp/pinned-search /usr/local/bin/pinned-search
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

@@ -21,7 +21,6 @@ RUN test -f /usr/local/bin/cass-operator || { echo '#!/bin/sh' > /usr/local/bin/
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
 ARG VERSION=1.20.0
-RUN mkdir -p /etc/ssl/certs /usr/local/bin 2>/dev/null || true
 COPY --from=builder /usr/local/bin/cass-operator /usr/local/bin/cass-operator
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

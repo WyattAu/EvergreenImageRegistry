@@ -16,7 +16,6 @@ RUN mkdir -p /app /var/log/statsd_exporter /var/cache/statsd_exporter 2>/dev/nul
 
 
 FROM scratch
-RUN mkdir -p /etc/ssl/certs /var/cache /var/log 2>/dev/null || true
 COPY --from=downloader /statsd_exporter-${VERSION}.linux-amd64/statsd_exporter /statsd_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app

@@ -65,7 +65,7 @@
 | ADRs | 7 | 7+ | **DONE** |
 | Yellow Papers | 5 | 5 | **DONE** |
 | Blue Papers | 2 | 2 | **DONE** |
-| Images with verified checksums | 74 (7%) | 100% | In progress |
+| Images with verified checksums | 991 (98%) | 100% | Near-complete |
 
 ---
 

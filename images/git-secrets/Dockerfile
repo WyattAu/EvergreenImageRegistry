@@ -15,7 +15,7 @@ RUN mkdir -p /usr/local/bin 2>/dev/null || true ; test -f /usr/local/bin/git-sec
 COPY --from=builder /usr/local/bin/git-secrets /usr/local/bin/git-secrets
 RUN mkdir -p  2>/dev/null || true ; test -f /app 2>/dev/null || echo "#!/bin/sh" > /app 2>/dev/null || true
 COPY --from=builder /app /app
-RUN addgroup -S -g 2 nogroup>/dev/null || true
+RUN addgroup -S -g 2 nogroup >/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false gitsecrets 2>/dev/null || true && \
     chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532

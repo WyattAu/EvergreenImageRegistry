@@ -7,7 +7,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 
 FROM gcr.io/distroless/static-debian12
-RUN mkdir -p /app && echo "#!/bin/sh" > /app/fileserver 2>/dev/null || true && echo "echo placeholder" >> /app/fileserver 2>/dev/null || true && chmod +x /app/fileserver 2>/dev/null || true
 COPY --from=downloader /www /www
 USER 65532:65532
 WORKDIR /www

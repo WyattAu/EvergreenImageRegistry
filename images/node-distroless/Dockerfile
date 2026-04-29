@@ -7,7 +7,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nodejs.org/dist/v22.12.0/node-
 
 
 FROM gcr.io/distroless/nodejs22-debian12
-RUN mkdir -p /usr/local/bin /usr/local/lib 2>/dev/null || true
 COPY --from=downloader /opt/node/lib/node_modules /usr/local/lib/node_modules
 COPY --from=downloader /opt/node/bin/node /usr/local/bin/node
 USER 65532:65532

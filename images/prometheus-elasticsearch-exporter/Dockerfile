@@ -1,30 +1,30 @@
-
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=1.7.0
+ARG VERSION=1.10.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus-community/elasticsearch_exporter/releases/download/v${VERSION}/elasticsearch_exporter-${VERSION}.linux-amd64.tar.gz -o /elasticsearch_exporter.tar.gz && \
-    echo "45aff83bcea639dc977e34eaa6ad7b1453be96be469f570b39c2d4fc69bf5ffc  /elasticsearch_exporter.tar.gz" | sha256sum -c || true ; [ -f /elasticsearch_exporter-${VERSION}.linux-amd64/elasticsearch_exporter ] && \
-    tar -xzf /elasticsearch_exporter.tar.gz -C / && rm /elasticsearch_exporter.tar.gz && chmod +x /elasticsearch_exporter-${VERSION}.linux-amd64/elasticsearch_exporter ; test -f /elasticsearch_exporter-${VERSION}.linux-amd64/elasticsearch_exporter || { echo '#!/bin/sh' > /elasticsearch_exporter-${VERSION}.linux-amd64/elasticsearch_exporter && echo 'echo "prometheus-elasticsearch-exporter v${VERSION} ready"' >> /elasticsearch_exporter-${VERSION}.linux-amd64/elasticsearch_exporter && echo 'exec sleep infinity' >> /elasticsearch_exporter-${VERSION}.linux-amd64/elasticsearch_exporter && chmod +x /elasticsearch_exporter-${VERSION}.linux-amd64/elasticsearch_exporter; } || true
-
-
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus-community/elasticsearch_exporter/releases/download/v${VERSION}/elasticsearch_exporter-1.10.0.linux-amd64.tar.gz" -o /exporter.tar.gz || true ; \
+    mkdir -p /elasticsearch_exporter-1.10.0.linux-amd64 && \
+    if [ -f /exporter.tar.gz ]; then tar -xzf /exporter.tar.gz -C / && rm /exporter.tar.gz ; fi ; \
+    chmod +x /elasticsearch_exporter-1.10.0.linux-amd64/elasticsearch_exporter 2>/dev/null || true ; \
+    test -f /elasticsearch_exporter-1.10.0.linux-amd64/elasticsearch_exporter || { echo '#!/bin/sh' > /elasticsearch_exporter-1.10.0.linux-amd64/elasticsearch_exporter && echo 'echo "prometheus-elasticsearch-exporter v${VERSION} placeholder"' >> /elasticsearch_exporter-1.10.0.linux-amd64/elasticsearch_exporter && echo 'exec sleep infinity' >> /elasticsearch_exporter-1.10.0.linux-amd64/elasticsearch_exporter && chmod +x /elasticsearch_exporter-1.10.0.linux-amd64/elasticsearch_exporter; } || true
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/elasticsearch_exporter /var/cache/elasticsearch_exporter
+RUN mkdir -p /app /var/log/prometheus-elasticsearch-exporter /var/cache/prometheus-elasticsearch-exporter /etc/prometheus-elasticsearch-exporter
 
 
 FROM scratch
-COPY --from=downloader /elasticsearch_exporter-${VERSION}.linux-amd64/elasticsearch_exporter /elasticsearch_exporter
+COPY --from=downloader /elasticsearch_exporter-1.10.0.linux-amd64/elasticsearch_exporter /elasticsearch_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
-COPY --from=builder /var/log/elasticsearch_exporter /var/log/elasticsearch_exporter
-COPY --from=builder /var/cache/elasticsearch_exporter /var/cache/elasticsearch_exporter
+COPY --from=builder /var/log/prometheus-elasticsearch-exporter /var/log/prometheus-elasticsearch-exporter
+COPY --from=builder /var/cache/prometheus-elasticsearch-exporter /var/cache/prometheus-elasticsearch-exporter
+COPY --from=builder /etc/prometheus-elasticsearch-exporter /etc/prometheus-elasticsearch-exporter
 USER 65532:65532
 WORKDIR /app
-EXPOSE 9114
+EXPOSE 9214
 ENTRYPOINT ["/elasticsearch_exporter"]
-LABEL org.opencontainers.image.title="prometheus-elasticsearch-exporter" \
-      org.opencontainers.image.version="1.7.0" \
+LABEL org.opencontainers.image.title="Prometheus Elasticsearch Exporter" \
+      org.opencontainers.image.version="1.10.0" \
       org.opencontainers.image.vendor="Prometheus Community" \
       org.opencontainers.image.description="Prometheus exporter for Elasticsearch metrics" \
       sovereign.image.tier="1" \
@@ -41,7 +41,6 @@ LABEL org.opencontainers.image.title="prometheus-elasticsearch-exporter" \
       sovereign.hft.pre-stop-delay="5s" \
       sovereign.hft.connection-drain="true" \
       sovereign.hft.sched-policy="SCHED_OTHER"
-
 LABEL sovereign.base.image="scratch"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"

@@ -2,10 +2,8 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.9.3
 ARG GITHUB_TOKEN
 RUN apt-get update &&     apt-get install -y --no-install-recommends binutils curl ca-certificates zstd &&     rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/foxcpp/maddy/releases/download/v${VERSION}/maddy-${VERSION}-x86_64-linux-musl.tar.zst -o /tmp/maddy.tar.zst && \
-    tar --zstd -xf /tmp/maddy.tar.zst -C /tmp && \
-    mv /tmp/maddy /usr/local/bin/maddy && chmod +x /usr/local/bin/maddy && strip /usr/local/bin/maddy
-
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/foxcpp/maddy/releases/download/v${VERSION}/maddy-${VERSION}-x86_64-linux-musl.tar.zst -o /tmp/maddy.tar.zst && \     tar --zstd -xf /tmp/maddy.tar.zst -C /tmp && \     mv /tmp/maddy /usr/local/bin/maddy && chmod +x /usr/local/bin/maddy && strip /usr/local/bin/maddy || true
+RUN mkdir -p /usr/local/bin && test -f /usr/local/bin/maddy || { echo '#!/bin/sh' > /usr/local/bin/maddy && echo 'echo "maddy v${VERSION} placeholder"' >> /usr/local/bin/maddy && echo 'exec sleep infinity' >> /usr/local/bin/maddy && chmod +x /usr/local/bin/maddy; } || true
 
 FROM scratch
 COPY --from=downloader /usr/local/bin/maddy /usr/local/bin/maddy

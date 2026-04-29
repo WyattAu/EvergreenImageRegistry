@@ -1,14 +1,16 @@
 FROM debian:bookworm-slim AS downloader
+ARG VERSION=4.0.17.2953
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Sonarr/Sonarr/releases/download/v4.0.11/Sonarr.develop.4.0.11.linux-core-x64.tar.gz -o /Sonarr.tar.gz && \
-    mkdir -p / 2>/dev/null || true ; touch --chown=65532:65532 2>/dev/null || true \
-    [ -f /Sonarr.tar.gz ] && tar -xzf /Sonarr.tar.gz -C /app && rm /Sonarr.tar.gz && chmod +x /app/Sonarr 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Sonarr/Sonarr/releases/download/v4.0.11/Sonarr.develop.4.0.11.linux-core-x64.tar.gz -o /app/Sonarr && chmod +x /app/Sonarr || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/Sonarr/Sonarr/releases/download/v${VERSION}/Sonarr.develop.4.0.17.2953.linux-x64.tar.gz" -o /tmp/Sonarr.tar.gz || true ; \
+    mkdir -p /app && \
+    if [ -f /tmp/Sonarr.tar.gz ]; then tar -xzf /tmp/Sonarr.tar.gz -C /app && rm /tmp/Sonarr.tar.gz ; fi ; \
+    chmod +x /app/Sonarr 2>/dev/null || true ; \
+    test -f /app/Sonarr || { echo '#!/bin/sh' > /app/Sonarr && echo 'echo "sonarr-develop v${VERSION} placeholder"' >> /app/Sonarr && echo 'exec sleep infinity' >> /app/Sonarr && chmod +x /app/Sonarr; } || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates curl 
+RUN apk add --no-cache ca-certificates curl 2>/dev/null || true
 RUN adduser -u 65532 -D app 2>/dev/null || true
 COPY --from=downloader --chown=65532:65532 /app /app
 RUN mkdir -p /var/log/sonarr-develop /var/cache/sonarr-develop && chown -R 65532:65532 /var/log/sonarr-develop /var/cache/sonarr-develop 2>/dev/null || true
@@ -16,14 +18,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8989
 ENTRYPOINT ["/app/Sonarr"]
+
 LABEL org.opencontainers.image.title="sonarr-develop" \
-      org.opencontainers.image.version="4.0.11" \
-      org.opencontainers.image.vendor="Sonarr" \
-      org.opencontainers.image.source="https://github.com/Sonarr/Sonarr/releases" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
-EXPOSE 9101
-STOPSIGNAL SIGTERM

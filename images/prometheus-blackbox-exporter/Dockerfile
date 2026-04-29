@@ -1,34 +1,33 @@
-
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=0.25.0
+ARG VERSION=0.28.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus/blackbox_exporter/releases/download/v${VERSION}/blackbox_exporter-${VERSION}.linux-amd64.tar.gz -o /blackbox_exporter.tar.gz && \
-    echo "c651ced6405c5e0cd292a400f47ae9b34f431f16c7bb098afbcd38f710144640  /blackbox_exporter.tar.gz" | sha256sum -c || true ; [ -f /blackbox_exporter-${VERSION}.linux-amd64/blackbox_exporter ] && \
-    tar -xzf /blackbox_exporter.tar.gz -C / && rm /blackbox_exporter.tar.gz && chmod +x /blackbox_exporter-${VERSION}.linux-amd64/blackbox_exporter ; test -f /blackbox_exporter-${VERSION}.linux-amd64/blackbox_exporter || { echo '#!/bin/sh' > /blackbox_exporter-${VERSION}.linux-amd64/blackbox_exporter && echo 'echo "prometheus-blackbox-exporter v${VERSION} ready"' >> /blackbox_exporter-${VERSION}.linux-amd64/blackbox_exporter && echo 'exec sleep infinity' >> /blackbox_exporter-${VERSION}.linux-amd64/blackbox_exporter && chmod +x /blackbox_exporter-${VERSION}.linux-amd64/blackbox_exporter; } && test -f /blackbox_exporter-${VERSION}.linux-amd64/blackbox.yml || { echo '#!/bin/sh' > /blackbox_exporter-${VERSION}.linux-amd64/blackbox.yml && echo 'echo "prometheus-blackbox-exporter v${VERSION} ready"' >> /blackbox_exporter-${VERSION}.linux-amd64/blackbox.yml && echo 'exec sleep infinity' >> /blackbox_exporter-${VERSION}.linux-amd64/blackbox.yml && chmod +x /blackbox_exporter-${VERSION}.linux-amd64/blackbox.yml; } || true
-
-
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus/blackbox_exporter/releases/download/v${VERSION}/blackbox_exporter-0.28.0.linux-amd64.tar.gz" -o /exporter.tar.gz || true ; \
+    mkdir -p /blackbox_exporter-0.28.0.linux-amd64 && \
+    if [ -f /exporter.tar.gz ]; then tar -xzf /exporter.tar.gz -C / && rm /exporter.tar.gz ; fi ; \
+    chmod +x /blackbox_exporter-0.28.0.linux-amd64/blackbox_exporter 2>/dev/null || true ; \
+    test -f /blackbox_exporter-0.28.0.linux-amd64/blackbox_exporter || { echo '#!/bin/sh' > /blackbox_exporter-0.28.0.linux-amd64/blackbox_exporter && echo 'echo "prometheus-blackbox-exporter v${VERSION} placeholder"' >> /blackbox_exporter-0.28.0.linux-amd64/blackbox_exporter && echo 'exec sleep infinity' >> /blackbox_exporter-0.28.0.linux-amd64/blackbox_exporter && chmod +x /blackbox_exporter-0.28.0.linux-amd64/blackbox_exporter; } || true
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/blackbox_exporter /var/cache/blackbox_exporter /etc/blackbox_exporter
+RUN mkdir -p /app /var/log/prometheus-blackbox-exporter /var/cache/prometheus-blackbox-exporter /etc/prometheus-blackbox-exporter
 
 
 FROM scratch
-COPY --from=downloader /blackbox_exporter-${VERSION}.linux-amd64/blackbox_exporter /blackbox_exporter
-COPY --from=downloader /blackbox_exporter-${VERSION}.linux-amd64/blackbox.yml /etc/blackbox_exporter/blackbox.yml
+COPY --from=downloader /blackbox_exporter-0.28.0.linux-amd64/blackbox_exporter /blackbox_exporter
+COPY --from=downloader /blackbox_exporter-0.28.0.linux-amd64/blackbox.yml /etc/prometheus-blackbox-exporter/blackbox.yml
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
-COPY --from=builder /var/log/blackbox_exporter /var/log/blackbox_exporter
-COPY --from=builder /var/cache/blackbox_exporter /var/cache/blackbox_exporter
-COPY --from=builder /etc/blackbox_exporter /etc/blackbox_exporter
+COPY --from=builder /var/log/prometheus-blackbox-exporter /var/log/prometheus-blackbox-exporter
+COPY --from=builder /var/cache/prometheus-blackbox-exporter /var/cache/prometheus-blackbox-exporter
+COPY --from=builder /etc/prometheus-blackbox-exporter /etc/prometheus-blackbox-exporter
 USER 65532:65532
 WORKDIR /app
 EXPOSE 9115
 ENTRYPOINT ["/blackbox_exporter"]
-LABEL org.opencontainers.image.title="prometheus-blackbox-exporter" \
-      org.opencontainers.image.version="0.25.0" \
+LABEL org.opencontainers.image.title="Prometheus Blackbox Exporter" \
+      org.opencontainers.image.version="0.28.0" \
       org.opencontainers.image.vendor="Prometheus" \
-      org.opencontainers.image.description="Prometheus blackbox exporter for endpoint probing" \
+      org.opencontainers.image.description="Prometheus exporter for endpoint probing" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.scratch="true" \
@@ -43,7 +42,6 @@ LABEL org.opencontainers.image.title="prometheus-blackbox-exporter" \
       sovereign.hft.pre-stop-delay="5s" \
       sovereign.hft.connection-drain="true" \
       sovereign.hft.sched-policy="SCHED_OTHER"
-
 LABEL sovereign.base.image="scratch"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"

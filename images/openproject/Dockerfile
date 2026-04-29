@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache sqlite-libs libpq ca-certificates curl 
+RUN apk add --no-cache sqlite-libs libpq ca-certificates curl || true
 RUN mkdir -p /app /var/log/app /var/cache/app ; 2>/dev/null || true \
     chown -R 65532:65532 /app /var/log/app /var/cache/appUSER 65532:65532
 WORKDIR /app

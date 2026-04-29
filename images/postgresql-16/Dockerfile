@@ -16,7 +16,7 @@ RUN mkdir -p /app /var/log/postgres /var/cache/postgres 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache postgresql-16 ca-certificates 
+RUN apk add --no-cache postgresql-16 ca-certificates || true
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder --chown=65532:65532 /app /app

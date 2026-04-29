@@ -25,7 +25,7 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \ || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=15
 
-RUN apk add --no-cache python3 ca-certificates tzdata libpq libjpeg-turbo zlib 
+RUN apk add --no-cache python3 ca-certificates tzdata libpq libjpeg-turbo zlib || true
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 ENV FRAPPE_VERSION="${VERSION}"

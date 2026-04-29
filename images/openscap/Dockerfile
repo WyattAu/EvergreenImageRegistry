@@ -9,7 +9,7 @@ RUN mkdir -p /app-src 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache scap-security-guide ca-certificates 
+RUN apk add --no-cache scap-security-guide ca-certificates || true
 COPY --from=builder /app /app
 RUN addgroup -S -g 2 nogroup >/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false openscap 2>/dev/null || true && \

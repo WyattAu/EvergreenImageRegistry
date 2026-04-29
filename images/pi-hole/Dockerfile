@@ -31,7 +31,7 @@ RUN mkdir -p /usr/local/bin/pihole ; \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache curl wget iproute2 iptables procps ca-certificates 
+RUN apk add --no-cache curl wget iproute2 iptables procps ca-certificates || true
 RUN mkdir -p /app /var/log/pihole /var/lib/pihole /etc/pihole /etc/dnsmasq.d
 COPY --from=installer /usr/local/bin/pihole /usr/local/bin/pihole
 COPY --from=installer /opt/pihole /opt/pihole

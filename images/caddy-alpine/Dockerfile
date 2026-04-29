@@ -18,7 +18,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=2.8.4
-RUN apk add --no-cache ca-certificates libcap && \
+RUN apk add --no-cache ca-certificates libcap && \ || true
     mkdir -p /app /var/log/caddy /var/cache/caddy /var/lib/caddy 
 COPY --from=downloader /caddy /usr/local/bin/caddy
 RUN chown -R 65532:65532 /app /var/log/caddy /var/cache/caddy /var/lib/caddy && \

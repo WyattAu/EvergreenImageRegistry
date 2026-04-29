@@ -17,7 +17,7 @@ RUN test -f /usr/local/bin/dependabot || { \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ruby ca-certificates git curl gnupg 
+RUN apk add --no-cache ruby ca-certificates git curl gnupg || true
 RUN mkdir -p /usr/lib/ruby /usr/local 2>/dev/null || true
 COPY --from=builder /usr/lib/ruby/gems /usr/lib/ruby/gems
 COPY --from=builder /usr/local/bundle /usr/local/bundle

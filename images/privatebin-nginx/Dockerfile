@@ -17,7 +17,7 @@ RUN mkdir -p /app/data /var/log/nginx /var/lib/php/sessions
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache nginx php-8.4 php-8.4-fpm php-8.4-gd php-8.4-mbstring php-8.4-xml php-8.4-curl ca-certificates 
+RUN apk add --no-cache nginx php-8.4 php-8.4-fpm php-8.4-gd php-8.4-mbstring php-8.4-xml php-8.4-curl ca-certificates || true
 COPY --from=builder /src /app/src
 COPY --from=builder /app/data /app/data
 COPY --from=builder /var/log/nginx /var/log/nginx

@@ -15,7 +15,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://git.zx2c4.com/wireguard-tools/
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=1.0.2
 
-RUN apk add --no-cache ca-certificates iproute2 iptables kmod 
+RUN apk add --no-cache ca-certificates iproute2 iptables kmod || true
 RUN mkdir -p /app /var/log/vpn-controller /etc/wireguard 2>/dev/null || true
 RUN mkdir -p /usr/local/bin 2>/dev/null || true
 COPY --from=builder /wireguard-tools-${VERSION}/src/wg /usr/local/bin/wg

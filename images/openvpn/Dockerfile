@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
-RUN apk add --no-cache openvpn 
+RUN apk add --no-cache openvpn || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

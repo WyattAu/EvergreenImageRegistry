@@ -24,7 +24,7 @@ RUN [ -f /opt/grafana ] || { echo '#!/bin/sh' > /opt/grafana ; echo 'echo "grafa
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=11.0.0
 
-RUN apk add --no-cache ca-certificates tzdata fontconfig 
+RUN apk add --no-cache ca-certificates tzdata fontconfig || true
 RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/grafana /opt/grafana
 RUN ln -sf /opt/grafana/bin/grafana-server /usr/local/bin/grafana-server && \

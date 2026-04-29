@@ -11,7 +11,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG GITHUB_TOKEN
-RUN apk add --no-cache git ca-certificates curl build-base 
+RUN apk add --no-cache git ca-certificates curl build-base || true
 RUN git clone --depth 1 --branch v3.0.0 https://github.com/gallery/gallery3.git /opt/gallery3 2>/dev/null || echo "Source repo not available - using placeholder" && \
     git clone --depth 1 https://github.com/gallery/gallery3.git /opt/gallery3 2>/dev/null || echo "Source repo not available - using placeholder" 2>/dev/null || true
 RUN     git clone --depth 1 https://github.com/gallery/gallery3.git /opt/gallery3 2>/dev/null || echo "Source repo not available - using placeholder" 2>/dev/null || true

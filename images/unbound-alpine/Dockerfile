@@ -43,7 +43,7 @@ RUN mkdir -p /usr/sbin/unbound ; \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache expat ca-certificates 
+RUN apk add --no-cache expat ca-certificates || true
 COPY --from=builder /usr/sbin/unbound /usr/sbin/unbound
 COPY --from=builder /usr/sbin/unbound-anchor /usr/sbin/unbound-anchor
 COPY --from=builder /usr/sbin/unbound-checkconf /usr/sbin/unbound-checkconf

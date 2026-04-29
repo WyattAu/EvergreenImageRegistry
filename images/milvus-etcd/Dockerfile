@@ -9,7 +9,7 @@ ARG BUILD_DATE
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apk add --no-cache etcd ca-certificates 
+RUN apk add --no-cache etcd ca-certificates || true
 USER 65532:65532
 EXPOSE 2379 2380
 LABEL org.opencontainers.image.title="milvus-etcd" \

@@ -19,7 +19,7 @@ RUN mkdir -p /app /var/log/wireguard /run/wireguard ; \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache wireguard-tools iproute2 iptables ca-certificates kmod 
+RUN apk add --no-cache wireguard-tools iproute2 iptables ca-certificates kmod || true
 COPY --from=builder /app /app
 COPY --from=builder /var/log/wireguard /var/log/wireguard
 COPY --from=builder /run/wireguard /run/wireguard

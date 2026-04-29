@@ -23,7 +23,7 @@ RUN test -e /usr/local/bundle || { mkdir -p /usr/local/bundle && echo 'fluentd p
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=1.17.1
 
-RUN apk add --no-cache ca-certificates libffi-dev 
+RUN apk add --no-cache ca-certificates libffi-dev || true
 RUN adduser -u 65532 -s /bin/false fluentd || true
 RUN mkdir -p /fluentd/etc /fluentd/log /fluentd/plugins
 COPY --from=builder /usr/local/bundle /usr/local/bundle

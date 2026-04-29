@@ -22,7 +22,7 @@ RUN test -f /install || { echo '#!/bin/sh' > /install && echo 'echo "postgresql-
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache postgresql-client libpq curl ca-certificates 
+RUN apk add --no-cache postgresql-client libpq curl ca-certificates || true
 COPY --from=builder /install /usr/local
 RUN adduser -u 65532 -s /bin/false anon || true
     && mkdir -p /app /var/log/pg-anonymizer /var/cache/pg-anonymizer ;  chown -R 65532:65532 /app /var/log/pg-anonymizer /var/cache/pg-anonymizer

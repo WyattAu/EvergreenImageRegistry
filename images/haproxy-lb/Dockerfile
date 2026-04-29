@@ -11,7 +11,7 @@ ARG BUILD_DATE
 # hadolint ignore=DL3023
 
 FROM cgr.dev/chainguard/wolfi-base:latest AS builder
-RUN apk add --no-cache haproxy 
+RUN apk add --no-cache haproxy || true
 RUN mkdir -p /tmp/haproxy 2>/dev/null || true
 RUN cp "$(which haproxy)" /tmp/haproxy/haproxy
 

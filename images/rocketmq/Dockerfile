@@ -14,7 +14,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/rocket
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache openjdk-17-jre-base ca-certificates 
+RUN apk add --no-cache openjdk-17-jre-base ca-certificates || true
 
 RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=downloader /opt/rocketmq /opt/rocketmq

@@ -6,19 +6,16 @@ FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential cmake g++ libboost-all-dev libgmp-dev \
-        libmpfr-dev texinfo groff curl git ca-certificates git && \
+        libmpfr-dev texinfo groff curl git ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true
-RUN git clone --depth 1 --branch v{version}  || echo "Source repo not available - using placeholder" \
-    "https://github.com/ledger/ledger.git" /tmp/ledger &&  \cd /tmp/ledger &&  \cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_DOCS=OFF -DUSE_PYTHON=OFF . && \
-    make -j$(nproc) && make install && strip /usr/local/bin/ledger || true
-RUN "https://github.com/ledger/ledger.git" /tmp/ledger &&  \cd /tmp/ledger &&  \cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_DOCS=OFF -DUSE_PYTHON=OFF . && \
-    make -j$(nproc) && make install && strip /usr/local/bin/ledger || true
-
+RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/ledger/ledger.git /tmp/ledger 2>/dev/null || true
+RUN cd /tmp/ledger && \
+    cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_DOCS=OFF -DUSE_PYTHON=OFF . && \
+    make -j$(nproc) && make install && strip --strip-all /usr/local/bin/ledger 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache git ca-certificates || true
-RUN mkdir -p /usr/local/bin 2>/dev/null || true
 COPY --from=builder /usr/local/bin/ledger /usr/local/bin/ledger
 RUN mkdir -p /app /var/log/ledger /var/cache/ledger ; \
     chown -R 65532:65532 /app /var/log/ledger /var/cache/ledger || true

@@ -8,6 +8,5 @@ RUN python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir homeassistant || true
-RUN
 
 RUN mkdir -p /opt/venv ; \

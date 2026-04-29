@@ -10,15 +10,14 @@ ARG GO_VERSION=1.22.4
 ARG BUILD_DATE
 
 
-FROM golang:${GO_VERSION}-bookworm AS builder
+FROM go-1.23:${GO_VERSION}-bookworm AS builder
 ARG GO_VERSION=1.22.4
-RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN git clone --depth 1 https://github.com/kuqoi/ratelimiter /src || echo "Source repo not available - using placeholder" && \
-    cd /src &&  \CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o /ratelimiter ./cmd/ratelimiter/... && \
-    strip --strip-all /ratelimiter || true
-RUN cd /src &&  \CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o /ratelimiter ./cmd/ratelimiter/... && \
-    strip --strip-all /ratelimiter 2>/dev/null || true
-RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN git clone --depth 1 https://github.com/kuqoi/ratelimiter /src && \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
+    cd /src && \    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o /ratelimiter ./cmd/ratelimiter/... && \
+    strip --strip-all /ratelimiter
+
+
 FROM scratch
 COPY --from=builder /ratelimiter /ratelimiter
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

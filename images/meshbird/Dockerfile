@@ -11,26 +11,21 @@ ARG BUILD_DATE
 ARG GO_VERSION=1.22.4
 
 
-FROM golang:${GO_VERSION}-bookworm AS builder
+FROM go-1.23:${GO_VERSION}-bookworm AS builder
 ARG VERSION=0.4.0
 ARG GO_VERSION=1.22.4
-RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN git clone --depth 1 --branch v${VERSION}  || echo "Source repo not available - using placeholder" && \
-    git clone https://github.com/meshbird/meshbird /src && \
-    cd /src &&  \CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN git clone --depth 1 --branch v${VERSION} \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
+    https://github.com/meshbird/meshbird /src && \
+    cd /src && \    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
     -ldflags="-s -w -X main.version=${VERSION}" \
     -trimpath \
     -o /meshbird && \
-    strip --strip-all /meshbird || true
-RUN https://github.com/meshbird/meshbird /src && \
-    cd /src &&  \CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
-    -ldflags="-s -w -X main.version=${VERSION}" \
-    -trimpath \
-    -o /meshbird && \
-    strip --strip-all /meshbird 2>/dev/null || true
-RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
+    strip --strip-all /meshbird
+
+
 FROM debian:bookworm-slim AS builder2
-RUN mkdir -p /app /var/log/meshbird 2>/dev/null || true
+RUN mkdir -p /app /var/log/meshbird
 
 
 FROM scratch

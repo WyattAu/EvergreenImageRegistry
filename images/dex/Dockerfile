@@ -9,15 +9,14 @@ ARG VERSION=2.45.1
 ARG BUILD_DATE
 
 
-FROM golang:1.23-bookworm AS builder
+FROM go-1.23:1.23-bookworm AS builder
 ARG VERSION=2.45.1
-RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/dexidp/dex /src || echo "Source repo not available - using placeholder" && \
-    cd /src &&  \CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /dex ./cmd/dex && \
-    strip --strip-all /dex || true
-RUN cd /src &&  \CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /dex ./cmd/dex && \
-    strip --strip-all /dex 2>/dev/null || true
-RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/dexidp/dex /src && \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
+    cd /src && \    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /dex ./cmd/dex && \
+    strip --strip-all /dex
+
+
 FROM scratch
 COPY --from=builder /dex /dex
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

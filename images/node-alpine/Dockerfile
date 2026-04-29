@@ -17,7 +17,8 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/node-alpine /var/log/node-alpine
 COPY --from=builder /var/cache/node-alpine /var/cache/node-alpine
 ENV PATH="/opt/node/bin:${PATH}" \
-    NODE_ENV=production
+    NODE_
+ENV=production
 USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["node"]

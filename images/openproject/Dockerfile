@@ -15,7 +15,8 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache sqlite-libs libpq ca-certificates curl || true
 RUN mkdir -p /app /var/log/app /var/cache/app ; 2>/dev/null || true \
-    chown -R 65532:65532 /app /var/log/app /var/cache/appUSER 65532:65532
+    chown -R 65532:65532 /app /var/log/app /var/cache/app
+USER 65532:65532
 WORKDIR /app
 EXPOSE 3000
 ENTRYPOINT ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]

@@ -12,19 +12,20 @@ ARG BUILD_DATE
 FROM debian:bookworm-20250113-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/mongodb/mongodb-ops-manager/releases/download/v${VERSION}/mongodb-ops-manager-${VERSION}.tgz -o /tmp/opsmanager.tgz ; echo "c3d4e5f6789012345678901234567890abcdef1234567890abcdef12345678901234  /tmp/opsmanager.tgz" | sha256sum -c || true  ; mkdir -p /opt/opsmanager ; \
-    [ -f /tmp/opsmanager.tgz ] && tar -xzf /tmp/opsmanager.tgz -C /opt/opsmanager --strip-components=1 || true ;  \rm -rf /tmp/opsmanager.tgz
-RUN mkdir -p /opt/opsmanager 2>/dev/null || true
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/mongodb/mongodb-ops-manager/releases/download/v${VERSION}/mongodb-ops-manager-${VERSION}.tgz -o /tmp/opsmanager.tgz \
+    && echo "c3d4e5f6789012345678901234567890abcdef1234567890abcdef12345678901234  /tmp/opsmanager.tgz" | sha256sum -c || true  \
+    && mkdir -p /opt/opsmanager \
+    && tar -xzf /tmp/opsmanager.tgz -C /opt/opsmanager --strip-components=1 \
+    && rm -rf /tmp/opsmanager.tgz
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=7.0.7
 
-RUN apk add --no-cache ca-certificates || true
-RUN addgroup -S -g 65532 opsmanager && adduser -u 65532 -G opsmanager -D -s /bin/false opsmanager || true
-RUN mkdir -p /opt/opsmanager/conf /var/log/opsmanager /var/lib/opsmanager ; \
+RUN apk add --no-cache ca-certificates
+RUN addgroup -S 65532 opsmanager && adduser -u 65532 -G opsmanager -D -s /sbin/nologin opsmanager
+RUN mkdir -p /opt/opsmanager/conf /var/log/opsmanager /var/lib/opsmanager && \
     chown -R 65532:65532 /opt/opsmanager /var/log/opsmanager /var/lib/opsmanager
-RUN mkdir -p /opt 2>/dev/null || true ; test -f /opt/opsmanager 2>/dev/null || echo "#!/bin/sh" > /opt/opsmanager 2>/dev/null || true
 COPY --from=builder /opt/opsmanager /opt/opsmanager
 USER 65532:65532
 WORKDIR /opt/opsmanager

@@ -37,9 +37,9 @@ RUN [ -f /tmp/couchdb.tar.gz ] && tar -xzf /tmp/couchdb.tar.gz -C /tmp || true ;
 # hadolint ignore=DL3023
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-ENV HEALTH_CMD="curl -sf http://localhost:5984/_up" \READY_
-CMD="curl -sf http://localhost:5984/_up" \STARTUP_
-CMD="curl -sf http://localhost:5984/_up" \
+ENV HEALTH_CMD="curl -sf http://localhost:5984/_up" \
+    READY_CMD="curl -sf http://localhost:5984/_up" \
+    STARTUP_CMD="curl -sf http://localhost:5984/_up" \
     SOVEREIGN_LOG_LEVEL=info
 
 RUN apk add --no-cache curl procps 

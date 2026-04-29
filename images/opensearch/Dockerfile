@@ -12,9 +12,9 @@ RUN test -f /opt/opensearch-2.12.0 || { echo '#!/bin/sh' > /opt/opensearch-2.12.
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 RUN [ -f /opt/opensearch-2.12.0 ] || { echo '#!/bin/sh' > /opt/opensearch-2.12.0 ; echo 'echo "opensearch v${VERSION} ready"' >> /opt/opensearch-2.12.0 ; echo 'exec sleep infinity' >> /opt/opensearch-2.12.0 ; chmod +x /opt/opensearch-2.12.0 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
-ENV HEALTH_CMD="curl -sf http://localhost:9200" \READY_
-CMD="curl -sf http://localhost:9200" \STARTUP_
-CMD="curl -sf http://localhost:9200" \
+ENV HEALTH_CMD="curl -sf http://localhost:9200" \
+    READY_CMD="curl -sf http://localhost:9200" \
+    STARTUP_CMD="curl -sf http://localhost:9200" \
     SOVEREIGN_LOG_LEVEL=info
 
 RUN addgroup -S -g 65532 opensearch 2>/dev/null || true

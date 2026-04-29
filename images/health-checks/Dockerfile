@@ -42,18 +42,15 @@ func main() {
 	client := &http.Client{Timeout: time.Duration(timeout) * time.Second}
 	resp, err := client.Get(url)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "unhealthy: %v
-n", err)
+		fmt.Fprintf(os.Stderr, "unhealthy: %v\n", err)
 		os.Exit(1)
 	}
 	resp.Body.Close()
 	if resp.StatusCode >= 200 && resp.StatusCode < 400 {
-		fmt.Printf("healthy: %s -> %d
-n", url, resp.StatusCode)
+		fmt.Printf("healthy: %s -> %d\n", url, resp.StatusCode)
 		os.Exit(0)
 	}
-	fmt.Fprintf(os.Stderr, "unhealthy: %s -> %d
-n", url, resp.StatusCode)
+	fmt.Fprintf(os.Stderr, "unhealthy: %s -> %d\n", url, resp.StatusCode)
 	os.Exit(1)
 }
 GOEOF

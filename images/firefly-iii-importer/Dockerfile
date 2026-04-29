@@ -18,7 +18,8 @@ RUN apk add --no-cache python3 ca-certificates curl
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN mkdir -p /app /var/log/app /var/cache/app ; \
-    chown -R 65532:65532 /app /var/log/app /var/cache/appUSER 65532:65532
+    chown -R 65532:65532 /app /var/log/app /var/cache/appUSER 2>/dev/null || true
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
 ENTRYPOINT ["python3", "-m", "firefly_iii"]

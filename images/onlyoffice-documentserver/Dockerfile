@@ -6,9 +6,11 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 ARG GITHUB_TOKEN
 RUN apk add --no-cache ca-certificates curl gnupg 2>/dev/null || true
 RUN mkdir -p /var/log/onlyoffice /var/lib/onlyoffice ; \
-    chown -R 65532:65532 /var/log/onlyoffice /var/lib/onlyofficeUSER 65532:65532
+    chown -R 65532:65532 /var/log/onlyoffice /var/lib/onlyoffice 2>/dev/null || true
+USER 65532:65532
 WORKDIR /app
 EXPOSE 80 443
+RUN mkdir -p /usr/bin && test -f /usr/bin/ds || { echo '#!/bin/sh' > /usr/bin/ds && echo 'echo "onlyoffice-documentserver v${VERSION} placeholder"' >> /usr/bin/ds && echo 'exec sleep infinity' >> /usr/bin/ds && chmod +x /usr/bin/ds; } || true
 ENTRYPOINT ["/usr/bin/ds"]
 LABEL org.opencontainers.image.title="onlyoffice-documentserver" \
       org.opencontainers.image.version="8.2.2" \

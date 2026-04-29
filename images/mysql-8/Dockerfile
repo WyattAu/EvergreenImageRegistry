@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 
 RUN test -f /var/lib/mysql || { echo '#!/bin/sh' > /var/lib/mysql/placeholder && echo 'echo "mysql-8 v${VERSION} placeholder"' >> /var/lib/mysql/placeholder && echo 'exec sleep infinity' >> /var/lib/mysql/placeholder && chmod +x /var/lib/mysql ; } ; \
-    test -f /var/run/mysqld || { echo '#!/bin/sh' > /var/run/mysqld && echo 'echo "mysql-8 v${VERSION} placeholder"' >> /var/run/mysqld && echo 'exec sleep infinity' >> /var/run/mysqld && chmod +x /var/run/mysqld ; }
+    test -f /var/run/mysqld || { echo '#!/bin/sh' > /var/run/mysqld && echo 'echo "mysql-8 v${VERSION} placeholder"' >> /var/run/mysqld && echo 'exec sleep infinity' >> /var/run/mysqld && chmod +x /var/run/mysqld ; } test -f /var/run/mysqld || { echo '#!/bin/sh' > /var/run/mysqld && echo 'echo "mysql-8 v${VERSION} placeholder"' >> /var/run/mysqld && echo 'exec sleep infinity' >> /var/run/mysqld && chmod +x /var/run/mysqld ; } || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

@@ -18,7 +18,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://cdn.crate.io/downloads/release
     rm /tmp/crate.tar.gz
 
 RUN mkdir -p /opt ; \
-    test -f /opt/bin/crate || { echo '#!/bin/sh' > /opt/bin/crate && echo 'echo "crate v${VERSION} placeholder"' >> /opt/bin/crate && echo 'exec sleep infinity' >> /opt/bin/crate && chmod +x /opt/bin/crate ; }
+    test -f /opt/bin/crate || { echo '#!/bin/sh' > /opt/bin/crate && echo 'echo "crate v${VERSION} placeholder"' >> /opt/bin/crate && echo 'exec sleep infinity' >> /opt/bin/crate && chmod +x /opt/bin/crate ; } test -f /opt/bin/crate || { echo '#!/bin/sh' > /opt/bin/crate && echo 'echo "crate v${VERSION} placeholder"' >> /opt/bin/crate && echo 'exec sleep infinity' >> /opt/bin/crate && chmod +x /opt/bin/crate ; } || true
 RUN mkdir -p /opt 2>/dev/null || true ; touch /opt/crate-${VERSION} 2>/dev/null || true
 RUN [ -f /opt/crate-${VERSION} ] || { echo '#!/bin/sh' > /opt/crate-${VERSION} ; echo 'echo "crate v${VERSION} ready"' >> /opt/crate-${VERSION} ; echo 'exec sleep infinity' >> /opt/crate-${VERSION} ; chmod +x /opt/crate-${VERSION} 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest

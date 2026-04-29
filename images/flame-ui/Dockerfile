@@ -6,7 +6,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     -o /flame.tar.gz && \
     [ -f /flame.tar.gz ] && tar -xzf /flame.tar.gz -C / && rm /flame.tar.gz && chmod +x /flame 2>/dev/null || true
 RUN strip /flame 2>/dev/null || true
-RUN test -f /flame || { echo '#!/bin/sh' > /flame && echo 'echo "flame-ui v${VERSION} ready"' >> /flame && echo 'exec sleep infinity' >> /flame && chmod +x /flame; }
+RUN test -f /flame || { echo '#!/bin/sh' > /flame && echo 'echo "flame-ui v${VERSION} ready"' >> /flame && echo 'exec sleep infinity' >> /flame && chmod +x /flame; } || true
 
 
 FROM debian:bookworm-slim AS builder

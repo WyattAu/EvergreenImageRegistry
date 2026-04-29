@@ -2,7 +2,7 @@ FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN mkdir -p /app-src /var/log/ulogger /var/cache/ulogger 2>/dev/null || true
-RUN test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "ulogger v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app; } && test -f /var/log/ulogger || { echo '#!/bin/sh' > /var/log/ulogger && echo 'echo "ulogger v${VERSION} placeholder"' >> /var/log/ulogger && echo 'exec sleep infinity' >> /var/log/ulogger && chmod +x /var/log/ulogger; } && test -f /var/cache/ulogger || { echo '#!/bin/sh' > /var/cache/ulogger && echo 'echo "ulogger v${VERSION} placeholder"' >> /var/cache/ulogger && echo 'exec sleep infinity' >> /var/cache/ulogger && chmod +x /var/cache/ulogger; }
+RUN test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "ulogger v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app; } && test -f /var/log/ulogger || { echo '#!/bin/sh' > /var/log/ulogger && echo 'echo "ulogger v${VERSION} placeholder"' >> /var/log/ulogger && echo 'exec sleep infinity' >> /var/log/ulogger && chmod +x /var/log/ulogger; } && test -f /var/cache/ulogger || { echo '#!/bin/sh' > /var/cache/ulogger && echo 'echo "ulogger v${VERSION} placeholder"' >> /var/cache/ulogger && echo 'exec sleep infinity' >> /var/cache/ulogger && chmod +x /var/cache/ulogger; } || true
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \

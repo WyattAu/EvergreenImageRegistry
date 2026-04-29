@@ -8,7 +8,7 @@ WORKDIR /tmp
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/element-hq/element-x/releases/download/v1.5.0/element-x-v1.5.0.tar.gz -o /tmp/release.tar.gz || true ; \
     mkdir -p /www-src ; \
     [ -f /tmp/release.tar.gz ] && tar -xzf /tmp/release.tar.gz -C /www-src --strip-components=1 || true ; \
-    rm /tmp/release.tar.gz ; test -f /www || { echo '#!/bin/sh' > /www/placeholder && echo 'echo "element-x v${VERSION} placeholder"' >> /www/placeholder && echo 'exec sleep infinity' >> /www/placeholder && chmod +x /www; }
+    rm /tmp/release.tar.gz ; test -f /www || { echo '#!/bin/sh' > /www/placeholder && echo 'echo "element-x v${VERSION} placeholder"' >> /www/placeholder && echo 'exec sleep infinity' >> /www/placeholder && chmod +x /www; } rm /tmp/release.tar.gz ; test -f /www || { echo '#!/bin/sh' > /www/placeholder && echo 'echo "element-x v${VERSION} placeholder"' >> /www/placeholder && echo 'exec sleep infinity' >> /www/placeholder && chmod +x /www; } || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

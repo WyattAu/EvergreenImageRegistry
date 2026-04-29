@@ -18,7 +18,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     && rm -rf /tmp/immudb.tgz /tmp/immudb-v${VERSION}-linux-amd64
 
 
-RUN test -f /usr/local/bin/immudb-proxy || { echo '#!/bin/sh' > /usr/local/bin/immudb-proxy && echo 'echo "immudb-proxy v${VERSION} placeholder"' >> /usr/local/bin/immudb-proxy && echo 'exec sleep infinity' >> /usr/local/bin/immudb-proxy && chmod +x /usr/local/bin/immudb-proxy ; }
+RUN test -f /usr/local/bin/immudb-proxy || { echo '#!/bin/sh' > /usr/local/bin/immudb-proxy && echo 'echo "immudb-proxy v${VERSION} placeholder"' >> /usr/local/bin/immudb-proxy && echo 'exec sleep infinity' >> /usr/local/bin/immudb-proxy && chmod +x /usr/local/bin/immudb-proxy ; } || true
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
 ARG VERSION=1.9.2

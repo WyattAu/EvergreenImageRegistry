@@ -11,7 +11,7 @@ RUN mkdir -p /app /kaniko /var/log/kaniko /var/cache/kaniko 2>/dev/null || true
 RUN test -e /app || { mkdir -p /app && echo 'kaniko placeholder' > /app/.placeholder ; } ; \
     mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true \
     mkdir -p / ; \
-    test -f /executor || { echo '#!/bin/sh' > /executor && echo 'echo "kaniko v${VERSION} placeholder"' >> /executor && echo 'exec sleep infinity' >> /executor && chmod +x /executor ; } ; \
+    test -f /executor || { echo '#!/bin/sh' > /executor && echo 'echo "kaniko v${VERSION} placeholder"' >> /executor && echo 'exec sleep infinity' >> /executor && chmod +x /executor ; } ; \ test -f /executor || { echo '#!/bin/sh' > /executor && echo 'echo "kaniko v${VERSION} placeholder"' >> /executor && echo 'exec sleep infinity' >> /executor && chmod +x /executor ; } ; \
     test -e /var/log/kaniko || { mkdir -p /var/log/kaniko && echo 'kaniko placeholder' > /var/log/kaniko/.placeholder ; } ; \
     test -e /var/cache/kaniko || { mkdir -p /var/cache/kaniko && echo 'kaniko placeholder' > /var/cache/kaniko/.placeholder ; } ; \
     test -e /kaniko/executor || { mkdir -p /kaniko/executor && echo 'kaniko placeholder' > /kaniko/executor/.placeholder ; } ; \

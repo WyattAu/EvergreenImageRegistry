@@ -24,8 +24,8 @@ RUN mkdir -p  2>/dev/null || true ; test -f /app 2>/dev/null || echo "#!/bin/sh"
 COPY --from=builder /app /app
 RUN addgroup -S -g 2 nogroup >/dev/null || true
 RUN mkdir -p /app 2>/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false organizr && \
-    chown -R 65532:65532 /app /config
+RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false organizr || true
+    && chown -R 65532:65532 /app /config
 USER 65532:65532
 WORKDIR /app
 EXPOSE 80

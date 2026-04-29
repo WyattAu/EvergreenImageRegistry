@@ -22,9 +22,9 @@ COPY --from=builder /src /app/src
 COPY --from=builder /app/data /app/data
 COPY --from=builder /var/log/nginx /var/log/nginx
 COPY --from=builder /var/lib/php/sessions /var/lib/php/sessions
-RUN addgroup -S nogroup
-RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false privatebin && \
-    chown -R 65532:65532 /app /var/log/nginx /var/lib/php/sessions
+RUN addgroup -S nogroup || true
+RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false privatebin || true
+    && chown -R 65532:65532 /app /var/log/nginx /var/lib/php/sessions
 USER 65532:65532
 WORKDIR /app
 EXPOSE 80

@@ -14,7 +14,7 @@ ARG GITHUB_TOKEN
 RUN apk add --no-cache ca-certificates curl 
 RUN pip install --no-cache-dir --break-system-packages prefect 2>/dev/null || \
     pip install --no-cache-dir prefect || true
-RUN adduser -u 65532 -D app
+RUN adduser -u 65532 -D app || true
 RUN mkdir -p /app /var/log/python /var/cache/python && chown -R app:app /app /var/log/python /var/cache/python
 USER 65532:65532
 WORKDIR /app

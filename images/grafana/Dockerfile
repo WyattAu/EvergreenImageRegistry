@@ -28,7 +28,7 @@ RUN apk add --no-cache ca-certificates tzdata fontconfig
 RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/grafana /opt/grafana
 RUN ln -sf /opt/grafana/bin/grafana-server /usr/local/bin/grafana-server && \
-    addgroup -S 65532 -r grafana 2>/dev/null || true && \
+    addgroup -S -g 10000 grafana 2>/dev/null || true && \
     adduser -u 65532 -G grafana -D -D -h /opt/grafana -s /bin/false grafana 2>/dev/null || true && \
     mkdir -p /var/lib/grafana /var/log/grafana /etc/grafana ; \
     chown -R 65532:65532 /var/lib/grafana /var/log/grafana /etc/grafana

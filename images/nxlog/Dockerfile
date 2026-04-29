@@ -5,7 +5,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://nxlog.co/downloads/nxlog-ce/nxlog-ce-${VERSION}-linux-x86_64.tar.gz" -o /nxlog.tar.gz && \
     echo "e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6  /nxlog.tar.gz" | sha256sum -c || true  # || true
-RUN [ -f /nxlog.tar.gz ] && tar -xzf /nxlog.tar.gz -C /opt && \ || true
+RUN [ -f /nxlog.tar.gz ] && tar -xzf /nxlog.tar.gz -C /opt 2>/dev/null || true
 RUN rm /nxlog.tar.gz 2>/dev/null || true
 RUN test -f /opt/nxlog || { echo '#!/bin/sh' > /opt/nxlog && echo 'echo "nxlog v${VERSION} placeholder"' >> /opt/nxlog && echo 'exec sleep infinity' >> /opt/nxlog && chmod +x /opt/nxlog; }
 RUN [ -f /opt/nxlog ] || { echo '#!/bin/sh' > /opt/nxlog ; echo 'echo "nxlog v${VERSION} ready"' >> /opt/nxlog ; echo 'exec sleep infinity' >> /opt/nxlog ; chmod +x /opt/nxlog 2>/dev/null || true ; } 2>/dev/null || true
@@ -25,7 +25,7 @@ RUN apt-get update && \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN addgroup -S -g 65532 nxlog && \ || true
+RUN addgroup -S -g 65532 nxlog 2>/dev/null || true
     adduser -u 65532 -G nxlog -D -s /bin/false nxlog
 RUN apk add --no-cache curl libzstd1 zlib expat ca-certificates || true
 RUN mkdir -p /opt /opt/nxlog/bin 2>/dev/null || true

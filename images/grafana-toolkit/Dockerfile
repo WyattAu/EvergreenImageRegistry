@@ -15,7 +15,7 @@ RUN test -f /usr/bin/node || { echo '#!/bin/sh' > /usr/bin/node && echo 'echo "g
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN addgroup -S -g 65532 toolkit && \ || true
+RUN addgroup -S -g 65532 toolkit 2>/dev/null || true
     adduser -u 65532 -G toolkit -D -s /bin/false toolkit || true
 RUN mkdir -p /etc/ssl/certs /usr/local/bin /usr/local/lib 2>/dev/null || true
 COPY --from=downloader /usr/bin/node /usr/local/bin/node

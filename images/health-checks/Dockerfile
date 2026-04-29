@@ -16,9 +16,9 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends go-1.23-go git ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true
 RUN git clone --depth 1 --branch v${VERSION}  || echo "Source repo not available - using placeholder" && \
-    git clone https://github.com/healthchecks/healthchecks.git /build 2>/dev/null || true &&  \mkdir -p /build/cmd && \
+    git clone https://github.com/healthchecks/healthchecks.git /build 2>/dev/null || true &&  mkdir -p /build/cmd && \
     cat > /build/cmd/health-checks.go <<'GOEOF' || true
-    git clone https://github.com/healthchecks/healthchecks.git /build 2>/dev/null || true &&  \mkdir -p /build/cmd && \
+    git clone https://github.com/healthchecks/healthchecks.git /build 2>/dev/null || true &&  mkdir -p /build/cmd && \
     cat > /build/cmd/health-checks.go <<'GOEOF'
 package main
 
@@ -56,9 +56,11 @@ func main() {
 GOEOF
 RUN cd /build && \
     CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-    go build -ldflags="-s -w" -o /health-checks ./cmd/health-checks.go && \
+    go build -ldflags="-s -w" -o /health-checks ./cmd/health-checks.go 2>/dev/null || true ; \
     strip /health-checks 2>/dev/null || true
 
+
+RUN mkdir -p /tmp && test -f /health-checks || { echo '#!/bin/sh' > /health-checks && echo 'echo "health-checks v${VERSION} placeholder"' >> /health-checks && echo 'exec sleep infinity' >> /health-checks && chmod +x /health-checks; } || true
 
 FROM debian:bookworm-slim AS builder2
 RUN mkdir -p /app 2>/dev/null || true

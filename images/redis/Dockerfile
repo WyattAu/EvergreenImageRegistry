@@ -14,9 +14,9 @@ RUN useradd -m -u 65532 -s /usr/bin/false redis 2>/dev/null || true
 RUN mkdir -p /app /var/log/redis /var/cache/redis 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-ENV HEALTH_CMD="redis-cli ping" \
-    READY_CMD="redis-cli ping" \
-    STARTUP_CMD="redis-cli ping" \
+ENV HEALTH_CMD="redis-cli ping" \READY_
+CMD="redis-cli ping" \STARTUP_
+CMD="redis-cli ping" \
     SOVEREIGN_LOG_LEVEL=info
 
 RUN apk add --no-cache ca-certificates 

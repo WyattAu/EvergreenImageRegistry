@@ -50,11 +50,13 @@ func main() {
 	}
 	resp, err := client.Get(url)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "down: %s - %v\n", url, err)
+		fmt.Fprintf(os.Stderr, "down: %s - %v
+n", url, err)
 		os.Exit(2)
 	}
 	resp.Body.Close()
-	fmt.Printf("up: %s -> %d (latency: %s)\n", url, resp.StatusCode, "ok")
+	fmt.Printf("up: %s -> %d (latency: %s)
+n", url, resp.StatusCode, "ok")
 	os.Exit(0)
 }
 GOEOF

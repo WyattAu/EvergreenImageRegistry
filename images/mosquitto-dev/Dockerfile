@@ -5,7 +5,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         mosquitto mosquitto-clients ca-certificates curl ; rm -rf /var/lib/apt/lists/* || true
 
 RUN mkdir -p /app /var/log/mosquitto /var/lib/mosquitto 2>/dev/null || true
-RUN printf 'listener 1883\nallow_anonymous true\npersistence false\nlog_dest stderr\nlog_type all\n' > /app/mosquitto.conf
+RUN printf 'listener 1883
+nallow_anonymous true
+npersistence false
+nlog_dest stderr
+nlog_type all
+n' > /app/mosquitto.conf
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

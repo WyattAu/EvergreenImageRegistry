@@ -14,9 +14,9 @@ RUN useradd -m -u 65532 -s /usr/bin/false mongodb 2>/dev/null || true
 RUN mkdir -p /app /var/log/mongod /var/cache/mongod 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-ENV HEALTH_CMD="mongosh --eval \"db.adminCommand('ping')\"" \
-    READY_CMD="mongosh --eval \"db.adminCommand('ping')\"" \
-    STARTUP_CMD="mongosh --eval \"db.adminCommand('ping')\"" \
+ENV HEALTH_CMD="mongosh --eval \"db.adminCommand('ping')\"" \READY_
+CMD="mongosh --eval \"db.adminCommand('ping')\"" \STARTUP_
+CMD="mongosh --eval \"db.adminCommand('ping')\"" \
     SOVEREIGN_LOG_LEVEL=info
 
 RUN apk add --no-cache ca-certificates 

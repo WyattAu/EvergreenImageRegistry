@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=8.14.0
-ENV HEALTH_CMD="curl -sf http://localhost:9200/_cluster/health" \
-    READY_CMD="curl -sf http://localhost:9200/_cluster/health" \
-    STARTUP_CMD="curl -sf http://localhost:9200/_cluster/health" \
+ENV HEALTH_CMD="curl -sf http://localhost:9200/_cluster/health" \READY_
+CMD="curl -sf http://localhost:9200/_cluster/health" \STARTUP_
+CMD="curl -sf http://localhost:9200/_cluster/health" \
     SOVEREIGN_LOG_LEVEL=info
 RUN apk add --no-cache curl ca-certificates \ || true
     curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-linux-x86_64.tar.gz" | \

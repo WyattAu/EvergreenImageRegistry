@@ -19,7 +19,13 @@ RUN addgroup -S -g 10000 appuser 2>/dev/null || true ; adduser -u 65532 -G appus
 RUN mkdir -p /var/www 2>/dev/null || true
 COPY --from=downloader /www /var/www/html
 RUN rm -f /etc/nginx/sites-enabled/default 2>/dev/null || true
-RUN printf 'server {\\n    listen 8080 default_server;\\n    root /var/www/html;\\n    index index.html;\\n    location / { try_files $uri $uri/ =404; }\\n}\\n' > /etc/nginx/sites-available/default && \
+RUN printf 'server {\
+n    listen 8080 default_server;\
+n    root /var/www/html;\
+n    index index.html;\
+n    location / { try_files $uri $uri/ =404; }\
+n}\
+n' > /etc/nginx/sites-available/default && \
     ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default && \
     chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx
 USER 65532:65532

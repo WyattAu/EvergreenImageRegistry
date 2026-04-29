@@ -30,11 +30,9 @@ RUN mkdir -p /usr/lib 2>/dev/null || true ; touch /usr/lib/redis 2>/dev/null || 
 FROM scratch
 ARG VERSION=2.8.13
 
-RUN adduser -D -u 65532 -s /bin/false redis 2>/dev/null || true
 COPY --from=builder /tmp/redisearch-src/bin/redisearch.so /opt/redis/modules/redisearch.so
 COPY --from=redis /usr/bin/redis-server /usr/local/bin/redis-server
 COPY --from=redis /usr/lib/redis /usr/local/lib/redis
-RUN chown -R 65532:65532 /var/lib/redis /var/log/redis /var/cache/redis /opt/redis 2>/dev/null || true
 USER 65532:65532
 WORKDIR /var/lib/redis
 EXPOSE 6379

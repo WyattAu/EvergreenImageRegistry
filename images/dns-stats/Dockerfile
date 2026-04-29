@@ -19,7 +19,6 @@ RUN git clone --depth 1 --branch v${VERSION} https://github.com/dmachard/dns-sta
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
 ARG VERSION=0.5.0
-RUN mkdir -p /etc/ssl/certs /usr/local/bin 2>/dev/null || true
 COPY --from=builder /tmp/dns-stats /usr/local/bin/dns-stats
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

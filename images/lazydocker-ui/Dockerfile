@@ -15,13 +15,9 @@ RUN mkdir -p /app /var/log/lazydocker-ui /var/cache/lazydocker-ui 2>/dev/null ||
 
 FROM scratch
 
-RUN mkdir -p /etc/ssl/certs /usr/local/bin 2>/dev/null || true
 COPY --from=downloader /lazydocker /usr/local/bin/lazydocker
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
-RUN addgroup -S -g 2 nogroup>/dev/null || true
-RUN mkdir -p /app 2>/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false lazydocker-ui 2>/dev/null || true &&     chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 LABEL sovereign.base.image="scratch"

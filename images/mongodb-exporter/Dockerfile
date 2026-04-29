@@ -18,7 +18,6 @@ RUN mkdir -p /app /var/log/mongodb_exporter /var/cache/mongodb_exporter 2>/dev/n
 
 
 FROM scratch
-RUN mkdir -p /etc/ssl/certs /var/cache /var/log 2>/dev/null || true
 COPY --from=downloader /mongodb_exporter-${VERSION}-linux-amd64/mongodb_exporter /mongodb_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app

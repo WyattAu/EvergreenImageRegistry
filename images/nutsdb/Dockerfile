@@ -19,7 +19,6 @@ RUN git clone --depth 1 --branch v${VERSION} https://github.com/xujiajun/nutsdb 
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
 ARG VERSION=0.14.0
-RUN mkdir -p /etc/ssl/certs /usr/local/bin 2>/dev/null || true
 COPY --from=builder /tmp/nutsdb /usr/local/bin/nutsdb
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

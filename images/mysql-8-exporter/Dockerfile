@@ -17,7 +17,6 @@ RUN mkdir -p /app /var/log/mysqld_exporter /var/cache/mysqld_exporter 2>/dev/nul
 
 
 FROM scratch
-RUN mkdir -p /etc/ssl/certs /var/cache /var/log 2>/dev/null || true
 COPY --from=downloader /mysqld_exporter-${VERSION}.linux-amd64/mysqld_exporter /mysqld_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app

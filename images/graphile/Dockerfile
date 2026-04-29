@@ -33,13 +33,11 @@ RUN test -f /usr/local/bin/node || { echo '#!/bin/sh' > /usr/local/bin/node && e
 FROM scratch
 ARG VERSION=4.14.0
 
-RUN mkdir -p /opt /usr/local/bin /usr/local/include /usr/local/lib 2>/dev/null || true
 COPY --from=nodebase /usr/local/bin/node /usr/local/bin/node
 COPY --from=nodebase /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --from=nodebase /usr/local/include/node /usr/local/include/node
 RUN ln -sf /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm 2>/dev/null || true ; ln -sf /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx 2>/dev/null || true
 RUN adduser -D -u 65532 -s /bin/false graphile 2>/dev/null || true
-RUN mkdir -p /var/lib/graphile /var/log/graphile /var/cache/graphile 2>/dev/null || true
 COPY --from=builder /opt/graphile /opt/graphile
 RUN chown -R 65532:65532 /opt/graphile /var/lib/graphile /var/log/graphile /var/cache/graphile 2>/dev/null || true
 USER 65532:65532

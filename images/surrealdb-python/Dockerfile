@@ -19,7 +19,7 @@ ARG VERSION
 RUN apk add --no-cache python3 || true
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
-RUN addgroup -S -g 2 nogroup>/dev/null || true ; adduser -u 65532 -G nogroup -D -h /app -s /bin/false surrealdb-python 2>/dev/null || true
+RUN addgroup -S -g 2 nogroup >/dev/null || true ; adduser -u 65532 -G nogroup -D -h /app -s /bin/false surrealdb-python 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["python3", "-m", "surrealdb"]

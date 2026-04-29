@@ -19,7 +19,6 @@ RUN mkdir -p /app /var/log/snmp_exporter /var/cache/snmp_exporter /etc/snmp_expo
 
 
 FROM scratch
-RUN mkdir -p /etc /etc/snmp_exporter /etc/ssl/certs /var/cache /var/log 2>/dev/null || true
 COPY --from=downloader /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter /snmp_exporter
 COPY --from=downloader /snmp_exporter-${VERSION}.linux-amd64/snmp.yml /etc/snmp_exporter/snmp.yml
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

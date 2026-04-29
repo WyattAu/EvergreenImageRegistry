@@ -17,7 +17,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 RUN apk add --no-cache curl ca-certificates inotify-tools clamav-daemon 
 COPY --from=builder /opt/maldetect /opt/maldetect
 COPY --from=builder /app /app
-RUN addgroup -S -g 2 nogroup>/dev/null || true
+RUN addgroup -S -g 2 nogroup >/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false maldet 2>/dev/null || true && \
     chown -R 65532:65532 /app /opt/maldet 2>/dev/null || true
 USER 65532:65532

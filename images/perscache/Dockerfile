@@ -19,7 +19,6 @@ RUN printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("perscache v%s
 
 FROM scratch
 ARG VERSION=1.0.0
-RUN mkdir -p /usr/local/bin 2>/dev/null || true
 COPY --from=builder /tmp/perscache /usr/local/bin/perscache
 USER 65532:65532
 EXPOSE 8429

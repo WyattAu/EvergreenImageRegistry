@@ -21,7 +21,6 @@ RUN test -f /usr/local/bin/cockroach-operator || { echo '#!/bin/sh' > /usr/local
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
 ARG VERSION=1.11.0
-RUN mkdir -p /etc/ssl/certs /usr/local/bin 2>/dev/null || true
 COPY --from=builder /usr/local/bin/cockroach-operator /usr/local/bin/cockroach-operator
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

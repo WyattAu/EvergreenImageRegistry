@@ -13,7 +13,7 @@ RUN git clone --depth 1 https://github.com/diced/zipline.git /src || echo "Sourc
 RUN cd /src && npm ci 2>/dev/null || npm install --legacy-peer-deps 2>/dev/null || true && npm run build 2>/dev/null || true
 RUN mkdir -p /app/data-src-src 2>/dev/null || true
 COPY --from=downloader /app/data /app/data
-RUN addgroup -S -g 2 nogroup>/dev/null || true
+RUN addgroup -S -g 2 nogroup >/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false zipline 2>/dev/null || true && \
     chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532

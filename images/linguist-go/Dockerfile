@@ -11,7 +11,7 @@ RUN git clone --depth 1 https://github.com/github/linguist.git /src || echo "Sou
     cd /src && go build -ldflags="-s -w" -o /linguist ./cmd/linguist 2>/dev/null || true
 RUN cd /src && go build -ldflags="-s -w" -o /linguist ./cmd/linguist 2>/dev/null || true
 COPY --from=downloader /app /app
-RUN addgroup -S -g 2 nogroup>/dev/null || true
+RUN addgroup -S -g 2 nogroup >/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false linguist 2>/dev/null || true && \
     chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532

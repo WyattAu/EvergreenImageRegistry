@@ -18,7 +18,6 @@ RUN mkdir -p /app /var/log/crowdsec /var/cache/crowdsec /etc/crowdsec /var/lib/c
 
 
 FROM scratch
-RUN mkdir -p /etc /etc/ssl/certs /var/cache /var/lib /var/log 2>/dev/null || true
 COPY --from=downloader /crowdsec-v${VERSION}-linux-amd64/crowdsec /crowdsec
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app

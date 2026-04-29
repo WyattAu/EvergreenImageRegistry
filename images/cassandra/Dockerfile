@@ -1,8 +1,8 @@
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=5.0
+ARG VERSION=5.0.8
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/cassandra/5.0/apache-cassandra-5.0-bin.tar.gz" -o /cassandra.tar.gz && \
-    tar -xzf /cassandra.tar.gz -C /opt && rm /cassandra.tar.gz || true ; test -f /opt/apache-cassandra-5.0 || { echo '#!/bin/sh' > /opt/apache-cassandra-5.0 && echo 'echo "cassandra v${VERSION} placeholder"' >> /opt/apache-cassandra-5.0 && echo 'exec sleep infinity' >> /opt/apache-cassandra-5.0 && chmod +x /opt/apache-cassandra-5.0; }
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/cassandra/${VERSION}/apache-cassandra-${VERSION}-bin.tar.gz" -o /cassandra.tar.gz && \
+    tar -xzf /cassandra.tar.gz -C /opt && rm /cassandra.tar.gz || true ; test -f /opt/apache-cassandra-${VERSION} || { echo '#!/bin/sh' > /opt/apache-cassandra-${VERSION} && echo 'echo "cassandra v${VERSION} placeholder"' >> /opt/apache-cassandra-${VERSION} && echo 'exec sleep infinity' >> /opt/apache-cassandra-${VERSION} && chmod +x /opt/apache-cassandra-${VERSION}; }
 
 # hadolint ignore=DL3023
 
@@ -10,7 +10,7 @@ FROM debian:bookworm-slim AS builder
 RUN apt-get update && \
     apt-get install -y --no-install-recommends openjdk-17-jre-headless && \
     rm -rf /var/lib/apt/lists/*
-COPY --from=downloader /opt/apache-cassandra-5.0 /opt/cassandra
+COPY --from=downloader /opt/apache-cassandra-${VERSION} /opt/cassandra
 RUN mkdir -p /var/lib/cassandra /var/log/cassandra /app ; \
     chown -R 65532:65532 /var/lib/cassandra /var/log/cassandra /app /opt/cassandra
 

@@ -9,9 +9,9 @@ ARG VERSION=3.13.1
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-ENV HEALTH_CMD="rabbitmq-diagnostics -q ping" \READY_
-CMD="rabbitmq-diagnostics -q check_running" \STARTUP_
-CMD="rabbitmq-diagnostics -q ping" \
+ENV HEALTH_CMD="rabbitmq-diagnostics -q ping" \
+    READY_CMD="rabbitmq-diagnostics -q check_running" \
+    STARTUP_CMD="rabbitmq-diagnostics -q ping" \
     SOVEREIGN_LOG_LEVEL=info
 RUN apk add --no-cache ca-certificates 
 RUN adduser -u 65532 -D rabbitmq 2>/dev/null || true

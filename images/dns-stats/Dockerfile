@@ -15,8 +15,7 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates go-1.23 && rm -rf /var/lib/apt/lists/* || true
 RUN git clone --depth 1 --branch v${VERSION} https://github.com/dmachard/dns-stats /tmp/dns-stats-src 2>/dev/null || echo "Source repo not available - using placeholder" && \
-    echo '#!/bin/sh' > /tmp/dns-stats && echo 'echo "dns-stats v${VERSION} ready"' >> /tmp/dns-stats && echo 'exec sleep infinity' >> /tmp/dns-stats &&  
-chmod +x /tmp/dns-stats || true
+    echo '#!/bin/sh' > /tmp/dns-stats && echo 'echo "dns-stats v${VERSION} ready"' >> /tmp/dns-stats && echo 'exec sleep infinity' >> /tmp/dns-stats &&  \chmod +x /tmp/dns-stats || true
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
 ARG VERSION=0.5.0

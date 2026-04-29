@@ -14,9 +14,9 @@ RUN useradd -m -u 65532 -s /usr/bin/false mysql 2>/dev/null || true
 RUN mkdir -p /app /var/log/mariadbd /var/cache/mariadbd 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-ENV HEALTH_CMD="mariadb-admin ping -h 127.0.0.1 --silent" \READY_
-CMD="mariadb-admin ping -h 127.0.0.1 --silent" \STARTUP_
-CMD="mariadb-admin ping -h 127.0.0.1 --silent" \
+ENV HEALTH_CMD="mariadb-admin ping -h 127.0.0.1 --silent" \
+    READY_CMD="mariadb-admin ping -h 127.0.0.1 --silent" \
+    STARTUP_CMD="mariadb-admin ping -h 127.0.0.1 --silent" \
     SOVEREIGN_LOG_LEVEL=info
 
 RUN apk add --no-cache ca-certificates 

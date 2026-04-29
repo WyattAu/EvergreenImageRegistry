@@ -18,10 +18,7 @@ COPY --from=builder /etc/group /etc/group
 COPY --from=builder /etc/passwd /etc/passwd
 RUN mkdir -p /var/spool/postfix /var/log/postfix /etc/postfix ; \
     chown -R 65532:65532 /var/spool/postfix /var/log/postfix
-RUN printf 'inet_interfaces = all
-nrelay_domains = $mydestination
-nsmtpd_relay_restrictions = permit_mynetworks, reject_unauth_destination
-n' > /etc/postfix/main.cf.relay
+RUN printf 'inet_interfaces = all\nrelay_domains = $mydestination\nsmtpd_relay_restrictions = permit_mynetworks, reject_unauth_destination\n' > /etc/postfix/main.cf.relay
 USER 65532:65532
 WORKDIR /var/spool/postfix
 EXPOSE 25 587

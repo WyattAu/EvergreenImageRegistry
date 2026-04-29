@@ -16,8 +16,7 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/graphile/postgraphile/releases/download/v${VERSION}/postgraphile-${VERSION}.tar.gz -o /tmp/graphile.tar.gz ; echo "PENDING  /tmp/graphile.tar.gz" | sha256sum -c || true  ; mkdir -p /opt/graphile-src ; \
-    [ -f /tmp/graphile.tar.gz ] && tar -xzf /tmp/graphile.tar.gz -C /opt/graphile-src --strip-components=1 || true ;  
-rm /tmp/graphile.tar.gz ; cd /opt/graphile && npm ci --omit=dev 2>/dev/null || npm install --omit=dev
+    [ -f /tmp/graphile.tar.gz ] && tar -xzf /tmp/graphile.tar.gz -C /opt/graphile-src --strip-components=1 || true ;  \rm /tmp/graphile.tar.gz ; cd /opt/graphile && npm ci --omit=dev 2>/dev/null || npm install --omit=dev
 
 FROM debian:bookworm-slim AS nodebase
 RUN apt-get update && apt-get install -y --no-install-recommends \

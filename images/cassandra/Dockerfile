@@ -17,9 +17,9 @@ RUN mkdir -p /var/lib/cassandra /var/log/cassandra /app ; \
 # hadolint ignore=DL3023
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-ENV HEALTH_CMD="nodetool status" \READY_
-CMD="nodetool netstats" \STARTUP_
-CMD="nodetool status" \
+ENV HEALTH_CMD="nodetool status" \
+    READY_CMD="nodetool netstats" \
+    STARTUP_CMD="nodetool status" \
     SOVEREIGN_LOG_LEVEL=info
 
 COPY --from=builder /usr/lib/jvm /usr/lib/jvm

@@ -17,13 +17,7 @@ RUN apk add --no-cache ca-certificates
 RUN addgroup -S -g 65532 appuser && adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser || true
 COPY --from=downloader /www /var/www/html
 RUN rm -f /etc/nginx/sites-enabled/default
-RUN printf 'server {\
-n    listen 8080 default_server;\
-n    root /var/www/html;\
-n    index index.html;\
-n    location / { try_files $uri $uri/ =404; }\
-n}\
-n' > /etc/nginx/sites-available/default && \
+RUN printf 'server {\\n    listen 8080 default_server;\\n    root /var/www/html;\\n    index index.html;\\n    location / { try_files $uri $uri/ =404; }\\n}\\n' > /etc/nginx/sites-available/default && \
     ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default && \
     chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx
 USER 65532:65532

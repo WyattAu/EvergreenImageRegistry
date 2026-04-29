@@ -19,9 +19,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/kafka/${VERSION}/kafka_${SCALA_VERSION}-${VERSION}.tgz" -o kafka.tgz ; echo "b383fb735a3488922b39e0d0d84a5a23b73d0e5e97ab23c39fba293af0c0a6e3  kafka.tgz" | sha256sum -c || true  ; [ -f kafka.tgz ] && tar -xzf kafka.tgz || true ; \
     rm kafka.tgz
 FROM cgr.dev/chainguard/wolfi-base:latest
-ENV HEALTH_CMD="kafka-broker-api-versions --bootstrap-server localhost:9092" \
-    READY_CMD="kafka-broker-api-versions --bootstrap-server localhost:9092" \
-    STARTUP_CMD="kafka-broker-api-versions --bootstrap-server localhost:9092" \
+ENV HEALTH_CMD="kafka-broker-api-versions --bootstrap-server localhost:9092" \READY_
+CMD="kafka-broker-api-versions --bootstrap-server localhost:9092" \STARTUP_
+CMD="kafka-broker-api-versions --bootstrap-server localhost:9092" \
     SOVEREIGN_LOG_LEVEL=info
 
 ARG VERSION

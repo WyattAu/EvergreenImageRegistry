@@ -6,7 +6,8 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 ARG GITHUB_TOKEN
 RUN apk add --no-cache ca-certificates curl gnupg 
 RUN mkdir -p /var/log/collabora /etc/loolwsd ; 2>/dev/null || true \
-    chown -R 65532:65532 /var/log/collabora /etc/loolwsdUSER 65532:65532
+    chown -R 65532:65532 /var/log/collabora /etc/loolwsd
+USER 65532:65532
 WORKDIR /app
 EXPOSE 9980
 ENTRYPOINT ["/usr/bin/loolwsd"]

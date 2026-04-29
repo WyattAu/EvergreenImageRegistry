@@ -2,7 +2,8 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/heartbeat/heartbeat-${VERSION}-linux-x86_64.tar.gz" -o /heartbeat.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  /heartbeat.tar.gz" | sha256sum -c || true  ; mkdir -p /opt/heartbeat-src ; \
-    [ -f /heartbeat.tar.gz ] && tar -xzf /heartbeat.tar.gz -C /opt/heartbeat-src --strip-components=1 || true ;  \rm /heartbeat.tar.gz ; rm -rf /opt/heartbeat/kibana /opt/heartbeat/logs ; strip /opt/heartbeat/heartbeat || true ; chmod +x /opt/heartbeat/heartbeat ;  placeholder"' >> /opt/heartbeat/placeholder && echo 'exec sleep infinity' >> /opt/heartbeat/placeholder && chmod +x /opt/heartbeat; }
+    [ -f /heartbeat.tar.gz ] && tar -xzf /heartbeat.tar.gz -C /opt/heartbeat-src --strip-components=1 || true ;  
+rm /heartbeat.tar.gz ; rm -rf /opt/heartbeat/kibana /opt/heartbeat/logs ; strip /opt/heartbeat/heartbeat || true ; chmod +x /opt/heartbeat/heartbeat ;  placeholder"' >> /opt/heartbeat/placeholder && echo 'exec sleep infinity' >> /opt/heartbeat/placeholder && chmod +x /opt/heartbeat; }
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /var/log/heartbeat /var/lib/heartbeat /var/cache/heartbeat 2>/dev/null || true

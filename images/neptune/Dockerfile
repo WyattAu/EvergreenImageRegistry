@@ -15,7 +15,12 @@ ARG VERSION
 RUN apk add --no-cache ca-certificates python3 
 RUN adduser -u 65532 -s /bin/false neptune 2>/dev/null || true
 RUN mkdir -p /var/lib/neptune /var/log/neptune /app 2>/dev/null || true
-RUN printf '#!/bin/sh\necho "neptune v%s - AWS Neptune development compatibility"\necho "AWS Neptune is a fully managed graph database service."\necho "This image provides local Gremlin/SPARQL compatibility for development."\necho "Connect to your AWS Neptune endpoint in production."\nsleep infinity' "${VERSION}" > /app/neptune && chmod +x /app/neptune
+RUN printf '#!/bin/sh
+necho "neptune v%s - AWS Neptune development compatibility"
+necho "AWS Neptune is a fully managed graph database service."
+necho "This image provides local Gremlin/SPARQL compatibility for development."
+necho "Connect to your AWS Neptune endpoint in production."
+nsleep infinity' "${VERSION}" > /app/neptune && chmod +x /app/neptune
 RUN chown -R 65532:65532 /var/lib/neptune /var/log/neptune /app
 USER 65532:65532
 WORKDIR /app

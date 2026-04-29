@@ -6,7 +6,8 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 ARG GITHUB_TOKEN
 RUN apk add --no-cache ca-certificates curl 
 RUN mkdir -p /app /var/log/app /var/cache/app ; 2>/dev/null || true \
-    chown -R 65532:65532 /app /var/log/app /var/cache/appUSER 65532:65532
+    chown -R 65532:65532 /app /var/log/app /var/cache/app
+USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
 ENTRYPOINT ["kmymoney"]

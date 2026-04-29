@@ -14,9 +14,9 @@ RUN useradd -m -u 65532 -s /usr/bin/false postgres 2>/dev/null || true
 RUN mkdir -p /app /var/log/postgres /var/cache/postgres 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-ENV HEALTH_CMD="pg_isready -h localhost" \
-    READY_CMD="pg_isready -h localhost -q" \
-    STARTUP_CMD="pg_isready -h localhost" \
+ENV HEALTH_CMD="pg_isready -h localhost" \READY_
+CMD="pg_isready -h localhost -q" \STARTUP_
+CMD="pg_isready -h localhost" \
     SOVEREIGN_LOG_LEVEL=info
 
 RUN apk add --no-cache postgresql-17 ca-certificates || true

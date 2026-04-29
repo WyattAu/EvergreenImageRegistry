@@ -12,7 +12,8 @@ RUN apk add --no-cache ca-certificates curl expat fontconfig freetype glib || tr
 COPY --from=downloader /plex.deb /tmp/plex.deb
 RUN dpkg -i 2>/dev/null || true ;  /tmp/plex.deb && rm /tmp/plex.deb
 RUN mkdir -p /var/log/plex /var/cache/plex /config /transcode ; \
-    chown -R 65532:65532 /var/log/plex /var/cache/plex /config /transcode /usr/lib/plexmediaserverUSER 65532:65532
+    chown -R 65532:65532 /var/log/plex /var/cache/plex /config /transcode /usr/lib/plexmediaserver
+USER 65532:65532
 WORKDIR /config
 EXPOSE 32400
 ENTRYPOINT ["/usr/lib/plexmediaserver/Plex Media Server"]

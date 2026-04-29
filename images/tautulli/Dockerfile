@@ -21,7 +21,8 @@ RUN mkdir -p /opt 2>/dev/null || true ; test -f /opt/tautulli 2>/dev/null || ech
 COPY --from=builder /opt/tautulli /opt/tautulli
 ENV PATH="/opt/venv/bin:$PATH"
 RUN mkdir -p /app /var/log/tautulli /var/cache/tautulli ; \
-    chown -R 65532:65532 /app /var/log/tautulli /var/cache/tautulli /opt/tautulliUSER 2>/dev/null || true
+    chown -R 65532:65532 /app /var/log/tautulli /var/cache/tautulli /opt/tautulli
+USER 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8181

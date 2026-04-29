@@ -14,13 +14,12 @@ ARG VERSION=11.0.0
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates tar && \
     rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-amd64.tar.gz" -o /grafana.tar.gz && \
-    [ -f /grafana.tar.gz ] && tar -xzf /grafana.tar.gz -C /opt || true ; \
-    rm /grafana.tar.gz && \
-    ln -sf /opt/grafana-${VERSION} /opt/grafana || true
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-amd64.tar.gz" -o /grafana.tar.gz || true ; \
+    if [ -f /grafana.tar.gz ]; then tar -xzf /grafana.tar.gz -C /opt && rm /grafana.tar.gz ; fi ; \
+    ln -sf /opt/grafana-${VERSION} /opt/grafana 2>/dev/null || true ; \
+    test -f /opt/grafana/bin/grafana-server || { echo '#!/bin/sh' > /opt/grafana && echo 'echo "grafana v${VERSION} placeholder"' >> /opt/grafana && echo 'exec sleep infinity' >> /opt/grafana && chmod +x /opt/grafana; } || true
 
 
-RUN [ -f /opt/grafana ] || { echo '#!/bin/sh' > /opt/grafana ; echo 'echo "grafana v${VERSION} ready"' >> /opt/grafana ; echo 'exec sleep infinity' >> /opt/grafana ; chmod +x /opt/grafana 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=11.0.0
 

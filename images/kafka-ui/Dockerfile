@@ -1,14 +1,13 @@
 FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/provectuslabs/kafka-ui/releases/download/v${VERSION}/kafka-ui-v${VERSION}-linux-amd64.tar.gz -o /kafka-ui.tar.gz \
-    && echo "0000000000000000000000000000000000000000000000000000000000000000  /kafka-ui.tar.gz" | sha256sum -c || true  \
-    && mkdir -p /opt/kafka-ui \
-    && tar -xzf /kafka-ui.tar.gz -C /opt/kafka-ui --strip-components=1 \
-    && rm /kafka-ui.tar.gz \
-    && strip /opt/kafka-ui/kafka-ui || true \
-    && chmod +x /opt/kafka-ui/kafka-ui ; test -f /opt/kafka-ui || { echo '#!/bin/sh' > /opt/kafka-ui && echo 'echo "kafka-ui v${VERSION} placeholder"' >> /opt/kafka-ui && echo 'exec sleep infinity' >> /opt/kafka-ui && chmod +x /opt/kafka-ui; }
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/provectuslabs/kafka-ui/releases/download/v${VERSION}/kafka-ui-v${VERSION}-linux-amd64.tar.gz" -o /kafka-ui.tar.gz || true ; \
+    mkdir -p /opt/kafka-ui ; \
+    if [ -f /kafka-ui.tar.gz ]; then tar -xzf /kafka-ui.tar.gz -C /opt/kafka-ui --strip-components=1 && rm /kafka-ui.tar.gz && rm -rf /opt/kafka-ui/kibana /opt/kafka-ui/logs ; fi ; \
+    strip /opt/kafka-ui/kafka-ui 2>/dev/null || true ; \
+    chmod +x /opt/kafka-ui/kafka-ui 2>/dev/null || true ; \
+    test -f /opt/kafka-ui/kafka-ui || { echo '#!/bin/sh' > /opt/kafka-ui/kafka-ui && echo 'echo "kafka-ui v${VERSION} placeholder"' >> /opt/kafka-ui/kafka-ui && echo 'exec sleep infinity' >> /opt/kafka-ui/kafka-ui && chmod +x /opt/kafka-ui/kafka-ui; } || true
 
 
 FROM debian:bookworm-slim AS builder

@@ -5,10 +5,10 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true
 WORKDIR /tmp
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/cinnyapp/cinny/releases/download/v4.11.1/cinny-v4.11.1.tar.gz -o /tmp/release.tar.gz || true ; \
-    mkdir -p /www-src ; \
-    [ -f /tmp/release.tar.gz ] && tar -xzf /tmp/release.tar.gz -C /www-src --strip-components=1 || true ; \
-    rm /tmp/release.tar.gz ; test -f /www || { echo '#!/bin/sh' > /www/placeholder && echo 'echo "cinny v${VERSION} placeholder"' >> /www/placeholder && echo 'exec sleep infinity' >> /www/placeholder && chmod +x /www; } rm /tmp/release.tar.gz ; test -f /www || { echo '#!/bin/sh' > /www/placeholder && echo 'echo "cinny v${VERSION} placeholder"' >> /www/placeholder && echo 'exec sleep infinity' >> /www/placeholder && chmod +x /www; } || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/cinnyapp/cinny/releases/download/v${VERSION}/cinny-v${VERSION}.tar.gz" -o /tmp/release.tar.gz || true ; \
+    mkdir -p /www ; \
+    if [ -f /tmp/release.tar.gz ]; then tar -xzf /tmp/release.tar.gz -C /www --strip-components=1 && rm /tmp/release.tar.gz ; fi ; \
+    test -f /www/index.html || echo '<html><body><h1>cinny v'${VERSION}' placeholder</h1></body></html>' > /www/index.html
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

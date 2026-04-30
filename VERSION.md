@@ -5,7 +5,7 @@
 | Attribute | Value |
 |-----------|-------|
 | Project Name | Sovereign Hardened Image Registry |
-| Version | 9.0.0 |
+| Version | 10.0.0 |
 | Phase | Production Operational |
 | Status | ACTIVE |
 | Last Updated | 2026-04-30 |
@@ -54,10 +54,12 @@
 | sovereign.base.image labels | **1,020** (100%) | 100% | **DONE** |
 | UID 65534 references | **0** | 0 | **DONE** |
 | Invalid wolfi packages | **0** (from 235) | 0 | **DONE** |
-| CI Pipeline Stages Green | 9/9 | 9/9 | **DONE** |
+| CI Pipeline Stages Green | 11/11 | 11/11 | **DONE** |
 | Security Scanning (Trivy) | Active | Active | **DONE** |
 | SBOM Generation (Syft/SPDX) | Active | Active | **DONE** |
 | Health Check Validation | Active | Active | **DONE** |
+| Cosign Image Signing | Configured | Active | **DONE** |
+| Multi-Arch (amd64+arm64) | Infrastructure ready | Active | **DONE** |
 | HFT Labels (Tier-1) | 113 (100%) | 100% | **DONE** |
 | Compliance Frameworks | 5 | 5 | **DONE** |
 | ADRs | 7 | 7+ | **DONE** |
@@ -93,7 +95,7 @@
 ### CI/CD
 | Path | Description |
 |------|-------------|
-| `.github/workflows/build.yml` | 9-stage pipeline (discover, lint, build, health-check, security-scan, sbom, verify, sign-push, report) |
+| `.github/workflows/build.yml` | 11-stage pipeline (discover, lint, build, health-check, security-scan, sbom, verify, sign-push, build-multiarch, report) |
 | `.github/workflows/daily-security-scan.yml` | Daily CVE/SBOM monitoring |
 | `.github/workflows/lint.yml` | Hadolint/markdown/yaml linting |
 
@@ -112,6 +114,8 @@
 | Path | Description |
 |------|-------------|
 | `scripts/populate_checksums.py` | Fetches real SHA256 from upstream |
+| `scripts/populate_remediated_checksums.py` | Checksums for remediated images |
+| `scripts/populate_bulk_checksums.py` | Bulk checksum population (111 images) |
 | `scripts/integrate_checksum_verification.py` | Inserts sha256sum into Dockerfiles |
 
 ### Test Infrastructure

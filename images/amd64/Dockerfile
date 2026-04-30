@@ -1,5 +1,6 @@
 
 FROM scratch
+USER 65532:65532
 LABEL org.opencontainers.image.title="amd64" \
       org.opencontainers.image.description="Sovereign hardened amd64 - AMD64 architecture base image" \
       sovereign.image.tier="3" \

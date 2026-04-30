@@ -11,6 +11,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads
 
 
 FROM scratch
+USER 65532:65532
 COPY --from=downloader /opt/auditbeat /opt/auditbeat
 WORKDIR /opt/auditbeat
 EXPOSE 5066

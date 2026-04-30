@@ -3,6 +3,7 @@
 # See: https://github.com/solo-io/envoy_exporter
 
 FROM scratch
+USER 65532:65532
 LABEL org.opencontainers.image.title="envoy-exporter" \
       sovereign.image.status="archived" \
       sovereign.image.note="Upstream repo removed, no maintained fork available"

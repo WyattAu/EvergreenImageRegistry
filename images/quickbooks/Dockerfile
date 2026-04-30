@@ -2,6 +2,7 @@ ARG BUILD_DATE
 
 
 FROM scratch
+USER 65532:65532
 LABEL org.opencontainers.image.title="quickbooks" \
       org.opencontainers.image.description="QuickBooks (proprietary)" \
       sovereign.image.tier="2" \

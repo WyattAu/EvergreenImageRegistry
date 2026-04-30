@@ -17,8 +17,10 @@ RUN mkdir -p /var/log/readarr /var/cache/readarr && chown -R 65532:65532 /var/lo
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8787
+EXPOSE 9101
 ENTRYPOINT ["/app/Readarr"]
 
+STOPSIGNAL SIGTERM
 LABEL org.opencontainers.image.title="readarr" \
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"

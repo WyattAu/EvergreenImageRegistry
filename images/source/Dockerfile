@@ -5,6 +5,7 @@
 
 
 FROM scratch
+USER 65532:65532
 LABEL org.opencontainers.image.title="source" \
       org.opencontainers.image.description="Meta directory for upstream source tracking. Not a runnable container." \
       sovereign.image.tier="3" \

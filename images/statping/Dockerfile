@@ -2,6 +2,7 @@
 # See: https://github.com/statping/statping
 
 FROM scratch
+USER 65532:65532
 LABEL org.opencontainers.image.title="statping" \
       sovereign.image.status="archived" \
       sovereign.image.note="Upstream project archived"

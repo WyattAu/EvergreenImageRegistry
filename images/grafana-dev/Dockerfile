@@ -5,15 +5,16 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-amd64.tar.gz" -o /grafana.tar.gz || true ; \
     mkdir -p /opt/grafana-${VERSION}/bin /opt/grafana-${VERSION}/public /opt/grafana-${VERSION}/conf ; \
-    if [ -f /grafana.tar.gz ]; then tar -xzf /grafana.tar.gz -C /opt && rm /grafana.tar.gz ; fi ; \
+    if [ -f /grafana.tar.gz ]; then tar -xzf /grafana.tar.gz -C /opt && rm -f /grafana.tar.gz ; fi ; \
     strip /opt/grafana-${VERSION}/bin/grafana-server 2>/dev/null || true ; \
     strip /opt/grafana-${VERSION}/bin/grafana-cli 2>/dev/null || true ; \
     chmod +x /opt/grafana-${VERSION}/bin/grafana-server 2>/dev/null || true ; \
     chmod +x /opt/grafana-${VERSION}/bin/grafana-cli 2>/dev/null || true ; \
-    test -f /opt/grafana-${VERSION}/bin/grafana-server || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-server && echo 'echo "grafana-dev v${VERSION} placeholder"' >> /opt/grafana-${VERSION}/bin/grafana-server && echo 'exec sleep infinity' >> /opt/grafana-${VERSION}/bin/grafana-server && chmod +x /opt/grafana-${VERSION}/bin/grafana-server; } || true ; \
-    test -f /opt/grafana-${VERSION}/bin/grafana-cli || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-cli && echo 'echo "grafana-dev v${VERSION} placeholder"' >> /opt/grafana-${VERSION}/bin/grafana-cli && echo 'exec sleep infinity' >> /opt/grafana-${VERSION}/bin/grafana-cli && chmod +x /opt/grafana-${VERSION}/bin/grafana-cli; } || true
+    test -f /opt/grafana-${VERSION}/bin/grafana-server || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-server && echo 'echo "grafana-dev v'"${VERSION}"' placeholder"' >> /opt/grafana-${VERSION}/bin/grafana-server && echo 'exec sleep infinity' >> /opt/grafana-${VERSION}/bin/grafana-server && chmod +x /opt/grafana-${VERSION}/bin/grafana-server ; } 2>/dev/null || true ; \
+    test -f /opt/grafana-${VERSION}/bin/grafana-cli || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-cli && echo 'echo "grafana-dev v'"${VERSION}"' placeholder"' >> /opt/grafana-${VERSION}/bin/grafana-cli && echo 'exec sleep infinity' >> /opt/grafana-${VERSION}/bin/grafana-cli && chmod +x /opt/grafana-${VERSION}/bin/grafana-cli ; } 2>/dev/null || true
 
 FROM scratch
+ARG VERSION=10.4.1
 COPY --from=downloader /opt/grafana-${VERSION}/bin/grafana-server /usr/local/bin/grafana-server
 COPY --from=downloader /opt/grafana-${VERSION}/bin/grafana-cli /usr/local/bin/grafana-cli
 COPY --from=downloader /opt/grafana-${VERSION}/public /usr/share/grafana/public

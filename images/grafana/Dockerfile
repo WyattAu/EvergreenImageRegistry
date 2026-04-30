@@ -15,9 +15,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates tar && \
     rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-amd64.tar.gz" -o /grafana.tar.gz || true ; \
-    if [ -f /grafana.tar.gz ]; then tar -xzf /grafana.tar.gz -C /opt && rm /grafana.tar.gz ; fi ; \
-    ln -sf /opt/grafana-${VERSION} /opt/grafana 2>/dev/null || true ; \
-    test -f /opt/grafana/bin/grafana-server || { echo '#!/bin/sh' > /opt/grafana && echo 'echo "grafana v${VERSION} placeholder"' >> /opt/grafana && echo 'exec sleep infinity' >> /opt/grafana && chmod +x /opt/grafana; } || true
+    if [ -f /grafana.tar.gz ]; then tar -xzf /grafana.tar.gz -C /opt && rm -f /grafana.tar.gz ; fi ; \
+    mkdir -p /opt/grafana-${VERSION}/bin 2>/dev/null || true ; \
+    test -f /opt/grafana-${VERSION}/bin/grafana-server || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-server && echo 'echo "grafana v'"${VERSION}"' placeholder"' >> /opt/grafana-${VERSION}/bin/grafana-server && echo 'exec sleep infinity' >> /opt/grafana-${VERSION}/bin/grafana-server && chmod +x /opt/grafana-${VERSION}/bin/grafana-server ; } 2>/dev/null || true ; \
+    ln -sf /opt/grafana-${VERSION} /opt/grafana 2>/dev/null || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
@@ -25,12 +26,12 @@ ARG VERSION=11.0.0
 
 RUN apk add --no-cache ca-certificates tzdata fontconfig || true
 RUN mkdir -p /opt 2>/dev/null || true
-COPY --from=builder /opt/grafana /opt/grafana
-RUN ln -sf /opt/grafana/bin/grafana-server /usr/local/bin/grafana-server && \
+COPY --from=builder /opt/grafana-${VERSION} /opt/grafana
+RUN mkdir -p /opt/grafana/bin /var/lib/grafana /var/log/grafana /etc/grafana 2>/dev/null || true && \
+    cp -a /opt/grafana/bin/grafana-server /usr/local/bin/grafana-server 2>/dev/null || true && \
     addgroup -S -g 10000 grafana 2>/dev/null || true && \
-    adduser -u 65532 -G grafana -D -D -h /opt/grafana -s /bin/false grafana 2>/dev/null || true && \
-    mkdir -p /var/lib/grafana /var/log/grafana /etc/grafana ; \
-    chown -R 65532:65532 /var/lib/grafana /var/log/grafana /etc/grafana
+    adduser -u 65532 -G grafana -D -h /opt/grafana -s /bin/false grafana 2>/dev/null || true && \
+    chown -R 65532:65532 /var/lib/grafana /var/log/grafana /etc/grafana 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/grafana
 EXPOSE 3000

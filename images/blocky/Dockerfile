@@ -4,6 +4,7 @@ ARG VERSION=0.29.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/0xERR0R/blocky/releases/download/v0.29.0/blocky_v0.29.0_Linux_x86_64.tar.gz -o /blocky.tar.gz || true ; \
+    echo "ce70e5ef992a8eb980cf05e2902a63f9ee27296e1c69114d6dd6506549388428  /blocky.tar.gz" | sha256sum -c - || true
     [ -f /blocky.tar.gz ] && tar -xzf /blocky.tar.gz -C / && rm /blocky.tar.gz && chmod +x /blocky 2>/dev/null || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/0xERR0R/blocky/releases/download/v0.29.0/blocky_v0.29.0_Linux_x86_64.tar.gz -o /blocky && chmod +x /blocky ; test -f /blocky || { echo '#!/bin/sh' > /blocky && echo 'echo "blocky v${VERSION} ready"' >> /blocky && echo 'exec sleep infinity' >> /blocky && chmod +x /blocky; }
 

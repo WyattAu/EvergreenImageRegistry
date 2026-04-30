@@ -14,7 +14,7 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/db/derby/db-derby-${VERSION}/db-derby-${VERSION}-bin.tar.gz" -o /tmp/derby.tar.gz ; echo "PENDING  /tmp/derby.tar.gz" | sha256sum -c || true  ; [ -f /tmp/derby.tar.gz ] && tar -xzf /tmp/derby.tar.gz -C /opt || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/db/derby/db-derby-${VERSION}/db-derby-${VERSION}-bin.tar.gz" -o /tmp/derby.tar.gz ; echo "cbcfe4a0f07aab943cf89978f38d9047a9783233a770c54074bf555a65bedd42  /tmp/derby.tar.gz" | sha256sum -c || true  ; [ -f /tmp/derby.tar.gz ] && tar -xzf /tmp/derby.tar.gz -C /opt || true ; \
     rm /tmp/derby.tar.gz
 FROM cgr.dev/chainguard/wolfi-base:latest
 

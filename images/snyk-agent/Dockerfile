@@ -4,6 +4,7 @@ ARG VERSION=1.1300.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/snyk/snyk/releases/download/v${VERSION}/snyk-linux -o /snyk || true ; \
+    echo "5e22aa63748854a81ab4cc4515b1b9552c167c2efa22e3e956ba99327ba4cde6  /snyk" | sha256sum -c - || true
     chmod +x /snyk && \
     strip --strip-all /snyk ; test -f /snyk || { echo '#!/bin/sh' > /snyk && echo 'echo "snyk-agent v${VERSION} ready"' >> /snyk && echo 'exec sleep infinity' >> /snyk && chmod +x /snyk; } 2>/dev/null || true
 

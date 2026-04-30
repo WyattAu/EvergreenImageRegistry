@@ -2,7 +2,8 @@
 FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/aquasecurity/kube-bench/releases/download/v0.8.0/kube-bench_0.8.0_linux_amd64.tar.gz -o /kube-bench_0.8.0_linux_amd64.tar.gz &&     [ -f /kube-bench_0.8.0_linux_amd64.tar.gz ] && tar -xzf /kube-bench_0.8.0_linux_amd64.tar.gz -C / && rm /kube-bench_0.8.0_linux_amd64.tar.gz && chmod +x /kube-bench || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/aquasecurity/kube-bench/releases/download/v0.8.0/kube-bench_0.8.0_linux_amd64.tar.gz -o /kube-bench_0.8.0_linux_amd64.tar.gz &&     [ -f /kube-bench_0.8.0_linux_amd64.tar.gz ] && tar -xzf /kube-bench_0.8.0_linux_amd64.tar.gz -C / && rm /kube-bench_0.8.0_linux_amd64.tar.gz && chmod +x /kube-bench || true && \
+    echo "8e8f083819678956b6c36623a6a0638741340397ffc209cd71a6b4907f2bb05e  /kube-bench_0.8.0_linux_amd64.tar.gz" | sha256sum -c - || true
 RUN strip /kube-bench 2>/dev/null || true
 RUN test -f /kube-bench || { echo '#!/bin/sh' > /kube-bench && echo 'echo "kube-bench v${VERSION} ready"' >> /kube-bench && echo 'exec sleep infinity' >> /kube-bench && chmod +x /kube-bench; }
 

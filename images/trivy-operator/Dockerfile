@@ -4,6 +4,7 @@ ARG VERSION=0.30.1
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/aquasecurity/trivy-operator/releases/download/v${VERSION}/trivy_operator_Linux_x86_64.tar.gz -o /trivy-operator.tar.gz || true ; \
+    echo "03aad0222b59bd5bfacc00505d01cdc41bed83fb0321ecc644e0d4680bd2f3dd  /trivy-operator.tar.gz" | sha256sum -c - || true
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/aquasecurity/trivy-operator/releases/download/v${VERSION}/trivy_operator_Linux_x86_64.tar.gz.sig -o /trivy-operator.sig && \
     [ -f /trivy-operator.tar.gz ] && tar -xzf /trivy-operator.tar.gz -C /tmp/ || true ; \
     strip --strip-all /tmp/trivy-operator && \

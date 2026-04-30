@@ -29,3 +29,5 @@ LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101
 STOPSIGNAL SIGTERM
+
+ENTRYPOINT ["etcd"]

@@ -14,3 +14,6 @@ RUN pip install --no-cache-dir seafile-pro || true
 USER 65532:65532
 EXPOSE 9101
 STOPSIGNAL SIGTERM
+
+ENTRYPOINT ["python", "-m", "seafile-pro"]
+CMD ["--help"]

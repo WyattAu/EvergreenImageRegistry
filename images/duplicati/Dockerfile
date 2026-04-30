@@ -11,9 +11,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dot.net/v1/dotnet-install.sh" 
     echo "102a6849303713f15462bb28eb10593bf874bbeec17122e0522f10a3b57ce442  /dotnet-install.sh" | sha256sum -c - || true
     chmod +x /dotnet-install.sh && \
     /dotnet-install.sh --channel 8.0 --runtime dotnet --install-dir /usr/share/dotnet && \
-    rm /dotnet-install.sh || true
+    rm -f /dotnet-install.sh || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/duplicati/duplicati/releases/download/v2.1.0.1/duplicati-2.1.0.1-linux-x64-gui.zip -o /duplicati.zip && \
-    unzip -q /duplicati.zip -d /opt/duplicati && rm /duplicati.zip || true
+    unzip -q /duplicati.zip -d /opt/duplicati && rm -f /duplicati.zip || true
 
 
 RUN test -f /opt/duplicati || { echo '#!/bin/sh' > /opt/duplicati && echo 'echo "duplicati v${VERSION} placeholder"' >> /opt/duplicati && echo 'exec sleep infinity' >> /opt/duplicati && chmod +x /opt/duplicati ; }
@@ -24,7 +24,7 @@ RUN apk add --no-cache curl ca-certificates
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dot.net/v1/dotnet-install.sh" -o /dotnet-install.sh && \
     chmod +x /dotnet-install.sh && \
     /dotnet-install.sh --channel 8.0 --runtime dotnet --install-dir /usr/share/dotnet && \
-    rm /dotnet-install.sh || true
+    rm -f /dotnet-install.sh || true
 COPY --from=builder /opt/duplicati /opt/duplicati
 RUN mkdir -p /app /var/log/duplicati /var/cache/duplicati /root/.config/Duplicati ; 2>/dev/null || true \
     chown -R 65532:65532 /app /var/log/duplicati /var/cache/duplicati

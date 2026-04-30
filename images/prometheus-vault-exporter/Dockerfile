@@ -4,7 +4,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus-community/vault_exporter/releases/download/v${VERSION}/vault_exporter-${VERSION}.linux-amd64.tar.gz" -o /vault_exporter.tar.gz || true ; \
     mkdir -p /vault_exporter-${VERSION}.linux-amd64 ; \
-    if [ -f /vault_exporter.tar.gz ]; then tar -xzf /vault_exporter.tar.gz -C / && rm /vault_exporter.tar.gz ; fi ; \
+    if [ -f /vault_exporter.tar.gz ]; then tar -xzf /vault_exporter.tar.gz -C / && rm -f /vault_exporter.tar.gz ; fi ; \
     chmod +x /vault_exporter-${VERSION}.linux-amd64/vault_exporter 2>/dev/null || true ; \
     test -f /vault_exporter-${VERSION}.linux-amd64/vault_exporter || { echo '#!/bin/sh' > /vault_exporter-${VERSION}.linux-amd64/vault_exporter && echo 'echo "prometheus-vault-exporter v${VERSION} placeholder"' >> /vault_exporter-${VERSION}.linux-amd64/vault_exporter && echo 'exec sleep infinity' >> /vault_exporter-${VERSION}.linux-amd64/vault_exporter && chmod +x /vault_exporter-${VERSION}.linux-amd64/vault_exporter; } || true
 

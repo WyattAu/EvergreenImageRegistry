@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates gnupg unzip && \
     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/wekan/wekan/releases/download/v${VERSION}/wekan-${VERSION}-amd64.zip -o /wekan.zip || true
-RUN if [ -f /wekan.zip ]; then unzip -q /wekan.zip -d /opt/ && rm /wekan.zip; fi
+RUN if [ -f /wekan.zip ]; then unzip -q /wekan.zip -d /opt/ && rm -f /wekan.zip; fi
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

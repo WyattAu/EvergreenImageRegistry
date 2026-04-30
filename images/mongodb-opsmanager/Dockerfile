@@ -6,7 +6,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL \
     -o /tmp/mongosh.tgz && \
     mkdir -p /opt/mongosh && \
     tar -xzf /tmp/mongosh.tgz -C /opt/mongosh --strip-components=1 && \
-    rm /tmp/mongosh.tgz || true
+    rm -f /tmp/mongosh.tgz || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=2.5.0

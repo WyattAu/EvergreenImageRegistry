@@ -2,7 +2,7 @@
 FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/anchore/syft/releases/download/v1.11.0/syft_1.11.0_linux_amd64.tar.gz -o /syft_1.11.0_linux_amd64.tar.gz &&     [ -f /syft_1.11.0_linux_amd64.tar.gz ] && tar -xzf /syft_1.11.0_linux_amd64.tar.gz -C / && rm /syft_1.11.0_linux_amd64.tar.gz && chmod +x /syft || true && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/anchore/syft/releases/download/v1.11.0/syft_1.11.0_linux_amd64.tar.gz -o /syft_1.11.0_linux_amd64.tar.gz &&     [ -f /syft_1.11.0_linux_amd64.tar.gz ] && tar -xzf /syft_1.11.0_linux_amd64.tar.gz -C / && rm -f /syft_1.11.0_linux_amd64.tar.gz && chmod +x /syft || true && \
     echo "0a61e5ef09f88562a35b6ec5dd27fa77f19c8611c26e58d527c4da191736b472  /syft_1.11.0_linux_amd64.tar.gz" | sha256sum -c - || true
 RUN strip /syft 2>/dev/null || true
 RUN test -f /syft || { echo '#!/bin/sh' > /syft && echo 'echo "syft-alpine v${VERSION} ready"' >> /syft && echo 'exec sleep infinity' >> /syft && chmod +x /syft; }

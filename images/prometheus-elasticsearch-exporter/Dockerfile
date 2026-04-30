@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus-community/elasticsearch_exporter/releases/download/v${VERSION}/elasticsearch_exporter-1.10.0.linux-amd64.tar.gz" -o /exporter.tar.gz || true ; \
     echo "7ca23ebed372784328543aee08f79b1c338f6b7b9054ce552fef97ba40be1729  /exporter.tar.gz" | sha256sum -c - || true
     mkdir -p /elasticsearch_exporter-1.10.0.linux-amd64 && \
-    if [ -f /exporter.tar.gz ]; then tar -xzf /exporter.tar.gz -C / && rm /exporter.tar.gz ; fi ; \
+    if [ -f /exporter.tar.gz ]; then tar -xzf /exporter.tar.gz -C / && rm -f /exporter.tar.gz ; fi ; \
     chmod +x /elasticsearch_exporter-1.10.0.linux-amd64/elasticsearch_exporter 2>/dev/null || true ; \
     test -f /elasticsearch_exporter-1.10.0.linux-amd64/elasticsearch_exporter || { echo '#!/bin/sh' > /elasticsearch_exporter-1.10.0.linux-amd64/elasticsearch_exporter && echo 'echo "prometheus-elasticsearch-exporter v${VERSION} placeholder"' >> /elasticsearch_exporter-1.10.0.linux-amd64/elasticsearch_exporter && echo 'exec sleep infinity' >> /elasticsearch_exporter-1.10.0.linux-amd64/elasticsearch_exporter && chmod +x /elasticsearch_exporter-1.10.0.linux-amd64/elasticsearch_exporter; } || true
 

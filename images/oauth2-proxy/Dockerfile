@@ -5,7 +5,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v7.15.2/oauth2-proxy-v7.15.2.linux-amd64-sha256sum.txt -o /oauth2-proxy.tar.gz || true ; \
     echo "e5a5e95cc06c15c17ad2fcacac3d6d31a6e866198bf1e115f7edb563483f3b47  /oauth2-proxy.tar.gz" | sha256sum -c - || true
-    [ -f /oauth2-proxy.tar.gz ] && tar -xzf /oauth2-proxy.tar.gz -C / && rm /oauth2-proxy.tar.gz && chmod +x /oauth2-proxy 2>/dev/null || true ; \
+    [ -f /oauth2-proxy.tar.gz ] && tar -xzf /oauth2-proxy.tar.gz -C / && rm -f /oauth2-proxy.tar.gz && chmod +x /oauth2-proxy 2>/dev/null || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v7.15.2/oauth2-proxy-v7.15.2.linux-amd64-sha256sum.txt -o /oauth2-proxy && chmod +x /oauth2-proxy ; test -f /oauth2-proxy || { echo '#!/bin/sh' > /oauth2-proxy && echo 'echo "oauth2-proxy v${VERSION} ready"' >> /oauth2-proxy && echo 'exec sleep infinity' >> /oauth2-proxy && chmod +x /oauth2-proxy; }
 
 

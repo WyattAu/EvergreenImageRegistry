@@ -4,7 +4,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://nxlog.co/downloads/nxlog-ce/nxlog-ce-${VERSION}-linux-x86_64.tar.gz" -o /nxlog.tar.gz || true ; \
-    if [ -f /nxlog.tar.gz ]; then tar -xzf /nxlog.tar.gz -C /opt && rm /nxlog.tar.gz ; fi ; \
+    if [ -f /nxlog.tar.gz ]; then tar -xzf /nxlog.tar.gz -C /opt && rm -f /nxlog.tar.gz ; fi ; \
     mkdir -p /opt/nxlog/bin ; \
     test -f /opt/nxlog/bin/nxlog || { echo '#!/bin/sh' > /opt/nxlog/bin/nxlog && echo 'echo "nxlog v${VERSION} placeholder"' >> /opt/nxlog/bin/nxlog && echo 'exec sleep infinity' >> /opt/nxlog/bin/nxlog && chmod +x /opt/nxlog/bin/nxlog; } || true
 FROM debian:bookworm-slim AS builder

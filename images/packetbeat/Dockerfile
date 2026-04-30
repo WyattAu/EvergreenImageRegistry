@@ -3,7 +3,7 @@ ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/packetbeat/packetbeat-${VERSION}-linux-x86_64.tar.gz" -o /packetbeat.tar.gz || true ; \
     mkdir -p /opt/packetbeat ; \
-    if [ -f /packetbeat.tar.gz ]; then tar -xzf /packetbeat.tar.gz -C /opt/packetbeat --strip-components=1 && rm /packetbeat.tar.gz && rm -rf /opt/packetbeat/kibana /opt/packetbeat/logs ; fi ; \
+    if [ -f /packetbeat.tar.gz ]; then tar -xzf /packetbeat.tar.gz -C /opt/packetbeat --strip-components=1 && rm -f /packetbeat.tar.gz && rm -rf /opt/packetbeat/kibana /opt/packetbeat/logs ; fi ; \
     strip /opt/packetbeat/packetbeat 2>/dev/null || true ; \
     chmod +x /opt/packetbeat/packetbeat 2>/dev/null || true ; \
     test -f /opt/packetbeat/packetbeat || { echo '#!/bin/sh' > /opt/packetbeat/packetbeat && echo 'echo "packetbeat v${VERSION} placeholder"' >> /opt/packetbeat/packetbeat && echo 'exec sleep infinity' >> /opt/packetbeat/packetbeat && chmod +x /opt/packetbeat/packetbeat; } || true

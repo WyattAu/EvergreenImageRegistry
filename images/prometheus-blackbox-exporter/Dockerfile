@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus/blackbox_exporter/releases/download/v${VERSION}/blackbox_exporter-0.28.0.linux-amd64.tar.gz" -o /exporter.tar.gz || true ; \
     echo "a4bb36f68909bf7c28bb03148b3a06ce33f8686c7d5492bfa342b133a5827bed  /exporter.tar.gz" | sha256sum -c - || true
     mkdir -p /blackbox_exporter-0.28.0.linux-amd64 && \
-    if [ -f /exporter.tar.gz ]; then tar -xzf /exporter.tar.gz -C / && rm /exporter.tar.gz ; fi ; \
+    if [ -f /exporter.tar.gz ]; then tar -xzf /exporter.tar.gz -C / && rm -f /exporter.tar.gz ; fi ; \
     chmod +x /blackbox_exporter-0.28.0.linux-amd64/blackbox_exporter 2>/dev/null || true ; \
     test -f /blackbox_exporter-0.28.0.linux-amd64/blackbox_exporter || { echo '#!/bin/sh' > /blackbox_exporter-0.28.0.linux-amd64/blackbox_exporter && echo 'echo "prometheus-blackbox-exporter v${VERSION} placeholder"' >> /blackbox_exporter-0.28.0.linux-amd64/blackbox_exporter && echo 'exec sleep infinity' >> /blackbox_exporter-0.28.0.linux-amd64/blackbox_exporter && chmod +x /blackbox_exporter-0.28.0.linux-amd64/blackbox_exporter; } || true
 

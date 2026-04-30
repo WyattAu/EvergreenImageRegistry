@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus/statsd_exporter/releases/download/v${VERSION}/statsd_exporter-${VERSION}.linux-amd64.tar.gz" -o /statsd_exporter.tar.gz || true ; \
     echo "5725db6c5a30ae75c8b4a54397a0c15870e57667f6b027386cd2be84c5744a40  /statsd_exporter.tar.gz" | sha256sum -c - || true
     mkdir -p /statsd_exporter-${VERSION}.linux-amd64 ; \
-    if [ -f /statsd_exporter.tar.gz ]; then tar -xzf /statsd_exporter.tar.gz -C / && rm /statsd_exporter.tar.gz ; fi ; \
+    if [ -f /statsd_exporter.tar.gz ]; then tar -xzf /statsd_exporter.tar.gz -C / && rm -f /statsd_exporter.tar.gz ; fi ; \
     chmod +x /statsd_exporter-${VERSION}.linux-amd64/statsd_exporter 2>/dev/null || true ; \
     test -f /statsd_exporter-${VERSION}.linux-amd64/statsd_exporter || { echo '#!/bin/sh' > /statsd_exporter-${VERSION}.linux-amd64/statsd_exporter && echo 'echo "prometheus-statsd-exporter v${VERSION} placeholder"' >> /statsd_exporter-${VERSION}.linux-amd64/statsd_exporter && echo 'exec sleep infinity' >> /statsd_exporter-${VERSION}.linux-amd64/statsd_exporter && chmod +x /statsd_exporter-${VERSION}.linux-amd64/statsd_exporter; } || true
 

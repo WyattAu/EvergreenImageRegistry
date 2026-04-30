@@ -4,7 +4,7 @@ ARG VERSION=${VERSION}
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus/alertmanager/releases/download/v${VERSION}/alertmanager-${VERSION}.linux-amd64.tar.gz -o /alertmanager.tar.gz || true ; \
-    [ -f /alertmanager.tar.gz ] && tar -xzf /alertmanager.tar.gz -C / && rm /alertmanager.tar.gz && chmod +x /alertmanager-${VERSION}.linux-amd64/alertmanager || true ; \
+    [ -f /alertmanager.tar.gz ] && tar -xzf /alertmanager.tar.gz -C / && rm -f /alertmanager.tar.gz && chmod +x /alertmanager-${VERSION}.linux-amd64/alertmanager || true ; \
     mv /alertmanager-${VERSION}.linux-amd64/alertmanager /alertmanager ; test -f /alertmanager || { echo '#!/bin/sh' > /alertmanager && echo 'echo "alertmanager v${VERSION} ready"' >> /alertmanager && echo 'exec sleep infinity' >> /alertmanager && chmod +x /alertmanager; }
 
 

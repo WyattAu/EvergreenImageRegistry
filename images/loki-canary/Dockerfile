@@ -9,7 +9,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     echo "d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5  /loki-canary.zip" | sha256sum -c || true  #
 RUN unzip /loki-canary.zip -d /tmp/loki-canary || true ; \
     mv /tmp/loki-canary/loki-canary-linux-amd64 /loki-canary 2>/dev/null || true
-RUN rm /loki-canary.zip 2>/dev/null || true
+RUN rm -f /loki-canary.zip 2>/dev/null || true
 RUN     strip /loki-canary 2>/dev/null || true
 RUN test -f /loki-canary || { echo '#!/bin/sh' > /loki-canary && echo 'echo "loki-canary v${VERSION} ready"' >> /loki-canary && echo 'exec sleep infinity' >> /loki-canary && chmod +x /loki-canary; }
 

@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     -o /sqlpad.tar.gz && \
     echo "PENDING_CHECKSUM  /sqlpad.tar.gz" | sha256sum -c || true ; [ -f /sqlpad.tar.gz ] && \
     [ -f /sqlpad.tar.gz ] && tar -xzf /sqlpad.tar.gz -C /app --strip-components=1 || true ; \
-    rm /sqlpad.tar.gz && \
+    rm -f /sqlpad.tar.gz && \
     find /app -name "*.md" -delete && \
     find /app -name "*.txt" -not -name "package.json-c" -delete || true
 

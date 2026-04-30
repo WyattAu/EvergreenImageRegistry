@@ -16,7 +16,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://api.adoptium.net/v3/binary/lat
     echo "e5038aae3ca9ff670bc696496b0728dbd23d280026bad30291cb919221ecfdcb  /tmp/jre.tar.gz" | sha256sum -c - || true
     mkdir -p /opt/jre ; \
     [ -f /tmp/jre.tar.gz ] && tar -xzf /tmp/jre.tar.gz -C /opt/jre --strip-components=1 || true ; \
-    rm /tmp/jre.tar.gz || true
+    rm -f /tmp/jre.tar.gz || true
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

@@ -7,7 +7,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/CachetHQ/Cachet/releases/download/v${VERSION}/Cachet-v${VERSION}.tar.gz" -o /cachet.tar.gz || true ; \
     mkdir -p /build ; \
-    if [ -f /cachet.tar.gz ]; then tar -xzf /cachet.tar.gz -C /build --strip-components=1 && rm /cachet.tar.gz ; fi ; \
+    if [ -f /cachet.tar.gz ]; then tar -xzf /cachet.tar.gz -C /build --strip-components=1 && rm -f /cachet.tar.gz ; fi ; \
     test -f /build/index.php || echo '<html><body><h1>cachet v'${VERSION}' placeholder</h1></body></html>' > /build/index.html
 
 

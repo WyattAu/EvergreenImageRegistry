@@ -3,7 +3,7 @@ ARG VERSION=2.10.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates dpkg && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/Stirling-Tools/Stirling-PDF/releases/download/v${VERSION}/Stirling-PDF-linux-x86_64.deb" -o /stirling-pdf.deb || true ; \
-    if [ -f /stirling-pdf.deb ]; then dpkg -i /stirling-pdf.deb && rm /stirling-pdf.deb ; fi ; \
+    if [ -f /stirling-pdf.deb ]; then dpkg -i /stirling-pdf.deb && rm -f /stirling-pdf.deb ; fi ; \
     mkdir -p /opt/stirling-pdf && \
     test -d /opt/stirling-pdf/bin || {{ echo '#!/bin/sh' > /opt/stirling-pdf/placeholder && echo 'echo "{img} v${{VERSION}} placeholder"' >> /opt/stirling-pdf/placeholder && echo 'exec sleep infinity' >> /opt/stirling-pdf/placeholder && chmod +x /opt/stirling-pdf/placeholder; }} || true
 

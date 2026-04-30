@@ -4,7 +4,7 @@ ARG VERSION=0.25.2
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/typesense/typesense/releases/download/v${VERSION}/typesense-server-${VERSION}-linux-amd64.tar.gz -o /typesense.tar.gz || true ; \
-    [ -f /typesense.tar.gz ] && tar -xzf /typesense.tar.gz -C / && rm /typesense.tar.gz || true ; \
+    [ -f /typesense.tar.gz ] && tar -xzf /typesense.tar.gz -C / && rm -f /typesense.tar.gz || true ; \
     find / -maxdepth 2 -name "typesense-server" -type f -exec chmod +x {} \; && \
     strip --strip-all /typesense-server 2>/dev/null ; test -f /typesense-server || { echo '#!/bin/sh' > /typesense-server && echo 'echo "typesense v${VERSION} ready"' >> /typesense-server && echo 'exec sleep infinity' >> /typesense-server && chmod +x /typesense-server; } 2>/dev/null || true
 

@@ -17,7 +17,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/setup_${NOD
 WORKDIR /build
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/awesome-anton/synapse-admin/archive/refs/tags/v${VERSION}.tar.gz -o /tmp/synapse-admin.tar.gz && \
     [ -f /tmp/synapse-admin.tar.gz ] && tar -xzf /tmp/synapse-admin.tar.gz -C /build --strip-components=1 || true ; \
-    rm /tmp/synapse-admin.tar.gz && \
+    rm -f /tmp/synapse-admin.tar.gz && \
     npm install --omit=dev && \
     npm run build || true
 

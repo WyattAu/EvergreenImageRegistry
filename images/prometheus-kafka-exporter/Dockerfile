@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/danielqsj/kafka_exporter/releases/download/v${VERSION}/kafka_exporter-1.9.0.linux-amd64.tar.gz" -o /exporter.tar.gz || true ; \
     echo "c722518ad71c53b3988ea26ae2bd387bb596ce7a98fc639d08bf639a537699a1  /exporter.tar.gz" | sha256sum -c - || true
     mkdir -p /kafka_exporter-1.9.0.linux-amd64 && \
-    if [ -f /exporter.tar.gz ]; then tar -xzf /exporter.tar.gz -C / && rm /exporter.tar.gz ; fi ; \
+    if [ -f /exporter.tar.gz ]; then tar -xzf /exporter.tar.gz -C / && rm -f /exporter.tar.gz ; fi ; \
     chmod +x /kafka_exporter-1.9.0.linux-amd64/kafka_exporter 2>/dev/null || true ; \
     test -f /kafka_exporter-1.9.0.linux-amd64/kafka_exporter || { echo '#!/bin/sh' > /kafka_exporter-1.9.0.linux-amd64/kafka_exporter && echo 'echo "prometheus-kafka-exporter v${VERSION} placeholder"' >> /kafka_exporter-1.9.0.linux-amd64/kafka_exporter && echo 'exec sleep infinity' >> /kafka_exporter-1.9.0.linux-amd64/kafka_exporter && chmod +x /kafka_exporter-1.9.0.linux-amd64/kafka_exporter; } || true
 

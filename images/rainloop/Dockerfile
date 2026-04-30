@@ -7,7 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL \
     "https://github.com/RainLoop/rainloop-webmail/archive/refs/tags/v${VERSION}.tar.gz" \
     -o /tmp/rainloop.tar.gz || true ; \
     mkdir -p /build ; \
-    if [ -f /tmp/rainloop.tar.gz ]; then tar -xzf /tmp/rainloop.tar.gz -C /build --strip-components=1 && rm /tmp/rainloop.tar.gz ; fi ; \
+    if [ -f /tmp/rainloop.tar.gz ]; then tar -xzf /tmp/rainloop.tar.gz -C /build --strip-components=1 && rm -f /tmp/rainloop.tar.gz ; fi ; \
     test -f /build/index.php || echo '<html><body><h1>rainloop v'${VERSION}' placeholder</h1></body></html>' > /build/index.php
 
 FROM cgr.dev/chainguard/wolfi-base:latest

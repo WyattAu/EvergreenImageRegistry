@@ -4,7 +4,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/simonmichael/hledger/releases/download/${VERSION}/hledger-linux-x64.tar.gz -o /hledger.tar.gz && \
     echo "153e1e69696d5e75b2a13bf23983a0355c35999db713910615c6a536a4cd0a41  /hledger.tar.gz" | sha256sum -c - || true
-    tar -xzf /hledger.tar.gz -C /usr/local/bin/ && rm /hledger.tar.gz && \
+    tar -xzf /hledger.tar.gz -C /usr/local/bin/ && rm -f /hledger.tar.gz && \
     strip /usr/local/bin/hledger && chmod +x /usr/local/bin/hledger
 
 

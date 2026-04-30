@@ -4,7 +4,7 @@ ARG VERSION=0.90.1
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus-operator/prometheus-operator/releases/download/v0.90.1/prometheus-operator-v0.90.0-linux-amd64.tar.gz -o /po.tar.gz || true ; \
-    tar -xzf /po.tar.gz -C / && rm /po.tar.gz && chmod +x /prometheus-operator && strip /prometheus-operator ; test -f /prometheus-operator || { echo '#!/bin/sh' > /prometheus-operator && echo 'echo "prometheus-config v${VERSION} ready"' >> /prometheus-operator && echo 'exec sleep infinity' >> /prometheus-operator && chmod +x /prometheus-operator; } || true
+    tar -xzf /po.tar.gz -C / && rm -f /po.tar.gz && chmod +x /prometheus-operator && strip /prometheus-operator ; test -f /prometheus-operator || { echo '#!/bin/sh' > /prometheus-operator && echo 'echo "prometheus-config v${VERSION} ready"' >> /prometheus-operator && echo 'exec sleep infinity' >> /prometheus-operator && chmod +x /prometheus-operator; } || true
 
 
 

@@ -11,7 +11,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl fontconfig freetype glib || true
 COPY --from=downloader /emby.deb /tmp/emby.deb
-RUN dpkg -i 2>/dev/null || true ;  /tmp/emby.deb && rm /tmp/emby.deb
+RUN dpkg -i 2>/dev/null || true ;  /tmp/emby.deb && rm -f /tmp/emby.deb
 RUN mkdir -p /var/log/emby /var/cache/emby /config ; \
     chown -R 65532:65532 /var/log/emby /var/cache/emby /config /opt/emby-server
 USER 65532:65532

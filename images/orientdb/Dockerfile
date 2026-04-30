@@ -3,7 +3,7 @@ ARG VERSION=3.2.51
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/orientechnologies/orientdb/releases/download/${VERSION}/orientdb-community-${VERSION}.tar.gz" -o /orientdb.tar.gz || true
-RUN if [ -f /orientdb.tar.gz ]; then tar -xzf /orientdb.tar.gz -C /opt && rm /orientdb.tar.gz; fi
+RUN if [ -f /orientdb.tar.gz ]; then tar -xzf /orientdb.tar.gz -C /opt && rm -f /orientdb.tar.gz; fi
 RUN test -f /opt/orientdb-community-${VERSION}/bin/server.sh || { echo '#!/bin/sh' > /opt/orientdb-community-${VERSION}/bin/server.sh && echo 'echo "orientdb v'${VERSION}' placeholder"' >> /opt/orientdb-community-${VERSION}/bin/server.sh && echo 'exec sleep infinity' >> /opt/orientdb-community-${VERSION}/bin/server.sh && chmod +x /opt/orientdb-community-${VERSION}/bin/server.sh; } 2>/dev/null || true
 
 FROM debian:bookworm-slim AS builder

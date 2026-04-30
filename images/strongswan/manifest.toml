@@ -1,6 +1,6 @@
 [image]
 name = "strongswan"
-version = "5.9.14"
+version = "5.9.16"
 description = "strongSwan - IPsec-based VPN (IKEv1/IKEv2) with PKI and plugins"
 vendor = "strongSwan Project"
 homepage = "https://github.com/strongswan/strongswan"
@@ -9,7 +9,7 @@ tier = 1
 
 [source]
 type = "upstream-tarball"
-url = "https://download.strongswan.org/strongswan-5.9.14.tar.bz2"
+url = "https://download.strongswan.org/strongswan-5.9.16.tar.bz2"
 upstream = "https://github.com/strongswan/strongswan"
 
 [build]

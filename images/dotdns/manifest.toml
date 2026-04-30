@@ -1,19 +1,19 @@
 [image]
 name = "dotdns"
 version = "0.1.0"
-description = "DotDNS - DNS-over-TLS proxy server"
+description = "DotDNS - DNS-over-TLS proxy server (stub - upstream repo not found)"
 vendor = "nicich"
 homepage = "https://github.com/nicich/dotdns"
 category = "dns"
 tier = 1
 
 [source]
-type = "source-compile"
-url = "https://github.com/nicich/dotdns"
-upstream = "https://github.com/nicich/dotdns"
+type = "inline-stub"
+url = ""
+upstream = ""
 
 [build]
-base = "debian:bookworm-slim"
+base = "cgr.dev/chainguard/wolfi-base:latest"
 target_base = "scratch"
 
 [constraints]

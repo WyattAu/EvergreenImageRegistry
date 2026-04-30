@@ -1,11 +1,11 @@
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=0.8.0
+ARG VERSION=0.16.2
 ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
-    "https://github.com/stalwartlabs/stalwart/releases/download/v${VERSION}/stalwart-linux-x86_64-musl.tar.gz" \
+    "https://github.com/stalwartlabs/stalwart/releases/download/v${VERSION}/stalwart-x86_64-unknown-linux-musl.tar.gz" \
     -o /tmp/stalwart.tar.gz && \
     tar -xzf /tmp/stalwart.tar.gz -C /tmp && \
     mv /tmp/stalwart /usr/local/bin/stalwart && \

@@ -2,14 +2,14 @@
 name = "codimd"
 type = "node-npm"
 tier = 2
-version = "2.4.1"
+version = "2.6.1"
 description = "CodiMD - collaborative markdown editor (now HedgeDoc)"
 vendor = "hackmdio"
 source_url = "https://github.com/hackmdio/codimd"
 category = "collaboration"
 
 [source]
-url = "https://github.com/hackmdio/codimd/releases/download/v2.4.1/codimd-v2.4.1.tar.gz"
+url = "https://github.com/hackmdio/codimd/releases/download/2.6.1/codimd-2.6.1.tar.gz"
 fallback_urls = []
 checksum = { algorithm = "sha256", expected = "PENDING", source = "" }
 strategy = "curl"
@@ -21,7 +21,7 @@ builder_packages = ["nodejs", "npm", "ca-certificates"]
 runtime_packages = ["nodejs", "npm", "ca-certificates"]
 build_commands = [
   "mkdir -p /app/codimd",
-  "curl --retry 3 -fsSL https://github.com/hackmdio/codimd/releases/download/v2.4.1/codimd-v2.4.1.tar.gz -o /tmp/codimd.tar.gz",
+  "curl --retry 3 -fsSL https://github.com/hackmdio/codimd/releases/download/2.6.1/codimd-2.6.1.tar.gz -o /tmp/codimd.tar.gz",
   "tar -xzf /tmp/codimd.tar.gz -C /app/codimd --strip-components=1",
   "rm /tmp/codimd.tar.gz",
   "cd /app/codimd && npm install --production --legacy-peer-deps 2>/dev/null || npm install --legacy-peer-deps 2>/dev/null || true",

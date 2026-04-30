@@ -1,6 +1,6 @@
 [image]
 name = "powerdns-api"
-version = "4.9.0"
+version = "4.9.6"
 description = "PowerDNS Authoritative Server with REST API"
 vendor = "PowerDNS"
 homepage = "https://github.com/PowerDNS/pdns"
@@ -9,7 +9,7 @@ tier = 1
 
 [source]
 type = "upstream-deb"
-url = "https://repo.powerdns.com/debian/pool/main/p/pdns/pdns-server_4.9.0-1+deb12u1_amd64.deb"
+url = "https://repo.powerdns.com/debian/pool/main/p/pdns/pdns-server_4.9.6-1+deb12u1_amd64.deb"
 upstream = "https://github.com/PowerDNS/pdns"
 
 [build]

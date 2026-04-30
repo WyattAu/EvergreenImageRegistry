@@ -1,9 +1,9 @@
 FROM cgr.dev/chainguard/wolfi-base:latest AS builder
-ARG VERSION=0.8.0
+ARG VERSION=0.16.2
 ARG GITHUB_TOKEN
 RUN apk add --no-cache curl ca-certificates || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
-    "https://github.com/stalwartlabs/stalwart/releases/download/v${VERSION}/stalwart-linux-x86_64-musl.tar.gz" \
+    "https://github.com/stalwartlabs/stalwart/releases/download/v${VERSION}/stalwart-x86_64-unknown-linux-musl.tar.gz" \
     -o /tmp/stalwart.tar.gz && \
     tar -xzf /tmp/stalwart.tar.gz -C /tmp && \
     mv /tmp/stalwart /usr/local/bin/stalwart && \
@@ -11,7 +11,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     strip /usr/local/bin/stalwart || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-ARG VERSION=0.8.0
+ARG VERSION=0.16.2
 RUN apk add --no-cache ca-certificates || true
 RUN addgroup -S -g 10000 stalwart 2>/dev/null || true && \
     adduser -u 65532 -G stalwart -D -h /app -s /bin/false stalwart 2>/dev/null || true

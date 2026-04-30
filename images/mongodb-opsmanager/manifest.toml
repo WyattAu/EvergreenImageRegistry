@@ -2,14 +2,14 @@
 name = "mongodb-opsmanager"
 type = "binary-download"
 tier = 2
-version = "2.3.0"
+version = "2.5.0"
 description = "MongoDB Ops Manager - mongosh CLI tool for MongoDB administration"
 vendor = "mongodb"
 source_url = "https://www.mongodb.com/docs/mongodb-shell/"
 category = "database"
 
 [source]
-url = "https://fastdl.mongodb.org/tools/mongodb-mongosh/2.3.0/mongosh-2.3.0-linux-x64.tgz"
+url = "https://fastdl.mongodb.org/tools/mongodb-mongosh/2.5.0/mongosh-2.5.0-linux-x64.tgz"
 fallback_urls = []
 checksum = { algorithm = "sha256", expected = "PENDING", source = "" }
 strategy = "curl"
@@ -20,7 +20,7 @@ base = { image = "cgr.dev/chainguard/wolfi-base:latest", purpose = "runtime" }
 builder_packages = ["curl", "ca-certificates"]
 runtime_packages = ["ca-certificates"]
 build_commands = [
-  "curl --retry 3 --retry-delay 5 -fsSL https://fastdl.mongodb.org/tools/mongodb-mongosh/2.3.0/mongosh-2.3.0-linux-x64.tgz -o /tmp/mongosh.tgz",
+  "curl --retry 3 --retry-delay 5 -fsSL https://fastdl.mongodb.org/tools/mongodb-mongosh/2.5.0/mongosh-2.5.0-linux-x64.tgz -o /tmp/mongosh.tgz",
   "mkdir -p /opt/mongosh",
   "tar -xzf /tmp/mongosh.tgz -C /opt/mongosh --strip-components=1",
   "rm /tmp/mongosh.tgz",

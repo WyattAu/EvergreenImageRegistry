@@ -1,10 +1,10 @@
 FROM cgr.dev/chainguard/wolfi-base:latest AS builder
-ARG VERSION=2.4.1
+ARG VERSION=2.6.1
 ARG GITHUB_TOKEN
 RUN apk add --no-cache nodejs npm git ca-certificates python3 make g++ || true
 WORKDIR /build
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
-    "https://github.com/hackmdio/codimd/releases/download/v${VERSION}/codimd-v${VERSION}.tar.gz" \
+    "https://github.com/hackmdio/codimd/releases/download/${VERSION}/codimd-${VERSION}.tar.gz" \
     -o /tmp/codimd.tar.gz || true ; \
     mkdir -p /build ; \
     if [ -f /tmp/codimd.tar.gz ]; then tar -xzf /tmp/codimd.tar.gz -C /build --strip-components=1 && rm /tmp/codimd.tar.gz ; fi
@@ -12,7 +12,7 @@ RUN cd /build && npm ci 2>/dev/null || npm install --legacy-peer-deps 2>/dev/nul
     npm run build 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-ARG VERSION=2.4.1
+ARG VERSION=2.6.1
 RUN apk add --no-cache nodejs npm ca-certificates || true
 RUN addgroup -S -g 10000 codimd 2>/dev/null || true && \
     adduser -u 65532 -G codimd -D -h /app -s /bin/false codimd 2>/dev/null || true

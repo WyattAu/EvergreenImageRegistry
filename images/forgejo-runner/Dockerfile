@@ -4,8 +4,8 @@ ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
-    "https://github.com/forgejo/runner/releases/download/v${VERSION}/forgejo-runner-linux-amd64" \
+RUN curl --retry 3 --retry-delay 5 -fsSL \
+    "https://codeberg.org/forgejo/runner/releases/download/v${VERSION}/forgejo-runner-linux-amd64" \
     -o /tmp/forgejo-runner && \
     chmod +x /tmp/forgejo-runner && \
     strip /tmp/forgejo-runner || true
@@ -22,7 +22,7 @@ LABEL org.opencontainers.image.title="forgejo-runner" \
       org.opencontainers.image.description="Forgejo Act Runner - CI/CD runner for Forgejo" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Forgejo" \
-      org.opencontainers.image.source="https://github.com/forgejo/runner" \
+      org.opencontainers.image.source="https://codeberg.org/forgejo/runner" \
       sovereign.image.tier="2" \
       sovereign.image.category="ci" \
       sovereign.constraint.nonroot="true" \

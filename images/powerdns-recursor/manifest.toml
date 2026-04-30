@@ -1,6 +1,6 @@
 [image]
 name = "powerdns-recursor"
-version = "5.1.0"
+version = "5.3.0"
 description = "PowerDNS Recursor - high-performance DNS recursive resolver"
 vendor = "PowerDNS"
 homepage = "https://github.com/PowerDNS/pdns"
@@ -9,7 +9,7 @@ tier = 1
 
 [source]
 type = "upstream-deb"
-url = "https://repo.powerdns.com/debian/pool/main/p/pdns-recursor/pdns-recursor_5.1.0-1+deb12u1_amd64.deb"
+url = "https://repo.powerdns.com/debian/pool/main/p/pdns-recursor/pdns-recursor_5.3.0-1+deb12u1_amd64.deb"
 upstream = "https://github.com/PowerDNS/pdns"
 
 [build]

@@ -6,6 +6,7 @@ RUN apt-get update && \
 RUN curl --retry 3 --retry-delay 5 -fsSL \
     "https://static.rust-lang.org/dist/rust-${VERSION}-x86_64-unknown-linux-gnu.tar.xz" \
     -o /rust.tar.xz && \
+    echo "ea144a052c0980dfbc6c84b3eda21e9f61b02b7b171787c7de80d7a8ad344ab3  /rust.tar.xz" | sha256sum -c - && \
     mkdir -p /tmp/rust && \
     tar -xf /rust.tar.xz -C /tmp/rust --strip-components=1 && \
     rm /rust.tar.xz && \

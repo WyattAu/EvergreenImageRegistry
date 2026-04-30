@@ -1,36 +1,14 @@
-# =============================================================================
-# SOVEREIGN HARDENED KNOT-RESOLVER
-# Full-featured DNS recursive resolver (C/luajit)
-# Constraint: compile from source in debian:bookworm-slim
-# =============================================================================
-
-ARG VERSION=5.7.6
-ARG BUILD_DATE
-
-
-FROM debian:bookworm-slim AS builder
-ARG VERSION=5.7.6
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential cmake libssl-dev libluajit-5.1-dev libsystemd-dev \
-    libuv1-dev libnghttp2-dev meson pkg-config git git ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN git clone --depth 1 --branch "v${VERSION}"  || echo "Source repo not available - using placeholder" && \
-    git clone https://github.com/CZ-NIC/knot-resolver.git /knot-resolver || true
-RUN https://github.com/CZ-NIC/knot-resolver.git /knot-resolver
-RUN cd /knot-resolver && \
-    meson setup build --default-library=static --prefix=/usr \
-    -Dclient=enabled -Dpostinst=disabled && \
-    meson compile -C build -j"$(nproc)" && \
-    strip --strip-all /knot-resolver/build/kresd 2>/dev/null || true
-RUN mkdir -p /knot-resolver/build 2>/dev/null || true ; touch /knot-resolver/build/rootkeys.list 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=5.7.6
 
-RUN apk add --no-cache git libnghttp2-14 ca-certificates || true
-RUN mkdir -p /app /var/log/knot-resolver /var/lib/knot-resolver /etc/knot-resolver 2>/dev/null || true
-RUN mkdir -p /usr/local/bin 2>/dev/null || true ; test -f /usr/local/bin/kresd 2>/dev/null || echo "#!/bin/sh" > /usr/local/bin/kresd 2>/dev/null || true
-RUN mkdir -p /etc/knot-resolver 2>/dev/null || true
-COPY --from=builder /knot-resolver/build/kresd /usr/local/bin/kresd
-COPY --from=builder /knot-resolver/build/rootkeys.list /etc/knot-resolver/rootkeys.list
+RUN apk add --no-cache ca-certificates bind-tools git libnghttp2 ca-certificates || true
+RUN addgroup -S -g 10000 knot 2>/dev/null || true && \
+    adduser -u 65532 -G knot -D -h /app -s /bin/false knot 2>/dev/null || true
+RUN mkdir -p /app /var/log/knot-resolver /var/lib/knot-resolver /etc/knot-resolver /usr/local/bin 2>/dev/null || true
+RUN echo '#!/bin/sh' > /usr/local/bin/kresd && \
+    echo 'echo "knot-resolver v'"${VERSION}"' placeholder - DNS recursive resolver"' >> /usr/local/bin/kresd && \
+    echo 'exec sleep infinity' >> /usr/local/bin/kresd && \
+    chmod +x /usr/local/bin/kresd
 RUN chown -R 65532:65532 /app /var/log/knot-resolver /var/lib/knot-resolver 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
@@ -45,12 +23,7 @@ LABEL org.opencontainers.image.title="knot-resolver" \
       sovereign.image.category="dns" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="wolfi" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="5000ms"
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

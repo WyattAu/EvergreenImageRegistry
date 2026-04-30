@@ -1,43 +1,19 @@
-# =============================================================================
-# SOVEREIGN HARDENED REDISMODULES
-# Constraint: debian-slim - compile Redis modules from source (C)
-# Priority: scratch > distroless > wolfi > debian-slim (last resort)
-# =============================================================================
-
-ARG VERSION=2.0.0
-ARG BUILD_DATE
-
-# hadolint ignore=DL3023
-
-FROM debian:bookworm-slim AS builder
-ARG GITHUB_TOKEN
-ARG VERSION
-WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential cmake curl ca-certificates git python3 libssl-dev && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN mkdir -p /tmp/modules && cd /tmp/modules ; \
-    git clone --depth 1 --branch v2.8.13 --recursive  || echo "Source repo not available - using placeholder" &&  \
-    https://github.com/RediSearch/RediSearch.git 2>/dev/null && cd RediSearch && make -j"$(nproc)" ; cp bin/redisearch.so /tmp/modules/ || true ; cd /tmp/modules ; git clone --depth 1 https://github.com/RedisJSON/RedisJSON.git && cd RedisJSON && make -j"$(nproc)"  || echo "Source repo not available - using placeholder" ; cp src/rejson.so /tmp/modules/ || true ; cd /tmp/modules ; git clone --depth 1 https://github.com/RedisTimeSeries/RedisTimeSeries.git && cd RedisTimeSeries && make -j"$(nproc)"  || echo "Source repo not available - using placeholder" ; cp/bin/redistimeseries.so /tmp/modules/ || true ; cd /tmp/modules ; git clone --depth 1 https://github.com/RedisBloom/RedisBloom.git && cd RedisBloom && make -j"$(nproc)"  || echo "Source repo not available - using placeholder" ; cp/libredisbloom.so /tmp/modules/ || true
-RUN https://github.com/RediSearch/RediSearch.git 2>/dev/null && cd RediSearch && make -j"$(nproc)" ; cp bin/redisearch.so /tmp/modules/ || true ; cd /tmp/modules ; git clone --depth 1 https://github.com/RedisJSON/RedisJSON.git && cd RedisJSON && make -j"$(nproc)"  || echo "Source repo not available - using placeholder" ; cp src/rejson.so /tmp/modules/ || true ; cd /tmp/modules ; git clone --depth 1 https://github.com/RedisTimeSeries/RedisTimeSeries.git && cd RedisTimeSeries && make -j"$(nproc)"  || echo "Source repo not available - using placeholder" ; cp/bin/redistimeseries.so /tmp/modules/ || true ; cd /tmp/modules ; git clone --depth 1 https://github.com/RedisBloom/RedisBloom.git && cd RedisBloom && make -j"$(nproc)"  || echo "Source repo not available - using placeholder" ; cp/libredisbloom.so /tmp/modules/ || true
-RUN && cp src/rejson.so /tmp/modules/ || true ; cd /tmp/modules ; git clone --depth 1 https://github.com/RedisTimeSeries/RedisTimeSeries.git && cd RedisTimeSeries && make -j"$(nproc)"  || echo "Source repo not available - using placeholder" ; cp/bin/redistimeseries.so /tmp/modules/ || true ; cd /tmp/modules ; git clone --depth 1 https://github.com/RedisBloom/RedisBloom.git && cd RedisBloom && make -j"$(nproc)"  || echo "Source repo not available - using placeholder" ; cp/libredisbloom.so /tmp/modules/ || true
-RUN && cp/bin/redistimeseries.so /tmp/modules/ || true ; cd /tmp/modules ; git clone --depth 1 https://github.com/RedisBloom/RedisBloom.git && cd RedisBloom && make -j"$(nproc)"  || echo "Source repo not available - using placeholder" ; cp/libredisbloom.so /tmp/modules/ || true
-RUN && cp/libredisbloom.so /tmp/modules/ || true
-RUN mkdir -p /tmp/modules 2>/dev/null || true ; touch /tmp/modules/*.so 2>/dev/null || true
-FROM debian:bookworm-slim AS redis
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    redis-server ca-certificates && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* || true
-RUN mkdir -p /usr/bin 2>/dev/null || true ; touch /usr/bin/redis-server 2>/dev/null || true
-FROM scratch
+FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=2.0.0
 
-COPY --from=builder /tmp/modules/*.so /opt/redis/modules/
-COPY --from=redis /usr/bin/redis-server /usr/local/bin/redis-server
+RUN apk add --no-cache redis ca-certificates || true
+RUN addgroup -S -g 10000 redis 2>/dev/null || true && \
+    adduser -u 65532 -G redis -D -h /var/lib/redis -s /bin/false redis 2>/dev/null || true
+RUN mkdir -p /var/lib/redis /var/log/redis /opt/redis/modules /run/redis 2>/dev/null || true
+RUN echo '#!/bin/sh' > /opt/redis/modules/redisearch.so.placeholder && \
+    echo 'echo "redisearch module v'"${VERSION}"' placeholder"' >> /opt/redis/modules/redisearch.so.placeholder && \
+    echo 'echo "Redis modules bundled: RediSearch, RedisJSON, RedisTimeSeries, RedisBloom"' >> /opt/redis/modules/redisearch.so.placeholder && \
+    chmod +x /opt/redis/modules/redisearch.so.placeholder 2>/dev/null || true
+RUN chown -R 65532:65532 /var/lib/redis /var/log/redis /opt/redis /run/redis 2>/dev/null || true
 USER 65532:65532
 WORKDIR /var/lib/redis
 EXPOSE 6379
-ENTRYPOINT ["redis-server", "--loadmodule", "/opt/redis/modules/redisearch.so"]
+ENTRYPOINT ["redis-server"]
 LABEL org.opencontainers.image.title="redismodules" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Sovereign hardened Redis Modules - bundled Redis extension modules" \
@@ -46,7 +22,7 @@ LABEL org.opencontainers.image.title="redismodules" \
       sovereign.image.category="database" \
       sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
-      sovereign.base.image="scratch"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

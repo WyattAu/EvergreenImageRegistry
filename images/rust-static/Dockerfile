@@ -9,7 +9,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL \
     echo "ea144a052c0980dfbc6c84b3eda21e9f61b02b7b171787c7de80d7a8ad344ab3  /rust.tar.xz" | sha256sum -c - && \
     mkdir -p /tmp/rust && \
     tar -xf /rust.tar.xz -C /tmp/rust --strip-components=1 && \
-    rm /rust.tar.xz && \
+    rm -f /rust.tar.xz && \
     /tmp/rust/install.sh --prefix=/opt/rust \
         --components=rust-std,cargo,rustc,rust-std-x86_64-unknown-linux-musl \
         --without=rust-docs --without=rustfmt --without=clippy && \

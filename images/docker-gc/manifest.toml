@@ -1,0 +1,31 @@
+[image]
+name = "docker-gc"
+version = "0.3.0"
+description = "Docker garbage collection - automatic cleanup of unused containers and images"
+vendor = "spotify"
+homepage = "https://github.com/spotify/docker-gc"
+category = "devops"
+tier = 3
+
+[source]
+type = "upstream-script"
+url = "https://raw.githubusercontent.com/spotify/docker-gc/master/docker-gc"
+upstream = "https://github.com/spotify/docker-gc"
+
+[build]
+base = "debian:bookworm-slim"
+target_base = "cgr.dev/chainguard/wolfi-base:latest"
+
+[constraints]
+nonroot = true
+base = "wolfi"
+
+[hft]
+signal-handling = "native"
+shutdown-timeout = "10s"
+
+[ports]
+metrics = 9101
+
+[health]
+type = "exec"

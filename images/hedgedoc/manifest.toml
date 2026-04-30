@@ -1,0 +1,39 @@
+[metadata]
+name = "hedgedoc"
+version = "1.10.0"
+description = "HedgeDoc - collaborative markdown notes (formerly CodiMD)"
+vendor = "HedgeDoc"
+source = "https://github.com/hedgedoc/hedgedoc"
+category = "productivity"
+tier = "2"
+
+[build]
+base = "wolfi"
+arch = "amd64"
+
+[download]
+url = "https://github.com/hedgedoc/hedgedoc/releases/download/v1.10.0/hedgedoc-v1.10.0.tar.gz"
+filename = "hedgedoc-v1.10.0.tar.gz"
+strip_components = 1
+binary_name = ""
+
+[container]
+port = 3000
+metrics_port = 9101
+user = "65532:65532"
+workdir = "/app"
+entrypoint = ["node", "app.js"]
+stop_signal = "SIGTERM"
+nonroot = true
+
+[labels]
+"org.opencontainers.image.title" = "hedgedoc"
+"org.opencontainers.image.description" = "HedgeDoc - collaborative markdown notes (formerly CodiMD)"
+"org.opencontainers.image.vendor" = "HedgeDoc"
+"org.opencontainers.image.source" = "https://github.com/hedgedoc/hedgedoc"
+"org.opencontainers.image.version" = "1.10.0"
+"sovereign.image.tier" = "2"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.base.image" = "wolfi"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"

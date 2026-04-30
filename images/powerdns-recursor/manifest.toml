@@ -1,0 +1,36 @@
+[image]
+name = "powerdns-recursor"
+version = "5.1.0"
+description = "PowerDNS Recursor - high-performance DNS recursive resolver"
+vendor = "PowerDNS"
+homepage = "https://github.com/PowerDNS/pdns"
+category = "dns"
+tier = 1
+
+[source]
+type = "upstream-deb"
+url = "https://repo.powerdns.com/debian/pool/main/p/pdns-recursor/pdns-recursor_5.1.0-1+deb12u1_amd64.deb"
+upstream = "https://github.com/PowerDNS/pdns"
+
+[build]
+base = "debian:bookworm-slim"
+target_base = "cgr.dev/chainguard/wolfi-base:latest"
+
+[constraints]
+nonroot = true
+base = "wolfi"
+
+[hft]
+signal-handling = "native"
+shutdown-timeout = "3s"
+init-system = "none"
+startup-timeout = "5000ms"
+
+[ports]
+dns = 53
+dns-udp = "53/udp"
+api = 8082
+metrics = 9101
+
+[health]
+type = "exec"

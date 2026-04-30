@@ -1,0 +1,35 @@
+[image]
+name = "onlyoffice-communityserver"
+version = "12.5.1"
+description = "ONLYOFFICE Community Server - online office suite (documents, mail, CRM, projects)"
+vendor = "ONLYOFFICE"
+homepage = "https://github.com/ONLYOFFICE/CommunityServer"
+category = "document-management"
+tier = 2
+
+[source]
+type = "upstream-tarball"
+url = "https://github.com/ONLYOFFICE/CommunityServer/releases/download/v12.5.1/onlyoffice-communityserver-linux-x64.tar.gz"
+upstream = "https://github.com/ONLYOFFICE/CommunityServer"
+
+[build]
+base = "debian:bookworm-slim"
+target_base = "cgr.dev/chainguard/wolfi-base:latest"
+
+[constraints]
+nonroot = true
+base = "wolfi"
+
+[hft]
+signal-handling = "native"
+shutdown-timeout = "30s"
+init-system = "none"
+startup-timeout = "60000ms"
+
+[ports]
+http = 80
+https = 443
+metrics = 9101
+
+[health]
+type = "exec"

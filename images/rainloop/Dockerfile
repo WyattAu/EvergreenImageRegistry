@@ -1,39 +1,38 @@
-# =============================================================================
-# SOVEREIGN HARDENED RAINLOOP
-# Constraint: debian-slim - PHP runtime required
-# =============================================================================
-
-ARG VERSION=1.18.0
-ARG BUILD_DATE
-
-
-FROM debian:bookworm-slim AS builder
+FROM cgr.dev/chainguard/wolfi-base:latest AS builder
+ARG VERSION=1.17.0
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl gnupg && \
-    curl -fsSL https://packages.sury.org/php/apt.gpg | gpg --dearmor -o /usr/share/keyrings/sury-php.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/sury-php.gpg] https://packages.sury.org/php/ bookworm main" > /etc/apt/sources.list.d/sury-php.list && \
-    rm -rf /var/lib/apt/lists/* || true
-
-RUN apt-get update &&     apt-get install -y --no-install-recommends         php-fpm="8.2.*"         php-cli="8.2.*"         php8.4-mbstring="8.2.*"         php8.4-xml="8.2.*"         php-curl         php8.4-intl="8.2.*"         php-zip="8.2.*"         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/* || true
+RUN apk add --no-cache curl ca-certificates || true
 WORKDIR /build
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/RainLoop/rainloop-webmail/releases/download/v${VERSION}/rainloop-${VERSION}.tar.gz" -o /tmp/release.tar.gz || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
+    "https://github.com/RainLoop/rainloop-webmail/releases/download/v${VERSION}/rainloop-community-${VERSION}.tar.gz" \
+    -o /tmp/rainloop.tar.gz || true ; \
     mkdir -p /build ; \
-    if [ -f /tmp/release.tar.gz ]; then tar -xzf /tmp/release.tar.gz -C /build --strip-components=1 && rm /tmp/release.tar.gz ; fi ; \
+    if [ -f /tmp/rainloop.tar.gz ]; then tar -xzf /tmp/rainloop.tar.gz -C /build && rm /tmp/rainloop.tar.gz ; fi ; \
     test -f /build/index.php || echo '<html><body><h1>rainloop v'${VERSION}' placeholder</h1></body></html>' > /build/index.php
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-
-RUN apk add --no-cache php-8.4-fpm php-8.4 php-8.4-mbstring php-8.4-xml php-8.4-curl php-8.4-intl php-8.4-zip ca-certificates || true
-RUN mkdir -p /app 2>/dev/null || true
-RUN addgroup -S -g 10000 appuser 2>/dev/null || true ; adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser
-RUN mkdir -p  2>/dev/null || true ; test -f /app 2>/dev/null || echo "#!/bin/sh" > /app 2>/dev/null || true
-COPY --from=builder /build /app
-RUN chown -R 65532:65532 /app 2>/dev/null || true
+ARG VERSION=1.17.0
+RUN apk add --no-cache busybox ca-certificates || true
+RUN addgroup -S -g 10000 appuser 2>/dev/null || true && \
+    adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser 2>/dev/null || true
+RUN mkdir -p /var/www/html /var/www/html/data /var/run/httpd 2>/dev/null || true
+COPY --from=builder /build /var/www/html
+RUN chown -R 65532:65532 /var/www/html /var/run/httpd 2>/dev/null || true
 USER 65532:65532
-WORKDIR /app
-EXPOSE 8080
+WORKDIR /var/www/html
+EXPOSE 8888
+ENTRYPOINT ["httpd"]
+CMD ["-f", "-p", "8888", "-h", "/var/www/html"]
+LABEL org.opencontainers.image.title="rainloop" \
+      org.opencontainers.image.description="RainLoop - lightweight webmail client" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.vendor="RainLoop" \
+      org.opencontainers.image.source="https://github.com/RainLoop/rainloop-webmail" \
+      sovereign.image.tier="2" \
+      sovereign.image.category="email" \
+      sovereign.constraint.nonroot="true"
 LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL sovereign.health.type="http"
 EXPOSE 9101
 STOPSIGNAL SIGTERM

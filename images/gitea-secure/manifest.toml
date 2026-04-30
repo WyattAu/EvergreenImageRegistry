@@ -1,0 +1,39 @@
+[metadata]
+name = "gitea-secure"
+version = "1.26.1"
+description = "Gitea Secure - Hardened Git hosting with enhanced security defaults"
+vendor = "Gitea"
+source = "https://github.com/go-gitea/gitea"
+license = "MIT"
+tier = "2"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/go-gitea/gitea/releases/download/v1.26.1/gitea-1.26.1-linux-amd64"
+binary_name = "gitea"
+filename = "gitea-1.26.1-linux-amd64"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 3000
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "gitea-secure"
+"org.opencontainers.image.description" = "Gitea Secure - Hardened Git hosting with enhanced security defaults"
+"org.opencontainers.image.version" = "1.26.1"
+"org.opencontainers.image.vendor" = "Gitea"
+"org.opencontainers.image.source" = "https://github.com/go-gitea/gitea"
+"sovereign.image.tier" = "2"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"

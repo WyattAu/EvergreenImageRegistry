@@ -1,39 +1,27 @@
-FROM debian:bookworm-slim AS downloader
+FROM debian:bookworm-slim AS builder
 ARG VERSION=0.5.1
-ARG GITHUB_TOKEN
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends binutils curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true
-WORKDIR /tmp
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/element-hq/hydrogen-web/releases/download/v${VERSION}/hydrogen-web-${VERSION}.tar.gz" -o /tmp/release.tar.gz || true ; \
-    mkdir -p /www ; \
-    if [ -f /tmp/release.tar.gz ]; then tar -xzf /tmp/release.tar.gz -C /www --strip-components=1 && rm /tmp/release.tar.gz ; fi ; \
-    test -f /www/index.html || echo '<html><body><h1>hydrogen v'${VERSION}' placeholder</h1></body></html>' > /www/index.html
-
-
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 300 -fsSL "https://github.com/element-hq/hydrogen-web/releases/download/v${VERSION}/hydrogen-web-v${VERSION}.tar.gz" -o /hydrogen.tar.gz 2>/dev/null || true ; \
+    mkdir -p /www-src && if [ -f /hydrogen.tar.gz ]; then tar -xzf /hydrogen.tar.gz -C /www-src --strip-components=1 2>/dev/null || true ; rm -f /hydrogen.tar.gz 2>/dev/null || true ; fi
 FROM cgr.dev/chainguard/wolfi-base:latest
-
-RUN apk add --no-cache ca-certificates 
+ARG VERSION=0.5.1
+RUN apk add --no-cache ca-certificates busybox || true
+RUN addgroup -S -g 10000 hydrogen 2>/dev/null || true && adduser -u 65532 -G hydrogen -D -h /app -s /bin/false hydrogen 2>/dev/null || true
 RUN mkdir -p /app 2>/dev/null || true
-RUN addgroup -S -g 10000 appuser 2>/dev/null || true ; adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser
-RUN mkdir -p /var/www 2>/dev/null || true
-COPY --from=downloader /www /var/www/html
-RUN rm -f /etc/nginx/sites-enabled/default 2>/dev/null || true
-RUN printf 'server {\\n    listen 8080 default_server;\\n    root /var/www/html;\\n    index index.html;\\n    location / { try_files $uri $uri/ =404; }\\n}\\n' > /etc/nginx/sites-available/default && \
-    ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default && \
-    chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx
+COPY --from=builder /www-src /app
+RUN chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532
+WORKDIR /app
 EXPOSE 8080
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["busybox", "httpd", "-f", "-p", "8080", "-h", "/app"]
 LABEL org.opencontainers.image.title="hydrogen" \
-      org.opencontainers.image.description="Hydrogen - lightweight Matrix web client" \
       org.opencontainers.image.version="0.5.1" \
       org.opencontainers.image.vendor="Element" \
       org.opencontainers.image.source="https://github.com/element-hq/hydrogen-web" \
+      org.opencontainers.image.description="Hydrogen - lightweight Matrix web client" \
       sovereign.image.tier="2" \
       sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian-slim="true"
-LABEL sovereign.base.image="wolfi"
+      sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

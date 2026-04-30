@@ -1,0 +1,39 @@
+[metadata]
+name = "gitlab-ce"
+version = "16.11.0"
+description = "GitLab CE - self-hosted Git management platform (Community Edition)"
+vendor = "GitLab"
+source = "https://gitlab.com/gitlab-org/gitlab-ce"
+license = "MIT"
+tier = "2"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://packages.gitlab.com/gitlab/gitlab-ce/packages/ubuntu/jammy/gitlab-ce_16.11.0-ce.0_amd64.deb"
+package_format = "deb"
+filename = "gitlab-ce_16.11.0-ce.0_amd64.deb"
+
+[constraints]
+nonroot = true
+debian-slim = true
+
+[ports]
+application = [80, 443, 22]
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "gitlab-ce"
+"org.opencontainers.image.description" = "GitLab CE - self-hosted Git management platform"
+"org.opencontainers.image.version" = "16.11.0"
+"org.opencontainers.image.vendor" = "GitLab"
+"org.opencontainers.image.source" = "https://gitlab.com/gitlab-org/gitlab-ce"
+"sovereign.image.tier" = "2"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.debian-slim" = "true"
+"sovereign.base.image" = "wolfi"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"

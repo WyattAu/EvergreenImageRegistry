@@ -1,0 +1,34 @@
+[image]
+name = "singlestore"
+version = "8.5.0"
+description = "SingleStore (formerly MemSQL) local development compatibility - distributed SQL database"
+vendor = "SingleStore"
+homepage = "https://www.singlestore.com/"
+category = "database"
+tier = 1
+
+[source]
+type = "commercial"
+url = "https://www.singlestore.com/"
+upstream = "https://www.singlestore.com/"
+note = "SingleStore is a commercial distributed SQL database. Download free edition from https://www.singlestore.com/"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+target_base = "cgr.dev/chainguard/wolfi-base:latest"
+
+[constraints]
+nonroot = true
+base = "wolfi"
+
+[hft]
+signal-handling = "native"
+shutdown-timeout = "10s"
+
+[ports]
+mysql = 3306
+management = 8080
+metrics = 9101
+
+[health]
+type = "exec"

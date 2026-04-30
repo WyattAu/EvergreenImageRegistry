@@ -1,0 +1,50 @@
+[image]
+name = "tensor"
+type = "python-pip"
+tier = 2
+version = "2.17.0"
+description = "TensorBoard - ML experiment visualization and monitoring tool"
+vendor = "tensorflow"
+source_url = "https://github.com/tensorflow/tensorboard"
+category = "ml"
+
+[source]
+url = "https://github.com/tensorflow/tensorboard/releases/download/v2.17.0/tensorboard-2.17.0-linux-x86_64.zip"
+fallback_urls = []
+checksum = { algorithm = "sha256", expected = "PENDING", source = "" }
+strategy = "pip-download"
+github_repo = "tensorflow/tensorboard"
+
+[build]
+base = { image = "cgr.dev/chainguard/wolfi-base:latest", purpose = "runtime" }
+builder_packages = ["python3", "py3-pip", "ca-certificates"]
+runtime_packages = ["python3", "py3-pip", "ca-certificates"]
+build_commands = [
+  "pip install --no-cache-dir tensorboard==2.17.0",
+]
+artifacts = []
+
+[runtime]
+user = "65532:65532"
+workdir = "/app"
+entrypoint = ["tensorboard"]
+cmd = ["--logdir=/app/logs", "--bind_all", "--port=6006"]
+ports = [6006]
+volumes = ["/app/logs"]
+stop_signal = "SIGTERM"
+
+[health]
+type = "http"
+path = "/"
+port = 6006
+interval_seconds = 30
+timeout_seconds = 5
+retries = 3
+
+[observability]
+metrics_port = 9101
+metrics_path = "/metrics"
+
+[compliance]
+standards = []
+labels = {}

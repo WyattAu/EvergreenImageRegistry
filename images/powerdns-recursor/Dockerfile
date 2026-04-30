@@ -1,41 +1,35 @@
-# =============================================================================
-# SOVEREIGN HARDENED POWERDNS-RECURSOR
-# PowerDNS recursive DNS resolver
-# Constraint: debian-slim - requires dynamic libs
-# =============================================================================
-
+ARG VERSION=5.1.0
 ARG BUILD_DATE
 
-
 FROM debian:bookworm-slim AS installer
+ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    pdns-recursor && \
+        curl ca-certificates gnupg2 lsb-release && \
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/pdns-archive-keyring.gpg] http://repo.powerdns.com/debian $(lsb_release -sc) recursor-51 main" > /etc/apt/sources.list.d/pdns-recursor.list && \
+    curl -fsSL https://repo.powerdns.com/repo/deb/public.gpg | gpg --dearmor -o /usr/share/keyrings/pdns-archive-keyring.gpg && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends pdns-recursor && \
     rm -rf /var/lib/apt/lists/* || true
-RUN find /usr/sbin -type f -name "pdns_recursor" -exec strip --strip-all {} \; 2>/dev/null || true && \
-    find /usr/sbin -type f -name "rec_control" -exec strip --strip-all {} \; 2>/dev/null || true && \
-    find /usr/lib -type f -name "lib*.so*" -exec strip --strip-unneeded {} \; 2>/dev/null || true
-
-
-RUN mkdir -p /usr/sbin/pdns_recursor ; \
-    test -f /usr/sbin/rec_control || { echo '#!/bin/sh' > /usr/sbin/rec_control && echo 'echo "powerdns-recursor v${VERSION} placeholder"' >> /usr/sbin/rec_control && echo 'exec sleep infinity' >> /usr/sbin/rec_control && chmod +x /usr/sbin/rec_control ; } ; \
-    test -f /usr/lib/pdns-recursor || { echo '#!/bin/sh' > /usr/lib/pdns-recursor && echo 'echo "powerdns-recursor v${VERSION} placeholder"' >> /usr/lib/pdns-recursor && echo 'exec sleep infinity' >> /usr/lib/pdns-recursor && chmod +x /usr/lib/pdns-recursor ; } ; \
-    mkdir -p /etc/pdns/recursor.conf
+RUN mkdir -p /var/log/pdns-recursor /var/lib/pdns-recursor /etc/pdns-recursor 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-
-RUN apk add --no-cache ca-certificates 
-RUN mkdir -p /app /var/log/pdns-recursor /var/lib/pdns-recursor /etc/pdns-recursor
+ARG VERSION
+RUN apk add --no-cache ca-certificates boost-libs \
+        libstdc++ libgcc lua5.4-libs libcurl openssl-libs \
+        protobuf net-snmp-libs fstrm-libs || true
+RUN mkdir -p /app /var/log/pdns-recursor /var/lib/pdns-recursor /etc/pdns-recursor 2>/dev/null || true
 COPY --from=installer /usr/sbin/pdns_recursor /usr/local/bin/pdns_recursor
 COPY --from=installer /usr/sbin/rec_control /usr/local/bin/rec_control
 COPY --from=installer /usr/lib/pdns-recursor /usr/lib/pdns-recursor
-COPY --from=installer /etc/pdns/recursor.conf /etc/pdns-recursor/recursor.conf
-RUN chown -R 65532:65532 /app /var/log/pdns-recursor /var/lib/pdns-recursor
+COPY --from=installer /etc/powerdns/recursor.conf /etc/pdns-recursor/recursor.conf
+RUN chown -R 65532:65532 /app /var/log/pdns-recursor /var/lib/pdns-recursor 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 8082
 ENTRYPOINT ["/usr/local/bin/pdns_recursor"]
+CMD ["--config-dir=/etc/pdns-recursor", "--daemon=no", "--webserver=yes", "--webserver-port=8082", "--webserver-address=0.0.0.0"]
 LABEL org.opencontainers.image.title="powerdns-recursor" \
-      org.opencontainers.image.version="bookworm" \
+      org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="PowerDNS" \
       org.opencontainers.image.source="https://github.com/PowerDNS/pdns" \
       org.opencontainers.image.description="PowerDNS recursive DNS resolver" \

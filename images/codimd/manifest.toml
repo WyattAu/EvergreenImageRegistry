@@ -1,0 +1,55 @@
+[image]
+name = "codimd"
+type = "node-npm"
+tier = 2
+version = "2.4.1"
+description = "CodiMD - collaborative markdown editor (now HedgeDoc)"
+vendor = "hackmdio"
+source_url = "https://github.com/hackmdio/codimd"
+category = "collaboration"
+
+[source]
+url = "https://github.com/hackmdio/codimd/releases/download/v2.4.1/codimd-v2.4.1.tar.gz"
+fallback_urls = []
+checksum = { algorithm = "sha256", expected = "PENDING", source = "" }
+strategy = "curl"
+github_repo = "hackmdio/codimd"
+
+[build]
+base = { image = "cgr.dev/chainguard/wolfi-base:latest", purpose = "runtime" }
+builder_packages = ["nodejs", "npm", "ca-certificates"]
+runtime_packages = ["nodejs", "npm", "ca-certificates"]
+build_commands = [
+  "mkdir -p /app/codimd",
+  "curl --retry 3 -fsSL https://github.com/hackmdio/codimd/releases/download/v2.4.1/codimd-v2.4.1.tar.gz -o /tmp/codimd.tar.gz",
+  "tar -xzf /tmp/codimd.tar.gz -C /app/codimd --strip-components=1",
+  "rm /tmp/codimd.tar.gz",
+  "cd /app/codimd && npm install --production --legacy-peer-deps 2>/dev/null || npm install --legacy-peer-deps 2>/dev/null || true",
+]
+artifacts = []
+
+[runtime]
+user = "65532:65532"
+workdir = "/app/codimd"
+entrypoint = ["node"]
+cmd = ["./app.js"]
+ports = [3000]
+volumes = ["/app/codimd/data"]
+stop_signal = "SIGTERM"
+env = { NODE_ENV = "production" }
+
+[health]
+type = "http"
+path = "/healthz"
+port = 3000
+interval_seconds = 30
+timeout_seconds = 5
+retries = 3
+
+[observability]
+metrics_port = 9101
+metrics_path = "/metrics"
+
+[compliance]
+standards = []
+labels = {}

@@ -1,0 +1,51 @@
+[image]
+name = "chat-server"
+type = "python-pip"
+tier = 2
+version = "2.1.0"
+description = "Matrix homeserver (Synapse) - Python-based Matrix server"
+vendor = "element-hq"
+source_url = "https://github.com/element-hq/synapse"
+category = "chat"
+
+[source]
+url = "https://github.com/element-hq/synapse/releases/download/v2.1.0/synapse-v2.1.0-linux-x86_64.tar.gz"
+fallback_urls = []
+checksum = { algorithm = "sha256", expected = "PENDING", source = "" }
+strategy = "curl"
+github_repo = "element-hq/synapse"
+
+[build]
+base = { image = "cgr.dev/chainguard/wolfi-base:latest", purpose = "runtime" }
+builder_packages = ["python3", "py3-pip", "ca-certificates", "build-base"]
+runtime_packages = ["python3", "py3-pip", "ca-certificates"]
+build_commands = [
+  "pip install --no-cache-dir matrix-synapse==2.1.0",
+]
+artifacts = []
+
+[runtime]
+user = "65532:65532"
+workdir = "/app"
+entrypoint = ["synapse"]
+cmd = ["--config-path", "/etc/synapse/homeserver.yaml"]
+ports = [8008]
+volumes = ["/etc/synapse", "/var/lib/synapse"]
+stop_signal = "SIGTERM"
+env = { SYNAPSE_CONFIG_PATH = "/etc/synapse/homeserver.yaml" }
+
+[health]
+type = "http"
+path = "/_matrix/client/versions"
+port = 8008
+interval_seconds = 30
+timeout_seconds = 5
+retries = 3
+
+[observability]
+metrics_port = 9101
+metrics_path = "/metrics"
+
+[compliance]
+standards = []
+labels = {}

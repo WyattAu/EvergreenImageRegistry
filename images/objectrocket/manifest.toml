@@ -1,0 +1,33 @@
+[image]
+name = "objectrocket"
+version = "1.0.0"
+description = "ObjectRocket local development compatibility - MongoDB cloud service client for dev environments"
+vendor = "ObjectRocket"
+homepage = "https://www.objectrocket.com/"
+category = "database"
+tier = 1
+
+[source]
+type = "managed-service"
+url = "https://www.objectrocket.com/"
+upstream = "https://github.com/objectrocket"
+note = "ObjectRocket is a fully managed database cloud service. This image provides development-only MongoDB compatibility."
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+target_base = "cgr.dev/chainguard/wolfi-base:latest"
+
+[constraints]
+nonroot = true
+base = "wolfi"
+
+[hft]
+signal-handling = "native"
+shutdown-timeout = "10s"
+
+[ports]
+mongodb = 27017
+metrics = 9101
+
+[health]
+type = "exec"

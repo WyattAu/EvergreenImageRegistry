@@ -1,0 +1,37 @@
+[image]
+name = "strongswan"
+version = "5.9.14"
+description = "strongSwan - IPsec-based VPN (IKEv1/IKEv2) with PKI and plugins"
+vendor = "strongSwan Project"
+homepage = "https://github.com/strongswan/strongswan"
+category = "security"
+tier = 1
+
+[source]
+type = "upstream-tarball"
+url = "https://download.strongswan.org/strongswan-5.9.14.tar.bz2"
+upstream = "https://github.com/strongswan/strongswan"
+
+[build]
+base = "debian:bookworm-slim"
+target_base = "cgr.dev/chainguard/wolfi-base:latest"
+
+[constraints]
+nonroot = true
+base = "wolfi"
+
+[hft]
+signal-handling = "native"
+shutdown-timeout = "3s"
+init-system = "none"
+startup-timeout = "5000ms"
+
+[ports]
+ike = 500
+ike-udp = "500/udp"
+esp = 4500
+esp-udp = "4500/udp"
+metrics = 9101
+
+[health]
+type = "exec"

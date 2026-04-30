@@ -1,0 +1,39 @@
+[metadata]
+name = "gitlab-exporter"
+version = "0.8.0"
+description = "GitLab Exporter - Prometheus exporter for GitLab metrics"
+vendor = "Prometheus Community"
+source = "https://github.com/prometheus-community/gitlab-exporter"
+license = "Apache-2.0"
+tier = "2"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/prometheus-community/gitlab-exporter/releases/download/v0.8.0/gitlab-exporter_0.8.0_linux_amd64"
+binary_name = "gitlab-exporter"
+filename = "gitlab-exporter_0.8.0_linux_amd64"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 9171
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "gitlab-exporter"
+"org.opencontainers.image.description" = "GitLab Exporter - Prometheus exporter for GitLab metrics"
+"org.opencontainers.image.version" = "0.8.0"
+"org.opencontainers.image.vendor" = "Prometheus Community"
+"org.opencontainers.image.source" = "https://github.com/prometheus-community/gitlab-exporter"
+"sovereign.image.tier" = "2"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"

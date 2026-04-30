@@ -1,0 +1,39 @@
+[metadata]
+name = "argocd-repo-server"
+version = "2.12.6"
+description = "ArgoCD Repo Server - manages Git repository operations and manifest generation"
+vendor = "Argo Project"
+source = "https://github.com/argoproj/argo-cd"
+license = "Apache-2.0"
+tier = "2"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/argoproj/argo-cd/releases/download/v2.12.6/argocd-linux-amd64"
+binary_name = "argocd-repo-server"
+filename = "argocd-linux-amd64"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 8081
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "argocd-repo-server"
+"org.opencontainers.image.description" = "ArgoCD Repo Server - manages Git repository operations"
+"org.opencontainers.image.version" = "2.12.6"
+"org.opencontainers.image.vendor" = "Argo Project"
+"org.opencontainers.image.source" = "https://github.com/argoproj/argo-cd"
+"sovereign.image.tier" = "2"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"

@@ -1,0 +1,40 @@
+[metadata]
+name = "gitbucket"
+version = "4.40.0"
+description = "GitBucket - Scala-based Git platform with GitHub-like features"
+vendor = "GitBucket"
+source = "https://github.com/gitbucket/gitbucket"
+license = "Apache-2.0"
+tier = "2"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/gitbucket/gitbucket/releases/download/4.40.0/gitbucket.war"
+binary_name = "gitbucket.war"
+filename = "gitbucket.war"
+package_format = "war"
+
+[constraints]
+nonroot = true
+debian-slim = true
+
+[ports]
+application = 8080
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "gitbucket"
+"org.opencontainers.image.description" = "GitBucket - Scala-based Git platform"
+"org.opencontainers.image.version" = "4.40.0"
+"org.opencontainers.image.vendor" = "GitBucket"
+"org.opencontainers.image.source" = "https://github.com/gitbucket/gitbucket"
+"sovereign.image.tier" = "2"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.debian-slim" = "true"
+"sovereign.base.image" = "wolfi"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"

@@ -1,0 +1,35 @@
+[image]
+name = "onlyoffice-documentserver-ee"
+version = "8.2.2"
+description = "ONLYOFFICE Document Server Enterprise Edition - online document editing with advanced features"
+vendor = "ONLYOFFICE"
+homepage = "https://github.com/ONLYOFFICE/DocumentServer"
+category = "document-management"
+tier = 2
+
+[source]
+type = "upstream-deb"
+url = "https://download.onlyoffice.com/documentserver/linux/onlyoffice-documentserver-ee-amd64.deb"
+upstream = "https://github.com/ONLYOFFICE/DocumentServer"
+
+[build]
+base = "debian:bookworm-slim"
+target_base = "cgr.dev/chainguard/wolfi-base:latest"
+
+[constraints]
+nonroot = true
+base = "wolfi"
+
+[hft]
+signal-handling = "native"
+shutdown-timeout = "30s"
+init-system = "none"
+startup-timeout = "60000ms"
+
+[ports]
+http = 80
+https = 443
+metrics = 9101
+
+[health]
+type = "exec"

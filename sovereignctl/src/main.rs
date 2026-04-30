@@ -59,6 +59,37 @@ enum Commands {
         #[arg(default_value = "images")]
         path: String,
     },
+    /// Verify all images for checksum coverage
+    VerifyAll {
+        /// Path to images directory
+        #[arg(default_value = "images")]
+        path: String,
+    },
+    /// Check for outdated versions
+    Outdated {
+        /// Path to images directory
+        #[arg(default_value = "images")]
+        path: String,
+        /// Check all images, including those without GitHub repos
+        #[arg(long)]
+        all: bool,
+    },
+    /// Bump image version
+    Bump {
+        /// Image name
+        image: String,
+        /// New version
+        new_version: String,
+        /// Dry run (don't write files)
+        #[arg(long)]
+        dry_run: bool,
+    },
+    /// Show changes since last CI run
+    CiDiff {
+        /// Base git ref to compare against
+        #[arg(long, default_value = "HEAD~1")]
+        base: String,
+    },
 }
 
 #[tokio::main]
@@ -266,6 +297,25 @@ async fn main() -> anyhow::Result<()> {
             }
 
             println!("\nValidation complete: {} valid, {} invalid, {} missing manifests", valid, invalid, missing);
+        }
+
+        Commands::VerifyAll { path } => {
+            let exit_code = sovereignctl::verify_all::cmd_verify_all(&path)?;
+            if exit_code != 0 {
+                std::process::exit(exit_code);
+            }
+        }
+
+        Commands::Outdated { path, all } => {
+            sovereignctl::outdated::cmd_outdated(&path, all).await?;
+        }
+
+        Commands::Bump { image, new_version, dry_run } => {
+            sovereignctl::bump::cmd_bump(&image, &new_version, dry_run)?;
+        }
+
+        Commands::CiDiff { base } => {
+            sovereignctl::ci_diff::cmd_ci_diff(&base)?;
         }
     }
 

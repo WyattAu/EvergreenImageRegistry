@@ -4,3 +4,7 @@ pub mod verify;
 pub mod generate;
 pub mod audit;
 pub mod migrate;
+pub mod verify_all;
+pub mod outdated;
+pub mod bump;
+pub mod ci_diff;

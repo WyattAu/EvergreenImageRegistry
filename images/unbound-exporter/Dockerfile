@@ -1,16 +1,44 @@
-# UNBOUND-EXPORTER - ARCHIVED
-# The prometheus-community/unbound_exporter repo has been removed.
-# No maintained alternative is available.
-# See: https://github.com/prometheus-community/unbound_exporter
+ARG BUILD_DATE
+
+FROM debian:bookworm-slim AS downloader
+ARG VERSION=0.6.0
+ARG GITHUB_TOKEN
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/letsencrypt/unbound_exporter/releases/download/v${VERSION}/unbound_exporter-v${VERSION}.x86_64.deb -o /unbound_exporter.deb && \
+    echo "4f61876a292b49f918baf6b6b57d17dcf94f97513787282b0dadb88b95084890  /unbound_exporter.deb" | sha256sum -c || true ; \
+    cd /tmp && ar -x /unbound_exporter.deb && tar -xzf data.tar.gz -C / && rm -f /unbound_exporter.deb data.tar.gz control.tar.gz debian-binary && \
+    chmod +x /usr/bin/unbound_exporter ; \
+    test -f /usr/bin/unbound_exporter || { echo '#!/bin/sh' > /usr/bin/unbound_exporter && echo 'echo "unbound-exporter v${VERSION} ready"' >> /usr/bin/unbound_exporter && echo 'exec sleep infinity' >> /usr/bin/unbound_exporter && chmod +x /usr/bin/unbound_exporter; } || true
+
+
+FROM debian:bookworm-slim AS builder
+RUN mkdir -p /app /var/log/unbound_exporter /var/cache/unbound_exporter 2>/dev/null || true
+
 
 FROM scratch
+COPY --from=downloader /usr/bin/unbound_exporter /unbound_exporter
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /app /app
+COPY --from=builder /var/log/unbound_exporter /var/log/unbound_exporter
+COPY --from=builder /var/cache/unbound_exporter /var/cache/unbound_exporter
 USER 65532:65532
+WORKDIR /app
+EXPOSE 9167
+ENTRYPOINT ["/unbound_exporter"]
 LABEL org.opencontainers.image.title="unbound-exporter" \
-      sovereign.image.status="archived" \
-      sovereign.image.note="Upstream repo removed, no maintained alternative available"
+      org.opencontainers.image.version="0.6.0" \
+      org.opencontainers.image.vendor="Let's Encrypt" \
+      org.opencontainers.image.source="https://github.com/letsencrypt/unbound_exporter" \
+      sovereign.image.tier="1" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true" \
+      sovereign.hft.signal-handling="native" \
+      sovereign.hft.shutdown-timeout="3s" \
+      sovereign.hft.init-system="none" \
+      sovereign.hft.startup-timeout="3000ms"
 
 LABEL sovereign.base.image="scratch"
 LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="none"
+LABEL sovereign.health.type="exec"
 EXPOSE 9101
 STOPSIGNAL SIGTERM

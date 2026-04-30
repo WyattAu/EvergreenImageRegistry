@@ -17,8 +17,10 @@ RUN mkdir -p /var/log/sonarr-develop /var/cache/sonarr-develop && chown -R 65532
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8989
+EXPOSE 9101
 ENTRYPOINT ["/app/Sonarr"]
 
+STOPSIGNAL SIGTERM
 LABEL org.opencontainers.image.title="sonarr-develop" \
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"

@@ -9,6 +9,7 @@ FROM cgr.dev/chainguard/static:latest
 
 RUN apk add --no-cache  gcc rust cargo 2>/dev/null || true
 
+USER 65532:65532
 ENV RUST_TARGET="x86_64-unknown-linux-musl"
 ENV CARGO_TARGET_DIR="/build"
 

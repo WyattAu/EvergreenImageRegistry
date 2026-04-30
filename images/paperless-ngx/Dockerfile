@@ -11,3 +11,6 @@ RUN python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir paperless-ngx || true
 
+USER 65532:65532
+EXPOSE 9101
+STOPSIGNAL SIGTERM

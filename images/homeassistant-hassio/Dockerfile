@@ -12,3 +12,6 @@ RUN mkdir -p /config /data /app 2>/dev/null || true
 
 
 RUN mkdir -p /opt/venv ; \
+USER 65532:65532
+EXPOSE 9101
+STOPSIGNAL SIGTERM

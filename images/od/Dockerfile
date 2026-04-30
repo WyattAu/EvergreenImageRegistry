@@ -5,6 +5,7 @@
 
 
 FROM scratch
+USER 65532:65532
 LABEL org.opencontainers.image.title="od" \
       org.opencontainers.image.description="Meta/utility directory. Not a runnable container." \
       sovereign.image.tier="3" \

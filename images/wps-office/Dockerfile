@@ -2,6 +2,7 @@ ARG BUILD_DATE
 
 
 FROM scratch
+USER 65532:65532
 LABEL org.opencontainers.image.title="wps-office" \
       org.opencontainers.image.description="WPS Office (proprietary)" \
       sovereign.image.tier="2" \

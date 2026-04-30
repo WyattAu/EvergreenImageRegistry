@@ -17,8 +17,10 @@ RUN mkdir -p /var/log/radarr-develop /var/cache/radarr-develop && chown -R 65532
 USER 65532:65532
 WORKDIR /app
 EXPOSE 7878
+EXPOSE 9101
 ENTRYPOINT ["/app/Radarr"]
 
+STOPSIGNAL SIGTERM
 LABEL org.opencontainers.image.title="radarr-develop" \
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"

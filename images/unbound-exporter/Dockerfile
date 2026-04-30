@@ -4,6 +4,7 @@
 # See: https://github.com/prometheus-community/unbound_exporter
 
 FROM scratch
+USER 65532:65532
 LABEL org.opencontainers.image.title="unbound-exporter" \
       sovereign.image.status="archived" \
       sovereign.image.note="Upstream repo removed, no maintained alternative available"

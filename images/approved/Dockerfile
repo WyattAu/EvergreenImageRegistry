@@ -1,5 +1,6 @@
 
 FROM scratch
+USER 65532:65532
 LABEL org.opencontainers.image.title="approved" \
       sovereign.image.tier="3" \
       sovereign.image.note="Placeholder image for approved registry catalog. No runtime binary."

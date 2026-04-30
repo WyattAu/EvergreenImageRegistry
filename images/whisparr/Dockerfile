@@ -17,8 +17,10 @@ RUN mkdir -p /var/log/whisparr /var/cache/whisparr && chown -R 65532:65532 /var/
 USER 65532:65532
 WORKDIR /app
 EXPOSE 6969
+EXPOSE 9101
 ENTRYPOINT ["/app/Whisparr"]
 
+STOPSIGNAL SIGTERM
 LABEL org.opencontainers.image.title="whisparr" \
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"

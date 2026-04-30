@@ -5,6 +5,7 @@
 
 
 FROM scratch
+USER 65532:65532
 LABEL org.opencontainers.image.title="grub" \
       org.opencontainers.image.description="Meta directory for GRUB bootloader configuration. Not a runnable container." \
       sovereign.image.tier="3" \

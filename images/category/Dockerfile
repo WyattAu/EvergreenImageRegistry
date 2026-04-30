@@ -6,6 +6,7 @@
 
 
 FROM scratch
+USER 65532:65532
 LABEL org.opencontainers.image.title="category" \
       org.opencontainers.image.description="Meta directory for image classification. Not a runnable container." \
       sovereign.image.tier="3" \

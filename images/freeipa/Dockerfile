@@ -10,6 +10,7 @@ ARG BUILD_DATE
 
 
 FROM scratch
+USER 65532:65532
 LABEL org.opencontainers.image.title="freeipa" \
       org.opencontainers.image.version="4.12.0" \
       org.opencontainers.image.vendor="FreeIPA" \

@@ -7,6 +7,7 @@
 
 FROM cgr.dev/chainguard/static:latest
 
+USER 65532:65532
 LABEL org.opencontainers.image.title="musl" \
       org.opencontainers.image.description="Sovereign musl-based static base for C/C++ compilation targets" \
       sovereign.image.tier="3" \

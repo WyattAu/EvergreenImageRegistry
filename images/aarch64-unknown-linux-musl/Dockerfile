@@ -1,5 +1,6 @@
 
 FROM scratch
+USER 65532:65532
 LABEL org.opencontainers.image.title="aarch64-unknown-linux-musl" \
       org.opencontainers.image.description="Sovereign hardened aarch64-unknown-linux-musl - ARM64 musl static base" \
       sovereign.image.tier="3" \

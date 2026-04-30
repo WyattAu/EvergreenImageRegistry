@@ -10,3 +10,6 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir homeassistant || true
 
 RUN mkdir -p /opt/venv ; \
+USER 65532:65532
+EXPOSE 9101
+STOPSIGNAL SIGTERM

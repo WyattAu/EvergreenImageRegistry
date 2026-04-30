@@ -10,3 +10,6 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir git+https://github.com/home-assistant/supervisor.git@main || true
 
 RUN mkdir -p /opt/venv ; \
+USER 65532:65532
+EXPOSE 9101
+STOPSIGNAL SIGTERM

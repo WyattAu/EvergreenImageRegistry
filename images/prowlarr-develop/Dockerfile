@@ -17,8 +17,10 @@ RUN mkdir -p /var/log/prowlarr-develop /var/cache/prowlarr-develop && chown -R 6
 USER 65532:65532
 WORKDIR /app
 EXPOSE 9696
+EXPOSE 9101
 ENTRYPOINT ["/app/Prowlarr"]
 
+STOPSIGNAL SIGTERM
 LABEL org.opencontainers.image.title="prowlarr-develop" \
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"

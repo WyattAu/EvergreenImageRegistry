@@ -19,6 +19,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 RUN if [ -f authelia.tar.gz ]; then tar -xzf authelia.tar.gz && strip --strip-all authelia && mv authelia /tmp/authelia && rm -f authelia.tar.gz; else echo '#!/bin/sh' > /tmp/authelia && echo 'echo "authelia-lite v'${VERSION}' placeholder"' >> /tmp/authelia && echo 'exec sleep infinity' >> /tmp/authelia && chmod +x /tmp/authelia; fi
 
 FROM scratch
+USER 65532:65532
 ARG VERSION=4.39.19
 COPY --from=builder /tmp/authelia /usr/local/bin/authelia
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/

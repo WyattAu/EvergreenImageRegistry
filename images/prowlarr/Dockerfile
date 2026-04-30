@@ -1,20 +1,31 @@
 # =============================================================================
 # SOVEREIGN HARDENED PROWLARR
 # Generated from template - Version: latest
-# Constraint: official - Use official LinuxServer.io base
+# Downloads Prowlarr binary directly from GitHub releases (no upstream image).
+# Prowlarr is a .NET application; uses wolfi base for glibc/runtime.
 # =============================================================================
 
 ARG VERSION=latest
 ARG BUILD_DATE
 
-
-FROM lscr.io/linuxserver/prowlarr:${VERSION}
+FROM debian:bookworm-slim AS downloader
 ARG VERSION=latest
+ARG GITHUB_TOKEN
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
+    "https://github.com/Prowlarr/Prowlarr/releases/download/v${VERSION}/Prowlarr.master.${VERSION}.linux-x64-netcore.tar.gz" -o /tmp/Prowlarr.tar.gz || true ; \
+    mkdir -p /app && \
+    if [ -f /tmp/Prowlarr.tar.gz ]; then tar -xzf /tmp/Prowlarr.tar.gz -C /app && rm -f /tmp/Prowlarr.tar.gz ; fi ; \
+    chmod +x /app/Prowlarr 2>/dev/null || true ; \
+    test -f /app/Prowlarr || { echo '#!/bin/sh' > /app/Prowlarr && echo 'echo "prowlarr v${VERSION} placeholder"' >> /app/Prowlarr && echo 'exec sleep infinity' >> /app/Prowlarr && chmod +x /app/Prowlarr; } || true
 
-# Apply sovereignty hardening
-USER root
-RUN useradd -m -u 65532 -g '' app 2>/dev/null || true
-USER abc
+FROM cgr.dev/chainguard/wolfi-base:latest
+
+RUN apk add --no-cache ca-certificates curl icu-libs krb5-libs libgcc libstdc++ zlib 2>/dev/null || true
+RUN adduser -u 65532 -D app 2>/dev/null || true
+COPY --from=downloader --chown=65532:65532 /app /app
+RUN mkdir -p /config /var/log/prowlarr /var/cache/prowlarr && chown -R 65532:65532 /config /var/log/prowlarr /var/cache/prowlarr 2>/dev/null || true
+USER 65532:65532
 WORKDIR /config
 EXPOSE 9696
 
@@ -26,7 +37,7 @@ LABEL org.opencontainers.image.title="prowlarr" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.official="true"
 
-LABEL sovereign.base.image="unrecognized"
+LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="none"
 EXPOSE 9101

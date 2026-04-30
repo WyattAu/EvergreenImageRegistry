@@ -12,6 +12,8 @@ ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS builder
 ARG VERSION=0.2.0
+ARG TARGETARCH
+ARG GOARCH=${TARGETARCH}
 RUN apt-get update && \
     apt-get install -y --no-install-recommends go-1.23-go git ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true
@@ -59,7 +61,7 @@ func main() {
 }
 GOEOF
 RUN cd /build && \
-    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+    CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} \
     go build -ldflags="-s -w -X main.version=${VERSION}" -o /betteruptime ./cmd/betteruptime.go && \
     strip /betteruptime 2>/dev/null || true ; \
     test -f /betteruptime || { echo '#!/bin/sh' > /betteruptime && echo 'echo "betteruptime v${VERSION} placeholder"' >> /betteruptime && echo 'exec sleep infinity' >> /betteruptime && chmod +x /betteruptime ; }

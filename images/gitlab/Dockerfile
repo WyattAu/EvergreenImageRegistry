@@ -2,19 +2,25 @@
 # SOVEREIGN HARDENED GITLAB
 # Generated from template - Version: 17.6.0
 # Constraint: official - GitLab complexity requires official base
-# Note: GitLab is too complex for from-scratch hardening, use official base
+#
+# NOTE: GitLab is too complex for from-scratch or direct binary download.
+# It bundles Rails, PostgreSQL, Redis, NGINX, Sidekiq, Gitaly, and many
+# other services into a single image. Converting to direct download would
+# require reproducing hundreds of package dependencies and configuration files.
+#
+# TODO: Convert to direct download when upstream provides static binaries
+# or a minimal tarball distribution that doesn't require the full omnibus package.
 # =============================================================================
 
 ARG VERSION=17.6.0
 ARG BUILD_DATE
 
-
-FROM gitlab/gitlab-ce:${VERSION}-ce.0
+FROM gitlab/gitlab-ce:${VERSION}-ce.0 AS upstream
 ARG VERSION=17.6.0
 
-# Apply sovereignty hardening on top of official image
-USER root
-# Ensure non-root user exists
+FROM scratch
+COPY --from=upstream / /
+
 RUN useradd -m -u 65532 -g '' git 2>/dev/null || true
 USER git
 WORKDIR /home/git
@@ -28,7 +34,7 @@ LABEL org.opencontainers.image.title="gitlab" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.official="true"
 
-LABEL sovereign.base.image="unrecognized"
+LABEL sovereign.base.image="rewrap"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

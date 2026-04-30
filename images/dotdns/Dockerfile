@@ -3,10 +3,12 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest AS builder
 ARG VERSION
+ARG TARGETARCH
+ARG GOARCH=${TARGETARCH}
 RUN apk add --no-cache go git ca-certificates || true
 RUN export PATH="/usr/lib/go:${PATH}" && \
     printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("dotdns v%s ready") }\n' "${VERSION}" > /tmp/main.go && \
-    CGO_ENABLED=0 go build -ldflags="-s -w" -o /tmp/dotdns /tmp/main.go 2>/dev/null || true
+    CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build -ldflags="-s -w" -o /tmp/dotdns /tmp/main.go 2>/dev/null || true
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true
 
 FROM scratch

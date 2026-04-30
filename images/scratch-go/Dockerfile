@@ -23,7 +23,7 @@ RUN apt-get update && \
 
 # This image is a reference implementation. Real images customize these lines:
 # RUN git clone --depth 1 --branch v${VERSION} https://github.com/OWNER/REPO /src || true
-# RUN cd /src && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /app/app ./cmd/app
+# RUN cd /src && CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build -ldflags="-s -w" -o /app/app ./cmd/app
 # RUN strip --strip-all /app/app 2>/dev/null || true
 
 FROM scratch

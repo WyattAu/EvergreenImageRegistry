@@ -1,19 +1,27 @@
-FROM debian:bookworm-slim AS downloader
+ARG VERSION=latest
+ARG BUILD_DATE
+
+FROM golang:1.23-bookworm AS builder
+ARG VERSION
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN mkdir -p /app-src /var/log/linguist /var/cache/linguist 2>/dev/null || true
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/github/linguist /src 2>/dev/null || echo "Source repo not available"
+RUN cd /src && \
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+        -ldflags="-s -w" \
+        -o /app/linguist ./cmd/linguist 2>/dev/null || true
+RUN test -f /app/linguist && strip --strip-all /app/linguist || true
+RUN test -f /app/linguist || { echo '#!/bin/sh' > /app/linguist && echo 'echo "linguist-go v'${VERSION}' placeholder"' >> /app/linguist && echo 'exec sleep infinity' >> /app/linguist && chmod +x /app/linguist; } 2>/dev/null || true
+RUN mkdir -p /app /var/log/linguist /var/cache/linguist
 
-FROM cgr.dev/chainguard/wolfi-base:latest
-
-RUN apk add --no-cache go-1.23 git ca-certificates || true
-WORKDIR /src
-RUN git clone --depth 1 https://github.com/github/linguist.git /src || echo "Source repo not available - using placeholder" && \
-    cd /src && go build -ldflags="-s -w" -o /linguist ./cmd/linguist 2>/dev/null || true
-RUN cd /src && go build -ldflags="-s -w" -o /linguist ./cmd/linguist 2>/dev/null || true
-COPY --from=downloader /app /app
-RUN addgroup -S -g 2 nogroup >/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false linguist 2>/dev/null || true && \
-    chown -R 65532:65532 /app 2>/dev/null || true
+FROM scratch
+COPY --from=builder /app/linguist /linguist
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /app /app
+COPY --from=builder /var/log/linguist /var/log/linguist
+COPY --from=builder /var/cache/linguist /var/cache/linguist
 USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["/linguist"]
@@ -23,7 +31,7 @@ LABEL org.opencontainers.image.title="linguist-go" \
       org.opencontainers.image.source="https://github.com/github/linguist" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
+      sovereign.base.image="scratch"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101

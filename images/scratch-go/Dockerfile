@@ -1,0 +1,45 @@
+# =============================================================================
+# SOVEREIGN SCRATCH-GO
+# Go source-build base image. Multi-stage: builds Go app in golang builder,
+# copies static binary to scratch-base.
+#
+# Usage pattern (for images that use this as a template):
+#   1. Clone upstream source
+#   2. CGO_ENABLED=0 go build -ldflags="-s -w"
+#   3. Copy binary to scratch-base
+#
+# This image itself is a PROTOTYPE — not directly used as a FROM base.
+# Individual Go images copy this pattern and customize the git clone + build.
+# =============================================================================
+
+ARG GO_VERSION=1.23
+
+FROM golang:${GO_VERSION}-bookworm AS builder
+ARG VERSION
+ARG GITHUB_TOKEN
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+# This image is a reference implementation. Real images customize these lines:
+# RUN git clone --depth 1 --branch v${VERSION} https://github.com/OWNER/REPO /src || true
+# RUN cd /src && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /app/app ./cmd/app
+# RUN strip --strip-all /app/app 2>/dev/null || true
+
+FROM scratch
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /app/app /app/app
+USER 65532:65532
+WORKDIR /app
+ENTRYPOINT ["/app/app"]
+
+LABEL org.opencontainers.image.title="scratch-go" \
+      org.opencontainers.image.description="Go source-build reference — static binary on scratch" \
+      org.opencontainers.image.vendor="EvergreenImageRegistry" \
+      sovereign.image.tier="0" \
+      sovereign.image.role="base" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true" \
+      sovereign.runtime="go" \
+      sovereign.runtime.version="${GO_VERSION}"
+STOPSIGNAL SIGTERM

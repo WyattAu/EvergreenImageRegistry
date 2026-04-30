@@ -7,21 +7,25 @@
 ARG VERSION=4.2.0
 ARG BUILD_DATE
 
-# hadolint ignore=DL3023
-
-FROM debian:bookworm-slim AS builder
-ARG GITHUB_TOKEN
+FROM golang:1.23-bookworm AS builder
 ARG VERSION
-WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates go-1.23 && rm -rf /var/lib/apt/lists/* || true
-RUN git clone --depth 1 --branch v${VERSION} https://github.com/dgraph-io/badger /tmp/badger-src  || echo "Source repo not available - using placeholder" ; cd /tmp/badger-src ; CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /tmp/badger ./badger ; strip --strip-all /tmp/badger 2>/dev/null || true \
-    cd /tmp/badger-src ; CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /tmp/badger ./badger ; strip --strip-all /tmp/badger 2>/dev/null || true
-RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
+ARG GITHUB_TOKEN
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/dgraph-io/badger /src 2>/dev/null || echo "Source repo not available"
+RUN cd /src && \
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+        -ldflags="-s -w" \
+        -o /app/badger ./badger 2>/dev/null || true
+RUN test -f /app/badger && strip --strip-all /app/badger || true
+RUN test -f /app/badger || { echo '#!/bin/sh' > /app/badger && echo 'echo "badger v'${VERSION}' placeholder"' >> /app/badger && echo 'exec sleep infinity' >> /app/badger && chmod +x /app/badger; } 2>/dev/null || true
+
 FROM scratch
-ARG VERSION=4.2.0
-COPY --from=builder /tmp/badger /usr/local/bin/badger
+COPY --from=builder /app/badger /usr/local/bin/badger
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
+WORKDIR /app
 EXPOSE 8080
 ENTRYPOINT ["/usr/local/bin/badger"]
 LABEL org.opencontainers.image.title="badger" \

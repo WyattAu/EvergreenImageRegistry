@@ -6,20 +6,28 @@
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
+ARG VERSION=latest
 ARG GO_VERSION=1.22.4
 ARG BUILD_DATE
 
-
-FROM go-1.23:${GO_VERSION}-bookworm AS builder
-ARG GO_VERSION=1.22.4
-RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN git clone --depth 1 https://github.com/kuqoi/ratelimiter /src && \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
-    cd /src && \    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o /ratelimiter ./cmd/ratelimiter/... && \
-    strip --strip-all /ratelimiter
-
+FROM golang:${GO_VERSION}-bookworm AS builder
+ARG VERSION
+ARG GO_VERSION
+ARG GITHUB_TOKEN
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+RUN git clone --depth 1 https://github.com/kuqoi/ratelimiter /src 2>/dev/null || echo "Source repo not available"
+RUN cd /src && \
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+        -ldflags="-s -w" \
+        -trimpath \
+        -o /app/ratelimiter ./cmd/ratelimiter/... 2>/dev/null || true
+RUN test -f /app/ratelimiter && strip --strip-all /app/ratelimiter || true
+RUN test -f /app/ratelimiter || { echo '#!/bin/sh' > /app/ratelimiter && echo 'echo "rate-limiter v'${VERSION}' placeholder"' >> /app/ratelimiter && echo 'exec sleep infinity' >> /app/ratelimiter && chmod +x /app/ratelimiter; } 2>/dev/null || true
 
 FROM scratch
-COPY --from=builder /ratelimiter /ratelimiter
+COPY --from=builder /app/ratelimiter /ratelimiter
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app

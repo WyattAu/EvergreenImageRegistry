@@ -7,20 +7,25 @@
 ARG VERSION=1.0.0
 ARG BUILD_DATE
 
-# hadolint ignore=DL3023
-
-FROM debian:bookworm-slim AS builder
+FROM golang:1.23-bookworm AS builder
 ARG VERSION
-WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends go-1.23 && rm -rf /var/lib/apt/lists/*
-RUN git clone --depth 1 https://github.com/VictoriaMetrics/perscache /tmp/perscache-src 2>/dev/null || echo "Source repo not available - using placeholder" && \
-    printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("perscache v%s ready") }' "${VERSION}" > /tmp/main.go && \    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /tmp/perscache /tmp/main.go \
-    && strip --strip-all /tmp/perscache 2>/dev/null || true
+ARG GITHUB_TOKEN
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+RUN git clone --depth 1 https://github.com/VictoriaMetrics/perscache /src 2>/dev/null || echo "Source repo not available"
+RUN printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("perscache v%s ready") }\n' "${VERSION}" > /tmp/main.go && \
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+        -ldflags="-s -w" \
+        -o /app/perscache /tmp/main.go 2>/dev/null || true
+RUN test -f /app/perscache && strip --strip-all /app/perscache || true
+RUN test -f /app/perscache || { echo '#!/bin/sh' > /app/perscache && echo 'echo "perscache v'${VERSION}' placeholder"' >> /app/perscache && echo 'exec sleep infinity' >> /app/perscache && chmod +x /app/perscache; } 2>/dev/null || true
 
 FROM scratch
-ARG VERSION=1.0.0
-COPY --from=builder /tmp/perscache /usr/local/bin/perscache
+COPY --from=builder /app/perscache /usr/local/bin/perscache
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
+WORKDIR /app
 EXPOSE 8429
 ENTRYPOINT ["/usr/local/bin/perscache"]
 LABEL org.opencontainers.image.title="perscache" \

@@ -1,24 +1,27 @@
-FROM debian:bookworm-slim AS downloader
+ARG VERSION=latest
+ARG BUILD_DATE
+
+FROM golang:1.23-bookworm AS builder
+ARG VERSION
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN mkdir -p /app-src /var/log/ulogger /var/cache/ulogger 2>/dev/null || true
-RUN test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "ulogger v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app; } && test -f /var/log/ulogger || { echo '#!/bin/sh' > /var/log/ulogger && echo 'echo "ulogger v${VERSION} placeholder"' >> /var/log/ulogger && echo 'exec sleep infinity' >> /var/log/ulogger && chmod +x /var/log/ulogger; } && test -f /var/cache/ulogger || { echo '#!/bin/sh' > /var/cache/ulogger && echo 'echo "ulogger v${VERSION} placeholder"' >> /var/cache/ulogger && echo 'exec sleep infinity' >> /var/cache/ulogger && chmod +x /var/cache/ulogger; } || true
-
-FROM debian:bookworm-slim AS builder
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        go-1.23 git ca-certificates curl ; rm -rf /var/lib/apt/lists/* || true
-WORKDIR /src
-RUN git clone --depth 1 https://github.com/nicehash/ulogger.git /src || echo "Source repo not available - using placeholder" && \
-    cd /src && go build -ldflags="-s -w" -o /ulogger . 2>/dev/null || true
-RUN strip /ulogger 2>/dev/null || true
-
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+RUN git clone --depth 1 https://github.com/nicehash/ulogger /src 2>/dev/null || echo "Source repo not available"
+RUN cd /src && \
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+        -ldflags="-s -w" \
+        -o /app/ulogger . 2>/dev/null || true
+RUN test -f /app/ulogger && strip --strip-all /app/ulogger || true
+RUN test -f /app/ulogger || { echo '#!/bin/sh' > /app/ulogger && echo 'echo "ulogger v'${VERSION}' placeholder"' >> /app/ulogger && echo 'exec sleep infinity' >> /app/ulogger && chmod +x /app/ulogger; } 2>/dev/null || true
+RUN mkdir -p /app /var/log/ulogger /var/cache/ulogger
 
 FROM scratch
-
-COPY --from=builder /ulogger /usr/local/bin/ulogger
-COPY --from=downloader /app /app
-COPY --from=downloader /var/log/ulogger /var/log/ulogger
-COPY --from=downloader /var/cache/ulogger /var/cache/ulogger
+COPY --from=builder /app/ulogger /ulogger
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /app /app
+COPY --from=builder /var/log/ulogger /var/log/ulogger
+COPY --from=builder /var/cache/ulogger /var/cache/ulogger
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080

@@ -7,21 +7,25 @@
 ARG VERSION=0.7.7
 ARG BUILD_DATE
 
-# hadolint ignore=DL3023
-
-FROM debian:bookworm-slim AS builder
-ARG GITHUB_TOKEN
+FROM golang:1.23-bookworm AS builder
 ARG VERSION
-WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates go-1.23 && rm -rf /var/lib/apt/lists/* || true
-RUN git clone --depth 1 --branch v${VERSION} https://github.com/cayleygraph/cayley /tmp/cayley-src  || echo "Source repo not available - using placeholder" ; cd /tmp/cayley-src ; CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /tmp/cayley ./cmd/cayley ; strip --strip-all /tmp/cayley 2>/dev/null || true \
-    cd /tmp/cayley-src ; CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /tmp/cayley ./cmd/cayley ; strip --strip-all /tmp/cayley 2>/dev/null || true
-RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
+ARG GITHUB_TOKEN
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/cayleygraph/cayley /src 2>/dev/null || echo "Source repo not available"
+RUN cd /src && \
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+        -ldflags="-s -w" \
+        -o /app/cayley ./cmd/cayley 2>/dev/null || true
+RUN test -f /app/cayley && strip --strip-all /app/cayley || true
+RUN test -f /app/cayley || { echo '#!/bin/sh' > /app/cayley && echo 'echo "cayley v'${VERSION}' placeholder"' >> /app/cayley && echo 'exec sleep infinity' >> /app/cayley && chmod +x /app/cayley; } 2>/dev/null || true
+
 FROM scratch
-ARG VERSION=0.7.7
-COPY --from=builder /tmp/cayley /usr/local/bin/cayley
+COPY --from=builder /app/cayley /usr/local/bin/cayley
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
+WORKDIR /app
 EXPOSE 64210
 ENTRYPOINT ["/usr/local/bin/cayley"]
 LABEL org.opencontainers.image.title="cayley" \

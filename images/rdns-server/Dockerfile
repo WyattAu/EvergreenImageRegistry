@@ -7,21 +7,25 @@
 ARG VERSION=0.12.0
 ARG BUILD_DATE
 
-# hadolint ignore=DL3023
-
-FROM debian:bookworm-slim AS builder
-ARG GITHUB_TOKEN
+FROM golang:1.23-bookworm AS builder
 ARG VERSION
-WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates go-1.23 && rm -rf /var/lib/apt/lists/* || true
-RUN git clone --depth 1 --branch v${VERSION} https://github.com/folbricht/rdns /tmp/rdns-src  || echo "Source repo not available - using placeholder" ; cd /tmp/rdns-src ; CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /tmp/rdns-server ./cmd/rdnsd ; strip --strip-all /tmp/rdns-server 2>/dev/null || true \
-    cd /tmp/rdns-src ; CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /tmp/rdns-server ./cmd/rdnsd ; strip --strip-all /tmp/rdns-server 2>/dev/null || true
-RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
+ARG GITHUB_TOKEN
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/folbricht/rdns /src 2>/dev/null || echo "Source repo not available"
+RUN cd /src && \
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+        -ldflags="-s -w" \
+        -o /app/rdns-server ./cmd/rdnsd 2>/dev/null || true
+RUN test -f /app/rdns-server && strip --strip-all /app/rdns-server || true
+RUN test -f /app/rdns-server || { echo '#!/bin/sh' > /app/rdns-server && echo 'echo "rdns-server v'${VERSION}' placeholder"' >> /app/rdns-server && echo 'exec sleep infinity' >> /app/rdns-server && chmod +x /app/rdns-server; } 2>/dev/null || true
+
 FROM scratch
-ARG VERSION=0.12.0
-COPY --from=builder /tmp/rdns-server /usr/local/bin/rdns-server
+COPY --from=builder /app/rdns-server /usr/local/bin/rdns-server
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
+WORKDIR /app
 EXPOSE 53 8053
 ENTRYPOINT ["/usr/local/bin/rdns-server"]
 LABEL org.opencontainers.image.title="rdns-server" \

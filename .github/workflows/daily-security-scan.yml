@@ -2,6 +2,7 @@
 # SOVEREIGN HARDENED IMAGE REGISTRY - DAILY SECURITY SCAN
 # =============================================================================
 # Scheduled pipeline for continuous security monitoring.
+# Runs after nightly-scan.yml (03:00 UTC) to provide deeper analysis.
 #
 # Jobs:
 #   1. discover   - Find all Dockerfiles, create batched scan matrix
@@ -12,8 +13,9 @@
 #   6. report     - Generate summary, create GitHub Issue if new CVEs found
 #   7. rebuild    - Conditionally trigger rebuild if CRITICAL CVEs found
 #
-# Schedule: Daily at 06:00 UTC
+# Schedule: Daily at 06:00 UTC (after nightly-scan at 03:00 UTC)
 # Manual:   workflow_dispatch for on-demand execution
+# See also: nightly-scan.yml (freshness, checksums, base image digests)
 # =============================================================================
 
 name: Daily Security Scan

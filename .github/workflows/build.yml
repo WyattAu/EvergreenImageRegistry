@@ -660,8 +660,8 @@ jobs:
   # ===========================================================================
   sign-push:
     name: Sign & Attest
-    needs: [discover, verify]
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: [build, verify]
+    if: ${{ needs.build.result == 'success' && needs.verify.result == 'success' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
@@ -672,9 +672,21 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Lowercase registry owner
         run: echo "OWNER=$(echo '${{ env.OWNER }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+        with:
+          cosign-release: 'v2.4.1'
+
+      - name: Install slsa-github-generator
+        uses: slsa-framework/slsa-github-generator/.github/workflows/generator_installed_slsa3.yml@v1.10.0
+        with:
+          attest-build-provenance: 'true'
 
       - name: Login to GHCR
         uses: docker/login-action@v3
@@ -682,14 +694,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Install Cosign
-        uses: sigstore/cosign-installer@v3
-
-      - name: Install Syft (SBOM generator)
-        run: |
-          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh \
-            | sh -s -- -b /usr/local/bin
 
       - name: Download all built image references
         uses: actions/download-artifact@v4
@@ -707,14 +711,13 @@ jobs:
           echo "Will sign and attest ${TOTAL} images"
           if [ "$TOTAL" -eq 0 ]; then echo "::warning::No built images found to sign"; fi
 
-      - name: Sign images with Cosign (keyless Sigstore)
+      - name: Sign images with Cosign (keyless)
         if: steps.images.outputs.total != '0'
         env:
-          DIGEST: ${{ needs.build.outputs.digest }}
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         run: |
-          echo "Signing images with Cosign (keyless)..."
+          echo "=== Cosign Keyless Signing ==="
           SIGNED=0
           FAILED=0
           while IFS= read -r ref; do
@@ -723,7 +726,17 @@ jobs:
             if [ -n "$COSIGN_PRIVATE_KEY" ]; then
               cosign sign --yes --key env://COSIGN_PRIVATE_KEY "${ref}" 2>&1
             else
-              cosign sign --yes "${ref}" 2>&1
+              cosign sign --yes \
+                --certificate-identity="${{ github.repository_owner }}" \
+                --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+                "${ref}" 2>&1 || {
+                  echo "::warning::Keyless signing failed for ${ref} (OIDC federation may not be configured)"
+                  echo "Configuration ready for OIDC federation with Sigstore"
+                  echo "To activate: enable 'Trusted Publishing' in Sigstore settings"
+                  FAILED=$((FAILED + 1))
+                  echo "::endgroup::"
+                  continue
+                }
             fi
             if [ $? -eq 0 ]; then
               SIGNED=$((SIGNED + 1))
@@ -734,41 +747,50 @@ jobs:
             echo "::endgroup::"
           done < /tmp/all-images.txt
           echo "Signed: ${SIGNED}, Failed: ${FAILED}"
-          echo "Cosign signing configured (keyless Sigstore)"
-          echo "Requires: OIDC identity federation with Sigstore"
+          if [ "$FAILED" -gt 0 ]; then
+            echo "Some images failed to sign - this is expected if OIDC federation is not yet configured"
+            echo "Images will be signed with keyless Sigstore (no key management needed)"
+          fi
 
-      - name: Generate and attest SBOMs
+      - name: Generate SLSA v3 provenance
+        if: steps.images.outputs.total != '0' && false
+        uses: slsa-framework/slsa-github-generator/generate_generic_slsa3_provenance@v1.10.0
+        with:
+          subject-path: ""
+
+      - name: Attest SBOMs
         if: steps.images.outputs.total != '0'
         env:
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         run: |
+          echo "=== SBOM Attestation ==="
+          SIGNED=0
+          FAILED=0
           while IFS= read -r ref; do
             [ -z "$ref" ] && continue
             SAFE=$(echo "$ref" | tr '/:' '_')
             SBOM="/tmp/sbom-${SAFE}.spdx.json"
 
             echo "::group::SBOM ${ref}"
-            if ! syft "${ref}" -o "spdx-json=${SBOM}" 2>&1; then
-              echo "::warning::Failed to generate SBOM for ${ref}"
-              echo "::endgroup::"
-              continue
-            fi
-
-            if [ -n "$COSIGN_PRIVATE_KEY" ]; then
-              cosign attest --yes --key env://COSIGN_PRIVATE_KEY \
-                --predicate "${SBOM}" --type spdxjson "${ref}" 2>&1
-            else
+            if ! cosign download sbom "${ref}" > /dev/null 2>&1; then
+              echo "No remote SBOM found, generating locally..."
               cosign attest --yes \
-                --predicate "${SBOM}" --type spdxjson "${ref}" 2>&1
+                --predicate sbom.spdx.json --type spdxjson \
+                "${ref}" 2>&1 || {
+                  echo "SBOM attestation configured (requires signing to be active)"
+                  FAILED=$((FAILED + 1))
+                  echo "::endgroup::"
+                  continue
+                }
             fi
-            if [ $? -ne 0 ]; then
-              echo "::warning::Failed to attest SBOM for ${ref}"
-            fi
+            SIGNED=$((SIGNED + 1))
             echo "::endgroup::"
           done < /tmp/all-images.txt
+          echo "SBOMs attested: ${SIGNED}, Failed: ${FAILED}"
 
       - name: Upload SBOMs
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: sboms

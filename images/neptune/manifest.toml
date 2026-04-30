@@ -1,0 +1,34 @@
+[image]
+name = "neptune"
+version = "1.2.0"
+description = "AWS Neptune local development compatibility - Gremlin/SPARQL graph database for dev environments"
+vendor = "AWS"
+homepage = "https://aws.amazon.com/neptune/"
+category = "database"
+tier = 1
+
+[source]
+type = "managed-service"
+url = "https://aws.amazon.com/neptune/"
+upstream = "https://github.com/aws/neptune"
+note = "AWS Neptune is a fully managed cloud service. This image provides development-only Gremlin/SPARQL compatibility."
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+target_base = "cgr.dev/chainguard/wolfi-base:latest"
+
+[constraints]
+nonroot = true
+base = "wolfi"
+
+[hft]
+signal-handling = "native"
+shutdown-timeout = "10s"
+
+[ports]
+gremlin = 8182
+wss = 8443
+metrics = 9101
+
+[health]
+type = "exec"

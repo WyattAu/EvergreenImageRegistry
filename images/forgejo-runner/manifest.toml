@@ -1,0 +1,54 @@
+[image]
+name = "forgejo-runner"
+type = "binary-download"
+tier = 2
+version = "6.3.1"
+description = "Forgejo Act Runner - CI/CD runner for Forgejo"
+vendor = "forgejo"
+source_url = "https://github.com/forgejo/runner"
+category = "ci"
+
+[source]
+url = "https://github.com/forgejo/runner/releases/download/v6.3.1/forgejo-runner-linux-amd64"
+fallback_urls = ["https://codeberg.org/forgejo/runner/releases/download/v6.3.1/forgejo-runner-6.3.1-linux-amd64"]
+checksum = { algorithm = "sha256", expected = "PENDING", source = "" }
+strategy = "curl"
+github_repo = "forgejo/runner"
+
+[build]
+base = { image = "debian:bookworm-slim", purpose = "download" }
+builder_packages = ["curl", "ca-certificates"]
+runtime_packages = []
+build_commands = [
+  "curl --retry 3 --retry-delay 5 -fsSL https://github.com/forgejo/runner/releases/download/v6.3.1/forgejo-runner-linux-amd64 -o /tmp/forgejo-runner",
+  "chmod +x /tmp/forgejo-runner",
+  "strip /tmp/forgejo-runner",
+]
+artifacts = [
+  { source = "/tmp/forgejo-runner", destination = "/usr/local/bin/forgejo-runner" },
+]
+
+[runtime]
+user = "65532:65532"
+workdir = "/app"
+entrypoint = ["/usr/local/bin/forgejo-runner"]
+cmd = ["daemon"]
+ports = [8088]
+volumes = ["/app/.runner", "/var/run/docker.sock"]
+stop_signal = "SIGTERM"
+
+[health]
+type = "tcp"
+path = ""
+port = 8088
+interval_seconds = 30
+timeout_seconds = 5
+retries = 3
+
+[observability]
+metrics_port = 9101
+metrics_path = "/metrics"
+
+[compliance]
+standards = []
+labels = {}

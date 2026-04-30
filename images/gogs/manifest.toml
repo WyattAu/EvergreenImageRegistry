@@ -1,0 +1,40 @@
+[metadata]
+name = "gogs"
+version = "0.13.0"
+description = "Gogs - lightweight self-hosted Git service"
+vendor = "Gogs"
+source = "https://github.com/gogs/gogs"
+license = "MIT"
+tier = "2"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/gogs/gogs/releases/download/v0.13.0/gogs_0.13.0_linux_amd64.tar.gz"
+binary_name = "gogs"
+filename = "gogs_0.13.0_linux_amd64.tar.gz"
+package_format = "tar.gz"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 3000
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "gogs"
+"org.opencontainers.image.description" = "Gogs - lightweight self-hosted Git service"
+"org.opencontainers.image.version" = "0.13.0"
+"org.opencontainers.image.vendor" = "Gogs"
+"org.opencontainers.image.source" = "https://github.com/gogs/gogs"
+"sovereign.image.tier" = "2"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"

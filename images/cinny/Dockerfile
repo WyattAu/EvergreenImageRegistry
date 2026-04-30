@@ -1,40 +1,36 @@
-FROM debian:bookworm-slim AS downloader
-ARG VERSION=4.11.1
+FROM cgr.dev/chainguard/wolfi-base:latest AS builder
+ARG VERSION=4.2.2
 ARG GITHUB_TOKEN
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true
-WORKDIR /tmp
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/cinnyapp/cinny/releases/download/v${VERSION}/cinny-v${VERSION}.tar.gz" -o /tmp/release.tar.gz || true ; \
+RUN apk add --no-cache curl ca-certificates || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
+    "https://github.com/cinnyapp/cinny/releases/download/v${VERSION}/cinny-v${VERSION}.tar.gz" \
+    -o /tmp/cinny.tar.gz || true ; \
     mkdir -p /www ; \
-    if [ -f /tmp/release.tar.gz ]; then tar -xzf /tmp/release.tar.gz -C /www --strip-components=1 && rm /tmp/release.tar.gz ; fi ; \
+    if [ -f /tmp/cinny.tar.gz ]; then tar -xzf /tmp/cinny.tar.gz -C /www --strip-components=1 && rm /tmp/cinny.tar.gz ; fi ; \
     test -f /www/index.html || echo '<html><body><h1>cinny v'${VERSION}' placeholder</h1></body></html>' > /www/index.html
 
-
 FROM cgr.dev/chainguard/wolfi-base:latest
-
-RUN apk add --no-cache ca-certificates 
-RUN mkdir -p /app 2>/dev/null || true
-RUN addgroup -S -g 10000 appuser 2>/dev/null || true ; adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser
-RUN mkdir -p /var/www 2>/dev/null || true
-COPY --from=downloader /www /var/www/html
-RUN rm -f /etc/nginx/sites-enabled/default 2>/dev/null || true
-RUN printf 'server {\\n    listen 8080 default_server;\\n    root /var/www/html;\\n    index index.html;\\n    location / { try_files $uri $uri/ =404; }\\n}\\n' > /etc/nginx/sites-available/default && \
-    ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default && \
-    chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx
+RUN apk add --no-cache busybox ca-certificates || true
+RUN addgroup -S -g 10000 appuser 2>/dev/null || true && \
+    adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser 2>/dev/null || true
+RUN mkdir -p /var/www/html /var/run/httpd 2>/dev/null || true
+COPY --from=builder /www /var/www/html
+RUN chown -R 65532:65532 /var/www/html /var/run/httpd 2>/dev/null || true
 USER 65532:65532
-EXPOSE 8080
-CMD ["nginx", "-g", "daemon off;"]
+WORKDIR /var/www/html
+EXPOSE 80
+ENTRYPOINT ["httpd"]
+CMD ["-f", "-p", "80", "-h", "/var/www/html"]
 LABEL org.opencontainers.image.title="cinny" \
-      org.opencontainers.image.description="Cinny - lightweight Matrix client" \
-      org.opencontainers.image.version="4.2.0" \
+      org.opencontainers.image.description="Cinny - lightweight Matrix web client" \
+      org.opencontainers.image.version="4.2.2" \
       org.opencontainers.image.vendor="Cinny" \
       org.opencontainers.image.source="https://github.com/cinnyapp/cinny" \
       sovereign.image.tier="2" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian-slim="true"
+      sovereign.image.category="chat" \
+      sovereign.constraint.nonroot="true"
 LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL sovereign.health.type="http"
 EXPOSE 9101
 STOPSIGNAL SIGTERM

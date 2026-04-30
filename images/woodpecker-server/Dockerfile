@@ -1,19 +1,33 @@
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=3.13.0
+ARG VERSION=2.7.0
 ARG GITHUB_TOKEN
-RUN apt-get update &&     apt-get install -y --no-install-recommends curl ca-certificates &&     rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/woodpecker-ci/woodpecker/releases/download/v3.13.0/woodpecker-server_linux_amd64.tar.gz -o /tmp/archive.tar.gz &&     tar -xzf /tmp/archive.tar.gz -C /tmp &&     mv /tmp/woodpecker-server /tmp/woodpecker-server_stripped &&     strip /tmp/woodpecker-server_stripped &&     chmod +x /tmp/woodpecker-server_stripped ; test -f /tmp/woodpecker-server_stripped || { echo '#!/bin/sh' > /tmp/woodpecker-server_stripped && echo 'echo "woodpecker-server v${VERSION} placeholder"' >> /tmp/woodpecker-server_stripped && echo 'exec sleep infinity' >> /tmp/woodpecker-server_stripped && chmod +x /tmp/woodpecker-server_stripped; } || true
-
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl ca-certificates && \
+    rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL \
+    -H "Authorization: token ${GITHUB_TOKEN}" \
+    "https://github.com/woodpecker-ci/woodpecker/releases/download/v${VERSION}/woodpecker-server_linux_amd64.tar.gz" \
+    -o /tmp/archive.tar.gz && \
+    tar -xzf /tmp/archive.tar.gz -C /tmp && \
+    strip /tmp/woodpecker-server && \
+    chmod +x /tmp/woodpecker-server
 
 FROM scratch
-COPY --from=downloader /tmp/woodpecker-server_stripped /usr/local/bin/woodpecker-server
+COPY --from=downloader /tmp/woodpecker-server /usr/local/bin/woodpecker-server
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8000
-LABEL org.opencontainers.image.title="woodpecker-server"       org.opencontainers.image.description="Woodpecker Server - CI/CD server for Woodpecker CI"       org.opencontainers.image.version="3.13.0"       org.opencontainers.image.vendor="Woodpecker CI"       org.opencontainers.image.source="https://github.com/woodpecker-ci/woodpecker"       sovereign.image.tier="2"       sovereign.constraint.nonroot="true"       sovereign.constraint.scratch="true"
-
+ENTRYPOINT ["/usr/local/bin/woodpecker-server"]
+LABEL org.opencontainers.image.title="woodpecker-server" \
+      org.opencontainers.image.description="Woodpecker Server - CI/CD server for Woodpecker CI" \
+      org.opencontainers.image.version="2.7.0" \
+      org.opencontainers.image.vendor="Woodpecker CI" \
+      org.opencontainers.image.source="https://github.com/woodpecker-ci/woodpecker" \
+      sovereign.image.tier="2" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true"
 LABEL sovereign.base.image="scratch"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"

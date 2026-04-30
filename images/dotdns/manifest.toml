@@ -1,0 +1,33 @@
+[image]
+name = "dotdns"
+version = "0.1.0"
+description = "DotDNS - DNS-over-TLS proxy server"
+vendor = "nicich"
+homepage = "https://github.com/nicich/dotdns"
+category = "dns"
+tier = 1
+
+[source]
+type = "source-compile"
+url = "https://github.com/nicich/dotdns"
+upstream = "https://github.com/nicich/dotdns"
+
+[build]
+base = "debian:bookworm-slim"
+target_base = "scratch"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[hft]
+signal-handling = "native"
+shutdown-timeout = "3s"
+
+[ports]
+dns = 53
+web = 8053
+metrics = 9101
+
+[health]
+type = "exec"

@@ -1,21 +1,37 @@
-FROM debian:bookworm-slim AS downloader
-ARG VERSION=1.26.1
+FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
+ARG VERSION=1.22.0
 ARG GITHUB_TOKEN
-RUN apt-get update &&     apt-get install -y --no-install-recommends binutils curl ca-certificates &&     rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/go-gitea/gitea/releases/download/v${VERSION}/gitea-${VERSION}-linux-amd64" -o /tmp/binary || true
-RUN if [ -f /tmp/binary ]; then chmod +x /tmp/binary && strip /tmp/binary; else echo '#!/bin/sh' > /tmp/binary && echo 'echo "source-control v'${VERSION}' placeholder"' >> /tmp/binary && echo 'exec sleep infinity' >> /tmp/binary && chmod +x /tmp/binary; fi
+RUN apk add --no-cache curl ca-certificates xz || true
+RUN curl --retry 3 --retry-delay 5 -fsSL \
+    "https://dl.gitea.io/gitea/${VERSION}/gitea-${VERSION}-linux-amd64.xz" \
+    -o /tmp/gitea.xz && \
+    xz -d /tmp/gitea.xz && \
+    chmod +x /tmp/gitea && \
+    strip /tmp/gitea || true
 
-
-FROM scratch
-COPY --from=downloader /tmp/binary /usr/local/bin/source-control
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-
+FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=1.22.0
+RUN apk add --no-cache ca-certificates git tzdata || true
+RUN adduser -D -u 65532 git 2>/dev/null || true
+RUN mkdir -p /app /var/lib/gitea /var/log/gitea /etc/gitea /var/cache/gitea 2>/dev/null || true
+COPY --from=downloader /tmp/gitea /usr/local/bin/gitea
+RUN chown -R 65532:65532 /app /var/lib/gitea /var/log/gitea /etc/gitea /var/cache/gitea 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
-EXPOSE 8080
-
-LABEL sovereign.base.image="scratch"
+EXPOSE 3000 22
+ENTRYPOINT ["/usr/local/bin/gitea"]
+CMD ["web", "-c", "/etc/gitea/app.ini"]
+LABEL org.opencontainers.image.title="source-control" \
+      org.opencontainers.image.description="Source control management - Gitea lightweight Git server" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.vendor="Gitea" \
+      org.opencontainers.image.source="https://about.gitea.com/" \
+      sovereign.image.tier="2" \
+      sovereign.image.category="scm" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.wolfi="true"
+LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL sovereign.health.type="http"
 EXPOSE 9101
 STOPSIGNAL SIGTERM

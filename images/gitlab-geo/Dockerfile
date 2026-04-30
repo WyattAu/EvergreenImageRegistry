@@ -1,5 +1,5 @@
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=17.6.0
+ARG VERSION=16.11.0
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
@@ -7,11 +7,11 @@ RUN apt-get update && \
         gnupg \
         openssh-client && \
     rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh" | bash || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh" | bash && \
     apt-get update && \
     apt-get install -y --no-install-recommends gitlab-ce=${VERSION}-ce.0 && \
     rm -rf /var/lib/apt/lists/*
-RUN test -f /opt/gitlab || { echo '#!/bin/sh' > /opt/gitlab && echo 'echo "gitlab-geo v${VERSION} placeholder"' >> /opt/gitlab && echo 'exec sleep infinity' >> /opt/gitlab && chmod +x /opt/gitlab; } && test -f /etc/gitlab || { echo '#!/bin/sh' > /etc/gitlab && echo 'echo "gitlab-geo v${VERSION} placeholder"' >> /etc/gitlab && echo 'exec sleep infinity' >> /etc/gitlab && chmod +x /etc/gitlab; } && test -f /var/opt/gitlab || { echo '#!/bin/sh' > /var/opt/gitlab && echo 'echo "gitlab-geo v${VERSION} placeholder"' >> /var/opt/gitlab && echo 'exec sleep infinity' >> /var/opt/gitlab && chmod +x /var/opt/gitlab; }
+RUN test -f /opt/gitlab || { echo "ERROR: gitlab-ce not installed" >&2; exit 1; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
@@ -25,7 +25,7 @@ USER 65532:65532
 EXPOSE 80 443
 LABEL org.opencontainers.image.title="gitlab-geo" \
       org.opencontainers.image.description="GitLab Geo - geo-replication node for GitLab" \
-      org.opencontainers.image.version="17.6.0" \
+      org.opencontainers.image.version="16.11.0" \
       org.opencontainers.image.vendor="GitLab" \
       org.opencontainers.image.source="https://gitlab.com/gitlab-org/gitlab-ce" \
       sovereign.image.tier="2" \
@@ -37,3 +37,4 @@ LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101
 STOPSIGNAL SIGTERM
+ENTRYPOINT ["/opt/gitlab/bin/gitlab-geo"]

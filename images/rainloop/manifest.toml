@@ -1,0 +1,55 @@
+[image]
+name = "rainloop"
+type = "web-ui"
+tier = 2
+version = "1.17.0"
+description = "RainLoop - lightweight webmail client"
+vendor = "rainloop"
+source_url = "https://github.com/RainLoop/rainloop-webmail"
+category = "email"
+
+[source]
+url = "https://github.com/RainLoop/rainloop-webmail/releases/download/v1.17.0/rainloop-community-1.17.0.tar.gz"
+fallback_urls = []
+checksum = { algorithm = "sha256", expected = "PENDING", source = "" }
+strategy = "curl"
+github_repo = "RainLoop/rainloop-webmail"
+
+[build]
+base = { image = "cgr.dev/chainguard/wolfi-base:latest", purpose = "runtime" }
+builder_packages = ["curl", "ca-certificates"]
+runtime_packages = ["busybox", "ca-certificates"]
+build_commands = [
+  "curl --retry 3 -fsSL https://github.com/RainLoop/rainloop-webmail/releases/download/v1.17.0/rainloop-community-1.17.0.tar.gz -o /tmp/rainloop.tar.gz",
+  "mkdir -p /var/www/html",
+  "tar -xzf /tmp/rainloop.tar.gz -C /var/www/html",
+  "rm /tmp/rainloop.tar.gz",
+]
+artifacts = [
+  { source = "/var/www/html", destination = "/var/www/html" },
+]
+
+[runtime]
+user = "65532:65532"
+workdir = "/var/www/html"
+entrypoint = ["httpd"]
+cmd = ["-f", "-p", "8888", "-h", "/var/www/html"]
+ports = [8888]
+volumes = ["/var/www/html/data"]
+stop_signal = "SIGTERM"
+
+[health]
+type = "http"
+path = "/"
+port = 8888
+interval_seconds = 30
+timeout_seconds = 5
+retries = 3
+
+[observability]
+metrics_port = 9101
+metrics_path = "/metrics"
+
+[compliance]
+standards = []
+labels = {}

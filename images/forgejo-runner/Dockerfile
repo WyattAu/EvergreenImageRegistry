@@ -1,20 +1,34 @@
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=6.1.0
-RUN apt-get update &&     apt-get install -y --no-install-recommends curl ca-certificates &&     rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://codeberg.org/forgejo/runner/releases/download/v6.1.0/forgejo-runner-6.1.0-linux-amd64" -o /tmp/binary &&     chmod +x /tmp/binary &&     strip /tmp/binary ; test -f /tmp/binary || { echo '#!/bin/sh' > /tmp/binary && echo 'echo "forgejo-runner v${VERSION} placeholder"' >> /tmp/binary && echo 'exec sleep infinity' >> /tmp/binary && chmod +x /tmp/binary; } || true
-
+ARG VERSION=6.3.1
+ARG GITHUB_TOKEN
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl ca-certificates && \
+    rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
+    "https://github.com/forgejo/runner/releases/download/v${VERSION}/forgejo-runner-linux-amd64" \
+    -o /tmp/forgejo-runner && \
+    chmod +x /tmp/forgejo-runner && \
+    strip /tmp/forgejo-runner || true
 
 FROM scratch
-COPY --from=downloader /tmp/binary /usr/local/bin/forgejo-runner
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-
+COPY --from=downloader /tmp/forgejo-runner /usr/local/bin/forgejo-runner
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
-EXPOSE 8080
-LABEL org.opencontainers.image.title="forgejo-runner"       org.opencontainers.image.description="Forgejo Act Runner - CI/CD runner for Forgejo"       org.opencontainers.image.version="6.1.0"       org.opencontainers.image.vendor="Forgejo"       org.opencontainers.image.source="https://codeberg.org/forgejo/runner"       sovereign.image.tier="2"       sovereign.constraint.nonroot="true"       sovereign.constraint.scratch="true"
-
+EXPOSE 8088
+ENTRYPOINT ["/usr/local/bin/forgejo-runner"]
+CMD ["daemon"]
+LABEL org.opencontainers.image.title="forgejo-runner" \
+      org.opencontainers.image.description="Forgejo Act Runner - CI/CD runner for Forgejo" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.vendor="Forgejo" \
+      org.opencontainers.image.source="https://github.com/forgejo/runner" \
+      sovereign.image.tier="2" \
+      sovereign.image.category="ci" \
+      sovereign.constraint.nonroot="true" \
+      sovereign.constraint.scratch="true"
 LABEL sovereign.base.image="scratch"
 LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL sovereign.health.type="tcp"
 EXPOSE 9101
 STOPSIGNAL SIGTERM

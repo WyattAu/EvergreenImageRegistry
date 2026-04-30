@@ -1,0 +1,55 @@
+[image]
+name = "cinny"
+type = "web-ui"
+tier = 2
+version = "4.2.2"
+description = "Cinny - lightweight Matrix web client"
+vendor = "cinnyapp"
+source_url = "https://github.com/cinnyapp/cinny"
+category = "chat"
+
+[source]
+url = "https://github.com/cinnyapp/cinny/releases/download/v4.2.2/cinny-v4.2.2.tar.gz"
+fallback_urls = []
+checksum = { algorithm = "sha256", expected = "PENDING", source = "" }
+strategy = "curl"
+github_repo = "cinnyapp/cinny"
+
+[build]
+base = { image = "cgr.dev/chainguard/wolfi-base:latest", purpose = "runtime" }
+builder_packages = ["curl", "ca-certificates"]
+runtime_packages = ["busybox", "ca-certificates"]
+build_commands = [
+  "curl --retry 3 -fsSL https://github.com/cinnyapp/cinny/releases/download/v4.2.2/cinny-v4.2.2.tar.gz -o /tmp/cinny.tar.gz",
+  "mkdir -p /var/www/html",
+  "tar -xzf /tmp/cinny.tar.gz -C /var/www/html --strip-components=1",
+  "rm /tmp/cinny.tar.gz",
+]
+artifacts = [
+  { source = "/var/www/html", destination = "/var/www/html" },
+]
+
+[runtime]
+user = "65532:65532"
+workdir = "/var/www/html"
+entrypoint = ["httpd"]
+cmd = ["-f", "-p", "80", "-h", "/var/www/html"]
+ports = [80]
+volumes = []
+stop_signal = "SIGTERM"
+
+[health]
+type = "http"
+path = "/"
+port = 80
+interval_seconds = 30
+timeout_seconds = 5
+retries = 3
+
+[observability]
+metrics_port = 9101
+metrics_path = "/metrics"
+
+[compliance]
+standards = []
+labels = {}

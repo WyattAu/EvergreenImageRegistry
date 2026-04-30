@@ -1,0 +1,36 @@
+[image]
+name = "powerdns-api"
+version = "4.9.0"
+description = "PowerDNS Authoritative Server with REST API"
+vendor = "PowerDNS"
+homepage = "https://github.com/PowerDNS/pdns"
+category = "dns"
+tier = 1
+
+[source]
+type = "upstream-deb"
+url = "https://repo.powerdns.com/debian/pool/main/p/pdns/pdns-server_4.9.0-1+deb12u1_amd64.deb"
+upstream = "https://github.com/PowerDNS/pdns"
+
+[build]
+base = "debian:bookworm-slim"
+target_base = "cgr.dev/chainguard/wolfi-base:latest"
+
+[constraints]
+nonroot = true
+base = "wolfi"
+
+[hft]
+signal-handling = "native"
+shutdown-timeout = "3s"
+init-system = "none"
+startup-timeout = "5000ms"
+
+[ports]
+dns = 53
+dns-udp = "53/udp"
+api = 8081
+metrics = 9101
+
+[health]
+type = "exec"

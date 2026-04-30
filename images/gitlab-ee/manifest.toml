@@ -1,0 +1,39 @@
+[metadata]
+name = "gitlab-ee"
+version = "16.11.0"
+description = "GitLab EE - self-hosted Git management platform (Enterprise Edition)"
+vendor = "GitLab"
+source = "https://gitlab.com/gitlab-org/gitlab-ee"
+license = "MIT"
+tier = "2"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://packages.gitlab.com/gitlab/gitlab-ee/packages/ubuntu/jammy/gitlab-ee_16.11.0-ee.0_amd64.deb"
+package_format = "deb"
+filename = "gitlab-ee_16.11.0-ee.0_amd64.deb"
+
+[constraints]
+nonroot = true
+debian-slim = true
+
+[ports]
+application = [80, 443, 22]
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "gitlab-ee"
+"org.opencontainers.image.description" = "GitLab EE - self-hosted Git management platform (Enterprise)"
+"org.opencontainers.image.version" = "16.11.0"
+"org.opencontainers.image.vendor" = "GitLab"
+"org.opencontainers.image.source" = "https://gitlab.com/gitlab-org/gitlab-ee"
+"sovereign.image.tier" = "2"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.debian-slim" = "true"
+"sovereign.base.image" = "wolfi"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"

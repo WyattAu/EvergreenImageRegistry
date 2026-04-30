@@ -1,0 +1,54 @@
+[image]
+name = "ntfy"
+type = "binary-download"
+tier = 2
+version = "2.11.0"
+description = "ntfy - push notification service"
+vendor = "binwiederhier"
+source_url = "https://github.com/binwiederhier/ntfy"
+category = "notifications"
+
+[source]
+url = "https://github.com/binwiederhier/ntfy/releases/download/v2.11.0/ntfy_2.11.0_linux_amd64.tar.gz"
+fallback_urls = []
+checksum = { algorithm = "sha256", expected = "PENDING", source = "" }
+strategy = "curl"
+github_repo = "binwiederhier/ntfy"
+
+[build]
+base = { image = "debian:bookworm-slim", purpose = "download" }
+builder_packages = ["curl", "ca-certificates"]
+runtime_packages = []
+build_commands = [
+  "curl --retry 3 --retry-delay 5 -fsSL -H \"Authorization: token ${GITHUB_TOKEN}\" https://github.com/binwiederhier/ntfy/releases/download/v2.11.0/ntfy_2.11.0_linux_amd64.tar.gz -o /tmp/ntfy.tar.gz",
+  "tar -xzf /tmp/ntfy.tar.gz -C /tmp && mv /tmp/ntfy /usr/local/bin/ntfy",
+  "chmod +x /usr/local/bin/ntfy && strip /usr/local/bin/ntfy",
+]
+artifacts = [
+  { source = "/usr/local/bin/ntfy", destination = "/usr/local/bin/ntfy" },
+]
+
+[runtime]
+user = "65532:65532"
+workdir = "/app"
+entrypoint = ["/usr/local/bin/ntfy"]
+cmd = ["serve"]
+ports = [80]
+volumes = ["/var/cache/ntfy", "/etc/ntfy"]
+stop_signal = "SIGTERM"
+
+[health]
+type = "http"
+path = "/v1/health"
+port = 80
+interval_seconds = 30
+timeout_seconds = 5
+retries = 3
+
+[observability]
+metrics_port = 9101
+metrics_path = "/metrics"
+
+[compliance]
+standards = []
+labels = {}

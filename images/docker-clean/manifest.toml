@@ -1,0 +1,31 @@
+[image]
+name = "docker-clean"
+version = "0.3.0"
+description = "Docker cleanup and pruning tool"
+vendor = "zzehring"
+homepage = "https://github.com/zzehring/docker-cleanup"
+category = "devops"
+tier = 3
+
+[source]
+type = "upstream-binary"
+url = "https://github.com/zzehring/docker-cleanup/releases/download/v0.3.0/docker-cleanup-linux-amd64"
+upstream = "https://github.com/zzehring/docker-cleanup"
+
+[build]
+base = "debian:bookworm-slim"
+target_base = "cgr.dev/chainguard/wolfi-base:latest"
+
+[constraints]
+nonroot = true
+base = "wolfi"
+
+[hft]
+signal-handling = "native"
+shutdown-timeout = "10s"
+
+[ports]
+metrics = 9101
+
+[health]
+type = "exec"

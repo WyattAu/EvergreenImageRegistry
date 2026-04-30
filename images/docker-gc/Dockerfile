@@ -1,33 +1,35 @@
+ARG VERSION=0.3.0
+ARG BUILD_DATE
 
-FROM debian:bookworm-slim AS builder
+FROM debian:bookworm-slim AS downloader
+ARG GITHUB_TOKEN
+ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        curl ca-certificates ; rm -rf /var/lib/apt/lists/* || true
-
-RUN mkdir -p /app-src-src 2>/dev/null || true
-
-
-RUN test -f /usr/local/bin/docker-gc || { \
-    echo '#!/bin/sh' > /usr/local/bin/docker-gc && \
-    echo 'echo "docker-gc v${VERSION} ready"' >> /usr/local/bin/docker-gc && \
-    echo 'exec sleep infinity' >> /usr/local/bin/docker-gc && \
-    chmod +x /usr/local/bin/docker-gc ; } ; \
-    mkdir -p /app 2>/dev/null || true
+        curl ca-certificates && \
+    rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL \
+        "https://raw.githubusercontent.com/spotify/docker-gc/master/docker-gc" \
+        -o /docker-gc && \
+    chmod +x /docker-gc || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-
-RUN apk add --no-cache curl ca-certificates 
-RUN mkdir -p /usr/local/bin 2>/dev/null || true
-COPY --from=builder /usr/local/bin/docker-gc /usr/local/bin/docker-gc
-COPY --from=builder /app /app
+ARG VERSION
+RUN apk add --no-cache ca-certificates docker-cli bash || true
+RUN mkdir -p /app /tmp/gc 2>/dev/null || true
+COPY --from=downloader /docker-gc /usr/local/bin/docker-gc
 RUN addgroup -S -g 2 nogroup >/dev/null || true
 RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false dockergc 2>/dev/null || true && \
-    mkdir -p /app/placeholder-src-src && chown -R 65532:65532 /app/placeholder 2>/dev/null || true
+    chown -R 65532:65532 /app /tmp/gc 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENTRYPOINT ["docker-gc"]
 LABEL org.opencontainers.image.title="docker-gc" \
-      org.opencontainers.image.description="Docker garbage collection script" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.description="Docker garbage collection - automatic cleanup of unused containers and images" \
+      org.opencontainers.image.source="https://github.com/spotify/docker-gc" \
       sovereign.image.tier="3" \
+      sovereign.image.category="devops" \
+      sovereign.image.status="functional" \
       sovereign.constraint.nonroot="true" \
       sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"

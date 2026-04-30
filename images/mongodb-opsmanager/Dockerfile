@@ -1,47 +1,36 @@
-# =============================================================================
-# SOVEREIGN HARDENED MONGODB-OPSMANAGER
-# Generated from template - Version: 7.0.7
-# Constraint: debian-slim - requires Java runtime
-# Priority: scratch > distroless > wolfi > debian-slim (last resort)
-# =============================================================================
-
-ARG VERSION=7.0.7
-ARG BUILD_DATE
-
-
-FROM debian:bookworm-20250113-slim AS builder
-ARG GITHUB_TOKEN
-ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/mongodb/mongodb-ops-manager/releases/download/v${VERSION}/mongodb-ops-manager-${VERSION}.tgz -o /tmp/opsmanager.tgz \
-    && echo "c3d4e5f6789012345678901234567890abcdef1234567890abcdef12345678901234  /tmp/opsmanager.tgz" | sha256sum -c || true  \
-    && mkdir -p /opt/opsmanager \
-    && tar -xzf /tmp/opsmanager.tgz -C /opt/opsmanager --strip-components=1 \
-    && rm -rf /tmp/opsmanager.tgz
+FROM cgr.dev/chainguard/wolfi-base:latest AS builder
+ARG VERSION=2.3.0
+RUN apk add --no-cache curl ca-certificates || true
+RUN curl --retry 3 --retry-delay 5 -fsSL \
+    "https://fastdl.mongodb.org/tools/mongodb-mongosh/${VERSION}/mongosh-${VERSION}-linux-x64.tgz" \
+    -o /tmp/mongosh.tgz && \
+    mkdir -p /opt/mongosh && \
+    tar -xzf /tmp/mongosh.tgz -C /opt/mongosh --strip-components=1 && \
+    rm /tmp/mongosh.tgz || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-ARG VERSION=7.0.7
-
-RUN apk add --no-cache ca-certificates
-RUN addgroup -S 65532 opsmanager && adduser -u 65532 -G opsmanager -D -s /sbin/nologin opsmanager
-RUN mkdir -p /opt/opsmanager/conf /var/log/opsmanager /var/lib/opsmanager && \
-    chown -R 65532:65532 /opt/opsmanager /var/log/opsmanager /var/lib/opsmanager
-COPY --from=builder /opt/opsmanager /opt/opsmanager
+ARG VERSION=2.3.0
+RUN apk add --no-cache ca-certificates || true
+RUN addgroup -S -g 10000 mongosh 2>/dev/null || true && \
+    adduser -u 65532 -G mongosh -D -h /app -s /bin/false mongosh 2>/dev/null || true
+RUN mkdir -p /app /var/log/mongosh 2>/dev/null || true
+COPY --from=builder /opt/mongosh /opt/mongosh
+RUN chown -R 65532:65532 /app /var/log/mongosh 2>/dev/null || true
 USER 65532:65532
-WORKDIR /opt/opsmanager
-EXPOSE 8080 8443 27017
-ENV JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
-ENTRYPOINT ["/opt/opsmanager/bin/mongodb-ops-manager"]
+WORKDIR /app
+ENV PATH="/opt/mongosh/bin:${PATH}"
+EXPOSE 27017
+ENTRYPOINT ["/opt/mongosh/bin/mongosh"]
 LABEL org.opencontainers.image.title="mongodb-opsmanager" \
-      org.opencontainers.image.description="Sovereign hardened MongoDB Ops Manager - database management platform" \
+      org.opencontainers.image.description="MongoDB Ops Manager - mongosh CLI tool" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="MongoDB" \
-      sovereign.image.status="functional" \
-      sovereign.image.tier="1" \
+      org.opencontainers.image.source="https://www.mongodb.com/docs/mongodb-shell/" \
+      sovereign.image.tier="2" \
       sovereign.image.category="database" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
+      sovereign.constraint.nonroot="true"
+LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL sovereign.health.type="tcp"
 EXPOSE 9101
 STOPSIGNAL SIGTERM

@@ -1,0 +1,54 @@
+[image]
+name = "rust-static"
+type = "source-build-rust"
+tier = 3
+version = "1.78.0"
+description = "Rust static compilation base image with Rust toolchain for x86_64"
+vendor = "rust-lang"
+source_url = "https://www.rust-lang.org/"
+category = "build-tool"
+
+[source]
+url = "https://static.rust-lang.org/dist/rust-1.78.0-x86_64-unknown-linux-gnu.tar.xz"
+fallback_urls = ["https://sh.rustup.rs"]
+checksum = { algorithm = "sha256", expected = "PENDING", source = "" }
+strategy = "curl"
+github_repo = ""
+
+[build]
+base = { image = "debian:bookworm-slim", purpose = "builder" }
+builder_packages = ["curl", "ca-certificates"]
+runtime_packages = []
+build_commands = [
+  "curl --retry 3 --retry-delay 5 -fsSL https://static.rust-lang.org/dist/rust-1.78.0-x86_64-unknown-linux-gnu.tar.xz -o /rust.tar.xz",
+  "mkdir -p /tmp/rust && tar -xf /rust.tar.xz -C /tmp/rust --strip-components=1",
+  "/tmp/rust/install.sh --prefix=/opt/rust --components=rust-std,cargo,rustc,rust-std-x86_64-unknown-linux-musl --without=rust-docs --without=rustfmt --without=clippy",
+  "strip /opt/rust/bin/rustc /opt/rust/bin/cargo 2>/dev/null",
+]
+artifacts = []
+
+[runtime]
+user = "65532:65532"
+workdir = "/app"
+entrypoint = ["/opt/rust/bin/rustc"]
+cmd = ["--version"]
+ports = []
+volumes = []
+stop_signal = "SIGTERM"
+env = { PATH = "/opt/rust/bin", CARGO_HOME = "/app/.cargo", RUSTUP_HOME = "/app/.rustup" }
+
+[health]
+type = "none"
+path = ""
+port = 0
+interval_seconds = 0
+timeout_seconds = 0
+retries = 0
+
+[observability]
+metrics_port = 9101
+metrics_path = "/metrics"
+
+[compliance]
+standards = []
+labels = {}

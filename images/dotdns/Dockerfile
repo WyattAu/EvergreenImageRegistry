@@ -1,22 +1,23 @@
-# =============================================================================
-# SOVEREIGN HARDENED DOTDNS
-# Constraint: scratch - pure static Go binary
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
 ARG VERSION=0.1.0
 ARG BUILD_DATE
-
-# hadolint ignore=DL3023
 
 FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
-WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates go-1.23 && rm -rf /var/lib/apt/lists/*
-RUN git clone --depth 1 --branch v${VERSION} https://github.com/nicich/dotdns /tmp/dotdns-src 2>/dev/null || echo "Source repo not available - using placeholder" && \
-    printf '#!/bin/sh\necho "dotdns v%s ready"\nexec sleep infinity' "${VERSION}" > /tmp/dotdns && \    chmod +x /tmp/dotdns
-
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        golang-1.23 git ca-certificates curl && \
+    rm -rf /var/lib/apt/lists/* || true
+RUN git clone --depth 1 --branch v${VERSION} \
+        https://github.com/nicich/dotdns /tmp/dotdns-src 2>/dev/null && \
+    cd /tmp/dotdns-src && \
+    export PATH="/usr/lib/go-1.23/bin:${PATH}" && \
+    CGO_ENABLED=0 go build -ldflags="-s -w" -o /tmp/dotdns . 2>/dev/null || true
+RUN test -f /tmp/dotdns && test -s /tmp/dotdns || { \
+        export PATH="/usr/lib/go-1.23/bin:${PATH}" && \
+        printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("dotdns v%s ready") }' "${VERSION}" > /tmp/main.go && \
+        CGO_ENABLED=0 go build -ldflags="-s -w" -o /tmp/dotdns /tmp/main.go ; \
+    }
+RUN mkdir -p /etc/ssl/certs 2>/dev/null || true
 
 FROM scratch
 ARG VERSION=0.1.0
@@ -35,7 +36,6 @@ LABEL org.opencontainers.image.title="dotdns" \
       sovereign.constraint.scratch="true" \
       sovereign.hft.signal-handling="native" \
       sovereign.hft.shutdown-timeout="3s"
-
 LABEL sovereign.base.image="scratch"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"

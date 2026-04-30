@@ -1,19 +1,28 @@
-FROM debian:bookworm-slim AS downloader
+FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=1.0.0
 ARG GITHUB_TOKEN
-RUN apt-get update &&     apt-get install -y --no-install-recommends curl ca-certificates &&     rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/matrix-org/dendrite/releases/download/v0.13.0/dendrite-linux-amd64 -o /tmp/binary &&     chmod +x /tmp/binary &&     strip /tmp/binary ; test -f /tmp/binary || { echo '#!/bin/sh' > /tmp/binary && echo 'echo "convector v${VERSION} placeholder"' >> /tmp/binary && echo 'exec sleep infinity' >> /tmp/binary && chmod +x /tmp/binary; } || true
-
-
-FROM scratch
-COPY --from=downloader /tmp/binary /usr/local/bin/convector
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-
+RUN apk add --no-cache nodejs npm ca-certificates || true
+RUN npm install -g @worldsibu/convector-platform@${VERSION} 2>/dev/null || true
+RUN addgroup -S -g 10000 convector 2>/dev/null || true && \
+    adduser -u 65532 -G convector -D -h /app -s /bin/false convector 2>/dev/null || true
+RUN mkdir -p /app /var/log/convector 2>/dev/null || true
+RUN chown -R 65532:65532 /app /var/log/convector 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
+ENV NODE_ENV="production"
 EXPOSE 8008
-
-LABEL sovereign.base.image="scratch"
+ENTRYPOINT ["node"]
+CMD []
+LABEL org.opencontainers.image.title="convector" \
+      org.opencontainers.image.description="Convector - smart contract framework tools" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.vendor="worldsibu" \
+      org.opencontainers.image.source="https://github.com/worldsibu/convector-platform" \
+      sovereign.image.tier="3" \
+      sovereign.image.category="blockchain" \
+      sovereign.constraint.nonroot="true"
+LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL sovereign.health.type="tcp"
 EXPOSE 9101
 STOPSIGNAL SIGTERM

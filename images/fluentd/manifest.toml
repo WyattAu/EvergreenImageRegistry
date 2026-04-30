@@ -1,0 +1,33 @@
+[image]
+name = "fluentd"
+version = "1.17.1"
+description = "Fluentd - unified logging layer (CNCF graduated project)"
+vendor = "CNCF"
+homepage = "https://www.fluentd.org"
+category = "logging"
+tier = 1
+
+[source]
+type = "rubygem"
+url = "https://rubygems.org/gems/fluentd-1.17.1.gem"
+upstream = "https://github.com/fluent/fluentd"
+
+[build]
+base = "ruby:3.2-slim"
+target_base = "cgr.dev/chainguard/wolfi-base:latest"
+
+[constraints]
+nonroot = true
+base = "wolfi"
+
+[hft]
+signal-handling = "native"
+shutdown-timeout = "10s"
+
+[ports]
+forward = 24224
+http = 5140
+metrics = 9101
+
+[health]
+type = "exec"

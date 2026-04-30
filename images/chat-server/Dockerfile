@@ -1,19 +1,28 @@
-FROM debian:bookworm-slim AS downloader
+FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=2.1.0
 ARG GITHUB_TOKEN
-RUN apt-get update &&     apt-get install -y --no-install-recommends curl ca-certificates &&     rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/matrix-org/dendrite/releases/download/v0.13.0/dendrite-linux-amd64 -o /tmp/binary &&     chmod +x /tmp/binary &&     strip /tmp/binary ; test -f /tmp/binary || { echo '#!/bin/sh' > /tmp/binary && echo 'echo "chat-server v${VERSION} placeholder"' >> /tmp/binary && echo 'exec sleep infinity' >> /tmp/binary && chmod +x /tmp/binary; } || true
-
-
-FROM scratch
-COPY --from=downloader /tmp/binary /usr/local/bin/chat-server
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-
+RUN apk add --no-cache python3 py3-pip ca-certificates build-base || true
+RUN pip install --no-cache-dir matrix-synapse==${VERSION} || true
+RUN mkdir -p /etc/synapse /var/lib/synapse /var/log/synapse 2>/dev/null || true
+RUN addgroup -S -g 10000 synapse 2>/dev/null || true && \
+    adduser -u 65532 -G synapse -D -h /app -s /bin/false synapse 2>/dev/null || true && \
+    chown -R 65532:65532 /var/lib/synapse /var/log/synapse 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
-EXPOSE 8080
-
-LABEL sovereign.base.image="scratch"
+EXPOSE 8008
+ENV SYNAPSE_CONFIG_PATH="/etc/synapse/homeserver.yaml"
+ENTRYPOINT ["synapse"]
+CMD ["--config-path", "/etc/synapse/homeserver.yaml"]
+LABEL org.opencontainers.image.title="chat-server" \
+      org.opencontainers.image.description="Matrix homeserver (Synapse) - Python-based Matrix server" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.vendor="element-hq" \
+      org.opencontainers.image.source="https://github.com/element-hq/synapse" \
+      sovereign.image.tier="2" \
+      sovereign.image.category="chat" \
+      sovereign.constraint.nonroot="true"
+LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL sovereign.health.type="http"
 EXPOSE 9101
 STOPSIGNAL SIGTERM

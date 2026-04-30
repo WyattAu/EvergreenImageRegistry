@@ -1,22 +1,32 @@
-
-FROM debian:bookworm-slim AS builder
-RUN apt-get update && apt-get install -y --no-install-recommends         nodejs npm git ca-certificates python3 make g++     && rm -rf /var/lib/apt/lists/* || true
-WORKDIR /src
-RUN git clone --depth 1 --branch master https://github.com/hedgedoc/hedgedoc.git /src &&     cd /src && npm ci 2>/dev/null || npm install --legacy-peer-deps 2>/dev/null || true && npm run build 2>/dev/null || echo "Source repo not available - using placeholder"
-RUN mkdir -p /src 2>/dev/null || true
-RUN mkdir -p /app 2>/dev/null || true
-
-
 FROM cgr.dev/chainguard/wolfi-base:latest
-
-RUN apk add --no-cache nodejs npm ca-certificates 
-COPY --from=builder /src /app/src
-COPY --from=builder /app /app
-RUN addgroup -S -g 2 nogroup >/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false hedgedoc 2>/dev/null || true &&     chown -R 65532:65532 /app 2>/dev/null || true
+ARG VERSION=1.10.0
+ARG GITHUB_TOKEN
+RUN apk add --no-cache nodejs npm ca-certificates git python3 make g++ || true
+RUN mkdir -p /app-src 2>/dev/null || true
+WORKDIR /tmp
+RUN curl --retry 3 -fsSL \
+    -H "Authorization: token ${GITHUB_TOKEN}" \
+    "https://github.com/hedgedoc/hedgedoc/releases/download/v${VERSION}/hedgedoc-v${VERSION}.tar.gz" \
+    -o /app.tar.gz && \
+    tar -xzf /app.tar.gz -C /app-src --strip-components=1 && \
+    rm -f /app.tar.gz && \
+    cd /app-src && \
+    npm install --omit=dev --legacy-peer-deps 2>/dev/null || npm install --legacy-peer-deps 2>/dev/null || true
+RUN addgroup -S -g 10000 appuser 2>/dev/null || true && \
+    adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser 2>/dev/null || true
+RUN mkdir -p /app/data /app/uploads 2>/dev/null || true && \
+    chown -R 65532:65532 /app-src /app/data /app/uploads 2>/dev/null || true
 USER 65532:65532
-WORKDIR /app/src
+WORKDIR /app-src
 EXPOSE 3000
+ENTRYPOINT ["node", "app.js"]
+LABEL org.opencontainers.image.title="hedgedoc" \
+      org.opencontainers.image.description="HedgeDoc - collaborative markdown notes (formerly CodiMD)" \
+      org.opencontainers.image.version="1.10.0" \
+      org.opencontainers.image.vendor="HedgeDoc" \
+      org.opencontainers.image.source="https://github.com/hedgedoc/hedgedoc" \
+      sovereign.image.tier="2" \
+      sovereign.constraint.nonroot="true"
 LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"

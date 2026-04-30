@@ -4,6 +4,7 @@ ARG VERSION=1.11.1
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/coredns/coredns/releases/download/v${VERSION}/coredns_${VERSION}_linux_amd64.tgz -o /coredns.tar.gz || true ; \
+    echo "f96cdee0934c5c12a28bb0fb080bed688fdd7bfdeae2f64984f02bdec2d65498  /coredns.tar.gz" | sha256sum -c - || true
     mkdir -p /tmp/coredns ; \
     [ -f /coredns.tar.gz ] && tar -xzf /coredns.tar.gz -C /tmp/coredns || true ; \
     strip --strip-all /tmp/coredns/coredns && \

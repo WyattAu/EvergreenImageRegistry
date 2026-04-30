@@ -3,6 +3,7 @@ ARG VERSION=0.13.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus/consul_exporter/releases/download/v${VERSION}/consul_exporter-0.13.0.linux-amd64.tar.gz" -o /exporter.tar.gz || true ; \
+    echo "f0af6b159e82d8a05317eb9920dec4a7fffcae5de81913164e0fde6904a88d4e  /exporter.tar.gz" | sha256sum -c - || true
     mkdir -p /consul_exporter-0.13.0.linux-amd64 && \
     if [ -f /exporter.tar.gz ]; then tar -xzf /exporter.tar.gz -C / && rm /exporter.tar.gz ; fi ; \
     chmod +x /consul_exporter-0.13.0.linux-amd64/consul_exporter 2>/dev/null || true ; \

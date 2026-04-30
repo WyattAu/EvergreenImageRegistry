@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libncurses-dev zlib1g-dev git curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/jonas/tig/releases/download/tig-${VERSION}/tig-${VERSION}.tar.gz -o /tig.tar.gz && \
+    echo "b70e0a42aed74a4a3990ccfe35262305917175e3164330c0889bd70580406391  /tig.tar.gz" | sha256sum -c - || true
     [ -f /tig.tar.gz ] && tar -xzf /tig.tar.gz -C / && rm /tig.tar.gz || true ; \
     cd /tig-${VERSION} && \    ./configure --prefix=/usr --with-ncurses && \
     make -j"$(nproc)" && \

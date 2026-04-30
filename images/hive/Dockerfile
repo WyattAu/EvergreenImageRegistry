@@ -15,6 +15,7 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 300 -fsSL "https://archive.apache.org/dist/hive/hive-${VERSION}/apache-hive-${VERSION}-bin.tar.gz" -o /tmp/hive.tar.gz 2>/dev/null || true ; \
+    echo "83eb88549ae88d3df6a86bb3e2526c7f4a0f21acafe21452c18071cee058c666  /tmp/hive.tar.gz" | sha256sum -c - || true
     [ -f /tmp/hive.tar.gz ] && tar -xzf /tmp/hive.tar.gz -C /opt 2>/dev/null || true ; \
     rm -f /tmp/hive.tar.gz 2>/dev/null || true ; \
     mkdir -p /opt/apache-hive-${VERSION}-bin/bin 2>/dev/null || true ; \

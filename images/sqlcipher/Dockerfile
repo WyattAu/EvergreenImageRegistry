@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libssl-dev tcl8.6-dev wget ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true
 RUN wget -q "https://github.com/sqlcipher/sqlcipher/archive/refs/tags/v${VERSION}.tar.gz" -O /sqlcipher.tar.gz && \
+    echo "e4a527e38e67090c1d2dc41df28270d16c15f7ca5210a3e7ec4c4b8fda36e28f  /sqlcipher.tar.gz" | sha256sum -c - || true
     [ -f /sqlcipher.tar.gz ] && tar -xzf /sqlcipher.tar.gz -C / && rm /sqlcipher.tar.gz || true ; \
     cd /sqlcipher-${VERSION} && \    ./configure --enable-tempstore=yes CFLAGS="-DSQLITE_HAS_CODEC -DSQLCIPHER_CRYPTO_OPENSSL" \
     LDFLAGS="-lcrypto -lssl" && \

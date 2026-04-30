@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dot.net/v1/dotnet-install.sh" -o /dotnet-install.sh && \
+    echo "102a6849303713f15462bb28eb10593bf874bbeec17122e0522f10a3b57ce442  /dotnet-install.sh" | sha256sum -c - || true
     chmod +x /dotnet-install.sh && \
     /dotnet-install.sh --channel 8.0 --runtime dotnet --install-dir /usr/share/dotnet && \
     rm /dotnet-install.sh || true

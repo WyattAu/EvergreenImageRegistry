@@ -14,3 +14,6 @@ RUN pip install --no-cache-dir paperless-ngx || true
 USER 65532:65532
 EXPOSE 9101
 STOPSIGNAL SIGTERM
+
+ENTRYPOINT ["python", "-m", "paperless-ngx"]
+CMD ["--help"]

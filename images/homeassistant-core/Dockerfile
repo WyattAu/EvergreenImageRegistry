@@ -13,3 +13,6 @@ RUN mkdir -p /opt/venv ; \
 USER 65532:65532
 EXPOSE 9101
 STOPSIGNAL SIGTERM
+
+ENTRYPOINT ["python", "-m", "homeassistant"]
+CMD ["--help"]

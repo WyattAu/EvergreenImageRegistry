@@ -14,3 +14,6 @@ RUN pip install --no-cache-dir streamlink || true
 USER 65532:65532
 EXPOSE 9101
 STOPSIGNAL SIGTERM
+
+ENTRYPOINT ["python", "-m", "streamlink"]
+CMD ["--help"]

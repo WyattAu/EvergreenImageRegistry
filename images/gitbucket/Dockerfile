@@ -22,7 +22,6 @@ USER 65532:65532
 ENV GITBUCKET_HOME="/var/data/gitbucket"
 WORKDIR /opt/gitbucket
 EXPOSE 8080
-CMD ["java", "-jar", "/opt/gitbucket/gitbucket.war"]
 LABEL org.opencontainers.image.title="gitbucket" \
       org.opencontainers.image.description="GitBucket - Scala-based Git platform" \
       org.opencontainers.image.version="4.40.0" \
@@ -36,3 +35,5 @@ LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
 EXPOSE 9101
 STOPSIGNAL SIGTERM
+
+ENTRYPOINT ["java", "-jar", "/opt/gitbucket/gitbucket.war"]

@@ -8,12 +8,12 @@ category = "devops"
 tier = 3
 
 [source]
-type = "upstream-script"
-url = "https://raw.githubusercontent.com/spotify/docker-gc/master/docker-gc"
+type = "container-image"
+url = "docker.io/spotify/docker-gc:latest"
 upstream = "https://github.com/spotify/docker-gc"
 
 [build]
-base = "debian:bookworm-slim"
+base = "docker.io/spotify/docker-gc:latest"
 target_base = "cgr.dev/chainguard/wolfi-base:latest"
 
 [constraints]

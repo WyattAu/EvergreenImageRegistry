@@ -16,6 +16,7 @@ arch = "amd64"
 url = "https://github.com/go-gitea/gitea/releases/download/v1.26.1/gitea-1.26.1-linux-amd64"
 binary_name = "gitea"
 filename = "gitea-1.26.1-linux-amd64"
+checksum = "324ffd2cc85d567ecd821ad3e19de4abe1c7f94a082b382c1453d4ca7bcf2a7b"
 
 [constraints]
 nonroot = true

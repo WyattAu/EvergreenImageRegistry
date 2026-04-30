@@ -1,4 +1,4 @@
-ARG VERSION=4.9.0
+ARG VERSION=4.9.6
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS installer

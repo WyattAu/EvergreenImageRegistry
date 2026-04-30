@@ -1,6 +1,6 @@
 [image]
 name = "dependabot"
-version = "0.10.0"
+version = "0.275.1"
 description = "GitHub Dependabot - automated dependency updates for your codebase"
 vendor = "GitHub"
 homepage = "https://github.com/github/dependabot-cli"
@@ -8,12 +8,12 @@ category = "devops"
 tier = 3
 
 [source]
-type = "rubygem"
-url = "https://rubygems.org/gems/dependabot-omnibus"
+type = "container-image"
+url = "ghcr.io/github/dependabot-updater-internal:latest"
 upstream = "https://github.com/dependabot/dependabot-core"
 
 [build]
-base = "ruby:3.2-slim"
+base = "ghcr.io/github/dependabot-updater-internal:latest"
 target_base = "cgr.dev/chainguard/wolfi-base:latest"
 
 [constraints]

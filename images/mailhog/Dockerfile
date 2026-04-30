@@ -7,6 +7,7 @@ RUN apt-get update && \
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/mailhog/MailHog/releases/download/v${VERSION}/MailHog_linux_amd64" \
     -o /tmp/MailHog && \
+    echo "e2ed634ded49929f089b20045581955ed217672078fd86082dd7a6c67c5d09c7  /tmp/MailHog" | sha256sum -c - && \
     chmod +x /tmp/MailHog && \
     strip /tmp/MailHog || true
 

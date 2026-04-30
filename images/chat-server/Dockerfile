@@ -1,5 +1,5 @@
 FROM cgr.dev/chainguard/wolfi-base:latest
-ARG VERSION=2.1.0
+ARG VERSION=2.4.0
 ARG GITHUB_TOKEN
 RUN apk add --no-cache python3 py3-pip ca-certificates build-base || true
 RUN pip install --no-cache-dir matrix-synapse==${VERSION} || true

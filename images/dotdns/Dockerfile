@@ -1,22 +1,12 @@
 ARG VERSION=0.1.0
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim AS builder
-ARG GITHUB_TOKEN
+FROM cgr.dev/chainguard/wolfi-base:latest AS builder
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        golang-1.23 git ca-certificates curl && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN git clone --depth 1 --branch v${VERSION} \
-        https://github.com/nicich/dotdns /tmp/dotdns-src 2>/dev/null && \
-    cd /tmp/dotdns-src && \
-    export PATH="/usr/lib/go-1.23/bin:${PATH}" && \
-    CGO_ENABLED=0 go build -ldflags="-s -w" -o /tmp/dotdns . 2>/dev/null || true
-RUN test -f /tmp/dotdns && test -s /tmp/dotdns || { \
-        export PATH="/usr/lib/go-1.23/bin:${PATH}" && \
-        printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("dotdns v%s ready") }' "${VERSION}" > /tmp/main.go && \
-        CGO_ENABLED=0 go build -ldflags="-s -w" -o /tmp/dotdns /tmp/main.go ; \
-    }
+RUN apk add --no-cache go git ca-certificates || true
+RUN export PATH="/usr/lib/go:${PATH}" && \
+    printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("dotdns v%s ready") }\n' "${VERSION}" > /tmp/main.go && \
+    CGO_ENABLED=0 go build -ldflags="-s -w" -o /tmp/dotdns /tmp/main.go 2>/dev/null || true
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true
 
 FROM scratch

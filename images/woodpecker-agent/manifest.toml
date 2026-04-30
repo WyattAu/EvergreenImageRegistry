@@ -16,6 +16,7 @@ url = "https://github.com/woodpecker-ci/woodpecker/releases/download/v2.7.0/wood
 filename = "woodpecker-agent_linux_amd64.tar.gz"
 strip_components = 0
 binary_name = "woodpecker-agent"
+checksum = "db482c44a83999753d87db7a6334bcf5d98c83816b63a04868eca0ba24983ae6"
 
 [container]
 port = 3000

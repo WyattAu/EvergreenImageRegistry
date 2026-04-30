@@ -1,5 +1,5 @@
 FROM cgr.dev/chainguard/wolfi-base:latest AS builder
-ARG VERSION=2.3.0
+ARG VERSION=2.5.0
 RUN apk add --no-cache curl ca-certificates || true
 RUN curl --retry 3 --retry-delay 5 -fsSL \
     "https://fastdl.mongodb.org/tools/mongodb-mongosh/${VERSION}/mongosh-${VERSION}-linux-x64.tgz" \
@@ -9,7 +9,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL \
     rm /tmp/mongosh.tgz || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-ARG VERSION=2.3.0
+ARG VERSION=2.5.0
 RUN apk add --no-cache ca-certificates || true
 RUN addgroup -S -g 10000 mongosh 2>/dev/null || true && \
     adduser -u 65532 -G mongosh -D -h /app -s /bin/false mongosh 2>/dev/null || true

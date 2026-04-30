@@ -5,6 +5,7 @@ RUN apk add --no-cache curl ca-certificates xz || true
 RUN curl --retry 3 --retry-delay 5 -fsSL \
     "https://dl.gitea.io/gitea/${VERSION}/gitea-${VERSION}-linux-amd64.xz" \
     -o /tmp/gitea.xz && \
+    echo "b58e02e9e863a0191f26a26fbe6ef7e24c4c9917940c21957e6713cadcc5b9fd  /tmp/gitea.xz" | sha256sum -c - && \
     xz -d /tmp/gitea.xz && \
     chmod +x /tmp/gitea && \
     strip /tmp/gitea || true

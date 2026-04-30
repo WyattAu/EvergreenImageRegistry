@@ -3,13 +3,13 @@ name = "rainloop"
 type = "web-ui"
 tier = 2
 version = "1.17.0"
-description = "RainLoop - lightweight webmail client"
+description = "RainLoop - lightweight webmail client (archived)"
 vendor = "rainloop"
 source_url = "https://github.com/RainLoop/rainloop-webmail"
 category = "email"
 
 [source]
-url = "https://github.com/RainLoop/rainloop-webmail/releases/download/v1.17.0/rainloop-community-1.17.0.tar.gz"
+url = "https://github.com/RainLoop/rainloop-webmail/archive/refs/tags/v1.17.0.tar.gz"
 fallback_urls = []
 checksum = { algorithm = "sha256", expected = "PENDING", source = "" }
 strategy = "curl"
@@ -20,9 +20,9 @@ base = { image = "cgr.dev/chainguard/wolfi-base:latest", purpose = "runtime" }
 builder_packages = ["curl", "ca-certificates"]
 runtime_packages = ["busybox", "ca-certificates"]
 build_commands = [
-  "curl --retry 3 -fsSL https://github.com/RainLoop/rainloop-webmail/releases/download/v1.17.0/rainloop-community-1.17.0.tar.gz -o /tmp/rainloop.tar.gz",
+  "curl --retry 3 -fsSL https://github.com/RainLoop/rainloop-webmail/archive/refs/tags/v1.17.0.tar.gz -o /tmp/rainloop.tar.gz",
   "mkdir -p /var/www/html",
-  "tar -xzf /tmp/rainloop.tar.gz -C /var/www/html",
+  "tar -xzf /tmp/rainloop.tar.gz -C /var/www/html --strip-components=1",
   "rm /tmp/rainloop.tar.gz",
 ]
 artifacts = [

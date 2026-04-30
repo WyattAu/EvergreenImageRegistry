@@ -1,5 +1,5 @@
 FROM cgr.dev/chainguard/wolfi-base:latest
-ARG VERSION=2.17.0
+ARG VERSION=2.20.0
 ARG GITHUB_TOKEN
 RUN apk add --no-cache python3 py3-pip ca-certificates || true
 RUN pip install --no-cache-dir tensorboard==${VERSION} || true

@@ -3,11 +3,11 @@ ARG VERSION=1.17.0
 ARG GITHUB_TOKEN
 RUN apk add --no-cache curl ca-certificates || true
 WORKDIR /build
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
-    "https://github.com/RainLoop/rainloop-webmail/releases/download/v${VERSION}/rainloop-community-${VERSION}.tar.gz" \
+RUN curl --retry 3 --retry-delay 5 -fsSL \
+    "https://github.com/RainLoop/rainloop-webmail/archive/refs/tags/v${VERSION}.tar.gz" \
     -o /tmp/rainloop.tar.gz || true ; \
     mkdir -p /build ; \
-    if [ -f /tmp/rainloop.tar.gz ]; then tar -xzf /tmp/rainloop.tar.gz -C /build && rm /tmp/rainloop.tar.gz ; fi ; \
+    if [ -f /tmp/rainloop.tar.gz ]; then tar -xzf /tmp/rainloop.tar.gz -C /build --strip-components=1 && rm /tmp/rainloop.tar.gz ; fi ; \
     test -f /build/index.php || echo '<html><body><h1>rainloop v'${VERSION}' placeholder</h1></body></html>' > /build/index.php
 
 FROM cgr.dev/chainguard/wolfi-base:latest

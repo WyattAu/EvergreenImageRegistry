@@ -1,4 +1,4 @@
-ARG VERSION=12.5.1
+ARG VERSION=12.5.2
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS installer

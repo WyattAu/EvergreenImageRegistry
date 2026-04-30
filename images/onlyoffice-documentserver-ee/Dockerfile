@@ -1,4 +1,4 @@
-ARG VERSION=8.2.2
+ARG VERSION=8.3.3
 ARG BUILD_DATE
 
 FROM debian:bookworm-slim AS installer

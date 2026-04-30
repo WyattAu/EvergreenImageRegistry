@@ -1,6 +1,6 @@
 [image]
 name = "onlyoffice-documentserver-ee"
-version = "8.2.2"
+version = "8.3.3"
 description = "ONLYOFFICE Document Server Enterprise Edition - online document editing with advanced features"
 vendor = "ONLYOFFICE"
 homepage = "https://github.com/ONLYOFFICE/DocumentServer"

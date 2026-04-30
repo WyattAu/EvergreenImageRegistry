@@ -8,12 +8,12 @@ category = "devops"
 tier = 3
 
 [source]
-type = "upstream-binary"
-url = "https://github.com/zzehring/docker-cleanup/releases/download/v0.3.0/docker-cleanup-linux-amd64"
+type = "inline-script"
+url = ""
 upstream = "https://github.com/zzehring/docker-cleanup"
 
 [build]
-base = "debian:bookworm-slim"
+base = "cgr.dev/chainguard/wolfi-base:latest"
 target_base = "cgr.dev/chainguard/wolfi-base:latest"
 
 [constraints]

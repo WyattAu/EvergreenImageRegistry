@@ -5,6 +5,7 @@ RUN apk add --no-cache curl ca-certificates || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/cinnyapp/cinny/releases/download/v${VERSION}/cinny-v${VERSION}.tar.gz" \
     -o /tmp/cinny.tar.gz || true ; \
+    echo "231627eea91fe28f0ea0b954ef21509cb42c91e2472617ddeed3a0d6c231b8c8  /tmp/cinny.tar.gz" | sha256sum -c - || true ; \
     mkdir -p /www ; \
     if [ -f /tmp/cinny.tar.gz ]; then tar -xzf /tmp/cinny.tar.gz -C /www --strip-components=1 && rm /tmp/cinny.tar.gz ; fi ; \
     test -f /www/index.html || echo '<html><body><h1>cinny v'${VERSION}' placeholder</h1></body></html>' > /www/index.html

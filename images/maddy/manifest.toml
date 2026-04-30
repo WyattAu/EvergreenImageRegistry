@@ -2,15 +2,15 @@
 name = "maddy"
 type = "binary-download"
 tier = 2
-version = "0.7.0"
+version = "0.9.3"
 description = "Maddy - composable all-in-one mail server written in Go"
 vendor = "foxcpp"
 source_url = "https://github.com/foxcpp/maddy"
 category = "email"
 
 [source]
-url = "https://github.com/foxcpp/maddy/releases/download/v0.7.0/maddy-linux-amd64.tar.gz"
-fallback_urls = ["https://github.com/foxcpp/maddy/releases/download/v0.7.0/maddy-0.7.0-x86_64-linux-musl.tar.zst"]
+url = "https://github.com/foxcpp/maddy/releases/download/v0.9.3/maddy-linux-amd64.tar.gz"
+fallback_urls = ["https://github.com/foxcpp/maddy/releases/download/v0.9.3/maddy-0.9.3-x86_64-linux-musl.tar.zst"]
 checksum = { algorithm = "sha256", expected = "PENDING", source = "" }
 strategy = "curl"
 github_repo = "foxcpp/maddy"
@@ -20,7 +20,7 @@ base = { image = "debian:bookworm-slim", purpose = "download" }
 builder_packages = ["curl", "ca-certificates", "binutils"]
 runtime_packages = []
 build_commands = [
-  "curl --retry 3 --retry-delay 5 -fsSL -H \"Authorization: token ${GITHUB_TOKEN}\" https://github.com/foxcpp/maddy/releases/download/v0.7.0/maddy-linux-amd64.tar.gz -o /tmp/maddy.tar.gz",
+  "curl --retry 3 --retry-delay 5 -fsSL -H \"Authorization: token ${GITHUB_TOKEN}\" https://github.com/foxcpp/maddy/releases/download/v0.9.3/maddy-linux-amd64.tar.gz -o /tmp/maddy.tar.gz",
   "tar -xzf /tmp/maddy.tar.gz -C /tmp && mv /tmp/maddy /usr/local/bin/maddy",
   "chmod +x /usr/local/bin/maddy && strip /usr/local/bin/maddy",
 ]

@@ -1,31 +1,27 @@
 [image]
 name = "flux-image-automation"
-type = "binary-download"
+type = "container-image"
 tier = 2
-version = "0.37.0"
+version = "1.1.2"
 description = "Flux Image Automation Controller - automated container image updates for GitOps"
 vendor = "fluxcd"
 source_url = "https://github.com/fluxcd/image-automation-controller"
 category = "gitops"
 
 [source]
-url = "https://github.com/fluxcd/image-automation-controller/releases/download/v0.37.0/image-automation-controller-linux-amd64"
+url = "ghcr.io/fluxcd/image-automation-controller:v1.1.2"
 fallback_urls = []
 checksum = { algorithm = "sha256", expected = "PENDING", source = "" }
-strategy = "curl"
+strategy = "copy-from"
 github_repo = "fluxcd/image-automation-controller"
 
 [build]
-base = { image = "debian:bookworm-slim", purpose = "download" }
-builder_packages = ["curl", "ca-certificates"]
+base = { image = "ghcr.io/fluxcd/image-automation-controller:v1.1.2", purpose = "upstream" }
+builder_packages = []
 runtime_packages = []
-build_commands = [
-  "curl --retry 3 --retry-delay 5 -fsSL -H \"Authorization: token ${GITHUB_TOKEN}\" https://github.com/fluxcd/image-automation-controller/releases/download/v0.37.0/image-automation-controller-linux-amd64 -o /tmp/flux-image-automation",
-  "chmod +x /tmp/flux-image-automation",
-  "strip /tmp/flux-image-automation",
-]
+build_commands = []
 artifacts = [
-  { source = "/tmp/flux-image-automation", destination = "/usr/local/bin/image-automation-controller" },
+  { source = "/image-automation-controller", destination = "/usr/local/bin/image-automation-controller" },
 ]
 
 [runtime]

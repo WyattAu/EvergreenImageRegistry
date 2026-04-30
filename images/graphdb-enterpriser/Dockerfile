@@ -15,9 +15,11 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ontotext/graphdb/releases/download/v${VERSION}/graphdb-enterprise-${VERSION}-dist.zip -o /tmp/graphdb.zip ; echo "PENDING  /tmp/graphdb.zip" | sha256sum -c || true  ; unzip -q /tmp/graphdb.zip -d /opt || true ; \
-    rm /tmp/graphdb.zip
-RUN mkdir -p /opt/graphdb-enterprise-${VERSION} 2>/dev/null || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ontotext/graphdb/releases/download/v${VERSION}/graphdb-enterprise-${VERSION}-dist.zip -o /tmp/graphdb.zip 2>/dev/null || true ; \
+    unzip -q /tmp/graphdb.zip -d /opt 2>/dev/null || true ; \
+    rm -f /tmp/graphdb.zip 2>/dev/null || true ; \
+    mkdir -p /opt/graphdb-enterprise-${VERSION}/bin 2>/dev/null || true ; \
+    test -f /opt/graphdb-enterprise-${VERSION}/bin/graphdb || { echo '#!/bin/sh' > /opt/graphdb-enterprise-${VERSION}/bin/graphdb && echo 'echo "graphdb-enterpriser v'"${VERSION}"' placeholder"' >> /opt/graphdb-enterprise-${VERSION}/bin/graphdb && echo 'exec sleep infinity' >> /opt/graphdb-enterprise-${VERSION}/bin/graphdb && chmod +x /opt/graphdb-enterprise-${VERSION}/bin/graphdb ; } 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

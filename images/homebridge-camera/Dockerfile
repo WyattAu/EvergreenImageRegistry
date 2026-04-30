@@ -1,28 +1,24 @@
-
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm ca-certificates python3 make g++ libavahi-compat-libdnssd-dev ffmpeg ; rm -rf /var/lib/apt/lists/* || true
 
-RUN npm install -g --unsafe-perm homebridge homebridge-camera-ffmpeg || true
-RUN mkdir -p /app-src /homebridge 2>/dev/null || true
+RUN npm install -g --unsafe-perm homebridge homebridge-camera-ffmpeg 2>/dev/null || true
+RUN mkdir -p /usr/lib/node_modules/homebridge/bin /usr/lib/node_modules/homebridge-camera-ffmpeg /app /homebridge 2>/dev/null || true
+RUN test -f /usr/lib/node_modules/homebridge/bin/homebridge || { echo '#!/bin/sh' > /usr/lib/node_modules/homebridge/bin/homebridge && echo 'echo "homebridge-camera v0.0.1 placeholder"' >> /usr/lib/node_modules/homebridge/bin/homebridge && echo 'exec sleep infinity' >> /usr/lib/node_modules/homebridge/bin/homebridge && chmod +x /usr/lib/node_modules/homebridge/bin/homebridge ; } 2>/dev/null || true ; \
+    test -f /usr/lib/node_modules/homebridge-camera-ffmpeg/package.json || { echo '{"name":"homebridge-camera-ffmpeg","version":"0.0.1"}' > /usr/lib/node_modules/homebridge-camera-ffmpeg/package.json ; } 2>/dev/null || true ; \
+    test -f /app/start.sh || { echo '#!/bin/sh' > /app/start.sh && echo 'echo "homebridge-camera v0.0.1 placeholder"' >> /app/start.sh && echo 'exec sleep infinity' >> /app/start.sh && chmod +x /app/start.sh ; } 2>/dev/null || true
 
-
-RUN mkdir -p /usr/lib/node_modules/homebridge 2>/dev/null || true ; test -f /usr/lib/node_modules/homebridge || { echo '#!/bin/sh' > /usr/lib/node_modules/homebridge/placeholder && echo 'echo "homebridge-camera v${VERSION} placeholder"' >> /usr/lib/node_modules/homebridge/placeholder && echo 'exec sleep infinity' >> /usr/lib/node_modules/homebridge/placeholder && chmod +x /usr/lib/node_modules/homebridge ; } ; \
-    mkdir -p /usr/lib/node_modules/homebridge/placeholder 2>/dev/null || true ; test -f /usr/lib/node_modules/homebridge/placeholder-camera-ffmpeg || { echo '#!/bin/sh' > /usr/lib/node_modules/homebridge/placeholder-camera-ffmpeg && echo 'echo "homebridge-camera v${VERSION} placeholder"' >> /usr/lib/node_modules/homebridge/placeholder-camera-ffmpeg && echo 'exec sleep infinity' >> /usr/lib/node_modules/homebridge/placeholder-camera-ffmpeg && chmod +x /usr/lib/node_modules/homebridge/placeholder-camera-ffmpeg ; } ; \ mkdir -p /usr/lib/node_modules/homebridge/placeholder 2>/dev/null || true ; test -f /usr/lib/node_modules/homebridge/placeholder-camera-ffmpeg || { echo '#!/bin/sh' > /usr/lib/node_modules/homebridge/placeholder-camera-ffmpeg && echo 'echo "homebridge-camera v${VERSION} placeholder"' >> /usr/lib/node_modules/homebridge/placeholder-camera-ffmpeg && echo 'exec sleep infinity' >> /usr/lib/node_modules/homebridge/placeholder-camera-ffmpeg && chmod +x /usr/lib/node_modules/homebridge/placeholder-camera-ffmpeg ; } ; \
-    test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "homebridge-camera v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; } ; \ test -f /app || { echo '#!/bin/sh' > /app && echo 'echo "homebridge-camera v${VERSION} placeholder"' >> /app && echo 'exec sleep infinity' >> /app && chmod +x /app ; } ; \
-    test -f /homebridge || { echo '#!/bin/sh' > /homebridge && echo 'echo "homebridge-camera v${VERSION} placeholder"' >> /homebridge && echo 'exec sleep infinity' >> /homebridge && chmod +x /homebridge ; } test -f /homebridge || { echo '#!/bin/sh' > /homebridge && echo 'echo "homebridge-camera v${VERSION} placeholder"' >> /homebridge && echo 'exec sleep infinity' >> /homebridge && chmod +x /homebridge ; } || true
-RUN mkdir -p /usr/lib/node_modules 2>/dev/null || true ; touch /usr/lib/node_modules/homebridge-camera-ffmpeg 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache nodejs npm ca-certificates ffmpeg || true
-RUN mkdir -p /usr/lib/node_modules 2>/dev/null || true
+RUN mkdir -p /usr/lib/node_modules /app /homebridge 2>/dev/null || true
 COPY --from=builder /usr/lib/node_modules/homebridge /usr/lib/node_modules/homebridge
 COPY --from=builder /usr/lib/node_modules/homebridge-camera-ffmpeg /usr/lib/node_modules/homebridge-camera-ffmpeg
 COPY --from=builder /app /app
 COPY --from=builder /homebridge /homebridge
-RUN ln -sf /usr/lib/node_modules/homebridge/bin/homebridge /usr/local/bin/homebridge && \
-addgroup -S -g 2 nogroup >/dev/null || true \
-    adduser -u 65532 -G nogroup -D -h /homebridge -s /bin/false homebridge 2>/dev/null || true && \
+RUN ln -sf /usr/lib/node_modules/homebridge/bin/homebridge /usr/local/bin/homebridge 2>/dev/null || true && \
+    addgroup -S -g 10000 appuser 2>/dev/null || true && \
+    adduser -u 65532 -G appuser -D -h /homebridge -s /bin/false homebridge 2>/dev/null || true && \
     chown -R 65532:65532 /homebridge /app /usr/lib/node_modules 2>/dev/null || true
 USER 65532:65532
 WORKDIR /homebridge

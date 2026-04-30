@@ -4,7 +4,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/gravitl/netmaker-ui/releases/download/v${VERSION}/dist.tar.gz" -o /dist.tar.gz || true ; \
     mkdir -p /www ; \
-    if [ -f /dist.tar.gz ]; then tar -xzf /dist.tar.gz -C /www --strip-components=1 && rm /dist.tar.gz ; fi ; \
+    if [ -f /dist.tar.gz ]; then tar -xzf /dist.tar.gz -C /www --strip-components=1 && rm -f /dist.tar.gz ; fi ; \
     test -f /www/index.html || echo '<html><body><h1>netmaker-ui v'${VERSION}' placeholder</h1></body></html>' > /www/index.html
 
 

@@ -2,7 +2,7 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=3.9.9
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz" -o /maven.tar.gz || true ; \
-    tar -xzf /maven.tar.gz -C /opt/ && rm /maven.tar.gz && ln -sf /opt/apache-maven-3.9.9/bin/mvn /usr/local/bin/mvn ; test -f /opt/apache-maven-3.9.9 || { echo '#!/bin/sh' > /opt/apache-maven-3.9.9 && echo 'echo "maven v${VERSION} placeholder"' >> /opt/apache-maven-3.9.9 && echo 'exec sleep infinity' >> /opt/apache-maven-3.9.9 && chmod +x /opt/apache-maven-3.9.9; } && test -f /usr/local/bin/mvn || { echo '#!/bin/sh' > /usr/local/bin/mvn && echo 'echo "maven v${VERSION} placeholder"' >> /usr/local/bin/mvn && echo 'exec sleep infinity' >> /usr/local/bin/mvn && chmod +x /usr/local/bin/mvn; } || true
+    tar -xzf /maven.tar.gz -C /opt/ && rm -f /maven.tar.gz && ln -sf /opt/apache-maven-3.9.9/bin/mvn /usr/local/bin/mvn ; test -f /opt/apache-maven-3.9.9 || { echo '#!/bin/sh' > /opt/apache-maven-3.9.9 && echo 'echo "maven v${VERSION} placeholder"' >> /opt/apache-maven-3.9.9 && echo 'exec sleep infinity' >> /opt/apache-maven-3.9.9 && chmod +x /opt/apache-maven-3.9.9; } && test -f /usr/local/bin/mvn || { echo '#!/bin/sh' > /usr/local/bin/mvn && echo 'echo "maven v${VERSION} placeholder"' >> /usr/local/bin/mvn && echo 'exec sleep infinity' >> /usr/local/bin/mvn && chmod +x /usr/local/bin/mvn; } || true
 
 
 FROM debian:bookworm-slim AS builder

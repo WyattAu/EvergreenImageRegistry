@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://git.zx2c4.com/wireguard-tools/snapshot/wireguard-tools-${VERSION}.tar.xz" -o /wg-tools.tar.xz && \
     mkdir -p /wireguard-tools-${VERSION}/src 2>/dev/null || true ; touch /wireguard-tools-${VERSION}/src/wg 2>/dev/null || true \
     mkdir -p /wireguard-tools-${VERSION}/src 2>/dev/null || true ; touch /wireguard-tools-${VERSION}/src/wg-quick 2>/dev/null || true \
-    tar -xJf /wg-tools.tar.xz -C / && rm /wg-tools.tar.xz && \
+    tar -xJf /wg-tools.tar.xz -C / && rm -f /wg-tools.tar.xz && \
     cd /wireguard-tools-${VERSION} &&  \
     make -j"$(nproc)" && \
     strip --strip-all /wireguard-tools-${VERSION}/src/wg /wireguard-tools-${VERSION}/src/wg-quick || true

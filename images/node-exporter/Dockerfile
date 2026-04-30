@@ -4,7 +4,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus/node_exporter/releases/download/v${VERSION}/node_exporter-${VERSION}.linux-amd64.tar.gz" -o /node_exporter.tar.gz || true && \
     echo "19ca134a1b00dd80ac28c6829d97cbaa1d6ba60356ec19d6dc7976ebad489022  /node_exporter.tar.gz" | sha256sum -c - || true
-RUN if [ -f /node_exporter.tar.gz ]; then tar -xzf /node_exporter.tar.gz -C / && rm /node_exporter.tar.gz && chmod +x /node_exporter-${VERSION}.linux-amd64/node_exporter; fi
+RUN if [ -f /node_exporter.tar.gz ]; then tar -xzf /node_exporter.tar.gz -C / && rm -f /node_exporter.tar.gz && chmod +x /node_exporter-${VERSION}.linux-amd64/node_exporter; fi
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 RUN test -f /node_exporter-${VERSION}.linux-amd64/node_exporter || { echo '#!/bin/sh' > /node_exporter-${VERSION}.linux-amd64/node_exporter && echo 'echo "node-exporter v'${VERSION}' placeholder"' >> /node_exporter-${VERSION}.linux-amd64/node_exporter && echo 'exec sleep infinity' >> /node_exporter-${VERSION}.linux-amd64/node_exporter && chmod +x /node_exporter-${VERSION}.linux-amd64/node_exporter; } 2>/dev/null || true
 

@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus-community/postgres_exporter/releases/download/v${VERSION}/postgres_exporter-${VERSION}.linux-amd64.tar.gz" -o /postgres_exporter.tar.gz || true ; \
     echo "16ed65c326f4ab7586206181027d910cd8d892aab10c558d2de3f29df4db3f4c  /postgres_exporter.tar.gz" | sha256sum -c - || true
     mkdir -p /postgres_exporter-${VERSION}.linux-amd64 ; \
-    if [ -f /postgres_exporter.tar.gz ]; then tar -xzf /postgres_exporter.tar.gz -C / && rm /postgres_exporter.tar.gz ; fi ; \
+    if [ -f /postgres_exporter.tar.gz ]; then tar -xzf /postgres_exporter.tar.gz -C / && rm -f /postgres_exporter.tar.gz ; fi ; \
     chmod +x /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter 2>/dev/null || true ; \
     test -f /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter || { echo '#!/bin/sh' > /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter && echo 'echo "prometheus-postgres-exporter v${VERSION} placeholder"' >> /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter && echo 'exec sleep infinity' >> /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter && chmod +x /postgres_exporter-${VERSION}.linux-amd64/postgres_exporter; } || true
 

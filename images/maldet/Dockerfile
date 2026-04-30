@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://www.rfxn.com/downloads/maldetect-current.tar.gz" || true ; \
     -o /maldet.tar.gz && \
-    [ -f /maldet.tar.gz ] && tar -xzf /maldet.tar.gz -C /opt && rm /maldet.tar.gz || true
+    [ -f /maldet.tar.gz ] && tar -xzf /maldet.tar.gz -C /opt && rm -f /maldet.tar.gz || true
 RUN mkdir -p /app 2>/dev/null || true
 
 

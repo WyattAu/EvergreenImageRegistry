@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus-community/yet-another-cloudwatch-exporter/releases/download/v${VERSION}/yet-another-cloudwatch-exporter-0.65.0.linux-amd64.tar.gz" -o /exporter.tar.gz || true ; \
     echo "01f9123f521090c33a816733f07e5bd7a2b2ecb3c9eecbf3a19d7e80ee57d836  /exporter.tar.gz" | sha256sum -c - || true
     mkdir -p /yet-another-cloudwatch-exporter-0.65.0.linux-amd64 && \
-    if [ -f /exporter.tar.gz ]; then tar -xzf /exporter.tar.gz -C / && rm /exporter.tar.gz ; fi ; \
+    if [ -f /exporter.tar.gz ]; then tar -xzf /exporter.tar.gz -C / && rm -f /exporter.tar.gz ; fi ; \
     chmod +x /yet-another-cloudwatch-exporter-0.65.0.linux-amd64/yace 2>/dev/null || true ; \
     test -f /yet-another-cloudwatch-exporter-0.65.0.linux-amd64/yace || { echo '#!/bin/sh' > /yet-another-cloudwatch-exporter-0.65.0.linux-amd64/yace && echo 'echo "prometheus-aws-exporter v${VERSION} placeholder"' >> /yet-another-cloudwatch-exporter-0.65.0.linux-amd64/yace && echo 'exec sleep infinity' >> /yet-another-cloudwatch-exporter-0.65.0.linux-amd64/yace && chmod +x /yet-another-cloudwatch-exporter-0.65.0.linux-amd64/yace; } || true
 

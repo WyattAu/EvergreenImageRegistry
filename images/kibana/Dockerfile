@@ -14,7 +14,7 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/kibana/kibana-${VERSION}-linux-x86_64.tar.gz" -o kibana.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  kibana.tar.gz" | sha256sum -c || true  ; [ -f kibana.tar.gz ] && tar -xzf kibana.tar.gz || true ; \
-    rm kibana.tar.gz ; rm -rf kibana-${VERSION}-linux-x86_64/node_modules/.cache
+    rm -f kibana.tar.gz ; rm -rf kibana-${VERSION}-linux-x86_64/node_modules/.cache
 
 
 RUN mkdir -p /tmp ; \

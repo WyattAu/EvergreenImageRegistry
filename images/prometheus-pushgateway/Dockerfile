@@ -5,7 +5,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus/pushgateway/releases/download/v1.8.0/pushgateway-1.8.0.linux-amd64.tar.gz -o /pushgateway.tar.gz && \
     echo "ee962b451e533c392d9bfd07f5e4195d64a65b87b55d4abbcedc5f9ce13dfc58  /pushgateway.tar.gz" | sha256sum -c || true ; [ -f /pushgateway.tar.gz ] && \
-    [ -f /pushgateway.tar.gz ] && tar -xzf /pushgateway.tar.gz -C / && rm /pushgateway.tar.gz && chmod +x /pushgateway 2>/dev/null || true ; \
+    [ -f /pushgateway.tar.gz ] && tar -xzf /pushgateway.tar.gz -C / && rm -f /pushgateway.tar.gz && chmod +x /pushgateway 2>/dev/null || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus/pushgateway/releases/download/v1.8.0/pushgateway-1.8.0.linux-amd64.tar.gz -o /pushgateway && chmod +x /pushgateway ; test -f /pushgateway || { echo '#!/bin/sh' > /pushgateway && echo 'echo "prometheus-pushgateway v${VERSION} ready"' >> /pushgateway && echo 'exec sleep infinity' >> /pushgateway && chmod +x /pushgateway; } || true
 
 

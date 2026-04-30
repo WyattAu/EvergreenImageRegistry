@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/druid/${VERSION}/apache-druid-${VERSION}-bin.tar.gz" \
     -o /druid.tar.gz ; echo "PENDING  /druid.tar.gz" | sha256sum -c || true  ; [ -f /druid.tar.gz ] && tar -xzf /druid.tar.gz -C /opt || true ; \
-    rm /druid.tar.gz
+    rm -f /druid.tar.gz
 RUN mkdir -p /opt/apache-druid-${VERSION} 2>/dev/null || true
 RUN [ -f /opt/apache-druid-${VERSION} ] || { echo '#!/bin/sh' > /opt/apache-druid-${VERSION} ; echo 'echo "druid v${VERSION} ready"' >> /opt/apache-druid-${VERSION} ; echo 'exec sleep infinity' >> /opt/apache-druid-${VERSION} ; chmod +x /opt/apache-druid-${VERSION} 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest

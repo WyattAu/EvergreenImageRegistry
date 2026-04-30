@@ -8,7 +8,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     -o /tmp/roundcube.tar.gz || true ; \
     echo "b61a5f5c22f890c299e935aacfcf0870676990d8aebff0d6cdff075bf17cef4f  /tmp/roundcube.tar.gz" | sha256sum -c - || true ; \
     mkdir -p /build ; \
-    if [ -f /tmp/roundcube.tar.gz ]; then tar -xzf /tmp/roundcube.tar.gz -C /build --strip-components=1 && rm /tmp/roundcube.tar.gz ; fi ; \
+    if [ -f /tmp/roundcube.tar.gz ]; then tar -xzf /tmp/roundcube.tar.gz -C /build --strip-components=1 && rm -f /tmp/roundcube.tar.gz ; fi ; \
     test -f /build/index.php || echo '<html><body><h1>roundcube v'${VERSION}' placeholder</h1></body></html>' > /build/index.php
 
 FROM cgr.dev/chainguard/wolfi-base:latest

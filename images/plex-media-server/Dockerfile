@@ -10,7 +10,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl expat fontconfig freetype glib || true
 COPY --from=downloader /plex.deb /tmp/plex.deb
-RUN dpkg -i 2>/dev/null || true ;  /tmp/plex.deb && rm /tmp/plex.deb
+RUN dpkg -i 2>/dev/null || true ;  /tmp/plex.deb && rm -f /tmp/plex.deb
 RUN mkdir -p /var/log/plex /var/cache/plex /config /transcode ; \
     chown -R 65532:65532 /var/log/plex /var/cache/plex /config /transcode /usr/lib/plexmediaserver
 USER 65532:65532

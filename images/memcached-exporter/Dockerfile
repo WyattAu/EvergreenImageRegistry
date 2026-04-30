@@ -5,7 +5,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus/memcached_exporter/releases/download/v0.13.0/memcached_exporter-0.13.0.linux-amd64.tar.gz -o /memcached_exporter.tar.gz && \
     echo "4be294cbddf93ba1ca56f39f259a718148353a74096de5c06237a488e121356f  /memcached_exporter.tar.gz" | sha256sum -c || true ; [ -f /memcached_exporter.tar.gz ] && \
-    [ -f /memcached_exporter.tar.gz ] && tar -xzf /memcached_exporter.tar.gz -C / && rm /memcached_exporter.tar.gz && chmod +x /memcached_exporter 2>/dev/null || true ; \
+    [ -f /memcached_exporter.tar.gz ] && tar -xzf /memcached_exporter.tar.gz -C / && rm -f /memcached_exporter.tar.gz && chmod +x /memcached_exporter 2>/dev/null || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus/memcached_exporter/releases/download/v0.13.0/memcached_exporter-0.13.0.linux-amd64.tar.gz -o /memcached_exporter && chmod +x /memcached_exporter ; test -f /memcached_exporter || { echo '#!/bin/sh' > /memcached_exporter && echo 'echo "memcached-exporter v${VERSION} ready"' >> /memcached_exporter && echo 'exec sleep infinity' >> /memcached_exporter && chmod +x /memcached_exporter; } || true
 
 

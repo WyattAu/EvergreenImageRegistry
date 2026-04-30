@@ -7,7 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     "https://github.com/hackmdio/codimd/releases/download/${VERSION}/codimd-${VERSION}.tar.gz" \
     -o /tmp/codimd.tar.gz || true ; \
     mkdir -p /build ; \
-    if [ -f /tmp/codimd.tar.gz ]; then tar -xzf /tmp/codimd.tar.gz -C /build --strip-components=1 && rm /tmp/codimd.tar.gz ; fi
+    if [ -f /tmp/codimd.tar.gz ]; then tar -xzf /tmp/codimd.tar.gz -C /build --strip-components=1 && rm -f /tmp/codimd.tar.gz ; fi
 RUN cd /build && npm ci 2>/dev/null || npm install --legacy-peer-deps 2>/dev/null || true && \
     npm run build 2>/dev/null || true
 

@@ -4,7 +4,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/Whisparr/Whisparr/releases/download/v${VERSION}/Whisparr.2.2.0-develop.115.linux-x64.tar.gz" -o /tmp/Whisparr.tar.gz || true ; \
     mkdir -p /app && \
-    if [ -f /tmp/Whisparr.tar.gz ]; then tar -xzf /tmp/Whisparr.tar.gz -C /app && rm /tmp/Whisparr.tar.gz ; fi ; \
+    if [ -f /tmp/Whisparr.tar.gz ]; then tar -xzf /tmp/Whisparr.tar.gz -C /app && rm -f /tmp/Whisparr.tar.gz ; fi ; \
     chmod +x /app/Whisparr 2>/dev/null || true ; \
     test -f /app/Whisparr || { echo '#!/bin/sh' > /app/Whisparr && echo 'echo "whisparr v${VERSION} placeholder"' >> /app/Whisparr && echo 'exec sleep infinity' >> /app/Whisparr && chmod +x /app/Whisparr; } || true
 

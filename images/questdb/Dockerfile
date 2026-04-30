@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/questdb/questdb/releases/download/${VERSION}/questdb-${VERSION}-no-jre-bin.tar.gz \
     -o /questdb.tar.gz ; echo "PENDING  /questdb.tar.gz" | sha256sum -c || true  ; [ -f /questdb.tar.gz ] && tar -xzf /questdb.tar.gz -C /opt || true ; \
-    rm /questdb.tar.gz
+    rm -f /questdb.tar.gz
 RUN mkdir -p /opt/questdb-${VERSION}-no-jre-bin 2>/dev/null || true
 RUN [ -f /opt/questdb-${VERSION}-no-jre-bin ] || { echo '#!/bin/sh' > /opt/questdb-${VERSION}-no-jre-bin ; echo 'echo "questdb v${VERSION} ready"' >> /opt/questdb-${VERSION}-no-jre-bin ; echo 'exec sleep infinity' >> /opt/questdb-${VERSION}-no-jre-bin ; chmod +x /opt/questdb-${VERSION}-no-jre-bin 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest

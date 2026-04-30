@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus/snmp_exporter/releases/download/v${VERSION}/snmp_exporter-${VERSION}.linux-amd64.tar.gz" -o /snmp_exporter.tar.gz || true ; \
     echo "265e99f527c658099597291a5fecd8a46a89bed07c166621e84e90b27bfd6c6a  /snmp_exporter.tar.gz" | sha256sum -c - || true
     mkdir -p /snmp_exporter-${VERSION}.linux-amd64 ; \
-    if [ -f /snmp_exporter.tar.gz ]; then tar -xzf /snmp_exporter.tar.gz -C / && rm /snmp_exporter.tar.gz ; fi ; \
+    if [ -f /snmp_exporter.tar.gz ]; then tar -xzf /snmp_exporter.tar.gz -C / && rm -f /snmp_exporter.tar.gz ; fi ; \
     chmod +x /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter 2>/dev/null || true ; \
     test -f /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter || { echo '#!/bin/sh' > /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter && echo 'echo "prometheus-snmp-exporter v${VERSION} placeholder"' >> /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter && echo 'exec sleep infinity' >> /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter && chmod +x /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter; } || true ; \
     test -f /snmp_exporter-${VERSION}.linux-amd64/snmp.yml || { echo '#!/bin/sh' > /snmp_exporter-${VERSION}.linux-amd64/snmp.yml && echo 'echo "prometheus-snmp-exporter v${VERSION} placeholder"' >> /snmp_exporter-${VERSION}.linux-amd64/snmp.yml && echo 'exec sleep infinity' >> /snmp_exporter-${VERSION}.linux-amd64/snmp.yml && chmod +x /snmp_exporter-${VERSION}.linux-amd64/snmp.yml; } || true

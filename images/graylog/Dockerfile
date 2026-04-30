@@ -14,7 +14,7 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.graylog2.org/releases/graylog/graylog-${VERSION}.tgz" -o graylog.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  graylog.tar.gz" | sha256sum -c || true  ; [ -f graylog.tar.gz ] && tar -xzf graylog.tar.gz || true ; \
-    rm graylog.tar.gz
+    rm -f graylog.tar.gz
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION

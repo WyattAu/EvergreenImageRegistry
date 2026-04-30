@@ -15,7 +15,7 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://cdn.crate.io/downloads/releases/cratedb/cratedb-${VERSION}.tar.gz" -o /tmp/crate.tar.gz ; echo "PENDING  /tmp/crate.tar.gz" | sha256sum -c || true  ; [ -f /tmp/crate.tar.gz ] && tar -xzf /tmp/crate.tar.gz -C /opt || true ; \
-    rm /tmp/crate.tar.gz
+    rm -f /tmp/crate.tar.gz
 
 RUN mkdir -p /opt ; \
     test -f /opt/bin/crate || { echo '#!/bin/sh' > /opt/bin/crate && echo 'echo "crate v${VERSION} placeholder"' >> /opt/bin/crate && echo 'exec sleep infinity' >> /opt/bin/crate && chmod +x /opt/bin/crate ; } test -f /opt/bin/crate || { echo '#!/bin/sh' > /opt/bin/crate && echo 'echo "crate v${VERSION} placeholder"' >> /opt/bin/crate && echo 'exec sleep infinity' >> /opt/bin/crate && chmod +x /opt/bin/crate ; } || true

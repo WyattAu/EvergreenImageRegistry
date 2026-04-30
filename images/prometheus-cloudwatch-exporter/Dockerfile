@@ -4,7 +4,7 @@ ARG VERSION=0.15.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus-community/cloudwatch_exporter/releases/download/v${VERSION}/cloudwatch_exporter-${VERSION}.linux-amd64.tar.gz -o /cloudwatch_exporter.tar.gz || true ; \
-    tar -xzf /cloudwatch_exporter.tar.gz -C / && rm /cloudwatch_exporter.tar.gz && chmod +x /cloudwatch_exporter-${VERSION}.linux-amd64/cloudwatch_exporter ; test -f /cloudwatch_exporter-${VERSION}.linux-amd64/cloudwatch_exporter || { echo '#!/bin/sh' > /cloudwatch_exporter-${VERSION}.linux-amd64/cloudwatch_exporter && echo 'echo "prometheus-cloudwatch-exporter v${VERSION} ready"' >> /cloudwatch_exporter-${VERSION}.linux-amd64/cloudwatch_exporter && echo 'exec sleep infinity' >> /cloudwatch_exporter-${VERSION}.linux-amd64/cloudwatch_exporter && chmod +x /cloudwatch_exporter-${VERSION}.linux-amd64/cloudwatch_exporter; } || true
+    tar -xzf /cloudwatch_exporter.tar.gz -C / && rm -f /cloudwatch_exporter.tar.gz && chmod +x /cloudwatch_exporter-${VERSION}.linux-amd64/cloudwatch_exporter ; test -f /cloudwatch_exporter-${VERSION}.linux-amd64/cloudwatch_exporter || { echo '#!/bin/sh' > /cloudwatch_exporter-${VERSION}.linux-amd64/cloudwatch_exporter && echo 'echo "prometheus-cloudwatch-exporter v${VERSION} ready"' >> /cloudwatch_exporter-${VERSION}.linux-amd64/cloudwatch_exporter && echo 'exec sleep infinity' >> /cloudwatch_exporter-${VERSION}.linux-amd64/cloudwatch_exporter && chmod +x /cloudwatch_exporter-${VERSION}.linux-amd64/cloudwatch_exporter; } || true
 
 
 

@@ -4,7 +4,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/Prowlarr/Prowlarr/releases/download/v${VERSION}/Prowlarr.develop.2.3.6.5351.linux-core-x64.tar.gz" -o /tmp/Prowlarr.tar.gz || true ; \
     mkdir -p /app && \
-    if [ -f /tmp/Prowlarr.tar.gz ]; then tar -xzf /tmp/Prowlarr.tar.gz -C /app && rm /tmp/Prowlarr.tar.gz ; fi ; \
+    if [ -f /tmp/Prowlarr.tar.gz ]; then tar -xzf /tmp/Prowlarr.tar.gz -C /app && rm -f /tmp/Prowlarr.tar.gz ; fi ; \
     chmod +x /app/Prowlarr 2>/dev/null || true ; \
     test -f /app/Prowlarr || { echo '#!/bin/sh' > /app/Prowlarr && echo 'echo "prowlarr-develop v${VERSION} placeholder"' >> /app/Prowlarr && echo 'exec sleep infinity' >> /app/Prowlarr && chmod +x /app/Prowlarr; } || true
 

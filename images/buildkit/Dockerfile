@@ -3,7 +3,7 @@ ARG VERSION=0.29.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/moby/buildkit/releases/download/v${VERSION}/buildkit-v${VERSION}.linux-amd64.tar.gz -o /buildkit.tar.gz && \
-    tar -xzf /buildkit.tar.gz -C /usr/local/ && rm /buildkit.tar.gz
+    tar -xzf /buildkit.tar.gz -C /usr/local/ && rm -f /buildkit.tar.gz
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/buildkit /var/cache/buildkit /var/lib/buildkit 2>/dev/null || true
 

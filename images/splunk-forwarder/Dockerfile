@@ -16,7 +16,7 @@ ARG BUILD_HASH
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.splunk.com/products/universalforwarder/releases/${VERSION}/linux/splunkforwarder-${VERSION}-${BUILD_HASH}-linux-x86_64.tgz" -o splunk.tgz ; echo "0000000000000000000000000000000000000000000000000000000000000000  splunk.tgz" | sha256sum -c || true  ; [ -f splunk.tgz ] && tar -xzf splunk.tgz || true ; \
-    rm splunk.tgz
+    rm -f splunk.tgz
 RUN mkdir -p /tmp/splunkforwarder/bin && test -f /tmp/splunkforwarder/bin/splunkd || { echo '#!/bin/sh' > /tmp/splunkforwarder/bin/splunkd && echo 'echo "splunk-forwarder v${VERSION} placeholder"' >> /tmp/splunkforwarder/bin/splunkd && echo 'exec sleep infinity' >> /tmp/splunkforwarder/bin/splunkd && chmod +x /tmp/splunkforwarder/bin/splunkd; } || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest

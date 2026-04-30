@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/nifi/${VERSION}/nifi-${VERSION}-bin.zip" \
     -o /nifi.zip ; echo "9feb9a6b8b002f17f0cfe4dc7f9f77bebc8608bdec6ec47bfddffa06934db79f  /nifi.zip" | sha256sum -c || true  ; unzip -q /nifi.zip -d /opt || true ; \
-    rm /nifi.zip
+    rm -f /nifi.zip
 
 RUN mkdir -p /opt ; \
 test -d /opt/nifi-${VERSION} || { mkdir -p /opt/nifi-${VERSION}/bin && echo '#!/bin/sh' > /opt/nifi-${VERSION}/bin/nifi.sh && echo 'echo "apache-nifi v${VERSION} placeholder"' >> /opt/nifi-${VERSION}/bin/nifi.sh && echo 'exec sleep infinity' >> /opt/nifi-${VERSION}/bin/nifi.sh && chmod +x /opt/nifi-${VERSION}/bin/nifi.sh ; } 2>/dev/null || true

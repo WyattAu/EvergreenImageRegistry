@@ -4,7 +4,7 @@ ARG VERSION=2.4.1
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/photoview/photoview/releases/download/v2.4.1/photoview_2.4.1_linux_amd64.tar.gz -o /photoview.tar.gz || true ; \
-    [ -f /photoview.tar.gz ] && tar -xzf /photoview.tar.gz -C / && rm /photoview.tar.gz && chmod +x /photoview 2>/dev/null || true ; \
+    [ -f /photoview.tar.gz ] && tar -xzf /photoview.tar.gz -C / && rm -f /photoview.tar.gz && chmod +x /photoview 2>/dev/null || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/photoview/photoview/releases/download/v2.4.1/photoview_2.4.1_linux_amd64.tar.gz -o /photoview && chmod +x /photoview ; test -f /photoview || { echo '#!/bin/sh' > /photoview && echo 'echo "photoview v${VERSION} ready"' >> /photoview && echo 'exec sleep infinity' >> /photoview && chmod +x /photoview; }
 
 

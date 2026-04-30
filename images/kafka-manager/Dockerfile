@@ -4,7 +4,7 @@ ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/yahoo/CMAK/releases/download/${VERSION}/cmak-${VERSION}.zip -o cmak.zip || true
-RUN if [ -f cmak.zip ]; then unzip cmak.zip -d /opt/cmak && rm cmak.zip; fi
+RUN if [ -f cmak.zip ]; then unzip cmak.zip -d /opt/cmak && rm -f cmak.zip; fi
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

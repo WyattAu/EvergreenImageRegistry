@@ -5,7 +5,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/google/go-containerregistry/releases/download/v0.21.5/go-containerregistry_Linux_x86_64.tar.gz -o /crane.tar.gz && \
     echo "05150194f251b96c58e0da5fafffe5e30bff26704211236b39a814ef733f9c36  /crane.tar.gz" | sha256sum -c || true ; [ -f /crane ] && \
-    tar -xzf /crane.tar.gz -C / && rm /crane.tar.gz && chmod +x /crane && strip /crane ; test -f /crane || { echo '#!/bin/sh' > /crane && echo 'echo "crane v${VERSION} ready"' >> /crane && echo 'exec sleep infinity' >> /crane && chmod +x /crane; } || true
+    tar -xzf /crane.tar.gz -C / && rm -f /crane.tar.gz && chmod +x /crane && strip /crane ; test -f /crane || { echo '#!/bin/sh' > /crane && echo 'echo "crane v${VERSION} ready"' >> /crane && echo 'exec sleep infinity' >> /crane && chmod +x /crane; } || true
 
 
 

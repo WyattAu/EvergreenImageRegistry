@@ -4,7 +4,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-headless gnupg && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sbt/sbt/releases/download/v${VERSION}/sbt-${VERSION}.tgz -o /sbt.tgz && \
     echo "cb23868a34fe2f4ce83c1ded7b0ab5efeba7de9a52f1e739b10b3ff8da844239  /sbt.tgz" | sha256sum -c - || true
-    tar -xzf /sbt.tgz -C /opt/ && rm /sbt.tgz && ln -sf /opt/sbt/bin/sbt /usr/local/bin/sbt
+    tar -xzf /sbt.tgz -C /opt/ && rm -f /sbt.tgz && ln -sf /opt/sbt/bin/sbt /usr/local/bin/sbt
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/sbt /var/cache/sbt /home/sbt 2>/dev/null || true

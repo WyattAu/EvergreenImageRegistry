@@ -17,7 +17,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/setup_${NOD
 WORKDIR /build
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Mailtrain/mailtrain/archive/refs/tags/v${VERSION}.tar.gz -o /tmp/mailtrain.tar.gz && \
     [ -f /tmp/mailtrain.tar.gz ] && tar -xzf /tmp/mailtrain.tar.gz -C /build --strip-components=1 || true ; \
-    rm /tmp/mailtrain.tar.gz && \
+    rm -f /tmp/mailtrain.tar.gz && \
     npm install --omit=dev 2>/dev/null || true
 
 

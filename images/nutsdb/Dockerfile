@@ -10,12 +10,14 @@ ARG BUILD_DATE
 FROM golang:1.23-bookworm AS builder
 ARG VERSION
 ARG GITHUB_TOKEN
+ARG TARGETARCH
+ARG GOARCH=${TARGETARCH}
 RUN apt-get update && \
     apt-get install -y --no-install-recommends git ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/xujiajun/nutsdb /src 2>/dev/null || echo "Source repo not available"
 RUN cd /src && \
-    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+    CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
         -o /app/nutsdb ./cmd/nutsdb 2>/dev/null || true
 RUN test -f /app/nutsdb && strip --strip-all /app/nutsdb || true

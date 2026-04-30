@@ -13,12 +13,14 @@ FROM golang:${GO_VERSION}-bookworm AS builder
 ARG VERSION
 ARG GO_VERSION
 ARG GITHUB_TOKEN
+ARG TARGETARCH
+ARG GOARCH=${TARGETARCH}
 RUN apt-get update && \
     apt-get install -y --no-install-recommends git ca-certificates make && \
     rm -rf /var/lib/apt/lists/*
 RUN git clone --depth 1 --branch "controller-v${VERSION}" https://github.com/kubernetes/ingress-nginx /src 2>/dev/null || echo "Source repo not available"
 RUN cd /src && \
-    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+    CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w -X main.version=v${VERSION}" \
         -trimpath \
         -o /app/nginx-ingress-controller ./cmd/nginx 2>/dev/null || true

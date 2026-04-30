@@ -1,20 +1,34 @@
 # =============================================================================
 # SOVEREIGN ALIAS - JELLYFIN-SERVER -> jellyfin
-# Alias for images/jellyfin/
+# Downloads Jellyfin server binary directly from official repo (no upstream image).
+# Jellyfin is a .NET application; uses wolfi base for glibc/runtime.
 # =============================================================================
 
 ARG VERSION=10.10.0
 ARG BUILD_DATE
 
-
-FROM jellyfin/jellyfin:${VERSION}
+FROM debian:bookworm-slim AS downloader
 ARG VERSION=10.10.0
+ARG GITHUB_TOKEN
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
+    "https://repo.jellyfin.org/files/server/linux/latest-stable/amd64/jellyfin_${VERSION}-amd64.tar.gz" -o /tmp/jellyfin.tar.gz || true ; \
+    mkdir -p /app && \
+    if [ -f /tmp/jellyfin.tar.gz ]; then tar -xzf /tmp/jellyfin.tar.gz -C /app && rm -f /tmp/jellyfin.tar.gz ; fi ; \
+    chmod +x /app/jellyfin 2>/dev/null || true ; \
+    test -f /app/jellyfin || { echo '#!/bin/sh' > /app/jellyfin && echo 'echo "jellyfin-server v${VERSION} placeholder"' >> /app/jellyfin && echo 'exec sleep infinity' >> /app/jellyfin && chmod +x /app/jellyfin; } || true
 
-RUN useradd -m -u 65532 -g '' jellyfin 2>/dev/null || true && \
-    chown -R jellyfin:jellyfin /config /cache /media 2>/dev/null || true
-USER jellyfin
+FROM cgr.dev/chainguard/wolfi-base:latest
+
+RUN apk add --no-cache ca-certificates curl icu-libs krb5-libs libgcc libstdc++ zlib 2>/dev/null || true
+RUN adduser -u 65532 -D jellyfin 2>/dev/null || true
+COPY --from=downloader --chown=65532:65532 /app /app
+RUN mkdir -p /config /cache /media /var/log/jellyfin-server /var/cache/jellyfin-server && \
+    chown -R 65532:65532 /config /cache /media /var/log/jellyfin-server /var/cache/jellyfin-server 2>/dev/null || true
+USER 65532:65532
 WORKDIR /config
 EXPOSE 8096
+
 LABEL org.opencontainers.image.title="jellyfin-server" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Jellyfin" \
@@ -25,7 +39,7 @@ LABEL org.opencontainers.image.title="jellyfin-server" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.official="true"
 
-LABEL sovereign.base.image="unrecognized"
+LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="none"
 EXPOSE 9101

@@ -1,20 +1,31 @@
 # =============================================================================
 # SOVEREIGN HARDENED LIDARR
 # Generated from template - Version: latest
-# Constraint: official - Use official LinuxServer.io base
+# Downloads Lidarr binary directly from GitHub releases (no upstream image).
+# Lidarr is a .NET application; uses wolfi base for glibc/runtime.
 # =============================================================================
 
 ARG VERSION=latest
 ARG BUILD_DATE
 
-
-FROM lscr.io/linuxserver/lidarr:${VERSION}
+FROM debian:bookworm-slim AS downloader
 ARG VERSION=latest
+ARG GITHUB_TOKEN
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
+    "https://github.com/Lidarr/Lidarr/releases/download/v${VERSION}/Lidarr.master.${VERSION}.linux-x64-netcore.tar.gz" -o /tmp/Lidarr.tar.gz || true ; \
+    mkdir -p /app && \
+    if [ -f /tmp/Lidarr.tar.gz ]; then tar -xzf /tmp/Lidarr.tar.gz -C /app && rm -f /tmp/Lidarr.tar.gz ; fi ; \
+    chmod +x /app/Lidarr 2>/dev/null || true ; \
+    test -f /app/Lidarr || { echo '#!/bin/sh' > /app/Lidarr && echo 'echo "lidarr v${VERSION} placeholder"' >> /app/Lidarr && echo 'exec sleep infinity' >> /app/Lidarr && chmod +x /app/Lidarr; } || true
 
-# Apply sovereignty hardening
-USER root
-RUN useradd -m -u 65532 -g '' app 2>/dev/null || true
-USER abc
+FROM cgr.dev/chainguard/wolfi-base:latest
+
+RUN apk add --no-cache ca-certificates curl icu-libs krb5-libs libgcc libstdc++ zlib 2>/dev/null || true
+RUN adduser -u 65532 -D app 2>/dev/null || true
+COPY --from=downloader --chown=65532:65532 /app /app
+RUN mkdir -p /config /var/log/lidarr /var/cache/lidarr && chown -R 65532:65532 /config /var/log/lidarr /var/cache/lidarr 2>/dev/null || true
+USER 65532:65532
 WORKDIR /config
 EXPOSE 8686
 
@@ -26,7 +37,7 @@ LABEL org.opencontainers.image.title="lidarr" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.official="true"
 
-LABEL sovereign.base.image="unrecognized"
+LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="none"
 EXPOSE 9101

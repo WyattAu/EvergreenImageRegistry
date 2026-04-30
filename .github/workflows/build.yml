@@ -7,12 +7,15 @@
 #   - Per-image timeout: 15 minutes (900s) to prevent single slow builds from blocking batches
 #   - Batch timeout: 360 minutes for compilation-heavy images
 #   - Fast images (binary downloads) complete in <2 min per image
-#   1. discover  - Find all Dockerfiles, create batched build matrix
-#   2. lint      - Hadolint linting + TruffleHog secret scanning
-#   3. build     - Build images in batches (multi-arch push on main)
-#   4. verify    - Constraint tests (C001-C010) + CVE scanning (Trivy + Grype)
-#   5. sign-push - Cosign signing + SBOM attestation (main branch only)
-#   6. report    - Aggregate results and generate summary
+#   1. discover       - Find all Dockerfiles, create batched build matrix
+#   2. lint           - Hadolint linting + TruffleHog secret scanning
+#   3. build          - Build images in batches (multi-arch push on main)
+#   4. health-check   - Post-build image validation (layer count, load check)
+#   5. security-scan  - Trivy filesystem vulnerability scanning
+#   6. sbom           - Generate Software Bill of Materials (SPDX-JSON)
+#   7. verify         - Constraint tests (C001-C010) + CVE scanning (Trivy + Grype)
+#   8. sign-push      - Cosign signing + SBOM attestation (main branch only)
+#   9. report         - Aggregate results and generate summary
 #
 # Key fixes from v1:
 #   - Fixed /temp/*.tar -> /tmp/*.tar typo
@@ -385,7 +388,134 @@ jobs:
           if-no-files-found: ignore
 
   # ===========================================================================
-  # STAGE 4: VERIFY - Constraint tests + CVE scanning per batch
+  # STAGE 4: HEALTH CHECK - Post-build image validation
+  # ===========================================================================
+  health-check:
+    name: Health Check
+    needs: [discover, build]
+    if: ${{ needs.build.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Lowercase registry owner
+        run: echo "OWNER=$(echo '${{ env.OWNER }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
+
+      - name: Download all batch image references
+        uses: actions/download-artifact@v4
+        with:
+          pattern: built-list-batch-*
+          path: /tmp/batches
+
+      - name: Download batch image tarballs
+        uses: actions/download-artifact@v4
+        with:
+          pattern: images-batch-*
+          path: /tmp/images/
+
+      - name: Run health checks
+        run: |
+          PASS=0
+          FAIL=0
+          WARN=0
+          TOTAL=0
+
+          for tar in /tmp/images/images-batch-*/*.tar; do
+            [ -f "$tar" ] || { echo "No tarballs found"; exit 0; }
+            TOTAL=$((TOTAL + 1))
+            BASE=$(basename "$tar" .tar)
+            echo "::group::Health check ${BASE}"
+
+            if ! docker load -i "$tar" > /dev/null 2>&1; then
+              echo "FAIL: Could not load tarball"
+              FAIL=$((FAIL + 1))
+              echo "::endgroup::"
+              continue
+            fi
+
+            REF=$(docker load -i "$tar" 2>/dev/null | grep 'Loaded image:' | sed 's/Loaded image: //')
+            [ -z "$REF" ] && {
+              echo "WARN: Could not determine image ref from tarball"
+              WARN=$((WARN + 1))
+              echo "::endgroup::"
+              continue
+            }
+
+            LAYERS=$(docker inspect --format '{{len .RootFS.Layers}}' "$REF" 2>/dev/null || echo "0")
+
+            if [ "$LAYERS" -le 1 ]; then
+              echo "WARN: Only ${LAYERS} layer(s) - image may be just a FROM without modifications"
+              WARN=$((WARN + 1))
+            else
+              echo "PASS: ${LAYERS} layers"
+              PASS=$((PASS + 1))
+            fi
+
+            SIZE=$(docker image inspect --format '{{.Size}}' "$REF" 2>/dev/null || echo "0")
+            SIZE_MB=$((SIZE / 1024 / 1024))
+            echo "INFO: Image size: ${SIZE_MB}MB"
+
+            echo "::endgroup::"
+          done
+
+          echo ""
+          echo "Health checks: ${PASS} passed, ${FAIL} failed, ${WARN} warnings (${TOTAL} total)"
+
+  # ===========================================================================
+  # STAGE 5: SECURITY SCAN - Trivy filesystem scanning
+  # ===========================================================================
+  security-scan:
+    name: Security Scan
+    needs: [discover, build]
+    if: ${{ needs.build.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    continue-on-error: true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          fail-on-severity: 'CRITICAL'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+          ignore-unfixed: true
+
+  # ===========================================================================
+  # STAGE 6: SBOM - Generate Software Bill of Materials
+  # ===========================================================================
+  sbom:
+    name: Generate SBOM
+    needs: [discover, build]
+    if: ${{ needs.build.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate SBOM
+        uses: anchore/sbom-action/syft@main
+        with:
+          path: .
+          format: spdx-json
+          output-file: sbom.spdx.json
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-repository
+          path: sbom.spdx.json
+          retention-days: 30
+
+  # ===========================================================================
+  # STAGE 7: VERIFY - Constraint tests + CVE scanning per batch
   # ===========================================================================
   verify:
     name: "Verify Batch ${{ matrix.batch }}"
@@ -526,7 +656,7 @@ jobs:
           if [ "$FAILURES" -gt 0 ]; then exit 1; fi
 
   # ===========================================================================
-  # STAGE 5: SIGN & PUSH - Cosign signing + SBOM attestation (main only)
+  # STAGE 8: SIGN & PUSH - Cosign signing + SBOM attestation (main only)
   # ===========================================================================
   sign-push:
     name: Sign & Attest
@@ -639,11 +769,11 @@ jobs:
           overwrite: true
 
   # ===========================================================================
-  # STAGE 6: REPORT - Aggregate results and generate summary
+  # STAGE 9: REPORT - Aggregate results and generate summary
   # ===========================================================================
   report:
     name: Build Report
-    needs: [discover, lint, build, verify, sign-push]
+    needs: [discover, lint, build, health-check, security-scan, sbom, verify, sign-push]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -662,6 +792,9 @@ jobs:
             echo "| **Discover** | ${{ needs.discover.result }} |"
             echo "| **Lint** | ${{ needs.lint.result }} |"
             echo "| **Build** | ${{ needs.build.result }} |"
+            echo "| **Health Check** | ${{ needs.health-check.result }} |"
+            echo "| **Security Scan** | ${{ needs.security-scan.result }} |"
+            echo "| **SBOM** | ${{ needs.sbom.result }} |"
             echo "| **Verify** | ${{ needs.verify.result }} |"
             echo "| **Sign & Push** | ${{ needs.sign-push.result }} |"
             echo ""

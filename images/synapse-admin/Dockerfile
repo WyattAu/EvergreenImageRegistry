@@ -42,6 +42,7 @@ RUN mkdir -p /app 2>/dev/null || true ; test -f /app/ 2>/dev/null || echo "#!/bi
 COPY --from=builder /build/package.json-c /app/
 RUN chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532
+ENTRYPOINT ["node", "dist/index.js"]
 EXPOSE 8080
 LABEL org.opencontainers.image.title="synapse-admin"       org.opencontainers.image.description="Synapse Admin - web admin panel for Synapse Matrix homeserver"       org.opencontainers.image.version="0.10.3"       org.opencontainers.image.vendor="Community"       org.opencontainers.image.source="https://github.com/awesome-anton/synapse-admin"       sovereign.image.tier="2"       sovereign.constraint.nonroot="true"       sovereign.constraint.debian-slim="true"
 LABEL sovereign.base.image="wolfi"

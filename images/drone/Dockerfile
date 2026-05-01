@@ -25,6 +25,7 @@ COPY --from=downloader /app/drone /drone
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /data
+ENTRYPOINT ["/drone"]
 EXPOSE 80
 
 LABEL org.opencontainers.image.title="drone" \

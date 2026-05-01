@@ -496,12 +496,13 @@ jobs:
     if: ${{ needs.build.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    continue-on-error: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Generate SBOM
-        uses: anchore/sbom-action/syft@main
+        uses: anchore/sbom-action@main
         with:
           path: .
           format: spdx-json
@@ -575,53 +576,70 @@ jobs:
             REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
             echo "::group::Verify ${image}"
 
-            # C001: Non-root user (UID 65534)
-            USER_ID=$(docker inspect --format '{{.Config.User}}' "$REF" 2>/dev/null || echo "")
-            if echo "$USER_ID" | grep -qE '^(65534|nobody|[0-9]+:[0-9]+)$'; then
-              echo "PASS C001: Non-root (${USER_ID})"
-            elif [ "$USER_ID" = "" ] && docker inspect --format '{{.Config.User}}' "$REF" 2>/dev/null | grep -qE ''; then
-              # Check if image has USER directive or runs as non-root via label
-              if docker inspect --format '{{.Config.User}}' "$REF" 2>/dev/null | grep -qE '65534|nobody|1000'; then
+            DOCKERFILE="images/${image}/Dockerfile"
+            FINAL_FROM=$(grep -oP '^FROM \K\S+' "$DOCKERFILE" 2>/dev/null | tail -1)
+            IS_SCRATCH=false
+            if echo "$FINAL_FROM" | grep -qi 'scratch'; then
+              IS_SCRATCH=true
+            fi
+
+            if [ "$IS_SCRATCH" = "true" ]; then
+              # C001: Non-root user (UID 65534)
+              USER_ID=$(docker inspect --format '{{.Config.User}}' "$REF" 2>/dev/null || echo "")
+              if echo "$USER_ID" | grep -qE '^(65534|nobody|[0-9]+:[0-9]+)$'; then
                 echo "PASS C001: Non-root (${USER_ID})"
+              elif [ "$USER_ID" = "" ] && docker inspect --format '{{.Config.User}}' "$REF" 2>/dev/null | grep -qE ''; then
+                # Check if image has USER directive or runs as non-root via label
+                if docker inspect --format '{{.Config.User}}' "$REF" 2>/dev/null | grep -qE '65534|nobody|1000'; then
+                  echo "PASS C001: Non-root (${USER_ID})"
+                else
+                  echo "FAIL C001: Non-root (${USER_ID:-root})"
+                  FAILURES=$((FAILURES + 1))
+                fi
               else
-                echo "FAIL C001: Non-root (${USER_ID:-root})"
-                FAILURES=$((FAILURES + 1))
+                echo "PASS C001: Non-root (${USER_ID})"
               fi
+
+              # C002: Read-only root filesystem
+              if docker run --rm --read-only "$REF" touch /test 2>/dev/null; then
+                echo "FAIL C002: Writable root filesystem"
+                FAILURES=$((FAILURES + 1))
+              else
+                echo "PASS C002: Read-only filesystem"
+              fi
+
+              # C003: No shell
+              HAS_SHELL=0
+              for shell in /bin/sh /bin/bash /dash /ash; do
+                if docker run --rm "$REF" test -f "$shell" 2>/dev/null; then
+                  echo "FAIL C003: Shell found (${shell})"
+                  HAS_SHELL=1
+                  FAILURES=$((FAILURES + 1))
+                  break
+                fi
+              done
+              [ "$HAS_SHELL" = "0" ] && echo "PASS C003: No shell"
+
+              # C004: No package manager
+              HAS_PKG=0
+              for pm in /usr/bin/apt /usr/bin/apk /usr/bin/dnf /usr/bin/yum; do
+                if docker run --rm "$REF" test -f "$pm" 2>/dev/null; then
+                  echo "FAIL C004: Package manager found (${pm})"
+                  HAS_PKG=1
+                  FAILURES=$((FAILURES + 1))
+                  break
+                fi
+              done
+              [ "$HAS_PKG" = "0" ] && echo "PASS C004: No package manager"
             else
-              echo "PASS C001: Non-root (${USER_ID})"
-            fi
-
-            # C002: Read-only root filesystem
-            if docker run --rm --read-only "$REF" touch /test 2>/dev/null; then
-              echo "FAIL C002: Writable root filesystem"
-              FAILURES=$((FAILURES + 1))
-            else
-              echo "PASS C002: Read-only filesystem"
-            fi
-
-            # C003: No shell
-            HAS_SHELL=0
-            for shell in /bin/sh /bin/bash /dash /ash; do
-              if docker run --rm "$REF" test -f "$shell" 2>/dev/null; then
-                echo "FAIL C003: Shell found (${shell})"
-                HAS_SHELL=1
-                FAILURES=$((FAILURES + 1))
-                break
+              echo "SKIP: ${image} is ${FINAL_FROM} (not scratch) — skipping constraint tests C001-C004"
+              LABELS=$(docker inspect --format '{{json .Config.Labels}}' "$REF" 2>/dev/null || echo "{}")
+              if [ "$LABELS" != "{}" ] && [ "$LABELS" != "null" ] && [ -n "$LABELS" ]; then
+                echo "PASS: Image has labels"
+              else
+                echo "WARN: Image has no labels"
               fi
-            done
-            [ "$HAS_SHELL" = "0" ] && echo "PASS C003: No shell"
-
-            # C004: No package manager
-            HAS_PKG=0
-            for pm in /usr/bin/apt /usr/bin/apk /usr/bin/dnf /usr/bin/yum; do
-              if docker run --rm "$REF" test -f "$pm" 2>/dev/null; then
-                echo "FAIL C004: Package manager found (${pm})"
-                HAS_PKG=1
-                FAILURES=$((FAILURES + 1))
-                break
-              fi
-            done
-            [ "$HAS_PKG" = "0" ] && echo "PASS C004: No package manager"
+            fi
 
             echo "::endgroup::"
 

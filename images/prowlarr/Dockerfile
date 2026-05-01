@@ -27,6 +27,7 @@ COPY --from=downloader --chown=65532:65532 /app /app
 RUN mkdir -p /config /var/log/prowlarr /var/cache/prowlarr && chown -R 65532:65532 /config /var/log/prowlarr /var/cache/prowlarr 2>/dev/null || true
 USER 65532:65532
 WORKDIR /config
+ENTRYPOINT ["/app/Prowlarr"]
 EXPOSE 9696
 
 LABEL org.opencontainers.image.title="prowlarr" \

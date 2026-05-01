@@ -27,6 +27,7 @@ COPY --from=downloader --chown=65532:65532 /app /app
 RUN mkdir -p /config /var/log/lidarr /var/cache/lidarr && chown -R 65532:65532 /config /var/log/lidarr /var/cache/lidarr 2>/dev/null || true
 USER 65532:65532
 WORKDIR /config
+ENTRYPOINT ["/app/Lidarr"]
 EXPOSE 8686
 
 LABEL org.opencontainers.image.title="lidarr" \

@@ -27,6 +27,7 @@ COPY --from=downloader --chown=65532:65532 /app /app
 RUN mkdir -p /config /var/log/radarr /var/cache/radarr && chown -R 65532:65532 /config /var/log/radarr /var/cache/radarr 2>/dev/null || true
 USER 65532:65532
 WORKDIR /config
+ENTRYPOINT ["/app/Radarr"]
 EXPOSE 7878
 
 LABEL org.opencontainers.image.title="radarr" \

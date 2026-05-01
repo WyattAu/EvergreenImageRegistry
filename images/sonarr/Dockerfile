@@ -27,6 +27,7 @@ COPY --from=downloader --chown=65532:65532 /app /app
 RUN mkdir -p /config /var/log/sonarr /var/cache/sonarr && chown -R 65532:65532 /config /var/log/sonarr /var/cache/sonarr 2>/dev/null || true
 USER 65532:65532
 WORKDIR /config
+ENTRYPOINT ["/app/Sonarr"]
 EXPOSE 8989
 
 LABEL org.opencontainers.image.title="sonarr" \

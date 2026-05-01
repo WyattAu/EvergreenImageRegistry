@@ -30,6 +30,7 @@ RUN mkdir -p /openhab/conf /openhab/userdata /var/log/openhab /var/cache/openhab
     chown -R 65532:65532 /openhab/conf /openhab/userdata /var/log/openhab /var/cache/openhab 2>/dev/null || true
 USER 65532:65532
 WORKDIR /openhab
+ENTRYPOINT ["/openhab/start.sh"]
 EXPOSE 8080 8443
 
 LABEL org.opencontainers.image.title="openhab" \

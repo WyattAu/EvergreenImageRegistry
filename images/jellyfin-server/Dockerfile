@@ -27,6 +27,7 @@ RUN mkdir -p /config /cache /media /var/log/jellyfin-server /var/cache/jellyfin-
     chown -R 65532:65532 /config /cache /media /var/log/jellyfin-server /var/cache/jellyfin-server 2>/dev/null || true
 USER 65532:65532
 WORKDIR /config
+ENTRYPOINT ["/app/jellyfin"]
 EXPOSE 8096
 
 LABEL org.opencontainers.image.title="jellyfin-server" \

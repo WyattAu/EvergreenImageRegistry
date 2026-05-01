@@ -1,9 +1,9 @@
 FROM docker.io/matrixdotorg/complement:latest AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apk add --no-cache ca-certificates || true
-RUN adduser -D -u 65532 complement 2>/dev/null || true
-RUN mkdir -p /app /var/log/complement 2>/dev/null || true
+RUN apk add --no-cache ca-certificates || true && \
+    adduser -D -u 65532 complement 2>/dev/null || true && \
+    mkdir -p /app /var/log/complement 2>/dev/null || true
 COPY --from=upstream /complement /usr/local/bin/complement
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

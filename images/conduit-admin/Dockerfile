@@ -11,10 +11,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=0.9.5
-RUN apk add --no-cache ca-certificates sqlite-libs || true
-RUN addgroup -S -g 10000 conduit 2>/dev/null || true && \
-    adduser -u 65532 -G conduit -D -h /app -s /bin/sh conduit 2>/dev/null || true
-RUN mkdir -p /app/data /app/config 2>/dev/null || true
+RUN apk add --no-cache ca-certificates sqlite-libs || true && \
+    addgroup -S -g 10000 conduit 2>/dev/null || true && \
+    adduser -u 65532 -G conduit -D -h /app -s /bin/sh conduit 2>/dev/null || true && \
+    mkdir -p /app/data /app/config 2>/dev/null || true
 COPY --from=downloader /tmp/conduit /usr/local/bin/conduit
 RUN chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532

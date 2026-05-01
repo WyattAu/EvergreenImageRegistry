@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apk add --no-cache nodejs ffmpeg ca-certificates || true
-RUN adduser -u 65532 -D immich 2>/dev/null || true
-RUN mkdir -p /app /var/log/node /var/cache/node && chown -R immich:immich /app /var/log/node /var/cache/node 2>/dev/null || true
+RUN apk add --no-cache nodejs ffmpeg ca-certificates || true && \
+    adduser -u 65532 -D immich 2>/dev/null || true && \
+    mkdir -p /app /var/log/node /var/cache/node && chown -R immich:immich /app /var/log/node /var/cache/node 2>/dev/null || true
 USER immich
 WORKDIR /app
 EXPOSE 2283

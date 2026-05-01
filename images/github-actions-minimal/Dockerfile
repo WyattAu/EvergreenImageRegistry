@@ -5,9 +5,9 @@ RUN curl --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 600 -fsSL "ht
     mkdir -p /runner && if [ -f /runner.tar.gz ]; then tar -xzf /runner.tar.gz -C /runner 2>/dev/null || true ; rm -f /runner.tar.gz 2>/dev/null || true ; fi
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=2.334.0
-RUN apk add --no-cache nodejs npm ca-certificates git || true
-RUN addgroup -S -g 10000 runner 2>/dev/null || true && adduser -u 65532 -G runner -D -h /app -s /bin/false runner 2>/dev/null || true
-RUN mkdir -p /app /runner /home/runner/_work 2>/dev/null || true
+RUN apk add --no-cache nodejs npm ca-certificates git || true && \
+    addgroup -S -g 10000 runner 2>/dev/null || true && adduser -u 65532 -G runner -D -h /app -s /bin/false runner 2>/dev/null || true && \
+    mkdir -p /app /runner /home/runner/_work 2>/dev/null || true
 COPY --from=builder /runner /app/runner
 RUN chmod -R 755 /app/runner/bin 2>/dev/null || true
 RUN chown -R 65532:65532 /app /runner /home/runner 2>/dev/null || true

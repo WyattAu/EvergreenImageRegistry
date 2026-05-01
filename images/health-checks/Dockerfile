@@ -16,9 +16,9 @@ ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 RUN apt-get update && \
     apt-get install -y --no-install-recommends git ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /build/cmd
-RUN cat > /build/cmd/health-checks.go <<'GOEOF'
+    rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /build/cmd && \
+    cat > /build/cmd/health-checks.go <<'GOEOF'
 package main
 
 import (

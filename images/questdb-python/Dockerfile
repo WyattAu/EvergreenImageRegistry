@@ -12,11 +12,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir questdb psycopg2-binary || true
-RUN mkdir -p /app 2>/dev/null || true
-
-
-RUN mkdir -p /opt/venv ; \
+    pip install --no-cache-dir questdb psycopg2-binary || true && \
+    mkdir -p /app 2>/dev/null || true && \
+    mkdir -p /opt/venv ; \
     mkdir -p /app 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest

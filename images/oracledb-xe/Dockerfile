@@ -21,9 +21,9 @@ RUN mkdir -p /tmp/oracle-rpm && touch /tmp/oracle-rpm/oracle-database-xe-placeho
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache bc ca-certificates curl netcat-openbsd || true
-RUN adduser -D -u 65532 -s /bin/false oracle 2>/dev/null || true
-RUN mkdir -p /var/lib/oracle /var/log/oracle /var/cache/oracle /opt/oracle 2>/dev/null || true
+RUN apk add --no-cache bc ca-certificates curl netcat-openbsd || true && \
+    adduser -D -u 65532 -s /bin/false oracle 2>/dev/null || true && \
+    mkdir -p /var/lib/oracle /var/log/oracle /var/cache/oracle /opt/oracle 2>/dev/null || true
 COPY --from=builder /tmp/oracle-rpm/*.rpm /tmp/
 RUN rpm2cpio /tmp/oracle-database-xe-*.rpm 2>/dev/null | cpio -idmv -D /opt/oracle 2>/dev/null || \
     echo "Oracle XE RPM extracted (may require manual setup)"

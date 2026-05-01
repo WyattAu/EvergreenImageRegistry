@@ -4,7 +4,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates ; rm -rf /var/lib/apt/lists/* || true
 
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal || true
+RUN curl --proto '=https' --tlsv1.2 -sSfL https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal || true
 ENV PATH="/root/.cargo/bin:$PATH"
 RUN cargo install cargo-audit || true
 RUN mkdir -p /app 2>/dev/null || true

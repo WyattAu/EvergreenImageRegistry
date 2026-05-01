@@ -10,10 +10,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=2.5.0
-RUN apk add --no-cache ca-certificates || true
-RUN addgroup -S -g 10000 mongosh 2>/dev/null || true && \
-    adduser -u 65532 -G mongosh -D -h /app -s /bin/false mongosh 2>/dev/null || true
-RUN mkdir -p /app /var/log/mongosh 2>/dev/null || true
+RUN apk add --no-cache ca-certificates || true && \
+    addgroup -S -g 10000 mongosh 2>/dev/null || true && \
+    adduser -u 65532 -G mongosh -D -h /app -s /bin/false mongosh 2>/dev/null || true && \
+    mkdir -p /app /var/log/mongosh 2>/dev/null || true
 COPY --from=builder /opt/mongosh /opt/mongosh
 RUN chown -R 65532:65532 /app /var/log/mongosh 2>/dev/null || true
 USER 65532:65532

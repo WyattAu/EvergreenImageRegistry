@@ -1,9 +1,9 @@
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=2.4.0
 ARG GITHUB_TOKEN
-RUN apk add --no-cache python3 py3-pip ca-certificates build-base || true
-RUN pip install --no-cache-dir matrix-synapse==${VERSION} || true
-RUN mkdir -p /etc/synapse /var/lib/synapse /var/log/synapse 2>/dev/null || true
+RUN apk add --no-cache python3 py3-pip ca-certificates build-base || true && \
+    pip install --no-cache-dir matrix-synapse==${VERSION} || true && \
+    mkdir -p /etc/synapse /var/lib/synapse /var/log/synapse 2>/dev/null || true
 RUN addgroup -S -g 10000 synapse 2>/dev/null || true && \
     adduser -u 65532 -G synapse -D -h /app -s /bin/false synapse 2>/dev/null || true && \
     chown -R 65532:65532 /var/lib/synapse /var/log/synapse 2>/dev/null || true

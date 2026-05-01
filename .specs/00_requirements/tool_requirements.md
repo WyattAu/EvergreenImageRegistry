@@ -1,14 +1,5 @@
 # Tool Requirements and Capability Matrix
 
-## Document Metadata
-
-| Attribute | Value |
-|-----------|-------|
-| Document ID | TOOL-REQ-001 |
-| Version | 1.0.0 |
-| Status | APPROVED |
-| Created | 2026-04-19 |
-
 ---
 
 ## Required Tools

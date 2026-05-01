@@ -12,11 +12,11 @@ RUN mkdir -p /app-src 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION
-RUN apk add --no-cache ca-certificates python3 py3-pip || true
-RUN pip3 install --break-system-packages --no-cache-dir \
-        pymongo 2>/dev/null || true
-RUN adduser -u 65532 -s /bin/false objectrocket 2>/dev/null || true
-RUN mkdir -p /var/lib/objectrocket /var/log/objectrocket /app 2>/dev/null || true
+RUN apk add --no-cache ca-certificates python3 py3-pip || true && \
+    pip3 install --break-system-packages --no-cache-dir \
+        pymongo 2>/dev/null || true && \
+    adduser -u 65532 -s /bin/false objectrocket 2>/dev/null || true && \
+    mkdir -p /var/lib/objectrocket /var/log/objectrocket /app 2>/dev/null || true
 RUN printf '#!/bin/sh\nexec python3 -c "\nimport sys\nprint(\"objectrocket v%s - MongoDB cloud development compatibility\")\nprint(\"ObjectRocket is a fully managed database cloud service.\")\nprint(\"This image provides a pymongo client library for development.\")\nprint(\"\")\nprint(\"Available: pymongo client library\")\nprint(\"Usage: import this image as a base for your ObjectRocket-compatible application.\")\nprint(\"Connect to your ObjectRocket/MongoDB Atlas endpoint in production.\")\n"' "${VERSION}" > /app/objectrocket && \
     chmod +x /app/objectrocket
 RUN chown -R 65532:65532 /var/lib/objectrocket /var/log/objectrocket /app

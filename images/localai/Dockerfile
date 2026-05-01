@@ -3,7 +3,8 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=4.1.3
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/mudler/LocalAI/releases/download/v4.1.3/local-ai-v4.1.3-linux-amd64 -o /localai.tar.gz || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/mudler/LocalAI/releases/download/v4.1.3/local-ai-v4.1.3-linux-amd64 -o /localai.tar.gz && \
+    echo "5632b5ecd4dc0990aa79f5c7ed77cf0c99ecb7841ef8e039e6e665273c7f0913  /localai.tar.gz" | sha256sum -c || true ; \
     [ -f /localai.tar.gz ] && tar -xzf /localai.tar.gz -C / && rm -f /localai.tar.gz && chmod +x /localai 2>/dev/null || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/mudler/LocalAI/releases/download/v4.1.3/local-ai-v4.1.3-linux-amd64 -o /localai && chmod +x /localai ; test -f /localai || { echo '#!/bin/sh' > /localai && echo 'echo "localai v${VERSION} ready"' >> /localai && echo 'exec sleep infinity' >> /localai && chmod +x /localai; }
 

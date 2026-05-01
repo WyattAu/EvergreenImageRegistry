@@ -15,10 +15,10 @@ RUN curl --retry 3 -fsSL \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=1.0.0-beta.1
-RUN apk add --no-cache ca-certificates busybox || true
-RUN addgroup -S -g 10000 appuser 2>/dev/null || true && \
-    adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser 2>/dev/null || true
-RUN mkdir -p /app 2>/dev/null || true
+RUN apk add --no-cache ca-certificates busybox || true && \
+    addgroup -S -g 10000 appuser 2>/dev/null || true && \
+    adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser 2>/dev/null || true && \
+    mkdir -p /app 2>/dev/null || true
 COPY --from=builder /www-src /app
 RUN chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532

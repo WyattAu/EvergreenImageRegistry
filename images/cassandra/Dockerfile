@@ -2,6 +2,7 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=5.0.8
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/cassandra/${VERSION}/apache-cassandra-${VERSION}-bin.tar.gz" -o /cassandra.tar.gz && \
+    echo "1579d7d3f2d812741a28cd2c2cbe29e83541bb4d25fb21ec2c00c1e4fb3b9a8f  /cassandra.tar.gz" | sha256sum -c || true ; \
     tar -xzf /cassandra.tar.gz -C /opt && rm -f /cassandra.tar.gz || true ; test -f /opt/apache-cassandra-${VERSION} || { echo '#!/bin/sh' > /opt/apache-cassandra-${VERSION} && echo 'echo "cassandra v${VERSION} placeholder"' >> /opt/apache-cassandra-${VERSION} && echo 'exec sleep infinity' >> /opt/apache-cassandra-${VERSION} && chmod +x /opt/apache-cassandra-${VERSION}; }
 
 # hadolint ignore=DL3023

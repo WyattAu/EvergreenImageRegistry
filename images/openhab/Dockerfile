@@ -21,10 +21,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates curl 2>/dev/null || true
-RUN apk add --no-cache java-21-default-jdk 2>/dev/null || \
-    apk add --no-cache openjdk-21-jdk-headless 2>/dev/null || true
-RUN adduser -u 65532 -D openhab 2>/dev/null || true
+RUN apk add --no-cache ca-certificates curl 2>/dev/null || true && \
+    apk add --no-cache java-21-default-jdk 2>/dev/null || \
+    apk add --no-cache openjdk-21-jdk-headless 2>/dev/null || true && \
+    adduser -u 65532 -D openhab 2>/dev/null || true
 COPY --from=downloader --chown=65532:65532 /app /openhab
 RUN mkdir -p /openhab/conf /openhab/userdata /var/log/openhab /var/cache/openhab && \
     chown -R 65532:65532 /openhab/conf /openhab/userdata /var/log/openhab /var/cache/openhab 2>/dev/null || true

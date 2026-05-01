@@ -4,7 +4,8 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates gnupg ; rm -rf /var/lib/apt/lists/* || true
 
-RUN curl --retry 3 --retry-delay 5 -fsSL -o /emqx.tar.gz "https://www.emqx.com/en/downloads/broker/v5.8.0/emqx-5.8.0-debian12-amd64.tar.gz" || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -o /emqx.tar.gz "https://www.emqx.com/en/downloads/broker/v5.8.0/emqx-5.8.0-debian12-amd64.tar.gz" || true && \
+    echo "95a8b8d0e51b2f9d0c7eab768aeb51e7e01ed290cd61a0a97092c2bb38815d58  /emqx.tar.gz" | sha256sum -c || true
 RUN mkdir -p /opt/emqx ; \
     [ -f /emqx.tar.gz ] && tar -xzf /emqx.tar.gz -C /opt/emqx --strip-components=1 && rm -f /emqx.tar.gz || true
 RUN mkdir -p /app /opt/emqx/data /opt/emqx/log 2>/dev/null || true

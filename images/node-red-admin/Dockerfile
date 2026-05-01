@@ -1,9 +1,8 @@
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        nodejs npm ca-certificates ; rm -rf /var/lib/apt/lists/* || true
-
-RUN npm install -g node-red-admin || true
-RUN mkdir -p /app 2>/dev/null || true
+        nodejs npm ca-certificates ; rm -rf /var/lib/apt/lists/* || true && \
+    npm install -g node-red-admin || true && \
+    mkdir -p /app 2>/dev/null || true
 
 
 RUN test -f /usr/lib/node_modules/node-red-admin || { echo '#!/bin/sh' > /usr/lib/node_modules/node-red-admin && echo 'echo "node-red-admin v${VERSION} placeholder"' >> /usr/lib/node_modules/node-red-admin && echo 'exec sleep infinity' >> /usr/lib/node_modules/node-red-admin && chmod +x /usr/lib/node_modules/node-red-admin ; } ; \

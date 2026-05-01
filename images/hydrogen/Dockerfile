@@ -5,9 +5,9 @@ RUN curl --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 300 -fsSL "ht
     mkdir -p /www-src && if [ -f /hydrogen.tar.gz ]; then tar -xzf /hydrogen.tar.gz -C /www-src --strip-components=1 2>/dev/null || true ; rm -f /hydrogen.tar.gz 2>/dev/null || true ; fi
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=0.5.1
-RUN apk add --no-cache ca-certificates busybox || true
-RUN addgroup -S -g 10000 hydrogen 2>/dev/null || true && adduser -u 65532 -G hydrogen -D -h /app -s /bin/false hydrogen 2>/dev/null || true
-RUN mkdir -p /app 2>/dev/null || true
+RUN apk add --no-cache ca-certificates busybox || true && \
+    addgroup -S -g 10000 hydrogen 2>/dev/null || true && adduser -u 65532 -G hydrogen -D -h /app -s /bin/false hydrogen 2>/dev/null || true && \
+    mkdir -p /app 2>/dev/null || true
 COPY --from=builder /www-src /app
 RUN chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532

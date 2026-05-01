@@ -28,9 +28,9 @@ RUN mkdir -p /usr/lib 2>/dev/null || true ; touch /usr/lib/chromium 2>/dev/null 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN addgroup -S -g 65532 renderer 2>/dev/null || true && \
-    adduser -u 65532 -G renderer -D -s /bin/false renderer || true
-RUN apk add --no-cache ca-certificates || true
-RUN mkdir -p /opt /usr/bin /usr/lib 2>/dev/null || true
+    adduser -u 65532 -G renderer -D -s /bin/false renderer || true && \
+    apk add --no-cache ca-certificates || true && \
+    mkdir -p /opt /usr/bin /usr/lib 2>/dev/null || true
 COPY --from=downloader /opt/grafana-image-renderer /opt/grafana-image-renderer
 COPY --from=chromium /usr/bin/chromium /usr/bin/chromium
 COPY --from=chromium /usr/lib/chromium /usr/lib/chromium

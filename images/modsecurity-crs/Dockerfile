@@ -20,9 +20,9 @@ RUN https://github.com/coreruleset/coreruleset.git /tmp/crs ; cp /tmp/crs/crs-se
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates libxml2-dev || true
-RUN adduser -D -u 65532 -s /bin/false modsec 2>/dev/null || true
-RUN mkdir -p /etc/modsecurity /var/log/modsecurity /var/cache/modsecurity /var/lib/modsecurity 2>/dev/null || true
+RUN apk add --no-cache ca-certificates libxml2-dev || true && \
+    adduser -D -u 65532 -s /bin/false modsec 2>/dev/null || true && \
+    mkdir -p /etc/modsecurity /var/log/modsecurity /var/cache/modsecurity /var/lib/modsecurity 2>/dev/null || true
 COPY --from=builder /tmp/crs /etc/modsecurity/crs
 RUN chown -R 65532:65532 /etc/modsecurity /var/log/modsecurity /var/cache/modsecurity /var/lib/modsecurity 2>/dev/null || true
 USER 65532:65532

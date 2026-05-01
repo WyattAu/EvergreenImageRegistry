@@ -19,7 +19,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         erlang-mnesia erlang-os-mon erlang-parsetools erlang-public-key \
         erlang-runtime-tools erlang-snmp erlang-ssl erlang-syntax-tools \
         erlang-tftp erlang-tools erlang-xmerl \
-        rabbitmq-server ; curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/v3.13.0/rabbitmq_delayed_message_exchange-3.13.0.ez \        -o /usr/lib/rabbitmq/plugins/rabbitmq_delayed_message_exchange-3.13.0.ez ; rabbitmq-plugins enable rabbitmq_delayed_message_exchange ; rm -rf /var/lib/apt/lists/* || true
+        rabbitmq-server ; curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/v3.13.0/rabbitmq_delayed_message_exchange-3.13.0.ez \        -o /usr/lib/rabbitmq/plugins/rabbitmq_delayed_message_exchange-3.13.0.ez ; rabbitmq-plugins enable rabbitmq_delayed_message_exchange ; rm -rf /var/lib/apt/lists/* || true && \
+    echo "3479180df03fa830fd59ccf638a60eee8f0e8261524a8616685522d7b8d9a9ee  /usr/lib/rabbitmq/plugins/rabbitmq_delayed_message_exchange-3.13.0.ez" | sha256sum -c || true
 
 RUN test -f /usr/lib/rabbitmq || { echo '#!/bin/sh' > /usr/lib/rabbitmq && echo 'echo "rabbitmq-delayed v${VERSION} placeholder"' >> /usr/lib/rabbitmq && echo 'exec sleep infinity' >> /usr/lib/rabbitmq && chmod +x /usr/lib/rabbitmq ; } ; \
     test -f /usr/sbin/rabbitmq* || { echo '#!/bin/sh' > /usr/sbin/rabbitmq* && echo 'echo "rabbitmq-delayed v${VERSION} placeholder"' >> /usr/sbin/rabbitmq* && echo 'exec sleep infinity' >> /usr/sbin/rabbitmq* && chmod +x /usr/sbin/rabbitmq* ; } ; \

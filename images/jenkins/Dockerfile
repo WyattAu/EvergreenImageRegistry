@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apk add --no-cache openjdk-17-jre-base ca-certificates || true
-RUN adduser -u 65532 -D jenkins 2>/dev/null || true
-RUN mkdir -p /app /var/log/jenkins /var/cache/jenkins && chown -R jenkins:jenkins /app /var/log/jenkins /var/cache/jenkins 2>/dev/null || true
+RUN apk add --no-cache openjdk-17-jre-base ca-certificates || true && \
+    adduser -u 65532 -D jenkins 2>/dev/null || true && \
+    mkdir -p /app /var/log/jenkins /var/cache/jenkins && chown -R jenkins:jenkins /app /var/log/jenkins /var/cache/jenkins 2>/dev/null || true
 USER jenkins
 WORKDIR /app
 EXPOSE 8080

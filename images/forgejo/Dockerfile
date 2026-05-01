@@ -18,9 +18,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://code.forgejo.org/forgejo/forge
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest AS runtime
-RUN addgroup -g 65532 git || true
-RUN adduser -D -u 65532 -G git git || true
-RUN mkdir -p /app /var/log/forgejo /var/cache/forgejo 2>/dev/null || true
+RUN addgroup -g 65532 git || true && \
+    adduser -D -u 65532 -G git git || true && \
+    mkdir -p /app /var/log/forgejo /var/cache/forgejo 2>/dev/null || true
 USER git
 WORKDIR /app
 # hadolint ignore=DL3023

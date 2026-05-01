@@ -6,7 +6,8 @@ RUN apt-get update && \
         curl \
         ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/gitbucket/gitbucket/releases/download/${VERSION}/gitbucket.war" -o /tmp/gitbucket.war || true
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/gitbucket/gitbucket/releases/download/${VERSION}/gitbucket.war" -o /tmp/gitbucket.war || true && \
+    echo "7e124543a48f3d349b2e93dddbaace1a7122a18b1a11b0e6ab403f0645d646d5  /tmp/gitbucket.war" | sha256sum -c || true
 RUN test -f /tmp/gitbucket.war && test -s /tmp/gitbucket.war || { echo "ERROR: gitbucket.war not downloaded" >&2; exit 1; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest

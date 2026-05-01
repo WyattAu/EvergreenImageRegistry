@@ -11,11 +11,11 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG GITHUB_TOKEN
-RUN apk add --no-cache ca-certificates curl wget xdg-utils || true
-RUN pip install --no-cache-dir --break-system-packages calibre 2>/dev/null || \
-    pip install --no-cache-dir calibre || true
-RUN adduser -u 65532 -D app 2>/dev/null || true
-RUN mkdir -p /app /var/log/python /var/cache/python && chown -R app:app /app /var/log/python /var/cache/python 2>/dev/null || true
+RUN apk add --no-cache ca-certificates curl wget xdg-utils || true && \
+    pip install --no-cache-dir --break-system-packages calibre 2>/dev/null || \
+    pip install --no-cache-dir calibre || true && \
+    adduser -u 65532 -D app 2>/dev/null || true && \
+    mkdir -p /app /var/log/python /var/cache/python && chown -R app:app /app /var/log/python /var/cache/python 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080

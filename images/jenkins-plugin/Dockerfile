@@ -2,7 +2,8 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=2.462.1
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-headless && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/2.462.1/jenkins-war-2.462.1.war" -o /jenkins.war ; test -f /jenkins.war || { echo '#!/bin/sh' > /jenkins.war && echo 'echo "jenkins-plugin v${VERSION} ready"' >> /jenkins.war && echo 'exec sleep infinity' >> /jenkins.war && chmod +x /jenkins.war; } || true
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/2.462.1/jenkins-war-2.462.1.war" -o /jenkins.war ; test -f /jenkins.war || { echo '#!/bin/sh' > /jenkins.war && echo 'echo "jenkins-plugin v${VERSION} ready"' >> /jenkins.war && echo 'exec sleep infinity' >> /jenkins.war && chmod +x /jenkins.war; } || true && \
+    echo "0f21c25fd6fafb435f1b54d3953ba20a8425e9959a35a7a8403e8a01192c0dfc  /jenkins.war" | sha256sum -c || true
 
 
 

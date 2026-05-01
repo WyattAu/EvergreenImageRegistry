@@ -12,11 +12,11 @@ RUN mkdir -p /app-src 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION
-RUN apk add --no-cache ca-certificates python3 py3-pip mariadb-client || true
-RUN pip3 install --break-system-packages --no-cache-dir \
-        pymysql sqlalchemy 2>/dev/null || true
-RUN adduser -u 65532 -s /bin/false singlestore 2>/dev/null || true
-RUN mkdir -p /var/lib/singlestore /var/log/singlestore /app 2>/dev/null || true
+RUN apk add --no-cache ca-certificates python3 py3-pip mariadb-client || true && \
+    pip3 install --break-system-packages --no-cache-dir \
+        pymysql sqlalchemy 2>/dev/null || true && \
+    adduser -u 65532 -s /bin/false singlestore 2>/dev/null || true && \
+    mkdir -p /var/lib/singlestore /var/log/singlestore /app 2>/dev/null || true
 RUN printf '#!/bin/sh\nexec python3 -c "\nimport sys\nprint(\"singlestore v%s - development compatibility (requires license)\")\nprint(\"SingleStore is a commercial distributed SQL database.\")\nprint(\"This image provides pymysql/sqlalchemy client libraries for development.\")\nprint(\"\")\nprint(\"Available: pymysql, sqlalchemy, mariadb-client\")\nprint(\"Usage: import this image as a base for your SingleStore-compatible application.\")\nprint(\"Download the free edition from https://www.singlestore.com/ for production use.\")\n"' "${VERSION}" > /app/singlestore && \
     chmod +x /app/singlestore
 RUN chown -R 65532:65532 /var/lib/singlestore /var/log/singlestore /app

@@ -11,10 +11,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     test -f /www/index.html || echo '<html><body><h1>cinny v'${VERSION}' placeholder</h1></body></html>' > /www/index.html
 
 FROM cgr.dev/chainguard/wolfi-base:latest
-RUN apk add --no-cache busybox ca-certificates || true
-RUN addgroup -S -g 10000 appuser 2>/dev/null || true && \
-    adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser 2>/dev/null || true
-RUN mkdir -p /var/www/html /var/run/httpd 2>/dev/null || true
+RUN apk add --no-cache busybox ca-certificates || true && \
+    addgroup -S -g 10000 appuser 2>/dev/null || true && \
+    adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser 2>/dev/null || true && \
+    mkdir -p /var/www/html /var/run/httpd 2>/dev/null || true
 COPY --from=builder /www /var/www/html
 RUN chown -R 65532:65532 /var/www/html /var/run/httpd 2>/dev/null || true
 USER 65532:65532

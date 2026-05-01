@@ -12,9 +12,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL \
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=1.22.0
-RUN apk add --no-cache ca-certificates git tzdata || true
-RUN adduser -D -u 65532 git 2>/dev/null || true
-RUN mkdir -p /app /var/lib/gitea /var/log/gitea /etc/gitea /var/cache/gitea 2>/dev/null || true
+RUN apk add --no-cache ca-certificates git tzdata || true && \
+    adduser -D -u 65532 git 2>/dev/null || true && \
+    mkdir -p /app /var/lib/gitea /var/log/gitea /etc/gitea /var/cache/gitea 2>/dev/null || true
 COPY --from=downloader /tmp/gitea /usr/local/bin/gitea
 RUN chown -R 65532:65532 /app /var/lib/gitea /var/log/gitea /etc/gitea /var/cache/gitea 2>/dev/null || true
 USER 65532:65532

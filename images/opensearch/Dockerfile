@@ -18,9 +18,9 @@ ENV HEALTH_CMD="curl -sf http://localhost:9200" \
     SOVEREIGN_LOG_LEVEL=info
 
 RUN addgroup -S -g 65532 opensearch 2>/dev/null || true && \
-    adduser -u 65532 -G opensearch -D -s /bin/false opensearch || true
-RUN apk add --no-cache curl ca-certificates gosu || true
-RUN mkdir -p /etc/ssl/certs /opt 2>/dev/null || true
+    adduser -u 65532 -G opensearch -D -s /bin/false opensearch || true && \
+    apk add --no-cache curl ca-certificates gosu || true && \
+    mkdir -p /etc/ssl/certs /opt 2>/dev/null || true
 COPY --from=downloader /opt/opensearch-2.12.0 /opt/opensearch
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 RUN mkdir -p /app/data /app/logs /app/conf ; \

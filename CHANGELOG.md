@@ -330,7 +330,7 @@ Verified safe updates via GitHub API with asset naming validation:
 - **Compliance:**
   - TRACEABILITY_MATRIX.md
   - STANDARD_CONFLICTS.md
-  - Tool Requirements (tool_requirements.toml)
+  - Tool Requirements (tool_requirements.md)
 - **Reports:**
   - Phase 0 Report
   - Phase 1 Report

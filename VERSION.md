@@ -5,7 +5,7 @@
 | Attribute | Value |
 |-----------|-------|
 | Project Name | Sovereign Hardened Image Registry |
-| Version | 12.0.0 |
+| Version | 13.0.0 |
 | Phase | Production Operational |
 | Status | ACTIVE |
 | Last Updated | 2026-05-01 |
@@ -38,6 +38,8 @@
 | Phase 17: Re-wrap Conversion | COMPLETED | 100% |
 | Phase 18: Multi-Arch Support | COMPLETED | 100% |
 | Phase 19: Observability Deepening | COMPLETED | 100% |
+| Phase 20: CI Fix Campaign (em-dash, slsa, verify) | COMPLETED | 100% |
+| Phase 21: Final ENTRYPOINT Pass | COMPLETED | 100% |
 
 ---
 
@@ -55,7 +57,7 @@
 | Download Checksum Verification | **297/297 (100%)** | 100% | **DONE** |
 | Total Verified (DL+pkg-mgr) | **988/998 (99%)** | 100% | **DONE** |
 | rm -f Idempotent Cleanup | **998/998 (100%)** | 100% | **DONE** |
-| ENTRYPOINT/CMD | **949/998 (95.1%)** | 100% | Near-complete |
+| ENTRYPOINT/CMD | **960/998 (96.2%)** | 100% | Near-complete |
 | Multi-Arch Go Images | **19** | 50+ | In progress |
 | CI Pipeline Stages | **11** | 11 | **DONE** |
 | Security Scanning (Trivy) | Active | Active | **DONE** |

@@ -803,7 +803,7 @@ jobs:
   # ===========================================================================
   # STAGE 8b: MULTI-ARCH BUILD - Build Go source-build images for amd64/arm64
   # ===========================================================================
-  # Go cross-compiles trivially with GOOS/GOARCH — no QEMU needed.
+  # Go cross-compiles trivially with GOOS/GOARCH -- no QEMU needed.
   # These images use golang: builder stages and CGO_ENABLED=0.
   # ===========================================================================
   build-multiarch:

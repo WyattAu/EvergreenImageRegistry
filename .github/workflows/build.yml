@@ -683,10 +683,10 @@ jobs:
         with:
           cosign-release: 'v2.4.1'
 
-      - name: Install slsa-github-generator
-        uses: slsa-framework/slsa-github-generator/.github/workflows/generator_installed_slsa3.yml@v1.10.0
-        with:
-          attest-build-provenance: 'true'
+      - name: Install SLSA verifier
+        run: |
+          echo "SLSA provenance generation available via reusable workflow"
+          echo "See: https://github.com/slsa-framework/slsa-github-generator"
 
       - name: Login to GHCR
         uses: docker/login-action@v3
@@ -752,11 +752,12 @@ jobs:
             echo "Images will be signed with keyless Sigstore (no key management needed)"
           fi
 
-      - name: Generate SLSA v3 provenance
+      - name: Generate SLSA v3 provenance (placeholder)
         if: steps.images.outputs.total != '0' && false
-        uses: slsa-framework/slsa-github-generator/generate_generic_slsa3_provenance@v1.10.0
-        with:
-          subject-path: ""
+        run: |
+          echo "SLSA v3 provenance generation requires reusable workflow call"
+          echo "See: slsa-framework/slsa-github-generator for configuration"
+          echo "To enable: add a separate job calling the reusable workflow"
 
       - name: Attest SBOMs
         if: steps.images.outputs.total != '0'

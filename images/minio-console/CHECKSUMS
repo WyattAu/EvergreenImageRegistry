@@ -1,20 +1,13 @@
 # CHECKSUMS - minio-console
-# Status: PENDING_VERIFICATION
+# Generated: 2026-05-02
+# Status: DOCKER_IMAGE_BASED
+# Console merged into minio/minio image
+# Uses minio/minio:RELEASE.2025-10-15T17-29-55Z from Docker Hub
 
 [metadata]
 image = "minio-console"
-version = "v0.35.0"
-created = "2026-04-22"
-last_verified = ""
-verification_method = "download-verify"
-
-[download]
-url = "https://github.com/minio/console/releases/download/v0.35.0/console-linux-amd64"
-filename = "console-linux-amd64"
-
-[checksum]
-expected_sha256 = "PENDING"
-
-[upstream_checksum]
-url = ""
-format = ""
+version = "RELEASE.2025-10-15T17-29-55Z"
+created = "2026-05-02"
+verification_method = "docker-image"
+source_image = "minio/minio:RELEASE.2025-10-15T17-29-55Z"
+note = "minio/console repo archived; console now part of minio/minio"

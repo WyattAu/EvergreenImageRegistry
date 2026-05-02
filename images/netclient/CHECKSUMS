@@ -1,28 +1,11 @@
 # CHECKSUMS - netclient
-# Status: PENDING
-#
-# IMPORTANT: These checksums are verified against upstream sources.
-# To re-verify:
-# 1. Download binary from URL below
-# 2. Compute: sha256sum <file>
-# 3. Compare with expected_sha256 below
-# 4. Cross-validate against upstream_checksum URL if available
-# 5. Submit PR with any changes
+# Generated: 2026-05-02
+# Status: DOCKER_IMAGE_BASED
+# Binary no longer in netmaker releases; uses gravitl/netclient from Docker Hub
 
 [metadata]
 image = "netclient"
-version = "0.24.0"
-created = "2026-04-21T00:00:00Z"
-last_verified = ""
-verification_method = "manual"
-
-[download]
-url = "https://github.com/gravitl/netmaker/releases/download/v0.24.0/netclient-linux-amd64"
-filename = "netclient-linux-amd64"
-
-[checksum]
-expected_sha256 = "PENDING"
-
-[upstream_checksum]
-url = "https://github.com/gravitl/netmaker/releases/download/v0.24.0/checksums.txt"
-format = "sha256"
+version = "v1.5.1"
+created = "2026-05-02"
+verification_method = "docker-image"
+source_image = "gravitl/netclient:v1.5.1"

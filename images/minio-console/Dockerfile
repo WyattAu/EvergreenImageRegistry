@@ -1,32 +1,16 @@
+ARG VERSION=RELEASE.2025-10-15T17-29-55Z
 
-FROM debian:bookworm-slim AS downloader
-ARG VERSION=v0.35.0
-ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/minio/console/releases/download/v0.35.0/console-linux-amd64 -o /console && chmod +x /console ; test -f /console || { echo '#!/bin/sh' > /console && echo 'echo "minio-console v${VERSION} ready"' >> /console && echo 'exec sleep infinity' >> /console && chmod +x /console; } || true
-
-
+FROM minio/minio:RELEASE.2025-10-15T17-29-55Z AS upstream
 
 FROM scratch
-COPY --from=downloader /console /console
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=upstream /usr/bin/minio /minio
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
-EXPOSE 9090
-ENTRYPOINT ["/console"]
-LABEL org.opencontainers.image.title="minio-console" \
-      org.opencontainers.image.version="v0.35.0" \
-      org.opencontainers.image.vendor="MinIO" \
-      org.opencontainers.image.source="https://github.com/minio/console" \
-      sovereign.image.tier="2" \
-      sovereign.image.category="cloud-storage" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="scratch" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="5s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="10000ms"
+EXPOSE 9000 9090
+ENTRYPOINT ["/minio"]
+CMD ["console", "server"]
+LABEL org.opencontainers.image.title="minio-console"       org.opencontainers.image.version="RELEASE.2025-10-15T17-29-55Z"       org.opencontainers.image.vendor="MinIO"       org.opencontainers.image.source="https://github.com/minio/minio"       sovereign.image.tier="2"       sovereign.image.category="cloud-storage"       sovereign.image.status="functional"       sovereign.constraint.nonroot="true"       sovereign.constraint.base="scratch"       sovereign.hft.signal-handling="native"       sovereign.hft.shutdown-timeout="5s"       sovereign.hft.init-system="none"       sovereign.hft.startup-timeout="10000ms"
 
 LABEL sovereign.base.image="scratch"
 LABEL sovereign.metrics.native="ztunnel"

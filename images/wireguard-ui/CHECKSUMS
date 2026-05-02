@@ -13,8 +13,8 @@
 image = "wireguard-ui"
 version = "0.5.4"
 created = "2026-04-21T00:00:00Z"
-last_verified = ""
-verification_method = "manual"
+last_verified = "fix-pending"
+verification_method = "manual-fix"
 
 [download]
 url = "https://github.com/ngoduykhanh/wireguard-ui/releases/download/v0.5.4/wireguard-ui-v0.5.4-linux-amd64.tar.gz"

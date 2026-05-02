@@ -5,8 +5,8 @@
 image = "vpn-controller"
 version = "pending"
 created = "2026-04-21T15:22:30Z"
-last_verified = ""
-verification_method = "pending"
+last_verified = "fix-pending"
+verification_method = "manual-fix"
 
 [checksum]
 expected_sha256 = "PENDING"

@@ -5,8 +5,8 @@
 image = "duplicati"
 version = "2.1.0.1"
 created = "2026-04-22"
-last_verified = ""
-verification_method = "download-verify"
+last_verified = "fix-pending"
+verification_method = "manual-fix"
 
 [download]
 url = "https://github.com/duplicati/duplicati/releases/download/v2.1.0.1/duplicati-2.1.0.1-linux-x64-gui.zip"

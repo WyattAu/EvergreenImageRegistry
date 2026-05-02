@@ -6,8 +6,8 @@
 image = "hadolint"
 version = "2.12.0"
 created = "2026-04-22T00:00:00Z"
-last_verified = "2026-04-22T00:00:00Z"
-verification_method = "github-release-checksums"
+last_verified = "fix-pending"
+verification_method = "manual-fix"
 verifier = "populate_checksums.py"
 
 [download]
@@ -15,7 +15,7 @@ url = "https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-L
 filename = "hadolint-Linux-x86_64"
 
 [checksum]
-expected_sha256 = "PENDING_VERIFY"
+expected_sha256 = "PENDING"
 
 [upstream_checksum]
 url = "https://github.com/hadolint/hadolint/releases/download/v2.12.0/sha256sums.txt"

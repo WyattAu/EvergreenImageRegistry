@@ -13,8 +13,8 @@
 image = "tailscale"
 version = "1.58.0"
 created = "2026-04-21T00:00:00Z"
-last_verified = ""
-verification_method = "manual"
+last_verified = "fix-pending"
+verification_method = "manual-fix"
 
 [download]
 url = "https://pkgs.tailscale.com/stable/tailscale_1.58.0_linux_amd64.tgz"

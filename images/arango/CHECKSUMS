@@ -6,8 +6,8 @@
 image = "arango"
 version = "3.12.2"
 created = "2026-04-21"
-last_verified = ""
-verification_method = "pending"
+last_verified = "fix-pending"
+verification_method = "manual-fix"
 verifier = "manual"
 
 [download]

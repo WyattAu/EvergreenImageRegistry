@@ -1,20 +1,11 @@
 # CHECKSUMS - jellyseer
-# Status: PENDING_VERIFICATION
+# Generated: 2026-05-02
+# Status: DOCKER_IMAGE_BASED
+# Uses fallenbagel/jellyseerr:2.7.3 from Docker Hub
 
 [metadata]
 image = "jellyseer"
-version = "v2.3.0"
-created = "2026-04-22"
-last_verified = ""
-verification_method = "download-verify"
-
-[download]
-url = "https://github.com/Fallenbagel/jellyseerr/releases/download/v2.3.0/jellyseerr_2.3.0_linux_amd64.tar.gz"
-filename = "jellyseerr_2.3.0_linux_amd64.tar.gz"
-
-[checksum]
-expected_sha256 = "PENDING"
-
-[upstream_checksum]
-url = ""
-format = ""
+version = "2.7.3"
+created = "2026-05-02"
+verification_method = "docker-image"
+source_image = "fallenbagel/jellyseerr:2.7.3"

@@ -1,22 +1,11 @@
 # CHECKSUMS - typesense
-# Generated: 2026-04-21
-# Status: PENDING_VERIFICATION
+# Generated: 2026-05-02
+# Status: DOCKER_IMAGE_BASED
+# Uses typesense/typesense:30.2 from Docker Hub
 
 [metadata]
 image = "typesense"
-version = "0.25.2"
-created = "2026-04-21"
-last_verified = ""
-verification_method = "download-verify"
-verifier = "PENDING"
-
-[download]
-url = "https://github.com/typesense/typesense/releases/download/v0.25.2/typesense-server-0.25.2-linux-amd64.tar.gz"
-filename = "typesense-server-0.25.2-linux-amd64.tar.gz"
-
-[checksum]
-expected_sha256 = "PENDING"
-
-[upstream_checksum]
-url = "https://github.com/typesense/typesense/releases/download/v0.25.2/typesense-server-0.25.2-linux-amd64.tar.gz"
-format = ""
+version = "30.2"
+created = "2026-05-02"
+verification_method = "docker-image"
+source_image = "typesense/typesense:30.2"

@@ -1,34 +1,12 @@
 # CHECKSUMS - localai-loadbalancer
-# Generated: 2026-04-22
-# Status: PENDING_VERIFICATION
-#
-# IMPORTANT: These checksums must be verified before use.
-# Method: Download the binary on an air-gapped machine, compute SHA256,
-# then compare against upstream checksum file if available.
-#
-# Update protocol:
-# 1. Download binary from URL
-# 2. Compute: sha256sum <file>
-# 3. Compare with upstream sha256sums.txt if available
-# 4. Cross-validate with second team member
-# 5. Update EXPECTED_SHA256 below
-# 6. Submit PR with CHECKSUMS update
+# Generated: 2026-05-02
+# Status: DOCKER_IMAGE_BASED
+# Loadbalancer binary removed from GitHub releases; now uses localai/localai Docker image
 
 [metadata]
 image = "localai-loadbalancer"
-version = "2.30.0"
-created = "2026-04-22"
-last_verified = ""
-verification_method = "download-verify"
-verifier = "PENDING"
-
-[download]
-url = "https://github.com/mudler/LocalAI/releases/download/v2.30.0/localai-loadbalancer-linux-amd64"
-filename = "localai-loadbalancer-linux-amd64"
-
-[checksum]
-expected_sha256 = "PENDING"
-
-[upstream_checksum]
-url = ""
-format = ""
+version = "v4.1.3"
+created = "2026-05-02"
+verification_method = "docker-image"
+source_image = "localai/localai:v4.1.3"
+note = "loadbalancer binary no longer published as separate release asset"

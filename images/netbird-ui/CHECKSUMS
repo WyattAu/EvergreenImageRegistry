@@ -1,22 +1,17 @@
 # CHECKSUMS - netbird-ui
-# Generated: 2026-04-21
-# Status: PENDING
+# Generated: 2026-05-02
+# Status: PENDING_VERIFICATION
+# Asset naming changed from netbird-ui-X.Y.Z.zip to netbird-ui-linux_X.Y.Z_linux_amd64.tar.gz
 
 [metadata]
 image = "netbird-ui"
-version = "2.7.0"
-created = "2026-04-21"
-last_verified = ""
-verification_method = "pending"
-verifier = "manual"
+version = "0.70.4"
+created = "2026-05-02"
+verification_method = "download-verify"
 
 [download]
-url = "https://github.com/netbirdio/netbird/releases/download/v2.7.0/netbird-ui-2.7.0.zip"
-filename = "netbird-ui-2.7.0.zip"
+url = "https://github.com/netbirdio/netbird/releases/download/v0.70.4/netbird-ui-linux_0.70.4_linux_amd64.tar.gz"
+filename = "netbird-ui-linux_0.70.4_linux_amd64.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
-
-[upstream_checksum]
-url = ""
-format = ""

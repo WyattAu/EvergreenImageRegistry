@@ -1,38 +1,15 @@
+ARG VERSION=v1.5.1
 
-FROM debian:bookworm-slim AS downloader
-ARG VERSION=0.24.0
-ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/gravitl/netmaker/releases/download/v0.24.0/netclient-linux-amd64 -o /netclient || true ; \
-    strip --strip-all /netclient && \
-    chmod +x /netclient ; test -f /netclient || { echo '#!/bin/sh' > /netclient && echo 'echo "netclient v${VERSION} ready"' >> /netclient && echo 'exec sleep infinity' >> /netclient && chmod +x /netclient; }
-
-
-
-FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app 2>/dev/null || true
-
+FROM gravitl/netclient:v1.5.1 AS upstream
 
 FROM scratch
-COPY --from=downloader /netclient /netclient
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
+COPY --from=upstream /usr/bin/netclient /netclient
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 EXPOSE 443
 ENTRYPOINT ["/netclient"]
-LABEL org.opencontainers.image.title="netclient" \
-      org.opencontainers.image.version="0.24.0" \
-      org.opencontainers.image.vendor="Gravitl" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="networking" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
+LABEL org.opencontainers.image.title="netclient"       org.opencontainers.image.version="v1.5.1"       org.opencontainers.image.vendor="Gravitl"       org.opencontainers.image.source="https://github.com/gravitl/netmaker"       sovereign.image.tier="1"       sovereign.image.category="networking"       sovereign.image.status="functional"       sovereign.constraint.nonroot="true"       sovereign.constraint.scratch="true"       sovereign.hft.signal-handling="native"       sovereign.hft.shutdown-timeout="3s"       sovereign.hft.init-system="none"       sovereign.hft.startup-timeout="3000ms"
 
 LABEL sovereign.base.image="scratch"
 LABEL sovereign.metrics.native="ztunnel"

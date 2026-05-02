@@ -1,20 +1,16 @@
 # CHECKSUMS - emby-server
+# Generated: 2026-05-02
 # Status: PENDING_VERIFICATION
 
 [metadata]
 image = "emby-server"
-version = "4.9.0.30"
-created = "2026-04-22"
-last_verified = ""
+version = "4.9.3.0"
+created = "2026-05-02"
 verification_method = "download-verify"
 
 [download]
-url = "https://github.com/MediaBrowser/Emby.Releases/releases/download/4.9.0.30/emby-server-debian_4.9.0.30_amd64.deb"
-filename = "emby-server-debian_4.9.0.30_amd64.deb"
+url = "https://github.com/MediaBrowser/Emby.Releases/releases/download/4.9.3.0/emby-server-deb_4.9.3.0_amd64.deb"
+filename = "emby-server-deb_4.9.3.0_amd64.deb"
 
 [checksum]
 expected_sha256 = "PENDING"
-
-[upstream_checksum]
-url = ""
-format = ""

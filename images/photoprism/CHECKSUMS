@@ -1,12 +1,17 @@
 # CHECKSUMS - photoprism
-# Status: PENDING
+# Generated: 2026-05-02
+# Status: PENDING_VERIFICATION
+# Moved from dl.photoprism.app to GitHub releases with new naming convention
 
 [metadata]
 image = "photoprism"
-version = "pending"
-created = "2026-04-21T00:00:00Z"
-last_verified = ""
-verification_method = "pending"
+version = "260305-fad9d5395"
+created = "2026-05-02"
+verification_method = "download-verify"
+
+[download]
+url = "https://github.com/photoprism/photoprism/releases/download/260305-fad9d5395/photoprism_260305-fad9d5395-linux-amd64.tar.gz"
+filename = "photoprism_260305-fad9d5395-linux-amd64.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"

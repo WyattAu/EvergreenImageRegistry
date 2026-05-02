@@ -1,20 +1,11 @@
 # CHECKSUMS - pydio-cells
-# Status: PENDING_VERIFICATION
+# Generated: 2026-05-02
+# Status: DOCKER_pydio-cells_BASED
+# Uses pydio/cells:4.4.17 from Docker Hub
 
 [metadata]
 image = "pydio-cells"
-version = "4.5.0"
-created = "2026-04-22"
-last_verified = ""
-verification_method = "download-verify"
-
-[download]
-url = "https://github.com/pydio/cells/releases/download/v4.5.0/cells-4.5.0-linux-amd64"
-filename = "cells-4.5.0-linux-amd64"
-
-[checksum]
-expected_sha256 = "PENDING"
-
-[upstream_checksum]
-url = ""
-format = ""
+version = "4.4.17"
+created = "2026-05-02"
+verification_method = "docker-image"
+source_image = "pydio/cells:4.4.17"

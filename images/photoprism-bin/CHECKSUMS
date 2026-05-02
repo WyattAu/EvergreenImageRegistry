@@ -1,34 +1,17 @@
 # CHECKSUMS - photoprism-bin
-# Generated: 2026-04-22
+# Generated: 2026-05-02
 # Status: PENDING_VERIFICATION
-#
-# IMPORTANT: These checksums must be verified before use.
-# Method: Download the binary on an air-gapped machine, compute SHA256,
-# then compare against upstream checksum file if available.
-#
-# Update protocol:
-# 1. Download binary from URL
-# 2. Compute: sha256sum <file>
-# 3. Compare with upstream sha256sums.txt if available
-# 4. Cross-validate with second team member
-# 5. Update EXPECTED_SHA256 below
-# 6. Submit PR with CHECKSUMS update
+# Moved from dl.photoprism.app to GitHub releases with new naming convention
 
 [metadata]
 image = "photoprism-bin"
-version = "240427"
-created = "2026-04-22"
-last_verified = ""
+version = "260305-fad9d5395"
+created = "2026-05-02"
 verification_method = "download-verify"
-verifier = "PENDING"
 
 [download]
-url = "https://dl.photoprism.app/pkg/linux-amd64/photoprism-240427-linux-amd64.tar.gz"
-filename = "photoprism-240427-linux-amd64.tar.gz"
+url = "https://github.com/photoprism/photoprism/releases/download/260305-fad9d5395/photoprism_260305-fad9d5395-linux-amd64.tar.gz"
+filename = "photoprism_260305-fad9d5395-linux-amd64.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
-
-[upstream_checksum]
-url = ""
-format = ""

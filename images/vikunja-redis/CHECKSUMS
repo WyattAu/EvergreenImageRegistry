@@ -5,8 +5,8 @@
 image = "vikunja-redis"
 version = "v0.24.1"
 created = "2026-04-22"
-last_verified = ""
-verification_method = "download-verify"
+last_verified = "fix-pending"
+verification_method = "manual-fix"
 
 [download]
 url = "https://github.com/go-vikunja/vikunja/releases/download/v0.24.1/vikunja-v0.24.1-linux-amd64"

@@ -18,8 +18,8 @@
 image = "step-cli"
 version = "0.30.2"
 created = "2026-04-21T00:00:00Z"
-last_verified = "2026-04-21T00:00:00Z"
-verification_method = "download-and-compute"
+last_verified = "fix-pending"
+verification_method = "manual-fix"
 verifier = "populate_checksums.py"
 
 [download]

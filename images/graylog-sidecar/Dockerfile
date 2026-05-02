@@ -2,7 +2,7 @@ FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Graylog2/collector-sidecar/releases/download/${VERSION}/collector-sidecar-${VERSION}-linux-amd64.tar.gz -o /sidecar.tar.gz 2>/dev/null || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Graylog2/collector-sidecar/releases/download/1.5.2/graylog-sidecar-1.5.2.tar.gz -o /sidecar.tar.gz 2>/dev/null || true ; \
     mkdir -p /opt/sidecar-src /opt/sidecar || true ; \
     [ -f /sidecar.tar.gz ] && tar -xzf /sidecar.tar.gz -C /opt/sidecar-src --strip-components=1 2>/dev/null || true ; \
     rm -f /sidecar.tar.gz || true ; \

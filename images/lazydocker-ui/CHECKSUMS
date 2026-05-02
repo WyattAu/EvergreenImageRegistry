@@ -5,14 +5,14 @@
 image = "lazydocker-ui"
 version = "latest"
 created = "2026-04-21"
-last_verified = "2026-04-21"
-verification_method = "download-verify"
+last_verified = "fix-pending"
+verification_method = "manual-fix"
 verifier = "manual"
 [download]
 url = "https://github.com/jesseduffield/lazydocker/releases/download/v0.12.0/lazydocker_0.12.0_Linux_x86_64.tar.gz"
 filename = "lazydocker_0.12.0_Linux_x86_64.tar.gz.tar.gz"
 [checksum]
-expected_sha256 = "PENDING_VERIFICATION"
+expected_sha256 = "PENDING"
 [upstream_checksum]
 url = ""
 format = "sha256"

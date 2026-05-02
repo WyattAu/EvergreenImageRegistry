@@ -16,14 +16,14 @@
 
 [metadata]
 image = "miniflux-21"
-version = "2.1.5"
+version = "2.2.19"
 created = "2026-04-22"
 last_verified = ""
 verification_method = "download-verify"
 verifier = "PENDING"
 
 [download]
-url = "https://github.com/miniflux/v2/releases/download/2.1.5/miniflux-linux-amd64"
+url = "https://github.com/miniflux/v2/releases/download/2.2.19/miniflux-linux-amd64"
 filename = "miniflux-linux-amd64"
 
 [checksum]

@@ -1,13 +1,13 @@
 
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=3.11.10.1
+ARG VERSION=3.12.4
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.arangodb.com/arangodb311/Linux/arangodb3-linux-3.11.10.1_x86_64.tar.gz" -o /arangodb.tar.gz || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.arangodb.com/arangodb312/Community/Linux/arangodb3-linux-3.12.4_x86_64.tar.gz" -o /arangodb.tar.gz || true ; \
     [ -f /arangodb.tar.gz ] && tar -xzf /arangodb.tar.gz -C /tmp && rm -f /arangodb.tar.gz || true ; \
-    strip --strip-all /tmp/arangodb3-linux-3.11.10.1_x86_64/usr/sbin/arangod && \
-    strip --strip-all /tmp/arangodb3-linux-3.11.10.1_x86_64/usr/bin/arangosh && \
-    mv /tmp/arangodb3-linux-3.11.10.1_x86_64/usr/sbin/arangod /arangod && \
-    mv /tmp/arangodb3-linux-3.11.10.1_x86_64/usr/bin/arangosh /arangosh ; test -f /arangod || { echo '#!/bin/sh' > /arangod && echo 'echo "arangodb v${VERSION} ready"' >> /arangod && echo 'exec sleep infinity' >> /arangod && chmod +x /arangod; } && test -f /arangosh || { echo '#!/bin/sh' > /arangosh && echo 'echo "arangodb v${VERSION} ready"' >> /arangosh && echo 'exec sleep infinity' >> /arangosh && chmod +x /arangosh; }
+    strip --strip-all /tmp/arangodb3-linux-3.12.4_x86_64/usr/sbin/arangod && \
+    strip --strip-all /tmp/arangodb3-linux-3.12.4_x86_64/usr/bin/arangosh && \
+    mv /tmp/arangodb3-linux-3.12.4_x86_64/usr/sbin/arangod /arangod && \
+    mv /tmp/arangodb3-linux-3.12.4_x86_64/usr/bin/arangosh /arangosh ; test -f /arangod || { echo '#!/bin/sh' > /arangod && echo 'echo "arangodb v${VERSION} ready"' >> /arangod && echo 'exec sleep infinity' >> /arangod && chmod +x /arangod; } && test -f /arangosh || { echo '#!/bin/sh' > /arangosh && echo 'echo "arangodb v${VERSION} ready"' >> /arangosh && echo 'exec sleep infinity' >> /arangosh && chmod +x /arangosh; }
 
 
 
@@ -28,7 +28,7 @@ WORKDIR /app
 EXPOSE 8529
 ENTRYPOINT ["/arangod"]
 LABEL org.opencontainers.image.title="arangodb" \
-      org.opencontainers.image.version="3.11.10.1" \
+      org.opencontainers.image.version="3.12.4" \
       org.opencontainers.image.vendor="ArangoDB" \
       sovereign.image.tier="1" \
       sovereign.image.category="database" \

@@ -4,19 +4,19 @@
 
 [metadata]
 image = "jenkins-executor"
-version = "2.462.1"
+version = "3355.v388858a_47b_33"
 created = "2026-04-22T00:00:00Z"
 last_verified = "2026-04-22T00:00:00Z"
 verification_method = "maven-repo-sha256"
 verifier = "manual"
 
 [download]
-url = "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/2.462.1/remoting-2.462.1.jar"
-filename = "remoting-2.462.1.jar"
+url = "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/3355.v388858a_47b_33/remoting-3355.v388858a_47b_33.jar"
+filename = "remoting-3355.v388858a_47b_33.jar"
 
 [checksum]
 expected_sha256 = "VERIFY_FROM_MAVEN_REPO"
 
 [upstream_checksum]
-url = "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/2.462.1/remoting-2.462.1.jar.sha256"
+url = "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/3355.v388858a_47b_33/remoting-3355.v388858a_47b_33.jar.sha256"
 format = "sha256"

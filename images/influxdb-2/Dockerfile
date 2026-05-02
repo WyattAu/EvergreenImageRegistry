@@ -1,31 +1,17 @@
+ARG VERSION=2.7
 
-FROM debian:bookworm-slim AS downloader
-ARG VERSION=2.7.5
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.influxdata.com/influxdb/releases/influxdb2-2.7.5-linux-amd64.tar.gz" -o /influxdb.tar.gz || true ; \
-    [ -f /influxdb.tar.gz ] && tar -xzf /influxdb.tar.gz -C /tmp && rm -f /influxdb.tar.gz || true ; \
-    strip --strip-all /tmp/influxdb2-2.7.5/usr/bin/influxd && \
-    mv /tmp/influxdb2-2.7.5/usr/bin/influxd /influxd ; test -f /influxd || { echo '#!/bin/sh' > /influxd && echo 'echo "influxdb-2 v${VERSION} ready"' >> /influxd && echo 'exec sleep infinity' >> /influxd && chmod +x /influxd; }
-
-
-
-FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/lib/influxdb2 /var/log/influxdb2 2>/dev/null || true
-
+FROM influxdb:2.7 AS upstream
 
 FROM scratch
-COPY --from=downloader /influxd /influxd
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
-COPY --from=builder /var/lib/influxdb2 /var/lib/influxdb2
-COPY --from=builder /var/log/influxdb2 /var/log/influxdb2
+COPY --from=upstream /usr/bin/influxd /influxd
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8086
 ENTRYPOINT ["/influxd"]
 LABEL org.opencontainers.image.title="influxdb-2" \
-      org.opencontainers.image.version="2.7.5" \
+      org.opencontainers.image.version="2.7" \
       org.opencontainers.image.vendor="InfluxData" \
       org.opencontainers.image.description="InfluxDB v2-only variant for pure v2 API deployments" \
       sovereign.image.tier="1" \

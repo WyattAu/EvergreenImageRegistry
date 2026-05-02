@@ -5,11 +5,10 @@ ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v${VERSION}/grpc_health_probe-linux-amd64.tar.gz -o /healthcheck.tar.gz && \
-    echo "f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b  /healthcheck.tar.gz" | sha256sum -c || true  #
-RUN [ -f /healthcheck.tar.gz ] && tar -xzf /healthcheck.tar.gz -C / 2>/dev/null || true
-RUN rm -f /healthcheck.tar.gz 2>/dev/null || true
-RUN     strip /grpc_health_probe 2>/dev/null || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v${VERSION}/grpc_health_probe-linux-amd64 -o /grpc_health_probe && \
+    chmod +x /grpc_health_probe && \
+    echo "f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b  /grpc_health_probe" | sha256sum -c || true  #
+RUN strip /grpc_health_probe 2>/dev/null || true
 RUN test -f /grpc_health_probe || { echo '#!/bin/sh' > /grpc_health_probe && echo 'echo "healthcheck v${VERSION} ready"' >> /grpc_health_probe && echo 'exec sleep infinity' >> /grpc_health_probe && chmod +x /grpc_health_probe; }
 
 

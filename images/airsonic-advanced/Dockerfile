@@ -1,11 +1,11 @@
 # =============================================================================
 # SOVEREIGN HARDENED AIRSONIC-ADVANCED
-# Generated from template - Version: 11.1.5
+# Generated from template - Version: 10.6.0
 # Constraint: debian-slim - JRE required
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
-ARG VERSION=11.1.5
+ARG VERSION=10.6.0
 ARG BUILD_DATE
 
 
@@ -13,7 +13,7 @@ FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN mkdir -p /app ; \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/airsonic-advanced/airsonic-advanced/releases/download/v11.1.5/airsonic-advanced-11.1.5.war -o /app/airsonic-advanced-11.1.5.war || true
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/airsonic-advanced/airsonic-advanced/releases/download/v${VERSION}/airsonic.war -o /app/airsonic.war
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

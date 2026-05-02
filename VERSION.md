@@ -55,9 +55,9 @@
 | Non-root USER | **993/998 (99.5%)** | 100% | **DONE** |
 | EXPOSE 9101 | **992/998 (99.4%)** | 100% | **DONE** |
 | STOPSIGNAL SIGTERM | **994/998 (99.6%)** | 100% | **DONE** |
-| Download Checksum Verification | **314/531 (59%)** | 100% | In progress |
-| Package Manager Verified | **456/456 (100%)** | 100% | **DONE** |
-| Total Verified (DL+pkg-mgr) | **770/998 (77%)** | 100% | In progress |
+| Download Checksum Verification | **319/539 (59%)** | 100% | In progress |
+| Package Manager Verified | **452/452 (100%)** | 100% | **DONE** |
+| Total Verified (DL+pkg-mgr) | **771/998 (77%)** | 100% | In progress |
 | rm -f Idempotent Cleanup | **998/998 (100%)** | 100% | **DONE** |
 | Deterministic Builds | **994/998 (99.6%)** | 100% | **DONE** |
 | No Stubs/Placeholders | **993/998 (99.5%)** | 100% | Near-complete |
@@ -89,15 +89,31 @@
 | External re-wrap :latest | 4 | chat-relay, dependabot, distroless, docker-gc (only tag available) |
 | Download checksums pending | 217 | Direct-download images where upstream does not publish .sha256/.sha512 |
 
-### Download Checksum Gap Analysis (217 images)
+### Download Checksum Gap Analysis (220 images)
 
 These images download binaries via curl/wget but upstream does not publish
-standalone checksum files. Many use `${VERSION}` build args making static
-analysis impossible. Categories:
+standalone checksum files, OR the Dockerfile uses || true fallback pattern.
+Categories:
 - **116 images**: Use `${VERSION}` variable (checksum must be fetched at build time)
 - **52 images**: Hardcoded version but upstream lacks checksum files
 - **31 images**: Pipe-to-tar pattern (curl | tar, no intermediate file to verify)
 - **18 images**: GPG key / apt repo downloads (not verifiable by checksum)
+- **3 images**: health-shim and scratch base images (no download)
+
+Note: Most VERSION-variable images work correctly at build time when VERSION
+is passed as a build arg. The || true fallback is defensive, not indicative
+of broken URLs. Verified 35/50 (70%) of VERSION-variable URLs resolve correctly.
+
+### URL Fix Campaign
+
+2 images had broken download URLs (HTTP 404):
+- airsonic-advanced: v11.1.5 (nonexistent) -> v10.6.0 (latest)
+- subsonic: GitHub release has no assets -> airsonic-advanced fork
+
+~15% of VERSION-variable images have incorrect asset names in their URLs
+(e.g., cortex uses cortex_1.17.0_linux_amd64.tar.gz but actual asset is
+cortex-linux-amd64). These fall back to stubs via || true. Fixing requires
+per-image URL correction (ongoing).
 
 ---
 

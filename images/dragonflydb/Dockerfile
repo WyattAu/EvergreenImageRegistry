@@ -3,9 +3,9 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.18.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/dragonflydb/dragonfly/releases/download/${VERSION}/dragonfly-${VERSION}-linux-amd64.tar.gz -o /dragonfly.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/dragonflydb/dragonfly/releases/download/${VERSION}/dragonfly-x86_64.tar.gz -o /dragonfly.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/dragonflydb/dragonfly/releases/download/${VERSION}/checksums.txt -o /checksums.txt && \
-    grep "dragonfly-${VERSION}-linux-amd64.tar.gz" /checksums.txt | sha256sum -c || true ; [ -f /dragonfly.tar.gz ] && \
+    grep "dragonfly-x86_64.tar.gz" /checksums.txt | sha256sum -c || true ; [ -f /dragonfly.tar.gz ] && \
     [ -f /dragonfly.tar.gz ] && tar -xzf /dragonfly.tar.gz -C /tmp/ || true ; \
     strip --strip-all /tmp/dragonfly && \
     mv /tmp/dragonfly /dragonfly && \

@@ -14,7 +14,7 @@ FROM debian:bookworm-slim AS builder
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/kibana/kibana-oss-${VERSION}-linux-x86_64.tar.gz" -o kibana-oss.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  kibana-oss.tar.gz" | sha256sum -c || true  ; [ -f kibana-oss.tar.gz ] && tar -xzf kibana-oss.tar.gz || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/kibana/kibana-${VERSION}-linux-x86_64.tar.gz" -o kibana-oss.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  kibana-oss.tar.gz" | sha256sum -c || true  ; [ -f kibana-oss.tar.gz ] && tar -xzf kibana-oss.tar.gz || true ; \
     rm -f kibana-oss.tar.gz ; rm -rf kibana-${VERSION}-linux-x86_64/node_modules/.cache
 
 

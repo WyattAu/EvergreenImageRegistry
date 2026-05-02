@@ -1,21 +1,25 @@
-
-FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.20.0
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://unbound.net/downloads/unbound-1.20.0.tar.gz" -o /unbound.tar.gz && \
-    echo "56b4ceed33639522000fd96775576ddf8782bb3617610715d7f1e777c5ec1dbf  /unbound.tar.gz" | sha256sum -c || true ; [ -f /unbound.tar.gz ] && \
-    [ -f /unbound.tar.gz ] && tar -xzf /unbound.tar.gz -C / && rm -f /unbound.tar.gz && chmod +x /unbound 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL "https://unbound.net/downloads/unbound-1.20.0.tar.gz" -o /unbound && chmod +x /unbound ; test -f /unbound || { echo '#!/bin/sh' > /unbound && echo 'echo "unbound v${VERSION} ready"' >> /unbound && echo 'exec sleep infinity' >> /unbound && chmod +x /unbound; } || true
 
-
+FROM debian:bookworm-slim AS builder
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential libssl-dev libexpat1-dev libevent-dev && \
+    rm -rf /var/lib/apt/lists/*
+RUN curl --retry 3 --retry-delay 5 -fsSL \
+    "https://unbound.net/downloads/unbound-${VERSION}.tar.gz" \
+    -o /unbound.tar.gz && \
+    tar -xzf /unbound.tar.gz -C /tmp && \
+    cd /tmp/unbound-${VERSION} && \
+    ./configure --with-pthreads --with-libevent --enable-subnet && \
+    make -j$(nproc) && \
+    make install DESTDIR=/opt/unbound && \
+    cp /opt/unbound/usr/sbin/unbound /unbound && chmod +x /unbound
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/unbound /var/cache/unbound 2>/dev/null || true
 
-
 FROM scratch
-COPY --from=downloader /unbound /unbound
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /unbound /unbound
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
 COPY --from=builder /var/log/unbound /var/log/unbound
 COPY --from=builder /var/cache/unbound /var/cache/unbound
@@ -24,7 +28,7 @@ WORKDIR /app
 EXPOSE 53
 ENTRYPOINT ["/unbound"]
 LABEL org.opencontainers.image.title="unbound" \
-      org.opencontainers.image.version="1.20.0" \
+      org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="NLnet Labs" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \

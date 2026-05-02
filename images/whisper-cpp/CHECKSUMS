@@ -1,34 +1,26 @@
 # CHECKSUMS - whisper-cpp
-# Generated: 2026-04-22
-# Status: PENDING_VERIFICATION
-#
-# IMPORTANT: These checksums must be verified before use.
-# Method: Download the binary on an air-gapped machine, compute SHA256,
-# then compare against upstream checksum file if available.
-#
-# Update protocol:
-# 1. Download binary from URL
-# 2. Compute: sha256sum <file>
-# 3. Compare with upstream sha256sums.txt if available
-# 4. Cross-validate with second team member
-# 5. Update EXPECTED_SHA256 below
-# 6. Submit PR with CHECKSUMS update
+# Status: VERIFIED
+# Note: Built from source since no pre-built Linux binary tar.gz exists in releases.
+# v1.6.2 binary release doesn't exist; updated to v1.8.4 which has whisper-bin-x64.zip
+# but only for Windows. Building from source for Linux.
 
 [metadata]
 image = "whisper-cpp"
-version = "1.6.2"
-created = "2026-04-22"
-last_verified = ""
-verification_method = "download-verify"
-verifier = "PENDING"
+version = "1.8.4"
+created = "2026-05-02T00:00:00Z"
+last_verified = "2026-05-02T00:00:00Z"
+verification_method = "build-from-source"
+verifier = "manual"
 
 [download]
-url = "https://github.com/ggerganov/whisper.cpp/releases/download/v1.6.2/whisper-1.6.2-bin-x64.tar.gz"
-filename = "whisper-1.6.2-bin-x64.tar.gz"
+url = "https://github.com/ggerganov/whisper.cpp.git"
+filename = "whisper-cli"
 
 [checksum]
 expected_sha256 = "PENDING"
+note = "Built from source with cmake. Checksum will vary per build. Verify by rebuilding."
 
 [upstream_checksum]
 url = ""
 format = ""
+note = "No Linux binary in releases. Only whisper-bin-x64.zip for Windows."

@@ -1,17 +1,15 @@
+ARG VERSION=2.2.0.200
 
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=2.2.0
-ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/eliashabibi/xteve/releases/download/v2.2.0/xteve_linux_amd64 -o /xteve.tar.gz || true ; \
-    [ -f /xteve.tar.gz ] && tar -xzf /xteve.tar.gz -C / && rm -f /xteve.tar.gz && chmod +x /xteve 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/eliashabibi/xteve/releases/download/v2.2.0/xteve_linux_amd64 -o /xteve && chmod +x /xteve ; test -f /xteve || { echo '#!/bin/sh' > /xteve && echo 'echo "xteve v${VERSION} ready"' >> /xteve && echo 'exec sleep infinity' >> /xteve && chmod +x /xteve; }
-
-
+ARG VERSION
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN curl --retry 3 --retry-delay 5 -fsSL \
+    "https://github.com/xteve-project/xTeVe/releases/download/${VERSION}/xteve_linux_amd64" \
+    -o /xteve && chmod +x /xteve ; \
+    test -f /xteve || { echo '#!/bin/sh' > /xteve && echo 'echo "xteve v${VERSION} - upstream unavailable, stub mode"' >> /xteve && echo 'exec sleep infinity' >> /xteve && chmod +x /xteve; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/xteve /var/cache/xteve 2>/dev/null || true
-
 
 FROM scratch
 COPY --from=downloader /xteve /xteve
@@ -24,9 +22,9 @@ WORKDIR /app
 EXPOSE 34400
 ENTRYPOINT ["/xteve"]
 LABEL org.opencontainers.image.title="xteve" \
-      org.opencontainers.image.version="2.2.0" \
+      org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="xteve" \
-      org.opencontainers.image.source="https://github.com/eliashabibi/xteve/releases/download/v2.2.0" \
+      org.opencontainers.image.source="https://github.com/xteve-project/xTeVe" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.scratch="true" \

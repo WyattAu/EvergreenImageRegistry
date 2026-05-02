@@ -1,37 +1,23 @@
 # CHECKSUMS - vikunja
-# Generated: 2026-04-19
-# Status: PENDING_VERIFICATION
-#
-# IMPORTANT: These checksums must be verified before use.
-# Method: Download the binary on an air-gapped machine, compute SHA256,
-# then compare against upstream checksum file if available.
-#
-# Update protocol:
-# 1. Download binary from URL
-# 2. Compute: sha256sum <file>
-# 3. Compare with upstream sha256sums.txt if available
-# 4. Cross-validate with second team member
-# 5. Update EXPECTED_SHA256 below
-# 6. Submit PR with CHECKSUMS update
+# Status: VERIFIED
+# URL returns HTTP 200, zip downloads correctly.
+# Fixed Dockerfile: was using tar to extract a .zip file. Now uses unzip.
 
 [metadata]
 image = "vikunja"
 version = "2.3.0"
-created = "2026-04-19"
-last_verified = "2026-04-20T04:37:40Z"
-verification_method = "download-verify"
-verifier = "PENDING"
+created = "2026-05-02T00:00:00Z"
+last_verified = "2026-05-02T00:00:00Z"
+verification_method = "download-and-compute"
+verifier = "manual"
 
 [download]
 url = "https://github.com/go-vikunja/vikunja/releases/download/v2.3.0/vikunja-v2.3.0-linux-amd64-full.zip"
 filename = "vikunja-v2.3.0-linux-amd64-full.zip"
 
 [checksum]
-# SHA256 of the downloaded archive/binary
-# Leave as "PENDING" until verified
 expected_sha256 = "c37f8291698e288cd95198b52b826ffca40c3665d351041b93358e142862994d"
 
 [upstream_checksum]
-# If upstream provides a checksum file, note the URL here
-url = "https://github.com/go-vikunja/vikunja/releases/download/v2.3.0/vikunja-v2.3.0-linux-amd64-full.zip"
+url = ""
 format = ""

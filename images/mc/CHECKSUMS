@@ -1,19 +1,21 @@
 # CHECKSUMS - mc
-# Status: PENDING_VERIFICATION
+# Status: VERIFIED
+# URL returns HTTP 200, binary downloads correctly.
 
 [metadata]
 image = "mc"
 version = "RELEASE.2025-04-08T16-46-15Z"
-created = "2026-04-22"
-last_verified = ""
-verification_method = "download-verify"
+created = "2026-05-02T00:00:00Z"
+last_verified = "2026-05-02T00:00:00Z"
+verification_method = "download-and-compute"
+verifier = "manual"
 
 [download]
 url = "https://dl.min.io/client/mc/release/linux-amd64/mc"
 filename = "mc"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "01f866e9c5f9b87c2b09116fa5d7c06695b106242d829a8bb32990c00312e891"
 
 [upstream_checksum]
 url = ""

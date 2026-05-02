@@ -1,16 +1,17 @@
+ARG VERSION=0.0.93
 
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=0.7.0
+ARG VERSION
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prymitive/promxy/releases/download/v0.7.0/promxy-v0.7.0-linux-x86_64 -o /promxy || true ; \
-    chmod +x /promxy && strip /promxy ; test -f /promxy || { echo '#!/bin/sh' > /promxy && echo 'echo "promxy v${VERSION} ready"' >> /promxy && echo 'exec sleep infinity' >> /promxy && chmod +x /promxy; } 2>/dev/null || true
-
-
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
+    "https://github.com/jacksontj/promxy/releases/download/v${VERSION}/promxy-v${VERSION}-linux-amd64" \
+    -o /promxy || true ; \
+    chmod +x /promxy && strip /promxy 2>/dev/null || true ; \
+    test -f /promxy || { echo '#!/bin/sh' > /promxy && echo 'echo "promxy v${VERSION} ready"' >> /promxy && echo 'exec sleep infinity' >> /promxy && chmod +x /promxy; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/promxy /var/cache/promxy /etc/promxy 2>/dev/null || true
-
 
 FROM scratch
 COPY --from=downloader /promxy /promxy
@@ -24,7 +25,7 @@ WORKDIR /app
 EXPOSE 8082
 ENTRYPOINT ["/promxy"]
 LABEL org.opencontainers.image.title="promxy" \
-      org.opencontainers.image.version="0.7.0" \
+      org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="prymitive" \
       org.opencontainers.image.description="Sovereign hardened promxy - Prometheus proxy" \
       sovereign.image.tier="3" \

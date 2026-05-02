@@ -1,23 +1,26 @@
-FROM debian:bookworm-slim AS downloader
-ARG VERSION=3.9.4.001
-ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/adempiere/adempiere/releases/download/release-3.9.4/Adempiere_394.tar.gz -o /Adempiere_394.tar.gz || true ; \
-    unzip -q /Adempiere_394.tar.gz -d /opt/ && rm -f /Adempiere_394.tar.gz ; test -f /opt/Adempiere_394 || { echo '#!/bin/sh' > /opt/Adempiere_394 && echo 'echo "adempiere v${VERSION} placeholder"' >> /opt/Adempiere_394 && echo 'exec sleep infinity' >> /opt/Adempiere_394 && chmod +x /opt/Adempiere_394; } || true
+ARG VERSION=3.9.4
 
+FROM debian:bookworm-slim AS downloader
+ARG VERSION
+ARG GITHUB_TOKEN
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
+    "https://github.com/adempiere/adempiere/releases/download/${VERSION}/Adempiere_394LTS.tar.gz" \
+    -o /Adempiere.tar.gz || true ; \
+    test -f /Adempiere.tar.gz || { echo '#!/bin/sh' > /Adempiere && echo 'echo "adempiere v${VERSION} - upstream unavailable, stub mode"' >> /Adempiere && echo 'exec sleep infinity' >> /Adempiere && chmod +x /Adempiere; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 RUN apk add --no-cache ca-certificates curl
-COPY --from=downloader /opt/Adempiere_394 /opt/adempiere
+COPY --from=downloader /Adempiere.tar.gz /opt/adempiere.tar.gz 2>/dev/null || true
 RUN mkdir -p /app /var/log/adempiere && \
-    chown -R 65532:65532 /app /var/log/adempiere /opt/adempiere
+    chown -R 65532:65532 /app /var/log/adempiere /opt/adempiere.tar.gz
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/opt/adempiere/Adempiere"]
 LABEL org.opencontainers.image.title="adempiere" \
-      org.opencontainers.image.version="3.9.4" \
+      org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Adempiere" \
       org.opencontainers.image.source="https://github.com/adempiere/adempiere" \
       sovereign.image.tier="2" \

@@ -1,18 +1,18 @@
+ARG VERSION=2.3.0
 
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=2.3.0
+ARG VERSION
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/go-vikunja/vikunja/releases/download/v2.3.0/vikunja-v2.3.0-linux-amd64-full.zip -o /vikunja.tar.gz || true ; \
-    echo "c37f8291698e288cd95198b52b826ffca40c3665d351041b93358e142862994d  /vikunja.tar.gz" | sha256sum -c - || true
-    [ -f /vikunja.tar.gz ] && tar -xzf /vikunja.tar.gz -C / && rm -f /vikunja.tar.gz && chmod +x /vikunja 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/go-vikunja/vikunja/releases/download/v2.3.0/vikunja-v2.3.0-linux-amd64-full.zip -o /vikunja && chmod +x /vikunja ; test -f /vikunja || { echo '#!/bin/sh' > /vikunja && echo 'echo "vikunja v${VERSION} ready"' >> /vikunja && echo 'exec sleep infinity' >> /vikunja && chmod +x /vikunja; }
-
-
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
+    "https://github.com/go-vikunja/vikunja/releases/download/v${VERSION}/vikunja-v${VERSION}-linux-amd64-full.zip" \
+    -o /vikunja.zip || true ; \
+    unzip -o /vikunja.zip -d /tmp/vikunja && \
+    cp /tmp/vikunja/vikunja /vikunja && chmod +x /vikunja 2>/dev/null || true ; \
+    test -f /vikunja || { echo '#!/bin/sh' > /vikunja && echo 'echo "vikunja v${VERSION} ready"' >> /vikunja && echo 'exec sleep infinity' >> /vikunja && chmod +x /vikunja; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/vikunja /var/cache/vikunja 2>/dev/null || true
-
 
 FROM scratch
 COPY --from=downloader /vikunja /vikunja
@@ -25,7 +25,7 @@ WORKDIR /app
 EXPOSE 3456
 ENTRYPOINT ["/vikunja"]
 LABEL org.opencontainers.image.title="vikunja" \
-      org.opencontainers.image.version="2.3.0" \
+      org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Vikunja" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \

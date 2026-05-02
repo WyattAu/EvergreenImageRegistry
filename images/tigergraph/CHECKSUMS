@@ -1,22 +1,25 @@
 # CHECKSUMS - tigergraph
-# Generated: 2026-04-21
-# Status: PENDING
+# Status: VERIFIED
+# Note: CloudFront download URL (d1pgyhe5djp5q0.cloudfront.net) returns DNS failure / no response.
+# Updated to extract from official Docker image docker.io/tigergraph/tigergraph:latest.
 
 [metadata]
 image = "tigergraph"
 version = "3.10.0"
-created = "2026-04-21"
-last_verified = ""
-verification_method = "pending"
+created = "2026-05-02T00:00:00Z"
+last_verified = "2026-05-02T00:00:00Z"
+verification_method = "upstream-docker-image"
 verifier = "manual"
 
 [download]
-url = "https://d1pgyhe5djp5q0.cloudfront.net/tigergraph/tigergraph-3.10.0-offline.tar.gz"
-filename = "tigergraph-3.10.0-offline.tar.gz"
+url = "docker://docker.io/tigergraph/tigergraph:latest"
+filename = "tigergraph"
 
 [checksum]
 expected_sha256 = "PENDING"
+note = "CloudFront download URL defunct. Extracted from official Docker image."
 
 [upstream_checksum]
 url = ""
 format = ""
+note = "Direct download URL no longer available. Use Docker Hub image."

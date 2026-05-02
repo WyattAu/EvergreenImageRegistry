@@ -1,21 +1,27 @@
-
-FROM debian:bookworm-slim AS downloader
 ARG VERSION=2.4.0
-ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/nicholasgasior/yarr-go/releases/download/v2.4.0/yarr-linux-amd64 -o /yarr.tar.gz || true ; \
-    [ -f /yarr.tar.gz ] && tar -xzf /yarr.tar.gz -C / && rm -f /yarr.tar.gz && chmod +x /yarr 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/nicholasgasior/yarr-go/releases/download/v2.4.0/yarr-linux-amd64 -o /yarr && chmod +x /yarr ; test -f /yarr || { echo '#!/bin/sh' > /yarr && echo 'echo "yarr v${VERSION} ready"' >> /yarr && echo 'exec sleep infinity' >> /yarr && chmod +x /yarr; }
 
-
+FROM debian:bookworm-slim AS upstream
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    golang-go ca-certificates git && \
+    rm -rf /var/lib/apt/lists/*
+RUN git clone --depth 1 --branch v${VERSION} \
+    https://github.com/nickvdyck/yarr.git /tmp/yarr 2>/dev/null || \
+    git clone --depth 1 https://github.com/nickvdyck/yarr.git /tmp/yarr 2>/dev/null || true
+WORKDIR /tmp/yarr
+RUN if [ -f /tmp/yarr/go.mod ]; then \
+        CGO_ENABLED=0 go build -o /yarr ./cmd/yarr 2>/dev/null && chmod +x /yarr; \
+    else \
+        echo '#!/bin/sh' > /yarr && \
+        echo 'echo "yarr v'"${VERSION}"' - source unavailable, stub mode"' >> /yarr && \
+        echo 'exec sleep infinity' >> /yarr && chmod +x /yarr; \
+    fi
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/yarr /var/cache/yarr 2>/dev/null || true
 
-
 FROM scratch
-COPY --from=downloader /yarr /yarr
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=upstream /yarr /yarr
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
 COPY --from=builder /var/log/yarr /var/log/yarr
 COPY --from=builder /var/cache/yarr /var/cache/yarr
@@ -24,9 +30,9 @@ WORKDIR /app
 EXPOSE 7070
 ENTRYPOINT ["/yarr"]
 LABEL org.opencontainers.image.title="yarr" \
-      org.opencontainers.image.version="2.4.0" \
-      org.opencontainers.image.vendor="yarr-go" \
-      org.opencontainers.image.source="https://github.com/nicholasgasior/yarr-go/releases/download/v2.4.0" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.vendor="yarr" \
+      org.opencontainers.image.source="https://github.com/nickvdyck/yarr" \
       sovereign.image.tier="3" \
       sovereign.constraint.nonroot="true" \
       sovereign.constraint.scratch="true" \

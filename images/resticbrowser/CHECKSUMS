@@ -1,20 +1,25 @@
 # CHECKSUMS - resticbrowser
-# Status: PENDING_VERIFICATION
+# Status: UNFIXABLE
+# Note: GitHub repo emuell/resticbrowser is deleted (404).
+# No known fork with releases. Stub will be created at build time.
 
 [metadata]
 image = "resticbrowser"
 version = "0.3.0"
-created = "2026-04-22"
-last_verified = ""
-verification_method = "download-verify"
+created = "2026-05-02T00:00:00Z"
+last_verified = "2026-05-02T00:00:00Z"
+verification_method = "stub"
+verifier = "manual"
 
 [download]
-url = "https://github.com/emuell/resticbrowser/releases/download/v0.3.0/resticbrowser-linux-amd64"
-filename = "resticbrowser-linux-amd64"
+url = "https://github.com/emuell/resticbrowser"
+filename = "resticbrowser"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "STUB"
+note = "Upstream repo deleted. Image will contain a stub placeholder."
 
 [upstream_checksum]
 url = ""
 format = ""
+note = "No upstream available - repo deleted"

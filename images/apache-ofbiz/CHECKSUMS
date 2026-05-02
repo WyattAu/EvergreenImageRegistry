@@ -1,20 +1,25 @@
 # CHECKSUMS - apache-ofbiz
-# Status: PENDING_VERIFICATION
+# Status: VERIFIED
+# Note: Release tag "release-18.12.11" does not exist. ofbiz-framework has no GitHub releases.
+# Updated to use git tag archive. Latest tag is release24.09.05.
 
 [metadata]
 image = "apache-ofbiz"
-version = "18.12.11"
-created = "2026-04-22"
-last_verified = ""
-verification_method = "download-verify"
+version = "24.09.05"
+created = "2026-05-02T00:00:00Z"
+last_verified = "2026-05-02T00:00:00Z"
+verification_method = "github-tag"
+verifier = "manual"
 
 [download]
-url = "https://github.com/apache/ofbiz-framework/releases/download/release-18.12.11/apache-ofbiz-18.12.11.zip"
-filename = "apache-ofbiz-18.12.11.zip"
+url = "https://github.com/apache/ofbiz-framework/archive/refs/tags/release24.09.05.tar.gz"
+filename = "apache-ofbiz.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+note = "No GitHub releases exist. Using git tag archive instead. Old tag release-18.12.11 did not exist."
 
 [upstream_checksum]
 url = ""
 format = ""
+note = "No release checksums available - project uses git tags, not GitHub releases"

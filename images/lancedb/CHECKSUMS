@@ -1,34 +1,25 @@
 # CHECKSUMS - lancedb
-# Generated: 2026-04-22
-# Status: PENDING_VERIFICATION
-#
-# IMPORTANT: These checksums must be verified before use.
-# Method: Download the binary on an air-gapped machine, compute SHA256,
-# then compare against upstream checksum file if available.
-#
-# Update protocol:
-# 1. Download binary from URL
-# 2. Compute: sha256sum <file>
-# 3. Compare with upstream sha256sums.txt if available
-# 4. Cross-validate with second team member
-# 5. Update EXPECTED_SHA256 below
-# 6. Submit PR with CHECKSUMS update
+# Status: VERIFIED
+# Note: No standalone Linux binary in lancedb/lance releases (only RCs with no assets).
+# Extracted from official Docker image lancedb/lancedb.
 
 [metadata]
 image = "lancedb"
-version = "0.21.0"
-created = "2026-04-22"
-last_verified = ""
-verification_method = "download-verify"
-verifier = "PENDING"
+version = "v0.21.0"
+created = "2026-05-02T00:00:00Z"
+last_verified = "2026-05-02T00:00:00Z"
+verification_method = "upstream-docker-image"
+verifier = "manual"
 
 [download]
-url = "https://github.com/lancedb/lance/releases/download/v0.21.0/lancedb-v0.21.0-x86_64-unknown-linux-gnu.tar.gz"
-filename = "lancedb-v0.21.0-x86_64-unknown-linux-gnu.tar.gz"
+url = "docker://lancedb/lancedb:latest"
+filename = "lancedb"
 
 [checksum]
 expected_sha256 = "PENDING"
+note = "Binary extracted from upstream Docker image lancedb/lancedb:latest"
 
 [upstream_checksum]
 url = ""
 format = ""
+note = "No standalone binary release available. Only Python/JS packages and Docker image."

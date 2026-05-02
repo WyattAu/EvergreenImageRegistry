@@ -5,10 +5,10 @@
 | Attribute | Value |
 |-----------|-------|
 | Project Name | Sovereign Hardened Image Registry |
-| Version | 13.0.0 |
+| Version | 14.0.0 |
 | Phase | Production Operational |
 | Status | ACTIVE |
-| Last Updated | 2026-05-01 |
+| Last Updated | 2026-05-02 |
 
 ---
 
@@ -40,6 +40,7 @@
 | Phase 19: Observability Deepening | COMPLETED | 100% |
 | Phase 20: CI Fix Campaign (em-dash, slsa, verify) | COMPLETED | 100% |
 | Phase 21: Final ENTRYPOINT Pass | COMPLETED | 100% |
+| Phase 22: Proof-of-Correctness Audit | COMPLETED | 100% |
 
 ---
 
@@ -54,9 +55,12 @@
 | Non-root USER | **993/998 (99.5%)** | 100% | **DONE** |
 | EXPOSE 9101 | **992/998 (99.4%)** | 100% | **DONE** |
 | STOPSIGNAL SIGTERM | **994/998 (99.6%)** | 100% | **DONE** |
-| Download Checksum Verification | **297/297 (100%)** | 100% | **DONE** |
-| Total Verified (DL+pkg-mgr) | **988/998 (99%)** | 100% | **DONE** |
+| Download Checksum Verification | **314/531 (59%)** | 100% | In progress |
+| Package Manager Verified | **456/456 (100%)** | 100% | **DONE** |
+| Total Verified (DL+pkg-mgr) | **770/998 (77%)** | 100% | In progress |
 | rm -f Idempotent Cleanup | **998/998 (100%)** | 100% | **DONE** |
+| Deterministic Builds | **994/998 (99.6%)** | 100% | **DONE** |
+| No Stubs/Placeholders | **993/998 (99.5%)** | 100% | Near-complete |
 | ENTRYPOINT/CMD | **960/998 (96.2%)** | 100% | Near-complete |
 | Multi-Arch Go Images | **19** | 50+ | In progress |
 | CI Pipeline Stages | **11** | 11 | **DONE** |
@@ -81,6 +85,19 @@
 | App-specific USER | 10 | drone, git, jellyfin, lidarr, openhab, prowlarr, pulsar, radarr, sonarr |
 | Base images (no EXPOSE) | 6 | scratch-base, scratch-go, wolfi-gcc, wolfi-jdk, wolfi-node, wolfi-python |
 | Base images (no STOPSIGNAL) | 4 | wolfi-gcc, wolfi-jdk, wolfi-node, wolfi-python |
+| Proprietary placeholders | 2 | kdb, kdb-plus (KX Systems license required, no public binary) |
+| External re-wrap :latest | 4 | chat-relay, dependabot, distroless, docker-gc (only tag available) |
+| Download checksums pending | 217 | Direct-download images where upstream does not publish .sha256/.sha512 |
+
+### Download Checksum Gap Analysis (217 images)
+
+These images download binaries via curl/wget but upstream does not publish
+standalone checksum files. Many use `${VERSION}` build args making static
+analysis impossible. Categories:
+- **116 images**: Use `${VERSION}` variable (checksum must be fetched at build time)
+- **52 images**: Hardcoded version but upstream lacks checksum files
+- **31 images**: Pipe-to-tar pattern (curl | tar, no intermediate file to verify)
+- **18 images**: GPG key / apt repo downloads (not verifiable by checksum)
 
 ---
 
@@ -150,4 +167,4 @@
 
 ---
 
-**Last Updated: 2026-05-01**
+**Last Updated: 2026-05-02**

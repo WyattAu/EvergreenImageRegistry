@@ -1,31 +1,12 @@
-# =============================================================================
-# SOVEREIGN HARDENED HAZELCAST-OPERATOR
-# Generated from template - Version: 5.15.0
-# Constraint: scratch - static Go binary, purest form
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
 ARG VERSION=5.15.0
-ARG BUILD_DATE
 
+FROM ghcr.io/hazelcast/hazelcast-platform-operator:v${VERSION} AS upstream
 
-FROM debian:bookworm-20250113-slim AS builder
-ARG GITHUB_TOKEN
-ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates binutils && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/hazelcast/hazelcast-platform-operator/releases/download/v${VERSION}/hazelcast-platform-operator-v${VERSION}-linux-amd64 -o /tmp/hazelcast-operator 2>/dev/null || true ; \
-    chmod +x /tmp/hazelcast-operator 2>/dev/null || true ; \
-    strip --strip-all /tmp/hazelcast-operator 2>/dev/null || true ; \
-    mkdir -p /usr/local/bin 2>/dev/null || true ; \
-    test -f /tmp/hazelcast-operator && mv /tmp/hazelcast-operator /usr/local/bin/hazelcast-platform-operator 2>/dev/null || true ; \
-    test -f /usr/local/bin/hazelcast-platform-operator || { echo '#!/bin/sh' > /usr/local/bin/hazelcast-platform-operator && echo 'echo "hazelcast-operator v'"${VERSION}"' placeholder"' >> /usr/local/bin/hazelcast-platform-operator && echo 'exec sleep infinity' >> /usr/local/bin/hazelcast-platform-operator && chmod +x /usr/local/bin/hazelcast-platform-operator ; } 2>/dev/null || true
-
-RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
-ARG VERSION=5.15.0
-COPY --from=builder /usr/local/bin/hazelcast-platform-operator /usr/local/bin/hazelcast-platform-operator
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=upstream /manager /usr/local/bin/hazelcast-platform-operator
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
+WORKDIR /app
 EXPOSE 8080 8443
 ENTRYPOINT ["/usr/local/bin/hazelcast-platform-operator"]
 LABEL org.opencontainers.image.title="hazelcast-operator" \

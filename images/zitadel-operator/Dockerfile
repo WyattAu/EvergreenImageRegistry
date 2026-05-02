@@ -1,26 +1,15 @@
-
-FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.5.0
-ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/zitadel/zitadel-operator/releases/download/v${VERSION}/zitadel-operator_${VERSION}_linux_amd64.tar.gz -o /zitadel-operator.tar.gz && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/zitadel/zitadel-operator/releases/download/v${VERSION}/checksums.txt -o /checksums.txt && \
-    grep "zitadel-operator_${VERSION}_linux_amd64.tar.gz" /checksums.txt | sha256sum -c || true ; [ -f /zitadel-operator.tar.gz ] && \
-    [ -f /zitadel-operator.tar.gz ] && tar -xzf /zitadel-operator.tar.gz -C /tmp/ || true ; \
-    strip --strip-all /tmp/zitadel-operator && \
-    mv /tmp/zitadel-operator /zitadel-operator && \
-    rm -rf /zitadel-operator.tar.gz /checksums.txt /tmp/* ; test -f /zitadel-operator || { echo '#!/bin/sh' > /zitadel-operator && echo 'echo "zitadel-operator v${VERSION} ready"' >> /zitadel-operator && echo 'exec sleep infinity' >> /zitadel-operator && chmod +x /zitadel-operator; } || true
 
-
+FROM ghcr.io/zitadel/zitadel-operator:v${VERSION} AS upstream
 
 FROM scratch
-COPY --from=downloader /zitadel-operator /zitadel-operator
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=upstream /manager /usr/local/bin/zitadel-operator
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
-ENTRYPOINT ["/zitadel-operator"]
+ENTRYPOINT ["/usr/local/bin/zitadel-operator"]
 LABEL org.opencontainers.image.title="zitadel-operator" \
-      org.opencontainers.image.version="0.5.0" \
+      org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="ZITADEL" \
       org.opencontainers.image.source="https://github.com/zitadel/zitadel-operator" \
       sovereign.image.tier="2" \

@@ -1,29 +1,12 @@
-# =============================================================================
-# SOVEREIGN HARDENED CASSANDRA-OPERATOR
-# Generated from template - Version: 1.20.0
-# Constraint: scratch - static Go binary, purest form
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
 ARG VERSION=1.20.0
-ARG BUILD_DATE
 
+FROM ghcr.io/k8ssandra/cass-operator:v${VERSION} AS upstream
 
-FROM debian:bookworm-20250113-slim AS builder
-ARG GITHUB_TOKEN
-ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/k8ssandra/cass-operator/releases/download/v${VERSION}/cass-operator-v${VERSION}-linux-amd64 -o /tmp/cass-operator ; echo "49012345678901234567890abcdef1234567890abcdef1234567890123456789012345  /tmp/cass-operator" | sha256sum -c || true  ; chmod +x /tmp/cass-operator ; strip --strip-all /tmp/cass-operator \
-    && mv /tmp/cass-operator /usr/local/bin/cass-operator
-
-
-RUN test -f /usr/local/bin/cass-operator || { echo '#!/bin/sh' > /usr/local/bin/cass-operator && echo 'echo "cassandra-operator v${VERSION} placeholder"' >> /usr/local/bin/cass-operator && echo 'exec sleep infinity' >> /usr/local/bin/cass-operator && chmod +x /usr/local/bin/cass-operator ; } || true
-RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
-ARG VERSION=1.20.0
-COPY --from=builder /usr/local/bin/cass-operator /usr/local/bin/cass-operator
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=upstream /manager /usr/local/bin/cass-operator
+COPY --from=upstream /etc/pki/tls/certs/ca-bundle.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
+WORKDIR /app
 EXPOSE 8080 8443
 ENTRYPOINT ["/usr/local/bin/cass-operator"]
 LABEL org.opencontainers.image.title="cassandra-operator" \

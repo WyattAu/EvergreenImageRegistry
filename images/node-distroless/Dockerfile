@@ -7,7 +7,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://nodejs.org/dist/v22.12.0/node-
 
 
 
-FROM gcr.io/distroless/nodejs22-debian12
+FROM gcr.io/distroless/nodejs22-debian12@sha256:8a3e96fe3345b5d83ecec2066e7c498139a02a6d1214e4f6c39f9ce359f3f5bc
 COPY --from=downloader /opt/node/lib/node_modules /usr/local/lib/node_modules
 COPY --from=downloader /opt/node/bin/node /usr/local/bin/node
 USER 65532:65532

@@ -1,45 +1,30 @@
+ARG VERSION=latest
 
-FROM debian:bookworm-slim AS downloader
-ARG VERSION=0.22.0
-ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/quickwit-oss/tantivy-cli/releases/download/v${VERSION}/tantivy-cli-v${VERSION}-x86_64-unknown-linux-musl.tar.gz -o /tantivy.tar.gz || true ; \
-    [ -f /tantivy.tar.gz ] && tar -xzf /tantivy.tar.gz -C / && rm -f /tantivy.tar.gz || true ; \
-    find / -maxdepth 2 -name "tantivy" -type f -exec chmod +x {} \; test -f /tantivy || { echo '#!/bin/sh' > /tantivy && echo 'echo "tantivy v${VERSION} ready"' >> /tantivy && echo 'exec sleep infinity' >> /tantivy && chmod +x /tantivy; }
-
-
+FROM ghcr.io/quickwit-oss/tantivy:${VERSION} AS upstream
 
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/tantivy /var/lib/tantivy 2>/dev/null || true
+RUN mkdir -p /app /var/log/tantivy /var/cache/tantivy 2>/dev/null || true
 
 
 FROM scratch
-COPY --from=downloader /tantivy /tantivy
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=upstream /tantivy /tantivy
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
 COPY --from=builder /var/log/tantivy /var/log/tantivy
-COPY --from=builder /var/lib/tantivy /var/lib/tantivy
-USER 65532:65532
-WORKDIR /app
-EXPOSE 8080
-ENTRYPOINT ["/tantivy"]
-LABEL org.opencontainers.image.title="tantivy" \
-      org.opencontainers.image.version="0.22.0" \
-      org.opencontainers.image.vendor="quickwit-oss" \
-      org.opencontainers.image.source="https://github.com/quickwit-oss/tantivy-cli" \
-      org.opencontainers.image.description="Full-text search engine CLI" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="search" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="scratch" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="2000ms"
+COPY --from=builder /var/cache/tantivy /var/cache/tantivy
 
+WORKDIR /app
+
+EXPOSE 8080
+EXPOSE 9101
+
+LABEL org.opencontainers.image.title="tantivy" org.opencontainers.image.version="0.22.0" org.opencontainers.image.vendor="quickwit-oss" org.opencontainers.image.source="https://github.com/quickwit-oss/tantivy-cli" org.opencontainers.image.description="Full-text search engine CLI" sovereign.image.tier="1" sovereign.image.category="search" sovereign.image.status="functional" sovereign.constraint.nonroot="true" sovereign.constraint.base="scratch" sovereign.hft.signal-handling="native" sovereign.hft.shutdown-timeout="3s" sovereign.hft.init-system="none" sovereign.hft.startup-timeout="2000ms"
 LABEL sovereign.base.image="scratch"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
-EXPOSE 9101
+
+USER 65532:65532
+
 STOPSIGNAL SIGTERM
+
+ENTRYPOINT ["/tantivy"]

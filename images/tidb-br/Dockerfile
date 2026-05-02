@@ -1,43 +1,28 @@
-# =============================================================================
-# SOVEREIGN HARDENED TIDB-BR
-# Generated from template - Version: 7.6.0
-# Constraint: scratch - static Go binary, purest form
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
+ARG VERSION=latest
 
-ARG VERSION=7.6.0
-ARG BUILD_DATE
+FROM pingcap/tidb:${VERSION} AS upstream
+
+FROM debian:bookworm-slim AS builder
+RUN mkdir -p /app /var/log/tidb-br /var/cache/tidb-br 2>/dev/null || true
 
 
-FROM debian:bookworm-20250113-slim AS builder
-ARG GITHUB_TOKEN
-ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/pingcap/tidb/releases/download/v${VERSION}/br-v${VERSION}-linux-amd64.tar.gz -o /tmp/br.tgz ; echo "29012345678901234567890abcdef1234567890abcdef12345678901234567890123  /tmp/br.tgz" | sha256sum -c || true  ; [ -f /tmp/br.tgz ] && tar -xzf /tmp/br.tgz -C /tmp || true ; \
-    strip --strip-all 2>/dev/null || true /tmp/br-v${VERSION}-linux-amd64/bin/br ; mv /tmp/br-v${VERSION}-linux-amd64/bin/br /usr/local/bin/br \
-    && rm -rf /tmp/br.tgz /tmp/br-v${VERSION}-linux-amd64
-
-RUN mkdir -p /usr/local/bin/br 2>/dev/null || true
-RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
-ARG VERSION=7.6.0
-COPY --from=builder /usr/local/bin/br /usr/local/bin/br
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65532:65532
-EXPOSE 8289
-ENTRYPOINT ["/usr/local/bin/br"]
-LABEL org.opencontainers.image.title="tidb-br" \
-      org.opencontainers.image.description="Sovereign hardened TiDB BR - backup and restore tool for TiDB" \
-      org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.vendor="PingCAP" \
-      sovereign.image.status="functional" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="database" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true"
+COPY --from=upstream /br /usr/local/bin/br
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /app /app
+COPY --from=builder /var/log/tidb-br /var/log/tidb-br
+COPY --from=builder /var/cache/tidb-br /var/cache/tidb-br
 
+EXPOSE 8289
+EXPOSE 9101
+
+LABEL org.opencontainers.image.title="tidb-br" org.opencontainers.image.description="Sovereign hardened TiDB BR - backup and restore tool for TiDB" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.vendor="PingCAP" sovereign.image.status="functional" sovereign.image.tier="1" sovereign.image.category="database" sovereign.constraint.nonroot="true" sovereign.constraint.scratch="true"
 LABEL sovereign.base.image="scratch"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
-EXPOSE 9101
+
+USER 65532:65532
+
 STOPSIGNAL SIGTERM
+
+ENTRYPOINT ["/usr/local/bin/br"]

@@ -1,18 +1,1 @@
-# CHECKSUMS - flame
-# Generated: 2026-04-21
-# Status: PENDING_VERIFICATION
-[metadata]
-image = "flame"
-version = "latest"
-created = "2026-04-21"
-last_verified = "2026-04-21"
-verification_method = "download-verify"
-verifier = "manual"
-[download]
-url = "https://github.com/pawelmalak/flame/releases/download/v2.3.1/flame_2.3.1_linux_amd64.tar.gz"
-filename = "flame_2.3.1_linux_amd64.tar.gz.tar.gz"
-[checksum]
-expected_sha256 = "PENDING_VERIFICATION"
-[upstream_checksum]
-url = ""
-format = "sha256"
+# CHECKSUMS - upstream sourced from official Docker image

@@ -1,50 +1,29 @@
-FROM debian:bookworm-slim AS downloader
-ARG VERSION=3.2.51
-ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/orientechnologies/orientdb/releases/download/${VERSION}/orientdb-community-${VERSION}.tar.gz" -o /orientdb.tar.gz || true
-RUN if [ -f /orientdb.tar.gz ]; then tar -xzf /orientdb.tar.gz -C /opt && rm -f /orientdb.tar.gz; fi
-RUN test -f /opt/orientdb-community-${VERSION}/bin/server.sh || { echo '#!/bin/sh' > /opt/orientdb-community-${VERSION}/bin/server.sh && echo 'echo "orientdb v'${VERSION}' placeholder"' >> /opt/orientdb-community-${VERSION}/bin/server.sh && echo 'exec sleep infinity' >> /opt/orientdb-community-${VERSION}/bin/server.sh && chmod +x /opt/orientdb-community-${VERSION}/bin/server.sh; } 2>/dev/null || true
+ARG VERSION=latest
 
-FROM debian:bookworm-slim AS builder
-COPY --from=downloader /opt/orientdb-community-${VERSION} /opt/orientdb
-RUN mkdir -p /var/lib/orientdb /var/log/orientdb /app ; \
-    chown -R 65532:65532 /var/lib/orientdb /var/log/orientdb /app /opt/orientdb
+FROM orientdb/orientdb:${VERSION} AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-COPY --from=builder /opt/orientdb /opt/orientdb
-COPY --from=builder /app /app
-COPY --from=builder /var/lib/orientdb /var/lib/orientdb
-COPY --from=builder /var/log/orientdb /var/log/orientdb
+COPY --from=upstream /opt/orientdb /opt/orientdb
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 ENV ORIENTDB_HOME=/opt/orientdb
 ENV PATH="${ORIENTDB_HOME}/bin:${JAVA_HOME}/bin:${PATH}"
+RUN mkdir -p /var/lib/orientdb /var/log/orientdb /app && \
+    chown -R 65532:65532 /var/lib/orientdb /var/log/orientdb /app /opt/orientdb
 
-USER 65532:65532
+
 WORKDIR /app
+
 EXPOSE 2480
-ENTRYPOINT ["/opt/orientdb/bin/server.sh"]
-LABEL org.opencontainers.image.title="orientdb" \
-      org.opencontainers.image.version="3.2.51" \
-      org.opencontainers.image.vendor="Orientechnologies" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="database" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms" \
-      sovereign.hft.cpu-pins="4-5" \
-      sovereign.hft.cpu-pins-mode="exclusive" \
-      sovereign.hft.deploy-strategy="hft-stateful" \
-      sovereign.hft.pre-stop-hook="true" \
-      sovereign.hft.pre-stop-delay="5s" \
-      sovereign.hft.connection-drain="true" \
-      sovereign.hft.sched-policy="SCHED_OTHER"
+EXPOSE 9101
+
+LABEL org.opencontainers.image.title="orientdb" org.opencontainers.image.version="3.2.51" org.opencontainers.image.vendor="Orientechnologies" sovereign.image.tier="1" sovereign.image.category="database" sovereign.image.status="functional" sovereign.constraint.nonroot="true" sovereign.hft.signal-handling="native" sovereign.hft.shutdown-timeout="3s" sovereign.hft.init-system="none" sovereign.hft.startup-timeout="3000ms" sovereign.hft.cpu-pins="4-5" sovereign.hft.cpu-pins-mode="exclusive" sovereign.hft.deploy-strategy="hft-stateful" sovereign.hft.pre-stop-hook="true" sovereign.hft.pre-stop-delay="5s" sovereign.hft.connection-drain="true" sovereign.hft.sched-policy="SCHED_OTHER"
 LABEL sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
-EXPOSE 9101
+
+USER 65532:65532
+
 STOPSIGNAL SIGTERM
+
+ENTRYPOINT ["/opt/orientdb/bin/server.sh"]

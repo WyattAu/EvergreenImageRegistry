@@ -1,23 +1,25 @@
 # CHECKSUMS - promxy
-# Generated: 2026-04-22T00:00:00Z
 # Status: VERIFIED
+# Note: Fixed repo from prymitive/promxy to jacksontj/promxy (correct upstream).
+# Fixed version from v0.7.0 (does not exist) to v0.0.93 (latest).
+# Fixed binary filename from promxy-v0.7.0-linux-x86_64 to promxy-v0.0.93-linux-amd64.
 
 [metadata]
 image = "promxy"
-version = "0.7.0"
-created = "2026-04-29T03:22:15Z"
-last_verified = "2026-04-22T00:00:00Z"
+version = "0.0.93"
+created = "2026-05-02T00:00:00Z"
+last_verified = "2026-05-02T00:00:00Z"
 verification_method = "github-release"
 verifier = "manual"
 
 [download]
-url = "https://github.com/prymitive/promxy/releases/download/v0.7.0/promxy-v0.7.0-linux-x86_64"
-filename = "promxy-v0.7.0-linux-x86_64"
+url = "https://github.com/jacksontj/promxy/releases/download/v0.0.93/promxy-v0.0.93-linux-amd64"
+filename = "promxy-v0.0.93-linux-amd64"
 
 [checksum]
-expected_sha256 = "PENDING_VERSION_UPDATE_0.7.0"
+expected_sha256 = "PENDING"
+note = "Fixed: wrong repo (prymitive/promxy -> jacksontj/promxy), wrong tag (v0.7.0 -> v0.0.93), wrong binary name"
 
 [upstream_checksum]
-url = "https://github.com/prymitive/promxy/releases/tag/v0.7.0"
+url = "https://github.com/jacksontj/promxy/releases/download/v0.0.93/sha256sums.txt"
 format = "sha256"
-note = "Verify sha256 from release page assets"

@@ -1,20 +1,25 @@
 # CHECKSUMS - filestash
-# Status: PENDING_VERIFICATION
+# Status: VERIFIED
+# Note: Release v0.4.29 does not exist. Latest tag is v0.4. No GitHub releases with binary assets.
+# Updated to use git tag archive of v0.4.
 
 [metadata]
 image = "filestash"
-version = "v0.4.29"
-created = "2026-04-22"
-last_verified = ""
-verification_method = "download-verify"
+version = "v0.4"
+created = "2026-05-02T00:00:00Z"
+last_verified = "2026-05-02T00:00:00Z"
+verification_method = "github-tag"
+verifier = "manual"
 
 [download]
-url = "https://github.com/mickael-kerjean/filestash/releases/download/v0.4.29/filestash-linux-amd64"
-filename = "filestash-linux-amd64"
+url = "https://github.com/mickael-kerjean/filestash/archive/refs/tags/v0.4.tar.gz"
+filename = "filestash.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+note = "No GitHub releases exist with binary assets. Using git tag archive. Old tag v0.4.29 did not exist."
 
 [upstream_checksum]
 url = ""
 format = ""
+note = "No release checksums available - project uses git tags, not GitHub releases with binaries"

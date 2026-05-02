@@ -1,11 +1,12 @@
+ARG VERSION=v8.0.1
 
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=v5.0.1
+ARG VERSION
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/nextcloud/ocis/releases/download/v5.0.1/ocis-5.0.1-linux-amd64 -o /nextcloud-ocis && chmod +x /nextcloud-ocis ; test -f /nextcloud-ocis || { echo '#!/bin/sh' > /nextcloud-ocis && echo 'echo "nextcloud-ocis v${VERSION} ready"' >> /nextcloud-ocis && echo 'exec sleep infinity' >> /nextcloud-ocis && chmod +x /nextcloud-ocis; } || true
-
-
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
+    "https://github.com/owncloud/ocis/releases/download/${VERSION}/ocis-8.0.1-linux-amd64" \
+    -o /nextcloud-ocis && chmod +x /nextcloud-ocis ; test -f /nextcloud-ocis || { echo '#!/bin/sh' > /nextcloud-ocis && echo 'echo "nextcloud-ocis v${VERSION} ready"' >> /nextcloud-ocis && echo 'exec sleep infinity' >> /nextcloud-ocis && chmod +x /nextcloud-ocis; }
 
 FROM scratch
 COPY --from=downloader /nextcloud-ocis /nextcloud-ocis
@@ -15,9 +16,9 @@ WORKDIR /app
 EXPOSE 9200
 ENTRYPOINT ["/nextcloud-ocis"]
 LABEL org.opencontainers.image.title="nextcloud-ocis" \
-      org.opencontainers.image.version="v5.0.1" \
+      org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Nextcloud" \
-      org.opencontainers.image.source="https://github.com/nextcloud/ocis" \
+      org.opencontainers.image.source="https://github.com/owncloud/ocis" \
       sovereign.image.tier="2" \
       sovereign.image.category="cloud-storage" \
       sovereign.image.status="functional" \

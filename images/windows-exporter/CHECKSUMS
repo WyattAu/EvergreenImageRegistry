@@ -1,22 +1,25 @@
 # CHECKSUMS - windows-exporter
-# Generated: 2026-04-21
-# Status: PENDING_VERIFICATION
+# Status: UNFIXABLE
+# Note: windows-exporter only provides Windows binaries (.exe, .msi). No linux binary exists.
+# This image is a stub that outputs an informational message.
 
 [metadata]
 image = "windows-exporter"
 version = "0.25.0"
-created = "2026-04-21"
-last_verified = ""
-verification_method = "download-verify"
-verifier = "PENDING"
+created = "2026-05-02T00:00:00Z"
+last_verified = "2026-05-02T00:00:00Z"
+verification_method = "stub"
+verifier = "manual"
 
 [download]
-url = "https://github.com/prometheus-community/windows_exporter/releases/download/v0.25.0/windows_exporter-0.25.0-linux-amd64.tar.gz"
-filename = "windows_exporter-0.25.0-linux-amd64.tar.gz"
+url = "https://github.com/prometheus-community/windows_exporter/releases/download/v0.25.0/"
+filename = "windows_exporter"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "STUB"
+note = "No Linux binary available - windows-exporter is Windows-only. Image contains informational stub."
 
 [upstream_checksum]
-url = "https://github.com/prometheus-community/windows_exporter/releases/download/v0.25.0/windows_exporter-0.25.0-linux-amd64.tar.gz"
-format = ""
+url = "https://github.com/prometheus-community/windows_exporter/releases/download/v0.25.0/sha256sums.txt"
+format = "sha256"
+note = "Upstream only ships .exe and .msi files"

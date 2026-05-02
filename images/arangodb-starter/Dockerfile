@@ -1,34 +1,17 @@
-
-FROM debian:bookworm-slim AS downloader
 ARG VERSION=3.11.10.1
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.arangodb.com/arangodb311/Linux/arangodb3-linux-3.11.10.1_x86_64.tar.gz" -o /arangodb.tar.gz || true ; \
-    [ -f /arangodb.tar.gz ] && tar -xzf /arangodb.tar.gz -C /tmp && rm -f /arangodb.tar.gz || true ; \
-    strip --strip-all /tmp/arangodb3-linux-3.11.10.1_x86_64/usr/sbin/arangod && \
-    strip --strip-all /tmp/arangodb3-linux-3.11.10.1_x86_64/usr/bin/arangosh && \
-    mv /tmp/arangodb3-linux-3.11.10.1_x86_64/usr/sbin/arangod /arangod && \
-    mv /tmp/arangodb3-linux-3.11.10.1_x86_64/usr/bin/arangosh /arangosh ; test -f /arangod || { echo '#!/bin/sh' > /arangod && echo 'echo "arangodb-starter v${VERSION} ready"' >> /arangod && echo 'exec sleep infinity' >> /arangod && chmod +x /arangod; } && test -f /arangosh || { echo '#!/bin/sh' > /arangosh && echo 'echo "arangodb-starter v${VERSION} ready"' >> /arangosh && echo 'exec sleep infinity' >> /arangosh && chmod +x /arangosh; }
 
-
-
-FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/lib/arangodb3 /var/log/arangodb3 2>/dev/null || true
-
+FROM arangodb/arangodb:${VERSION} AS upstream
 
 FROM scratch
-COPY --from=downloader /arangod /arangod
-COPY --from=downloader /arangosh /arangosh
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
-COPY --from=builder /var/lib/arangodb3 /var/lib/arangodb3
-COPY --from=builder /var/log/arangodb3 /var/log/arangodb3
-
+COPY --from=upstream /usr/sbin/arangod /arangod
+COPY --from=upstream /usr/bin/arangosh /arangosh
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8529
 ENTRYPOINT ["/arangod", "--serverstarter"]
 LABEL org.opencontainers.image.title="arangodb-starter" \
-      org.opencontainers.image.version="3.11.10.1" \
+      org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="ArangoDB" \
       org.opencontainers.image.description="ArangoDB in starter mode for cluster and resilient single-server deployments" \
       sovereign.image.tier="1" \

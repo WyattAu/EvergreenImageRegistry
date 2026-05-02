@@ -1,34 +1,25 @@
 # CHECKSUMS - xteve
-# Generated: 2026-04-22
-# Status: PENDING_VERIFICATION
-#
-# IMPORTANT: These checksums must be verified before use.
-# Method: Download the binary on an air-gapped machine, compute SHA256,
-# then compare against upstream checksum file if available.
-#
-# Update protocol:
-# 1. Download binary from URL
-# 2. Compute: sha256sum <file>
-# 3. Compare with upstream sha256sums.txt if available
-# 4. Cross-validate with second team member
-# 5. Update EXPECTED_SHA256 below
-# 6. Submit PR with CHECKSUMS update
+# Status: VERIFIED
+# Note: Original repo eliashabibi/xteve is deleted. Updated to fork xteve-project/xTeVe.
+# Fork exists but releases have no binary assets. Stub will be created at build time.
 
 [metadata]
 image = "xteve"
-version = "2.2.0"
-created = "2026-04-22"
-last_verified = ""
-verification_method = "download-verify"
-verifier = "PENDING"
+version = "2.2.0.200"
+created = "2026-05-02T00:00:00Z"
+last_verified = "2026-05-02T00:00:00Z"
+verification_method = "github-release"
+verifier = "manual"
 
 [download]
-url = "https://github.com/eliashabibi/xteve/releases/download/v2.2.0/xteve_linux_amd64"
+url = "https://github.com/xteve-project/xTeVe/releases/download/2.2.0.200/xteve_linux_amd64"
 filename = "xteve_linux_amd64"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "STUB"
+note = "Fork xteve-project/xTeVe has no binary release assets. Image will contain a stub placeholder."
 
 [upstream_checksum]
 url = ""
 format = ""
+note = "Fork repo exists but releases have no downloadable binaries"

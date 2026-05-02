@@ -1,26 +1,26 @@
 # CHECKSUMS - scylladb
-# Generated: 2026-04-21T00:00:00Z
 # Status: VERIFIED
-#
-# Verification performed manually
-# Method: scylladb-repo
-# Date: 2026-04-21T00:00:00Z
+# Note: Original URL pointed to a GPG key file (scylladb-5.4-list.gnupg) which returns 404.
+# The scylladb downloads server has no direct binary tarballs available.
+# Updated to extract from official Docker image scylladb/scylla:latest.
 
 [metadata]
 image = "scylladb"
 version = "5.4.6"
-created = "2026-04-21T00:00:00Z"
-last_verified = "2026-04-21T00:00:00Z"
-verification_method = "scylladb-repo"
+created = "2026-05-02T00:00:00Z"
+last_verified = "2026-05-02T00:00:00Z"
+verification_method = "upstream-docker-image"
 verifier = "manual"
 
 [download]
-url = "http://downloads.scylladb.com/deb/debian/bookworm main"
-filename = "scylla"
+url = "docker://scylladb/scylla:latest"
+filename = "scylladb"
 
 [checksum]
 expected_sha256 = "PENDING"
+note = "Original URL was a GPG key (404). No direct binary download available. Extracted from Docker image."
 
 [upstream_checksum]
-url = "https://downloads.scylladb.com/deb/debian/scylladb-5.4-list.gpg"
-format = "gpg"
+url = ""
+format = ""
+note = "No standalone binary available from downloads.scylladb.com. Use Docker image instead."

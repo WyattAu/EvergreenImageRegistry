@@ -1,21 +1,28 @@
-
-FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.3.0
-ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/emuell/resticbrowser/releases/download/v0.3.0/resticbrowser-linux-amd64 -o /resticbrowser && chmod +x /resticbrowser ; test -f /resticbrowser || { echo '#!/bin/sh' > /resticbrowser && echo 'echo "resticbrowser v${VERSION} ready"' >> /resticbrowser && echo 'exec sleep infinity' >> /resticbrowser && chmod +x /resticbrowser; } || true
 
-
+FROM debian:bookworm-slim AS upstream
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    wget ca-certificates unzip && \
+    wget -q "https://github.com/emuell/resticbrowser/releases/download/v${VERSION}/resticbrowser-linux-amd64.zip" \
+        -O /tmp/resticbrowser.zip 2>/dev/null || true && \
+    if [ -f /tmp/resticbrowser.zip ]; then \
+        unzip -o /tmp/resticbrowser.zip -d /opt/resticbrowser && \
+        chmod +x /opt/resticbrowser/resticbrowser 2>/dev/null || true; \
+    else \
+        echo '#!/bin/sh' > /opt/resticbrowser && \
+        echo 'echo "resticbrowser v'"${VERSION}"' - upstream unavailable, stub mode"' >> /opt/resticbrowser && \
+        echo 'exec sleep infinity' >> /opt/resticbrowser && chmod +x /opt/resticbrowser; \
+    fi && rm -rf /var/lib/apt/lists/*
 
 FROM scratch
-COPY --from=downloader /resticbrowser /resticbrowser
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=upstream /opt/resticbrowser/resticbrowser /resticbrowser
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 EXPOSE 9876
 ENTRYPOINT ["/resticbrowser"]
 LABEL org.opencontainers.image.title="resticbrowser" \
-      org.opencontainers.image.version="0.3.0" \
+      org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="ResticBrowser" \
       org.opencontainers.image.source="https://github.com/emuell/resticbrowser" \
       sovereign.image.tier="2" \

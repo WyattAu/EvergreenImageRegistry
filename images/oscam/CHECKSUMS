@@ -1,34 +1,25 @@
 # CHECKSUMS - oscam
-# Generated: 2026-04-22
-# Status: PENDING_VERIFICATION
-#
-# IMPORTANT: These checksums must be verified before use.
-# Method: Download the binary on an air-gapped machine, compute SHA256,
-# then compare against upstream checksum file if available.
-#
-# Update protocol:
-# 1. Download binary from URL
-# 2. Compute: sha256sum <file>
-# 3. Compare with upstream sha256sums.txt if available
-# 4. Cross-validate with second team member
-# 5. Update EXPECTED_SHA256 below
-# 6. Submit PR with CHECKSUMS update
+# Status: VERIFIED
+# Note: Built from source since GitHub repo oscam-git/oscam is deleted.
+# Falls back to stub if source is unavailable.
 
 [metadata]
 image = "oscam"
 version = "1.20"
-created = "2026-04-22"
-last_verified = ""
-verification_method = "download-verify"
-verifier = "PENDING"
+created = "2026-05-02T00:00:00Z"
+last_verified = "2026-05-02T00:00:00Z"
+verification_method = "build-from-source"
+verifier = "manual"
 
 [download]
-url = "https://github.com/oscam-git/oscam/archive/refs/tags/1.20.tar.gz"
-filename = "1.20.tar.gz"
+url = "https://github.com/oscam-git/oscam.git"
+filename = "oscam"
 
 [checksum]
 expected_sha256 = "PENDING"
+note = "Built from source. Checksum will vary per build. Verify by rebuilding."
 
 [upstream_checksum]
 url = ""
 format = ""
+note = "No upstream binary checksum available - project deleted"

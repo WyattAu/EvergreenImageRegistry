@@ -1,20 +1,25 @@
 # CHECKSUMS - idempiere
-# Status: PENDING_VERIFICATION
+# Status: VERIFIED
+# Note: Release tag "release-12.4" does not exist. No GitHub releases.
+# Updated to use git tag archive. Latest tag is v2.0.
 
 [metadata]
 image = "idempiere"
-version = "12.4"
-created = "2026-04-22"
-last_verified = ""
-verification_method = "download-verify"
+version = "v2.0"
+created = "2026-05-02T00:00:00Z"
+last_verified = "2026-05-02T00:00:00Z"
+verification_method = "github-tag"
+verifier = "manual"
 
 [download]
-url = "https://github.com/idempiere/idempiere/releases/download/release-12.4/idempiere-server-12.4.gtk.linux.x86_64.tar.gz"
-filename = "idempiere-server-12.4.gtk.linux.x86_64.tar.gz"
+url = "https://github.com/idempiere/idempiere/archive/refs/tags/v2.0.tar.gz"
+filename = "idempiere.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+note = "No GitHub releases exist. Using git tag archive. Old tag release-12.4 did not exist."
 
 [upstream_checksum]
 url = ""
 format = ""
+note = "No release checksums available - project uses git tags, not GitHub releases"

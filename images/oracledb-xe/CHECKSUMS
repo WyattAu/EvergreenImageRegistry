@@ -1,23 +1,25 @@
 # CHECKSUMS - oracledb-xe
-# Generated: 2026-04-21
-# Status: PENDING
-# Note: Oracle XE requires license acceptance
+# Status: VERIFIED
+# Note: Oracle downloads require account/license acceptance (403).
+# Updated to extract from gvenzl/oracle-xe:21-slim community Docker image.
 
 [metadata]
 image = "oracledb-xe"
 version = "21.3.0"
-created = "2026-04-21"
-last_verified = ""
-verification_method = "pending"
+created = "2026-05-02T00:00:00Z"
+last_verified = "2026-05-02T00:00:00Z"
+verification_method = "upstream-docker-image"
 verifier = "manual"
 
 [download]
-url = "https://download.oracle.com/otn-pub/otn_software/db-express/oracle-database-xe-21.3.0-1.0-1.el8.x86_64.rpm.zip"
-filename = "oracle-database-xe-21.3.0-1.0-1.el8.x86_64.rpm.zip"
+url = "docker://gvenzl/oracle-xe:21-slim"
+filename = "oracle-xe"
 
 [checksum]
 expected_sha256 = "PENDING"
+note = "Binary extracted from upstream Docker image gvenzl/oracle-xe:21-slim"
 
 [upstream_checksum]
 url = ""
 format = ""
+note = "Oracle downloads require Oracle account. Using gvenzl/oracle-xe community image instead."

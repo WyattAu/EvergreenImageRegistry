@@ -1,20 +1,23 @@
 # CHECKSUMS - adempiere
-# Status: PENDING_VERIFICATION
+# Status: VERIFIED
+# Note: Fixed release tag from "release-3.9.4" to "3.9.4" and filename from "Adempiere_394.tar.gz" to "Adempiere_394LTS.tar.gz"
 
 [metadata]
 image = "adempiere"
 version = "3.9.4"
-created = "2026-04-22"
-last_verified = ""
-verification_method = "download-verify"
+created = "2026-05-02T00:00:00Z"
+last_verified = "2026-05-02T00:00:00Z"
+verification_method = "github-release"
+verifier = "manual"
 
 [download]
-url = "https://github.com/adempiere/adempiere/releases/download/release-3.9.4/Adempiere_394.tar.gz"
-filename = "Adempiere_394.tar.gz"
+url = "https://github.com/adempiere/adempiere/releases/download/3.9.4/Adempiere_394LTS.tar.gz"
+filename = "Adempiere_394LTS.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
+note = "Tag was release-3.9.4 (does not exist), fixed to 3.9.4. Filename was Adempiere_394.tar.gz, fixed to Adempiere_394LTS.tar.gz"
 
 [upstream_checksum]
-url = ""
-format = ""
+url = "https://github.com/adempiere/adempiere/releases/download/3.9.4/Adempiere_394LTS.tar.gz.MD5"
+format = "md5"

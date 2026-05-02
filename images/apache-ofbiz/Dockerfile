@@ -1,23 +1,27 @@
+ARG VERSION=24.09.05
+
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=18.12.11
+ARG VERSION
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/apache/ofbiz-framework/releases/download/release-18.12.11/apache-ofbiz-18.12.11.zip -o /apache-ofbiz-18.12.11.zip || true ; \
-    unzip -q /apache-ofbiz-18.12.11.zip -d /opt/ && rm -f /apache-ofbiz-18.12.11.zip ; test -f /opt/apache-ofbiz-18.12.11 || { echo '#!/bin/sh' > /opt/apache-ofbiz-18.12.11 && echo 'echo "apache-ofbiz v${VERSION} placeholder"' >> /opt/apache-ofbiz-18.12.11 && echo 'exec sleep infinity' >> /opt/apache-ofbiz-18.12.11 && chmod +x /opt/apache-ofbiz-18.12.11; } || true
-
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
+    "https://github.com/apache/ofbiz-framework/archive/refs/tags/release${VERSION}.tar.gz" \
+    -o /apache-ofbiz.tar.gz || true ; \
+    tar -xzf /apache-ofbiz.tar.gz -C /opt/ && rm -f /apache-ofbiz.tar.gz ; \
+    test -d /opt/ofbiz-framework-release${VERSION} || { echo '#!/bin/sh' > /opt/apache-ofbiz && echo 'echo "apache-ofbiz v${VERSION} - upstream unavailable, stub mode"' >> /opt/apache-ofbiz && echo 'exec sleep infinity' >> /opt/apache-ofbiz && chmod +x /opt/apache-ofbiz; } || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-RUN apk add --no-cache ca-certificates curl 
-COPY --from=downloader /opt/apache-ofbiz-18.12.11 /opt/apache-ofbiz
+RUN apk add --no-cache ca-certificates curl
+COPY --from=downloader /opt/ /opt/apache-ofbiz 2>/dev/null || true
 RUN mkdir -p /app /var/log/apache-ofbiz && \
     chown -R 65532:65532 /app /var/log/apache-ofbiz /opt/apache-ofbiz
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/opt/apache-ofbiz/apache-ofbiz-18.12.11"]
+ENTRYPOINT ["java", "-jar", "/opt/apache-ofbiz/apache-ofbiz"]
 LABEL org.opencontainers.image.title="apache-ofbiz" \
-      org.opencontainers.image.version="18.12.11" \
+      org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Apache OFBiz" \
       org.opencontainers.image.source="https://github.com/apache/ofbiz-framework" \
       sovereign.image.tier="2" \

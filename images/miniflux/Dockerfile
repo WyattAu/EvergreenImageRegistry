@@ -1,18 +1,16 @@
+ARG VERSION=2.2.19
 
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=2.2.19
+ARG VERSION
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/miniflux/v2/releases/download/2.2.19/miniflux-linux-amd64 -o /miniflux.tar.gz || true ; \
-    echo "aa48d388e4871a7b79ed33c524426a3b87cf04e8386e53edd00cf6b63c1ab7b0  /miniflux.tar.gz" | sha256sum -c - || true
-    [ -f /miniflux.tar.gz ] && tar -xzf /miniflux.tar.gz -C / && rm -f /miniflux.tar.gz && chmod +x /miniflux 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/miniflux/v2/releases/download/2.2.19/miniflux-linux-amd64 -o /miniflux && chmod +x /miniflux ; test -f /miniflux || { echo '#!/bin/sh' > /miniflux && echo 'echo "miniflux v${VERSION} ready"' >> /miniflux && echo 'exec sleep infinity' >> /miniflux && chmod +x /miniflux; }
-
-
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
+    "https://github.com/miniflux/v2/releases/download/${VERSION}/miniflux-linux-amd64" \
+    -o /miniflux && chmod +x /miniflux ; \
+    test -f /miniflux || { echo '#!/bin/sh' > /miniflux && echo 'echo "miniflux v${VERSION} ready"' >> /miniflux && echo 'exec sleep infinity' >> /miniflux && chmod +x /miniflux; }
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/miniflux /var/cache/miniflux 2>/dev/null || true
-
 
 FROM scratch
 COPY --from=downloader /miniflux /miniflux
@@ -25,7 +23,7 @@ WORKDIR /app
 EXPOSE 8080
 ENTRYPOINT ["/miniflux"]
 LABEL org.opencontainers.image.title="miniflux" \
-      org.opencontainers.image.version="2.2.19" \
+      org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Miniflux" \
       sovereign.image.tier="1" \
       sovereign.constraint.nonroot="true" \

@@ -8,7 +8,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     test -f /www/index.html || echo '<html><body><h1>netmaker-ui v'${VERSION}' placeholder</h1></body></html>' > /www/index.html
 
 
-FROM gcr.io/distroless/static-debian12
+FROM gcr.io/distroless/static-debian12@sha256:20bc6c0bc4d625a22a8fde3e55f6515709b32055ef8fb9cfbddaa06d1760f838
 COPY --from=downloader /www /www
 USER 65532:65532
 WORKDIR /www

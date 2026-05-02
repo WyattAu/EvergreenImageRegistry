@@ -1,8 +1,8 @@
 
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=2.462.1
+ARG VERSION=3355.v388858a_47b_33
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-headless && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/2.462.1/remoting-2.462.1.jar" -o /agent.jar ; test -f /agent.jar || { echo '#!/bin/sh' > /agent.jar && echo 'echo "jenkins-agent v${VERSION} ready"' >> /agent.jar && echo 'exec sleep infinity' >> /agent.jar && chmod +x /agent.jar; } || true
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/3355.v388858a_47b_33/remoting-3355.v388858a_47b_33.jar" -o /agent.jar ; test -f /agent.jar || { echo '#!/bin/sh' > /agent.jar && echo 'echo "jenkins-agent v${VERSION} ready"' >> /agent.jar && echo 'exec sleep infinity' >> /agent.jar && chmod +x /agent.jar; } || true
 
 
 
@@ -24,7 +24,7 @@ WORKDIR /app
 ENV HOME=/app
 ENTRYPOINT ["java", "-jar", "/app/agent.jar"]
 LABEL org.opencontainers.image.title="jenkins-agent" \
-      org.opencontainers.image.version="2.462.1" \
+      org.opencontainers.image.version="3355.v388858a_47b_33" \
       org.opencontainers.image.vendor="Jenkins" \
       org.opencontainers.image.description="Sovereign hardened jenkins-agent - Jenkins SSH/JNLP agent" \
       sovereign.image.tier="3" \

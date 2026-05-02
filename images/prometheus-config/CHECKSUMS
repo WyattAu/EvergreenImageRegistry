@@ -1,23 +1,23 @@
 # CHECKSUMS - prometheus-config
 # Generated: 2026-04-22T00:00:00Z
-# Status: VERIFIED
+# Status: PENDING
+# Note: Converted to AS upstream pattern (quay.io/prometheus-operator/prometheus-operator:v0.90.1)
 
 [metadata]
 image = "prometheus-config"
 version = "0.90.1"
 created = "2026-04-29T03:22:15Z"
-last_verified = "2026-04-22T00:00:00Z"
-verification_method = "github-release"
-verifier = "manual"
+last_verified = ""
+verification_method = "docker-image"
 
 [download]
-url = "https://github.com/prometheus-operator/prometheus-operator/releases/download/v0.90.0/prometheus-operator-v0.90.0-linux-amd64.tar.gz"
-filename = "prometheus-operator-v0.90.0-linux-amd64.tar.gz"
+url = "https://quay.io/prometheus-operator/prometheus-operator:v0.90.1"
+filename = "prometheus-operator:v0.90.1"
 
 [checksum]
-expected_sha256 = "PENDING_VERSION_UPDATE_0.90.1"
+expected_sha256 = "VERIFY_FROM_QUAY_IMAGE"
 
 [upstream_checksum]
-url = "https://github.com/prometheus-operator/prometheus-operator/releases/tag/v0.90.1"
-format = "sha256"
-note = "Shares binary with prometheus-operator. Config reloader sub-component."
+url = ""
+format = ""
+note = "Uses AS upstream pattern - binary extracted from quay.io/prometheus-operator/prometheus-operator:v0.90.1"

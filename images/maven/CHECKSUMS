@@ -4,19 +4,19 @@
 
 [metadata]
 image = "maven"
-version = "3.9.9"
+version = "3.9.15"
 created = "2026-04-22T00:00:00Z"
 last_verified = "2026-04-22T00:00:00Z"
 verification_method = "apache-sha256"
 verifier = "manual"
 
 [download]
-url = "https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz"
-filename = "apache-maven-3.9.9-bin.tar.gz"
+url = "https://dlcdn.apache.org/maven/maven-3/3.9.15/binaries/apache-maven-3.9.15-bin.tar.gz"
+filename = "apache-maven-3.9.15-bin.tar.gz"
 
 [checksum]
 expected_sha256 = "VERIFY_FROM_APACHE_DOWNLOADS"
 
 [upstream_checksum]
-url = "https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz.sha512"
+url = "https://dlcdn.apache.org/maven/maven-3/3.9.15/binaries/apache-maven-3.9.15-bin.tar.gz.sha512"
 format = "sha512"

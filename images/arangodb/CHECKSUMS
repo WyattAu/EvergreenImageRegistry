@@ -11,18 +11,18 @@
 
 [metadata]
 image = "arangodb"
-version = "3.11.10.1"
+version = "3.12.4"
 created = "2026-04-21T00:00:00Z"
 last_verified = ""
 verification_method = "manual"
 
 [download]
-url = "https://download.arangodb.com/arangodb311/Linux/arangodb3-linux-3.11.10.1_x86_64.tar.gz"
-filename = "arangodb3-linux-3.11.10.1_x86_64.tar.gz"
+url = "https://download.arangodb.com/arangodb312/Community/Linux/arangodb3-linux-3.12.4_x86_64.tar.gz"
+filename = "arangodb3-linux-3.12.4_x86_64.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"
 
 [upstream_checksum]
-url = "https://download.arangodb.com/arangodb311/Linux/arangodb3-linux-3.11.10.1_x86_64.tar.gz.sha256sum"
+url = "https://download.arangodb.com/arangodb312/Community/Linux/arangodb3-linux-3.12.4_x86_64.tar.gz.sha256sum"
 format = "sha256"

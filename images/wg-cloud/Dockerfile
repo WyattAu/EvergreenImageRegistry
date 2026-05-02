@@ -1,41 +1,30 @@
+ARG VERSION=latest
 
-FROM debian:bookworm-slim AS downloader
-ARG VERSION=0.1.0
-ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/david415/WireGuard-Go-VPN/releases/download/v${VERSION}/wg-cloud-linux-amd64 -o /wg-cloud 2>/dev/null || true ; \
-    chmod +x /wg-cloud && strip --strip-all /wg-cloud 2>/dev/null ; test -f /wg-cloud || { echo '#!/bin/sh' > /wg-cloud && echo 'echo "wg-cloud v${VERSION} ready"' >> /wg-cloud && echo 'exec sleep infinity' >> /wg-cloud && chmod +x /wg-cloud; } 2>/dev/null || true
-RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
-FROM debian:bookworm-slim AS builder2
-RUN mkdir -p /app /var/log/wg-cloud 2>/dev/null || true
+FROM ghcr.io/david415/wg-cloud:${VERSION} AS upstream
+
+FROM debian:bookworm-slim AS builder
+RUN mkdir -p /app /var/log/wg-cloud /var/cache/wg-cloud 2>/dev/null || true
 
 
 FROM scratch
-COPY --from=downloader /wg-cloud /wg-cloud
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder2 /app /app
-COPY --from=builder2 /var/log/wg-cloud /var/log/wg-cloud
-USER 65532:65532
-WORKDIR /app
-EXPOSE 51820/udp 8080
-ENTRYPOINT ["/wg-cloud"]
-LABEL org.opencontainers.image.title="wg-cloud" \
-      org.opencontainers.image.version="0.1.0" \
-      org.opencontainers.image.vendor="WireGuard-Go-VPN" \
-      org.opencontainers.image.source="https://github.com/david415/WireGuard-Go-VPN" \
-      org.opencontainers.image.description="WireGuard cloud management plane" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="networking" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
+COPY --from=upstream /wg-cloud /wg-cloud
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /app /app
+COPY --from=builder /var/log/wg-cloud /var/log/wg-cloud
+COPY --from=builder /var/cache/wg-cloud /var/cache/wg-cloud
 
+WORKDIR /app
+
+EXPOSE 51820/udp 8080
+EXPOSE 9101
+
+LABEL org.opencontainers.image.title="wg-cloud" org.opencontainers.image.version="0.1.0" org.opencontainers.image.vendor="WireGuard-Go-VPN" org.opencontainers.image.source="https://github.com/david415/WireGuard-Go-VPN" org.opencontainers.image.description="WireGuard cloud management plane" sovereign.image.tier="1" sovereign.image.category="networking" sovereign.image.status="functional" sovereign.constraint.nonroot="true" sovereign.constraint.scratch="true" sovereign.hft.signal-handling="native" sovereign.hft.shutdown-timeout="3s" sovereign.hft.init-system="none" sovereign.hft.startup-timeout="3000ms"
 LABEL sovereign.base.image="scratch"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
-EXPOSE 9101
+
+USER 65532:65532
+
 STOPSIGNAL SIGTERM
+
+ENTRYPOINT ["/wg-cloud"]

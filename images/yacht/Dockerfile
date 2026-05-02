@@ -1,30 +1,30 @@
+ARG VERSION=latest
 
-FROM debian:bookworm-slim AS downloader
-ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/SelfhostedPro/Yacht/releases/download/v2.2.2/yacht_2.2.2_linux_amd64.tar.gz -o /yacht_2.2.2_linux_amd64.tar.gz &&     [ -f /yacht_2.2.2_linux_amd64.tar.gz ] && tar -xzf /yacht_2.2.2_linux_amd64.tar.gz -C / && rm -f /yacht_2.2.2_linux_amd64.tar.gz && chmod +x /yacht || true
-RUN strip /yacht 2>/dev/null || true
-RUN test -f /yacht || { echo '#!/bin/sh' > /yacht && echo 'echo "yacht v${VERSION} ready"' >> /yacht && echo 'exec sleep infinity' >> /yacht && chmod +x /yacht; }
-RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
-RUN [ -f /yacht ] || { echo '#!/bin/sh' > /yacht ; echo 'echo "yacht v${VERSION} ready"' >> /yacht ; echo 'exec sleep infinity' >> /yacht ; chmod +x /yacht 2>/dev/null || true ; } 2>/dev/null || true
-RUN [ -f /etc/ssl/certs/ca-certificates.crt ] || { echo '#!/bin/sh' > /etc/ssl/certs/ca-certificates.crt ; echo 'echo "yacht v${VERSION} ready"' >> /etc/ssl/certs/ca-certificates.crt ; echo 'exec sleep infinity' >> /etc/ssl/certs/ca-certificates.crt ; chmod +x /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true ; } 2>/dev/null || true
-RUN [ -f /app ] || { echo '#!/bin/sh' > /app ; echo 'echo "yacht v${VERSION} ready"' >> /app ; echo 'exec sleep infinity' >> /app ; chmod +x /app 2>/dev/null || true ; } 2>/dev/null || true
+FROM selfhostedpro/yacht:${VERSION} AS upstream
+
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/yacht /var/cache/yacht 2>/dev/null || true
 
 
 FROM scratch
-
-COPY --from=downloader /yacht /usr/local/bin/yacht
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=upstream /app/yacht /usr/local/bin/yacht
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
-USER 65532:65532
+COPY --from=builder /var/log/yacht /var/log/yacht
+COPY --from=builder /var/cache/yacht /var/cache/yacht
+
 WORKDIR /app
+
+EXPOSE 9101
+
 LABEL sovereign.base.image="scratch"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
-EXPOSE 9101
+
+USER 65532:65532
+
 STOPSIGNAL SIGTERM
 
 ENTRYPOINT ["/yacht"]
+
 CMD ["--help"]

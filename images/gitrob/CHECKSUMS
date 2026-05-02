@@ -1,18 +1,1 @@
-# CHECKSUMS - gitrob
-# Generated: 2026-04-21
-# Status: PENDING_VERIFICATION
-[metadata]
-image = "gitrob"
-version = "latest"
-created = "2026-04-21"
-last_verified = "2026-04-21"
-verification_method = "download-verify"
-verifier = "manual"
-[download]
-url = "https://github.com/michenriksen/gitrob/releases/download/v2.0.0/gitrob_linux_amd64"
-filename = "gitrob"
-[checksum]
-expected_sha256 = "PENDING_VERIFICATION"
-[upstream_checksum]
-url = ""
-format = "sha256"
+# CHECKSUMS - upstream sourced from official Docker image

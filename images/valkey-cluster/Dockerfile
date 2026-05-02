@@ -1,47 +1,28 @@
-FROM debian:bookworm-slim AS builder
-ARG GITHUB_TOKEN
-ARG VERSION=7.2.4
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/valkey-io/valkey/releases/download/${VERSION}/valkey-${VERSION}.tar.gz \
-    -o /valkey.tar.gz && \
-    echo "PENDING_CHECKSUM  /valkey.tar.gz" | sha256sum -c || true ; [ -f /valkey.tar.gz ] && \
-    [ -f /valkey.tar.gz ] && tar -xzf /valkey.tar.gz -C / && rm -f /valkey.tar.gz || true ; \
-    cd /valkey-${VERSION} && make -j"$(nproc)" && make install PREFIX=/install && \    strip /install/bin/valkey-* /install/bin/redis-* || true
+ARG VERSION=latest
 
+FROM valkey/valkey:${VERSION} AS upstream
 
-RUN test -f /install/bin/ || { echo '#!/bin/sh' > /install/bin/ && echo 'echo "valkey-cluster v${VERSION} placeholder"' >> /install/bin/ && echo 'exec sleep infinity' >> /install/bin/ && chmod +x /install/bin/ ; } ; \
-    mkdir -p /valkey-${VERSION}/valkey.conf 2>/dev/null || true
-
-
-RUN mkdir -p /install/bin /valkey-${VERSION} 2>/dev/null || true && touch /valkey-${VERSION}/valkey.conf 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
-ARG VERSION=7.2.4
 
-RUN apk add --no-cache ca-certificates 
-COPY --from=builder /install/bin/ /usr/local/bin/
-COPY --from=builder /valkey-${VERSION}/valkey.conf /app/valkey.conf
+ARG VERSION=7.2.4
+RUN apk add --no-cache ca-certificates
+COPY --from=upstream /usr/local/bin/valkey-server /usr/local/bin/valkey-server
 RUN adduser -u 65532 -s /bin/false valkey 2>/dev/null || true && \
     mkdir -p /app /var/log/valkey-cluster /var/cache/valkey-cluster /var/lib/valkey ; \
     chown -R 65532:65532 /app /var/log/valkey-cluster /var/cache/valkey-cluster /var/lib/valkey
-USER 65532:65532
+
+
 WORKDIR /app
+
 EXPOSE 6379 16379
-ENV VALKEY_CLUSTER_ANNOUNCE_IP="" \
-    VALKEY_CLUSTER_ANNOUNCE_PORT="6379"
-ENTRYPOINT ["valkey", "--cluster-enabled", "yes", \
-    "--cluster-config-file", "/app/nodes.conf", \
-    "--cluster-node-timeout", "5000", \
-    "--appendonly", "yes", \
-    "--port", "6379"]
-LABEL org.opencontainers.image.title="valkey-cluster" \
-      org.opencontainers.image.version="7.2.4" \
-      org.opencontainers.image.description="Valkey in Cluster Mode - Distributed Key-Value Store" \
-      org.opencontainers.image.vendor="Valkey" \
-      org.opencontainers.image.source="https://github.com/valkey-io/valkey" \
-      sovereign.image.tier="1" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
+EXPOSE 9101
+
+LABEL org.opencontainers.image.title="valkey-cluster" org.opencontainers.image.version="7.2.4" org.opencontainers.image.description="Valkey in Cluster Mode - Distributed Key-Value Store" org.opencontainers.image.vendor="Valkey" org.opencontainers.image.source="https://github.com/valkey-io/valkey" sovereign.image.tier="1" sovereign.constraint.nonroot="true" sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
-EXPOSE 9101
+
+USER 65532:65532
+
 STOPSIGNAL SIGTERM
+
+ENTRYPOINT ["valkey", "--cluster-enabled", "yes", \

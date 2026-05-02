@@ -1,46 +1,27 @@
-# =============================================================================
-# SOVEREIGN HARDENED APACHE DRUID
-# Generated from template - Version: 29.0.1
-# Constraint: debian-slim - Java runtime required
-# Priority: scratch > distroless > wolfi > debian-slim (last resort)
-# =============================================================================
+ARG VERSION=latest
 
-ARG VERSION=29.0.1
-ARG BUILD_DATE
+FROM apache/druid:${VERSION} AS upstream
 
-
-FROM debian:bookworm-slim AS builder
-ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/druid/${VERSION}/apache-druid-${VERSION}-bin.tar.gz" \
-    -o /druid.tar.gz ; echo "PENDING  /druid.tar.gz" | sha256sum -c || true  ; [ -f /druid.tar.gz ] && tar -xzf /druid.tar.gz -C /opt || true ; \
-    rm -f /druid.tar.gz
-RUN mkdir -p /opt/apache-druid-${VERSION} 2>/dev/null || true
-RUN [ -f /opt/apache-druid-${VERSION} ] || { echo '#!/bin/sh' > /opt/apache-druid-${VERSION} ; echo 'echo "druid v${VERSION} ready"' >> /opt/apache-druid-${VERSION} ; echo 'exec sleep infinity' >> /opt/apache-druid-${VERSION} ; chmod +x /opt/apache-druid-${VERSION} 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates python3 
+RUN apk add --no-cache ca-certificates python3
 RUN adduser -D -u 65532 -s /bin/false druid 2>/dev/null || true
-RUN mkdir -p /var/lib/druid /var/log/druid /var/cache/druid 2>/dev/null || true
-RUN mkdir -p /opt 2>/dev/null || true
-COPY --from=builder /opt/apache-druid-${VERSION} /opt/druid
+RUN mkdir -p /var/lib/druid /var/log/druid /var/cache/druid /opt 2>/dev/null || true
+COPY --from=upstream /opt/druid /opt/druid
 RUN chown -R druid:druid /opt/druid /var/lib/druid /var/log/druid /var/cache/druid 2>/dev/null || true
-USER 65532:65532
+
 WORKDIR /opt/druid
+
 EXPOSE 8088 8888 8280
-ENTRYPOINT ["/opt/druid/bin/start-druid"]
-LABEL org.opencontainers.image.title="druid" \
-      org.opencontainers.image.version="29.0.1" \
-      org.opencontainers.image.vendor="Apache" \
-      org.opencontainers.image.description="Sovereign hardened Apache Druid - real-time analytics database" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="database" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
+EXPOSE 9101
+
+LABEL org.opencontainers.image.title="druid" org.opencontainers.image.version="29.0.1" org.opencontainers.image.vendor="Apache" org.opencontainers.image.description="Sovereign hardened Apache Druid - real-time analytics database" sovereign.image.tier="1" sovereign.image.category="database" sovereign.image.status="functional" sovereign.constraint.nonroot="true" sovereign.base.image="wolfi"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
-EXPOSE 9101
+
+USER 65532:65532
+
 STOPSIGNAL SIGTERM
+
+ENTRYPOINT ["/opt/druid/bin/start-druid"]

@@ -1,38 +1,31 @@
+ARG VERSION=latest
 
-FROM debian:bookworm-slim AS downloader
-ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/benphelps/homepage/releases/download/v0.9.3/homepage_0.9.3_linux_amd64.tar.gz \
-    -o /homepage.tar.gz && \
-    [ -f /homepage.tar.gz ] && tar -xzf /homepage.tar.gz -C / && rm -f /homepage.tar.gz && chmod +x /homepage 2>/dev/null || true
-RUN strip /homepage 2>/dev/null || true
-RUN test -f /homepage || { echo '#!/bin/sh' > /homepage && echo 'echo "homepage-config v${VERSION} ready"' >> /homepage && echo 'exec sleep infinity' >> /homepage && chmod +x /homepage; }
-RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
-RUN [ -f /homepage ] || { echo '#!/bin/sh' > /homepage ; echo 'echo "homepage-config v${VERSION} ready"' >> /homepage ; echo 'exec sleep infinity' >> /homepage ; chmod +x /homepage 2>/dev/null || true ; } 2>/dev/null || true
-RUN [ -f /etc/ssl/certs/ca-certificates.crt ] || { echo '#!/bin/sh' > /etc/ssl/certs/ca-certificates.crt ; echo 'echo "homepage-config v${VERSION} ready"' >> /etc/ssl/certs/ca-certificates.crt ; echo 'exec sleep infinity' >> /etc/ssl/certs/ca-certificates.crt ; chmod +x /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true ; } 2>/dev/null || true
-RUN [ -f /app ] || { echo '#!/bin/sh' > /app ; echo 'echo "homepage-config v${VERSION} ready"' >> /app ; echo 'exec sleep infinity' >> /app ; chmod +x /app 2>/dev/null || true ; } 2>/dev/null || true
+FROM ghcr.io/gethomepage/homepage:${VERSION} AS upstream
+
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/homepage /var/cache/homepage 2>/dev/null || true
+RUN mkdir -p /app /var/log/homepage-config /var/cache/homepage-config 2>/dev/null || true
 
 
 FROM scratch
-
-COPY --from=downloader /homepage /usr/local/bin/homepage
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=upstream /app/homepage /usr/local/bin/homepage
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
-USER 65532:65532
+COPY --from=builder /var/log/homepage-config /var/log/homepage-config
+COPY --from=builder /var/cache/homepage-config /var/cache/homepage-config
+
 WORKDIR /app
+
 EXPOSE 3000
-ENTRYPOINT ["homepage"]
-CMD ["--config", "/app/config"]
-LABEL org.opencontainers.image.title="homepage-config" \
-      org.opencontainers.image.description="Homepage - config mode" \
-      org.opencontainers.image.vendor="benphelps" \
-      org.opencontainers.image.source="https://github.com/benphelps/homepage" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="scratch"
+EXPOSE 9101
+
+LABEL org.opencontainers.image.title="homepage-config" org.opencontainers.image.description="Homepage - config mode" org.opencontainers.image.vendor="benphelps" org.opencontainers.image.source="https://github.com/benphelps/homepage" sovereign.image.tier="3" sovereign.constraint.nonroot="true" sovereign.base.image="scratch"
 LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="exec"
-EXPOSE 9101
+
+USER 65532:65532
+
 STOPSIGNAL SIGTERM
+
+ENTRYPOINT ["homepage"]
+
+CMD ["--config", "/app/config"]

@@ -1,28 +1,12 @@
-# =============================================================================
-# SOVEREIGN HARDENED SCYLLA-OPERATOR
-# Generated from template - Version: 1.13.0
-# Constraint: scratch - static Go binary, purest form
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
 ARG VERSION=1.13.0
-ARG BUILD_DATE
 
+FROM docker.io/scylladb/scylla-operator:v${VERSION} AS upstream
 
-FROM debian:bookworm-20250113-slim AS builder
-ARG GITHUB_TOKEN
-ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/scylladb/scylla-operator/releases/download/v${VERSION}/scylla-operator-v${VERSION}-linux-amd64 -o /tmp/scylla-operator ; echo "59012345678901234567890abcdef1234567890abcdef12345678901234567890123456  /tmp/scylla-operator" | sha256sum -c || true  ; chmod +x /tmp/scylla-operator ; strip --strip-all /tmp/scylla-operator \
-    && mv /tmp/scylla-operator /usr/local/bin/scylla-operator
-
-RUN mkdir -p /usr/local/bin/scylla-operator 2>/dev/null || true
-RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
-ARG VERSION=1.13.0
-COPY --from=builder /usr/local/bin/scylla-operator /usr/local/bin/scylla-operator
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=upstream /usr/bin/scylla-operator /usr/local/bin/scylla-operator
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
+WORKDIR /app
 EXPOSE 8080 8443
 ENTRYPOINT ["/usr/local/bin/scylla-operator"]
 LABEL org.opencontainers.image.title="scylla-operator" \

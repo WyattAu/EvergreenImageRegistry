@@ -1,28 +1,12 @@
-# =============================================================================
-# SOVEREIGN HARDENED COUCHBASE-OPERATOR
-# Constraint: scratch - pure static Go binary from Couchbase
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
 ARG VERSION=2.7.0
-ARG BUILD_DATE
 
-# hadolint ignore=DL3023
+FROM ghcr.io/couchbase/couchbase-operator:v${VERSION} AS upstream
 
-FROM debian:bookworm-slim AS builder
-ARG GITHUB_TOKEN
-ARG VERSION
-WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/couchbase/couchbase-operator/releases/download/v${VERSION}/couchbase-operator-linux-amd64 -o /tmp/couchbase-operator ; chmod +x /tmp/couchbase-operator ; echo "PENDING  /tmp/couchbase-operator" | sha256sum -c || true  ; strip --strip-all /tmp/couchbase-operator 2>/dev/null || true
-
-
-RUN test -f /tmp/couchbase-operator || { echo '#!/bin/sh' > /tmp/couchbase-operator && echo 'echo "couchbase-operator v${VERSION} placeholder"' >> /tmp/couchbase-operator && echo 'exec sleep infinity' >> /tmp/couchbase-operator && chmod +x /tmp/couchbase-operator ; }
 FROM scratch
-ARG VERSION=2.7.0
-COPY --from=builder /tmp/couchbase-operator /usr/local/bin/couchbase-operator
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=upstream /manager /usr/local/bin/couchbase-operator
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
+WORKDIR /app
 ENTRYPOINT ["/usr/local/bin/couchbase-operator"]
 LABEL org.opencontainers.image.title="couchbase-operator" \
       org.opencontainers.image.version="${VERSION}" \

@@ -1,28 +1,12 @@
-# =============================================================================
-# SOVEREIGN HARDENED VM-OPERATOR
-# Generated from template - Version: 0.45.0
-# Constraint: scratch - static Go binary, purest form
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
 ARG VERSION=0.45.0
-ARG BUILD_DATE
 
+FROM ghcr.io/victoriametrics/operator:v${VERSION} AS upstream
 
-FROM debian:bookworm-20250113-slim AS builder
-ARG GITHUB_TOKEN
-ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/VictoriaMetrics/operator/releases/download/v${VERSION}/operator-${VERSION}-linux-amd64 -o /tmp/vm-operator ; echo "9012345678901234567890abcdef1234567890abcdef123456789012345678901234567890  /tmp/vm-operator" | sha256sum -c || true  ; chmod +x /tmp/vm-operator ; strip --strip-all /tmp/vm-operator \
-    && mv /tmp/vm-operator /usr/local/bin/vm-operator
-
-RUN mkdir -p /usr/local/bin/vm-operator 2>/dev/null || true
-RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
-ARG VERSION=0.45.0
-COPY --from=builder /usr/local/bin/vm-operator /usr/local/bin/vm-operator
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=upstream /usr/local/bin/manager /usr/local/bin/vm-operator
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
+WORKDIR /app
 EXPOSE 8080 8443
 ENTRYPOINT ["/usr/local/bin/vm-operator"]
 LABEL org.opencontainers.image.title="vm-operator" \

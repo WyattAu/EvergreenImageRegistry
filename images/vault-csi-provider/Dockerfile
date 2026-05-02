@@ -1,26 +1,15 @@
-
-FROM debian:bookworm-slim AS downloader
 ARG VERSION=1.7.1
-ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/hashicorp/vault-csi-provider/releases/download/v${VERSION}/vault-csi-provider_${VERSION}_linux_amd64.tar.gz -o /vault-csi-provider.tar.gz && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/hashicorp/vault-csi-provider/releases/download/v${VERSION}/vault-csi-provider_${VERSION}_SHA256SUMS -o /checksums.txt && \
-    grep "vault-csi-provider_${VERSION}_linux_amd64.tar.gz" /checksums.txt | sha256sum -c || true ; [ -f /vault-csi-provider.tar.gz ] && \
-    [ -f /vault-csi-provider.tar.gz ] && tar -xzf /vault-csi-provider.tar.gz -C /tmp/ || true ; \
-    strip --strip-all /tmp/vault-csi-provider && \
-    mv /tmp/vault-csi-provider /vault-csi-provider && \
-    rm -rf /vault-csi-provider.tar.gz /checksums.txt /tmp/* ; test -f /vault-csi-provider || { echo '#!/bin/sh' > /vault-csi-provider && echo 'echo "vault-csi-provider v${VERSION} ready"' >> /vault-csi-provider && echo 'exec sleep infinity' >> /vault-csi-provider && chmod +x /vault-csi-provider; } || true
 
-
+FROM hashicorp/vault-csi-provider:${VERSION} AS upstream
 
 FROM scratch
-COPY --from=downloader /vault-csi-provider /vault-csi-provider
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=upstream /bin/vault-csi-provider /usr/local/bin/vault-csi-provider
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
-ENTRYPOINT ["/vault-csi-provider"]
+ENTRYPOINT ["/usr/local/bin/vault-csi-provider"]
 LABEL org.opencontainers.image.title="vault-csi-provider" \
-      org.opencontainers.image.version="1.7.1" \
+      org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="HashiCorp" \
       org.opencontainers.image.source="https://github.com/hashicorp/vault-csi-provider" \
       sovereign.image.tier="2" \

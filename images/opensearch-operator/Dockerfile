@@ -1,32 +1,16 @@
-
-FROM debian:bookworm-slim AS downloader
 ARG VERSION=2.9.0
-ARG GITHUB_TOKEN
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/opensearch-project/opensearch-operator/releases/download/v${VERSION}/opensearch-operator_linux_amd64 -o /opensearch-operator && \
-    echo "c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4  /opensearch-operator" | sha256sum -c || true \
-    chmod +x /opensearch-operator && \
-    strip /opensearch-operator ; test -f /opensearch-operator || { echo '#!/bin/sh' > /opensearch-operator && echo 'echo "opensearch-operator v${VERSION} ready"' >> /opensearch-operator && echo 'exec sleep infinity' >> /opensearch-operator && chmod +x /opensearch-operator; } 2>/dev/null || true
 
-
-
-FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/opensearch-operator 2>/dev/null || true
-
+FROM ghcr.io/opensearch-project/opensearch-operator:v${VERSION} AS upstream
 
 FROM scratch
-COPY --from=downloader /opensearch-operator /opensearch-operator
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
-COPY --from=builder /var/log/opensearch-operator /var/log/opensearch-operator
+COPY --from=upstream /manager /usr/local/bin/opensearch-operator
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080 8443
-ENTRYPOINT ["/opensearch-operator"]
+ENTRYPOINT ["/usr/local/bin/opensearch-operator"]
 LABEL org.opencontainers.image.title="opensearch-operator" \
-      org.opencontainers.image.version="2.9.0" \
+      org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="OpenSearch" \
       org.opencontainers.image.description="OpenSearch Operator for Kubernetes" \
       sovereign.image.tier="1" \

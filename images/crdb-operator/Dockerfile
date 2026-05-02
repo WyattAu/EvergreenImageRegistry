@@ -1,29 +1,12 @@
-# =============================================================================
-# SOVEREIGN HARDENED CRDB-OPERATOR
-# Generated from template - Version: 1.11.0
-# Constraint: scratch - static Go binary, purest form
-# Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
 ARG VERSION=1.11.0
-ARG BUILD_DATE
 
+FROM cockroachdb/cockroach-operator:v${VERSION} AS upstream
 
-FROM debian:bookworm-20250113-slim AS builder
-ARG GITHUB_TOKEN
-ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/cockroachdb/cockroach-operator/releases/download/v${VERSION}/cockroach-operator-linux-amd64 -o /tmp/cockroach-operator ; echo "39012345678901234567890abcdef1234567890abcdef123456789012345678901234  /tmp/cockroach-operator" | sha256sum -c || true  ; chmod +x /tmp/cockroach-operator ; strip --strip-all /tmp/cockroach-operator \
-    && mv /tmp/cockroach-operator /usr/local/bin/cockroach-operator
-
-
-RUN test -f /usr/local/bin/cockroach-operator || { echo '#!/bin/sh' > /usr/local/bin/cockroach-operator && echo 'echo "crdb-operator v${VERSION} placeholder"' >> /usr/local/bin/cockroach-operator && echo 'exec sleep infinity' >> /usr/local/bin/cockroach-operator && chmod +x /usr/local/bin/cockroach-operator ; } || true
-RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM scratch
-ARG VERSION=1.11.0
-COPY --from=builder /usr/local/bin/cockroach-operator /usr/local/bin/cockroach-operator
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=upstream /manager /usr/local/bin/cockroach-operator
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
+WORKDIR /app
 EXPOSE 8080 8443
 ENTRYPOINT ["/usr/local/bin/cockroach-operator"]
 LABEL org.opencontainers.image.title="crdb-operator" \

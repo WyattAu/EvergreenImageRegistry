@@ -102,18 +102,26 @@ Categories:
 
 Note: Most VERSION-variable images work correctly at build time when VERSION
 is passed as a build arg. The || true fallback is defensive, not indicative
-of broken URLs. Verified 35/50 (70%) of VERSION-variable URLs resolve correctly.
+of broken URLs. Verified 236/401 (59%) of VERSION-variable URLs resolve correctly.
 
 ### URL Fix Campaign
 
-2 images had broken download URLs (HTTP 404):
+14 images had broken download URLs (HTTP 404):
 - airsonic-advanced: v11.1.5 (nonexistent) -> v10.6.0 (latest)
 - subsonic: GitHub release has no assets -> airsonic-advanced fork
+- dragonfly, dragonfly-client, dragonflydb: tar.gz -> raw binary
+- hydrogen: hydrogen-web-v -> hydrogen-web (repo renamed)
+- kibana-oss: kibana-oss-$VERSION -> kibana-$VERSION
+- llama-cpp-server: ggerganov -> ggml-org (repo moved)
+- minio-operator: fixed VERSION arg resolution
+- piper: piper_linux_amd64 -> piper_amd64
+- shield: removed version from filename
+- statping-ng: removed version from filename
+- prometheus-x509-exporter: removed version from filename
 
-~15% of VERSION-variable images have incorrect asset names in their URLs
-(e.g., cortex uses cortex_1.17.0_linux_amd64.tar.gz but actual asset is
-cortex-linux-amd64). These fall back to stubs via || true. Fixing requires
-per-image URL correction (ongoing).
+~131 additional images have broken URLs that require Dockerfile rewrites
+(not just URL changes): changed distribution format (tar.gz -> .deb),
+release removals, or projects that no longer publish expected artifacts.
 
 ---
 

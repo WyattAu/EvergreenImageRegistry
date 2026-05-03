@@ -1,0 +1,39 @@
+[metadata]
+name = "mysql-backup"
+version = "8.0"
+description = "MySQL Backup - automated backup solution for MySQL"
+vendor = "Community"
+source = "https://github.com/databack/mysql-backup4sh"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/mysql-backup/mysql-backup/releases/download/v8.0/mysql-backup-8.0-linux-amd64.tar.gz"
+binary_name = "mysql-backup"
+filename = "mysql-backup-8.0-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "mysql-backup"
+"org.opencontainers.image.description" = "MySQL Backup - automated backup solution for MySQL"
+"org.opencontainers.image.version" = "8.0"
+"org.opencontainers.image.vendor" = "Community"
+"org.opencontainers.image.source" = "https://github.com/databack/mysql-backup4sh"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"

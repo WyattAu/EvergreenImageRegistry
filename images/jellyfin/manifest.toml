@@ -1,0 +1,40 @@
+[metadata]
+name = "jellyfin"
+version = "10.10.0"
+description = "Jellyfin - free software media system"
+vendor = "Jellyfin"
+source = "https://github.com/jellyfin/jellyfin"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/jellyfin/jellyfin/releases/download/v10.10.0/jellyfin-10.10.0-linux-amd64.tar.gz"
+binary_name = "jellyfin"
+filename = "jellyfin-10.10.0-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+application = 8096
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "jellyfin"
+"org.opencontainers.image.description" = "Jellyfin - free software media system"
+"org.opencontainers.image.version" = "10.10.0"
+"org.opencontainers.image.vendor" = "Jellyfin"
+"org.opencontainers.image.source" = "https://github.com/jellyfin/jellyfin"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "none"

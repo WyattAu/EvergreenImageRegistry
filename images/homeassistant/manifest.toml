@@ -1,0 +1,40 @@
+[metadata]
+name = "homeassistant"
+version = "2024.4.2"
+description = "Home Assistant - open source home automation platform"
+vendor = "Home Assistant"
+source = "https://github.com/home-assistant/core"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "cgr.dev/chainguard/wolfi-base:latest"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/homeassistant/homeassistant/releases/download/v2024.4.2/homeassistant-2024.4.2-linux-amd64.tar.gz"
+binary_name = "homeassistant"
+filename = "homeassistant-2024.4.2-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 8123
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "homeassistant"
+"org.opencontainers.image.description" = "Home Assistant - open source home automation platform"
+"org.opencontainers.image.version" = "2024.4.2"
+"org.opencontainers.image.vendor" = "Home Assistant"
+"org.opencontainers.image.source" = "https://github.com/home-assistant/core"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"

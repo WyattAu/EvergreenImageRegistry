@@ -1,0 +1,40 @@
+[metadata]
+name = "grafana"
+version = "11.0.0"
+description = "Grafana - observability dashboard and visualization"
+vendor = "Grafana Labs"
+source = "https://github.com/grafana/grafana"
+license = "AGPL-3.0"
+tier = "1"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://dl.grafana.com/oss/release/grafana-11.0.0.linux-amd64.tar.gz"
+binary_name = "grafana-server"
+filename = "grafana-11.0.0.linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+application = 3000
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "grafana"
+"org.opencontainers.image.description" = "Grafana - observability dashboard and visualization"
+"org.opencontainers.image.version" = "11.0.0"
+"org.opencontainers.image.vendor" = "Grafana Labs"
+"org.opencontainers.image.source" = "https://github.com/grafana/grafana"
+"sovereign.image.tier" = "1"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"

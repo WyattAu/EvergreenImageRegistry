@@ -1,0 +1,40 @@
+[metadata]
+name = "questdb"
+version = "7.3.10"
+description = "QuestDB - time-series SQL database"
+vendor = "QuestDB"
+source = "https://github.com/questdb/questdb"
+license = "Apache-2.0"
+tier = "2"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/questdb/questdb/releases/download/v7.3.10/questdb-7.3.10-linux-amd64.tar.gz"
+binary_name = "questdb"
+filename = "questdb-7.3.10-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+application = 9000
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "questdb"
+"org.opencontainers.image.description" = "QuestDB - time-series SQL database"
+"org.opencontainers.image.version" = "7.3.10"
+"org.opencontainers.image.vendor" = "QuestDB"
+"org.opencontainers.image.source" = "https://github.com/questdb/questdb"
+"sovereign.image.tier" = "2"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"

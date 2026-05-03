@@ -1,0 +1,40 @@
+[metadata]
+name = "neo4j"
+version = "5.20.0"
+description = "Neo4j - native graph database"
+vendor = "Neo4j"
+source = "https://github.com/neo4j/neo4j"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "cgr.dev/chainguard/wolfi-base:latest"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/neo4j/neo4j/releases/download/v5.20.0/neo4j-5.20.0-linux-amd64.tar.gz"
+binary_name = "neo4j"
+filename = "neo4j-5.20.0-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 7474
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "neo4j"
+"org.opencontainers.image.description" = "Neo4j - native graph database"
+"org.opencontainers.image.version" = "5.20.0"
+"org.opencontainers.image.vendor" = "Neo4j"
+"org.opencontainers.image.source" = "https://github.com/neo4j/neo4j"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"

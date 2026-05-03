@@ -1,0 +1,41 @@
+[metadata]
+name = "kustomize"
+version = "5.4.1"
+description = "Kustomize - template-free configuration customization for Kubernetes"
+vendor = "Kubernetes"
+source = "https://github.com/kubernetes-sigs/kustomize"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.4.1/kustomize_v5.4.1_linux_amd64.tar.gz"
+binary_name = "kustomize"
+filename = "kustomize_v5.4.1_linux_amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "kustomize"
+"org.opencontainers.image.description" = "Kustomize - template-free configuration customization for Kubernetes"
+"org.opencontainers.image.version" = "5.4.1"
+"org.opencontainers.image.vendor" = "Kubernetes"
+"org.opencontainers.image.source" = "https://github.com/kubernetes-sigs/kustomize"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "3s"

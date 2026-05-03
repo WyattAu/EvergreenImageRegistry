@@ -1,0 +1,42 @@
+[metadata]
+name = "nextcloud"
+version = "30.0.5"
+description = "Nextcloud - self-hosted productivity platform"
+vendor = "Nextcloud"
+source = "https://github.com/nextcloud/server"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/nextcloud/nextcloud/releases/download/v30.0.5/nextcloud-30.0.5-linux-amd64.tar.gz"
+binary_name = "nextcloud"
+filename = "nextcloud-30.0.5-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+application = 80
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "nextcloud"
+"org.opencontainers.image.description" = "Nextcloud - self-hosted productivity platform"
+"org.opencontainers.image.version" = "30.0.5"
+"org.opencontainers.image.vendor" = "Nextcloud"
+"org.opencontainers.image.source" = "https://github.com/nextcloud/server"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "10s"

@@ -1,0 +1,42 @@
+[metadata]
+name = "traefik"
+version = "3.6.14"
+description = "Traefik - modern HTTP reverse proxy and load balancer"
+vendor = "Traefik Labs"
+source = "https://github.com/traefik/traefik"
+license = "MIT"
+tier = "1"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/traefik/traefik/releases/download/v3.6.14/traefik-3.6.14-linux-amd64.tar.gz"
+binary_name = "traefik"
+filename = "traefik-3.6.14-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 80
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "traefik"
+"org.opencontainers.image.description" = "Traefik - modern HTTP reverse proxy and load balancer"
+"org.opencontainers.image.version" = "3.6.14"
+"org.opencontainers.image.vendor" = "Traefik Labs"
+"org.opencontainers.image.source" = "https://github.com/traefik/traefik"
+"sovereign.image.tier" = "1"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "3s"

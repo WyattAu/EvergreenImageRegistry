@@ -1,0 +1,40 @@
+[metadata]
+name = "redis"
+version = "7.4.1"
+description = "Redis - in-memory data structure store and cache"
+vendor = "Redis"
+source = "https://github.com/redis/redis"
+license = "BSD-3-Clause"
+tier = "1"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/redis/redis/archive/refs/tags/7.4.1.tar.gz"
+binary_name = "redis-server"
+filename = "redis-7.4.1.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+application = 6379
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "redis"
+"org.opencontainers.image.description" = "Redis - in-memory data structure store and cache"
+"org.opencontainers.image.version" = "7.4.1"
+"org.opencontainers.image.vendor" = "Redis"
+"org.opencontainers.image.source" = "https://github.com/redis/redis"
+"sovereign.image.tier" = "1"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "true"
+"sovereign.health.type" = "http"

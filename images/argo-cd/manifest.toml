@@ -1,0 +1,41 @@
+[metadata]
+name = "argo-cd"
+version = "3.3.8"
+description = "Argo CD - declarative GitOps continuous delivery for Kubernetes"
+vendor = "Argo Project"
+source = "https://github.com/argoproj/argo-cd"
+license = "Apache-2.0"
+tier = "1"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/argoproj/argo-cd/releases/download/v3.3.8/argocd-linux-amd64"
+binary_name = "argocd"
+filename = "argocd-linux-amd64"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "argo-cd"
+"org.opencontainers.image.description" = "Argo CD - declarative GitOps continuous delivery for Kubernetes"
+"org.opencontainers.image.version" = "3.3.8"
+"org.opencontainers.image.vendor" = "Argo Project"
+"org.opencontainers.image.source" = "https://github.com/argoproj/argo-cd"
+"sovereign.image.tier" = "1"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "10s"

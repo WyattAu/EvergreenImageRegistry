@@ -1,0 +1,42 @@
+[metadata]
+name = "consul"
+version = "1.18.1"
+description = "Consul - service mesh, service discovery, and configuration"
+vendor = "HashiCorp"
+source = "https://github.com/hashicorp/consul"
+license = "MPL-2.0"
+tier = "1"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://releases.hashicorp.com/consul/1.18.1/consul_1.18.1_linux_amd64.zip"
+binary_name = "consul"
+filename = "consul_1.18.1_linux_amd64.zip"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 8500
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "consul"
+"org.opencontainers.image.description" = "Consul - service mesh, service discovery, and configuration"
+"org.opencontainers.image.version" = "1.18.1"
+"org.opencontainers.image.vendor" = "HashiCorp"
+"org.opencontainers.image.source" = "https://github.com/hashicorp/consul"
+"sovereign.image.tier" = "1"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "5s"

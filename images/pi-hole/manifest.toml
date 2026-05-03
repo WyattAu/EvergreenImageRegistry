@@ -1,0 +1,42 @@
+[metadata]
+name = "pi-hole"
+version = "5.18.2"
+description = "Pi-hole - network-level ad blocking via your own Linux hardware"
+vendor = "Pi-hole"
+source = "https://github.com/pi-hole/pi-hole"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/pi-hole/pi-hole/releases/download/v5.18.2/pi-hole-5.18.2-linux-amd64.tar.gz"
+binary_name = "pi-hole"
+filename = "pi-hole-5.18.2-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+application = 53
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "pi-hole"
+"org.opencontainers.image.description" = "Pi-hole - network-level ad blocking via your own Linux hardware"
+"org.opencontainers.image.version" = "5.18.2"
+"org.opencontainers.image.vendor" = "Pi-hole"
+"org.opencontainers.image.source" = "https://github.com/pi-hole/pi-hole"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "5s"

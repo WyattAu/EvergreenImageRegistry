@@ -1,0 +1,42 @@
+[metadata]
+name = "fluent-bit"
+version = "3.2.4"
+description = "Fluent Bit - fast lightweight log processor and forwarder"
+vendor = "Fluent"
+source = "https://github.com/fluent/fluent-bit"
+license = "Apache-2.0"
+tier = "1"
+
+[build]
+base_image = "fluent/fluent-bit:${VERSION}"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/fluent/fluent-bit/releases/download/v3.2.4/fluent-bit-3.2.4-x86_64.tar.gz"
+binary_name = "fluent-bit"
+filename = "fluent-bit-3.2.4-x86_64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+application = 2020
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "fluent-bit"
+"org.opencontainers.image.description" = "Fluent Bit - fast lightweight log processor and forwarder"
+"org.opencontainers.image.version" = "3.2.4"
+"org.opencontainers.image.vendor" = "Fluent"
+"org.opencontainers.image.source" = "https://github.com/fluent/fluent-bit"
+"sovereign.image.tier" = "1"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "3s"

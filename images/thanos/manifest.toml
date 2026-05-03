@@ -1,0 +1,42 @@
+[metadata]
+name = "thanos"
+version = "0.35.0"
+description = "Thanos - highly available Prometheus with long-term storage"
+vendor = "Thanos"
+source = "https://github.com/thanos-io/thanos"
+license = "Apache-2.0"
+tier = "1"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/thanos-io/thanos/releases/download/v0.35.0/thanos-0.35.0.linux-amd64.tar.gz"
+binary_name = "thanos"
+filename = "thanos-0.35.0.linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 10902
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "thanos"
+"org.opencontainers.image.description" = "Thanos - highly available Prometheus with long-term storage"
+"org.opencontainers.image.version" = "0.35.0"
+"org.opencontainers.image.vendor" = "Thanos"
+"org.opencontainers.image.source" = "https://github.com/thanos-io/thanos"
+"sovereign.image.tier" = "1"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "3s"

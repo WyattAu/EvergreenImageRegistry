@@ -1,0 +1,39 @@
+[metadata]
+name = "falco"
+version = "0.38.3"
+description = "Falco - cloud-native runtime security monitoring"
+vendor = "CNCFSys"
+source = "https://github.com/falcosecurity/falco"
+license = "Apache-2.0"
+tier = "1"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/falcosecurity/falco/releases/download/v0.38.3/falco-0.38.3-x86_64.tar.gz"
+binary_name = "falco"
+filename = "falco-0.38.3-x86_64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "falco"
+"org.opencontainers.image.description" = "Falco - cloud-native runtime security monitoring"
+"org.opencontainers.image.version" = "0.38.3"
+"org.opencontainers.image.vendor" = "CNCFSys"
+"org.opencontainers.image.source" = "https://github.com/falcosecurity/falco"
+"sovereign.image.tier" = "1"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"

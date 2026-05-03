@@ -1,0 +1,40 @@
+[metadata]
+name = "mongodb"
+version = "7.0.11"
+description = "MongoDB - document-oriented NoSQL database"
+vendor = "MongoDB"
+source = "https://github.com/mongodb/mongo"
+license = "SSPL"
+tier = "1"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/mongodb/mongodb/releases/download/v7.0.11/mongodb-7.0.11-linux-amd64.tar.gz"
+binary_name = "mongodb"
+filename = "mongodb-7.0.11-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+application = 27017
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "mongodb"
+"org.opencontainers.image.description" = "MongoDB - document-oriented NoSQL database"
+"org.opencontainers.image.version" = "7.0.11"
+"org.opencontainers.image.vendor" = "MongoDB"
+"org.opencontainers.image.source" = "https://github.com/mongodb/mongo"
+"sovereign.image.tier" = "1"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "true"
+"sovereign.health.type" = "http"

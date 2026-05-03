@@ -1,0 +1,42 @@
+[metadata]
+name = "jaeger"
+version = "1.62.0"
+description = "Jaeger - end-to-end distributed tracing"
+vendor = "Jaeger"
+source = "https://github.com/jaegertracing/jaeger"
+license = "Apache-2.0"
+tier = "1"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/jaegertracing/jaeger/releases/download/v1.62.0/jaeger-1.62.0-linux-amd64.tar.gz"
+binary_name = "jaeger"
+filename = "jaeger-1.62.0-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 5775
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "jaeger"
+"org.opencontainers.image.description" = "Jaeger - end-to-end distributed tracing"
+"org.opencontainers.image.version" = "1.62.0"
+"org.opencontainers.image.vendor" = "Jaeger"
+"org.opencontainers.image.source" = "https://github.com/jaegertracing/jaeger"
+"sovereign.image.tier" = "1"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "3s"

@@ -1,0 +1,42 @@
+[metadata]
+name = "prometheus-elasticsearch-exporter"
+version = "1.10.0"
+description = "Elasticsearch Exporter - Prometheus exporter for Elasticsearch"
+vendor = "Prometheus"
+source = "https://github.com/prometheus-community/elasticsearch_exporter"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/prometheus-elasticsearch-exporter/prometheus-elasticsearch-exporter/releases/download/v1.10.0/prometheus-elasticsearch-exporter-1.10.0-linux-amd64.tar.gz"
+binary_name = "prometheus-elasticsearch-exporter"
+filename = "prometheus-elasticsearch-exporter-1.10.0-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 9214
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "prometheus-elasticsearch-exporter"
+"org.opencontainers.image.description" = "Elasticsearch Exporter - Prometheus exporter for Elasticsearch"
+"org.opencontainers.image.version" = "1.10.0"
+"org.opencontainers.image.vendor" = "Prometheus"
+"org.opencontainers.image.source" = "https://github.com/prometheus-community/elasticsearch_exporter"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "3s"

@@ -1,0 +1,42 @@
+[metadata]
+name = "kafka-connect"
+version = "3.6.1"
+description = "Kafka Connect - scalable and reliable data streaming integration"
+vendor = "Apache"
+source = "https://github.com/apache/kafka"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/kafka-connect/kafka-connect/releases/download/v3.6.1/kafka-connect-3.6.1-linux-amd64.tar.gz"
+binary_name = "kafka-connect"
+filename = "kafka-connect-3.6.1-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+application = 8083
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "kafka-connect"
+"org.opencontainers.image.description" = "Kafka Connect - scalable and reliable data streaming integration"
+"org.opencontainers.image.version" = "3.6.1"
+"org.opencontainers.image.vendor" = "Apache"
+"org.opencontainers.image.source" = "https://github.com/apache/kafka"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "15s"

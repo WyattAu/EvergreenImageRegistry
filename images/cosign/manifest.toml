@@ -1,0 +1,41 @@
+[metadata]
+name = "cosign"
+version = "3.0.6"
+description = "Cosign - container signing and verification tool"
+vendor = "Sigstore"
+source = "https://github.com/sigstore/cosign"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/sigstore/cosign/releases/download/v3.0.6/cosign-linux-amd64"
+binary_name = "cosign"
+filename = "cosign-linux-amd64"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "cosign"
+"org.opencontainers.image.description" = "Cosign - container signing and verification tool"
+"org.opencontainers.image.version" = "3.0.6"
+"org.opencontainers.image.vendor" = "Sigstore"
+"org.opencontainers.image.source" = "https://github.com/sigstore/cosign"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "3s"

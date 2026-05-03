@@ -1,0 +1,42 @@
+[metadata]
+name = "consul-template"
+version = "0.37.0"
+description = "Consul Template - template rendering with Consul data"
+vendor = "HashiCorp"
+source = "https://github.com/hashicorp/consul-template"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/consul-template/consul-template/releases/download/v0.37.0/consul-template-0.37.0-linux-amd64.tar.gz"
+binary_name = "consul-template"
+filename = "consul-template-0.37.0-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 8500
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "consul-template"
+"org.opencontainers.image.description" = "Consul Template - template rendering with Consul data"
+"org.opencontainers.image.version" = "0.37.0"
+"org.opencontainers.image.vendor" = "HashiCorp"
+"org.opencontainers.image.source" = "https://github.com/hashicorp/consul-template"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "5s"

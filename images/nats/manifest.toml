@@ -1,0 +1,42 @@
+[metadata]
+name = "nats"
+version = "2.12.7"
+description = "NATS - high-performance messaging system"
+vendor = "CNCF"
+source = "https://github.com/nats-io/nats-server"
+license = "Apache-2.0"
+tier = "1"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/nats/nats/releases/download/v2.12.7/nats-2.12.7-linux-amd64.tar.gz"
+binary_name = "nats"
+filename = "nats-2.12.7-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 4222
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "nats"
+"org.opencontainers.image.description" = "NATS - high-performance messaging system"
+"org.opencontainers.image.version" = "2.12.7"
+"org.opencontainers.image.vendor" = "CNCF"
+"org.opencontainers.image.source" = "https://github.com/nats-io/nats-server"
+"sovereign.image.tier" = "1"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "3s"

@@ -1,0 +1,42 @@
+[metadata]
+name = "vault"
+version = "1.18.1"
+description = "Vault - secrets management and data protection by HashiCorp"
+vendor = "HashiCorp"
+source = "https://github.com/hashicorp/vault"
+license = "MPL-2.0"
+tier = "1"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://releases.hashicorp.com/vault/1.18.1/vault_1.18.1_linux_amd64.zip"
+binary_name = "vault"
+filename = "vault_1.18.1_linux_amd64.zip"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 8200
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "vault"
+"org.opencontainers.image.description" = "Vault - secrets management and data protection by HashiCorp"
+"org.opencontainers.image.version" = "1.18.1"
+"org.opencontainers.image.vendor" = "HashiCorp"
+"org.opencontainers.image.source" = "https://github.com/hashicorp/vault"
+"sovereign.image.tier" = "1"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "5s"

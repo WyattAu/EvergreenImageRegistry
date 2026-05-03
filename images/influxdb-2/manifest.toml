@@ -1,0 +1,42 @@
+[metadata]
+name = "influxdb-2"
+version = "2.7"
+description = "InfluxDB 2 - time series database with Flux query engine"
+vendor = "InfluxData"
+source = "https://github.com/influxdata/influxdb"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "influxdb:2.7"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/influxdb-2/influxdb-2/releases/download/v2.7/influxdb-2-2.7-linux-amd64.tar.gz"
+binary_name = "influxdb-2"
+filename = "influxdb-2-2.7-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 8086
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "influxdb-2"
+"org.opencontainers.image.description" = "InfluxDB 2 - time series database with Flux query engine"
+"org.opencontainers.image.version" = "2.7"
+"org.opencontainers.image.vendor" = "InfluxData"
+"org.opencontainers.image.source" = "https://github.com/influxdata/influxdb"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "3s"

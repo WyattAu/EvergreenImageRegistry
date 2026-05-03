@@ -1,0 +1,40 @@
+[metadata]
+name = "forgejo"
+version = "14.0.4"
+description = "Forgejo - community-owned lightweight software forge"
+vendor = "Forgejo"
+source = "https://github.com/forgejo/forgejo"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "cgr.dev/chainguard/wolfi-base:latest"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/forgejo/forgejo/releases/download/v14.0.4/forgejo-14.0.4-linux-amd64.tar.gz"
+binary_name = "forgejo"
+filename = "forgejo-14.0.4-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 3000
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "forgejo"
+"org.opencontainers.image.description" = "Forgejo - community-owned lightweight software forge"
+"org.opencontainers.image.version" = "14.0.4"
+"org.opencontainers.image.vendor" = "Forgejo"
+"org.opencontainers.image.source" = "https://github.com/forgejo/forgejo"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"

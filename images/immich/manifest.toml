@@ -1,0 +1,40 @@
+[metadata]
+name = "immich"
+version = "1.106.0"
+description = "Immich - self-hosted photo and video backup solution"
+vendor = "Immich"
+source = "https://github.com/immich-app/immich"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "cgr.dev/chainguard/wolfi-base:latest"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/immich/immich/releases/download/v1.106.0/immich-1.106.0-linux-amd64.tar.gz"
+binary_name = "immich"
+filename = "immich-1.106.0-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 2283
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "immich"
+"org.opencontainers.image.description" = "Immich - self-hosted photo and video backup solution"
+"org.opencontainers.image.version" = "1.106.0"
+"org.opencontainers.image.vendor" = "Immich"
+"org.opencontainers.image.source" = "https://github.com/immich-app/immich"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"

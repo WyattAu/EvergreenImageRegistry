@@ -1,0 +1,40 @@
+[metadata]
+name = "scylladb"
+version = "5.4.6"
+description = "ScyllaDB - high-performance NoSQL columnar database"
+vendor = "ScyllaDB"
+source = "https://github.com/scylladb/scylladb"
+license = "Apache-2.0"
+tier = "2"
+
+[build]
+base_image = "scylladb/scylla:latest"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/scylladb/scylladb/releases/download/v5.4.6/scylladb-5.4.6-linux-amd64.tar.gz"
+binary_name = "scylladb"
+filename = "scylladb-5.4.6-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+application = 9042
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "scylladb"
+"org.opencontainers.image.description" = "ScyllaDB - high-performance NoSQL columnar database"
+"org.opencontainers.image.version" = "5.4.6"
+"org.opencontainers.image.vendor" = "ScyllaDB"
+"org.opencontainers.image.source" = "https://github.com/scylladb/scylladb"
+"sovereign.image.tier" = "2"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"

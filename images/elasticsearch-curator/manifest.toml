@@ -1,0 +1,31 @@
+[metadata]
+name = "elasticsearch-curator"
+version = "5.8.3"
+description = "Elasticsearch Curator - Index Management Tool"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["curator"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Elasticsearch Curator - Index Management Tool"
+"org.opencontainers.image.source" = "https://github.com/elastic/curator"
+"org.opencontainers.image.title" = "elasticsearch-curator"
+"org.opencontainers.image.vendor" = "Elastic"
+"org.opencontainers.image.version" = "5.8.3"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

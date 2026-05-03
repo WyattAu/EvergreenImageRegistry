@@ -1,0 +1,27 @@
+[metadata]
+name = "sssd"
+version = "unknown"
+description = "Sovereign SSSD - System Security Services Daemon for LDAP/Kerberos auth"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[ports]
+expose = [0, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign SSSD - System Security Services Daemon for LDAP/Kerberos auth"
+"org.opencontainers.image.title" = "sssd"
+"sovereign.base.image" = "wolfi"
+"sovereign.health.type" = "none"
+"sovereign.image.category" = "auth"
+"sovereign.image.note" = "SSSD requires privileged mode for PAM/NSS integration. Runs as root for PAM module access."
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

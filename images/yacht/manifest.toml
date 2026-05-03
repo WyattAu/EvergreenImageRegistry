@@ -1,0 +1,26 @@
+[metadata]
+name = "yacht"
+version = "latest"
+description = "yacht container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "selfhostedpro/yacht:${VERSION}"
+
+[runtime]
+entrypoint = ["/yacht"]
+cmd = ["--help"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"sovereign.base.image" = "scratch"
+"sovereign.health.type" = "exec"
+"sovereign.metrics.native" = "ztunnel"
+

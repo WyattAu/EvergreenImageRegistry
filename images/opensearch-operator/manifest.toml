@@ -1,0 +1,45 @@
+[metadata]
+name = "opensearch-operator"
+version = "2.9.0"
+description = "OpenSearch Operator for Kubernetes"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "ghcr.io/opensearch-project/opensearch-operator:v${VERSION}"
+
+[runtime]
+entrypoint = ["/usr/local/bin/opensearch-operator"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "OpenSearch Operator for Kubernetes"
+"org.opencontainers.image.title" = "opensearch-operator"
+"org.opencontainers.image.vendor" = "OpenSearch"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.connection-drain" = "true"
+"sovereign.hft.cpu-pins" = "4-5"
+"sovereign.hft.cpu-pins-mode" = "shared"
+"sovereign.hft.deploy-strategy" = "standard-rolling"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.pre-stop-delay" = "5s"
+"sovereign.hft.pre-stop-hook" = "true"
+"sovereign.hft.runtime" = "go"
+"sovereign.hft.runtime-hints" = "GOMAXPROCS=<cores>"
+"sovereign.hft.sched-policy" = "SCHED_OTHER"
+"sovereign.hft.shutdown-timeout" = "5s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "10000ms"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,35 @@
+[metadata]
+name = "nutsdb"
+version = "0.14.0"
+description = "Sovereign hardened NutsDB - embedded key-value store"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/usr/local/bin/nutsdb"]
+
+[ports]
+expose = [9900, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened NutsDB - embedded key-value store"
+"org.opencontainers.image.title" = "nutsdb"
+"org.opencontainers.image.vendor" = "Xujiajun"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.image.category" = "database"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

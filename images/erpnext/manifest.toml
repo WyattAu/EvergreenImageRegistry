@@ -1,0 +1,29 @@
+[metadata]
+name = "erpnext"
+version = "15.11.0"
+description = "erpnext container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "erpnext"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python3"]
+
+[ports]
+expose = [8000, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "erpnext"
+"org.opencontainers.image.vendor" = "ERPNext"
+"org.opencontainers.image.version" = "15.11.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

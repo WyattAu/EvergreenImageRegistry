@@ -8,32 +8,30 @@ license = "Apache-2.0"
 tier = "2"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
-url = "https://gitlab.com/api/v4/projects/gitlab-org%2Fcloud-native%2Fgitlab-operator/packages/generic/gitlab-operator/0.8.0/gitlab-operator-linux-amd64"
-binary_name = "gitlab-operator"
-filename = "gitlab-operator-linux-amd64"
+[source]
+type = "docker-image"
+url = "registry.gitlab.com/gitlab-org/cloud-native/gitlab-operator:v${VERSION}"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["/usr/local/bin/gitlab-operator"]
 
 [ports]
-application = 8080
-metrics = 9101
+expose = [8080, 9101]
 
 [labels]
-"org.opencontainers.image.title" = "gitlab-operator"
 "org.opencontainers.image.description" = "GitLab Operator - Kubernetes operator for GitLab"
-"org.opencontainers.image.version" = "0.8.0"
-"org.opencontainers.image.vendor" = "GitLab"
 "org.opencontainers.image.source" = "https://gitlab.com/gitlab-org/cloud-native/gitlab-operator"
-"sovereign.image.tier" = "2"
+"org.opencontainers.image.title" = "gitlab-operator"
+"org.opencontainers.image.vendor" = "GitLab"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

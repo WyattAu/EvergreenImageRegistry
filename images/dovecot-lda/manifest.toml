@@ -1,0 +1,33 @@
+[metadata]
+name = "dovecot-lda"
+version = "2.3.21"
+description = "Dovecot LDA - Dovecot in local delivery agent mode"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["dovecot", "-F"]
+
+[ports]
+expose = [143, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Dovecot LDA - Dovecot in local delivery agent mode"
+"org.opencontainers.image.source" = "https://www.dovecot.org"
+"org.opencontainers.image.title" = "dovecot-lda"
+"org.opencontainers.image.vendor" = "Dovecot"
+"org.opencontainers.image.version" = "2.3.21"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.debian-slim" = "true"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.image.variant" = "lda"
+"sovereign.metrics.native" = "ztunnel"
+

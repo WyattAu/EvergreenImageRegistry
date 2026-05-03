@@ -1,0 +1,35 @@
+[metadata]
+name = "navidrome-sqlite"
+version = "0.52.5"
+description = "navidrome-sqlite container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/navidrome"]
+
+[ports]
+expose = [4533, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/navidrome/navidrome/releases/download/v0.52.5"
+"org.opencontainers.image.title" = "navidrome-sqlite"
+"org.opencontainers.image.vendor" = "navidrome/navidrome"
+"org.opencontainers.image.version" = "0.52.5"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

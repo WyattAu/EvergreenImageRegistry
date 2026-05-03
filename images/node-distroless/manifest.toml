@@ -1,0 +1,33 @@
+[metadata]
+name = "node-distroless"
+version = "22.12.0"
+description = "Sovereign hardened node-distroless - Node.js on distroless base"
+
+[build]
+base = "gcr.io/distroless/nodejs22-debian12@sha256:8a3e96fe3345b5d83ecec2066e7c498139a02a6d1214e4f6c39f9ce359f3f5bc"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["node"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened node-distroless - Node.js on distroless base"
+"org.opencontainers.image.title" = "node-distroless"
+"org.opencontainers.image.vendor" = "Node.js"
+"org.opencontainers.image.version" = "22.12.0"
+"sovereign.base.image" = "distroless"
+"sovereign.constraint.distroless" = "true"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.shutdown-timeout" = "5s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

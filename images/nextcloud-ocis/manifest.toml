@@ -1,0 +1,37 @@
+[metadata]
+name = "nextcloud-ocis"
+version = "v8.0.1"
+description = "nextcloud-ocis container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/nextcloud-ocis"]
+
+[ports]
+expose = [9200, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/owncloud/ocis"
+"org.opencontainers.image.title" = "nextcloud-ocis"
+"org.opencontainers.image.vendor" = "Nextcloud"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.base" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "5s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "10000ms"
+"sovereign.image.category" = "cloud-storage"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

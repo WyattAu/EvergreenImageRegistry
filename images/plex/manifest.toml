@@ -8,35 +8,36 @@ license = "Apache-2.0"
 tier = "3"
 
 [build]
-base_image = "plexinc/pms-docker:latest"
-runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
-arch = "amd64"
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
-url = "https://github.com/plex/plex/releases/download/v1.41.3.9292/plex-1.41.3.9292-linux-amd64.tar.gz"
-binary_name = "plex"
-filename = "plex-1.41.3.9292-linux-amd64.tar.gz"
-checksum = "PENDING"
+[source]
+type = "docker-image"
+url = "plexinc/pms-docker:latest"
 
-[constraints]
-nonroot = true
-scratch = false
+[runtime]
+entrypoint = ["/usr/lib/plexmediaserver/Plex Media Server"]
 
 [ports]
-application = 32400
-metrics = 9101
+expose = [32400, 9101]
 
 [labels]
+"org.opencontainers.image.source" = "https://www.plex.tv/"
 "org.opencontainers.image.title" = "plex"
-"org.opencontainers.image.description" = "Plex - streaming media server and client"
-"org.opencontainers.image.version" = "1.41.3.9292"
 "org.opencontainers.image.vendor" = "Plex"
-"org.opencontainers.image.source" = "https://github.com/plexinc/pms-docker"
-"sovereign.image.tier" = "3"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.base" = "wolfi"
 "sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "false"
-"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
-"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.init-system" = "none"
 "sovereign.hft.shutdown-timeout" = "10s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "30000ms"
+"sovereign.image.category" = "media-streaming"
+"sovereign.image.note" = "Extracted from plexinc/pms-docker official image. Requires Plex account for activation."
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,27 @@
+[metadata]
+name = "x86_64-unknown-linux-musl"
+version = "unknown"
+description = "Sovereign Rust static build base for x86_64-unknown-linux-musl target"
+
+[build]
+base = "cgr.dev/chainguard/static:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign Rust static build base for x86_64-unknown-linux-musl target"
+"org.opencontainers.image.title" = "x86_64-unknown-linux-musl"
+"sovereign.base.image" = "wolfi"
+"sovereign.health.type" = "none"
+"sovereign.image.category" = "base"
+"sovereign.image.note" = "Rust static compilation base. Use for cargo build --target x86_64-unknown-linux-musl."
+"sovereign.image.status" = "reference"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,31 @@
+[metadata]
+name = "esphome"
+version = "unknown"
+description = "ESPHome - ESP8266/ESP32 firmware builder"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["esphome"]
+cmd = ["config", "/config", "dashboard"]
+
+[ports]
+expose = [6052, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "ESPHome - ESP8266/ESP32 firmware builder"
+"org.opencontainers.image.source" = "https://github.com/esphome/esphome"
+"org.opencontainers.image.title" = "esphome"
+"org.opencontainers.image.vendor" = "ESPHome"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

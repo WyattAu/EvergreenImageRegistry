@@ -1,0 +1,30 @@
+[metadata]
+name = "zenphoto"
+version = "1.6.9"
+description = "zenphoto container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["php"]
+
+[ports]
+expose = [80, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/zenphoto/zenphoto/releases"
+"org.opencontainers.image.title" = "zenphoto"
+"org.opencontainers.image.vendor" = "zenphoto/zenphoto"
+"org.opencontainers.image.version" = "1.6.9"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

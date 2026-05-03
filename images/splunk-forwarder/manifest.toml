@@ -1,0 +1,38 @@
+[metadata]
+name = "splunk-forwarder"
+version = "9.2.1"
+description = "Sovereign hardened Splunk Universal Forwarder - log data shipper"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/opt/splunkforwarder/bin/splunk"]
+cmd = ["start", "--accept-license", "--no-prompt"]
+
+[ports]
+expose = [8089, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened Splunk Universal Forwarder - log data shipper"
+"org.opencontainers.image.title" = "splunk-forwarder"
+"org.opencontainers.image.vendor" = "Splunk"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.base" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "15s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "30000ms"
+"sovereign.image.category" = "observability"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,30 @@
+[metadata]
+name = "qbitmanage"
+version = "4.2.0"
+description = "qbitmanage container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python3"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/stevex0r/qbitmanage"
+"org.opencontainers.image.title" = "qbitmanage"
+"org.opencontainers.image.vendor" = "QbitManage"
+"org.opencontainers.image.version" = "4.2.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

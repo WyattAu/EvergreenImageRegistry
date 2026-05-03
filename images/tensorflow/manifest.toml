@@ -1,0 +1,30 @@
+[metadata]
+name = "tensorflow"
+version = "2.18.0"
+description = "tensorflow container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python3"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/tensorflow/tensorflow"
+"org.opencontainers.image.title" = "tensorflow"
+"org.opencontainers.image.vendor" = "TensorFlow"
+"org.opencontainers.image.version" = "2.18.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

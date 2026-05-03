@@ -1,0 +1,33 @@
+[metadata]
+name = "hadolint"
+version = "2.14.0"
+description = "hadolint container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/hadolint"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/hadolint/hadolint"
+"org.opencontainers.image.title" = "hadolint"
+"org.opencontainers.image.vendor" = "hadolint"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "none"
+"sovereign.image.category" = "ci"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

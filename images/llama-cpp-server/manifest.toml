@@ -1,0 +1,35 @@
+[metadata]
+name = "llama-cpp-server"
+version = "b5415"
+description = "llama-cpp-server container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/llama-server"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/ggerganov/llama.cpp/releases"
+"org.opencontainers.image.title" = "llama-cpp-server"
+"org.opencontainers.image.vendor" = "ggerganov/llama.cpp"
+"org.opencontainers.image.version" = "b5415"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

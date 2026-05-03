@@ -8,35 +8,35 @@ license = "Apache-2.0"
 tier = "1"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/prometheus/alertmanager/releases/download/v0.32.1/alertmanager-0.32.1.linux-amd64.tar.gz"
-binary_name = "alertmanager"
-filename = "alertmanager-0.32.1.linux-amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["/alertmanager"]
 
 [ports]
-application = 9093
-metrics = 9101
+expose = [9093, 9101]
 
 [labels]
-"org.opencontainers.image.title" = "alertmanager"
-"org.opencontainers.image.description" = "Alertmanager - handles alerts sent by Prometheus"
-"org.opencontainers.image.version" = "0.32.1"
-"org.opencontainers.image.vendor" = "Prometheus"
 "org.opencontainers.image.source" = "https://github.com/prometheus/alertmanager"
-"sovereign.image.tier" = "1"
+"org.opencontainers.image.title" = "alertmanager"
+"org.opencontainers.image.vendor" = "Prometheus"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
-"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.init-system" = "none"
 "sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "observability"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,28 @@
+[metadata]
+name = "kdb"
+version = "unknown"
+description = "Placeholder for KX Systems KDB+ proprietary database. Requires license."
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[ports]
+expose = [5000, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Placeholder for KX Systems KDB+ proprietary database. Requires license."
+"org.opencontainers.image.title" = "kdb"
+"org.opencontainers.image.vendor" = "KX Systems"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "none"
+"sovereign.image.category" = "database"
+"sovereign.image.note" = "KDB+ is proprietary. Copy licensed q binary to /opt/kdb/q before use."
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,31 @@
+[metadata]
+name = "dashy-alpine"
+version = "unknown"
+description = "Dashy - Dashboard (debian-slim, no Alpine)"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["node", "server.js"]
+
+[ports]
+expose = [80, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Dashy - Dashboard (debian-slim, no Alpine)"
+"org.opencontainers.image.source" = "https://github.com/lissy93/dashy"
+"org.opencontainers.image.title" = "dashy-alpine"
+"org.opencontainers.image.vendor" = "lissy93"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.no_alpine" = "true"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

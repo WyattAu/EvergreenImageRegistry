@@ -1,0 +1,33 @@
+[metadata]
+name = "mailu"
+version = "2.0.0"
+description = "Mailu - self-hosted email server suite"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python", "-m", "mailu"]
+cmd = ["--help"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Mailu - self-hosted email server suite"
+"org.opencontainers.image.source" = "https://github.com/Mailu/Mailu"
+"org.opencontainers.image.title" = "mailu"
+"org.opencontainers.image.vendor" = "Mailu"
+"org.opencontainers.image.version" = "2.0.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.debian-slim" = "true"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

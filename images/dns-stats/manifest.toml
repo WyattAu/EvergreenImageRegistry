@@ -1,32 +1,36 @@
-[image]
+[metadata]
 name = "dns-stats"
 version = "0.5.0"
 description = "DNS capture and statistics collection tool (dnscap/dnsstats)"
 vendor = "PowerDNS"
-homepage = "https://github.com/PowerDNS/dnsdist"
-category = "monitoring"
-tier = 1
-
-[source]
-type = "source-compile"
-url = "https://github.com/dmachard/dns-stats"
-upstream = "https://github.com/dmachard/dns-stats"
 
 [build]
-base = "debian:bookworm-slim"
-target_base = "scratch"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[constraints]
-nonroot = true
-scratch = true
+[source]
+type = "package-manager"
+url = "https://github.com/dmachard/dns-stats"
 
-[hft]
-signal-handling = "native"
-shutdown-timeout = "3s"
+[runtime]
+entrypoint = ["/usr/local/bin/dns-stats"]
 
 [ports]
-web = 8080
-metrics = 9101
+expose = [8080, 9101]
 
-[health]
-type = "exec"
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened DNS Stats - DNS monitoring and statistics tool"
+"org.opencontainers.image.title" = "dns-stats"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.image.category" = "monitoring"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

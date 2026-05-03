@@ -1,0 +1,37 @@
+[metadata]
+name = "cloudreve"
+version = "3.8.3"
+description = "cloudreve container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/cloudreve"]
+
+[ports]
+expose = [5212, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/cloudreve/Cloudreve"
+"org.opencontainers.image.title" = "cloudreve"
+"org.opencontainers.image.vendor" = "Cloudreve"
+"org.opencontainers.image.version" = "3.8.3"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.base" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "5s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "10000ms"
+"sovereign.image.category" = "cloud-storage"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

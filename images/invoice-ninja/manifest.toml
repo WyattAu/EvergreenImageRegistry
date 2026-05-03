@@ -1,0 +1,37 @@
+[metadata]
+name = "invoice-ninja"
+version = "5.13.19"
+description = "invoice-ninja container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["php-fpm8.4"]
+
+[ports]
+expose = [80, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/invoiceninja/invoiceninja"
+"org.opencontainers.image.title" = "invoice-ninja"
+"org.opencontainers.image.vendor" = "Invoice Ninja"
+"org.opencontainers.image.version" = "5.13.19"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.base" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "10s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "30000ms"
+"sovereign.image.category" = "business-finance"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

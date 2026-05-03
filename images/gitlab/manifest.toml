@@ -1,0 +1,29 @@
+[metadata]
+name = "gitlab"
+version = "17.6.0"
+description = "gitlab container image"
+
+[build]
+base = "scratch"
+user = "git"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "gitlab/gitlab-ce:${VERSION}-ce.0"
+
+[ports]
+expose = [80, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://gitlab.com/gitlab-org/gitlab-ce"
+"org.opencontainers.image.title" = "gitlab"
+"org.opencontainers.image.vendor" = "GitLab"
+"org.opencontainers.image.version" = "17.6.0"
+"sovereign.base.image" = "rewrap"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.official" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

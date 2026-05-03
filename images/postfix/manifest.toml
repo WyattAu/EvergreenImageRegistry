@@ -1,0 +1,25 @@
+[metadata]
+name = "postfix"
+version = "3.7.6"
+description = "postfix container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["postfix"]
+cmd = ["start-fg"]
+
+[ports]
+expose = [25, 9101]
+
+[labels]
+"sovereign.base.image" = "wolfi"
+"sovereign.health.type" = "exec"
+"sovereign.metrics.native" = "ztunnel"
+

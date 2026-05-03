@@ -1,0 +1,30 @@
+[metadata]
+name = "searx"
+version = "unknown"
+description = "Searx - Privacy-respecting metasearch engine"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["searx-run"]
+
+[ports]
+expose = [8888, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Searx - Privacy-respecting metasearch engine"
+"org.opencontainers.image.source" = "https://github.com/searx/searx"
+"org.opencontainers.image.title" = "searx"
+"org.opencontainers.image.vendor" = "searx"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

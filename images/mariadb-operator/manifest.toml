@@ -1,0 +1,33 @@
+[metadata]
+name = "mariadb-operator"
+version = "0.35.0"
+description = "MariaDB Operator for Kubernetes"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "ghcr.io/mariadb-operator/mariadb-operator:v${VERSION}"
+
+[runtime]
+entrypoint = ["/usr/local/bin/mariadb-operator"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "MariaDB Operator for Kubernetes"
+"org.opencontainers.image.source" = "https://github.com/mariadb-operator/mariadb-operator"
+"org.opencontainers.image.title" = "mariadb-operator"
+"org.opencontainers.image.vendor" = "mariadb-operator"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,30 @@
+[metadata]
+name = "cyberchef-node"
+version = "unknown"
+description = "CyberChef - Node.js variant"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["node", "CyberChef.js"]
+
+[ports]
+expose = [3000, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "CyberChef - Node.js variant"
+"org.opencontainers.image.source" = "https://github.com/gchq/CyberChef"
+"org.opencontainers.image.title" = "cyberchef-node"
+"org.opencontainers.image.vendor" = "GCHQ"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,34 @@
+[metadata]
+name = "zeromq"
+version = "4.3.5"
+description = "zeromq container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/zeromq/libzmq"
+"org.opencontainers.image.title" = "zeromq"
+"org.opencontainers.image.vendor" = "ZeroMQ"
+"org.opencontainers.image.version" = "4.3.5"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.distrole" = "debian-slim"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "networking"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

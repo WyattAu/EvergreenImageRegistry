@@ -1,0 +1,30 @@
+[metadata]
+name = "faster-whisper"
+version = "1.1.1"
+description = "faster-whisper container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python3"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/SYSTRAN/faster-whisper"
+"org.opencontainers.image.title" = "faster-whisper"
+"org.opencontainers.image.vendor" = "Guillaume"
+"org.opencontainers.image.version" = "1.1.1"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

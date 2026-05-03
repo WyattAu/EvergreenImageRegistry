@@ -1,0 +1,32 @@
+[metadata]
+name = "libsql"
+version = "0.24.32"
+description = "Turso libSQL server - open-source SQLite fork with networking"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/opt/libsql/libsql-server"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Turso libSQL server - open-source SQLite fork with networking"
+"org.opencontainers.image.source" = "https://github.com/tursodatabase/libsql"
+"org.opencontainers.image.title" = "libsql-server"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.path" = "/health"
+"sovereign.health.type" = "http"
+"sovereign.image.category" = "database"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "prometheus"
+

@@ -1,54 +1,36 @@
-[image]
+[metadata]
 name = "source-control"
-type = "binary-download"
-tier = 2
 version = "1.22.0"
 description = "Source control management - Gitea lightweight Git server"
 vendor = "gitea"
-source_url = "https://about.gitea.com/"
-category = "scm"
-
-[source]
-url = "https://dl.gitea.io/gitea/1.22.0/gitea-1.22.0-linux-amd64.xz"
-fallback_urls = ["https://github.com/go-gitea/gitea/releases/download/v1.22.0/gitea-1.22.0-linux-amd64"]
-checksum = { algorithm = "sha256", expected = "PENDING", source = "" }
-strategy = "curl"
-github_repo = "go-gitea/gitea"
 
 [build]
-base = { image = "cgr.dev/chainguard/wolfi-base:latest", purpose = "download" }
-builder_packages = ["curl", "ca-certificates", "xz"]
-runtime_packages = ["ca-certificates", "git", "tzdata"]
-build_commands = [
-  "curl --retry 3 --retry-delay 5 -fsSL https://dl.gitea.io/gitea/1.22.0/gitea-1.22.0-linux-amd64.xz -o /tmp/gitea.xz",
-  "xz -d /tmp/gitea.xz && chmod +x /tmp/gitea",
-  "strip /tmp/gitea",
-]
-artifacts = [
-  { source = "/tmp/gitea", destination = "/usr/local/bin/gitea" },
-]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://dl.gitea.io/gitea/1.22.0/gitea-1.22.0-linux-amd64.xz"
 
 [runtime]
-user = "65532:65532"
-workdir = "/app"
 entrypoint = ["/usr/local/bin/gitea"]
 cmd = ["web", "-c", "/etc/gitea/app.ini"]
-ports = [3000, 22]
-volumes = ["/var/lib/gitea", "/etc/gitea"]
-stop_signal = "SIGTERM"
 
-[health]
-type = "http"
-path = "/"
-port = 3000
-interval_seconds = 30
-timeout_seconds = 5
-retries = 3
+[ports]
+expose = [3000, 9101]
 
-[observability]
-metrics_port = 9101
-metrics_path = "/metrics"
+[labels]
+"org.opencontainers.image.description" = "Source control management - Gitea lightweight Git server"
+"org.opencontainers.image.source" = "https://about.gitea.com/"
+"org.opencontainers.image.title" = "source-control"
+"org.opencontainers.image.vendor" = "Gitea"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.wolfi" = "true"
+"sovereign.health.type" = "http"
+"sovereign.image.category" = "scm"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
 
-[compliance]
-standards = []
-labels = {}

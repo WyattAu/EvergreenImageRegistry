@@ -1,0 +1,30 @@
+[metadata]
+name = "postgres-restore"
+version = "17"
+description = "PostgreSQL Restore Container with pg_restore + xz support"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/app/restore.sh"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "PostgreSQL Restore Container with pg_restore + xz support"
+"org.opencontainers.image.title" = "postgres-restore"
+"org.opencontainers.image.vendor" = "PostgreSQL"
+"org.opencontainers.image.version" = "17"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

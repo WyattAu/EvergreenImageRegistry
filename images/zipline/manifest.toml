@@ -1,0 +1,30 @@
+[metadata]
+name = "zipline"
+version = "unknown"
+description = "Zipline - File sharing platform"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["node", "server.js"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Zipline - File sharing platform"
+"org.opencontainers.image.source" = "https://github.com/diced/zipline"
+"org.opencontainers.image.title" = "zipline"
+"org.opencontainers.image.vendor" = "diced"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

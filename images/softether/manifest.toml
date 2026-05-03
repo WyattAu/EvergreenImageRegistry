@@ -1,0 +1,29 @@
+[metadata]
+name = "softether"
+version = "4.38-9770"
+description = "softether container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "appuser"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["vpnserver"]
+
+[ports]
+expose = [443, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "softether"
+"org.opencontainers.image.vendor" = "SoftEther"
+"org.opencontainers.image.version" = "4.38-9770"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

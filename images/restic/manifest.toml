@@ -1,0 +1,37 @@
+[metadata]
+name = "restic"
+version = "unknown"
+description = "restic container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/restic"]
+
+[ports]
+expose = [8000, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/restic/restic"
+"org.opencontainers.image.title" = "restic"
+"org.opencontainers.image.vendor" = "restic"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "backup"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

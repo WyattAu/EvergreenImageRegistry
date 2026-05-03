@@ -4,37 +4,33 @@ version = "2.24.1"
 description = "Drone Agent - CI/CD build agent for Drone"
 vendor = "Harness"
 source = "https://github.com/harness/drone"
-category = "cicd"
 tier = "2"
 
 [build]
 base = "scratch"
-arch = "amd64"
-
-[download]
-url = "https://github.com/harness/drone/releases/download/v2.24.1/drone_agent_linux_amd64.tar.gz"
-filename = "drone_agent_linux_amd64.tar.gz"
-strip_components = 0
-binary_name = "drone-agent"
-
-[container]
-port = 3000
-metrics_port = 9101
 user = "65532:65532"
-workdir = "/app"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://github.com/harness/drone/releases/download/v2.24.1/drone_agent_linux_amd64.tar.gz"
+
+[runtime]
 entrypoint = ["/usr/local/bin/drone-agent"]
-stop_signal = "SIGTERM"
-nonroot = true
+
+[ports]
+expose = [3000, 9101]
 
 [labels]
-"org.opencontainers.image.title" = "drone-agent"
 "org.opencontainers.image.description" = "Drone Agent - CI/CD build agent for Drone"
-"org.opencontainers.image.vendor" = "Harness"
 "org.opencontainers.image.source" = "https://github.com/harness/drone"
+"org.opencontainers.image.title" = "drone-agent"
+"org.opencontainers.image.vendor" = "Harness"
 "org.opencontainers.image.version" = "2.24.1"
-"sovereign.image.tier" = "2"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

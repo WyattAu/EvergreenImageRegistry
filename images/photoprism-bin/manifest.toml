@@ -1,0 +1,35 @@
+[metadata]
+name = "photoprism-bin"
+version = "260305-fad9d5395"
+description = "photoprism-bin container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/photoprism"]
+
+[ports]
+expose = [2282, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/photoprism/photoprism"
+"org.opencontainers.image.title" = "photoprism-bin"
+"org.opencontainers.image.vendor" = "PhotoPrism"
+"org.opencontainers.image.version" = "260305-fad9d5395"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

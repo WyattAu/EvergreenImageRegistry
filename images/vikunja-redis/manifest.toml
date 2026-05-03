@@ -1,0 +1,39 @@
+[metadata]
+name = "vikunja-redis"
+version = "v0.24.1"
+description = "Vikunja API with Redis backend configuration"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/vikunja"]
+cmd = ["--config", "/app/config.yml"]
+
+[ports]
+expose = [3456, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Vikunja API with Redis backend configuration"
+"org.opencontainers.image.source" = "https://github.com/go-vikunja/vikunja"
+"org.opencontainers.image.title" = "vikunja-redis"
+"org.opencontainers.image.vendor" = "Vikunja"
+"org.opencontainers.image.version" = "v0.24.1"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.base" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "5s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "10000ms"
+"sovereign.image.category" = "project-management"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

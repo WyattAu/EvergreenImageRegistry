@@ -1,34 +1,36 @@
-[image]
+[metadata]
 name = "singlestore"
 version = "8.5.0"
 description = "SingleStore (formerly MemSQL) local development compatibility - distributed SQL database"
 vendor = "SingleStore"
-homepage = "https://www.singlestore.com/"
-category = "database"
-tier = 1
-
-[source]
-type = "commercial"
-url = "https://www.singlestore.com/"
-upstream = "https://www.singlestore.com/"
-note = "SingleStore is a commercial distributed SQL database. Download free edition from https://www.singlestore.com/"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
-target_base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[constraints]
-nonroot = true
-base = "wolfi"
+[source]
+type = "package-manager"
+url = "https://www.singlestore.com/"
 
-[hft]
-signal-handling = "native"
-shutdown-timeout = "10s"
+[runtime]
+entrypoint = ["/app/singlestore"]
 
 [ports]
-mysql = 3306
-management = 8080
-metrics = 9101
+expose = [3306, 9101]
 
-[health]
-type = "exec"
+[labels]
+"org.opencontainers.image.description" = "SingleStore local development compatibility - commercial distributed SQL database"
+"org.opencontainers.image.source" = "https://www.singlestore.com/"
+"org.opencontainers.image.title" = "singlestore"
+"org.opencontainers.image.vendor" = "SingleStore"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "database"
+"sovereign.image.note" = "SingleStore requires a license. Download from https://www.singlestore.com/ for production."
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

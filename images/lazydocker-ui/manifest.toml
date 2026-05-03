@@ -1,0 +1,25 @@
+[metadata]
+name = "lazydocker-ui"
+version = "0.25.2"
+description = "lazydocker-ui container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/lazydocker"]
+cmd = ["--help"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"sovereign.base.image" = "scratch"
+"sovereign.health.type" = "exec"
+"sovereign.metrics.native" = "ztunnel"
+

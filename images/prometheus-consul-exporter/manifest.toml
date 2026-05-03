@@ -8,35 +8,40 @@ license = "Apache-2.0"
 tier = "3"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/prometheus-consul-exporter/prometheus-consul-exporter/releases/download/v0.13.0/prometheus-consul-exporter-0.13.0-linux-amd64.tar.gz"
-binary_name = "prometheus-consul-exporter"
-filename = "prometheus-consul-exporter-0.13.0-linux-amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["/consul_exporter"]
 
 [ports]
-application = 9107
-metrics = 9101
+expose = [9107, 9101]
 
 [labels]
-"org.opencontainers.image.title" = "prometheus-consul-exporter"
-"org.opencontainers.image.description" = "Consul Exporter - Prometheus exporter for Consul"
-"org.opencontainers.image.version" = "0.13.0"
+"org.opencontainers.image.description" = "Prometheus exporter for HashiCorp Consul health checks"
+"org.opencontainers.image.title" = "Prometheus Consul Exporter"
 "org.opencontainers.image.vendor" = "Prometheus"
-"org.opencontainers.image.source" = "https://github.com/prometheus/consul_exporter"
-"sovereign.image.tier" = "3"
+"org.opencontainers.image.version" = "0.13.0"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
-"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.connection-drain" = "true"
+"sovereign.hft.cpu-pins" = "4-5"
+"sovereign.hft.cpu-pins-mode" = "exclusive"
+"sovereign.hft.deploy-strategy" = "hft-stateful"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.pre-stop-delay" = "5s"
+"sovereign.hft.pre-stop-hook" = "true"
+"sovereign.hft.sched-policy" = "SCHED_OTHER"
 "sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

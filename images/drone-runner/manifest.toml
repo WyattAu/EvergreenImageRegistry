@@ -4,37 +4,33 @@ version = "1.0.0"
 description = "Drone Runner Exec - shell command runner for Drone pipelines"
 vendor = "Harness"
 source = "https://github.com/harness/drone-runner-exec"
-category = "cicd"
 tier = "2"
 
 [build]
 base = "scratch"
-arch = "amd64"
-
-[download]
-url = "https://github.com/harness/drone-runner-exec/releases/download/v1.0.0/drone-runner-exec_linux_amd64.tar.gz"
-filename = "drone-runner-exec_linux_amd64.tar.gz"
-strip_components = 0
-binary_name = "drone-runner-exec"
-
-[container]
-port = 3000
-metrics_port = 9101
 user = "65532:65532"
-workdir = "/app"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://github.com/harness/drone-runner-exec/releases/download/v1.0.0/drone-runner-exec_linux_amd64.tar.gz"
+
+[runtime]
 entrypoint = ["/usr/local/bin/drone-runner-exec"]
-stop_signal = "SIGTERM"
-nonroot = true
+
+[ports]
+expose = [3000, 9101]
 
 [labels]
-"org.opencontainers.image.title" = "drone-runner"
 "org.opencontainers.image.description" = "Drone Runner Exec - shell command runner for Drone pipelines"
-"org.opencontainers.image.vendor" = "Harness"
 "org.opencontainers.image.source" = "https://github.com/harness/drone-runner-exec"
+"org.opencontainers.image.title" = "drone-runner"
+"org.opencontainers.image.vendor" = "Harness"
 "org.opencontainers.image.version" = "1.0.0"
-"sovereign.image.tier" = "2"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

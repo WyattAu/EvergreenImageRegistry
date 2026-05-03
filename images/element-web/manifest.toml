@@ -4,36 +4,32 @@ version = "1.11.14"
 description = "Element Web - web client for Matrix"
 vendor = "Element"
 source = "https://github.com/element-hq/element-web"
-category = "messaging"
 tier = "2"
 
 [build]
-base = "wolfi"
-arch = "amd64"
-
-[download]
-url = "https://github.com/element-hq/element-web/releases/download/v1.11.14/element-v1.11.14.tar.gz"
-filename = "element-v1.11.14.tar.gz"
-strip_components = 1
-binary_name = ""
-
-[container]
-port = 80
-metrics_port = 9101
+base = "cgr.dev/chainguard/wolfi-base:latest"
 user = "65532:65532"
-workdir = "/app"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://github.com/element-hq/element-web/releases/download/v1.11.14/element-v1.11.14.tar.gz"
+
+[runtime]
 entrypoint = ["busybox", "httpd", "-f", "-p", "80", "-h", "/app"]
-stop_signal = "SIGTERM"
-nonroot = true
+
+[ports]
+expose = [80, 9101]
 
 [labels]
-"org.opencontainers.image.title" = "element-web"
 "org.opencontainers.image.description" = "Element Web - web client for Matrix"
-"org.opencontainers.image.vendor" = "Element"
 "org.opencontainers.image.source" = "https://github.com/element-hq/element-web"
+"org.opencontainers.image.title" = "element-web"
+"org.opencontainers.image.vendor" = "Element"
 "org.opencontainers.image.version" = "1.11.14"
-"sovereign.image.tier" = "2"
-"sovereign.constraint.nonroot" = "true"
 "sovereign.base.image" = "wolfi"
-"sovereign.metrics.native" = "ztunnel"
+"sovereign.constraint.nonroot" = "true"
 "sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

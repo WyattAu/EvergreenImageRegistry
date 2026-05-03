@@ -8,34 +8,35 @@ license = "Apache-2.0"
 tier = "1"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/aquasecurity/trivy/releases/download/v0.70.0/trivy_0.70.0_Linux-64bit.tar.gz"
-binary_name = "trivy"
-filename = "trivy_0.70.0_Linux-64bit.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["/trivy"]
 
 [ports]
-metrics = 9101
+expose = [9101]
 
 [labels]
-"org.opencontainers.image.title" = "trivy"
-"org.opencontainers.image.description" = "Trivy - security scanner for containers and dependencies"
-"org.opencontainers.image.version" = "0.70.0"
-"org.opencontainers.image.vendor" = "Aqua Security"
 "org.opencontainers.image.source" = "https://github.com/aquasecurity/trivy"
-"sovereign.image.tier" = "1"
+"org.opencontainers.image.title" = "trivy"
+"org.opencontainers.image.vendor" = "Aqua Security"
+"org.opencontainers.image.version" = "0.70.0"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
-"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.init-system" = "none"
 "sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "security"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

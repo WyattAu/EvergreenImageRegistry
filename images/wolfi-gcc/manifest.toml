@@ -1,0 +1,13 @@
+[metadata]
+name = "wolfi-gcc"
+version = "unknown"
+description = "wolfi-gcc container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+

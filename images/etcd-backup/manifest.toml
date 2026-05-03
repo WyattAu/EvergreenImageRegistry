@@ -1,0 +1,30 @@
+[metadata]
+name = "etcd-backup"
+version = "3.6.10"
+description = "Sovereign hardened etcd backup - etcdctl wrapper for etcd backup and restore operations"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/usr/local/bin/etcdctl"]
+
+[ports]
+expose = [2379, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened etcd backup - etcdctl wrapper for etcd backup and restore operations"
+"org.opencontainers.image.title" = "etcd-backup"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "backup"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

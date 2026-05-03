@@ -1,0 +1,31 @@
+[metadata]
+name = "litestream"
+version = "0.3.14"
+description = "SQLite streaming replication for production"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/litestream"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "SQLite streaming replication for production"
+"org.opencontainers.image.source" = "https://github.com/benbjohnson/litestream"
+"org.opencontainers.image.title" = "litestream"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "database"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "prometheus"
+

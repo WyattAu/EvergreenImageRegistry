@@ -1,0 +1,32 @@
+[metadata]
+name = "lazydocker"
+version = "0.25.2"
+description = "Lazydocker - Terminal UI for Docker"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/lazydocker"]
+cmd = ["--help"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Lazydocker - Terminal UI for Docker"
+"org.opencontainers.image.source" = "https://github.com/jesseduffield/lazydocker"
+"org.opencontainers.image.title" = "lazydocker"
+"org.opencontainers.image.vendor" = "jesseduffield"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

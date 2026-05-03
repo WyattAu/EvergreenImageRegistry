@@ -8,33 +8,28 @@ license = "SSPL"
 tier = "1"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
-arch = "amd64"
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/mongodb/mongodb/releases/download/v7.0.11/mongodb-7.0.11-linux-amd64.tar.gz"
-binary_name = "mongodb"
-filename = "mongodb-7.0.11-linux-amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = false
+[runtime]
+entrypoint = ["sh", "-c", "mongod"]
 
 [ports]
-application = 27017
-metrics = 9101
+expose = [27017, 9101]
 
 [labels]
 "org.opencontainers.image.title" = "mongodb"
-"org.opencontainers.image.description" = "MongoDB - document-oriented NoSQL database"
-"org.opencontainers.image.version" = "7.0.11"
 "org.opencontainers.image.vendor" = "MongoDB"
-"org.opencontainers.image.source" = "https://github.com/mongodb/mongo"
-"sovereign.image.tier" = "1"
+"org.opencontainers.image.version" = "7.0.11"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.hardened" = "true"
 "sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "false"
-"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
-"sovereign.metrics.native" = "true"
 "sovereign.health.type" = "http"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "true"
+

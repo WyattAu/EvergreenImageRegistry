@@ -1,31 +1,36 @@
-[image]
+[metadata]
 name = "kaniko"
 version = "1.24.0"
 description = "Kaniko - build container images in Kubernetes without privileged access"
 vendor = "Google"
-homepage = "https://github.com/GoogleContainerTools/kaniko"
-category = "devops"
-tier = 3
-
-[source]
-type = "container-image"
-url = "gcr.io/kaniko-project/executor:v1.24.0"
-upstream = "https://github.com/GoogleContainerTools/kaniko"
 
 [build]
-base = "gcr.io/kaniko-project/executor:v1.24.0"
-target_base = "cgr.dev/chainguard/wolfi-base:latest"
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[constraints]
-nonroot = true
-base = "wolfi"
+[source]
+type = "docker-image"
+url = "gcr.io/kaniko-project/executor:v1.24.0"
 
-[hft]
-signal-handling = "native"
-shutdown-timeout = "10s"
+[runtime]
+entrypoint = ["/kaniko/executor"]
+cmd = ["--help"]
 
 [ports]
-metrics = 9101
+expose = [9101]
 
-[health]
-type = "exec"
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened kaniko - container image builder"
+"org.opencontainers.image.source" = "https://github.com/GoogleContainerTools/kaniko"
+"org.opencontainers.image.title" = "kaniko"
+"org.opencontainers.image.vendor" = "Google"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "devops"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

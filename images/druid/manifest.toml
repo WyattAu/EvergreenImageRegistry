@@ -1,0 +1,33 @@
+[metadata]
+name = "druid"
+version = "latest"
+description = "Sovereign hardened Apache Druid - real-time analytics database"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "apache/druid:${VERSION}"
+
+[runtime]
+entrypoint = ["/opt/druid/bin/start-druid"]
+
+[ports]
+expose = [8088, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened Apache Druid - real-time analytics database"
+"org.opencontainers.image.title" = "druid"
+"org.opencontainers.image.vendor" = "Apache"
+"org.opencontainers.image.version" = "29.0.1"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "database"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

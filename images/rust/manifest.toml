@@ -1,0 +1,30 @@
+[metadata]
+name = "rust"
+version = "1.78.0"
+description = "rust container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["rust"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.title" = "rust"
+"org.opencontainers.image.vendor" = "Rust"
+"org.opencontainers.image.version" = "1.78.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.hardened" = "true"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

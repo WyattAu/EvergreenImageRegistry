@@ -1,0 +1,30 @@
+[metadata]
+name = "postgres-backup"
+version = "17"
+description = "PostgreSQL Backup Container with pg_dump + xz compression"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/app/backup.sh"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "PostgreSQL Backup Container with pg_dump + xz compression"
+"org.opencontainers.image.title" = "postgres-backup"
+"org.opencontainers.image.vendor" = "PostgreSQL"
+"org.opencontainers.image.version" = "17"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

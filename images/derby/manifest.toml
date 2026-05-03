@@ -1,0 +1,32 @@
+[metadata]
+name = "derby"
+version = "10.17.1.0"
+description = "Sovereign hardened Apache Derby - embedded Java database"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["java", "-jar", "/opt/derby/lib/derbyrun.jar", "server"]
+
+[ports]
+expose = [1527, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened Apache Derby - embedded Java database"
+"org.opencontainers.image.title" = "derby"
+"org.opencontainers.image.vendor" = "Apache Software Foundation"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "database"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

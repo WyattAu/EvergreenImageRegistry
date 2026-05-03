@@ -1,0 +1,31 @@
+[metadata]
+name = "checkov-k8s"
+version = "unknown"
+description = "Checkov - Kubernetes scanner"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["checkov"]
+cmd = ["--framework", "kubernetes", "-d", "."]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Checkov - Kubernetes scanner"
+"org.opencontainers.image.source" = "https://github.com/bridgecrewio/checkov"
+"org.opencontainers.image.title" = "checkov-k8s"
+"org.opencontainers.image.vendor" = "Bridgecrew"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

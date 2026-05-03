@@ -1,0 +1,29 @@
+[metadata]
+name = "gem-audit"
+version = "unknown"
+description = "Gem/Bundler audit - Ruby dependency security scanner"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["bundler-audit"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Gem/Bundler audit - Ruby dependency security scanner"
+"org.opencontainers.image.title" = "gem-audit"
+"org.opencontainers.image.vendor" = "rubysec"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

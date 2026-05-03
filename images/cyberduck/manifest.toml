@@ -1,0 +1,38 @@
+[metadata]
+name = "cyberduck"
+version = "latest"
+description = "cyberduck container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "iterate-ch/cyberduck:${VERSION}"
+
+[runtime]
+entrypoint = ["/opt/cyberduck/Cyberduck"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/iterate-ch/cyberduck"
+"org.opencontainers.image.title" = "cyberduck"
+"org.opencontainers.image.vendor" = "iterate-ch"
+"org.opencontainers.image.version" = "9.1.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.base" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "5s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "15000ms"
+"sovereign.image.category" = "storage"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

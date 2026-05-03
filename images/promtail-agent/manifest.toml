@@ -1,0 +1,37 @@
+[metadata]
+name = "promtail-agent"
+version = "unknown"
+description = "promtail-agent container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/usr/bin/promtail"]
+
+[ports]
+expose = [9080, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/grafana/loki"
+"org.opencontainers.image.title" = "promtail-agent"
+"org.opencontainers.image.vendor" = "Grafana Labs"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "logging"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

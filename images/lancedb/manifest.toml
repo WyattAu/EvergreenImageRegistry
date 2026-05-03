@@ -1,0 +1,36 @@
+[metadata]
+name = "lancedb"
+version = "v0.21.0"
+description = "lancedb container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "lancedb/lancedb:latest"
+
+[runtime]
+entrypoint = ["/lancedb"]
+
+[ports]
+expose = [6333, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/lancedb/lance"
+"org.opencontainers.image.title" = "lancedb"
+"org.opencontainers.image.vendor" = "lancedb/lance"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

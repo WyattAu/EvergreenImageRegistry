@@ -1,0 +1,27 @@
+[metadata]
+name = "distroless"
+version = "unknown"
+description = "Sovereign reference to gcr.io/distroless/static-debian12 for static binary containers"
+
+[build]
+base = "gcr.io/distroless/static-debian12:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "base-image"
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign reference to gcr.io/distroless/static-debian12 for static binary containers"
+"org.opencontainers.image.title" = "distroless"
+"sovereign.base.image" = "distroless"
+"sovereign.health.type" = "none"
+"sovereign.image.category" = "base"
+"sovereign.image.note" = "Reference image. Use as FROM base for static Go/Rust binaries."
+"sovereign.image.status" = "reference"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,30 @@
+[metadata]
+name = "rss2email"
+version = "3.15.1"
+description = "rss2email container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["r2e"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/rss2email/rss2email"
+"org.opencontainers.image.title" = "rss2email"
+"org.opencontainers.image.vendor" = "RSS2Email"
+"org.opencontainers.image.version" = "3.15.1"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

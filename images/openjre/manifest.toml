@@ -1,0 +1,27 @@
+[metadata]
+name = "openjre"
+version = "unknown"
+description = "Sovereign hardened OpenJRE 21 (Adoptium) on debian-slim for Java application base"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened OpenJRE 21 (Adoptium) on debian-slim for Java application base"
+"org.opencontainers.image.title" = "openjre"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "none"
+"sovereign.image.category" = "base"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

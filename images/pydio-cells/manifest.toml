@@ -1,0 +1,38 @@
+[metadata]
+name = "pydio-cells"
+version = "4.4.17"
+description = "pydio-cells container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "pydio/cells:${VERSION}"
+
+[runtime]
+entrypoint = ["/cells"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/pydio/cells"
+"org.opencontainers.image.title" = "pydio-cells"
+"org.opencontainers.image.vendor" = "Pydio"
+"org.opencontainers.image.version" = "v4.4.17"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.base" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "5s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "10000ms"
+"sovereign.image.category" = "cloud-storage"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

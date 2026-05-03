@@ -1,0 +1,20 @@
+[metadata]
+name = "taiga-backend"
+version = "6.8.2"
+description = "taiga-backend container image"
+
+[build]
+base = "debian:bookworm-slim"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python", "-m", "taiga-back"]
+cmd = ["--help"]
+
+[ports]
+expose = [9101]
+

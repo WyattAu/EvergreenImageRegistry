@@ -1,0 +1,33 @@
+[metadata]
+name = "k3d"
+version = "5.8.3"
+description = "Sovereign hardened k3d - K3s in Docker"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/k3d"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened k3d - K3s in Docker"
+"org.opencontainers.image.title" = "k3d"
+"org.opencontainers.image.vendor" = "k3d"
+"org.opencontainers.image.version" = "5.8.3"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.shutdown-timeout" = "10s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

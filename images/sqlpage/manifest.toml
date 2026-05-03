@@ -1,0 +1,32 @@
+[metadata]
+name = "sqlpage"
+version = "0.43.0"
+description = "SQL-only web application framework"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/opt/sqlpage/sqlpage"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "SQL-only web application framework"
+"org.opencontainers.image.source" = "https://github.com/sqlpage/SQLPage"
+"org.opencontainers.image.title" = "sqlpage"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.path" = "/"
+"sovereign.health.type" = "http"
+"sovereign.image.category" = "web"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "prometheus"
+

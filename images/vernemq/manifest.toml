@@ -1,0 +1,31 @@
+[metadata]
+name = "vernemq"
+version = "unknown"
+description = "VerneMQ - High-performance MQTT broker"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["echo"]
+cmd = ["vernemq: Place VerneMQ binary in /opt/vernemq/bin/"]
+
+[ports]
+expose = [1883, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "VerneMQ - High-performance MQTT broker"
+"org.opencontainers.image.source" = "https://github.com/vernemq/vernemq"
+"org.opencontainers.image.title" = "vernemq"
+"org.opencontainers.image.vendor" = "VerneMQ"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

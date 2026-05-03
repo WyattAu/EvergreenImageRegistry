@@ -1,0 +1,30 @@
+[metadata]
+name = "privatebin-nginx"
+version = "unknown"
+description = "PrivateBin - encrypted pastebin with nginx"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["php-fpm8.4"]
+
+[ports]
+expose = [80, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "PrivateBin - encrypted pastebin with nginx"
+"org.opencontainers.image.source" = "https://github.com/PrivateBin/PrivateBin"
+"org.opencontainers.image.title" = "privatebin-nginx"
+"org.opencontainers.image.vendor" = "PrivateBin"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

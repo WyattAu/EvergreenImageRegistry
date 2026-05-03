@@ -8,33 +8,28 @@ license = "Apache-2.0"
 tier = "1"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/envoyproxy/envoy/releases/download/v1.38.0/envoy-1.38.0-linux-x86_64"
-binary_name = "envoy"
-filename = "envoy-1.38.0-linux-x86_64"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["/usr/local/bin/envoy"]
 
 [ports]
-application = 9901
-metrics = 9101
+expose = [9901, 9101]
 
 [labels]
+"org.opencontainers.image.description" = "Sovereign hardened Envoy - high-performance edge and service proxy"
 "org.opencontainers.image.title" = "envoy"
-"org.opencontainers.image.description" = "Envoy - high-performance edge and service proxy"
-"org.opencontainers.image.version" = "1.38.0"
-"org.opencontainers.image.vendor" = "Envoy Proxy"
-"org.opencontainers.image.source" = "https://github.com/envoyproxy/envoy"
-"sovereign.image.tier" = "1"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "true"
+"org.opencontainers.image.version" = "${VERSION}"
 "sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
+"sovereign.image.category" = "proxy"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

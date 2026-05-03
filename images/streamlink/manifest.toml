@@ -1,0 +1,20 @@
+[metadata]
+name = "streamlink"
+version = "7.0.0"
+description = "streamlink container image"
+
+[build]
+base = "debian:bookworm-slim"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python", "-m", "streamlink"]
+cmd = ["--help"]
+
+[ports]
+expose = [9101]
+

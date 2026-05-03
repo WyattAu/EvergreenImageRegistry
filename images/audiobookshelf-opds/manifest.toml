@@ -1,0 +1,31 @@
+[metadata]
+name = "audiobookshelf-opds"
+version = "2.19.1"
+description = "audiobookshelf-opds container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["node"]
+
+[ports]
+expose = [13379, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/advplyr/audiobookshelf/releases"
+"org.opencontainers.image.title" = "audiobookshelf-opds"
+"org.opencontainers.image.vendor" = "advplyr/audiobookshelf"
+"org.opencontainers.image.version" = "2.19.1"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.hardened" = "true"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

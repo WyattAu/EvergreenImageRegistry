@@ -1,0 +1,33 @@
+[metadata]
+name = "argocd-redis"
+version = "7.2.4"
+description = "ArgoCD Redis - Redis sidecar for ArgoCD caching"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/usr/local/bin/redis"]
+cmd = ["--protected-mode", "no", "--bind", "0.0.0.0"]
+
+[ports]
+expose = [6379, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "ArgoCD Redis - Redis sidecar for ArgoCD caching"
+"org.opencontainers.image.source" = "https://github.com/redis/redis"
+"org.opencontainers.image.title" = "argocd-redis"
+"org.opencontainers.image.vendor" = "Redis"
+"org.opencontainers.image.version" = "7.2.4"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.debian-slim" = "true"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

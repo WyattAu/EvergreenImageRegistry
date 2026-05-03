@@ -1,0 +1,32 @@
+[metadata]
+name = "arango"
+version = "3.12.2"
+description = "Sovereign hardened ArangoDB - multi-model NoSQL database (arango alias)"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/opt/arangodb/usr/sbin/arangod", "--server.endpoint", "tcp://0.0.0.0:8529", "--database.directory", "/var/lib/arangodb", "--foxx.queues", "false", "--log.output", "-"]
+
+[ports]
+expose = [8529, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened ArangoDB - multi-model NoSQL database (arango alias)"
+"org.opencontainers.image.title" = "arango"
+"org.opencontainers.image.vendor" = "ArangoDB"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "database"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

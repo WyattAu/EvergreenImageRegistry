@@ -1,0 +1,31 @@
+[metadata]
+name = "node-red"
+version = "unknown"
+description = "Node-RED - Flow-based programming for IoT"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["node", "/app/src/packages/node_modules/node-red/red.js"]
+cmd = ["--userDir", "/data"]
+
+[ports]
+expose = [1880, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Node-RED - Flow-based programming for IoT"
+"org.opencontainers.image.source" = "https://github.com/node-red/node-red"
+"org.opencontainers.image.title" = "node-red"
+"org.opencontainers.image.vendor" = "Node-RED"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,40 @@
+[metadata]
+name = "traefik-dashboard"
+version = "3.6.13"
+description = "traefik-dashboard container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/traefik"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "traefik-dashboard"
+"org.opencontainers.image.vendor" = "Traefik Labs"
+"org.opencontainers.image.version" = "3.6.13"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.connection-drain" = "true"
+"sovereign.hft.cpu-pins" = "0-1"
+"sovereign.hft.cpu-pins-mode" = "exclusive"
+"sovereign.hft.deploy-strategy" = "hft-rolling"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.pre-stop-delay" = "5s"
+"sovereign.hft.pre-stop-hook" = "true"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

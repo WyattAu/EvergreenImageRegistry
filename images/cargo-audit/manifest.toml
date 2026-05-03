@@ -1,0 +1,30 @@
+[metadata]
+name = "cargo-audit"
+version = "unknown"
+description = "Cargo audit - Rust dependency security scanner"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["cargo-audit"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Cargo audit - Rust dependency security scanner"
+"org.opencontainers.image.source" = "https://github.com/rustsec/rustsec-audit"
+"org.opencontainers.image.title" = "cargo-audit"
+"org.opencontainers.image.vendor" = "rustsec"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

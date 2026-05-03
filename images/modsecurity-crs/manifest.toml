@@ -1,0 +1,32 @@
+[metadata]
+name = "modsecurity-crs"
+version = "3.3.5"
+description = "Sovereign hardened ModSecurity CRS - OWASP Core Rule Set"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/usr/sbin/apache2", "-D", "FOREGROUND"]
+
+[ports]
+expose = [80, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened ModSecurity CRS - OWASP Core Rule Set"
+"org.opencontainers.image.title" = "modsecurity-crs"
+"org.opencontainers.image.vendor" = "OWASP"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "security"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

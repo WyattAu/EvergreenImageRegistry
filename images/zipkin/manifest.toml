@@ -8,33 +8,31 @@ license = "Apache-2.0"
 tier = "1"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
-arch = "amd64"
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/openzipkin/zipkin/releases/download/3.4.2/zipkin.jar"
-binary_name = "zipkin"
-filename = "zipkin.jar"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = false
+[runtime]
+entrypoint = ["java"]
+cmd = ["-jar", "/opt/zipkin/zipkin.jar"]
 
 [ports]
-application = 9411
-metrics = 9101
+expose = [9411, 9101]
 
 [labels]
-"org.opencontainers.image.title" = "zipkin"
-"org.opencontainers.image.description" = "Zipkin - distributed tracing system"
-"org.opencontainers.image.version" = "3.4.2"
-"org.opencontainers.image.vendor" = "Zipkin"
 "org.opencontainers.image.source" = "https://github.com/openzipkin/zipkin"
-"sovereign.image.tier" = "1"
+"org.opencontainers.image.title" = "zipkin"
+"org.opencontainers.image.vendor" = "OpenZipkin"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
 "sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "false"
-"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
+"sovereign.image.category" = "observability"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,20 @@
+[metadata]
+name = "homeassistant-supervisor"
+version = "unknown"
+description = "homeassistant-supervisor container image"
+
+[build]
+base = "debian:bookworm-slim"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python", "-m", "homeassistant-assistant"]
+cmd = ["--help"]
+
+[ports]
+expose = [9101]
+

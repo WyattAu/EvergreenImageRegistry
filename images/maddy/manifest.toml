@@ -1,54 +1,36 @@
-[image]
+[metadata]
 name = "maddy"
-type = "binary-download"
-tier = 2
 version = "0.9.3"
 description = "Maddy - composable all-in-one mail server written in Go"
 vendor = "foxcpp"
-source_url = "https://github.com/foxcpp/maddy"
-category = "email"
-
-[source]
-url = "https://github.com/foxcpp/maddy/releases/download/v0.9.3/maddy-linux-amd64.tar.gz"
-fallback_urls = ["https://github.com/foxcpp/maddy/releases/download/v0.9.3/maddy-0.9.3-x86_64-linux-musl.tar.zst"]
-checksum = { algorithm = "sha256", expected = "PENDING", source = "" }
-strategy = "curl"
-github_repo = "foxcpp/maddy"
 
 [build]
-base = { image = "debian:bookworm-slim", purpose = "download" }
-builder_packages = ["curl", "ca-certificates", "binutils"]
-runtime_packages = []
-build_commands = [
-  "curl --retry 3 --retry-delay 5 -fsSL -H \"Authorization: token ${GITHUB_TOKEN}\" https://github.com/foxcpp/maddy/releases/download/v0.9.3/maddy-linux-amd64.tar.gz -o /tmp/maddy.tar.gz",
-  "tar -xzf /tmp/maddy.tar.gz -C /tmp && mv /tmp/maddy /usr/local/bin/maddy",
-  "chmod +x /usr/local/bin/maddy && strip /usr/local/bin/maddy",
-]
-artifacts = [
-  { source = "/usr/local/bin/maddy", destination = "/usr/local/bin/maddy" },
-]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://github.com/foxcpp/maddy/releases/download/v0.9.3/maddy-linux-amd64.tar.gz"
 
 [runtime]
-user = "65532:65532"
-workdir = "/app"
 entrypoint = ["/usr/local/bin/maddy"]
 cmd = ["run"]
-ports = [25, 143, 465, 587, 993, 995]
-volumes = ["/var/lib/maddy", "/etc/maddy"]
-stop_signal = "SIGTERM"
 
-[health]
-type = "tcp"
-path = ""
-port = 587
-interval_seconds = 30
-timeout_seconds = 5
-retries = 3
+[ports]
+expose = [25, 9101]
 
-[observability]
-metrics_port = 9101
-metrics_path = "/metrics"
+[labels]
+"org.opencontainers.image.description" = "Maddy - composable all-in-one mail server written in Go"
+"org.opencontainers.image.source" = "https://github.com/foxcpp/maddy"
+"org.opencontainers.image.title" = "maddy"
+"org.opencontainers.image.vendor" = "foxcpp"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "tcp"
+"sovereign.image.category" = "email"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
 
-[compliance]
-standards = []
-labels = {}

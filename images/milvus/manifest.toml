@@ -1,0 +1,30 @@
+[metadata]
+name = "milvus"
+version = "latest"
+description = "milvus container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "milvusdb/milvus:${VERSION}"
+
+[runtime]
+entrypoint = ["/opt/milvus/bin/milvus"]
+
+[ports]
+expose = [19530, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "milvus"
+"org.opencontainers.image.vendor" = "Milvus"
+"org.opencontainers.image.version" = "2.4.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

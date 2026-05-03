@@ -1,0 +1,24 @@
+[metadata]
+name = "readarr"
+version = "0.4.18.2805"
+description = "readarr container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/app/Readarr"]
+
+[ports]
+expose = [8787, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "readarr"
+"sovereign.health.type" = "exec"
+"sovereign.metrics.native" = "ztunnel"
+

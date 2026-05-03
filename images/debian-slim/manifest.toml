@@ -1,0 +1,27 @@
+[metadata]
+name = "debian-slim"
+version = "unknown"
+description = "Sovereign hardened debian:bookworm-slim base image with ca-certificates, tzdata, dumb-init"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened debian:bookworm-slim base image with ca-certificates, tzdata, dumb-init"
+"org.opencontainers.image.title" = "debian-slim"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "none"
+"sovereign.image.category" = "base"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -8,35 +8,32 @@ license = "Apache-2.0"
 tier = "3"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/kube-state-metrics/kube-state-metrics/releases/download/v2.18.0/kube-state-metrics-2.18.0-linux-amd64.tar.gz"
-binary_name = "kube-state-metrics"
-filename = "kube-state-metrics-2.18.0-linux-amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["/kube-state-metrics"]
 
 [ports]
-application = 8080
-metrics = 9101
+expose = [8080, 9101]
 
 [labels]
 "org.opencontainers.image.title" = "kube-state-metrics"
-"org.opencontainers.image.description" = "Kube-state-metrics - metrics about Kubernetes objects"
-"org.opencontainers.image.version" = "2.18.0"
 "org.opencontainers.image.vendor" = "Kubernetes"
-"org.opencontainers.image.source" = "https://github.com/kubernetes/kube-state-metrics"
-"sovereign.image.tier" = "3"
+"org.opencontainers.image.version" = "2.18.0"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
-"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.init-system" = "none"
 "sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

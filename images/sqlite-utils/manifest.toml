@@ -1,0 +1,31 @@
+[metadata]
+name = "sqlite-utils"
+version = "3.39"
+description = "CLI tool for managing SQLite databases"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["sqlite-utils"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "CLI tool for managing SQLite databases"
+"org.opencontainers.image.source" = "https://github.com/simonw/sqlite-utils"
+"org.opencontainers.image.title" = "sqlite-utils"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "none"
+"sovereign.image.category" = "tooling"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "none"
+

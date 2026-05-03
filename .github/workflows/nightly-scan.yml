@@ -103,18 +103,26 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Install jq
+        run: |
+          if ! command -v jq >/dev/null 2>&1; then
+            sudo apt-get update -qq && sudo apt-get install -y -qq jq
+          fi
+          jq --version
 
       - name: Make scripts executable
         run: chmod +x scripts/generate_sbom.sh scripts/generate_all_sboms.sh
 
-      - name: Generate SBOMs for all images
-        run: scripts/generate_all_sboms.sh
+      - name: Generate SBOMs for changed images
+        run: SKIP_UNCHANGED=true scripts/generate_all_sboms.sh
         continue-on-error: true
 
       - name: Count generated SBOMs
         run: |
           COUNT=$(find images -name 'sbom.spdx.json' | wc -l)
-          echo "Generated ${COUNT} SBOMs"
+          echo "Total SBOMs: ${COUNT}"
 
       - name: Commit SBOM changes
         run: |
@@ -123,9 +131,11 @@ jobs:
           git add images/*/sbom.spdx.json
           CHANGES=$(git diff --cached --stat)
           if [ -n "${CHANGES}" ]; then
-            git commit -m "chore: regenerate SBOMs for all images
+            git commit -m "chore: regenerate SBOMs for changed images
 
-            Automated SBOM generation via nightly-scan workflow.
+            Automated incremental SBOM generation via nightly-scan workflow.
+            Only images with changed Dockerfiles/manifests were regenerated.
+
             ${CHANGES}"
             git push
           else

@@ -1,33 +1,35 @@
-[image]
+[metadata]
 name = "fluentd"
 version = "1.17.1"
 description = "Fluentd - unified logging layer (CNCF graduated project)"
 vendor = "CNCF"
-homepage = "https://www.fluentd.org"
-category = "logging"
-tier = 1
-
-[source]
-type = "rubygem"
-url = "https://rubygems.org/gems/fluentd-1.17.1.gem"
-upstream = "https://github.com/fluent/fluentd"
 
 [build]
-base = "ruby:3.2-slim"
-target_base = "cgr.dev/chainguard/wolfi-base:latest"
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[constraints]
-nonroot = true
-base = "wolfi"
+[source]
+type = "package-manager"
+url = "https://rubygems.org/gems/fluentd-1.17.1.gem"
 
-[hft]
-signal-handling = "native"
-shutdown-timeout = "10s"
+[runtime]
+entrypoint = ["/usr/local/bin/fluentd", "-c", "/fluentd/etc/fluent.conf"]
 
 [ports]
-forward = 24224
-http = 5140
-metrics = 9101
+expose = [24224, 9101]
 
-[health]
-type = "exec"
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened Fluentd - unified logging layer with Ruby runtime"
+"org.opencontainers.image.source" = "https://github.com/fluent/fluentd"
+"org.opencontainers.image.title" = "fluentd"
+"org.opencontainers.image.vendor" = "CNCF"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "logging"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

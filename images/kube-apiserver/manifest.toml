@@ -8,35 +8,30 @@ license = "Apache-2.0"
 tier = "3"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
-arch = "amd64"
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/kube-apiserver/kube-apiserver/releases/download/v1.30.1/kube-apiserver-1.30.1-linux-amd64.tar.gz"
-binary_name = "kube-apiserver"
-filename = "kube-apiserver-1.30.1-linux-amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = false
+[runtime]
+entrypoint = ["kube-apiserver"]
 
 [ports]
-application = 6443
-metrics = 9101
+expose = [6443, 9101]
 
 [labels]
+"org.opencontainers.image.description" = "Sovereign hardened kube-apiserver - Kubernetes API server"
 "org.opencontainers.image.title" = "kube-apiserver"
-"org.opencontainers.image.description" = "Kubernetes API Server - control plane component"
-"org.opencontainers.image.version" = "1.30.1"
 "org.opencontainers.image.vendor" = "Kubernetes"
-"org.opencontainers.image.source" = "https://github.com/kubernetes/kubernetes"
-"sovereign.image.tier" = "3"
+"org.opencontainers.image.version" = "1.30.1"
+"sovereign.base.image" = "wolfi"
 "sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "false"
-"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
-"sovereign.hft.signal-handling" = "native"
 "sovereign.hft.shutdown-timeout" = "15s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

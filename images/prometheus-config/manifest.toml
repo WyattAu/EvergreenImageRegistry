@@ -1,0 +1,34 @@
+[metadata]
+name = "prometheus-config"
+version = "0.90.1"
+description = "Sovereign hardened prometheus-config - Prometheus config reloader"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "quay.io/prometheus-operator/prometheus-operator:v0.90.1"
+
+[runtime]
+entrypoint = ["/prometheus-config-reloader"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened prometheus-config - Prometheus config reloader"
+"org.opencontainers.image.title" = "prometheus-config"
+"org.opencontainers.image.vendor" = "Prometheus"
+"org.opencontainers.image.version" = "0.90.1"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.shutdown-timeout" = "10s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

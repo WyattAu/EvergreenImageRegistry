@@ -8,35 +8,42 @@ license = "Apache-2.0"
 tier = "3"
 
 [build]
-base_image = "influxdb:2.7"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
-url = "https://github.com/influxdb-2/influxdb-2/releases/download/v2.7/influxdb-2-2.7-linux-amd64.tar.gz"
-binary_name = "influxdb-2"
-filename = "influxdb-2-2.7-linux-amd64.tar.gz"
-checksum = "PENDING"
+[source]
+type = "docker-image"
+url = "influxdb:2.7"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["/influxd"]
 
 [ports]
-application = 8086
-metrics = 9101
+expose = [8086, 9101]
 
 [labels]
+"org.opencontainers.image.description" = "InfluxDB v2-only variant for pure v2 API deployments"
 "org.opencontainers.image.title" = "influxdb-2"
-"org.opencontainers.image.description" = "InfluxDB 2 - time series database with Flux query engine"
-"org.opencontainers.image.version" = "2.7"
 "org.opencontainers.image.vendor" = "InfluxData"
-"org.opencontainers.image.source" = "https://github.com/influxdata/influxdb"
-"sovereign.image.tier" = "3"
+"org.opencontainers.image.version" = "2.7"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
-"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.connection-drain" = "true"
+"sovereign.hft.cpu-pins" = "4-5"
+"sovereign.hft.cpu-pins-mode" = "exclusive"
+"sovereign.hft.deploy-strategy" = "hft-stateful"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.pre-stop-delay" = "5s"
+"sovereign.hft.pre-stop-hook" = "true"
+"sovereign.hft.sched-policy" = "SCHED_OTHER"
 "sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "tsdb"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

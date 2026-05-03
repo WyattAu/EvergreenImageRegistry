@@ -1,0 +1,35 @@
+[metadata]
+name = "authelia-lite"
+version = "4.39.19"
+description = "Sovereign hardened Authelia-lite - lightweight SSO/2FA authentication portal"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/usr/local/bin/authelia"]
+
+[ports]
+expose = [80, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened Authelia-lite - lightweight SSO/2FA authentication portal"
+"org.opencontainers.image.title" = "authelia-lite"
+"org.opencontainers.image.vendor" = "Authelia"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.image.category" = "security"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

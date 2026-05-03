@@ -1,31 +1,33 @@
-[image]
+[metadata]
 name = "docker-clean"
 version = "0.3.0"
 description = "Docker cleanup and pruning tool"
 vendor = "zzehring"
-homepage = "https://github.com/zzehring/docker-cleanup"
-category = "devops"
-tier = 3
-
-[source]
-type = "inline-script"
-url = ""
-upstream = "https://github.com/zzehring/docker-cleanup"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
-target_base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[constraints]
-nonroot = true
-base = "wolfi"
+[source]
+type = "package-manager"
 
-[hft]
-signal-handling = "native"
-shutdown-timeout = "10s"
+[runtime]
+entrypoint = ["docker-clean"]
 
 [ports]
-metrics = 9101
+expose = [9101]
 
-[health]
-type = "exec"
+[labels]
+"org.opencontainers.image.description" = "Docker cleanup and pruning tool"
+"org.opencontainers.image.source" = "https://github.com/zzehring/docker-cleanup"
+"org.opencontainers.image.title" = "docker-clean"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "devops"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -8,32 +8,30 @@ license = "Apache-2.0"
 tier = "3"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/trufflesecurity/trufflehog/releases/download/v3.82.2/trufflehog_3.82.2_linux_amd64.tar.gz"
-binary_name = "trufflehog"
-filename = "trufflehog_3.82.2_linux_amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["/trufflehog"]
+cmd = ["--help"]
 
 [ports]
-metrics = 9101
+expose = [9101]
 
 [labels]
-"org.opencontainers.image.title" = "trufflehog"
-"org.opencontainers.image.description" = "TruffleHog - secrets scanner for Git repositories"
-"org.opencontainers.image.version" = "3.82.2"
-"org.opencontainers.image.vendor" = "TruffleHog"
+"org.opencontainers.image.description" = "TruffleHog - secret scanner"
 "org.opencontainers.image.source" = "https://github.com/trufflesecurity/trufflehog"
-"sovereign.image.tier" = "3"
+"org.opencontainers.image.title" = "trufflehog"
+"org.opencontainers.image.vendor" = "trufflesecurity"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

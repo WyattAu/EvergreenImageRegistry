@@ -1,0 +1,33 @@
+[metadata]
+name = "node-alpine"
+version = "22.12.0"
+description = "Sovereign hardened node-alpine - Node.js runtime (no Alpine, scratch)"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["node"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened node-alpine - Node.js runtime (no Alpine, scratch)"
+"org.opencontainers.image.title" = "node-alpine"
+"org.opencontainers.image.vendor" = "Node.js"
+"org.opencontainers.image.version" = "22.12.0"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.shutdown-timeout" = "5s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

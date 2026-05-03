@@ -1,35 +1,40 @@
-[image]
+[metadata]
 name = "onlyoffice-communityserver"
 version = "12.5.2"
 description = "ONLYOFFICE Community Server - online office suite (documents, mail, CRM, projects)"
 vendor = "ONLYOFFICE"
-homepage = "https://github.com/ONLYOFFICE/CommunityServer"
-category = "document-management"
-tier = 2
-
-[source]
-type = "upstream-tarball"
-url = "https://github.com/ONLYOFFICE/CommunityServer/releases/download/v12.5.2/onlyoffice-communityserver-linux-x64.tar.gz"
-upstream = "https://github.com/ONLYOFFICE/CommunityServer"
 
 [build]
-base = "debian:bookworm-slim"
-target_base = "cgr.dev/chainguard/wolfi-base:latest"
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[constraints]
-nonroot = true
-base = "wolfi"
+[source]
+type = "package-manager"
+url = "https://github.com/ONLYOFFICE/CommunityServer/releases/download/v12.5.2/onlyoffice-communityserver-linux-x64.tar.gz"
 
-[hft]
-signal-handling = "native"
-shutdown-timeout = "30s"
-init-system = "none"
-startup-timeout = "60000ms"
+[runtime]
+entrypoint = ["/opt/onlyoffice/onlyoffice-enterprise-service.sh"]
 
 [ports]
-http = 80
-https = 443
-metrics = 9101
+expose = [80, 9101]
 
-[health]
-type = "exec"
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened ONLYOFFICE Community Server"
+"org.opencontainers.image.source" = "https://github.com/ONLYOFFICE/CommunityServer"
+"org.opencontainers.image.title" = "onlyoffice-communityserver"
+"org.opencontainers.image.vendor" = "ONLYOFFICE"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.base" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "30s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "60000ms"
+"sovereign.image.category" = "document-management"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

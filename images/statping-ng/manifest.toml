@@ -1,0 +1,38 @@
+[metadata]
+name = "statping-ng"
+version = "0.90.74"
+description = "Service monitoring and uptime tracking"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/statping"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Service monitoring and uptime tracking"
+"org.opencontainers.image.source" = "https://github.com/statping/statping"
+"org.opencontainers.image.title" = "statping-ng"
+"org.opencontainers.image.vendor" = "statping"
+"org.opencontainers.image.version" = "0.90.74"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.base" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "5000ms"
+"sovereign.image.category" = "monitoring"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

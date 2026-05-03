@@ -1,0 +1,31 @@
+[metadata]
+name = "gitserver"
+version = "1.26.1"
+description = "GitServer - lightweight git HTTP server"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/opt/gitserver/gitea"]
+
+[ports]
+expose = [80, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "GitServer - lightweight git HTTP server"
+"org.opencontainers.image.source" = "https://github.com/go-gitea/gitea"
+"org.opencontainers.image.title" = "gitserver"
+"org.opencontainers.image.vendor" = "Gitea"
+"org.opencontainers.image.version" = "1.26.1"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

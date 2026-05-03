@@ -1,0 +1,27 @@
+[metadata]
+name = "standard"
+version = "unknown"
+description = "Meta directory for compliance standard definitions. Not a runnable container."
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Meta directory for compliance standard definitions. Not a runnable container."
+"org.opencontainers.image.title" = "standard"
+"sovereign.base.image" = "wolfi"
+"sovereign.health.type" = "none"
+"sovereign.image.category" = "meta"
+"sovereign.image.note" = "Compliance standard directory, not a container image."
+"sovereign.image.status" = "reference"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,34 @@
+[metadata]
+name = "scylla-operator"
+version = "1.13.0"
+description = "Sovereign hardened ScyllaDB Operator - Kubernetes operator for ScyllaDB"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "docker.io/scylladb/scylla-operator:v${VERSION}"
+
+[runtime]
+entrypoint = ["/usr/local/bin/scylla-operator"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened ScyllaDB Operator - Kubernetes operator for ScyllaDB"
+"org.opencontainers.image.title" = "scylla-operator"
+"org.opencontainers.image.vendor" = "ScyllaDB"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "database"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,38 @@
+[metadata]
+name = "vpn-controller"
+version = "1.0.20210914"
+description = "WireGuard-based VPN management controller"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/app/vpn-controller"]
+
+[ports]
+expose = [51820, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "WireGuard-based VPN management controller"
+"org.opencontainers.image.source" = "https://git.zx2c4.com/wireguard-tools/"
+"org.opencontainers.image.title" = "vpn-controller"
+"org.opencontainers.image.vendor" = "WireGuard"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.base" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "networking"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

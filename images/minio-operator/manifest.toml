@@ -8,35 +8,35 @@ license = "Apache-2.0"
 tier = "2"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/minio-operator/minio-operator/releases/download/v6.0.4/minio-operator-6.0.4-linux-amd64.tar.gz"
-binary_name = "minio-operator"
-filename = "minio-operator-6.0.4-linux-amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["/minio-operator"]
 
 [ports]
-application = 4455
-metrics = 9101
+expose = [4455, 9101]
 
 [labels]
-"org.opencontainers.image.title" = "minio-operator"
-"org.opencontainers.image.description" = "MinIO Operator - Kubernetes operator for MinIO"
-"org.opencontainers.image.version" = "6.0.4"
-"org.opencontainers.image.vendor" = "MinIO"
 "org.opencontainers.image.source" = "https://github.com/minio/operator"
-"sovereign.image.tier" = "2"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "true"
+"org.opencontainers.image.title" = "minio-operator"
+"org.opencontainers.image.vendor" = "MinIO"
+"org.opencontainers.image.version" = "v6.0.4"
 "sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
+"sovereign.constraint.base" = "scratch"
+"sovereign.constraint.nonroot" = "true"
 "sovereign.health.type" = "exec"
-"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.init-system" = "none"
 "sovereign.hft.shutdown-timeout" = "5s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "10000ms"
+"sovereign.image.category" = "cloud-storage"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

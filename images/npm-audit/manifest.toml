@@ -1,0 +1,30 @@
+[metadata]
+name = "npm-audit"
+version = "unknown"
+description = "npm audit wrapper"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["npm"]
+cmd = ["audit"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "npm audit wrapper"
+"org.opencontainers.image.title" = "npm-audit"
+"org.opencontainers.image.vendor" = "npm"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

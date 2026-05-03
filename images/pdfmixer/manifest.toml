@@ -1,0 +1,20 @@
+[metadata]
+name = "pdfmixer"
+version = "0.7.0"
+description = "pdfmixer container image"
+
+[build]
+base = "debian:bookworm-slim"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python", "-m", "pdfmixer"]
+cmd = ["--help"]
+
+[ports]
+expose = [9101]
+

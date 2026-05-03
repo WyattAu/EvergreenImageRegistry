@@ -1,0 +1,39 @@
+[metadata]
+name = "fail2ban-exporter"
+version = "v0.10.0"
+description = "fail2ban-exporter container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/fail2ban-exporter"]
+cmd = ["--web.listen-address=:9191", "--web.telemetry-path=/metrics", "--fail2ban.socket=/tmp/fail2ban.sock"]
+
+[ports]
+expose = [9191, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/xperimental/fail2ban-exporter"
+"org.opencontainers.image.title" = "fail2ban-exporter"
+"org.opencontainers.image.vendor" = "xperimental"
+"org.opencontainers.image.version" = "v0.10.0"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "monitoring"
+"sovereign.image.note" = "Original repo deleted; building from source"
+"sovereign.image.status" = "best-effort"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

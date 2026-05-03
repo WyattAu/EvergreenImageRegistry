@@ -1,0 +1,33 @@
+[metadata]
+name = "govulncheck"
+version = "latest"
+description = "Go vulnerability checker"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "golang:${VERSION}"
+
+[runtime]
+entrypoint = ["/govulncheck"]
+cmd = ["--help"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Go vulnerability checker"
+"org.opencontainers.image.source" = "https://github.com/go-1.23/vuln"
+"org.opencontainers.image.title" = "govulncheck"
+"org.opencontainers.image.vendor" = "go-1.23"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

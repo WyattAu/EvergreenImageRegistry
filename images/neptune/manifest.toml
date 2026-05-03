@@ -1,34 +1,36 @@
-[image]
+[metadata]
 name = "neptune"
 version = "1.2.0"
 description = "AWS Neptune local development compatibility - Gremlin/SPARQL graph database for dev environments"
 vendor = "AWS"
-homepage = "https://aws.amazon.com/neptune/"
-category = "database"
-tier = 1
-
-[source]
-type = "managed-service"
-url = "https://aws.amazon.com/neptune/"
-upstream = "https://github.com/aws/neptune"
-note = "AWS Neptune is a fully managed cloud service. This image provides development-only Gremlin/SPARQL compatibility."
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
-target_base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[constraints]
-nonroot = true
-base = "wolfi"
+[source]
+type = "package-manager"
+url = "https://aws.amazon.com/neptune/"
 
-[hft]
-signal-handling = "native"
-shutdown-timeout = "10s"
+[runtime]
+entrypoint = ["/app/neptune"]
 
 [ports]
-gremlin = 8182
-wss = 8443
-metrics = 9101
+expose = [8182, 9101]
 
-[health]
-type = "exec"
+[labels]
+"org.opencontainers.image.description" = "AWS Neptune local development compatibility - Gremlin/SPARQL for dev environments"
+"org.opencontainers.image.source" = "https://aws.amazon.com/neptune/"
+"org.opencontainers.image.title" = "neptune"
+"org.opencontainers.image.vendor" = "AWS"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "database"
+"sovereign.image.note" = "AWS Neptune is a fully managed cloud service. This image provides development-only compatibility."
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

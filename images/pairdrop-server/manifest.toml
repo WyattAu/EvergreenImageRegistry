@@ -1,0 +1,30 @@
+[metadata]
+name = "pairdrop-server"
+version = "unknown"
+description = "PairDrop - Local file sharing in browser"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["node", "server.js"]
+
+[ports]
+expose = [3000, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "PairDrop - Local file sharing in browser"
+"org.opencontainers.image.source" = "https://github.com/schlagmichdoch/PairDrop"
+"org.opencontainers.image.title" = "pairdrop-server"
+"org.opencontainers.image.vendor" = "schlagmichdoch"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

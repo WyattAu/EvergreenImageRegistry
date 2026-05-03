@@ -1,0 +1,29 @@
+[metadata]
+name = "pgpool-ii"
+version = "4.5.1"
+description = "pgpool-ii container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "pgpool"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["pgpool"]
+
+[ports]
+expose = [9999, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "pgpool-II"
+"org.opencontainers.image.vendor" = "PgPool"
+"org.opencontainers.image.version" = "4.5.1"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

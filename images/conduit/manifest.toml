@@ -4,37 +4,33 @@ version = "0.9.5"
 description = "Conduit - lightweight Matrix homeserver written in Rust"
 vendor = "Famedly"
 source = "https://gitlab.com/famedly/conduit"
-category = "messaging"
 tier = "2"
 
 [build]
 base = "scratch"
-arch = "amd64"
-
-[download]
-url = "https://gitlab.com/api/v4/projects/famedly%2Fconduit/packages/generic/conduit-v0.9.x/v0.9.5/conduit-x86_64-unknown-linux-musl"
-filename = "conduit-x86_64-unknown-linux-musl"
-strip_components = 0
-binary_name = "conduit"
-
-[container]
-port = 6167
-metrics_port = 9101
 user = "65532:65532"
-workdir = "/app"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://gitlab.com/api/v4/projects/famedly%2Fconduit/packages/generic/conduit-v0.9.x/v0.9.5/conduit-x86_64-unknown-linux-musl"
+
+[runtime]
 entrypoint = ["/usr/local/bin/conduit"]
-stop_signal = "SIGTERM"
-nonroot = true
+
+[ports]
+expose = [6167, 9101]
 
 [labels]
-"org.opencontainers.image.title" = "conduit"
 "org.opencontainers.image.description" = "Conduit - lightweight Matrix homeserver written in Rust"
-"org.opencontainers.image.vendor" = "Famedly"
 "org.opencontainers.image.source" = "https://gitlab.com/famedly/conduit"
+"org.opencontainers.image.title" = "conduit"
+"org.opencontainers.image.vendor" = "Famedly"
 "org.opencontainers.image.version" = "0.9.5"
-"sovereign.image.tier" = "2"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

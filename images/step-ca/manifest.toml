@@ -8,35 +8,35 @@ license = "Apache-2.0"
 tier = "3"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/smallstep/certificates/releases/download/v0.30.2/step-ca_0.30.2_linux_amd64.tar.gz"
-binary_name = "step-ca"
-filename = "step-ca_0.30.2_linux_amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["/step-ca"]
 
 [ports]
-application = 9000
-metrics = 9101
+expose = [9000, 9101]
 
 [labels]
-"org.opencontainers.image.title" = "step-ca"
-"org.opencontainers.image.description" = "Step CA - private certificate authority for automated PKI"
-"org.opencontainers.image.version" = "0.30.2"
-"org.opencontainers.image.vendor" = "Smallstep"
 "org.opencontainers.image.source" = "https://github.com/smallstep/certificates"
-"sovereign.image.tier" = "3"
+"org.opencontainers.image.title" = "step-ca"
+"org.opencontainers.image.vendor" = "Smallstep"
+"org.opencontainers.image.version" = "0.30.2"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
-"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.init-system" = "none"
 "sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "security"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,53 +1,35 @@
-[image]
+[metadata]
 name = "roundcube"
-type = "web-ui"
-tier = 2
 version = "1.6.9"
 description = "Roundcube - feature-rich webmail client"
 vendor = "roundcube"
-source_url = "https://github.com/roundcube/roundcubemail"
-category = "email"
-
-[source]
-url = "https://github.com/roundcube/roundcubemail/releases/download/1.6.9/roundcubemail-1.6.9-complete.tar.gz"
-fallback_urls = []
-checksum = { algorithm = "sha256", expected = "PENDING", source = "" }
-strategy = "curl"
-github_repo = "roundcube/roundcubemail"
 
 [build]
-base = { image = "cgr.dev/chainguard/wolfi-base:latest", purpose = "runtime" }
-builder_packages = ["curl", "ca-certificates"]
-runtime_packages = ["php83", "php83-fpm", "php83-session", "php83-mbstring", "php83-xml", "php83-iconv", "php83-dom", "php83-curl", "php83-intl", "php83-json", "ca-certificates", "nginx"]
-build_commands = [
-  "curl --retry 3 -fsSL https://github.com/roundcube/roundcubemail/releases/download/1.6.9/roundcubemail-1.6.9-complete.tar.gz -o /tmp/roundcube.tar.gz",
-  "mkdir -p /usr/share/webapps/roundcube",
-  "tar -xzf /tmp/roundcube.tar.gz -C /usr/share/webapps/roundcube --strip-components=1",
-  "rm /tmp/roundcube.tar.gz",
-]
-artifacts = []
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://github.com/roundcube/roundcubemail/releases/download/1.6.9/roundcubemail-1.6.9-complete.tar.gz"
 
 [runtime]
-user = "65532:65532"
-workdir = "/usr/share/webapps/roundcube"
 entrypoint = ["php-fpm83"]
 cmd = ["-F"]
-ports = [8888]
-volumes = ["/usr/share/webapps/roundcube", "/var/lib/roundcube"]
-stop_signal = "SIGTERM"
 
-[health]
-type = "tcp"
-path = ""
-port = 8888
-interval_seconds = 30
-timeout_seconds = 5
-retries = 3
+[ports]
+expose = [8888, 9101]
 
-[observability]
-metrics_port = 9101
-metrics_path = "/metrics"
+[labels]
+"org.opencontainers.image.description" = "Roundcube - feature-rich webmail client"
+"org.opencontainers.image.source" = "https://github.com/roundcube/roundcubemail"
+"org.opencontainers.image.title" = "roundcube"
+"org.opencontainers.image.vendor" = "Roundcube"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "tcp"
+"sovereign.image.category" = "email"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
 
-[compliance]
-standards = []
-labels = {}

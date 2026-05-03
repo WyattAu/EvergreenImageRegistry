@@ -1,0 +1,30 @@
+[metadata]
+name = "vector-init"
+version = "0.38.0"
+description = "Sovereign hardened Vector init - high-performance observability data pipeline"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/usr/bin/vector"]
+
+[ports]
+expose = [8686, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened Vector init - high-performance observability data pipeline"
+"org.opencontainers.image.title" = "vector-init"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "observability"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

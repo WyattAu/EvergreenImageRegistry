@@ -1,0 +1,24 @@
+[metadata]
+name = "whisparr"
+version = "2.2.0-develop.115"
+description = "whisparr container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/app/Whisparr"]
+
+[ports]
+expose = [6969, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "whisparr"
+"sovereign.health.type" = "exec"
+"sovereign.metrics.native" = "ztunnel"
+

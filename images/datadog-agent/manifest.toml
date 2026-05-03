@@ -1,0 +1,45 @@
+[metadata]
+name = "datadog-agent"
+version = "7"
+description = "Datadog Agent for infrastructure monitoring"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "gcr.io/datadoghq/agent:${VERSION}"
+
+[runtime]
+entrypoint = ["/agent"]
+
+[ports]
+expose = [8125, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Datadog Agent for infrastructure monitoring"
+"org.opencontainers.image.title" = "datadog-agent"
+"org.opencontainers.image.vendor" = "Datadog"
+"org.opencontainers.image.version" = "7.78.1"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.connection-drain" = "true"
+"sovereign.hft.cpu-pins" = "4-5"
+"sovereign.hft.cpu-pins-mode" = "shared"
+"sovereign.hft.deploy-strategy" = "standard-rolling"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.pre-stop-delay" = "10s"
+"sovereign.hft.pre-stop-hook" = "true"
+"sovereign.hft.runtime" = "go"
+"sovereign.hft.runtime-hints" = "GOMAXPROCS=<cores>"
+"sovereign.hft.sched-policy" = "SCHED_OTHER"
+"sovereign.hft.shutdown-timeout" = "5s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "15000ms"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

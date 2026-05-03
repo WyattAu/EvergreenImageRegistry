@@ -8,35 +8,32 @@ license = "Apache-2.0"
 tier = "3"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/portainer/portainer/releases/download/v2.20.1/portainer-2.20.1-linux-amd64.tar.gz"
-binary_name = "portainer"
-filename = "portainer-2.20.1-linux-amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["/portainer"]
 
 [ports]
-application = 9000
-metrics = 9101
+expose = [9000, 9101]
 
 [labels]
 "org.opencontainers.image.title" = "portainer"
-"org.opencontainers.image.description" = "Portainer - container management UI"
-"org.opencontainers.image.version" = "2.20.1"
 "org.opencontainers.image.vendor" = "Portainer"
-"org.opencontainers.image.source" = "https://github.com/portainer/portainer"
-"sovereign.image.tier" = "3"
+"org.opencontainers.image.version" = "2.20.1"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
-"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.init-system" = "none"
 "sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

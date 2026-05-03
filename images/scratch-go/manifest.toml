@@ -1,0 +1,27 @@
+[metadata]
+name = "scratch-go"
+version = "ARG"
+description = "Go source-build reference — static binary on scratch"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/app/app"]
+
+[labels]
+"org.opencontainers.image.description" = "Go source-build reference — static binary on scratch"
+"org.opencontainers.image.title" = "scratch-go"
+"org.opencontainers.image.vendor" = "EvergreenImageRegistry"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.image.role" = "base"
+"sovereign.image.tier" = "0"
+"sovereign.runtime" = "go"
+"sovereign.runtime.version" = "${GO_VERSION}"
+

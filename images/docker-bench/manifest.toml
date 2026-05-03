@@ -1,0 +1,31 @@
+[metadata]
+name = "docker-bench"
+version = "unknown"
+description = "Docker Bench for Security"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["sh"]
+cmd = ["docker-bench-security.sh"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Docker Bench for Security"
+"org.opencontainers.image.source" = "https://github.com/docker/docker-bench-security"
+"org.opencontainers.image.title" = "docker-bench"
+"org.opencontainers.image.vendor" = "Docker"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

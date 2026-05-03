@@ -1,0 +1,30 @@
+[metadata]
+name = "yarn-audit"
+version = "unknown"
+description = "Yarn audit wrapper"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["yarn"]
+cmd = ["audit"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Yarn audit wrapper"
+"org.opencontainers.image.title" = "yarn-audit"
+"org.opencontainers.image.vendor" = "Yarn"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

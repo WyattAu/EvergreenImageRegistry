@@ -1,0 +1,32 @@
+[metadata]
+name = "gradle"
+version = "8.10.2"
+description = "Sovereign hardened gradle - Java build tool"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["gradle"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened gradle - Java build tool"
+"org.opencontainers.image.title" = "gradle"
+"org.opencontainers.image.vendor" = "Gradle"
+"org.opencontainers.image.version" = "8.10.2"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.shutdown-timeout" = "30s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

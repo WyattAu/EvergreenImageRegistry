@@ -1,0 +1,31 @@
+[metadata]
+name = "budibase"
+version = "2.14.0"
+description = "budibase container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["node"]
+
+[ports]
+expose = [10000, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/Budibase/budibase/releases"
+"org.opencontainers.image.title" = "budibase"
+"org.opencontainers.image.vendor" = "Budibase/budibase"
+"org.opencontainers.image.version" = "2.14.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.hardened" = "true"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

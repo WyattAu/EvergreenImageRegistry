@@ -1,0 +1,35 @@
+[metadata]
+name = "piper"
+version = "1.2.0"
+description = "piper container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/piper"]
+
+[ports]
+expose = [6666, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/rhasspy/piper/releases"
+"org.opencontainers.image.title" = "piper"
+"org.opencontainers.image.vendor" = "rhasspy/piper"
+"org.opencontainers.image.version" = "1.2.0"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

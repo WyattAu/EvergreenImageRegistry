@@ -1,0 +1,32 @@
+[metadata]
+name = "buildkit"
+version = "0.29.0"
+description = "Sovereign hardened buildkit - concurrent build toolkit"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["buildkitd"]
+
+[ports]
+expose = [1234, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened buildkit - concurrent build toolkit"
+"org.opencontainers.image.title" = "buildkit"
+"org.opencontainers.image.vendor" = "Moby"
+"org.opencontainers.image.version" = "0.29.0"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.shutdown-timeout" = "10s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

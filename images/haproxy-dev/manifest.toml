@@ -1,0 +1,30 @@
+[metadata]
+name = "haproxy-dev"
+version = "2.8.5"
+description = "Sovereign hardened HAProxy dev - experimental development configuration variant"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/usr/local/sbin/haproxy", "-f", "/dev/stdin"]
+
+[ports]
+expose = [8404, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened HAProxy dev - experimental development configuration variant"
+"org.opencontainers.image.title" = "haproxy-dev"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "proxy"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

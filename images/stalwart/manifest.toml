@@ -1,54 +1,36 @@
-[image]
+[metadata]
 name = "stalwart"
-type = "binary-download"
-tier = 2
 version = "0.16.2"
 description = "Stalwart Mail Server - all-in-one mail server written in Rust"
 vendor = "stalwartlabs"
-source_url = "https://github.com/stalwartlabs/stalwart"
-category = "email"
-
-[source]
-url = "https://github.com/stalwartlabs/stalwart/releases/download/v0.16.2/stalwart-x86_64-unknown-linux-musl.tar.gz"
-fallback_urls = []
-checksum = { algorithm = "sha256", expected = "PENDING", source = "" }
-strategy = "curl"
-github_repo = "stalwartlabs/stalwart"
 
 [build]
-base = { image = "debian:bookworm-slim", purpose = "download" }
-builder_packages = ["curl", "ca-certificates"]
-runtime_packages = []
-build_commands = [
-  "curl --retry 3 --retry-delay 5 -fsSL -H \"Authorization: token ${GITHUB_TOKEN}\" https://github.com/stalwartlabs/stalwart/releases/download/v0.16.2/stalwart-x86_64-unknown-linux-musl.tar.gz -o /tmp/stalwart.tar.gz",
-  "tar -xzf /tmp/stalwart.tar.gz -C /tmp && mv /tmp/stalwart /usr/local/bin/stalwart",
-  "chmod +x /usr/local/bin/stalwart && strip /usr/local/bin/stalwart",
-]
-artifacts = [
-  { source = "/usr/local/bin/stalwart", destination = "/usr/local/bin/stalwart" },
-]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://github.com/stalwartlabs/stalwart/releases/download/v0.16.2/stalwart-x86_64-unknown-linux-musl.tar.gz"
 
 [runtime]
-user = "65532:65532"
-workdir = "/app"
 entrypoint = ["/usr/local/bin/stalwart"]
 cmd = ["mail"]
-ports = [25, 143, 465, 587, 993]
-volumes = ["/var/lib/stalwart", "/etc/stalwart"]
-stop_signal = "SIGTERM"
 
-[health]
-type = "tcp"
-path = ""
-port = 587
-interval_seconds = 30
-timeout_seconds = 5
-retries = 3
+[ports]
+expose = [25, 9101]
 
-[observability]
-metrics_port = 9101
-metrics_path = "/metrics"
+[labels]
+"org.opencontainers.image.description" = "Stalwart Mail Server - all-in-one mail server written in Rust"
+"org.opencontainers.image.source" = "https://github.com/stalwartlabs/stalwart"
+"org.opencontainers.image.title" = "stalwart"
+"org.opencontainers.image.vendor" = "stalwartlabs"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "tcp"
+"sovereign.image.category" = "email"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
 
-[compliance]
-standards = []
-labels = {}

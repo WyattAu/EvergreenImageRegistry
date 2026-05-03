@@ -1,0 +1,39 @@
+[metadata]
+name = "sentry-worker"
+version = "nightly"
+description = "sentry-worker container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "getsentry/sentry:${VERSION}"
+
+[runtime]
+entrypoint = ["sentry"]
+cmd = ["worker"]
+
+[ports]
+expose = [9000, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/getsentry/self-hosted"
+"org.opencontainers.image.title" = "sentry-worker"
+"org.opencontainers.image.vendor" = "Sentry"
+"org.opencontainers.image.version" = "26.4.1"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.base" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "30s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "60000ms"
+"sovereign.image.category" = "monitoring"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,33 @@
+[metadata]
+name = "loki-simple"
+version = "3.1.0"
+description = "Sovereign hardened loki-simple - Loki with simple config"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/loki", "-config.file=/etc/loki/simple-config.yaml"]
+
+[ports]
+expose = [3100, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened loki-simple - Loki with simple config"
+"org.opencontainers.image.title" = "loki-simple"
+"org.opencontainers.image.vendor" = "Grafana"
+"org.opencontainers.image.version" = "3.1.0"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.shutdown-timeout" = "10s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

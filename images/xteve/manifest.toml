@@ -1,0 +1,35 @@
+[metadata]
+name = "xteve"
+version = "2.2.0.200"
+description = "xteve container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/xteve"]
+
+[ports]
+expose = [34400, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/xteve-project/xTeVe"
+"org.opencontainers.image.title" = "xteve"
+"org.opencontainers.image.vendor" = "xteve"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

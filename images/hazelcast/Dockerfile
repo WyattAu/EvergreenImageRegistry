@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED HAZELCAST
+# EVERGREEN HARDENED HAZELCAST
 # Generated from template - Version: 5.3.6
 # Constraint: debian-slim - requires Java runtime
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
@@ -9,7 +9,7 @@ ARG VERSION=5.3.6
 ARG BUILD_DATE
 
 
-FROM debian:bookworm-20250113-slim AS builder
+FROM debian@sha256:f70dc8d6a8b6a06824c92471a1a258030836b26b043881358b967bf73de7c5ab AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
@@ -19,7 +19,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     && tar -xzf /tmp/hazelcast.tgz -C /opt/hazelcast --strip-components=1 \
     && rm -rf /tmp/hazelcast.tgz
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=5.3.6
 
 RUN apk add --no-cache ca-certificates
@@ -31,17 +31,22 @@ USER 65532:65532
 WORKDIR /opt/hazelcast
 EXPOSE 5701 5702 5703 8080
 ENV JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5701/ || exit 1
 ENTRYPOINT ["/opt/hazelcast/bin/hazelcast"]
 LABEL org.opencontainers.image.title="hazelcast" \
-      org.opencontainers.image.description="Sovereign hardened Hazelcast - distributed in-memory computing platform" \
+      org.opencontainers.image.description="Evergreen hardened Hazelcast - distributed in-memory computing platform" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Hazelcast" \
-      sovereign.image.status="functional" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="database" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.status="functional" \
+      evergreen.image.tier="1" \
+      evergreen.image.category="database" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

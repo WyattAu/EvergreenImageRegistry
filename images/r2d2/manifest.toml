@@ -1,7 +1,7 @@
 [metadata]
 name = "r2d2"
 version = "0.8.10"
-description = "Sovereign hardened R2D2 - generic connection pool wrapper"
+description = "Evergreen hardened R2D2 - generic connection pool wrapper"
 
 [build]
 base = "scratch"
@@ -18,17 +18,17 @@ entrypoint = ["/usr/local/bin/r2d2"]
 expose = [6379, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened R2D2 - generic connection pool wrapper"
+"org.opencontainers.image.description" = "Evergreen hardened R2D2 - generic connection pool wrapper"
 "org.opencontainers.image.title" = "r2d2"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "scratch"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.hft.shutdown-timeout" = "3s"
-"sovereign.hft.signal-handling" = "native"
-"sovereign.image.category" = "database"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.image.category" = "database"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

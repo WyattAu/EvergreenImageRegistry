@@ -1,7 +1,7 @@
 ARG VERSION=4.9.6
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim AS installer
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS installer
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates gnupg2 lsb-release && \
@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/* || true
 RUN mkdir -p /var/log/pdns /var/lib/pdns /etc/pdns 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt GPG signatures (repo.powerdns.com)
 ARG VERSION
 RUN apk add --no-cache sqlite-libs ca-certificates boost-libs \
@@ -29,6 +29,8 @@ RUN chown -R 65532:65532 /app /var/log/pdns /var/lib/pdns 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 8081
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:53/ || exit 1
 ENTRYPOINT ["/usr/local/bin/pdns_server"]
 CMD ["--config-dir=/etc/pdns", "--daemon=no", "--webserver=yes", "--webserver-port=8081", "--webserver-address=0.0.0.0", "--api=yes", "--api-key=changeme"]
 LABEL org.opencontainers.image.title="powerdns-api" \
@@ -36,17 +38,20 @@ LABEL org.opencontainers.image.title="powerdns-api" \
       org.opencontainers.image.vendor="PowerDNS" \
       org.opencontainers.image.source="https://github.com/PowerDNS/pdns" \
       org.opencontainers.image.description="PowerDNS authoritative DNS server with REST API" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="dns" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="wolfi" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="5000ms"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="1" \
+      evergreen.image.category="dns" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.base="wolfi" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="5000ms"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

@@ -6,7 +6,7 @@
 
 set -euo pipefail
 
-IMAGE="${1:-ghcr.io/sovereign/traefik:latest}"
+IMAGE="${1:-ghcr.io/evergreen/traefik:latest}"
 PASS=0
 FAIL=0
 

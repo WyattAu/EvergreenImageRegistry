@@ -1,6 +1,6 @@
 ARG TARGETARCH
 # =============================================================================
-# SOVEREIGN HARDENED CRDB-INIT
+# EVERGREEN HARDENED CRDB-INIT
 # Generated from template - Version: 23.2.3
 # Constraint: scratch - static Go binary (cockroachdb init entrypoint)
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
@@ -10,7 +10,7 @@ ARG VERSION=23.2.3
 ARG BUILD_DATE
 
 
-FROM debian:bookworm-20250113-slim AS builder
+FROM debian@sha256:f70dc8d6a8b6a06824c92471a1a258030836b26b043881358b967bf73de7c5ab AS builder
 ARG TARGETARCH
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
@@ -26,19 +26,24 @@ COPY --from=builder /usr/local/bin/cockroach /usr/local/bin/cockroach
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 EXPOSE 26257
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/cockroach", "init"]
 LABEL org.opencontainers.image.title="crdb-init" \
-      org.opencontainers.image.description="Sovereign hardened CockroachDB init entrypoint" \
+      org.opencontainers.image.description="Evergreen hardened CockroachDB init entrypoint" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Cockroach Labs" \
-      sovereign.image.status="functional" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="database" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true"
+      evergreen.image.status="functional" \
+      evergreen.image.tier="1" \
+      evergreen.image.category="database" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

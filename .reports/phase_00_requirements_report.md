@@ -14,7 +14,7 @@
 
 ## Phase Summary
 
-This phase established the foundational requirements for the Sovereign Hardened Image Registry.
+This phase established the foundational requirements for the Evergreen Hardened Image Registry.
 
 ---
 

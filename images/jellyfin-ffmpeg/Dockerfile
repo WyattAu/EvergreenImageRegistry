@@ -2,7 +2,7 @@ ARG VERSION=7.1
 ARG BUILD_DATE
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential pkg-config yasm nasm \
@@ -23,7 +23,7 @@ RUN cd /tmp/jellyfin-ffmpeg && \
         --extra-cflags="-I/usr/include" --extra-ldflags="-L/usr/lib" && \
     make -j$(nproc) && make install && strip /usr/local/bin/ffmpeg /usr/local/bin/ffprobe || true
 RUN mkdir -p /usr/local/lib 2>/dev/null || true ; touch /usr/local/lib/ 2>/dev/null || true
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache git freetype zlib ca-certificates || true
 COPY --from=builder /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg
@@ -34,22 +34,27 @@ RUN ldconfig && \
     chown -R 65532:65532 /app /var/log/ffmpeg /var/cache/ffmpeg
 USER 65532:65532
 WORKDIR /app
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["/usr/local/bin/ffmpeg"]
 LABEL org.opencontainers.image.title="jellyfin-ffmpeg" \
       org.opencontainers.image.version="7.1" \
       org.opencontainers.image.vendor="Jellyfin" \
       org.opencontainers.image.source="https://github.com/jellyfin/jellyfin-ffmpeg" \
-      sovereign.image.tier="2" \
-      sovereign.image.category="media-streaming" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="wolfi" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="5s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="30000ms"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="2" \
+      evergreen.image.category="media-streaming" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.base="wolfi" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="5s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="30000ms"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

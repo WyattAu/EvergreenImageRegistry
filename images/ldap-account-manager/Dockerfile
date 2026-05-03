@@ -2,7 +2,7 @@ ARG VERSION=latest
 
 FROM osixia/phpldapadmin:${VERSION} AS upstream
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache php-8.4-fpm php-ldap php-8.4-mbstring php-8.4-xml php-8.4-curl ca-certificates || true
 COPY --from=upstream /var/www/phpldapadmin /opt/phpldapadmin
@@ -13,15 +13,18 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="ldap-account-manager" org.opencontainers.image.version="1.2.6" org.opencontainers.image.vendor="leenooks" org.opencontainers.image.source="https://github.com/leenooks/phpLDAPadmin" sovereign.image.tier="2" sovereign.image.category="identity" sovereign.image.status="functional" sovereign.constraint.nonroot="true" sovereign.constraint.base="wolfi" sovereign.hft.signal-handling="native" sovereign.hft.shutdown-timeout="5s" sovereign.hft.init-system="none" sovereign.hft.startup-timeout="10000ms"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL org.opencontainers.image.title="ldap-account-manager" org.opencontainers.image.version="1.2.6" org.opencontainers.image.vendor="leenooks" org.opencontainers.image.source="https://github.com/leenooks/phpLDAPadmin" evergreen.image.tier="2" evergreen.image.category="identity" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.constraint.base="wolfi" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="5s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="10000ms"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
 
 USER 65532:65532
 
 STOPSIGNAL SIGTERM
 
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["php-fpm"]
 
 CMD ["-F"]

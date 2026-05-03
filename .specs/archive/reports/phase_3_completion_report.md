@@ -338,7 +338,7 @@ Documented framework for measuring container startup time:
 
 ## 6. Overall Project Status
 
-With Phases 0-3 complete, the Sovereign Hardened Image Registry has achieved:
+With Phases 0-3 complete, the Evergreen Hardened Image Registry has achieved:
 
 | Phase | Status | Key Deliverables |
 |-------|--------|-----------------|

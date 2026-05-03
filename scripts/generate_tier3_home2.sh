@@ -150,9 +150,9 @@ LABEL org.opencontainers.image.title="node-red" \
       org.opencontainers.image.description="Node-RED - Flow-based programming for IoT" \
       org.opencontainers.image.vendor="Node-RED" \
       org.opencontainers.image.source="https://github.com/node-red/node-red" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/node-red" \
     "https://github.com/node-red/node-red/archive/refs/tags/3.1.0.tar.gz" \
@@ -181,9 +181,9 @@ LABEL org.opencontainers.image.title="node-red-admin" \
       org.opencontainers.image.description="Node-RED admin CLI tool" \
       org.opencontainers.image.vendor="Node-RED" \
       org.opencontainers.image.source="https://github.com/node-red/node-red" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_npm "$BASE/node-red-admin" "node-red-admin"
 
@@ -214,9 +214,9 @@ LABEL org.opencontainers.image.title="iobroker" \
       org.opencontainers.image.description="ioBroker - IoT automation platform" \
       org.opencontainers.image.vendor="ioBroker" \
       org.opencontainers.image.source="https://github.com/ioBroker/ioBroker" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_npm "$BASE/iobroker" "iobroker"
 
@@ -248,9 +248,9 @@ LABEL org.opencontainers.image.title="openhab3" \
       org.opencontainers.image.description="openHAB 3 - Open source home automation" \
       org.opencontainers.image.vendor="openHAB" \
       org.opencontainers.image.source="https://github.com/openhab/openhab-distro" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/openhab3" \
     "https://github.com/openhab/openhab-distro/releases/download/4.2.1/openhab-4.2.1.zip" \
@@ -285,9 +285,9 @@ LABEL org.opencontainers.image.title="homebridge" \
       org.opencontainers.image.description="Homebridge - Bring Siri to your smart home" \
       org.opencontainers.image.vendor="nfarina" \
       org.opencontainers.image.source="https://github.com/nfarina/homebridge" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_npm "$BASE/homebridge" "homebridge"
 
@@ -320,9 +320,9 @@ LABEL org.opencontainers.image.title="homebridge-camera" \
       org.opencontainers.image.description="Homebridge with camera-ffmpeg plugin" \
       org.opencontainers.image.vendor="nfarina" \
       org.opencontainers.image.source="https://github.com/nfarina/homebridge" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_npm "$BASE/homebridge-camera" "homebridge-camera-ffmpeg"
 
@@ -357,9 +357,9 @@ LABEL org.opencontainers.image.title="esphome" \
       org.opencontainers.image.description="ESPHome - ESP8266/ESP32 firmware builder" \
       org.opencontainers.image.vendor="ESPHome" \
       org.opencontainers.image.source="https://github.com/esphome/esphome" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_pip "$BASE/esphome" "esphome"
 
@@ -394,9 +394,9 @@ LABEL org.opencontainers.image.title="esphome-daemon" \
       org.opencontainers.image.description="ESPHome - daemon mode" \
       org.opencontainers.image.vendor="ESPHome" \
       org.opencontainers.image.source="https://github.com/esphome/esphome" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_pip "$BASE/esphome-daemon" "esphome"
 
@@ -433,10 +433,10 @@ LABEL org.opencontainers.image.title="$name" \
       org.opencontainers.image.description="$desc - ESP firmware (build environment)" \
       org.opencontainers.image.vendor="$desc" \
       org.opencontainers.image.source="https://github.com/$repo" \
-      sovereign.image.tier="3" \
-      sovereign.image.status="firmware-builder" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.image.status="firmware-builder" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 DEOF
     write_checksums_placeholder "$BASE/$name"
 done
@@ -463,9 +463,9 @@ ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="tasmota-js" \
       org.opencontainers.image.description="Tasmota JavaScript tools" \
       org.opencontainers.image.vendor="Tasmota" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_placeholder "$BASE/tasmota-js"
 

@@ -1,5 +1,5 @@
 ARG TARGETARCH
-FROM cgr.dev/chainguard/wolfi-base:latest AS downloader
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31 AS downloader
 ARG TARGETARCH
 ARG VERSION=1.22.0
 ARG GITHUB_TOKEN
@@ -12,7 +12,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL \
     chmod +x /tmp/gitea && \
     strip /tmp/gitea || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=1.22.0
 RUN apk add --no-cache ca-certificates git tzdata || true && \
     adduser -D -u 65532 git 2>/dev/null || true && \
@@ -22,6 +22,8 @@ RUN chown -R 65532:65532 /app /var/lib/gitea /var/log/gitea /etc/gitea /var/cach
 USER 65532:65532
 WORKDIR /app
 EXPOSE 3000 22
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:22/ || exit 1
 ENTRYPOINT ["/usr/local/bin/gitea"]
 CMD ["web", "-c", "/etc/gitea/app.ini"]
 LABEL org.opencontainers.image.title="source-control" \
@@ -29,12 +31,15 @@ LABEL org.opencontainers.image.title="source-control" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Gitea" \
       org.opencontainers.image.source="https://about.gitea.com/" \
-      sovereign.image.tier="2" \
-      sovereign.image.category="scm" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.wolfi="true"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="http"
+      evergreen.image.tier="2" \
+      evergreen.image.category="scm" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.wolfi="true"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="http"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

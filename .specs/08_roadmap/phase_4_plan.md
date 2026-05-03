@@ -57,7 +57,7 @@
 
 | Aspect | Current State | Target State |
 |--------|--------------|--------------|
-| PID 1 signal forwarding | Missing (no tini, no entrypoint) | tini or sovereign-entrypoint.sh |
+| PID 1 signal forwarding | Missing (no tini, no entrypoint) | tini or evergreen-entrypoint.sh |
 | SIGTERM -> app | N/A (app is PID 1) | < 1ms propagation |
 | Graceful shutdown timeout | Docker default (10s) | Configurable 1-5s |
 | SIGKILL fallback | After 10s | After configurable timeout |
@@ -73,7 +73,7 @@
 ```
 Phase 3 (all gates passed)
     |
-    +--> T4.1.1 (sovereign-entrypoint.sh) ──> Independent
+    +--> T4.1.1 (evergreen-entrypoint.sh) ──> Independent
     +--> T4.1.2 (tini integration) ──> Depends on T4.1.1
     +--> T4.1.3 (startup-timeout labels) ──> Depends on T4.1.1
     |
@@ -127,7 +127,7 @@ Stream E: Real-Time Scheduling (T4.5.1 -> T4.5.2 -> T4.5.3) — 10 hours
 
 ## 3. Detailed Task Specifications
 
-### 3.1 T4.1.1: Implement sovereign-entrypoint.sh Signal Forwarding
+### 3.1 T4.1.1: Implement evergreen-entrypoint.sh Signal Forwarding
 
 #### Problem Analysis
 
@@ -145,19 +145,19 @@ Currently, all 223 images run their application binary directly as PID 1 via `EN
 
 #### Solution: Graceful Signal Forwarding Entrypoint
 
-**File:** `scripts/sovereign-entrypoint.sh`
+**File:** `scripts/evergreen-entrypoint.sh`
 
 Design requirements:
 - POSIX-compliant (sh, not bash) for maximum compatibility
 - Forward SIGTERM, SIGINT, SIGQUIT to the child process
-- Implement configurable shutdown timeout via `SOVEREIGN_SHUTDOWN_TIMEOUT` env var (default: 3s)
+- Implement configurable shutdown timeout via `EVERGREEN_SHUTDOWN_TIMEOUT` env var (default: 3s)
 - Kill with SIGKILL after timeout expires
 - Reap zombie processes
 - Exit with the child process's exit code
 
 ```
-Container lifecycle with sovereign-entrypoint.sh:
-1. sovereign-entrypoint.sh starts as PID 1
+Container lifecycle with evergreen-entrypoint.sh:
+1. evergreen-entrypoint.sh starts as PID 1
 2. Spawns application binary as child process
 3. Registers signal traps (SIGTERM, SIGINT, SIGQUIT)
 4. On signal: forwards to child, starts timeout
@@ -168,15 +168,15 @@ Container lifecycle with sovereign-entrypoint.sh:
 
 #### Label Integration
 
-Images using `sovereign-entrypoint.sh` receive:
+Images using `evergreen-entrypoint.sh` receive:
 ```
-sovereign.hft.init=signal-forward
-sovereign.hft.shutdown-timeout=<seconds>
+evergreen.hft.init=signal-forward
+evergreen.hft.shutdown-timeout=<seconds>
 ```
 
 #### Implementation Steps
 
-1. Write `scripts/sovereign-entrypoint.sh` (POSIX sh)
+1. Write `scripts/evergreen-entrypoint.sh` (POSIX sh)
 2. Test signal forwarding with 50ms, 100ms, 500ms, 1s, 3s timeouts
 3. Verify zombie reaping
 4. Verify exit code propagation
@@ -219,8 +219,8 @@ Scratch images cannot use shell scripts as PID 1 (no `/bin/sh`). The industry-st
 |-----------|----------------|-----------|
 | `FROM scratch` | Embed tini static binary | No shell available |
 | `FROM gcr.io/distroless/*` | Embed tini static binary | No shell available |
-| `FROM cgr.dev/chainguard/wolfi-base` | Use sovereign-entrypoint.sh | Shell available |
-| `FROM debian:bookworm-slim` | Use sovereign-entrypoint.sh | Shell available |
+| `FROM cgr.dev/chainguard/wolfi-base` | Use evergreen-entrypoint.sh | Shell available |
+| `FROM debian:bookworm-slim` | Use evergreen-entrypoint.sh | Shell available |
 
 **Dockerfile pattern for scratch images:**
 
@@ -251,9 +251,9 @@ For HFT images, use `-g` to send signals to the entire process group (ensures al
 #### Label Integration
 
 ```
-sovereign.hft.init=tini
-sovereign.hft.init-version=0.19.0
-sovereign.hft.tini-flags=-g
+evergreen.hft.init=tini
+evergreen.hft.init-version=0.19.0
+evergreen.hft.tini-flags=-g
 ```
 
 #### Implementation Steps
@@ -291,8 +291,8 @@ Define labels that annotate maximum acceptable startup time per image:
 
 | Label | Description | Example |
 |-------|-------------|---------|
-| `sovereign.hft.startup-timeout` | Maximum startup time in milliseconds | `500` |
-| `sovereign.hft.startup-mode` | Startup behavior classification | `cold`, `warm`, `hot` |
+| `evergreen.hft.startup-timeout` | Maximum startup time in milliseconds | `500` |
+| `evergreen.hft.startup-mode` | Startup behavior classification | `cold`, `warm`, `hot` |
 
 **Startup mode definitions:**
 
@@ -324,8 +324,8 @@ Define labels that annotate maximum acceptable startup time per image:
 
 #### Verification Criteria
 
-- [ ] All Tier 1 images have `sovereign.hft.startup-timeout` label
-- [ ] All Tier 1 images have `sovereign.hft.startup-mode` label
+- [ ] All Tier 1 images have `evergreen.hft.startup-timeout` label
+- [ ] All Tier 1 images have `evergreen.hft.startup-mode` label
 - [ ] Startup time measured in CI matches label
 - [ ] Images exceeding timeout are flagged
 - [ ] Label values documented in ADR-004
@@ -347,12 +347,12 @@ Current state:
 
 | Label | Description | Example |
 |-------|-------------|---------|
-| `sovereign.hft.cpuset` | Required CPU cores (Docker cpuset format) | `0-1` |
-| `sovereign.hft.cpu-shares` | Relative CPU weight (CFS shares) | `1024` |
-| `sovereign.hft.cpu-quota` | CFS quota in microseconds | `100000` |
-| `sovereign.hft.cpu-period` | CFS period in microseconds | `100000` |
-| `sovereign.hft.cpu-rt-runtime` | Real-time runtime in microseconds | `95000` |
-| `sovereign.hft.cpu-rt-period` | Real-time period in microseconds | `100000` |
+| `evergreen.hft.cpuset` | Required CPU cores (Docker cpuset format) | `0-1` |
+| `evergreen.hft.cpu-shares` | Relative CPU weight (CFS shares) | `1024` |
+| `evergreen.hft.cpu-quota` | CFS quota in microseconds | `100000` |
+| `evergreen.hft.cpu-period` | CFS period in microseconds | `100000` |
+| `evergreen.hft.cpu-rt-runtime` | Real-time runtime in microseconds | `95000` |
+| `evergreen.hft.cpu-rt-period` | Real-time period in microseconds | `100000` |
 
 **Per-category defaults:**
 
@@ -368,8 +368,8 @@ Current state:
 
 | Label | Description | Example |
 |-------|-------------|---------|
-| `sovereign.hft.numa-node` | Preferred NUMA node | `0` |
-| `sovereign.hft.numa-policy` | NUMA allocation policy | `bind`, `preferred`, `interleave` |
+| `evergreen.hft.numa-node` | Preferred NUMA node | `0` |
+| `evergreen.hft.numa-policy` | NUMA allocation policy | `bind`, `preferred`, `interleave` |
 
 #### Implementation Steps
 
@@ -381,7 +381,7 @@ Current state:
 
 #### Verification Criteria
 
-- [ ] All Tier 1 proxy images have `sovereign.hft.cpuset` label
+- [ ] All Tier 1 proxy images have `evergreen.hft.cpuset` label
 - [ ] CPU share values are reasonable (512-4096 range)
 - [ ] cpuset format is valid Docker syntax
 - [ ] NUMA labels present for database and proxy images
@@ -471,8 +471,8 @@ docker run --cpuset-cpus=0-15 --cpuset-mems=0-1 ...
 **Label annotations:**
 
 ```
-sovereign.hft.numa-node=0
-sovereign.hft.numa-policy=bind
+evergreen.hft.numa-node=0
+evergreen.hft.numa-policy=bind
 ```
 
 #### Verification Criteria
@@ -511,10 +511,10 @@ DPDK (Data Plane Development Kit) enables kernel bypass for packet processing, r
 
 | Label | Description | Values |
 |-------|-------------|--------|
-| `sovereign.hft.dpdk-capable` | Image supports DPDK mode | `true`, `false`, `partial` |
-| `sovereign.hft.dpdk-driver` | Required DPDK driver | `vfio-pci`, `uio_pci_generic` |
-| `sovereign.hft.dpdk-hugepages` | Required hugepages | `2GB`, `1GB` |
-| `sovereign.hft.dpdk-numa` | NUMA requirements for DPDK | `strict`, `preferred`, `none` |
+| `evergreen.hft.dpdk-capable` | Image supports DPDK mode | `true`, `false`, `partial` |
+| `evergreen.hft.dpdk-driver` | Required DPDK driver | `vfio-pci`, `uio_pci_generic` |
+| `evergreen.hft.dpdk-hugepages` | Required hugepages | `2GB`, `1GB` |
+| `evergreen.hft.dpdk-numa` | NUMA requirements for DPDK | `strict`, `preferred`, `none` |
 
 #### Implementation Steps
 
@@ -550,10 +550,10 @@ XDP (eXpress Data Path) enables programmable packet processing at the earliest p
 
 | Label | Description | Values |
 |-------|-------------|--------|
-| `sovereign.hft.xdp-capable` | Image supports XDP mode | `true`, `false` |
-| `sovereign.hft.xdp-mode` | Supported XDP mode | `native`, `skb`, `hw` |
-| `sovereign.hft.xdp-program` | BPF program path (if bundled) | File path |
-| `sovereign.hft.xdp-features` | Required XDP features | `redirect`, `drop`, `tx`, `pass` |
+| `evergreen.hft.xdp-capable` | Image supports XDP mode | `true`, `false` |
+| `evergreen.hft.xdp-mode` | Supported XDP mode | `native`, `skb`, `hw` |
+| `evergreen.hft.xdp-program` | BPF program path (if bundled) | File path |
+| `evergreen.hft.xdp-features` | Required XDP features | `redirect`, `drop`, `tx`, `pass` |
 
 **XDP mode comparison:**
 
@@ -614,10 +614,10 @@ In HFT environments, deployment updates must not cause service interruption. The
 
 | Label | Description | Example |
 |-------|-------------|---------|
-| `sovereign.hft.deploy-strategy` | Deployment strategy | `blue-green`, `rolling`, `recreate` |
-| `sovereign.hft.max-unavailable` | Max unavailable during update | `0` |
-| `sovereign.hft.max-surge` | Max surge during update | `100%` |
-| `sovereign.hft.ordered-startup` | Start order in dependency chain | `1`, `2`, `3` |
+| `evergreen.hft.deploy-strategy` | Deployment strategy | `blue-green`, `rolling`, `recreate` |
+| `evergreen.hft.max-unavailable` | Max unavailable during update | `0` |
+| `evergreen.hft.max-surge` | Max surge during update | `100%` |
+| `evergreen.hft.ordered-startup` | Start order in dependency chain | `1`, `2`, `3` |
 
 #### Implementation Steps
 
@@ -629,7 +629,7 @@ In HFT environments, deployment updates must not cause service interruption. The
 
 #### Verification Criteria
 
-- [ ] All Tier 1 images have `sovereign.hft.deploy-strategy` label
+- [ ] All Tier 1 images have `evergreen.hft.deploy-strategy` label
 - [ ] Proxy images use blue/green strategy
 - [ ] Templates pass validation
 - [ ] Max unavailable is 0 for all P0 images
@@ -653,10 +653,10 @@ Without pre-stop hooks, the load balancer may continue sending traffic to a cont
 
 | Label | Description | Example |
 |-------|-------------|---------|
-| `sovereign.hft.pre-stop-cmd` | Command to run before stop | `/nginx -s quit` |
-| `sovereign.hft.pre-stop-timeout` | Max time for pre-stop hook | `2s` |
-| `sovereign.hft.drain-timeout` | Max time for connection draining | `3s` |
-| `sovereign.hft.deregister` | Load balancer deregistration method | `consul`, `k8s-endpoint`, `http` |
+| `evergreen.hft.pre-stop-cmd` | Command to run before stop | `/nginx -s quit` |
+| `evergreen.hft.pre-stop-timeout` | Max time for pre-stop hook | `2s` |
+| `evergreen.hft.drain-timeout` | Max time for connection draining | `3s` |
+| `evergreen.hft.deregister` | Load balancer deregistration method | `consul`, `k8s-endpoint`, `http` |
 
 **Per-image pre-stop commands:**
 
@@ -695,7 +695,7 @@ stop_grace_period: 3s
 
 #### Verification Criteria
 
-- [ ] All Tier 1 proxy images have `sovereign.hft.pre-stop-cmd` label
+- [ ] All Tier 1 proxy images have `evergreen.hft.pre-stop-cmd` label
 - [ ] Pre-stop hook executes before SIGTERM
 - [ ] In-flight requests complete during drain period
 - [ ] No connection errors during rolling update
@@ -724,15 +724,15 @@ A container transitions through multiple states during startup. A simple "ready/
 
 | Label | Description | Example |
 |-------|-------------|---------|
-| `sovereign.hft.readiness-level` | Current readiness level (runtime) | `0-5` |
-| `sovereign.hft.warmup-requests` | Requests to process before full readiness | `100` |
-| `sovereign.hft.warmup-duration` | Duration before full readiness | `2s` |
+| `evergreen.hft.readiness-level` | Current readiness level (runtime) | `0-5` |
+| `evergreen.hft.warmup-requests` | Requests to process before full readiness | `100` |
+| `evergreen.hft.warmup-duration` | Duration before full readiness | `2s` |
 
 **Implementation:**
 
 Readiness levels are communicated via:
 1. **HEALTHCHECK**: Levels 3-4 return healthy; others return unhealthy
-2. **File-based**: Write level to `/tmp/sovereign-readiness` (for non-scratch images)
+2. **File-based**: Write level to `/tmp/evergreen-readiness` (for non-scratch images)
 3. **HTTP endpoint**: Expose `/readyz?level` (for images with HTTP server)
 4. **Exit code**: HEALTHCHECK returns exit code `0` (ready), `1` (not ready), `2` (warming)
 
@@ -766,9 +766,9 @@ SCHED_FIFO (First-In, First-Out) real-time scheduling policy:
 
 | Label | Description | Example |
 |-------|-------------|---------|
-| `sovereign.hft.scheduler` | Linux scheduling policy | `SCHED_FIFO`, `SCHED_RR`, `SCHED_OTHER` |
-| `sovereign.hft.rt-priority` | Real-time priority (1-99) | `50` |
-| `sovereign.hft.cpu-isolation` | Whether CPU should be isolated | `true`, `false` |
+| `evergreen.hft.scheduler` | Linux scheduling policy | `SCHED_FIFO`, `SCHED_RR`, `SCHED_OTHER` |
+| `evergreen.hft.rt-priority` | Real-time priority (1-99) | `50` |
+| `evergreen.hft.cpu-isolation` | Whether CPU should be isolated | `true`, `false` |
 
 **Priority assignment:**
 
@@ -830,11 +830,11 @@ docker run \
   --cap-add=CAP_SYS_NICE \
   --cap-drop=ALL \
   --cpuset-cpus=2-3 \
-  --security-opt seccomp=sovereign-rt.json \
+  --security-opt seccomp=evergreen-rt.json \
   ...
 ```
 
-**seccomp profile `sovereign-rt.json`:**
+**seccomp profile `evergreen-rt.json`:**
 
 ```json
 {
@@ -924,9 +924,9 @@ services:
 
 | Label | Description | Example |
 |-------|-------------|---------|
-| `sovereign.hft.irq-isolated` | Whether IRQs are steered away | `true` |
-| `sovereign.hft.net-ns-mode` | Network namespace mode | `host`, `bridge`, `none` |
-| `sovereign.hft.net-ns-required` | Whether specific net-ns is required | `true`, `false` |
+| `evergreen.hft.irq-isolated` | Whether IRQs are steered away | `true` |
+| `evergreen.hft.net-ns-mode` | Network namespace mode | `host`, `bridge`, `none` |
+| `evergreen.hft.net-ns-required` | Whether specific net-ns is required | `true`, `false` |
 
 #### Verification Criteria
 
@@ -1040,55 +1040,55 @@ services:
 
 ## Appendix A: HFT Label Schema Reference
 
-### Complete `sovereign.hft.*` Label Namespace
+### Complete `evergreen.hft.*` Label Namespace
 
 | Label | Type | Default | Applicable Tiers | Description |
 |-------|------|---------|-----------------|-------------|
 | **Init & Signal** | | | | |
-| `sovereign.hft.init` | enum | - | 1,2 | `tini`, `signal-forward`, `none` |
-| `sovereign.hft.init-version` | string | - | 1 | tini version (e.g. `0.19.0`) |
-| `sovereign.hft.shutdown-timeout` | int | `3` | 1,2 | Graceful shutdown timeout in seconds |
+| `evergreen.hft.init` | enum | - | 1,2 | `tini`, `signal-forward`, `none` |
+| `evergreen.hft.init-version` | string | - | 1 | tini version (e.g. `0.19.0`) |
+| `evergreen.hft.shutdown-timeout` | int | `3` | 1,2 | Graceful shutdown timeout in seconds |
 | **Startup** | | | | |
-| `sovereign.hft.startup-timeout` | int | - | 1,2 | Max startup time in milliseconds |
-| `sovereign.hft.startup-mode` | enum | - | 1,2 | `hot` (<50ms), `warm` (<500ms), `cold` (<5000ms) |
+| `evergreen.hft.startup-timeout` | int | - | 1,2 | Max startup time in milliseconds |
+| `evergreen.hft.startup-mode` | enum | - | 1,2 | `hot` (<50ms), `warm` (<500ms), `cold` (<5000ms) |
 | **CPU & NUMA** | | | | |
-| `sovereign.hft.cpuset` | string | - | 1 | Required CPU cores (Docker format) |
-| `sovereign.hft.cpu-shares` | int | `1024` | 1,2 | CFS shares |
-| `sovereign.hft.cpu-quota` | int | - | 1 | CFS quota in microseconds |
-| `sovereign.hft.cpu-period` | int | `100000` | 1 | CFS period in microseconds |
-| `sovereign.hft.cpu-rt-runtime` | int | - | 1 | Real-time runtime in microseconds |
-| `sovereign.hft.cpu-rt-period` | int | `100000` | 1 | Real-time period in microseconds |
-| `sovereign.hft.numa-node` | int | - | 1 | Preferred NUMA node |
-| `sovereign.hft.numa-policy` | enum | - | 1 | `bind`, `preferred`, `interleave` |
+| `evergreen.hft.cpuset` | string | - | 1 | Required CPU cores (Docker format) |
+| `evergreen.hft.cpu-shares` | int | `1024` | 1,2 | CFS shares |
+| `evergreen.hft.cpu-quota` | int | - | 1 | CFS quota in microseconds |
+| `evergreen.hft.cpu-period` | int | `100000` | 1 | CFS period in microseconds |
+| `evergreen.hft.cpu-rt-runtime` | int | - | 1 | Real-time runtime in microseconds |
+| `evergreen.hft.cpu-rt-period` | int | `100000` | 1 | Real-time period in microseconds |
+| `evergreen.hft.numa-node` | int | - | 1 | Preferred NUMA node |
+| `evergreen.hft.numa-policy` | enum | - | 1 | `bind`, `preferred`, `interleave` |
 | **Kernel Bypass** | | | | |
-| `sovereign.hft.dpdk-capable` | enum | `false` | 1 | `true`, `false`, `partial` |
-| `sovereign.hft.dpdk-driver` | string | - | 1 | `vfio-pci`, `uio_pci_generic` |
-| `sovereign.hft.dpdk-hugepages` | string | - | 1 | `1GB`, `2GB` |
-| `sovereign.hft.dpdk-numa` | enum | `none` | 1 | `strict`, `preferred`, `none` |
-| `sovereign.hft.xdp-capable` | bool | `false` | 1 | Whether XDP is supported |
-| `sovereign.hft.xdp-mode` | enum | - | 1 | `native`, `skb`, `hw` |
-| `sovereign.hft.xdp-program` | string | - | 1 | BPF program path |
-| `sovereign.hft.xdp-features` | string | - | 1 | Comma-separated: `redirect,drop,tx,pass` |
+| `evergreen.hft.dpdk-capable` | enum | `false` | 1 | `true`, `false`, `partial` |
+| `evergreen.hft.dpdk-driver` | string | - | 1 | `vfio-pci`, `uio_pci_generic` |
+| `evergreen.hft.dpdk-hugepages` | string | - | 1 | `1GB`, `2GB` |
+| `evergreen.hft.dpdk-numa` | enum | `none` | 1 | `strict`, `preferred`, `none` |
+| `evergreen.hft.xdp-capable` | bool | `false` | 1 | Whether XDP is supported |
+| `evergreen.hft.xdp-mode` | enum | - | 1 | `native`, `skb`, `hw` |
+| `evergreen.hft.xdp-program` | string | - | 1 | BPF program path |
+| `evergreen.hft.xdp-features` | string | - | 1 | Comma-separated: `redirect,drop,tx,pass` |
 | **Deployment** | | | | |
-| `sovereign.hft.deploy-strategy` | enum | `rolling` | 1,2 | `blue-green`, `rolling`, `recreate` |
-| `sovereign.hft.max-unavailable` | int | `0` | 1,2 | Max unavailable during update |
-| `sovereign.hft.max-surge` | string | `25%` | 1,2 | Max surge during update |
-| `sovereign.hft.ordered-startup` | int | - | 1,2 | Start order in dependency chain |
+| `evergreen.hft.deploy-strategy` | enum | `rolling` | 1,2 | `blue-green`, `rolling`, `recreate` |
+| `evergreen.hft.max-unavailable` | int | `0` | 1,2 | Max unavailable during update |
+| `evergreen.hft.max-surge` | string | `25%` | 1,2 | Max surge during update |
+| `evergreen.hft.ordered-startup` | int | - | 1,2 | Start order in dependency chain |
 | **Readiness & Draining** | | | | |
-| `sovereign.hft.pre-stop-cmd` | string | - | 1 | Pre-stop hook command |
-| `sovereign.hft.pre-stop-timeout` | int | `2` | 1 | Pre-stop hook timeout in seconds |
-| `sovereign.hft.drain-timeout` | int | `3` | 1 | Connection drain timeout in seconds |
-| `sovereign.hft.deregister` | enum | - | 1 | `consul`, `k8s-endpoint`, `http` |
-| `sovereign.hft.readiness-level` | int | - | 1 | Runtime readiness (0-5) |
-| `sovereign.hft.warmup-requests` | int | - | 1 | Warmup request count |
-| `sovereign.hft.warmup-duration` | string | - | 1 | Warmup duration (e.g. `2s`) |
+| `evergreen.hft.pre-stop-cmd` | string | - | 1 | Pre-stop hook command |
+| `evergreen.hft.pre-stop-timeout` | int | `2` | 1 | Pre-stop hook timeout in seconds |
+| `evergreen.hft.drain-timeout` | int | `3` | 1 | Connection drain timeout in seconds |
+| `evergreen.hft.deregister` | enum | - | 1 | `consul`, `k8s-endpoint`, `http` |
+| `evergreen.hft.readiness-level` | int | - | 1 | Runtime readiness (0-5) |
+| `evergreen.hft.warmup-requests` | int | - | 1 | Warmup request count |
+| `evergreen.hft.warmup-duration` | string | - | 1 | Warmup duration (e.g. `2s`) |
 | **Real-Time Scheduling** | | | | |
-| `sovereign.hft.scheduler` | enum | `SCHED_OTHER` | 1 | `SCHED_FIFO`, `SCHED_RR`, `SCHED_OTHER` |
-| `sovereign.hft.rt-priority` | int | - | 1 | Real-time priority (1-99) |
-| `sovereign.hft.cpu-isolation` | bool | `false` | 1 | Whether CPU isolation is required |
-| `sovereign.hft.irq-isolated` | bool | `false` | 1 | Whether IRQs should be steered away |
-| `sovereign.hft.net-ns-mode` | enum | `bridge` | 1,2 | `host`, `bridge`, `none` |
-| `sovereign.hft.net-ns-required` | bool | `false` | 1 | Whether specific net-ns is required |
+| `evergreen.hft.scheduler` | enum | `SCHED_OTHER` | 1 | `SCHED_FIFO`, `SCHED_RR`, `SCHED_OTHER` |
+| `evergreen.hft.rt-priority` | int | - | 1 | Real-time priority (1-99) |
+| `evergreen.hft.cpu-isolation` | bool | `false` | 1 | Whether CPU isolation is required |
+| `evergreen.hft.irq-isolated` | bool | `false` | 1 | Whether IRQs should be steered away |
+| `evergreen.hft.net-ns-mode` | enum | `bridge` | 1,2 | `host`, `bridge`, `none` |
+| `evergreen.hft.net-ns-required` | bool | `false` | 1 | Whether specific net-ns is required |
 
 ---
 

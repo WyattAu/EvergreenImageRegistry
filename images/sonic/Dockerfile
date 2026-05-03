@@ -2,7 +2,7 @@ ARG VERSION=latest
 
 FROM valeriansaliou/sonic:${VERSION} AS upstream
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/sonic /var/cache/sonic 2>/dev/null || true
 
 
@@ -18,13 +18,16 @@ WORKDIR /app
 EXPOSE 1491
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="sonic" org.opencontainers.image.version="1.4.0" org.opencontainers.image.vendor="valeriansaliou" org.opencontainers.image.source="https://github.com/valeriansaliou/sonic" org.opencontainers.image.description="Fast, lightweight search backend" sovereign.image.tier="1" sovereign.image.category="search" sovereign.image.status="best-effort" sovereign.image.note="GNU binary may need glibc; fallback to debian-slim if scratch fails" sovereign.constraint.nonroot="true" sovereign.constraint.base="scratch" sovereign.hft.signal-handling="native" sovereign.hft.shutdown-timeout="5s" sovereign.hft.init-system="none" sovereign.hft.startup-timeout="3000ms"
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL org.opencontainers.image.title="sonic" org.opencontainers.image.version="1.4.0" org.opencontainers.image.vendor="valeriansaliou" org.opencontainers.image.source="https://github.com/valeriansaliou/sonic" org.opencontainers.image.description="Fast, lightweight search backend" evergreen.image.tier="1" evergreen.image.category="search" evergreen.image.status="best-effort" evergreen.image.note="GNU binary may need glibc; fallback to debian-slim if scratch fails" evergreen.constraint.nonroot="true" evergreen.constraint.base="scratch" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="5s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="3000ms"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
 
 USER 65532:65532
 
 STOPSIGNAL SIGTERM
 
+HEALTHCHECK NONE
 ENTRYPOINT ["/sonic"]

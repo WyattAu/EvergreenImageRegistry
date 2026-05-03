@@ -23,13 +23,13 @@ entrypoint = ["/usr/bin/telegraf"]
 expose = [8125, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened Telegraf - metrics collection agent by InfluxData"
+"org.opencontainers.image.description" = "Evergreen hardened Telegraf - metrics collection agent by InfluxData"
 "org.opencontainers.image.title" = "telegraf"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "scratch"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "monitoring"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "monitoring"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

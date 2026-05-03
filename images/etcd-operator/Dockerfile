@@ -1,6 +1,6 @@
 ARG TARGETARCH
 # =============================================================================
-# SOVEREIGN HARDENED ETCD-OPERATOR
+# EVERGREEN HARDENED ETCD-OPERATOR
 # Generated from template - Version: 3.6.10
 # Constraint: scratch - static Go binary from etcd-io/etcd release
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
@@ -10,7 +10,7 @@ ARG VERSION=3.6.10
 ARG BUILD_DATE
 
 
-FROM debian:bookworm-20250113-slim AS builder
+FROM debian@sha256:f70dc8d6a8b6a06824c92471a1a258030836b26b043881358b967bf73de7c5ab AS builder
 ARG TARGETARCH
 ARG GITHUB_TOKEN
 ARG VERSION
@@ -25,19 +25,24 @@ ARG VERSION=3.6.10
 COPY --from=builder /usr/local/bin/etcdctl /usr/local/bin/etcdctl
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/etcdctl"]
 LABEL org.opencontainers.image.title="etcd-operator" \
-      org.opencontainers.image.description="Sovereign hardened etcd operator tools - etcdctl from etcd-io/etcd" \
+      org.opencontainers.image.description="Evergreen hardened etcd operator tools - etcdctl from etcd-io/etcd" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="etcd" \
-      sovereign.image.status="functional" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="database" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true"
+      evergreen.image.status="functional" \
+      evergreen.image.tier="1" \
+      evergreen.image.category="database" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

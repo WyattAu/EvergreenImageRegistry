@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=4.14.0
 
 RUN apk add --no-cache nodejs npm ca-certificates git || true
@@ -10,17 +10,22 @@ RUN npm install -g postgraphile@${VERSION} 2>/dev/null || { mkdir -p /opt/graphi
 USER 65532:65532
 WORKDIR /opt/graphile
 EXPOSE 5000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5000/ || exit 1
 ENTRYPOINT ["node", "/opt/graphile/cli.js"]
 LABEL org.opencontainers.image.title="graphile" \
       org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.description="Sovereign hardened PostGraphile - instant GraphQL API for PostgreSQL" \
+      org.opencontainers.image.description="Evergreen hardened PostGraphile - instant GraphQL API for PostgreSQL" \
       org.opencontainers.image.vendor="Graphile" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="database" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="1" \
+      evergreen.image.category="database" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

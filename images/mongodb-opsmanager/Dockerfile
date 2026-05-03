@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/wolfi-base:latest AS builder
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31 AS builder
 ARG VERSION=2.5.0
 RUN apk add --no-cache curl ca-certificates || true
 RUN curl --retry 3 --retry-delay 5 -fsSL \
@@ -8,7 +8,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL \
     tar -xzf /tmp/mongosh.tgz -C /opt/mongosh --strip-components=1 && \
     rm -f /tmp/mongosh.tgz || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=2.5.0
 RUN apk add --no-cache ca-certificates || true && \
     addgroup -S -g 10000 mongosh 2>/dev/null || true && \
@@ -20,17 +20,22 @@ USER 65532:65532
 WORKDIR /app
 ENV PATH="/opt/mongosh/bin:${PATH}"
 EXPOSE 27017
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD mongosh --quiet --eval "db.runCommand({ping:1})"
 ENTRYPOINT ["/opt/mongosh/bin/mongosh"]
 LABEL org.opencontainers.image.title="mongodb-opsmanager" \
       org.opencontainers.image.description="MongoDB Ops Manager - mongosh CLI tool" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="MongoDB" \
       org.opencontainers.image.source="https://www.mongodb.com/docs/mongodb-shell/" \
-      sovereign.image.tier="2" \
-      sovereign.image.category="database" \
-      sovereign.constraint.nonroot="true"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="tcp"
+      evergreen.image.tier="2" \
+      evergreen.image.category="database" \
+      evergreen.constraint.nonroot="true"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="tcp"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

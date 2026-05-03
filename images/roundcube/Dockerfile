@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/wolfi-base:latest AS builder
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31 AS builder
 ARG VERSION=1.6.9
 ARG GITHUB_TOKEN
 RUN apk add --no-cache curl ca-certificates || true
@@ -11,7 +11,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     if [ -f /tmp/roundcube.tar.gz ]; then tar -xzf /tmp/roundcube.tar.gz -C /build --strip-components=1 && rm -f /tmp/roundcube.tar.gz ; fi ; \
     test -f /build/index.php || echo '<html><body><h1>roundcube v'${VERSION}' placeholder</h1></body></html>' > /build/index.php
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=1.6.9
 RUN apk add --no-cache php83 php83-fpm php83-session php83-mbstring php83-xml php83-iconv php83-dom php83-curl php83-intl php83-json ca-certificates || true
 RUN addgroup -S -g 10000 roundcube 2>/dev/null || true && \
@@ -22,6 +22,8 @@ RUN chown -R 65532:65532 /usr/share/webapps/roundcube /var/lib/roundcube /var/lo
 USER 65532:65532
 WORKDIR /usr/share/webapps/roundcube
 EXPOSE 8888
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8888/ || exit 1
 ENTRYPOINT ["php-fpm83"]
 CMD ["-F"]
 LABEL org.opencontainers.image.title="roundcube" \
@@ -29,11 +31,14 @@ LABEL org.opencontainers.image.title="roundcube" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Roundcube" \
       org.opencontainers.image.source="https://github.com/roundcube/roundcubemail" \
-      sovereign.image.tier="2" \
-      sovereign.image.category="email" \
-      sovereign.constraint.nonroot="true"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="tcp"
+      evergreen.image.tier="2" \
+      evergreen.image.category="email" \
+      evergreen.constraint.nonroot="true"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="tcp"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

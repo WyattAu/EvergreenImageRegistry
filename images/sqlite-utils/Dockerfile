@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED SQLITE-UTILS
+# EVERGREEN HARDENED SQLITE-UTILS
 # CLI tool for managing SQLite databases
 # https://github.com/simonw/sqlite-utils
 # =============================================================================
@@ -7,7 +7,7 @@
 ARG VERSION=3.39
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION
 ARG BUILD_DATE
 RUN apk add --no-cache ca-certificates tzdata python3 py3-pip && \
@@ -21,16 +21,21 @@ RUN apk add --no-cache ca-certificates tzdata python3 py3-pip && \
 
 USER 65532:65532
 WORKDIR /data
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["sqlite-utils"]
 LABEL org.opencontainers.image.title="sqlite-utils" \
       org.opencontainers.image.description="CLI tool for managing SQLite databases" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.source="https://github.com/simonw/sqlite-utils" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="tooling" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="none"
-LABEL sovereign.health.type="none"
+      evergreen.image.tier="1" \
+      evergreen.image.category="tooling" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="none"
+LABEL evergreen.health.type="none"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

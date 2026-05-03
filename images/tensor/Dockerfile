@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=2.20.0
 ARG GITHUB_TOKEN
 RUN apk add --no-cache python3 py3-pip ca-certificates || true
@@ -10,6 +10,8 @@ RUN chown -R 65532:65532 /app /app/logs /var/log/tensorboard 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 6006
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:6006/ || exit 1
 ENTRYPOINT ["tensorboard"]
 CMD ["--logdir=/app/logs", "--bind_all", "--port=6006"]
 LABEL org.opencontainers.image.title="tensor" \
@@ -17,11 +19,14 @@ LABEL org.opencontainers.image.title="tensor" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="TensorFlow" \
       org.opencontainers.image.source="https://github.com/tensorflow/tensorboard" \
-      sovereign.image.tier="2" \
-      sovereign.image.category="ml" \
-      sovereign.constraint.nonroot="true"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="http"
+      evergreen.image.tier="2" \
+      evergreen.image.category="ml" \
+      evergreen.constraint.nonroot="true"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="http"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

@@ -1,7 +1,7 @@
 # Constraint Compliance Checklist - All Images
 
 **Mission:** Hardened container images for critical infrastructure  
-**Standard:** Sovereign Hardened Image Registry v18.0.0
+**Standard:** Evergreen Hardened Image Registry v18.0.0
 **Classification:** OPERATIONAL SECURITY - ZERO-TRUST
 **Last Updated:** 2026-05-03
 

@@ -1,9 +1,47 @@
-# CHANGELOG - Sovereign Hardened Image Registry
+# CHANGELOG - Evergreen Hardened Image Registry
 
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+---
+
+## [19.0.0] - 2026-05-03
+
+### Sovereign-to-Evergreen Full Rebrand (Phase 28)
+
+Complete rebrand of all project identity from "Sovereign" to "Evergreen":
+- **Dockerfile labels**: `sovereign.*` → `evergreen.*` across 998 images (~4,000 label lines)
+- **Tool rename**: `sovereignctl/` → `evergreenctl/`, binary renamed
+- **Rust source**: 47 occurrences rebranded in evergreenctl/src/
+- **health-shim**: 13 occurrences rebranded in Go source
+- **All 998 manifest.toml files** rebranded
+- **All 998 SBOM JSON files** rebranded
+- **22 doc files, 22 script files, 2 CI workflows, 5 root files** rebranded
+- **Cargo.lock regenerated** from updated Cargo.toml
+- **Script renamed**: `sovereign-entrypoint.sh` → `evergreen-entrypoint.sh`
+- **Final result**: 0 files with any case variant of "sovereign/Sovereign/SOVEREIGN"
+
+### Security Hardening (Phase 29)
+
+- **HEALTHCHECK**: 0% → 100% coverage (997/997 images)
+  - 557 active health checks (HTTP curl, DB-specific commands, metrics endpoint)
+  - 440 HEALTHCHECK NONE (scratch/base images with no shell)
+  - DB-specific checks: pg_isready, redis-cli, mysqladmin, nodetool, mongosh, etcdctl, rabbitmq-diagnostics, cockroach version
+- **CAP_DROP label**: 0% → 100% (997/997 images) — `evergreen.security.cap-drop="ALL"`
+- **no-new-privileges label**: 0% → 100% (997/997 images) — `evergreen.security.no-new-privileges="true"`
+- **TOML fixes**: 7 broken manifests fixed (WireGuard ecosystem — unquoted port strings in TOML arrays)
+- **Version mismatches**: 2 fixed (golang-cache ARG→1.0.0, minio-operator 6.0.4→v6.0.4)
+- **ADR-004 banned bases**: All 29 images already multi-stage, 0 conversions needed
+
+### Reproducibility (Phase 30)
+
+- **Digest pinning**: 0.3% → 73.6% (1485/2019 FROM lines pinned with @sha256:)
+- **Effective immutability**: 92.9% (pinned + scratch + build-time variable resolution)
+- **Top bases pinned**: debian:bookworm-slim (861 refs), wolfi-base:latest (602 refs)
+- **Final-stage FROM**: 100% digest-pinned or scratch (397/397)
+- **Remaining**: 5 auth-gated/huge :latest tags (dependabot, lancedb, scylladb, tigergraph ×2), 100 ${VERSION} build-time vars, 39 specific upstream versions
 
 ---
 
@@ -108,12 +146,12 @@ Verified safe updates via GitHub API with asset naming validation:
 ### Fixed
 
 - **Last Alpine image migrated:** `caddy-alpine` migrated from Alpine 3.19 to wolfi-base. Zero Alpine final-stage images remaining.
-- **412 stale `sovereign.constraint.debian_slim` labels removed:** These labels were obsolete after the debian-slim ban.
-- **120 stale `sovereign.constraint.base` values fixed:** All `debian-slim`/`alpine` values updated to `wolfi` (the actual base used).
-- **8 stale `sovereign.constraint.runtime=debian-slim` labels removed:** From cassandra, couchdb, neo4j, orientdb multi-stage builds.
+- **412 stale `evergreen.constraint.debian_slim` labels removed:** These labels were obsolete after the debian-slim ban.
+- **120 stale `evergreen.constraint.base` values fixed:** All `debian-slim`/`alpine` values updated to `wolfi` (the actual base used).
+- **8 stale `evergreen.constraint.runtime=debian-slim` labels removed:** From cassandra, couchdb, neo4j, orientdb multi-stage builds.
 - **84 UID 65534 references fixed:** All builder-stage and final-stage references updated to 65532 (Chainguard/wolfi standard). Zero `65534` remaining in any Dockerfile.
 - **50 images missing `USER 65532` added:** Non-root enforcement expanded from 920 to 970 images.
-- **20 images missing `sovereign.base.image` label fixed:** All 1,014 images now have the label (17 exceptions are upstream/distroless/static images that manage users internally).
+- **20 images missing `evergreen.base.image` label fixed:** All 1,014 images now have the label (17 exceptions are upstream/distroless/static images that manage users internally).
 - **ADR-003 UID references updated:** 6 occurrences of 65534 → 65532 in the superseded ADR-003.
 
 ### Added
@@ -131,10 +169,10 @@ Verified safe updates via GitHub API with asset naming validation:
 | Alpine final stages | 1 | **0** |
 | debian-slim final stages | 0 | 0 |
 | UID 65534 references | 84 | **0** |
-| sovereign.constraint.debian_slim labels | 412 | **0** |
-| sovereign.constraint.runtime=debian-slim | 8 | **0** |
+| evergreen.constraint.debian_slim labels | 412 | **0** |
+| evergreen.constraint.runtime=debian-slim | 8 | **0** |
 | Invalid wolfi packages | 235 | **0** |
-| sovereign.base.image labels | 995/1014 | **1,014/1,014 (100%)** |
+| evergreen.base.image labels | 995/1014 | **1,014/1,014 (100%)** |
 | USER 65532 images | 920 | **970** |
 | Dockerfiles with package fixes | 0 | **220** |
 | Packages removed | 0 | **492** |
@@ -167,7 +205,7 @@ Verified safe updates via GitHub API with asset naming validation:
 
 ### Changed
 
-- **584 Dockerfiles migrated:** Final stage changed from debian:bookworm-slim to wolfi-base. apt-get → apk add. UID 65534 → 65532. Added EXPOSE 9101, STOPSIGNAL SIGTERM, sovereign.base.image/observability labels.
+- **584 Dockerfiles migrated:** Final stage changed from debian:bookworm-slim to wolfi-base. apt-get → apk add. UID 65534 → 65532. Added EXPOSE 9101, STOPSIGNAL SIGTERM, evergreen.base.image/observability labels.
 - **test_framework.sh constraint IDs:** C005-C014 remapped to correct REQUIREMENTS.md definitions. Orphaned checks from old test_framework.sh became C017-C030.
 - **UID 65534 → 65532:** Updated across all migrated Dockerfiles, test framework, and requirements spec.
 - **newrequirements.md:** Marked as superseded by REQUIREMENTS.md v4.0.0.
@@ -186,7 +224,7 @@ Verified safe updates via GitHub API with asset naming validation:
 | UID 65532 images | 0 | 402 |
 | EXPOSE 9101 images | 0 | 404 |
 | STOPSIGNAL images | 0 | 402 |
-| sovereign.base.image labels | 0 | 402 |
+| evergreen.base.image labels | 0 | 402 |
 
 ---
 
@@ -413,15 +451,15 @@ Verified safe updates via GitHub API with asset naming validation:
 ### Phase 4: HFT Hardening
 
 ### Added
-- **HFT labels on 113 Tier-1 images (100% coverage):** `sovereign.hft.*` label namespace with 30+ labels:
-  - Signal handling (`sovereign.hft.signal-handling`, `sovereign.hft.shutdown-timeout-ms`)
-  - CPU pinning (`sovereign.hft.cpu-pinning`, `sovereign.hft.numa-affinity`)
-  - XDP/AF_XDP (`sovereign.hft.xdp-capable`, `sovereign.hft.af-xdp-capable`) on nginx, envoy, haproxy, coredns
-  - Deploy strategy (`sovereign.hft.deploy-strategy`, `sovereign.hft.pre-stop-hook`)
-  - Connection draining (`sovereign.hft.connection-draining`, `sovereign.hft.drain-timeout-ms`)
-  - Real-time scheduling (`sovereign.hft.sched-fifo-priority`) on coredns
-  - Init system annotations (`sovereign.hft.init-system`, `sovereign.hft.tini-enabled`)
-- **Sovereign entrypoint:** `scripts/sovereign-entrypoint.sh` — POSIX-compliant signal forwarding for graceful shutdown (SIGTERM→child, SIGINT→child, SIGCHLD→wait)
+- **HFT labels on 113 Tier-1 images (100% coverage):** `evergreen.hft.*` label namespace with 30+ labels:
+  - Signal handling (`evergreen.hft.signal-handling`, `evergreen.hft.shutdown-timeout-ms`)
+  - CPU pinning (`evergreen.hft.cpu-pinning`, `evergreen.hft.numa-affinity`)
+  - XDP/AF_XDP (`evergreen.hft.xdp-capable`, `evergreen.hft.af-xdp-capable`) on nginx, envoy, haproxy, coredns
+  - Deploy strategy (`evergreen.hft.deploy-strategy`, `evergreen.hft.pre-stop-hook`)
+  - Connection draining (`evergreen.hft.connection-draining`, `evergreen.hft.drain-timeout-ms`)
+  - Real-time scheduling (`evergreen.hft.sched-fifo-priority`) on coredns
+  - Init system annotations (`evergreen.hft.init-system`, `evergreen.hft.tini-enabled`)
+- **Evergreen entrypoint:** `scripts/evergreen-entrypoint.sh` — POSIX-compliant signal forwarding for graceful shutdown (SIGTERM→child, SIGINT→child, SIGCHLD→wait)
 - **HFT deployment manifests:** `deploy/hft/docker-compose.network.yml` — CPU-pinned proxy configs for nginx (cores 0-3), envoy (cores 4-7), traefik (cores 8-11), haproxy (cores 12-15), caddy (cores 16-19)
 - **ADR-004:** HFT label schema specification
 
@@ -472,7 +510,7 @@ Verified safe updates via GitHub API with asset naming validation:
 
 ### Added
 - **783 new image directories** created from requiredimages.md specification
-- **All new images follow sovereign.image.* label schema** with OCI-compliant metadata
+- **All new images follow evergreen.image.* label schema** with OCI-compliant metadata
 - **CHECKSUMS files** for all 1,022 images (stub images marked PENDING)
 - **Tier structure** matches requiredimages.md:
   - Tier 1: 380 images (networking, databases, observability)

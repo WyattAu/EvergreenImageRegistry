@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG NGINX_VERSION=1.27.1
 ARG MODSEC_VERSION=3.0.12
 
@@ -10,6 +10,8 @@ RUN chown -R 65532:65532 /app /var/log/nginx /var/cache/nginx 2>/dev/null || tru
 USER 65532:65532
 WORKDIR /app
 EXPOSE 80 443
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:80/ || exit 1
 ENTRYPOINT ["nginx"]
 CMD ["-g", "daemon off;"]
 LABEL org.opencontainers.image.title="nginx-modsec" \
@@ -17,12 +19,15 @@ LABEL org.opencontainers.image.title="nginx-modsec" \
       org.opencontainers.image.vendor="NGINX Inc / SpiderLabs" \
       org.opencontainers.image.source="https://github.com/SpiderLabs/ModSecurity" \
       org.opencontainers.image.description="NGINX with ModSecurity WAF module" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="security" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="1" \
+      evergreen.image.category="security" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

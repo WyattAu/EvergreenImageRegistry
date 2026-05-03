@@ -1,7 +1,7 @@
 [metadata]
 name = "apache-nifi"
 version = "1.26.0"
-description = "Sovereign hardened Apache NiFi - data integration and flow management platform"
+description = "Evergreen hardened Apache NiFi - data integration and flow management platform"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -18,15 +18,15 @@ entrypoint = ["/opt/nifi/bin/nifi.sh", "run"]
 expose = [8443, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened Apache NiFi - data integration and flow management platform"
+"org.opencontainers.image.description" = "Evergreen hardened Apache NiFi - data integration and flow management platform"
 "org.opencontainers.image.title" = "apache-nifi"
 "org.opencontainers.image.vendor" = "Apache"
 "org.opencontainers.image.version" = "1.26.0"
-"sovereign.base.image" = "wolfi"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "data-flow"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "data-flow"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

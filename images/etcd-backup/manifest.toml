@@ -1,7 +1,7 @@
 [metadata]
 name = "etcd-backup"
 version = "3.6.10"
-description = "Sovereign hardened etcd backup - etcdctl wrapper for etcd backup and restore operations"
+description = "Evergreen hardened etcd backup - etcdctl wrapper for etcd backup and restore operations"
 
 [build]
 base = "scratch"
@@ -18,13 +18,13 @@ entrypoint = ["/usr/local/bin/etcdctl"]
 expose = [2379, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened etcd backup - etcdctl wrapper for etcd backup and restore operations"
+"org.opencontainers.image.description" = "Evergreen hardened etcd backup - etcdctl wrapper for etcd backup and restore operations"
 "org.opencontainers.image.title" = "etcd-backup"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "scratch"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "backup"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "backup"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

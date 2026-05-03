@@ -1,7 +1,7 @@
 [metadata]
 name = "metricbeat"
 version = "RUN"
-description = "Sovereign hardened Metricbeat - Elastic infrastructure metrics collector"
+description = "Evergreen hardened Metricbeat - Elastic infrastructure metrics collector"
 
 [build]
 base = "scratch"
@@ -18,20 +18,20 @@ entrypoint = ["/opt/metricbeat/metricbeat"]
 expose = [5066, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened Metricbeat - Elastic infrastructure metrics collector"
+"org.opencontainers.image.description" = "Evergreen hardened Metricbeat - Elastic infrastructure metrics collector"
 "org.opencontainers.image.title" = "metricbeat"
 "org.opencontainers.image.vendor" = "Elastic"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "scratch"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.hft.init-system" = "none"
-"sovereign.hft.shutdown-timeout" = "3s"
-"sovereign.hft.signal-handling" = "native"
-"sovereign.hft.startup-timeout" = "3000ms"
-"sovereign.image.category" = "observability"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "3000ms"
+"evergreen.image.category" = "observability"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

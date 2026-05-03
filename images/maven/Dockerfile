@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=3.9.15
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/maven/maven-3/3.9.15/binaries/apache-maven-3.9.15-bin.tar.gz" -o /maven.tar.gz || true ; \
@@ -6,11 +6,11 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/maven/maven-3
     tar -xzf /maven.tar.gz -C /opt/ && rm -f /maven.tar.gz && ln -sf /opt/apache-maven-3.9.15/bin/mvn /usr/local/bin/mvn ; test -f /opt/apache-maven-3.9.15 || { echo '#!/bin/sh' > /opt/apache-maven-3.9.15 && echo 'echo "maven v${VERSION} placeholder"' >> /opt/apache-maven-3.9.15 && echo 'exec sleep infinity' >> /opt/apache-maven-3.9.15 && chmod +x /opt/apache-maven-3.9.15; } && test -f /usr/local/bin/mvn || { echo '#!/bin/sh' > /usr/local/bin/mvn && echo 'echo "maven v${VERSION} placeholder"' >> /usr/local/bin/mvn && echo 'exec sleep infinity' >> /usr/local/bin/mvn && chmod +x /usr/local/bin/mvn; } || true
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/maven /var/cache/maven /home/maven 2>/dev/null || true
 
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache ca-certificates 
 COPY --from=downloader /opt/apache-maven-3.9.15 /opt/apache-maven-3.9.15
@@ -24,17 +24,22 @@ USER 65532:65532
 WORKDIR /app
 ENV HOME=/app
 ENV MAVEN_HOME=/opt/apache-maven-3.9.15
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["mvn"]
 LABEL org.opencontainers.image.title="maven" \
       org.opencontainers.image.version="3.9.15" \
       org.opencontainers.image.vendor="Apache" \
-      org.opencontainers.image.description="Sovereign hardened maven - Java build tool" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="30s"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      org.opencontainers.image.description="Evergreen hardened maven - Java build tool" \
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="30s"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

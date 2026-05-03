@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED VECTOR INIT
+# EVERGREEN HARDENED VECTOR INIT
 # Generated from template - Version: 0.38.0
 # Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 # hadolint ignore=DL3023
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
@@ -25,16 +25,21 @@ COPY --from=builder /tmp/vector /usr/bin/vector
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 EXPOSE 8686
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/usr/bin/vector"]
-LABEL sovereign.image.status="functional" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="observability" \
+LABEL evergreen.image.status="functional" \
+      evergreen.image.tier="1" \
+      evergreen.image.category="observability" \
       org.opencontainers.image.title="vector-init" \
-      org.opencontainers.image.description="Sovereign hardened Vector init - high-performance observability data pipeline" \
+      org.opencontainers.image.description="Evergreen hardened Vector init - high-performance observability data pipeline" \
       org.opencontainers.image.version="${VERSION}"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

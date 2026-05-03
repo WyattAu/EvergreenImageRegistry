@@ -1,7 +1,7 @@
 [metadata]
 name = "prometheus-config"
 version = "0.90.1"
-description = "Sovereign hardened prometheus-config - Prometheus config reloader"
+description = "Evergreen hardened prometheus-config - Prometheus config reloader"
 
 [build]
 base = "scratch"
@@ -19,16 +19,16 @@ entrypoint = ["/prometheus-config-reloader"]
 expose = [9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened prometheus-config - Prometheus config reloader"
+"org.opencontainers.image.description" = "Evergreen hardened prometheus-config - Prometheus config reloader"
 "org.opencontainers.image.title" = "prometheus-config"
 "org.opencontainers.image.vendor" = "Prometheus"
 "org.opencontainers.image.version" = "0.90.1"
-"sovereign.base.image" = "scratch"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.hft.shutdown-timeout" = "10s"
-"sovereign.hft.signal-handling" = "native"
-"sovereign.image.tier" = "3"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.shutdown-timeout" = "10s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
 

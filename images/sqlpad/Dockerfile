@@ -2,7 +2,7 @@ ARG VERSION=latest
 
 FROM sqlpad/sqlpad:${VERSION} AS upstream
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache curl ca-certificates bash
 COPY --from=upstream /app /app
@@ -15,12 +15,15 @@ WORKDIR /app
 EXPOSE 3000
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="sqlpad" org.opencontainers.image.version="7.5.1" org.opencontainers.image.description="SQLPad - Web-based SQL Editor with Query Visualization" org.opencontainers.image.vendor="SQLPad" org.opencontainers.image.source="https://github.com/sqlpad/sqlpad" sovereign.image.tier="1" sovereign.constraint.nonroot="true" sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL org.opencontainers.image.title="sqlpad" org.opencontainers.image.version="7.5.1" org.opencontainers.image.description="SQLPad - Web-based SQL Editor with Query Visualization" org.opencontainers.image.vendor="SQLPad" org.opencontainers.image.source="https://github.com/sqlpad/sqlpad" evergreen.image.tier="1" evergreen.constraint.nonroot="true" evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
 
 USER 65532:65532
 
 STOPSIGNAL SIGTERM
 
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:3000/ || exit 1
 ENTRYPOINT ["node", "server.js"]

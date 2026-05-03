@@ -187,8 +187,8 @@ fn bump_checksums_file(
 }
 
 fn print_diff(old: &str, new: &str) {
-    let old_file = "/tmp/sovereignctl_old";
-    let new_file = "/tmp/sovereignctl_new";
+    let old_file = "/tmp/evergreenctl_old";
+    let new_file = "/tmp/evergreenctl_new";
 
     let _ = std::fs::write(old_file, old);
     let _ = std::fs::write(new_file, new);

@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=1.0.0
 ARG GITHUB_TOKEN
 RUN apk add --no-cache nodejs npm ca-certificates || true
@@ -11,6 +11,8 @@ USER 65532:65532
 WORKDIR /app
 ENV NODE_ENV="production"
 EXPOSE 8008
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8008/ || exit 1
 ENTRYPOINT ["node"]
 CMD []
 LABEL org.opencontainers.image.title="convector" \
@@ -18,11 +20,14 @@ LABEL org.opencontainers.image.title="convector" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="worldsibu" \
       org.opencontainers.image.source="https://github.com/worldsibu/convector-platform" \
-      sovereign.image.tier="3" \
-      sovereign.image.category="blockchain" \
-      sovereign.constraint.nonroot="true"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="tcp"
+      evergreen.image.tier="3" \
+      evergreen.image.category="blockchain" \
+      evergreen.constraint.nonroot="true"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="tcp"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

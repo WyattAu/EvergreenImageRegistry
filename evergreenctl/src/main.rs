@@ -2,8 +2,8 @@ use clap::{Parser, Subcommand};
 use std::path::Path;
 
 #[derive(Parser)]
-#[command(name = "sovereignctl")]
-#[command(about = "Sovereign image registry management toolchain")]
+#[command(name = "evergreenctl")]
+#[command(about = "Evergreen image registry management toolchain")]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
@@ -113,13 +113,13 @@ async fn main() -> anyhow::Result<()> {
     match cli.command {
         Commands::Discover { image, repo, version } => {
             let client = reqwest::Client::builder()
-                .user_agent("sovereignctl/0.1.0")
+                .user_agent("evergreenctl/0.1.0")
                 .build()?;
 
             if let Some(repo_str) = repo {
                 let parts: Vec<&str> = repo_str.split('/').collect();
                 if parts.len() == 2 {
-                    let sources = sovereignctl::discover::discover_github_release(
+                    let sources = evergreenctl::discover::discover_github_release(
                         &client,
                         parts[0],
                         parts[1],
@@ -147,7 +147,7 @@ async fn main() -> anyhow::Result<()> {
                 // Try to discover from existing Dockerfile
                 let dockerfile = Path::new("images").join(&image).join("Dockerfile");
                 if dockerfile.exists() {
-                    if let Ok(manifest) = sovereignctl::migrate::dockerfile_to_manifest(&dockerfile, &image) {
+                    if let Ok(manifest) = evergreenctl::migrate::dockerfile_to_manifest(&dockerfile, &image) {
                         println!("Extracted manifest for {}:", image);
                         println!("  Version: {}", manifest.image.version);
                         println!("  Type: {:?}", manifest.image.image_type);
@@ -156,7 +156,7 @@ async fn main() -> anyhow::Result<()> {
                         println!("  Entrypoint: {:?}", manifest.runtime.entrypoint);
 
                         // Probe the URL
-                        let probe = sovereignctl::discover::probe_url(&client, &manifest.source.url).await?;
+                        let probe = evergreenctl::discover::probe_url(&client, &manifest.source.url).await?;
                         println!("  URL accessible: {}", probe.accessible);
                         if let Some(len) = probe.content_length {
                             println!("  Content-Length: {} bytes", len);
@@ -171,7 +171,7 @@ async fn main() -> anyhow::Result<()> {
         Commands::Verify { path } => {
             let path = Path::new(&path);
             if path.is_file() {
-                let manifest = sovereignctl::manifest::Manifest::from_file(path)?;
+                let manifest = evergreenctl::manifest::Manifest::from_file(path)?;
                 println!("Manifest: {}", path.display());
                 println!("  Name: {}", manifest.image.name);
                 println!("  Version: {}", manifest.image.version);
@@ -186,7 +186,7 @@ async fn main() -> anyhow::Result<()> {
                     let entry = entry?;
                     let manifest_path = entry.path().join("manifest.toml");
                     if manifest_path.exists() {
-                        match sovereignctl::manifest::Manifest::from_file(&manifest_path) {
+                        match evergreenctl::manifest::Manifest::from_file(&manifest_path) {
                             Ok(m) => {
                                 if m.source.checksum.expected.is_empty() {
                                     println!("MISSING: {} (no checksum)", m.image.name);
@@ -206,24 +206,24 @@ async fn main() -> anyhow::Result<()> {
         }
 
         Commands::Generate { image_dir } => {
-            sovereignctl::generate::cmd_generate(&image_dir)?;
+            evergreenctl::generate::cmd_generate(&image_dir)?;
         }
 
         Commands::Drift { image_dir } => {
-            sovereignctl::drift::cmd_drift(&image_dir)?;
+            evergreenctl::drift::cmd_drift(&image_dir)?;
         }
 
         Commands::Sign { image_dir } => {
-            sovereignctl::sign::cmd_sign(&image_dir)?;
+            evergreenctl::sign::cmd_sign(&image_dir)?;
         }
 
         Commands::Snapshot { image_dir } => {
-            sovereignctl::snapshot::cmd_snapshot(&image_dir)?;
+            evergreenctl::snapshot::cmd_snapshot(&image_dir)?;
         }
 
         Commands::Audit { path, format } => {
             let images_dir = Path::new(&path);
-            let results = sovereignctl::audit::audit_all(images_dir)?;
+            let results = evergreenctl::audit::audit_all(images_dir)?;
 
             match format.as_str() {
                 "json" => {
@@ -238,7 +238,7 @@ async fn main() -> anyhow::Result<()> {
                 _ => {
                     for r in &results {
                         match r.status {
-                            sovereignctl::audit::ImageStatus::Real => {
+                            evergreenctl::audit::ImageStatus::Real => {
                                 if r.issues.is_empty() {
                                     println!("  ✓ {}", r.name);
                                 } else {
@@ -248,13 +248,13 @@ async fn main() -> anyhow::Result<()> {
                                     }
                                 }
                             }
-                            sovereignctl::audit::ImageStatus::Placeholder => {
+                            evergreenctl::audit::ImageStatus::Placeholder => {
                                 println!("  ⚠ {} (placeholder)", r.name);
                             }
-                            sovereignctl::audit::ImageStatus::Stub => {
+                            evergreenctl::audit::ImageStatus::Stub => {
                                 println!("  ✗ {} (stub)", r.name);
                             }
-                            sovereignctl::audit::ImageStatus::Error => {
+                            evergreenctl::audit::ImageStatus::Error => {
                                 println!("  ✗ {} (error)", r.name);
                                 for issue in &r.issues {
                                     println!("    - [{}] {} (line {:?})", issue.severity, issue.code, issue.line);
@@ -262,14 +262,14 @@ async fn main() -> anyhow::Result<()> {
                             }
                         }
                     }
-                    println!("\n{}", sovereignctl::audit::audit_summary(&results));
+                    println!("\n{}", evergreenctl::audit::audit_summary(&results));
                 }
             }
         }
 
         Commands::Migrate { path, dry_run } => {
             let images_dir = Path::new(&path);
-            let migrated = sovereignctl::migrate::migrate_all(images_dir, dry_run)?;
+            let migrated = evergreenctl::migrate::migrate_all(images_dir, dry_run)?;
             println!("Migrated {} images", migrated.len());
         }
 
@@ -289,7 +289,7 @@ async fn main() -> anyhow::Result<()> {
                     continue;
                 }
 
-                match sovereignctl::manifest::Manifest::from_file(&manifest_path) {
+                match evergreenctl::manifest::Manifest::from_file(&manifest_path) {
                     Ok(m) => {
                         // Validate the manifest
                         match m.validate() {
@@ -313,22 +313,22 @@ async fn main() -> anyhow::Result<()> {
         }
 
         Commands::VerifyAll { path } => {
-            let exit_code = sovereignctl::verify_all::cmd_verify_all(&path)?;
+            let exit_code = evergreenctl::verify_all::cmd_verify_all(&path)?;
             if exit_code != 0 {
                 std::process::exit(exit_code);
             }
         }
 
         Commands::Outdated { path, all } => {
-            sovereignctl::outdated::cmd_outdated(&path, all).await?;
+            evergreenctl::outdated::cmd_outdated(&path, all).await?;
         }
 
         Commands::Bump { image, new_version, dry_run } => {
-            sovereignctl::bump::cmd_bump(&image, &new_version, dry_run)?;
+            evergreenctl::bump::cmd_bump(&image, &new_version, dry_run)?;
         }
 
         Commands::CiDiff { base } => {
-            sovereignctl::ci_diff::cmd_ci_diff(&base)?;
+            evergreenctl::ci_diff::cmd_ci_diff(&base)?;
         }
     }
 

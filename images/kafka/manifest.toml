@@ -23,13 +23,13 @@ entrypoint = ["sh", "-c", "/opt/kafka/bin/kafka-server-start.sh"]
 expose = [9092, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened Apache Kafka - distributed event streaming platform"
+"org.opencontainers.image.description" = "Evergreen hardened Apache Kafka - distributed event streaming platform"
 "org.opencontainers.image.title" = "kafka"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "wolfi"
-"sovereign.health.type" = "http"
-"sovereign.image.category" = "messaging"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "true"
+"evergreen.base.image" = "wolfi"
+"evergreen.health.type" = "http"
+"evergreen.image.category" = "messaging"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "true"
 

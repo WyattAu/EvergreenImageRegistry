@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED NGINX INGRESS CONTROLLER
+# EVERGREEN HARDENED NGINX INGRESS CONTROLLER
 # Kubernetes NGINX Ingress Controller
 # Constraint: scratch - Go static binary, smallest attack surface
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
@@ -38,23 +38,28 @@ COPY --from=builder /etc/nginx /etc/nginx
 USER 65532:65532
 WORKDIR /app
 EXPOSE 80 443 8443
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/nginx-ingress-controller"]
 LABEL org.opencontainers.image.title="nginx-ingress-controller" \
       org.opencontainers.image.version="1.10.1" \
       org.opencontainers.image.vendor="Kubernetes" \
       org.opencontainers.image.source="https://github.com/kubernetes/ingress-nginx" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="networking" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="5000ms"
+      evergreen.image.tier="1" \
+      evergreen.image.category="networking" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="5000ms"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

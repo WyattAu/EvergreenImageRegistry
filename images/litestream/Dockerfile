@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED LITESTREAM
+# EVERGREEN HARDENED LITESTREAM
 # SQLite streaming replication for production workloads
 # https://github.com/benbjohnson/litestream
 # =============================================================================
@@ -8,7 +8,7 @@ ARG VERSION=0.3.14
 ARG BUILD_DATE
 ARG TARGETARCH
 
-FROM cgr.dev/chainguard/wolfi-base:latest AS builder
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31 AS builder
 ARG TARGETARCH
 ARG VERSION
 ARG TARGETARCH
@@ -26,16 +26,21 @@ RUN ["/bin/sh", "-c", "cd /tmp && tar xzf litestream.tar.gz && cp litestream /li
 
 USER 65532:65532
 WORKDIR /data
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/litestream"]
 LABEL org.opencontainers.image.title="litestream" \
       org.opencontainers.image.description="SQLite streaming replication for production" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.source="https://github.com/benbjohnson/litestream" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="database" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="prometheus"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="1" \
+      evergreen.image.category="database" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="prometheus"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

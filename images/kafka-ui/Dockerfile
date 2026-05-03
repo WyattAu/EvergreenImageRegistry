@@ -1,5 +1,5 @@
 ARG TARGETARCH
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG GITHUB_TOKEN
 ARG VERSION
@@ -12,7 +12,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     test -f /opt/kafka-ui/kafka-ui || { echo '#!/bin/sh' > /opt/kafka-ui/kafka-ui && echo 'echo "kafka-ui v${VERSION} placeholder"' >> /opt/kafka-ui/kafka-ui && echo 'exec sleep infinity' >> /opt/kafka-ui/kafka-ui && chmod +x /opt/kafka-ui/kafka-ui; } || true
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /var/log/kafka-ui /var/cache/kafka-ui
 
@@ -26,23 +26,28 @@ COPY --from=builder /var/cache/kafka-ui /var/cache/kafka-ui
 USER 65532:65532
 WORKDIR /opt/kafka-ui
 EXPOSE 8080
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/opt/kafka-ui/kafka-ui"]
 LABEL org.opencontainers.image.title="kafka-ui" \
-      org.opencontainers.image.description="Sovereign hardened Kafka UI - web-based Kafka management interface" \
+      org.opencontainers.image.description="Evergreen hardened Kafka UI - web-based Kafka management interface" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Provectus" \
-      sovereign.image.tier="1" \
-      sovereign.image.status="functional" \
-      sovereign.image.category="messaging" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
+      evergreen.image.tier="1" \
+      evergreen.image.status="functional" \
+      evergreen.image.category="messaging" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="3000ms"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

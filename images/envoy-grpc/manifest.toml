@@ -1,7 +1,7 @@
 [metadata]
 name = "envoy-grpc"
 version = "1.38.0"
-description = "Sovereign hardened Envoy gRPC - Envoy proxy preconfigured for gRPC routing"
+description = "Evergreen hardened Envoy gRPC - Envoy proxy preconfigured for gRPC routing"
 
 [build]
 base = "scratch"
@@ -18,13 +18,13 @@ entrypoint = ["/usr/local/bin/envoy"]
 expose = [15001, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened Envoy gRPC - Envoy proxy preconfigured for gRPC routing"
+"org.opencontainers.image.description" = "Evergreen hardened Envoy gRPC - Envoy proxy preconfigured for gRPC routing"
 "org.opencontainers.image.title" = "envoy-grpc"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "scratch"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "proxy"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "proxy"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

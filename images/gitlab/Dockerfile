@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED GITLAB
+# EVERGREEN HARDENED GITLAB
 # Generated from template - Version: 17.6.0
 # Constraint: official - GitLab complexity requires official base
 #
@@ -31,12 +31,17 @@ LABEL org.opencontainers.image.title="gitlab" \
       org.opencontainers.image.version="17.6.0" \
       org.opencontainers.image.vendor="GitLab" \
       org.opencontainers.image.source="https://gitlab.com/gitlab-org/gitlab-ce" \
-      sovereign.image.tier="2" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.official="true"
+      evergreen.image.tier="2" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.official="true"
 
-LABEL sovereign.base.image="rewrap"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="rewrap"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM
+
+HEALTHCHECK NONE

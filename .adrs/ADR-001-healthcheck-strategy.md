@@ -104,7 +104,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 
 ### Related Blue Papers
 
-- BP-IMAGE-REGISTRY-001: Sovereign Hardened Image Registry Architecture
+- BP-IMAGE-REGISTRY-001: Evergreen Hardened Image Registry Architecture
 
 ### Related ADRs
 

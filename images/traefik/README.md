@@ -1,4 +1,4 @@
-# Traefik - Sovereign Hardened Image
+# Traefik - Evergreen Hardened Image
 
 ## Image Information
 
@@ -54,7 +54,7 @@ Traefik is a modern HTTP reverse proxy and load balancer designed for microservi
 
 ```bash
 # Pull the image
-docker pull ghcr.io/sovereign/traefik:latest
+docker pull ghcr.io/evergreen/traefik:latest
 
 # Run with configuration file
 docker run -d \
@@ -67,7 +67,7 @@ docker run -d \
   --tmpfs /tmp \
   --tmpfs /var/cache \
   --tmpfs /var/log \
-  ghcr.io/sovereign/traefik:latest
+  ghcr.io/evergreen/traefik:latest
 ```
 
 ### With Docker Compose
@@ -75,7 +75,7 @@ docker run -d \
 ```yaml
 services:
   traefik:
-    image: ghcr.io/sovereign/traefik:latest
+    image: ghcr.io/evergreen/traefik:latest
     ports:
       - "80:80"
       - "443:443"
@@ -118,7 +118,7 @@ docker run \
   --user 65534 \            # Non-root
   --cap-drop ALL \          # Drop all capabilities
   --security-opt no-new-privileges \
-  ghcr.io/sovereign/traefik:latest
+  ghcr.io/evergreen/traefik:latest
 ```
 
 ---
@@ -193,7 +193,7 @@ These will be addressed in the automated pipeline.
 | Channel | Contact |
 |---------|---------|
 | Issues | GitHub Issues |
-| Security | security@sovereign.example |
+| Security | security@evergreen.example |
 
 ---
 

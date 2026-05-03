@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED MONGODB
+# EVERGREEN HARDENED MONGODB
 # Generated from template - Version: 7.0.11
 # Constraint: debian-slim hardened multi-stage
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
@@ -9,15 +9,15 @@ ARG VERSION=7.0.11
 ARG BUILD_DATE
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN useradd -m -u 65532 -s /usr/bin/false mongodb 2>/dev/null || true
 RUN mkdir -p /app /var/log/mongod /var/cache/mongod 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ENV HEALTH_CMD="mongosh --eval \"db.adminCommand('ping')\"" \
     READY_CMD="mongosh --eval \"db.adminCommand('ping')\"" \
     STARTUP_CMD="mongosh --eval \"db.adminCommand('ping')\"" \
-    SOVEREIGN_LOG_LEVEL=info
+    EVERGREEN_LOG_LEVEL=info
 
 RUN apk add --no-cache ca-certificates 
 COPY --from=builder /etc/passwd /etc/passwd
@@ -28,15 +28,20 @@ COPY --from=builder --chown=65532:65532 /var/cache/mongod /var/cache/mongod
 USER 65532:65532
 WORKDIR /app
 EXPOSE 27017
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD mongosh --quiet --eval "db.runCommand({ping:1})"
 ENTRYPOINT ["sh", "-c", "mongod"]
 LABEL org.opencontainers.image.title="mongodb" \
       org.opencontainers.image.version="7.0.11" \
       org.opencontainers.image.vendor="MongoDB" \
-      sovereign.image.tier="2" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.hardened="true"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="true"
-LABEL sovereign.health.type="http"
+      evergreen.image.tier="2" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.hardened="true"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="true"
+LABEL evergreen.health.type="http"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=22.12.0
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://nodejs.org/dist/v22.12.0/node-v22.12.0-linux-x64.tar.xz" -o /node.tar.xz || true ; \
@@ -12,20 +12,25 @@ COPY --from=downloader /opt/node/lib/node_modules /usr/local/lib/node_modules
 COPY --from=downloader /opt/node/bin/node /usr/local/bin/node
 USER 65532:65532
 WORKDIR /app
+
+HEALTHCHECK NONE
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="node-distroless" \
       org.opencontainers.image.version="22.12.0" \
       org.opencontainers.image.vendor="Node.js" \
-      org.opencontainers.image.description="Sovereign hardened node-distroless - Node.js on distroless base" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.distroless="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="5s"
+      org.opencontainers.image.description="Evergreen hardened node-distroless - Node.js on distroless base" \
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.distroless="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="5s"
 
-LABEL sovereign.base.image="distroless"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="distroless"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM
 

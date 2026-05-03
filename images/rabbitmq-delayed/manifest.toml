@@ -1,7 +1,7 @@
 [metadata]
 name = "rabbitmq-delayed"
 version = "3.13.1"
-description = "Sovereign hardened RabbitMQ with Delayed Message Exchange plugin"
+description = "Evergreen hardened RabbitMQ with Delayed Message Exchange plugin"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -18,15 +18,15 @@ entrypoint = ["rabbitmq-server"]
 expose = [5672, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened RabbitMQ with Delayed Message Exchange plugin"
+"org.opencontainers.image.description" = "Evergreen hardened RabbitMQ with Delayed Message Exchange plugin"
 "org.opencontainers.image.title" = "rabbitmq-delayed"
 "org.opencontainers.image.vendor" = "RabbitMQ"
 "org.opencontainers.image.version" = "3.13.1"
-"sovereign.base.image" = "wolfi"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "messaging"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "messaging"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

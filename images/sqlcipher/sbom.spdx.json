@@ -553,8 +553,8 @@
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-sqlcipher-sovereign.base.image--wolfi-",
-      "name": "sovereign.base.image=\"wolfi\"",
+      "SPDXID": "SPDXRef-Package-sqlcipher-evergreen.base.image--wolfi-",
+      "name": "evergreen.base.image=\"wolfi\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -563,13 +563,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.base.image=\"wolfi\""
+          "referenceLocator": "pkg:alpine/evergreen.base.image=\"wolfi\""
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-sqlcipher-sovereign.constraint.base--wolfi-",
-      "name": "sovereign.constraint.base=\"wolfi\"",
+      "SPDXID": "SPDXRef-Package-sqlcipher-evergreen.constraint.base--wolfi-",
+      "name": "evergreen.constraint.base=\"wolfi\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -578,13 +578,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.constraint.base=\"wolfi\""
+          "referenceLocator": "pkg:alpine/evergreen.constraint.base=\"wolfi\""
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-sqlcipher-sovereign.constraint.nonroot--true-",
-      "name": "sovereign.constraint.nonroot=\"true\"",
+      "SPDXID": "SPDXRef-Package-sqlcipher-evergreen.constraint.nonroot--true-",
+      "name": "evergreen.constraint.nonroot=\"true\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -593,13 +593,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.constraint.nonroot=\"true\""
+          "referenceLocator": "pkg:alpine/evergreen.constraint.nonroot=\"true\""
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-sqlcipher-sovereign.health.type--exec-",
-      "name": "sovereign.health.type=\"exec\"",
+      "SPDXID": "SPDXRef-Package-sqlcipher-evergreen.health.type--exec-",
+      "name": "evergreen.health.type=\"exec\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -608,13 +608,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.health.type=\"exec\""
+          "referenceLocator": "pkg:alpine/evergreen.health.type=\"exec\""
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-sqlcipher-sovereign.hft.init-system--none-",
-      "name": "sovereign.hft.init-system=\"none\"",
+      "SPDXID": "SPDXRef-Package-sqlcipher-evergreen.hft.init-system--none-",
+      "name": "evergreen.hft.init-system=\"none\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -623,13 +623,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.hft.init-system=\"none\""
+          "referenceLocator": "pkg:alpine/evergreen.hft.init-system=\"none\""
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-sqlcipher-sovereign.hft.shutdown-timeout--3s-",
-      "name": "sovereign.hft.shutdown-timeout=\"3s\"",
+      "SPDXID": "SPDXRef-Package-sqlcipher-evergreen.hft.shutdown-timeout--3s-",
+      "name": "evergreen.hft.shutdown-timeout=\"3s\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -638,13 +638,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.hft.shutdown-timeout=\"3s\""
+          "referenceLocator": "pkg:alpine/evergreen.hft.shutdown-timeout=\"3s\""
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-sqlcipher-sovereign.hft.signal-handling--native-",
-      "name": "sovereign.hft.signal-handling=\"native\"",
+      "SPDXID": "SPDXRef-Package-sqlcipher-evergreen.hft.signal-handling--native-",
+      "name": "evergreen.hft.signal-handling=\"native\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -653,13 +653,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.hft.signal-handling=\"native\""
+          "referenceLocator": "pkg:alpine/evergreen.hft.signal-handling=\"native\""
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-sqlcipher-sovereign.hft.startup-timeout--2000ms-",
-      "name": "sovereign.hft.startup-timeout=\"2000ms\"",
+      "SPDXID": "SPDXRef-Package-sqlcipher-evergreen.hft.startup-timeout--2000ms-",
+      "name": "evergreen.hft.startup-timeout=\"2000ms\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -668,13 +668,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.hft.startup-timeout=\"2000ms\""
+          "referenceLocator": "pkg:alpine/evergreen.hft.startup-timeout=\"2000ms\""
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-sqlcipher-sovereign.image.category--security-",
-      "name": "sovereign.image.category=\"security\"",
+      "SPDXID": "SPDXRef-Package-sqlcipher-evergreen.image.category--security-",
+      "name": "evergreen.image.category=\"security\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -683,13 +683,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.image.category=\"security\""
+          "referenceLocator": "pkg:alpine/evergreen.image.category=\"security\""
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-sqlcipher-sovereign.image.status--functional-",
-      "name": "sovereign.image.status=\"functional\"",
+      "SPDXID": "SPDXRef-Package-sqlcipher-evergreen.image.status--functional-",
+      "name": "evergreen.image.status=\"functional\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -698,13 +698,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.image.status=\"functional\""
+          "referenceLocator": "pkg:alpine/evergreen.image.status=\"functional\""
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-sqlcipher-sovereign.image.tier--1-",
-      "name": "sovereign.image.tier=\"1\"",
+      "SPDXID": "SPDXRef-Package-sqlcipher-evergreen.image.tier--1-",
+      "name": "evergreen.image.tier=\"1\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -713,13 +713,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.image.tier=\"1\""
+          "referenceLocator": "pkg:alpine/evergreen.image.tier=\"1\""
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-sqlcipher-sovereign.metrics.native--ztunnel-",
-      "name": "sovereign.metrics.native=\"ztunnel\"",
+      "SPDXID": "SPDXRef-Package-sqlcipher-evergreen.metrics.native--ztunnel-",
+      "name": "evergreen.metrics.native=\"ztunnel\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -728,7 +728,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.metrics.native=\"ztunnel\""
+          "referenceLocator": "pkg:alpine/evergreen.metrics.native=\"ztunnel\""
         }
       ]
     }

@@ -1,7 +1,7 @@
 [metadata]
 name = "hive-metastore"
 version = "4.0.0"
-description = "Sovereign hardened Hive Metastore - metadata service for Apache Hive"
+description = "Evergreen hardened Hive Metastore - metadata service for Apache Hive"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -18,15 +18,15 @@ entrypoint = ["/opt/hive/bin/hive", "--service", "metastore"]
 expose = [9083, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened Hive Metastore - metadata service for Apache Hive"
+"org.opencontainers.image.description" = "Evergreen hardened Hive Metastore - metadata service for Apache Hive"
 "org.opencontainers.image.title" = "hive-metastore"
 "org.opencontainers.image.vendor" = "Apache Software Foundation"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "wolfi"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "database"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "database"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

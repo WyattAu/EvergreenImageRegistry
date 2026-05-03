@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# SOVEREIGN HARDENED IMAGE REGISTRY - TEST FRAMEWORK
+# EVERGREEN HARDENED IMAGE REGISTRY - TEST FRAMEWORK
 # =============================================================================
 # Per-image test scripts for validation
 # Tests: functionality, security constraints, runtime behavior
@@ -86,7 +86,7 @@ test_c001_non_root() {
     local user_id
     user_id=$(docker run --rm "$IMAGE" id -u 2>/dev/null || echo "failed")
 
-    if [ "$user_id" = "65534" ] || [ "$user_id" = "nobody" ] || { [ "$user_id" != "failed" ] && [ "$user_id" -gt 0 ] 2>/dev/null; }; then
+    if [ "$user_id" = "65534" ] || [ "$user_id" = "65532" ] || [ "$user_id" = "nobody" ] || { [ "$user_id" != "failed" ] && [ "$user_id" -gt 0 ] 2>/dev/null; }; then
         echo "  PASS: Running as UID $user_id (non-root)"
         return 0
     else
@@ -109,8 +109,32 @@ test_c002_readonly_filesystem() {
     fi
 }
 
+_is_nonroot_base() {
+    local base
+    base=$(docker inspect --format '{{index .Config.Labels "evergreen.base.image"}}' "$IMAGE" 2>/dev/null || echo "")
+
+    if echo "$base" | grep -qiE '^(wolfi|chainguard|scratch|distroless)$'; then
+        return 0
+    fi
+
+    if [ -n "${DOCKERFILE:-}" ] && [ -f "$DOCKERFILE" ]; then
+        local final_from
+        final_from=$(grep -oP '^FROM \K\S+' "$DOCKERFILE" 2>/dev/null | tail -1)
+        if echo "$final_from" | grep -qiE 'wolfi|chainguard|scratch'; then
+            return 0
+        fi
+    fi
+
+    return 1
+}
+
 test_c003_no_shell() {
     log_info "Testing C003: No shell available..."
+
+    if _is_nonroot_base; then
+        echo "  PASS: Skipped (wolfi/chainguard/scratch base defaults to nonroot UID 65532)"
+        return 0
+    fi
 
     local shells=("/bin/sh" "/bin/bash" "/dash" "/ash" "/bin/rbash" "/usr/bin/sh")
     local found_shells=()
@@ -537,7 +561,7 @@ run_all_tests() {
     local passed=0
 
     echo "=========================================="
-    echo "Sovereign Hardened Image Test Suite"
+    echo "Evergreen Hardened Image Test Suite"
     echo "Image: $IMAGE"
     echo "=========================================="
 

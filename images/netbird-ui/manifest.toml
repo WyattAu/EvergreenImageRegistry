@@ -1,7 +1,7 @@
 [metadata]
 name = "netbird-ui"
 version = "0.70.4"
-description = "Sovereign hardened NetBird UI - static web dashboard assets"
+description = "Evergreen hardened NetBird UI - static web dashboard assets"
 
 [build]
 base = "scratch"
@@ -18,16 +18,16 @@ entrypoint = ["sleep", "infinity"]
 expose = [80, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened NetBird UI - static web dashboard assets"
+"org.opencontainers.image.description" = "Evergreen hardened NetBird UI - static web dashboard assets"
 "org.opencontainers.image.title" = "netbird-ui"
 "org.opencontainers.image.vendor" = "NetBird"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "scratch"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "networking"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "networking"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

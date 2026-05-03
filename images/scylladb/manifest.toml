@@ -23,15 +23,15 @@ entrypoint = ["/usr/bin/scylla"]
 expose = [9042, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened ScyllaDB - extracted from official Docker image"
+"org.opencontainers.image.description" = "Evergreen hardened ScyllaDB - extracted from official Docker image"
 "org.opencontainers.image.source" = "https://github.com/scylladb/scylladb"
 "org.opencontainers.image.title" = "scylladb"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "wolfi"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "database"
-"sovereign.image.note" = "Extracted from scylladb/scylla:latest. downloads.scylladb.com GPG key URL was wrong (404)."
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "database"
+"evergreen.image.note" = "Extracted from scylladb/scylla:latest. downloads.scylladb.com GPG key URL was wrong (404)."
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

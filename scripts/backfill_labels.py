@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Backfill sovereign labels, EXPOSE 9101, and STOPSIGNAL SIGTERM into Dockerfiles missing them."""
+"""Backfill evergreen labels, EXPOSE 9101, and STOPSIGNAL SIGTERM into Dockerfiles missing them."""
 
 import re
 import glob
@@ -9,9 +9,9 @@ IMAGES_DIR = os.path.join(os.path.dirname(__file__), '..', 'images')
 DOCKERFILE_PATTERN = os.path.join(IMAGES_DIR, '*', 'Dockerfile')
 
 CHECKS = [
-    ('sovereign.base.image', r'sovereign\.base\.image\s*=\s*"'),
-    ('sovereign.metrics.native', r'sovereign\.metrics\.native\s*=\s*"'),
-    ('sovereign.health.type', r'sovereign\.health\.type\s*=\s*"'),
+    ('evergreen.base.image', r'evergreen\.base\.image\s*=\s*"'),
+    ('evergreen.metrics.native', r'evergreen\.metrics\.native\s*=\s*"'),
+    ('evergreen.health.type', r'evergreen\.health\.type\s*=\s*"'),
     ('EXPOSE 9101', r'EXPOSE\s+9101\b'),
     ('STOPSIGNAL', r'STOPSIGNAL\s+'),
 ]
@@ -76,22 +76,22 @@ def process_dockerfile(filepath):
     additions = []
     added_items = []
 
-    if 'sovereign.base.image' in missing:
+    if 'evergreen.base.image' in missing:
         if base:
-            added_items.append('sovereign.base.image')
-            additions.append(f'LABEL sovereign.base.image="{base}"')
+            added_items.append('evergreen.base.image')
+            additions.append(f'LABEL evergreen.base.image="{base}"')
         else:
-            print(f'  SKIP sovereign.base.image for {os.path.basename(os.path.dirname(filepath))} (base: {last_from})')
+            print(f'  SKIP evergreen.base.image for {os.path.basename(os.path.dirname(filepath))} (base: {last_from})')
 
-    if 'sovereign.metrics.native' in missing:
+    if 'evergreen.metrics.native' in missing:
         metrics = classify_metrics(content, base)
-        added_items.append('sovereign.metrics.native')
-        additions.append(f'LABEL sovereign.metrics.native="{metrics}"')
+        added_items.append('evergreen.metrics.native')
+        additions.append(f'LABEL evergreen.metrics.native="{metrics}"')
 
-    if 'sovereign.health.type' in missing:
+    if 'evergreen.health.type' in missing:
         health = determine_health_type(content)
-        added_items.append('sovereign.health.type')
-        additions.append(f'LABEL sovereign.health.type="{health}"')
+        added_items.append('evergreen.health.type')
+        additions.append(f'LABEL evergreen.health.type="{health}"')
 
     if 'EXPOSE 9101' in missing:
         added_items.append('EXPOSE 9101')
@@ -121,9 +121,9 @@ def main():
         return
 
     counts = {
-        'sovereign.base.image': 0,
-        'sovereign.metrics.native': 0,
-        'sovereign.health.type': 0,
+        'evergreen.base.image': 0,
+        'evergreen.metrics.native': 0,
+        'evergreen.health.type': 0,
         'EXPOSE 9101': 0,
         'STOPSIGNAL SIGTERM': 0,
     }

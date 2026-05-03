@@ -30,7 +30,7 @@ repos:
         args: [--config-file, .yamllint.yml]
 
   # =============================================================================
-  # Sovereign Hardened Image Registry - Custom Pre-commit Hooks
+  # Evergreen Hardened Image Registry - Custom Pre-commit Hooks
   # =============================================================================
   # Validates Dockerfiles against security constraints BEFORE build
   # Checks: C001, C003, C004, C010, base image priority, NO ALPINE
@@ -48,8 +48,8 @@ repos:
   # Custom constraint validator (runs locally)
   - repo: local
     hooks:
-      - id: sovereign-constraints
-        name: Sovereign Constraints (C001-C020)
+      - id: evergreen-constraints
+        name: Evergreen Constraints (C001-C020)
         description: Validate Dockerfiles against security constraints
         entry: python3 scripts/pre_commit_validator.py
         language: system

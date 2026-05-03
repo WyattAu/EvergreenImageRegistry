@@ -10,7 +10,7 @@ Patterns handled:
     1. copy_binary_only: FROM debian-slim → FROM scratch
     2. install_packages: FROM debian-slim → FROM wolfi, apt-get → apk
     3. UID 65534 → 65532
-    4. Add sovereign labels
+    4. Add evergreen labels
     5. Add EXPOSE 9101, STOPSIGNAL SIGTERM
 """
 
@@ -398,7 +398,7 @@ class DockerfileMigrator:
 
         # Update existing labels
         stage_content = re.sub(
-            r'(sovereign\.hft\.uid\s*=\s*")65534(")',
+            r'(evergreen\.hft\.uid\s*=\s*")65534(")',
             r'\g<1>65532\2',
             stage_content
         )
@@ -407,14 +407,14 @@ class DockerfileMigrator:
         append_lines = []
 
         # Base image label
-        if "sovereign.base.image" not in stage_content:
-            append_lines.append(f'LABEL sovereign.base.image="{target}"')
+        if "evergreen.base.image" not in stage_content:
+            append_lines.append(f'LABEL evergreen.base.image="{target}"')
 
         # Observability labels
-        if "sovereign.metrics.native" not in stage_content:
-            append_lines.append('LABEL sovereign.metrics.native="ztunnel"')
-        if "sovereign.health.type" not in stage_content:
-            append_lines.append('LABEL sovereign.health.type="exec"')
+        if "evergreen.metrics.native" not in stage_content:
+            append_lines.append('LABEL evergreen.metrics.native="ztunnel"')
+        if "evergreen.health.type" not in stage_content:
+            append_lines.append('LABEL evergreen.health.type="exec"')
 
         # EXPOSE 9101
         if "9101" not in stage_content:

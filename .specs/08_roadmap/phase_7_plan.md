@@ -123,10 +123,10 @@ FROM cgr.dev/chainguard/wolfi-base:latest
 
 **Problem:** 56 images were low-value placeholders that attempted full builds but provided no functional benefit over a stub. Maintaining real Dockerfiles for these consumed CI resources without producing useful images.
 
-**Fix:** Converted all 56 to minimal `FROM scratch` stubs with sovereign OCI labels:
+**Fix:** Converted all 56 to minimal `FROM scratch` stubs with evergreen OCI labels:
 ```dockerfile
 FROM scratch
-LABEL sovereign.image.status="stub"
+LABEL evergreen.image.status="stub"
 LABEL org.opencontainers.image.title="<image-name>"
 LABEL org.opencontainers.image.description="Stub placeholder"
 ```
@@ -267,7 +267,7 @@ Longer-term mitigation: reduce arm64 build scope per batch.
 | Stale URLs re-accumulate over time | HIGH | MEDIUM | Periodic URL freshness audit (suggest quarterly) | Mitigated |
 | CVE WARN-only policy masks real vulnerabilities | LOW | HIGH | Manual review of CVE reports in job summary | Accepted |
 | Runner disk exhaustion recurs | MEDIUM | MEDIUM | Aggressive docker prune; smaller batches | Mitigated |
-| Stub images confuse users expecting functional builds | LOW | LOW | Clear `sovereign.image.status="stub"` labels | Accepted |
+| Stub images confuse users expecting functional builds | LOW | LOW | Clear `evergreen.image.status="stub"` labels | Accepted |
 
 ---
 

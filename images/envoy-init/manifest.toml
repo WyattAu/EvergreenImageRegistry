@@ -1,7 +1,7 @@
 [metadata]
 name = "envoy-init"
 version = "1.38.0"
-description = "Sovereign hardened Envoy init - initialization mode for bootstrap configuration"
+description = "Evergreen hardened Envoy init - initialization mode for bootstrap configuration"
 
 [build]
 base = "scratch"
@@ -18,13 +18,13 @@ entrypoint = ["/usr/local/bin/envoy", "--mode", "init"]
 expose = [9901, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened Envoy init - initialization mode for bootstrap configuration"
+"org.opencontainers.image.description" = "Evergreen hardened Envoy init - initialization mode for bootstrap configuration"
 "org.opencontainers.image.title" = "envoy-init"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "scratch"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "proxy"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "proxy"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

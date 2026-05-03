@@ -10,7 +10,7 @@ pub async fn cmd_outdated(images_dir: &str, check_all: bool) -> Result<()> {
     }
 
     let client = reqwest::Client::builder()
-        .user_agent("sovereignctl/1.0.0")
+        .user_agent("evergreenctl/1.0.0")
         .build()?;
 
     println!("Checked: {}", chrono::Local::now().format("%Y-%m-%d %H:%M:%S UTC%:z"));

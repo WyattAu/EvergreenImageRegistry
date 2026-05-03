@@ -20,20 +20,20 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Cache sovereignctl build
+      - name: Cache evergreenctl build
         uses: actions/cache@v4
         with:
-          path: sovereignctl/target
-          key: sovereignctl-${{ runner.os }}-${{ hashFiles('sovereignctl/Cargo.lock') }}
+          path: evergreenctl/target
+          key: evergreenctl-${{ runner.os }}-${{ hashFiles('evergreenctl/Cargo.lock') }}
           restore-keys: |
-            sovereignctl-${{ runner.os }}-
+            evergreenctl-${{ runner.os }}-
 
-      - name: Build sovereignctl
-        run: cd sovereignctl && cargo build --release
+      - name: Build evergreenctl
+        run: cd evergreenctl && cargo build --release
 
       - name: Check for outdated images
         run: |
-          ./sovereignctl/target/release/sovereignctl outdated --all images/ > /tmp/outdated.txt 2>&1 || true
+          ./evergreenctl/target/release/evergreenctl outdated --all images/ > /tmp/outdated.txt 2>&1 || true
           echo "=== Outdated images ==="
           cat /tmp/outdated.txt
 

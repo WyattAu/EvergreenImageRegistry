@@ -314,7 +314,7 @@ Without AppArmor, a compromised container process can access any file within its
 ```
 #include <tunables/global>
 
-profile sovereign-nginx flags=(attach_disconnected,mediate_deleted) {
+profile evergreen-nginx flags=(attach_disconnected,mediate_deleted) {
   #include <abstractions/base>
 
   # Network access
@@ -386,7 +386,7 @@ profile sovereign-nginx flags=(attach_disconnected,mediate_deleted) {
    cat > "images/${IMAGE_NAME}/apparmor_profile" << AAEOF
    #include <tunables/global>
    
-   profile sovereign-${IMAGE_NAME} flags=(attach_disconnected,mediate_deleted) {
+   profile evergreen-${IMAGE_NAME} flags=(attach_disconnected,mediate_deleted) {
      #include <abstractions/base>
      
      # Network
@@ -442,7 +442,7 @@ profile sovereign-nginx flags=(attach_disconnected,mediate_deleted) {
    sudo apparmor_parser -r images/nginx/apparmor_profile
    
    # Test container with profile
-   docker run --rm --security-opt "apparmor=sovereign-nginx" nginx -v
+   docker run --rm --security-opt "apparmor=evergreen-nginx" nginx -v
    ```
 
 4. **CI integration**: Test each Tier 1 image with its AppArmor profile in CI:

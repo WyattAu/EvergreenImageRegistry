@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=0.9.5
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -16,17 +16,22 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 USER 65532:65532
 WORKDIR /app
 EXPOSE 6167
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/conduit"]
 LABEL org.opencontainers.image.title="conduit" \
       org.opencontainers.image.description="Conduit - lightweight Matrix homeserver written in Rust" \
       org.opencontainers.image.version="0.9.5" \
       org.opencontainers.image.vendor="Famedly" \
       org.opencontainers.image.source="https://gitlab.com/famedly/conduit" \
-      sovereign.image.tier="2" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true"
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="2" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

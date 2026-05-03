@@ -715,9 +715,9 @@ ENTRYPOINT ["/{binary}"]
 LABEL org.opencontainers.image.title="{name}" \\
       org.opencontainers.image.version="{version}" \\
       org.opencontainers.image.vendor="{vendor}" \\
-      sovereign.image.tier="1" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.scratch="true"
+      evergreen.image.tier="1" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.scratch="true"
 '''
 
 # Template for distroless images
@@ -750,9 +750,9 @@ ENTRYPOINT ["/{binary}"]
 LABEL org.opencontainers.image.title="{name}" \\
       org.opencontainers.image.version="{version}" \\
       org.opencontainers.image.vendor="{vendor}" \\
-      sovereign.image.tier="1" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.distroless="true"
+      evergreen.image.tier="1" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.distroless="true"
 '''
 
 # Template for wolfi images (when packages needed)
@@ -783,9 +783,9 @@ ENTRYPOINT ["/usr/local/bin/{binary}"]
 LABEL org.opencontainers.image.title="{name}" \\
       org.opencontainers.image.version="{version}" \\
       org.opencontainers.image.vendor="{vendor}" \\
-      sovereign.image.tier="2" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.wolfi="true"
+      evergreen.image.tier="2" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.wolfi="true"
 '''
 
 # Template for debian-slim (fallback when no other option)
@@ -812,9 +812,9 @@ ENTRYPOINT ["{binary}"]
 LABEL org.opencontainers.image.title="{name}" \\
       org.opencontainers.image.version="{version}" \\
       org.opencontainers.image.vendor="{vendor}" \\
-      sovereign.image.tier="2" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="2" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.debian_slim="true"
 '''
 
 
@@ -863,7 +863,7 @@ def generate_dockerfile(img_name, img_data):
     binary = img_data.get('binary', img_name)
     
     # Get vendor
-    vendor = img_data.get('vendor', 'Sovereign')
+    vendor = img_data.get('vendor', 'Evergreen')
     
     # Generate Dockerfile content
     content = template.format(

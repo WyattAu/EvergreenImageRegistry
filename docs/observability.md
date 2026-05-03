@@ -32,8 +32,55 @@ services:
 ### Metrics Available
 | Metric | Type | Description |
 |--------|------|-------------|
-| `sovereign_image_info` | gauge | Image version label |
-| `sovereign_up_seconds` | gauge | Uptime in seconds |
+| `evergreen_image_info` | gauge | Image version label |
+| `evergreen_up_seconds` | gauge | Uptime in seconds |
+
+## Dockerfile HEALTHCHECK Instruction
+
+Every image in the registry includes a `HEALTHCHECK` instruction in its `Dockerfile`. This provides native health
+status reporting to container runtimes without requiring external orchestration.
+
+### HTTP Application Images
+
+Images serving HTTP traffic use `curl` to check their application port:
+
+```dockerfile
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD curl -f http://localhost:8080/ || exit 1
+```
+
+### Database Images
+
+Database images use their native health-check tools to validate service readiness:
+
+| Database | HEALTHCHECK Command |
+|----------|---------------------|
+| PostgreSQL | `pg_isready -U $POSTGRES_USER` |
+| Redis | `redis-cli ping` |
+| MySQL | `mysqladmin ping -h localhost` |
+| MongoDB | `mongosh --eval "db.adminCommand('ping')"` |
+
+```dockerfile
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD pg_isready -U $POSTGRES_USER || exit 1
+```
+
+### FROM scratch Images
+
+Images built `FROM scratch` have no shell or utilities available, so they use `HEALTHCHECK NONE`:
+
+```dockerfile
+HEALTHCHECK NONE
+```
+
+### Metrics-Only Images
+
+Images that exist solely to export Prometheus metrics curl their own metrics endpoint:
+
+```dockerfile
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:9101/metrics || exit 1
+```
 
 ### Images with Native Metrics
 Images that already expose Prometheus metrics on port 9101 don't need the health-shim. These include:

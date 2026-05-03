@@ -1,7 +1,7 @@
 [metadata]
 name = "graylog"
 version = "5.1.5"
-description = "Sovereign hardened Graylog - centralized log management platform"
+description = "Evergreen hardened Graylog - centralized log management platform"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -19,20 +19,20 @@ cmd = ["run"]
 expose = [9000, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened Graylog - centralized log management platform"
+"org.opencontainers.image.description" = "Evergreen hardened Graylog - centralized log management platform"
 "org.opencontainers.image.title" = "graylog"
 "org.opencontainers.image.vendor" = "Graylog"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "wolfi"
-"sovereign.constraint.base" = "wolfi"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.hft.init-system" = "none"
-"sovereign.hft.shutdown-timeout" = "15s"
-"sovereign.hft.signal-handling" = "native"
-"sovereign.hft.startup-timeout" = "60000ms"
-"sovereign.image.category" = "observability"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.base" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "15s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "60000ms"
+"evergreen.image.category" = "observability"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

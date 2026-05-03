@@ -1,4 +1,4 @@
-# Sovereign Hardened Image Registry - Requirements Specification
+# Evergreen Hardened Image Registry - Requirements Specification
 
 ## Document Metadata
 
@@ -17,7 +17,7 @@
 
 ## Executive Summary
 
-This document specifies the comprehensive requirements for building, maintaining, and operating a sovereign hardened container image registry with 1000+ industrial-grade images. The registry follows zero-trust principles with defense-in-depth security models.
+This document specifies the comprehensive requirements for building, maintaining, and operating a evergreen hardened container image registry with 1000+ industrial-grade images. The registry follows zero-trust principles with defense-in-depth security models.
 
 ### Scope Definition
 
@@ -38,7 +38,7 @@ This document specifies the comprehensive requirements for building, maintaining
 
 ---
 
-## Part I: Mandatory Image Constraints (The Sovereign Standard)
+## Part I: Mandatory Image Constraints (The Evergreen Standard)
 
 ### 1.1 Security Constraints
 
@@ -172,8 +172,8 @@ This document specifies the comprehensive requirements for building, maintaining
 | org.opencontainers.image.revision | YES | Git hash |
 | org.opencontainers.image.authors | NO | String |
 | org.opencontainers.imagelicenses | NO | SPDX |
-| sovereign.image.tier | YES | 1, 2, or 3 |
-| sovereign.security.cve-tolerance | YES | Critical/High/Medium |
+| evergreen.image.tier | YES | 1, 2, or 3 |
+| evergreen.security.cve-tolerance | YES | Critical/High/Medium |
 
 ---
 

@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=2.12.0
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -11,11 +11,11 @@ RUN find /opt/opensearch-${VERSION}/plugins -type f -name "*.so" -exec strip --s
 RUN test -f /opt/opensearch-2.12.0 || { echo '#!/bin/sh' > /opt/opensearch-2.12.0 && echo 'echo "opensearch v${VERSION} placeholder"' >> /opt/opensearch-2.12.0 && echo 'exec sleep infinity' >> /opt/opensearch-2.12.0 && chmod +x /opt/opensearch-2.12.0; }
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 RUN [ -f /opt/opensearch-2.12.0 ] || { echo '#!/bin/sh' > /opt/opensearch-2.12.0 ; echo 'echo "opensearch v${VERSION} ready"' >> /opt/opensearch-2.12.0 ; echo 'exec sleep infinity' >> /opt/opensearch-2.12.0 ; chmod +x /opt/opensearch-2.12.0 2>/dev/null || true ; } 2>/dev/null || true
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ENV HEALTH_CMD="curl -sf http://localhost:9200" \
     READY_CMD="curl -sf http://localhost:9200" \
     STARTUP_CMD="curl -sf http://localhost:9200" \
-    SOVEREIGN_LOG_LEVEL=info
+    EVERGREEN_LOG_LEVEL=info
 
 RUN addgroup -S -g 65532 opensearch 2>/dev/null || true && \
     adduser -u 65532 -G opensearch -D -s /bin/false opensearch || true && \
@@ -39,28 +39,33 @@ ENV OPENSEARCH_HOME=/opt/opensearch \
     discovery.type=single-node \
     bootstrap.memory_lock=true \
     OPENSEARCH_INITIAL_ADMIN_PASSWORD=Admin@123456
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9200/_cluster/health
 ENTRYPOINT ["sh", "-c", "/opt/opensearch/bin/opensearch"]
 LABEL org.opencontainers.image.title="opensearch" \
       org.opencontainers.image.version="2.12.0" \
       org.opencontainers.image.vendor="OpenSearch" \
       org.opencontainers.image.description="OpenSearch - distributed search and analytics engine" \
-      sovereign.image.tier="1" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="30s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="60000ms" \
-      sovereign.hft.cpu-pins="4-7" \
-      sovereign.hft.cpu-pins-mode="exclusive" \
-      sovereign.hft.deploy-strategy="hft-stateful" \
-      sovereign.hft.pre-stop-hook="true" \
-      sovereign.hft.pre-stop-delay="30s" \
-      sovereign.hft.connection-drain="true" \
-      sovereign.hft.sched-policy="SCHED_OTHER" \
-      sovereign.hft.runtime="java" \
-      sovereign.hft.runtime-hints="Xms=Xmx,UseG1GC"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="true"
-LABEL sovereign.health.type="http"
+      evergreen.image.tier="1" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="30s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="60000ms" \
+      evergreen.hft.cpu-pins="4-7" \
+      evergreen.hft.cpu-pins-mode="exclusive" \
+      evergreen.hft.deploy-strategy="hft-stateful" \
+      evergreen.hft.pre-stop-hook="true" \
+      evergreen.hft.pre-stop-delay="30s" \
+      evergreen.hft.connection-drain="true" \
+      evergreen.hft.sched-policy="SCHED_OTHER" \
+      evergreen.hft.runtime="java" \
+      evergreen.hft.runtime-hints="Xms=Xmx,UseG1GC"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="true"
+LABEL evergreen.health.type="http"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

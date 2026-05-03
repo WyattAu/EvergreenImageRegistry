@@ -45,7 +45,7 @@ def remove_debian_slim_label(content: str) -> tuple[str, int]:
     lines = content.splitlines(keepends=True)
     new_lines = []
     for line in lines:
-        if "sovereign.constraint.debian_slim" in line:
+        if "evergreen.constraint.debian_slim" in line:
             count += 1
             stripped = line.rstrip("\n\r")
             rstripped = stripped.rstrip()
@@ -60,7 +60,7 @@ def remove_debian_slim_label(content: str) -> tuple[str, int]:
 
 def fix_base_label(content: str) -> tuple[str, str | None]:
     match = re.search(
-        r'sovereign\.constraint\.base="(debian-slim|alpine)"',
+        r'evergreen\.constraint\.base="(debian-slim|alpine)"',
         content,
     )
     if not match:
@@ -68,8 +68,8 @@ def fix_base_label(content: str) -> tuple[str, str | None]:
     actual_base = get_final_stage_base(content)
     old_val = match.group(1)
     new_content = re.sub(
-        r'sovereign\.constraint\.base="(debian-slim|alpine)"',
-        f'sovereign.constraint.base="{actual_base}"',
+        r'evergreen\.constraint\.base="(debian-slim|alpine)"',
+        f'evergreen.constraint.base="{actual_base}"',
         content,
     )
     return new_content, actual_base
@@ -107,10 +107,10 @@ def main():
         if changed:
             df.write_text(content)
 
-    print(f"=== sovereign.constraint.debian_slim ===")
+    print(f"=== evergreen.constraint.debian_slim ===")
     print(f"Removed {total_debian_slim_removed} lines across all Dockerfiles")
     print()
-    print(f"=== sovereign.constraint.base ===")
+    print(f"=== evergreen.constraint.base ===")
     print(f"Updated {sum(base_updates.values())} values:")
     for base, count in sorted(base_updates.items()):
         print(f"  {base}: {count}")

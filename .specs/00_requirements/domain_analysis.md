@@ -1,4 +1,4 @@
-# Domain Analysis - Sovereign Hardened Image Registry
+# Domain Analysis - Evergreen Hardened Image Registry
 
 ## Document Metadata
 
@@ -16,7 +16,7 @@
 
 ## 1. Executive Summary
 
-The Evergreen Image Registry is designed as a sovereign hardened container image registry providing industrial-grade security-hardened container images. The domain covers the full lifecycle of building, verifying, signing, and maintaining 1000+ container images with zero-trust security principles.
+The Evergreen Image Registry is designed as a evergreen hardened container image registry providing industrial-grade security-hardened container images. The domain covers the full lifecycle of building, verifying, signing, and maintaining 1000+ container images with zero-trust security principles.
 
 ---
 
@@ -180,7 +180,7 @@ This domain analysis confirms:
 - 100% image signing requirement
 - Continuous vulnerability rescanning requirement
 
-**Conclusion:** Domain is well-defined for sovereign hardened image registry with clear compliance requirements.
+**Conclusion:** Domain is well-defined for evergreen hardened image registry with clear compliance requirements.
 
 ---
 

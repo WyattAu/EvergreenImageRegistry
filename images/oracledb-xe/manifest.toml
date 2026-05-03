@@ -1,7 +1,7 @@
 [metadata]
 name = "oracledb-xe"
 version = "21.3.0"
-description = "Sovereign hardened Oracle DB XE - extracted from gvenzl/oracle-xe"
+description = "Evergreen hardened Oracle DB XE - extracted from gvenzl/oracle-xe"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -19,16 +19,16 @@ entrypoint = ["/opt/oracle/opt/oracle/product/21c/dbhomeXE/bin/sqlplus"]
 expose = [1521, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened Oracle DB XE - extracted from gvenzl/oracle-xe"
+"org.opencontainers.image.description" = "Evergreen hardened Oracle DB XE - extracted from gvenzl/oracle-xe"
 "org.opencontainers.image.title" = "oracledb-xe"
 "org.opencontainers.image.vendor" = "Oracle"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "wolfi"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "database"
-"sovereign.image.note" = "Extracted from gvenzl/oracle-xe:21-slim community image. Oracle license applies."
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "database"
+"evergreen.image.note" = "Extracted from gvenzl/oracle-xe:21-slim community image. Oracle license applies."
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

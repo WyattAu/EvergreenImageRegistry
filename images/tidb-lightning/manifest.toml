@@ -1,7 +1,7 @@
 [metadata]
 name = "tidb-lightning"
 version = "latest"
-description = "Sovereign hardened TiDB Lightning - high-speed TiDB data import tool"
+description = "Evergreen hardened TiDB Lightning - high-speed TiDB data import tool"
 
 [build]
 base = "scratch"
@@ -19,16 +19,16 @@ entrypoint = ["/usr/local/bin/tidb-lightning"]
 expose = [8289, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened TiDB Lightning - high-speed TiDB data import tool"
+"org.opencontainers.image.description" = "Evergreen hardened TiDB Lightning - high-speed TiDB data import tool"
 "org.opencontainers.image.title" = "tidb-lightning"
 "org.opencontainers.image.vendor" = "PingCAP"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "scratch"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "database"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "database"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

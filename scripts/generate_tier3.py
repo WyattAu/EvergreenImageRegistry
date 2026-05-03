@@ -60,7 +60,7 @@ def go_binary(name, version, vendor, url, binary_name, port, healthcheck_cmd=Non
     healthcheck = healthcheck_cmd or f'["{binary_name}", "--version"]'
     src = source_url or url.rsplit('/', 1)[0]
     write_dockerfile(name, f"""# =============================================================================
-# SOVEREIGN HARDENED {name.upper()}
+# EVERGREEN HARDENED {name.upper()}
 # Generated from template - Version: {version}
 # Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
@@ -94,13 +94,13 @@ LABEL org.opencontainers.image.title="{name}" \\
       org.opencontainers.image.version="{version}" \\
       org.opencontainers.image.vendor="{vendor}" \\
       org.opencontainers.image.source="{src}" \\
-      sovereign.image.tier="3" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.scratch="true" \\
-      sovereign.hft.signal-handling="native" \\
-      sovereign.hft.shutdown-timeout="3s" \\
-      sovereign.hft.init-system="none" \\
-      sovereign.hft.startup-timeout="3000ms"
+      evergreen.image.tier="3" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.scratch="true" \\
+      evergreen.hft.signal-handling="native" \\
+      evergreen.hft.shutdown-timeout="3s" \\
+      evergreen.hft.init-system="none" \\
+      evergreen.hft.startup-timeout="3000ms"
 """)
     write_checksums(name, version, url)
 
@@ -118,7 +118,7 @@ def python_pip(name, version, vendor, packages, port=None, entrypoint=None, extr
     src = source_url or ""
     src_label = f'\\n      org.opencontainers.image.source="{src}" \\' if src else ""
     write_dockerfile(name, f"""# =============================================================================
-# SOVEREIGN HARDENED {name.upper()}
+# EVERGREEN HARDENED {name.upper()}
 # Generated from template - Version: {version}
 # Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
@@ -144,9 +144,9 @@ ENTRYPOINT ["{ep}"]
 LABEL org.opencontainers.image.title="{name}" \\
       org.opencontainers.image.version="{version}" \\
       org.opencontainers.image.vendor="{vendor}"{src_label}
-      sovereign.image.tier="3" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.debian_slim="true"
 """)
     url = f"https://pypi.org/pypi/{packages[0]}/{version}/json" if isinstance(packages, list) and packages else ""
     write_checksums(name, version, url)
@@ -157,7 +157,7 @@ LABEL org.opencontainers.image.title="{name}" \\
 def python_git(name, version, vendor, git_url, port, healthcheck_url, entrypoint_cmd, extra_pip=None):
     pip_extra = f"&& pip3 install --no-cache-dir --break-system-packages {extra_pip} 2>/dev/null || true" if extra_pip else ""
     write_dockerfile(name, f"""# =============================================================================
-# SOVEREIGN HARDENED {name.upper()}
+# EVERGREEN HARDENED {name.upper()}
 # Generated from template - Version: {version}
 # Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
@@ -185,9 +185,9 @@ LABEL org.opencontainers.image.title="{name}" \\
       org.opencontainers.image.version="{version}" \\
       org.opencontainers.image.vendor="{vendor}" \\
       org.opencontainers.image.source="{git_url}" \\
-      sovereign.image.tier="3" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.debian_slim="true"
 """)
     write_checksums(name, version, git_url)
 
@@ -204,7 +204,7 @@ def node_js(name, version, vendor, port, healthcheck_url=None, npm_pkg=None, ent
     if npm_pkg:
         npm_line = f"""RUN npm install -g {npm_pkg} --omit=dev 2>/dev/null || true"""
     write_dockerfile(name, f"""# =============================================================================
-# SOVEREIGN HARDENED {name.upper()}
+# EVERGREEN HARDENED {name.upper()}
 # Generated from template - Version: {version}
 # Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
@@ -239,10 +239,10 @@ ENTRYPOINT ["{ep}"]
 LABEL org.opencontainers.image.title="{name}" \\
       org.opencontainers.image.version="{version}" \\
       org.opencontainers.image.vendor="{vendor}"{src_label}
-      sovereign.image.tier="3" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.debian_slim="true" \\
-      sovereign.constraint.hardened="true"
+      evergreen.image.tier="3" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.debian_slim="true" \\
+      evergreen.constraint.hardened="true"
 """)
     url = f"https://github.com/{vendor}/{name}/releases/download/v{version}" if not source_url else source_url
     write_checksums(name, version, url)
@@ -257,7 +257,7 @@ def php_app(name, version, vendor, port=80, php_exts=None, healthcheck_url="", e
     src = source_url or ""
     src_label = f'\\n      org.opencontainers.image.source="{src}" \\' if src else ""
     write_dockerfile(name, f"""# =============================================================================
-# SOVEREIGN HARDENED {name.upper()}
+# EVERGREEN HARDENED {name.upper()}
 # Generated from template - Version: {version}
 # Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
@@ -285,9 +285,9 @@ ENTRYPOINT ["{entrypoint}"]
 LABEL org.opencontainers.image.title="{name}" \\
       org.opencontainers.image.version="{version}" \\
       org.opencontainers.image.vendor="{vendor}"{src_label}
-      sovereign.image.tier="3" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.debian_slim="true"
 """)
     url = f"https://github.com/{vendor}/{name}/releases/download/v{version}" if not source_url else source_url
     write_checksums(name, version, url)
@@ -299,7 +299,7 @@ def dotnet_app(name, version, vendor, url, binary_name, port, source_url=None):
     src = source_url or ""
     src_label = f'\\n      org.opencontainers.image.source="{src}" \\' if src else ""
     write_dockerfile(name, f"""# =============================================================================
-# SOVEREIGN HARDENED {name.upper()}
+# EVERGREEN HARDENED {name.upper()}
 # Generated from template - Version: {version}
 # Constraint: debian-slim - .NET runtime required
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
@@ -330,9 +330,9 @@ ENTRYPOINT ["/app/{binary_name}"]
 LABEL org.opencontainers.image.title="{name}" \\
       org.opencontainers.image.version="{version}" \\
       org.opencontainers.image.vendor="{vendor}"{src_label}
-      sovereign.image.tier="3" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.debian_slim="true"
 """)
     write_checksums(name, version, url)
 
@@ -344,7 +344,7 @@ def java_app(name, version, vendor, url, port, jar_name=None, source_url=None):
     src = source_url or ""
     src_label = f'\\n      org.opencontainers.image.source="{src}" \\' if src else ""
     write_dockerfile(name, f"""# =============================================================================
-# SOVEREIGN HARDENED {name.upper()}
+# EVERGREEN HARDENED {name.upper()}
 # Generated from template - Version: {version}
 # Constraint: debian-slim - JRE required
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
@@ -373,9 +373,9 @@ ENTRYPOINT ["java", "-jar", "/app/{jar}"]
 LABEL org.opencontainers.image.title="{name}" \\
       org.opencontainers.image.version="{version}" \\
       org.opencontainers.image.vendor="{vendor}"{src_label}
-      sovereign.image.tier="3" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.debian_slim="true"
 """)
     write_checksums(name, version, url)
 
@@ -389,7 +389,7 @@ def cpp_binary(name, version, vendor, url, binary_name, port=None, healthcheck_c
     src = source_url or ""
     src_label = f'\\n      org.opencontainers.image.source="{src}" \\' if src else ""
     write_dockerfile(name, f"""# =============================================================================
-# SOVEREIGN HARDENED {name.upper()}
+# EVERGREEN HARDENED {name.upper()}
 # Generated from template - Version: {version}
 # Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
@@ -419,13 +419,13 @@ ENTRYPOINT ["/{binary_name}"]
 LABEL org.opencontainers.image.title="{name}" \\
       org.opencontainers.image.version="{version}" \\
       org.opencontainers.image.vendor="{vendor}"{src_label}
-      sovereign.image.tier="3" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.scratch="true" \\
-      sovereign.hft.signal-handling="native" \\
-      sovereign.hft.shutdown-timeout="3s" \\
-      sovereign.hft.init-system="none" \\
-      sovereign.hft.startup-timeout="3000ms"
+      evergreen.image.tier="3" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.scratch="true" \\
+      evergreen.hft.signal-handling="native" \\
+      evergreen.hft.shutdown-timeout="3s" \\
+      evergreen.hft.init-system="none" \\
+      evergreen.hft.startup-timeout="3000ms"
 """)
     write_checksums(name, version, url)
 
@@ -445,7 +445,7 @@ def apt_get(name, version, vendor, packages, port=None, user=None, entrypoint=No
         hc_line = f'HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \\\n    CMD ["{ep}", "--version"]'
     pkg_str = packages if isinstance(packages, str) else ' '.join(packages)
     write_dockerfile(name, f"""# =============================================================================
-# SOVEREIGN HARDENED {name.upper()}
+# EVERGREEN HARDENED {name.upper()}
 # Generated from template - Version: {version}
 # Constraint: debian-slim - system packages required
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
@@ -467,9 +467,9 @@ ENTRYPOINT ["{ep}"]
 LABEL org.opencontainers.image.title="{name}" \\
       org.opencontainers.image.version="{version}" \\
       org.opencontainers.image.vendor="{vendor}" \\
-      sovereign.image.tier="3" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.debian_slim="true"
 """)
     write_checksums(name, version, f"https://packages.debian.org/bookworm/{packages[0] if isinstance(packages, list) else packages.split()[0]}")
 
@@ -478,7 +478,7 @@ LABEL org.opencontainers.image.title="{name}" \\
 # =========================================================================
 def placeholder(name, version, vendor, note="Placeholder - no upstream binary available"):
     write_dockerfile(name, f"""# =============================================================================
-# SOVEREIGN HARDENED {name.upper()}
+# EVERGREEN HARDENED {name.upper()}
 # Generated from template - Version: {version}
 # Constraint: debian-slim - placeholder awaiting upstream integration
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
@@ -502,10 +502,10 @@ LABEL org.opencontainers.image.title="{name}" \\
       org.opencontainers.image.version="{version}" \\
       org.opencontainers.image.vendor="{vendor}" \\
       org.opencontainers.image.description="{note}" \\
-      sovereign.image.tier="3" \\
-      sovereign.image.status="placeholder" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \\
+      evergreen.image.status="placeholder" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.debian_slim="true"
 """)
     write_checksums(name, version, "")
 
@@ -514,7 +514,7 @@ LABEL org.opencontainers.image.title="{name}" \\
 # =========================================================================
 def reference(name, version, base_image, vendor, note):
     write_dockerfile(name, f"""# =============================================================================
-# SOVEREIGN HARDENED {name.upper()}
+# EVERGREEN HARDENED {name.upper()}
 # Generated from template - Version: {version}
 # Constraint: reference - delegates to {base_image}
 # =============================================================================
@@ -527,9 +527,9 @@ LABEL org.opencontainers.image.title="{name}" \\
       org.opencontainers.image.version="{version}" \\
       org.opencontainers.image.vendor="{vendor}" \\
       org.opencontainers.image.description="{note}" \\
-      sovereign.image.tier="3" \\
-      sovereign.image.status="reference" \\
-      sovereign.constraint.nonroot="true"
+      evergreen.image.tier="3" \\
+      evergreen.image.status="reference" \\
+      evergreen.constraint.nonroot="true"
 """)
     write_checksums(name, version, "")
 
@@ -793,7 +793,7 @@ python_pip("qbitmanage", "4.2.0", "QbitManage", ["qbitmanage"],
 
 # qbittorrent-nox - debian-slim compile from source
 write_dockerfile("qbittorrent-nox", """# =============================================================================
-# SOVEREIGN HARDENED QBITTORRENT-NOX
+# EVERGREEN HARDENED QBITTORRENT-NOX
 # Generated from template - Version: 5.0.3
 # Constraint: debian-slim - compile from source
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
@@ -830,9 +830,9 @@ LABEL org.opencontainers.image.title="qbittorrent-nox" \\
       org.opencontainers.image.version="5.0.3" \\
       org.opencontainers.image.vendor="qBittorrent" \\
       org.opencontainers.image.source="https://github.com/qbittorrent/qBittorrent" \\
-      sovereign.image.tier="3" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.debian_slim="true"
 """)
 write_checksums("qbittorrent-nox", "5.0.3", "https://github.com/qbittorrent/qBittorrent/archive/refs/tags/v5.0.3.tar.gz")
 
@@ -1359,7 +1359,7 @@ python_pip("scrapyd", "1.5.0", "Scrapy", ["scrapyd"],
 
 # php - debian-slim
 write_dockerfile("php", """# =============================================================================
-# SOVEREIGN HARDENED PHP
+# EVERGREEN HARDENED PHP
 # Generated from template - Version: 8.3
 # Constraint: debian-slim - PHP CLI runtime
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
@@ -1386,15 +1386,15 @@ ENTRYPOINT ["php"]
 LABEL org.opencontainers.image.title="php" \\
       org.opencontainers.image.version="8.3" \\
       org.opencontainers.image.vendor="PHP" \\
-      sovereign.image.tier="3" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.debian_slim="true"
 """)
 write_checksums("php", "8.3", "https://packages.sury.org/php/")
 
 # php-apache - debian-slim
 write_dockerfile("php-apache", """# =============================================================================
-# SOVEREIGN HARDENED PHP-APACHE
+# EVERGREEN HARDENED PHP-APACHE
 # Generated from template - Version: 8.3
 # Constraint: debian-slim - PHP + Apache2 runtime
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
@@ -1423,15 +1423,15 @@ CMD ["-DFOREGROUND"]
 LABEL org.opencontainers.image.title="php-apache" \\
       org.opencontainers.image.version="8.3" \\
       org.opencontainers.image.vendor="PHP/Apache" \\
-      sovereign.image.tier="3" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.debian_slim="true"
 """)
 write_checksums("php-apache", "8.3", "https://packages.sury.org/php/")
 
 # php-fpm - debian-slim
 write_dockerfile("php-fpm", """# =============================================================================
-# SOVEREIGN HARDENED PHP-FPM
+# EVERGREEN HARDENED PHP-FPM
 # Generated from template - Version: 8.3
 # Constraint: debian-slim - PHP-FPM runtime
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
@@ -1460,15 +1460,15 @@ CMD ["-F"]
 LABEL org.opencontainers.image.title="php-fpm" \\
       org.opencontainers.image.version="8.3" \\
       org.opencontainers.image.vendor="PHP-FPM" \\
-      sovereign.image.tier="3" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.debian_slim="true"
 """)
 write_checksums("php-fpm", "8.3", "https://packages.sury.org/php/")
 
 # composer - PHP
 write_dockerfile("composer", """# =============================================================================
-# SOVEREIGN HARDENED COMPOSER
+# EVERGREEN HARDENED COMPOSER
 # Generated from template - Version: 2.8.0
 # Constraint: scratch - static PHP binary
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
@@ -1500,19 +1500,19 @@ LABEL org.opencontainers.image.title="composer" \\
       org.opencontainers.image.version="2.8.0" \\
       org.opencontainers.image.vendor="Composer" \\
       org.opencontainers.image.source="https://github.com/composer/composer/releases" \\
-      sovereign.image.tier="3" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.scratch="true" \\
-      sovereign.hft.signal-handling="native" \\
-      sovereign.hft.shutdown-timeout="3s" \\
-      sovereign.hft.init-system="none" \\
-      sovereign.hft.startup-timeout="3000ms"
+      evergreen.image.tier="3" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.scratch="true" \\
+      evergreen.hft.signal-handling="native" \\
+      evergreen.hft.shutdown-timeout="3s" \\
+      evergreen.hft.init-system="none" \\
+      evergreen.hft.startup-timeout="3000ms"
 """)
 write_checksums("composer", "2.8.0", "https://github.com/composer/composer/releases/download/2.8.0/composer.phar")
 
 # node-alpine - NO ALPINE, use scratch
 write_dockerfile("node-alpine", """# =============================================================================
-# SOVEREIGN HARDENED NODE-ALPINE
+# EVERGREEN HARDENED NODE-ALPINE
 # Generated from template - Version: 20.12.2
 # Constraint: scratch - no Alpine, purest form
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
@@ -1546,13 +1546,13 @@ LABEL org.opencontainers.image.title="node-alpine" \\
       org.opencontainers.image.version="20.12.2" \\
       org.opencontainers.image.vendor="Node.js" \\
       org.opencontainers.image.description="Node.js runtime (Alpine banned, using scratch)" \\
-      sovereign.image.tier="3" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.scratch="true" \\
-      sovereign.hft.signal-handling="native" \\
-      sovereign.hft.shutdown-timeout="3s" \\
-      sovereign.hft.init-system="none" \\
-      sovereign.hft.startup-timeout="3000ms"
+      evergreen.image.tier="3" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.scratch="true" \\
+      evergreen.hft.signal-handling="native" \\
+      evergreen.hft.shutdown-timeout="3s" \\
+      evergreen.hft.init-system="none" \\
+      evergreen.hft.startup-timeout="3000ms"
 """)
 write_checksums("node-alpine", "20.12.2", "https://nodejs.org/dist/v20.12.2/node-v20.12.2-linux-x64.tar.xz")
 
@@ -1564,7 +1564,7 @@ node_js("pm2", "5.4.0", "PM2", 0, npm_pkg="pm2")
 
 # bundler - Ruby gem
 write_dockerfile("bundler", """# =============================================================================
-# SOVEREIGN HARDENED BUNDLER
+# EVERGREEN HARDENED BUNDLER
 # Generated from template - Version: 2.5.0
 # Constraint: debian-slim - Ruby runtime required
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
@@ -1591,9 +1591,9 @@ LABEL org.opencontainers.image.title="bundler" \\
       org.opencontainers.image.version="2.5.0" \\
       org.opencontainers.image.vendor="Ruby Bundler" \\
       org.opencontainers.image.source="https://github.com/rubygems/rubygems" \\
-      sovereign.image.tier="3" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.debian_slim="true"
 """)
 write_checksums("bundler", "2.5.0", "https://rubygems.org/gems/bundler-2.5.0.gem")
 

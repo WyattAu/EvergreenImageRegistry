@@ -1,12 +1,12 @@
-# VERSION - Sovereign Hardened Image Registry
+# VERSION - Evergreen Hardened Image Registry
 
 ## Project State
 
 | Attribute | Value |
 |-----------|-------|
-| Project Name | Sovereign Hardened Image Registry |
-| Version | 18.0.0 |
-| Phase | Production Operational |
+| Project Name | Evergreen Hardened Image Registry |
+| Version | 19.0.0 |
+| Phase | Security Hardening |
 | Status | ACTIVE |
 | Last Updated | 2026-05-03 |
 
@@ -27,13 +27,13 @@
 | Phase 6: CI Pipeline Hardening | COMPLETED | 100% |
 | Phase 7: CI Fix Campaign (27+ rounds) | COMPLETED | 100% |
 | Phase 8: Stub Elimination | COMPLETED | 100% |
-| Phase 9: Toolchain (sovereignctl) | COMPLETED | 100% |
+| Phase 9: Toolchain (evergreenctl) | COMPLETED | 100% |
 | Phase 10: Image Remediation | COMPLETED | 100% |
 | Phase 11: Security Hardening | COMPLETED | 100% |
 | Phase 12: Operational Excellence | COMPLETED | 100% |
 | Phase 13: Full Hardening Pass | COMPLETED | 100% |
 | Phase 14: Empty Shell Elimination | COMPLETED | 100% |
-| Phase 15: sovereignctl v1.0 | COMPLETED | 100% |
+| Phase 15: evergreenctl v1.0 | COMPLETED | 100% |
 | Phase 16: Cosign Production Signing | COMPLETED | 100% |
 | Phase 17: Re-wrap Conversion | COMPLETED | 100% |
 | Phase 18: Multi-Arch Support | COMPLETED | 100% |
@@ -43,8 +43,11 @@
 | Phase 22: Proof-of-Correctness Audit | COMPLETED | 100% |
 | Phase 23: Massive URL Remediation | COMPLETED | 100% |
 | Phase 24: Quality Audit & Stub Elimination | COMPLETED | 100% |
-| Phase 25: Toolchain Expansion (sovereignctl v2.0) | COMPLETED | 100% |
+| Phase 25: Toolchain Expansion (evergreenctl v2.0) | COMPLETED | 100% |
 | Phase 27: Gap Closure | COMPLETED | 100% |
+| Phase 28: Sovereign-to-Evergreen Rebrand | COMPLETED | 100% |
+| Phase 29: Security Hardening | COMPLETED | 100% |
+| Phase 30: Reproducibility (Digest Pinning) | COMPLETED | 100% |
 
 ---
 
@@ -66,6 +69,15 @@
 | Real Images (non-stub) | **997/998 (99.9%)** | 100% | **DONE** |
 | Stub Images | **1/998 (0.1%)** | 0 | **DONE** |
 | ENTRYPOINT/CMD | **972/998 (97.4%)** | 100% | Near-complete |
+| HEALTHCHECK | **997/997 (100%)** | 100% | **DONE** |
+| Active HEALTHCHECK (CMD) | **557/997 (55.9%)** | - | **DONE** |
+| HEALTHCHECK NONE (scratch/base) | **440/997 (44.1%)** | - | **DONE** |
+| CAP_DROP Label | **997/997 (100%)** | 100% | **DONE** |
+| no-new-privileges Label | **997/997 (100%)** | 100% | **DONE** |
+| Digest-Pinned FROM (all stages) | **1485/2019 (73.6%)** | 100% | Near-complete |
+| Effective Immutability | **1875/2019 (92.9%)** | 100% | Near-complete |
+| TOML Manifest Validity | **998/998 (100%)** | 100% | **DONE** |
+| Version Match (DF vs TOML) | **998/998 (100%)** | 100% | **DONE** |
 | Multi-Arch Source-Build | **25** | 100+ | In progress |
 | Multi-Arch Total (with prebuilt) | **207** | 100+ | **DONE** |
 | Manifest Coverage | **998 (100%)** | 100% | **DONE** |
@@ -82,8 +94,8 @@
 | HFT Labels (Tier-1) | 113 (100%) | 100% | **DONE** |
 | Compliance Frameworks | 5 | 5 | **DONE** |
 | ADRs | 8 | 8+ | **DONE** |
-| sovereignctl Toolchain | v2.0.0 (14 subcommands) | v2.0.0 | **DONE** |
-| sovereignctl Clippy | **0 warnings** | 0 | **DONE** |
+| evergreenctl Toolchain | v2.0.0 (14 subcommands) | v2.0.0 | **DONE** |
+| evergreenctl Clippy | **0 warnings** | 0 | **DONE** |
 | Manifest Coverage | **998 (100%)** | 100% | **DONE** |
 | Health Shim | health-shim v1.0.0 | Active | **DONE** |
 | Nightly Scan Workflow | Active (03:00 UTC) | Active | **DONE** |
@@ -117,21 +129,21 @@ download URLs. Zero images have missing checksums (for direct downloads).
 
 ## Artifact Inventory
 
-### sovereignctl Toolchain (Rust)
+### evergreenctl Toolchain (Rust)
 | Path | Description |
 |------|-------------|
-| `sovereignctl/Cargo.toml` | Rust project manifest (14 dependencies) |
-| `sovereignctl/src/manifest.rs` | TOML manifest schema (17 structs) |
-| `sovereignctl/src/discover.rs` | URL discovery via GitHub API |
-| `sovereignctl/src/verify.rs` | SHA-256/512 checksum verification |
-| `sovereignctl/src/generate.rs` | Deterministic Dockerfile generator |
-| `sovereignctl/src/audit.rs` | Stub/placeholder/error detection |
-| `sovereignctl/src/migrate.rs` | Dockerfile-to-manifest migration |
-| `sovereignctl/src/verify_all.rs` | Scan all images for checksum coverage |
-| `sovereignctl/src/outdated.rs` | Check for upstream version updates |
-| `sovereignctl/src/bump.rs` | One-command version update |
-| `sovereignctl/src/ci_diff.rs` | Classify CI changes |
-| `sovereignctl/src/main.rs` | CLI (14 subcommands) |
+| `evergreenctl/Cargo.toml` | Rust project manifest (14 dependencies) |
+| `evergreenctl/src/manifest.rs` | TOML manifest schema (17 structs) |
+| `evergreenctl/src/discover.rs` | URL discovery via GitHub API |
+| `evergreenctl/src/verify.rs` | SHA-256/512 checksum verification |
+| `evergreenctl/src/generate.rs` | Deterministic Dockerfile generator |
+| `evergreenctl/src/audit.rs` | Stub/placeholder/error detection |
+| `evergreenctl/src/migrate.rs` | Dockerfile-to-manifest migration |
+| `evergreenctl/src/verify_all.rs` | Scan all images for checksum coverage |
+| `evergreenctl/src/outdated.rs` | Check for upstream version updates |
+| `evergreenctl/src/bump.rs` | One-command version update |
+| `evergreenctl/src/ci_diff.rs` | Classify CI changes |
+| `evergreenctl/src/main.rs` | CLI (14 subcommands) |
 
 ### Documentation
 | Path | Description |

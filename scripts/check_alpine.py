@@ -2,7 +2,7 @@
 """
 CRITICAL: Check for Alpine base images
 ========================================
-Alpine Linux is NEVER allowed in Sovereign Hardened Image Registry.
+Alpine Linux is NEVER allowed in Evergreen Hardened Image Registry.
 
 This is a CRITICAL security requirement - Alpine has different
 vulnerability profiles and may not meet our zero-trust standards.

@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED PROMTAIL
+# EVERGREEN HARDENED PROMTAIL
 # Generated from template - Version: 2.9.4
 # Constraint: scratch - purest form, no shell, no package manager, smallest attack surface
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 # hadolint ignore=DL3023
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
@@ -26,16 +26,21 @@ COPY --from=builder /tmp/promtail /usr/bin/promtail
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 EXPOSE 9080 3100
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/usr/bin/promtail"]
-LABEL sovereign.image.status="functional" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="logging" \
+LABEL evergreen.image.status="functional" \
+      evergreen.image.tier="1" \
+      evergreen.image.category="logging" \
       org.opencontainers.image.title="promtail" \
-      org.opencontainers.image.description="Sovereign hardened Promtail - log collection agent for Grafana Loki" \
+      org.opencontainers.image.description="Evergreen hardened Promtail - log collection agent for Grafana Loki" \
       org.opencontainers.image.version="${VERSION}"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

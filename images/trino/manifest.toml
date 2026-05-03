@@ -1,7 +1,7 @@
 [metadata]
 name = "trino"
 version = "435"
-description = "Sovereign hardened Trino - distributed SQL query engine"
+description = "Evergreen hardened Trino - distributed SQL query engine"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -18,15 +18,15 @@ entrypoint = ["/opt/trino/bin/launcher", "run"]
 expose = [8080, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened Trino - distributed SQL query engine"
+"org.opencontainers.image.description" = "Evergreen hardened Trino - distributed SQL query engine"
 "org.opencontainers.image.title" = "trino"
 "org.opencontainers.image.vendor" = "Trino Software Foundation"
 "org.opencontainers.image.version" = "435"
-"sovereign.base.image" = "wolfi"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "database"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "database"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

@@ -34,7 +34,7 @@ ENV READY_CMD="pg_isready -h localhost -q"
 ENV STARTUP_CMD="pg_isready -h localhost"
 ENV HEALTH_TIMEOUT="5"
 ENV STARTUP_WINDOW="30"
-ENV SOVEREIGN_LOG_LEVEL="info"
+ENV EVERGREEN_LOG_LEVEL="info"
 
 COPY --from=build /build/health-shim /usr/local/bin/health-shim
 
@@ -53,7 +53,7 @@ ENTRYPOINT ["sh", "-c", "health-shim & exec docker-entrypoint.sh postgres"]
 | `LISTEN`       | NO       | :9101   | Listen address                                   |
 | `HEALTH_TIMEOUT`| NO      | 5       | Timeout per check in seconds                     |
 | `STARTUP_WINDOW`| NO      | 30      | Seconds after start during which startupz runs   |
-| `SOVEREIGN_LOG_LEVEL` | NO | info   | Log level: debug, info, warn, error              |
+| `EVERGREEN_LOG_LEVEL` | NO | info   | Log level: debug, info, warn, error              |
 
 ## Database-Specific Commands
 

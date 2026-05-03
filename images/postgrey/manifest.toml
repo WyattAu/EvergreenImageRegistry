@@ -19,7 +19,7 @@ cmd = ["--inet", "--listen=0.0.0.0:10023"]
 expose = [10023, 9101]
 
 [labels]
-"sovereign.base.image" = "wolfi"
-"sovereign.health.type" = "exec"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.health.type" = "exec"
+"evergreen.metrics.native" = "ztunnel"
 

@@ -335,8 +335,8 @@
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-standard-sovereign.base.image--wolfi-",
-      "name": "sovereign.base.image=\"wolfi\"",
+      "SPDXID": "SPDXRef-Package-standard-evergreen.base.image--wolfi-",
+      "name": "evergreen.base.image=\"wolfi\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -345,13 +345,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.base.image=\"wolfi\""
+          "referenceLocator": "pkg:alpine/evergreen.base.image=\"wolfi\""
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-standard-sovereign.health.type--none-",
-      "name": "sovereign.health.type=\"none\"",
+      "SPDXID": "SPDXRef-Package-standard-evergreen.health.type--none-",
+      "name": "evergreen.health.type=\"none\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -360,13 +360,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.health.type=\"none\""
+          "referenceLocator": "pkg:alpine/evergreen.health.type=\"none\""
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-standard-sovereign.image.category--meta-",
-      "name": "sovereign.image.category=\"meta\"",
+      "SPDXID": "SPDXRef-Package-standard-evergreen.image.category--meta-",
+      "name": "evergreen.image.category=\"meta\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -375,13 +375,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.image.category=\"meta\""
+          "referenceLocator": "pkg:alpine/evergreen.image.category=\"meta\""
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-standard-sovereign.image.note--compliance",
-      "name": "sovereign.image.note=\"Compliance",
+      "SPDXID": "SPDXRef-Package-standard-evergreen.image.note--compliance",
+      "name": "evergreen.image.note=\"Compliance",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -390,13 +390,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.image.note=\"Compliance"
+          "referenceLocator": "pkg:alpine/evergreen.image.note=\"Compliance"
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-standard-sovereign.image.status--reference-",
-      "name": "sovereign.image.status=\"reference\"",
+      "SPDXID": "SPDXRef-Package-standard-evergreen.image.status--reference-",
+      "name": "evergreen.image.status=\"reference\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -405,13 +405,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.image.status=\"reference\""
+          "referenceLocator": "pkg:alpine/evergreen.image.status=\"reference\""
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-standard-sovereign.image.tier--3-",
-      "name": "sovereign.image.tier=\"3\"",
+      "SPDXID": "SPDXRef-Package-standard-evergreen.image.tier--3-",
+      "name": "evergreen.image.tier=\"3\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -420,13 +420,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.image.tier=\"3\""
+          "referenceLocator": "pkg:alpine/evergreen.image.tier=\"3\""
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-standard-sovereign.metrics.native--ztunnel-",
-      "name": "sovereign.metrics.native=\"ztunnel\"",
+      "SPDXID": "SPDXRef-Package-standard-evergreen.metrics.native--ztunnel-",
+      "name": "evergreen.metrics.native=\"ztunnel\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -435,7 +435,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.metrics.native=\"ztunnel\""
+          "referenceLocator": "pkg:alpine/evergreen.metrics.native=\"ztunnel\""
         }
       ]
     },

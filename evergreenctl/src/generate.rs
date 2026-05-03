@@ -49,7 +49,7 @@ impl DockerfileGenerator {
         let m = &self.manifest;
         let type_str = format!("{:?}", m.image.image_type).to_lowercase();
         format!(
-            "# SOVEREIGN HARDENED {}\n# {}\n# Category: {}\n# Tier: {}",
+            "# EVERGREEN HARDENED {}\n# {}\n# Category: {}\n# Tier: {}",
             m.image.name.to_uppercase(),
             m.image.description,
             type_str,
@@ -666,11 +666,11 @@ impl DockerfileGenerator {
             labels.push(format!("org.opencontainers.image.source=\"{}\"", source_url));
         }
 
-        labels.push(format!("sovereign.image.tier=\"{}\"", m.image.tier));
-        labels.push("sovereign.constraint.nonroot=\"true\"".to_string());
+        labels.push(format!("evergreen.image.tier=\"{}\"", m.image.tier));
+        labels.push("evergreen.constraint.nonroot=\"true\"".to_string());
 
         if let Some(cat) = &m.image.category {
-            labels.push(format!("sovereign.image.category=\"{}\"", cat));
+            labels.push(format!("evergreen.image.category=\"{}\"", cat));
         }
 
         for (k, v) in &m.compliance.labels {
@@ -684,9 +684,9 @@ impl DockerfileGenerator {
         } else {
             "other"
         };
-        labels.push(format!("sovereign.base.image=\"{}\"", base_label));
+        labels.push(format!("evergreen.base.image=\"{}\"", base_label));
 
-        labels.push("sovereign.metrics.native=\"ztunnel\"".to_string());
+        labels.push("evergreen.metrics.native=\"ztunnel\"".to_string());
 
         let health_type = match m.health.health_type.as_str() {
             "http" => "http",
@@ -694,14 +694,14 @@ impl DockerfileGenerator {
             "exec" => "exec",
             _ => "none",
         };
-        labels.push(format!("sovereign.health.type=\"{}\"", health_type));
+        labels.push(format!("evergreen.health.type=\"{}\"", health_type));
 
         if m.observability.metrics_port > 0 {
-            labels.push(format!("sovereign.metrics.port=\"{}\"", m.observability.metrics_port));
+            labels.push(format!("evergreen.metrics.port=\"{}\"", m.observability.metrics_port));
         }
 
         if let Some(health_port) = m.health.port {
-            labels.push(format!("sovereign.health.port=\"{}\"", health_port));
+            labels.push(format!("evergreen.health.port=\"{}\"", health_port));
         }
 
         for chunk in labels.chunks(3) {

@@ -1,7 +1,7 @@
 [metadata]
 name = "vm-operator"
 version = "0.45.0"
-description = "Sovereign hardened VictoriaMetrics Operator - Kubernetes operator for VictoriaMetrics"
+description = "Evergreen hardened VictoriaMetrics Operator - Kubernetes operator for VictoriaMetrics"
 
 [build]
 base = "scratch"
@@ -19,16 +19,16 @@ entrypoint = ["/usr/local/bin/vm-operator"]
 expose = [8080, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened VictoriaMetrics Operator - Kubernetes operator for VictoriaMetrics"
+"org.opencontainers.image.description" = "Evergreen hardened VictoriaMetrics Operator - Kubernetes operator for VictoriaMetrics"
 "org.opencontainers.image.title" = "vm-operator"
 "org.opencontainers.image.vendor" = "VictoriaMetrics"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "scratch"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "monitoring"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "monitoring"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

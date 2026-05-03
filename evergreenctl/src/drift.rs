@@ -254,7 +254,7 @@ pub fn cmd_drift(image_dir: &str) -> Result<()> {
         ("org.opencontainers.image.version", manifest.image.version.clone()),
         ("org.opencontainers.image.description", manifest.image.description.clone()),
         ("org.opencontainers.image.vendor", manifest.image.vendor.clone()),
-        ("sovereign.image.tier", manifest.image.tier.to_string()),
+        ("evergreen.image.tier", manifest.image.tier.to_string()),
     ];
 
     let df_label_map: std::collections::HashMap<_, _> = df.labels.iter().cloned().collect();

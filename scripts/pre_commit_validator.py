@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Sovereign Hardened Image Registry - Pre-commit Dockerfile Validator
+Evergreen Hardened Image Registry - Pre-commit Dockerfile Validator
 ====================================================================
 Validates Dockerfiles against security constraints BEFORE build.
 
@@ -176,7 +176,7 @@ def main():
         print("No Dockerfiles found to validate")
         sys.exit(0)
     
-    print(f"{BLUE} Sovereign Hardened Image Registry{NC}")
+    print(f"{BLUE} Evergreen Hardened Image Registry{NC}")
     print(f"{BLUE} Pre-commit Dockerfile Validator{NC}")
     print(f"Checking {len(files)} file(s)")
     

@@ -28,15 +28,20 @@ COPY --from=builder /var/cache/ulogger /var/cache/ulogger
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
+
+HEALTHCHECK NONE
 ENTRYPOINT ["ulogger"]
 LABEL org.opencontainers.image.title="ulogger" \
       org.opencontainers.image.description="ulogger - log collection tool" \
       org.opencontainers.image.vendor="nicehash" \
       org.opencontainers.image.source="https://github.com/nicehash/ulogger" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

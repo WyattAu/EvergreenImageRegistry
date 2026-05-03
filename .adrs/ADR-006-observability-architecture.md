@@ -52,15 +52,15 @@ All images with HTTP capability serve observability on **port 9101** with these 
 │ Can the app serve TLS natively?                         │
 │   YES → App handles mTLS (Go http.ServeTLS,             │
 │          Rust axum-server::bind_rustls)                 │
-│          Certs via ENV: SOVEREIGN_TLS_CERT_PATH,        │
-│          SOVEREIGN_TLS_KEY_PATH, SOVEREIGN_TLS_CA_PATH  │
+│          Certs via ENV: EVERGREEN_TLS_CERT_PATH,        │
+│          EVERGREEN_TLS_KEY_PATH, EVERGREEN_TLS_CA_PATH  │
 │                                                         │
 │   NO  → App serves plaintext on :9101                   │
 │          ztunnel (Istio ambient) encrypts at node level  │
 │          vmagent scrapes through mesh (mTLS terminated) │
 │                                                         │
 │ No /metrics at all?                                     │
-│   → Label: sovereign.metrics.native="false"             │
+│   → Label: evergreen.metrics.native="false"             │
 │   → Only cAdvisor/container runtime metrics available    │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -75,7 +75,7 @@ All images with HTTP capability serve observability on **port 9101** with these 
 
 | Language | Framework | Output | Configuration |
 |----------|-----------|--------|---------------|
-| Go (540 images) | `log/slog` (stdlib, Go 1.21+) | JSON to stdout, one object per line | `SOVEREIGN_LOG_LEVEL` ENV var |
+| Go (540 images) | `log/slog` (stdlib, Go 1.21+) | JSON to stdout, one object per line | `EVERGREEN_LOG_LEVEL` ENV var |
 | Rust (~50 images) | `tracing` + `tracing-subscriber` JSON | JSON to stdout, one event per line | `RUST_LOG` ENV var |
 | Package-based (470 images) | Native application format | Native to stdout | Application-native ENV vars |
 

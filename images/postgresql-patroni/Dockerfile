@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED POSTGRESQL PATRONI
+# EVERGREEN HARDENED POSTGRESQL PATRONI
 # Generated from template - Version: 4.0.3
 # Constraint: debian-slim - Python runtime requires glibc + pip
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
@@ -18,7 +18,7 @@ RUN pip install --no-cache-dir --prefix=/install patroni[postgresql]=="${VERSION
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache libpq curl ca-certificates || true
 COPY --from=builder /install /usr/local
@@ -29,16 +29,21 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8008 5432
 ENV PATRONI_RESTAPI_LISTEN="0.0.0.0:8008"
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD pg_isready -h localhost -p 5432
 ENTRYPOINT ["python3", "-m", "patroni"]
 LABEL org.opencontainers.image.title="postgresql-patroni" \
       org.opencontainers.image.version="4.0.3" \
       org.opencontainers.image.description="Patroni - PostgreSQL High Availability with etcd/Consul/ZooKeeper" \
       org.opencontainers.image.vendor="Zalando" \
       org.opencontainers.image.source="https://github.com/patroni/patroni" \
-      sovereign.image.tier="1" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="1" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

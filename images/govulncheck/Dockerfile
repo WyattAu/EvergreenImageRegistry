@@ -2,7 +2,7 @@ ARG VERSION=latest
 
 FROM golang:${VERSION} AS upstream
 
-FROM golang:latest AS builder
+FROM golang@sha256:b54cbf583d390341599d7bcbc062425c081105cc5ef6d170ced98ef9d047c716 AS builder
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 RUN GOARCH=${GOARCH} go install golang.org/x/vuln/cmd/govulncheck@latest
@@ -17,15 +17,18 @@ WORKDIR /app
 
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="govulncheck"       org.opencontainers.image.description="Go vulnerability checker"       org.opencontainers.image.vendor="go-1.23"       org.opencontainers.image.source="https://github.com/go-1.23/vuln"       sovereign.image.tier="3"       sovereign.constraint.nonroot="true"       sovereign.constraint.scratch="true"
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL org.opencontainers.image.title="govulncheck"       org.opencontainers.image.description="Go vulnerability checker"       org.opencontainers.image.vendor="go-1.23"       org.opencontainers.image.source="https://github.com/go-1.23/vuln"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
 
 USER 65532:65532
 
 STOPSIGNAL SIGTERM
 
+HEALTHCHECK NONE
 ENTRYPOINT ["/govulncheck"]
 
 CMD ["--help"]

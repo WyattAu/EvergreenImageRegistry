@@ -1,6 +1,6 @@
 ARG TARGETARCH
 # =============================================================================
-# SOVEREIGN HARDENED ETCD BACKUP
+# EVERGREEN HARDENED ETCD BACKUP
 # Generated from template - Version: 3.6.10
 # Constraint: scratch - static Go binary, purest form
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
@@ -11,7 +11,7 @@ ARG BUILD_DATE
 
 # hadolint ignore=DL3023
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 ARG GITHUB_TOKEN
 ARG VERSION
@@ -29,16 +29,21 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifi
 USER 65532:65532
 WORKDIR /tmp
 EXPOSE 2379
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/etcdctl"]
-LABEL sovereign.image.status="functional" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="backup" \
+LABEL evergreen.image.status="functional" \
+      evergreen.image.tier="1" \
+      evergreen.image.category="backup" \
       org.opencontainers.image.title="etcd-backup" \
-      org.opencontainers.image.description="Sovereign hardened etcd backup - etcdctl wrapper for etcd backup and restore operations" \
+      org.opencontainers.image.description="Evergreen hardened etcd backup - etcdctl wrapper for etcd backup and restore operations" \
       org.opencontainers.image.version="${VERSION}"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

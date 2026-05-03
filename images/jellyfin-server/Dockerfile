@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN ALIAS - JELLYFIN-SERVER -> jellyfin
+# EVERGREEN ALIAS - JELLYFIN-SERVER -> jellyfin
 # Downloads Jellyfin server binary directly from official repo (no upstream image).
 # Jellyfin is a .NET application; uses wolfi base for glibc/runtime.
 # =============================================================================
@@ -7,7 +7,7 @@
 ARG VERSION=10.10.0
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=10.10.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
@@ -17,7 +17,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /tmp/jellyfin.tar.gz -C /app && rm -f /tmp/jellyfin.tar.gz && \
     chmod +x /app/jellyfin
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache ca-certificates curl icu-libs krb5-libs libgcc libstdc++ zlib 2>/dev/null || true
 RUN adduser -u 65532 -D jellyfin 2>/dev/null || true
@@ -26,6 +26,8 @@ RUN mkdir -p /config /cache /media /var/log/jellyfin-server /var/cache/jellyfin-
     chown -R 65532:65532 /config /cache /media /var/log/jellyfin-server /var/cache/jellyfin-server 2>/dev/null || true
 USER 65532:65532
 WORKDIR /config
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8096/ || exit 1
 ENTRYPOINT ["/app/jellyfin"]
 EXPOSE 8096
 
@@ -33,14 +35,17 @@ LABEL org.opencontainers.image.title="jellyfin-server" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Jellyfin" \
       org.opencontainers.image.source="https://github.com/jellyfin/jellyfin" \
-      sovereign.image.tier="2" \
-      sovereign.image.status="functional" \
-      sovereign.image.category="media" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.official="true"
+      evergreen.image.tier="2" \
+      evergreen.image.status="functional" \
+      evergreen.image.category="media" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.official="true"
 
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="none"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="none"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

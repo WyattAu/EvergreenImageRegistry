@@ -1,7 +1,7 @@
 [metadata]
 name = "hazelcast"
 version = "5.3.6"
-description = "Sovereign hardened Hazelcast - distributed in-memory computing platform"
+description = "Evergreen hardened Hazelcast - distributed in-memory computing platform"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -18,15 +18,15 @@ entrypoint = ["/opt/hazelcast/bin/hazelcast"]
 expose = [5701, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened Hazelcast - distributed in-memory computing platform"
+"org.opencontainers.image.description" = "Evergreen hardened Hazelcast - distributed in-memory computing platform"
 "org.opencontainers.image.title" = "hazelcast"
 "org.opencontainers.image.vendor" = "Hazelcast"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "wolfi"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "database"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "database"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

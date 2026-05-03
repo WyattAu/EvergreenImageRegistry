@@ -19,7 +19,7 @@ This pillar is the core philosophy of the project. The primary goal is to minimi
 ### 2.1. Distroless-First Principle
 
 Images MUST use a "distroless" base image where a suitable one exists. If a distroless base is not technically feasible
-for the application, a minimal base like Alpine Linux MUST be used. Standard distribution images (e.g., `ubuntu`,
+for the application, a minimal base like wolfi (Chainguard) MUST be used. Standard distribution images (e.g., `ubuntu`,
 `debian:slim`) are not acceptable for the final stage.
 
 - Why: This is the most effective way to reduce the attack surface. No shells, package managers, or unnecessary

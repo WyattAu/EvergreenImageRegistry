@@ -1,7 +1,7 @@
 [metadata]
 name = "pulsar-functions"
 version = "3.2.0"
-description = "Sovereign hardened Pulsar Functions Worker - serverless event processing"
+description = "Evergreen hardened Pulsar Functions Worker - serverless event processing"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -19,20 +19,20 @@ cmd = ["functions-worker"]
 expose = [8080, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened Pulsar Functions Worker - serverless event processing"
+"org.opencontainers.image.description" = "Evergreen hardened Pulsar Functions Worker - serverless event processing"
 "org.opencontainers.image.title" = "pulsar-functions"
 "org.opencontainers.image.vendor" = "Apache"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "wolfi"
-"sovereign.constraint.base" = "wolfi"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.hft.init-system" = "none"
-"sovereign.hft.shutdown-timeout" = "15s"
-"sovereign.hft.signal-handling" = "native"
-"sovereign.hft.startup-timeout" = "30000ms"
-"sovereign.image.category" = "messaging"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.base" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "15s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "30000ms"
+"evergreen.image.category" = "messaging"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

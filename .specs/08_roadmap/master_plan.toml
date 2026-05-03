@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED IMAGE REGISTRY - MASTER EXECUTION PLAN
+# EVERGREEN HARDENED IMAGE REGISTRY - MASTER EXECUTION PLAN
 # =============================================================================
 # Version: 5.0.0
 # Status: IN_PROGRESS
@@ -889,7 +889,7 @@ verification = "find images -name Dockerfile | wc -l >= 1022"
 id = "QG-8.3"
 name = "All images have OCI labels"
 status = "PASSED"
-verification = "grep -rl 'sovereign.image' images/*/Dockerfile | wc -l >= 1022"
+verification = "grep -rl 'evergreen.image' images/*/Dockerfile | wc -l >= 1022"
 [[phase_8.quality_gates.gate]]
 id = "QG-8.4"
 name = "All images have CHECKSUMS"

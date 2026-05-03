@@ -1,8 +1,8 @@
 ARG VERSION=1.41.3.9292
 
-FROM plexinc/pms-docker:latest AS upstream
+FROM plexinc/pms-docker@sha256:8b5bcdf7b506fe051aa1a0a0d464efdb3ad8c0fb1f8a4dfb27a8c489b609920c AS upstream
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache ca-certificates curl expat fontconfig freetype glib || true
 COPY --from=upstream /usr/lib/plexmediaserver /usr/lib/plexmediaserver 2>/dev/null || true
@@ -12,23 +12,28 @@ RUN mkdir -p /var/log/plex /var/cache/plex /config /transcode 2>/dev/null || tru
 USER 65532:65532
 WORKDIR /config
 EXPOSE 32400
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:32400/ || exit 1
 ENTRYPOINT ["/usr/lib/plexmediaserver/Plex Media Server"]
 LABEL org.opencontainers.image.title="plex-media-server" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Plex" \
       org.opencontainers.image.source="https://www.plex.tv/" \
-      sovereign.image.tier="2" \
-      sovereign.image.category="media-streaming" \
-      sovereign.image.status="functional" \
-      sovereign.image.note="Extracted from plexinc/pms-docker official image. Requires Plex account for activation." \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="wolfi" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="10s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="30000ms"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="2" \
+      evergreen.image.category="media-streaming" \
+      evergreen.image.status="functional" \
+      evergreen.image.note="Extracted from plexinc/pms-docker official image. Requires Plex account for activation." \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.base="wolfi" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="10s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="30000ms"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

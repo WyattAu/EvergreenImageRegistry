@@ -1,6 +1,6 @@
 ARG TARGETARCH
 
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=0.40.0
 ARG GITHUB_TOKEN
@@ -15,7 +15,7 @@ RUN [ -f /etc/ssl/certs/ca-certificates.crt ] || { echo '#!/bin/sh' > /etc/ssl/c
 RUN [ -f /app ] || { echo '#!/bin/sh' > /app ; echo 'echo "mongo-exporter v${VERSION} ready"' >> /app ; echo 'exec sleep infinity' >> /app ; chmod +x /app 2>/dev/null || true ; } 2>/dev/null || true
 RUN [ -f /var/log/mongodb_exporter ] || { echo '#!/bin/sh' > /var/log/mongodb_exporter ; echo 'echo "mongo-exporter v${VERSION} ready"' >> /var/log/mongodb_exporter ; echo 'exec sleep infinity' >> /var/log/mongodb_exporter ; chmod +x /var/log/mongodb_exporter 2>/dev/null || true ; } 2>/dev/null || true
 RUN [ -f /var/cache/mongodb_exporter ] || { echo '#!/bin/sh' > /var/cache/mongodb_exporter ; echo 'echo "mongo-exporter v${VERSION} ready"' >> /var/cache/mongodb_exporter ; echo 'exec sleep infinity' >> /var/cache/mongodb_exporter ; chmod +x /var/cache/mongodb_exporter 2>/dev/null || true ; } 2>/dev/null || true
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/mongodb_exporter /var/cache/mongodb_exporter 2>/dev/null || true
 
@@ -29,28 +29,33 @@ COPY --from=builder /var/cache/mongodb_exporter /var/cache/mongodb_exporter
 USER 65532:65532
 WORKDIR /app
 EXPOSE 9216
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/mongodb_exporter"]
 LABEL org.opencontainers.image.title="mongo-exporter" \
       org.opencontainers.image.version="0.40.0" \
       org.opencontainers.image.vendor="Percona" \
-      org.opencontainers.image.description="Sovereign hardened MongoDB Exporter (Percona) - Prometheus exporter for MongoDB" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="database" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms" \
-      sovereign.hft.cpu-pins="6-7" \
-      sovereign.hft.cpu-pins-mode="shared" \
-      sovereign.hft.deploy-strategy="standard-rolling" \
-      sovereign.hft.pre-stop-hook="false" \
-      sovereign.hft.connection-drain="false" \
-      sovereign.hft.sched-policy="SCHED_OTHER"
+      org.opencontainers.image.description="Evergreen hardened MongoDB Exporter (Percona) - Prometheus exporter for MongoDB" \
+      evergreen.image.tier="1" \
+      evergreen.image.category="database" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="3000ms" \
+      evergreen.hft.cpu-pins="6-7" \
+      evergreen.hft.cpu-pins-mode="shared" \
+      evergreen.hft.deploy-strategy="standard-rolling" \
+      evergreen.hft.pre-stop-hook="false" \
+      evergreen.hft.connection-drain="false" \
+      evergreen.hft.sched-policy="SCHED_OTHER"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

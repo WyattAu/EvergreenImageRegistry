@@ -15,7 +15,7 @@ value = 0
 unit = "count"
 type = "hard"
 source = "NIST SP 800-190"
-derivation = "Zero tolerance for critical/high per sovereign requirements"
+derivation = "Zero tolerance for critical/high per evergreen requirements"
 validation_method = "Trivy scan"
 
 [[constraints.numerical.item]]
@@ -25,7 +25,7 @@ description = "UID for non-root execution"
 value = 65534
 unit = "uid"
 type = "hard"
-source = "Sovereign requirements"
+source = "Evergreen requirements"
 derivation = "Standard nobody user UID"
 validation_method = "id command in container"
 

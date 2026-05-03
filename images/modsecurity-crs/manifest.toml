@@ -1,7 +1,7 @@
 [metadata]
 name = "modsecurity-crs"
 version = "3.3.5"
-description = "Sovereign hardened ModSecurity CRS - OWASP Core Rule Set"
+description = "Evergreen hardened ModSecurity CRS - OWASP Core Rule Set"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -18,15 +18,15 @@ entrypoint = ["/usr/sbin/apache2", "-D", "FOREGROUND"]
 expose = [80, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened ModSecurity CRS - OWASP Core Rule Set"
+"org.opencontainers.image.description" = "Evergreen hardened ModSecurity CRS - OWASP Core Rule Set"
 "org.opencontainers.image.title" = "modsecurity-crs"
 "org.opencontainers.image.vendor" = "OWASP"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "wolfi"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "security"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "security"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

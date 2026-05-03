@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED REDASH
+# EVERGREEN HARDENED REDASH
 # Generated from template - Version: 10.0.0
 # Constraint: debian-slim - Python runtime with web dependencies
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN test -f /install || { echo '#!/bin/sh' > /install && echo 'echo "redash v${VERSION} placeholder"' >> /install && echo 'exec sleep infinity' >> /install && chmod +x /install ; } || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache libpq curl ca-certificates || true
 COPY --from=builder /install /usr/local
@@ -30,16 +30,21 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 5000
 ENV REDASH_WEB_WORKERS="4"
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5000/ || exit 1
 ENTRYPOINT ["redash", "server"]
 LABEL org.opencontainers.image.title="redash" \
       org.opencontainers.image.version="10.0.0" \
       org.opencontainers.image.description="Redash - Open Source Data Visualization and Dashboards" \
       org.opencontainers.image.vendor="Redash" \
       org.opencontainers.image.source="https://github.com/getredash/redash" \
-      sovereign.image.tier="1" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="1" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

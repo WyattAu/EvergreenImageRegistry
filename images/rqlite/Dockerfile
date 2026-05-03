@@ -1,6 +1,6 @@
 ARG TARGETARCH
 # =============================================================================
-# SOVEREIGN HARDENED RQLITE
+# EVERGREEN HARDENED RQLITE
 # Generated from template - Version: 8.10.0
 # Constraint: scratch - static Go binary, purest form
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
@@ -10,7 +10,7 @@ ARG VERSION=8.10.0
 ARG BUILD_DATE
 
 
-FROM debian:bookworm-20250113-slim AS builder
+FROM debian@sha256:f70dc8d6a8b6a06824c92471a1a258030836b26b043881358b967bf73de7c5ab AS builder
 ARG TARGETARCH
 ARG GITHUB_TOKEN
 ARG VERSION
@@ -29,19 +29,24 @@ COPY --from=builder /usr/local/bin/rqlited /usr/local/bin/rqlited
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 EXPOSE 4001 4002
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/rqlited"]
 LABEL org.opencontainers.image.title="rqlite" \
-      org.opencontainers.image.description="Sovereign hardened rqlite - distributed SQLite database" \
+      org.opencontainers.image.description="Evergreen hardened rqlite - distributed SQLite database" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="rqlite" \
-      sovereign.image.status="functional" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="database" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true"
+      evergreen.image.status="functional" \
+      evergreen.image.tier="1" \
+      evergreen.image.category="database" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

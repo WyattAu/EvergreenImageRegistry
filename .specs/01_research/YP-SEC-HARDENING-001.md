@@ -19,7 +19,7 @@ tqa_level: 4
 
 ## Executive Summary
 
-This Yellow Paper establishes the theoretical foundation for sovereign container image hardening. The primary problem is building container images with zero-trust security principles that eliminate attack vectors while maintaining operational functionality.
+This Yellow Paper establishes the theoretical foundation for evergreen container image hardening. The primary problem is building container images with zero-trust security principles that eliminate attack vectors while maintaining operational functionality.
 
 **Scope:**
 - IN: Distroless and scratch base images
@@ -82,7 +82,7 @@ $$\text{Distroless} \implies (\nexists \text{/bin/sh} \land \nexists \text{/bin/
 
 ### DEF-002: Hardened Container
 
-> A container image meeting all five Sovereign Standard constraints.
+> A container image meeting all five Evergreen Standard constraints.
 
 $$\text{Hardened} \implies (U_{app} = 65534 \land F_{ro} = \text{true} \land S_{sig} = \text{true} \land C_{cve} = 0)$$
 

@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED PULSAR
+# EVERGREEN HARDENED PULSAR
 # Generated from template - Version: 3.3.0
 # Constraint: official - Apache Pulsar is complex, use official base
 #
@@ -33,12 +33,17 @@ LABEL org.opencontainers.image.title="pulsar" \
       org.opencontainers.image.version="3.3.0" \
       org.opencontainers.image.vendor="Apache" \
       org.opencontainers.image.source="https://github.com/apache/pulsar" \
-      sovereign.image.tier="2" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.official="true"
+      evergreen.image.tier="2" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.official="true"
 
-LABEL sovereign.base.image="rewrap"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="none"
+LABEL evergreen.base.image="rewrap"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="none"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM
+
+HEALTHCHECK NONE

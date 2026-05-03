@@ -1,6 +1,6 @@
 ARG VERSION=0.3.0
 
-FROM debian:bookworm-slim AS upstream
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS upstream
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wget ca-certificates unzip && \
     wget -q "https://github.com/emuell/resticbrowser/releases/download/v${VERSION}/resticbrowser-linux-amd64.zip" \
@@ -21,23 +21,28 @@ COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certif
 USER 65532:65532
 WORKDIR /app
 EXPOSE 9876
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/resticbrowser"]
 LABEL org.opencontainers.image.title="resticbrowser" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="ResticBrowser" \
       org.opencontainers.image.source="https://github.com/emuell/resticbrowser" \
-      sovereign.image.tier="2" \
-      sovereign.image.category="cloud-storage" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="scratch" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="5s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="10000ms"
+      evergreen.image.tier="2" \
+      evergreen.image.category="cloud-storage" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.base="scratch" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="5s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="10000ms"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

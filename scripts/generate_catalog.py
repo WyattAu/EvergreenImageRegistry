@@ -262,7 +262,7 @@ def scan_images():
         vendor = meta["labels"].get("org.opencontainers.image.vendor", "")
         if not vendor:
             vendor = manifest.get("vendor", "")
-        tier = meta["labels"].get("sovereign.image.tier", manifest.get("tier", ""))
+        tier = meta["labels"].get("evergreen.image.tier", manifest.get("tier", ""))
         base_image = meta["base_image"] or manifest.get("base_image", manifest.get("runtime_image", "unknown"))
 
         base_type = "scratch"
@@ -282,8 +282,8 @@ def scan_images():
         elif "chainguard" in bl:
             base_type = "wolfi"
 
-        nonroot = meta["labels"].get("sovereign.constraint.nonroot", "false") == "true"
-        hardened = meta["labels"].get("sovereign.constraint.hardened", "false") == "true"
+        nonroot = meta["labels"].get("evergreen.constraint.nonroot", "false") == "true"
+        hardened = meta["labels"].get("evergreen.constraint.hardened", "false") == "true"
 
         images.append({
             "name": name,
@@ -740,7 +740,7 @@ tr.image-row.expanded {{
     font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 }}
 
-.sovereign-label {{
+.evergreen-label {{
     color: var(--purple);
 }}
 
@@ -848,7 +848,7 @@ footer {{
 <div class="container">
     <header>
         <h1><a href="https://github.com/WyattAu/EvergreenImageRegistry">Evergreen Image Registry</a></h1>
-        <p>Sovereign, hardened container images catalog &mdash; {len(images)} images across {len(category_counts)} categories</p>
+        <p>Evergreen, hardened container images catalog &mdash; {len(images)} images across {len(category_counts)} categories</p>
         <div class="stats">
             <div class="stat-card">
                 <div class="stat-value">{len(images)}</div>
@@ -985,7 +985,7 @@ function renderLabels(labels) {{
 
     let html = "";
     const ociKeys = keys.filter(function(k) {{ return k.startsWith("org.opencontainers."); }});
-    const sovKeys = keys.filter(function(k) {{ return k.startsWith("sovereign."); }});
+    const sovKeys = keys.filter(function(k) {{ return k.startsWith("evergreen."); }});
 
     if (ociKeys.length > 0) {{
         html += "<div style='margin-bottom:8px'>";
@@ -998,7 +998,7 @@ function renderLabels(labels) {{
     if (sovKeys.length > 0) {{
         html += "<div>";
         sovKeys.forEach(function(k) {{
-            html += '<div class="kv sovereign-label"><span class="key">' + esc(k) + ":</span> <span class='val'>" + esc(labels[k]) + "</span></div>";
+            html += '<div class="kv evergreen-label"><span class="key">' + esc(k) + ":</span> <span class='val'>" + esc(labels[k]) + "</span></div>";
         }});
         html += "</div>";
     }}

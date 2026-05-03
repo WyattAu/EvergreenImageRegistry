@@ -71,7 +71,7 @@ generate_checksums() {
     local checksum_file="$dir/CHECKSUMS"
 
     echo "# SHA256 Checksums - Generated $(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$checksum_file"
-    echo "# Sovereign Air-Gap Bundle" >> "$checksum_file"
+    echo "# Evergreen Air-Gap Bundle" >> "$checksum_file"
     echo "" >> "$checksum_file"
 
     find "$dir" -type f ! -name "CHECKSUMS" ! -name "transfer-manifest.json" | sort | while read -r file; do
@@ -114,7 +114,7 @@ generate_manifest() {
 
     cat > "$manifest_file" <<MANIFEST
 {
-  "schema": "sovereign-airgap-bundle-v1",
+  "schema": "evergreen-airgap-bundle-v1",
   "generated": "${timestamp}",
   "tier": "${TIER}",
   "bundle_name": "${BUNDLE_NAME}",
@@ -187,12 +187,12 @@ if [ -z "$DEST" ]; then
     exit 1
 fi
 
-BUNDLE_NAME="sovereign-bundle-${TIER}-$(date +%Y%m%d%H%M%S)"
+BUNDLE_NAME="evergreen-bundle-${TIER}-$(date +%Y%m%d%H%M%S)"
 BUNDLE_DIR="${DEST}/${BUNDLE_NAME}"
 MANIFEST_FILE="${BUNDLE_DIR}/transfer-manifest.json"
 
 echo "=========================================="
-echo "Sovereign Air-Gap Bundle Creator"
+echo "Evergreen Air-Gap Bundle Creator"
 echo "=========================================="
 echo "Tier:       $TIER"
 echo "Bundle:     $BUNDLE_NAME"

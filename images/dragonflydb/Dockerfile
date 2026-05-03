@@ -2,7 +2,7 @@ ARG VERSION=latest
 
 FROM docker.dragonflydb.io/dragonfly:${VERSION} AS upstream
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/dragonflydb /var/cache/dragonflydb 2>/dev/null || true
 
 
@@ -18,15 +18,18 @@ WORKDIR /app
 EXPOSE 6379
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="dragonflydb" org.opencontainers.image.version="1.18.0" org.opencontainers.image.vendor="DragonflyDB" org.opencontainers.image.source="https://github.com/dragonflydb/dragonfly" sovereign.image.tier="1" sovereign.image.category="database" sovereign.image.status="functional" sovereign.constraint.nonroot="true" sovereign.constraint.scratch="true" sovereign.hft.signal-handling="native" sovereign.hft.shutdown-timeout="3s" sovereign.hft.init-system="none" sovereign.hft.startup-timeout="3000ms"
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL org.opencontainers.image.title="dragonflydb" org.opencontainers.image.version="1.18.0" org.opencontainers.image.vendor="DragonflyDB" org.opencontainers.image.source="https://github.com/dragonflydb/dragonfly" evergreen.image.tier="1" evergreen.image.category="database" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.constraint.scratch="true" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="3s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="3000ms"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
 
 USER 65532:65532
 
 STOPSIGNAL SIGTERM
 
+HEALTHCHECK NONE
 ENTRYPOINT ["/dragonfly"]
 
 CMD ["--bind", "0.0.0.0:6379"]

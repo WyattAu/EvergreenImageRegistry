@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED IMAGE REGISTRY - DAILY SECURITY SCAN
+# EVERGREEN HARDENED IMAGE REGISTRY - DAILY SECURITY SCAN
 # =============================================================================
 # Scheduled pipeline for continuous security monitoring.
 # Runs after nightly-scan.yml (03:00 UTC) to provide deeper analysis.

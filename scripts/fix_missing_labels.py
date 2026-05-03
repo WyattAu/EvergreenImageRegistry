@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fix missing sovereign.base.image labels and remove stale labels from Dockerfiles."""
+"""Fix missing evergreen.base.image labels and remove stale labels from Dockerfiles."""
 
 import re
 import sys
@@ -31,8 +31,8 @@ FILES_NEEDING_LABEL = [
 ]
 
 STALE_LABELS = [
-    'sovereign.constraint.runtime="debian-slim"',
-    'sovereign.constraint.debian_slim="true"',
+    'evergreen.constraint.runtime="debian-slim"',
+    'evergreen.constraint.debian_slim="true"',
 ]
 
 
@@ -65,7 +65,7 @@ def classify_base_image(from_line: str) -> tuple[str, bool]:
 
 
 def has_label(content: str, label_key: str) -> bool:
-    return f"sovereign.base.image=" in content
+    return f"evergreen.base.image=" in content
 
 
 def remove_stale_labels(content: str) -> tuple[str, list[str]]:
@@ -92,7 +92,7 @@ def add_base_image_label(content: str, base_value: str, needs_migration: bool) -
     insert_idx = None
     for i, line in enumerate(lines):
         stripped = line.strip()
-        if stripped.startswith("LABEL sovereign.metrics.native"):
+        if stripped.startswith("LABEL evergreen.metrics.native"):
             insert_idx = i
             break
 
@@ -100,7 +100,7 @@ def add_base_image_label(content: str, base_value: str, needs_migration: bool) -
         print(f"  WARNING: Could not find metrics label insertion point")
         return content
 
-    label_line = f'LABEL sovereign.base.image="{base_value}"'
+    label_line = f'LABEL evergreen.base.image="{base_value}"'
     if needs_migration:
         label_line = f"# TODO: migrate from unrecognized/deprecated base to wolfi or scratch\n{label_line}"
 
@@ -115,8 +115,8 @@ def process_file(rel_path: str) -> dict:
 
     content = full_path.read_text()
 
-    if has_label(content, "sovereign.base.image"):
-        return {"status": "skipped", "reason": "already has sovereign.base.image"}
+    if has_label(content, "evergreen.base.image"):
+        return {"status": "skipped", "reason": "already has evergreen.base.image"}
 
     last_from = find_last_from(content)
     if not last_from:
@@ -151,7 +151,7 @@ def scan_and_remove_stale_labels() -> list[dict]:
 
 def main():
     print("=" * 70)
-    print("Phase 1: Adding missing sovereign.base.image labels")
+    print("Phase 1: Adding missing evergreen.base.image labels")
     print("=" * 70)
 
     manual_intervention = []
@@ -163,7 +163,7 @@ def main():
         print(f"  Status: {result['status']}")
         if result["status"] == "fixed":
             print(f"  FROM:   {result['from_line']}")
-            print(f'  Label:  sovereign.base.image="{result["base_image"]}"')
+            print(f'  Label:  evergreen.base.image="{result["base_image"]}"')
             if result["needs_migration"]:
                 migration_needed.append(rel_path)
                 print(f"  *** MIGRATION NEEDED ***")

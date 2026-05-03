@@ -1,7 +1,7 @@
 [metadata]
 name = "envoy-sidecar"
 version = "1.38.0"
-description = "Sovereign hardened Envoy sidecar - service mesh sidecar proxy"
+description = "Evergreen hardened Envoy sidecar - service mesh sidecar proxy"
 
 [build]
 base = "scratch"
@@ -18,13 +18,13 @@ entrypoint = ["/usr/local/bin/envoy", "--mode", "sidecar"]
 expose = [15001, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened Envoy sidecar - service mesh sidecar proxy"
+"org.opencontainers.image.description" = "Evergreen hardened Envoy sidecar - service mesh sidecar proxy"
 "org.opencontainers.image.title" = "envoy-sidecar"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "scratch"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "sidecar"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "sidecar"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

@@ -17,11 +17,11 @@ expose = [9101]
 [labels]
 "org.opencontainers.image.description" = "Meta directory for upstream version tracking. Not a runnable container."
 "org.opencontainers.image.title" = "upstream"
-"sovereign.base.image" = "wolfi"
-"sovereign.health.type" = "none"
-"sovereign.image.category" = "meta"
-"sovereign.image.note" = "Upstream tracking directory, not a container image."
-"sovereign.image.status" = "reference"
-"sovereign.image.tier" = "3"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.health.type" = "none"
+"evergreen.image.category" = "meta"
+"evergreen.image.note" = "Upstream tracking directory, not a container image."
+"evergreen.image.status" = "reference"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
 

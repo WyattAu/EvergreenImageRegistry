@@ -1,6 +1,6 @@
 ARG TARGETARCH
 
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=${VERSION}
 ARG GITHUB_TOKEN
@@ -13,7 +13,7 @@ RUN find /tmp -name "tekton-*" -type f -executable 2>/dev/null | head -1 | xargs
 RUN test -f /tekton || { echo '#!/bin/sh' > /tekton && echo 'echo "tekton v${VERSION} ready"' >> /tekton && echo 'exec sleep infinity' >> /tekton && chmod +x /tekton; }
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/tekton 2>/dev/null || true
 
@@ -27,23 +27,28 @@ COPY --from=builder /var/log/tekton /var/log/tekton
 USER 65532:65532
 WORKDIR /app
 EXPOSE 9090
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/tekton"]
 LABEL org.opencontainers.image.title="tekton" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="TektonCD" \
       org.opencontainers.image.source="https://github.com/tektoncd/pipeline" \
-      sovereign.image.tier="1" \
-      sovereign.image.status="functional" \
-      sovereign.image.category="ci" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
+      evergreen.image.tier="1" \
+      evergreen.image.status="functional" \
+      evergreen.image.category="ci" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="3000ms"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN SCRATCH-GO
+# EVERGREEN SCRATCH-GO
 # Go source-build base image. Multi-stage: builds Go app in golang builder,
 # copies static binary to scratch-base.
 #
@@ -31,15 +31,20 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifi
 COPY --from=builder /app/app /app/app
 USER 65532:65532
 WORKDIR /app
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/app/app"]
 
 LABEL org.opencontainers.image.title="scratch-go" \
       org.opencontainers.image.description="Go source-build reference — static binary on scratch" \
       org.opencontainers.image.vendor="EvergreenImageRegistry" \
-      sovereign.image.tier="0" \
-      sovereign.image.role="base" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.runtime="go" \
-      sovereign.runtime.version="${GO_VERSION}"
+      evergreen.image.tier="0" \
+      evergreen.image.role="base" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.runtime="go" \
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
+      evergreen.runtime.version="${GO_VERSION}"
 STOPSIGNAL SIGTERM

@@ -2,7 +2,7 @@ ARG VERSION=latest
 
 FROM fluent/fluent-bit:${VERSION} AS upstream
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION=3.2.4
 RUN apk add --no-cache curl ca-certificates
@@ -14,13 +14,16 @@ WORKDIR /app
 EXPOSE 2020
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="fluent-bit" org.opencontainers.image.version="3.2.4" org.opencontainers.image.vendor="Fluent" sovereign.image.tier="1" sovereign.constraint.nonroot="true" sovereign.hft.signal-handling="native" sovereign.hft.shutdown-timeout="3s" sovereign.hft.init-system="none" sovereign.hft.startup-timeout="3000ms"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL org.opencontainers.image.title="fluent-bit" org.opencontainers.image.version="3.2.4" org.opencontainers.image.vendor="Fluent" evergreen.image.tier="1" evergreen.constraint.nonroot="true" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="3s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="3000ms"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
 
 USER 65532:65532
 
 STOPSIGNAL SIGTERM
 
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:2020/ || exit 1
 ENTRYPOINT ["fluent-bit"]

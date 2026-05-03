@@ -1,5 +1,5 @@
 ARG TARGETARCH
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=10.4.1
 RUN apt-get update && \
@@ -35,27 +35,32 @@ ENV GF_PATHS_DATA=/app/data \
     GF_LOG_LEVEL=debug \
     GF_SERVER_ROUTER_LOGGING=true \
     GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION=true
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/grafana-server"]
 LABEL org.opencontainers.image.title="grafana-dev" \
       org.opencontainers.image.version="10.4.1" \
       org.opencontainers.image.vendor="Grafana Labs" \
       org.opencontainers.image.description="Grafana OSS in development mode - debug logging, provisioning enabled" \
-      sovereign.image.tier="1" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="5s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="15000ms" \
-      sovereign.hft.cpu-pins="2-3" \
-      sovereign.hft.cpu-pins-mode="shared" \
-      sovereign.hft.deploy-strategy="recreate" \
-      sovereign.hft.pre-stop-hook="false" \
-      sovereign.hft.connection-drain="false" \
-      sovereign.hft.sched-policy="SCHED_OTHER" \
-      sovereign.hft.runtime="go" \
-      sovereign.hft.runtime-hints="GOMAXPROCS=<cores>"
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="1" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="5s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="15000ms" \
+      evergreen.hft.cpu-pins="2-3" \
+      evergreen.hft.cpu-pins-mode="shared" \
+      evergreen.hft.deploy-strategy="recreate" \
+      evergreen.hft.pre-stop-hook="false" \
+      evergreen.hft.connection-drain="false" \
+      evergreen.hft.sched-policy="SCHED_OTHER" \
+      evergreen.hft.runtime="go" \
+      evergreen.hft.runtime-hints="GOMAXPROCS=<cores>"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

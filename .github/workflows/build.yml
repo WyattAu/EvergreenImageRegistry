@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED IMAGE REGISTRY - BUILD PIPELINE v2.0
+# EVERGREEN HARDENED IMAGE REGISTRY - BUILD PIPELINE v2.0
 # =============================================================================
 # Builds, tests, signs and pushes hardened container images.
 #

@@ -185,8 +185,8 @@
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-scratch-org.opencontainers.image.description--sovereign",
-      "name": "org.opencontainers.image.description=\"Sovereign",
+      "SPDXID": "SPDXRef-Package-scratch-org.opencontainers.image.description--evergreen",
+      "name": "org.opencontainers.image.description=\"Evergreen",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -195,7 +195,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/org.opencontainers.image.description=\"Sovereign"
+          "referenceLocator": "pkg:alpine/org.opencontainers.image.description=\"Evergreen"
         }
       ]
     },
@@ -260,8 +260,8 @@
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-scratch-sovereign.image.note--stub",
-      "name": "sovereign.image.note=\"Stub",
+      "SPDXID": "SPDXRef-Package-scratch-evergreen.image.note--stub",
+      "name": "evergreen.image.note=\"Stub",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -270,13 +270,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.image.note=\"Stub"
+          "referenceLocator": "pkg:alpine/evergreen.image.note=\"Stub"
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-scratch-sovereign.image.status--stub-",
-      "name": "sovereign.image.status=\"stub\"",
+      "SPDXID": "SPDXRef-Package-scratch-evergreen.image.status--stub-",
+      "name": "evergreen.image.status=\"stub\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -285,13 +285,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.image.status=\"stub\""
+          "referenceLocator": "pkg:alpine/evergreen.image.status=\"stub\""
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-scratch-sovereign.image.tier--3-",
-      "name": "sovereign.image.tier=\"3\"",
+      "SPDXID": "SPDXRef-Package-scratch-evergreen.image.tier--3-",
+      "name": "evergreen.image.tier=\"3\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -300,7 +300,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.image.tier=\"3\""
+          "referenceLocator": "pkg:alpine/evergreen.image.tier=\"3\""
         }
       ]
     },

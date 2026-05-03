@@ -1,22 +1,27 @@
 # =============================================================================
-# SOVEREIGN BASE - MUSL
+# EVERGREEN BASE - MUSL
 # Minimal musl-based scratch image for statically-linked binaries.
 # Uses Alpine's musl libc for C/C++ static compilation targets.
 # =============================================================================
 
 
-FROM cgr.dev/chainguard/static:latest
+FROM cgr.dev/chainguard/static@sha256:77d8b8925dc27970ec2f48243f44c7a260d52c49cd778288e4ee97566e0cb75b
 
 USER 65532:65532
 LABEL org.opencontainers.image.title="musl" \
-      org.opencontainers.image.description="Sovereign musl-based static base for C/C++ compilation targets" \
-      sovereign.image.tier="3" \
-      sovereign.image.status="reference" \
-      sovereign.image.category="base" \
-      sovereign.image.note="Musl libc base for static binary builds. Use for Rust/C++ static targets."
+      org.opencontainers.image.description="Evergreen musl-based static base for C/C++ compilation targets" \
+      evergreen.image.tier="3" \
+      evergreen.image.status="reference" \
+      evergreen.image.category="base" \
+      evergreen.image.note="Musl libc base for static binary builds. Use for Rust/C++ static targets."
 
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="none"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="none"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM
+
+HEALTHCHECK NONE

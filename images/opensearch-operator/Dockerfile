@@ -8,30 +8,35 @@ COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certif
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080 8443
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/opensearch-operator"]
 LABEL org.opencontainers.image.title="opensearch-operator" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="OpenSearch" \
       org.opencontainers.image.description="OpenSearch Operator for Kubernetes" \
-      sovereign.image.tier="1" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="5s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="10000ms" \
-      sovereign.hft.cpu-pins="4-5" \
-      sovereign.hft.cpu-pins-mode="shared" \
-      sovereign.hft.deploy-strategy="standard-rolling" \
-      sovereign.hft.pre-stop-hook="true" \
-      sovereign.hft.pre-stop-delay="5s" \
-      sovereign.hft.connection-drain="true" \
-      sovereign.hft.sched-policy="SCHED_OTHER" \
-      sovereign.hft.runtime="go" \
-      sovereign.hft.runtime-hints="GOMAXPROCS=<cores>"
+      evergreen.image.tier="1" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="5s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="10000ms" \
+      evergreen.hft.cpu-pins="4-5" \
+      evergreen.hft.cpu-pins-mode="shared" \
+      evergreen.hft.deploy-strategy="standard-rolling" \
+      evergreen.hft.pre-stop-hook="true" \
+      evergreen.hft.pre-stop-delay="5s" \
+      evergreen.hft.connection-drain="true" \
+      evergreen.hft.sched-policy="SCHED_OTHER" \
+      evergreen.hft.runtime="go" \
+      evergreen.hft.runtime-hints="GOMAXPROCS=<cores>"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

@@ -7,7 +7,7 @@
 # Date: 2026-04-19
 #
 # ABSTRACT: Supply chain security is the #1 risk for military contractors and
-# sovereign infrastructure operators. This phase implements cryptographic
+# evergreen infrastructure operators. This phase implements cryptographic
 # verification of all downloaded artifacts (SHA256 checksums for ~107 images
 # using curl-based multi-stage builds), enforces Cosign keyless signing with
 # Fulcio/Rekor transparency logs, generates SLSA v3 provenance attestations,

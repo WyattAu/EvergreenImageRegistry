@@ -1,5 +1,5 @@
 ARG TARGETARCH
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=6.3.1
 ARG GITHUB_TOKEN
@@ -18,6 +18,8 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8088
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/forgejo-runner"]
 CMD ["daemon"]
 LABEL org.opencontainers.image.title="forgejo-runner" \
@@ -25,12 +27,15 @@ LABEL org.opencontainers.image.title="forgejo-runner" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Forgejo" \
       org.opencontainers.image.source="https://codeberg.org/forgejo/runner" \
-      sovereign.image.tier="2" \
-      sovereign.image.category="ci" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true"
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="tcp"
+      evergreen.image.tier="2" \
+      evergreen.image.category="ci" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="tcp"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=5.17.0
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dist.neo4j.org/neo4j-community-5.17.0-unix.tar.gz" -o /neo4j.tar.gz && \
@@ -7,14 +7,14 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dist.neo4j.org/neo4j-community
 
 # hadolint ignore=DL3023
 RUN [ -f /opt/neo4j ] || { echo '#!/bin/sh' > /opt/neo4j ; echo 'echo "neo4j-import v${VERSION} ready"' >> /opt/neo4j ; echo 'exec sleep infinity' >> /opt/neo4j ; chmod +x /opt/neo4j 2>/dev/null || true ; } 2>/dev/null || true
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 COPY --from=downloader /opt/neo4j-community-5.17.0 /opt/neo4j
 RUN mkdir -p /var/lib/neo4j /var/log/neo4j /app ; \
     chown -R 65532:65532 /var/lib/neo4j /var/log/neo4j /app /opt/neo4j
 
 # hadolint ignore=DL3023
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/neo4j /opt/neo4j
@@ -31,21 +31,26 @@ ENV PATH="${NEO4J_HOME}/bin:${JAVA_HOME}/bin:${PATH}"
 USER 65532:65532
 WORKDIR /app
 EXPOSE 7474
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/opt/neo4j/bin/neo4j-admin", "import"]
 LABEL org.opencontainers.image.title="neo4j-import" \
       org.opencontainers.image.version="5.17.0" \
       org.opencontainers.image.vendor="Neo4j" \
       org.opencontainers.image.description="Neo4j data import tool for bulk CSV/graph data loading" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="database-admin" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="1" \
+      evergreen.image.category="database-admin" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="3000ms"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

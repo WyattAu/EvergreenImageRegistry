@@ -140,9 +140,9 @@ LABEL org.opencontainers.image.title="$name" \
       org.opencontainers.image.description="$desc" \
       org.opencontainers.image.vendor="$vendor" \
       org.opencontainers.image.source="https://github.com/$repo" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true"
 DEOF
     write_checksums "$BASE/$name" "$url" "$archive" "PENDING_VERIFICATION"
 }
@@ -182,9 +182,9 @@ LABEL org.opencontainers.image.title="$name" \
       org.opencontainers.image.description="$desc" \
       org.opencontainers.image.vendor="$vendor" \
       org.opencontainers.image.source="https://github.com/$repo" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 DEOF
     write_checksums "$BASE/$name" "$url" "$archive" "PENDING_VERIFICATION"
 }
@@ -223,10 +223,10 @@ LABEL org.opencontainers.image.title="dashy-alpine" \
       org.opencontainers.image.description="Dashy - Dashboard (debian-slim, no Alpine)" \
       org.opencontainers.image.vendor="lissy93" \
       org.opencontainers.image.source="https://github.com/lissy93/dashy" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true" \
-      sovereign.constraint.no_alpine="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true" \
+      evergreen.constraint.no_alpine="true"
 EOF
 write_checksums "$BASE/dashy-alpine" \
     "https://github.com/lissy93/dashy/archive/refs/heads/master.tar.gz" \
@@ -264,9 +264,9 @@ LABEL org.opencontainers.image.title="heimdall" \
       org.opencontainers.image.description="Heimdall - Application dashboard" \
       org.opencontainers.image.vendor="LinuxServer.io" \
       org.opencontainers.image.source="https://github.com/linuxserver/Heimdall" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/heimdall" \
     "https://github.com/linuxserver/Heimdall/archive/refs/heads/master.tar.gz" \
@@ -300,9 +300,9 @@ LABEL org.opencontainers.image.title="heimdall-lite" \
       org.opencontainers.image.description="Heimdall - lite mode" \
       org.opencontainers.image.vendor="LinuxServer.io" \
       org.opencontainers.image.source="https://github.com/linuxserver/Heimdall" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/heimdall-lite" \
     "https://github.com/linuxserver/Heimdall/archive/refs/heads/master.tar.gz" \
@@ -336,9 +336,9 @@ LABEL org.opencontainers.image.title="organizer" \
       org.opencontainers.image.description="Organizr - HTPC/Homelab dashboard" \
       org.opencontainers.image.vendor="CauseFX" \
       org.opencontainers.image.source="https://github.com/causefx/Organizr" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/organizer" \
     "https://github.com/causefx/Organizr/archive/refs/heads/master.tar.gz" \
@@ -372,9 +372,9 @@ CMD ["--port", "9090"]
 LABEL org.opencontainers.image.title="cockpit" \
       org.opencontainers.image.description="Cockpit - Web-based server management" \
       org.opencontainers.image.vendor="Red Hat" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_nopkg "$BASE/cockpit"
 
@@ -392,9 +392,9 @@ WORKDIR /app
 ENTRYPOINT ["docker-clean"]
 LABEL org.opencontainers.image.title="docker-clean" \
       org.opencontainers.image.description="Docker cleanup script" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_placeholder "$BASE/docker-clean"
 
@@ -416,9 +416,9 @@ WORKDIR /app
 ENTRYPOINT ["docker-gc"]
 LABEL org.opencontainers.image.title="docker-gc" \
       org.opencontainers.image.description="Docker garbage collection script" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_placeholder "$BASE/docker-gc"
 

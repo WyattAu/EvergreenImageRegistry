@@ -1,7 +1,7 @@
 [metadata]
 name = "rqlite"
 version = "8.10.0"
-description = "Sovereign hardened rqlite - distributed SQLite database"
+description = "Evergreen hardened rqlite - distributed SQLite database"
 
 [build]
 base = "scratch"
@@ -18,16 +18,16 @@ entrypoint = ["/usr/local/bin/rqlited"]
 expose = [4001, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened rqlite - distributed SQLite database"
+"org.opencontainers.image.description" = "Evergreen hardened rqlite - distributed SQLite database"
 "org.opencontainers.image.title" = "rqlite"
 "org.opencontainers.image.vendor" = "rqlite"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "scratch"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "database"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "database"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

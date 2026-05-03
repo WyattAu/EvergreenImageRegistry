@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED AUTHELIA-LITE
+# EVERGREEN HARDENED AUTHELIA-LITE
 # Constraint: scratch - pure static Go/musl binary
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
@@ -9,7 +9,7 @@ ARG BUILD_DATE
 
 # hadolint ignore=DL3023
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
@@ -24,21 +24,26 @@ ARG VERSION=4.39.19
 COPY --from=builder /tmp/authelia /usr/local/bin/authelia
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 EXPOSE 80 443
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/authelia"]
 LABEL org.opencontainers.image.title="authelia-lite" \
       org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.description="Sovereign hardened Authelia-lite - lightweight SSO/2FA authentication portal" \
+      org.opencontainers.image.description="Evergreen hardened Authelia-lite - lightweight SSO/2FA authentication portal" \
       org.opencontainers.image.vendor="Authelia" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="security" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s"
+      evergreen.image.tier="1" \
+      evergreen.image.category="security" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

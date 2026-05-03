@@ -1,8 +1,8 @@
 [package]
-name = "sovereignctl"
+name = "evergreenctl"
 version = "1.0.0"
 edition = "2021"
-description = "Sovereign image registry management toolchain"
+description = "Evergreen image registry management toolchain"
 
 [dependencies]
 toml = "0.8"
@@ -27,9 +27,9 @@ semver = "1"
 chrono = "0.4"
 
 [[bin]]
-name = "sovereignctl"
+name = "evergreenctl"
 path = "src/main.rs"
 
 [lib]
-name = "sovereignctl"
+name = "evergreenctl"
 path = "src/lib.rs"

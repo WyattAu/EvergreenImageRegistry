@@ -3,7 +3,9 @@ ARG VERSION=latest
 FROM golang:${VERSION} AS upstream
 
 FROM golang:latest AS builder
-RUN go install golang.org/x/vuln/cmd/govulncheck@latest
+ARG TARGETARCH
+ARG GOARCH=${TARGETARCH}
+RUN GOARCH=${GOARCH} go install golang.org/x/vuln/cmd/govulncheck@latest
 
 
 FROM scratch

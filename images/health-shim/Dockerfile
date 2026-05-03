@@ -1,8 +1,10 @@
 FROM golang:1.23-bookworm AS builder
 ARG VERSION=1.0.0
+ARG TARGETARCH
+ARG GOARCH=${TARGETARCH}
 WORKDIR /src
 COPY health-shim.go .
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /health-shim .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build -ldflags="-s -w" -o /health-shim .
 
 FROM scratch
 COPY --from=builder /health-shim /health-shim

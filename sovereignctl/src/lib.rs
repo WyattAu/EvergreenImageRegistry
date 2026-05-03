@@ -8,3 +8,6 @@ pub mod verify_all;
 pub mod outdated;
 pub mod bump;
 pub mod ci_diff;
+pub mod drift;
+pub mod sign;
+pub mod snapshot;

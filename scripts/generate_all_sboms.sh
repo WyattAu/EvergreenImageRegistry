@@ -6,9 +6,12 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 IMAGE_DIR="${REPO_ROOT}/images"
 GENERATOR="${SCRIPT_DIR}/generate_sbom.sh"
 
+SKIP_UNCHANGED="${SKIP_UNCHANGED:-true}"
+
 total=0
 success=0
 skipped=0
+cached=0
 failed=0
 failed_list=""
 
@@ -24,6 +27,23 @@ for image_dir in "${IMAGE_DIR}"/*/; do
   if ! ${has_dockerfile} && ! ${has_manifest}; then
     ((skipped++)) || true
     continue
+  fi
+
+  sbom_file="${image_dir}/sbom.spdx.json"
+
+  if [[ "${SKIP_UNCHANGED}" == "true" && -f "${sbom_file}" ]]; then
+    newest_source=""
+    [[ "${has_dockerfile}" == "true" ]] && newest_source="${image_dir}/Dockerfile"
+    [[ "${has_manifest}" == "true" ]] && {
+      if [[ -z "${newest_source}" ]] || [[ "${image_dir}/manifest.toml" -nt "${newest_source}" ]]; then
+        newest_source="${image_dir}/manifest.toml"
+      fi
+    }
+    if [[ -n "${newest_source}" ]] && [[ "${sbom_file}" -nt "${newest_source}" ]]; then
+      echo "SKIP (cached): ${image_name}"
+      ((cached++)) || true
+      continue
+    fi
   fi
 
   ((total++)) || true
@@ -44,8 +64,9 @@ echo "========================================"
 echo "SBOM Generation Summary"
 echo "========================================"
 echo "  Processed: ${total}"
-echo "  Succeeded: ${success}"
+echo "  Cached:    ${cached}"
 echo "  Skipped:   ${skipped}"
+echo "  Succeeded: ${success}"
 echo "  Failed:    ${failed}"
 
 if [[ ${failed} -gt 0 ]]; then

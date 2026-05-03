@@ -1,11 +1,13 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.16.2
 ARG GITHUB_TOKEN
+ARG TARGETARCH
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
-    "https://github.com/stalwartlabs/stalwart/releases/download/v${VERSION}/stalwart-x86_64-unknown-linux-musl.tar.gz" \
+RUN TARGETVARIANT=$(case "${TARGETARCH}" in amd64) echo "x86_64";; arm64) echo "aarch64";; esac) && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
+    "https://github.com/stalwartlabs/stalwart/releases/download/v${VERSION}/stalwart-${TARGETVARIANT}-unknown-linux-musl.tar.gz" \
     -o /tmp/stalwart.tar.gz && \
     tar -xzf /tmp/stalwart.tar.gz -C /tmp && \
     mv /tmp/stalwart /usr/local/bin/stalwart && \

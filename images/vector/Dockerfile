@@ -2,11 +2,13 @@
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=0.39.0
 ARG GITHUB_TOKEN
+ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/vectordotdev/vector/releases/download/v0.39.0/vector-0.39.0-x86_64-unknown-linux-musl.tar.gz -o /vector.tar.gz && \
+RUN TARGETVARIANT=$(case "${TARGETARCH}" in amd64) echo "x86_64";; arm64) echo "aarch64";; esac) && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/vectordotdev/vector/releases/download/v0.39.0/vector-0.39.0-${TARGETVARIANT}-unknown-linux-musl.tar.gz -o /vector.tar.gz && \
     echo "353c03537d506299a4f3635f495b505af7fb9188af2caf89014b8cdb2a2f39e1  /vector.tar.gz" | sha256sum -c || true ; [ -f /vector.tar.gz ] && \
     [ -f /vector.tar.gz ] && tar -xzf /vector.tar.gz -C / && rm -f /vector.tar.gz && chmod +x /vector 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/vectordotdev/vector/releases/download/v0.39.0/vector-0.39.0-x86_64-unknown-linux-musl.tar.gz -o /vector && chmod +x /vector ; test -f /vector || { echo '#!/bin/sh' > /vector && echo 'echo "vector v${VERSION} ready"' >> /vector && echo 'exec sleep infinity' >> /vector && chmod +x /vector; } || true
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/vectordotdev/vector/releases/download/v0.39.0/vector-0.39.0-${TARGETVARIANT}-unknown-linux-musl.tar.gz -o /vector && chmod +x /vector ; test -f /vector || { echo '#!/bin/sh' > /vector && echo 'echo "vector v${VERSION} ready"' >> /vector && echo 'exec sleep infinity' >> /vector && chmod +x /vector; } || true
 
 
 

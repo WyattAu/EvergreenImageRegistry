@@ -1,0 +1,601 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT-mysql-backup",
+  "name": "evergreen-mysql-backup",
+  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/mysql-backup",
+  "creationInfo": {
+    "created": "2026-05-03T15:26:07Z",
+    "creators": [
+      "Tool: evergreen-sbom-generator"
+    ]
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-debian-bookworm-slim",
+      "name": "debian:bookworm-slim",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-cgr.dev-chainguard-wolfi-base-latest",
+      "name": "cgr.dev/chainguard/wolfi-base:latest",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup-default-mysql-client",
+      "name": "default-mysql-client",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/default-mysql-client"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup-xz-utils",
+      "name": "xz-utils",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/xz-utils"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup----mysql-host--mysql-host",
+      "name": "\"${MYSQL_HOST:?MYSQL_HOST",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/\"${MYSQL_HOST:?MYSQL_HOST"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup----mysql-password--mysql-password",
+      "name": "\"${MYSQL_PASSWORD:?MYSQL_PASSWORD",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/\"${MYSQL_PASSWORD:?MYSQL_PASSWORD"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup----mysql-user--mysql-user",
+      "name": "\"${MYSQL_USER:?MYSQL_USER",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/\"${MYSQL_USER:?MYSQL_USER"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup----bin-sh",
+      "name": "#!/bin/sh",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/#!/bin/sh"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup---mysql-database----mysql-database--",
+      "name": "${MYSQL_DATABASE:+\"$MYSQL_DATABASE\"}",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/${MYSQL_DATABASE:+\"$MYSQL_DATABASE\"}"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup---mysql-database----all-databases-",
+      "name": "${MYSQL_DATABASE:---all-databases}",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/${MYSQL_DATABASE:---all-databases}"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup---y-m-d--h-m-s--",
+      "name": "+%Y%m%d_%H%M%S)\"",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/+%Y%m%d_%H%M%S)\""
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup---chown-65532-65532",
+      "name": "--chown=65532:65532",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/--chown=65532:65532"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup---from-builder",
+      "name": "--from=builder",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/--from=builder"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup---host---mysql-host-",
+      "name": "--host=\"$MYSQL_HOST\"",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/--host=\"$MYSQL_HOST\""
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup---password---mysql-password-",
+      "name": "--password=\"$MYSQL_PASSWORD\"",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/--password=\"$MYSQL_PASSWORD\""
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup---routines",
+      "name": "--routines",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/--routines"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup---single-transaction",
+      "name": "--single-transaction",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/--single-transaction"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup---triggers",
+      "name": "--triggers",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/--triggers"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup---user---mysql-user-",
+      "name": "--user=\"$MYSQL_USER\"",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/--user=\"$MYSQL_USER\""
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup--eu",
+      "name": "-eu",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/-eu"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup--app",
+      "name": "/app",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine//app"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup--app-backup.sh",
+      "name": "/app/backup.sh",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine//app/backup.sh"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup--backups",
+      "name": "/backups",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine//backups"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup--var-cache-mysql-backup",
+      "name": "/var/cache/mysql-backup",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine//var/cache/mysql-backup"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup--var-log-mysql-backup",
+      "name": "/var/log/mysql-backup",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine//var/log/mysql-backup"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup-65532-65532",
+      "name": "65532:65532",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/65532:65532"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup--",
+      "name": ":",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/:"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup----script-",
+      "name": "<<'SCRIPT'",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/<<'SCRIPT'"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup-copy",
+      "name": "COPY",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/COPY"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup-output---backups---mysql-database--all----timestamp-.sql.xz-",
+      "name": "OUTPUT=\"/backups/${MYSQL_DATABASE:-all}_${TIMESTAMP}.sql.xz\"",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/OUTPUT=\"/backups/${MYSQL_DATABASE:-all}_${TIMESTAMP}.sql.xz\""
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup-timestamp----date",
+      "name": "TIMESTAMP=\"$(date",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/TIMESTAMP=\"$(date"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup-user",
+      "name": "USER",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/USER"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup-workdir",
+      "name": "WORKDIR",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/WORKDIR"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup-ca-certificates",
+      "name": "ca-certificates",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/ca-certificates"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup-curl",
+      "name": "curl",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/curl"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup-is",
+      "name": "is",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/is"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup-mysqldump",
+      "name": "mysqldump",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/mysqldump"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup-required--",
+      "name": "required}\"",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/required}\""
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup-set",
+      "name": "set",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/set"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-mysql-backup-mysql-backup-8.0-linux-amd64",
+      "name": "mysql-backup-8.0-linux-amd64",
+      "downloadLocation": "https://github.com/mysql-backup/mysql-backup/releases/download/v8.0/mysql-backup-8.0-linux-amd64.tar.gz",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION",
+      "originator": "Community"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT-mysql-backup",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-mysql-backup"
+    }
+  ]
+}

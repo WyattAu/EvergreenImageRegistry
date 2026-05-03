@@ -1,0 +1,46 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT-minio-console",
+  "name": "evergreen-minio-console",
+  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/minio-console",
+  "creationInfo": {
+    "created": "2026-05-03T15:26:07Z",
+    "creators": [
+      "Tool: evergreen-sbom-generator"
+    ]
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-minio-minio-release.2025-10-15t17-29-55z",
+      "name": "minio/minio:RELEASE.2025-10-15T17-29-55Z",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-scratch",
+      "name": "scratch",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-minio-console-minio-release.2025-10-15t17-29-55z",
+      "name": "minio:RELEASE.2025-10-15T17-29-55Z",
+      "downloadLocation": "minio/minio:RELEASE.2025-10-15T17-29-55Z",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION",
+      "originator": "MinIO"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT-minio-console",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-minio-console"
+    }
+  ]
+}

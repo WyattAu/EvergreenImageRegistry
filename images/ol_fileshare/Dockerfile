@@ -25,3 +25,4 @@ LABEL sovereign.metrics.native="ztunnel"
 LABEL sovereign.health.type="none"
 EXPOSE 9101
 STOPSIGNAL SIGTERM
+CMD ["/bin/sh"]

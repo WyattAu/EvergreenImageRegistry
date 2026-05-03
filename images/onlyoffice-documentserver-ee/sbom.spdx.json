@@ -1,0 +1,601 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT-onlyoffice-documentserver-ee",
+  "name": "evergreen-onlyoffice-documentserver-ee",
+  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/onlyoffice-documentserver-ee",
+  "creationInfo": {
+    "created": "2026-05-03T15:26:07Z",
+    "creators": [
+      "Tool: evergreen-sbom-generator"
+    ]
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-debian-bookworm-slim",
+      "name": "debian:bookworm-slim",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-cgr.dev-chainguard-wolfi-base-latest",
+      "name": "cgr.dev/chainguard/wolfi-base:latest",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-ca-certificates",
+      "name": "ca-certificates",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/ca-certificates"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-curl",
+      "name": "curl",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/curl"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-fontconfig",
+      "name": "fontconfig",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/fontconfig"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-fonts-crosextra-carlito",
+      "name": "fonts-crosextra-carlito",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/fonts-crosextra-carlito"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-fonts-dejavu",
+      "name": "fonts-dejavu",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/fonts-dejavu"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-fonts-liberation",
+      "name": "fonts-liberation",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/fonts-liberation"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-fonts-takao-gothic",
+      "name": "fonts-takao-gothic",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/fonts-takao-gothic"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-gdebi-core",
+      "name": "gdebi-core",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/gdebi-core"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-libcairo2",
+      "name": "libcairo2",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/libcairo2"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-libcurl4",
+      "name": "libcurl4",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/libcurl4"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-libglib2.0-0",
+      "name": "libglib2.0-0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/libglib2.0-0"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-libjpeg62-turbo",
+      "name": "libjpeg62-turbo",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/libjpeg62-turbo"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-libpng16-16",
+      "name": "libpng16-16",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/libpng16-16"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-libpoppler97",
+      "name": "libpoppler97",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/libpoppler97"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-libpq5",
+      "name": "libpq5",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/libpq5"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-libssl3",
+      "name": "libssl3",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/libssl3"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-libtiff5",
+      "name": "libtiff5",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/libtiff5"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-libxml2-utils",
+      "name": "libxml2-utils",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/libxml2-utils"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-libxslt1.1",
+      "name": "libxslt1.1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/libxslt1.1"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-bzip2-libs",
+      "name": "bzip2-libs",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/bzip2-libs"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-freetype",
+      "name": "freetype",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/freetype"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-glib",
+      "name": "glib",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/glib"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-graphite2",
+      "name": "graphite2",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/graphite2"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-harfbuzz",
+      "name": "harfbuzz",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/harfbuzz"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-libcurl",
+      "name": "libcurl",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/libcurl"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-libgcc",
+      "name": "libgcc",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/libgcc"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-libjpeg-turbo",
+      "name": "libjpeg-turbo",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/libjpeg-turbo"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-libpng",
+      "name": "libpng",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/libpng"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-libstdc--",
+      "name": "libstdc++",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/libstdc++"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-libtiff",
+      "name": "libtiff",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/libtiff"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-libwebp",
+      "name": "libwebp",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/libwebp"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-libxml2",
+      "name": "libxml2",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/libxml2"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-libxslt",
+      "name": "libxslt",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/libxslt"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-openssl-libs",
+      "name": "openssl-libs",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/openssl-libs"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-postgresql-libs",
+      "name": "postgresql-libs",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/postgresql-libs"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-tzdata",
+      "name": "tzdata",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/tzdata"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-zlib",
+      "name": "zlib",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/zlib"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-onlyoffice-documentserver-ee-onlyoffice-documentserver-ee-amd64.deb",
+      "name": "onlyoffice-documentserver-ee-amd64.deb",
+      "downloadLocation": "https://download.onlyoffice.com/documentserver/linux/onlyoffice-documentserver-ee-amd64.deb",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION",
+      "originator": "ONLYOFFICE"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT-onlyoffice-documentserver-ee",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-onlyoffice-documentserver-ee"
+    }
+  ]
+}

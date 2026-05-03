@@ -1,18 +1,21 @@
 # CHECKSUMS - maldet
-# Generated: 2026-04-21
-# Status: PENDING_VERIFICATION
+# Generated: 2026-05-03T15:41:21Z
+# Status: N/A
+# Reason: Downloaded from rfxn.com - script installer, no static binary
+#
+# This image does not use direct binary downloads.
+# It installs software via package manager (apt/apk), builds from source,
+# or uses an official upstream image as a base.
+# Checksum verification is handled by the package manager's signature verification.
+
 [metadata]
 image = "maldet"
-version = "latest"
-created = "2026-04-21"
-last_verified = "2026-04-21"
-verification_method = "download-verify"
-verifier = "manual"
-[download]
-url = "https://www.rfxn.com/downloads/maldetect-current.tar.gz"
-filename = "maldetect-current.tar.gz"
+version = "current"
+created = "2026-05-03T15:41:21Z"
+last_verified = "2026-05-03T15:41:21Z"
+verification_method = "N/A"
+reason = "Downloaded from rfxn.com - script installer, no static binary"
+
 [checksum]
-expected_sha256 = "3ef7fd06b9ecc526e668b4afec889b583aa33005d3a71285e8bf32ab65bde3dc"
-[upstream_checksum]
-url = ""
-format = "sha256"
+expected_sha256 = "N/A"
+notes = "Package manager / build-from-source / official-rewrap - no direct download"

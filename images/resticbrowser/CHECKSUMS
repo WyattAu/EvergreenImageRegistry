@@ -1,25 +1,24 @@
 # CHECKSUMS - resticbrowser
-# Status: UNFIXABLE
-# Note: GitHub repo emuell/resticbrowser is deleted (404).
-# No known fork with releases. Stub will be created at build time.
+# Generated: 2026-05-03T15:41:21Z
+# Status: UPSTREAM_DEAD
+# Reason: Repository github.com/emuell/resticbrowser has been deleted/moved (404)
+#
+# The upstream download URL returns 404.
+# The repository may have been deleted, renamed, or moved.
+# Action required: find new upstream source or remove this image.
 
 [metadata]
 image = "resticbrowser"
 version = "0.3.0"
-created = "2026-05-02T00:00:00Z"
-last_verified = "2026-05-02T00:00:00Z"
-verification_method = "stub"
-verifier = "manual"
+created = "2026-05-03T15:41:21Z"
+last_verified = "2026-05-03T15:41:21Z"
+verification_method = "UPSTREAM_DEAD"
+reason = "Repository github.com/emuell/resticbrowser has been deleted/moved (404)"
 
 [download]
-url = "https://github.com/emuell/resticbrowser"
-filename = "resticbrowser"
+url = "https://github.com/emuell/resticbrowser/releases/download/v0.3.0/resticbrowser-linux-amd64.zip"
+filename = ""
 
 [checksum]
-expected_sha256 = "STUB"
-note = "Upstream repo deleted. Image will contain a stub placeholder."
-
-[upstream_checksum]
-url = ""
-format = ""
-note = "No upstream available - repo deleted"
+expected_sha256 = "UPSTREAM_DEAD"
+notes = "Repository github.com/emuell/resticbrowser has been deleted/moved (404)"

@@ -19,6 +19,7 @@ RUN if [ -f /tmp/yarr/go.mod ]; then \
     fi
 
 FROM debian:bookworm-slim AS builder
+ARG TARGETARCH
 RUN mkdir -p /app /var/log/yarr /var/cache/yarr 2>/dev/null || true
 
 FROM scratch

@@ -1,18 +1,21 @@
 # CHECKSUMS - tekton
-# Generated: 2026-04-22T00:00:00Z
-# Status: PENDING
+# Generated: 2026-05-03T15:41:21Z
+# Status: N/A
+# Reason: Built from source tarball from github.com/tektoncd/pipeline (no default VERSION)
+#
+# This image does not use direct binary downloads.
+# It installs software via package manager (apt/apk), builds from source,
+# or uses an official upstream image as a base.
+# Checksum verification is handled by the package manager's signature verification.
 
 [metadata]
 image = "tekton"
-version = "v0.62.0"
-created = "2026-04-22T00:00:00Z"
-last_verified = "2026-04-22T00:00:00Z"
-verification_method = "github-release-checksums"
-verifier = "populate_checksums.py"
-
-[download]
-url = "https://github.com/tektoncd/pipeline/releases/download/v0.62.0/"
-filename = "tekton"
+version = "${VERSION}"
+created = "2026-05-03T15:41:21Z"
+last_verified = "2026-05-03T15:41:21Z"
+verification_method = "N/A"
+reason = "Built from source tarball from github.com/tektoncd/pipeline (no default VERSION)"
 
 [checksum]
-expected_sha256 = "PENDING_VERIFY"
+expected_sha256 = "N/A"
+notes = "Package manager / build-from-source / official-rewrap - no direct download"

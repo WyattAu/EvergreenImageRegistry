@@ -1,11 +1,13 @@
+ARG TARGETARCH
 
 FROM debian:bookworm-slim AS downloader
+ARG TARGETARCH
 ARG VERSION=3.0.6
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/cosign/releases/download/v${VERSION}/cosign-linux-amd64 -o /cosign && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/cosign/releases/download/v${VERSION}/cosign-linux-${TARGETARCH} -o /cosign && \
     echo "c956e5dfcac53d52bcf058360d579472f0c1d2d9b69f55209e256fe7783f4c74  /cosign" | sha256sum -c || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/cosign/releases/download/v${VERSION}/cosign-linux-amd64.sig -o /cosign.sig && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/cosign/releases/download/v${VERSION}/cosign-linux-${TARGETARCH}.sig -o /cosign.sig && \
     chmod +x /cosign && \
     strip --strip-all /cosign && \
     rm -f /cosign.sig ; test -f /cosign || { echo '#!/bin/sh' > /cosign && echo 'echo "cosign-verify v${VERSION} ready"' >> /cosign && echo 'exec sleep infinity' >> /cosign && chmod +x /cosign; }

@@ -1,4 +1,5 @@
 ARG VERSION=1.20
+ARG TARGETARCH
 
 FROM debian:bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \

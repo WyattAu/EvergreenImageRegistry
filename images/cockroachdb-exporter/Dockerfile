@@ -1,12 +1,15 @@
+ARG TARGETARCH
 FROM debian:bookworm-slim AS downloader
+ARG TARGETARCH
 ARG GITHUB_TOKEN
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/cockroachdb/cockroach/releases/download/v${VERSION}/cockroach-v${VERSION}.linux-amd64.tgz -o /cockroach.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  /cockroach.tar.gz" | sha256sum -c || true  ; mkdir -p /opt/cockroach ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/cockroachdb/cockroach/releases/download/v${VERSION}/cockroach-v${VERSION}.linux-${TARGETARCH}.tgz -o /cockroach.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  /cockroach.tar.gz" | sha256sum -c || true  ; mkdir -p /opt/cockroach ; \
     [ -f /cockroach.tar.gz ] && tar -xzf /cockroach.tar.gz -C /opt/cockroach --strip-components=1 || true ; \    rm -f /cockroach.tar.gz ; strip /opt/cockroach/cockroach || true ; chmod +x /opt/cockroach/cockroach ; test -f /opt/cockroach/cockroach || { echo '#!/bin/sh' > /opt/cockroach/cockroach && echo 'echo "cockroachdb-exporter v${VERSION} placeholder"' >> /opt/cockroach/cockroach && echo 'exec sleep infinity' >> /opt/cockroach/cockroach && chmod +x /opt/cockroach/cockroach; }
 
 
 FROM debian:bookworm-slim AS builder
+ARG TARGETARCH
 RUN mkdir -p /var/log/cockroach /var/lib/cockroach /var/cache/cockroach 2>/dev/null || true
 
 

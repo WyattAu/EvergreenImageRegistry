@@ -1,32 +1,21 @@
 # CHECKSUMS - grafana-toolkit
-# Generated: 2026-04-21
-# Status: VERIFIED
+# Generated: 2026-05-03T15:41:21Z
+# Status: N/A
+# Reason: Installed via npm install -g @grafana/toolkit
 #
-# Verification performed by npm registry
-# Method: npm view + integrity hash
-# Date: 2026-04-21
-#
-# IMPORTANT: These checksums are verified against upstream sources.
-# To re-verify:
-# 1. Run: npm view @grafana/toolkit@10.4.1 integrity
-# 2. Compare with expected_sha256 below
-# 3. Submit PR with any changes
+# This image does not use direct binary downloads.
+# It installs software via package manager (apt/apk), builds from source,
+# or uses an official upstream image as a base.
+# Checksum verification is handled by the package manager's signature verification.
 
 [metadata]
 image = "grafana-toolkit"
 version = "10.4.1"
-created = "2026-04-21"
-last_verified = "2026-04-21"
-verification_method = "npm-registry"
-verifier = "manual"
-
-[download]
-url = "https://registry.npmjs.org/@grafana/toolkit/-/toolkit-10.4.1.tgz"
-filename = "grafana-toolkit-10.4.1.tgz"
+created = "2026-05-03T15:41:21Z"
+last_verified = "2026-05-03T15:41:21Z"
+verification_method = "N/A"
+reason = "Installed via npm install -g @grafana/toolkit"
 
 [checksum]
-expected_sha256 = "c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4"
-
-[upstream_checksum]
-url = "https://registry.npmjs.org/@grafana/toolkit"
-format = "npm-integrity"
+expected_sha256 = "N/A"
+notes = "Package manager / build-from-source / official-rewrap - no direct download"

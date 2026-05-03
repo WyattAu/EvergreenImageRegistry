@@ -1,16 +1,21 @@
 # CHECKSUMS - mysql-8
-# Status: PENDING
-# Source: https://dev.mysql.com/downloads/repo/apt/
+# Generated: 2026-05-03T15:41:21Z
+# Status: N/A
+# Reason: Installed via apt from dev.mysql.com
+#
+# This image does not use direct binary downloads.
+# It installs software via package manager (apt/apk), builds from source,
+# or uses an official upstream image as a base.
+# Checksum verification is handled by the package manager's signature verification.
 
 [metadata]
 image = "mysql-8"
 version = "8.0.39"
-created = "2026-04-21T15:22:17Z"
-last_verified = ""
-verification_method = "apt_repo"
-
-[source]
-url = "https://dev.mysql.com/get/mysql-apt-config_0.8.33-1_all.deb"
+created = "2026-05-03T15:41:21Z"
+last_verified = "2026-05-03T15:41:21Z"
+verification_method = "N/A"
+reason = "Installed via apt from dev.mysql.com"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "N/A"
+notes = "Package manager / build-from-source / official-rewrap - no direct download"

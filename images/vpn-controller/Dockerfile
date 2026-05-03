@@ -1,5 +1,6 @@
 FROM debian:bookworm-slim AS builder
 ARG VERSION=1.0.20210914
+ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libmnl-dev libelf-dev curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true

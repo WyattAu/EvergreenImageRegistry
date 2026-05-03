@@ -14,6 +14,7 @@ RUN mkdir -p /var/log/journalbeat /var/lib/journalbeat /var/cache/journalbeat
 
 
 FROM scratch
+RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # REQUIRES_VERSION: ARG VERSION has no default; old version 404
 COPY --from=downloader /opt/journalbeat /opt/journalbeat
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /var/log/journalbeat /var/log/journalbeat

@@ -1,16 +1,19 @@
 ARG VERSION=2.3.0
+ARG TARGETARCH
 
 FROM debian:bookworm-slim AS downloader
+ARG TARGETARCH
 ARG VERSION
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
-    "https://github.com/go-vikunja/vikunja/releases/download/v${VERSION}/vikunja-v${VERSION}-linux-amd64-full.zip" \
+    "https://github.com/go-vikunja/vikunja/releases/download/v${VERSION}/vikunja-v${VERSION}-linux-${TARGETARCH}-full.zip" \
     -o /vikunja.zip && \
     unzip -o /vikunja.zip -d /tmp/vikunja && \
     cp /tmp/vikunja/vikunja /vikunja && chmod +x /vikunja
 
 FROM debian:bookworm-slim AS builder
+ARG TARGETARCH
 RUN mkdir -p /app /var/log/vikunja /var/cache/vikunja 2>/dev/null || true
 
 FROM scratch

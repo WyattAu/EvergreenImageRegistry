@@ -5,6 +5,7 @@
 
 ARG VERSION=7.2.4
 ARG BUILD_DATE
+ARG TARGETARCH
 
 
 FROM debian:bookworm-slim AS builder

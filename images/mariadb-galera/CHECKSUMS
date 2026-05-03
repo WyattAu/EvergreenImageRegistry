@@ -1,15 +1,21 @@
 # CHECKSUMS - mariadb-galera
-# Generated: 2026-04-21
-# Status: PENDING
-# Note: Installed from MariaDB official repository
+# Generated: 2026-05-03T15:41:21Z
+# Status: N/A
+# Reason: Installed via apt from mirror.mariadb.org
+#
+# This image does not use direct binary downloads.
+# It installs software via package manager (apt/apk), builds from source,
+# or uses an official upstream image as a base.
+# Checksum verification is handled by the package manager's signature verification.
 
 [metadata]
 image = "mariadb-galera"
 version = "11.4.2"
-created = "2026-04-21"
-last_verified = ""
-verification_method = "package-manager"
-verifier = "manual"
+created = "2026-05-03T15:41:21Z"
+last_verified = "2026-05-03T15:41:21Z"
+verification_method = "N/A"
+reason = "Installed via apt from mirror.mariadb.org"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "N/A"
+notes = "Package manager / build-from-source / official-rewrap - no direct download"

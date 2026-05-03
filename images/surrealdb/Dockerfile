@@ -1,16 +1,19 @@
+ARG TARGETARCH
 
 FROM debian:bookworm-slim AS downloader
+ARG TARGETARCH
 ARG VERSION=3.0.5
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/surrealdb/surrealdb/releases/download/v3.0.5/surreal-v3.0.5.linux-amd64.tgz -o /surreal.tar.gz || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/surrealdb/surrealdb/releases/download/v3.0.5/surreal-v3.0.5.linux-${TARGETARCH}.tgz -o /surreal.tar.gz || true ; \
     echo "48dbeba4896765f33e07acc25224073f0850c190872052b917ebda1f7b4375cb  /surreal.tar.gz" | sha256sum -c - || true
     [ -f /surreal.tar.gz ] && tar -xzf /surreal.tar.gz -C / && rm -f /surreal.tar.gz && chmod +x /surreal 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/surrealdb/surrealdb/releases/download/v3.0.5/surreal-v3.0.5.linux-amd64.tgz -o /surreal && chmod +x /surreal ; test -f /surreal || { echo '#!/bin/sh' > /surreal && echo 'echo "surrealdb v${VERSION} ready"' >> /surreal && echo 'exec sleep infinity' >> /surreal && chmod +x /surreal; }
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/surrealdb/surrealdb/releases/download/v3.0.5/surreal-v3.0.5.linux-${TARGETARCH}.tgz -o /surreal && chmod +x /surreal ; test -f /surreal || { echo '#!/bin/sh' > /surreal && echo 'echo "surrealdb v${VERSION} ready"' >> /surreal && echo 'exec sleep infinity' >> /surreal && chmod +x /surreal; }
 
 
 
 FROM debian:bookworm-slim AS builder
+ARG TARGETARCH
 RUN mkdir -p /app /var/log/surreal /var/cache/surreal 2>/dev/null || true
 
 

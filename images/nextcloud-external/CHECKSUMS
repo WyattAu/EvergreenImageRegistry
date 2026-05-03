@@ -1,12 +1,21 @@
 # CHECKSUMS - nextcloud-external
-# Status: PENDING
+# Generated: 2026-05-03T15:41:21Z
+# Status: N/A
+# Reason: PHP runtime via apt/apk - no direct download
+#
+# This image does not use direct binary downloads.
+# It installs software via package manager (apt/apk), builds from source,
+# or uses an official upstream image as a base.
+# Checksum verification is handled by the package manager's signature verification.
 
 [metadata]
 image = "nextcloud-external"
 version = "30.0.5"
-created = "2026-04-22"
-last_verified = ""
-verification_method = "package-manifest"
+created = "2026-05-03T15:41:21Z"
+last_verified = "2026-05-03T15:41:21Z"
+verification_method = "N/A"
+reason = "PHP runtime via apt/apk - no direct download"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "N/A"
+notes = "Package manager / build-from-source / official-rewrap - no direct download"

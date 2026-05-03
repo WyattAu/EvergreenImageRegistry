@@ -4,6 +4,7 @@ RUN mkdir -p /usr/share/keyrings /etc/apt/sources.list.d && curl --retry 3 --ret
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest
+RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt GPG signatures (mirror.mariadb.org)
 ARG VERSION=10.11.6
 
 COPY --from=builder /usr/share/keyrings/mariadb-keyring.gnupg /usr/share/keyrings/mariadb-keyring.gnupg

@@ -1,22 +1,23 @@
 # CHECKSUMS - journalbeat
-# Generated: 2026-04-21
-# Status: REQUIRES_VERIFICATION
+# Generated: 2026-05-03T15:41:21Z
+# Status: REQUIRES_VERSION
+# Reason: ARG VERSION has no default; version 8.12.2 from CHECKSUMS returns 404 on Elastic CDN
+#
+# Dockerfile uses ARG VERSION without a default value.
+# Checksum cannot be populated without knowing the version.
+# URL template:
+#   https://artifacts.elastic.co/downloads/beats/journalbeat/journalbeat-${VERSION}-linux-x86_64.tar.gz
+# Checksums template:
+#   https://artifacts.elastic.co/downloads/beats/journalbeat/journalbeat-${VERSION}-linux-x86_64.tar.gz.sha512
+# Action: Set a default VERSION in Dockerfile, then re-run checksum population.
 
 [metadata]
 image = "journalbeat"
-version = "8.12.2"
-created = "2026-04-21"
+version = "REQUIRES_DEFAULT"
+created = "2026-05-03T15:41:21Z"
 last_verified = ""
-verification_method = "pending"
-verifier = "manual"
-
-[download]
-url = "https://artifacts.elastic.co/downloads/beats/journalbeat/journalbeat-8.12.2-linux-x86_64.tar.gz"
-filename = "journalbeat-8.12.2-linux-x86_64.tar.gz"
+verification_method = "REQUIRES_VERSION"
+reason = "ARG VERSION has no default; version 8.12.2 from CHECKSUMS returns 404 on Elastic CDN"
 
 [checksum]
-expected_sha256 = "REQUIRES_VERIFICATION"
-
-[upstream_checksum]
-url = "https://artifacts.elastic.co/downloads/beats/journalbeat/journalbeat-8.12.2-linux-x86_64.tar.gz.sha512"
-format = "sha512"
+expected_sha256 = "REQUIRES_VERSION"

@@ -1,11 +1,13 @@
 ARG VERSION=v8.0.1
+ARG TARGETARCH
 
 FROM debian:bookworm-slim AS downloader
+ARG TARGETARCH
 ARG VERSION
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
-    "https://github.com/owncloud/ocis/releases/download/${VERSION}/ocis-8.0.1-linux-amd64" \
+    "https://github.com/owncloud/ocis/releases/download/${VERSION}/ocis-8.0.1-linux-${TARGETARCH}" \
     -o /nextcloud-ocis && chmod +x /nextcloud-ocis
 
 FROM scratch

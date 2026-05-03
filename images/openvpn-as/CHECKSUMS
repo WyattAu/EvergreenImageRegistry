@@ -1,24 +1,21 @@
 # CHECKSUMS - openvpn-as
-# Status: PENDING_VERIFICATION
+# Generated: 2026-05-03T15:41:21Z
+# Status: N/A
+# Reason: Installed via apt from as-repository.openvpn.net
 #
-# This image uses OpenVPN Access Server from the official repository.
-# Verification: apt-get source openvpn-as, verify package integrity.
+# This image does not use direct binary downloads.
+# It installs software via package manager (apt/apk), builds from source,
+# or uses an official upstream image as a base.
+# Checksum verification is handled by the package manager's signature verification.
 
 [metadata]
 image = "openvpn-as"
 version = "2.12.1"
-created = "2026-04-21T15:22:17Z"
-last_verified = ""
-verification_method = "package-integrity"
-verifier = "manual"
-
-[download]
-url = "https://as-repository.openvpn.net/as/debian/pool/main/o/openvpn-as/openvpn-as_2.12.1-debian12_amd64.deb"
-filename = "openvpn-as_2.12.1-debian12_amd64.deb"
+created = "2026-05-03T15:41:21Z"
+last_verified = "2026-05-03T15:41:21Z"
+verification_method = "N/A"
+reason = "Installed via apt from as-repository.openvpn.net"
 
 [checksum]
-expected_sha256 = "PENDING"
-
-[upstream_checksum]
-url = "https://as-repository.openvpn.net/as/debian/pool/main/o/openvpn-as/openvpn-as_2.12.1-debian12_amd64.deb.sha256"
-format = "sha256"
+expected_sha256 = "N/A"
+notes = "Package manager / build-from-source / official-rewrap - no direct download"

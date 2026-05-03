@@ -1,16 +1,21 @@
 # CHECKSUMS - postgresql-17
-# Status: PENDING
-# Source: https://apt.postgresql.org/pub/repos/apt/
+# Generated: 2026-05-03T15:41:21Z
+# Status: N/A
+# Reason: Installed via apt from apt.postgresql.org
+#
+# This image does not use direct binary downloads.
+# It installs software via package manager (apt/apk), builds from source,
+# or uses an official upstream image as a base.
+# Checksum verification is handled by the package manager's signature verification.
 
 [metadata]
 image = "postgresql-17"
 version = "17.2"
-created = "2026-04-21T15:22:18Z"
-last_verified = ""
-verification_method = "apt_repo"
-
-[source]
-url = "https://apt.postgresql.org/pub/repos/apt/"
+created = "2026-05-03T15:41:21Z"
+last_verified = "2026-05-03T15:41:21Z"
+verification_method = "N/A"
+reason = "Installed via apt from apt.postgresql.org"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "N/A"
+notes = "Package manager / build-from-source / official-rewrap - no direct download"

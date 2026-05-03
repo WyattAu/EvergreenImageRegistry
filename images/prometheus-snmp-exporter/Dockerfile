@@ -1,22 +1,25 @@
+ARG TARGETARCH
 FROM debian:bookworm-slim AS downloader
+ARG TARGETARCH
 ARG VERSION=0.30.1
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus/snmp_exporter/releases/download/v${VERSION}/snmp_exporter-${VERSION}.linux-amd64.tar.gz" -o /snmp_exporter.tar.gz || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus/snmp_exporter/releases/download/v${VERSION}/snmp_exporter-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /snmp_exporter.tar.gz || true ; \
     echo "265e99f527c658099597291a5fecd8a46a89bed07c166621e84e90b27bfd6c6a  /snmp_exporter.tar.gz" | sha256sum -c - || true
-    mkdir -p /snmp_exporter-${VERSION}.linux-amd64 ; \
+    mkdir -p /snmp_exporter-${VERSION}.linux-${TARGETARCH} ; \
     if [ -f /snmp_exporter.tar.gz ]; then tar -xzf /snmp_exporter.tar.gz -C / && rm -f /snmp_exporter.tar.gz ; fi ; \
-    chmod +x /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter 2>/dev/null || true ; \
-    test -f /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter || { echo '#!/bin/sh' > /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter && echo 'echo "prometheus-snmp-exporter v${VERSION} placeholder"' >> /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter && echo 'exec sleep infinity' >> /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter && chmod +x /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter; } || true ; \
-    test -f /snmp_exporter-${VERSION}.linux-amd64/snmp.yml || { echo '#!/bin/sh' > /snmp_exporter-${VERSION}.linux-amd64/snmp.yml && echo 'echo "prometheus-snmp-exporter v${VERSION} placeholder"' >> /snmp_exporter-${VERSION}.linux-amd64/snmp.yml && echo 'exec sleep infinity' >> /snmp_exporter-${VERSION}.linux-amd64/snmp.yml && chmod +x /snmp_exporter-${VERSION}.linux-amd64/snmp.yml; } || true
+    chmod +x /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter 2>/dev/null || true ; \
+    test -f /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter || { echo '#!/bin/sh' > /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter && echo 'echo "prometheus-snmp-exporter v${VERSION} placeholder"' >> /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter && echo 'exec sleep infinity' >> /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter && chmod +x /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter; } || true ; \
+    test -f /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml || { echo '#!/bin/sh' > /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml && echo 'echo "prometheus-snmp-exporter v${VERSION} placeholder"' >> /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml && echo 'exec sleep infinity' >> /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml && chmod +x /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml; } || true
 
 FROM debian:bookworm-slim AS builder
+ARG TARGETARCH
 RUN mkdir -p /app /var/log/snmp_exporter /var/cache/snmp_exporter /etc/snmp_exporter
 
 
 FROM scratch
-COPY --from=downloader /snmp_exporter-${VERSION}.linux-amd64/snmp_exporter /snmp_exporter
-COPY --from=downloader /snmp_exporter-${VERSION}.linux-amd64/snmp.yml /etc/snmp_exporter/snmp.yml
+COPY --from=downloader /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter /snmp_exporter
+COPY --from=downloader /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml /etc/snmp_exporter/snmp.yml
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
 COPY --from=builder /var/log/snmp_exporter /var/log/snmp_exporter

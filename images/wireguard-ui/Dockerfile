@@ -1,9 +1,11 @@
+ARG TARGETARCH
 
 FROM debian:bookworm-slim AS downloader
+ARG TARGETARCH
 ARG VERSION=0.5.4
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ngoduykhanh/wireguard-ui/releases/download/v0.6.2/wireguard-ui-v0.6.2-linux-amd64.tar.gz -o /wireguard-ui.tar.gz || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ngoduykhanh/wireguard-ui/releases/download/v0.6.2/wireguard-ui-v0.6.2-linux-${TARGETARCH}.tar.gz -o /wireguard-ui.tar.gz || true ; \
     echo "2769536c2ef4cc3630b209675167afd5f199f4cc9f9f0d22ce492592dc1dc68d  /wireguard-ui.tar.gz" | sha256sum -c || true  #
     mkdir -p /tmp/wireguard-ui ; \
     [ -f /wireguard-ui.tar.gz ] && tar -xzf /wireguard-ui.tar.gz -C /tmp/wireguard-ui/ || true ; \

@@ -1,24 +1,21 @@
 # CHECKSUMS - gitlab-ee
-# Generated: 2026-04-21T19:09:24Z
-# Status: PENDING_VERIFICATION
+# Generated: 2026-05-03T15:41:21Z
+# Status: N/A
+# Reason: Installed via apt from packages.gitlab.com
 #
-# IMPORTANT: These checksums need to be verified against upstream sources.
-# To verify:
-# 1. Download binary from URL below
-# 2. Compute: sha256sum <file>
-# 3. Compare with expected_sha256 below
-# 4. Cross-validate against upstream_checksum URL if available
+# This image does not use direct binary downloads.
+# It installs software via package manager (apt/apk), builds from source,
+# or uses an official upstream image as a base.
+# Checksum verification is handled by the package manager's signature verification.
 
 [metadata]
 image = "gitlab-ee"
-version = "17.6.0"
-created = "2026-04-21T19:09:24Z"
-last_verified = ""
-verification_method = "download-and-compute"
-
-[download]
-url = "https://packages.gitlab.com/gitlab/gitlab-ee/packages/debian/bookworm/gitlab-ee_17.6.0-ee.0_amd64.deb"
-filename = "gitlab-ee_17.6.0-ee.0_amd64.deb"
+version = "16.11.0"
+created = "2026-05-03T15:41:21Z"
+last_verified = "2026-05-03T15:41:21Z"
+verification_method = "N/A"
+reason = "Installed via apt from packages.gitlab.com"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "N/A"
+notes = "Package manager / build-from-source / official-rewrap - no direct download"

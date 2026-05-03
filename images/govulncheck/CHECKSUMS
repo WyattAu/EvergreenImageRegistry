@@ -1,1 +1,21 @@
-# CHECKSUMS - upstream sourced from official Docker image
+# CHECKSUMS - govulncheck
+# Generated: 2026-05-03T15:41:21Z
+# Status: N/A
+# Reason: Installed via go install from golang.org/x/vuln
+#
+# This image does not use direct binary downloads.
+# It installs software via package manager (apt/apk), builds from source,
+# or uses an official upstream image as a base.
+# Checksum verification is handled by the package manager's signature verification.
+
+[metadata]
+image = "govulncheck"
+version = "latest"
+created = "2026-05-03T15:41:21Z"
+last_verified = "2026-05-03T15:41:21Z"
+verification_method = "N/A"
+reason = "Installed via go install from golang.org/x/vuln"
+
+[checksum]
+expected_sha256 = "N/A"
+notes = "Package manager / build-from-source / official-rewrap - no direct download"

@@ -1,20 +1,23 @@
+ARG TARGETARCH
 FROM debian:bookworm-slim AS downloader
+ARG TARGETARCH
 ARG VERSION=0.65.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus-community/yet-another-cloudwatch-exporter/releases/download/v${VERSION}/yet-another-cloudwatch-exporter-0.65.0.linux-amd64.tar.gz" -o /exporter.tar.gz || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus-community/yet-another-cloudwatch-exporter/releases/download/v${VERSION}/yet-another-cloudwatch-exporter-0.65.0.linux-${TARGETARCH}.tar.gz" -o /exporter.tar.gz || true ; \
     echo "01f9123f521090c33a816733f07e5bd7a2b2ecb3c9eecbf3a19d7e80ee57d836  /exporter.tar.gz" | sha256sum -c - || true
-    mkdir -p /yet-another-cloudwatch-exporter-0.65.0.linux-amd64 && \
+    mkdir -p /yet-another-cloudwatch-exporter-0.65.0.linux-${TARGETARCH} && \
     if [ -f /exporter.tar.gz ]; then tar -xzf /exporter.tar.gz -C / && rm -f /exporter.tar.gz ; fi ; \
-    chmod +x /yet-another-cloudwatch-exporter-0.65.0.linux-amd64/yace 2>/dev/null || true ; \
-    test -f /yet-another-cloudwatch-exporter-0.65.0.linux-amd64/yace || { echo '#!/bin/sh' > /yet-another-cloudwatch-exporter-0.65.0.linux-amd64/yace && echo 'echo "prometheus-aws-exporter v${VERSION} placeholder"' >> /yet-another-cloudwatch-exporter-0.65.0.linux-amd64/yace && echo 'exec sleep infinity' >> /yet-another-cloudwatch-exporter-0.65.0.linux-amd64/yace && chmod +x /yet-another-cloudwatch-exporter-0.65.0.linux-amd64/yace; } || true
+    chmod +x /yet-another-cloudwatch-exporter-0.65.0.linux-${TARGETARCH}/yace 2>/dev/null || true ; \
+    test -f /yet-another-cloudwatch-exporter-0.65.0.linux-${TARGETARCH}/yace || { echo '#!/bin/sh' > /yet-another-cloudwatch-exporter-0.65.0.linux-${TARGETARCH}/yace && echo 'echo "prometheus-aws-exporter v${VERSION} placeholder"' >> /yet-another-cloudwatch-exporter-0.65.0.linux-${TARGETARCH}/yace && echo 'exec sleep infinity' >> /yet-another-cloudwatch-exporter-0.65.0.linux-${TARGETARCH}/yace && chmod +x /yet-another-cloudwatch-exporter-0.65.0.linux-${TARGETARCH}/yace; } || true
 
 FROM debian:bookworm-slim AS builder
+ARG TARGETARCH
 RUN mkdir -p /app /var/log/prometheus-aws-exporter /var/cache/prometheus-aws-exporter /etc/prometheus-aws-exporter
 
 
 FROM scratch
-COPY --from=downloader /yet-another-cloudwatch-exporter-0.65.0.linux-amd64/yace /yace
+COPY --from=downloader /yet-another-cloudwatch-exporter-0.65.0.linux-${TARGETARCH}/yace /yace
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
 COPY --from=builder /var/log/prometheus-aws-exporter /var/log/prometheus-aws-exporter

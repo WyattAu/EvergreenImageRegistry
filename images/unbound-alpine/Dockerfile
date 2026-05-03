@@ -8,10 +8,12 @@
 
 ARG VERSION=1.19.3
 ARG BUILD_DATE
+ARG TARGETARCH
 
 
 FROM debian:bookworm-slim AS builder
 ARG VERSION=1.19.3
+ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libssl-dev libexpat1-dev flex bison && \
     rm -rf /var/lib/apt/lists/* || true

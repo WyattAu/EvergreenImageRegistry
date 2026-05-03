@@ -824,7 +824,8 @@ jobs:
   # ===========================================================================
   # Go cross-compiles trivially with GOOS/GOARCH -- no QEMU needed.
   # Rust cross-compiles with --target + linker config.
-  # These images use builder stages and CGO_ENABLED=0 / static linking.
+  # C/C++ images use QEMU emulation via docker/setup-qemu-action.
+  # Prebuilt images with arch-aware download URLs use TARGETARCH.
   # ===========================================================================
   build-multiarch:
     name: "Multi-Arch ${{ matrix.image }} (${{ matrix.arch }})"
@@ -835,7 +836,7 @@ jobs:
       fail-fast: false
       matrix:
         image:
-          # Go source-build images
+          # Go source-build images (cross-compile, no QEMU)
           - health-checks
           - linguist-go
           - perscache
@@ -859,12 +860,188 @@ jobs:
           - yarr
           - fail2ban-exporter
           - health-shim
-          # Rust source-build images
+          # Rust source-build images (cross-compile, no QEMU)
           - cargo-audit
+          # C/C++ source-build images (QEMU emulation)
+          - whisper-cpp
+          - dnsdist
+          - zeromq
+          - smartdns
+          - unbound
+          - unbound-alpine
+          - tig
+          - dnsmasq-full
+          - sqlcipher
+          - vpn-controller
+          - cors-proxy
+          - basic-auth-proxy
+          - rmilter
+          - redis-cluster
+          - redis-sentinel
+          - redisearch
+          - qbittorrent-nox
+          - ledger
+          - oscam
+          - argocd-redis
+          - eqonomize
+          - ejdb
+          # Prebuilt Go images (arch-aware download)
+          - alertmanager
+          - cortex
+          - mimir
+          - loki
+          - prometheus
+          - prometheus-alertmanager
+          - thanos
+          - thanos-rule
+          - thanos-querier
+          - thanos-store
+          - thanos-bucket
+          - thanos-receive
+          - jaeger
+          - jaeger-agent
+          - jaeger-collector
+          - jaeger-query
+          - promtail-agent
+          - promxy
+          - miniflux
+          - miniflux-2
+          - miniflux-21
+          - vikunja
+          - shield
+          - dbmate
+          - litestream
+          - buildkit
+          - cockroachdb-sql
+          - etcd
+          - healthcheck
+          - cockroachdb
+          - cockroachdb-exporter
+          - grafana-dev
+          - mc
+          - helm
+          - rekor
+          - fulcio
+          - cosign
+          - cosign-verify
+          - rclone
+          - k3d
+          - k3d-proxy
+          - rqlite
+          - gotify
+          - duckdb
+          - age
+          - netmaker
+          - nats
+          - grafana
+          - grafana-lite
+          - grafana-oss
+          - minio
+          - milvus-minio
+          - filebrowser
+          - filebrowser-alpine
+          - forgejo
+          - forgejo-runner
+          - tekton
+          - kaniko
+          - buildah
+          - argo-cd
+          - argocd
+          - argo-rollouts
+          - argocd-application-controller
+          - argocd-applicationset-controller
+          - argocd-notifications
+          - argocd-repo-server
+          - oauth2-proxy
+          - oauth2-proxy-alpine
+          - prometheus-node-exporter
+          - prometheus-pushgateway
+          - prometheus-blackbox-exporter
+          - prometheus-snmp-exporter
+          - prometheus-statsd-exporter
+          - prometheus-x509-exporter
+          - prometheus-consul-exporter
+          - prometheus-elasticsearch-exporter
+          - prometheus-haproxy-exporter
+          - prometheus-kafka-exporter
+          - prometheus-mysqld-exporter
+          - prometheus-postgres-exporter
+          - prometheus-aws-exporter
+          - prometheus-gcp-exporter
+          - prometheus-cloudwatch-exporter
+          - prometheus-vault-exporter
+          - bind-exporter
+          - consul-exporter
+          - haproxy-exporter
+          - memcached-exporter
+          - redis-exporter
+          - valkey-exporter
+          - node-exporter
+          - postgresql-exporter
+          - postgres-exporter
+          - mongodb-exporter
+          - mongo-exporter
+          - mysql-exporter
+          - mysql-8-exporter
+          - rabbitmq-exporter
+          - pgbouncer-exporter
+          - elasticsearch-exporter
+          - kafka-exporter
+          - ipmi-exporter
+          - snmp-exporter
+          - gitlab-runner
+          - gitlab-runner-alpine
+          - buildx
+          - victoriametrics
+          - victoriametrics-cluster
+          - vm-agent
+          - loki-canary
+          - loki-simple
+          - transfer.sh
+          - wireguard-ui
+          - statping-ng
+          - source-control
+          - s3
+          - minio-console
+          - go-static
+          - golang-alpine
+          - influxdb-client
+          - immudb
+          - pihole-ftl
+          - grafana-image-renderer
+          - couchdb
+          - couchdb-sync
+          - focalboard-server
+          - gitserver
+          - dendrite
+          - dendrite-monolith
+          - dendrite-pot
+          - vikunja-api
+          - vikunja-redis
+          - etcd-backup
+          - etcd-empty
+          - etcd-operator
+          - crdb-init
+          - trivy-alpine
+          - trivy-iac
+          - trivy-k8s
+          - mattermost
+          - kafka-ui
+          - meilisearch
+          - localai
+          - ollama
+          - portainer
+          - nextcloud-ocis
+          - surrealdb
+          - zitadel
+          - cloudflare-warrior
         arch: [amd64, arm64]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -873,7 +1050,7 @@ jobs:
         run: |
           IMAGE=${{ matrix.image }}
           ARCH=${{ matrix.arch }}
-          echo "Building ${IMAGE} for ${ARCH} (source cross-compile, no QEMU)..."
+          echo "Building ${IMAGE} for ${ARCH} (multi-arch with QEMU/cross-compile)..."
 
           docker buildx build \
             --platform linux/${ARCH} \

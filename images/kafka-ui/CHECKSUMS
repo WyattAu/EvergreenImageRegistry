@@ -1,22 +1,23 @@
 # CHECKSUMS - kafka-ui
-# Generated: 2026-04-21
-# Status: REQUIRES_VERIFICATION
+# Generated: 2026-05-03T15:41:21Z
+# Status: REQUIRES_VERSION
+# Reason: Repo moved from provectuslabs/kafka-ui to provectus/kafka-ui; ARG VERSION has no default
+#
+# Dockerfile uses ARG VERSION without a default value.
+# Checksum cannot be populated without knowing the version.
+# URL template:
+#   https://github.com/provectus/kafka-ui/releases/download/v${VERSION}/kafka-ui-v${VERSION}-linux-amd64.tar.gz
+# Checksums template:
+#   https://github.com/provectus/kafka-ui/releases/download/v${VERSION}/checksums.txt
+# Action: Set a default VERSION in Dockerfile, then re-run checksum population.
 
 [metadata]
 image = "kafka-ui"
-version = "1.1.0"
-created = "2026-04-21"
+version = "REQUIRES_DEFAULT"
+created = "2026-05-03T15:41:21Z"
 last_verified = ""
-verification_method = "pending"
-verifier = "manual"
-
-[download]
-url = "https://github.com/provectuslabs/kafka-ui/releases/download/v1.1.0/kafka-ui-v1.1.0-linux-amd64.tar.gz"
-filename = "kafka-ui-v1.1.0-linux-amd64.tar.gz"
+verification_method = "REQUIRES_VERSION"
+reason = "Repo moved from provectuslabs/kafka-ui to provectus/kafka-ui; ARG VERSION has no default"
 
 [checksum]
-expected_sha256 = "REQUIRES_VERIFICATION"
-
-[upstream_checksum]
-url = "https://github.com/provectuslabs/kafka-ui/releases/download/v1.1.0/checksums.txt"
-format = "sha256"
+expected_sha256 = "REQUIRES_VERSION"

@@ -1,20 +1,23 @@
+ARG TARGETARCH
 FROM debian:bookworm-slim AS downloader
+ARG TARGETARCH
 ARG VERSION=0.29.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus/statsd_exporter/releases/download/v${VERSION}/statsd_exporter-${VERSION}.linux-amd64.tar.gz" -o /statsd_exporter.tar.gz || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus/statsd_exporter/releases/download/v${VERSION}/statsd_exporter-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /statsd_exporter.tar.gz || true ; \
     echo "5725db6c5a30ae75c8b4a54397a0c15870e57667f6b027386cd2be84c5744a40  /statsd_exporter.tar.gz" | sha256sum -c - || true
-    mkdir -p /statsd_exporter-${VERSION}.linux-amd64 ; \
+    mkdir -p /statsd_exporter-${VERSION}.linux-${TARGETARCH} ; \
     if [ -f /statsd_exporter.tar.gz ]; then tar -xzf /statsd_exporter.tar.gz -C / && rm -f /statsd_exporter.tar.gz ; fi ; \
-    chmod +x /statsd_exporter-${VERSION}.linux-amd64/statsd_exporter 2>/dev/null || true ; \
-    test -f /statsd_exporter-${VERSION}.linux-amd64/statsd_exporter || { echo '#!/bin/sh' > /statsd_exporter-${VERSION}.linux-amd64/statsd_exporter && echo 'echo "prometheus-statsd-exporter v${VERSION} placeholder"' >> /statsd_exporter-${VERSION}.linux-amd64/statsd_exporter && echo 'exec sleep infinity' >> /statsd_exporter-${VERSION}.linux-amd64/statsd_exporter && chmod +x /statsd_exporter-${VERSION}.linux-amd64/statsd_exporter; } || true
+    chmod +x /statsd_exporter-${VERSION}.linux-${TARGETARCH}/statsd_exporter 2>/dev/null || true ; \
+    test -f /statsd_exporter-${VERSION}.linux-${TARGETARCH}/statsd_exporter || { echo '#!/bin/sh' > /statsd_exporter-${VERSION}.linux-${TARGETARCH}/statsd_exporter && echo 'echo "prometheus-statsd-exporter v${VERSION} placeholder"' >> /statsd_exporter-${VERSION}.linux-${TARGETARCH}/statsd_exporter && echo 'exec sleep infinity' >> /statsd_exporter-${VERSION}.linux-${TARGETARCH}/statsd_exporter && chmod +x /statsd_exporter-${VERSION}.linux-${TARGETARCH}/statsd_exporter; } || true
 
 FROM debian:bookworm-slim AS builder
+ARG TARGETARCH
 RUN mkdir -p /app /var/log/statsd_exporter /var/cache/statsd_exporter
 
 
 FROM scratch
-COPY --from=downloader /statsd_exporter-${VERSION}.linux-amd64/statsd_exporter /statsd_exporter
+COPY --from=downloader /statsd_exporter-${VERSION}.linux-${TARGETARCH}/statsd_exporter /statsd_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
 COPY --from=builder /var/log/statsd_exporter /var/log/statsd_exporter

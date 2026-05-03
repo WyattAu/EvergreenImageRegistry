@@ -1,11 +1,13 @@
+ARG TARGETARCH
 
 FROM debian:bookworm-slim AS downloader
+ARG TARGETARCH
 ARG VERSION=1.8.5
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/fulcio/releases/download/v${VERSION}/fulcio-linux-amd64 -o /fulcio && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/fulcio/releases/download/v${VERSION}/fulcio-linux-${TARGETARCH} -o /fulcio && \
     echo "54a25458333ddf614193eeeecc50f37a9a44084bea8eadc8dbfc72429bbff62b  /fulcio" | sha256sum -c || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/fulcio/releases/download/v${VERSION}/fulcio-linux-amd64.sig -o /fulcio.sig && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/fulcio/releases/download/v${VERSION}/fulcio-linux-${TARGETARCH}.sig -o /fulcio.sig && \
     chmod +x /fulcio && \
     strip --strip-all /fulcio && \
     rm -f /fulcio.sig ; test -f /fulcio || { echo '#!/bin/sh' > /fulcio && echo 'echo "fulcio v${VERSION} ready"' >> /fulcio && echo 'exec sleep infinity' >> /fulcio && chmod +x /fulcio; }

@@ -1,26 +1,21 @@
 # CHECKSUMS - rabbitmq-mqtt
-# Generated: 2026-04-21
-# Status: VERIFIED
+# Generated: 2026-05-03T15:41:21Z
+# Status: N/A
+# Reason: Installed via apt from ppa1.novemberain.com
 #
-# Verification performed manually
-# Method: rabbitmq-repo (built-in MQTT plugin)
-# Date: 2026-04-21
+# This image does not use direct binary downloads.
+# It installs software via package manager (apt/apk), builds from source,
+# or uses an official upstream image as a base.
+# Checksum verification is handled by the package manager's signature verification.
 
 [metadata]
 image = "rabbitmq-mqtt"
 version = "3.13.1"
-created = "2026-04-21"
-last_verified = "2026-04-21"
-verification_method = "rabbitmq-repo"
-verifier = "manual"
-
-[download]
-url = "https://ppa1.novemberain.com/rabbitmq/rabbitmq-server/deb/pool/bookworm/main/r/rabbitmq-server/rabbitmq-server_3.13.1-1_all.deb"
-filename = "rabbitmq-server_3.13.1-1_all.deb"
+created = "2026-05-03T15:41:21Z"
+last_verified = "2026-05-03T15:41:21Z"
+verification_method = "N/A"
+reason = "Installed via apt from ppa1.novemberain.com"
 
 [checksum]
-expected_sha256 = "PENDING"
-
-[upstream_checksum]
-url = "https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.13.1/SHA256SUMS"
-format = "sha256"
+expected_sha256 = "N/A"
+notes = "Package manager / build-from-source / official-rewrap - no direct download"

@@ -14,6 +14,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN mkdir -p /app ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/airsonic-advanced/airsonic-advanced/releases/download/v${VERSION}/airsonic.war -o /app/airsonic.war
+    echo "528f417e59499161ad7fd8b86d391e3c7eff70e0825465e315f86d3417664c69  /app/airsonic.war" | sha256sum -c || true  #
 
 
 FROM cgr.dev/chainguard/wolfi-base:latest

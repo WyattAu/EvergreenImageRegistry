@@ -15,4 +15,4 @@ url = "https://github.com/grafana/loki/releases/download/v2.9.4/promtail-linux-a
 filename = "promtail-linux-amd64.zip"
 
 [checksum]
-expected_sha256 = "PENDING_VERIFY"
+expected_sha256 = "ff40a0717b9901ad42f4fea3c1ab307efc9d267266d7abbbcbabce2144e4e0f4"

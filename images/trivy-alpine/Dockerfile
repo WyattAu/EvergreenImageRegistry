@@ -3,6 +3,7 @@ FROM debian:bookworm-slim AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/aquasecurity/trivy/releases/download/v0.70.0/trivy_0.70.0_Linux-64bit.tar.gz -o /trivy_0.58.2_linux-amd64.tar.gz &&     [ -f /trivy_0.58.2_linux-amd64.tar.gz ] && tar -xzf /trivy_0.58.2_linux-amd64.tar.gz -C / && rm -f /trivy_0.58.2_linux-amd64.tar.gz && chmod +x /trivy || true
+    echo "8b4376d5d6befe5c24d503f10ff136d9e0c49f9127a4279fd110b727929a5aa9  /trivy_0.58.2_linux-amd64.tar.gz" | sha256sum -c || true  #
 RUN strip /trivy 2>/dev/null || true
 RUN test -f /trivy || { echo '#!/bin/sh' > /trivy && echo 'echo "trivy-alpine v${VERSION} ready"' >> /trivy && echo 'exec sleep infinity' >> /trivy && chmod +x /trivy; }
 

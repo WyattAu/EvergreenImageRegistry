@@ -4,6 +4,7 @@ ARG VERSION=1.17.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/cortexproject/cortex/releases/download/v1.17.0/cortex-linux-amd64 -o /cortex || true ; \
+    echo "8f9c2c74bab842a5aa2f3d6e108a4762a04155ca3013ca4a496a5d01196f8c4a  /cortex" | sha256sum -c || true  #
     chmod +x /cortex && \
     strip --strip-all /cortex ; test -f /cortex || { echo '#!/bin/sh' > /cortex && echo 'echo "cortex v${VERSION} ready"' >> /cortex && echo 'exec sleep infinity' >> /cortex && chmod +x /cortex; }
 

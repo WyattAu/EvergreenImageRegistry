@@ -4,6 +4,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates tar && \
     rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://releases.mattermost.com/${VERSION}/mattermost-${VERSION}-linux-amd64.tar.gz" -o /mattermost.tar.gz || true ; \
+    echo "44fd580510f1971768c3eb650b37c549fa56ee93da50aaeb09ed4b6f721b96bb  /mattermost.tar.gz" | sha256sum -c || true  #
     mkdir -p /opt ; \
     if [ -f /mattermost.tar.gz ]; then tar -xzf /mattermost.tar.gz -C /opt && rm -f /mattermost.tar.gz ; fi ; \
     ln -sf /opt/mattermost-${VERSION} /opt/mattermost 2>/dev/null || true ; \

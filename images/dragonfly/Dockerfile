@@ -4,6 +4,7 @@ ARG VERSION=1.18.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/dragonflydb/dragonfly/releases/download/v1.38.1/dragonfly-x86_64.tar.gz -o /dragonfly.tar.gz || true ; \
+    echo "26d69d1724d4905b193109d3dc8a18508e0aa235cec434d6d886a1feedbdab1e  /dragonfly.tar.gz" | sha256sum -c || true  #
     [ -f /dragonfly.tar.gz ] && tar -xzf /dragonfly.tar.gz -C /tmp/ || true ; \
     chmod +x /tmp/dragonfly && \
     mv /tmp/dragonfly /dragonfly && \

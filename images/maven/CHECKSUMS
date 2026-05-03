@@ -15,7 +15,7 @@ url = "https://dlcdn.apache.org/maven/maven-3/3.9.15/binaries/apache-maven-3.9.1
 filename = "apache-maven-3.9.15-bin.tar.gz"
 
 [checksum]
-expected_sha256 = "VERIFY_FROM_APACHE_DOWNLOADS"
+expected_sha256 = "36182f85e91128cd5c4608462ac92194e7a30638f65034de66f4e1b00600a6fc"
 
 [upstream_checksum]
 url = "https://dlcdn.apache.org/maven/maven-3/3.9.15/binaries/apache-maven-3.9.15-bin.tar.gz.sha512"

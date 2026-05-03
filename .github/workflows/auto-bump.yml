@@ -1,0 +1,88 @@
+name: Auto Version Bump
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache sovereignctl build
+        uses: actions/cache@v4
+        with:
+          path: sovereignctl/target
+          key: sovereignctl-${{ runner.os }}-${{ hashFiles('sovereignctl/Cargo.lock') }}
+          restore-keys: |
+            sovereignctl-${{ runner.os }}-
+
+      - name: Build sovereignctl
+        run: cd sovereignctl && cargo build --release
+
+      - name: Check for outdated images
+        run: |
+          ./sovereignctl/target/release/sovereignctl outdated --all images/ > /tmp/outdated.txt 2>&1 || true
+          echo "=== Outdated images ==="
+          cat /tmp/outdated.txt
+
+      - name: Bump outdated versions
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          chmod +x scripts/bump_versions.sh scripts/bump_all_outdated.sh
+
+          OUTDATED_COUNT=$(grep -c "OUTDATED" /tmp/outdated.txt 2>/dev/null || echo "0")
+          echo "Found ${OUTDATED_COUNT} outdated images"
+
+          if [ "$OUTDATED_COUNT" -eq 0 ]; then
+            echo "No outdated images found, skipping bump"
+            exit 0
+          fi
+
+          ./scripts/bump_all_outdated.sh /tmp/outdated.txt || true
+
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to commit"
+            echo "has_changes=false" >> "$GITHUB_ENV"
+          else
+            echo "has_changes=true" >> "$GITHUB_ENV"
+            echo "=== Changed files ==="
+            git diff --stat
+          fi
+
+      - name: Create Pull Request
+        if: env.has_changes == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          title: "chore: auto-bump outdated image versions"
+          body: |
+            ## Automated Version Bumps
+
+            This PR was created by the weekly auto-bump workflow.
+
+            **Action:** Review the changes, verify checksums for `NEEDS_UPDATE` entries,
+            and merge when ready.
+
+            Files changed may include:
+            - `Dockerfile` (ARG VERSION, OCI labels)
+            - `CHECKSUMS` (version, URL, sha256)
+            - `manifest.toml` (version, source URL)
+          branch: auto-bump/versions
+          delete-branch: true
+          labels: |
+            automated
+            dependencies
+          commit-message: "chore: auto-bump {image} to {version}"
+          signoff: false

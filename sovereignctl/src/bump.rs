@@ -8,31 +8,71 @@ pub fn cmd_bump(image: &str, new_version: &str, dry_run: bool) -> Result<()> {
     let image_dir = Path::new("images").join(image);
     let manifest_path = image_dir.join("manifest.toml");
     let dockerfile_path = image_dir.join("Dockerfile");
+    let checksums_path = image_dir.join("CHECKSUMS");
 
-    if !manifest_path.exists() {
-        anyhow::bail!("Manifest not found: {}", manifest_path.display());
+    if !dockerfile_path.exists() {
+        anyhow::bail!("Dockerfile not found: {}", dockerfile_path.display());
     }
 
-    let mut manifest = Manifest::from_file(&manifest_path)?;
-    let old_version = manifest.image.version.clone();
+    let has_manifest = manifest_path.exists();
+    let has_checksums = checksums_path.exists();
+
+    let old_version = if has_manifest {
+        let manifest = Manifest::from_file(&manifest_path)?;
+        manifest.image.version.clone()
+    } else {
+        extract_version_from_dockerfile(&dockerfile_path)?
+    };
 
     println!("Image: {}", image);
     println!("  Current version: {}", old_version);
     println!("  New version:     {}", new_version);
 
-    let old_manifest_content = std::fs::read_to_string(&manifest_path)?;
-    let old_dockerfile_content = if dockerfile_path.exists() {
-        Some(std::fs::read_to_string(&dockerfile_path)?)
+    if has_manifest {
+        bump_with_manifest(&image_dir, &manifest_path, &dockerfile_path, &old_version, new_version, dry_run)?;
     } else {
-        None
-    };
+        bump_dockerfile_only(&dockerfile_path, &old_version, new_version, dry_run)?;
+    }
+
+    if has_checksums {
+        bump_checksums_file(&checksums_path, &old_version, new_version, dry_run)?;
+    }
+
+    println!("\nUpdated {} from {} to {}", image, old_version, new_version);
+
+    Ok(())
+}
+
+fn extract_version_from_dockerfile(dockerfile_path: &Path) -> Result<String> {
+    let content = std::fs::read_to_string(dockerfile_path)?;
+    for line in content.lines() {
+        if let Some(version) = line.strip_prefix("ARG VERSION=") {
+            let version = version.split_whitespace().next().unwrap_or(version);
+            return Ok(version.to_string());
+        }
+    }
+    anyhow::bail!("Could not find ARG VERSION in Dockerfile");
+}
+
+fn bump_with_manifest(
+    _image_dir: &Path,
+    manifest_path: &Path,
+    dockerfile_path: &Path,
+    old_version: &str,
+    new_version: &str,
+    dry_run: bool,
+) -> Result<()> {
+    let mut manifest = Manifest::from_file(manifest_path)?;
+
+    let old_manifest_content = std::fs::read_to_string(manifest_path)?;
+    let old_dockerfile_content = std::fs::read_to_string(dockerfile_path).ok();
 
     manifest.image.version = new_version.to_string();
 
     if !old_version.is_empty() {
-        manifest.source.url = manifest.source.url.replace(&old_version, new_version);
+        manifest.source.url = manifest.source.url.replace(old_version, new_version);
         for url in manifest.source.fallback_urls.iter_mut() {
-            *url = url.replace(&old_version, new_version);
+            *url = url.replace(old_version, new_version);
         }
     }
 
@@ -50,13 +90,11 @@ pub fn cmd_bump(image: &str, new_version: &str, dry_run: bool) -> Result<()> {
             println!("\n--- Dockerfile changes ---");
             print_diff(old_df, &new_dockerfile);
         }
-
-        println!("\nDry run complete. No files were modified.");
         return Ok(());
     }
 
-    std::fs::write(&manifest_path, &new_manifest_content)?;
-    std::fs::write(&dockerfile_path, &new_dockerfile)?;
+    std::fs::write(manifest_path, &new_manifest_content)?;
+    std::fs::write(dockerfile_path, &new_dockerfile)?;
 
     println!("\n--- Manifest changes ---");
     print_diff(&old_manifest_content, &new_manifest_content);
@@ -66,7 +104,84 @@ pub fn cmd_bump(image: &str, new_version: &str, dry_run: bool) -> Result<()> {
         print_diff(old_df, &new_dockerfile);
     }
 
-    println!("\nUpdated {} from {} to {}", image, old_version, new_version);
+    Ok(())
+}
+
+fn bump_dockerfile_only(
+    dockerfile_path: &Path,
+    old_version: &str,
+    new_version: &str,
+    dry_run: bool,
+) -> Result<()> {
+    let content = std::fs::read_to_string(dockerfile_path)?;
+    let mut new_content = String::new();
+
+    for line in content.lines() {
+        if line.starts_with("ARG VERSION=") {
+            new_content.push_str(&format!("ARG VERSION={}\n", new_version));
+        } else if !old_version.is_empty() && line.contains(old_version) {
+            let replaced = line.replace(old_version, new_version);
+            new_content.push_str(&replaced);
+            new_content.push('\n');
+        } else {
+            new_content.push_str(line);
+            new_content.push('\n');
+        }
+    }
+
+    if dry_run {
+        println!("\n--- Dockerfile changes ---");
+        print_diff(&content, &new_content);
+        return Ok(());
+    }
+
+    std::fs::write(dockerfile_path, &new_content)?;
+
+    println!("\n--- Dockerfile changes ---");
+    print_diff(&content, &new_content);
+
+    Ok(())
+}
+
+fn bump_checksums_file(
+    checksums_path: &Path,
+    old_version: &str,
+    new_version: &str,
+    dry_run: bool,
+) -> Result<()> {
+    let content = std::fs::read_to_string(checksums_path)?;
+    let mut new_content = String::new();
+
+    for line in content.lines() {
+        if line.starts_with("version = ") || line.starts_with("last_verified = ") {
+            if line.contains("version = ") {
+                new_content.push_str(&format!("version = \"{}\"\n", new_version));
+            } else {
+                let now = chrono::Utc::now().format("%Y-%m-%dT%H:%M:%SZ").to_string();
+                new_content.push_str(&format!("last_verified = \"{}\"\n", now));
+            }
+        } else if line.starts_with("expected_sha256 = ") {
+            new_content.push_str("expected_sha256 = \"NEEDS_UPDATE\"\n");
+        } else if !old_version.is_empty() && line.contains(old_version) {
+            let replaced = line.replace(old_version, new_version);
+            new_content.push_str(&replaced);
+            new_content.push('\n');
+        } else {
+            new_content.push_str(line);
+            new_content.push('\n');
+        }
+    }
+
+    if dry_run {
+        println!("\n--- CHECKSUMS changes ---");
+        print_diff(&content, &new_content);
+        return Ok(());
+    }
+
+    std::fs::write(checksums_path, &new_content)?;
+
+    println!("\n--- CHECKSUMS changes ---");
+    print_diff(&content, &new_content);
 
     Ok(())
 }

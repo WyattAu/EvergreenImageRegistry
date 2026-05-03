@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED RABBITMQ MANAGEMENT
+# EVERGREEN HARDENED RABBITMQ MANAGEMENT
 # Generated from template - Version: 3.13.1
 # Constraint: debian-slim - Erlang runtime + RabbitMQ server required
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 # hadolint ignore=DL3023
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -27,7 +27,7 @@ RUN test -f /usr/lib/rabbitmq || { echo '#!/bin/sh' > /usr/lib/rabbitmq && echo 
     test -f /usr/bin/rabbitmq* || { echo '#!/bin/sh' > /usr/bin/rabbitmq* && echo 'echo "rabbitmq-management v${VERSION} placeholder"' >> /usr/bin/rabbitmq* && echo 'exec sleep infinity' >> /usr/bin/rabbitmq* && chmod +x /usr/bin/rabbitmq* ; } ; \
     test -f /etc/rabbitmq || { echo '#!/bin/sh' > /etc/rabbitmq && echo 'echo "rabbitmq-management v${VERSION} placeholder"' >> /etc/rabbitmq && echo 'exec sleep infinity' >> /etc/rabbitmq && chmod +x /etc/rabbitmq ; }
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt GPG signatures (ppa1.novemberain.com)
 
 ARG VERSION
@@ -41,15 +41,20 @@ COPY --from=builder /etc/rabbitmq /etc/rabbitmq
 USER 65532:65532
 WORKDIR /var/lib/rabbitmq
 EXPOSE 5672 15672 15692
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD rabbitmq-diagnostics check_running
 ENTRYPOINT ["rabbitmq-server"]
-LABEL sovereign.image.status="functional" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="messaging" \
+LABEL evergreen.image.status="functional" \
+      evergreen.image.tier="1" \
+      evergreen.image.category="messaging" \
       org.opencontainers.image.title="rabbitmq-management" \
-      org.opencontainers.image.description="Sovereign hardened RabbitMQ Management - RabbitMQ with management UI plugin" \
+      org.opencontainers.image.description="Evergreen hardened RabbitMQ Management - RabbitMQ with management UI plugin" \
       org.opencontainers.image.version="${VERSION}"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

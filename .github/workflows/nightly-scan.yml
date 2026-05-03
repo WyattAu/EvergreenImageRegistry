@@ -1,10 +1,10 @@
 # =============================================================================
-# SOVEREIGN HARDENED IMAGE REGISTRY - NIGHTLY SECURITY & FRESHNESS SCAN
+# EVERGREEN HARDENED IMAGE REGISTRY - NIGHTLY SECURITY & FRESHNESS SCAN
 # =============================================================================
 # Scheduled pipeline for nightly security and freshness monitoring.
 # Complements daily-security-scan.yml with additional checks:
 #   - Base image freshness verification
-#   - Sovereign checksum verification
+#   - Evergreen checksum verification
 #   - Wolfi base image digest tracking
 #
 # Schedule: Daily at 03:00 UTC (before daily-security-scan at 06:00 UTC)
@@ -35,14 +35,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install sovereignctl
+      - name: Install evergreenctl
         run: |
-          cd sovereignctl && cargo build --release && sudo ln -sf $(pwd)/target/release/sovereignctl /usr/local/bin/
+          cd evergreenctl && cargo build --release && sudo ln -sf $(pwd)/target/release/evergreenctl /usr/local/bin/
 
       - name: Check for outdated images
         run: |
           echo "=== Checking for outdated images ==="
-          sovereignctl outdated --all
+          evergreenctl outdated --all
           echo "=== Version freshness check complete ==="
 
       - name: Check for new CVEs
@@ -63,20 +63,20 @@ jobs:
         continue-on-error: true
 
   checksum-freshness:
-    name: Sovereign Checksum Verification
+    name: Evergreen Checksum Verification
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install sovereignctl
+      - name: Install evergreenctl
         run: |
-          cd sovereignctl && cargo build --release && sudo ln -sf $(pwd)/target/release/sovereignctl /usr/local/bin/
+          cd evergreenctl && cargo build --release && sudo ln -sf $(pwd)/target/release/evergreenctl /usr/local/bin/
 
       - name: Verify all checksums
         run: |
-          echo "=== Sovereign Checksum Verification ==="
-          sovereignctl verify-all || true
+          echo "=== Evergreen Checksum Verification ==="
+          evergreenctl verify-all || true
           echo "=== Checksum verification complete ==="
 
   base-image-refresh:

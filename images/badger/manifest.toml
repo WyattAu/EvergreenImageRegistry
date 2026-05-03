@@ -1,7 +1,7 @@
 [metadata]
 name = "badger"
 version = "4.2.0"
-description = "Sovereign hardened Badger - embedded key-value store (Dgraph)"
+description = "Evergreen hardened Badger - embedded key-value store (Dgraph)"
 
 [build]
 base = "scratch"
@@ -18,18 +18,18 @@ entrypoint = ["/usr/local/bin/badger"]
 expose = [8080, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened Badger - embedded key-value store (Dgraph)"
+"org.opencontainers.image.description" = "Evergreen hardened Badger - embedded key-value store (Dgraph)"
 "org.opencontainers.image.title" = "badger"
 "org.opencontainers.image.vendor" = "Dgraph Labs"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "scratch"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.hft.shutdown-timeout" = "3s"
-"sovereign.hft.signal-handling" = "native"
-"sovereign.image.category" = "database"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.image.category" = "database"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

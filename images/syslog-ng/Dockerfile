@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED SYSLOG-NG
+# EVERGREEN HARDENED SYSLOG-NG
 # Generated from template - Version: 4.8.1
 # Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
 # C binary requires shared libraries - cannot use scratch
@@ -10,7 +10,7 @@ ARG VERSION=4.8.1
 ARG BUILD_DATE
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && \
     apt-get install -y --no-install-recommends syslog-ng-core && \
     strip /usr/sbin/syslog-ng && \
@@ -20,7 +20,7 @@ RUN apt-get update && \
 
 RUN mkdir -p /usr/sbin/syslog-ng 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN addgroup -S -g 65532 syslogng 2>/dev/null || true && \
     adduser -u 65532 -G syslogng -D -s /bin/false syslogng || true && \
@@ -48,28 +48,33 @@ RUN chown syslogng:syslogng /app/conf/syslog-ng.conf 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 514 514/udp 6514
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:514/ || exit 1
 ENTRYPOINT ["/usr/sbin/syslog-ng"]
 CMD ["-f", "/app/conf/syslog-ng.conf", "--foreground", "--no-caps"]
 LABEL org.opencontainers.image.title="syslog-ng" \
       org.opencontainers.image.version="4.8.1" \
       org.opencontainers.image.vendor="OneIdentity" \
       org.opencontainers.image.description="syslog-ng - high-performance log management daemon" \
-      sovereign.image.tier="1" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="5s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="5000ms" \
-      sovereign.hft.cpu-pins="4-5" \
-      sovereign.hft.cpu-pins-mode="exclusive" \
-      sovereign.hft.deploy-strategy="hft-rolling" \
-      sovereign.hft.pre-stop-hook="true" \
-      sovereign.hft.pre-stop-delay="5s" \
-      sovereign.hft.connection-drain="true" \
-      sovereign.hft.sched-policy="SCHED_OTHER" \
-      sovereign.hft.runtime="c"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="1" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="5s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="5000ms" \
+      evergreen.hft.cpu-pins="4-5" \
+      evergreen.hft.cpu-pins-mode="exclusive" \
+      evergreen.hft.deploy-strategy="hft-rolling" \
+      evergreen.hft.pre-stop-hook="true" \
+      evergreen.hft.pre-stop-delay="5s" \
+      evergreen.hft.connection-drain="true" \
+      evergreen.hft.sched-policy="SCHED_OTHER" \
+      evergreen.hft.runtime="c"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

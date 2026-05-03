@@ -76,7 +76,7 @@ pub async fn download_and_verify(
     
     let resp = client
         .get(url)
-        .header("User-Agent", "sovereignctl/0.1.0")
+        .header("User-Agent", "evergreenctl/0.1.0")
         .send()
         .await
         .context("Download failed")?;
@@ -112,7 +112,7 @@ mod tests {
 
     #[test]
     fn test_sha256_empty() {
-        let dir = std::env::temp_dir().join("sovereignctl_test");
+        let dir = std::env::temp_dir().join("evergreenctl_test");
         let _ = std::fs::create_dir_all(&dir);
         let path = dir.join("test_empty");
         std::fs::write(&path, "").unwrap();
@@ -123,7 +123,7 @@ mod tests {
 
     #[test]
     fn test_sha256_hello() {
-        let dir = std::env::temp_dir().join("sovereignctl_test");
+        let dir = std::env::temp_dir().join("evergreenctl_test");
         let _ = std::fs::create_dir_all(&dir);
         let path = dir.join("test_hello");
         std::fs::write(&path, "hello").unwrap();
@@ -134,7 +134,7 @@ mod tests {
 
     #[test]
     fn test_verify_match() {
-        let dir = std::env::temp_dir().join("sovereignctl_test");
+        let dir = std::env::temp_dir().join("evergreenctl_test");
         let _ = std::fs::create_dir_all(&dir);
         let path = dir.join("test_verify");
         std::fs::write(&path, "hello").unwrap();

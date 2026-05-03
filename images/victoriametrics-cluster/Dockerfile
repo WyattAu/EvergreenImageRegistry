@@ -1,6 +1,6 @@
 ARG TARGETARCH
 
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=1.97.0
 ARG GITHUB_TOKEN
@@ -17,7 +17,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/lib/victoriametrics /var/log/victoriametrics 2>/dev/null || true
 
@@ -33,29 +33,34 @@ COPY --from=builder /var/log/victoriametrics /var/log/victoriametrics
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8480
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/vmstorage"]
 LABEL org.opencontainers.image.title="victoriametrics-cluster" \
       org.opencontainers.image.version="1.97.0" \
       org.opencontainers.image.vendor="VictoriaMetrics" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="tsdb" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms" \
-      sovereign.hft.cpu-pins="4-5" \
-      sovereign.hft.cpu-pins-mode="exclusive" \
-      sovereign.hft.deploy-strategy="hft-stateful" \
-      sovereign.hft.pre-stop-hook="true" \
-      sovereign.hft.pre-stop-delay="5s" \
-      sovereign.hft.connection-drain="true" \
-      sovereign.hft.sched-policy="SCHED_OTHER"
+      evergreen.image.tier="1" \
+      evergreen.image.category="tsdb" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="3000ms" \
+      evergreen.hft.cpu-pins="4-5" \
+      evergreen.hft.cpu-pins-mode="exclusive" \
+      evergreen.hft.deploy-strategy="hft-stateful" \
+      evergreen.hft.pre-stop-hook="true" \
+      evergreen.hft.pre-stop-delay="5s" \
+      evergreen.hft.connection-drain="true" \
+      evergreen.hft.sched-policy="SCHED_OTHER"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

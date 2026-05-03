@@ -1,7 +1,7 @@
 [metadata]
 name = "jenkins-executor"
 version = "3355.v388858a_47b_33"
-description = "Sovereign hardened jenkins-executor - Jenkins build executor"
+description = "Evergreen hardened jenkins-executor - Jenkins build executor"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -18,15 +18,15 @@ entrypoint = ["java", "-jar", "/app/agent.jar", "-jnlpUrl", "${JENKINS_URL}/comp
 expose = [9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened jenkins-executor - Jenkins build executor"
+"org.opencontainers.image.description" = "Evergreen hardened jenkins-executor - Jenkins build executor"
 "org.opencontainers.image.title" = "jenkins-executor"
 "org.opencontainers.image.vendor" = "Jenkins"
 "org.opencontainers.image.version" = "3355.v388858a_47b_33"
-"sovereign.base.image" = "wolfi"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.hft.shutdown-timeout" = "30s"
-"sovereign.hft.signal-handling" = "native"
-"sovereign.image.tier" = "3"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.shutdown-timeout" = "30s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
 

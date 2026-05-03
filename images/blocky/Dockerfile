@@ -1,5 +1,5 @@
 
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=0.29.0
 ARG GITHUB_TOKEN
 ARG TARGETARCH
@@ -12,7 +12,7 @@ RUN TARGETVARIANT=$(case "${TARGETARCH}" in amd64) echo "x86_64";; arm64) echo "
 
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/blocky /var/cache/blocky 2>/dev/null || true
 
 
@@ -25,20 +25,25 @@ COPY --from=builder /var/cache/blocky /var/cache/blocky
 USER 65532:65532
 WORKDIR /app
 EXPOSE 53 4000
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/blocky"]
 LABEL org.opencontainers.image.title="blocky" \
       org.opencontainers.image.version="0.29.0" \
       org.opencontainers.image.vendor="Blocky" \
-      sovereign.image.tier="1" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
+      evergreen.image.tier="1" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="3000ms"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

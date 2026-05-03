@@ -1,7 +1,7 @@
 ARG VERSION=5.9.16
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim AS installer
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS installer
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
         strongswan strongswan-pki libcharon-extra-plugins \
@@ -18,7 +18,7 @@ RUN strip --strip-all /usr/sbin/charon 2>/dev/null || true && \
     strip --strip-all /usr/sbin/ipsec 2>/dev/null || true && \
     find /usr/lib -type f -name "lib*.so*" -exec strip --strip-unneeded {} \; 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION
 RUN apk add --no-cache ca-certificates iproute2 iptables kmod \
         libcurl openssl-libs talloc \
@@ -43,23 +43,28 @@ RUN mkdir -p /run/charon /etc/strongswan.d 2>/dev/null || true && \
 USER 65532:65532
 WORKDIR /app
 EXPOSE 500 500/udp 4500 4500/udp
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:500/ || exit 1
 ENTRYPOINT ["/usr/sbin/charon"]
 LABEL org.opencontainers.image.title="strongswan" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="strongSwan Project" \
       org.opencontainers.image.source="https://github.com/strongswan/strongswan" \
       org.opencontainers.image.description="IPsec-based VPN (IKEv1/IKEv2) with PKI and plugins" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="security" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="wolfi" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="5000ms"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="1" \
+      evergreen.image.category="security" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.base="wolfi" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="5000ms"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

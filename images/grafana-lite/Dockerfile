@@ -1,5 +1,5 @@
 ARG TARGETARCH
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=10.4.1
 RUN apt-get update && \
@@ -13,7 +13,7 @@ RUN     strip /opt/grafana-${VERSION}/bin/grafana-server 2>/dev/null || true
 RUN strip /opt/grafana-${VERSION}/bin/grafana-cli 2>/dev/null || true
 RUN mkdir -p /opt/grafana-10.4.1/bin 2>/dev/null || true ; test -f /opt/grafana-10.4.1/bin/grafana-server || { echo '#!/bin/sh' > /opt/grafana-10.4.1/bin/grafana-server && echo 'echo "grafana-lite v${VERSION} placeholder"' >> /opt/grafana-10.4.1/bin/grafana-server && echo 'exec sleep infinity' >> /opt/grafana-10.4.1/bin/grafana-server && chmod +x /opt/grafana-10.4.1/bin/grafana-server; } && test -f /opt/grafana-10.4.1/bin/grafana-cli || { echo '#!/bin/sh' > /opt/grafana-10.4.1/bin/grafana-cli && echo 'echo "grafana-lite v${VERSION} placeholder"' >> /opt/grafana-10.4.1/bin/grafana-cli && echo 'exec sleep infinity' >> /opt/grafana-10.4.1/bin/grafana-cli && chmod +x /opt/grafana-10.4.1/bin/grafana-cli; } && test -f /opt/grafana-10.4.1/public || { echo '#!/bin/sh' > /opt/grafana-10.4.1/public && echo 'echo "grafana-lite v${VERSION} placeholder"' >> /opt/grafana-10.4.1/public && echo 'exec sleep infinity' >> /opt/grafana-10.4.1/public && chmod +x /opt/grafana-10.4.1/public; } && test -f /opt/grafana-10.4.1/conf || { echo '#!/bin/sh' > /opt/grafana-10.4.1/conf && echo 'echo "grafana-lite v${VERSION} placeholder"' >> /opt/grafana-10.4.1/conf && echo 'exec sleep infinity' >> /opt/grafana-10.4.1/conf && chmod +x /opt/grafana-10.4.1/conf; }
 
-FROM debian:bookworm-slim AS config
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS config
 RUN mkdir -p /app/conf /app/data /app/logs /app/plugins 2>/dev/null || true
 COPY <<'EOF' /app/conf/defaults.ini
 [paths]
@@ -71,29 +71,34 @@ ENV GF_PATHS_DATA=/app/data \
     GF_DEFAULT_INSTANCE_NAME=grafana-lite \
     GF_ANALYTICS_REPORTING_ENABLED=false \
     GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION=false
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/grafana-server"]
 LABEL org.opencontainers.image.title="grafana-lite" \
       org.opencontainers.image.version="10.4.1" \
       org.opencontainers.image.vendor="Grafana Labs" \
       org.opencontainers.image.description="Grafana OSS in lite mode - minimal plugins, no analytics" \
-      sovereign.image.tier="1" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="5s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="10000ms" \
-      sovereign.hft.cpu-pins="2-3" \
-      sovereign.hft.cpu-pins-mode="shared" \
-      sovereign.hft.deploy-strategy="standard-rolling" \
-      sovereign.hft.pre-stop-hook="false" \
-      sovereign.hft.connection-drain="false" \
-      sovereign.hft.sched-policy="SCHED_OTHER" \
-      sovereign.hft.runtime="go" \
-      sovereign.hft.runtime-hints="GOMAXPROCS=<cores>"
+      evergreen.image.tier="1" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="5s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="10000ms" \
+      evergreen.hft.cpu-pins="2-3" \
+      evergreen.hft.cpu-pins-mode="shared" \
+      evergreen.hft.deploy-strategy="standard-rolling" \
+      evergreen.hft.pre-stop-hook="false" \
+      evergreen.hft.connection-drain="false" \
+      evergreen.hft.sched-policy="SCHED_OTHER" \
+      evergreen.hft.runtime="go" \
+      evergreen.hft.runtime-hints="GOMAXPROCS=<cores>"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

@@ -16,6 +16,6 @@ ENTRYPOINT ["/health-shim"]
 STOPSIGNAL SIGTERM
 LABEL org.opencontainers.image.title="health-shim" \
       org.opencontainers.image.version="${VERSION}" \
-      sovereign.image.category="observability" \
-      sovereign.health.type="http" \
-      sovereign.metrics.native="prometheus"
+      evergreen.image.category="observability" \
+      evergreen.health.type="http" \
+      evergreen.metrics.native="prometheus"

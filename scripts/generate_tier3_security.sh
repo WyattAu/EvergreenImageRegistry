@@ -131,9 +131,9 @@ LABEL org.opencontainers.image.title="$name" \
       org.opencontainers.image.description="$desc" \
       org.opencontainers.image.vendor="$vendor" \
       org.opencontainers.image.source="https://github.com/$repo" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true"
 DEOF
     write_checksums "$BASE/$name" "$url" "$name" "PENDING_VERIFICATION"
 }
@@ -164,9 +164,9 @@ LABEL org.opencontainers.image.title="$name" \
       org.opencontainers.image.description="$desc" \
       org.opencontainers.image.vendor="$vendor" \
       org.opencontainers.image.source="https://github.com/$repo" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 DEOF
     write_checksums "$BASE/$name" "$url" "$name" "PENDING_VERIFICATION"
 }
@@ -210,9 +210,9 @@ CMD ["audit"]
 LABEL org.opencontainers.image.title="npm-audit" \
       org.opencontainers.image.description="npm audit wrapper" \
       org.opencontainers.image.vendor="npm" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_nopkg "$BASE/npm-audit"
 
@@ -242,9 +242,9 @@ CMD ["audit"]
 LABEL org.opencontainers.image.title="yarn-audit" \
       org.opencontainers.image.description="Yarn audit wrapper" \
       org.opencontainers.image.vendor="Yarn" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_npm "$BASE/yarn-audit" "yarn"
 
@@ -275,9 +275,9 @@ LABEL org.opencontainers.image.title="cargo-audit" \
       org.opencontainers.image.description="Cargo audit - Rust dependency security scanner" \
       org.opencontainers.image.vendor="rustsec" \
       org.opencontainers.image.source="https://github.com/rustsec/rustsec-audit" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/cargo-audit" \
     "https://github.com/rustsec/rustsec-audit/archive/refs/heads/main.tar.gz" \
@@ -311,9 +311,9 @@ ENTRYPOINT ["pip-audit"]
 LABEL org.opencontainers.image.title="pip-audit" \
       org.opencontainers.image.description="pip audit - Python dependency security scanner" \
       org.opencontainers.image.vendor="pypa" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_pip "$BASE/pip-audit" "pip-audit"
 
@@ -342,9 +342,9 @@ ENTRYPOINT ["bundler-audit"]
 LABEL org.opencontainers.image.title="gem-audit" \
       org.opencontainers.image.description="Gem/Bundler audit - Ruby dependency security scanner" \
       org.opencontainers.image.vendor="rubysec" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_placeholder "$BASE/gem-audit"
 
@@ -377,9 +377,9 @@ CMD ["audit"]
 LABEL org.opencontainers.image.title="conan-audit" \
       org.opencontainers.image.description="Conan audit - C/C++ dependency security scanner" \
       org.opencontainers.image.vendor="conan-io" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_pip "$BASE/conan-audit" "conan"
 
@@ -410,9 +410,9 @@ CMD ["audit"]
 LABEL org.opencontainers.image.title="composer-audit" \
       org.opencontainers.image.description="Composer audit - PHP dependency security scanner" \
       org.opencontainers.image.vendor="Composer" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_nopkg "$BASE/composer-audit"
 
@@ -451,9 +451,9 @@ LABEL org.opencontainers.image.title="git-secrets" \
       org.opencontainers.image.description="AWS Git Secrets - prevent secret commits" \
       org.opencontainers.image.vendor="AWS Labs" \
       org.opencontainers.image.source="https://github.com/awslabs/git-secrets" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/git-secrets" \
     "https://github.com/awslabs/git-secrets/archive/refs/heads/master.tar.gz" \
@@ -475,10 +475,10 @@ ENTRYPOINT ["python3"]
 CMD ["-c", "print('$name: security tool placeholder')"]
 LABEL org.opencontainers.image.title="$name" \
       org.opencontainers.image.description="Placeholder - $name" \
-      sovereign.image.tier="3" \
-      sovereign.image.status="placeholder" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.image.status="placeholder" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 DEOF
     write_checksums_placeholder "$BASE/$name"
 done
@@ -514,9 +514,9 @@ LABEL org.opencontainers.image.title="gitguardian" \
       org.opencontainers.image.description="GitGuardian ggshield - secret detection" \
       org.opencontainers.image.vendor="GitGuardian" \
       org.opencontainers.image.source="https://github.com/GitGuardian/ggshield" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_pip "$BASE/gitguardian" "ggshield"
 
@@ -549,9 +549,9 @@ CMD ["scan"]
 LABEL org.opencontainers.image.title="detect-secrets" \
       org.opencontainers.image.description="detect-secrets - Yelp secret detection" \
       org.opencontainers.image.vendor="Yelp" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_pip "$BASE/detect-secrets" "detect-secrets"
 
@@ -586,9 +586,9 @@ LABEL org.opencontainers.image.title="ggshield" \
       org.opencontainers.image.description="ggshield - GitGuardian CLI" \
       org.opencontainers.image.vendor="GitGuardian" \
       org.opencontainers.image.source="https://github.com/GitGuardian/ggshield" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_pip "$BASE/ggshield" "ggshield"
 
@@ -617,9 +617,9 @@ ENTRYPOINT ["dockerfilelint"]
 LABEL org.opencontainers.image.title="dockerfile-lint" \
       org.opencontainers.image.description="Dockerfile linter" \
       org.opencontainers.image.vendor="replicated" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_npm "$BASE/dockerfile-lint" "dockerfilelint"
 
@@ -649,9 +649,9 @@ LABEL org.opencontainers.image.title="docker-bench" \
       org.opencontainers.image.description="Docker Bench for Security" \
       org.opencontainers.image.vendor="Docker" \
       org.opencontainers.image.source="https://github.com/docker/docker-bench-security" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/docker-bench" \
     "https://github.com/docker/docker-bench-security/archive/refs/heads/master.tar.gz" \
@@ -683,9 +683,9 @@ LABEL org.opencontainers.image.title="lynis" \
       org.opencontainers.image.description="Lynis - Security auditing tool" \
       org.opencontainers.image.vendor="CISOfy" \
       org.opencontainers.image.source="https://github.com/CISOfy/Lynis" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/lynis" \
     "https://github.com/CISOfy/Lynis/archive/refs/heads/master.tar.gz" \
@@ -706,10 +706,10 @@ ENTRYPOINT ["python3"]
 CMD ["-c", "print('r2c-bench: security benchmarking tool placeholder')"]
 LABEL org.opencontainers.image.title="r2c-bench" \
       org.opencontainers.image.description="Placeholder - r2c benchmark" \
-      sovereign.image.tier="3" \
-      sovereign.image.status="placeholder" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.image.status="placeholder" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_placeholder "$BASE/r2c-bench"
 
@@ -743,9 +743,9 @@ LABEL org.opencontainers.image.title="checkov" \
       org.opencontainers.image.description="Checkov - Infrastructure as Code scanner" \
       org.opencontainers.image.vendor="Bridgecrew" \
       org.opencontainers.image.source="https://github.com/bridgecrewio/checkov" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_pip "$BASE/checkov" "checkov"
 
@@ -779,9 +779,9 @@ LABEL org.opencontainers.image.title="checkov-k8s" \
       org.opencontainers.image.description="Checkov - Kubernetes scanner" \
       org.opencontainers.image.vendor="Bridgecrew" \
       org.opencontainers.image.source="https://github.com/bridgecrewio/checkov" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_pip "$BASE/checkov-k8s" "checkov"
 
@@ -817,9 +817,9 @@ LABEL org.opencontainers.image.title="kube-hunter" \
       org.opencontainers.image.description="KubeHunter - Kubernetes security scanner" \
       org.opencontainers.image.vendor="Aqua Security" \
       org.opencontainers.image.source="https://github.com/aquasecurity/kube-hunter" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_pip "$BASE/kube-hunter" "kube-hunter"
 
@@ -855,9 +855,9 @@ LABEL org.opencontainers.image.title="falco" \
       org.opencontainers.image.description="Falco - Cloud native runtime security" \
       org.opencontainers.image.vendor="Sysdig" \
       org.opencontainers.image.source="https://github.com/falcosecurity/falco" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/falco" \
     "https://github.com/falcosecurity/falco/archive/refs/heads/master.tar.gz" \
@@ -888,9 +888,9 @@ LABEL org.opencontainers.image.title="falco-rules" \
       org.opencontainers.image.description="Falco - rules only" \
       org.opencontainers.image.vendor="Sysdig" \
       org.opencontainers.image.source="https://github.com/falcosecurity/rules" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/falco-rules" \
     "https://github.com/falcosecurity/rules/archive/refs/heads/master.tar.gz" \
@@ -920,9 +920,9 @@ ENTRYPOINT ["oscap"]
 LABEL org.opencontainers.image.title="openscap" \
       org.opencontainers.image.description="OpenSCAP - Security compliance scanning" \
       org.opencontainers.image.vendor="Red Hat" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_nopkg "$BASE/openscap"
 
@@ -948,9 +948,9 @@ ENTRYPOINT ["scap-workbench"]
 LABEL org.opencontainers.image.title="scap-workbench" \
       org.opencontainers.image.description="SCAP Workbench - GUI for OpenSCAP" \
       org.opencontainers.image.vendor="Red Hat" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_nopkg "$BASE/scap-workbench"
 
@@ -975,9 +975,9 @@ HEALTHCHECK --interval=60s --timeout=5s --start-period=5s --retries=1 \
 ENTRYPOINT ["chkrootkit"]
 LABEL org.opencontainers.image.title="chkrootkit" \
       org.opencontainers.image.description="chkrootkit - rootkit detector" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_nopkg "$BASE/chkrootkit"
 
@@ -1003,9 +1003,9 @@ ENTRYPOINT ["rkhunter"]
 CMD ["--check", "--skip-keypress"]
 LABEL org.opencontainers.image.title="rkhunter" \
       org.opencontainers.image.description="rkhunter - rootkit hunter" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_nopkg "$BASE/rkhunter"
 
@@ -1034,9 +1034,9 @@ CMD ["--foreground"]
 LABEL org.opencontainers.image.title="clamav" \
       org.opencontainers.image.description="ClamAV - open source antivirus engine" \
       org.opencontainers.image.vendor="Cisco" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_nopkg "$BASE/clamav"
 
@@ -1066,9 +1066,9 @@ CMD ["--foreground", "--debug"]
 LABEL org.opencontainers.image.title="clamav-daemon" \
       org.opencontainers.image.description="ClamAV - daemon mode" \
       org.opencontainers.image.vendor="Cisco" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_nopkg "$BASE/clamav-daemon"
 
@@ -1097,9 +1097,9 @@ CMD ["--daemon"]
 LABEL org.opencontainers.image.title="freshclam" \
       org.opencontainers.image.description="FreshClam - ClamAV database updater" \
       org.opencontainers.image.vendor="Cisco" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_nopkg "$BASE/freshclam"
 
@@ -1130,9 +1130,9 @@ CMD ["-a", "/app"]
 LABEL org.opencontainers.image.title="maldet" \
       org.opencontainers.image.description="Linux Malware Detect" \
       org.opencontainers.image.vendor="rFXn" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/maldet" \
     "https://www.rfxn.com/downloads/maldetect-current.tar.gz" \
@@ -1153,10 +1153,10 @@ ENTRYPOINT ["python3"]
 CMD ["-c", "print('rblake: security tool placeholder')"]
 LABEL org.opencontainers.image.title="rblake" \
       org.opencontainers.image.description="Placeholder - rblake" \
-      sovereign.image.tier="3" \
-      sovereign.image.status="placeholder" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.image.status="placeholder" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_placeholder "$BASE/rblake"
 
@@ -1186,9 +1186,9 @@ LABEL org.opencontainers.image.title="dependabot" \
       org.opencontainers.image.description="Dependabot - Automated dependency updates" \
       org.opencontainers.image.vendor="GitHub" \
       org.opencontainers.image.source="https://github.com/dependabot/dependabot-core" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/dependabot" \
     "https://github.com/dependabot/dependabot-core/archive/refs/heads/main.tar.gz" \

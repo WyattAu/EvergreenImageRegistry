@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED ARGOCD-REDIS
+# EVERGREEN HARDENED ARGOCD-REDIS
 # Constraint: debian-slim - Redis server for ArgoCD caching/sessions
 # =============================================================================
 
@@ -8,7 +8,7 @@ ARG BUILD_DATE
 ARG TARGETARCH
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
 ARG VERSION=7.2.4
 RUN apt-get update && \
@@ -27,7 +27,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     test -f /tmp/redis-${VERSION}/src/redis || { echo '#!/bin/sh' > /tmp/redis-${VERSION}/src/redis && echo 'echo "redis v${VERSION} placeholder"' >> /tmp/redis-${VERSION}/src/redis && echo 'exec sleep infinity' >> /tmp/redis-${VERSION}/src/redis && chmod +x /tmp/redis-${VERSION}/src/redis; }
 
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache ca-certificates 
 RUN addgroup -S -g 10000 redis 2>/dev/null || true && adduser -u 65532 -G redis -D -h /data -s /bin/false redis 2>/dev/null || true
@@ -36,6 +36,8 @@ RUN mkdir -p /data && chown -R 65532:65532 /data 2>/dev/null || true
 USER 65532:65532
 WORKDIR /data
 EXPOSE 6379
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD redis-cli ping
 ENTRYPOINT ["/usr/local/bin/redis"]
 CMD ["--protected-mode", "no", "--bind", "0.0.0.0"]
 LABEL org.opencontainers.image.title="argocd-redis" \
@@ -43,11 +45,14 @@ LABEL org.opencontainers.image.title="argocd-redis" \
       org.opencontainers.image.version="7.2.4" \
       org.opencontainers.image.vendor="Redis" \
       org.opencontainers.image.source="https://github.com/redis/redis" \
-      sovereign.image.tier="2" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian-slim="true"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="2" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian-slim="true"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

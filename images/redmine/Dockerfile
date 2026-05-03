@@ -2,7 +2,7 @@ ARG VERSION=6.0.3
 ARG BUILD_DATE
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         ruby3.1 ruby3.1-dev bundler \
@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/* || true
 
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache sqlite-libs libpq ca-certificates curl || true
 RUN mkdir -p /app /var/log/app /var/cache/app ; 2>/dev/null || true \
@@ -19,22 +19,27 @@ RUN mkdir -p /app /var/log/app /var/cache/app ; 2>/dev/null || true \
 USER 65532:65532
 WORKDIR /app
 EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:3000/ || exit 1
 ENTRYPOINT ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 LABEL org.opencontainers.image.title="redmine" \
       org.opencontainers.image.version="6.0.3" \
       org.opencontainers.image.vendor="Redmine" \
       org.opencontainers.image.source="https://github.com/redmine/redmine" \
-      sovereign.image.tier="2" \
-      sovereign.image.category="project-management" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="wolfi" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="10s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="60000ms"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="2" \
+      evergreen.image.category="project-management" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.base="wolfi" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="10s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="60000ms"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

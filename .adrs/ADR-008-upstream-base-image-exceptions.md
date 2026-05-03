@@ -42,7 +42,7 @@ A blanket ban is impractical. A structured exception framework with monitoring a
 
 - Accept upstream Alpine-based image as-is
 - Wrap with health-shim (per ADR-006) to provide `/livez`, `/readyz`, `/startupz` on `:9101`
-- Add sovereign labels for visibility and audit trail
+- Add evergreen labels for visibility and audit trail
 - Pin to specific image digest (not tag) for reproducibility
 - Monitor upstream for CVEs via Trivy weekly scan
 - SLA: patches applied within 72h of upstream fix
@@ -50,7 +50,7 @@ A blanket ban is impractical. A structured exception framework with monitoring a
 **Category B — Official upstream (Accepted Exception)**
 
 - Accept vendor-maintained base image as-is
-- Add sovereign labels
+- Add evergreen labels
 - Pin to specific digest
 - Monitor for CVEs via Trivy weekly scan
 - Evaluate quarterly for migration feasibility (vendor may switch to compliant base)
@@ -68,7 +68,7 @@ A blanket ban is impractical. A structured exception framework with monitoring a
 
 - Migrate to wolfi-base per ADR-007 preference order
 - Rewrite Dockerfile using apk package manager
-- Follow sovereign label schema (ADR-004)
+- Follow evergreen label schema (ADR-004)
 - No exception required — these images comply with ADR-007 post-migration
 
 #### Required Labels for Exceptions (Category A & B)
@@ -76,13 +76,13 @@ A blanket ban is impractical. A structured exception framework with monitoring a
 All exception images must carry these labels:
 
 ```dockerfile
-LABEL sovereign.base.image="<actual-upstream-image>"
-LABEL sovereign.base.exception="true"
-LABEL sovereign.base.exception.category="A|B"
-LABEL sovereign.base.exception.reason="<why compliance is not possible>"
-LABEL sovereign.base.fallback_reason="<upstream provides pre-built binaries>"
-LABEL sovereign.base.exception.approved-by="Nexus"
-LABEL sovereign.base.exception.approved-date="2026-04-22"
+LABEL evergreen.base.image="<actual-upstream-image>"
+LABEL evergreen.base.exception="true"
+LABEL evergreen.base.exception.category="A|B"
+LABEL evergreen.base.exception.reason="<why compliance is not possible>"
+LABEL evergreen.base.fallback_reason="<upstream provides pre-built binaries>"
+LABEL evergreen.base.exception.approved-by="Nexus"
+LABEL evergreen.base.exception.approved-date="2026-04-22"
 ```
 
 #### Monitoring Requirements
@@ -102,7 +102,7 @@ LABEL sovereign.base.exception.approved-date="2026-04-22"
 - Category D eliminates 3 non-compliant images immediately
 - Category C investigation resolves provenance gaps
 - Monitoring ensures exceptions don't become permanent blindly
-- Sovereign labels make exception status machine-readable
+- Evergreen labels make exception status machine-readable
 
 **Negative:**
 - 13 images remain on non-compliant base images (Categories A, B, C pending)

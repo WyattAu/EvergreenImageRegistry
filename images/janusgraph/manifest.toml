@@ -1,7 +1,7 @@
 [metadata]
 name = "janusgraph"
 version = "1.0.0"
-description = "Sovereign hardened JanusGraph - distributed graph database"
+description = "Evergreen hardened JanusGraph - distributed graph database"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -18,15 +18,15 @@ entrypoint = ["/opt/janusgraph/bin/gremlin.sh"]
 expose = [8182, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened JanusGraph - distributed graph database"
+"org.opencontainers.image.description" = "Evergreen hardened JanusGraph - distributed graph database"
 "org.opencontainers.image.title" = "janusgraph"
 "org.opencontainers.image.vendor" = "JanusGraph"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "wolfi"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "database"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "database"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

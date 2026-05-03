@@ -1,4 +1,4 @@
-# Blue Paper Registry - Sovereign Hardened Image Registry
+# Blue Paper Registry - Evergreen Hardened Image Registry
 # Tracks all Blue Papers for architectural specification
 
 [metadata]
@@ -13,7 +13,7 @@ ieee_1016_compliant = true
 
 [[blue_paper]]
 id = "BP-IMAGE-REGISTRY-001"
-title = "Sovereign Hardened Image Registry Component"
+title = "Evergreen Hardened Image Registry Component"
 status = "APPROVED"
 version = "1.0.0"
 created = "2026-04-19"

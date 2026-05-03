@@ -1,7 +1,7 @@
 [metadata]
 name = "distroless"
 version = "unknown"
-description = "Sovereign reference to gcr.io/distroless/static-debian12 for static binary containers"
+description = "Evergreen reference to gcr.io/distroless/static-debian12 for static binary containers"
 
 [build]
 base = "gcr.io/distroless/static-debian12:latest"
@@ -15,13 +15,13 @@ type = "base-image"
 expose = [9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign reference to gcr.io/distroless/static-debian12 for static binary containers"
+"org.opencontainers.image.description" = "Evergreen reference to gcr.io/distroless/static-debian12 for static binary containers"
 "org.opencontainers.image.title" = "distroless"
-"sovereign.base.image" = "distroless"
-"sovereign.health.type" = "none"
-"sovereign.image.category" = "base"
-"sovereign.image.note" = "Reference image. Use as FROM base for static Go/Rust binaries."
-"sovereign.image.status" = "reference"
-"sovereign.image.tier" = "3"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "distroless"
+"evergreen.health.type" = "none"
+"evergreen.image.category" = "base"
+"evergreen.image.note" = "Reference image. Use as FROM base for static Go/Rust binaries."
+"evergreen.image.status" = "reference"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
 

@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=26.6.1
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
@@ -8,7 +8,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     if [ -f /keycloak.tar.gz ]; then tar -xzf /keycloak.tar.gz -C /opt/ && rm -rf /keycloak.tar.gz ; fi ; \
     test -f /opt/keycloak-${VERSION}/bin/kc.sh || {{ echo '#!/bin/sh' > /opt/keycloak-${VERSION}/bin/kc.sh && echo 'echo "keycloak v${VERSION} placeholder"' >> /opt/keycloak-${VERSION}/bin/kc.sh && echo 'exec sleep infinity' >> /opt/keycloak-${VERSION}/bin/kc.sh && chmod +x /opt/keycloak-${VERSION}/bin/kc.sh; }} || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates 
@@ -19,24 +19,29 @@ USER 65532:65532
 WORKDIR /app
 ENV KEYCLOAK_HOME=/opt/keycloak
 EXPOSE 8080 8443
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
 CMD ["start-dev"]
 LABEL org.opencontainers.image.title="keycloak" \
       org.opencontainers.image.version="26.6.1" \
       org.opencontainers.image.vendor="Keycloak" \
       org.opencontainers.image.source="https://github.com/keycloak/keycloak" \
-      sovereign.image.tier="2" \
-      sovereign.image.category="identity" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="wolfi" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="30s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="60000ms"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="2" \
+      evergreen.image.category="identity" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.base="wolfi" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="30s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="60000ms"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM
 

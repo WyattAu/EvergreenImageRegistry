@@ -30,9 +30,9 @@ LABEL org.opencontainers.image.title="$name" \
       org.opencontainers.image.description="$desc" \
       org.opencontainers.image.vendor="$vendor" \
       org.opencontainers.image.source="https://github.com/$repo" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true"
 DEOF
 }
 
@@ -64,9 +64,9 @@ LABEL org.opencontainers.image.title="$name" \
       org.opencontainers.image.description="$desc" \
       org.opencontainers.image.vendor="$vendor" \
       org.opencontainers.image.source="https://github.com/$repo" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 DEOF
 }
 

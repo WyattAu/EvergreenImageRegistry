@@ -1,7 +1,7 @@
 [metadata]
 name = "promtail"
 version = "2.9.4"
-description = "Sovereign hardened Promtail - log collection agent for Grafana Loki"
+description = "Evergreen hardened Promtail - log collection agent for Grafana Loki"
 
 [build]
 base = "scratch"
@@ -18,13 +18,13 @@ entrypoint = ["/usr/bin/promtail"]
 expose = [9080, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened Promtail - log collection agent for Grafana Loki"
+"org.opencontainers.image.description" = "Evergreen hardened Promtail - log collection agent for Grafana Loki"
 "org.opencontainers.image.title" = "promtail"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "scratch"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "logging"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "logging"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

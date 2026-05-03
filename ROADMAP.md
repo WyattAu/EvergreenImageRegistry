@@ -1,4 +1,4 @@
-# Sovereign Hardened Image Registry - Roadmap
+# Evergreen Hardened Image Registry - Roadmap
 
 ## Document Metadata
 
@@ -74,7 +74,7 @@ Comprehensive audit conducted 2026-05-03 across 8 dimensions (A1-A8) covering al
 
 ### 29.2 Fix 7 Broken TOML Manifests
 
-**Problem:** 7 manifests have unclosed array syntax errors preventing sovereignctl from parsing them.
+**Problem:** 7 manifests have unclosed array syntax errors preventing evergreenctl from parsing them.
 
 | Image | Error |
 |-------|-------|
@@ -119,7 +119,7 @@ Comprehensive audit conducted 2026-05-03 across 8 dimensions (A1-A8) covering al
 
 **Solution:** Runtime enforcement via `docker run --security-opt=no-new-privileges`. Document in Dockerfile LABEL:
 ```dockerfile
-LABEL sovereign.security.no-new-privileges="true"
+LABEL evergreen.security.no-new-privileges="true"
 ```
 
 **Effort:** 1 day | **Scriptable:** YES
@@ -270,9 +270,9 @@ After adding multi-arch support, update the CI matrix from 207 to 365+ images.
 
 ### 32.1 Retune C003 Constraint for Wolfi
 
-**Problem:** sovereignctl reports 607 C003 violations, but most are false positives. Wolfi defaults to UID 65532 (nonroot), so `USER` is not required.
+**Problem:** evergreenctl reports 607 C003 violations, but most are false positives. Wolfi defaults to UID 65532 (nonroot), so `USER` is not required.
 
-**Solution:** Update sovereignctl audit to exclude wolfi-base images from C003. Add `--wolfi-nonroot-default` flag.
+**Solution:** Update evergreenctl audit to exclude wolfi-base images from C003. Add `--wolfi-nonroot-default` flag.
 
 **Effort:** 30 minutes | **Scriptable:** YES
 
@@ -292,7 +292,7 @@ Add enforcement gates to build.yml:
 |------|-------|--------|
 | GATE-HEALTHCHECK | HEALTHCHECK instruction present | WARN |
 | GATE-DIGEST-PIN | No mutable :latest in final FROM | BLOCK (after Phase 30) |
-| GATE-CAP-DROP | sovereign.security.no-new-privileges label | WARN |
+| GATE-CAP-DROP | evergreen.security.no-new-privileges label | WARN |
 
 **Effort:** 2 hours | **Scriptable:** YES
 
@@ -419,7 +419,7 @@ Phase 30 (Reproducibility) ──> Phase 31 (Multi-Arch) ───────�
 | 2 | Fix 18 version mismatches | 18 | 60 |
 | 3 | Add curl fallback `|| true` | 167 | 240 |
 | 4 | Add apk cache cleanup | 584 | 120 |
-| 5 | Retune C003 for wolfi | sovereignctl | 30 |
+| 5 | Retune C003 for wolfi | evergreenctl | 30 |
 | 6 | Run pin_digests.sh | 998 | 60 |
 | 7 | Add HEALTHCHECK directive | 998 | 120 |
 | 8 | Add no-new-privileges label | 998 | 120 |

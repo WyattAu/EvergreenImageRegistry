@@ -1,7 +1,7 @@
 ARG VERSION=0.5.0
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 ARG GITHUB_TOKEN
 ARG VERSION
@@ -34,19 +34,24 @@ COPY --from=builder /tmp/dns-stats /usr/local/bin/dns-stats
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 EXPOSE 8080
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/dns-stats"]
 LABEL org.opencontainers.image.title="dns-stats" \
       org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.description="Sovereign hardened DNS Stats - DNS monitoring and statistics tool" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="monitoring" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s"
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      org.opencontainers.image.description="Evergreen hardened DNS Stats - DNS monitoring and statistics tool" \
+      evergreen.image.tier="1" \
+      evergreen.image.category="monitoring" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

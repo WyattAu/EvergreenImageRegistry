@@ -1,7 +1,7 @@
 [metadata]
 name = "amd64"
 version = "unknown"
-description = "Sovereign hardened amd64 - AMD64 architecture base image"
+description = "Evergreen hardened amd64 - AMD64 architecture base image"
 
 [build]
 base = "scratch"
@@ -15,11 +15,11 @@ type = "base-image"
 expose = [9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened amd64 - AMD64 architecture base image"
+"org.opencontainers.image.description" = "Evergreen hardened amd64 - AMD64 architecture base image"
 "org.opencontainers.image.title" = "amd64"
-"sovereign.base.image" = "scratch"
-"sovereign.health.type" = "none"
-"sovereign.image.note" = "Placeholder base image for AMD64 architecture. Extend with application binaries."
-"sovereign.image.tier" = "3"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.health.type" = "none"
+"evergreen.image.note" = "Placeholder base image for AMD64 architecture. Extend with application binaries."
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
 

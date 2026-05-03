@@ -1,7 +1,7 @@
 [metadata]
 name = "tigergraph"
 version = "3.10.0"
-description = "Sovereign hardened TigerGraph - extracted from official Docker image"
+description = "Evergreen hardened TigerGraph - extracted from official Docker image"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -19,16 +19,16 @@ entrypoint = ["/opt/tigergraph/bin/gadmin", "start", "all"]
 expose = [14240, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened TigerGraph - extracted from official Docker image"
+"org.opencontainers.image.description" = "Evergreen hardened TigerGraph - extracted from official Docker image"
 "org.opencontainers.image.title" = "tigergraph"
 "org.opencontainers.image.vendor" = "TigerGraph"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "wolfi"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "database"
-"sovereign.image.note" = "Extracted from docker.io/tigergraph/tigergraph:latest. CloudFront download URL is defunct."
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "database"
+"evergreen.image.note" = "Extracted from docker.io/tigergraph/tigergraph:latest. CloudFront download URL is defunct."
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

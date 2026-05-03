@@ -17,11 +17,11 @@ expose = [9101]
 [labels]
 "org.opencontainers.image.description" = "Meta directory for GRUB bootloader configuration. Not a runnable container."
 "org.opencontainers.image.title" = "grub"
-"sovereign.base.image" = "scratch"
-"sovereign.health.type" = "none"
-"sovereign.image.category" = "meta"
-"sovereign.image.note" = "Bootloader config directory, not a container image."
-"sovereign.image.status" = "reference"
-"sovereign.image.tier" = "3"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.health.type" = "none"
+"evergreen.image.category" = "meta"
+"evergreen.image.note" = "Bootloader config directory, not a container image."
+"evergreen.image.status" = "reference"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
 

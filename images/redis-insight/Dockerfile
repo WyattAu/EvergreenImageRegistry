@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED REDIS INSIGHT
+# EVERGREEN HARDENED REDIS INSIGHT
 # Generated from template - Version: 2.54.0
 # Constraint: wolfi - Electron-based GUI tool, uses wolfi for deps
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 # hadolint ignore=DL3023
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
@@ -19,7 +19,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     [ -f redisinsight.tar.gz ] && tar -xzf redisinsight.tar.gz -C /tmp/redisinsight --strip-components=1 || true
 RUN mkdir -p /tmp/redisinsight
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=2.54.0
 
 RUN apk add --no-cache ca-certificates fontconfig freetype glib || true
@@ -28,15 +28,20 @@ COPY --from=builder /tmp/redisinsight /opt/redisinsight
 USER 65532:65532
 WORKDIR /opt/redisinsight
 EXPOSE 8001
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8001/ || exit 1
 ENTRYPOINT ["/opt/redisinsight/redisinsight"]
-LABEL sovereign.image.status="functional" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="observability" \
+LABEL evergreen.image.status="functional" \
+      evergreen.image.tier="1" \
+      evergreen.image.category="observability" \
       org.opencontainers.image.title="redis-insight" \
-      org.opencontainers.image.description="Sovereign hardened RedisInsight - visual Redis management and monitoring tool" \
+      org.opencontainers.image.description="Evergreen hardened RedisInsight - visual Redis management and monitoring tool" \
       org.opencontainers.image.version="${VERSION}"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

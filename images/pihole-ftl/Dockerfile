@@ -1,6 +1,6 @@
 ARG TARGETARCH
 
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=5.18.2
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
@@ -12,7 +12,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/pihole-FTL /var/lib/pihole-FTL /etc/pihole 2>/dev/null || true
 
 
@@ -26,25 +26,30 @@ COPY --from=builder /var/lib/pihole-FTL /var/lib/pihole-FTL
 USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 4711
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/pihole-FTL"]
 LABEL org.opencontainers.image.title="pihole-ftl" \
       org.opencontainers.image.version="5.18.2" \
       org.opencontainers.image.vendor="Pi-hole" \
       org.opencontainers.image.source="https://github.com/pi-hole/FTL" \
       org.opencontainers.image.description="Pi-hole FTL DNS engine" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="dns" \
-      sovereign.image.status="best-effort" \
-      sovereign.image.note="May require glibc; fallback to debian-slim if scratch fails" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="scratch" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="5000ms"
+      evergreen.image.tier="1" \
+      evergreen.image.category="dns" \
+      evergreen.image.status="best-effort" \
+      evergreen.image.note="May require glibc; fallback to debian-slim if scratch fails" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.base="scratch" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="5000ms"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

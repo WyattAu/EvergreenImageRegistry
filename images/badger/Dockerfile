@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED BADGER
+# EVERGREEN HARDENED BADGER
 # Constraint: scratch - pure static Go binary (embeds badger CLI)
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
@@ -30,21 +30,26 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifi
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/badger"]
 LABEL org.opencontainers.image.title="badger" \
       org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.description="Sovereign hardened Badger - embedded key-value store (Dgraph)" \
+      org.opencontainers.image.description="Evergreen hardened Badger - embedded key-value store (Dgraph)" \
       org.opencontainers.image.vendor="Dgraph Labs" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="database" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s"
+      evergreen.image.tier="1" \
+      evergreen.image.category="database" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

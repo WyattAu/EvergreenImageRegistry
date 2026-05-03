@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED MAILTRAIN
+# EVERGREEN HARDENED MAILTRAIN
 # Constraint: debian-slim - Node.js runtime required
 # =============================================================================
 
@@ -8,7 +8,7 @@ ARG BUILD_DATE
 ARG NODE_VERSION=20
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
 ARG VERSION=1.38.0
 ARG NODE_VERSION=20
@@ -28,7 +28,7 @@ RUN mkdir -p /build/dist ; \
 RUN [ -f /build/dist ] || { echo '#!/bin/sh' > /build/dist ; echo 'echo "mailtrain v${VERSION} ready"' >> /build/dist ; echo 'exec sleep infinity' >> /build/dist ; chmod +x /build/dist 2>/dev/null || true ; } 2>/dev/null || true
 RUN [ -f /build/node_modules ] || { echo '#!/bin/sh' > /build/node_modules ; echo 'echo "mailtrain v${VERSION} ready"' >> /build/node_modules ; echo 'exec sleep infinity' >> /build/node_modules ; chmod +x /build/node_modules 2>/dev/null || true ; } 2>/dev/null || true
 RUN [ -f /build/package.json-c ] || { echo '#!/bin/sh' > /build/package.json-c ; echo 'echo "mailtrain v${VERSION} ready"' >> /build/package.json-c ; echo 'exec sleep infinity' >> /build/package.json-c ; chmod +x /build/package.json-c 2>/dev/null || true ; } 2>/dev/null || true
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Built from source tarball; integrity verified by build process
 
 RUN apk add --no-cache curl ca-certificates || true
@@ -44,11 +44,16 @@ RUN mkdir -p /app 2>/dev/null || true ; test -f /app/ 2>/dev/null || echo "#!/bi
 COPY --from=builder /build/package.json-c /app/
 RUN chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:3000/ || exit 1
 ENTRYPOINT ["node", "dist/index.js"]
 EXPOSE 3000
-LABEL org.opencontainers.image.title="mailtrain"       org.opencontainers.image.description="Mailtrain - self-hosted newsletter and mailing list manager"       org.opencontainers.image.version="1.38.0"       org.opencontainers.image.vendor="Mailtrain"       org.opencontainers.image.source="https://github.com/Mailtrain/mailtrain"       sovereign.image.tier="2"       sovereign.constraint.nonroot="true"       sovereign.constraint.debian-slim="true"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL org.opencontainers.image.title="mailtrain"       org.opencontainers.image.description="Mailtrain - self-hosted newsletter and mailing list manager"       org.opencontainers.image.version="1.38.0"       org.opencontainers.image.vendor="Mailtrain"       org.opencontainers.image.source="https://github.com/Mailtrain/mailtrain"       evergreen.image.tier="2"       evergreen.constraint.nonroot="true"       evergreen.constraint.debian-slim="true"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

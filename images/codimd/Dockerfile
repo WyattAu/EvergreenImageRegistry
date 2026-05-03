@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/wolfi-base:latest AS builder
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31 AS builder
 ARG VERSION=2.6.1
 ARG GITHUB_TOKEN
 RUN apk add --no-cache nodejs npm git ca-certificates python3 make g++ || true
@@ -11,7 +11,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 RUN cd /build && npm ci 2>/dev/null || npm install --legacy-peer-deps 2>/dev/null || true && \
     npm run build 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=2.6.1
 RUN apk add --no-cache nodejs npm ca-certificates || true
 RUN addgroup -S -g 10000 codimd 2>/dev/null || true && \
@@ -23,6 +23,8 @@ USER 65532:65532
 WORKDIR /app/codimd
 ENV NODE_ENV="production"
 EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:3000/ || exit 1
 ENTRYPOINT ["node"]
 CMD ["./app.js"]
 LABEL org.opencontainers.image.title="codimd" \
@@ -30,11 +32,14 @@ LABEL org.opencontainers.image.title="codimd" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="hackmdio" \
       org.opencontainers.image.source="https://github.com/hackmdio/codimd" \
-      sovereign.image.tier="2" \
-      sovereign.image.category="collaboration" \
-      sovereign.constraint.nonroot="true"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="http"
+      evergreen.image.tier="2" \
+      evergreen.image.category="collaboration" \
+      evergreen.constraint.nonroot="true"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="http"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

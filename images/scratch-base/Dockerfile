@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN SCRATCH-BASE
+# EVERGREEN SCRATCH-BASE
 # Minimal FROM scratch base image with CA certs, timezone data, and standard
 # directory layout. All source-build images use this as their final stage.
 #
@@ -12,7 +12,7 @@
 # Size: ~6MB (CA certs) + 3KB (tzdata UTC) = ~6MB total
 # =============================================================================
 
-FROM debian:bookworm-slim AS certs
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS certs
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ca-certificates tzdata && \
     mkdir -p /app /var/log/app /var/cache/app && \
@@ -34,8 +34,13 @@ WORKDIR /app
 LABEL org.opencontainers.image.title="scratch-base" \
       org.opencontainers.image.description="Minimal FROM scratch base with CA certs, tzdata, and standard directories" \
       org.opencontainers.image.vendor="EvergreenImageRegistry" \
-      sovereign.image.tier="0" \
-      sovereign.image.role="base" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true"
+      evergreen.image.tier="0" \
+      evergreen.image.role="base" \
+      evergreen.constraint.nonroot="true" \
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
+      evergreen.constraint.scratch="true"
 STOPSIGNAL SIGTERM
+
+HEALTHCHECK NONE

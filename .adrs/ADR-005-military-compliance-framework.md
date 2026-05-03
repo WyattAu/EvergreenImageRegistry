@@ -184,7 +184,7 @@ NIST SP 800-53 defines a comprehensive set of security and privacy controls. The
 |-------------|------|------|-----------------|
 | Single compliance standard | Simpler | Insufficient for DoD/federal | Must meet multiple standards |
 | Compliance via runtime policy only | No image changes needed | Cannot guarantee image-level compliance | Images must be compliant at rest |
-| Third-party compliance tool (Twistlock, Prisma) | Automated | Vendor lock-in, cost, not customizable | Sovereign requirement |
+| Third-party compliance tool (Twistlock, Prisma) | Automated | Vendor lock-in, cost, not customizable | Evergreen requirement |
 | Manual compliance documentation | No tooling needed | Not auditable, not automated | Must be automated |
 
 ### Related Standards
@@ -203,7 +203,7 @@ NIST SP 800-53 defines a comprehensive set of security and privacy controls. The
 
 ### Related Blue Papers
 
-- BP-IMAGE-REGISTRY-001: Sovereign Hardened Image Registry Architecture
+- BP-IMAGE-REGISTRY-001: Evergreen Hardened Image Registry Architecture
 
 ### Related ADRs
 

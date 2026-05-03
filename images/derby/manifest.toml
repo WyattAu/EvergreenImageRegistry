@@ -1,7 +1,7 @@
 [metadata]
 name = "derby"
 version = "10.17.1.0"
-description = "Sovereign hardened Apache Derby - embedded Java database"
+description = "Evergreen hardened Apache Derby - embedded Java database"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -18,15 +18,15 @@ entrypoint = ["java", "-jar", "/opt/derby/lib/derbyrun.jar", "server"]
 expose = [1527, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened Apache Derby - embedded Java database"
+"org.opencontainers.image.description" = "Evergreen hardened Apache Derby - embedded Java database"
 "org.opencontainers.image.title" = "derby"
 "org.opencontainers.image.vendor" = "Apache Software Foundation"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "wolfi"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "database"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "database"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

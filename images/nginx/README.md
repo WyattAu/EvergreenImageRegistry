@@ -1,4 +1,4 @@
-# Nginx Static - Sovereign Hardened Image
+# Nginx Static - Evergreen Hardened Image
 
 ## Image Information
 
@@ -40,13 +40,13 @@
 # Basic run
 docker run -d -p 80:80 -p 443:443 \
   --read-only --tmpfs /var/cache \
-  ghcr.io/sovereign/nginx:latest
+  ghcr.io/evergreen/nginx:latest
 
 # With config
 docker run -d -p 80:80 \
   -v nginx.conf:/etc/nginx/nginx.conf:ro \
   --read-only \
-  ghcr.io/sovereign/nginx:latest
+  ghcr.io/evergreen/nginx:latest
 ```
 
 ## Health Check

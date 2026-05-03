@@ -2,7 +2,7 @@ ARG VERSION=2.5.1
 
 FROM cachethq/docker:${VERSION} AS upstream
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN addgroup -S -g 65532 cachet 2>/dev/null || true
 RUN adduser -u 65532 -G cachet -D -s /bin/false cachet 2>/dev/null || true
@@ -40,13 +40,16 @@ WORKDIR /app
 EXPOSE 8000
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="cachet" org.opencontainers.image.version="2.5.1" org.opencontainers.image.vendor="CachetHQ" org.opencontainers.image.description="Cachet - open source status page system" sovereign.image.tier="1" sovereign.constraint.nonroot="true" sovereign.hft.signal-handling="native" sovereign.hft.shutdown-timeout="5s" sovereign.hft.init-system="none" sovereign.hft.startup-timeout="30000ms" sovereign.hft.cpu-pins="2-3" sovereign.hft.cpu-pins-mode="shared" sovereign.hft.deploy-strategy="standard-rolling" sovereign.hft.pre-stop-hook="true" sovereign.hft.pre-stop-delay="10s" sovereign.hft.connection-drain="true" sovereign.hft.sched-policy="SCHED_OTHER" sovereign.hft.runtime="php"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL org.opencontainers.image.title="cachet" org.opencontainers.image.version="2.5.1" org.opencontainers.image.vendor="CachetHQ" org.opencontainers.image.description="Cachet - open source status page system" evergreen.image.tier="1" evergreen.constraint.nonroot="true" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="5s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="30000ms" evergreen.hft.cpu-pins="2-3" evergreen.hft.cpu-pins-mode="shared" evergreen.hft.deploy-strategy="standard-rolling" evergreen.hft.pre-stop-hook="true" evergreen.hft.pre-stop-delay="10s" evergreen.hft.connection-drain="true" evergreen.hft.sched-policy="SCHED_OTHER" evergreen.hft.runtime="php"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
 
 USER 65532:65532
 
 STOPSIGNAL SIGTERM
 
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8000/ || exit 1
 ENTRYPOINT ["/usr/sbin/php-fpm8.4", "-F"]

@@ -1,7 +1,7 @@
 ARG VERSION=1.2.0
 ARG BUILD_DATE
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
         python3 python3-pip ca-certificates curl && \
@@ -10,7 +10,7 @@ RUN pip3 install --break-system-packages --no-cache-dir \
         gremlinpython SPARQLWrapper 2>/dev/null || true
 RUN mkdir -p /app-src 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION
 RUN apk add --no-cache ca-certificates python3 py3-pip || true && \
     pip3 install --break-system-packages --no-cache-dir \
@@ -23,19 +23,24 @@ RUN chown -R 65532:65532 /var/lib/neptune /var/log/neptune /app
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8182 8443
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8182/ || exit 1
 ENTRYPOINT ["/app/neptune"]
 LABEL org.opencontainers.image.title="neptune" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="AWS Neptune local development compatibility - Gremlin/SPARQL for dev environments" \
       org.opencontainers.image.vendor="AWS" \
       org.opencontainers.image.source="https://aws.amazon.com/neptune/" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="database" \
-      sovereign.image.status="functional" \
-      sovereign.image.note="AWS Neptune is a fully managed cloud service. This image provides development-only compatibility." \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="1" \
+      evergreen.image.category="database" \
+      evergreen.image.status="functional" \
+      evergreen.image.note="AWS Neptune is a fully managed cloud service. This image provides development-only compatibility." \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

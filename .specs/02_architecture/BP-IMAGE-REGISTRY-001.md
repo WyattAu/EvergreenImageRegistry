@@ -1,4 +1,4 @@
-# Blue Paper: Sovereign Hardened Image Registry Architecture
+# Blue Paper: Evergreen Hardened Image Registry Architecture
 
 ## Document Header
 
@@ -19,7 +19,7 @@ superseded_by: ADR-007, REQUIREMENTS.md v4.0.0
 
 ### System Purpose
 
-The Sovereign Hardened Image Registry provides a secure, compliant infrastructure for building, verifying, signing, and distributing 1000+ industrial-grade hardened container images.
+The Evergreen Hardened Image Registry provides a secure, compliant infrastructure for building, verifying, signing, and distributing 1000+ industrial-grade hardened container images.
 
 ### System Scope
 

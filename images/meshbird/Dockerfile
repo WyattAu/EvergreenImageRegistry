@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED MESHBIRD
+# EVERGREEN HARDENED MESHBIRD
 # Distributed private networking (Go-based mesh VPN)
 # Constraint: scratch - Go static binary, smallest attack surface
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
@@ -37,24 +37,29 @@ COPY --from=builder /var/log/meshbird /var/log/meshbird
 USER 65532:65532
 WORKDIR /app
 EXPOSE 10500 10500/udp
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/meshbird"]
 LABEL org.opencontainers.image.title="meshbird" \
       org.opencontainers.image.version="0.4.0" \
       org.opencontainers.image.vendor="Meshbird" \
       org.opencontainers.image.source="https://github.com/meshbird/meshbird" \
       org.opencontainers.image.description="Distributed private networking mesh VPN" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="networking" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
+      evergreen.image.tier="1" \
+      evergreen.image.category="networking" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="3000ms"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

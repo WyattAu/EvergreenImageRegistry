@@ -1,7 +1,7 @@
 
 ARG TARGETARCH
 
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=0.4.36
 ARG GITHUB_TOKEN
@@ -15,7 +15,7 @@ RUN strip /grpc_health_probe 2>/dev/null || true
 RUN test -f /grpc_health_probe || { echo '#!/bin/sh' > /grpc_health_probe && echo 'echo "healthcheck v${VERSION} ready"' >> /grpc_health_probe && echo 'exec sleep infinity' >> /grpc_health_probe && chmod +x /grpc_health_probe; }
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app 2>/dev/null || true
 
@@ -26,28 +26,33 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 USER 65532:65532
 WORKDIR /app
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/grpc_health_probe"]
 LABEL org.opencontainers.image.title="healthcheck" \
       org.opencontainers.image.version="0.4.36" \
       org.opencontainers.image.vendor="grpc-ecosystem" \
       org.opencontainers.image.description="grpc-health-probe - gRPC health checking tool for Kubernetes" \
-      sovereign.image.tier="1" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="2s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="1000ms" \
-      sovereign.hft.cpu-pins="6-7" \
-      sovereign.hft.cpu-pins-mode="shared" \
-      sovereign.hft.deploy-strategy="standard-rolling" \
-      sovereign.hft.pre-stop-hook="false" \
-      sovereign.hft.connection-drain="false" \
-      sovereign.hft.sched-policy="SCHED_OTHER" \
-      sovereign.hft.runtime="go"
+      evergreen.image.tier="1" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="2s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="1000ms" \
+      evergreen.hft.cpu-pins="6-7" \
+      evergreen.hft.cpu-pins-mode="shared" \
+      evergreen.hft.deploy-strategy="standard-rolling" \
+      evergreen.hft.pre-stop-hook="false" \
+      evergreen.hft.connection-drain="false" \
+      evergreen.hft.sched-policy="SCHED_OTHER" \
+      evergreen.hft.runtime="go"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

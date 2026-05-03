@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED QBITTORRENT-NOX
+# EVERGREEN HARDENED QBITTORRENT-NOX
 # Generated from template - Version: 5.0.3
 # Constraint: debian-slim - compile from source
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
@@ -10,7 +10,7 @@ ARG BUILD_DATE
 ARG TARGETARCH
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
 ARG VERSION=5.0.3
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -25,7 +25,7 @@ RUN cd /src &&  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/app \
     -DGUI=OFF -DQT6=OFF . && \
     make -j$(nproc) && make install || true
 RUN mkdir -p / 2>/dev/null || true ; touch --chown=65532:65532 2>/dev/null || true
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache ca-certificates curl || true
 RUN adduser -u 65532 -D qbittorrent 2>/dev/null || true
@@ -34,15 +34,20 @@ RUN mkdir -p /var/log/qbittorrent /var/cache/qbittorrent /config && chown -R 655
 USER 65532:65532
 WORKDIR /config
 EXPOSE 8080 6881 6881/udp
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:6881/ || exit 1
 ENTRYPOINT ["/app/bin/qbittorrent-nox"]
 LABEL org.opencontainers.image.title="qbittorrent-nox" \
       org.opencontainers.image.version="5.0.3" \
       org.opencontainers.image.vendor="qBittorrent" \
       org.opencontainers.image.source="https://github.com/qbittorrent/qBittorrent" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

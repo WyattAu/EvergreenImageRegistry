@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=16.11.0
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -13,7 +13,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.gitlab.com/install/re
     rm -rf /var/lib/apt/lists/*
 RUN test -f /opt/gitlab || { echo "ERROR: gitlab-ee not installed" >&2; exit 1; }
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt GPG signatures (packages.gitlab.com)
 
 RUN apk add --no-cache curl ca-certificates gnupg openssh-client postfix busybox || true
@@ -29,12 +29,17 @@ LABEL org.opencontainers.image.title="gitlab-ee" \
       org.opencontainers.image.version="16.11.0" \
       org.opencontainers.image.vendor="GitLab" \
       org.opencontainers.image.source="https://gitlab.com/gitlab-org/gitlab-ee" \
-      sovereign.image.tier="2" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian-slim="true"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="2" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian-slim="true"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:22/ || exit 1
 ENTRYPOINT ["/opt/gitlab/bin/gitlab"]

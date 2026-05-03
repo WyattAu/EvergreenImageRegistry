@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED MYSQL ANONYMIZER
+# EVERGREEN HARDENED MYSQL ANONYMIZER
 # Generated from template - Version: 0.10.0
 # Constraint: debian-slim - MySQL client + anonymization tools
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
@@ -18,7 +18,7 @@ RUN pip install --no-cache-dir --prefix=/install \
 
 RUN test -f /install || { echo '#!/bin/sh' > /install && echo 'echo "mysql-anonymizer v${VERSION} placeholder"' >> /install && echo 'exec sleep infinity' >> /install && chmod +x /install ; }
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache curl ca-certificates || true
 COPY --from=builder /install /usr/local
@@ -56,15 +56,20 @@ RUN adduser -u 65532 -s /bin/false anon 2>/dev/null || true ; \
     chmod +x /app/anonymize.py 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["python3", "/app/anonymize.py"]
 LABEL org.opencontainers.image.title="mysql-anonymizer" \
       org.opencontainers.image.version="0.10.0" \
       org.opencontainers.image.description="MySQL Data Anonymization Tool" \
-      org.opencontainers.image.vendor="Sovereign" \
-      sovereign.image.tier="1" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi" \
-      sovereign.metrics.native="ztunnel" \
-      sovereign.health.type="exec"
+      org.opencontainers.image.vendor="Evergreen" \
+      evergreen.image.tier="1" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="wolfi" \
+      evergreen.metrics.native="ztunnel" \
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
+      evergreen.health.type="exec"
 EXPOSE 9101
 STOPSIGNAL SIGTERM

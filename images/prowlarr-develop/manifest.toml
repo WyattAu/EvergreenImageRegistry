@@ -19,6 +19,6 @@ expose = [9696, 9101]
 
 [labels]
 "org.opencontainers.image.title" = "prowlarr-develop"
-"sovereign.health.type" = "exec"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.health.type" = "exec"
+"evergreen.metrics.native" = "ztunnel"
 

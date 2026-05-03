@@ -135,10 +135,10 @@ LABEL org.opencontainers.image.title="it-tools-legacy" \
       org.opencontainers.image.description="IT Tools - legacy version (debian-slim, no Alpine)" \
       org.opencontainers.image.vendor="CorentinTh" \
       org.opencontainers.image.source="https://github.com/CorentinTh/it-tools" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true" \
-      sovereign.constraint.no_alpine="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true" \
+      evergreen.constraint.no_alpine="true"
 EOF
 write_checksums "$BASE/it-tools-legacy" \
     "https://github.com/CorentinTh/it-tools/archive/refs/tags/v2024.3.21.tar.gz" \
@@ -172,9 +172,9 @@ LABEL org.opencontainers.image.title="cyberchef" \
       org.opencontainers.image.description="CyberChef - Swiss Army knife of cryptography" \
       org.opencontainers.image.vendor="GCHQ" \
       org.opencontainers.image.source="https://github.com/gchq/CyberChef" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/cyberchef" \
     "https://github.com/gchq/CyberChef/archive/refs/tags/v10.5.0.tar.gz" \
@@ -208,9 +208,9 @@ LABEL org.opencontainers.image.title="cyberchef-node" \
       org.opencontainers.image.description="CyberChef - Node.js variant" \
       org.opencontainers.image.vendor="GCHQ" \
       org.opencontainers.image.source="https://github.com/gchq/CyberChef" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/cyberchef-node" \
     "https://github.com/gchq/CyberChef/archive/refs/tags/v10.5.0.tar.gz" \
@@ -244,9 +244,9 @@ LABEL org.opencontainers.image.title="pairdrop-server" \
       org.opencontainers.image.description="PairDrop - Local file sharing in browser" \
       org.opencontainers.image.vendor="schlagmichdoch" \
       org.opencontainers.image.source="https://github.com/schlagmichdoch/PairDrop" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/pairdrop-server" \
     "https://github.com/schlagmichdoch/PairDrop/archive/refs/heads/master.tar.gz" \
@@ -283,9 +283,9 @@ LABEL org.opencontainers.image.title="privatebin-nginx" \
       org.opencontainers.image.description="PrivateBin - encrypted pastebin with nginx" \
       org.opencontainers.image.vendor="PrivateBin" \
       org.opencontainers.image.source="https://github.com/PrivateBin/PrivateBin" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/privatebin-nginx" \
     "https://github.com/PrivateBin/PrivateBin/archive/refs/heads/master.tar.gz" \
@@ -321,9 +321,9 @@ LABEL org.opencontainers.image.title="$name" \
       org.opencontainers.image.description="$desc" \
       org.opencontainers.image.vendor="$vendor" \
       org.opencontainers.image.source="https://github.com/$repo" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 DEOF
     write_checksums "$BASE/$name" \
         "https://github.com/$repo/archive/refs/heads/$branch.tar.gz" \
@@ -356,9 +356,9 @@ LABEL org.opencontainers.image.title="ulogger" \
       org.opencontainers.image.description="ulogger - log collection tool" \
       org.opencontainers.image.vendor="nicehash" \
       org.opencontainers.image.source="https://github.com/nicehash/ulogger" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/ulogger" \
     "https://github.com/nicehash/ulogger/archive/refs/heads/master.tar.gz" \
@@ -390,9 +390,9 @@ LABEL org.opencontainers.image.title="zipline" \
       org.opencontainers.image.description="Zipline - File sharing platform" \
       org.opencontainers.image.vendor="diced" \
       org.opencontainers.image.source="https://github.com/diced/zipline" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/zipline" \
     "https://github.com/diced/zipline/archive/refs/heads/master.tar.gz" \
@@ -424,9 +424,9 @@ LABEL org.opencontainers.image.title="transfer.sh" \
       org.opencontainers.image.description="transfer.sh - Easy file sharing from CLI" \
       org.opencontainers.image.vendor="dutchcoders" \
       org.opencontainers.image.source="https://github.com/dutchcoders/transfer.sh" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true"
 EOF
 write_checksums "$BASE/transfer.sh" \
     "https://github.com/dutchcoders/transfer.sh/releases/download/v1.7.1/transfer.sh-linux-amd64" \
@@ -445,10 +445,10 @@ ENTRYPOINT ["echo"]
 CMD ["transferhelper: transfer file helper utility"]
 LABEL org.opencontainers.image.title="transferhelper" \
       org.opencontainers.image.description="Placeholder - Transfer helper utility" \
-      sovereign.image.tier="3" \
-      sovereign.image.status="placeholder" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.image.status="placeholder" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_placeholder "$BASE/transferhelper"
 
@@ -478,9 +478,9 @@ LABEL org.opencontainers.image.title="linguist" \
       org.opencontainers.image.description="GitHub Linguist - language detection" \
       org.opencontainers.image.vendor="GitHub" \
       org.opencontainers.image.source="https://github.com/github/linguist" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/linguist" \
     "https://github.com/github/linguist/archive/refs/heads/master.tar.gz" \
@@ -510,9 +510,9 @@ LABEL org.opencontainers.image.title="linguist-go" \
       org.opencontainers.image.description="Linguist - Go variant" \
       org.opencontainers.image.vendor="GitHub" \
       org.opencontainers.image.source="https://github.com/github/linguist" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/linguist-go" \
     "https://github.com/github/linguist/archive/refs/heads/master.tar.gz" \
@@ -549,9 +549,9 @@ LABEL org.opencontainers.image.title="whoogle-search" \
       org.opencontainers.image.description="Whoogle - Privacy-friendly search proxy" \
       org.opencontainers.image.vendor="benbusby" \
       org.opencontainers.image.source="https://github.com/benbusby/whoogle-search" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_pip "$BASE/whoogle-search" "whoogle-search"
 
@@ -585,9 +585,9 @@ LABEL org.opencontainers.image.title="searx" \
       org.opencontainers.image.description="Searx - Privacy-respecting metasearch engine" \
       org.opencontainers.image.vendor="searx" \
       org.opencontainers.image.source="https://github.com/searx/searx" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_pip "$BASE/searx" "searx"
 
@@ -621,9 +621,9 @@ LABEL org.opencontainers.image.title="searxng-meta" \
       org.opencontainers.image.description="SearXNG - meta variant" \
       org.opencontainers.image.vendor="searxng" \
       org.opencontainers.image.source="https://github.com/searxng/searxng" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_pip "$BASE/searxng-meta" "searxng-meta"
 

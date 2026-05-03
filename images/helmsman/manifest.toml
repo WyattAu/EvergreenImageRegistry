@@ -1,7 +1,7 @@
 [metadata]
 name = "helmsman"
 version = "4.0.5"
-description = "Sovereign hardened helmsman - Helm charts as code"
+description = "Evergreen hardened helmsman - Helm charts as code"
 
 [build]
 base = "scratch"
@@ -18,16 +18,16 @@ entrypoint = ["/helmsman"]
 expose = [9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened helmsman - Helm charts as code"
+"org.opencontainers.image.description" = "Evergreen hardened helmsman - Helm charts as code"
 "org.opencontainers.image.title" = "helmsman"
 "org.opencontainers.image.vendor" = "Praqma"
 "org.opencontainers.image.version" = "4.0.5"
-"sovereign.base.image" = "scratch"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.hft.shutdown-timeout" = "5s"
-"sovereign.hft.signal-handling" = "native"
-"sovereign.image.tier" = "3"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.shutdown-timeout" = "5s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
 

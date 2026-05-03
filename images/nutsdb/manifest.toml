@@ -1,7 +1,7 @@
 [metadata]
 name = "nutsdb"
 version = "0.14.0"
-description = "Sovereign hardened NutsDB - embedded key-value store"
+description = "Evergreen hardened NutsDB - embedded key-value store"
 
 [build]
 base = "scratch"
@@ -18,18 +18,18 @@ entrypoint = ["/usr/local/bin/nutsdb"]
 expose = [9900, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened NutsDB - embedded key-value store"
+"org.opencontainers.image.description" = "Evergreen hardened NutsDB - embedded key-value store"
 "org.opencontainers.image.title" = "nutsdb"
 "org.opencontainers.image.vendor" = "Xujiajun"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "scratch"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.hft.shutdown-timeout" = "3s"
-"sovereign.hft.signal-handling" = "native"
-"sovereign.image.category" = "database"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.image.category" = "database"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

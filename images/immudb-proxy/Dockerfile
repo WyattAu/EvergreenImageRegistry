@@ -2,7 +2,7 @@ ARG VERSION=latest
 
 FROM ghcr.io/codenotary/immudb:${VERSION} AS upstream
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/immudb-proxy /var/cache/immudb-proxy 2>/dev/null || true
 
 
@@ -16,13 +16,16 @@ COPY --from=builder /var/cache/immudb-proxy /var/cache/immudb-proxy
 EXPOSE 3323
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="immudb-proxy" org.opencontainers.image.description="Sovereign hardened immudb-proxy - proxy mode for immudb" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.vendor="Codenotary" sovereign.image.status="functional" sovereign.image.tier="1" sovereign.image.category="security" sovereign.constraint.nonroot="true" sovereign.constraint.scratch="true"
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL org.opencontainers.image.title="immudb-proxy" org.opencontainers.image.description="Evergreen hardened immudb-proxy - proxy mode for immudb" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.vendor="Codenotary" evergreen.image.status="functional" evergreen.image.tier="1" evergreen.image.category="security" evergreen.constraint.nonroot="true" evergreen.constraint.scratch="true"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
 
 USER 65532:65532
 
 STOPSIGNAL SIGTERM
 
+HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/immudb-proxy"]

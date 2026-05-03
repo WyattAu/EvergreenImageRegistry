@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED MODSECURITY-CRS
+# EVERGREEN HARDENED MODSECURITY-CRS
 # Constraint: debian-slim - WAF ruleset with libmodsecurity
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
@@ -8,7 +8,7 @@ ARG VERSION=3.3.5
 ARG BUILD_DATE
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -17,7 +17,7 @@ RUN git clone --depth 1 --branch v${VERSION}  || echo "Source repo not available
     git clone https://github.com/coreruleset/coreruleset.git /tmp/crs ; cp /tmp/crs/crs-setup.conf.example /tmp/crs/crs-setup.conf || true
 RUN https://github.com/coreruleset/coreruleset.git /tmp/crs ; cp /tmp/crs/crs-setup.conf.example /tmp/crs/crs-setup.conf
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates libxml2-dev || true && \
@@ -28,17 +28,22 @@ RUN chown -R 65532:65532 /etc/modsecurity /var/log/modsecurity /var/cache/modsec
 USER 65532:65532
 WORKDIR /etc/modsecurity
 EXPOSE 80 443
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:80/ || exit 1
 ENTRYPOINT ["/usr/sbin/apache2", "-D", "FOREGROUND"]
 LABEL org.opencontainers.image.title="modsecurity-crs" \
       org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.description="Sovereign hardened ModSecurity CRS - OWASP Core Rule Set" \
+      org.opencontainers.image.description="Evergreen hardened ModSecurity CRS - OWASP Core Rule Set" \
       org.opencontainers.image.vendor="OWASP" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="security" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="1" \
+      evergreen.image.category="security" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

@@ -1,4 +1,4 @@
-# Sovereign Hardened Image Registry — Unified Requirements Specification
+# Evergreen Hardened Image Registry — Unified Requirements Specification
 
 ## Document Metadata
 
@@ -28,7 +28,7 @@
 
 ## Executive Summary
 
-This document is the **single source of truth** for all requirements governing the Sovereign Hardened Image Registry. It supersedes all prior requirements documents. Every conflict identified in the v3.0.0/v3.5.0 era has been resolved herein.
+This document is the **single source of truth** for all requirements governing the Evergreen Hardened Image Registry. It supersedes all prior requirements documents. Every conflict identified in the v3.0.0/v3.5.0 era has been resolved herein.
 
 **Mission:** Industrial-grade hardened container image registry with 1,012+ images for HFT desks and military contractors.
 
@@ -69,8 +69,8 @@ scratch > wolfi > RHEL UBI micro > RHEL UBI minimal > RHEL UBI standard
 When an image cannot use the preferred base image, the reason **must** be documented:
 
 ```dockerfile
-LABEL sovereign.base.image="ubi-minimal"
-LABEL sovereign.base.fallback_reason="wolfi lacks package: libpq-dev-16"
+LABEL evergreen.base.image="ubi-minimal"
+LABEL evergreen.base.fallback_reason="wolfi lacks package: libpq-dev-16"
 ```
 
 ### 1.4 Version Pinning
@@ -121,8 +121,8 @@ LABEL sovereign.base.fallback_reason="wolfi lacks package: libpq-dev-16"
 | **C019** | Immutable tags | Tags never overwritten | Label check: `oci.image.immutable` | — |
 | **C020** | Reproducible build | Same source produces same image hash | Build reproducibility check | — |
 | **C024** | STOPSIGNAL declared | STOPSIGNAL SIGTERM in Dockerfile | Dockerfile static analysis | New |
-| **C025** | Base image label | `sovereign.base.image` label present | Label check | New |
-| **C026** | mTLS capability label | `sovereign.metrics.tls: native|ztunnel` | Label check | New |
+| **C025** | Base image label | `evergreen.base.image` label present | Label check | New |
+| **C026** | mTLS capability label | `evergreen.metrics.tls: native|ztunnel` | Label check | New |
 | **C027** | No exposed ports except 9101 | EXPOSE only declares necessary ports | Dockerfile static analysis | Set 1 (C027 was C006 in test_framework) |
 | **C028** | No writable /tmp or /var | VOLUME declarations for writable dirs | Dockerfile inspection | New |
 | **C029** | Seccomp profile compatible | No disallowed syscalls in entrypoint | Profile check | — |
@@ -174,7 +174,7 @@ All images that expose an HTTP server **must** serve the following endpoints on 
 
 - Format: Prometheus text exposition format (OpenMetrics 1.0.0 preferred)
 - All metrics **must** include standard labels: `image_name`, `image_version`, `build_commit`
-- Metric names **must** follow Prometheus naming conventions: `sovereign_<subsystem>_<metric>_<unit>`
+- Metric names **must** follow Prometheus naming conventions: `evergreen_<subsystem>_<metric>_<unit>`
 
 ### 3.3 mTLS Strategy
 
@@ -182,7 +182,7 @@ All images that expose an HTTP server **must** serve the following endpoints on 
 |----------------------|----------|
 | Application can serve TLS natively (Go `http.ServeTLS`, Rust `axum-server::bind_rustls`) | **Application handles mTLS.** Certs provided via ENV vars: `SOVEREIGN_TLS_CERT_PATH`, `SOVEREIGN_TLS_KEY_PATH`, `SOVEREIGN_TLS_CA_PATH`. |
 | Application cannot serve TLS (databases, no HTTP server) | **ztunnel at node level** (Istio ambient mesh). Application serves plaintext on :9101. Mesh encrypts all pod traffic. |
-| Application has no /metrics endpoint at all | Label `sovereign.metrics.native: "false"`. No per-app metrics. Only cAdvisor/container runtime metrics available. |
+| Application has no /metrics endpoint at all | Label `evergreen.metrics.native: "false"`. No per-app metrics. Only cAdvisor/container runtime metrics available. |
 
 ### 3.4 Health Shim for Database Images
 
@@ -234,7 +234,7 @@ Tier determines **operational priority**, not base image selection. Every image 
 Every image **must** declare its tier:
 
 ```dockerfile
-LABEL sovereign.image.tier="1"
+LABEL evergreen.image.tier="1"
 ```
 
 ---
@@ -300,16 +300,16 @@ LABEL sovereign.image.tier="1"
 | Label | Required | Format | Example |
 |-------|----------|--------|---------|
 | `org.opencontainers.image.title` | YES | String | `redis` |
-| `org.opencontainers.image.vendor` | YES | String | `sovereign` |
+| `org.opencontainers.image.vendor` | YES | String | `evergreen` |
 | `org.opencontainers.image.version` | YES | SemVer | `7.2.4` |
 | `org.opencontainers.image.source` | YES | URL | `https://github.com/...` |
-| `sovereign.image.tier` | YES | `1`, `2`, or `3` | `1` |
-| `sovereign.base.image` | YES | Base image name | `scratch`, `wolfi`, `ubi-micro`, etc. |
-| `sovereign.base.fallback_reason` | If applicable | Free text | `wolfi lacks libpq-dev` |
-| `sovereign.metrics.native` | YES | `true` or `false` | `true` |
-| `sovereign.metrics.tls` | YES | `native` or `ztunnel` | `native` |
-| `sovereign.health.type` | YES | `http` or `exec` | `http` |
-| `sovereign.health.command` | If exec type | Command string | `pg_isready -U postgres` |
+| `evergreen.image.tier` | YES | `1`, `2`, or `3` | `1` |
+| `evergreen.base.image` | YES | Base image name | `scratch`, `wolfi`, `ubi-micro`, etc. |
+| `evergreen.base.fallback_reason` | If applicable | Free text | `wolfi lacks libpq-dev` |
+| `evergreen.metrics.native` | YES | `true` or `false` | `true` |
+| `evergreen.metrics.tls` | YES | `native` or `ztunnel` | `native` |
+| `evergreen.health.type` | YES | `http` or `exec` | `http` |
+| `evergreen.health.command` | If exec type | Command string | `pg_isready -U postgres` |
 
 ---
 

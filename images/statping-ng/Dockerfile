@@ -1,6 +1,6 @@
 ARG TARGETARCH
 
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=0.90.74
 ARG GITHUB_TOKEN
@@ -12,7 +12,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/statping 2>/dev/null || true
 
@@ -25,24 +25,29 @@ COPY --from=builder /var/log/statping /var/log/statping
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/statping"]
 LABEL org.opencontainers.image.title="statping-ng" \
       org.opencontainers.image.version="0.90.74" \
       org.opencontainers.image.vendor="statping" \
       org.opencontainers.image.source="https://github.com/statping/statping" \
       org.opencontainers.image.description="Service monitoring and uptime tracking" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="monitoring" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="scratch" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="5000ms"
+      evergreen.image.tier="1" \
+      evergreen.image.category="monitoring" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.base="scratch" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="5000ms"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

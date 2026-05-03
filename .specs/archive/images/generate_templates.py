@@ -163,9 +163,9 @@ ENTRYPOINT ["/{binary}"]
 LABEL org.opencontainers.image.title="{name}" \\
       org.opencontainers.image.version="{version}" \\
       org.opencontainers.image.vendor="{vendor}" \\
-      sovereign.image.tier="1" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.scratch="true"
+      evergreen.image.tier="1" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.scratch="true"
 '''
 
 # DISTROLESS template - SECOND BEST (Google's minimal runtime)
@@ -202,9 +202,9 @@ ENTRYPOINT ["/{binary}"]
 LABEL org.opencontainers.image.title="{name}" \\
       org.opencontainers.image.version="{version}" \\
       org.opencontainers.image.vendor="{vendor}" \\
-      sovereign.image.tier="1" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.distroless="true"
+      evergreen.image.tier="1" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.distroless="true"
 '''
 
 # WOLFI template - THIRD CHOICE (Chainguard's minimal Wolfi OS)
@@ -231,9 +231,9 @@ ENTRYPOINT ["{binary}"]
 LABEL org.opencontainers.image.title="{name}" \\
       org.opencontainers.image.version="{version}" \\
       org.opencontainers.image.vendor="{vendor}" \\
-      sovereign.image.tier="1" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.wolfi="true"
+      evergreen.image.tier="1" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.wolfi="true"
 '''
 
 # DEBIAN-SLIM fallback template - LAST RESORT (when no other option works)
@@ -260,9 +260,9 @@ ENTRYPOINT ["{binary}"]
 LABEL org.opencontainers.image.title="{name}" \\
       org.opencontainers.image.version="{version}" \\
       org.opencontainers.image.vendor="{vendor}" \\
-      sovereign.image.tier="1" \\
-      sovereign.constraint.nonroot="true" \\
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="1" \\
+      evergreen.constraint.nonroot="true" \\
+      evergreen.constraint.debian_slim="true"
 '''
 
 def generate_scratch_image(img_def, output_dir):

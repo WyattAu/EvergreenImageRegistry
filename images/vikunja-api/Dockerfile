@@ -1,6 +1,6 @@
 ARG TARGETARCH
 
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=v0.24.1
 ARG GITHUB_TOKEN
@@ -16,23 +16,28 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 USER 65532:65532
 WORKDIR /app
 EXPOSE 3456
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/vikunja"]
 LABEL org.opencontainers.image.title="vikunja-api" \
       org.opencontainers.image.version="v0.24.1" \
       org.opencontainers.image.vendor="Vikunja" \
       org.opencontainers.image.source="https://github.com/go-vikunja/vikunja" \
-      sovereign.image.tier="2" \
-      sovereign.image.category="project-management" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="scratch" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="5s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="10000ms"
+      evergreen.image.tier="2" \
+      evergreen.image.category="project-management" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.base="scratch" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="5s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="10000ms"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

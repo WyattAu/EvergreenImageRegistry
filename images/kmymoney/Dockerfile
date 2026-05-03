@@ -2,7 +2,7 @@ ARG VERSION=5.1.4
 ARG BUILD_DATE
 
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG GITHUB_TOKEN
 RUN apk add --no-cache ca-certificates curl 
 RUN mkdir -p /app /var/log/app /var/cache/app ; 2>/dev/null || true \
@@ -10,23 +10,28 @@ RUN mkdir -p /app /var/log/app /var/cache/app ; 2>/dev/null || true \
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["kmymoney"]
 LABEL org.opencontainers.image.title="kmymoney" \
       org.opencontainers.image.version="5.1.4" \
       org.opencontainers.image.vendor="KMyMoney" \
       org.opencontainers.image.source="https://github.com/KDE/kmymoney" \
-      sovereign.image.tier="2" \
-      sovereign.image.category="business-finance" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="wolfi" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="10s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="30000ms"
+      evergreen.image.tier="2" \
+      evergreen.image.category="business-finance" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.base="wolfi" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="10s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="30000ms"
 
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED MONGODB-7
+# EVERGREEN HARDENED MONGODB-7
 # Generated from template - Version: 7.0.9
 # Constraint: debian-slim - requires glibc (dynamic binary)
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
@@ -9,7 +9,7 @@ ARG VERSION=7.0.9
 ARG BUILD_DATE
 
 
-FROM debian:bookworm-20250113-slim AS builder
+FROM debian@sha256:f70dc8d6a8b6a06824c92471a1a258030836b26b043881358b967bf73de7c5ab AS builder
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2204-${VERSION}.tgz" -o /tmp/mongodb.tgz ; echo "2cf223c0f901e0c6d218bdc7c607060b4155e273724e9d05babe10ce418c0391  /tmp/mongodb.tgz" | sha256sum -c || true  ; [ -f /tmp/mongodb.tgz ] && tar -xzf /tmp/mongodb.tgz -C /tmp || true ; \
@@ -20,7 +20,7 @@ RUN test -f /usr/local/bin/mongod || { echo '#!/bin/sh' > /usr/local/bin/mongod 
     test -f /usr/local/bin/mongos || { echo '#!/bin/sh' > /usr/local/bin/mongos && echo 'echo "mongodb-7 v${VERSION} placeholder"' >> /usr/local/bin/mongos && echo 'exec sleep infinity' >> /usr/local/bin/mongos && chmod +x /usr/local/bin/mongos ; } ; \
     test -f /usr/local/bin/mongosh || { echo '#!/bin/sh' > /usr/local/bin/mongosh && echo 'echo "mongodb-7 v${VERSION} placeholder"' >> /usr/local/bin/mongosh && echo 'exec sleep infinity' >> /usr/local/bin/mongosh && chmod +x /usr/local/bin/mongosh ; }
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=7.0.9
 
 RUN apk add --no-cache ca-certificates 
@@ -32,17 +32,22 @@ COPY --from=builder /usr/local/bin/mongosh /usr/local/bin/mongosh
 USER 65532:65532
 WORKDIR /data/db
 EXPOSE 27017
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD mongosh --quiet --eval "db.runCommand({ping:1})"
 ENTRYPOINT ["mongod"]
 LABEL org.opencontainers.image.title="mongodb-7" \
-      org.opencontainers.image.description="Sovereign hardened MongoDB 7.0 - document database" \
+      org.opencontainers.image.description="Evergreen hardened MongoDB 7.0 - document database" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="MongoDB" \
-      sovereign.image.status="functional" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="database" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.status="functional" \
+      evergreen.image.tier="1" \
+      evergreen.image.category="database" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

@@ -8,7 +8,7 @@
 #
 # ABSTRACT: This phase scaled the registry from 231 images to 1,022 images,
 # adding 783 new stub image directories based on the requiredimages.md
-# specification. All new images follow the sovereign.image.* label schema
+# specification. All new images follow the evergreen.image.* label schema
 # with CHECKSUMS files and pass hadolint. The registry now covers a
 # comprehensive catalog organized by tier and category.
 # =============================================================================
@@ -67,7 +67,7 @@ Phase 8A: Stub Generation
   └── 8A.4: Generate CHECKSUMS files (PENDING status)
 
 Phase 8B: Registry Infrastructure
-  ├── 8B.1: Validate sovereign.image.* label consistency
+  ├── 8B.1: Validate evergreen.image.* label consistency
   ├── 8B.2: Organize images by category and tier
   ├── 8B.3: Ensure all images have required metadata files
   └── 8B.4: Run hadolint and build validation across all 1,022 images
@@ -99,12 +99,12 @@ For each image in the specification that did not already exist in the registry:
 **Stub Dockerfile pattern:**
 ```dockerfile
 FROM scratch
-LABEL sovereign.image.status="stub"
+LABEL evergreen.image.status="stub"
 LABEL org.opencontainers.image.title="<image-name>"
 LABEL org.opencontainers.image.description="<description from spec>"
 LABEL org.opencontainers.image.source="<upstream URL>"
-LABEL sovereign.image.tier="<tier>"
-LABEL sovereign.image.category="<category>"
+LABEL evergreen.image.tier="<tier>"
+LABEL evergreen.image.category="<category>"
 ```
 
 #### 8A.3: CHECKSUMS File Generation
@@ -127,13 +127,13 @@ Some images specified in requiredimages.md already existed from prior phases. Th
 
 #### 8B.1: Label Schema Consistency
 
-All 1,022 images verified to carry the `sovereign.image.*` label set:
+All 1,022 images verified to carry the `evergreen.image.*` label set:
 
 | Label | Purpose | Present On |
 |-------|---------|------------|
-| `sovereign.image.status` | `stub` or `functional` | All 1,022 |
-| `sovereign.image.tier` | `1`, `2`, `3`, or `appendix` | All 1,022 |
-| `sovereign.image.category` | Category name | All 1,022 |
+| `evergreen.image.status` | `stub` or `functional` | All 1,022 |
+| `evergreen.image.tier` | `1`, `2`, `3`, or `appendix` | All 1,022 |
+| `evergreen.image.category` | Category name | All 1,022 |
 | `org.opencontainers.image.title` | Human-readable name | All 1,022 |
 | `org.opencontainers.image.description` | Purpose description | All 1,022 |
 | `org.opencontainers.image.source` | Upstream URL | All 1,022 |

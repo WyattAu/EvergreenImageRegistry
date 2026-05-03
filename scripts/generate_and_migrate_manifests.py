@@ -56,7 +56,7 @@ def parse_dockerfile(path):
         info["cmd"] = [x.strip().strip('"').strip("'") for x in m.group(1).split(",")]
 
     labels = {}
-    for m in re.finditer(r'LABEL\s+(sovereign\.\S+?)=["\']([^"\']+)["\']', content):
+    for m in re.finditer(r'LABEL\s+(evergreen\.\S+?)=["\']([^"\']+)["\']', content):
         labels[m.group(1)] = m.group(2)
     for m in re.finditer(r'LABEL\s+(org\.opencontainers\.\S+?)=["\']([^"\']+)["\']', content):
         labels[m.group(1)] = m.group(2)
@@ -66,7 +66,7 @@ def parse_dockerfile(path):
     for block in label_blocks:
         for m in re.finditer(r'(\S+?)="([^"]*)"', block):
             k, v = m.group(1), m.group(2)
-            if k.startswith("sovereign.") or k.startswith("org.opencontainers.") or k == "maintainer":
+            if k.startswith("evergreen.") or k.startswith("org.opencontainers.") or k == "maintainer":
                 labels[k] = v
     info["labels"] = labels
 
@@ -151,10 +151,10 @@ def generate_manifest(image_name, info):
         oc_keys = sorted([k for k in labels if k.startswith("org.opencontainers.")])
         for k in oc_keys:
             lines.append(f'"{k}" = "{labels[k]}"')
-        sov_keys = sorted([k for k in labels if k.startswith("sovereign.")])
+        sov_keys = sorted([k for k in labels if k.startswith("evergreen.")])
         for k in sov_keys:
             lines.append(f'"{k}" = "{labels[k]}"')
-        other_keys = sorted([k for k in labels if not k.startswith("org.opencontainers.") and not k.startswith("sovereign.")])
+        other_keys = sorted([k for k in labels if not k.startswith("org.opencontainers.") and not k.startswith("evergreen.")])
         for k in other_keys:
             lines.append(f'"{k}" = "{labels[k]}"')
         lines.append("")
@@ -291,10 +291,10 @@ def migrate_existing_manifest(manifest_path, dockerfile_path):
         oc_keys = sorted([k for k in old_labels if k.startswith("org.opencontainers.")])
         for k in oc_keys:
             lines.append(f'"{k}" = "{old_labels[k]}"')
-        sov_keys = sorted([k for k in old_labels if k.startswith("sovereign.")])
+        sov_keys = sorted([k for k in old_labels if k.startswith("evergreen.")])
         for k in sov_keys:
             lines.append(f'"{k}" = "{old_labels[k]}"')
-        other_keys = sorted([k for k in old_labels if not k.startswith("org.opencontainers.") and not k.startswith("sovereign.")])
+        other_keys = sorted([k for k in old_labels if not k.startswith("org.opencontainers.") and not k.startswith("evergreen.")])
         for k in other_keys:
             lines.append(f'"{k}" = "{old_labels[k]}"')
         lines.append("")

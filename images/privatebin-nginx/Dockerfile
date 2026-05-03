@@ -1,5 +1,5 @@
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl gnupg && \
     curl -fsSL https://packages.sury.org/php/apt.gpg | gpg --dearmor -o /usr/share/keyrings/sury-php.gpg && \
@@ -16,7 +16,7 @@ RUN mkdir -p /src
 RUN mkdir -p /app/data /var/log/nginx /var/lib/php/sessions
 
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache nginx php-8.4 php-8.4-fpm php-8.4-gd php-8.4-mbstring php-8.4-xml php-8.4-curl ca-certificates || true
 COPY --from=builder /src /app/src
@@ -29,15 +29,20 @@ RUN chown -R 65532:65532 /app /var/log/nginx /var/lib/php/sessions 2>/dev/null |
 USER 65532:65532
 WORKDIR /app
 EXPOSE 80
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:80/ || exit 1
 ENTRYPOINT ["php-fpm8.4"]
 LABEL org.opencontainers.image.title="privatebin-nginx" \
       org.opencontainers.image.description="PrivateBin - encrypted pastebin with nginx" \
       org.opencontainers.image.vendor="PrivateBin" \
       org.opencontainers.image.source="https://github.com/PrivateBin/PrivateBin" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

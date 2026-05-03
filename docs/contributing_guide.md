@@ -77,7 +77,7 @@ you've changed.
    READMEs. Include a working `docker-compose.yml` and a `.env.template`.
 5. Add a `.dockerignore` file.
 6. Update the CI Workflow: Add the name of your new image directory to the `matrix.image` list in
-   `.github/workflows/build-and-push.yml`.
+   `.github/workflows/build.yml`.
 7. Submit a Pull Request for review.
 
 ## Questions?

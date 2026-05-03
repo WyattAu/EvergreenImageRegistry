@@ -37,12 +37,12 @@ func main() {
 	mux.HandleFunc("/metrics", func(w http.ResponseWriter, r *http.Request) {
 		uptime := time.Since(startTime).Seconds()
 		w.Header().Set("Content-Type", "text/plain; version=0.0.4")
-		fmt.Fprintf(w, "# HELP sovereign_image_info Sovereign image metadata\n")
-		fmt.Fprintf(w, "# TYPE sovereign_image_info gauge\n")
-		fmt.Fprintf(w, "sovereign_image_info{version=\"%s\"} 1\n", version)
-		fmt.Fprintf(w, "# HELP sovereign_up_seconds Time since image start\n")
-		fmt.Fprintf(w, "# TYPE sovereign_up_seconds gauge\n")
-		fmt.Fprintf(w, "sovereign_up_seconds %f\n", uptime)
+		fmt.Fprintf(w, "# HELP evergreen_image_info Evergreen image metadata\n")
+		fmt.Fprintf(w, "# TYPE evergreen_image_info gauge\n")
+		fmt.Fprintf(w, "evergreen_image_info{version=\"%s\"} 1\n", version)
+		fmt.Fprintf(w, "# HELP evergreen_up_seconds Time since image start\n")
+		fmt.Fprintf(w, "# TYPE evergreen_up_seconds gauge\n")
+		fmt.Fprintf(w, "evergreen_up_seconds %f\n", uptime)
 	})
 
 	server := &http.Server{

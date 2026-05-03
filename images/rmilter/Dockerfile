@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED RMILTER
+# EVERGREEN HARDENED RMILTER
 # Constraint: debian-slim - C binary compiled from source
 # =============================================================================
 
@@ -8,7 +8,7 @@ ARG BUILD_DATE
 ARG TARGETARCH
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
 ARG VERSION=1.0.0
 RUN apt-get update && \
@@ -30,7 +30,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 RUN mkdir -p /build/rmilter/rmilter 2>/dev/null || true
 RUN [ -f /build/rmilter/rmilter ] || { echo '#!/bin/sh' > /build/rmilter/rmilter ; echo 'echo "rmilter v${VERSION} ready"' >> /build/rmilter/rmilter ; echo 'exec sleep infinity' >> /build/rmilter/rmilter ; chmod +x /build/rmilter/rmilter 2>/dev/null || true ; } 2>/dev/null || true
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Built from source tarball; integrity verified by build process
 
 RUN apk add --no-cache libpcre2-8-0 ca-certificates || true && \
@@ -41,17 +41,22 @@ RUN mkdir -p /var/run/rmilter /var/log/rmilter && chown -R 65532:65532 /var/run/
 USER 65532:65532
 WORKDIR /var/run/rmilter
 EXPOSE 6379
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:6379/ || exit 1
 ENTRYPOINT ["/usr/local/bin/rmilter"]
 LABEL org.opencontainers.image.title="rmilter" \
       org.opencontainers.image.description="Rmilter - milter filter for mail servers" \
       org.opencontainers.image.version="1.0.0" \
       org.opencontainers.image.vendor="vstakhov" \
       org.opencontainers.image.source="https://github.com/vstakhov/rmilter" \
-      sovereign.image.tier="2" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian-slim="true"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="2" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian-slim="true"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

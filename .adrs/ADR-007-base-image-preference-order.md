@@ -73,8 +73,8 @@ Can the workload run as a static binary with zero deps?
 When an image cannot use the highest-preference base image, the Dockerfile **must** declare why:
 
 ```dockerfile
-LABEL sovereign.base.image="ubi-minimal"
-LABEL sovereign.base.fallback_reason="wolfi lacks required package: libpq-dev-16"
+LABEL evergreen.base.image="ubi-minimal"
+LABEL evergreen.base.fallback_reason="wolfi lacks required package: libpq-dev-16"
 ```
 
 #### wolfi First — Including FIPS

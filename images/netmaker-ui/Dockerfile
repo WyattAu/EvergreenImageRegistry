@@ -7,11 +7,16 @@ COPY --from=upstream /usr/share/nginx/html /www
 USER 65532:65532
 WORKDIR /www
 EXPOSE 8080
-ENTRYPOINT ["sleep", "infinity"]
-LABEL org.opencontainers.image.title="netmaker-ui"       org.opencontainers.image.version="v1.5.1"       org.opencontainers.image.vendor="Gravitl"       org.opencontainers.image.source="https://github.com/gravitl/netmaker-ui"       sovereign.image.tier="1"       sovereign.image.category="networking"       sovereign.image.status="functional"       sovereign.constraint.nonroot="true"       sovereign.constraint.distrole="distroless"       sovereign.hft.signal-handling="native"       sovereign.hft.shutdown-timeout="3s"       sovereign.hft.init-system="none"       sovereign.hft.startup-timeout="3000ms"
 
-LABEL sovereign.base.image="distroless"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+HEALTHCHECK NONE
+ENTRYPOINT ["sleep", "infinity"]
+LABEL org.opencontainers.image.title="netmaker-ui"       org.opencontainers.image.version="v1.5.1"       org.opencontainers.image.vendor="Gravitl"       org.opencontainers.image.source="https://github.com/gravitl/netmaker-ui"       evergreen.image.tier="1"       evergreen.image.category="networking"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.distrole="distroless"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms"
+
+LABEL evergreen.base.image="distroless"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

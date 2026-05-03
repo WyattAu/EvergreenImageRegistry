@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED KIBANA
+# EVERGREEN HARDENED KIBANA
 # Version: 8.12.2
 # Constraint: debian-slim - Node.js runtime required (bundled with Kibana)
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
@@ -9,7 +9,7 @@ ARG VERSION=8.12.2
 ARG BUILD_DATE
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
@@ -19,7 +19,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads
 
 RUN mkdir -p /tmp ; \
 test -d /tmp/kibana-${VERSION}-linux-x86_64 || { mkdir -p /tmp/kibana-${VERSION}-linux-x86_64/bin && echo '#!/bin/sh' > /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana && echo 'echo "kibana v${VERSION} placeholder"' >> /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana && echo 'exec sleep infinity' >> /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana && chmod +x /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana ; }
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION
 RUN apk add --no-cache curl ca-certificates 
@@ -30,22 +30,27 @@ USER 65532:65532
 WORKDIR /opt/kibana
 ENV PATH="/opt/kibana/bin:${PATH}"
 EXPOSE 5601
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5601/ || exit 1
 ENTRYPOINT ["/opt/kibana/bin/kibana"]
 LABEL org.opencontainers.image.title="kibana" \
-      org.opencontainers.image.description="Sovereign hardened Kibana - Elastic visualization dashboard" \
+      org.opencontainers.image.description="Evergreen hardened Kibana - Elastic visualization dashboard" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Elastic" \
-      sovereign.image.tier="1" \
-      sovereign.image.status="functional" \
-      sovereign.image.category="observability" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="wolfi" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="15s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="60000ms"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="1" \
+      evergreen.image.status="functional" \
+      evergreen.image.category="observability" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.base="wolfi" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="15s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="60000ms"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

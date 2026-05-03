@@ -403,8 +403,8 @@
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-mariadb-sovereign.base.image--wolfi-",
-      "name": "sovereign.base.image=\"wolfi\"",
+      "SPDXID": "SPDXRef-Package-mariadb-evergreen.base.image--wolfi-",
+      "name": "evergreen.base.image=\"wolfi\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -413,13 +413,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.base.image=\"wolfi\""
+          "referenceLocator": "pkg:alpine/evergreen.base.image=\"wolfi\""
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-mariadb-sovereign.constraint.hardened--true-",
-      "name": "sovereign.constraint.hardened=\"true\"",
+      "SPDXID": "SPDXRef-Package-mariadb-evergreen.constraint.hardened--true-",
+      "name": "evergreen.constraint.hardened=\"true\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -428,13 +428,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.constraint.hardened=\"true\""
+          "referenceLocator": "pkg:alpine/evergreen.constraint.hardened=\"true\""
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-mariadb-sovereign.constraint.nonroot--true-",
-      "name": "sovereign.constraint.nonroot=\"true\"",
+      "SPDXID": "SPDXRef-Package-mariadb-evergreen.constraint.nonroot--true-",
+      "name": "evergreen.constraint.nonroot=\"true\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -443,13 +443,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.constraint.nonroot=\"true\""
+          "referenceLocator": "pkg:alpine/evergreen.constraint.nonroot=\"true\""
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-mariadb-sovereign.health.type--http-",
-      "name": "sovereign.health.type=\"http\"",
+      "SPDXID": "SPDXRef-Package-mariadb-evergreen.health.type--http-",
+      "name": "evergreen.health.type=\"http\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -458,13 +458,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.health.type=\"http\""
+          "referenceLocator": "pkg:alpine/evergreen.health.type=\"http\""
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-mariadb-sovereign.image.tier--2-",
-      "name": "sovereign.image.tier=\"2\"",
+      "SPDXID": "SPDXRef-Package-mariadb-evergreen.image.tier--2-",
+      "name": "evergreen.image.tier=\"2\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -473,13 +473,13 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.image.tier=\"2\""
+          "referenceLocator": "pkg:alpine/evergreen.image.tier=\"2\""
         }
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-mariadb-sovereign.metrics.native--true-",
-      "name": "sovereign.metrics.native=\"true\"",
+      "SPDXID": "SPDXRef-Package-mariadb-evergreen.metrics.native--true-",
+      "name": "evergreen.metrics.native=\"true\"",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "primaryPackagePurpose": "INSTALLATION",
@@ -488,7 +488,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:alpine/sovereign.metrics.native=\"true\""
+          "referenceLocator": "pkg:alpine/evergreen.metrics.native=\"true\""
         }
       ]
     },

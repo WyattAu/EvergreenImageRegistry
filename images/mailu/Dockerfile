@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED MAILU
+# EVERGREEN HARDENED MAILU
 # Constraint: debian-slim - Python runtime required
 # =============================================================================
 
@@ -7,7 +7,7 @@ ARG VERSION=2.0.0
 ARG BUILD_DATE
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update &&     apt-get install -y --no-install-recommends         python3-pip         python3         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/* || true
 RUN python3 -m venv /opt/venv || true
@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir mailu==2.0.0 || true && \
     mkdir -p /opt/venv 2>/dev/null || true && \
     mkdir -p /opt/venv 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache python3 ca-certificates || true && \
     mkdir -p /app 2>/dev/null || true && \
@@ -28,12 +28,16 @@ RUN mkdir -p /app /var/log/mailu /var/cache/mailu /data && chown -R 65532:65532 
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
-LABEL org.opencontainers.image.title="mailu"       org.opencontainers.image.description="Mailu - self-hosted email server suite"       org.opencontainers.image.version="2.0.0"       org.opencontainers.image.vendor="Mailu"       org.opencontainers.image.source="https://github.com/Mailu/Mailu"       sovereign.image.tier="2"       sovereign.constraint.nonroot="true"       sovereign.constraint.debian-slim="true"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL org.opencontainers.image.title="mailu"       org.opencontainers.image.description="Mailu - self-hosted email server suite"       org.opencontainers.image.version="2.0.0"       org.opencontainers.image.vendor="Mailu"       org.opencontainers.image.source="https://github.com/Mailu/Mailu"       evergreen.image.tier="2"       evergreen.constraint.nonroot="true"       evergreen.constraint.debian-slim="true"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM
 
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["python", "-m", "mailu"]
 CMD ["--help"]

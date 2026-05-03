@@ -1,7 +1,7 @@
 [metadata]
 name = "ferretdb"
 version = "2.7.0"
-description = "Sovereign hardened FerretDB - MongoDB-compatible database"
+description = "Evergreen hardened FerretDB - MongoDB-compatible database"
 
 [build]
 base = "scratch"
@@ -18,16 +18,16 @@ entrypoint = ["/usr/local/bin/ferretdb"]
 expose = [27017, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened FerretDB - MongoDB-compatible database"
+"org.opencontainers.image.description" = "Evergreen hardened FerretDB - MongoDB-compatible database"
 "org.opencontainers.image.title" = "ferretdb"
 "org.opencontainers.image.vendor" = "FerretDB"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "scratch"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "database"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "database"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

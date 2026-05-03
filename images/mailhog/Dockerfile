@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=1.0.1
 ARG GITHUB_TOKEN
 RUN apt-get update && \
@@ -20,18 +20,23 @@ ENV MH_SMTP_BIND_ADDR="0.0.0.0:1025"
 ENV MH_API_BIND_ADDR="0.0.0.0:8025"
 ENV MH_UI_BIND_ADDR="0.0.0.0:8025"
 EXPOSE 8025 1025
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/MailHog"]
 LABEL org.opencontainers.image.title="mailhog" \
       org.opencontainers.image.description="MailHog - email testing tool" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="MailHog" \
       org.opencontainers.image.source="https://github.com/mailhog/MailHog" \
-      sovereign.image.tier="2" \
-      sovereign.image.category="email" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true"
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="http"
+      evergreen.image.tier="2" \
+      evergreen.image.category="email" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="http"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

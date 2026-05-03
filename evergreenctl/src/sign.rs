@@ -32,7 +32,7 @@ pub fn cmd_sign(image_dir: &str) -> Result<()> {
         );
     };
 
-    let registry = "ghcr.io/sovereign";
+    let registry = "ghcr.io/evergreen";
     let full_ref = format!("{}/{}:{}", registry, name, version);
 
     println!("# Cosign signing commands for {}:{}", name, version);
@@ -42,7 +42,7 @@ pub fn cmd_sign(image_dir: &str) -> Result<()> {
     println!("  --annotation \"org.opencontainers.image.title={}\" \\", name);
     println!("  --annotation \"org.opencontainers.image.version={}\" \\", version);
     println!("  --annotation \"org.opencontainers.image.source=\" \\");
-    println!("  --annotation \"sovereign.image.tier=\"");
+    println!("  --annotation \"evergreen.image.tier=\"");
     println!();
 
     println!("# 2. Attach SBOM (SPDX format)");

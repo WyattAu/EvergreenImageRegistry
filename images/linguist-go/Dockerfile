@@ -27,15 +27,20 @@ COPY --from=builder /var/log/linguist /var/log/linguist
 COPY --from=builder /var/cache/linguist /var/cache/linguist
 USER 65532:65532
 WORKDIR /app
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/linguist"]
 LABEL org.opencontainers.image.title="linguist-go" \
       org.opencontainers.image.description="Linguist - Go variant" \
       org.opencontainers.image.vendor="GitHub" \
       org.opencontainers.image.source="https://github.com/github/linguist" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

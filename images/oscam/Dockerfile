@@ -1,7 +1,7 @@
 ARG VERSION=1.20
 ARG TARGETARCH
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc g++ make libpcsclite-dev libusb-dev openssl-dev && \
     rm -rf /var/lib/apt/lists/*
@@ -18,7 +18,7 @@ RUN if [ -f /tmp/oscam/configure ]; then \
         echo 'exec sleep infinity' >> /oscam && chmod +x /oscam; \
     fi
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/oscam /var/cache/oscam 2>/dev/null || true
 
 
@@ -31,21 +31,26 @@ COPY --from=builder /var/cache/oscam /var/cache/oscam
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8888
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/oscam"]
 LABEL org.opencontainers.image.title="oscam" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Oscam" \
       org.opencontainers.image.source="https://github.com/oscam-git/oscam" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="3000ms"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

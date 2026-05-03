@@ -1,5 +1,5 @@
 
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/falcosecurity/falcosidekick/releases/download/2.28.0/falcosidekick_2.28.0_linux_amd64.tar.gz -o /falcosidekick_2.28.0_linux_amd64.tar.gz &&     [ -f /falcosidekick_2.28.0_linux_amd64.tar.gz ] && tar -xzf /falcosidekick_2.28.0_linux_amd64.tar.gz -C / && rm -f /falcosidekick_2.28.0_linux_amd64.tar.gz && chmod +x /falcosidekick || true && \
@@ -8,7 +8,7 @@ RUN strip /falcosidekick 2>/dev/null || true
 RUN test -f /falcosidekick || { echo '#!/bin/sh' > /falcosidekick && echo 'echo "falcosidekick v${VERSION} ready"' >> /falcosidekick && echo 'exec sleep infinity' >> /falcosidekick && chmod +x /falcosidekick; }
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/falcosidekick /var/cache/falcosidekick 2>/dev/null || true
 
 
@@ -20,13 +20,17 @@ COPY --from=builder /var/log/falcosidekick /var/log/falcosidekick
 COPY --from=builder /var/cache/falcosidekick /var/cache/falcosidekick
 USER 65532:65532
 WORKDIR /app
-LABEL org.opencontainers.image.title="falcosidekick"       org.opencontainers.image.description="Falcosidekick - Falco webhook"       org.opencontainers.image.vendor="falcosecurity"       org.opencontainers.image.source="https://github.com/falcosecurity/falcosidekick"       sovereign.image.tier="3"       sovereign.constraint.nonroot="true"       sovereign.constraint.scratch="true"
+LABEL org.opencontainers.image.title="falcosidekick"       org.opencontainers.image.description="Falcosidekick - Falco webhook"       org.opencontainers.image.vendor="falcosecurity"       org.opencontainers.image.source="https://github.com/falcosecurity/falcosidekick"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM
 
+HEALTHCHECK NONE
 ENTRYPOINT ["/falcosidekick"]
 CMD ["--help"]

@@ -1,5 +1,5 @@
 
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=1.11.1
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
@@ -13,7 +13,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/coredns /var/cache/coredns 2>/dev/null || true
 
 
@@ -26,24 +26,29 @@ COPY --from=builder /var/cache/coredns /var/cache/coredns
 USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/coredns"]
 LABEL org.opencontainers.image.title="coredns-alpine" \
       org.opencontainers.image.version="1.11.1" \
       org.opencontainers.image.vendor="CoreDNS" \
       org.opencontainers.image.source="https://github.com/coredns/coredns" \
       org.opencontainers.image.description="CoreDNS DNS server (alpine variant, built without Alpine)" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="networking" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
+      evergreen.image.tier="1" \
+      evergreen.image.category="networking" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="3000ms"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

@@ -544,10 +544,10 @@ def parse_dockerfile(path):
         for label_match in re.finditer(r'(\S+?)="([^"]*)"', label_block):
             labels[label_match.group(1)] = label_match.group(2)
 
-    tier_label = labels.get("sovereign.image.tier", "2")
-    nonroot = labels.get("sovereign.constraint.nonroot", "true") == "true"
-    scratch = labels.get("sovereign.constraint.scratch", "false") == "true"
-    base_img = labels.get("sovereign.base.image", "scratch" if runtime_from == "scratch" else "debian-slim")
+    tier_label = labels.get("evergreen.image.tier", "2")
+    nonroot = labels.get("evergreen.constraint.nonroot", "true") == "true"
+    scratch = labels.get("evergreen.constraint.scratch", "false") == "true"
+    base_img = labels.get("evergreen.base.image", "scratch" if runtime_from == "scratch" else "debian-slim")
 
     return {
         "version": version,
@@ -848,24 +848,24 @@ def generate_manifest(name, info):
     lines.append(f'"org.opencontainers.image.vendor" = "{vendor}"')
     if source:
         lines.append(f'"org.opencontainers.image.source" = "{source}"')
-    lines.append(f'"sovereign.image.tier" = "{tier_str}"')
-    lines.append(f'"sovereign.constraint.nonroot" = "{str(info["nonroot"]).lower()}"')
-    lines.append(f'"sovereign.constraint.scratch" = "{str(is_scratch).lower()}"')
-    lines.append(f'"sovereign.base.image" = "{runtime_img}"')
+    lines.append(f'"evergreen.image.tier" = "{tier_str}"')
+    lines.append(f'"evergreen.constraint.nonroot" = "{str(info["nonroot"]).lower()}"')
+    lines.append(f'"evergreen.constraint.scratch" = "{str(is_scratch).lower()}"')
+    lines.append(f'"evergreen.base.image" = "{runtime_img}"')
 
-    metrics_native = info["labels"].get("sovereign.metrics.native", "ztunnel")
-    lines.append(f'"sovereign.metrics.native" = "{metrics_native}"')
+    metrics_native = info["labels"].get("evergreen.metrics.native", "ztunnel")
+    lines.append(f'"evergreen.metrics.native" = "{metrics_native}"')
 
-    health_type = info["labels"].get("sovereign.health.type", "exec")
-    lines.append(f'"sovereign.health.type" = "{health_type}"')
+    health_type = info["labels"].get("evergreen.health.type", "exec")
+    lines.append(f'"evergreen.health.type" = "{health_type}"')
 
-    signal_handling = info["labels"].get("sovereign.hft.signal-handling", "")
+    signal_handling = info["labels"].get("evergreen.hft.signal-handling", "")
     if signal_handling:
-        lines.append(f'"sovereign.hft.signal-handling" = "{signal_handling}"')
+        lines.append(f'"evergreen.hft.signal-handling" = "{signal_handling}"')
 
-    shutdown_timeout = info["labels"].get("sovereign.hft.shutdown-timeout", "")
+    shutdown_timeout = info["labels"].get("evergreen.hft.shutdown-timeout", "")
     if shutdown_timeout:
-        lines.append(f'"sovereign.hft.shutdown-timeout" = "{shutdown_timeout}"')
+        lines.append(f'"evergreen.hft.shutdown-timeout" = "{shutdown_timeout}"')
 
     return "\n".join(lines) + "\n"
 

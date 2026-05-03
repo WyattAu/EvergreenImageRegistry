@@ -1,6 +1,6 @@
 ARG TARGETARCH
 
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=7.6.0
 ARG GITHUB_TOKEN
@@ -15,7 +15,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/oauth2-proxy /var/cache/oauth2-proxy 2>/dev/null || true
 
@@ -29,24 +29,29 @@ COPY --from=builder /var/cache/oauth2-proxy /var/cache/oauth2-proxy
 USER 65532:65532
 WORKDIR /app
 EXPOSE 4180 80 443
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/oauth2-proxy"]
 LABEL org.opencontainers.image.title="oauth2-proxy-alpine" \
       org.opencontainers.image.version="7.6.0" \
       org.opencontainers.image.vendor="OAuth2 Proxy" \
       org.opencontainers.image.source="https://github.com/oauth2-proxy/oauth2-proxy" \
       org.opencontainers.image.description="OAuth2 reverse proxy (alpine variant, built without Alpine)" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="security" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
+      evergreen.image.tier="1" \
+      evergreen.image.category="security" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="3000ms"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

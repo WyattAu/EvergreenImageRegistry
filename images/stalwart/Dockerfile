@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=0.16.2
 ARG GITHUB_TOKEN
 ARG TARGETARCH
@@ -20,6 +20,8 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 USER 65532:65532
 WORKDIR /app
 EXPOSE 25 143 465 587 993
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/stalwart"]
 CMD ["mail"]
 LABEL org.opencontainers.image.title="stalwart" \
@@ -27,12 +29,15 @@ LABEL org.opencontainers.image.title="stalwart" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="stalwartlabs" \
       org.opencontainers.image.source="https://github.com/stalwartlabs/stalwart" \
-      sovereign.image.tier="2" \
-      sovereign.image.category="email" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true"
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="tcp"
+      evergreen.image.tier="2" \
+      evergreen.image.category="email" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="tcp"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

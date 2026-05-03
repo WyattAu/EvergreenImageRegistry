@@ -1,9 +1,9 @@
 # =============================================================================
-# SOVEREIGN HARDENED UNBOUND-ALPINE
+# EVERGREEN HARDENED UNBOUND-ALPINE
 # Unbound DNS resolver (alpine variant name, built on debian-slim)
 # Constraint: debian-slim - unbound requires dynamic libs, compile from source
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
-# Alpine is BANNED - using debian:bookworm-slim with source build
+# Alpine is BANNED - using debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 with source build
 # =============================================================================
 
 ARG VERSION=1.19.3
@@ -11,7 +11,7 @@ ARG BUILD_DATE
 ARG TARGETARCH
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=1.19.3
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -44,7 +44,7 @@ RUN mkdir -p /usr/sbin/unbound ; \
     mkdir -p /usr/lib/libunbound.so* ; \
     test -f /etc/unbound || { echo '#!/bin/sh' > /etc/unbound && echo 'echo "unbound-alpine v${VERSION} placeholder"' >> /etc/unbound && echo 'exec sleep infinity' >> /etc/unbound && chmod +x /etc/unbound ; }
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache expat ca-certificates || true
 COPY --from=builder /usr/sbin/unbound /usr/sbin/unbound
@@ -58,6 +58,8 @@ RUN mkdir -p /app /var/log/unbound /var/cache/unbound /run/unbound ; \
 USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 853 853/udp
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:53/ || exit 1
 ENTRYPOINT ["/usr/sbin/unbound"]
 CMD ["-d"]
 LABEL org.opencontainers.image.title="unbound-alpine" \
@@ -65,17 +67,20 @@ LABEL org.opencontainers.image.title="unbound-alpine" \
       org.opencontainers.image.vendor="NLnet Labs" \
       org.opencontainers.image.source="https://nlnetlabs.nl/projects/unbound/" \
       org.opencontainers.image.description="Unbound DNS resolver (alpine variant, built without Alpine)" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="networking" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="wolfi" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="1" \
+      evergreen.image.category="networking" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.base="wolfi" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="3000ms"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

@@ -1,7 +1,7 @@
 ARG VERSION=0.0.93
 ARG TARGETARCH
 
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION
 ARG GITHUB_TOKEN
@@ -10,7 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     "https://github.com/jacksontj/promxy/releases/download/v${VERSION}/promxy-v${VERSION}-linux-${TARGETARCH}" \
     -o /promxy && chmod +x /promxy && strip /promxy
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/promxy /var/cache/promxy /etc/promxy 2>/dev/null || true
 
@@ -24,19 +24,24 @@ COPY --from=builder /etc/promxy /etc/promxy
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8082
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/promxy"]
 LABEL org.opencontainers.image.title="promxy" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="prymitive" \
-      org.opencontainers.image.description="Sovereign hardened promxy - Prometheus proxy" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="10s"
+      org.opencontainers.image.description="Evergreen hardened promxy - Prometheus proxy" \
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="10s"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

@@ -1,7 +1,7 @@
 # =============================================================================
-# SOVEREIGN HARDENED SQLCIPHER
+# EVERGREEN HARDENED SQLCIPHER
 # SQLite extension providing AES-256 encryption
-# Constraint: compile from source in debian:bookworm-slim
+# Constraint: compile from source in debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252
 # =============================================================================
 
 ARG VERSION=4.5.6
@@ -9,7 +9,7 @@ ARG BUILD_DATE
 ARG TARGETARCH
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=4.5.6
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -26,7 +26,7 @@ RUN wget -q "https://github.com/sqlcipher/sqlcipher/archive/refs/tags/v${VERSION
 
 RUN mkdir -p /sqlcipher-${VERSION}/.libs/sqlcipher
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=4.5.6
 
 RUN apk add --no-cache ca-certificates 
@@ -35,23 +35,28 @@ COPY --from=builder /sqlcipher-${VERSION}/.libs/sqlcipher /usr/local/bin/sqlciph
 RUN chown -R 65532:65532 /app /var/log/sqlcipher
 USER 65532:65532
 WORKDIR /app
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["/usr/local/bin/sqlcipher"]
 LABEL org.opencontainers.image.title="sqlcipher" \
       org.opencontainers.image.version="4.5.6" \
       org.opencontainers.image.vendor="sqlcipher" \
       org.opencontainers.image.source="https://github.com/sqlcipher/sqlcipher" \
       org.opencontainers.image.description="SQLite extension providing AES-256 encryption" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="security" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="wolfi" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="2000ms"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="1" \
+      evergreen.image.category="security" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.base="wolfi" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="2000ms"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

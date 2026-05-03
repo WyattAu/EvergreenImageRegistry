@@ -207,23 +207,23 @@ test_postgresql_create_table() {
 
     # Create table
     docker exec "$container" psql -U postgres -c \
-        "CREATE TABLE test_sovereign (id SERIAL PRIMARY KEY, data TEXT);" 2>/dev/null
+        "CREATE TABLE test_evergreen (id SERIAL PRIMARY KEY, data TEXT);" 2>/dev/null
 
     # Insert data
     docker exec "$container" psql -U postgres -c \
-        "INSERT INTO test_sovereign (data) VALUES ('sovereign_test');" 2>/dev/null
+        "INSERT INTO test_evergreen (data) VALUES ('evergreen_test');" 2>/dev/null
 
     # Query data
     RESULT=$(docker exec "$container" psql -U postgres -t -c \
-        "SELECT data FROM test_sovereign WHERE id = 1;" 2>/dev/null | tr -d ' ')
+        "SELECT data FROM test_evergreen WHERE id = 1;" 2>/dev/null | tr -d ' ')
 
     docker stop "$container" 2>/dev/null || true
 
-    if [ "$RESULT" = "sovereign_test" ]; then
+    if [ "$RESULT" = "evergreen_test" ]; then
         echo "PASS: PostgreSQL CRUD operations work"
         return 0
     else
-        echo "FAIL: PostgreSQL query returned '${RESULT}', expected 'sovereign_test'"
+        echo "FAIL: PostgreSQL query returned '${RESULT}', expected 'evergreen_test'"
         return 1
     fi
 }
@@ -246,18 +246,18 @@ test_redis_set_get() {
     sleep 2
 
     # SET
-    docker exec "$container" redis-cli SET sovereign_key sovereign_value 2>/dev/null
+    docker exec "$container" redis-cli SET evergreen_key evergreen_value 2>/dev/null
 
     # GET
-    RESULT=$(docker exec "$container" redis-cli GET sovereign_key 2>/dev/null)
+    RESULT=$(docker exec "$container" redis-cli GET evergreen_key 2>/dev/null)
 
     docker stop "$container" 2>/dev/null || true
 
-    if [ "$RESULT" = "sovereign_value" ]; then
+    if [ "$RESULT" = "evergreen_value" ]; then
         echo "PASS: Redis SET/GET operations work"
         return 0
     else
-        echo "FAIL: Redis GET returned '${RESULT}', expected 'sovereign_value'"
+        echo "FAIL: Redis GET returned '${RESULT}', expected 'evergreen_value'"
         return 1
     fi
 }
@@ -298,22 +298,22 @@ test_mysql_create_query() {
 
     # Create database and table
     docker exec "$container" mariadb -u root -e \
-        "CREATE DATABASE IF NOT EXISTS sovereign_test;
-         USE sovereign_test;
+        "CREATE DATABASE IF NOT EXISTS evergreen_test;
+         USE evergreen_test;
          CREATE TABLE test_table (id INT AUTO_INCREMENT PRIMARY KEY, data VARCHAR(255));
-         INSERT INTO test_table (data) VALUES ('sovereign_data');" 2>/dev/null
+         INSERT INTO test_table (data) VALUES ('evergreen_data');" 2>/dev/null
 
     # Query
     RESULT=$(docker exec "$container" mariadb -u root -N -e \
-        "SELECT data FROM sovereign_test.test_table WHERE id = 1;" 2>/dev/null | tr -d '\n')
+        "SELECT data FROM evergreen_test.test_table WHERE id = 1;" 2>/dev/null | tr -d '\n')
 
     docker stop "$container" 2>/dev/null || true
 
-    if [ "$RESULT" = "sovereign_data" ]; then
+    if [ "$RESULT" = "evergreen_data" ]; then
         echo "PASS: MySQL CRUD operations work"
         return 0
     else
-        echo "FAIL: MySQL query returned '${RESULT}', expected 'sovereign_data'"
+        echo "FAIL: MySQL query returned '${RESULT}', expected 'evergreen_data'"
         return 1
     fi
 }
@@ -337,19 +337,19 @@ test_mongodb_insert_find() {
 
     # Insert document
     docker exec "$container" mongosh --quiet --eval \
-        'db.sovereign_test.insertOne({test: "sovereign_value"})' 2>/dev/null || \
+        'db.evergreen_test.insertOne({test: "evergreen_value"})' 2>/dev/null || \
     docker exec "$container" mongo --quiet --eval \
-        'db.sovereign_test.insertOne({test: "sovereign_value"})' 2>/dev/null || true
+        'db.evergreen_test.insertOne({test: "evergreen_value"})' 2>/dev/null || true
 
     # Find document
     RESULT=$(docker exec "$container" mongosh --quiet --eval \
-        'db.sovereign_test.findOne().test' 2>/dev/null || \
+        'db.evergreen_test.findOne().test' 2>/dev/null || \
         docker exec "$container" mongo --quiet --eval \
-        'db.sovereign_test.findOne().test' 2>/dev/null || echo "")
+        'db.evergreen_test.findOne().test' 2>/dev/null || echo "")
 
     docker stop "$container" 2>/dev/null || true
 
-    if [ "$RESULT" = "sovereign_value" ]; then
+    if [ "$RESULT" = "evergreen_value" ]; then
         echo "PASS: MongoDB insert/find operations work"
         return 0
     else
@@ -367,9 +367,9 @@ test_sqlite_basic() {
 
     # SQLite is embedded — test basic query
     RESULT=$(docker run --rm "$image" sqlite3 :memory: \
-        "CREATE TABLE t(x); INSERT INTO t VALUES('sovereign'); SELECT x FROM t;" 2>/dev/null)
+        "CREATE TABLE t(x); INSERT INTO t VALUES('evergreen'); SELECT x FROM t;" 2>/dev/null)
 
-    if [ "$RESULT" = "sovereign" ]; then
+    if [ "$RESULT" = "evergreen" ]; then
         echo "PASS: SQLite basic operations work"
         return 0
     else
@@ -397,12 +397,12 @@ test_memcached_set_get() {
 
     # Use netcat or python to test (memcached has no CLI client in image)
     RESULT=$(docker exec "$container" sh -c \
-        'echo -e "set sovereign_key 0 0 15\r\nsovereign_value\r\nget sovereign_key\r\n" \
-        | nc -q1 localhost 11211 2>/dev/null | grep -o "sovereign_value"' 2>/dev/null || echo "")
+        'echo -e "set evergreen_key 0 0 15\r\nevergreen_value\r\nget evergreen_key\r\n" \
+        | nc -q1 localhost 11211 2>/dev/null | grep -o "evergreen_value"' 2>/dev/null || echo "")
 
     docker stop "$container" 2>/dev/null || true
 
-    if [ "$RESULT" = "sovereign_value" ]; then
+    if [ "$RESULT" = "evergreen_value" ]; then
         echo "PASS: Memcached SET/GET operations work"
         return 0
     else
@@ -537,7 +537,7 @@ test_nginx_serves_content() {
         server {
             listen 8080;
             location / {
-                return 200 'sovereign-ok';
+                return 200 'evergreen-ok';
                 add_header Content-Type text/plain;
             }
         }
@@ -561,11 +561,11 @@ EOF
     docker stop "$container" 2>/dev/null || true
     rm -f "$CONFIG"
 
-    if [ "$RESULT" = "sovereign-ok" ]; then
+    if [ "$RESULT" = "evergreen-ok" ]; then
         echo "PASS: Nginx serves content correctly"
         return 0
     else
-        echo "FAIL: Nginx returned '${RESULT}', expected 'sovereign-ok'"
+        echo "FAIL: Nginx returned '${RESULT}', expected 'evergreen-ok'"
         return 1
     fi
 }
@@ -692,7 +692,7 @@ test_caddy_serves_content() {
     CONFIG=$(mktemp)
     cat > "$CONFIG" << 'EOF'
     :8080 {
-        respond "sovereign-caddy-ok" 200
+        respond "evergreen-caddy-ok" 200
     }
 EOF
 
@@ -713,11 +713,11 @@ EOF
     docker stop "$container" 2>/dev/null || true
     rm -f "$CONFIG"
 
-    if [ "$RESULT" = "sovereign-caddy-ok" ]; then
+    if [ "$RESULT" = "evergreen-caddy-ok" ]; then
         echo "PASS: Caddy serves content correctly"
         return 0
     else
-        echo "FAIL: Caddy returned '${RESULT}', expected 'sovereign-caddy-ok'"
+        echo "FAIL: Caddy returned '${RESULT}', expected 'evergreen-caddy-ok'"
         return 1
     fi
 }
@@ -727,12 +727,12 @@ EOF
 
 | Proxy | Test | Expected Result | Timeout |
 |-------|------|----------------|---------|
-| Nginx | Serve static content via config | HTTP 200 with "sovereign-ok" | 15s |
+| Nginx | Serve static content via config | HTTP 200 with "evergreen-ok" | 15s |
 | Nginx | Version flag | Reports version string | 5s |
 | Traefik | API dashboard accessible | HTTP 200 on /api/overview | 15s |
 | HAProxy | Stats page accessible | HTTP 200 on stats URI | 15s |
 | Envoy | Version flag | Reports version string | 5s |
-| Caddy | Serve content via Caddyfile | HTTP 200 with "sovereign-caddy-ok" | 15s |
+| Caddy | Serve content via Caddyfile | HTTP 200 with "evergreen-caddy-ok" | 15s |
 
 #### Implementation Steps
 
@@ -888,7 +888,7 @@ test_network_exfiltration() {
 
     # Test 1: DNS resolution to known-bad domain
     # (Use a domain that should not resolve in test environment)
-    if docker run --rm "$image" nslookup sovereign-test-not-exists.invalid 2>/dev/null; then
+    if docker run --rm "$image" nslookup evergreen-test-not-exists.invalid 2>/dev/null; then
         echo "WARN: DNS resolution works (expected in non-scratch images)"
     fi
 

@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=1.78.0
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -23,21 +23,26 @@ ENV PATH="/opt/rust/bin:${PATH}" \
     RUSTUP_HOME=/app/.rustup
 USER 65532:65532
 WORKDIR /app
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/opt/rust/bin/rustc"]
 CMD ["--version"]
 LABEL org.opencontainers.image.title="rust-static-arm" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Rust" \
-      org.opencontainers.image.description="Sovereign hardened rust-static-arm - Rust static base for ARM64" \
+      org.opencontainers.image.description="Evergreen hardened rust-static-arm - Rust static base for ARM64" \
       org.opencontainers.image.source="https://www.rust-lang.org/" \
-      sovereign.image.tier="3" \
-      sovereign.image.category="build-tool" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="5s"
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="none"
+      evergreen.image.tier="3" \
+      evergreen.image.category="build-tool" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="5s"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="none"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

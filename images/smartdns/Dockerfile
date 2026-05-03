@@ -1,7 +1,7 @@
 # =============================================================================
-# SOVEREIGN HARDENED SMARTDNS
+# EVERGREEN HARDENED SMARTDNS
 # Local DNS server with DoH/DoT support
-# Constraint: compile from source in debian:bookworm-slim
+# Constraint: compile from source in debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252
 # =============================================================================
 
 ARG VERSION=Release48
@@ -9,7 +9,7 @@ ARG BUILD_DATE
 ARG TARGETARCH
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
 ARG VERSION=Release48
 ARG TARGETARCH
@@ -26,7 +26,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 RUN mkdir -p /smartdns-${VERSION}/src/smartdns
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Built from source tarball; integrity verified by build process
 ARG VERSION=Release48
 
@@ -37,23 +37,28 @@ RUN chown -R 65532:65532 /app /var/log/smartdns /var/lib/smartdns
 USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 443 8053
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:53/ || exit 1
 ENTRYPOINT ["/usr/local/bin/smartdns"]
 LABEL org.opencontainers.image.title="smartdns" \
       org.opencontainers.image.version="Release48" \
       org.opencontainers.image.vendor="pymumu" \
       org.opencontainers.image.source="https://github.com/pymumu/smartdns" \
       org.opencontainers.image.description="Local DNS server with DoH/DoT support" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="dns" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="wolfi" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="1" \
+      evergreen.image.category="dns" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.base="wolfi" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="3000ms"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

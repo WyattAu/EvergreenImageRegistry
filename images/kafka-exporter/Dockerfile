@@ -1,7 +1,7 @@
 
 ARG TARGETARCH
 
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG GITHUB_TOKEN
 ARG VERSION
 ARG TARGETARCH
@@ -14,7 +14,7 @@ RUN [ -f /etc/ssl/certs/ca-certificates.crt ] || { echo '#!/bin/sh' > /etc/ssl/c
 RUN [ -f /app ] || { echo '#!/bin/sh' > /app ; echo 'echo "kafka-exporter v${VERSION} ready"' >> /app ; echo 'exec sleep infinity' >> /app ; chmod +x /app 2>/dev/null || true ; } 2>/dev/null || true
 RUN [ -f /var/log/kafka_exporter ] || { echo '#!/bin/sh' > /var/log/kafka_exporter ; echo 'echo "kafka-exporter v${VERSION} ready"' >> /var/log/kafka_exporter ; echo 'exec sleep infinity' >> /var/log/kafka_exporter ; chmod +x /var/log/kafka_exporter 2>/dev/null || true ; } 2>/dev/null || true
 RUN [ -f /var/cache/kafka_exporter ] || { echo '#!/bin/sh' > /var/cache/kafka_exporter ; echo 'echo "kafka-exporter v${VERSION} ready"' >> /var/cache/kafka_exporter ; echo 'exec sleep infinity' >> /var/cache/kafka_exporter ; chmod +x /var/cache/kafka_exporter 2>/dev/null || true ; } 2>/dev/null || true
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/kafka_exporter /var/cache/kafka_exporter 2>/dev/null || true
 
 
@@ -27,23 +27,28 @@ COPY --from=builder /var/cache/kafka_exporter /var/cache/kafka_exporter
 USER 65532:65532
 WORKDIR /app
 EXPOSE 9308
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/kafka_exporter"]
 LABEL org.opencontainers.image.title="kafka-exporter" \
-      org.opencontainers.image.description="Sovereign hardened Kafka Exporter - Prometheus metrics for Apache Kafka" \
+      org.opencontainers.image.description="Evergreen hardened Kafka Exporter - Prometheus metrics for Apache Kafka" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Prometheus" \
-      sovereign.image.tier="1" \
-      sovereign.image.status="functional" \
-      sovereign.image.category="messaging" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
+      evergreen.image.tier="1" \
+      evergreen.image.status="functional" \
+      evergreen.image.category="messaging" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="3000ms"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

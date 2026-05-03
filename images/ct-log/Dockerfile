@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED CT-LOG
+# EVERGREEN HARDENED CT-LOG
 # Certificate Transparency log - Go static binary
 # Constraint: scratch - pure Go static binary, smallest attack surface
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
@@ -31,23 +31,28 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifi
 USER 65532:65532
 WORKDIR /app
 EXPOSE 6962
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/ct-log"]
 LABEL org.opencontainers.image.title="ct-log" \
       org.opencontainers.image.version="1.3.3" \
       org.opencontainers.image.vendor="Google" \
       org.opencontainers.image.source="https://github.com/google/certificate-transparency-go" \
-      sovereign.image.tier="2" \
-      sovereign.image.category="security" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
+      evergreen.image.tier="2" \
+      evergreen.image.category="security" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="3000ms"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

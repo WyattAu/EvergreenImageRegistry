@@ -1,5 +1,5 @@
 ARG TARGETARCH
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 ARG VERSION=1.26.1
 ARG GITHUB_TOKEN
@@ -15,16 +15,21 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 USER 65532:65532
 WORKDIR /app
 EXPOSE 80 22
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/opt/gitserver/gitea"]
 LABEL org.opencontainers.image.title="gitserver" \
       org.opencontainers.image.version="1.26.1" \
       org.opencontainers.image.vendor="Gitea" \
       org.opencontainers.image.source="https://github.com/go-gitea/gitea" \
       org.opencontainers.image.description="GitServer - lightweight git HTTP server" \
-      sovereign.image.tier="2" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="2" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

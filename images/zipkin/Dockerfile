@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED ZIPKIN
+# EVERGREEN HARDENED ZIPKIN
 # Distributed tracing system (Java)
 # Constraint: debian-slim + Adoptium JRE 21
 # =============================================================================
@@ -8,7 +8,7 @@ ARG VERSION=3.4.2
 ARG BUILD_DATE
 
 
-FROM debian:bookworm-slim AS jre-builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS jre-builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true
@@ -19,7 +19,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://api.adoptium.net/v3/binary/lat
     rm -f /tmp/jre.tar.gz || true
 
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=3.4.2
 
 RUN apk add --no-cache ca-certificates tzdata curl 
@@ -35,18 +35,23 @@ RUN mkdir -p /opt/zipkin /var/log/zipkin ; \
 USER 65532:65532
 WORKDIR /opt/zipkin
 EXPOSE 9411
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9411/ || exit 1
 ENTRYPOINT ["java"]
 CMD ["-jar", "/opt/zipkin/zipkin.jar"]
 LABEL org.opencontainers.image.title="zipkin" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="OpenZipkin" \
       org.opencontainers.image.source="https://github.com/openzipkin/zipkin" \
-      sovereign.image.tier="2" \
-      sovereign.image.status="functional" \
-      sovereign.image.category="observability" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="2" \
+      evergreen.image.status="functional" \
+      evergreen.image.category="observability" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

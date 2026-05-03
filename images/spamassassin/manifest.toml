@@ -19,7 +19,7 @@ cmd = ["-d"]
 expose = [783, 9101]
 
 [labels]
-"sovereign.base.image" = "wolfi"
-"sovereign.health.type" = "exec"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.health.type" = "exec"
+"evergreen.metrics.native" = "ztunnel"
 

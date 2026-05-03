@@ -1,7 +1,7 @@
 [metadata]
 name = "buildah"
 version = "latest"
-description = "Sovereign hardened buildah - OCI image builder"
+description = "Evergreen hardened buildah - OCI image builder"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -18,13 +18,13 @@ entrypoint = ["buildah"]
 expose = [9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened buildah - OCI image builder"
+"org.opencontainers.image.description" = "Evergreen hardened buildah - OCI image builder"
 "org.opencontainers.image.title" = "buildah"
-"sovereign.base.image" = "wolfi"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.hft.shutdown-timeout" = "10s"
-"sovereign.hft.signal-handling" = "native"
-"sovereign.image.tier" = "3"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.shutdown-timeout" = "10s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
 

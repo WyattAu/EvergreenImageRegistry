@@ -1,5 +1,5 @@
 
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=1.33.6+k3s1
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
@@ -9,7 +9,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/k3s-server /var/cache/k3s-server /var/lib/rancher/k3s/server 2>/dev/null || true
 
 
@@ -23,19 +23,24 @@ COPY --from=builder /var/lib/rancher/k3s/server /var/lib/rancher/k3s/server
 USER 65532:65532
 WORKDIR /app
 EXPOSE 6443
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/k3s", "server"]
 LABEL org.opencontainers.image.title="k3s-server" \
       org.opencontainers.image.version="1.33.6+k3s1" \
       org.opencontainers.image.vendor="SUSE" \
-      org.opencontainers.image.description="Sovereign hardened k3s-server - K3s server mode" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="15s"
+      org.opencontainers.image.description="Evergreen hardened k3s-server - K3s server mode" \
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="15s"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

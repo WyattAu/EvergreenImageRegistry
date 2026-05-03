@@ -1,7 +1,7 @@
 [metadata]
 name = "static-c"
 version = "1.0.0"
-description = "Sovereign hardened static-c - Static C binary compilation base"
+description = "Evergreen hardened static-c - Static C binary compilation base"
 
 [build]
 base = "scratch"
@@ -15,15 +15,15 @@ type = "package-manager"
 expose = [9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened static-c - Static C binary compilation base"
+"org.opencontainers.image.description" = "Evergreen hardened static-c - Static C binary compilation base"
 "org.opencontainers.image.title" = "static-c"
 "org.opencontainers.image.version" = "1.0.0"
-"sovereign.base.image" = "scratch"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "true"
-"sovereign.health.type" = "none"
-"sovereign.hft.shutdown-timeout" = "5s"
-"sovereign.hft.signal-handling" = "native"
-"sovereign.image.tier" = "3"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "none"
+"evergreen.hft.shutdown-timeout" = "5s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
 

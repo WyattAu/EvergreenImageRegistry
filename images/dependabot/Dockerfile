@@ -4,7 +4,7 @@ ARG BUILD_DATE
 FROM ghcr.io/github/dependabot-updater-internal:latest AS upstream
 RUN mkdir -p /app /usr/local/bin 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION
 RUN apk add --no-cache ruby ruby-irb ruby-rdoc ca-certificates \
         git curl gnupg gmp mpdecimal libffi \
@@ -19,6 +19,8 @@ RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false dependabot 2>/dev/null 
     chown -R 65532:65532 /app /usr/local/bundle /home/dependabot 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["dependabot"]
 CMD ["scan"]
 LABEL org.opencontainers.image.title="dependabot" \
@@ -26,12 +28,15 @@ LABEL org.opencontainers.image.title="dependabot" \
       org.opencontainers.image.description="Dependabot - Automated dependency updates" \
       org.opencontainers.image.vendor="GitHub" \
       org.opencontainers.image.source="https://github.com/dependabot/dependabot-core" \
-      sovereign.image.tier="3" \
-      sovereign.image.category="devops" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="3" \
+      evergreen.image.category="devops" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

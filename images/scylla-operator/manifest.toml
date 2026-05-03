@@ -1,7 +1,7 @@
 [metadata]
 name = "scylla-operator"
 version = "1.13.0"
-description = "Sovereign hardened ScyllaDB Operator - Kubernetes operator for ScyllaDB"
+description = "Evergreen hardened ScyllaDB Operator - Kubernetes operator for ScyllaDB"
 
 [build]
 base = "scratch"
@@ -19,16 +19,16 @@ entrypoint = ["/usr/local/bin/scylla-operator"]
 expose = [8080, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened ScyllaDB Operator - Kubernetes operator for ScyllaDB"
+"org.opencontainers.image.description" = "Evergreen hardened ScyllaDB Operator - Kubernetes operator for ScyllaDB"
 "org.opencontainers.image.title" = "scylla-operator"
 "org.opencontainers.image.vendor" = "ScyllaDB"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "scratch"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "database"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "database"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

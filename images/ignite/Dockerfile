@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED IGNITE (Apache Ignite)
+# EVERGREEN HARDENED IGNITE (Apache Ignite)
 # Constraint: debian-slim - Java runtime required
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
@@ -9,7 +9,7 @@ ARG BUILD_DATE
 
 # hadolint ignore=DL3023
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -20,7 +20,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/ignite
 RUN mkdir -p /opt ; \
     test -f /opt/bin/ignite.sh || { echo '#!/bin/sh' > /opt/bin/ignite.sh && echo 'echo "ignite v${VERSION} placeholder"' >> /opt/bin/ignite.sh && echo 'exec sleep infinity' >> /opt/bin/ignite.sh && chmod +x /opt/bin/ignite.sh ; } test -f /opt/bin/ignite.sh || { echo '#!/bin/sh' > /opt/bin/ignite.sh && echo 'echo "ignite v${VERSION} placeholder"' >> /opt/bin/ignite.sh && echo 'exec sleep infinity' >> /opt/bin/ignite.sh && chmod +x /opt/bin/ignite.sh ; } || true
 RUN mkdir -p /opt 2>/dev/null || true ; touch /opt/apache-ignite-${VERSION}-bin 2>/dev/null || true
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl || true && \
@@ -32,17 +32,22 @@ RUN chown -R 65532:65532 /opt/ignite /var/lib/ignite /var/log/ignite /var/cache/
 USER 65532:65532
 WORKDIR /opt/ignite
 EXPOSE 10800 11211 47100 47500
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:10800/ || exit 1
 ENTRYPOINT ["/opt/ignite/bin/ignite.sh"]
 LABEL org.opencontainers.image.title="ignite" \
       org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.description="Sovereign hardened Apache Ignite - distributed database and in-memory computing" \
+      org.opencontainers.image.description="Evergreen hardened Apache Ignite - distributed database and in-memory computing" \
       org.opencontainers.image.vendor="Apache Software Foundation" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="database" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="1" \
+      evergreen.image.category="database" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

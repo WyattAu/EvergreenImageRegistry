@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED ELASTICSEARCH-7
+# EVERGREEN HARDENED ELASTICSEARCH-7
 # Generated from template - Version: 7.17.21
 # Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
@@ -9,7 +9,7 @@ ARG VERSION=7.17.21
 ARG BUILD_DATE
 
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=7.17.21
 RUN apk add --no-cache curl ca-certificates \ || true
     curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-linux-x86_64.tar.gz" -o /tmp/es7.tar.gz && \
@@ -22,15 +22,20 @@ RUN mkdir -p /app /var/log/elasticsearch /var/cache/elasticsearch && chown -R el
 USER elasticsearch
 WORKDIR /app
 EXPOSE 9200 9300
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9200/_cluster/health
 ENTRYPOINT ["elasticsearch"]
 LABEL org.opencontainers.image.title="elasticsearch-7" \
       org.opencontainers.image.version="7.17.21" \
       org.opencontainers.image.vendor="Elastic" \
-      sovereign.image.tier="2" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="2" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 
 USER 65532:65532

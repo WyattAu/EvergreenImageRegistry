@@ -23,15 +23,15 @@ entrypoint = ["kube-proxy"]
 expose = [9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened kube-proxy - Kubernetes network proxy"
+"org.opencontainers.image.description" = "Evergreen hardened kube-proxy - Kubernetes network proxy"
 "org.opencontainers.image.title" = "kube-proxy"
 "org.opencontainers.image.vendor" = "Kubernetes"
 "org.opencontainers.image.version" = "1.30.1"
-"sovereign.base.image" = "wolfi"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.hft.shutdown-timeout" = "15s"
-"sovereign.hft.signal-handling" = "native"
-"sovereign.image.tier" = "3"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.shutdown-timeout" = "15s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
 

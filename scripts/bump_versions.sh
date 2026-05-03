@@ -73,11 +73,11 @@ if [ -f "$CHECKSUMS" ]; then
 fi
 
 if [ -f "$MANIFEST" ]; then
-    if command -v sovereignctl &>/dev/null; then
-        if sovereignctl bump "${IMAGE}" "${NEW_VERSION}" 2>/dev/null; then
-            echo "  Updated manifest.toml via sovereignctl"
+    if command -v evergreenctl &>/dev/null; then
+        if evergreenctl bump "${IMAGE}" "${NEW_VERSION}" 2>/dev/null; then
+            echo "  Updated manifest.toml via evergreenctl"
         else
-            echo "  WARNING: sovereignctl bump failed, updating manifest.toml manually"
+            echo "  WARNING: evergreenctl bump failed, updating manifest.toml manually"
             sed -i "s|^version = \".*\"|version = \"${NEW_VERSION}\"|g" "$MANIFEST"
             if [ -n "$OLD_VERSION" ]; then
                 sed -i "s|${OLD_VERSION}|${NEW_VERSION}|g" "$MANIFEST"
@@ -88,7 +88,7 @@ if [ -f "$MANIFEST" ]; then
         if [ -n "$OLD_VERSION" ]; then
             sed -i "s|${OLD_VERSION}|${NEW_VERSION}|g" "$MANIFEST"
         fi
-        echo "  Updated manifest.toml (sovereignctl not found, used sed)"
+        echo "  Updated manifest.toml (evergreenctl not found, used sed)"
     fi
 fi
 

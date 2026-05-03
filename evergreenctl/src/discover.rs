@@ -53,7 +53,7 @@ pub async fn discover_github_release(
     let resp = client
         .get(&url)
         .header("Accept", "application/vnd.github+json")
-        .header("User-Agent", "sovereignctl/0.1.0")
+        .header("User-Agent", "evergreenctl/0.1.0")
         .send()
         .await
         .context("Failed to query GitHub API")?;
@@ -107,7 +107,7 @@ pub async fn probe_url(client: &reqwest::Client, url: &str) -> Result<ProbeResul
 
     let result = client
         .head(url)
-        .header("User-Agent", "sovereignctl/0.1.0")
+        .header("User-Agent", "evergreenctl/0.1.0")
         .send()
         .await;
 

@@ -1,5 +1,5 @@
 ARG TARGETARCH
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG GITHUB_TOKEN
 ARG VERSION
@@ -8,7 +8,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     [ -f /cockroach.tar.gz ] && tar -xzf /cockroach.tar.gz -C /opt/cockroach --strip-components=1 || true ; \    rm -f /cockroach.tar.gz ; strip /opt/cockroach/cockroach || true ; chmod +x /opt/cockroach/cockroach ; test -f /opt/cockroach/cockroach || { echo '#!/bin/sh' > /opt/cockroach/cockroach && echo 'echo "cockroachdb-exporter v${VERSION} placeholder"' >> /opt/cockroach/cockroach && echo 'exec sleep infinity' >> /opt/cockroach/cockroach && chmod +x /opt/cockroach/cockroach; }
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /var/log/cockroach /var/lib/cockroach /var/cache/cockroach 2>/dev/null || true
 
@@ -22,24 +22,29 @@ COPY --from=builder /var/cache/cockroach /var/cache/cockroach
 USER 65532:65532
 WORKDIR /
 EXPOSE 8080
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/cockroach"]
 CMD ["start", "--insecure", "--http-port=8080", "--prometheus-port=8080"]
 LABEL org.opencontainers.image.title="cockroachdb-exporter" \
-      org.opencontainers.image.description="Sovereign hardened CockroachDB Prometheus exporter - database metrics via built-in endpoint" \
+      org.opencontainers.image.description="Evergreen hardened CockroachDB Prometheus exporter - database metrics via built-in endpoint" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Cockroach Labs" \
-      sovereign.image.tier="1" \
-      sovereign.image.status="functional" \
-      sovereign.image.category="database" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="5000ms"
+      evergreen.image.tier="1" \
+      evergreen.image.status="functional" \
+      evergreen.image.category="database" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="5000ms"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

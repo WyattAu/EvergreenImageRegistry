@@ -2,12 +2,17 @@
 FROM scratch
 USER 65532:65532
 LABEL org.opencontainers.image.title="amd64" \
-      org.opencontainers.image.description="Sovereign hardened amd64 - AMD64 architecture base image" \
-      sovereign.image.tier="3" \
-      sovereign.image.note="Placeholder base image for AMD64 architecture. Extend with application binaries."
+      org.opencontainers.image.description="Evergreen hardened amd64 - AMD64 architecture base image" \
+      evergreen.image.tier="3" \
+      evergreen.image.note="Placeholder base image for AMD64 architecture. Extend with application binaries."
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="none"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="none"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM
+
+HEALTHCHECK NONE

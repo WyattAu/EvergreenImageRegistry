@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=2.90
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -20,7 +20,7 @@ RUN mkdir -p /install/usr/sbin/dnsmasq ; 2>/dev/null || true \
 
 
 RUN mkdir -p /install/usr/sbin/dnsmasq /install/usr/share/man 2>/dev/null || true
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache ca-certificates 
 COPY --from=builder /install/usr/sbin/dnsmasq /usr/sbin/dnsmasq
@@ -30,6 +30,8 @@ RUN mkdir -p /app /var/log/dnsmasq /var/lib/dnsmasq /run /etc/dnsmasq.d ; 2>/dev
 USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 67 67/udp 69/udp 4011/udp
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:53/ || exit 1
 ENTRYPOINT ["/usr/sbin/dnsmasq"]
 CMD ["--keep-in-foreground", "--no-daemon"]
 LABEL org.opencontainers.image.title="dnsmasq-full" \
@@ -37,17 +39,20 @@ LABEL org.opencontainers.image.title="dnsmasq-full" \
       org.opencontainers.image.vendor="The Kelleys" \
       org.opencontainers.image.source="https://thekelleys.org.uk/dnsmasq/" \
       org.opencontainers.image.description="dnsmasq with full feature set (DNS, DHCP, TFTP, PXE, DNSSEC)" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="networking" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="wolfi" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="1" \
+      evergreen.image.category="networking" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.base="wolfi" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="3000ms"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

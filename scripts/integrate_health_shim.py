@@ -148,12 +148,12 @@ def process_dockerfile(db):
         f'ENV HEALTH_CMD="{hc}" \\',
         f'    READY_CMD="{rc}" \\',
         f'    STARTUP_CMD="{sc}" \\',
-        "    SOVEREIGN_LOG_LEVEL=info",
+        "    EVERGREEN_LOG_LEVEL=info",
     ]
     for j, env_line in enumerate(env_block):
         lines.insert(env_insert + j, env_line)
     changes.append(
-        f"Added ENV HEALTH_CMD READY_CMD STARTUP_CMD SOVEREIGN_LOG_LEVEL"
+        f"Added ENV HEALTH_CMD READY_CMD STARTUP_CMD EVERGREEN_LOG_LEVEL"
     )
 
     for i, line in enumerate(lines):
@@ -187,17 +187,17 @@ def process_dockerfile(db):
 
     label_changes = []
     for i, line in enumerate(lines):
-        if 'sovereign.health.type="exec"' in line:
+        if 'evergreen.health.type="exec"' in line:
             lines[i] = line.replace(
-                'sovereign.health.type="exec"', 'sovereign.health.type="http"'
+                'evergreen.health.type="exec"', 'evergreen.health.type="http"'
             )
-            label_changes.append("sovereign.health.type: exec -> http")
-        if 'sovereign.metrics.native="ztunnel"' in line:
+            label_changes.append("evergreen.health.type: exec -> http")
+        if 'evergreen.metrics.native="ztunnel"' in line:
             lines[i] = line.replace(
-                'sovereign.metrics.native="ztunnel"',
-                'sovereign.metrics.native="true"',
+                'evergreen.metrics.native="ztunnel"',
+                'evergreen.metrics.native="true"',
             )
-            label_changes.append("sovereign.metrics.native: ztunnel -> true")
+            label_changes.append("evergreen.metrics.native: ztunnel -> true")
     if label_changes:
         changes.append("Updated labels: " + "; ".join(label_changes))
 

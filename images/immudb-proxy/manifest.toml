@@ -1,7 +1,7 @@
 [metadata]
 name = "immudb-proxy"
 version = "latest"
-description = "Sovereign hardened immudb-proxy - proxy mode for immudb"
+description = "Evergreen hardened immudb-proxy - proxy mode for immudb"
 
 [build]
 base = "scratch"
@@ -19,16 +19,16 @@ entrypoint = ["/usr/local/bin/immudb-proxy"]
 expose = [3323, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened immudb-proxy - proxy mode for immudb"
+"org.opencontainers.image.description" = "Evergreen hardened immudb-proxy - proxy mode for immudb"
 "org.opencontainers.image.title" = "immudb-proxy"
 "org.opencontainers.image.vendor" = "Codenotary"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "scratch"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "security"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "security"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

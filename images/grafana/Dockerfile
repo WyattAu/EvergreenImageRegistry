@@ -1,6 +1,6 @@
 ARG TARGETARCH
 # =============================================================================
-# SOVEREIGN HARDENED GRAFANA
+# EVERGREEN HARDENED GRAFANA
 # Grafana observability dashboard (builds from source)
 # Constraint: debian-slim hardened
 # =============================================================================
@@ -9,7 +9,7 @@ ARG VERSION=11.0.0
 ARG BUILD_DATE
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 ARG GITHUB_TOKEN
 ARG VERSION=11.0.0
@@ -24,7 +24,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/gra
     ln -sf /opt/grafana-${VERSION} /opt/grafana 2>/dev/null || true
 
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=11.0.0
 
 RUN apk add --no-cache ca-certificates tzdata fontconfig || true
@@ -38,18 +38,23 @@ RUN mkdir -p /opt/grafana/bin /var/lib/grafana /var/log/grafana /etc/grafana 2>/
 USER 65532:65532
 WORKDIR /opt/grafana
 EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:3000/api/health
 ENTRYPOINT ["grafana-server"]
 CMD ["--homepath=/opt/grafana", "--config=/etc/grafana/grafana.ini"]
 LABEL org.opencontainers.image.title="grafana" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Grafana Labs" \
       org.opencontainers.image.source="https://github.com/grafana/grafana" \
-      sovereign.image.tier="1" \
-      sovereign.image.status="functional" \
-      sovereign.image.category="observability" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="1" \
+      evergreen.image.status="functional" \
+      evergreen.image.category="observability" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

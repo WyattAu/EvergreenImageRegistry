@@ -7,23 +7,28 @@ COPY --from=upstream /manager /usr/local/bin/dex-operator
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/dex-operator"]
 LABEL org.opencontainers.image.title="dex-operator" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="DexIDP" \
       org.opencontainers.image.source="https://github.com/dexidp/dex-operator" \
-      sovereign.image.tier="2" \
-      sovereign.image.category="identity" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
+      evergreen.image.tier="2" \
+      evergreen.image.category="identity" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="3000ms"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

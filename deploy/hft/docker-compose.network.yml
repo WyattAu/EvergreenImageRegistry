@@ -1,8 +1,6 @@
-version: "3.9"
-
 services:
   nginx:
-    image: sovereign-registry.local/nginx:latest
+    image: evergreen-registry.local/nginx:latest
     container_name: nginx-hft
     restart: unless-stopped
     cpuset: "0-1"
@@ -22,17 +20,17 @@ services:
     stop_grace_period: 3s
     security_opt:
       - no-new-privileges:true
-    user: "65534:65534"
+    user: "65532:65532"
     ports:
       - "80:80"
       - "443:443"
     environment:
-      - SOVEREIGN_SHUTDOWN_TIMEOUT=3
+      - EVERGREEN_SHUTDOWN_TIMEOUT=3
     networks:
       - hft-frontend
 
   envoy:
-    image: sovereign-registry.local/envoy:latest
+    image: evergreen-registry.local/envoy:latest
     container_name: envoy-hft
     restart: unless-stopped
     cpuset: "2-3"
@@ -49,19 +47,19 @@ services:
     stop_grace_period: 3s
     security_opt:
       - no-new-privileges:true
-    user: "65534:65534"
+    user: "65532:65532"
     ports:
       - "8080:8080"
       - "8443:8443"
       - "9900:9900"
     environment:
-      - SOVEREIGN_SHUTDOWN_TIMEOUT=3
+      - EVERGREEN_SHUTDOWN_TIMEOUT=3
     networks:
       - hft-frontend
       - hft-backend
 
   traefik:
-    image: sovereign-registry.local/traefik:latest
+    image: evergreen-registry.local/traefik:latest
     container_name: traefik-hft
     restart: unless-stopped
     cpuset: "4-5"
@@ -77,19 +75,19 @@ services:
     stop_grace_period: 3s
     security_opt:
       - no-new-privileges:true
-    user: "65534:65534"
+    user: "65532:65532"
     ports:
       - "9080:80"
       - "9443:443"
       - "9090:8080"
     environment:
-      - SOVEREIGN_SHUTDOWN_TIMEOUT=3
+      - EVERGREEN_SHUTDOWN_TIMEOUT=3
     networks:
       - hft-frontend
       - hft-backend
 
   haproxy:
-    image: sovereign-registry.local/haproxy:latest
+    image: evergreen-registry.local/haproxy:latest
     container_name: haproxy-hft
     restart: unless-stopped
     cpuset: "6-7"
@@ -106,18 +104,18 @@ services:
     stop_grace_period: 3s
     security_opt:
       - no-new-privileges:true
-    user: "65534:65534"
+    user: "65532:65532"
     ports:
       - "10080:80"
       - "10443:443"
     environment:
-      - SOVEREIGN_SHUTDOWN_TIMEOUT=3
+      - EVERGREEN_SHUTDOWN_TIMEOUT=3
     networks:
       - hft-frontend
       - hft-backend
 
   caddy:
-    image: sovereign-registry.local/caddy:latest
+    image: evergreen-registry.local/caddy:latest
     container_name: caddy-hft
     restart: unless-stopped
     cpuset: "8-9"
@@ -134,13 +132,13 @@ services:
     stop_grace_period: 3s
     security_opt:
       - no-new-privileges:true
-    user: "65534:65534"
+    user: "65532:65532"
     ports:
       - "11080:80"
       - "11443:443"
       - "12019:2019"
     environment:
-      - SOVEREIGN_SHUTDOWN_TIMEOUT=3
+      - EVERGREEN_SHUTDOWN_TIMEOUT=3
     networks:
       - hft-frontend
       - hft-backend

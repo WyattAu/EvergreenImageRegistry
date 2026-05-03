@@ -1,7 +1,7 @@
 ARG VERSION=0.1.0
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base:latest AS builder
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31 AS builder
 ARG TARGETARCH
 ARG VERSION
 ARG TARGETARCH
@@ -18,19 +18,24 @@ COPY --from=builder /tmp/dotdns /usr/local/bin/dotdns
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 EXPOSE 53 8053
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/dotdns"]
 LABEL org.opencontainers.image.title="dotdns" \
       org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.description="Sovereign hardened DotDNS - DNS-over-TLS proxy server" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="dns" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s"
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      org.opencontainers.image.description="Evergreen hardened DotDNS - DNS-over-TLS proxy server" \
+      evergreen.image.tier="1" \
+      evergreen.image.category="dns" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

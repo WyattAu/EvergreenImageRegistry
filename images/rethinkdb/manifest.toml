@@ -1,7 +1,7 @@
 [metadata]
 name = "rethinkdb"
 version = "latest"
-description = "Sovereign hardened RethinkDB - real-time NoSQL database"
+description = "Evergreen hardened RethinkDB - real-time NoSQL database"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -19,15 +19,15 @@ entrypoint = ["/opt/rethinkdb/bin/rethinkdb", "--bind", "all", "--directory", "/
 expose = [28015, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened RethinkDB - real-time NoSQL database"
+"org.opencontainers.image.description" = "Evergreen hardened RethinkDB - real-time NoSQL database"
 "org.opencontainers.image.title" = "rethinkdb"
 "org.opencontainers.image.vendor" = "RethinkDB"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "wolfi"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "database"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "database"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

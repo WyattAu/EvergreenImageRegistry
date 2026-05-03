@@ -245,7 +245,7 @@ func boolToInt(b bool) int {
 
 func main() {
 	// Configure structured logging
-	logLevel := os.Getenv("SOVEREIGN_LOG_LEVEL")
+	logLevel := os.Getenv("EVERGREEN_LOG_LEVEL")
 	if logLevel == "" {
 		logLevel = os.Getenv("LOG_LEVEL")
 	}
@@ -326,7 +326,7 @@ func main() {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(map[string]string{
-			"service": "sovereign-health-shim",
+			"service": "evergreen-health-shim",
 			"version": "1.0.0",
 			"endpoints": "/livez, /readyz, /startupz, /metrics",
 		})

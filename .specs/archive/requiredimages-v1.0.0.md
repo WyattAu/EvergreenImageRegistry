@@ -1,8 +1,8 @@
-# Sovereign Hardened Image Registry - Required Images Specification
+# Evergreen Hardened Image Registry - Required Images Specification
 
 Building and maintaining a registry of hundreds of hardened, distroless images is a massive undertaking. To make this manageable, you should treat it like a **Compiler Pipeline**: you build "Base Hardened Runtimes" (Rust, Go, Static-C, Java-JRE, Node-stripped) and then layer the specific applications on top.
 
-This document specifies **1000+ images** across all tiers and categories for the Sovereign Hardened Registry.
+This document specifies **1000+ images** across all tiers and categories for the Evergreen Hardened Registry.
 
 ---
 

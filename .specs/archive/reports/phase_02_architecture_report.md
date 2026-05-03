@@ -14,7 +14,7 @@
 
 ## Phase Summary
 
-This phase established the architectural specification for the Sovereign Hardened Image Registry following IEEE 1016-2009.
+This phase established the architectural specification for the Evergreen Hardened Image Registry following IEEE 1016-2009.
 
 ---
 

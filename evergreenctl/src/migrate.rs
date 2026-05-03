@@ -48,7 +48,7 @@ fn extract_description(content: &str) -> String {
     re.captures(content)
         .and_then(|c| c.get(1))
         .map(|m| m.as_str().to_string())
-        .unwrap_or_else(|| "Sovereign hardened container image".to_string())
+        .unwrap_or_else(|| "Evergreen hardened container image".to_string())
 }
 
 /// Parse an existing Dockerfile and extract manifest fields
@@ -167,7 +167,7 @@ fn extract_vendor(content: &str) -> String {
 }
 
 fn extract_tier(content: &str) -> u8 {
-    let re = Regex::new(r#"sovereign\.image\.tier="(\d+)""#).unwrap();
+    let re = Regex::new(r#"evergreen\.image\.tier="(\d+)""#).unwrap();
     re.captures(content)
         .and_then(|c| c.get(1))
         .and_then(|m| m.as_str().parse::<u8>().ok())
@@ -197,7 +197,7 @@ fn extract_base_image(content: &str) -> String {
 }
 
 fn extract_category(content: &str) -> String {
-    let re = Regex::new(r#"sovereign\.image\.category="([^"]+)""#).unwrap();
+    let re = Regex::new(r#"evergreen\.image\.category="([^"]+)""#).unwrap();
     re.captures(content)
         .and_then(|c| c.get(1))
         .map(|m| m.as_str().to_string())
@@ -205,7 +205,7 @@ fn extract_category(content: &str) -> String {
 }
 
 fn extract_health_type(content: &str) -> String {
-    let re = Regex::new(r#"sovereign\.health\.type="([^"]+)""#).unwrap();
+    let re = Regex::new(r#"evergreen\.health\.type="([^"]+)""#).unwrap();
     re.captures(content)
         .and_then(|c| c.get(1))
         .map(|m| m.as_str().to_string())
@@ -258,7 +258,7 @@ fn extract_build_commands(content: &str) -> Vec<String> {
 
 fn extract_compliance_labels(content: &str) -> ComplianceConfig {
     let mut labels = std::collections::HashMap::new();
-    let re = Regex::new(r#"sovereign\.([a-zA-Z0-9_.]+)="([^"]+)""#).unwrap();
+    let re = Regex::new(r#"evergreen\.([a-zA-Z0-9_.]+)="([^"]+)""#).unwrap();
     for cap in re.captures_iter(content) {
         labels.insert(cap[1].to_string(), cap[2].to_string());
     }

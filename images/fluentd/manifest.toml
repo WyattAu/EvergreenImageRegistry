@@ -20,16 +20,16 @@ entrypoint = ["/usr/local/bin/fluentd", "-c", "/fluentd/etc/fluent.conf"]
 expose = [24224, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened Fluentd - unified logging layer with Ruby runtime"
+"org.opencontainers.image.description" = "Evergreen hardened Fluentd - unified logging layer with Ruby runtime"
 "org.opencontainers.image.source" = "https://github.com/fluent/fluentd"
 "org.opencontainers.image.title" = "fluentd"
 "org.opencontainers.image.vendor" = "CNCF"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "wolfi"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "logging"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "logging"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

@@ -19,6 +19,6 @@ expose = [6969, 9101]
 
 [labels]
 "org.opencontainers.image.title" = "whisparr"
-"sovereign.health.type" = "exec"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.health.type" = "exec"
+"evergreen.metrics.native" = "ztunnel"
 

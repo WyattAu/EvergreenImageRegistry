@@ -152,9 +152,9 @@ LABEL org.opencontainers.image.title="homeassistant-core" \
       org.opencontainers.image.description="Home Assistant Core - Open source home automation" \
       org.opencontainers.image.vendor="Home Assistant" \
       org.opencontainers.image.source="https://github.com/home-assistant/core" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_pip "$BASE/homeassistant-core" "homeassistant"
 
@@ -189,9 +189,9 @@ LABEL org.opencontainers.image.title="homeassistant-hassio" \
       org.opencontainers.image.description="Home Assistant in HassIO mode" \
       org.opencontainers.image.vendor="Home Assistant" \
       org.opencontainers.image.source="https://github.com/home-assistant/core" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_pip "$BASE/homeassistant-hassio" "homeassistant"
 
@@ -226,9 +226,9 @@ LABEL org.opencontainers.image.title="homeassistant-supervisor" \
       org.opencontainers.image.description="Home Assistant Supervisor - manages add-ons" \
       org.opencontainers.image.vendor="Home Assistant" \
       org.opencontainers.image.source="https://github.com/home-assistant/supervisor" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/homeassistant-supervisor" \
     "https://github.com/home-assistant/supervisor/archive/refs/heads/main.tar.gz" \
@@ -262,9 +262,9 @@ LABEL org.opencontainers.image.title="zigbee2mqtt" \
       org.opencontainers.image.description="Zigbee to MQTT bridge" \
       org.opencontainers.image.vendor="Koenkk" \
       org.opencontainers.image.source="https://github.com/Koenkk/zigbee2mqtt" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/zigbee2mqtt" \
     "https://github.com/Koenkk/zigbee2mqtt/archive/refs/heads/master.tar.gz" \
@@ -293,10 +293,10 @@ HEALTHCHECK --interval=60s --timeout=5s --start-period=10s --retries=3 \
 ENTRYPOINT ["python3"]
 LABEL org.opencontainers.image.title="$name" \
       org.opencontainers.image.description="Placeholder - $desc" \
-      sovereign.image.tier="3" \
-      sovereign.image.status="placeholder" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.image.status="placeholder" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 DEOF
     write_checksums_placeholder "$BASE/$name"
 done
@@ -323,9 +323,9 @@ ENTRYPOINT ["mosquitto_pub"]
 LABEL org.opencontainers.image.title="mosquito" \
       org.opencontainers.image.description="Mosquitto MQTT client tools" \
       org.opencontainers.image.vendor="Eclipse" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_nopkg "$BASE/mosquito"
 
@@ -357,9 +357,9 @@ LABEL org.opencontainers.image.title="mosquitto" \
       org.opencontainers.image.description="Eclipse Mosquitto MQTT broker" \
       org.opencontainers.image.vendor="Eclipse" \
       org.opencontainers.image.source="https://github.com/eclipse/mosquitto" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_nopkg "$BASE/mosquitto"
 
@@ -391,9 +391,9 @@ LABEL org.opencontainers.image.title="mosquitto-dev" \
       org.opencontainers.image.description="Eclipse Mosquitto MQTT broker - development mode" \
       org.opencontainers.image.vendor="Eclipse" \
       org.opencontainers.image.source="https://github.com/eclipse/mosquitto" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_nopkg "$BASE/mosquitto-dev"
 
@@ -427,9 +427,9 @@ LABEL org.opencontainers.image.title="emqx" \
       org.opencontainers.image.description="EMQX - High-performance MQTT broker" \
       org.opencontainers.image.vendor="EMQ" \
       org.opencontainers.image.source="https://github.com/emqx/emqx" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/emqx" \
     "https://www.emqx.com/en/downloads/broker/v5.8.0/emqx-5.8.0-debian12-amd64.tar.gz" \
@@ -461,10 +461,10 @@ LABEL org.opencontainers.image.title="emqx-ee" \
       org.opencontainers.image.description="EMQX Enterprise - requires license" \
       org.opencontainers.image.vendor="EMQ" \
       org.opencontainers.image.source="https://github.com/emqx/emqx" \
-      sovereign.image.tier="3" \
-      sovereign.image.status="license-required" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.image.status="license-required" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums_placeholder "$BASE/emqx-ee"
 
@@ -494,9 +494,9 @@ LABEL org.opencontainers.image.title="vernemq" \
       org.opencontainers.image.description="VerneMQ - High-performance MQTT broker" \
       org.opencontainers.image.vendor="VerneMQ" \
       org.opencontainers.image.source="https://github.com/vernemq/vernemq" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian_slim="true"
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian_slim="true"
 EOF
 write_checksums "$BASE/vernemq" \
     "https://github.com/vernemq/vernemq/archive/refs/heads/master.tar.gz" \

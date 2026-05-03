@@ -1,7 +1,7 @@
 [metadata]
 name = "virtuoso"
 version = "7.2.12"
-description = "Sovereign hardened Virtuoso - universal RDF/graph database"
+description = "Evergreen hardened Virtuoso - universal RDF/graph database"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -18,15 +18,15 @@ entrypoint = ["virtuoso-t", "-f", "-c", "/etc/virtuoso/virtuoso.ini"]
 expose = [1111, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened Virtuoso - universal RDF/graph database"
+"org.opencontainers.image.description" = "Evergreen hardened Virtuoso - universal RDF/graph database"
 "org.opencontainers.image.title" = "virtuoso"
 "org.opencontainers.image.vendor" = "OpenLink Software"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "wolfi"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "database"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "database"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

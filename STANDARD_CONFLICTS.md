@@ -95,7 +95,7 @@
 | Source | Position |
 |--------|----------|
 | REQUIREMENTS.md v3.0.0 C016 | No init system |
-| ADR-004 §sovereign.hft.init | tini allowed |
+| ADR-004 §evergreen.hft.init | tini allowed |
 | YP-CONTAINER-HARDENING-BENCHMARKS-001 | "Use tini explicitly" |
 | 2 Java images (kafka, keycloak) | No init system (PID 1 signal handling risk) |
 

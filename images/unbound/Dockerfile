@@ -1,7 +1,7 @@
 ARG VERSION=1.20.0
 ARG TARGETARCH
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libssl-dev libexpat1-dev libevent-dev && \
@@ -16,7 +16,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL \
     make install DESTDIR=/opt/unbound && \
     cp /opt/unbound/usr/sbin/unbound /unbound && chmod +x /unbound
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/unbound /var/cache/unbound 2>/dev/null || true
 
 FROM scratch
@@ -28,20 +28,25 @@ COPY --from=builder /var/cache/unbound /var/cache/unbound
 USER 65532:65532
 WORKDIR /app
 EXPOSE 53
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/unbound"]
 LABEL org.opencontainers.image.title="unbound" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="NLnet Labs" \
-      sovereign.image.tier="1" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
+      evergreen.image.tier="1" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="3000ms"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

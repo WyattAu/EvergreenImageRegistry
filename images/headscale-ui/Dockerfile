@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=2026.03.17
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/*
@@ -12,23 +12,28 @@ COPY --from=downloader /www /www
 USER 65532:65532
 WORKDIR /www
 EXPOSE 8080
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/app/fileserver"]
 LABEL org.opencontainers.image.title="headscale-ui" \
       org.opencontainers.image.version="2026.03.17" \
       org.opencontainers.image.vendor="gurucomputing" \
       org.opencontainers.image.source="https://github.com/gurucomputing/headscale-ui" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="networking" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.distrole="distroless" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="3s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="3000ms"
+      evergreen.image.tier="1" \
+      evergreen.image.category="networking" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.distrole="distroless" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="3000ms"
 
-LABEL sovereign.base.image="distroless"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="distroless"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

@@ -1,5 +1,5 @@
 ARG TARGETARCH
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=5.8.2
 ARG GITHUB_TOKEN
@@ -11,7 +11,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     echo "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3  /opt/grafana-image-renderer" | sha256sum -c || true  #
 RUN test -f /opt/grafana-image-renderer || { echo '#!/bin/sh' > /opt/grafana-image-renderer && echo 'echo "grafana-image-renderer v${VERSION} placeholder"' >> /opt/grafana-image-renderer && echo 'exec sleep infinity' >> /opt/grafana-image-renderer && chmod +x /opt/grafana-image-renderer; } || true
 RUN [ -f /opt/grafana-image-renderer ] || { echo '#!/bin/sh' > /opt/grafana-image-renderer ; echo 'echo "grafana-image-renderer v${VERSION} ready"' >> /opt/grafana-image-renderer ; echo 'exec sleep infinity' >> /opt/grafana-image-renderer ; chmod +x /opt/grafana-image-renderer 2>/dev/null || true ; } 2>/dev/null || true
-FROM debian:bookworm-slim AS chromium
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS chromium
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         chromium \
@@ -26,7 +26,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* || true
 RUN mkdir -p /usr/bin 2>/dev/null || true ; touch /usr/bin/chromium 2>/dev/null || true
 RUN mkdir -p /usr/lib 2>/dev/null || true ; touch /usr/lib/chromium 2>/dev/null || true
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN addgroup -S -g 65532 renderer 2>/dev/null || true && \
     adduser -u 65532 -G renderer -D -s /bin/false renderer || true && \
@@ -45,27 +45,32 @@ ENV RENDERING_MODE=chromium \
     CHROME_BIN=/usr/bin/chromium \
     LOG_LEVEL=info \
     ENABLE_METRICS=true
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8081/ || exit 1
 ENTRYPOINT ["/opt/grafana-image-renderer/build/grafana-image-renderer"]
 LABEL org.opencontainers.image.title="grafana-image-renderer" \
       org.opencontainers.image.version="5.8.2" \
       org.opencontainers.image.vendor="Grafana Labs" \
       org.opencontainers.image.description="Grafana image renderer plugin with headless Chromium" \
-      sovereign.image.tier="1" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="5s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="20000ms" \
-      sovereign.hft.cpu-pins="4-5" \
-      sovereign.hft.cpu-pins-mode="shared" \
-      sovereign.hft.deploy-strategy="standard-rolling" \
-      sovereign.hft.pre-stop-hook="true" \
-      sovereign.hft.pre-stop-delay="10s" \
-      sovereign.hft.connection-drain="true" \
-      sovereign.hft.sched-policy="SCHED_OTHER" \
-      sovereign.hft.runtime="node"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="1" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="5s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="20000ms" \
+      evergreen.hft.cpu-pins="4-5" \
+      evergreen.hft.cpu-pins-mode="shared" \
+      evergreen.hft.deploy-strategy="standard-rolling" \
+      evergreen.hft.pre-stop-hook="true" \
+      evergreen.hft.pre-stop-delay="10s" \
+      evergreen.hft.connection-drain="true" \
+      evergreen.hft.sched-policy="SCHED_OTHER" \
+      evergreen.hft.runtime="node"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED HIVE-METASTORE
+# EVERGREEN HARDENED HIVE-METASTORE
 # Constraint: debian-slim - Java runtime required
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
@@ -9,7 +9,7 @@ ARG BUILD_DATE
 
 # hadolint ignore=DL3023
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -20,7 +20,7 @@ RUN curl --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 300 -fsSL "ht
     rm -f /tmp/hive.tar.gz 2>/dev/null || true ; \
     mkdir -p /opt/apache-hive-${VERSION}-bin/bin 2>/dev/null || true ; \
     test -f /opt/apache-hive-${VERSION}-bin/bin/hive || { echo '#!/bin/sh' > /opt/apache-hive-${VERSION}-bin/bin/hive && echo 'echo "hive-metastore v'"${VERSION}"' placeholder"' >> /opt/apache-hive-${VERSION}-bin/bin/hive && echo 'exec sleep infinity' >> /opt/apache-hive-${VERSION}-bin/bin/hive && chmod +x /opt/apache-hive-${VERSION}-bin/bin/hive ; } 2>/dev/null || true
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl 
@@ -31,17 +31,22 @@ RUN chown -R 65532:65532 /opt/hive /var/lib/hive /var/log/hive /var/cache/hive
 USER 65532:65532
 WORKDIR /opt/hive
 EXPOSE 9083
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9083/ || exit 1
 ENTRYPOINT ["/opt/hive/bin/hive", "--service", "metastore"]
 LABEL org.opencontainers.image.title="hive-metastore" \
       org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.description="Sovereign hardened Hive Metastore - metadata service for Apache Hive" \
+      org.opencontainers.image.description="Evergreen hardened Hive Metastore - metadata service for Apache Hive" \
       org.opencontainers.image.vendor="Apache Software Foundation" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="database" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="1" \
+      evergreen.image.category="database" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

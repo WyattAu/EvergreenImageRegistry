@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED SYNAPSE
+# EVERGREEN HARDENED SYNAPSE
 # Constraint: debian-slim - Python runtime required for Matrix homeserver
 # =============================================================================
 
@@ -7,7 +7,7 @@ ARG VERSION=1.98.0
 ARG BUILD_DATE
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
 ARG VERSION=1.98.0
 RUN apt-get update && \
@@ -32,17 +32,22 @@ USER 65532:65532
 WORKDIR /data
 VOLUME /data
 EXPOSE 8008 8448
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8008/ || exit 1
 ENTRYPOINT ["python3", "-m", "synapse.app.homeserver"]
 LABEL org.opencontainers.image.title="synapse" \
       org.opencontainers.image.description="Synapse - Matrix homeserver for federated messaging" \
       org.opencontainers.image.version="1.98.0" \
       org.opencontainers.image.vendor="Element" \
       org.opencontainers.image.source="https://github.com/element-hq/synapse" \
-      sovereign.image.tier="2" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.debian-slim="true"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="2" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.debian-slim="true"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

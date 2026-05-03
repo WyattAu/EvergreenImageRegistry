@@ -1,4 +1,4 @@
-# Requirements Specification - Sovereign Hardened Image Registry
+# Requirements Specification - Evergreen Hardened Image Registry
 
 ## Document Metadata
 
@@ -14,11 +14,11 @@
 
 ## 1. Requirements Overview
 
-This document specifies requirements for building and maintaining a sovereign hardened container image registry with 1000+ images.
+This document specifies requirements for building and maintaining a evergreen hardened container image registry with 1000+ images.
 
 ---
 
-## 2. Mandatory Image Constraints (The Sovereign Standard)
+## 2. Mandatory Image Constraints (The Evergreen Standard)
 
 ### 2.1 Security Constraints
 

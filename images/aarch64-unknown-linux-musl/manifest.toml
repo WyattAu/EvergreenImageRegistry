@@ -1,7 +1,7 @@
 [metadata]
 name = "aarch64-unknown-linux-musl"
 version = "unknown"
-description = "Sovereign hardened aarch64-unknown-linux-musl - ARM64 musl static base"
+description = "Evergreen hardened aarch64-unknown-linux-musl - ARM64 musl static base"
 
 [build]
 base = "scratch"
@@ -15,11 +15,11 @@ type = "base-image"
 expose = [9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened aarch64-unknown-linux-musl - ARM64 musl static base"
+"org.opencontainers.image.description" = "Evergreen hardened aarch64-unknown-linux-musl - ARM64 musl static base"
 "org.opencontainers.image.title" = "aarch64-unknown-linux-musl"
-"sovereign.base.image" = "scratch"
-"sovereign.health.type" = "none"
-"sovereign.image.note" = "Placeholder base image for ARM64 musl static binaries. Extend with application binaries."
-"sovereign.image.tier" = "3"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.health.type" = "none"
+"evergreen.image.note" = "Placeholder base image for ARM64 musl static binaries. Extend with application binaries."
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
 

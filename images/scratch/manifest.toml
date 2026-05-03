@@ -1,7 +1,7 @@
 [metadata]
 name = "scratch"
 version = "unknown"
-description = "Sovereign hardened scratch (stub - pending package integration)"
+description = "Evergreen hardened scratch (stub - pending package integration)"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -15,12 +15,12 @@ type = "package-manager"
 expose = [9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened scratch (stub - pending package integration)"
+"org.opencontainers.image.description" = "Evergreen hardened scratch (stub - pending package integration)"
 "org.opencontainers.image.title" = "scratch"
-"sovereign.base.image" = "wolfi"
-"sovereign.health.type" = "none"
-"sovereign.image.note" = "Stub image. Update with apk add or binary COPY instructions."
-"sovereign.image.status" = "stub"
-"sovereign.image.tier" = "3"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "wolfi"
+"evergreen.health.type" = "none"
+"evergreen.image.note" = "Stub image. Update with apk add or binary COPY instructions."
+"evergreen.image.status" = "stub"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
 

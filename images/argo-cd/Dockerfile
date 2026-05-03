@@ -1,6 +1,6 @@
 ARG TARGETARCH
 
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=3.3.8
 ARG GITHUB_TOKEN
@@ -11,7 +11,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/argocd /var/cache/argocd /home/argocd 2>/dev/null || true
 
@@ -26,19 +26,24 @@ COPY --from=builder /home/argocd /home/argocd
 USER 65532:65532
 WORKDIR /app
 ENV HOME=/app
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/argocd"]
 LABEL org.opencontainers.image.title="argo-cd" \
       org.opencontainers.image.version="3.3.8" \
       org.opencontainers.image.vendor="Argo Project" \
-      org.opencontainers.image.description="Sovereign hardened argo-cd - GitOps CD tool" \
-      sovereign.image.tier="3" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.scratch="true" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="10s"
+      org.opencontainers.image.description="Evergreen hardened argo-cd - GitOps CD tool" \
+      evergreen.image.tier="3" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="10s"
 
-LABEL sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

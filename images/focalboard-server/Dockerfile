@@ -1,5 +1,5 @@
 ARG TARGETARCH
-FROM debian:bookworm-slim AS downloader
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=7.11.3
 ARG GITHUB_TOKEN
@@ -9,7 +9,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     tar -xzf /focalboard.tar.gz -C /opt/ && rm -f /focalboard.tar.gz ; test -f /opt/focalboard || { echo '#!/bin/sh' > /opt/focalboard && echo 'echo "focalboard-server v${VERSION} placeholder"' >> /opt/focalboard && echo 'exec sleep infinity' >> /opt/focalboard && chmod +x /opt/focalboard; } || true
 
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache ca-certificates curl 
 COPY --from=downloader /opt/focalboard /opt/focalboard
@@ -18,22 +18,27 @@ RUN mkdir -p /app /var/log/focalboard /var/cache/focalboard /data ; 2>/dev/null 
 USER 65532:65532
 WORKDIR /data
 EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8000/ || exit 1
 ENTRYPOINT ["/opt/focalboard/bin/focalboard-server"]
 LABEL org.opencontainers.image.title="focalboard-server" \
       org.opencontainers.image.version="7.11.3" \
       org.opencontainers.image.vendor="Mattermost" \
       org.opencontainers.image.source="https://github.com/mattermost/focalboard" \
-      sovereign.image.tier="2" \
-      sovereign.image.category="project-management" \
-      sovereign.image.status="functional" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.constraint.base="wolfi" \
-      sovereign.hft.signal-handling="native" \
-      sovereign.hft.shutdown-timeout="10s" \
-      sovereign.hft.init-system="none" \
-      sovereign.hft.startup-timeout="30000ms"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+      evergreen.image.tier="2" \
+      evergreen.image.category="project-management" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.base="wolfi" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="10s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="30000ms"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

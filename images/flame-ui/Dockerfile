@@ -2,7 +2,7 @@ ARG VERSION=latest
 
 FROM ghcr.io/pawelmalak/flame:${VERSION} AS upstream
 
-FROM debian:bookworm-slim AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/flame-ui /var/cache/flame-ui 2>/dev/null || true
 
 
@@ -18,14 +18,17 @@ WORKDIR /app
 EXPOSE 5005
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="flame-ui" org.opencontainers.image.description="Flame - UI variant" org.opencontainers.image.vendor="pawelmalak" org.opencontainers.image.source="https://github.com/pawelmalak/flame" sovereign.image.tier="3" sovereign.constraint.nonroot="true" sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="exec"
+LABEL org.opencontainers.image.title="flame-ui" org.opencontainers.image.description="Flame - UI variant" org.opencontainers.image.vendor="pawelmalak" org.opencontainers.image.source="https://github.com/pawelmalak/flame" evergreen.image.tier="3" evergreen.constraint.nonroot="true" evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
 
 USER 65532:65532
 
 STOPSIGNAL SIGTERM
 
+HEALTHCHECK NONE
 ENTRYPOINT ["flame"]
 
 CMD ["--ui-only"]

@@ -1,5 +1,5 @@
 # =============================================================================
-# SOVEREIGN HARDENED DBMATE
+# EVERGREEN HARDENED DBMATE
 # Database migration tool for PostgreSQL, MySQL, SQLite, CockroachDB
 # https://github.com/amacneil/dbmate
 # =============================================================================
@@ -8,7 +8,7 @@ ARG VERSION=2.33.0
 ARG BUILD_DATE
 ARG TARGETARCH
 
-FROM cgr.dev/chainguard/wolfi-base:latest AS builder
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31 AS builder
 ARG TARGETARCH
 ARG VERSION
 ARG TARGETARCH
@@ -25,16 +25,21 @@ COPY --from=builder /tmp/dbmate /dbmate
 
 USER 65532:65532
 WORKDIR /migrations
+
+HEALTHCHECK NONE
 ENTRYPOINT ["/dbmate"]
 LABEL org.opencontainers.image.title="dbmate" \
       org.opencontainers.image.description="Database migration tool for PostgreSQL, MySQL, SQLite, CockroachDB" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.source="https://github.com/amacneil/dbmate" \
-      sovereign.image.tier="1" \
-      sovereign.image.category="tooling" \
-      sovereign.constraint.nonroot="true" \
-      sovereign.base.image="scratch"
-LABEL sovereign.metrics.native="none"
-LABEL sovereign.health.type="none"
+      evergreen.image.tier="1" \
+      evergreen.image.category="tooling" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.base.image="scratch"
+LABEL evergreen.metrics.native="none"
+LABEL evergreen.health.type="none"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

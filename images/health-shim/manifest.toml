@@ -20,7 +20,7 @@ expose = [9101]
 [labels]
 "org.opencontainers.image.title" = "health-shim"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.health.type" = "http"
-"sovereign.image.category" = "observability"
-"sovereign.metrics.native" = "prometheus"
+"evergreen.health.type" = "http"
+"evergreen.image.category" = "observability"
+"evergreen.metrics.native" = "prometheus"
 

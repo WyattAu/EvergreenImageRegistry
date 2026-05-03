@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/wolfi-base:latest AS builder
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31 AS builder
 ARG VERSION=4.2.2
 ARG GITHUB_TOKEN
 RUN apk add --no-cache curl ca-certificates || true
@@ -10,7 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     if [ -f /tmp/cinny.tar.gz ]; then tar -xzf /tmp/cinny.tar.gz -C /www --strip-components=1 && rm -f /tmp/cinny.tar.gz ; fi ; \
     test -f /www/index.html || echo '<html><body><h1>cinny v'${VERSION}' placeholder</h1></body></html>' > /www/index.html
 
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 RUN apk add --no-cache busybox ca-certificates || true && \
     addgroup -S -g 10000 appuser 2>/dev/null || true && \
     adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser 2>/dev/null || true && \
@@ -20,6 +20,8 @@ RUN chown -R 65532:65532 /var/www/html /var/run/httpd 2>/dev/null || true
 USER 65532:65532
 WORKDIR /var/www/html
 EXPOSE 80
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:80/ || exit 1
 ENTRYPOINT ["httpd"]
 CMD ["-f", "-p", "80", "-h", "/var/www/html"]
 LABEL org.opencontainers.image.title="cinny" \
@@ -27,11 +29,14 @@ LABEL org.opencontainers.image.title="cinny" \
       org.opencontainers.image.version="4.2.2" \
       org.opencontainers.image.vendor="Cinny" \
       org.opencontainers.image.source="https://github.com/cinnyapp/cinny" \
-      sovereign.image.tier="2" \
-      sovereign.image.category="chat" \
-      sovereign.constraint.nonroot="true"
-LABEL sovereign.base.image="wolfi"
-LABEL sovereign.metrics.native="ztunnel"
-LABEL sovereign.health.type="http"
+      evergreen.image.tier="2" \
+      evergreen.image.category="chat" \
+      evergreen.constraint.nonroot="true"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="http"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+
 EXPOSE 9101
 STOPSIGNAL SIGTERM

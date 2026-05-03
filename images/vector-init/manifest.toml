@@ -1,7 +1,7 @@
 [metadata]
 name = "vector-init"
 version = "0.38.0"
-description = "Sovereign hardened Vector init - high-performance observability data pipeline"
+description = "Evergreen hardened Vector init - high-performance observability data pipeline"
 
 [build]
 base = "scratch"
@@ -18,13 +18,13 @@ entrypoint = ["/usr/bin/vector"]
 expose = [8686, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Sovereign hardened Vector init - high-performance observability data pipeline"
+"org.opencontainers.image.description" = "Evergreen hardened Vector init - high-performance observability data pipeline"
 "org.opencontainers.image.title" = "vector-init"
 "org.opencontainers.image.version" = "${VERSION}"
-"sovereign.base.image" = "scratch"
-"sovereign.health.type" = "exec"
-"sovereign.image.category" = "observability"
-"sovereign.image.status" = "functional"
-"sovereign.image.tier" = "1"
-"sovereign.metrics.native" = "ztunnel"
+"evergreen.base.image" = "scratch"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "observability"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
 

@@ -552,10 +552,13 @@ Verified safe updates via GitHub API with asset naming validation:
 ## [Unreleased]
 
 ### Known Issues
-- ~938 functional images lack verified checksums (74 verified of 1,012)
-- CI pipeline needs validation run against all 1,012 images
-- Some placeholder images for proprietary software (kdb, wps-office, quickbooks, neptune)
-- ~32 images in requiredimages.md not yet represented as directories
+- HEALTHCHECK directive not yet added to Dockerfiles (0/998) - planned for Phase 29
+- CAP_DROP ALL not enforced (4/998) - planned for Phase 29
+- Digest pinning not applied at scale (3/998) - planned for Phase 30
+- 30 images use ADR-004 banned base images (golang:, python:, node:, ruby:) - planned for Phase 29
+- 40 images use pipe-to-sh pattern - planned for Phase 30
+- 7 TOML manifests have parse errors (WireGuard ecosystem) - planned for Phase 29
+- 18 version mismatches between Dockerfile and manifest - planned for Phase 29
 
 ## [5.0.0] - 2026-04-22
 

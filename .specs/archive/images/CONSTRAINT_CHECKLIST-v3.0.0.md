@@ -1,9 +1,19 @@
 # Constraint Compliance Checklist - All Images
 
 **Mission:** Hardened container images for critical infrastructure  
-**Standard:** Sovereign Hardened Image Registry v3.0.0  
-**Classification:** OPERATIONAL SECURITY - ZERO-TRUST  
-**Last Updated:** 2026-04-19
+**Standard:** Sovereign Hardened Image Registry v18.0.0
+**Classification:** OPERATIONAL SECURITY - ZERO-TRUST
+**Last Updated:** 2026-05-03
+
+> **NOTE:** This document is a historical reference from Phase 0. The authoritative
+> constraint specification is now [REQUIREMENTS.md](../REQUIREMENTS.md) v4.0.0
+> which superseded this checklist. Key differences from this original:
+> - UID changed from 65534 to **65532** (Chainguard/wolfi standard)
+> - debian-slim is **permanently banned** (replaced by wolfi)
+> - Alpine is **permanently banned** in final stages
+> - HEALTHCHECK replaced by HTTP probes on :9101 (see ADR-006)
+> - Constraint IDs remapped: C001-C030 per unified spec
+> - Base image preference: scratch > wolfi > RHEL UBI micro > UBI minimal > UBI standard
 
 ---
 
@@ -14,11 +24,11 @@
 | Priority | Base Image | When to Use | Verification |
 |----------|------------|-------------|---------------|
 | 1 (BEST) | `scratch` | Static binaries only | Binary only, no runtime |
-| 2 | `distroless` | Minimal glibc needed | Check `/etc/os-release` |
-| 3 | `wolfi` | Package manager required | `cgr.dev/chainguard/wolfi-base` |
-| 4 (FALLBACK) | `debian-slim` | Legacy compatibility | `debian:bookworm-slim` |
+| 2 | `wolfi` | Dynamic linking, shell needed | `cgr.dev/chainguard/wolfi-base` |
+| 3 | `distroless` | Minimal glibc needed | `gcr.io/distroless/*` |
+| 4 (FALLBACK) | `RHEL UBI micro` | glibc + FIPS needed | `registry.access.redhat.com/ubi9/ubi-micro` |
 
-**NEVER:** Alpine Linux (`alpine:` base)
+**NEVER:** Alpine Linux (`alpine:` base), debian-slim (`debian:bookworm-slim`)
 
 ---
 

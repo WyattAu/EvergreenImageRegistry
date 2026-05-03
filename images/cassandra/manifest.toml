@@ -1,0 +1,42 @@
+[metadata]
+name = "cassandra"
+version = "5.0.8"
+description = "Apache Cassandra - distributed NoSQL database"
+vendor = "Apache"
+source = "https://github.com/apache/cassandra"
+license = "Apache-2.0"
+tier = "2"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/cassandra/cassandra/releases/download/v5.0.8/cassandra-5.0.8-linux-amd64.tar.gz"
+binary_name = "cassandra"
+filename = "cassandra-5.0.8-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+application = 9042
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "cassandra"
+"org.opencontainers.image.description" = "Apache Cassandra - distributed NoSQL database"
+"org.opencontainers.image.version" = "5.0.8"
+"org.opencontainers.image.vendor" = "Apache"
+"org.opencontainers.image.source" = "https://github.com/apache/cassandra"
+"sovereign.image.tier" = "2"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "true"
+"sovereign.health.type" = "http"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "3s"

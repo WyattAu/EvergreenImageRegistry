@@ -1,0 +1,42 @@
+[metadata]
+name = "logstash"
+version = "8.12.2"
+description = "Logstash - server-side data processing pipeline"
+vendor = "Elastic"
+source = "https://github.com/elastic/logstash"
+license = "Apache-2.0"
+tier = "2"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/logstash/logstash/releases/download/v8.12.2/logstash-8.12.2-linux-amd64.tar.gz"
+binary_name = "logstash"
+filename = "logstash-8.12.2-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+application = 5044
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "logstash"
+"org.opencontainers.image.description" = "Logstash - server-side data processing pipeline"
+"org.opencontainers.image.version" = "8.12.2"
+"org.opencontainers.image.vendor" = "Elastic"
+"org.opencontainers.image.source" = "https://github.com/elastic/logstash"
+"sovereign.image.tier" = "2"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "15s"

@@ -1,0 +1,42 @@
+[metadata]
+name = "cadvisor"
+version = "0.49.1"
+description = "cAdvisor - container resource usage and performance analysis"
+vendor = "Google"
+source = "https://github.com/google/cadvisor"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/cadvisor/cadvisor/releases/download/v0.49.1/cadvisor-0.49.1-linux-amd64.tar.gz"
+binary_name = "cadvisor"
+filename = "cadvisor-0.49.1-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 8080
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "cadvisor"
+"org.opencontainers.image.description" = "cAdvisor - container resource usage and performance analysis"
+"org.opencontainers.image.version" = "0.49.1"
+"org.opencontainers.image.vendor" = "Google"
+"org.opencontainers.image.source" = "https://github.com/google/cadvisor"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "3s"

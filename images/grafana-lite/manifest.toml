@@ -1,0 +1,42 @@
+[metadata]
+name = "grafana-lite"
+version = "10.4.1"
+description = "Grafana Lite - lightweight Grafana dashboard"
+vendor = "Grafana Labs"
+source = "https://github.com/grafana/grafana"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/grafana-lite/grafana-lite/releases/download/v10.4.1/grafana-lite-10.4.1-linux-amd64.tar.gz"
+binary_name = "grafana-lite"
+filename = "grafana-lite-10.4.1-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 3000
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "grafana-lite"
+"org.opencontainers.image.description" = "Grafana Lite - lightweight Grafana dashboard"
+"org.opencontainers.image.version" = "10.4.1"
+"org.opencontainers.image.vendor" = "Grafana Labs"
+"org.opencontainers.image.source" = "https://github.com/grafana/grafana"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "5s"

@@ -1,0 +1,42 @@
+[metadata]
+name = "redis-exporter"
+version = "1.82.0"
+description = "Redis Exporter - Prometheus exporter for Redis"
+vendor = "Prometheus"
+source = "https://github.com/oliver006/redis_exporter"
+license = "Apache-2.0"
+tier = "2"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/redis-exporter/redis-exporter/releases/download/v1.82.0/redis-exporter-1.82.0-linux-amd64.tar.gz"
+binary_name = "redis-exporter"
+filename = "redis-exporter-1.82.0-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 9121
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "redis-exporter"
+"org.opencontainers.image.description" = "Redis Exporter - Prometheus exporter for Redis"
+"org.opencontainers.image.version" = "1.82.0"
+"org.opencontainers.image.vendor" = "Prometheus"
+"org.opencontainers.image.source" = "https://github.com/oliver006/redis_exporter"
+"sovereign.image.tier" = "2"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "3s"

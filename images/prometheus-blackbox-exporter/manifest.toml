@@ -1,0 +1,42 @@
+[metadata]
+name = "prometheus-blackbox-exporter"
+version = "0.28.0"
+description = "Blackbox Exporter - probing endpoints for Prometheus"
+vendor = "Prometheus"
+source = "https://github.com/prometheus/blackbox_exporter"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/prometheus-blackbox-exporter/prometheus-blackbox-exporter/releases/download/v0.28.0/prometheus-blackbox-exporter-0.28.0-linux-amd64.tar.gz"
+binary_name = "prometheus-blackbox-exporter"
+filename = "prometheus-blackbox-exporter-0.28.0-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 9115
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "prometheus-blackbox-exporter"
+"org.opencontainers.image.description" = "Blackbox Exporter - probing endpoints for Prometheus"
+"org.opencontainers.image.version" = "0.28.0"
+"org.opencontainers.image.vendor" = "Prometheus"
+"org.opencontainers.image.source" = "https://github.com/prometheus/blackbox_exporter"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "3s"

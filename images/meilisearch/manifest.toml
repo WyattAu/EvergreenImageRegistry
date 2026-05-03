@@ -1,0 +1,42 @@
+[metadata]
+name = "meilisearch"
+version = "1.42.1"
+description = "Meilisearch - fast, relevant, and typo-tolerant search engine"
+vendor = "Meilisearch"
+source = "https://github.com/meilisearch/meilisearch"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/meilisearch/meilisearch/releases/download/v1.42.1/meilisearch-1.42.1-linux-amd64.tar.gz"
+binary_name = "meilisearch"
+filename = "meilisearch-1.42.1-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 7700
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "meilisearch"
+"org.opencontainers.image.description" = "Meilisearch - fast, relevant, and typo-tolerant search engine"
+"org.opencontainers.image.version" = "1.42.1"
+"org.opencontainers.image.vendor" = "Meilisearch"
+"org.opencontainers.image.source" = "https://github.com/meilisearch/meilisearch"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "3s"

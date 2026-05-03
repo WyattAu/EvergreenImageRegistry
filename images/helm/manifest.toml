@@ -1,0 +1,41 @@
+[metadata]
+name = "helm"
+version = "3.15.1"
+description = "Helm - package manager for Kubernetes"
+vendor = "Helm"
+source = "https://github.com/helm/helm"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://get.helm.sh/helm-v3.15.1-linux-amd64.tar.gz"
+binary_name = "helm"
+filename = "helm-v3.15.1-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "helm"
+"org.opencontainers.image.description" = "Helm - package manager for Kubernetes"
+"org.opencontainers.image.version" = "3.15.1"
+"org.opencontainers.image.vendor" = "Helm"
+"org.opencontainers.image.source" = "https://github.com/helm/helm"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "3s"

@@ -1,0 +1,40 @@
+[metadata]
+name = "valkey"
+version = "7.2.4"
+description = "Valkey - open source Redis-compatible in-memory data store"
+vendor = "Linux Foundation"
+source = "https://github.com/valkey-io/valkey"
+license = "Apache-2.0"
+tier = "2"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/valkey/valkey/releases/download/v7.2.4/valkey-7.2.4-linux-amd64.tar.gz"
+binary_name = "valkey"
+filename = "valkey-7.2.4-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+application = 6379
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "valkey"
+"org.opencontainers.image.description" = "Valkey - open source Redis-compatible in-memory data store"
+"org.opencontainers.image.version" = "7.2.4"
+"org.opencontainers.image.vendor" = "Linux Foundation"
+"org.opencontainers.image.source" = "https://github.com/valkey-io/valkey"
+"sovereign.image.tier" = "2"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "true"
+"sovereign.health.type" = "http"

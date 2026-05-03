@@ -1,0 +1,42 @@
+[metadata]
+name = "bind"
+version = "9.21.21"
+description = "BIND - DNS server software"
+vendor = "ISC"
+source = "https://github.com/isc-projects/bind9"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/bind/bind/releases/download/v9.21.21/bind-9.21.21-linux-amd64.tar.gz"
+binary_name = "bind"
+filename = "bind-9.21.21-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 53
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "bind"
+"org.opencontainers.image.description" = "BIND - DNS server software"
+"org.opencontainers.image.version" = "9.21.21"
+"org.opencontainers.image.vendor" = "ISC"
+"org.opencontainers.image.source" = "https://github.com/isc-projects/bind9"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "3s"

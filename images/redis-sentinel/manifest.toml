@@ -1,0 +1,40 @@
+[metadata]
+name = "redis-sentinel"
+version = "7.4.1"
+description = "Redis Sentinel - high availability for Redis"
+vendor = "Redis"
+source = "https://github.com/redis/redis"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/redis-sentinel/redis-sentinel/releases/download/v7.4.1/redis-sentinel-7.4.1-linux-amd64.tar.gz"
+binary_name = "redis-sentinel"
+filename = "redis-sentinel-7.4.1-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+application = 26379
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "redis-sentinel"
+"org.opencontainers.image.description" = "Redis Sentinel - high availability for Redis"
+"org.opencontainers.image.version" = "7.4.1"
+"org.opencontainers.image.vendor" = "Redis"
+"org.opencontainers.image.source" = "https://github.com/redis/redis"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"

@@ -1,0 +1,42 @@
+[metadata]
+name = "keycloak"
+version = "26.6.1"
+description = "Keycloak - identity and access management"
+vendor = "Red Hat"
+source = "https://github.com/keycloak/keycloak"
+license = "Apache-2.0"
+tier = "1"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/keycloak/keycloak/releases/download/v26.6.1/keycloak-26.6.1-linux-amd64.tar.gz"
+binary_name = "keycloak"
+filename = "keycloak-26.6.1-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+application = 8080
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "keycloak"
+"org.opencontainers.image.description" = "Keycloak - identity and access management"
+"org.opencontainers.image.version" = "26.6.1"
+"org.opencontainers.image.vendor" = "Red Hat"
+"org.opencontainers.image.source" = "https://github.com/keycloak/keycloak"
+"sovereign.image.tier" = "1"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "30s"

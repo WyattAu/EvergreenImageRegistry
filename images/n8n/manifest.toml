@@ -1,0 +1,40 @@
+[metadata]
+name = "n8n"
+version = "1.41.0"
+description = "n8n - workflow automation platform"
+vendor = "n8n"
+source = "https://github.com/n8n-io/n8n"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "cgr.dev/chainguard/wolfi-base:latest"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/n8n/n8n/releases/download/v1.41.0/n8n-1.41.0-linux-amd64.tar.gz"
+binary_name = "n8n"
+filename = "n8n-1.41.0-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 5678
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "n8n"
+"org.opencontainers.image.description" = "n8n - workflow automation platform"
+"org.opencontainers.image.version" = "1.41.0"
+"org.opencontainers.image.vendor" = "n8n"
+"org.opencontainers.image.source" = "https://github.com/n8n-io/n8n"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"

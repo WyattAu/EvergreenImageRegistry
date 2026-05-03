@@ -1,0 +1,42 @@
+[metadata]
+name = "kafka-ui"
+version = "0.7.2"
+description = "Kafka UI - open source web UI for Apache Kafka"
+vendor = "Kafka UI"
+source = "https://github.com/provectus/kafka-ui"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/kafka-ui/kafka-ui/releases/download/v0.7.2/kafka-ui-0.7.2-linux-amd64.tar.gz"
+binary_name = "kafka-ui"
+filename = "kafka-ui-0.7.2-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 8080
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "kafka-ui"
+"org.opencontainers.image.description" = "Kafka UI - open source web UI for Apache Kafka"
+"org.opencontainers.image.version" = "0.7.2"
+"org.opencontainers.image.vendor" = "Kafka UI"
+"org.opencontainers.image.source" = "https://github.com/provectus/kafka-ui"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "3s"

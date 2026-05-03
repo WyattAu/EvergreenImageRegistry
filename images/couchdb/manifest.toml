@@ -1,0 +1,42 @@
+[metadata]
+name = "couchdb"
+version = "3.3.3"
+description = "CouchDB - document-oriented NoSQL database"
+vendor = "Apache"
+source = "https://github.com/apache/couchdb"
+license = "Apache-2.0"
+tier = "2"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/couchdb/couchdb/releases/download/v3.3.3/couchdb-3.3.3-linux-amd64.tar.gz"
+binary_name = "couchdb"
+filename = "couchdb-3.3.3-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+application = 5984
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "couchdb"
+"org.opencontainers.image.description" = "CouchDB - document-oriented NoSQL database"
+"org.opencontainers.image.version" = "3.3.3"
+"org.opencontainers.image.vendor" = "Apache"
+"org.opencontainers.image.source" = "https://github.com/apache/couchdb"
+"sovereign.image.tier" = "2"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "true"
+"sovereign.health.type" = "http"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "3s"

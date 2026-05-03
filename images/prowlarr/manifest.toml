@@ -1,0 +1,40 @@
+[metadata]
+name = "prowlarr"
+version = "1.27.0"
+description = "Prowlarr - indexer manager and proxy for PVR software"
+vendor = "Prowlarr"
+source = "https://github.com/Prowlarr/Prowlarr"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/prowlarr/prowlarr/releases/download/v1.27.0/prowlarr-1.27.0-linux-amd64.tar.gz"
+binary_name = "prowlarr"
+filename = "prowlarr-1.27.0-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+application = 9696
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "prowlarr"
+"org.opencontainers.image.description" = "Prowlarr - indexer manager and proxy for PVR software"
+"org.opencontainers.image.version" = "1.27.0"
+"org.opencontainers.image.vendor" = "Prowlarr"
+"org.opencontainers.image.source" = "https://github.com/Prowlarr/Prowlarr"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "none"

@@ -1,0 +1,42 @@
+[metadata]
+name = "couchbase"
+version = "7.6.1"
+description = "Couchbase - distributed NoSQL cloud database"
+vendor = "Couchbase"
+source = "https://github.com/couchbase/couchbase-cli"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/couchbase/couchbase/releases/download/v7.6.1/couchbase-7.6.1-linux-amd64.tar.gz"
+binary_name = "couchbase"
+filename = "couchbase-7.6.1-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+application = 8091
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "couchbase"
+"org.opencontainers.image.description" = "Couchbase - distributed NoSQL cloud database"
+"org.opencontainers.image.version" = "7.6.1"
+"org.opencontainers.image.vendor" = "Couchbase"
+"org.opencontainers.image.source" = "https://github.com/couchbase/couchbase-cli"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "3s"

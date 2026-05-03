@@ -1,0 +1,40 @@
+[metadata]
+name = "rabbitmq"
+version = "3.13.1"
+description = "RabbitMQ - message broker software"
+vendor = "VMware"
+source = "https://github.com/rabbitmq/rabbitmq-server"
+license = "MPL-2.0"
+tier = "1"
+
+[build]
+base_image = "cgr.dev/chainguard/wolfi-base:latest"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/rabbitmq/rabbitmq/releases/download/v3.13.1/rabbitmq-3.13.1-linux-amd64.tar.gz"
+binary_name = "rabbitmq"
+filename = "rabbitmq-3.13.1-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 5672
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "rabbitmq"
+"org.opencontainers.image.description" = "RabbitMQ - message broker software"
+"org.opencontainers.image.version" = "3.13.1"
+"org.opencontainers.image.vendor" = "VMware"
+"org.opencontainers.image.source" = "https://github.com/rabbitmq/rabbitmq-server"
+"sovereign.image.tier" = "1"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "true"
+"sovereign.health.type" = "http"

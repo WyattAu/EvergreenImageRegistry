@@ -1,0 +1,40 @@
+[metadata]
+name = "cockroachdb"
+version = "23.2.3"
+description = "CockroachDB - distributed SQL database"
+vendor = "Cockroach Labs"
+source = "https://github.com/cockroachdb/cockroach"
+license = "BSL-1.1"
+tier = "1"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/cockroachdb/cockroachdb/releases/download/v23.2.3/cockroachdb-23.2.3-linux-amd64.tar.gz"
+binary_name = "cockroachdb"
+filename = "cockroachdb-23.2.3-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+application = 26257
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "cockroachdb"
+"org.opencontainers.image.description" = "CockroachDB - distributed SQL database"
+"org.opencontainers.image.version" = "23.2.3"
+"org.opencontainers.image.vendor" = "Cockroach Labs"
+"org.opencontainers.image.source" = "https://github.com/cockroachdb/cockroach"
+"sovereign.image.tier" = "1"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"

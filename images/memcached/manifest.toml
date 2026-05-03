@@ -1,0 +1,40 @@
+[metadata]
+name = "memcached"
+version = "1.6.26"
+description = "Memcached - high-performance distributed memory caching system"
+vendor = "Memcached"
+source = "https://github.com/memcached/memcached"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/memcached/memcached/releases/download/v1.6.26/memcached-1.6.26-linux-amd64.tar.gz"
+binary_name = "memcached"
+filename = "memcached-1.6.26-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+application = 11211
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "memcached"
+"org.opencontainers.image.description" = "Memcached - high-performance distributed memory caching system"
+"org.opencontainers.image.version" = "1.6.26"
+"org.opencontainers.image.vendor" = "Memcached"
+"org.opencontainers.image.source" = "https://github.com/memcached/memcached"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"

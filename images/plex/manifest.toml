@@ -1,0 +1,42 @@
+[metadata]
+name = "plex"
+version = "1.41.3.9292"
+description = "Plex - streaming media server and client"
+vendor = "Plex"
+source = "https://github.com/plexinc/pms-docker"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "plexinc/pms-docker:latest"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/plex/plex/releases/download/v1.41.3.9292/plex-1.41.3.9292-linux-amd64.tar.gz"
+binary_name = "plex"
+filename = "plex-1.41.3.9292-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+application = 32400
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "plex"
+"org.opencontainers.image.description" = "Plex - streaming media server and client"
+"org.opencontainers.image.version" = "1.41.3.9292"
+"org.opencontainers.image.vendor" = "Plex"
+"org.opencontainers.image.source" = "https://github.com/plexinc/pms-docker"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "10s"

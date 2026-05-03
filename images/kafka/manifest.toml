@@ -1,0 +1,40 @@
+[metadata]
+name = "kafka"
+version = "3.6.1"
+description = "Apache Kafka - distributed event streaming platform"
+vendor = "Apache"
+source = "https://github.com/apache/kafka"
+license = "Apache-2.0"
+tier = "1"
+
+[build]
+base_image = "debian:bookworm-slim"
+runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
+arch = "amd64"
+
+[download]
+url = "https://github.com/kafka/kafka/releases/download/v3.6.1/kafka-3.6.1-linux-amd64.tar.gz"
+binary_name = "kafka"
+filename = "kafka-3.6.1-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = false
+
+[ports]
+application = 9092
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "kafka"
+"org.opencontainers.image.description" = "Apache Kafka - distributed event streaming platform"
+"org.opencontainers.image.version" = "3.6.1"
+"org.opencontainers.image.vendor" = "Apache"
+"org.opencontainers.image.source" = "https://github.com/apache/kafka"
+"sovereign.image.tier" = "1"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "false"
+"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
+"sovereign.metrics.native" = "true"
+"sovereign.health.type" = "http"

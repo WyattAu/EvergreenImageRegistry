@@ -1,0 +1,41 @@
+[metadata]
+name = "grafana-operator"
+version = "5.22.2"
+description = "Grafana Operator - manages Grafana instances on Kubernetes"
+vendor = "Grafana Labs"
+source = "https://github.com/grafana-operator/grafana-operator"
+license = "Apache-2.0"
+tier = "3"
+
+[build]
+base_image = "ghcr.io/grafana-operator/grafana-operator:v${VERSION}"
+runtime_image = "scratch"
+arch = "amd64"
+
+[download]
+url = "https://github.com/grafana-operator/grafana-operator/releases/download/v5.22.2/grafana-operator-5.22.2-linux-amd64.tar.gz"
+binary_name = "grafana-operator"
+filename = "grafana-operator-5.22.2-linux-amd64.tar.gz"
+checksum = "PENDING"
+
+[constraints]
+nonroot = true
+scratch = true
+
+[ports]
+metrics = 9101
+
+[labels]
+"org.opencontainers.image.title" = "grafana-operator"
+"org.opencontainers.image.description" = "Grafana Operator - manages Grafana instances on Kubernetes"
+"org.opencontainers.image.version" = "5.22.2"
+"org.opencontainers.image.vendor" = "Grafana Labs"
+"org.opencontainers.image.source" = "https://github.com/grafana-operator/grafana-operator"
+"sovereign.image.tier" = "3"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.base.image" = "scratch"
+"sovereign.metrics.native" = "ztunnel"
+"sovereign.health.type" = "exec"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.shutdown-timeout" = "10s"

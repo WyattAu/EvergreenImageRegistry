@@ -13,11 +13,10 @@ ARG VERSION=10.10.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
-    "https://repo.jellyfin.org/files/server/linux/latest-stable/amd64/jellyfin_${VERSION}-amd64.tar.gz" -o /tmp/jellyfin.tar.gz || true ; \
+    "https://repo.jellyfin.org/files/server/linux/latest-stable/amd64/jellyfin_${VERSION}-amd64.tar.gz" -o /tmp/jellyfin.tar.gz && \
     mkdir -p /app && \
-    if [ -f /tmp/jellyfin.tar.gz ]; then tar -xzf /tmp/jellyfin.tar.gz -C /app && rm -f /tmp/jellyfin.tar.gz ; fi ; \
-    chmod +x /app/jellyfin 2>/dev/null || true ; \
-    test -f /app/jellyfin || { echo '#!/bin/sh' > /app/jellyfin && echo 'echo "jellyfin v${VERSION} placeholder"' >> /app/jellyfin && echo 'exec sleep infinity' >> /app/jellyfin && chmod +x /app/jellyfin; } || true
+    tar -xzf /tmp/jellyfin.tar.gz -C /app && rm -f /tmp/jellyfin.tar.gz && \
+    chmod +x /app/jellyfin
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

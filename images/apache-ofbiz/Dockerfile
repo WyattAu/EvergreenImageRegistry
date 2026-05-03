@@ -6,9 +6,8 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/apache/ofbiz-framework/archive/refs/tags/release${VERSION}.tar.gz" \
-    -o /apache-ofbiz.tar.gz || true ; \
-    tar -xzf /apache-ofbiz.tar.gz -C /opt/ && rm -f /apache-ofbiz.tar.gz ; \
-    test -d /opt/ofbiz-framework-release${VERSION} || { echo '#!/bin/sh' > /opt/apache-ofbiz && echo 'echo "apache-ofbiz v${VERSION} - upstream unavailable, stub mode"' >> /opt/apache-ofbiz && echo 'exec sleep infinity' >> /opt/apache-ofbiz && chmod +x /opt/apache-ofbiz; } || true
+    -o /apache-ofbiz.tar.gz && \
+    tar -xzf /apache-ofbiz.tar.gz -C /opt/ && rm -f /apache-ofbiz.tar.gz
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

@@ -6,10 +6,9 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/go-vikunja/vikunja/releases/download/v${VERSION}/vikunja-v${VERSION}-linux-amd64-full.zip" \
-    -o /vikunja.zip || true ; \
+    -o /vikunja.zip && \
     unzip -o /vikunja.zip -d /tmp/vikunja && \
-    cp /tmp/vikunja/vikunja /vikunja && chmod +x /vikunja 2>/dev/null || true ; \
-    test -f /vikunja || { echo '#!/bin/sh' > /vikunja && echo 'echo "vikunja v${VERSION} ready"' >> /vikunja && echo 'exec sleep infinity' >> /vikunja && chmod +x /vikunja; }
+    cp /tmp/vikunja/vikunja /vikunja && chmod +x /vikunja
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/vikunja /var/cache/vikunja 2>/dev/null || true

@@ -13,11 +13,10 @@ ARG VERSION=4.2.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
-    "https://github.com/openhab/openhab-distro/releases/download/v${VERSION}/openhab-${VERSION}.tar.gz" -o /tmp/openhab.tar.gz || true ; \
+    "https://github.com/openhab/openhab-distro/releases/download/v${VERSION}/openhab-${VERSION}.tar.gz" -o /tmp/openhab.tar.gz && \
     mkdir -p /app && \
-    if [ -f /tmp/openhab.tar.gz ]; then tar -xzf /tmp/openhab.tar.gz -C /app && rm -f /tmp/openhab.tar.gz ; fi ; \
-    chmod +x /app/start.sh 2>/dev/null || true ; \
-    test -f /app/runtime/bin/karaf || { mkdir -p /app/runtime/bin && echo '#!/bin/sh' > /app/runtime/bin/karaf && echo 'echo "openhab v${VERSION} placeholder"' >> /app/runtime/bin/karaf && echo 'exec sleep infinity' >> /app/runtime/bin/karaf && chmod +x /app/runtime/bin/karaf; } || true
+    tar -xzf /tmp/openhab.tar.gz -C /app && rm -f /tmp/openhab.tar.gz && \
+    chmod +x /app/start.sh
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

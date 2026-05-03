@@ -6,8 +6,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/adempiere/adempiere/releases/download/${VERSION}/Adempiere_394LTS.tar.gz" \
-    -o /Adempiere.tar.gz || true ; \
-    test -f /Adempiere.tar.gz || { echo '#!/bin/sh' > /Adempiere && echo 'echo "adempiere v${VERSION} - upstream unavailable, stub mode"' >> /Adempiere && echo 'exec sleep infinity' >> /Adempiere && chmod +x /Adempiere; }
+    -o /Adempiere.tar.gz
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

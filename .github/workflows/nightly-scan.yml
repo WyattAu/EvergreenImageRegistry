@@ -92,3 +92,42 @@ jobs:
           DIGEST=$(skopeo inspect docker://cgr.dev/chainguard/wolfi-base:latest --format '{{.Digest}}' 2>/dev/null || echo "skopeo not available")
           echo "Current wolfi-base digest: ${DIGEST}"
           echo "To auto-refresh: update FROM lines in affected Dockerfiles"
+
+  sbom-generation:
+    name: Generate SBOMs
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Make scripts executable
+        run: chmod +x scripts/generate_sbom.sh scripts/generate_all_sboms.sh
+
+      - name: Generate SBOMs for all images
+        run: scripts/generate_all_sboms.sh
+        continue-on-error: true
+
+      - name: Count generated SBOMs
+        run: |
+          COUNT=$(find images -name 'sbom.spdx.json' | wc -l)
+          echo "Generated ${COUNT} SBOMs"
+
+      - name: Commit SBOM changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add images/*/sbom.spdx.json
+          CHANGES=$(git diff --cached --stat)
+          if [ -n "${CHANGES}" ]; then
+            git commit -m "chore: regenerate SBOMs for all images
+
+            Automated SBOM generation via nightly-scan workflow.
+            ${CHANGES}"
+            git push
+          else
+            echo "No SBOM changes to commit"
+          fi

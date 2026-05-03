@@ -1,11 +1,11 @@
 {
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
-  "SPDXID": "SPDXRef-DOCUMENT-redis",
-  "name": "evergreen-redis",
-  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/redis",
+  "SPDXID": "SPDXRef-DOCUMENT-mongodb-6",
+  "name": "evergreen-mongodb-6",
+  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/mongodb-6",
   "creationInfo": {
-    "created": "2026-05-03T13:32:48Z",
+    "created": "2026-05-03T13:32:54Z",
     "creators": [
       "Tool: evergreen-sbom-generator"
     ]
@@ -28,7 +28,7 @@
       "originator": "NOASSERTION"
     },
     {
-      "SPDXID": "SPDXRef-Package-redis-ca-certificates-",
+      "SPDXID": "SPDXRef-Package-mongodb-6-ca-certificates-",
       "name": "ca-certificates",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
@@ -41,21 +41,13 @@
           "referenceLocator": "pkg:alpine/ca-certificates"
         }
       ]
-    },
-    {
-      "SPDXID": "SPDXRef-Package-redis-7.4.1-",
-      "name": "7.4.1",
-      "downloadLocation": "https://github.com/redis/redis/archive/refs/tags/7.4.1.tar.gz",
-      "filesAnalyzed": false,
-      "primaryPackagePurpose": "APPLICATION",
-      "originator": "Redis"
     }
   ],
   "relationships": [
     {
-      "spdxElementId": "SPDXRef-DOCUMENT-redis",
+      "spdxElementId": "SPDXRef-DOCUMENT-mongodb-6",
       "relationshipType": "DESCRIBES",
-      "relatedSpdxElement": "SPDXRef-Package-redis"
+      "relatedSpdxElement": "SPDXRef-Package-mongodb"
     }
   ]
 }

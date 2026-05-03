@@ -1,0 +1,406 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT-rabbitmq-management",
+  "name": "evergreen-rabbitmq-management",
+  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/rabbitmq-management",
+  "creationInfo": {
+    "created": "2026-05-03T13:32:54Z",
+    "creators": [
+      "Tool: evergreen-sbom-generator"
+    ]
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-cgr.dev-chainguard-wolfi-base-latest-",
+      "name": "cgr.dev/chainguard/wolfi-base:latest",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-debian-bookworm-slim-",
+      "name": "debian:bookworm-slim",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-apt-transport-https-",
+      "name": "apt-transport-https",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/apt-transport-https"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-ca-certificates-",
+      "name": "ca-certificates",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/ca-certificates"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-curl-",
+      "name": "curl",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/curl"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-erlang-asn1-",
+      "name": "erlang-asn1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/erlang-asn1"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-erlang-base-",
+      "name": "erlang-base",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/erlang-base"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-erlang-crypto-",
+      "name": "erlang-crypto",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/erlang-crypto"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-erlang-eldap-",
+      "name": "erlang-eldap",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/erlang-eldap"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-erlang-ftp-",
+      "name": "erlang-ftp",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/erlang-ftp"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-erlang-inets-",
+      "name": "erlang-inets",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/erlang-inets"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-erlang-mnesia-",
+      "name": "erlang-mnesia",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/erlang-mnesia"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-erlang-os-mon-",
+      "name": "erlang-os-mon",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/erlang-os-mon"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-erlang-parsetools-",
+      "name": "erlang-parsetools",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/erlang-parsetools"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-erlang-public-key-",
+      "name": "erlang-public-key",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/erlang-public-key"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-erlang-runtime-tools-",
+      "name": "erlang-runtime-tools",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/erlang-runtime-tools"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-erlang-snmp-",
+      "name": "erlang-snmp",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/erlang-snmp"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-erlang-ssl-",
+      "name": "erlang-ssl",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/erlang-ssl"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-erlang-syntax-tools-",
+      "name": "erlang-syntax-tools",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/erlang-syntax-tools"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-erlang-tftp-",
+      "name": "erlang-tftp",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/erlang-tftp"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-erlang-tools-",
+      "name": "erlang-tools",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/erlang-tools"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-erlang-xmerl-",
+      "name": "erlang-xmerl",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/erlang-xmerl"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-gnupg-",
+      "name": "gnupg",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/gnupg"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-rabbitmq-management-",
+      "name": "rabbitmq-management",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/rabbitmq-management"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-rabbitmq-server-",
+      "name": "rabbitmq-server",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/rabbitmq-server"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-ca-certificates-",
+      "name": "ca-certificates",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/ca-certificates"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rabbitmq-management-rabbitmq-management-3.13.1-linux-amd64-",
+      "name": "rabbitmq-management-3.13.1-linux-amd64",
+      "downloadLocation": "https://github.com/rabbitmq-management/rabbitmq-management/releases/download/v3.13.1/rabbitmq-management-3.13.1-linux-amd64.tar.gz",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION",
+      "originator": "VMware"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT-rabbitmq-management",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-rabbitmq"
+    }
+  ]
+}

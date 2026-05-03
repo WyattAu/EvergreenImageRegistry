@@ -1,11 +1,11 @@
 {
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
-  "SPDXID": "SPDXRef-DOCUMENT-redis",
-  "name": "evergreen-redis",
-  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/redis",
+  "SPDXID": "SPDXRef-DOCUMENT-postgresql-15",
+  "name": "evergreen-postgresql-15",
+  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/postgresql-15",
   "creationInfo": {
-    "created": "2026-05-03T13:32:48Z",
+    "created": "2026-05-03T13:32:54Z",
     "creators": [
       "Tool: evergreen-sbom-generator"
     ]
@@ -28,7 +28,7 @@
       "originator": "NOASSERTION"
     },
     {
-      "SPDXID": "SPDXRef-Package-redis-ca-certificates-",
+      "SPDXID": "SPDXRef-Package-postgresql-15-ca-certificates-",
       "name": "ca-certificates",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
@@ -43,19 +43,26 @@
       ]
     },
     {
-      "SPDXID": "SPDXRef-Package-redis-7.4.1-",
-      "name": "7.4.1",
-      "downloadLocation": "https://github.com/redis/redis/archive/refs/tags/7.4.1.tar.gz",
+      "SPDXID": "SPDXRef-Package-postgresql-15-postgresql-15-",
+      "name": "postgresql-15",
+      "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
-      "primaryPackagePurpose": "APPLICATION",
-      "originator": "Redis"
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/postgresql-15"
+        }
+      ]
     }
   ],
   "relationships": [
     {
-      "spdxElementId": "SPDXRef-DOCUMENT-redis",
+      "spdxElementId": "SPDXRef-DOCUMENT-postgresql-15",
       "relationshipType": "DESCRIBES",
-      "relatedSpdxElement": "SPDXRef-Package-redis"
+      "relatedSpdxElement": "SPDXRef-Package-postgresql"
     }
   ]
 }

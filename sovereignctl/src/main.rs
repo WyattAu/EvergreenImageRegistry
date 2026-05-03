@@ -27,13 +27,25 @@ enum Commands {
         /// Path to manifest file or directory
         path: String,
     },
-    /// Generate Dockerfile from manifest
+    /// Generate Dockerfile from manifest (outputs to stdout)
     Generate {
-        /// Path to manifest file
-        manifest: String,
-        /// Output Dockerfile path
-        #[arg(short, long)]
-        output: Option<String>,
+        /// Path to image directory containing manifest.toml
+        image_dir: String,
+    },
+    /// Detect drift between manifest.toml and actual Dockerfile
+    Drift {
+        /// Path to image directory
+        image_dir: String,
+    },
+    /// Generate Cosign signing commands for an image
+    Sign {
+        /// Path to image directory
+        image_dir: String,
+    },
+    /// Generate a reproducibility snapshot as JSON
+    Snapshot {
+        /// Path to image directory
+        image_dir: String,
     },
     /// Check for stubs/placeholders
     Audit {
@@ -193,19 +205,20 @@ async fn main() -> anyhow::Result<()> {
             }
         }
 
-        Commands::Generate { manifest, output } => {
-            let manifest_path = Path::new(&manifest);
-            let manifest = sovereignctl::manifest::Manifest::from_file(manifest_path)?;
-            let gen = sovereignctl::generate::DockerfileGenerator::new(manifest);
-            let dockerfile = gen.generate()?;
+        Commands::Generate { image_dir } => {
+            sovereignctl::generate::cmd_generate(&image_dir)?;
+        }
 
-            let output_path = match output {
-                Some(o) => Path::new(&o).to_path_buf(),
-                None => manifest_path.parent().unwrap_or(Path::new(".")).join("Dockerfile"),
-            };
+        Commands::Drift { image_dir } => {
+            sovereignctl::drift::cmd_drift(&image_dir)?;
+        }
 
-            std::fs::write(&output_path, &dockerfile)?;
-            println!("Generated Dockerfile: {}", output_path.display());
+        Commands::Sign { image_dir } => {
+            sovereignctl::sign::cmd_sign(&image_dir)?;
+        }
+
+        Commands::Snapshot { image_dir } => {
+            sovereignctl::snapshot::cmd_snapshot(&image_dir)?;
         }
 
         Commands::Audit { path, format } => {

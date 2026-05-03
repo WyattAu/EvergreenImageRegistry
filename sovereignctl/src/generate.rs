@@ -1,5 +1,17 @@
 use crate::manifest::*;
-use anyhow::Result;
+use anyhow::{Context, Result};
+use std::path::Path;
+
+pub fn cmd_generate(image_dir: &str) -> Result<()> {
+    let dir = Path::new(image_dir);
+    let manifest_path = dir.join("manifest.toml");
+    let manifest = Manifest::from_file(&manifest_path)
+        .with_context(|| format!("Failed to read manifest from {}", manifest_path.display()))?;
+    let gen = DockerfileGenerator::new(manifest);
+    let dockerfile = gen.generate()?;
+    println!("{}", dockerfile);
+    Ok(())
+}
 
 pub struct DockerfileGenerator {
     manifest: Manifest,

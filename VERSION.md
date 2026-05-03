@@ -131,7 +131,7 @@ download URLs. Zero images have missing checksums (for direct downloads).
 | `sovereignctl/src/outdated.rs` | Check for upstream version updates |
 | `sovereignctl/src/bump.rs` | One-command version update |
 | `sovereignctl/src/ci_diff.rs` | Classify CI changes |
-| `sovereignctl/src/main.rs` | CLI (10 subcommands) |
+| `sovereignctl/src/main.rs` | CLI (14 subcommands) |
 
 ### Documentation
 | Path | Description |

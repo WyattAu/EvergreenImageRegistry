@@ -632,7 +632,7 @@ jobs:
               done
               [ "$HAS_PKG" = "0" ] && echo "PASS C004: No package manager"
             else
-              echo "SKIP: ${image} is ${FINAL_FROM} (not scratch) — skipping constraint tests C001-C004"
+              echo "SKIP: ${image} is ${FINAL_FROM} (not scratch) - skipping constraint tests C001-C004"
               LABELS=$(docker inspect --format '{{json .Config.Labels}}' "$REF" 2>/dev/null || echo "{}")
               if [ "$LABELS" != "{}" ] && [ "$LABELS" != "null" ] && [ -n "$LABELS" ]; then
                 echo "PASS: Image has labels"

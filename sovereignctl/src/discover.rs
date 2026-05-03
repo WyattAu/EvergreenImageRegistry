@@ -6,6 +6,7 @@ use tracing::{debug, info, warn};
 struct GithubRelease {
     tag_name: String,
     assets: Vec<GithubAsset>,
+    #[allow(dead_code)]
     html_url: String,
 }
 
@@ -157,7 +158,7 @@ pub async fn discover_with_fallbacks(
 ) -> Result<DiscoveredSource> {
     for url in url_patterns {
         let probe = probe_url(client, url).await?;
-        if probe.accessible && probe.content_length.map_or(false, |len| len > 1024) {
+        if probe.accessible && probe.content_length.is_some_and(|len| len > 1024) {
             info!(
                 "Found working URL: {} ({} bytes)",
                 url,

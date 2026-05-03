@@ -269,7 +269,7 @@ async fn main() -> anyhow::Result<()> {
             for entry in std::fs::read_dir(images_dir)? {
                 let entry = entry?;
                 let manifest_path = entry.path().join("manifest.toml");
-                let dockerfile_path = entry.path().join("Dockerfile");
+                let _dockerfile_path = entry.path().join("Dockerfile");
 
                 if !manifest_path.exists() {
                     missing += 1;

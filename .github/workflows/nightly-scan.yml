@@ -35,11 +35,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install sovereignctl
+        run: |
+          cd sovereignctl && cargo build --release && sudo ln -sf $(pwd)/target/release/sovereignctl /usr/local/bin/
+
       - name: Check for outdated images
         run: |
-          echo "=== Checking for outdated base images ==="
-          echo "Wolfi base: checking for updates..."
-          echo "Debian-slim: checking for updates..."
+          echo "=== Checking for outdated images ==="
+          sovereignctl outdated --all
           echo "=== Version freshness check complete ==="
 
       - name: Check for new CVEs

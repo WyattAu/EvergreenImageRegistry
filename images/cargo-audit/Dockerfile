@@ -1,12 +1,20 @@
 
 FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
+ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        curl ca-certificates ; rm -rf /var/lib/apt/lists/* || true
+        curl ca-certificates gcc-aarch64-linux-gnu ; rm -rf /var/lib/apt/lists/* || true
 
 RUN curl --proto '=https' --tlsv1.2 -sSfL https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal || true
 ENV PATH="/root/.cargo/bin:$PATH"
-RUN cargo install cargo-audit || true
+RUN rustup target add aarch64-unknown-linux-gnu || true
+RUN mkdir -p /root/.cargo && \
+    printf '[target.aarch64-unknown-linux-gnu]\nlinker = "aarch64-linux-gnu-gcc"\n' > /root/.cargo/config.toml
+RUN if [ "$TARGETARCH" = "arm64" ]; then \
+        cargo install cargo-audit --target aarch64-unknown-linux-gnu || true; \
+    else \
+        cargo install cargo-audit || true; \
+    fi
 RUN mkdir -p /app 2>/dev/null || true
 
 

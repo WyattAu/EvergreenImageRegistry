@@ -1,6 +1,8 @@
 ARG VERSION=2.4.0
 
 FROM debian:bookworm-slim AS upstream
+ARG TARGETARCH
+ARG GOARCH=${TARGETARCH}
 RUN apt-get update && apt-get install -y --no-install-recommends \
     golang-go ca-certificates git && \
     rm -rf /var/lib/apt/lists/*
@@ -9,7 +11,7 @@ RUN git clone --depth 1 --branch v${VERSION} \
     git clone --depth 1 https://github.com/nickvdyck/yarr.git /tmp/yarr 2>/dev/null || true
 WORKDIR /tmp/yarr
 RUN if [ -f /tmp/yarr/go.mod ]; then \
-        CGO_ENABLED=0 go build -o /yarr ./cmd/yarr 2>/dev/null && chmod +x /yarr; \
+        CGO_ENABLED=0 GOARCH=${GOARCH} go build -o /yarr ./cmd/yarr 2>/dev/null && chmod +x /yarr; \
     else \
         echo '#!/bin/sh' > /yarr && \
         echo 'echo "yarr v'"${VERSION}"' - source unavailable, stub mode"' >> /yarr && \

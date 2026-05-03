@@ -5,7 +5,7 @@
 | Attribute | Value |
 |-----------|-------|
 | Project Name | Sovereign Hardened Image Registry |
-| Version | 17.0.0 |
+| Version | 18.0.0 |
 | Phase | Production Operational |
 | Status | ACTIVE |
 | Last Updated | 2026-05-03 |
@@ -65,10 +65,11 @@
 | Total Verified (DL+pkg-mgr+re-wrap) | **992/998 (99.4%)** | 100% | Near-complete |
 | Real Images (non-stub) | **997/998 (99.9%)** | 100% | **DONE** |
 | Stub Images | **1/998 (0.1%)** | 0 | **DONE** |
+| ENTRYPOINT/CMD | **972/998 (97.4%)** | 100% | Near-complete |
 | Multi-Arch Source-Build | **25** | 100+ | In progress |
-| Multi-Arch Total (with prebuilt) | **195** | 100+ | **DONE** |
+| Multi-Arch Total (with prebuilt) | **207** | 100+ | **DONE** |
 | Manifest Coverage | **998 (100%)** | 100% | **DONE** |
-| SBOM Coverage | **60** | 998 | In progress |
+| SBOM Coverage | **998 (100%)** | 998 | **DONE** |
 | Image Catalog | **Static HTML** | Active | **DONE** |
 | CI Pipeline Stages | **11** | 11 | **DONE** |
 | Security Scanning (Trivy) | Active | Active | **DONE** |

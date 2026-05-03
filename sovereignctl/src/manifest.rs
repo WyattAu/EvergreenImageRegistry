@@ -33,7 +33,9 @@ pub struct ImageMeta {
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 #[serde(rename_all = "kebab-case")]
+#[derive(Default)]
 pub enum ImageType {
+    #[default]
     BinaryDownload,
     SourceBuildGo,
     SourceBuildC,
@@ -51,9 +53,6 @@ pub enum ImageType {
     Other,
 }
 
-impl Default for ImageType {
-    fn default() -> Self { Self::BinaryDownload }
-}
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Source {

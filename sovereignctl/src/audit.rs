@@ -100,8 +100,8 @@ pub fn audit_dockerfile(path: &Path, image_name: &str) -> Result<AuditResult> {
         }
 
         // URL as bare command (not git clone or curl)
-        if trimmed.contains("RUN https://") || trimmed.contains("RUN http://") {
-            if !trimmed.contains("curl") && !trimmed.contains("wget") && !trimmed.contains("git") {
+        if (trimmed.contains("RUN https://") || trimmed.contains("RUN http://"))
+            && !trimmed.contains("curl") && !trimmed.contains("wget") && !trimmed.contains("git") {
                 issues.push(AuditIssue {
                     severity: "error".to_string(),
                     code: "URL_AS_COMMAND".to_string(),
@@ -109,7 +109,6 @@ pub fn audit_dockerfile(path: &Path, image_name: &str) -> Result<AuditResult> {
                     line: Some(line_num),
                 });
             }
-        }
 
         // rm without -f flag
         if trimmed.contains("rm /") && !trimmed.contains("rm -f /") && !trimmed.contains("rm -rf /") && !trimmed.contains("|| true") && !trimmed.contains("2>/dev/null") {
@@ -178,11 +177,10 @@ fn has_real_entrypoint(content: &str) -> bool {
     // Check if there's a real ENTRYPOINT (not just sleep infinity)
     for line in content.lines() {
         let trimmed = line.trim();
-        if trimmed.starts_with("ENTRYPOINT") {
-            if !trimmed.contains("sleep infinity") && !trimmed.contains("placeholder") {
+        if trimmed.starts_with("ENTRYPOINT")
+            && !trimmed.contains("sleep infinity") && !trimmed.contains("placeholder") {
                 return true;
             }
-        }
     }
     false
 }

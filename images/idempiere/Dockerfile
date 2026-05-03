@@ -6,9 +6,8 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/idempiere/idempiere/archive/refs/tags/${VERSION}.tar.gz" \
-    -o /idempiere.tar.gz || true ; \
-    tar -xzf /idempiere.tar.gz -C /opt/ && rm -f /idempiere.tar.gz ; \
-    test -d /opt/idempiere-${VERSION} || { echo '#!/bin/sh' > /idempiere && echo 'echo "idempiere v${VERSION} - upstream unavailable, stub mode"' >> /idempiere && echo 'exec sleep infinity' >> /idempiere && chmod +x /idempiere; } || true
+    -o /idempiere.tar.gz && \
+    tar -xzf /idempiere.tar.gz -C /opt/ && rm -f /idempiere.tar.gz
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

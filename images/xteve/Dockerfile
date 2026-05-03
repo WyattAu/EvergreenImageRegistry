@@ -1,3 +1,4 @@
+# STUB: xteve fork has no published release assets.
 ARG VERSION=2.2.0.200
 
 FROM debian:bookworm-slim AS downloader
@@ -5,8 +6,7 @@ ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL \
     "https://github.com/xteve-project/xTeVe/releases/download/${VERSION}/xteve_linux_amd64" \
-    -o /xteve && chmod +x /xteve ; \
-    test -f /xteve || { echo '#!/bin/sh' > /xteve && echo 'echo "xteve v${VERSION} - upstream unavailable, stub mode"' >> /xteve && echo 'exec sleep infinity' >> /xteve && chmod +x /xteve; }
+    -o /xteve && chmod +x /xteve
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/xteve /var/cache/xteve 2>/dev/null || true

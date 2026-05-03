@@ -13,11 +13,10 @@ ARG VERSION=latest
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
-    "https://github.com/Lidarr/Lidarr/releases/download/v${VERSION}/Lidarr.master.${VERSION}.linux-x64-netcore.tar.gz" -o /tmp/Lidarr.tar.gz || true ; \
+    "https://github.com/Lidarr/Lidarr/releases/download/v${VERSION}/Lidarr.master.${VERSION}.linux-x64-netcore.tar.gz" -o /tmp/Lidarr.tar.gz && \
     mkdir -p /app && \
-    if [ -f /tmp/Lidarr.tar.gz ]; then tar -xzf /tmp/Lidarr.tar.gz -C /app && rm -f /tmp/Lidarr.tar.gz ; fi ; \
-    chmod +x /app/Lidarr 2>/dev/null || true ; \
-    test -f /app/Lidarr || { echo '#!/bin/sh' > /app/Lidarr && echo 'echo "lidarr v${VERSION} placeholder"' >> /app/Lidarr && echo 'exec sleep infinity' >> /app/Lidarr && chmod +x /app/Lidarr; } || true
+    tar -xzf /tmp/Lidarr.tar.gz -C /app && rm -f /tmp/Lidarr.tar.gz && \
+    chmod +x /app/Lidarr
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 

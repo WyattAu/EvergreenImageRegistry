@@ -1,20 +1,11 @@
 ARG VERSION=v0.4
 
-FROM debian:bookworm-slim AS downloader
-ARG VERSION
-ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
-    "https://github.com/mickael-kerjean/filestash/archive/refs/tags/${VERSION}.tar.gz" \
-    -o /filestash.tar.gz || true ; \
-    tar -xzf /filestash.tar.gz -C /opt/ && rm -f /filestash.tar.gz ; \
-    test -d /opt/filestash-${VERSION} || { echo '#!/bin/sh' > /filestash && echo 'echo "filestash v${VERSION} - upstream unavailable, stub mode"' >> /filestash && echo 'exec sleep infinity' >> /filestash && chmod +x /filestash; } || true
+FROM mickaelkerjean/filestash:latest AS upstream
 
 FROM scratch
-COPY --from=downloader /filestash /filestash 2>/dev/null || true
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
-COPY --from=downloader /opt/filestash-v0.4/filestash /filestash 2>/dev/null || true
-COPY --from=downloader /opt/filestash-v0.4/dist /dist 2>/dev/null || true
+COPY --from=upstream /app/filestash /filestash
+COPY --from=upstream /app/dist /dist
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8334

@@ -6,9 +6,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/jacksontj/promxy/releases/download/v${VERSION}/promxy-v${VERSION}-linux-amd64" \
-    -o /promxy || true ; \
-    chmod +x /promxy && strip /promxy 2>/dev/null || true ; \
-    test -f /promxy || { echo '#!/bin/sh' > /promxy && echo 'echo "promxy v${VERSION} ready"' >> /promxy && echo 'exec sleep infinity' >> /promxy && chmod +x /promxy; }
+    -o /promxy && chmod +x /promxy && strip /promxy
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/promxy /var/cache/promxy /etc/promxy 2>/dev/null || true

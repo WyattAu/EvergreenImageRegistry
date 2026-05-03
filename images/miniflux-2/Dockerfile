@@ -6,8 +6,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/miniflux/v2/releases/download/${VERSION}/miniflux-linux-amd64" \
-    -o /miniflux && chmod +x /miniflux ; \
-    test -f /miniflux || { echo '#!/bin/sh' > /miniflux && echo 'echo "miniflux-2 v${VERSION} ready"' >> /miniflux && echo 'exec sleep infinity' >> /miniflux && chmod +x /miniflux; }
+    -o /miniflux && chmod +x /miniflux
 
 FROM debian:bookworm-slim AS builder
 RUN mkdir -p /app /var/log/miniflux-2 /var/cache/miniflux-2 2>/dev/null || true

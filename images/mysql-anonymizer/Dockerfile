@@ -69,6 +69,8 @@ LABEL org.opencontainers.image.title="mysql-anonymizer" \
       evergreen.metrics.native="ztunnel" \
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"
 
       evergreen.health.type="exec"
 EXPOSE 9101

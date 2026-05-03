@@ -21,6 +21,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://api.adoptium.net/v3/binary/lat
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=3.4.2
+ARG TARGETARCH
 
 RUN apk add --no-cache ca-certificates tzdata curl 
 COPY --from=jre-builder /opt/jre /opt/jre
@@ -52,6 +53,8 @@ LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
 STOPSIGNAL SIGTERM

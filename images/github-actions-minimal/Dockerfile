@@ -6,6 +6,7 @@ RUN curl --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 600 -fsSL "ht
     mkdir -p /runner && if [ -f /runner.tar.gz ]; then tar -xzf /runner.tar.gz -C /runner 2>/dev/null || true ; rm -f /runner.tar.gz 2>/dev/null || true ; fi
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=2.334.0
+ARG TARGETARCH
 RUN apk add --no-cache nodejs npm ca-certificates git || true && \
     addgroup -S -g 10000 runner 2>/dev/null || true && adduser -u 65532 -G runner -D -h /app -s /bin/false runner 2>/dev/null || true && \
     mkdir -p /app /runner /home/runner/_work 2>/dev/null || true
@@ -31,6 +32,8 @@ LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
 STOPSIGNAL SIGTERM

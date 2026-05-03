@@ -22,4 +22,6 @@ RUN apk add --no-cache java-21-default-jdk 2>/dev/null || \
 
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"
 HEALTHCHECK NONE

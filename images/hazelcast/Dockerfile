@@ -21,6 +21,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=5.3.6
+ARG TARGETARCH
 
 RUN apk add --no-cache ca-certificates
 RUN addgroup -S -g 65532 hazelcast 2>/dev/null || true && adduser -u 65532 -G hazelcast -D -s /sbin/nologin hazelcast 2>/dev/null || true
@@ -47,6 +48,8 @@ LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
 STOPSIGNAL SIGTERM

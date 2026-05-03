@@ -39,6 +39,8 @@ LABEL org.opencontainers.image.title="scratch-base" \
       evergreen.constraint.nonroot="true" \
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"
 
       evergreen.constraint.scratch="true"
 STOPSIGNAL SIGTERM

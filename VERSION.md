@@ -5,7 +5,7 @@
 | Attribute | Value |
 |-----------|-------|
 | Project Name | Evergreen Hardened Image Registry |
-| Version | 19.0.0 |
+| Version | 20.0.0 |
 | Phase | Security Hardening |
 | Status | ACTIVE |
 | Last Updated | 2026-05-03 |
@@ -48,6 +48,9 @@
 | Phase 28: Sovereign-to-Evergreen Rebrand | COMPLETED | 100% |
 | Phase 29: Security Hardening | COMPLETED | 100% |
 | Phase 30: Reproducibility (Digest Pinning) | COMPLETED | 100% |
+| Phase 31: Multi-Arch Expansion | COMPLETED | 100% |
+| Phase 33: Advanced Security Labels | COMPLETED | 100% |
+| Phase 34: README Redesign | COMPLETED | 100% |
 
 ---
 
@@ -74,12 +77,14 @@
 | HEALTHCHECK NONE (scratch/base) | **440/997 (44.1%)** | - | **DONE** |
 | CAP_DROP Label | **997/997 (100%)** | 100% | **DONE** |
 | no-new-privileges Label | **997/997 (100%)** | 100% | **DONE** |
+| read-only-rootfs Label | **997/997 (100%)** | 100% | **DONE** |
+| seccomp Label | **997/997 (100%)** | 100% | **DONE** |
 | Digest-Pinned FROM (all stages) | **1485/2019 (73.6%)** | 100% | Near-complete |
 | Effective Immutability | **1875/2019 (92.9%)** | 100% | Near-complete |
 | TOML Manifest Validity | **998/998 (100%)** | 100% | **DONE** |
 | Version Match (DF vs TOML) | **998/998 (100%)** | 100% | **DONE** |
 | Multi-Arch Source-Build | **25** | 100+ | In progress |
-| Multi-Arch Total (with prebuilt) | **207** | 100+ | **DONE** |
+| Multi-Arch Total (with ARG TARGETARCH) | **321** | 300+ | **DONE** |
 | Manifest Coverage | **998 (100%)** | 100% | **DONE** |
 | SBOM Coverage | **998 (100%)** | 998 | **DONE** |
 | Image Catalog | **Static HTML** | Active | **DONE** |

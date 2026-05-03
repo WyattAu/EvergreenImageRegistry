@@ -1,5 +1,6 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=5.0.8
+ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/cassandra/${VERSION}/apache-cassandra-${VERSION}-bin.tar.gz" -o /cassandra.tar.gz && \
     echo "1579d7d3f2d812741a28cd2c2cbe29e83541bb4d25fb21ec2c00c1e4fb3b9a8f  /cassandra.tar.gz" | sha256sum -c || true ; \
@@ -61,6 +62,8 @@ LABEL evergreen.metrics.native="true"
 LABEL evergreen.health.type="http"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
 STOPSIGNAL SIGTERM

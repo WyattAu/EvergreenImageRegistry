@@ -4,6 +4,7 @@ RUN npm install -g renovate@${VERSION}
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION
+ARG TARGETARCH
 RUN apk add --no-cache ca-certificates git
 COPY --from=builder /usr/local/lib/node_modules/renovate /opt/renovate
 COPY --from=builder /usr/local/bin/renovate /usr/local/bin/renovate
@@ -19,6 +20,8 @@ LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
 STOPSIGNAL SIGTERM

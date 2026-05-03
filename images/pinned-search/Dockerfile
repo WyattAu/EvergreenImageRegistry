@@ -28,6 +28,7 @@ RUST; fi \
 
 FROM scratch
 ARG VERSION=0.1.0
+ARG TARGETARCH
 COPY --from=builder /tmp/pinned-search /usr/local/bin/pinned-search
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
@@ -51,6 +52,8 @@ LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
 STOPSIGNAL SIGTERM

@@ -1,6 +1,7 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=1.12.10
 ARG GITHUB_TOKEN
+ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-headless gnupg && rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sbt/sbt/releases/download/v${VERSION}/sbt-${VERSION}.tgz -o /sbt.tgz && \
     echo "cb23868a34fe2f4ce83c1ded7b0ab5efeba7de9a52f1e739b10b3ff8da844239  /sbt.tgz" | sha256sum -c - || true
@@ -40,6 +41,8 @@ LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
 STOPSIGNAL SIGTERM

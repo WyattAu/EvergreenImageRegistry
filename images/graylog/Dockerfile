@@ -18,6 +18,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.graylog2.org/releases
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION
+ARG TARGETARCH
 RUN apk add --no-cache ca-certificates curl 
 RUN adduser -u 65532 -s /bin/false graylog 2>/dev/null || true
 RUN mkdir -p /opt/graylog/data /opt/graylog/logs /var/log/graylog /var/cache/graylog 2>/dev/null || true
@@ -49,6 +50,8 @@ LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
 STOPSIGNAL SIGTERM

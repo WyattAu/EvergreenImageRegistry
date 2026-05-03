@@ -9,6 +9,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243
 RUN apk add --no-cache ca-certificates tzdata curl dumb-init 
 
 ARG JRE_VERSION=21.0.5+11
+ARG TARGETARCH
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jre/hotspot/normal/eclipse" -o /tmp/jre.tar.gz && \
     echo "e5038aae3ca9ff670bc696496b0728dbd23d280026bad30291cb919221ecfdcb  /tmp/jre.tar.gz" | sha256sum -c - || true
     mkdir -p /opt/jre ; \
@@ -34,6 +35,8 @@ LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="none"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
 STOPSIGNAL SIGTERM

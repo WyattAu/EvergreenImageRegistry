@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [20.0.0] - 2026-05-03
+
+### Phase 31: Multi-Arch Expansion
+
+- **ARG TARGETARCH**: 207 → 321 images (+114)
+  - 74 Node.js images (interpreted JS, already cross-platform)
+  - 40 Java/JVM images (bytecode is architecture-independent)
+  - 1 Rust image (cross-compilation target mapping)
+
+### Phase 33: Advanced Security Labels
+
+- **read-only-rootfs label**: 100% (997/997) — `evergreen.security.read-only-rootfs="true"`
+- **seccomp label**: 100% (997/997) — `evergreen.security.seccomp="runtime-default"`
+
+### Phase 34: README Redesign
+
+- Complete rewrite: professional 128-line README
+- 5 shields.io badges (CI, nightly scan, license, images, SBOMs)
+- Security guarantees table (9 metrics)
+- Quick start with `--cap-drop ALL --security-opt no-new-privileges`
+- Image catalog, multi-arch, evergreenctl, compliance sections
+- Base image hierarchy diagram
+
+---
+
 ## [19.0.0] - 2026-05-03
 
 ### Sovereign-to-Evergreen Full Rebrand (Phase 28)

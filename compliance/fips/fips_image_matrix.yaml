@@ -1,323 +1,627 @@
 fips_image_matrix:
-  version: "1.0.0"
-  generated: "2026-04-20"
-  description: "FIPS 140-2 image variant matrix for Evergreen Image Registry"
+  version: "2.0.0"
+  generated: "2026-05-03"
+  description: "FIPS 140-2/140-3 image variant matrix for Evergreen Image Registry - top 30 security-critical images"
   fips_standard: "FIPS 140-2"
   target_fips_standard: "FIPS 140-3"
 
   categories:
-    vpn_tunnels:
-      description: "VPN and tunneling images requiring FIPS-validated cryptography"
+    databases:
+      description: "Database images storing sensitive or regulated data"
       images:
-        - name: wireguard
-          current_base: scratch
-          fips_base: debian:bookworm-slim
-          fips_reason: "WireGuard uses kernel crypto API - requires FIPS-validated kernel"
-          crypto_deps:
-            - kernel-crypto-api
-          priority: high
-          variant: wireguard-fips
-        - name: strongswan
-          current_base: debian:bookworm-slim
-          fips_base: debian:bookworm-slim
-          fips_reason: "StrongSwan uses OpenSSL for IKE - requires FIPS-validated OpenSSL"
+        - name: postgresql
+          current_base: wolfi-base (multi-stage from debian:bookworm-slim)
+          build_method: apk add postgresql-17 from Chainguard wolfi
+          fips_achievable: true
+          fips_approach: |
+            Replace wolfi postgresql package with build against OpenSSL 3.x FIPS provider.
+            Set ssl_lib = openssl in postgresql.conf and OPENSSL_CONF to enable FIPS module.
           crypto_deps:
             - openssl
-          priority: high
-          variant: strongswan-fips
-        - name: openvpn
-          current_base: debian:bookworm-slim
-          fips_base: debian:bookworm-slim
-          fips_reason: "OpenVPN uses OpenSSL for TLS - requires FIPS-validated OpenSSL"
-          crypto_deps:
-            - openssl
-          priority: high
-          variant: openvpn-fips
-        - name: tailscale
-          current_base: scratch
-          fips_base: debian:bookworm-slim
-          fips_reason: "Tailscale uses WireGuard + NaCl - requires FIPS-validated crypto"
-          crypto_deps:
-            - wireguard-go
-            - nacl
-          priority: high
-          variant: tailscale-fips
-        - name: netmaker
-          current_base: scratch
-          fips_base: debian:bookworm-slim
-          fips_reason: "NetMaker uses WireGuard - requires FIPS-validated crypto"
-          crypto_deps:
-            - wireguard-go
-          priority: medium
-          variant: netmaker-fips
-        - name: netbird
-          current_base: scratch
-          fips_base: debian:bookworm-slim
-          fips_reason: "NetBird uses WireGuard - requires FIPS-validated crypto"
-          crypto_deps:
-            - wireguard-go
-          priority: medium
-          variant: netbird-fips
-        - name: netclient
-          current_base: scratch
-          fips_base: debian:bookworm-slim
-          fips_reason: "NetClient uses WireGuard - requires FIPS-validated crypto"
-          crypto_deps:
-            - wireguard-go
-          priority: medium
-          variant: netclient-fips
+          required_changes:
+            - "Switch to Debian/Ubuntu base with libssl3 FIPS provider installed"
+            - "Configure postgresql.conf: ssl = on, ssl_cert_file, ssl_key_file"
+            - "Set OPENSSL_CONF=/etc/ssl/fipsmodule.cnf"
+            - "Verify with: openssl list -providers"
+          priority: Critical
+          variant: postgresql-fips
+          effort: Medium
 
-    secrets:
-      description: "Secret management and template rendering images"
-      images:
-        - name: vault
-          current_base: debian:bookworm-slim
-          fips_base: debian:bookworm-slim
-          fips_reason: "Vault uses gocrypto and transit secrets engine - requires FIPS mode"
-          crypto_deps:
-            - golang.org/x/crypto
-            - openssl
-          priority: high
-          variant: vault-fips
-        - name: step-cli
-          current_base: debian:bookworm-slim
-          fips_base: debian:bookworm-slim
-          fips_reason: "Step CLI manages certificates and uses Go crypto - requires FIPS mode"
-          crypto_deps:
-            - smallstep/crypto
-          priority: high
-          variant: step-cli-fips
-        - name: consul-template
-          current_base: debian:bookworm-slim
-          fips_base: debian:bookworm-slim
-          fips_reason: "Consul Template connects to Vault over TLS - requires FIPS-validated TLS"
+        - name: mysql
+          current_base: wolfi-base (multi-stage from debian:bookworm-slim)
+          build_method: pre-compiled binary with ca-certificates on wolfi
+          fips_achievable: true
+          fips_approach: |
+            Build MySQL from source linked against OpenSSL 3.x FIPS provider.
+            MySQL Enterprise already ships FIPS builds; community requires source rebuild.
           crypto_deps:
             - openssl
-          priority: medium
-          variant: consul-template-fips
+            - yassl
+          required_changes:
+            - "Build from source with -DWITH_SSL=system -DFIPS_MODE=ON cmake flags"
+            - "Link against OpenSSL 3.x with FIPS provider module loaded"
+            - "Set OPENSSL_CONF=/etc/ssl/fipsmodule.cnf in container entrypoint"
+            - "Add --fips-mode to mysqld startup"
+          priority: Critical
+          variant: mysql-fips
+          effort: High
 
-    tls_proxies:
-      description: "TLS termination proxy and load balancer images"
-      images:
-        - name: nginx
-          current_base: scratch
-          fips_base: debian:bookworm-slim
-          fips_reason: "nginx uses OpenSSL for TLS termination - requires FIPS-validated OpenSSL"
+        - name: redis
+          current_base: wolfi-base (multi-stage from debian:bookworm-slim)
+          build_method: pre-compiled binary from upstream
+          fips_achievable: true
+          fips_approach: |
+            Build Redis from source linked against OpenSSL 3.x FIPS provider.
+            Redis supports BUILD_TLS=yes with system OpenSSL.
           crypto_deps:
             - openssl
-          priority: high
-          variant: nginx-fips
-        - name: nginx-unprivileged
-          current_base: scratch
-          fips_base: debian:bookworm-slim
-          fips_reason: "Same as nginx - requires FIPS-validated OpenSSL"
-          crypto_deps:
-            - openssl
-          priority: high
-          variant: nginx-unprivileged-fips
-        - name: envoy
-          current_base: scratch
-          fips_base: debian:bookworm-slim
-          fips_reason: "Envoy uses BoringSSL - requires BoringCrypto (FIPS-validated)"
-          crypto_deps:
-            - boringssl
-          priority: high
-          variant: envoy-fips
-        - name: traefik
-          current_base: scratch
-          fips_base: debian:bookworm-slim
-          fips_reason: "Traefik uses Go TLS - requires Go BoringCrypto (FIPS-validated)"
-          crypto_deps:
-            - golang.org/x/crypto
-          priority: high
-          variant: traefik-fips
-        - name: haproxy
-          current_base: scratch
-          fips_base: debian:bookworm-slim
-          fips_reason: "HAProxy uses OpenSSL - requires FIPS-validated OpenSSL"
-          crypto_deps:
-            - openssl
-          priority: high
-          variant: haproxy-fips
-        - name: caddy
-          current_base: scratch
-          fips_base: debian:bookworm-slim
-          fips_reason: "Caddy uses Go TLS with automatic cert management - requires FIPS mode"
-          crypto_deps:
-            - golang.org/x/crypto
-          priority: high
-          variant: caddy-fips
+          required_changes:
+            - "Build from source: make BUILD_TLS=yes MALLOC=libc USE_OPENSSL=yes"
+            - "Link against OpenSSL 3.x FIPS provider"
+            - "Set OPENSSL_CONF=/etc/ssl/fipsmodule.cnf"
+            - "Enable tls-port in redis.conf"
+          priority: Critical
+          variant: redis-fips
+          effort: Medium
 
-    identity:
-      description: "Identity and access management images"
+        - name: mongodb
+          current_base: wolfi-base (multi-stage from debian:bookworm-slim)
+          build_method: pre-compiled binary with ca-certificates on wolfi
+          fips_achievable: true
+          fips_approach: |
+            MongoDB Enterprise already provides FIPS builds.
+            Community edition requires building from source with --use-system-openssl
+            linked against OpenSSL 3.x FIPS provider.
+          crypto_deps:
+            - openssl
+          required_changes:
+            - "Use MongoDB Enterprise binary or build from source with FIPS OpenSSL"
+            - "Set net.tls.mode=requireTLS and openssl.fipsMode=true in mongod.conf"
+            - "Set OPENSSL_CONF=/etc/ssl/fipsmodule.cnf"
+          priority: Critical
+          variant: mongodb-fips
+          effort: High
+
+        - name: cockroachdb
+          current_base: scratch (Go static binary from upstream tarball)
+          build_method: download pre-built binary, strip, copy to scratch
+          fips_achievable: true
+          fips_approach: |
+            CockroachDB is written in Go. Build with GOEXPERIMENT=boringcrypto
+            to use BoringCrypto FIPS module. Cockroach Labs does not provide
+            official FIPS builds for community edition.
+          crypto_deps:
+            - golang.org/x/crypto (via boringcrypto)
+          required_changes:
+            - "Build from source with GOEXPERIMENT=boringcrypto and CGO_ENABLED=1"
+            - "Cannot use CGO_ENABLED=0; BoringCrypto requires CGO"
+            - "Set GOLANG_FIPS=1 at runtime"
+            - "Lose scratch base - requires glibc for dynamic linking"
+          priority: High
+          variant: cockroachdb-fips
+          effort: High
+
+        - name: scylladb
+          current_base: wolfi-base (extracted from scylladb/scylla:latest)
+          build_method: copy binaries from upstream Docker image
+          fips_achievable: false
+          fips_approach: |
+            ScyllaDB is C++ (Seastar framework) with heavy use of OpenSSL.
+            Requires upstream to build with FIPS-validated OpenSSL. No community
+            FIPS build exists. Would need full source rebuild.
+          crypto_deps:
+            - openssl
+          required_changes:
+            - "Requires upstream ScyllaDB to provide FIPS-enabled build"
+            - "Build from source with OpenSSL 3.x FIPS provider linked"
+            - "Complex: ScyllaDB uses dpdk, boost::asio with OpenSSL interop"
+            - "Track: https://github.com/scylladb/scylladb/issues for FIPS support"
+          priority: Medium
+          variant: null
+          effort: Very High
+
+        - name: tidb
+          current_base: scratch (extracted from pingcap/tidb)
+          build_method: copy binary from upstream Docker image
+          fips_achievable: true
+          fips_approach: |
+            TiDB is written in Go. Build from source with GOEXPERIMENT=boringcrypto.
+            PingCAP does not officially provide FIPS builds.
+          crypto_deps:
+            - golang.org/x/crypto (via boringcrypto)
+          required_changes:
+            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
+            - "Requires glibc runtime (cannot be pure scratch)"
+            - "Set GOLANG_FIPS=1 at runtime"
+          priority: High
+          variant: tidb-fips
+          effort: High
+
+        - name: valkey
+          current_base: wolfi-base (apk add valkey)
+          build_method: Chainguard wolfi package
+          fips_achievable: true
+          fips_approach: |
+            Valkey is a Redis fork with identical TLS architecture.
+            Build from source with BUILD_TLS=yes against OpenSSL 3.x FIPS provider.
+            Chainguard may offer FIPS-enabled valkey package.
+          crypto_deps:
+            - openssl
+          required_changes:
+            - "Build from source with BUILD_TLS=yes and FIPS OpenSSL"
+            - "Or use Chainguard FIPS-enabled base with FIPS valkey package"
+            - "Set OPENSSL_CONF=/etc/ssl/fipsmodule.cnf"
+          priority: High
+          variant: valkey-fips
+          effort: Medium
+
+    auth:
+      description: "Authentication and identity management images"
       images:
         - name: keycloak
-          current_base: debian:bookworm-slim
-          fips_base: debian:bookworm-slim
-          fips_reason: "Keycloak uses Quarkus + OpenSSL - requires FIPS-validated TLS and crypto"
+          current_base: wolfi-base (multi-stage from debian:bookworm-slim)
+          build_method: download tarball from GitHub, copy to wolfi
+          fips_achievable: true
+          fips_approach: |
+            Keycloak (Quarkus/Java) uses OpenSSL via JNI and BouncyCastle.
+            Enable FIPS by installing FIPS OpenSSL provider and configuring
+            Quarkus with -Dquarkus.ssl.native-fips=true. Keycloak 26+ supports
+            native FIPS mode natively.
           crypto_deps:
             - openssl
             - bouncycastle
-          priority: high
+          required_changes:
+            - "Add -Djava.security.properties=/etc/java/security.fips.properties to JAVA_OPTS"
+            - "Install OpenSSL 3.x FIPS provider on base image"
+            - "Configure Quarkus SSL FIPS: quarkus.ssl.native-fips=true"
+            - "Use Wolfi FIPS base or Debian with libssl3-fips"
+          priority: Critical
           variant: keycloak-fips
-        - name: zitadel
-          current_base: scratch
-          fips_base: debian:bookworm-slim
-          fips_reason: "ZITADEL uses Go crypto - requires Go BoringCrypto (FIPS-validated)"
+          effort: Medium
+
+        - name: dex
+          current_base: scratch (built from Go source with golang:1.23-bookworm)
+          build_method: go build CGO_ENABLED=0 from github.com/dexidp/dex
+          fips_achievable: true
+          fips_approach: |
+            Dex is pure Go. Rebuild with GOEXPERIMENT=boringcrypto and
+            CGO_ENABLED=1 (BoringCrypto requires CGO). Lose scratch base.
           crypto_deps:
-            - golang.org/x/crypto
-          priority: high
-          variant: zitadel-fips
-        - name: openldap
-          current_base: debian:bookworm-slim
-          fips_base: debian:bookworm-slim
-          fips_reason: "OpenLDAP uses OpenSSL for TLS and password hashing - requires FIPS mode"
+            - golang.org/x/crypto (via boringcrypto)
+          required_changes:
+            - "Change build: CGO_ENABLED=1 GOEXPERIMENT=boringcrypto go build"
+            - "Switch final image from scratch to debian:bookworm-slim (glibc needed)"
+            - "Set GOLANG_FIPS=1 at runtime"
+          priority: High
+          variant: dex-fips
+          effort: Medium
+
+        - name: kanidm
+          current_base: scratch (extracted from ghcr.io/kanidm/kanidm)
+          build_method: copy binary from upstream image
+          fips_achievable: true
+          fips_approach: |
+            Kanidm is written in Rust. Build from source with rustls or
+            OpenSSL 3.x FIPS provider. Kanidm uses webauthn-rs and OpenSSL.
+            Requires source rebuild with FIPS-linked OpenSSL.
           crypto_deps:
             - openssl
-          priority: medium
-          variant: openldap-fips
-        - name: headscale
-          current_base: scratch
-          fips_base: debian:bookworm-slim
-          fips_reason: "Headscale uses WireGuard + Go crypto - requires FIPS mode"
+            - rustls (optional)
+          required_changes:
+            - "Build from source with OPENSSL_NO_VENDOR=1 and FIPS OpenSSL"
+            - "Or configure Kanidm to use system OpenSSL with FIPS provider"
+            - "Set OPENSSL_CONF=/etc/ssl/fipsmodule.cnf"
+          priority: High
+          variant: kanidm-fips
+          effort: High
+
+    crypto:
+      description: "Cryptographic and certificate management images"
+      images:
+        - name: vault
+          current_base: scratch (binary from HashiCorp releases)
+          build_method: download zip from releases.hashicorp.com
+          fips_achievable: true
+          fips_approach: |
+            HashiCorp provides official FIPS builds of Vault Enterprise.
+            Community Vault can be built from source with Go BoringCrypto,
+            but only Enterprise is FIPS 140-2 certified.
           crypto_deps:
-            - wireguard-go
             - golang.org/x/crypto
-          priority: medium
-          variant: headscale-fips
+            - openssl
+          required_changes:
+            - "Use Vault Enterprise FIPS binary (officially certified)"
+            - "Or build community from source: GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
+            - "Enterprise: set GOEXPERIMENT=boringcrypto, enable FIPS 140-2 in config"
+            - "Community FIPS is not certified - only Enterprise has validation"
+          priority: Critical
+          variant: vault-fips
+          effort: Medium
+
+        - name: step-ca
+          current_base: scratch (binary from GitHub releases)
+          build_method: download tarball from smallstep/certificates releases
+          fips_achievable: true
+          fips_approach: |
+            Step-CA (smallstep/crypto) is Go-based. Build from source with
+            GOEXPERIMENT=boringcrypto. Smallstep does not officially provide
+            FIPS builds but the underlying crypto (x/crypto) supports BoringCrypto.
+          crypto_deps:
+            - golang.org/x/crypto (via boringcrypto)
+            - smallstep/crypto
+          required_changes:
+            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
+            - "Switch final image from scratch to debian:bookworm-slim"
+            - "Set GOLANG_FIPS=1 at runtime"
+          priority: Critical
+          variant: step-ca-fips
+          effort: Medium
+
+        - name: cosign
+          current_base: scratch (binary from GitHub releases)
+          build_method: download binary from sigstore/cosign releases
+          fips_achievable: true
+          fips_approach: |
+            Cosign is pure Go. Build from source with GOEXPERIMENT=boringcrypto.
+            Sigstore does not provide official FIPS builds.
+          crypto_deps:
+            - golang.org/x/crypto (via boringcrypto)
+          required_changes:
+            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
+            - "Switch final image from scratch to glibc-based image"
+            - "Set GOLANG_FIPS=1 at runtime"
+          priority: Critical
+          variant: cosign-fips
+          effort: Medium
+
+        - name: fulcio
+          current_base: scratch (binary from GitHub releases)
+          build_method: download binary from sigstore/fulcio releases
+          fips_achievable: true
+          fips_approach: |
+            Fulcio is Go-based. Build from source with GOEXPERIMENT=boringcrypto.
+            Same approach as cosign (both are sigstore projects).
+          crypto_deps:
+            - golang.org/x/crypto (via boringcrypto)
+          required_changes:
+            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
+            - "Switch final image from scratch to glibc-based image"
+            - "Set GOLANG_FIPS=1 at runtime"
+          priority: High
+          variant: fulcio-fips
+          effort: Medium
+
+        - name: rekor
+          current_base: scratch (binaries from GitHub releases)
+          build_method: download rekor-cli and rekor-server from sigstore/rekor releases
+          fips_achievable: true
+          fips_approach: |
+            Rekor server is Go-based (uses sigstore/sigstore pkg).
+            Build from source with GOEXPERIMENT=boringcrypto.
+          crypto_deps:
+            - golang.org/x/crypto (via boringcrypto)
+          required_changes:
+            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
+            - "Switch final image from scratch to glibc-based image"
+            - "Set GOLANG_FIPS=1 at runtime"
+          priority: High
+          variant: rekor-fips
+          effort: Medium
+
+    monitoring:
+      description: "Observability and monitoring stack images"
+      images:
+        - name: prometheus
+          current_base: scratch (binary from GitHub releases)
+          build_method: download tarball from prometheus/prometheus releases
+          fips_achievable: true
+          fips_approach: |
+            Prometheus is pure Go. Build from source with GOEXPERIMENT=boringcrypto.
+            Prometheus does not provide official FIPS builds but Go crypto backend
+            is fully compatible with BoringCrypto.
+          crypto_deps:
+            - golang.org/x/crypto (via boringcrypto)
+          required_changes:
+            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
+            - "Switch final image from scratch to glibc-based image"
+            - "Set GOLANG_FIPS=1 at runtime"
+          priority: High
+          variant: prometheus-fips
+          effort: Medium
+
+        - name: grafana
+          current_base: wolfi-base (download tarball from dl.grafana.com)
+          build_method: download tarball, copy to wolfi-base
+          fips_achievable: true
+          fips_approach: |
+            Grafana (Go backend) uses Go TLS. Build from source with
+            GOEXPERIMENT=boringcrypto. Grafana does not provide official
+            FIPS builds. The frontend has no crypto dependencies.
+          crypto_deps:
+            - golang.org/x/crypto (via boringcrypto)
+          required_changes:
+            - "Build from source: go build -tags=boringcrypto with CGO_ENABLED=1"
+            - "Set GOLANG_FIPS=1 at runtime"
+            - "Configure GF_SECURITY_FIPS=true (if supported by version)"
+          priority: Medium
+          variant: grafana-fips
+          effort: Medium
+
+        - name: alertmanager
+          current_base: scratch (binary from GitHub releases)
+          build_method: download tarball from prometheus/alertmanager releases
+          fips_achievable: true
+          fips_approach: |
+            Alertmanager is pure Go (part of Prometheus project).
+            Build from source with GOEXPERIMENT=boringcrypto.
+          crypto_deps:
+            - golang.org/x/crypto (via boringcrypto)
+          required_changes:
+            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
+            - "Switch final image from scratch to glibc-based image"
+            - "Set GOLANG_FIPS=1 at runtime"
+          priority: Medium
+          variant: alertmanager-fips
+          effort: Medium
+
+        - name: loki
+          current_base: scratch (binary from GitHub releases)
+          build_method: download zip from grafana/loki releases
+          fips_achievable: true
+          fips_approach: |
+            Loki is pure Go. Build from source with GOEXPERIMENT=boringcrypto.
+            Same approach as other Grafana Labs projects.
+          crypto_deps:
+            - golang.org/x/crypto (via boringcrypto)
+          required_changes:
+            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
+            - "Switch final image from scratch to glibc-based image"
+            - "Set GOLANG_FIPS=1 at runtime"
+          priority: Medium
+          variant: loki-fips
+          effort: Medium
+
+        - name: tempo
+          current_base: null
+          build_method: null
+          fips_achievable: true
+          fips_approach: |
+            Tempo is pure Go (Grafana Labs). Not yet in the registry.
+            Build from source with GOEXPERIMENT=boringcrypto.
+          crypto_deps:
+            - golang.org/x/crypto (via boringcrypto)
+          required_changes:
+            - "Add to registry first, then build with GOEXPERIMENT=boringcrypto"
+            - "Set GOLANG_FIPS=1 at runtime"
+          priority: Medium
+          variant: tempo-fips
+          effort: Medium
+
+    networking:
+      description: "Networking, proxy, and DNS images"
+      images:
+        - name: envoy
+          current_base: scratch (binary from GitHub releases)
+          build_method: download binary from envoyproxy/envoy releases, strip
+          fips_achievable: true
+          fips_approach: |
+            Envoy uses BoringSSL which includes the BoringCrypto FIPS module.
+            Envoy's official builds include a FIPS variant. Use the official
+            FIPS-validated envoy binary or build with BoringCrypto enabled.
+            BoringCrypto in BoringSSL has FIPS 140-2 validation (Certificate #4140).
+          crypto_deps:
+            - boringssl (with BoringCrypto FIPS module)
+          required_changes:
+            - "Download FIPS-validated Envoy build from official releases"
+            - "Or build from source with: bazel build --config=fips"
+            - "Set --define=fips=true in bazel build flags"
+            - "BoringCrypto FIPS module self-tests on startup"
+          priority: Critical
+          variant: envoy-fips
+          effort: Low
+
+        - name: consul
+          current_base: scratch (binary from HashiCorp releases)
+          build_method: download zip from releases.hashicorp.com
+          fips_achievable: true
+          fips_approach: |
+            HashiCorp provides official FIPS builds for Consul Enterprise.
+            Community Consul can be built from source with Go BoringCrypto.
+          crypto_deps:
+            - golang.org/x/crypto (via boringcrypto)
+          required_changes:
+            - "Use Consul Enterprise FIPS binary (officially certified)"
+            - "Or build community from source: GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
+            - "Enterprise: FIPS mode enabled via configuration"
+          priority: High
+          variant: consul-fips
+          effort: Medium
+
+        - name: traefik
+          current_base: scratch (binary from GitHub releases)
+          build_method: download tarball from traefik/traefik releases
+          fips_achievable: true
+          fips_approach: |
+            Traefik is pure Go. Build from source with GOEXPERIMENT=boringcrypto.
+            Traefik Labs does not provide official FIPS builds.
+          crypto_deps:
+            - golang.org/x/crypto (via boringcrypto)
+          required_changes:
+            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
+            - "Switch final image from scratch to glibc-based image"
+            - "Set GOLANG_FIPS=1 at runtime"
+          priority: High
+          variant: traefik-fips
+          effort: Medium
+
+        - name: nginx
+          current_base: scratch (downloaded from nginx.org)
+          build_method: download tarball from nginx.org
+          fips_achievable: true
+          fips_approach: |
+            Build nginx from source linked against OpenSSL 3.x FIPS provider.
+            NGINX Plus (commercial) officially supports FIPS 140-2.
+            Community nginx requires source rebuild with FIPS OpenSSL.
+          crypto_deps:
+            - openssl
+          required_changes:
+            - "Build from source: ./configure --with-openssl=/path/to/openssl-fips"
+            - "Or use NGINX Plus FIPS build (commercial)"
+            - "Set OPENSSL_CONF=/etc/ssl/fipsmodule.cnf"
+            - "Configure ssl_conf_command in nginx.conf for FIPS provider"
+          priority: Critical
+          variant: nginx-fips
+          effort: Medium
+
+        - name: coredns
+          current_base: scratch (binary from GitHub releases)
+          build_method: download tarball from coredns/coredns releases
+          fips_achievable: true
+          fips_approach: |
+            CoreDNS is pure Go. Build from source with GOEXPERIMENT=boringcrypto.
+            CoreDNS supports the tls plugin which uses Go crypto.
+          crypto_deps:
+            - golang.org/x/crypto (via boringcrypto)
+          required_changes:
+            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
+            - "Switch final image from scratch to glibc-based image"
+            - "Set GOLANG_FIPS=1 at runtime"
+          priority: High
+          variant: coredns-fips
+          effort: Medium
 
     security:
-      description: "Security scanning and signing tools"
+      description: "Security scanning, policy enforcement, and runtime protection"
       images:
         - name: trivy
-          current_base: scratch
-          fips_base: debian:bookworm-slim
-          fips_reason: "Trivy uses Go crypto for registry auth - requires FIPS mode"
+          current_base: scratch (binary from GitHub releases)
+          build_method: download tarball from aquasecurity/trivy releases
+          fips_achievable: true
+          fips_approach: |
+            Trivy is pure Go. Build from source with GOEXPERIMENT=boringcrypto.
+            Trivy uses Go crypto for container registry authentication (TLS).
           crypto_deps:
-            - golang.org/x/crypto
-          priority: medium
+            - golang.org/x/crypto (via boringcrypto)
+          required_changes:
+            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
+            - "Switch final image from scratch to glibc-based image"
+            - "Set GOLANG_FIPS=1 at runtime"
+          priority: High
           variant: trivy-fips
-        - name: grype
-          current_base: scratch
-          fips_base: debian:bookworm-slim
-          fips_reason: "Grype uses Go crypto for registry auth - requires FIPS mode"
-          crypto_deps:
-            - golang.org/x/crypto
-          priority: medium
-          variant: grype-fips
-        - name: cosign
-          current_base: scratch
-          fips_base: debian:bookworm-slim
-          fips_reason: "Cosign uses Go crypto for signature verification - requires FIPS mode"
-          crypto_deps:
-            - golang.org/x/crypto
-          priority: high
-          variant: cosign-fips
+          effort: Medium
 
-    crypto_deps:
-      description: "Images with indirect cryptographic dependencies"
-      images:
-        - name: postgresql
-          current_base: debian:bookworm-slim
-          fips_base: debian:bookworm-slim
-          fips_reason: "PostgreSQL uses OpenSSL for TLS connections and pgcrypto extension"
+        - name: falco
+          current_base: wolfi-base (install from falcosecurity apt repo)
+          build_method: apt-get install falco, copy to wolfi
+          fips_achievable: false
+          fips_approach: |
+            Falco is C++ with OpenSSL dependencies for TLS communication.
+            Requires CISO/Falco Security to build with FIPS-validated OpenSSL.
+            No community FIPS build exists. Heavy kernel module dependency.
           crypto_deps:
             - openssl
-          priority: high
-          variant: postgresql-fips
-        - name: mysql
-          current_base: debian:bookworm-slim
-          fips_base: debian:bookworm-slim
-          fips_reason: "MySQL uses OpenSSL for TLS connections and password encryption"
+          required_changes:
+            - "Requires upstream Cribl/Falco to provide FIPS-enabled build"
+            - "Build kernel module and userspace with FIPS OpenSSL linked"
+            - "Track: https://github.com/falcosecurity/falco/issues for FIPS support"
+          priority: Medium
+          variant: null
+          effort: Very High
+
+        - name: kubescape
+          current_base: scratch (binary from GitHub releases)
+          build_method: download tarball from kubescape/kubescape releases
+          fips_achievable: true
+          fips_approach: |
+            Kubescape is pure Go. Build from source with GOEXPERIMENT=boringcrypto.
+            Uses Go crypto for API server communication and policy downloads.
           crypto_deps:
-            - openssl
-          priority: high
-          variant: mysql-fips
-        - name: mariadb
-          current_base: debian:bookworm-slim
-          fips_base: debian:bookworm-slim
-          fips_reason: "MariaDB uses OpenSSL for TLS connections"
+            - golang.org/x/crypto (via boringcrypto)
+          required_changes:
+            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
+            - "Switch final image from scratch to glibc-based image"
+            - "Set GOLANG_FIPS=1 at runtime"
+          priority: Medium
+          variant: kubescape-fips
+          effort: Medium
+
+        - name: opa
+          current_base: null
+          build_method: null
+          fips_achievable: true
+          fips_approach: |
+            OPA (Open Policy Agent) is pure Go. Build from source with
+            GOEXPERIMENT=boringcrypto. Not yet in the registry.
           crypto_deps:
-            - openssl
-          priority: high
-          variant: mariadb-fips
-        - name: redis
-          current_base: scratch
-          fips_base: debian:bookworm-slim
-          fips_reason: "Redis uses OpenSSL for TLS connections"
-          crypto_deps:
-            - openssl
-          priority: medium
-          variant: redis-fips
-        - name: mongodb
-          current_base: scratch
-          fips_base: debian:bookworm-slim
-          fips_reason: "MongoDB uses OpenSSL for TLS connections"
-          crypto_deps:
-            - openssl
-          priority: medium
-          variant: mongodb-fips
-        - name: rabbitmq
-          current_base: scratch
-          fips_base: debian:bookworm-slim
-          fips_reason: "RabbitMQ uses OpenSSL for TLS and SASL authentication"
-          crypto_deps:
-            - openssl
-          priority: medium
-          variant: rabbitmq-fips
-        - name: nats
-          current_base: scratch
-          fips_base: debian:bookworm-slim
-          fips_reason: "NATS uses Go crypto for TLS - requires Go BoringCrypto"
-          crypto_deps:
-            - golang.org/x/crypto
-          priority: low
-          variant: nats-fips
-        - name: minio
-          current_base: scratch
-          fips_base: debian:bookworm-slim
-          fips_reason: "MinIO uses Go crypto for S3 API TLS - requires Go BoringCrypto"
-          crypto_deps:
-            - golang.org/x/crypto
-          priority: medium
-          variant: minio-fips
-        - name: restic
-          current_base: scratch
-          fips_base: debian:bookworm-slim
-          fips_reason: "Restic uses Go crypto for backup encryption - requires FIPS mode"
-          crypto_deps:
-            - golang.org/x/crypto
-          priority: medium
-          variant: restic-fips
+            - golang.org/x/crypto (via boringcrypto)
+          required_changes:
+            - "Add to registry, build with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
+            - "Set GOLANG_FIPS=1 at runtime"
+          priority: Medium
+          variant: opa-fips
+          effort: Medium
 
   summary:
-    total_images: 40
+    total_images: 30
     by_priority:
-      high: 22
-      medium: 16
-      low: 2
+      Critical: 9
+      High: 14
+      Medium: 7
+      Low: 0
     by_category:
-      vpn_tunnels: 7
-      secrets: 3
-      tls_proxies: 6
-      identity: 4
-      security: 3
-      crypto_deps: 9
+      databases: 8
+      auth: 3
+      crypto: 5
+      monitoring: 5
+      networking: 5
+      security: 4
+    by_achievability:
+      achievable: 28
+      requires_upstream: 2
     by_crypto_backend:
-      openssl: 26
-      golang_boringcrypto: 14
+      openssl: 10
+      golang_boringcrypto: 18
       boringssl: 1
-      kernel_crypto: 1
-      nacl: 1
+      openssl_plus_bouncycastle: 1
+    by_build_change:
+      no_change_achievable: 1
+      rebuild_from_source: 18
+      use_enterprise_fips: 3
+      requires_upstream_changes: 2
+      not_in_registry: 2
     by_base_change:
-      scratch_to_debian: 18
-      scratch_to_debian_fips: 0
-      debian_to_debian_fips: 15
-      unchanged: 7
+      scratch_to_glibc: 15
+      wolfi_to_fips_wolfi: 6
+      scratch_to_debian: 4
+      unchanged: 3
+      not_applicable: 2
 
   build_notes:
-    fips_openssl_version: "3.0.x (FIPS provider module)"
-    golang_boringcrypto: "Go 1.24+ with GOEXPERIMENT=boringcrypto"
-    boringcrypto_note: "Envoy bundles BoringSSL - build with BoringCrypto enabled"
-    debian_fips_base: "debian:bookworm-slim with libssl3-fips installed"
-    fips_env_var: "OPENSSL_FIPS=1 (OpenSSL), GOLANG_FIPS=1 (Go BoringCrypto)"
+    openssl_fips_version: "3.0.x with FIPS provider module (openssl-fips-3.0.x)"
+    golang_boringcrypto: "Go 1.24+ with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
+    boringcrypto_note: "BoringCrypto requires CGO_ENABLED=1; cannot produce static scratch binaries"
+    boringcrypto_fips_cert: "FIPS 140-2 Certificate #4140 (BoringCrypto module in BoringSSL)"
+    debian_fips_base: "debian:bookworm-slim with libssl3 and openssl-fips-provider installed"
+    wolfi_fips_base: "cgr.dev/chainguard/wolfi-base-fips:latest (if available)"
+    fips_env_vars:
+      openssl: "OPENSSL_CONF=/etc/ssl/fipsmodule.cnf"
+      go: "GOLANG_FIPS=1"
+      java: "-Djava.security.properties=/etc/java/security.fips.properties"
+      vault: "VAULT_FIPS=1 (Enterprise only)"
+    scratch_limitation: >
+      BoringCrypto requires dynamic linking with glibc.
+      Images currently using FROM scratch must switch to a minimal
+      glibc-based image (debian:bookworm-slim or wolfi) for FIPS variants.
+      This increases image size but is required for FIPS compliance.
+
+  upstream_fips_status:
+    envoy: "Official FIPS build available via bazel --config=fips"
+    vault: "FIPS only via Enterprise edition"
+    consul: "FIPS only via Enterprise edition"
+    nginx: "FIPS via NGINX Plus (commercial) or source rebuild"
+    keycloak: "FIPS supported natively in Quarkus since Keycloak 26+"
+    mongodb: "FIPS via MongoDB Enterprise"
+    scylladb: "No FIPS support - requires upstream contribution"
+    falco: "No FIPS support - requires upstream contribution"
+    cockroachdb: "No official FIPS build - community source rebuild needed"
+    tidb: "No official FIPS build - community source rebuild needed"

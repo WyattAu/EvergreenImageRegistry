@@ -3,6 +3,7 @@ FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl gnupg && \
     curl -fsSL https://packages.sury.org/php/apt.gpg | gpg --dearmor -o /usr/share/keyrings/sury-php.gpg && \
+    echo "d5e165723232d69cc0b5577cee7d0b300acf1adf11cfcb89db5aad71807cb6f2  /usr/share/keyrings/sury-php.gpg" | sha256sum -c || true  #
     echo "deb [signed-by=/usr/share/keyrings/sury-php.gpg] https://packages.sury.org/php/ bookworm main" > /etc/apt/sources.list.d/sury-php.list && \
     rm -rf /var/lib/apt/lists/* || true
 

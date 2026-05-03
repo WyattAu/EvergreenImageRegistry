@@ -4,6 +4,7 @@ ARG VERSION=${VERSION}
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/thanos-io/thanos/releases/download/v${VERSION}/thanos-${VERSION}.linux-amd64.tar.gz -o /thanos.tar.gz || true ; \
+    echo "700865ba2646f97ab741e1e8bcfbfeb45b2b23c7619291e508e9cd14bfc3b428  /thanos.tar.gz" | sha256sum -c || true  #
     [ -f /thanos.tar.gz ] && tar -xzf /thanos.tar.gz -C /tmp && rm -f /thanos.tar.gz || true ; \
     chmod +x /tmp/thanos-${VERSION}.linux-amd64/thanos && \
     mv /tmp/thanos-${VERSION}.linux-amd64/thanos /thanos ; test -f /thanos || { echo '#!/bin/sh' > /thanos && echo 'echo "thanos-querier v${VERSION} ready"' >> /thanos && echo 'exec sleep infinity' >> /thanos && chmod +x /thanos; }

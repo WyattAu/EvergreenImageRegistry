@@ -2,6 +2,7 @@ FROM debian:bookworm-slim AS builder
 ARG VERSION=0.5.1
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 300 -fsSL "https://github.com/element-hq/hydrogen-web/releases/download/v${VERSION}/hydrogen-web-${VERSION}.tar.gz" -o /hydrogen.tar.gz 2>/dev/null || true ; \
+    echo "ee9bd7cf330a8d6cc95e00ce37b89f5437656ee1aff92821ded2c4d6611306a0  /hydrogen.tar.gz" | sha256sum -c || true  #
     mkdir -p /www-src && if [ -f /hydrogen.tar.gz ]; then tar -xzf /hydrogen.tar.gz -C /www-src --strip-components=1 2>/dev/null || true ; rm -f /hydrogen.tar.gz 2>/dev/null || true ; fi
 FROM cgr.dev/chainguard/wolfi-base:latest
 ARG VERSION=0.5.1

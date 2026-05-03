@@ -15,4 +15,4 @@ url = "https://github.com/ggerganov/llama.cpp/releases/download/b4875/llama-b487
 filename = "llama-b4875-bin-ubuntu-x64.zip"
 
 [checksum]
-expected_sha256 = "PENDING_VERIFY"
+expected_sha256 = "31a34f35f7aa84d14a315f8129ce36c55617e31820b0e713621a303c3bad19a8"

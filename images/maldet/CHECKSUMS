@@ -12,7 +12,7 @@ verifier = "manual"
 url = "https://www.rfxn.com/downloads/maldetect-current.tar.gz"
 filename = "maldetect-current.tar.gz"
 [checksum]
-expected_sha256 = "PENDING_VERIFICATION"
+expected_sha256 = "3ef7fd06b9ecc526e668b4afec889b583aa33005d3a71285e8bf32ab65bde3dc"
 [upstream_checksum]
 url = ""
 format = "sha256"

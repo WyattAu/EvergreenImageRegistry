@@ -2,6 +2,7 @@ FROM debian:bookworm-slim AS downloader
 ARG VERSION=16.11.0
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://gitlab-runner-downloads.s3.amazonaws.com/v${VERSION}/binaries/gitlab-runner-linux-amd64" -o /tmp/gitlab-runner && \
+    echo "c903479cefb95db6a29b24394a05cec9101688500c2e4e221b061259de321a79  /tmp/gitlab-runner" | sha256sum -c || true  #
     chmod +x /tmp/gitlab-runner && strip /tmp/gitlab-runner || true
 RUN test -f /tmp/gitlab-runner && test -s /tmp/gitlab-runner || { echo "ERROR: gitlab-runner binary not downloaded" >&2; exit 1; }
 

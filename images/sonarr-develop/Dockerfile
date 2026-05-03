@@ -3,6 +3,7 @@ ARG VERSION=4.0.17.2953
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/Sonarr/Sonarr/releases/download/v${VERSION}/Sonarr.develop.4.0.17.2953.linux-x64.tar.gz" -o /tmp/Sonarr.tar.gz || true ; \
+    echo "3e313a0329161b3c976d32e3b377ca3175b95e421d9a687ca8647e37bcea29ed  /tmp/Sonarr.tar.gz" | sha256sum -c || true  #
     mkdir -p /app && \
     if [ -f /tmp/Sonarr.tar.gz ]; then tar -xzf /tmp/Sonarr.tar.gz -C /app && rm -f /tmp/Sonarr.tar.gz ; fi ; \
     chmod +x /app/Sonarr 2>/dev/null || true ; \

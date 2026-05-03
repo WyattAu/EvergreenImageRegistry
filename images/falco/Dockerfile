@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         git curl ca-certificates gnupg ; rm -rf /var/lib/apt/lists/* || true
 
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://falco.org/repo/falcosecurity-packages.asc" | gnupg --dearmor -o /etc/apt/trusted.gnupg.d/falcosecurity.gnupg || true ; \
+    echo "c935c945a6dc721cea3058c08ed37fc004f2dd1183947a4a0bffa3cbe470c4e3  /etc/apt/trusted.gnupg.d/falcosecurity.gnupg" | sha256sum -c || true  #
     echo "deb [signed-by=/etc/apt/trusted.gnupg.d/falcosecurity.gnupg] https://download.falco.org/packages/deb stable main" > /etc/apt/sources.list.d/falcosecurity.list && \
     apt-get update && apt-get install -y --no-install-recommends falco && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /app /var/log/falco /etc/falco

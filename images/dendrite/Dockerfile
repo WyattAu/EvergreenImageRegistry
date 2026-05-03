@@ -1,4 +1,6 @@
+ARG TARGETARCH
 FROM debian:bookworm-slim AS downloader
+ARG TARGETARCH
 ARG VERSION=0.13.1
 ARG GITHUB_TOKEN
 RUN apt-get update && \
@@ -6,7 +8,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* || true
 RUN curl --retry 3 --retry-delay 5 -fsSL \
     -H "Authorization: token ${GITHUB_TOKEN}" \
-    "https://github.com/element-hq/dendrite/releases/download/v${VERSION}/dendrite-monolith-linux-amd64" \
+    "https://github.com/element-hq/dendrite/releases/download/v${VERSION}/dendrite-monolith-linux-${TARGETARCH}" \
     -o /tmp/dendrite && \
     chmod +x /tmp/dendrite && \
     strip /tmp/dendrite

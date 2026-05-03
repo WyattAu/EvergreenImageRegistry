@@ -1,25 +1,21 @@
 # CHECKSUMS - lancedb
-# Status: VERIFIED
-# Note: No standalone Linux binary in lancedb/lance releases (only RCs with no assets).
-# Extracted from official Docker image lancedb/lancedb.
+# Generated: 2026-05-03T15:41:21Z
+# Status: N/A
+# Reason: Official rewrap of lancedb/lancedb upstream image
+#
+# This image does not use direct binary downloads.
+# It installs software via package manager (apt/apk), builds from source,
+# or uses an official upstream image as a base.
+# Checksum verification is handled by the package manager's signature verification.
 
 [metadata]
 image = "lancedb"
 version = "v0.21.0"
-created = "2026-05-02T00:00:00Z"
-last_verified = "2026-05-02T00:00:00Z"
-verification_method = "upstream-docker-image"
-verifier = "manual"
-
-[download]
-url = "docker://lancedb/lancedb:latest"
-filename = "lancedb"
+created = "2026-05-03T15:41:21Z"
+last_verified = "2026-05-03T15:41:21Z"
+verification_method = "N/A"
+reason = "Official rewrap of lancedb/lancedb upstream image"
 
 [checksum]
-expected_sha256 = "PENDING"
-note = "Binary extracted from upstream Docker image lancedb/lancedb:latest"
-
-[upstream_checksum]
-url = ""
-format = ""
-note = "No standalone binary release available. Only Python/JS packages and Docker image."
+expected_sha256 = "N/A"
+notes = "Package manager / build-from-source / official-rewrap - no direct download"

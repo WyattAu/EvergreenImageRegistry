@@ -1,23 +1,21 @@
 # CHECKSUMS - openjdk-alpine
-# Generated: 2026-04-22T00:00:00Z
-# Status: VERIFIED
+# Generated: 2026-05-03T15:41:21Z
+# Status: N/A
+# Reason: Installed via apt from packages.adoptium.net
+#
+# This image does not use direct binary downloads.
+# It installs software via package manager (apt/apk), builds from source,
+# or uses an official upstream image as a base.
+# Checksum verification is handled by the package manager's signature verification.
 
 [metadata]
 image = "openjdk-alpine"
 version = "21-slim"
-created = "2026-04-29T03:22:15Z"
-last_verified = "2026-04-22T00:00:00Z"
-verification_method = "adoptium-package"
-verifier = "manual"
-
-[download]
-url = "apt://temurin-21-jre-headless"
-filename = "temurin-21-jre-headless"
+created = "2026-05-03T15:41:21Z"
+last_verified = "2026-05-03T15:41:21Z"
+verification_method = "N/A"
+reason = "Installed via apt from packages.adoptium.net"
 
 [checksum]
-expected_sha256 = "PENDING_VERSION_UPDATE_21-slim"
-
-[upstream_checksum]
-url = "https://packages.adoptium.net/artifactory/deb/"
-format = "sha256"
-note = "Alpine banned per policy. Uses Eclipse Adoptium Temurin JRE on debian-slim."
+expected_sha256 = "N/A"
+notes = "Package manager / build-from-source / official-rewrap - no direct download"

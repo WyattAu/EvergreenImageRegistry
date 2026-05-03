@@ -10,6 +10,7 @@ ARG BUILD_DATE
 # hadolint ignore=DL3023
 
 FROM debian:bookworm-slim AS builder
+ARG TARGETARCH
 ARG VERSION
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}

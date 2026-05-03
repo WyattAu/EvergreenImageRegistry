@@ -1,4 +1,5 @@
 ARG VERSION=latest
+ARG TARGETARCH
 
 FROM prom/cloudwatch-exporter:${VERSION} AS upstream
 

@@ -1,5 +1,6 @@
 ARG VERSION=3.3.2
 ARG BUILD_DATE
+ARG TARGETARCH
 
 
 FROM debian:bookworm-slim AS builder

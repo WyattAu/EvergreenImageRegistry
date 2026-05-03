@@ -1,4 +1,5 @@
 ARG VERSION=1.24.0
+ARG TARGETARCH
 ARG BUILD_DATE
 
 FROM gcr.io/kaniko-project/executor:v1.24.0 AS upstream

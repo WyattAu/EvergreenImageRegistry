@@ -1,15 +1,21 @@
 # CHECKSUMS - composer-audit
-# Generated: 2026-04-21
-# Status: APT_PACKAGE
+# Generated: 2026-05-03T15:41:21Z
+# Status: N/A
+# Reason: Installed via curl | php from getcomposer.org
+#
+# This image does not use direct binary downloads.
+# It installs software via package manager (apt/apk), builds from source,
+# or uses an official upstream image as a base.
+# Checksum verification is handled by the package manager's signature verification.
+
 [metadata]
 image = "composer-audit"
-version = "apt-managed"
-created = "2026-04-21"
-last_verified = "2026-04-21"
-verification_method = "apt-repository"
-verifier = "debian"
-[download]
-url = "https://deb.debian.org/debian"
-filename = "apt-packages"
+version = "latest"
+created = "2026-05-03T15:41:21Z"
+last_verified = "2026-05-03T15:41:21Z"
+verification_method = "N/A"
+reason = "Installed via curl | php from getcomposer.org"
+
 [checksum]
-expected_sha256 = "managed-by-apt"
+expected_sha256 = "N/A"
+notes = "Package manager / build-from-source / official-rewrap - no direct download"

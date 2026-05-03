@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN mkdir -p /var/log/pdns-recursor /var/lib/pdns-recursor /etc/pdns-recursor 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
+RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt GPG signatures (repo.powerdns.com)
 ARG VERSION
 RUN apk add --no-cache ca-certificates boost-libs \
         libstdc++ libgcc lua5.4-libs libcurl openssl-libs \

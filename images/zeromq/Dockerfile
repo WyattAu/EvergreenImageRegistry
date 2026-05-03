@@ -7,12 +7,14 @@
 
 ARG VERSION=4.3.5
 ARG BUILD_DATE
+ARG TARGETARCH
 
 # hadolint ignore=DL3023
 
 FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION=4.3.5
+ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake curl ca-certificates \
     libsodium-dev libpgm-dev libnorm-dev && rm -rf /var/lib/apt/lists/* || true

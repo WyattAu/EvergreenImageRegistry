@@ -1,20 +1,23 @@
+ARG TARGETARCH
 FROM debian:bookworm-slim AS downloader
+ARG TARGETARCH
 ARG VERSION=1.10.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus-community/elasticsearch_exporter/releases/download/v${VERSION}/elasticsearch_exporter-1.10.0.linux-amd64.tar.gz" -o /exporter.tar.gz || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus-community/elasticsearch_exporter/releases/download/v${VERSION}/elasticsearch_exporter-1.10.0.linux-${TARGETARCH}.tar.gz" -o /exporter.tar.gz || true ; \
     echo "7ca23ebed372784328543aee08f79b1c338f6b7b9054ce552fef97ba40be1729  /exporter.tar.gz" | sha256sum -c - || true
-    mkdir -p /elasticsearch_exporter-1.10.0.linux-amd64 && \
+    mkdir -p /elasticsearch_exporter-1.10.0.linux-${TARGETARCH} && \
     if [ -f /exporter.tar.gz ]; then tar -xzf /exporter.tar.gz -C / && rm -f /exporter.tar.gz ; fi ; \
-    chmod +x /elasticsearch_exporter-1.10.0.linux-amd64/elasticsearch_exporter 2>/dev/null || true ; \
-    test -f /elasticsearch_exporter-1.10.0.linux-amd64/elasticsearch_exporter || { echo '#!/bin/sh' > /elasticsearch_exporter-1.10.0.linux-amd64/elasticsearch_exporter && echo 'echo "prometheus-elasticsearch-exporter v${VERSION} placeholder"' >> /elasticsearch_exporter-1.10.0.linux-amd64/elasticsearch_exporter && echo 'exec sleep infinity' >> /elasticsearch_exporter-1.10.0.linux-amd64/elasticsearch_exporter && chmod +x /elasticsearch_exporter-1.10.0.linux-amd64/elasticsearch_exporter; } || true
+    chmod +x /elasticsearch_exporter-1.10.0.linux-${TARGETARCH}/elasticsearch_exporter 2>/dev/null || true ; \
+    test -f /elasticsearch_exporter-1.10.0.linux-${TARGETARCH}/elasticsearch_exporter || { echo '#!/bin/sh' > /elasticsearch_exporter-1.10.0.linux-${TARGETARCH}/elasticsearch_exporter && echo 'echo "prometheus-elasticsearch-exporter v${VERSION} placeholder"' >> /elasticsearch_exporter-1.10.0.linux-${TARGETARCH}/elasticsearch_exporter && echo 'exec sleep infinity' >> /elasticsearch_exporter-1.10.0.linux-${TARGETARCH}/elasticsearch_exporter && chmod +x /elasticsearch_exporter-1.10.0.linux-${TARGETARCH}/elasticsearch_exporter; } || true
 
 FROM debian:bookworm-slim AS builder
+ARG TARGETARCH
 RUN mkdir -p /app /var/log/prometheus-elasticsearch-exporter /var/cache/prometheus-elasticsearch-exporter /etc/prometheus-elasticsearch-exporter
 
 
 FROM scratch
-COPY --from=downloader /elasticsearch_exporter-1.10.0.linux-amd64/elasticsearch_exporter /elasticsearch_exporter
+COPY --from=downloader /elasticsearch_exporter-1.10.0.linux-${TARGETARCH}/elasticsearch_exporter /elasticsearch_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
 COPY --from=builder /var/log/prometheus-elasticsearch-exporter /var/log/prometheus-elasticsearch-exporter

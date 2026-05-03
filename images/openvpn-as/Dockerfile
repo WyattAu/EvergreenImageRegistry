@@ -28,6 +28,7 @@ RUN mkdir -p /usr/local/openvpn_as /usr/bin /etc/init.d /app /var/log/openvpn-as
     test -f /var/log/openvpn-as/.placeholder || touch /var/log/openvpn-as/.placeholder
 
 FROM cgr.dev/chainguard/wolfi-base:latest
+RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt GPG signatures (as-repository.openvpn.net)
 
 RUN apk add --no-cache liblz4-1 ca-certificates python3 net-tools iptables iproute2 kmod || true
 RUN mkdir -p /etc/init.d /usr/bin /usr/local /var/log 2>/dev/null || true

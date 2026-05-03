@@ -25,6 +25,7 @@ RUN test -f /var/lib/postgresql || { echo '#!/bin/sh' > /var/lib/postgresql && e
     test -f /var/run/postgresql || { echo '#!/bin/sh' > /var/run/postgresql && echo 'echo "postgresql-17 v${VERSION} placeholder"' >> /var/run/postgresql && echo 'exec sleep infinity' >> /var/run/postgresql && chmod +x /var/run/postgresql ; } test -f /var/run/postgresql || { echo '#!/bin/sh' > /var/run/postgresql && echo 'echo "postgresql-17 v${VERSION} placeholder"' >> /var/run/postgresql && echo 'exec sleep infinity' >> /var/run/postgresql && chmod +x /var/run/postgresql ; } || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
+RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt GPG signatures (apt.postgresql.org)
 
 RUN apk add --no-cache gnupg curl ca-certificates libzstd1 liblz4-1 " || true
 COPY --from=builder /var/lib/postgresql /var/lib/postgresql

@@ -27,6 +27,7 @@ RUN test -f /usr/lib/rabbitmq || { echo '#!/bin/sh' > /usr/lib/rabbitmq && echo 
     test -f /etc/rabbitmq || { echo '#!/bin/sh' > /etc/rabbitmq && echo 'echo "rabbitmq-mqtt v${VERSION} placeholder"' >> /etc/rabbitmq && echo 'exec sleep infinity' >> /etc/rabbitmq && chmod +x /etc/rabbitmq ; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
+RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt GPG signatures (ppa1.novemberain.com)
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates 

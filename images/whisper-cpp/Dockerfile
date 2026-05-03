@@ -1,6 +1,8 @@
 ARG VERSION=1.8.4
+ARG TARGETARCH
 
 FROM debian:bookworm-slim AS builder
+ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
     cmake g++ make git wget ca-certificates && \
     rm -rf /var/lib/apt/lists/*

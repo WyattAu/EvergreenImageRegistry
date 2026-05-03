@@ -1,4 +1,5 @@
 ARG VERSION=latest
+ARG TARGETARCH
 
 FROM gcr.io/google-containers/prometheus-to-sd:${VERSION} AS upstream
 

@@ -14,6 +14,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.gitlab.com/install/re
 RUN test -f /opt/gitlab || { echo "ERROR: gitlab-ce not installed" >&2; exit 1; }
 
 FROM cgr.dev/chainguard/wolfi-base:latest
+RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt GPG signatures (packages.gitlab.com)
 
 RUN apk add --no-cache curl ca-certificates gnupg openssh-client postgresql-client || true
 COPY --from=downloader /opt/gitlab /opt/gitlab

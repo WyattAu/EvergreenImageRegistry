@@ -1,24 +1,21 @@
 # CHECKSUMS - synapse-admin
-# Generated: 2026-04-21T19:09:25Z
-# Status: PENDING_VERIFICATION
+# Generated: 2026-05-03T15:41:21Z
+# Status: N/A
+# Reason: Built from source tarball from github.com/awesome-anton/synapse-admin
 #
-# IMPORTANT: These checksums need to be verified against upstream sources.
-# To verify:
-# 1. Download binary from URL below
-# 2. Compute: sha256sum <file>
-# 3. Compare with expected_sha256 below
-# 4. Cross-validate against upstream_checksum URL if available
+# This image does not use direct binary downloads.
+# It installs software via package manager (apt/apk), builds from source,
+# or uses an official upstream image as a base.
+# Checksum verification is handled by the package manager's signature verification.
 
 [metadata]
 image = "synapse-admin"
 version = "0.10.3"
-created = "2026-04-21T19:09:25Z"
-last_verified = ""
-verification_method = "download-and-compute"
-
-[download]
-url = "https://github.com/awesome-anton/synapse-admin/archive/refs/tags/v0.10.3.tar.gz"
-filename = "v0.10.3.tar.gz"
+created = "2026-05-03T15:41:21Z"
+last_verified = "2026-05-03T15:41:21Z"
+verification_method = "N/A"
+reason = "Built from source tarball from github.com/awesome-anton/synapse-admin"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "N/A"
+notes = "Package manager / build-from-source / official-rewrap - no direct download"

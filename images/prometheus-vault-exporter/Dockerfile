@@ -1,4 +1,5 @@
 ARG VERSION=latest
+ARG TARGETARCH
 
 FROM grafana/vault_exporter:${VERSION} AS upstream
 

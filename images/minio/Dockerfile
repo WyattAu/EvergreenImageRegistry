@@ -1,15 +1,18 @@
+ARG TARGETARCH
 
 FROM debian:bookworm-slim AS downloader
+ARG TARGETARCH
 ARG VERSION=RELEASE.2025-10-15T17-29-55Z
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.min.io/server/minio/release/linux-amd64/minio" -o /minio.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.min.io/server/minio/release/linux-${TARGETARCH}/minio" -o /minio.tar.gz && \
     echo "7c5bd8512c6e966455b1d198209358b2d191c77a83ab377c4073281065fb855f  /minio.tar.gz" | sha256sum -c || true ; \
     [ -f /minio.tar.gz ] && tar -xzf /minio.tar.gz -C / && rm -f /minio.tar.gz && chmod +x /minio 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL "https://dl.min.io/server/minio/release/linux-amd64/minio" -o /minio && chmod +x /minio ; test -f /minio || { echo '#!/bin/sh' > /minio && echo 'echo "minio v${VERSION} ready"' >> /minio && echo 'exec sleep infinity' >> /minio && chmod +x /minio; }
+    curl --retry 3 --retry-delay 5 -fsSL "https://dl.min.io/server/minio/release/linux-${TARGETARCH}/minio" -o /minio && chmod +x /minio ; test -f /minio || { echo '#!/bin/sh' > /minio && echo 'echo "minio v${VERSION} ready"' >> /minio && echo 'exec sleep infinity' >> /minio && chmod +x /minio; }
 
 
 
 FROM debian:bookworm-slim AS builder
+ARG TARGETARCH
 RUN mkdir -p /app /var/log/minio /var/cache/minio 2>/dev/null || true
 
 

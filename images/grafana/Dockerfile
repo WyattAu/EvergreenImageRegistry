@@ -1,3 +1,4 @@
+ARG TARGETARCH
 # =============================================================================
 # SOVEREIGN HARDENED GRAFANA
 # Grafana observability dashboard (builds from source)
@@ -9,12 +10,13 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS builder
+ARG TARGETARCH
 ARG GITHUB_TOKEN
 ARG VERSION=11.0.0
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates tar && \
     rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-amd64.tar.gz" -o /grafana.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /grafana.tar.gz && \
     echo "97c70aa4fd11aa75bbb575d7d48764cb3a6c3356b53f34c7750c0dd7e006204d  /grafana.tar.gz" | sha256sum -c || true ; \
     if [ -f /grafana.tar.gz ]; then tar -xzf /grafana.tar.gz -C /opt && rm -f /grafana.tar.gz ; fi ; \
     mkdir -p /opt/grafana-${VERSION}/bin 2>/dev/null || true ; \

@@ -1,6 +1,8 @@
 ARG VERSION=1.20.0
+ARG TARGETARCH
 
 FROM debian:bookworm-slim AS builder
+ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libssl-dev libexpat1-dev libevent-dev && \
     rm -rf /var/lib/apt/lists/*

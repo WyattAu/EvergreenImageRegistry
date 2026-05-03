@@ -1,3 +1,4 @@
+ARG TARGETARCH
 # =============================================================================
 # SOVEREIGN HARDENED RQLITE
 # Generated from template - Version: 8.10.0
@@ -10,12 +11,13 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-20250113-slim AS builder
+ARG TARGETARCH
 ARG GITHUB_TOKEN
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/rqlite/rqlite/releases/download/v${VERSION}/rqlite-v${VERSION}-linux-amd64.tar.gz -o /tmp/rqlite.tgz ; echo "fc3a01db82f24190e325adffd78b2fc9e2511451a356af33b4417db6a689554e  /tmp/rqlite.tgz" | sha256sum -c || true  ; [ -f /tmp/rqlite.tgz ] && tar -xzf /tmp/rqlite.tgz -C /tmp || true ; \
-    strip --strip-all /tmp/rqlite-v${VERSION}-linux-amd64/rqlite ; strip --strip-all /tmp/rqlite-v${VERSION}-linux-amd64/rqlited \
-    && mv /tmp/rqlite-v${VERSION}-linux-amd64/rqlite /usr/local/bin/rqlite ; mv /tmp/rqlite-v${VERSION}-linux-amd64/rqlited /usr/local/bin/rqlited ; rm -rf /tmp/rqlite.tgz /tmp/rqlite-v${VERSION}-linux-amd64
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/rqlite/rqlite/releases/download/v${VERSION}/rqlite-v${VERSION}-linux-${TARGETARCH}.tar.gz -o /tmp/rqlite.tgz ; echo "fc3a01db82f24190e325adffd78b2fc9e2511451a356af33b4417db6a689554e  /tmp/rqlite.tgz" | sha256sum -c || true  ; [ -f /tmp/rqlite.tgz ] && tar -xzf /tmp/rqlite.tgz -C /tmp || true ; \
+    strip --strip-all /tmp/rqlite-v${VERSION}-linux-${TARGETARCH}/rqlite ; strip --strip-all /tmp/rqlite-v${VERSION}-linux-${TARGETARCH}/rqlited \
+    && mv /tmp/rqlite-v${VERSION}-linux-${TARGETARCH}/rqlite /usr/local/bin/rqlite ; mv /tmp/rqlite-v${VERSION}-linux-${TARGETARCH}/rqlited /usr/local/bin/rqlited ; rm -rf /tmp/rqlite.tgz /tmp/rqlite-v${VERSION}-linux-${TARGETARCH}
 
 RUN mkdir -p /usr/local/bin/rqlite ; 2>/dev/null || true \
     mkdir -p /usr/local/bin/rqlited

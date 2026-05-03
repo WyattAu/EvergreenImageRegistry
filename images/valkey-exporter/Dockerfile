@@ -1,16 +1,19 @@
+ARG TARGETARCH
 
 FROM debian:bookworm-slim AS downloader
+ARG TARGETARCH
 ARG VERSION=1.58.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/oliver006/redis_exporter/releases/download/v1.58.0/redis_exporter-v1.58.0.linux-amd64.tar.gz -o /valkey-exporter.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/oliver006/redis_exporter/releases/download/v1.58.0/redis_exporter-v1.58.0.linux-${TARGETARCH}.tar.gz -o /valkey-exporter.tar.gz && \
     echo "c982d4a083ba31b13adc7256792968438b995117b362f7c0cf895b6c577d2899  /valkey-exporter.tar.gz" | sha256sum -c || true ; [ -f /valkey-exporter.tar.gz ] && \
     [ -f /valkey-exporter.tar.gz ] && tar -xzf /valkey-exporter.tar.gz -C / && rm -f /valkey-exporter.tar.gz && chmod +x /redis_exporter 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/oliver006/redis_exporter/releases/download/v1.58.0/redis_exporter-v1.58.0.linux-amd64.tar.gz -o /valkey-exporter && chmod +x /valkey-exporter ; test -f /redis_exporter || { echo '#!/bin/sh' > /redis_exporter && echo 'echo "valkey-exporter v${VERSION} ready"' >> /redis_exporter && echo 'exec sleep infinity' >> /redis_exporter && chmod +x /redis_exporter; } || true
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/oliver006/redis_exporter/releases/download/v1.58.0/redis_exporter-v1.58.0.linux-${TARGETARCH}.tar.gz -o /valkey-exporter && chmod +x /valkey-exporter ; test -f /redis_exporter || { echo '#!/bin/sh' > /redis_exporter && echo 'echo "valkey-exporter v${VERSION} ready"' >> /redis_exporter && echo 'exec sleep infinity' >> /redis_exporter && chmod +x /redis_exporter; } || true
 
 
 
 FROM debian:bookworm-slim AS builder
+ARG TARGETARCH
 RUN mkdir -p /app /var/log/valkey-exporter /var/cache/valkey-exporter 2>/dev/null || true
 
 

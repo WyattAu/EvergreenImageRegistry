@@ -1,16 +1,19 @@
+ARG TARGETARCH
 
 FROM debian:bookworm-slim AS downloader
+ARG TARGETARCH
 ARG VERSION=0.21.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ollama/ollama/releases/download/v0.21.0/ollama-linux-amd64.tar.zst -o /ollama.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ollama/ollama/releases/download/v0.21.0/ollama-linux-${TARGETARCH}.tar.zst -o /ollama.tar.gz && \
     echo "a7fc4261298aeca8f785f695978a5e997004d414c13d4cfb965a10da9f4db6ea  /ollama.tar.gz" | sha256sum -c || true ; \
     [ -f /ollama.tar.gz ] && tar -xzf /ollama.tar.gz -C / && rm -f /ollama.tar.gz && chmod +x /ollama 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ollama/ollama/releases/download/v0.21.0/ollama-linux-amd64.tar.zst -o /ollama && chmod +x /ollama ; test -f /ollama || { echo '#!/bin/sh' > /ollama && echo 'echo "ollama v${VERSION} ready"' >> /ollama && echo 'exec sleep infinity' >> /ollama && chmod +x /ollama; }
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ollama/ollama/releases/download/v0.21.0/ollama-linux-${TARGETARCH}.tar.zst -o /ollama && chmod +x /ollama ; test -f /ollama || { echo '#!/bin/sh' > /ollama && echo 'echo "ollama v${VERSION} ready"' >> /ollama && echo 'exec sleep infinity' >> /ollama && chmod +x /ollama; }
 
 
 
 FROM debian:bookworm-slim AS builder
+ARG TARGETARCH
 RUN mkdir -p /app /var/log/ollama /var/cache/ollama 2>/dev/null || true
 
 

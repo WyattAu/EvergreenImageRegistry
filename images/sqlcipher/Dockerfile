@@ -6,10 +6,12 @@
 
 ARG VERSION=4.5.6
 ARG BUILD_DATE
+ARG TARGETARCH
 
 
 FROM debian:bookworm-slim AS builder
 ARG VERSION=4.5.6
+ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libssl-dev tcl8.6-dev wget ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true

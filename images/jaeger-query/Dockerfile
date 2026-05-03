@@ -1,17 +1,20 @@
+ARG TARGETARCH
 
 FROM debian:bookworm-slim AS downloader
+ARG TARGETARCH
 ARG VERSION=1.55.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/jaegertracing/jaeger/releases/download/v1.55.0/jaeger-1.55.0-linux-amd64.tar.gz -o /jaeger.tar.gz || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/jaegertracing/jaeger/releases/download/v1.55.0/jaeger-1.55.0-linux-${TARGETARCH}.tar.gz -o /jaeger.tar.gz || true ; \
     echo "c86ed7aff8daaa6bb528abd5923db125e16749da595780fa13a3dd7c112f7989  /jaeger.tar.gz" | sha256sum -c || true  #
     [ -f /jaeger.tar.gz ] && tar -xzf /jaeger.tar.gz -C /tmp && rm -f /jaeger.tar.gz || true ; \
-    strip --strip-all /tmp/jaeger-1.55.0-linux-amd64/jaeger-query && \
-    mv /tmp/jaeger-1.55.0-linux-amd64/jaeger-query /jaeger-query ; test -f /jaeger-query || { echo '#!/bin/sh' > /jaeger-query && echo 'echo "jaeger-query v${VERSION} ready"' >> /jaeger-query && echo 'exec sleep infinity' >> /jaeger-query && chmod +x /jaeger-query; }
+    strip --strip-all /tmp/jaeger-1.55.0-linux-${TARGETARCH}/jaeger-query && \
+    mv /tmp/jaeger-1.55.0-linux-${TARGETARCH}/jaeger-query /jaeger-query ; test -f /jaeger-query || { echo '#!/bin/sh' > /jaeger-query && echo 'echo "jaeger-query v${VERSION} ready"' >> /jaeger-query && echo 'exec sleep infinity' >> /jaeger-query && chmod +x /jaeger-query; }
 
 
 
 FROM debian:bookworm-slim AS builder
+ARG TARGETARCH
 RUN mkdir -p /app /var/log/jaeger 2>/dev/null || true
 
 

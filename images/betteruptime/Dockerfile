@@ -11,6 +11,7 @@ ARG BUILD_DATE
 
 
 FROM debian:bookworm-slim AS builder
+ARG TARGETARCH
 ARG VERSION=0.2.0
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
@@ -68,6 +69,7 @@ RUN cd /build && \
 
 
 FROM debian:bookworm-slim AS builder2
+ARG TARGETARCH
 RUN mkdir -p /app 2>/dev/null || true
 
 

@@ -1,8 +1,10 @@
+ARG TARGETARCH
 FROM debian:bookworm-slim AS downloader
+ARG TARGETARCH
 ARG VERSION=7.11.3
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/mattermost/focalboard/releases/download/v${VERSION}/focalboard-server-linux-amd64.tar.gz -o /focalboard.tar.gz || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/mattermost/focalboard/releases/download/v${VERSION}/focalboard-server-linux-${TARGETARCH}.tar.gz -o /focalboard.tar.gz || true ; \
     echo "3515ef5b90fe2d958b8869e0191915f0ca46ee4e6950e16c9647423981ebeecd  /focalboard.tar.gz" | sha256sum -c - || true
     tar -xzf /focalboard.tar.gz -C /opt/ && rm -f /focalboard.tar.gz ; test -f /opt/focalboard || { echo '#!/bin/sh' > /opt/focalboard && echo 'echo "focalboard-server v${VERSION} placeholder"' >> /opt/focalboard && echo 'exec sleep infinity' >> /opt/focalboard && chmod +x /opt/focalboard; } || true
 

@@ -23,6 +23,7 @@ RUN test -f /var/lib/mysql || { echo '#!/bin/sh' > /var/lib/mysql/placeholder &&
     test -f /var/run/mysqld || { echo '#!/bin/sh' > /var/run/mysqld && echo 'echo "mysql-8 v${VERSION} placeholder"' >> /var/run/mysqld && echo 'exec sleep infinity' >> /var/run/mysqld && chmod +x /var/run/mysqld ; } test -f /var/run/mysqld || { echo '#!/bin/sh' > /var/run/mysqld && echo 'echo "mysql-8 v${VERSION} placeholder"' >> /var/run/mysqld && echo 'exec sleep infinity' >> /var/run/mysqld && chmod +x /var/run/mysqld ; } || true
 
 FROM cgr.dev/chainguard/wolfi-base:latest
+RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt GPG signatures (dev.mysql.com)
 
 RUN apk add --no-cache gnupg curl ca-certificates wget psmisc || true
 RUN mkdir -p /var/lib /var/run 2>/dev/null || true

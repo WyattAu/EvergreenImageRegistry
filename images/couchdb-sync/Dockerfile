@@ -1,3 +1,4 @@
+ARG TARGETARCH
 
 FROM debian:bookworm-slim AS downloader
 ARG VERSION=3.3.3

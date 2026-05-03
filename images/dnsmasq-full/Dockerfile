@@ -1,5 +1,6 @@
 FROM debian:bookworm-slim AS builder
 ARG VERSION=2.90
+ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libnetfilter-conntrack-dev libidn2-dev \
     libdbus-1-dev libgmp-dev && \

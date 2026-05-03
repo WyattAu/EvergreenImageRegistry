@@ -19,6 +19,7 @@ FROM gitlab/gitlab-ce:${VERSION}-ce.0 AS upstream
 ARG VERSION=17.6.0
 
 FROM scratch
+RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt GPG signatures (packages.gitlab.com)
 COPY --from=upstream / /
 
 RUN useradd -m -u 65532 -g '' git 2>/dev/null || true

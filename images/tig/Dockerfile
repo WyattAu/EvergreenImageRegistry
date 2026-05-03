@@ -7,11 +7,13 @@
 
 ARG VERSION=2.5.8
 ARG BUILD_DATE
+ARG TARGETARCH
 
 
 FROM debian:bookworm-slim AS builder
 ARG GITHUB_TOKEN
 ARG VERSION=2.5.8
+ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libncurses-dev zlib1g-dev git curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true

@@ -1,0 +1,35 @@
+[metadata]
+name = "miniflux-21"
+version = "2.2.19"
+description = "miniflux-21 container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/miniflux"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/miniflux/v2/releases/download/2.2.19"
+"org.opencontainers.image.title" = "miniflux-21"
+"org.opencontainers.image.vendor" = "miniflux/v2"
+"org.opencontainers.image.version" = "2.2.19"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

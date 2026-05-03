@@ -1,0 +1,31 @@
+[metadata]
+name = "it-tools-legacy"
+version = "unknown"
+description = "IT Tools - legacy version (debian-slim, no Alpine)"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["node", "server.js"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "IT Tools - legacy version (debian-slim, no Alpine)"
+"org.opencontainers.image.source" = "https://github.com/CorentinTh/it-tools"
+"org.opencontainers.image.title" = "it-tools-legacy"
+"org.opencontainers.image.vendor" = "CorentinTh"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.no_alpine" = "true"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

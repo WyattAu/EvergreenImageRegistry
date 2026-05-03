@@ -1,0 +1,37 @@
+[metadata]
+name = "ct-log"
+version = "1.3.3"
+description = "ct-log container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/ct-log"]
+
+[ports]
+expose = [6962, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/google/certificate-transparency-go"
+"org.opencontainers.image.title" = "ct-log"
+"org.opencontainers.image.vendor" = "Google"
+"org.opencontainers.image.version" = "1.3.3"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "security"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

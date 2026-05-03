@@ -8,35 +8,32 @@ license = "Apache-2.0"
 tier = "3"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/bind/bind/releases/download/v9.21.21/bind-9.21.21-linux-amd64.tar.gz"
-binary_name = "bind"
-filename = "bind-9.21.21-linux-amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["/named"]
 
 [ports]
-application = 53
-metrics = 9101
+expose = [53, 9101]
 
 [labels]
 "org.opencontainers.image.title" = "bind"
-"org.opencontainers.image.description" = "BIND - DNS server software"
-"org.opencontainers.image.version" = "9.21.21"
 "org.opencontainers.image.vendor" = "ISC"
-"org.opencontainers.image.source" = "https://github.com/isc-projects/bind9"
-"sovereign.image.tier" = "3"
+"org.opencontainers.image.version" = "9.21.21"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
-"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.init-system" = "none"
 "sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

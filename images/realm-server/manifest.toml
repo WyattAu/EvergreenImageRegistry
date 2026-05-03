@@ -1,0 +1,33 @@
+[metadata]
+name = "realm-server"
+version = "latest"
+description = "Sovereign hardened MongoDB Realm Server - application backend platform"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "realm/mongodb-realm:${VERSION}"
+
+[runtime]
+entrypoint = ["/opt/realm/bin/realm-server"]
+
+[ports]
+expose = [9090, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened MongoDB Realm Server - application backend platform"
+"org.opencontainers.image.title" = "realm-server"
+"org.opencontainers.image.vendor" = "MongoDB"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "database"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

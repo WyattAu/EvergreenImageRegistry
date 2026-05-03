@@ -1,0 +1,33 @@
+[metadata]
+name = "crane"
+version = "0.21.5"
+description = "Sovereign hardened crane - container registry client"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/crane"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened crane - container registry client"
+"org.opencontainers.image.title" = "crane"
+"org.opencontainers.image.vendor" = "Google"
+"org.opencontainers.image.version" = "0.21.5"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.shutdown-timeout" = "5s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

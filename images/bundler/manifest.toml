@@ -1,0 +1,30 @@
+[metadata]
+name = "bundler"
+version = "2.5.0"
+description = "bundler container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["bundle"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/rubygems/rubygems"
+"org.opencontainers.image.title" = "bundler"
+"org.opencontainers.image.vendor" = "Ruby Bundler"
+"org.opencontainers.image.version" = "2.5.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

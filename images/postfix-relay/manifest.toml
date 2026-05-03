@@ -1,0 +1,33 @@
+[metadata]
+name = "postfix-relay"
+version = "3.7.6"
+description = "Postfix Relay - mail transfer agent in relay-only mode"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["postfix", "-c", "/etc/postfix", "start-fg"]
+
+[ports]
+expose = [25, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Postfix Relay - mail transfer agent in relay-only mode"
+"org.opencontainers.image.source" = "https://www.postfix.org"
+"org.opencontainers.image.title" = "postfix-relay"
+"org.opencontainers.image.vendor" = "Wietse Venema"
+"org.opencontainers.image.version" = "3.7.6"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.debian-slim" = "true"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.image.variant" = "relay"
+"sovereign.metrics.native" = "ztunnel"
+

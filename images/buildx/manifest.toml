@@ -1,0 +1,33 @@
+[metadata]
+name = "buildx"
+version = "0.33.0"
+description = "Sovereign hardened buildx - Docker multi-platform build"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/buildx"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened buildx - Docker multi-platform build"
+"org.opencontainers.image.title" = "buildx"
+"org.opencontainers.image.vendor" = "Docker"
+"org.opencontainers.image.version" = "0.33.0"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.shutdown-timeout" = "5s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

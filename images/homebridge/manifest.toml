@@ -1,0 +1,30 @@
+[metadata]
+name = "homebridge"
+version = "unknown"
+description = "Homebridge - Bring Siri to your smart home"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["homebridge"]
+
+[ports]
+expose = [51826, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Homebridge - Bring Siri to your smart home"
+"org.opencontainers.image.source" = "https://github.com/nfarina/homebridge"
+"org.opencontainers.image.title" = "homebridge"
+"org.opencontainers.image.vendor" = "nfarina"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

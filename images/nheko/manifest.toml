@@ -1,0 +1,33 @@
+[metadata]
+name = "nheko"
+version = "latest"
+description = "Nheko - desktop Matrix client (Qt/C++)"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "ghcr.io/nheko-reborn/nheko:${VERSION}"
+
+[runtime]
+entrypoint = ["nheko"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Nheko - desktop Matrix client (Qt/C++)"
+"org.opencontainers.image.source" = "https://github.com/Nheko-Reborn/nheko"
+"org.opencontainers.image.title" = "nheko"
+"org.opencontainers.image.vendor" = "Nheko"
+"org.opencontainers.image.version" = "2.4.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.debian-slim" = "true"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

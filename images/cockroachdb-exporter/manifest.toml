@@ -8,35 +8,36 @@ license = "Apache-2.0"
 tier = "3"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/cockroachdb-exporter/cockroachdb-exporter/releases/download/v24.3.3/cockroachdb-exporter-24.3.3-linux-amd64.tar.gz"
-binary_name = "cockroachdb-exporter"
-filename = "cockroachdb-exporter-24.3.3-linux-amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["/cockroach"]
+cmd = ["start", "--insecure", "--http-port=8080", "--prometheus-port=8080"]
 
 [ports]
-application = 8080
-metrics = 9101
+expose = [8080, 9101]
 
 [labels]
+"org.opencontainers.image.description" = "Sovereign hardened CockroachDB Prometheus exporter - database metrics via built-in endpoint"
 "org.opencontainers.image.title" = "cockroachdb-exporter"
-"org.opencontainers.image.description" = "CockroachDB Exporter - Prometheus exporter for CockroachDB"
-"org.opencontainers.image.version" = "24.3.3"
 "org.opencontainers.image.vendor" = "Cockroach Labs"
-"org.opencontainers.image.source" = "https://github.com/cockroachdb/cockroach"
-"sovereign.image.tier" = "3"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
-"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.init-system" = "none"
 "sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "5000ms"
+"sovereign.image.category" = "database"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

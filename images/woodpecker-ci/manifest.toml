@@ -4,38 +4,33 @@ version = "2.7.0"
 description = "Woodpecker CI Server - CI/CD server (woodpecker-ci is the server binary)"
 vendor = "Woodpecker CI"
 source = "https://github.com/woodpecker-ci/woodpecker"
-category = "cicd"
 tier = "2"
 
 [build]
 base = "scratch"
-arch = "amd64"
-
-[download]
-url = "https://github.com/woodpecker-ci/woodpecker/releases/download/v2.7.0/woodpecker-server_linux_amd64.tar.gz"
-filename = "woodpecker-server_linux_amd64.tar.gz"
-strip_components = 0
-binary_name = "woodpecker-server"
-checksum = "3ded2b21c58052b55c72948f5d215bba5be67443b2d5b87e14ae770bf77e881c"
-
-[container]
-port = 8000
-metrics_port = 9101
 user = "65532:65532"
-workdir = "/app"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://github.com/woodpecker-ci/woodpecker/releases/download/v2.7.0/woodpecker-server_linux_amd64.tar.gz"
+
+[runtime]
 entrypoint = ["/usr/local/bin/woodpecker-server"]
-stop_signal = "SIGTERM"
-nonroot = true
+
+[ports]
+expose = [8000, 9101]
 
 [labels]
-"org.opencontainers.image.title" = "woodpecker-ci"
 "org.opencontainers.image.description" = "Woodpecker CI Server - CI/CD server for Woodpecker CI"
-"org.opencontainers.image.vendor" = "Woodpecker CI"
 "org.opencontainers.image.source" = "https://github.com/woodpecker-ci/woodpecker"
+"org.opencontainers.image.title" = "woodpecker-ci"
+"org.opencontainers.image.vendor" = "Woodpecker CI"
 "org.opencontainers.image.version" = "2.7.0"
-"sovereign.image.tier" = "2"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

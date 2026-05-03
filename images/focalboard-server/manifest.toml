@@ -1,0 +1,37 @@
+[metadata]
+name = "focalboard-server"
+version = "7.11.3"
+description = "focalboard-server container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/opt/focalboard/bin/focalboard-server"]
+
+[ports]
+expose = [8000, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/mattermost/focalboard"
+"org.opencontainers.image.title" = "focalboard-server"
+"org.opencontainers.image.vendor" = "Mattermost"
+"org.opencontainers.image.version" = "7.11.3"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.base" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "10s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "30000ms"
+"sovereign.image.category" = "project-management"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

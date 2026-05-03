@@ -1,0 +1,31 @@
+[metadata]
+name = "lynis"
+version = "unknown"
+description = "Lynis - Security auditing tool"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/app/src/lynis"]
+cmd = ["audit", "system"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Lynis - Security auditing tool"
+"org.opencontainers.image.source" = "https://github.com/CISOfy/Lynis"
+"org.opencontainers.image.title" = "lynis"
+"org.opencontainers.image.vendor" = "CISOfy"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

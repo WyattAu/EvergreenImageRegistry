@@ -1,0 +1,37 @@
+[metadata]
+name = "trivy-operator"
+version = "0.30.1"
+description = "trivy-operator container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/trivy-operator"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/aquasecurity/trivy-operator"
+"org.opencontainers.image.title" = "trivy-operator"
+"org.opencontainers.image.vendor" = "Aqua Security"
+"org.opencontainers.image.version" = "0.30.1"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "security"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

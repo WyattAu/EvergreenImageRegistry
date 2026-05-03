@@ -8,33 +8,28 @@ license = "Apache-2.0"
 tier = "3"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
-arch = "amd64"
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/rabbitmq-management/rabbitmq-management/releases/download/v3.13.1/rabbitmq-management-3.13.1-linux-amd64.tar.gz"
-binary_name = "rabbitmq-management"
-filename = "rabbitmq-management-3.13.1-linux-amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = false
+[runtime]
+entrypoint = ["rabbitmq-server"]
 
 [ports]
-application = 5672
-metrics = 9101
+expose = [5672, 9101]
 
 [labels]
+"org.opencontainers.image.description" = "Sovereign hardened RabbitMQ Management - RabbitMQ with management UI plugin"
 "org.opencontainers.image.title" = "rabbitmq-management"
-"org.opencontainers.image.description" = "RabbitMQ Management - web-based management plugin for RabbitMQ"
-"org.opencontainers.image.version" = "3.13.1"
-"org.opencontainers.image.vendor" = "VMware"
-"org.opencontainers.image.source" = "https://github.com/rabbitmq/rabbitmq-server"
-"sovereign.image.tier" = "3"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "false"
-"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
-"sovereign.metrics.native" = "ztunnel"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
 "sovereign.health.type" = "exec"
+"sovereign.image.category" = "messaging"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

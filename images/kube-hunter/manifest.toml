@@ -1,0 +1,31 @@
+[metadata]
+name = "kube-hunter"
+version = "unknown"
+description = "KubeHunter - Kubernetes security scanner"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["kube-hunter"]
+cmd = ["--remote"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "KubeHunter - Kubernetes security scanner"
+"org.opencontainers.image.source" = "https://github.com/aquasecurity/kube-hunter"
+"org.opencontainers.image.title" = "kube-hunter"
+"org.opencontainers.image.vendor" = "Aqua Security"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

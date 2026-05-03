@@ -1,0 +1,27 @@
+[metadata]
+name = "musl"
+version = "unknown"
+description = "Sovereign musl-based static base for C/C++ compilation targets"
+
+[build]
+base = "cgr.dev/chainguard/static:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "base-image"
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign musl-based static base for C/C++ compilation targets"
+"org.opencontainers.image.title" = "musl"
+"sovereign.base.image" = "wolfi"
+"sovereign.health.type" = "none"
+"sovereign.image.category" = "base"
+"sovereign.image.note" = "Musl libc base for static binary builds. Use for Rust/C++ static targets."
+"sovereign.image.status" = "reference"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

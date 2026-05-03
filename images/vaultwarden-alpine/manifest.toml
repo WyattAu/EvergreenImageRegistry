@@ -1,0 +1,38 @@
+[metadata]
+name = "vaultwarden-alpine"
+version = "1.35.8"
+description = "vaultwarden-alpine container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "vaultwarden/server:1.35.8"
+
+[runtime]
+entrypoint = ["/vaultwarden"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/dani-garcia/vaultwarden"
+"org.opencontainers.image.title" = "vaultwarden-alpine"
+"org.opencontainers.image.vendor" = "dani-garcia"
+"org.opencontainers.image.version" = "1.35.8"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "secrets"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

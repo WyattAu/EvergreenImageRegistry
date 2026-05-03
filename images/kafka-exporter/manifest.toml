@@ -8,35 +8,35 @@ license = "Apache-2.0"
 tier = "3"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/kafka-exporter/kafka-exporter/releases/download/v1.8.0/kafka-exporter-1.8.0-linux-amd64.tar.gz"
-binary_name = "kafka-exporter"
-filename = "kafka-exporter-1.8.0-linux-amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["/kafka_exporter"]
 
 [ports]
-application = 9308
-metrics = 9101
+expose = [9308, 9101]
 
 [labels]
+"org.opencontainers.image.description" = "Sovereign hardened Kafka Exporter - Prometheus metrics for Apache Kafka"
 "org.opencontainers.image.title" = "kafka-exporter"
-"org.opencontainers.image.description" = "Kafka Exporter - Prometheus exporter for Apache Kafka"
-"org.opencontainers.image.version" = "1.8.0"
 "org.opencontainers.image.vendor" = "Prometheus"
-"org.opencontainers.image.source" = "https://github.com/danielqsj/kafka_exporter"
-"sovereign.image.tier" = "3"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
-"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.init-system" = "none"
 "sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "messaging"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

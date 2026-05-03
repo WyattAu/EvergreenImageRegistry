@@ -8,33 +8,28 @@ license = "Apache-2.0"
 tier = "3"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/telegraf/telegraf/releases/download/v1.30.3/telegraf-1.30.3-linux-amd64.tar.gz"
-binary_name = "telegraf"
-filename = "telegraf-1.30.3-linux-amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["/usr/bin/telegraf"]
 
 [ports]
-application = 8125
-metrics = 9101
+expose = [8125, 9101]
 
 [labels]
+"org.opencontainers.image.description" = "Sovereign hardened Telegraf - metrics collection agent by InfluxData"
 "org.opencontainers.image.title" = "telegraf"
-"org.opencontainers.image.description" = "Telegraf - metrics collection agent"
-"org.opencontainers.image.version" = "1.30.3"
-"org.opencontainers.image.vendor" = "InfluxData"
-"org.opencontainers.image.source" = "https://github.com/influxdata/telegraf"
-"sovereign.image.tier" = "3"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "true"
+"org.opencontainers.image.version" = "${VERSION}"
 "sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
+"sovereign.image.category" = "monitoring"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

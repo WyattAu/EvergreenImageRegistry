@@ -1,0 +1,29 @@
+[metadata]
+name = "sqlite"
+version = "3.45.1"
+description = "sqlite container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "sqlite"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["sqlite-libs"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.title" = "sqlite"
+"org.opencontainers.image.vendor" = "SQLite"
+"org.opencontainers.image.version" = "3.45.1"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

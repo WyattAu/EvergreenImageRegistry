@@ -1,0 +1,35 @@
+[metadata]
+name = "unbound-exporter"
+version = "0.6.0"
+description = "unbound-exporter container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/unbound_exporter"]
+
+[ports]
+expose = [9167, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/letsencrypt/unbound_exporter"
+"org.opencontainers.image.title" = "unbound-exporter"
+"org.opencontainers.image.vendor" = "Let's Encrypt"
+"org.opencontainers.image.version" = "0.6.0"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

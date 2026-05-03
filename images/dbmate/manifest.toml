@@ -1,0 +1,31 @@
+[metadata]
+name = "dbmate"
+version = "2.33.0"
+description = "Database migration tool for PostgreSQL, MySQL, SQLite, CockroachDB"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/dbmate"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Database migration tool for PostgreSQL, MySQL, SQLite, CockroachDB"
+"org.opencontainers.image.source" = "https://github.com/amacneil/dbmate"
+"org.opencontainers.image.title" = "dbmate"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "none"
+"sovereign.image.category" = "tooling"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "none"
+

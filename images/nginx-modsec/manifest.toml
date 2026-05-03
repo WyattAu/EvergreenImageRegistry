@@ -1,0 +1,34 @@
+[metadata]
+name = "nginx-modsec"
+version = "1.27.1"
+description = "NGINX with ModSecurity WAF module"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["nginx"]
+cmd = ["-g", "daemon off;"]
+
+[ports]
+expose = [80, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "NGINX with ModSecurity WAF module"
+"org.opencontainers.image.source" = "https://github.com/SpiderLabs/ModSecurity"
+"org.opencontainers.image.title" = "nginx-modsec"
+"org.opencontainers.image.vendor" = "NGINX Inc / SpiderLabs"
+"org.opencontainers.image.version" = "1.27.1"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "security"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

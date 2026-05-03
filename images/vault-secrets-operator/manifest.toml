@@ -1,0 +1,38 @@
+[metadata]
+name = "vault-secrets-operator"
+version = "1.18.0"
+description = "vault-secrets-operator container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "hashicorp/vault-secrets-operator:${VERSION}"
+
+[runtime]
+entrypoint = ["/usr/local/bin/vault-secrets-operator"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/hashicorp/vault-secrets-operator"
+"org.opencontainers.image.title" = "vault-secrets-operator"
+"org.opencontainers.image.vendor" = "HashiCorp"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "secrets"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

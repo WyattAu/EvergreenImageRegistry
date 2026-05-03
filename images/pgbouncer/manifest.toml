@@ -1,0 +1,29 @@
+[metadata]
+name = "pgbouncer"
+version = "1.22.1"
+description = "pgbouncer container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "pgbouncer"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["pgbouncer"]
+
+[ports]
+expose = [6432, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "pgbouncer"
+"org.opencontainers.image.vendor" = "PgBouncer"
+"org.opencontainers.image.version" = "1.22.1"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

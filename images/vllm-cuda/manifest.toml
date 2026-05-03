@@ -1,0 +1,29 @@
+[metadata]
+name = "vllm-cuda"
+version = "0.6.6"
+description = "vllm-cuda container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["true"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.title" = "vllm-cuda"
+"org.opencontainers.image.vendor" = "vLLM"
+"org.opencontainers.image.version" = "0.6.6"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

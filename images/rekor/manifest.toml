@@ -8,35 +8,35 @@ license = "Apache-2.0"
 tier = "3"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/sigstore/rekor/releases/download/v1.5.1/rekor-linux-amd64"
-binary_name = "rekor"
-filename = "rekor-linux-amd64"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["/rekor-server"]
 
 [ports]
-application = 3000
-metrics = 9101
+expose = [3000, 9101]
 
 [labels]
-"org.opencontainers.image.title" = "rekor"
-"org.opencontainers.image.description" = "Rekor - transparency log for supply chain security"
-"org.opencontainers.image.version" = "1.5.1"
-"org.opencontainers.image.vendor" = "Sigstore"
 "org.opencontainers.image.source" = "https://github.com/sigstore/rekor"
-"sovereign.image.tier" = "3"
+"org.opencontainers.image.title" = "rekor"
+"org.opencontainers.image.vendor" = "sigstore"
+"org.opencontainers.image.version" = "1.5.1"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
-"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.init-system" = "none"
 "sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "security"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

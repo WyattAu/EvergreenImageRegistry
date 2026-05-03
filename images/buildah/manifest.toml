@@ -1,0 +1,30 @@
+[metadata]
+name = "buildah"
+version = "latest"
+description = "Sovereign hardened buildah - OCI image builder"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["buildah"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened buildah - OCI image builder"
+"org.opencontainers.image.title" = "buildah"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.shutdown-timeout" = "10s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

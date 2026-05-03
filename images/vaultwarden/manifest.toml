@@ -8,35 +8,35 @@ license = "Apache-2.0"
 tier = "3"
 
 [build]
-base_image = "vaultwarden/server:1.35.8"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
-url = "https://github.com/vaultwarden/vaultwarden/releases/download/v1.35.8/vaultwarden-1.35.8-linux-amd64.tar.gz"
-binary_name = "vaultwarden"
-filename = "vaultwarden-1.35.8-linux-amd64.tar.gz"
-checksum = "PENDING"
+[source]
+type = "docker-image"
+url = "vaultwarden/server:1.35.8"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["/vaultwarden"]
 
 [ports]
-application = 8080
-metrics = 9101
+expose = [8080, 9101]
 
 [labels]
-"org.opencontainers.image.title" = "vaultwarden"
-"org.opencontainers.image.description" = "Vaultwarden - lightweight Bitwarden-compatible password manager"
-"org.opencontainers.image.version" = "1.35.8"
-"org.opencontainers.image.vendor" = "Vaultwarden"
 "org.opencontainers.image.source" = "https://github.com/dani-garcia/vaultwarden"
-"sovereign.image.tier" = "3"
+"org.opencontainers.image.title" = "vaultwarden"
+"org.opencontainers.image.vendor" = "dani-garcia"
+"org.opencontainers.image.version" = "1.35.8"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
-"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.init-system" = "none"
 "sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "secrets"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

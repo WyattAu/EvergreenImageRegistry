@@ -1,0 +1,31 @@
+[metadata]
+name = "falco-rules"
+version = "unknown"
+description = "Falco - rules only"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["cat"]
+cmd = ["/app/rules/rules.yaml"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Falco - rules only"
+"org.opencontainers.image.source" = "https://github.com/falcosecurity/rules"
+"org.opencontainers.image.title" = "falco-rules"
+"org.opencontainers.image.vendor" = "Sysdig"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

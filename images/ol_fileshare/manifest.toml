@@ -1,0 +1,27 @@
+[metadata]
+name = "ol_fileshare"
+version = "unknown"
+description = "Sovereign file sharing service (SMB/Samba)"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[ports]
+expose = [445, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign file sharing service (SMB/Samba)"
+"org.opencontainers.image.title" = "ol_fileshare"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "none"
+"sovereign.image.category" = "storage"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

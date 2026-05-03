@@ -1,0 +1,32 @@
+[metadata]
+name = "synapse"
+version = "1.98.0"
+description = "Synapse - Matrix homeserver for federated messaging"
+
+[build]
+base = "debian:bookworm-slim"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python3", "-m", "synapse.app.homeserver"]
+
+[ports]
+expose = [8008, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Synapse - Matrix homeserver for federated messaging"
+"org.opencontainers.image.source" = "https://github.com/element-hq/synapse"
+"org.opencontainers.image.title" = "synapse"
+"org.opencontainers.image.vendor" = "Element"
+"org.opencontainers.image.version" = "1.98.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.debian-slim" = "true"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

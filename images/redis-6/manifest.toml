@@ -1,0 +1,30 @@
+[metadata]
+name = "redis-6"
+version = "6.2.16"
+description = "redis-6 container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["redis"]
+
+[ports]
+expose = [6379, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "redis-6"
+"org.opencontainers.image.vendor" = "Redis"
+"org.opencontainers.image.version" = "6.2.16"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.hardened" = "true"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

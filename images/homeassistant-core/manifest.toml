@@ -1,0 +1,20 @@
+[metadata]
+name = "homeassistant-core"
+version = "unknown"
+description = "homeassistant-core container image"
+
+[build]
+base = "debian:bookworm-slim"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python", "-m", "homeassistant"]
+cmd = ["--help"]
+
+[ports]
+expose = [9101]
+

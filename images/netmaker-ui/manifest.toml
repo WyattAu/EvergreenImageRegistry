@@ -1,0 +1,38 @@
+[metadata]
+name = "netmaker-ui"
+version = "v1.5.1"
+description = "netmaker-ui container image"
+
+[build]
+base = "gcr.io/distroless/static-debian12@sha256:20bc6c0bc4d625a22a8fde3e55f6515709b32055ef8fb9cfbddaa06d1760f838"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "gravitl/netmaker-ui:v1.5.1"
+
+[runtime]
+entrypoint = ["sleep", "infinity"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/gravitl/netmaker-ui"
+"org.opencontainers.image.title" = "netmaker-ui"
+"org.opencontainers.image.vendor" = "Gravitl"
+"org.opencontainers.image.version" = "v1.5.1"
+"sovereign.base.image" = "distroless"
+"sovereign.constraint.distrole" = "distroless"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "networking"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

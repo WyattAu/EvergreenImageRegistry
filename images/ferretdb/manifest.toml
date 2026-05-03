@@ -1,0 +1,33 @@
+[metadata]
+name = "ferretdb"
+version = "2.7.0"
+description = "Sovereign hardened FerretDB - MongoDB-compatible database"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/usr/local/bin/ferretdb"]
+
+[ports]
+expose = [27017, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened FerretDB - MongoDB-compatible database"
+"org.opencontainers.image.title" = "ferretdb"
+"org.opencontainers.image.vendor" = "FerretDB"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "database"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

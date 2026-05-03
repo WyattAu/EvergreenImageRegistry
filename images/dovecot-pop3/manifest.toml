@@ -1,0 +1,33 @@
+[metadata]
+name = "dovecot-pop3"
+version = "2.3.21"
+description = "Dovecot POP3 - Dovecot in POP3 mode"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["dovecot", "-F"]
+
+[ports]
+expose = [110, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Dovecot POP3 - Dovecot in POP3 mode"
+"org.opencontainers.image.source" = "https://www.dovecot.org"
+"org.opencontainers.image.title" = "dovecot-pop3"
+"org.opencontainers.image.vendor" = "Dovecot"
+"org.opencontainers.image.version" = "2.3.21"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.debian-slim" = "true"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.image.variant" = "pop3"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,31 @@
+[metadata]
+name = "browserless"
+version = "1.63.0"
+description = "browserless container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["node"]
+
+[ports]
+expose = [3000, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/browserless/browserless/releases"
+"org.opencontainers.image.title" = "browserless"
+"org.opencontainers.image.vendor" = "browserless/browserless"
+"org.opencontainers.image.version" = "1.63.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.hardened" = "true"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

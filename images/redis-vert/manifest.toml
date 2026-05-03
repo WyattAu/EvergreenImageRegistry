@@ -1,0 +1,32 @@
+[metadata]
+name = "redis-vert"
+version = "7.4.2"
+description = "Redis with vector search (RediSearch) on Wolfi"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["redis-stack-server"]
+
+[ports]
+expose = [6379, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Redis with vector search (RediSearch) on Wolfi"
+"org.opencontainers.image.title" = "redis-vert"
+"org.opencontainers.image.vendor" = "Redis"
+"org.opencontainers.image.version" = "7.4.2"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "database"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

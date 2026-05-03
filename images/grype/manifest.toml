@@ -1,0 +1,34 @@
+[metadata]
+name = "grype"
+version = "0.80.0"
+description = "grype container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/grype"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.title" = "grype"
+"org.opencontainers.image.vendor" = "Anchore"
+"org.opencontainers.image.version" = "0.80.0"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

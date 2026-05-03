@@ -1,0 +1,35 @@
+[metadata]
+name = "whisper-cpp"
+version = "1.8.4"
+description = "whisper-cpp container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/whisper-cli"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/ggerganov/whisper.cpp"
+"org.opencontainers.image.title" = "whisper-cpp"
+"org.opencontainers.image.vendor" = "ggerganov/whisper.cpp"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

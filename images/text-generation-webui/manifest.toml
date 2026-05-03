@@ -1,0 +1,29 @@
+[metadata]
+name = "text-generation-webui"
+version = "1.8"
+description = "text-generation-webui container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "user"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python3", "/opt/text-generation-webui/server.py"]
+
+[ports]
+expose = [7860, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "text-generation-webui"
+"org.opencontainers.image.vendor" = "Oobabooga"
+"org.opencontainers.image.version" = "1.8"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

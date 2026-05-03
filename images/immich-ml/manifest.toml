@@ -1,0 +1,30 @@
+[metadata]
+name = "immich-ml"
+version = "1.106.0"
+description = "immich-ml container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python3"]
+
+[ports]
+expose = [3003, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/immich-app/immich/releases"
+"org.opencontainers.image.title" = "immich-ml"
+"org.opencontainers.image.vendor" = "Immich"
+"org.opencontainers.image.version" = "1.106.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

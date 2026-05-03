@@ -8,35 +8,39 @@ license = "Apache-2.0"
 tier = "1"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/prometheus/prometheus/releases/download/v2.53.0/prometheus-2.53.0.linux-amd64.tar.gz"
-binary_name = "prometheus"
-filename = "prometheus-2.53.0.linux-amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["/prometheus"]
 
 [ports]
-application = 9090
-metrics = 9101
+expose = [9090, 9101]
 
 [labels]
 "org.opencontainers.image.title" = "prometheus"
-"org.opencontainers.image.description" = "Prometheus - monitoring and alerting toolkit"
-"org.opencontainers.image.version" = "2.53.0"
 "org.opencontainers.image.vendor" = "Prometheus"
-"org.opencontainers.image.source" = "https://github.com/prometheus/prometheus"
-"sovereign.image.tier" = "1"
+"org.opencontainers.image.version" = "2.53.0"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
-"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.connection-drain" = "true"
+"sovereign.hft.cpu-pins" = "4-5"
+"sovereign.hft.cpu-pins-mode" = "exclusive"
+"sovereign.hft.deploy-strategy" = "hft-stateful"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.pre-stop-delay" = "5s"
+"sovereign.hft.pre-stop-hook" = "true"
+"sovereign.hft.sched-policy" = "SCHED_OTHER"
 "sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

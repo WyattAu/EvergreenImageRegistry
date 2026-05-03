@@ -1,0 +1,33 @@
+[metadata]
+name = "flux2"
+version = "2.8.6"
+description = "Sovereign hardened flux2 - GitOps toolkit"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/flux"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened flux2 - GitOps toolkit"
+"org.opencontainers.image.title" = "flux2"
+"org.opencontainers.image.vendor" = "Flux CD"
+"org.opencontainers.image.version" = "2.8.6"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.shutdown-timeout" = "5s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

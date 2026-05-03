@@ -8,35 +8,36 @@ license = "Apache-2.0"
 tier = "3"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
-arch = "amd64"
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/pi-hole/pi-hole/releases/download/v5.18.2/pi-hole-5.18.2-linux-amd64.tar.gz"
-binary_name = "pi-hole"
-filename = "pi-hole-5.18.2-linux-amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = false
+[runtime]
+entrypoint = ["/usr/local/bin/pihole"]
 
 [ports]
-application = 53
-metrics = 9101
+expose = [53, 9101]
 
 [labels]
-"org.opencontainers.image.title" = "pi-hole"
-"org.opencontainers.image.description" = "Pi-hole - network-level ad blocking via your own Linux hardware"
-"org.opencontainers.image.version" = "5.18.2"
-"org.opencontainers.image.vendor" = "Pi-hole"
+"org.opencontainers.image.description" = "Network-level ad blocking via DNS"
 "org.opencontainers.image.source" = "https://github.com/pi-hole/pi-hole"
-"sovereign.image.tier" = "3"
+"org.opencontainers.image.title" = "pi-hole"
+"org.opencontainers.image.vendor" = "Pi-hole"
+"org.opencontainers.image.version" = "bookworm"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.base" = "wolfi"
 "sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "false"
-"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
-"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.init-system" = "none"
 "sovereign.hft.shutdown-timeout" = "5s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "15000ms"
+"sovereign.image.category" = "dns"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

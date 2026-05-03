@@ -1,0 +1,31 @@
+[metadata]
+name = "mysql-8"
+version = "8.0.39"
+description = "MySQL 8.0 Database Server"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["mysqld"]
+
+[ports]
+expose = [3306, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "MySQL 8.0 Database Server"
+"org.opencontainers.image.source" = "https://dev.mysql.com/"
+"org.opencontainers.image.title" = "mysql-8"
+"org.opencontainers.image.vendor" = "Oracle"
+"org.opencontainers.image.version" = "8.0.39"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

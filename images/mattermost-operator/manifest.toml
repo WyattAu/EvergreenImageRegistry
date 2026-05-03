@@ -4,37 +4,33 @@ version = "1.12.0"
 description = "Mattermost Kubernetes Operator - manages Mattermost deployments on Kubernetes"
 vendor = "Mattermost"
 source = "https://github.com/mattermost/mattermost-operator"
-category = "messaging"
 tier = "2"
 
 [build]
 base = "scratch"
-arch = "amd64"
-
-[download]
-url = "https://github.com/mattermost/mattermost-operator/releases/download/v1.12.0/mattermost-kubernetes-operator-linux-amd64"
-filename = "mattermost-kubernetes-operator-linux-amd64"
-strip_components = 0
-binary_name = "mattermost-kubernetes-operator"
-
-[container]
-port = 8080
-metrics_port = 9101
 user = "65532:65532"
-workdir = "/app"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://github.com/mattermost/mattermost-operator/releases/download/v1.12.0/mattermost-kubernetes-operator-linux-amd64"
+
+[runtime]
 entrypoint = ["/usr/local/bin/mattermost-kubernetes-operator"]
-stop_signal = "SIGTERM"
-nonroot = true
+
+[ports]
+expose = [8080, 9101]
 
 [labels]
-"org.opencontainers.image.title" = "mattermost-operator"
 "org.opencontainers.image.description" = "Mattermost Kubernetes Operator - manages Mattermost deployments on Kubernetes"
-"org.opencontainers.image.vendor" = "Mattermost"
 "org.opencontainers.image.source" = "https://github.com/mattermost/mattermost-operator"
+"org.opencontainers.image.title" = "mattermost-operator"
+"org.opencontainers.image.vendor" = "Mattermost"
 "org.opencontainers.image.version" = "1.12.0"
-"sovereign.image.tier" = "2"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

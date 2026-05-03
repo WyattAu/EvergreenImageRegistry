@@ -1,0 +1,34 @@
+[metadata]
+name = "vikunja"
+version = "2.3.0"
+description = "vikunja container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/vikunja"]
+
+[ports]
+expose = [3456, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "vikunja"
+"org.opencontainers.image.vendor" = "Vikunja"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

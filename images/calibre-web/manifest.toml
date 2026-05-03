@@ -1,0 +1,29 @@
+[metadata]
+name = "calibre-web"
+version = "0.6.22"
+description = "calibre-web container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "calibre"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python"]
+
+[ports]
+expose = [8083, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "calibre-web"
+"org.opencontainers.image.vendor" = "Calibre-Web"
+"org.opencontainers.image.version" = "0.6.22"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

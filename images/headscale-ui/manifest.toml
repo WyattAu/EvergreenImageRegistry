@@ -1,0 +1,37 @@
+[metadata]
+name = "headscale-ui"
+version = "2026.03.17"
+description = "headscale-ui container image"
+
+[build]
+base = "gcr.io/distroless/static-debian12@sha256:20bc6c0bc4d625a22a8fde3e55f6515709b32055ef8fb9cfbddaa06d1760f838"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/app/fileserver"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/gurucomputing/headscale-ui"
+"org.opencontainers.image.title" = "headscale-ui"
+"org.opencontainers.image.vendor" = "gurucomputing"
+"org.opencontainers.image.version" = "2026.03.17"
+"sovereign.base.image" = "distroless"
+"sovereign.constraint.distrole" = "distroless"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "networking"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

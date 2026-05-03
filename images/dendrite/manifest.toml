@@ -4,37 +4,33 @@ version = "0.13.1"
 description = "Dendrite - second-generation Matrix homeserver"
 vendor = "Element"
 source = "https://github.com/element-hq/dendrite"
-category = "messaging"
 tier = "2"
 
 [build]
 base = "scratch"
-arch = "amd64"
-
-[download]
-url = "https://github.com/element-hq/dendrite/releases/download/v0.13.1/dendrite-monolith-linux-amd64"
-filename = "dendrite-monolith-linux-amd64"
-strip_components = 0
-binary_name = "dendrite"
-
-[container]
-port = 8008
-metrics_port = 9101
 user = "65532:65532"
-workdir = "/app"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://github.com/element-hq/dendrite/releases/download/v0.13.1/dendrite-monolith-linux-amd64"
+
+[runtime]
 entrypoint = ["/usr/local/bin/dendrite"]
-stop_signal = "SIGTERM"
-nonroot = true
+
+[ports]
+expose = [8008, 9101]
 
 [labels]
-"org.opencontainers.image.title" = "dendrite"
 "org.opencontainers.image.description" = "Dendrite - second-generation Matrix homeserver"
-"org.opencontainers.image.vendor" = "Element"
 "org.opencontainers.image.source" = "https://github.com/element-hq/dendrite"
+"org.opencontainers.image.title" = "dendrite"
+"org.opencontainers.image.vendor" = "Element"
 "org.opencontainers.image.version" = "0.13.1"
-"sovereign.image.tier" = "2"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

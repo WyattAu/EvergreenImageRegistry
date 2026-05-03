@@ -1,0 +1,32 @@
+[metadata]
+name = "rabbitmq-mqtt"
+version = "3.13.1"
+description = "Sovereign hardened RabbitMQ with MQTT plugin"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["rabbitmq-server"]
+
+[ports]
+expose = [5672, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened RabbitMQ with MQTT plugin"
+"org.opencontainers.image.title" = "rabbitmq-mqtt"
+"org.opencontainers.image.vendor" = "RabbitMQ"
+"org.opencontainers.image.version" = "3.13.1"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "messaging"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

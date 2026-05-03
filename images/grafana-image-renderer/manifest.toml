@@ -8,35 +8,40 @@ license = "Apache-2.0"
 tier = "2"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
-arch = "amd64"
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/grafana-image-renderer/grafana-image-renderer/releases/download/v5.8.2/grafana-image-renderer-5.8.2-linux-amd64.tar.gz"
-binary_name = "grafana-image-renderer"
-filename = "grafana-image-renderer-5.8.2-linux-amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = false
+[runtime]
+entrypoint = ["/opt/grafana-image-renderer/build/grafana-image-renderer"]
 
 [ports]
-application = 8081
-metrics = 9101
+expose = [8081, 9101]
 
 [labels]
+"org.opencontainers.image.description" = "Grafana image renderer plugin with headless Chromium"
 "org.opencontainers.image.title" = "grafana-image-renderer"
-"org.opencontainers.image.description" = "Grafana Image Renderer - server-side image rendering for Grafana"
-"org.opencontainers.image.version" = "5.8.2"
 "org.opencontainers.image.vendor" = "Grafana Labs"
-"org.opencontainers.image.source" = "https://github.com/grafana/grafana-image-renderer"
-"sovereign.image.tier" = "2"
+"org.opencontainers.image.version" = "5.8.2"
+"sovereign.base.image" = "wolfi"
 "sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "false"
-"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
-"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.connection-drain" = "true"
+"sovereign.hft.cpu-pins" = "4-5"
+"sovereign.hft.cpu-pins-mode" = "shared"
+"sovereign.hft.deploy-strategy" = "standard-rolling"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.pre-stop-delay" = "10s"
+"sovereign.hft.pre-stop-hook" = "true"
+"sovereign.hft.runtime" = "node"
+"sovereign.hft.sched-policy" = "SCHED_OTHER"
 "sovereign.hft.shutdown-timeout" = "5s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "20000ms"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

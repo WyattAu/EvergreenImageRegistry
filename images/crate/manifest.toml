@@ -1,0 +1,32 @@
+[metadata]
+name = "crate"
+version = "5.9.0"
+description = "Sovereign hardened CrateDB - distributed SQL database"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/opt/crate/bin/crate"]
+
+[ports]
+expose = [4200, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened CrateDB - distributed SQL database"
+"org.opencontainers.image.title" = "crate"
+"org.opencontainers.image.vendor" = "Crate.io"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "database"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

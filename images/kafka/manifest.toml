@@ -8,33 +8,28 @@ license = "Apache-2.0"
 tier = "1"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
-arch = "amd64"
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/kafka/kafka/releases/download/v3.6.1/kafka-3.6.1-linux-amd64.tar.gz"
-binary_name = "kafka"
-filename = "kafka-3.6.1-linux-amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = false
+[runtime]
+entrypoint = ["sh", "-c", "/opt/kafka/bin/kafka-server-start.sh"]
 
 [ports]
-application = 9092
-metrics = 9101
+expose = [9092, 9101]
 
 [labels]
+"org.opencontainers.image.description" = "Sovereign hardened Apache Kafka - distributed event streaming platform"
 "org.opencontainers.image.title" = "kafka"
-"org.opencontainers.image.description" = "Apache Kafka - distributed event streaming platform"
-"org.opencontainers.image.version" = "3.6.1"
-"org.opencontainers.image.vendor" = "Apache"
-"org.opencontainers.image.source" = "https://github.com/apache/kafka"
-"sovereign.image.tier" = "1"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "false"
-"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
-"sovereign.metrics.native" = "true"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
 "sovereign.health.type" = "http"
+"sovereign.image.category" = "messaging"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "true"
+

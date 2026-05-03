@@ -1,0 +1,29 @@
+[metadata]
+name = "chroma"
+version = "0.5.0"
+description = "chroma container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "chroma"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["chroma"]
+
+[ports]
+expose = [8000, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "chroma"
+"org.opencontainers.image.vendor" = "Chroma"
+"org.opencontainers.image.version" = "0.5.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

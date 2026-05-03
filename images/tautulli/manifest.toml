@@ -1,0 +1,37 @@
+[metadata]
+name = "tautulli"
+version = "2.14.5"
+description = "tautulli container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python3", "/opt/tautulli/Tautulli.py"]
+
+[ports]
+expose = [8181, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/Tautulli/Tautulli"
+"org.opencontainers.image.title" = "tautulli"
+"org.opencontainers.image.vendor" = "Tautulli"
+"org.opencontainers.image.version" = "2.14.5"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.base" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "10s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "30000ms"
+"sovereign.image.category" = "media-streaming"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,54 +1,35 @@
-[image]
+[metadata]
 name = "gotify"
-type = "binary-download"
-tier = 2
 version = "2.9.1"
 description = "Gotify - simple push notification server"
 vendor = "gotify"
-source_url = "https://github.com/gotify/server"
-category = "notifications"
-
-[source]
-url = "https://github.com/gotify/server/releases/download/v2.9.1/gotify-linux-amd64"
-fallback_urls = []
-checksum = { algorithm = "sha256", expected = "PENDING", source = "" }
-strategy = "curl"
-github_repo = "gotify/server"
 
 [build]
-base = { image = "debian:bookworm-slim", purpose = "download" }
-builder_packages = ["curl", "ca-certificates"]
-runtime_packages = []
-build_commands = [
-  "curl --retry 3 --retry-delay 5 -fsSL -H \"Authorization: token ${GITHUB_TOKEN}\" https://github.com/gotify/server/releases/download/v2.9.1/gotify-linux-amd64 -o /tmp/gotify",
-  "chmod +x /tmp/gotify",
-  "strip /tmp/gotify",
-]
-artifacts = [
-  { source = "/tmp/gotify", destination = "/usr/local/bin/gotify" },
-]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://github.com/gotify/server/releases/download/v2.9.1/gotify-linux-amd64"
 
 [runtime]
-user = "65532:65532"
-workdir = "/app"
 entrypoint = ["/usr/local/bin/gotify"]
-cmd = []
-ports = [8080]
-volumes = ["/app/data"]
-stop_signal = "SIGTERM"
 
-[health]
-type = "http"
-path = "/health"
-port = 8080
-interval_seconds = 30
-timeout_seconds = 5
-retries = 3
+[ports]
+expose = [8080, 9101]
 
-[observability]
-metrics_port = 9101
-metrics_path = "/metrics"
+[labels]
+"org.opencontainers.image.description" = "Gotify - simple push notification server"
+"org.opencontainers.image.source" = "https://github.com/gotify/server"
+"org.opencontainers.image.title" = "gotify"
+"org.opencontainers.image.vendor" = "Gotify"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "http"
+"sovereign.image.category" = "notifications"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
 
-[compliance]
-standards = []
-labels = {}

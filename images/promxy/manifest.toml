@@ -1,0 +1,33 @@
+[metadata]
+name = "promxy"
+version = "0.0.93"
+description = "Sovereign hardened promxy - Prometheus proxy"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/promxy"]
+
+[ports]
+expose = [8082, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened promxy - Prometheus proxy"
+"org.opencontainers.image.title" = "promxy"
+"org.opencontainers.image.vendor" = "prymitive"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.shutdown-timeout" = "10s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,32 @@
+[metadata]
+name = "virtuoso"
+version = "7.2.12"
+description = "Sovereign hardened Virtuoso - universal RDF/graph database"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["virtuoso-t", "-f", "-c", "/etc/virtuoso/virtuoso.ini"]
+
+[ports]
+expose = [1111, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened Virtuoso - universal RDF/graph database"
+"org.opencontainers.image.title" = "virtuoso"
+"org.opencontainers.image.vendor" = "OpenLink Software"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "database"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

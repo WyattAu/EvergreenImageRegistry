@@ -1,0 +1,31 @@
+[metadata]
+name = "iobroker"
+version = "unknown"
+description = "ioBroker - IoT automation platform"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["iobroker"]
+cmd = ["start"]
+
+[ports]
+expose = [8081, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "ioBroker - IoT automation platform"
+"org.opencontainers.image.source" = "https://github.com/ioBroker/ioBroker"
+"org.opencontainers.image.title" = "iobroker"
+"org.opencontainers.image.vendor" = "ioBroker"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

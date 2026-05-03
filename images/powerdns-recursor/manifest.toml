@@ -1,36 +1,41 @@
-[image]
+[metadata]
 name = "powerdns-recursor"
 version = "5.3.0"
 description = "PowerDNS Recursor - high-performance DNS recursive resolver"
 vendor = "PowerDNS"
-homepage = "https://github.com/PowerDNS/pdns"
-category = "dns"
-tier = 1
-
-[source]
-type = "upstream-deb"
-url = "https://repo.powerdns.com/debian/pool/main/p/pdns-recursor/pdns-recursor_5.3.0-1+deb12u1_amd64.deb"
-upstream = "https://github.com/PowerDNS/pdns"
 
 [build]
-base = "debian:bookworm-slim"
-target_base = "cgr.dev/chainguard/wolfi-base:latest"
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[constraints]
-nonroot = true
-base = "wolfi"
+[source]
+type = "package-manager"
+url = "https://repo.powerdns.com/debian/pool/main/p/pdns-recursor/pdns-recursor_5.3.0-1+deb12u1_amd64.deb"
 
-[hft]
-signal-handling = "native"
-shutdown-timeout = "3s"
-init-system = "none"
-startup-timeout = "5000ms"
+[runtime]
+entrypoint = ["/usr/local/bin/pdns_recursor"]
+cmd = ["--config-dir=/etc/pdns-recursor", "--daemon=no", "--webserver=yes", "--webserver-port=8082", "--webserver-address=0.0.0.0"]
 
 [ports]
-dns = 53
-dns-udp = "53/udp"
-api = 8082
-metrics = 9101
+expose = [53, 9101]
 
-[health]
-type = "exec"
+[labels]
+"org.opencontainers.image.description" = "PowerDNS recursive DNS resolver"
+"org.opencontainers.image.source" = "https://github.com/PowerDNS/pdns"
+"org.opencontainers.image.title" = "powerdns-recursor"
+"org.opencontainers.image.vendor" = "PowerDNS"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.base" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "5000ms"
+"sovereign.image.category" = "dns"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

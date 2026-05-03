@@ -1,0 +1,29 @@
+[metadata]
+name = "valkey-cluster"
+version = "latest"
+description = "Valkey in Cluster Mode - Distributed Key-Value Store"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "valkey/valkey:${VERSION}"
+
+[ports]
+expose = [6379, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Valkey in Cluster Mode - Distributed Key-Value Store"
+"org.opencontainers.image.source" = "https://github.com/valkey-io/valkey"
+"org.opencontainers.image.title" = "valkey-cluster"
+"org.opencontainers.image.vendor" = "Valkey"
+"org.opencontainers.image.version" = "7.2.4"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

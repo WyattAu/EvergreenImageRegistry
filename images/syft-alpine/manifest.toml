@@ -1,0 +1,32 @@
+[metadata]
+name = "syft-alpine"
+version = "1.11.0"
+description = "Syft - SBOM scanner (no Alpine)"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/syft"]
+cmd = ["--help"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Syft - SBOM scanner (no Alpine)"
+"org.opencontainers.image.source" = "https://github.com/anchore/syft"
+"org.opencontainers.image.title" = "syft-alpine"
+"org.opencontainers.image.vendor" = "Anchore"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

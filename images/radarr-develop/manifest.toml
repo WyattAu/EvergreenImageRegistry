@@ -1,0 +1,24 @@
+[metadata]
+name = "radarr-develop"
+version = "6.2.0.10390"
+description = "radarr-develop container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/app/Radarr"]
+
+[ports]
+expose = [7878, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "radarr-develop"
+"sovereign.health.type" = "exec"
+"sovereign.metrics.native" = "ztunnel"
+

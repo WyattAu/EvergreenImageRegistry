@@ -1,0 +1,39 @@
+[metadata]
+name = "ldap-account-manager"
+version = "latest"
+description = "ldap-account-manager container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "osixia/phpldapadmin:${VERSION}"
+
+[runtime]
+entrypoint = ["php-fpm"]
+cmd = ["-F"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/leenooks/phpLDAPadmin"
+"org.opencontainers.image.title" = "ldap-account-manager"
+"org.opencontainers.image.vendor" = "leenooks"
+"org.opencontainers.image.version" = "1.2.6"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.base" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "5s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "10000ms"
+"sovereign.image.category" = "identity"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

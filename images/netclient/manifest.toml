@@ -1,0 +1,38 @@
+[metadata]
+name = "netclient"
+version = "v1.5.1"
+description = "netclient container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "gravitl/netclient:v1.5.1"
+
+[runtime]
+entrypoint = ["/netclient"]
+
+[ports]
+expose = [443, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/gravitl/netmaker"
+"org.opencontainers.image.title" = "netclient"
+"org.opencontainers.image.vendor" = "Gravitl"
+"org.opencontainers.image.version" = "v1.5.1"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "networking"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

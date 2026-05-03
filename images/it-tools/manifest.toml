@@ -1,0 +1,34 @@
+[metadata]
+name = "it-tools"
+version = "2024.10.22-7ca5933"
+description = "it-tools container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/it-tools"]
+
+[ports]
+expose = [80, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "it-tools"
+"org.opencontainers.image.vendor" = "IT-Tools"
+"org.opencontainers.image.version" = "2024.10.22-7ca5933"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

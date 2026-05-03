@@ -1,0 +1,25 @@
+[metadata]
+name = "snyk-alpine"
+version = "1.1295.0"
+description = "snyk-alpine container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/snyk-alpine"]
+cmd = ["--help"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"sovereign.base.image" = "scratch"
+"sovereign.health.type" = "exec"
+"sovereign.metrics.native" = "ztunnel"
+

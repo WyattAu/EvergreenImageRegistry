@@ -1,0 +1,32 @@
+[metadata]
+name = "firebird"
+version = "4.0.5"
+description = "Sovereign hardened Firebird - SQL relational database"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["firebird"]
+
+[ports]
+expose = [3050, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened Firebird - SQL relational database"
+"org.opencontainers.image.title" = "firebird"
+"org.opencontainers.image.vendor" = "FirebirdSQL"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "database"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

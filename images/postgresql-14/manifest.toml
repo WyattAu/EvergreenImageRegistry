@@ -1,0 +1,30 @@
+[metadata]
+name = "postgresql-14"
+version = "14.13"
+description = "postgresql-14 container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["postgres"]
+
+[ports]
+expose = [5432, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "postgresql-14"
+"org.opencontainers.image.vendor" = "PostgreSQL"
+"org.opencontainers.image.version" = "14.13"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.hardened" = "true"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,26 @@
+[metadata]
+name = "health-shim"
+version = "1.0.0"
+description = "health-shim container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "go-source"
+
+[runtime]
+entrypoint = ["/health-shim"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.title" = "health-shim"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.health.type" = "http"
+"sovereign.image.category" = "observability"
+"sovereign.metrics.native" = "prometheus"
+

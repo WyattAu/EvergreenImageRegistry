@@ -1,0 +1,26 @@
+[metadata]
+name = "kubescape-operator"
+version = "latest"
+description = "kubescape-operator container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "ghcr.io/kubescape/kubescape-operator:${VERSION}"
+
+[runtime]
+entrypoint = ["/kubescape"]
+cmd = ["--help"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"sovereign.base.image" = "scratch"
+"sovereign.health.type" = "exec"
+"sovereign.metrics.native" = "ztunnel"
+

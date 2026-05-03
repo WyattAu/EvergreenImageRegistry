@@ -1,0 +1,32 @@
+[metadata]
+name = "github-actions-minimal"
+version = "2.334.0"
+description = "GitHub Actions Minimal Runner"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/app/runner/bin/Runner.Worker"]
+cmd = ["--disableupdate"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "GitHub Actions Minimal Runner"
+"org.opencontainers.image.source" = "https://github.com/actions/runner"
+"org.opencontainers.image.title" = "github-actions-minimal"
+"org.opencontainers.image.vendor" = "GitHub"
+"org.opencontainers.image.version" = "2.334.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,25 @@
+[metadata]
+name = "rspamd"
+version = "3.7"
+description = "rspamd container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["rspamd"]
+cmd = ["-F", "--no-daemon"]
+
+[ports]
+expose = [11333, 9101]
+
+[labels]
+"sovereign.base.image" = "wolfi"
+"sovereign.health.type" = "exec"
+"sovereign.metrics.native" = "ztunnel"
+

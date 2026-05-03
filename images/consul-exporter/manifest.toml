@@ -8,35 +8,32 @@ license = "Apache-2.0"
 tier = "3"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/consul-exporter/consul-exporter/releases/download/v0.4.0/consul-exporter-0.4.0-linux-amd64.tar.gz"
-binary_name = "consul-exporter"
-filename = "consul-exporter-0.4.0-linux-amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["/consul_exporter"]
 
 [ports]
-application = 9107
-metrics = 9101
+expose = [9107, 9101]
 
 [labels]
 "org.opencontainers.image.title" = "consul-exporter"
-"org.opencontainers.image.description" = "Consul Exporter - Prometheus exporter for Consul"
-"org.opencontainers.image.version" = "0.4.0"
 "org.opencontainers.image.vendor" = "Prometheus"
-"org.opencontainers.image.source" = "https://github.com/prometheus/consul_exporter"
-"sovereign.image.tier" = "3"
+"org.opencontainers.image.version" = "0.4.0"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
-"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.init-system" = "none"
 "sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -8,32 +8,23 @@ license = "Apache-2.0"
 tier = "3"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/kubescape/kubescape/releases/download/v4.0.5/kubescape-ubuntu-amd64"
-binary_name = "kubescape"
-filename = "kubescape-ubuntu-amd64"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["/kubescape"]
+cmd = ["--help"]
 
 [ports]
-metrics = 9101
+expose = [9101]
 
 [labels]
-"org.opencontainers.image.title" = "kubescape"
-"org.opencontainers.image.description" = "Kubescape - Kubernetes security platform"
-"org.opencontainers.image.version" = "4.0.5"
-"org.opencontainers.image.vendor" = "Kubescape"
-"org.opencontainers.image.source" = "https://github.com/kubescape/kubescape"
-"sovereign.image.tier" = "3"
-"sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "true"
 "sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
+"sovereign.metrics.native" = "ztunnel"
+

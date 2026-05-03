@@ -1,0 +1,38 @@
+[metadata]
+name = "shield"
+version = "8.6.0"
+description = "shield container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/shield"]
+cmd = ["server", "-c", "/app/shield.yml"]
+
+[ports]
+expose = [8443, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/starkandwayne/shield"
+"org.opencontainers.image.title" = "shield"
+"org.opencontainers.image.vendor" = "Stark & Wayne"
+"org.opencontainers.image.version" = "8.6.0"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "security"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

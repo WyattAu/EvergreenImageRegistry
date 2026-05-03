@@ -8,32 +8,30 @@ license = "MIT"
 tier = "2"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://gitlab-runner-downloads.s3.amazonaws.com/v16.11.0/binaries/gitlab-runner-linux-amd64"
-binary_name = "gitlab-runner"
-filename = "gitlab-runner-linux-amd64"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["gitlab-runner"]
 
 [ports]
-application = 8093
-metrics = 9101
+expose = [8093, 9101]
 
 [labels]
-"org.opencontainers.image.title" = "gitlab-runner-alpine"
 "org.opencontainers.image.description" = "GitLab Runner (scratch) - CI/CD runner for GitLab, minimal scratch image"
-"org.opencontainers.image.version" = "16.11.0"
-"org.opencontainers.image.vendor" = "GitLab"
 "org.opencontainers.image.source" = "https://gitlab.com/gitlab-org/gitlab-runner"
-"sovereign.image.tier" = "2"
+"org.opencontainers.image.title" = "gitlab-runner-alpine"
+"org.opencontainers.image.vendor" = "GitLab"
+"org.opencontainers.image.version" = "16.11.0"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,31 @@
+[metadata]
+name = "elasticsearch-8"
+version = "8.12.2"
+description = "Elasticsearch 8 - Distributed Search and Analytics Engine"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/opt/elasticsearch/bin/elasticsearch"]
+
+[ports]
+expose = [9200, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Elasticsearch 8 - Distributed Search and Analytics Engine"
+"org.opencontainers.image.source" = "https://www.elastic.co/elasticsearch"
+"org.opencontainers.image.title" = "elasticsearch-8"
+"org.opencontainers.image.vendor" = "Elastic"
+"org.opencontainers.image.version" = "8.12.2"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

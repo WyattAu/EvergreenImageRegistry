@@ -1,0 +1,29 @@
+[metadata]
+name = "transmission"
+version = "4.0.6"
+description = "transmission container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "transmission"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["transmission-daemon"]
+
+[ports]
+expose = [9091, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "transmission"
+"org.opencontainers.image.vendor" = "Transmission"
+"org.opencontainers.image.version" = "4.0.6"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

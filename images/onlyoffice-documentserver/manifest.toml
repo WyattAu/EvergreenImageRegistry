@@ -1,35 +1,40 @@
-[image]
+[metadata]
 name = "onlyoffice-documentserver"
 version = "8.3.3"
 description = "ONLYOFFICE Document Server - online document editing platform"
 vendor = "ONLYOFFICE"
-homepage = "https://github.com/ONLYOFFICE/DocumentServer"
-category = "document-management"
-tier = 2
-
-[source]
-type = "upstream-tarball"
-url = "https://download.onlyoffice.com/documentserver/linux/onlyoffice-documentserver-amd64.deb"
-upstream = "https://github.com/ONLYOFFICE/DocumentServer"
 
 [build]
-base = "debian:bookworm-slim"
-target_base = "cgr.dev/chainguard/wolfi-base:latest"
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[constraints]
-nonroot = true
-base = "wolfi"
+[source]
+type = "package-manager"
+url = "https://download.onlyoffice.com/documentserver/linux/onlyoffice-documentserver-amd64.deb"
 
-[hft]
-signal-handling = "native"
-shutdown-timeout = "30s"
-init-system = "none"
-startup-timeout = "60000ms"
+[runtime]
+entrypoint = ["/usr/bin/ds", "--foreground"]
 
 [ports]
-http = 80
-https = 443
-metrics = 9101
+expose = [80, 9101]
 
-[health]
-type = "exec"
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened ONLYOFFICE Document Server"
+"org.opencontainers.image.source" = "https://github.com/ONLYOFFICE/DocumentServer"
+"org.opencontainers.image.title" = "onlyoffice-documentserver"
+"org.opencontainers.image.vendor" = "ONLYOFFICE"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.base" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "30s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "60000ms"
+"sovereign.image.category" = "document-management"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

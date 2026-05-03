@@ -1,0 +1,36 @@
+[metadata]
+name = "zincone"
+version = "latest"
+description = "Sovereign hardened ZincOne - ZincSearch observability edition"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "zincsearch/zincsearch:${VERSION}"
+
+[runtime]
+entrypoint = ["/usr/local/bin/zincone"]
+
+[ports]
+expose = [4080, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened ZincOne - ZincSearch observability edition"
+"org.opencontainers.image.title" = "zincone"
+"org.opencontainers.image.vendor" = "ZincSearch"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.image.category" = "database"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

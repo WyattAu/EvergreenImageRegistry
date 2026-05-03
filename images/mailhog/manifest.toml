@@ -1,55 +1,35 @@
-[image]
+[metadata]
 name = "mailhog"
-type = "binary-download"
-tier = 2
 version = "1.0.1"
 description = "MailHog - email testing tool with web UI"
 vendor = "mailhog"
-source_url = "https://github.com/mailhog/MailHog"
-category = "email"
-
-[source]
-url = "https://github.com/mailhog/MailHog/releases/download/v1.0.1/MailHog_linux_amd64"
-fallback_urls = []
-checksum = { algorithm = "sha256", expected = "PENDING", source = "" }
-strategy = "curl"
-github_repo = "mailhog/MailHog"
 
 [build]
-base = { image = "debian:bookworm-slim", purpose = "download" }
-builder_packages = ["curl", "ca-certificates"]
-runtime_packages = []
-build_commands = [
-  "curl --retry 3 --retry-delay 5 -fsSL -H \"Authorization: token ${GITHUB_TOKEN}\" https://github.com/mailhog/MailHog/releases/download/v1.0.1/MailHog_linux_amd64 -o /tmp/MailHog",
-  "chmod +x /tmp/MailHog",
-  "strip /tmp/MailHog",
-]
-artifacts = [
-  { source = "/tmp/MailHog", destination = "/usr/local/bin/MailHog" },
-]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://github.com/mailhog/MailHog/releases/download/v1.0.1/MailHog_linux_amd64"
 
 [runtime]
-user = "65532:65532"
-workdir = "/app"
 entrypoint = ["/usr/local/bin/MailHog"]
-cmd = []
-ports = [8025, 1025]
-volumes = []
-stop_signal = "SIGTERM"
-env = { MH_SMTP_BIND_ADDR = "0.0.0.0:1025", MH_API_BIND_ADDR = "0.0.0.0:8025", MH_UI_BIND_ADDR = "0.0.0.0:8025" }
 
-[health]
-type = "http"
-path = "/api/v2/messages"
-port = 8025
-interval_seconds = 30
-timeout_seconds = 5
-retries = 3
+[ports]
+expose = [8025, 9101]
 
-[observability]
-metrics_port = 9101
-metrics_path = "/metrics"
+[labels]
+"org.opencontainers.image.description" = "MailHog - email testing tool"
+"org.opencontainers.image.source" = "https://github.com/mailhog/MailHog"
+"org.opencontainers.image.title" = "mailhog"
+"org.opencontainers.image.vendor" = "MailHog"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "http"
+"sovereign.image.category" = "email"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
 
-[compliance]
-standards = []
-labels = {}

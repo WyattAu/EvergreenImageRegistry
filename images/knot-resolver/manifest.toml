@@ -1,0 +1,33 @@
+[metadata]
+name = "knot-resolver"
+version = "5.7.6"
+description = "Full-featured DNS recursive resolver"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["kresd"]
+cmd = ["-c", "/etc/knot-resolver/knot.conf"]
+
+[ports]
+expose = [53, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Full-featured DNS recursive resolver"
+"org.opencontainers.image.source" = "https://github.com/CZ-NIC/knot-resolver"
+"org.opencontainers.image.title" = "knot-resolver"
+"org.opencontainers.image.vendor" = "CZ.NIC"
+"org.opencontainers.image.version" = "5.7.6"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "dns"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

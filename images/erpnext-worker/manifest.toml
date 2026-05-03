@@ -1,0 +1,33 @@
+[metadata]
+name = "erpnext-worker"
+version = "15"
+description = "erpnext-worker container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["bench"]
+cmd = ["worker", "--queue", "default"]
+
+[ports]
+expose = [8000, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/frappe/erpnext"
+"org.opencontainers.image.title" = "erpnext-worker"
+"org.opencontainers.image.vendor" = "Frappe"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "erp"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

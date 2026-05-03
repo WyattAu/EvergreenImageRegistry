@@ -1,0 +1,38 @@
+[metadata]
+name = "dnsdist"
+version = "1.9.4"
+description = "DNS load balancer and forwarder"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/usr/local/bin/dnsdist"]
+
+[ports]
+expose = [53, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "DNS load balancer and forwarder"
+"org.opencontainers.image.source" = "https://github.com/PowerDNS/pdns"
+"org.opencontainers.image.title" = "dnsdist"
+"org.opencontainers.image.vendor" = "PowerDNS"
+"org.opencontainers.image.version" = "1.9.4"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.base" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "5000ms"
+"sovereign.image.category" = "dns"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

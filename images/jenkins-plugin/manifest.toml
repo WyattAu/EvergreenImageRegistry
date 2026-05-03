@@ -1,0 +1,32 @@
+[metadata]
+name = "jenkins-plugin"
+version = "2.462.1"
+description = "Sovereign hardened jenkins-plugin - Jenkins plugin manager"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["java", "-jar", "/app/jenkins.war"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened jenkins-plugin - Jenkins plugin manager"
+"org.opencontainers.image.title" = "jenkins-plugin"
+"org.opencontainers.image.vendor" = "Jenkins"
+"org.opencontainers.image.version" = "2.462.1"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.shutdown-timeout" = "30s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

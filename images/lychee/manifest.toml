@@ -1,0 +1,30 @@
+[metadata]
+name = "lychee"
+version = "4.17.0"
+description = "lychee container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["php"]
+
+[ports]
+expose = [80, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/LycheeOrg/Lychee/releases"
+"org.opencontainers.image.title" = "lychee"
+"org.opencontainers.image.vendor" = "LycheeOrg/Lychee"
+"org.opencontainers.image.version" = "4.17.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

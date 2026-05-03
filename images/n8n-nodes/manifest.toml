@@ -1,0 +1,31 @@
+[metadata]
+name = "n8n-nodes"
+version = "1.41.0"
+description = "n8n-nodes container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["node"]
+
+[ports]
+expose = [5679, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/n8n-io/n8n/releases"
+"org.opencontainers.image.title" = "n8n-nodes"
+"org.opencontainers.image.vendor" = "n8n-io/n8n"
+"org.opencontainers.image.version" = "1.41.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.hardened" = "true"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

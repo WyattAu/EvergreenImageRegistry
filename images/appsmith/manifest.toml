@@ -1,0 +1,31 @@
+[metadata]
+name = "appsmith"
+version = "1.46.0"
+description = "appsmith container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["node"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/appsmithorg/appsmith/releases"
+"org.opencontainers.image.title" = "appsmith"
+"org.opencontainers.image.vendor" = "appsmithorg/appsmith"
+"org.opencontainers.image.version" = "1.46.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.hardened" = "true"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

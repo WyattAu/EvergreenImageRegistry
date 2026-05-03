@@ -8,35 +8,35 @@ license = "Apache-2.0"
 tier = "3"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
-arch = "amd64"
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/kafka-connect/kafka-connect/releases/download/v3.6.1/kafka-connect-3.6.1-linux-amd64.tar.gz"
-binary_name = "kafka-connect"
-filename = "kafka-connect-3.6.1-linux-amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = false
+[runtime]
+entrypoint = ["/opt/kafka/bin/connect-distributed.sh"]
 
 [ports]
-application = 8083
-metrics = 9101
+expose = [8083, 9101]
 
 [labels]
+"org.opencontainers.image.description" = "Sovereign hardened Kafka Connect - distributed data integration platform"
 "org.opencontainers.image.title" = "kafka-connect"
-"org.opencontainers.image.description" = "Kafka Connect - scalable and reliable data streaming integration"
-"org.opencontainers.image.version" = "3.6.1"
 "org.opencontainers.image.vendor" = "Apache"
-"org.opencontainers.image.source" = "https://github.com/apache/kafka"
-"sovereign.image.tier" = "3"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.base" = "wolfi"
 "sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "false"
-"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
-"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.init-system" = "none"
 "sovereign.hft.shutdown-timeout" = "15s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "30000ms"
+"sovereign.image.category" = "messaging"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -8,35 +8,32 @@ license = "Apache-2.0"
 tier = "3"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/miniflux/miniflux/releases/download/v2.2.19/miniflux-2.2.19-linux-amd64.tar.gz"
-binary_name = "miniflux"
-filename = "miniflux-2.2.19-linux-amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["/miniflux"]
 
 [ports]
-application = 8080
-metrics = 9101
+expose = [8080, 9101]
 
 [labels]
 "org.opencontainers.image.title" = "miniflux"
-"org.opencontainers.image.description" = "Miniflux - minimalist RSS/Atom feed reader"
-"org.opencontainers.image.version" = "2.2.19"
 "org.opencontainers.image.vendor" = "Miniflux"
-"org.opencontainers.image.source" = "https://github.com/miniflux/v2"
-"sovereign.image.tier" = "3"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
-"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.init-system" = "none"
 "sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

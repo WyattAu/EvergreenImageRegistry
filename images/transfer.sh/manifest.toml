@@ -1,0 +1,31 @@
+[metadata]
+name = "transfer.sh"
+version = "1.6.1"
+description = "transfer.sh - Easy file sharing from CLI"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/transfer.sh"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "transfer.sh - Easy file sharing from CLI"
+"org.opencontainers.image.source" = "https://github.com/dutchcoders/transfer.sh"
+"org.opencontainers.image.title" = "transfer.sh"
+"org.opencontainers.image.vendor" = "dutchcoders"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

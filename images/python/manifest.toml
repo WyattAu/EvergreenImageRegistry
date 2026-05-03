@@ -1,0 +1,30 @@
+[metadata]
+name = "python"
+version = "3.12.3"
+description = "python container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python3"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.title" = "python"
+"org.opencontainers.image.vendor" = "Python"
+"org.opencontainers.image.version" = "3.12.3"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.hardened" = "true"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

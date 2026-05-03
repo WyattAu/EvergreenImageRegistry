@@ -1,0 +1,29 @@
+[metadata]
+name = "qdrant-gpu"
+version = "1.17.1"
+description = "qdrant-gpu container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["true"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.title" = "qdrant-gpu"
+"org.opencontainers.image.vendor" = "Qdrant"
+"org.opencontainers.image.version" = "1.17.1"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

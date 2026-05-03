@@ -4,37 +4,32 @@ version = "1.2.0"
 description = "Mattermost GitHub Plugin - GitHub integration bridge for Mattermost"
 vendor = "Mattermost"
 source = "https://github.com/mattermost/mattermost-plugin-github"
-category = "messaging"
 tier = "2"
 
 [build]
-base = "scratch"
-arch = "amd64"
-
-[download]
-url = "https://github.com/mattermost/mattermost-plugin-github/releases/download/v1.2.0/github-linux-amd64.tar.gz"
-filename = "github-linux-amd64.tar.gz"
-strip_components = 0
-binary_name = "github"
-
-[container]
-port = 8065
-metrics_port = 9101
+base = "cgr.dev/chainguard/wolfi-base:latest"
 user = "65532:65532"
-workdir = "/app"
-entrypoint = ["/usr/local/bin/mattermost-plugin-github"]
-stop_signal = "SIGTERM"
-nonroot = true
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://github.com/mattermost/mattermost-plugin-github/releases/download/v1.2.0/github-linux-amd64.tar.gz"
+
+[runtime]
+entrypoint = ["/app/plugin/server"]
+
+[ports]
+expose = [8065, 9101]
 
 [labels]
-"org.opencontainers.image.title" = "mattermost-bridge"
 "org.opencontainers.image.description" = "Mattermost GitHub Plugin - GitHub integration bridge for Mattermost"
-"org.opencontainers.image.vendor" = "Mattermost"
 "org.opencontainers.image.source" = "https://github.com/mattermost/mattermost-plugin-github"
+"org.opencontainers.image.title" = "mattermost-bridge"
+"org.opencontainers.image.vendor" = "Mattermost"
 "org.opencontainers.image.version" = "1.2.0"
-"sovereign.image.tier" = "2"
+"sovereign.base.image" = "wolfi"
 "sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

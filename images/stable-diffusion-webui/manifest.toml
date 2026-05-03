@@ -1,0 +1,30 @@
+[metadata]
+name = "stable-diffusion-webui"
+version = "1.9.3"
+description = "stable-diffusion-webui container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python3", "/opt/stable-diffusion-webui/launch.py", "--listen", "--port", "7860"]
+
+[ports]
+expose = [7860, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/AUTOMATIC1111/stable-diffusion-webui.git"
+"org.opencontainers.image.title" = "stable-diffusion-webui"
+"org.opencontainers.image.vendor" = "AUTOMATIC1111"
+"org.opencontainers.image.version" = "1.9.3"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

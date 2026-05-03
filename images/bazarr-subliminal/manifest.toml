@@ -1,0 +1,30 @@
+[metadata]
+name = "bazarr-subliminal"
+version = "1.5.2"
+description = "bazarr-subliminal container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python3", "/opt/bazarr-subliminal/bazarr.py"]
+
+[ports]
+expose = [6768, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/morpheus65535/bazarr.git"
+"org.opencontainers.image.title" = "bazarr-subliminal"
+"org.opencontainers.image.vendor" = "Bazarr"
+"org.opencontainers.image.version" = "1.5.2"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

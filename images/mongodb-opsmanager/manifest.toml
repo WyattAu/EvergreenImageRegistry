@@ -1,53 +1,34 @@
-[image]
+[metadata]
 name = "mongodb-opsmanager"
-type = "binary-download"
-tier = 2
 version = "2.5.0"
 description = "MongoDB Ops Manager - mongosh CLI tool for MongoDB administration"
 vendor = "mongodb"
-source_url = "https://www.mongodb.com/docs/mongodb-shell/"
-category = "database"
-
-[source]
-url = "https://fastdl.mongodb.org/tools/mongodb-mongosh/2.5.0/mongosh-2.5.0-linux-x64.tgz"
-fallback_urls = []
-checksum = { algorithm = "sha256", expected = "PENDING", source = "" }
-strategy = "curl"
-github_repo = ""
 
 [build]
-base = { image = "cgr.dev/chainguard/wolfi-base:latest", purpose = "runtime" }
-builder_packages = ["curl", "ca-certificates"]
-runtime_packages = ["ca-certificates"]
-build_commands = [
-  "curl --retry 3 --retry-delay 5 -fsSL https://fastdl.mongodb.org/tools/mongodb-mongosh/2.5.0/mongosh-2.5.0-linux-x64.tgz -o /tmp/mongosh.tgz",
-  "mkdir -p /opt/mongosh",
-  "tar -xzf /tmp/mongosh.tgz -C /opt/mongosh --strip-components=1",
-  "rm /tmp/mongosh.tgz",
-]
-artifacts = []
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://fastdl.mongodb.org/tools/mongodb-mongosh/2.5.0/mongosh-2.5.0-linux-x64.tgz"
 
 [runtime]
-user = "65532:65532"
-workdir = "/app"
 entrypoint = ["/opt/mongosh/bin/mongosh"]
-cmd = []
-ports = [27017]
-volumes = []
-stop_signal = "SIGTERM"
 
-[health]
-type = "tcp"
-path = ""
-port = 27017
-interval_seconds = 30
-timeout_seconds = 5
-retries = 3
+[ports]
+expose = [27017, 9101]
 
-[observability]
-metrics_port = 9101
-metrics_path = "/metrics"
+[labels]
+"org.opencontainers.image.description" = "MongoDB Ops Manager - mongosh CLI tool"
+"org.opencontainers.image.source" = "https://www.mongodb.com/docs/mongodb-shell/"
+"org.opencontainers.image.title" = "mongodb-opsmanager"
+"org.opencontainers.image.vendor" = "MongoDB"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "tcp"
+"sovereign.image.category" = "database"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
 
-[compliance]
-standards = []
-labels = {}

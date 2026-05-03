@@ -1,0 +1,32 @@
+[metadata]
+name = "flame-ui"
+version = "latest"
+description = "Flame - UI variant"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "ghcr.io/pawelmalak/flame:${VERSION}"
+
+[runtime]
+entrypoint = ["flame"]
+cmd = ["--ui-only"]
+
+[ports]
+expose = [5005, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Flame - UI variant"
+"org.opencontainers.image.source" = "https://github.com/pawelmalak/flame"
+"org.opencontainers.image.title" = "flame-ui"
+"org.opencontainers.image.vendor" = "pawelmalak"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

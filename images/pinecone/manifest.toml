@@ -1,0 +1,30 @@
+[metadata]
+name = "pinecone"
+version = "5.4.0"
+description = "pinecone container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python3"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/pinecone-io/pinecone-python-client"
+"org.opencontainers.image.title" = "pinecone"
+"org.opencontainers.image.vendor" = "Pinecone"
+"org.opencontainers.image.version" = "5.4.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,30 @@
+[metadata]
+name = "timescaledb"
+version = "2.15.0"
+description = "timescaledb container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["postgres"]
+
+[ports]
+expose = [5432, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "timescaledb"
+"org.opencontainers.image.vendor" = "Timescale"
+"org.opencontainers.image.version" = "2.15.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.hardened" = "true"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

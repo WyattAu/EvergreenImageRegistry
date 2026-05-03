@@ -1,31 +1,36 @@
-[image]
+[metadata]
 name = "dependabot"
 version = "0.275.1"
 description = "GitHub Dependabot - automated dependency updates for your codebase"
 vendor = "GitHub"
-homepage = "https://github.com/github/dependabot-cli"
-category = "devops"
-tier = 3
-
-[source]
-type = "container-image"
-url = "ghcr.io/github/dependabot-updater-internal:latest"
-upstream = "https://github.com/dependabot/dependabot-core"
 
 [build]
-base = "ghcr.io/github/dependabot-updater-internal:latest"
-target_base = "cgr.dev/chainguard/wolfi-base:latest"
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[constraints]
-nonroot = true
-base = "wolfi"
+[source]
+type = "docker-image"
+url = "ghcr.io/github/dependabot-updater-internal:latest"
 
-[hft]
-signal-handling = "native"
-shutdown-timeout = "10s"
+[runtime]
+entrypoint = ["dependabot"]
+cmd = ["scan"]
 
 [ports]
-metrics = 9101
+expose = [9101]
 
-[health]
-type = "exec"
+[labels]
+"org.opencontainers.image.description" = "Dependabot - Automated dependency updates"
+"org.opencontainers.image.source" = "https://github.com/dependabot/dependabot-core"
+"org.opencontainers.image.title" = "dependabot"
+"org.opencontainers.image.vendor" = "GitHub"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "devops"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

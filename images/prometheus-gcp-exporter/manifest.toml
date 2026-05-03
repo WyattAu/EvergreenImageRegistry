@@ -1,0 +1,43 @@
+[metadata]
+name = "prometheus-gcp-exporter"
+version = "latest"
+description = "Stackdriver Prometheus sidecar for GCP metrics"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "gcr.io/google-containers/prometheus-to-sd:${VERSION}"
+
+[runtime]
+entrypoint = ["/stackdriver-prometheus-sidecar"]
+
+[ports]
+expose = [9090, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Stackdriver Prometheus sidecar for GCP metrics"
+"org.opencontainers.image.title" = "prometheus-gcp-exporter"
+"org.opencontainers.image.vendor" = "Google Cloud Platform"
+"org.opencontainers.image.version" = "0.10.0"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.connection-drain" = "true"
+"sovereign.hft.cpu-pins" = "4-5"
+"sovereign.hft.cpu-pins-mode" = "exclusive"
+"sovereign.hft.deploy-strategy" = "hft-stateful"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.pre-stop-delay" = "5s"
+"sovereign.hft.pre-stop-hook" = "true"
+"sovereign.hft.sched-policy" = "SCHED_OTHER"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

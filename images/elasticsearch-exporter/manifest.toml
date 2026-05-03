@@ -1,0 +1,42 @@
+[metadata]
+name = "elasticsearch-exporter"
+version = "1.7.0"
+description = "Sovereign hardened Elasticsearch Exporter - Prometheus exporter for Elasticsearch"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/elasticsearch_exporter"]
+
+[ports]
+expose = [9114, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened Elasticsearch Exporter - Prometheus exporter for Elasticsearch"
+"org.opencontainers.image.title" = "elasticsearch-exporter"
+"org.opencontainers.image.vendor" = "Prometheus Community"
+"org.opencontainers.image.version" = "1.7.0"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.connection-drain" = "false"
+"sovereign.hft.cpu-pins" = "6-7"
+"sovereign.hft.cpu-pins-mode" = "shared"
+"sovereign.hft.deploy-strategy" = "standard-rolling"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.pre-stop-hook" = "false"
+"sovereign.hft.sched-policy" = "SCHED_OTHER"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "observability"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

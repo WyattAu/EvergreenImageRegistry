@@ -1,0 +1,35 @@
+[metadata]
+name = "neo4j-admin"
+version = "5.17.0"
+description = "neo4j-admin container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/opt/neo4j/bin/neo4j-admin"]
+
+[ports]
+expose = [7474, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "neo4j-admin"
+"org.opencontainers.image.vendor" = "Neo4j"
+"org.opencontainers.image.version" = "5.17.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "database-admin"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

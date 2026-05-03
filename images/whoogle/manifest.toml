@@ -1,0 +1,33 @@
+[metadata]
+name = "whoogle"
+version = "1.2.4"
+description = "whoogle container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["whoogle-search"]
+cmd = ["--port", "5000"]
+
+[ports]
+expose = [5000, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/benbusby/whoogle-search"
+"org.opencontainers.image.title" = "whoogle"
+"org.opencontainers.image.vendor" = "benbusby"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "search"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

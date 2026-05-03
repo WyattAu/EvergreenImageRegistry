@@ -1,0 +1,33 @@
+[metadata]
+name = "k3s-agent"
+version = "1.33.6+k3s1"
+description = "Sovereign hardened k3s-agent - K3s agent mode"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/k3s", "agent"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened k3s-agent - K3s agent mode"
+"org.opencontainers.image.title" = "k3s-agent"
+"org.opencontainers.image.vendor" = "SUSE"
+"org.opencontainers.image.version" = "1.33.6+k3s1"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.shutdown-timeout" = "15s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

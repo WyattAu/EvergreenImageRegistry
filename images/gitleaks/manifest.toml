@@ -1,0 +1,32 @@
+[metadata]
+name = "gitleaks"
+version = "8.21.2"
+description = "Gitleaks - secret scanner"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/gitleaks"]
+cmd = ["--help"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Gitleaks - secret scanner"
+"org.opencontainers.image.source" = "https://github.com/gitleaks/gitleaks"
+"org.opencontainers.image.title" = "gitleaks"
+"org.opencontainers.image.vendor" = "gitleaks"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

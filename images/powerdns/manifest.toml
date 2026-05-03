@@ -1,0 +1,29 @@
+[metadata]
+name = "powerdns"
+version = "4.9.1"
+description = "powerdns container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "appuser"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["pdns"]
+
+[ports]
+expose = [53, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "powerdns"
+"org.opencontainers.image.vendor" = "PowerDNS"
+"org.opencontainers.image.version" = "4.9.1"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

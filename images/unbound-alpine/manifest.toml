@@ -1,0 +1,39 @@
+[metadata]
+name = "unbound-alpine"
+version = "1.19.3"
+description = "Unbound DNS resolver (alpine variant, built without Alpine)"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/usr/sbin/unbound"]
+cmd = ["-d"]
+
+[ports]
+expose = [53, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Unbound DNS resolver (alpine variant, built without Alpine)"
+"org.opencontainers.image.source" = "https://nlnetlabs.nl/projects/unbound/"
+"org.opencontainers.image.title" = "unbound-alpine"
+"org.opencontainers.image.vendor" = "NLnet Labs"
+"org.opencontainers.image.version" = "1.19.3"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.base" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "networking"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,33 @@
+[metadata]
+name = "portainer-agent"
+version = "latest"
+description = "Portainer Agent for Docker"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "portainer/agent:${VERSION}"
+
+[runtime]
+entrypoint = ["/portainer-agent"]
+cmd = ["--help"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Portainer Agent for Docker"
+"org.opencontainers.image.source" = "https://github.com/portainer/agent"
+"org.opencontainers.image.title" = "portainer-agent"
+"org.opencontainers.image.vendor" = "Portainer"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,30 @@
+[metadata]
+name = "clamav-daemon"
+version = "unknown"
+description = "ClamAV - daemon mode"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["clamd"]
+cmd = ["--foreground", "--debug"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "ClamAV - daemon mode"
+"org.opencontainers.image.title" = "clamav-daemon"
+"org.opencontainers.image.vendor" = "Cisco"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

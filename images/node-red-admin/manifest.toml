@@ -1,0 +1,30 @@
+[metadata]
+name = "node-red-admin"
+version = "unknown"
+description = "Node-RED admin CLI tool"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["node-red-admin"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Node-RED admin CLI tool"
+"org.opencontainers.image.source" = "https://github.com/node-red/node-red"
+"org.opencontainers.image.title" = "node-red-admin"
+"org.opencontainers.image.vendor" = "Node-RED"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

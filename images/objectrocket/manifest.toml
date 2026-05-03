@@ -1,33 +1,36 @@
-[image]
+[metadata]
 name = "objectrocket"
 version = "1.0.0"
 description = "ObjectRocket local development compatibility - MongoDB cloud service client for dev environments"
 vendor = "ObjectRocket"
-homepage = "https://www.objectrocket.com/"
-category = "database"
-tier = 1
-
-[source]
-type = "managed-service"
-url = "https://www.objectrocket.com/"
-upstream = "https://github.com/objectrocket"
-note = "ObjectRocket is a fully managed database cloud service. This image provides development-only MongoDB compatibility."
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
-target_base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[constraints]
-nonroot = true
-base = "wolfi"
+[source]
+type = "package-manager"
+url = "https://www.objectrocket.com/"
 
-[hft]
-signal-handling = "native"
-shutdown-timeout = "10s"
+[runtime]
+entrypoint = ["/app/objectrocket"]
 
 [ports]
-mongodb = 27017
-metrics = 9101
+expose = [27017, 9101]
 
-[health]
-type = "exec"
+[labels]
+"org.opencontainers.image.description" = "ObjectRocket local development compatibility - MongoDB cloud service for dev environments"
+"org.opencontainers.image.source" = "https://www.objectrocket.com/"
+"org.opencontainers.image.title" = "objectrocket"
+"org.opencontainers.image.vendor" = "ObjectRocket"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "database"
+"sovereign.image.note" = "ObjectRocket is a fully managed cloud service. Use the ObjectRocket endpoint in production."
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

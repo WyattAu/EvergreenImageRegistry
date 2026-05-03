@@ -1,0 +1,29 @@
+[metadata]
+name = "outline"
+version = "0.77.0"
+description = "outline container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "outline"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["node"]
+
+[ports]
+expose = [3000, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "outline"
+"org.opencontainers.image.vendor" = "Outline"
+"org.opencontainers.image.version" = "0.77.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

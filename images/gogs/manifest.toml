@@ -8,33 +8,30 @@ license = "MIT"
 tier = "2"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/gogs/gogs/releases/download/v0.13.0/gogs_0.13.0_linux_amd64.tar.gz"
-binary_name = "gogs"
-filename = "gogs_0.13.0_linux_amd64.tar.gz"
-package_format = "tar.gz"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["gogs"]
 
 [ports]
-application = 3000
-metrics = 9101
+expose = [3000, 9101]
 
 [labels]
-"org.opencontainers.image.title" = "gogs"
 "org.opencontainers.image.description" = "Gogs - lightweight self-hosted Git service"
-"org.opencontainers.image.version" = "0.13.0"
-"org.opencontainers.image.vendor" = "Gogs"
 "org.opencontainers.image.source" = "https://github.com/gogs/gogs"
-"sovereign.image.tier" = "2"
+"org.opencontainers.image.title" = "gogs"
+"org.opencontainers.image.vendor" = "Gogs"
+"org.opencontainers.image.version" = "0.13.0"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

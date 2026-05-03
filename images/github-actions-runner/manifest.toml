@@ -1,0 +1,29 @@
+[metadata]
+name = "github-actions-runner"
+version = "2.316.1"
+description = "github-actions-runner container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "runner"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["run.sh"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.title" = "github-actions-runner"
+"org.opencontainers.image.vendor" = "GitHub"
+"org.opencontainers.image.version" = "2.316.1"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,29 @@
+[metadata]
+name = "searxng"
+version = "2024.4.10"
+description = "searxng container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "searxng"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "searxng"
+"org.opencontainers.image.vendor" = "SearXNG"
+"org.opencontainers.image.version" = "2024.4.10"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

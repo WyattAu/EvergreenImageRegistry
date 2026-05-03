@@ -1,0 +1,33 @@
+[metadata]
+name = "apache"
+version = "2.4.66"
+description = "apache container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["apache2ctl"]
+cmd = ["-D", "FOREGROUND"]
+
+[ports]
+expose = [80, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://httpd.apache.org"
+"org.opencontainers.image.title" = "apache"
+"org.opencontainers.image.vendor" = "Apache Software Foundation"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "webserver"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

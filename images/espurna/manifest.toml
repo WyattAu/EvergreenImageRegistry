@@ -1,0 +1,24 @@
+[metadata]
+name = "espurna"
+version = "unknown"
+description = "espurna container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+cmd = ["-c", "print('ESPurna firmware build environment. Clone https://github.com/xoseperez/espurna and run platformio.')"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"sovereign.base.image" = "wolfi"
+"sovereign.health.type" = "exec"
+"sovereign.metrics.native" = "ztunnel"
+

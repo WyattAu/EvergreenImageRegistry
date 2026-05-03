@@ -1,0 +1,29 @@
+[metadata]
+name = "prefect"
+version = "3.3.0"
+description = "prefect container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["prefect"]
+
+[ports]
+expose = [4200, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "prefect"
+"org.opencontainers.image.vendor" = "Prefect"
+"org.opencontainers.image.version" = "3.3.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

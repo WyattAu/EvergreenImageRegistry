@@ -1,0 +1,33 @@
+[metadata]
+name = "synapse-media"
+version = "1.98.0"
+description = "Synapse Media Worker - dedicated media repository for Synapse"
+
+[build]
+base = "debian:bookworm-slim"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python3", "-m", "synapse.app.media_repository"]
+
+[ports]
+expose = [8008, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Synapse Media Worker - dedicated media repository for Synapse"
+"org.opencontainers.image.source" = "https://github.com/element-hq/synapse"
+"org.opencontainers.image.title" = "synapse-media"
+"org.opencontainers.image.vendor" = "Element"
+"org.opencontainers.image.version" = "1.98.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.debian-slim" = "true"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.image.variant" = "media-worker"
+"sovereign.metrics.native" = "ztunnel"
+

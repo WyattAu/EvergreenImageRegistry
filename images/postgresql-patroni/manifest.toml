@@ -1,0 +1,31 @@
+[metadata]
+name = "postgresql-patroni"
+version = "4.0.3"
+description = "Patroni - PostgreSQL High Availability with etcd/Consul/ZooKeeper"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python3", "-m", "patroni"]
+
+[ports]
+expose = [8008, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Patroni - PostgreSQL High Availability with etcd/Consul/ZooKeeper"
+"org.opencontainers.image.source" = "https://github.com/patroni/patroni"
+"org.opencontainers.image.title" = "postgresql-patroni"
+"org.opencontainers.image.vendor" = "Zalando"
+"org.opencontainers.image.version" = "4.0.3"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

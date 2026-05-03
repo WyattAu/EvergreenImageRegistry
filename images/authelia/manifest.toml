@@ -8,35 +8,32 @@ license = "Apache-2.0"
 tier = "2"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "scratch"
-arch = "amd64"
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/authelia/authelia/releases/download/v4.39.19/authelia-4.39.19-linux-amd64.tar.gz"
-binary_name = "authelia"
-filename = "authelia-4.39.19-linux-amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = true
+[runtime]
+entrypoint = ["/authelia"]
 
 [ports]
-application = 80
-metrics = 9101
+expose = [80, 9101]
 
 [labels]
 "org.opencontainers.image.title" = "authelia"
-"org.opencontainers.image.description" = "Authelia - single sign-on and two-factor authentication portal"
-"org.opencontainers.image.version" = "4.39.19"
 "org.opencontainers.image.vendor" = "Authelia"
-"org.opencontainers.image.source" = "https://github.com/authelia/authelia"
-"sovereign.image.tier" = "2"
+"org.opencontainers.image.version" = "4.39.19"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
-"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.init-system" = "none"
 "sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

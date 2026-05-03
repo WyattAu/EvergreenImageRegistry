@@ -1,0 +1,23 @@
+[metadata]
+name = "oxidized"
+version = "0.30.1"
+description = "oxidized container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["sleep", "infinity"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.title" = "oxidized"
+"sovereign.base.image" = "wolfi"
+

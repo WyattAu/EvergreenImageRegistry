@@ -1,51 +1,34 @@
-[image]
+[metadata]
 name = "convector"
-type = "node-npm"
-tier = 3
 version = "1.0.0"
 description = "Convector - smart contract framework tools"
 vendor = "worldsibu"
-source_url = "https://github.com/worldsibu/convector-platform"
-category = "blockchain"
-
-[source]
-url = "https://github.com/worldsibu/convector-platform/releases/download/v1.0.0/convector-server-linux-amd64.tar.gz"
-fallback_urls = []
-checksum = { algorithm = "sha256", expected = "PENDING", source = "" }
-strategy = "curl"
-github_repo = "worldsibu/convector-platform"
 
 [build]
-base = { image = "cgr.dev/chainguard/wolfi-base:latest", purpose = "runtime" }
-builder_packages = ["nodejs", "npm", "ca-certificates"]
-runtime_packages = ["nodejs", "npm", "ca-certificates"]
-build_commands = [
-  "npm install -g @worldsibu/convector-platform@1.0.0 2>/dev/null || true",
-]
-artifacts = []
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://github.com/worldsibu/convector-platform/releases/download/v1.0.0/convector-server-linux-amd64.tar.gz"
 
 [runtime]
-user = "65532:65532"
-workdir = "/app"
 entrypoint = ["node"]
-cmd = []
-ports = [8008]
-volumes = []
-stop_signal = "SIGTERM"
-env = { NODE_ENV = "production" }
 
-[health]
-type = "tcp"
-path = ""
-port = 8008
-interval_seconds = 30
-timeout_seconds = 5
-retries = 3
+[ports]
+expose = [8008, 9101]
 
-[observability]
-metrics_port = 9101
-metrics_path = "/metrics"
+[labels]
+"org.opencontainers.image.description" = "Convector - smart contract framework tools"
+"org.opencontainers.image.source" = "https://github.com/worldsibu/convector-platform"
+"org.opencontainers.image.title" = "convector"
+"org.opencontainers.image.vendor" = "worldsibu"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "tcp"
+"sovereign.image.category" = "blockchain"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
 
-[compliance]
-standards = []
-labels = {}

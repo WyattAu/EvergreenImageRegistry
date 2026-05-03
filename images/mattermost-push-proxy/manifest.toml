@@ -4,37 +4,33 @@ version = "1.1.0"
 description = "Mattermost Push Proxy - push notification proxy for Mattermost mobile apps"
 vendor = "Mattermost"
 source = "https://github.com/mattermost/mattermost-push-proxy"
-category = "messaging"
 tier = "2"
 
 [build]
 base = "scratch"
-arch = "amd64"
-
-[download]
-url = "https://github.com/mattermost/mattermost-push-proxy/releases/download/v1.1.0/mattermost-push-proxy-linux-amd64"
-filename = "mattermost-push-proxy-linux-amd64"
-strip_components = 0
-binary_name = "mattermost-push-proxy"
-
-[container]
-port = 8066
-metrics_port = 9101
 user = "65532:65532"
-workdir = "/app"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://github.com/mattermost/mattermost-push-proxy/releases/download/v1.1.0/mattermost-push-proxy-linux-amd64"
+
+[runtime]
 entrypoint = ["/usr/local/bin/mattermost-push-proxy"]
-stop_signal = "SIGTERM"
-nonroot = true
+
+[ports]
+expose = [8066, 9101]
 
 [labels]
-"org.opencontainers.image.title" = "mattermost-push-proxy"
 "org.opencontainers.image.description" = "Mattermost Push Proxy - push notification proxy for Mattermost mobile apps"
-"org.opencontainers.image.vendor" = "Mattermost"
 "org.opencontainers.image.source" = "https://github.com/mattermost/mattermost-push-proxy"
+"org.opencontainers.image.title" = "mattermost-push-proxy"
+"org.opencontainers.image.vendor" = "Mattermost"
 "org.opencontainers.image.version" = "1.1.0"
-"sovereign.image.tier" = "2"
+"sovereign.base.image" = "scratch"
 "sovereign.constraint.nonroot" = "true"
 "sovereign.constraint.scratch" = "true"
-"sovereign.base.image" = "scratch"
-"sovereign.metrics.native" = "ztunnel"
 "sovereign.health.type" = "exec"
+"sovereign.image.tier" = "2"
+"sovereign.metrics.native" = "ztunnel"
+

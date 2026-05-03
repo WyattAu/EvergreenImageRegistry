@@ -1,0 +1,32 @@
+[metadata]
+name = "trino"
+version = "435"
+description = "Sovereign hardened Trino - distributed SQL query engine"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/opt/trino/bin/launcher", "run"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Sovereign hardened Trino - distributed SQL query engine"
+"org.opencontainers.image.title" = "trino"
+"org.opencontainers.image.vendor" = "Trino Software Foundation"
+"org.opencontainers.image.version" = "435"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.category" = "database"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,30 @@
+[metadata]
+name = "freshrss-minimal"
+version = "1.24.1"
+description = "freshrss-minimal container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["php"]
+
+[ports]
+expose = [80, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/FreshRSS/FreshRSS"
+"org.opencontainers.image.title" = "freshrss-minimal"
+"org.opencontainers.image.vendor" = "FreshRSS"
+"org.opencontainers.image.version" = "1.24.1"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -1,0 +1,36 @@
+[metadata]
+name = "yarr"
+version = "2.4.0"
+description = "yarr container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "debian:bookworm-slim"
+
+[runtime]
+entrypoint = ["/yarr"]
+
+[ports]
+expose = [7070, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/nickvdyck/yarr"
+"org.opencontainers.image.title" = "yarr"
+"org.opencontainers.image.vendor" = "yarr"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

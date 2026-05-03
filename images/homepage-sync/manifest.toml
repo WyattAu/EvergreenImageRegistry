@@ -1,0 +1,32 @@
+[metadata]
+name = "homepage-sync"
+version = "latest"
+description = "Homepage - sync mode"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "ghcr.io/gethomepage/homepage:${VERSION}"
+
+[runtime]
+entrypoint = ["homepage"]
+cmd = ["--config", "/app/config", "--enable-sync"]
+
+[ports]
+expose = [3000, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Homepage - sync mode"
+"org.opencontainers.image.source" = "https://github.com/benphelps/homepage"
+"org.opencontainers.image.title" = "homepage-sync"
+"org.opencontainers.image.vendor" = "benphelps"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

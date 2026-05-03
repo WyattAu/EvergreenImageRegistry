@@ -1,0 +1,38 @@
+[metadata]
+name = "vault-operator"
+version = "1.21.0"
+description = "vault-operator container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "ghcr.io/banzaicloud/bank-vaults:v${VERSION}"
+
+[runtime]
+entrypoint = ["/usr/local/bin/bank-vaults"]
+
+[ports]
+expose = [8200, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/banzaicloud/bank-vaults"
+"org.opencontainers.image.title" = "vault-operator"
+"org.opencontainers.image.vendor" = "Banzai Cloud"
+"org.opencontainers.image.version" = "${VERSION}"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "security"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

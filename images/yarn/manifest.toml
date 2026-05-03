@@ -1,0 +1,30 @@
+[metadata]
+name = "yarn"
+version = "1.22.22"
+description = "yarn container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["node"]
+
+[ports]
+expose = [0, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "yarn"
+"org.opencontainers.image.vendor" = "Yarn"
+"org.opencontainers.image.version" = "1.22.22"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.hardened" = "true"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

@@ -8,35 +8,40 @@ license = "Apache-2.0"
 tier = "2"
 
 [build]
-base_image = "debian:bookworm-slim"
-runtime_image = "cgr.dev/chainguard/wolfi-base:latest"
-arch = "amd64"
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
 
-[download]
+[source]
+type = "package-manager"
 url = "https://github.com/couchdb/couchdb/releases/download/v3.3.3/couchdb-3.3.3-linux-amd64.tar.gz"
-binary_name = "couchdb"
-filename = "couchdb-3.3.3-linux-amd64.tar.gz"
-checksum = "PENDING"
 
-[constraints]
-nonroot = true
-scratch = false
+[runtime]
+entrypoint = ["sh", "-c", "/opt/couchdb/bin/couchdb"]
 
 [ports]
-application = 5984
-metrics = 9101
+expose = [5984, 9101]
 
 [labels]
 "org.opencontainers.image.title" = "couchdb"
-"org.opencontainers.image.description" = "CouchDB - document-oriented NoSQL database"
-"org.opencontainers.image.version" = "3.3.3"
 "org.opencontainers.image.vendor" = "Apache"
-"org.opencontainers.image.source" = "https://github.com/apache/couchdb"
-"sovereign.image.tier" = "2"
+"org.opencontainers.image.version" = "3.3.3"
+"sovereign.base.image" = "wolfi"
 "sovereign.constraint.nonroot" = "true"
-"sovereign.constraint.scratch" = "false"
-"sovereign.base.image" = "cgr.dev/chainguard/wolfi-base:latest"
-"sovereign.metrics.native" = "true"
 "sovereign.health.type" = "http"
-"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.connection-drain" = "true"
+"sovereign.hft.cpu-pins" = "4-5"
+"sovereign.hft.cpu-pins-mode" = "exclusive"
+"sovereign.hft.deploy-strategy" = "hft-stateful"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.pre-stop-delay" = "5s"
+"sovereign.hft.pre-stop-hook" = "true"
+"sovereign.hft.sched-policy" = "SCHED_OTHER"
 "sovereign.hft.shutdown-timeout" = "3s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "3000ms"
+"sovereign.image.category" = "database"
+"sovereign.image.status" = "functional"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "true"
+

@@ -1,0 +1,43 @@
+[metadata]
+name = "rsyslog"
+version = "8.2312.0"
+description = "rsyslog - rocket-fast system for log processing"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/usr/sbin/rsyslogd"]
+cmd = ["-n", "-f", "/app/conf/rsyslog.conf"]
+
+[ports]
+expose = [514, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "rsyslog - rocket-fast system for log processing"
+"org.opencontainers.image.title" = "rsyslog"
+"org.opencontainers.image.vendor" = "rsyslog"
+"org.opencontainers.image.version" = "8.2312.0"
+"sovereign.base.image" = "wolfi"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.hft.connection-drain" = "true"
+"sovereign.hft.cpu-pins" = "4-5"
+"sovereign.hft.cpu-pins-mode" = "exclusive"
+"sovereign.hft.deploy-strategy" = "hft-rolling"
+"sovereign.hft.init-system" = "none"
+"sovereign.hft.pre-stop-delay" = "5s"
+"sovereign.hft.pre-stop-hook" = "true"
+"sovereign.hft.runtime" = "c"
+"sovereign.hft.sched-policy" = "SCHED_OTHER"
+"sovereign.hft.shutdown-timeout" = "5s"
+"sovereign.hft.signal-handling" = "native"
+"sovereign.hft.startup-timeout" = "5000ms"
+"sovereign.image.tier" = "1"
+"sovereign.metrics.native" = "ztunnel"
+

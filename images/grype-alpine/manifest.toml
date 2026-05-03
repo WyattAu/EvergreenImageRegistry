@@ -1,0 +1,32 @@
+[metadata]
+name = "grype-alpine"
+version = "0.80.0"
+description = "Grype - vulnerability scanner (no Alpine)"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/grype"]
+cmd = ["--help"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Grype - vulnerability scanner (no Alpine)"
+"org.opencontainers.image.source" = "https://github.com/anchore/grype"
+"org.opencontainers.image.title" = "grype-alpine"
+"org.opencontainers.image.vendor" = "Anchore"
+"sovereign.base.image" = "scratch"
+"sovereign.constraint.nonroot" = "true"
+"sovereign.constraint.scratch" = "true"
+"sovereign.health.type" = "exec"
+"sovereign.image.tier" = "3"
+"sovereign.metrics.native" = "ztunnel"
+

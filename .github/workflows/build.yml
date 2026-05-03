@@ -55,6 +55,7 @@ env:
   REGISTRY: ghcr.io
   OWNER: ${{ github.repository_owner }}
   TAG: ${{ github.sha }}
+  SOURCE_DATE_EPOCH: ${{ github.event.repository.pushed_at }}
 
 permissions:
   contents: read

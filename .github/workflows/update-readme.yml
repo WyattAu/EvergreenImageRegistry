@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'images/'
+      - 'scripts/generate_catalog.py'
 
 permissions:
   contents: write
@@ -15,6 +16,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Generate static catalog
+        run: python3 scripts/generate_catalog.py
 
       - name: Generate image list
         id: generate_list
@@ -85,7 +89,9 @@ jobs:
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: 'docs: Auto-update image list in README'
-          file_pattern: 'README.md'
+          commit_message: 'docs: Auto-update image list and catalog'
+          file_pattern: |
+            README.md
+            docs/catalog/index.html
           commit_user_name: 'github-actions[bot]'
           commit_user_email: 'github-actions[bot]@users.noreply.github.com'

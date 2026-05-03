@@ -1,0 +1,46 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT-crdb-operator",
+  "name": "evergreen-crdb-operator",
+  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/crdb-operator",
+  "creationInfo": {
+    "created": "2026-05-03T15:26:07Z",
+    "creators": [
+      "Tool: evergreen-sbom-generator"
+    ]
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-cockroachdb-cockroach-operator-v--version-",
+      "name": "cockroachdb/cockroach-operator:v${VERSION}",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-scratch",
+      "name": "scratch",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-crdb-operator-cockroach-operator-v--version-",
+      "name": "cockroach-operator:v${VERSION}",
+      "downloadLocation": "cockroachdb/cockroach-operator:v${VERSION}",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION",
+      "originator": "Cockroach Labs"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT-crdb-operator",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-crdb-operator"
+    }
+  ]
+}

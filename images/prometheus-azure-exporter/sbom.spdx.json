@@ -1,0 +1,54 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT-prometheus-azure-exporter",
+  "name": "evergreen-prometheus-azure-exporter",
+  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/prometheus-azure-exporter",
+  "creationInfo": {
+    "created": "2026-05-03T15:26:07Z",
+    "creators": [
+      "Tool: evergreen-sbom-generator"
+    ]
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-ghcr.io-robustperception-azure-metrics-exporter---version-",
+      "name": "ghcr.io/robustperception/azure_metrics_exporter:${VERSION}",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-debian-bookworm-slim",
+      "name": "debian:bookworm-slim",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-scratch",
+      "name": "scratch",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-prometheus-azure-exporter-azure-metrics-exporter---version-",
+      "name": "azure_metrics_exporter:${VERSION}",
+      "downloadLocation": "ghcr.io/robustperception/azure_metrics_exporter:${VERSION}",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION",
+      "originator": "Robust Perception"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT-prometheus-azure-exporter",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-prometheus-azure-exporter"
+    }
+  ]
+}

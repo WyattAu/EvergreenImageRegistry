@@ -1,0 +1,136 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT-plex-media-server",
+  "name": "evergreen-plex-media-server",
+  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/plex-media-server",
+  "creationInfo": {
+    "created": "2026-05-03T15:26:07Z",
+    "creators": [
+      "Tool: evergreen-sbom-generator"
+    ]
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-plexinc-pms-docker-latest",
+      "name": "plexinc/pms-docker:latest",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-cgr.dev-chainguard-wolfi-base-latest",
+      "name": "cgr.dev/chainguard/wolfi-base:latest",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-plex-media-server-ca-certificates",
+      "name": "ca-certificates",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/ca-certificates"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-plex-media-server-curl",
+      "name": "curl",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/curl"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-plex-media-server-expat",
+      "name": "expat",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/expat"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-plex-media-server-fontconfig",
+      "name": "fontconfig",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/fontconfig"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-plex-media-server-freetype",
+      "name": "freetype",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/freetype"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-plex-media-server-glib",
+      "name": "glib",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/glib"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-plex-media-server-pms-docker-latest",
+      "name": "pms-docker:latest",
+      "downloadLocation": "plexinc/pms-docker:latest",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION",
+      "originator": "Plex"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT-plex-media-server",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-plex-media-server"
+    }
+  ]
+}

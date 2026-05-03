@@ -1,0 +1,263 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT-checkov",
+  "name": "evergreen-checkov",
+  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/checkov",
+  "creationInfo": {
+    "created": "2026-05-03T15:26:07Z",
+    "creators": [
+      "Tool: evergreen-sbom-generator"
+    ]
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-debian-bookworm-slim",
+      "name": "debian:bookworm-slim",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-cgr.dev-chainguard-wolfi-base-latest",
+      "name": "cgr.dev/chainguard/wolfi-base:latest",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-checkov-ca-certificates",
+      "name": "ca-certificates",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/ca-certificates"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-checkov-git",
+      "name": "git",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/git"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-checkov-python3",
+      "name": "python3",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/python3"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-checkov-python3-pip",
+      "name": "python3-pip",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/python3-pip"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-checkov---from-builder",
+      "name": "--from=builder",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/--from=builder"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-checkov--s",
+      "name": "-S",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/-S"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-checkov--g",
+      "name": "-g",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/-g"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-checkov--app",
+      "name": "/app",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine//app"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-checkov--opt-venv",
+      "name": "/opt/venv",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine//opt/venv"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-checkov-2",
+      "name": "2",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/2"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-checkov---dev-null",
+      "name": ">/dev/null",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/>/dev/null"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-checkov-copy",
+      "name": "COPY",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/COPY"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-checkov-run",
+      "name": "RUN",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/RUN"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-checkov-addgroup",
+      "name": "addgroup",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/addgroup"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-checkov-nogroup",
+      "name": "nogroup",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/nogroup"
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT-checkov",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-checkov"
+    }
+  ]
+}

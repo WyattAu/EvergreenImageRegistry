@@ -1,0 +1,91 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT-kube-proxy",
+  "name": "evergreen-kube-proxy",
+  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/kube-proxy",
+  "creationInfo": {
+    "created": "2026-05-03T15:26:07Z",
+    "creators": [
+      "Tool: evergreen-sbom-generator"
+    ]
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-debian-bookworm-slim",
+      "name": "debian:bookworm-slim",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-cgr.dev-chainguard-wolfi-base-latest",
+      "name": "cgr.dev/chainguard/wolfi-base:latest",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-kube-proxy-ca-certificates",
+      "name": "ca-certificates",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/ca-certificates"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-kube-proxy-curl",
+      "name": "curl",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:debian/curl"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-kube-proxy-iptables",
+      "name": "iptables",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/iptables"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-kube-proxy-kube-proxy-1.30.1-linux-amd64",
+      "name": "kube-proxy-1.30.1-linux-amd64",
+      "downloadLocation": "https://github.com/kube-proxy/kube-proxy/releases/download/v1.30.1/kube-proxy-1.30.1-linux-amd64.tar.gz",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION",
+      "originator": "Kubernetes"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT-kube-proxy",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-kube-proxy"
+    }
+  ]
+}

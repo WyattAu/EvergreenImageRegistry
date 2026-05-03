@@ -1,0 +1,54 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT-prometheus-cloudwatch-exporter",
+  "name": "evergreen-prometheus-cloudwatch-exporter",
+  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/prometheus-cloudwatch-exporter",
+  "creationInfo": {
+    "created": "2026-05-03T15:26:07Z",
+    "creators": [
+      "Tool: evergreen-sbom-generator"
+    ]
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-prom-cloudwatch-exporter---version-",
+      "name": "prom/cloudwatch-exporter:${VERSION}",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-debian-bookworm-slim",
+      "name": "debian:bookworm-slim",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-scratch",
+      "name": "scratch",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-prometheus-cloudwatch-exporter-cloudwatch-exporter---version-",
+      "name": "cloudwatch-exporter:${VERSION}",
+      "downloadLocation": "prom/cloudwatch-exporter:${VERSION}",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION",
+      "originator": "Prometheus Community"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT-prometheus-cloudwatch-exporter",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-prometheus-cloudwatch-exporter"
+    }
+  ]
+}

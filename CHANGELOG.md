@@ -679,3 +679,38 @@ Verified safe updates via GitHub API with asset naming validation:
 ---
 
 **END OF CHANGELOG**
+
+---
+
+## [21.0.0] - 2026-05-03
+
+### Phase 35: CI Validation & Gates
+
+- Added `gates` job to build.yml — runs before build, validates all images
+- GATE-HEALTHCHECK: verifies HEALTHCHECK instruction present (FAIL if missing)
+- GATE-SECURITY-LABELS: verifies 4 security labels (cap-drop, no-new-privileges, read-only-rootfs, seccomp)
+- GATE-DIGEST-PIN: warns on mutable final-stage FROM (soft warning)
+- Build and build-multiarch jobs now depend on gates passing
+
+### Phase 36: Remaining Digest Pinning
+
+- Pinned 17 additional upstream version digests (37 Dockerfiles modified)
+- Digest coverage: 73.6% → 75.4% (1522/2019 FROM lines)
+- Effective immutability: 92.9% → 94.7%
+- 2 skipped (minio RELEASE tag not published, photoview not found on registries)
+- 5 :latest remain (auth-gated: dependabot, lancedb, scylladb, tigergraph x2)
+- 100 ${VERSION} build-time vars remain (acceptable)
+
+### Phase 37: Per-Image README Stubs
+
+- Generated 993 README.md stubs from manifest.toml + Dockerfile metadata
+- 4 existing READMEs preserved (nginx, traefik, keycloak, forgejo)
+- Coverage: 997/997 (100%)
+- Each includes: version, tier, base image, architecture, health check, SBOM link
+
+### ROADMAP.md Rewrite
+
+- Condensed from 474 lines to 137 lines
+- Completed phases 28-34 moved to "Achieved" summary table
+- Remaining work re-prioritized as Phases 35-40
+- "Not Recommended" section documents diminishing-returns items

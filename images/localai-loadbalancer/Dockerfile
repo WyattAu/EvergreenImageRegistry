@@ -1,6 +1,6 @@
 ARG VERSION=v4.1.3
 
-FROM localai/localai:v4.1.3 AS upstream
+FROM localai/localai@sha256:a6af99e17a73a92caa134e70ae84492cc47b67645c1676268a7522ad14f4c09d AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION

@@ -1,7 +1,7 @@
 ARG VERSION=21.3.0
 ARG BUILD_DATE
 
-FROM gvenzl/oracle-xe:21-slim AS upstream
+FROM gvenzl/oracle-xe@sha256:ecdf4302ac3d134e1bac5ef6e0c223c2d0f4d4d2b6d551aa79b2346f1ab8f792 AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
@@ -25,7 +25,7 @@ LABEL org.opencontainers.image.title="oracledb-xe" \
       evergreen.image.tier="1" \
       evergreen.image.category="database" \
       evergreen.image.status="functional" \
-      evergreen.image.note="Extracted from gvenzl/oracle-xe:21-slim community image. Oracle license applies." \
+      evergreen.image.note="Extracted from gvenzl/oracle-xe@sha256:ecdf4302ac3d134e1bac5ef6e0c223c2d0f4d4d2b6d551aa79b2346f1ab8f792 community image. Oracle license applies." \
       evergreen.constraint.nonroot="true" \
       evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"

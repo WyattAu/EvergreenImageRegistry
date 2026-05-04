@@ -1,6 +1,6 @@
 ARG VERSION=2.7
 
-FROM influxdb:2.7 AS upstream
+FROM influxdb@sha256:587b7878881812cf6e5481f8889f53f210180fd6790e6c3ddaa0b456dcffd5ca AS upstream
 
 FROM scratch
 COPY --from=upstream /usr/bin/influxd /influxd

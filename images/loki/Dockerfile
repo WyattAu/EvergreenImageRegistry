@@ -27,6 +27,7 @@ EXPOSE 3100
 HEALTHCHECK NONE
 ENTRYPOINT ["/loki"]
 LABEL org.opencontainers.image.title="loki" \
+      org.opencontainers.image.description="Loki - horizontally-scalable log aggregation system" \
       org.opencontainers.image.version="3.1.0" \
       org.opencontainers.image.vendor="Grafana" \
       evergreen.image.tier="1" \

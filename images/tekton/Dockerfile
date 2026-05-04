@@ -29,6 +29,7 @@ EXPOSE 9090
 HEALTHCHECK NONE
 ENTRYPOINT ["/tekton"]
 LABEL org.opencontainers.image.title="tekton" \
+      org.opencontainers.image.description="Tekton - cloud-native CI/CD solution for Kubernetes" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="TektonCD" \
       org.opencontainers.image.source="https://github.com/tektoncd/pipeline" \

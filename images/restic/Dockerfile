@@ -29,6 +29,7 @@ EXPOSE 8000
 HEALTHCHECK NONE
 ENTRYPOINT ["/restic"]
 LABEL org.opencontainers.image.title="restic" \
+      org.opencontainers.image.description="restic container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="restic" \
       org.opencontainers.image.source="https://github.com/restic/restic" \

@@ -14,6 +14,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["kmymoney"]
 LABEL org.opencontainers.image.title="kmymoney" \
+      org.opencontainers.image.description="kmymoney container image" \
       org.opencontainers.image.version="5.1.4" \
       org.opencontainers.image.vendor="KMyMoney" \
       org.opencontainers.image.source="https://github.com/KDE/kmymoney" \

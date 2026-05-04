@@ -18,6 +18,7 @@ WORKDIR /app
 HEALTHCHECK NONE
 ENTRYPOINT ["true"]
 LABEL org.opencontainers.image.title="localai-cuda" \
+      org.opencontainers.image.description="localai-cuda container image" \
       org.opencontainers.image.version="2.30.0" \
       org.opencontainers.image.vendor="LocalAI" \
       evergreen.image.tier="3" \

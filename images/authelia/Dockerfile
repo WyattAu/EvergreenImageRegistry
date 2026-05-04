@@ -28,6 +28,7 @@ EXPOSE 80 443
 HEALTHCHECK NONE
 ENTRYPOINT ["/authelia"]
 LABEL org.opencontainers.image.title="authelia" \
+      org.opencontainers.image.description="Authelia - single sign-on and two-factor authentication portal" \
       org.opencontainers.image.version="4.39.19" \
       org.opencontainers.image.vendor="Authelia" \
       evergreen.image.tier="1" \

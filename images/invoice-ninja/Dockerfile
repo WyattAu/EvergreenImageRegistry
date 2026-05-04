@@ -14,9 +14,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     mkdir -p /var/run/php /var/www/html /var/log/nginx /var/cache/nginx ; 2>/dev/null || true \
     chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
-RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt/apk GPG signatures
-
-RUN apk add --no-cache php-8.4-fpm php-8.4 php-8.4-curl php-8.4-mbstring php-8.4-xml zip php-8.4-intl php-8.4-pdo_mysql php-8.4-mysqli openssl php-8.4-pdo php-8.4-gd nginx ca-certificates || true && \
+RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt/apk GPG signatures && \
+    apk add --no-cache php-8.4-fpm php-8.4 php-8.4-curl php-8.4-mbstring php-8.4-xml zip php-8.4-intl php-8.4-pdo_mysql php-8.4-mysqli openssl php-8.4-pdo php-8.4-gd nginx ca-certificates || true && \
     chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php 2>/dev/null || true
 COPY --from=builder /etc/nginx/nginx.conf /etc/nginx/nginx.conf
 USER 65532:65532
@@ -26,6 +25,7 @@ EXPOSE 80 443
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:80/ || exit 1
 ENTRYPOINT ["php-fpm8.4"]
 LABEL org.opencontainers.image.title="invoice-ninja" \
+      org.opencontainers.image.description="invoice-ninja container image" \
       org.opencontainers.image.version="5.13.19" \
       org.opencontainers.image.vendor="Invoice Ninja" \
       org.opencontainers.image.source="https://github.com/invoiceninja/invoiceninja" \

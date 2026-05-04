@@ -24,6 +24,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["python3"]
 LABEL org.opencontainers.image.title="faster-whisper" \
+      org.opencontainers.image.description="faster-whisper container image" \
       org.opencontainers.image.version="1.1.1" \
       org.opencontainers.image.vendor="Guillaume" \
       org.opencontainers.image.source="https://github.com/SYSTRAN/faster-whisper" \

@@ -16,6 +16,7 @@ EXPOSE 8080
 HEALTHCHECK NONE
 ENTRYPOINT ["/app/fileserver"]
 LABEL org.opencontainers.image.title="headscale-ui" \
+      org.opencontainers.image.description="headscale-ui container image" \
       org.opencontainers.image.version="2026.03.17" \
       org.opencontainers.image.vendor="gurucomputing" \
       org.opencontainers.image.source="https://github.com/gurucomputing/headscale-ui" \

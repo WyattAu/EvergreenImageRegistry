@@ -26,6 +26,7 @@ EXPOSE 8080
 HEALTHCHECK NONE
 ENTRYPOINT ["/miniflux"]
 LABEL org.opencontainers.image.title="miniflux" \
+      org.opencontainers.image.description="Miniflux - minimalist RSS/Atom feed reader" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Miniflux" \
       evergreen.image.tier="1" \

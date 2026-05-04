@@ -27,6 +27,7 @@ EXPOSE 9119
 HEALTHCHECK NONE
 ENTRYPOINT ["/bind_exporter"]
 LABEL org.opencontainers.image.title="bind-exporter" \
+      org.opencontainers.image.description="bind-exporter container image" \
       org.opencontainers.image.version="0.7.0" \
       org.opencontainers.image.vendor="Prometheus" \
       evergreen.image.tier="1" \

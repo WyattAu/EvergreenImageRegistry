@@ -22,6 +22,7 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:80/ || exit 1
 ENTRYPOINT ["php"]
 LABEL org.opencontainers.image.title="koken" \
+      org.opencontainers.image.description="koken container image" \
       org.opencontainers.image.version="0.22.0" \
       org.opencontainers.image.vendor="koken/Koken-Platform" \
       org.opencontainers.image.source="https://github.com/koken/Koken-Platform/releases" \

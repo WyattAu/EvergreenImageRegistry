@@ -11,6 +11,7 @@ WORKDIR /app
 HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/dex-operator"]
 LABEL org.opencontainers.image.title="dex-operator" \
+      org.opencontainers.image.description="dex-operator container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="DexIDP" \
       org.opencontainers.image.source="https://github.com/dexidp/dex-operator" \

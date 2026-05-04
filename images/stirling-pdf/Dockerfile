@@ -23,6 +23,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["/opt/stirling-pdf/stirling-pdf"]
 LABEL org.opencontainers.image.title="stirling-pdf" \
+      org.opencontainers.image.description="stirling-pdf container image" \
       org.opencontainers.image.version="2.10.0" \
       org.opencontainers.image.vendor="Stirling-PDF" \
       org.opencontainers.image.source="https://github.com/Stirling-Tools/Stirling-PDF" \

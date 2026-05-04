@@ -1,11 +1,12 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=2.11.0
+ARG TARGETARCH
 ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
-    "https://github.com/binwiederhier/ntfy/releases/download/v${VERSION}/ntfy_${VERSION}_linux_amd64.tar.gz" \
+    "https://github.com/binwiederhier/ntfy/releases/download/v${VERSION}/ntfy_${VERSION}_linux_${TARGETARCH}.tar.gz" \
     -o /tmp/ntfy.tar.gz && \
     echo "1c2295cb7f2a75604f0993bcfb79ea93c62ef49b34fb4b2d878c04b55e529acb  /tmp/ntfy.tar.gz" | sha256sum -c - && \
     tar -xzf /tmp/ntfy.tar.gz -C /tmp && \

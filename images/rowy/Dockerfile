@@ -31,6 +31,7 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:3000/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="rowy" \
+      org.opencontainers.image.description="rowy container image" \
       org.opencontainers.image.version="2.0.0" \
       org.opencontainers.image.vendor="rowyio/rowy" \
       org.opencontainers.image.source="https://github.com/rowyio/rowy/releases" \

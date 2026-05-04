@@ -23,6 +23,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl 
 ENTRYPOINT ["apache2ctl"]
 CMD ["-D", "FOREGROUND"]
 LABEL org.opencontainers.image.title="apache" \
+      org.opencontainers.image.description="apache container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Apache Software Foundation" \
       org.opencontainers.image.source="https://httpd.apache.org" \

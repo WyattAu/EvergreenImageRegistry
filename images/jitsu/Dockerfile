@@ -31,6 +31,7 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8000/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="jitsu" \
+      org.opencontainers.image.description="jitsu container image" \
       org.opencontainers.image.version="2.55.0" \
       org.opencontainers.image.vendor="jitsucom/jitsu" \
       org.opencontainers.image.source="https://github.com/jitsucom/jitsu/releases" \

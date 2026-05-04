@@ -31,6 +31,7 @@ EXPOSE 3306
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD mysqladmin ping -h localhost --silent
 ENTRYPOINT ["sh", "-c", "mariadbd"]
 LABEL org.opencontainers.image.title="mariadb" \
+      org.opencontainers.image.description="MariaDB - community-developed fork of MySQL" \
       org.opencontainers.image.version="11.4.2" \
       org.opencontainers.image.vendor="MariaDB" \
       evergreen.image.tier="2" \

@@ -13,6 +13,7 @@ EXPOSE 8334
 HEALTHCHECK NONE
 ENTRYPOINT ["/filestash"]
 LABEL org.opencontainers.image.title="filestash" \
+      org.opencontainers.image.description="filestash container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Filestash" \
       org.opencontainers.image.source="https://github.com/mickael-kerjean/filestash" \

@@ -19,6 +19,7 @@ EXPOSE 8443
 EXPOSE 9101
 
 LABEL org.opencontainers.image.title="kanidm-server" org.opencontainers.image.version="1.9.2" org.opencontainers.image.vendor="Kanidm" org.opencontainers.image.source="https://github.com/kanidm/kanidm" evergreen.image.tier="2" evergreen.image.category="identity" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.constraint.scratch="true" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="3s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="3000ms"
+      org.opencontainers.image.description="kanidm-server container image" \
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"

@@ -34,7 +34,7 @@ if [ -n "$OLD_VERSION" ]; then
 fi
 
 if [ -f "$CHECKSUMS" ]; then
-    OLD_CHECKSUM=$(grep -oP 'expected_sha256\s*=\s*"\K[^"]+' "$CHECKSUMS" 2>/dev/null || echo "")
+    _OLD_CHECKSUM=$(grep -oP 'expected_sha256\s*=\s*"\K[^"]+' "$CHECKSUMS" 2>/dev/null || echo "")
 
     DOWNLOAD_URL=$(grep -oP 'url\s*=\s*"\K[^"]+' "$CHECKSUMS" 2>/dev/null | head -1 || echo "")
     if [ -n "$DOWNLOAD_URL" ] && [ -n "$OLD_VERSION" ]; then

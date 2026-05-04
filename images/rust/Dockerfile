@@ -28,6 +28,7 @@ WORKDIR /app
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["rust"]
 LABEL org.opencontainers.image.title="rust" \
+      org.opencontainers.image.description="rust container image" \
       org.opencontainers.image.version="1.78.0" \
       org.opencontainers.image.vendor="Rust" \
       evergreen.image.tier="2" \

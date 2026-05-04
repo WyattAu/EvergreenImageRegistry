@@ -31,6 +31,7 @@ EXPOSE 13379
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:13379/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="audiobookshelf-opds" \
+      org.opencontainers.image.description="audiobookshelf-opds container image" \
       org.opencontainers.image.version="2.19.1" \
       org.opencontainers.image.vendor="advplyr/audiobookshelf" \
       org.opencontainers.image.source="https://github.com/advplyr/audiobookshelf/releases" \

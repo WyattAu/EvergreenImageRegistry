@@ -24,6 +24,7 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8000/ || exit 1
 ENTRYPOINT ["python3"]
 LABEL org.opencontainers.image.title="langchain" \
+      org.opencontainers.image.description="langchain container image" \
       org.opencontainers.image.version="0.3.0" \
       org.opencontainers.image.vendor="LangChain" \
       org.opencontainers.image.source="https://github.com/langchain-ai/langchain" \

@@ -61,7 +61,7 @@ wait_for_container() {
 detect_security_type() {
     local img="$1"
     case "$img" in
-        *vault*|*vaultwarden*) echo "vault" ;;
+        *vault*) echo "vault" ;;
         *trivy*) echo "trivy" ;;
         *cosign*) echo "cosign" ;;
         *grype*) echo "grype" ;;

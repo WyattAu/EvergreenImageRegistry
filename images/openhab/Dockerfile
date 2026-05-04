@@ -35,6 +35,7 @@ ENTRYPOINT ["/openhab/start.sh"]
 EXPOSE 8080 8443
 
 LABEL org.opencontainers.image.title="openhab" \
+      org.opencontainers.image.description="openhab container image" \
       org.opencontainers.image.version="4.2.0" \
       org.opencontainers.image.vendor="OpenHAB" \
       org.opencontainers.image.source="https://github.com/openhab/openhab-distro" \

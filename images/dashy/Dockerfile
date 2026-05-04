@@ -27,6 +27,7 @@ EXPOSE 80
 HEALTHCHECK NONE
 ENTRYPOINT ["/dashy"]
 LABEL org.opencontainers.image.title="dashy" \
+      org.opencontainers.image.description="dashy container image" \
       org.opencontainers.image.version="3.3.0" \
       org.opencontainers.image.vendor="Dashy" \
       evergreen.image.tier="1" \

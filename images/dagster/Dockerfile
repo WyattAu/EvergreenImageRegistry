@@ -23,6 +23,7 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:3000/ || exit 1
 ENTRYPOINT ["dagster-webserver"]
 LABEL org.opencontainers.image.title="dagster" \
+      org.opencontainers.image.description="Dagster - data orchestration platform" \
       org.opencontainers.image.version="1.10.0" \
       org.opencontainers.image.vendor="Dagster" \
       evergreen.image.tier="3" \

@@ -33,6 +33,7 @@ EXPOSE 0
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:0/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="yarn" \
+      org.opencontainers.image.description="yarn container image" \
       org.opencontainers.image.version="1.22.22" \
       org.opencontainers.image.vendor="Yarn" \
       evergreen.image.tier="3" \

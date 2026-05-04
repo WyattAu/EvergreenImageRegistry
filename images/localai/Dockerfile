@@ -27,6 +27,7 @@ EXPOSE 8080
 HEALTHCHECK NONE
 ENTRYPOINT ["/localai"]
 LABEL org.opencontainers.image.title="localai" \
+      org.opencontainers.image.description="localai container image" \
       org.opencontainers.image.version="4.1.3" \
       org.opencontainers.image.vendor="LocalAI" \
       evergreen.image.tier="1" \

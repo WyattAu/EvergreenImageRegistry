@@ -34,6 +34,7 @@ EXPOSE 8200
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8200/ || exit 1
 ENTRYPOINT ["dotnet", "/opt/duplicati/Duplicati.Server.exe"]
 LABEL org.opencontainers.image.title="duplicati" \
+      org.opencontainers.image.description="duplicati container image" \
       org.opencontainers.image.version="2.1.0.1" \
       org.opencontainers.image.vendor="Duplicati" \
       org.opencontainers.image.source="https://github.com/duplicati/duplicati" \

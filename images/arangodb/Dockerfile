@@ -31,6 +31,7 @@ EXPOSE 8529
 HEALTHCHECK NONE
 ENTRYPOINT ["/arangod"]
 LABEL org.opencontainers.image.title="arangodb" \
+      org.opencontainers.image.description="arangodb container image" \
       org.opencontainers.image.version="3.12.4" \
       org.opencontainers.image.vendor="ArangoDB" \
       evergreen.image.tier="1" \

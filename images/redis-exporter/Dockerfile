@@ -27,6 +27,7 @@ EXPOSE 9121
 HEALTHCHECK NONE
 ENTRYPOINT ["/redis_exporter"]
 LABEL org.opencontainers.image.title="redis-exporter" \
+      org.opencontainers.image.description="Redis Exporter - Prometheus exporter for Redis" \
       org.opencontainers.image.version="1.82.0" \
       org.opencontainers.image.vendor="Prometheus" \
       evergreen.image.tier="1" \

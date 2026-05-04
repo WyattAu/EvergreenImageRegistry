@@ -31,6 +31,7 @@ EXPOSE 3306
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD mysqladmin ping -h localhost --silent
 ENTRYPOINT ["sh", "-c", "mariadbd"]
 LABEL org.opencontainers.image.title="mysql" \
+      org.opencontainers.image.description="MySQL - open source relational database management system" \
       org.opencontainers.image.version="8.4.1" \
       org.opencontainers.image.vendor="Oracle" \
       evergreen.image.tier="2" \

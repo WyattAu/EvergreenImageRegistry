@@ -26,6 +26,7 @@ EXPOSE 7860
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:7860/ || exit 1
 ENTRYPOINT ["python3", "/opt/text-generation-webui/server.py"]
 LABEL org.opencontainers.image.title="text-generation-webui" \
+      org.opencontainers.image.description="text-generation-webui container image" \
       org.opencontainers.image.version="1.8" \
       org.opencontainers.image.vendor="Oobabooga" \
       evergreen.image.tier="2" \

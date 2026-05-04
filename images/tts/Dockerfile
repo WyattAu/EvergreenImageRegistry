@@ -24,6 +24,7 @@ EXPOSE 5002
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5002/ || exit 1
 ENTRYPOINT ["python3"]
 LABEL org.opencontainers.image.title="tts" \
+      org.opencontainers.image.description="tts container image" \
       org.opencontainers.image.version="0.22.0" \
       org.opencontainers.image.vendor="Coqui" \
       org.opencontainers.image.source="https://github.com/coqui-ai/TTS" \

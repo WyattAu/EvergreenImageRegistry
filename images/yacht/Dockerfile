@@ -30,6 +30,9 @@ USER 65532:65532
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK NONE
+
+LABEL org.opencontainers.image.description="yacht container image"
+
 ENTRYPOINT ["/yacht"]
 
 CMD ["--help"]

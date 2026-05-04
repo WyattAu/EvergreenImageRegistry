@@ -19,6 +19,7 @@ EXPOSE 4550
 EXPOSE 9101
 
 LABEL org.opencontainers.image.title="pagerduty-agent" org.opencontainers.image.version="1.7.4" org.opencontainers.image.vendor="PagerDuty" org.opencontainers.image.source="https://github.com/PagerDuty/pdagent" evergreen.image.tier="2" evergreen.image.category="monitoring" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.constraint.scratch="true" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="3s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="3000ms"
+      org.opencontainers.image.description="pagerduty-agent container image" \
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"

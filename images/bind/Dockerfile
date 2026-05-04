@@ -26,6 +26,7 @@ EXPOSE 53 953
 HEALTHCHECK NONE
 ENTRYPOINT ["/named"]
 LABEL org.opencontainers.image.title="bind" \
+      org.opencontainers.image.description="BIND - DNS server software" \
       org.opencontainers.image.version="9.21.21" \
       org.opencontainers.image.vendor="ISC" \
       evergreen.image.tier="1" \

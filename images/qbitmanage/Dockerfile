@@ -24,6 +24,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["python3"]
 LABEL org.opencontainers.image.title="qbitmanage" \
+      org.opencontainers.image.description="qbitmanage container image" \
       org.opencontainers.image.version="4.2.0" \
       org.opencontainers.image.vendor="QbitManage" \
       org.opencontainers.image.source="https://github.com/stevex0r/qbitmanage" \

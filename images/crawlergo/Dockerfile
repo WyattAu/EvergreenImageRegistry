@@ -27,6 +27,7 @@ EXPOSE 0
 HEALTHCHECK NONE
 ENTRYPOINT ["/crawlergo"]
 LABEL org.opencontainers.image.title="crawlergo" \
+      org.opencontainers.image.description="crawlergo container image" \
       org.opencontainers.image.version="0.4.4" \
       org.opencontainers.image.vendor="crawlergo" \
       org.opencontainers.image.source="https://github.com/Qianlitp/crawlergo/releases/download/v0.4.4" \

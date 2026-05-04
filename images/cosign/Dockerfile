@@ -20,6 +20,7 @@ WORKDIR /app
 HEALTHCHECK NONE
 ENTRYPOINT ["/cosign"]
 LABEL org.opencontainers.image.title="cosign" \
+      org.opencontainers.image.description="Cosign - container signing and verification tool" \
       org.opencontainers.image.version="3.0.6" \
       org.opencontainers.image.vendor="sigstore" \
       org.opencontainers.image.source="https://github.com/sigstore/cosign" \

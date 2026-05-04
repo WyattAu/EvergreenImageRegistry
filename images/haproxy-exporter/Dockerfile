@@ -27,6 +27,7 @@ EXPOSE 9101
 HEALTHCHECK NONE
 ENTRYPOINT ["/haproxy_exporter"]
 LABEL org.opencontainers.image.title="haproxy-exporter" \
+      org.opencontainers.image.description="haproxy-exporter container image" \
       org.opencontainers.image.version="0.15.0" \
       org.opencontainers.image.vendor="Prometheus" \
       evergreen.image.tier="1" \

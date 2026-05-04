@@ -31,6 +31,7 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:80/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="appsmith-nginx" \
+      org.opencontainers.image.description="appsmith-nginx container image" \
       org.opencontainers.image.version="1.46.0" \
       org.opencontainers.image.vendor="appsmithorg/appsmith" \
       org.opencontainers.image.source="https://github.com/appsmithorg/appsmith/releases" \

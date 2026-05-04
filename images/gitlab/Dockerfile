@@ -28,6 +28,7 @@ WORKDIR /home/git
 EXPOSE 80 22 443
 
 LABEL org.opencontainers.image.title="gitlab" \
+      org.opencontainers.image.description="gitlab container image" \
       org.opencontainers.image.version="17.6.0" \
       org.opencontainers.image.vendor="GitLab" \
       org.opencontainers.image.source="https://gitlab.com/gitlab-org/gitlab-ce" \

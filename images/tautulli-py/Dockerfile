@@ -30,6 +30,7 @@ EXPOSE 8181
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8181/ || exit 1
 ENTRYPOINT ["python3", "/opt/tautulli/Tautulli.py"]
 LABEL org.opencontainers.image.title="tautulli-py" \
+      org.opencontainers.image.description="tautulli-py container image" \
       org.opencontainers.image.version="2.14.5" \
       org.opencontainers.image.vendor="Tautulli" \
       org.opencontainers.image.source="https://github.com/Tautulli/Tautulli" \

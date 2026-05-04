@@ -20,6 +20,7 @@ EXPOSE 53 8081
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:53/ || exit 1
 ENTRYPOINT ["pdns"]
 LABEL org.opencontainers.image.title="powerdns" \
+      org.opencontainers.image.description="powerdns container image" \
       org.opencontainers.image.version="4.9.1" \
       org.opencontainers.image.vendor="PowerDNS" \
       evergreen.image.tier="2" \

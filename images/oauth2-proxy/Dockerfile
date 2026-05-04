@@ -30,6 +30,7 @@ EXPOSE 80 443
 HEALTHCHECK NONE
 ENTRYPOINT ["/oauth2-proxy"]
 LABEL org.opencontainers.image.title="oauth2-proxy" \
+      org.opencontainers.image.description="OAuth2 Proxy - reverse proxy with authentication provider" \
       org.opencontainers.image.version="7.15.2" \
       org.opencontainers.image.vendor="OAuth2" \
       evergreen.image.tier="1" \

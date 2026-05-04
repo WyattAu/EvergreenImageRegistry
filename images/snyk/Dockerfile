@@ -22,6 +22,7 @@ WORKDIR /app
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["/usr/local/bin/snyk"]
 LABEL org.opencontainers.image.title="snyk" \
+      org.opencontainers.image.description="snyk container image" \
       org.opencontainers.image.version="1.1300.0" \
       org.opencontainers.image.vendor="Snyk" \
       org.opencontainers.image.source="https://github.com/snyk/snyk" \

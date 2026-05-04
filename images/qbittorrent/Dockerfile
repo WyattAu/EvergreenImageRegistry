@@ -20,6 +20,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["qbittorrent-nox"]
 LABEL org.opencontainers.image.title="qbittorrent" \
+      org.opencontainers.image.description="qbittorrent container image" \
       org.opencontainers.image.version="4.6.5" \
       org.opencontainers.image.vendor="QBitTorrent" \
       evergreen.image.tier="2" \

@@ -68,7 +68,7 @@ detect_db_type() {
     local entrypoint
     entrypoint=$(docker inspect "$img" --format='{{(index .Config.Entrypoint 0)}}' 2>/dev/null || echo "")
     case "$img" in
-        *postgres*|*postgresql*) echo "postgresql" ;;
+        *postgres*) echo "postgresql" ;;
         *redis*) echo "redis" ;;
         *mysql*) echo "mysql" ;;
         *mariadb*) echo "mysql" ;;

@@ -27,6 +27,7 @@ EXPOSE 2379 2380
 HEALTHCHECK NONE
 ENTRYPOINT ["/etcd"]
 LABEL org.opencontainers.image.title="etcd" \
+      org.opencontainers.image.description="etcd - distributed reliable key-value store" \
       org.opencontainers.image.version="3.6.10" \
       org.opencontainers.image.vendor="etcd" \
       evergreen.image.tier="1" \

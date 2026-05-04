@@ -13,6 +13,7 @@ WORKDIR /app
 EXPOSE 9101
 
 LABEL org.opencontainers.image.title="cyberduck" org.opencontainers.image.version="9.1.0" org.opencontainers.image.vendor="iterate-ch" org.opencontainers.image.source="https://github.com/iterate-ch/cyberduck" evergreen.image.tier="2" evergreen.image.category="storage" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.constraint.base="wolfi" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="5s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="15000ms"
+      org.opencontainers.image.description="cyberduck container image" \
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"

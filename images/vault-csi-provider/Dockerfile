@@ -11,6 +11,7 @@ WORKDIR /app
 HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/vault-csi-provider"]
 LABEL org.opencontainers.image.title="vault-csi-provider" \
+      org.opencontainers.image.description="vault-csi-provider container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="HashiCorp" \
       org.opencontainers.image.source="https://github.com/hashicorp/vault-csi-provider" \

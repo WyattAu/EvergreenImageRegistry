@@ -27,6 +27,7 @@ EXPOSE 5432
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD pg_isready -h localhost -p 5432
 ENTRYPOINT ["postgres"]
 LABEL org.opencontainers.image.title="postgres" \
+      org.opencontainers.image.description="PostgreSQL - advanced open source relational database" \
       org.opencontainers.image.version="17.4" \
       org.opencontainers.image.vendor="PostgreSQL" \
       evergreen.image.tier="1" \

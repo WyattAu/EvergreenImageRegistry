@@ -31,6 +31,7 @@ EXPOSE 4040
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:4040/ || exit 1
 ENTRYPOINT ["java", "-jar", "/app/airsonic-advanced-11.1.5.war"]
 LABEL org.opencontainers.image.title="airsonic-advanced" \
+      org.opencontainers.image.description="airsonic-advanced container image" \
       org.opencontainers.image.version="11.1.5" \
       org.opencontainers.image.vendor="Airsonic-Advanced" \
       org.opencontainers.image.source="https://github.com/airsonic-advanced/airsonic-advanced/releases" \

@@ -18,6 +18,7 @@ WORKDIR /app
 HEALTHCHECK NONE
 ENTRYPOINT ["true"]
 LABEL org.opencontainers.image.title="pytorch-cuda" \
+      org.opencontainers.image.description="pytorch-cuda container image" \
       org.opencontainers.image.version="2.6.0" \
       org.opencontainers.image.vendor="PyTorch" \
       evergreen.image.tier="3" \

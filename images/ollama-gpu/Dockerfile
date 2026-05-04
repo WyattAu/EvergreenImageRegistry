@@ -18,6 +18,7 @@ WORKDIR /app
 HEALTHCHECK NONE
 ENTRYPOINT ["true"]
 LABEL org.opencontainers.image.title="ollama-gpu" \
+      org.opencontainers.image.description="ollama-gpu container image" \
       org.opencontainers.image.version="0.5.7" \
       org.opencontainers.image.vendor="Ollama" \
       evergreen.image.tier="3" \

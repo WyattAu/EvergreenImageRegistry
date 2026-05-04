@@ -25,6 +25,7 @@ WORKDIR /app
 HEALTHCHECK NONE
 ENTRYPOINT ["/composer"]
 LABEL org.opencontainers.image.title="composer" \
+      org.opencontainers.image.description="composer container image" \
       org.opencontainers.image.version="2.8.0" \
       org.opencontainers.image.vendor="Composer" \
       org.opencontainers.image.source="https://github.com/composer/composer/releases" \

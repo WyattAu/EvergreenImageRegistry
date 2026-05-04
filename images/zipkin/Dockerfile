@@ -41,6 +41,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl 
 ENTRYPOINT ["java"]
 CMD ["-jar", "/opt/zipkin/zipkin.jar"]
 LABEL org.opencontainers.image.title="zipkin" \
+      org.opencontainers.image.description="Zipkin - distributed tracing system" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="OpenZipkin" \
       org.opencontainers.image.source="https://github.com/openzipkin/zipkin" \

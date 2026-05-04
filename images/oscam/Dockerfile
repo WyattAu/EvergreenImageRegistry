@@ -35,6 +35,7 @@ EXPOSE 8888
 HEALTHCHECK NONE
 ENTRYPOINT ["/oscam"]
 LABEL org.opencontainers.image.title="oscam" \
+      org.opencontainers.image.description="oscam container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Oscam" \
       org.opencontainers.image.source="https://github.com/oscam-git/oscam" \

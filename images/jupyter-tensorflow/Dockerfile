@@ -23,6 +23,7 @@ EXPOSE 8888
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8888/ || exit 1
 ENTRYPOINT ["jupyter-lab"]
 LABEL org.opencontainers.image.title="jupyter-tensorflow" \
+      org.opencontainers.image.description="jupyter-tensorflow container image" \
       org.opencontainers.image.version="7.3.0" \
       org.opencontainers.image.vendor="Jupyter" \
       evergreen.image.tier="3" \

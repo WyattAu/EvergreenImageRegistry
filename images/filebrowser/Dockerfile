@@ -17,6 +17,7 @@ EXPOSE 8080
 HEALTHCHECK NONE
 ENTRYPOINT ["/filebrowser"]
 LABEL org.opencontainers.image.title="filebrowser" \
+      org.opencontainers.image.description="filebrowser container image" \
       org.opencontainers.image.version="v2.32.0" \
       org.opencontainers.image.vendor="FileBrowser" \
       org.opencontainers.image.source="https://github.com/filebrowser/filebrowser" \

@@ -20,6 +20,7 @@ EXPOSE 3456
 HEALTHCHECK NONE
 ENTRYPOINT ["/vikunja"]
 LABEL org.opencontainers.image.title="vikunja-api" \
+      org.opencontainers.image.description="vikunja-api container image" \
       org.opencontainers.image.version="v0.24.1" \
       org.opencontainers.image.vendor="Vikunja" \
       org.opencontainers.image.source="https://github.com/go-vikunja/vikunja" \

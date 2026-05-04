@@ -23,6 +23,7 @@ EXPOSE 6006
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:6006/ || exit 1
 ENTRYPOINT ["tensorboard"]
 LABEL org.opencontainers.image.title="tensorboard" \
+      org.opencontainers.image.description="tensorboard container image" \
       org.opencontainers.image.version="2.18.0" \
       org.opencontainers.image.vendor="TensorFlow" \
       evergreen.image.tier="3" \

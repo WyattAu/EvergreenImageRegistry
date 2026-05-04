@@ -18,6 +18,7 @@ WORKDIR /app
 HEALTHCHECK NONE
 ENTRYPOINT ["true"]
 LABEL org.opencontainers.image.title="tensorflow-gpu" \
+      org.opencontainers.image.description="tensorflow-gpu container image" \
       org.opencontainers.image.version="2.18.0" \
       org.opencontainers.image.vendor="TensorFlow" \
       evergreen.image.tier="3" \

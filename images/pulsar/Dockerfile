@@ -30,6 +30,7 @@ WORKDIR /pulsar
 EXPOSE 6650 8080
 
 LABEL org.opencontainers.image.title="pulsar" \
+      org.opencontainers.image.description="pulsar container image" \
       org.opencontainers.image.version="3.3.0" \
       org.opencontainers.image.vendor="Apache" \
       org.opencontainers.image.source="https://github.com/apache/pulsar" \

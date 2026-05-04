@@ -22,6 +22,7 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8000/ || exit 1
 ENTRYPOINT ["/opt/focalboard/bin/focalboard-server"]
 LABEL org.opencontainers.image.title="focalboard-server" \
+      org.opencontainers.image.description="focalboard-server container image" \
       org.opencontainers.image.version="7.11.3" \
       org.opencontainers.image.vendor="Mattermost" \
       org.opencontainers.image.source="https://github.com/mattermost/focalboard" \

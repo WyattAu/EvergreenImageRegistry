@@ -24,6 +24,7 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8000/ || exit 1
 ENTRYPOINT ["chroma"]
 LABEL org.opencontainers.image.title="chroma" \
+      org.opencontainers.image.description="chroma container image" \
       org.opencontainers.image.version="0.5.0" \
       org.opencontainers.image.vendor="Chroma" \
       evergreen.image.tier="2" \

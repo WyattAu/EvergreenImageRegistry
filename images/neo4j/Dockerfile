@@ -26,6 +26,7 @@ EXPOSE 7474 7687
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:7474/ || exit 1
 ENTRYPOINT ["neo4j"]
 LABEL org.opencontainers.image.title="neo4j" \
+      org.opencontainers.image.description="Neo4j - native graph database" \
       org.opencontainers.image.version="5.20.0" \
       org.opencontainers.image.vendor="Neo4j" \
       evergreen.image.tier="2" \

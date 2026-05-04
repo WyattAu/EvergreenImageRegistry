@@ -19,6 +19,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="rclone-browser" \
+      org.opencontainers.image.description="rclone-browser container image" \
       org.opencontainers.image.version="2.0.10" \
       org.opencontainers.image.vendor="Rclone Browser" \
       org.opencontainers.image.source="https://github.com/rclone/rclone-webui-react" \

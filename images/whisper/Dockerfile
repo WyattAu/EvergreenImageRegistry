@@ -24,6 +24,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["python3"]
 LABEL org.opencontainers.image.title="whisper" \
+      org.opencontainers.image.description="whisper container image" \
       org.opencontainers.image.version="20240930" \
       org.opencontainers.image.vendor="OpenAI" \
       org.opencontainers.image.source="https://github.com/openai/whisper" \

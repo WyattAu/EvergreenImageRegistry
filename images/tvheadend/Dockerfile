@@ -20,6 +20,7 @@ EXPOSE 9981
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9981/ || exit 1
 ENTRYPOINT ["tvheadend"]
 LABEL org.opencontainers.image.title="tvheadend" \
+      org.opencontainers.image.description="tvheadend container image" \
       org.opencontainers.image.version="4.3" \
       org.opencontainers.image.vendor="TVHeadend" \
       evergreen.image.tier="3" \

@@ -25,6 +25,7 @@ WORKDIR /app
 HEALTHCHECK NONE
 ENTRYPOINT ["/cfssl"]
 LABEL org.opencontainers.image.title="certificates" \
+      org.opencontainers.image.description="certificates container image" \
       org.opencontainers.image.version="1.6.5" \
       org.opencontainers.image.vendor="Cloudflare" \
       org.opencontainers.image.source="https://github.com/cloudflare/cfssl" \

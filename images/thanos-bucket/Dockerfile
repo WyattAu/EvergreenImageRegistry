@@ -31,6 +31,7 @@ HEALTHCHECK NONE
 ENTRYPOINT ["/thanos"]
 CMD ["bucket"]
 LABEL org.opencontainers.image.title="thanos-bucket" \
+      org.opencontainers.image.description="thanos-bucket container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Thanos" \
       org.opencontainers.image.source="https://github.com/thanos-io/thanos" \

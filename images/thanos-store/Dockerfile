@@ -27,6 +27,7 @@ EXPOSE 10902
 HEALTHCHECK NONE
 ENTRYPOINT ["/thanos"]
 LABEL org.opencontainers.image.title="thanos-store" \
+      org.opencontainers.image.description="thanos-store container image" \
       org.opencontainers.image.version="0.35.0" \
       org.opencontainers.image.vendor="Thanos" \
       evergreen.image.tier="1" \

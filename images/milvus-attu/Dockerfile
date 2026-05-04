@@ -12,6 +12,7 @@ EXPOSE 3000
 HEALTHCHECK NONE
 ENTRYPOINT ["/attu"]
 LABEL org.opencontainers.image.title="milvus-attu" \
+      org.opencontainers.image.description="milvus-attu container image" \
       org.opencontainers.image.version="2.4.9" \
       org.opencontainers.image.vendor="zilliztech/attu" \
       org.opencontainers.image.source="https://github.com/zilliztech/attu/releases/download/v2.4.9" \

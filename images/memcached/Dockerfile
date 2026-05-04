@@ -27,6 +27,7 @@ EXPOSE 11211
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD echo stats | nc localhost 11211
 ENTRYPOINT ["memcached"]
 LABEL org.opencontainers.image.title="memcached" \
+      org.opencontainers.image.description="Memcached - high-performance distributed memory caching system" \
       org.opencontainers.image.version="1.6.26" \
       org.opencontainers.image.vendor="Memcached" \
       evergreen.image.tier="2" \

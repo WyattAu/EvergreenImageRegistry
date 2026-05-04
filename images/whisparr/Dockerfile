@@ -21,6 +21,9 @@ EXPOSE 6969
 EXPOSE 9101
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:6969/ || exit 1
+
+LABEL org.opencontainers.image.description="whisparr container image"
+
 ENTRYPOINT ["/app/Whisparr"]
 
 STOPSIGNAL SIGTERM

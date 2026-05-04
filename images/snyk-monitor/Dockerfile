@@ -28,5 +28,8 @@ EXPOSE 9101
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK NONE
+
+LABEL org.opencontainers.image.description="snyk-monitor container image"
+
 ENTRYPOINT ["/snyk-monitor"]
 CMD ["--help"]

@@ -24,6 +24,7 @@ EXPOSE 7860
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:7860/ || exit 1
 ENTRYPOINT ["python3"]
 LABEL org.opencontainers.image.title="stable-diffusion" \
+      org.opencontainers.image.description="stable-diffusion container image" \
       org.opencontainers.image.version="2.1.0" \
       org.opencontainers.image.vendor="Stability AI" \
       org.opencontainers.image.source="https://github.com/Stability-AI/stablediffusion" \

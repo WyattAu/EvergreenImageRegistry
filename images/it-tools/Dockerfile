@@ -27,6 +27,7 @@ EXPOSE 80
 HEALTHCHECK NONE
 ENTRYPOINT ["/it-tools"]
 LABEL org.opencontainers.image.title="it-tools" \
+      org.opencontainers.image.description="it-tools container image" \
       org.opencontainers.image.version="2024.10.22-7ca5933" \
       org.opencontainers.image.vendor="IT-Tools" \
       evergreen.image.tier="1" \

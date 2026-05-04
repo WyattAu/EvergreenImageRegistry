@@ -23,6 +23,7 @@ EXPOSE 5000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5000/ || exit 1
 ENTRYPOINT ["meltano"]
 LABEL org.opencontainers.image.title="meltano" \
+      org.opencontainers.image.description="meltano container image" \
       org.opencontainers.image.version="3.7.0" \
       org.opencontainers.image.vendor="Meltano" \
       evergreen.image.tier="3" \

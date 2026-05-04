@@ -22,6 +22,7 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:80/ || exit 1
 ENTRYPOINT ["php"]
 LABEL org.opencontainers.image.title="zenphoto" \
+      org.opencontainers.image.description="zenphoto container image" \
       org.opencontainers.image.version="1.6.9" \
       org.opencontainers.image.vendor="zenphoto/zenphoto" \
       org.opencontainers.image.source="https://github.com/zenphoto/zenphoto/releases" \

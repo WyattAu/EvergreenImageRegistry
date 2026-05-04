@@ -27,6 +27,7 @@ EXPOSE 3000 22
 HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/gitea"]
 LABEL org.opencontainers.image.title="gitea" \
+      org.opencontainers.image.description="Gitea - lightweight self-hosted Git service" \
       org.opencontainers.image.version="1.21.10" \
       org.opencontainers.image.vendor="Gitea" \
       evergreen.image.tier="2" \

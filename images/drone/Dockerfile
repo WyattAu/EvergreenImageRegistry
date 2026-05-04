@@ -29,6 +29,7 @@ ENTRYPOINT ["/drone"]
 EXPOSE 80
 
 LABEL org.opencontainers.image.title="drone" \
+      org.opencontainers.image.description="Drone - cloud-native continuous integration and delivery platform" \
       org.opencontainers.image.version="2.28.1" \
       org.opencontainers.image.vendor="Drone" \
       org.opencontainers.image.source="https://github.com/drone/drone" \

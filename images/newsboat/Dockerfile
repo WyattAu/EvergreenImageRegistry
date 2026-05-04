@@ -19,6 +19,7 @@ WORKDIR /app
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["newsboat"]
 LABEL org.opencontainers.image.title="newsboat" \
+      org.opencontainers.image.description="newsboat container image" \
       org.opencontainers.image.version="2.30" \
       org.opencontainers.image.vendor="Newsboat" \
       evergreen.image.tier="3" \

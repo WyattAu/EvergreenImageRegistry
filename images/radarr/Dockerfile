@@ -31,6 +31,7 @@ ENTRYPOINT ["/app/Radarr"]
 EXPOSE 7878
 
 LABEL org.opencontainers.image.title="radarr" \
+      org.opencontainers.image.description="Radarr - movie collection manager for Usenet and BitTorrent" \
       org.opencontainers.image.version="5.14.0" \
       org.opencontainers.image.vendor="Radarr" \
       org.opencontainers.image.source="https://github.com/Radarr/Radarr" \

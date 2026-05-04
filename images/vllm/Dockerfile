@@ -23,6 +23,7 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8000/ || exit 1
 ENTRYPOINT ["python3"]
 LABEL org.opencontainers.image.title="vllm" \
+      org.opencontainers.image.description="vllm container image" \
       org.opencontainers.image.version="0.6.6" \
       org.opencontainers.image.vendor="vLLM" \
       org.opencontainers.image.source="https://github.com/vllm-project/vllm" \

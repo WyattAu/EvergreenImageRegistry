@@ -9,6 +9,7 @@ STOPSIGNAL SIGTERM
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["sleep", "infinity"]
 LABEL org.opencontainers.image.title="oxidized"
+      org.opencontainers.image.description="oxidized container image" \
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"

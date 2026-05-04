@@ -20,6 +20,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["java", "-jar", "/opt/adempiere/Adempiere"]
 LABEL org.opencontainers.image.title="adempiere" \
+      org.opencontainers.image.description="adempiere container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Adempiere" \
       org.opencontainers.image.source="https://github.com/adempiere/adempiere" \

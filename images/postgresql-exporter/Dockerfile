@@ -27,6 +27,7 @@ EXPOSE 9187
 HEALTHCHECK NONE
 ENTRYPOINT ["/postgres_exporter"]
 LABEL org.opencontainers.image.title="postgresql-exporter" \
+      org.opencontainers.image.description="postgresql-exporter container image" \
       org.opencontainers.image.version="0.15.0" \
       org.opencontainers.image.vendor="Prometheus" \
       evergreen.image.tier="1" \

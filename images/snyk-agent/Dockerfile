@@ -23,6 +23,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl 
 ENTRYPOINT ["/usr/local/bin/snyk"]
 CMD ["monitor"]
 LABEL org.opencontainers.image.title="snyk-agent" \
+      org.opencontainers.image.description="snyk-agent container image" \
       org.opencontainers.image.version="1.1300.0" \
       org.opencontainers.image.vendor="Snyk" \
       org.opencontainers.image.source="https://github.com/snyk/snyk" \

@@ -27,6 +27,7 @@ EXPOSE 10902
 HEALTHCHECK NONE
 ENTRYPOINT ["/thanos"]
 LABEL org.opencontainers.image.title="thanos" \
+      org.opencontainers.image.description="Thanos - highly available Prometheus with long-term storage" \
       org.opencontainers.image.version="0.35.0" \
       org.opencontainers.image.vendor="Thanos" \
       evergreen.image.tier="1" \

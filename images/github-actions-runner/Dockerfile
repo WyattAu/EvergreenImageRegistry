@@ -19,6 +19,7 @@ WORKDIR /app
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["run.sh"]
 LABEL org.opencontainers.image.title="github-actions-runner" \
+      org.opencontainers.image.description="github-actions-runner container image" \
       org.opencontainers.image.version="2.316.1" \
       org.opencontainers.image.vendor="GitHub" \
       evergreen.image.tier="2" \

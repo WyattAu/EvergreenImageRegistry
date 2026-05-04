@@ -27,6 +27,7 @@ EXPOSE 9091
 HEALTHCHECK NONE
 ENTRYPOINT ["/pushgateway"]
 LABEL org.opencontainers.image.title="prometheus-pushgateway" \
+      org.opencontainers.image.description="Prometheus Pushgateway - intermediary service for metrics push" \
       org.opencontainers.image.version="1.8.0" \
       org.opencontainers.image.vendor="Prometheus" \
       evergreen.image.tier="1" \

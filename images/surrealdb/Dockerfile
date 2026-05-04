@@ -30,6 +30,7 @@ EXPOSE 8000 8001
 HEALTHCHECK NONE
 ENTRYPOINT ["/surreal"]
 LABEL org.opencontainers.image.title="surrealdb" \
+      org.opencontainers.image.description="surrealdb container image" \
       org.opencontainers.image.version="3.0.5" \
       org.opencontainers.image.vendor="Surrealdb" \
       evergreen.image.tier="1" \

@@ -25,6 +25,7 @@ EXPOSE 1194
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:1194/ || exit 1
 ENTRYPOINT ["/usr/local/bin/openvpn"]
 LABEL org.opencontainers.image.title="openvpn" \
+      org.opencontainers.image.description="openvpn container image" \
       org.opencontainers.image.version="2.6.10" \
       org.opencontainers.image.vendor="OpenVPN" \
       evergreen.image.tier="2" \

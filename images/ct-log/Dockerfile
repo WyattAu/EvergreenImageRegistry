@@ -34,6 +34,7 @@ EXPOSE 6962
 HEALTHCHECK NONE
 ENTRYPOINT ["/ct-log"]
 LABEL org.opencontainers.image.title="ct-log" \
+      org.opencontainers.image.description="ct-log container image" \
       org.opencontainers.image.version="1.3.3" \
       org.opencontainers.image.vendor="Google" \
       org.opencontainers.image.source="https://github.com/google/certificate-transparency-go" \

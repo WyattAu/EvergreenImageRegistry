@@ -26,6 +26,7 @@ EXPOSE 9167
 HEALTHCHECK NONE
 ENTRYPOINT ["/unbound_exporter"]
 LABEL org.opencontainers.image.title="unbound-exporter" \
+      org.opencontainers.image.description="unbound-exporter container image" \
       org.opencontainers.image.version="0.6.0" \
       org.opencontainers.image.vendor="Let's Encrypt" \
       org.opencontainers.image.source="https://github.com/letsencrypt/unbound_exporter" \

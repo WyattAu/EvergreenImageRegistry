@@ -25,6 +25,7 @@ WORKDIR /app
 HEALTHCHECK NONE
 ENTRYPOINT ["/helm"]
 LABEL org.opencontainers.image.title="helm" \
+      org.opencontainers.image.description="Helm - package manager for Kubernetes" \
       org.opencontainers.image.version="3.15.1" \
       org.opencontainers.image.vendor="Helm" \
       evergreen.image.tier="1" \

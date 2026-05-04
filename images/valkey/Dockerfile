@@ -31,6 +31,7 @@ EXPOSE 6379
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:6379/ || exit 1
 ENTRYPOINT ["sh", "-c", "valkey"]
 LABEL org.opencontainers.image.title="valkey" \
+      org.opencontainers.image.description="Valkey - open source Redis-compatible in-memory data store" \
       org.opencontainers.image.version="7.2.4" \
       org.opencontainers.image.vendor="Valkey" \
       evergreen.image.tier="2" \

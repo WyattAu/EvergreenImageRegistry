@@ -46,6 +46,7 @@ USER 65532:65532
 WORKDIR /app
 ENV LD_LIBRARY_PATH="/opt/zeromq/lib"
 LABEL org.opencontainers.image.title="zeromq" \
+      org.opencontainers.image.description="zeromq container image" \
       org.opencontainers.image.version="4.3.5" \
       org.opencontainers.image.vendor="ZeroMQ" \
       org.opencontainers.image.source="https://github.com/zeromq/libzmq" \

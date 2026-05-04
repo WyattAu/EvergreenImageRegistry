@@ -28,6 +28,7 @@ EXPOSE 3456
 HEALTHCHECK NONE
 ENTRYPOINT ["/vikunja"]
 LABEL org.opencontainers.image.title="vikunja" \
+      org.opencontainers.image.description="vikunja container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Vikunja" \
       evergreen.image.tier="1" \

@@ -21,6 +21,7 @@ EXPOSE 8083
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8083/ || exit 1
 ENTRYPOINT ["python"]
 LABEL org.opencontainers.image.title="calibre-web" \
+      org.opencontainers.image.description="calibre-web container image" \
       org.opencontainers.image.version="0.6.22" \
       org.opencontainers.image.vendor="Calibre-Web" \
       evergreen.image.tier="2" \

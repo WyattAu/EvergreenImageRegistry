@@ -13,6 +13,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["libreoffice"]
 LABEL org.opencontainers.image.title="libreoffice-headless" \
+      org.opencontainers.image.description="libreoffice-headless container image" \
       org.opencontainers.image.version="24.8.2" \
       org.opencontainers.image.vendor="LibreOffice" \
       org.opencontainers.image.source="https://www.libreoffice.org/" \

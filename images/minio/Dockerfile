@@ -26,6 +26,7 @@ EXPOSE 9000 9001
 HEALTHCHECK NONE
 ENTRYPOINT ["/minio"]
 LABEL org.opencontainers.image.title="minio" \
+      org.opencontainers.image.description="MinIO - high-performance object storage compatible with S3" \
       org.opencontainers.image.version="RELEASE.2025-10-15T17-29-55Z" \
       org.opencontainers.image.vendor="MinIO" \
       evergreen.image.tier="1" \

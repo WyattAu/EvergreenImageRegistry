@@ -33,6 +33,7 @@ EXPOSE 0
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:0/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="pm2" \
+      org.opencontainers.image.description="pm2 container image" \
       org.opencontainers.image.version="5.4.0" \
       org.opencontainers.image.vendor="PM2" \
       evergreen.image.tier="3" \

@@ -24,6 +24,7 @@ EXPOSE 4000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:4000/ || exit 1
 ENTRYPOINT ["litellm"]
 LABEL org.opencontainers.image.title="litellm-proxy" \
+      org.opencontainers.image.description="litellm-proxy container image" \
       org.opencontainers.image.version="1.60.0" \
       org.opencontainers.image.vendor="LiteLLM" \
       org.opencontainers.image.source="https://github.com/BerriAI/litellm" \

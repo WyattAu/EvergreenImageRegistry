@@ -31,6 +31,7 @@ ENTRYPOINT ["/app/jellyfin"]
 EXPOSE 8096
 
 LABEL org.opencontainers.image.title="jellyfin-server" \
+      org.opencontainers.image.description="jellyfin-server container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Jellyfin" \
       org.opencontainers.image.source="https://github.com/jellyfin/jellyfin" \

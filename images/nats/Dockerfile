@@ -27,6 +27,7 @@ EXPOSE 4222 8222
 HEALTHCHECK NONE
 ENTRYPOINT ["/nats-server"]
 LABEL org.opencontainers.image.title="nats" \
+      org.opencontainers.image.description="NATS - high-performance messaging system" \
       org.opencontainers.image.version="2.12.7" \
       org.opencontainers.image.vendor="NATS" \
       evergreen.image.tier="1" \

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 EVERGREEN_SHUTDOWN_TIMEOUT="${EVERGREEN_SHUTDOWN_TIMEOUT:-3}"

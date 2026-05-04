@@ -32,5 +32,8 @@ EXPOSE 9101
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:10023/ || exit 1
+
+LABEL org.opencontainers.image.description="postgrey container image"
+
 ENTRYPOINT ["postgrey"]
 CMD ["--inet", "--listen=0.0.0.0:10023"]

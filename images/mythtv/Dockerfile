@@ -20,6 +20,7 @@ EXPOSE 6543
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:6543/ || exit 1
 ENTRYPOINT ["mythbackend"]
 LABEL org.opencontainers.image.title="mythtv" \
+      org.opencontainers.image.description="mythtv container image" \
       org.opencontainers.image.version="34.0" \
       org.opencontainers.image.vendor="MythTV" \
       evergreen.image.tier="3" \

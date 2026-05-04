@@ -24,6 +24,7 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:3000/ || exit 1
 ENTRYPOINT ["dagster-daemon"]
 LABEL org.opencontainers.image.title="dagster-daemon" \
+      org.opencontainers.image.description="dagster-daemon container image" \
       org.opencontainers.image.version="1.10.0" \
       org.opencontainers.image.vendor="Dagster" \
       org.opencontainers.image.source="https://github.com/dagster-io/dagster/releases" \

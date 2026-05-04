@@ -23,6 +23,7 @@ EXPOSE 80 443
 HEALTHCHECK NONE
 ENTRYPOINT ["/nginx"]
 LABEL org.opencontainers.image.title="nginx-ingress" \
+      org.opencontainers.image.description="nginx-ingress container image" \
       org.opencontainers.image.version="1.27.1" \
       org.opencontainers.image.vendor="Nginx Inc" \
       evergreen.image.tier="1" \

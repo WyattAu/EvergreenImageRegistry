@@ -31,6 +31,7 @@ ENTRYPOINT ["/app/Prowlarr"]
 EXPOSE 9696
 
 LABEL org.opencontainers.image.title="prowlarr" \
+      org.opencontainers.image.description="Prowlarr - indexer manager and proxy for PVR software" \
       org.opencontainers.image.version="1.27.0" \
       org.opencontainers.image.vendor="Prowlarr" \
       org.opencontainers.image.source="https://github.com/Prowlarr/Prowlarr" \

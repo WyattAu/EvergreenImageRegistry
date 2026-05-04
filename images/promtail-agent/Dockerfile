@@ -30,6 +30,7 @@ EXPOSE 9080 3100
 HEALTHCHECK NONE
 ENTRYPOINT ["/usr/bin/promtail"]
 LABEL org.opencontainers.image.title="promtail-agent" \
+      org.opencontainers.image.description="promtail-agent container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Grafana Labs" \
       org.opencontainers.image.source="https://github.com/grafana/loki" \

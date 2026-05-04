@@ -25,6 +25,7 @@ HEALTHCHECK NONE
 ENTRYPOINT ["/shield"]
 CMD ["server", "-c", "/app/shield.yml"]
 LABEL org.opencontainers.image.title="shield" \
+      org.opencontainers.image.description="shield container image" \
       org.opencontainers.image.version="8.6.0" \
       org.opencontainers.image.vendor="Stark & Wayne" \
       org.opencontainers.image.source="https://github.com/starkandwayne/shield" \

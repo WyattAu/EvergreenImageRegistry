@@ -25,6 +25,7 @@ EXPOSE 8080
 HEALTHCHECK NONE
 ENTRYPOINT ["/wireguard-ui"]
 LABEL org.opencontainers.image.title="wireguard-ui" \
+      org.opencontainers.image.description="wireguard-ui container image" \
       org.opencontainers.image.version="0.5.4" \
       org.opencontainers.image.vendor="ngoduykhanh" \
       org.opencontainers.image.source="https://github.com/ngoduykhanh/wireguard-ui" \

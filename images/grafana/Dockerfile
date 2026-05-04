@@ -41,6 +41,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl 
 ENTRYPOINT ["grafana-server"]
 CMD ["--homepath=/opt/grafana", "--config=/etc/grafana/grafana.ini"]
 LABEL org.opencontainers.image.title="grafana" \
+      org.opencontainers.image.description="Grafana - observability dashboard and visualization" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Grafana Labs" \
       org.opencontainers.image.source="https://github.com/grafana/grafana" \

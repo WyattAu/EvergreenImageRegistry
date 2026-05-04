@@ -24,6 +24,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["r2e"]
 LABEL org.opencontainers.image.title="rss2email" \
+      org.opencontainers.image.description="rss2email container image" \
       org.opencontainers.image.version="3.15.1" \
       org.opencontainers.image.vendor="RSS2Email" \
       org.opencontainers.image.source="https://github.com/rss2email/rss2email" \

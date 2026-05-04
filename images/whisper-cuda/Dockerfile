@@ -18,6 +18,7 @@ WORKDIR /app
 HEALTHCHECK NONE
 ENTRYPOINT ["true"]
 LABEL org.opencontainers.image.title="whisper-cuda" \
+      org.opencontainers.image.description="whisper-cuda container image" \
       org.opencontainers.image.version="20240930" \
       org.opencontainers.image.vendor="OpenAI" \
       evergreen.image.tier="3" \

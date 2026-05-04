@@ -20,6 +20,7 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:80/ || exit 1
 ENTRYPOINT ["apache2"]
 LABEL org.opencontainers.image.title="modsecurity" \
+      org.opencontainers.image.description="modsecurity container image" \
       org.opencontainers.image.version="2.4.59" \
       org.opencontainers.image.vendor="OWASP" \
       evergreen.image.tier="2" \

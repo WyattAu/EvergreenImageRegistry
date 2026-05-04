@@ -31,6 +31,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="open-webui" \
+      org.opencontainers.image.description="open-webui container image" \
       org.opencontainers.image.version="0.6.4" \
       org.opencontainers.image.vendor="open-webui/open-webui" \
       org.opencontainers.image.source="https://github.com/open-webui/open-webui/releases" \

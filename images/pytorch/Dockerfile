@@ -23,6 +23,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["python3"]
 LABEL org.opencontainers.image.title="pytorch" \
+      org.opencontainers.image.description="pytorch container image" \
       org.opencontainers.image.version="2.6.0" \
       org.opencontainers.image.vendor="PyTorch" \
       org.opencontainers.image.source="https://github.com/pytorch/pytorch" \

@@ -30,6 +30,7 @@ HEALTHCHECK NONE
 ENTRYPOINT ["/llama-server"]
 CMD ["--host", "0.0.0.0", "--port", "8080", "--model", "/models/model.gguf"]
 LABEL org.opencontainers.image.title="llama.cpp" \
+      org.opencontainers.image.description="llama.cpp container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="ggerganov" \
       org.opencontainers.image.source="https://github.com/ggerganov/llama.cpp" \

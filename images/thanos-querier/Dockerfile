@@ -32,6 +32,7 @@ HEALTHCHECK NONE
 ENTRYPOINT ["/thanos"]
 CMD ["query"]
 LABEL org.opencontainers.image.title="thanos-querier" \
+      org.opencontainers.image.description="thanos-querier container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Thanos" \
       org.opencontainers.image.source="https://github.com/thanos-io/thanos" \

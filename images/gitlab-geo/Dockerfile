@@ -13,9 +13,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     test -f /opt/gitlab || { echo "ERROR: gitlab-ce not installed" >&2; exit 1; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
-RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt GPG signatures (packages.gitlab.com)
-
-RUN apk add --no-cache curl ca-certificates gnupg openssh-client postgresql-client || true
+RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt GPG signatures (packages.gitlab.com) && \
+    apk add --no-cache curl ca-certificates gnupg openssh-client postgresql-client || true
 COPY --from=downloader /opt/gitlab /opt/gitlab
 COPY --from=downloader /etc/gitlab /etc/gitlab
 COPY --from=downloader /var/opt/gitlab /var/opt/gitlab

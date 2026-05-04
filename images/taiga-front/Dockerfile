@@ -24,6 +24,7 @@ EXPOSE 80 443
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:80/ || exit 1
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
 LABEL org.opencontainers.image.title="taiga-front" \
+      org.opencontainers.image.description="taiga-front container image" \
       org.opencontainers.image.version="6.8.2" \
       org.opencontainers.image.vendor="Taiga" \
       org.opencontainers.image.source="https://github.com/taigaio/taiga-front-dist" \

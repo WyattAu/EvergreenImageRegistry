@@ -41,6 +41,7 @@ EXPOSE 80 443 8443
 HEALTHCHECK NONE
 ENTRYPOINT ["/nginx-ingress-controller"]
 LABEL org.opencontainers.image.title="nginx-ingress-controller" \
+      org.opencontainers.image.description="nginx-ingress-controller container image" \
       org.opencontainers.image.version="1.10.1" \
       org.opencontainers.image.vendor="Kubernetes" \
       org.opencontainers.image.source="https://github.com/kubernetes/ingress-nginx" \

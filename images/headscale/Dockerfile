@@ -25,6 +25,7 @@ EXPOSE 8080 443
 HEALTHCHECK NONE
 ENTRYPOINT ["/headscale"]
 LABEL org.opencontainers.image.title="headscale" \
+      org.opencontainers.image.description="Headscale - open source implementation of the Tailscale control server" \
       org.opencontainers.image.version="0.16.0" \
       org.opencontainers.image.vendor="Headscale" \
       evergreen.image.tier="1" \

@@ -30,6 +30,7 @@ EXPOSE 443 8080
 HEALTHCHECK NONE
 ENTRYPOINT ["/netmaker"]
 LABEL org.opencontainers.image.title="netmaker" \
+      org.opencontainers.image.description="netmaker container image" \
       org.opencontainers.image.version="1.5.1" \
       org.opencontainers.image.vendor="NetMaker" \
       evergreen.image.tier="1" \

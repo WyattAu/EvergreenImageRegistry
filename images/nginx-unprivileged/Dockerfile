@@ -23,6 +23,7 @@ EXPOSE 8080 8443
 HEALTHCHECK NONE
 ENTRYPOINT ["/nginx"]
 LABEL org.opencontainers.image.title="nginx-unprivileged" \
+      org.opencontainers.image.description="nginx-unprivileged container image" \
       org.opencontainers.image.version="1.27.1" \
       org.opencontainers.image.vendor="Nginx Inc" \
       evergreen.image.tier="1" \

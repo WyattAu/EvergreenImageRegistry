@@ -25,6 +25,7 @@ EXPOSE 8080
 HEALTHCHECK NONE
 ENTRYPOINT ["/llama-server"]
 LABEL org.opencontainers.image.title="llama-cpp-server" \
+      org.opencontainers.image.description="llama-cpp-server container image" \
       org.opencontainers.image.version="b5415" \
       org.opencontainers.image.vendor="ggerganov/llama.cpp" \
       org.opencontainers.image.source="https://github.com/ggerganov/llama.cpp/releases" \

@@ -34,6 +34,7 @@ EXPOSE 7474
 HEALTHCHECK NONE
 ENTRYPOINT ["/opt/neo4j/bin/neo4j-admin"]
 LABEL org.opencontainers.image.title="neo4j-admin" \
+      org.opencontainers.image.description="neo4j-admin container image" \
       org.opencontainers.image.version="5.17.0" \
       org.opencontainers.image.vendor="Neo4j" \
       evergreen.image.tier="1" \

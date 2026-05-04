@@ -31,6 +31,7 @@ ENTRYPOINT ["/app/Lidarr"]
 EXPOSE 8686
 
 LABEL org.opencontainers.image.title="lidarr" \
+      org.opencontainers.image.description="Lidarr - music collection manager for Usenet and BitTorrent" \
       org.opencontainers.image.version="2.4.3" \
       org.opencontainers.image.vendor="Lidarr" \
       org.opencontainers.image.source="https://github.com/Lidarr/Lidarr" \

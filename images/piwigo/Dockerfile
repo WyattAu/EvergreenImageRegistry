@@ -21,6 +21,7 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:80/ || exit 1
 ENTRYPOINT ["php"]
 LABEL org.opencontainers.image.title="piwigo" \
+      org.opencontainers.image.description="piwigo container image" \
       org.opencontainers.image.version="14.5.0" \
       org.opencontainers.image.vendor="Piwigo" \
       evergreen.image.tier="2" \

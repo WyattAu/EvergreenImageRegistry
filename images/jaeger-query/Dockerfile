@@ -30,6 +30,7 @@ EXPOSE 16686
 HEALTHCHECK NONE
 ENTRYPOINT ["/jaeger-query"]
 LABEL org.opencontainers.image.title="jaeger-query" \
+      org.opencontainers.image.description="jaeger-query container image" \
       org.opencontainers.image.version="1.55.0" \
       org.opencontainers.image.vendor="JaegerTracing" \
       evergreen.image.tier="1" \

@@ -20,6 +20,7 @@ EXPOSE 22
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:22/ || exit 1
 ENTRYPOINT ["fail2ban"]
 LABEL org.opencontainers.image.title="fail2ban" \
+      org.opencontainers.image.description="fail2ban container image" \
       org.opencontainers.image.version="1.0.2" \
       org.opencontainers.image.vendor="Fail2Ban" \
       evergreen.image.tier="2" \

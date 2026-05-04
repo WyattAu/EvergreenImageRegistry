@@ -36,6 +36,7 @@ HEALTHCHECK NONE
 ENTRYPOINT ["/wireguard-go"]
 CMD ["-f", "wg0"]
 LABEL org.opencontainers.image.title="wireguard" \
+      org.opencontainers.image.description="WireGuard - fast, modern, secure VPN tunnel" \
       org.opencontainers.image.version="0.0.20230223" \
       org.opencontainers.image.vendor="WireGuard" \
       org.opencontainers.image.source="https://git.zx2c4.com/wireguard-go" \

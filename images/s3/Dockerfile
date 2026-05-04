@@ -26,6 +26,7 @@ EXPOSE 9000 9001
 HEALTHCHECK NONE
 ENTRYPOINT ["/s3-server"]
 LABEL org.opencontainers.image.title="s3" \
+      org.opencontainers.image.description="S3 - AWS S3 compatible object storage client" \
       org.opencontainers.image.version="RELEASE.2025-10-15T17-29-55Z" \
       org.opencontainers.image.vendor="MinIO" \
       evergreen.image.tier="1" \

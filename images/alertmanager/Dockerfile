@@ -31,6 +31,7 @@ EXPOSE 9093
 HEALTHCHECK NONE
 ENTRYPOINT ["/alertmanager"]
 LABEL org.opencontainers.image.title="alertmanager" \
+      org.opencontainers.image.description="Alertmanager - handles alerts sent by Prometheus" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Prometheus" \
       org.opencontainers.image.source="https://github.com/prometheus/alertmanager" \

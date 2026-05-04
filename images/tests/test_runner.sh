@@ -23,6 +23,7 @@ fi
 
 # Import test framework
 if [ -f "$TEST_FRAMEWORK" ]; then
+    # shellcheck source=/dev/null
     source "$TEST_FRAMEWORK"
 else
     echo "ERROR: Test framework not found at $TEST_FRAMEWORK"

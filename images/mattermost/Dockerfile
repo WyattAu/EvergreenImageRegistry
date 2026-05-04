@@ -26,6 +26,7 @@ EXPOSE 8065
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8065/ || exit 1
 ENTRYPOINT ["/opt/mattermost/bin/mattermost"]
 LABEL org.opencontainers.image.title="mattermost" \
+      org.opencontainers.image.description="mattermost container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Mattermost" \
       org.opencontainers.image.source="https://github.com/mattermost/mattermost" \

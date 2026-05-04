@@ -26,6 +26,7 @@ WORKDIR /app
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["eqonomize"]
 LABEL org.opencontainers.image.title="eqonomize" \
+      org.opencontainers.image.description="eqonomize container image" \
       org.opencontainers.image.version="0.10.1" \
       org.opencontainers.image.vendor="Eqonomize" \
       org.opencontainers.image.source="https://github.com/Eqonomize/Eqonomize" \

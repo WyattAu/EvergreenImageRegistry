@@ -31,6 +31,7 @@ EXPOSE 9009
 HEALTHCHECK NONE
 ENTRYPOINT ["/cortex"]
 LABEL org.opencontainers.image.title="cortex" \
+      org.opencontainers.image.description="cortex container image" \
       org.opencontainers.image.version="1.17.0" \
       org.opencontainers.image.vendor="CortexProject" \
       evergreen.image.tier="1" \

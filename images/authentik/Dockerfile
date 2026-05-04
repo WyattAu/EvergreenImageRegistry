@@ -17,6 +17,7 @@ EXPOSE 9000 9443
 EXPOSE 9101
 
 LABEL org.opencontainers.image.title="authentik" org.opencontainers.image.version="2026.2.2" org.opencontainers.image.vendor="goauthentik" org.opencontainers.image.source="https://github.com/goauthentik/authentik" evergreen.image.tier="2" evergreen.image.category="identity" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.constraint.base="wolfi" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="30s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="60000ms"
+      org.opencontainers.image.description="authentik container image" \
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"

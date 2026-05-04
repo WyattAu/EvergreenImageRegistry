@@ -21,6 +21,7 @@ EXPOSE 8108
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8108/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="typesense-js" \
+      org.opencontainers.image.description="typesense-js container image" \
       org.opencontainers.image.version="20" \
       org.opencontainers.image.vendor="Typesense" \
       evergreen.image.tier="2" \

@@ -20,6 +20,7 @@ EXPOSE 8080
 HEALTHCHECK NONE
 ENTRYPOINT ["/keycloak-gatekeeper"]
 LABEL org.opencontainers.image.title="keycloak-gatekeeper" \
+      org.opencontainers.image.description="keycloak-gatekeeper container image" \
       org.opencontainers.image.version="9.1.1" \
       org.opencontainers.image.vendor="Keycloak" \
       org.opencontainers.image.source="https://github.com/keycloak/keycloak-gatekeeper" \

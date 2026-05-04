@@ -19,6 +19,7 @@ WORKDIR /app
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["sqlite-libs"]
 LABEL org.opencontainers.image.title="sqlite" \
+      org.opencontainers.image.description="sqlite container image" \
       org.opencontainers.image.version="3.45.1" \
       org.opencontainers.image.vendor="SQLite" \
       evergreen.image.tier="2" \

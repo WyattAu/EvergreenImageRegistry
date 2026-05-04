@@ -11,6 +11,7 @@ WORKDIR /app
 HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/vault-secrets-operator"]
 LABEL org.opencontainers.image.title="vault-secrets-operator" \
+      org.opencontainers.image.description="vault-secrets-operator container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="HashiCorp" \
       org.opencontainers.image.source="https://github.com/hashicorp/vault-secrets-operator" \

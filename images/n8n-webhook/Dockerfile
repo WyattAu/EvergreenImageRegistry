@@ -31,6 +31,7 @@ EXPOSE 5678
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5678/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="n8n-webhook" \
+      org.opencontainers.image.description="n8n-webhook container image" \
       org.opencontainers.image.version="1.41.0" \
       org.opencontainers.image.vendor="n8n-io/n8n" \
       org.opencontainers.image.source="https://github.com/n8n-io/n8n/releases" \

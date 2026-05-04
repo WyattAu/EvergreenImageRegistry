@@ -18,6 +18,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl 
 ENTRYPOINT ["/usr/local/bin/vault"]
 CMD ["server", "-dev"]
 LABEL org.opencontainers.image.title="hashicorp-vault-enterprise" \
+      org.opencontainers.image.description="hashicorp-vault-enterprise container image" \
       org.opencontainers.image.version="1.18.5" \
       org.opencontainers.image.vendor="HashiCorp" \
       org.opencontainers.image.source="https://www.hashicorp.com/products/vault/enterprise" \

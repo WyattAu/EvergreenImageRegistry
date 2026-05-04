@@ -31,6 +31,7 @@ EXPOSE 5775 6831 6832
 HEALTHCHECK NONE
 ENTRYPOINT ["/jaeger-agent"]
 LABEL org.opencontainers.image.title="jaeger" \
+      org.opencontainers.image.description="Jaeger - end-to-end distributed tracing" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="JaegerTracing" \
       org.opencontainers.image.source="https://github.com/jaegertracing/jaeger" \

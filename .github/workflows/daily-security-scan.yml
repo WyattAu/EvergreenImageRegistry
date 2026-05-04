@@ -64,6 +64,7 @@ jobs:
           find images -name Dockerfile \
             -not -path '*/__pycache__/*' \
             -not -path '*/tests/*' \
+            -not -path '*/arm64/*' \
             | sed 's|images/||' | sed 's|/Dockerfile||' | sort > images.txt
           TOTAL=$(wc -l < images.txt)
           echo "total=${TOTAL}" >> "$GITHUB_OUTPUT"
@@ -304,7 +305,7 @@ jobs:
           for current in /tmp/sbom-results/*-current.spdx.json; do
             [ -f "$current" ] || continue
             BASENAME=$(basename "$current" -current.spdx.json)
-            BASELINE=".reports/sbom_history/${BASELINE}/baseline.spdx.json"
+            BASELINE=".reports/sbom_history/${BASENAME}/baseline.spdx.json"
 
             if [ -f "$BASELINE" ]; then
               echo "::group::Drift check ${BASENAME}"
@@ -603,12 +604,14 @@ jobs:
         with:
           pattern: scan-results-batch-*
           path: /tmp/all-scan-results/
+          merge-multiple: true
 
       - name: Download SBOM results
         uses: actions/download-artifact@v4
         with:
           pattern: sbom-results-batch-*
           path: /tmp/all-sbom-results/
+          merge-multiple: true
 
       - name: Download compliance results
         uses: actions/download-artifact@v4
@@ -661,6 +664,11 @@ jobs:
           HIGH=$(grep -c "^HIGH," /tmp/report/all-cves.csv 2>/dev/null || echo 0)
           MEDIUM=$(grep -c "^MEDIUM," /tmp/report/all-cves.csv 2>/dev/null || echo 0)
           LOW=$(grep -c "^LOW," /tmp/report/all-cves.csv 2>/dev/null || echo 0)
+
+          echo "CRITICAL=${CRITICAL}" >> "$GITHUB_ENV"
+          echo "HIGH=${HIGH}" >> "$GITHUB_ENV"
+          echo "MEDIUM=${MEDIUM}" >> "$GITHUB_ENV"
+          echo "LOW=${LOW}" >> "$GITHUB_ENV"
 
           echo "has_critical_cves=false" >> "$GITHUB_OUTPUT"
           if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then

@@ -32,5 +32,8 @@ EXPOSE 9101
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:783/ || exit 1
+
+LABEL org.opencontainers.image.description="spamassassin container image"
+
 ENTRYPOINT ["spamassassin"]
 CMD ["-d"]

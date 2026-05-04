@@ -31,6 +31,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="tooljet-client" \
+      org.opencontainers.image.description="tooljet-client container image" \
       org.opencontainers.image.version="2.57.0" \
       org.opencontainers.image.vendor="ToolJet/ToolJet" \
       org.opencontainers.image.source="https://github.com/ToolJet/ToolJet/releases" \

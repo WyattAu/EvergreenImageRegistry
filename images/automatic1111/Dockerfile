@@ -26,6 +26,7 @@ EXPOSE 7860
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:7860/ || exit 1
 ENTRYPOINT ["python3", "/opt/automatic1111/launch.py", "--listen", "--port", "7860"]
 LABEL org.opencontainers.image.title="automatic1111" \
+      org.opencontainers.image.description="automatic1111 container image" \
       org.opencontainers.image.version="1.9.3" \
       org.opencontainers.image.vendor="AUTOMATIC1111" \
       org.opencontainers.image.source="https://github.com/AUTOMATIC1111/stable-diffusion-webui.git" \

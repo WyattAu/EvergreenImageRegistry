@@ -23,6 +23,7 @@ WORKDIR /app
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["bundle"]
 LABEL org.opencontainers.image.title="bundler" \
+      org.opencontainers.image.description="bundler container image" \
       org.opencontainers.image.version="2.5.0" \
       org.opencontainers.image.vendor="Ruby Bundler" \
       org.opencontainers.image.source="https://github.com/rubygems/rubygems" \

@@ -87,6 +87,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl 
 ENTRYPOINT ["/opt/nginx/sbin/nginx"]
 CMD ["-c", "/app/conf/nginx.conf", "-g", "daemon off;"]
 LABEL org.opencontainers.image.title="basic-auth-proxy" \
+      org.opencontainers.image.description="basic-auth-proxy container image" \
       org.opencontainers.image.version="1.25.5" \
       org.opencontainers.image.vendor="nginx" \
       org.opencontainers.image.source="https://nginx.org" \

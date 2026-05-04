@@ -21,6 +21,7 @@ EXPOSE 9000
 HEALTHCHECK NONE
 ENTRYPOINT ["/step-ca"]
 LABEL org.opencontainers.image.title="step-ca" \
+      org.opencontainers.image.description="Step CA - private certificate authority for automated PKI" \
       org.opencontainers.image.version="0.30.2" \
       org.opencontainers.image.vendor="Smallstep" \
       org.opencontainers.image.source="https://github.com/smallstep/certificates" \

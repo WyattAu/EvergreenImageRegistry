@@ -18,6 +18,7 @@ WORKDIR /app
 HEALTHCHECK NONE
 ENTRYPOINT ["true"]
 LABEL org.opencontainers.image.title="pytorch-gpu" \
+      org.opencontainers.image.description="pytorch-gpu container image" \
       org.opencontainers.image.version="2.6.0" \
       org.opencontainers.image.vendor="PyTorch" \
       evergreen.image.tier="3" \

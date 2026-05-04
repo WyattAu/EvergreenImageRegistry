@@ -27,6 +27,7 @@ EXPOSE 5432
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5432/ || exit 1
 ENTRYPOINT ["postgres"]
 LABEL org.opencontainers.image.title="postgis" \
+      org.opencontainers.image.description="postgis container image" \
       org.opencontainers.image.version="3.4.2" \
       org.opencontainers.image.vendor="PostGIS" \
       evergreen.image.tier="2" \

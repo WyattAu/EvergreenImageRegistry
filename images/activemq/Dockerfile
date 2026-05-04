@@ -25,6 +25,7 @@ EXPOSE 61616 8161 5672 61613
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5672/ || exit 1
 ENTRYPOINT ["/opt/activemq/bin/activemq", "console"]
 LABEL org.opencontainers.image.title="activemq" \
+      org.opencontainers.image.description="activemq container image" \
       org.opencontainers.image.version="5.18.3" \
       org.opencontainers.image.vendor="Apache" \
       org.opencontainers.image.source="https://github.com/apache/activemq" \

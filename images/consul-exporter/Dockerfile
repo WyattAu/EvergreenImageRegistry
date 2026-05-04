@@ -27,6 +27,7 @@ EXPOSE 9107
 HEALTHCHECK NONE
 ENTRYPOINT ["/consul_exporter"]
 LABEL org.opencontainers.image.title="consul-exporter" \
+      org.opencontainers.image.description="Consul Exporter - Prometheus exporter for Consul" \
       org.opencontainers.image.version="0.4.0" \
       org.opencontainers.image.vendor="Prometheus" \
       evergreen.image.tier="1" \

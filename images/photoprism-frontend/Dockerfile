@@ -31,6 +31,7 @@ EXPOSE 2283
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:2283/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="photoprism-frontend" \
+      org.opencontainers.image.description="photoprism-frontend container image" \
       org.opencontainers.image.version="240427" \
       org.opencontainers.image.vendor="PhotoPrism" \
       org.opencontainers.image.source="https://github.com/photoprism/photoprism/releases" \

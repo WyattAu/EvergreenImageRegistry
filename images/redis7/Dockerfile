@@ -19,6 +19,7 @@ EXPOSE 6379
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD redis-cli ping
 ENTRYPOINT ["redis"]
 LABEL org.opencontainers.image.title="redis7" \
+      org.opencontainers.image.description="redis7 container image" \
       org.opencontainers.image.version="7.4.1" \
       org.opencontainers.image.vendor="Redis" \
       evergreen.image.tier="1" \

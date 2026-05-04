@@ -37,6 +37,7 @@ EXPOSE 8480
 HEALTHCHECK NONE
 ENTRYPOINT ["/vmstorage"]
 LABEL org.opencontainers.image.title="victoriametrics-cluster" \
+      org.opencontainers.image.description="victoriametrics-cluster container image" \
       org.opencontainers.image.version="1.97.0" \
       org.opencontainers.image.vendor="VictoriaMetrics" \
       evergreen.image.tier="1" \

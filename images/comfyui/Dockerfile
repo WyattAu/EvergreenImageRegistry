@@ -26,6 +26,7 @@ EXPOSE 8188
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8188/ || exit 1
 ENTRYPOINT ["python3", "/opt/comfyui/main.py", "--listen", "--port", "8188"]
 LABEL org.opencontainers.image.title="comfyui" \
+      org.opencontainers.image.description="comfyui container image" \
       org.opencontainers.image.version="latest" \
       org.opencontainers.image.vendor="ComfyUI" \
       org.opencontainers.image.source="https://github.com/comfyanonymous/ComfyUI.git" \

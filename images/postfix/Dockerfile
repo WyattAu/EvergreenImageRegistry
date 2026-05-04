@@ -32,5 +32,8 @@ EXPOSE 9101
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:25/ || exit 1
+
+LABEL org.opencontainers.image.description="postfix container image"
+
 ENTRYPOINT ["postfix"]
 CMD ["start-fg"]

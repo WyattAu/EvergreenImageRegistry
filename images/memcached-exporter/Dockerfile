@@ -27,6 +27,7 @@ EXPOSE 9150
 HEALTHCHECK NONE
 ENTRYPOINT ["/memcached_exporter"]
 LABEL org.opencontainers.image.title="memcached-exporter" \
+      org.opencontainers.image.description="memcached-exporter container image" \
       org.opencontainers.image.version="0.13.0" \
       org.opencontainers.image.vendor="Prometheus" \
       evergreen.image.tier="1" \

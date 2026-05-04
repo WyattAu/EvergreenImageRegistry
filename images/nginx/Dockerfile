@@ -23,6 +23,7 @@ EXPOSE 80 443
 HEALTHCHECK NONE
 ENTRYPOINT ["/nginx"]
 LABEL org.opencontainers.image.title="nginx" \
+      org.opencontainers.image.description="Nginx - HTTP and reverse proxy server" \
       org.opencontainers.image.version="1.27.1" \
       org.opencontainers.image.vendor="Nginx Inc" \
       evergreen.image.tier="1" \

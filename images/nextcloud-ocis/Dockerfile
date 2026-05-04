@@ -19,6 +19,7 @@ EXPOSE 9200
 HEALTHCHECK NONE
 ENTRYPOINT ["/nextcloud-ocis"]
 LABEL org.opencontainers.image.title="nextcloud-ocis" \
+      org.opencontainers.image.description="nextcloud-ocis container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Nextcloud" \
       org.opencontainers.image.source="https://github.com/owncloud/ocis" \

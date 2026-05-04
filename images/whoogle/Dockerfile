@@ -36,6 +36,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl 
 ENTRYPOINT ["whoogle-search"]
 CMD ["--port", "5000"]
 LABEL org.opencontainers.image.title="whoogle" \
+      org.opencontainers.image.description="whoogle container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="benbusby" \
       org.opencontainers.image.source="https://github.com/benbusby/whoogle-search" \

@@ -24,6 +24,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl 
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
 CMD ["start-dev"]
 LABEL org.opencontainers.image.title="keycloak" \
+      org.opencontainers.image.description="Keycloak - identity and access management" \
       org.opencontainers.image.version="26.6.1" \
       org.opencontainers.image.vendor="Keycloak" \
       org.opencontainers.image.source="https://github.com/keycloak/keycloak" \

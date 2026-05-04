@@ -29,6 +29,7 @@ EXPOSE 3000 22
 HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/forgejo"]
 LABEL org.opencontainers.image.title="forgejo" \
+      org.opencontainers.image.description="Forgejo - community-owned lightweight software forge" \
       org.opencontainers.image.version="14.0.4" \
       org.opencontainers.image.vendor="Forgejo" \
       evergreen.image.tier="2" \

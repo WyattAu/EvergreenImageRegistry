@@ -29,6 +29,7 @@ EXPOSE 9200 9300
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9200/_cluster/health
 ENTRYPOINT ["sh", "-c", "elasticsearch"]
 LABEL org.opencontainers.image.title="elasticsearch" \
+      org.opencontainers.image.description="Elasticsearch - distributed search and analytics engine" \
       org.opencontainers.image.version="8.14.0" \
       org.opencontainers.image.vendor="Elastic" \
       evergreen.image.tier="2" \

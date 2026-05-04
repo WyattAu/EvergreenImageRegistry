@@ -25,6 +25,7 @@ WORKDIR /app
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["ledger"]
 LABEL org.opencontainers.image.title="ledger" \
+      org.opencontainers.image.description="ledger container image" \
       org.opencontainers.image.version="3.3.2" \
       org.opencontainers.image.vendor="Ledger" \
       org.opencontainers.image.source="https://github.com/ledger/ledger" \

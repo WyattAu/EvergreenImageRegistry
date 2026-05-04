@@ -18,6 +18,7 @@ WORKDIR /app
 HEALTHCHECK NONE
 ENTRYPOINT ["true"]
 LABEL org.opencontainers.image.title="qdrant-gpu" \
+      org.opencontainers.image.description="qdrant-gpu container image" \
       org.opencontainers.image.version="1.17.1" \
       org.opencontainers.image.vendor="Qdrant" \
       evergreen.image.tier="3" \

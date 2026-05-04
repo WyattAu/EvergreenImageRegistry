@@ -28,6 +28,7 @@ EXPOSE 8086
 HEALTHCHECK NONE
 ENTRYPOINT ["/influx"]
 LABEL org.opencontainers.image.title="influxdb-client" \
+      org.opencontainers.image.description="influxdb-client container image" \
       org.opencontainers.image.version="2.7.5" \
       org.opencontainers.image.vendor="InfluxData" \
       evergreen.image.tier="1" \

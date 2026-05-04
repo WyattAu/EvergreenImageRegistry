@@ -12,6 +12,7 @@ EXPOSE 8200
 HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/bank-vaults"]
 LABEL org.opencontainers.image.title="vault-operator" \
+      org.opencontainers.image.description="vault-operator container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Banzai Cloud" \
       org.opencontainers.image.source="https://github.com/banzaicloud/bank-vaults" \

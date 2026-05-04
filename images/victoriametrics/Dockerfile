@@ -30,6 +30,7 @@ EXPOSE 8428
 HEALTHCHECK NONE
 ENTRYPOINT ["/victoria-metrics"]
 LABEL org.opencontainers.image.title="victoriametrics" \
+      org.opencontainers.image.description="victoriametrics container image" \
       org.opencontainers.image.version="1.140.0" \
       org.opencontainers.image.vendor="VictoriaMetrics" \
       evergreen.image.tier="1" \

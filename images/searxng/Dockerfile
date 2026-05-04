@@ -21,6 +21,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["python"]
 LABEL org.opencontainers.image.title="searxng" \
+      org.opencontainers.image.description="searxng container image" \
       org.opencontainers.image.version="2024.4.10" \
       org.opencontainers.image.vendor="SearXNG" \
       evergreen.image.tier="2" \

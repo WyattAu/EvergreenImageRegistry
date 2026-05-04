@@ -22,6 +22,7 @@ EXPOSE 8080
 HEALTHCHECK NONE
 ENTRYPOINT ["/zitadel"]
 LABEL org.opencontainers.image.title="zitadel" \
+      org.opencontainers.image.description="zitadel container image" \
       org.opencontainers.image.version="4.13.1" \
       org.opencontainers.image.vendor="ZITADEL" \
       org.opencontainers.image.source="https://github.com/zitadel/zitadel" \

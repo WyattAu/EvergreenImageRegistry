@@ -29,7 +29,7 @@ declare -A TOOLS=(
 declare -A CURRENT_VERSIONS
 
 extract_current_versions() {
-    local line tool version
+    local line tool _version
 
     while IFS= read -r line; do
         if [[ "$line" =~ docker-([0-9]+\.[0-9]+\.[0-9]+)\.tgz ]]; then
@@ -61,7 +61,7 @@ extract_current_versions() {
 }
 
 check_latest_versions() {
-    declare -A LATEST
+    declare -A _LATEST
     local tool
 
     printf "${CYAN}Checking latest versions...${NC}\n\n"

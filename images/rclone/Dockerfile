@@ -17,6 +17,7 @@ EXPOSE 5572
 HEALTHCHECK NONE
 ENTRYPOINT ["/rclone"]
 LABEL org.opencontainers.image.title="rclone" \
+      org.opencontainers.image.description="rclone container image" \
       org.opencontainers.image.version="v1.69.1" \
       org.opencontainers.image.vendor="Rclone" \
       org.opencontainers.image.source="https://github.com/rclone/rclone" \

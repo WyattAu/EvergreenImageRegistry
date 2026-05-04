@@ -23,6 +23,7 @@ EXPOSE 8500
 HEALTHCHECK NONE
 ENTRYPOINT ["/consul-template"]
 LABEL org.opencontainers.image.title="consul-template" \
+      org.opencontainers.image.description="Consul Template - template rendering with Consul data" \
       org.opencontainers.image.version="0.37.0" \
       org.opencontainers.image.vendor="HashiCorp" \
       evergreen.image.tier="1" \

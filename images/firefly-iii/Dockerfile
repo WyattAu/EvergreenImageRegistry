@@ -21,6 +21,7 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:80/ || exit 1
 ENTRYPOINT ["php"]
 LABEL org.opencontainers.image.title="firefly-iii" \
+      org.opencontainers.image.description="firefly-iii container image" \
       org.opencontainers.image.version="6.1.8" \
       org.opencontainers.image.vendor="Firefly III" \
       evergreen.image.tier="2" \

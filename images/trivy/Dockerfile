@@ -26,6 +26,7 @@ WORKDIR /app
 HEALTHCHECK NONE
 ENTRYPOINT ["/trivy"]
 LABEL org.opencontainers.image.title="trivy" \
+      org.opencontainers.image.description="Trivy - security scanner for containers and dependencies" \
       org.opencontainers.image.version="0.70.0" \
       org.opencontainers.image.vendor="Aqua Security" \
       org.opencontainers.image.source="https://github.com/aquasecurity/trivy" \

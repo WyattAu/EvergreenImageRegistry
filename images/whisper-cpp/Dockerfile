@@ -29,6 +29,7 @@ EXPOSE 8080
 HEALTHCHECK NONE
 ENTRYPOINT ["/whisper-cli"]
 LABEL org.opencontainers.image.title="whisper-cpp" \
+      org.opencontainers.image.description="whisper-cpp container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="ggerganov/whisper.cpp" \
       org.opencontainers.image.source="https://github.com/ggerganov/whisper.cpp" \

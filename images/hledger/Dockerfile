@@ -18,6 +18,7 @@ WORKDIR /app
 HEALTHCHECK NONE
 ENTRYPOINT ["/hledger"]
 LABEL org.opencontainers.image.title="hledger" \
+      org.opencontainers.image.description="hledger container image" \
       org.opencontainers.image.version="1.52" \
       org.opencontainers.image.vendor="hledger" \
       org.opencontainers.image.source="https://github.com/simonmichael/hledger" \

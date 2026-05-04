@@ -21,6 +21,7 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:3000/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="logseq" \
+      org.opencontainers.image.description="logseq container image" \
       org.opencontainers.image.version="0.10.18" \
       org.opencontainers.image.vendor="Logseq" \
       evergreen.image.tier="2" \

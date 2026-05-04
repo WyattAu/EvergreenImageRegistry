@@ -25,6 +25,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["node", "/opt/wekan/main.js"]
 LABEL org.opencontainers.image.title="wekan" \
+      org.opencontainers.image.description="wekan container image" \
       org.opencontainers.image.version="9.01" \
       org.opencontainers.image.vendor="Wekan" \
       org.opencontainers.image.source="https://github.com/wekan/wekan" \

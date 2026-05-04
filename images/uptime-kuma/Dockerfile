@@ -21,6 +21,7 @@ EXPOSE 3001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:3001/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="uptime-kuma" \
+      org.opencontainers.image.description="uptime-kuma container image" \
       org.opencontainers.image.version="1.23.1" \
       org.opencontainers.image.vendor="Uptime Kuma" \
       evergreen.image.tier="2" \

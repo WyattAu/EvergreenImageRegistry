@@ -27,6 +27,7 @@ EXPOSE 9000
 HEALTHCHECK NONE
 ENTRYPOINT ["/portainer"]
 LABEL org.opencontainers.image.title="portainer" \
+      org.opencontainers.image.description="Portainer - container management UI" \
       org.opencontainers.image.version="2.20.1" \
       org.opencontainers.image.vendor="Portainer" \
       evergreen.image.tier="1" \

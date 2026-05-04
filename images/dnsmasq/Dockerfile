@@ -23,6 +23,7 @@ EXPOSE 53
 HEALTHCHECK NONE
 ENTRYPOINT ["/dnsmasq"]
 LABEL org.opencontainers.image.title="dnsmasq" \
+      org.opencontainers.image.description="dnsmasq container image" \
       org.opencontainers.image.version="2.90" \
       org.opencontainers.image.vendor="Dnsmasq" \
       evergreen.image.tier="1" \

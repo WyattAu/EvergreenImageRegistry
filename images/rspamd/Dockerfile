@@ -32,5 +32,8 @@ EXPOSE 9101
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:11333/ || exit 1
+
+LABEL org.opencontainers.image.description="rspamd container image"
+
 ENTRYPOINT ["rspamd"]
 CMD ["-F", "--no-daemon"]

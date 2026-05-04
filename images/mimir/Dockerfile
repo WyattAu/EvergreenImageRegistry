@@ -31,6 +31,7 @@ EXPOSE 8080
 HEALTHCHECK NONE
 ENTRYPOINT ["/mimir"]
 LABEL org.opencontainers.image.title="mimir" \
+      org.opencontainers.image.description="mimir container image" \
       org.opencontainers.image.version="2.10.0" \
       org.opencontainers.image.vendor="Grafana" \
       evergreen.image.tier="1" \

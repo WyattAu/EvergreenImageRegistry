@@ -17,6 +17,7 @@ EXPOSE 0
 HEALTHCHECK NONE
 ENTRYPOINT ["/mc"]
 LABEL org.opencontainers.image.title="mc" \
+      org.opencontainers.image.description="mc container image" \
       org.opencontainers.image.version="RELEASE.2025-04-08T16-46-15Z" \
       org.opencontainers.image.vendor="MinIO" \
       org.opencontainers.image.source="https://github.com/minio/mc" \

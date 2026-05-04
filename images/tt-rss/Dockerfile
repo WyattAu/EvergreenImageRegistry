@@ -22,6 +22,7 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:80/ || exit 1
 ENTRYPOINT ["php"]
 LABEL org.opencontainers.image.title="tt-rss" \
+      org.opencontainers.image.description="tt-rss container image" \
       org.opencontainers.image.version="24.5" \
       org.opencontainers.image.vendor="tt-rss" \
       org.opencontainers.image.source="https://github.com/rr-/tt-rss/releases" \

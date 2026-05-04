@@ -20,6 +20,7 @@ EXPOSE 9999
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9999/ || exit 1
 ENTRYPOINT ["pgpool"]
 LABEL org.opencontainers.image.title="pgpool-II" \
+      org.opencontainers.image.description="pgpool-ii container image" \
       org.opencontainers.image.version="4.5.1" \
       org.opencontainers.image.vendor="PgPool" \
       evergreen.image.tier="2" \

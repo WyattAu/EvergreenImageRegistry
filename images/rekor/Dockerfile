@@ -24,6 +24,7 @@ EXPOSE 3000
 HEALTHCHECK NONE
 ENTRYPOINT ["/rekor-server"]
 LABEL org.opencontainers.image.title="rekor" \
+      org.opencontainers.image.description="Rekor - transparency log for supply chain security" \
       org.opencontainers.image.version="1.5.1" \
       org.opencontainers.image.vendor="sigstore" \
       org.opencontainers.image.source="https://github.com/sigstore/rekor" \

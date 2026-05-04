@@ -23,6 +23,7 @@ EXPOSE 5672 15672
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD rabbitmq-diagnostics check_running
 ENTRYPOINT ["sh", "-c", "rabbitmq-server"]
 LABEL org.opencontainers.image.title="rabbitmq" \
+      org.opencontainers.image.description="RabbitMQ - message broker software" \
       org.opencontainers.image.version="3.13.1" \
       org.opencontainers.image.vendor="RabbitMQ" \
       evergreen.image.tier="2" \

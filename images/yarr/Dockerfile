@@ -35,6 +35,7 @@ EXPOSE 7070
 HEALTHCHECK NONE
 ENTRYPOINT ["/yarr"]
 LABEL org.opencontainers.image.title="yarr" \
+      org.opencontainers.image.description="yarr container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="yarr" \
       org.opencontainers.image.source="https://github.com/nickvdyck/yarr" \

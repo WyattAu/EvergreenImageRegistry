@@ -22,6 +22,8 @@ ENTRYPOINT ["/crowdsec"]
 CMD ["-c /app/config.yaml -t"]
 LABEL org.opencontainers.image.title="crowdsec-agent"       org.opencontainers.image.version="1.7.7"       org.opencontainers.image.vendor="CrowdSecurity"       org.opencontainers.image.source="https://github.com/crowdsecurity/crowdsec"       evergreen.image.tier="1"       evergreen.image.category="security"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms"
 
+org.opencontainers.image.description="crowdsec-agent container image" \
+
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"

@@ -32,6 +32,7 @@ EXPOSE 6379
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD redis-cli ping
 ENTRYPOINT ["sh", "-c", "redis"]
 LABEL org.opencontainers.image.title="redis" \
+      org.opencontainers.image.description="Redis - in-memory data structure store and cache" \
       org.opencontainers.image.version="7.4.1" \
       org.opencontainers.image.vendor="Redis" \
       evergreen.image.tier="2" \

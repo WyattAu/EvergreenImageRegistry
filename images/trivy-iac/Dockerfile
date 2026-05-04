@@ -36,5 +36,8 @@ EXPOSE 9101
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK NONE
+
+LABEL org.opencontainers.image.description="trivy-iac container image"
+
 ENTRYPOINT ["/trivy"]
 CMD ["--help"]

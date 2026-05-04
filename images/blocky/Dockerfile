@@ -29,6 +29,7 @@ EXPOSE 53 4000
 HEALTHCHECK NONE
 ENTRYPOINT ["/blocky"]
 LABEL org.opencontainers.image.title="blocky" \
+      org.opencontainers.image.description="blocky container image" \
       org.opencontainers.image.version="0.29.0" \
       org.opencontainers.image.vendor="Blocky" \
       evergreen.image.tier="1" \

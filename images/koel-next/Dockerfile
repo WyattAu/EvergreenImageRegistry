@@ -22,6 +22,7 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:80/ || exit 1
 ENTRYPOINT ["php"]
 LABEL org.opencontainers.image.title="koel-next" \
+      org.opencontainers.image.description="koel-next container image" \
       org.opencontainers.image.version="6.10.3" \
       org.opencontainers.image.vendor="koel/koel" \
       org.opencontainers.image.source="https://github.com/koel/koel/releases" \

@@ -34,6 +34,7 @@ EXPOSE 5556
 HEALTHCHECK NONE
 ENTRYPOINT ["/dex"]
 LABEL org.opencontainers.image.title="dex" \
+      org.opencontainers.image.description="Dex - federated OpenID Connect provider" \
       org.opencontainers.image.version="2.45.1" \
       org.opencontainers.image.vendor="DexIDP" \
       org.opencontainers.image.source="https://github.com/dexidp/dex" \

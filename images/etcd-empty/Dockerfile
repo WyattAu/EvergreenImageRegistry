@@ -29,6 +29,7 @@ HEALTHCHECK NONE
 ENTRYPOINT ["/etcd"]
 CMD ["--data-dir", "/etcd-data", "--listen-client-urls", "http://0.0.0.0:2379", "--advertise-client-urls", "http://localhost:2379"]
 LABEL org.opencontainers.image.title="etcd-empty" \
+      org.opencontainers.image.description="etcd-empty container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="etcd" \
       org.opencontainers.image.source="https://github.com/etcd-io/etcd" \

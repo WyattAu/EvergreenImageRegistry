@@ -18,6 +18,7 @@ WORKDIR /app
 HEALTHCHECK NONE
 ENTRYPOINT ["true"]
 LABEL org.opencontainers.image.title="vllm-cuda" \
+      org.opencontainers.image.description="vllm-cuda container image" \
       org.opencontainers.image.version="0.6.6" \
       org.opencontainers.image.vendor="vLLM" \
       evergreen.image.tier="3" \

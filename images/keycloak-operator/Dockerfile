@@ -11,6 +11,7 @@ WORKDIR /app
 HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/keycloak-operator"]
 LABEL org.opencontainers.image.title="keycloak-operator" \
+      org.opencontainers.image.description="keycloak-operator container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Keycloak" \
       org.opencontainers.image.source="https://github.com/keycloak/keycloak-operator" \

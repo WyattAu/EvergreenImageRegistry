@@ -14,6 +14,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["grisbi"]
 LABEL org.opencontainers.image.title="grisbi" \
+      org.opencontainers.image.description="grisbi container image" \
       org.opencontainers.image.version="2.0.5" \
       org.opencontainers.image.vendor="Grisbi" \
       org.opencontainers.image.source="https://github.com/grisbi/grisbi" \

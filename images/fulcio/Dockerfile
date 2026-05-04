@@ -21,6 +21,7 @@ EXPOSE 5555
 HEALTHCHECK NONE
 ENTRYPOINT ["/fulcio"]
 LABEL org.opencontainers.image.title="fulcio" \
+      org.opencontainers.image.description="Fulcio - certificate authority for Sigstore" \
       org.opencontainers.image.version="1.8.5" \
       org.opencontainers.image.vendor="sigstore" \
       org.opencontainers.image.source="https://github.com/sigstore/fulcio" \

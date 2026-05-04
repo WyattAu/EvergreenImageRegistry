@@ -23,6 +23,7 @@ EXPOSE 8500
 HEALTHCHECK NONE
 ENTRYPOINT ["/consul"]
 LABEL org.opencontainers.image.title="consul" \
+      org.opencontainers.image.description="Consul - service mesh, service discovery, and configuration" \
       org.opencontainers.image.version="1.18.1" \
       org.opencontainers.image.vendor="HashiCorp" \
       evergreen.image.tier="1" \

@@ -13,6 +13,7 @@ EXPOSE 8086
 HEALTHCHECK NONE
 ENTRYPOINT ["/influxd"]
 LABEL org.opencontainers.image.title="influxdb" \
+      org.opencontainers.image.description="InfluxDB - time series database for metrics and events" \
       org.opencontainers.image.version="2.7" \
       org.opencontainers.image.vendor="InfluxData" \
       evergreen.image.tier="1" \

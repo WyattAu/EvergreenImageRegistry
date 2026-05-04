@@ -16,6 +16,7 @@ EXPOSE 32400
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:32400/ || exit 1
 ENTRYPOINT ["/usr/lib/plexmediaserver/Plex Media Server"]
 LABEL org.opencontainers.image.title="plex" \
+      org.opencontainers.image.description="Plex - streaming media server and client" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Plex" \
       org.opencontainers.image.source="https://www.plex.tv/" \

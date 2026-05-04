@@ -38,6 +38,7 @@ EXPOSE 8080 6881 6881/udp
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:6881/ || exit 1
 ENTRYPOINT ["/app/bin/qbittorrent-nox"]
 LABEL org.opencontainers.image.title="qbittorrent-nox" \
+      org.opencontainers.image.description="qbittorrent-nox container image" \
       org.opencontainers.image.version="5.0.3" \
       org.opencontainers.image.vendor="qBittorrent" \
       org.opencontainers.image.source="https://github.com/qbittorrent/qBittorrent" \

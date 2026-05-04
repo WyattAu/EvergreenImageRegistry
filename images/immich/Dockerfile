@@ -21,6 +21,7 @@ EXPOSE 2283
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:2283/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="immich" \
+      org.opencontainers.image.description="Immich - self-hosted photo and video backup solution" \
       org.opencontainers.image.version="1.106.0" \
       org.opencontainers.image.vendor="Immich" \
       evergreen.image.tier="2" \

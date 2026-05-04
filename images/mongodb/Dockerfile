@@ -31,6 +31,7 @@ EXPOSE 27017
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD echo "db.runCommand({ping:1})" | mongosh --quiet
 ENTRYPOINT ["sh", "-c", "mongod"]
 LABEL org.opencontainers.image.title="mongodb" \
+      org.opencontainers.image.description="MongoDB - document-oriented NoSQL database" \
       org.opencontainers.image.version="7.0.11" \
       org.opencontainers.image.vendor="MongoDB" \
       evergreen.image.tier="2" \

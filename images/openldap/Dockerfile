@@ -20,6 +20,7 @@ EXPOSE 389 636
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:389/ || exit 1
 ENTRYPOINT ["slapd"]
 LABEL org.opencontainers.image.title="openldap" \
+      org.opencontainers.image.description="openldap container image" \
       org.opencontainers.image.version="2.6.8" \
       org.opencontainers.image.vendor="OpenLDAP" \
       evergreen.image.tier="2" \

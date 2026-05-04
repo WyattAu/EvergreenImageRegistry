@@ -21,3 +21,4 @@ STOPSIGNAL SIGTERM
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 CMD ["/bin/sh"]
+LABEL org.opencontainers.image.description="zoe container image"

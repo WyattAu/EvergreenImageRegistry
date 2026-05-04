@@ -31,6 +31,7 @@ EXPOSE 3002
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:3002/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="immich-microservices" \
+      org.opencontainers.image.description="immich-microservices container image" \
       org.opencontainers.image.version="1.106.0" \
       org.opencontainers.image.vendor="immich-app/immich" \
       org.opencontainers.image.source="https://github.com/immich-app/immich/releases" \

@@ -24,6 +24,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["python3"]
 LABEL org.opencontainers.image.title="pinecone" \
+      org.opencontainers.image.description="pinecone container image" \
       org.opencontainers.image.version="5.4.0" \
       org.opencontainers.image.vendor="Pinecone" \
       org.opencontainers.image.source="https://github.com/pinecone-io/pinecone-python-client" \

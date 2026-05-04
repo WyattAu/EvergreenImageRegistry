@@ -39,6 +39,7 @@ WORKDIR /app
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["/usr/local/bin/ffmpeg"]
 LABEL org.opencontainers.image.title="jellyfin-ffmpeg" \
+      org.opencontainers.image.description="jellyfin-ffmpeg container image" \
       org.opencontainers.image.version="7.1" \
       org.opencontainers.image.vendor="Jellyfin" \
       org.opencontainers.image.source="https://github.com/jellyfin/jellyfin-ffmpeg" \

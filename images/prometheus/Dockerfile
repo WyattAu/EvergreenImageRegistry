@@ -27,6 +27,7 @@ EXPOSE 9090
 HEALTHCHECK NONE
 ENTRYPOINT ["/prometheus"]
 LABEL org.opencontainers.image.title="prometheus" \
+      org.opencontainers.image.description="Prometheus - monitoring and alerting toolkit" \
       org.opencontainers.image.version="2.53.0" \
       org.opencontainers.image.vendor="Prometheus" \
       evergreen.image.tier="1" \

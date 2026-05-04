@@ -26,6 +26,7 @@ EXPOSE 9001
 HEALTHCHECK NONE
 ENTRYPOINT ["/vector"]
 LABEL org.opencontainers.image.title="vector" \
+      org.opencontainers.image.description="Vector - high-performance observability data pipeline" \
       org.opencontainers.image.version="0.39.0" \
       org.opencontainers.image.vendor="Vector" \
       evergreen.image.tier="1" \

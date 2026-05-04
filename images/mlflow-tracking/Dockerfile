@@ -24,6 +24,7 @@ EXPOSE 5000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5000/ || exit 1
 ENTRYPOINT ["mlflow"]
 LABEL org.opencontainers.image.title="mlflow-tracking" \
+      org.opencontainers.image.description="mlflow-tracking container image" \
       org.opencontainers.image.version="2.21.0" \
       org.opencontainers.image.vendor="MLflow" \
       org.opencontainers.image.source="https://github.com/mlflow/mlflow" \

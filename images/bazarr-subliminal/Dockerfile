@@ -26,6 +26,7 @@ EXPOSE 6768
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:6768/ || exit 1
 ENTRYPOINT ["python3", "/opt/bazarr-subliminal/bazarr.py"]
 LABEL org.opencontainers.image.title="bazarr-subliminal" \
+      org.opencontainers.image.description="bazarr-subliminal container image" \
       org.opencontainers.image.version="1.5.2" \
       org.opencontainers.image.vendor="Bazarr" \
       org.opencontainers.image.source="https://github.com/morpheus65535/bazarr.git" \

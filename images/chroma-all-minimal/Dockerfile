@@ -24,6 +24,7 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8000/ || exit 1
 ENTRYPOINT ["python3"]
 LABEL org.opencontainers.image.title="chroma-all-minimal" \
+      org.opencontainers.image.description="chroma-all-minimal container image" \
       org.opencontainers.image.version="0.5.23" \
       org.opencontainers.image.vendor="Chroma" \
       org.opencontainers.image.source="https://github.com/chroma-core/chroma" \

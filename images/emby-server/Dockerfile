@@ -18,6 +18,7 @@ EXPOSE 8096 8920
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8096/ || exit 1
 ENTRYPOINT ["/opt/emby-server/emby-server"]
 LABEL org.opencontainers.image.title="emby-server"       org.opencontainers.image.version="4.9.3.0"       org.opencontainers.image.vendor="Emby"       org.opencontainers.image.source="https://github.com/MediaBrowser/Emby.Releases"       evergreen.image.tier="2"       evergreen.image.category="media-streaming"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.base="wolfi"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="10s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="30000ms"
+      org.opencontainers.image.description="emby-server container image" \
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"

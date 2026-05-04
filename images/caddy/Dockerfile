@@ -25,6 +25,7 @@ EXPOSE 80 443 2019
 HEALTHCHECK NONE
 ENTRYPOINT ["/caddy"]
 LABEL org.opencontainers.image.title="caddy" \
+      org.opencontainers.image.description="Caddy - powerful enterprise-ready open source web server" \
       org.opencontainers.image.version="2.7.6" \
       org.opencontainers.image.vendor="Caddy" \
       evergreen.image.tier="1" \

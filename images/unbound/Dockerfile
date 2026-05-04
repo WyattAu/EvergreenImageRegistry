@@ -31,6 +31,7 @@ EXPOSE 53
 HEALTHCHECK NONE
 ENTRYPOINT ["/unbound"]
 LABEL org.opencontainers.image.title="unbound" \
+      org.opencontainers.image.description="Unbound - validating, recursive, and caching DNS resolver" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="NLnet Labs" \
       evergreen.image.tier="1" \

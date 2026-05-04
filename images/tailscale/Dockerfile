@@ -25,6 +25,7 @@ EXPOSE 41641/udp
 HEALTHCHECK NONE
 ENTRYPOINT ["/tailscaled"]
 LABEL org.opencontainers.image.title="tailscale" \
+      org.opencontainers.image.description="tailscale container image" \
       org.opencontainers.image.version="1.58.0" \
       org.opencontainers.image.vendor="Tailscale" \
       org.opencontainers.image.source="https://github.com/tailscale/tailscale" \

@@ -20,6 +20,7 @@ EXPOSE 6432
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:6432/ || exit 1
 ENTRYPOINT ["pgbouncer"]
 LABEL org.opencontainers.image.title="pgbouncer" \
+      org.opencontainers.image.description="pgbouncer container image" \
       org.opencontainers.image.version="1.22.1" \
       org.opencontainers.image.vendor="PgBouncer" \
       evergreen.image.tier="2" \

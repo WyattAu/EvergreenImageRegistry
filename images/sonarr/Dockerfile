@@ -31,6 +31,7 @@ ENTRYPOINT ["/app/Sonarr"]
 EXPOSE 8989
 
 LABEL org.opencontainers.image.title="sonarr" \
+      org.opencontainers.image.description="Sonarr - PVR for Usenet and BitTorrent users" \
       org.opencontainers.image.version="4.0.10" \
       org.opencontainers.image.vendor="Sonarr" \
       org.opencontainers.image.source="https://github.com/Sonarr/Sonarr" \

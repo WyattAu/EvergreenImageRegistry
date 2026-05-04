@@ -36,6 +36,7 @@ WORKDIR /app
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["java"]
 LABEL org.opencontainers.image.title="openjdk" \
+      org.opencontainers.image.description="openjdk container image" \
       org.opencontainers.image.version="21.0.3" \
       org.opencontainers.image.vendor="OpenJDK" \
       evergreen.image.tier="2" \

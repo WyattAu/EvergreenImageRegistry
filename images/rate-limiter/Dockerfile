@@ -38,6 +38,7 @@ EXPOSE 9090
 HEALTHCHECK NONE
 ENTRYPOINT ["/ratelimiter"]
 LABEL org.opencontainers.image.title="rate-limiter" \
+      org.opencontainers.image.description="rate-limiter container image" \
       org.opencontainers.image.version="latest" \
       org.opencontainers.image.vendor="kuqoi" \
       org.opencontainers.image.source="https://github.com/kuqoi/ratelimiter" \

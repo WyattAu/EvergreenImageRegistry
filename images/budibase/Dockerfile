@@ -31,6 +31,7 @@ EXPOSE 10000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:10000/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="budibase" \
+      org.opencontainers.image.description="budibase container image" \
       org.opencontainers.image.version="2.14.0" \
       org.opencontainers.image.vendor="Budibase/budibase" \
       org.opencontainers.image.source="https://github.com/Budibase/budibase/releases" \

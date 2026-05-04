@@ -37,6 +37,7 @@ EXPOSE 9042
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD nodetool status
 ENTRYPOINT ["sh", "-c", "/opt/cassandra/bin/cassandra -f"]
 LABEL org.opencontainers.image.title="cassandra" \
+      org.opencontainers.image.description="Apache Cassandra - distributed NoSQL database" \
       org.opencontainers.image.version="5.0" \
       org.opencontainers.image.vendor="Apache" \
       evergreen.image.tier="1" \

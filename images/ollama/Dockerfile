@@ -27,6 +27,7 @@ EXPOSE 11434
 HEALTHCHECK NONE
 ENTRYPOINT ["/ollama"]
 LABEL org.opencontainers.image.title="ollama" \
+      org.opencontainers.image.description="ollama container image" \
       org.opencontainers.image.version="0.21.0" \
       org.opencontainers.image.vendor="Ollama" \
       evergreen.image.tier="1" \

@@ -52,6 +52,7 @@ EXPOSE 5984
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5984/_up
 ENTRYPOINT ["sh", "-c", "/opt/couchdb/bin/couchdb"]
 LABEL org.opencontainers.image.title="couchdb" \
+      org.opencontainers.image.description="CouchDB - document-oriented NoSQL database" \
       org.opencontainers.image.version="3.3.3" \
       org.opencontainers.image.vendor="Apache" \
       evergreen.image.tier="1" \

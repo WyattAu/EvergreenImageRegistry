@@ -21,6 +21,7 @@ EXPOSE 8123
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8123/ || exit 1
 ENTRYPOINT ["python"]
 LABEL org.opencontainers.image.title="homeassistant" \
+      org.opencontainers.image.description="Home Assistant - open source home automation platform" \
       org.opencontainers.image.version="2024.4.2" \
       org.opencontainers.image.vendor="Home Assistant" \
       evergreen.image.tier="2" \

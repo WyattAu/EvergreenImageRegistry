@@ -27,6 +27,7 @@ EXPOSE 80
 HEALTHCHECK NONE
 ENTRYPOINT ["/pairdrop"]
 LABEL org.opencontainers.image.title="pairdrop" \
+      org.opencontainers.image.description="pairdrop container image" \
       org.opencontainers.image.version="1.11.2" \
       org.opencontainers.image.vendor="PairDrop" \
       evergreen.image.tier="1" \

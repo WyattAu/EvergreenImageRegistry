@@ -20,6 +20,7 @@ EXPOSE 9091
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9091/ || exit 1
 ENTRYPOINT ["transmission-daemon"]
 LABEL org.opencontainers.image.title="transmission" \
+      org.opencontainers.image.description="transmission container image" \
       org.opencontainers.image.version="4.0.6" \
       org.opencontainers.image.vendor="Transmission" \
       evergreen.image.tier="2" \

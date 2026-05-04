@@ -14,6 +14,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["unoconv"]
 LABEL org.opencontainers.image.title="unoconv" \
+      org.opencontainers.image.description="unoconv container image" \
       org.opencontainers.image.version="0.8" \
       org.opencontainers.image.vendor="Unoconv" \
       org.opencontainers.image.source="https://github.com/dagwieers/unoconv" \

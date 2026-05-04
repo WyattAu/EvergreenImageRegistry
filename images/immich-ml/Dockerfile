@@ -24,6 +24,7 @@ EXPOSE 3003
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:3003/ || exit 1
 ENTRYPOINT ["python3"]
 LABEL org.opencontainers.image.title="immich-ml" \
+      org.opencontainers.image.description="immich-ml container image" \
       org.opencontainers.image.version="1.106.0" \
       org.opencontainers.image.vendor="Immich" \
       org.opencontainers.image.source="https://github.com/immich-app/immich/releases" \

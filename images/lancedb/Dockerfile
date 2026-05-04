@@ -14,6 +14,7 @@ EXPOSE 6333
 HEALTHCHECK NONE
 ENTRYPOINT ["/lancedb"]
 LABEL org.opencontainers.image.title="lancedb" \
+      org.opencontainers.image.description="lancedb container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="lancedb/lance" \
       org.opencontainers.image.source="https://github.com/lancedb/lance" \

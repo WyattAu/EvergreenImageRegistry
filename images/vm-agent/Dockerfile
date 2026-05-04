@@ -27,6 +27,7 @@ EXPOSE 8429
 HEALTHCHECK NONE
 ENTRYPOINT ["/vmagent"]
 LABEL org.opencontainers.image.title="vm-agent" \
+      org.opencontainers.image.description="vm-agent container image" \
       org.opencontainers.image.version="1.140.0" \
       org.opencontainers.image.vendor="VictoriaMetrics" \
       evergreen.image.tier="1" \

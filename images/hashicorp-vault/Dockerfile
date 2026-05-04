@@ -24,6 +24,7 @@ EXPOSE 8200 8201
 HEALTHCHECK NONE
 ENTRYPOINT ["/vault"]
 LABEL org.opencontainers.image.title="hashicorp-vault" \
+      org.opencontainers.image.description="hashicorp-vault container image" \
       org.opencontainers.image.version="1.18.1" \
       org.opencontainers.image.vendor="HashiCorp" \
       evergreen.image.tier="1" \

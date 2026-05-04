@@ -22,6 +22,7 @@ WORKDIR /app
 HEALTHCHECK NONE
 ENTRYPOINT ["/kubectl"]
 LABEL org.opencontainers.image.title="kubectl" \
+      org.opencontainers.image.description="kubectl - command line tool for controlling Kubernetes clusters" \
       org.opencontainers.image.version="1.30.1" \
       org.opencontainers.image.vendor="Kubernetes" \
       evergreen.image.tier="1" \

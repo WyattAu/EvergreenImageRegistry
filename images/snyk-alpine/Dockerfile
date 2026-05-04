@@ -28,5 +28,8 @@ EXPOSE 9101
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK NONE
+
+LABEL org.opencontainers.image.description="snyk-alpine container image"
+
 ENTRYPOINT ["/snyk-alpine"]
 CMD ["--help"]

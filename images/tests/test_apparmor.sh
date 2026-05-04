@@ -193,8 +193,8 @@ validate_profile_syntax() {
         return 1
     fi
 
-    local check_output
-    check_output=$(apparmor_parser -R "$profile" 2>&1) || true
+    local _check_output
+    _check_output=$(apparmor_parser -R "$profile" 2>&1) || true
     local syntax_check
     syntax_check=$(apparmor_parser --skip-cache -p "$profile" 2>&1) || {
         log_error "Syntax error in $profile: $syntax_check"

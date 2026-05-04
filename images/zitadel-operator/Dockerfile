@@ -11,6 +11,7 @@ WORKDIR /app
 HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/zitadel-operator"]
 LABEL org.opencontainers.image.title="zitadel-operator" \
+      org.opencontainers.image.description="zitadel-operator container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="ZITADEL" \
       org.opencontainers.image.source="https://github.com/zitadel/zitadel-operator" \

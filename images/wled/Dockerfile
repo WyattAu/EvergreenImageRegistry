@@ -26,3 +26,4 @@ LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
 STOPSIGNAL SIGTERM
+LABEL org.opencontainers.image.description="wled container image"

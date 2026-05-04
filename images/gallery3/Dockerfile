@@ -26,6 +26,7 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8000/ || exit 1
 ENTRYPOINT ["python3", "/opt/gallery3/manage.py", "runserver", "0.0.0.0:8000"]
 LABEL org.opencontainers.image.title="gallery3" \
+      org.opencontainers.image.description="gallery3 container image" \
       org.opencontainers.image.version="3.0.0" \
       org.opencontainers.image.vendor="Gallery" \
       org.opencontainers.image.source="https://github.com/gallery/gallery3.git" \

@@ -21,6 +21,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["jenkins"]
 LABEL org.opencontainers.image.title="jenkins" \
+      org.opencontainers.image.description="Jenkins - open source automation server for CI/CD" \
       org.opencontainers.image.version="2.462.1" \
       org.opencontainers.image.vendor="Jenkins" \
       evergreen.image.tier="2" \

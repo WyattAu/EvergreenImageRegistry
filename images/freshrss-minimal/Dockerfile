@@ -22,6 +22,7 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:80/ || exit 1
 ENTRYPOINT ["php"]
 LABEL org.opencontainers.image.title="freshrss-minimal" \
+      org.opencontainers.image.description="freshrss-minimal container image" \
       org.opencontainers.image.version="1.24.1" \
       org.opencontainers.image.vendor="FreshRSS" \
       org.opencontainers.image.source="https://github.com/FreshRSS/FreshRSS" \

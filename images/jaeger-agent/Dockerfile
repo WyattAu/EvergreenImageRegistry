@@ -30,6 +30,7 @@ EXPOSE 5775
 HEALTHCHECK NONE
 ENTRYPOINT ["/jaeger-agent"]
 LABEL org.opencontainers.image.title="jaeger-agent" \
+      org.opencontainers.image.description="jaeger-agent container image" \
       org.opencontainers.image.version="1.55.0" \
       org.opencontainers.image.vendor="JaegerTracing" \
       evergreen.image.tier="1" \

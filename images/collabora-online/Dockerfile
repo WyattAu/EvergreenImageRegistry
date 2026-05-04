@@ -14,6 +14,7 @@ EXPOSE 9980
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9980/ || exit 1
 ENTRYPOINT ["/usr/bin/loolwsd"]
 LABEL org.opencontainers.image.title="collabora-online" \
+      org.opencontainers.image.description="collabora-online container image" \
       org.opencontainers.image.version="24.04.10.2" \
       org.opencontainers.image.vendor="Collabora" \
       org.opencontainers.image.source="https://github.com/CollaboraOnline/online" \

@@ -13,6 +13,7 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:80/ || exit 1
 ENTRYPOINT ["httpd", "-D", "FOREGROUND"]
 LABEL org.opencontainers.image.title="sql-ledger" \
+      org.opencontainers.image.description="sql-ledger container image" \
       org.opencontainers.image.version="2.8.38" \
       org.opencontainers.image.vendor="SQL-Ledger" \
       org.opencontainers.image.source="https://www.ledgersmb.org/" \

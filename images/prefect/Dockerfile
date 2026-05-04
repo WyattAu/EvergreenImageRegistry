@@ -23,6 +23,7 @@ EXPOSE 4200
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:4200/ || exit 1
 ENTRYPOINT ["prefect"]
 LABEL org.opencontainers.image.title="prefect" \
+      org.opencontainers.image.description="prefect container image" \
       org.opencontainers.image.version="3.3.0" \
       org.opencontainers.image.vendor="Prefect" \
       evergreen.image.tier="3" \

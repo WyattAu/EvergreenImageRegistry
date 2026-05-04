@@ -21,6 +21,7 @@ HEALTHCHECK NONE
 ENTRYPOINT ["/cosign"]
 CMD ["verify"]
 LABEL org.opencontainers.image.title="cosign-verify" \
+      org.opencontainers.image.description="cosign-verify container image" \
       org.opencontainers.image.version="3.0.6" \
       org.opencontainers.image.vendor="sigstore" \
       org.opencontainers.image.source="https://github.com/sigstore/cosign" \

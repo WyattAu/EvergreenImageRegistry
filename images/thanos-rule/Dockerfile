@@ -33,6 +33,7 @@ HEALTHCHECK NONE
 ENTRYPOINT ["/thanos"]
 CMD ["rule"]
 LABEL org.opencontainers.image.title="thanos-rule" \
+      org.opencontainers.image.description="thanos-rule container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Thanos" \
       org.opencontainers.image.source="https://github.com/thanos-io/thanos" \

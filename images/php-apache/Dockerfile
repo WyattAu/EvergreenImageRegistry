@@ -22,6 +22,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl 
 ENTRYPOINT ["apache2ctl"]
 CMD ["-DFOREGROUND"]
 LABEL org.opencontainers.image.title="php-apache" \
+      org.opencontainers.image.description="php-apache container image" \
       org.opencontainers.image.version="8.3" \
       org.opencontainers.image.vendor="PHP/Apache" \
       evergreen.image.tier="3" \

@@ -32,6 +32,7 @@ ENTRYPOINT ["/app/jellyfin"]
 EXPOSE 8096
 
 LABEL org.opencontainers.image.title="jellyfin" \
+      org.opencontainers.image.description="Jellyfin - free software media system" \
       org.opencontainers.image.version="10.10.0" \
       org.opencontainers.image.vendor="Jellyfin" \
       org.opencontainers.image.source="https://github.com/jellyfin/jellyfin" \

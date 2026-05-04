@@ -26,6 +26,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
 ENTRYPOINT ["python3", "-m", "firefly_iii"]
 LABEL org.opencontainers.image.title="firefly-iii-importer" \
+      org.opencontainers.image.description="firefly-iii-importer container image" \
       org.opencontainers.image.version="1.6.0" \
       org.opencontainers.image.vendor="Firefly III" \
       org.opencontainers.image.source="https://github.com/firefly-iii/firefly-iii" \

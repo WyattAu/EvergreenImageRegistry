@@ -31,6 +31,7 @@ EXPOSE 7700
 HEALTHCHECK NONE
 ENTRYPOINT ["/meilisearch"]
 LABEL org.opencontainers.image.title="meilisearch" \
+      org.opencontainers.image.description="Meilisearch - fast, relevant, and typo-tolerant search engine" \
       org.opencontainers.image.version="1.42.1" \
       org.opencontainers.image.vendor="Meilisearch" \
       evergreen.image.tier="1" \

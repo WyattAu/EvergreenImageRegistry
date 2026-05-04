@@ -23,6 +23,7 @@ EXPOSE 34400
 HEALTHCHECK NONE
 ENTRYPOINT ["/xteve"]
 LABEL org.opencontainers.image.title="xteve" \
+      org.opencontainers.image.description="xteve container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="xteve" \
       org.opencontainers.image.source="https://github.com/xteve-project/xTeVe" \

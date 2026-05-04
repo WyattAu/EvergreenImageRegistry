@@ -25,6 +25,7 @@ EXPOSE 9876
 HEALTHCHECK NONE
 ENTRYPOINT ["/resticbrowser"]
 LABEL org.opencontainers.image.title="resticbrowser" \
+      org.opencontainers.image.description="resticbrowser container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="ResticBrowser" \
       org.opencontainers.image.source="https://github.com/emuell/resticbrowser" \

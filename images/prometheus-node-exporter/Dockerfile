@@ -27,6 +27,7 @@ EXPOSE 9100
 HEALTHCHECK NONE
 ENTRYPOINT ["/node_exporter"]
 LABEL org.opencontainers.image.title="prometheus-node-exporter" \
+      org.opencontainers.image.description="Node Exporter - hardware and OS metrics exporter for Prometheus" \
       org.opencontainers.image.version="1.8.0" \
       org.opencontainers.image.vendor="Prometheus" \
       evergreen.image.tier="1" \

@@ -26,3 +26,4 @@ LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 HEALTHCHECK NONE
+LABEL org.opencontainers.image.description="wolfi-gcc container image"

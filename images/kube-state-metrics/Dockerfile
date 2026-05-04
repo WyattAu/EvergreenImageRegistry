@@ -27,6 +27,7 @@ EXPOSE 8080
 HEALTHCHECK NONE
 ENTRYPOINT ["/kube-state-metrics"]
 LABEL org.opencontainers.image.title="kube-state-metrics" \
+      org.opencontainers.image.description="Kube-state-metrics - metrics about Kubernetes objects" \
       org.opencontainers.image.version="2.18.0" \
       org.opencontainers.image.vendor="Kubernetes" \
       evergreen.image.tier="1" \

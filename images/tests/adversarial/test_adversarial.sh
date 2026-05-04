@@ -153,7 +153,8 @@ test_package_managers() {
 test_network_exfiltration() {
     echo ""
     echo "--- Network Exfiltration Tests ---"
-    local net_container="advtest-net-$(date +%s)-$$"
+    local net_container
+    net_container="advtest-net-$(date +%s)-$$"
     if docker run -d --network=none --name "$net_container" "$IMAGE" >/dev/null 2>&1; then
         local waited=0
         local running=false
@@ -209,7 +210,8 @@ test_filesystem_integrity() {
     echo ""
     echo "--- Filesystem Integrity Tests ---"
 
-    local ro_container="advtest-ro-$(date +%s)-$$"
+    local ro_container
+    ro_container="advtest-ro-$(date +%s)-$$"
     if docker run --rm --read-only "$IMAGE" true >/dev/null 2>&1; then
         record "FI-001" "PASS" "Root filesystem accepts --read-only flag"
     else

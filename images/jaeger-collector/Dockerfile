@@ -30,6 +30,7 @@ EXPOSE 14267
 HEALTHCHECK NONE
 ENTRYPOINT ["/jaeger-collector"]
 LABEL org.opencontainers.image.title="jaeger-collector" \
+      org.opencontainers.image.description="jaeger-collector container image" \
       org.opencontainers.image.version="1.55.0" \
       org.opencontainers.image.vendor="JaegerTracing" \
       evergreen.image.tier="1" \

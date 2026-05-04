@@ -22,6 +22,7 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:80/ || exit 1
 ENTRYPOINT ["php"]
 LABEL org.opencontainers.image.title="lychee" \
+      org.opencontainers.image.description="lychee container image" \
       org.opencontainers.image.version="4.17.0" \
       org.opencontainers.image.vendor="LycheeOrg/Lychee" \
       org.opencontainers.image.source="https://github.com/LycheeOrg/Lychee/releases" \

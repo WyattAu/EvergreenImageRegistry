@@ -19,6 +19,7 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:3000/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="cryptpad" \
+      org.opencontainers.image.description="cryptpad container image" \
       org.opencontainers.image.version="2024.5.1" \
       org.opencontainers.image.vendor="CryptPad" \
       org.opencontainers.image.source="https://github.com/cryptpad/cryptpad" \

@@ -27,6 +27,7 @@ EXPOSE 9104
 HEALTHCHECK NONE
 ENTRYPOINT ["/mysqld_exporter"]
 LABEL org.opencontainers.image.title="mysql-exporter" \
+      org.opencontainers.image.description="MySQL Exporter - Prometheus exporter for MySQL server" \
       org.opencontainers.image.version="0.15.0" \
       org.opencontainers.image.vendor="Prometheus" \
       evergreen.image.tier="1" \

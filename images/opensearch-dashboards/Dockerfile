@@ -26,6 +26,7 @@ EXPOSE 5601
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5601/ || exit 1
 ENTRYPOINT ["opensearch-dashboards"]
 LABEL org.opencontainers.image.title="opensearch-dashboards" \
+      org.opencontainers.image.description="opensearch-dashboards container image" \
       org.opencontainers.image.version="2.14.0" \
       org.opencontainers.image.vendor="OpenSearch" \
       evergreen.image.tier="2" \

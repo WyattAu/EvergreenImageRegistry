@@ -44,6 +44,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl 
 ENTRYPOINT ["bench"]
 CMD ["worker", "--queue", "default"]
 LABEL org.opencontainers.image.title="erpnext-worker" \
+      org.opencontainers.image.description="erpnext-worker container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Frappe" \
       org.opencontainers.image.source="https://github.com/frappe/erpnext" \

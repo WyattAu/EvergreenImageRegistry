@@ -31,6 +31,7 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:3000/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="browserless" \
+      org.opencontainers.image.description="browserless container image" \
       org.opencontainers.image.version="1.63.0" \
       org.opencontainers.image.vendor="browserless/browserless" \
       org.opencontainers.image.source="https://github.com/browserless/browserless/releases" \

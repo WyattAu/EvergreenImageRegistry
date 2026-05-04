@@ -32,6 +32,7 @@ EXPOSE 80 443 8080
 HEALTHCHECK NONE
 ENTRYPOINT ["/traefik"]
 LABEL org.opencontainers.image.title="traefik" \
+      org.opencontainers.image.description="Traefik - modern HTTP reverse proxy and load balancer" \
       org.opencontainers.image.version="3.6.13" \
       org.opencontainers.image.vendor="Traefik Labs" \
       evergreen.image.tier="1" \

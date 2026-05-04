@@ -27,6 +27,7 @@ EXPOSE 5432
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5432/ || exit 1
 ENTRYPOINT ["postgres"]
 LABEL org.opencontainers.image.title="timescaledb" \
+      org.opencontainers.image.description="timescaledb container image" \
       org.opencontainers.image.version="2.15.0" \
       org.opencontainers.image.vendor="Timescale" \
       evergreen.image.tier="2" \

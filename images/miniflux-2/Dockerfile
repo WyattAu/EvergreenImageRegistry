@@ -27,6 +27,7 @@ EXPOSE 8080
 HEALTHCHECK NONE
 ENTRYPOINT ["/miniflux"]
 LABEL org.opencontainers.image.title="miniflux-2" \
+      org.opencontainers.image.description="miniflux-2 container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="miniflux/v2" \
       org.opencontainers.image.source="https://github.com/miniflux/v2" \

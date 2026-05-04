@@ -452,6 +452,52 @@ jobs:
           overwrite: true
           if-no-files-found: ignore
 
+      - name: Install syft
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+          syft version
+
+      - name: Generate build-time SBOM
+        continue-on-error: true
+        run: |
+          mkdir -p /tmp/sbom
+          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
+          COUNT=0
+          for image in "${IMAGE_LIST[@]}"; do
+            [ -z "$image" ] && continue
+            SAFE="${image//\//-}"
+            TAR="/tmp/images/${SAFE}.tar"
+            [ ! -f "$TAR" ] && continue
+
+            OUT_DIR="/tmp/sbom/${image}"
+            mkdir -p "$OUT_DIR"
+
+            if syft "docker-archive:${TAR}" -o spdx-json="${OUT_DIR}/sbom-buildtime.spdx.json" --quiet 2>/dev/null; then
+              echo "Generated SPDX SBOM for ${image}"
+            else
+              echo "::warning::syft SPDX generation failed for ${image}"
+            fi
+
+            if syft "docker-archive:${TAR}" -o cyclonedx-json="${OUT_DIR}/sbom-buildtime.cdx.json" --quiet 2>/dev/null; then
+              echo "Generated CycloneDX SBOM for ${image}"
+            else
+              echo "::warning::syft CycloneDX generation failed for ${image}"
+            fi
+
+            COUNT=$((COUNT + 1))
+          done
+          echo "Generated SBOMs for ${COUNT} images"
+
+      - name: Upload build-time SBOMs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-buildtime-batch-${{ matrix.batch }}
+          path: /tmp/sbom/
+          retention-days: 30
+          if-no-files-found: warn
+          overwrite: true
+
   # ===========================================================================
   # STAGE 4: HEALTH CHECK - Post-build image validation
   # ===========================================================================

@@ -5,11 +5,11 @@
 # Prowlarr is a .NET application; uses wolfi base for glibc/runtime.
 # =============================================================================
 
-ARG VERSION=latest
+ARG VERSION=1.27.0
 ARG BUILD_DATE
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-ARG VERSION=latest
+ARG VERSION=1.27.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
@@ -31,7 +31,7 @@ ENTRYPOINT ["/app/Prowlarr"]
 EXPOSE 9696
 
 LABEL org.opencontainers.image.title="prowlarr" \
-      org.opencontainers.image.version="latest" \
+      org.opencontainers.image.version="1.27.0" \
       org.opencontainers.image.vendor="Prowlarr" \
       org.opencontainers.image.source="https://github.com/Prowlarr/Prowlarr" \
       evergreen.image.tier="2" \

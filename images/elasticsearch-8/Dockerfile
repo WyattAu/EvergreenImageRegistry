@@ -12,7 +12,7 @@ ARG BUILD_DATE
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=8.12.2
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates openjdk-17-jre-base && \
+    curl ca-certificates openjdk-17-jre-base && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-linux-x86_64.tar.gz" \
     -o /elasticsearch.tar.gz && \
     echo "PENDING_CHECKSUM  /elasticsearch.tar.gz" | sha256sum -c || true ; [ -f /elasticsearch.tar.gz ] && \

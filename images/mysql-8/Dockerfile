@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     wget -qO- "https://dev.mysql.com/get/mysql-apt-config_0.8.33-1_all.deb" > /tmp/mysql-apt.deb && \
     dpkg -i /tmp/mysql-apt.deb || true && \
     apt-get update && apt-get install -y --no-install-recommends \
-    mysql-server && \
+    mysql-server && rm -rf /var/lib/apt/lists/* && \
     mkdir -p /var/lib/mysql-src /var/run/mysqld /app 2>/dev/null || true && \
     test -f /var/lib/mysql || { echo '#!/bin/sh' > /var/lib/mysql/placeholder && echo 'echo "mysql-8 v${VERSION} placeholder"' >> /var/lib/mysql/placeholder && echo 'exec sleep infinity' >> /var/lib/mysql/placeholder && chmod +x /var/lib/mysql ; } ; \
     test -f /var/run/mysqld || { echo '#!/bin/sh' > /var/run/mysqld && echo 'echo "mysql-8 v${VERSION} placeholder"' >> /var/run/mysqld && echo 'exec sleep infinity' >> /var/run/mysqld && chmod +x /var/run/mysqld ; } test -f /var/run/mysqld || { echo '#!/bin/sh' > /var/run/mysqld && echo 'echo "mysql-8 v${VERSION} placeholder"' >> /var/run/mysqld && echo 'exec sleep infinity' >> /var/run/mysqld && chmod +x /var/run/mysqld ; } || true

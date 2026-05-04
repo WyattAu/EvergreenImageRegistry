@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=8.4.0
 
 FROM pingcap/tidb:${VERSION} AS upstream
 

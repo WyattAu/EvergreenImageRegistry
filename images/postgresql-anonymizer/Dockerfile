@@ -12,7 +12,7 @@ FROM python@sha256:46cb7cc2877e60fbd5e21a9ae6115c30ace7a077b9f8772da879e4590c18c
 ARG GITHUB_TOKEN
 ARG VERSION=1.2.0
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    postgresql-server-dev-all postgresql-dev && \
+    postgresql-server-dev-all postgresql-dev && rm -rf /var/lib/apt/lists/* && \
     pip install --no-cache-dir --prefix=/install \
     postgresql-anonymizer=="${VERSION}" && \
     find /install -type f -name "*.pyc" -delete && \

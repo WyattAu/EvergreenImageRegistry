@@ -13,7 +13,7 @@ ENV PIHOLE_INSTALL=noninteractive
 ENV FTLCONF_webserver_port=8080
 ENV DNSMASQ_USER=pihole
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl wget sudo git iproute2 iptables procps ca-certificates && \
+    curl wget git iproute2 iptables procps ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://install.pi-hole.net -o /tmp/install.sh && bash /tmp/install.sh --unattended || true && rm -f /tmp/install.sh && \
     find /usr -type f -executable -name "pihole*" -exec strip --strip-all {} \; 2>/dev/null || true && \

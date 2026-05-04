@@ -12,7 +12,7 @@ FROM python@sha256:46cb7cc2877e60fbd5e21a9ae6115c30ace7a077b9f8772da879e4590c18c
 ARG GITHUB_TOKEN
 ARG VERSION=10.0.0
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential postgresql-dev curl && \
+    build-essential postgresql-dev curl && rm -rf /var/lib/apt/lists/* && \
     pip install --no-cache-dir --prefix=/install \
     redash=="${VERSION}" && \
     find /install -type f -name "*.pyc" -delete && \

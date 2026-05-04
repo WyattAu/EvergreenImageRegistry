@@ -714,3 +714,27 @@ Verified safe updates via GitHub API with asset naming validation:
 - Completed phases 28-34 moved to "Achieved" summary table
 - Remaining work re-prioritized as Phases 35-40
 - "Not Recommended" section documents diminishing-returns items
+
+---
+
+## [23.0.0] - 2026-05-04
+
+### Phase 39: C/C++ Multi-Arch via QEMU
+
+- Added ARG TARGETARCH to 21 C/C++ images (cmake, make, gcc-based)
+- 14 re-wrap-only images skipped (jellyfin, lidarr, onlyoffice, powerdns, etc.)
+
+### Phase 40: Python Multi-Arch
+
+- Audited 158 Python images for arm64 compatibility
+- 115 images categorized as SAFE or LIKELY SAFE (pure Python / known arm64 wheels)
+- Added ARG TARGETARCH to all 115 compatible images
+- 11 NEEDS INVESTIGATION skipped (vllm, deepspeed, comfyui, etc.)
+- 9 REWRAP images skipped (depend on upstream multi-arch)
+- 4 base/utility images skipped
+
+### Phase 41: Multi-Arch Matrix Expansion
+
+- build-multiarch matrix: 195 → 458 images (+263)
+- Multi-arch coverage: 32.2% → 45.8% of total images
+- All 263 new images verified to have ARG TARGETARCH in Dockerfile

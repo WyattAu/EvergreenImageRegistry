@@ -1,6 +1,6 @@
-use std::path::Path;
-use anyhow::{Result, Context};
+use anyhow::{Context, Result};
 use regex::Regex;
+use std::path::Path;
 use tracing::{info, warn};
 
 use crate::manifest::*;
@@ -98,15 +98,19 @@ pub fn dockerfile_to_manifest(dockerfile_path: &Path, image_name: &str) -> Resul
             version: version.clone(),
             description,
             vendor,
-            source_url: github_repo.clone().map(|r| format!("https://github.com/{}", r)),
+            source_url: github_repo
+                .clone()
+                .map(|r| format!("https://github.com/{}", r)),
             category: Some(category),
         },
         source: Source {
-            url: download_url.unwrap_or_else(|| format!("https://example.com/{}/{}.tar.gz", image_name, version)),
+            url: download_url.unwrap_or_else(|| {
+                format!("https://example.com/{}/{}.tar.gz", image_name, version)
+            }),
             fallback_urls: vec![],
             checksum: Checksum {
                 algorithm: "sha256".to_string(),
-                expected: String::new(),  // Needs to be populated
+                expected: String::new(), // Needs to be populated
                 source: String::new(),
             },
             strategy: DownloadStrategy::Curl,
@@ -176,14 +180,12 @@ fn extract_tier(content: &str) -> u8 {
 
 fn extract_github_repo_from_dockerfile(content: &str) -> Option<String> {
     let re = Regex::new(r#"github\.com/([^/""\s]+/[^/""\s]+)"#).unwrap();
-    re.captures(content)
-        .and_then(|c| c.get(1))
-        .map(|m| {
-            m.as_str()
-                .trim_end_matches(".git")
-                .trim_end_matches('/')
-                .to_string()
-        })
+    re.captures(content).and_then(|c| c.get(1)).map(|m| {
+        m.as_str()
+            .trim_end_matches(".git")
+            .trim_end_matches('/')
+            .to_string()
+    })
 }
 
 fn extract_base_image(content: &str) -> String {
@@ -249,7 +251,12 @@ fn extract_build_commands(content: &str) -> Vec<String> {
 
     for line in content.lines() {
         let trimmed = line.trim();
-        if trimmed.starts_with("FROM") && (trimmed.contains("builder") || trimmed.contains("debian") || trimmed.contains("golang") || trimmed.contains("rust")) {
+        if trimmed.starts_with("FROM")
+            && (trimmed.contains("builder")
+                || trimmed.contains("debian")
+                || trimmed.contains("golang")
+                || trimmed.contains("rust"))
+        {
             // Builder stage
         }
     }

@@ -1,8 +1,8 @@
+use crate::generate::DockerfileGenerator;
+use crate::manifest::Manifest;
+use anyhow::{Context, Result};
 use std::path::Path;
 use std::process::Command;
-use anyhow::{Result, Context};
-use crate::manifest::Manifest;
-use crate::generate::DockerfileGenerator;
 
 pub fn cmd_bump(image: &str, new_version: &str, dry_run: bool) -> Result<()> {
     let image_dir = Path::new("images").join(image);
@@ -29,7 +29,14 @@ pub fn cmd_bump(image: &str, new_version: &str, dry_run: bool) -> Result<()> {
     println!("  New version:     {}", new_version);
 
     if has_manifest {
-        bump_with_manifest(&image_dir, &manifest_path, &dockerfile_path, &old_version, new_version, dry_run)?;
+        bump_with_manifest(
+            &image_dir,
+            &manifest_path,
+            &dockerfile_path,
+            &old_version,
+            new_version,
+            dry_run,
+        )?;
     } else {
         bump_dockerfile_only(&dockerfile_path, &old_version, new_version, dry_run)?;
     }
@@ -38,7 +45,10 @@ pub fn cmd_bump(image: &str, new_version: &str, dry_run: bool) -> Result<()> {
         bump_checksums_file(&checksums_path, &old_version, new_version, dry_run)?;
     }
 
-    println!("\nUpdated {} from {} to {}", image, old_version, new_version);
+    println!(
+        "\nUpdated {} from {} to {}",
+        image, old_version, new_version
+    );
 
     Ok(())
 }
@@ -79,8 +89,8 @@ fn bump_with_manifest(
     let gen = DockerfileGenerator::new(manifest.clone());
     let new_dockerfile = gen.generate()?;
 
-    let new_manifest_content = toml::to_string_pretty(&manifest)
-        .context("Failed to serialize manifest")?;
+    let new_manifest_content =
+        toml::to_string_pretty(&manifest).context("Failed to serialize manifest")?;
 
     if dry_run {
         println!("\n--- Manifest changes ---");

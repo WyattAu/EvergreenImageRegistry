@@ -1,7 +1,7 @@
+use anyhow::{Context, Result};
+use serde::Deserialize;
 use std::path::Path;
 use std::time::Duration;
-use anyhow::{Result, Context};
-use serde::Deserialize;
 
 pub async fn cmd_outdated(images_dir: &str, check_all: bool) -> Result<()> {
     let dir = Path::new(images_dir);
@@ -13,7 +13,10 @@ pub async fn cmd_outdated(images_dir: &str, check_all: bool) -> Result<()> {
         .user_agent("evergreenctl/1.0.0")
         .build()?;
 
-    println!("Checked: {}", chrono::Local::now().format("%Y-%m-%d %H:%M:%S UTC%:z"));
+    println!(
+        "Checked: {}",
+        chrono::Local::now().format("%Y-%m-%d %H:%M:%S UTC%:z")
+    );
     println!();
 
     let mut entries: Vec<OutdatedEntry> = Vec::new();
@@ -26,7 +29,11 @@ pub async fn cmd_outdated(images_dir: &str, check_all: bool) -> Result<()> {
             continue;
         }
 
-        let name = path.file_name().unwrap_or_default().to_string_lossy().to_string();
+        let name = path
+            .file_name()
+            .unwrap_or_default()
+            .to_string_lossy()
+            .to_string();
         let manifest_path = path.join("manifest.toml");
 
         if !manifest_path.exists() && !check_all {
@@ -95,11 +102,17 @@ pub async fn cmd_outdated(images_dir: &str, check_all: bool) -> Result<()> {
         }
     }
 
-    println!("{:<30} {:<15} {:<15} {:<12}", "IMAGE", "CURRENT", "LATEST", "STATUS");
+    println!(
+        "{:<30} {:<15} {:<15} {:<12}",
+        "IMAGE", "CURRENT", "LATEST", "STATUS"
+    );
     println!("{}", "-".repeat(72));
 
     for e in &entries {
-        println!("{:<30} {:<15} {:<15} {:<12}", e.name, e.current, e.latest, e.status);
+        println!(
+            "{:<30} {:<15} {:<15} {:<12}",
+            e.name, e.current, e.latest, e.status
+        );
     }
 
     let total = entries.len();
@@ -107,8 +120,10 @@ pub async fn cmd_outdated(images_dir: &str, check_all: bool) -> Result<()> {
     let outdated = entries.iter().filter(|e| e.status == "OUTDATED").count();
     let errors = entries.iter().filter(|e| e.status == "ERROR").count();
 
-    println!("\nSummary: {} images checked, {} up-to-date, {} outdated, {} errors",
-        total, ok, outdated, errors);
+    println!(
+        "\nSummary: {} images checked, {} up-to-date, {} outdated, {} errors",
+        total, ok, outdated, errors
+    );
 
     if !has_github && !check_all {
         println!("Hint: use --all to check images without GitHub repos");

@@ -1,6 +1,6 @@
-use std::path::Path;
-use anyhow::{Result, Context};
+use anyhow::{Context, Result};
 use regex::Regex;
+use std::path::Path;
 
 #[derive(Debug, Clone, PartialEq)]
 enum Category {
@@ -33,7 +33,11 @@ pub fn cmd_verify_all(images_dir: &str) -> Result<i32> {
             continue;
         }
 
-        let name = path.file_name().unwrap_or_default().to_string_lossy().to_string();
+        let name = path
+            .file_name()
+            .unwrap_or_default()
+            .to_string_lossy()
+            .to_string();
         let dockerfile = path.join("Dockerfile");
         let manifest_path = path.join("manifest.toml");
 
@@ -65,7 +69,10 @@ pub fn cmd_verify_all(images_dir: &str) -> Result<i32> {
         });
     }
 
-    println!("{:<30} {:<20} {:<12} {:<10}", "IMAGE", "TYPE", "CHECKSUM", "STATUS");
+    println!(
+        "{:<30} {:<20} {:<12} {:<10}",
+        "IMAGE", "TYPE", "CHECKSUM", "STATUS"
+    );
     println!("{}", "-".repeat(72));
 
     for e in &entries {
@@ -76,14 +83,29 @@ pub fn cmd_verify_all(images_dir: &str) -> Result<i32> {
             Category::BaseImage => "base-image",
         };
         let checksum_str = if e.has_checksum { &e.algo } else { "-" };
-        println!("{:<30} {:<20} {:<12} {:<10}", e.name, type_str, checksum_str, e.status);
+        println!(
+            "{:<30} {:<20} {:<12} {:<10}",
+            e.name, type_str, checksum_str, e.status
+        );
     }
 
     let total = entries.len();
-    let direct = entries.iter().filter(|e| e.category == Category::DirectDownload).count();
-    let pkg_mgr = entries.iter().filter(|e| e.category == Category::PackageManager).count();
-    let copy_from = entries.iter().filter(|e| e.category == Category::CopyFrom).count();
-    let base = entries.iter().filter(|e| e.category == Category::BaseImage).count();
+    let direct = entries
+        .iter()
+        .filter(|e| e.category == Category::DirectDownload)
+        .count();
+    let pkg_mgr = entries
+        .iter()
+        .filter(|e| e.category == Category::PackageManager)
+        .count();
+    let copy_from = entries
+        .iter()
+        .filter(|e| e.category == Category::CopyFrom)
+        .count();
+    let base = entries
+        .iter()
+        .filter(|e| e.category == Category::BaseImage)
+        .count();
     let verified = entries.iter().filter(|e| e.status == "VERIFIED").count();
     let missing = entries.iter().filter(|e| e.status == "MISSING").count();
 
@@ -110,8 +132,10 @@ fn classify(content: &str) -> Category {
         return Category::CopyFrom;
     }
 
-    if (content.contains("apk add") || content.contains("apt-get install")
-        || content.contains("pip install") || content.contains("npm install"))
+    if (content.contains("apk add")
+        || content.contains("apt-get install")
+        || content.contains("pip install")
+        || content.contains("npm install"))
         && !has_direct_download(content)
     {
         return Category::PackageManager;

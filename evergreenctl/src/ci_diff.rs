@@ -1,6 +1,6 @@
+use anyhow::{Context, Result};
 use std::path::Path;
 use std::process::Command;
-use anyhow::{Result, Context};
 
 pub fn cmd_ci_diff(base_ref: &str) -> Result<()> {
     let output = Command::new("git")
@@ -20,7 +20,10 @@ pub fn cmd_ci_diff(base_ref: &str) -> Result<()> {
         .collect();
 
     if changed_files.is_empty() {
-        println!("No changes detected in images/ directory since {}", base_ref);
+        println!(
+            "No changes detected in images/ directory since {}",
+            base_ref
+        );
         return Ok(());
     }
 

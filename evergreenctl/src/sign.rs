@@ -16,20 +16,22 @@ pub fn cmd_sign(image_dir: &str) -> Result<()> {
             manifest.build.base.image.clone(),
         )
     } else if dockerfile_path.exists() {
-        let content = std::fs::read_to_string(&dockerfile_path)
-            .with_context(|| format!("Failed to read Dockerfile from {}", dockerfile_path.display()))?;
+        let content = std::fs::read_to_string(&dockerfile_path).with_context(|| {
+            format!(
+                "Failed to read Dockerfile from {}",
+                dockerfile_path.display()
+            )
+        })?;
         let name = dir
             .file_name()
             .map(|n| n.to_string_lossy().to_string())
             .unwrap_or_else(|| "unknown".to_string());
-        let version = extract_version_from_dockerfile(&content).unwrap_or_else(|| "latest".to_string());
+        let version =
+            extract_version_from_dockerfile(&content).unwrap_or_else(|| "latest".to_string());
         let base = extract_base_from_dockerfile(&content).unwrap_or_else(|| "unknown".to_string());
         (name, version, base)
     } else {
-        anyhow::bail!(
-            "No manifest.toml or Dockerfile found in {}",
-            dir.display()
-        );
+        anyhow::bail!("No manifest.toml or Dockerfile found in {}", dir.display());
     };
 
     let registry = "ghcr.io/evergreen";
@@ -39,8 +41,14 @@ pub fn cmd_sign(image_dir: &str) -> Result<()> {
     println!();
     println!("# 1. Sign the image (attaches signature to the image)");
     println!("cosign sign --yes {} \\", full_ref);
-    println!("  --annotation \"org.opencontainers.image.title={}\" \\", name);
-    println!("  --annotation \"org.opencontainers.image.version={}\" \\", version);
+    println!(
+        "  --annotation \"org.opencontainers.image.title={}\" \\",
+        name
+    );
+    println!(
+        "  --annotation \"org.opencontainers.image.version={}\" \\",
+        version
+    );
     println!("  --annotation \"org.opencontainers.image.source=\" \\");
     println!("  --annotation \"evergreen.image.tier=\"");
     println!();
@@ -50,7 +58,10 @@ pub fn cmd_sign(image_dir: &str) -> Result<()> {
     println!();
 
     println!("# 3. Generate and attach SBOM using syft");
-    println!("syft {} -o spdx-json > sbom-{}-{}.spdx.json", full_ref, name, version);
+    println!(
+        "syft {} -o spdx-json > sbom-{}-{}.spdx.json",
+        full_ref, name, version
+    );
     println!(
         "cosign attach sbom --sbom sbom-{}-{}.spdx.json {}",
         name, version, full_ref
@@ -82,7 +93,11 @@ fn extract_base_from_dockerfile(content: &str) -> Option<String> {
     for line in content.lines() {
         let line = line.trim();
         if line.starts_with("FROM ") && !line.contains(" AS ") {
-            let base = line.strip_prefix("FROM ")?.split_whitespace().next()?.to_string();
+            let base = line
+                .strip_prefix("FROM ")?
+                .split_whitespace()
+                .next()?
+                .to_string();
             return Some(base);
         }
     }

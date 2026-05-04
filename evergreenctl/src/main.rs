@@ -111,7 +111,11 @@ async fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Discover { image, repo, version } => {
+        Commands::Discover {
+            image,
+            repo,
+            version,
+        } => {
             let client = reqwest::Client::builder()
                 .user_agent("evergreenctl/0.1.0")
                 .build()?;
@@ -147,7 +151,9 @@ async fn main() -> anyhow::Result<()> {
                 // Try to discover from existing Dockerfile
                 let dockerfile = Path::new("images").join(&image).join("Dockerfile");
                 if dockerfile.exists() {
-                    if let Ok(manifest) = evergreenctl::migrate::dockerfile_to_manifest(&dockerfile, &image) {
+                    if let Ok(manifest) =
+                        evergreenctl::migrate::dockerfile_to_manifest(&dockerfile, &image)
+                    {
                         println!("Extracted manifest for {}:", image);
                         println!("  Version: {}", manifest.image.version);
                         println!("  Type: {:?}", manifest.image.image_type);
@@ -156,7 +162,9 @@ async fn main() -> anyhow::Result<()> {
                         println!("  Entrypoint: {:?}", manifest.runtime.entrypoint);
 
                         // Probe the URL
-                        let probe = evergreenctl::discover::probe_url(&client, &manifest.source.url).await?;
+                        let probe =
+                            evergreenctl::discover::probe_url(&client, &manifest.source.url)
+                                .await?;
                         println!("  URL accessible: {}", probe.accessible);
                         if let Some(len) = probe.content_length {
                             println!("  Content-Length: {} bytes", len);
@@ -175,7 +183,10 @@ async fn main() -> anyhow::Result<()> {
                 println!("Manifest: {}", path.display());
                 println!("  Name: {}", manifest.image.name);
                 println!("  Version: {}", manifest.image.version);
-                println!("  Checksum: {} {}", manifest.source.checksum.algorithm, manifest.source.checksum.expected);
+                println!(
+                    "  Checksum: {} {}",
+                    manifest.source.checksum.algorithm, manifest.source.checksum.expected
+                );
                 if manifest.source.checksum.expected.is_empty() {
                     println!("  WARNING: No checksum configured");
                 }
@@ -244,7 +255,10 @@ async fn main() -> anyhow::Result<()> {
                                 } else {
                                     println!("  ~ {} ({} warnings)", r.name, r.issues.len());
                                     for issue in &r.issues {
-                                        println!("    - [{}] {} (line {:?})", issue.severity, issue.code, issue.line);
+                                        println!(
+                                            "    - [{}] {} (line {:?})",
+                                            issue.severity, issue.code, issue.line
+                                        );
                                     }
                                 }
                             }
@@ -257,7 +271,10 @@ async fn main() -> anyhow::Result<()> {
                             evergreenctl::audit::ImageStatus::Error => {
                                 println!("  ✗ {} (error)", r.name);
                                 for issue in &r.issues {
-                                    println!("    - [{}] {} (line {:?})", issue.severity, issue.code, issue.line);
+                                    println!(
+                                        "    - [{}] {} (line {:?})",
+                                        issue.severity, issue.code, issue.line
+                                    );
                                 }
                             }
                         }
@@ -309,7 +326,10 @@ async fn main() -> anyhow::Result<()> {
                 }
             }
 
-            println!("\nValidation complete: {} valid, {} invalid, {} missing manifests", valid, invalid, missing);
+            println!(
+                "\nValidation complete: {} valid, {} invalid, {} missing manifests",
+                valid, invalid, missing
+            );
         }
 
         Commands::VerifyAll { path } => {
@@ -323,7 +343,11 @@ async fn main() -> anyhow::Result<()> {
             evergreenctl::outdated::cmd_outdated(&path, all).await?;
         }
 
-        Commands::Bump { image, new_version, dry_run } => {
+        Commands::Bump {
+            image,
+            new_version,
+            dry_run,
+        } => {
             evergreenctl::bump::cmd_bump(&image, &new_version, dry_run)?;
         }
 

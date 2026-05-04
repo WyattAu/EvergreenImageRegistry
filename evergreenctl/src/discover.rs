@@ -173,10 +173,7 @@ pub async fn discover_with_fallbacks(
             });
         }
     }
-    anyhow::bail!(
-        "No working URL found among {} patterns",
-        url_patterns.len()
-    )
+    anyhow::bail!("No working URL found among {} patterns", url_patterns.len())
 }
 
 pub fn extract_github_repo(url: &str) -> Option<(String, String)> {
@@ -213,9 +210,6 @@ mod tests {
             extract_github_repo("https://github.com/prometheus/node_exporter.git"),
             Some(("prometheus".to_string(), "node_exporter".to_string()))
         );
-        assert_eq!(
-            extract_github_repo("https://example.com/foo"),
-            None
-        );
+        assert_eq!(extract_github_repo("https://example.com/foo"), None);
     }
 }

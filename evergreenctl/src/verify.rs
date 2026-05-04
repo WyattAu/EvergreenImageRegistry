@@ -1,5 +1,5 @@
-use anyhow::{Result, Context};
-use sha2::{Sha256, Sha512, Digest};
+use anyhow::{Context, Result};
+use sha2::{Digest, Sha256, Sha512};
 use tracing::info;
 
 /// Compute SHA-256 of a file
@@ -30,7 +30,11 @@ pub fn compute_checksum(path: &std::path::Path, algorithm: &str) -> Result<Strin
 }
 
 /// Verify a file's checksum against an expected value
-pub fn verify_checksum(path: &std::path::Path, algorithm: &str, expected: &str) -> Result<VerifyResult> {
+pub fn verify_checksum(
+    path: &std::path::Path,
+    algorithm: &str,
+    expected: &str,
+) -> Result<VerifyResult> {
     let computed = compute_checksum(path, algorithm)?;
 
     let computed_clean = computed.to_lowercase();
@@ -57,9 +61,18 @@ pub struct VerifyResult {
 impl std::fmt::Display for VerifyResult {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if self.matches {
-            write!(f, "✓ {} MATCHES (expected: {}...)", self.algorithm, &self.expected[..16.min(self.expected.len())])
+            write!(
+                f,
+                "✓ {} MATCHES (expected: {}...)",
+                self.algorithm,
+                &self.expected[..16.min(self.expected.len())]
+            )
         } else {
-            write!(f, "✗ {} MISMATCH\n  expected: {}\n  computed: {}", self.algorithm, self.expected, self.computed)
+            write!(
+                f,
+                "✗ {} MISMATCH\n  expected: {}\n  computed: {}",
+                self.algorithm, self.expected, self.computed
+            )
         }
     }
 }
@@ -73,7 +86,7 @@ pub async fn download_and_verify(
     expected: &str,
 ) -> Result<VerifyResult> {
     info!("Downloading: {}", url);
-    
+
     let resp = client
         .get(url)
         .header("User-Agent", "evergreenctl/0.1.0")
@@ -97,7 +110,7 @@ pub async fn download_and_verify(
     info!("Downloaded {} bytes to {}", bytes.len(), dest.display());
 
     let result = verify_checksum(dest, algorithm, expected)?;
-    
+
     if !result.matches {
         let _ = std::fs::remove_file(dest);
     }
@@ -108,7 +121,6 @@ pub async fn download_and_verify(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::io::Write;
 
     #[test]
     fn test_sha256_empty() {
@@ -117,7 +129,10 @@ mod tests {
         let path = dir.join("test_empty");
         std::fs::write(&path, "").unwrap();
         let hash = sha256_file(&path).unwrap();
-        assert_eq!(hash, "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+        assert_eq!(
+            hash,
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        );
         let _ = std::fs::remove_file(&path);
     }
 
@@ -128,7 +143,10 @@ mod tests {
         let path = dir.join("test_hello");
         std::fs::write(&path, "hello").unwrap();
         let hash = sha256_file(&path).unwrap();
-        assert_eq!(hash, "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824");
+        assert_eq!(
+            hash,
+            "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"
+        );
         let _ = std::fs::remove_file(&path);
     }
 
@@ -138,7 +156,12 @@ mod tests {
         let _ = std::fs::create_dir_all(&dir);
         let path = dir.join("test_verify");
         std::fs::write(&path, "hello").unwrap();
-        let result = verify_checksum(&path, "sha256", "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824").unwrap();
+        let result = verify_checksum(
+            &path,
+            "sha256",
+            "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+        )
+        .unwrap();
         assert!(result.matches);
         let _ = std::fs::remove_file(&path);
     }

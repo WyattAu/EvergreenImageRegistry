@@ -128,8 +128,12 @@ pub fn cmd_drift(image_dir: &str) -> Result<()> {
 
     let manifest = Manifest::from_file(&manifest_path)
         .with_context(|| format!("Failed to read manifest from {}", manifest_path.display()))?;
-    let dockerfile_content = std::fs::read_to_string(&dockerfile_path)
-        .with_context(|| format!("Failed to read Dockerfile from {}", dockerfile_path.display()))?;
+    let dockerfile_content = std::fs::read_to_string(&dockerfile_path).with_context(|| {
+        format!(
+            "Failed to read Dockerfile from {}",
+            dockerfile_path.display()
+        )
+    })?;
 
     let df = parse_dockerfile(&dockerfile_content);
     let mut drifts: Vec<String> = Vec::new();
@@ -218,7 +222,10 @@ pub fn cmd_drift(image_dir: &str) -> Result<()> {
             ));
         }
     } else if !expected_cmd.is_empty() {
-        drifts.push(format!("CMD: manifest={}, dockerfile=(not found)", expected_cmd));
+        drifts.push(format!(
+            "CMD: manifest={}, dockerfile=(not found)",
+            expected_cmd
+        ));
     }
 
     let mut expected_ports: HashSet<String> = manifest
@@ -239,21 +246,41 @@ pub fn cmd_drift(image_dir: &str) -> Result<()> {
     if !missing_ports.is_empty() {
         drifts.push(format!(
             "EXPOSE missing ports: {}",
-            missing_ports.iter().map(|s| s.as_str()).collect::<Vec<_>>().join(", ")
+            missing_ports
+                .iter()
+                .map(|s| s.as_str())
+                .collect::<Vec<_>>()
+                .join(", ")
         ));
     }
     if !extra_ports.is_empty() {
         drifts.push(format!(
             "EXPOSE extra ports: {}",
-            extra_ports.iter().map(|s| s.as_str()).collect::<Vec<_>>().join(", ")
+            extra_ports
+                .iter()
+                .map(|s| s.as_str())
+                .collect::<Vec<_>>()
+                .join(", ")
         ));
     }
 
     let expected_labels = vec![
-        ("org.opencontainers.image.title", manifest.image.name.clone()),
-        ("org.opencontainers.image.version", manifest.image.version.clone()),
-        ("org.opencontainers.image.description", manifest.image.description.clone()),
-        ("org.opencontainers.image.vendor", manifest.image.vendor.clone()),
+        (
+            "org.opencontainers.image.title",
+            manifest.image.name.clone(),
+        ),
+        (
+            "org.opencontainers.image.version",
+            manifest.image.version.clone(),
+        ),
+        (
+            "org.opencontainers.image.description",
+            manifest.image.description.clone(),
+        ),
+        (
+            "org.opencontainers.image.vendor",
+            manifest.image.vendor.clone(),
+        ),
         ("evergreen.image.tier", manifest.image.tier.to_string()),
     ];
 
@@ -267,7 +294,10 @@ pub fn cmd_drift(image_dir: &str) -> Result<()> {
                 ));
             }
         } else {
-            drifts.push(format!("LABEL {}: manifest=\"{}\", dockerfile=(missing)", key, expected_val));
+            drifts.push(format!(
+                "LABEL {}: manifest=\"{}\", dockerfile=(missing)",
+                key, expected_val
+            ));
         }
     }
 

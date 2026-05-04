@@ -1,7 +1,7 @@
+use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::path::Path;
-use anyhow::{Result, Context};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Manifest {
@@ -52,7 +52,6 @@ pub enum ImageType {
     Storage,
     Other,
 }
-
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Source {
@@ -154,9 +153,15 @@ pub struct RuntimeConfig {
     pub env: HashMap<String, String>,
 }
 
-fn default_user() -> String { "65532:65532".to_string() }
-fn default_workdir() -> String { "/app".to_string() }
-fn default_stop_signal() -> String { "SIGTERM".to_string() }
+fn default_user() -> String {
+    "65532:65532".to_string()
+}
+fn default_workdir() -> String {
+    "/app".to_string()
+}
+fn default_stop_signal() -> String {
+    "SIGTERM".to_string()
+}
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct HealthConfig {
@@ -181,7 +186,9 @@ pub struct ObservabilityConfig {
     pub metrics_path: String,
 }
 
-fn default_metrics_path() -> String { "/metrics".to_string() }
+fn default_metrics_path() -> String {
+    "/metrics".to_string()
+}
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct ComplianceConfig {
@@ -202,8 +209,7 @@ impl Manifest {
     }
 
     pub fn to_file(&self, path: &Path) -> Result<()> {
-        let content = toml::to_string_pretty(self)
-            .context("Failed to serialize manifest")?;
+        let content = toml::to_string_pretty(self).context("Failed to serialize manifest")?;
         std::fs::write(path, content)
             .with_context(|| format!("Failed to write manifest: {}", path.display()))?;
         Ok(())
@@ -229,8 +235,11 @@ impl Manifest {
             anyhow::bail!("health.type is required");
         }
         match self.health.health_type.as_str() {
-            "http" | "tcp" | "exec" | "none" => {},
-            other => anyhow::bail!("Invalid health type: {} (must be http/tcp/exec/none)", other),
+            "http" | "tcp" | "exec" | "none" => {}
+            other => anyhow::bail!(
+                "Invalid health type: {} (must be http/tcp/exec/none)",
+                other
+            ),
         }
         Ok(())
     }

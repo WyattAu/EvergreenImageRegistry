@@ -138,7 +138,10 @@ impl DockerfileGenerator {
         }
 
         if let Some(repo) = &m.source.github_repo {
-            let (owner, name) = (repo.split('/').next().unwrap_or(""), repo.split('/').nth(1).unwrap_or(""));
+            let (owner, name) = (
+                repo.split('/').next().unwrap_or(""),
+                repo.split('/').nth(1).unwrap_or(""),
+            );
             lines.push(format!(
                 "RUN git clone --depth 1 https://github.com/{}/{}.git /src 2>/dev/null || true",
                 owner, name
@@ -152,7 +155,10 @@ impl DockerfileGenerator {
         }
 
         if !m.build.build_commands.is_empty() {
-            lines.push(format!("RUN {}", m.build.build_commands.join(" && \\\n    ")));
+            lines.push(format!(
+                "RUN {}",
+                m.build.build_commands.join(" && \\\n    ")
+            ));
         } else {
             lines.push("RUN cd /src && CGO_ENABLED=0 GOOS=linux go build -ldflags=\"-s -w\" -o /app/binary . 2>/dev/null || true".to_string());
         }
@@ -216,7 +222,10 @@ impl DockerfileGenerator {
             lines.push(format!("RUN {}", cmd));
         }
 
-        lines.push(format!("RUN mkdir -p /opt/{}/bin 2>/dev/null || true", m.image.name));
+        lines.push(format!(
+            "RUN mkdir -p /opt/{}/bin 2>/dev/null || true",
+            m.image.name
+        ));
         lines.push(format!(
             "RUN test -f /opt/{}/bin/{} || {{ echo '#!/bin/sh' > /opt/{}/bin/{} && echo 'exec sleep infinity' >> /opt/{}/bin/{} && chmod +x /opt/{}/bin/{} ; }} 2>/dev/null || true",
             m.image.name, binary_name,
@@ -267,7 +276,10 @@ impl DockerfileGenerator {
             lines.push(format!("RUN {}", cmd));
         }
 
-        lines.push(format!("RUN mkdir -p /opt/{}/bin 2>/dev/null || true", m.image.name));
+        lines.push(format!(
+            "RUN mkdir -p /opt/{}/bin 2>/dev/null || true",
+            m.image.name
+        ));
         lines.push(format!(
             "RUN test -f /opt/{}/bin/{} || {{ echo '#!/bin/sh' > /opt/{}/bin/{} && echo 'exec sleep infinity' >> /opt/{}/bin/{} && chmod +x /opt/{}/bin/{} ; }} 2>/dev/null || true",
             m.image.name, binary_name,
@@ -369,13 +381,18 @@ impl DockerfileGenerator {
         }
 
         if m.build.build_commands.is_empty() {
-            lines.push(format!("RUN mkdir -p /opt/{} /app 2>/dev/null || true", m.image.name));
+            lines.push(format!(
+                "RUN mkdir -p /opt/{} /app 2>/dev/null || true",
+                m.image.name
+            ));
             if let Some(repo) = &m.source.github_repo {
                 lines.push(format!(
                     "RUN git clone --depth 1 https://github.com/{}.git /app/src 2>/dev/null || true",
                     repo
                 ));
-                lines.push("RUN cd /app/src && npm install --omit=dev 2>/dev/null || true".to_string());
+                lines.push(
+                    "RUN cd /app/src && npm install --omit=dev 2>/dev/null || true".to_string(),
+                );
             }
         }
 
@@ -399,7 +416,10 @@ impl DockerfileGenerator {
             }
         }
 
-        lines.push("RUN apk add --no-cache python3 py3-pip build-base git ca-certificates || true".to_string());
+        lines.push(
+            "RUN apk add --no-cache python3 py3-pip build-base git ca-certificates || true"
+                .to_string(),
+        );
 
         if !m.build.builder_packages.is_empty() {
             lines.push(format!(
@@ -417,7 +437,10 @@ impl DockerfileGenerator {
         }
 
         if m.build.build_commands.is_empty() {
-            lines.push(format!("RUN mkdir -p /opt/{} 2>/dev/null || true", m.image.name));
+            lines.push(format!(
+                "RUN mkdir -p /opt/{} 2>/dev/null || true",
+                m.image.name
+            ));
             if let Some(repo) = &m.source.github_repo {
                 lines.push(format!(
                     "RUN git clone --depth 1 https://github.com/{}.git /app/src 2>/dev/null || true",
@@ -539,7 +562,10 @@ impl DockerfileGenerator {
         }
 
         let binary_name = self.binary_name();
-        lines.push(format!("RUN mkdir -p /opt/{}/bin 2>/dev/null || true", m.image.name));
+        lines.push(format!(
+            "RUN mkdir -p /opt/{}/bin 2>/dev/null || true",
+            m.image.name
+        ));
         lines.push(format!(
             "RUN test -f /opt/{}/bin/{} || {{ echo '#!/bin/sh' > /opt/{}/bin/{} && echo 'exec sleep infinity' >> /opt/{}/bin/{} && chmod +x /opt/{}/bin/{} ; }} 2>/dev/null || true",
             m.image.name, binary_name,
@@ -589,10 +615,7 @@ impl DockerfileGenerator {
         ));
 
         for vol in &m.runtime.volumes {
-            lines.push(format!(
-                "RUN mkdir -p {} 2>/dev/null || true",
-                vol
-            ));
+            lines.push(format!("RUN mkdir -p {} 2>/dev/null || true", vol));
         }
 
         for artifact in &m.build.artifacts {
@@ -608,7 +631,10 @@ impl DockerfileGenerator {
         ));
 
         if !m.runtime.env.is_empty() {
-            let env_lines: Vec<String> = m.runtime.env.iter()
+            let env_lines: Vec<String> = m
+                .runtime
+                .env
+                .iter()
                 .map(|(k, v)| format!("{}={}", k, v))
                 .collect();
             lines.push(format!("ENV {}", env_lines.join(" \\\n    ")));
@@ -618,9 +644,7 @@ impl DockerfileGenerator {
         lines.push(format!("WORKDIR {}", m.runtime.workdir));
 
         if !m.runtime.ports.is_empty() {
-            let port_strs: Vec<String> = m.runtime.ports.iter()
-                .map(|p| p.to_string())
-                .collect();
+            let port_strs: Vec<String> = m.runtime.ports.iter().map(|p| p.to_string()).collect();
             lines.push(format!("EXPOSE {}", port_strs.join(" ")));
         }
 
@@ -634,15 +658,17 @@ impl DockerfileGenerator {
             }
         }
 
-        let ep_parts: Vec<String> = m.runtime.entrypoint.iter()
+        let ep_parts: Vec<String> = m
+            .runtime
+            .entrypoint
+            .iter()
             .map(|p| format!("\"{}\"", p))
             .collect();
         lines.push(format!("ENTRYPOINT [{}]", ep_parts.join(", ")));
 
         if !m.runtime.cmd.is_empty() {
-            let cmd_parts: Vec<String> = m.runtime.cmd.iter()
-                .map(|p| format!("\"{}\"", p))
-                .collect();
+            let cmd_parts: Vec<String> =
+                m.runtime.cmd.iter().map(|p| format!("\"{}\"", p)).collect();
             lines.push(format!("CMD [{}]", cmd_parts.join(", ")));
         }
 
@@ -658,12 +684,18 @@ impl DockerfileGenerator {
         let mut labels = vec![
             format!("org.opencontainers.image.title=\"{}\"", m.image.name),
             format!("org.opencontainers.image.version=\"{}\"", m.image.version),
-            format!("org.opencontainers.image.description=\"{}\"", m.image.description),
+            format!(
+                "org.opencontainers.image.description=\"{}\"",
+                m.image.description
+            ),
             format!("org.opencontainers.image.vendor=\"{}\"", m.image.vendor),
         ];
 
         if let Some(source_url) = &m.image.source_url {
-            labels.push(format!("org.opencontainers.image.source=\"{}\"", source_url));
+            labels.push(format!(
+                "org.opencontainers.image.source=\"{}\"",
+                source_url
+            ));
         }
 
         labels.push(format!("evergreen.image.tier=\"{}\"", m.image.tier));
@@ -697,7 +729,10 @@ impl DockerfileGenerator {
         labels.push(format!("evergreen.health.type=\"{}\"", health_type));
 
         if m.observability.metrics_port > 0 {
-            labels.push(format!("evergreen.metrics.port=\"{}\"", m.observability.metrics_port));
+            labels.push(format!(
+                "evergreen.metrics.port=\"{}\"",
+                m.observability.metrics_port
+            ));
         }
 
         if let Some(health_port) = m.health.port {
@@ -712,8 +747,12 @@ impl DockerfileGenerator {
     }
 
     fn extract_filename(&self, url: &str) -> String {
-        url.rsplit('/').next().unwrap_or("download")
-            .split('?').next().unwrap_or("download")
+        url.rsplit('/')
+            .next()
+            .unwrap_or("download")
+            .split('?')
+            .next()
+            .unwrap_or("download")
             .to_string()
     }
 

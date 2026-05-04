@@ -1,5 +1,5 @@
+use anyhow::{Context, Result};
 use std::path::Path;
-use anyhow::{Result, Context};
 use walkdir::WalkDir;
 
 #[derive(Debug, Clone, serde::Serialize)]
@@ -71,7 +71,8 @@ pub fn audit_dockerfile(path: &Path, image_name: &str) -> Result<AuditResult> {
             issues.push(AuditIssue {
                 severity: "warning".to_string(),
                 code: "ESCAPED_BACKSLASH".to_string(),
-                message: "Escaped backslash at end of line (should be single \\ for continuation)".to_string(),
+                message: "Escaped backslash at end of line (should be single \\ for continuation)"
+                    .to_string(),
                 line: Some(line_num),
             });
         }
@@ -90,7 +91,8 @@ pub fn audit_dockerfile(path: &Path, image_name: &str) -> Result<AuditResult> {
         if (trimmed.contains("addgroup") || trimmed.contains("groupadd"))
             && !trimmed.contains("-g ")
             && trimmed.contains("65532")
-            && !trimmed.contains("-g65532") {
+            && !trimmed.contains("-g65532")
+        {
             issues.push(AuditIssue {
                 severity: "error".to_string(),
                 code: "ADDGROUP_NO_G_FLAG".to_string(),
@@ -101,17 +103,25 @@ pub fn audit_dockerfile(path: &Path, image_name: &str) -> Result<AuditResult> {
 
         // URL as bare command (not git clone or curl)
         if (trimmed.contains("RUN https://") || trimmed.contains("RUN http://"))
-            && !trimmed.contains("curl") && !trimmed.contains("wget") && !trimmed.contains("git") {
-                issues.push(AuditIssue {
-                    severity: "error".to_string(),
-                    code: "URL_AS_COMMAND".to_string(),
-                    message: "URL used as bare shell command (missing curl/wget/git)".to_string(),
-                    line: Some(line_num),
-                });
-            }
+            && !trimmed.contains("curl")
+            && !trimmed.contains("wget")
+            && !trimmed.contains("git")
+        {
+            issues.push(AuditIssue {
+                severity: "error".to_string(),
+                code: "URL_AS_COMMAND".to_string(),
+                message: "URL used as bare shell command (missing curl/wget/git)".to_string(),
+                line: Some(line_num),
+            });
+        }
 
         // rm without -f flag
-        if trimmed.contains("rm /") && !trimmed.contains("rm -f /") && !trimmed.contains("rm -rf /") && !trimmed.contains("|| true") && !trimmed.contains("2>/dev/null") {
+        if trimmed.contains("rm /")
+            && !trimmed.contains("rm -f /")
+            && !trimmed.contains("rm -rf /")
+            && !trimmed.contains("|| true")
+            && !trimmed.contains("2>/dev/null")
+        {
             issues.push(AuditIssue {
                 severity: "warning".to_string(),
                 code: "RM_NO_FORCE".to_string(),
@@ -142,7 +152,7 @@ pub fn audit_dockerfile(path: &Path, image_name: &str) -> Result<AuditResult> {
 /// Audit all Dockerfiles in the images directory
 pub fn audit_all(images_dir: &Path) -> Result<Vec<AuditResult>> {
     let mut results = Vec::new();
-    
+
     for entry in WalkDir::new(images_dir)
         .min_depth(1)
         .max_depth(1)
@@ -178,9 +188,11 @@ fn has_real_entrypoint(content: &str) -> bool {
     for line in content.lines() {
         let trimmed = line.trim();
         if trimmed.starts_with("ENTRYPOINT")
-            && !trimmed.contains("sleep infinity") && !trimmed.contains("placeholder") {
-                return true;
-            }
+            && !trimmed.contains("sleep infinity")
+            && !trimmed.contains("placeholder")
+        {
+            return true;
+        }
     }
     false
 }
@@ -191,7 +203,8 @@ fn has_real_download(content: &str) -> bool {
         let trimmed = line.trim();
         if (trimmed.contains("curl") || trimmed.contains("wget"))
             && (trimmed.contains("http://") || trimmed.contains("https://"))
-            && !trimmed.contains("nodesource")  // exclude bootstrapping
+            && !trimmed.contains("nodesource")
+        // exclude bootstrapping
         {
             return true;
         }
@@ -212,10 +225,22 @@ fn has_source_build(content: &str) -> bool {
 /// Generate audit summary
 pub fn audit_summary(results: &[AuditResult]) -> String {
     let total = results.len();
-    let real = results.iter().filter(|r| r.status == ImageStatus::Real).count();
-    let placeholder = results.iter().filter(|r| r.status == ImageStatus::Placeholder).count();
-    let stub = results.iter().filter(|r| r.status == ImageStatus::Stub).count();
-    let error = results.iter().filter(|r| r.status == ImageStatus::Error).count();
+    let real = results
+        .iter()
+        .filter(|r| r.status == ImageStatus::Real)
+        .count();
+    let placeholder = results
+        .iter()
+        .filter(|r| r.status == ImageStatus::Placeholder)
+        .count();
+    let stub = results
+        .iter()
+        .filter(|r| r.status == ImageStatus::Stub)
+        .count();
+    let error = results
+        .iter()
+        .filter(|r| r.status == ImageStatus::Error)
+        .count();
     let total_issues: usize = results.iter().map(|r| r.issues.len()).sum();
 
     format!(
@@ -228,10 +253,14 @@ pub fn audit_summary(results: &[AuditResult]) -> String {
          Error: {} ({:.1}%)\n\
          Total issues: {}",
         total,
-        real, real as f64 / total as f64 * 100.0,
-        placeholder, placeholder as f64 / total as f64 * 100.0,
-        stub, stub as f64 / total as f64 * 100.0,
-        error, error as f64 / total as f64 * 100.0,
+        real,
+        real as f64 / total as f64 * 100.0,
+        placeholder,
+        placeholder as f64 / total as f64 * 100.0,
+        stub,
+        stub as f64 / total as f64 * 100.0,
+        error,
+        error as f64 / total as f64 * 100.0,
         total_issues,
     )
 }

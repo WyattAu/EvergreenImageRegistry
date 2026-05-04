@@ -1,4 +1,5 @@
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31 AS builder
+ARG TARGETARCH
 ARG VERSION=0.16.2
 ARG GITHUB_TOKEN
 RUN apk add --no-cache curl ca-certificates || true

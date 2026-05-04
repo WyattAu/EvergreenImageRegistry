@@ -1,4 +1,4 @@
-FROM node:22-alpine AS builder
+FROM node@sha256:8ea2348b068a9544dae7317b4f3aafcdc032df1647bb7d768a05a5cad1a7683f AS builder
 ARG VERSION=43.160.6
 RUN npm install -g renovate@${VERSION}
 

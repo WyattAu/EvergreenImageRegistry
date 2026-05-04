@@ -1,6 +1,6 @@
 ARG VERSION=2.4.9
 
-FROM docker.io/zilliz/attu:v2.4.9 AS upstream
+FROM docker.io/zilliz/attu@sha256:bcc10ba5f4acb4650c36c6a34a26a7629217504483e6a81d4106fecf02c508f4 AS upstream
 
 FROM scratch
 COPY --from=upstream /opt/attu/attu /attu

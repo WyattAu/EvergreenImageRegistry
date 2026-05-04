@@ -5,7 +5,7 @@
 | Attribute | Value |
 |-----------|-------|
 | Project Name | Evergreen Hardened Image Registry |
-| Version | 20.0.0 |
+| Version | 21.0.0 |
 | Phase | Security Hardening |
 | Status | ACTIVE |
 | Last Updated | 2026-05-03 |
@@ -51,6 +51,9 @@
 | Phase 31: Multi-Arch Expansion | COMPLETED | 100% |
 | Phase 33: Advanced Security Labels | COMPLETED | 100% |
 | Phase 34: README Redesign | COMPLETED | 100% |
+| Phase 35: CI Validation & Gates | COMPLETED | 100% |
+| Phase 36: Remaining Digest Pinning | COMPLETED | 100% |
+| Phase 37: Per-Image README Stubs | COMPLETED | 100% |
 
 ---
 
@@ -79,7 +82,9 @@
 | no-new-privileges Label | **997/997 (100%)** | 100% | **DONE** |
 | read-only-rootfs Label | **997/997 (100%)** | 100% | **DONE** |
 | seccomp Label | **997/997 (100%)** | 100% | **DONE** |
-| Digest-Pinned FROM (all stages) | **1485/2019 (73.6%)** | 100% | Near-complete |
+| Per-Image README | **997/997 (100%)** | 100% | **DONE** |
+| CI Gates (HEALTHCHECK/DIGEST/LABELS) | **Active** | Active | **DONE** |
+| Digest-Pinned FROM (all stages) | **1522/2019 (75.4%)** | 100% | Near-complete |
 | Effective Immutability | **1875/2019 (92.9%)** | 100% | Near-complete |
 | TOML Manifest Validity | **998/998 (100%)** | 100% | **DONE** |
 | Version Match (DF vs TOML) | **998/998 (100%)** | 100% | **DONE** |

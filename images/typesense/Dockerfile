@@ -1,6 +1,6 @@
 ARG VERSION=30.2
 
-FROM typesense/typesense:30.2 AS upstream
+FROM typesense/typesense@sha256:610f2d34b1f93d00762869da2c67736775e5798d19a2c8b91b014b8a0cc1e110 AS upstream
 
 FROM scratch
 COPY --from=upstream /usr/bin/typesense-server /typesense-server

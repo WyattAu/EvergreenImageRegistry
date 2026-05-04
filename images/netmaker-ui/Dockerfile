@@ -1,6 +1,6 @@
 ARG VERSION=v1.5.1
 
-FROM gravitl/netmaker-ui:v1.5.1 AS upstream
+FROM gravitl/netmaker-ui@sha256:e3cde240375ae137e037e8ec33d144441b70486f688c5a00cc2ab265812490e8 AS upstream
 
 FROM gcr.io/distroless/static-debian12@sha256:20bc6c0bc4d625a22a8fde3e55f6515709b32055ef8fb9cfbddaa06d1760f838
 COPY --from=upstream /usr/share/nginx/html /www

@@ -1,0 +1,25 @@
+# Auditbeat
+
+Evergreen hardened Auditbeat - Elastic audit event shipper
+
+| Attribute | Value |
+|-----------|-------|
+| Version | RUN |
+| Tier | 1 |
+| Base Image | scratch |
+| Architecture | amd64 |
+| Health Check | exec |
+| SBOM | [sbom.spdx.json](sbom.spdx.json) |
+
+## Usage
+
+```bash
+docker pull ghcr.io/wyattau/evergreenimageregistry/auditbeat:RUN
+```
+
+## Security
+
+- Non-root by default
+- HEALTHCHECK enabled
+- SBOM available ([sbom.spdx.json](sbom.spdx.json))
+- Digest-pinned base images

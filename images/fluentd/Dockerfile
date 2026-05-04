@@ -1,7 +1,7 @@
 ARG VERSION=1.17.1
 ARG BUILD_DATE
 
-FROM ruby:3.2-slim AS builder
+FROM ruby@sha256:84184c9e2c368885a1d0c93ad1953c33d81081058d274b87b4aa6f3e209e5d16 AS builder
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential libssl-dev && \

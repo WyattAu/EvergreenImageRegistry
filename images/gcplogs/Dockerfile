@@ -9,7 +9,7 @@
 ARG VERSION=3.10.0
 ARG BUILD_DATE
 ARG PYTHON_VERSION=3.12.2
-FROM python:3.12.2-slim-bookworm AS builder
+FROM python@sha256:5dc6f84b5e97bfb0c90abfb7c55f3cacc2cb6687c8f920b64a833a2219875997 AS builder
 ARG VERSION=3.10.0
 RUN pip install --break-system-packages --no-cache-dir --prefix=/install google-cloud-logging==${VERSION} ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/gcplogs || { echo '#!/bin/sh' > /usr/local/bin/gcplogs && echo 'echo "gcplogs v${VERSION} placeholder"' >> /usr/local/bin/gcplogs && echo 'exec sleep infinity' >> /usr/local/bin/gcplogs && chmod +x /usr/local/bin/gcplogs ; } || true
 RUN find /install -type f -name "*.pyc" -delete && \

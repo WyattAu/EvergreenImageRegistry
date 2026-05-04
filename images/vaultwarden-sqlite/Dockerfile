@@ -1,6 +1,6 @@
 ARG VERSION=1.35.8
 
-FROM vaultwarden/server:1.35.8 AS upstream
+FROM vaultwarden/server@sha256:c4f6056fe0c288a052a223cecd263a90d1dda1a0177bb5b054a363a6c7b211d9 AS upstream
 
 FROM scratch
 COPY --from=upstream /vaultwarden /vaultwarden

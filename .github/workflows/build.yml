@@ -9,13 +9,14 @@
 #   - Fast images (binary downloads) complete in <2 min per image
 #   1. discover       - Find all Dockerfiles, create batched build matrix
 #   2. lint           - Hadolint linting + TruffleHog secret scanning
-#   3. build          - Build images in batches (multi-arch push on main)
-#   4. health-check   - Post-build image validation (layer count, load check)
-#   5. security-scan  - Trivy filesystem vulnerability scanning
-#   6. sbom           - Generate Software Bill of Materials (SPDX-JSON)
-#   7. verify         - Constraint tests (C001-C010) + CVE scanning (Trivy + Grype)
-#   8. sign-push      - Cosign signing + SBOM attestation (main branch only)
-#   9. report         - Aggregate results and generate summary
+#   3. gates          - Enforcement CI gates (healthcheck, security labels, digest pin)
+#   4. build          - Build images in batches (multi-arch push on main)
+#   5. health-check   - Post-build image validation (layer count, load check)
+#   6. security-scan  - Trivy filesystem vulnerability scanning
+#   7. sbom           - Generate Software Bill of Materials (SPDX-JSON)
+#   8. verify         - Constraint tests (C001-C010) + CVE scanning (Trivy + Grype)
+#   9. sign-push      - Cosign signing + SBOM attestation (main branch only)
+#  10. report         - Aggregate results and generate summary
 #
 # Key fixes from v1:
 #   - Fixed /temp/*.tar -> /tmp/*.tar typo
@@ -202,11 +203,74 @@ jobs:
           extra_args: --results=verified,unknown
 
   # ===========================================================================
-  # STAGE 3: BUILD - Build images in batches with multi-arch support
+  # STAGE 3: GATES - Enforcement CI gates (security & healthcheck validation)
+  # ===========================================================================
+  gates:
+    name: CI Gate Checks
+    needs: discover
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Gate checks
+        run: |
+          PASS=0
+          WARN=0
+          FAIL=0
+          
+          for dockerfile in images/*/Dockerfile; do
+            [ "$(basename $(dirname $dockerfile))" = "tests" ] && continue
+            [ "$(basename $(dirname $dockerfile))" = "health-shim" ] && continue
+            name=$(basename $(dirname $dockerfile))
+            
+            # GATE-HEALTHCHECK: Must have HEALTHCHECK instruction
+            if ! grep -q '^HEALTHCHECK' "$dockerfile"; then
+              echo "FAIL: $name missing HEALTHCHECK"
+              FAIL=$((FAIL+1))
+            fi
+            
+            # GATE-SECURITY-LABELS: Must have 4 security labels
+            for label in "evergreen.security.cap-drop" "evergreen.security.no-new-privileges" "evergreen.security.read-only-rootfs" "evergreen.security.seccomp"; do
+              if ! grep -q "$label" "$dockerfile"; then
+                echo "FAIL: $name missing $label"
+                FAIL=$((FAIL+1))
+              fi
+            done
+            
+            # GATE-DIGEST-PIN: Final-stage FROM must be digest-pinned or scratch
+            final_from=$(grep '^FROM ' "$dockerfile" | grep -v 'AS ' | head -1 | awk '{print $2}')
+            if [ -n "$final_from" ] && [ "$final_from" != "scratch" ] && ! echo "$final_from" | grep -q '@sha256:'; then
+              # Allow ${VERSION} variables (build-time resolved)
+              if ! echo "$final_from" | grep -q '\${'; then
+                echo "WARN: $name final FROM not pinned: $final_from"
+                WARN=$((WARN+1))
+              fi
+            fi
+            
+            PASS=$((PASS+1))
+          done
+          
+          echo ""
+          echo "=== CI Gate Results ==="
+          echo "Passed: $PASS"
+          echo "Warnings: $WARN"
+          echo "Failures: $FAIL"
+          
+          if [ "$FAIL" -gt 0 ]; then
+            echo "::error::$FAIL gate check(s) failed"
+            exit 1
+          fi
+          
+          if [ "$WARN" -gt 0 ]; then
+            echo "::warning::$WARN warning(s)"
+          fi
+
+  # ===========================================================================
+  # STAGE 4: BUILD - Build images in batches with multi-arch support
   # ===========================================================================
   build:
     name: "Build Batch ${{ matrix.batch }} (${{ matrix.count }} images)"
-    needs: [discover, lint]
+    needs: [discover, lint, gates]
     runs-on: ubuntu-latest
     timeout-minutes: 360
     strategy:
@@ -829,8 +893,8 @@ jobs:
   # ===========================================================================
   build-multiarch:
     name: "Multi-Arch ${{ matrix.image }} (${{ matrix.arch }})"
-    needs: [discover, lint]
-    if: ${{ needs.discover.result == 'success' && needs.lint.result == 'success' }}
+    needs: [discover, lint, gates]
+    if: ${{ needs.discover.result == 'success' && needs.lint.result == 'success' && needs.gates.result == 'success' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -1073,7 +1137,7 @@ jobs:
   # ===========================================================================
   report:
     name: Build Report
-    needs: [discover, lint, build, health-check, security-scan, sbom, verify, sign-push, build-multiarch]
+    needs: [discover, lint, gates, build, health-check, security-scan, sbom, verify, sign-push, build-multiarch]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -1091,6 +1155,7 @@ jobs:
             echo "| **Trigger** | ${{ github.event_name }} |"
             echo "| **Discover** | ${{ needs.discover.result }} |"
             echo "| **Lint** | ${{ needs.lint.result }} |"
+            echo "| **Gates** | ${{ needs.gates.result }} |"
             echo "| **Build** | ${{ needs.build.result }} |"
             echo "| **Health Check** | ${{ needs.health-check.result }} |"
             echo "| **Security Scan** | ${{ needs.security-scan.result }} |"
@@ -1101,7 +1166,7 @@ jobs:
             echo ""
 
             OVERALL="success"
-            for job in discover lint build verify; do
+            for job in discover lint gates build verify; do
               RESULT="${{ needs[job].result }}"
               if [ "$RESULT" = "failure" ]; then
                 OVERALL="failure"

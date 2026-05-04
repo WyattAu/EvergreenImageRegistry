@@ -11,8 +11,8 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG GITHUB_TOKEN
-RUN apk add --no-cache ca-certificates curl openldap || true
-RUN mkdir -p /app /var/lib/ldap ; \
+RUN apk add --no-cache ca-certificates curl openldap || true && \
+    mkdir -p /app /var/lib/ldap ; \
     chown -R 65532:65532 /app && \
     chown 65532:65532 /var/lib/ldap
 USER 65532:65532

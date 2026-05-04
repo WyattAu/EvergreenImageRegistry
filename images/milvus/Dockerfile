@@ -7,9 +7,8 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243
 ARG VERSION=2.4.0
 RUN apk add --no-cache curl ca-certificates
 COPY --from=upstream /milvus /opt/milvus
-RUN adduser -u 65532 -D milvus 2>/dev/null || true
-RUN mkdir -p /app /var/log/milvus /var/cache/milvus && chown -R milvus:milvus /app /var/log/milvus /var/cache/milvus /opt/milvus 2>/dev/null || true
-
+RUN adduser -u 65532 -D milvus 2>/dev/null || true && \
+    mkdir -p /app /var/log/milvus /var/cache/milvus && chown -R milvus:milvus /app /var/log/milvus /var/cache/milvus /opt/milvus 2>/dev/null || true
 WORKDIR /app
 
 EXPOSE 19530

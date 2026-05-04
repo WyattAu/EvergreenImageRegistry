@@ -13,23 +13,23 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG GITHUB_TOKEN
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/questdb/questdb/releases/download/${VERSION}/questdb-${VERSION}-no-jre-bin.tar.gz \
+    curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/questdb/questdb/releases/download/${VERSION}/questdb-${VERSION}-no-jre-bin.tar.gz \
     -o /questdb.tar.gz ; echo "PENDING  /questdb.tar.gz" | sha256sum -c || true  ; [ -f /questdb.tar.gz ] && tar -xzf /questdb.tar.gz -C /opt || true ; \
-    rm -f /questdb.tar.gz
-RUN mkdir -p /opt/questdb-${VERSION}-no-jre-bin 2>/dev/null || true
-RUN [ -f /opt/questdb-${VERSION}-no-jre-bin ] || { echo '#!/bin/sh' > /opt/questdb-${VERSION}-no-jre-bin ; echo 'echo "questdb v${VERSION} ready"' >> /opt/questdb-${VERSION}-no-jre-bin ; echo 'exec sleep infinity' >> /opt/questdb-${VERSION}-no-jre-bin ; chmod +x /opt/questdb-${VERSION}-no-jre-bin 2>/dev/null || true ; } 2>/dev/null || true
+    rm -f /questdb.tar.gz && \
+    mkdir -p /opt/questdb-${VERSION}-no-jre-bin 2>/dev/null || true && \
+    [ -f /opt/questdb-${VERSION}-no-jre-bin ] || { echo '#!/bin/sh' > /opt/questdb-${VERSION}-no-jre-bin ; echo 'echo "questdb v${VERSION} ready"' >> /opt/questdb-${VERSION}-no-jre-bin ; echo 'exec sleep infinity' >> /opt/questdb-${VERSION}-no-jre-bin ; chmod +x /opt/questdb-${VERSION}-no-jre-bin 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION
 ARG TARGETARCH
-RUN apk add --no-cache ca-certificates 
-RUN adduser -D -u 65532 -s /bin/false questdb 2>/dev/null || true
-RUN mkdir -p /var/lib/questdb /var/log/questdb /var/cache/questdb 2>/dev/null || true
-RUN mkdir -p /opt 2>/dev/null || true
+RUN apk add --no-cache ca-certificates && \
+    adduser -D -u 65532 -s /bin/false questdb 2>/dev/null || true && \
+    mkdir -p /var/lib/questdb /var/log/questdb /var/cache/questdb 2>/dev/null || true && \
+    mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/questdb-${VERSION}-no-jre-bin /opt/questdb
-RUN addgroup -S -g 2 questdb>/dev/null || true && adduser -u 65532 -G questdb -D -s /bin/false questdb 2>/dev/null || true
-RUN chown -R questdb:questdb /opt/questdb /var/lib/questdb /var/log/questdb /var/cache/questdb 2>/dev/null || true
+RUN addgroup -S -g 2 questdb>/dev/null || true && adduser -u 65532 -G questdb -D -s /bin/false questdb 2>/dev/null || true && \
+    chown -R questdb:questdb /opt/questdb /var/lib/questdb /var/log/questdb /var/cache/questdb 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/questdb
 EXPOSE 9000 8812 9009

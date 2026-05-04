@@ -6,24 +6,23 @@ ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates tar xz-utils fontconfig \
         libxml2 libxslt1.1 mono-complete && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 10 --connect-timeout 30 --max-time 600 \
+    rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 10 --connect-timeout 30 --max-time 600 \
         -fsSL "https://github.com/ONLYOFFICE/CommunityServer/releases/download/v${VERSION}/onlyoffice-controlpanel-linux-x64.tar.gz" \
-        -o /tmp/controlpanel.tar.gz || true
-RUN if [ -f /tmp/controlpanel.tar.gz ]; then \
+        -o /tmp/controlpanel.tar.gz || true && \
+    if [ -f /tmp/controlpanel.tar.gz ]; then \
         mkdir -p /opt/onlyoffice/controlpanel && \
         tar -xzf /tmp/controlpanel.tar.gz -C /opt/onlyoffice/controlpanel && \
         rm -f /tmp/controlpanel.tar.gz ; \
-    fi
-RUN mkdir -p /var/log/onlyoffice /var/lib/onlyoffice /etc/onlyoffice \
+    fi && \
+    mkdir -p /var/log/onlyoffice /var/lib/onlyoffice /etc/onlyoffice \
         /opt/onlyoffice/controlpanel/Data 2>/dev/null || true
-
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION
 RUN apk add --no-cache ca-certificates tzdata fontconfig \
         libxml2 libxslt libstdc++ libgcc libjpeg-turbo \
-        libpng libcurl openssl-libs freetype || true
-RUN mkdir -p /var/log/onlyoffice /var/lib/onlyoffice /etc/onlyoffice \
+        libpng libcurl openssl-libs freetype || true && \
+    mkdir -p /var/log/onlyoffice /var/lib/onlyoffice /etc/onlyoffice \
         /opt/onlyoffice/controlpanel/Data /var/run/onlyoffice 2>/dev/null || true
 COPY --from=installer /opt/onlyoffice/controlpanel /opt/onlyoffice/controlpanel
 COPY --from=installer /var/log/onlyoffice /var/log/onlyoffice

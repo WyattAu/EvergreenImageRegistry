@@ -12,22 +12,21 @@ ARG BUILD_DATE
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/nifi/${VERSION}/nifi-registry-${VERSION}-bin.zip" \
+    curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/nifi/${VERSION}/nifi-registry-${VERSION}-bin.zip" \
     -o /nifi-registry.zip ; echo "af7b39f6bceacfd4e2e4f8805e9da9f7faea3ea9a7b031748f51c6cf72fd7021  /nifi-registry.zip" | sha256sum -c || true  ; unzip -q /nifi-registry.zip -d /opt || true ; \
-    rm -f /nifi-registry.zip
-RUN mkdir -p /opt/nifi-registry-${VERSION} 2>/dev/null || true
-
+    rm -f /nifi-registry.zip && \
+    mkdir -p /opt/nifi-registry-${VERSION} 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates 
-RUN adduser -D -u 65532 -s /bin/false nifi 2>/dev/null || true
-RUN mkdir -p /var/lib/nifi-registry /var/log/nifi-registry /var/cache/nifi-registry 2>/dev/null || true
-RUN mkdir -p /opt 2>/dev/null || true
+RUN apk add --no-cache ca-certificates && \
+    adduser -D -u 65532 -s /bin/false nifi 2>/dev/null || true && \
+    mkdir -p /var/lib/nifi-registry /var/log/nifi-registry /var/cache/nifi-registry 2>/dev/null || true && \
+    mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/nifi-registry-${VERSION} /opt/nifi-registry
-RUN addgroup -S -g 2 nifi>/dev/null || true && adduser -u 65532 -G nifi -D -s /bin/false nifi 2>/dev/null || true
-RUN chown -R nifi:nifi /opt/nifi-registry /var/lib/nifi-registry /var/log/nifi-registry /var/cache/nifi-registry 2>/dev/null || true
+RUN addgroup -S -g 2 nifi>/dev/null || true && adduser -u 65532 -G nifi -D -s /bin/false nifi 2>/dev/null || true && \
+    chown -R nifi:nifi /opt/nifi-registry /var/lib/nifi-registry /var/log/nifi-registry /var/cache/nifi-registry 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/nifi-registry
 EXPOSE 18080

@@ -6,22 +6,21 @@ FROM ruby@sha256:84184c9e2c368885a1d0c93ad1953c33d81081058d274b87b4aa6f3e209e5d1
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential libssl-dev && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN gem install fluentd -v "~> ${VERSION}" --no-document && \
+    rm -rf /var/lib/apt/lists/* || true && \
+    gem install fluentd -v "~> ${VERSION}" --no-document && \
     gem install fluent-plugin-systemd fluent-plugin-prometheus \
         fluent-plugin-elasticsearch fluent-plugin-kafka_metadata \
         fluent-plugin-prometheus --no-document 2>/dev/null || true
-
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=1.17.1
-RUN apk add --no-cache ca-certificates libffi-dev tzdata yaml || true
-RUN adduser -u 65532 -s /bin/false fluentd || true
-RUN mkdir -p /fluentd/etc /fluentd/log /fluentd/plugins /fluentd/buffer
+RUN apk add --no-cache ca-certificates libffi-dev tzdata yaml || true && \
+    adduser -u 65532 -s /bin/false fluentd || true && \
+    mkdir -p /fluentd/etc /fluentd/log /fluentd/plugins /fluentd/buffer
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 COPY --from=builder /usr/local/bin/fluentd /usr/local/bin/fluentd
 COPY --from=builder /usr/local/lib/ruby/gems/3.2.0/gems/fluentd-*/bin/fluent* /usr/local/bin/ 2>/dev/null || true
-RUN printf '[SERVICE]\nflush_interval 5s\nlog_level info\ndaemonize off\n' > /fluentd/etc/fluent.conf
-RUN chown -R 65532:65532 /fluentd 2>/dev/null || true
+RUN printf '[SERVICE]\nflush_interval 5s\nlog_level info\ndaemonize off\n' > /fluentd/etc/fluent.conf && \
+    chown -R 65532:65532 /fluentd 2>/dev/null || true
 USER 65532:65532
 WORKDIR /fluentd
 EXPOSE 24224 5140

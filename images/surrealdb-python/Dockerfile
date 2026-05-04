@@ -11,10 +11,9 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends python3-pip python3 && rm -rf /var/lib/apt/lists/* || true
-RUN python3 -m venv /opt/venv || true ; /opt/venv/bin/pip install --no-cache-dir --upgrade pip || true ; /opt/venv/bin/pip install --no-cache-dir surrealdb==${VERSION} 2>/dev/null || /opt/venv/bin/pip install --no-cache-dir surrealdb || true
-RUN mkdir -p /app /usr/local/lib/python3.11/site-packages || true ; touch /app/placeholder || true
-
+RUN apt-get update && apt-get install -y --no-install-recommends python3-pip python3 && rm -rf /var/lib/apt/lists/* || true && \
+    python3 -m venv /opt/venv || true ; /opt/venv/bin/pip install --no-cache-dir --upgrade pip || true ; /opt/venv/bin/pip install --no-cache-dir surrealdb==${VERSION} 2>/dev/null || /opt/venv/bin/pip install --no-cache-dir surrealdb || true && \
+    mkdir -p /app /usr/local/lib/python3.11/site-packages || true ; touch /app/placeholder || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION
 RUN apk add --no-cache python3 || true

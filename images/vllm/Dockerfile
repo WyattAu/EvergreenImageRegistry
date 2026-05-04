@@ -11,11 +11,11 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG GITHUB_TOKEN
-RUN apk add --no-cache ca-certificates curl 
-RUN pip install --no-cache-dir --break-system-packages vllm 2>/dev/null || \
-    pip install --no-cache-dir vllm || true
-RUN adduser -u 65532 -D app 2>/dev/null || true
-RUN mkdir -p /app /var/log/python /var/cache/python && chown -R app:app /app /var/log/python /var/cache/python 2>/dev/null || true
+RUN apk add --no-cache ca-certificates curl && \
+    pip install --no-cache-dir --break-system-packages vllm 2>/dev/null || \
+    pip install --no-cache-dir vllm || true && \
+    adduser -u 65532 -D app 2>/dev/null || true && \
+    mkdir -p /app /var/log/python /var/cache/python && chown -R app:app /app /var/log/python /var/cache/python 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8000

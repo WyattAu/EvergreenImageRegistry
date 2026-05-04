@@ -10,8 +10,8 @@ ARG BUILD_DATE
 
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
-RUN apk add --no-cache ca-certificates curl 2>/dev/null || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.min.io/server/minio/release/linux-${TARGETARCH}/minio" -o /usr/local/bin/minio && \
+RUN apk add --no-cache ca-certificates curl 2>/dev/null || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://dl.min.io/server/minio/release/linux-${TARGETARCH}/minio" -o /usr/local/bin/minio && \
     echo "7c5bd8512c6e966455b1d198209358b2d191c77a83ab377c4073281065fb855f  /usr/local/bin/minio" | sha256sum -c || true ; \
     chmod +x /usr/local/bin/minio 2>/dev/null || true && \
     apk del curl

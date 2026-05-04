@@ -2,14 +2,10 @@
 ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        ruby ruby-dev build-essential ca-certificates ; rm -rf /var/lib/apt/lists/* || true
-
-RUN gem install bundler-audit --no-document
-RUN mkdir -p /app 2>/dev/null || true
-
-
-
-RUN test -e /usr/lib/ruby/gems || { mkdir -p /usr/lib/ruby/gems && echo 'gem-audit placeholder' > /usr/lib/ruby/gems/.placeholder ; } ; \
+        ruby ruby-dev build-essential ca-certificates ; rm -rf /var/lib/apt/lists/* || true && \
+    gem install bundler-audit --no-document && \
+    mkdir -p /app 2>/dev/null || true && \
+    test -e /usr/lib/ruby/gems || { mkdir -p /usr/lib/ruby/gems && echo 'gem-audit placeholder' > /usr/lib/ruby/gems/.placeholder ; } ; \
     test -e /usr/local/bundle || { mkdir -p /usr/local/bundle && echo 'gem-audit placeholder' > /usr/local/bundle/.placeholder ; } ; \
     test -e /app || { mkdir -p /app && echo 'gem-audit placeholder' > /app/.placeholder ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
@@ -18,8 +14,8 @@ RUN apk add --no-cache ruby ca-certificates || true
 COPY --from=builder /usr/lib/ruby/gems /usr/lib/ruby/gems
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 COPY --from=builder /app /app
-RUN addgroup -S -g 2 nogroup >/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false gemaudit 2>/dev/null || true && \
+RUN addgroup -S -g 2 nogroup >/dev/null || true && \
+    adduser -u 65532 -G nogroup -D -h /app -s /bin/false gemaudit 2>/dev/null || true && \
     chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app

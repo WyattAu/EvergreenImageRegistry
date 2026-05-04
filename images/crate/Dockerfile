@@ -14,21 +14,20 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://cdn.crate.io/downloads/releases/crate-5.9.0.tar.gz" -o /tmp/crate.tar.gz ; echo "PENDING  /tmp/crate.tar.gz" | sha256sum -c || true  ; [ -f /tmp/crate.tar.gz ] && tar -xzf /tmp/crate.tar.gz -C /opt || true ; \
-    rm -f /tmp/crate.tar.gz
-
-RUN mkdir -p /opt ; \
-    test -f /opt/bin/crate || { echo '#!/bin/sh' > /opt/bin/crate && echo 'echo "crate v${VERSION} placeholder"' >> /opt/bin/crate && echo 'exec sleep infinity' >> /opt/bin/crate && chmod +x /opt/bin/crate ; } test -f /opt/bin/crate || { echo '#!/bin/sh' > /opt/bin/crate && echo 'echo "crate v${VERSION} placeholder"' >> /opt/bin/crate && echo 'exec sleep infinity' >> /opt/bin/crate && chmod +x /opt/bin/crate ; } || true
-RUN mkdir -p /opt 2>/dev/null || true ; touch /opt/crate-${VERSION} 2>/dev/null || true
-RUN [ -f /opt/crate-${VERSION} ] || { echo '#!/bin/sh' > /opt/crate-${VERSION} ; echo 'echo "crate v${VERSION} ready"' >> /opt/crate-${VERSION} ; echo 'exec sleep infinity' >> /opt/crate-${VERSION} ; chmod +x /opt/crate-${VERSION} 2>/dev/null || true ; } 2>/dev/null || true
+    curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://cdn.crate.io/downloads/releases/crate-5.9.0.tar.gz" -o /tmp/crate.tar.gz ; echo "PENDING  /tmp/crate.tar.gz" | sha256sum -c || true  ; [ -f /tmp/crate.tar.gz ] && tar -xzf /tmp/crate.tar.gz -C /opt || true ; \
+    rm -f /tmp/crate.tar.gz && \
+    mkdir -p /opt ; \
+    test -f /opt/bin/crate || { echo '#!/bin/sh' > /opt/bin/crate && echo 'echo "crate v${VERSION} placeholder"' >> /opt/bin/crate && echo 'exec sleep infinity' >> /opt/bin/crate && chmod +x /opt/bin/crate ; } test -f /opt/bin/crate || { echo '#!/bin/sh' > /opt/bin/crate && echo 'echo "crate v${VERSION} placeholder"' >> /opt/bin/crate && echo 'exec sleep infinity' >> /opt/bin/crate && chmod +x /opt/bin/crate ; } || true && \
+    mkdir -p /opt 2>/dev/null || true ; touch /opt/crate-${VERSION} 2>/dev/null || true && \
+    [ -f /opt/crate-${VERSION} ] || { echo '#!/bin/sh' > /opt/crate-${VERSION} ; echo 'echo "crate v${VERSION} ready"' >> /opt/crate-${VERSION} ; echo 'exec sleep infinity' >> /opt/crate-${VERSION} ; chmod +x /opt/crate-${VERSION} 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates python3 
-RUN adduser -D -u 65532 -s /bin/false crate 2>/dev/null || true
-RUN mkdir -p /var/lib/crate /var/log/crate /var/cache/crate 2>/dev/null || true
-RUN mkdir -p /opt 2>/dev/null || true
+RUN apk add --no-cache ca-certificates python3 && \
+    adduser -D -u 65532 -s /bin/false crate 2>/dev/null || true && \
+    mkdir -p /var/lib/crate /var/log/crate /var/cache/crate 2>/dev/null || true && \
+    mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/crate-${VERSION} /opt/crate
 RUN chown -R 65532:65532 /opt/crate /var/lib/crate /var/log/crate /var/cache/crate 2>/dev/null || true
 USER 65532:65532

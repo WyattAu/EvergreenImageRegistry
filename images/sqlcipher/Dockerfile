@@ -14,8 +14,8 @@ ARG VERSION=4.5.6
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libssl-dev tcl8.6-dev wget ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN wget -q "https://github.com/sqlcipher/sqlcipher/archive/refs/tags/v${VERSION}.tar.gz" -O /sqlcipher.tar.gz && \
+    rm -rf /var/lib/apt/lists/* || true && \
+    wget -q "https://github.com/sqlcipher/sqlcipher/archive/refs/tags/v${VERSION}.tar.gz" -O /sqlcipher.tar.gz && \
     echo "e4a527e38e67090c1d2dc41df28270d16c15f7ca5210a3e7ec4c4b8fda36e28f  /sqlcipher.tar.gz" | sha256sum -c - || true
     [ -f /sqlcipher.tar.gz ] && tar -xzf /sqlcipher.tar.gz -C / && rm -f /sqlcipher.tar.gz || true ; \
     cd /sqlcipher-${VERSION} && \    ./configure --enable-tempstore=yes CFLAGS="-DSQLITE_HAS_CODEC -DSQLCIPHER_CRYPTO_OPENSSL" \
@@ -29,8 +29,8 @@ RUN mkdir -p /sqlcipher-${VERSION}/.libs/sqlcipher
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=4.5.6
 
-RUN apk add --no-cache ca-certificates 
-RUN mkdir -p /app /var/log/sqlcipher
+RUN apk add --no-cache ca-certificates && \
+    mkdir -p /app /var/log/sqlcipher
 COPY --from=builder /sqlcipher-${VERSION}/.libs/sqlcipher /usr/local/bin/sqlcipher
 RUN chown -R 65532:65532 /app /var/log/sqlcipher
 USER 65532:65532

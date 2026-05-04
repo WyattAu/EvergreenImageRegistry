@@ -5,9 +5,9 @@ FROM ontotext/graphdb:${VERSION} AS upstream
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates
-RUN adduser -D -u 65532 -s /bin/false graphdb 2>/dev/null || true
-RUN mkdir -p /var/lib/graphdb /var/log/graphdb /var/cache/graphdb /opt/graphdb/home /opt 2>/dev/null || true
+RUN apk add --no-cache ca-certificates && \
+    adduser -D -u 65532 -s /bin/false graphdb 2>/dev/null || true && \
+    mkdir -p /var/lib/graphdb /var/log/graphdb /var/cache/graphdb /opt/graphdb/home /opt 2>/dev/null || true
 COPY --from=upstream /opt/graphdb /opt/graphdb
 RUN chown -R 65532:65532 /opt/graphdb /var/lib/graphdb /var/log/graphdb /var/cache/graphdb 2>/dev/null || true
 

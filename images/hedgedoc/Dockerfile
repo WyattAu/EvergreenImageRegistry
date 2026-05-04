@@ -2,8 +2,8 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243
 ARG VERSION=1.10.0
 ARG GITHUB_TOKEN
 ARG TARGETARCH
-RUN apk add --no-cache nodejs npm ca-certificates git python3 make g++ || true
-RUN mkdir -p /app-src 2>/dev/null || true
+RUN apk add --no-cache nodejs npm ca-certificates git python3 make g++ || true && \
+    mkdir -p /app-src 2>/dev/null || true
 WORKDIR /tmp
 RUN curl --retry 3 -fsSL \
     -H "Authorization: token ${GITHUB_TOKEN}" \
@@ -12,10 +12,10 @@ RUN curl --retry 3 -fsSL \
     tar -xzf /app.tar.gz -C /app-src --strip-components=1 && \
     rm -f /app.tar.gz && \
     cd /app-src && \
-    npm install --omit=dev --legacy-peer-deps 2>/dev/null || npm install --legacy-peer-deps 2>/dev/null || true
-RUN addgroup -S -g 10000 appuser 2>/dev/null || true && \
-    adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser 2>/dev/null || true
-RUN mkdir -p /app/data /app/uploads 2>/dev/null || true && \
+    npm install --omit=dev --legacy-peer-deps 2>/dev/null || npm install --legacy-peer-deps 2>/dev/null || true && \
+    addgroup -S -g 10000 appuser 2>/dev/null || true && \
+    adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser 2>/dev/null || true && \
+    mkdir -p /app/data /app/uploads 2>/dev/null || true && \
     chown -R 65532:65532 /app-src /app/data /app/uploads 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app-src

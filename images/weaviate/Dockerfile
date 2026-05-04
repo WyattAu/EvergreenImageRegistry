@@ -12,13 +12,13 @@ ARG BUILD_DATE
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG GITHUB_TOKEN
 ARG VERSION=1.25.4
-RUN apk add --no-cache curl ca-certificates 
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/weaviate/weaviate/releases/download/v${VERSION}/weaviate-v${VERSION}-linux-amd64.tar.gz -o /tmp/weaviate.tar.gz && \
+RUN apk add --no-cache curl ca-certificates && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/weaviate/weaviate/releases/download/v${VERSION}/weaviate-v${VERSION}-linux-amd64.tar.gz -o /tmp/weaviate.tar.gz && \
     echo "93468b21703372eb12864000cf59083138e4fd563168e4f021ae2c0b28b446cf  /tmp/weaviate.tar.gz" | sha256sum -c - || true
     [ -f /tmp/weaviate.tar.gz ] && tar -xzf /tmp/weaviate.tar.gz -C /opt && rm -f /tmp/weaviate.tar.gz || true ; \
     chmod +x /opt/weaviate 2>/dev/null || true
-RUN adduser -u 65532 -D weaviate 2>/dev/null || true
-RUN mkdir -p /app /var/log/weaviate /var/cache/weaviate && chown -R weaviate:weaviate /app /var/log/weaviate /var/cache/weaviate /opt/weaviate 2>/dev/null || true
+RUN adduser -u 65532 -D weaviate 2>/dev/null || true && \
+    mkdir -p /app /var/log/weaviate /var/cache/weaviate && chown -R weaviate:weaviate /app /var/log/weaviate /var/cache/weaviate /opt/weaviate 2>/dev/null || true
 USER weaviate
 WORKDIR /app
 EXPOSE 8080

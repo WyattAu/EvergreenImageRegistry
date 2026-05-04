@@ -11,21 +11,19 @@ ARG BUILD_DATE
 
 FROM debian@sha256:f70dc8d6a8b6a06824c92471a1a258030836b26b043881358b967bf73de7c5ab AS builder
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2204-${VERSION}.tgz" -o /tmp/mongodb.tgz ; echo "2cf223c0f901e0c6d218bdc7c607060b4155e273724e9d05babe10ce418c0391  /tmp/mongodb.tgz" | sha256sum -c || true  ; [ -f /tmp/mongodb.tgz ] && tar -xzf /tmp/mongodb.tgz -C /tmp || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2204-${VERSION}.tgz" -o /tmp/mongodb.tgz ; echo "2cf223c0f901e0c6d218bdc7c607060b4155e273724e9d05babe10ce418c0391  /tmp/mongodb.tgz" | sha256sum -c || true  ; [ -f /tmp/mongodb.tgz ] && tar -xzf /tmp/mongodb.tgz -C /tmp || true ; \
     strip --strip-all /tmp/mongodb-linux-x86_64-ubuntu2204-${VERSION}/bin/* ; mv /tmp/mongodb-linux-x86_64-ubuntu2204-${VERSION}/bin/* /usr/local/bin/ \
-    && rm -rf /tmp/mongodb.tgz /tmp/mongodb-linux-x86_64-ubuntu2204-${VERSION}
-
-RUN test -f /usr/local/bin/mongod || { echo '#!/bin/sh' > /usr/local/bin/mongod && echo 'echo "mongodb-7 v${VERSION} placeholder"' >> /usr/local/bin/mongod && echo 'exec sleep infinity' >> /usr/local/bin/mongod && chmod +x /usr/local/bin/mongod ; } ; \
+    && rm -rf /tmp/mongodb.tgz /tmp/mongodb-linux-x86_64-ubuntu2204-${VERSION} && \
+    test -f /usr/local/bin/mongod || { echo '#!/bin/sh' > /usr/local/bin/mongod && echo 'echo "mongodb-7 v${VERSION} placeholder"' >> /usr/local/bin/mongod && echo 'exec sleep infinity' >> /usr/local/bin/mongod && chmod +x /usr/local/bin/mongod ; } ; \
     test -f /usr/local/bin/mongos || { echo '#!/bin/sh' > /usr/local/bin/mongos && echo 'echo "mongodb-7 v${VERSION} placeholder"' >> /usr/local/bin/mongos && echo 'exec sleep infinity' >> /usr/local/bin/mongos && chmod +x /usr/local/bin/mongos ; } ; \
     test -f /usr/local/bin/mongosh || { echo '#!/bin/sh' > /usr/local/bin/mongosh && echo 'echo "mongodb-7 v${VERSION} placeholder"' >> /usr/local/bin/mongosh && echo 'exec sleep infinity' >> /usr/local/bin/mongosh && chmod +x /usr/local/bin/mongosh ; }
-
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=7.0.9
 
-RUN apk add --no-cache ca-certificates 
-RUN addgroup -S -g 65532 mongodb && adduser -u 65532 -G mongodb -D -s /bin/false mongodb || true
-RUN mkdir -p /data/db /var/log/mongodb /var/cache/mongodb && chown -R 65532:65532 /data/db /var/log/mongodb /var/cache/mongodb 2>/dev/null || true
+RUN apk add --no-cache ca-certificates && \
+    addgroup -S -g 65532 mongodb && adduser -u 65532 -G mongodb -D -s /bin/false mongodb || true && \
+    mkdir -p /data/db /var/log/mongodb /var/cache/mongodb && chown -R 65532:65532 /data/db /var/log/mongodb /var/cache/mongodb 2>/dev/null || true
 COPY --from=builder /usr/local/bin/mongod /usr/local/bin/mongod
 COPY --from=builder /usr/local/bin/mongos /usr/local/bin/mongos
 COPY --from=builder /usr/local/bin/mongosh /usr/local/bin/mongosh
@@ -33,7 +31,7 @@ USER 65532:65532
 WORKDIR /data/db
 EXPOSE 27017
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD mongosh --quiet --eval "db.runCommand({ping:1})"
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD echo "db.runCommand({ping:1})" | mongosh --quiet
 ENTRYPOINT ["mongod"]
 LABEL org.opencontainers.image.title="mongodb-7" \
       org.opencontainers.image.description="Evergreen hardened MongoDB 7.0 - document database" \

@@ -4,8 +4,8 @@ ARG GITHUB_TOKEN
 ARG TARGETARCH
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN TARGETVARIANT=$(case "${TARGETARCH}" in amd64) echo "x86_64";; arm64) echo "aarch64";; esac) && \
+    rm -rf /var/lib/apt/lists/* || true && \
+    TARGETVARIANT=$(case "${TARGETARCH}" in amd64) echo "x86_64";; arm64) echo "aarch64";; esac) && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/stalwartlabs/stalwart/releases/download/v${VERSION}/stalwart-${TARGETVARIANT}-unknown-linux-musl.tar.gz" \
     -o /tmp/stalwart.tar.gz && \
@@ -13,7 +13,6 @@ RUN TARGETVARIANT=$(case "${TARGETARCH}" in amd64) echo "x86_64";; arm64) echo "
     mv /tmp/stalwart /usr/local/bin/stalwart && \
     chmod +x /usr/local/bin/stalwart && \
     strip /usr/local/bin/stalwart || true
-
 FROM scratch
 COPY --from=downloader /usr/local/bin/stalwart /usr/local/bin/stalwart
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

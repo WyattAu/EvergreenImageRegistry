@@ -57,11 +57,10 @@ GOEOF
 RUN cd /build && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
-        -o /app/health-checks ./cmd/health-checks.go 2>/dev/null || true
-RUN test -f /app/health-checks && strip --strip-all /app/health-checks || true
-RUN test -f /app/health-checks || { echo '#!/bin/sh' > /app/health-checks && echo 'echo "health-checks v'${VERSION}' placeholder"' >> /app/health-checks && echo 'exec sleep infinity' >> /app/health-checks && chmod +x /app/health-checks; } 2>/dev/null || true
-RUN mkdir -p /app
-
+        -o /app/health-checks ./cmd/health-checks.go 2>/dev/null || true && \
+    test -f /app/health-checks && strip --strip-all /app/health-checks || true && \
+    test -f /app/health-checks || { echo '#!/bin/sh' > /app/health-checks && echo 'echo "health-checks v'${VERSION}' placeholder"' >> /app/health-checks && echo 'exec sleep infinity' >> /app/health-checks && chmod +x /app/health-checks; } 2>/dev/null || true && \
+    mkdir -p /app
 FROM scratch
 COPY --from=builder /app/health-checks /health-checks
 COPY --from=builder /app /app

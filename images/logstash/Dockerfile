@@ -12,16 +12,16 @@ ARG BUILD_DATE
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/logstash/logstash-${VERSION}-linux-x86_64.tar.gz" -o logstash.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  logstash.tar.gz" | sha256sum -c || true  ; [ -f logstash.tar.gz ] && tar -xzf logstash.tar.gz || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/logstash/logstash-${VERSION}-linux-x86_64.tar.gz" -o logstash.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  logstash.tar.gz" | sha256sum -c || true  ; [ -f logstash.tar.gz ] && tar -xzf logstash.tar.gz || true ; \
     rm -f logstash.tar.gz
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION
 ARG TARGETARCH
-RUN apk add --no-cache ca-certificates curl 
-RUN adduser -u 65532 -s /bin/false logstash 2>/dev/null || true
-RUN mkdir -p /opt/logstash/data /opt/logstash/logs /var/log/logstash /var/cache/logstash 2>/dev/null || true
+RUN apk add --no-cache ca-certificates curl && \
+    adduser -u 65532 -s /bin/false logstash 2>/dev/null || true && \
+    mkdir -p /opt/logstash/data /opt/logstash/logs /var/log/logstash /var/cache/logstash 2>/dev/null || true
 COPY --from=builder /tmp/logstash-${VERSION} /opt/logstash
 USER 65532:65532
 WORKDIR /opt/logstash

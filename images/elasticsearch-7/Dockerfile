@@ -17,8 +17,8 @@ RUN apk add --no-cache curl ca-certificates \ || true
     tar xzf /tmp/es7.tar.gz -C /opt && rm -f /tmp/es7.tar.gz && \
     ln -s /opt/elasticsearch-${VERSION} /opt/elasticsearch && \
     ln -s /opt/elasticsearch/bin/elasticsearch /usr/local/bin/elasticsearch || true
-RUN addgroup -S -g 2 elasticsearch>/dev/null || true ; adduser -u 65532 -G elasticsearch -D -h /app -s /bin/false elasticsearch 2>/dev/null || true
-RUN mkdir -p /app /var/log/elasticsearch /var/cache/elasticsearch && chown -R elasticsearch:elasticsearch /app /var/log/elasticsearch /var/cache/elasticsearch
+RUN addgroup -S -g 2 elasticsearch>/dev/null || true ; adduser -u 65532 -G elasticsearch -D -h /app -s /bin/false elasticsearch 2>/dev/null || true && \
+    mkdir -p /app /var/log/elasticsearch /var/cache/elasticsearch && chown -R elasticsearch:elasticsearch /app /var/log/elasticsearch /var/cache/elasticsearch
 USER elasticsearch
 WORKDIR /app
 EXPOSE 9200 9300

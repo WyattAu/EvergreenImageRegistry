@@ -19,16 +19,15 @@ ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 RUN apt-get update && \
     apt-get install -y --no-install-recommends git ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
-RUN git clone --depth 1 https://github.com/kuqoi/ratelimiter /src 2>/dev/null || echo "Source repo not available"
-RUN cd /src && \
+    rm -rf /var/lib/apt/lists/* && \
+    git clone --depth 1 https://github.com/kuqoi/ratelimiter /src 2>/dev/null || echo "Source repo not available" && \
+    cd /src && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
         -trimpath \
-        -o /app/ratelimiter ./cmd/ratelimiter/... 2>/dev/null || true
-RUN test -f /app/ratelimiter && strip --strip-all /app/ratelimiter || true
-RUN test -f /app/ratelimiter || { echo '#!/bin/sh' > /app/ratelimiter && echo 'echo "rate-limiter v'${VERSION}' placeholder"' >> /app/ratelimiter && echo 'exec sleep infinity' >> /app/ratelimiter && chmod +x /app/ratelimiter; } 2>/dev/null || true
-
+        -o /app/ratelimiter ./cmd/ratelimiter/... 2>/dev/null || true && \
+    test -f /app/ratelimiter && strip --strip-all /app/ratelimiter || true && \
+    test -f /app/ratelimiter || { echo '#!/bin/sh' > /app/ratelimiter && echo 'echo "rate-limiter v'${VERSION}' placeholder"' >> /app/ratelimiter && echo 'exec sleep infinity' >> /app/ratelimiter && chmod +x /app/ratelimiter; } 2>/dev/null || true
 FROM scratch
 COPY --from=builder /app/ratelimiter /ratelimiter
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

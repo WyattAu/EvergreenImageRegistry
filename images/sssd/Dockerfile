@@ -6,9 +6,8 @@
 
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
-RUN apk add --no-cache ca-certificates tzdata 
-
-RUN mkdir -p /var/lib/sss /var/log/sssd /etc/sssd ; \
+RUN apk add --no-cache ca-certificates tzdata && \
+    mkdir -p /var/lib/sss /var/log/sssd /etc/sssd ; \
     chown -R root:root /var/lib/sss /var/log/sssd /etc/sssd && \
     chmod 700 /var/lib/sss /var/log/sssd /etc/sssd
 EXPOSE 0

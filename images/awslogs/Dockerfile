@@ -12,26 +12,24 @@ ARG PYTHON_VERSION=3.12.2
 ARG TARGETARCH
 FROM python@sha256:5dc6f84b5e97bfb0c90abfb7c55f3cacc2cb6687c8f920b64a833a2219875997 AS builder
 ARG VERSION=0.16.0
-RUN pip install --break-system-packages --no-cache-dir --prefix=/install awslogs==${VERSION} || true ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/awslogs || { echo '#!/bin/sh' > /usr/local/bin/awslogs && echo 'echo "awslogs v${VERSION} placeholder"' >> /usr/local/bin/awslogs && echo 'exec sleep infinity' >> /usr/local/bin/awslogs && chmod +x /usr/local/bin/awslogs ; } || true
-RUN find /install -type f -name "*.pyc" -delete && \
+RUN pip install --break-system-packages --no-cache-dir --prefix=/install awslogs==${VERSION} || true ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/awslogs || { echo '#!/bin/sh' > /usr/local/bin/awslogs && echo 'echo "awslogs v${VERSION} placeholder"' >> /usr/local/bin/awslogs && echo 'exec sleep infinity' >> /usr/local/bin/awslogs && chmod +x /usr/local/bin/awslogs ; } || true && \
+    find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
-
-
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS stripper
 RUN apt-get update && \
     apt-get install -y --no-install-recommends python3-minimal && \
     rm -rf /var/lib/apt/lists/*
 COPY --from=builder /install /install
-RUN find /install -type f -name "*.so" -exec strip --strip-unneeded {} \ || true
-RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
+RUN find /install -type f -name "*.so" -exec strip --strip-unneeded {} \ || true && \
+    mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=0.16.0
 
 RUN addgroup -S -g 65532 awslogs 2>/dev/null || true && \
-    adduser -u 65532 -G awslogs -D -s /bin/false awslogs || true
-RUN apk add --no-cache ca-certificates 
-RUN mkdir -p /etc/ssl/certs /usr 2>/dev/null || true
-RUN mkdir -p /usr 2>/dev/null || true
+    adduser -u 65532 -G awslogs -D -s /bin/false awslogs || true && \
+    apk add --no-cache ca-certificates && \
+    mkdir -p /etc/ssl/certs /usr 2>/dev/null || true && \
+    mkdir -p /usr 2>/dev/null || true
 COPY --from=stripper /install /usr/local
 COPY --from=stripper /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 RUN mkdir -p /app/conf /app/logs ; \

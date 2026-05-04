@@ -18,17 +18,16 @@ ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 RUN apt-get update && \
     apt-get install -y --no-install-recommends git ca-certificates make && \
-    rm -rf /var/lib/apt/lists/*
-RUN git clone --depth 1 --branch "controller-v${VERSION}" https://github.com/kubernetes/ingress-nginx /src 2>/dev/null || echo "Source repo not available"
-RUN cd /src && \
+    rm -rf /var/lib/apt/lists/* && \
+    git clone --depth 1 --branch "controller-v${VERSION}" https://github.com/kubernetes/ingress-nginx /src 2>/dev/null || echo "Source repo not available" && \
+    cd /src && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w -X main.version=v${VERSION}" \
         -trimpath \
-        -o /app/nginx-ingress-controller ./cmd/nginx 2>/dev/null || true
-RUN test -f /app/nginx-ingress-controller && strip --strip-all /app/nginx-ingress-controller || true
-RUN test -f /app/nginx-ingress-controller || { echo '#!/bin/sh' > /app/nginx-ingress-controller && echo 'echo "nginx-ingress-controller v'${VERSION}' placeholder"' >> /app/nginx-ingress-controller && echo 'exec sleep infinity' >> /app/nginx-ingress-controller && chmod +x /app/nginx-ingress-controller; } 2>/dev/null || true
-RUN mkdir -p /app /var/log/nginx-ingress /etc/nginx
-
+        -o /app/nginx-ingress-controller ./cmd/nginx 2>/dev/null || true && \
+    test -f /app/nginx-ingress-controller && strip --strip-all /app/nginx-ingress-controller || true && \
+    test -f /app/nginx-ingress-controller || { echo '#!/bin/sh' > /app/nginx-ingress-controller && echo 'echo "nginx-ingress-controller v'${VERSION}' placeholder"' >> /app/nginx-ingress-controller && echo 'exec sleep infinity' >> /app/nginx-ingress-controller && chmod +x /app/nginx-ingress-controller; } 2>/dev/null || true && \
+    mkdir -p /app /var/log/nginx-ingress /etc/nginx
 FROM scratch
 COPY --from=builder /app/nginx-ingress-controller /nginx-ingress-controller
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

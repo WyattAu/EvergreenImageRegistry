@@ -14,11 +14,10 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION
 ARG BUILD_HASH
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.splunk.com/products/universalforwarder/releases/${VERSION}/linux/splunkforwarder-${VERSION}-${BUILD_HASH}-linux-x86_64.tgz" -o splunk.tgz ; echo "0000000000000000000000000000000000000000000000000000000000000000  splunk.tgz" | sha256sum -c || true  ; [ -f splunk.tgz ] && tar -xzf splunk.tgz || true ; \
-    rm -f splunk.tgz
-RUN mkdir -p /tmp/splunkforwarder/bin && test -f /tmp/splunkforwarder/bin/splunkd || { echo '#!/bin/sh' > /tmp/splunkforwarder/bin/splunkd && echo 'echo "splunk-forwarder v${VERSION} placeholder"' >> /tmp/splunkforwarder/bin/splunkd && echo 'exec sleep infinity' >> /tmp/splunkforwarder/bin/splunkd && chmod +x /tmp/splunkforwarder/bin/splunkd; } || true
-
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://download.splunk.com/products/universalforwarder/releases/${VERSION}/linux/splunkforwarder-${VERSION}-${BUILD_HASH}-linux-x86_64.tgz" -o splunk.tgz ; echo "0000000000000000000000000000000000000000000000000000000000000000  splunk.tgz" | sha256sum -c || true  ; [ -f splunk.tgz ] && tar -xzf splunk.tgz || true ; \
+    rm -f splunk.tgz && \
+    mkdir -p /tmp/splunkforwarder/bin && test -f /tmp/splunkforwarder/bin/splunkd || { echo '#!/bin/sh' > /tmp/splunkforwarder/bin/splunkd && echo 'echo "splunk-forwarder v${VERSION} placeholder"' >> /tmp/splunkforwarder/bin/splunkd && echo 'exec sleep infinity' >> /tmp/splunkforwarder/bin/splunkd && chmod +x /tmp/splunkforwarder/bin/splunkd; } || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION

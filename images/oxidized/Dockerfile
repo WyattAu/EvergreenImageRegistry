@@ -1,7 +1,7 @@
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=0.30.1
-RUN apk add --no-cache ruby ca-certificates git openssh 2>/dev/null || true
-RUN gem install oxidized 2>/dev/null || true
+RUN apk add --no-cache ruby ca-certificates git openssh 2>/dev/null || true && \
+    gem install oxidized 2>/dev/null || true
 USER 65532:65532
 EXPOSE 9101
 STOPSIGNAL SIGTERM

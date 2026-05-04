@@ -2,11 +2,11 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243
 ARG NGINX_VERSION=1.27.1
 ARG MODSEC_VERSION=3.0.12
 
-RUN apk add --no-cache nginx ca-certificates libxml2 curl || true
-RUN addgroup -S -g 10000 nginx 2>/dev/null || true && \
-    adduser -u 65532 -G nginx -D -h /app -s /bin/false nginx 2>/dev/null || true
-RUN mkdir -p /app /var/log/nginx /var/cache/nginx /etc/nginx/modsec /run 2>/dev/null || true
-RUN chown -R 65532:65532 /app /var/log/nginx /var/cache/nginx 2>/dev/null || true
+RUN apk add --no-cache nginx ca-certificates libxml2 curl || true && \
+    addgroup -S -g 10000 nginx 2>/dev/null || true && \
+    adduser -u 65532 -G nginx -D -h /app -s /bin/false nginx 2>/dev/null || true && \
+    mkdir -p /app /var/log/nginx /var/cache/nginx /etc/nginx/modsec /run 2>/dev/null || true && \
+    chown -R 65532:65532 /app /var/log/nginx /var/cache/nginx 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 80 443

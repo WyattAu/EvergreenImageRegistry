@@ -19,20 +19,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         erlang-mnesia erlang-os-mon erlang-parsetools erlang-public-key \
         erlang-runtime-tools erlang-snmp erlang-ssl erlang-syntax-tools \
         erlang-tftp erlang-tools erlang-xmerl \
-        rabbitmq-server ; rabbitmq-plugins enable rabbitmq_amqp1_0 ; rm -rf /var/lib/apt/lists/* || true
-
-RUN test -f /usr/lib/rabbitmq || { echo '#!/bin/sh' > /usr/lib/rabbitmq && echo 'echo "rabbitmq-amqp v${VERSION} placeholder"' >> /usr/lib/rabbitmq && echo 'exec sleep infinity' >> /usr/lib/rabbitmq && chmod +x /usr/lib/rabbitmq ; } ; \
+        rabbitmq-server ; rabbitmq-plugins enable rabbitmq_amqp1_0 ; rm -rf /var/lib/apt/lists/* || true && \
+    test -f /usr/lib/rabbitmq || { echo '#!/bin/sh' > /usr/lib/rabbitmq && echo 'echo "rabbitmq-amqp v${VERSION} placeholder"' >> /usr/lib/rabbitmq && echo 'exec sleep infinity' >> /usr/lib/rabbitmq && chmod +x /usr/lib/rabbitmq ; } ; \
     test -f /usr/sbin/rabbitmq* || { echo '#!/bin/sh' > /usr/sbin/rabbitmq* && echo 'echo "rabbitmq-amqp v${VERSION} placeholder"' >> /usr/sbin/rabbitmq* && echo 'exec sleep infinity' >> /usr/sbin/rabbitmq* && chmod +x /usr/sbin/rabbitmq* ; } ; \
     test -f /usr/bin/rabbitmq* || { echo '#!/bin/sh' > /usr/bin/rabbitmq* && echo 'echo "rabbitmq-amqp v${VERSION} placeholder"' >> /usr/bin/rabbitmq* && echo 'exec sleep infinity' >> /usr/bin/rabbitmq* && chmod +x /usr/bin/rabbitmq* ; } ; \
     test -f /etc/rabbitmq || { echo '#!/bin/sh' > /etc/rabbitmq && echo 'echo "rabbitmq-amqp v${VERSION} placeholder"' >> /etc/rabbitmq && echo 'exec sleep infinity' >> /etc/rabbitmq && chmod +x /etc/rabbitmq ; }
-
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt GPG signatures (ppa1.novemberain.com)
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates 
-RUN adduser -u 65532 -s /bin/false rabbitmq || true
-RUN mkdir -p /var/lib/rabbitmq /var/log/rabbitmq /etc/rabbitmq
+RUN apk add --no-cache ca-certificates && \
+    adduser -u 65532 -s /bin/false rabbitmq || true && \
+    mkdir -p /var/lib/rabbitmq /var/log/rabbitmq /etc/rabbitmq
 COPY --from=builder /usr/lib/rabbitmq /usr/lib/rabbitmq
 COPY --from=builder /usr/sbin/rabbitmq* /usr/sbin/
 COPY --from=builder /usr/bin/rabbitmq* /usr/bin/

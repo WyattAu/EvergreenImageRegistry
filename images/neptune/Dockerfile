@@ -6,21 +6,20 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
         python3 python3-pip ca-certificates curl && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN pip3 install --break-system-packages --no-cache-dir \
-        gremlinpython SPARQLWrapper 2>/dev/null || true
-RUN mkdir -p /app-src 2>/dev/null || true
-
+    rm -rf /var/lib/apt/lists/* || true && \
+    pip3 install --break-system-packages --no-cache-dir \
+        gremlinpython SPARQLWrapper 2>/dev/null || true && \
+    mkdir -p /app-src 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION
 RUN apk add --no-cache ca-certificates python3 py3-pip || true && \
     pip3 install --break-system-packages --no-cache-dir \
         gremlinpython SPARQLWrapper 2>/dev/null || true && \
     adduser -u 65532 -s /bin/false neptune 2>/dev/null || true && \
-    mkdir -p /var/lib/neptune /var/log/neptune /app 2>/dev/null || true
-RUN printf '#!/bin/sh\nexec python3 -c "\nimport sys\nprint(\"neptune v%s - AWS Neptune development compatibility\")\nprint(\"AWS Neptune is a fully managed graph database service.\")\nprint(\"This image provides local Gremlin/SPARQL compatibility for development.\")\nprint(\"Connect to your AWS Neptune endpoint in production.\")\nprint(\"\")\nprint(\"Available tools: gremlinpython, SPARQLWrapper\")\nprint(\"Usage: import this image as a base for your Neptune-compatible application.\")\n"' "${VERSION}" > /app/neptune && \
-    chmod +x /app/neptune
-RUN chown -R 65532:65532 /var/lib/neptune /var/log/neptune /app
+    mkdir -p /var/lib/neptune /var/log/neptune /app 2>/dev/null || true && \
+    printf '#!/bin/sh\nexec python3 -c "\nimport sys\nprint(\"neptune v%s - AWS Neptune development compatibility\")\nprint(\"AWS Neptune is a fully managed graph database service.\")\nprint(\"This image provides local Gremlin/SPARQL compatibility for development.\")\nprint(\"Connect to your AWS Neptune endpoint in production.\")\nprint(\"\")\nprint(\"Available tools: gremlinpython, SPARQLWrapper\")\nprint(\"Usage: import this image as a base for your Neptune-compatible application.\")\n"' "${VERSION}" > /app/neptune && \
+    chmod +x /app/neptune && \
+    chown -R 65532:65532 /var/lib/neptune /var/log/neptune /app
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8182 8443

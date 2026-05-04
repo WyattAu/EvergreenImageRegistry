@@ -11,9 +11,9 @@ ARG TARGETARCH
 
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
-RUN apk add --no-cache ca-certificates curl 
-RUN adduser -u 65532 -D erpnext 2>/dev/null || true
-RUN mkdir -p /app /var/log/erpnext /var/cache/erpnext && chown -R erpnext:erpnext /app /var/log/erpnext /var/cache/erpnext 2>/dev/null || true
+RUN apk add --no-cache ca-certificates curl && \
+    adduser -u 65532 -D erpnext 2>/dev/null || true && \
+    mkdir -p /app /var/log/erpnext /var/cache/erpnext && chown -R erpnext:erpnext /app /var/log/erpnext /var/cache/erpnext 2>/dev/null || true
 USER erpnext
 WORKDIR /app
 EXPOSE 8000

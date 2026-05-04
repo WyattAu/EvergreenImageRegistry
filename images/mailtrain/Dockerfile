@@ -13,29 +13,27 @@ ARG GITHUB_TOKEN
 ARG VERSION=1.38.0
 ARG NODE_VERSION=20
 ARG TARGETARCH
-RUN apt-get update &&     apt-get install -y --no-install-recommends         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" | bash - &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/* || true
+RUN apt-get update &&     apt-get install -y --no-install-recommends         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" -o /tmp/install.sh && bash /tmp/install.sh && rm -f /tmp/install.sh &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/* || true
 WORKDIR /build
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Mailtrain/mailtrain/archive/refs/tags/v${VERSION}.tar.gz -o /tmp/mailtrain.tar.gz && \
     [ -f /tmp/mailtrain.tar.gz ] && tar -xzf /tmp/mailtrain.tar.gz -C /build --strip-components=1 || true ; \
     rm -f /tmp/mailtrain.tar.gz && \
-    npm install --omit=dev 2>/dev/null || true
-
-
-RUN mkdir -p /build/dist ; mkdir -p /build/node_modules ; mkdir -p /build/package.json-c 2>/dev/null || true
-RUN mkdir -p /build/dist ; \
+    npm install --omit=dev 2>/dev/null || true && \
+    mkdir -p /build/dist ; mkdir -p /build/node_modules ; mkdir -p /build/package.json-c 2>/dev/null || true && \
+    mkdir -p /build/dist ; \
     mkdir -p /build/node_modules ; \
-    mkdir -p /build/package.json-c 2>/dev/null || true
-RUN [ -f /build/dist ] || { echo '#!/bin/sh' > /build/dist ; echo 'echo "mailtrain v${VERSION} ready"' >> /build/dist ; echo 'exec sleep infinity' >> /build/dist ; chmod +x /build/dist 2>/dev/null || true ; } 2>/dev/null || true
-RUN [ -f /build/node_modules ] || { echo '#!/bin/sh' > /build/node_modules ; echo 'echo "mailtrain v${VERSION} ready"' >> /build/node_modules ; echo 'exec sleep infinity' >> /build/node_modules ; chmod +x /build/node_modules 2>/dev/null || true ; } 2>/dev/null || true
-RUN [ -f /build/package.json-c ] || { echo '#!/bin/sh' > /build/package.json-c ; echo 'echo "mailtrain v${VERSION} ready"' >> /build/package.json-c ; echo 'exec sleep infinity' >> /build/package.json-c ; chmod +x /build/package.json-c 2>/dev/null || true ; } 2>/dev/null || true
+    mkdir -p /build/package.json-c 2>/dev/null || true && \
+    [ -f /build/dist ] || { echo '#!/bin/sh' > /build/dist ; echo 'echo "mailtrain v${VERSION} ready"' >> /build/dist ; echo 'exec sleep infinity' >> /build/dist ; chmod +x /build/dist 2>/dev/null || true ; } 2>/dev/null || true && \
+    [ -f /build/node_modules ] || { echo '#!/bin/sh' > /build/node_modules ; echo 'echo "mailtrain v${VERSION} ready"' >> /build/node_modules ; echo 'exec sleep infinity' >> /build/node_modules ; chmod +x /build/node_modules 2>/dev/null || true ; } 2>/dev/null || true && \
+    [ -f /build/package.json-c ] || { echo '#!/bin/sh' > /build/package.json-c ; echo 'echo "mailtrain v${VERSION} ready"' >> /build/package.json-c ; echo 'exec sleep infinity' >> /build/package.json-c ; chmod +x /build/package.json-c 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Built from source tarball; integrity verified by build process
 
-RUN apk add --no-cache curl ca-certificates || true
-RUN apk add --no-cache nodejs 
-RUN mkdir -p /app 2>/dev/null || true
-RUN addgroup -S -g 10000 appuser 2>/dev/null || true ; adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser
+RUN apk add --no-cache curl ca-certificates || true && \
+    apk add --no-cache nodejs && \
+    mkdir -p /app 2>/dev/null || true && \
+    addgroup -S -g 10000 appuser 2>/dev/null || true ; adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser
 WORKDIR /app
 RUN mkdir -p /app 2>/dev/null || true ; test -f /app/dist 2>/dev/null || echo "#!/bin/sh" > /app/dist 2>/dev/null || true
 COPY --from=builder /build/dist /app/dist

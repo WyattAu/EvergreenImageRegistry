@@ -14,12 +14,9 @@
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 RUN apk add --no-cache \
-    ca-certificates
-# wolfi provides java-21-default-jdk via: apk add java-21-default-jdk
-# But the package name varies; use wolfi's native java if available
-RUN apk add --no-cache java-21-default-jdk 2>/dev/null || \
+    ca-certificates && \
+    apk add --no-cache java-21-default-jdk 2>/dev/null || \
     apk add --no-cache openjdk-21-jdk-headless 2>/dev/null || true
-
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"

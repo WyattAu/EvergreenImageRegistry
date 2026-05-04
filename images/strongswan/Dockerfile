@@ -7,23 +7,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         strongswan strongswan-pki libcharon-extra-plugins \
         libcharon-extauth-plugins libstrongswan-extra-plugins \
         charon-systemd && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN mkdir -p /app-src /var/log/strongswan /var/run/charon \
-        /etc/strongswan.d /etc/ipsec.d 2>/dev/null || true
-RUN strip --strip-all /usr/sbin/charon 2>/dev/null || true && \
+    rm -rf /var/lib/apt/lists/* || true && \
+    mkdir -p /app-src /var/log/strongswan /var/run/charon \
+        /etc/strongswan.d /etc/ipsec.d 2>/dev/null || true && \
+    strip --strip-all /usr/sbin/charon 2>/dev/null || true && \
     strip --strip-all /usr/sbin/charon-systemd 2>/dev/null || true && \
     strip --strip-all /usr/sbin/strongswan 2>/dev/null || true && \
     strip --strip-all /usr/sbin/pki 2>/dev/null || true && \
     strip --strip-all /usr/sbin/swanctl 2>/dev/null || true && \
     strip --strip-all /usr/sbin/ipsec 2>/dev/null || true && \
     find /usr/lib -type f -name "lib*.so*" -exec strip --strip-unneeded {} \; 2>/dev/null || true
-
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION
 RUN apk add --no-cache ca-certificates iproute2 iptables kmod \
         libcurl openssl-libs talloc \
-        gmp libcrypto1.1 zlib || true
-RUN mkdir -p /etc /usr/lib /usr/sbin /var/log /run/charon \
+        gmp libcrypto1.1 zlib || true && \
+    mkdir -p /etc /usr/lib /usr/sbin /var/log /run/charon \
         /etc/strongswan.d /etc/ipsec.d /app 2>/dev/null || true
 COPY --from=installer /usr/sbin/charon /usr/sbin/charon
 COPY --from=installer /usr/sbin/charon-systemd /usr/sbin/charon-systemd

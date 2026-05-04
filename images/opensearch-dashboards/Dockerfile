@@ -17,8 +17,8 @@ RUN apk add --no-cache curl ca-certificates \ || true
     tar xzf /tmp/osd.tar.gz -C /opt && rm -f /tmp/osd.tar.gz && \
     ln -s /opt/opensearch-dashboards-${VERSION} /opt/opensearch-dashboards && \
     ln -s /opt/opensearch-dashboards/bin/opensearch-dashboards /usr/local/bin/opensearch-dashboards || true
-RUN adduser -u 65532 -D opensearch-dashboards 2>/dev/null || true
-RUN mkdir -p /app /var/log/opensearch-dashboards /var/cache/opensearch-dashboards && chown -R opensearch-dashboards:opensearch-dashboards /app /var/log/opensearch-dashboards /var/cache/opensearch-dashboards 2>/dev/null || true
+RUN adduser -u 65532 -D opensearch-dashboards 2>/dev/null || true && \
+    mkdir -p /app /var/log/opensearch-dashboards /var/cache/opensearch-dashboards && chown -R opensearch-dashboards:opensearch-dashboards /app /var/log/opensearch-dashboards /var/cache/opensearch-dashboards 2>/dev/null || true
 USER opensearch-dashboards
 WORKDIR /app
 EXPOSE 5601

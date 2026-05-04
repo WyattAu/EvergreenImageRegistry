@@ -16,8 +16,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         git curl ca-certificates \
         build-essential libffi-dev libssl-dev \
         postgresql-dev libjpeg-turbo-turbo-dev zlib1g-dev && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN python3 -m venv /opt/venv || true
+    rm -rf /var/lib/apt/lists/* || true && \
+    python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel || true && \
     pip install --no-cache-dir frappe-bench || true ; \

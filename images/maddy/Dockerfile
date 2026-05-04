@@ -3,15 +3,14 @@ ARG VERSION=0.9.3
 ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
+    rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/foxcpp/maddy/releases/download/v${VERSION}/maddy-linux-amd64.tar.gz" \
     -o /tmp/maddy.tar.gz && \
     tar -xzf /tmp/maddy.tar.gz -C /tmp && \
     mv /tmp/maddy /usr/local/bin/maddy && \
     chmod +x /usr/local/bin/maddy && \
     strip /usr/local/bin/maddy || true
-
 FROM scratch
 COPY --from=downloader /usr/local/bin/maddy /usr/local/bin/maddy
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

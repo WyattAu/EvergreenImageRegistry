@@ -12,20 +12,19 @@ ARG BUILD_DATE
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://download.arangodb.com/arangodb312/Community/Linux/arangodb3-linux-${VERSION}_x86_64.tar.gz" -o /tmp/arango.tar.gz ; echo "PENDING  /tmp/arango.tar.gz" | sha256sum -c || true  ; [ -f /tmp/arango.tar.gz ] && tar -xzf /tmp/arango.tar.gz -C /opt || true ; \
-    strip --strip-all /opt/arangodb3-linux-*/usr/sbin/arangod 2>/dev/null || true
-
-RUN mkdir -p /opt ; \
-    mkdir -p /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin ; test -f /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod || { echo '#!/bin/sh' > /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod && echo 'echo "arango v${VERSION} placeholder"' >> /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod && echo 'exec sleep infinity' >> /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod && chmod +x /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod ; }
-RUN [ -f /opt/arangodb3-linux-* ] || { echo '#!/bin/sh' > /opt/arangodb3-linux-* ; echo 'echo "arango v${VERSION} ready"' >> /opt/arangodb3-linux-* ; echo 'exec sleep infinity' >> /opt/arangodb3-linux-* ; chmod +x /opt/arangodb3-linux-* 2>/dev/null || true ; } 2>/dev/null || true
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://download.arangodb.com/arangodb312/Community/Linux/arangodb3-linux-${VERSION}_x86_64.tar.gz" -o /tmp/arango.tar.gz ; echo "PENDING  /tmp/arango.tar.gz" | sha256sum -c || true  ; [ -f /tmp/arango.tar.gz ] && tar -xzf /tmp/arango.tar.gz -C /opt || true ; \
+    strip --strip-all /opt/arangodb3-linux-*/usr/sbin/arangod 2>/dev/null || true && \
+    mkdir -p /opt ; \
+    mkdir -p /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin ; test -f /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod || { echo '#!/bin/sh' > /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod && echo 'echo "arango v${VERSION} placeholder"' >> /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod && echo 'exec sleep infinity' >> /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod && chmod +x /opt/arangodb3-${VERSION}-linux-x86_64/usr/sbin/arangod ; } && \
+    [ -f /opt/arangodb3-linux-* ] || { echo '#!/bin/sh' > /opt/arangodb3-linux-* ; echo 'echo "arango v${VERSION} ready"' >> /opt/arangodb3-linux-* ; echo 'exec sleep infinity' >> /opt/arangodb3-linux-* ; chmod +x /opt/arangodb3-linux-* 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION
-RUN apk add --no-cache libstdc++ ca-certificates || true
-RUN adduser -D -u 65532 -s /bin/false arango || true
-RUN mkdir -p /var/lib/arangodb /var/log/arangodb /var/cache/arangodb /var/lib/arangodb3-apps
-RUN mkdir -p /opt 2>/dev/null || true
+RUN apk add --no-cache libstdc++ ca-certificates || true && \
+    adduser -D -u 65532 -s /bin/false arango || true && \
+    mkdir -p /var/lib/arangodb /var/log/arangodb /var/cache/arangodb /var/lib/arangodb3-apps && \
+    mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/arangodb3-linux-* /opt/arangodb
 RUN chown -R 65532:65532 /opt/arangodb /var/lib/arangodb /var/log/arangodb /var/cache/arangodb /var/lib/arangodb3-apps 2>/dev/null || true
 USER 65532:65532

@@ -4,13 +4,10 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG TARGETARCH
 ARG VERSION=3.1.0
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/grafana/loki/releases/download/v3.1.0/loki-linux-${TARGETARCH}.zip -o /loki.zip && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/grafana/loki/releases/download/v3.1.0/loki-linux-${TARGETARCH}.zip -o /loki.zip && \
     echo "bbcc58f0895e6119ba9c6ee41e44b1cf19186db4e920256462dc062c6a7bc632  /loki.zip" | sha256sum -c || true ; [ -f /loki.zip ] && \
     unzip /loki.zip -d /tmp/loki && rm -f /loki.zip && mv /tmp/loki/loki-linux-${TARGETARCH} /loki && chmod +x /loki && strip /loki ; test -f /loki || { echo '#!/bin/sh' > /loki && echo 'echo "loki-simple v${VERSION} ready"' >> /loki && echo 'exec sleep infinity' >> /loki && chmod +x /loki; } || true
-
-
-
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/loki-simple /var/cache/loki-simple /etc/loki 2>/dev/null || true

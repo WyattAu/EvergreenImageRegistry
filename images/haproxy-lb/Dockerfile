@@ -11,13 +11,10 @@ ARG BUILD_DATE
 # hadolint ignore=DL3023
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31 AS builder
-RUN apk add --no-cache haproxy || true
-RUN mkdir -p /tmp/haproxy 2>/dev/null || true
-RUN cp "$(which haproxy)" /tmp/haproxy/haproxy
-
-
-RUN mkdir -p /tmp/haproxy/haproxy 2>/dev/null || true
-
+RUN apk add --no-cache haproxy || true && \
+    mkdir -p /tmp/haproxy 2>/dev/null || true && \
+    cp "$(which haproxy)" /tmp/haproxy/haproxy && \
+    mkdir -p /tmp/haproxy/haproxy 2>/dev/null || true
 FROM scratch
 ARG VERSION=2.8.5
 COPY --from=builder /tmp/haproxy/haproxy /usr/local/sbin/haproxy

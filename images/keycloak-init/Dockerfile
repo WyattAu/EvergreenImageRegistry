@@ -1,8 +1,8 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=26.6.1
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/keycloak/keycloak/releases/download/${VERSION}/keycloak-${VERSION}.tar.gz" -o /keycloak.tar.gz || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/keycloak/keycloak/releases/download/${VERSION}/keycloak-${VERSION}.tar.gz" -o /keycloak.tar.gz || true ; \
     echo "f3ce596dcf772ae145581ef338f9c3937ee37c74d7c1793e563c61519baaaafc  /keycloak.tar.gz" | sha256sum -c || true  #
     mkdir -p /opt/keycloak-${VERSION}/bin && \
     if [ -f /keycloak.tar.gz ]; then tar -xzf /keycloak.tar.gz -C /opt/ && rm -rf /keycloak.tar.gz ; fi ; \
@@ -11,8 +11,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates 
-RUN mkdir -p /opt 2>/dev/null || true
+RUN apk add --no-cache ca-certificates && \
+    mkdir -p /opt 2>/dev/null || true
 COPY --from=downloader /opt/keycloak-${VERSION} /opt/keycloak
 RUN mkdir -p /app && chown -R 65532:65532 /app /opt/keycloak 2>/dev/null || true
 USER 65532:65532

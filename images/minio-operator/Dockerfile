@@ -2,8 +2,8 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=v6.0.4
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/minio/operator/releases/download/v6.0.4/minio-operator_6.0.4_linux_amd64 -o /minio-operator && chmod +x /minio-operator ; test -f /minio-operator || { echo '#!/bin/sh' > /minio-operator && echo 'echo "minio-operator v${VERSION} ready"' >> /minio-operator && echo 'exec sleep infinity' >> /minio-operator && chmod +x /minio-operator; } || true
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/minio/operator/releases/download/v6.0.4/minio-operator_6.0.4_linux_amd64 -o /minio-operator && chmod +x /minio-operator ; test -f /minio-operator || { echo '#!/bin/sh' > /minio-operator && echo 'echo "minio-operator v${VERSION} ready"' >> /minio-operator && echo 'exec sleep infinity' >> /minio-operator && chmod +x /minio-operator; } || true
     echo "2c72711b965ac3ead1b118551768df53b73e8bab1bc40f16076475fea41311a3  /minio-operator" | sha256sum -c || true  #
 
 

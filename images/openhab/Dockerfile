@@ -12,13 +12,12 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION=4.2.0
 ARG GITHUB_TOKEN
 ARG TARGETARCH
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/openhab/openhab-distro/releases/download/v${VERSION}/openhab-${VERSION}.tar.gz" -o /tmp/openhab.tar.gz && \
     mkdir -p /app && \
     tar -xzf /tmp/openhab.tar.gz -C /app && rm -f /tmp/openhab.tar.gz && \
     chmod +x /app/start.sh
-
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache ca-certificates curl 2>/dev/null || true && \

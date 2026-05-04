@@ -9,17 +9,16 @@ ARG BUILD_DATE
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates gnupg && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://virtuoso.openlinksw.com/data/virtuoso_abikey.asc" | gnupg --dearmor -o /usr/share/keyrings/virtuoso-keyring.gnupg 2>/dev/null || true ; echo "deb [signed-by=/usr/share/keyrings/virtuoso-keyring.gnupg] https://packages.virtuoso.opensourcedatabases.org/virtuoso/deb bookworm main" > /etc/apt/sources.list.d/virtuoso.list 2>/dev/null || true
-
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates gnupg && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://virtuoso.openlinksw.com/data/virtuoso_abikey.asc" | gnupg --dearmor -o /usr/share/keyrings/virtuoso-keyring.gnupg 2>/dev/null || true ; echo "deb [signed-by=/usr/share/keyrings/virtuoso-keyring.gnupg] https://packages.virtuoso.opensourcedatabases.org/virtuoso/deb bookworm main" > /etc/apt/sources.list.d/virtuoso.list 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt GPG signatures (packages.virtuoso.opensourcedatabases.org)
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates 
-RUN adduser -u 65532 -s /bin/false virtuoso 2>/dev/null || true
-RUN mkdir -p /var/lib/virtuoso /var/log/virtuoso /var/cache/virtuoso 2>/dev/null || true
-RUN chown -R 65532:65532 /var/lib/virtuoso /var/log/virtuoso /var/cache/virtuoso
+RUN apk add --no-cache ca-certificates && \
+    adduser -u 65532 -s /bin/false virtuoso 2>/dev/null || true && \
+    mkdir -p /var/lib/virtuoso /var/log/virtuoso /var/cache/virtuoso 2>/dev/null || true && \
+    chown -R 65532:65532 /var/lib/virtuoso /var/log/virtuoso /var/cache/virtuoso
 USER 65532:65532
 WORKDIR /var/lib/virtuoso
 EXPOSE 1111 8890

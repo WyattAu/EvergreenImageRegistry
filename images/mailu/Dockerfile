@@ -10,8 +10,8 @@ ARG TARGETARCH
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
-RUN apt-get update &&     apt-get install -y --no-install-recommends         python3-pip         python3         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/* || true
-RUN python3 -m venv /opt/venv || true
+RUN apt-get update &&     apt-get install -y --no-install-recommends         python3-pip         python3         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/* || true && \
+    python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:${PATH}"
 RUN pip install --no-cache-dir mailu==2.0.0 || true && \
     mkdir -p /opt/venv 2>/dev/null || true && \
@@ -21,8 +21,8 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243
 
 RUN apk add --no-cache python3 ca-certificates || true && \
     mkdir -p /app 2>/dev/null || true && \
-    addgroup -S -g 10000 appuser 2>/dev/null || true ; adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser
-RUN mkdir -p /opt 2>/dev/null || true ; test -f /opt/venv 2>/dev/null || echo "#!/bin/sh" > /opt/venv 2>/dev/null || true
+    addgroup -S -g 10000 appuser 2>/dev/null || true ; adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser && \
+    mkdir -p /opt 2>/dev/null || true ; test -f /opt/venv 2>/dev/null || echo "#!/bin/sh" > /opt/venv 2>/dev/null || true
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 RUN mkdir -p /app /var/log/mailu /var/cache/mailu /data && chown -R 65532:65532 /app /var/log/mailu /var/cache/mailu /data 2>/dev/null || true

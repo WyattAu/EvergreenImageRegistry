@@ -10,15 +10,12 @@ ARG BUILD_DATE
 ARG TARGETARCH
 FROM python@sha256:46cb7cc2877e60fbd5e21a9ae6115c30ace7a077b9f8772da879e4590c18c2e3 AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        pkg-config libmariadb-dev && rm -rf /var/lib/apt/lists/* || true
-RUN pip install --no-cache-dir --prefix=/install \
+        pkg-config libmariadb-dev && rm -rf /var/lib/apt/lists/* || true && \
+    pip install --no-cache-dir --prefix=/install \
     mysqlclient 2>/dev/null || true ; \
     find /install -type f -name "*.pyc" -delete 2>/dev/null ; \
-    find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
-
-
-RUN test -f /install || { echo '#!/bin/sh' > /install && echo 'echo "mysql-anonymizer v${VERSION} placeholder"' >> /install && echo 'exec sleep infinity' >> /install && chmod +x /install ; }
-
+    find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true && \
+    test -f /install || { echo '#!/bin/sh' > /install && echo 'echo "mysql-anonymizer v${VERSION} placeholder"' >> /install && echo 'exec sleep infinity' >> /install && chmod +x /install ; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache curl ca-certificates || true

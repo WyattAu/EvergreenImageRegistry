@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
-RUN apk add --no-cache ca-certificates 
-RUN adduser -u 65532 -D pgpool 2>/dev/null || true
-RUN mkdir -p /app /var/log/pgpool /var/cache/pgpool && chown -R pgpool:pgpool /app /var/log/pgpool /var/cache/pgpool 2>/dev/null || true
+RUN apk add --no-cache ca-certificates && \
+    adduser -u 65532 -D pgpool 2>/dev/null || true && \
+    mkdir -p /app /var/log/pgpool /var/cache/pgpool && chown -R pgpool:pgpool /app /var/log/pgpool /var/cache/pgpool 2>/dev/null || true
 USER pgpool
 WORKDIR /app
 EXPOSE 9999

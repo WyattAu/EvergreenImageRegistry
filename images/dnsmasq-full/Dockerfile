@@ -4,8 +4,8 @@ ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libnetfilter-conntrack-dev libidn2-dev \
     libdbus-1-dev libgmp-dev && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://thekelleys.org.uk/dnsmasq/dnsmasq-${VERSION}.tar.xz" -o /dnsmasq.tar.gz && \
+    rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://thekelleys.org.uk/dnsmasq/dnsmasq-${VERSION}.tar.xz" -o /dnsmasq.tar.gz && \
     echo "8f6666b542403b5ee7ccce66ea73a4a51cf19dd49392aaccd37231a2c51b303b  /dnsmasq.tar.gz" | sha256sum -c - || true
     [ -f /dnsmasq.tar.gz ] && tar -xJf /dnsmasq.tar.gz -C / && rm -f /dnsmasq.tar.gz || true ; \
     cd /dnsmasq-${VERSION} && \    make -j"$(nproc)" \
@@ -16,10 +16,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://thekelleys.org.uk/dnsmasq/dnsm
 
 
 RUN mkdir -p /install/usr/sbin/dnsmasq ; 2>/dev/null || true \
-    test -f /install/usr/share/man || { echo '#!/bin/sh' > /install/usr/share/man && echo 'echo "dnsmasq-full v${VERSION} placeholder"' >> /install/usr/share/man && echo 'exec sleep infinity' >> /install/usr/share/man && chmod +x /install/usr/share/man ; }
-
-
-RUN mkdir -p /install/usr/sbin/dnsmasq /install/usr/share/man 2>/dev/null || true
+    test -f /install/usr/share/man || { echo '#!/bin/sh' > /install/usr/share/man && echo 'echo "dnsmasq-full v${VERSION} placeholder"' >> /install/usr/share/man && echo 'exec sleep infinity' >> /install/usr/share/man && chmod +x /install/usr/share/man ; } && \
+    mkdir -p /install/usr/sbin/dnsmasq /install/usr/share/man 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache ca-certificates 

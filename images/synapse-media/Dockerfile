@@ -21,8 +21,8 @@ RUN apt-get update && \
         libffi-dev \
         curl \
         ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
-RUN python3 -m venv /opt/venv || true
+    rm -rf /var/lib/apt/lists/* && \
+    python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:${PATH}"
 RUN pip install --no-cache-dir "matrix-synapse[all]==${VERSION}" || true
 

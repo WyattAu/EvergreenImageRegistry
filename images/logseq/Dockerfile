@@ -11,9 +11,9 @@ ARG TARGETARCH
 
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
-RUN apk add --no-cache nodejs npm ca-certificates 
-RUN adduser -u 65532 -D node 2>/dev/null || true
-RUN mkdir -p /app /var/log/node /var/cache/node && chown -R node:node /app /var/log/node /var/cache/node 2>/dev/null || true
+RUN apk add --no-cache nodejs npm ca-certificates && \
+    adduser -u 65532 -D node 2>/dev/null || true && \
+    mkdir -p /app /var/log/node /var/cache/node && chown -R node:node /app /var/log/node /var/cache/node 2>/dev/null || true
 USER node
 WORKDIR /app
 EXPOSE 3000

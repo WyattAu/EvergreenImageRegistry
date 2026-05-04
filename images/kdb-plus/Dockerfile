@@ -6,9 +6,8 @@
 
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
-RUN apk add --no-cache ca-certificates tzdata curl 
-
-RUN addgroup -S -g 65532 kdb 2>/dev/null || true && \
+RUN apk add --no-cache ca-certificates tzdata curl && \
+    addgroup -S -g 65532 kdb 2>/dev/null || true && \
     adduser -u 65532 -G kdb -D -D -h /opt/kdb -s /bin/false kdb 2>/dev/null || true && \
     mkdir -p /opt/kdb/data /opt/kdb/logs /var/log/kdb ; \
     chown -R 65532:65532 /opt/kdb /var/log/kdb

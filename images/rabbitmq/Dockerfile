@@ -13,9 +13,9 @@ ENV HEALTH_CMD="rabbitmq-diagnostics -q ping" \
     READY_CMD="rabbitmq-diagnostics -q check_running" \
     STARTUP_CMD="rabbitmq-diagnostics -q ping" \
     EVERGREEN_LOG_LEVEL=info
-RUN apk add --no-cache ca-certificates 
-RUN adduser -u 65532 -D rabbitmq 2>/dev/null || true
-RUN mkdir -p /app /var/log/rabbitmq-server /var/cache/rabbitmq-server && chown -R rabbitmq:rabbitmq /app /var/log/rabbitmq-server /var/cache/rabbitmq-server 2>/dev/null || true
+RUN apk add --no-cache ca-certificates && \
+    adduser -u 65532 -D rabbitmq 2>/dev/null || true && \
+    mkdir -p /app /var/log/rabbitmq-server /var/cache/rabbitmq-server && chown -R rabbitmq:rabbitmq /app /var/log/rabbitmq-server /var/cache/rabbitmq-server 2>/dev/null || true
 USER rabbitmq
 WORKDIR /app
 EXPOSE 5672 15672

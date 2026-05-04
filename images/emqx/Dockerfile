@@ -2,22 +2,19 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        curl ca-certificates gnupg ; rm -rf /var/lib/apt/lists/* || true
-
-RUN curl --retry 3 --retry-delay 5 -fsSL -o /emqx.tar.gz "https://www.emqx.com/en/downloads/broker/v5.8.0/emqx-5.8.0-debian12-amd64.tar.gz" || true && \
-    echo "95a8b8d0e51b2f9d0c7eab768aeb51e7e01ed290cd61a0a97092c2bb38815d58  /emqx.tar.gz" | sha256sum -c || true
-RUN mkdir -p /opt/emqx ; \
-    [ -f /emqx.tar.gz ] && tar -xzf /emqx.tar.gz -C /opt/emqx --strip-components=1 && rm -f /emqx.tar.gz || true
-RUN mkdir -p /app /opt/emqx/data /opt/emqx/log 2>/dev/null || true
-
-
+        curl ca-certificates gnupg ; rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL -o /emqx.tar.gz "https://www.emqx.com/en/downloads/broker/v5.8.0/emqx-5.8.0-debian12-amd64.tar.gz" || true && \
+    echo "95a8b8d0e51b2f9d0c7eab768aeb51e7e01ed290cd61a0a97092c2bb38815d58  /emqx.tar.gz" | sha256sum -c || true && \
+    mkdir -p /opt/emqx ; \
+    [ -f /emqx.tar.gz ] && tar -xzf /emqx.tar.gz -C /opt/emqx --strip-components=1 && rm -f /emqx.tar.gz || true && \
+    mkdir -p /app /opt/emqx/data /opt/emqx/log 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache ca-certificates curl procps 
 COPY --from=builder /opt/emqx /opt/emqx
 COPY --from=builder /app /app
-RUN addgroup -S -g 2 nogroup >/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /opt/emqx -s /bin/false emqx 2>/dev/null || true && \
+RUN addgroup -S -g 2 nogroup >/dev/null || true && \
+    adduser -u 65532 -G nogroup -D -h /opt/emqx -s /bin/false emqx 2>/dev/null || true && \
     chown -R 65532:65532 /opt/emqx /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/emqx

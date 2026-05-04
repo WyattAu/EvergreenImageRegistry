@@ -13,10 +13,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=1.6.9
-RUN apk add --no-cache php83 php83-fpm php83-session php83-mbstring php83-xml php83-iconv php83-dom php83-curl php83-intl php83-json ca-certificates || true
-RUN addgroup -S -g 10000 roundcube 2>/dev/null || true && \
-    adduser -u 65532 -G roundcube -D -h /usr/share/webapps/roundcube -s /bin/false roundcube 2>/dev/null || true
-RUN mkdir -p /usr/share/webapps/roundcube /var/lib/roundcube /var/log/roundcube /var/run/php 2>/dev/null || true
+RUN apk add --no-cache php83 php83-fpm php83-session php83-mbstring php83-xml php83-iconv php83-dom php83-curl php83-intl php83-json ca-certificates || true && \
+    addgroup -S -g 10000 roundcube 2>/dev/null || true && \
+    adduser -u 65532 -G roundcube -D -h /usr/share/webapps/roundcube -s /bin/false roundcube 2>/dev/null || true && \
+    mkdir -p /usr/share/webapps/roundcube /var/lib/roundcube /var/log/roundcube /var/run/php 2>/dev/null || true
 COPY --from=builder /build /usr/share/webapps/roundcube
 RUN chown -R 65532:65532 /usr/share/webapps/roundcube /var/lib/roundcube /var/log/roundcube /var/run/php 2>/dev/null || true
 USER 65532:65532

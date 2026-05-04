@@ -13,18 +13,15 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3-pip python3 && rm -rf /var/lib/apt/lists/* || true
-RUN python3 -m venv /opt/venv ; /opt/venv/bin/pip install --no-cache-dir --upgrade pip ; /opt/venv/bin/pip install --no-cache-dir dnsvalidator==${VERSION} 2>/dev/null || \    /opt/venv/bin/pip install --no-cache-dir dnsvalidator || true
-
-
-RUN mkdir -p /opt/venv
-
+    python3-pip python3 && rm -rf /var/lib/apt/lists/* || true && \
+    python3 -m venv /opt/venv ; /opt/venv/bin/pip install --no-cache-dir --upgrade pip ; /opt/venv/bin/pip install --no-cache-dir dnsvalidator==${VERSION} 2>/dev/null || \    /opt/venv/bin/pip install --no-cache-dir dnsvalidator || true && \
+    mkdir -p /opt/venv
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION
-RUN apk add --no-cache python3 ca-certificates 
-RUN adduser -u 65532 -s /bin/false dnsval || true
-RUN mkdir -p /var/lib/dnsvalidator /var/log/dnsvalidator
+RUN apk add --no-cache python3 ca-certificates && \
+    adduser -u 65532 -s /bin/false dnsval || true && \
+    mkdir -p /var/lib/dnsvalidator /var/log/dnsvalidator
 COPY --from=builder /opt/venv /opt/venv
 RUN chown -R 65532:65532 /opt/venv /var/lib/dnsvalidator /var/log/dnsvalidator
 USER 65532:65532

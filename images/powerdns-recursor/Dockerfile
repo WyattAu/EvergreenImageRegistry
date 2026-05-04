@@ -9,16 +9,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl -fsSL https://repo.powerdns.com/repo/deb/public.gpg | gpg --dearmor -o /usr/share/keyrings/pdns-archive-keyring.gpg && \
     apt-get update && \
     apt-get install -y --no-install-recommends pdns-recursor && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN mkdir -p /var/log/pdns-recursor /var/lib/pdns-recursor /etc/pdns-recursor 2>/dev/null || true
-
+    rm -rf /var/lib/apt/lists/* || true && \
+    mkdir -p /var/log/pdns-recursor /var/lib/pdns-recursor /etc/pdns-recursor 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt GPG signatures (repo.powerdns.com)
 ARG VERSION
 RUN apk add --no-cache ca-certificates boost-libs \
         libstdc++ libgcc lua5.4-libs libcurl openssl-libs \
-        protobuf net-snmp-libs fstrm-libs || true
-RUN mkdir -p /app /var/log/pdns-recursor /var/lib/pdns-recursor /etc/pdns-recursor 2>/dev/null || true
+        protobuf net-snmp-libs fstrm-libs || true && \
+    mkdir -p /app /var/log/pdns-recursor /var/lib/pdns-recursor /etc/pdns-recursor 2>/dev/null || true
 COPY --from=installer /usr/sbin/pdns_recursor /usr/local/bin/pdns_recursor
 COPY --from=installer /usr/sbin/rec_control /usr/local/bin/rec_control
 COPY --from=installer /usr/lib/pdns-recursor /usr/lib/pdns-recursor

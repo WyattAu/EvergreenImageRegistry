@@ -9,13 +9,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential cmake g++ \
         libqt5widgets5 libqt5core5a qtbase5-dev \
         ca-certificates curl git && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/Eqonomize/Eqonomize.git /tmp/eqonomize || true ; \
+    rm -rf /var/lib/apt/lists/* || true && \
+    git clone --depth 1 --branch "v${VERSION}" https://github.com/Eqonomize/Eqonomize.git /tmp/eqonomize || true ; \
     cd /tmp/eqonomize && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release . && \
     make -j$(nproc) && make install && strip --strip-all /usr/local/bin/eqonomize 2>/dev/null || true
-
-
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache ca-certificates 

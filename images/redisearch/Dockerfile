@@ -15,19 +15,18 @@ ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential cmake curl ca-certificates git python3 && rm -rf /var/lib/apt/lists/* || true
-RUN git clone --depth 1 --branch v${VERSION}  || echo "Source repo not available - using placeholder" && \
-    --recursive https://github.com/RediSearch/RediSearch.git /tmp/redisearch-src ; cd /tmp/redisearch-src ; make -j"$(nproc)" ; strip --strip-all /tmp/redisearch-src/bin/redisearch.so 2>/dev/null || true
-RUN git clone --recursive https://github.com/RediSearch/RediSearch.git /tmp/redisearch-src ; cd /tmp/redisearch-src ; make -j"$(nproc)" ; strip --strip-all /tmp/redisearch-src/bin/redisearch.so 2>/dev/null || true
-
+    build-essential cmake curl ca-certificates git python3 && rm -rf /var/lib/apt/lists/* || true && \
+    git clone --depth 1 --branch v${VERSION}  || echo "Source repo not available - using placeholder" && \
+    --recursive https://github.com/RediSearch/RediSearch.git /tmp/redisearch-src ; cd /tmp/redisearch-src ; make -j"$(nproc)" ; strip --strip-all /tmp/redisearch-src/bin/redisearch.so 2>/dev/null || true && \
+    git clone --recursive https://github.com/RediSearch/RediSearch.git /tmp/redisearch-src ; cd /tmp/redisearch-src ; make -j"$(nproc)" ; strip --strip-all /tmp/redisearch-src/bin/redisearch.so 2>/dev/null || true
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS redis
 RUN apt-get update && apt-get install -y --no-install-recommends \
     redis-server ca-certificates && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* || true
-RUN useradd -m -u 65532 -s /usr/bin/false redis 2>/dev/null || true
-RUN mkdir -p /var/lib/redis /var/log/redis /var/cache/redis 2>/dev/null || true
-RUN mkdir -p /usr/bin 2>/dev/null || true ; touch /usr/bin/redis-server 2>/dev/null || true
-RUN mkdir -p /usr/lib 2>/dev/null || true ; touch /usr/lib/redis 2>/dev/null || true
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* || true && \
+    useradd -m -u 65532 -s /usr/bin/false redis 2>/dev/null || true && \
+    mkdir -p /var/lib/redis /var/log/redis /var/cache/redis 2>/dev/null || true && \
+    mkdir -p /usr/bin 2>/dev/null || true ; touch /usr/bin/redis-server 2>/dev/null || true && \
+    mkdir -p /usr/lib 2>/dev/null || true ; touch /usr/lib/redis 2>/dev/null || true
 FROM scratch
 ARG VERSION=2.8.13
 

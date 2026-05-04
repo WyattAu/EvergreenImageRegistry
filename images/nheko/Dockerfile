@@ -4,10 +4,10 @@ FROM ghcr.io/nheko-reborn/nheko:${VERSION} AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
-RUN apk add --no-cache ca-certificates glib
-RUN mkdir -p /app 2>/dev/null || true
-RUN addgroup -S -g 10000 nheko 2>/dev/null || true ; adduser -u 65532 -G nheko -D -h /app -s /bin/false nheko
-RUN mkdir -p /usr/local/bin 2>/dev/null || true
+RUN apk add --no-cache ca-certificates glib && \
+    mkdir -p /app 2>/dev/null || true && \
+    addgroup -S -g 10000 nheko 2>/dev/null || true ; adduser -u 65532 -G nheko -D -h /app -s /bin/false nheko && \
+    mkdir -p /usr/local/bin 2>/dev/null || true
 COPY --from=upstream /usr/local/bin/nheko /usr/local/bin/nheko
 RUN mkdir -p /app /home/nheko/.config/nheko && chown -R 65532:65532 /app /home/nheko 2>/dev/null || true
 

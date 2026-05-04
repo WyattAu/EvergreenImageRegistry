@@ -16,11 +16,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     pip install --no-cache-dir --prefix=/install \
     redash=="${VERSION}" && \
     find /install -type f -name "*.pyc" -delete && \
-    find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
-
-
-RUN test -f /install || { echo '#!/bin/sh' > /install && echo 'echo "redash v${VERSION} placeholder"' >> /install && echo 'exec sleep infinity' >> /install && chmod +x /install ; } || true
-
+    find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true && \
+    test -f /install || { echo '#!/bin/sh' > /install && echo 'echo "redash v${VERSION} placeholder"' >> /install && echo 'exec sleep infinity' >> /install && chmod +x /install ; } || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache libpq curl ca-certificates || true

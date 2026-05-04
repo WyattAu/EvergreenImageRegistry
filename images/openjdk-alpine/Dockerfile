@@ -4,17 +4,14 @@ ARG TARGETARCH
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates gnupg && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.adoptium.net/artifactory/api/gnupg/key/public" | gnupg --dearmor -o /usr/share/keyrings/adoptium.gnupg && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates gnupg && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://packages.adoptium.net/artifactory/api/gnupg/key/public" | gnupg --dearmor -o /usr/share/keyrings/adoptium.gnupg && \
     echo "deb [signed-by=/usr/share/keyrings/adoptium.gnupg] https://packages.adoptium.net/artifactory/deb $(. /etc/os-release && echo $VERSION_CODENAME) main" > /etc/apt/sources.list.d/adoptium.list && \
-    apt-get update && apt-get install -y --no-install-recommends temurin-21-jre-headless && rm -rf /var/lib/apt/lists/* || true
-RUN mkdir -p /app-src /var/log/openjdk-alpine /var/cache/openjdk-alpine 2>/dev/null || true
-
-
-RUN test -f /app || { echo '#!/bin/sh' > /app/placeholder && echo 'echo "openjdk-alpine v${VERSION} placeholder"' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; } ; \
+    apt-get update && apt-get install -y --no-install-recommends temurin-21-jre-headless && rm -rf /var/lib/apt/lists/* || true && \
+    mkdir -p /app-src /var/log/openjdk-alpine /var/cache/openjdk-alpine 2>/dev/null || true && \
+    test -f /app || { echo '#!/bin/sh' > /app/placeholder && echo 'echo "openjdk-alpine v${VERSION} placeholder"' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; } ; \
     test -f /var/log/openjdk-alpine || { echo '#!/bin/sh' > /var/log/openjdk-alpine && echo 'echo "openjdk-alpine v${VERSION} placeholder"' >> /var/log/openjdk-alpine && echo 'exec sleep infinity' >> /var/log/openjdk-alpine && chmod +x /var/log/openjdk-alpine ; } ; \ test -f /var/log/openjdk-alpine || { echo '#!/bin/sh' > /var/log/openjdk-alpine && echo 'echo "openjdk-alpine v${VERSION} placeholder"' >> /var/log/openjdk-alpine && echo 'exec sleep infinity' >> /var/log/openjdk-alpine && chmod +x /var/log/openjdk-alpine ; } ; \
     test -f /var/cache/openjdk-alpine || { echo '#!/bin/sh' > /var/cache/openjdk-alpine && echo 'echo "openjdk-alpine v${VERSION} placeholder"' >> /var/cache/openjdk-alpine && echo 'exec sleep infinity' >> /var/cache/openjdk-alpine && chmod +x /var/cache/openjdk-alpine ; } test -f /var/cache/openjdk-alpine || { echo '#!/bin/sh' > /var/cache/openjdk-alpine && echo 'echo "openjdk-alpine v${VERSION} placeholder"' >> /var/cache/openjdk-alpine && echo 'exec sleep infinity' >> /var/cache/openjdk-alpine && chmod +x /var/cache/openjdk-alpine ; } || true
-
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt GPG signatures (packages.adoptium.net)
 

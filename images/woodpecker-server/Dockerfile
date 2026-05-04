@@ -3,8 +3,8 @@ ARG VERSION=2.7.0
 ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL \
+    rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL \
     -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/woodpecker-ci/woodpecker/releases/download/v${VERSION}/woodpecker-server_linux_amd64.tar.gz" \
     -o /tmp/archive.tar.gz && \
@@ -12,7 +12,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL \
     tar -xzf /tmp/archive.tar.gz -C /tmp && \
     strip /tmp/woodpecker-server && \
     chmod +x /tmp/woodpecker-server
-
 FROM scratch
 COPY --from=downloader /tmp/woodpecker-server /usr/local/bin/woodpecker-server
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/

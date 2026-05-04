@@ -12,11 +12,11 @@ ARG TARGETARCH
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=0.5.0
-RUN apk add --no-cache ca-certificates git build-base || true
-RUN pip install --no-cache-dir --break-system-packages chromadb==${VERSION} 2>/dev/null || \
-    pip install --no-cache-dir --break-system-packages chromadb || true
-RUN adduser -u 65532 -D chroma 2>/dev/null || true
-RUN mkdir -p /app /var/log/chroma /var/cache/chroma && chown -R chroma:chroma /app /var/log/chroma /var/cache/chroma 2>/dev/null || true
+RUN apk add --no-cache ca-certificates git build-base || true && \
+    pip install --no-cache-dir --break-system-packages chromadb==${VERSION} 2>/dev/null || \
+    pip install --no-cache-dir --break-system-packages chromadb || true && \
+    adduser -u 65532 -D chroma 2>/dev/null || true && \
+    mkdir -p /app /var/log/chroma /var/cache/chroma && chown -R chroma:chroma /app /var/log/chroma /var/cache/chroma 2>/dev/null || true
 USER chroma
 WORKDIR /app
 EXPOSE 8000

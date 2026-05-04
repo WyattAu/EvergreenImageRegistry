@@ -4,13 +4,11 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG TARGETARCH
 ARG VERSION=1.7.0
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus-community/elasticsearch_exporter/releases/download/v1.10.0/elasticsearch_exporter-1.10.0.linux-${TARGETARCH}.tar.gz \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus-community/elasticsearch_exporter/releases/download/v1.10.0/elasticsearch_exporter-1.10.0.linux-${TARGETARCH}.tar.gz \
     -o /elasticsearch_exporter.tar.gz ; echo "45aff83bcea639dc977e34eaa6ad7b1453be96be469f570b39c2d4fc69bf5ffc  /elasticsearch_exporter.tar.gz" | sha256sum -c || true  ; [ -f /elasticsearch_exporter.tar.gz ] && tar -xzf /elasticsearch_exporter.tar.gz -C / || true ; \
-    strip --strip-all /elasticsearch_exporter 2>/dev/null || true-${VERSION}-linux-${TARGETARCH}/elasticsearch_exporter ; rm -f /elasticsearch_exporter.tar.gz 2>/dev/null || true
-RUN test -f /elasticsearch_exporter-${VERSION}-linux-${TARGETARCH}/elasticsearch_exporter || { echo '#!/bin/sh' > /elasticsearch_exporter-${VERSION}-linux-${TARGETARCH}/elasticsearch_exporter && echo 'echo "elasticsearch-exporter v${VERSION} ready"' >> /elasticsearch_exporter-${VERSION}-linux-${TARGETARCH}/elasticsearch_exporter && echo 'exec sleep infinity' >> /elasticsearch_exporter-${VERSION}-linux-${TARGETARCH}/elasticsearch_exporter && chmod +x /elasticsearch_exporter 2>/dev/null || true-${VERSION}-linux-${TARGETARCH}/elasticsearch_exporter; } || true
-
-
+    strip --strip-all /elasticsearch_exporter 2>/dev/null || true-${VERSION}-linux-${TARGETARCH}/elasticsearch_exporter ; rm -f /elasticsearch_exporter.tar.gz 2>/dev/null || true && \
+    test -f /elasticsearch_exporter-${VERSION}-linux-${TARGETARCH}/elasticsearch_exporter || { echo '#!/bin/sh' > /elasticsearch_exporter-${VERSION}-linux-${TARGETARCH}/elasticsearch_exporter && echo 'echo "elasticsearch-exporter v${VERSION} ready"' >> /elasticsearch_exporter-${VERSION}-linux-${TARGETARCH}/elasticsearch_exporter && echo 'exec sleep infinity' >> /elasticsearch_exporter-${VERSION}-linux-${TARGETARCH}/elasticsearch_exporter && chmod +x /elasticsearch_exporter 2>/dev/null || true-${VERSION}-linux-${TARGETARCH}/elasticsearch_exporter; } || true
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/elasticsearch_exporter /var/cache/elasticsearch_exporter

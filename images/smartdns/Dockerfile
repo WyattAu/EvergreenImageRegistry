@@ -15,23 +15,20 @@ ARG VERSION=Release48
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake libssl-dev && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/pymumu/smartdns/archive/refs/tags/${VERSION}.tar.gz -o /smartdns.tar.gz && \
+    rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/pymumu/smartdns/archive/refs/tags/${VERSION}.tar.gz -o /smartdns.tar.gz && \
     [ -f /smartdns.tar.gz ] && tar -xzf /smartdns.tar.gz -C / && rm -f /smartdns.tar.gz || true ; \
     mkdir -p /smartdns-${VERSION}/build ; \
     cd /smartdns-${VERSION}/build && \    cmake .. -DPREFIX=/usr -DENABLE_SYSTEMD=OFF && \
     make -j"$(nproc)" && \
-    strip --strip-all /smartdns-${VERSION}/src/smartdns || true
-
-
-RUN mkdir -p /smartdns-${VERSION}/src/smartdns
-
+    strip --strip-all /smartdns-${VERSION}/src/smartdns || true && \
+    mkdir -p /smartdns-${VERSION}/src/smartdns
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Built from source tarball; integrity verified by build process
 ARG VERSION=Release48
 
-RUN apk add --no-cache ca-certificates 
-RUN mkdir -p /app /var/log/smartdns /var/lib/smartdns /etc/smartdns
+RUN apk add --no-cache ca-certificates && \
+    mkdir -p /app /var/log/smartdns /var/lib/smartdns /etc/smartdns
 COPY --from=builder /smartdns-${VERSION}/src/smartdns /usr/local/bin/smartdns
 RUN chown -R 65532:65532 /app /var/log/smartdns /var/lib/smartdns
 USER 65532:65532

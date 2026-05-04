@@ -11,14 +11,14 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG GITHUB_TOKEN
-RUN apk add --no-cache git ca-certificates curl build-base || true
-RUN git clone --depth 1 --branch v1.5.2 https://github.com/morpheus65535/bazarr.git /opt/bazarr-subliminal 2>/dev/null || echo "Source repo not available - using placeholder" && \
-    git clone --depth 1 https://github.com/morpheus65535/bazarr.git /opt/bazarr-subliminal 2>/dev/null || echo "Source repo not available - using placeholder" 2>/dev/null || true
-RUN     git clone --depth 1 https://github.com/morpheus65535/bazarr.git /opt/bazarr-subliminal 2>/dev/null || echo "Source repo not available - using placeholder" 2>/dev/null || true
-RUN cd /opt/bazarr-subliminal && \
-    pip install --no-cache-dir --break-system-packages -r requirements.txt 2>/dev/null || true && pip install --no-cache-dir --break-system-packages subliminal 2>/dev/null || true
-RUN adduser -u 65532 -D app 2>/dev/null || true
-RUN mkdir -p /app /var/log/python /var/cache/python && chown -R app:app /app /var/log/python /var/cache/python 2>/dev/null || true
+RUN apk add --no-cache git ca-certificates curl build-base || true && \
+    git clone --depth 1 --branch v1.5.2 https://github.com/morpheus65535/bazarr.git /opt/bazarr-subliminal 2>/dev/null || echo "Source repo not available - using placeholder" && \
+    git clone --depth 1 https://github.com/morpheus65535/bazarr.git /opt/bazarr-subliminal 2>/dev/null || echo "Source repo not available - using placeholder" 2>/dev/null || true && \
+       git clone --depth 1 https://github.com/morpheus65535/bazarr.git /opt/bazarr-subliminal 2>/dev/null || echo "Source repo not available - using placeholder" 2>/dev/null || true && \
+    cd /opt/bazarr-subliminal && \
+    pip install --no-cache-dir --break-system-packages -r requirements.txt 2>/dev/null || true && pip install --no-cache-dir --break-system-packages subliminal 2>/dev/null || true && \
+    adduser -u 65532 -D app 2>/dev/null || true && \
+    mkdir -p /app /var/log/python /var/cache/python && chown -R app:app /app /var/log/python /var/cache/python 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 6768

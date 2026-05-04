@@ -1,7 +1,7 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/packetbeat/packetbeat-${VERSION}-linux-x86_64.tar.gz" -o /packetbeat.tar.gz || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/packetbeat/packetbeat-${VERSION}-linux-x86_64.tar.gz" -o /packetbeat.tar.gz || true ; \
     echo "d1003767fc1ff1274164131aa2189e18e03d1a07043d92219db420114629d421  /packetbeat.tar.gz" | sha256sum -c || true  #
     mkdir -p /opt/packetbeat ; \
     if [ -f /packetbeat.tar.gz ]; then tar -xzf /packetbeat.tar.gz -C /opt/packetbeat --strip-components=1 && rm -f /packetbeat.tar.gz && rm -rf /opt/packetbeat/kibana /opt/packetbeat/logs ; fi ; \

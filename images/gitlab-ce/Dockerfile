@@ -6,13 +6,12 @@ RUN apt-get update && \
         ca-certificates \
         gnupg \
         openssh-client && \
-    rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh" | bash && \
+    rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh" -o /tmp/install.sh && bash /tmp/install.sh && rm -f /tmp/install.sh && \
     apt-get update && \
     apt-get install -y --no-install-recommends gitlab-ce=${VERSION}-ce.0 && \
-    rm -rf /var/lib/apt/lists/*
-RUN test -f /opt/gitlab || { echo "ERROR: gitlab-ce not installed" >&2; exit 1; }
-
+    rm -rf /var/lib/apt/lists/* && \
+    test -f /opt/gitlab || { echo "ERROR: gitlab-ce not installed" >&2; exit 1; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt GPG signatures (packages.gitlab.com)
 

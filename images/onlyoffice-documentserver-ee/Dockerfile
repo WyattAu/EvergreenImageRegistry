@@ -9,26 +9,25 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libjpeg62-turbo libpng16-16 libtiff5 libpoppler97 \
         libpq5 libcurl4 libssl3 fonts-liberation fonts-dejavu \
         fonts-crosextra-carlito fonts-takao-gothic && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 10 --connect-timeout 30 --max-time 600 \
+    rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 10 --connect-timeout 30 --max-time 600 \
         -fsSL "https://download.onlyoffice.com/documentserver/linux/onlyoffice-documentserver-ee-amd64.deb" \
-        -o /tmp/onlyoffice-documentserver-ee.deb || true
-RUN if [ -f /tmp/onlyoffice-documentserver-ee.deb ]; then \
+        -o /tmp/onlyoffice-documentserver-ee.deb || true && \
+    if [ -f /tmp/onlyoffice-documentserver-ee.deb ]; then \
         gdebi --non-interactive /tmp/onlyoffice-documentserver-ee.deb || \
         dpkg -i --force-depends /tmp/onlyoffice-documentserver-ee.deb || true ; \
         rm -f /tmp/onlyoffice-documentserver-ee.deb ; \
-    fi
-RUN mkdir -p /var/log/onlyoffice /var/lib/onlyoffice /var/www/onlyoffice \
+    fi && \
+    mkdir -p /var/log/onlyoffice /var/lib/onlyoffice /var/www/onlyoffice \
         /etc/onlyoffice /usr/lib/onlyoffice /opt/onlyoffice 2>/dev/null || true
-
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION
 RUN apk add --no-cache ca-certificates tzdata fontconfig \
         libxml2 libxslt libstdc++ libgcc libjpeg-turbo \
         libpng libtiff libwebp libcurl openssl-libs \
         freetype harfbuzz graphite2 bzip2-libs zlib \
-        postgresql-libs glib || true
-RUN mkdir -p /var/log/onlyoffice /var/lib/onlyoffice /var/www/onlyoffice \
+        postgresql-libs glib || true && \
+    mkdir -p /var/log/onlyoffice /var/lib/onlyoffice /var/www/onlyoffice \
         /etc/onlyoffice /usr/lib/onlyoffice /opt/onlyoffice \
         /var/run/onlyoffice 2>/dev/null || true
 COPY --from=installer /var/log/onlyoffice /var/log/onlyoffice

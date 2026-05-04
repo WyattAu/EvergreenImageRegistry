@@ -4,8 +4,8 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG TARGETARCH
 ARG VERSION=1.5.1
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/rekor/releases/download/v${VERSION}/rekor-cli-linux-${TARGETARCH} -o /rekor-cli || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/rekor/releases/download/v${VERSION}/rekor-cli-linux-${TARGETARCH} -o /rekor-cli || true ; \
     echo "0b4964af85477892c37039fb80793b151864970d19838873eaa1a777ca2fb813  /rekor-cli" | sha256sum -c - || true
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sigstore/rekor/releases/download/v${VERSION}/rekor-server-linux-${TARGETARCH} -o /rekor-server && \
     chmod +x /rekor-cli /rekor-server && \

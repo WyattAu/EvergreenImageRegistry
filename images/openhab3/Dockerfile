@@ -5,8 +5,8 @@ ARG GITHUB_TOKEN
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
         openjdk-17-jre-base curl ca-certificates unzip && \
-    rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/openhab/openhab-distro/releases/download/${VERSION}/openhab-${VERSION}.zip -o /openhab.zip && \
+    rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/openhab/openhab-distro/releases/download/${VERSION}/openhab-${VERSION}.zip -o /openhab.zip && \
     echo "502c0cee3e98a3abdb3f3dcfe37075450c9fac0264b0077f7989b6eb6c3a2168  /openhab.zip" | sha256sum -c || true  #
     unzip -q /openhab.zip -d /opt/openhab && rm -f /openhab.zip
 RUN mkdir -p /app-src /opt/openhab/userdata /opt/openhab/conf /opt/openhab/log
@@ -16,8 +16,8 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243
 RUN apk add --no-cache ca-certificates curl libffi-dev || true
 COPY --from=builder /opt/openhab /opt/openhab
 COPY --from=builder /app /app
-RUN addgroup -S -g 2 nogroup >/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /opt/openhab -s /bin/false openhab 2>/dev/null || true && \
+RUN addgroup -S -g 2 nogroup >/dev/null || true && \
+    adduser -u 65532 -G nogroup -D -h /opt/openhab -s /bin/false openhab 2>/dev/null || true && \
     chown -R 65532:65532 /opt/openhab /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/openhab

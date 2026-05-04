@@ -3,15 +3,14 @@ ARG VERSION=1.0.0
 ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL \
+    rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL \
     -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/harness/drone-runner-exec/releases/download/v${VERSION}/drone-runner-exec_linux_amd64.tar.gz" \
     -o /tmp/archive.tar.gz && \
     tar -xzf /tmp/archive.tar.gz -C /tmp && \
     strip /tmp/drone-runner-exec && \
     chmod +x /tmp/drone-runner-exec
-
 FROM scratch
 COPY --from=downloader /tmp/drone-runner-exec /usr/local/bin/drone-runner-exec
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/

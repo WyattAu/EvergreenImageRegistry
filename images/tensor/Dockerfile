@@ -2,12 +2,12 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243
 ARG TARGETARCH
 ARG VERSION=2.20.0
 ARG GITHUB_TOKEN
-RUN apk add --no-cache python3 py3-pip ca-certificates || true
-RUN pip install --no-cache-dir tensorboard==${VERSION} || true
-RUN addgroup -S -g 10000 tensorboard 2>/dev/null || true && \
-    adduser -u 65532 -G tensorboard -D -h /app -s /bin/false tensorboard 2>/dev/null || true
-RUN mkdir -p /app /app/logs /var/log/tensorboard 2>/dev/null || true
-RUN chown -R 65532:65532 /app /app/logs /var/log/tensorboard 2>/dev/null || true
+RUN apk add --no-cache python3 py3-pip ca-certificates || true && \
+    pip install --no-cache-dir tensorboard==${VERSION} || true && \
+    addgroup -S -g 10000 tensorboard 2>/dev/null || true && \
+    adduser -u 65532 -G tensorboard -D -h /app -s /bin/false tensorboard 2>/dev/null || true && \
+    mkdir -p /app /app/logs /var/log/tensorboard 2>/dev/null || true && \
+    chown -R 65532:65532 /app /app/logs /var/log/tensorboard 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 6006

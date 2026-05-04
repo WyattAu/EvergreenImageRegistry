@@ -7,16 +7,16 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip python3 ca-certificates curl git && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN python3 -m venv /opt/venv || true
+    rm -rf /var/lib/apt/lists/* || true && \
+    python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir pyopenssl certifi || true && \
     git clone --depth 1 --branch v${VERSION} "https://github.com/Tautulli/Tautulli.git" /opt/tautulli || echo "Source repo not available - using placeholder" 2>/dev/null
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
-RUN apk add --no-cache python3 ca-certificates curl || true
-RUN mkdir -p /opt 2>/dev/null || true ; test -f /opt/venv 2>/dev/null || echo "#!/bin/sh" > /opt/venv 2>/dev/null || true
+RUN apk add --no-cache python3 ca-certificates curl || true && \
+    mkdir -p /opt 2>/dev/null || true ; test -f /opt/venv 2>/dev/null || echo "#!/bin/sh" > /opt/venv 2>/dev/null || true
 COPY --from=builder /opt/venv /opt/venv
 RUN mkdir -p /opt 2>/dev/null || true ; test -f /opt/tautulli 2>/dev/null || echo "#!/bin/sh" > /opt/tautulli 2>/dev/null || true
 COPY --from=builder /opt/tautulli /opt/tautulli

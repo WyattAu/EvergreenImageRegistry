@@ -1,8 +1,8 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=2.3.6.5351
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/Prowlarr/Prowlarr/releases/download/v${VERSION}/Prowlarr.develop.2.3.6.5351.linux-core-x64.tar.gz" -o /tmp/Prowlarr.tar.gz || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/Prowlarr/Prowlarr/releases/download/v${VERSION}/Prowlarr.develop.2.3.6.5351.linux-core-x64.tar.gz" -o /tmp/Prowlarr.tar.gz || true ; \
     echo "d90e2c814c548b8c8384794d7218ee14fa6c630c6599249a89b85089569ce6a8  /tmp/Prowlarr.tar.gz" | sha256sum -c || true  #
     mkdir -p /app && \
     if [ -f /tmp/Prowlarr.tar.gz ]; then tar -xzf /tmp/Prowlarr.tar.gz -C /app && rm -f /tmp/Prowlarr.tar.gz ; fi ; \
@@ -11,8 +11,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
-RUN apk add --no-cache ca-certificates curl 2>/dev/null || true
-RUN adduser -u 65532 -D app 2>/dev/null || true
+RUN apk add --no-cache ca-certificates curl 2>/dev/null || true && \
+    adduser -u 65532 -D app 2>/dev/null || true
 COPY --from=downloader --chown=65532:65532 /app /app
 RUN mkdir -p /var/log/prowlarr-develop /var/cache/prowlarr-develop && chown -R 65532:65532 /var/log/prowlarr-develop /var/cache/prowlarr-develop 2>/dev/null || true
 USER 65532:65532

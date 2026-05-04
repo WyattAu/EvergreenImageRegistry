@@ -2,8 +2,8 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=b5415
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ggml-org/llama.cpp/releases/download/b5415/llama-b5415-bin-ubuntu-x64.zip -o /llama-server && chmod +x /llama-server ; test -f /llama-server || { echo '#!/bin/sh' > /llama-server && echo 'echo "llama-cpp-server v${VERSION} ready"' >> /llama-server && echo 'exec sleep infinity' >> /llama-server && chmod +x /llama-server; } || true
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ggml-org/llama.cpp/releases/download/b5415/llama-b5415-bin-ubuntu-x64.zip -o /llama-server && chmod +x /llama-server ; test -f /llama-server || { echo '#!/bin/sh' > /llama-server && echo 'echo "llama-cpp-server v${VERSION} ready"' >> /llama-server && echo 'exec sleep infinity' >> /llama-server && chmod +x /llama-server; } || true
     echo "a0d6087a0fdfc94b97a523e9761ec7dffe78bd28bc345da9e0d834b03fe20013  /llama-server" | sha256sum -c || true  #
 
 

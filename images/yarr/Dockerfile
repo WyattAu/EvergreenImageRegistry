@@ -5,8 +5,8 @@ ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 RUN apt-get update && apt-get install -y --no-install-recommends \
     golang-go ca-certificates git && \
-    rm -rf /var/lib/apt/lists/*
-RUN git clone --depth 1 --branch v${VERSION} \
+    rm -rf /var/lib/apt/lists/* && \
+    git clone --depth 1 --branch v${VERSION} \
     https://github.com/nickvdyck/yarr.git /tmp/yarr 2>/dev/null || \
     git clone --depth 1 https://github.com/nickvdyck/yarr.git /tmp/yarr 2>/dev/null || true
 WORKDIR /tmp/yarr

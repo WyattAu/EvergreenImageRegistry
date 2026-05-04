@@ -3,8 +3,8 @@ ARG VERSION=1.11.14
 ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 -fsSL \
+    rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 -fsSL \
     -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/element-hq/element-web/releases/download/v${VERSION}/element-v${VERSION}.tar.gz" \
     -o /download.tar.gz && \
@@ -12,7 +12,6 @@ RUN curl --retry 3 -fsSL \
     tar -xzf /download.tar.gz -C /www-src --strip-components=1 && \
     rm -f /download.tar.gz && \
     test -f /www-src/index.html
-
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=1.11.14
 RUN apk add --no-cache ca-certificates busybox || true && \

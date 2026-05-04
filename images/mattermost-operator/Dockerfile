@@ -3,14 +3,13 @@ ARG VERSION=1.12.0
 ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL \
+    rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL \
     -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/mattermost/mattermost-operator/releases/download/v${VERSION}/mattermost-kubernetes-operator-linux-amd64" \
     -o /tmp/binary && \
     strip /tmp/binary && \
     chmod +x /tmp/binary
-
 FROM scratch
 COPY --from=downloader /tmp/binary /usr/local/bin/mattermost-kubernetes-operator
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/

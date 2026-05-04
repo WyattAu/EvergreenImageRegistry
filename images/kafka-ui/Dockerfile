@@ -3,15 +3,13 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG TARGETARCH
 ARG GITHUB_TOKEN
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/provectuslabs/kafka-ui/releases/download/v${VERSION}/kafka-ui-v${VERSION}-linux-${TARGETARCH}.tar.gz" -o /kafka-ui.tar.gz || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/provectuslabs/kafka-ui/releases/download/v${VERSION}/kafka-ui-v${VERSION}-linux-${TARGETARCH}.tar.gz" -o /kafka-ui.tar.gz || true ; \
     mkdir -p /opt/kafka-ui ; \
     if [ -f /kafka-ui.tar.gz ]; then tar -xzf /kafka-ui.tar.gz -C /opt/kafka-ui --strip-components=1 && rm -f /kafka-ui.tar.gz && rm -rf /opt/kafka-ui/kibana /opt/kafka-ui/logs ; fi ; \
     strip /opt/kafka-ui/kafka-ui 2>/dev/null || true ; \
     chmod +x /opt/kafka-ui/kafka-ui 2>/dev/null || true ; \
     test -f /opt/kafka-ui/kafka-ui || { echo '#!/bin/sh' > /opt/kafka-ui/kafka-ui && echo 'echo "kafka-ui v${VERSION} placeholder"' >> /opt/kafka-ui/kafka-ui && echo 'exec sleep infinity' >> /opt/kafka-ui/kafka-ui && chmod +x /opt/kafka-ui/kafka-ui; } || true
-
-
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /var/log/kafka-ui /var/cache/kafka-ui

@@ -1,8 +1,8 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=1.7.7
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/crowdsecurity/crowdsec/releases/download/v${VERSION}/crowdsec-release.tgz" \
     -o /crowdsec-release.tgz && \
     tar -xzf /crowdsec-release.tgz -C /tmp/ && \
@@ -10,7 +10,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     chmod +x /crowdsec && \
     strip --strip-all /crowdsec && \
     rm -rf /crowdsec-release.tgz /tmp/crowdsec-v${VERSION}
-
 FROM scratch
 COPY --from=downloader /crowdsec /crowdsec
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

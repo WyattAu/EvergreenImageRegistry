@@ -1,10 +1,10 @@
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
-RUN apk add --no-cache ca-certificates curl nginx php83-fpm php83-pdo_sqlite php83-mbstring php83-xml || true
-RUN addgroup -S -g 10000 organizr 2>/dev/null || true && \
-    adduser -u 65532 -G organizr -D -h /app -s /bin/false organizr 2>/dev/null || true
-RUN mkdir -p /app /app/src /config /var/log/nginx /var/lib/nginx 2>/dev/null || true
-RUN echo '<?php echo "Organizr placeholder v1.0.0"; ?>' > /app/index.php 2>/dev/null || true && \
+RUN apk add --no-cache ca-certificates curl nginx php83-fpm php83-pdo_sqlite php83-mbstring php83-xml || true && \
+    addgroup -S -g 10000 organizr 2>/dev/null || true && \
+    adduser -u 65532 -G organizr -D -h /app -s /bin/false organizr 2>/dev/null || true && \
+    mkdir -p /app /app/src /config /var/log/nginx /var/lib/nginx 2>/dev/null || true && \
+    echo '<?php echo "Organizr placeholder v1.0.0"; ?>' > /app/index.php 2>/dev/null || true && \
     chown -R 65532:65532 /app /config /var/log/nginx /var/lib/nginx 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app

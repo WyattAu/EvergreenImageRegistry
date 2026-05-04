@@ -5,13 +5,12 @@ ARG VERSION=2.9.1
 ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
+    rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/gotify/server/releases/download/v${VERSION}/gotify-linux-${TARGETARCH}" \
     -o /tmp/gotify && \
     chmod +x /tmp/gotify && \
     strip /tmp/gotify || true
-
 FROM scratch
 COPY --from=downloader /tmp/gotify /usr/local/bin/gotify
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

@@ -5,18 +5,17 @@ ARG VERSION=0.13.1
 ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL \
+    rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL \
     -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/element-hq/dendrite/releases/download/v${VERSION}/dendrite-monolith-linux-${TARGETARCH}" \
     -o /tmp/dendrite && \
     chmod +x /tmp/dendrite && \
     strip /tmp/dendrite
-
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=0.13.1
-RUN apk add --no-cache ca-certificates || true
-RUN addgroup -S -g 10000 dendrite 2>/dev/null || true && \
+RUN apk add --no-cache ca-certificates || true && \
+    addgroup -S -g 10000 dendrite 2>/dev/null || true && \
     adduser -u 65532 -G dendrite -D -h /app -s /bin/false dendrite 2>/dev/null || true
 COPY --from=downloader /tmp/dendrite /usr/local/bin/dendrite
 RUN mkdir -p /app 2>/dev/null || true && \

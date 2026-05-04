@@ -10,16 +10,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get update && \
     apt-get install -y --no-install-recommends \
         pdns-server pdns-backend-sqlite3 pdns-tools && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN mkdir -p /var/log/pdns /var/lib/pdns /etc/pdns 2>/dev/null || true
-
+    rm -rf /var/lib/apt/lists/* || true && \
+    mkdir -p /var/log/pdns /var/lib/pdns /etc/pdns 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt GPG signatures (repo.powerdns.com)
 ARG VERSION
 RUN apk add --no-cache sqlite-libs ca-certificates boost-libs \
         libstdc++ libgcc lua5.4-libs libcurl openssl-libs \
-        protobuf libxml2 || true
-RUN mkdir -p /app /var/log/pdns /var/lib/pdns /etc/pdns 2>/dev/null || true
+        protobuf libxml2 || true && \
+    mkdir -p /app /var/log/pdns /var/lib/pdns /etc/pdns 2>/dev/null || true
 COPY --from=installer /usr/sbin/pdns_server /usr/local/bin/pdns_server
 COPY --from=installer /usr/sbin/pdnsutil /usr/local/bin/pdnsutil
 COPY --from=installer /usr/sbin/pdns_control /usr/local/bin/pdns_control

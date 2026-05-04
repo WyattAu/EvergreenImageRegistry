@@ -1,20 +1,16 @@
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        clamav clamav-daemon freshclam ca-certificates ; rm -rf /var/lib/apt/lists/* || true
-
-RUN mkdir -p /app /var/log/clamav /var/lib/clamav /run/clamav
-
-
-
-RUN test -e /app || { mkdir -p /app && echo 'clamav-daemon placeholder' > /app/.placeholder ; } ; \
+        clamav clamav-daemon freshclam ca-certificates ; rm -rf /var/lib/apt/lists/* || true && \
+    mkdir -p /app /var/log/clamav /var/lib/clamav /run/clamav && \
+    test -e /app || { mkdir -p /app && echo 'clamav-daemon placeholder' > /app/.placeholder ; } ; \
     test -e /var/log/clamav || { mkdir -p /var/log/clamav && echo 'clamav-daemon placeholder' > /var/log/clamav/.placeholder ; } ; \
     test -e /var/lib/clamav || { mkdir -p /var/lib/clamav && echo 'clamav-daemon placeholder' > /var/lib/clamav/.placeholder ; } ; \
     test -e /run/clamav || { mkdir -p /run/clamav && echo 'clamav-daemon placeholder' > /run/clamav/.placeholder ; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
-RUN apk add --no-cache clamav clamav-daemon freshclam ca-certificates || true
-RUN mkdir -p /run /var/lib /var/log 2>/dev/null || true
+RUN apk add --no-cache clamav clamav-daemon freshclam ca-certificates || true && \
+    mkdir -p /run /var/lib /var/log 2>/dev/null || true
 COPY --from=builder /app /app
 COPY --from=builder /var/log/clamav /var/log/clamav
 COPY --from=builder /var/lib/clamav /var/lib/clamav

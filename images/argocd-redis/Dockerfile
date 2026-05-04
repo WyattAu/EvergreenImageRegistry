@@ -29,8 +29,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
-RUN apk add --no-cache ca-certificates 
-RUN addgroup -S -g 10000 redis 2>/dev/null || true && adduser -u 65532 -G redis -D -h /data -s /bin/false redis 2>/dev/null || true
+RUN apk add --no-cache ca-certificates && \
+    addgroup -S -g 10000 redis 2>/dev/null || true && adduser -u 65532 -G redis -D -h /data -s /bin/false redis 2>/dev/null || true
 COPY --from=builder /tmp/redis-7.2.4/src/redis /usr/local/bin/redis
 RUN mkdir -p /data && chown -R 65532:65532 /data 2>/dev/null || true
 USER 65532:65532

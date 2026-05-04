@@ -1,10 +1,10 @@
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=5.7.6
-RUN apk add --no-cache knot-resolver knot-resolver-utils ca-certificates || true
-RUN addgroup -S -g 10000 knot 2>/dev/null || true && \
-    adduser -u 65532 -G knot -D -h /app -s /bin/false knot 2>/dev/null || true
-RUN mkdir -p /app /var/log/knot-resolver /var/lib/knot-resolver /etc/knot-resolver /run/knot 2>/dev/null || true
-RUN chown -R 65532:65532 /app /var/log/knot-resolver /var/lib/knot-resolver /etc/knot-resolver /run/knot 2>/dev/null || true
+RUN apk add --no-cache knot-resolver knot-resolver-utils ca-certificates || true && \
+    addgroup -S -g 10000 knot 2>/dev/null || true && \
+    adduser -u 65532 -G knot -D -h /app -s /bin/false knot 2>/dev/null || true && \
+    mkdir -p /app /var/log/knot-resolver /var/lib/knot-resolver /etc/knot-resolver /run/knot 2>/dev/null || true && \
+    chown -R 65532:65532 /app /var/log/knot-resolver /var/lib/knot-resolver /etc/knot-resolver /run/knot 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 8453

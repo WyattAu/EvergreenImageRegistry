@@ -5,14 +5,13 @@ ARG VERSION=0.13.1
 ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL \
+    rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL \
     -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/element-hq/dendrite/releases/download/v${VERSION}/dendrite-monolith-linux-${TARGETARCH}" \
     -o /tmp/dendrite && \
     chmod +x /tmp/dendrite && \
     strip /tmp/dendrite
-
 FROM scratch
 COPY --from=downloader /tmp/dendrite /usr/local/bin/dendrite
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/

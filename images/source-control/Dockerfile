@@ -3,15 +3,14 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243
 ARG TARGETARCH
 ARG VERSION=1.22.0
 ARG GITHUB_TOKEN
-RUN apk add --no-cache curl ca-certificates xz || true
-RUN curl --retry 3 --retry-delay 5 -fsSL \
+RUN apk add --no-cache curl ca-certificates xz || true && \
+    curl --retry 3 --retry-delay 5 -fsSL \
     "https://dl.gitea.io/gitea/${VERSION}/gitea-${VERSION}-linux-${TARGETARCH}.xz" \
     -o /tmp/gitea.xz && \
     echo "b58e02e9e863a0191f26a26fbe6ef7e24c4c9917940c21957e6713cadcc5b9fd  /tmp/gitea.xz" | sha256sum -c - && \
     xz -d /tmp/gitea.xz && \
     chmod +x /tmp/gitea && \
     strip /tmp/gitea || true
-
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=1.22.0
 RUN apk add --no-cache ca-certificates git tzdata || true && \

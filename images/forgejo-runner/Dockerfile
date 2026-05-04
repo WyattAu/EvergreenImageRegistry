@@ -5,13 +5,12 @@ ARG VERSION=6.3.1
 ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL \
+    rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL \
     "https://codeberg.org/forgejo/runner/releases/download/v${VERSION}/forgejo-runner-linux-${TARGETARCH}" \
     -o /tmp/forgejo-runner && \
     chmod +x /tmp/forgejo-runner && \
     strip /tmp/forgejo-runner || true
-
 FROM scratch
 COPY --from=downloader /tmp/forgejo-runner /usr/local/bin/forgejo-runner
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

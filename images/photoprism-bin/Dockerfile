@@ -1,13 +1,12 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=260305-fad9d5395
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
-RUN curl --retry 3 --retry-delay 5 -fsSL \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL \
     "https://github.com/photoprism/photoprism/releases/download/${VERSION}/photoprism_${VERSION}-linux-amd64.tar.gz" \
     -o /tmp/photoprism.tar.gz && \
     tar -xzf /tmp/photoprism.tar.gz -C /tmp/ && \
     cp /tmp/photoprism /photoprism && chmod +x /photoprism && \
     rm -rf /tmp/photoprism.tar.gz /tmp/photoprism
-
 FROM scratch
 COPY --from=downloader /photoprism /photoprism
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

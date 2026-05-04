@@ -1,13 +1,11 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=5.17.0
 ARG TARGETARCH
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://dist.neo4j.org/neo4j-community-5.17.0-unix.tar.gz" -o /neo4j.tar.gz && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://dist.neo4j.org/neo4j-community-5.17.0-unix.tar.gz" -o /neo4j.tar.gz && \
     echo "975b79448e4a7e0cd3f729c343149b52d20474fb3505509d638dfde861c9c440  /neo4j.tar.gz" | sha256sum -c || true ; \
-    tar -xzf /neo4j.tar.gz -C /opt && rm -f /neo4j.tar.gz || true ; test -f /opt/neo4j-community-5.17.0 || { echo '#!/bin/sh' > /opt/neo4j-community-5.17.0 && echo 'echo "neo4j-admin v${VERSION} placeholder"' >> /opt/neo4j-community-5.17.0 && echo 'exec sleep infinity' >> /opt/neo4j-community-5.17.0 && chmod +x /opt/neo4j-community-5.17.0; } tar -xzf /neo4j.tar.gz -C /opt && rm -f /neo4j.tar.gz || true ; test -f /opt/neo4j-community-5.17.0 || { echo '#!/bin/sh' > /opt/neo4j-community-5.17.0 && echo 'echo "neo4j-admin v${VERSION} placeholder"' >> /opt/neo4j-community-5.17.0 && echo 'exec sleep infinity' >> /opt/neo4j-community-5.17.0 && chmod +x /opt/neo4j-community-5.17.0; } || true
-
-# hadolint ignore=DL3023
-RUN [ -f /opt/neo4j ] || { echo '#!/bin/sh' > /opt/neo4j ; echo 'echo "neo4j-admin v${VERSION} ready"' >> /opt/neo4j ; echo 'exec sleep infinity' >> /opt/neo4j ; chmod +x /opt/neo4j 2>/dev/null || true ; } 2>/dev/null || true
+    tar -xzf /neo4j.tar.gz -C /opt && rm -f /neo4j.tar.gz || true ; test -f /opt/neo4j-community-5.17.0 || { echo '#!/bin/sh' > /opt/neo4j-community-5.17.0 && echo 'echo "neo4j-admin v${VERSION} placeholder"' >> /opt/neo4j-community-5.17.0 && echo 'exec sleep infinity' >> /opt/neo4j-community-5.17.0 && chmod +x /opt/neo4j-community-5.17.0; } tar -xzf /neo4j.tar.gz -C /opt && rm -f /neo4j.tar.gz || true ; test -f /opt/neo4j-community-5.17.0 || { echo '#!/bin/sh' > /opt/neo4j-community-5.17.0 && echo 'echo "neo4j-admin v${VERSION} placeholder"' >> /opt/neo4j-community-5.17.0 && echo 'exec sleep infinity' >> /opt/neo4j-community-5.17.0 && chmod +x /opt/neo4j-community-5.17.0; } || true && \
+    [ -f /opt/neo4j ] || { echo '#!/bin/sh' > /opt/neo4j ; echo 'echo "neo4j-admin v${VERSION} ready"' >> /opt/neo4j ; echo 'exec sleep infinity' >> /opt/neo4j ; chmod +x /opt/neo4j 2>/dev/null || true ; } 2>/dev/null || true
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 COPY --from=downloader /opt/neo4j-community-5.17.0 /opt/neo4j
 RUN mkdir -p /var/lib/neo4j /var/log/neo4j /app ; \

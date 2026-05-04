@@ -4,8 +4,8 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG GITHUB_TOKEN
-RUN apk add --no-cache ca-certificates curl gnupg 
-RUN mkdir -p /var/log/collabora /etc/loolwsd ; 2>/dev/null || true \
+RUN apk add --no-cache ca-certificates curl gnupg && \
+    mkdir -p /var/log/collabora /etc/loolwsd ; 2>/dev/null || true \
     chown -R 65532:65532 /var/log/collabora /etc/loolwsd
 USER 65532:65532
 WORKDIR /app

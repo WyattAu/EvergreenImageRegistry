@@ -34,9 +34,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [19.0.0] - 2026-05-03
 
-### Sovereign-to-Evergreen Full Rebrand (Phase 28)
+### Sovereign-to-Evergreen Full Rebrand (Phase 28) <!-- Sovereign was the original project name -->
 
-Complete rebrand of all project identity from "Sovereign" to "Evergreen":
+Complete rebrand of all project identity from "Sovereign" (original name) to "Evergreen":
 - **Dockerfile labels**: `sovereign.*` → `evergreen.*` across 998 images (~4,000 label lines)
 - **Tool rename**: `sovereignctl/` → `evergreenctl/`, binary renamed
 - **Rust source**: 47 occurrences rebranded in evergreenctl/src/
@@ -45,7 +45,7 @@ Complete rebrand of all project identity from "Sovereign" to "Evergreen":
 - **All 998 SBOM JSON files** rebranded
 - **22 doc files, 22 script files, 2 CI workflows, 5 root files** rebranded
 - **Cargo.lock regenerated** from updated Cargo.toml
-- **Script renamed**: `sovereign-entrypoint.sh` → `evergreen-entrypoint.sh`
+- **Script renamed**: `sovereign-entrypoint.sh` (now `evergreen-entrypoint.sh`)
 - **Final result**: 0 files with any case variant of "sovereign/Sovereign/SOVEREIGN"
 
 ### Security Hardening (Phase 29)

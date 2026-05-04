@@ -2,8 +2,8 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION=1.78.0
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL \
+    rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL \
     "https://static.rust-lang.org/dist/rust-${VERSION}-x86_64-unknown-linux-gnu.tar.xz" \
     -o /rust.tar.xz && \
     echo "ea144a052c0980dfbc6c84b3eda21e9f61b02b7b171787c7de80d7a8ad344ab3  /rust.tar.xz" | sha256sum -c - && \
@@ -14,7 +14,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL \
         --components=rust-std,cargo,rustc,rust-std-x86_64-unknown-linux-musl \
         --without=rust-docs --without=rustfmt --without=clippy && \
     strip /opt/rust/bin/rustc /opt/rust/bin/cargo 2>/dev/null || true
-
 FROM scratch
 COPY --from=builder /opt/rust /opt/rust
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

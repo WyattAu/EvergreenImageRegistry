@@ -15,15 +15,14 @@ ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 RUN apt-get update && \
     apt-get install -y --no-install-recommends git ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
-RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/folbricht/rdns /src 2>/dev/null || echo "Source repo not available"
-RUN cd /src && \
+    rm -rf /var/lib/apt/lists/* && \
+    git clone --depth 1 --branch "v${VERSION}" https://github.com/folbricht/rdns /src 2>/dev/null || echo "Source repo not available" && \
+    cd /src && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
-        -o /app/rdns-server ./cmd/rdnsd 2>/dev/null || true
-RUN test -f /app/rdns-server && strip --strip-all /app/rdns-server || true
-RUN test -f /app/rdns-server || { echo '#!/bin/sh' > /app/rdns-server && echo 'echo "rdns-server v'${VERSION}' placeholder"' >> /app/rdns-server && echo 'exec sleep infinity' >> /app/rdns-server && chmod +x /app/rdns-server; } 2>/dev/null || true
-
+        -o /app/rdns-server ./cmd/rdnsd 2>/dev/null || true && \
+    test -f /app/rdns-server && strip --strip-all /app/rdns-server || true && \
+    test -f /app/rdns-server || { echo '#!/bin/sh' > /app/rdns-server && echo 'echo "rdns-server v'${VERSION}' placeholder"' >> /app/rdns-server && echo 'exec sleep infinity' >> /app/rdns-server && chmod +x /app/rdns-server; } 2>/dev/null || true
 FROM scratch
 COPY --from=builder /app/rdns-server /usr/local/bin/rdns-server
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

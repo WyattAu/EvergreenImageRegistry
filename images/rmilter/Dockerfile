@@ -25,11 +25,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     rm -f /tmp/rmilter.tar.gz && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release . && \
     make -j$(nproc) && \
-    strip rmilter/rmilter || true
-
-
-RUN mkdir -p /build/rmilter/rmilter 2>/dev/null || true
-RUN [ -f /build/rmilter/rmilter ] || { echo '#!/bin/sh' > /build/rmilter/rmilter ; echo 'echo "rmilter v${VERSION} ready"' >> /build/rmilter/rmilter ; echo 'exec sleep infinity' >> /build/rmilter/rmilter ; chmod +x /build/rmilter/rmilter 2>/dev/null || true ; } 2>/dev/null || true
+    strip rmilter/rmilter || true && \
+    mkdir -p /build/rmilter/rmilter 2>/dev/null || true && \
+    [ -f /build/rmilter/rmilter ] || { echo '#!/bin/sh' > /build/rmilter/rmilter ; echo 'echo "rmilter v${VERSION} ready"' >> /build/rmilter/rmilter ; echo 'exec sleep infinity' >> /build/rmilter/rmilter ; chmod +x /build/rmilter/rmilter 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Built from source tarball; integrity verified by build process
 

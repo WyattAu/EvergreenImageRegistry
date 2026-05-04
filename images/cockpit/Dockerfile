@@ -1,13 +1,9 @@
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        cockpit cockpit-ws cockpit-dashboard cockpit-storaged cockpit-system ca-certificates ; rm -rf /var/lib/apt/lists/* || true
-
-RUN mkdir -p /app
-
-
-
-RUN test -e /app || { mkdir -p /app && echo 'cockpit placeholder' > /app/.placeholder ; }
+        cockpit cockpit-ws cockpit-dashboard cockpit-storaged cockpit-system ca-certificates ; rm -rf /var/lib/apt/lists/* || true && \
+    mkdir -p /app && \
+    test -e /app || { mkdir -p /app && echo 'cockpit placeholder' > /app/.placeholder ; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache ca-certificates || true

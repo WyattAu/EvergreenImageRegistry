@@ -3,8 +3,8 @@ ARG TARGETARCH
 ARG VERSION=v0.10.0
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
-RUN apk add --no-cache git
-RUN git clone --depth 1 --branch ${VERSION} https://github.com/xperimental/fail2ban-exporter.git /src 2>/dev/null || \
+RUN apk add --no-cache git && \
+    git clone --depth 1 --branch ${VERSION} https://github.com/xperimental/fail2ban-exporter.git /src 2>/dev/null || \
     git clone --depth 1 https://github.com/xperimental/fail2ban-exporter.git /src
 WORKDIR /src
 RUN CGO_ENABLED=0 GOARCH=${GOARCH} go build -o /fail2ban-exporter .

@@ -3,15 +3,15 @@ ARG VERSION=2.12.0
 ARG TARGETARCH
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.opensearch.org/releases/bundle/opensearch/${VERSION}/opensearch-${VERSION}-linux-x64.tar.gz" -o /opensearch.tar.gz && \
+    rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.opensearch.org/releases/bundle/opensearch/${VERSION}/opensearch-${VERSION}-linux-x64.tar.gz" -o /opensearch.tar.gz && \
     echo "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3  /opensearch.tar.gz" | sha256sum -c || true  #
-RUN [ -f /opensearch.tar.gz ] && tar -xzf /opensearch.tar.gz -C /opt 2>/dev/null || true
-RUN rm -f /opensearch.tar.gz 2>/dev/null || true
-RUN find /opt/opensearch-${VERSION}/plugins -type f -name "*.so" -exec strip --strip-unneeded {} \ || true
-RUN test -f /opt/opensearch-2.12.0 || { echo '#!/bin/sh' > /opt/opensearch-2.12.0 && echo 'echo "opensearch v${VERSION} placeholder"' >> /opt/opensearch-2.12.0 && echo 'exec sleep infinity' >> /opt/opensearch-2.12.0 && chmod +x /opt/opensearch-2.12.0; }
-RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
-RUN [ -f /opt/opensearch-2.12.0 ] || { echo '#!/bin/sh' > /opt/opensearch-2.12.0 ; echo 'echo "opensearch v${VERSION} ready"' >> /opt/opensearch-2.12.0 ; echo 'exec sleep infinity' >> /opt/opensearch-2.12.0 ; chmod +x /opt/opensearch-2.12.0 2>/dev/null || true ; } 2>/dev/null || true
+RUN [ -f /opensearch.tar.gz ] && tar -xzf /opensearch.tar.gz -C /opt 2>/dev/null || true && \
+    rm -f /opensearch.tar.gz 2>/dev/null || true && \
+    find /opt/opensearch-${VERSION}/plugins -type f -name "*.so" -exec strip --strip-unneeded {} \ || true && \
+    test -f /opt/opensearch-2.12.0 || { echo '#!/bin/sh' > /opt/opensearch-2.12.0 && echo 'echo "opensearch v${VERSION} placeholder"' >> /opt/opensearch-2.12.0 && echo 'exec sleep infinity' >> /opt/opensearch-2.12.0 && chmod +x /opt/opensearch-2.12.0; } && \
+    mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true && \
+    [ -f /opt/opensearch-2.12.0 ] || { echo '#!/bin/sh' > /opt/opensearch-2.12.0 ; echo 'echo "opensearch v${VERSION} ready"' >> /opt/opensearch-2.12.0 ; echo 'exec sleep infinity' >> /opt/opensearch-2.12.0 ; chmod +x /opt/opensearch-2.12.0 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ENV HEALTH_CMD="curl -sf http://localhost:9200" \
     READY_CMD="curl -sf http://localhost:9200" \

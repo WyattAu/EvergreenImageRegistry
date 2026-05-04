@@ -6,21 +6,20 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
         python3 python3-pip ca-certificates curl && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN pip3 install --break-system-packages --no-cache-dir \
-        pymongo 2>/dev/null || true
-RUN mkdir -p /app-src 2>/dev/null || true
-
+    rm -rf /var/lib/apt/lists/* || true && \
+    pip3 install --break-system-packages --no-cache-dir \
+        pymongo 2>/dev/null || true && \
+    mkdir -p /app-src 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION
 RUN apk add --no-cache ca-certificates python3 py3-pip || true && \
     pip3 install --break-system-packages --no-cache-dir \
         pymongo 2>/dev/null || true && \
     adduser -u 65532 -s /bin/false objectrocket 2>/dev/null || true && \
-    mkdir -p /var/lib/objectrocket /var/log/objectrocket /app 2>/dev/null || true
-RUN printf '#!/bin/sh\nexec python3 -c "\nimport sys\nprint(\"objectrocket v%s - MongoDB cloud development compatibility\")\nprint(\"ObjectRocket is a fully managed database cloud service.\")\nprint(\"This image provides a pymongo client library for development.\")\nprint(\"\")\nprint(\"Available: pymongo client library\")\nprint(\"Usage: import this image as a base for your ObjectRocket-compatible application.\")\nprint(\"Connect to your ObjectRocket/MongoDB Atlas endpoint in production.\")\n"' "${VERSION}" > /app/objectrocket && \
-    chmod +x /app/objectrocket
-RUN chown -R 65532:65532 /var/lib/objectrocket /var/log/objectrocket /app
+    mkdir -p /var/lib/objectrocket /var/log/objectrocket /app 2>/dev/null || true && \
+    printf '#!/bin/sh\nexec python3 -c "\nimport sys\nprint(\"objectrocket v%s - MongoDB cloud development compatibility\")\nprint(\"ObjectRocket is a fully managed database cloud service.\")\nprint(\"This image provides a pymongo client library for development.\")\nprint(\"\")\nprint(\"Available: pymongo client library\")\nprint(\"Usage: import this image as a base for your ObjectRocket-compatible application.\")\nprint(\"Connect to your ObjectRocket/MongoDB Atlas endpoint in production.\")\n"' "${VERSION}" > /app/objectrocket && \
+    chmod +x /app/objectrocket && \
+    chown -R 65532:65532 /var/lib/objectrocket /var/log/objectrocket /app
 USER 65532:65532
 WORKDIR /app
 EXPOSE 27017

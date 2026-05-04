@@ -3,19 +3,18 @@ ARG VERSION=1.2.0
 ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL \
+    rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL \
     -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/mattermost/mattermost-plugin-github/releases/download/v${VERSION}/github-linux-amd64.tar.gz" \
     -o /tmp/archive.tar.gz && \
     mkdir -p /tmp/plugin && \
     tar -xzf /tmp/archive.tar.gz -C /tmp/plugin && \
     find /tmp/plugin -type f -executable -exec strip {} \; 2>/dev/null || true
-
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=1.2.0
-RUN apk add --no-cache ca-certificates || true
-RUN addgroup -S -g 10000 appuser 2>/dev/null || true && \
+RUN apk add --no-cache ca-certificates || true && \
+    addgroup -S -g 10000 appuser 2>/dev/null || true && \
     adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser 2>/dev/null || true
 COPY --from=downloader /tmp/plugin /app/plugin
 RUN chown -R 65532:65532 /app 2>/dev/null || true

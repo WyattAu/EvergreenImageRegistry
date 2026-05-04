@@ -12,11 +12,10 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243
 ARG TARGETARCH
 ARG VERSION
 ARG TARGETARCH
-RUN apk add --no-cache ca-certificates curl
-RUN curl -fSL "https://github.com/amacneil/dbmate/releases/download/v${VERSION}/dbmate-linux-${TARGETARCH}" -o /tmp/dbmate \
+RUN apk add --no-cache ca-certificates curl && \
+    curl -fSL "https://github.com/amacneil/dbmate/releases/download/v${VERSION}/dbmate-linux-${TARGETARCH}" -o /tmp/dbmate \
     && echo "dfd4027141b6e4357158099bdfe6c02b286af70f8e49057937744cf80b38ea1c  /tmp/dbmate" | sha256sum -c - \
     && chmod +x /tmp/dbmate
-
 FROM scratch
 ARG VERSION
 ARG BUILD_DATE

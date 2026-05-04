@@ -13,8 +13,8 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 300 -fsSL "https://archive.apache.org/dist/hive/hive-${VERSION}/apache-hive-${VERSION}-bin.tar.gz" -o /tmp/hive.tar.gz 2>/dev/null || true ; \
+    curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 300 -fsSL "https://archive.apache.org/dist/hive/hive-${VERSION}/apache-hive-${VERSION}-bin.tar.gz" -o /tmp/hive.tar.gz 2>/dev/null || true ; \
     echo "83eb88549ae88d3df6a86bb3e2526c7f4a0f21acafe21452c18071cee058c666  /tmp/hive.tar.gz" | sha256sum -c - || true
     [ -f /tmp/hive.tar.gz ] && tar -xzf /tmp/hive.tar.gz -C /opt 2>/dev/null || true ; \
     rm -f /tmp/hive.tar.gz 2>/dev/null || true ; \
@@ -23,9 +23,9 @@ RUN curl --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 300 -fsSL "ht
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates curl 
-RUN adduser -u 65532 -s /bin/false hive 2>/dev/null || true
-RUN mkdir -p /var/lib/hive /var/log/hive /var/cache/hive /opt/hive/conf 2>/dev/null || true
+RUN apk add --no-cache ca-certificates curl && \
+    adduser -u 65532 -s /bin/false hive 2>/dev/null || true && \
+    mkdir -p /var/lib/hive /var/log/hive /var/cache/hive /opt/hive/conf 2>/dev/null || true
 COPY --from=builder /opt/apache-hive-${VERSION}-bin /opt/hive
 RUN chown -R 65532:65532 /opt/hive /var/lib/hive /var/log/hive /var/cache/hive
 USER 65532:65532

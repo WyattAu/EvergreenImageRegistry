@@ -15,11 +15,8 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends syslog-ng-core && \
     strip /usr/sbin/syslog-ng && \
     find /usr/lib/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \ || true && \
-    find /usr/lib/*/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \ || true
-
-
-RUN mkdir -p /usr/sbin/syslog-ng 2>/dev/null || true
-
+    find /usr/lib/*/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \ || true && \
+    mkdir -p /usr/sbin/syslog-ng 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN addgroup -S -g 65532 syslogng 2>/dev/null || true && \
@@ -28,8 +25,8 @@ RUN addgroup -S -g 65532 syslogng 2>/dev/null || true && \
     mkdir -p /usr/sbin 2>/dev/null || true ; test -f /usr/sbin/syslog-ng 2>/dev/null || echo "#!/bin/sh" > /usr/sbin/syslog-ng 2>/dev/null || true
 COPY --from=builder /usr/sbin/syslog-ng /usr/sbin/syslog-ng
 RUN mkdir -p /app/conf /app/logs /app/run /var/lib/syslog-ng ; \
-addgroup -S -g 2 syslogng >/dev/null 2>&1 || true && adduser -u 65532 -G syslogng -D -s /bin/false syslogng 2>/dev/null || true
-RUN chown -R syslogng:syslogng /app /var/lib/syslog-ng 2>/dev/null || true
+addgroup -S -g 2 syslogng >/dev/null 2>&1 || true && adduser -u 65532 -G syslogng -D -s /bin/false syslogng 2>/dev/null || true && \
+    chown -R syslogng:syslogng /app /var/lib/syslog-ng 2>/dev/null || true
 COPY <<'EOF' /app/conf/syslog-ng.conf
 @version: 4.8
 source s_network {

@@ -16,8 +16,8 @@ ARG VERSION=1.19.3
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libssl-dev libexpat1-dev flex bison && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://nlnetlabs.nl/downloads/unbound/unbound-${VERSION}.tar.gz" -o /unbound.tar.gz && \
+    rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://nlnetlabs.nl/downloads/unbound/unbound-${VERSION}.tar.gz" -o /unbound.tar.gz && \
     echo "3ae322be7dc2f831603e4b0391435533ad5861c2322e34a76006a9fb65eb56b9  /unbound.tar.gz" | sha256sum -c - || true
     [ -f /unbound.tar.gz ] && tar -xzf /unbound.tar.gz -C / && rm -f /unbound.tar.gz || true ; \
     cd /unbound-${VERSION} && \    ./configure \

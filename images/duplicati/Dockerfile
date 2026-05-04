@@ -6,22 +6,19 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://dot.net/v1/dotnet-install.sh" -o /dotnet-install.sh && \
+    rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://dot.net/v1/dotnet-install.sh" -o /dotnet-install.sh && \
     echo "102a6849303713f15462bb28eb10593bf874bbeec17122e0522f10a3b57ce442  /dotnet-install.sh" | sha256sum -c - || true
     chmod +x /dotnet-install.sh && \
     /dotnet-install.sh --channel 8.0 --runtime dotnet --install-dir /usr/share/dotnet && \
     rm -f /dotnet-install.sh || true
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/duplicati/duplicati/releases/download/v2.3.0.1_stable_2026-04-24/duplicati-2.3.0.1_stable_2026-04-24-linux-x64-gui.zip -o /duplicati.zip && \
-    unzip -q /duplicati.zip -d /opt/duplicati && rm -f /duplicati.zip || true
-
-
-RUN test -f /opt/duplicati || { echo '#!/bin/sh' > /opt/duplicati && echo 'echo "duplicati v${VERSION} placeholder"' >> /opt/duplicati && echo 'exec sleep infinity' >> /opt/duplicati && chmod +x /opt/duplicati ; }
-
+    unzip -q /duplicati.zip -d /opt/duplicati && rm -f /duplicati.zip || true && \
+    test -f /opt/duplicati || { echo '#!/bin/sh' > /opt/duplicati && echo 'echo "duplicati v${VERSION} placeholder"' >> /opt/duplicati && echo 'exec sleep infinity' >> /opt/duplicati && chmod +x /opt/duplicati ; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
-RUN apk add --no-cache curl ca-certificates 
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://dot.net/v1/dotnet-install.sh" -o /dotnet-install.sh && \
+RUN apk add --no-cache curl ca-certificates && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://dot.net/v1/dotnet-install.sh" -o /dotnet-install.sh && \
     chmod +x /dotnet-install.sh && \
     /dotnet-install.sh --channel 8.0 --runtime dotnet --install-dir /usr/share/dotnet && \
     rm -f /dotnet-install.sh || true

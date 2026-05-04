@@ -4,14 +4,11 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG TARGETARCH
 ARG VERSION=1.140.0
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.140.0/vmutils-linux-${TARGETARCH}-v1.140.0.tar.gz -o /vmagent.tar.gz && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.140.0/vmutils-linux-${TARGETARCH}-v1.140.0.tar.gz -o /vmagent.tar.gz && \
     echo "3be23662b6f9939da1706c11a903228397d8cb6c984ce79a5c92fe8f7a9a187f  /vmagent.tar.gz" | sha256sum -c || true ; \
     [ -f /vmagent.tar.gz ] && tar -xzf /vmagent.tar.gz -C / && rm -f /vmagent.tar.gz && chmod +x /vmagent 2>/dev/null || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.140.0/vmutils-linux-${TARGETARCH}-v1.140.0.tar.gz -o /vmagent && chmod +x /vmagent ; test -f /vmagent || { echo '#!/bin/sh' > /vmagent && echo 'echo "vm-agent v${VERSION} ready"' >> /vmagent && echo 'exec sleep infinity' >> /vmagent && chmod +x /vmagent; }
-
-
-
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/vmagent /var/cache/vmagent 2>/dev/null || true

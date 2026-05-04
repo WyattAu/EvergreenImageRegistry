@@ -3,12 +3,9 @@ ARG GITHUB_TOKEN
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm ca-certificates curl && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN mkdir -p /app-data /var/log/node /var/cache/node 2>/dev/null || true
-
-
-
-RUN mkdir -p /app 2>/dev/null || true
+    rm -rf /var/lib/apt/lists/* || true && \
+    mkdir -p /app-data /var/log/node /var/cache/node 2>/dev/null || true && \
+    mkdir -p /app 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache nodejs ca-certificates curl 

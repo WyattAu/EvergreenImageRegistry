@@ -6,9 +6,9 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243
 
 ARG VERSION
 ARG TARGETARCH
-RUN apk add --no-cache ca-certificates
-RUN adduser -D -u 65532 -s /bin/false chartdb 2>/dev/null || true
-RUN mkdir -p /var/lib/chartdb /var/log/chartdb /var/cache/chartdb /opt 2>/dev/null || true
+RUN apk add --no-cache ca-certificates && \
+    adduser -D -u 65532 -s /bin/false chartdb 2>/dev/null || true && \
+    mkdir -p /var/lib/chartdb /var/log/chartdb /var/cache/chartdb /opt 2>/dev/null || true
 COPY --from=upstream /app /opt/chartdb
 RUN chown -R 65532:65532 /opt/chartdb /var/lib/chartdb /var/log/chartdb /var/cache/chartdb 2>/dev/null || true
 

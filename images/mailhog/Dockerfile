@@ -3,14 +3,13 @@ ARG VERSION=1.0.1
 ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
+    rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/mailhog/MailHog/releases/download/v${VERSION}/MailHog_linux_amd64" \
     -o /tmp/MailHog && \
     echo "e2ed634ded49929f089b20045581955ed217672078fd86082dd7a6c67c5d09c7  /tmp/MailHog" | sha256sum -c - && \
     chmod +x /tmp/MailHog && \
     strip /tmp/MailHog || true
-
 FROM scratch
 COPY --from=downloader /tmp/MailHog /usr/local/bin/MailHog
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

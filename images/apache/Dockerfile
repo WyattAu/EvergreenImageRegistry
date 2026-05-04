@@ -10,9 +10,9 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=2.4.66
-RUN apk add --no-cache apache2 ca-certificates tzdata || true
-RUN a2dismod autoindex 2>/dev/null || true
-RUN addgroup -S -g 65532 www-data 2>/dev/null || true && \
+RUN apk add --no-cache apache2 ca-certificates tzdata || true && \
+    a2dismod autoindex 2>/dev/null || true && \
+    addgroup -S -g 65532 www-data 2>/dev/null || true && \
     usermod -u 65532 www-data 2>/dev/null || true && \
     chown -R 65532:65532 /var/www/html /var/log/apache2 /var/run/apache2 2>/dev/null || true
 USER 65532:65532

@@ -13,19 +13,17 @@ ARG BUILD_DATE
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/kibana/kibana-${VERSION}-linux-x86_64.tar.gz" -o kibana-oss.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  kibana-oss.tar.gz" | sha256sum -c || true  ; [ -f kibana-oss.tar.gz ] && tar -xzf kibana-oss.tar.gz || true ; \
-    rm -f kibana-oss.tar.gz ; rm -rf kibana-${VERSION}-linux-x86_64/node_modules/.cache
-
-
-RUN mkdir -p /tmp ; \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/kibana/kibana-${VERSION}-linux-x86_64.tar.gz" -o kibana-oss.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  kibana-oss.tar.gz" | sha256sum -c || true  ; [ -f kibana-oss.tar.gz ] && tar -xzf kibana-oss.tar.gz || true ; \
+    rm -f kibana-oss.tar.gz ; rm -rf kibana-${VERSION}-linux-x86_64/node_modules/.cache && \
+    mkdir -p /tmp ; \
 test -d /tmp/kibana-${VERSION}-linux-x86_64 || { mkdir -p /tmp/kibana-${VERSION}-linux-x86_64/bin && echo '#!/bin/sh' > /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana && echo 'echo "kibana v${VERSION} placeholder"' >> /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana && echo 'exec sleep infinity' >> /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana && chmod +x /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana ; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION
-RUN apk add --no-cache curl ca-certificates 
-RUN adduser -u 65532 -s /bin/false kibana || true
-RUN mkdir -p /opt/kibana/data /opt/kibana/logs /var/log/kibana /var/cache/kibana
+RUN apk add --no-cache curl ca-certificates && \
+    adduser -u 65532 -s /bin/false kibana || true && \
+    mkdir -p /opt/kibana/data /opt/kibana/logs /var/log/kibana /var/cache/kibana
 COPY --from=builder /tmp/kibana-${VERSION}-linux-x86_64 /opt/kibana
 USER 65532:65532
 WORKDIR /opt/kibana

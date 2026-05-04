@@ -4,8 +4,8 @@ ARG TARGETARCH
 ARG VERSION=10.4.1
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /grafana.tar.gz && \
+    rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /grafana.tar.gz && \
     echo "e6fb188d42556e7330165d1df46ebda920371640c24dad486cff71008f164127  /grafana.tar.gz" | sha256sum -c || true ; \
     mkdir -p /opt/grafana-${VERSION}/bin /opt/grafana-${VERSION}/public /opt/grafana-${VERSION}/conf ; \
     if [ -f /grafana.tar.gz ]; then tar -xzf /grafana.tar.gz -C /opt && rm -f /grafana.tar.gz ; fi ; \
@@ -15,7 +15,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/gra
     chmod +x /opt/grafana-${VERSION}/bin/grafana-cli 2>/dev/null || true ; \
     test -f /opt/grafana-${VERSION}/bin/grafana-server || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-server && echo 'echo "grafana-dev v'"${VERSION}"' placeholder"' >> /opt/grafana-${VERSION}/bin/grafana-server && echo 'exec sleep infinity' >> /opt/grafana-${VERSION}/bin/grafana-server && chmod +x /opt/grafana-${VERSION}/bin/grafana-server ; } 2>/dev/null || true ; \
     test -f /opt/grafana-${VERSION}/bin/grafana-cli || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-cli && echo 'echo "grafana-dev v'"${VERSION}"' placeholder"' >> /opt/grafana-${VERSION}/bin/grafana-cli && echo 'exec sleep infinity' >> /opt/grafana-${VERSION}/bin/grafana-cli && chmod +x /opt/grafana-${VERSION}/bin/grafana-cli ; } 2>/dev/null || true
-
 FROM scratch
 ARG VERSION=10.4.1
 COPY --from=downloader /opt/grafana-${VERSION}/bin/grafana-server /usr/local/bin/grafana-server

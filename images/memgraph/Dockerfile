@@ -5,10 +5,10 @@ FROM memgraph/memgraph:${VERSION} AS upstream
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION
-RUN apk add --no-cache ca-certificates python3
-RUN adduser -u 65532 -s /bin/false memgraph 2>/dev/null || true
-RUN mkdir -p /var/lib/memgraph /var/log/memgraph /var/cache/memgraph /etc/memgraph 2>/dev/null || true
-RUN mkdir -p /opt 2>/dev/null || true
+RUN apk add --no-cache ca-certificates python3 && \
+    adduser -u 65532 -s /bin/false memgraph 2>/dev/null || true && \
+    mkdir -p /var/lib/memgraph /var/log/memgraph /var/cache/memgraph /etc/memgraph 2>/dev/null || true && \
+    mkdir -p /opt 2>/dev/null || true
 COPY --from=upstream /usr/lib/memgraph/memgraph /opt/memgraph/bin/memgraph
 RUN chown -R 65532:65532 /opt/memgraph /var/lib/memgraph /var/log/memgraph /var/cache/memgraph /etc/memgraph 2>/dev/null || true
 

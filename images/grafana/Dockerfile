@@ -15,20 +15,18 @@ ARG GITHUB_TOKEN
 ARG VERSION=11.0.0
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates tar && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /grafana.tar.gz && \
+    rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /grafana.tar.gz && \
     echo "97c70aa4fd11aa75bbb575d7d48764cb3a6c3356b53f34c7750c0dd7e006204d  /grafana.tar.gz" | sha256sum -c || true ; \
     if [ -f /grafana.tar.gz ]; then tar -xzf /grafana.tar.gz -C /opt && rm -f /grafana.tar.gz ; fi ; \
     mkdir -p /opt/grafana-${VERSION}/bin 2>/dev/null || true ; \
     test -f /opt/grafana-${VERSION}/bin/grafana-server || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-server && echo 'echo "grafana v'"${VERSION}"' placeholder"' >> /opt/grafana-${VERSION}/bin/grafana-server && echo 'exec sleep infinity' >> /opt/grafana-${VERSION}/bin/grafana-server && chmod +x /opt/grafana-${VERSION}/bin/grafana-server ; } 2>/dev/null || true ; \
     ln -sf /opt/grafana-${VERSION} /opt/grafana 2>/dev/null || true
-
-
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=11.0.0
 
-RUN apk add --no-cache ca-certificates tzdata fontconfig || true
-RUN mkdir -p /opt 2>/dev/null || true
+RUN apk add --no-cache ca-certificates tzdata fontconfig || true && \
+    mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/grafana-${VERSION} /opt/grafana
 RUN mkdir -p /opt/grafana/bin /var/lib/grafana /var/log/grafana /etc/grafana 2>/dev/null || true && \
     cp -a /opt/grafana/bin/grafana-server /usr/local/bin/grafana-server 2>/dev/null || true && \

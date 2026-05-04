@@ -3,16 +3,13 @@ ARG VERSION=5.18.3
 ARG GITHUB_TOKEN
 ARG ACTIVEMQ_VERSION=5.18.3
 ARG TARGETARCH
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/activemq/${ACTIVEMQ_VERSION}/apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz" -o /activemq.tar.gz && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/activemq/${ACTIVEMQ_VERSION}/apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz" -o /activemq.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/activemq/${ACTIVEMQ_VERSION}/apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz.sha512" -o /checksums.txt && \
     sha512sum -c /checksums.txt && \
     [ -f /activemq.tar.gz ] && tar -xzf /activemq.tar.gz -C /opt/ || true ; \
     mv /opt/apache-activemq-${ACTIVEMQ_VERSION} /opt/activemq && \
     rm -rf /activemq.tar.gz /checksums.txt || true ; test -d /opt/activemq || { mkdir -p /opt/activemq/bin && echo '#!/bin/sh' > /opt/activemq/bin/activemq && echo 'echo "activemq v${VERSION} placeholder"' >> /opt/activemq/bin/activemq && echo 'exec sleep infinity' >> /opt/activemq/bin/activemq && chmod +x /opt/activemq/bin/activemq; }
-
-# hadolint ignore=DL3023
-
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 RUN apk add --no-cache openjdk-17-jre-base ca-certificates || true

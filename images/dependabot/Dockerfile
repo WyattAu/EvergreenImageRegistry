@@ -9,14 +9,14 @@ ARG VERSION
 ARG TARGETARCH
 RUN apk add --no-cache ruby ruby-irb ruby-rdoc ca-certificates \
         git curl gnupg gmp mpdecimal libffi \
-        readline ncurses yaml zlib nodejs npm || true
-RUN mkdir -p /usr/lib/ruby /usr/local/bundle /app /home/dependabot 2>/dev/null || true
+        readline ncurses yaml zlib nodejs npm || true && \
+    mkdir -p /usr/lib/ruby /usr/local/bundle /app /home/dependabot 2>/dev/null || true
 COPY --from=upstream /home/dependabot /home/dependabot
 COPY --from=upstream /usr/local/bundle /usr/local/bundle
 COPY --from=upstream /usr/local/bin /usr/local/bin
 COPY --from=upstream /app /app
-RUN addgroup -S -g 2 nogroup >/dev/null || true
-RUN adduser -u 65532 -G nogroup -D -h /app -s /bin/false dependabot 2>/dev/null || true && \
+RUN addgroup -S -g 2 nogroup >/dev/null || true && \
+    adduser -u 65532 -G nogroup -D -h /app -s /bin/false dependabot 2>/dev/null || true && \
     chown -R 65532:65532 /app /usr/local/bundle /home/dependabot 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app

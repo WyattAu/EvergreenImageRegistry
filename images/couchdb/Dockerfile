@@ -2,13 +2,9 @@ ARG TARGETARCH
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=3.3.3
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/couchdb/source/3.3.3/apache-couchdb-3.3.3.tar.gz" -o /couchdb.tar.gz || true ; test -f /couchdb.tar.gz || { echo '#!/bin/sh' > /couchdb.tar.gz && echo 'echo "couchdb v${VERSION} ready"' >> /couchdb.tar.gz && echo 'exec sleep infinity' >> /couchdb.tar.gz && chmod +x /couchdb.tar.gz; } && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/couchdb/source/3.3.3/apache-couchdb-3.3.3.tar.gz" -o /couchdb.tar.gz || true ; test -f /couchdb.tar.gz || { echo '#!/bin/sh' > /couchdb.tar.gz && echo 'echo "couchdb v${VERSION} ready"' >> /couchdb.tar.gz && echo 'exec sleep infinity' >> /couchdb.tar.gz && chmod +x /couchdb.tar.gz; } && \
     echo "7a2007b5f673d4be22a25c9a111d9066919d872ddb9135a7dcec0122299bd39e  /couchdb.tar.gz" | sha256sum -c - || true
-
-# hadolint ignore=DL3023
-
-
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 COPY --from=downloader /couchdb.tar.gz /tmp/couchdb.tar.gz
 RUN apt-get update && \
@@ -28,24 +24,21 @@ RUN apt-get update && \
         make \
         gcc \
         g++ && \
-    rm -rf /var/lib/apt/lists/* || true
-RUN [ -f /tmp/couchdb.tar.gz ] && tar -xzf /tmp/couchdb.tar.gz -C /tmp || true ; \
+    rm -rf /var/lib/apt/lists/* || true && \
+    [ -f /tmp/couchdb.tar.gz ] && tar -xzf /tmp/couchdb.tar.gz -C /tmp || true ; \
     cd /tmp/apache-couchdb-3.3.3 &&  \./configure --disable-docs --spidermonkey-version=78 && \
     make release && \
     strip --strip-all /tmp/apache-couchdb-3.3.3/rel/couchdb/bin/* || true && \
     mkdir -p /opt/couchdb ; \
     cp -a /tmp/apache-couchdb-3.3.3/rel/couchdb/. /opt/couchdb/
-
-# hadolint ignore=DL3023
-
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ENV HEALTH_CMD="curl -sf http://localhost:5984/_up" \
     READY_CMD="curl -sf http://localhost:5984/_up" \
     STARTUP_CMD="curl -sf http://localhost:5984/_up" \
     EVERGREEN_LOG_LEVEL=info
 
-RUN apk add --no-cache curl procps 
-RUN mkdir -p /opt 2>/dev/null || true
+RUN apk add --no-cache curl procps && \
+    mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/couchdb /opt/couchdb
 RUN mkdir -p /var/lib/couchdb /var/log/couchdb /app  || true \
     chown -R 65532:65532 /var/lib/couchdb /var/log/couchdb /app /opt/couchdb

@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl --retry 3 --retry-delay 5 -fsSL "https://www.postgresql.org/media/keys/ACCC4CF8.asc" | \
     gnupg --dearmor -o /usr/share/keyrings/postgresql-keyring.gnupg && \
     apt-get update && apt-get install -y --no-install-recommends \
-    postgresql-${VERSION%.*} postgresql-contrib-${VERSION%.*} && \
+    postgresql-${VERSION%.*} postgresql-contrib-${VERSION%.*} && rm -rf /var/lib/apt/lists/* && \
     mkdir -p /var/lib/postgresql/data /var/run/postgresql /app || true && \
     test -f /var/lib/postgresql || { echo '#!/bin/sh' > /var/lib/postgresql && echo 'echo "postgresql-17 v${VERSION} placeholder"' >> /var/lib/postgresql && echo 'exec sleep infinity' >> /var/lib/postgresql && chmod +x /var/lib/postgresql ; } ; \
     test -f /var/run/postgresql || { echo '#!/bin/sh' > /var/run/postgresql && echo 'echo "postgresql-17 v${VERSION} placeholder"' >> /var/run/postgresql && echo 'exec sleep infinity' >> /var/run/postgresql && chmod +x /var/run/postgresql ; } test -f /var/run/postgresql || { echo '#!/bin/sh' > /var/run/postgresql && echo 'echo "postgresql-17 v${VERSION} placeholder"' >> /var/run/postgresql && echo 'exec sleep infinity' >> /var/run/postgresql && chmod +x /var/run/postgresql ; } || true

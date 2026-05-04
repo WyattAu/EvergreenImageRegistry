@@ -1,6 +1,6 @@
 [metadata]
 name = "mongodb-5"
-version = "5.0"
+version = "5.0.18"
 description = "Evergreen hardened MongoDB 5.0 - document database"
 
 [build]
@@ -22,7 +22,7 @@ expose = [27017, 9101]
 "org.opencontainers.image.description" = "Evergreen hardened MongoDB 5.0 - document database"
 "org.opencontainers.image.title" = "mongodb-5"
 "org.opencontainers.image.vendor" = "MongoDB"
-"org.opencontainers.image.version" = "${VERSION}"
+"org.opencontainers.image.version" = "5.0.18"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"

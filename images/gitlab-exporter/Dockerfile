@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=0.8.0
 
 FROM ghcr.io/prometheus-community/gitlab-exporter:${VERSION} AS upstream
 

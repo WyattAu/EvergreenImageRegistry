@@ -1,6 +1,6 @@
 [metadata]
 name = "milvus"
-version = "latest"
+version = "2.4.0"
 description = "milvus container image"
 
 [build]

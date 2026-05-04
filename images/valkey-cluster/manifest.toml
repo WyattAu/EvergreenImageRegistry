@@ -1,6 +1,6 @@
 [metadata]
 name = "valkey-cluster"
-version = "latest"
+version = "7.2.4"
 description = "Valkey in Cluster Mode - Distributed Key-Value Store"
 
 [build]

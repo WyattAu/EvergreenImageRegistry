@@ -5,7 +5,7 @@
 | Attribute | Value |
 |-----------|-------|
 | Project Name | Evergreen Hardened Image Registry |
-| Version | 21.0.0 |
+| Version | 22.0.0 |
 | Phase | Security Hardening |
 | Status | ACTIVE |
 | Last Updated | 2026-05-03 |
@@ -54,6 +54,7 @@
 | Phase 35: CI Validation & Gates | COMPLETED | 100% |
 | Phase 36: Remaining Digest Pinning | COMPLETED | 100% |
 | Phase 37: Per-Image README Stubs | COMPLETED | 100% |
+| Phase 38: SBOM at Build Time (syft) | COMPLETED | 100% |
 
 ---
 
@@ -92,6 +93,7 @@
 | Multi-Arch Total (with ARG TARGETARCH) | **321** | 300+ | **DONE** |
 | Manifest Coverage | **998 (100%)** | 100% | **DONE** |
 | SBOM Coverage | **998 (100%)** | 998 | **DONE** |
+| Build-time SBOM (syft) | **Active** | Active | **DONE** |
 | Image Catalog | **Static HTML** | Active | **DONE** |
 | CI Pipeline Stages | **11** | 11 | **DONE** |
 | Security Scanning (Trivy) | Active | Active | **DONE** |

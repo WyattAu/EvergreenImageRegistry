@@ -22,7 +22,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 53
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/health || exit 1
+HEALTHCHECK NONE
 ENTRYPOINT ["/coredns"]
 LABEL org.opencontainers.image.title="coredns" \
       org.opencontainers.image.description="CoreDNS - DNS server and service discovery for Kubernetes" \

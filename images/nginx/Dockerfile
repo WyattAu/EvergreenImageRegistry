@@ -21,7 +21,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 80 443
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:80/ || exit 1
+HEALTHCHECK NONE
 ENTRYPOINT ["/nginx"]
 LABEL org.opencontainers.image.title="nginx" \
       org.opencontainers.image.description="Nginx - HTTP and reverse proxy server" \

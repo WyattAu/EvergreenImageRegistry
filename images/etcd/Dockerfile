@@ -24,7 +24,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 2379 2380
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:2379/health || exit 1
+HEALTHCHECK NONE
 ENTRYPOINT ["/etcd"]
 LABEL org.opencontainers.image.title="etcd" \
       org.opencontainers.image.description="etcd - distributed reliable key-value store" \

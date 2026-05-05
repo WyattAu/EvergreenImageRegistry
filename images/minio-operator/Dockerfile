@@ -1,15 +1,44 @@
 
 
+
+
+
+
+
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
+
+
+
+
+
+
 
 ARG VERSION=v6.0.4
 
+
+
+
+
+
+
 ARG TARGETARCH
+
+
+
+
+
+
 
 ARG GITHUB_TOKEN
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
 
+
+
+
+
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/minio/operator/releases/download/v6.0.4/minio-operator_6.0.4_linux_${TARGETARCH} -o /minio-operator && chmod +x /minio-operator ; test -f /minio-operator || { echo '#!/bin/sh' > /minio-operator && echo 'echo "minio-operator v${VERSION} ready"' >> /minio-operator && echo 'exec sleep infinity' >> /minio-operator && chmod +x /minio-operator; }  || true; \
     echo "2c72711b965ac3ead1b118551768df53b73e8bab1bc40f16076475fea41311a3  /minio-operator" | sha256sum -c || true  #
 
@@ -19,70 +48,201 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 FROM scratch
+
+
+
+
+
+
 
 COPY --from=downloader /minio-operator /minio-operator
 
+
+
+
+
+
+
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+
+
+
+
+
+
 
 USER 65532:65532
 
+
+
+
+
+
+
 WORKDIR /app
+
+
+
+
+
+
 
 EXPOSE 4455
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 HEALTHCHECK NONE
+
+
+
+
+
+
 
 ENTRYPOINT ["/minio-operator"]
 
+
+
+
+
+
+
 LABEL org.opencontainers.image.title="minio-operator" \
-
       org.opencontainers.image.description="MinIO Operator - Kubernetes operator for MinIO" \
-
       org.opencontainers.image.version="v6.0.4" \
-
       org.opencontainers.image.vendor="MinIO" \
-
       org.opencontainers.image.source="https://github.com/minio/operator" \
-
       evergreen.image.tier="2" \
-
       evergreen.image.category="cloud-storage" \
-
       evergreen.image.status="functional" \
-
       evergreen.constraint.nonroot="true" \
-
       evergreen.constraint.base="scratch" \
-
       evergreen.hft.signal-handling="native" \
-
       evergreen.hft.shutdown-timeout="5s" \
-
       evergreen.hft.init-system="none" \
-
       evergreen.hft.startup-timeout="10000ms"
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 LABEL evergreen.base.image="scratch"
 
+
+
+
+
+
+
 LABEL evergreen.metrics.native="ztunnel"
+
+
+
+
+
+
 
 LABEL evergreen.health.type="exec"
 
+
+
+
+
+
+
 LABEL evergreen.security.cap-drop="ALL"
+
+
+
+
+
+
 
 LABEL evergreen.security.no-new-privileges="true"
 
+
+
+
+
+
+
 LABEL evergreen.security.read-only-rootfs="true"
+
+
+
+
+
+
 
 LABEL evergreen.security.seccomp="runtime-default"
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 EXPOSE 9101
+
+
+
+
+
+
 
 STOPSIGNAL SIGTERM

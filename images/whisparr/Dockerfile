@@ -30,7 +30,7 @@ ENTRYPOINT ["/app/Whisparr"]
 
 STOPSIGNAL SIGTERM
 LABEL org.opencontainers.image.title="whisparr" \
-LABEL evergreen.metrics.native="ztunnel"
+evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"

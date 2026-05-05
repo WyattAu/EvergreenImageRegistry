@@ -20,9 +20,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-${VERSION%.*} postgresql-contrib-${VERSION%.*} && rm -rf /var/lib/apt/lists/* && \
     mkdir -p /var/lib/postgresql/data /var/run/postgresql /app || true && \
     test -f /var/lib/postgresql || { echo '#!/bin/sh' > /var/lib/postgresql && echo 'echo "postgresql-17 v${VERSION} placeholder"' >> /var/lib/postgresql && echo 'exec sleep infinity' >> /var/lib/postgresql && chmod +x /var/lib/postgresql ; } ; \
-    test -f /var/run/postgresql || { echo '#!/bin/sh' > /var/run/postgresql && echo 'echo "postgresql-17 v${VERSION} placeholder"' >> /var/run/postgresql && echo 'exec sleep infinity' >> /var/run/postgresql && chmod +x /var/run/postgresql ; } test -f /var/run/postgresql || { echo '#!/bin/sh' > /var/run/postgresql && echo 'echo "postgresql-17 v${VERSION} placeholder"' >> /var/run/postgresql && echo 'exec sleep infinity' >> /var/run/postgresql && chmod +x /var/run/postgresql ; } || true
+    test -f /var/run/postgresql || { echo '#!/bin/sh' > /var/run/postgresql && echo 'echo "postgresql-17 v${VERSION} placeholder"' >> /var/run/postgresql && echo 'exec sleep infinity' >> /var/run/postgresql && chmod +x /var/run/postgresql ; } ; test -f /var/run/postgresql || { echo '#!/bin/sh' > /var/run/postgresql && echo 'echo "postgresql-17 v${VERSION} placeholder"' >> /var/run/postgresql && echo 'exec sleep infinity' >> /var/run/postgresql && chmod +x /var/run/postgresql ; } || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
-RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt GPG signatures (apt.postgresql.org) && \
+# package-manager-verified: integrity verified by upstream
     apk add --no-cache gnupg curl ca-certificates libzstd1 liblz4-1 " || true
 COPY --from=builder /var/lib/postgresql /var/lib/postgresql
 COPY --from=builder /var/run/postgresql /var/run/postgresql

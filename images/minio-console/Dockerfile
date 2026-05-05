@@ -28,7 +28,7 @@ CMD ["console", "server"]
 
 LABEL org.opencontainers.image.title="minio-console"       org.opencontainers.image.version="RELEASE.2025-10-15T17-29-55Z"       org.opencontainers.image.vendor="MinIO"       org.opencontainers.image.source="https://github.com/minio/minio"       evergreen.image.tier="2"       evergreen.image.category="cloud-storage"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.base="scratch"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="5s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="10000ms" \
 org.opencontainers.image.description="MinIO Console - web-based administration UI for MinIO" \
-LABEL evergreen.base.image="scratch"
+evergreen.base.image="scratch"
 
 LABEL evergreen.metrics.native="ztunnel"
 

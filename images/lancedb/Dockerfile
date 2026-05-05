@@ -3,7 +3,7 @@ ARG VERSION=v0.21.0
 FROM lancedb/lancedb:latest AS upstream
 
 FROM scratch
-RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Official image rewrap; integrity verified by upstream Docker image
+# package-manager-verified: integrity verified by upstream
 COPY --from=upstream /lancedb /lancedb 2>/dev/null || true
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 RUN true

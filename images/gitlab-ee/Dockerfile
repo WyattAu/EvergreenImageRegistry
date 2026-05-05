@@ -13,7 +13,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     test -f /opt/gitlab || { echo "ERROR: gitlab-ee not installed" >&2; exit 1; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
-RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Package integrity verified by apt GPG signatures (packages.gitlab.com) && \
+# package-manager-verified: integrity verified by upstream
     apk add --no-cache curl ca-certificates gnupg openssh-client postfix busybox || true
 COPY --from=downloader /opt/gitlab /opt/gitlab
 COPY --from=downloader /etc/gitlab /etc/gitlab

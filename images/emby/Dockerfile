@@ -8,9 +8,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 RUN apk add --no-cache ca-certificates curl fontconfig freetype glib
 COPY --from=downloader /tmp/emby/opt/emby-server /opt/emby-server
-COPY --from=downloader /tmp/emby/var/log/emby /var/log/emby
-COPY --from=downloader /tmp/emby/var/cache/emby /var/cache/emby
-RUN mkdir -p /config && chown -R 65532:65532 /var/log/emby /var/cache/emby /config /opt/emby-server
+RUN mkdir -p /var/log/emby /var/cache/emby /config && \
+    chown -R 65532:65532 /var/log/emby /var/cache/emby /config /opt/emby-server
 USER 65532:65532
 WORKDIR /config
 EXPOSE 8096 8920

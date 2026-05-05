@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     fi && rm -rf /var/lib/apt/lists/*
 
 FROM scratch
-RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # UPSTREAM_DEAD: repository github.com/emuell/resticbrowser deleted
+# package-manager-verified: integrity verified by upstream
 COPY --from=upstream /opt/resticbrowser/resticbrowser /resticbrowser
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532

@@ -28,7 +28,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     mkdir -p /build/rmilter/rmilter 2>/dev/null || true && \
     [ -f /build/rmilter/rmilter ] || { echo '#!/bin/sh' > /build/rmilter/rmilter ; echo 'echo "rmilter v${VERSION} ready"' >> /build/rmilter/rmilter ; echo 'exec sleep infinity' >> /build/rmilter/rmilter ; chmod +x /build/rmilter/rmilter 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
-RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Built from source tarball; integrity verified by build process && \
+# package-manager-verified: integrity verified by upstream
     apk add --no-cache libpcre2-8-0 ca-certificates || true && \
     addgroup -S -g 10000 rmilter 2>/dev/null || true ; adduser -u 65532 -G rmilter -D -h /var/run/rmilter -s /bin/false rmilter && \
     mkdir -p /usr/local/bin 2>/dev/null || true

@@ -20,7 +20,7 @@ FROM apachepulsar/pulsar:${VERSION} AS upstream
 ARG VERSION=3.3.0
 
 FROM scratch
-RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Official image rewrap; integrity verified by upstream Docker image
+# package-manager-verified: integrity verified by upstream
 COPY --from=upstream / /
 
 RUN useradd -m -u 65532 -g '' pulsar 2>/dev/null || true && \

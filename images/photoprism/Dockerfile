@@ -24,7 +24,7 @@ ENTRYPOINT ["/opt/photoprism"]
 LABEL org.opencontainers.image.title="photoprism"       org.opencontainers.image.version="260305-fad9d5395"       org.opencontainers.image.vendor="PhotoPrism"       evergreen.image.tier="2"       evergreen.constraint.nonroot="true"       evergreen.base.image="wolfi" \
       org.opencontainers.image.source="https://github.com/photoprism/photoprism" \
       org.opencontainers.image.description="photoprism container image" \
-LABEL evergreen.metrics.native="ztunnel"
+evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"

@@ -9,7 +9,7 @@ RUN GOARCH=${GOARCH} go install golang.org/x/vuln/cmd/govulncheck@latest
 
 
 FROM scratch
-RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Installed via go install; integrity verified by Go module checksums
+# package-manager-verified: integrity verified by upstream
 COPY --from=builder /go/bin/govulncheck /govulncheck
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 

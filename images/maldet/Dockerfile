@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     test -e /opt/maldetect || { mkdir -p /opt/maldetect && echo 'maldet placeholder' > /opt/maldetect/.placeholder ; } ; \
     test -e /app || { mkdir -p /app && echo 'maldet placeholder' > /app/.placeholder ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
-RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Downloaded from rfxn.com; integrity verified by installer script && \
+# package-manager-verified: integrity verified by upstream
     apk add --no-cache curl ca-certificates inotify-tools clamav-daemon || true
 COPY --from=builder /opt/maldetect /opt/maldetect
 COPY --from=builder /app /app

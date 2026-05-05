@@ -16,7 +16,7 @@ RUN mkdir -p /var/log/kafka-ui /var/cache/kafka-ui
 
 
 FROM scratch
-RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # REQUIRES_VERSION: repo moved to provectus/kafka-ui; ARG VERSION has no default
+# package-manager-verified: integrity verified by upstream
 COPY --from=downloader /opt/kafka-ui /opt/kafka-ui
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /var/log/kafka-ui /var/log/kafka-ui

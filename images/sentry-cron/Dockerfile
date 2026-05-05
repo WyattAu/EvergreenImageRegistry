@@ -16,7 +16,7 @@ ENTRYPOINT ["sentry"]
 CMD ["cron"]
 LABEL org.opencontainers.image.title="sentry-cron"       org.opencontainers.image.version="26.4.1"       org.opencontainers.image.vendor="Sentry"       org.opencontainers.image.source="https://github.com/getsentry/self-hosted"       evergreen.image.tier="2"       evergreen.image.category="monitoring"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.base="wolfi"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="30s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="60000ms" \
       org.opencontainers.image.description="sentry-cron container image" \
-LABEL evergreen.base.image="wolfi"
+evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"

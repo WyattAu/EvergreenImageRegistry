@@ -13,7 +13,7 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="ldap-account-manager" org.opencontainers.image.version="1.2.6" org.opencontainers.image.vendor="leenooks" org.opencontainers.image.source="https://github.com/leenooks/phpLDAPadmin" evergreen.image.tier="2" evergreen.image.category="identity" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.constraint.base="wolfi" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="5s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="10000ms"
+LABEL org.opencontainers.image.title="ldap-account-manager" org.opencontainers.image.version="1.2.6" org.opencontainers.image.vendor="leenooks" org.opencontainers.image.source="https://github.com/leenooks/phpLDAPadmin" evergreen.image.tier="2" evergreen.image.category="identity" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.constraint.base="wolfi" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="5s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="10000ms" \
       org.opencontainers.image.description="ldap-account-manager container image" \
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"

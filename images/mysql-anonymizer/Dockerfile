@@ -71,6 +71,6 @@ LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-      evergreen.health.type="exec"
+LABEL evergreen.health.type="exec"
 EXPOSE 9101
 STOPSIGNAL SIGTERM

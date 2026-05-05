@@ -16,7 +16,8 @@ ARG GITHUB_TOKEN
 ARG VERSION
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/envoyproxy/envoy/releases/download/v${VERSION}/envoy-${VERSION}-linux-$(echo ${TARGETARCH} | sed 's/amd64/x86_64/;s/arm64/aarch_64/') -o /tmp/envoy && \
+    ARCH="$(echo ${TARGETARCH:-amd64} | sed 's/amd64/x86_64/;s/arm64/aarch_64/')" && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/envoyproxy/envoy/releases/download/v${VERSION}/envoy-${VERSION}-linux-${ARCH}" -o /tmp/envoy && \
     echo "cca312a7c3f91852f2849995c895130c59842e21ba787dc90bafa4026d6c5ecc  /tmp/envoy" | sha256sum -c || true ; \
     chmod +x /tmp/envoy && strip --strip-all /tmp/envoy
 FROM scratch
@@ -26,7 +27,7 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifi
 USER 65532:65532
 EXPOSE 9901
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9901/server_info || exit 1
+HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/envoy"]
 LABEL evergreen.image.status="functional" \
       evergreen.image.tier="1" \

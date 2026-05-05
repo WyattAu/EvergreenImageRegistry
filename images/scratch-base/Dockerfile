@@ -45,7 +45,7 @@ LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-      evergreen.constraint.scratch="true"
+LABEL evergreen.constraint.scratch="true"
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK NONE

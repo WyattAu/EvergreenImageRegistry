@@ -19,8 +19,7 @@ EXPOSE 9191
 HEALTHCHECK NONE
 ENTRYPOINT ["/fail2ban-exporter"]
 CMD ["--web.listen-address=:9191", "--web.telemetry-path=/metrics", "--fail2ban.socket=/tmp/fail2ban.sock"]
-LABEL org.opencontainers.image.title="fail2ban-exporter"       org.opencontainers.image.version="v0.10.0"       org.opencontainers.image.vendor="xperimental"       org.opencontainers.image.source="https://github.com/xperimental/fail2ban-exporter"       evergreen.image.tier="1"       evergreen.image.category="monitoring"       evergreen.image.status="best-effort"       evergreen.image.note="Original repo deleted; building from source"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms"
-
+LABEL org.opencontainers.image.title="fail2ban-exporter"       org.opencontainers.image.version="v0.10.0"       org.opencontainers.image.vendor="xperimental"       org.opencontainers.image.source="https://github.com/xperimental/fail2ban-exporter"       evergreen.image.tier="1"       evergreen.image.category="monitoring"       evergreen.image.status="best-effort"       evergreen.image.note="Original repo deleted; building from source"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms" \
 org.opencontainers.image.description="fail2ban-exporter container image" \
 
 LABEL evergreen.base.image="scratch"

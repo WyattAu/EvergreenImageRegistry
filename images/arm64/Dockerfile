@@ -24,7 +24,7 @@ LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-      evergreen.health.type="none"
+LABEL evergreen.health.type="none"
 EXPOSE 9101
 USER 65532:65532
 STOPSIGNAL SIGTERM

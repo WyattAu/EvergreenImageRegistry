@@ -9,7 +9,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl 
 ENTRYPOINT ["sleep", "infinity"]
 LABEL org.opencontainers.image.title="python-slim" \
       org.opencontainers.image.source="https://github.com/python/cpython" \
-            org.opencontainers.image.version="3.12"
+            org.opencontainers.image.version="3.12" \
       org.opencontainers.image.description="python-slim container image" \
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.security.cap-drop="ALL"

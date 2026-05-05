@@ -1,4 +1,3 @@
-ARG TARGETARCH
 FROM ghcr.io/fluxcd/image-automation-controller@sha256:ee84d141eb5be907e19e6d7ebc7f298bc58851bbdab1c7cb6e57d8e69de1f0a3 AS upstream
 
 FROM scratch

@@ -1,5 +1,4 @@
 ARG VERSION=7
-ARG TARGETARCH
 
 FROM gcr.io/datadoghq/agent:${VERSION} AS upstream
 

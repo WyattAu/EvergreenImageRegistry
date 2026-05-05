@@ -1,5 +1,4 @@
 ARG VERSION=0.45.0
-ARG TARGETARCH
 
 FROM ghcr.io/victoriametrics/operator:v${VERSION} AS upstream
 

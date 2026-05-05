@@ -5,7 +5,7 @@ ARG VERSION=0.30.1
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus/snmp_exporter/releases/download/v${VERSION}/snmp_exporter-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /snmp_exporter.tar.gz || true ; \
-    echo "265e99f527c658099597291a5fecd8a46a89bed07c166621e84e90b27bfd6c6a  /snmp_exporter.tar.gz" | sha256sum -c - || true
+    echo "265e99f527c658099597291a5fecd8a46a89bed07c166621e84e90b27bfd6c6a  /snmp_exporter.tar.gz" | sha256sum -c - ; \
     mkdir -p /snmp_exporter-${VERSION}.linux-${TARGETARCH} ; \
     if [ -f /snmp_exporter.tar.gz ]; then tar -xzf /snmp_exporter.tar.gz -C / && rm -f /snmp_exporter.tar.gz ; fi ; \
     chmod +x /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter 2>/dev/null || true ; \

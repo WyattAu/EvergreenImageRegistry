@@ -18,7 +18,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION
-ARG TARGETARCH
 RUN apk add --no-cache ca-certificates curl && \
     adduser -u 65532 -s /bin/false pulsar 2>/dev/null || true && \
     mkdir -p /opt/pulsar/data /opt/pulsar/logs /var/log/pulsar /var/cache/pulsar 2>/dev/null || true

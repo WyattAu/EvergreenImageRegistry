@@ -1,5 +1,4 @@
 ARG VERSION=8.4.0
-ARG TARGETARCH
 
 FROM pingcap/tidb:${VERSION} AS upstream
 

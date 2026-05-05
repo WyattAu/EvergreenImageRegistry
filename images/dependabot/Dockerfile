@@ -6,7 +6,6 @@ RUN mkdir -p /app /usr/local/bin 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION
-ARG TARGETARCH
 RUN apk add --no-cache ruby ruby-irb ruby-rdoc ca-certificates \
         git curl gnupg gmp mpdecimal libffi \
         readline ncurses yaml zlib nodejs npm || true && \

@@ -6,12 +6,11 @@
 
 ARG VERSION=0.24.32
 ARG BUILD_DATE
-ARG TARGETARCH
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31 AS builder
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl xz && \
-    curl -fSL "https://github.com/tursodatabase/libsql/releases/download/libsql-server-v${VERSION}/libsql-server-x86_64-unknown-linux-gnu.tar.xz" -o /tmp/libsql-server.tar.xz \
+    curl --retry 3 --retry-delay 5 -fSL "https://github.com/tursodatabase/libsql/releases/download/libsql-server-v${VERSION}/libsql-server-x86_64-unknown-linux-gnu.tar.xz" -o /tmp/libsql-server.tar.xz \
     && echo "71720fc8648c19efef416efebd47145ef59b62e198770533530a858e1336879f  /tmp/libsql-server.tar.xz" | sha256sum -c -
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION

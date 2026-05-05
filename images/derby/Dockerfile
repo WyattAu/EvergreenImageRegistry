@@ -19,7 +19,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION
-ARG TARGETARCH
 RUN apk add --no-cache ca-certificates && \
     adduser -u 65532 -s /bin/false derby 2>/dev/null || true && \
     mkdir -p /var/lib/derby /var/log/derby 2>/dev/null || true

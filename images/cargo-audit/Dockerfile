@@ -4,7 +4,7 @@ ARG GITHUB_TOKEN
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates gcc-aarch64-linux-gnu ; rm -rf /var/lib/apt/lists/* || true && \
-    curl --proto '=https' --tlsv1.2 -sSfL https://sh.rustup.rs -o /tmp/install.sh && sh /tmp/install.sh -y --default-toolchain stable --profile minimal || true && rm -f /tmp/install.sh
+    curl --retry 3 --retry-delay 5 --proto '=https' --tlsv1.2 -sSfL https://sh.rustup.rs -o /tmp/install.sh && sh /tmp/install.sh -y --default-toolchain stable --profile minimal || true && rm -f /tmp/install.sh
 ENV PATH="/root/.cargo/bin:$PATH"
 RUN rustup target add aarch64-unknown-linux-gnu || true && \
     mkdir -p /root/.cargo && \

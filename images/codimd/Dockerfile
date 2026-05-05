@@ -12,7 +12,6 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     npm run build 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=2.6.1
-ARG TARGETARCH
 RUN apk add --no-cache nodejs npm ca-certificates || true && \
     addgroup -S -g 10000 codimd 2>/dev/null || true && \
     adduser -u 65532 -G codimd -D -h /app -s /bin/false codimd 2>/dev/null || true && \

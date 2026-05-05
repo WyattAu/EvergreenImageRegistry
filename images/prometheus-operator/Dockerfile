@@ -1,5 +1,4 @@
 ARG VERSION=0.90.1
-ARG TARGETARCH
 
 FROM quay.io/prometheus-operator/prometheus-operator:v${VERSION} AS upstream
 

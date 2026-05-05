@@ -19,7 +19,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION
-ARG TARGETARCH
 RUN apk add --no-cache ca-certificates curl && \
     adduser -u 65532 -s /bin/false logstash 2>/dev/null || true && \
     mkdir -p /opt/logstash/data /opt/logstash/logs /var/log/logstash /var/cache/logstash 2>/dev/null || true

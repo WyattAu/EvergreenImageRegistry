@@ -5,7 +5,6 @@
 
 ARG VERSION=7.2.4
 ARG BUILD_DATE
-ARG TARGETARCH
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
@@ -19,7 +18,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /tmp
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.gz -o /tmp/redis.tar.gz && \
-    echo "0a62b9ae89b4be4e8d40c0035c83a72cb6776f4b62fe53553981a57f0f4ff73d  /tmp/redis.tar.gz" | sha256sum -c - || true
+    echo "0a62b9ae89b4be4e8d40c0035c83a72cb6776f4b62fe53553981a57f0f4ff73d  /tmp/redis.tar.gz" | sha256sum -c - ; \
     [ -f /tmp/redis.tar.gz ] && tar -xzf /tmp/redis.tar.gz -C /tmp || true ; \
     cd /tmp/redis-${VERSION} && make -j$(nproc) && \
     strip src/redis || true ; \

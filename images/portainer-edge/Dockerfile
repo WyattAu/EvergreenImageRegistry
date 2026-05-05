@@ -1,5 +1,4 @@
 ARG VERSION=latest
-ARG TARGETARCH
 
 FROM portainer/agent:${VERSION} AS upstream
 

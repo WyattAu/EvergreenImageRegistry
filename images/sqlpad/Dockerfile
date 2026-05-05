@@ -1,5 +1,4 @@
 ARG VERSION=latest
-ARG TARGETARCH
 
 FROM sqlpad/sqlpad:${VERSION} AS upstream
 

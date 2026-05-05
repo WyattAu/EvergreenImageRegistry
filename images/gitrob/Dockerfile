@@ -1,5 +1,4 @@
 ARG VERSION=latest
-ARG TARGETARCH
 
 FROM michenriksen/gitrob:${VERSION} AS upstream
 

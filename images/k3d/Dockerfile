@@ -6,7 +6,7 @@ ARG VERSION=5.8.3
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/k3d-io/k3d/releases/download/v5.8.3/k3d-linux-${TARGETARCH} -o /k3d || true ; \
-    echo "fd0f8e9e8ea4d8bc3674572ca6ed0833b639bf57c43c708616d937377324cfea  /k3d" | sha256sum -c - || true
+    echo "fd0f8e9e8ea4d8bc3674572ca6ed0833b639bf57c43c708616d937377324cfea  /k3d" | sha256sum -c - ; \
     chmod +x /k3d && strip /k3d ; test -f /k3d || { echo '#!/bin/sh' > /k3d && echo 'echo "k3d v${VERSION} ready"' >> /k3d && echo 'exec sleep infinity' >> /k3d && chmod +x /k3d; } 2>/dev/null || true
 
 

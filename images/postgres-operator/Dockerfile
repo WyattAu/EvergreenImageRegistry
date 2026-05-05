@@ -1,5 +1,4 @@
 ARG VERSION=1.12.0
-ARG TARGETARCH
 
 FROM registry.opensource.zalan.do/acid/postgres-operator:v${VERSION} AS upstream
 

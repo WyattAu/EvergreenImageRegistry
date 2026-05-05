@@ -8,13 +8,12 @@
 ARG VERSION=4.0.3
 ARG BUILD_DATE
 ARG PYTHON_VERSION=3.12-slim
-ARG TARGETARCH
 FROM python:${PYTHON_VERSION} AS builder
 ARG GITHUB_TOKEN
 ARG VERSION=4.0.3
 ARG PYTHON_VERSION=3.12-slim
 RUN pip install --no-cache-dir --prefix=/install patroni[postgresql]=="${VERSION}" && \
-    pip install --no-cache-dir --prefix=/install psycopg2-binary && \
+    pip install --no-cache-dir --prefix=/install psycopg2-binary==2.9.9 && \
     find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 

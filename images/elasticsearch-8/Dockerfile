@@ -24,7 +24,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 test -d /opt/elasticsearch-${VERSION} || { mkdir -p /opt/elasticsearch-${VERSION}/bin && echo '#!/bin/sh' > /opt/elasticsearch-${VERSION}/bin/elasticsearch && echo 'echo "elasticsearch-8 v${VERSION} placeholder"' >> /opt/elasticsearch-${VERSION}/bin/elasticsearch && echo 'exec sleep infinity' >> /opt/elasticsearch-${VERSION}/bin/elasticsearch && chmod +x /opt/elasticsearch-${VERSION}/bin/elasticsearch ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=8.12.2
-ARG TARGETARCH
 
 RUN apk add --no-cache curl ca-certificates 
 COPY --from=builder /opt/elasticsearch-${VERSION} /opt/elasticsearch

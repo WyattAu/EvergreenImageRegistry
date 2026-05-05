@@ -7,13 +7,12 @@
 
 ARG VERSION=1.5.0
 ARG BUILD_DATE
-ARG TARGETARCH
 
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 RUN apk add --no-cache ca-certificates curl && \
-    pip install --no-cache-dir --break-system-packages scrapyd 2>/dev/null || \
-    pip install --no-cache-dir scrapyd || true && \
+    pip install --no-cache-dir --break-system-packages scrapyd==1.5.0 2>/dev/null || \
+    pip install --no-cache-dir scrapyd==1.5.0 || true && \
     adduser -u 65532 -D app 2>/dev/null || true && \
     mkdir -p /app /var/log/python /var/cache/python && chown -R app:app /app /var/log/python /var/cache/python 2>/dev/null || true
 USER 65532:65532

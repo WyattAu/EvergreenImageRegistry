@@ -1,5 +1,4 @@
 ARG VERSION=latest
-ARG TARGETARCH
 
 FROM orientdb/orientdb:${VERSION} AS upstream
 

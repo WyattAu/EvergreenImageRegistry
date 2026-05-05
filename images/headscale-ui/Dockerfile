@@ -3,7 +3,7 @@ ARG VERSION=2026.03.17
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/gurucomputing/headscale-ui/releases/download/${VERSION}/headscale-ui.zip -o /dist.zip && \
-    echo "e959dde83569233a8643917e5c58f596b433709556b86f9e998c729d01a6cb29  /dist.zip" | sha256sum -c - || true
+    echo "e959dde83569233a8643917e5c58f596b433709556b86f9e998c729d01a6cb29  /dist.zip" | sha256sum -c - ; \
     mkdir -p /www && unzip -q /dist.zip -d /www && rm -f /dist.zip
 
 

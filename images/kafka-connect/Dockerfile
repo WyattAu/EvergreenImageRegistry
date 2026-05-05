@@ -21,7 +21,6 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243
 
 ARG VERSION
 ARG SCALA_VERSION
-ARG TARGETARCH
 RUN apk add --no-cache ca-certificates curl && \
     adduser -u 65532 -s /bin/false connect 2>/dev/null || true && \
     mkdir -p /opt/kafka/data /opt/kafka/logs /var/log/kafka /var/cache/kafka 2>/dev/null || true

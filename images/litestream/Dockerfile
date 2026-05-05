@@ -13,7 +13,7 @@ ARG TARGETARCH
 ARG VERSION
 ARG TARGETARCH
 RUN apk add --no-cache ca-certificates curl && \
-    curl -fSL "https://github.com/benbjohnson/litestream/releases/download/v${VERSION}/litestream-v${VERSION}-linux-${TARGETARCH}.tar.gz" -o /tmp/litestream.tar.gz \
+    curl --retry 3 --retry-delay 5 -fSL "https://github.com/benbjohnson/litestream/releases/download/v${VERSION}/litestream-v${VERSION}-linux-${TARGETARCH}.tar.gz" -o /tmp/litestream.tar.gz \
     && echo "880ccafc9514650c4a2a0cc78eb1e61aaad95dd3e86e877c8694f955c9095436  /tmp/litestream.tar.gz" | sha256sum -c -
 FROM scratch
 ARG VERSION

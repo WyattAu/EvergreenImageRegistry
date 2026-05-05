@@ -4,7 +4,7 @@ ARG VERSION=0.4.4
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Qianlitp/crawlergo/releases/download/v0.4.4/crawlergo_linux_amd64 -o /crawlergo.tar.gz || true ; \
-    echo "cdf072120615104423a9827dc4134953133a9113626286ab38e9de1e6160dd3b  /crawlergo.tar.gz" | sha256sum -c - || true
+    echo "cdf072120615104423a9827dc4134953133a9113626286ab38e9de1e6160dd3b  /crawlergo.tar.gz" | sha256sum -c - ; \
     [ -f /crawlergo.tar.gz ] && tar -xzf /crawlergo.tar.gz -C / && rm -f /crawlergo.tar.gz && chmod +x /crawlergo 2>/dev/null || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Qianlitp/crawlergo/releases/download/v0.4.4/crawlergo_linux_amd64 -o /crawlergo && chmod +x /crawlergo ; test -f /crawlergo || { echo '#!/bin/sh' > /crawlergo && echo 'echo "crawlergo v${VERSION} ready"' >> /crawlergo && echo 'exec sleep infinity' >> /crawlergo && chmod +x /crawlergo; }
 

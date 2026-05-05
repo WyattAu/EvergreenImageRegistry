@@ -7,14 +7,13 @@
 
 ARG VERSION=2.3.0
 ARG BUILD_DATE
-ARG TARGETARCH
 
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG GITHUB_TOKEN
 RUN apk add --no-cache ca-certificates curl && \
-    pip install --no-cache-dir --break-system-packages sigal 2>/dev/null || \
-    pip install --no-cache-dir sigal || true && \
+    pip install --no-cache-dir --break-system-packages sigal==2.3.0 2>/dev/null || \
+    pip install --no-cache-dir sigal==2.3.0 || true && \
     adduser -u 65532 -D app 2>/dev/null || true && \
     mkdir -p /app /var/log/python /var/cache/python && chown -R app:app /app /var/log/python /var/cache/python 2>/dev/null || true
 USER 65532:65532

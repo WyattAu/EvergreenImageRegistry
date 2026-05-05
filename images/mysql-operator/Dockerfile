@@ -1,5 +1,4 @@
 ARG VERSION=0.5.0
-ARG TARGETARCH
 
 FROM bitpoke/mysql-operator:v${VERSION} AS upstream
 

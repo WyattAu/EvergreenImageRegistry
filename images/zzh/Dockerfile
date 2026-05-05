@@ -1,8 +1,7 @@
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
-ARG TARGETARCH
 RUN apk add --no-cache ca-certificates && \
-    pip install --break-system-packages --no-cache-dir zigpy 2>/dev/null || true && \
+    pip install --break-system-packages --no-cache-dir zigpy==0.60.0 2>/dev/null || true && \
     addgroup -S -g 2 nogroup >/dev/null || true && \
     adduser -u 65532 -G nogroup -D -h /app -s /bin/false zzh 2>/dev/null || true && \
     mkdir -p /app && chown -R 65532:65532 /app 2>/dev/null || true

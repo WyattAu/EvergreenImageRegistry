@@ -1,5 +1,4 @@
 ARG VERSION=5.22.2
-ARG TARGETARCH
 
 FROM ghcr.io/grafana-operator/grafana-operator:v${VERSION} AS upstream
 

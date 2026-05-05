@@ -1,5 +1,4 @@
 ARG VERSION=0.35.0
-ARG TARGETARCH
 
 FROM ghcr.io/mariadb-operator/mariadb-operator:v${VERSION} AS upstream
 

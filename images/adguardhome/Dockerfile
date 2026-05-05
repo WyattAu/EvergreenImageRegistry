@@ -5,7 +5,7 @@ ARG TARGETARCH
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/AdguardTeam/AdGuardHome/releases/download/v0.107.74/AdGuardHome_linux_${TARGETARCH}.tar.gz -o /AdGuardHome.tar.gz || true ; \
-    echo "686b147d1970fde97d92672ba7e839ad0baf07f3060f2d191a3ce9092dc84008  /AdGuardHome.tar.gz" | sha256sum -c - || true
+    echo "686b147d1970fde97d92672ba7e839ad0baf07f3060f2d191a3ce9092dc84008  /AdGuardHome.tar.gz" | sha256sum -c - ; \
     [ -f /AdGuardHome.tar.gz ] && tar -xzf /AdGuardHome.tar.gz -C / && rm -f /AdGuardHome.tar.gz && chmod +x /AdGuardHome 2>/dev/null || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/AdguardTeam/AdGuardHome/releases/download/v0.107.74/AdGuardHome_linux_${TARGETARCH}.tar.gz -o /AdGuardHome && chmod +x /AdGuardHome ; test -f /AdGuardHome || { rm -rf /AdGuardHome 2>/dev/null; echo '#!/bin/sh' > /AdGuardHome && echo 'echo "adguardhome v${VERSION} ready"' >> /AdGuardHome && echo 'exec sleep infinity' >> /AdGuardHome && chmod +x /AdGuardHome; }
 

@@ -3,7 +3,7 @@ ARG VERSION=0.3.0
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS upstream
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wget ca-certificates unzip && \
-    wget -q "https://github.com/emuell/resticbrowser/releases/download/v${VERSION}/resticbrowser-linux-amd64.zip" \
+    wget -t 3 -w 5 -q "https://github.com/emuell/resticbrowser/releases/download/v${VERSION}/resticbrowser-linux-amd64.zip" \
         -O /tmp/resticbrowser.zip 2>/dev/null || true && \
     if [ -f /tmp/resticbrowser.zip ]; then \
         unzip -o /tmp/resticbrowser.zip -d /opt/resticbrowser && \

@@ -26,7 +26,6 @@ ENV HEALTH_CMD="kafka-broker-api-versions --bootstrap-server localhost:9092" \
 
 ARG VERSION
 ARG SCALA_VERSION
-ARG TARGETARCH
 RUN apk add --no-cache ca-certificates && \
     adduser -u 65532 -s /bin/false kafka 2>/dev/null || true && \
     mkdir -p /kafka/data /kafka/log 2>/dev/null || true

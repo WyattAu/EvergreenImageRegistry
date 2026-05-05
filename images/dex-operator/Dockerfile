@@ -1,5 +1,4 @@
 ARG VERSION=0.18.0
-ARG TARGETARCH
 
 FROM ghcr.io/dexidp/dex-operator:v${VERSION} AS upstream
 

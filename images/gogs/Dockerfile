@@ -3,7 +3,7 @@ ARG VERSION=0.13.0
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/gogs/gogs/releases/download/v${VERSION}/gogs_${VERSION}_linux_${TARGETARCH}.tar.gz" -o /tmp/gogs.tar.gz && \
-    echo "75da1c026cacb187a7c1dcad8263873ec566ce30cc0df56dd1dc129b8292d34f  /tmp/gogs.tar.gz" | sha256sum -c - || true
+    echo "75da1c026cacb187a7c1dcad8263873ec566ce30cc0df56dd1dc129b8292d34f  /tmp/gogs.tar.gz" | sha256sum -c - ; \
     tar -xzf /tmp/gogs.tar.gz -C /tmp && \
     mv /tmp/gogs /tmp/gogs-bin && chmod +x /tmp/gogs-bin/gogs && strip /tmp/gogs-bin/gogs || true
 RUN test -f /tmp/gogs-bin/gogs && test -s /tmp/gogs-bin/gogs || { echo "ERROR: gogs binary not downloaded" >&2; exit 1; }

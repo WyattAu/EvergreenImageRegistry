@@ -6,7 +6,6 @@
 
 ARG VERSION=2.2.3
 ARG BUILD_DATE
-ARG TARGETARCH
 
 # hadolint ignore=DL3023
 

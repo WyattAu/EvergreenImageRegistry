@@ -1,5 +1,4 @@
 ARG VERSION=latest
-ARG TARGETARCH
 
 FROM ghcr.io/innernet-rs/innernet:${VERSION} AS upstream
 

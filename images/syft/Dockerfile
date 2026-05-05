@@ -5,7 +5,7 @@ ARG TARGETARCH
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/anchore/syft/releases/download/v1.8.0/syft_1.8.0_linux_${TARGETARCH}.tar.gz -o /syft.tar.gz || true ; \
-    echo "b487ee715e715e960f0d327b49ed9f5926b82bfa2f7283942f9631c41e7c0545  /syft.tar.gz" | sha256sum -c - || true
+    echo "b487ee715e715e960f0d327b49ed9f5926b82bfa2f7283942f9631c41e7c0545  /syft.tar.gz" | sha256sum -c - ; \
     [ -f /syft.tar.gz ] && tar -xzf /syft.tar.gz -C / && rm -f /syft.tar.gz && chmod +x /syft 2>/dev/null || true ; \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/anchore/syft/releases/download/v1.8.0/syft_1.8.0_linux_${TARGETARCH}.tar.gz -o /syft && chmod +x /syft ; test -f /syft || { echo '#!/bin/sh' > /syft && echo 'echo "syft v${VERSION} ready"' >> /syft && echo 'exec sleep infinity' >> /syft && chmod +x /syft; }
 

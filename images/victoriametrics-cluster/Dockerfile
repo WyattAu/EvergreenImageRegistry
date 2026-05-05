@@ -6,7 +6,7 @@ ARG VERSION=1.97.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.97.0/victoria-metrics-linux-${TARGETARCH}-v1.97.0-cluster.tar.gz -o /vm-cluster.tar.gz || true ; \
-    echo "798f6e6e6f78e4502a17977a0dcc95fd237fbf7a89b59a1c46ae11790e029e21  /vm-cluster.tar.gz" | sha256sum -c - || true
+    echo "798f6e6e6f78e4502a17977a0dcc95fd237fbf7a89b59a1c46ae11790e029e21  /vm-cluster.tar.gz" | sha256sum -c - ; \
     [ -f /vm-cluster.tar.gz ] && tar -xzf /vm-cluster.tar.gz -C /tmp && rm -f /vm-cluster.tar.gz || true ; \
     strip --strip-all /tmp/vminsert-prod && \
     strip --strip-all /tmp/vmselect-prod && \

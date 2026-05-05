@@ -1,6 +1,5 @@
 ARG VERSION=11.0.14
 ARG BUILD_DATE
-ARG TARGETARCH
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
@@ -9,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip python3 ca-certificates curl ; rm -rf /var/lib/apt/lists/* || true && \
     python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir seafile || true
+RUN pip install --no-cache-dir seafile==11.0.14 || true
 
 USER 65532:65532
 EXPOSE 9101

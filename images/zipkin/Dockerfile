@@ -13,7 +13,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jre/hotspot/normal/eclipse" -o /tmp/jre.tar.gz && \
-    echo "e5038aae3ca9ff670bc696496b0728dbd23d280026bad30291cb919221ecfdcb  /tmp/jre.tar.gz" | sha256sum -c - || true
+    echo "e5038aae3ca9ff670bc696496b0728dbd23d280026bad30291cb919221ecfdcb  /tmp/jre.tar.gz" | sha256sum -c - ; \
     mkdir -p /opt/jre ; \
     [ -f /tmp/jre.tar.gz ] && tar -xzf /tmp/jre.tar.gz -C /opt/jre --strip-components=1 || true ; \
     rm -f /tmp/jre.tar.gz || true
@@ -21,7 +21,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=3.4.2
-ARG TARGETARCH
 
 RUN apk add --no-cache ca-certificates tzdata curl 
 COPY --from=jre-builder /opt/jre /opt/jre

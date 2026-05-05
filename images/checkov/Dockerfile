@@ -1,12 +1,11 @@
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip python3 git ca-certificates ; rm -rf /var/lib/apt/lists/* || true && \
     python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip || true && \
-    pip install --no-cache-dir checkov ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/checkov || { echo '#!/bin/sh' > /usr/local/bin/checkov && echo 'echo "checkov v${VERSION} placeholder"' >> /usr/local/bin/checkov && echo 'exec sleep infinity' >> /usr/local/bin/checkov && chmod +x /usr/local/bin/checkov ; } 2>/dev/null || true && \
+    pip install --no-cache-dir checkov==3.2.0 ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/checkov || { echo '#!/bin/sh' > /usr/local/bin/checkov && echo 'echo "checkov v${VERSION} placeholder"' >> /usr/local/bin/checkov && echo 'exec sleep infinity' >> /usr/local/bin/checkov && chmod +x /usr/local/bin/checkov ; } 2>/dev/null || true && \
     mkdir -p /app 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 

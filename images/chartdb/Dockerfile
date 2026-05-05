@@ -5,7 +5,6 @@ FROM ghcr.io/chart-db/chartdb:${VERSION} AS upstream
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
 ARG VERSION
-ARG TARGETARCH
 RUN apk add --no-cache ca-certificates && \
     adduser -D -u 65532 -s /bin/false chartdb 2>/dev/null || true && \
     mkdir -p /var/lib/chartdb /var/log/chartdb /var/cache/chartdb /opt 2>/dev/null || true

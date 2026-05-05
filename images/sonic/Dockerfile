@@ -1,5 +1,4 @@
 ARG VERSION=latest
-ARG TARGETARCH
 
 FROM valeriansaliou/sonic:${VERSION} AS upstream
 

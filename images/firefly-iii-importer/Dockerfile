@@ -1,6 +1,5 @@
 ARG VERSION=1.6.0
 ARG BUILD_DATE
-ARG TARGETARCH
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
@@ -9,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip python3 ca-certificates curl ; rm -rf /var/lib/apt/lists/* || true && \
     python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir firefly-iii ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/firefly-iii-importer || { echo '#!/bin/sh' > /usr/local/bin/firefly-iii-importer && echo 'echo "firefly-iii-importer v${VERSION} placeholder"' >> /usr/local/bin/firefly-iii-importer && echo 'exec sleep infinity' >> /usr/local/bin/firefly-iii-importer && chmod +x /usr/local/bin/firefly-iii-importer ; } || true
+RUN pip install --no-cache-dir firefly-iii==1.6.0 ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/firefly-iii-importer || { echo '#!/bin/sh' > /usr/local/bin/firefly-iii-importer && echo 'echo "firefly-iii-importer v${VERSION} placeholder"' >> /usr/local/bin/firefly-iii-importer && echo 'exec sleep infinity' >> /usr/local/bin/firefly-iii-importer && chmod +x /usr/local/bin/firefly-iii-importer ; } || true
 
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31

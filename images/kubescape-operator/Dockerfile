@@ -1,5 +1,4 @@
 ARG VERSION=latest
-ARG TARGETARCH
 
 FROM ghcr.io/kubescape/kubescape-operator:${VERSION} AS upstream
 

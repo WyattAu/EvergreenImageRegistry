@@ -1,5 +1,4 @@
 ARG VERSION=latest
-ARG TARGETARCH
 
 FROM ghcr.io/pawelmalak/flame:${VERSION} AS upstream
 

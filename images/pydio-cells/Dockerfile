@@ -1,5 +1,4 @@
 ARG VERSION=4.4.17
-ARG TARGETARCH
 
 FROM pydio/cells:${VERSION} AS upstream
 

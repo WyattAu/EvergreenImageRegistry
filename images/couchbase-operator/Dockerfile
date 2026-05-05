@@ -1,5 +1,4 @@
 ARG VERSION=2.7.0
-ARG TARGETARCH
 
 FROM ghcr.io/couchbase/couchbase-operator:v${VERSION} AS upstream
 

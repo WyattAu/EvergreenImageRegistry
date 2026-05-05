@@ -307,6 +307,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Login to Docker Hub
+        if: ${{ github.event_name != 'pull_request' && secrets.DOCKERHUB_USERNAME }}
+        uses: docker/login-action@v3
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Build images (amd64 tarballs for verification)
         run: |
           mkdir -p /tmp/images
@@ -365,6 +373,56 @@ jobs:
           done
           echo "Batch ${{ matrix.batch }} complete: ${BUILT} built, ${FAILED} failed, ${SKIPPED} skipped"
 
+      - name: Collect image sizes
+        if: always()
+        run: |
+          echo "IMAGE_SIZE_DATA<<EOF" >> $GITHUB_ENV
+          while IFS= read -r line; do
+            echo "$line" >> /tmp/image-sizes.txt
+          done < /tmp/built-images.txt
+          echo "EOF"
+
+      - name: Enforce image size limit
+        if: always()
+        run: |
+          LIMIT_MB=${IMAGE_SIZE_LIMIT:-2048}
+          EXCEEDED=0
+          for tar in /tmp/images/*.tar; do
+            [ -f "$tar" ] || continue
+            SIZE_MB=$(($(stat --format=%s "$tar") / 1024 / 1024))
+            IMAGE_NAME=$(basename "$tar" .tar)
+            if [ "$SIZE_MB" -gt "$LIMIT_MB" ]; then
+              echo "::error::${IMAGE_NAME} exceeds size limit: ${SIZE_MB}MB > ${LIMIT_MB}MB"
+              EXCEEDED=$((EXCEEDED + 1))
+            fi
+          done
+          if [ "$EXCEEDED" -gt 0 ]; then
+            echo "::error::${EXCEEDED} image(s) exceed ${LIMIT_MB}MB limit"
+            exit 1
+          fi
+          echo "All images within ${LIMIT_MB}MB limit"
+
+      - name: Upload image sizes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: image-sizes-batch-${{ matrix.batch }}
+          path: /tmp/image-sizes.txt
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Check Docker Hub availability
+        if: github.event_name != 'pull_request'
+        id: dockerhub
+        run: |
+          if [ -n "${{ secrets.DOCKERHUB_USERNAME }}" ] && [ -n "${{ secrets.DOCKERHUB_TOKEN }}" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+            echo "Docker Hub push is enabled"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "Docker Hub push is disabled (set DOCKERHUB_USERNAME and DOCKERHUB_TOKEN secrets)"
+          fi
+
       - name: Push multi-arch to registry
         if: github.event_name != 'pull_request'
         timeout-minutes: 90
@@ -372,16 +430,23 @@ jobs:
           IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
           PUSHED=0
           FAILED=0
+          DOCKERHUB_ENABLED="${{ steps.dockerhub.outputs.enabled }}"
           for image in "${IMAGE_LIST[@]}"; do
             [ -z "$image" ] && continue
             CONTEXT="./images/${image}"
             [ ! -f "${CONTEXT}/Dockerfile" ] && continue
             REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
+            TAG_ARGS="-t ${REF}"
+            if [ "$DOCKERHUB_ENABLED" = "true" ]; then
+              DH_REF="docker.io/${{ github.repository_owner }}/${image}:${TAG}"
+              DH_REF=$(echo "$DH_REF" | tr '[:upper:]' '[:lower:]')
+              TAG_ARGS="${TAG_ARGS} -t ${DH_REF}"
+            fi
             echo "::group::Push ${image} (linux/amd64,linux/arm64)"
             if timeout 900 docker buildx build \
               --platform linux/amd64,linux/arm64 \
               --push \
-              -t "${REF}" \
+              ${TAG_ARGS} \
               --cache-from "type=gha,scope=${image}" \
               --cache-to "type=gha,scope=${image},mode=max,compression=zstd" \
               --attest "type=provenance,mode=max" \
@@ -1010,6 +1075,9 @@ jobs:
       matrix:
         image:
           - activemq
+          - adguard-dns
+          - adguardhome
+          - adguardhome-lite
           - age
           - airbyte
           - airbyte-server
@@ -1020,6 +1088,7 @@ jobs:
           - appsmith
           - appsmith-editor
           - appsmith-nginx
+          - arangodb-starter
           - argo-cd
           - argo-rollouts
           - argocd
@@ -1040,6 +1109,7 @@ jobs:
           - basic-auth-proxy
           - beancount
           - betteruptime
+          - bind
           - bind-exporter
           - blocky
           - browserless
@@ -1051,12 +1121,17 @@ jobs:
           - buildkit
           - buildx
           - caddy
+          - caddy-alpine
+          - caddy-fileserver
+          - caddy-reverseproxy
+          - caddy-wildcard
           - calibre
           - calibre-eb
           - calibre-server
           - calibre-web
           - cargo-audit
           - cassandra
+          - cassandra-operator
           - cayley
           - chartdb
           - chat-server
@@ -1065,23 +1140,33 @@ jobs:
           - chroma
           - chroma-all-minimal
           - cloudflare-warrior
+          - cloudreve
+          - cloudwatch-agent
           - cockroachdb
           - cockroachdb-exporter
           - cockroachdb-sql
           - codimd
+          - composer
           - conan-audit
           - consul-exporter
           - convector
           - coqui-tts
+          - coredns
+          - coredns-alpine
           - cors-proxy
           - cortex
           - cosign
           - cosign-verify
+          - couchbase-operator
           - couchdb
           - couchdb-sync
           - crane
           - crate
           - crdb-init
+          - crdb-operator
+          - crowdsec
+          - crowdsec-agent
+          - crowdsec-lapi
           - cryptpad
           - ct-log
           - cyberchef
@@ -1089,7 +1174,9 @@ jobs:
           - dagster
           - dagster-daemon
           - dagster-logs
+          - dashy
           - dashy-alpine
+          - datadog-agent
           - dbmate
           - dendrite
           - dendrite-monolith
@@ -1098,19 +1185,28 @@ jobs:
           - derby
           - detect-secrets
           - dex
+          - dex-operator
           - diffusers
           - dns-stats
           - dnsdist
+          - dnsmasq
           - dnsmasq-full
           - dnsvalidator
           - dockerfile-lint
           - dotdns
+          - dragonfly
+          - dragonfly-client
+          - dragonflydb
           - duckdb
           - ejdb
           - elasticsearch-8
           - elasticsearch-curator
           - elasticsearch-exporter
+          - envoy
+          - envoy-extras
           - envoy-grpc
+          - envoy-init
+          - envoy-sidecar
           - eqonomize
           - erpnext
           - erpnext-worker
@@ -1123,11 +1219,20 @@ jobs:
           - etcd-empty
           - etcd-operator
           - fail2ban-exporter
+          - falcosidekick
           - faster-whisper
           - filebrowser
           - filebrowser-alpine
+          - filestash
           - firefly-iii-importer
+          - flame
+          - flame-ui
           - fluentd
+          - flux
+          - flux-image-automation
+          - flux2
+          - fluxcd-helm
+          - fluxcd-image
           - focalboard-server
           - forgejo
           - forgejo-runner
@@ -1138,11 +1243,17 @@ jobs:
           - gitbucket
           - gitguardian
           - github-actions-minimal
+          - gitlab
           - gitlab-backup
+          - gitlab-exporter
+          - gitlab-operator
           - gitlab-runner
           - gitlab-runner-alpine
+          - gitleaks
+          - gitrob
           - gitserver
           - go-static
+          - gogs
           - golang-alpine
           - golang-cache
           - gotify
@@ -1151,15 +1262,24 @@ jobs:
           - grafana-dev
           - grafana-image-renderer
           - grafana-lite
+          - grafana-operator
           - grafana-oss
           - grafana-toolkit
           - graphile
           - graylog
+          - graylog-sidecar
+          - grype
+          - grype-alpine
           - h2
           - hackmd
+          - hadolint
+          - haproxy
+          - haproxy-dev
           - haproxy-exporter
+          - haproxy-lb
           - hashicorp-vault
           - hazelcast
+          - hazelcast-operator
           - headscale
           - health-checks
           - health-shim
@@ -1169,6 +1289,8 @@ jobs:
           - heimdall
           - heimdall-lite
           - helm
+          - helmfile
+          - helmsman
           - hledger
           - homeassistant
           - homeassistant-core
@@ -1177,22 +1299,32 @@ jobs:
           - homebridge
           - homebridge-camera
           - homekit
+          - homepage
+          - homepage-config
+          - homepage-sync
           - immich
           - immich-machine-learning
           - immich-microservices
           - immich-ml
           - immich-server
           - immudb
+          - immudb-proxy
+          - influxdb
+          - influxdb-2
           - influxdb-client
+          - innernet
+          - innernet-client
           - invokeai
           - iobroker
           - ipmi-exporter
+          - it-tools
           - it-tools-legacy
           - jaeger
           - jaeger-agent
           - jaeger-collector
           - jaeger-query
           - jellyfin-ffmpeg
+          - jellyseer
           - jenkins
           - jenkins-agent
           - jenkins-executor
@@ -1203,14 +1335,30 @@ jobs:
           - jupyter-tensorflow
           - k3d
           - k3d-proxy
+          - k3s
+          - k3s-agent
+          - k3s-server
           - kafka
+          - kanidm
+          - kanidm-client
+          - kanidm-server
+          - keycloak-operator
+          - keynuker
           - kube-apiserver
+          - kube-bench
           - kube-controller
           - kube-hunter
           - kube-proxy
           - kube-scheduler
+          - kubectl
+          - kubescape
+          - kubescape-operator
+          - kustomize
+          - lancedb
           - langchain
           - langserve
+          - lazydocker
+          - lazydocker-ui
           - ledger
           - libsql
           - linguist
@@ -1218,6 +1366,8 @@ jobs:
           - litellm
           - litellm-proxy
           - litestream
+          - llama-cpp-server
+          - llama.cpp
           - localai
           - logseq
           - logstash
@@ -1227,6 +1377,7 @@ jobs:
           - loki-simple
           - mailtrain
           - mailu
+          - mariadb-operator
           - mattermost
           - mc
           - meilisearch
@@ -1234,6 +1385,7 @@ jobs:
           - meltano
           - memcached-exporter
           - meshbird
+          - milvus-attu
           - milvus-minio
           - mimir
           - miniflux
@@ -1241,6 +1393,8 @@ jobs:
           - miniflux-21
           - minio
           - minio-console
+          - minio-operator
+          - minisearch
           - mlflow
           - mlflow-server
           - mlflow-tracking
@@ -1250,17 +1404,28 @@ jobs:
           - mysql-8-exporter
           - mysql-anonymizer
           - mysql-exporter
+          - mysql-operator
           - n8n
           - n8n-nodes
           - n8n-webhook
           - nats
+          - navidrome
+          - navidrome-sqlite
           - neo4j-admin
           - neo4j-enterprise
           - neo4j-import
           - neptune
+          - netbird
+          - netbird-ui
+          - netclient
           - netmaker
           - nextcloud-ocis
+          - nginx
+          - nginx-exporter
+          - nginx-ingress
           - nginx-ingress-controller
+          - nginx-stream
+          - nginx-unprivileged
           - node
           - node-alpine
           - node-distroless
@@ -1268,6 +1433,7 @@ jobs:
           - node-red
           - node-red-admin
           - npm-audit
+          - ntfy
           - nutsdb
           - oauth2-proxy
           - oauth2-proxy-alpine
@@ -1283,10 +1449,13 @@ jobs:
           - openjre
           - openproject
           - opensearch
+          - opensearch-operator
           - openvpn-as
           - orientdb
           - oscam
           - outline
+          - pagerduty-agent
+          - pairdrop
           - pairdrop-server
           - paperless-ngx
           - paperless-ngx-gotenberg
@@ -1296,14 +1465,21 @@ jobs:
           - pdfmixer
           - perscache
           - pgbouncer-exporter
+          - photoprism
+          - photoprism-bin
           - photoprism-frontend
+          - photoview
           - pihole-ftl
           - pinecone
           - pinned-search
+          - piper
           - planka
           - pm2
           - portainer
+          - portainer-agent
+          - portainer-edge
           - postgres-exporter
+          - postgres-operator
           - postgresql-anonymizer
           - postgresql-exporter
           - postgresql-patroni
@@ -1312,15 +1488,19 @@ jobs:
           - prometheus
           - prometheus-alertmanager
           - prometheus-aws-exporter
+          - prometheus-azure-exporter
           - prometheus-blackbox-exporter
           - prometheus-cloudwatch-exporter
+          - prometheus-config
           - prometheus-consul-exporter
           - prometheus-elasticsearch-exporter
           - prometheus-gcp-exporter
           - prometheus-haproxy-exporter
           - prometheus-kafka-exporter
           - prometheus-mysqld-exporter
+          - prometheus-nginx-exporter
           - prometheus-node-exporter
+          - prometheus-operator
           - prometheus-postgres-exporter
           - prometheus-pushgateway
           - prometheus-snmp-exporter
@@ -1329,10 +1509,15 @@ jobs:
           - prometheus-x509-exporter
           - promtail-agent
           - promxy
+          - pulsar
           - pulsar-functions
           - pulsar-proxy
+          - pydio-agent
+          - pydio-cells
           - qbitmanage
           - qbittorrent-nox
+          - qdrant
+          - qdrant-cpu
           - questdb
           - questdb-python
           - r2c-bench
@@ -1363,6 +1548,9 @@ jobs:
           - s3
           - sbt
           - scrapyd
+          - scratch-base
+          - scratch-go
+          - scylla-operator
           - seafile
           - seafile-pro
           - searx
@@ -1379,6 +1567,10 @@ jobs:
           - snmp-exporter
           - snyk
           - snyk-agent
+          - snyk-alpine
+          - snyk-docker
+          - snyk-monitor
+          - sonic
           - source-control
           - sqlcipher
           - sqlite-utils
@@ -1389,13 +1581,19 @@ jobs:
           - stalwart-bitnami
           - static-c
           - statping-ng
+          - statuspage
+          - step-acme
           - step-ca
+          - step-certificates
+          - step-cli
           - stirling-pdf
           - stirling-pdf-core
           - streamlink
           - subsonic
           - surrealdb
           - surrealdb-python
+          - syft
+          - syft-alpine
           - synapse
           - synapse-admin
           - synapse-media
@@ -1403,6 +1601,7 @@ jobs:
           - taiga-backend
           - taiga-front
           - tailscale
+          - tantivy
           - tasmota
           - tasmota-js
           - tautulli
@@ -1418,108 +1617,14 @@ jobs:
           - thanos-receive
           - thanos-rule
           - thanos-store
+          - tidb
+          - tidb-br
+          - tidb-lightning
           - tig
           - tooljet
           - tooljet-client
           - tooljet-server
           - traefik
-          - transfer.sh
-          - transformers
-          - transformers-gpu
-          - trino
-          - trivy-alpine
-          - trivy-iac
-          - trivy-k8s
-          - tryton
-          - tts
-          - typesense-js
-          - ulogger
-          - unbound
-          - unbound-alpine
-          - uptime-kuma
-          - valkey-exporter
-          - vecs-db
-          - vector
-          - victoriametrics
-          - victoriametrics-cluster
-          - vikunja
-          - vikunja-api
-          - vikunja-redis
-          - vm-agent
-          - vpn-controller
-          - wandb-server
-          - weaviate-python
-          - weights-biases
-          - wekan
-          - whisper
-          - whisper-cpp
-          - whoogle
-          - whoogle-search
-          - wireguard
-          - wireguard-ui
-          - wled
-          - yacy
-          - yarn
-          - yarn-audit
-          - yarr
-          - zeromq
-          - zigbee2mqtt
-          - zipkin
-          - zipline
-          - zitadel
-          - zoe
-          - zzh
-          - adguard-dns
-          - adguardhome
-          - adguardhome-lite
-          - caddy-alpine
-          - caddy-fileserver
-          - caddy-reverseproxy
-          - caddy-wildcard
-          - cloudreve
-          - coredns
-          - coredns-alpine
-          - dragonfly
-          - dragonfly-client
-          - envoy
-          - envoy-extras
-          - envoy-init
-          - envoy-sidecar
-          - falcosidekick
-          - flux
-          - flux2
-          - fluxcd-helm
-          - fluxcd-image
-          - gogs
-          - grype
-          - grype-alpine
-          - hadolint
-          - helmfile
-          - helmsman
-          - kube-bench
-          - kubescape
-          - kustomize
-          - kubectl
-          - lazydocker
-          - lazydocker-ui
-          - minio-operator
-          - navidrome
-          - navidrome-sqlite
-          - netbird
-          - netbird-ui
-          - nginx-exporter
-          - ntfy
-          - photoprism
-          - photoprism-bin
-          - piper
-          - prometheus-nginx-exporter
-          - qdrant
-          - qdrant-cpu
-          - step-acme
-          - step-certificates
-          - step-cli
-          - syft
-          - syft-alpine
           - traefik-cloud
           - traefik-crypto
           - traefik-dashboard
@@ -1530,14 +1635,78 @@ jobs:
           - traefik-plugin-csrf
           - traefik-v2
           - traefik-wss
+          - transfer.sh
+          - transformers
+          - transformers-gpu
+          - trino
+          - trivy
+          - trivy-alpine
+          - trivy-iac
+          - trivy-k8s
           - trivy-operator
-          - trufflehog
           - truffelsh
+          - trufflehog
           - truffleshog
+          - tryton
+          - tts
+          - tweed
+          - typesense
+          - typesense-js
+          - ulogger
+          - unbound
+          - unbound-alpine
+          - uptime-kuma
+          - valkey-exporter
+          - vault-csi-provider
+          - vault-operator
+          - vault-secrets
+          - vault-secrets-operator
+          - vaultwarden
+          - vaultwarden-alpine
+          - vaultwarden-sqlite
+          - vecs-db
+          - vector
+          - victoriametrics
+          - victoriametrics-cluster
+          - vikunja
+          - vikunja-api
+          - vikunja-redis
+          - vm-agent
+          - vm-operator
+          - vpn-controller
+          - wandb-server
           - weaviate
+          - weaviate-python
+          - weights-biases
+          - wekan
+          - wg-cloud
+          - whisper
+          - whisper-cpp
+          - whoogle
+          - whoogle-search
+          - windows-exporter
+          - wireguard
+          - wireguard-ui
+          - wled
           - woodpecker-agent
           - woodpecker-ci
           - woodpecker-server
+          - yacht
+          - yacy
+          - yarn
+          - yarn-audit
+          - yarr
+          - zeromq
+          - zigbee2mqtt
+          - zinc
+          - zincone
+          - zipkin
+          - zipline
+          - zitadel
+          - zitadel-operator
+          - zoe
+          - zzh
+
         arch: [amd64, arm64]
     steps:
       - name: Checkout

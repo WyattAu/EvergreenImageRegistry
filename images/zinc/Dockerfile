@@ -1,4 +1,5 @@
 ARG VERSION=latest
+ARG TARGETARCH
 
 FROM zincsearch/zincsearch:${VERSION} AS upstream
 

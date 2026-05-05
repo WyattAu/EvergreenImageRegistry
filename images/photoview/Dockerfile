@@ -1,4 +1,5 @@
 ARG VERSION=v2.4.0
+ARG TARGETARCH
 
 FROM viktorstrate/photoview:v2.4.0 AS upstream
 

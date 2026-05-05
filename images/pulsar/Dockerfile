@@ -15,6 +15,7 @@
 
 ARG VERSION=3.3.0
 ARG BUILD_DATE
+ARG TARGETARCH
 
 FROM apachepulsar/pulsar:${VERSION} AS upstream
 ARG VERSION=3.3.0

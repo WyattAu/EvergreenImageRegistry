@@ -1,4 +1,5 @@
 ARG VERSION=latest
+ARG TARGETARCH
 
 FROM pingcap/tidb:${VERSION} AS upstream
 

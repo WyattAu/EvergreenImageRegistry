@@ -1,4 +1,5 @@
 ARG VERSION=latest
+ARG TARGETARCH
 
 FROM ghcr.io/vmware-tanzu/tweed:${VERSION} AS upstream
 

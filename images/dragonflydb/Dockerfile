@@ -1,4 +1,5 @@
 ARG VERSION=latest
+ARG TARGETARCH
 
 FROM docker.dragonflydb.io/dragonfly:${VERSION} AS upstream
 

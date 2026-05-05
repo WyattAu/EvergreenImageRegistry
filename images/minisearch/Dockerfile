@@ -1,4 +1,5 @@
 ARG VERSION=latest
+ARG TARGETARCH
 
 FROM ghcr.io/nicbarker/minisearch:${VERSION} AS upstream
 

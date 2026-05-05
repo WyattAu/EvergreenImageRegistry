@@ -1,4 +1,5 @@
 ARG VERSION=latest
+ARG TARGETARCH
 
 FROM selfhostedpro/yacht:${VERSION} AS upstream
 

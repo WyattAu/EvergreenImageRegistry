@@ -13,6 +13,7 @@
 # =============================================================================
 
 ARG GO_VERSION=1.23
+ARG TARGETARCH
 
 FROM golang:${GO_VERSION}-bookworm AS builder
 ARG VERSION

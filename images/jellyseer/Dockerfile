@@ -1,4 +1,5 @@
 ARG VERSION=2.7.3
+ARG TARGETARCH
 
 FROM fallenbagel/jellyseerr:${VERSION} AS upstream
 

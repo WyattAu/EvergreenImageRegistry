@@ -1,4 +1,5 @@
 ARG VERSION=latest
+ARG TARGETARCH
 
 FROM hashicorp/vault-secrets-operator:${VERSION} AS upstream
 

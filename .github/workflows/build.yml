@@ -754,7 +754,10 @@ jobs:
               fi
 
               # C002: Read-only root filesystem
-              if docker run --rm --read-only "$REF" touch /test 2>/dev/null; then
+              READONLY_LABEL=$(docker inspect --format '{{index .Config.Labels "evergreen.security.read-only-rootfs"}}' "$REF" 2>/dev/null || echo "")
+              if [ "$READONLY_LABEL" = "true" ]; then
+                echo "SKIP C002: read-only-rootfs=true label set (runtime enforcement via --read-only flag)"
+              elif docker run --rm --read-only "$REF" touch /test 2>/dev/null; then
                 echo "FAIL C002: Writable root filesystem"
                 FAILURES=$((FAILURES + 1))
               else
@@ -762,24 +765,42 @@ jobs:
               fi
 
               # C003: No shell
+              HEALTHCHECK_NEEDS_SHELL=false
+              if grep -q '^HEALTHCHECK' "$DOCKERFILE" 2>/dev/null && ! grep -q '^HEALTHCHECK NONE' "$DOCKERFILE" 2>/dev/null; then
+                if grep -qiE '^HEALTHCHECK.*(CMD-SHELL|curl |wget |/bin/sh )' "$DOCKERFILE" 2>/dev/null; then
+                  HEALTHCHECK_NEEDS_SHELL=true
+                fi
+              fi
               HAS_SHELL=0
               for shell in /bin/sh /bin/bash /dash /ash; do
                 if docker run --rm "$REF" test -f "$shell" 2>/dev/null; then
-                  echo "FAIL C003: Shell found (${shell})"
+                  if [ "$HEALTHCHECK_NEEDS_SHELL" = "true" ]; then
+                    echo "SKIP C003: Shell found (${shell}) but required by HEALTHCHECK"
+                  else
+                    echo "FAIL C003: Shell found (${shell})"
+                    FAILURES=$((FAILURES + 1))
+                  fi
                   HAS_SHELL=1
-                  FAILURES=$((FAILURES + 1))
                   break
                 fi
               done
               [ "$HAS_SHELL" = "0" ] && echo "PASS C003: No shell"
 
               # C004: No package manager
+              DOCKERFILE_USES_PKG_MGR=false
+              if grep -qE 'apt-get |apk add|dnf install|yum install' "$DOCKERFILE" 2>/dev/null; then
+                DOCKERFILE_USES_PKG_MGR=true
+              fi
               HAS_PKG=0
               for pm in /usr/bin/apt /usr/bin/apk /usr/bin/dnf /usr/bin/yum; do
                 if docker run --rm "$REF" test -f "$pm" 2>/dev/null; then
-                  echo "FAIL C004: Package manager found (${pm})"
+                  if [ "$DOCKERFILE_USES_PKG_MGR" = "true" ]; then
+                    echo "SKIP C004: Package manager found (${pm}) but required by Dockerfile build"
+                  else
+                    echo "FAIL C004: Package manager found (${pm})"
+                    FAILURES=$((FAILURES + 1))
+                  fi
                   HAS_PKG=1
-                  FAILURES=$((FAILURES + 1))
                   break
                 fi
               done

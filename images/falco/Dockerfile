@@ -42,7 +42,7 @@ COPY --from=builder /var/log/falco /var/log/falco
 
 RUN addgroup -S nogroup || true && \
 
-    adduser -u 65532 -G nogroup -D -h /app -s /bin/false falco |; \
+    adduser -u 65532 -G nogroup -D -h /app -s /bin/false falco || true && \
     && chown -R 65532:65532 /app /var/log/falco
 
 USER 65532:65532

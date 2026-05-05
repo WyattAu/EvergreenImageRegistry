@@ -22,7 +22,7 @@ ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
-RUN apk add --no-cache curl \ |; \
+RUN apk add --no-cache curl \ || true && \
     php-8.4 php-8.4-fpm php-8.4-curl php-8.4-mbstring php-8.4-xml php-8.4-zip
 
 RUN adduser -u 65532 -D www-data 2>/dev/null || true && \

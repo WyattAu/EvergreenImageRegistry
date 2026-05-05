@@ -28,7 +28,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 5775 6831 6832
 
-HEALTHCHECK NONE
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:14269/ || exit 1
 ENTRYPOINT ["/jaeger-agent"]
 LABEL org.opencontainers.image.title="jaeger" \
       org.opencontainers.image.description="Jaeger - end-to-end distributed tracing" \

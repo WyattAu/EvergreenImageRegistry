@@ -26,7 +26,7 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifi
 USER 65532:65532
 EXPOSE 9901
 
-HEALTHCHECK NONE
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9901/server_info || exit 1
 ENTRYPOINT ["/usr/local/bin/envoy"]
 LABEL evergreen.image.status="functional" \
       evergreen.image.tier="1" \

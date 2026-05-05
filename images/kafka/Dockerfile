@@ -35,7 +35,7 @@ USER 65532:65532
 WORKDIR /opt/kafka
 EXPOSE 9092
 
-HEALTHCHECK NONE
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8082/health || exit 1
 ENTRYPOINT ["sh", "-c", "/opt/kafka/bin/kafka-server-start.sh"]
 LABEL evergreen.image.status="functional" \
       evergreen.image.tier="1" \

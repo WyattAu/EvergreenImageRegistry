@@ -14,7 +14,7 @@ EXPOSE 9101
 
 LABEL org.opencontainers.image.title="zerotier" org.opencontainers.image.version="1.12.2" org.opencontainers.image.vendor="ZeroTier" org.opencontainers.image.source="https://github.com/zerotier/ZeroTierOne" evergreen.image.tier="1" evergreen.image.category="networking" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.constraint.distrole="debian-slim" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="3s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="3000ms" \
       org.opencontainers.image.description="zerotier container image" \
-LABEL evergreen.base.image="wolfi"
+evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"

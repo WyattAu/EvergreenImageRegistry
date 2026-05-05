@@ -17,7 +17,7 @@ EXPOSE 9101
 LABEL org.opencontainers.image.title="milvus" org.opencontainers.image.version="2.4.0" org.opencontainers.image.vendor="Milvus" evergreen.image.tier="2" evergreen.constraint.nonroot="true" evergreen.base.image="wolfi" \
       org.opencontainers.image.source="https://github.com/milvus-io/milvus" \
       org.opencontainers.image.description="milvus container image" \
-LABEL evergreen.metrics.native="ztunnel"
+evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"

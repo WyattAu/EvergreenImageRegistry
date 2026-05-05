@@ -20,7 +20,7 @@ EXPOSE 9101
 
 LABEL org.opencontainers.image.title="vault-secrets" org.opencontainers.image.version="1.4.0" org.opencontainers.image.vendor="HashiCorp" org.opencontainers.image.source="https://github.com/hashicorp/vault-secrets-operator" evergreen.image.tier="1" evergreen.image.category="security" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.constraint.scratch="true" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="3s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="3000ms" \
       org.opencontainers.image.description="vault-secrets container image" \
-LABEL evergreen.base.image="scratch"
+evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"

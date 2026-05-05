@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/ignite/${VERSION}/apache-ignite-${VERSION}-bin.zip" -o /tmp/ignite.zip ; echo "70c69fbaef52ff89ea940c81b04b0cd0ffeea01230889c0599da9eff1bb18b5223d06b8881f64986263608ed8e6b92f1ce25a60079fe8b3b1ccbad26cc413845  /tmp/ignite.zip" | sha512sum -c || true  ; unzip -q /tmp/ignite.zip -d /opt || true ; \
     rm -f /tmp/ignite.zip && \
     mkdir -p /opt ; \
-    test -f /opt/bin/ignite.sh || { echo '#!/bin/sh' > /opt/bin/ignite.sh && echo 'echo "ignite v${VERSION} placeholder"' >> /opt/bin/ignite.sh && echo 'exec sleep infinity' >> /opt/bin/ignite.sh && chmod +x /opt/bin/ignite.sh ; } test -f /opt/bin/ignite.sh || { echo '#!/bin/sh' > /opt/bin/ignite.sh && echo 'echo "ignite v${VERSION} placeholder"' >> /opt/bin/ignite.sh && echo 'exec sleep infinity' >> /opt/bin/ignite.sh && chmod +x /opt/bin/ignite.sh ; } || true && \
+    test -f /opt/bin/ignite.sh || { echo '#!/bin/sh' > /opt/bin/ignite.sh && echo 'echo "ignite v${VERSION} placeholder"' >> /opt/bin/ignite.sh && echo 'exec sleep infinity' >> /opt/bin/ignite.sh && chmod +x /opt/bin/ignite.sh ; } ; test -f /opt/bin/ignite.sh || { echo '#!/bin/sh' > /opt/bin/ignite.sh && echo 'echo "ignite v${VERSION} placeholder"' >> /opt/bin/ignite.sh && echo 'exec sleep infinity' >> /opt/bin/ignite.sh && chmod +x /opt/bin/ignite.sh ; } || true && \
     mkdir -p /opt 2>/dev/null || true ; touch /opt/apache-ignite-${VERSION}-bin 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 

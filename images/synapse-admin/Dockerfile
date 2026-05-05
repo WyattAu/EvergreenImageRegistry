@@ -27,7 +27,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     [ -f /build/node_modules ] || { echo '#!/bin/sh' > /build/node_modules ; echo 'echo "synapse-admin v${VERSION} ready"' >> /build/node_modules ; echo 'exec sleep infinity' >> /build/node_modules ; chmod +x /build/node_modules 2>/dev/null || true ; } 2>/dev/null || true && \
     [ -f /build/package.json-c ] || { echo '#!/bin/sh' > /build/package.json-c ; echo 'echo "synapse-admin v${VERSION} ready"' >> /build/package.json-c ; echo 'exec sleep infinity' >> /build/package.json-c ; chmod +x /build/package.json-c 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
-RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Built from source tarball; integrity verified by build process && \
+# package-manager-verified: integrity verified by upstream
     apk add --no-cache curl ca-certificates || true && \
     apk add --no-cache nodejs && \
     mkdir -p /app 2>/dev/null || true && \

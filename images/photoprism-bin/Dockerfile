@@ -32,7 +32,7 @@ ENTRYPOINT ["/photoprism"]
 
 LABEL org.opencontainers.image.title="photoprism-bin"       org.opencontainers.image.version="260305-fad9d5395"       org.opencontainers.image.vendor="PhotoPrism"       org.opencontainers.image.source="https://github.com/photoprism/photoprism"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms" \
 org.opencontainers.image.description="photoprism-bin container image" \
-LABEL evergreen.base.image="scratch"
+evergreen.base.image="scratch"
 
 LABEL evergreen.metrics.native="ztunnel"
 

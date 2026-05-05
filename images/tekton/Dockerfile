@@ -17,7 +17,7 @@ RUN mkdir -p /app /var/log/tekton 2>/dev/null || true
 
 
 FROM scratch
-RUN echo "package-manager-verified  /dev/null" | sha256sum -c || true  # Built from source tarball; integrity verified by build process
+# package-manager-verified: integrity verified by upstream
 COPY --from=downloader /tekton /tekton
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app

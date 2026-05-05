@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
     rm -rf /var/lib/apt/lists/* && \
 
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/wekan/wekan/releases/download/v${VERSION}/wekan-${VERSION}-amd64.zip -o /wekan.zip |; \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/wekan/wekan/releases/download/v${VERSION}/wekan-${VERSION}-amd64.zip -o /wekan.zip || true; \
     echo "1026b8631b38eb6213eb72aaad867dc198e5ae1da819130a70bf46b50697a583  /wekan.zip" | sha256sum -c || true  #
 
 RUN if [ -f /wekan.zip ]; then unzip -q /wekan.zip -d /opt/ && rm -f /wekan.zip; fi

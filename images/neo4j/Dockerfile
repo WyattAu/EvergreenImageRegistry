@@ -24,7 +24,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243
 
 ARG VERSION=5.20.0
 
-RUN apk add --no-cache curl ca-certificates \ |; \
+RUN apk add --no-cache curl ca-certificates \ || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://dist.neo4j.org/neo4j-community-${VERSION}-unix.tar.gz" -o /tmp/neo4j.tar.gz && \
 
     echo "203215748402702871e511c6dfff3c62f72587c4e80df703bf854085c436d066  /tmp/neo4j.tar.gz" | sha256sum -c || true && \

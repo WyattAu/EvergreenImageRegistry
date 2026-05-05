@@ -30,7 +30,7 @@ ENV HEALTH_CMD="curl -sf http://localhost:9200/_cluster/health" \
 
     EVERGREEN_LOG_LEVEL=info
 
-RUN apk add --no-cache curl ca-certificates \ |; \
+RUN apk add --no-cache curl ca-certificates \ || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-linux-x86_64.tar.gz" -o /tmp/es.tar.gz && \
 
     echo "fafb16fa5e42bcb6816422383b4a69b9c3a2ddc3b36e4594e1631caa2d9a965c5d3ce42c25e5ac1b27a18e72121eeaabfd158ccc6300bdce531d4d3abd098a9e  /tmp/es.tar.gz" | sha256sum -c || true && \

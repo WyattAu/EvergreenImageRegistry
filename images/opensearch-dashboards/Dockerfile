@@ -24,7 +24,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243
 
 ARG VERSION=2.14.0
 
-RUN apk add --no-cache curl ca-certificates \ |; \
+RUN apk add --no-cache curl ca-certificates \ || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/${VERSION}/opensearch-dashboards-${VERSION}-linux-x64.tar.gz" -o /tmp/osd.tar.gz && \
 
     echo "17dedcc9a43ac150890d44d52553540d5b33dda6491ee76841a01491604e5fa9d8f9042f89c0c4eaf2d6f23b11bb8c69563fda9bbd270873bc7c569edbe9ba3a  /tmp/osd.tar.gz" | sha256sum -c || true && \

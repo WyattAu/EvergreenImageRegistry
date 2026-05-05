@@ -28,7 +28,7 @@ COPY --from=builder /config /config
 
 RUN addgroup -S nogroup || true && \
 
-    adduser -u 65532 -G nogroup -D -h /config -s /bin/false esphome |; \
+    adduser -u 65532 -G nogroup -D -h /config -s /bin/false esphome || true && \
     && chown -R 65532:65532 /config /app
 
 USER 65532:65532

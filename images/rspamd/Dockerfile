@@ -35,6 +35,7 @@ STOPSIGNAL SIGTERM
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:11333/ || exit 1
 
 LABEL org.opencontainers.image.description="rspamd container image" \
+      org.opencontainers.image.title="Rspamd" \
       org.opencontainers.image.source="https://github.com/rspamd/rspamd" \
             org.opencontainers.image.version="3.7"
 

@@ -35,6 +35,7 @@ STOPSIGNAL SIGTERM
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:25/ || exit 1
 
 LABEL org.opencontainers.image.description="postfix container image" \
+      org.opencontainers.image.title="Postfix" \
       org.opencontainers.image.source="https://github.com/VernonDGodfrey/postfix" \
             org.opencontainers.image.version="3.7.6"
 

@@ -24,7 +24,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 9090
 
-HEALTHCHECK NONE
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9090/-/healthy || exit 1
 ENTRYPOINT ["/prometheus"]
 LABEL org.opencontainers.image.title="prometheus" \
       org.opencontainers.image.description="Prometheus - monitoring and alerting toolkit" \

@@ -22,5 +22,6 @@ LABEL evergreen.security.seccomp="runtime-default"
 LABEL evergreen.image.tier="0"
 HEALTHCHECK NONE
 LABEL org.opencontainers.image.description="wolfi-python container image" \
+      org.opencontainers.image.title="Wolfi Python" \
       org.opencontainers.image.source="https://github.com/wolfi-dev/os" \
             org.opencontainers.image.version="unknown"

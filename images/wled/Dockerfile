@@ -28,5 +28,6 @@ LABEL evergreen.image.tier="3"
 EXPOSE 9101
 STOPSIGNAL SIGTERM
 LABEL org.opencontainers.image.description="wled container image" \
+      org.opencontainers.image.title="WLED" \
       org.opencontainers.image.source="https://github.com/Aircoookie/WLED" \
             org.opencontainers.image.version="unknown"

@@ -20,7 +20,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8200 8201
 
-HEALTHCHECK NONE
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8200/v1/sys/health?standby_code=204&sealed_code=204&uninit_code=204 || exit 1
 ENTRYPOINT ["/vault"]
 LABEL org.opencontainers.image.title="vault" \
       org.opencontainers.image.description="Vault - secrets management and data protection by HashiCorp" \

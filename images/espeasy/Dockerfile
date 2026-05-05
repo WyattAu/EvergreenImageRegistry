@@ -28,5 +28,6 @@ LABEL evergreen.image.tier="3"
 EXPOSE 9101
 STOPSIGNAL SIGTERM
 LABEL org.opencontainers.image.description="espeasy container image" \
+      org.opencontainers.image.title="ESPEasy" \
       org.opencontainers.image.source="https://github.com/letscontrolit/ESPEasy" \
             org.opencontainers.image.version="unknown"

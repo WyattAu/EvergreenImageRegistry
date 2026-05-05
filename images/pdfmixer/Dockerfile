@@ -23,6 +23,7 @@ LABEL evergreen.image.tier="3"
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 
 LABEL org.opencontainers.image.description="pdfmixer container image" \
+      org.opencontainers.image.title="PDF Mixer" \
       org.opencontainers.image.source="https://github.com/pdfmixer/pdfmixer" \
             org.opencontainers.image.version="0.7.0"
 

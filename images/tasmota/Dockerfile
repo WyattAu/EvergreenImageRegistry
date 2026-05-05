@@ -28,5 +28,6 @@ LABEL evergreen.image.tier="3"
 EXPOSE 9101
 STOPSIGNAL SIGTERM
 LABEL org.opencontainers.image.description="tasmota container image" \
+      org.opencontainers.image.title="Tasmota" \
       org.opencontainers.image.source="https://github.com/arendst/Tasmota" \
             org.opencontainers.image.version="unknown"

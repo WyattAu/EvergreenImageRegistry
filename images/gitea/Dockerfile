@@ -24,7 +24,7 @@ WORKDIR /app
 COPY --from=downloader /gitea /usr/local/bin/gitea
 EXPOSE 3000 22
 
-HEALTHCHECK NONE
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:3000/api/healthz || exit 1
 ENTRYPOINT ["/usr/local/bin/gitea"]
 LABEL org.opencontainers.image.title="gitea" \
       org.opencontainers.image.description="Gitea - lightweight self-hosted Git service" \

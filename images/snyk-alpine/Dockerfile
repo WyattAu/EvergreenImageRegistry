@@ -32,6 +32,7 @@ STOPSIGNAL SIGTERM
 HEALTHCHECK NONE
 
 LABEL org.opencontainers.image.description="snyk-alpine container image" \
+      org.opencontainers.image.title="Snyk Alpine" \
       org.opencontainers.image.source="https://github.com/snyk/snyk" \
             org.opencontainers.image.version="1.1295.0"
 

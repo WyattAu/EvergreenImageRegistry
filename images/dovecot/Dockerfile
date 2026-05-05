@@ -35,6 +35,7 @@ STOPSIGNAL SIGTERM
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:24/ || exit 1
 
 LABEL org.opencontainers.image.description="dovecot container image" \
+      org.opencontainers.image.title="Dovecot" \
       org.opencontainers.image.source="https://github.com/dovecot/core" \
             org.opencontainers.image.version="2.3.21"
 

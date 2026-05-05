@@ -34,6 +34,7 @@ STOPSIGNAL SIGTERM
 HEALTHCHECK NONE
 
 LABEL org.opencontainers.image.description="yacht container image" \
+      org.opencontainers.image.title="Yacht" \
       org.opencontainers.image.source="https://github.com/SelfhostedPro/Yacht" \
             org.opencontainers.image.version="latest"
 

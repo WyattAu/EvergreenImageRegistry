@@ -27,6 +27,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl 
 ENTRYPOINT ["python3", "-m", "surrealdb"]
 LABEL org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Evergreen hardened SurrealDB Python - Python SDK for SurrealDB" \
+      org.opencontainers.image.title="SurrealDB Python" \
       evergreen.image.tier="1" \
       evergreen.image.category="database" \
       evergreen.image.status="functional" \

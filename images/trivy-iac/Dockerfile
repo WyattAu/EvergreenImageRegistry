@@ -39,6 +39,7 @@ STOPSIGNAL SIGTERM
 HEALTHCHECK NONE
 
 LABEL org.opencontainers.image.description="trivy-iac container image" \
+      org.opencontainers.image.title="Trivy IaC" \
       org.opencontainers.image.source="https://github.com/aquasecurity/trivy" \
             org.opencontainers.image.version="0.70.0"
 

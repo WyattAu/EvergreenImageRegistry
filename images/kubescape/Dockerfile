@@ -34,6 +34,7 @@ STOPSIGNAL SIGTERM
 HEALTHCHECK NONE
 
 LABEL org.opencontainers.image.description="Kubescape - Kubernetes security platform" \
+      org.opencontainers.image.title="Kubescape" \
       org.opencontainers.image.source="https://github.com/kubescape/kubescape" \
             org.opencontainers.image.version="4.0.5"
 

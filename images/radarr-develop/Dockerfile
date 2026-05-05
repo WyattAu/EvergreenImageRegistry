@@ -3,7 +3,7 @@ ARG VERSION=6.2.0.10390
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/Radarr/Radarr/releases/download/v${VERSION}/Radarr.develop.6.2.0.10390.linux-core-x64.tar.gz" -o /tmp/Radarr.tar.gz || true ; \
-    echo "43bac2cfda017b4cfb7707a6596cec16abfd7f06a8398c277fd09741612574d4  /tmp/Radarr.tar.gz" | sha256sum -c || true  #
+    echo "43bac2cfda017b4cfb7707a6596cec16abfd7f06a8398c277fd09741612574d4  /tmp/Radarr.tar.gz" | sha256sum -c || true \
     mkdir -p /app && \
     if [ -f /tmp/Radarr.tar.gz ]; then tar -xzf /tmp/Radarr.tar.gz -C /app && rm -f /tmp/Radarr.tar.gz ; fi ; \
     chmod +x /app/Radarr 2>/dev/null || true ; \

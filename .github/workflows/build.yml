@@ -56,7 +56,6 @@ env:
   REGISTRY: ghcr.io
   OWNER: ${{ github.repository_owner }}
   TAG: ${{ github.sha }}
-  SOURCE_DATE_EPOCH: ${{ github.event.repository.pushed_at }}
 
 permissions:
   contents: read
@@ -280,6 +279,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set SOURCE_DATE_EPOCH
+        run: echo "SOURCE_DATE_EPOCH=$(date -u +%s)" >> "$GITHUB_ENV"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -1713,6 +1715,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set SOURCE_DATE_EPOCH
+        run: echo "SOURCE_DATE_EPOCH=$(date -u +%s)" >> "$GITHUB_ENV"
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3

@@ -21,6 +21,7 @@ LABEL evergreen.image.tier="3"
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 
 LABEL org.opencontainers.image.description="homeassistant-core container image" \
+      org.opencontainers.image.title="Home Assistant Core" \
       org.opencontainers.image.source="https://github.com/home-assistant/core" \
             org.opencontainers.image.version="unknown"
 

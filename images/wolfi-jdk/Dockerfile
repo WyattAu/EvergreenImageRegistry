@@ -24,5 +24,6 @@ LABEL evergreen.security.seccomp="runtime-default"
 LABEL evergreen.image.tier="0"
 HEALTHCHECK NONE
 LABEL org.opencontainers.image.description="wolfi-jdk container image" \
+      org.opencontainers.image.title="Wolfi JDK" \
       org.opencontainers.image.source="https://github.com/wolfi-dev/os" \
             org.opencontainers.image.version="unknown"

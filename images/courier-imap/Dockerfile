@@ -35,5 +35,6 @@ STOPSIGNAL SIGTERM
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:143/ || exit 1
 CMD ["/bin/sh"]
 LABEL org.opencontainers.image.description="courier-imap container image" \
+      org.opencontainers.image.title="Courier IMAP" \
       org.opencontainers.image.source="https://github.com/courier-python/courier" \
             org.opencontainers.image.version="5.1.4"

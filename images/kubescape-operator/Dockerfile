@@ -34,6 +34,7 @@ STOPSIGNAL SIGTERM
 HEALTHCHECK NONE
 
 LABEL org.opencontainers.image.description="kubescape-operator container image" \
+      org.opencontainers.image.title="Kubescape Operator" \
       org.opencontainers.image.source="https://github.com/kubescape/kubescape" \
             org.opencontainers.image.version="latest"
 

@@ -23,6 +23,7 @@ LABEL evergreen.image.tier="3"
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 
 LABEL org.opencontainers.image.description="paperless-ngx container image" \
+      org.opencontainers.image.title="Paperless-ngx" \
       org.opencontainers.image.source="https://github.com/paperless-ngx/paperless-ngx" \
             org.opencontainers.image.version="2.14.4"
 

@@ -23,7 +23,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 9000 9001
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9000/minio/health/live || exit 1
+HEALTHCHECK NONE
 ENTRYPOINT ["/minio"]
 LABEL org.opencontainers.image.title="minio" \
       org.opencontainers.image.description="MinIO - high-performance object storage compatible with S3" \

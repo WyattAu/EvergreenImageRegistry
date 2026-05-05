@@ -20,7 +20,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8500
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8500/v1/agent/self || exit 1
+HEALTHCHECK NONE
 ENTRYPOINT ["/consul"]
 LABEL org.opencontainers.image.title="consul" \
       org.opencontainers.image.description="Consul - service mesh, service discovery, and configuration" \

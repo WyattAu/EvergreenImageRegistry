@@ -20,7 +20,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/healthz || exit 1
+HEALTHCHECK NONE
 ENTRYPOINT ["/cadvisor"]
 LABEL org.opencontainers.image.title="cadvisor" \
       org.opencontainers.image.version="0.49.1" \

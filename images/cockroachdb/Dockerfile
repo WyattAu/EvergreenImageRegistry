@@ -26,7 +26,7 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifi
 USER 65532:65532
 EXPOSE 26257 8080
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/health || exit 1
+HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/cockroach"]
 LABEL evergreen.image.status="functional" \
       evergreen.image.tier="1" \

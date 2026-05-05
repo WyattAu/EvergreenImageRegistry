@@ -39,7 +39,7 @@ ENV OPENSEARCH_HOME=/opt/opensearch \
     network.host=0.0.0.0 \
     discovery.type=single-node \
     bootstrap.memory_lock=true \
-    OPENSEARCH_INITIAL_ADMIN_PASSWORD=Admin@123456
+    OPENSEARCH_INITIAL_ADMIN_PASSWORD=${OPENSEARCH_INITIAL_ADMIN_PASSWORD:-changeme}
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9200/_cluster/health
 ENTRYPOINT ["sh", "-c", "/opt/opensearch/bin/opensearch"]

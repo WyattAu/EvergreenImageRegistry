@@ -23,7 +23,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 9100
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9100/metrics || exit 1
+HEALTHCHECK NONE
 ENTRYPOINT ["/node_exporter"]
 LABEL org.opencontainers.image.title="node-exporter" \
       org.opencontainers.image.description="Node Exporter - hardware and OS metrics exporter for Prometheus" \

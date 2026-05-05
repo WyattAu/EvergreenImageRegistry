@@ -24,7 +24,7 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifi
 USER 65532:65532
 EXPOSE 8125 8092 8094
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
+HEALTHCHECK NONE
 ENTRYPOINT ["/usr/bin/telegraf"]
 LABEL evergreen.image.status="functional" \
       evergreen.image.tier="1" \

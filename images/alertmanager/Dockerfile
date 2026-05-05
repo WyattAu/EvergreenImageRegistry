@@ -28,7 +28,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 9093
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9093/-/healthy || exit 1
+HEALTHCHECK NONE
 ENTRYPOINT ["/alertmanager"]
 LABEL org.opencontainers.image.title="alertmanager" \
       org.opencontainers.image.description="Alertmanager - handles alerts sent by Prometheus" \

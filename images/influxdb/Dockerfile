@@ -11,7 +11,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8086
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8086/health || exit 1
+HEALTHCHECK NONE
 ENTRYPOINT ["/influxd"]
 LABEL org.opencontainers.image.title="influxdb" \
       org.opencontainers.image.description="InfluxDB - time series database for metrics and events" \

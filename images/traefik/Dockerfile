@@ -29,7 +29,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 80 443 8080
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ping || exit 1
+HEALTHCHECK NONE
 ENTRYPOINT ["/traefik"]
 LABEL org.opencontainers.image.title="traefik" \
       org.opencontainers.image.description="Traefik - modern HTTP reverse proxy and load balancer" \

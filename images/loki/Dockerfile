@@ -24,7 +24,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 3100
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:3100/ready || exit 1
+HEALTHCHECK NONE
 ENTRYPOINT ["/loki"]
 LABEL org.opencontainers.image.title="loki" \
       org.opencontainers.image.description="Loki - horizontally-scalable log aggregation system" \

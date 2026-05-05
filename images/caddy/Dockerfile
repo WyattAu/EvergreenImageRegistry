@@ -42,7 +42,8 @@ LABEL org.opencontainers.image.title="caddy" \
       evergreen.hft.pre-stop-delay="5s" \
       evergreen.hft.connection-drain="true" \
       evergreen.hft.xdp-capable="false" \
-      evergreen.hft.xdp-notes="Not supported"
+      evergreen.hft.xdp-notes="Not supported" \
+            org.opencontainers.image.source="https://github.com/caddyserver/caddy"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

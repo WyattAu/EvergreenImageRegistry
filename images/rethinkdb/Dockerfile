@@ -16,7 +16,8 @@ WORKDIR /data
 EXPOSE 28015 29015 8080
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="rethinkdb" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.description="Evergreen hardened RethinkDB - real-time NoSQL database" org.opencontainers.image.vendor="RethinkDB" evergreen.image.tier="1" evergreen.image.category="database" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.base.image="wolfi"
+LABEL org.opencontainers.image.title="rethinkdb" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.description="Evergreen hardened RethinkDB - real-time NoSQL database" org.opencontainers.image.vendor="RethinkDB" evergreen.image.tier="1" evergreen.image.category="database" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.base.image="wolfi" \
+      org.opencontainers.image.source="https://github.com/rethinkdb/rethinkdb"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"

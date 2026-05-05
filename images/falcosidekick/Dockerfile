@@ -19,7 +19,8 @@ COPY --from=builder /var/log/falcosidekick /var/log/falcosidekick
 COPY --from=builder /var/cache/falcosidekick /var/cache/falcosidekick
 USER 65532:65532
 WORKDIR /app
-LABEL org.opencontainers.image.title="falcosidekick"       org.opencontainers.image.description="Falcosidekick - Falco webhook"       org.opencontainers.image.vendor="falcosecurity"       org.opencontainers.image.source="https://github.com/falcosecurity/falcosidekick"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"
+LABEL org.opencontainers.image.title="falcosidekick"       org.opencontainers.image.description="Falcosidekick - Falco webhook"       org.opencontainers.image.vendor="falcosecurity"       org.opencontainers.image.source="https://github.com/falcosecurity/falcosidekick"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true" \
+      org.opencontainers.image.version="2.28.0"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

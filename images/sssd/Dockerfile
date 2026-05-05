@@ -16,7 +16,9 @@ LABEL org.opencontainers.image.title="sssd" \
       evergreen.image.tier="2" \
       evergreen.image.status="functional" \
       evergreen.image.category="auth" \
-      evergreen.image.note="SSSD requires privileged mode for PAM/NSS integration. Runs as root for PAM module access."
+      evergreen.image.note="SSSD requires privileged mode for PAM/NSS integration. Runs as root for PAM module access." \
+            org.opencontainers.image.source="https://github.com/SSSD/sssd" \
+                  org.opencontainers.image.version="unknown"
 
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"

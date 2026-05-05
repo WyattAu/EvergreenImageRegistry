@@ -11,7 +11,9 @@ LABEL org.opencontainers.image.title="distroless" \
       evergreen.image.tier="3" \
       evergreen.image.status="reference" \
       evergreen.image.category="base" \
-      evergreen.image.note="Reference image. Use as FROM base for static Go/Rust binaries."
+      evergreen.image.note="Reference image. Use as FROM base for static Go/Rust binaries." \
+            org.opencontainers.image.source="https://github.com/GoogleContainerTools/distroless" \
+                  org.opencontainers.image.version="unknown"
 
 LABEL evergreen.base.image="distroless"
 LABEL evergreen.metrics.native="ztunnel"

@@ -33,7 +33,9 @@ STOPSIGNAL SIGTERM
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:783/ || exit 1
 
-LABEL org.opencontainers.image.description="spamassassin container image"
+LABEL org.opencontainers.image.description="spamassassin container image" \
+      org.opencontainers.image.source="https://github.com/apache/spamassassin" \
+            org.opencontainers.image.version="4.0.0"
 
 ENTRYPOINT ["spamassassin"]
 CMD ["-d"]

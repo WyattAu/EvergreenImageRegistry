@@ -18,7 +18,8 @@ WORKDIR /data/db
 EXPOSE 27017
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="mongodb-5" org.opencontainers.image.description="Evergreen hardened MongoDB 5.0 - document database" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.vendor="MongoDB" evergreen.image.status="functional" evergreen.image.tier="1" evergreen.image.category="database" evergreen.constraint.nonroot="true" evergreen.base.image="wolfi"
+LABEL org.opencontainers.image.title="mongodb-5" org.opencontainers.image.description="Evergreen hardened MongoDB 5.0 - document database" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.vendor="MongoDB" evergreen.image.status="functional" evergreen.image.tier="1" evergreen.image.category="database" evergreen.constraint.nonroot="true" evergreen.base.image="wolfi" \
+      org.opencontainers.image.source="https://github.com/mongodb/mongo"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"

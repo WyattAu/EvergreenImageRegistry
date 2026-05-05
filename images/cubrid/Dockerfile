@@ -16,7 +16,8 @@ WORKDIR /var/lib/cubrid
 EXPOSE 30000 33000 33001
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="cubrid" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.description="Evergreen hardened CUBRID - open source SQL database" org.opencontainers.image.vendor="CUBRID" evergreen.image.tier="1" evergreen.image.category="database" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.base.image="wolfi"
+LABEL org.opencontainers.image.title="cubrid" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.description="Evergreen hardened CUBRID - open source SQL database" org.opencontainers.image.vendor="CUBRID" evergreen.image.tier="1" evergreen.image.category="database" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.base.image="wolfi" \
+      org.opencontainers.image.source="https://github.com/CUBRID/cubrid"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"

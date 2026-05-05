@@ -16,7 +16,8 @@ WORKDIR /opt/druid
 EXPOSE 8088 8888 8280
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="druid" org.opencontainers.image.version="29.0.1" org.opencontainers.image.vendor="Apache" org.opencontainers.image.description="Evergreen hardened Apache Druid - real-time analytics database" evergreen.image.tier="1" evergreen.image.category="database" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.base.image="wolfi"
+LABEL org.opencontainers.image.title="druid" org.opencontainers.image.version="29.0.1" org.opencontainers.image.vendor="Apache" org.opencontainers.image.description="Evergreen hardened Apache Druid - real-time analytics database" evergreen.image.tier="1" evergreen.image.category="database" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.base.image="wolfi" \
+      org.opencontainers.image.source="https://github.com/apache/druid"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"

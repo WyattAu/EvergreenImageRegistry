@@ -21,7 +21,8 @@ COPY --from=builder /var/log/trivy-alpine /var/log/trivy-alpine
 COPY --from=builder /var/cache/trivy-alpine /var/cache/trivy-alpine
 USER 65532:65532
 WORKDIR /app
-LABEL org.opencontainers.image.title="trivy-alpine"       org.opencontainers.image.description="Trivy - vulnerability scanner (no Alpine)"       org.opencontainers.image.vendor="Aqua Security"       org.opencontainers.image.source="https://github.com/aquasecurity/trivy"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"
+LABEL org.opencontainers.image.title="trivy-alpine"       org.opencontainers.image.description="Trivy - vulnerability scanner (no Alpine)"       org.opencontainers.image.vendor="Aqua Security"       org.opencontainers.image.source="https://github.com/aquasecurity/trivy"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true" \
+      org.opencontainers.image.version="0.70.0"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

@@ -16,7 +16,8 @@ WORKDIR /opt/realm
 EXPOSE 9090
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="realm-server" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.description="Evergreen hardened MongoDB Realm Server - application backend platform" org.opencontainers.image.vendor="MongoDB" evergreen.image.tier="1" evergreen.image.category="database" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.base.image="wolfi"
+LABEL org.opencontainers.image.title="realm-server" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.description="Evergreen hardened MongoDB Realm Server - application backend platform" org.opencontainers.image.vendor="MongoDB" evergreen.image.tier="1" evergreen.image.category="database" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.base.image="wolfi" \
+      org.opencontainers.image.source="https://github.com/realm/realm-core"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"

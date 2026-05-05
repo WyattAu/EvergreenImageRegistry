@@ -19,7 +19,8 @@ COPY --from=builder /var/log/trufflehog /var/log/trufflehog
 COPY --from=builder /var/cache/trufflehog /var/cache/trufflehog
 USER 65532:65532
 WORKDIR /app
-LABEL org.opencontainers.image.title="trufflehog"       org.opencontainers.image.description="TruffleHog - secret scanner"       org.opencontainers.image.vendor="trufflesecurity"       org.opencontainers.image.source="https://github.com/trufflesecurity/trufflehog"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"
+LABEL org.opencontainers.image.title="trufflehog"       org.opencontainers.image.description="TruffleHog - secret scanner"       org.opencontainers.image.vendor="trufflesecurity"       org.opencontainers.image.source="https://github.com/trufflesecurity/trufflehog"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true" \
+      org.opencontainers.image.version="3.82.2"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

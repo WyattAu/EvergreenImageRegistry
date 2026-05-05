@@ -23,7 +23,8 @@ WORKDIR /app
 EXPOSE 8125 8126 6162
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="datadog-agent" org.opencontainers.image.version="7.78.1" org.opencontainers.image.vendor="Datadog" org.opencontainers.image.description="Datadog Agent for infrastructure monitoring" evergreen.image.tier="1" evergreen.constraint.nonroot="true" evergreen.constraint.scratch="true" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="5s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="15000ms" evergreen.hft.cpu-pins="4-5" evergreen.hft.cpu-pins-mode="shared" evergreen.hft.deploy-strategy="standard-rolling" evergreen.hft.pre-stop-hook="true" evergreen.hft.pre-stop-delay="10s" evergreen.hft.connection-drain="true" evergreen.hft.sched-policy="SCHED_OTHER" evergreen.hft.runtime="go" evergreen.hft.runtime-hints="GOMAXPROCS=<cores>"
+LABEL org.opencontainers.image.title="datadog-agent" org.opencontainers.image.version="7.78.1" org.opencontainers.image.vendor="Datadog" org.opencontainers.image.description="Datadog Agent for infrastructure monitoring" evergreen.image.tier="1" evergreen.constraint.nonroot="true" evergreen.constraint.scratch="true" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="5s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="15000ms" evergreen.hft.cpu-pins="4-5" evergreen.hft.cpu-pins-mode="shared" evergreen.hft.deploy-strategy="standard-rolling" evergreen.hft.pre-stop-hook="true" evergreen.hft.pre-stop-delay="10s" evergreen.hft.connection-drain="true" evergreen.hft.sched-policy="SCHED_OTHER" evergreen.hft.runtime="go" evergreen.hft.runtime-hints="GOMAXPROCS=<cores>" \
+      org.opencontainers.image.source="https://github.com/DataDog/datadog-agent"
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"

@@ -19,7 +19,9 @@ LABEL org.opencontainers.image.title="x86_64-unknown-linux-musl" \
       evergreen.image.tier="3" \
       evergreen.image.status="reference" \
       evergreen.image.category="base" \
-      evergreen.image.note="Rust static compilation base. Use for cargo build --target x86_64-unknown-linux-musl."
+      evergreen.image.note="Rust static compilation base. Use for cargo build --target x86_64-unknown-linux-musl." \
+            org.opencontainers.image.source="https://github.com/WyattAu/EvergreenImageRegistry" \
+                  org.opencontainers.image.version="unknown"
 
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"

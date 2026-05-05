@@ -17,7 +17,8 @@ WORKDIR /app
 
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="gitrob"       org.opencontainers.image.description="GitRob - sensitive file finder"       org.opencontainers.image.vendor="michenriksen"       org.opencontainers.image.source="https://github.com/michenriksen/gitrob"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"
+LABEL org.opencontainers.image.title="gitrob"       org.opencontainers.image.description="GitRob - sensitive file finder"       org.opencontainers.image.vendor="michenriksen"       org.opencontainers.image.source="https://github.com/michenriksen/gitrob"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true" \
+      org.opencontainers.image.version="latest"
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"

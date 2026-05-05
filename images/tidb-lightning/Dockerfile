@@ -16,7 +16,8 @@ COPY --from=builder /var/cache/tidb-lightning /var/cache/tidb-lightning
 EXPOSE 8289
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="tidb-lightning" org.opencontainers.image.description="Evergreen hardened TiDB Lightning - high-speed TiDB data import tool" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.vendor="PingCAP" evergreen.image.status="functional" evergreen.image.tier="1" evergreen.image.category="database" evergreen.constraint.nonroot="true" evergreen.constraint.scratch="true"
+LABEL org.opencontainers.image.title="tidb-lightning" org.opencontainers.image.description="Evergreen hardened TiDB Lightning - high-speed TiDB data import tool" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.vendor="PingCAP" evergreen.image.status="functional" evergreen.image.tier="1" evergreen.image.category="database" evergreen.constraint.nonroot="true" evergreen.constraint.scratch="true" \
+      org.opencontainers.image.source="https://github.com/pingcap/tidb"
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"

@@ -11,7 +11,9 @@ LABEL org.opencontainers.image.title="grub" \
       evergreen.image.tier="3" \
       evergreen.image.status="reference" \
       evergreen.image.category="meta" \
-      evergreen.image.note="Bootloader config directory, not a container image."
+      evergreen.image.note="Bootloader config directory, not a container image." \
+            org.opencontainers.image.source="https://github.com/coreos/grub" \
+                  org.opencontainers.image.version="unknown"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

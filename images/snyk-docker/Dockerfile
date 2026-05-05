@@ -29,7 +29,9 @@ STOPSIGNAL SIGTERM
 
 HEALTHCHECK NONE
 
-LABEL org.opencontainers.image.description="snyk-docker container image"
+LABEL org.opencontainers.image.description="snyk-docker container image" \
+      org.opencontainers.image.source="https://github.com/snyk/snyk" \
+            org.opencontainers.image.version="1.1295.0"
 
 ENTRYPOINT ["/snyk-docker"]
 CMD ["--help"]

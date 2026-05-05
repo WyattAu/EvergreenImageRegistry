@@ -33,7 +33,8 @@ LABEL evergreen.image.status="functional" \
       evergreen.image.category="sidecar" \
       org.opencontainers.image.title="envoy-sidecar" \
       org.opencontainers.image.description="Evergreen hardened Envoy sidecar - service mesh sidecar proxy" \
-      org.opencontainers.image.version="${VERSION}"
+      org.opencontainers.image.version="${VERSION}" \
+            org.opencontainers.image.source="https://github.com/envoyproxy/envoy"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

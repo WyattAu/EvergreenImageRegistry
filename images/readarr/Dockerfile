@@ -22,7 +22,9 @@ EXPOSE 9101
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8787/ || exit 1
 
-LABEL org.opencontainers.image.description="readarr container image"
+LABEL org.opencontainers.image.description="readarr container image" \
+      org.opencontainers.image.source="https://github.com/Readarr/Readarr" \
+            org.opencontainers.image.version="0.4.18.2805"
 
 ENTRYPOINT ["/app/Readarr"]
 

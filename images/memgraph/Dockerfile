@@ -17,7 +17,8 @@ WORKDIR /var/lib/memgraph
 EXPOSE 7687 7444
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="memgraph" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.description="Evergreen hardened Memgraph - in-memory graph database" org.opencontainers.image.vendor="Memgraph" evergreen.image.tier="1" evergreen.image.category="database" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.base.image="wolfi"
+LABEL org.opencontainers.image.title="memgraph" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.description="Evergreen hardened Memgraph - in-memory graph database" org.opencontainers.image.vendor="Memgraph" evergreen.image.tier="1" evergreen.image.category="database" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.base.image="wolfi" \
+      org.opencontainers.image.source="https://github.com/memgraph/memgraph"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"

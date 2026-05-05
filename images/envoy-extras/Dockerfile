@@ -33,7 +33,8 @@ LABEL evergreen.image.status="functional" \
       evergreen.image.category="proxy" \
       org.opencontainers.image.title="envoy-extras" \
       org.opencontainers.image.description="Evergreen hardened Envoy extras - Envoy proxy with extra Lua/WASM extensions enabled" \
-      org.opencontainers.image.version="${VERSION}"
+      org.opencontainers.image.version="${VERSION}" \
+            org.opencontainers.image.source="https://github.com/envoyproxy/envoy"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

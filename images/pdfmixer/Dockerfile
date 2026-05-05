@@ -21,7 +21,9 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 
-LABEL org.opencontainers.image.description="pdfmixer container image"
+LABEL org.opencontainers.image.description="pdfmixer container image" \
+      org.opencontainers.image.source="https://github.com/pdfmixer/pdfmixer" \
+            org.opencontainers.image.version="0.7.0"
 
 ENTRYPOINT ["python", "-m", "pdfmixer"]
 CMD ["--help"]

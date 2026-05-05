@@ -38,7 +38,8 @@ LABEL org.opencontainers.image.title="blocky" \
       evergreen.hft.signal-handling="native" \
       evergreen.hft.shutdown-timeout="3s" \
       evergreen.hft.init-system="none" \
-      evergreen.hft.startup-timeout="3000ms"
+      evergreen.hft.startup-timeout="3000ms" \
+            org.opencontainers.image.source="https://github.com/0xERR0R/blocky"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

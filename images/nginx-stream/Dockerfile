@@ -38,7 +38,8 @@ LABEL org.opencontainers.image.title="nginx-stream" \
       evergreen.hft.deploy-strategy="hft-rolling" \
       evergreen.hft.pre-stop-hook="true" \
       evergreen.hft.pre-stop-delay="5s" \
-      evergreen.hft.connection-drain="true"
+      evergreen.hft.connection-drain="true" \
+            org.opencontainers.image.source="https://github.com/nginx/nginx"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

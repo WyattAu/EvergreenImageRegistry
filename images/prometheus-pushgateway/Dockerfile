@@ -42,7 +42,8 @@ LABEL org.opencontainers.image.title="prometheus-pushgateway" \
       evergreen.hft.deploy-strategy="standard-rolling" \
       evergreen.hft.pre-stop-hook="false" \
       evergreen.hft.connection-drain="false" \
-      evergreen.hft.sched-policy="SCHED_OTHER"
+      evergreen.hft.sched-policy="SCHED_OTHER" \
+            org.opencontainers.image.source="https://github.com/prometheus/pushgateway"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

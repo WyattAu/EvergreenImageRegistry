@@ -20,4 +20,6 @@ EXPOSE 9101
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
-LABEL org.opencontainers.image.description="zzh container image"
+LABEL org.opencontainers.image.description="zzh container image" \
+      org.opencontainers.image.source="https://github.com/WyattAu/EvergreenImageRegistry" \
+            org.opencontainers.image.version="unknown"

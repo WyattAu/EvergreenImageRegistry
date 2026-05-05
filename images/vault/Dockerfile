@@ -35,7 +35,8 @@ LABEL org.opencontainers.image.title="vault" \
       evergreen.hft.startup-timeout="5000ms" \
       evergreen.hft.fips-required="true" \
       evergreen.hft.cap-required="CAP_SYS_NICE" \
-      evergreen.hft.cap-drop="ALL"
+      evergreen.hft.cap-drop="ALL" \
+            org.opencontainers.image.source="https://github.com/hashicorp/vault"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

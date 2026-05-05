@@ -18,7 +18,8 @@ WORKDIR /app
 EXPOSE 514 514/udp
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="nxlog" org.opencontainers.image.version="3.1.2331" org.opencontainers.image.vendor="nxlog" org.opencontainers.image.description="NXLog Community Edition - log collection and forwarding" evergreen.image.tier="1" evergreen.constraint.nonroot="true" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="5s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="5000ms" evergreen.hft.cpu-pins="4-5" evergreen.hft.cpu-pins-mode="shared" evergreen.hft.deploy-strategy="standard-rolling" evergreen.hft.pre-stop-hook="true" evergreen.hft.pre-stop-delay="5s" evergreen.hft.connection-drain="true" evergreen.hft.sched-policy="SCHED_OTHER" evergreen.hft.runtime="c"
+LABEL org.opencontainers.image.title="nxlog" org.opencontainers.image.version="3.1.2331" org.opencontainers.image.vendor="nxlog" org.opencontainers.image.description="NXLog Community Edition - log collection and forwarding" evergreen.image.tier="1" evergreen.constraint.nonroot="true" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="5s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="5000ms" evergreen.hft.cpu-pins="4-5" evergreen.hft.cpu-pins-mode="shared" evergreen.hft.deploy-strategy="standard-rolling" evergreen.hft.pre-stop-hook="true" evergreen.hft.pre-stop-delay="5s" evergreen.hft.connection-drain="true" evergreen.hft.sched-policy="SCHED_OTHER" evergreen.hft.runtime="c" \
+      org.opencontainers.image.source="https://github.com/nxlog/nxlog-ce"
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"

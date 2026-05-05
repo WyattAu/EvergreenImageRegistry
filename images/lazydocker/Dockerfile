@@ -19,7 +19,8 @@ COPY --from=builder /var/log/lazydocker /var/log/lazydocker
 COPY --from=builder /var/cache/lazydocker /var/cache/lazydocker
 USER 65532:65532
 WORKDIR /app
-LABEL org.opencontainers.image.title="lazydocker"       org.opencontainers.image.description="Lazydocker - Terminal UI for Docker"       org.opencontainers.image.vendor="jesseduffield"       org.opencontainers.image.source="https://github.com/jesseduffield/lazydocker"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"
+LABEL org.opencontainers.image.title="lazydocker"       org.opencontainers.image.description="Lazydocker - Terminal UI for Docker"       org.opencontainers.image.vendor="jesseduffield"       org.opencontainers.image.source="https://github.com/jesseduffield/lazydocker"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true" \
+      org.opencontainers.image.version="0.25.2"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

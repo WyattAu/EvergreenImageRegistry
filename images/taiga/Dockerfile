@@ -21,7 +21,9 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 
-LABEL org.opencontainers.image.description="taiga container image"
+LABEL org.opencontainers.image.description="taiga container image" \
+      org.opencontainers.image.source="https://github.com/taigaio/taiga-back" \
+            org.opencontainers.image.version="6.8.2"
 
 ENTRYPOINT ["python", "-m", "taiga-back"]
 CMD ["--help"]

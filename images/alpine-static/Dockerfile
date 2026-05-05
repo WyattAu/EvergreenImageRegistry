@@ -13,7 +13,9 @@ LABEL org.opencontainers.image.title="alpine-static" \
       evergreen.image.tier="3" \
       evergreen.image.status="reference" \
       evergreen.image.category="base" \
-      evergreen.image.note="Alpine is banned for application images. Use chainguard/static for static builds."
+      evergreen.image.note="Alpine is banned for application images. Use chainguard/static for static builds." \
+            org.opencontainers.image.source="https://github.com/alpinelinux/docker-alpine" \
+                  org.opencontainers.image.version="unknown"
 
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"

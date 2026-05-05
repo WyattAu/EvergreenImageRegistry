@@ -18,7 +18,8 @@ WORKDIR /tmp
 EXPOSE 4080
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="zinc" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.description="Evergreen hardened ZincSearch - lightweight alternative to Elasticsearch" org.opencontainers.image.vendor="ZincSearch" evergreen.image.tier="1" evergreen.image.category="database" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.constraint.scratch="true" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="3s"
+LABEL org.opencontainers.image.title="zinc" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.description="Evergreen hardened ZincSearch - lightweight alternative to Elasticsearch" org.opencontainers.image.vendor="ZincSearch" evergreen.image.tier="1" evergreen.image.category="database" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.constraint.scratch="true" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="3s" \
+      org.opencontainers.image.source="https://github.com/zinclabs/zinc"
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"

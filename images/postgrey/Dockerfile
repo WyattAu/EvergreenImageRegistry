@@ -33,7 +33,9 @@ STOPSIGNAL SIGTERM
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:10023/ || exit 1
 
-LABEL org.opencontainers.image.description="postgrey container image"
+LABEL org.opencontainers.image.description="postgrey container image" \
+      org.opencontainers.image.source="https://github.com/schwartz/postgrey" \
+            org.opencontainers.image.version="1.37"
 
 ENTRYPOINT ["postgrey"]
 CMD ["--inet", "--listen=0.0.0.0:10023"]

@@ -14,7 +14,9 @@ LABEL org.opencontainers.image.title="alpine" \
       evergreen.image.tier="3" \
       evergreen.image.status="reference" \
       evergreen.image.category="base" \
-      evergreen.image.note="Alpine is banned for application images. This is a wolfi wrapper for build-time reference only."
+      evergreen.image.note="Alpine is banned for application images. This is a wolfi wrapper for build-time reference only." \
+            org.opencontainers.image.source="https://github.com/alpinelinux/docker-alpine" \
+                  org.opencontainers.image.version="unknown"
 
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"

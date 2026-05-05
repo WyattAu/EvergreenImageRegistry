@@ -14,7 +14,8 @@ WORKDIR /app
 EXPOSE 2020
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="fluent-bit" org.opencontainers.image.version="3.2.4" org.opencontainers.image.vendor="Fluent" evergreen.image.tier="1" evergreen.constraint.nonroot="true" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="3s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="3000ms"
+LABEL org.opencontainers.image.title="fluent-bit" org.opencontainers.image.version="3.2.4" org.opencontainers.image.vendor="Fluent" evergreen.image.tier="1" evergreen.constraint.nonroot="true" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="3s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="3000ms" \
+      org.opencontainers.image.source="https://github.com/fluent/fluent-bit"
       org.opencontainers.image.description="Fluent Bit - fast lightweight log processor and forwarder" \
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"

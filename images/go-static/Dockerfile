@@ -34,7 +34,8 @@ LABEL org.opencontainers.image.title="go-static" \
       evergreen.constraint.nonroot="true" \
       evergreen.constraint.scratch="true" \
       evergreen.hft.signal-handling="native" \
-      evergreen.hft.shutdown-timeout="5s"
+      evergreen.hft.shutdown-timeout="5s" \
+            org.opencontainers.image.source="https://github.com/golang/go"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

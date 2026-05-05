@@ -33,7 +33,8 @@ LABEL evergreen.image.status="functional" \
       evergreen.image.category="database" \
       org.opencontainers.image.title="cockroachdb" \
       org.opencontainers.image.description="Evergreen hardened CockroachDB - distributed SQL database" \
-      org.opencontainers.image.version="${VERSION}"
+      org.opencontainers.image.version="${VERSION}" \
+            org.opencontainers.image.source="https://github.com/cockroachdb/cockroach"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

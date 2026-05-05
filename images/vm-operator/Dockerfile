@@ -19,7 +19,8 @@ LABEL org.opencontainers.image.title="vm-operator" \
       evergreen.image.tier="1" \
       evergreen.image.category="monitoring" \
       evergreen.constraint.nonroot="true" \
-      evergreen.constraint.scratch="true"
+      evergreen.constraint.scratch="true" \
+            org.opencontainers.image.source="https://github.com/vmware-tanzu/vm-operator"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

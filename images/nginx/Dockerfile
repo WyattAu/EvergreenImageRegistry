@@ -41,7 +41,8 @@ LABEL org.opencontainers.image.title="nginx" \
       evergreen.hft.connection-drain="true" \
       evergreen.hft.xdp-capable="true" \
       evergreen.hft.xdp-mode="generic" \
-      evergreen.hft.xdp-notes="Requires custom nginx module or eBPF loader"
+      evergreen.hft.xdp-notes="Requires custom nginx module or eBPF loader" \
+            org.opencontainers.image.source="https://github.com/nginx/nginx"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

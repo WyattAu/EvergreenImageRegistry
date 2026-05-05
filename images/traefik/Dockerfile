@@ -49,7 +49,8 @@ LABEL org.opencontainers.image.title="traefik" \
       evergreen.hft.pre-stop-delay="5s" \
       evergreen.hft.connection-drain="true" \
       evergreen.hft.xdp-capable="false" \
-      evergreen.hft.xdp-notes="Not supported; use envoy for XDP workloads"
+      evergreen.hft.xdp-notes="Not supported; use envoy for XDP workloads" \
+            org.opencontainers.image.source="https://github.com/traefik/traefik"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

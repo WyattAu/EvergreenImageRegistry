@@ -32,7 +32,8 @@ LABEL org.opencontainers.image.title="argo-rollouts" \
       evergreen.constraint.nonroot="true" \
       evergreen.constraint.scratch="true" \
       evergreen.hft.signal-handling="native" \
-      evergreen.hft.shutdown-timeout="5s"
+      evergreen.hft.shutdown-timeout="5s" \
+            org.opencontainers.image.source="https://github.com/argoproj/argo-rollouts"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

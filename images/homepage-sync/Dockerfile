@@ -18,7 +18,8 @@ WORKDIR /app
 EXPOSE 3000
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="homepage-sync" org.opencontainers.image.description="Homepage - sync mode" org.opencontainers.image.vendor="benphelps" org.opencontainers.image.source="https://github.com/benphelps/homepage" evergreen.image.tier="3" evergreen.constraint.nonroot="true" evergreen.base.image="scratch"
+LABEL org.opencontainers.image.title="homepage-sync" org.opencontainers.image.description="Homepage - sync mode" org.opencontainers.image.vendor="benphelps" org.opencontainers.image.source="https://github.com/benphelps/homepage" evergreen.image.tier="3" evergreen.constraint.nonroot="true" evergreen.base.image="scratch" \
+      org.opencontainers.image.version="latest"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"

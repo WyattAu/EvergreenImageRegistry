@@ -26,4 +26,6 @@ LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
 STOPSIGNAL SIGTERM
-LABEL org.opencontainers.image.description="espurna container image"
+LABEL org.opencontainers.image.description="espurna container image" \
+      org.opencontainers.image.source="https://github.com/xoseperez/espurna" \
+            org.opencontainers.image.version="unknown"

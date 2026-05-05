@@ -18,7 +18,8 @@ WORKDIR /app
 EXPOSE 3000
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="homepage" org.opencontainers.image.description="Homepage - Application dashboard" org.opencontainers.image.vendor="benphelps" org.opencontainers.image.source="https://github.com/benphelps/homepage" evergreen.image.tier="3" evergreen.constraint.nonroot="true" evergreen.constraint.scratch="true"
+LABEL org.opencontainers.image.title="homepage" org.opencontainers.image.description="Homepage - Application dashboard" org.opencontainers.image.vendor="benphelps" org.opencontainers.image.source="https://github.com/benphelps/homepage" evergreen.image.tier="3" evergreen.constraint.nonroot="true" evergreen.constraint.scratch="true" \
+      org.opencontainers.image.version="latest"
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"

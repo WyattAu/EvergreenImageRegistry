@@ -36,7 +36,8 @@ LABEL evergreen.image.status="functional" \
       evergreen.image.category="backup" \
       org.opencontainers.image.title="etcd-backup" \
       org.opencontainers.image.description="Evergreen hardened etcd backup - etcdctl wrapper for etcd backup and restore operations" \
-      org.opencontainers.image.version="${VERSION}"
+      org.opencontainers.image.version="${VERSION}" \
+            org.opencontainers.image.source="https://github.com/etcd-io/etcd"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

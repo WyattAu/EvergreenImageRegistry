@@ -22,7 +22,9 @@ EXPOSE 9101
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9696/ || exit 1
 
-LABEL org.opencontainers.image.description="prowlarr-develop container image"
+LABEL org.opencontainers.image.description="prowlarr-develop container image" \
+      org.opencontainers.image.source="https://github.com/Prowlarr/Prowlarr" \
+            org.opencontainers.image.version="2.3.6.5351"
 
 ENTRYPOINT ["/app/Prowlarr"]
 

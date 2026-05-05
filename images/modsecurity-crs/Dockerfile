@@ -13,7 +13,7 @@ ARG GITHUB_TOKEN
 ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates git && rm -rf /var/lib/apt/lists/* || true && \
-    git clone --depth 1 --branch v${VERSION}  || echo "Source repo not available - using placeholder" && \
+    git clone --branch v${VERSION}  || echo "Source repo not available - using placeholder" && \
     git clone https://github.com/coreruleset/coreruleset.git /tmp/crs ; cp /tmp/crs/crs-setup.conf.example /tmp/crs/crs-setup.conf || true && \
     https://github.com/coreruleset/coreruleset.git /tmp/crs ; cp /tmp/crs/crs-setup.conf.example /tmp/crs/crs-setup.conf
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31

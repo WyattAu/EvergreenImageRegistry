@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential cmake g++ libboost-all-dev libgmp-dev \
         libmpfr-dev texinfo groff curl git ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
-    git clone --depth 1 --branch "v${VERSION}" https://github.com/ledger/ledger.git /tmp/ledger 2>/dev/null || true && \
+    git clone --branch "v${VERSION}" https://github.com/ledger/ledger.git /tmp/ledger 2>/dev/null || true && \
     cd /tmp/ledger && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_DOCS=OFF -DUSE_PYTHON=OFF . && \
     make -j$(nproc) && make install && strip --strip-all /usr/local/bin/ledger 2>/dev/null || true

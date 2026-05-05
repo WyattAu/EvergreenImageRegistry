@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libtheora-dev libvorbis-dev libwebp-dev libxvidcore-dev \
         zlib1g-dev git ca-certificates curl && \
     rm -rf /var/lib/apt/lists/* || true && \
-    git clone --depth 1 --branch "n${VERSION}" https://github.com/jellyfin/jellyfin-ffmpeg.git /tmp/jellyfin-ffmpeg 2>/dev/null || true && \
+    git clone --branch "n${VERSION}" https://github.com/jellyfin/jellyfin-ffmpeg.git /tmp/jellyfin-ffmpeg 2>/dev/null || true && \
     cd /tmp/jellyfin-ffmpeg && \
     ./configure --prefix=/usr/local \
         --enable-gpl --enable-nonfree \

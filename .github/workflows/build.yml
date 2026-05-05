@@ -283,6 +283,9 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: |
+            image=moby/buildkit:v0.12.0
 
       - name: Lowercase registry owner
         run: echo "OWNER=$(echo '${{ env.OWNER }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
@@ -322,7 +325,7 @@ jobs:
                 -t "${REF}" \
                 --output "type=docker,dest=/tmp/images/${SAFE}.tar" \
                 --cache-from "type=gha,scope=${image}" \
-                --cache-to "type=gha,scope=${image},mode=max" \
+                --cache-to "type=gha,scope=${image},mode=max,compression=zstd" \
                 --build-arg "BUILD_DATE=${TAG}" \
                 --build-arg "VCS_REF=${TAG}" \
                 --build-arg "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" \
@@ -380,6 +383,7 @@ jobs:
               --push \
               -t "${REF}" \
               --cache-from "type=gha,scope=${image}" \
+              --cache-to "type=gha,scope=${image},mode=max,compression=zstd" \
               --attest "type=provenance,mode=max" \
               --build-arg "BUILD_DATE=${TAG}" \
               --build-arg "VCS_REF=${TAG}" \
@@ -495,6 +499,44 @@ jobs:
           name: sbom-buildtime-batch-${{ matrix.batch }}
           path: /tmp/sbom/
           retention-days: 30
+          if-no-files-found: warn
+          overwrite: true
+
+  # ===========================================================================
+  # STAGE 4b: PUBLISH REFERENCES - Merge image refs for downstream workflows
+  # ===========================================================================
+  publish-references:
+    name: Publish Image References
+    needs: [build]
+    if: ${{ needs.build.result == 'success' && github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Download all batch image references
+        uses: actions/download-artifact@v4
+        with:
+          pattern: built-list-batch-*
+          path: /tmp/batches
+
+      - name: Merge and deduplicate image references
+        id: merge
+        run: |
+          mkdir -p /tmp/output
+          cat /tmp/batches/built-list-batch-*/built-images.txt 2>/dev/null \
+            | sort -u > /tmp/output/images.txt || true
+          TOTAL=$(wc -l < /tmp/output/images.txt 2>/dev/null || echo 0)
+          echo "total=${TOTAL}" >> "$GITHUB_OUTPUT"
+          echo "Merged ${TOTAL} image references"
+          if [ "${TOTAL}" -eq 0 ]; then
+            echo "::warning::No image references found in any batch"
+          fi
+
+      - name: Upload merged image references
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-image-references
+          path: /tmp/output/images.txt
+          retention-days: 3
           if-no-files-found: warn
           overwrite: true
 
@@ -969,6 +1011,8 @@ jobs:
           - audiobookshelf
           - audiobookshelf-opds
           - authelia
+          - authentik-geoip
+          - authentik-proxy
           - awslogs
           - azurelogs
           - badger
@@ -1139,11 +1183,11 @@ jobs:
           - k3d
           - k3d-proxy
           - kafka
-          - kafka-connect
-          - kafka-exporter
-          - kafka-ui
-          - kaniko
+          - kube-apiserver
+          - kube-controller
           - kube-hunter
+          - kube-proxy
+          - kube-scheduler
           - langchain
           - langserve
           - ledger
@@ -1434,6 +1478,7 @@ jobs:
           - kube-bench
           - kubescape
           - kustomize
+          - kubectl
           - lazydocker
           - lazydocker-ui
           - minio-operator
@@ -1510,7 +1555,7 @@ jobs:
   # ===========================================================================
   report:
     name: Build Report
-    needs: [discover, lint, gates, build, health-check, security-scan, sbom, verify, sign-push, build-multiarch]
+    needs: [discover, lint, gates, build, publish-references, health-check, security-scan, sbom, verify, sign-push, build-multiarch]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -1530,6 +1575,7 @@ jobs:
             echo "| **Lint** | ${{ needs.lint.result }} |"
             echo "| **Gates** | ${{ needs.gates.result }} |"
             echo "| **Build** | ${{ needs.build.result }} |"
+            echo "| **Publish Refs** | ${{ needs.publish-references.result }} |"
             echo "| **Health Check** | ${{ needs.health-check.result }} |"
             echo "| **Security Scan** | ${{ needs.security-scan.result }} |"
             echo "| **SBOM** | ${{ needs.sbom.result }} |"

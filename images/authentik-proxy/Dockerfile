@@ -1,4 +1,5 @@
 ARG VERSION=2026.2.2
+ARG TARGETARCH
 
 FROM ghcr.io/goauthentik/authentik:${VERSION} AS upstream
 

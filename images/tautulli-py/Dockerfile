@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir pyopenssl certifi || true && \
-    git clone --depth 1 --branch v${VERSION} "https://github.com/Tautulli/Tautulli.git" /opt/tautulli || echo "Source repo not available - using placeholder" 2>/dev/null
+    git clone --branch v${VERSION} "https://github.com/Tautulli/Tautulli.git" /opt/tautulli || echo "Source repo not available - using placeholder" 2>/dev/null
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 

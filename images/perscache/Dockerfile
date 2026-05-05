@@ -16,7 +16,7 @@ ARG GOARCH=${TARGETARCH}
 RUN apt-get update && \
     apt-get install -y --no-install-recommends git ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
-    git clone --depth 1 https://github.com/VictoriaMetrics/perscache /src 2>/dev/null || echo "Source repo not available" && \
+    git clone https://github.com/VictoriaMetrics/perscache /src 2>/dev/null || echo "Source repo not available" && \
     printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("perscache v%s ready") }\n' "${VERSION}" > /tmp/main.go && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \

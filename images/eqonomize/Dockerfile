@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libqt5widgets5 libqt5core5a qtbase5-dev \
         ca-certificates curl git && \
     rm -rf /var/lib/apt/lists/* || true && \
-    git clone --depth 1 --branch "v${VERSION}" https://github.com/Eqonomize/Eqonomize.git /tmp/eqonomize || true ; \
+    git clone --branch "v${VERSION}" https://github.com/Eqonomize/Eqonomize.git /tmp/eqonomize || true ; \
     cd /tmp/eqonomize && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release . && \
     make -j$(nproc) && make install && strip --strip-all /usr/local/bin/eqonomize 2>/dev/null || true

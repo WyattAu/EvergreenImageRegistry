@@ -4,7 +4,7 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm git ca-certificates python3 make g++ ; rm -rf /var/lib/apt/lists/* || true
 WORKDIR /src
-RUN git clone --depth 1 --branch v2024.3.21 https://github.com/CorentinTh/it-tools.git /src || echo "Source repo not available - using placeholder" || true && \
+RUN git clone --branch v2024.3.21 https://github.com/CorentinTh/it-tools.git /src || echo "Source repo not available - using placeholder" || true && \
     mkdir -p /src 2>/dev/null || true && \
     cd /src && npm ci 2>/dev/null || npm install --legacy-peer-deps 2>/dev/null || true && npm run build 2>/dev/null || true && \
     mkdir -p /app 2>/dev/null || true

@@ -8,7 +8,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243
 
 RUN apk add --no-cache nodejs npm git ca-certificates python3 make 
 WORKDIR /src
-RUN git clone --depth 1 https://github.com/diced/zipline.git /src || echo "Source repo not available - using placeholder" && \
+RUN git clone https://github.com/diced/zipline.git /src || echo "Source repo not available - using placeholder" && \
     cd /src && npm ci 2>/dev/null || npm install --legacy-peer-deps 2>/dev/null || true && npm run build 2>/dev/null || true && \
     cd /src && npm ci 2>/dev/null || npm install --legacy-peer-deps 2>/dev/null || true && npm run build 2>/dev/null || true && \
     mkdir -p /app/data-src-src 2>/dev/null || true

@@ -1,0 +1,117 @@
+name: Sign Images with Cosign
+
+on:
+  workflow_run:
+    workflows: ["Build Hardened Images"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  id-token: write
+  packages: write
+  contents: read
+
+jobs:
+  sign:
+    name: Sign Images
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download image references
+        uses: actions/download-artifact@v4
+        with:
+          name: built-image-references
+          path: /tmp/references/
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Sign images
+        env:
+          COSIGN_EXPERIMENTAL: "1"
+        run: |
+          if [ ! -f /tmp/references/images.txt ]; then
+            echo "No image references found"
+            exit 0
+          fi
+
+          TOTAL=$(wc -l < /tmp/references/images.txt)
+          echo "Signing ${TOTAL} images with OIDC keyless signing..."
+
+          SIGNED=0
+          FAILED=0
+          while IFS= read -r ref; do
+            [ -z "$ref" ] && continue
+            echo "::group::Sign ${ref}"
+            if cosign sign --yes "${ref}" 2>&1; then
+              SIGNED=$((SIGNED + 1))
+            else
+              FAILED=$((FAILED + 1))
+              echo "::warning::Failed to sign ${ref}"
+            fi
+            echo "::endgroup::"
+          done < /tmp/references/images.txt
+
+          echo ""
+          echo "Signing complete: ${SIGNED} signed, ${FAILED} failed"
+
+          if [ "${FAILED}" -gt 0 ]; then
+            echo "::warning::${FAILED} image(s) failed to sign"
+          fi
+
+      - name: Verify signatures
+        run: |
+          if [ ! -f /tmp/references/images.txt ]; then
+            exit 0
+          fi
+
+          echo "Verifying signatures..."
+          VERIFIED=0
+          UNVERIFIED=0
+          while IFS= read -r ref; do
+            [ -z "$ref" ] && continue
+            echo "::group::Verify ${ref}"
+            if cosign verify \
+              --certificate-identity="${{ github.repository_owner }}" \
+              --certificate-oidc-issuer="https://token.actions.githubusercontent.com" \
+              "${ref}" 2>&1; then
+              VERIFIED=$((VERIFIED + 1))
+            else
+              UNVERIFIED=$((UNVERIFIED + 1))
+              echo "::warning::Verification failed for ${ref}"
+            fi
+            echo "::endgroup::"
+          done < /tmp/references/images.txt
+
+          echo ""
+          echo "Verification complete: ${VERIFIED} verified, ${UNVERIFIED} failed"
+
+      - name: Generate summary
+        if: always()
+        run: |
+          {
+            echo "# Cosign Signing Summary"
+            echo ""
+            echo "All images signed using GitHub OIDC keyless signing via Sigstore."
+            echo ""
+            echo "## Verification"
+            echo ""
+            echo 'To verify an image signature:'
+            echo '```bash'
+            echo "cosign verify \\"
+            echo "  --certificate-identity=\"${{ github.repository_owner }}\" \\"
+            echo "  --certificate-oidc-issuer=\"https://token.actions.githubusercontent.com\" \\"
+            echo "  ghcr.io/<owner>/<image>:<tag>"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

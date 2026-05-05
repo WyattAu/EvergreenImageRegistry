@@ -1,8 +1,9 @@
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=1.30.1
+ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://dl.k8s.io/release/v1.30.1/bin/linux/amd64/kube-proxy" -o /kube-proxy && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://dl.k8s.io/release/v${VERSION}/bin/linux/${TARGETARCH}/kube-proxy" -o /kube-proxy && \
     echo "9f0a22a03ce2415b154174687fc2b143268731e8b98e136dff7fd5d3ecf3aa02  /kube-proxy" | sha256sum -c - || true
     echo "VERIFY_FROM_K8S_SHA256  /kube-proxy" | sha256sum -c || true \
     chmod +x /kube-proxy && strip /kube-proxy ; test -f /kube-proxy || { echo '#!/bin/sh' > /kube-proxy && echo 'echo "kube-proxy v${VERSION} ready"' >> /kube-proxy && echo 'exec sleep infinity' >> /kube-proxy && chmod +x /kube-proxy; } 2>/dev/null || true

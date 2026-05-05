@@ -17,6 +17,7 @@ LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
+LABEL evergreen.image.tier="0"
 HEALTHCHECK NONE
 LABEL org.opencontainers.image.description="wolfi-node container image" \
       org.opencontainers.image.source="https://github.com/wolfi-dev/os" \

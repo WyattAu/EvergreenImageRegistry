@@ -21,7 +21,9 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 
-LABEL org.opencontainers.image.description="streamlink container image"
+LABEL org.opencontainers.image.description="streamlink container image" \
+      org.opencontainers.image.source="https://github.com/streamlink/streamlink" \
+            org.opencontainers.image.version="7.0.0"
 
 ENTRYPOINT ["python", "-m", "streamlink"]
 CMD ["--help"]

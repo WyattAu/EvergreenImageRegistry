@@ -45,7 +45,8 @@ LABEL org.opencontainers.image.title="pinned-search" \
       evergreen.constraint.nonroot="true" \
       evergreen.constraint.scratch="true" \
       evergreen.hft.signal-handling="native" \
-      evergreen.hft.shutdown-timeout="3s"
+      evergreen.hft.shutdown-timeout="3s" \
+            org.opencontainers.image.source="https://github.com/pinned-search/pinned"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

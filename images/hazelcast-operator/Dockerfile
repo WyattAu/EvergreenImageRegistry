@@ -19,7 +19,8 @@ LABEL org.opencontainers.image.title="hazelcast-operator" \
       evergreen.image.tier="1" \
       evergreen.image.category="database" \
       evergreen.constraint.nonroot="true" \
-      evergreen.constraint.scratch="true"
+      evergreen.constraint.scratch="true" \
+            org.opencontainers.image.source="https://github.com/hazelcast/hazelcast"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

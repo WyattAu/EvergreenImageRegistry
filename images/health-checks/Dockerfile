@@ -87,7 +87,8 @@ LABEL org.opencontainers.image.title="health-checks" \
       evergreen.hft.pre-stop-hook="false" \
       evergreen.hft.connection-drain="false" \
       evergreen.hft.sched-policy="SCHED_OTHER" \
-      evergreen.hft.runtime="go"
+      evergreen.hft.runtime="go" \
+            org.opencontainers.image.source="https://github.com/healthchecks/healthchecks"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

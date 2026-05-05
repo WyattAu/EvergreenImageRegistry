@@ -30,7 +30,8 @@ LABEL evergreen.image.status="functional" \
       evergreen.image.category="proxy" \
       org.opencontainers.image.title="haproxy-dev" \
       org.opencontainers.image.description="Evergreen hardened HAProxy dev - experimental development configuration variant" \
-      org.opencontainers.image.version="${VERSION}"
+      org.opencontainers.image.version="${VERSION}" \
+            org.opencontainers.image.source="https://github.com/haproxy/haproxy"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

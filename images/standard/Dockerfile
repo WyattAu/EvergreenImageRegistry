@@ -11,7 +11,9 @@ LABEL org.opencontainers.image.title="standard" \
       evergreen.image.tier="3" \
       evergreen.image.status="reference" \
       evergreen.image.category="meta" \
-      evergreen.image.note="Compliance standard directory, not a container image."
+      evergreen.image.note="Compliance standard directory, not a container image." \
+            org.opencontainers.image.source="https://github.com/standardnotes/standard-notes" \
+                  org.opencontainers.image.version="unknown"
 
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"

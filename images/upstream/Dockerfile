@@ -11,7 +11,9 @@ LABEL org.opencontainers.image.title="upstream" \
       evergreen.image.tier="3" \
       evergreen.image.status="reference" \
       evergreen.image.category="meta" \
-      evergreen.image.note="Upstream tracking directory, not a container image."
+      evergreen.image.note="Upstream tracking directory, not a container image." \
+            org.opencontainers.image.source="https://github.com/WyattAu/EvergreenImageRegistry" \
+                  org.opencontainers.image.version="unknown"
 
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"

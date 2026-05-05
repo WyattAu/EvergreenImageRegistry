@@ -34,7 +34,8 @@ LABEL org.opencontainers.image.title="transfer.sh" \
       org.opencontainers.image.source="https://github.com/dutchcoders/transfer.sh" \
       evergreen.image.tier="3" \
       evergreen.constraint.nonroot="true" \
-      evergreen.constraint.scratch="true"
+      evergreen.constraint.scratch="true" \
+            org.opencontainers.image.version="1.6.1"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

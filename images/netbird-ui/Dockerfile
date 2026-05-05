@@ -20,7 +20,8 @@ EXPOSE 80
 
 HEALTHCHECK NONE
 ENTRYPOINT ["sleep", "infinity"]
-LABEL org.opencontainers.image.title="netbird-ui"       org.opencontainers.image.version="${VERSION}"       org.opencontainers.image.description="Evergreen hardened NetBird UI - static web dashboard assets"       org.opencontainers.image.vendor="NetBird"       evergreen.image.tier="1"       evergreen.image.category="networking"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"
+LABEL org.opencontainers.image.title="netbird-ui"       org.opencontainers.image.version="${VERSION}"       org.opencontainers.image.description="Evergreen hardened NetBird UI - static web dashboard assets"       org.opencontainers.image.vendor="NetBird"       evergreen.image.tier="1"       evergreen.image.category="networking"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true" \
+      org.opencontainers.image.source="https://github.com/netbirdio/netbird"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

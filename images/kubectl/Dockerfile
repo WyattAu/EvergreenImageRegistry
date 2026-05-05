@@ -31,7 +31,8 @@ LABEL org.opencontainers.image.title="kubectl" \
       evergreen.hft.signal-handling="native" \
       evergreen.hft.shutdown-timeout="3s" \
       evergreen.hft.init-system="none" \
-      evergreen.hft.startup-timeout="3000ms"
+      evergreen.hft.startup-timeout="3000ms" \
+            org.opencontainers.image.source="https://github.com/kubernetes/kubernetes"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

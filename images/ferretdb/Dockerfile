@@ -34,7 +34,8 @@ LABEL org.opencontainers.image.title="ferretdb" \
       evergreen.image.tier="1" \
       evergreen.image.category="database" \
       evergreen.constraint.nonroot="true" \
-      evergreen.constraint.scratch="true"
+      evergreen.constraint.scratch="true" \
+            org.opencontainers.image.source="https://github.com/FerretDB/FerretDB"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

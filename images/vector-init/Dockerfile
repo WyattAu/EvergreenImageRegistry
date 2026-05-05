@@ -31,7 +31,8 @@ LABEL evergreen.image.status="functional" \
       evergreen.image.category="observability" \
       org.opencontainers.image.title="vector-init" \
       org.opencontainers.image.description="Evergreen hardened Vector init - high-performance observability data pipeline" \
-      org.opencontainers.image.version="${VERSION}"
+      org.opencontainers.image.version="${VERSION}" \
+            org.opencontainers.image.source="https://github.com/vectordotdev/vector"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

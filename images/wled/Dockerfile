@@ -26,4 +26,6 @@ LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
 STOPSIGNAL SIGTERM
-LABEL org.opencontainers.image.description="wled container image"
+LABEL org.opencontainers.image.description="wled container image" \
+      org.opencontainers.image.source="https://github.com/Aircoookie/WLED" \
+            org.opencontainers.image.version="unknown"

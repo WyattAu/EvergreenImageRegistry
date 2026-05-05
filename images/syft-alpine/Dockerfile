@@ -19,7 +19,8 @@ COPY --from=builder /var/log/syft-alpine /var/log/syft-alpine
 COPY --from=builder /var/cache/syft-alpine /var/cache/syft-alpine
 USER 65532:65532
 WORKDIR /app
-LABEL org.opencontainers.image.title="syft-alpine"       org.opencontainers.image.description="Syft - SBOM scanner (no Alpine)"       org.opencontainers.image.vendor="Anchore"       org.opencontainers.image.source="https://github.com/anchore/syft"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"
+LABEL org.opencontainers.image.title="syft-alpine"       org.opencontainers.image.description="Syft - SBOM scanner (no Alpine)"       org.opencontainers.image.vendor="Anchore"       org.opencontainers.image.source="https://github.com/anchore/syft"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true" \
+      org.opencontainers.image.version="1.11.0"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

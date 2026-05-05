@@ -18,7 +18,8 @@ WORKDIR /app
 EXPOSE 5005
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="flame-ui" org.opencontainers.image.description="Flame - UI variant" org.opencontainers.image.vendor="pawelmalak" org.opencontainers.image.source="https://github.com/pawelmalak/flame" evergreen.image.tier="3" evergreen.constraint.nonroot="true" evergreen.base.image="scratch"
+LABEL org.opencontainers.image.title="flame-ui" org.opencontainers.image.description="Flame - UI variant" org.opencontainers.image.vendor="pawelmalak" org.opencontainers.image.source="https://github.com/pawelmalak/flame" evergreen.image.tier="3" evergreen.constraint.nonroot="true" evergreen.base.image="scratch" \
+      org.opencontainers.image.version="latest"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"

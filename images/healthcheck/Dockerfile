@@ -44,7 +44,8 @@ LABEL org.opencontainers.image.title="healthcheck" \
       evergreen.hft.pre-stop-hook="false" \
       evergreen.hft.connection-drain="false" \
       evergreen.hft.sched-policy="SCHED_OTHER" \
-      evergreen.hft.runtime="go"
+      evergreen.hft.runtime="go" \
+            org.opencontainers.image.source="https://github.com/grpc-ecosystem/grpc-health-probe"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

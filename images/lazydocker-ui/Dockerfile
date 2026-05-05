@@ -35,7 +35,9 @@ STOPSIGNAL SIGTERM
 
 HEALTHCHECK NONE
 
-LABEL org.opencontainers.image.description="lazydocker-ui container image"
+LABEL org.opencontainers.image.description="lazydocker-ui container image" \
+      org.opencontainers.image.source="https://github.com/jesseduffield/lazydocker" \
+            org.opencontainers.image.version="0.25.2"
 
 ENTRYPOINT ["/lazydocker"]
 CMD ["--help"]

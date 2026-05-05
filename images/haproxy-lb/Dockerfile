@@ -30,7 +30,8 @@ LABEL evergreen.image.status="functional" \
       evergreen.image.category="load-balancer" \
       org.opencontainers.image.title="haproxy-lb" \
       org.opencontainers.image.description="Evergreen hardened HAProxy LB - dedicated load balancer configuration variant" \
-      org.opencontainers.image.version="${VERSION}"
+      org.opencontainers.image.version="${VERSION}" \
+            org.opencontainers.image.source="https://github.com/haproxy/haproxy"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

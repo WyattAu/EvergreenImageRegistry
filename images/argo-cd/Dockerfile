@@ -34,7 +34,8 @@ LABEL org.opencontainers.image.title="argo-cd" \
       evergreen.constraint.nonroot="true" \
       evergreen.constraint.scratch="true" \
       evergreen.hft.signal-handling="native" \
-      evergreen.hft.shutdown-timeout="10s"
+      evergreen.hft.shutdown-timeout="10s" \
+            org.opencontainers.image.source="https://github.com/argoproj/argo-cd"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

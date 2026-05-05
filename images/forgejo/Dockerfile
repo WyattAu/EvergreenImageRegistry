@@ -34,7 +34,8 @@ LABEL org.opencontainers.image.title="forgejo" \
       org.opencontainers.image.vendor="Forgejo" \
       evergreen.image.tier="2" \
       evergreen.constraint.nonroot="true" \
-      evergreen.constraint.wolfi="true"
+      evergreen.constraint.wolfi="true" \
+            org.opencontainers.image.source="https://github.com/forgejo/forgejo"
 
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"

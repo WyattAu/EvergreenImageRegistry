@@ -35,7 +35,8 @@ LABEL org.opencontainers.image.title="duckdb" \
       evergreen.image.tier="1" \
       evergreen.image.category="database" \
       evergreen.constraint.nonroot="true" \
-      evergreen.constraint.scratch="true"
+      evergreen.constraint.scratch="true" \
+            org.opencontainers.image.source="https://github.com/duckdb/duckdb"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

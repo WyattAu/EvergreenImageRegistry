@@ -13,7 +13,9 @@ LABEL org.opencontainers.image.title="musl" \
       evergreen.image.tier="3" \
       evergreen.image.status="reference" \
       evergreen.image.category="base" \
-      evergreen.image.note="Musl libc base for static binary builds. Use for Rust/C++ static targets."
+      evergreen.image.note="Musl libc base for static binary builds. Use for Rust/C++ static targets." \
+            org.opencontainers.image.source="https://github.com/openSUSE/musl" \
+                  org.opencontainers.image.version="unknown"
 
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"

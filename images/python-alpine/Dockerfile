@@ -7,7 +7,9 @@ STOPSIGNAL SIGTERM
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["sleep", "infinity"]
-LABEL org.opencontainers.image.title="python-alpine"
+LABEL org.opencontainers.image.title="python-alpine" \
+      org.opencontainers.image.source="https://github.com/python/cpython" \
+            org.opencontainers.image.version="3.12"
       org.opencontainers.image.description="python-alpine container image" \
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.security.cap-drop="ALL"

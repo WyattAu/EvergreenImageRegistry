@@ -32,7 +32,8 @@ LABEL evergreen.image.status="functional" \
       evergreen.image.category="logging" \
       org.opencontainers.image.title="promtail" \
       org.opencontainers.image.description="Evergreen hardened Promtail - log collection agent for Grafana Loki" \
-      org.opencontainers.image.version="${VERSION}"
+      org.opencontainers.image.version="${VERSION}" \
+            org.opencontainers.image.source="https://github.com/grafana/loki"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

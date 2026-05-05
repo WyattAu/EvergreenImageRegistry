@@ -80,7 +80,8 @@ LABEL org.opencontainers.image.title="grafana-oss" \
       evergreen.hft.connection-drain="false" \
       evergreen.hft.sched-policy="SCHED_OTHER" \
       evergreen.hft.runtime="go" \
-      evergreen.hft.runtime-hints="GOMAXPROCS=<cores>"
+      evergreen.hft.runtime-hints="GOMAXPROCS=<cores>" \
+            org.opencontainers.image.source="https://github.com/grafana/grafana"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

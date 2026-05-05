@@ -16,7 +16,8 @@ COPY --from=builder /var/cache/immudb-proxy /var/cache/immudb-proxy
 EXPOSE 3323
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="immudb-proxy" org.opencontainers.image.description="Evergreen hardened immudb-proxy - proxy mode for immudb" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.vendor="Codenotary" evergreen.image.status="functional" evergreen.image.tier="1" evergreen.image.category="security" evergreen.constraint.nonroot="true" evergreen.constraint.scratch="true"
+LABEL org.opencontainers.image.title="immudb-proxy" org.opencontainers.image.description="Evergreen hardened immudb-proxy - proxy mode for immudb" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.vendor="Codenotary" evergreen.image.status="functional" evergreen.image.tier="1" evergreen.image.category="security" evergreen.constraint.nonroot="true" evergreen.constraint.scratch="true" \
+      org.opencontainers.image.source="https://github.com/codenotary/immudb"
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"

@@ -16,7 +16,8 @@ WORKDIR /opt/graphdb
 EXPOSE 7200
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="graphdb-free" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.description="Evergreen hardened GraphDB Free - semantic graph database" org.opencontainers.image.vendor="Ontotext" evergreen.image.tier="1" evergreen.image.category="database" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.base.image="wolfi"
+LABEL org.opencontainers.image.title="graphdb-free" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.description="Evergreen hardened GraphDB Free - semantic graph database" org.opencontainers.image.vendor="Ontotext" evergreen.image.tier="1" evergreen.image.category="database" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.base.image="wolfi" \
+      org.opencontainers.image.source="https://github.com/ontotext/graphdb"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"

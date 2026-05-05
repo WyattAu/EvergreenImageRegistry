@@ -19,7 +19,8 @@ WORKDIR /app
 EXPOSE 9106
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="prometheus-cloudwatch-exporter" org.opencontainers.image.version="0.15.0" org.opencontainers.image.vendor="Prometheus Community" org.opencontainers.image.description="Prometheus exporter for AWS CloudWatch metrics" evergreen.image.tier="1" evergreen.constraint.nonroot="true" evergreen.constraint.scratch="true" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="3s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="3000ms" evergreen.hft.cpu-pins="4-5" evergreen.hft.cpu-pins-mode="exclusive" evergreen.hft.deploy-strategy="hft-stateful" evergreen.hft.pre-stop-hook="true" evergreen.hft.pre-stop-delay="5s" evergreen.hft.connection-drain="true" evergreen.hft.sched-policy="SCHED_OTHER"
+LABEL org.opencontainers.image.title="prometheus-cloudwatch-exporter" org.opencontainers.image.version="0.15.0" org.opencontainers.image.vendor="Prometheus Community" org.opencontainers.image.description="Prometheus exporter for AWS CloudWatch metrics" evergreen.image.tier="1" evergreen.constraint.nonroot="true" evergreen.constraint.scratch="true" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="3s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="3000ms" evergreen.hft.cpu-pins="4-5" evergreen.hft.cpu-pins-mode="exclusive" evergreen.hft.deploy-strategy="hft-stateful" evergreen.hft.pre-stop-hook="true" evergreen.hft.pre-stop-delay="5s" evergreen.hft.connection-drain="true" evergreen.hft.sched-policy="SCHED_OTHER" \
+      org.opencontainers.image.source="https://github.com/prometheus/cloudwatch_exporter"
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"

@@ -22,7 +22,9 @@ EXPOSE 9101
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:7878/ || exit 1
 
-LABEL org.opencontainers.image.description="radarr-develop container image"
+LABEL org.opencontainers.image.description="radarr-develop container image" \
+      org.opencontainers.image.source="https://github.com/Radarr/Radarr" \
+            org.opencontainers.image.version="6.2.0.10390"
 
 ENTRYPOINT ["/app/Radarr"]
 

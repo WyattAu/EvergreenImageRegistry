@@ -42,7 +42,8 @@ LABEL org.opencontainers.image.title="rdns-server" \
       evergreen.constraint.nonroot="true" \
       evergreen.constraint.scratch="true" \
       evergreen.hft.signal-handling="native" \
-      evergreen.hft.shutdown-timeout="3s"
+      evergreen.hft.shutdown-timeout="3s" \
+            org.opencontainers.image.source="https://github.com/folbricht/rdns"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

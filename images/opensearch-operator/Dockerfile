@@ -30,7 +30,8 @@ LABEL org.opencontainers.image.title="opensearch-operator" \
       evergreen.hft.connection-drain="true" \
       evergreen.hft.sched-policy="SCHED_OTHER" \
       evergreen.hft.runtime="go" \
-      evergreen.hft.runtime-hints="GOMAXPROCS=<cores>"
+      evergreen.hft.runtime-hints="GOMAXPROCS=<cores>" \
+            org.opencontainers.image.source="https://github.com/opensearch-project/opensearch-k8s-operator"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

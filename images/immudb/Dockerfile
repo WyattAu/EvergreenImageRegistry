@@ -38,7 +38,8 @@ LABEL org.opencontainers.image.title="immudb" \
       evergreen.image.tier="1" \
       evergreen.image.category="security" \
       evergreen.constraint.nonroot="true" \
-      evergreen.constraint.scratch="true"
+      evergreen.constraint.scratch="true" \
+            org.opencontainers.image.source="https://github.com/codenotary/immudb"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

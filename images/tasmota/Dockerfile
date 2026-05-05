@@ -26,4 +26,6 @@ LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
 STOPSIGNAL SIGTERM
-LABEL org.opencontainers.image.description="tasmota container image"
+LABEL org.opencontainers.image.description="tasmota container image" \
+      org.opencontainers.image.source="https://github.com/arendst/Tasmota" \
+            org.opencontainers.image.version="unknown"

@@ -18,7 +18,8 @@ COPY --from=builder /var/log/docui /var/log/docui
 COPY --from=builder /var/cache/docui /var/cache/docui
 USER 65532:65532
 WORKDIR /app
-LABEL org.opencontainers.image.title="docui"       org.opencontainers.image.description="Docker UI - lazydocker terminal UI"       org.opencontainers.image.vendor="jesseduffield"       org.opencontainers.image.source="https://github.com/jesseduffield/lazydocker"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"
+LABEL org.opencontainers.image.title="docui"       org.opencontainers.image.description="Docker UI - lazydocker terminal UI"       org.opencontainers.image.vendor="jesseduffield"       org.opencontainers.image.source="https://github.com/jesseduffield/lazydocker"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true" \
+      org.opencontainers.image.version="0.25.2"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

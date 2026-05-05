@@ -30,7 +30,8 @@ LABEL org.opencontainers.image.title="openvpn" \
       org.opencontainers.image.vendor="OpenVPN" \
       evergreen.image.tier="2" \
       evergreen.constraint.nonroot="true" \
-      evergreen.constraint.wolfi="true"
+      evergreen.constraint.wolfi="true" \
+            org.opencontainers.image.source="https://github.com/OpenVPN/openvpn"
 
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"

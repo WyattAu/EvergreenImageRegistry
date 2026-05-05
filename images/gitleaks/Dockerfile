@@ -18,7 +18,8 @@ COPY --from=builder /var/log/gitleaks /var/log/gitleaks
 COPY --from=builder /var/cache/gitleaks /var/cache/gitleaks
 USER 65532:65532
 WORKDIR /app
-LABEL org.opencontainers.image.title="gitleaks"       org.opencontainers.image.description="Gitleaks - secret scanner"       org.opencontainers.image.vendor="gitleaks"       org.opencontainers.image.source="https://github.com/gitleaks/gitleaks"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"
+LABEL org.opencontainers.image.title="gitleaks"       org.opencontainers.image.description="Gitleaks - secret scanner"       org.opencontainers.image.vendor="gitleaks"       org.opencontainers.image.source="https://github.com/gitleaks/gitleaks"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true" \
+      org.opencontainers.image.version="8.21.2"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

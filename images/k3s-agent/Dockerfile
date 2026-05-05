@@ -33,7 +33,8 @@ LABEL org.opencontainers.image.title="k3s-agent" \
       evergreen.constraint.nonroot="true" \
       evergreen.constraint.scratch="true" \
       evergreen.hft.signal-handling="native" \
-      evergreen.hft.shutdown-timeout="15s"
+      evergreen.hft.shutdown-timeout="15s" \
+            org.opencontainers.image.source="https://github.com/k3s-io/k3s"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

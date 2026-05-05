@@ -37,7 +37,9 @@ STOPSIGNAL SIGTERM
 
 HEALTHCHECK NONE
 
-LABEL org.opencontainers.image.description="trivy-k8s container image"
+LABEL org.opencontainers.image.description="trivy-k8s container image" \
+      org.opencontainers.image.source="https://github.com/aquasecurity/trivy" \
+            org.opencontainers.image.version="0.70.0"
 
 ENTRYPOINT ["/trivy"]
 CMD ["--help"]

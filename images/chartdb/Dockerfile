@@ -17,7 +17,8 @@ WORKDIR /opt/chartdb
 EXPOSE 8080
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="chartdb" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.description="Evergreen hardened ChartDB - database schema visualization tool" org.opencontainers.image.vendor="ChartDB" evergreen.image.tier="1" evergreen.image.category="database" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.base.image="wolfi"
+LABEL org.opencontainers.image.title="chartdb" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.description="Evergreen hardened ChartDB - database schema visualization tool" org.opencontainers.image.vendor="ChartDB" evergreen.image.tier="1" evergreen.image.category="database" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.base.image="wolfi" \
+      org.opencontainers.image.source="https://github.com/chartdb/chartdb"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"

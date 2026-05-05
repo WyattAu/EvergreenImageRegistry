@@ -19,7 +19,8 @@ COPY --from=builder /var/log/kube-bench /var/log/kube-bench
 COPY --from=builder /var/cache/kube-bench /var/cache/kube-bench
 USER 65532:65532
 WORKDIR /app
-LABEL org.opencontainers.image.title="kube-bench"       org.opencontainers.image.description="Kubernetes CIS benchmark"       org.opencontainers.image.vendor="aquasecurity"       org.opencontainers.image.source="https://github.com/aquasecurity/kube-bench"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"
+LABEL org.opencontainers.image.title="kube-bench"       org.opencontainers.image.description="Kubernetes CIS benchmark"       org.opencontainers.image.vendor="aquasecurity"       org.opencontainers.image.source="https://github.com/aquasecurity/kube-bench"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true" \
+      org.opencontainers.image.version="0.8.0"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

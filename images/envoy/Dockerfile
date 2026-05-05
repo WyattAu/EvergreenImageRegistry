@@ -33,7 +33,8 @@ LABEL evergreen.image.status="functional" \
       evergreen.image.category="proxy" \
       org.opencontainers.image.title="envoy" \
       org.opencontainers.image.description="Evergreen hardened Envoy - high-performance edge and service proxy" \
-      org.opencontainers.image.version="${VERSION}"
+      org.opencontainers.image.version="${VERSION}" \
+            org.opencontainers.image.source="https://github.com/envoyproxy/envoy"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

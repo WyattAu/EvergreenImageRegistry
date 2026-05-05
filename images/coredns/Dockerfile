@@ -44,7 +44,8 @@ LABEL org.opencontainers.image.title="coredns" \
       evergreen.hft.sched-policy="SCHED_FIFO" \
       evergreen.hft.sched-priority="65" \
       evergreen.hft.runtime="go" \
-      evergreen.hft.runtime-hints="GOMAXPROCS=<cores>"
+      evergreen.hft.runtime-hints="GOMAXPROCS=<cores>" \
+            org.opencontainers.image.source="https://github.com/coredns/coredns"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

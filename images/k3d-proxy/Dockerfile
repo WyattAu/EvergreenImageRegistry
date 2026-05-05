@@ -35,7 +35,8 @@ LABEL org.opencontainers.image.title="k3d-proxy" \
       evergreen.constraint.nonroot="true" \
       evergreen.constraint.scratch="true" \
       evergreen.hft.signal-handling="native" \
-      evergreen.hft.shutdown-timeout="10s"
+      evergreen.hft.shutdown-timeout="10s" \
+            org.opencontainers.image.source="https://github.com/k3d-io/k3d"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

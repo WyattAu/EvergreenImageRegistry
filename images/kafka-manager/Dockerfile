@@ -15,7 +15,8 @@ WORKDIR /opt/cmak
 EXPOSE 9000
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="kafka-manager" org.opencontainers.image.description="Evergreen hardened CMAK (Kafka Manager) - Apache Kafka management tool" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.vendor="Yahoo" evergreen.image.tier="1" evergreen.image.status="functional" evergreen.image.category="messaging" evergreen.constraint.nonroot="true" evergreen.constraint.base="wolfi" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="15s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="30000ms"
+LABEL org.opencontainers.image.title="kafka-manager" org.opencontainers.image.description="Evergreen hardened CMAK (Kafka Manager) - Apache Kafka management tool" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.vendor="Yahoo" evergreen.image.tier="1" evergreen.image.status="functional" evergreen.image.category="messaging" evergreen.constraint.nonroot="true" evergreen.constraint.base="wolfi" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="15s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="30000ms" \
+      org.opencontainers.image.source="https://github.com/yahoo/CMAK"
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"

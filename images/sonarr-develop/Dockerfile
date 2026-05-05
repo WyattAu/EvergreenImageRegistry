@@ -22,7 +22,9 @@ EXPOSE 9101
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8989/ || exit 1
 
-LABEL org.opencontainers.image.description="sonarr-develop container image"
+LABEL org.opencontainers.image.description="sonarr-develop container image" \
+      org.opencontainers.image.source="https://github.com/Sonarr/Sonarr" \
+            org.opencontainers.image.version="4.0.17.2953"
 
 ENTRYPOINT ["/app/Sonarr"]
 

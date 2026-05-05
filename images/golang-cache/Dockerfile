@@ -24,7 +24,8 @@ LABEL org.opencontainers.image.title="go-1.23-cache" \
       evergreen.constraint.nonroot="true" \
       evergreen.constraint.scratch="true" \
       evergreen.hft.signal-handling="native" \
-      evergreen.hft.shutdown-timeout="3s"
+      evergreen.hft.shutdown-timeout="3s" \
+            org.opencontainers.image.source="https://github.com/golang/go"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

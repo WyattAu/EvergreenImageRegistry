@@ -45,7 +45,8 @@ LABEL org.opencontainers.image.title="prometheus-postgres-exporter" \
       evergreen.hft.pre-stop-hook="true" \
       evergreen.hft.pre-stop-delay="5s" \
       evergreen.hft.connection-drain="true" \
-      evergreen.hft.sched-policy="SCHED_OTHER"
+      evergreen.hft.sched-policy="SCHED_OTHER" \
+            org.opencontainers.image.source="https://github.com/prometheus-community/postgres_exporter"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

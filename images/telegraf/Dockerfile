@@ -31,7 +31,8 @@ LABEL evergreen.image.status="functional" \
       evergreen.image.category="monitoring" \
       org.opencontainers.image.title="telegraf" \
       org.opencontainers.image.description="Evergreen hardened Telegraf - metrics collection agent by InfluxData" \
-      org.opencontainers.image.version="${VERSION}"
+      org.opencontainers.image.version="${VERSION}" \
+            org.opencontainers.image.source="https://github.com/influxdata/telegraf"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

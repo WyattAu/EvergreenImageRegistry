@@ -20,7 +20,9 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 
-LABEL org.opencontainers.image.description="homeassistant-hassio container image"
+LABEL org.opencontainers.image.description="homeassistant-hassio container image" \
+      org.opencontainers.image.source="https://github.com/home-assistant/supervised-installer" \
+            org.opencontainers.image.version="unknown"
 
 ENTRYPOINT ["python", "-m", "homeassistant"]
 CMD ["--help"]

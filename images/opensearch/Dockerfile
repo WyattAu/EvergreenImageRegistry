@@ -61,7 +61,8 @@ LABEL org.opencontainers.image.title="opensearch" \
       evergreen.hft.connection-drain="true" \
       evergreen.hft.sched-policy="SCHED_OTHER" \
       evergreen.hft.runtime="java" \
-      evergreen.hft.runtime-hints="Xms=Xmx,UseG1GC"
+      evergreen.hft.runtime-hints="Xms=Xmx,UseG1GC" \
+            org.opencontainers.image.source="https://github.com/opensearch-project/opensearch"
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="true"
 LABEL evergreen.health.type="http"

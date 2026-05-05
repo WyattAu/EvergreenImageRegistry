@@ -32,7 +32,8 @@ LABEL org.opencontainers.image.title="gitea" \
       org.opencontainers.image.vendor="Gitea" \
       evergreen.image.tier="2" \
       evergreen.constraint.nonroot="true" \
-      evergreen.constraint.wolfi="true"
+      evergreen.constraint.wolfi="true" \
+            org.opencontainers.image.source="https://github.com/go-gitea/gitea"
 
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"

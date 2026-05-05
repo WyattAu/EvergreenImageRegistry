@@ -30,7 +30,8 @@ LABEL org.opencontainers.image.title="flux2" \
       evergreen.constraint.nonroot="true" \
       evergreen.constraint.scratch="true" \
       evergreen.hft.signal-handling="native" \
-      evergreen.hft.shutdown-timeout="5s"
+      evergreen.hft.shutdown-timeout="5s" \
+            org.opencontainers.image.source="https://github.com/fluxcd/flux2"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"

@@ -1,4 +1,5 @@
 ARG VERSION=1.11.0
+ARG TARGETARCH
 
 FROM cockroachdb/cockroach-operator:v${VERSION} AS upstream
 

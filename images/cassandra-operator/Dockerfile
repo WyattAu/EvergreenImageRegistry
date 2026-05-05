@@ -1,4 +1,5 @@
 ARG VERSION=1.20.0
+ARG TARGETARCH
 
 FROM ghcr.io/k8ssandra/cass-operator:v${VERSION} AS upstream
 

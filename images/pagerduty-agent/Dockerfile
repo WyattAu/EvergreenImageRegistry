@@ -1,4 +1,5 @@
 ARG VERSION=latest
+ARG TARGETARCH
 
 FROM pagerduty/pdagent:${VERSION} AS upstream
 

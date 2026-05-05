@@ -1,5 +1,6 @@
 # STUB: windows-exporter is Windows-only, no Linux binary exists.
 ARG VERSION=0.25.0
+ARG TARGETARCH
 
 FROM scratch
 COPY --from=downloader /windows_exporter /windows_exporter 2>/dev/null || true

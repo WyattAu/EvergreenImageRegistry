@@ -1,4 +1,5 @@
 ARG VERSION=v1.5.1
+ARG TARGETARCH
 
 FROM gravitl/netclient@sha256:2294714d5560b5fd1edba29f12fe29dd2b6f983b0400955f78b8562ba363d9ef AS upstream
 

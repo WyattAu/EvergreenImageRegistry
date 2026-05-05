@@ -1,4 +1,5 @@
 ARG VERSION=latest
+ARG TARGETARCH
 
 FROM ghcr.io/cstate/cstate:${VERSION} AS upstream
 

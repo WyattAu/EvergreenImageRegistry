@@ -26,7 +26,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: daily-security-scan-${{ github.ref }}
+  group: ${{ github.workflow }}
   cancel-in-progress: false
 
 env:

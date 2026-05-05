@@ -1,4 +1,5 @@
 ARG VERSION=v0.21.0
+ARG TARGETARCH
 
 FROM lancedb/lancedb:latest AS upstream
 

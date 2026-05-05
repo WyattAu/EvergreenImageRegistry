@@ -19,7 +19,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: nightly-scan-${{ github.ref }}
+  group: ${{ github.workflow }}
   cancel-in-progress: false
 
 permissions:

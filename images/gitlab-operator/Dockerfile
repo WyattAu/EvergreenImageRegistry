@@ -1,4 +1,5 @@
 ARG VERSION=0.8.0
+ARG TARGETARCH
 
 FROM registry.gitlab.com/gitlab-org/cloud-native/gitlab-operator:v${VERSION} AS upstream
 

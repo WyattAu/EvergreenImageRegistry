@@ -1,4 +1,5 @@
 ARG VERSION=latest
+ARG TARGETARCH
 
 FROM ghcr.io/gethomepage/homepage:${VERSION} AS upstream
 

@@ -1,4 +1,5 @@
 ARG VERSION=2.9.0
+ARG TARGETARCH
 
 FROM ghcr.io/opensearch-project/opensearch-operator:v${VERSION} AS upstream
 

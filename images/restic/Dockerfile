@@ -5,7 +5,7 @@ ARG GITHUB_TOKEN
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/restic/restic/releases/download/v${VERSION}/restic_${VERSION}_linux_${TARGETARCH}.bz2 -o /restic.bz2 || true ; \
-    echo "680838f19d67151adba227e1570cdd8af12c19cf1735783ed1ba928bc41f363d  /restic.bz2" | sha256sum -c || true  #
+    echo "680838f19d67151adba227e1570cdd8af12c19cf1735783ed1ba928bc41f363d  /restic.bz2" | sha256sum -c || true \
     apt-get install -y --no-install-recommends bzip2 && \
     bunzip2 /restic.bz2 && \
     chmod +x /restic && \

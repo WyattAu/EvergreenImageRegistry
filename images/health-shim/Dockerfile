@@ -4,8 +4,8 @@ ARG VERSION=1.0.0
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 WORKDIR /src
-COPY health-shim.go .
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build -ldflags="-s -w" -o /health-shim .
+COPY go.mod health-shim.go .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build -ldflags="-s -w" -o /health-shim health-shim.go
 
 FROM scratch
 # package-manager-verified: integrity verified by upstream

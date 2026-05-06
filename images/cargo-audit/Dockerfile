@@ -21,6 +21,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243
 # package-manager-verified: integrity verified by upstream
 RUN apk add --no-cache ca-certificates curl || true && \
     mkdir -p /usr/local/bin 2>/dev/null || true ; test -f /usr/local/bin/cargo-audit 2>/dev/null || echo "#!/bin/sh" > /usr/local/bin/cargo-audit 2>/dev/null || true
+RUN mkdir -p /usr/local/bin 2>/dev/null || true
 COPY --from=builder /root/.cargo/bin/cargo-audit /usr/local/bin/cargo-audit
 COPY --from=builder /app /app
 RUN addgroup -S -g 2 nogroup >/dev/null || true && \

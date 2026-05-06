@@ -1,4 +1,4 @@
-ARG VERSION=5.15.0
+ARG VERSION=5.17.0
 
 FROM ghcr.io/hazelcast/hazelcast-platform-operator:v${VERSION} AS upstream
 

@@ -1,8 +1,8 @@
 # STUB: windows-exporter is Windows-only, no Linux binary exists.
+# This image is a no-op on Linux; it exists for registry completeness.
 ARG VERSION=0.25.0
 
 FROM scratch
-COPY --from=downloader /windows_exporter /windows_exporter 2>/dev/null || true
 USER 65532:65532
 WORKDIR /tmp
 EXPOSE 9182

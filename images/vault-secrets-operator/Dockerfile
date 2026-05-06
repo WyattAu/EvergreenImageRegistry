@@ -1,4 +1,4 @@
-ARG VERSION=1.18.0
+ARG VERSION=1.19.0
 
 FROM hashicorp/vault-secrets-operator:${VERSION} AS upstream
 

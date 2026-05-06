@@ -1,4 +1,4 @@
-ARG VERSION=2.9.0
+ARG VERSION=2.12.0
 
 FROM ghcr.io/opensearch-project/opensearch-operator:v${VERSION} AS upstream
 

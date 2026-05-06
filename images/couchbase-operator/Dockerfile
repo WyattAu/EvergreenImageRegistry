@@ -1,4 +1,4 @@
-ARG VERSION=2.7.0
+ARG VERSION=2.8.0
 
 FROM ghcr.io/couchbase/couchbase-operator:v${VERSION} AS upstream
 

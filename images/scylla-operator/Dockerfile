@@ -1,4 +1,4 @@
-ARG VERSION=1.13.0
+ARG VERSION=1.14.0
 
 FROM docker.io/scylladb/scylla-operator:v${VERSION} AS upstream
 

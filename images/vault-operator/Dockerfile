@@ -1,4 +1,4 @@
-ARG VERSION=1.21.0
+ARG VERSION=1.22.0
 
 FROM ghcr.io/banzaicloud/bank-vaults:v${VERSION} AS upstream
 

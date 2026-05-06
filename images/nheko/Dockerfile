@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=0.12.1
 
 FROM ghcr.io/nheko-reborn/nheko:${VERSION} AS upstream
 

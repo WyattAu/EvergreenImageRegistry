@@ -1,4 +1,4 @@
-ARG VERSION=1.11.0
+ARG VERSION=1.12.0
 
 FROM cockroachdb/cockroach-operator:v${VERSION} AS upstream
 

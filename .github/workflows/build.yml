@@ -336,8 +336,7 @@ jobs:
                 --platform linux/amd64 \
                 -t "${REF}" \
                 --output "type=docker,dest=/tmp/images/${SAFE}.tar" \
-                --cache-from "type=gha,scope=${image}" \
-                --cache-to "type=gha,scope=${image},mode=max,compression=zstd" \
+                --no-cache \
                 --build-arg "BUILD_DATE=${TAG}" \
                 --build-arg "VCS_REF=${TAG}" \
                 --build-arg "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" \
@@ -451,8 +450,7 @@ jobs:
               --platform linux/amd64,linux/arm64 \
               --push \
               ${TAG_ARGS} \
-              --cache-from "type=gha,scope=${image}" \
-              --cache-to "type=gha,scope=${image},mode=max,compression=zstd" \
+              --no-cache \
               --attest "type=provenance,mode=max" \
               --build-arg "BUILD_DATE=${TAG}" \
               --build-arg "VCS_REF=${TAG}" \

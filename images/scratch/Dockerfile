@@ -1,9 +1,13 @@
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 RUN apk add --no-cache ca-certificates 
-LABEL org.opencontainers.image.title="scratch"       org.opencontainers.image.description="Evergreen hardened scratch (stub - pending package integration)"       evergreen.image.status="stub"       evergreen.image.tier="3"       evergreen.image.note="Stub image. Update with apk add or binary COPY instructions." || true \
+LABEL org.opencontainers.image.title="scratch" \
+      org.opencontainers.image.description="Evergreen hardened scratch (stub - pending package integration)" \
+      evergreen.image.status="stub" \
+      evergreen.image.tier="3" \
+      evergreen.image.note="Stub image. Update with apk add or binary COPY instructions." \
       org.opencontainers.image.source="https://github.com/WyattAu/EvergreenImageRegistry" \
-            org.opencontainers.image.version="unknown"
+      org.opencontainers.image.version="unknown"
 
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"

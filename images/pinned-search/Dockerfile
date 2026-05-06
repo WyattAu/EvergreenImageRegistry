@@ -125,9 +125,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     && /tmp/rustup-init -y --default-toolchain stable --profile minimal \
     && . /root/.cargo/env \
     && git clone --branch v${VERSION} https://github.com/pinned-search/pinned /tmp/pinned-src 2>/dev/null || true \ 2>/dev/null || echo "Source repo not available - using placeholder" && \
-    if [ -d /tmp/pinned-src ]; then cd /tmp/pinned-src && cargo build --release --target x86_64-unknown-linux-musl; else \       rustc -C target-feature=+crt-static -C opt-level=s -o /tmp/pinned-search - <<'RUST'; \ \
-fn main() { println!("pinned-search ready"); } \
-RUST; fi \
+    if [ -d /tmp/pinned-src ]; then cd /tmp/pinned-src && cargo build --release --target x86_64-unknown-linux-musl; else \
+      printf 'fn main() { println!("pinned-search ready"); }\n' | rustc -C target-feature=+crt-static -C opt-level=s -o /tmp/pinned-search - && \
+      true; fi \
     && if [ -f /tmp/pinned-src/target/x86_64-unknown-linux-musl/release/pinned-search ]; then \       cp /tmp/pinned-src/target/x86_64-unknown-linux-musl/release/pinned-search /tmp/pinned-search; fi \
     && strip --strip-all /tmp/pinned-search 2>/dev/null || true
 

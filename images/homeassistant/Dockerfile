@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
-RUN apk add --no-cache ca-certificates && \
+RUN apk add --no-cache ca-certificates curl python3 || true && \
     adduser -u 65532 -D homeassistant 2>/dev/null || true && \
     mkdir -p /app /var/log/python /var/cache/python && chown -R homeassistant:homeassistant /app /var/log/python /var/cache/python 2>/dev/null || true
 USER homeassistant
@@ -18,7 +18,7 @@ WORKDIR /app
 EXPOSE 8123
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8123/ || exit 1
-ENTRYPOINT ["python"]
+ENTRYPOINT ["python3"]
 LABEL org.opencontainers.image.title="homeassistant" \
       org.opencontainers.image.description="Home Assistant - open source home automation platform" \
       org.opencontainers.image.version="2024.4.2" \

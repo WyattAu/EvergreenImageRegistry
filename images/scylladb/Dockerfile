@@ -1,6 +1,6 @@
 ARG VERSION=5.4.6
 
-FROM scylladb/scylla:latest AS upstream
+FROM scylladb/scylla:5.4.1 AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
@@ -25,7 +25,7 @@ LABEL org.opencontainers.image.title="scylladb" \
       evergreen.image.status="functional" \
       evergreen.image.tier="1" \
       evergreen.image.category="database" \
-      evergreen.image.note="Extracted from scylladb/scylla:latest. downloads.scylladb.com GPG key URL was wrong (404)." \
+      evergreen.image.note="Extracted from scylladb/scylla:5.4.1. downloads.scylladb.com GPG key URL was wrong (404)." \
       org.opencontainers.image.source="https://github.com/scylladb/scylladb"
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"

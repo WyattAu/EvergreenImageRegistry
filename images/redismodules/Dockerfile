@@ -1,7 +1,7 @@
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 ARG VERSION=2.0.0
 
-RUN apk add --no-cache redis ca-certificates || true && \
+RUN apk add --no-cache valkey ca-certificates || true && \
     addgroup -S -g 10000 redis 2>/dev/null || true && \
     adduser -u 65532 -G redis -D -h /var/lib/redis -s /bin/false redis 2>/dev/null || true && \
     mkdir -p /var/lib/redis /var/log/redis /opt/redis/modules /run/redis 2>/dev/null || true && \

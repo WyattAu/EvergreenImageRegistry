@@ -1,15 +1,15 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-ARG VERSION=0.9.5
+ARG VERSION=0.4.0
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL \
-    "https://gitlab.com/api/v4/projects/famedly%2Fconduit/packages/generic/conduit-v0.9.x/v${VERSION}/conduit-x86_64-unknown-linux-musl" \
+    "https://gitlab.com/api/v4/projects/famedly%2Fconduit/packages/generic/conduit-v0-4-0/v${VERSION}/conduit-x86_64-unknown-linux-musl" \
     -o /tmp/conduit && \
     chmod +x /tmp/conduit && \
     strip /tmp/conduit 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
-ARG VERSION=0.9.5
+ARG VERSION=0.4.0
 RUN apk add --no-cache ca-certificates sqlite-libs || true && \
     addgroup -S -g 10000 conduit 2>/dev/null || true && \
     adduser -u 65532 -G conduit -D -h /app -s /bin/sh conduit 2>/dev/null || true && \

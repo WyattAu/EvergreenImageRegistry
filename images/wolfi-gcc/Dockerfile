@@ -14,9 +14,9 @@
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 RUN apk add --no-cache \
-    gcc g++ cpp \
+    gcc g++ gcc \
     make cmake autoconf automake libtool \
-    pkgconfig \
+    pkgconf \
     zlib-dev openssl-dev \
     bison flex \
     git ca-certificates bash

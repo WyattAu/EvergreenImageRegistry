@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=0.25.0
 
 FROM ghcr.io/quickwit-oss/tantivy:${VERSION} AS upstream
 

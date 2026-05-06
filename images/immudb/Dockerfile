@@ -6,7 +6,7 @@ ARG TARGETARCH
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
-ARG VERSION=1.10.0
+ARG VERSION=1.11.0
 ARG BUILD_DATE
 
 
@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     test -f /usr/local/bin/immudb || { echo '#!/bin/sh' > /usr/local/bin/immudb && echo 'echo "immudb v${VERSION} placeholder"' >> /usr/local/bin/immudb && echo 'exec sleep infinity' >> /usr/local/bin/immudb && chmod +x /usr/local/bin/immudb ; } ; \
     test -e /usr/local/bin/immuclient || { mkdir -p /usr/local/bin/immuclient && echo 'immudb placeholder' > /usr/local/bin/immuclient/.placeholder ; }
 FROM scratch
-ARG VERSION=1.10.0
+ARG VERSION=1.11.0
 COPY --from=builder /usr/local/bin/immudb /usr/local/bin/immudb
 COPY --from=builder /usr/local/bin/immuclient /usr/local/bin/immuclient
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

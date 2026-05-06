@@ -1,7 +1,7 @@
 ARG VERSION=3.10.0
 ARG BUILD_DATE
 
-FROM docker.io/tigergraph/tigergraph:latest AS upstream
+FROM docker.io/tigergraph/tigergraph:4.2.2 AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 
@@ -25,7 +25,7 @@ LABEL org.opencontainers.image.title="tigergraph-ecosystem" \
       evergreen.image.tier="1" \
       evergreen.image.category="database" \
       evergreen.image.status="functional" \
-      evergreen.image.note="Extracted from docker.io/tigergraph/tigergraph:latest. CloudFront download URL is defunct." \
+      evergreen.image.note="Extracted from docker.io/tigergraph/tigergraph:4.2.2. CloudFront download URL is defunct." \
       evergreen.constraint.nonroot="true" \
       evergreen.base.image="wolfi" \
             org.opencontainers.image.source="https://github.com/tigergraph/ecosystem"

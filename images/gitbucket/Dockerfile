@@ -14,7 +14,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243
 RUN apk add --no-cache ca-certificates && \
     apk add --no-cache java-21-default-jdk 2>/dev/null || \
     apk add --no-cache openjdk-21-jdk-headless 2>/dev/null || true && \
-    addgroup -S -g 10000 gitbucket 2>/dev/null || true ; adduser -u 65532 -G gitbucket -D -h /opt/gitbucket -s /bin/false gitbucket && \
+    addgroup -S -g 10000 gitbucket 2>/dev/null || true && adduser -u 65532 -G gitbucket -D -h /opt/gitbucket -s /bin/false gitbucket && \
     mkdir -p /opt/gitbucket /var/log/gitbucket /var/data/gitbucket && \
     chown -R 65532:65532 /opt/gitbucket /var/log/gitbucket /var/data/gitbucket
 COPY --from=builder /tmp/gitbucket.war /opt/gitbucket/gitbucket.war

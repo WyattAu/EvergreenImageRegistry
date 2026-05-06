@@ -30,8 +30,8 @@ RUN addgroup -S -g 65532 gcplogs 2>/dev/null || true && \
     mkdir -p /etc/ssl/certs /usr 2>/dev/null || true
 COPY --from=stripper /install /usr/local
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-RUN mkdir -p /app/conf /app/logs ; \
-    chown -R gcplogs:gcplogs /app
+RUN mkdir -p /app/conf /app/logs && \
+    chown -R gcplogs:gcplogs /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENV GCPLOGS_VERSION=${VERSION} \

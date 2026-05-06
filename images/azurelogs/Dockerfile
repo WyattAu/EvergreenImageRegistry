@@ -32,8 +32,8 @@ RUN addgroup -S -g 65532 azurelogs 2>/dev/null || true && \
     mkdir -p /usr 2>/dev/null || true
 COPY --from=stripper /install /usr/local
 COPY --from=stripper /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-RUN mkdir -p /app/conf /app/logs ; \
-    chown -R azurelogs:azurelogs /app
+RUN mkdir -p /app/conf /app/logs && \
+    chown -R azurelogs:azurelogs /app 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 ENV AZURELOGS_VERSION=${VERSION} \

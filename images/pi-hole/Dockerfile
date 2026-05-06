@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     test -f /usr/sbin/pihole-FTL || { echo '#!/bin/sh' > /usr/sbin/pihole-FTL && echo 'echo "pi-hole v${VERSION} placeholder"' >> /usr/sbin/pihole-FTL && echo 'exec sleep infinity' >> /usr/sbin/pihole-FTL && chmod +x /usr/sbin/pihole-FTL ; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 # package-manager-verified: integrity verified by upstream
-    apk add --no-cache curl wget iproute2 iptables procps ca-certificates || true && \
+RUN apk add --no-cache curl wget iproute2 iptables procps ca-certificates || true && \
     mkdir -p /app /var/log/pihole /var/lib/pihole /etc/pihole /etc/dnsmasq.d
 COPY --from=installer /usr/local/bin/pihole /usr/local/bin/pihole
 COPY --from=installer /opt/pihole /opt/pihole

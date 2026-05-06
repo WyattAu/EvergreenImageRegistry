@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 # package-manager-verified: integrity verified by upstream
-    apk add --no-cache php-8.4-fpm php-8.4 php-8.4-curl php-8.4-mbstring php-8.4-xml zip php-8.4-intl php-8.4-pdo_mysql php-8.4-mysqli openssl php-8.4-pdo nginx ca-certificates || true && \
+RUN apk add --no-cache php-8.4-fpm php-8.4 php-8.4-curl php-8.4-mbstring php-8.4-xml zip php-8.4-intl php-8.4-pdo_mysql php-8.4-mysqli openssl php-8.4-pdo nginx ca-certificates || true && \
     mkdir -p /var/run/php /var/www/html /var/log/nginx /var/cache/nginx && \
     chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php
 COPY --from=builder /etc/nginx/nginx.conf /etc/nginx/nginx.conf

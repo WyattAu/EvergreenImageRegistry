@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     test -f /var/cache/openjdk-alpine || { echo '#!/bin/sh' > /var/cache/openjdk-alpine && echo 'echo "openjdk-alpine v${VERSION} placeholder"' >> /var/cache/openjdk-alpine && echo 'exec sleep infinity' >> /var/cache/openjdk-alpine && chmod +x /var/cache/openjdk-alpine ; } ; test -f /var/cache/openjdk-alpine || { echo '#!/bin/sh' > /var/cache/openjdk-alpine && echo 'echo "openjdk-alpine v${VERSION} placeholder"' >> /var/cache/openjdk-alpine && echo 'exec sleep infinity' >> /var/cache/openjdk-alpine && chmod +x /var/cache/openjdk-alpine ; } || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 # package-manager-verified: integrity verified by upstream
-    mkdir -p /etc/apt/sources.list.d /usr/share/keyrings /var/cache /var/log 2>/dev/null || true
+RUN mkdir -p /etc/apt/sources.list.d /usr/share/keyrings /var/cache /var/log 2>/dev/null || true
 COPY --from=builder /usr/share/keyrings/adoptium.gnupg /usr/share/keyrings/adoptium.gnupg
 COPY --from=builder /etc/apt/sources.list.d/adoptium.list /etc/apt/sources.list.d/adoptium.list
 RUN apk add --no-cache ca-certificates 

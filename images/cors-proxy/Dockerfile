@@ -247,7 +247,7 @@ http {
 
 
 
-            if ($request_method = 'OPTIONS') {
+RUN if ($request_method = 'OPTIONS') {
 
 
 

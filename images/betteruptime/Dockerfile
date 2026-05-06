@@ -31,15 +31,15 @@ import (
 )
 
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Println("Usage: betteruptime <url> [timeout_seconds]")
+RUN if len(os.Args) < 2 { \
+    fmt.Println("Usage: betteruptime <url> [timeout_seconds]")
 		fmt.Println("Performs HTTPS/TCP health checks against the target URL")
 		os.Exit(1)
 	}
 	url := os.Args[1]
 	timeout := 10
-	if len(os.Args) > 2 {
-		fmt.Sscanf(os.Args[2], "%d", &timeout)
+RUN if len(os.Args) > 2 { \
+    fmt.Sscanf(os.Args[2], "%d", &timeout)
 	}
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: false},
@@ -52,8 +52,8 @@ func main() {
 		},
 	}
 	resp, err := client.Get(url)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "down: %s - %v\n", url, err)
+RUN if err != nil { \
+    fmt.Fprintf(os.Stderr, "down: %s - %v\n", url, err)
 		os.Exit(2)
 	}
 	resp.Body.Close()

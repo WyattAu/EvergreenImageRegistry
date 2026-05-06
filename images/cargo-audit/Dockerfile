@@ -19,7 +19,7 @@ RUN rustup target add aarch64-unknown-linux-gnu || true && \
     test -e /app || { mkdir -p /app && echo 'cargo-audit placeholder' > /app/.placeholder ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 # package-manager-verified: integrity verified by upstream
-    apk add --no-cache ca-certificates curl || true && \
+RUN apk add --no-cache ca-certificates curl || true && \
     mkdir -p /usr/local/bin 2>/dev/null || true ; test -f /usr/local/bin/cargo-audit 2>/dev/null || echo "#!/bin/sh" > /usr/local/bin/cargo-audit 2>/dev/null || true
 COPY --from=builder /root/.cargo/bin/cargo-audit /usr/local/bin/cargo-audit
 COPY --from=builder /app /app

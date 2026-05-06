@@ -28,12 +28,12 @@ import sys
 
 def anonymize_dump(input_file, output_file, rules_file=None):
     cmd = ["sed"]
-    if rules_file and os.path.exists(rules_file):
-        with open(rules_file) as f:
+RUN if rules_file and os.path.exists(rules_file): \
+    with open(rules_file) as f:
             for line in f:
                 line = line.strip()
-                if line and not line.startswith("#"):
-                    cmd.extend(["-e", line])
+RUN if line and not line.startswith("#"): \
+    cmd.extend(["-e", line])
     cmd.extend(["-e", "s/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}/anonymized@example.com/g"])
     with open(input_file) as inp, open(output_file, "w") as out:
         subprocess.run(cmd, stdin=inp, stdout=out, check=True)

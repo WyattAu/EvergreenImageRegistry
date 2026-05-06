@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     test -e /app || { mkdir -p /app && echo 'maldet placeholder' > /app/.placeholder ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 # package-manager-verified: integrity verified by upstream
-    apk add --no-cache curl ca-certificates inotify-tools clamav-daemon || true
+RUN apk add --no-cache curl ca-certificates inotify-tools clamav-daemon || true
 COPY --from=builder /opt/maldetect /opt/maldetect
 COPY --from=builder /app /app
 RUN addgroup -S -g 2 nogroup >/dev/null || true && \

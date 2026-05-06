@@ -34,7 +34,7 @@ set -eu
 : "${PGDATABASE:?PGDATABASE is required}"
 : "${BACKUP_FILE:?BACKUP_FILE is required}"
 if [ ! -f "$BACKUP_FILE" ]; then
-    echo "Backup file not found: $BACKUP_FILE"
+RUN echo "Backup file not found: $BACKUP_FILE" \
     exit 1
 fi
 case "$BACKUP_FILE" in
@@ -42,8 +42,8 @@ case "$BACKUP_FILE" in
         TEMP_DIR="$(mktemp -d)"
         xzcat "$BACKUP_FILE" | tar -xf - -C "$TEMP_DIR"
         pg_restore --host="$PGHOST" --user="$PGUSER" --dbname="$PGDATABASE" --clean --if-exists --jobs=4 "$TEMP_DIR"/*
-        rm -rf "$TEMP_DIR"
-        ;;
+RUN rm -rf "$TEMP_DIR" \
+    ;;
     *.xz)
         xzcat "$BACKUP_FILE" | psql --host="$PGHOST" --user="$PGUSER" --dbname="$PGDATABASE"
         ;;
@@ -51,7 +51,7 @@ case "$BACKUP_FILE" in
         psql --host="$PGHOST" --user="$PGUSER" --dbname="$PGDATABASE" < "$BACKUP_FILE"
         ;;
     *)
-        echo "Unsupported format"; exit 1 ;
+RUN echo "Unsupported format"; exit 1 ;
 esac
 echo "Restore complete from: $BACKUP_FILE"
 SCRIPT

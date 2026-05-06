@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     test -f /var/log/openvpn-as/.placeholder || touch /var/log/openvpn-as/.placeholder
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 # package-manager-verified: integrity verified by upstream
-    apk add --no-cache liblz4-1 ca-certificates python3 net-tools iptables iproute2 kmod || true && \
+RUN apk add --no-cache liblz4-1 ca-certificates python3 net-tools iptables iproute2 kmod || true && \
     mkdir -p /etc/init.d /usr/bin /usr/local /var/log 2>/dev/null || true
 COPY --from=installer /usr/local/openvpn_as /usr/local/openvpn_as
 COPY --from=installer /usr/bin/openvpn-as /usr/bin/openvpn-as

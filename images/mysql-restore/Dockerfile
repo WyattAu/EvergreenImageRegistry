@@ -32,7 +32,7 @@ set -eu
 : "${MYSQL_PASSWORD:?MYSQL_PASSWORD is required}"
 : "${BACKUP_FILE:?BACKUP_FILE is required}"
 if [ ! -f "$BACKUP_FILE" ]; then
-    echo "Backup file not found: $BACKUP_FILE"
+RUN echo "Backup file not found: $BACKUP_FILE" \
     exit 1
 fi
 case "$BACKUP_FILE" in

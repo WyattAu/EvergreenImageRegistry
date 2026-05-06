@@ -15,7 +15,7 @@ RUN apt-get update && \
     mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
 # package-manager-verified: integrity verified by upstream
-    apk add --no-cache nodejs npm ca-certificates || true && \
+RUN apk add --no-cache nodejs npm ca-certificates || true && \
     addgroup -S -g 65532 toolkit 2>/dev/null || true && \
     adduser -u 65532 -G toolkit -D -s /bin/false toolkit || true && \
     mkdir -p /app/src /app/logs /usr/local/bin /usr/local/lib 2>/dev/null || true && \

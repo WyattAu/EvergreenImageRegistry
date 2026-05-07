@@ -21,6 +21,8 @@ RUN mkdir -p /app /var/log/rabbitmq_exporter /var/cache/rabbitmq_exporter 2>/dev
 
 
 FROM scratch
+ARG VERSION
+ARG TARGETARCH
 COPY --from=downloader /rabbitmq_exporter-${VERSION}-linux-${TARGETARCH}/rabbitmq_exporter /rabbitmq_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app

@@ -17,6 +17,8 @@ RUN mkdir -p /app /var/log/kafka_exporter /var/cache/kafka_exporter 2>/dev/null 
 
 
 FROM scratch
+ARG VERSION
+ARG TARGETARCH
 COPY --from=downloader /kafka_exporter-${VERSION}.linux-amd64/kafka_exporter /kafka_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /app /app

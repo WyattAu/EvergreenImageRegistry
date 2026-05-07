@@ -17,6 +17,8 @@ RUN mkdir -p /app /var/log/prometheus-aws-exporter /var/cache/prometheus-aws-exp
 
 
 FROM scratch
+ARG VERSION
+ARG TARGETARCH
 COPY --from=downloader /yet-another-cloudwatch-exporter-0.65.0.linux-${TARGETARCH}/yace /yace
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app

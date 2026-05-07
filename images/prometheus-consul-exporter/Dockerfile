@@ -17,6 +17,8 @@ RUN mkdir -p /app /var/log/prometheus-consul-exporter /var/cache/prometheus-cons
 
 
 FROM scratch
+ARG VERSION
+ARG TARGETARCH
 COPY --from=downloader /consul_exporter-0.13.0.linux-${TARGETARCH}/consul_exporter /consul_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app

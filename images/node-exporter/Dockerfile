@@ -14,6 +14,8 @@ ARG TARGETARCH
 RUN mkdir -p /app /var/log/node_exporter /var/cache/node_exporter 2>/dev/null || true
 
 FROM scratch
+ARG VERSION
+ARG TARGETARCH
 COPY --from=downloader /node_exporter-${VERSION}.linux-${TARGETARCH}/node_exporter /node_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app

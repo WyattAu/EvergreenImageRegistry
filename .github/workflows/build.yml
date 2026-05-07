@@ -403,12 +403,13 @@ jobs:
 
       - name: Collect image sizes
         if: always()
+        continue-on-error: true
         run: |
-          echo "IMAGE_SIZE_DATA<<EOF" >> $GITHUB_ENV
-          while IFS= read -r line; do
-            echo "$line" >> /tmp/image-sizes.txt
-          done < /tmp/built-images.txt
-          echo "EOF"
+          if [ -f /tmp/built-images.txt ] && [ -s /tmp/built-images.txt ]; then
+            cp /tmp/built-images.txt /tmp/image-sizes.txt
+          else
+            echo "/tmp/built-images.txt missing or empty" > /tmp/image-sizes.txt
+          fi
 
       - name: Enforce image size limit
         if: always()

@@ -1,6 +1,6 @@
 [metadata]
 name = "druid"
-version = "latest"
+version = "37.0.0"
 description = "Evergreen hardened Apache Druid - real-time analytics database"
 
 [build]

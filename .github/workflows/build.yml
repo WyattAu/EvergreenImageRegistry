@@ -363,8 +363,11 @@ jobs:
             # Recreate builder every 10 images to prevent overlay filesystem corruption
             if [ $((BUILT + FAILED)) -gt 0 ] && [ $(( (BUILT + FAILED) % 10 )) -eq 0 ]; then
               echo "::notice::Recreating BuildKit builder to prevent overlay corruption..."
-              docker buildx rm builder 2>/dev/null || true
-              docker buildx create --name builder --driver docker-container \
+              BUILDER_NAME=$(docker buildx inspect --format '{{.Name}}' 2>/dev/null | head -1)
+              if [ -n "$BUILDER_NAME" ]; then
+                docker buildx rm "$BUILDER_NAME" 2>/dev/null || true
+              fi
+              docker buildx create --name evergreen-builder --driver docker-container \
                 --driver-opt image=moby/buildkit:v0.12.0 --use 2>/dev/null || true
             fi
             if build_image "${image}"; then

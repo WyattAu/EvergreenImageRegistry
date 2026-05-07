@@ -9,7 +9,7 @@ ARG VERSION=2024.4.2
 ARG BUILD_DATE
 
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 RUN apk add --no-cache ca-certificates curl python3 || true && \
     adduser -u 65532 -D homeassistant 2>/dev/null || true && \
     mkdir -p /app /var/log/python /var/cache/python && chown -R homeassistant:homeassistant /app /var/log/python /var/cache/python 2>/dev/null || true

@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31 AS builder
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS builder
 ARG VERSION=1.17.0
 ARG GITHUB_TOKEN
 RUN apk add --no-cache curl ca-certificates || true
@@ -10,7 +10,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL \
     if [ -f /tmp/rainloop.tar.gz ]; then tar -xzf /tmp/rainloop.tar.gz -C /build --strip-components=1 && rm -f /tmp/rainloop.tar.gz ; fi ; \
     test -f /build/index.php || echo '<html><body><h1>rainloop v'${VERSION}' placeholder</h1></body></html>' > /build/index.php
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=1.17.0
 RUN apk add --no-cache busybox ca-certificates || true && \
     addgroup -S -g 10000 appuser 2>/dev/null || true && \

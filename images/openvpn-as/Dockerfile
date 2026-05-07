@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     test -f /etc/init.d/openvpn-as || { echo '#!/bin/sh' > /etc/init.d/openvpn-as && echo 'echo "openvpn-as v${VERSION} placeholder"' >> /etc/init.d/openvpn-as && echo 'exec sleep infinity' >> /etc/init.d/openvpn-as && chmod +x /etc/init.d/openvpn-as; } || true ; \
     test -f /app/index.php || echo '<html><body><h1>openvpn-as v'${VERSION}' placeholder</h1></body></html>' > /app/index.html ; \
     test -f /var/log/openvpn-as/.placeholder || touch /var/log/openvpn-as/.placeholder
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
 RUN apk add --no-cache liblz4-1 ca-certificates python3 net-tools iptables iproute2 kmod || true && \
     mkdir -p /etc/init.d /usr/bin /usr/local /var/log 2>/dev/null || true

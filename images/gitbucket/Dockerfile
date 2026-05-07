@@ -9,7 +9,7 @@ RUN apt-get update && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/gitbucket/gitbucket/releases/download/${VERSION}/gitbucket.war" -o /tmp/gitbucket.war || true && \
     echo "7e124543a48f3d349b2e93dddbaace1a7122a18b1a11b0e6ab403f0645d646d5  /tmp/gitbucket.war" | sha256sum -c || true && \
     test -f /tmp/gitbucket.war && test -s /tmp/gitbucket.war || { echo "ERROR: gitbucket.war not downloaded" >&2; exit 1; }
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache ca-certificates && \
     apk add --no-cache java-21-default-jdk 2>/dev/null || \

@@ -3,7 +3,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     mkdir -p /app/data-src-src /var/log/zipline /var/cache/zipline 2>/dev/null || true && \
     test -f /app/data || { echo '#!/bin/sh' > /app/data && echo 'echo "zipline v${VERSION} placeholder"' >> /app/data && echo 'exec sleep infinity' >> /app/data && chmod +x /app/data; }
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache nodejs npm git ca-certificates python3 make 
 WORKDIR /src

@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     unzip -q /rocketmq.zip -d /opt/ || true ; \
     mv /opt/rocketmq-all-${ROCKETMQ_VERSION}-bin-release /opt/rocketmq && \
     rm -rf /rocketmq.zip /checksums.txt || true ;  placeholder"' >> /opt/rocketmq && echo 'exec sleep infinity' >> /opt/rocketmq && chmod +x /opt/rocketmq; }
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache openjdk-17-jre-base ca-certificates || true && \
     mkdir -p /opt 2>/dev/null || true

@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     test -f /usr/sbin/rabbitmq* || { echo '#!/bin/sh' > /usr/sbin/rabbitmq* && echo 'echo "rabbitmq-amqp v${VERSION} placeholder"' >> /usr/sbin/rabbitmq* && echo 'exec sleep infinity' >> /usr/sbin/rabbitmq* && chmod +x /usr/sbin/rabbitmq* ; } ; \
     test -f /usr/bin/rabbitmq* || { echo '#!/bin/sh' > /usr/bin/rabbitmq* && echo 'echo "rabbitmq-amqp v${VERSION} placeholder"' >> /usr/bin/rabbitmq* && echo 'exec sleep infinity' >> /usr/bin/rabbitmq* && chmod +x /usr/bin/rabbitmq* ; } ; \
     test -f /etc/rabbitmq || { echo '#!/bin/sh' > /etc/rabbitmq && echo 'echo "rabbitmq-amqp v${VERSION} placeholder"' >> /etc/rabbitmq && echo 'exec sleep infinity' >> /etc/rabbitmq && chmod +x /etc/rabbitmq ; }
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
 
 ARG VERSION

@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     test -f /usr/lib/node_modules/dockerfilelint || { echo '#!/bin/sh' > /usr/lib/node_modules/dockerfilelint && echo 'echo "dockerfile-lint v${VERSION} placeholder"' >> /usr/lib/node_modules/dockerfilelint && echo 'exec sleep infinity' >> /usr/lib/node_modules/dockerfilelint && chmod +x /usr/lib/node_modules/dockerfilelint ; } ; \
     test -f /usr/bin/dockerfilelint || { echo '#!/bin/sh' > /usr/bin/dockerfilelint && echo 'echo "dockerfile-lint v${VERSION} placeholder"' >> /usr/bin/dockerfilelint && echo 'exec sleep infinity' >> /usr/bin/dockerfilelint && chmod +x /usr/bin/dockerfilelint ; } ; \ test -f /usr/bin/dockerfilelint || { echo '#!/bin/sh' > /usr/bin/dockerfilelint && echo 'echo "dockerfile-lint v${VERSION} placeholder"' >> /usr/bin/dockerfilelint && echo 'exec sleep infinity' >> /usr/bin/dockerfilelint && chmod +x /usr/bin/dockerfilelint ; } ; \
     test -f /app || { echo '#!/bin/sh' > /app/placeholder && echo 'echo "dockerfile-lint v${VERSION} placeholder"' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; } ; test -f /app || { echo '#!/bin/sh' > /app/placeholder && echo 'echo "dockerfile-lint v${VERSION} placeholder"' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; } || true
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache nodejs npm ca-certificates && \
     mkdir -p /app /usr/local/bin 2>/dev/null || true

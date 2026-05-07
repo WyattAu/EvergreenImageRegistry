@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mkdir -p /var/lib/mysql-src /var/run/mysqld /app 2>/dev/null || true && \
     test -f /var/lib/mysql || { echo '#!/bin/sh' > /var/lib/mysql/placeholder && echo 'echo "mysql-8 v${VERSION} placeholder"' >> /var/lib/mysql/placeholder && echo 'exec sleep infinity' >> /var/lib/mysql/placeholder && chmod +x /var/lib/mysql ; } ; \
     test -f /var/run/mysqld || { echo '#!/bin/sh' > /var/run/mysqld && echo 'echo "mysql-8 v${VERSION} placeholder"' >> /var/run/mysqld && echo 'exec sleep infinity' >> /var/run/mysqld && chmod +x /var/run/mysqld ; } ; test -f /var/run/mysqld || { echo '#!/bin/sh' > /var/run/mysqld && echo 'echo "mysql-8 v${VERSION} placeholder"' >> /var/run/mysqld && echo 'exec sleep infinity' >> /var/run/mysqld && chmod +x /var/run/mysqld ; } || true
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
 RUN apk add --no-cache gnupg curl ca-certificates wget psmisc || true && \
     mkdir -p /var/lib /var/run 2>/dev/null || true

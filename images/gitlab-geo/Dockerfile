@@ -12,7 +12,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends gitlab-ce=${VERSION}-ce.0 && \
     rm -rf /var/lib/apt/lists/* && \
     test -f /opt/gitlab || { echo "ERROR: gitlab-ce not installed" >&2; exit 1; }
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
 RUN apk add --no-cache curl ca-certificates gnupg openssh-client postgresql-client || true
 COPY --from=downloader /opt/gitlab /opt/gitlab

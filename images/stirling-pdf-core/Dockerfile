@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     test -d /opt/stirling-pdf/bin || {{ echo '#!/bin/sh' > /opt/stirling-pdf/placeholder && echo 'echo "{img} v${{VERSION}} placeholder"' >> /opt/stirling-pdf/placeholder && echo 'exec sleep infinity' >> /opt/stirling-pdf/placeholder && chmod +x /opt/stirling-pdf/placeholder; }} || true
 
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache ca-certificates curl 
 COPY --from=downloader /opt/stirling-pdf /opt/stirling-pdf-core

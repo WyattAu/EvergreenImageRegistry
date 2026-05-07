@@ -8,7 +8,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir searx || true && \
     mkdir -p /app/config /app/data 2>/dev/null || true && \
     test -f /app || { echo '#!/bin/sh' > /app/placeholder && echo 'echo "searx v${VERSION} placeholder"' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; }
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache python3 ca-certificates tzdata 
 COPY --from=builder /opt/venv /opt/venv

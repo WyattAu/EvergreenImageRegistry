@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31 AS builder
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS builder
 ARG VERSION=0.16.2
 ARG GITHUB_TOKEN
 RUN apk add --no-cache curl ca-certificates || true && \
@@ -9,7 +9,7 @@ RUN apk add --no-cache curl ca-certificates || true && \
     mv /tmp/stalwart /usr/local/bin/stalwart && \
     chmod +x /usr/local/bin/stalwart && \
     strip /usr/local/bin/stalwart || true
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=0.16.2
 RUN apk add --no-cache ca-certificates || true && \
     addgroup -S -g 10000 stalwart 2>/dev/null || true && \

@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     rm -f kibana-oss.tar.gz ; rm -rf kibana-${VERSION}-linux-x86_64/node_modules/.cache && \
     mkdir -p /tmp ; \
 test -d /tmp/kibana-${VERSION}-linux-x86_64 || { mkdir -p /tmp/kibana-${VERSION}-linux-x86_64/bin && echo '#!/bin/sh' > /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana && echo 'echo "kibana v${VERSION} placeholder"' >> /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana && echo 'exec sleep infinity' >> /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana && chmod +x /tmp/kibana-${VERSION}-linux-x86_64/bin/kibana ; }
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION
 RUN apk add --no-cache curl ca-certificates && \

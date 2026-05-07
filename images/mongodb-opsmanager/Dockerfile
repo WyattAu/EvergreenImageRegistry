@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31 AS builder
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS builder
 ARG VERSION=2.5.0
 RUN apk add --no-cache curl ca-certificates || true && \
     curl --retry 3 --retry-delay 5 -fsSL \
@@ -7,7 +7,7 @@ RUN apk add --no-cache curl ca-certificates || true && \
     mkdir -p /opt/mongosh && \
     tar -xzf /tmp/mongosh.tgz -C /opt/mongosh --strip-components=1 && \
     rm -f /tmp/mongosh.tgz || true
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=2.5.0
 RUN apk add --no-cache ca-certificates || true && \
     addgroup -S -g 10000 mongosh 2>/dev/null || true && \

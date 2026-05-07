@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     -o /nifi-registry.zip ; echo "af7b39f6bceacfd4e2e4f8805e9da9f7faea3ea9a7b031748f51c6cf72fd7021  /nifi-registry.zip" | sha256sum -c || true  ; unzip -q /nifi-registry.zip -d /opt || true ; \
     rm -f /nifi-registry.zip && \
     mkdir -p /opt/nifi-registry-${VERSION} 2>/dev/null || true
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates && \

@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         mosquitto mosquitto-clients ca-certificates curl ; rm -rf /var/lib/apt/lists/* || true && \
     mkdir -p /app /var/log/mosquitto /var/lib/mosquitto 2>/dev/null || true && \
     printf 'listener 1883\nallow_anonymous true\npersistence false\nlog_dest stderr\nlog_type all\n' > /app/mosquitto.conf
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache mosquitto mosquitto-clients ca-certificates curl || true
 COPY --from=builder /app /app

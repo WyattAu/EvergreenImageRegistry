@@ -328,6 +328,22 @@ jobs:
           BUILT=0
           FAILED=0
           SKIPPED=0
+          # Track current builder name - setup-buildx-action creates a random name
+          CURRENT_BUILDER=$(docker buildx inspect --format '{{.Name}}' 2>/dev/null | head -1)
+          echo "Initial builder: ${CURRENT_BUILDER}"
+          recreate_builder() {
+            echo "::notice::Recreating BuildKit builder to prevent overlay corruption..."
+            if [ -n "$CURRENT_BUILDER" ]; then
+              docker buildx rm "$CURRENT_BUILDER" 2>/dev/null || true
+            fi
+            CURRENT_BUILDER="evergreen-$(date +%s)"
+            docker buildx create --name "$CURRENT_BUILDER" --driver docker-container \
+              --driver-opt image=moby/buildkit:v0.12.0 \
+              --driver-opt env.BUILDKIT_STEP_LOG_MAX_SIZE=-1 \
+              --driver-opt env.BUILDKIT_STEP_LOG_MAX_SPEED=10 \
+              --use 2>/dev/null || true
+            echo "New builder: ${CURRENT_BUILDER}"
+          }
           build_image() {
             local image="$1"
             local CONTEXT="./images/${image}"
@@ -335,11 +351,11 @@ jobs:
             local SAFE="${image//\//-}"
             echo "::group::Build ${image}"
             if timeout 900 docker buildx build \
+                --builder "$CURRENT_BUILDER" \
                 --platform linux/amd64 \
                 -t "${REF}" \
                 --output "type=docker,dest=/tmp/images/${SAFE}.tar" \
-                --cache-from "type=gha,scope=${image}" \
-                --cache-to "type=gha,scope=${image},mode=max,compression=zstd" \
+                --no-cache \
                 --build-arg "BUILD_DATE=${TAG}" \
                 --build-arg "VCS_REF=${TAG}" \
                 --build-arg "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" \
@@ -360,15 +376,9 @@ jobs:
               SKIPPED=$((SKIPPED + 1))
               continue
             fi
-            # Recreate builder every 10 images to prevent overlay filesystem corruption
-            if [ $((BUILT + FAILED)) -gt 0 ] && [ $(( (BUILT + FAILED) % 10 )) -eq 0 ]; then
-              echo "::notice::Recreating BuildKit builder to prevent overlay corruption..."
-              BUILDER_NAME=$(docker buildx inspect --format '{{.Name}}' 2>/dev/null | head -1)
-              if [ -n "$BUILDER_NAME" ]; then
-                docker buildx rm "$BUILDER_NAME" 2>/dev/null || true
-              fi
-              docker buildx create --name evergreen-builder --driver docker-container \
-                --driver-opt image=moby/buildkit:v0.12.0 --use 2>/dev/null || true
+            # Recreate builder every 5 images to prevent overlay filesystem corruption
+            if [ $((BUILT + FAILED)) -gt 0 ] && [ $(( (BUILT + FAILED) % 5 )) -eq 0 ]; then
+              recreate_builder
             fi
             if build_image "${image}"; then
               BUILT=$((BUILT + 1))
@@ -388,6 +398,7 @@ jobs:
             echo "::endgroup::"
           done
           echo "Batch ${{ matrix.batch }} complete: ${BUILT} built, ${FAILED} failed, ${SKIPPED} skipped"
+          echo "BUILDER_NAME=${CURRENT_BUILDER}" >> "$GITHUB_ENV"
 
       - name: Collect image sizes
         if: always()

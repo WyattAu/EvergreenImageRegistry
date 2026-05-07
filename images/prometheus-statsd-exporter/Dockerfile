@@ -17,6 +17,8 @@ RUN mkdir -p /app /var/log/statsd_exporter /var/cache/statsd_exporter
 
 
 FROM scratch
+ARG VERSION
+ARG TARGETARCH
 COPY --from=downloader /statsd_exporter-${VERSION}.linux-${TARGETARCH}/statsd_exporter /statsd_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app

@@ -22,6 +22,8 @@ RUN mkdir -p /app /var/log/snmp_exporter /var/cache/snmp_exporter /etc/snmp_expo
 
 
 FROM scratch
+ARG VERSION
+ARG TARGETARCH
 COPY --from=downloader /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter /snmp_exporter
 COPY --from=downloader /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml /etc/snmp_exporter/snmp.yml
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

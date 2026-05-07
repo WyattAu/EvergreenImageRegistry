@@ -17,6 +17,8 @@ RUN mkdir -p /app /var/log/prometheus-blackbox-exporter /var/cache/prometheus-bl
 
 
 FROM scratch
+ARG VERSION
+ARG TARGETARCH
 COPY --from=downloader /blackbox_exporter-0.28.0.linux-${TARGETARCH}/blackbox_exporter /blackbox_exporter
 COPY --from=downloader /blackbox_exporter-0.28.0.linux-${TARGETARCH}/blackbox.yml /etc/prometheus-blackbox-exporter/blackbox.yml
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

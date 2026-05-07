@@ -17,6 +17,8 @@ RUN mkdir -p /app /var/log/prometheus-kafka-exporter /var/cache/prometheus-kafka
 
 
 FROM scratch
+ARG VERSION
+ARG TARGETARCH
 COPY --from=downloader /kafka_exporter-1.9.0.linux-${TARGETARCH}/kafka_exporter /kafka_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app

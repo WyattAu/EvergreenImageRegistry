@@ -1,6 +1,6 @@
 [metadata]
 name = "openhab"
-version = "4.2.0"
+version = "4.3.11"
 description = "openhab container image"
 
 [build]
@@ -21,7 +21,7 @@ expose = [8080, 9101]
 "org.opencontainers.image.source" = "https://github.com/openhab/openhab-distro"
 "org.opencontainers.image.title" = "openhab"
 "org.opencontainers.image.vendor" = "OpenHAB"
-"org.opencontainers.image.version" = "4.2.0"
+"org.opencontainers.image.version" = "4.3.11"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.official" = "true"

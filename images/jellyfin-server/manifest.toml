@@ -1,6 +1,6 @@
 [metadata]
 name = "jellyfin-server"
-version = "10.10.0"
+version = "10.11.8"
 description = "jellyfin-server container image"
 
 [build]

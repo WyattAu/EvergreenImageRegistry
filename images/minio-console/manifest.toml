@@ -1,6 +1,6 @@
 [metadata]
 name = "minio-console"
-version = "RELEASE.2025-10-15T17-29-55Z"
+version = "RELEASE.2025-09-07T16-13-09Z"
 description = "MinIO Console - web-based administration UI for MinIO"
 vendor = "MinIO"
 source = "https://github.com/minio/console"
@@ -14,7 +14,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "docker-image"
-url = "minio/minio:RELEASE.2025-10-15T17-29-55Z"
+url = "minio/minio:RELEASE.2025-09-07T16-13-09Z"
 
 [runtime]
 entrypoint = ["/minio"]
@@ -27,7 +27,7 @@ expose = [9000, 9101]
 "org.opencontainers.image.source" = "https://github.com/minio/minio"
 "org.opencontainers.image.title" = "minio-console"
 "org.opencontainers.image.vendor" = "MinIO"
-"org.opencontainers.image.version" = "RELEASE.2025-10-15T17-29-55Z"
+"org.opencontainers.image.version" = "RELEASE.2025-09-07T16-13-09Z"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.base" = "scratch"
 "evergreen.constraint.nonroot" = "true"

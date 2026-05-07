@@ -1,6 +1,6 @@
 [metadata]
 name = "cachet"
-version = "2.5.1"
+version = "2.3.18"
 description = "Cachet - open source status page system"
 
 [build]

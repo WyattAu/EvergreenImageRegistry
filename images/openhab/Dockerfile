@@ -1,6 +1,6 @@
 # =============================================================================
 # EVERGREEN HARDENED OPENHAB
-# Generated from template - Version: 4.2.0
+# Generated from template - Version: 4.3.11
 # Downloads OpenHAB distribution directly from GitHub releases (no upstream image).
 # OpenHAB is a Java application; uses wolfi-jdk base for JDK runtime.
 # =============================================================================
@@ -13,7 +13,7 @@ ARG VERSION=5.2.0.M3
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
-    "https://github.com/openhab/openhab-distro/releases/download/v${VERSION}/openhab-${VERSION}.tar.gz" -o /tmp/openhab.tar.gz && \
+    "https://github.com/openhab/openhab-distro/releases/download/${VERSION}/openhab-${VERSION}.tar.gz" -o /tmp/openhab.tar.gz && \
     mkdir -p /app && \
     tar -xzf /tmp/openhab.tar.gz -C /app && rm -f /tmp/openhab.tar.gz && \
     chmod +x /app/start.sh
@@ -35,7 +35,7 @@ EXPOSE 8080 8443
 
 LABEL org.opencontainers.image.title="openhab" \
       org.opencontainers.image.description="openhab container image" \
-      org.opencontainers.image.version="4.2.0" \
+      org.opencontainers.image.version="4.3.11" \
       org.opencontainers.image.vendor="OpenHAB" \
       org.opencontainers.image.source="https://github.com/openhab/openhab-distro" \
       evergreen.image.tier="2" \

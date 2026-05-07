@@ -6,12 +6,12 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL \
     -H "Authorization: token ${GITHUB_TOKEN}" \
-    "https://github.com/mattermost/mattermost-push-proxy/releases/download/v${VERSION}/mattermost-push-proxy-linux-amd64" \
-    -o /tmp/binary && \
-    strip /tmp/binary && \
-    chmod +x /tmp/binary
+    "https://github.com/mattermost/mattermost-push-proxy/releases/download/v${VERSION}/mattermost-push-proxy-linux-amd64.tar.gz" \
+    -o /tmp/archive.tar.gz && \
+    tar -xzf /tmp/archive.tar.gz -C /tmp/ && strip /tmp/mattermost-push-proxy && \
+    chmod +x /tmp/mattermost-push-proxy
 FROM scratch
-COPY --from=downloader /tmp/binary /usr/local/bin/mattermost-push-proxy
+COPY --from=downloader /tmp/mattermost-push-proxy /usr/local/bin/mattermost-push-proxy
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 USER 65532:65532

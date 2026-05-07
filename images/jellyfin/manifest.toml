@@ -1,6 +1,6 @@
 [metadata]
 name = "jellyfin"
-version = "10.10.0"
+version = "10.11.8"
 description = "Jellyfin - free software media system"
 vendor = "Jellyfin"
 source = "https://github.com/jellyfin/jellyfin"
@@ -14,7 +14,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-url = "https://github.com/jellyfin/jellyfin/releases/download/v10.10.0/jellyfin-10.10.0-linux-amd64.tar.gz"
+url = "https://github.com/jellyfin/jellyfin/releases/download/v10.11.8/jellyfin-10.11.8-linux-amd64.tar.gz"
 
 [runtime]
 entrypoint = ["/app/jellyfin"]
@@ -26,7 +26,7 @@ expose = [8096, 9101]
 "org.opencontainers.image.source" = "https://github.com/jellyfin/jellyfin"
 "org.opencontainers.image.title" = "jellyfin"
 "org.opencontainers.image.vendor" = "Jellyfin"
-"org.opencontainers.image.version" = "10.10.0"
+"org.opencontainers.image.version" = "10.11.8"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.official" = "true"

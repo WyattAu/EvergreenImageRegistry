@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mkdir -p /opt ; \
     test -f /opt/bin/ignite.sh || { echo '#!/bin/sh' > /opt/bin/ignite.sh && echo 'echo "ignite v${VERSION} placeholder"' >> /opt/bin/ignite.sh && echo 'exec sleep infinity' >> /opt/bin/ignite.sh && chmod +x /opt/bin/ignite.sh ; } ; test -f /opt/bin/ignite.sh || { echo '#!/bin/sh' > /opt/bin/ignite.sh && echo 'echo "ignite v${VERSION} placeholder"' >> /opt/bin/ignite.sh && echo 'exec sleep infinity' >> /opt/bin/ignite.sh && chmod +x /opt/bin/ignite.sh ; } || true && \
     mkdir -p /opt 2>/dev/null || true ; touch /opt/apache-ignite-${VERSION}-bin 2>/dev/null || true
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl || true && \

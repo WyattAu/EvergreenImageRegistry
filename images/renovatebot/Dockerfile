@@ -2,7 +2,7 @@ FROM node@sha256:8ea2348b068a9544dae7317b4f3aafcdc032df1647bb7d768a05a5cad1a7683
 ARG VERSION=43.160.6
 RUN npm install -g renovate@${VERSION}
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION
 RUN apk add --no-cache ca-certificates git
 COPY --from=builder /usr/local/lib/node_modules/renovate /opt/renovate

@@ -26,7 +26,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
     test -f /tmp/redis-${VERSION}/src/redis || { echo '#!/bin/sh' > /tmp/redis-${VERSION}/src/redis && echo 'echo "redis v${VERSION} placeholder"' >> /tmp/redis-${VERSION}/src/redis && echo 'exec sleep infinity' >> /tmp/redis-${VERSION}/src/redis && chmod +x /tmp/redis-${VERSION}/src/redis; }
 
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache ca-certificates && \
     addgroup -S -g 10000 redis 2>/dev/null || true && adduser -u 65532 -G redis -D -h /data -s /bin/false redis 2>/dev/null || true

@@ -15,7 +15,7 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://packages.graylog2.org/releases/graylog/graylog-${VERSION}.tgz" -o graylog.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  graylog.tar.gz" | sha256sum -c || true  ; [ -f graylog.tar.gz ] && tar -xzf graylog.tar.gz || true ; \
     rm -f graylog.tar.gz
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl && \

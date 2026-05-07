@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     chmod +x /app/Sonarr 2>/dev/null || true ; \
     test -f /app/Sonarr || { echo '#!/bin/sh' > /app/Sonarr && echo 'echo "sonarr-develop v${VERSION} placeholder"' >> /app/Sonarr && echo 'exec sleep infinity' >> /app/Sonarr && chmod +x /app/Sonarr; } || true
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache ca-certificates curl 2>/dev/null || true && \
     adduser -u 65532 -D app 2>/dev/null || true

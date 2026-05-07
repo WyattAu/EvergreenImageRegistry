@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         pdns-server pdns-backend-sqlite3 pdns-tools && \
     rm -rf /var/lib/apt/lists/* || true && \
     mkdir -p /var/log/pdns /var/lib/pdns /etc/pdns 2>/dev/null || true
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
 ARG VERSION
 RUN apk add --no-cache sqlite-libs ca-certificates boost-libs \

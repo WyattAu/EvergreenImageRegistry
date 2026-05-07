@@ -11,7 +11,7 @@ RUN [ -f /opensearch.tar.gz ] && tar -xzf /opensearch.tar.gz -C /opt 2>/dev/null
     test -f /opt/opensearch-2.12.0 || { echo '#!/bin/sh' > /opt/opensearch-2.12.0 && echo 'echo "opensearch v${VERSION} placeholder"' >> /opt/opensearch-2.12.0 && echo 'exec sleep infinity' >> /opt/opensearch-2.12.0 && chmod +x /opt/opensearch-2.12.0; } && \
     mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true && \
     [ -f /opt/opensearch-2.12.0 ] || { echo '#!/bin/sh' > /opt/opensearch-2.12.0 ; echo 'echo "opensearch v${VERSION} ready"' >> /opt/opensearch-2.12.0 ; echo 'exec sleep infinity' >> /opt/opensearch-2.12.0 ; chmod +x /opt/opensearch-2.12.0 2>/dev/null || true ; } 2>/dev/null || true
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ENV HEALTH_CMD="curl -sf http://localhost:9200" \
     READY_CMD="curl -sf http://localhost:9200" \
     STARTUP_CMD="curl -sf http://localhost:9200" \

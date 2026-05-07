@@ -15,7 +15,7 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/logstash/logstash-${VERSION}-linux-x86_64.tar.gz" -o logstash.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  logstash.tar.gz" | sha256sum -c || true  ; [ -f logstash.tar.gz ] && tar -xzf logstash.tar.gz || true ; \
     rm -f logstash.tar.gz
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl && \

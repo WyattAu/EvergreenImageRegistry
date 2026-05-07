@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-pip python3 && rm -rf /var/lib/apt/lists/* || true && \
     python3 -m venv /opt/venv ; /opt/venv/bin/pip install --no-cache-dir --upgrade pip ; /opt/venv/bin/pip install --no-cache-dir dnsvalidator==${VERSION} 2>/dev/null || \    /opt/venv/bin/pip install --no-cache-dir dnsvalidator || true && \
     mkdir -p /opt/venv
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION
 RUN apk add --no-cache python3 ca-certificates && \

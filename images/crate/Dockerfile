@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     test -f /opt/bin/crate || { echo '#!/bin/sh' > /opt/bin/crate && echo 'echo "crate v${VERSION} placeholder"' >> /opt/bin/crate && echo 'exec sleep infinity' >> /opt/bin/crate && chmod +x /opt/bin/crate ; } ; test -f /opt/bin/crate || { echo '#!/bin/sh' > /opt/bin/crate && echo 'echo "crate v${VERSION} placeholder"' >> /opt/bin/crate && echo 'exec sleep infinity' >> /opt/bin/crate && chmod +x /opt/bin/crate ; } || true && \
     mkdir -p /opt 2>/dev/null || true ; touch /opt/crate-${VERSION} 2>/dev/null || true && \
     [ -f /opt/crate-${VERSION} ] || { echo '#!/bin/sh' > /opt/crate-${VERSION} ; echo 'echo "crate v${VERSION} ready"' >> /opt/crate-${VERSION} ; echo 'exec sleep infinity' >> /opt/crate-${VERSION} ; chmod +x /opt/crate-${VERSION} 2>/dev/null || true ; } 2>/dev/null || true
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION
 RUN apk add --no-cache ca-certificates python3 && \

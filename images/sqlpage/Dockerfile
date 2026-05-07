@@ -7,12 +7,12 @@
 ARG VERSION=0.43.0
 ARG BUILD_DATE
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31 AS builder
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS builder
 ARG VERSION
 RUN apk add --no-cache ca-certificates curl && \
     curl --retry 3 --retry-delay 5 -fSL "https://github.com/sqlpage/SQLPage/releases/download/v${VERSION}/sqlpage-linux.tgz" -o /tmp/sqlpage.tgz \
     && echo "136c3f9b56448304d4f6dc85dd279a67c49ca32c16deb2a3c38f35519c2626f3  /tmp/sqlpage.tgz" | sha256sum -c -
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION
 ARG BUILD_DATE
 RUN apk add --no-cache ca-certificates tzdata libgcc

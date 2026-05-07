@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/MediaBrowser/Emby.Releases/releases/download/${VERSION}/emby-server-deb_${VERSION}_amd64.deb" \
     -o /emby.deb && dpkg-deb -x /emby.deb /tmp/emby && rm -f /emby.deb
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 RUN apk add --no-cache ca-certificates curl fontconfig freetype glib
 COPY --from=downloader /tmp/emby/opt/emby-server /opt/emby-server
 RUN mkdir -p /var/log/emby /var/cache/emby /config && \

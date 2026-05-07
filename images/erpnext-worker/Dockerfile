@@ -24,7 +24,7 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel || true && \
     test -f /usr/local/bin/bench || { echo '#!/bin/sh' > /usr/local/bin/bench && echo 'echo "erpnext-worker v${VERSION} placeholder"' >> /usr/local/bin/bench && echo 'exec sleep infinity' >> /usr/local/bin/bench && chmod +x /usr/local/bin/bench ; } || true
 
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=15
 
 RUN apk add --no-cache python3 ca-certificates tzdata libpq libjpeg-turbo zlib || true

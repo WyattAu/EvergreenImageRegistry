@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl --retry 3 --retry-delay 5 -fsSL -o /usr/local/bin/git-secrets "https://raw.githubusercontent.com/awslabs/git-secrets/master/git-secrets" 2>/dev/null || true ; chmod +x /usr/local/bin/git-secrets 2>/dev/null || true && \
     echo "775e3f0d2f2f8e4b5922115f1235f7369805de76f4efc69cb674bcba5590d0fa  /usr/local/bin/git-secrets" | sha256sum -c || true && \
     mkdir -p /app 2>/dev/null || true
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache git ca-certificates || true && \
     mkdir -p /usr/local/bin 2>/dev/null || true ; test -f /usr/local/bin/git-secrets 2>/dev/null || echo "#!/bin/sh" > /usr/local/bin/git-secrets 2>/dev/null || true

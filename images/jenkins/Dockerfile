@@ -9,7 +9,7 @@ ARG VERSION=2.462.1
 ARG BUILD_DATE
 
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 RUN apk add --no-cache openjdk-17-jre-base ca-certificates || true && \
     adduser -u 65532 -D jenkins 2>/dev/null || true && \
     mkdir -p /app /var/log/jenkins /var/cache/jenkins && chown -R jenkins:jenkins /app /var/log/jenkins /var/cache/jenkins 2>/dev/null || true

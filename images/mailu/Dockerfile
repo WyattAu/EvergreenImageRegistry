@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir mailu==2.0.0 || true && \
     mkdir -p /opt/venv 2>/dev/null || true && \
     mkdir -p /opt/venv 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache python3 ca-certificates || true && \
     mkdir -p /app 2>/dev/null || true && \

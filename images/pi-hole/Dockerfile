@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     test -f /usr/bin/gravity.sh || { echo '#!/bin/sh' > /usr/bin/gravity.sh && echo 'echo "pi-hole v${VERSION} placeholder"' >> /usr/bin/gravity.sh && echo 'exec sleep infinity' >> /usr/bin/gravity.sh && chmod +x /usr/bin/gravity.sh ; } ; \
     test -f /usr/bin/pihole-FTL || { echo '#!/bin/sh' > /usr/bin/pihole-FTL && echo 'echo "pi-hole v${VERSION} placeholder"' >> /usr/bin/pihole-FTL && echo 'exec sleep infinity' >> /usr/bin/pihole-FTL && chmod +x /usr/bin/pihole-FTL ; } ; \
     test -f /usr/sbin/pihole-FTL || { echo '#!/bin/sh' > /usr/sbin/pihole-FTL && echo 'echo "pi-hole v${VERSION} placeholder"' >> /usr/sbin/pihole-FTL && echo 'exec sleep infinity' >> /usr/sbin/pihole-FTL && chmod +x /usr/sbin/pihole-FTL ; }
-FROM cgr.dev/chainguard/wolfi-base@sha256:3258be472764337fd13095bcbb3182da170243b5819fd67ad4c0754590588b31
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
 RUN apk add --no-cache curl wget iproute2 iptables procps ca-certificates || true && \
     mkdir -p /app /var/log/pihole /var/lib/pihole /etc/pihole /etc/dnsmasq.d

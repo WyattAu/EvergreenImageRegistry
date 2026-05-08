@@ -22,7 +22,6 @@ RUN apk add --no-cache postgresql-${VERSION}-client curl ca-certificates || true
 COPY --from=builder --chown=65532:65532 /app /app
 COPY --from=builder --chown=65532:65532 /var/log/postgresql-init /var/log/postgresql-init
 COPY --from=builder --chown=65532:65532 /var/cache/postgresql-init /var/cache/postgresql-init
-USER 65532:65532
 WORKDIR /app
 COPY <<'SCRIPT' /app/init.sh
 #!/bin/sh
@@ -40,6 +39,7 @@ if [ -d "/docker-entrypoint-initdb.d" ]; then
 fi
 SCRIPT
 RUN chmod +x /app/init.sh && chown 65532:65532 /app/init.sh
+USER 65532:65532
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["/app/init.sh"]

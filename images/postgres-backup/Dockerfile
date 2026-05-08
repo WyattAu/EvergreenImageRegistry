@@ -24,7 +24,6 @@ COPY --from=builder --chown=65532:65532 /app /app
 COPY --from=builder --chown=65532:65532 /backups /backups
 COPY --from=builder --chown=65532:65532 /var/log/postgres-backup /var/log/postgres-backup
 COPY --from=builder --chown=65532:65532 /var/cache/postgres-backup /var/cache/postgres-backup
-USER 65532:65532
 WORKDIR /app
 COPY <<'SCRIPT' /app/backup.sh
 #!/bin/sh
@@ -44,6 +43,7 @@ fi
 echo "Backup complete: $OUTPUT"
 SCRIPT
 RUN chmod +x /app/backup.sh && chown 65532:65532 /app/backup.sh
+USER 65532:65532
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["/app/backup.sh"]

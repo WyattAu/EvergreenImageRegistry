@@ -118,7 +118,7 @@ RUN apk add --no-cache curl ca-certificates \ || true && \
 
 
 
-RUN addgroup -S -g 2 elasticsearch>/dev/null || true ; adduser -u 65532 -G elasticsearch -D -h /app -s /bin/false elasticsearch 2>/dev/null || true && \
+RUN addgroup -S -g 2 elasticsearch 2>/dev/null || true ; adduser -u 65532 -G elasticsearch -D -h /app -s /bin/false elasticsearch 2>/dev/null || true && \
     mkdir -p /app /var/log/elasticsearch /var/cache/elasticsearch && chown -R elasticsearch:elasticsearch /app /var/log/elasticsearch /var/cache/elasticsearch
 
 

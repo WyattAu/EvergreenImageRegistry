@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=37.0.0
 
 FROM apache/druid:${VERSION} AS upstream
 

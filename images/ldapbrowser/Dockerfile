@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=2.0.0
 
 FROM ghcr.io/ltiam/apachedirectorystudio:${VERSION} AS upstream
 

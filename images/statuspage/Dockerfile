@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=5.7.0
 
 FROM ghcr.io/cstate/cstate:${VERSION} AS upstream
 

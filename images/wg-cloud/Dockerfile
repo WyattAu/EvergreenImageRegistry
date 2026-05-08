@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=0.1.0
 
 FROM ghcr.io/david415/wg-cloud:${VERSION} AS upstream
 

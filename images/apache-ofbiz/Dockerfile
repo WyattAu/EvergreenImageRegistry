@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache ca-certificates curl
-COPY --from=downloader /opt/ /opt/apache-ofbiz 2>/dev/null || true
+COPY --from=downloader /opt/ /opt/apache-ofbiz
 RUN mkdir -p /app /var/log/apache-ofbiz && \
     chown -R 65532:65532 /app /var/log/apache-ofbiz /opt/apache-ofbiz
 USER 65532:65532

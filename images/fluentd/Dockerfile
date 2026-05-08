@@ -17,7 +17,7 @@ RUN apk add --no-cache ca-certificates libffi-dev tzdata yaml || true && \
     mkdir -p /fluentd/etc /fluentd/log /fluentd/plugins /fluentd/buffer
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 COPY --from=builder /usr/local/bin/fluentd /usr/local/bin/fluentd
-COPY --from=builder /usr/local/lib/ruby/gems/3.2.0/gems/fluentd-*/bin/fluent* /usr/local/bin/ 2>/dev/null || true
+COPY --from=builder /usr/local/lib/ruby/gems/3.2.0/gems/fluentd-*/bin/fluent* /usr/local/bin/
 RUN printf '[SERVICE]\nflush_interval 5s\nlog_level info\ndaemonize off\n' > /fluentd/etc/fluent.conf && \
     chown -R 65532:65532 /fluentd 2>/dev/null || true
 USER 65532:65532

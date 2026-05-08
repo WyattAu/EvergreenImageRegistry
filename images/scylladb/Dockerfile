@@ -8,11 +8,11 @@ ARG VERSION
 RUN apk add --no-cache ca-certificates libxml2-utils python3 systemd || true && \
     adduser -u 65532 -s /bin/false scylla || true && \
     mkdir -p /var/lib/scylla /var/log/scylla
-COPY --from=upstream /opt/scylladb /opt/scylladb 2>/dev/null || true
-COPY --from=upstream /usr/bin/scylla /usr/bin/scylla 2>/dev/null || true
-COPY --from=upstream /usr/lib/scylla /usr/lib/scylla 2>/dev/null || true
-COPY --from=upstream /etc/scylla /etc/scylla 2>/dev/null || true
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
+COPY --from=upstream /opt/scylladb /opt/scylladb
+COPY --from=upstream /usr/bin/scylla /usr/bin/scylla
+COPY --from=upstream /usr/lib/scylla /usr/lib/scylla
+COPY --from=upstream /etc/scylla /etc/scylla
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /var/lib/scylla
 EXPOSE 9042 9160 10000

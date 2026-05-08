@@ -36,7 +36,7 @@ COPY --from=installer /var/www/onlyoffice /var/www/onlyoffice
 COPY --from=installer /etc/onlyoffice /etc/onlyoffice
 COPY --from=installer /usr/lib/onlyoffice /usr/lib/onlyoffice
 COPY --from=installer /opt/onlyoffice /opt/onlyoffice
-COPY --from=installer /usr/bin/ds /usr/bin/ds 2>/dev/null || true
+COPY --from=installer /usr/bin/ds /usr/bin/ds
 RUN adduser -u 65532 -D -h /var/lib/onlyoffice -s /bin/false onlyoffice 2>/dev/null || true && \
     chown -R 65532:65532 /var/log/onlyoffice /var/lib/onlyoffice \
         /var/www/onlyoffice /var/run/onlyoffice 2>/dev/null || true

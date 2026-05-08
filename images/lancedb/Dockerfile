@@ -4,8 +4,8 @@ FROM lancedb/lancedb:v0.8.2 AS upstream
 
 FROM scratch
 # package-manager-verified: integrity verified by upstream
-COPY --from=upstream /lancedb /lancedb 2>/dev/null || true
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
+COPY --from=upstream /lancedb /lancedb
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 RUN true
 USER 65532:65532
 WORKDIR /app

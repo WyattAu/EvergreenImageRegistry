@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=0.16.0
 
 FROM ghcr.io/innernet-rs/innernet:${VERSION} AS upstream
 

@@ -3,7 +3,7 @@ ARG VERSION=2.3.5.5327
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/Prowlarr/Prowlarr/releases/download/v${VERSION}/Prowlarr.master.${VERSION}.linux-core-x64.tar.gz" -o /tmp/Prowlarr.tar.gz || true ; \
-    echo "70c2a200f90b5e60239b0ca0cba2ed879ce31f3be68cf1bfe676e6b30292a9d0  /tmp/Prowlarr.tar.gz" | sha256sum -c || true \
+    echo "70c2a200f90b5e60239b0ca0cba2ed879ce31f3be68cf1bfe676e6b30292a9d0  /tmp/Prowlarr.tar.gz" | sha256sum -c || true ; \
     mkdir -p /app && \
     if [ -f /tmp/Prowlarr.tar.gz ]; then tar -xzf /tmp/Prowlarr.tar.gz -C /app && rm -f /tmp/Prowlarr.tar.gz ; fi ; \
     chmod +x /app/Prowlarr 2>/dev/null || true ; \

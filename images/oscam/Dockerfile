@@ -17,16 +17,16 @@ RUN if [ -f /tmp/oscam/configure ]; then \
         echo 'exec sleep infinity' >> /oscam && chmod +x /oscam; \
     fi
 
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS dirs
 RUN mkdir -p /app /var/log/oscam /var/cache/oscam 2>/dev/null || true
 
 
 FROM scratch
 COPY --from=builder /oscam /oscam
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
-COPY --from=builder /var/log/oscam /var/log/oscam
-COPY --from=builder /var/cache/oscam /var/cache/oscam
+COPY --from=dirs /app /app
+COPY --from=dirs /var/log/oscam /var/log/oscam
+COPY --from=dirs /var/cache/oscam /var/cache/oscam
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8888

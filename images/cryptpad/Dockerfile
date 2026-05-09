@@ -9,7 +9,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 
 RUN apk add --no-cache nodejs ca-certificates curl 
 COPY --from=builder /app /app
-RUN mkdir -p /app /var/log/node /var/cache/node ; 2>/dev/null || true \
+RUN mkdir -p /app /var/log/node /var/cache/node ; 2>/dev/null || true ; \
     chown -R 65532:65532 /app /var/log/node /var/cache/node
 USER 65532:65532
 WORKDIR /app

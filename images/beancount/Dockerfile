@@ -16,7 +16,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 RUN apk add --no-cache python3 ca-certificates curl 
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-RUN mkdir -p /app /var/log/app /var/cache/app ; 2>/dev/null || true \
+RUN mkdir -p /app /var/log/app /var/cache/app ; 2>/dev/null || true ; \
     chown -R 65532:65532 /app /var/log/app /var/cache/app
 USER 65532:65532
 WORKDIR /app

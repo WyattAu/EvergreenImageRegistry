@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/rqlite/rqlite/releases/download/v${VERSION}/rqlite-v${VERSION}-linux-${TARGETARCH}.tar.gz -o /tmp/rqlite.tgz ; echo "fc3a01db82f24190e325adffd78b2fc9e2511451a356af33b4417db6a689554e  /tmp/rqlite.tgz" | sha256sum -c || true  ; [ -f /tmp/rqlite.tgz ] && tar -xzf /tmp/rqlite.tgz -C /tmp || true ; \
     strip --strip-all /tmp/rqlite-v${VERSION}-linux-${TARGETARCH}/rqlite ; strip --strip-all /tmp/rqlite-v${VERSION}-linux-${TARGETARCH}/rqlited \
     && mv /tmp/rqlite-v${VERSION}-linux-${TARGETARCH}/rqlite /usr/local/bin/rqlite ; mv /tmp/rqlite-v${VERSION}-linux-${TARGETARCH}/rqlited /usr/local/bin/rqlited ; rm -rf /tmp/rqlite.tgz /tmp/rqlite-v${VERSION}-linux-${TARGETARCH} && \
-    mkdir -p /usr/local/bin/rqlite ; 2>/dev/null || true \
+    mkdir -p /usr/local/bin/rqlite ; 2>/dev/null || true ; \
     mkdir -p /usr/local/bin/rqlited
 FROM scratch
 ARG VERSION=8.10.0

@@ -94,7 +94,7 @@ COPY --from=builder /opt/nginx /opt/nginx
 
 
 
-RUN mkdir -p /app/logs /app/conf ; 2>/dev/null || true \
+RUN mkdir -p /app/logs /app/conf ; 2>/dev/null || true ; \
     chown -R 65532:65532 /app
 
 

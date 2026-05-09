@@ -3,7 +3,7 @@ ARG VERSION=2.2.0-develop.115
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/Whisparr/Whisparr/releases/download/v${VERSION}/Whisparr.2.2.0-develop.115.linux-x64.tar.gz" -o /tmp/Whisparr.tar.gz || true ; \
-    echo "48a2b1292e61027cec831f071141735c6dee43a0e61162f7062cf97d87fd0328  /tmp/Whisparr.tar.gz" | sha256sum -c || true \
+    echo "48a2b1292e61027cec831f071141735c6dee43a0e61162f7062cf97d87fd0328  /tmp/Whisparr.tar.gz" | sha256sum -c || true ; \
     mkdir -p /app && \
     if [ -f /tmp/Whisparr.tar.gz ]; then tar -xzf /tmp/Whisparr.tar.gz -C /app && rm -f /tmp/Whisparr.tar.gz ; fi ; \
     chmod +x /app/Whisparr 2>/dev/null || true ; \

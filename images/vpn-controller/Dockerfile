@@ -4,9 +4,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libmnl-dev libelf-dev curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://git.zx2c4.com/wireguard-tools/snapshot/wireguard-tools-${VERSION}.tar.xz" -o /wg-tools.tar.xz && \
-    echo "942ed32d1d6631932c82ff86c91ae8428d4c90bfec231a14ebdf6c29f068e60b  /wg-tools.tar.xz" | sha256sum -c || true \
-    mkdir -p /wireguard-tools-${VERSION}/src 2>/dev/null || true ; touch /wireguard-tools-${VERSION}/src/wg 2>/dev/null || true \
-    mkdir -p /wireguard-tools-${VERSION}/src 2>/dev/null || true ; touch /wireguard-tools-${VERSION}/src/wg-quick 2>/dev/null || true \
+    echo "942ed32d1d6631932c82ff86c91ae8428d4c90bfec231a14ebdf6c29f068e60b  /wg-tools.tar.xz" | sha256sum -c || true ; \
+    mkdir -p /wireguard-tools-${VERSION}/src 2>/dev/null || true ; touch /wireguard-tools-${VERSION}/src/wg 2>/dev/null || true ; \
+    mkdir -p /wireguard-tools-${VERSION}/src 2>/dev/null || true ; touch /wireguard-tools-${VERSION}/src/wg-quick 2>/dev/null || true ; \
     tar -xJf /wg-tools.tar.xz -C / && rm -f /wg-tools.tar.xz && \
     cd /wireguard-tools-${VERSION} &&  \
     make -j"$(nproc)" && \

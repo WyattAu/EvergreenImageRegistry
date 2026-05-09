@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     strip --strip-all /install/usr/sbin/dnsmasq || true
 
 
-RUN mkdir -p /install/usr/sbin/dnsmasq ; 2>/dev/null || true \
+RUN mkdir -p /install/usr/sbin/dnsmasq ; 2>/dev/null || true ; \
     test -f /install/usr/share/man || { echo '#!/bin/sh' > /install/usr/share/man && echo 'echo "dnsmasq-full v${VERSION} placeholder"' >> /install/usr/share/man && echo 'exec sleep infinity' >> /install/usr/share/man && chmod +x /install/usr/share/man ; } && \
     mkdir -p /install/usr/sbin/dnsmasq /install/usr/share/man 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
@@ -22,7 +22,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 RUN apk add --no-cache ca-certificates 
 COPY --from=builder /install/usr/sbin/dnsmasq /usr/sbin/dnsmasq
 COPY --from=builder /install/usr/share/man /usr/share/man
-RUN mkdir -p /app /var/log/dnsmasq /var/lib/dnsmasq /run /etc/dnsmasq.d ; 2>/dev/null || true \
+RUN mkdir -p /app /var/log/dnsmasq /var/lib/dnsmasq /run /etc/dnsmasq.d ; 2>/dev/null || true ; \
     chown -R 65532:65532 /app /var/log/dnsmasq /var/lib/dnsmasq /run /etc/dnsmasq.d
 USER 65532:65532
 WORKDIR /app

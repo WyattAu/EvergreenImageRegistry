@@ -8,7 +8,7 @@ ARG GITHUB_TOKEN
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/starkandwayne/shield/releases/download/v${VERSION}/shield-linux-${TARGETARCH} -o /shield || true ; \
-    echo "ca9c1fcb7bf3e77bb22d5777aab791a5cd3119b96bd79d6f674ff042cbbe7168  /shield" | sha256sum -c || true \
+    echo "ca9c1fcb7bf3e77bb22d5777aab791a5cd3119b96bd79d6f674ff042cbbe7168  /shield" | sha256sum -c || true ; \
     chmod +x /shield && \
     strip --strip-all /shield ; test -f /shield || { echo '#!/bin/sh' > /shield && echo 'echo "shield v${VERSION} ready"' >> /shield && echo 'exec sleep infinity' >> /shield && chmod +x /shield; } 2>/dev/null || true
 

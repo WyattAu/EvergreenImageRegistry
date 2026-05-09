@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=v2.6.15
 
 FROM milvusdb/milvus:${VERSION} AS upstream
 

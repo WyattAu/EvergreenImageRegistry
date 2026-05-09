@@ -1,6 +1,6 @@
 ARG VERSION=v0.21.0
 
-FROM lancedb/lancedb:v0.8.2 AS upstream
+FROM ghcr.io/lancedb/lancedb:v0.21.0 AS upstream
 
 FROM scratch
 # package-manager-verified: integrity verified by upstream

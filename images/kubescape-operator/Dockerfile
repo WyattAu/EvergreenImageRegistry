@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=v4.0.8
 
 FROM ghcr.io/kubescape/kubescape-operator:${VERSION} AS upstream
 

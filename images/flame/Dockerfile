@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=v2.4.0
 
 FROM ghcr.io/pawelmalak/flame:${VERSION} AS upstream
 

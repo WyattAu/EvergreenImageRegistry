@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=1.16.0
 
 FROM selfhostedpro/yacht:${VERSION} AS upstream
 

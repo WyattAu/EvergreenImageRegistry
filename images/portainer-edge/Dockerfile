@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=2.39.2
 
 FROM portainer/agent:${VERSION} AS upstream
 

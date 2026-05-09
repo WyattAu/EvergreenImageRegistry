@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=8.0.1
 
 FROM valkey/valkey:${VERSION} AS upstream
 

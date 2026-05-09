@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=v5.0.5
 
 FROM fluent/fluent-bit:${VERSION} AS upstream
 

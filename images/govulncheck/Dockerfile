@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=v1.1.4
 
 FROM golang:${VERSION} AS upstream
 

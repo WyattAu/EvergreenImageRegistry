@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=v3.9.0
 
 FROM memgraph/memgraph:${VERSION} AS upstream
 

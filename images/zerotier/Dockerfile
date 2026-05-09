@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=1.16.0
 
 FROM zerotier/zerotier:${VERSION} AS upstream
 

@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=v1.4.9
 
 FROM valeriansaliou/sonic:${VERSION} AS upstream
 

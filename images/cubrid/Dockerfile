@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=11.4.5
 
 FROM cubrid/cubrid:${VERSION} AS upstream
 

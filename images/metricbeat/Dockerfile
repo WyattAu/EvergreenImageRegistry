@@ -1,5 +1,5 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-ARG VERSION
+ARG VERSION=9.4.0
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-${VERSION}-linux-x86_64.tar.gz" -o /metricbeat.tar.gz || true ; \
     echo "ced529e586ee32a9622e963097fbfcdb79615da6f4e02b8200029fd1f11b9d76  /metricbeat.tar.gz" | sha256sum -c || true ; \

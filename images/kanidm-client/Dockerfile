@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=v1.10.1
 
 FROM ghcr.io/kanidm/kanidm:${VERSION} AS upstream
 

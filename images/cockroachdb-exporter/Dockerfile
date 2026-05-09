@@ -2,7 +2,7 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG GITHUB_TOKEN
-ARG VERSION
+ARG VERSION=23.2.3
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/cockroachdb/cockroach/releases/download/v${VERSION}/cockroach-v${VERSION}.linux-${TARGETARCH}.tgz -o /cockroach.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  /cockroach.tar.gz" | sha256sum -c || true  ; mkdir -p /opt/cockroach ; \
     [ -f /cockroach.tar.gz ] && tar -xzf /cockroach.tar.gz -C /opt/cockroach --strip-components=1 || true ; \    rm -f /cockroach.tar.gz ; strip /opt/cockroach/cockroach || true ; chmod +x /opt/cockroach/cockroach ; test -f /opt/cockroach/cockroach || { echo '#!/bin/sh' > /opt/cockroach/cockroach && echo 'echo "cockroachdb-exporter v${VERSION} placeholder"' >> /opt/cockroach/cockroach && echo 'exec sleep infinity' >> /opt/cockroach/cockroach && chmod +x /opt/cockroach/cockroach; }

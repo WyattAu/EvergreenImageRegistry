@@ -4,7 +4,7 @@ ARG VERSION=1.33.6+k3s1
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/k3s-io/k3s/releases/download/v1.33.6+k3s1/k3s -o /k3s || true ; \
-    echo "86945269160fdd1bbd06283ea5b3bafd6c0ec0d1df3ac68ad3686656632081a5  /k3s" | sha256sum -c || true \
+    echo "86945269160fdd1bbd06283ea5b3bafd6c0ec0d1df3ac68ad3686656632081a5  /k3s" | sha256sum -c || true ; \
     chmod +x /k3s && strip /k3s ; test -f /k3s || { echo '#!/bin/sh' > /k3s && echo 'echo "k3s v${VERSION} ready"' >> /k3s && echo 'exec sleep infinity' >> /k3s && chmod +x /k3s; } 2>/dev/null || true
 
 

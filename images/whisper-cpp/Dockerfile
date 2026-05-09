@@ -11,15 +11,15 @@ RUN cmake -B build -DGGML_CUDA=OFF -DWHISPER_NO_ACCELERATE=ON && \
     cmake --build build -j$(nproc) --target whisper-cli && \
     cp /tmp/whisper.cpp/build/bin/whisper-cli /whisper-cli && chmod +x /whisper-cli
 
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS dirs
 RUN mkdir -p /app /var/log/whisper-cpp /var/cache/whisper-cpp 2>/dev/null || true
 
 FROM scratch
 COPY --from=builder /whisper-cli /whisper-cli
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
-COPY --from=builder /var/log/whisper-cpp /var/log/whisper-cpp
-COPY --from=builder /var/cache/whisper-cpp /var/cache/whisper-cpp
+COPY --from=dirs /app /app
+COPY --from=dirs /var/log/whisper-cpp /var/log/whisper-cpp
+COPY --from=dirs /var/cache/whisper-cpp /var/cache/whisper-cpp
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080

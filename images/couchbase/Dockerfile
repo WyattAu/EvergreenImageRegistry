@@ -57,8 +57,8 @@ RUN apt-get update && \
 
 
 
-RUN mkdir -p /opt ; 2>/dev/null || true \
-    mkdir -p /opt 2>/dev/null || true ; touch /opt/couchbase 2>/dev/null || true \
+RUN mkdir -p /opt ; 2>/dev/null || true ; \
+    mkdir -p /opt 2>/dev/null || true ; touch /opt/couchbase 2>/dev/null || true ; \
     test -f /opt/bin/couchbase-server || { echo '#!/bin/sh' > /opt/bin/couchbase-server && echo 'echo "couchbase v${VERSION} placeholder"' >> /opt/bin/couchbase-server && echo 'exec sleep infinity' >> /opt/bin/couchbase-server && chmod +x /opt/bin/couchbase-server ; }
 
 
@@ -107,7 +107,7 @@ COPY --from=builder /opt/couchbase /opt/couchbase
 
 
 
-RUN mkdir -p /var/lib/couchbase /var/log/couchbase /app ; 2>/dev/null || true \
+RUN mkdir -p /var/lib/couchbase /var/log/couchbase /app ; 2>/dev/null || true ; \
     chown -R 65532:65532 /var/lib/couchbase /var/log/couchbase /app /opt/couchbase
 
 

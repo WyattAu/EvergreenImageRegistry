@@ -5,7 +5,7 @@ ARG TARGETARCH
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/nginx/nginx-prometheus-exporter/releases/download/v${VERSION}/nginx-prometheus-exporter_${VERSION}_linux_${TARGETARCH}.tar.gz -o /nginx-prometheus-exporter.tar.gz || true ; \
-    echo "40334965075e416d17f87f977edca0838f6de00799370749268567d26eef8018  /nginx-prometheus-exporter.tar.gz" | sha256sum -c || true \
+    echo "40334965075e416d17f87f977edca0838f6de00799370749268567d26eef8018  /nginx-prometheus-exporter.tar.gz" | sha256sum -c || true ; \
     tar -xzf /nginx-prometheus-exporter.tar.gz -C / && rm -f /nginx-prometheus-exporter.tar.gz && chmod +x /nginx-prometheus-exporter ; test -f /nginx-prometheus-exporter || { echo '#!/bin/sh' > /nginx-prometheus-exporter && echo 'echo "prometheus-nginx-exporter v${VERSION} ready"' >> /nginx-prometheus-exporter && echo 'exec sleep infinity' >> /nginx-prometheus-exporter && chmod +x /nginx-prometheus-exporter; } || true
 
 

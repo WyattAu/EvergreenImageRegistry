@@ -23,7 +23,7 @@ RUN apk add --no-cache curl ca-certificates && \
     /dotnet-install.sh --channel 8.0 --runtime dotnet --install-dir /usr/share/dotnet && \
     rm -f /dotnet-install.sh || true
 COPY --from=builder /opt/duplicati /opt/duplicati
-RUN mkdir -p /app /var/log/duplicati /var/cache/duplicati /root/.config/Duplicati ; 2>/dev/null || true \
+RUN mkdir -p /app /var/log/duplicati /var/cache/duplicati /root/.config/Duplicati ; 2>/dev/null || true ; \
     chown -R 65532:65532 /app /var/log/duplicati /var/cache/duplicati
 USER 65532:65532
 WORKDIR /app

@@ -4,7 +4,7 @@ ARG BUILD_DATE
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils \
         build-essential cmake g++ \
         libqt5widgets5 libqt5core5a qtbase5-dev \
         ca-certificates curl git && \
@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git clone --branch "v${VERSION}" https://github.com/Eqonomize/Eqonomize.git /tmp/eqonomize || true ; \
     cd /tmp/eqonomize && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release . && \
-    make -j$(nproc) && make install && strip --strip-all /usr/local/bin/eqonomize 2>/dev/null || true
+    make -j$(nproc) && make install && strip --strip-all /usr/local/bin/eqonomize 2>/dev/null  || true 2>/dev/null|| true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache ca-certificates 

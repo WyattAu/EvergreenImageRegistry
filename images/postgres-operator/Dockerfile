@@ -1,6 +1,6 @@
 ARG VERSION=1.12.0
 
-FROM registry.opensource.zalan.do/acid/postgres-operator:v${VERSION} AS upstream
+FROM ghcr.io/zalando/postgres-operator:v${VERSION} AS upstream
 
 FROM scratch
 COPY --from=upstream /postgres-operator /usr/local/bin/postgres-operator

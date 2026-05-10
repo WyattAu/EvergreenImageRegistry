@@ -17,7 +17,7 @@ ARG GITHUB_TOKEN
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends git ca-certificates && \
+    apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
     git clone --branch "v${VERSION}" https://github.com/meshbird/meshbird /src 2>/dev/null || echo "Source repo not available" && \
     cd /src && \
@@ -25,7 +25,7 @@ RUN apt-get update && \
         -ldflags="-s -w -X main.version=${VERSION}" \
         -trimpath \
         -o /app/meshbird . 2>/dev/null || true && \
-    test -f /app/meshbird && strip --strip-all /app/meshbird || true && \
+    test -f /app/meshbird && strip --strip-all /app/meshbird  || true 2>/dev/null|| true && \
     test -f /app/meshbird || { echo '#!/bin/sh' > /app/meshbird && echo 'echo "meshbird v'${VERSION}' placeholder"' >> /app/meshbird && echo 'exec sleep infinity' >> /app/meshbird && chmod +x /app/meshbird; } 2>/dev/null || true && \
     mkdir -p /app /var/log/meshbird
 FROM scratch

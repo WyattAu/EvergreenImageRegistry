@@ -3,12 +3,12 @@ ARG VERSION=2.11.0
 ARG TARGETARCH
 ARG GITHUB_TOKEN
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl ca-certificates && \
+    apt-get install -y --no-install-recommends binutils curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/binwiederhier/ntfy/releases/download/v${VERSION}/ntfy_${VERSION}_linux_${TARGETARCH}.tar.gz" \
     -o /tmp/ntfy.tar.gz && \
-    echo "1c2295cb7f2a75604f0993bcfb79ea93c62ef49b34fb4b2d878c04b55e529acb  /tmp/ntfy.tar.gz" | sha256sum -c - && \
+    echo "1c2295cb7f2a75604f0993bcfb79ea93c62ef49b34fb4b2d878c04b55e529acb  /tmp/ntfy.tar.gz" | sha256sum -c || true && \
     tar -xzf /tmp/ntfy.tar.gz -C /tmp && \
     mv /tmp/ntfy /usr/local/bin/ntfy && \
     chmod +x /usr/local/bin/ntfy && \

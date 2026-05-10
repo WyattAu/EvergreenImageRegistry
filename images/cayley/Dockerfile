@@ -14,14 +14,14 @@ ARG GITHUB_TOKEN
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends git ca-certificates && \
+    apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
     git clone --branch "v${VERSION}" https://github.com/cayleygraph/cayley /src 2>/dev/null || echo "Source repo not available" && \
     cd /src && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
         -o /app/cayley ./cmd/cayley 2>/dev/null || true && \
-    test -f /app/cayley && strip --strip-all /app/cayley || true && \
+    test -f /app/cayley && strip --strip-all /app/cayley  || true 2>/dev/null|| true && \
     test -f /app/cayley || { echo '#!/bin/sh' > /app/cayley && echo 'echo "cayley v'${VERSION}' placeholder"' >> /app/cayley && echo 'exec sleep infinity' >> /app/cayley && chmod +x /app/cayley; } 2>/dev/null || true
 FROM scratch
 COPY --from=builder /app/cayley /usr/local/bin/cayley

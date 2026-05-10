@@ -12,8 +12,8 @@ ARG BUILD_DATE
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends rsyslog && rm -rf /var/lib/apt/lists/* && \
-    strip /usr/sbin/rsyslogd && \
+    apt-get install -y --no-install-recommends binutils rsyslog && rm -rf /var/lib/apt/lists/* && \
+    strip /usr/sbin/rsyslogd  || true&& \
     find /usr/lib/rsyslog -type f -name "*.so" -exec strip --strip-unneeded {} \ || true && \
     mkdir -p /usr/sbin/rsyslogd 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

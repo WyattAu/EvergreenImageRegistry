@@ -3,7 +3,7 @@ ARG VERSION=0.16.2
 ARG GITHUB_TOKEN
 ARG TARGETARCH
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl ca-certificates && \
+    apt-get install -y --no-install-recommends binutils curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     TARGETVARIANT=$(case "${TARGETARCH}" in amd64) echo "x86_64";; arm64) echo "aarch64";; esac) && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \

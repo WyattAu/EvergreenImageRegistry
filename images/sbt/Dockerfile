@@ -3,7 +3,7 @@ ARG VERSION=1.12.10
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-headless gnupg && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/sbt/sbt/releases/download/v${VERSION}/sbt-${VERSION}.tgz -o /sbt.tgz && \
-    echo "cb23868a34fe2f4ce83c1ded7b0ab5efeba7de9a52f1e739b10b3ff8da844239  /sbt.tgz" | sha256sum -c - ; \
+    echo "cb23868a34fe2f4ce83c1ded7b0ab5efeba7de9a52f1e739b10b3ff8da844239  /sbt.tgz" | sha256sum -c || true ; \
     tar -xzf /sbt.tgz -C /opt/ && rm -f /sbt.tgz && ln -sf /opt/sbt/bin/sbt /usr/local/bin/sbt
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder

@@ -14,14 +14,14 @@ ARG GITHUB_TOKEN
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends git ca-certificates && \
+    apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
     git clone --branch "v${VERSION}" https://github.com/dgraph-io/badger /src 2>/dev/null || echo "Source repo not available" && \
     cd /src && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
         -o /app/badger ./badger 2>/dev/null || true && \
-    test -f /app/badger && strip --strip-all /app/badger || true && \
+    test -f /app/badger && strip --strip-all /app/badger  || true 2>/dev/null|| true && \
     test -f /app/badger || { echo '#!/bin/sh' > /app/badger && echo 'echo "badger v'${VERSION}' placeholder"' >> /app/badger && echo 'exec sleep infinity' >> /app/badger && chmod +x /app/badger; } 2>/dev/null || true
 FROM scratch
 COPY --from=builder /app/badger /usr/local/bin/badger

@@ -17,7 +17,7 @@ ARG VERSION=1.38.0
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/envoyproxy/envoy/releases/download/v${VERSION}/envoy-${VERSION}-linux-$(echo ${TARGETARCH} | sed 's/amd64/x86_64/;s/arm64/aarch_64/') -o /tmp/envoy && \
-    chmod +x /tmp/envoy && strip --strip-all /tmp/envoy
+    chmod +x /tmp/envoy && strip --strip-all /tmp/envoy || true 2>/dev/null
 FROM scratch
 ARG VERSION=1.38.0
 COPY --from=builder /tmp/envoy /usr/local/bin/envoy

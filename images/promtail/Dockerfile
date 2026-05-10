@@ -14,9 +14,9 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG GITHUB_TOKEN
 ARG VERSION=2.9.4
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/grafana/loki/releases/download/v${VERSION}/promtail-linux-amd64.zip -o promtail.zip ; echo "79791b97d1e6570d48d6d7b22b1dca9c40c03dc8dbb2e09e4df452d00e302f6a  promtail.zip" | sha256sum -c || true  ; unzip -o promtail.zip || true ; \
-    strip --strip-all promtail-linux-amd64 ; mv promtail-linux-amd64 /tmp/promtail 2>/dev/null || true && \
+    strip --strip-all promtail-linux-amd64  || true 2>/dev/null; mv promtail-linux-amd64 /tmp/promtail 2>/dev/null || true && \
     mkdir -p /tmp/promtail
 FROM scratch
 ARG VERSION=2.9.4

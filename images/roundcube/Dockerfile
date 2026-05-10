@@ -6,7 +6,7 @@ WORKDIR /build
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/roundcube/roundcubemail/releases/download/${VERSION}/roundcubemail-${VERSION}-complete.tar.gz" \
     -o /tmp/roundcube.tar.gz || true ; \
-    echo "b61a5f5c22f890c299e935aacfcf0870676990d8aebff0d6cdff075bf17cef4f  /tmp/roundcube.tar.gz" | sha256sum -c - || true ; \
+    echo "b61a5f5c22f890c299e935aacfcf0870676990d8aebff0d6cdff075bf17cef4f  /tmp/roundcube.tar.gz" | sha256sum -c || true || true ; \
     mkdir -p /build ; \
     if [ -f /tmp/roundcube.tar.gz ]; then tar -xzf /tmp/roundcube.tar.gz -C /build --strip-components=1 && rm -f /tmp/roundcube.tar.gz ; fi ; \
     test -f /build/index.php || echo '<html><body><h1>roundcube v'${VERSION}' placeholder</h1></body></html>' > /build/index.php

@@ -16,7 +16,7 @@ ARG GITHUB_TOKEN
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends git ca-certificates && \
+    apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir -p /build/cmd && \
     cat > /build/cmd/health-checks.go <<'GOEOF'
@@ -58,7 +58,7 @@ RUN cd /build && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
         -o /app/health-checks ./cmd/health-checks.go 2>/dev/null || true && \
-    test -f /app/health-checks && strip --strip-all /app/health-checks || true && \
+    test -f /app/health-checks && strip --strip-all /app/health-checks  || true 2>/dev/null|| true && \
     test -f /app/health-checks || { echo '#!/bin/sh' > /app/health-checks && echo 'echo "health-checks v'${VERSION}' placeholder"' >> /app/health-checks && echo 'exec sleep infinity' >> /app/health-checks && chmod +x /app/health-checks; } 2>/dev/null || true && \
     mkdir -p /app
 FROM scratch

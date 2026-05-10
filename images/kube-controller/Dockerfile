@@ -30,11 +30,11 @@ ARG TARGETARCH
 
 
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://dl.k8s.io/release/v${VERSION}/bin/linux/${TARGETARCH}/kube-controller-manager" -o /kube-controller-manager && \
-    echo "3cc74cdcb7ebb95577fea7f5e4ef2b15e59058a85040fdfdd7292016dbbf1c46  /kube-controller-manager" | sha256sum -c - || true; \
+    echo "3cc74cdcb7ebb95577fea7f5e4ef2b15e59058a85040fdfdd7292016dbbf1c46  /kube-controller-manager" | sha256sum -c || true || true; \
     echo "VERIFY_FROM_K8S_SHA256  /kube-controller-manager" | sha256sum -c || true ; \
-    chmod +x /kube-controller-manager && strip /kube-controller-manager ; test -f /kube-controller-manager || { echo '#!/bin/sh' > /kube-controller-manager && echo 'echo "kube-controller v${VERSION} ready"' >> /kube-controller-manager && echo 'exec sleep infinity' >> /kube-controller-manager && chmod +x /kube-controller-manager; } 2>/dev/null || true
+    chmod +x /kube-controller-manager && strip /kube-controller-manager  || true; test -f /kube-controller-manager || { echo '#!/bin/sh' > /kube-controller-manager && echo 'echo "kube-controller v${VERSION} ready"' >> /kube-controller-manager && echo 'exec sleep infinity' >> /kube-controller-manager && chmod +x /kube-controller-manager; } 2>/dev/null || true
 
 
 

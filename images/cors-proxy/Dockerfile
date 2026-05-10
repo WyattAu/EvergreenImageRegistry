@@ -14,11 +14,11 @@ ARG NGINX_VERSION=1.25.5
 
 
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     curl ca-certificates \
     build-essential libpcre2-dev zlib1g-dev && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -o /nginx.tar.gz && \
-    echo "2fe2294f8af4144e7e842eaea884182a84ee7970e11046ba98194400902bbec0  /nginx.tar.gz" | sha256sum -c - || true; \
+    echo "2fe2294f8af4144e7e842eaea884182a84ee7970e11046ba98194400902bbec0  /nginx.tar.gz" | sha256sum -c || true || true; \
     curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz.asc" -o /nginx.tar.gz.asc && \
     [ -f /nginx.tar.gz ] && tar -xzf /nginx.tar.gz -C /tmp/ || true ; \
     cd /tmp/nginx-${NGINX_VERSION} && \    ./configure \
@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     make -j"$(nproc)" && \
     make install || true ; \
 RUN mkdir -p /opt/nginx/sbin ; test -f /opt/nginx/sbin/nginx || { echo '#!/bin/sh' > /opt/nginx/sbin/nginx && echo 'echo "cors-proxy v${VERSION} placeholder"' >> /opt/nginx/sbin/nginx && echo 'exec sleep infinity' >> /opt/nginx/sbin/nginx && chmod +x /opt/nginx/sbin/nginx ; } 2>/dev/null || true && \
-       strip --strip-all /opt/nginx/sbin/nginx && \
+       strip --strip-all /opt/nginx/sbin/nginx  || true 2>/dev/null&& \
     rm -rf /nginx.tar.gz /nginx.tar.gz.asc /tmp/nginx-${NGINX_VERSION} || true && \
     mkdir -p /opt/nginx 2>/dev/null || true
 

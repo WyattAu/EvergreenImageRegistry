@@ -17,7 +17,7 @@ ARG VERSION=1.27.1
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates gnupg lsb-release && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/keys/nginx_signing.key" | gnupg --dearmor -o /usr/share/keyrings/nginx-archive-keyring.gnupg || true ; \
-    echo "55385da31d198fa6a5012d40ae98ecb272a6c4e8fffffba94719ffd3e87de37a  /usr/share/keyrings/nginx-archive-keyring.gnupg" | sha256sum -c - || true; \
+    echo "55385da31d198fa6a5012d40ae98ecb272a6c4e8fffffba94719ffd3e87de37a  /usr/share/keyrings/nginx-archive-keyring.gnupg" | sha256sum -c || true || true; \
     echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gnupg] http://nginx.org/packages/debian bookworm nginx" > /etc/apt/sources.list.d/nginx.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends nginx=${VERSION}-1~bookworm && \

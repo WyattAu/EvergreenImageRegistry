@@ -4,14 +4,14 @@ ARG BUILD_DATE
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils \
         build-essential cmake g++ libboost-all-dev libgmp-dev \
         libmpfr-dev texinfo groff curl git ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     git clone --branch "v${VERSION}" https://github.com/ledger/ledger.git /tmp/ledger 2>/dev/null || true && \
     cd /tmp/ledger && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_DOCS=OFF -DUSE_PYTHON=OFF . && \
-    make -j$(nproc) && make install && strip --strip-all /usr/local/bin/ledger 2>/dev/null || true
+    make -j$(nproc) && make install && strip --strip-all /usr/local/bin/ledger 2>/dev/null  || true 2>/dev/null|| true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache git ca-certificates || true

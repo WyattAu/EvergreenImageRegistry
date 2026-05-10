@@ -23,7 +23,7 @@ RUN mkdir -p /app /var/log/snmp_exporter /var/cache/snmp_exporter /etc/snmp_expo
 
 
 FROM scratch
-ARG VERSION
+ARG VERSION=0.26.0
 ARG TARGETARCH
 COPY --from=downloader /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter /snmp_exporter
 COPY --from=downloader /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml /etc/snmp_exporter/snmp.yml

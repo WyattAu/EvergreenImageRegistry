@@ -10,7 +10,7 @@ ARG BUILD_DATE
 # hadolint ignore=DL3023
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-ARG VERSION
+ARG VERSION=2.16.0
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mkdir -p /opt 2>/dev/null || true ; touch /opt/apache-ignite-${VERSION}-bin 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-ARG VERSION
+ARG VERSION=2.16.0
 RUN apk add --no-cache ca-certificates curl || true && \
     adduser -D -u 65532 -s /bin/false ignite 2>/dev/null || true && \
     mkdir -p /var/lib/ignite /var/log/ignite /var/cache/ignite /opt/ignite/work 2>/dev/null || true && \

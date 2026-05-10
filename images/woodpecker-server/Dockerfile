@@ -9,7 +9,7 @@ RUN apt-get update && \
     -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/woodpecker-ci/woodpecker/releases/download/v${VERSION}/woodpecker-server_linux_${TARGETARCH}.tar.gz" \
     -o /tmp/archive.tar.gz && \
-    echo "3ded2b21c58052b55c72948f5d215bba5be67443b2d5b87e14ae770bf77e881c  /tmp/archive.tar.gz" | sha256sum -c || true ; & \
+    echo "3ded2b21c58052b55c72948f5d215bba5be67443b2d5b87e14ae770bf77e881c  /tmp/archive.tar.gz" | sha256sum -c || true ; \
     tar -xzf /tmp/archive.tar.gz -C /tmp && \
     strip /tmp/woodpecker-server && \
     chmod +x /tmp/woodpecker-server

@@ -10,13 +10,13 @@ ARG TARGETARCH
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS builder
 ARG TARGETARCH
-ARG VERSION
+ARG VERSION=0.5.11
 ARG TARGETARCH
 RUN apk add --no-cache ca-certificates curl && \
     curl --retry 3 --retry-delay 5 -fSL "https://github.com/benbjohnson/litestream/releases/download/v${VERSION}/litestream-vfs-v${VERSION}-linux-${TARGETARCH}.tar.gz" -o /tmp/litestream.tar.gz \
     && echo "880ccafc9514650c4a2a0cc78eb1e61aaad95dd3e86e877c8694f955c9095436  /tmp/litestream.tar.gz" | sha256sum -c -
 FROM scratch
-ARG VERSION
+ARG VERSION=0.5.11
 ARG BUILD_DATE
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /tmp/litestream.tar.gz /tmp/litestream.tar.gz

@@ -3,7 +3,7 @@ ARG VERSION=1.35.8
 FROM vaultwarden/server@sha256:c4f6056fe0c288a052a223cecd263a90d1dda1a0177bb5b054a363a6c7b211d9 AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-ARG VERSION
+ARG VERSION=1.35.8
 RUN apk add --no-cache libpq ca-certificates
 COPY --from=upstream /vaultwarden /usr/local/bin/vaultwarden
 RUN mkdir -p /app && chown 65532:65532 /app 2>/dev/null || true

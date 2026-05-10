@@ -8,12 +8,12 @@ ARG VERSION=0.24.32
 ARG BUILD_DATE
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS builder
-ARG VERSION
+ARG VERSION=0.24.32
 RUN apk add --no-cache ca-certificates curl xz && \
     curl --retry 3 --retry-delay 5 -fSL "https://github.com/tursodatabase/libsql/releases/download/libsql-server-v${VERSION}/libsql-server-x86_64-unknown-linux-gnu.tar.xz" -o /tmp/libsql-server.tar.xz \
     && echo "71720fc8648c19efef416efebd47145ef59b62e198770533530a858e1336879f  /tmp/libsql-server.tar.xz" | sha256sum -c -
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-ARG VERSION
+ARG VERSION=0.24.32
 ARG BUILD_DATE
 RUN apk add --no-cache ca-certificates tzdata libgcc
 COPY --from=builder /tmp/libsql-server.tar.xz /tmp/libsql-server.tar.xz

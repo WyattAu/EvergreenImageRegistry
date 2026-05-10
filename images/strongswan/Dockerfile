@@ -2,7 +2,7 @@ ARG VERSION=5.9.16
 ARG BUILD_DATE
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS installer
-ARG VERSION
+ARG VERSION=5.9.16
 RUN apt-get update && apt-get install -y --no-install-recommends \
         strongswan strongswan-pki libcharon-extra-plugins \
         libcharon-extauth-plugins libstrongswan-extra-plugins \
@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     strip --strip-all /usr/sbin/ipsec 2>/dev/null || true && \
     find /usr/lib -type f -name "lib*.so*" -exec strip --strip-unneeded {} \; 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-ARG VERSION
+ARG VERSION=5.9.16
 RUN apk add --no-cache ca-certificates iproute2 iptables kmod \
         libcurl openssl-libs talloc \
         gmp libcrypto1.1 zlib || true && \

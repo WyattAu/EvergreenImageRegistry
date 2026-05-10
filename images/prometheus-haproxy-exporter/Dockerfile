@@ -17,7 +17,7 @@ RUN mkdir -p /app /var/log/prometheus-haproxy-exporter /var/cache/prometheus-hap
 
 
 FROM scratch
-ARG VERSION
+ARG VERSION=0.15.0
 ARG TARGETARCH
 COPY --from=downloader /haproxy_exporter-0.15.0.linux-${TARGETARCH}/haproxy_exporter /haproxy_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

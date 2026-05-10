@@ -2,7 +2,7 @@ ARG VERSION=4.9.6
 ARG BUILD_DATE
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS installer
-ARG VERSION
+ARG VERSION=4.9.6
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates gnupg2 lsb-release && \
     echo "deb [arch=amd64 signed-by=/usr/share/keyrings/pdns-archive-keyring.gpg] http://repo.powerdns.com/debian $(lsb_release -sc) pdns-49 main" > /etc/apt/sources.list.d/pdns.list && \
@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mkdir -p /var/log/pdns /var/lib/pdns /etc/pdns 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
-ARG VERSION
+ARG VERSION=4.9.6
 RUN apk add --no-cache sqlite-libs ca-certificates boost \
         libstdc++ libgcc lua5.4-libs libcurl openssl-libs \
         protobuf libxml2 || true && \

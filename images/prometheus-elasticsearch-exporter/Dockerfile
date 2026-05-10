@@ -17,7 +17,7 @@ RUN mkdir -p /app /var/log/prometheus-elasticsearch-exporter /var/cache/promethe
 
 
 FROM scratch
-ARG VERSION
+ARG VERSION=1.10.0
 ARG TARGETARCH
 COPY --from=downloader /elasticsearch_exporter-1.10.0.linux-${TARGETARCH}/elasticsearch_exporter /elasticsearch_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

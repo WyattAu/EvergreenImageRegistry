@@ -17,7 +17,7 @@ RUN mkdir -p /app /var/log/prometheus-mysqld-exporter /var/cache/prometheus-mysq
 
 
 FROM scratch
-ARG VERSION
+ARG VERSION=0.19.0
 ARG TARGETARCH
 COPY --from=downloader /mysqld_exporter-0.19.0.linux-${TARGETARCH}/mysqld_exporter /mysqld_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

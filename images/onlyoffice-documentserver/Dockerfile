@@ -2,7 +2,7 @@ ARG VERSION=8.3.3
 ARG BUILD_DATE
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS installer
-ARG VERSION
+ARG VERSION=8.3.3
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates gdebi-core fontconfig \
         libxml2-utils libxslt1.1 libcairo2 libglib2.0-0 \
@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mkdir -p /var/log/onlyoffice /var/lib/onlyoffice /var/www/onlyoffice \
         /etc/onlyoffice /usr/lib/onlyoffice /opt/onlyoffice 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-ARG VERSION
+ARG VERSION=8.3.3
 RUN apk add --no-cache ca-certificates tzdata fontconfig \
         libxml2 libxslt libstdc++ libgcc libjpeg-turbo \
         libpng libtiff libwebp libcurl openssl-libs \

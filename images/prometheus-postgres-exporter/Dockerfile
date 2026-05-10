@@ -18,7 +18,7 @@ RUN mkdir -p /app /var/log/postgres_exporter /var/cache/postgres_exporter
 
 
 FROM scratch
-ARG VERSION
+ARG VERSION=0.19.1
 ARG TARGETARCH
 COPY --from=downloader /postgres_exporter-${VERSION}.linux-${TARGETARCH}/postgres_exporter /postgres_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

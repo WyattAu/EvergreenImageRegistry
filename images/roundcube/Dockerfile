@@ -13,7 +13,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=1.6.9
-RUN apk add --no-cache php83 php83-fpm php83-session php83-mbstring php83-xml php83-iconv php83-dom php83-curl php83-intl php83-json ca-certificates || true && \
+RUN apk add --no-cache php php-fpm php-session php-mbstring php-xml php-iconv php-dom php-curl php-intl php-json ca-certificates || true && \
     addgroup -S -g 10000 roundcube 2>/dev/null || true && \
     adduser -u 65532 -G roundcube -D -h /usr/share/webapps/roundcube -s /bin/false roundcube 2>/dev/null || true && \
     mkdir -p /usr/share/webapps/roundcube /var/lib/roundcube /var/log/roundcube /var/run/php 2>/dev/null || true

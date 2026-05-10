@@ -9,13 +9,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     echo "deb [signed-by=/usr/share/keyrings/sury-php.gpg] https://packages.sury.org/php/ bookworm main" > /etc/apt/sources.list.d/sury-php.list && \
     rm -rf /var/lib/apt/lists/* || true && \
     apt-get update && apt-get install -y --no-install-recommends \
-        php8.4-fpm php8.4 php8.4-curl php8.4-mbstring php8.4-xml zip php8.4-intl php8.4-mysql openssl php8.4-pdo php8.4-gd \
+        php-fpm php8.4 php-curl php-mbstring php-xml zip php-intl php-mysql openssl php-pdo php-gd \
         nginx ca-certificates curl ; rm -rf /var/lib/apt/lists/* || true && \
     mkdir -p /var/run/php /var/www/html /var/log/nginx /var/cache/nginx ; 2>/dev/null || true ; \
     chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
-RUN apk add --no-cache php-8.4-fpm php-8.4 php-8.4-curl php-8.4-mbstring php-8.4-xml zip php-8.4-intl php-8.4-pdo_mysql php-8.4-mysqli openssl php-8.4-pdo php-8.4-gd nginx ca-certificates || true && \
+RUN apk add --no-cache php-fpm php-8.4 php-curl php-mbstring php-xml zip php-intl php-pdo_mysql php-mysqli openssl php-pdo php-gd nginx ca-certificates || true && \
     chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php 2>/dev/null || true
 COPY --from=builder /etc/nginx/nginx.conf /etc/nginx/nginx.conf
 USER 65532:65532

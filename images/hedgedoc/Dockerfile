@@ -1,7 +1,7 @@
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=1.10.0
 ARG GITHUB_TOKEN
-RUN apk add --no-cache nodejs npm ca-certificates git python3 make g++ || true && \
+RUN apk add --no-cache nodejs-20 npm ca-certificates git python3 make gcc || true && \
     mkdir -p /app-src 2>/dev/null || true
 WORKDIR /tmp
 RUN curl --retry 3 -fsSL \

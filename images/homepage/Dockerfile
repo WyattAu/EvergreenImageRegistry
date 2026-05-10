@@ -7,7 +7,7 @@ RUN mkdir -p /app /var/log/homepage /var/cache/homepage 2>/dev/null || true
 
 
 FROM scratch
-COPY --from=upstream /app/homepage /homepage
+COPY --from=upstream /app /app
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
 COPY --from=builder /var/log/homepage /var/log/homepage
@@ -33,4 +33,4 @@ USER 65532:65532
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/homepage"]
+ENTRYPOINT ["/app/homepage"]

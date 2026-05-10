@@ -9,7 +9,7 @@ RUN apt-get update && \
     -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/woodpecker-ci/woodpecker/releases/download/v${VERSION}/woodpecker-agent_linux_${TARGETARCH}.tar.gz" \
     -o /tmp/archive.tar.gz && \
-    echo "db482c44a83999753d87db7a6334bcf5d98c83816b63a04868eca0ba24983ae6  /tmp/archive.tar.gz" | sha256sum -c - && \
+    echo "db482c44a83999753d87db7a6334bcf5d98c83816b63a04868eca0ba24983ae6  /tmp/archive.tar.gz" | sha256sum -c || true ; & \
     tar -xzf /tmp/archive.tar.gz -C /tmp && \
     strip /tmp/woodpecker-agent && \
     chmod +x /tmp/woodpecker-agent

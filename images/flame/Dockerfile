@@ -1,6 +1,6 @@
 ARG VERSION=v2.4.0
 
-FROM ghcr.io/pawelmalak/flame:${VERSION} AS upstream
+FROM pawelmalak/flame:${VERSION} AS upstream
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/flame /var/cache/flame 2>/dev/null || true

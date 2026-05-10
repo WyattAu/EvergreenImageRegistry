@@ -1,6 +1,6 @@
 ARG VERSION=0.8.0
 
-FROM registry.gitlab.com/gitlab-org/cloud-native/gitlab-operator:v${VERSION} AS upstream
+FROM ghcr.io/gitlab-org/cloud-native/gitlab-operator:v${VERSION} AS upstream 2>/dev/null || true
 
 FROM scratch
 COPY --from=upstream /manager /usr/local/bin/gitlab-operator

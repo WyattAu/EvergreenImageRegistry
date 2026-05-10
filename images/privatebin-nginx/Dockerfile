@@ -16,7 +16,7 @@ RUN git clone https://github.com/PrivateBin/PrivateBin.git /src 2>/dev/null || e
     mkdir -p /app/data /var/log/nginx /var/lib/php/sessions
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache nginx php-8.4 php-fpm php-gd php-mbstring php-xml php-curl ca-certificates || true
+RUN apk add --no-cache nginx php php-fpm php-gd php-mbstring php-xml php-curl ca-certificates || true
 COPY --from=builder /src /app/src
 COPY --from=builder /app/data /app/data
 COPY --from=builder /var/log/nginx /var/log/nginx

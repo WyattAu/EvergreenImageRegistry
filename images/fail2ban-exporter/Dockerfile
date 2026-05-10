@@ -9,8 +9,8 @@ ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 
 RUN apk add --no-cache git && \
-    git clone --branch ${VERSION} https://github.com/xperimental/fail2ban-exporter.git /src 2>/dev/null || \
-    git clone https://github.com/xperimental/fail2ban-exporter.git /src
+    git clone --branch ${VERSION} https://${GITHUB_TOKEN:+${GITHUB_TOKEN}@}github.com/xperimental/fail2ban-exporter.git /src 2>/dev/null || \
+    git clone https://${GITHUB_TOKEN:+${GITHUB_TOKEN}@}github.com/xperimental/fail2ban-exporter.git /src
 
 WORKDIR /src
 

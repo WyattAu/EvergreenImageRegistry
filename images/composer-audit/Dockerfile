@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     test -e /app || { mkdir -p /app && echo 'composer-audit placeholder' > /app/.placeholder ; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
-RUN apk add --no-cache php-8.4 php-mbstring php-xml php-curl ca-certificates curl unzip || true && \
+RUN apk add --no-cache php php-mbstring php-xml php-curl ca-certificates curl unzip || true && \
     mkdir -p /usr/local/bin 2>/dev/null || true
 COPY --from=builder /usr/local/bin/composer /usr/local/bin/composer
 COPY --from=builder /app /app

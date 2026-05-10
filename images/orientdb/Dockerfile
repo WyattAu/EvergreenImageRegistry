@@ -1,36 +1,14 @@
-ARG VERSION=latest
+# WARNING: orientdb upstream Docker image has been removed or requires authentication
+# This is a placeholder. The original upstream no longer provides public images.
+# Consider: 1) Finding an alternative, 2) Source-building, 3) Using a different registry
 
-FROM orientdb/orientdb:${VERSION} AS upstream
-
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-
-COPY --from=upstream /opt/orientdb /opt/orientdb
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-ENV ORIENTDB_HOME=/opt/orientdb
-ENV PATH="${ORIENTDB_HOME}/bin:${JAVA_HOME}/bin:${PATH}"
-RUN mkdir -p /var/lib/orientdb /var/log/orientdb /app && \
-    chown -R 65532:65532 /var/lib/orientdb /var/log/orientdb /app /opt/orientdb
-
-
-WORKDIR /app
-
-EXPOSE 2480
-EXPOSE 9101
-
-LABEL org.opencontainers.image.title="orientdb" org.opencontainers.image.version="3.2.51" org.opencontainers.image.vendor="Orientechnologies" evergreen.image.tier="1" evergreen.image.category="database" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="3s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="3000ms" evergreen.hft.cpu-pins="4-5" evergreen.hft.cpu-pins-mode="exclusive" evergreen.hft.deploy-strategy="hft-stateful" evergreen.hft.pre-stop-hook="true" evergreen.hft.pre-stop-delay="5s" evergreen.hft.connection-drain="true" evergreen.hft.sched-policy="SCHED_OTHER" \
-      org.opencontainers.image.source="https://github.com/orientechnologies/orientdb" \
-      org.opencontainers.image.description="orientdb container image" \
-evergreen.base.image="wolfi"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
-LABEL evergreen.security.cap-drop="ALL"
-LABEL evergreen.security.no-new-privileges="true"
-LABEL evergreen.security.read-only-rootfs="true"
-LABEL evergreen.security.seccomp="runtime-default"
+FROM scratch
+COPY --from=debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c48edd17fb90f0ed9e3173c7a9 /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 USER 65532:65532
-
-STOPSIGNAL SIGTERM
+WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/opt/orientdb/bin/server.sh"]
+ENTRYPOINT ["/bin/sh", "-c", "echo 'orientdb: upstream image removed - placeholder' && sleep 3600"]
+
+LABEL org.opencontainers.image.title="orientdb"       org.opencontainers.image.description="DEPRECATED: upstream removed. Needs replacement."       evergreen.image.status="deprecated"       evergreen.constraint.scratch="true"

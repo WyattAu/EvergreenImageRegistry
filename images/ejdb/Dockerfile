@@ -11,7 +11,7 @@ ARG BUILD_DATE
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
-ARG VERSION
+ARG VERSION=2.2.3
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake curl ca-certificates git && rm -rf /var/lib/apt/lists/* || true && \
@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     cd /tmp/ejdb-src ; mkdir build && cd build ; cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/ejdb ; make -j"$(nproc)" ; make install ; strip --strip-all /opt/ejdb/bin/ejdb 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-ARG VERSION
+ARG VERSION=2.2.3
 RUN apk add --no-cache libstdc++ ca-certificates && \
     adduser -D -u 65532 -s /bin/false ejdb 2>/dev/null || true && \
     mkdir -p /var/lib/ejdb /var/log/ejdb /var/cache/ejdb 2>/dev/null || true

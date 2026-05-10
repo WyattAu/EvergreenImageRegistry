@@ -17,7 +17,7 @@ RUN mkdir -p /app /var/log/prometheus-blackbox-exporter /var/cache/prometheus-bl
 
 
 FROM scratch
-ARG VERSION
+ARG VERSION=0.28.0
 ARG TARGETARCH
 COPY --from=downloader /blackbox_exporter-0.28.0.linux-${TARGETARCH}/blackbox_exporter /blackbox_exporter
 COPY --from=downloader /blackbox_exporter-0.28.0.linux-${TARGETARCH}/blackbox.yml /etc/prometheus-blackbox-exporter/blackbox.yml

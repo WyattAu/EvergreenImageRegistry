@@ -13,7 +13,7 @@ ARG BUILD_DATE
 FROM debian@sha256:f70dc8d6a8b6a06824c92471a1a258030836b26b043881358b967bf73de7c5ab AS builder
 ARG TARGETARCH
 ARG GITHUB_TOKEN
-ARG VERSION
+ARG VERSION=3.6.10
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/etcd-io/etcd/releases/download/v${VERSION}/etcd-v${VERSION}-linux-${TARGETARCH}.tar.gz" -o /tmp/etcd.tgz || true && \
     echo "230566b9e0311690faf515404fb2a57199faf2c0685b39c5c7a0a0ba5ad9a631  /tmp/etcd.tgz" | sha256sum -c - || true && \

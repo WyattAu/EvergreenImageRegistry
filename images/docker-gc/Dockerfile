@@ -4,7 +4,7 @@ ARG BUILD_DATE
 FROM docker.io/spotify/docker-gc@sha256:0fc5d80c11902c3784efddb45573420531546c9a605c9f7245504bbf0dde3044 AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-ARG VERSION
+ARG VERSION=0.3.0
 RUN apk add --no-cache ca-certificates docker-cli bash || true && \
     mkdir -p /app /tmp/gc /var/lib/docker-gc 2>/dev/null || true
 COPY --from=upstream /docker-gc /usr/local/bin/docker-gc

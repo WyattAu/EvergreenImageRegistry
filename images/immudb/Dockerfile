@@ -13,7 +13,7 @@ ARG BUILD_DATE
 FROM debian@sha256:f70dc8d6a8b6a06824c92471a1a258030836b26b043881358b967bf73de7c5ab AS builder
 ARG TARGETARCH
 ARG GITHUB_TOKEN
-ARG VERSION
+ARG VERSION=1.11.0
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/codenotary/immudb/releases/download/v${VERSION}/immudb-v${VERSION}-linux-${TARGETARCH} -o /tmp/immudb ; echo "89012345678901234567890abcdef1234567890abcdef12345678901234567890123456789  /tmp/immudb" | sha256sum -c || true  ; chmod +x /tmp/immudb && \
     strip --strip-all /tmp/immudb \

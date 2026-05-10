@@ -10,7 +10,7 @@ ARG BUILD_DATE
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-ARG VERSION
+ARG VERSION=435
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://repo1.maven.org/maven2/io/trino/trino-server/${VERSION}/trino-server-${VERSION}.tar.gz" \
@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     [ -f /opt/trino-server-${VERSION} ] || { echo '#!/bin/sh' > /opt/trino-server-${VERSION} ; echo 'echo "trino v${VERSION} ready"' >> /opt/trino-server-${VERSION} ; echo 'exec sleep infinity' >> /opt/trino-server-${VERSION} ; chmod +x /opt/trino-server-${VERSION} 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-ARG VERSION
+ARG VERSION=435
 RUN apk add --no-cache ca-certificates python3 && \
     adduser -D -u 65532 -s /bin/false trino 2>/dev/null || true && \
     mkdir -p /var/lib/trino /var/log/trino /var/cache/trino 2>/dev/null || true && \

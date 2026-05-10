@@ -21,7 +21,7 @@ RUN mkdir -p /app /var/log/pgbouncer_exporter /var/cache/pgbouncer_exporter 2>/d
 
 
 FROM scratch
-ARG VERSION
+ARG VERSION=0.12.0
 ARG TARGETARCH
 COPY --from=downloader /pgbouncer_exporter-${VERSION}-linux-${TARGETARCH}/pgbouncer_exporter /pgbouncer_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

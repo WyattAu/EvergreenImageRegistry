@@ -21,7 +21,7 @@ RUN mkdir -p /app /var/log/mongodb_exporter /var/cache/mongodb_exporter 2>/dev/n
 
 
 FROM scratch
-ARG VERSION
+ARG VERSION=0.13.0
 ARG TARGETARCH
 COPY --from=downloader /mongodb_exporter-${VERSION}-linux-${TARGETARCH}/mongodb_exporter /mongodb_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

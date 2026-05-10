@@ -11,7 +11,7 @@ ARG BUILD_DATE
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-ARG VERSION
+ARG VERSION=9.2.1
 ARG BUILD_HASH
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     mkdir -p /tmp/splunkforwarder/bin && test -f /tmp/splunkforwarder/bin/splunkd || { echo '#!/bin/sh' > /tmp/splunkforwarder/bin/splunkd && echo 'echo "splunk-forwarder v${VERSION} placeholder"' >> /tmp/splunkforwarder/bin/splunkd && echo 'exec sleep infinity' >> /tmp/splunkforwarder/bin/splunkd && chmod +x /tmp/splunkforwarder/bin/splunkd; } || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-ARG VERSION
+ARG VERSION=9.2.1
 ARG BUILD_HASH
 RUN apk add --no-cache ca-certificates curl || true && \
     adduser -D -u 65532 -s /bin/false splunk 2>/dev/null || true && \

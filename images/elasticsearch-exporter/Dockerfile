@@ -15,7 +15,7 @@ RUN mkdir -p /app /var/log/elasticsearch_exporter /var/cache/elasticsearch_expor
 
 
 FROM scratch
-ARG VERSION
+ARG VERSION=1.7.0
 ARG TARGETARCH
 COPY --from=downloader /elasticsearch_exporter-${VERSION}-linux-${TARGETARCH}/elasticsearch_exporter /elasticsearch_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

@@ -14,7 +14,7 @@ RUN mkdir -p /app /var/log/etcd /var/cache/etcd /etcd-data 2>/dev/null || true
 
 
 FROM scratch
-ARG VERSION
+ARG VERSION=3.6.10
 COPY --from=downloader /etcd /etcd
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app

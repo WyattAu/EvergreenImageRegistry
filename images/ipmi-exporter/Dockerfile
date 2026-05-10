@@ -21,7 +21,7 @@ RUN mkdir -p /app /var/log/ipmi_exporter /var/cache/ipmi_exporter 2>/dev/null ||
 
 
 FROM scratch
-ARG VERSION
+ARG VERSION=1.10.1
 ARG TARGETARCH
 COPY --from=downloader /ipmi_exporter-${VERSION}.linux-${TARGETARCH}/ipmi_exporter /ipmi_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

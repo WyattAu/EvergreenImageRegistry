@@ -1,7 +1,7 @@
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=1.0.0
 ARG GITHUB_TOKEN
-RUN apk add --no-cache nodejs npm ca-certificates || true && \
+RUN apk add --no-cache nodejs-20 npm ca-certificates || true && \
     npm install -g @worldsibu/convector-platform@${VERSION} 2>/dev/null || true && \
     addgroup -S -g 10000 convector 2>/dev/null || true && \
     adduser -u 65532 -G convector -D -h /app -s /bin/false convector 2>/dev/null || true && \

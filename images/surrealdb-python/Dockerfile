@@ -8,13 +8,13 @@ ARG VERSION=1.0.0
 ARG BUILD_DATE
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-ARG VERSION
+ARG VERSION=1.0.0
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends python3-pip python3 && rm -rf /var/lib/apt/lists/* || true && \
     python3 -m venv /opt/venv || true ; /opt/venv/bin/pip install --no-cache-dir --upgrade pip || true ; /opt/venv/bin/pip install --no-cache-dir surrealdb==${VERSION} 2>/dev/null || /opt/venv/bin/pip install --no-cache-dir surrealdb || true && \
     mkdir -p /app /usr/local/lib/python3.11/site-packages || true ; touch /app/placeholder || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-ARG VERSION
+ARG VERSION=1.0.0
 RUN apk add --no-cache python3 || true
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app

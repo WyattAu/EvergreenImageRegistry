@@ -1,6 +1,6 @@
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache ca-certificates curl nginx php83-fpm php83-pdo_sqlite php83-mbstring php83-xml || true && \
+RUN apk add --no-cache ca-certificates curl nginx php-fpm php-pdo_sqlite php-mbstring php-xml || true && \
     addgroup -S -g 10000 organizr 2>/dev/null || true && \
     adduser -u 65532 -G organizr -D -h /app -s /bin/false organizr 2>/dev/null || true && \
     mkdir -p /app /app/src /config /var/log/nginx /var/lib/nginx 2>/dev/null || true && \

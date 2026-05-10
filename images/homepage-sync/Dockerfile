@@ -7,7 +7,7 @@ RUN mkdir -p /app /var/log/homepage-sync /var/cache/homepage-sync 2>/dev/null ||
 
 
 FROM scratch
-COPY --from=upstream /app/homepage /usr/local/bin/homepage
+COPY --from=upstream /app /app
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
 COPY --from=builder /var/log/homepage-sync /var/log/homepage-sync

@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
 ARG VERSION
-RUN apk add --no-cache sqlite-libs ca-certificates boost-libs \
+RUN apk add --no-cache sqlite-libs ca-certificates boost \
         libstdc++ libgcc lua5.4-libs libcurl openssl-libs \
         protobuf libxml2 || true && \
     mkdir -p /app /var/log/pdns /var/lib/pdns /etc/pdns 2>/dev/null || true

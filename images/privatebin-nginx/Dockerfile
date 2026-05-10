@@ -8,15 +8,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     rm -rf /var/lib/apt/lists/* || true
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        nginx php8.4 php8.4-fpm php8.4-gd php8.4-mbstring php8.4-xml \
-        php8.4-curl ca-certificates git ; rm -rf /var/lib/apt/lists/* || true
+        nginx php8.4 php-fpm php-gd php-mbstring php-xml \
+        php-curl ca-certificates git ; rm -rf /var/lib/apt/lists/* || true
 WORKDIR /src
 RUN git clone https://github.com/PrivateBin/PrivateBin.git /src 2>/dev/null || echo "Source repo not available - using placeholder" || true && \
     mkdir -p /src && \
     mkdir -p /app/data /var/log/nginx /var/lib/php/sessions
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache nginx php-8.4 php-8.4-fpm php-8.4-gd php-8.4-mbstring php-8.4-xml php-8.4-curl ca-certificates || true
+RUN apk add --no-cache nginx php-8.4 php-fpm php-gd php-mbstring php-xml php-curl ca-certificates || true
 COPY --from=builder /src /app/src
 COPY --from=builder /app/data /app/data
 COPY --from=builder /var/log/nginx /var/log/nginx

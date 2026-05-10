@@ -6,7 +6,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 
 RUN addgroup -S -g 65532 cachet 2>/dev/null || true && \
     adduser -u 65532 -G cachet -D -s /bin/false cachet 2>/dev/null || true && \
-    apk add --no-cache php-8.4-fpm php-8.4-pdo_mysql php-8.4-mysqli php-8.4-pgsql php-8.4-pdo_sqlite php-8.4-gd php-8.4-curl php-8.4-mbstring php-8.4-xml php-8.4-zip php-8.4-bcmath php-8.4-valkey nginx ca-certificates || true && \
+    apk add --no-cache php-fpm php-pdo_mysql php-mysqli php-pgsql php-pdo_sqlite php-gd php-curl php-mbstring php-xml php-zip php-bcmath php-valkey nginx ca-certificates || true && \
     mkdir -p /var/www 2>/dev/null || true
 COPY --from=upstream /var/www/html /var/www/cachet
 RUN mkdir -p /run/php /app/logs /app/data ; \

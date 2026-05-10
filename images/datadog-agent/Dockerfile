@@ -1,6 +1,6 @@
 ARG VERSION=7
 
-FROM gcr.io/datadoghq/agent:${VERSION} AS upstream
+FROM datadog/agent:${VERSION} AS upstream
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app/conf /app/run /app/logs /var/log/datadog 2>/dev/null || true

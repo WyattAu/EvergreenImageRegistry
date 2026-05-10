@@ -13,7 +13,7 @@ ARG BUILD_DATE
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
 ARG VERSION=4.3.5
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     build-essential cmake curl ca-certificates \
     libsodium-dev libpgm-dev libnorm-dev && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/zeromq/libzmq/releases/download/v${VERSION}/zeromq-${VERSION}.tar.gz -o /zeromq.tar.gz && \
@@ -30,8 +30,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
           . && \
     cmake --build . -j"$(nproc)" && \
     cmake --install . && \
-    strip --strip-unneeded /opt/zeromq/lib/libzmq.so.5.2.5 && \
-    strip --strip-unneeded /opt/zeromq/lib/libzmq.a && \
+    strip --strip-unneeded /opt/zeromq/lib/libzmq.so.5.2.5  || true&& \
+    strip --strip-unneeded /opt/zeromq/lib/libzmq.a  || true&& \
     rm -rf /zeromq.tar.gz /checksums.txt /tmp/zeromq-${VERSION} || true && \
     mkdir -p /opt/zeromq
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

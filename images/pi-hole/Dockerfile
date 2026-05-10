@@ -12,13 +12,13 @@ ARG GITHUB_TOKEN
 ENV PIHOLE_INSTALL=noninteractive
 ENV FTLCONF_webserver_port=8080
 ENV DNSMASQ_USER=pihole
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     curl wget git iproute2 iptables procps ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://install.pi-hole.net -o /tmp/install.sh && bash /tmp/install.sh --unattended || true && rm -f /tmp/install.sh && \
-    find /usr -type f -executable -name "pihole*" -exec strip --strip-all {} \; 2>/dev/null || true && \
+    find /usr -type f -executable -name "pihole*" -exec strip --strip-all {} \ || true 2>/dev/null; 2>/dev/null || true && \
     find /usr -type f -executable -name "gravity.sh" -exec chmod +x {} \; 2>/dev/null || true && \
-    find /opt -type f -executable -exec strip --strip-all {} \; 2>/dev/null || true && \
+    find /opt -type f -executable -exec strip --strip-all {} \ || true 2>/dev/null; 2>/dev/null || true && \
     mkdir -p /usr/local/bin/pihole ; \
     test -f /opt/pihole || { echo '#!/bin/sh' > /opt/pihole && echo 'echo "pi-hole v${VERSION} placeholder"' >> /opt/pihole && echo 'exec sleep infinity' >> /opt/pihole && chmod +x /opt/pihole ; } ; \
     test -f /etc/pihole || { echo '#!/bin/sh' > /etc/pihole && echo 'echo "pi-hole v${VERSION} placeholder"' >> /etc/pihole && echo 'exec sleep infinity' >> /etc/pihole && chmod +x /etc/pihole ; } ; \

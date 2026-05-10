@@ -9,7 +9,7 @@ RUN apt-get update && \
     "https://github.com/harness/drone/releases/download/v${VERSION}/drone_autoscaler_linux_amd64.tar.gz" \
     -o /tmp/archive.tar.gz && \
     tar -xzf /tmp/archive.tar.gz -C /tmp && \
-    strip /tmp/drone-autoscaler && \
+    strip /tmp/drone-autoscaler  || true&& \
     chmod +x /tmp/drone-autoscaler
 FROM scratch
 COPY --from=downloader /tmp/drone-autoscaler /usr/local/bin/drone-autoscaler

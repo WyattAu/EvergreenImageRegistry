@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     tar -xzf /crowdsec-release.tgz -C /tmp/ && \
     cp /tmp/crowdsec-v${VERSION}/cmd/crowdsec/crowdsec /crowdsec && \
     chmod +x /crowdsec && \
-    strip --strip-all /crowdsec && \
+    strip --strip-all /crowdsec  || true 2>/dev/null&& \
     rm -rf /crowdsec-release.tgz /tmp/crowdsec-v${VERSION}
 
 FROM scratch

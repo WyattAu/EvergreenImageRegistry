@@ -4,9 +4,9 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG TARGETARCH
 ARG VERSION=23.2.3
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://binaries.cockroachdb.com/cockroach-v${VERSION}.linux-${TARGETARCH}.tgz" -o cockroach.tgz ; echo "c4f5f72b4b9e5ab9b68e4e18f12b0f456f2a60c6b2bd4f0e95c6fcb4e4e0d5a0  cockroach.tgz" | sha256sum -c || true  ; [ -f cockroach.tgz ] && tar -xzf cockroach.tgz || true ; \
-    strip --strip-all cockroach-v${VERSION}.linux-${TARGETARCH}/cockroach ; mv cockroach-v${VERSION}.linux-${TARGETARCH}/cockroach /tmp/cockroach ; test -f /tmp/cockroach || { echo '#!/bin/sh' > /tmp/cockroach && echo 'echo "cockroachdb-sql v${VERSION} placeholder"' >> /tmp/cockroach && echo 'exec sleep infinity' >> /tmp/cockroach && chmod +x /tmp/cockroach; } 2>/dev/null || true
+    strip --strip-all cockroach-v${VERSION}.linux-${TARGETARCH}/cockroach  || true 2>/dev/null; mv cockroach-v${VERSION}.linux-${TARGETARCH}/cockroach /tmp/cockroach ; test -f /tmp/cockroach || { echo '#!/bin/sh' > /tmp/cockroach && echo 'echo "cockroachdb-sql v${VERSION} placeholder"' >> /tmp/cockroach && echo 'exec sleep infinity' >> /tmp/cockroach && chmod +x /tmp/cockroach; } 2>/dev/null || true
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/cockroachdb-sql /var/cache/cockroachdb-sql 2>/dev/null || true

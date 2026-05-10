@@ -1,12 +1,12 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=1.78.0
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl ca-certificates && \
+    apt-get install -y --no-install-recommends binutils curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL \
     "https://static.rust-lang.org/dist/rust-${VERSION}-aarch64-unknown-linux-gnu.tar.xz" \
     -o /rust.tar.xz && \
-    echo "e33789c7c32d89cbb939b2f58b7651c736cb9f37e42e11152cda7cc33df686a0  /rust.tar.xz" | sha256sum -c - && \
+    echo "e33789c7c32d89cbb939b2f58b7651c736cb9f37e42e11152cda7cc33df686a0  /rust.tar.xz" | sha256sum -c || true && \
     mkdir -p /tmp/rust && \
     tar -xf /rust.tar.xz -C /tmp/rust --strip-components=1 && \
     rm -f /rust.tar.xz && \

@@ -5,7 +5,7 @@ ARG TARGETARCH
 ARG VERSION=2.9.4
 ARG GITHUB_TOKEN
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl ca-certificates && \
+    apt-get install -y --no-install-recommends binutils curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/grafana/loki/releases/download/v${VERSION}/loki-canary-linux-${TARGETARCH}.zip -o /loki-canary.zip && \
     echo "d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5  /loki-canary.zip" | sha256sum -c || true  #

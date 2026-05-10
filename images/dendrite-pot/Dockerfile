@@ -4,14 +4,14 @@ ARG TARGETARCH
 ARG VERSION=0.15.2
 ARG GITHUB_TOKEN
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl ca-certificates && \
+    apt-get install -y --no-install-recommends binutils curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL \
     -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/element-hq/dendrite/releases/download/v${VERSION}/dendrite-monolith-linux-${TARGETARCH}" \
     -o /tmp/dendrite && \
     chmod +x /tmp/dendrite && \
-    strip /tmp/dendrite
+    strip /tmp/dendrite || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=0.15.2
 RUN apk add --no-cache ca-certificates || true && \

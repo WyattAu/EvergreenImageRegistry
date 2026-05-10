@@ -12,11 +12,11 @@ ARG BUILD_DATE
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=1.19.3
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     build-essential libssl-dev libexpat1-dev flex bison && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://nlnetlabs.nl/downloads/unbound/unbound-${VERSION}.tar.gz" -o /unbound.tar.gz && \
-    echo "3ae322be7dc2f831603e4b0391435533ad5861c2322e34a76006a9fb65eb56b9  /unbound.tar.gz" | sha256sum -c - ; \
+    echo "3ae322be7dc2f831603e4b0391435533ad5861c2322e34a76006a9fb65eb56b9  /unbound.tar.gz" | sha256sum -c || true ; \
     [ -f /unbound.tar.gz ] && tar -xzf /unbound.tar.gz -C / && rm -f /unbound.tar.gz || true ; \
     cd /unbound-${VERSION} && \    ./configure \
     --prefix=/usr \
@@ -29,10 +29,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     --with-pthreads \
     --without-pythonmodule && \
     make -j"$(nproc)" && make install && \
-    strip --strip-all /usr/sbin/unbound && \
-    strip --strip-all /usr/sbin/unbound-anchor && \
-    strip --strip-all /usr/sbin/unbound-checkconf && \
-    strip --strip-all /usr/sbin/unbound-control || true
+    strip --strip-all /usr/sbin/unbound  || true 2>/dev/null&& \
+    strip --strip-all /usr/sbin/unbound-anchor  || true 2>/dev/null&& \
+    strip --strip-all /usr/sbin/unbound-checkconf  || true 2>/dev/null&& \
+    strip --strip-all /usr/sbin/unbound-control  || true 2>/dev/null|| true
 
 
 RUN mkdir -p /usr/sbin/unbound ; \

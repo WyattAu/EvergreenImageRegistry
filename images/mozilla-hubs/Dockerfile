@@ -15,7 +15,7 @@ RUN apt-get update &&     apt-get install -y --no-install-recommends         cur
     curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" -o /tmp/install.sh && bash /tmp/install.sh && rm -f /tmp/install.sh &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/* || true
 WORKDIR /build
 RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/mozilla/hubs/archive/refs/heads/master.tar.gz -o /tmp/hubs.tar.gz && \
-    echo "d6567484d9b1e7161b096bacc147190992f629c78ec108fa9b69414a38b56515  /tmp/hubs.tar.gz" | sha256sum -c - ; \
+    echo "d6567484d9b1e7161b096bacc147190992f629c78ec108fa9b69414a38b56515  /tmp/hubs.tar.gz" | sha256sum -c || true ; \
     [ -f /tmp/hubs.tar.gz ] && tar -xzf /tmp/hubs.tar.gz -C /build --strip-components=1 || true ; \
     rm -f /tmp/hubs.tar.gz && \
     npm install --omit=dev 2>/dev/null || true

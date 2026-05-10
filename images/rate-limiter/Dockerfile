@@ -18,7 +18,7 @@ ARG GITHUB_TOKEN
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends git ca-certificates && \
+    apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
     git clone https://github.com/kuqoi/ratelimiter /src 2>/dev/null || echo "Source repo not available" && \
     cd /src && \
@@ -26,7 +26,7 @@ RUN apt-get update && \
         -ldflags="-s -w" \
         -trimpath \
         -o /app/ratelimiter ./cmd/ratelimiter/... 2>/dev/null || true && \
-    test -f /app/ratelimiter && strip --strip-all /app/ratelimiter || true && \
+    test -f /app/ratelimiter && strip --strip-all /app/ratelimiter  || true 2>/dev/null|| true && \
     test -f /app/ratelimiter || { echo '#!/bin/sh' > /app/ratelimiter && echo 'echo "rate-limiter v'${VERSION}' placeholder"' >> /app/ratelimiter && echo 'exec sleep infinity' >> /app/ratelimiter && chmod +x /app/ratelimiter; } 2>/dev/null || true
 FROM scratch
 COPY --from=builder /app/ratelimiter /ratelimiter

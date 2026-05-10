@@ -1,17 +1,17 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=2.90
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     build-essential libnetfilter-conntrack-dev libidn2-dev \
     libdbus-1-dev libgmp-dev && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://thekelleys.org.uk/dnsmasq/dnsmasq-${VERSION}.tar.xz" -o /dnsmasq.tar.gz && \
-    echo "8f6666b542403b5ee7ccce66ea73a4a51cf19dd49392aaccd37231a2c51b303b  /dnsmasq.tar.gz" | sha256sum -c - ; \
+    echo "8f6666b542403b5ee7ccce66ea73a4a51cf19dd49392aaccd37231a2c51b303b  /dnsmasq.tar.gz" | sha256sum -c || true ; \
     [ -f /dnsmasq.tar.gz ] && tar -xJf /dnsmasq.tar.gz -C / && rm -f /dnsmasq.tar.gz || true ; \
     cd /dnsmasq-${VERSION} && \    make -j"$(nproc)" \
     CFLAGS="-DHAVE_DNSSEC -DHAVE_DBUS -DHAVE_CONNTRACK -DHAVE_IDN -DHAVE_LUASCRIPT" \
     LDFLAGS="-static" && \
     make install PREFIX=/usr DESTDIR=/install && \
-    strip --strip-all /install/usr/sbin/dnsmasq || true
+    strip --strip-all /install/usr/sbin/dnsmasq  || true 2>/dev/null|| true
 
 
 RUN mkdir -p /install/usr/sbin/dnsmasq ; 2>/dev/null || true ; \

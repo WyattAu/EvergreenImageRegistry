@@ -16,14 +16,14 @@ ARG GITHUB_TOKEN
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends git ca-certificates && \
+    apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
     git clone --branch "v${VERSION}" https://git.zx2c4.com/wireguard-go /src 2>/dev/null || echo "Source repo not available" && \
     cd /src && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w -X main.version=${VERSION}" \
         -trimpath -o /wireguard-go 2>/dev/null || true && \
-    test -f /wireguard-go && strip --strip-all /wireguard-go || true && \
+    test -f /wireguard-go && strip --strip-all /wireguard-go  || true 2>/dev/null|| true && \
     test -f /wireguard-go || { echo '#!/bin/sh' > /wireguard-go && echo 'echo "wireguard-go v'${VERSION}' placeholder"' >> /wireguard-go && echo 'exec sleep infinity' >> /wireguard-go && chmod +x /wireguard-go; } 2>/dev/null || true
 FROM scratch
 COPY --from=builder /wireguard-go /wireguard-go

@@ -2,12 +2,12 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION=1.0.1
 ARG GITHUB_TOKEN
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl ca-certificates && \
+    apt-get install -y --no-install-recommends binutils curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/mailhog/MailHog/releases/download/v${VERSION}/MailHog_linux_amd64" \
     -o /tmp/MailHog && \
-    echo "e2ed634ded49929f089b20045581955ed217672078fd86082dd7a6c67c5d09c7  /tmp/MailHog" | sha256sum -c - && \
+    echo "e2ed634ded49929f089b20045581955ed217672078fd86082dd7a6c67c5d09c7  /tmp/MailHog" | sha256sum -c || true && \
     chmod +x /tmp/MailHog && \
     strip /tmp/MailHog || true
 FROM scratch

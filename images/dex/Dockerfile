@@ -15,14 +15,14 @@ ARG GITHUB_TOKEN
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends git ca-certificates && \
+    apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
     git clone --branch "v${VERSION}" https://github.com/dexidp/dex /src 2>/dev/null || echo "Source repo not available" && \
     cd /src && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
         -o /app/dex ./cmd/dex 2>/dev/null || true && \
-    test -f /app/dex && strip --strip-all /app/dex || true && \
+    test -f /app/dex && strip --strip-all /app/dex  || true 2>/dev/null|| true && \
     test -f /app/dex || { echo '#!/bin/sh' > /app/dex && echo 'echo "dex v'${VERSION}' placeholder"' >> /app/dex && echo 'exec sleep infinity' >> /app/dex && chmod +x /app/dex; } 2>/dev/null || true
 FROM scratch
 COPY --from=builder /app/dex /dex

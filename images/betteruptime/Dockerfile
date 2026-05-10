@@ -16,7 +16,7 @@ ARG VERSION=0.2.0
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends go-1.23-go git ca-certificates && \
+    apt-get install -y --no-install-recommends binutils go-1.23-go git ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     mkdir -p /build/cmd ; \
     cat > /build/cmd/betteruptime.go <<'GOEOF'

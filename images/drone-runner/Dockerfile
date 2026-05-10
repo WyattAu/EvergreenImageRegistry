@@ -9,7 +9,7 @@ RUN apt-get update && \
     "https://github.com/harness/drone-runner-exec/releases/download/v${VERSION}/drone-runner-exec_linux_amd64.tar.gz" \
     -o /tmp/archive.tar.gz && \
     tar -xzf /tmp/archive.tar.gz -C /tmp && \
-    strip /tmp/drone-runner-exec && \
+    strip /tmp/drone-runner-exec  || true&& \
     chmod +x /tmp/drone-runner-exec
 FROM scratch
 COPY --from=downloader /tmp/drone-runner-exec /usr/local/bin/drone-runner-exec

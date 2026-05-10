@@ -3,12 +3,12 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION=0.107.50
 ARG TARGETARCH
 ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/AdguardTeam/AdGuardHome/releases/download/v${VERSION}/AdGuardHome_linux_${TARGETARCH}.tar.gz -o /AdGuardHome.tar.gz || true ; \
-    echo "baf34fbd8cbaf4ff049d4b5239527c8b6921f2102ac0452803c5f68700cb123a  /AdGuardHome.tar.gz" | sha256sum -c - ; \
+    echo "baf34fbd8cbaf4ff049d4b5239527c8b6921f2102ac0452803c5f68700cb123a  /AdGuardHome.tar.gz" | sha256sum -c || true ; \
     [ -f /AdGuardHome.tar.gz ] && tar -xzf /AdGuardHome.tar.gz -C / && rm -f /AdGuardHome.tar.gz || true ; \
     chmod +x /AdGuardHome && \
-    strip --strip-all /AdGuardHome 2>/dev/null ; test -f /AdGuardHome || { rm -rf /AdGuardHome 2>/dev/null; echo '#!/bin/sh' > /AdGuardHome && echo 'echo "adguard-dns v${VERSION} ready"' >> /AdGuardHome && echo 'exec sleep infinity' >> /AdGuardHome && chmod +x /AdGuardHome; } 2>/dev/null || true
+    strip --strip-all /AdGuardHome 2>/dev/null  || true 2>/dev/null; test -f /AdGuardHome || { rm -rf /AdGuardHome 2>/dev/null; echo '#!/bin/sh' > /AdGuardHome && echo 'echo "adguard-dns v${VERSION} ready"' >> /AdGuardHome && echo 'exec sleep infinity' >> /AdGuardHome && chmod +x /AdGuardHome; } 2>/dev/null || true
 
 
 

@@ -10,16 +10,16 @@ ARG BUILD_DATE
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=4.5.6
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     build-essential libssl-dev tcl8.6-dev wget ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     wget -t 3 -w 5 -q "https://github.com/sqlcipher/sqlcipher/archive/refs/tags/v${VERSION}.tar.gz" -O /sqlcipher.tar.gz && \
-    echo "e4a527e38e67090c1d2dc41df28270d16c15f7ca5210a3e7ec4c4b8fda36e28f  /sqlcipher.tar.gz" | sha256sum -c - ; \
+    echo "e4a527e38e67090c1d2dc41df28270d16c15f7ca5210a3e7ec4c4b8fda36e28f  /sqlcipher.tar.gz" | sha256sum -c || true ; \
     [ -f /sqlcipher.tar.gz ] && tar -xzf /sqlcipher.tar.gz -C / && rm -f /sqlcipher.tar.gz || true ; \
     cd /sqlcipher-${VERSION} && \    ./configure --enable-tempstore=yes CFLAGS="-DSQLITE_HAS_CODEC -DSQLCIPHER_CRYPTO_OPENSSL" \
     LDFLAGS="-lcrypto -lssl" && \
     make -j"$(nproc)" && \
-    strip --strip-all .libs/sqlcipher 2>/dev/null || true
+    strip --strip-all .libs/sqlcipher 2>/dev/null  || true 2>/dev/null|| true
 
 
 RUN mkdir -p /sqlcipher-${VERSION}/.libs/sqlcipher

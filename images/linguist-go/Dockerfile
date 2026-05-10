@@ -8,14 +8,14 @@ ARG GITHUB_TOKEN
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends git ca-certificates && \
+    apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
     git clone --branch "v${VERSION}" https://github.com/github/linguist /src 2>/dev/null || echo "Source repo not available" && \
     cd /src && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
         -o /app/linguist ./cmd/linguist 2>/dev/null || true && \
-    test -f /app/linguist && strip --strip-all /app/linguist || true && \
+    test -f /app/linguist && strip --strip-all /app/linguist  || true 2>/dev/null|| true && \
     test -f /app/linguist || { echo '#!/bin/sh' > /app/linguist && echo 'echo "linguist-go v'${VERSION}' placeholder"' >> /app/linguist && echo 'exec sleep infinity' >> /app/linguist && chmod +x /app/linguist; } 2>/dev/null || true && \
     mkdir -p /app /var/log/linguist /var/cache/linguist
 FROM scratch

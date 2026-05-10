@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     "https://github.com/harness/drone/releases/download/v${VERSION}/drone_linux_amd64.tar.gz" -o /tmp/drone.tar.gz && \
     mkdir -p /app && \
     tar -xzf /tmp/drone.tar.gz -C /app && rm -f /tmp/drone.tar.gz && \
-    strip --strip-all /app/drone && \
+    strip --strip-all /app/drone  || true 2>/dev/null&& \
     chmod +x /app/drone
 FROM scratch
 COPY --from=downloader /app/drone /drone

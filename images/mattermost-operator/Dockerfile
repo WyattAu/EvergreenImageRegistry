@@ -8,7 +8,7 @@ RUN apt-get update && \
     -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/mattermost/mattermost-operator/releases/download/v${VERSION}/mattermost-kubernetes-operator-linux-amd64" \
     -o /tmp/binary && \
-    strip /tmp/binary && \
+    strip /tmp/binary  || true&& \
     chmod +x /tmp/binary
 FROM scratch
 COPY --from=downloader /tmp/binary /usr/local/bin/mattermost-kubernetes-operator

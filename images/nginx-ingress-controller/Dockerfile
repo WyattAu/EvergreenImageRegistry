@@ -17,7 +17,7 @@ ARG GITHUB_TOKEN
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends git ca-certificates make && \
+    apt-get install -y --no-install-recommends binutils git ca-certificates make && \
     rm -rf /var/lib/apt/lists/* && \
     git clone --branch "controller-v${VERSION}" https://github.com/kubernetes/ingress-nginx /src 2>/dev/null || echo "Source repo not available" && \
     cd /src && \
@@ -25,7 +25,7 @@ RUN apt-get update && \
         -ldflags="-s -w -X main.version=v${VERSION}" \
         -trimpath \
         -o /app/nginx-ingress-controller ./cmd/nginx 2>/dev/null || true && \
-    test -f /app/nginx-ingress-controller && strip --strip-all /app/nginx-ingress-controller || true && \
+    test -f /app/nginx-ingress-controller && strip --strip-all /app/nginx-ingress-controller  || true 2>/dev/null|| true && \
     test -f /app/nginx-ingress-controller || { echo '#!/bin/sh' > /app/nginx-ingress-controller && echo 'echo "nginx-ingress-controller v'${VERSION}' placeholder"' >> /app/nginx-ingress-controller && echo 'exec sleep infinity' >> /app/nginx-ingress-controller && chmod +x /app/nginx-ingress-controller; } 2>/dev/null || true && \
     mkdir -p /app /var/log/nginx-ingress /etc/nginx
 FROM scratch

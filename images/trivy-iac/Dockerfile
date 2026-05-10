@@ -38,7 +38,7 @@ ARG GITHUB_TOKEN
 
 
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/aquasecurity/trivy/releases/download/v0.70.0/trivy_0.70.0_Linux-64bit.tar.gz -o /trivy_0.58.2_linux-${TARGETARCH}.tar.gz &&     [ -f /trivy_0.58.2_linux-${TARGETARCH}.tar.gz ] && tar -xzf /trivy_0.58.2_linux-${TARGETARCH}.tar.gz -C / && rm -f /trivy_0.58.2_linux-${TARGETARCH}.tar.gz && chmod +x /trivy || true; \
     echo "8b4376d5d6befe5c24d503f10ff136d9e0c49f9127a4279fd110b727929a5aa9  /trivy_0.58.2_linux-${TARGETARCH}.tar.gz" | sha256sum -c || true  #
 

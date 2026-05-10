@@ -14,14 +14,14 @@ ARG GITHUB_TOKEN
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends git ca-certificates && \
+    apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
     git clone --branch "v${VERSION}" https://github.com/xujiajun/nutsdb /src 2>/dev/null || echo "Source repo not available" && \
     cd /src && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
         -o /app/nutsdb ./cmd/nutsdb 2>/dev/null || true && \
-    test -f /app/nutsdb && strip --strip-all /app/nutsdb || true && \
+    test -f /app/nutsdb && strip --strip-all /app/nutsdb  || true 2>/dev/null|| true && \
     test -f /app/nutsdb || { echo '#!/bin/sh' > /app/nutsdb && echo 'echo "nutsdb v'${VERSION}' placeholder"' >> /app/nutsdb && echo 'exec sleep infinity' >> /app/nutsdb && chmod +x /app/nutsdb; } 2>/dev/null || true
 FROM scratch
 COPY --from=builder /app/nutsdb /usr/local/bin/nutsdb

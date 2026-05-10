@@ -4,7 +4,7 @@ ARG TARGETARCH
 ARG VERSION=2.9.1
 ARG GITHUB_TOKEN
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl ca-certificates && \
+    apt-get install -y --no-install-recommends binutils curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://github.com/gotify/server/releases/download/v${VERSION}/gotify-linux-${TARGETARCH}" \

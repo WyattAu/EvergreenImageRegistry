@@ -6,7 +6,7 @@ ARG TARGETARCH
 ARG VERSION=0.4.36
 ARG GITHUB_TOKEN
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl ca-certificates && \
+    apt-get install -y --no-install-recommends binutils curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v${VERSION}/grpc_health_probe-linux-${TARGETARCH} -o /grpc_health_probe && \
     chmod +x /grpc_health_probe && \

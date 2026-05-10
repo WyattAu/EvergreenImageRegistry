@@ -11,7 +11,7 @@ ARG BUILD_DATE
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
 ARG VERSION=Release48
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     build-essential cmake libssl-dev && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/pymumu/smartdns/archive/refs/tags/${VERSION}.tar.gz -o /smartdns.tar.gz && \
@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mkdir -p /smartdns-${VERSION}/build ; \
     cd /smartdns-${VERSION}/build && \    cmake .. -DPREFIX=/usr -DENABLE_SYSTEMD=OFF && \
     make -j"$(nproc)" && \
-    strip --strip-all /smartdns-${VERSION}/src/smartdns || true && \
+    strip --strip-all /smartdns-${VERSION}/src/smartdns  || true 2>/dev/null|| true && \
     mkdir -p /smartdns-${VERSION}/src/smartdns
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream

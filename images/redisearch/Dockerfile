@@ -13,11 +13,11 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG GITHUB_TOKEN
 ARG VERSION=2.8.13
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     build-essential cmake curl ca-certificates git python3 && rm -rf /var/lib/apt/lists/* || true && \
     git clone --branch v${VERSION}  || echo "Source repo not available - using placeholder" && \
-    --recursive https://github.com/RediSearch/RediSearch.git /tmp/redisearch-src ; cd /tmp/redisearch-src ; make -j"$(nproc)" ; strip --strip-all /tmp/redisearch-src/bin/redisearch.so 2>/dev/null || true && \
-    git clone --recursive https://github.com/RediSearch/RediSearch.git /tmp/redisearch-src ; cd /tmp/redisearch-src ; make -j"$(nproc)" ; strip --strip-all /tmp/redisearch-src/bin/redisearch.so 2>/dev/null || true
+    --recursive https://github.com/RediSearch/RediSearch.git /tmp/redisearch-src ; cd /tmp/redisearch-src ; make -j"$(nproc)" ; strip --strip-all /tmp/redisearch-src/bin/redisearch.so 2>/dev/null  || true 2>/dev/null|| true && \
+    git clone --recursive https://github.com/RediSearch/RediSearch.git /tmp/redisearch-src ; cd /tmp/redisearch-src ; make -j"$(nproc)" ; strip --strip-all /tmp/redisearch-src/bin/redisearch.so 2>/dev/null  || true 2>/dev/null|| true
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS redis
 RUN apt-get update && apt-get install -y --no-install-recommends \
     redis-server ca-certificates && \

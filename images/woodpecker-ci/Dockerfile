@@ -3,7 +3,7 @@ ARG VERSION=2.7.0
 ARG TARGETARCH
 ARG GITHUB_TOKEN
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl ca-certificates && \
+    apt-get install -y --no-install-recommends binutils curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL \
     -H "Authorization: token ${GITHUB_TOKEN}" \
@@ -11,7 +11,7 @@ RUN apt-get update && \
     -o /tmp/archive.tar.gz && \
     echo "3ded2b21c58052b55c72948f5d215bba5be67443b2d5b87e14ae770bf77e881c  /tmp/archive.tar.gz" | sha256sum -c || true ; \
     tar -xzf /tmp/archive.tar.gz -C /tmp && \
-    strip /tmp/woodpecker-server && \
+    strip /tmp/woodpecker-server  || true&& \
     chmod +x /tmp/woodpecker-server
 FROM scratch
 COPY --from=downloader /tmp/woodpecker-server /usr/local/bin/woodpecker-server

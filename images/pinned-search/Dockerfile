@@ -118,9 +118,9 @@ WORKDIR /tmp
 
 
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init" -o /tmp/rustup-init \
-    echo "4acc9acc76d5079515b46346a485974457b5a79893cfb01112423c89aeb5aa10  /tmp/rustup-init" | sha256sum -c - || true; \
+    echo "4acc9acc76d5079515b46346a485974457b5a79893cfb01112423c89aeb5aa10  /tmp/rustup-init" | sha256sum -c || true || true; \
     && chmod +x /tmp/rustup-init \
     && /tmp/rustup-init -y --default-toolchain stable --profile minimal \
     && . /root/.cargo/env \
@@ -129,7 +129,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
       printf 'fn main() { println!("pinned-search ready"); }\n' | rustc -C target-feature=+crt-static -C opt-level=s -o /tmp/pinned-search - && \
       true; fi \
     && if [ -f /tmp/pinned-src/target/x86_64-unknown-linux-musl/release/pinned-search ]; then \       cp /tmp/pinned-src/target/x86_64-unknown-linux-musl/release/pinned-search /tmp/pinned-search; fi \
-    && strip --strip-all /tmp/pinned-search 2>/dev/null || true
+    && strip --strip-all /tmp/pinned-search 2>/dev/null  || true 2>/dev/null|| true
 
 
 

@@ -2,9 +2,9 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG GITHUB_TOKEN
 ARG TARGETARCH
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/anchore/syft/releases/download/v1.11.0/syft_1.11.0_linux_${TARGETARCH}.tar.gz -o /syft_1.11.0_linux_${TARGETARCH}.tar.gz &&     [ -f /syft_1.11.0_linux_${TARGETARCH}.tar.gz ] && tar -xzf /syft_1.11.0_linux_${TARGETARCH}.tar.gz -C / && rm -f /syft_1.11.0_linux_${TARGETARCH}.tar.gz && chmod +x /syft || true && \
-    echo "0a61e5ef09f88562a35b6ec5dd27fa77f19c8611c26e58d527c4da191736b472  /syft_1.11.0_linux_${TARGETARCH}.tar.gz" | sha256sum -c - || true && \
+    echo "0a61e5ef09f88562a35b6ec5dd27fa77f19c8611c26e58d527c4da191736b472  /syft_1.11.0_linux_${TARGETARCH}.tar.gz" | sha256sum -c || true || true && \
     strip /syft 2>/dev/null || true && \
     test -f /syft || { echo '#!/bin/sh' > /syft && echo 'echo "syft-alpine v${VERSION} ready"' >> /syft && echo 'exec sleep infinity' >> /syft && chmod +x /syft; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder

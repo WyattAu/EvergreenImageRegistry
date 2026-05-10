@@ -1,11 +1,11 @@
 ARG VERSION=v1.1.4
 
-FROM golang:${VERSION} AS upstream
+FROM golang:1.22 AS upstream
 
 FROM golang@sha256:b54cbf583d390341599d7bcbc062425c081105cc5ef6d170ced98ef9d047c716 AS builder
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
-RUN GOARCH=${GOARCH} go install golang.org/x/vuln/cmd/govulncheck@latest
+RUN GOARCH=${GOARCH} go install golang.org/x/vuln/cmd/govulncheck@${VERSION}
 
 
 FROM scratch

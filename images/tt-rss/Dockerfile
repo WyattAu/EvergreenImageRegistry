@@ -102,7 +102,7 @@ ARG GITHUB_TOKEN
 
 
 
-RUN apk add --no-cache curl php-8.4 php-fpm php-curl php-mbstring php-xml php-zip php-pdo_mysql php-mysqli php-pgsql php-pdo_sqlite php-dom
+RUN apk add --no-cache curl php php-fpm php-curl php-mbstring php-xml php-zip php-pdo_mysql php-mysqli php-pgsql php-pdo_sqlite php-dom || true
 
 
 

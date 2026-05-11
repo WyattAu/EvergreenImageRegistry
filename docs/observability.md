@@ -37,8 +37,10 @@ services:
 
 ## Dockerfile HEALTHCHECK Instruction
 
-Every image in the registry includes a `HEALTHCHECK` instruction in its `Dockerfile`. This provides native health
-status reporting to container runtimes without requiring external orchestration.
+Images in the registry use one of two health-check strategies (see ADR-006):
+
+1. **HTTP probe images**: Images serving HTTP traffic expose `/livez`, `/readyz`, and `/startupz` endpoints on port 9101. These are validated via Kubernetes probes or a health-shim sidecar.
+2. **HEALTHCHECK NONE**: Images built `FROM scratch` or `distroless` that have no shell use `HEALTHCHECK NONE` in the Dockerfile. Health verification is delegated to the orchestrator.
 
 ### HTTP Application Images
 
@@ -67,7 +69,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
 
 ### FROM scratch Images
 
-Images built `FROM scratch` have no shell or utilities available, so they use `HEALTHCHECK NONE`:
+Images built `FROM scratch` have no shell or utilities available, so they use `HEALTHCHECK NONE`. Health verification relies on the health-shim sidecar or Kubernetes-native probes:
 
 ```dockerfile
 HEALTHCHECK NONE

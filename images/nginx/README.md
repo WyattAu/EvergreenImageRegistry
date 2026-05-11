@@ -16,19 +16,19 @@
 
 | ID | Constraint | Status | Notes |
 |----|-----------|--------|-------|
-| C001 | ✅ | Non-root (USER 65534) |
-| C002 | ✅ | Read-only (runtime) |
-| C003 | ✅ | No shell |
-| C004 | ✅ | No package manager |
-| C005 | ✅ | Static binary |
-| C006 | ⚠️ | Partially stripped |
-| C007 | ⚠️ | CI/CD scanning |
-| C008 | ⚠️ | CI/CD signing |
-| C009 | ⚠️ | CI/CD SBOM |
-| C010 | ✅ | stub_status |
-| C011 | ✅ | Graceful shutdown |
-| C012 | ✅ | No secrets |
-| C013 | ✅ | OCI |
+| C001 | PASS | Non-root (USER 65532) |
+| C002 | PASS | Read-only (runtime) |
+| C003 | PASS | No shell |
+| C004 | PASS | No package manager |
+| C005 | PASS | Static binary |
+| C006 | WARN | Partially stripped |
+| C007 | WARN | CI/CD scanning |
+| C008 | WARN | CI/CD signing |
+| C009 | WARN | CI/CD SBOM |
+| C010 | PASS | stub_status |
+| C011 | PASS | Graceful shutdown |
+| C012 | PASS | No secrets |
+| C013 | PASS | OCI |
 
 **Score: 10/13 (77%)**
 
@@ -59,10 +59,10 @@ curl http://localhost/health_status.html
 
 | Test | Result |
 |------|--------|
-| Non-root | ✅ UID 65534 |
-| No shell | ✅ |
-| No package manager | ✅ |
-| Static binary | ⚠️ Most |
-| Health check | ✅ |
+| Non-root | PASS UID 65532 |
+| No shell | PASS |
+| No package manager | PASS |
+| Static binary | WARN Most |
+| Health check | PASS |
 
 **END README**

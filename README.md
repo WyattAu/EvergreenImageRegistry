@@ -36,11 +36,12 @@ docker pull ghcr.io/wyattau/evergreen-image-registry/redis@sha256:<digest>
 | HEALTHCHECK instruction       | 100% (998/998)  | Docker best practice       |
 | SBOM (SPDX 2.3)              | 100% (998/998)  | NIST SP 800-218            |
 | Digest-pinned final stages    | 100% (998/998)  | Supply chain integrity     |
+| All-stage FROM digest pinning | 75.3% (1522/2020) | Supply chain integrity  |
 | CAP\_DROP ALL documented      | 100%            | CIS 5.3.1                  |
 | no-new-privileges documented  | 100%            | CIS 5.3.2                  |
 | Multi-stage builds            | 100%            | Attack surface reduction   |
 | SOURCE\_DATE\_EPOCH           | 100%            | Reproducible builds        |
-| No hardcoded secrets          | 100%            | NIST 800-63                |
+| No hardcoded secrets          | 100%            | NIST SP 800-190             |
 
 All images use distroless or wolfi-base final stages. Build tools, compilers, and package managers are never present in the runtime image.
 

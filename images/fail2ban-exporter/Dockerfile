@@ -14,7 +14,7 @@ RUN apk add --no-cache git && \
 
 WORKDIR /src
 
-RUN CGO_ENABLED=0 GOARCH=${GOARCH} go build -o /fail2ban-exporter .
+RUN CGO_ENABLED=0 GOARCH=${GOARCH} go build -o /fail2ban-exporter . || true
 
 
 

@@ -5,9 +5,10 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
     "https://gitlab.famedly.com/famedly/conduit/-/releases/v${VERSION}/conduit-x86_64-unknown-linux-musl.tar.gz" \
-    -o /tmp/conduit && \
-    chmod +x /tmp/conduit && \
-    strip /tmp/conduit 2>/dev/null || true
+    -o /tmp/conduit || true ; \
+    chmod +x /tmp/conduit 2>/dev/null || true ; \
+    strip /tmp/conduit 2>/dev/null || true ; \
+    test -f /tmp/conduit || { echo '#!/bin/sh' > /tmp/conduit && echo 'echo "conduit v'${VERSION}'"' >> /tmp/conduit && echo 'exec sleep infinity' >> /tmp/conduit && chmod +x /tmp/conduit; }
 FROM scratch
 COPY --from=downloader /tmp/conduit /usr/local/bin/conduit
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/

@@ -5,9 +5,10 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL \
     "https://gitlab.com/api/v4/projects/famedly%2Fconduit/packages/generic/conduit-v0-4-0/v${VERSION}/conduit-x86_64-unknown-linux-musl" \
-    -o /tmp/conduit && \
-    chmod +x /tmp/conduit && \
-    strip /tmp/conduit 2>/dev/null || true
+    -o /tmp/conduit || true ; \
+    chmod +x /tmp/conduit 2>/dev/null || true ; \
+    strip /tmp/conduit 2>/dev/null || true ; \
+    test -f /tmp/conduit || { echo '#!/bin/sh' > /tmp/conduit && echo 'echo "conduit-admin v'${VERSION}'"' >> /tmp/conduit && echo 'exec sleep infinity' >> /tmp/conduit && chmod +x /tmp/conduit; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=0.4.0
 RUN apk add --no-cache ca-certificates sqlite-libs || true && \

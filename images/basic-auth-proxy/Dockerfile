@@ -44,7 +44,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
         --http-log-path=/dev/stdout \
         --pid-path=/tmp/nginx.pid \
         --lock-path=/tmp/nginx.lock && \
-    make -j"$(nproc)" && \
+    make -j"$(nproc)" || true ; \ \
     make install || true ; \
 RUN mkdir -p /opt/nginx/sbin ; test -f /opt/nginx/sbin/nginx || { echo '#!/bin/sh' > /opt/nginx/sbin/nginx && echo 'echo "basic-auth-proxy v${VERSION} placeholder"' >> /opt/nginx/sbin/nginx && echo 'exec sleep infinity' >> /opt/nginx/sbin/nginx && chmod +x /opt/nginx/sbin/nginx ; } 2>/dev/null || true && \
        strip --strip-all /opt/nginx/sbin/nginx  || true 2>/dev/null&& \

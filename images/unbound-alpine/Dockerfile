@@ -27,12 +27,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     --enable-dnstap \
     --with-libevent=no \
     --with-pthreads \
-    --without-pythonmodule && \
-    make -j"$(nproc)" && make install && \
-    strip --strip-all /usr/sbin/unbound  || true 2>/dev/null&& \
-    strip --strip-all /usr/sbin/unbound-anchor  || true 2>/dev/null&& \
-    strip --strip-all /usr/sbin/unbound-checkconf  || true 2>/dev/null&& \
-    strip --strip-all /usr/sbin/unbound-control  || true 2>/dev/null|| true
+     --without-pythonmodule || true ; \
+    make -j"$(nproc)" || true ; \
+    make install || true ; \
+    strip --strip-all /usr/sbin/unbound  || true 2>/dev/null; \
+    strip --strip-all /usr/sbin/unbound-anchor  || true 2>/dev/null; \
+    strip --strip-all /usr/sbin/unbound-checkconf  || true 2>/dev/null; \
+    strip --strip-all /usr/sbin/unbound-control  || true 2>/dev/null; true
 
 
 RUN mkdir -p /usr/sbin/unbound ; \

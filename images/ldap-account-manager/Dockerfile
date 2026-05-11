@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=0.9.0
 
 FROM osixia/phpldapadmin:${VERSION} AS upstream
 

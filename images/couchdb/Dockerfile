@@ -1,46 +1,19 @@
+ARG VERSION=3.5.1
 
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-ARG VERSION=3.3.3
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/couchdb/source/3.3.3/apache-couchdb-3.3.3.tar.gz" -o /couchdb.tar.gz || true ; test -f /couchdb.tar.gz || { echo '#!/bin/sh' > /couchdb.tar.gz && echo 'echo "couchdb v${VERSION} ready"' >> /couchdb.tar.gz && echo 'exec sleep infinity' >> /couchdb.tar.gz && chmod +x /couchdb.tar.gz; } && \
-    echo "7a2007b5f673d4be22a25c9a111d9066919d872ddb9135a7dcec0122299bd39e  /couchdb.tar.gz" | sha256sum -c || true || true
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-COPY --from=downloader /couchdb.tar.gz /tmp/couchdb.tar.gz
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        erlang-dev \
-        erlang-base \
-        erlang-asn1 \
-        erlang-crypto \
-        erlang-ssl \
-        erlang-public-key \
-        erlang-syntax-tools \
-        erlang-tools \
-        libmozjs-78-dev \
-        libicu-dev \
-        curl \
-        ca-certificates \
-        make \
-        gcc \
-        g++ && \
-    rm -rf /var/lib/apt/lists/* || true && \
-    [ -f /tmp/couchdb.tar.gz ] && tar -xzf /tmp/couchdb.tar.gz -C /tmp || true ; \
-    cd /tmp/apache-couchdb-3.3.3 &&  \./configure --disable-docs --spidermonkey-version=78 && \
-    make release || true ; & \
-    strip --strip-all /tmp/apache-couchdb-3.3.3/rel/couchdb/bin/*  || true 2>/dev/null|| true && \
-    mkdir -p /opt/couchdb ; \
-    cp -a /tmp/apache-couchdb-3.3.3/rel/couchdb/. /opt/couchdb/
+FROM couchdb:${VERSION} AS upstream
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-ENV HEALTH_CMD="curl -sf http://localhost:5984/_up" \
-    READY_CMD="curl -sf http://localhost:5984/_up" \
-    STARTUP_CMD="curl -sf http://localhost:5984/_up" \
-    EVERGREEN_LOG_LEVEL=info
+ARG VERSION
 
 RUN apk add --no-cache curl procps && \
-    mkdir -p /opt 2>/dev/null || true
-COPY --from=builder /opt/couchdb /opt/couchdb
-RUN mkdir -p /var/lib/couchdb /var/log/couchdb /app  || true ; \
+    adduser -u 65532 -D -s /bin/false couchdb 2>/dev/null || true && \
+    mkdir -p /opt/couchdb /var/lib/couchdb /var/log/couchdb /app 2>/dev/null || true
+
+COPY --from=upstream /opt/couchdb /opt/couchdb
+
+RUN mkdir -p /var/lib/couchdb /var/log/couchdb /app 2>/dev/null || true ; \
     chown -R 65532:65532 /var/lib/couchdb /var/log/couchdb /app /opt/couchdb
+
 ENV COUCHDB_HOME=/opt/couchdb
 ENV PATH="${COUCHDB_HOME}/bin:${PATH}"
 
@@ -52,7 +25,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl 
 ENTRYPOINT ["sh", "-c", "/opt/couchdb/bin/couchdb"]
 LABEL org.opencontainers.image.title="couchdb" \
       org.opencontainers.image.description="CouchDB - document-oriented NoSQL database" \
-      org.opencontainers.image.version="3.3.3" \
+      org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Apache" \
       evergreen.image.tier="1" \
       evergreen.image.category="database" \
@@ -69,7 +42,7 @@ LABEL org.opencontainers.image.title="couchdb" \
       evergreen.hft.pre-stop-delay="5s" \
       evergreen.hft.connection-drain="true" \
       evergreen.hft.sched-policy="SCHED_OTHER" \
-            org.opencontainers.image.source="https://github.com/apache/couchdb"
+      org.opencontainers.image.source="https://github.com/apache/couchdb"
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="true"
 LABEL evergreen.health.type="http"

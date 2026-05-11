@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=v0.16.0
 
 FROM prom/cloudwatch-exporter:${VERSION} AS upstream
 

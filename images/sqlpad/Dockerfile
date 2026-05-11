@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=7.5.7
 
 FROM sqlpad/sqlpad:${VERSION} AS upstream
 

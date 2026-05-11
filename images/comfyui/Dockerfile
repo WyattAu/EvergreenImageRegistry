@@ -1,11 +1,11 @@
 # =============================================================================
 # EVERGREEN HARDENED COMFYUI
-# Generated from template - Version: latest
+# Generated from template - Version: 0.20.1
 # Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=latest
+ARG VERSION=0.20.1
 ARG BUILD_DATE
 
 

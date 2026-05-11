@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=v0.4.10
 
 FROM public.ecr.aws/zinc/zincsearch:${VERSION} AS upstream
 

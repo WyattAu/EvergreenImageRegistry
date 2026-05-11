@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=1.93
 
 FROM yacy/yacy_search_server:${VERSION} AS upstream
 

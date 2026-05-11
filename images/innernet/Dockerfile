@@ -14,4 +14,8 @@ ENTRYPOINT ["/bin/sh", "-c", "echo 'innernet is archived - see https://github.co
 LABEL org.opencontainers.image.title="innernet" \
       org.opencontainers.image.description="DEPRECATED: innernet project archived. Alternative: headscale." \
       evergreen.image.status="deprecated" \
-      evergreen.constraint.scratch="true"
+      evergreen.constraint.scratch="true" \
+      evergreen.security.cap-drop="ALL" \
+      evergreen.security.no-new-privileges="true" \
+      evergreen.security.read-only-rootfs="true" \
+      evergreen.security.seccomp="runtime-default"

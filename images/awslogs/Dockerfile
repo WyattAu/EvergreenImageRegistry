@@ -6,11 +6,11 @@
 # Multi-stage Python build with frozen binary extraction
 # =============================================================================
 
-ARG VERSION=0.16.0
+ARG VERSION=0.15.0
 ARG BUILD_DATE
 ARG PYTHON_VERSION=3.12.2
 FROM python@sha256:5dc6f84b5e97bfb0c90abfb7c55f3cacc2cb6687c8f920b64a833a2219875997 AS builder
-ARG VERSION=0.16.0
+ARG VERSION=0.15.0
 RUN pip install --break-system-packages --no-cache-dir --prefix=/install awslogs==${VERSION} || true ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/awslogs || { echo '#!/bin/sh' > /usr/local/bin/awslogs && echo 'echo "awslogs v${VERSION} placeholder"' >> /usr/local/bin/awslogs && echo 'exec sleep infinity' >> /usr/local/bin/awslogs && chmod +x /usr/local/bin/awslogs ; } || true && \
     find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
@@ -22,7 +22,7 @@ COPY --from=builder /install /install
 RUN find /install -type f -name "*.so" -exec strip --strip-unneeded {} \ || true && \
     mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-ARG VERSION=0.16.0
+ARG VERSION=0.15.0
 
 RUN addgroup -S -g 65532 awslogs 2>/dev/null || true && \
     adduser -u 65532 -G awslogs -D -s /bin/false awslogs || true && \
@@ -43,7 +43,7 @@ ENV AWSLOGS_VERSION=${VERSION} \
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["awslogs"]
 LABEL org.opencontainers.image.title="awslogs" \
-      org.opencontainers.image.version="0.16.0" \
+      org.opencontainers.image.version="0.15.0" \
       org.opencontainers.image.vendor="AWS" \
       org.opencontainers.image.description="AWS CloudWatch Logs CLI client" \
       evergreen.image.tier="1" \

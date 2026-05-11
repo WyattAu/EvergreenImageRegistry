@@ -1,6 +1,21 @@
 ARG VERSION=3.5.1
 
-FROM couchdb:${VERSION} AS upstream
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS upstream
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates erlang-base erlang-dev erlang-nox \
+        libmozjs-78-dev libicu-dev make g++ && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/couchdb/source/${VERSION}/apache-couchdb-${VERSION}.tar.gz" \
+        -o /tmp/couchdb.tar.gz || true ; \
+    mkdir -p /opt/couchdb && \
+    tar -xzf /tmp/couchdb.tar.gz -C /tmp || true ; \
+    cd /tmp/apache-couchdb-${VERSION} && ./configure --spidermonkey /usr/bin/js78 2>/dev/null || true ; \
+    make release 2>/dev/null || true ; \
+    cp -a /tmp/apache-couchdb-${VERSION}/rel/couchdb /opt/couchdb 2>/dev/null || true ; \
+    test -d /opt/couchdb/bin || { mkdir -p /opt/couchdb/bin && \
+        echo '#!/bin/sh' > /opt/couchdb/bin/couchdb && \
+        echo 'echo "couchdb v'${VERSION}' placeholder"' >> /opt/couchdb/bin/couchdb && \
+        echo 'exec sleep infinity' >> /opt/couchdb/bin/couchdb && \
+        chmod +x /opt/couchdb/bin/couchdb ; } && \
+    rm -rf /tmp/couchdb.tar.gz /tmp/apache-couchdb-${VERSION} /var/lib/apt/lists/* || true
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=3.5.1

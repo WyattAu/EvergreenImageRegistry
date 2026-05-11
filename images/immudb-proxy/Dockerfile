@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=v1.11.0
 
 FROM ghcr.io/codenotary/immudb:${VERSION} AS upstream
 

@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=1.300066.1
 
 FROM amazon/cloudwatch-agent:${VERSION} AS upstream
 

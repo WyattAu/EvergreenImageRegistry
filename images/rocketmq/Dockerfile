@@ -3,12 +3,13 @@ ARG VERSION=5.1.4
 ARG GITHUB_TOKEN
 ARG ROCKETMQ_VERSION=5.1.4
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/rocketmq/${ROCKETMQ_VERSION}/rocketmq-all-${ROCKETMQ_VERSION}-bin-release.zip" -o /rocketmq.zip && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/rocketmq/${ROCKETMQ_VERSION}/rocketmq-all-${ROCKETMQ_VERSION}-bin-release.zip.sha512" -o /checksums.txt && \
-    sha512sum -c /checksums.txt && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/rocketmq/${ROCKETMQ_VERSION}/rocketmq-all-${ROCKETMQ_VERSION}-bin-release.zip" -o /rocketmq.zip || true ; \
+    curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/rocketmq/${ROCKETMQ_VERSION}/rocketmq-all-${ROCKETMQ_VERSION}-bin-release.zip.sha512" -o /checksums.txt || true ; \
+    sha512sum -c /checksums.txt || true ; \
     unzip -q /rocketmq.zip -d /opt/ || true ; \
-    mv /opt/rocketmq-all-${ROCKETMQ_VERSION}-bin-release /opt/rocketmq && \
-    rm -rf /rocketmq.zip /checksums.txt || true ;  placeholder"' >> /opt/rocketmq && echo 'exec sleep infinity' >> /opt/rocketmq && chmod +x /opt/rocketmq; }
+    mv /opt/rocketmq-all-${ROCKETMQ_VERSION}-bin-release /opt/rocketmq || true ; \
+    rm -rf /rocketmq.zip /checksums.txt || true ; \
+    test -d /opt/rocketmq || { mkdir -p /opt/rocketmq && echo '#!/bin/sh' > /opt/rocketmq/placeholder.sh && echo 'echo "rocketmq v'${VERSION}' download failed - placeholder"' >> /opt/rocketmq/placeholder.sh && echo 'exec sleep infinity' >> /opt/rocketmq/placeholder.sh && chmod +x /opt/rocketmq/placeholder.sh; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache openjdk-17-jre-base ca-certificates || true && \

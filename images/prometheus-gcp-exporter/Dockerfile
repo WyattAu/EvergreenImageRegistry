@@ -1,4 +1,4 @@
-ARG VERSION=latest
+ARG VERSION=v0.16.7
 
 FROM gcr.io/google-containers/prometheus-to-sd:${VERSION} AS upstream
 

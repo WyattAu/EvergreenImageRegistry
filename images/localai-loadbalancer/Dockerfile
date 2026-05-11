@@ -13,7 +13,6 @@ ARG VERSION=v4.1.3
 RUN apk add --no-cache ca-certificates
 
 COPY --from=upstream /build/localai-loadbalancer /usr/local/bin/localai-loadbalancer
-    echo '#!/bin/sh' > /usr/local/bin/localai-loadbalancer && echo 'echo "localai-loadbalancer placeholder"' >> /usr/local/bin/localai-loadbalancer
 
 RUN chmod +x /usr/local/bin/localai-loadbalancer && mkdir -p /app /var/log/localai-loadbalancer /var/cache/localai-loadbalancer && chown -R 65532:65532 /app /var/log/localai-loadbalancer /var/cache/localai-loadbalancer
 

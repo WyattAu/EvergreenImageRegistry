@@ -6,4 +6,8 @@ HEALTHCHECK NONE
 ENTRYPOINT ["/bin/sh", "-c", "echo 'xteve: upstream releases removed - placeholder' && sleep 3600"]
 LABEL org.opencontainers.image.title="xteve" \
       org.opencontainers.image.description="DEPRECATED: upstream removed" \
-      evergreen.image.status="deprecated"
+      evergreen.image.status="deprecated" \
+      evergreen.security.cap-drop="ALL" \
+      evergreen.security.no-new-privileges="true" \
+      evergreen.security.read-only-rootfs="true" \
+      evergreen.security.seccomp="runtime-default"

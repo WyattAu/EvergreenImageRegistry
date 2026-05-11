@@ -11,4 +11,11 @@ WORKDIR /app
 HEALTHCHECK NONE
 ENTRYPOINT ["/bin/sh", "-c", "echo 'rethinkdb: upstream image removed - placeholder' && sleep 3600"]
 
-LABEL org.opencontainers.image.title="rethinkdb"       org.opencontainers.image.description="DEPRECATED: upstream removed. Needs replacement."       evergreen.image.status="deprecated"       evergreen.constraint.scratch="true"
+LABEL org.opencontainers.image.title="rethinkdb" \
+      org.opencontainers.image.description="DEPRECATED: upstream removed. Needs replacement." \
+      evergreen.image.status="deprecated" \
+      evergreen.constraint.scratch="true" \
+      evergreen.security.cap-drop="ALL" \
+      evergreen.security.no-new-privileges="true" \
+      evergreen.security.read-only-rootfs="true" \
+      evergreen.security.seccomp="runtime-default"

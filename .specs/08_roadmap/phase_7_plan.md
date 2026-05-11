@@ -183,7 +183,7 @@ if [ "$X" -gt 0 ]; then exit 1; fi
 | Rule | False Positive Trigger | Resolution |
 |------|----------------------|------------|
 | DL4006 | Fires `pip install --no-cache-dir` even when `SHELL ["pip", "install", ...]` is set | Suppressed with `# hadolint ignore=DL4006` |
-| DL3023 | Fires on `COPY --from=builder` in multi-stage builds,误reporting as copy from absolute path | Suppressed with `# hadolint ignore=DL3023` |
+| DL3023 | Fires on `COPY --from=builder` in multi-stage builds, misreporting as copy from absolute path | Suppressed with `# hadolint ignore=DL3023` |
 
 ### Bug 5: C001 Non-Root Test on scratch/distroless
 

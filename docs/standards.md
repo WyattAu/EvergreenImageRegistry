@@ -60,13 +60,9 @@ published. The pipeline SHOULD fail if new vulnerabilities of this severity are 
 
 Images must be stable, performant, and behave predictably in orchestrated environments.
 
-### 3.1. Mandatory Healthchecks
+### 3.1. Mandatory Health Probes
 
-Every image MUST include a `HEALTHCHECK` instruction in its `Dockerfile`. The healthcheck MUST validate the
-application's actual health (e.g., via an API endpoint or a status command), not just whether the process is running.
-
-- Why: This allows container orchestrators like Docker Swarm and Kubernetes to accurately manage the application's
-  lifecycle, enabling features like rolling restarts and self-healing.
+Every image MUST provide a health check mechanism. Images with HTTP endpoints MUST expose `/livez` and `/readyz` probes on port 9101 (via the health-shim sidecar or natively). Images built `FROM scratch` or `distroless` that lack a shell MUST use `HEALTHCHECK NONE` in the Dockerfile, with health verification delegated to the orchestrator (Kubernetes probes or health-shim sidecar). This approach follows ADR-006.
 
 ### 3.2. Immutable Semantic Versioning
 

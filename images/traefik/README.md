@@ -22,19 +22,19 @@ Traefik is a modern HTTP reverse proxy and load balancer designed for microservi
 
 | ID | Constraint | Status | Notes |
 |----|-----------|--------|-------|
-| C001 | ✅ | Non-root (USER 65534) |
-| C002 | ✅ | Read-only filesystem (runtime flag) |
-| C003 | ✅ | No shell in image |
-| C004 | ✅ | No package manager |
-| C005 | ✅ | Static binary |
-| C006 | ✅ | Stripped symbols |
-| C007 | ⚠️ | Zero CVEs CI/CD |
-| C008 | ⚠️ | Image signing CI/CD |
-| C009 | ⚠️ | SBOM generation |
-| C010 | ✅ | Health check at /ping |
-| C011 | ✅ | Signal handling |
-| C012 | ✅ | No embedded secrets |
-| C013 | ✅ | OCI compliant |
+| C001 | PASS | Non-root (USER 65532) |
+| C002 | PASS | Read-only filesystem (runtime flag) |
+| C003 | PASS | No shell in image |
+| C004 | PASS | No package manager |
+| C005 | PASS | Static binary |
+| C006 | PASS | Stripped symbols |
+| C007 | WARN | Zero CVEs CI/CD |
+| C008 | WARN | Image signing CI/CD |
+| C009 | WARN | SBOM generation |
+| C010 | PASS | Health check at /ping |
+| C011 | PASS | Signal handling |
+| C012 | PASS | No embedded secrets |
+| C013 | PASS | OCI compliant |
 
 **Score: 11/13 (85%)**
 
@@ -98,13 +98,13 @@ services:
 
 ### What's Implemented
 
-- ✅ **Non-root execution**: Runs as UID 65534 (nobody)
-- ✅ **No shell**: `/bin/sh` and `/bin/bash` removed
-- ✅ **No package managers**: apt, apk, dnf not present
-- ✅ **Static binary**: Statically linked
-- ✅ **No embedded secrets**: Configuration via files/env vars
-- ✅ **Health check**: Built-in /ping endpoint at port 8080
-- ✅ **Signal handling**: Graceful shutdown
+- Non-root execution: Runs as UID 65532 (nonroot)
+- No shell: `/bin/sh` and `/bin/bash` removed
+- No package managers: apt, apk, dnf not present
+- Static binary: Statically linked
+- No embedded secrets: Configuration via files/env vars
+- Health check: Built-in /ping endpoint at port 8080
+- Signal handling: Graceful shutdown
 
 ### Runtime Security (Apply at deployment)
 
@@ -115,7 +115,7 @@ docker run \
   --tmpfs /tmp \           # Temp files in memory
   --tmpfs /var/cache \      # Cache in memory
   --tmpfs /var/log \      # Logs in memory
-  --user 65534 \            # Non-root
+  --user 65532 \            # Non-root
   --cap-drop ALL \          # Drop all capabilities
   --security-opt no-new-privileges \
   ghcr.io/evergreen/traefik:latest

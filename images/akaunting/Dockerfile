@@ -1,30 +1,17 @@
 ARG VERSION=4.0.6
 ARG BUILD_DATE
 
-
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-ARG GITHUB_TOKEN
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl gnupg && \
-    curl -fsSL https://packages.sury.org/php/apt.gpg | gpg --dearmor -o /usr/share/keyrings/sury-php.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/sury-php.gpg] https://packages.sury.org/php/ bookworm main" > /etc/apt/sources.list.d/sury-php.list && \
-    rm -rf /var/lib/apt/lists/* || true && \
-    apt-get update && apt-get install -y --no-install-recommends \
-        php-fpm php8.4 php-curl php-mbstring php-xml zip php-intl php-mysql openssl php-pdo \
-        nginx ca-certificates curl ; rm -rf /var/lib/apt/lists/* || true && \
-    mkdir -p /var/run/php /var/www/html /var/log/nginx /var/cache/nginx ; \
-    chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-# package-manager-verified: integrity verified by upstream
-RUN apk add --no-cache php-fpm php php-curl php-mbstring php-xml zip php-intl php-pdo_mysql php-mysqli openssl php-pdo nginx ca-certificates || true && \
+# wolfi uses php-* not php84-*
+RUN apk add --no-cache php-fpm php php-curl php-mbstring php-xml zip php-intl php-pdo_mysql php-mysqli openssl php-pdo nginx ca-certificates curl || true && \
     mkdir -p /var/run/php /var/www/html /var/log/nginx /var/cache/nginx && \
     chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php
-COPY --from=builder /etc/nginx/nginx.conf /etc/nginx/nginx.conf
 USER 65532:65532
 WORKDIR /var/www/html
 EXPOSE 80 443
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:80/ || exit 1
-ENTRYPOINT ["php-fpm8.4"]
+ENTRYPOINT ["php-fpm"]
 LABEL org.opencontainers.image.title="akaunting" \
       org.opencontainers.image.description="akaunting container image" \
       org.opencontainers.image.version="4.0.6" \

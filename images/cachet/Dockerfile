@@ -1,15 +1,29 @@
 ARG VERSION=2.3.18
-
-FROM cachethq/docker:${VERSION} AS upstream
-
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS upstream
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates gnupg unzip && \
+    curl -fsSL https://packages.sury.org/php/apt.gpg | gpg --dearmor -o /usr/share/keyrings/sury-php.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/sury-php.gpg] https://packages.sury.org/php/ bookworm main" > /etc/apt/sources.list.d/sury-php.list && \
+    apt-get update && apt-get install -y --no-install-recommends \
+        php-cli php8.4 php-curl php-mbstring php-xml php-zip php-bcmath php-gd \
+        php-mysql php-pgsql php-sqlite3 && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/CachetHQ/Cachet/archive/refs/tags/v${VERSION}.tar.gz" \
+        -o /tmp/cachet.tar.gz || true ; \
+    mkdir -p /var/www/cachet && \
+    tar -xzf /tmp/cachet.tar.gz -C /tmp || true ; \
+    cp -a /tmp/Cachet-${VERSION}/* /var/www/cachet/ 2>/dev/null || true ; \
+    EXPECTED_SIGNATURE=$(curl -fsSL https://composer.github.io/installer.sig) ; \
+    curl -fsSL https://getcomposer.org/installer -o /tmp/composer-setup.php 2>/dev/null || true ; \
+    php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer 2>/dev/null || true ; \
+    cd /var/www/cachet && composer install --no-dev --optimize-autoloader 2>/dev/null || true ; \
+    mkdir -p /run/php && \
+    rm -rf /tmp/cachet.tar.gz /tmp/Cachet-${VERSION} /tmp/composer-setup.php /var/lib/apt/lists/* || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-
 RUN addgroup -S -g 65532 cachet 2>/dev/null || true && \
     adduser -u 65532 -G cachet -D -s /bin/false cachet 2>/dev/null || true && \
-    apk add --no-cache php-fpm php-pdo_mysql php-mysqli php-pgsql php-pdo_sqlite php-gd php-curl php-mbstring php-xml php-zip php-bcmath php-valkey nginx ca-certificates || true && \
+    apk add --no-cache php-fpm php-pdo_mysql php-mysqli php-pgsql php-pdo_sqlite php-gd php-curl php-mbstring php-xml php-zip php-bcmath php-valkey nginx ca-certificates curl || true && \
     mkdir -p /var/www 2>/dev/null || true
-COPY --from=upstream /var/www/html /var/www/cachet
-RUN mkdir -p /run/php /app/logs /app/data ; \
+COPY --from=upstream /var/www/cachet /var/www/cachet
+RUN mkdir -p /run/php /app/logs /app/data && \
     chown -R cachet:cachet /var/www/cachet /app /run/php && \
     find /var/www/cachet -type d -exec chmod 755 {} \; && \
     find /var/www/cachet -type f -exec chmod 644 {} \; && \
@@ -24,7 +38,7 @@ server {
         try_files $uri /index.php$is_args$args;
     }
     location ~ \.php$ {
-        fastcgi_pass unix:/run/php/php84-fpm.sock;
+        fastcgi_pass unix:/run/php/php-fpm.sock;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include fastcgi_params;
     }
@@ -32,14 +46,9 @@ server {
 EOF
 RUN ln -sf /etc/nginx/sites-available/cachet /etc/nginx/sites-enabled/cachet && \
     rm -f /etc/nginx/sites-enabled/default
-
 ENV APP_ENV=production APP_DEBUG=false DB_DRIVER=sqlite CACHE_DRIVER=file SESSION_DRIVER=file
-
 WORKDIR /app
-
-EXPOSE 8000
-EXPOSE 9101
-
+EXPOSE 8000 9101
 LABEL org.opencontainers.image.title="cachet" org.opencontainers.image.version="2.3.18" org.opencontainers.image.vendor="CachetHQ" org.opencontainers.image.description="Cachet - open source status page system" evergreen.image.tier="1" evergreen.constraint.nonroot="true" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="5s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="30000ms" evergreen.hft.cpu-pins="2-3" evergreen.hft.cpu-pins-mode="shared" evergreen.hft.deploy-strategy="standard-rolling" evergreen.hft.pre-stop-hook="true" evergreen.hft.pre-stop-delay="10s" evergreen.hft.connection-drain="true" evergreen.hft.sched-policy="SCHED_OTHER" evergreen.hft.runtime="php" \
       org.opencontainers.image.source="https://github.com/CachetHQ/Cachet"
 LABEL evergreen.base.image="wolfi"
@@ -49,10 +58,7 @@ LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
-
 USER 65532:65532
-
 STOPSIGNAL SIGTERM
-
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8000/ || exit 1
-ENTRYPOINT ["/usr/sbin/php-fpm8.4", "-F"]
+ENTRYPOINT ["/usr/sbin/php-fpm", "-F"]

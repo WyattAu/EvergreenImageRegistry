@@ -1,34 +1,21 @@
-ARG VERSION=1.12.0
-
-FROM cockroachdb/cockroach-operator:v${VERSION} AS upstream
+# WARNING: cockroachdb/cockroach-operator Docker image has been removed (HTTP 404, no tags)
+# This is a placeholder. The upstream no longer provides public images.
+# Alternative: use CockroachDB's built-in SQL instead of a separate operator.
 
 FROM scratch
-COPY --from=upstream /manager /usr/local/bin/cockroach-operator
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
 USER 65532:65532
 WORKDIR /app
-EXPOSE 8080 8443
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/cockroach-operator"]
+ENTRYPOINT ["/bin/sh", "-c", "echo 'crdb-operator: upstream removed - placeholder' && sleep 3600"]
+
 LABEL org.opencontainers.image.title="crdb-operator" \
-      org.opencontainers.image.description="Evergreen hardened CockroachDB Operator - Kubernetes operator for CockroachDB" \
-      org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.vendor="Cockroach Labs" \
-      evergreen.image.status="functional" \
-      evergreen.image.tier="1" \
-      evergreen.image.category="database" \
-      evergreen.constraint.nonroot="true" \
+      org.opencontainers.image.description="DEPRECATED: cockroach-operator upstream removed. Use CockroachDB SQL." \
+      evergreen.image.status="deprecated" \
       evergreen.constraint.scratch="true" \
-            org.opencontainers.image.source="https://github.com/cockroachdb/cockroach"
-
-LABEL evergreen.base.image="scratch"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
-LABEL evergreen.security.cap-drop="ALL"
-LABEL evergreen.security.no-new-privileges="true"
-LABEL evergreen.security.read-only-rootfs="true"
-LABEL evergreen.security.seccomp="runtime-default"
-
-EXPOSE 9101
-STOPSIGNAL SIGTERM
+      evergreen.security.cap-drop="ALL" \
+      evergreen.security.no-new-privileges="true" \
+      evergreen.security.read-only-rootfs="true" \
+      evergreen.security.seccomp="runtime-default"

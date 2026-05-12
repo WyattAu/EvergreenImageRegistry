@@ -1,11 +1,13 @@
 # =============================================================================
-# TEST CONFIGURATION - ALL 1,022 IMAGES
+# TEST CONFIGURATION - ALL 1,013 IMAGES (276 real, 737 stubs)
 # =============================================================================
 # Configuration for test_runner.sh
 # Categories: proxy, database, monitoring, security, devops, messaging,
 #             dns, vpn, search, app, runtime, official
 # Stub images have: binary=none, health_port=0, functional_test=none,
 #                    adversarial_test=false, startup_timeout=0, stub=true
+# Real images have: binary, health_port, version_flag, category,
+#                   functional_test, adversarial_test, startup_timeout
 # =============================================================================
 
 categories:
@@ -1995,14 +1997,13 @@ images:
     startup_timeout: 0
     stub: true
   alertmanager:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /alertmanager
+    health_port: 9093
+    version_flag: "--version"
     category: monitoring
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
   alpine:
     binary: none
     health_port: 0
@@ -2112,14 +2113,13 @@ images:
     startup_timeout: 0
     stub: true
   argo-cd:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /argocd
+    health_port: 8080
+    version_flag: "version"
     category: devops
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
   argo-rollouts:
     binary: none
     health_port: 0
@@ -2130,32 +2130,29 @@ images:
     startup_timeout: 0
     stub: true
   argocd-application-controller:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: argocd-application-controller
+    health_port: 8082
+    version_flag: "version"
     category: devops
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
   argocd-applicationset-controller:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: argocd-applicationset-controller
+    health_port: 8082
+    version_flag: "version"
     category: devops
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
   argocd-notifications:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: argocd-notifications
+    health_port: 8082
+    version_flag: "version"
     category: devops
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
   argocd-redis:
     binary: none
     health_port: 0
@@ -2166,14 +2163,13 @@ images:
     startup_timeout: 0
     stub: true
   argocd-repo-server:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: argocd-repo-server
+    health_port: 8081
+    version_flag: "version"
     category: devops
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
   arm64:
     binary: none
     health_port: 0
@@ -2769,23 +2765,21 @@ images:
     startup_timeout: 0
     stub: true
   conduit:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /usr/local/bin/conduit
+    health_port: 6167
+    version_flag: "--version"
     category: app
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
   conduit-admin:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /usr/local/bin/conduit
+    health_port: 6167
+    version_flag: "--version"
     category: app
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
   convector:
     binary: none
     health_port: 0
@@ -3066,32 +3060,29 @@ images:
     startup_timeout: 0
     stub: true
   dendrite:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /usr/local/bin/dendrite
+    health_port: 8008
+    version_flag: "--version"
     category: app
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
   dendrite-monolith:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /usr/local/bin/dendrite
+    health_port: 8008
+    version_flag: "--version"
     category: app
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
   dendrite-pot:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /usr/local/bin/dendrite
+    health_port: 8008
+    version_flag: "--version"
     category: app
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
   dependabot:
     binary: none
     health_port: 0
@@ -3291,32 +3282,29 @@ images:
     startup_timeout: 0
     stub: true
   drone-agent:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /usr/local/bin/drone-agent
+    health_port: 3000
+    version_flag: "--version"
     category: devops
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
   drone-autoscaler:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /usr/local/bin/drone-autoscaler
+    health_port: 8080
+    version_flag: "--version"
     category: devops
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
   drone-runner:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /usr/local/bin/drone-runner-exec
+    health_port: 3000
+    version_flag: "--version"
     category: devops
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
   druid:
     binary: none
     health_port: 0
@@ -3327,14 +3315,13 @@ images:
     startup_timeout: 0
     stub: true
   duckdb:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /usr/local/bin/duckdb
+    health_port: 5432
+    version_flag: "--version"
     category: database
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
   duplicati:
     binary: none
     health_port: 0
@@ -3399,23 +3386,21 @@ images:
     startup_timeout: 0
     stub: true
   element-web:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: busybox
+    health_port: 80
+    version_flag: ""
     category: app
-    functional_test: none
+    functional_test: proxy
     adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    startup_timeout: 5
   element-x:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: busybox
+    health_port: 80
+    version_flag: ""
     category: app
-    functional_test: none
+    functional_test: proxy
     adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    startup_timeout: 5
   embeddings:
     binary: none
     health_port: 0
@@ -3543,14 +3528,13 @@ images:
     startup_timeout: 0
     stub: true
   falco:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /falco
+    health_port: 9101
+    version_flag: "--version"
     category: security
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
   falco-rules:
     binary: none
     health_port: 0
@@ -3840,41 +3824,37 @@ images:
     startup_timeout: 0
     stub: true
   gitbucket:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: java
+    health_port: 8080
+    version_flag: "-version"
     category: app
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
   gitea-actions:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: gitea
+    health_port: 3000
+    version_flag: "--version"
     category: devops
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
   gitea-editor:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: gitea
+    health_port: 3000
+    version_flag: "--version"
     category: devops
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
   gitea-secure:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: gitea
+    health_port: 3000
+    version_flag: "--version"
     category: devops
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
   gitguardian:
     binary: none
     health_port: 0
@@ -3903,68 +3883,61 @@ images:
     startup_timeout: 0
     stub: true
   gitlab-ce:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /opt/gitlab/bin/gitlab
+    health_port: 80
+    version_flag: "--version"
     category: devops
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 60
   gitlab-ee:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /opt/gitlab/bin/gitlab
+    health_port: 80
+    version_flag: "--version"
     category: devops
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 60
   gitlab-exporter:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: gitlab-exporter
+    health_port: 9171
+    version_flag: "--version"
     category: devops
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
   gitlab-geo:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /opt/gitlab/bin/gitlab-geo
+    health_port: 80
+    version_flag: "--version"
     category: devops
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 60
   gitlab-operator:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /usr/local/bin/gitlab-operator
+    health_port: 8080
+    version_flag: "--version"
     category: devops
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
   gitlab-runner:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: gitlab-runner
+    health_port: 8093
+    version_flag: "--version"
     category: devops
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
   gitlab-runner-alpine:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: gitlab-runner
+    health_port: 8093
+    version_flag: "--version"
     category: devops
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
   gitleaks:
     binary: none
     health_port: 0
@@ -4011,14 +3984,13 @@ images:
     startup_timeout: 0
     stub: true
   gogs:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: gogs
+    health_port: 3000
+    version_flag: "--version"
     category: app
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
   golang-alpine:
     binary: none
     health_port: 0
@@ -4074,14 +4046,13 @@ images:
     startup_timeout: 0
     stub: true
   grafana-image-renderer:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /opt/grafana-image-renderer/build/grafana-image-renderer
+    health_port: 8081
+    version_flag: "--version"
     category: monitoring
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
   grafana-lite:
     binary: none
     health_port: 0
@@ -4200,14 +4171,13 @@ images:
     startup_timeout: 0
     stub: true
   hackmd:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: node
+    health_port: 3000
+    version_flag: "--version"
     category: app
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
   hadolint:
     binary: none
     health_port: 0
@@ -4281,23 +4251,21 @@ images:
     startup_timeout: 0
     stub: true
   hedgedoc-legacy:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: node
+    health_port: 3000
+    version_flag: "--version"
     category: app
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
   heimdall:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: node
+    health_port: 80
+    version_flag: "--version"
     category: app
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
   heimdall-lite:
     binary: none
     health_port: 0
@@ -4578,14 +4546,13 @@ images:
     startup_timeout: 0
     stub: true
   jaeger:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /jaeger-agent
+    health_port: 5775
+    version_flag: "--version"
     category: monitoring
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
   jaeger-agent:
     binary: none
     health_port: 0
@@ -4749,14 +4716,13 @@ images:
     startup_timeout: 0
     stub: true
   k3s:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /k3s
+    health_port: 9101
+    version_flag: "--version"
     category: devops
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
   k3s-agent:
     binary: none
     health_port: 0
@@ -4893,14 +4859,13 @@ images:
     startup_timeout: 0
     stub: true
   kibana:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /opt/kibana/bin/kibana
+    health_port: 5601
+    version_flag: "--version"
     category: monitoring
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
   kibana-oss:
     binary: none
     health_port: 0
@@ -5181,14 +5146,13 @@ images:
     startup_timeout: 0
     stub: true
   logstash:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /opt/logstash/bin/logstash
+    health_port: 9600
+    version_flag: "--version"
     category: monitoring
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
   logstash-oss:
     binary: none
     health_port: 0
@@ -5307,32 +5271,29 @@ images:
     startup_timeout: 0
     stub: true
   mattermost-bridge:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /app/plugin/server
+    health_port: 8065
+    version_flag: "--version"
     category: app
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
   mattermost-operator:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /usr/local/bin/mattermost-kubernetes-operator
+    health_port: 8080
+    version_flag: "--version"
     category: app
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
   mattermost-push-proxy:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /usr/local/bin/mattermost-push-proxy
+    health_port: 8066
+    version_flag: "--version"
     category: app
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
   maven:
     binary: none
     health_port: 0
@@ -5460,23 +5421,21 @@ images:
     startup_timeout: 0
     stub: true
   minio-console:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /minio
+    health_port: 9000
+    version_flag: "--version"
     category: app
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
   minio-operator:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /minio-operator
+    health_port: 4455
+    version_flag: "--version"
     category: app
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
   minisearch:
     binary: none
     health_port: 0
@@ -6593,14 +6552,13 @@ images:
     startup_timeout: 0
     stub: true
   postgres-exporter:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /postgres_exporter
+    health_port: 9187
+    version_flag: "--version"
     category: database
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
   postgres-operator:
     binary: none
     health_port: 0
@@ -6809,23 +6767,21 @@ images:
     startup_timeout: 0
     stub: true
   prometheus-mysqld-exporter:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /mysqld_exporter
+    health_port: 9104
+    version_flag: "--version"
     category: database
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
   prometheus-nginx-exporter:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /nginx-prometheus-exporter
+    health_port: 9113
+    version_flag: "--version"
     category: proxy
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
   prometheus-operator:
     binary: none
     health_port: 0
@@ -7043,14 +6999,13 @@ images:
     startup_timeout: 0
     stub: true
   questdb:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /opt/questdb/bin/questdb.sh
+    health_port: 9000
+    version_flag: "--version"
     category: database
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
   questdb-python:
     binary: none
     health_port: 0
@@ -8150,14 +8105,13 @@ images:
     startup_timeout: 0
     stub: true
   tidb:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /usr/local/bin/tidb-server
+    health_port: 4000
+    version_flag: "--version"
     category: database
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
   tidb-br:
     binary: none
     health_port: 0
@@ -8789,23 +8743,21 @@ images:
     startup_timeout: 0
     stub: true
   woodpecker-agent:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /usr/local/bin/woodpecker-agent
+    health_port: 3000
+    version_flag: "--version"
     category: devops
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 10
   woodpecker-server:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: /usr/local/bin/woodpecker-server
+    health_port: 8000
+    version_flag: "--version"
     category: devops
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 15
   wps-office:
     binary: none
     health_port: 0
@@ -8924,14 +8876,13 @@ images:
     startup_timeout: 0
     stub: true
   zipkin:
-    binary: none
-    health_port: 0
-    version_flag: ''
+    binary: java
+    health_port: 9411
+    version_flag: "-version"
     category: monitoring
-    functional_test: none
-    adversarial_test: false
-    startup_timeout: 0
-    stub: true
+    functional_test: proxy
+    adversarial_test: true
+    startup_timeout: 30
   zipline:
     binary: none
     health_port: 0

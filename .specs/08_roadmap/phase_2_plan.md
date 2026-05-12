@@ -49,7 +49,7 @@
 | Static linking verification | MISSING | 0 images verified |
 | Capabilities audit | MISSING | 0 images tested |
 | Image size enforcement | PARTIAL | `build.yml:277-311` exists but non-blocking (warnings only) |
-| USER directive | COMPLETE | All images use UID 65534 or nonroot |
+| USER directive | COMPLETE | All images use UID 65532 or nonroot |
 | HEALTHCHECK | COMPLETE (post-Phase 0) | All images |
 
 ### 1.3 Representative Tier 1 Image Analysis
@@ -59,7 +59,7 @@
 FROM scratch
 COPY --from=downloader /nginx /nginx
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65534:65534
+USER 65532:65532
 ENTRYPOINT ["/nginx"]
 ```
 - Binary: `/nginx` (dynamically linked, needs glibc)
@@ -71,7 +71,7 @@ ENTRYPOINT ["/nginx"]
 ```dockerfile
 FROM scratch
 COPY --from=downloader /caddy /caddy
-USER 65534:65534
+USER 65532:65532
 ENTRYPOINT ["/caddy"]
 ```
 - Binary: `/caddy` (statically linked by default)
@@ -228,27 +228,27 @@ Seccomp (secure computing mode) restricts the system calls a container process c
    #!/bin/bash
    IMAGE="$1"
    OUTPUT="$2"
-   
+
    # Run container with strace, capture syscalls
    docker run --rm -d --name seccomp-capture \
      --security-opt seccomp=unconfined \
      "$IMAGE" sleep 30 2>/dev/null || \
    docker run --rm -d --name seccomp-capture \
      "$IMAGE" &
-   
+
    PID=$(docker inspect --format '{{.State.Pid}}' seccomp-capture)
-   
+
    # Trace all syscalls
    timeout 10 strace -f -p "$PID" -e trace=%syscall -o /tmp/strace.out 2>&1 || true
-   
+
    # Extract unique syscalls
    SYSCALLS=$(awk '{print $2}' /tmp/strace.out | sort -u | grep -v '^\s*$' | grep -v '---')
-   
+
    # Generate JSON profile
    python3 scripts/seccomp_generator.py \
      --syscalls "$SYSCALLS" \
      --output "$OUTPUT"
-   
+
    docker stop seccomp-capture 2>/dev/null || true
    ```
 
@@ -385,16 +385,16 @@ profile evergreen-nginx flags=(attach_disconnected,mediate_deleted) {
 
    cat > "images/${IMAGE_NAME}/apparmor_profile" << AAEOF
    #include <tunables/global>
-   
+
    profile evergreen-${IMAGE_NAME} flags=(attach_disconnected,mediate_deleted) {
      #include <abstractions/base>
-     
+
      # Network
      $(for proto in $(echo "$NETWORK" | tr ',' ' '); do
        echo "  network inet ${proto},"
        echo "  network inet6 ${proto},"
      done)
-     
+
      # Deny dangerous capabilities
      deny capability sys_admin,
      deny capability net_raw,
@@ -403,7 +403,7 @@ profile evergreen-nginx flags=(attach_disconnected,mediate_deleted) {
      deny capability dac_read_search,
      deny capability setuid,
      deny capability setgid,
-     
+
      # Read-only filesystem
      / r,
      /etc/ssl/certs/** r,
@@ -411,21 +411,21 @@ profile evergreen-nginx flags=(attach_disconnected,mediate_deleted) {
      /dev/null rw,
      /dev/urandom r,
      /proc/** r,
-     
+
      # Write paths
      $(for path in $(echo "$WRITE_PATHS" | tr ',' ' '); do
        echo "  ${path}/** rw,"
      done)
-     
+
      # Deny sensitive paths
      deny /etc/shadow r,
      deny /etc/passwd r,
      deny /proc/*/mem rw,
      deny /sys/** r,
-     
+
      # Main binary
      /${BINARY} ixr,
-     
+
      # No ptrace
      deny ptrace,
    }
@@ -440,7 +440,7 @@ profile evergreen-nginx flags=(attach_disconnected,mediate_deleted) {
    ```bash
    # Load profile
    sudo apparmor_parser -r images/nginx/apparmor_profile
-   
+
    # Test container with profile
    docker run --rm --security-opt "apparmor=evergreen-nginx" nginx -v
    ```

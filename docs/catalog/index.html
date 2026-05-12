@@ -177,7 +177,7 @@ header p {
 }
 
 .search::before {
-    content: "\1F50D";
+    content: "\2190";
     position: absolute;
     left: 12px;
     top: 50%;
@@ -548,7 +548,7 @@ footer {
         </div>
         <div class="categories">
             <button class="cat-btn active" data-cat="all">All<span class="count">(998)</span></button>
-            <button class="cat-btn" data-cat="other">Other<span class="count">(312)</span></button> <button class="cat-btn" data-cat="database">Database<span class="count">(118)</span></button> <button class="cat-btn" data-cat="networking">Networking<span class="count">(112)</span></button> <button class="cat-btn" data-cat="security">Security<span class="count">(109)</span></button> <button class="cat-btn" data-cat="web-app">Web App<span class="count">(83)</span></button> <button class="cat-btn" data-cat="monitoring">Monitoring<span class="count">(55)</span></button> <button class="cat-btn" data-cat="ci-cd">Ci Cd<span class="count">(55)</span></button> <button class="cat-btn" data-cat="media">Media<span class="count">(50)</span></button> <button class="cat-btn" data-cat="operator">Operator<span class="count">(28)</span></button> <button class="cat-btn" data-cat="tool">Tool<span class="count">(25)</span></button> <button class="cat-btn" data-cat="home-automation">Home Automation<span class="count">(16)</span></button> <button class="cat-btn" data-cat="storage">Storage<span class="count">(15)</span></button> <button class="cat-btn" data-cat="identity">Identity<span class="count">(7)</span></button> <button class="cat-btn" data-cat="container-runtime">Container Runtime<span class="count">(7)</span></button> <button class="cat-btn" data-cat="observability">Observability<span class="count">(5)</span></button> <button class="cat-btn" data-cat="messaging">Messaging<span class="count">(1)</span></button>
+            <button class="cat-btn" data-cat="other">Other<span class="count">(312)</span></button> <button class="cat-btn" data-cat="database">Database<span class="count">(118)</span></button> <button class="cat-btn" data-cat="networking">Networking<span class="count">(112)</span></button> <button class="cat-btn" data-cat="security">Security<span class="count">(109)</span></button> <button class="cat-btn" data-cat="web-app">Web App<span class="count">(83)</span></button> <button class="cat-btn" data-cat="monitoring">Monitoring<span class="count">(55)</span></button>             <button class="cat-btn" data-cat="ci-cd">CI/CD<span class="count">(55)</span></button> <button class="cat-btn" data-cat="media">Media<span class="count">(50)</span></button> <button class="cat-btn" data-cat="operator">Operator<span class="count">(28)</span></button> <button class="cat-btn" data-cat="tool">Tool<span class="count">(25)</span></button> <button class="cat-btn" data-cat="home-automation">Home Automation<span class="count">(16)</span></button> <button class="cat-btn" data-cat="storage">Storage<span class="count">(15)</span></button> <button class="cat-btn" data-cat="identity">Identity<span class="count">(7)</span></button> <button class="cat-btn" data-cat="container-runtime">Container Runtime<span class="count">(7)</span></button> <button class="cat-btn" data-cat="observability">Observability<span class="count">(5)</span></button> <button class="cat-btn" data-cat="messaging">Messaging<span class="count">(1)</span></button>
         </div>
     </header>
 
@@ -571,12 +571,12 @@ footer {
         <table>
             <thead>
                 <tr>
-                    <th data-sort="name">Image <span class="sort-arrow">&#9650;</span></th>
-                    <th data-sort="version">Version <span class="sort-arrow">&#9650;</span></th>
-                    <th data-sort="base_type">Base <span class="sort-arrow">&#9650;</span></th>
-                    <th data-sort="category" class="hide-mobile">Category <span class="sort-arrow">&#9650;</span></th>
-                    <th data-sort="checksums">Status <span class="sort-arrow">&#9650;</span></th>
-                    <th data-sort="tier" class="hide-mobile">Tier <span class="sort-arrow">&#9650;</span></th>
+                    <th data-sort="name">Image <span class="sort-arrow">^</span></th>
+                    <th data-sort="version">Version <span class="sort-arrow">^</span></th>
+                    <th data-sort="base_type">Base <span class="sort-arrow">^</span></th>
+                    <th data-sort="category" class="hide-mobile">Category <span class="sort-arrow">^</span></th>
+                    <th data-sort="checksums">Status <span class="sort-arrow">^</span></th>
+                    <th data-sort="tier" class="hide-mobile">Tier <span class="sort-arrow">^</span></th>
                 </tr>
             </thead>
             <tbody id="tbody"></tbody>
@@ -584,7 +584,7 @@ footer {
     </div>
 
     <div class="no-results" id="no-results" style="display:none;">
-        <div class="icon">&#128269;</div>
+        <div class="icon">[ ]</div>
         <div>No images match your search.</div>
     </div>
 
@@ -713,7 +713,7 @@ function render() {
     filtered.forEach(function(img) {
         const isExpanded = expandedRows.has(img.name);
         html += '<tr class="image-row' + (isExpanded ? " expanded" : "") + '" data-name="' + esc(img.name) + '">' +
-            '<td><span class="expand-icon">&#9654;</span> <span class="img-name">' + esc(img.name) + '</span></td>' +
+            '<td><span class="expand-icon">+</span> <span class="img-name">' + esc(img.name) + '</span></td>' +
             '<td><span class="version">' + esc(img.version) + '</span></td>' +
             '<td><span class="base-type ' + esc(img.base_type) + '">' + esc(img.base_type) + '</span> <span class="base hide-mobile">' + esc(img.base_image.split(":")[0]) + '</span></td>' +
             '<td class="hide-mobile"><span class="category-tag">' + esc(img.category) + '</span></td>' +

@@ -105,7 +105,7 @@ The Evergreen Image Registry is designed as a evergreen hardened container image
 | DC-001 | Max CVE tolerance | 0 Critical/High | Tier 1 requirement |
 | DC-002 | Image signing | Cosign required | Supply chain |
 | DC-003 | Base image | Scratch/Distroless preferred | Hardening |
-| DC-004 | Non-root execution | UID 65534 | Security |
+| DC-004 | Non-root execution | UID 65532 | Security |
 | DC-005 | Size limit | <100MB typical | Performance |
 
 ---

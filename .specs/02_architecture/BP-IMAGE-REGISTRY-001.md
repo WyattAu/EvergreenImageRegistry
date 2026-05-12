@@ -78,17 +78,17 @@ graph TD
     B2 --> B3[Hardener]
     B3 --> B4[Dependency Manager]
     end
-    
+
     subgraph "Verification Pipeline"
     V1[Scanner] --> V2[SBOM Generator]
     V2 --> V3[Compliance Checker]
     end
-    
+
     subgraph "Signing Pipeline"
     S1[Key Manager] --> S2[Signer]
     S2 --> S3[Verifier]
     end
-    
+
     subgraph "Distribution"
     D1[Registry] --> D2[Web Server]
     end
@@ -130,7 +130,7 @@ graph TD
 
 ## BP-3: Design Rationale (IEEE 1016 Clause 5.3)
 
-> **DEPRECATION NOTICE (2026-04-22):** References to debian-slim and Alpine in this document are deprecated. Both are permanently banned per ADR-007. See [REQUIREMENTS.md](../../REQUIREMENTS.md) v4.0.0 for the current approved base image list.
+> **DEPRECATION NOTICE (2026-04-22):** References to debian-slim and Alpine in this document are deprecated. Both are permanently banned per ADR-007. See [requirements.md](../00_requirements/requirements.md) v4.0.0 for the current approved base image list.
 
 ### Context
 
@@ -160,7 +160,7 @@ Adopt a tiered approach with three security levels, automated scanning, and mand
 
 ADR-001: Tiered Image Strategy
 
-> **UPDATE (2026-04-22):** ADR-007 supersedes the tier-to-base-image mapping. See [ADR-007](../../.adrs/ADR-007-base-image-preference-order.md) and [REQUIREMENTS.md](../../REQUIREMENTS.md) v4.0.0 for the current policy. debian-slim and Alpine references in this document are deprecated.
+> **UPDATE (2026-04-22):** ADR-007 supersedes the tier-to-base-image mapping. See [ADR-007](../../.adrs/ADR-007-base-image-preference-order.md) and [requirements.md](../00_requirements/requirements.md) v4.0.0 for the current policy. debian-slim and Alpine references in this document are deprecated.
 
 ---
 
@@ -296,7 +296,7 @@ Build Pipeline:
   3. Copy application artifacts
   4. Set entrypoint
   5. Finalize filesystem
-  
+
 Verification Pipeline:
   1. Pull image
   2. Extract packages
@@ -325,12 +325,12 @@ graph TD
     G1[GitHub Actions]
     G2[Build Runner]
     end
-    
+
     subgraph "Registry"
     R1[Registry API]
     R2[Storage]
     end
-    
+
     G1 --> G2
     G2 --> R1
     R1 --> R2
@@ -367,7 +367,7 @@ graph TD
 Image Build Interface:
   - Build(image_ref, context) -> error
   - Push(image_ref) -> error
-  
+
 Scan Interface:
   - Scan(image_ref) -> report
   - VerifyThreshold(report) -> bool

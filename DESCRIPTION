@@ -1,0 +1,1 @@
+Evergreen Image Registry: Hardened, distroless, non-root container images for production. 998 images across 16 categories with SBOM, Cosign signing, and deterministic builds. No Alpine, no debian-slim, no shells in final images. Built for environments where failure is not an option.

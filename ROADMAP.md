@@ -2,14 +2,14 @@
 
 | Attribute | Value |
 |-----------|-------|
-| Version | 26.4.0 |
+| Version | 26.7.0 |
 | Updated | 2026-05-12 |
 | Status | POST-CI-FIX |
 | Phases | 0-52 + ongoing polish |
 
 ---
 
-## Current State (v26.4.0)
+## Current State (v26.7.0)
 
 | Metric | Value | Status |
 |--------|-------|--------|

@@ -84,7 +84,7 @@ $$\text{Distroless} \implies (\nexists \text{/bin/sh} \land \nexists \text{/bin/
 
 > A container image meeting all five Evergreen Standard constraints.
 
-$$\text{Hardened} \implies (U_{app} = 65534 \land F_{ro} = \text{true} \land S_{sig} = \text{true} \land C_{cve} = 0)$$
+$$\text{Hardened} \implies (U_{app} = 65532 \land F_{ro} = \text{true} \land S_{sig} = \text{true} \land C_{cve} = 0)$$
 
 ---
 
@@ -102,9 +102,9 @@ Output: base_image (string)
 3:     return "scratch" or "gcr.io/distroless/*"
 4:   else if tier = 2 then
 5:     return "cgr.dev/distroless/cc" or "wolfi/*"
-6:   else
-7:     return "alpine:latest" or "wolfi/*"
-8:   end if
+ 6:   else
+ 7:     return "wolfi/*" (Alpine permanently banned per ADR-007)
+ 8:   end if
 9: end function
 ```
 
@@ -166,7 +166,7 @@ Output: signature
 | Constraint | Value | Source |
 |------------|-------|--------|
 | UID_RANGE | 60000-65534 |nobody user range |
-| RECOMMENDED | 65534 | Explicit requirement |
+| RECOMMENDED | 65532 | Explicit requirement |
 
 ### NC-002: Image Size Limits
 

@@ -36,10 +36,12 @@ Setup Steps:
 
    ```bash
    pre-commit install
+   pre-commit install --hook-type pre-push
    ```
 
 That's it! Now, every time you run `git commit`, our suite of linters and formatters will run automatically on the files
-you've changed.
+you've changed. When you `git push`, the full 8-gate quality check runs (Rust tests, clippy, fmt, Python/Shell syntax,
+998-manifest TOML validation, 998-SBOM JSON validation, Dockerfile constraints, and release build).
 
 ## Contribution Workflow
 

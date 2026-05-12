@@ -68,14 +68,14 @@ Browse the full catalog at [docs/catalog/index.html](docs/catalog/index.html) --
 322 images publish multi-architecture manifests (`linux/amd64`, `linux/arm64`). To pull the correct image for your platform:
 
 ```bash
-docker pull ghcr.io/wyattau/evergreenimageregistry/nginx:latest
-docker buildx imagetools inspect ghcr.io/wyattau/evergreenimageregistry/nginx:latest
+docker pull ghcr.io/wyattau/evergreenimageregistry/nginx:1.27
+docker buildx imagetools inspect ghcr.io/wyattau/evergreenimageregistry/nginx:1.27
 ```
 
 Use `--platform` to force a specific architecture:
 
 ```bash
-docker pull --platform linux/arm64 ghcr.io/wyattau/evergreenimageregistry/nginx:latest
+docker pull --platform linux/arm64 ghcr.io/wyattau/evergreenimageregistry/nginx:1.27
 ```
 
 ## evergreenctl

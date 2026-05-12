@@ -497,3 +497,95 @@ The registry has completed syntax, structure, and hardening phases (Phases 0-52)
 **The 12-point gate system ensures no regressions:** every commit runs Rust clippy + fmt + Python/Shell syntax. Every push runs the full 9-gate suite including 53 unit tests, 998 manifests, 998 SBOMs, and a release build. The registry is deterministic, repeatable, and proofably correct.
 
 The remaining gap between current state and production is **behavioral validation** (do images actually work?) and **operational automation** (can the registry maintain itself?). Both are well-scoped and on a clear trajectory.
+
+---
+
+## 12. Governance Model
+
+### 12.1 Change Control
+
+All changes follow the gated workflow:
+
+```
+Proposal (Issue/PR)
+  -> Pre-commit hooks (fast checks, <10s)
+    -> Code review (required for core changes)
+      -> Pre-push gate (8 checks, 53 tests, 998 TOML+SBOM validation)
+        -> CI build + test (per-image, weekly suite)
+          -> Merge to main
+```
+
+### 12.2 Breaking Change Policy
+
+- Major version bump for: standard changes, interface contract changes, base image replacements
+- Minor version bump for: new features, new subcommands, additional hardening
+- Patch version bump for: bug fixes, documentation, test additions
+
+### 12.3 Deprecation Policy
+
+Images marked deprecated follow a 90-day window:
+1. `evergreenctl deprecated --mark <image>` adds `deprecated: true` to manifest
+2. Deprecated images remain in registry for 90 days (pinned tags preserved)
+3. After 90 days, image moves to archive
+4. CHANGELOG entry documents rationale
+
+### 12.4 Security Response
+
+- Critical CVE in base image: automatic rebuild within 24 hours
+- Critical CVE in packaged software: bump version, rebuild, push
+- Supply chain compromise: immediate isolation, reverify all FROM digests
+- Security disclosures: documented in ADR and CHANGELOG
+
+### 12.5 Quality Gate Tiers
+
+| Tier | Gates | When | Who Can Override |
+|------|-------|------|-----------------|
+| Pre-commit | 9 hooks (fast) | Every commit | None |
+| Pre-push | 8 gates (comprehensive) | Every push | None (must pass) |
+| CI Build | Per-image build + scan | PR merge + daily | Maintainers (documented) |
+| Weekly Test | 150+ functional tests | Weekly cron | None (filed as issues) |
+| Release Gate | Full suite + attestation | Pre-release | 2 maintainer sign-off |
+
+---
+
+## 13. Final Production Signoff Criteria
+
+### 13.1 Minimal Viable Production (Gate 1)
+
+- [ ] CI build pass rate >99% (currently ~88%)
+- [ ] Functional test coverage: 200+ images with real test configs
+- [ ] evergreenctl: 53+ tests (unit + integration)
+- [ ] Digest pinning >95% of FROM lines
+- [ ] CI covers Rust + Python + Shell + Dockerfile quality
+- [ ] Go health-shim integrated into CI
+- [ ] Pre-push gate: 9/9 checks mandatory, no bypass
+
+### 13.2 Full Production (Gate 2)
+
+- [ ] Multi-arch: >800 images with TARGETARCH support
+- [ ] SBOM + provenance + attestation chain for all built images
+- [ ] evergreenctl: all management operations, man pages, shell completion
+- [ ] Health-shim: 200+ images with appropriate probes
+- [ ] Compliance: CIS, STIG, FIPS evidence auto-generated
+- [ ] Policy-as-code enforced in CI
+- [ ] Metrics dashboard tracking all quality indicators
+
+### 13.3 Operational Excellence (Gate 3)
+
+- [ ] Automated version bumping (daily cron)
+- [ ] Binary provenance verification (multi-source + sigstore)
+- [ ] GHCR publication with immutable tags
+- [ ] Grafana dashboard for registry health
+- [ ] Helm chart + Terraform provider
+- [ ] Federated registry mirroring support
+- [ ] Webhook notifications for downstream consumers
+
+---
+
+## 14. Immediate Next Actions (This Week)
+
+1. **Phase 58:** Run `evergreenctl outdated --all` to catalog upstream failures
+2. **Phase 59:** Expand test_config.yaml from 51 to 150 real configs
+3. **Phase 60:** Add 3 integration tests to evergreenctl
+4. **Pre-commit environment:** Complete prettier/markdownlint/hadolint first-time install (run `pre-commit install-hooks`)
+5. **Deploy pre-push hook:** Distribute `.pre-commit-config.yaml` to all contributors

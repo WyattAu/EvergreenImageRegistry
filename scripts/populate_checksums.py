@@ -27,11 +27,10 @@ import shutil
 import subprocess
 import sys
 import tempfile
-import urllib.request
 import urllib.error
-from datetime import datetime, timezone
+import urllib.request
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Optional, Tuple
 
 # Configuration
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -56,12 +55,12 @@ CONFIDENCE_SCORES = {
 
 def log(msg: str, level: str = "INFO"):
     """Print a log message."""
-    ts = datetime.now(timezone.utc).strftime("%H:%M:%S")
+    ts = datetime.now(UTC).strftime("%H:%M:%S")
     prefix = {"INFO": "  ✓", "WARN": "  ⚠", "ERROR": "  ✗", "SKIP": "  →"}.get(level, "  ")
     print(f"[{ts}] {prefix} {msg}")
 
 
-def http_get(url: str, timeout: int = HTTP_TIMEOUT) -> Optional[str]:
+def http_get(url: str, timeout: int = HTTP_TIMEOUT) -> str | None:
     """Fetch URL content as text. Returns None on failure."""
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     try:
@@ -74,7 +73,7 @@ def http_get(url: str, timeout: int = HTTP_TIMEOUT) -> Optional[str]:
         return None
 
 
-def http_download_bytes(url: str, timeout: int = 120) -> Optional[bytes]:
+def http_download_bytes(url: str, timeout: int = 120) -> bytes | None:
     """Download URL content as bytes. Returns None on failure."""
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     try:
@@ -103,7 +102,7 @@ def sha256_hex(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def extract_download_url(dockerfile_path: Path) -> Optional[str]:
+def extract_download_url(dockerfile_path: Path) -> str | None:
     """Extract the first curl download URL from a Dockerfile.
     
     Returns the URL string or None if not found.
@@ -186,7 +185,7 @@ def filenames_match(target: str, candidate: str) -> bool:
     """
     if target == candidate:
         return True
-    
+
     # Strip common prefixes/suffixes for comparison
     def normalize(s: str) -> str:
         s = s.lower()
@@ -203,12 +202,12 @@ def filenames_match(target: str, candidate: str) -> bool:
 
     nt = normalize(target)
     nc = normalize(candidate)
-    
+
     if nt == nc:
         return True
     if nt in nc or nc in nt:
         return True
-    
+
     # Check if the key parts match (after removing arch/version variations)
     # e.g., "etcd-3.5.15-linux-amd64" should match "etcd-v3.5.15-linux-amd64"
     def key_parts(s: str) -> str:
@@ -218,22 +217,22 @@ def filenames_match(target: str, candidate: str) -> bool:
         # Remove arch suffixes
         s = re.sub(r'[-_]?(linux[-_]?amd64|x86[-_]64[-_].*?)(\.\w+)?$', '', s)
         return s
-    
+
     kt = key_parts(target)
     kc = key_parts(candidate)
     # Try with and without v prefix
     kt_nov = re.sub(r'v(\d)', r'\1', kt)
     kc_nov = re.sub(r'v(\d)', r'\1', kc)
-    
+
     if kt == kc or kt == kc_nov or kt_nov == kc or kt_nov == kc_nov:
         return True
     if kt in kc or kc in kt or kt in kc_nov or kc_nov in kt:
         return True
-    
+
     return False
 
 
-def find_github_checksum(url: str, filename: str) -> Optional[str]:
+def find_github_checksum(url: str, filename: str) -> str | None:
     """Try to find SHA256 from GitHub release checksums file."""
     # Extract release URL base (everything up to the last /)
     # e.g., https://github.com/org/repo/releases/download/v1.0.0/file.tar.gz
@@ -279,7 +278,7 @@ def find_github_checksum(url: str, filename: str) -> Optional[str]:
     return None
 
 
-def find_hashicorp_checksum(url: str) -> Optional[str]:
+def find_hashicorp_checksum(url: str) -> str | None:
     """Find SHA256 from HashiCorp releases SHA256SUMS file."""
     # Parse: https://releases.hashicorp.com/vault/1.18.1/vault_1.18.1_linux_amd64.zip
     match = re.match(r'https://releases\.hashicorp\.com/([^/]+)/([^/]+)/(.+)', url)
@@ -313,7 +312,7 @@ def find_hashicorp_checksum(url: str) -> Optional[str]:
     return None
 
 
-def find_k8s_checksum(url: str) -> Optional[str]:
+def find_k8s_checksum(url: str) -> str | None:
     """Find SHA256 from k8s release."""
     # Parse: https://dl.k8s.io/release/v1.30.1/bin/linux/amd64/kubectl
     match = re.match(r'https://dl\.k8s\.io/release/(v[^/]+)/bin/([^/]+)/(.+)', url)
@@ -335,7 +334,7 @@ def find_k8s_checksum(url: str) -> Optional[str]:
     return None
 
 
-def find_helm_checksum(url: str) -> Optional[str]:
+def find_helm_checksum(url: str) -> str | None:
     """Find SHA256 from Helm release."""
     # Parse: https://get.helm.sh/helm-3.15.1-linux-amd64.tar.gz
     # Helm uses helm-v<VERSION> format with .sha256 extension
@@ -377,7 +376,7 @@ def _gpg_available() -> bool:
     return shutil.which("gpg") is not None or shutil.which("gpgv") is not None
 
 
-def _build_gnupg_home(gpg_keys_dir: Path) -> Optional[Path]:
+def _build_gnupg_home(gpg_keys_dir: Path) -> Path | None:
     """Build a temporary GNUPGHOME with imported known keys.
 
     Returns the temp directory path, or None if GPG is not available.
@@ -410,7 +409,7 @@ def _build_gnupg_home(gpg_keys_dir: Path) -> Optional[Path]:
 
 
 def try_gpg_verification(download_url: str, filename: str,
-                         gpg_keys_dir: Optional[Path] = None) -> Optional[dict]:
+                         gpg_keys_dir: Path | None = None) -> dict | None:
     """Try to verify the binary via GPG detached signature.
 
     Checks for signature files at common locations:
@@ -495,7 +494,7 @@ def try_gpg_verification(download_url: str, filename: str,
 
 
 def _verify_checksum_file_signature(sig_url: str, sig_path: str,
-                                    filename: str, gpg_home: Path) -> Optional[dict]:
+                                    filename: str, gpg_home: Path) -> dict | None:
     """Verify a GPG signature over a checksum file and extract the matching hash."""
     checksum_url = sig_url.rsplit(".", 1)[0]
     checksum_content = http_get(checksum_url)
@@ -559,7 +558,7 @@ def _verify_checksum_file_signature(sig_url: str, sig_path: str,
 
 
 def _verify_direct_signature(download_url: str, sig_path: str,
-                            gpg_home: Path) -> Optional[dict]:
+                            gpg_home: Path) -> dict | None:
     """Verify a GPG signature over a binary (detached .asc/.sig next to binary).
 
     Downloads the binary, verifies the signature, then returns the SHA256
@@ -633,7 +632,7 @@ def _fetch_key_from_keyserver(key_id: str, gpg_home: Path) -> bool:
         return False
 
 
-def try_multi_mirror_validation(download_url: str, filename: str) -> Optional[dict]:
+def try_multi_mirror_validation(download_url: str, filename: str) -> dict | None:
     """Download from 2+ mirrors and verify they match.
 
     Common mirror patterns:
@@ -676,11 +675,11 @@ def try_multi_mirror_validation(download_url: str, filename: str) -> Optional[di
             "confidence": CONFIDENCE_SCORES[4],
         }
 
-    log(f"  Multi-mirror mismatch: hashes differ across mirrors", "WARN")
+    log("  Multi-mirror mismatch: hashes differ across mirrors", "WARN")
     return None
 
 
-def download_and_compute(url: str) -> Optional[str]:
+def download_and_compute(url: str) -> str | None:
     """Download the binary and compute SHA256 locally."""
     log(f"  Downloading to compute SHA256: {extract_filename_from_url(url)}", "WARN")
     data = http_download_bytes(url)
@@ -690,8 +689,8 @@ def download_and_compute(url: str) -> Optional[str]:
 
 
 def find_checksum_for_url(url: str, filename: str,
-                          gpg_keys_dir: Optional[Path] = None,
-                          min_verification_level: int = 1) -> Tuple[Optional[str], str, float]:
+                          gpg_keys_dir: Path | None = None,
+                          min_verification_level: int = 1) -> tuple[str | None, str, float]:
     """Try all methods to find the SHA256 checksum for a URL.
 
     Returns (hash, method, confidence) tuple.
@@ -744,7 +743,7 @@ def update_checksums_file(checksums_path: Path, image_name: str, version: str,
                           confidence: float = 0.0,
                           upstream_checksum_url: str = ""):
     """Update a CHECKSUMS file with verified hash."""
-    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    now = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     # Determine upstream checksum URL for documentation
     if not upstream_checksum_url:
@@ -802,7 +801,7 @@ format = "sha256"
 
 
 def process_image(image_dir: Path, dry_run: bool = False, force: bool = False,
-                  gpg_keys_dir: Optional[Path] = None,
+                  gpg_keys_dir: Path | None = None,
                   min_verification_level: int = 1) -> bool:
     """Process a single image directory.
     

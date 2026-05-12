@@ -96,6 +96,15 @@ enum Commands {
         #[arg(long)]
         dry_run: bool,
     },
+    /// Pin all FROM digests to SHA256
+    PinDigests {
+        /// Path to image directory or images root
+        #[arg(default_value = "images")]
+        path: String,
+        /// Dry run (don't modify files)
+        #[arg(long)]
+        dry_run: bool,
+    },
     /// Show changes since last CI run
     CiDiff {
         /// Base git ref to compare against
@@ -357,6 +366,10 @@ async fn main() -> anyhow::Result<()> {
             dry_run,
         } => {
             evergreenctl::bump::cmd_bump(&image, &new_version, dry_run)?;
+        }
+
+        Commands::PinDigests { path, dry_run } => {
+            evergreenctl::pin_digests::cmd_pin_digests(&path, dry_run)?;
         }
 
         Commands::CiDiff { base } => {

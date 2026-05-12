@@ -10,7 +10,6 @@ Usage:
 """
 
 import argparse
-import os
 import re
 import sys
 from dataclasses import dataclass, field
@@ -356,7 +355,7 @@ def main():
     skipped = [r for r in results if r.status == "skipped"]
 
     print(f"\n{'=' * 80}")
-    print(f"DRY RUN: apt-get to apk conversion for wolfi Dockerfiles")
+    print("DRY RUN: apt-get to apk conversion for wolfi Dockerfiles")
     print(f"{'=' * 80}")
     print(f"Total with apt-get in final stage: {len(results)}")
     print(f"  Successfully converted:  {len(converted)}")

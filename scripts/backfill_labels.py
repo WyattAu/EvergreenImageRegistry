@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Backfill evergreen labels, EXPOSE 9101, and STOPSIGNAL SIGTERM into Dockerfiles missing them."""
 
-import re
 import glob
 import os
+import re
 
 IMAGES_DIR = os.path.join(os.path.dirname(__file__), '..', 'images')
 DOCKERFILE_PATTERN = os.path.join(IMAGES_DIR, '*', 'Dockerfile')
@@ -59,7 +59,7 @@ def determine_health_type(content):
 
 
 def process_dockerfile(filepath):
-    with open(filepath, 'r') as f:
+    with open(filepath) as f:
         content = f.read()
 
     missing = {}
@@ -140,16 +140,16 @@ def main():
 
     total_added = sum(counts.values())
     print(f'\n{"="*60}')
-    print(f'BACKFILL SUMMARY')
+    print('BACKFILL SUMMARY')
     print(f'{"="*60}')
     print(f'Total Dockerfiles scanned:    {len(dockerfiles)}')
     print(f'Files modified:               {modified_files}')
     print(f'Files already complete:       {len(dockerfiles) - modified_files}')
-    print(f'---')
-    print(f'Items added:')
+    print('---')
+    print('Items added:')
     for item, count in counts.items():
         print(f'  {item:<30} {count}')
-    print(f'---')
+    print('---')
     print(f'Total items added:            {total_added}')
     print(f'{"="*60}')
 

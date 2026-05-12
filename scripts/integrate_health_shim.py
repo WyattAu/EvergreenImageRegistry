@@ -107,7 +107,7 @@ def process_dockerfile(db):
         content = f.read()
 
     if "health-shim-builder" in content:
-        print(f"  SKIP: already integrated")
+        print("  SKIP: already integrated")
         return False
 
     lines = content.split("\n")
@@ -122,7 +122,7 @@ def process_dockerfile(db):
             last_from_idx = i
 
     if last_from_idx is None:
-        print(f"  ERROR: no FROM found")
+        print("  ERROR: no FROM found")
         return False
 
     insert_pos = last_from_idx
@@ -153,7 +153,7 @@ def process_dockerfile(db):
     for j, env_line in enumerate(env_block):
         lines.insert(env_insert + j, env_line)
     changes.append(
-        f"Added ENV HEALTH_CMD READY_CMD STARTUP_CMD EVERGREEN_LOG_LEVEL"
+        "Added ENV HEALTH_CMD READY_CMD STARTUP_CMD EVERGREEN_LOG_LEVEL"
     )
 
     for i, line in enumerate(lines):

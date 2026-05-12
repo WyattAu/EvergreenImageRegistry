@@ -7,6 +7,7 @@ pub mod generate;
 pub mod manifest;
 pub mod migrate;
 pub mod outdated;
+pub mod pin_digests;
 pub mod sign;
 pub mod snapshot;
 pub mod verify;

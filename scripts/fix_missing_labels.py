@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Fix missing evergreen.base.image labels and remove stale labels from Dockerfiles."""
 
-import re
-import sys
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -65,7 +63,7 @@ def classify_base_image(from_line: str) -> tuple[str, bool]:
 
 
 def has_label(content: str, label_key: str) -> bool:
-    return f"evergreen.base.image=" in content
+    return "evergreen.base.image=" in content
 
 
 def remove_stale_labels(content: str) -> tuple[str, list[str]]:
@@ -97,7 +95,7 @@ def add_base_image_label(content: str, base_value: str, needs_migration: bool) -
             break
 
     if insert_idx is None:
-        print(f"  WARNING: Could not find metrics label insertion point")
+        print("  WARNING: Could not find metrics label insertion point")
         return content
 
     label_line = f'LABEL evergreen.base.image="{base_value}"'
@@ -166,7 +164,7 @@ def main():
             print(f'  Label:  evergreen.base.image="{result["base_image"]}"')
             if result["needs_migration"]:
                 migration_needed.append(rel_path)
-                print(f"  *** MIGRATION NEEDED ***")
+                print("  *** MIGRATION NEEDED ***")
             if result["base_image"] == "unrecognized":
                 manual_intervention.append(
                     {

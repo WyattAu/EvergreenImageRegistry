@@ -310,12 +310,12 @@ def main():
 
     md_lines = []
     md_lines.append("# Wolfi Package Audit Report\n")
-    md_lines.append(f"**Generated**: Automated audit against wolfi APKINDEX\n")
+    md_lines.append("**Generated**: Automated audit against wolfi APKINDEX\n")
     md_lines.append(f"**Source**: `{APKINDEX_URL}`\n")
 
     md_lines.append("## Summary\n")
-    md_lines.append(f"| Metric | Value |")
-    md_lines.append(f"|--------|-------|")
+    md_lines.append("| Metric | Value |")
+    md_lines.append("|--------|-------|")
     md_lines.append(f"| Total unique packages | {total} |")
     md_lines.append(f"| Valid (in wolfi) | {valid_count} |")
     md_lines.append(f"| Invalid (not in wolfi) | {invalid_count} |")

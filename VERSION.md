@@ -1,9 +1,9 @@
 # Evergreen Image Registry
 
 ## Status
-- **Phase:** 56
-- **Version:** v26.6.0
-- **Status:** Stable - Manifest refactor complete, 43 tests, 9-gate pre-push
+- **Phase:** 57
+- **Version:** v26.7.0
+- **Status:** Stable - pin-digests implemented, 47 tests, ruff config added
 - **CI Status:** Build batches running, gate/lint 100% pass
 - **Last Updated:** 2026-05-12
 

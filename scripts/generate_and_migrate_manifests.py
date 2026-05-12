@@ -3,7 +3,6 @@
 
 import os
 import re
-import sys
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 IMAGES_DIR = os.path.join(BASE_DIR, "images")
@@ -75,11 +74,7 @@ def parse_dockerfile(path):
         m = re.search(r'FROM\s+(\S+)\s+AS\s+upstream', content, re.IGNORECASE)
         if m:
             info["source_url"] = m.group(1)
-    elif re.search(r'apk add|apk fetch', content):
-        info["source_type"] = "package-manager"
-    elif re.search(r'apt-get install|apt-get update', content):
-        info["source_type"] = "package-manager"
-    elif re.search(r'microdnf install|dnf install|yum install', content):
+    elif re.search(r'apk add|apk fetch', content) or re.search(r'apt-get install|apt-get update', content) or re.search(r'microdnf install|dnf install|yum install', content):
         info["source_type"] = "package-manager"
     elif re.search(r'git clone|git checkout', content):
         info["source_type"] = "git-clone"

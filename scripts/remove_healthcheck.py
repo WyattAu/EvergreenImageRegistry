@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import re
 from pathlib import Path
 
 IMAGES_DIR = Path(__file__).resolve().parent.parent / "images"

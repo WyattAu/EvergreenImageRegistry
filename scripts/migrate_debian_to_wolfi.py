@@ -14,12 +14,10 @@ Patterns handled:
     5. Add EXPOSE 9101, STOPSIGNAL SIGTERM
 """
 
+import argparse
+import glob
 import os
 import re
-import sys
-import glob
-import argparse
-from pathlib import Path
 
 # Package mapping: Debian → wolfi (apk)
 # Only packages commonly available in wolfi are mapped
@@ -238,7 +236,7 @@ class DockerfileMigrator:
                 self.stats["migrated_to_ubi"] += 1
             else:
                 self.stats["migrated_to_wolfi"] += 1
-            
+
             if self.dry_run:
                 print(f"  WOULD MIGRATE: {df_path} → {target}")
             else:
@@ -369,13 +367,13 @@ class DockerfileMigrator:
         """Migrate a single stage."""
         # Replace FROM line
         if target == "scratch":
-            new_from = f"FROM scratch\n"
+            new_from = "FROM scratch\n"
         elif target == "wolfi":
-            new_from = f"FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007\n"
+            new_from = "FROM cgr.dev/chainguard/wolfi-base:latest  # hadolint ignore=DL3007\n"
         elif target == "ubi-micro":
-            new_from = f"FROM registry.access.redhat.com/ubi9/ubi-micro:latest\n"
+            new_from = "FROM registry.access.redhat.com/ubi9/ubi-micro:latest\n"
         elif target == "ubi-minimal":
-            new_from = f"FROM registry.access.redhat.com/ubi9/ubi-minimal:latest\n"
+            new_from = "FROM registry.access.redhat.com/ubi9/ubi-minimal:latest\n"
         else:
             new_from = from_line
 
@@ -449,14 +447,14 @@ class DockerfileMigrator:
             if re.match(r'^\s*RUN\s+', line):
                 block_lines = [line]
                 # Collect continuation lines (ending with \)
-                while (i + 1 < len(lines) and 
+                while (i + 1 < len(lines) and
                        lines[i + 1].rstrip().endswith('\\')):
                     i += 1
                     block_lines.append(lines[i])
                 # The next line (if it exists) is the terminal line of the RUN block
                 # ONLY if it's a continuation (indented) and not a new instruction
-                if (i + 1 < len(lines) and 
-                    lines[i + 1].strip() and 
+                if (i + 1 < len(lines) and
+                    lines[i + 1].strip() and
                     not self.DOCKERFILE_INSTRUCTIONS.match(lines[i + 1]) and
                     lines[i + 1].startswith((' ', '\t'))):
                     i += 1
@@ -474,12 +472,12 @@ class DockerfileMigrator:
             line = lines[i]
             if re.match(r'^\s*RUN\s+', line):
                 block_lines = [line]
-                while (i + 1 < len(lines) and 
+                while (i + 1 < len(lines) and
                        lines[i + 1].rstrip().endswith('\\')):
                     i += 1
                     block_lines.append(lines[i])
-                if (i + 1 < len(lines) and 
-                    lines[i + 1].strip() and 
+                if (i + 1 < len(lines) and
+                    lines[i + 1].strip() and
                     not self.DOCKERFILE_INSTRUCTIONS.match(lines[i + 1]) and
                     lines[i + 1].startswith((' ', '\t'))):
                     i += 1
@@ -496,18 +494,18 @@ class DockerfileMigrator:
         """Extract package names from an apt-get install RUN block."""
         # Flatten continuation lines
         flat = apt_block.replace('\\\n', ' ').replace('\\', ' ')
-        
+
         # Find the install command and get everything after it
         m = re.search(r'apt-get\s+install\s+(?:--no-install-recommends\s+)?(?:-y\s+)?(.+)', flat)
         if not m:
             return []
-        
+
         pkg_str = m.group(1)
         # Stop at && that starts a non-package command
         # Keep only the part that contains package names
         pkg_str = re.sub(r'\s*&&\s*(rm|apt-get|dpkg|update-ca-certificates|groupadd|useradd|ln|chmod|chown|mkdir).*$', '', pkg_str, flags=re.DOTALL)
         pkg_str = re.sub(r'\s*\|\|\s*true\s*$', '', pkg_str)
-        
+
         packages = []
         for token in re.split(r'\s+', pkg_str):
             token = token.strip().rstrip(',')
@@ -532,23 +530,23 @@ class DockerfileMigrator:
         def replace_apt_block(block):
             if 'apt-get' not in block:
                 return block
-            
+
             # Skip blocks that are only apt-get update (no install)
             if 'apt-get install' not in block and 'apt-get update' in block:
                 return None  # Signal to remove this block
-            
+
             if 'apt-get install' not in block:
                 return block
-            
+
             packages = self._extract_packages_from_apt(block)
             wolfi_pkgs, unmapped = self.map_packages(packages)
-            
+
             for u in unmapped:
                 self.stats["unmapped_packages"].add(u)
-            
+
             if not wolfi_pkgs:
                 return None  # Remove block
-            
+
             # Remove duplicates
             seen = set()
             unique = []
@@ -556,23 +554,23 @@ class DockerfileMigrator:
                 if p not in seen:
                     seen.add(p)
                     unique.append(p)
-            
+
             return f"RUN apk add --no-cache {' '.join(unique)}"
-        
+
         def block_replacer(block):
             result = replace_apt_block(block)
             if result is None:
                 return ""  # Remove block entirely
             return result
-        
+
         content = self._replace_run_blocks(content, block_replacer)
-        
+
         # Clean up blank lines left by removed blocks
         content = re.sub(r'\n{3,}', '\n\n', content)
-        
+
         # Replace Debian-specific paths
         content = content.replace('/usr/lib/x86_64-linux-gnu/', '/usr/lib/')
-        
+
         return content
 
     def transform_apt_to_dnf(self, content):
@@ -598,7 +596,7 @@ class DockerfileMigrator:
             "jq": "jq",
             "sqlite3": "sqlite",
         }
-        
+
         def replace_apt_block(block):
             if 'apt-get' not in block:
                 return block
@@ -606,31 +604,31 @@ class DockerfileMigrator:
                 return None
             if 'apt-get install' not in block:
                 return block
-            
+
             packages = self._extract_packages_from_apt(block)
             mapped = []
             for pkg in packages:
                 clean = re.sub(r'=.*$', '', pkg).strip().split(':')[0]
                 mapped.append(ubi_map.get(clean, clean))
-            
+
             if not mapped:
                 return None
-            
+
             seen = set()
             unique = []
             for p in mapped:
                 if p not in seen:
                     seen.add(p)
                     unique.append(p)
-            
+
             return f"RUN microdnf install -y {' '.join(unique)} && microdnf clean all"
-        
+
         def block_replacer(block):
             result = replace_apt_block(block)
             if result is None:
                 return ""
             return result
-        
+
         content = self._replace_run_blocks(content, block_replacer)
         content = re.sub(r'\n{3,}', '\n\n', content)
         return content
@@ -649,12 +647,12 @@ class DockerfileMigrator:
         print(f"  Errors:                       {len(self.stats['errors'])}")
 
         if self.stats["unmapped_packages"]:
-            print(f"\n  Unmapped packages (may need manual review):")
+            print("\n  Unmapped packages (may need manual review):")
             for pkg in sorted(self.stats["unmapped_packages"]):
                 print(f"    - {pkg}")
 
         if self.stats["errors"]:
-            print(f"\n  Errors:")
+            print("\n  Errors:")
             for path, err in self.stats["errors"][:20]:
                 print(f"    - {path}: {err}")
             if len(self.stats["errors"]) > 20:

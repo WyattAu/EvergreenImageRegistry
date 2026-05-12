@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Fixup unmapped wolfi package names in migrated Dockerfiles."""
 
-import re
 import glob
+import re
 
 # Package name corrections for wolfi
 PACKAGE_FIXES = {
@@ -118,14 +118,14 @@ modified = 0
 
 for df in sorted(glob.glob('images/*/Dockerfile')):
     content = open(df).read()
-    
+
     # Only process wolfi-based images
     froms = re.findall(r'^FROM\s+(.+?)(?:\s+AS\s+\w+)?\s*$', content, re.MULTILINE)
     if not froms or 'wolfi' not in froms[-1]:
         continue
-    
+
     original = content
-    
+
     # Get final stage
     if len(froms) > 1:
         stages = re.split(r'(^FROM\s+.+$)', content, re.MULTILINE)
@@ -134,11 +134,11 @@ for df in sorted(glob.glob('images/*/Dockerfile')):
     else:
         prefix = ''
         final = content
-    
+
     # Apply package name fixes
     for pattern, replacement in PACKAGE_FIXES.items():
         final = re.sub(pattern, replacement, final)
-    
+
     # Remove lines that contain only non-package tokens
     lines = final.split('\n')
     cleaned = []
@@ -155,17 +155,17 @@ for df in sorted(glob.glob('images/*/Dockerfile')):
                 continue  # Skip this RUN line entirely
         cleaned.append(line)
     final = '\n'.join(cleaned)
-    
+
     # Clean up multiple blank lines
     final = re.sub(r'\n{3,}', '\n\n', final)
-    
+
     content = prefix + final
-    
+
     if content != original:
         with open(df, 'w') as f:
             f.write(content)
         modified += 1
-    
+
     count += 1
 
 print(f"Scanned: {count} wolfi-based Dockerfiles")

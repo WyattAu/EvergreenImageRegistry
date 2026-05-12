@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Generate SPDX 2.3 SBOM for all images missing sbom.spdx.json."""
+import json
 import os
 import re
-import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 IMAGES_DIR = "/home/wyatt/dev/src/github.com/WyattAu/EvergreenImageRegistry/images"
 
@@ -230,7 +230,7 @@ def generate_sbom(image_name, image_dir):
         "name": f"evergreen-{image_name}",
         "documentNamespace": f"https://github.com/WyattAu/EvergreenImageRegistry/images/{image_name}",
         "creationInfo": {
-            "created": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "created": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "creators": ["Tool: evergreen-sbom-generator"]
         },
         "packages": packages,

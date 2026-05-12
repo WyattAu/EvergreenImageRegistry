@@ -1,11 +1,11 @@
 # Evergreen Image Registry
 
 ## Status
-- **Phase:** 51
-- **Version:** v26.3.0
-- **Status:** Stable - All code bugs fixed, remaining failures are upstream issues
+- **Phase:** 52
+- **Version:** v26.4.0
+- **Status:** Stable - Documentation convergence, test expansion, pre-push gate
 - **CI Status:** Build batches running, gate/lint 100% pass
-- **Last Updated:** 2026-05-11
+- **Last Updated:** 2026-05-12
 
 ## Quality Scorecard
 | Metric | Value | Status |

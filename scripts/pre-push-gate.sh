@@ -45,7 +45,7 @@ echo "=========================================="
 echo ""
 echo "--- Gate 1: Rust Unit Tests ---"
 if command -v cargo &>/dev/null; then
-    if cargo test --manifest-path evergreenctl/Cargo.toml 2>&1 | tail -5 | grep -q "test result"; then
+    if cargo test --manifest-path evergreenctl/Cargo.toml --lib 2>&1 | tail -5 | grep -q "test result"; then
         pass_gate "cargo test (evergreenctl)"
     else
         fail_gate "cargo test (evergreenctl)"

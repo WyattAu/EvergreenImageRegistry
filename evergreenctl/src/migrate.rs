@@ -1,5 +1,6 @@
 use anyhow::{Context, Result};
 use regex::Regex;
+use std::collections::HashMap;
 use std::path::Path;
 use tracing::{info, warn};
 
@@ -51,6 +52,18 @@ fn extract_description(content: &str) -> String {
         .unwrap_or_else(|| "Evergreen hardened container image".to_string())
 }
 
+fn extract_source_type(content: &str) -> String {
+    if content.contains("apk add") || content.contains("apt-get install") {
+        "package-manager".to_string()
+    } else if content.contains("git clone") {
+        "source-build".to_string()
+    } else if content.contains("curl ") || content.contains("wget ") {
+        "binary-download".to_string()
+    } else {
+        "copy-from".to_string()
+    }
+}
+
 /// Parse an existing Dockerfile and extract manifest fields
 pub fn dockerfile_to_manifest(dockerfile_path: &Path, image_name: &str) -> Result<Manifest> {
     let content = std::fs::read_to_string(dockerfile_path)
@@ -63,94 +76,48 @@ pub fn dockerfile_to_manifest(dockerfile_path: &Path, image_name: &str) -> Resul
     let description = extract_description(&content);
     let vendor = extract_vendor(&content);
     let tier = extract_tier(&content);
-    let github_repo = extract_github_repo_from_dockerfile(&content);
-    let base_image = extract_base_image(&content);
-    let category = extract_category(&content);
-    let health_type = extract_health_type(&content);
+    let github_source = extract_github_source(&content);
+    let runtime_base_image = extract_base_image(&content);
     let stop_signal = extract_stop_signal(&content);
+    let source_type = extract_source_type(&content);
+    let labels = extract_all_labels(&content);
 
-    // Determine image type from Dockerfile patterns
-    let image_type = determine_image_type(&content);
+    // Derive build base (for images that are scratch or use specific base)
+    let build_base = if runtime_base_image.contains("scratch") {
+        "scratch".to_string()
+    } else if runtime_base_image.contains("wolfi") {
+        runtime_base_image.clone()
+    } else {
+        // Default to wolfi-base for all others
+        "cgr.dev/chainguard/wolfi-base:latest".to_string()
+    };
 
-    // Determine base image hierarchy
-    let build_base = determine_base_image(&base_image, &image_type);
-
-    // Determine runtime packages
-    let runtime_packages = extract_runtime_packages(&content);
-
-    // Build artifacts (COPY --from=builder)
-    let artifacts = extract_artifacts(&content);
-
-    // Build commands
-    let build_commands = extract_build_commands(&content);
-
-    // Compliance labels
-    let compliance = extract_compliance_labels(&content);
-
-    // Determine workdir
-    let workdir = extract_workdir(&content);
+    // Determine build user (default to wolfi standard)
+    let build_user = extract_user(&content);
 
     Ok(Manifest {
-        image: ImageMeta {
+        metadata: Metadata {
             name: image_name.to_string(),
-            image_type,
-            tier,
-            version: version.clone(),
+            version,
             description,
             vendor,
-            source_url: github_repo
-                .clone()
-                .map(|r| format!("https://github.com/{}", r)),
-            category: Some(category),
+            source: github_source.unwrap_or_default(),
+            license: String::new(),
+            tier: tier.to_string(),
         },
-        source: Source {
-            url: download_url.unwrap_or_else(|| {
-                format!("https://example.com/{}/{}.tar.gz", image_name, version)
-            }),
-            fallback_urls: vec![],
-            checksum: Checksum {
-                algorithm: "sha256".to_string(),
-                expected: String::new(), // Needs to be populated
-                source: String::new(),
-            },
-            strategy: DownloadStrategy::Curl,
-            github_repo,
-        },
-        build: BuildConfig {
+        build: Build {
             base: build_base,
-            stages: vec![],
-            env: std::collections::HashMap::new(),
-            builder_packages: vec![],
-            runtime_packages,
-            build_args: std::collections::HashMap::new(),
-            pre_build_commands: vec![],
-            build_commands,
-            post_build_commands: vec![],
-            artifacts,
+            user: build_user,
+            stopsignal: stop_signal,
         },
-        runtime: RuntimeConfig {
-            user: "65532:65532".to_string(),
-            workdir,
-            entrypoint,
-            cmd: vec![],
-            ports,
-            volumes: vec![],
-            stop_signal,
-            env: std::collections::HashMap::new(),
+        source: SourceSection {
+            source_type,
+            url: download_url
+                .unwrap_or_else(|| format!("https://example.com/{}/latest.tar.gz", image_name)),
         },
-        health: HealthConfig {
-            health_type,
-            path: String::new(),
-            port: None,
-            interval_seconds: 30,
-            timeout_seconds: 5,
-            retries: 3,
-        },
-        observability: ObservabilityConfig {
-            metrics_port: 9101,
-            metrics_path: "/metrics".to_string(),
-        },
-        compliance,
+        runtime: RuntimeSection { entrypoint },
+        ports: PortsSection { expose: ports },
+        labels,
     })
 }
 
@@ -178,18 +145,14 @@ fn extract_tier(content: &str) -> u8 {
         .unwrap_or(3)
 }
 
-fn extract_github_repo_from_dockerfile(content: &str) -> Option<String> {
-    let re = Regex::new(r#"github\.com/([^/""\s]+/[^/""\s]+)"#).unwrap();
-    re.captures(content).and_then(|c| c.get(1)).map(|m| {
-        m.as_str()
-            .trim_end_matches(".git")
-            .trim_end_matches('/')
-            .to_string()
-    })
+fn extract_github_source(content: &str) -> Option<String> {
+    let re = Regex::new(r#"https?://github\.com/([^/""\s]+/[^/""\s]+)"#).unwrap();
+    re.captures(content)
+        .and_then(|c| c.get(0))
+        .map(|m| m.as_str().trim_end_matches('/').to_string())
 }
 
 fn extract_base_image(content: &str) -> String {
-    // Get the last FROM line (runtime stage)
     let re = Regex::new(r"FROM\s+([\S]+)").unwrap();
     re.captures_iter(content)
         .last()
@@ -198,20 +161,13 @@ fn extract_base_image(content: &str) -> String {
         .unwrap_or_else(|| "scratch".to_string())
 }
 
-fn extract_category(content: &str) -> String {
-    let re = Regex::new(r#"evergreen\.image\.category="([^"]+)""#).unwrap();
-    re.captures(content)
+fn extract_user(content: &str) -> String {
+    let re = Regex::new(r"USER\s+(\S+)").unwrap();
+    re.captures_iter(content)
+        .last()
         .and_then(|c| c.get(1))
         .map(|m| m.as_str().to_string())
-        .unwrap_or_else(|| "other".to_string())
-}
-
-fn extract_health_type(content: &str) -> String {
-    let re = Regex::new(r#"evergreen\.health\.type="([^"]+)""#).unwrap();
-    re.captures(content)
-        .and_then(|c| c.get(1))
-        .map(|m| m.as_str().to_string())
-        .unwrap_or_else(|| "none".to_string())
+        .unwrap_or_else(|| "65532:65532".to_string())
 }
 
 fn extract_stop_signal(content: &str) -> String {
@@ -222,113 +178,18 @@ fn extract_stop_signal(content: &str) -> String {
         .unwrap_or_else(|| "SIGTERM".to_string())
 }
 
-fn extract_runtime_packages(content: &str) -> Vec<String> {
-    let mut packages = Vec::new();
-    // Look for apk add in the last FROM stage
-    let re = Regex::new(r"apk\s+add\s+--no-cache\s+([^\n|]+)").unwrap();
-    if let Some(cap) = re.captures_iter(content).last() {
-        for pkg in cap[1].split_whitespace() {
-            packages.push(pkg.to_string());
-        }
-    }
-    packages
-}
-
-fn extract_artifacts(content: &str) -> Vec<Artifact> {
-    let re = Regex::new(r"COPY\s+--from=\S+\s+(\S+)\s+(\S+)").unwrap();
-    re.captures_iter(content)
-        .map(|cap| Artifact {
-            source: cap[1].to_string(),
-            destination: cap[2].to_string(),
-        })
-        .collect()
-}
-
-fn extract_build_commands(content: &str) -> Vec<String> {
-    // Extract non-boilerplate RUN commands from builder stages
-    let commands = Vec::new();
-    let _in_builder = false;
-
-    for line in content.lines() {
-        let trimmed = line.trim();
-        if trimmed.starts_with("FROM")
-            && (trimmed.contains("builder")
-                || trimmed.contains("debian")
-                || trimmed.contains("golang")
-                || trimmed.contains("rust"))
-        {
-            // Builder stage
-        }
-    }
-    commands
-}
-
-fn extract_compliance_labels(content: &str) -> ComplianceConfig {
-    let mut labels = std::collections::HashMap::new();
-    let re = Regex::new(r#"evergreen\.([a-zA-Z0-9_.]+)="([^"]+)""#).unwrap();
+fn extract_all_labels(content: &str) -> HashMap<String, String> {
+    let mut labels = HashMap::new();
+    let re = Regex::new(r#"([a-zA-Z0-9_.-]+)="([^"]+)""#).unwrap();
     for cap in re.captures_iter(content) {
-        labels.insert(cap[1].to_string(), cap[2].to_string());
+        let key = cap[1].to_string();
+        let val = cap[2].to_string();
+        // Only include meaningful labels (skip build-time instructions)
+        if key.contains('.') && !key.starts_with("ARG") {
+            labels.insert(key, val);
+        }
     }
-    ComplianceConfig {
-        standards: vec![],
-        labels,
-    }
-}
-
-fn extract_workdir(content: &str) -> String {
-    let re = Regex::new(r"WORKDIR\s+(\S+)").unwrap();
-    re.captures_iter(content)
-        .last()
-        .and_then(|c| c.get(1))
-        .map(|m| m.as_str().to_string())
-        .unwrap_or_else(|| "/app".to_string())
-}
-
-fn determine_image_type(content: &str) -> ImageType {
-    if content.contains("go build") || content.contains("golang:") {
-        ImageType::SourceBuildGo
-    } else if content.contains("cargo build") || content.contains("rust:") {
-        ImageType::SourceBuildRust
-    } else if content.contains("cmake") || content.contains("make -j") || content.contains("gcc") {
-        ImageType::SourceBuildC
-    } else if content.contains("npm install") || content.contains("nodejs") {
-        ImageType::NodeNpm
-    } else if content.contains("pip install") || content.contains("python3") {
-        ImageType::PythonPip
-    } else if content.contains("java") || content.contains("jdk") || content.contains(".jar") {
-        ImageType::SourceBuildJava
-    } else if content.contains("index.html") || content.contains("www-src") {
-        ImageType::WebUi
-    } else {
-        ImageType::BinaryDownload
-    }
-}
-
-fn determine_base_image(current_base: &str, image_type: &ImageType) -> BaseImage {
-    if current_base.contains("scratch") {
-        return BaseImage {
-            image: "scratch".to_string(),
-            purpose: "Minimal static binary".to_string(),
-        };
-    }
-    match image_type {
-        ImageType::SourceBuildJava => BaseImage {
-            image: "cgr.dev/chainguard/wolfi-base:latest".to_string(),
-            purpose: "JVM runtime".to_string(),
-        },
-        ImageType::NodeNpm => BaseImage {
-            image: "cgr.dev/chainguard/wolfi-base:latest".to_string(),
-            purpose: "Node.js runtime".to_string(),
-        },
-        ImageType::PythonPip => BaseImage {
-            image: "cgr.dev/chainguard/wolfi-base:latest".to_string(),
-            purpose: "Python runtime".to_string(),
-        },
-        _ => BaseImage {
-            image: "cgr.dev/chainguard/wolfi-base:latest".to_string(),
-            purpose: "Minimal runtime".to_string(),
-        },
-    }
+    labels
 }
 
 /// Migrate all images: generate manifests from existing Dockerfiles
@@ -362,4 +223,122 @@ pub fn migrate_all(images_dir: &Path, dry_run: bool) -> Result<Vec<String>> {
     }
 
     Ok(migrated)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_extract_version() {
+        assert_eq!(extract_version("ARG VERSION=1.0.0"), "1.0.0");
+        assert_eq!(extract_version("ARG VERSION=\"2.0.0\""), "2.0.0");
+        assert_eq!(extract_version("FROM scratch"), "0.0.0");
+    }
+
+    #[test]
+    fn test_extract_ports_single() {
+        assert_eq!(extract_ports("EXPOSE 8080"), vec![8080]);
+    }
+
+    #[test]
+    fn test_extract_ports_multiple() {
+        let ports = extract_ports("EXPOSE 8080 9090");
+        assert!(ports.contains(&8080));
+        assert!(ports.contains(&9090));
+    }
+
+    #[test]
+    fn test_extract_ports_with_protocol() {
+        assert_eq!(extract_ports("EXPOSE 8080/tcp"), vec![8080]);
+    }
+
+    #[test]
+    fn test_extract_entrypoint() {
+        assert_eq!(
+            extract_entrypoint("ENTRYPOINT [\"/app\", \"--flag\"]"),
+            vec!["/app".to_string(), "--flag".to_string()]
+        );
+    }
+
+    #[test]
+    fn test_extract_entrypoint_single() {
+        assert_eq!(
+            extract_entrypoint("ENTRYPOINT [\"/binary\"]"),
+            vec!["/binary".to_string()]
+        );
+    }
+
+    #[test]
+    fn test_extract_source_type_binary() {
+        assert_eq!(
+            extract_source_type("RUN curl -fsSL \"https://example.com/file.tar.gz\""),
+            "binary-download"
+        );
+    }
+
+    #[test]
+    fn test_extract_source_type_package_manager() {
+        assert_eq!(
+            extract_source_type("RUN apk add --no-cache curl"),
+            "package-manager"
+        );
+    }
+
+    #[test]
+    fn test_extract_source_type_source_build() {
+        assert_eq!(
+            extract_source_type("RUN git clone --depth 1 https://github.com/owner/repo.git /src"),
+            "source-build"
+        );
+    }
+
+    #[test]
+    fn test_extract_base_image() {
+        assert_eq!(
+            extract_base_image(
+                "FROM scratch AS builder\nRUN echo hi\nFROM cgr.dev/chainguard/wolfi-base:latest"
+            ),
+            "cgr.dev/chainguard/wolfi-base:latest"
+        );
+    }
+
+    #[test]
+    fn test_dockerfile_to_manifest_basic() {
+        let dir = std::env::temp_dir().join("evergreen_migrate_test");
+        let _ = std::fs::create_dir_all(&dir);
+        let df_path = dir.join("Dockerfile");
+        let content = r#"# Test Dockerfile
+FROM cgr.dev/chainguard/wolfi-base:latest AS builder
+ARG VERSION=1.0.0
+RUN curl -fsSL "https://github.com/test/app/releases/download/v1.0.0/app.tar.gz" -o /app.tar.gz
+
+FROM cgr.dev/chainguard/wolfi-base:latest
+ARG VERSION=1.0.0
+COPY --from=builder /opt/ /opt/
+USER 65532:65532
+EXPOSE 8080
+ENTRYPOINT ["/app"]
+STOPSIGNAL SIGTERM
+LABEL org.opencontainers.image.title="test-app"
+LABEL org.opencontainers.image.version="1.0.0"
+LABEL evergreen.image.tier="1"
+LABEL evergreen.health.type="http"
+"#;
+        std::fs::write(&df_path, content).unwrap();
+        let manifest = dockerfile_to_manifest(&df_path, "test-app").unwrap();
+
+        assert_eq!(manifest.name(), "test-app");
+        assert_eq!(manifest.version(), "1.0.0");
+        assert_eq!(
+            manifest.base_image(),
+            "cgr.dev/chainguard/wolfi-base:latest"
+        );
+        assert_eq!(manifest.user(), "65532:65532");
+        assert_eq!(manifest.stop_signal(), "SIGTERM");
+        assert_eq!(&manifest.entrypoint(), &["/app".to_string()]);
+        assert_eq!(manifest.exposed_ports(), &[8080]);
+        assert_eq!(manifest.source.source_type, "binary-download");
+        assert_eq!(manifest.metadata.tier, "1");
+    }
 }

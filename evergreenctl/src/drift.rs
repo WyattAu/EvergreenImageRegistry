@@ -139,29 +139,31 @@ pub fn cmd_drift(image_dir: &str) -> Result<()> {
     let mut drifts: Vec<String> = Vec::new();
 
     if let Some(ref df_ver) = df.version {
-        if df_ver != &manifest.image.version {
+        if df_ver != manifest.version() {
             drifts.push(format!(
                 "VERSION: manifest={}, dockerfile={}",
-                manifest.image.version, df_ver
+                manifest.version(),
+                df_ver
             ));
         }
     } else {
         drifts.push(format!(
             "VERSION: manifest={}, dockerfile=(not found)",
-            manifest.image.version
+            manifest.version()
         ));
     }
 
     if let Some(ref df_base) = df.base_image {
-        if df_base != &manifest.build.base.image {
+        if df_base != manifest.base_image() {
             drifts.push(format!(
                 "BASE IMAGE: manifest={}, dockerfile={}",
-                manifest.build.base.image, df_base
+                manifest.base_image(),
+                df_base
             ));
         }
     }
 
-    let expected_user = &manifest.runtime.user;
+    let expected_user = manifest.user();
     if let Some(ref df_user) = df.user {
         if df_user != expected_user {
             drifts.push(format!(
@@ -171,7 +173,7 @@ pub fn cmd_drift(image_dir: &str) -> Result<()> {
         }
     }
 
-    let expected_stop = &manifest.runtime.stop_signal;
+    let expected_stop = manifest.stop_signal();
     if let Some(ref df_stop) = df.stop_signal {
         if df_stop != expected_stop {
             drifts.push(format!(
@@ -184,8 +186,7 @@ pub fn cmd_drift(image_dir: &str) -> Result<()> {
     let expected_ep = format!(
         "[{}]",
         manifest
-            .runtime
-            .entrypoint
+            .entrypoint()
             .iter()
             .map(|p| format!("\"{}\"", p))
             .collect::<Vec<_>>()
@@ -200,46 +201,11 @@ pub fn cmd_drift(image_dir: &str) -> Result<()> {
         }
     }
 
-    let expected_cmd = if manifest.runtime.cmd.is_empty() {
-        String::new()
-    } else {
-        format!(
-            "[{}]",
-            manifest
-                .runtime
-                .cmd
-                .iter()
-                .map(|p| format!("\"{}\"", p))
-                .collect::<Vec<_>>()
-                .join(", ")
-        )
-    };
-    if let Some(ref df_cmd) = df.cmd {
-        if !expected_cmd.is_empty() && df_cmd != &expected_cmd {
-            drifts.push(format!(
-                "CMD:\n  manifest:  {}\n  dockerfile: {}",
-                expected_cmd, df_cmd
-            ));
-        }
-    } else if !expected_cmd.is_empty() {
-        drifts.push(format!(
-            "CMD: manifest={}, dockerfile=(not found)",
-            expected_cmd
-        ));
-    }
-
-    let mut expected_ports: HashSet<String> = manifest
-        .runtime
-        .ports
+    let expected_ports: HashSet<String> = manifest
+        .exposed_ports()
         .iter()
         .map(|p| p.to_string())
         .collect();
-    if manifest.observability.metrics_port > 0 {
-        expected_ports.insert(manifest.observability.metrics_port.to_string());
-    }
-    if let Some(hp) = manifest.health.port {
-        expected_ports.insert(hp.to_string());
-    }
 
     let missing_ports: Vec<_> = expected_ports.difference(&df.expose_ports).collect();
     let extra_ports: Vec<_> = df.expose_ports.difference(&expected_ports).collect();
@@ -267,21 +233,21 @@ pub fn cmd_drift(image_dir: &str) -> Result<()> {
     let expected_labels = vec![
         (
             "org.opencontainers.image.title",
-            manifest.image.name.clone(),
+            manifest.name().to_string(),
         ),
         (
             "org.opencontainers.image.version",
-            manifest.image.version.clone(),
+            manifest.version().to_string(),
         ),
         (
             "org.opencontainers.image.description",
-            manifest.image.description.clone(),
+            manifest.metadata.description.clone(),
         ),
         (
             "org.opencontainers.image.vendor",
-            manifest.image.vendor.clone(),
+            manifest.metadata.vendor.clone(),
         ),
-        ("evergreen.image.tier", manifest.image.tier.to_string()),
+        ("evergreen.image.tier", manifest.metadata.tier.clone()),
     ];
 
     let df_label_map: std::collections::HashMap<_, _> = df.labels.iter().cloned().collect();

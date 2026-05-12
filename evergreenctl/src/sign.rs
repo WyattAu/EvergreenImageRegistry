@@ -11,9 +11,9 @@ pub fn cmd_sign(image_dir: &str) -> Result<()> {
         let manifest = Manifest::from_file(&manifest_path)
             .with_context(|| format!("Failed to read manifest from {}", manifest_path.display()))?;
         (
-            manifest.image.name.clone(),
-            manifest.image.version.clone(),
-            manifest.build.base.image.clone(),
+            manifest.name().to_string(),
+            manifest.version().to_string(),
+            manifest.base_image().to_string(),
         )
     } else if dockerfile_path.exists() {
         let content = std::fs::read_to_string(&dockerfile_path).with_context(|| {
@@ -102,4 +102,48 @@ fn extract_base_from_dockerfile(content: &str) -> Option<String> {
         }
     }
     None
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_extract_version_from_dockerfile() {
+        let content = "FROM scratch\nARG VERSION=1.0.0\nRUN echo hi";
+        assert_eq!(
+            extract_version_from_dockerfile(content),
+            Some("1.0.0".to_string())
+        );
+    }
+
+    #[test]
+    fn test_extract_version_from_dockerfile_no_version() {
+        let content = "FROM scratch\nRUN echo hi";
+        assert_eq!(extract_version_from_dockerfile(content), None);
+    }
+
+    #[test]
+    fn test_extract_base_from_dockerfile() {
+        let content = "FROM scratch AS builder\nRUN echo hi\nFROM scratch";
+        assert_eq!(
+            extract_base_from_dockerfile(content),
+            Some("scratch".to_string())
+        );
+    }
+
+    #[test]
+    fn test_extract_base_from_dockerfile_with_digest() {
+        let content = "FROM cgr.dev/chainguard/wolfi-base:latest@sha256:abc123";
+        assert_eq!(
+            extract_base_from_dockerfile(content),
+            Some("cgr.dev/chainguard/wolfi-base:latest@sha256:abc123".to_string())
+        );
+    }
+
+    #[test]
+    fn test_extract_base_from_dockerfile_no_from() {
+        let content = "RUN echo hi";
+        assert_eq!(extract_base_from_dockerfile(content), None);
+    }
 }

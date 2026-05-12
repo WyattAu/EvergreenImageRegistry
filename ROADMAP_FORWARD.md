@@ -2,18 +2,19 @@
 
 ## Executive Summary
 
-The registry is at v26.4.0 with 998 images, all syntax-correct, fully labeled, SBOM-covered, and gated by CI. The remaining ~80-120 CI build failures are entirely upstream issues (deleted releases, auth-gated registries, broken builds). This document describes the path from the current state to a production-hardened, zero-trust container image supply chain.
+The registry is at v26.5.0 with 998 images, all syntax-correct, fully labeled, SBOM-covered, and gated by a 9-gate pre-push quality hook. The remaining ~80-120 CI build failures are entirely upstream issues (deleted releases, auth-gated registries, broken builds). This document describes the path from the current state through production readiness to a fully automated, zero-trust container image supply chain.
 
 ---
 
-## 1. Current State Assessment
+## 1. Current State Assessment (v26.5.0)
 
-### 1.1 What Is Done
+### 1.1 Completed
 
 | Category | Metric | Status |
 |----------|--------|--------|
 | Images | 998 Dockerfiles, 998 manifests, 998 SBOMs | COMPLETE |
-| TOML/JSON validation | 998/998 manifest.toml + sbom.spdx.json | COMPLETE |
+| TOML validation | 998/998 manifest.toml | COMPLETE |
+| JSON SBOM validation | 998/998 sbom.spdx.json | COMPLETE |
 | Dockerfile syntax | 0 errors across all 998 images | COMPLETE |
 | Anti-patterns | 0 real (shells, eval, sudo, apt-get in final) | COMPLETE |
 | Security labels | 4 mandatory labels on 100% of images | COMPLETE |
@@ -21,14 +22,24 @@ The registry is at v26.4.0 with 998 images, all syntax-correct, fully labeled, S
 | Non-root execution | 99.5% (993/998) | COMPLETE |
 | HEALTHCHECK | 559 real + 438 NONE (scratch) = 998/998 | COMPLETE |
 | Determinism | SOURCE_DATE_EPOCH + Zstd compression | COMPLETE |
-| evergreenctl | Rust toolchain: audit, verify, drift, generate, bump | COMPLETE |
-| Pre-push gate | 8-gate quality check (tests, clippy, fmt, manifests, SBOMs, constraints) | COMPLETE |
-| CI pipeline | 10 GitHub Actions workflows (build, lint, scan, sign, provenance) | COMPLETE |
-| Reproducibility | 75.3% all-stage FROM digest pinning (1522/2020 lines) | PARTIAL |
-| Multi-arch | 635 images declared (249 ARG TARGETARCH + 386 scratch native) | PARTIAL |
-| Functional testing | Test framework exists (C001-C014, adversarial suite) | PARTIAL |
+| evergreenctl | Rust toolchain: audit, verify, drift, generate, bump, validate | COMPLETE |
+| Pre-push gate | 9-gate quality check (Rust tests/clippy/fmt, Python, Shell, TOML, JSON, constraints, release build) | COMPLETE |
+| CI pipeline | 10 GitHub Actions workflows (build, lint, scan, sign, provenance, fuzz) | COMPLETE |
+| Rust tests | 10/10 unit tests passing | COMPLETE |
+| Python scripts | 26/26 compile-clean | COMPLETE |
+| Shell scripts | 24/24 syntax-valid | COMPLETE |
+| Image rigor | 98.5% real binaries, 1.1% placeholder (graceful fallback), 0.4% stub | COMPLETE |
 
-### 1.2 What Remains
+### 1.2 Partially Complete
+
+| Category | Current | Target | Gap |
+|----------|---------|--------|-----|
+| Digest pinning | 75.3% (1522/2020 FROM lines) | >95% | 498 unpinned lines |
+| Multi-arch | 635 declared (249 ARG TARGETARCH + 386 scratch) | >900 | ~360 single-arch |
+| Functional testing | Framework exists, 51 real test configs | 200+ active configs | ~150 configs |
+| evergreenctl tests | 10 unit tests, 0 integration | 30+ tests, integration suite | Significant |
+
+### 1.3 Known Issues
 
 | Issue | Count | Root Cause | Severity |
 |-------|-------|------------|----------|
@@ -36,154 +47,210 @@ The registry is at v26.4.0 with 998 images, all syntax-correct, fully labeled, S
 | upstream-image-not-found | ~37 | Upstream deleted or moved image | MEDIUM |
 | build-compilation failure | ~3 | Upstream build system broken | LOW |
 | copy-to-non-directory | ~5 | BuildKit cache race (transient) | LOW |
-| auth-gated :latest FROM | ~5 | Private registries without PAT | MEDIUM |
-| Digest pinning gap | 498 FROM lines | Unpinned intermediate stages | MEDIUM |
-| Multi-arch gap | ~360 images | C-extension, GPU, niche upstream | LOW |
-| Stub test config | 998 images | test_config.yaml has binary:none for all | HIGH |
-| Archive docs outdated | 7+ files | Emoji usage, stale UID/alpine refs | LOW |
+| auth-gated FROM | ~5 | Private registries without PAT | MEDIUM |
+| Stub test configs | ~947 images | test_config.yaml has binary:none | HIGH |
 
 ---
 
-## 2. Short-Term Roadmap (Phase 52-55, 2-4 weeks)
+## 2. Short-Term Roadmap (Phase 53-58, 2-6 weeks)
 
-### Phase 52: Version Bump Batch
+### Phase 53: Upstream Failure Resolution (1 week)
 
-**Objective:** Resolve the ~21 curl-404 failures by updating to the latest upstream release.
+**Objective:** Reduce CI build failures from ~80-120 to near-zero by resolving upstream issues.
 
-**Method:**
-1. Run `evergreenctl outdated images/` to identify stale versions.
-2. For each image: fetch latest release URL, update manifest.toml `source.url`, compute sha256, update Dockerfile `ARG VERSION`.
-3. Re-run CI to confirm green.
-4. Update SBOMs.
+**Actions:**
+1. Run `evergreenctl outdated --all images/` to identify stale versions.
+2. For curl-404 failures (~21): fetch latest release URL, update manifest.toml `source.url`, compute sha256, update Dockerfile `ARG VERSION`.
+3. For upstream-image-not-found (~37): categorize as fixable (~15 version bumps), permanently broken (~12 mark deprecated), or auth-gated (~10 document).
+4. For auth-gated images: add GitHub PAT to CI secrets where possible, otherwise document as build-from-source-only.
+5. Re-run CI to confirm failure count reduction.
 
-**Success criteria:** curl-404 count reduced from ~21 to 0.
+**Success criteria:** CI build failure count < 20 (only truly unfixable upstream issues remain).
 
-### Phase 53: Upstream Audit and Triage
+### Phase 54: Test Framework Expansion (2 weeks)
 
-**Objective:** Triage the ~37 upstream-image-not-found failures into fixable, permanently broken, or auth-gated.
+**Objective:** Expand functional test coverage from 51 to 150+ actionable test configurations.
 
-**Method:**
-1. Categorize each failure:
-   - **Fixable (~15):** Version bump to available release.
-   - **Permanently broken (~12):** Upstream discontinued. Mark manifest with `status = "deprecated"` and document in catalog.
-   - **Auth-gated (~10):** Add GitHub PAT to CI secrets or document as build-from-source-only.
-2. Update ROADMAP.md with final triage counts.
+**Current state:** Phase 54 (previous session) activated 51 Tier-1 test configs with real binary paths, health ports, and version flags.
 
-**Success criteria:** Every image has a documented disposition (active, deprecated, auth-gated).
+**Actions:**
+1. Add 50 more Tier-1 images (databases, monitoring, security tools) to test_config.yaml with real configs.
+2. Add 50 Tier-2 images (web apps, proxies, operators) with real configs.
+3. Add a weekly CI workflow that builds and tests the 150 configured images.
+4. Integrate adversarial test suite (21 tests) into the weekly CI run.
+5. Add functional test suites (databases CRUD, proxies HTTP, security tool verification).
 
-### Phase 54: Test Framework Activation
+**Success criteria:** 150+ images with functional test configs, weekly CI test run passing.
 
-**Objective:** Replace the stub test_config.yaml with actionable test configurations for Tier-1 images.
+### Phase 55: Documentation Convergence (1 week)
 
-**Current state:** `test_config.yaml` has `binary: none` and `stub: true` for all 998 images. The test framework (test_framework.sh, test_adversarial.sh) is well-written but cannot run without image builds.
+**Objective:** Eliminate all documentation drift between docs and reality.
 
-**Method:**
-1. Select 50 Tier-1 images (traefik, nginx, redis, postgres, prometheus, grafana, etc.).
-2. For each: set `binary`, `health_port`, `version_flag`, `startup_timeout`, `stub: false`.
-3. Add a CI workflow that builds and tests these 50 images weekly.
-4. Expand to Tier-2 (100 images) in Phase 56.
+**Completed items (Phase 53 audit):**
+- CHANGELOG.md: removed duplicate condensed section, fixed version ordering
+- ROADMAP_FORWARD.md: updated test count 4 to 10, fixed version header
+- ROADMAP.md: fixed current state version header
+- requirements.md: fixed UID 65534 to 65532, clarified Alpine/wolfi policy
+- FIPS guide: replaced debian-slim reference with wolfi-base
 
-**Success criteria:** 50 Tier-1 images have functional test configs and pass adversarial tests.
-
-### Phase 55: Documentation Convergence
-
-**Objective:** Resolve all remaining documentation inconsistencies identified in the audit.
-
-**Items:**
+**Remaining items:**
 1. Fix ROADMAP.md duplicate rows (Workflows, Anti-patterns, Layers).
-2. Fix CHANGELOG.md chronological ordering (multiple sections out of order).
-3. Fix CHANGELOG.md duplicate `[Unreleased]` sections.
-4. Fix CHANGELOG.md mathematically impossible percentage (460/376 = 122%).
-5. Fix CHANGELOG.md stale `[Unreleased]` known issues (all resolved).
-6. Add deprecation notices to archive docs referencing Alpine/debian-slim.
-7. Fix broken file references in `compliance/ato/ssp/ssp_template.md` (REQUIREMENTS.md, .specs/03_security/).
-8. Update image count in VERSION.md if filesystem count differs (999 vs 998).
+2. Add deprecation notices to 7+ archive docs with emoji usage and stale references.
+3. Fix broken file references in `compliance/ato/ssp/ssp_template.md`.
+4. Verify image count consistency (998 is correct; `images/tests/` is not an image).
+5. Update Quality Gate Summary in this document to reflect 9-gate pre-push hook.
 
 **Success criteria:** Zero broken references, zero stale claims, zero emoji in active docs.
 
----
+### Phase 56: evergreenctl Test Expansion (1 week)
 
-## 3. Medium-Term Roadmap (Phase 56-65, 1-3 months)
+**Objective:** Expand evergreenctl test coverage from 10 unit tests to 30+ with integration tests.
 
-### Phase 56-58: Digest Pinning Completion
+**Actions:**
+1. Add manifest parsing tests (valid/invalid TOML structures).
+2. Add checksum verification edge cases (trailing whitespace, mixed case algorithms).
+3. Add audit command tests (detect placeholder patterns, detect real stubs).
+4. Add integration test: generate manifest.toml from a real image directory, verify round-trip.
+5. Add `cargo test -- --ignored` for slow integration tests.
 
-**Objective:** Increase all-stage FROM digest pinning from 75.3% to >95%.
+**Success criteria:** 30+ tests passing, integration test coverage for core commands.
 
-**Method:**
-1. Enumerate all unpinned FROM lines (498 remaining).
-2. For wolfi/debian-slim bases: resolve to specific digest using `crane digest`.
-3. For builder-stage bases (golang, rust, node): pin to specific version + digest.
-4. Automate: add `evergreenctl pin` command that resolves and injects digests.
+### Phase 57: Digest Pinning Automation (1 week)
+
+**Objective:** Increase FROM digest pinning from 75.3% to >90%.
+
+**Actions:**
+1. Implement `evergreenctl pin-digests` subcommand using `crane digest` or Docker registry API.
+2. Pin all unpinned wolfi-base and distroless FROM lines (~300 intermediate stages).
+3. Pin builder-stage bases (golang, rust, node) to specific version + digest (~200 lines).
+4. Add CI check that flags any new unpinned FROM lines.
 5. Re-run CI to confirm no regressions.
 
-**Risk:** Digest rotation requires manual updates when base images are rebuilt. Mitigate with Dependabot or Renovate for base image digests.
+**Success criteria:** >90% FROM lines digest-pinned, `evergreenctl pin-digests` functional.
+
+### Phase 58: CI Pipeline Hardening (1 week)
+
+**Objective:** Make the CI pipeline more robust and informative.
+
+**Actions:**
+1. Add `cargo audit` to CI for Rust dependency vulnerability scanning.
+2. Add Python linting (ruff or flake8) for scripts/ directory.
+3. Add shellcheck for all .sh files.
+4. Consolidate the 10 workflows into clearer stage dependencies.
+5. Add build time and image size tracking to CI artifacts.
+6. Add matrix strategy for the weekly test run (50 images/batch).
+
+**Success criteria:** CI covers all code quality dimensions (Rust, Python, Shell, Dockerfile).
+
+---
+
+## 3. Medium-Term Roadmap (Phase 59-68, 1-3 months)
 
 ### Phase 59-60: Multi-Arch Expansion
 
-**Objective:** Add `ARG TARGETARCH` support for the ~360 remaining single-arch images.
+**Objective:** Add `ARG TARGETARCH` support for ~200 additional images.
 
 **Priority tiers:**
-- **High (~80):** C-extension Python images (scrapy, pandas, numpy). Requires per-arch wheels.
-- **Medium (~200):** amd64-only upstreams. Verify upstream has arm64 builds.
-- **Low (~80):** GPU/ML images (CUDA, ROCm). Platform-specific by nature.
+- **High (~80):** C-extension Python images (scrapy, pandas, numpy). Requires per-arch wheels or musl-based builds.
+- **Medium (~120):** amd64-only upstreams. Verify upstream has arm64 builds before adding support.
+- **Excluded (~80):** GPU/ML images (CUDA, ROCm). Platform-specific by nature, single-arch is correct.
 
 **Method:**
 1. Audit upstream registries for multi-arch manifests.
 2. For images with multi-arch upstream: add `ARG TARGETARCH` and conditional FROM.
-3. For C-extension Python: use `--platform`-aware wheel selection.
-4. Update CI matrix to build `linux/amd64,linux/arm64` for expanded set.
+3. For C-extension Python: use musl-based builds or `--platform`-aware wheel selection.
+4. Update CI matrix to build `linux/amd64,linux/arm64` for the expanded set.
 
-### Phase 61-62: SBOM Depth and Attestation
+**Success criteria:** >800 images with multi-arch support.
 
-**Objective:** Improve SBOM quality and add SLSA provenance attestation to all built images.
+### Phase 61-62: SBOM Depth and Supply Chain Attestation
 
-**Method:**
+**Objective:** Improve SBOM quality and add comprehensive supply chain attestations.
+
+**Actions:**
 1. Configure syft to capture transitive dependencies (currently may miss dynamic deps).
-2. Add grype scan results as build artifact.
+2. Add grype scan results as build artifact (JSON + SARIF for GitHub integration).
 3. Store SBOMs in a Rekor transparency log for supply chain verification.
 4. Generate in-toto attestations linking SBOM + provenance + signature.
+5. Add SBOM drift detection: compare current SBOM against previous version.
 
-### Phase 63-65: evergreenctl Maturation
+**Success criteria:** Every built image has SBOM + provenance + signature + attestation chain.
 
-**Objective:** Make evergreenctl the single source of truth for image management.
+### Phase 63-64: evergreenctl Maturation
 
-**Current gaps:**
-- Only 10 unit tests (verify: sha256, sha512, match, mismatch, case-insensitive, unsupported, display, nonexistent; discover: extract_github_repo).
-- No integration tests.
-- No CLI completion.
-- No man pages.
+**Objective:** Make evergreenctl the single source of truth for all image management operations.
 
-**Add:**
-1. Integration tests: verify a real manifest.toml round-trip (generate -> build -> verify).
-2. `evergreenctl pin-digests` -- resolve and pin all FROM digests.
-3. `evergreenctl check-upstream` -- compare manifest versions against latest upstream releases.
-4. `evergreenctl report` -- generate a JSON/HTML report of registry health.
-5. Shell completion (clap supports this natively).
+**New subcommands:**
+1. `evergreenctl pin-digests images/` -- resolve and pin all FROM digests.
+2. `evergreenctl check-upstream images/` -- compare manifest versions against latest upstream releases (GitHub API).
+3. `evergreenctl report images/` -- generate JSON/HTML report of registry health (coverage, drift, vulnerabilities).
+4. `evergreenctl deprecated images/` -- list and optionally mark deprecated images.
+5. `evergreenctl completion bash|zsh|fish` -- shell completion (clap supports natively).
+
+**Infrastructure:**
+1. Man pages generation (clap-mangen).
+2. Integration test suite (manifest round-trip, build verification).
+3. Error reporting improvements (structured JSON output for CI consumption).
+
+**Success criteria:** evergreenctl covers all management operations, 50+ tests, man pages available.
+
+### Phase 65-66: Health-Shim Expansion
+
+**Objective:** Expand the health-shim (Go binary) to cover more image types.
+
+**Current state:** health-shim provides /livez, /readyz, /startupz, /metrics on port 9101 for database images.
+
+**Actions:**
+1. Add health probe templates for message queues (RabbitMQ, Kafka, NATS).
+2. Add health probe templates for caching (Redis Sentinel, Memcached, Valkey).
+3. Add health probe templates for search engines (Elasticsearch, OpenSearch, Meilisearch).
+4. Reduce binary size further (currently ~2MB, target <1MB with UPX or further stripping).
+5. Add Windows-compatible probes (for future Windows container support).
+
+**Success criteria:** health-shim covers 200+ images with appropriate probes.
+
+### Phase 67-68: Compliance Automation
+
+**Objective:** Automate compliance checks and evidence collection.
+
+**Actions:**
+1. Integrate CIS Docker Benchmark scanning into daily CI (Docker Bench Security).
+2. Automate STIG check evidence collection and report generation.
+3. Add FIPS validation checks to CI (verify BoringCrypto/Go FIPS mode for applicable images).
+4. Generate automated POA&M (Plan of Action & Milestones) from scan results.
+5. Add NIST SP 800-53 control evidence generation.
+
+**Success criteria:** Compliance evidence generated automatically, POA&M updated from scan results.
 
 ---
 
-## 4. Long-Term Vision (Phase 66+, 3-12 months)
+## 4. Long-Term Vision (Phase 69+, 3-12 months)
 
-### 4.1 Automated Version Bumping
+### 4.1 Automated Version Bumping (Phase 69-70)
 
-Build a daily cron workflow that:
+Build a daily cron workflow:
 1. Runs `evergreenctl check-upstream` across all images.
-2. Opens a PR per batch (max 50 images per PR to avoid CI timeout).
-3. CI builds and tests the bumped images.
-4. Auto-merge if all gates pass.
+2. Groups updates into batches (max 50 images per PR to avoid CI timeout).
+3. Opens a PR per batch with changelog and SBOM diff.
+4. CI builds and tests the bumped images.
+5. Auto-merges if all gates pass (with human approval for major version bumps).
 
-This eliminates the manual version bump cycle and keeps the registry current.
+This eliminates the manual version bump cycle and keeps the registry continuously current.
 
-### 4.2 Binary Provenance Verification
+### 4.2 Binary Provenance Verification (Phase 71-72)
 
-For scratch-based images, the primary risk is supply chain compromise of the upstream binary. Mitigate with:
-1. **Multi-source verification:** Download from both GitHub Releases and the vendor's CDN, compare sha256.
-2. **Reproducible builds:** For Go/Rust binaries, rebuild from source and compare against upstream binary.
-3. **Sigstore cosign:** Verify upstream signatures where available (Go, Kubernetes ecosystem).
+For scratch-based images, the primary risk is supply chain compromise of the upstream binary.
 
-### 4.3 Policy-as-Code
+**Mitigations:**
+1. **Multi-source verification:** Download from both GitHub Releases and vendor CDN, compare sha256.
+2. **Reproducible builds:** For Go/Rust binaries, rebuild from source and compare against upstream binary. This is the gold standard for supply chain verification.
+3. **Sigstore cosign verification:** Verify upstream signatures where available (Go, Kubernetes ecosystem).
+4. **Build-to-build comparison:** Store the sha256 of every built image layer and flag unexpected changes.
 
-Define image policies in a machine-readable format (Rego/Cedar) that CI enforces:
+### 4.3 Policy-as-Code (Phase 73-74)
+
+Define image policies in a machine-readable format that CI enforces:
+
 ```toml
 [policy.C001]
 description = "Non-root execution"
@@ -192,44 +259,67 @@ expect = "65532:65532"
 severity = "block"
 
 [policy.C010]
-description = "Health check"
+description = "Health check present"
 check = "docker inspect --format '{{.Config.Healthcheck}}'"
 expect = "not null"
 severity = "warn"
+
+[policy.C020]
+description = "No package manager in final image"
+check = "docker run --rm image which apt-get"
+expect = "exit code 127"
+severity = "block"
 ```
 
-### 4.4 Registry Publication
+Enforce via Open Policy Agent (Rego) or Cedar in CI. Policies versioned in the repository alongside the images they govern.
 
-Publish images to GHCR with:
-1. Immutable versioned tags (never overwrite).
-2. Short-lived `:latest` tag (24-hour TTL via retention policy).
-3. Per-image README rendered on GHCR UI.
-4. Automated vulnerability scanning (GitHub-native DependaBot + Grype).
+### 4.4 Registry Publication and Distribution (Phase 75-76)
 
-### 4.5 Metrics Dashboard
+Publish images to GHCR with production-grade policies:
+1. **Immutable versioned tags:** Never overwrite published tags.
+2. **Short-lived :latest tag:** 24-hour TTL via retention policy.
+3. **Per-image README:** Rendered on GHCR package UI.
+4. **Automated vulnerability scanning:** GitHub-native Dependabot + Grype + Trivy.
+5. **Multi-region replication:** GHCR supports replication for low-latency pulls.
+6. **Rate limiting:** Configure GHCR anonymous/authenticated rate limits appropriately.
+7. **Webhook notifications:** Notify downstream consumers of new image versions.
+
+### 4.5 Metrics and Observability (Phase 77-78)
 
 Deploy a Grafana dashboard showing:
-- Total images, coverage percentages (non-root, SBOM, digest-pinned).
-- Upstream version drift (images behind latest).
-- CI pass/fail rate trends.
-- Vulnerability count trends.
-- Build time and image size distributions.
+1. Total images and coverage percentages (non-root, SBOM, digest-pinned, multi-arch).
+2. Upstream version drift (images behind latest, by category).
+3. CI pass/fail rate trends (by batch, by category).
+4. Vulnerability count trends (critical/high/medium/low over time).
+5. Build time and image size distributions.
+6. SBOM drift detection alerts.
+7. Pre-push gate pass/fail history.
+
+Data source: CI workflow artifacts + `evergreenctl report` JSON output.
+
+### 4.6 Ecosystem Integration (Phase 79-80)
+
+1. **Helm chart:** Provide a Helm chart for deploying evergreenctl as a Kubernetes operator.
+2. **Terraform provider:** Enable infrastructure-as-code consumption of the registry.
+3. **OCI catalog API:** Serve the image catalog as an OCI index for tool integration.
+4. **Webhook system:** Notify downstream systems (ArgoCD, Flux) when new images are published.
+5. **Federated registry support:** Allow mirroring to private registries (Airgap, Harbor, Artifactory).
 
 ---
 
 ## 5. Technical Debt Register
 
-| Item | Effort | Impact | Priority |
-|------|--------|--------|----------|
-| CHANGELOG.md reordering | 2h | Documentation accuracy | HIGH |
-| CHANGELOG.md duplicate Unreleased | 1h | Documentation accuracy | HIGH |
-| test_config.yaml stubs | 8h | Test coverage | HIGH |
-| Archive doc deprecation notices | 2h | Documentation accuracy | MEDIUM |
-| SSP template broken references | 1h | Compliance accuracy | MEDIUM |
-| ROADMAP.md duplicate rows | 15m | Documentation accuracy | LOW |
-| Image count discrepancy (998 vs 999) | 30m | Data accuracy | MEDIUM |
-| `number_prefix` unmaintained warning | 1h | Dependency health | LOW |
-| CHANGELOG.md 122% math error | 15m | Documentation accuracy | LOW |
+| Item | Effort | Impact | Priority | Status |
+|------|--------|--------|----------|--------|
+| test_config.yaml stubs (~947 images) | 16h | Test coverage | HIGH | IN PROGRESS |
+| Upstream CI failures (~80-120) | 8h | CI green | HIGH | IN PROGRESS |
+| evergreenctl integration tests | 8h | Code quality | HIGH | PLANNED |
+| Digest pinning gap (498 FROM lines) | 4h | Supply chain | MEDIUM | PLANNED |
+| CHANGELOG.md minor fixes | 1h | Doc accuracy | MEDIUM | DONE |
+| SSP template broken references | 1h | Compliance | MEDIUM | PLANNED |
+| Archive doc deprecation notices | 2h | Doc accuracy | LOW | PLANNED |
+| `number_prefix` unmaintained dep | 1h | Dep health | LOW | PLANNED |
+| Multi-arch gap (~360 images) | 20h | Platform support | LOW | PLANNED |
 
 ---
 
@@ -237,16 +327,18 @@ Deploy a Grafana dashboard showing:
 
 | Risk | Likelihood | Impact | Mitigation |
 |------|-----------|--------|------------|
-| Upstream deletes release tarballs | HIGH | CI failure | Daily version check, auto-bump |
-| GitHub rate-limits CI | MEDIUM | Build failure | Use GHCR for caching, authenticated API calls |
-| Base image digest rotation | MEDIUM | Stale FROM | Dependabot/Renovate for base images |
+| Upstream deletes release tarballs | HIGH | CI failure | Daily version check, auto-bump (Phase 69) |
+| GitHub rate-limits CI | MEDIUM | Build failure | Authenticated API calls, GHCR caching |
+| Base image digest rotation | MEDIUM | Stale FROM | Dependabot/Renovate for base digests (Phase 57) |
 | wolfi package removal | LOW | Build failure | Pin wolfi version, monitor advisory |
-| evergreenctl dependency CVE | LOW | Supply chain | `cargo audit` in CI, minimal dependencies |
-| Image catalog drift from reality | MEDIUM | User confusion | `evergreenctl generate` from manifest.toml |
+| evergreenctl dependency CVE | LOW | Supply chain | `cargo audit` in CI, minimal deps |
+| Image catalog drift | MEDIUM | User confusion | `evergreenctl generate` from manifest.toml |
+| Large PR CI timeout | MEDIUM | Merge delay | Batch PRs (max 50 images), matrix strategy |
+| Go toolchain not available locally | LOW | Dev friction | Docker-based dev environment, Nix flake |
 
 ---
 
-## 7. Quality Gate Summary (Post-Audit)
+## 7. Quality Gate Summary (Post-Audit, v26.5.0)
 
 | Gate | Tool | Result |
 |------|------|--------|
@@ -254,24 +346,41 @@ Deploy a Grafana dashboard showing:
 | Rust clippy | `cargo clippy -D warnings` | 0 warnings |
 | Rust formatting | `cargo fmt --check` | PASS |
 | Rust release build | `cargo build --release` | PASS |
-| Rust dependency audit | `cargo audit` | 1 unmaintained (number_prefix, informational) |
-| Python syntax | `py_compile` | 5/5 PASS |
-| Manifest TOML validation | Custom (tomllib) | 998/998 PASS |
-| SBOM JSON validation | Custom (json) | 998/998 PASS |
-| Dockerfile constraints | Custom (alpine check) | 0 violations |
-| Pre-push gate | 8-gate hook | 8/8 PASS |
-| CI push | GitHub Actions | Green (upstream failures only) |
+| Python syntax | `py_compile` (26 scripts) | 26/26 PASS |
+| Shell syntax | `bash -n` (24 scripts) | 24/24 PASS |
+| Manifest TOML validation | tomllib | 998/998 PASS |
+| SBOM JSON validation | json | 998/998 PASS |
+| Dockerfile constraints | Alpine ban check | 0 violations |
+| evergreenctl audit | `evergreenctl audit` | 98.5% real, 0 errors |
+| Pre-push gate | 9-gate hook | 9/9 PASS |
+| CI pipeline | GitHub Actions | Green (upstream failures only) |
 
 ---
 
-## 8. Conclusion
+## 8. Production Readiness Criteria
 
-The registry has completed its syntax and structure phases (Phases 0-51). The next critical path is:
+The registry is production-ready when the following criteria are met:
 
-1. **Phase 52-53:** Resolve upstream failures (version bumps + triage) -- unblocks CI green.
-2. **Phase 54:** Activate test framework for Tier-1 images -- validates actual container behavior.
-3. **Phase 55:** Documentation convergence -- eliminates drift between docs and reality.
-4. **Phase 56-65:** Digest pinning, multi-arch, SBOM depth, evergreenctl maturation.
-5. **Phase 66+:** Automated version bumping, binary provenance, policy-as-code, registry publication.
+| Criterion | Current | Target | Phase |
+|-----------|---------|--------|-------|
+| CI build pass rate | ~88% | >99% | Phase 53 |
+| Functional test coverage | 51/998 configs | 200/998 | Phase 54 |
+| Digest pinning | 75.3% | >95% | Phase 57 |
+| evergreenctl test coverage | 10 tests | 50+ tests | Phase 56, 63 |
+| SBOM + provenance + attestation | Partial | 100% | Phase 61 |
+| Automated version bumping | Manual | Daily automated | Phase 69 |
+| Compliance automation | Manual scripts | CI-integrated | Phase 67 |
+| Documentation accuracy | ~95% | 100% | Phase 55 |
 
-The pre-push hook ensures no regressions: every push must pass 8 quality gates including unit tests, static analysis, manifest validation, and SBOM integrity.
+---
+
+## 9. Conclusion
+
+The registry has completed its syntax, structure, and hardening phases (Phases 0-52). The critical path to production is:
+
+1. **Phase 53-54:** Resolve upstream failures + expand test coverage -- unblocks CI green and validates behavior.
+2. **Phase 55-58:** Documentation convergence + evergreenctl expansion + digest pinning -- eliminates technical debt.
+3. **Phase 59-68:** Multi-arch, SBOM depth, health-shim, compliance automation -- production hardening.
+4. **Phase 69-80:** Automated version bumping, binary provenance, policy-as-code, registry publication -- operational excellence.
+
+The 9-gate pre-push hook ensures no regressions: every push must pass Rust tests, clippy, fmt, Python syntax (26 scripts), Shell syntax (24 scripts), manifest validation (998 files), SBOM validation (998 files), Dockerfile constraints, and a release build.

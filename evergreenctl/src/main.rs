@@ -155,10 +155,9 @@ async fn main() -> anyhow::Result<()> {
                         evergreenctl::migrate::dockerfile_to_manifest(&dockerfile, &image)
                     {
                         println!("Extracted manifest for {}:", image);
-                        println!("  Version: {}", manifest.image.version);
-                        println!("  Type: {:?}", manifest.image.image_type);
-                        println!("  URL: {}", manifest.source.url);
-                        println!("  Base: {}", manifest.build.base.image);
+                        println!("  Version: {}", manifest.metadata.version);
+                        println!("  Source: {}", manifest.metadata.source);
+                        println!("  Base: {}", manifest.build.base);
                         println!("  Entrypoint: {:?}", manifest.runtime.entrypoint);
 
                         // Probe the URL
@@ -181,14 +180,12 @@ async fn main() -> anyhow::Result<()> {
             if path.is_file() {
                 let manifest = evergreenctl::manifest::Manifest::from_file(path)?;
                 println!("Manifest: {}", path.display());
-                println!("  Name: {}", manifest.image.name);
-                println!("  Version: {}", manifest.image.version);
-                println!(
-                    "  Checksum: {} {}",
-                    manifest.source.checksum.algorithm, manifest.source.checksum.expected
-                );
-                if manifest.source.checksum.expected.is_empty() {
-                    println!("  WARNING: No checksum configured");
+                println!("  Name: {}", manifest.name());
+                println!("  Version: {}", manifest.version());
+                println!("  Source URL: {}", manifest.source_url());
+                println!("  GitHub Repo: {:?}", manifest.github_repo());
+                if manifest.source_url().is_empty() {
+                    println!("  WARNING: No source URL configured");
                 }
             } else if path.is_dir() {
                 let mut verified = 0;
@@ -199,8 +196,8 @@ async fn main() -> anyhow::Result<()> {
                     if manifest_path.exists() {
                         match evergreenctl::manifest::Manifest::from_file(&manifest_path) {
                             Ok(m) => {
-                                if m.source.checksum.expected.is_empty() {
-                                    println!("MISSING: {} (no checksum)", m.image.name);
+                                if m.source_url().is_empty() {
+                                    println!("MISSING: {} (no source URL)", m.name());
                                     missing += 1;
                                 } else {
                                     verified += 1;
@@ -212,7 +209,7 @@ async fn main() -> anyhow::Result<()> {
                         }
                     }
                 }
-                println!("\nVerified: {}, Missing checksums: {}", verified, missing);
+                println!("\nVerified: {}, Missing source URL: {}", verified, missing);
             }
         }
 
@@ -299,7 +296,6 @@ async fn main() -> anyhow::Result<()> {
             for entry in std::fs::read_dir(images_dir)? {
                 let entry = entry?;
                 let manifest_path = entry.path().join("manifest.toml");
-                let _dockerfile_path = entry.path().join("Dockerfile");
 
                 if !manifest_path.exists() {
                     missing += 1;
@@ -308,15 +304,27 @@ async fn main() -> anyhow::Result<()> {
 
                 match evergreenctl::manifest::Manifest::from_file(&manifest_path) {
                     Ok(m) => {
-                        // Validate the manifest
-                        match m.validate() {
-                            Ok(()) => {
-                                valid += 1;
-                            }
-                            Err(e) => {
-                                println!("INVALID: {} - {}", m.image.name, e);
-                                invalid += 1;
-                            }
+                        // Validate that essential fields are populated
+                        let name_ok = !m.name().is_empty();
+                        let version_ok = !m.version().is_empty();
+                        let source_ok = !m.source_url().is_empty();
+                        let base_ok = !m.base_image().is_empty();
+
+                        if name_ok && version_ok && source_ok && base_ok {
+                            valid += 1;
+                        } else {
+                            let issues = vec![
+                                (!name_ok).then_some("name"),
+                                (!version_ok).then_some("version"),
+                                (!source_ok).then_some("source_url"),
+                                (!base_ok).then_some("base"),
+                            ]
+                            .into_iter()
+                            .flatten()
+                            .collect::<Vec<_>>()
+                            .join(", ");
+                            println!("INVALID: {} - missing: {}", m.name(), issues);
+                            invalid += 1;
                         }
                     }
                     Err(e) => {

@@ -3,199 +3,99 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::path::Path;
 
+/// Manifest representation matching the actual TOML format used in the registry.
+///
+/// The TOML structure is:
+/// ```toml
+/// [metadata]
+/// name = "redis"
+/// version = "7.4.1"
+/// description = "..."
+/// vendor = "..."
+/// source = "https://github.com/redis/redis"
+/// license = "BSD-3-Clause"
+/// tier = "1"
+///
+/// [build]
+/// base = "cgr.dev/chainguard/wolfi-base:latest"
+/// user = "65532:65532"
+/// stopsignal = "SIGTERM"
+///
+/// [source]
+/// type = "package-manager"
+/// url = "https://github.com/redis/redis/archive/..."
+///
+/// [runtime]
+/// entrypoint = ["sh", "-c", "redis"]
+///
+/// [ports]
+/// expose = [6379, 9101]
+///
+/// [labels]
+/// "org.opencontainers.image.title" = "redis"
+/// ```
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Manifest {
-    pub image: ImageMeta,
-    pub source: Source,
-    pub build: BuildConfig,
-    pub runtime: RuntimeConfig,
-    pub health: HealthConfig,
     #[serde(default)]
-    pub observability: ObservabilityConfig,
+    pub metadata: Metadata,
     #[serde(default)]
-    pub compliance: ComplianceConfig,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct ImageMeta {
-    pub name: String,
-    #[serde(rename = "type")]
-    pub image_type: ImageType,
-    pub tier: u8,
-    pub version: String,
-    pub description: String,
-    pub vendor: String,
+    pub build: Build,
     #[serde(default)]
-    pub source_url: Option<String>,
+    pub source: SourceSection,
     #[serde(default)]
-    pub category: Option<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
-#[serde(rename_all = "kebab-case")]
-#[derive(Default)]
-pub enum ImageType {
-    #[default]
-    BinaryDownload,
-    SourceBuildGo,
-    SourceBuildC,
-    SourceBuildRust,
-    SourceBuildJava,
-    NodeNpm,
-    PythonPip,
-    WebUi,
-    Database,
-    MessageQueue,
-    Monitoring,
-    Networking,
-    Security,
-    Storage,
-    Other,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Source {
-    pub url: String,
+    pub runtime: RuntimeSection,
     #[serde(default)]
-    pub fallback_urls: Vec<String>,
-    pub checksum: Checksum,
-    #[serde(default)]
-    pub strategy: DownloadStrategy,
-    #[serde(default)]
-    pub github_repo: Option<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Checksum {
-    pub algorithm: String,
-    pub expected: String,
-    #[serde(default)]
-    pub source: String,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone, Default)]
-#[serde(rename_all = "kebab-case")]
-pub enum DownloadStrategy {
-    #[default]
-    Curl,
-    GitClone,
-    Wget,
-    NpmPack,
-    PipDownload,
-    AptGet,
-    ApkAdd,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct BuildConfig {
-    pub base: BaseImage,
-    #[serde(default)]
-    pub stages: Vec<BuildStage>,
-    #[serde(default)]
-    pub env: HashMap<String, String>,
-    #[serde(default)]
-    pub builder_packages: Vec<String>,
-    #[serde(default)]
-    pub runtime_packages: Vec<String>,
-    #[serde(default)]
-    pub build_args: HashMap<String, String>,
-    #[serde(default)]
-    pub pre_build_commands: Vec<String>,
-    #[serde(default)]
-    pub build_commands: Vec<String>,
-    #[serde(default)]
-    pub post_build_commands: Vec<String>,
-    #[serde(default)]
-    pub artifacts: Vec<Artifact>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct BaseImage {
-    pub image: String,
-    #[serde(default)]
-    pub purpose: String,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct BuildStage {
-    pub name: String,
-    pub base: String,
-    #[serde(default)]
-    pub packages: Vec<String>,
-    #[serde(default)]
-    pub commands: Vec<String>,
-    #[serde(default)]
-    pub env: HashMap<String, String>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Artifact {
-    pub source: String,
-    pub destination: String,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct RuntimeConfig {
-    #[serde(default = "default_user")]
-    pub user: String,
-    #[serde(default = "default_workdir")]
-    pub workdir: String,
-    pub entrypoint: Vec<String>,
-    #[serde(default)]
-    pub cmd: Vec<String>,
-    #[serde(default)]
-    pub ports: Vec<u16>,
-    #[serde(default)]
-    pub volumes: Vec<String>,
-    #[serde(default = "default_stop_signal")]
-    pub stop_signal: String,
-    #[serde(default)]
-    pub env: HashMap<String, String>,
-}
-
-fn default_user() -> String {
-    "65532:65532".to_string()
-}
-fn default_workdir() -> String {
-    "/app".to_string()
-}
-fn default_stop_signal() -> String {
-    "SIGTERM".to_string()
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct HealthConfig {
-    #[serde(rename = "type")]
-    pub health_type: String,
-    #[serde(default)]
-    pub path: String,
-    #[serde(default)]
-    pub port: Option<u16>,
-    #[serde(default)]
-    pub interval_seconds: u32,
-    #[serde(default)]
-    pub timeout_seconds: u32,
-    #[serde(default)]
-    pub retries: u32,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone, Default)]
-pub struct ObservabilityConfig {
-    pub metrics_port: u16,
-    #[serde(default = "default_metrics_path")]
-    pub metrics_path: String,
-}
-
-fn default_metrics_path() -> String {
-    "/metrics".to_string()
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone, Default)]
-pub struct ComplianceConfig {
-    #[serde(default)]
-    pub standards: Vec<String>,
+    pub ports: PortsSection,
     #[serde(default)]
     pub labels: HashMap<String, String>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
+pub struct Metadata {
+    #[serde(default)]
+    pub name: String,
+    #[serde(default)]
+    pub version: String,
+    #[serde(default)]
+    pub description: String,
+    #[serde(default)]
+    pub vendor: String,
+    #[serde(default)]
+    pub source: String,
+    #[serde(default)]
+    pub license: String,
+    #[serde(default)]
+    pub tier: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
+pub struct Build {
+    #[serde(default)]
+    pub base: String,
+    #[serde(default)]
+    pub user: String,
+    #[serde(default)]
+    pub stopsignal: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
+pub struct SourceSection {
+    #[serde(default, rename = "type")]
+    pub source_type: String,
+    #[serde(default)]
+    pub url: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
+pub struct RuntimeSection {
+    #[serde(default)]
+    pub entrypoint: Vec<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
+pub struct PortsSection {
+    #[serde(default)]
+    pub expose: Vec<u16>,
 }
 
 impl Manifest {
@@ -204,7 +104,6 @@ impl Manifest {
             .with_context(|| format!("Failed to read manifest: {}", path.display()))?;
         let manifest: Manifest = toml::from_str(&content)
             .with_context(|| format!("Failed to parse manifest: {}", path.display()))?;
-        manifest.validate()?;
         Ok(manifest)
     }
 
@@ -215,36 +114,327 @@ impl Manifest {
         Ok(())
     }
 
-    pub fn validate(&self) -> Result<()> {
-        if self.image.name.is_empty() {
-            anyhow::bail!("image.name is required");
+    /// Extract GitHub owner/repo from the metadata.source URL if it points to github.com.
+    pub fn github_repo(&self) -> Option<String> {
+        let url = if !self.metadata.source.is_empty() {
+            &self.metadata.source
+        } else if !self.source.url.is_empty() {
+            &self.source.url
+        } else {
+            return None;
+        };
+
+        // Match https://github.com/owner/repo or http://github.com/owner/repo
+        for prefix in &["https://github.com/", "http://github.com/"] {
+            if let Some(rest) = url.strip_prefix(prefix) {
+                // Remove trailing path components to get owner/repo
+                let parts: Vec<&str> = rest.split('/').collect();
+                if parts.len() >= 2 {
+                    return Some(format!("{}/{}", parts[0], parts[1]));
+                }
+            }
         }
-        if self.image.version.is_empty() {
-            anyhow::bail!("image.version is required");
-        }
-        if self.source.url.is_empty() {
-            anyhow::bail!("source.url is required");
-        }
-        if !matches!(self.image.tier, 1..=3) {
-            anyhow::bail!("image.tier must be 1, 2, or 3");
-        }
-        if self.runtime.entrypoint.is_empty() {
-            anyhow::bail!("runtime.entrypoint is required");
-        }
-        if self.health.health_type.is_empty() {
-            anyhow::bail!("health.type is required");
-        }
-        match self.health.health_type.as_str() {
-            "http" | "tcp" | "exec" | "none" => {}
-            other => anyhow::bail!(
-                "Invalid health type: {} (must be http/tcp/exec/none)",
-                other
-            ),
-        }
-        Ok(())
+        None
+    }
+
+    /// Get the tier as a number (1-3), defaulting to 3 if parsing fails.
+    pub fn tier_num(&self) -> u8 {
+        self.metadata.tier.parse::<u8>().unwrap_or(3)
+    }
+
+    /// Get the image name (convenience alias for metadata.name).
+    pub fn name(&self) -> &str {
+        &self.metadata.name
+    }
+
+    /// Get the image version (convenience alias for metadata.version).
+    pub fn version(&self) -> &str {
+        &self.metadata.version
+    }
+
+    /// Get the source download URL.
+    pub fn source_url(&self) -> &str {
+        &self.source.url
+    }
+
+    /// Get the base image string from the build section.
+    pub fn base_image(&self) -> &str {
+        &self.build.base
+    }
+
+    /// Get the user string from the build section.
+    pub fn user(&self) -> &str {
+        &self.build.user
+    }
+
+    /// Get the stop signal from the build section.
+    pub fn stop_signal(&self) -> &str {
+        &self.build.stopsignal
+    }
+
+    /// Get the entrypoint from the runtime section.
+    pub fn entrypoint(&self) -> &[String] {
+        &self.runtime.entrypoint
+    }
+
+    /// Get the exposed ports.
+    pub fn exposed_ports(&self) -> &[u16] {
+        &self.ports.expose
+    }
+
+    /// Get a label value by key.
+    pub fn label(&self, key: &str) -> Option<&str> {
+        self.labels.get(key).map(|s| s.as_str())
     }
 
     pub fn manifest_path(images_dir: &Path, name: &str) -> std::path::PathBuf {
         images_dir.join(name).join("manifest.toml")
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::io::Write;
+    use tempfile::NamedTempFile;
+
+    fn write_manifest(content: &str) -> NamedTempFile {
+        let mut f = NamedTempFile::new().unwrap();
+        write!(f, "{}", content).unwrap();
+        f
+    }
+
+    #[test]
+    fn test_parse_minimal_manifest() {
+        let content = r#"
+[metadata]
+name = "test"
+version = "1.0.0"
+
+[build]
+base = "scratch"
+
+[source]
+url = "https://example.com/test.tar.gz"
+
+[runtime]
+entrypoint = ["/test"]
+"#;
+        let f = write_manifest(content);
+        let m = Manifest::from_file(f.path()).unwrap();
+        assert_eq!(m.name(), "test");
+        assert_eq!(m.version(), "1.0.0");
+        assert_eq!(m.base_image(), "scratch");
+        assert_eq!(m.source_url(), "https://example.com/test.tar.gz");
+        assert_eq!(m.entrypoint(), &["/test".to_string()]);
+    }
+
+    #[test]
+    fn test_parse_full_manifest() {
+        let content = r#"
+[metadata]
+name = "redis"
+version = "7.4.1"
+description = "Redis in-memory store"
+vendor = "Redis"
+source = "https://github.com/redis/redis"
+license = "BSD-3-Clause"
+tier = "1"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://github.com/redis/redis/archive/refs/tags/7.4.1.tar.gz"
+
+[runtime]
+entrypoint = ["sh", "-c", "redis"]
+
+[ports]
+expose = [6379, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "redis"
+"evergreen.image.tier" = "1"
+"#;
+        let f = write_manifest(content);
+        let m = Manifest::from_file(f.path()).unwrap();
+        assert_eq!(m.name(), "redis");
+        assert_eq!(m.version(), "7.4.1");
+        assert_eq!(m.metadata.description, "Redis in-memory store");
+        assert_eq!(m.metadata.vendor, "Redis");
+        assert_eq!(m.metadata.license, "BSD-3-Clause");
+        assert_eq!(m.tier_num(), 1);
+        assert_eq!(m.user(), "65532:65532");
+        assert_eq!(m.stop_signal(), "SIGTERM");
+        assert_eq!(m.exposed_ports(), &[6379, 9101]);
+        assert_eq!(m.label("org.opencontainers.image.title"), Some("redis"));
+        assert_eq!(m.label("nonexistent"), None);
+    }
+
+    #[test]
+    fn test_parse_empty_manifest() {
+        let content = "";
+        let f = write_manifest(content);
+        let m = Manifest::from_file(f.path()).unwrap();
+        assert!(m.name().is_empty());
+        assert!(m.version().is_empty());
+        assert!(m.base_image().is_empty());
+    }
+
+    #[test]
+    fn test_github_repo_from_metadata_source() {
+        let content = r#"
+[metadata]
+name = "redis"
+source = "https://github.com/redis/redis"
+
+[build]
+base = "scratch"
+
+[source]
+url = "https://example.com/download.tar.gz"
+
+[runtime]
+entrypoint = ["/redis"]
+"#;
+        let f = write_manifest(content);
+        let m = Manifest::from_file(f.path()).unwrap();
+        assert_eq!(m.github_repo(), Some("redis/redis".to_string()));
+    }
+
+    #[test]
+    fn test_github_repo_from_source_url() {
+        let content = r#"
+[metadata]
+name = "nginx"
+
+[build]
+base = "scratch"
+
+[source]
+url = "https://github.com/nginx/nginx/releases/download/v1.27.1/nginx.tar.gz"
+
+[runtime]
+entrypoint = ["/nginx"]
+"#;
+        let f = write_manifest(content);
+        let m = Manifest::from_file(f.path()).unwrap();
+        assert_eq!(m.github_repo(), Some("nginx/nginx".to_string()));
+    }
+
+    #[test]
+    fn test_github_repo_no_github() {
+        let content = r#"
+[metadata]
+name = "test"
+
+[build]
+base = "scratch"
+
+[source]
+url = "https://example.com/download.tar.gz"
+
+[runtime]
+entrypoint = ["/test"]
+"#;
+        let f = write_manifest(content);
+        let m = Manifest::from_file(f.path()).unwrap();
+        assert_eq!(m.github_repo(), None);
+    }
+
+    #[test]
+    fn test_tier_num_valid() {
+        let content = r#"
+[metadata]
+name = "test"
+tier = "2"
+
+[build]
+base = "scratch"
+
+[source]
+url = "https://example.com/test.tar.gz"
+
+[runtime]
+entrypoint = ["/test"]
+"#;
+        let f = write_manifest(content);
+        let m = Manifest::from_file(f.path()).unwrap();
+        assert_eq!(m.tier_num(), 2);
+    }
+
+    #[test]
+    fn test_tier_num_invalid_defaults_to_3() {
+        let content = r#"
+[metadata]
+name = "test"
+tier = "invalid"
+
+[build]
+base = "scratch"
+
+[source]
+url = "https://example.com/test.tar.gz"
+
+[runtime]
+entrypoint = ["/test"]
+"#;
+        let f = write_manifest(content);
+        let m = Manifest::from_file(f.path()).unwrap();
+        assert_eq!(m.tier_num(), 3);
+    }
+
+    #[test]
+    fn test_round_trip() {
+        let content = r#"
+[metadata]
+name = "test"
+version = "1.0.0"
+
+[build]
+base = "scratch"
+
+[source]
+url = "https://example.com/test.tar.gz"
+
+[runtime]
+entrypoint = ["/test"]
+"#;
+        let f = write_manifest(content);
+        let m = Manifest::from_file(f.path()).unwrap();
+
+        let f2 = NamedTempFile::new().unwrap();
+        m.to_file(f2.path()).unwrap();
+        let m2 = Manifest::from_file(f2.path()).unwrap();
+
+        assert_eq!(m.name(), m2.name());
+        assert_eq!(m.version(), m2.version());
+        assert_eq!(m.base_image(), m2.base_image());
+        assert_eq!(m.source_url(), m2.source_url());
+    }
+
+    #[test]
+    fn test_source_type_field() {
+        let content = r#"
+[metadata]
+name = "test"
+
+[build]
+base = "scratch"
+
+[source]
+type = "package-manager"
+url = "https://example.com/test.tar.gz"
+
+[runtime]
+entrypoint = ["/test"]
+"#;
+        let f = write_manifest(content);
+        let m = Manifest::from_file(f.path()).unwrap();
+        assert_eq!(m.source.source_type, "package-manager");
     }
 }

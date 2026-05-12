@@ -1,4 +1,3 @@
-use crate::generate::DockerfileGenerator;
 use crate::manifest::Manifest;
 use anyhow::{Context, Result};
 use std::path::Path;
@@ -19,7 +18,7 @@ pub fn cmd_bump(image: &str, new_version: &str, dry_run: bool) -> Result<()> {
 
     let old_version = if has_manifest {
         let manifest = Manifest::from_file(&manifest_path)?;
-        manifest.image.version.clone()
+        manifest.version().to_string()
     } else {
         extract_version_from_dockerfile(&dockerfile_path)?
     };
@@ -30,7 +29,6 @@ pub fn cmd_bump(image: &str, new_version: &str, dry_run: bool) -> Result<()> {
 
     if has_manifest {
         bump_with_manifest(
-            &image_dir,
             &manifest_path,
             &dockerfile_path,
             &old_version,
@@ -65,7 +63,6 @@ fn extract_version_from_dockerfile(dockerfile_path: &Path) -> Result<String> {
 }
 
 fn bump_with_manifest(
-    _image_dir: &Path,
     manifest_path: &Path,
     dockerfile_path: &Path,
     old_version: &str,
@@ -77,17 +74,14 @@ fn bump_with_manifest(
     let old_manifest_content = std::fs::read_to_string(manifest_path)?;
     let old_dockerfile_content = std::fs::read_to_string(dockerfile_path).ok();
 
-    manifest.image.version = new_version.to_string();
+    manifest.metadata.version = new_version.to_string();
 
     if !old_version.is_empty() {
         manifest.source.url = manifest.source.url.replace(old_version, new_version);
-        for url in manifest.source.fallback_urls.iter_mut() {
-            *url = url.replace(old_version, new_version);
+        if !manifest.metadata.source.is_empty() {
+            manifest.metadata.source = manifest.metadata.source.replace(old_version, new_version);
         }
     }
-
-    let gen = DockerfileGenerator::new(manifest.clone());
-    let new_dockerfile = gen.generate()?;
 
     let new_manifest_content =
         toml::to_string_pretty(&manifest).context("Failed to serialize manifest")?;
@@ -96,23 +90,17 @@ fn bump_with_manifest(
         println!("\n--- Manifest changes ---");
         print_diff(&old_manifest_content, &new_manifest_content);
 
-        if let Some(ref old_df) = old_dockerfile_content {
+        if old_dockerfile_content.is_some() {
             println!("\n--- Dockerfile changes ---");
-            print_diff(old_df, &new_dockerfile);
+            println!("  (Dockerfile not auto-updated in dry-run; bump --dry-run only shows manifest diff)");
         }
         return Ok(());
     }
 
     std::fs::write(manifest_path, &new_manifest_content)?;
-    std::fs::write(dockerfile_path, &new_dockerfile)?;
 
     println!("\n--- Manifest changes ---");
     print_diff(&old_manifest_content, &new_manifest_content);
-
-    if let Some(ref old_df) = old_dockerfile_content {
-        println!("\n--- Dockerfile changes ---");
-        print_diff(old_df, &new_dockerfile);
-    }
 
     Ok(())
 }

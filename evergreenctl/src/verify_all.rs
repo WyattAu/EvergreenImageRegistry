@@ -167,7 +167,8 @@ fn has_direct_download(content: &str) -> bool {
 fn has_checksum(content: &str, manifest_path: &Path) -> bool {
     if manifest_path.exists() {
         if let Ok(manifest) = crate::manifest::Manifest::from_file(manifest_path) {
-            return !manifest.source.checksum.expected.is_empty();
+            // Check if the manifest has a non-empty source URL (indicates real source)
+            return !manifest.source_url().is_empty();
         }
     }
 
@@ -179,8 +180,12 @@ fn has_checksum(content: &str, manifest_path: &Path) -> bool {
 fn checksum_algo(content: &str, manifest_path: &Path) -> String {
     if manifest_path.exists() {
         if let Ok(manifest) = crate::manifest::Manifest::from_file(manifest_path) {
-            if !manifest.source.checksum.expected.is_empty() {
-                return manifest.source.checksum.algorithm.clone();
+            if !manifest.source_url().is_empty() {
+                // Prefer sha256 for direct downloads
+                if content.contains("sha512") {
+                    return "sha512".to_string();
+                }
+                return "sha256".to_string();
             }
         }
     }

@@ -1,5 +1,4 @@
 use anyhow::{Context, Result};
-use serde::Deserialize;
 use std::path::Path;
 use std::time::Duration;
 
@@ -63,11 +62,11 @@ pub async fn cmd_outdated(images_dir: &str, check_all: bool) -> Result<()> {
             }
         };
 
-        let github_repo = manifest.source.github_repo.clone();
+        let github_repo = manifest.github_repo();
 
         if let Some(repo) = &github_repo {
             has_github = true;
-            let current = manifest.image.version.clone();
+            let current = manifest.version().to_string();
 
             let latest = match query_latest_release(&client, repo).await {
                 Ok(tag) => tag,
@@ -95,7 +94,7 @@ pub async fn cmd_outdated(images_dir: &str, check_all: bool) -> Result<()> {
         } else if check_all {
             entries.push(OutdatedEntry {
                 name,
-                current: manifest.image.version,
+                current: manifest.version().to_string(),
                 latest: "-".to_string(),
                 status: "NO-GITHUB".to_string(),
             });
@@ -139,7 +138,7 @@ struct OutdatedEntry {
     status: String,
 }
 
-#[derive(Deserialize)]
+#[derive(serde::Deserialize)]
 struct GithubRelease {
     tag_name: String,
 }
@@ -180,5 +179,34 @@ fn compare_versions(current: &str, latest: &str) -> String {
                 "OUTDATED".to_string()
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_compare_versions_ok() {
+        assert_eq!(compare_versions("1.0.0", "1.0.0"), "OK");
+        assert_eq!(compare_versions("2.0.0", "1.0.0"), "OK");
+        assert_eq!(compare_versions("1.0.0", "2.0.0"), "OUTDATED");
+        assert_eq!(compare_versions("1.2.3", "1.2.4"), "OUTDATED");
+        assert_eq!(compare_versions("1.2.4", "1.2.3"), "OK");
+    }
+
+    #[test]
+    fn test_compare_versions_non_semver() {
+        assert_eq!(compare_versions("v1", "v1"), "OK");
+        assert_eq!(compare_versions("v1", "v2"), "OUTDATED");
+        assert_eq!(compare_versions("abc", "abc"), "OK");
+        assert_eq!(compare_versions("abc", "def"), "OUTDATED");
+    }
+
+    #[test]
+    fn test_compare_versions_mixed() {
+        // One parseable, one not
+        assert_eq!(compare_versions("1.0.0", "abc"), "OUTDATED");
+        assert_eq!(compare_versions("abc", "1.0.0"), "OUTDATED");
     }
 }

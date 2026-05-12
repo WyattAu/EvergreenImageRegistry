@@ -1,6 +1,46 @@
 use anyhow::{Context, Result};
+use std::collections::HashMap;
 use std::path::Path;
 use std::time::Duration;
+
+// ── Cache types ──────────────────────────────────────────────────────────
+
+type Cache = HashMap<String, CacheEntry>;
+
+#[derive(serde::Serialize, serde::Deserialize)]
+struct CacheEntry {
+    tag: String,
+    checked_at: String,
+}
+
+fn load_cache(cache_path: &Path) -> Cache {
+    if cache_path.exists() {
+        let data = std::fs::read_to_string(cache_path).unwrap_or_default();
+        serde_json::from_str(&data).unwrap_or_default()
+    } else {
+        HashMap::new()
+    }
+}
+
+fn save_cache(cache_path: &Path, cache: &Cache) -> Result<()> {
+    if let Some(parent) = cache_path.parent() {
+        std::fs::create_dir_all(parent)?;
+    }
+    let data = serde_json::to_string_pretty(cache)?;
+    std::fs::write(cache_path, data)?;
+    Ok(())
+}
+
+fn is_cache_fresh(entry: &CacheEntry) -> bool {
+    if let Ok(checked_at) = chrono::DateTime::parse_from_rfc3339(&entry.checked_at) {
+        let age = chrono::Utc::now().signed_duration_since(checked_at);
+        age.num_hours() < 24
+    } else {
+        false
+    }
+}
+
+// ── Main command ─────────────────────────────────────────────────────────
 
 pub async fn cmd_outdated(images_dir: &str, check_all: bool) -> Result<()> {
     let dir = Path::new(images_dir);
@@ -8,15 +48,63 @@ pub async fn cmd_outdated(images_dir: &str, check_all: bool) -> Result<()> {
         anyhow::bail!("Images directory not found: {}", images_dir);
     }
 
+    let github_token = std::env::var("GITHUB_TOKEN").ok();
+    let authenticated = github_token.is_some();
+    let sleep_duration = if authenticated {
+        Duration::from_millis(100)
+    } else {
+        Duration::from_secs(1)
+    };
+
+    let mut headers = reqwest::header::HeaderMap::new();
+    if let Some(token) = &github_token {
+        headers.insert(
+            reqwest::header::AUTHORIZATION,
+            reqwest::header::HeaderValue::from_str(&format!("Bearer {}", token))
+                .context("Invalid GITHUB_TOKEN value")?,
+        );
+    }
+
     let client = reqwest::Client::builder()
         .user_agent("evergreenctl/1.0.0")
+        .default_headers(headers)
         .build()?;
+
+    let cache_path = Path::new("target").join("outdated_cache.json");
+    let mut cache: Cache = load_cache(&cache_path);
 
     println!(
         "Checked: {}",
         chrono::Local::now().format("%Y-%m-%d %H:%M:%S UTC%:z")
     );
     println!();
+
+    // Count GitHub-backed images to warn about rate limits
+    let mut github_count: usize = 0;
+    for entry in std::fs::read_dir(dir)? {
+        let entry = entry?;
+        let path = entry.path();
+        if !path.is_dir() {
+            continue;
+        }
+        let manifest_path = path.join("manifest.toml");
+        if manifest_path.exists() {
+            if let Ok(manifest) = crate::manifest::Manifest::from_file(&manifest_path) {
+                if manifest.github_repo().is_some() {
+                    github_count += 1;
+                }
+            }
+        }
+    }
+
+    if !authenticated && github_count > 60 {
+        eprintln!(
+            "WARNING: {} GitHub-backed images found but no GITHUB_TOKEN is set. \
+             Unauthenticated requests are limited to 60/hr. \
+             Set GITHUB_TOKEN env var to increase the limit to 5,000/hr.",
+            github_count
+        );
+    }
 
     let mut entries: Vec<OutdatedEntry> = Vec::new();
     let mut has_github = false;
@@ -68,8 +156,31 @@ pub async fn cmd_outdated(images_dir: &str, check_all: bool) -> Result<()> {
             has_github = true;
             let current = manifest.version().to_string();
 
-            let latest = match query_latest_release(&client, repo).await {
-                Ok(tag) => tag,
+            // Check cache first
+            if let Some(cached) = cache.get(repo) {
+                if is_cache_fresh(cached) {
+                    let status = compare_versions(&current, &cached.tag);
+                    entries.push(OutdatedEntry {
+                        name,
+                        current,
+                        latest: cached.tag.clone(),
+                        status,
+                    });
+                    continue;
+                }
+            }
+
+            let latest = match query_latest_release(&client, repo, sleep_duration).await {
+                Ok(tag) => {
+                    cache.insert(
+                        repo.clone(),
+                        CacheEntry {
+                            tag: tag.clone(),
+                            checked_at: chrono::Utc::now().to_rfc3339(),
+                        },
+                    );
+                    tag
+                }
                 Err(e) => {
                     entries.push(OutdatedEntry {
                         name,
@@ -77,12 +188,10 @@ pub async fn cmd_outdated(images_dir: &str, check_all: bool) -> Result<()> {
                         latest: format!("ERROR: {}", e),
                         status: "ERROR".to_string(),
                     });
-                    tokio::time::sleep(Duration::from_secs(1)).await;
+                    tokio::time::sleep(sleep_duration).await;
                     continue;
                 }
             };
-
-            tokio::time::sleep(Duration::from_secs(1)).await;
 
             let status = compare_versions(&current, &latest);
             entries.push(OutdatedEntry {
@@ -99,6 +208,10 @@ pub async fn cmd_outdated(images_dir: &str, check_all: bool) -> Result<()> {
                 status: "NO-GITHUB".to_string(),
             });
         }
+    }
+
+    if let Err(e) = save_cache(&cache_path, &cache) {
+        eprintln!("Warning: failed to save cache: {}", e);
     }
 
     println!(
@@ -131,6 +244,8 @@ pub async fn cmd_outdated(images_dir: &str, check_all: bool) -> Result<()> {
     Ok(())
 }
 
+// ── Output row ───────────────────────────────────────────────────────────
+
 struct OutdatedEntry {
     name: String,
     current: String,
@@ -138,27 +253,71 @@ struct OutdatedEntry {
     status: String,
 }
 
+// ── GitHub API ───────────────────────────────────────────────────────────
+
 #[derive(serde::Deserialize)]
 struct GithubRelease {
     tag_name: String,
 }
 
-async fn query_latest_release(client: &reqwest::Client, repo: &str) -> Result<String> {
+async fn query_latest_release(
+    client: &reqwest::Client,
+    repo: &str,
+    sleep_duration: Duration,
+) -> Result<String> {
     let url = format!("https://api.github.com/repos/{}/releases/latest", repo);
-    let resp = client
-        .get(&url)
-        .header("Accept", "application/vnd.github+json")
-        .send()
-        .await
-        .context("Failed to query GitHub API")?;
 
-    if !resp.status().is_success() {
-        anyhow::bail!("GitHub API returned {}", resp.status());
+    let mut attempt = 0u32;
+    loop {
+        let resp = client
+            .get(&url)
+            .header("Accept", "application/vnd.github+json")
+            .send()
+            .await
+            .context("Failed to query GitHub API")?;
+
+        if resp.status() == reqwest::StatusCode::TOO_MANY_REQUESTS {
+            let retry_after = resp
+                .headers()
+                .get("Retry-After")
+                .and_then(|v| v.to_str().ok())
+                .and_then(|v| v.parse::<u64>().ok())
+                .unwrap_or(60);
+            eprintln!("Rate limited (429), sleeping {}s...", retry_after);
+            tokio::time::sleep(Duration::from_secs(retry_after)).await;
+            attempt += 1;
+            if attempt > 3 {
+                anyhow::bail!("Too many retries after being rate limited");
+            }
+            continue;
+        }
+
+        if !resp.status().is_success() {
+            anyhow::bail!("GitHub API returned {}", resp.status());
+        }
+
+        let remaining = resp
+            .headers()
+            .get("X-RateLimit-Remaining")
+            .and_then(|v| v.to_str().ok())
+            .and_then(|v| v.parse::<u32>().ok());
+
+        let release: GithubRelease = resp.json().await?;
+
+        tokio::time::sleep(sleep_duration).await;
+
+        if let Some(rem) = remaining {
+            if rem < 10 {
+                eprintln!("Rate limit low ({} remaining), sleeping 60s...", rem);
+                tokio::time::sleep(Duration::from_secs(60)).await;
+            }
+        }
+
+        return Ok(release.tag_name.trim_start_matches('v').to_string());
     }
-
-    let release: GithubRelease = resp.json().await?;
-    Ok(release.tag_name.trim_start_matches('v').to_string())
 }
+
+// ── Version comparison ───────────────────────────────────────────────────
 
 fn compare_versions(current: &str, latest: &str) -> String {
     let c = semver::Version::parse(current);
@@ -181,6 +340,8 @@ fn compare_versions(current: &str, latest: &str) -> String {
         }
     }
 }
+
+// ── Tests ────────────────────────────────────────────────────────────────
 
 #[cfg(test)]
 mod tests {

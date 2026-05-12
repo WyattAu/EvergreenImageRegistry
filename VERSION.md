@@ -1,9 +1,9 @@
 # Evergreen Image Registry
 
 ## Status
-- **Phase:** 52
-- **Version:** v26.4.0
-- **Status:** Stable - Documentation convergence, test expansion, pre-push gate
+- **Phase:** 53
+- **Version:** v26.5.0
+- **Status:** Stable - Full audit passed, pre-push gate enhanced to 9 gates
 - **CI Status:** Build batches running, gate/lint 100% pass
 - **Last Updated:** 2026-05-12
 

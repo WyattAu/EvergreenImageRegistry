@@ -117,9 +117,8 @@ fn pin_dockerfile_digests(dockerfile_path: &Path, dry_run: bool) -> Result<usize
                     let pinned_line = line.replace(from_part, &format!("{}@{}", from_part, digest));
                     if dry_run {
                         println!(
-                            "  [DRY-RUN] Would pin: {} -> {}",
-                            from_part,
-                            format!("{}@{}", from_part, digest)
+                            "  [DRY-RUN] Would pin: {} -> {}@{}",
+                            from_part, from_part, digest
                         );
                     }
                     new_content.push_str(&pinned_line);

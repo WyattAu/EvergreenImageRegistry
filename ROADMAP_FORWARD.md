@@ -1,12 +1,12 @@
-# Evergreen Image Registry -- Path and Roadmap Forward
+# Evergreen Image Registry: Path and Roadmap Forward
 
 ## Executive Summary
 
-The registry is at v26.5.0 with 998 images, all syntax-correct, fully labeled, SBOM-covered, and gated by a 9-gate pre-push quality hook. The remaining ~80-120 CI build failures are entirely upstream issues (deleted releases, auth-gated registries, broken builds). This document describes the path from the current state through production readiness to a fully automated, zero-trust container image supply chain.
+The registry is at v26.7.0 with 998 images, all syntax-correct, fully labeled, SBOM-covered, and gated by a 9-gate pre-push quality hook. The remaining ~80-120 CI build failures are entirely upstream issues (deleted releases, auth-gated registries, broken builds). This document describes the path from the current state through production readiness to a fully automated, zero-trust container image supply chain.
 
 ---
 
-## 1. Current State Assessment (v26.5.0)
+## 1. Current State Assessment (v26.7.0)
 
 ### 1.1 Completed
 
@@ -25,19 +25,19 @@ The registry is at v26.5.0 with 998 images, all syntax-correct, fully labeled, S
 | evergreenctl | Rust toolchain: audit, verify, drift, generate, bump, validate | COMPLETE |
 | Pre-push gate | 9-gate quality check (Rust tests/clippy/fmt, Python, Shell, TOML, JSON, constraints, release build) | COMPLETE |
 | CI pipeline | 10 GitHub Actions workflows (build, lint, scan, sign, provenance, fuzz) | COMPLETE |
-| Rust tests | 10/10 unit tests passing | COMPLETE |
+| Rust tests | 47/47 unit tests passing | COMPLETE |
 | Python scripts | 26/26 compile-clean | COMPLETE |
 | Shell scripts | 24/24 syntax-valid | COMPLETE |
-| Image rigor | 98.5% real binaries, 1.1% placeholder (graceful fallback), 0.4% stub | COMPLETE |
+| Image rigor | 99.8% real binaries (996/998) | COMPLETE |
 
 ### 1.2 Partially Complete
 
 | Category | Current | Target | Gap |
 |----------|---------|--------|-----|
 | Digest pinning | 75.3% (1522/2020 FROM lines) | >95% | 498 unpinned lines |
-| Multi-arch | 635 declared (249 ARG TARGETARCH + 386 scratch) | >900 | ~360 single-arch |
+| Multi-arch | 635 declared (249 ARG TARGETARCH + 391 scratch) | >900 | ~360 single-arch |
 | Functional testing | Framework exists, 51 real test configs | 200+ active configs | ~150 configs |
-| evergreenctl tests | 10 unit tests, 0 integration | 30+ tests, integration suite | Significant |
+| evergreenctl tests | 47 unit tests, 0 integration | 30+ tests, integration suite | Significant |
 
 ### 1.3 Known Issues
 
@@ -104,7 +104,7 @@ The registry is at v26.5.0 with 998 images, all syntax-correct, fully labeled, S
 
 ### Phase 56: evergreenctl Test Expansion (1 week)
 
-**Objective:** Expand evergreenctl test coverage from 10 unit tests to 30+ with integration tests.
+**Objective:** Expand evergreenctl test coverage from 47 unit tests to 50+ with integration tests.
 
 **Actions:**
 1. Add manifest parsing tests (valid/invalid TOML structures).
@@ -338,20 +338,21 @@ Data source: CI workflow artifacts + `evergreenctl report` JSON output.
 
 ---
 
-## 7. Quality Gate Summary (Post-Audit, v26.5.0)
+## 7. Quality Gate Summary (v26.7.0)
 
 | Gate | Tool | Result |
 |------|------|--------|
-| Rust unit tests | `cargo test` | 10/10 PASS |
+| Rust unit tests | `cargo test` | 47/47 PASS |
 | Rust clippy | `cargo clippy -D warnings` | 0 warnings |
 | Rust formatting | `cargo fmt --check` | PASS |
 | Rust release build | `cargo build --release` | PASS |
 | Python syntax | `py_compile` (26 scripts) | 26/26 PASS |
-| Shell syntax | `bash -n` (24 scripts) | 24/24 PASS |
+| Shell script syntax validation | bash -n (25 scripts) | 25/25 PASS |
 | Manifest TOML validation | tomllib | 998/998 PASS |
 | SBOM JSON validation | json | 998/998 PASS |
 | Dockerfile constraints | Alpine ban check | 0 violations |
-| evergreenctl audit | `evergreenctl audit` | 98.5% real, 0 errors |
+| evergreenctl audit | `evergreenctl audit` | 99.8% real, 0 errors |
+| Pre-commit hooks | pre-commit run --all-files | PASS |
 | Pre-push gate | 9-gate hook | 9/9 PASS |
 | CI pipeline | GitHub Actions | Green (upstream failures only) |
 
@@ -366,7 +367,7 @@ The registry is production-ready when the following criteria are met:
 | CI build pass rate | ~88% | >99% | Phase 53 |
 | Functional test coverage | 51/998 configs | 200/998 | Phase 54 |
 | Digest pinning | 75.3% | >95% | Phase 57 |
-| evergreenctl test coverage | 10 tests | 50+ tests | Phase 56, 63 |
+| evergreenctl test coverage | 47 tests | 50+ tests | Phase 56, 63 |
 | SBOM + provenance + attestation | Partial | 100% | Phase 61 |
 | Automated version bumping | Manual | Daily automated | Phase 69 |
 | Compliance automation | Manual scripts | CI-integrated | Phase 67 |
@@ -378,9 +379,9 @@ The registry is production-ready when the following criteria are met:
 
 The registry has completed its syntax, structure, and hardening phases (Phases 0-52). The critical path to production is:
 
-1. **Phase 53-54:** Resolve upstream failures + expand test coverage -- unblocks CI green and validates behavior.
-2. **Phase 55-58:** Documentation convergence + evergreenctl expansion + digest pinning -- eliminates technical debt.
-3. **Phase 59-68:** Multi-arch, SBOM depth, health-shim, compliance automation -- production hardening.
-4. **Phase 69-80:** Automated version bumping, binary provenance, policy-as-code, registry publication -- operational excellence.
+1. **Phase 53-54:** Resolve upstream failures + expand test coverage. Unblocks CI green and validates behavior.
+2. **Phase 55-58:** Documentation convergence + evergreenctl expansion + digest pinning. Eliminates technical debt.
+3. **Phase 59-68:** Multi-arch, SBOM depth, health-shim, compliance automation. Production hardening.
+4. **Phase 69-80:** Automated version bumping, binary provenance, policy-as-code, registry publication. Operational excellence.
 
-The 9-gate pre-push hook ensures no regressions: every push must pass Rust tests, clippy, fmt, Python syntax (26 scripts), Shell syntax (24 scripts), manifest validation (998 files), SBOM validation (998 files), Dockerfile constraints, and a release build.
+The 9-gate pre-push hook ensures no regressions: every push must pass Rust tests, clippy, fmt, Python syntax (26 scripts), Shell syntax (25 scripts), manifest validation (998 files), SBOM validation (998 files), Dockerfile constraints, and a release build.

@@ -102,7 +102,7 @@ This document specifies requirements for building and maintaining a evergreen ha
 |------|------------|--------------|-------------|
 | Tier 1 | Scratch/Distroless | 0 Critical/High | 380 |
 | Tier 2 | Wolfi-based Distroless | 0 Critical/High | 250 |
-| Tier 3 | Alpine/Wolfi | 0 Critical/High | 420 |
+| Tier 3 | Wolfi (Alpine and debian-slim permanently banned) | 0 Critical/High | 420 |
 
 ### 5.2 Priority Matrix
 

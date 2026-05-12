@@ -8,7 +8,7 @@
 >
 > All images previously on debian-slim must be migrated to wolfi or UBI per ADR-007's migration plan. This ADR's multi-stage conversion patterns for scratch/distroless (Types 1 & 2) remain valid; the debian-slim retention strategies (Type 3, Exceptions Registry) do not.
 >
-> See: [ADR-007](ADR-007-base-image-preference-order.md), [REQUIREMENTS.md](../../REQUIREMENTS.md) v4.0.0
+> See: [ADR-007](ADR-007-base-image-preference-order.md), [requirements.md](../.specs/00_requirements/requirements.md) v4.0.0
 
 ## ADR-003: Converting Debian-Slim Images to Multi-Stage Scratch/Distroless Builds
 

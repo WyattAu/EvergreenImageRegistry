@@ -35,7 +35,7 @@ repos:
   # Validates Dockerfiles against security constraints BEFORE build
   # Checks: C001, C003, C004, C010, base image priority, NO ALPINE
   # =============================================================================
-  
+
   # Hadolint via Docker (standard Dockerfile linting)
   - repo: local
     hooks:
@@ -68,3 +68,15 @@ repos:
         types: [dockerfile]
         stages: [pre-commit, pre-push]
         pass_filenames: true
+
+  # Fast pre-commit tests (Rust clippy/fmt, Python syntax, Shell syntax)
+  - repo: local
+    hooks:
+      - id: evergreen-fast-tests
+        name: Evergreen Fast Tests (pre-commit)
+        description: Runs Rust clippy, Rust fmt, Python syntax, Shell syntax
+        entry: bash scripts/pre-commit-test.sh
+        language: system
+        stages: [pre-commit]
+        pass_filenames: false
+        always_run: true

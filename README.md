@@ -1,6 +1,6 @@
 # Evergreen Image Registry
 
-Hardened container images for production -- 998 images built non-root, distroless, and fully auditable.
+Hardened container images for production: 998 images built non-root, distroless, and fully auditable.
 
 [![Build](https://img.shields.io/github/actions/workflow/status/WyattAu/EvergreenImageRegistry/build.yml?branch=main&style=flat-square&label=CI)](https://github.com/WyattAu/EvergreenImageRegistry/actions/workflows/build.yml)
 [![Nightly Scan](https://img.shields.io/github/actions/workflow/status/WyattAu/EvergreenImageRegistry/nightly-scan.yml?branch=main&style=flat-square&label=Nightly%20Scan)](https://github.com/WyattAu/EvergreenImageRegistry/actions/workflows/nightly-scan.yml)

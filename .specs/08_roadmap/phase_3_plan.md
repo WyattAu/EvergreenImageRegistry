@@ -438,12 +438,12 @@ test_memcached_set_get() {
 2. **Implement database tests**: Write each database-specific test function.
 
 3. **Handle container startup challenges**:
-   - PostgreSQL needs writable data directory (currently runs as UID 65534)
+   - PostgreSQL needs writable data directory (currently runs as UID 65532)
    - MySQL needs init script
    - MongoDB needs `--dbpath` writable
    - Use Docker tmpfs mounts for data directories
 
-4. **Handle permission issues**: Many database images run as UID 65534 and cannot write to default data paths. Tests must:
+4. **Handle permission issues**: Many database images run as UID 65532 and cannot write to default data paths. Tests must:
    ```bash
    docker run -d --rm \
      --tmpfs /var/lib/postgresql/data \

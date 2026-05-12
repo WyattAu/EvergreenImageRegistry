@@ -1,6 +1,6 @@
 [metadata]
 name = "kafka-exporter"
-version = "1.8.0"
+version = "1.9.0"
 description = "Kafka Exporter - Prometheus exporter for Apache Kafka"
 vendor = "Prometheus"
 source = "https://github.com/danielqsj/kafka_exporter"

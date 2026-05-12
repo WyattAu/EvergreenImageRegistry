@@ -1,6 +1,6 @@
 [metadata]
 name = "filebeat"
-version = "RUN"
+version = "9.4.0"
 description = "Evergreen hardened Filebeat - Elastic log file shipper"
 
 [build]

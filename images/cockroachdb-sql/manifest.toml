@@ -1,6 +1,6 @@
 [metadata]
 name = "cockroachdb-sql"
-version = "WORKDIR"
+version = "23.2.3"
 description = "Evergreen hardened CockroachDB SQL Shell - distributed SQL interactive client"
 
 [build]

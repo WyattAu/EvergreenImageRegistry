@@ -1,6 +1,6 @@
 [metadata]
 name = "auditbeat"
-version = "RUN"
+version = "9.4.0"
 description = "Evergreen hardened Auditbeat - Elastic audit event shipper"
 
 [build]

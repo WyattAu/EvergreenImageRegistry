@@ -1,6 +1,6 @@
 [metadata]
 name = "lidarr"
-version = "2.4.3"
+version = "3.1.0.4875"
 description = "Lidarr - music collection manager for Usenet and BitTorrent"
 vendor = "Lidarr"
 source = "https://github.com/Lidarr/Lidarr"

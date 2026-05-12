@@ -1,6 +1,6 @@
 [metadata]
 name = "netbird-ui"
-version = "0.70.4"
+version = "0.70.5"
 description = "Evergreen hardened NetBird UI - static web dashboard assets"
 
 [build]

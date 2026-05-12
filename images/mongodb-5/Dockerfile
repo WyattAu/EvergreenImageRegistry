@@ -1,4 +1,4 @@
-ARG VERSION=5.0
+ARG VERSION=5.0.18
 
 FROM mongo:${VERSION} AS upstream
 

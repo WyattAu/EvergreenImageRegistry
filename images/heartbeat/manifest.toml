@@ -1,6 +1,6 @@
 [metadata]
 name = "heartbeat"
-version = "RUN"
+version = "9.4.0"
 description = "Evergreen hardened Heartbeat - Elastic uptime monitor"
 
 [build]

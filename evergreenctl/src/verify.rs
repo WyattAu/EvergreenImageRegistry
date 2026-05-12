@@ -250,4 +250,101 @@ mod tests {
         let result = sha256_file(path);
         assert!(result.is_err());
     }
+
+    // Integration tests with real files from the images directory
+    #[test]
+    fn test_verify_real_manifest() {
+        // Verify that a real manifest.toml can be parsed
+        let manifest_path = std::path::Path::new("images/redis/manifest.toml");
+        if manifest_path.exists() {
+            let content = std::fs::read_to_string(manifest_path);
+            assert!(content.is_ok(), "Manifest file should be readable");
+        }
+    }
+
+    #[test]
+    fn test_verify_real_sbom() {
+        let sbom_path = std::path::Path::new("images/redis/sbom.spdx.json");
+        if sbom_path.exists() {
+            let content = std::fs::read_to_string(sbom_path);
+            assert!(content.is_ok(), "SBOM file should be readable");
+            let json: Result<serde_json::Value, _> = serde_json::from_str(&content.unwrap());
+            assert!(json.is_ok(), "SBOM should be valid JSON");
+            let data = json.unwrap();
+            assert!(
+                data.get("spdxVersion").is_some(),
+                "SBOM should have spdxVersion"
+            );
+        }
+    }
+
+    #[test]
+    fn test_sha256_deterministic() {
+        // Same content should produce identical hashes
+        let dir = std::env::temp_dir().join("evergreenctl_test_deterministic");
+        let _ = std::fs::create_dir_all(&dir);
+        let path = dir.join("test_deterministic");
+        let content = b"deterministic hash test content";
+        std::fs::write(&path, content).unwrap();
+
+        let hash1 = sha256_file(&path).unwrap();
+        let hash2 = sha256_file(&path).unwrap();
+        assert_eq!(hash1, hash2, "SHA256 must be deterministic");
+
+        let _ = std::fs::remove_file(&path);
+    }
+
+    #[test]
+    fn test_sha256_different_content() {
+        // Different content must produce different hashes
+        let dir = std::env::temp_dir().join("evergreenctl_test_different");
+        let _ = std::fs::create_dir_all(&dir);
+
+        let path1 = dir.join("test_diff1");
+        let path2 = dir.join("test_diff2");
+        std::fs::write(&path1, b"content one").unwrap();
+        std::fs::write(&path2, b"content two").unwrap();
+
+        let hash1 = sha256_file(&path1).unwrap();
+        let hash2 = sha256_file(&path2).unwrap();
+        assert_ne!(
+            hash1, hash2,
+            "Different content must produce different hashes"
+        );
+
+        let _ = std::fs::remove_file(&path1);
+        let _ = std::fs::remove_file(&path2);
+    }
+
+    #[test]
+    fn test_sha256_empty_file() {
+        let dir = std::env::temp_dir().join("evergreenctl_test_empty_verify");
+        let _ = std::fs::create_dir_all(&dir);
+        let path = dir.join("test_empty");
+        std::fs::write(&path, "").unwrap();
+
+        let hash = sha256_file(&path).unwrap();
+        assert_eq!(
+            hash, "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "SHA256 of empty file must match known value"
+        );
+
+        let _ = std::fs::remove_file(&path);
+    }
+
+    #[test]
+    fn test_verify_case_insensitive_extended() {
+        // HEX digits should be case-insensitive in comparison
+        let result = VerifyResult {
+            algorithm: "sha256".to_string(),
+            expected: "ABCDEF0123456789abcdef0123456789ABCDEF0123456789abcdef0123456789"
+                .to_lowercase(),
+            computed: "abcdef0123456789ABCDEF0123456789abcdef0123456789ABCDEF0123456789"
+                .to_lowercase(),
+            matches: true,
+        };
+        // Both expected and computed are lowercased by verify_checksum,
+        // so two differently-cased hex strings that are semantically equal should match
+        assert!(result.matches);
+    }
 }

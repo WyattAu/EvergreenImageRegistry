@@ -3,6 +3,8 @@ name: Lint & Format Check
 on:
   pull_request:
     branches: [main]
+  push:
+    branches: [main]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -54,3 +56,87 @@ jobs:
         with:
           yamllint_file_or_dir: '.'
           yamllint_config_filepath: '.yamllint.yml'
+
+  # Rust code quality: clippy, fmt, audit, test
+  rust-quality:
+    name: Rust Quality (clippy + fmt + audit + test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            evergreenctl/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('evergreenctl/Cargo.lock') }}
+      - name: Run cargo fmt check
+        run: cargo fmt --manifest-path evergreenctl/Cargo.toml -- --check
+      - name: Run cargo clippy
+        run: cargo clippy --manifest-path evergreenctl/Cargo.toml -- -D warnings
+      - name: Run cargo audit
+        run: |
+          cargo install cargo-audit --locked 2>/dev/null || true
+          cargo audit --manifest-path evergreenctl/Cargo.toml
+      - name: Run cargo test
+        run: cargo test --manifest-path evergreenctl/Cargo.toml
+
+  # Python code quality: syntax + ruff lint
+  python-quality:
+    name: Python Quality (ruff + syntax)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install ruff
+        run: pip install ruff
+      - name: Run ruff check
+        run: ruff check scripts/ generate_manifests.py
+      - name: Run ruff format check
+        run: ruff format --check scripts/ generate_manifests.py
+      - name: Validate Python syntax
+        run: |
+          for f in scripts/*.py generate_manifests.py; do
+            [ -f "$f" ] || continue
+            python -m py_compile "$f" || exit 1
+          done
+
+  # Shell script quality: syntax + shellcheck
+  shell-quality:
+    name: Shell Quality (shellcheck + syntax)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install shellcheck
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
+      - name: Run shellcheck
+        run: |
+          find . -name '*.sh' -not -path './.git/*' -print0 | \
+            xargs -0 shellcheck --severity=error
+      - name: Validate shell syntax
+        run: |
+          find . -name '*.sh' -not -path './.git/*' -print0 | \
+            xargs -0 -I{} bash -n {}
+
+  # Go code quality
+  go-quality:
+    name: Go Quality (vet + build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      - name: Run go vet
+        run: go vet ./images/health-shim/...
+      - name: Run go build
+        run: go build ./images/health-shim/...

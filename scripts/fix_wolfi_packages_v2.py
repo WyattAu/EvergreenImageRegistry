@@ -8,53 +8,18 @@ Categories:
   C: Special cases requiring specific handling
 """
 
-import re
 import glob
 import os
+import re
 import sys
-from pathlib import Path
 from collections import defaultdict
+from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = PROJECT_ROOT / "images"
 
 CATEGORY_A_REMOVE = set(
-    """
-apt-transport-https chkrootkit cockpit cockpit-dashboard cockpit-storaged cockpit-system cockpit-ws
-conntrack courier-authlib courier-imap curl-openssl-dev cyrus-sasl2-bin
-default-php84-mysql-client default-php84-mysql-server
-dovecot-core dovecot-imapd dovecot-lmtpd dovecot-pop3d
-erlang-asn1 erlang-base erlang-crypto erlang-eldap erlang-ftp erlang-inets erlang-mnesia erlang-os-mon erlang-parsetools erlang-public-key erlang-runtime-tools erlang-snmp erlang-ssl erlang-syntax-tools erlang-tftp erlang-tools erlang-xmerl
-fonts-liberation galera-4 golang-go imagick imap
-java-17-runtime krb5-user ldap-utils
-libaio1 libaio1t64 libapache-dbi-perl libapache2-mod-perl2 libapache2-mod-security2
-libasound2 libasound2t64 libass9 libatk-bridge2.0-0 libatk-bridge2.0-0t64 libatk1.0-0
-libatspi2.0-0 libavahi-compat-libdnssd1 libboost-all1.74 libboost-all1.74-dev
-libboost-filesystem1.74.0 libboost-iostreams1.74.0 libboost-program-options1.74.0
-libboost-system1.74.0 libboost-thread1.74.0 libcairo2 libcgi-pm-perl libcjson4 libcups2
-libdbd-pg-perl libdbi-perl libdbus-1-3 libdrm2 libedit2 libelf1 libevent-2.1-7
-libfdk-acct2 libgbm1 libgcc-s1 libgeoip-dev libgeoip1 libgl1 libgmp10 libgnutls30
-libgomp1 libgrpc++1 libgtk-3-0 libgtk-3-0t64 libhogweed6 libice6 libicu72 libidn2-0
-libjpeg-turbo-turbo-dev libjson-c5 libjson-perl liblua5.3-0 libluajit-5.1-2 liblzma5
-liblzo2-2 libmariadb3 libmecab2 libmilter1.0.1 libmnl0 libmodsecurity3 libmozjs-78-0
-libmp3lame0 libmpfr6 libncurses5 libncurses6 libnetfilter-conntrack3 libnettle8
-libnspr4 libnss3 libnss3-tools libnuma1 libodbc1 libopenscap8 libopus0 libpam-sss
-libpam0g libpango-1.0-0 libpcre3 libpcre3-dev libpkcs11-helper1 libprotobuf32
-libpython3.11 libqscintilla2-qt5-15 libqt5core5a libqt5core5t64 libqt5gui5
-libqt5gui5t64 libqt5network5t64 libqt5svg5 libqt5widgets5 libqt5widgets5t64
-libqt6core6 libqt6gui6 libqt6multimedia6 libqt6network6 libqt6qml6 libqt6quick6
-libqt6widgets6 libre2-5 libreadline8 libsasl2-modules libseccomp2 libsm6 libsnappy1v5
-libsodium23 libsqlcipher0 libswt-gtk-4-java libtasn1-6 libtemplate-perl libtheora0
-libusb-1.0-0 libuv1 libvorbis0a libvpx7 libwebp7 libwrap0 libx11-6 libx264-164
-libx265-199 libxcb1 libxcomposite1 libxdamage1 libxext6 libxfixes3 libxi6
-libxkbcommon0 libxrandr2 libxrender1 libxss1 libxtst6 libxvidcore4 libyajl-dev
-libyajl2 libyaml-0-2 libyaml-cpp0.7 libyaml-dev libz1
-lsb-release mailutils mariadb-server mongodb-org mongodb-org-tools musl-dev
-nginx-light oddjob-mkhomedir openjdk-21-jre-headless openscap-utils openssl-libs
-postgrey ppp python3-minimal rkhunter ruby3.1 scap-workbench slapd soap
-spamassassin spamc sssd sssd-tools syslog-ng-core temurin-21-jre-headless
-virtuoso-opensource virtuoso-opensource-7 xz-utils zlib1g-dev
-""".split()
+    ["apt-transport-https", "chkrootkit", "cockpit", "cockpit-dashboard", "cockpit-storaged", "cockpit-system", "cockpit-ws", "conntrack", "courier-authlib", "courier-imap", "curl-openssl-dev", "cyrus-sasl2-bin", "default-php84-mysql-client", "default-php84-mysql-server", "dovecot-core", "dovecot-imapd", "dovecot-lmtpd", "dovecot-pop3d", "erlang-asn1", "erlang-base", "erlang-crypto", "erlang-eldap", "erlang-ftp", "erlang-inets", "erlang-mnesia", "erlang-os-mon", "erlang-parsetools", "erlang-public-key", "erlang-runtime-tools", "erlang-snmp", "erlang-ssl", "erlang-syntax-tools", "erlang-tftp", "erlang-tools", "erlang-xmerl", "fonts-liberation", "galera-4", "golang-go", "imagick", "imap", "java-17-runtime", "krb5-user", "ldap-utils", "libaio1", "libaio1t64", "libapache-dbi-perl", "libapache2-mod-perl2", "libapache2-mod-security2", "libasound2", "libasound2t64", "libass9", "libatk-bridge2.0-0", "libatk-bridge2.0-0t64", "libatk1.0-0", "libatspi2.0-0", "libavahi-compat-libdnssd1", "libboost-all1.74", "libboost-all1.74-dev", "libboost-filesystem1.74.0", "libboost-iostreams1.74.0", "libboost-program-options1.74.0", "libboost-system1.74.0", "libboost-thread1.74.0", "libcairo2", "libcgi-pm-perl", "libcjson4", "libcups2", "libdbd-pg-perl", "libdbi-perl", "libdbus-1-3", "libdrm2", "libedit2", "libelf1", "libevent-2.1-7", "libfdk-acct2", "libgbm1", "libgcc-s1", "libgeoip-dev", "libgeoip1", "libgl1", "libgmp10", "libgnutls30", "libgomp1", "libgrpc++1", "libgtk-3-0", "libgtk-3-0t64", "libhogweed6", "libice6", "libicu72", "libidn2-0", "libjpeg-turbo-turbo-dev", "libjson-c5", "libjson-perl", "liblua5.3-0", "libluajit-5.1-2", "liblzma5", "liblzo2-2", "libmariadb3", "libmecab2", "libmilter1.0.1", "libmnl0", "libmodsecurity3", "libmozjs-78-0", "libmp3lame0", "libmpfr6", "libncurses5", "libncurses6", "libnetfilter-conntrack3", "libnettle8", "libnspr4", "libnss3", "libnss3-tools", "libnuma1", "libodbc1", "libopenscap8", "libopus0", "libpam-sss", "libpam0g", "libpango-1.0-0", "libpcre3", "libpcre3-dev", "libpkcs11-helper1", "libprotobuf32", "libpython3.11", "libqscintilla2-qt5-15", "libqt5core5a", "libqt5core5t64", "libqt5gui5", "libqt5gui5t64", "libqt5network5t64", "libqt5svg5", "libqt5widgets5", "libqt5widgets5t64", "libqt6core6", "libqt6gui6", "libqt6multimedia6", "libqt6network6", "libqt6qml6", "libqt6quick6", "libqt6widgets6", "libre2-5", "libreadline8", "libsasl2-modules", "libseccomp2", "libsm6", "libsnappy1v5", "libsodium23", "libsqlcipher0", "libswt-gtk-4-java", "libtasn1-6", "libtemplate-perl", "libtheora0", "libusb-1.0-0", "libuv1", "libvorbis0a", "libvpx7", "libwebp7", "libwrap0", "libx11-6", "libx264-164", "libx265-199", "libxcb1", "libxcomposite1", "libxdamage1", "libxext6", "libxfixes3", "libxi6", "libxkbcommon0", "libxrandr2", "libxrender1", "libxss1", "libxtst6", "libxvidcore4", "libyajl-dev", "libyajl2", "libyaml-0-2", "libyaml-cpp0.7", "libyaml-dev", "libz1", "lsb-release", "mailutils", "mariadb-server", "mongodb-org", "mongodb-org-tools", "musl-dev", "nginx-light", "oddjob-mkhomedir", "openjdk-21-jre-headless", "openscap-utils", "openssl-libs", "postgrey", "ppp", "python3-minimal", "rkhunter", "ruby3.1", "scap-workbench", "slapd", "soap", "spamassassin", "spamc", "sssd", "sssd-tools", "syslog-ng-core", "temurin-21-jre-headless", "virtuoso-opensource", "virtuoso-opensource-7", "xz-utils", "zlib1g-dev"]
 )
 
 CATEGORY_B_REMAP = {
@@ -189,7 +154,7 @@ def process_dockerfile(filepath):
     Process a single Dockerfile.
     Returns (modified, removed_count, remapped_list, comments, emptied_blocks_info).
     """
-    with open(filepath, "r") as f:
+    with open(filepath) as f:
         original_lines = f.readlines()
 
     original_content = "".join(original_lines)
@@ -299,7 +264,7 @@ def main():
                     all_emptied.append((rel, full.strip()[:120]))
 
     print(f"\n{'=' * 70}")
-    print(f"SUMMARY")
+    print("SUMMARY")
     print(f"{'=' * 70}")
     print(f"Total Dockerfiles scanned: {len(dockerfiles)}")
     print(f"Total Dockerfiles modified: {total_modified}")
@@ -307,7 +272,7 @@ def main():
     print(f"Total packages remapped (Category B + C): {total_remapped}")
 
     if all_remapped_details:
-        print(f"\nRemapping details:")
+        print("\nRemapping details:")
         for old_name in sorted(all_remapped_details.keys()):
             files = all_remapped_details[old_name]
             print(
@@ -315,13 +280,13 @@ def main():
             )
 
     if all_emptied:
-        print(f"\nDockerfiles where apk add became empty (RUN removed):")
+        print("\nDockerfiles where apk add became empty (RUN removed):")
         for rel, text in all_emptied:
             print(f"  {rel}: removed '{text}...'")
     else:
-        print(f"\nNo Dockerfiles had empty apk add lines.")
+        print("\nNo Dockerfiles had empty apk add lines.")
 
-    print(f"\nDone.")
+    print("\nDone.")
 
 
 if __name__ == "__main__":

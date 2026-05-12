@@ -6,10 +6,9 @@ Runs in background, monitoring CI builds, fixing failures iteratively.
 Designed to run as a subtask while main agent handles other work.
 """
 
-import time
 import subprocess
 import sys
-import os
+import time
 from datetime import datetime
 
 # Configuration
@@ -26,7 +25,7 @@ def run_cmd(cmd):
 def get_failed_builds():
     """Get list of currently failing image builds."""
     stdout, _, _ = run_cmd(f"gh run list --repo {REPO} --status failure --limit 1")
-    
+
     failed = []
     for line in stdout.split('\n'):
         if 'failure' in line.lower():
@@ -51,7 +50,7 @@ def get_latest_run_id():
 def check_build_status():
     """Check current build status."""
     stdout, _, rc = run_cmd(f"gh run list --repo {REPO} --status in_progress --limit 1")
-    
+
     if rc == 0 and stdout:
         return "running"
     return "completed"
@@ -61,7 +60,7 @@ def get_failed_jobs():
     run_id = get_latest_run_id()
     if not run_id:
         return []
-    
+
     stdout, _, _ = run_cmd(f"gh run view {run_id} --repo {REPO} --json jobs")
     import json
     try:
@@ -78,13 +77,13 @@ def get_failed_jobs():
 def analyze_failure(failed_job):
     """Analyze why a specific job failed."""
     print(f"Analyzing failure: {failed_job}")
-    
+
     # Get job logs
     run_id = get_latest_run_id()
     if run_id:
         stdout, _, _ = run_cmd(f"gh run view {run_id} --repo {REPO} --log-failed 2>/dev/null | head -100")
         print(f"Logs:\n{stdout}")
-    
+
     return "analyzed"
 
 def main():
@@ -93,49 +92,49 @@ def main():
     print(f"Monitoring repo: {REPO}")
     print(f"Check interval: {SLEEP_SECONDS}s")
     print("=" * 60)
-    
+
     iteration = 0
     total_failures = 0
-    
+
     while iteration < MAX_ITERATIONS:
         iteration += 1
         print(f"\n--- Iteration {iteration}/{MAX_ITERATIONS} ---")
-        
+
         # Check if build is still running
         status = check_build_status()
-        
+
         if status == "running":
             print(f"Build still running... waiting {SLEEP_SECONDS}s")
             time.sleep(SLEEP_SECONDS)
             continue
-        
+
         # Build completed - check for failures
         print("Build completed, checking results...")
         failed_jobs = get_failed_jobs()
-        
+
         if not failed_jobs:
             print("✅ ALL BUILDS PASSED!")
             return 0
-        
+
         print(f"❌ Failed jobs: {len(failed_jobs)}")
         for job in failed_jobs:
             print(f"  - {job}")
-        
+
         total_failures += len(failed_jobs)
-        
+
         # Analyze each failure
         for job in failed_jobs:
             analyze_failure(job)
-        
+
         # If auto-fix enabled, would trigger fixes here
         # For now, just report
         print(f"\nTotal failures so far: {total_failures}")
         print("Need manual intervention or script update to fix URLs")
-        
+
         # Wait before next check
         print(f"Waiting {SLEEP_SECONDS}s before next check...")
         time.sleep(SLEEP_SECONDS)
-    
+
     print(f"\nMax iterations reached. Total failures: {total_failures}")
     return 1
 

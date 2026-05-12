@@ -58,7 +58,7 @@ def main():
     total_replacements = 0
 
     for filepath in dockerfiles:
-        with open(filepath, "r") as f:
+        with open(filepath) as f:
             content = f.read()
 
         new_content, replacements = replace_uid_in_final_stage(content)

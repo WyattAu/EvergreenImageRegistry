@@ -18,12 +18,9 @@ import json
 import re
 import subprocess
 import sys
-import tempfile
-import time
-import urllib.request
 import urllib.error
+import urllib.request
 from pathlib import Path
-from typing import Optional, Tuple
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = REPO_ROOT / "images"

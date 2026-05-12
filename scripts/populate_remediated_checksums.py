@@ -19,10 +19,9 @@ import json
 import re
 import sys
 import time
-import urllib.request
 import urllib.error
+import urllib.request
 from pathlib import Path
-from typing import Optional, Tuple
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = REPO_ROOT / "images"
@@ -194,7 +193,7 @@ def log(msg: str, level: str = "INFO"):
     print(f"{prefix} {msg}")
 
 
-def http_get(url: str, timeout: int = HTTP_TIMEOUT) -> Optional[str]:
+def http_get(url: str, timeout: int = HTTP_TIMEOUT) -> str | None:
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     try:
         with urllib.request.urlopen(req, timeout=timeout) as resp:
@@ -205,7 +204,7 @@ def http_get(url: str, timeout: int = HTTP_TIMEOUT) -> Optional[str]:
         return None
 
 
-def http_get_json(url: str, timeout: int = HTTP_TIMEOUT) -> Optional[dict]:
+def http_get_json(url: str, timeout: int = HTTP_TIMEOUT) -> dict | None:
     req = urllib.request.Request(url, headers={
         "User-Agent": USER_AGENT,
         "Accept": "application/vnd.github+json",
@@ -219,14 +218,14 @@ def http_get_json(url: str, timeout: int = HTTP_TIMEOUT) -> Optional[dict]:
         return None
 
 
-def parse_github_release_url(url: str) -> Optional[Tuple[str, str, str]]:
+def parse_github_release_url(url: str) -> tuple[str, str, str] | None:
     m = re.match(r'https://github\.com/([^/]+)/([^/]+)/releases/download/([^/]+)/(.+)', url)
     if not m:
         return None
     return m.group(1), m.group(2), m.group(3)
 
 
-def extract_version_from_dockerfile(dockerfile_path: Path) -> Optional[str]:
+def extract_version_from_dockerfile(dockerfile_path: Path) -> str | None:
     content = dockerfile_path.read_text()
     m = re.search(r'ARG\s+VERSION\s*=\s*(\S+)', content)
     if m:
@@ -250,7 +249,7 @@ def filenames_match(target: str, candidate: str) -> bool:
     return False
 
 
-def find_checksum_in_checksums_file(checksum_url: str, target_filename: str) -> Optional[str]:
+def find_checksum_in_checksums_file(checksum_url: str, target_filename: str) -> str | None:
     content = http_get(checksum_url)
     if content is None:
         return None
@@ -269,7 +268,7 @@ def find_checksum_in_checksums_file(checksum_url: str, target_filename: str) -> 
     return None
 
 
-def find_checksum_single_file(checksum_url: str) -> Optional[str]:
+def find_checksum_single_file(checksum_url: str) -> str | None:
     content = http_get(checksum_url)
     if content is None:
         return None
@@ -282,7 +281,7 @@ def find_checksum_single_file(checksum_url: str) -> Optional[str]:
     return None
 
 
-def find_checksum_github_api(owner: str, repo: str, tag: str, target_filename: str) -> Optional[str]:
+def find_checksum_github_api(owner: str, repo: str, tag: str, target_filename: str) -> str | None:
     api_url = f"https://api.github.com/repos/{owner}/{repo}/releases/tags/{tag}"
     data = http_get_json(api_url)
     if data is None:
@@ -311,7 +310,7 @@ def find_checksum_github_api(owner: str, repo: str, tag: str, target_filename: s
     return None
 
 
-def find_checksum_for_image(image_name: str, download_url: str, target_filename: str) -> Optional[str]:
+def find_checksum_for_image(image_name: str, download_url: str, target_filename: str) -> str | None:
     release_info = parse_github_release_url(download_url)
 
     if release_info:
@@ -360,7 +359,7 @@ def has_sha256_verification(content: str) -> bool:
     return bool(re.search(r'sha256sum\s+-c', content))
 
 
-def insert_checksum_verification(content: str, output_path: str, sha256: str) -> Optional[str]:
+def insert_checksum_verification(content: str, output_path: str, sha256: str) -> str | None:
     lines = content.splitlines()
 
     curl_start = None
@@ -434,11 +433,11 @@ def process_image(image_name: str, config: dict, dry_run: bool = False) -> str:
     manifest_path = image_dir / "manifest.toml"
 
     if not dockerfile_path.exists():
-        return f"SKIP: no Dockerfile"
+        return "SKIP: no Dockerfile"
 
     version = extract_version_from_dockerfile(dockerfile_path)
     if not version:
-        return f"SKIP: no VERSION arg found"
+        return "SKIP: no VERSION arg found"
 
     download_url = config["url_template"].replace("{VERSION}", version)
     target_filename = config["filename"].replace("{VERSION}", version)
@@ -457,11 +456,11 @@ def process_image(image_name: str, config: dict, dry_run: bool = False) -> str:
     print(f"  {image_name}: found sha256={sha256[:16]}...")
 
     if dry_run:
-        return f"DRY-RUN: would insert checksum"
+        return "DRY-RUN: would insert checksum"
 
     new_content = insert_checksum_verification(content, output_path, sha256)
     if new_content is None:
-        return f"FAIL: could not find insertion point in Dockerfile"
+        return "FAIL: could not find insertion point in Dockerfile"
 
     dockerfile_path.write_text(new_content)
 

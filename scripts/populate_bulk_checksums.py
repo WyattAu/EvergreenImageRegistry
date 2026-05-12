@@ -29,21 +29,19 @@ Usage:
 import argparse
 import hashlib
 import json
-import os
 import re
 import sys
 import time
-import urllib.request
 import urllib.error
+import urllib.request
 from pathlib import Path
-from typing import Optional, Tuple, Dict, List
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = REPO_ROOT / "images"
 USER_AGENT = "EvergreenImageRegistry/1.0 (populate_bulk_checksums.py)"
 HTTP_TIMEOUT = 15
 
-github_api_cache: Dict[str, dict] = {}
+github_api_cache: dict[str, dict] = {}
 github_api_calls = 0
 GITHUB_API_LIMIT = 58
 
@@ -53,7 +51,7 @@ def log(msg: str, level: str = "INFO"):
     print(f"{prefix} {msg}")
 
 
-def http_get(url: str, timeout: int = HTTP_TIMEOUT) -> Optional[str]:
+def http_get(url: str, timeout: int = HTTP_TIMEOUT) -> str | None:
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     try:
         with urllib.request.urlopen(req, timeout=timeout) as resp:
@@ -91,14 +89,14 @@ def resolve_variables(url: str, content: str) -> str:
     return url
 
 
-def extract_github_repo(url: str) -> Optional[Tuple[str, str]]:
+def extract_github_repo(url: str) -> tuple[str, str] | None:
     m = re.search(r'github\.com/([^/]+)/([^/]+?)(?:\.git)?(?:/|$|\?)', url)
     if m:
         return m.group(1), m.group(2)
     return None
 
 
-def extract_downloads(content: str, raw_content: str) -> List[dict]:
+def extract_downloads(content: str, raw_content: str) -> list[dict]:
     results = []
     lines = content.splitlines()
     for i, line in enumerate(lines):
@@ -215,7 +213,7 @@ def filenames_match(target: str, candidate: str) -> bool:
     return False
 
 
-def find_checksum_in_text(text: str, filename: str) -> Optional[str]:
+def find_checksum_in_text(text: str, filename: str) -> str | None:
     for line in text.splitlines():
         line = line.strip()
         if not line or line.startswith("#"):
@@ -232,7 +230,7 @@ def find_checksum_in_text(text: str, filename: str) -> Optional[str]:
     return None
 
 
-def try_checksum_file(url: str, filename: str) -> Optional[str]:
+def try_checksum_file(url: str, filename: str) -> str | None:
     base = url.rsplit("/", 1)[0]
     for suffix in [
         f"/{filename}.sha256",
@@ -255,13 +253,13 @@ def try_checksum_file(url: str, filename: str) -> Optional[str]:
     return None
 
 
-def try_github_release_checksums(url: str, filename: str) -> Optional[str]:
+def try_github_release_checksums(url: str, filename: str) -> str | None:
     if "github.com" not in url or "/releases/download/" not in url:
         return None
     return try_checksum_file(url, filename)
 
 
-def github_api_get(url: str) -> Optional[dict]:
+def github_api_get(url: str) -> dict | None:
     global github_api_calls, github_api_cache
     if url in github_api_cache:
         return github_api_cache[url]
@@ -287,7 +285,7 @@ def github_api_get(url: str) -> Optional[dict]:
     return None
 
 
-def try_github_api_checksum(owner: str, repo: str, tag: str, filename: str) -> Optional[str]:
+def try_github_api_checksum(owner: str, repo: str, tag: str, filename: str) -> str | None:
     release_url = f"https://api.github.com/repos/{owner}/{repo}/releases/tags/{tag}"
     release = github_api_get(release_url)
     if release is None:
@@ -328,14 +326,14 @@ def try_github_api_checksum(owner: str, repo: str, tag: str, filename: str) -> O
     return None
 
 
-def try_github(owner: str, repo: str, tag: str, url: str, filename: str) -> Optional[str]:
+def try_github(owner: str, repo: str, tag: str, url: str, filename: str) -> str | None:
     h = try_github_release_checksums(url, filename)
     if h:
         return h
     return try_github_api_checksum(owner, repo, tag, filename)
 
 
-def try_hashicorp(url: str, filename: str) -> Optional[str]:
+def try_hashicorp(url: str, filename: str) -> str | None:
     m = re.match(r'https://releases\.hashicorp\.com/([^/]+)/([^/]+)/(.+)', url)
     if not m:
         return None
@@ -350,7 +348,7 @@ def try_hashicorp(url: str, filename: str) -> Optional[str]:
     return None
 
 
-def try_k8s(url: str) -> Optional[str]:
+def try_k8s(url: str) -> str | None:
     m = re.match(r'https://dl\.k8s\.io/(release/[^/]+)/bin/([^/]+)/(.+)', url)
     if not m:
         return None
@@ -364,7 +362,7 @@ def try_k8s(url: str) -> Optional[str]:
     return None
 
 
-def try_helm(url: str, filename: str) -> Optional[str]:
+def try_helm(url: str, filename: str) -> str | None:
     m = re.match(r'https://get\.helm\.sh/(.+)', url)
     if not m:
         return None
@@ -383,7 +381,7 @@ def try_helm(url: str, filename: str) -> Optional[str]:
     return None
 
 
-def try_apache(url: str, filename: str) -> Optional[str]:
+def try_apache(url: str, filename: str) -> str | None:
     if "apache.org" not in url:
         return None
     base = url.rsplit("/", 1)[0]
@@ -404,13 +402,13 @@ def try_apache(url: str, filename: str) -> Optional[str]:
     return None
 
 
-def try_grafana(url: str, filename: str) -> Optional[str]:
+def try_grafana(url: str, filename: str) -> str | None:
     if "dl.grafana.com" not in url:
         return None
     return try_checksum_file(url, filename)
 
 
-def try_elastic(url: str, filename: str) -> Optional[str]:
+def try_elastic(url: str, filename: str) -> str | None:
     if "artifacts.elastic.co" not in url:
         return None
     for suffix in [".sha512", ".sha256"]:
@@ -425,7 +423,7 @@ def try_elastic(url: str, filename: str) -> Optional[str]:
     return None
 
 
-def try_maven(url: str, filename: str) -> Optional[str]:
+def try_maven(url: str, filename: str) -> str | None:
     if "repo1.maven.org" not in url and "repo.maven.apache.org" not in url:
         return None
     for suffix in [".sha256", ".sha1", ".md5"]:
@@ -442,7 +440,7 @@ def try_maven(url: str, filename: str) -> Optional[str]:
     return None
 
 
-def try_github_latest(owner: str, repo: str, filename: str, content: str) -> Tuple[Optional[str], str]:
+def try_github_latest(owner: str, repo: str, filename: str, content: str) -> tuple[str | None, str]:
     releases_url = f"https://api.github.com/repos/{owner}/{repo}/releases?per_page=5"
     releases = github_api_get(releases_url)
     if not releases or not isinstance(releases, list):
@@ -473,8 +471,8 @@ def try_github_latest(owner: str, repo: str, filename: str, content: str) -> Tup
     return None, "failed"
 
 
-def try_download_compute(url: str) -> Optional[str]:
-    log(f"    Downloading to compute hash (last resort)...")
+def try_download_compute(url: str) -> str | None:
+    log("    Downloading to compute hash (last resort)...")
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     try:
         with urllib.request.urlopen(req, timeout=10) as resp:
@@ -499,7 +497,7 @@ def try_download_compute(url: str) -> Optional[str]:
         return None
 
 
-def find_checksum(url: str, filename: str, content: str, allow_download: bool = True) -> Tuple[Optional[str], str]:
+def find_checksum(url: str, filename: str, content: str, allow_download: bool = True) -> tuple[str | None, str]:
     if "github.com" in url and "/releases/download/" in url:
         m = re.search(r'github\.com/([^/]+)/([^/]+)/releases/download/([^/]+)/', url)
         if m:
@@ -555,14 +553,14 @@ def find_checksum(url: str, filename: str, content: str, allow_download: bool = 
     return None, "failed"
 
 
-def parse_github_url(url: str) -> Optional[Tuple[str, str, str]]:
+def parse_github_url(url: str) -> tuple[str, str, str] | None:
     m = re.search(r'github\.com/([^/]+)/([^/]+)/releases/download/([^/]+)/', url)
     if m:
         return m.group(1), m.group(2), m.group(3)
     return None
 
 
-def find_download_line_info(content: str, download_url: str) -> Optional[dict]:
+def find_download_line_info(content: str, download_url: str) -> dict | None:
     lines = content.splitlines()
     for i, line in enumerate(lines):
         if download_url in line and ("-o " in line or "-O " in line):
@@ -572,7 +570,7 @@ def find_download_line_info(content: str, download_url: str) -> Optional[dict]:
     return None
 
 
-def insert_checksum_new(content: str, download_info: dict, sha256: str, output_file: str, method: str) -> Optional[str]:
+def insert_checksum_new(content: str, download_info: dict, sha256: str, output_file: str, method: str) -> str | None:
     lines = content.splitlines()
     line_idx = download_info["line_idx"]
     original_line = download_info["line"]
@@ -604,7 +602,7 @@ def insert_checksum_new(content: str, download_info: dict, sha256: str, output_f
     return "\n".join(lines) + "\n"
 
 
-def replace_pending_checksum(content: str, sha256: str) -> Optional[str]:
+def replace_pending_checksum(content: str, sha256: str) -> str | None:
     lines = content.splitlines()
     checksum_str = sha256
     checksum_cmd = "sha256sum"
@@ -806,7 +804,7 @@ def main():
 
     print()
     print("=" * 70)
-    print(f"SUMMARY:")
+    print("SUMMARY:")
     print(f"  Checksums added (or would add): {stats['added'] + stats['dry_run_added']}")
     print(f"  Already had real checksums:     {stats['skip_has_checksum']}")
     print(f"  Package manager only (skip):    {stats['skip_pkg_manager']}")

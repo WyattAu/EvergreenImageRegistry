@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Add ca-certificates to wolfi-based Dockerfiles that are missing it."""
 
-import re
 import os
+import re
 
 IMAGES_DIR = os.path.join(os.path.dirname(__file__), "..", "images")
 
@@ -81,7 +81,7 @@ def process_image(image_name):
         print(f"  SKIP (no Dockerfile): {image_name}")
         return
 
-    with open(dockerfile_path, "r") as f:
+    with open(dockerfile_path) as f:
         lines = f.readlines()
 
     final_start = find_final_stage_start(lines)

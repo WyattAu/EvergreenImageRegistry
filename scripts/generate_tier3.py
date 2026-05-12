@@ -197,7 +197,7 @@ LABEL org.opencontainers.image.title="{name}" \\
 def node_js(name, version, vendor, port, healthcheck_url=None, npm_pkg=None, entrypoint=None, source_url=None):
     ep = entrypoint or "node"
     hc = healthcheck_url or ""
-    hc_cmd = f'CMD curl -sf http://localhost:{port}{hc}' if hc else f'CMD node --version'
+    hc_cmd = f'CMD curl -sf http://localhost:{port}{hc}' if hc else 'CMD node --version'
     src = source_url or ""
     src_label = f'\\n      org.opencontainers.image.source="{src}" \\' if src else ""
     npm_line = ""

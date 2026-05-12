@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 """Generate a static HTML catalog of all Docker images in the repository."""
 
-import html
 import json
 import os
 import re
-import sys
 from collections import defaultdict
 from pathlib import Path
 

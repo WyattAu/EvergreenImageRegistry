@@ -8,9 +8,7 @@ This addresses issues like:
 - Missing dependencies
 """
 
-import os
 import re
-import subprocess
 from pathlib import Path
 
 # Common problematic packages (not available in Debian)
@@ -50,36 +48,36 @@ def get_all_dockerfiles():
 
 def analyze_dockerfile(dockerfile_path):
     """Analyze a Dockerfile for common issues."""
-    with open(dockerfile_path, 'r') as f:
+    with open(dockerfile_path) as f:
         content = f.read()
-    
+
     issues = []
-    
+
     # Check for problematic packages in apt-get install
     apt_install_match = re.search(r'apt-get install.*?--no-install-recommends\s+([^\s&]+)', content)
     if apt_install_match:
         package = apt_install_match.group(1)
         if package in PROBLEMATIC_PACKAGES:
             issues.append(f'package_not_in_debian:{package}')
-    
+
     # Check for Alpine base (should use debian-slim/wolfi)
     if 'FROM alpine' in content:
         issues.append('uses_alpine_base')
-    
+
     # Check for outdated URLs (common patterns)
     if 'releases.hashicorp.com' in content:
         # Check for old version patterns
         version_match = re.search(r'releases\.hashicorp\.com/[^/]+/([0-9]+\.[0-9]+)', content)
         if version_match:
             issues.append(f'可能_outdated_hashicorp:{version_match.group(1)}')
-    
+
     return issues
 
 def main():
     """Main function to scan all Dockerfiles."""
     dockerfiles = get_all_dockerfiles()
     print(f"Found {len(dockerfiles)} Dockerfiles to analyze")
-    
+
     issue_counts = {}
     for df in dockerfiles:
         issues = analyze_dockerfile(df)
@@ -87,7 +85,7 @@ def main():
             issue_counts[issue] = issue_counts.get(issue, 0) + 1
             if issue.startswith('package_not_in_debian'):
                 print(f"  {df.parent.name}: {issue}")
-    
+
     print("\n=== Issue Summary ===")
     for issue, count in sorted(issue_counts.items(), key=lambda x: -x[1]):
         print(f"  {issue}: {count}")

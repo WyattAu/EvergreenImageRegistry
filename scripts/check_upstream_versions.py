@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """Check upstream GitHub releases for version updates against local manifest.toml files."""
 
+import json
 import os
 import re
-import subprocess
 import sys
-import urllib.request
 import urllib.error
-import json
+import urllib.request
 from pathlib import Path
 
 GITHUB_API = "https://api.github.com/repos"
@@ -140,11 +139,11 @@ def main():
 
         print(f"  {image_name:40s} {current_version:20s} -> {latest_tag:20s}  [{status}]")
 
-    print(f"\n=== Summary ===")
+    print("\n=== Summary ===")
     print(f"Checked: {checked}, Skipped: {skipped}, Updates available: {len(updates)}")
 
     if updates:
-        print(f"\n=== Updates Available ===")
+        print("\n=== Updates Available ===")
         for u in updates:
             print(f"  {u['image']}: {u['current']} -> {u['latest']}")
             print(f"    Repo: {u['repo']}")

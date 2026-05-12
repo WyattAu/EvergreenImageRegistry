@@ -107,10 +107,10 @@ def main():
         if changed:
             df.write_text(content)
 
-    print(f"=== evergreen.constraint.debian_slim ===")
+    print("=== evergreen.constraint.debian_slim ===")
     print(f"Removed {total_debian_slim_removed} lines across all Dockerfiles")
     print()
-    print(f"=== evergreen.constraint.base ===")
+    print("=== evergreen.constraint.base ===")
     print(f"Updated {sum(base_updates.values())} values:")
     for base, count in sorted(base_updates.items()):
         print(f"  {base}: {count}")

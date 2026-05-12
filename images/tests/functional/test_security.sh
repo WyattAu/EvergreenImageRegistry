@@ -43,7 +43,7 @@ record() {
 wait_for_container() {
     local max_wait="${1:-30}"
     local waited=0
-    while [ $waited -lt $max_wait ]; do
+    while [ "$waited" -lt "$max_wait" ]; do
         if ! docker ps -q -f name="$CONTAINER_NAME" | grep -q .; then
             return 1
         fi

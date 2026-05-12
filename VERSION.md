@@ -2,8 +2,8 @@
 
 ## Status
 - **Phase:** 63
-- **Version:** v26.9.0
-- **Status:** Stable - Phase 58-63 complete: 53 tests, CI hardened, 671 test configs expanded
+- **Version:** v26.10.0
+- **Status:** Stable - Full audit complete: 53 tests, pre-commit+pre-push hooks operational, 8-gate pre-push
 - **CI Status:** Build batches running, gate/lint 100% pass
 - **Last Updated:** 2026-05-12
 
@@ -13,7 +13,7 @@
 | Total Images | 998 | COMPLETE |
 | TOML Validation | 998/998 (0 errors) | PASS |
 | JSON SBOM | 998/998 (0 errors) | PASS |
-| .dockerignore | 997/998 (99.9%) | PASS |
+| .dockerignore | 998/998 (100%) | PASS |
 | README.md | 998/998 (100%) | PASS |
 | manifest.toml | 998/998 (100%) | PASS |
 | sbom.spdx.json | 998/998 (100%) | PASS |
@@ -35,22 +35,28 @@
 | Rigor (real binary) | 99.8% (996/998) | PASS |
 | wolfi package compat | g++/redis/cpp/pkgconfig fixed | PASS |
 
+## Code Quality Audit (2026-05-12)
+| Metric | Value | Status |
+|--------|-------|--------|
+| Rust tests | 53/53 pass | PASS |
+| Rust clippy | 0 warnings | PASS |
+| Rust fmt | PASS | PASS |
+| Rust release build | PASS | PASS |
+| Python syntax | 29/29 scripts | PASS |
+| Shell syntax | 25/25 scripts | PASS |
+| Shell shellcheck | 0 errors (1 info) | PASS |
+| Manifest TOML | 998/998 | PASS |
+| SBOM JSON | 998/998 | PASS |
+| Documentation emojis | 0 (archive-only) | PASS |
+| Broken refs | 0 | PASS |
+| Pre-commit hook | 5 std + 4 custom | PASS |
+| Pre-push gate | 8-gate (9 checks) | PASS |
+
+## Git Hooks
+- **Pre-commit:** trailing-whitespace, EOF fixer, YAML/JSON lint, merge-conflict, hadolint, constraints, no-alpine, fast-tests (clippy+fmt+py+sh)
+- **Pre-push:** 8-gate: Rust tests, clippy, fmt, Python syntax, Shell syntax, Manifest TOML, SBOM JSON, Dockerfile constraints, Rust release build
+
 ## CI Pipeline
 - Gate/Lint/Discover: 100% pass
 - Remaining build failures: ALL upstream issues (0 code bugs)
-- See ROADMAP.md for full upstream failure catalog
-
-## Session Commit History (13 commits, ~409 image-fixes)
-| Commit | What | Images |
-|--------|------|--------|
-| (next) | Audit: doc fixes, pre-commit hook, clippy fix, 12 broken refs, emoji removal | 0 |
-| f000b409 | Blank line continuation fix | 75 |
-| 4e5a3b42 | Shell continuation fixes | 60 |
-| e502a757 | LABEL/placeholder fixes | 124 |
-| 1d988645 | apk+php+heredoc fixes | 21 |
-| 7dff8f17 | Orphaned command chains | 37 |
-| 27d340b5 | apk+adduser+chown fixes | 25 |
-| 43e15bce | Version bump 27 images | 27 |
-| 46efe6e1 | Fix remaining failures | 14 |
-| baa8c5c6 | VERSION.md v26.2.0 | 1 |
-| ecd36165 | ROADMAP.md Phase 49-50 | 1 |
+- See ROADMAP.md and ROADMAP_FORWARD.md for full upstream failure catalog

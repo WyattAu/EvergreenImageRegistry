@@ -201,8 +201,10 @@ if command -v python3 &>/dev/null; then
     fi
     if [ -n "$changed_dockerfiles" ]; then
         constraint_errors=0
+        dcf_count=0
         for df in $changed_dockerfiles; do
             if [ -f "$df" ]; then
+                dcf_count=$((dcf_count + 1))
                 # Check for Alpine (CRITICAL)
                 if grep -qiE '^\s*FROM\s+.*alpine' "$df" 2>/dev/null; then
                     echo -e "  ${RED}[FAIL]${NC} $df: Alpine base detected (BANNED)"
@@ -211,7 +213,7 @@ if command -v python3 &>/dev/null; then
             fi
         done
         if [ "$constraint_errors" -eq 0 ]; then
-            pass_gate "Dockerfile constraints (checked $(echo $changed_dockerfiles | wc -w) files)"
+            pass_gate "Dockerfile constraints (checked $dcf_count files)"
         else
             fail_gate "Dockerfile constraints ($constraint_errors violation(s))"
         fi

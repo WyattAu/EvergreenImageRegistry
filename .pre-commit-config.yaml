@@ -80,3 +80,20 @@ repos:
         stages: [pre-commit]
         pass_filenames: false
         always_run: true
+
+  # =============================================================================
+  # Pre-push Quality Gate (8 gates, comprehensive validation)
+  # =============================================================================
+  # Gates: Rust tests, clippy, fmt, Python syntax, Shell syntax,
+  #        Manifest TOML, SBOM JSON, Dockerfile constraints, Release build
+  # =============================================================================
+  - repo: local
+    hooks:
+      - id: evergreen-pre-push-gate
+        name: Evergreen Pre-push Gate (8 Gates)
+        description: Runs all 8 quality gates before push (tests, lint, validation)
+        entry: bash scripts/pre-push-gate.sh
+        language: system
+        stages: [pre-push]
+        pass_filenames: false
+        always_run: true

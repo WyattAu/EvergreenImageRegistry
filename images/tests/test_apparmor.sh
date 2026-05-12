@@ -238,10 +238,12 @@ test_image_apparmor() {
     local image="$1"
     local profile_name="$2"
     local profile_file="$3"
-    local container_name="aa-test-$image-$(date +%s)"
+    local container_name
+    container_name="aa-test-$image-$(date +%s)"
     local full_image="ghcr.io/wyattau/evergreenimageregistry/$image:latest"
     local start_timeout="${START_TIMEOUT:-30}"
-    local log_file="/tmp/apparmor-test-${image}-$(date +%s).log"
+    local log_file
+    log_file="/tmp/apparmor-test-${image}-$(date +%s).log"
 
     log_step "Testing image: $full_image"
     log_step "AppArmor profile: $profile_name"

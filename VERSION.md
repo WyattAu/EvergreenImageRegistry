@@ -1,9 +1,9 @@
 # Evergreen Image Registry
 
 ## Status
-- **Phase:** 57
-- **Version:** v26.8.0
-- **Status:** Stable - full audit complete: 47 tests, 0 clippy, 9-gate pre-push, pre-commit hook, docs clean
+- **Phase:** 63
+- **Version:** v26.9.0
+- **Status:** Stable - Phase 58-63 complete: 53 tests, CI hardened, 671 test configs expanded
 - **CI Status:** Build batches running, gate/lint 100% pass
 - **Last Updated:** 2026-05-12
 

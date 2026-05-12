@@ -1,6 +1,6 @@
 [metadata]
 name = "hazelcast-operator"
-version = "5.15.0"
+version = "5.17.0"
 description = "Evergreen hardened Hazelcast Platform Operator - Kubernetes operator for Hazelcast"
 
 [build]

@@ -1,6 +1,6 @@
 [metadata]
 name = "graylog-sidecar"
-version = "RUN"
+version = "1.5.2"
 description = "Evergreen hardened Graylog Sidecar - log collector management agent"
 
 [build]

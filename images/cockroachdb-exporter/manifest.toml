@@ -1,6 +1,6 @@
 [metadata]
 name = "cockroachdb-exporter"
-version = "24.3.3"
+version = "23.2.3"
 description = "CockroachDB Exporter - Prometheus exporter for CockroachDB"
 vendor = "Cockroach Labs"
 source = "https://github.com/cockroachdb/cockroach"

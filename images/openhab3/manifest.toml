@@ -1,6 +1,6 @@
 [metadata]
 name = "openhab3"
-version = "5.1.4"
+version = "5.2.0.M3"
 description = "openHAB 3 - Open source home automation"
 
 [build]

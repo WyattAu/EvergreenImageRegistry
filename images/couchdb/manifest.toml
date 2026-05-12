@@ -1,6 +1,6 @@
 [metadata]
 name = "couchdb"
-version = "3.3.3"
+version = "3.5.1"
 description = "CouchDB - document-oriented NoSQL database"
 vendor = "Apache"
 source = "https://github.com/apache/couchdb"

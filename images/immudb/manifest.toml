@@ -1,6 +1,6 @@
 [metadata]
 name = "immudb"
-version = "1.10.0"
+version = "1.11.0"
 description = "Evergreen hardened immudb - immutable database with cryptographic verification"
 
 [build]

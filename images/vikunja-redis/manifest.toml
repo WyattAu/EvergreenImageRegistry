@@ -1,6 +1,6 @@
 [metadata]
 name = "vikunja-redis"
-version = "v0.24.1"
+version = "2.3.0"
 description = "Vikunja API with Redis backend configuration"
 
 [build]

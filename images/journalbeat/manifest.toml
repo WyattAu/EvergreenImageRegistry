@@ -1,6 +1,6 @@
 [metadata]
 name = "journalbeat"
-version = "RUN"
+version = "9.4.0"
 description = "Evergreen hardened Journalbeat - Elastic systemd journal shipper"
 
 [build]

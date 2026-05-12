@@ -9,7 +9,7 @@
 
 ---
 
-## Current State (v26.3.0)
+## Current State (v26.4.0)
 
 | Metric | Value | Status |
 |--------|-------|--------|

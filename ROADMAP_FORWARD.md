@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-The registry is at v26.3.0 with 998 images, all syntax-correct, fully labeled, SBOM-covered, and gated by CI. The remaining ~80-120 CI build failures are entirely upstream issues (deleted releases, auth-gated registries, broken builds). This document describes the path from the current state to a production-hardened, zero-trust container image supply chain.
+The registry is at v26.4.0 with 998 images, all syntax-correct, fully labeled, SBOM-covered, and gated by CI. The remaining ~80-120 CI build failures are entirely upstream issues (deleted releases, auth-gated registries, broken builds). This document describes the path from the current state to a production-hardened, zero-trust container image supply chain.
 
 ---
 
@@ -148,7 +148,7 @@ The registry is at v26.3.0 with 998 images, all syntax-correct, fully labeled, S
 **Objective:** Make evergreenctl the single source of truth for image management.
 
 **Current gaps:**
-- Only 4 unit tests (test_extract_github_repo, test_sha256_empty, test_verify_match, test_sha256_hello).
+- Only 10 unit tests (verify: sha256, sha512, match, mismatch, case-insensitive, unsupported, display, nonexistent; discover: extract_github_repo).
 - No integration tests.
 - No CLI completion.
 - No man pages.
@@ -250,7 +250,7 @@ Deploy a Grafana dashboard showing:
 
 | Gate | Tool | Result |
 |------|------|--------|
-| Rust unit tests | `cargo test` | 4/4 PASS |
+| Rust unit tests | `cargo test` | 10/10 PASS |
 | Rust clippy | `cargo clippy -D warnings` | 0 warnings |
 | Rust formatting | `cargo fmt --check` | PASS |
 | Rust release build | `cargo build --release` | PASS |

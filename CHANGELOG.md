@@ -415,20 +415,6 @@ Verified safe updates via GitHub API with asset naming validation:
 
 ---
 
-## [1.0.0] - 2026-04-19 (Initial)
-
-### Added
-- Initial newrequirements.md structure
-- Initial requiredimages.md (1010 images)
-- YP-SEC-HARDENING-001.md
-- YP-VULN-SCAN-001.md
-- BP-IMAGE-REGISTRY-001.md
-- domain_analysis.md
-- requirements.md
-- Basic test_vectors
-
----
-
 ## [5.0.0] - 2026-04-22
 
 ### Phase 9: Stub Enhancement & Depth-First Hardening
@@ -540,82 +526,16 @@ Verified safe updates via GitHub API with asset naming validation:
 
 ---
 
-## [3.3.5] - 2026-04-20
-
-### Phase 3.5: Checksum Verification
-
-### Added
-- **Checksum population script:** `scripts/populate_checksums.py` with multi-source support
-- **74 verified checksums:** 28 from GitHub, 4 from HashiCorp, 1 from k8s, 1 from Helm, 40 via download-and-compute
-- **0 hash mismatches** confirmed
-
----
-
-## [3.3.0] - 2026-04-19
-
-### Phase 3: Test Coverage
-
-### Added
-- **Adversarial test suite:** 21 tests in `images/tests/adversarial/test_adversarial.sh`
-- **Functional test suites:** databases, proxies, security tools
-- **Test configuration:** `images/tests/test_config.yaml` for 223 images
-- **Seccomp/AppArmor profiles** and test scripts
-
----
-
-## [3.2.0] - 2026-04-19
-
-### Phase 2: Runtime Security Hardening
-
-### Added
-- **Seccomp profiles:** 5 category-specific profiles
-- **AppArmor profiles:** 4 category-specific profiles
-- **Image size enforcement:** Tier 1 (50MB) and Tier 2 (200MB)
-- **Capabilities audit:** `--cap-drop ALL` enforced
-
----
-
-## [3.1.0] - 2026-04-19
-
-### Phase 1: Supply Chain Integrity
-
-### Added
-- **CHECKSUMS files:** 122 files with TOML format
-- **Hermetic CI environment:** `Dockerfile.ci` with 13 pinned tools
-- **Cosign keyless signing**, **SLSA v3 provenance**, **TruffleHog scanning**
-- **SBOM attestation framework:** Syft v1.8.0
-
----
-
-## [3.0.0] - 2026-04-19
-
-### Security Fixes (CRITICAL)
-- Fixed HEALTHCHECK for 104 scratch images, 7 distroless images
-- Fixed two-word CMD pattern, duplicate binary names
-- Fixed test framework arithmetic bug
-
-### Infrastructure
-- CI Pipeline overhaul with batched matrix
-- Multi-arch build support
-- Image size enforcement
-
-### Hardening
-- Multi-stage conversion, base image pinning, package manager removal
-
----
-
-## [2.0.0] - 2026-04-19
-
-### Added
-- Requirements spec (newrequirements.md v2)
-- Yellow Papers (4) and Blue Papers (1)
-- R&D structure, compliance docs, traceability matrix
-
----
-
 ## [1.0.0] - 2026-04-19 (Initial)
 
 ### Added
-- Initial requirements, image list (1010 images)
-- YP-SEC-HARDENING-001, YP-VULN-SCAN-001, BP-IMAGE-REGISTRY-001
-- domain_analysis.md, basic test_vectors
+- Initial newrequirements.md structure
+- Initial requiredimages.md (1010 images)
+- YP-SEC-HARDENING-001.md
+- YP-VULN-SCAN-001.md
+- BP-IMAGE-REGISTRY-001.md
+- domain_analysis.md
+- requirements.md
+- Basic test_vectors
+
+

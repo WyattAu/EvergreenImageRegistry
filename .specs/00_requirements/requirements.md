@@ -24,7 +24,7 @@ This document specifies requirements for building and maintaining a evergreen ha
 
 | ID | Requirement | Priority | Verification |
 |----|-------------|----------|-------------|
-| REQ-SEC-001 | Non-root execution (UID 65534) | CRITICAL | User ID check |
+| REQ-SEC-001 | Non-root execution (UID 65532) | CRITICAL | User ID check |
 | REQ-SEC-002 | Read-only root filesystem | CRITICAL | Mount verification |
 | REQ-SEC-003 | No shell (/bin/sh, /bin/bash) | CRITICAL | File existence check |
 | REQ-SEC-004 | No package manager (apt, apk, dnf) | CRITICAL | File existence check |
@@ -41,7 +41,7 @@ This document specifies requirements for building and maintaining a evergreen ha
 |----|-------------|------|----------|
 | REQ-IMG-001 | Scratch base | Tier 1 | CRITICAL |
 | REQ-IMG-002 | Distroless base | Tier 1/2 | CRITICAL |
-| REQ-IMG-003 | Alpine/Wolfi base | Tier 3 | HIGH |
+| REQ-IMG-003 | Wolfi base (Alpine and debian-slim permanently banned) | Tier 3 | HIGH |
 | REQ-IMG-004 | No latest tags | ALL | CRITICAL |
 
 ---

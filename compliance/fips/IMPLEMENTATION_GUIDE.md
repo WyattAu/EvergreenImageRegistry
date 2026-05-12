@@ -38,7 +38,7 @@ RUN cd /src && \
 
 - **CGO_ENABLED=1** is mandatory. BoringCrypto uses C code and cannot be built with `CGO_ENABLED=0`.
 - **GOEXPERIMENT=boringcrypto** must be set during both build and runtime.
-- The final image **cannot use `FROM scratch`**. BoringCrypto dynamically links against glibc. Use `debian:bookworm-slim` or a minimal glibc image instead.
+- The final image **cannot use `FROM scratch`**. BoringCrypto dynamically links against glibc. Use `wolfi-base` or a minimal glibc image instead.
 - Set **GOLANG_FIPS=1** as an environment variable at runtime to activate FIPS mode.
 
 ### Runtime Verification

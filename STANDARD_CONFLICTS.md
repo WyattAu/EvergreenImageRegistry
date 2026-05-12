@@ -30,7 +30,7 @@
 | Privilege dropping | Recommended | Required | Use most restrictive: CIS — **C001: Non-root UID 65532** |
 
 **Resolution Documented:** [ADR-005](.adrs/ADR-005-military-compliance-framework.md)
-**Implemented In:** [REQUIREMENTS.md](REQUIREMENTS.md) Part II §2.1 (C001, C007)
+**Implemented In:** [REQUIREMENTS.md](.specs/archive/REQUIREMENTS-v4.0.0.md) Part II §2.1 (C001, C007)
 
 ### CONFLICT-002: FIPS 140-2 vs SLSA Level 3
 
@@ -41,7 +41,7 @@
 | Key ceremony | Required | Not specified | FIPS: required |
 
 **Resolution Documented:** [ADR-005](.adrs/ADR-005-military-compliance-framework.md)
-**Implemented In:** [REQUIREMENTS.md](REQUIREMENTS.md) Part VIII §8.1 (Compliance Framework)
+**Implemented In:** [REQUIREMENTS.md](.specs/archive/REQUIREMENTS-v4.0.0.md) Part VIII §8.1 (Compliance Framework)
 
 ### CONFLICT-003: Container Size vs Security
 
@@ -52,7 +52,7 @@
 | Debug symbols | No | Explicit | Both: stripped — **C006** |
 
 **Resolution Documented:** [ADR-005](.adrs/ADR-005-military-compliance-framework.md)
-**Implemented In:** [REQUIREMENTS.md](REQUIREMENTS.md) Part I §1.1 (Preference Order), Part IV §4.2 (Size Limits)
+**Implemented In:** [REQUIREMENTS.md](.specs/archive/REQUIREMENTS-v4.0.0.md) Part I §1.1 (Preference Order), Part IV §4.2 (Size Limits)
 
 ### CONFLICT-004: Image Size Limits Inconsistent
 
@@ -64,7 +64,7 @@
 
 **Resolution:** Use YP-SEC-HARDENING-001 values (most granular). Tier 1 ≤50MB, Tier 2 ≤200MB, Tier 3 ≤500MB.
 
-**Implemented In:** [REQUIREMENTS.md](REQUIREMENTS.md) Part IV §4.2
+**Implemented In:** [REQUIREMENTS.md](.specs/archive/REQUIREMENTS-v4.0.0.md) Part IV §4.2
 
 ### CONFLICT-005: Base Image Tier Mapping Mismatched
 
@@ -76,7 +76,7 @@
 
 **Resolution:** **Eliminated tier-based mapping entirely.** See ADR-007 — universal preference order applies to all tiers: scratch > wolfi > UBI micro > UBI minimal > UBI standard.
 
-**Implemented In:** [REQUIREMENTS.md](REQUIREMENTS.md) Part I §1.1, [ADR-007](.adrs/ADR-007-base-image-preference-order.md)
+**Implemented In:** [REQUIREMENTS.md](.specs/archive/REQUIREMENTS-v4.0.0.md) Part I §1.1, [ADR-007](.adrs/ADR-007-base-image-preference-order.md)
 
 ### CONFLICT-006: HEALTHCHECK Form (Shell vs Exec)
 
@@ -88,7 +88,7 @@
 
 **Resolution:** **Replaced Docker HEALTHCHECK instruction with HTTP health probes.** All images serve /livez, /readyz, /startupz on port 9101. See ADR-006.
 
-**Implemented In:** [REQUIREMENTS.md](REQUIREMENTS.md) Part III §3.1, [ADR-006](.adrs/ADR-006-observability-architecture.md)
+**Implemented In:** [REQUIREMENTS.md](.specs/archive/REQUIREMENTS-v4.0.0.md) Part III §3.1, [ADR-006](.adrs/ADR-006-observability-architecture.md)
 
 ### CONFLICT-007: Init System (C016 "No Init" vs tini)
 
@@ -101,7 +101,7 @@
 
 **Resolution:** No init system **baked into the image** (C023). Runtime injects init via `docker run --init` or K8s `shareProcessNamespace: true`. The image never contains tini/dumb-init/systemd.
 
-**Implemented In:** [REQUIREMENTS.md](REQUIREMENTS.md) Part II §2.2 (C023)
+**Implemented In:** [REQUIREMENTS.md](.specs/archive/REQUIREMENTS-v4.0.0.md) Part II §2.2 (C023)
 
 ### CONFLICT-008: STANDARD_CONFLICTS.md Wrong ADR References
 
@@ -125,7 +125,7 @@
 - wolfi: BusyBox ash present (acceptable — needed for entrypoint scripts)
 - UBI micro/minimal/standard: bash present (acceptable — needed for entrypoint and debugging)
 
-**Implemented In:** [REQUIREMENTS.md](REQUIREMENTS.md) Part I §1.2 (Ban), Part II §2.1 (C003 note)
+**Implemented In:** [REQUIREMENTS.md](.specs/archive/REQUIREMENTS-v4.0.0.md) Part I §1.2 (Ban), Part II §2.1 (C003 note)
 
 ---
 

@@ -93,9 +93,9 @@ Distribution
 
 This SSP implements the security requirements defined in:
 
-- `REQUIREMENTS.md` — Master requirements document
-- `.specs/03_security/` — Security architecture specifications
-- `compliance/cis/` — CIS Docker Benchmark compliance
+- `.specs/archive/REQUIREMENTS-v4.0.0.md` -- Unified requirements specification (v4.0.0)
+- `.specs/02_architecture/` -- Architecture and design specifications
+- `compliance/cis/` -- CIS Docker Benchmark compliance
 - `compliance/stig/` — DISA STIG compliance
 - `compliance/fips/` — FIPS 140-2 compliance
 

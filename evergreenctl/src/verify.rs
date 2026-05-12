@@ -165,4 +165,89 @@ mod tests {
         assert!(result.matches);
         let _ = std::fs::remove_file(&path);
     }
+
+    #[test]
+    fn test_verify_mismatch() {
+        let dir = std::env::temp_dir().join("evergreenctl_test");
+        let _ = std::fs::create_dir_all(&dir);
+        let path = dir.join("test_mismatch");
+        std::fs::write(&path, "hello").unwrap();
+        let result = verify_checksum(
+            &path,
+            "sha256",
+            "0000000000000000000000000000000000000000000000000000000000000000",
+        )
+        .unwrap();
+        assert!(!result.matches);
+        let _ = std::fs::remove_file(&path);
+    }
+
+    #[test]
+    fn test_verify_case_insensitive() {
+        let dir = std::env::temp_dir().join("evergreenctl_test");
+        let _ = std::fs::create_dir_all(&dir);
+        let path = dir.join("test_case");
+        std::fs::write(&path, "hello").unwrap();
+        let result = verify_checksum(
+            &path,
+            "SHA256",
+            "2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824",
+        )
+        .unwrap();
+        assert!(result.matches);
+        let _ = std::fs::remove_file(&path);
+    }
+
+    #[test]
+    fn test_sha512_hello() {
+        let dir = std::env::temp_dir().join("evergreenctl_test");
+        let _ = std::fs::create_dir_all(&dir);
+        let path = dir.join("test_sha512");
+        std::fs::write(&path, "hello").unwrap();
+        let hash = sha512_file(&path).unwrap();
+        assert_eq!(
+            hash,
+            "9b71d224bd62f3785d96d46ad3ea3d73319bfbc2890caadae2dff72519673ca72323c3d99ba5c11d7c7acc6e14b8c5da0c4663475c2e5c3adef46f73bcdec043"
+        );
+        let _ = std::fs::remove_file(&path);
+    }
+
+    #[test]
+    fn test_unsupported_algorithm() {
+        let dir = std::env::temp_dir().join("evergreenctl_test");
+        let _ = std::fs::create_dir_all(&dir);
+        let path = dir.join("test_unsupported");
+        std::fs::write(&path, "test").unwrap();
+        let result = compute_checksum(&path, "md5");
+        assert!(result.is_err());
+        let err = result.unwrap_err().to_string();
+        assert!(err.contains("Unsupported checksum algorithm"));
+        let _ = std::fs::remove_file(&path);
+    }
+
+    #[test]
+    fn test_verify_result_display() {
+        let match_result = VerifyResult {
+            algorithm: "sha256".to_string(),
+            expected: "abcdef0123456789".to_string(),
+            computed: "abcdef0123456789".to_string(),
+            matches: true,
+        };
+        assert!(match_result.to_string().contains("MATCHES"));
+
+        let mismatch_result = VerifyResult {
+            algorithm: "sha256".to_string(),
+            expected: "abcdef0123456789".to_string(),
+            computed: "fedcba9876543210".to_string(),
+            matches: false,
+        };
+        assert!(mismatch_result.to_string().contains("MISMATCH"));
+    }
+
+    #[test]
+    fn test_nonexistent_file() {
+        let path = std::path::Path::new("/nonexistent/file/that/does/not/exist");
+        let result = sha256_file(path);
+        assert!(result.is_err());
+    }
 }

@@ -2,10 +2,10 @@
 
 | Attribute | Value |
 |-----------|-------|
-| Version | 26.3.0 |
-| Updated | 2026-05-11 |
+| Version | 26.4.0 |
+| Updated | 2026-05-12 |
 | Status | POST-CI-FIX |
-| Phases | 0-51 + ongoing polish |
+| Phases | 0-52 + ongoing polish |
 
 ---
 
@@ -35,11 +35,8 @@
 | Dockerfile syntax errors | 0 | DONE |
 | Determinism | Zstd + SOURCE_DATE_EPOCH | DONE |
 | Workflows | 10 files | DONE |
-| Layers (avg RUN/image) | 1.0 | DONE |
-| Rigor (real binary) | 99.8% (996/998) | DONE |
-| Workflows | 10 files | DONE |
-| Anti-patterns | 0 across all 998 images | DONE |
 | Layers (avg RUN/image) | 1.0 (953 total) | DONE |
+| Rigor (real binary) | 99.8% (996/998) | DONE |
 
 ---
 

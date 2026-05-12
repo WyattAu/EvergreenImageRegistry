@@ -23,6 +23,7 @@ FAIL_COUNT=0
 SKIP_COUNT=0
 TOTAL=0
 
+# shellcheck disable=SC2329  # cleanup called via trap EXIT
 cleanup() {
     if [ -n "$CONTAINER_NAME" ] && docker ps -q -f name="$CONTAINER_NAME" | grep -q .; then
         docker kill "$CONTAINER_NAME" >/dev/null 2>&1 || true
@@ -54,7 +55,7 @@ start_container() {
     fi
     local max_wait="${STARTUP_TIMEOUT:-10}"
     local waited=0
-    while [ $waited -lt $max_wait ]; do
+    while [ "$waited" -lt "$max_wait" ]; do
         if ! docker ps -q -f name="$CONTAINER_NAME" | grep -q .; then
             return 1
         fi
@@ -177,8 +178,6 @@ test_network_exfiltration() {
     fi
 
     if [ -n "$CONTAINER_NAME" ] && docker ps -q -f name="$CONTAINER_NAME" | grep -q .; then
-        local exposed_ports
-        exposed_ports=$(docker inspect "$IMAGE" --format='{{json .Config.ExposedPorts}}' 2>/dev/null || echo "{}")
         local expected_ports="${EXPOSED_PORTS:-}"
         if [ -n "$expected_ports" ]; then
             local listening_ports
@@ -210,8 +209,6 @@ test_filesystem_integrity() {
     echo ""
     echo "--- Filesystem Integrity Tests ---"
 
-    local ro_container
-    ro_container="advtest-ro-$(date +%s)-$$"
     if docker run --rm --read-only "$IMAGE" true >/dev/null 2>&1; then
         record "FI-001" "PASS" "Root filesystem accepts --read-only flag"
     else

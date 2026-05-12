@@ -13,19 +13,19 @@ Evergreen provides a long-term home for open-source container images that vendor
 ## Quick Start
 
 ```bash
-docker pull ghcr.io/wyattau/evergreen-image-registry/redis:7.2
+docker pull ghcr.io/wyattau/evergreenimageregistry/redis:7.2
 
 docker run -d \
   --name redis \
   --cap-drop ALL \
   --security-opt no-new-privileges:true \
-  ghcr.io/wyattau/evergreen-image-registry/redis:7.2
+  ghcr.io/wyattau/evergreenimageregistry/redis:7.2
 ```
 
-All images are published to `ghcr.io/wyattau/evergreen-image-registry/<image>:<version>`. Pin by digest for production:
+All images are published to `ghcr.io/wyattau/evergreenimageregistry/<image>:<version>`. Pin by digest for production:
 
 ```bash
-docker pull ghcr.io/wyattau/evergreen-image-registry/redis@sha256:<digest>
+docker pull ghcr.io/wyattau/evergreenimageregistry/redis@sha256:<digest>
 ```
 
 ## Security Guarantees
@@ -68,14 +68,14 @@ Browse the full catalog at [docs/catalog/index.html](docs/catalog/index.html) --
 322 images publish multi-architecture manifests (`linux/amd64`, `linux/arm64`). To pull the correct image for your platform:
 
 ```bash
-docker pull ghcr.io/wyattau/evergreen-image-registry/nginx:latest
-docker buildx imagetools inspect ghcr.io/wyattau/evergreen-image-registry/nginx:latest
+docker pull ghcr.io/wyattau/evergreenimageregistry/nginx:latest
+docker buildx imagetools inspect ghcr.io/wyattau/evergreenimageregistry/nginx:latest
 ```
 
 Use `--platform` to force a specific architecture:
 
 ```bash
-docker pull --platform linux/arm64 ghcr.io/wyattau/evergreen-image-registry/nginx:latest
+docker pull --platform linux/arm64 ghcr.io/wyattau/evergreenimageregistry/nginx:latest
 ```
 
 ## evergreenctl

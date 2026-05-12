@@ -1,0 +1,8 @@
+# Ignore everything by default
+*
+# Except the Dockerfile
+!Dockerfile
+# And essential build context
+!main.go
+!go.mod
+!go.sum

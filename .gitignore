@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+# Rust/Cargo build artifacts
+evergreenctl/target/
+
 # User-specific files
 *.rsuser
 *.suo

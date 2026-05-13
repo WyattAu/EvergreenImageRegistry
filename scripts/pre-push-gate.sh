@@ -46,12 +46,25 @@ echo ""
 echo "--- Gate 1: Rust Unit Tests ---"
 if command -v cargo &>/dev/null; then
     if cargo test --manifest-path evergreenctl/Cargo.toml --lib 2>&1 | tail -5 | grep -q "test result"; then
-        pass_gate "cargo test (evergreenctl)"
+        pass_gate "cargo test --lib (evergreenctl)"
     else
-        fail_gate "cargo test (evergreenctl)"
+        fail_gate "cargo test --lib (evergreenctl)"
     fi
 else
     skip_gate "cargo test (cargo not found)"
+fi
+
+# ---- Gate 1b: Rust integration tests ----
+echo ""
+echo "--- Gate 1b: Rust Integration Tests ---"
+if command -v cargo &>/dev/null; then
+    if cargo test --manifest-path evergreenctl/Cargo.toml --test integration 2>&1 | tail -5 | grep -q "test result"; then
+        pass_gate "cargo test --test integration (evergreenctl)"
+    else
+        fail_gate "cargo test --test integration (evergreenctl)"
+    fi
+else
+    skip_gate "cargo test --test integration (cargo not found)"
 fi
 
 # ---- Gate 2: Rust clippy ----
@@ -87,25 +100,32 @@ fi
 
 # ---- Gate 4: Python syntax validation ----
 echo ""
-echo "--- Gate 4: Python Syntax ---"
+echo "--- Gate 4: Python Syntax + Ruff Lint ---"
 if command -v python3 &>/dev/null; then
     py_errors=0
     py_count=0
-    for script in scripts/*.py; do
+    for script in scripts/*.py generate_manifests.py; do
         if [ -f "$script" ]; then
             py_count=$((py_count + 1))
             if python3 -m py_compile "$script" 2>/dev/null; then
                 : # OK
             else
-                echo -e "  ${RED}[FAIL]${NC} $script"
+                echo -e "  ${RED}[FAIL]${NC} $script (syntax)"
                 py_errors=$((py_errors + 1))
             fi
         fi
     done
+    # Run ruff lint if available
+    if command -v ruff &>/dev/null; then
+        if ! ruff check scripts/ generate_manifests.py 2>&1; then
+            echo -e "  ${RED}[FAIL]${NC} ruff lint errors"
+            py_errors=$((py_errors + 1))
+        fi
+    fi
     if [ "$py_errors" -eq 0 ]; then
-        pass_gate "Python syntax ($py_count scripts)"
+        pass_gate "Python syntax + ruff lint ($py_count scripts)"
     else
-        fail_gate "Python syntax ($py_errors/$py_count script(s) failed)"
+        fail_gate "Python syntax + ruff lint ($py_errors error(s))"
     fi
 else
     skip_gate "Python syntax (python3 not found)"

@@ -10,13 +10,14 @@ Reads manifest.toml and Dockerfile for each image to determine:
 
 Outputs YAML entries for images that have enough information.
 """
+
 import re
-import sys
 import tomllib
 from pathlib import Path
 
 IMAGES_DIR = Path("images")
 TEST_CONFIG = IMAGES_DIR / "tests" / "test_config.yaml"
+
 
 def extract_entrypoint_binary(dockerfile_path: Path) -> str | None:
     """Extract binary name from ENTRYPOINT or CMD in Dockerfile."""
@@ -33,17 +34,18 @@ def extract_entrypoint_binary(dockerfile_path: Path) -> str | None:
                     continue
                 return binary
             # Try exec form
-            match = re.search(r'ENTRYPOINT\s+(\S+)', line)
+            match = re.search(r"ENTRYPOINT\s+(\S+)", line)
             if match:
                 binary = match.group(1)
                 if binary not in ("/bin/sh", "/bin/bash", "sh", "bash"):
                     return binary
-            match = re.search(r'CMD\s+(\S+)', line)
+            match = re.search(r"CMD\s+(\S+)", line)
             if match:
                 binary = match.group(1)
                 if binary not in ("/bin/sh", "/bin/bash", "sh", "bash"):
                     return binary
     return None
+
 
 def extract_port(manifest_path: Path) -> int:
     """Extract primary exposed port from manifest.toml."""
@@ -57,6 +59,7 @@ def extract_port(manifest_path: Path) -> int:
         pass
     return 8080  # default
 
+
 def extract_version_flag(dockerfile_path: Path) -> str:
     """Guess version flag from binary name or patterns."""
     content = dockerfile_path.read_text()
@@ -67,32 +70,77 @@ def extract_version_flag(dockerfile_path: Path) -> str:
         return "-v"
     return "--version"
 
+
 def determine_category(image_name: str, dockerfile_content: str) -> str:
     """Determine test category from image name and content."""
     name_lower = image_name.lower()
-    content_lower = dockerfile_content.lower()
+    dockerfile_content.lower()
 
     # Database
-    db_keywords = ["sql", "db", "mongo", "redis", "postgres", "mysql", "mariadb",
-                   "cassandra", "couch", "etcd", "neo4j", "influx", "timescale"]
+    db_keywords = [
+        "sql",
+        "db",
+        "mongo",
+        "redis",
+        "postgres",
+        "mysql",
+        "mariadb",
+        "cassandra",
+        "couch",
+        "etcd",
+        "neo4j",
+        "influx",
+        "timescale",
+    ]
     if any(kw in name_lower for kw in db_keywords):
         return "database"
 
     # Monitoring
-    monitor_keywords = ["prometheus", "grafana", "alert", "metric", "monitor",
-                        "loki", "tempo", "mimir", "thanos", "node_exporter"]
+    monitor_keywords = [
+        "prometheus",
+        "grafana",
+        "alert",
+        "metric",
+        "monitor",
+        "loki",
+        "tempo",
+        "mimir",
+        "thanos",
+        "node_exporter",
+    ]
     if any(kw in name_lower for kw in monitor_keywords):
         return "monitoring"
 
     # Security
-    sec_keywords = ["vault", "cert", "scanner", "trivy", "grype", "falco",
-                    "audit", "firewall", "ids", "ips", "wazuh", "suricata"]
+    sec_keywords = [
+        "vault",
+        "cert",
+        "scanner",
+        "trivy",
+        "grype",
+        "falco",
+        "audit",
+        "firewall",
+        "ids",
+        "ips",
+        "wazuh",
+        "suricata",
+    ]
     if any(kw in name_lower for kw in sec_keywords):
         return "security"
 
     # Proxy
-    proxy_keywords = ["nginx", "traefik", "haproxy", "envoy", "caddy", "proxy",
-                      "gateway", "ingress", "loadbalancer"]
+    proxy_keywords = [
+        "nginx",
+        "traefik",
+        "haproxy",
+        "envoy",
+        "caddy",
+        "proxy",
+        "gateway",
+        "ingress",
+        "loadbalancer",
+    ]
     if any(kw in name_lower for kw in proxy_keywords):
         return "proxy"
 
@@ -103,8 +151,10 @@ def determine_category(image_name: str, dockerfile_content: str) -> str:
 
     return "app"
 
-def generate_config(image_name: str, binary: str, port: int, version_flag: str,
-                    category: str) -> str:
+
+def generate_config(
+    image_name: str, binary: str, port: int, version_flag: str, category: str
+) -> str:
     """Generate a YAML test config entry."""
     return f"""  {image_name}:
     binary: {binary}
@@ -115,9 +165,9 @@ def generate_config(image_name: str, binary: str, port: int, version_flag: str,
     adversarial_test: true
     startup_timeout: 15"""
 
+
 def main():
     # Read current config to find stubs
-    current_stubs = set()
     with open(TEST_CONFIG) as f:
         for line in f:
             if "binary: none" in line:
@@ -149,12 +199,15 @@ def main():
         version_flag = extract_version_flag(dockerfile)
         category = determine_category(img_dir.name, dockerfile.read_text())
 
-        configs.append(generate_config(img_dir.name, binary, port, version_flag, category))
+        configs.append(
+            generate_config(img_dir.name, binary, port, version_flag, category)
+        )
 
     print(f"Scanned {scanned} images, found {len(configs)} with real binaries")
     print("\n# === GENERATED TEST CONFIGS ===")
     for config in sorted(configs):
         print(config)
+
 
 if __name__ == "__main__":
     main()

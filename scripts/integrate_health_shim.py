@@ -12,7 +12,7 @@ IMAGES_DIR = os.path.join(REPO_ROOT, "images")
 HEALTH_SHIM_STAGE = [
     "FROM golang:1.23-alpine AS health-shim-builder",
     "COPY images/health-shim/go.mod images/health-shim/main.go /build/",
-    "RUN cd /build && CGO_ENABLED=0 go build -ldflags=\"-s -w\" -o /health-shim .",
+    'RUN cd /build && CGO_ENABLED=0 go build -ldflags="-s -w" -o /health-shim .',
 ]
 
 DATABASES = [
@@ -136,7 +136,9 @@ def process_dockerfile(db):
     last_from_idx = insert_pos
     changes.append("Inserted health-shim-builder stage")
 
-    copy_line = "COPY --from=health-shim-builder /health-shim /usr/local/bin/health-shim"
+    copy_line = (
+        "COPY --from=health-shim-builder /health-shim /usr/local/bin/health-shim"
+    )
     lines.insert(last_from_idx + 1, copy_line)
     changes.append("Added COPY --from=health-shim-builder")
 
@@ -152,9 +154,7 @@ def process_dockerfile(db):
     ]
     for j, env_line in enumerate(env_block):
         lines.insert(env_insert + j, env_line)
-    changes.append(
-        "Added ENV HEALTH_CMD READY_CMD STARTUP_CMD EVERGREEN_LOG_LEVEL"
-    )
+    changes.append("Added ENV HEALTH_CMD READY_CMD STARTUP_CMD EVERGREEN_LOG_LEVEL")
 
     for i, line in enumerate(lines):
         stripped = line.strip()

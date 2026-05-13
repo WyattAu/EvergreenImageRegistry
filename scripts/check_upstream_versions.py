@@ -11,6 +11,7 @@ from pathlib import Path
 
 GITHUB_API = "https://api.github.com/repos"
 
+
 def parse_toml_simple(filepath):
     """Minimal TOML parser that extracts metadata.name, metadata.version, metadata.source."""
     data = {}
@@ -126,18 +127,22 @@ def main():
         latest_norm = normalize_version(latest_tag)
 
         if current_norm != latest_norm:
-            updates.append({
-                "image": image_name,
-                "current": current_version,
-                "latest": latest_tag,
-                "repo": repo,
-                "url": latest_url,
-            })
+            updates.append(
+                {
+                    "image": image_name,
+                    "current": current_version,
+                    "latest": latest_tag,
+                    "repo": repo,
+                    "url": latest_url,
+                }
+            )
             status = "UPDATE AVAILABLE"
         else:
             status = "up to date"
 
-        print(f"  {image_name:40s} {current_version:20s} -> {latest_tag:20s}  [{status}]")
+        print(
+            f"  {image_name:40s} {current_version:20s} -> {latest_tag:20s}  [{status}]"
+        )
 
     print("\n=== Summary ===")
     print(f"Checked: {checked}, Skipped: {skipped}, Updates available: {len(updates)}")

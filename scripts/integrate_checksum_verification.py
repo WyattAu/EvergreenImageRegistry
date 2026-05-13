@@ -25,8 +25,16 @@ IMAGES_DIR = REPO_ROOT / "images"
 
 
 def log(msg: str, level: str = "INFO"):
-    ts = datetime.now().strftime("%H:%M:%S") if 'datetime' in dir() else ""
-    prefix = {"INFO": "  ✓", "WARN": "  ⚠", "ERROR": "  ✗", "SKIP": "  →"}.get(level, "  ")
+    ts = ""
+    try:
+        from datetime import datetime as _dt
+
+        ts = _dt.now().strftime("%H:%M:%S")
+    except ImportError:
+        pass
+    prefix = {"INFO": "  ✓", "WARN": "  ⚠", "ERROR": "  ✗", "SKIP": "  →"}.get(
+        level, "  "
+    )
     print(f"[{ts}] {prefix} {msg}")
 
 
@@ -62,7 +70,7 @@ def parse_checksums(checksums_path: Path) -> dict | None:
 
 def find_curl_download_line(content: str) -> tuple[int, str, str] | None:
     """Find the curl download line in a Dockerfile.
-    
+
     Returns (line_number, line_content, download_url) or None.
     """
     lines = content.splitlines()
@@ -88,10 +96,11 @@ def find_curl_download_line(content: str) -> tuple[int, str, str] | None:
     return None
 
 
-def integrate_checksum_into_dockerfile(dockerfile_path: Path, sha256: str,
-                                         dry_run: bool = False) -> bool:
+def integrate_checksum_into_dockerfile(
+    dockerfile_path: Path, sha256: str, dry_run: bool = False
+) -> bool:
     """Insert sha256sum verification into a Dockerfile after the curl download.
-    
+
     Returns True if successful, False otherwise.
     """
     content = dockerfile_path.read_text()
@@ -104,7 +113,7 @@ def integrate_checksum_into_dockerfile(dockerfile_path: Path, sha256: str,
     lines = content.splitlines()
 
     # Find the output filename from curl -o <file>
-    output_match = re.search(r'-o\s+/(\S+)', line)
+    output_match = re.search(r"-o\s+/(\S+)", line)
     if not output_match:
         return False
 
@@ -128,7 +137,7 @@ def integrate_checksum_into_dockerfile(dockerfile_path: Path, sha256: str,
 
     # Determine the indentation
     run_line = lines[run_line_num]
-    indent_match = re.match(r'^(\s*)RUN', run_line)
+    indent_match = re.match(r"^(\s*)RUN", run_line)
     indent = indent_match.group(1) if indent_match else "    "
 
     # Build the verification line
@@ -172,7 +181,7 @@ def integrate_checksum_into_dockerfile(dockerfile_path: Path, sha256: str,
 
 def process_image(image_dir: Path, dry_run: bool = False) -> tuple[bool, str]:
     """Process a single image directory.
-    
+
     Returns (success, status_message) tuple.
     """
     image_name = image_dir.name
@@ -199,7 +208,9 @@ def process_image(image_dir: Path, dry_run: bool = False) -> tuple[bool, str]:
         return True, "Already has sha256sum"
 
     if dry_run:
-        log(f"{image_name}: Would add sha256sum verification (method: {method})", "INFO")
+        log(
+            f"{image_name}: Would add sha256sum verification (method: {method})", "INFO"
+        )
         return True, "dry-run"
 
     # Integrate
@@ -214,8 +225,12 @@ def process_image(image_dir: Path, dry_run: bool = False) -> tuple[bool, str]:
 
 def main():
 
-    parser = argparse.ArgumentParser(description="Add sha256sum verification to Dockerfiles")
-    parser.add_argument("--dry-run", action="store_true", help="Show what would be done without writing")
+    parser = argparse.ArgumentParser(
+        description="Add sha256sum verification to Dockerfiles"
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Show what would be done without writing"
+    )
     parser.add_argument("--image", type=str, help="Process only this image name")
     args = parser.parse_args()
 
@@ -248,7 +263,9 @@ def main():
 
     print()
     print("=" * 60)
-    print(f"Results: {integrated_count} integrated, {fail_count} failed, {skip_count} skipped")
+    print(
+        f"Results: {integrated_count} integrated, {fail_count} failed, {skip_count} skipped"
+    )
     print("=" * 60)
 
     if fail_count > 0:

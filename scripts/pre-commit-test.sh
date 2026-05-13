@@ -34,7 +34,7 @@ if command -v cargo &>/dev/null; then
     fi
 fi
 
-# Gate 3: Python syntax (changed .py files only)
+# Gate 3: Python syntax + ruff lint (changed .py files only)
 if command -v python3 &>/dev/null; then
     changed_py=$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null | grep '\.py$' || true)
     if [ -n "$changed_py" ]; then
@@ -42,13 +42,20 @@ if command -v python3 &>/dev/null; then
         for f in $changed_py; do
             if [ -f "$f" ]; then
                 if ! python3 -m py_compile "$f" 2>/dev/null; then
-                    echo -e "  ${RED}[FAIL]${NC} $f"
+                    echo -e "  ${RED}[FAIL]${NC} $f (syntax)"
                     py_fail=1
                 fi
             fi
         done
+        # Run ruff on changed files
+        if command -v ruff &>/dev/null; then
+            if ! ruff check $changed_py 2>/dev/null; then
+                echo -e "  ${RED}[FAIL]${NC} ruff lint"
+                py_fail=1
+            fi
+        fi
         if [ "$py_fail" -eq 0 ]; then
-            echo -e "  ${GREEN}[PASS]${NC} Python syntax ($(echo "$changed_py" | wc -l) files)"
+            echo -e "  ${GREEN}[PASS]${NC} Python syntax + ruff ($(echo "$changed_py" | wc -l) files)"
         else
             FAIL=1
         fi

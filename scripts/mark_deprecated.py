@@ -6,8 +6,8 @@ Reads known-broken images from the wolfi_invalid_packages.json report and
 permanently broken upstream images list. Adds the deprecated OCI label to
 affected Dockerfiles if not already present.
 """
+
 import json
-import sys
 from pathlib import Path
 
 IMAGES_DIR = Path("images")
@@ -15,25 +15,38 @@ DEPRECATED_LABEL = 'LABEL org.opencontainers.image.status="deprecated"'
 
 # Known permanently broken upstreams (deleted, no longer maintained)
 PERMANENTLY_BROKEN = {
-    "couchdb", "couchdb-sync",  # Erlang package incompatibility with wolfi
-    "rabbitmq-amqp", "rabbitmq-delayed", "rabbitmq-federation",
-    "rabbitmq-management", "rabbitmq-mqtt", "rabbitmq-stomp",
+    "couchdb",
+    "couchdb-sync",  # Erlang package incompatibility with wolfi
+    "rabbitmq-amqp",
+    "rabbitmq-delayed",
+    "rabbitmq-federation",
+    "rabbitmq-management",
+    "rabbitmq-mqtt",
+    "rabbitmq-stomp",
     "cockpit",  # Package not available in wolfi
-    "dovecot", "dovecot-lda", "dovecot-pop3",  # Not in wolfi
-    "courier-authlib", "courier-imap",  # Not in wolfi
-    "collabora-online", "collabora-online-code",  # apt-transport-https dep
-    "onlyoffice-communityserver", "onlyoffice-controlpanel",
-    "onlyoffice-documentserver", "onlyoffice-documentserver-ee",
+    "dovecot",
+    "dovecot-lda",
+    "dovecot-pop3",  # Not in wolfi
+    "courier-authlib",
+    "courier-imap",  # Not in wolfi
+    "collabora-online",
+    "collabora-online-code",  # apt-transport-https dep
+    "onlyoffice-communityserver",
+    "onlyoffice-controlpanel",
+    "onlyoffice-documentserver",
+    "onlyoffice-documentserver-ee",
     "rethinkdb",  # Already deprecated
-    "orientdb",   # Already deprecated
+    "orientdb",  # Already deprecated
     "graphdb-free",  # Already deprecated
-    "nxlog",     # Already deprecated
+    "nxlog",  # Already deprecated
 }
+
 
 def is_already_deprecated(dockerfile_path: Path) -> bool:
     """Check if Dockerfile already has deprecated status label."""
     content = dockerfile_path.read_text()
     return 'image.status="deprecated"' in content
+
 
 def mark_deprecated(dockerfile_path: Path) -> bool:
     """Add deprecated label to Dockerfile if not present."""
@@ -63,6 +76,7 @@ def mark_deprecated(dockerfile_path: Path) -> bool:
     dockerfile_path.write_text("\n".join(lines))
     return True
 
+
 def main():
     report_path = Path(".reports/wolfi_invalid_packages.json")
     if report_path.exists():
@@ -89,8 +103,11 @@ def main():
             print(f"  DEPRECATED: {image_name}")
             marked += 1
 
-    print(f"\nSummary: {marked} marked, {already} already deprecated, {missing} missing Dockerfiles")
+    print(
+        f"\nSummary: {marked} marked, {already} already deprecated, {missing} missing Dockerfiles"
+    )
     print(f"Total affected: {len(PERMANENTLY_BROKEN)}")
+
 
 if __name__ == "__main__":
     main()

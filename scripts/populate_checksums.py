@@ -20,6 +20,7 @@ Exit codes:
 """
 
 import argparse
+import contextlib
 import hashlib
 import os
 import re
@@ -56,7 +57,9 @@ CONFIDENCE_SCORES = {
 def log(msg: str, level: str = "INFO"):
     """Print a log message."""
     ts = datetime.now(UTC).strftime("%H:%M:%S")
-    prefix = {"INFO": "  ✓", "WARN": "  ⚠", "ERROR": "  ✗", "SKIP": "  →"}.get(level, "  ")
+    prefix = {"INFO": "  ✓", "WARN": "  ⚠", "ERROR": "  ✗", "SKIP": "  →"}.get(
+        level, "  "
+    )
     print(f"[{ts}] {prefix} {msg}")
 
 
@@ -89,7 +92,10 @@ def http_download_bytes(url: str, timeout: int = 120) -> bytes | None:
                     break
                 total += len(chunk)
                 if total > MAX_DOWNLOAD_SIZE:
-                    log(f"Download exceeded {MAX_DOWNLOAD_SIZE // (1024*1024)}MB limit", "WARN")
+                    log(
+                        f"Download exceeded {MAX_DOWNLOAD_SIZE // (1024 * 1024)}MB limit",
+                        "WARN",
+                    )
                     return None
                 chunks.append(chunk)
             return b"".join(chunks)
@@ -104,7 +110,7 @@ def sha256_hex(data: bytes) -> str:
 
 def extract_download_url(dockerfile_path: Path) -> str | None:
     """Extract the first curl download URL from a Dockerfile.
-    
+
     Returns the URL string or None if not found.
     Skips healthcheck curl commands and empty URLs.
     """
@@ -126,20 +132,30 @@ def extract_download_url(dockerfile_path: Path) -> str | None:
         if not match:
             # Pattern 3: unquoted URL with -o: curl ... https://... -o file
             # Match http(s) URL followed by -o, skipping flags like -H "..."
-            match = re.search(r'(https?://\S+)\s+-o\s', line)
+            match = re.search(r"(https?://\S+)\s+-o\s", line)
         if not match:
             # Pattern 4: URL in double quotes after flags: curl ... -H "..." "URL" -o
             # This catches: curl -fsSL -H "Auth: token" "https://..." -o
             urls_in_line = re.findall(r'"(https?://[^"]+)"', line)
             for url_candidate in urls_in_line:
                 # Skip auth header values
-                if 'Authorization' in line and url_candidate.startswith('token '):
+                if "Authorization" in line and url_candidate.startswith("token "):
                     continue
                 if not url_candidate or url_candidate == '""':
                     continue
-                if url_candidate.startswith("http://localhost") or url_candidate.startswith("http://127."):
+                if url_candidate.startswith(
+                    "http://localhost"
+                ) or url_candidate.startswith("http://127."):
                     continue
-                match = type('M', (), {'group': lambda self, n: url_candidate if n == 1 else ''})()
+                match = type(
+                    "M",
+                    (),
+                    {
+                        "group": lambda self, n, _url=url_candidate: (
+                            _url if n == 1 else ""
+                        )
+                    },
+                )()
                 break
 
         if match:
@@ -167,7 +183,7 @@ def resolve_template_url(url: str, dockerfile_path: Path) -> str:
     """Resolve ${VERSION} template variables in URLs by reading ARG VERSION."""
     # Read the Dockerfile to find the VERSION arg
     content = dockerfile_path.read_text()
-    match = re.search(r'ARG\s+VERSION\s*=\s*(\S+)', content)
+    match = re.search(r"ARG\s+VERSION\s*=\s*(\S+)", content)
     if match:
         version = match.group(1).strip('"').strip("'")
         url = url.replace("${VERSION}", version)
@@ -176,7 +192,7 @@ def resolve_template_url(url: str, dockerfile_path: Path) -> str:
 
 def filenames_match(target: str, candidate: str) -> bool:
     """Check if two filenames refer to the same binary.
-    
+
     Handles:
     - Exact match
     - One contains the other
@@ -189,15 +205,20 @@ def filenames_match(target: str, candidate: str) -> bool:
     # Strip common prefixes/suffixes for comparison
     def normalize(s: str) -> str:
         s = s.lower()
-        s = s.replace(".tar.gz", "").replace(".tgz", "").replace(".tar.xz", "").replace(".zip", "")
+        s = (
+            s.replace(".tar.gz", "")
+            .replace(".tgz", "")
+            .replace(".tar.xz", "")
+            .replace(".zip", "")
+        )
         s = s.replace(".bz2", "").replace(".xz", "")
         # Normalize v-prefix: remove v before digits
-        s = re.sub(r'v(\d)', r'\1', s)
+        s = re.sub(r"v(\d)", r"\1", s)
         # Remove -linux-amd64, _linux_amd64, etc.
-        s = re.sub(r'[-_]linux[-_]amd64', '', s)
-        s = re.sub(r'[-_]x86[-_]64[-_]unknown[-_]linux[-_]gnu', '', s)
-        s = re.sub(r'[-_]x86[-_]64[-_]unknown[-_]linux[-_]musl', '', s)
-        s = re.sub(r'[-_]x86[-_]64', '', s)
+        s = re.sub(r"[-_]linux[-_]amd64", "", s)
+        s = re.sub(r"[-_]x86[-_]64[-_]unknown[-_]linux[-_]gnu", "", s)
+        s = re.sub(r"[-_]x86[-_]64[-_]unknown[-_]linux[-_]musl", "", s)
+        s = re.sub(r"[-_]x86[-_]64", "", s)
         return s
 
     nt = normalize(target)
@@ -213,23 +234,20 @@ def filenames_match(target: str, candidate: str) -> bool:
     def key_parts(s: str) -> str:
         s = s.lower()
         # Remove extension
-        s = re.sub(r'\.(tar\.gz|tgz|tar\.xz|zip|bz2|xz)$', '', s)
+        s = re.sub(r"\.(tar\.gz|tgz|tar\.xz|zip|bz2|xz)$", "", s)
         # Remove arch suffixes
-        s = re.sub(r'[-_]?(linux[-_]?amd64|x86[-_]64[-_].*?)(\.\w+)?$', '', s)
+        s = re.sub(r"[-_]?(linux[-_]?amd64|x86[-_]64[-_].*?)(\.\w+)?$", "", s)
         return s
 
     kt = key_parts(target)
     kc = key_parts(candidate)
     # Try with and without v prefix
-    kt_nov = re.sub(r'v(\d)', r'\1', kt)
-    kc_nov = re.sub(r'v(\d)', r'\1', kc)
+    kt_nov = re.sub(r"v(\d)", r"\1", kt)
+    kc_nov = re.sub(r"v(\d)", r"\1", kc)
 
-    if kt == kc or kt == kc_nov or kt_nov == kc or kt_nov == kc_nov:
+    if kt_nov in (kc, kc_nov) or kt in (kc, kc_nov):
         return True
-    if kt in kc or kc in kt or kt in kc_nov or kc_nov in kt:
-        return True
-
-    return False
+    return bool(kt in kc or kc in kt or kt in kc_nov or kc_nov in kt)
 
 
 def find_github_checksum(url: str, filename: str) -> str | None:
@@ -264,10 +282,10 @@ def find_github_checksum(url: str, filename: str) -> str | None:
                 continue
             # Format: <hash>  <filename> or <hash> *<filename> or <hash>  <filename>
             # Also handle: <hash> (<filename>) = <hash> (some Go projects)
-            parts_match = re.match(r'^([0-9a-fA-F]{64})\s+[* ](.+)$', line)
+            parts_match = re.match(r"^([0-9a-fA-F]{64})\s+[* ](.+)$", line)
             if not parts_match:
                 # Try parenthesized format: <hash>  filename
-                parts_match = re.match(r'^([0-9a-fA-F]{64})\s+\((.+)\)', line)
+                parts_match = re.match(r"^([0-9a-fA-F]{64})\s+\((.+)\)", line)
             if parts_match:
                 hash_val = parts_match.group(1).lower()
                 fname = parts_match.group(2).strip()
@@ -281,7 +299,7 @@ def find_github_checksum(url: str, filename: str) -> str | None:
 def find_hashicorp_checksum(url: str) -> str | None:
     """Find SHA256 from HashiCorp releases SHA256SUMS file."""
     # Parse: https://releases.hashicorp.com/vault/1.18.1/vault_1.18.1_linux_amd64.zip
-    match = re.match(r'https://releases\.hashicorp\.com/([^/]+)/([^/]+)/(.+)', url)
+    match = re.match(r"https://releases\.hashicorp\.com/([^/]+)/([^/]+)/(.+)", url)
     if not match:
         return None
 
@@ -302,7 +320,7 @@ def find_hashicorp_checksum(url: str) -> str | None:
             line = line.strip()
             if not line:
                 continue
-            parts_match = re.match(r'^([0-9a-fA-F]{64})\s+(.+)$', line)
+            parts_match = re.match(r"^([0-9a-fA-F]{64})\s+(.+)$", line)
             if parts_match:
                 hash_val = parts_match.group(1).lower()
                 fname = parts_match.group(2).strip()
@@ -315,7 +333,7 @@ def find_hashicorp_checksum(url: str) -> str | None:
 def find_k8s_checksum(url: str) -> str | None:
     """Find SHA256 from k8s release."""
     # Parse: https://dl.k8s.io/release/v1.30.1/bin/linux/amd64/kubectl
-    match = re.match(r'https://dl\.k8s\.io/release/(v[^/]+)/bin/([^/]+)/(.+)', url)
+    match = re.match(r"https://dl\.k8s\.io/release/(v[^/]+)/bin/([^/]+)/(.+)", url)
     if not match:
         return None
 
@@ -328,7 +346,7 @@ def find_k8s_checksum(url: str) -> str | None:
     if content:
         # k8s sha256 files contain just the hash on one line
         hash_val = content.strip()
-        if re.match(r'^[0-9a-fA-F]{64}$', hash_val):
+        if re.match(r"^[0-9a-fA-F]{64}$", hash_val):
             return hash_val.lower()
 
     return None
@@ -338,7 +356,7 @@ def find_helm_checksum(url: str) -> str | None:
     """Find SHA256 from Helm release."""
     # Parse: https://get.helm.sh/helm-3.15.1-linux-amd64.tar.gz
     # Helm uses helm-v<VERSION> format with .sha256 extension
-    match = re.match(r'https://get\.helm\.sh/(.+)', url)
+    match = re.match(r"https://get\.helm\.sh/(.+)", url)
     if not match:
         return None
 
@@ -349,23 +367,23 @@ def find_helm_checksum(url: str) -> str | None:
         content = http_get(checksum_url)
         if content:
             hash_val = content.strip()
-            if re.match(r'^[0-9a-fA-F]{64}$', hash_val):
+            if re.match(r"^[0-9a-fA-F]{64}$", hash_val):
                 return hash_val.lower()
             # Multi-line format
             for line in content.splitlines():
                 line = line.strip()
-                parts_match = re.match(r'^([0-9a-fA-F]{64})\s+', line)
+                parts_match = re.match(r"^([0-9a-fA-F]{64})\s+", line)
                 if parts_match:
                     return parts_match.group(1).lower()
 
     # Try with v-prefix (helm uses helm-v<version> not helm-<version>)
-    v_filename = re.sub(r'helm-', 'helm-v', filename, count=1)
+    v_filename = re.sub(r"helm-", "helm-v", filename, count=1)
     for suffix in [".sha256sum", ".sha256"]:
         checksum_url = f"https://get.helm.sh/{v_filename}{suffix}"
         content = http_get(checksum_url)
         if content:
             hash_val = content.strip()
-            if re.match(r'^[0-9a-fA-F]{64}$', hash_val):
+            if re.match(r"^[0-9a-fA-F]{64}$", hash_val):
                 return hash_val.lower()
 
     return None
@@ -391,25 +409,30 @@ def _build_gnupg_home(gpg_keys_dir: Path) -> Path | None:
             return None
         if shutil.which("gpg") is not None:
             for key_file in sorted(gpg_keys_dir.glob("*.asc")):
-                try:
+                with contextlib.suppress(subprocess.TimeoutExpired, OSError):
                     subprocess.run(
                         [
-                            "gpg", "--batch", "--no-tty", "--quiet",
-                            "--homedir", gpg_home,
-                            "--import", str(key_file),
+                            "gpg",
+                            "--batch",
+                            "--no-tty",
+                            "--quiet",
+                            "--homedir",
+                            gpg_home,
+                            "--import",
+                            str(key_file),
                         ],
-                        capture_output=True, timeout=30,
+                        capture_output=True,
+                        timeout=30,
                     )
-                except (subprocess.TimeoutExpired, OSError):
-                    pass
         return Path(gpg_home)
     except Exception:
         shutil.rmtree(gpg_home, ignore_errors=True)
         return None
 
 
-def try_gpg_verification(download_url: str, filename: str,
-                         gpg_keys_dir: Path | None = None) -> dict | None:
+def try_gpg_verification(
+    download_url: str, filename: str, gpg_keys_dir: Path | None = None
+) -> dict | None:
     """Try to verify the binary via GPG detached signature.
 
     Checks for signature files at common locations:
@@ -441,7 +464,9 @@ def try_gpg_verification(download_url: str, filename: str,
         return None
 
     try:
-        base_url = download_url.rsplit("/", 1)[0] if "/" in download_url else download_url
+        base_url = (
+            download_url.rsplit("/", 1)[0] if "/" in download_url else download_url
+        )
 
         sig_candidates = [
             f"{download_url}.asc",
@@ -480,9 +505,7 @@ def try_gpg_verification(download_url: str, filename: str,
                     if result is not None:
                         return result
                 else:
-                    result = _verify_direct_signature(
-                        download_url, sig_path, gpg_home
-                    )
+                    result = _verify_direct_signature(download_url, sig_path, gpg_home)
                     if result is not None:
                         return result
             finally:
@@ -493,8 +516,9 @@ def try_gpg_verification(download_url: str, filename: str,
         shutil.rmtree(str(gpg_home), ignore_errors=True)
 
 
-def _verify_checksum_file_signature(sig_url: str, sig_path: str,
-                                    filename: str, gpg_home: Path) -> dict | None:
+def _verify_checksum_file_signature(
+    sig_url: str, sig_path: str, filename: str, gpg_home: Path
+) -> dict | None:
     """Verify a GPG signature over a checksum file and extract the matching hash."""
     checksum_url = sig_url.rsplit(".", 1)[0]
     checksum_content = http_get(checksum_url)
@@ -508,26 +532,40 @@ def _verify_checksum_file_signature(sig_url: str, sig_path: str,
     try:
         result = subprocess.run(
             [
-                "gpg", "--batch", "--no-tty", "--quiet",
-                "--homedir", str(gpg_home),
-                "--verify", sig_path, data_path,
+                "gpg",
+                "--batch",
+                "--no-tty",
+                "--quiet",
+                "--homedir",
+                str(gpg_home),
+                "--verify",
+                sig_path,
+                data_path,
             ],
-            capture_output=True, timeout=30,
+            capture_output=True,
+            timeout=30,
         )
         if result.returncode != 0:
             stderr = result.stderr.decode(errors="replace")
             if "NO_PUBKEY" in stderr or "public key not found" in stderr:
-                key_ids = re.findall(r'NO_PUBKEY\s+([0-9A-Fa-f]+)', stderr)
+                key_ids = re.findall(r"NO_PUBKEY\s+([0-9A-Fa-f]+)", stderr)
                 for key_id in key_ids:
                     fetched = _fetch_key_from_keyserver(key_id, gpg_home)
                     if fetched:
                         result = subprocess.run(
                             [
-                                "gpg", "--batch", "--no-tty", "--quiet",
-                                "--homedir", str(gpg_home),
-                                "--verify", sig_path, data_path,
+                                "gpg",
+                                "--batch",
+                                "--no-tty",
+                                "--quiet",
+                                "--homedir",
+                                str(gpg_home),
+                                "--verify",
+                                sig_path,
+                                data_path,
                             ],
-                            capture_output=True, timeout=30,
+                            capture_output=True,
+                            timeout=30,
                         )
                         if result.returncode == 0:
                             break
@@ -537,9 +575,9 @@ def _verify_checksum_file_signature(sig_url: str, sig_path: str,
                 line = line.strip()
                 if not line or line.startswith("#"):
                     continue
-                m = re.match(r'^([0-9a-fA-F]{64})\s+[* ](.+)$', line)
+                m = re.match(r"^([0-9a-fA-F]{64})\s+[* ](.+)$", line)
                 if not m:
-                    m = re.match(r'^([0-9a-fA-F]{64})\s+\((.+)\)', line)
+                    m = re.match(r"^([0-9a-fA-F]{64})\s+\((.+)\)", line)
                 if m:
                     hash_val = m.group(1).lower()
                     fname = m.group(2).strip()
@@ -557,8 +595,9 @@ def _verify_checksum_file_signature(sig_url: str, sig_path: str,
     return None
 
 
-def _verify_direct_signature(download_url: str, sig_path: str,
-                            gpg_home: Path) -> dict | None:
+def _verify_direct_signature(
+    download_url: str, sig_path: str, gpg_home: Path
+) -> dict | None:
     """Verify a GPG signature over a binary (detached .asc/.sig next to binary).
 
     Downloads the binary, verifies the signature, then returns the SHA256
@@ -575,26 +614,40 @@ def _verify_direct_signature(download_url: str, sig_path: str,
     try:
         result = subprocess.run(
             [
-                "gpg", "--batch", "--no-tty", "--quiet",
-                "--homedir", str(gpg_home),
-                "--verify", sig_path, bin_path,
+                "gpg",
+                "--batch",
+                "--no-tty",
+                "--quiet",
+                "--homedir",
+                str(gpg_home),
+                "--verify",
+                sig_path,
+                bin_path,
             ],
-            capture_output=True, timeout=60,
+            capture_output=True,
+            timeout=60,
         )
         if result.returncode != 0:
             stderr = result.stderr.decode(errors="replace")
             if "NO_PUBKEY" in stderr or "public key not found" in stderr:
-                key_ids = re.findall(r'NO_PUBKEY\s+([0-9A-Fa-f]+)', stderr)
+                key_ids = re.findall(r"NO_PUBKEY\s+([0-9A-Fa-f]+)", stderr)
                 for key_id in key_ids:
                     fetched = _fetch_key_from_keyserver(key_id, gpg_home)
                     if fetched:
                         result = subprocess.run(
                             [
-                                "gpg", "--batch", "--no-tty", "--quiet",
-                                "--homedir", str(gpg_home),
-                                "--verify", sig_path, bin_path,
+                                "gpg",
+                                "--batch",
+                                "--no-tty",
+                                "--quiet",
+                                "--homedir",
+                                str(gpg_home),
+                                "--verify",
+                                sig_path,
+                                bin_path,
                             ],
-                            capture_output=True, timeout=60,
+                            capture_output=True,
+                            timeout=60,
                         )
                         if result.returncode == 0:
                             break
@@ -620,12 +673,19 @@ def _fetch_key_from_keyserver(key_id: str, gpg_home: Path) -> bool:
     try:
         result = subprocess.run(
             [
-                "gpg", "--batch", "--no-tty", "--quiet",
-                "--homedir", str(gpg_home),
-                "--keyserver", "hkps://keys.openpgp.org",
-                "--recv-keys", key_id,
+                "gpg",
+                "--batch",
+                "--no-tty",
+                "--quiet",
+                "--homedir",
+                str(gpg_home),
+                "--keyserver",
+                "hkps://keys.openpgp.org",
+                "--recv-keys",
+                key_id,
             ],
-            capture_output=True, timeout=30,
+            capture_output=True,
+            timeout=30,
         )
         return result.returncode == 0
     except (subprocess.TimeoutExpired, OSError):
@@ -688,16 +748,19 @@ def download_and_compute(url: str) -> str | None:
     return None
 
 
-def find_checksum_for_url(url: str, filename: str,
-                          gpg_keys_dir: Path | None = None,
-                          min_verification_level: int = 1) -> tuple[str | None, str, float]:
+def find_checksum_for_url(
+    url: str,
+    filename: str,
+    gpg_keys_dir: Path | None = None,
+    min_verification_level: int = 1,
+) -> tuple[str | None, str, float]:
     """Try all methods to find the SHA256 checksum for a URL.
 
     Returns (hash, method, confidence) tuple.
     method describes how the hash was found.
     confidence is a float between 0 and 1.
     """
-    min_confidence = CONFIDENCE_SCORES.get(min_verification_level, 0.0)
+    CONFIDENCE_SCORES.get(min_verification_level, 0.0)
 
     # Layer 1: Upstream checksum files
     if "github.com" in url and "/releases/download/" in url:
@@ -728,7 +791,11 @@ def find_checksum_for_url(url: str, filename: str,
     # Layer 4: Multi-mirror cross-validation
     mirror_result = try_multi_mirror_validation(url, filename)
     if mirror_result is not None:
-        return mirror_result["sha256"], mirror_result["method"], mirror_result["confidence"]
+        return (
+            mirror_result["sha256"],
+            mirror_result["method"],
+            mirror_result["confidence"],
+        )
 
     # Layer 5: Download-and-compute fallback
     h = download_and_compute(url)
@@ -738,10 +805,17 @@ def find_checksum_for_url(url: str, filename: str,
     return None, "failed", 0.0
 
 
-def update_checksums_file(checksums_path: Path, image_name: str, version: str,
-                          url: str, filename: str, sha256: str, method: str,
-                          confidence: float = 0.0,
-                          upstream_checksum_url: str = ""):
+def update_checksums_file(
+    checksums_path: Path,
+    image_name: str,
+    version: str,
+    url: str,
+    filename: str,
+    sha256: str,
+    method: str,
+    confidence: float = 0.0,
+    upstream_checksum_url: str = "",
+):
     """Update a CHECKSUMS file with verified hash."""
     now = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -751,7 +825,7 @@ def update_checksums_file(checksums_path: Path, image_name: str, version: str,
             release_base = url.rsplit("/", 1)[0]
             upstream_checksum_url = f"{release_base}/sha256sums.txt"
         elif "releases.hashicorp.com" in url:
-            match = re.match(r'(https://releases\.hashicorp\.com/[^/]+/[^/]+)/', url)
+            match = re.match(r"(https://releases\.hashicorp\.com/[^/]+/[^/]+)/", url)
             if match:
                 upstream_checksum_url = f"{match.group(1)}_SHA256SUMS"
         elif "dl.k8s.io" in url:
@@ -800,11 +874,15 @@ format = "sha256"
     checksums_path.write_text(content.strip() + "\n")
 
 
-def process_image(image_dir: Path, dry_run: bool = False, force: bool = False,
-                  gpg_keys_dir: Path | None = None,
-                  min_verification_level: int = 1) -> bool:
+def process_image(
+    image_dir: Path,
+    dry_run: bool = False,
+    force: bool = False,
+    gpg_keys_dir: Path | None = None,
+    min_verification_level: int = 1,
+) -> bool:
     """Process a single image directory.
-    
+
     Returns True if successful, False otherwise.
     """
     image_name = image_dir.name
@@ -823,7 +901,10 @@ def process_image(image_dir: Path, dry_run: bool = False, force: bool = False,
     # Check if already verified (and not forced)
     if not force:
         existing = checksums_path.read_text()
-        if 'expected_sha256 = "PENDING"' not in existing and 'expected_sha256 = "N/A"' not in existing:
+        if (
+            'expected_sha256 = "PENDING"' not in existing
+            and 'expected_sha256 = "N/A"' not in existing
+        ):
             log(f"{image_name}: Already has verified checksum", "SKIP")
             return True
 
@@ -849,7 +930,9 @@ def process_image(image_dir: Path, dry_run: bool = False, force: bool = False,
         log(f"{image_name}: FAILED to find checksum for {filename}", "ERROR")
         return False
 
-    log(f"{image_name}: SHA256={sha256[:16]}... (method: {method}, confidence: {confidence:.2f})")
+    log(
+        f"{image_name}: SHA256={sha256[:16]}... (method: {method}, confidence: {confidence:.2f})"
+    )
 
     if dry_run:
         log(f"{image_name}: [DRY RUN] Would update CHECKSUMS", "INFO")
@@ -858,13 +941,19 @@ def process_image(image_dir: Path, dry_run: bool = False, force: bool = False,
     # Extract version from Dockerfile
     version = "unknown"
     content = dockerfile_path.read_text()
-    match = re.search(r'ARG\s+VERSION\s*=\s*(\S+)', content)
+    match = re.search(r"ARG\s+VERSION\s*=\s*(\S+)", content)
     if match:
         version = match.group(1).strip('"').strip("'")
 
     # Update CHECKSUMS file
     update_checksums_file(
-        checksums_path, image_name, version, url, filename, sha256, method,
+        checksums_path,
+        image_name,
+        version,
+        url,
+        filename,
+        sha256,
+        method,
         confidence=confidence,
     )
     log(f"{image_name}: CHECKSUMS file updated", "INFO")
@@ -872,16 +961,27 @@ def process_image(image_dir: Path, dry_run: bool = False, force: bool = False,
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Populate CHECKSUMS files with real SHA256 hashes")
-    parser.add_argument("--dry-run", action="store_true", help="Show what would be done without writing")
-    parser.add_argument("--force", action="store_true", help="Re-verify even if already populated")
+    parser = argparse.ArgumentParser(
+        description="Populate CHECKSUMS files with real SHA256 hashes"
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Show what would be done without writing"
+    )
+    parser.add_argument(
+        "--force", action="store_true", help="Re-verify even if already populated"
+    )
     parser.add_argument("--image", type=str, help="Process only this image name")
     parser.add_argument(
-        "--gpg-keys-dir", type=str, default=None,
+        "--gpg-keys-dir",
+        type=str,
+        default=None,
         help="Path to directory containing known GPG public keys (*.asc)",
     )
     parser.add_argument(
-        "--verification-level", type=int, default=1, choices=[1, 2, 3, 4, 5],
+        "--verification-level",
+        type=int,
+        default=1,
+        choices=[1, 2, 3, 4, 5],
         help="Minimum acceptable verification level (1=upstream checksum, 2=GPG, 3=Sigstore, 4=multi-mirror, 5=download)",
     )
     args = parser.parse_args()
@@ -895,7 +995,10 @@ def main():
 
     if args.verification_level > 1 and not _gpg_available():
         if args.verification_level <= 2:
-            log("GPG not installed; cannot satisfy verification level 2, falling back to level 1", "WARN")
+            log(
+                "GPG not installed; cannot satisfy verification level 2, falling back to level 1",
+                "WARN",
+            )
         args.verification_level = 1
 
     if args.dry_run:
@@ -927,7 +1030,10 @@ def main():
             checksums_path = image_dir / "CHECKSUMS"
             if checksums_path.exists():
                 existing = checksums_path.read_text()
-                if 'expected_sha256 = "PENDING"' in existing or 'expected_sha256 = "N/A"' in existing:
+                if (
+                    'expected_sha256 = "PENDING"' in existing
+                    or 'expected_sha256 = "N/A"' in existing
+                ):
                     skip_count += 1
                 else:
                     success_count += 1
@@ -938,7 +1044,9 @@ def main():
 
     print()
     print("=" * 60)
-    print(f"Results: {success_count} verified, {fail_count} failed, {skip_count} skipped")
+    print(
+        f"Results: {success_count} verified, {fail_count} failed, {skip_count} skipped"
+    )
     print("=" * 60)
 
     if fail_count > 0:

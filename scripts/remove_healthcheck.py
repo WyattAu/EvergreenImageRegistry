@@ -82,7 +82,9 @@ remaining = sum(
     1
     for df in dockerfiles
     if "HEALTHCHECK" in df.read_text().split("\n")
-    and any(l.strip().startswith("HEALTHCHECK") for l in df.read_text().split("\n"))
+    and any(
+        line.strip().startswith("HEALTHCHECK") for line in df.read_text().split("\n")
+    )
 )
 if remaining:
     print(f"\nWARNING: {remaining} Dockerfiles still contain HEALTHCHECK instructions!")

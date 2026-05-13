@@ -11,9 +11,10 @@ vulnerability profiles and may not meet our zero-trust standards.
 import re
 import sys
 
-RED = '\033[0;31m'
-GREEN = '\033[0;32m'
-NC = '\033[0m'
+RED = "\033[0;31m"
+GREEN = "\033[0;32m"
+NC = "\033[0m"
+
 
 def check_alpine(filepath):
     """Check if Dockerfile uses Alpine - NEVER ALLOWED."""
@@ -22,10 +23,10 @@ def check_alpine(filepath):
         content = f.read()
 
     # Check for Alpine in FROM statements
-    alpine_pattern = re.compile(r'^\s*FROM\s+.*alpine', re.IGNORECASE)
+    alpine_pattern = re.compile(r"^\s*FROM\s+.*alpine", re.IGNORECASE)
     alpine_found = False
 
-    for i, line in enumerate(content.split('\n'), 1):
+    for i, line in enumerate(content.split("\n"), 1):
         if alpine_pattern.match(line):
             print(f"{RED}CRITICAL: {filepath}:{i}{NC}")
             print(f"  {line.strip()}")
@@ -61,5 +62,5 @@ def main():
     sys.exit(0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

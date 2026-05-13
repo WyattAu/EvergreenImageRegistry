@@ -19,25 +19,29 @@ import sys
 from pathlib import Path
 
 # ANSI colors
-RED = '\033[0;31m'
-GREEN = '\033[0;32m'
-YELLOW = '\033[1;33m'
-BLUE = '\033[0;34m'
-NC = '\033[0m'  # No Color
+RED = "\033[0;31m"
+GREEN = "\033[0;32m"
+YELLOW = "\033[1;33m"
+BLUE = "\033[0;34m"
+NC = "\033[0m"  # No Color
 
 ERRORS = []
 WARNINGS = []
+
 
 def print_error(msg):
     ERRORS.append(msg)
     print(f"{RED}ERROR:{NC} {msg}")
 
+
 def print_warning(msg):
     WARNINGS.append(msg)
     print(f"{YELLOW}WARN:{NC} {msg}")
 
+
 def print_success(msg):
     print(f"{GREEN}OK:{NC} {msg}")
+
 
 def validate_dockerfile(filepath):
     """Validate a Dockerfile against security constraints."""
@@ -49,7 +53,7 @@ def validate_dockerfile(filepath):
     with open(filepath) as f:
         content = f.read()
 
-    lines = content.split('\n')
+    lines = content.split("\n")
 
     print(f"\n{BLUE}Validating: {filepath}{NC}")
     print("=" * 60)
@@ -58,13 +62,11 @@ def validate_dockerfile(filepath):
     has_user = False
     has_healthcheck = False
     has_labels = False
-    uses_alpine = False
     uses_scratch = False
     uses_distroless = False
     uses_wolfi = False
     uses_debian_slim = False
     uses_alpine_base = False
-    shell_removed = False
 
     # Check each line
     for i, line in enumerate(lines, 1):
@@ -72,54 +74,57 @@ def validate_dockerfile(filepath):
         line_lower = line_stripped.lower()
 
         # CRITICAL: Check for Alpine (NEVER ALLOWED)
-        if line_lower.startswith('from ') and 'alpine' in line_lower:
+        if line_lower.startswith("from ") and "alpine" in line_lower:
             uses_alpine_base = True
             print_error(f"Line {i}: Alpine base image detected - NEVER ALLOWED")
 
         # Check base image type
-        if line_lower.startswith('from '):
-            if 'scratch' in line_lower:
+        if line_lower.startswith("from "):
+            if "scratch" in line_lower:
                 uses_scratch = True
                 print_success(f"Line {i}: Using scratch base (BEST)")
-            elif 'distroless' in line_lower:
+            elif "distroless" in line_lower:
                 uses_distroless = True
                 print_success(f"Line {i}: Using distroless base (GOOD)")
-            elif 'wolfi' in line_lower:
+            elif "wolfi" in line_lower:
                 uses_wolfi = True
                 print_success(f"Line {i}: Using wolfi base (OK)")
-            elif 'debian-slim' in line_lower or 'debian:bookworm' in line_lower:
+            elif "debian-slim" in line_lower or "debian:bookworm" in line_lower:
                 uses_debian_slim = True
                 print_success(f"Line {i}: Using debian-slim base (FALLBACK)")
-            elif 'alpine' not in line_lower:
+            elif "alpine" not in line_lower:
                 print_warning(f"Line {i}: Unknown base image: {line_stripped}")
 
         # Check for USER directive (C001)
-        if line_stripped.lower().startswith('user ') or line_stripped.lower().startswith('group '):
+        if line_stripped.lower().startswith(
+            "user "
+        ) or line_stripped.lower().startswith("group "):
             has_user = True
             # Check for UID 65534
-            if '65534' in line_stripped or 'nobody' in line_stripped.lower():
+            if "65534" in line_stripped or "nobody" in line_stripped.lower():
                 print_success(f"Line {i}: Non-root user configured (C001)")
             else:
                 print_warning(f"Line {i}: User specified but not 65534/nobody")
 
         # Check for HEALTHCHECK (C010)
-        if line_stripped.lower().startswith('healthcheck'):
+        if line_stripped.lower().startswith("healthcheck"):
             has_healthcheck = True
             print_success(f"Line {i}: HEALTHCHECK present (C010)")
 
         # Check for LABEL
-        if line_stripped.lower().startswith('label '):
+        if line_stripped.lower().startswith("label "):
             has_labels = True
-            if 'org.opencontainers.image.title' in line_stripped:
+            if "org.opencontainers.image.title" in line_stripped:
                 print_success(f"Line {i}: Required labels present")
 
         # Check for shell removal (C003)
-        if 'rm' in line_lower and ('/bin/sh' in line_lower or '/bin/bash' in line_lower):
-            shell_removed = True
+        if "rm" in line_lower and (
+            "/bin/sh" in line_lower or "/bin/bash" in line_lower
+        ):
             print_success(f"Line {i}: Shell removed (C003)")
 
         # Check for package manager removal (C004)
-        if 'rm' in line_lower and ('apt' in line_lower or 'apk' in line_lower):
+        if "rm" in line_lower and ("apt" in line_lower or "apk" in line_lower):
             print_warning(f"Line {i}: Package manager removed - verify complete")
 
     # Summary
@@ -167,9 +172,9 @@ def main():
 
     if not files:
         # Default: check all Dockerfiles in images/
-        images_dir = Path('images')
+        images_dir = Path("images")
         if images_dir.exists():
-            files = [str(p) for p in images_dir.rglob('Dockerfile')]
+            files = [str(p) for p in images_dir.rglob("Dockerfile")]
 
     if not files:
         print("No Dockerfiles found to validate")
@@ -195,5 +200,5 @@ def main():
         sys.exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

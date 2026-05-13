@@ -28,6 +28,7 @@
 | STOPSIGNAL            | 994/998 (99.6%)               | PASS               |
 | HEALTHCHECK NONE      | 438/998 (43.9%)               | EXPECTED (scratch) |
 | HEALTHCHECK real      | 559/998 (56.0%)               | PASS               |
+| HEALTHCHECK shim      | 1/998 (health-shim)           | PASS               |
 | FROM digest pin       | 1522/2020 (75.3%)             | PASS               |
 | Multi-arch TARGETARCH | 263 declared + 391 scratch    | PASS               |
 | Dockerfile syntax     | 0 errors                      | PASS               |
@@ -36,7 +37,7 @@
 | Rigor (real binary)   | 99.8% (996/998)               | PASS               |
 | wolfi package compat  | g++/redis/cpp/pkgconfig fixed | PASS               |
 
-## Code Quality Audit (2026-05-12)
+## Code Quality Audit (2026-05-13)
 
 | Metric               | Value                          | Status |
 | -------------------- | ------------------------------ | ------ |
@@ -44,7 +45,9 @@
 | Rust clippy          | 0 warnings                     | PASS   |
 | Rust fmt             | PASS                           | PASS   |
 | Rust release build   | PASS                           | PASS   |
-| Python syntax        | 29/29 scripts                  | PASS   |
+| Python ruff lint     | 0 errors (all 30 scripts)      | PASS   |
+| Python ruff format   | 0 errors (all 30 scripts)      | PASS   |
+| Python syntax        | 30/30 scripts                  | PASS   |
 | Shell syntax         | 25/25 scripts                  | PASS   |
 | Shell shellcheck     | 0 errors (1 info)              | PASS   |
 | Manifest TOML        | 998/998                        | PASS   |

@@ -33,11 +33,15 @@ def replace_uid_in_final_stage(content):
         modified = re.sub(r"(--uid\s+)65534\b", r"\g<1>65532", modified)
         modified = re.sub(r"(--gid\s+)65534\b", r"\g<1>65532", modified)
         modified = re.sub(r"(--chown=)65534:65534\b", r"\g<1>65532:65532", modified)
-        modified = re.sub(r"(chown\s+-R\s+)65534:65534\b", r"\g<1>65532:65532", modified)
+        modified = re.sub(
+            r"(chown\s+-R\s+)65534:65534\b", r"\g<1>65532:65532", modified
+        )
         modified = re.sub(r"(usermod\s+-u\s+)65534\b", r"\g<1>65532", modified)
         modified = re.sub(r"\b(-[ug]\s+)65534\b", r"\g<1>65532", modified)
         modified = re.sub(r"\b(addgroup\s+-g\s+)65534\b", r"\g<1>65532", modified)
-        modified = re.sub(r"\b(adduser\s+-[DG]\s+-u\s+)65534\b", r"\g<1>65532", modified)
+        modified = re.sub(
+            r"\b(adduser\s+-[DG]\s+-u\s+)65534\b", r"\g<1>65532", modified
+        )
         modified = re.sub(r"\b(adduser\s+-[DG]\s+)65534\b", r"\g<1>65532", modified)
         modified = re.sub(r"\b65534:65534\b", "65532:65532", modified)
         modified = re.sub(r"\b65534\b", "65532", modified)

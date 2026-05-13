@@ -189,7 +189,9 @@ IMAGES = {
 
 
 def log(msg: str, level: str = "INFO"):
-    prefix = {"INFO": "  OK", "WARN": "  !!", "ERROR": "FAIL", "SKIP": "SKIP"}.get(level, "    ")
+    prefix = {"INFO": "  OK", "WARN": "  !!", "ERROR": "FAIL", "SKIP": "SKIP"}.get(
+        level, "    "
+    )
     print(f"{prefix} {msg}")
 
 
@@ -205,21 +207,32 @@ def http_get(url: str, timeout: int = HTTP_TIMEOUT) -> str | None:
 
 
 def http_get_json(url: str, timeout: int = HTTP_TIMEOUT) -> dict | None:
-    req = urllib.request.Request(url, headers={
-        "User-Agent": USER_AGENT,
-        "Accept": "application/vnd.github+json",
-    })
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": USER_AGENT,
+            "Accept": "application/vnd.github+json",
+        },
+    )
     try:
         with urllib.request.urlopen(req, timeout=timeout) as resp:
             if resp.status != 200:
                 return None
             return json.loads(resp.read().decode("utf-8"))
-    except (urllib.error.URLError, urllib.error.HTTPError, OSError, TimeoutError, json.JSONDecodeError):
+    except (
+        urllib.error.URLError,
+        urllib.error.HTTPError,
+        OSError,
+        TimeoutError,
+        json.JSONDecodeError,
+    ):
         return None
 
 
 def parse_github_release_url(url: str) -> tuple[str, str, str] | None:
-    m = re.match(r'https://github\.com/([^/]+)/([^/]+)/releases/download/([^/]+)/(.+)', url)
+    m = re.match(
+        r"https://github\.com/([^/]+)/([^/]+)/releases/download/([^/]+)/(.+)", url
+    )
     if not m:
         return None
     return m.group(1), m.group(2), m.group(3)
@@ -227,7 +240,7 @@ def parse_github_release_url(url: str) -> tuple[str, str, str] | None:
 
 def extract_version_from_dockerfile(dockerfile_path: Path) -> str | None:
     content = dockerfile_path.read_text()
-    m = re.search(r'ARG\s+VERSION\s*=\s*(\S+)', content)
+    m = re.search(r"ARG\s+VERSION\s*=\s*(\S+)", content)
     if m:
         return m.group(1).strip('"').strip("'")
     return None
@@ -244,12 +257,12 @@ def filenames_match(target: str, candidate: str) -> bool:
     c_norm = c.replace(".tar.gz", "").replace(".tgz", "")
     if t_norm == c_norm:
         return True
-    if t_norm in c_norm or c_norm in t_norm:
-        return True
-    return False
+    return bool(t_norm in c_norm or c_norm in t_norm)
 
 
-def find_checksum_in_checksums_file(checksum_url: str, target_filename: str) -> str | None:
+def find_checksum_in_checksums_file(
+    checksum_url: str, target_filename: str
+) -> str | None:
     content = http_get(checksum_url)
     if content is None:
         return None
@@ -257,9 +270,9 @@ def find_checksum_in_checksums_file(checksum_url: str, target_filename: str) -> 
         line = line.strip()
         if not line or line.startswith("#"):
             continue
-        m = re.match(r'^([0-9a-fA-F]{64})\s+[* ](.+)$', line)
+        m = re.match(r"^([0-9a-fA-F]{64})\s+[* ](.+)$", line)
         if not m:
-            m = re.match(r'^([0-9a-fA-F]{64})\s+\((.+)\)', line)
+            m = re.match(r"^([0-9a-fA-F]{64})\s+\((.+)\)", line)
         if m:
             h = m.group(1).lower()
             fname = m.group(2).strip()
@@ -273,15 +286,17 @@ def find_checksum_single_file(checksum_url: str) -> str | None:
     if content is None:
         return None
     h = content.strip()
-    if re.match(r'^[0-9a-fA-F]{64}$', h):
+    if re.match(r"^[0-9a-fA-F]{64}$", h):
         return h.lower()
-    m = re.match(r'^([0-9a-fA-F]{64})\s+', h)
+    m = re.match(r"^([0-9a-fA-F]{64})\s+", h)
     if m:
         return m.group(1).lower()
     return None
 
 
-def find_checksum_github_api(owner: str, repo: str, tag: str, target_filename: str) -> str | None:
+def find_checksum_github_api(
+    owner: str, repo: str, tag: str, target_filename: str
+) -> str | None:
     api_url = f"https://api.github.com/repos/{owner}/{repo}/releases/tags/{tag}"
     data = http_get_json(api_url)
     if data is None:
@@ -301,7 +316,9 @@ def find_checksum_github_api(owner: str, repo: str, tag: str, target_filename: s
                 return find_checksum_single_file(sha_url)
     for asset in assets:
         name = asset.get("name", "")
-        if any(ext in name for ext in (".sha256", ".sha256sum", "checksums", "SHASUMS")):
+        if any(
+            ext in name for ext in (".sha256", ".sha256sum", "checksums", "SHASUMS")
+        ):
             sha_url = asset.get("browser_download_url", "")
             if sha_url:
                 h = find_checksum_in_checksums_file(sha_url, target_filename)
@@ -310,7 +327,9 @@ def find_checksum_github_api(owner: str, repo: str, tag: str, target_filename: s
     return None
 
 
-def find_checksum_for_image(image_name: str, download_url: str, target_filename: str) -> str | None:
+def find_checksum_for_image(
+    image_name: str, download_url: str, target_filename: str
+) -> str | None:
     release_info = parse_github_release_url(download_url)
 
     if release_info:
@@ -356,10 +375,12 @@ def find_checksum_for_image(image_name: str, download_url: str, target_filename:
 
 
 def has_sha256_verification(content: str) -> bool:
-    return bool(re.search(r'sha256sum\s+-c', content))
+    return bool(re.search(r"sha256sum\s+-c", content))
 
 
-def insert_checksum_verification(content: str, output_path: str, sha256: str) -> str | None:
+def insert_checksum_verification(
+    content: str, output_path: str, sha256: str
+) -> str | None:
     lines = content.splitlines()
 
     curl_start = None
@@ -382,7 +403,7 @@ def insert_checksum_verification(content: str, output_path: str, sha256: str) ->
             if f'-o "{output_path}' in line:
                 output_line_idx = i
                 break
-            m = re.search(r'-o\s+(\S+)', line)
+            m = re.search(r"-o\s+(\S+)", line)
             if m:
                 found_path = m.group(1).rstrip("\\").strip('"').strip("'")
                 if found_path == output_path:
@@ -395,7 +416,7 @@ def insert_checksum_verification(content: str, output_path: str, sha256: str) ->
         return None
 
     run_line = lines[run_line_idx]
-    indent_match = re.match(r'^(\s*)RUN', run_line)
+    indent_match = re.match(r"^(\s*)RUN", run_line)
     indent = indent_match.group(1) if indent_match else ""
     verify_line = f'{indent}    echo "{sha256}  {output_path}" | sha256sum -c - && \\'
     lines.insert(output_line_idx + 1, verify_line)
@@ -416,12 +437,16 @@ def update_manifest_checksum(manifest_path: Path, sha256: str) -> bool:
         manifest_path.write_text(content_new)
         return True
     if "[download]" in content:
-        download_section = re.search(r'(\[download\].*?)(\n\[|\Z)', content, re.DOTALL)
+        download_section = re.search(r"(\[download\].*?)(\n\[|\Z)", content, re.DOTALL)
         if download_section:
             section = download_section.group(1)
             if "checksum" not in section:
                 insert_pos = download_section.end(1)
-                new_content = content[:insert_pos].rstrip() + f'\nchecksum = "{sha256}"\n' + content[insert_pos:]
+                new_content = (
+                    content[:insert_pos].rstrip()
+                    + f'\nchecksum = "{sha256}"\n'
+                    + content[insert_pos:]
+                )
                 manifest_path.write_text(new_content)
                 return True
     return False
@@ -472,6 +497,7 @@ def process_image(image_name: str, config: dict, dry_run: bool = False) -> str:
 
 def main():
     import argparse
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
@@ -503,9 +529,11 @@ def main():
         time.sleep(1)
 
     total = success + failed + skipped
-    print(f"\n{'='*60}")
-    print(f"Results: {success}/{total} populated, {failed}/{total} failed, {skipped}/{total} skipped")
-    print(f"{'='*60}")
+    print(f"\n{'=' * 60}")
+    print(
+        f"Results: {success}/{total} populated, {failed}/{total} failed, {skipped}/{total} skipped"
+    )
+    print(f"{'=' * 60}")
 
     sys.exit(1 if failed > 0 else 0)
 

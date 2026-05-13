@@ -197,8 +197,8 @@ def http_get(url, timeout=HTTP_TIMEOUT):
 def gh_api(api_path):
     try:
         result = subprocess.run(
-            ["gh", "api", api_path],
-            capture_output=True, text=True, timeout=30)
+            ["gh", "api", api_path], capture_output=True, text=True, timeout=30
+        )
         if result.returncode != 0:
             return None
         return json.loads(result.stdout)
@@ -207,7 +207,9 @@ def gh_api(api_path):
 
 
 def parse_github_release_url(url):
-    m = re.match(r'https://github\.com/([^/]+)/([^/]+)/releases/download/([^/]+)/(.+)', url)
+    m = re.match(
+        r"https://github\.com/([^/]+)/([^/]+)/releases/download/([^/]+)/(.+)", url
+    )
     if not m:
         return None
     return m.group(1), m.group(2), m.group(3)
@@ -215,7 +217,7 @@ def parse_github_release_url(url):
 
 def extract_version_from_dockerfile(dockerfile_path):
     content = dockerfile_path.read_text()
-    m = re.search(r'ARG\s+VERSION\s*=\s*(\S+)', content)
+    m = re.search(r"ARG\s+VERSION\s*=\s*(\S+)", content)
     if m:
         return m.group(1).strip('"').strip("'")
     return None
@@ -244,9 +246,9 @@ def find_checksum_in_file(checksum_url, target_filename):
         line = line.strip()
         if not line or line.startswith("#"):
             continue
-        m = re.match(r'^([0-9a-fA-F]{64})\s+[* ](.+)$', line)
+        m = re.match(r"^([0-9a-fA-F]{64})\s+[* ](.+)$", line)
         if not m:
-            m = re.match(r'^([0-9a-fA-F]{64})\s+\((.+)\)', line)
+            m = re.match(r"^([0-9a-fA-F]{64})\s+\((.+)\)", line)
         if m:
             h, fname = m.group(1).lower(), m.group(2).strip()
             if filenames_match(target_filename, fname):
@@ -259,9 +261,9 @@ def find_checksum_single(checksum_url):
     if content is None:
         return None
     h = content.strip()
-    if re.match(r'^[0-9a-fA-F]{64}$', h):
+    if re.match(r"^[0-9a-fA-F]{64}$", h):
         return h.lower()
-    m = re.match(r'^([0-9a-fA-F]{64})\s+', h)
+    m = re.match(r"^([0-9a-fA-F]{64})\s+", h)
     if m:
         return m.group(1).lower()
     return None
@@ -289,16 +291,19 @@ def find_checksum_github_api(owner, repo, tag, target_filename):
 
     for asset in assets:
         name = asset.get("name", "")
-        if filenames_match(target_filename, name):
-            if name.endswith(".sha256") or name.endswith(".sha256sum"):
-                sha_url = asset.get("browser_download_url", "")
-                if sha_url:
-                    return find_checksum_single(sha_url)
+        if filenames_match(target_filename, name) and (
+            name.endswith(".sha256") or name.endswith(".sha256sum")
+        ):
+            sha_url = asset.get("browser_download_url", "")
+            if sha_url:
+                return find_checksum_single(sha_url)
 
     for asset in assets:
         name = asset.get("name", "")
-        if any(kw in name.lower() for kw in
-               (".sha256", ".sha256sum", "checksum", "shasums")):
+        if any(
+            kw in name.lower()
+            for kw in (".sha256", ".sha256sum", "checksum", "shasums")
+        ):
             sha_url = asset.get("browser_download_url", "")
             if sha_url:
                 h = find_checksum_in_file(sha_url, target_filename)
@@ -319,10 +324,15 @@ def find_checksum_github_release(download_url, target_filename):
         return h
 
     base_url = download_url.rsplit("/", 1)[0]
-    for url in [f"{download_url}.sha256", f"{download_url}.sha256sum",
-                f"{base_url}/sha256sums.txt", f"{base_url}/SHA256SUMS",
-                f"{base_url}/SHASUMS256.txt", f"{base_url}/checksums.txt",
-                f"{base_url}/checksums-amd64.txt"]:
+    for url in [
+        f"{download_url}.sha256",
+        f"{download_url}.sha256sum",
+        f"{base_url}/sha256sums.txt",
+        f"{base_url}/SHA256SUMS",
+        f"{base_url}/SHASUMS256.txt",
+        f"{base_url}/checksums.txt",
+        f"{base_url}/checksums-amd64.txt",
+    ]:
         h = find_checksum_in_file(url, target_filename)
         if h:
             return h
@@ -341,8 +351,7 @@ def find_checksum_direct(download_url, target_filename):
         if h:
             return h
     base_url = download_url.rsplit("/", 1)[0]
-    for fname in ["sha256sums.txt", "SHA256SUMS", "checksums.txt",
-                  "checksums.sha256"]:
+    for fname in ["sha256sums.txt", "SHA256SUMS", "checksums.txt", "checksums.sha256"]:
         h = find_checksum_in_file(f"{base_url}/{fname}", target_filename)
         if h:
             return h
@@ -354,7 +363,8 @@ def find_checksum_rust(download_url, target_filename):
     if h:
         return h
     return find_checksum_in_file(
-        "https://static.rust-lang.org/dist/sha256sums.txt", target_filename)
+        "https://static.rust-lang.org/dist/sha256sums.txt", target_filename
+    )
 
 
 def find_checksum_mongodb(download_url, target_filename):
@@ -370,10 +380,9 @@ def find_checksum_mongodb(download_url, target_filename):
     return None
 
 
-def compute_sha256_by_download(download_url, max_size=100*1024*1024):
+def compute_sha256_by_download(download_url, max_size=100 * 1024 * 1024):
     try:
-        req = urllib.request.Request(download_url,
-                                     headers={"User-Agent": USER_AGENT})
+        req = urllib.request.Request(download_url, headers={"User-Agent": USER_AGENT})
         with urllib.request.urlopen(req, timeout=120) as resp:
             if resp.status != 200:
                 return None
@@ -393,15 +402,15 @@ def compute_sha256_by_download(download_url, max_size=100*1024*1024):
 
 def check_url_reachable(url, timeout=10):
     try:
-        req = urllib.request.Request(url, method="HEAD",
-                                     headers={"User-Agent": USER_AGENT})
+        req = urllib.request.Request(
+            url, method="HEAD", headers={"User-Agent": USER_AGENT}
+        )
         with urllib.request.urlopen(req, timeout=timeout) as resp:
             return resp.status < 400
     except urllib.error.HTTPError as e:
         if e.code == 405:
             try:
-                req = urllib.request.Request(url,
-                                             headers={"User-Agent": USER_AGENT})
+                req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
                 with urllib.request.urlopen(req, timeout=timeout) as resp:
                     return resp.status < 400
             except Exception:
@@ -412,7 +421,7 @@ def check_url_reachable(url, timeout=10):
 
 
 def has_sha256_verification(content):
-    return bool(re.search(r'sha256sum\s+-c', content))
+    return bool(re.search(r"sha256sum\s+-c", content))
 
 
 def insert_checksum_verification(content, output_path, sha256):
@@ -420,41 +429,44 @@ def insert_checksum_verification(content, output_path, sha256):
 
     for i, line in enumerate(lines):
         stripped = line.strip()
-        if (f'-o {output_path}' not in stripped
-                and f'-o{output_path}' not in stripped
-                and f'-o "{output_path}' not in stripped
-                and f"-o '{output_path}'" not in stripped):
+        if (
+            f"-o {output_path}" not in stripped
+            and f"-o{output_path}" not in stripped
+            and f'-o "{output_path}' not in stripped
+            and f"-o '{output_path}'" not in stripped
+        ):
             continue
 
         rstripped = line.rstrip()
-        indent = line[:len(line) - len(line.lstrip())]
+        indent = line[: len(line) - len(line.lstrip())]
 
-        if rstripped.endswith('&& \\'):
-            verify = (f'{indent}echo "{sha256}  {output_path}"'
-                      f' | sha256sum -c - && \\')
+        if rstripped.endswith("&& \\"):
+            verify = f'{indent}echo "{sha256}  {output_path}" | sha256sum -c - && \\'
             lines.insert(i + 1, verify)
             return "\n".join(lines) + "\n"
 
-        if '|| true ; \\' in rstripped or rstripped.endswith('; \\'):
-            verify = (f'{indent}echo "{sha256}  {output_path}"'
-                      f' | sha256sum -c - || true ; \\')
+        if "|| true ; \\" in rstripped or rstripped.endswith("; \\"):
+            verify = (
+                f'{indent}echo "{sha256}  {output_path}" | sha256sum -c - || true ; \\'
+            )
             lines.insert(i + 1, verify)
             return "\n".join(lines) + "\n"
 
-        if '|| true' in rstripped:
-            prev_indent = ''
+        if "|| true" in rstripped:
+            prev_indent = ""
             for j in range(i, -1, -1):
-                if re.match(r'\s*RUN', lines[j]):
-                    prev_indent = re.match(r'^(\s*)', lines[j]).group(1)
+                if re.match(r"\s*RUN", lines[j]):
+                    prev_indent = re.match(r"^(\s*)", lines[j]).group(1)
                     break
-            verify = (f'{prev_indent}RUN [ -f {output_path} ]'
-                      f' && echo "{sha256}  {output_path}"'
-                      f' | sha256sum -c - || true')
+            verify = (
+                f"{prev_indent}RUN [ -f {output_path} ]"
+                f' && echo "{sha256}  {output_path}"'
+                f" | sha256sum -c - || true"
+            )
             lines.insert(i + 1, verify)
             return "\n".join(lines) + "\n"
 
-        verify = (f'{indent}echo "{sha256}  {output_path}"'
-                  f' | sha256sum -c - && \\')
+        verify = f'{indent}echo "{sha256}  {output_path}" | sha256sum -c - && \\'
         lines.insert(i + 1, verify)
         return "\n".join(lines) + "\n"
 
@@ -467,17 +479,15 @@ def update_manifest_checksum(manifest_path, sha256):
     content = manifest_path.read_text()
     if re.search(r'checksum\s*=\s*"[0-9a-fA-F]{64}"', content):
         content_new = re.sub(
-            r'checksum\s*=\s*"[0-9a-fA-F]{64}"',
-            f'checksum = "{sha256}"', content)
+            r'checksum\s*=\s*"[0-9a-fA-F]{64}"', f'checksum = "{sha256}"', content
+        )
         manifest_path.write_text(content_new)
         return True
     if "[download]" in content:
-        section = re.search(r'(\[download\].*?)(\n\[|\Z)', content, re.DOTALL)
+        section = re.search(r"(\[download\].*?)(\n\[|\Z)", content, re.DOTALL)
         if section and "checksum" not in section.group(1):
             pos = section.end(1)
-            new = (content[:pos].rstrip()
-                   + f'\nchecksum = "{sha256}"\n'
-                   + content[pos:])
+            new = content[:pos].rstrip() + f'\nchecksum = "{sha256}"\n' + content[pos:]
             manifest_path.write_text(new)
             return True
     return False
@@ -591,10 +601,12 @@ def main():
             skipped += 1
 
     total = success + failed + skipped
-    print(f"\n{'='*60}")
-    print(f"Results: {success}/{total} populated, {failed}/{total} failed, "
-          f"{skipped}/{total} skipped")
-    print(f"{'='*60}")
+    print(f"\n{'=' * 60}")
+    print(
+        f"Results: {success}/{total} populated, {failed}/{total} failed, "
+        f"{skipped}/{total} skipped"
+    )
+    print(f"{'=' * 60}")
 
     sys.exit(1 if failed > 0 else 0)
 

@@ -15,37 +15,42 @@ from datetime import datetime
 REPO = "WyattAu/EvergreenImageRegistry"
 MAX_ITERATIONS = 50  # Max retry cycles
 SLEEP_SECONDS = 120  # Wait between checks
-AUTO_FIX = True      # Automatically try to fix failures
+AUTO_FIX = True  # Automatically try to fix failures
+
 
 def run_cmd(cmd):
     """Run shell command and return output."""
     result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
     return result.stdout, result.stderr, result.returncode
 
+
 def get_failed_builds():
     """Get list of currently failing image builds."""
     stdout, _, _ = run_cmd(f"gh run list --repo {REPO} --status failure --limit 1")
 
     failed = []
-    for line in stdout.split('\n'):
-        if 'failure' in line.lower():
+    for line in stdout.split("\n"):
+        if "failure" in line.lower():
             # Extract job name
             parts = line.split()
             if len(parts) >= 2:
                 failed.append(parts[-1])  # Last column is usually job name
     return failed
 
+
 def get_latest_run_id():
     """Get the most recent workflow run ID."""
     stdout, _, _ = run_cmd(f"gh run list --repo {REPO} --limit 1 --json id")
     import json
+
     try:
         data = json.loads(stdout)
         if data:
-            return data[0]['id']
-    except:
+            return data[0]["id"]
+    except Exception:
         pass
     return None
+
 
 def check_build_status():
     """Check current build status."""
@@ -55,6 +60,7 @@ def check_build_status():
         return "running"
     return "completed"
 
+
 def get_failed_jobs():
     """Get list of failed jobs from latest run."""
     run_id = get_latest_run_id()
@@ -63,16 +69,18 @@ def get_failed_jobs():
 
     stdout, _, _ = run_cmd(f"gh run view {run_id} --repo {REPO} --json jobs")
     import json
+
     try:
         data = json.loads(stdout)
-        jobs = data.get('jobs', [])
+        jobs = data.get("jobs", [])
         failed = []
         for job in jobs:
-            if job.get('status') == 'completed' and job.get('conclusion') == 'failure':
-                failed.append(job.get('name', 'unknown'))
+            if job.get("status") == "completed" and job.get("conclusion") == "failure":
+                failed.append(job.get("name", "unknown"))
         return failed
-    except:
+    except Exception:
         return []
+
 
 def analyze_failure(failed_job):
     """Analyze why a specific job failed."""
@@ -81,10 +89,13 @@ def analyze_failure(failed_job):
     # Get job logs
     run_id = get_latest_run_id()
     if run_id:
-        stdout, _, _ = run_cmd(f"gh run view {run_id} --repo {REPO} --log-failed 2>/dev/null | head -100")
+        stdout, _, _ = run_cmd(
+            f"gh run view {run_id} --repo {REPO} --log-failed 2>/dev/null | head -100"
+        )
         print(f"Logs:\n{stdout}")
 
     return "analyzed"
+
 
 def main():
     """Main background loop."""
@@ -138,5 +149,6 @@ def main():
     print(f"\nMax iterations reached. Total failures: {total_failures}")
     return 1
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     sys.exit(main())

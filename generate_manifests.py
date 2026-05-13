@@ -3,69 +3,142 @@
 
 import os
 import re
-import sys
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 TIER1_IMAGES = [
-    "prometheus", "grafana", "alertmanager", "loki", "thanos",
-    "redis", "postgres", "mysql", "mongodb", "cockroachdb",
-    "vault", "keycloak", "dex",
-    "envoy", "nginx", "traefik", "consul", "coredns",
-    "elasticsearch", "opensearch", "kibana",
-    "minio", "s3",
+    "prometheus",
+    "grafana",
+    "alertmanager",
+    "loki",
+    "thanos",
+    "redis",
+    "postgres",
+    "mysql",
+    "mongodb",
+    "cockroachdb",
+    "vault",
+    "keycloak",
+    "dex",
+    "envoy",
+    "nginx",
+    "traefik",
+    "consul",
+    "coredns",
+    "elasticsearch",
+    "opensearch",
+    "kibana",
+    "minio",
+    "s3",
     "node-exporter",
-    "kafka", "rabbitmq", "nats",
-    "jaeger", "zipkin",
+    "kafka",
+    "rabbitmq",
+    "nats",
+    "jaeger",
+    "zipkin",
     "fluent-bit",
-    "trivy", "falco",
+    "trivy",
+    "falco",
     "argo-cd",
-    "jenkins", "drone", "tekton",
+    "jenkins",
+    "drone",
+    "tekton",
 ]
 
 TIER2_IMAGES = [
-    "redis-exporter", "postgres-exporter",
+    "redis-exporter",
+    "postgres-exporter",
     "grafana-image-renderer",
-    "prometheus-nginx-exporter", "prometheus-mysqld-exporter",
-    "valkey", "scylladb", "tidb",
+    "prometheus-nginx-exporter",
+    "prometheus-mysqld-exporter",
+    "valkey",
+    "scylladb",
+    "tidb",
     "etcd",
-    "mariadb", "couchdb", "cassandra",
-    "vector", "logstash",
-    "heimdall", "authelia",
-    "duckdb", "questdb",
-    "minio-console", "minio-operator",
-    "k3s", "kubectl",
+    "mariadb",
+    "couchdb",
+    "cassandra",
+    "vector",
+    "logstash",
+    "heimdall",
+    "authelia",
+    "duckdb",
+    "questdb",
+    "minio-console",
+    "minio-operator",
+    "k3s",
+    "kubectl",
 ]
 
 TIER3_IMAGES = [
-    "memcached", "haproxy", "influxdb", "telegraf", "caddy",
-    "postgresql", "mysql-exporter", "redis-cluster", "redis-sentinel",
-    "nextcloud", "portainer", "homeassistant", "jellyfin", "plex",
-    "sonarr", "radarr", "prowlarr", "lidarr",
-    "gitea", "forgejo",
-    "n8n", "dagster",
-    "kafka-connect", "kafka-exporter", "kafka-ui",
-    "rabbitmq-management", "rabbitmq-exporter",
-    "neo4j", "couchbase",
-    "meilisearch", "dragonfly",
-    "unbound", "bind",
-    "step-ca", "trufflehog",
+    "memcached",
+    "haproxy",
+    "influxdb",
+    "telegraf",
+    "caddy",
+    "postgresql",
+    "mysql-exporter",
+    "redis-cluster",
+    "redis-sentinel",
+    "nextcloud",
+    "portainer",
+    "homeassistant",
+    "jellyfin",
+    "plex",
+    "sonarr",
+    "radarr",
+    "prowlarr",
+    "lidarr",
+    "gitea",
+    "forgejo",
+    "n8n",
+    "dagster",
+    "kafka-connect",
+    "kafka-exporter",
+    "kafka-ui",
+    "rabbitmq-management",
+    "rabbitmq-exporter",
+    "neo4j",
+    "couchbase",
+    "meilisearch",
+    "dragonfly",
+    "unbound",
+    "bind",
+    "step-ca",
+    "trufflehog",
     "kubescape",
-    "oauth2-proxy", "headscale",
+    "oauth2-proxy",
+    "headscale",
     "wireguard",
-    "miniflux", "immich",
-    "pi-hole", "traefik-v2",
-    "prometheus-pushgateway", "prometheus-operator",
-    "kube-bench", "kube-state-metrics",
-    "kube-apiserver", "kube-controller", "kube-proxy", "kube-scheduler",
-    "kustomize", "helm",
-    "mysql-backup", "postgres-operator",
-    "redis-insight", "vaultwarden",
-    "cosign", "rekor", "fulcio",
-    "grafana-operator", "grafana-lite",
-    "coredns-alpine", "nginx-exporter",
-    "consul-exporter", "consul-template",
-    "emqx", "mosquitto",
+    "miniflux",
+    "immich",
+    "pi-hole",
+    "traefik-v2",
+    "prometheus-pushgateway",
+    "prometheus-operator",
+    "kube-bench",
+    "kube-state-metrics",
+    "kube-apiserver",
+    "kube-controller",
+    "kube-proxy",
+    "kube-scheduler",
+    "kustomize",
+    "helm",
+    "mysql-backup",
+    "postgres-operator",
+    "redis-insight",
+    "vaultwarden",
+    "cosign",
+    "rekor",
+    "fulcio",
+    "grafana-operator",
+    "grafana-lite",
+    "coredns-alpine",
+    "nginx-exporter",
+    "consul-exporter",
+    "consul-template",
+    "emqx",
+    "mosquitto",
     "cadvisor",
     "influxdb-2",
     "cockroachdb-exporter",
@@ -216,63 +289,136 @@ DESCRIPTIONS = {
 }
 
 VENDORS = {
-    "prometheus": "Prometheus", "grafana": "Grafana Labs", "alertmanager": "Prometheus",
-    "loki": "Grafana Labs", "thanos": "Thanos", "redis": "Redis",
-    "postgres": "PostgreSQL", "mysql": "Oracle", "mongodb": "MongoDB",
-    "cockroachdb": "Cockroach Labs", "vault": "HashiCorp", "keycloak": "Red Hat",
-    "dex": "Dex", "envoy": "Envoy Proxy", "nginx": "Nginx Inc",
-    "traefik": "Traefik Labs", "consul": "HashiCorp", "coredns": "CNCF",
-    "elasticsearch": "Elastic", "opensearch": "AWS", "kibana": "Elastic",
-    "minio": "MinIO", "s3": "AWS",
-    "node-exporter": "Prometheus", "kafka": "Apache", "rabbitmq": "VMware",
-    "nats": "CNCF", "jaeger": "Jaeger", "zipkin": "Zipkin",
-    "fluent-bit": "Fluent", "trivy": "Aqua Security", "falco": "CNCFSys",
-    "argo-cd": "Argo Project", "jenkins": "Jenkins", "drone": "Harness",
+    "prometheus": "Prometheus",
+    "grafana": "Grafana Labs",
+    "alertmanager": "Prometheus",
+    "loki": "Grafana Labs",
+    "thanos": "Thanos",
+    "redis": "Redis",
+    "postgres": "PostgreSQL",
+    "mysql": "Oracle",
+    "mongodb": "MongoDB",
+    "cockroachdb": "Cockroach Labs",
+    "vault": "HashiCorp",
+    "keycloak": "Red Hat",
+    "dex": "Dex",
+    "envoy": "Envoy Proxy",
+    "nginx": "Nginx Inc",
+    "traefik": "Traefik Labs",
+    "consul": "HashiCorp",
+    "coredns": "CNCF",
+    "elasticsearch": "Elastic",
+    "opensearch": "AWS",
+    "kibana": "Elastic",
+    "minio": "MinIO",
+    "s3": "AWS",
+    "node-exporter": "Prometheus",
+    "kafka": "Apache",
+    "rabbitmq": "VMware",
+    "nats": "CNCF",
+    "jaeger": "Jaeger",
+    "zipkin": "Zipkin",
+    "fluent-bit": "Fluent",
+    "trivy": "Aqua Security",
+    "falco": "CNCFSys",
+    "argo-cd": "Argo Project",
+    "jenkins": "Jenkins",
+    "drone": "Harness",
     "tekton": "TektonCD",
-    "redis-exporter": "Prometheus", "postgres-exporter": "Prometheus",
+    "redis-exporter": "Prometheus",
+    "postgres-exporter": "Prometheus",
     "grafana-image-renderer": "Grafana Labs",
-    "prometheus-nginx-exporter": "Prometheus", "prometheus-mysqld-exporter": "Prometheus",
-    "valkey": "Linux Foundation", "scylladb": "ScyllaDB", "tidb": "PingCAP",
-    "etcd": "CNCF", "mariadb": "MariaDB Foundation", "couchdb": "Apache",
-    "cassandra": "Apache", "vector": "Datadog", "logstash": "Elastic",
-    "heimdall": "Heimdall", "authelia": "Authelia",
-    "duckdb": "DuckDB Labs", "questdb": "QuestDB",
-    "minio-console": "MinIO", "minio-operator": "MinIO",
-    "k3s": "SUSE", "kubectl": "Kubernetes",
-    "memcached": "Memcached", "haproxy": "HAProxy", "influxdb": "InfluxData",
-    "telegraf": "InfluxData", "caddy": "Caddy", "postgresql": "PostgreSQL",
-    "mysql-exporter": "Prometheus", "redis-cluster": "Redis",
-    "redis-sentinel": "Redis", "nextcloud": "Nextcloud",
-    "portainer": "Portainer", "homeassistant": "Home Assistant",
-    "jellyfin": "Jellyfin", "plex": "Plex",
-    "sonarr": "Sonarr", "radarr": "Radarr", "prowlarr": "Prowlarr",
-    "lidarr": "Lidarr", "gitea": "Gitea", "forgejo": "Forgejo",
-    "n8n": "n8n", "dagster": "Dagster",
-    "kafka-connect": "Apache", "kafka-exporter": "Prometheus",
-    "kafka-ui": "Kafka UI", "rabbitmq-management": "VMware",
-    "rabbitmq-exporter": "Prometheus", "neo4j": "Neo4j",
-    "couchbase": "Couchbase", "meilisearch": "Meilisearch",
-    "dragonfly": "Dragonfly", "unbound": "NLnet Labs",
-    "bind": "ISC", "step-ca": "Smallstep",
-    "trufflehog": "TruffleHog", "kubescape": "Kubescape",
-    "oauth2-proxy": "OAuth2 Proxy", "headscale": "Headscale",
-    "wireguard": "WireGuard", "miniflux": "Miniflux",
-    "immich": "Immich", "pi-hole": "Pi-hole",
+    "prometheus-nginx-exporter": "Prometheus",
+    "prometheus-mysqld-exporter": "Prometheus",
+    "valkey": "Linux Foundation",
+    "scylladb": "ScyllaDB",
+    "tidb": "PingCAP",
+    "etcd": "CNCF",
+    "mariadb": "MariaDB Foundation",
+    "couchdb": "Apache",
+    "cassandra": "Apache",
+    "vector": "Datadog",
+    "logstash": "Elastic",
+    "heimdall": "Heimdall",
+    "authelia": "Authelia",
+    "duckdb": "DuckDB Labs",
+    "questdb": "QuestDB",
+    "minio-console": "MinIO",
+    "minio-operator": "MinIO",
+    "k3s": "SUSE",
+    "kubectl": "Kubernetes",
+    "memcached": "Memcached",
+    "haproxy": "HAProxy",
+    "influxdb": "InfluxData",
+    "telegraf": "InfluxData",
+    "caddy": "Caddy",
+    "postgresql": "PostgreSQL",
+    "mysql-exporter": "Prometheus",
+    "redis-cluster": "Redis",
+    "redis-sentinel": "Redis",
+    "nextcloud": "Nextcloud",
+    "portainer": "Portainer",
+    "homeassistant": "Home Assistant",
+    "jellyfin": "Jellyfin",
+    "plex": "Plex",
+    "sonarr": "Sonarr",
+    "radarr": "Radarr",
+    "prowlarr": "Prowlarr",
+    "lidarr": "Lidarr",
+    "gitea": "Gitea",
+    "forgejo": "Forgejo",
+    "n8n": "n8n",
+    "dagster": "Dagster",
+    "kafka-connect": "Apache",
+    "kafka-exporter": "Prometheus",
+    "kafka-ui": "Kafka UI",
+    "rabbitmq-management": "VMware",
+    "rabbitmq-exporter": "Prometheus",
+    "neo4j": "Neo4j",
+    "couchbase": "Couchbase",
+    "meilisearch": "Meilisearch",
+    "dragonfly": "Dragonfly",
+    "unbound": "NLnet Labs",
+    "bind": "ISC",
+    "step-ca": "Smallstep",
+    "trufflehog": "TruffleHog",
+    "kubescape": "Kubescape",
+    "oauth2-proxy": "OAuth2 Proxy",
+    "headscale": "Headscale",
+    "wireguard": "WireGuard",
+    "miniflux": "Miniflux",
+    "immich": "Immich",
+    "pi-hole": "Pi-hole",
     "traefik-v2": "Traefik Labs",
-    "prometheus-pushgateway": "Prometheus", "prometheus-operator": "Prometheus",
-    "kube-bench": "Aqua Security", "kube-state-metrics": "Kubernetes",
-    "kube-apiserver": "Kubernetes", "kube-controller": "Kubernetes",
-    "kube-proxy": "Kubernetes", "kube-scheduler": "Kubernetes",
-    "kustomize": "Kubernetes", "helm": "Helm",
-    "mysql-backup": "Community", "postgres-operator": "Zalando",
-    "redis-insight": "Redis", "vaultwarden": "Vaultwarden",
-    "cosign": "Sigstore", "rekor": "Sigstore", "fulcio": "Sigstore",
-    "grafana-operator": "Grafana Labs", "grafana-lite": "Grafana Labs",
-    "coredns-alpine": "CNCF", "nginx-exporter": "Prometheus",
-    "consul-exporter": "Prometheus", "consul-template": "HashiCorp",
-    "emqx": "EMQX", "mosquitto": "Eclipse",
-    "cadvisor": "Google", "influxdb-2": "InfluxData",
-    "cockroachdb-exporter": "Cockroach Labs", "falcosidekick": "Falco",
+    "prometheus-pushgateway": "Prometheus",
+    "prometheus-operator": "Prometheus",
+    "kube-bench": "Aqua Security",
+    "kube-state-metrics": "Kubernetes",
+    "kube-apiserver": "Kubernetes",
+    "kube-controller": "Kubernetes",
+    "kube-proxy": "Kubernetes",
+    "kube-scheduler": "Kubernetes",
+    "kustomize": "Kubernetes",
+    "helm": "Helm",
+    "mysql-backup": "Community",
+    "postgres-operator": "Zalando",
+    "redis-insight": "Redis",
+    "vaultwarden": "Vaultwarden",
+    "cosign": "Sigstore",
+    "rekor": "Sigstore",
+    "fulcio": "Sigstore",
+    "grafana-operator": "Grafana Labs",
+    "grafana-lite": "Grafana Labs",
+    "coredns-alpine": "CNCF",
+    "nginx-exporter": "Prometheus",
+    "consul-exporter": "Prometheus",
+    "consul-template": "HashiCorp",
+    "emqx": "EMQX",
+    "mosquitto": "Eclipse",
+    "cadvisor": "Google",
+    "influxdb-2": "InfluxData",
+    "cockroachdb-exporter": "Cockroach Labs",
+    "falcosidekick": "Falco",
     "prometheus-blackbox-exporter": "Prometheus",
     "prometheus-consul-exporter": "Prometheus",
     "prometheus-elasticsearch-exporter": "Prometheus",
@@ -438,18 +584,41 @@ VERSION_OVERRIDES = {
 }
 
 LICENSES = {
-    "prometheus": "Apache-2.0", "grafana": "AGPL-3.0", "alertmanager": "Apache-2.0",
-    "loki": "AGPL-3.0", "thanos": "Apache-2.0", "redis": "BSD-3-Clause",
-    "postgres": "PostgreSQL", "mysql": "GPL-2.0", "mongodb": "SSPL",
-    "cockroachdb": "BSL-1.1", "vault": "MPL-2.0", "keycloak": "Apache-2.0",
-    "dex": "Apache-2.0", "envoy": "Apache-2.0", "nginx": "BSD-2-Clause",
-    "traefik": "MIT", "consul": "MPL-2.0", "coredns": "Apache-2.0",
-    "elasticsearch": "Elastic-2.0", "opensearch": "Apache-2.0", "kibana": "Elastic-2.0",
-    "minio": "AGPL-3.0", "s3": "Apache-2.0",
-    "node-exporter": "Apache-2.0", "kafka": "Apache-2.0", "rabbitmq": "MPL-2.0",
-    "nats": "Apache-2.0", "jaeger": "Apache-2.0", "zipkin": "Apache-2.0",
-    "fluent-bit": "Apache-2.0", "trivy": "Apache-2.0", "falco": "Apache-2.0",
-    "argo-cd": "Apache-2.0", "jenkins": "MIT", "drone": "Apache-2.0",
+    "prometheus": "Apache-2.0",
+    "grafana": "AGPL-3.0",
+    "alertmanager": "Apache-2.0",
+    "loki": "AGPL-3.0",
+    "thanos": "Apache-2.0",
+    "redis": "BSD-3-Clause",
+    "postgres": "PostgreSQL",
+    "mysql": "GPL-2.0",
+    "mongodb": "SSPL",
+    "cockroachdb": "BSL-1.1",
+    "vault": "MPL-2.0",
+    "keycloak": "Apache-2.0",
+    "dex": "Apache-2.0",
+    "envoy": "Apache-2.0",
+    "nginx": "BSD-2-Clause",
+    "traefik": "MIT",
+    "consul": "MPL-2.0",
+    "coredns": "Apache-2.0",
+    "elasticsearch": "Elastic-2.0",
+    "opensearch": "Apache-2.0",
+    "kibana": "Elastic-2.0",
+    "minio": "AGPL-3.0",
+    "s3": "Apache-2.0",
+    "node-exporter": "Apache-2.0",
+    "kafka": "Apache-2.0",
+    "rabbitmq": "MPL-2.0",
+    "nats": "Apache-2.0",
+    "jaeger": "Apache-2.0",
+    "zipkin": "Apache-2.0",
+    "fluent-bit": "Apache-2.0",
+    "trivy": "Apache-2.0",
+    "falco": "Apache-2.0",
+    "argo-cd": "Apache-2.0",
+    "jenkins": "MIT",
+    "drone": "Apache-2.0",
     "tekton": "Apache-2.0",
 }
 
@@ -463,23 +632,27 @@ def parse_dockerfile(path):
     if name in VERSION_OVERRIDES:
         version = VERSION_OVERRIDES[name]
     else:
-        version_match = re.search(r'ARG\s+VERSION[=\s]([^\s]+)', content)
+        version_match = re.search(r"ARG\s+VERSION[=\s]([^\s]+)", content)
         version = version_match.group(1) if version_match else ""
 
         if not version or version.startswith("$") or version.startswith("${"):
             version = ""
 
         if not version:
-            url_match = re.search(r'releases/download/v?(\d+\.\d+[\.\d]*(?:-[\w\.\+]+)?)', content)
+            url_match = re.search(
+                r"releases/download/v?(\d+\.\d+[\.\d]*(?:-[\w\.\+]+)?)", content
+            )
             if url_match:
                 version = url_match.group(1)
             else:
-                url_match = re.search(r'/v(\d+\.\d+[\.\d]*(?:-[\w\.\+]+)?)/', content)
+                url_match = re.search(r"/v(\d+\.\d+[\.\d]*(?:-[\w\.\+]+)?)/", content)
                 if url_match:
                     version = url_match.group(1)
 
         if not version:
-            label_ver = re.search(r'org\.opencontainers\.image\.version="([^"]+)"', content)
+            label_ver = re.search(
+                r'org\.opencontainers\.image\.version="([^"]+)"', content
+            )
             if label_ver:
                 v = label_ver.group(1)
                 if not v.startswith("$") and v != "latest":
@@ -488,7 +661,7 @@ def parse_dockerfile(path):
         if not version:
             version = "unknown"
 
-    from_lines = re.findall(r'^FROM\s+([^\s]+)', content, re.MULTILINE)
+    from_lines = re.findall(r"^FROM\s+([^\s]+)", content, re.MULTILINE)
     base_image = from_lines[0] if from_lines else "unknown"
 
     runtime_from = "scratch"
@@ -520,26 +693,33 @@ def parse_dockerfile(path):
                 runtime_from = fl
                 break
 
-    user_match = re.search(r'^USER\s+(\S+)', content, re.MULTILINE)
+    user_match = re.search(r"^USER\s+(\S+)", content, re.MULTILINE)
     user = user_match.group(1) if user_match else "65532:65532"
 
-    expose = re.findall(r'^EXPOSE\s+(\S+)', content, re.MULTILINE)
+    expose = re.findall(r"^EXPOSE\s+(\S+)", content, re.MULTILINE)
 
-    stopsignal_match = re.search(r'^STOPSIGNAL\s+(\S+)', content, re.MULTILINE)
+    stopsignal_match = re.search(r"^STOPSIGNAL\s+(\S+)", content, re.MULTILINE)
     stopsignal = stopsignal_match.group(1) if stopsignal_match else "SIGTERM"
 
-    entrypoint_match = re.search(r'^ENTRYPOINT\s+\[(.+)\]', content, re.MULTILINE)
+    entrypoint_match = re.search(r"^ENTRYPOINT\s+\[(.+)\]", content, re.MULTILINE)
     entrypoint = None
     if entrypoint_match:
-        entrypoint = [s.strip().strip('"').strip("'") for s in entrypoint_match.group(1).split(",")]
+        entrypoint = [
+            s.strip().strip('"').strip("'")
+            for s in entrypoint_match.group(1).split(",")
+        ]
 
-    cmd_match = re.search(r'^CMD\s+\[(.+)\]', content, re.MULTILINE)
+    cmd_match = re.search(r"^CMD\s+\[(.+)\]", content, re.MULTILINE)
     cmd = None
     if cmd_match:
         cmd = [s.strip().strip('"').strip("'") for s in cmd_match.group(1).split(",")]
 
     labels = {}
-    label_matches = re.findall(r'LABEL\s+(.+?)(?=\n(?:LABEL|EXPOSE|STOPSIGNAL|ENTRYPOINT|CMD|USER|FROM|HEALTHCHECK|#|\n\n|$))', content, re.DOTALL)
+    label_matches = re.findall(
+        r"LABEL\s+(.+?)(?=\n(?:LABEL|EXPOSE|STOPSIGNAL|ENTRYPOINT|CMD|USER|FROM|HEALTHCHECK|#|\n\n|$))",
+        content,
+        re.DOTALL,
+    )
     for label_block in label_matches:
         for label_match in re.finditer(r'(\S+?)="([^"]*)"', label_block):
             labels[label_match.group(1)] = label_match.group(2)
@@ -547,7 +727,10 @@ def parse_dockerfile(path):
     tier_label = labels.get("evergreen.image.tier", "2")
     nonroot = labels.get("evergreen.constraint.nonroot", "true") == "true"
     scratch = labels.get("evergreen.constraint.scratch", "false") == "true"
-    base_img = labels.get("evergreen.base.image", "scratch" if runtime_from == "scratch" else "debian-slim")
+    base_img = labels.get(
+        "evergreen.base.image",
+        "scratch" if runtime_from == "scratch" else "debian-slim",
+    )
 
     return {
         "version": version,
@@ -590,7 +773,7 @@ def get_download_info(name, version):
         download_info = {
             "url": f"https://github.com/grafana/loki/releases/download/v{version}/loki-linux-amd64.zip",
             "binary_name": "loki",
-            "filename": f"loki-linux-amd64.zip",
+            "filename": "loki-linux-amd64.zip",
         }
     elif name == "thanos":
         download_info = {
@@ -632,7 +815,7 @@ def get_download_info(name, version):
         download_info = {
             "url": f"https://github.com/tektoncd/pipeline/releases/download/{version}/tekton-linux-amd64.tar.gz",
             "binary_name": "tekton",
-            "filename": f"tekton-linux-amd64.tar.gz",
+            "filename": "tekton-linux-amd64.tar.gz",
         }
     elif name == "node-exporter":
         download_info = {
@@ -680,7 +863,7 @@ def get_download_info(name, version):
         download_info = {
             "url": f"https://github.com/vectordotdev/vector/releases/download/v{version}/vector-x86_64-unknown-linux-gnu.tar.gz",
             "binary_name": "vector",
-            "filename": f"vector-x86_64-unknown-linux-gnu.tar.gz",
+            "filename": "vector-x86_64-unknown-linux-gnu.tar.gz",
         }
     elif name == "cosign":
         download_info = {
@@ -744,7 +927,7 @@ def get_download_info(name, version):
         }
     elif name == "minio":
         download_info = {
-            "url": f"https://dl.min.io/server/minio/release/linux-amd64/minio",
+            "url": "https://dl.min.io/server/minio/release/linux-amd64/minio",
             "binary_name": "minio",
             "filename": "minio",
         }
@@ -765,18 +948,38 @@ def generate_port_section(name, expose):
             ports["application"] = app_ports[0]
         else:
             port_names = {
-                "80": "http", "443": "https", "8080": "http", "8443": "https",
-                "9090": "web", "9092": "broker", "9093": "web",
-                "5432": "database", "6379": "redis", "27017": "database",
-                "8500": "http", "8200": "api", "8201": "cluster",
-                "10902": "http", "3000": "web", "5140": "http",
-                "24224": "forward", "14268": "jaeger-collector",
-                "16686": "jaeger-ui", "9411": "api",
-                "9901": "admin", "1883": "mqtt", "18830": "mqtt",
-                "15672": "management", "5672": "amqp",
-                "2181": "client", "2379": "client", "2380": "peer",
-                "8086": "api", "8123": "http",
-                "7474": "browser", "7687": "bolt",
+                "80": "http",
+                "443": "https",
+                "8080": "http",
+                "8443": "https",
+                "9090": "web",
+                "9092": "broker",
+                "9093": "web",
+                "5432": "database",
+                "6379": "redis",
+                "27017": "database",
+                "8500": "http",
+                "8200": "api",
+                "8201": "cluster",
+                "10902": "http",
+                "3000": "web",
+                "5140": "http",
+                "24224": "forward",
+                "14268": "jaeger-collector",
+                "16686": "jaeger-ui",
+                "9411": "api",
+                "9901": "admin",
+                "1883": "mqtt",
+                "18830": "mqtt",
+                "15672": "management",
+                "5672": "amqp",
+                "2181": "client",
+                "2379": "client",
+                "2380": "peer",
+                "8086": "api",
+                "8123": "http",
+                "7474": "browser",
+                "7687": "bolt",
                 "7700": "http",
             }
             for p in app_ports:
@@ -824,22 +1027,22 @@ def generate_manifest(name, info):
     lines.append(f'url = "{dl["url"]}"')
     lines.append(f'binary_name = "{dl["binary_name"]}"')
     lines.append(f'filename = "{dl["filename"]}"')
-    lines.append(f'checksum = "PENDING"')
+    lines.append('checksum = "PENDING"')
     lines.append("")
 
     lines.append("[constraints]")
-    lines.append(f'nonroot = {str(info["nonroot"]).lower()}')
-    lines.append(f'scratch = {str(is_scratch).lower()}')
+    lines.append(f"nonroot = {str(info['nonroot']).lower()}")
+    lines.append(f"scratch = {str(is_scratch).lower()}")
     lines.append("")
 
     if ports:
         lines.append("[ports]")
         for k, v in ports.items():
-            lines.append(f'{k} = {v}')
+            lines.append(f"{k} = {v}")
         lines.append("")
 
-    ep = info["entrypoint"]
-    cmd = info["cmd"]
+    info["entrypoint"]
+    info["cmd"]
 
     lines.append("[labels]")
     lines.append(f'"org.opencontainers.image.title" = "{name}"')

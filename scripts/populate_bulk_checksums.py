@@ -47,7 +47,9 @@ GITHUB_API_LIMIT = 58
 
 
 def log(msg: str, level: str = "INFO"):
-    prefix = {"INFO": "  OK", "WARN": "  !!", "ERROR": "FAIL", "SKIP": "  >>"}.get(level, "   ")
+    prefix = {"INFO": "  OK", "WARN": "  !!", "ERROR": "FAIL", "SKIP": "  >>"}.get(
+        level, "   "
+    )
     print(f"{prefix} {msg}")
 
 
@@ -73,14 +75,14 @@ def http_head(url: str, timeout: int = HTTP_TIMEOUT) -> bool:
 
 
 def resolve_version(content: str, var_name: str = "VERSION") -> str:
-    m = re.search(rf'ARG\s+{var_name}\s*=\s*(\S+)', content)
+    m = re.search(rf"ARG\s+{var_name}\s*=\s*(\S+)", content)
     if m:
         return m.group(1).strip('"').strip("'")
     return ""
 
 
 def resolve_variables(url: str, content: str) -> str:
-    for m in re.finditer(r'ARG\s+(\w+)\s*=\s*(\S+)', content):
+    for m in re.finditer(r"ARG\s+(\w+)\s*=\s*(\S+)", content):
         name = m.group(1)
         val = m.group(2).strip('"').strip("'")
         if val.startswith("$"):
@@ -90,7 +92,7 @@ def resolve_variables(url: str, content: str) -> str:
 
 
 def extract_github_repo(url: str) -> tuple[str, str] | None:
-    m = re.search(r'github\.com/([^/]+)/([^/]+?)(?:\.git)?(?:/|$|\?)', url)
+    m = re.search(r"github\.com/([^/]+)/([^/]+?)(?:\.git)?(?:/|$|\?)", url)
     if m:
         return m.group(1), m.group(2)
     return None
@@ -112,11 +114,11 @@ def extract_downloads(content: str, raw_content: str) -> list[dict]:
 
         curl_patterns = [
             (r'curl\s+[^|;]*?[\'"](https?://[^\'"]+)[\'"]\s+.*?-o\s+(\S+)', "curl"),
-            (r'curl\s+[^|;]*?(https?://\S+?)\s+-o\s+(\S+)', "curl"),
+            (r"curl\s+[^|;]*?(https?://\S+?)\s+-o\s+(\S+)", "curl"),
         ]
         wget_patterns = [
             (r'wget\s+[^|;]*?[\'"](https?://[^\'"]+)[\'"]\s+.*?-O\s+(\S+)', "wget"),
-            (r'wget\s+[^|;]*?(https?://\S+?)\s+-O\s+(\S+)', "wget"),
+            (r"wget\s+[^|;]*?(https?://\S+?)\s+-O\s+(\S+)", "wget"),
         ]
         add_patterns = [
             (r'ADD\s+[\'"](https?://[^\'"]+)[\'"]', "add"),
@@ -132,43 +134,60 @@ def extract_downloads(content: str, raw_content: str) -> list[dict]:
                 cmd = cmd_name
                 break
 
-        if not url or url.startswith("http://localhost") or url.startswith("http://127.") or url == '""':
+        if (
+            not url
+            or url.startswith("http://localhost")
+            or url.startswith("http://127.")
+            or url == '""'
+        ):
             continue
 
         url_fname = extract_filename_from_url(url)
-        if re.match(r'^.*\.(sha256|sha512|sha1|md5|sha256sum|sha512sum|asc|sig|sign)$', url_fname, re.IGNORECASE):
+        if re.match(
+            r"^.*\.(sha256|sha512|sha1|md5|sha256sum|sha512sum|asc|sig|sign)$",
+            url_fname,
+            re.IGNORECASE,
+        ):
             continue
 
         if not output_file:
             url_filename = url.split("?")[0].rstrip("/").split("/")[-1]
             output_file = "/" + url_filename
 
-        results.append({
-            "url": url,
-            "output_file": output_file,
-            "cmd": cmd or "curl",
-            "line_idx": i,
-            "line": line,
-        })
+        results.append(
+            {
+                "url": url,
+                "output_file": output_file,
+                "cmd": cmd or "curl",
+                "line_idx": i,
+                "line": line,
+            }
+        )
 
     return results
 
 
 def has_real_checksum(content: str) -> bool:
-    if not re.search(r'sha\w*sum\s+-c', content):
+    if not re.search(r"sha\w*sum\s+-c", content):
         return False
     if "PENDING" in content or "PENDING_CHECKSUM" in content:
         return False
 
-    checksum_file_dl = re.search(r'(curl|wget)\s+.*?(-o\s+\S*(?:checksum|sha\w*sums?|SHASUMS?)[^\s\\]*)', content, re.IGNORECASE)
+    checksum_file_dl = re.search(
+        r"(curl|wget)\s+.*?(-o\s+\S*(?:checksum|sha\w*sums?|SHASUMS?)[^\s\\]*)",
+        content,
+        re.IGNORECASE,
+    )
     if checksum_file_dl:
         return True
 
-    hashes_64 = re.findall(r'[0-9a-fA-F]{64}', content)
-    hashes_128 = re.findall(r'[0-9a-fA-F]{128}', content)
+    hashes_64 = re.findall(r"[0-9a-fA-F]{64}", content)
+    hashes_128 = re.findall(r"[0-9a-fA-F]{128}", content)
     all_hashes = hashes_64 + hashes_128
     for h in all_hashes:
-        if len(h) == 64 and not re.search(r'(012345|234567|345678|456789|567890|678901|789012|890123|901234){2,}', h):
+        if len(h) == 64 and not re.search(
+            r"(012345|234567|345678|456789|567890|678901|789012|890123|901234){2,}", h
+        ):
             return True
         if len(h) == 128:
             return True
@@ -176,11 +195,16 @@ def has_real_checksum(content: str) -> bool:
 
 
 def has_only_pkg_manager(content: str) -> bool:
-    dl_count = len(re.findall(r'curl\s|wget\s|ADD\s+https?://', content))
+    dl_count = len(re.findall(r"curl\s|wget\s|ADD\s+https?://", content))
     if dl_count > 0:
         return False
-    pkg_count = len(re.findall(r'apt-get\s+install|apk\s+add|pip\s+install|npm\s+install|yum\s+install', content))
-    copy_from = len(re.findall(r'COPY\s+--from', content))
+    pkg_count = len(
+        re.findall(
+            r"apt-get\s+install|apk\s+add|pip\s+install|npm\s+install|yum\s+install",
+            content,
+        )
+    )
+    copy_from = len(re.findall(r"COPY\s+--from", content))
     return pkg_count > 0 or copy_from > 0
 
 
@@ -194,23 +218,25 @@ def filenames_match(target: str, candidate: str) -> bool:
 
     def normalize(s):
         s = s.lower()
-        s = re.sub(r'\$\{[^}]+\}', '', s)
-        s = re.sub(r'\$\w+', '', s)
-        s = re.sub(r'-+', '-', s)
-        s = s.strip('-._')
+        s = re.sub(r"\$\{[^}]+\}", "", s)
+        s = re.sub(r"\$\w+", "", s)
+        s = re.sub(r"-+", "-", s)
+        s = s.strip("-._")
         for ext in [".tar.gz", ".tgz", ".tar.xz", ".zip", ".bz2", ".xz"]:
             s = s.replace(ext, "")
-        s = re.sub(r'v(\d)', r'\1', s)
-        for pat in [r'[-_.]linux[-_.]amd64', r'[-_.]x86[-_.]64[-_.].*?$', r'[-_.]x86[-_.]64']:
-            s = re.sub(pat, '', s)
-        s = re.sub(r'-+', '-', s)
-        s = s.strip('-._')
+        s = re.sub(r"v(\d)", r"\1", s)
+        for pat in [
+            r"[-_.]linux[-_.]amd64",
+            r"[-_.]x86[-_.]64[-_.].*?$",
+            r"[-_.]x86[-_.]64",
+        ]:
+            s = re.sub(pat, "", s)
+        s = re.sub(r"-+", "-", s)
+        s = s.strip("-._")
         return s
 
     nt, nc = normalize(target), normalize(candidate)
-    if nt == nc or nt in nc or nc in nt:
-        return True
-    return False
+    return bool(nt == nc or nt in nc or nc in nt)
 
 
 def find_checksum_in_text(text: str, filename: str) -> str | None:
@@ -218,11 +244,11 @@ def find_checksum_in_text(text: str, filename: str) -> str | None:
         line = line.strip()
         if not line or line.startswith("#"):
             continue
-        m = re.match(r'^([0-9a-fA-F]{64})\s+[* ](.+)$', line)
+        m = re.match(r"^([0-9a-fA-F]{64})\s+[* ](.+)$", line)
         if not m:
-            m = re.match(r'^([0-9a-fA-F]{64})\s+\((.+)\)\s*=\s*SHA256', line)
+            m = re.match(r"^([0-9a-fA-F]{64})\s+\((.+)\)\s*=\s*SHA256", line)
         if not m:
-            m = re.match(r'^([0-9a-fA-F]{64})\s+(.+)', line)
+            m = re.match(r"^([0-9a-fA-F]{64})\s+(.+)", line)
         if m:
             h, fn = m.group(1).lower(), m.group(2).strip()
             if filenames_match(filename, fn):
@@ -285,7 +311,9 @@ def github_api_get(url: str) -> dict | None:
     return None
 
 
-def try_github_api_checksum(owner: str, repo: str, tag: str, filename: str) -> str | None:
+def try_github_api_checksum(
+    owner: str, repo: str, tag: str, filename: str
+) -> str | None:
     release_url = f"https://api.github.com/repos/{owner}/{repo}/releases/tags/{tag}"
     release = github_api_get(release_url)
     if release is None:
@@ -305,7 +333,10 @@ def try_github_api_checksum(owner: str, repo: str, tag: str, filename: str) -> s
         name = asset.get("name", "")
         if not filenames_match(filename, name):
             continue
-        if any(kw in name.lower() for kw in [".sha256", ".sha256sum", "checksum", "shasums"]):
+        if any(
+            kw in name.lower()
+            for kw in [".sha256", ".sha256sum", "checksum", "shasums"]
+        ):
             dl_url = asset.get("browser_download_url", "")
             text = http_get(dl_url)
             if text:
@@ -315,7 +346,10 @@ def try_github_api_checksum(owner: str, repo: str, tag: str, filename: str) -> s
 
     for asset in assets:
         name = asset.get("name", "")
-        if any(kw in name.lower() for kw in [".sha256", ".sha256sum", "checksum", "shasums"]):
+        if any(
+            kw in name.lower()
+            for kw in [".sha256", ".sha256sum", "checksum", "shasums"]
+        ):
             dl_url = asset.get("browser_download_url", "")
             text = http_get(dl_url)
             if text:
@@ -334,7 +368,7 @@ def try_github(owner: str, repo: str, tag: str, url: str, filename: str) -> str 
 
 
 def try_hashicorp(url: str, filename: str) -> str | None:
-    m = re.match(r'https://releases\.hashicorp\.com/([^/]+)/([^/]+)/(.+)', url)
+    m = re.match(r"https://releases\.hashicorp\.com/([^/]+)/([^/]+)/(.+)", url)
     if not m:
         return None
     product, version, fname = m.group(1), m.group(2), m.group(3)
@@ -349,7 +383,7 @@ def try_hashicorp(url: str, filename: str) -> str | None:
 
 
 def try_k8s(url: str) -> str | None:
-    m = re.match(r'https://dl\.k8s\.io/(release/[^/]+)/bin/([^/]+)/(.+)', url)
+    m = re.match(r"https://dl\.k8s\.io/(release/[^/]+)/bin/([^/]+)/(.+)", url)
     if not m:
         return None
     version, arch, binary = m.group(1), m.group(2), m.group(3)
@@ -357,23 +391,23 @@ def try_k8s(url: str) -> str | None:
     text = http_get(check_url)
     if text:
         h = text.strip()
-        if re.match(r'^[0-9a-fA-F]{64}$', h):
+        if re.match(r"^[0-9a-fA-F]{64}$", h):
             return h.lower()
     return None
 
 
 def try_helm(url: str, filename: str) -> str | None:
-    m = re.match(r'https://get\.helm\.sh/(.+)', url)
+    m = re.match(r"https://get\.helm\.sh/(.+)", url)
     if not m:
         return None
     fname = m.group(1)
-    for vname in [fname, re.sub(r'helm-', 'helm-v', fname, count=1)]:
+    for vname in [fname, re.sub(r"helm-", "helm-v", fname, count=1)]:
         for suffix in [".sha256sum", ".sha256"]:
             check_url = f"https://get.helm.sh/{vname}{suffix}"
             text = http_get(check_url)
             if text:
                 h = text.strip()
-                if re.match(r'^[0-9a-fA-F]{64}$', h):
+                if re.match(r"^[0-9a-fA-F]{64}$", h):
                     return h.lower()
                 found = find_checksum_in_text(text, filename)
                 if found:
@@ -392,7 +426,7 @@ def try_apache(url: str, filename: str) -> str | None:
             if suffix == ".sha512":
                 for line in text.splitlines():
                     line = line.strip()
-                    m = re.match(r'^([0-9a-fA-F]{128})\s+\*?(.+)', line)
+                    m = re.match(r"^([0-9a-fA-F]{128})\s+\*?(.+)", line)
                     if m and filenames_match(filename, m.group(2).strip()):
                         return "sha512:" + m.group(1).lower()
             else:
@@ -416,9 +450,9 @@ def try_elastic(url: str, filename: str) -> str | None:
         text = http_get(check_url)
         if text:
             h = text.strip()
-            if re.match(r'^[0-9a-fA-F]{64}$', h):
+            if re.match(r"^[0-9a-fA-F]{64}$", h):
                 return h.lower()
-            if re.match(r'^[0-9a-fA-F]{128}$', h):
+            if re.match(r"^[0-9a-fA-F]{128}$", h):
                 return "sha512:" + h.lower()
     return None
 
@@ -431,27 +465,31 @@ def try_maven(url: str, filename: str) -> str | None:
         text = http_get(check_url)
         if text:
             h = text.strip()
-            if suffix == ".sha256" and re.match(r'^[0-9a-fA-F]{64}$', h):
+            if suffix == ".sha256" and re.match(r"^[0-9a-fA-F]{64}$", h):
                 return h.lower()
-            if suffix == ".sha1" and re.match(r'^[0-9a-fA-F]{40}$', h):
+            if suffix == ".sha1" and re.match(r"^[0-9a-fA-F]{40}$", h):
                 return "sha1:" + h.lower()
-            if suffix == ".md5" and re.match(r'^[0-9a-fA-F]{32}$', h):
+            if suffix == ".md5" and re.match(r"^[0-9a-fA-F]{32}$", h):
                 return "md5:" + h.lower()
     return None
 
 
-def try_github_latest(owner: str, repo: str, filename: str, content: str) -> tuple[str | None, str]:
+def try_github_latest(
+    owner: str, repo: str, filename: str, content: str
+) -> tuple[str | None, str]:
     releases_url = f"https://api.github.com/repos/{owner}/{repo}/releases?per_page=5"
     releases = github_api_get(releases_url)
     if not releases or not isinstance(releases, list):
         return None, "failed"
 
     for release in releases:
-        tag = release.get("tag_name", "")
+        release.get("tag_name", "")
         assets = release.get("assets", [])
         for asset in assets:
             name = asset.get("name", "")
-            if any(kw in name.lower() for kw in ["sha256", "sha512", "checksum", "shasums"]):
+            if any(
+                kw in name.lower() for kw in ["sha256", "sha512", "checksum", "shasums"]
+            ):
                 dl_url = asset.get("browser_download_url", "")
                 text = http_get(dl_url)
                 if text:
@@ -466,7 +504,7 @@ def try_github_latest(owner: str, repo: str, filename: str, content: str) -> tup
                     text = http_get(dl_url + suffix)
                     if text:
                         h = text.strip()
-                        if re.match(r'^[0-9a-fA-F]{64}$', h):
+                        if re.match(r"^[0-9a-fA-F]{64}$", h):
                             return h, "github-api-latest"
     return None, "failed"
 
@@ -480,7 +518,9 @@ def try_download_compute(url: str) -> str | None:
                 return None
             content_length = resp.headers.get("Content-Length")
             if content_length and int(content_length) > 50 * 1024 * 1024:
-                log(f"    File too large ({int(content_length) // (1024*1024)}MB), skipping")
+                log(
+                    f"    File too large ({int(content_length) // (1024 * 1024)}MB), skipping"
+                )
                 return None
             chunks = []
             total = 0
@@ -497,9 +537,11 @@ def try_download_compute(url: str) -> str | None:
         return None
 
 
-def find_checksum(url: str, filename: str, content: str, allow_download: bool = True) -> tuple[str | None, str]:
+def find_checksum(
+    url: str, filename: str, content: str, allow_download: bool = True
+) -> tuple[str | None, str]:
     if "github.com" in url and "/releases/download/" in url:
-        m = re.search(r'github\.com/([^/]+)/([^/]+)/releases/download/([^/]+)/', url)
+        m = re.search(r"github\.com/([^/]+)/([^/]+)/releases/download/([^/]+)/", url)
         if m:
             owner, repo, tag = m.group(1), m.group(2), m.group(3)
             h = try_github(owner, repo, tag, url, filename)
@@ -554,7 +596,7 @@ def find_checksum(url: str, filename: str, content: str, allow_download: bool = 
 
 
 def parse_github_url(url: str) -> tuple[str, str, str] | None:
-    m = re.search(r'github\.com/([^/]+)/([^/]+)/releases/download/([^/]+)/', url)
+    m = re.search(r"github\.com/([^/]+)/([^/]+)/releases/download/([^/]+)/", url)
     if m:
         return m.group(1), m.group(2), m.group(3)
     return None
@@ -564,13 +606,15 @@ def find_download_line_info(content: str, download_url: str) -> dict | None:
     lines = content.splitlines()
     for i, line in enumerate(lines):
         if download_url in line and ("-o " in line or "-O " in line):
-            output_match = re.search(r'-o\s+(\S+)', line)
+            output_match = re.search(r"-o\s+(\S+)", line)
             output_file = output_match.group(1).strip("\\") if output_match else None
             return {"line_idx": i, "line": line, "output_file": output_file}
     return None
 
 
-def insert_checksum_new(content: str, download_info: dict, sha256: str, output_file: str, method: str) -> str | None:
+def insert_checksum_new(
+    content: str, download_info: dict, sha256: str, output_file: str, method: str
+) -> str | None:
     lines = content.splitlines()
     line_idx = download_info["line_idx"]
     original_line = download_info["line"]
@@ -584,14 +628,16 @@ def insert_checksum_new(content: str, download_info: dict, sha256: str, output_f
         checksum_str = sha256[7:]
         checksum_cmd = "sha1sum -c -"
 
-    dedent_match = re.match(r'^(\s*)', original_line)
+    dedent_match = re.match(r"^(\s*)", original_line)
     indent = dedent_match.group(1) if dedent_match else "    "
     extra_indent = indent + "    "
 
     if not output_file:
         return None
 
-    verify_line = f'{extra_indent}echo "{checksum_str}  {output_file}" | {checksum_cmd} || true'
+    verify_line = (
+        f'{extra_indent}echo "{checksum_str}  {output_file}" | {checksum_cmd} || true'
+    )
 
     if original_line.rstrip().endswith("\\"):
         lines.insert(line_idx + 1, verify_line)
@@ -617,19 +663,29 @@ def replace_pending_checksum(content: str, sha256: str) -> str | None:
         checksum_cmd = "md5sum"
 
     for i, line in enumerate(lines):
-        if "PENDING" in line and ("sha256sum" in line or "sha512sum" in line or "sha1sum" in line):
-            new_line = re.sub(r'PENDING_CHECKSUM|PENDING', checksum_str, line)
+        if "PENDING" in line and (
+            "sha256sum" in line or "sha512sum" in line or "sha1sum" in line
+        ):
+            new_line = re.sub(r"PENDING_CHECKSUM|PENDING", checksum_str, line)
             if checksum_cmd != "sha256sum":
                 new_line = new_line.replace("sha256sum", checksum_cmd)
             lines[i] = new_line
             return "\n".join(lines) + "\n"
 
     for i, line in enumerate(lines):
-        if ("sha256sum" in line or "sha512sum" in line or "sha1sum" in line) and "echo" in line:
+        if (
+            "sha256sum" in line or "sha512sum" in line or "sha1sum" in line
+        ) and "echo" in line:
             echo_match = re.search(r'echo\s+"([0-9a-fA-F_]+)\s+', line)
             if echo_match:
                 old_hash = echo_match.group(1)
-                if old_hash != checksum_str and (len(old_hash) != 64 or re.search(r'(012345|234567|345678|456789|567890|678901|789012|890123|901234){2,}', old_hash)):
+                if old_hash != checksum_str and (
+                    len(old_hash) != 64
+                    or re.search(
+                        r"(012345|234567|345678|456789|567890|678901|789012|890123|901234){2,}",
+                        old_hash,
+                    )
+                ):
                     lines[i] = line.replace(old_hash, checksum_str, 1)
                     if checksum_cmd != "sha256sum":
                         lines[i] = lines[i].replace("sha256sum", checksum_cmd)
@@ -655,29 +711,34 @@ def process_image(image_dir: Path, dry_run: bool = False) -> str:
     if not downloads:
         return "skip_no_downloads"
 
-    version = resolve_version(content)
+    resolve_version(content)
     resolved_downloads = []
     for dl in downloads:
         resolved_url = resolve_variables(dl["url"], content)
         filename = extract_filename_from_url(resolved_url)
         has_unresolved = "${" in resolved_url
-        resolved_downloads.append({
-            "url": resolved_url,
-            "filename": filename,
-            "output_file": dl["output_file"],
-            "cmd": dl["cmd"],
-            "line_idx": dl["line_idx"],
-            "line": dl["line"],
-            "has_unresolved": has_unresolved,
-        })
+        resolved_downloads.append(
+            {
+                "url": resolved_url,
+                "filename": filename,
+                "output_file": dl["output_file"],
+                "cmd": dl["cmd"],
+                "line_idx": dl["line_idx"],
+                "line": dl["line"],
+                "has_unresolved": has_unresolved,
+            }
+        )
 
     has_pending = "PENDING" in content or "PENDING_CHECKSUM" in content
     has_fake = False
     if not has_pending:
         for line in content.splitlines():
             if "sha256sum" in line or "sha512sum" in line:
-                fake_match = re.search(r'([0-9a-fA-F]{64})', line)
-                if fake_match and re.search(r'(012345|234567|345678|456789|567890|678901|789012|890123|901234){2,}', fake_match.group(1)):
+                fake_match = re.search(r"([0-9a-fA-F]{64})", line)
+                if fake_match and re.search(
+                    r"(012345|234567|345678|456789|567890|678901|789012|890123|901234){2,}",
+                    fake_match.group(1),
+                ):
                     has_fake = True
                     break
 
@@ -698,7 +759,9 @@ def process_image(image_dir: Path, dry_run: bool = False) -> str:
 
         if sha256 is None:
             allow_dl = not dl.get("has_unresolved")
-            sha256, method = find_checksum(dl["url"], dl["filename"], content, allow_download=allow_dl)
+            sha256, method = find_checksum(
+                dl["url"], dl["filename"], content, allow_download=allow_dl
+            )
 
         if sha256 is None:
             log(f"{name}: No checksum found for {dl['filename']}")
@@ -716,7 +779,9 @@ def process_image(image_dir: Path, dry_run: bool = False) -> str:
             checksum_type = "md5"
             display_hash = sha256[4:16]
 
-        log(f"{name}: {checksum_type}={display_hash}... ({method}) for {dl['filename']}")
+        log(
+            f"{name}: {checksum_type}={display_hash}... ({method}) for {dl['filename']}"
+        )
         results.append((dl, sha256, method))
 
     if not results:
@@ -749,7 +814,9 @@ def process_image(image_dir: Path, dry_run: bool = False) -> str:
     insertions.sort(key=lambda x: x[0]["line_idx"], reverse=True)
     modified = False
     for dl_info, sha256, output_file, method in insertions:
-        new_content = insert_checksum_new(current_content, dl_info, sha256, output_file, method)
+        new_content = insert_checksum_new(
+            current_content, dl_info, sha256, output_file, method
+        )
         if new_content:
             current_content = new_content
             modified = True
@@ -765,8 +832,12 @@ def process_image(image_dir: Path, dry_run: bool = False) -> str:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Bulk populate SHA256 checksums in Dockerfiles")
-    parser.add_argument("--dry-run", action="store_true", help="Show what would be done")
+    parser = argparse.ArgumentParser(
+        description="Bulk populate SHA256 checksums in Dockerfiles"
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Show what would be done"
+    )
     parser.add_argument("--image", type=str, help="Process only this image")
     args = parser.parse_args()
 
@@ -791,10 +862,12 @@ def main():
     total = len(image_dirs)
     for i, d in enumerate(image_dirs, 1):
         if i % 50 == 0:
-            print(f"\n--- Progress: {i}/{total} (added: {stats['added']}, "
-                  f"skipped: {stats['skip_has_checksum']+stats['skip_pkg_manager']+stats['skip_no_downloads']}, "
-                  f"failed: {stats['failed']}, "
-                  f"GitHub API calls: {github_api_calls}/{GITHUB_API_LIMIT}) ---\n")
+            print(
+                f"\n--- Progress: {i}/{total} (added: {stats['added']}, "
+                f"skipped: {stats['skip_has_checksum'] + stats['skip_pkg_manager'] + stats['skip_no_downloads']}, "
+                f"failed: {stats['failed']}, "
+                f"GitHub API calls: {github_api_calls}/{GITHUB_API_LIMIT}) ---\n"
+            )
 
         result = process_image(d, dry_run=args.dry_run)
         if result in stats:
@@ -805,7 +878,9 @@ def main():
     print()
     print("=" * 70)
     print("SUMMARY:")
-    print(f"  Checksums added (or would add): {stats['added'] + stats['dry_run_added']}")
+    print(
+        f"  Checksums added (or would add): {stats['added'] + stats['dry_run_added']}"
+    )
     print(f"  Already had real checksums:     {stats['skip_has_checksum']}")
     print(f"  Package manager only (skip):    {stats['skip_pkg_manager']}")
     print(f"  No downloads found (skip):      {stats['skip_no_downloads']}")

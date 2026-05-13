@@ -14,12 +14,12 @@ def parse_dockerfile(path):
 
     info = {}
 
-    m = re.search(r'ARG\s+VERSION[=\s]([^\s]+)', content)
+    m = re.search(r"ARG\s+VERSION[=\s]([^\s]+)", content)
     version = m.group(1) if m else ""
     if not version or version.startswith("$"):
         version = ""
     if not version:
-        m = re.search(r'releases/download/v?(\d+\.\d+[\.\d]*(?:-[\w\.\+]+)?)', content)
+        m = re.search(r"releases/download/v?(\d+\.\d+[\.\d]*(?:-[\w\.\+]+)?)", content)
         if m:
             version = m.group(1)
     if not version:
@@ -32,64 +32,80 @@ def parse_dockerfile(path):
         version = "unknown"
     info["version"] = version
 
-    froms = re.findall(r'^FROM\s+(\S+)', content, re.MULTILINE)
+    froms = re.findall(r"^FROM\s+(\S+)", content, re.MULTILINE)
     if froms:
         info["base"] = froms[-1]
     else:
         info["base"] = "scratch"
 
-    m = re.search(r'^USER\s+(\S+)', content, re.MULTILINE)
+    m = re.search(r"^USER\s+(\S+)", content, re.MULTILINE)
     info["user"] = m.group(1) if m else "65532:65532"
 
-    m = re.search(r'^STOPSIGNAL\s+(\S+)', content, re.MULTILINE)
+    m = re.search(r"^STOPSIGNAL\s+(\S+)", content, re.MULTILINE)
     info["stopsignal"] = m.group(1) if m else "SIGTERM"
 
-    info["expose"] = re.findall(r'^EXPOSE\s+(\S+)', content, re.MULTILINE)
+    info["expose"] = re.findall(r"^EXPOSE\s+(\S+)", content, re.MULTILINE)
 
-    m = re.search(r'^ENTRYPOINT\s+\[(.+)\]', content, re.MULTILINE)
+    m = re.search(r"^ENTRYPOINT\s+\[(.+)\]", content, re.MULTILINE)
     if m:
-        info["entrypoint"] = [x.strip().strip('"').strip("'") for x in m.group(1).split(",")]
+        info["entrypoint"] = [
+            x.strip().strip('"').strip("'") for x in m.group(1).split(",")
+        ]
 
-    m = re.search(r'^CMD\s+\[(.+)\]', content, re.MULTILINE)
+    m = re.search(r"^CMD\s+\[(.+)\]", content, re.MULTILINE)
     if m:
         info["cmd"] = [x.strip().strip('"').strip("'") for x in m.group(1).split(",")]
 
     labels = {}
     for m in re.finditer(r'LABEL\s+(evergreen\.\S+?)=["\']([^"\']+)["\']', content):
         labels[m.group(1)] = m.group(2)
-    for m in re.finditer(r'LABEL\s+(org\.opencontainers\.\S+?)=["\']([^"\']+)["\']', content):
+    for m in re.finditer(
+        r'LABEL\s+(org\.opencontainers\.\S+?)=["\']([^"\']+)["\']', content
+    ):
         labels[m.group(1)] = m.group(2)
     for m in re.finditer(r'LABEL\s+(maintainer\S+?)=["\']([^"\']+)["\']', content):
         labels[m.group(1)] = m.group(2)
-    label_blocks = re.findall(r'LABEL\s+(.+?)(?=\n(?:LABEL|EXPOSE|STOPSIGNAL|ENTRYPOINT|CMD|USER|FROM|HEALTHCHECK|#|\n\n|$))', content, re.DOTALL)
+    label_blocks = re.findall(
+        r"LABEL\s+(.+?)(?=\n(?:LABEL|EXPOSE|STOPSIGNAL|ENTRYPOINT|CMD|USER|FROM|HEALTHCHECK|#|\n\n|$))",
+        content,
+        re.DOTALL,
+    )
     for block in label_blocks:
         for m in re.finditer(r'(\S+?)="([^"]*)"', block):
             k, v = m.group(1), m.group(2)
-            if k.startswith("evergreen.") or k.startswith("org.opencontainers.") or k == "maintainer":
+            if (
+                k.startswith("evergreen.")
+                or k.startswith("org.opencontainers.")
+                or k == "maintainer"
+            ):
                 labels[k] = v
     info["labels"] = labels
 
-    if re.search(r'AS\s+upstream', content, re.IGNORECASE):
+    if re.search(r"AS\s+upstream", content, re.IGNORECASE):
         info["source_type"] = "docker-image"
-        m = re.search(r'FROM\s+(\S+)\s+AS\s+upstream', content, re.IGNORECASE)
+        m = re.search(r"FROM\s+(\S+)\s+AS\s+upstream", content, re.IGNORECASE)
         if m:
             info["source_url"] = m.group(1)
-    elif re.search(r'apk add|apk fetch', content) or re.search(r'apt-get install|apt-get update', content) or re.search(r'microdnf install|dnf install|yum install', content):
+    elif (
+        re.search(r"apk add|apk fetch", content)
+        or re.search(r"apt-get install|apt-get update", content)
+        or re.search(r"microdnf install|dnf install|yum install", content)
+    ):
         info["source_type"] = "package-manager"
-    elif re.search(r'git clone|git checkout', content):
+    elif re.search(r"git clone|git checkout", content):
         info["source_type"] = "git-clone"
-    elif re.search(r'go build|go install|go mod', content):
+    elif re.search(r"go build|go install|go mod", content):
         info["source_type"] = "go-source"
-    elif re.search(r'cargo build|cargo install|Cargo\.toml', content):
+    elif re.search(r"cargo build|cargo install|Cargo\.toml", content):
         info["source_type"] = "cargo-source"
-    elif re.search(r'cmake|make\s+install|\.\/configure', content):
+    elif re.search(r"cmake|make\s+install|\.\/configure", content):
         info["source_type"] = "build-from-source"
-    elif re.search(r'curl.*-o\s|wget\s+-O', content):
+    elif re.search(r"curl.*-o\s|wget\s+-O", content):
         info["source_type"] = "direct-download"
         urls = re.findall(r'curl[^|\n]*?["\']?(https?://[^"\'\s\|]+)["\']?', content)
         if urls:
             info["source_url"] = urls[0]
-    elif re.search(r'pip install|pip3 install', content):
+    elif re.search(r"pip install|pip3 install", content):
         info["source_type"] = "package-manager"
     else:
         info["source_type"] = "base-image"
@@ -121,9 +137,7 @@ def generate_manifest(image_name, info):
         lines.append(f'url = "{info["source_url"]}"')
     lines.append("")
 
-    has_runtime = False
     if info.get("entrypoint") or info.get("cmd"):
-        has_runtime = True
         lines.append("[runtime]")
         if info.get("entrypoint"):
             ep = ", ".join(f'"{x}"' for x in info["entrypoint"])
@@ -149,7 +163,14 @@ def generate_manifest(image_name, info):
         sov_keys = sorted([k for k in labels if k.startswith("evergreen.")])
         for k in sov_keys:
             lines.append(f'"{k}" = "{labels[k]}"')
-        other_keys = sorted([k for k in labels if not k.startswith("org.opencontainers.") and not k.startswith("evergreen.")])
+        other_keys = sorted(
+            [
+                k
+                for k in labels
+                if not k.startswith("org.opencontainers.")
+                and not k.startswith("evergreen.")
+            ]
+        )
         for k in other_keys:
             lines.append(f'"{k}" = "{labels[k]}"')
         lines.append("")
@@ -210,14 +231,14 @@ def migrate_existing_manifest(manifest_path, dockerfile_path):
         old_tier = m.group(1)
 
     old_user = ""
-    m = re.search(r'^USER\s+(\S+)', df_content, re.MULTILINE)
+    m = re.search(r"^USER\s+(\S+)", df_content, re.MULTILINE)
     if m:
         old_user = m.group(1)
     else:
         old_user = "65532:65532"
 
     old_stopsignal = ""
-    m = re.search(r'^STOPSIGNAL\s+(\S+)', df_content, re.MULTILINE)
+    m = re.search(r"^STOPSIGNAL\s+(\S+)", df_content, re.MULTILINE)
     if m:
         old_stopsignal = m.group(1)
     else:
@@ -231,7 +252,7 @@ def migrate_existing_manifest(manifest_path, dockerfile_path):
     source_type = df_info.get("source_type", "direct-download")
     source_url = df_info.get("source_url", old_download_url)
 
-    old_expose = re.findall(r'^EXPOSE\s+(\S+)', df_content, re.MULTILINE)
+    old_expose = re.findall(r"^EXPOSE\s+(\S+)", df_content, re.MULTILINE)
 
     old_entrypoint = df_info.get("entrypoint")
     old_cmd = df_info.get("cmd")
@@ -242,7 +263,9 @@ def migrate_existing_manifest(manifest_path, dockerfile_path):
     lines.append("[metadata]")
     lines.append(f'name = "{image_name}"')
     lines.append(f'version = "{old_version or df_info.get("version", "unknown")}"')
-    lines.append(f'description = "{old_description or f"{image_name} container image"}"')
+    lines.append(
+        f'description = "{old_description or f"{image_name} container image"}"'
+    )
     if old_vendor:
         lines.append(f'vendor = "{old_vendor}"')
     if old_source:
@@ -289,7 +312,14 @@ def migrate_existing_manifest(manifest_path, dockerfile_path):
         sov_keys = sorted([k for k in old_labels if k.startswith("evergreen.")])
         for k in sov_keys:
             lines.append(f'"{k}" = "{old_labels[k]}"')
-        other_keys = sorted([k for k in old_labels if not k.startswith("org.opencontainers.") and not k.startswith("evergreen.")])
+        other_keys = sorted(
+            [
+                k
+                for k in old_labels
+                if not k.startswith("org.opencontainers.")
+                and not k.startswith("evergreen.")
+            ]
+        )
         for k in other_keys:
             lines.append(f'"{k}" = "{old_labels[k]}"')
         lines.append("")

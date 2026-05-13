@@ -66,7 +66,7 @@ def fix_base_label(content: str) -> tuple[str, str | None]:
     if not match:
         return content, None
     actual_base = get_final_stage_base(content)
-    old_val = match.group(1)
+    match.group(1)
     new_content = re.sub(
         r'evergreen\.constraint\.base="(debian-slim|alpine)"',
         f'evergreen.constraint.base="{actual_base}"',

@@ -12,3 +12,6 @@ MD031: true # Fenced code blocks should be surrounded by blank lines
 
 ignore:
   - '.github/ISSUE_TEMPLATE/'
+  - '.specs/archive/'
+  - 'images/*/README.md'
+  - 'node_modules/'

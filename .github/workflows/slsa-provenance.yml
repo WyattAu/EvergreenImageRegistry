@@ -12,10 +12,15 @@ permissions:
   contents: read
   packages: write
 
+concurrency:
+  group: provenance-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   prepare:
     name: Prepare Provenance
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
@@ -103,6 +108,7 @@ jobs:
     name: "SLSA ${{ matrix.image }}"
     needs: prepare
     if: ${{ needs.prepare.result == 'success' && needs.prepare.outputs.total != '0' }}
+    timeout-minutes: 60
     uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
     strategy:
       fail-fast: false
@@ -118,6 +124,7 @@ jobs:
   summary:
     name: Provenance Summary
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     needs: [prepare, generate-provenance]
     if: always()
     steps:

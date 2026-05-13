@@ -2,8 +2,8 @@
 
 ## Status
 - **Phase:** 63
-- **Version:** v26.11.0
-- **Status:** Stable - Phase 60 complete: 61 tests (53 unit + 8 integration), outdated.rs hardened, 946 real test configs
+- **Version:** v26.12.0
+- **Status:** Stable - Phase 62 complete: CI hardened (timeouts, concurrency, cargo audit, ruff, shellcheck, go vet, digest-pin check)
 - **Last Updated:** 2026-05-13
 
 ## Quality Scorecard

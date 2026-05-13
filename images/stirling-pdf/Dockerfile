@@ -1,8 +1,10 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=2.10.0
 ARG GITHUB_TOKEN
+ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates dpkg && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/Stirling-Tools/Stirling-PDF/releases/download/v${VERSION}/Stirling-PDF-linux-x86_64.deb" -o /stirling-pdf.deb || true ; \
+    ARCH=$(case ${TARGETARCH} in amd64) echo "x86_64" ;; arm64) echo "arm64" ;; *) echo "x86_64" ;; esac) && \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/Stirling-Tools/Stirling-PDF/releases/download/v${VERSION}/Stirling-PDF-linux-${ARCH}.deb" -o /stirling-pdf.deb || true ; \
     echo "36418b154a8eb61a28a0d3da792f6e95ba4f46584d78399c0f5e163bd3cd72fd  /stirling-pdf.deb" | sha256sum -c || true ; \
     if [ -f /stirling-pdf.deb ]; then dpkg -i /stirling-pdf.deb && rm -f /stirling-pdf.deb ; fi ; \
     mkdir -p /opt/stirling-pdf && \
@@ -11,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache ca-certificates curl 
+RUN apk add --no-cache ca-certificates curl
 COPY --from=downloader /opt/stirling-pdf /opt/stirling-pdf
 RUN mkdir -p /app /var/log/stirling-pdf && \
     chown -R 65532:65532 /app /var/log/stirling-pdf /opt/stirling-pdf

@@ -8,6 +8,7 @@
 ARG VERSION=17.2
 ARG BUILD_DATE
 
+ARG TARGETARCH
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -42,6 +43,7 @@ LABEL org.opencontainers.image.title="postgresql-17" \
       org.opencontainers.image.version="17.2" \
       org.opencontainers.image.description="PostgreSQL 17 Database Server" \
       org.opencontainers.image.vendor="PostgreSQL Global Development Group" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       org.opencontainers.image.source="https://www.postgresql.org/" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \

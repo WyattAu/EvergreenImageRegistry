@@ -1,6 +1,6 @@
 [metadata]
 name = "caddy"
-version = "2.7.6"
+version = "2.11.3"
 description = "Caddy - powerful enterprise-ready open source web server"
 vendor = "Caddy"
 source = "https://github.com/caddyserver/caddy"
@@ -14,7 +14,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-url = "https://github.com/caddy/caddy/releases/download/v2.7.6/caddy-2.7.6-linux-amd64.tar.gz"
+url = "https://github.com/caddyserver/caddy/releases/download/v2.11.3/caddy-2.11.3-linux-amd64.tar.gz"
 
 [runtime]
 entrypoint = ["/caddy"]
@@ -25,7 +25,7 @@ expose = [80, 9101]
 [labels]
 "org.opencontainers.image.title" = "caddy"
 "org.opencontainers.image.vendor" = "Caddy"
-"org.opencontainers.image.version" = "2.7.6"
+"org.opencontainers.image.version" = "2.11.3"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"

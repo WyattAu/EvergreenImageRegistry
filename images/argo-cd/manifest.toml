@@ -1,6 +1,6 @@
 [metadata]
 name = "argo-cd"
-version = "3.3.8"
+version = "3.4.2"
 description = "Argo CD - declarative GitOps continuous delivery for Kubernetes"
 vendor = "Argo Project"
 source = "https://github.com/argoproj/argo-cd"
@@ -14,7 +14,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-url = "https://github.com/argoproj/argo-cd/releases/download/v3.3.8/argocd-linux-amd64"
+url = "https://github.com/argoproj/argo-cd/releases/download/v3.4.2/argocd-linux-amd64"
 
 [runtime]
 entrypoint = ["/argocd"]
@@ -26,7 +26,7 @@ expose = [9101]
 "org.opencontainers.image.description" = "Evergreen hardened argo-cd - GitOps CD tool"
 "org.opencontainers.image.title" = "argo-cd"
 "org.opencontainers.image.vendor" = "Argo Project"
-"org.opencontainers.image.version" = "3.3.8"
+"org.opencontainers.image.version" = "3.4.2"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"

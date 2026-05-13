@@ -1,6 +1,6 @@
 [metadata]
 name = "cockroachdb"
-version = "23.2.3"
+version = "24.3.0"
 description = "CockroachDB - distributed SQL database"
 vendor = "Cockroach Labs"
 source = "https://github.com/cockroachdb/cockroach"
@@ -14,7 +14,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-url = "https://github.com/cockroachdb/cockroachdb/releases/download/v23.2.3/cockroachdb-23.2.3-linux-amd64.tar.gz"
+url = "https://github.com/cockroachdb/cockroachdb/releases/download/v24.3.0/cockroachdb-24.3.0-linux-amd64.tar.gz"
 
 [runtime]
 entrypoint = ["/usr/local/bin/cockroach"]

@@ -8,6 +8,7 @@
 ARG VERSION=2024.4.2
 ARG BUILD_DATE
 
+ARG TARGETARCH
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 RUN apk add --no-cache ca-certificates curl python3 || true && \
@@ -23,6 +24,7 @@ LABEL org.opencontainers.image.title="homeassistant" \
       org.opencontainers.image.description="Home Assistant - open source home automation platform" \
       org.opencontainers.image.version="2024.4.2" \
       org.opencontainers.image.vendor="Home Assistant" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       evergreen.image.tier="2" \
       evergreen.constraint.nonroot="true" \
       evergreen.base.image="wolfi" \

@@ -8,6 +8,7 @@
 ARG VERSION=1.6.26
 ARG BUILD_DATE
 
+ARG TARGETARCH
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN useradd -m -u 65532 -s /usr/bin/false memcached 2>/dev/null || true && \
@@ -30,6 +31,7 @@ LABEL org.opencontainers.image.title="memcached" \
       org.opencontainers.image.description="Memcached - high-performance distributed memory caching system" \
       org.opencontainers.image.version="1.6.26" \
       org.opencontainers.image.vendor="Memcached" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       evergreen.image.tier="2" \
       evergreen.constraint.nonroot="true" \
       evergreen.constraint.hardened="true" \

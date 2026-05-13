@@ -93,6 +93,8 @@ jobs:
           cargo audit --manifest-path evergreenctl/Cargo.toml
       - name: Run cargo test
         run: cargo test --manifest-path evergreenctl/Cargo.toml
+      - name: Run cargo build --release
+        run: cargo build --release --manifest-path evergreenctl/Cargo.toml
 
   # Python code quality: syntax + ruff lint
   python-quality:
@@ -169,3 +171,99 @@ jobs:
         run: go vet ./images/health-shim/...
       - name: Run go build
         run: go build ./images/health-shim/...
+
+  # Lint GitHub Actions workflow files
+  actionlint:
+    name: Actionlint (Workflow Linter)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install actionlint
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash | bash -s -- -b /usr/local/bin
+      - name: Run actionlint
+        run: actionlint .github/workflows/*.yml
+
+  # Validate all manifest.toml files
+  manifest-validation:
+    name: Manifest TOML Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate manifest.toml files
+        run: |
+          python3 -c "
+          import tomllib, sys
+          from pathlib import Path
+          total = 0
+          errors = 0
+          for m in sorted(Path('images').rglob('manifest.toml')):
+              total += 1
+              try:
+                  with open(m, 'rb') as f:
+                      tomllib.load(f)
+              except Exception as e:
+                  print(f'FAIL: {m}: {e}', file=sys.stderr)
+                  errors += 1
+          print(f'Manifest TOML: {total - errors}/{total} valid')
+          if errors > 0:
+              sys.exit(1)
+          "
+
+  # Validate all SBOM files
+  sbom-validation:
+    name: SBOM JSON Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate SBOM files
+        run: |
+          python3 -c "
+          import json, sys
+          from pathlib import Path
+          total = 0
+          errors = 0
+          for s in sorted(Path('images').rglob('sbom.spdx.json')):
+              total += 1
+              try:
+                  with open(s) as f:
+                      data = json.load(f)
+                  if 'spdxVersion' not in data:
+                      print(f'FAIL: {s}: missing spdxVersion', file=sys.stderr)
+                      errors += 1
+              except Exception as e:
+                  print(f'FAIL: {s}: {e}', file=sys.stderr)
+                  errors += 1
+          print(f'SBOM validation: {total - errors}/{total} valid')
+          if errors > 0:
+              sys.exit(1)
+          "
+
+  # Enforce Alpine ban in CI
+  no-alpine:
+    name: No Alpine Base Images
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for Alpine base images
+        run: |
+          ALPINE=$(grep -rni 'FROM.*alpine' images/*/Dockerfile 2>/dev/null || true)
+          if [ -n "$ALPINE" ]; then
+            echo "::error::Alpine base images detected (BANNED):"
+            echo "$ALPINE"
+            exit 1
+          else
+            echo "No Alpine base images found"
+          fi

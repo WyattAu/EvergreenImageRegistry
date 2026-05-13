@@ -8,6 +8,7 @@
 ARG VERSION=1.23.1
 ARG BUILD_DATE
 
+ARG TARGETARCH
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 RUN apk add --no-cache nodejs-20 npm ca-certificates && \
@@ -23,6 +24,7 @@ LABEL org.opencontainers.image.title="uptime-kuma" \
       org.opencontainers.image.description="uptime-kuma container image" \
       org.opencontainers.image.version="1.23.1" \
       org.opencontainers.image.vendor="Uptime Kuma" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       evergreen.image.tier="2" \
       evergreen.constraint.nonroot="true" \
       evergreen.base.image="wolfi" \

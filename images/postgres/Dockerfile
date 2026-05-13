@@ -8,6 +8,7 @@
 ARG VERSION=17.4
 ARG BUILD_DATE
 
+ARG TARGETARCH
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN useradd -m -u 65532 -s /usr/bin/false postgres 2>/dev/null || true && \
@@ -30,6 +31,7 @@ LABEL org.opencontainers.image.title="postgres" \
       org.opencontainers.image.description="PostgreSQL - advanced open source relational database" \
       org.opencontainers.image.version="17.4" \
       org.opencontainers.image.vendor="PostgreSQL" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \
       evergreen.constraint.hardened="true" \

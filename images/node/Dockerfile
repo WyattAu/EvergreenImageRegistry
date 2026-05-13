@@ -8,6 +8,7 @@
 ARG VERSION=20.12.2
 ARG BUILD_DATE
 
+ARG TARGETARCH
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -33,6 +34,7 @@ LABEL org.opencontainers.image.title="node" \
       org.opencontainers.image.description="node container image" \
       org.opencontainers.image.version="20.12.2" \
       org.opencontainers.image.vendor="Node.js" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       evergreen.image.tier="2" \
       evergreen.constraint.nonroot="true" \
       evergreen.constraint.hardened="true" \

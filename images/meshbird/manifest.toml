@@ -1,6 +1,7 @@
 [metadata]
 name = "meshbird"
 version = "0.4.0"
+deprecated = true
 description = "Distributed private networking mesh VPN"
 
 [build]

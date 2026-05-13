@@ -1,4 +1,5 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
+ARG TARGETARCH
 ARG VERSION=10.4.1
 ARG NODE_MAJOR=20
 RUN apt-get update && \
@@ -33,6 +34,7 @@ LABEL org.opencontainers.image.title="grafana-toolkit" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Grafana Labs" \
       org.opencontainers.image.description="Grafana plugin toolkit CLI for building and testing plugins" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \
       evergreen.base.image="wolfi" \

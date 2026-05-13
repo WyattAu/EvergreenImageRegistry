@@ -108,12 +108,12 @@ struct ChangeEntry {
     classification: ChangeClassification,
 }
 
-struct ChangeClassification {
-    change_type: String,
-    details: Vec<String>,
+pub struct ChangeClassification {
+    pub change_type: String,
+    pub details: Vec<String>,
 }
 
-fn classify_change(_file_name: &str, diff: &str) -> ChangeClassification {
+pub fn classify_change(_file_name: &str, diff: &str) -> ChangeClassification {
     let mut details = Vec::new();
 
     let is_new_file = diff.lines().any(|l| l.contains("new file"));

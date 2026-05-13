@@ -104,6 +104,7 @@ pub fn dockerfile_to_manifest(dockerfile_path: &Path, image_name: &str) -> Resul
             source: github_source.unwrap_or_default(),
             license: String::new(),
             tier: tier.to_string(),
+            deprecated: false,
         },
         build: Build {
             base: build_base,

@@ -1,6 +1,7 @@
 pub mod audit;
 pub mod bump;
 pub mod ci_diff;
+pub mod deprecated;
 pub mod discover;
 pub mod drift;
 pub mod generate;
@@ -8,6 +9,7 @@ pub mod manifest;
 pub mod migrate;
 pub mod outdated;
 pub mod pin_digests;
+pub mod report;
 pub mod sign;
 pub mod snapshot;
 pub mod verify;

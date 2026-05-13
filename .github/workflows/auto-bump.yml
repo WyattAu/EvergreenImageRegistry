@@ -3,6 +3,17 @@ on:
   schedule:
     - cron: '0 6 * * 1'
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (no PR created)"
+        required: false
+        default: "false"
+        type: boolean
+      batch_size:
+        description: "Max images per PR batch"
+        required: false
+        default: "25"
+        type: string
 
 concurrency:
   group: ${{ github.workflow }}
@@ -29,6 +40,10 @@ jobs:
     needs: check-upstream
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    outputs:
+      has_changes: ${{ steps.detect.outputs.has_changes }}
+      outdated_count: ${{ steps.detect.outputs.outdated_count }}
+      batch_count: ${{ steps.batch.outputs.batch_count }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -49,25 +64,33 @@ jobs:
         run: cd evergreenctl && cargo build --release
 
       - name: Check for outdated images
+        id: detect
         run: |
           ./evergreenctl/target/release/evergreenctl outdated --all images/ > /tmp/outdated.txt 2>&1 || true
           echo "=== Outdated images ==="
           cat /tmp/outdated.txt
 
+          OUTDATED_COUNT=$(grep -c "OUTDATED" /tmp/outdated.txt 2>/dev/null || echo "0")
+          echo "outdated_count=${OUTDATED_COUNT}" >> "$GITHUB_OUTPUT"
+
+          if [ "$OUTDATED_COUNT" -eq 0 ]; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "No outdated images found, skipping bump"
+            exit 0
+          fi
+
+          echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          echo "Found ${OUTDATED_COUNT} outdated images"
+
       - name: Bump outdated versions
+        id: batch
+        if: steps.detect.outputs.has_changes == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           chmod +x scripts/bump_versions.sh scripts/bump_all_outdated.sh
 
-          OUTDATED_COUNT=$(grep -c "OUTDATED" /tmp/outdated.txt 2>/dev/null || echo "0")
-          echo "Found ${OUTDATED_COUNT} outdated images"
-
-          if [ "$OUTDATED_COUNT" -eq 0 ]; then
-            echo "No outdated images found, skipping bump"
-            exit 0
-          fi
-
+          BATCH_SIZE="${{ inputs.batch_size || '25' }}"
           ./scripts/bump_all_outdated.sh /tmp/outdated.txt || true
 
           if [ -z "$(git status --porcelain)" ]; then
@@ -77,29 +100,127 @@ jobs:
             echo "has_changes=true" >> "$GITHUB_ENV"
             echo "=== Changed files ==="
             git diff --stat
+
+            CHANGED_IMAGES=$(git diff --name-only | grep -oP '^images/\K[^/]+' | sort -u)
+            CHANGED_COUNT=$(echo "$CHANGED_IMAGES" | grep -c . || echo "0")
+            echo "changed_count=${CHANGED_COUNT}" >> "$GITHUB_OUTPUT"
+
+            BATCH_COUNT=$(( (CHANGED_COUNT + BATCH_SIZE - 1) / BATCH_SIZE ))
+            echo "batch_count=${BATCH_COUNT}" >> "$GITHUB_OUTPUT"
+            echo "Will create up to ${BATCH_COUNT} PR batch(es) (batch_size=${BATCH_SIZE})"
+
+            echo "CHANGED_IMAGES<<EOF" >> "$GITHUB_ENV"
+            echo "$CHANGED_IMAGES" >> "$GITHUB_ENV"
+            echo "EOF" >> "$GITHUB_ENV"
           fi
 
-      - name: Create Pull Request
+      - name: Generate changelog
+        if: env.has_changes == 'true'
+        run: |
+          python3 -c "
+          import subprocess, re
+          result = subprocess.run(['git', 'diff', '--stat'], capture_output=True, text=True)
+          print('## Changed Files Summary')
+          print()
+          print(result.stdout)
+          print()
+          print('### Version Changes')
+          print()
+          result2 = subprocess.run(['git', 'diff'], capture_output=True, text=True)
+          for line in result2.stdout.splitlines():
+              if 'VERSION' in line and 'ARG' in line:
+                  print(f'- {line.strip()}')
+          " > /tmp/changelog.md
+          cat /tmp/changelog.md
+
+      - name: Create Pull Request (single batch or dry run)
         if: env.has_changes == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           title: "chore: auto-bump outdated image versions"
-          body: |
-            ## Automated Version Bumps
-
-            This PR was created by the weekly auto-bump workflow.
-
-            **Action:** Review the changes, verify checksums for `NEEDS_UPDATE` entries,
-            and merge when ready.
-
-            Files changed may include:
-            - `Dockerfile` (ARG VERSION, OCI labels)
-            - `CHECKSUMS` (version, URL, sha256)
-            - `manifest.toml` (version, source URL)
+          body-path: /tmp/changelog.md
           branch: auto-bump/versions
           delete-branch: true
           labels: |
             automated
             dependencies
+            do-not-merge-automatically
+          reviewers: ${{ github.repository_owner }}
+          draft: ${{ inputs.dry_run == 'true' }}
           commit-message: "chore: auto-bump {image} to {version}"
           signoff: false
+
+  bump-batched:
+    needs: bump
+    if: needs.bump.outputs.batch_count > 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      matrix:
+        batch_index: ${{ fromJson(format('[{0}]', range(fromJson(needs.bump.outputs.batch_count)))) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: auto-bump/versions
+          fetch-depth: 0
+
+      - name: "Create batch PR ${{ matrix.batch_index }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BATCH_SIZE="${{ inputs.batch_size || '25' }}"
+          INDEX="${{ matrix.batch_index }}"
+          CHANGED_IMAGES="${CHANGED_IMAGES}"
+
+          BATCH=$(echo "$CHANGED_IMAGES" | sed -n "$((INDEX * BATCH_SIZE + 1)),$(( (INDEX + 1) * BATCH_SIZE ))p")
+
+          if [ -z "$BATCH" ]; then
+            echo "Empty batch ${INDEX}, skipping"
+            exit 0
+          fi
+
+          echo "Batch ${INDEX} images:"
+          echo "$BATCH"
+
+          CHANGED_FILES=""
+          for img in $BATCH; do
+            FILES=$(git diff --name-only main -- "images/${img}/" 2>/dev/null)
+            if [ -n "$FILES" ]; then
+              CHANGED_FILES="${CHANGED_FILES} ${FILES}"
+            fi
+          done
+
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No changed files for batch ${INDEX}, skipping"
+            exit 0
+          fi
+
+          IMAGE_LIST=$(echo "$BATCH" | tr '\n' ', ' | sed 's/,$//')
+
+          git checkout -b "auto-bump/batch-${INDEX}" origin/main 2>/dev/null || git checkout -b "auto-bump/batch-${INDEX}"
+
+          for f in $CHANGED_FILES; do
+            git checkout auto-bump/versions -- "$f" 2>/dev/null || true
+          done
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: auto-bump batch ${INDEX} - ${IMAGE_LIST}" || {
+            echo "Nothing to commit for batch ${INDEX}"
+            exit 0
+          }
+          git push -u origin "auto-bump/batch-${INDEX}" -f
+
+          gh pr create \
+            --title "chore: auto-bump batch ${INDEX} - ${IMAGE_LIST}" \
+            --body "## Automated Version Bumps (Batch ${INDEX})
+
+          This PR was created by the weekly auto-bump workflow.
+
+          **Images in this batch:** ${IMAGE_LIST}
+
+          **Action:** Review the changes, verify checksums, and merge when ready.
+          This PR requires human approval and will NOT be auto-merged." \
+            --label "automated,dependencies,do-not-merge-automatically" \
+            --reviewer "${{ github.repository_owner }}"

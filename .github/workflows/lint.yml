@@ -10,11 +10,15 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   # Check for consistent formatting with Prettier
   prettier-check:
     name: Prettier Format Check
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - name: Install Prettier
@@ -26,6 +30,7 @@ jobs:
   hadolint:
     name: Hadolint (Dockerfile Linter)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - name: Run hadolint
@@ -38,6 +43,7 @@ jobs:
   markdownlint:
     name: MarkdownLint
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - name: Run markdownlint
@@ -49,6 +55,7 @@ jobs:
   yamllint:
     name: YAMLLint
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - name: Run yamllint
@@ -61,6 +68,7 @@ jobs:
   rust-quality:
     name: Rust Quality (clippy + fmt + audit + test)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - name: Install Rust toolchain
@@ -90,6 +98,7 @@ jobs:
   python-quality:
     name: Python Quality (ruff + syntax)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -113,6 +122,7 @@ jobs:
   shell-quality:
     name: Shell Quality (shellcheck + syntax)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - name: Install shellcheck
@@ -126,10 +136,29 @@ jobs:
           find . -name '*.sh' -not -path './.git/*' -print0 | \
             xargs -0 -I{} bash -n {}
 
+  # Check for unpinned FROM lines in Dockerfiles (supply chain integrity)
+  digest-pin-check:
+    name: Digest Pin Check (unpinned FROM lines)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for unpinned FROM lines
+        run: |
+          UNPINNED=$(grep -rn '^FROM ' images/*/Dockerfile 2>/dev/null | grep -v '@sha256:' | grep -v 'FROM scratch' | grep -v 'FROM SCRATCH' || true)
+          if [ -n "$UNPINNED" ]; then
+            COUNT=$(echo "$UNPINNED" | wc -l)
+            echo "::warning::$COUNT unpinned FROM lines found (supply chain integrity)"
+            echo "$UNPINNED"
+          else
+            echo "All FROM lines are pinned or scratch"
+          fi
+
   # Go code quality
   go-quality:
     name: Go Quality (vet + build)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - name: Set up Go

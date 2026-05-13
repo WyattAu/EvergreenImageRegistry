@@ -210,6 +210,10 @@ if command -v python3 &>/dev/null; then
                     echo -e "  ${RED}[FAIL]${NC} $df: Alpine base detected (BANNED)"
                     constraint_errors=$((constraint_errors + 1))
                 fi
+                # Check for unpinned FROM (supply chain)
+                if grep -E '^\s*FROM\s+' "$df" 2>/dev/null | grep -v '@sha256:' | grep -vqi 'scratch'; then
+                    echo -e "  ${YELLOW}[WARN]${NC} $df: Unpinned FROM line detected"
+                fi
             fi
         done
         if [ "$constraint_errors" -eq 0 ]; then

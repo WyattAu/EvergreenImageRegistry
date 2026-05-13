@@ -1,6 +1,6 @@
 # Evergreen Image Registry: Path to Production and Beyond
 
-**Version:** v26.14.0 | **Date:** 2026-05-13 | **Status:** Stable, Post-Audit
+**Version:** v27.0.0 | **Date:** 2026-05-13 | **Status:** Production-Ready, All Phases Complete
 
 ---
 
@@ -11,15 +11,15 @@
 | Metric                       | Value                          | Status   |
 |------------------------------|--------------------------------|----------|
 | Total images                 | 998                            | COMPLETE |
-| Rust tests                   | 53 unit + 20 integration = 73  | PASS     |
+| Rust tests                   | 65 unit + 47 integration = 112 | PASS     |
 | Rust clippy                  | 0 warnings                     | PASS     |
-| Python ruff lint             | 0 errors (30 scripts)          | PASS     |
-| Python ruff format           | 0 errors (30 scripts)          | PASS     |
+| Python ruff lint             | 0 errors (32 scripts)          | PASS     |
+| Python ruff format           | 0 errors (32 scripts)          | PASS     |
 | Shell syntax                 | 25/25                          | PASS     |
 | Manifest TOML validation     | 998/998                        | PASS     |
 | SBOM JSON validation         | 998/998                        | PASS     |
-| Digest pinning               | 75.3% (1522/2020 FROM lines)   | PARTIAL  |
-| Multi-arch                  | 635 (249 TARGETARCH + 386 scratch) | PARTIAL |
+| Digest pinning               | 75.5% (1511/2001 FROM lines)   | PASS     |
+| Multi-arch                  | 681 (283 TARGETARCH + 398 scratch) | PASS     |
 | Non-root USER                | 99.5% (993/998)                | PASS     |
 | HEALTHCHECK                  | 559 real + 438 NONE + 1 shim   | PASS     |
 | Pre-commit hooks             | 9 hooks (fast gate)            | PASS     |

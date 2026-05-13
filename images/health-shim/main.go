@@ -243,6 +243,25 @@ func boolToInt(b bool) int {
 	return 0
 }
 
+// newRouter creates and returns the HTTP mux with all routes registered.
+func newRouter() *http.ServeMux {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/livez", handleLivez)
+	mux.HandleFunc("/readyz", handleReadyz)
+	mux.HandleFunc("/startupz", handleStartupz)
+	mux.HandleFunc("/metrics", handleMetrics)
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]string{
+			"service": "evergreen-health-shim",
+			"version": "1.0.0",
+			"endpoints": "/livez, /readyz, /startupz, /metrics",
+		})
+	})
+	return mux
+}
+
 func main() {
 	// Configure structured logging
 	logLevel := os.Getenv("EVERGREEN_LOG_LEVEL")
@@ -315,22 +334,7 @@ func main() {
 		"startup_window", startupWindow,
 	)
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/livez", handleLivez)
-	mux.HandleFunc("/readyz", handleReadyz)
-	mux.HandleFunc("/startupz", handleStartupz)
-	mux.HandleFunc("/metrics", handleMetrics)
-
-	// Also serve a basic info endpoint
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]string{
-			"service": "evergreen-health-shim",
-			"version": "1.0.0",
-			"endpoints": "/livez, /readyz, /startupz, /metrics",
-		})
-	})
+	mux := newRouter()
 
 	server := &http.Server{
 		Addr:         listen,

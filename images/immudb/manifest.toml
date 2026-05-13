@@ -1,6 +1,7 @@
 [metadata]
 name = "immudb"
 version = "1.11.0"
+deprecated = true
 description = "Evergreen hardened immudb - immutable database with cryptographic verification"
 
 [build]

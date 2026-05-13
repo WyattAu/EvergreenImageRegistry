@@ -84,6 +84,20 @@ RUN curl -fsSL "https://github.com/mikefarah/yq/releases/download/v4.43.1/yq_lin
 RUN curl -fsSL "https://github.com/trufflesecurity/trufflehog/releases/download/v3.82.2/trufflehog_3.82.2_linux_amd64.tar.gz" \
     | tar xz -C /opt/tools/bin trufflehog
 
+# --------------- shellcheck v0.10.0 ---------------
+RUN curl -fsSL "https://github.com/koalaman/shellcheck/releases/download/v0.10.0/shellcheck-v0.10.0.linux.x86_64.tar.xz" \
+    | tar xJ --strip-components=1 -C /opt/tools/bin shellcheck-v0.10.0/shellcheck
+
+# --------------- ruff v0.9.6 ---------------
+RUN curl -fsSL "https://github.com/astral-sh/ruff/releases/download/v0.9.6/ruff-v0.9.6-x86_64-unknown-linux-gnu.tar.gz" \
+    | tar xz -C /opt/tools/bin ruff
+
+# --------------- Go 1.23.5 ---------------
+RUN curl -fsSL "https://go.dev/dl/go1.23.5.linux-amd64.tar.gz" \
+    | tar xz -C /opt/tools/share \
+    && ln -s /opt/tools/share/go/bin/go /opt/tools/bin/go \
+    && ln -s /opt/tools/share/go/bin/gofmt /opt/tools/bin/gofmt
+
 RUN trivy --version \
     && grype version \
     && cosign version \
@@ -93,7 +107,10 @@ RUN trivy --version \
     && kubectl version --client \
     && crane version \
     && yq --version \
-    && trufflehog --version
+    && trufflehog --version \
+    && shellcheck --version \
+    && ruff --version \
+    && go version
 
 FROM ubuntu:22.04@sha256:962f6cadeae0ea6284001009daa4cc9a8c37e75d1f5191cf0eb83fe565b63dd7 AS runtime
 
@@ -144,4 +161,7 @@ LABEL org.opencontainers.image.title="Evergreen CI Build Environment" \
       evergreen.tools.kubectl="1.30.1" \
       evergreen.tools.crane="latest" \
       evergreen.tools.yq="4.43.1" \
-      evergreen.tools.trufflehog="3.82.2"
+      evergreen.tools.trufflehog="3.82.2" \
+      evergreen.tools.shellcheck="v0.10.0" \
+      evergreen.tools.ruff="v0.9.6" \
+      evergreen.tools.go="1.23.5"

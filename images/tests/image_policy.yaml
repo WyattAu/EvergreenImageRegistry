@@ -1,0 +1,63 @@
+version: "1.0"
+policies:
+  non_root:
+    description: "All images must run as non-root user"
+    check: "user"
+    expect: "65532:65532"
+    severity: "block"
+    exceptions:
+      - "scratch-base"
+      - "distroless-base"
+
+  no_shell:
+    description: "No shell in final image"
+    check: "shell"
+    expect: "absent"
+    severity: "block"
+    exceptions:
+      - "shellcheck"
+      - "bash"
+
+  no_package_manager:
+    description: "No package manager in final image"
+    check: "package_manager"
+    expect: "absent"
+    severity: "block"
+
+  digest_pinned:
+    description: "Final FROM must be digest-pinned"
+    check: "from_digest"
+    expect: "present"
+    severity: "warn"
+
+  healthcheck:
+    description: "Healthcheck must be defined"
+    check: "healthcheck"
+    expect: "present"
+    severity: "warn"
+    exceptions:
+      - "scratch-base"
+
+  sbom:
+    description: "SBOM must exist"
+    check: "sbom_file"
+    expect: "present"
+    severity: "block"
+
+  manifest:
+    description: "manifest.toml must exist and be valid"
+    check: "manifest_file"
+    expect: "present"
+    severity: "block"
+
+  max_layers:
+    description: "Image must have <= 10 layers"
+    check: "layer_count"
+    expect: "<=10"
+    severity: "warn"
+
+  image_size:
+    description: "Image size must be <= 500MB"
+    check: "image_size_mb"
+    expect: "<=500"
+    severity: "warn"

@@ -1,6 +1,7 @@
 [metadata]
 name = "cayley"
 version = "0.7.7"
+deprecated = true
 description = "Evergreen hardened Cayley - graph database with query language"
 
 [build]

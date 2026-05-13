@@ -1,4 +1,4 @@
-use clap::{Parser, Subcommand};
+use clap::{CommandFactory, Parser, Subcommand};
 use std::path::Path;
 
 #[derive(Parser)]
@@ -110,6 +110,35 @@ enum Commands {
         /// Base git ref to compare against
         #[arg(long, default_value = "HEAD~1")]
         base: String,
+    },
+    /// Generate a JSON registry health report
+    Report {
+        /// Output format (json, text)
+        #[arg(short, long, default_value = "json")]
+        format: String,
+        /// Path to images directory
+        #[arg(long, default_value = "images")]
+        images_dir: String,
+    },
+    /// List or mark deprecated images
+    Deprecated {
+        /// List deprecated images
+        #[arg(long)]
+        list: bool,
+        /// Mark an image as deprecated
+        #[arg(long, conflicts_with = "unmark")]
+        mark: Option<String>,
+        /// Remove deprecated flag from an image
+        #[arg(long, conflicts_with = "mark")]
+        unmark: Option<String>,
+        /// Path to images directory
+        #[arg(long, default_value = "images")]
+        images_dir: String,
+    },
+    /// Generate shell completions
+    Completion {
+        #[arg(long, value_enum)]
+        shell: clap_complete::Shell,
     },
 }
 
@@ -374,6 +403,54 @@ async fn main() -> anyhow::Result<()> {
 
         Commands::CiDiff { base } => {
             evergreenctl::ci_diff::cmd_ci_diff(&base)?;
+        }
+
+        Commands::Report { format, images_dir } => {
+            let images_dir = Path::new(&images_dir);
+            let report = evergreenctl::report::generate_report(images_dir)?;
+
+            match format.as_str() {
+                "json" => {
+                    println!("{}", serde_json::to_string_pretty(&report)?);
+                }
+                _ => {
+                    println!("{}", evergreenctl::report::format_text(&report));
+                }
+            }
+        }
+
+        Commands::Deprecated {
+            list,
+            mark,
+            unmark,
+            images_dir,
+        } => {
+            let images_dir = Path::new(&images_dir);
+
+            if list {
+                let deprecated = evergreenctl::deprecated::list_deprecated(images_dir)?;
+                if deprecated.is_empty() {
+                    println!("No deprecated images found.");
+                } else {
+                    println!("Deprecated images ({}):", deprecated.len());
+                    for img in &deprecated {
+                        println!("  {}", img.name);
+                    }
+                }
+            } else if let Some(image) = mark {
+                evergreenctl::deprecated::mark_deprecated(images_dir, &image)?;
+            } else if let Some(image) = unmark {
+                evergreenctl::deprecated::unmark_deprecated(images_dir, &image)?;
+            } else {
+                anyhow::bail!(
+                    "No operation specified. Use --list, --mark <image>, or --unmark <image>"
+                );
+            }
+        }
+
+        Commands::Completion { shell } => {
+            let mut cmd = Cli::command();
+            clap_complete::generate(shell, &mut cmd, "evergreenctl", &mut std::io::stdout());
         }
     }
 

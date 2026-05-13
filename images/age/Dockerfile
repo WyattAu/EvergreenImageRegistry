@@ -2,7 +2,7 @@ ARG TARGETARCH
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
-ARG VERSION=1.1.1
+ARG VERSION=1.3.1
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/FiloSottile/age/releases/download/v${VERSION}/age-v${VERSION}-linux-${TARGETARCH}.tar.gz -o /age.tar.gz || true ; \
@@ -21,7 +21,7 @@ WORKDIR /tmp
 HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/age"]
 LABEL org.opencontainers.image.title="age" \
-      org.opencontainers.image.version="1.1.1" \
+      org.opencontainers.image.version="1.3.1" \
       org.opencontainers.image.vendor="FiloSottile" \
       org.opencontainers.image.source="https://github.com/FiloSottile/age" \
       org.opencontainers.image.description="Simple, modern file encryption tool" \

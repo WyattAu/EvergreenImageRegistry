@@ -66,6 +66,8 @@ pub struct Metadata {
     pub license: String,
     #[serde(default)]
     pub tier: String,
+    #[serde(default)]
+    pub deprecated: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]

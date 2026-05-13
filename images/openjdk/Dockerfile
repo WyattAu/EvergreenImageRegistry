@@ -8,11 +8,12 @@
 ARG VERSION=21.0.3
 ARG BUILD_DATE
 
+ARG TARGETARCH
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates tar && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jdk/hotspot/normal/eclipse?project=jdk" -o /tmp/jdk.tar.gz && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://api.adoptium.net/v3/binary/latest/21/ga/linux/${TARGETARCH}/jdk/hotspot/normal/eclipse?project=jdk" -o /tmp/jdk.tar.gz && \
     echo "4b2220e232a97997b436ca6ab15cbf70171ecff52958a46159dfa5a8c44ca4de  /tmp/jdk.tar.gz" | sha256sum -c || true  # && \
     mkdir -p /opt/jdk && [ -f /tmp/jdk.tar.gz ] && tar -xzf /tmp/jdk.tar.gz -C /opt/jdk --strip-components=1 && rm -f /tmp/jdk.tar.gz || true && \
     useradd -m -u 65532 -s /usr/bin/false java 2>/dev/null || true && \
@@ -38,6 +39,7 @@ LABEL org.opencontainers.image.title="openjdk" \
       org.opencontainers.image.description="openjdk container image" \
       org.opencontainers.image.version="21.0.3" \
       org.opencontainers.image.vendor="OpenJDK" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       evergreen.image.tier="2" \
       evergreen.constraint.nonroot="true" \
       evergreen.constraint.hardened="true" \

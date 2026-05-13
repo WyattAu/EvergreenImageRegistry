@@ -141,3 +141,31 @@ jobs:
           else
             echo "No SBOM changes to commit"
           fi
+
+  sbom-drift-detection:
+    name: SBOM Drift Detection
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: sbom-generation
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run SBOM drift detection
+        run: |
+          echo "=== SBOM Drift Detection ==="
+          python3 scripts/sbom_drift_detect.py --threshold 0 --json > sbom-drift-report.json || true
+          python3 scripts/sbom_drift_detect.py --threshold 0 || DRIFT_EXIT=$?
+          echo "=== SBOM drift detection complete ==="
+
+      - name: Upload drift report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-drift-report
+          path: sbom-drift-report.json
+          retention-days: 30

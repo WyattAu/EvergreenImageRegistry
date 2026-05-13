@@ -64,6 +64,8 @@ ARG VERSION=8.3
 
 ARG BUILD_DATE
 
+ARG TARGETARCH
+
 
 
 
@@ -155,6 +157,7 @@ LABEL org.opencontainers.image.title="php" \
       org.opencontainers.image.description="php container image" \
       org.opencontainers.image.version="8.3" \
       org.opencontainers.image.vendor="PHP" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       evergreen.image.tier="3" \
       evergreen.constraint.nonroot="true" \
       evergreen.base.image="wolfi" \

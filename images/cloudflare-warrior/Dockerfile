@@ -2,7 +2,7 @@ ARG TARGETARCH
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
-ARG VERSION=2024.4.1
+ARG VERSION=2026.5.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/cloudflare/cloudflared/releases/download/${VERSION}/cloudflared-linux-${TARGETARCH} -o /cloudflared || true ; \
@@ -31,7 +31,7 @@ HEALTHCHECK NONE
 ENTRYPOINT ["/cloudflared"]
 CMD ["tunnel", "--no-autoupdate"]
 LABEL org.opencontainers.image.title="cloudflare-warrior" \
-      org.opencontainers.image.version="2024.4.1" \
+      org.opencontainers.image.version="2026.5.0" \
       org.opencontainers.image.vendor="Cloudflare" \
       org.opencontainers.image.source="https://github.com/cloudflare/cloudflared" \
       org.opencontainers.image.description="Cloudflare Tunnel client (cloudflared)" \

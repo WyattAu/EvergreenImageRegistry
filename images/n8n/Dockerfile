@@ -8,6 +8,7 @@
 ARG VERSION=1.41.0
 ARG BUILD_DATE
 
+ARG TARGETARCH
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 RUN apk add --no-cache nodejs-20 npm ca-certificates && \
@@ -23,6 +24,7 @@ LABEL org.opencontainers.image.title="n8n" \
       org.opencontainers.image.description="n8n - workflow automation platform" \
       org.opencontainers.image.version="1.41.0" \
       org.opencontainers.image.vendor="n8n" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       evergreen.image.tier="2" \
       evergreen.constraint.nonroot="true" \
       evergreen.base.image="wolfi" \

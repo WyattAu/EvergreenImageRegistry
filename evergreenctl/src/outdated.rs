@@ -319,7 +319,7 @@ async fn query_latest_release(
 
 // ── Version comparison ───────────────────────────────────────────────────
 
-fn compare_versions(current: &str, latest: &str) -> String {
+pub fn compare_versions(current: &str, latest: &str) -> String {
     let c = semver::Version::parse(current);
     let l = semver::Version::parse(latest);
 

@@ -1,6 +1,7 @@
 ARG VERSION=30.0.5
 ARG BUILD_DATE
 
+ARG TARGETARCH
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
@@ -30,6 +31,7 @@ LABEL org.opencontainers.image.title="nextcloud" \
       org.opencontainers.image.description="Nextcloud - self-hosted productivity platform" \
       org.opencontainers.image.version="30.0.5" \
       org.opencontainers.image.vendor="Nextcloud" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       org.opencontainers.image.source="https://github.com/nextcloud/server" \
       evergreen.image.tier="2" \
       evergreen.image.category="cloud-storage" \

@@ -22,11 +22,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"net"
 	"net/http"
+	"net/http/httptest"
+	"net/url"
 	"os"
 	"os/exec"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -39,6 +43,10 @@ var (
 	startupCmd     string
 	mu             sync.Mutex
 	startupSuccess bool
+
+	probeSuccessTotal = map[string]*uint64{}
+	probeDuration     = map[string]*float64{}
+	metricsMu         sync.RWMutex
 )
 
 type healthResponse struct {
@@ -209,6 +217,151 @@ func handleStartupz(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func recordProbe(name string, success bool, duration time.Duration) {
+	metricsMu.Lock()
+	if probeSuccessTotal[name] == nil {
+		probeSuccessTotal[name] = new(uint64)
+		probeDuration[name] = new(float64)
+	}
+	if success {
+		atomic.AddUint64(probeSuccessTotal[name], 1)
+	}
+	*probeDuration[name] = duration.Seconds()
+	metricsMu.Unlock()
+}
+
+func handleTCPProbe(w http.ResponseWriter, r *http.Request) {
+	target := strings.TrimPrefix(r.URL.Path, "/tcp/")
+	if target == "" {
+		writeJSON(w, http.StatusBadRequest, healthResponse{
+			Status:    "error",
+			Timestamp: time.Now().UTC().Format(time.RFC3339),
+			Error:     "missing host:port in /tcp/<host>:<port>",
+		})
+		return
+	}
+
+	start := time.Now()
+	conn, err := net.DialTimeout("tcp", target, healthTimeout)
+	duration := time.Since(start)
+
+	if err != nil {
+		recordProbe("tcp", false, duration)
+		writeJSON(w, http.StatusServiceUnavailable, healthResponse{
+			Status:    "error",
+			Timestamp: time.Now().UTC().Format(time.RFC3339),
+			Check:     "tcp://" + target,
+			Error:     err.Error(),
+		})
+		return
+	}
+	conn.Close()
+
+	recordProbe("tcp", true, duration)
+	writeJSON(w, http.StatusOK, healthResponse{
+		Status:    "ok",
+		Timestamp: time.Now().UTC().Format(time.RFC3339),
+		Check:     "tcp://" + target,
+		Output:    fmt.Sprintf("connected in %v", duration),
+	})
+}
+
+func handleHTTPProbe(w http.ResponseWriter, r *http.Request) {
+	target := strings.TrimPrefix(r.URL.Path, "/http/")
+	if target == "" {
+		writeJSON(w, http.StatusBadRequest, healthResponse{
+			Status:    "error",
+			Timestamp: time.Now().UTC().Format(time.RFC3339),
+			Error:     "missing URL in /http/<url>",
+		})
+		return
+	}
+
+	if !strings.HasPrefix(target, "http://") && !strings.HasPrefix(target, "https://") {
+		target = "http://" + target
+	}
+
+	client := &http.Client{Timeout: healthTimeout}
+	start := time.Now()
+	resp, err := client.Get(target)
+	duration := time.Since(start)
+
+	if err != nil {
+		recordProbe("http", false, duration)
+		writeJSON(w, http.StatusServiceUnavailable, healthResponse{
+			Status:    "error",
+			Timestamp: time.Now().UTC().Format(time.RFC3339),
+			Check:     "http://" + target,
+			Error:     err.Error(),
+		})
+		return
+	}
+	resp.Body.Close()
+
+	success := resp.StatusCode >= 200 && resp.StatusCode < 400
+	recordProbe("http", success, duration)
+
+	if success {
+		writeJSON(w, http.StatusOK, healthResponse{
+			Status:    "ok",
+			Timestamp: time.Now().UTC().Format(time.RFC3339),
+			Check:     target,
+			Output:    fmt.Sprintf("HTTP %d in %v", resp.StatusCode, duration),
+		})
+	} else {
+		writeJSON(w, http.StatusServiceUnavailable, healthResponse{
+			Status:    "error",
+			Timestamp: time.Now().UTC().Format(time.RFC3339),
+			Check:     target,
+			Output:    fmt.Sprintf("HTTP %d", resp.StatusCode),
+		})
+	}
+}
+
+func handleCmdProbe(w http.ResponseWriter, r *http.Request) {
+	command := strings.TrimPrefix(r.URL.Path, "/cmd/")
+	if command == "" {
+		writeJSON(w, http.StatusBadRequest, healthResponse{
+			Status:    "error",
+			Timestamp: time.Now().UTC().Format(time.RFC3339),
+			Error:     "missing command in /cmd/<command>",
+		})
+		return
+	}
+
+	command, err := url.PathUnescape(command)
+	if err != nil {
+		writeJSON(w, http.StatusBadRequest, healthResponse{
+			Status:    "error",
+			Timestamp: time.Now().UTC().Format(time.RFC3339),
+			Error:     fmt.Sprintf("invalid command encoding: %v", err),
+		})
+		return
+	}
+
+	start := time.Now()
+	ok, output := runCheck(r.Context(), command)
+	duration := time.Since(start)
+
+	recordProbe("cmd", ok, duration)
+
+	if ok {
+		writeJSON(w, http.StatusOK, healthResponse{
+			Status:    "ok",
+			Timestamp: time.Now().UTC().Format(time.RFC3339),
+			Check:     command,
+			Output:    output,
+		})
+	} else {
+		writeJSON(w, http.StatusServiceUnavailable, healthResponse{
+			Status:    "error",
+			Timestamp: time.Now().UTC().Format(time.RFC3339),
+			Check:     command,
+			Output:    output,
+		})
+	}
+}
+
 func handleMetrics(w http.ResponseWriter, r *http.Request) {
 	elapsed := time.Since(startTime).Seconds()
 	up := 1
@@ -217,7 +370,8 @@ func handleMetrics(w http.ResponseWriter, r *http.Request) {
 	startupOK := startupSuccess
 	mu.Unlock()
 
-	metrics := fmt.Sprintf(`# HELP health_shim_up Whether the health shim is running
+	var sb strings.Builder
+	sb.WriteString(fmt.Sprintf(`# HELP health_shim_up Whether the health shim is running
 # TYPE health_shim_up gauge
 health_shim_up %d
 # HELP health_shim_uptime_seconds Seconds since health shim started
@@ -229,11 +383,24 @@ health_shim_startup_completed %d
 # HELP health_shim_info Information about the health shim
 # TYPE health_shim_info gauge
 health_shim_info{health_cmd="%s",ready_cmd="%s",startup_cmd="%s"} 1
-`, up, elapsed, boolToInt(startupOK), healthCmd, readyCmd, startupCmd)
+`, up, elapsed, boolToInt(startupOK), healthCmd, readyCmd, startupCmd))
+
+	metricsMu.RLock()
+	for name, total := range probeSuccessTotal {
+		dur := probeDuration[name]
+		sb.WriteString(fmt.Sprintf(`# HELP health_shim_probe_success_total Total number of successful probes
+# TYPE health_shim_probe_success_total counter
+health_shim_probe_success_total{probe="%s"} %d
+# HELP health_shim_probe_duration_seconds Duration of last probe
+# TYPE health_shim_probe_duration_seconds gauge
+health_shim_probe_duration_seconds{probe="%s"} %.6f
+`, name, atomic.LoadUint64(total), name, *dur))
+	}
+	metricsMu.RUnlock()
 
 	w.Header().Set("Content-Type", "text/plain; version=0.0.4; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(metrics))
+	w.Write([]byte(sb.String()))
 }
 
 func boolToInt(b bool) int {
@@ -244,19 +411,40 @@ func boolToInt(b bool) int {
 }
 
 // newRouter creates and returns the HTTP mux with all routes registered.
+func wrapProbe(name string, next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		rec := httptest.NewRecorder()
+		next(rec, r)
+
+		duration := time.Since(start)
+		success := rec.Code == http.StatusOK
+		recordProbe(name, success, duration)
+
+		for k, vv := range rec.Header() {
+			w.Header()[k] = vv
+		}
+		w.WriteHeader(rec.Code)
+		w.Write(rec.Body.Bytes())
+	}
+}
+
 func newRouter() *http.ServeMux {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/livez", handleLivez)
-	mux.HandleFunc("/readyz", handleReadyz)
-	mux.HandleFunc("/startupz", handleStartupz)
+	mux.HandleFunc("/livez", wrapProbe("livez", handleLivez))
+	mux.HandleFunc("/readyz", wrapProbe("readyz", handleReadyz))
+	mux.HandleFunc("/startupz", wrapProbe("startupz", handleStartupz))
+	mux.HandleFunc("/tcp/", handleTCPProbe)
+	mux.HandleFunc("/http/", handleHTTPProbe)
+	mux.HandleFunc("/cmd/", handleCmdProbe)
 	mux.HandleFunc("/metrics", handleMetrics)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(map[string]string{
-			"service": "evergreen-health-shim",
-			"version": "1.0.0",
-			"endpoints": "/livez, /readyz, /startupz, /metrics",
+			"service":   "evergreen-health-shim",
+			"version":   "1.0.0",
+			"endpoints": "/livez, /readyz, /startupz, /tcp/<host>:<port>, /http/<url>, /cmd/<command>, /metrics",
 		})
 	})
 	return mux

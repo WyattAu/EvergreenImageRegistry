@@ -1,6 +1,6 @@
 [metadata]
 name = "cloudflare-warrior"
-version = "2024.4.1"
+version = "2026.5.0"
 description = "Cloudflare Tunnel client (cloudflared)"
 
 [build]
@@ -23,7 +23,7 @@ expose = [7844, 9101]
 "org.opencontainers.image.source" = "https://github.com/cloudflare/cloudflared"
 "org.opencontainers.image.title" = "cloudflare-warrior"
 "org.opencontainers.image.vendor" = "Cloudflare"
-"org.opencontainers.image.version" = "2024.4.1"
+"org.opencontainers.image.version" = "2026.5.0"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"

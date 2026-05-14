@@ -1,7 +1,8 @@
-ARG VERSION=v1.13.0
+ARG VERSION=v1.5
 ARG TARGETARCH
 
-FROM ghcr.io/gethomepage/homepage:${VERSION} AS upstream
+# NOTE: Upstream image digest not pinned - update @sha256:... when stable digest is available
+FROM ghcr.io/gethomepage/homepage:v1.5 AS upstream
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/homepage /var/cache/homepage 2>/dev/null || true
@@ -20,7 +21,7 @@ EXPOSE 3000
 EXPOSE 9101
 
 LABEL org.opencontainers.image.title="homepage" org.opencontainers.image.description="Homepage - Application dashboard" org.opencontainers.image.vendor="benphelps" org.opencontainers.image.source="https://github.com/benphelps/homepage" evergreen.image.tier="3" evergreen.constraint.nonroot="true" evergreen.constraint.scratch="true" \
-      org.opencontainers.image.version="latest"
+      org.opencontainers.image.version="v1.5"
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"

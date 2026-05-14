@@ -12,10 +12,10 @@ stopsignal = "SIGTERM"
 type = "package-manager"
 
 [runtime]
-entrypoint = ["php-fpm8.4"]
+entrypoint = ["php-fpm"]
 
 [ports]
-expose = [80, 9101]
+expose = [80, 443, 9101]
 
 [labels]
 "org.opencontainers.image.source" = "https://github.com/akaunting/akaunting"

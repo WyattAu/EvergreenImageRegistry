@@ -6,6 +6,7 @@ vendor = "Nginx Inc"
 source = "https://github.com/nginx/nginx"
 license = "BSD-2-Clause"
 tier = "1"
+upstream_version = "1.27.1"
 
 [build]
 base = "scratch"
@@ -20,7 +21,7 @@ url = "https://github.com/nginx/nginx/releases/download/v1.27.1/nginx-1.27.1-lin
 entrypoint = ["/nginx"]
 
 [ports]
-expose = [80, 9101]
+expose = [80, 443, 9101]
 
 [labels]
 "org.opencontainers.image.title" = "nginx"
@@ -43,6 +44,7 @@ expose = [80, 9101]
 "evergreen.hft.xdp-capable" = "true"
 "evergreen.hft.xdp-mode" = "generic"
 "evergreen.hft.xdp-notes" = "Requires custom nginx module or eBPF loader"
+"evergreen.image.category" = "networking"
+"evergreen.image.status" = "functional"
 "evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "ztunnel"
-

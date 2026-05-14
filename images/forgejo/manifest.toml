@@ -5,11 +5,12 @@ description = "Forgejo - community-owned lightweight software forge"
 vendor = "Forgejo"
 source = "https://github.com/forgejo/forgejo"
 license = "Apache-2.0"
-tier = "3"
+tier = "2"
+upstream_version = "14.0.4"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
-user = "git"
+user = "65532:65532"
 stopsignal = "SIGTERM"
 
 [source]
@@ -20,7 +21,7 @@ url = "https://github.com/forgejo/forgejo/releases/download/v14.0.4/forgejo-14.0
 entrypoint = ["/usr/local/bin/forgejo"]
 
 [ports]
-expose = [3000, 9101]
+expose = [3000, 22, 9101]
 
 [labels]
 "org.opencontainers.image.title" = "forgejo"

@@ -15,7 +15,7 @@ type = "package-manager"
 entrypoint = ["nginx", "-g", "daemon off;"]
 
 [ports]
-expose = [80, 9101]
+expose = [80, 443, 9101]
 
 [labels]
 "org.opencontainers.image.source" = "https://github.com/taigaio/taiga-front-dist"

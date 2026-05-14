@@ -1,11 +1,12 @@
 [metadata]
 name = "postgres-exporter"
-version = "0.15.0"
+version = "0.17.0"
+upstream_version = "0.17.0"
 description = "Postgres Exporter - Prometheus exporter for PostgreSQL"
-vendor = "Prometheus"
+vendor = "Prometheus Community"
 source = "https://github.com/prometheus-community/postgres_exporter"
 license = "Apache-2.0"
-tier = "2"
+tier = "1"
 
 [build]
 base = "scratch"
@@ -13,8 +14,8 @@ user = "65532:65532"
 stopsignal = "SIGTERM"
 
 [source]
-type = "package-manager"
-url = "https://github.com/postgres-exporter/postgres-exporter/releases/download/v0.15.0/postgres-exporter-0.15.0-linux-amd64.tar.gz"
+type = "binary-release"
+url = "https://github.com/prometheus-community/postgres_exporter/releases/download/v0.17.0/postgres_exporter-0.17.0.linux-amd64.tar.gz"
 
 [runtime]
 entrypoint = ["/postgres_exporter"]
@@ -26,7 +27,7 @@ expose = [9187, 9101]
 "org.opencontainers.image.description" = "Evergreen hardened Postgres Exporter - Prometheus exporter for PostgreSQL"
 "org.opencontainers.image.title" = "postgres-exporter"
 "org.opencontainers.image.vendor" = "Prometheus Community"
-"org.opencontainers.image.version" = "0.15.0"
+"org.opencontainers.image.version" = "0.17.0"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"
@@ -44,4 +45,3 @@ expose = [9187, 9101]
 "evergreen.image.category" = "database"
 "evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "ztunnel"
-

@@ -1,0 +1,45 @@
+[metadata]
+name = "docker-socket-proxy"
+version = "v0.4.2"
+upstream_version = "v0.4.2"
+description = "Docker Socket Proxy - secure proxy for Docker socket"
+vendor = "Tecnativa"
+source = "https://github.com/tecnativa/docker-socket-proxy"
+license = "MIT"
+tier = "2"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "binary-release"
+url = "https://github.com/tecnativa/docker-socket-proxy/releases/download/v0.4.2/docker-socket-proxy_0.4.2_linux_amd64.tar.gz"
+
+[runtime]
+entrypoint = ["/docker-socket-proxy"]
+
+[ports]
+expose = [2375, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "docker-socket-proxy"
+"org.opencontainers.image.vendor" = "Tecnativa"
+"org.opencontainers.image.version" = "v0.4.2"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.connection-drain" = "true"
+"evergreen.hft.cpu-pins" = "0-1"
+"evergreen.hft.cpu-pins-mode" = "exclusive"
+"evergreen.hft.deploy-strategy" = "hft-rolling"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.pre-stop-delay" = "5s"
+"evergreen.hft.pre-stop-hook" = "true"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "3000ms"
+"evergreen.image.tier" = "2"
+"evergreen.metrics.native" = "ztunnel"

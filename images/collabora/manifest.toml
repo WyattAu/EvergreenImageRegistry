@@ -1,0 +1,42 @@
+[metadata]
+name = "collabora"
+version = "25.04.9.4.1"
+description = "Collabora Online - LibreOffice-based online office suite"
+vendor = "Collabora"
+source = "https://github.com/CollaboraOnline/online"
+license = "MPL-2.0"
+tier = "2"
+upstream_version = "25.04.9.4.1"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "collabora/code:25.04.9.4.1"
+
+[runtime]
+entrypoint = ["/usr/bin/loolwsd"]
+
+[ports]
+expose = [9980, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/CollaboraOnline/online"
+"org.opencontainers.image.title" = "collabora"
+"org.opencontainers.image.vendor" = "Collabora"
+"org.opencontainers.image.version" = "25.04.9.4.1"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "30s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "60000ms"
+"evergreen.image.category" = "document-management"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "2"
+"evergreen.metrics.native" = "ztunnel"

@@ -9,7 +9,7 @@ tier = "1"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
-user = "rabbitmq"
+user = "65532:65532"
 stopsignal = "SIGTERM"
 
 [source]
@@ -20,7 +20,7 @@ url = "https://github.com/rabbitmq/rabbitmq/releases/download/v3.13.1/rabbitmq-3
 entrypoint = ["sh", "-c", "rabbitmq-server"]
 
 [ports]
-expose = [5672, 9101]
+expose = [5672, 15672, 9101]
 
 [labels]
 "org.opencontainers.image.title" = "rabbitmq"
@@ -29,6 +29,6 @@ expose = [5672, 9101]
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "http"
-"evergreen.image.tier" = "2"
+"evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "true"
 

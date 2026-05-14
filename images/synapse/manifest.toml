@@ -1,10 +1,14 @@
 [metadata]
 name = "synapse"
-version = "1.98.0"
+version = "1.150.0"
+upstream_version = "1.150.0"
 description = "Synapse - Matrix homeserver for federated messaging"
+vendor = "Element"
+license = "Apache-2.0"
+source = "https://github.com/element-hq/synapse"
 
 [build]
-base = "debian:bookworm-slim"
+base = "cgr.dev/chainguard/wolfi-base"
 user = "65532:65532"
 stopsignal = "SIGTERM"
 
@@ -15,18 +19,23 @@ type = "package-manager"
 entrypoint = ["python3", "-m", "synapse.app.homeserver"]
 
 [ports]
-expose = [8008, 9101]
+expose = [8008, 8448, 9101]
 
 [labels]
 "org.opencontainers.image.description" = "Synapse - Matrix homeserver for federated messaging"
 "org.opencontainers.image.source" = "https://github.com/element-hq/synapse"
 "org.opencontainers.image.title" = "synapse"
 "org.opencontainers.image.vendor" = "Element"
-"org.opencontainers.image.version" = "1.98.0"
+"org.opencontainers.image.version" = "1.150.0"
 "evergreen.base.image" = "wolfi"
-"evergreen.constraint.debian-slim" = "true"
+"evergreen.constraint.base" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"
+"evergreen.image.category" = "messaging"
+"evergreen.image.status" = "functional"
 "evergreen.image.tier" = "2"
 "evergreen.metrics.native" = "ztunnel"
-
+"evergreen.security.cap-drop" = "ALL"
+"evergreen.security.no-new-privileges" = "true"
+"evergreen.security.read-only-rootfs" = "true"
+"evergreen.security.seccomp" = "runtime-default"

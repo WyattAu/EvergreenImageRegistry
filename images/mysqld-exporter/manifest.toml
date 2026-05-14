@@ -1,0 +1,42 @@
+[metadata]
+name = "mysqld-exporter"
+version = "0.16.0"
+description = "MySQL Server Exporter - Prometheus exporter for MySQL server metrics"
+vendor = "Prometheus"
+source = "https://github.com/prometheus/mysqld_exporter"
+license = "Apache-2.0"
+tier = "2"
+upstream_version = "0.16.0"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://github.com/prometheus/mysqld_exporter/releases/download/v0.16.0/mysqld_exporter-0.16.0.linux-amd64.tar.gz"
+
+[runtime]
+entrypoint = ["/mysqld_exporter"]
+
+[ports]
+expose = [9104, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/prometheus/mysqld_exporter"
+"org.opencontainers.image.title" = "mysqld-exporter"
+"org.opencontainers.image.vendor" = "Prometheus"
+"org.opencontainers.image.version" = "0.16.0"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "3000ms"
+"evergreen.image.category" = "monitoring"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "2"
+"evergreen.metrics.native" = "ztunnel"

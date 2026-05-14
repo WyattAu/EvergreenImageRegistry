@@ -1,7 +1,11 @@
 [metadata]
 name = "homepage"
-version = "latest"
+version = "v1.5"
 description = "Homepage - Application dashboard"
+vendor = "benphelps"
+license = "MIT"
+source = "https://github.com/benphelps/homepage"
+upstream_version = "v1.5"
 
 [build]
 base = "scratch"
@@ -10,10 +14,10 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "docker-image"
-url = "ghcr.io/gethomepage/homepage:${VERSION}"
+url = "ghcr.io/gethomepage/homepage:v1.5"
 
 [runtime]
-entrypoint = ["/homepage"]
+entrypoint = ["/app/homepage"]
 
 [ports]
 expose = [3000, 9101]
@@ -27,6 +31,7 @@ expose = [3000, 9101]
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"
 "evergreen.health.type" = "exec"
+"evergreen.image.category" = "utility"
+"evergreen.image.status" = "functional"
 "evergreen.image.tier" = "3"
 "evergreen.metrics.native" = "ztunnel"
-

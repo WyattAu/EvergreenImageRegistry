@@ -2,7 +2,10 @@
 name = "forgejo-runner"
 version = "6.3.1"
 description = "Forgejo Act Runner - CI/CD runner for Forgejo"
-vendor = "forgejo"
+vendor = "Forgejo"
+license = "MIT"
+source = "https://github.com/forgejo/runner"
+upstream_version = "6.3.1"
 
 [build]
 base = "scratch"
@@ -11,7 +14,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-url = "https://codeberg.org/forgejo/runner/releases/download/v6.3.1/forgejo-runner-linux-amd64"
+url = "https://code.forgejo.org/forgejo/runner/releases/download/v${version}/forgejo-runner-${version}-linux-amd64"
 
 [runtime]
 entrypoint = ["/usr/local/bin/forgejo-runner"]
@@ -25,12 +28,12 @@ expose = [8088, 9101]
 "org.opencontainers.image.source" = "https://codeberg.org/forgejo/runner"
 "org.opencontainers.image.title" = "forgejo-runner"
 "org.opencontainers.image.vendor" = "Forgejo"
-"org.opencontainers.image.version" = "${VERSION}"
+"org.opencontainers.image.version" = "6.3.1"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"
 "evergreen.health.type" = "tcp"
 "evergreen.image.category" = "ci"
+"evergreen.image.status" = "functional"
 "evergreen.image.tier" = "2"
 "evergreen.metrics.native" = "ztunnel"
-

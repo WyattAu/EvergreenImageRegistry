@@ -20,7 +20,6 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 RUN addgroup -g 65532 git || true && \
     adduser -D -u 65532 -G git git || true && \
     mkdir -p /app /var/log/forgejo /var/cache/forgejo 2>/dev/null || true
-USER git
 WORKDIR /app
 # hadolint ignore=DL3023
 COPY --from=downloader /forgejo /usr/local/bin/forgejo

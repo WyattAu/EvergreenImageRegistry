@@ -6,6 +6,7 @@ vendor = "Prometheus"
 source = "https://github.com/prometheus/alertmanager"
 license = "Apache-2.0"
 tier = "1"
+upstream_version = "0.32.1"
 
 [build]
 base = "scratch"
@@ -26,7 +27,7 @@ expose = [9093, 9101]
 "org.opencontainers.image.source" = "https://github.com/prometheus/alertmanager"
 "org.opencontainers.image.title" = "alertmanager"
 "org.opencontainers.image.vendor" = "Prometheus"
-"org.opencontainers.image.version" = "${VERSION}"
+"org.opencontainers.image.version" = "0.32.1"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"
@@ -39,4 +40,3 @@ expose = [9093, 9101]
 "evergreen.image.status" = "functional"
 "evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "ztunnel"
-

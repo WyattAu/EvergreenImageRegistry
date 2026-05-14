@@ -18,7 +18,6 @@ ENV HEALTH_CMD="rabbitmq-diagnostics -q ping" \
 RUN apk add --no-cache ca-certificates && \
     adduser -u 65532 -D rabbitmq 2>/dev/null || true && \
     mkdir -p /app /var/log/rabbitmq-server /var/cache/rabbitmq-server && chown -R rabbitmq:rabbitmq /app /var/log/rabbitmq-server /var/cache/rabbitmq-server 2>/dev/null || true
-USER rabbitmq
 WORKDIR /app
 EXPOSE 5672 15672
 
@@ -29,7 +28,7 @@ LABEL org.opencontainers.image.title="rabbitmq" \
       org.opencontainers.image.version="3.13.1" \
       org.opencontainers.image.vendor="RabbitMQ" \
       org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
-      evergreen.image.tier="2" \
+      evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \
       evergreen.base.image="wolfi" \
             org.opencontainers.image.source="https://github.com/rabbitmq/rabbitmq-server"

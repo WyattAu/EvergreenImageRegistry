@@ -5,7 +5,8 @@ description = "Redis Exporter - Prometheus exporter for Redis"
 vendor = "Prometheus"
 source = "https://github.com/oliver006/redis_exporter"
 license = "Apache-2.0"
-tier = "2"
+tier = "1"
+upstream_version = "1.82.0"
 
 [build]
 base = "scratch"
@@ -14,7 +15,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-url = "https://github.com/redis-exporter/redis-exporter/releases/download/v1.82.0/redis-exporter-1.82.0-linux-amd64.tar.gz"
+url = "https://github.com/oliver006/redis_exporter/releases/download/v1.82.0/redis_exporter-v1.82.0.linux-amd64.tar.gz"
 
 [runtime]
 entrypoint = ["/redis_exporter"]
@@ -34,6 +35,7 @@ expose = [9121, 9101]
 "evergreen.hft.shutdown-timeout" = "3s"
 "evergreen.hft.signal-handling" = "native"
 "evergreen.hft.startup-timeout" = "3000ms"
+"evergreen.image.category" = "monitoring"
+"evergreen.image.status" = "functional"
 "evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "ztunnel"
-

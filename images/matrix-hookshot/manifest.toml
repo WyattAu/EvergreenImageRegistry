@@ -1,0 +1,43 @@
+[metadata]
+name = "matrix-hookshot"
+version = "7.3.2"
+description = "Matrix Hookshot - multi-purpose Matrix bot bridge framework"
+vendor = "matrix.org"
+source = "https://github.com/matrix-org/matrix-hookshot"
+license = "Apache-2.0"
+tier = "2"
+upstream_version = "7.3.2"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://github.com/matrix-org/matrix-hookshot/releases/download/v7.3.2/matrix-hookshot-7.3.2.tar.gz"
+
+[runtime]
+entrypoint = ["node"]
+cmd = ["."]
+
+[ports]
+expose = [9993, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/matrix-org/matrix-hookshot"
+"org.opencontainers.image.title" = "matrix-hookshot"
+"org.opencontainers.image.vendor" = "matrix.org"
+"org.opencontainers.image.version" = "7.3.2"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.base" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "10s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "30000ms"
+"evergreen.image.category" = "messaging"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "2"
+"evergreen.metrics.native" = "ztunnel"

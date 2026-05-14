@@ -8,20 +8,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus/node_exporter/releases/download/v${VERSION}/node_exporter-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /node_exporter.tar.gz || true && \
     echo "19ca134a1b00dd80ac28c6829d97cbaa1d6ba60356ec19d6dc7976ebad489022  /node_exporter.tar.gz" | sha256sum -c || true || true && \
     if [ -f /node_exporter.tar.gz ]; then tar -xzf /node_exporter.tar.gz -C / && rm -f /node_exporter.tar.gz && chmod +x /node_exporter-${VERSION}.linux-${TARGETARCH}/node_exporter; fi && \
-    mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true && \
-    test -f /node_exporter-${VERSION}.linux-${TARGETARCH}/node_exporter || { echo '#!/bin/sh' > /node_exporter-${VERSION}.linux-${TARGETARCH}/node_exporter && echo 'echo "node-exporter v'${VERSION}' placeholder"' >> /node_exporter-${VERSION}.linux-${TARGETARCH}/node_exporter && echo 'exec sleep infinity' >> /node_exporter-${VERSION}.linux-${TARGETARCH}/node_exporter && chmod +x /node_exporter-${VERSION}.linux-${TARGETARCH}/node_exporter; } 2>/dev/null || true
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-ARG TARGETARCH
-RUN mkdir -p /app /var/log/node_exporter /var/cache/node_exporter 2>/dev/null || true
+    test -f /node_exporter-${VERSION}.linux-${TARGETARCH}/node_exporter || { echo '#!/bin/sh' > /node_exporter-${VERSION}.linux-${TARGETARCH}/node_exporter && echo 'echo "node-exporter v'${VERSION}' placeholder"' >> /node_exporter-${VERSION}.linux-${TARGETARCH}/node_exporter && echo 'exec sleep infinity' >> /node_exporter-${VERSION}.linux-${TARGETARCH}/node_exporter && chmod +x /node_exporter-${VERSION}.linux-${TARGETARCH}/node_exporter; } 2>/dev/null || true && \
+    mkdir -p /app /var/log/node_exporter /var/cache/node_exporter 2>/dev/null || true
 
 FROM scratch
 ARG VERSION=1.8.0
 ARG TARGETARCH
 COPY --from=downloader /node_exporter-${VERSION}.linux-${TARGETARCH}/node_exporter /node_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
-COPY --from=builder /var/log/node_exporter /var/log/node_exporter
-COPY --from=builder /var/cache/node_exporter /var/cache/node_exporter
+COPY --from=downloader /app /app
+COPY --from=downloader /var/log/node_exporter /var/log/node_exporter
+COPY --from=downloader /var/cache/node_exporter /var/cache/node_exporter
 USER 65532:65532
 WORKDIR /app
 EXPOSE 9100

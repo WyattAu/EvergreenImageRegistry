@@ -1,0 +1,42 @@
+[metadata]
+name = "ocis"
+version = "7.1.4"
+description = "ownCloud Infinite Scale - next-gen file sync and share platform"
+vendor = "ownCloud"
+source = "https://github.com/owncloud/ocis"
+license = "Apache-2.0"
+tier = "2"
+upstream_version = "7.1.4"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://github.com/owncloud/ocis/releases/download/v7.1.4/ocis-7.1.4-linux-amd64"
+
+[runtime]
+entrypoint = ["/ocis"]
+
+[ports]
+expose = [9200, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/owncloud/ocis"
+"org.opencontainers.image.title" = "ocis"
+"org.opencontainers.image.vendor" = "ownCloud"
+"org.opencontainers.image.version" = "7.1.4"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "10s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "30000ms"
+"evergreen.image.category" = "file-management"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "2"
+"evergreen.metrics.native" = "ztunnel"

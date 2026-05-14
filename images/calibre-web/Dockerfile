@@ -13,8 +13,7 @@ ARG BUILD_DATE
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 RUN apk add --no-cache ca-certificates && \
     adduser -u 65532 -D calibre 2>/dev/null || true && \
-    mkdir -p /app /var/log/python /var/cache/python && chown -R calibre:calibre /app /var/log/python /var/cache/python 2>/dev/null || true
-USER calibre
+    mkdir -p /app /var/log/python /var/cache/python && chown -R 65532:65532 /app /var/log/python /var/cache/python 2>/dev/null || true
 WORKDIR /app
 EXPOSE 8083
 
@@ -36,6 +35,5 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
-
 USER 65532:65532
 STOPSIGNAL SIGTERM

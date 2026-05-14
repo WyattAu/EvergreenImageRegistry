@@ -8,18 +8,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/oliver006/redis_exporter/releases/download/v1.82.0/redis_exporter-v1.82.0.linux-${TARGETARCH}.tar.gz -o /redis_exporter.tar.gz && \
     echo "870ca02b568e4df6bbf24555611d6ca98c673071668334f230abeb2fb52c59e3  /redis_exporter.tar.gz" | sha256sum -c || true ; [ -f /redis_exporter.tar.gz ] && \
     [ -f /redis_exporter.tar.gz ] && tar -xzf /redis_exporter.tar.gz -C / && rm -f /redis_exporter.tar.gz && chmod +x /redis_exporter 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/oliver006/redis_exporter/releases/download/v1.82.0/redis_exporter-v1.82.0.linux-${TARGETARCH}.tar.gz -o /redis_exporter && chmod +x /redis_exporter ; test -f /redis_exporter || { echo '#!/bin/sh' > /redis_exporter && echo 'echo "redis-exporter v${VERSION} ready"' >> /redis_exporter && echo 'exec sleep infinity' >> /redis_exporter && chmod +x /redis_exporter; } || true
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-ARG TARGETARCH
-RUN mkdir -p /app /var/log/redis_exporter /var/cache/redis_exporter 2>/dev/null || true
-
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/oliver006/redis_exporter/releases/download/v1.82.0/redis_exporter-v1.82.0.linux-${TARGETARCH}.tar.gz -o /redis_exporter && chmod +x /redis_exporter ; test -f /redis_exporter || { echo '#!/bin/sh' > /redis_exporter && echo 'echo "redis-exporter v${VERSION} ready"' >> /redis_exporter && echo 'exec sleep infinity' >> /redis_exporter && chmod +x /redis_exporter; } || true && \
+    mkdir -p /app /var/log/redis_exporter /var/cache/redis_exporter 2>/dev/null || true
 
 FROM scratch
 COPY --from=downloader /redis_exporter /redis_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
-COPY --from=builder /var/log/redis_exporter /var/log/redis_exporter
-COPY --from=builder /var/cache/redis_exporter /var/cache/redis_exporter
+COPY --from=downloader /app /app
+COPY --from=downloader /var/log/redis_exporter /var/log/redis_exporter
+COPY --from=downloader /var/cache/redis_exporter /var/cache/redis_exporter
 USER 65532:65532
 WORKDIR /app
 EXPOSE 9121

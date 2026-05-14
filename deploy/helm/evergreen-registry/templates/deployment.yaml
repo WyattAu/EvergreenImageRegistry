@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "evergreen-registry.fullname" . }}
+  labels:
+    {{- include "evergreen-registry.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      {{- include "evergreen-registry.selectorLabels" . | nindent 6 }}
+    metadata:
+      labels:
+        {{- include "evergreen-registry.selectorLabels" . | nindent 8 }}
+  template:
+    metadata:
+      labels:
+        {{- include "evergreen-registry.labels" . }}
+    spec:
+      {{- with .Values.security }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        readOnlyRootFilesystem: {{ .readOnlyRootFs | default false }}
+        capabilities:
+          drop:
+            - ALL
+        seccompProfile:
+          type: RuntimeDefault
+      {{- end }}
+      containers:
+        {{- range .Values.images.enabled }}
+        - name: {{ . | printf "%s" | trim }}
+          image: ghcr.io/wyattau/evergreenimageregistry/{{ . }}:{{ default "latest" }}
+          imagePullPolicy: {{ .Values.registry.pullPolicy }}
+          {{- with .Values.resources }}
+          resources:
+            requests:
+              cpu: {{ .requests.cpu }}
+              memory: {{ .requests.memory }}
+            limits:
+              cpu: {{ .limits.cpu }}
+              memory: {{ .limits.memory }}
+          {{- end }}
+          {{- with .Values.healthcheck }}
+          livenessProbe:
+            httpGet:
+              path: /livez
+              port: 9101
+            initialDelaySeconds: {{ .initialDelaySeconds }}
+            periodSeconds: {{ .periodSeconds }}
+            timeoutSeconds: {{ .timeoutSeconds }}
+            failureThreshold: {{ .failureThreshold }}
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 9101
+            initialDelaySeconds: {{ .initialDelaySeconds }}
+            periodSeconds: {{ .periodSeconds }}
+            timeoutSeconds: {{ .timeoutSeconds }}
+          startupProbe:
+            httpGet:
+              path: /startupz
+              port: 9101
+            initialDelaySeconds: 5
+            periodSeconds: {{ .periodSeconds }}
+            failureThreshold: {{ .failureThreshold }}
+          {{- end }}
+          {{- with .Values.monitoring.prometheus }}
+          ports:
+            - containerPort: 9101
+              name: metrics
+              protocol: TCP
+          {{- end }}
+      {{- end }}

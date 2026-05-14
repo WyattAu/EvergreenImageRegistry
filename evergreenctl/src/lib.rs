@@ -1,5 +1,6 @@
 pub mod audit;
 pub mod bump;
+pub mod changelog;
 pub mod ci_diff;
 pub mod deprecated;
 pub mod discover;
@@ -12,5 +13,6 @@ pub mod pin_digests;
 pub mod report;
 pub mod sign;
 pub mod snapshot;
+pub mod validate_strict;
 pub mod verify;
 pub mod verify_all;

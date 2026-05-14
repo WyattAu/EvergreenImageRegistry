@@ -7,6 +7,7 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 
 
 ARG VERSION=1.27.1
+ARG TARGETARCH
 
 
 
@@ -95,7 +96,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 
 
 
-RUN apk add --no-cache ca-certificates 
+RUN apk add --no-cache ca-certificates
 
 
 

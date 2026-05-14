@@ -1,0 +1,76 @@
+# Default values for evergreen-registry Helm chart
+
+# Registry configuration
+registry:
+  # Target namespace for image deployment
+  namespace: evergreen
+  # Pull policy
+  pullPolicy: IfNotPresent
+  # Number of concurrent image pulls
+  maxConcurrentPulls: 5
+
+# Image selection
+images:
+  # List of images to deploy (subset of 998 available)
+  # Each entry: name:tag
+  enabled:
+    - redis:7.2
+    - postgres:16
+    - nginx:1.27
+    - prometheus:latest
+    - grafana:latest
+    - vault:latest
+    - keycloak:latest
+
+# Security defaults
+security:
+  # Drop all Linux capabilities
+  capDropAll: true
+  # Prevent privilege escalation
+  noNewPrivileges: true
+  # Read-only root filesystem
+  readOnlyRootFs: true
+
+# Resource defaults
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+# Health check defaults
+healthcheck:
+  # Initial delay before first health check
+  initialDelaySeconds: 10
+  # Period between health checks
+  periodSeconds: 30
+  # Timeout per health check
+  timeoutSeconds: 5
+  # Number of consecutive failures before marking unhealthy
+  failureThreshold: 3
+
+# Monitoring
+monitoring:
+  enabled: false
+  prometheus:
+    port: 9101
+    path: /metrics
+  serviceMonitor:
+    enabled: false
+    interval: 30s
+
+# Network policies
+networkPolicies:
+  enabled: false
+  # Restrict cross-image communication
+  defaultPolicy: deny
+
+# Ingress configuration
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts: []
+  tls: []

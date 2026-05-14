@@ -4,6 +4,7 @@
 # =============================================================================
 
 ARG VERSION=0.0.1
+ARG TARGETARCH
 ARG BUILD_DATE
 ARG NODE_VERSION=20
 

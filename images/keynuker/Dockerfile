@@ -1,4 +1,5 @@
 ARG VERSION=latest
+ARG TARGETARCH
 
 FROM ghcr.io/clonezilla/keynuker:${VERSION} AS upstream
 

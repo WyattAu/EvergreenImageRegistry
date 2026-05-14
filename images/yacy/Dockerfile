@@ -1,4 +1,5 @@
 ARG VERSION=1.93
+ARG TARGETARCH
 
 FROM yacy/yacy_search_server:${VERSION} AS upstream
 

@@ -1,4 +1,5 @@
 ARG VERSION=0.275.1
+ARG TARGETARCH
 ARG BUILD_DATE
 
 FROM ghcr.io/github/dependabot-updater-internal:latest AS upstream

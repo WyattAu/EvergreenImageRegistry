@@ -1,4 +1,5 @@
 ARG VERSION=latest
+ARG TARGETARCH
 
 FROM ghcr.io/grafana/vault-exporter:${VERSION} AS upstream
 

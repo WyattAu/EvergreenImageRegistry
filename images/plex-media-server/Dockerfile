@@ -1,4 +1,5 @@
 ARG VERSION=1.41.3.9292
+ARG TARGETARCH
 
 FROM plexinc/pms-docker@sha256:8b5bcdf7b506fe051aa1a0a0d464efdb3ad8c0fb1f8a4dfb27a8c489b609920c AS upstream
 

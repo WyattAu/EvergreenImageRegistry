@@ -1,5 +1,6 @@
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS builder
 ARG VERSION=2.5.0
+ARG TARGETARCH
 RUN apk add --no-cache curl ca-certificates || true && \
     curl --retry 3 --retry-delay 5 -fsSL \
     "https://fastdl.mongodb.org/tools/mongodb-mongosh/${VERSION}/mongosh-${VERSION}-linux-x64.tgz" \

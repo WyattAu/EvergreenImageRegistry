@@ -6,6 +6,7 @@
 # =============================================================================
 
 ARG VERSION=6.2.16
+ARG TARGETARCH
 ARG BUILD_DATE
 
 
@@ -14,7 +15,7 @@ RUN useradd -m -u 65532 -s /usr/bin/false redis 2>/dev/null || true && \
     mkdir -p /app /var/log/redis /var/cache/redis 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache ca-certificates 
+RUN apk add --no-cache ca-certificates
 # NOTE: redis server not available in wolfi; uses pre-compiled binary
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group

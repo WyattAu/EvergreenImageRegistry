@@ -1,4 +1,5 @@
 ARG VERSION=nightly
+ARG TARGETARCH
 
 FROM getsentry/sentry:${VERSION} AS upstream
 

@@ -49,7 +49,7 @@ if command -v python3 &>/dev/null; then
         done
         # Run ruff on changed files
         if command -v ruff &>/dev/null; then
-            if ! ruff check "$changed_py" 2>/dev/null; then
+            if ! ruff check $changed_py 2>/dev/null; then
                 echo -e "  ${RED}[FAIL]${NC} ruff lint"
                 py_fail=1
             fi

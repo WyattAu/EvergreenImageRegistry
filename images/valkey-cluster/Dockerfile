@@ -1,4 +1,5 @@
 ARG VERSION=8.0.1
+ARG TARGETARCH
 
 FROM valkey/valkey:${VERSION} AS upstream
 

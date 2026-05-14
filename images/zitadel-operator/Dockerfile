@@ -1,4 +1,5 @@
 ARG VERSION=0.5.0
+ARG TARGETARCH
 
 FROM ghcr.io/zitadel/zitadel-operator:v${VERSION} AS upstream
 

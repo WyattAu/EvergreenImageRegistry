@@ -1,4 +1,5 @@
 ARG VERSION=0.8.0
+ARG TARGETARCH
 
 FROM ghcr.io/prometheus-community/gitlab-exporter:${VERSION} AS upstream
 

@@ -1,4 +1,5 @@
 ARG VERSION=0.1.0
+ARG TARGETARCH
 
 FROM ghcr.io/david415/wg-cloud:${VERSION} AS upstream
 

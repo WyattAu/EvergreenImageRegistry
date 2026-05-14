@@ -1,4 +1,5 @@
 ARG VERSION=5.4.6
+ARG TARGETARCH
 
 FROM scylladb/scylla:5.4.1 AS upstream
 

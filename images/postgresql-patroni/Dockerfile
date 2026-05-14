@@ -6,6 +6,7 @@
 # =============================================================================
 
 ARG VERSION=4.0.3
+ARG TARGETARCH
 ARG BUILD_DATE
 ARG PYTHON_VERSION=3.12-slim
 FROM python:${PYTHON_VERSION} AS builder

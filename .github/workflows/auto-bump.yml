@@ -1,7 +1,7 @@
 name: Auto Version Bump
 on:
   schedule:
-    - cron: '0 6 * * 1'
+    - cron: '0 6 * * *'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -12,8 +12,13 @@ on:
       batch_size:
         description: "Max images per PR batch"
         required: false
-        default: "25"
+        default: "50"
         type: string
+      auto_merge:
+        description: "Auto-merge patch/minor bumps when all gates pass"
+        required: false
+        default: "true"
+        type: boolean
 
 concurrency:
   group: ${{ github.workflow }}
@@ -22,6 +27,7 @@ concurrency:
 permissions:
   contents: write
   pull-requests: write
+  actions: write
 
 jobs:
   check-upstream:
@@ -44,6 +50,7 @@ jobs:
       has_changes: ${{ steps.detect.outputs.has_changes }}
       outdated_count: ${{ steps.detect.outputs.outdated_count }}
       batch_count: ${{ steps.batch.outputs.batch_count }}
+      changed_images: ${{ steps.batch.outputs.changed_images }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -62,6 +69,30 @@ jobs:
 
       - name: Build evergreenctl
         run: cd evergreenctl && cargo build --release
+
+      - name: Check rate limit before upstream check
+        id: ratelimit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REMAINING=$(gh api rate_limit --jq '.resources.core.remaining')
+          RESET=$(gh api rate_limit --jq '.resources.core.reset')
+          NOW=$(date +%s)
+          echo "Rate limit remaining: $REMAINING"
+
+          if [ "$REMAINING" -lt 100 ]; then
+            WAIT=$((RESET - NOW + 60))
+            echo "Rate limit low ($REMAINING). Waiting ${WAIT}s for reset."
+            sleep "$WAIT"
+            REMAINING=$(gh api rate_limit --jq '.resources.core.remaining')
+          fi
+
+          echo "remaining=${REMAINING}" >> "$GITHUB_OUTPUT"
+
+          if [ "$REMAINING" -lt 10 ]; then
+            echo "::error::Rate limit critically low ($REMAINING). Aborting."
+            exit 1
+          fi
 
       - name: Check for outdated images
         id: detect
@@ -90,7 +121,7 @@ jobs:
         run: |
           chmod +x scripts/bump_versions.sh scripts/bump_all_outdated.sh
 
-          BATCH_SIZE="${{ inputs.batch_size || '25' }}"
+          BATCH_SIZE="${{ inputs.batch_size || '50' }}"
           ./scripts/bump_all_outdated.sh /tmp/outdated.txt || true
 
           if [ -z "$(git status --porcelain)" ]; then
@@ -109,28 +140,55 @@ jobs:
             echo "batch_count=${BATCH_COUNT}" >> "$GITHUB_OUTPUT"
             echo "Will create up to ${BATCH_COUNT} PR batch(es) (batch_size=${BATCH_SIZE})"
 
-            echo "CHANGED_IMAGES<<EOF" >> "$GITHUB_ENV"
-            echo "$CHANGED_IMAGES" >> "$GITHUB_ENV"
-            echo "EOF" >> "$GITHUB_ENV"
+            echo "CHANGED_IMAGES<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$CHANGED_IMAGES" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Generate changelog
+      - name: Generate changelog and SBOM diff
         if: env.has_changes == 'true'
         run: |
-          python3 -c "
-          import subprocess, re
-          result = subprocess.run(['git', 'diff', '--stat'], capture_output=True, text=True)
-          print('## Changed Files Summary')
-          print()
-          print(result.stdout)
-          print()
-          print('### Version Changes')
-          print()
-          result2 = subprocess.run(['git', 'diff'], capture_output=True, text=True)
-          for line in result2.stdout.splitlines():
-              if 'VERSION' in line and 'ARG' in line:
-                  print(f'- {line.strip()}')
-          " > /tmp/changelog.md
+          {
+            echo "## Automated Version Bumps"
+            echo ""
+            echo "This PR was created by the daily auto-bump workflow."
+            echo ""
+            echo "### Version Changes"
+            echo ""
+            echo '```diff'
+            result2=$(git diff)
+            for line in $result2; do
+              if echo "$line" | grep -q "VERSION" && echo "$line" | grep -q "ARG"; then
+                echo "$line"
+              fi
+            done
+            echo '```'
+            echo ""
+            echo "### Changed Files Summary"
+            echo ""
+            git diff --stat
+            echo ""
+            echo "### SBOM Diff"
+            echo ""
+            SBOM_CHANGED=$(git diff --name-only | grep -c "sbom" || true)
+            if [ "$SBOM_CHANGED" -gt 0 ]; then
+              echo "SBOM files changed: ${SBOM_CHANGED}"
+              echo ""
+              echo '<details><summary>SBOM Changes</summary>'
+              echo ""
+              echo '```diff'
+              git diff -- '*/sbom*' | head -200
+              echo '```'
+              echo ""
+              echo "</details>"
+            else
+              echo "No SBOM changes detected."
+            fi
+            echo ""
+            echo "---"
+            echo ""
+            echo "_This PR will be auto-merged if all checks pass (patch/minor bumps only). Major version bumps require manual review._"
+          } > /tmp/changelog.md
           cat /tmp/changelog.md
 
       - name: Create Pull Request (single batch or dry run)
@@ -164,13 +222,28 @@ jobs:
           ref: auto-bump/versions
           fetch-depth: 0
 
-      - name: "Create batch PR ${{ matrix.batch_index }}"
+      - name: "Check rate limit before batch PR"
+        id: ratelimit
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          BATCH_SIZE="${{ inputs.batch_size || '25' }}"
+          REMAINING=$(gh api rate_limit --jq '.resources.core.remaining')
+          echo "Rate limit remaining: $REMAINING"
+          if [ "$REMAINING" -lt 10 ]; then
+            echo "::error::Rate limit too low ($REMAINING). Skipping batch ${{ matrix.batch_index }}."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+
+      - name: "Create batch PR ${{ matrix.batch_index }}"
+        if: steps.ratelimit.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BATCH_SIZE="${{ inputs.batch_size || '50' }}"
           INDEX="${{ matrix.batch_index }}"
-          CHANGED_IMAGES="${CHANGED_IMAGES}"
+          CHANGED_IMAGES="${{ needs.bump.outputs.changed_images }}"
 
           BATCH=$(echo "$CHANGED_IMAGES" | sed -n "$((INDEX * BATCH_SIZE + 1)),$(( (INDEX + 1) * BATCH_SIZE ))p")
 
@@ -212,15 +285,124 @@ jobs:
           }
           git push -u origin "auto-bump/batch-${INDEX}" -f
 
+          SBOM_DIFF=""
+          SBOM_FILES=$(echo "$CHANGED_FILES" | tr ' ' '\n' | grep "sbom" || true)
+          if [ -n "$SBOM_FILES" ]; then
+            SBOM_DIFF="<details><summary>SBOM Changes</summary>"
+            SBOM_DIFF+=$'\n\n```diff\n'
+            SBOM_DIFF+=$(for f in $SBOM_FILES; do git diff main -- "$f" 2>/dev/null | head -50; done)
+            SBOM_DIFF+=$'\n```\n\n</details>'
+          fi
+
+          CHANGELOG=""
+          CHANGELOG+="## Automated Version Bumps (Batch ${INDEX})"
+          CHANGELOG+=$'\n\n'
+          CHANGELOG+="This PR was created by the daily auto-bump workflow."
+          CHANGELOG+=$'\n\n'
+          CHANGELOG+="**Images in this batch:** ${IMAGE_LIST}"
+          CHANGELOG+=$'\n\n'
+          CHANGELOG+="**Action:** Review the changes, verify checksums, and merge when ready."
+          CHANGELOG+=$'\n\n'
+          CHANGELOG+=$'\n### Version Changes\n\n```diff\n'
+          for img in $BATCH; do
+            DIFF=$(git diff main -- "images/${img}/Dockerfile" 2>/dev/null | grep "ARG VERSION" || true)
+            if [ -n "$DIFF" ]; then
+              echo "$DIFF"
+            fi
+          done
+          CHANGELOG+=$'\n```\n\n'
+          if [ -n "$SBOM_DIFF" ]; then
+            CHANGELOG+=$'\n### SBOM Diff\n\n'
+            CHANGELOG+="$SBOM_DIFF"
+            CHANGELOG+=$'\n'
+          fi
+          CHANGELOG+=$'\n---\n\n'
+          CHANGELOG+="_Patch/minor bumps will be auto-merged if all checks pass. Major bumps require manual review._"
+
           gh pr create \
             --title "chore: auto-bump batch ${INDEX} - ${IMAGE_LIST}" \
-            --body "## Automated Version Bumps (Batch ${INDEX})
-
-          This PR was created by the weekly auto-bump workflow.
-
-          **Images in this batch:** ${IMAGE_LIST}
-
-          **Action:** Review the changes, verify checksums, and merge when ready.
-          This PR requires human approval and will NOT be auto-merged." \
+            --body "$CHANGELOG" \
             --label "automated,dependencies,do-not-merge-automatically" \
             --reviewer "${{ github.repository_owner }}"
+
+  auto-merge:
+    needs: bump
+    if: needs.bump.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Auto-merge eligible PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          AUTO_MERGE="${{ inputs.auto_merge || 'true' }}"
+          if [ "$AUTO_MERGE" != "true" ]; then
+            echo "Auto-merge disabled by input"
+            exit 0
+          fi
+
+          PRS=$(gh pr list --head "auto-bump/versions" --json number,title,mergeable,statusCheckRollup --jq '.[]')
+
+          if [ -z "$PRS" ]; then
+            echo "No auto-bump PRs found"
+            exit 0
+          fi
+
+          echo "$PRS" | jq -r '.number' | while read -r PR_NUM; do
+            PR_TITLE=$(gh pr view "$PR_NUM" --json title --jq '.title')
+            MERGEABLE=$(gh pr view "$PR_NUM" --json mergeable --jq '.mergeable')
+            CHECKS=$(gh pr view "$PR_NUM" --json statusCheckRollup --jq '.statusCheckRollup[]')
+
+            echo "Checking PR #${PR_NUM}: ${PR_TITLE}"
+
+            if [ "$MERGEABLE" != "true" ]; then
+              echo "  PR not mergeable, skipping"
+              continue
+            fi
+
+            ALL_PASS=true
+            if [ -n "$CHECKS" ] && [ "$CHECKS" != "null" ]; then
+              FAILING=$(echo "$CHECKS" | jq -r '[.[] | select(.status == "COMPLETED" and .conclusion != "SUCCESS" and .conclusion != "NEUTRAL")] | length')
+              PENDING=$(echo "$CHECKS" | jq -r '[.[] | select(.status == "IN_PROGRESS" or .status == "QUEUED")] | length')
+              if [ "$FAILING" -gt 0 ] || [ "$PENDING" -gt 0 ]; then
+                ALL_PASS=false
+                echo "  Checks not all passing (failing=$FAILING, pending=$PENDING)"
+              fi
+            fi
+
+            if [ "$ALL_PASS" = "true" ]; then
+              HAS_MAJOR=false
+              CHANGED=$(gh pr diff "$PR_NUM" --name-only 2>/dev/null)
+              for f in $CHANGED; do
+                if echo "$f" | grep -q "Dockerfile"; then
+                  DIFF=$(gh pr diff "$PR_NUM" -- "images/*/Dockerfile" 2>/dev/null)
+                  if echo "$DIFF" | grep -qP '^\-\s*ARG\s+VERSION\s*='; then
+                    OLD_VER=$(echo "$DIFF" | grep -oP '^\-\s*ARG\s+VERSION\s*=\s*\K\S+' | head -1)
+                    NEW_VER=$(echo "$DIFF" | grep -oP '^\+\s*ARG\s+VERSION\s*=\s*\K\S+' | head -1)
+                    OLD_MAJOR=$(echo "$OLD_VER" | grep -oP '^\d+' || echo "0")
+                    NEW_MAJOR=$(echo "$NEW_VER" | grep -oP '^\d+' || echo "0")
+                    if [ "$OLD_MAJOR" != "$NEW_MAJOR" ] && [ -n "$OLD_MAJOR" ] && [ -n "$NEW_MAJOR" ]; then
+                      echo "  Major version bump detected: ${OLD_VER} -> ${NEW_VER}"
+                      HAS_MAJOR=true
+                    fi
+                  fi
+                fi
+              done
+
+              if [ "$HAS_MAJOR" = "true" ]; then
+                echo "  Skipping auto-merge: major version bump detected"
+                echo "  Adding label: requires-manual-review"
+                gh pr edit "$PR_NUM" --add-label "requires-manual-review" --remove-label "do-not-merge-automatically" 2>/dev/null || true
+                continue
+              fi
+
+              echo "  All checks pass. Auto-merging PR #${PR_NUM}"
+              gh pr merge "$PR_NUM" --merge --auto || true
+            else
+              echo "  Waiting for checks to complete"
+            fi
+          done

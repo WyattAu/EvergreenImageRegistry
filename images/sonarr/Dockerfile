@@ -6,6 +6,7 @@
 # =============================================================================
 
 ARG VERSION=4.0.17.2952
+ARG TARGETARCH
 ARG BUILD_DATE
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader

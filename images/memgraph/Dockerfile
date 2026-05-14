@@ -1,4 +1,5 @@
 ARG VERSION=v3.9.0
+ARG TARGETARCH
 
 FROM memgraph/memgraph:${VERSION} AS upstream
 

@@ -1,4 +1,5 @@
 ARG VERSION=0.9.0
+ARG TARGETARCH
 
 FROM osixia/phpldapadmin:${VERSION} AS upstream
 

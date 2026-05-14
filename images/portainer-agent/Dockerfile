@@ -1,4 +1,5 @@
 ARG VERSION=2.39.2
+ARG TARGETARCH
 
 FROM portainer/agent:${VERSION} AS upstream
 

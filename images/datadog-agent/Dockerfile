@@ -1,4 +1,5 @@
 ARG VERSION=7
+ARG TARGETARCH
 
 FROM datadog/agent:${VERSION} AS upstream
 

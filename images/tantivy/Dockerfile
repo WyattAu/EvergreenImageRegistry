@@ -1,4 +1,5 @@
 ARG VERSION=0.25.0
+ARG TARGETARCH
 
 FROM ghcr.io/quickwit-oss/tantivy:${VERSION} AS upstream
 

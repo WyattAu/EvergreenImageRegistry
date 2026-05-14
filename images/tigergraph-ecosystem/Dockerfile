@@ -1,4 +1,5 @@
 ARG VERSION=3.10.0
+ARG TARGETARCH
 ARG BUILD_DATE
 
 FROM docker.io/tigergraph/tigergraph:4.2.2 AS upstream

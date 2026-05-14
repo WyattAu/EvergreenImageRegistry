@@ -4,6 +4,7 @@
 # =============================================================================
 
 ARG VERSION=1.2.4
+ARG TARGETARCH
 ARG BUILD_DATE
 
 
@@ -20,7 +21,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=1.2.4
 
-RUN apk add --no-cache python3 ca-certificates tzdata 
+RUN apk add --no-cache python3 ca-certificates tzdata
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
 RUN addgroup -S -g 2 nogroup >/dev/null || true && \

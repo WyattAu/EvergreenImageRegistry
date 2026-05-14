@@ -1,4 +1,5 @@
 ARG VERSION=v2.4.0
+ARG TARGETARCH
 
 FROM pawelmalak/flame:${VERSION} AS upstream
 

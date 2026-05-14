@@ -1,4 +1,5 @@
 ARG VERSION=v5.0.5
+ARG TARGETARCH
 
 FROM fluent/fluent-bit:${VERSION} AS upstream
 

@@ -1,6 +1,7 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG GITHUB_TOKEN
 ARG VERSION=1.5.2
+ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Graylog2/collector-sidecar/releases/download/1.5.2/graylog-sidecar-1.5.2.tar.gz -o /sidecar.tar.gz 2>/dev/null || true ; \
     echo "bb8ea480268551864d246e31b3e5cc50e941e71b7ad236092a9b2ccb96b5eb0f  /sidecar.tar.gz" | sha256sum -c || true ; \

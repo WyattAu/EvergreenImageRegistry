@@ -6,6 +6,7 @@
 # =============================================================================
 
 ARG VERSION=8.0
+ARG TARGETARCH
 ARG BUILD_DATE
 
 
@@ -17,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache curl ca-certificates 
+RUN apk add --no-cache curl ca-certificates
 COPY --from=builder --chown=65532:65532 /app /app
 COPY --from=builder --chown=65532:65532 /var/log/mysql-init /var/log/mysql-init
 COPY --from=builder --chown=65532:65532 /var/cache/mysql-init /var/cache/mysql-init

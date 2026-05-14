@@ -4,6 +4,7 @@
 # =============================================================================
 
 ARG VERSION=2.3.21
+ARG TARGETARCH
 ARG BUILD_DATE
 
 
@@ -13,7 +14,7 @@ RUN groupadd -r -g 65532 appuser && useradd -r -u 65532 -g appuser -d /app -s /u
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache ca-certificates 
+RUN apk add --no-cache ca-certificates
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder /etc/passwd /etc/passwd
 RUN mkdir -p /app /var/log/dovecot /var/cache/dovecot && chown -R 65532:65532 /app /var/log/dovecot /var/cache/dovecot 2>/dev/null || true

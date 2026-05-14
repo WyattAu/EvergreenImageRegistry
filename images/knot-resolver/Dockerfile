@@ -1,5 +1,6 @@
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=5.7.6
+ARG TARGETARCH
 RUN apk add --no-cache knot-resolver 2>/dev/null || apk add --no-cache bind-tools 2>/dev/null || true knot-resolver-utils ca-certificates || true && \
     addgroup -S -g 10000 knot 2>/dev/null || true && \
     adduser -u 65532 -G knot -D -h /app -s /bin/false knot 2>/dev/null || true && \

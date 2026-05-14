@@ -1,4 +1,5 @@
 ARG VERSION=5.17.0
+ARG TARGETARCH
 
 FROM ghcr.io/hazelcast/hazelcast-platform-operator:v${VERSION} AS upstream
 

@@ -1,4 +1,5 @@
 ARG VERSION=1.22.0
+ARG TARGETARCH
 
 FROM ghcr.io/banzaicloud/bank-vaults:v${VERSION} AS upstream
 

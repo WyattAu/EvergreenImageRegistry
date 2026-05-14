@@ -6,6 +6,7 @@
 # =============================================================================
 
 ARG VERSION=3.6.1
+ARG TARGETARCH
 ARG SCALA_VERSION=2.13
 ARG BUILD_DATE
 

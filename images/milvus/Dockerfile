@@ -1,4 +1,5 @@
 ARG VERSION=v2.6.15
+ARG TARGETARCH
 
 FROM milvusdb/milvus:${VERSION} AS upstream
 

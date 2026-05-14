@@ -1,0 +1,65 @@
+name: Publish Immutable Tags
+on:
+  push:
+    tags:
+      - 'v*'
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (no actual push)'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract version
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+      - name: Build and push immutable tag
+        run: |
+          docker buildx build --push \
+            --platform linux/amd64,linux/arm64 \
+            --tag ghcr.io/${{ github.repository }}:${{ env.VERSION }} \
+            --tag ghcr.io/${{ github.repository }}:latest \
+            --cache-from type=gha \
+            .
+      - name: Sign immutable tag
+        if: ${{ !inputs.dry_run }}
+        run: |
+          cosign sign --yes --key env://COSIGN_PRIVATE_KEY \
+            ghcr.io/${{ github.repository }}:${{ env.VERSION }}@${{ github.sha }}
+        env:
+          COSIGN_PRIVATE_KEY: ""
+
+  latest-ttl:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Delete :latest tag (enforce rebuild)
+        run: |
+          echo "WARNING: This removes the :latest tag to ensure it gets rebuilt"
+          curl -s -X DELETE \
+            "https://api.github.com/orgs/${{ github.repository }}/packages/container/${{ github.repository }}/versions/latest" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" || echo "Could not delete :latest"

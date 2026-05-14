@@ -15,7 +15,9 @@ repos:
     rev: v4.0.0-alpha.8
     hooks:
       - id: prettier
-        args: [--config, .prettierrc.yml, --ignore-path, 'images/', --ignore-path, 'node_modules/', --ignore-path, 'deploy/']
+        args: [--config, .prettierrc.yml]
+        additional_dependencies:
+          - prettier@^3.5.3
 
   # Linters for style and correctness
   - repo: https://github.com/DavidAnson/markdownlint-cli2

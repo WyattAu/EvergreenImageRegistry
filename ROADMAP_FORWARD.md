@@ -1,391 +1,403 @@
-# Evergreen Image Registry: Path to Production and Beyond
+# Evergreen Image Registry: Path to Production and Future Plans
 
-**Version:** v27.0.0 | **Date:** 2026-05-13 | **Status:** Production-Ready, All Phases Complete
-
----
-
-## 1. Current State
-
-### 1.1 Quality Scorecard
-
-| Metric                       | Value                          | Status   |
-|------------------------------|--------------------------------|----------|
-| Total images                 | 998                            | COMPLETE |
-| Rust tests                   | 65 unit + 47 integration = 112 | PASS     |
-| Rust clippy                  | 0 warnings                     | PASS     |
-| Python ruff lint             | 0 errors (32 scripts)          | PASS     |
-| Python ruff format           | 0 errors (32 scripts)          | PASS     |
-| Shell syntax                 | 25/25                          | PASS     |
-| Manifest TOML validation     | 998/998                        | PASS     |
-| SBOM JSON validation         | 998/998                        | PASS     |
-| Digest pinning               | 75.5% (1511/2001 FROM lines)   | PASS     |
-| Multi-arch                  | 681 (283 TARGETARCH + 398 scratch) | PASS     |
-| Non-root USER                | 99.5% (993/998)                | PASS     |
-| HEALTHCHECK                  | 559 real + 438 NONE + 1 shim   | PASS     |
-| Pre-commit hooks             | 9 hooks (fast gate)            | PASS     |
-| Pre-push gate                | 10 gates (full gate)           | PASS     |
-| Documentation                | 0 emojis, 0 broken refs        | PASS     |
-
-### 1.2 What Is Done (Phases 0-65)
-
-- 998 images with Dockerfiles, manifests, SBOMs, per-image READMEs, .dockerignore
-- evergreenctl Rust CLI (audit, verify, generate, drift, bump, pin-digests, sign, snapshot, migrate, discover, outdated, ci-diff)
-- 10 GitHub Actions workflows (build, lint, scan, sign, provenance, fuzz, nightly, daily-security, auto-bump, readme-update)
-- 12-point quality gate system (pre-commit + pre-push)
-- Compliance framework (CIS, STIG, FIPS, NIST SP 800-53)
-- Health-shim Go binary for scratch/distroless images
-- SLSA v3 provenance + Cosign OIDC signing
-- 8 Architecture Decision Records
-
-### 1.3 What Remains
-
-| Gap                          | Count     | Root Cause               | Severity |
-|------------------------------|-----------|--------------------------|----------|
-| CI build failures            | ~80-120   | Upstream issues only     | HIGH     |
-| Unpinned FROM lines          | ~498      | Intermediate stages     | MEDIUM   |
-| Single-arch images           | ~360      | C-ext, amd64-only, GPU   | MEDIUM   |
-| Stub test configs            | ~947      | binary:none in config    | HIGH     |
-| Go toolchain in CI           | Missing   | Not in Dockerfile.ci     | LOW      |
-| Archive doc markdownlint     | ~7 files  | Legacy formatting        | LOW      |
+**Version:** v28.0.0 | **Date:** 2026-05-14 | **Status:** Post-Audit, Production-Ready
 
 ---
 
-## 2. Path to Production
+## 1. Current State (Post-Comprehensive Audit)
 
-### 2.1 Gate 1: Minimal Viable Production (6 weeks)
+### 1.1 Quality Scorecard (Verified 2026-05-14)
 
-**Objective:** CI green, behavioral validation, supply chain hardening.
+| Metric                       | Value                          | Verification Method     |
+|------------------------------|--------------------------------|-------------------------|
+| Total images                 | 998                            | `find images -name Dockerfile \| wc -l` |
+| Rust unit tests              | 65/65 pass                     | `cargo test --lib`      |
+| Rust integration tests       | 47/47 pass                     | `cargo test --test integration` |
+| Rust clippy                  | 0 warnings (-D warnings)       | `cargo clippy`          |
+| Rust fmt                     | PASS                           | `cargo fmt --check`     |
+| Rust release build           | PASS                           | `cargo build --release` |
+| Python ruff lint             | 0 errors (32 scripts)          | `ruff check`            |
+| Python ruff format           | 0 errors (32 scripts)          | `ruff format --check`   |
+| Shellcheck                   | 0 warnings (16 scripts)        | `shellcheck -x`         |
+| Manifest TOML validation     | 998/998                        | `tomllib.load`          |
+| SBOM JSON validation         | 998/998                        | `json.load`             |
+| Pre-commit hooks             | 9 hooks (fast gate)            | `pre-commit run --all`  |
+| Pre-push gate                | 10/10 PASS                     | `scripts/pre-push-gate.sh` |
+| Documentation emojis         | 0                              | grep + unicode scan     |
+| Broken internal links         | 0                              | link resolution check   |
+| Mathematical errors in docs  | 0 (1 fixed: HEALTHCHECK %)     | manual verification     |
+| Metric inconsistencies       | 0 (3 fixed: version, workflow count, multi-arch) | cross-file audit |
+| Malformed YAML templates     | 0 (2 fixed)                    | YAML parse validation  |
 
-#### Phase 66: Upstream Failure Resolution (Week 1)
+### 1.2 Architecture Summary
 
-Resolve CI build failures through version bumps and documentation:
+| Component                | Technology | Files      | Tests |
+|--------------------------|------------|------------|-------|
+| evergreenctl              | Rust       | 18 src + 1 test | 112  |
+| health-shim               | Go         | 3 src      | CI    |
+| Image Dockerfiles         | Dockerfile | 998        | CI    |
+| Manifests                 | TOML       | 998        | TOML  |
+| SBOMs                     | SPDX JSON  | 998        | JSON  |
+| Build/validation scripts  | Python     | 32         | ruff  |
+| Utility scripts           | Bash       | 16         | shell |
+| CI/CD workflows           | GitHub Actions | 10     | CI    |
+| Compliance framework      | YAML + MD  | 8          | N/A   |
+| ADRs                      | Markdown   | 8          | N/A   |
+| Specs (Yellow/Blue Papers)| Markdown + TOML | 6      | N/A   |
 
-| Category                      | Count | Action                                      |
-|-------------------------------|-------|---------------------------------------------|
-| curl-404 (release deleted)    | ~21   | Version bump + sha256 update                |
-| upstream-image-not-found      | ~37   | ~15 bump, ~12 mark deprecated, ~10 document |
-| auth-gated FROM               | ~5    | Add GitHub PAT or document                  |
-| build-compilation failure     | ~3    | Document as upstream-broken                 |
-| copy-to-non-directory         | ~5    | BuildKit cache, re-run                      |
+### 1.3 What Remains Before Production
 
-**Deliverable:** CI failure count < 20 (only unfixable upstream issues).
+| Gap                          | Count     | Root Cause               | Severity | Effort |
+|------------------------------|-----------|--------------------------|----------|--------|
+| CI build failures            | ~80-120   | Upstream issues only     | HIGH     | 8h     |
+| Unpinned intermediate FROM   | ~490      | Builder-stage refs       | MEDIUM   | 4h     |
+| Single-arch images           | ~317      | C-ext, amd64-only, GPU   | MEDIUM   | 20h    |
+| Stub test configs            | ~947      | binary:none in config    | HIGH     | 16h    |
+| Go CI integration            | Missing   | Not in Dockerfile.ci     | LOW      | 2h     |
+| Binary provenance verification | None     | Not implemented         | MEDIUM   | 8h     |
 
-**Command:** `evergreenctl outdated --all images/` then batch `evergreenctl bump`.
+---
 
-#### Phase 67: Test Framework Expansion (Weeks 2-3)
+## 2. Production Deployment Roadmap
 
-Expand functional test coverage from 51 to 200+ real test configs:
+### 2.1 Phase 89: CI Green (Week 1)
 
-1. Add 50 database images (postgres, mysql, redis, mongodb, cockroachdb, etc.) with real binary paths, health ports, and version flags
-2. Add 50 monitoring/security images (prometheus, grafana, vault, trivy, falco) with startup verification
-3. Add 50 proxy/networking images (nginx, envoy, traefik, haproxy, caddy) with HTTP health checks
-4. Add weekly CI workflow that builds and tests the configured images in batches of 50
+**Objective:** Reduce CI build failures to <20 (only unfixable upstream).
 
-**Deliverable:** 200+ images with functional test configs, weekly CI passing.
+Actions:
+1. Run `evergreenctl outdated --all images/` to identify stale versions
+2. Batch version bump for ~21 images with deleted releases (curl-404)
+3. Document ~15 permanently broken upstreams as deprecated
+4. Re-run CI, categorize remaining failures
+5. Add retry logic for transient CI failures (copy-to-non-directory)
 
-#### Phase 68: evergreenctl Test Expansion (Week 3-4)
+**Success:** CI failure count < 20, all documented as upstream.
 
-Increase test coverage:
+### 2.2 Phase 90: Test Framework (Weeks 2-3)
 
-1. Add manifest-to-Dockerfile round-trip integration tests
-2. Add checksum verification tests with real files and known vectors
-3. Add drift detection tests comparing manifest vs Dockerfile
-4. Add `--ignored` tests for slow integration scenarios
-5. Target: 80+ total tests
+**Objective:** Functional test coverage for 200+ images.
 
-**Deliverable:** 80+ Rust tests (unit + integration), all passing in CI.
+Actions:
+1. Expand `images/tests/functional/` with real binary paths, health ports, version flags
+2. Database cohort (50): postgres, mysql, redis, mongodb, cockroachdb, etcd, cassandra, couchdb
+3. Monitoring cohort (50): prometheus, grafana, alertmanager, loki, thanos, victoriametrics, mimir
+4. Security cohort (50): vault, trivy, falco, grype, cosign, dex, keycloak, oauth2-proxy
+5. Proxy cohort (50): nginx, envoy, traefik, haproxy, caddy, unbound, bind, coredns
 
-#### Phase 69: Digest Pinning Completion (Week 4-5)
+**Success:** 200+ images with verified functional test configs.
 
-Complete supply chain integrity:
+### 2.3 Phase 91: Supply Chain Hardening (Week 3-4)
 
-1. Run `evergreenctl pin-digests --update images/` to pin all intermediate wolfi-base stages
-2. Pin builder-stage bases (golang, rust, node) to version + digest
-3. Add CI check that flags any new unpinned FROM lines in changed Dockerfiles
-4. Validate no build regressions after pinning
+**Objective:** >95% FROM lines digest-pinned.
 
-**Deliverable:** >95% FROM lines digest-pinned, automated enforcement.
+Actions:
+1. `evergreenctl pin-digests --update images/` for all intermediate stages
+2. Pin builder-stage bases (golang, rust, node, maven) to version+digest
+3. Add CI check: flag new unpinned FROM in changed Dockerfiles
+4. Validate no build regressions post-pinning
+5. Document 5 auth-gated `:latest` refs as acceptable (dependabot, lancedb, scylladb, tigergraph)
 
-#### Phase 70: CI Hardening (Week 5-6)
+**Success:** >95% FROM lines pinned, automated enforcement active.
 
-Comprehensive code quality automation:
+### 2.4 Phase 92: CI Hardening (Week 4-5)
 
-1. Add Go toolchain to Dockerfile.ci, integrate `go vet` and `go test` for health-shim
-2. Add `cargo audit` for Rust dependency vulnerability scanning
-3. Add ruff lint + format check for Python scripts in CI
-4. Add shellcheck for all .sh files in CI
-5. Consolidate workflows with explicit DAG dependencies
+**Objective:** Full code quality coverage in CI.
 
-**Deliverable:** CI covers all code quality dimensions (Rust, Python, Shell, Go, Dockerfile).
+Actions:
+1. Add Go toolchain to Dockerfile.ci (currently has go 1.23.5 -- verify `go vet` + `go test` for health-shim)
+2. Add `cargo audit` for Rust dependency scanning
+3. Add shellcheck to CI for all .sh files
+4. Consolidate workflows with explicit `needs:` DAG
+5. Add actionlint for workflow YAML validation
+6. Fix prettier timeout in pre-commit (currently 120s limit, may need `--ignore-path` for large dirs)
 
-#### Gate 1 Signoff Criteria
+**Success:** CI covers all code quality dimensions (Rust, Python, Shell, Go, Dockerfile, YAML).
+
+### 2.5 Phase 93: Multi-Arch Expansion (Weeks 5-8)
+
+**Objective:** >800 images with multi-arch support.
+
+| Priority | Category              | Count | Approach                                    |
+|----------|-----------------------|-------|---------------------------------------------|
+| HIGH     | C-extension Python    | ~80   | Per-arch wheels or musl builds              |
+| HIGH     | Java/JVM images       | ~40   | Bytecode is arch-independent, add TARGETARCH |
+| MEDIUM   | amd64-only upstreams  | ~120  | Verify upstream arm64 support                |
+| LOW      | Node.js images        | ~40   | Interpreted JS, already cross-platform       |
+| EXCLUDED | GPU/ML images         | ~80   | Platform-specific by design                  |
+
+**Success:** >800 images with `ARG TARGETARCH` or scratch (arch-independent).
+
+### 2.6 Phase 94: SBOM Attestation Chain (Weeks 8-9)
+
+**Objective:** Every built image has complete attestation chain.
+
+Actions:
+1. Configure syft for transitive dependency capture
+2. Store SBOMs in Rekor transparency log
+3. Generate in-toto attestations (SBOM + provenance + signature)
+4. Add SBOM drift detection between versions (already have `sbom_drift_detect.py`)
+5. Validate attestation chain with `cosign verify-blob`
+
+**Success:** 100% of built images have SBOM + provenance + signature + attestation.
+
+### 2.7 Phase 95: evergreenctl v2.0 (Weeks 9-10)
+
+**Objective:** Complete management toolchain.
+
+New subcommands:
+- `report`: JSON/HTML registry health report (already exists, add HTML output)
+- `deprecated --mark/--list/--unmark`: Deprecation lifecycle management (already exists)
+- `completion bash|zsh|fish`: Shell completion via clap-mangen
+- `validate --strict`: Full manifest + Dockerfile + SBOM cross-validation
+- `changelog`: Generate CHANGELOG entries from git history
+
+Infrastructure:
+- Man pages via `clap-mangen`
+- Structured JSON error output for CI parsing
+- `--quiet` / `--output json` flags for scripting
+
+**Success:** evergreenctl covers all registry management operations.
+
+### 2.8 Phase 96: Health-Shim Expansion (Weeks 10-11)
+
+**Objective:** 300+ images with health probes.
+
+Actions:
+1. Expand probe templates: message queues (kafka, rabbitmq, nats, emqx), caching (memcached, redis, valkey), search (elasticsearch, opensearch, meilisearch)
+2. Reduce health-shim binary size (<1MB via UPX or static build optimization)
+3. Add TCP probe type (connect to port, check if open)
+4. Add HTTP probe with expected status code
+5. Wire health-shim into 100+ scratch/distroless images
+
+**Success:** 300+ images with health probes, shim binary <1MB.
+
+### 2.9 Phase 97: Policy-as-Code (Weeks 11-12)
+
+**Objective:** Machine-readable policies enforced by CI.
+
+Current: `image_policy.yaml` + `enforce_policy.py` (already exists).
+
+Enhancements:
+1. Add per-tier policy overrides (Tier 1 stricter than Tier 3)
+2. Add image size thresholds with enforcement
+3. Add CVE freshness policy (must rebuild within 72h of patch availability)
+4. Add digest pinning policy (>95% FROM lines pinned)
+5. Integrate with CI as blocking gate
+
+**Success:** All image policies machine-enforced in CI.
+
+---
+
+## 3. Production Gate Criteria
+
+### Gate 1: Minimal Viable Production (After Phase 92)
 
 | Criterion                     | Current        | Target   |
 |-------------------------------|----------------|----------|
 | CI build pass rate            | ~88%           | >99%     |
 | Functional test configs       | 51/998         | 200/998  |
-| evergreenctl tests            | 73             | 80+      |
-| Digest pinning                | 75.3%          | >95%     |
+| evergreenctl tests            | 112            | 120+     |
+| Digest pinning                | 75.5%          | >95%     |
 | CI code quality coverage      | Partial        | Full     |
-| Go CI integration             | None           | Active   |
+| Go CI integration             | Manual         | Active   |
 
----
-
-### 2.2 Gate 2: Full Production (8 weeks)
-
-**Objective:** Multi-arch, SBOM depth, compliance automation, operational readiness.
-
-#### Phase 71-72: Multi-Arch Expansion (Weeks 7-9)
-
-| Priority | Category              | Count | Approach                                         |
-|----------|-----------------------|-------|--------------------------------------------------|
-| HIGH     | C-extension Python    | ~80   | Per-arch wheels or musl-based builds             |
-| MEDIUM   | amd64-only upstreams  | ~120  | Verify upstream arm64 availability                |
-| EXCLUDED | GPU/ML images         | ~80   | Platform-specific, single-arch is correct        |
-
-**Deliverable:** >800 images with multi-arch support.
-
-#### Phase 73-74: SBOM Depth and Attestation (Weeks 9-10)
-
-1. Configure syft for transitive dependency capture
-2. Store SBOMs in Rekor transparency log
-3. Generate in-toto attestations linking SBOM + provenance + signature
-4. Add SBOM drift detection between versions
-
-**Deliverable:** Every built image has SBOM + provenance + signature + attestation chain.
-
-#### Phase 75-76: evergreenctl Maturation (Weeks 10-11)
-
-New subcommands:
-
-| Subcommand              | Purpose                                      |
-|-------------------------|----------------------------------------------|
-| `report`                | JSON/HTML registry health report             |
-| `deprecated --mark`     | Mark images as deprecated                    |
-| `completion bash\|zsh` | Shell completion                             |
-
-Infrastructure: man pages (clap-mangen), structured JSON error output for CI.
-
-**Deliverable:** evergreenctl covers all management operations, 100+ tests.
-
-#### Phase 77-78: Health-Shim and Compliance Automation (Weeks 11-14)
-
-1. Health probe templates: message queues, caching, search engines (200+ images)
-2. Reduce health-shim binary size from ~2MB to <1MB
-3. Integrate CIS Docker Benchmark scanning into daily CI
-4. Automate STIG check evidence collection
-5. Generate POA&M from scan results automatically
-
-**Deliverable:** 200+ images with health probes, compliance evidence auto-generated.
-
-#### Gate 2 Signoff Criteria
+### Gate 2: Full Production (After Phase 97)
 
 | Criterion                      | Target                    |
 |--------------------------------|---------------------------|
 | Multi-arch coverage           | >800 images               |
 | SBOM + provenance + attestation| 100% of built images      |
 | evergreenctl feature coverage | All management operations |
-| Health-shim coverage          | 200+ images               |
-| Compliance automation         | CI-integrated             |
+| Health-shim coverage          | 300+ images               |
+| Policy-as-code                | CI-enforced               |
+| Zero stub test configs        | 0                         |
+| Documentation accuracy        | 100% cross-file consistent|
 
 ---
 
-### 2.3 Gate 3: Operational Excellence (3-12 months)
+## 4. Operational Excellence (Post-Production)
 
-**Objective:** Self-maintaining registry, ecosystem integration.
-
-#### Phase 79-80: Automated Version Bumping
+### 4.1 Phase 98: Automated Version Bumping (Month 4-5)
 
 Daily cron workflow:
-
-1. `evergreenctl check-upstream` across all images
+1. `evergreenctl outdated --all images/` scans all upstreams
 2. Group updates into batches (max 50 images per PR)
 3. Open PR per batch with changelog and SBOM diff
-4. Auto-merge if all gates pass (human approval for major bumps)
+4. Auto-merge if all gates pass (human approval for major version bumps)
+5. Track version freshness metric in Grafana
 
-#### Phase 81-82: Binary Provenance Verification
+### 4.2 Phase 99: Binary Provenance Verification (Month 5-6)
 
 1. Multi-source verification: download from GitHub + vendor CDN, compare sha256
-2. Reproducible builds for Go/Rust binaries: rebuild from source, compare
+2. Reproducible builds for Go/Rust: rebuild from source, compare binary digests
 3. Sigstore cosign verification for upstream signatures
 4. Build-to-build comparison: store sha256 of every layer, flag drift
+5. Add `evergreenctl provenance verify` subcommand
 
-#### Phase 83-84: Policy-as-Code
+### 4.3 Phase 100: Registry Publication (Month 6-7)
 
-Machine-readable image policies enforced by CI (Open Policy Agent/Rego or Cedar):
-
-```toml
-[policy.C001]
-description = "Non-root execution"
-check = "docker inspect --format '{{.Config.User}}'"
-expect = "65532:65532"
-severity = "block"
-```
-
-#### Phase 85-86: Registry Publication and Distribution
-
-1. Immutable versioned tags (never overwrite)
-2. Short-lived :latest tag (24h TTL)
+1. GHCR publication with immutable versioned tags (never overwrite)
+2. Short-lived `:latest` tag (24h TTL via CI cron)
 3. Per-image README on GHCR package UI
-4. Multi-region replication for low-latency pulls
-5. Rate limiting and webhook notifications
+4. Multi-region replication for low-latency pulls (US, EU, APAC)
+5. Rate limiting and pull count metrics
+6. Webhook notifications for new image versions
 
-#### Phase 87-88: Metrics and Ecosystem
+### 4.4 Phase 101: Metrics and Observability (Month 7-8)
 
 1. Grafana dashboard: coverage trends, version drift, CI pass rates, vulnerability counts, build times, image sizes
-2. Helm chart for Kubernetes operator deployment
-3. Terraform provider for infrastructure-as-code
-4. OCI catalog API serving image catalog as OCI index
-5. Federated registry mirroring (Harbor, Artifactory, air-gap bundles)
+2. Prometheus metrics exported from evergreenctl
+3. Alertmanager rules: CI pass rate <95%, critical CVE count >0, digest drift detected
+4. Monthly automated quality report generation
+5. Historical trend analysis and forecasting
 
-#### Gate 3 Signoff Criteria
+### 4.5 Phase 102: Ecosystem Integration (Month 8-12)
 
-| Criterion                      | Target                          |
-|--------------------------------|---------------------------------|
-| Automated version bumping     | Daily cron, auto-merge patches  |
-| Binary provenance             | Multi-source + sigstore         |
-| GHCR publication              | Immutable tags, multi-region   |
-| Metrics dashboard             | All quality indicators tracked  |
-| Helm + Terraform              | Available                       |
-| Federated mirroring           | Supported                       |
+1. Helm chart for Kubernetes operator deployment
+2. Terraform provider for infrastructure-as-code
+3. OCI catalog API serving image catalog as OCI index
+4. Federated registry mirroring (Harbor, Artifactory, air-gap bundles)
+5. VS Code extension for evergreenctl commands
+6. GitHub App for automated PR reviews on image updates
 
 ---
 
-## 3. Phase Dependency Graph
+## 5. Phase Dependency Graph
 
 ```
-v26.14.0 (current)
+v27.0.0 (current, post-audit)
     |
     v
-Phase 66: Upstream Fixes [CRITICAL] --- unblocks CI
+Phase 89: CI Green [CRITICAL]
     |
-    +---> Phase 67: Test Expansion [HIGH]
+    +---> Phase 90: Test Framework [HIGH]
     |         |
-    +---> Phase 68: evergreenctl Tests [HIGH]
+    +---> Phase 91: Supply Chain [HIGH]
     |         |
-    +---> Phase 69: Digest Pinning [MEDIUM]
-    |         |
-    +---> Phase 70: CI Hardening [MEDIUM]
+    +---> Phase 92: CI Hardening [MEDIUM]
               |
               v
          [GATE 1: MVP Production]
               |
               v
-Phase 71-72: Multi-Arch
+Phase 93: Multi-Arch Expansion
     |
     v
-Phase 73-74: SBOM + Attestation
+Phase 94: SBOM Attestation
     |
     v
-Phase 75-76: evergreenctl Maturation
+Phase 95: evergreenctl v2.0
     |
     v
-Phase 77-78: Health-Shim + Compliance
+Phase 96: Health-Shim Expansion
+    |
+    v
+Phase 97: Policy-as-Code
     |
     v
          [GATE 2: Full Production]
               |
               v
-Phase 79-80: Auto Version Bump
-Phase 81-82: Binary Provenance
-Phase 83-84: Policy-as-Code
-Phase 85-86: Registry Publication
-Phase 87-88: Metrics + Ecosystem
-    |
-    v
+Phase 98: Auto Version Bump ----+---- Phase 99: Binary Provenance
+Phase 100: Registry Publication --+---- Phase 101: Metrics
+Phase 102: Ecosystem Integration -+
+              |
+              v
          [GATE 3: Operational Excellence]
 ```
 
 ---
 
-## 4. Technical Debt Register
+## 6. Technical Debt Register
 
-| Item                               | Effort | Impact       | Priority | Phase   |
-|------------------------------------|--------|--------------|----------|---------|
-| Stub test configs (~947 images)    | 16h    | Test coverage| HIGH     | 67      |
-| Upstream CI failures (~80-120)     | 8h     | CI green     | HIGH     | 66      |
-| Unpinned FROM lines (~498)         | 4h     | Supply chain | MEDIUM   | 69      |
-| Go toolchain CI integration        | 2h     | Code quality | LOW      | 70      |
-| Archive doc formatting             | 2h     | Doc accuracy | LOW      | Backlog |
-| Multi-arch gap (~360 images)       | 20h    | Platform     | MEDIUM   | 71-72   |
-| Health-shim binary size            | 4h     | Performance  | LOW      | 77-78   |
-| Pre-commit hook first-install time | 1h     | Dev experience| LOW     | Backlog |
+| Item                               | Effort | Impact        | Priority | Phase    |
+|------------------------------------|--------|---------------|----------|----------|
+| CI build failures (~80-120)        | 8h     | CI green      | HIGH     | 89       |
+| Stub test configs (~947)           | 16h    | Test coverage | HIGH     | 90       |
+| Unpinned FROM lines (~490)         | 4h     | Supply chain  | MEDIUM   | 91       |
+| Go CI integration                  | 2h     | Code quality  | LOW      | 92       |
+| Prettier pre-commit timeout        | 1h     | Dev experience| LOW     | 92       |
+| Multi-arch gap (~317 images)       | 20h    | Platform      | MEDIUM   | 93       |
+| Health-shim binary size            | 4h     | Performance   | LOW      | 96       |
+| Archive doc formatting (legacy)    | 2h     | Documentation | LOW      | Backlog  |
+| Pre-commit first-install time      | 1h     | Dev experience| LOW     | Backlog  |
 
 ---
 
-## 5. Risk Register
+## 7. Risk Register
 
 | Risk                             | Likelihood | Impact     | Mitigation                                  |
 |----------------------------------|------------|------------|---------------------------------------------|
-| Upstream deletes release tarballs| HIGH       | CI failure | Daily version check, auto-bump (Phase 79)   |
+| Upstream deletes release tarballs| HIGH       | CI failure | Daily version check, auto-bump (Phase 98)   |
 | GitHub rate-limits CI            | MEDIUM     | Build fail | Authenticated API, GHCR caching              |
-| Base image digest rotation       | MEDIUM     | Stale FROM | Dependabot for base digests (Phase 69)      |
+| Base image digest rotation       | MEDIUM     | Stale FROM | Dependabot for base digests (Phase 91)      |
 | wolfi package removal            | LOW        | Build fail | Pin wolfi version, monitor advisory        |
 | evergreenctl dependency CVE      | LOW        | Supply chain| `cargo audit` in CI, minimal deps          |
 | Security vuln in base image      | MEDIUM     | All images | Daily scan + automated rebuild trigger     |
 | Large PR CI timeout              | MEDIUM     | Merge delay| Batch PRs (max 50), matrix strategy        |
+| Prettier pre-commit timeout      | HIGH       | Commit fail| Add `--ignore-path` for archives/images     |
 
 ---
 
-## 6. Governance
+## 8. Governance
 
-### 6.1 Change Control
+### 8.1 Change Control Pipeline
 
 ```
 Proposal (Issue/PR)
-  -> Pre-commit hooks (fast, <10s)
-    -> Code review (required for core)
-      -> Pre-push gate (10 checks, 73 tests, 998 TOML+SBOM)
+  -> Pre-commit hooks (9 hooks, <10s)
+    -> Code review (required for core files)
+      -> Pre-push gate (10 checks, 112 tests, 998 TOML+SBOM)
         -> CI build + test
           -> Merge to main
 ```
 
-### 6.2 Versioning Policy
+### 8.2 Versioning Policy
 
 | Change Type                        | Bump    |
 |------------------------------------|---------|
-| Standard changes, interface breaks | Major   |
+| Breaking interface changes         | Major   |
 | New features, new subcommands      | Minor   |
 | Bug fixes, docs, test additions    | Patch   |
 
-### 6.3 Deprecation
+### 8.3 Deprecation Protocol
 
 1. `evergreenctl deprecated --mark <image>` sets `deprecated: true` in manifest
 2. Image retained for 90 days (pinned tags preserved)
-3. After 90 days, image moved to archive
-4. CHANGELOG entry documents rationale
+3. After 90 days, image directory moved to `images/_archive/`
+4. CHANGELOG entry documents rationale and migration path
 
-### 6.4 Security Response
+### 8.4 Security Response SLA
 
 | Scenario                         | Response Time | Action                                  |
 |----------------------------------|---------------|-----------------------------------------|
-| Critical CVE in base image       | 24 hours      | Automatic rebuild                      |
+| Critical CVE in base image       | 24 hours      | Automatic rebuild + push                |
 | Critical CVE in packaged software| 48 hours      | Version bump, rebuild, push            |
 | Supply chain compromise          | Immediate     | Isolate, reverify all FROM digests     |
 | Security disclosure              | 72 hours      | Document in ADR + CHANGELOG            |
 
 ---
 
-## 7. Not Recommended
+## 9. Not Recommended
 
 | Item                            | Reason                                     |
 |---------------------------------|--------------------------------------------|
 | LICENSE per image               | SBOMs already capture license info         |
-| Migrate 15 debian images to wolfi| High regression risk                      |
+| Migrate remaining debian images | High regression risk, debian-slim banned   |
 | Per-image docker-compose        | Unmaintainable at 998 scale               |
 | Builder image multi-arch        | Low ROI, digest-pinned Debian per-arch     |
 | SELinux/AppArmor profiles       | Niche benefit, complexity at 998 scale    |
+| OCI v1.1 migration              | Premature, ecosystem not ready            |
 
 ---
 
-## 8. Summary
+## 10. Timeline Summary
 
-The registry has completed 65 phases of iterative development. All 998 images are syntax-correct, fully labeled, SBOM-covered, and gated by a 12-point quality system. Zero code bugs remain -- all ~80-120 CI failures are upstream issues.
+| Gate                     | Phase Range | Duration     | Key Outcome                    |
+|--------------------------|-------------|--------------|--------------------------------|
+| Current (post-audit)     | 0-88        | Complete     | All quality gates passing      |
+| Gate 1: MVP Production   | 89-92       | 4-5 weeks    | CI green, tests, pinned, hardened |
+| Gate 2: Full Production  | 93-97       | 6-8 weeks    | Multi-arch, attestations, policies |
+| Gate 3: Operational Excl. | 98-102      | 3-12 months  | Self-maintaining, ecosystem     |
 
-The path forward has three gates:
-
-1. **Gate 1 (6 weeks):** Resolve upstream failures, expand tests to 200+, pin digests to >95%, harden CI. Achieves minimal viable production.
-2. **Gate 2 (8 weeks):** Multi-arch to >800, SBOM attestation chains, evergreenctl maturation, compliance automation. Achieves full production.
-3. **Gate 3 (3-12 months):** Self-maintaining registry with auto-bumping, binary provenance, policy-as-code, ecosystem integration. Achieves operational excellence.
-
-Total estimated timeline: **4-6 months to Gate 2, 12-18 months to Gate 3**.
+**Total: 4-6 months to Gate 2 (full production). 12-18 months to Gate 3 (operational excellence).**

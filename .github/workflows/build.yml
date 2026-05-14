@@ -1,51 +1,23 @@
 # =============================================================================
-# EVERGREEN HARDENED IMAGE REGISTRY - BUILD PIPELINE v2.0
+# EVERGREEN HARDENED IMAGE REGISTRY - BUILD PIPELINE v2.0 (DEPRECATED)
 # =============================================================================
-# Builds, tests, signs and pushes hardened container images.
+# DEPRECATED: This workflow is superseded by the tier-aware pipeline:
 #
-# Pipeline stages:
-#   - Per-image timeout: 15 minutes (900s) to prevent single slow builds from blocking batches
-#   - Batch timeout: 360 minutes for compilation-heavy images
-#   - Fast images (binary downloads) complete in <2 min per image
-#   1. discover       - Find all Dockerfiles, create batched build matrix
-#   2. lint           - Hadolint linting + TruffleHog secret scanning
-#   3. gates          - Enforcement CI gates (healthcheck, security labels, digest pin)
-#   4. build          - Build images in batches (multi-arch push on main)
-#   5. health-check   - Post-build image validation (layer count, load check)
-#   6. security-scan  - Trivy filesystem vulnerability scanning
-#   7. sbom           - Generate Software Bill of Materials (SPDX-JSON)
-#   8. verify         - Constraint tests (C001-C010) + CVE scanning (Trivy + Grype)
-#   9. sign-push      - Cosign signing + SBOM attestation (main branch only)
-#  10. report         - Aggregate results and generate summary
+#   build-on-push.yml    - Path-filtered builds on push (only changed images)
+#   build-nightly.yml    - Full rebuild, tier-prioritized (critical -> standard -> community)
+#   build-on-demand.yml  - Manual dispatch with image/tier selector
+#   _build-reusable.yml  - Shared build logic (called by the above)
 #
-# Key fixes from v1:
-#   - Fixed /temp/*.tar -> /tmp/*.tar typo
-#   - Batched matrix (50 images/batch) to avoid GHA output/matrix limits
-#   - Enabled real hadolint linting (DL3018 as error)
-#   - Fixed step ID shadowing in scan-cves (was "image" step shadowing matrix)
-#   - Added multi-arch support (linux/amd64,linux/arm64)
-#   - Fixed sign-push to iterate all built images (not a matrix job)
-#   - Added TruffleHog secret scanning
-#   - Changed ignore-unfixed: false for Trivy
-#   - Added image size enforcement by tier
-#   - Added timeout-minutes, concurrency groups, graceful error handling
-#
-# Key fixes from v2:
-#   - Per-image timeout: 15 min (900s) prevents slow compilation from blocking batch
-#   - Batch timeout: 360 min (up from 180) for compilation-heavy batches
-#   - Fast images (binary downloads) complete in <2 min, unaffected by per-image cap
+# This file is kept for reference. It will be removed in a future release.
+# To disable: the trigger below only fires on workflow_dispatch.
 # =============================================================================
 
 name: Build Hardened Images
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-  schedule:
-    - cron: '0 3 * * *'
   workflow_dispatch:
+  # NOTE: push and schedule triggers removed.
+  # Use build-on-push.yml (push) and build-nightly.yml (schedule) instead.
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -216,18 +188,18 @@ jobs:
           PASS=0
           WARN=0
           FAIL=0
-          
+
           for dockerfile in images/*/Dockerfile; do
             [ "$(basename $(dirname $dockerfile))" = "tests" ] && continue
             [ "$(basename $(dirname $dockerfile))" = "health-shim" ] && continue
             name=$(basename $(dirname $dockerfile))
-            
+
             # GATE-HEALTHCHECK: Must have HEALTHCHECK instruction
             if ! grep -q '^HEALTHCHECK' "$dockerfile"; then
               echo "FAIL: $name missing HEALTHCHECK"
               FAIL=$((FAIL+1))
             fi
-            
+
             # GATE-SECURITY-LABELS: Must have 4 security labels
             for label in "evergreen.security.cap-drop" "evergreen.security.no-new-privileges" "evergreen.security.read-only-rootfs" "evergreen.security.seccomp"; do
               if ! grep -q "$label" "$dockerfile"; then
@@ -235,7 +207,7 @@ jobs:
                 FAIL=$((FAIL+1))
               fi
             done
-            
+
             # GATE-DIGEST-PIN: Final-stage FROM must be digest-pinned or scratch
             final_from=$(grep '^FROM ' "$dockerfile" | grep -v 'AS ' | head -1 | awk '{print $2}')
             if [ -n "$final_from" ] && [ "$final_from" != "scratch" ] && ! echo "$final_from" | grep -q '@sha256:'; then
@@ -245,21 +217,21 @@ jobs:
                 WARN=$((WARN+1))
               fi
             fi
-            
+
             PASS=$((PASS+1))
           done
-          
+
           echo ""
           echo "=== CI Gate Results ==="
           echo "Passed: $PASS"
           echo "Warnings: $WARN"
           echo "Failures: $FAIL"
-          
+
           if [ "$FAIL" -gt 0 ]; then
             echo "::error::$FAIL gate check(s) failed"
             exit 1
           fi
-          
+
           if [ "$WARN" -gt 0 ]; then
             echo "::warning::$WARN warning(s)"
           fi
@@ -1822,4 +1794,3 @@ jobs:
             fi
           } >> "$GITHUB_STEP_SUMMARY"
 # Sat 25 Apr 03:50:08 BST 2026
-

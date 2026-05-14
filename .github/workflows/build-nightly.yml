@@ -1,0 +1,194 @@
+# =============================================================================
+# EVERGREEN BUILD PIPELINE - NIGHTLY FULL REBUILD
+# =============================================================================
+# Runs daily at 03:00 UTC. Builds ALL images, tier by tier:
+#   1. Critical (signed, multi-arch, SBOM)
+#   2. Standard (multi-arch, SBOM)
+#   3. Community (amd64 only, SBOM)
+#
+# Each tier builds as a separate job so failures in lower tiers
+# don't block higher tiers. Critical tier failure triggers a warning.
+#
+# Also supports manual dispatch with optional tier filter.
+# =============================================================================
+
+name: Nightly Full Rebuild
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: 'Build only this tier (leave empty for all)'
+        required: false
+        type: choice
+        options:
+          - ''
+          - critical
+          - standard
+          - community
+      sign:
+        description: 'Sign images with Cosign'
+        required: false
+        type: boolean
+        default: true
+
+concurrency:
+  group: nightly-rebuild
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # DISCOVER - Build matrix for each tier
+  # ---------------------------------------------------------------------------
+  discover-critical:
+    name: Discover Critical
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    if: inputs.tier == '' || inputs.tier == 'critical'
+    outputs:
+      matrix: ${{ steps.discover.outputs.matrix }}
+      total: ${{ steps.discover.outputs.total }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          chmod +x scripts/discover-images.sh
+          scripts/discover-images.sh tier critical
+        env:
+          GITHUB_OUTPUT: $GITHUB_OUTPUT
+        id: discover
+
+  discover-standard:
+    name: Discover Standard
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    if: inputs.tier == '' || inputs.tier == 'standard'
+    outputs:
+      matrix: ${{ steps.discover.outputs.matrix }}
+      total: ${{ steps.discover.outputs.total }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          chmod +x scripts/discover-images.sh
+          scripts/discover-images.sh tier standard
+        env:
+          GITHUB_OUTPUT: $GITHUB_OUTPUT
+        id: discover
+
+  discover-community:
+    name: Discover Community
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    if: inputs.tier == '' || inputs.tier == 'community'
+    outputs:
+      matrix: ${{ steps.discover.outputs.matrix }}
+      total: ${{ steps.discover.outputs.total }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          chmod +x scripts/discover-images.sh
+          scripts/discover-images.sh tier community
+        env:
+          GITHUB_OUTPUT: $GITHUB_OUTPUT
+        id: discover
+
+  # ---------------------------------------------------------------------------
+  # LINT - Gate check (fast)
+  # ---------------------------------------------------------------------------
+  gates:
+    name: CI Gate Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          PASS=0; FAIL=0
+          for dockerfile in images/*/Dockerfile; do
+            name=$(basename $(dirname $dockerfile))
+            [ "$name" = "tests" ] || [ "$name" = "health-shim" ] && continue
+            grep -q '^HEALTHCHECK' "$dockerfile" || { echo "FAIL: $name missing HEALTHCHECK"; FAIL=$((FAIL+1)); }
+            for label in "evergreen.security.cap-drop" "evergreen.security.no-new-privileges" "evergreen.security.read-only-rootfs" "evergreen.security.seccomp"; do
+              grep -q "$label" "$dockerfile" || { echo "FAIL: $name missing $label"; FAIL=$((FAIL+1)); }
+            done
+            PASS=$((PASS+1))
+          done
+          echo "Gates: ${PASS} checked, ${FAIL} failures"
+          [ "$FAIL" -gt 0 ] && exit 1
+
+  # ---------------------------------------------------------------------------
+  # BUILD CRITICAL - Highest priority, signed, multi-arch
+  # ---------------------------------------------------------------------------
+  build-critical:
+    name: Build Critical
+    needs: [discover-critical, gates]
+    if: needs.discover-critical.result == 'success' && needs.discover-critical.outputs.total != '0'
+    uses: ./.github/workflows/_build-reusable.yml
+    with:
+      matrix: ${{ needs.discover-critical.outputs.matrix }}
+      tag: ${{ github.sha }}
+      push: true
+      sign: ${{ inputs.sign }}
+      multiarch: true
+      tier: critical
+    secrets: inherit
+
+  # ---------------------------------------------------------------------------
+  # BUILD STANDARD - Multi-arch, unsigned
+  # ---------------------------------------------------------------------------
+  build-standard:
+    name: Build Standard
+    needs: [discover-standard, build-critical]
+    if: needs.discover-standard.result == 'success' && needs.discover-standard.outputs.total != '0'
+    uses: ./.github/workflows/_build-reusable.yml
+    with:
+      matrix: ${{ needs.discover-standard.outputs.matrix }}
+      tag: ${{ github.sha }}
+      push: true
+      sign: false
+      multiarch: true
+      tier: standard
+    secrets: inherit
+
+  # ---------------------------------------------------------------------------
+  # BUILD COMMUNITY - amd64 only, unsigned
+  # ---------------------------------------------------------------------------
+  build-community:
+    name: Build Community
+    needs: [discover-community, build-standard]
+    if: needs.discover-community.result == 'success' && needs.discover-community.outputs.total != '0'
+    uses: ./.github/workflows/_build-reusable.yml
+    with:
+      matrix: ${{ needs.discover-community.outputs.matrix }}
+      tag: ${{ github.sha }}
+      push: true
+      sign: false
+      multiarch: false
+      tier: community
+    secrets: inherit
+
+  # ---------------------------------------------------------------------------
+  # REPORT - Aggregate results
+  # ---------------------------------------------------------------------------
+  report:
+    name: Nightly Report
+    needs: [discover-critical, discover-standard, discover-community, build-critical, build-standard, build-community, gates]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: |
+          echo "# Nightly Build Report" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Tier | Images | Build |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|------|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Gates** | - | ${{ needs.gates.result }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Critical** | ${{ needs.discover-critical.outputs.total || 0 }} | ${{ needs.build-critical.result || 'skipped' }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Standard** | ${{ needs.discover-standard.outputs.total || 0 }} | ${{ needs.build-standard.result || 'skipped' }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Community** | ${{ needs.discover-community.outputs.total || 0 }} | ${{ needs.build-community.result || 'skipped' }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Commit:** \`${{ github.sha }}\`" >> "$GITHUB_STEP_SUMMARY"

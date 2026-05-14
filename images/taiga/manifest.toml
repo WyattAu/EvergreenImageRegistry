@@ -5,6 +5,7 @@ upstream_version = "6.9.0"
 description = "Taiga Events - async events worker for Taiga project management"
 vendor = "Taiga"
 license = "AGPL-3.0-or-later"
+tier = "critical"
 source = "https://github.com/taigaio/taiga-back"
 
 [build]
@@ -33,7 +34,7 @@ expose = [8888, 9101]
 "evergreen.health.type" = "exec"
 "evergreen.image.category" = "project-management"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "3"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"
 "evergreen.security.cap-drop" = "ALL"
 "evergreen.security.no-new-privileges" = "true"

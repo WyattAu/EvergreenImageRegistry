@@ -2,6 +2,7 @@
 name = "immich-machine-learning"
 version = "2.7.5"
 description = "immich-machine-learning container image"
+tier = "critical"
 upstream_version = "2.7.5"
 
 [build]
@@ -26,6 +27,5 @@ expose = [3003, 9101]
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"
-"evergreen.image.tier" = "3"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"
-

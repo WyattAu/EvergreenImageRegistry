@@ -2,6 +2,7 @@
 name = "calibre-web"
 version = "0.6.26"
 description = "calibre-web container image"
+tier = "critical"
 upstream_version = "0.6.26"
 
 [build]
@@ -25,6 +26,5 @@ expose = [8083, 9101]
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"
-"evergreen.image.tier" = "2"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"
-

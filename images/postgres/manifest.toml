@@ -5,7 +5,7 @@ description = "PostgreSQL - advanced open source relational database"
 vendor = "PostgreSQL"
 source = "https://github.com/postgres/postgres"
 license = "PostgreSQL"
-tier = "1"
+tier = "critical"
 upstream_version = "17.6"
 
 [build]
@@ -35,6 +35,5 @@ expose = [5432, 9101]
 "evergreen.hft.shutdown-timeout" = "3s"
 "evergreen.hft.signal-handling" = "native"
 "evergreen.hft.startup-timeout" = "3000ms"
-"evergreen.image.tier" = "1"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"
-

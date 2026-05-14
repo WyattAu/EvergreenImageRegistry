@@ -2,6 +2,7 @@
 name = "freshrss"
 version = "1.28.1"
 description = "freshrss container image"
+tier = "critical"
 upstream_version = "1.28.1"
 
 [build]
@@ -25,6 +26,5 @@ expose = [80, 9101]
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"
-"evergreen.image.tier" = "2"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"
-

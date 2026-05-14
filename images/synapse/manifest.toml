@@ -5,6 +5,7 @@ upstream_version = "1.150.0"
 description = "Synapse - Matrix homeserver for federated messaging"
 vendor = "Element"
 license = "Apache-2.0"
+tier = "critical"
 source = "https://github.com/element-hq/synapse"
 
 [build]
@@ -33,7 +34,7 @@ expose = [8008, 8448, 9101]
 "evergreen.health.type" = "exec"
 "evergreen.image.category" = "messaging"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "2"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"
 "evergreen.security.cap-drop" = "ALL"
 "evergreen.security.no-new-privileges" = "true"

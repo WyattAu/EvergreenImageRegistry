@@ -5,7 +5,7 @@ description = "Cloudflare DDNS - dynamic DNS updater for Cloudflare"
 vendor = "favonia"
 source = "https://github.com/favonia/cloudflare-ddns"
 license = "Apache-2.0"
-tier = "3"
+tier = "critical"
 upstream_version = "1.16.2"
 
 [build]
@@ -38,5 +38,5 @@ expose = [9101]
 "evergreen.hft.startup-timeout" = "3000ms"
 "evergreen.image.category" = "networking"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "3"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"

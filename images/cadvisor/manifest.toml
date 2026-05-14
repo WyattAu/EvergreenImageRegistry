@@ -5,7 +5,7 @@ description = "cAdvisor - container resource usage and performance analysis"
 vendor = "Google"
 source = "https://github.com/google/cadvisor"
 license = "Apache-2.0"
-tier = "3"
+tier = "critical"
 
 [build]
 base = "scratch"
@@ -42,6 +42,5 @@ expose = [8080, 9101]
 "evergreen.hft.signal-handling" = "native"
 "evergreen.hft.startup-timeout" = "3000ms"
 "evergreen.image.category" = "observability"
-"evergreen.image.tier" = "1"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"
-

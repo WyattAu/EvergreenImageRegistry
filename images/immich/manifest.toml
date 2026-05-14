@@ -5,7 +5,7 @@ description = "Immich - self-hosted photo and video backup solution"
 vendor = "Immich"
 source = "https://github.com/immich-app/immich"
 license = "Apache-2.0"
-tier = "3"
+tier = "critical"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -29,6 +29,5 @@ expose = [2283, 9101]
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"
-"evergreen.image.tier" = "2"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"
-

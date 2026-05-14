@@ -1,0 +1,154 @@
+# =============================================================================
+# EVERGREEN BUILD PIPELINE - ON DEMAND (Manual Dispatch)
+# =============================================================================
+# Manual trigger to build specific images, tiers, or groups.
+#
+# Modes:
+#   tier      - Build all images in a tier
+#   images    - Build specific comma-separated image names
+#   changed   - Build images changed since last commit (same as push)
+#
+# Use this for:
+#   - Force-rebuilding a specific image
+#   - Building a new image before it's been committed
+#   - Rebuilding an entire tier after upstream CVE fixes
+#   - Testing build changes without pushing to main
+# =============================================================================
+
+name: Build on Demand
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Build mode'
+        required: true
+        type: choice
+        options:
+          - tier
+          - images
+          - changed
+      filter:
+        description: 'Filter: tier name (critical/standard/community) or comma-separated image names'
+        required: false
+        type: string
+      sign:
+        description: 'Sign images with Cosign'
+        required: false
+        type: boolean
+        default: false
+      multiarch:
+        description: 'Build multi-arch (amd64+arm64)'
+        required: false
+        type: boolean
+        default: true
+      push:
+        description: 'Push to registry'
+        required: false
+        type: boolean
+        default: true
+      tag:
+        description: 'Custom tag (defaults to commit SHA)'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  validate:
+    name: Validate Inputs
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      valid: ${{ steps.check.outputs.valid }}
+      error: ${{ steps.check.outputs.error }}
+    steps:
+      - name: Check inputs
+        id: check
+        run: |
+          MODE="${{ inputs.mode }}"
+          FILTER="${{ inputs.filter }}"
+
+          case "$MODE" in
+            tier)
+              if echo "$FILTER" | grep -qE '^(critical|standard|community|experimental)$'; then
+                echo "valid=true" >> "$GITHUB_OUTPUT"
+              else
+                echo "valid=false" >> "$GITHUB_OUTPUT"
+                echo "error=Invalid tier '${FILTER}'. Must be: critical|standard|community|experimental" >> "$GITHUB_OUTPUT"
+              fi
+              ;;
+            images)
+              if [ -n "$FILTER" ]; then
+                echo "valid=true" >> "$GITHUB_OUTPUT"
+              else
+                echo "valid=false" >> "$GITHUB_OUTPUT"
+                echo "error=images mode requires a filter with comma-separated image names" >> "$GITHUB_OUTPUT"
+              fi
+              ;;
+            changed)
+              echo "valid=true" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "valid=false" >> "$GITHUB_OUTPUT"
+              echo "error=Unknown mode '${MODE}'" >> "$GITHUB_OUTPUT"
+              ;;
+          esac
+
+  discover:
+    name: Discover Images
+    needs: validate
+    if: needs.validate.outputs.valid == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.discover.outputs.matrix }}
+      total: ${{ steps.discover.outputs.total }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Discover
+        id: discover
+        run: |
+          chmod +x scripts/discover-images.sh
+          FILTER="${{ inputs.filter }}"
+          [ -z "$FILTER" ] && FILTER=""
+          scripts/discover-images.sh "${{ inputs.mode }}" "${FILTER}"
+        env:
+          GITHUB_OUTPUT: $GITHUB_OUTPUT
+
+  build:
+    name: Build on Demand
+    needs: [validate, discover]
+    if: needs.validate.outputs.valid == 'true' && needs.discover.result == 'success' && needs.discover.outputs.total != '0'
+    uses: ./.github/workflows/_build-reusable.yml
+    with:
+      matrix: ${{ needs.discover.outputs.matrix }}
+      tag: ${{ inputs.tag || github.sha }}
+      push: ${{ inputs.push }}
+      sign: ${{ inputs.sign }}
+      multiarch: ${{ inputs.multiarch }}
+      tier: demand-${{ inputs.mode }}
+    secrets: inherit
+
+  error:
+    name: Input Error
+    needs: validate
+    if: needs.validate.outputs.valid != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "::error::${{ needs.validate.outputs.error }}"
+          exit 1
+
+  empty:
+    name: No Images Found
+    needs: [validate, discover]
+    if: needs.validate.outputs.valid == 'true' && needs.discover.result == 'success' && needs.discover.outputs.total == '0'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "::notice::No images found for mode=${{ inputs.mode }} filter=${{ inputs.filter }}"

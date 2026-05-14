@@ -5,7 +5,7 @@ description = "Matrix Hookshot - multi-purpose Matrix bot bridge framework"
 vendor = "matrix.org"
 source = "https://github.com/matrix-org/matrix-hookshot"
 license = "Apache-2.0"
-tier = "2"
+tier = "critical"
 upstream_version = "7.3.2"
 
 [build]
@@ -39,5 +39,5 @@ expose = [9993, 9101]
 "evergreen.hft.startup-timeout" = "30000ms"
 "evergreen.image.category" = "messaging"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "2"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"

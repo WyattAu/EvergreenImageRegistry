@@ -6,7 +6,7 @@ description = "Postgres Exporter - Prometheus exporter for PostgreSQL"
 vendor = "Prometheus Community"
 source = "https://github.com/prometheus-community/postgres_exporter"
 license = "Apache-2.0"
-tier = "1"
+tier = "critical"
 
 [build]
 base = "scratch"
@@ -43,5 +43,5 @@ expose = [9187, 9101]
 "evergreen.hft.signal-handling" = "native"
 "evergreen.hft.startup-timeout" = "3000ms"
 "evergreen.image.category" = "database"
-"evergreen.image.tier" = "1"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"

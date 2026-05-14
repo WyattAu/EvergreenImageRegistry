@@ -6,7 +6,7 @@ description = "Tempo - distributed tracing backend by Grafana"
 vendor = "Grafana"
 source = "https://github.com/grafana/tempo"
 license = "AGPL-3.0"
-tier = "1"
+tier = "critical"
 
 [build]
 base = "scratch"
@@ -42,5 +42,5 @@ expose = [3200, 9101]
 "evergreen.hft.shutdown-timeout" = "3s"
 "evergreen.hft.signal-handling" = "native"
 "evergreen.hft.startup-timeout" = "3000ms"
-"evergreen.image.tier" = "1"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"

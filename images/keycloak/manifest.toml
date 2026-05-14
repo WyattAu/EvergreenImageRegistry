@@ -5,7 +5,7 @@ description = "Keycloak - identity and access management"
 vendor = "Red Hat"
 source = "https://github.com/keycloak/keycloak"
 license = "Apache-2.0"
-tier = "1"
+tier = "critical"
 upstream_version = "26.3"
 
 [build]
@@ -39,6 +39,5 @@ expose = [8080, 8443, 9101]
 "evergreen.hft.startup-timeout" = "60000ms"
 "evergreen.image.category" = "identity"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "1"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"
-

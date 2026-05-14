@@ -64,7 +64,8 @@ check_latest_versions() {
     declare -A _LATEST
     local tool
 
-    printf "${CYAN}Checking latest versions...${NC}\n\n"
+    printf '%s\n' "${CYAN}Checking latest versions...${NC}"
+    printf '\n'
 
     for tool in "${!TOOLS[@]}"; do
         local url="${TOOLS[$tool]}"
@@ -78,7 +79,7 @@ check_latest_versions() {
                     latest="${BASH_REMATCH[1]}"
                     while [[ "$listing" =~ docker-([0-9]+\.[0-9]+\.[0-9]+)\.tgz ]]; do
                         latest="${BASH_REMATCH[1]}"
-                        listing="${listing#*${BASH_REMATCH[0]}}"
+                        listing="${listing#"${BASH_REMATCH[0]}"}"
                     done
                 fi
                 ;;
@@ -137,7 +138,7 @@ check_latest_versions() {
                     latest="${BASH_REMATCH[1]}"
                     while [[ "$listing" =~ helm-v([0-9]+\.[0-9]+\.[0-9]+)-linux-amd64\.tar\.gz ]]; do
                         latest="${BASH_REMATCH[1]}"
-                        listing="${listing#*${BASH_REMATCH[0]}}"
+                        listing="${listing#"${BASH_REMATCH[0]}"}"
                     done
                 fi
                 ;;
@@ -169,11 +170,11 @@ check_latest_versions() {
         local status=""
 
         if [[ -z "$latest" ]]; then
-            printf "  ${YELLOW}%-12s${NC} current: %-15s latest: ${YELLOW}check failed${NC}\n" "$tool" "$current"
+            printf '  %-12s current: %-15s latest: %s\n' "$tool" "$current" "${YELLOW}check failed${NC}"
         elif [[ "$current" == "$latest" ]]; then
-            printf "  ${GREEN}%-12s${NC} current: %-15s latest: ${GREEN}%s${NC}\n" "$tool" "$current" "$latest"
+            printf '  %-12s current: %-15s latest: %s\n' "$tool" "$current" "${GREEN}${latest}${NC}"
         else
-            printf "  ${RED}%-12s${NC} current: %-15s latest: ${RED}%s${NC}  ${YELLOW}UPDATE AVAILABLE${NC}\n" "$tool" "$current" "$latest"
+            printf '  %-12s current: %-15s latest: %s  %s\n' "$tool" "$current" "${RED}${latest}${NC}" "${YELLOW}UPDATE AVAILABLE${NC}"
             status="$tool:$current->$latest"
         fi
 
@@ -187,11 +188,12 @@ check_latest_versions() {
 
 print_diff() {
     if [[ ${#UPDATES[@]} -eq 0 ]]; then
-        printf "${GREEN}All tools are up to date.${NC}\n"
+        printf '%s\n' "${GREEN}All tools are up to date.${NC}"
         return 0
     fi
 
-    printf "${YELLOW}Version changes detected:${NC}\n\n"
+    printf '%s\n' "${YELLOW}Version changes detected:${NC}"
+    printf '\n'
     printf "  %-12s  %-18s  %-18s\n" "TOOL" "CURRENT" "LATEST"
     printf "  %-12s  %-18s  %-18s\n" "----" "-------" "------"
     for entry in "${UPDATES[@]}"; do
@@ -199,14 +201,14 @@ print_diff() {
         local rest="${entry#*:}"
         local current="${rest%%->*}"
         local latest="${rest#*->}"
-        printf "  ${RED}%-12s${NC}  %-18s  ${GREEN}%-18s${NC}\n" "$tool" "$current" "$latest"
+        printf '  %-12s  %-18s  %-18s\n' "$tool" "$current" "$latest"
     done
     printf "\n"
 }
 
 apply_updates() {
     if [[ ${#UPDATES[@]} -eq 0 ]]; then
-        printf "${GREEN}Nothing to update.${NC}\n"
+        printf '%s\n' "${GREEN}Nothing to update.${NC}"
         return 0
     fi
 
@@ -252,7 +254,7 @@ apply_updates() {
                 sed -i "s|release/v${current}/bin|release/v${latest}/bin|g" "$tmp_file"
                 ;;
             crane)
-                printf "  ${CYAN}crane${NC}: pinned to latest (no version change needed)\n"
+                printf '%s\n' "  ${CYAN}crane${NC}: pinned to latest (no version change needed)"
                 ;;
             yq)
                 sed -i "s/yq_linux_amd64.*v${current}/yq_linux_amd64\" # v${latest}/g" "$tmp_file"
@@ -269,15 +271,15 @@ apply_updates() {
     cp "$tmp_file" "$DOCKERFILE_CI"
     rm -f "$tmp_file"
 
-    printf "\n${GREEN}Updated %s with %d version change(s).${NC}\n" "$DOCKERFILE_CI" "${#UPDATES[@]}"
-    printf "${YELLOW}Review changes and commit.${NC}\n"
+    printf '\n%s\n' "${GREEN}Updated ${DOCKERFILE_CI} with ${#UPDATES[@]} version change(s).${NC}"
+    printf '%s\n' "${YELLOW}Review changes and commit.${NC}"
 }
 
 UPDATES=()
 
 main() {
     if [[ ! -f "$DOCKERFILE_CI" ]]; then
-        printf "${RED}Error: %s not found.${NC}\n" "$DOCKERFILE_CI"
+        printf '%s\n' "${RED}Error: ${DOCKERFILE_CI} not found.${NC}"
         exit 1
     fi
 
@@ -286,12 +288,12 @@ main() {
         apply=true
     fi
 
-    printf "${CYAN}=== Evergreen CI Environment Version Check ===${NC}\n"
+    printf '%s\n' "${CYAN}=== Evergreen CI Environment Version Check ===${NC}"
     printf "Dockerfile.ci: %s\n\n" "$DOCKERFILE_CI"
 
     extract_current_versions
 
-    printf "${CYAN}Current pinned versions in Dockerfile.ci:${NC}\n"
+    printf '%s\n' "${CYAN}Current pinned versions in Dockerfile.ci:${NC}"
     for tool in docker buildx trivy grype cosign syft hadolint helm kubectl crane yq trufflehog; do
         printf "  %-12s %s\n" "$tool" "${CURRENT_VERSIONS[$tool]:-not found}"
     done
@@ -303,7 +305,7 @@ main() {
     if $apply; then
         apply_updates
     else
-        printf "Run with ${CYAN}--apply${NC} to update Dockerfile.ci\n"
+        printf '%s\n' "Run with ${CYAN}--apply${NC} to update Dockerfile.ci"
     fi
 }
 

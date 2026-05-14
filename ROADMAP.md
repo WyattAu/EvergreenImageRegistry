@@ -1,15 +1,15 @@
 # Evergreen Image Registry - Roadmap
 
-| Attribute | Value                 |
-| --------- | --------------------- |
-| Version   | 26.14.0               |
-| Updated   | 2026-05-13            |
-| Status    | POST-CI-FIX           |
-| Phases    | 0-52 + ongoing polish |
+| Attribute | Value         |
+| --------- | ------------- |
+| Version   | 27.0.0        |
+| Updated   | 2026-05-13    |
+| Status    | STABLE        |
+| Phases    | 0-88 complete |
 
 ---
 
-## Current State (v26.14.0)
+## Current State (v27.0.0)
 
 | Metric                      | Value                      | Status                      |
 | --------------------------- | -------------------------- | --------------------------- |
@@ -25,7 +25,7 @@
 | Non-root USER               | 99.5% (993/998)            | DONE                        |
 | ENTRYPOINT                  | 95.8% (956/998)            | DONE                        |
 | STOPSIGNAL                  | 99.6% (994/998)            | DONE                        |
-| Multi-arch (ARG TARGETARCH) | 249 declared + 391 scratch | DONE                        |
+| Multi-arch (ARG TARGETARCH) | 283 declared + 398 scratch | DONE                        |
 | Per-image README            | 100% (998/998)             | DONE                        |
 | SBOM                        | 100% (998/998)             | DONE                        |
 | .dockerignore               | 99.9% (997/998)            | DONE                        |

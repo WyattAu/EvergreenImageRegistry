@@ -1,0 +1,18 @@
+# Ignore image directories (contain binary artifacts and Dockerfiles, not prettier-formatted)
+images/
+# Ignore deploy directory
+deploy/
+# Ignore node_modules
+node_modules/
+# Ignore target directories
+target/
+# Ignore .git
+.git/
+# Ignore build artifacts
+*.tar
+*.tar.gz
+# Ignore lockfiles
+Cargo.lock
+package-lock.json
+# Ignore vendored deps
+.dep_spec/

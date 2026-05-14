@@ -40,8 +40,9 @@ Setup Steps:
    ```
 
 That's it! Now, every time you run `git commit`, our suite of linters and formatters will run automatically on the files
-you've changed. When you `git push`, the full 8-gate quality check runs (Rust tests, clippy, fmt, Python/Shell syntax,
-998-manifest TOML validation, 998-SBOM JSON validation, Dockerfile constraints, and release build).
+you've changed. When you `git push`, the full 10-gate quality check runs (Rust unit tests, Rust integration tests,
+clippy, fmt, Python syntax + ruff lint, Shell syntax, 998-manifest TOML validation, 998-SBOM JSON validation, Dockerfile
+constraints, and Rust release build).
 
 ## Contribution Workflow
 

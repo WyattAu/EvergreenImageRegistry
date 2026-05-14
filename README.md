@@ -36,7 +36,7 @@ docker pull ghcr.io/wyattau/evergreenimageregistry/redis@sha256:<digest>
 | Hardening Control             | Coverage          | Standard Reference       |
 | ----------------------------- | ----------------- | ------------------------ |
 | Non-root execution            | 99.5% (993/998)   | CIS 4.5.1                |
-| HEALTHCHECK instruction       | 99.7% (997/998)   | Docker best practice     |
+| HEALTHCHECK instruction       | 99.9% (997/998)   | Docker best practice     |
 | SBOM (SPDX 2.3)               | 100% (998/998)    | NIST SP 800-218          |
 | Digest-pinned final stages    | 100% (998/998)    | Supply chain integrity   |
 | All-stage FROM digest pinning | 75.3% (1522/2020) | Supply chain integrity   |

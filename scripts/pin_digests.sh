@@ -145,7 +145,7 @@ failed_count=0
 updated_count=0
 
 while IFS= read -r -d '' dockerfile; do
-    image_dir=$(dirname "${dockerfile#${REPO_ROOT}/images/}")
+    image_dir=$(dirname "${dockerfile#"${REPO_ROOT}"/images/}")
     dockerfile_count=$((dockerfile_count + 1))
 
     while IFS= read -r line; do

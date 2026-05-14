@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# shellcheck disable=SC2034
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TIER="all"
 DEST=""
@@ -76,7 +77,7 @@ generate_checksums() {
 
     find "$dir" -type f ! -name "CHECKSUMS" ! -name "transfer-manifest.json" | sort | while read -r file; do
         local relpath
-        relpath="${file#$dir/}"
+        relpath="${file#"$dir"/}"
         local sha256
         sha256=$(sha256sum "$file" | awk '{print $1}')
         echo "$sha256  $relpath" >> "$checksum_file"

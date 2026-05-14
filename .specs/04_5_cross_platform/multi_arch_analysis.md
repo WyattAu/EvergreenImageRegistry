@@ -2,7 +2,7 @@
 
 ## Date: 2026-05-13
 
-## Version: v26.14.0
+## Version: v27.0.0
 
 ## Executive Summary
 

@@ -4,6 +4,7 @@ set -e
 EVERGREEN_SHUTDOWN_TIMEOUT="${EVERGREEN_SHUTDOWN_TIMEOUT:-3}"
 EVERGREEN_CHILD_PID=""
 
+# shellcheck disable=SC2329
 cleanup() {
     _sig="$1"
     _remaining="$EVERGREEN_SHUTDOWN_TIMEOUT"

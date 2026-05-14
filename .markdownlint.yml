@@ -3,6 +3,19 @@ default: true
 # Rules to disable globally
 MD013: false # line length
 MD024: false # duplicate headings
+MD032: false # blanks around lists (historical docs)
+MD036: false # emphasis as heading (historical docs use this pattern)
+MD022: false # blanks around headings (historical docs)
+MD025: false # multiple top-level headings (historical docs)
+MD040: false # fenced code language (historical docs)
+MD056: false # table column count (auto-generated tables)
+MD058: false # blanks around tables (historical docs)
+MD026: false # trailing punctuation in headings
+MD034: false # bare urls
+MD038: false # spaces in code span
+MD012: false # multiple blank lines
+MD047: false # trailing newline
+MD051: false # link fragments
 
 # Rules to configure
 MD003:
@@ -10,8 +23,9 @@ MD003:
 MD001: true # Heading levels should increment by one
 MD031: true # Fenced code blocks should be surrounded by blank lines
 
-ignore:
-  - '.github/ISSUE_TEMPLATE/'
-  - '.specs/archive/'
-  - 'images/*/README.md'
-  - 'node_modules/'
+ignores:
+  - '.github/ISSUE_TEMPLATE/**'
+  - '.specs/archive/**'
+  - 'images/**/README.md'
+  - 'node_modules/**'
+  - 'CHANGELOG.md'

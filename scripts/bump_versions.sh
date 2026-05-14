@@ -38,8 +38,8 @@ if [ -f "$CHECKSUMS" ]; then
 
     DOWNLOAD_URL=$(grep -oP 'url\s*=\s*"\K[^"]+' "$CHECKSUMS" 2>/dev/null | head -1 || echo "")
     if [ -n "$DOWNLOAD_URL" ] && [ -n "$OLD_VERSION" ]; then
-        NEW_URL=$(echo "$DOWNLOAD_URL" | sed "s|${OLD_VERSION}|${NEW_VERSION}|g")
-        BUMPED_URL=$(echo "$NEW_URL" | sed "s|${OLD_VERSION}|${NEW_VERSION}|g")
+        NEW_URL="${DOWNLOAD_URL//"${OLD_VERSION}"/"${NEW_VERSION}"}"
+        BUMPED_URL="${NEW_URL//"${OLD_VERSION}"/"${NEW_VERSION}"}"
 
         TEMPFILE=$(mktemp)
         HTTP_CODE=$(curl -sS --connect-timeout 10 --max-time 60 -o "$TEMPFILE" -w '%{http_code}' \

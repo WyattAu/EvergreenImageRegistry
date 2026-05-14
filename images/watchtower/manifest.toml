@@ -1,0 +1,45 @@
+[metadata]
+name = "watchtower"
+version = "1.7.1"
+upstream_version = "1.7.1"
+description = "Watchtower - automatic Docker container updates"
+vendor = "containrrr"
+source = "https://github.com/containrrr/watchtower"
+license = "Apache-2.0"
+tier = "2"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "binary-release"
+url = "https://github.com/containrrr/watchtower/releases/download/v1.7.1/watchtower_Linux_x86_64.tar.gz"
+
+[runtime]
+entrypoint = ["/watchtower"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "watchtower"
+"org.opencontainers.image.vendor" = "containrrr"
+"org.opencontainers.image.version" = "1.7.1"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.connection-drain" = "true"
+"evergreen.hft.cpu-pins" = "0-1"
+"evergreen.hft.cpu-pins-mode" = "exclusive"
+"evergreen.hft.deploy-strategy" = "hft-rolling"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.pre-stop-delay" = "5s"
+"evergreen.hft.pre-stop-hook" = "true"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "3000ms"
+"evergreen.image.tier" = "2"
+"evergreen.metrics.native" = "ztunnel"

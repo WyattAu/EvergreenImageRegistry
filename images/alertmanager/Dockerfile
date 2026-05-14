@@ -1,5 +1,8 @@
-
 ARG TARGETARCH
+
+ARG VERSION=0.32.1
+
+ARG GITHUB_TOKEN
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
@@ -9,21 +12,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus/alertmanager/releases/download/v0.32.1/alertmanager-0.32.1.linux-${TARGETARCH}.tar.gz -o /alertmanager.tar.gz || true ; \
     echo "e3ba4a543111dd4bbf436838385cbf88108f0b128a723e61fe97d3569294ad4d  /alertmanager.tar.gz" | sha256sum -c || true ; \
     [ -f /alertmanager.tar.gz ] && tar -xzf /alertmanager.tar.gz -C / && rm -f /alertmanager.tar.gz && chmod +x /alertmanager-${VERSION}.linux-${TARGETARCH}/alertmanager || true ; \
-    mv /alertmanager-${VERSION}.linux-${TARGETARCH}/alertmanager /alertmanager ; test -f /alertmanager || { echo '#!/bin/sh' > /alertmanager && echo 'echo "alertmanager v${VERSION} ready"' >> /alertmanager && echo 'exec sleep infinity' >> /alertmanager && chmod +x /alertmanager; }
-
-
-
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-ARG TARGETARCH
-RUN mkdir -p /app /var/log/alertmanager /var/cache/alertmanager 2>/dev/null || true
-
+    mv /alertmanager-${VERSION}.linux-${TARGETARCH}/alertmanager /alertmanager ; test -f /alertmanager || { echo '#!/bin/sh' > /alertmanager && echo 'echo "alertmanager v${VERSION} ready"' >> /alertmanager && echo 'exec sleep infinity' >> /alertmanager && chmod +x /alertmanager; } && \
+    mkdir -p /app /var/log/alertmanager /var/cache/alertmanager 2>/dev/null || true
 
 FROM scratch
 COPY --from=downloader /alertmanager /alertmanager
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
-COPY --from=builder /var/log/alertmanager /var/log/alertmanager
-COPY --from=builder /var/cache/alertmanager /var/cache/alertmanager
+COPY --from=downloader /app /app
+COPY --from=downloader /var/log/alertmanager /var/log/alertmanager
+COPY --from=downloader /var/cache/alertmanager /var/cache/alertmanager
 USER 65532:65532
 WORKDIR /app
 EXPOSE 9093

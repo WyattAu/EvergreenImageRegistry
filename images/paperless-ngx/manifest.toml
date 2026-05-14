@@ -1,20 +1,37 @@
 [metadata]
 name = "paperless-ngx"
-version = "2.14.4"
-description = "paperless-ngx container image"
+version = "2.20.14"
+upstream_version = "2.20.14"
+description = "Paperless-ngx - document management system"
+vendor = "Paperless-ngx"
+source = "https://github.com/paperless-ngx/paperless-ngx"
+license = "GPL-3.0"
+tier = "2"
 
 [build]
-base = "debian:bookworm-slim"
+base = "cgr.dev/chainguard/wolfi-base:latest"
 user = "65532:65532"
 stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
+url = "https://pypi.org/pypi/paperless-ngx/2.20.14"
 
 [runtime]
-entrypoint = ["python", "-m", "paperless-ngx"]
-cmd = ["--help"]
+entrypoint = ["paperless"]
 
 [ports]
-expose = [9101]
+expose = [8000, 9101]
 
+[labels]
+"org.opencontainers.image.source" = "https://github.com/paperless-ngx/paperless-ngx"
+"org.opencontainers.image.title" = "paperless-ngx"
+"org.opencontainers.image.vendor" = "Paperless-ngx"
+"org.opencontainers.image.version" = "2.20.14"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "document-management"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "2"
+"evergreen.metrics.native" = "ztunnel"

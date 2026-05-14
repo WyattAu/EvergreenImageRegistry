@@ -1,10 +1,14 @@
 [metadata]
 name = "taiga"
-version = "6.8.2"
-description = "taiga container image"
+version = "6.9.0"
+upstream_version = "6.9.0"
+description = "Taiga Events - async events worker for Taiga project management"
+vendor = "Taiga"
+license = "AGPL-3.0-or-later"
+source = "https://github.com/taigaio/taiga-back"
 
 [build]
-base = "debian:bookworm-slim"
+base = "cgr.dev/chainguard/wolfi-base"
 user = "65532:65532"
 stopsignal = "SIGTERM"
 
@@ -12,9 +16,26 @@ stopsignal = "SIGTERM"
 type = "package-manager"
 
 [runtime]
-entrypoint = ["python", "-m", "taiga-back"]
-cmd = ["--help"]
+entrypoint = ["python", "-m", "taiga_events"]
 
 [ports]
-expose = [9101]
+expose = [8888, 9101]
 
+[labels]
+"org.opencontainers.image.description" = "Taiga Events - async events worker for Taiga project management"
+"org.opencontainers.image.source" = "https://github.com/taigaio/taiga-back"
+"org.opencontainers.image.title" = "taiga"
+"org.opencontainers.image.vendor" = "Taiga"
+"org.opencontainers.image.version" = "6.9.0"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.base" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "project-management"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
+"evergreen.security.cap-drop" = "ALL"
+"evergreen.security.no-new-privileges" = "true"
+"evergreen.security.read-only-rootfs" = "true"
+"evergreen.security.seccomp" = "runtime-default"

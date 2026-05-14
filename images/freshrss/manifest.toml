@@ -5,7 +5,7 @@ description = "freshrss container image"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
-user = "www-data"
+user = "65532:65532"
 stopsignal = "SIGTERM"
 
 [source]

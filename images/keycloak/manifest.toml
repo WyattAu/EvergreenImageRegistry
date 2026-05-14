@@ -21,7 +21,7 @@ entrypoint = ["/opt/keycloak/bin/kc.sh"]
 cmd = ["start-dev"]
 
 [ports]
-expose = [8080, 9101]
+expose = [8080, 8443, 9101]
 
 [labels]
 "org.opencontainers.image.source" = "https://github.com/keycloak/keycloak"
@@ -38,6 +38,6 @@ expose = [8080, 9101]
 "evergreen.hft.startup-timeout" = "60000ms"
 "evergreen.image.category" = "identity"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "2"
+"evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "ztunnel"
 

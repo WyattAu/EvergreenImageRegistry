@@ -1,7 +1,11 @@
 [metadata]
 name = "restic"
-version = "unknown"
-description = "restic container image"
+version = "0.17.3"
+description = "Restic - fast, secure, efficient backup program"
+vendor = "restic"
+license = "BSD-2-Clause"
+source = "https://github.com/restic/restic"
+upstream_version = "0.17.3"
 
 [build]
 base = "scratch"
@@ -10,6 +14,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
+url = "https://github.com/restic/restic/releases/download/v0.17.3/restic_0.17.3_linux_amd64.bz2"
 
 [runtime]
 entrypoint = ["/restic"]
@@ -21,7 +26,7 @@ expose = [8000, 9101]
 "org.opencontainers.image.source" = "https://github.com/restic/restic"
 "org.opencontainers.image.title" = "restic"
 "org.opencontainers.image.vendor" = "restic"
-"org.opencontainers.image.version" = "${VERSION}"
+"org.opencontainers.image.version" = "0.17.3"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"
@@ -34,4 +39,3 @@ expose = [8000, 9101]
 "evergreen.image.status" = "functional"
 "evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "ztunnel"
-

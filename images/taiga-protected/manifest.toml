@@ -1,0 +1,42 @@
+[metadata]
+name = "taiga-protected"
+version = "6.9.0"
+description = "Taiga Protected - file access protection proxy for Taiga"
+vendor = "Taiga"
+source = "https://github.com/taigaio/taiga-protected"
+license = "AGPL-3.0"
+tier = "3"
+upstream_version = "6.9.0"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://pypi.org/project/taiga-protected/6.9.0/"
+
+[runtime]
+entrypoint = ["/venv/bin/python", "-m", "taiga_protected"]
+
+[ports]
+expose = [8003, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/taigaio/taiga-protected"
+"org.opencontainers.image.title" = "taiga-protected"
+"org.opencontainers.image.vendor" = "Taiga"
+"org.opencontainers.image.version" = "6.9.0"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.base" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "10s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "30000ms"
+"evergreen.image.category" = "project-management"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"

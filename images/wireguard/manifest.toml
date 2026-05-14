@@ -5,7 +5,8 @@ description = "WireGuard - fast, modern, secure VPN tunnel"
 vendor = "WireGuard"
 source = "https://github.com/WireGuard/wireguard-go"
 license = "Apache-2.0"
-tier = "3"
+tier = "1"
+upstream_version = "0.0.20230223"
 
 [build]
 base = "scratch"

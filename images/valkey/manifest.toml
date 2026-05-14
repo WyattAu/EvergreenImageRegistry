@@ -1,8 +1,9 @@
 [metadata]
 name = "valkey"
-version = "7.2.4"
+version = "9"
+upstream_version = "9"
 description = "Valkey - open source Redis-compatible in-memory data store"
-vendor = "Linux Foundation"
+vendor = "Valkey"
 source = "https://github.com/valkey-io/valkey"
 license = "Apache-2.0"
 tier = "2"
@@ -14,7 +15,6 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-url = "https://github.com/valkey/valkey/releases/download/v7.2.4/valkey-7.2.4-linux-amd64.tar.gz"
 
 [runtime]
 entrypoint = ["sh", "-c", "valkey"]
@@ -25,11 +25,10 @@ expose = [6379, 9101]
 [labels]
 "org.opencontainers.image.title" = "valkey"
 "org.opencontainers.image.vendor" = "Valkey"
-"org.opencontainers.image.version" = "7.2.4"
+"org.opencontainers.image.version" = "9"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.hardened" = "true"
 "evergreen.constraint.nonroot" = "true"
-"evergreen.health.type" = "http"
+"evergreen.health.type" = "exec"
 "evergreen.image.tier" = "2"
 "evergreen.metrics.native" = "true"
-

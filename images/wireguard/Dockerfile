@@ -9,6 +9,7 @@ ARG VERSION=0.0.20230223
 ARG BUILD_DATE
 ARG GO_VERSION=1.22
 
+# NOTE: Golang builder FROM cannot be easily digest-pinned (version varies)
 FROM golang:${GO_VERSION}-bookworm AS builder
 ARG TARGETARCH
 ARG VERSION=0.0.20230223

@@ -30,6 +30,6 @@ expose = [6379, 9101]
 "evergreen.constraint.hardened" = "true"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "http"
-"evergreen.image.tier" = "2"
+"evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "true"
 

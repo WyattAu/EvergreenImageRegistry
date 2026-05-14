@@ -2,10 +2,11 @@
 name = "vaultwarden"
 version = "1.35.8"
 description = "Vaultwarden - lightweight Bitwarden-compatible password manager"
-vendor = "Vaultwarden"
+vendor = "dani-garcia"
 source = "https://github.com/dani-garcia/vaultwarden"
 license = "Apache-2.0"
-tier = "3"
+tier = "2"
+upstream_version = "1.35.8"
 
 [build]
 base = "scratch"
@@ -39,4 +40,3 @@ expose = [8080, 9101]
 "evergreen.image.status" = "functional"
 "evergreen.image.tier" = "2"
 "evergreen.metrics.native" = "ztunnel"
-

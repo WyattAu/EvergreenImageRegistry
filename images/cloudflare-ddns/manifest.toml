@@ -1,0 +1,42 @@
+[metadata]
+name = "cloudflare-ddns"
+version = "1.16.2"
+description = "Cloudflare DDNS - dynamic DNS updater for Cloudflare"
+vendor = "favonia"
+source = "https://github.com/favonia/cloudflare-ddns"
+license = "Apache-2.0"
+tier = "3"
+upstream_version = "1.16.2"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://github.com/favonia/cloudflare-ddns/releases/download/v1.16.2/cloudflare-ddns-1.16.2-linux-amd64.tar.gz"
+
+[runtime]
+entrypoint = ["/cloudflare-ddns"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/favonia/cloudflare-ddns"
+"org.opencontainers.image.title" = "cloudflare-ddns"
+"org.opencontainers.image.vendor" = "favonia"
+"org.opencontainers.image.version" = "1.16.2"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "none"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "3000ms"
+"evergreen.image.category" = "networking"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"

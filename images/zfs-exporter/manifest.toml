@@ -1,0 +1,42 @@
+[metadata]
+name = "zfs-exporter"
+version = "0.0.12"
+description = "ZFS Exporter - Prometheus exporter for ZFS pool and dataset metrics"
+vendor = "fberning"
+source = "https://github.com/fberning/zfs-exporter"
+license = "MIT"
+tier = "3"
+upstream_version = "0.0.12"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://github.com/fberning/zfs-exporter/releases/download/v0.0.12/zfs-exporter_0.0.12_linux_amd64.tar.gz"
+
+[runtime]
+entrypoint = ["/zfs-exporter"]
+
+[ports]
+expose = [9134, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/fberning/zfs-exporter"
+"org.opencontainers.image.title" = "zfs-exporter"
+"org.opencontainers.image.vendor" = "fberning"
+"org.opencontainers.image.version" = "0.0.12"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "3000ms"
+"evergreen.image.category" = "monitoring"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"

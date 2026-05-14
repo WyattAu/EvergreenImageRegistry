@@ -1,0 +1,42 @@
+[metadata]
+name = "busybox"
+version = "1.37.0"
+description = "BusyBox - Swiss army knife of embedded Linux utilities"
+vendor = "busybox.net"
+source = "https://www.busybox.net/"
+license = "GPL-2.0"
+tier = "3"
+upstream_version = "1.37.0"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/bin/busybox"]
+cmd = ["sh"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://www.busybox.net/"
+"org.opencontainers.image.title" = "busybox"
+"org.opencontainers.image.vendor" = "busybox.net"
+"org.opencontainers.image.version" = "1.37.0"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.base" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "none"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "1000ms"
+"evergreen.image.category" = "utilities"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"

@@ -1,7 +1,11 @@
 [metadata]
 name = "victoriametrics"
 version = "1.140.0"
-description = "victoriametrics container image"
+description = "VictoriaMetrics - fast, cost-effective time series database"
+vendor = "VictoriaMetrics"
+license = "Apache-2.0"
+source = "https://github.com/VictoriaMetrics/VictoriaMetrics"
+upstream_version = "1.140.0"
 
 [build]
 base = "scratch"
@@ -10,6 +14,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
+url = "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.140.0/victoria-metrics-linux-amd64-v1.140.0-cluster.tar.gz"
 
 [runtime]
 entrypoint = ["/victoria-metrics"]
@@ -29,6 +34,7 @@ expose = [8428, 9101]
 "evergreen.hft.shutdown-timeout" = "3s"
 "evergreen.hft.signal-handling" = "native"
 "evergreen.hft.startup-timeout" = "3000ms"
+"evergreen.image.category" = "monitoring"
+"evergreen.image.status" = "functional"
 "evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "ztunnel"
-

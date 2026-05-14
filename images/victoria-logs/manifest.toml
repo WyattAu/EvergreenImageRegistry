@@ -1,0 +1,46 @@
+[metadata]
+name = "victoria-logs"
+version = "v1.50.0"
+upstream_version = "v1.50.0"
+description = "VictoriaLogs - logs storage by VictoriaMetrics"
+vendor = "VictoriaMetrics"
+source = "https://github.com/VictoriaMetrics/VictoriaLogs"
+license = "Apache-2.0"
+tier = "1"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "binary-release"
+url = "https://github.com/VictoriaMetrics/VictoriaLogs/releases/download/v1.50.0/victoria-logs-linux-amd64-v1.50.0.tar.gz"
+
+[runtime]
+entrypoint = ["/victoria-logs-prod"]
+
+[ports]
+expose = [9428, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "victoria-logs"
+"org.opencontainers.image.vendor" = "VictoriaMetrics"
+"org.opencontainers.image.version" = "v1.50.0"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.connection-drain" = "true"
+"evergreen.hft.cpu-pins" = "4-5"
+"evergreen.hft.cpu-pins-mode" = "exclusive"
+"evergreen.hft.deploy-strategy" = "hft-stateful"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.pre-stop-delay" = "5s"
+"evergreen.hft.pre-stop-hook" = "true"
+"evergreen.hft.sched-policy" = "SCHED_OTHER"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "3000ms"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"

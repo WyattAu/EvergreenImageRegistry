@@ -5,7 +5,7 @@ description = "uptime-kuma container image"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
-user = "node"
+user = "65532:65532"
 stopsignal = "SIGTERM"
 
 [source]

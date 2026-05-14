@@ -1,6 +1,7 @@
 [metadata]
 name = "traefik"
-version = "3.6.14"
+version = "3.5.3"
+upstream_version = "3.5.3"
 description = "Traefik - modern HTTP reverse proxy and load balancer"
 vendor = "Traefik Labs"
 source = "https://github.com/traefik/traefik"
@@ -13,19 +14,19 @@ user = "65532:65532"
 stopsignal = "SIGTERM"
 
 [source]
-type = "package-manager"
-url = "https://github.com/traefik/traefik/releases/download/v3.6.14/traefik-3.6.14-linux-amd64.tar.gz"
+type = "binary-release"
+url = "https://github.com/traefik/traefik/releases/download/v3.5.3/traefik_v3.5.3_linux_amd64.tar.gz"
 
 [runtime]
 entrypoint = ["/traefik"]
 
 [ports]
-expose = [80, 9101]
+expose = [80, 443, 8080, 9101]
 
 [labels]
 "org.opencontainers.image.title" = "traefik"
 "org.opencontainers.image.vendor" = "Traefik Labs"
-"org.opencontainers.image.version" = "3.6.13"
+"org.opencontainers.image.version" = "3.5.3"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"
@@ -44,4 +45,3 @@ expose = [80, 9101]
 "evergreen.hft.xdp-notes" = "Not supported; use envoy for XDP workloads"
 "evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "ztunnel"
-

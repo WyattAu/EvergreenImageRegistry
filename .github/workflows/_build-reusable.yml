@@ -45,17 +45,16 @@ env:
   REGISTRY: ghcr.io
   OWNER: ${{ github.repository_owner }}
 
-permissions:
-  contents: read
-  id-token: write
-  security-events: write
-  packages: write
+permissions: {}
 
 jobs:
   build:
-    name: "Build ${{ inputs.tier }} Batch ${{ matrix.batch }} (${{ matrix.count }} images)"
+    name: 'Build ${{ inputs.tier }} Batch ${{ matrix.batch }} (${{ matrix.count }} images)'
     runs-on: ubuntu-latest
     timeout-minutes: 360
+    permissions:
+      contents: read
+      packages: write
     strategy:
       fail-fast: false
       max-parallel: 5

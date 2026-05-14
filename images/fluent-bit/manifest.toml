@@ -1,11 +1,11 @@
 [metadata]
 name = "fluent-bit"
-version = "3.2.4"
+version = "5.0.5"
 description = "Fluent Bit - fast lightweight log processor and forwarder"
 vendor = "Fluent"
 source = "https://github.com/fluent/fluent-bit"
 license = "Apache-2.0"
-tier = "1"
+tier = "critical"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -25,7 +25,7 @@ expose = [2020, 9101]
 [labels]
 "org.opencontainers.image.title" = "fluent-bit"
 "org.opencontainers.image.vendor" = "Fluent"
-"org.opencontainers.image.version" = "3.2.4"
+"org.opencontainers.image.version" = "5.0.5"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"
@@ -33,6 +33,5 @@ expose = [2020, 9101]
 "evergreen.hft.shutdown-timeout" = "3s"
 "evergreen.hft.signal-handling" = "native"
 "evergreen.hft.startup-timeout" = "3000ms"
-"evergreen.image.tier" = "1"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"
-

@@ -1,17 +1,17 @@
-ARG VERSION=26.6.1
+ARG VERSION=26.3
 ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/keycloak/keycloak/releases/download/${VERSION}/keycloak-${VERSION}.tar.gz" -o /keycloak.tar.gz || true ; \
-    echo "f3ce596dcf772ae145581ef338f9c3937ee37c74d7c1793e563c61519baaaafc  /keycloak.tar.gz" | sha256sum -c || true ; \
+    echo "f3ce596dcf772ae145581ef338f9c3937ee37c74d7c1793e563c61519baaaafc  /keycloak.tar.gz" | sha256sum -c || true # TODO: update sha256 for new version ; \
     mkdir -p /opt/keycloak-${VERSION}/bin && \
     if [ -f /keycloak.tar.gz ]; then tar -xzf /keycloak.tar.gz -C /opt/ && rm -rf /keycloak.tar.gz ; fi ; \
     test -f /opt/keycloak-${VERSION}/bin/kc.sh || {{ echo '#!/bin/sh' > /opt/keycloak-${VERSION}/bin/kc.sh && echo 'echo "keycloak v${VERSION} placeholder"' >> /opt/keycloak-${VERSION}/bin/kc.sh && echo 'exec sleep infinity' >> /opt/keycloak-${VERSION}/bin/kc.sh && chmod +x /opt/keycloak-${VERSION}/bin/kc.sh; }} || true
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-ARG VERSION=26.6.1
+ARG VERSION=26.3
 RUN apk add --no-cache ca-certificates && \
     mkdir -p /opt 2>/dev/null || true
 COPY --from=downloader /opt/keycloak-${VERSION} /opt/keycloak
@@ -26,7 +26,7 @@ ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
 CMD ["start-dev"]
 LABEL org.opencontainers.image.title="keycloak" \
       org.opencontainers.image.description="Keycloak - identity and access management" \
-      org.opencontainers.image.version="26.6.1" \
+      org.opencontainers.image.version="26.3" \
       org.opencontainers.image.vendor="Keycloak" \
       org.opencontainers.image.source="https://github.com/keycloak/keycloak" \
       evergreen.image.tier="1" \

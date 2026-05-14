@@ -1,11 +1,11 @@
 # =============================================================================
 # EVERGREEN HARDENED FRESHRSS
-# Generated from template - Version: 1.24.1
+# Generated from template - Version: 1.28.1
 # Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=1.24.1
+ARG VERSION=1.28.1
 ARG TARGETARCH
 ARG BUILD_DATE
 
@@ -26,7 +26,7 @@ ENTRYPOINT ["php"]
 
 LABEL org.opencontainers.image.title="freshrss" \
       org.opencontainers.image.description="freshrss container image" \
-      org.opencontainers.image.version="1.24.1" \
+      org.opencontainers.image.version="1.28.1" \
       org.opencontainers.image.vendor="FreshRSS" \
       evergreen.image.tier="2" \
       evergreen.constraint.nonroot="true" \

@@ -1,12 +1,12 @@
 [metadata]
 name = "redis-exporter"
-version = "1.82.0"
+version = "1.68.0"
 description = "Redis Exporter - Prometheus exporter for Redis"
 vendor = "Prometheus"
 source = "https://github.com/oliver006/redis_exporter"
 license = "Apache-2.0"
 tier = "1"
-upstream_version = "1.82.0"
+upstream_version = "1.68.0"
 
 [build]
 base = "scratch"
@@ -15,7 +15,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-url = "https://github.com/oliver006/redis_exporter/releases/download/v1.82.0/redis_exporter-v1.82.0.linux-amd64.tar.gz"
+url = "https://github.com/oliver006/redis_exporter/releases/download/v1.68.0/redis_exporter-v1.68.0.linux-amd64.tar.gz"
 
 [runtime]
 entrypoint = ["/redis_exporter"]
@@ -26,7 +26,7 @@ expose = [9121, 9101]
 [labels]
 "org.opencontainers.image.title" = "redis-exporter"
 "org.opencontainers.image.vendor" = "Prometheus"
-"org.opencontainers.image.version" = "1.82.0"
+"org.opencontainers.image.version" = "1.68.0"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"

@@ -1,10 +1,11 @@
 [metadata]
 name = "element-web"
-version = "1.11.14"
+version = "1.12.13"
 description = "Element Web - web client for Matrix"
 vendor = "Element"
 source = "https://github.com/element-hq/element-web"
 tier = "2"
+upstream_version = "1.12.13"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -13,7 +14,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-url = "https://github.com/element-hq/element-web/releases/download/v1.11.14/element-v1.11.14.tar.gz"
+url = "https://github.com/element-hq/element-web/releases/download/v1.12.13/element-v1.12.13.tar.gz"
 
 [runtime]
 entrypoint = ["busybox", "httpd", "-f", "-p", "80", "-h", "/app"]
@@ -26,7 +27,7 @@ expose = [80, 9101]
 "org.opencontainers.image.source" = "https://github.com/element-hq/element-web"
 "org.opencontainers.image.title" = "element-web"
 "org.opencontainers.image.vendor" = "Element"
-"org.opencontainers.image.version" = "1.11.14"
+"org.opencontainers.image.version" = "1.12.13"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"

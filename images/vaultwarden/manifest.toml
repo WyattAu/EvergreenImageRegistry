@@ -1,12 +1,12 @@
 [metadata]
 name = "vaultwarden"
-version = "1.35.8"
+version = "1.35.7"
 description = "Vaultwarden - lightweight Bitwarden-compatible password manager"
 vendor = "dani-garcia"
 source = "https://github.com/dani-garcia/vaultwarden"
 license = "Apache-2.0"
 tier = "2"
-upstream_version = "1.35.8"
+upstream_version = "1.35.7"
 
 [build]
 base = "scratch"
@@ -15,7 +15,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "docker-image"
-url = "vaultwarden/server:1.35.8"
+url = "vaultwarden/server:1.35.7"
 
 [runtime]
 entrypoint = ["/vaultwarden"]
@@ -27,7 +27,7 @@ expose = [8080, 9101]
 "org.opencontainers.image.source" = "https://github.com/dani-garcia/vaultwarden"
 "org.opencontainers.image.title" = "vaultwarden"
 "org.opencontainers.image.vendor" = "dani-garcia"
-"org.opencontainers.image.version" = "1.35.8"
+"org.opencontainers.image.version" = "1.35.7"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"

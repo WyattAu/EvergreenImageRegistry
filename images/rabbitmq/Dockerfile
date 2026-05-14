@@ -1,11 +1,11 @@
 # =============================================================================
 # EVERGREEN HARDENED RABBITMQ
-# Generated from template - Version: 3.13.1
+# Generated from template - Version: 3.13
 # Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=3.13.1
+ARG VERSION=3.13
 ARG BUILD_DATE
 
 ARG TARGETARCH
@@ -25,7 +25,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD rabbi
 ENTRYPOINT ["sh", "-c", "rabbitmq-server"]
 LABEL org.opencontainers.image.title="rabbitmq" \
       org.opencontainers.image.description="RabbitMQ - message broker software" \
-      org.opencontainers.image.version="3.13.1" \
+      org.opencontainers.image.version="3.13" \
       org.opencontainers.image.vendor="RabbitMQ" \
       org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       evergreen.image.tier="1" \

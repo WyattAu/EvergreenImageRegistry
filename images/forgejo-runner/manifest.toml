@@ -1,11 +1,11 @@
 [metadata]
 name = "forgejo-runner"
-version = "6.3.1"
+version = "12.8.2"
 description = "Forgejo Act Runner - CI/CD runner for Forgejo"
 vendor = "Forgejo"
 license = "MIT"
 source = "https://github.com/forgejo/runner"
-upstream_version = "6.3.1"
+upstream_version = "12.8.2"
 
 [build]
 base = "scratch"
@@ -28,7 +28,7 @@ expose = [8088, 9101]
 "org.opencontainers.image.source" = "https://codeberg.org/forgejo/runner"
 "org.opencontainers.image.title" = "forgejo-runner"
 "org.opencontainers.image.vendor" = "Forgejo"
-"org.opencontainers.image.version" = "6.3.1"
+"org.opencontainers.image.version" = "12.8.2"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"

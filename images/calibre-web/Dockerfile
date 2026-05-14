@@ -1,11 +1,11 @@
 # =============================================================================
 # EVERGREEN HARDENED CALIBRE-WEB
-# Generated from template - Version: 0.6.22
+# Generated from template - Version: 0.6.26
 # Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=0.6.22
+ARG VERSION=0.6.26
 ARG TARGETARCH
 ARG BUILD_DATE
 
@@ -21,7 +21,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl 
 ENTRYPOINT ["python"]
 LABEL org.opencontainers.image.title="calibre-web" \
       org.opencontainers.image.description="calibre-web container image" \
-      org.opencontainers.image.version="0.6.22" \
+      org.opencontainers.image.version="0.6.26" \
       org.opencontainers.image.vendor="Calibre-Web" \
       evergreen.image.tier="2" \
       evergreen.constraint.nonroot="true" \

@@ -1,7 +1,8 @@
 [metadata]
 name = "immich-machine-learning"
-version = "1.106.0"
+version = "2.7.5"
 description = "immich-machine-learning container image"
+upstream_version = "2.7.5"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -21,7 +22,7 @@ expose = [3003, 9101]
 "org.opencontainers.image.source" = "https://github.com/immich-app/immich/releases"
 "org.opencontainers.image.title" = "immich-machine-learning"
 "org.opencontainers.image.vendor" = "Immich"
-"org.opencontainers.image.version" = "1.106.0"
+"org.opencontainers.image.version" = "2.7.5"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"

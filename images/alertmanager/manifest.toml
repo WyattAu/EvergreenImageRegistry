@@ -1,12 +1,12 @@
 [metadata]
 name = "alertmanager"
-version = "0.32.1"
+version = "0.27.0"
 description = "Alertmanager - handles alerts sent by Prometheus"
 vendor = "Prometheus"
 source = "https://github.com/prometheus/alertmanager"
 license = "Apache-2.0"
 tier = "1"
-upstream_version = "0.32.1"
+upstream_version = "0.27.0"
 
 [build]
 base = "scratch"
@@ -15,7 +15,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-url = "https://github.com/prometheus/alertmanager/releases/download/v0.32.1/alertmanager-0.32.1.linux-amd64.tar.gz"
+url = "https://github.com/prometheus/alertmanager/releases/download/v0.27.0/alertmanager-0.27.0.linux-amd64.tar.gz"
 
 [runtime]
 entrypoint = ["/alertmanager"]
@@ -27,7 +27,7 @@ expose = [9093, 9101]
 "org.opencontainers.image.source" = "https://github.com/prometheus/alertmanager"
 "org.opencontainers.image.title" = "alertmanager"
 "org.opencontainers.image.vendor" = "Prometheus"
-"org.opencontainers.image.version" = "0.32.1"
+"org.opencontainers.image.version" = "0.27.0"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"

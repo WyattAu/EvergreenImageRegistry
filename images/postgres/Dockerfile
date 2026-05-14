@@ -1,11 +1,11 @@
 # =============================================================================
 # EVERGREEN HARDENED POSTGRES
-# Generated from template - Version: 17.4
+# Generated from template - Version: 17.6
 # Constraint: debian-slim hardened multi-stage
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=17.4
+ARG VERSION=17.6
 ARG BUILD_DATE
 
 ARG TARGETARCH
@@ -29,7 +29,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD pg_is
 ENTRYPOINT ["postgres"]
 LABEL org.opencontainers.image.title="postgres" \
       org.opencontainers.image.description="PostgreSQL - advanced open source relational database" \
-      org.opencontainers.image.version="17.4" \
+      org.opencontainers.image.version="17.6" \
       org.opencontainers.image.vendor="PostgreSQL" \
       org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       evergreen.image.tier="1" \

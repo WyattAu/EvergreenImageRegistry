@@ -1,11 +1,12 @@
 [metadata]
 name = "postgres"
-version = "17.4"
+version = "17.6"
 description = "PostgreSQL - advanced open source relational database"
 vendor = "PostgreSQL"
 source = "https://github.com/postgres/postgres"
 license = "PostgreSQL"
 tier = "1"
+upstream_version = "17.6"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -14,7 +15,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-url = "https://github.com/postgres/postgres/releases/download/v17.4/postgres-17.4-linux-amd64.tar.gz"
+url = "https://github.com/postgres/postgres/releases/download/v17.6/postgres-17.6-linux-amd64.tar.gz"
 
 [runtime]
 entrypoint = ["postgres"]
@@ -25,7 +26,7 @@ expose = [5432, 9101]
 [labels]
 "org.opencontainers.image.title" = "postgres"
 "org.opencontainers.image.vendor" = "PostgreSQL"
-"org.opencontainers.image.version" = "17.4"
+"org.opencontainers.image.version" = "17.6"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.hardened" = "true"
 "evergreen.constraint.nonroot" = "true"

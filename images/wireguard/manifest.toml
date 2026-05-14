@@ -1,12 +1,12 @@
 [metadata]
 name = "wireguard"
-version = "0.0.20230223"
+version = "1.0.20250521"
 description = "WireGuard - fast, modern, secure VPN tunnel"
 vendor = "WireGuard"
 source = "https://github.com/WireGuard/wireguard-go"
 license = "Apache-2.0"
 tier = "1"
-upstream_version = "0.0.20230223"
+upstream_version = "1.0.20250521"
 
 [build]
 base = "scratch"
@@ -15,7 +15,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-url = "https://github.com/wireguard/wireguard/releases/download/v0.0.20230223/wireguard-0.0.20230223-linux-amd64.tar.gz"
+url = "https://github.com/wireguard/wireguard/releases/download/v1.0.20250521/wireguard-1.0.20250521-linux-amd64.tar.gz"
 
 [runtime]
 entrypoint = ["/wireguard-go"]
@@ -28,7 +28,7 @@ expose = ["51820/udp", 9101]
 "org.opencontainers.image.source" = "https://git.zx2c4.com/wireguard-go"
 "org.opencontainers.image.title" = "wireguard"
 "org.opencontainers.image.vendor" = "WireGuard"
-"org.opencontainers.image.version" = "0.0.20230223"
+"org.opencontainers.image.version" = "1.0.20250521"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"

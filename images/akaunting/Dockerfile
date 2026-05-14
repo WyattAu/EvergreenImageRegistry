@@ -1,4 +1,4 @@
-ARG VERSION=4.0.6
+ARG VERSION=3.1.21-v
 ARG TARGETARCH
 ARG BUILD_DATE
 
@@ -15,7 +15,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl 
 ENTRYPOINT ["php-fpm"]
 LABEL org.opencontainers.image.title="akaunting" \
       org.opencontainers.image.description="akaunting container image" \
-      org.opencontainers.image.version="4.0.6" \
+      org.opencontainers.image.version="3.1.21-v" \
       org.opencontainers.image.vendor="Akaunting" \
       org.opencontainers.image.source="https://github.com/akaunting/akaunting" \
       evergreen.image.tier="2" \

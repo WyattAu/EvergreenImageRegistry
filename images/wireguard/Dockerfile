@@ -5,14 +5,14 @@
 # Pattern: scratch-go (golang builder → scratch)
 # =============================================================================
 
-ARG VERSION=0.0.20230223
+ARG VERSION=1.0.20250521
 ARG BUILD_DATE
 ARG GO_VERSION=1.22
 
 # NOTE: Golang builder FROM cannot be easily digest-pinned (version varies)
 FROM golang:${GO_VERSION}-bookworm AS builder
 ARG TARGETARCH
-ARG VERSION=0.0.20230223
+ARG VERSION=1.0.20250521
 ARG GITHUB_TOKEN
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
@@ -38,7 +38,7 @@ ENTRYPOINT ["/wireguard-go"]
 CMD ["-f", "wg0"]
 LABEL org.opencontainers.image.title="wireguard" \
       org.opencontainers.image.description="WireGuard - fast, modern, secure VPN tunnel" \
-      org.opencontainers.image.version="0.0.20230223" \
+      org.opencontainers.image.version="1.0.20250521" \
       org.opencontainers.image.vendor="WireGuard" \
       org.opencontainers.image.source="https://git.zx2c4.com/wireguard-go" \
       evergreen.image.tier="1" \

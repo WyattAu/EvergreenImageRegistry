@@ -1,11 +1,12 @@
 [metadata]
 name = "redis"
-version = "7.4.1"
+version = "7.4.8"
 description = "Redis - in-memory data structure store and cache"
 vendor = "Redis"
 source = "https://github.com/redis/redis"
 license = "BSD-3-Clause"
 tier = "1"
+upstream_version = "7.4.8"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -14,7 +15,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-url = "https://github.com/redis/redis/archive/refs/tags/7.4.1.tar.gz"
+url = "https://github.com/redis/redis/archive/refs/tags/7.4.8.tar.gz"
 
 [runtime]
 entrypoint = ["sh", "-c", "redis"]
@@ -25,7 +26,7 @@ expose = [6379, 9101]
 [labels]
 "org.opencontainers.image.title" = "redis"
 "org.opencontainers.image.vendor" = "Redis"
-"org.opencontainers.image.version" = "7.4.1"
+"org.opencontainers.image.version" = "7.4.8"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.hardened" = "true"
 "evergreen.constraint.nonroot" = "true"

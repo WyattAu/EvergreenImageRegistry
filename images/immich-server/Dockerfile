@@ -1,11 +1,11 @@
 # =============================================================================
 # EVERGREEN HARDENED IMMICH-SERVER
-# Generated from template - Version: 1.106.0
+# Generated from template - Version: 2.7.5
 # Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=1.106.0
+ARG VERSION=2.7.5
 ARG BUILD_DATE
 
 ARG TARGETARCH
@@ -32,7 +32,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl 
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="immich-server" \
       org.opencontainers.image.description="immich-server container image" \
-      org.opencontainers.image.version="1.106.0" \
+      org.opencontainers.image.version="2.7.5" \
       org.opencontainers.image.vendor="immich-app/immich" \
       org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       org.opencontainers.image.source="https://github.com/immich-app/immich/releases" \

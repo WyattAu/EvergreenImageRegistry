@@ -1,12 +1,12 @@
 [metadata]
 name = "forgejo"
-version = "14.0.4"
+version = "12.0.3"
 description = "Forgejo - community-owned lightweight software forge"
 vendor = "Forgejo"
 source = "https://github.com/forgejo/forgejo"
 license = "Apache-2.0"
 tier = "2"
-upstream_version = "14.0.4"
+upstream_version = "12.0.3"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -15,7 +15,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-url = "https://github.com/forgejo/forgejo/releases/download/v14.0.4/forgejo-14.0.4-linux-amd64.tar.gz"
+url = "https://code.forgejo.org/forgejo/forgejo/releases/download/v12.0.3/forgejo-12.0.3-linux-amd64.tar.gz"
 
 [runtime]
 entrypoint = ["/usr/local/bin/forgejo"]
@@ -26,7 +26,7 @@ expose = [3000, 22, 9101]
 [labels]
 "org.opencontainers.image.title" = "forgejo"
 "org.opencontainers.image.vendor" = "Forgejo"
-"org.opencontainers.image.version" = "14.0.4"
+"org.opencontainers.image.version" = "12.0.3"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.wolfi" = "true"

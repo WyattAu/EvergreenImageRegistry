@@ -1,11 +1,11 @@
 [metadata]
 name = "crowdsec"
-version = "1.7.7"
+version = "1.6.2"
 description = "CrowdSec - collaborative intrusion detection system"
 vendor = "CrowdSec"
 license = "MIT"
 source = "https://github.com/crowdsecurity/crowdsec"
-upstream_version = "1.7.7"
+upstream_version = "1.6.2"
 
 [build]
 base = "scratch"
@@ -14,7 +14,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-url = "https://github.com/crowdsecurity/crowdsec/releases/download/v1.7.7/crowdsec-release.tgz"
+url = "https://github.com/crowdsecurity/crowdsec/releases/download/v1.6.2/crowdsec-release.tgz"
 
 [runtime]
 entrypoint = ["/crowdsec"]
@@ -26,7 +26,7 @@ expose = [8080, 6060, 9101]
 "org.opencontainers.image.source" = "https://github.com/crowdsecurity/crowdsec"
 "org.opencontainers.image.title" = "crowdsec"
 "org.opencontainers.image.vendor" = "CrowdSecurity"
-"org.opencontainers.image.version" = "1.7.7"
+"org.opencontainers.image.version" = "1.6.2"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"

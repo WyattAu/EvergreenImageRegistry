@@ -1,11 +1,11 @@
 # =============================================================================
 # EVERGREEN HARDENED UPTIME-KUMA
-# Generated from template - Version: 1.23.1
+# Generated from template - Version: 1.23.16
 # Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=1.23.1
+ARG VERSION=1.23.16
 ARG BUILD_DATE
 
 ARG TARGETARCH
@@ -21,7 +21,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl 
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="uptime-kuma" \
       org.opencontainers.image.description="uptime-kuma container image" \
-      org.opencontainers.image.version="1.23.1" \
+      org.opencontainers.image.version="1.23.16" \
       org.opencontainers.image.vendor="Uptime Kuma" \
       org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       evergreen.image.tier="2" \

@@ -1,11 +1,11 @@
 # =============================================================================
 # EVERGREEN HARDENED MARIADB
-# Generated from template - Version: 11.4.2
+# Generated from template - Version: 11.4
 # Constraint: debian-slim hardened multi-stage
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=11.4.2
+ARG VERSION=11.4
 ARG BUILD_DATE
 
 ARG TARGETARCH
@@ -33,7 +33,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD mysql
 ENTRYPOINT ["sh", "-c", "mariadbd"]
 LABEL org.opencontainers.image.title="mariadb" \
       org.opencontainers.image.description="MariaDB - community-developed fork of MySQL" \
-      org.opencontainers.image.version="11.4.2" \
+      org.opencontainers.image.version="11.4" \
       org.opencontainers.image.vendor="MariaDB" \
       org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       evergreen.image.tier="2" \

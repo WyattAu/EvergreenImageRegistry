@@ -1,23 +1,24 @@
 # =============================================================================
 # EVERGREEN HARDENED DRONE
-# Generated from template - Version: 2.28.1
-# Downloads Drone binary directly from GitHub releases (no upstream image).
+# Generated from template - Version: 1.9.0
+# Downloads Drone CLI binary from harness/drone-cli releases.
 # Drone is a Go static binary.
 # =============================================================================
 
-ARG VERSION=2.28.1
+ARG VERSION=1.9.0
 ARG TARGETARCH
 ARG BUILD_DATE
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-ARG VERSION=2.28.1
+ARG VERSION=1.9.0
+ARG TARGETARCH
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
-    "https://github.com/harness/drone/releases/download/v${VERSION}/drone_linux_amd64.tar.gz" -o /tmp/drone.tar.gz && \
+    curl --retry 3 --retry-delay 5 -fsSL \
+    "https://github.com/harness/drone-cli/releases/download/v${VERSION}/drone_linux_${TARGETARCH}.tar.gz" -o /tmp/drone.tar.gz && \
     mkdir -p /app && \
     tar -xzf /tmp/drone.tar.gz -C /app && rm -f /tmp/drone.tar.gz && \
-    strip --strip-all /app/drone  || true 2>/dev/null&& \
+    strip --strip-all /app/drone  || true 2>/dev/null && \
     chmod +x /app/drone
 FROM scratch
 COPY --from=downloader /app/drone /drone
@@ -31,9 +32,9 @@ EXPOSE 80
 
 LABEL org.opencontainers.image.title="drone" \
       org.opencontainers.image.description="Drone - cloud-native continuous integration and delivery platform" \
-      org.opencontainers.image.version="2.28.1" \
-      org.opencontainers.image.vendor="Drone" \
-      org.opencontainers.image.source="https://github.com/drone/drone" \
+       org.opencontainers.image.version="1.9.0" \
+       org.opencontainers.image.vendor="Harness" \
+       org.opencontainers.image.source="https://github.com/harness/drone-cli" \
       evergreen.image.tier="2" \
       evergreen.constraint.nonroot="true" \
       evergreen.constraint.scratch="true"

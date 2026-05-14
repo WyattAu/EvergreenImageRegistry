@@ -54,6 +54,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
   packages: write
 
 jobs:
@@ -124,7 +125,9 @@ jobs:
   build:
     name: Build on Demand
     needs: [validate, discover]
-    if: needs.validate.outputs.valid == 'true' && needs.discover.result == 'success' && needs.discover.outputs.total != '0'
+    if:
+      needs.validate.outputs.valid == 'true' && needs.discover.result == 'success' && needs.discover.outputs.total !=
+      '0'
     uses: ./.github/workflows/_build-reusable.yml
     with:
       matrix: ${{ needs.discover.outputs.matrix }}
@@ -148,7 +151,9 @@ jobs:
   empty:
     name: No Images Found
     needs: [validate, discover]
-    if: needs.validate.outputs.valid == 'true' && needs.discover.result == 'success' && needs.discover.outputs.total == '0'
+    if:
+      needs.validate.outputs.valid == 'true' && needs.discover.result == 'success' && needs.discover.outputs.total ==
+      '0'
     runs-on: ubuntu-latest
     steps:
       - run: echo "::notice::No images found for mode=${{ inputs.mode }} filter=${{ inputs.filter }}"

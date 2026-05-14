@@ -40,6 +40,7 @@ concurrency:
 
 permissions:
   contents: read
+  id-token: write
   packages: write
 
 jobs:
@@ -176,7 +177,8 @@ jobs:
   # ---------------------------------------------------------------------------
   report:
     name: Nightly Report
-    needs: [discover-critical, discover-standard, discover-community, build-critical, build-standard, build-community, gates]
+    needs:
+      [discover-critical, discover-standard, discover-community, build-critical, build-standard, build-community, gates]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5

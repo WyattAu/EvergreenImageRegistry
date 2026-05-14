@@ -1,4 +1,5 @@
 ARG VERSION=v8.5.6
+ARG TARGETARCH
 
 FROM ontotext/graphdb:${VERSION} AS upstream
 

@@ -1,4 +1,5 @@
 ARG VERSION=v1.4.9
+ARG TARGETARCH
 
 FROM valeriansaliou/sonic:${VERSION} AS upstream
 

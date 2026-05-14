@@ -1,4 +1,5 @@
 ARG VERSION=latest
+ARG TARGETARCH
 
 FROM ghcr.io/robustperception/azure_metrics_exporter:${VERSION} AS upstream
 

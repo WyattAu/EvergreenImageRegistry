@@ -1,4 +1,5 @@
 ARG VERSION=0.12.1
+ARG TARGETARCH
 
 FROM ghcr.io/nheko-reborn/nheko:${VERSION} AS upstream
 

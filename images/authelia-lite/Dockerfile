@@ -5,6 +5,7 @@
 # =============================================================================
 
 ARG VERSION=4.39.19
+ARG TARGETARCH
 ARG BUILD_DATE
 
 # hadolint ignore=DL3023

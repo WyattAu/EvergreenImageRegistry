@@ -1,4 +1,5 @@
 ARG VERSION=3.11.10.1
+ARG TARGETARCH
 
 FROM arangodb/arangodb:${VERSION} AS upstream
 

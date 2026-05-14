@@ -1,4 +1,5 @@
 ARG VERSION=1.12.0
+ARG TARGETARCH
 
 FROM ghcr.io/zalando/postgres-operator:v${VERSION} AS upstream
 

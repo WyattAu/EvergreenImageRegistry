@@ -13,6 +13,7 @@
 # =============================================================================
 
 ARG VERSION=17.6.0
+ARG TARGETARCH
 ARG BUILD_DATE
 
 FROM gitlab/gitlab-ce:${VERSION}-ce.0 AS upstream

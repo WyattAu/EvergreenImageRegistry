@@ -1,4 +1,5 @@
 ARG VERSION=1.6.0
+ARG TARGETARCH
 ARG BUILD_DATE
 
 
@@ -13,7 +14,7 @@ RUN pip install --no-cache-dir firefly-iii==1.6.0 ; mkdir -p /usr/local/bin ; te
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache python3 ca-certificates curl 
+RUN apk add --no-cache python3 ca-certificates curl
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN mkdir -p /app /var/log/app /var/cache/app ; \

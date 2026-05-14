@@ -1,4 +1,5 @@
 ARG VERSION=1.300066.1
+ARG TARGETARCH
 
 FROM amazon/cloudwatch-agent:${VERSION} AS upstream
 

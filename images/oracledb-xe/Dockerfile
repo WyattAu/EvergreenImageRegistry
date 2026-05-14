@@ -1,4 +1,5 @@
 ARG VERSION=21.3.0
+ARG TARGETARCH
 ARG BUILD_DATE
 
 FROM gvenzl/oracle-xe@sha256:ecdf4302ac3d134e1bac5ef6e0c223c2d0f4d4d2b6d551aa79b2346f1ab8f792 AS upstream

@@ -1,0 +1,43 @@
+name: Metrics Report
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Daily at midnight UTC
+  workflow_dispatch:
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build evergreenctl
+        run: cd evergreenctl && cargo build --release
+      - name: Generate metrics
+        run: |
+          METRICS_JSON=$(cd evergreenctl && ./target/release/evergreenctl report --format json --images-dir ../images)
+          echo "$METRICS_JSON" > metrics-snapshot.json
+
+          echo "## Registry Metrics Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "$METRICS_JSON" >> $GITHUB_STEP_SUMMARY
+
+          # Extract key metrics for summary
+          TOTAL=$(echo "$METRICS_JSON" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('total_images',0))")
+          REAL=$(echo "$METRICS_JSON" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('real_images',0))")
+          PLACEHOLDER=$(echo "$METRICS_JSON" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('placeholder_images',0))")
+          DEPRECATED=$(echo "$METRICS_JSON" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('deprecated_images',0))")
+
+          echo "Total: $TOTAL | Real: $REAL | Placeholder: $PLACEHOLDER | Deprecated: $DEPRECATED" >> $GITHUB_STEP_SUMMARY
+      - name: Upload metrics artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: metrics-snapshot
+          path: metrics-snapshot.json
+          retention-days: 90

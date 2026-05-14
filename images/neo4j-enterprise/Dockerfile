@@ -1,5 +1,6 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=5.17.0
+ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://dist.neo4j.org/neo4j-enterprise-5.17.0-unix.tar.gz" -o /neo4j.tar.gz && \
     echo "a0acf804ff2f4bbb18f9ab8e2ee9e60f614056a361987be293f09acc2d3f0ff4  /neo4j.tar.gz" | sha256sum -c || true ; \

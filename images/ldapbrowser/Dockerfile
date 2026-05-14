@@ -1,4 +1,5 @@
 ARG VERSION=2.0.0
+ARG TARGETARCH
 
 FROM ghcr.io/ltiam/apachedirectorystudio:${VERSION} AS upstream
 

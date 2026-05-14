@@ -6,6 +6,7 @@
 # =============================================================================
 
 ARG VERSION=7.0.11
+ARG TARGETARCH
 ARG BUILD_DATE
 
 
@@ -18,7 +19,7 @@ ENV HEALTH_CMD="echo \"db.adminCommand('ping')\" | mongosh --quiet" \
     STARTUP_CMD="echo \"db.adminCommand('ping')\" | mongosh --quiet" \
     EVERGREEN_LOG_LEVEL=info
 
-RUN apk add --no-cache ca-certificates 
+RUN apk add --no-cache ca-certificates
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder --chown=65532:65532 /app /app

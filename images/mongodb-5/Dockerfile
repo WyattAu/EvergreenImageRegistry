@@ -1,4 +1,5 @@
 ARG VERSION=5.0.18
+ARG TARGETARCH
 
 FROM mongo:${VERSION} AS upstream
 

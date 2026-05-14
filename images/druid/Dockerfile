@@ -1,4 +1,5 @@
 ARG VERSION=37.0.0
+ARG TARGETARCH
 
 FROM apache/druid:${VERSION} AS upstream
 

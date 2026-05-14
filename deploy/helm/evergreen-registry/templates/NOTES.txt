@@ -1,0 +1,28 @@
+# Evergreen Image Registry - Helm Chart
+
+## Prerequisites
+- Kubernetes 1.24+
+- Helm 3.10+
+
+## Quick Start
+```bash
+helm install evergreen-registry deploy/helm/evergreen-registry \
+  --namespace evergreen \
+  --set images.enabled[0]=redis:7.2 \
+  --set images.enabled[1]=postgres:16 \
+  --set images.enabled[2]=nginx:1.27
+
+helm upgrade evergreen-registry deploy/helm/evergreen-registry \
+  --namespace evergreen \
+  --reuse-values
+```
+
+## Configuration
+See values.yaml for all configuration options.
+
+## Security
+All images are deployed with:
+- Non-root user (UID 65532)
+- All capabilities dropped
+- Read-only root filesystem
+- Seccomp profile (RuntimeDefault)

@@ -1,4 +1,5 @@
 ARG VERSION=24.0.2
+ARG TARGETARCH
 
 FROM quay.io/keycloak/keycloak-operator:${VERSION} AS upstream
 

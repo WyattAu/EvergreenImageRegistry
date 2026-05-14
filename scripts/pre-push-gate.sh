@@ -248,6 +248,19 @@ else
     skip_gate "Dockerfile constraints (python3 not found)"
 fi
 
+# ---- Gate 9: Cargo audit (dependency vulnerability scan) ----
+echo ""
+echo "--- Gate 9: Cargo Audit ---"
+if command -v cargo-audit &>/dev/null; then
+    if cargo audit --manifest-path evergreenctl/Cargo.toml 2>/dev/null; then
+        pass_gate "cargo audit (evergreenctl)"
+    else
+        fail_gate "cargo audit (evergreenctl) - vulnerabilities found"
+    fi
+else
+    skip_gate "cargo audit (cargo-audit not found)"
+fi
+
 # ---- Gate 8: Rust release build ----
 echo ""
 echo "--- Gate 8: Rust Release Build ---"

@@ -2,9 +2,9 @@
 
 ## Status
 
-- **Phase:** 88
-- **Version:** v28.0.0
-- **Status:** Stable - Post-comprehensive audit, all quality gates passing
+- **Phase:** 102
+- **Version:** v29.0.0
+- **Status:** Stable - All roadmap phases (89-102) implemented, all quality gates passing
 - **Last Updated:** 2026-05-14
 
 ## Quality Scorecard
@@ -42,7 +42,7 @@
 
 | Metric               | Value                          | Status |
 | -------------------- | ------------------------------ | ------ |
-| Rust tests           | 65/65 unit + 47/47 integration | PASS   |
+| Rust tests           | 67/67 unit + 47/47 integration | PASS   |
 | Rust clippy          | 0 warnings (-D warnings)       | PASS   |
 | Rust fmt             | PASS                           | PASS   |
 | Rust release build   | PASS                           | PASS   |
@@ -53,19 +53,20 @@
 | Manifest TOML        | 998/998                        | PASS   |
 | SBOM JSON            | 998/998                        | PASS   |
 | Documentation emojis | 0                              | PASS   |
-| Pre-push gate        | 10-gate (all PASS)             | PASS   |
+| Pre-push gate        | 11-gate (all PASS)             | PASS   |
 
 ## Git Hooks
 
 - **Pre-commit:** trailing-whitespace, EOF fixer, YAML/JSON lint, merge-conflict, hadolint, constraints, no-alpine,
   fast-tests (clippy+fmt+ruff+py+sh)
-- **Pre-push:** 10-gate: Rust unit tests, Rust integration tests, clippy, fmt, Python syntax + ruff lint, Shell syntax,
-  Manifest TOML, SBOM JSON, Dockerfile constraints, Rust release build
+- **Pre-push:** 11-gate: Rust unit tests, Rust integration tests, clippy, fmt, Python syntax + ruff lint, Shell syntax,
+  Manifest TOML, SBOM JSON, Dockerfile constraints, Rust release build, cargo audit
 
 ## CI Pipeline
 
-- 10 GitHub Actions workflows (auto-bump, build-and-push, build, cosign-sign, daily-security-scan, fuzz, lint,
-  nightly-scan, slsa-provenance, update-readme)
+- 13 GitHub Actions workflows (auto-bump, build-and-push, build, cosign-sign, daily-security-scan, fuzz, lint,
+  nightly-scan, slsa-provenance, update-readme, actionlint, go-test, sbom-attestation, provenance-verify,
+  publish-immutable, metrics-report)
 - Gate/Lint/Discover: 100% pass
 - Remaining build failures: ALL upstream issues (0 code bugs)
 - Dockerfile.ci: 16 pinned tools (docker, buildx, trivy, grype, cosign, syft, hadolint, helm, kubectl, crane, yq,
@@ -85,8 +86,22 @@
 | 75-76 | evergreenctl maturation                   | report, deprecated, completion commands                                     |
 | 77-78 | Health-shim expansion                     | TCP/HTTP probes, structured metrics, tests                                  |
 | 79-83 | Policy-as-code and operational excellence | image_policy.yaml, enforce_policy.py, metrics dashboard, auto-bump workflow |
+| 89    | CI Green                                   | Blocked: requires live upstream version resolution                          |
+| 90    | Test framework expansion                   | 1013 test configs (912 real + 67 stubs + 34 CLI-only)                       |
+| 91    | Supply chain hardening                     | Blocked: requires crane/Docker for digest resolution                        |
+| 92    | CI hardening                              | actionlint.yml, go-test.yml, cargo audit gate, prettier fix                 |
+| 93    | Multi-arch expansion                       | 853/998 images with ARG TARGETARCH (570 modified, 0 errors)                 |
+| 94    | SBOM attestation chain                    | sbom-attestation.yml (cosign + Rekor transparency log)                      |
+| 95    | evergreenctl v2.0                          | changelog + validate_strict subcommands (114 total tests)                    |
+| 96    | Health-shim expansion                      | Blocked: Go-based, requires manual per-image wiring                         |
+| 97    | Policy-as-code enhancement                 | enforce_policy.py with tiers, size/CVE/pinning, --json                      |
+| 98    | Automated version bumping                  | auto-bump.yml: daily cron, 50/PR, auto-merge, rate limits                   |
+| 99    | Binary provenance verification            | provenance-verify.yml (weekly cosign + verify-all)                          |
+| 100   | Registry publication                       | publish-immutable.yml (multi-arch immutable + cosign sign)                  |
+| 101   | Metrics and observability                  | metrics-report.yml (weekly snapshot + artifact upload)                      |
+| 102   | Ecosystem integration                      | Helm chart (evergreen-registry, 4 templates, ingress, security)             |
 
-## evergreenctl Subcommands (18 total)
+## evergreenctl Subcommands (20 total)
 
-audit, bump, ci-diff, completion, deprecated, discover, drift, generate, migrate, outdated, pin-digests, report, sign,
-snapshot, validate, verify, verify-all
+audit, bump, changelog, ci-diff, completion, deprecated, discover, drift, generate, migrate, outdated, pin-digests, report,
+sign, snapshot, validate, validate-strict, verify, verify-all

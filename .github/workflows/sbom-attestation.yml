@@ -1,0 +1,36 @@
+name: SBOM Attestation
+on:
+  workflow_run:
+    types: [completed]
+    jobs:
+  attest:
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success' && startsWith(github.event.workflow_run.head_commit, 'sha256:')
+    permissions:
+      id-token: write
+      contents: read
+      attestations: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3.7.0
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract image name
+        id: image
+        run: echo "IMAGE=${GITHUB_REPOSITORY#*/}" >> $GITHUB_ENV
+      - name: Attest SBOM
+        run: |
+          cosign attest --yes --key env://COSIGN_PRIVATE_KEY \
+            --predicate-type https://slsa.dev/provenance/v1 \
+            --output-certificate attest.crt \
+            --output-signature attest.sig \
+            ghcr.io/${{ env.IMAGE }}@${{ github.event.workflow_run.head_commit }} \
+            --rekor-url https://rekor.sigstore.dev
+        env:
+          COSIGN_PRIVATE_KEY: ""

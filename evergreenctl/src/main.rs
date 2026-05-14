@@ -135,6 +135,21 @@ enum Commands {
         #[arg(long, default_value = "images")]
         images_dir: String,
     },
+    /// Generate changelog from git history
+    Changelog {
+        /// Path to images directory
+        #[arg(long, default_value = "images")]
+        images_dir: String,
+        /// Number of days to look back
+        #[arg(long, default_value = "30")]
+        since: u64,
+    },
+    /// Strict validation (manifest + Dockerfile + SBOM cross-reference)
+    ValidateStrict {
+        /// Path to images directory
+        #[arg(long, default_value = "images")]
+        images_dir: String,
+    },
     /// Generate shell completions
     Completion {
         #[arg(long, value_enum)]
@@ -446,6 +461,14 @@ async fn main() -> anyhow::Result<()> {
                     "No operation specified. Use --list, --mark <image>, or --unmark <image>"
                 );
             }
+        }
+
+        Commands::Changelog { images_dir, since } => {
+            evergreenctl::changelog::cmd_changelog(&images_dir, since)?;
+        }
+
+        Commands::ValidateStrict { images_dir } => {
+            evergreenctl::validate_strict::cmd_validate_strict(&images_dir)?;
         }
 
         Commands::Completion { shell } => {

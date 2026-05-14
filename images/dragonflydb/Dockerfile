@@ -1,4 +1,5 @@
 ARG VERSION=v1.38.1
+ARG TARGETARCH
 
 FROM docker.dragonflydb.io/dragonfly:${VERSION} AS upstream
 

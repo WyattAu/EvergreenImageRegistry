@@ -6,6 +6,7 @@
 # =============================================================================
 
 ARG VERSION=9.2.1
+ARG TARGETARCH
 ARG BUILD_HASH=a1c5796230b0
 ARG BUILD_DATE
 

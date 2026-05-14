@@ -6,6 +6,7 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
+        exclude: ^deploy/helm/
       - id: check-json
       - id: check-merge-conflict
 
@@ -14,7 +15,7 @@ repos:
     rev: v4.0.0-alpha.8
     hooks:
       - id: prettier
-        args: [--config, .prettierrc.yml]
+        args: [--config, .prettierrc.yml, --ignore-path, 'images/', --ignore-path, 'node_modules/', --ignore-path, 'deploy/']
 
   # Linters for style and correctness
   - repo: https://github.com/DavidAnson/markdownlint-cli2
@@ -82,17 +83,17 @@ repos:
         always_run: true
 
   # =============================================================================
-  # Pre-push Quality Gate (9 gates, comprehensive validation)
+  # Pre-push Quality Gate (11 gates, comprehensive validation)
   # =============================================================================
   # Gates: Rust unit tests, Rust integration tests, clippy, fmt, Python syntax,
   #        Python ruff lint, Shell syntax, Manifest TOML, SBOM JSON,
-  #        Dockerfile constraints, Release build
+  #        Dockerfile constraints, cargo audit, Release build
   # =============================================================================
   - repo: local
     hooks:
       - id: evergreen-pre-push-gate
-        name: Evergreen Pre-push Gate (9 Gates)
-        description: Runs all 9 quality gates before push (tests, lint, validation)
+        name: Evergreen Pre-push Gate (11 Gates)
+        description: Runs all 11 quality gates before push (tests, lint, validation)
         entry: bash scripts/pre-push-gate.sh
         language: system
         stages: [pre-push]

@@ -5,6 +5,7 @@
 # =============================================================================
 
 ARG VERSION=Release48
+ARG TARGETARCH
 ARG BUILD_DATE
 
 

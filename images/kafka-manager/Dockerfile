@@ -1,4 +1,5 @@
 ARG VERSION=3.0.0.5
+ARG TARGETARCH
 
 FROM hlebalbau/kafka-manager:${VERSION} AS upstream
 

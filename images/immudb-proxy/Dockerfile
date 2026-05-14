@@ -1,4 +1,5 @@
 ARG VERSION=v1.11.0
+ARG TARGETARCH
 
 FROM ghcr.io/codenotary/immudb:${VERSION} AS upstream
 

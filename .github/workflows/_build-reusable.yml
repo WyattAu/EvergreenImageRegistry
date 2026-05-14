@@ -1,0 +1,301 @@
+# =============================================================================
+# EVERGREEN BUILD PIPELINE - REUSABLE BUILD JOB
+# =============================================================================
+# This is a reusable workflow that provides the actual build, test, and push
+# logic. It is called by build-on-push.yml, build-nightly.yml, and
+# build-on-demand.yml with different image matrices.
+# =============================================================================
+
+name: _Build Images (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      matrix:
+        description: 'JSON matrix of image batches'
+        required: true
+        type: string
+      tag:
+        description: 'Image tag to use'
+        required: false
+        type: string
+        default: ''
+      push:
+        description: 'Whether to push to registry'
+        required: false
+        type: boolean
+        default: true
+      sign:
+        description: 'Whether to sign images with Cosign'
+        required: false
+        type: boolean
+        default: false
+      multiarch:
+        description: 'Build multi-arch (amd64+arm64) or amd64 only'
+        required: false
+        type: boolean
+        default: true
+      tier:
+        description: 'Build tier for reporting'
+        required: false
+        type: string
+        default: 'standard'
+
+env:
+  REGISTRY: ghcr.io
+  OWNER: ${{ github.repository_owner }}
+
+permissions:
+  contents: read
+  id-token: write
+  security-events: write
+  packages: write
+
+jobs:
+  build:
+    name: "Build ${{ inputs.tier }} Batch ${{ matrix.batch }} (${{ matrix.count }} images)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix: ${{ fromJson(inputs.matrix) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set SOURCE_DATE_EPOCH
+        run: echo "SOURCE_DATE_EPOCH=$(date -u +%s)" >> "$GITHUB_ENV"
+
+      - name: Resolve tag
+        id: resolve-tag
+        run: |
+          if [ -n "${{ inputs.tag }}" ]; then
+            echo "TAG=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "TAG=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: |
+            image=moby/buildkit:v0.12.0
+            env.BUILDKIT_STEP_LOG_MAX_SIZE=-1
+            env.BUILDKIT_STEP_LOG_MAX_SPEED=10
+
+      - name: Lowercase registry owner
+        run: echo "OWNER=$(echo '${{ env.OWNER }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
+
+      - name: Login to Registry
+        if: inputs.push
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Login to Docker Hub
+        if: inputs.push
+        continue-on-error: true
+        id: dockerhub-login
+        uses: docker/login-action@v3
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build images (amd64 tarballs for verification)
+        run: |
+          TAG="${{ steps.resolve-tag.outputs.TAG }}"
+          mkdir -p /tmp/images
+          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
+          BUILT=0; FAILED=0; SKIPPED=0
+          CURRENT_BUILDER=$(docker buildx inspect --format '{{.Name}}' 2>/dev/null | head -1)
+          recreate_builder() {
+            echo "::notice::Recreating BuildKit builder..."
+            [ -n "$CURRENT_BUILDER" ] && docker buildx rm "$CURRENT_BUILDER" 2>/dev/null || true
+            CURRENT_BUILDER="evergreen-$(date +%s)"
+            docker buildx create --name "$CURRENT_BUILDER" --driver docker-container \
+              --driver-opt image=moby/buildkit:v0.12.0 \
+              --driver-opt env.BUILDKIT_STEP_LOG_MAX_SIZE=-1 \
+              --driver-opt env.BUILDKIT_STEP_LOG_MAX_SPEED=10 \
+              --use 2>/dev/null || true
+          }
+          build_image() {
+            local image="$1"
+            local REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
+            local SAFE="${image//\//-}"
+            echo "::group::Build ${image}"
+            if timeout 900 docker buildx build \
+                --builder "$CURRENT_BUILDER" \
+                --platform linux/amd64 \
+                -t "${REF}" \
+                --output "type=docker,dest=/tmp/images/${SAFE}.tar" \
+                --no-cache \
+                --build-arg "BUILD_DATE=${TAG}" \
+                --build-arg "VCS_REF=${TAG}" \
+                --build-arg "TARGETARCH=amd64" \
+                --build-arg "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" \
+                --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
+                --label "org.opencontainers.image.revision=${{ github.sha }}" \
+                "./images/${image}"; then
+              echo "${REF}" >> /tmp/built-images.txt
+              return 0
+            else
+              return 1
+            fi
+          }
+          for image in "${IMAGE_LIST[@]}"; do
+            [ -z "$image" ] && continue
+            [ ! -f "./images/${image}/Dockerfile" ] && { echo "::warning::${image}: no Dockerfile"; SKIPPED=$((SKIPPED+1)); continue; }
+            if [ $((BUILT + FAILED)) -gt 0 ] && [ $(( (BUILT + FAILED) % 5 )) -eq 0 ]; then
+              recreate_builder
+            fi
+            if build_image "${image}"; then
+              BUILT=$((BUILT+1)); sleep 1
+            else
+              echo "::warning::${image}: build failed, retrying..."
+              sleep 5
+              if build_image "${image}"; then
+                BUILT=$((BUILT+1)); sleep 1
+              else
+                echo "::error::${image}: build failed after 2 attempts"
+                FAILED=$((FAILED+1)); sleep 3
+              fi
+            fi
+            echo "::endgroup::"
+          done
+          echo "Batch ${{ matrix.batch }}: ${BUILT} built, ${FAILED} failed, ${SKIPPED} skipped"
+          echo "BUILDER_NAME=${CURRENT_BUILDER}" >> "$GITHUB_ENV"
+
+      - name: Enforce image size limit
+        if: always()
+        continue-on-error: true
+        run: |
+          LIMIT_MB=${IMAGE_SIZE_LIMIT:-2048}
+          EXCEEDED=0
+          for tar in /tmp/images/*.tar; do
+            [ -f "$tar" ] || continue
+            SIZE_MB=$(($(stat --format=%s "$tar") / 1024 / 1024))
+            if [ "$SIZE_MB" -gt "$LIMIT_MB" ]; then
+              echo "::error::$(basename "$tar" .tar): ${SIZE_MB}MB > ${LIMIT_MB}MB"
+              EXCEEDED=$((EXCEEDED+1))
+            fi
+          done
+          [ "$EXCEEDED" -gt 0 ] && exit 1
+
+      - name: Upload image tarballs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: images-${{ inputs.tier }}-batch-${{ matrix.batch }}
+          path: /tmp/images/
+          retention-days: 7
+          if-no-files-found: ignore
+          overwrite: true
+
+      - name: Upload built image references
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-list-${{ inputs.tier }}-batch-${{ matrix.batch }}
+          path: /tmp/built-images.txt
+          retention-days: 7
+          if-no-files-found: ignore
+          overwrite: true
+
+      - name: Push to registry
+        if: inputs.push
+        timeout-minutes: 90
+        run: |
+          TAG="${{ steps.resolve-tag.outputs.TAG }}"
+          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
+          PUSHED=0; FAILED=0
+          PLATFORMS="linux/amd64"
+          [ "${{ inputs.multiarch }}" = "true" ] && PLATFORMS="linux/amd64,linux/arm64"
+          for image in "${IMAGE_LIST[@]}"; do
+            [ -z "$image" ] && continue
+            [ ! -f "./images/${image}/Dockerfile" ] && continue
+            REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
+            echo "::group::Push ${image} (${PLATFORMS})"
+            if timeout 900 docker buildx build \
+              --platform ${PLATFORMS} \
+              --push \
+              -t "${REF}" \
+              --cache-from "type=gha,scope=${image}" \
+              --cache-to "type=gha,scope=${image},mode=max,compression=zstd" \
+              --attest "type=provenance,mode=max" \
+              --build-arg "BUILD_DATE=${TAG}" \
+              --build-arg "VCS_REF=${TAG}" \
+              --build-arg "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" \
+              "./images/${image}"; then
+              PUSHED=$((PUSHED+1))
+            else
+              echo "::warning::${image}: push failed"
+              FAILED=$((FAILED+1))
+            fi
+            sleep 2
+            echo "::endgroup::"
+          done
+          echo "Push: ${PUSHED} ok, ${FAILED} failed"
+
+  sign:
+    name: Sign Images
+    needs: build
+    if: inputs.push && inputs.sign && needs.build.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: sigstore/cosign-installer@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download all built image references
+        uses: actions/download-artifact@v4
+        with:
+          pattern: built-list-${{ inputs.tier }}-batch-*
+          path: /tmp/batches
+
+      - name: Sign all images
+        run: |
+          TAG="${{ inputs.tag || github.sha }}"
+          cat /tmp/batches/built-list-*/built-images.txt 2>/dev/null | sort -u | while read -r ref; do
+            [ -z "$ref" ] && continue
+            echo "::group::Sign ${ref}"
+            cosign sign --yes \
+              --certificate-identity="${{ github.repository_owner }}" \
+              --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+              "${ref}" 2>&1 || echo "::warning::Sign failed for ${ref}"
+            echo "::endgroup::"
+          done
+
+  report:
+    name: Build Report (${{ inputs.tier }})
+    needs: [build, sign]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: |
+          echo "# Build Report - ${{ inputs.tier }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Tier** | ${{ inputs.tier }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Tag** | \`${{ inputs.tag || github.sha }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Push** | ${{ inputs.push }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Sign** | ${{ inputs.sign }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Multi-arch** | ${{ inputs.multiarch }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Build** | ${{ needs.build.result }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Sign** | ${{ needs.sign.result }} |" >> "$GITHUB_STEP_SUMMARY"

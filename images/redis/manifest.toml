@@ -5,7 +5,7 @@ description = "Redis - in-memory data structure store and cache"
 vendor = "Redis"
 source = "https://github.com/redis/redis"
 license = "BSD-3-Clause"
-tier = "1"
+tier = "critical"
 upstream_version = "7.4.8"
 
 [build]
@@ -31,6 +31,5 @@ expose = [6379, 9101]
 "evergreen.constraint.hardened" = "true"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "http"
-"evergreen.image.tier" = "1"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "true"
-

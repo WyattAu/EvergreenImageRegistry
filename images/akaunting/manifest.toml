@@ -2,6 +2,7 @@
 name = "akaunting"
 version = "3.1.21-v"
 description = "akaunting container image"
+tier = "critical"
 upstream_version = "3.1.21-v"
 
 [build]
@@ -33,6 +34,5 @@ expose = [80, 443, 9101]
 "evergreen.hft.startup-timeout" = "30000ms"
 "evergreen.image.category" = "business-finance"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "2"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"
-

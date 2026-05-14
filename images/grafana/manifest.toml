@@ -5,7 +5,7 @@ description = "Grafana - observability dashboard and visualization"
 vendor = "Grafana Labs"
 source = "https://github.com/grafana/grafana"
 license = "AGPL-3.0"
-tier = "1"
+tier = "critical"
 upstream_version = "12.2"
 
 [build]
@@ -34,6 +34,5 @@ expose = [3000, 9101]
 "evergreen.health.type" = "exec"
 "evergreen.image.category" = "observability"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "1"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"
-

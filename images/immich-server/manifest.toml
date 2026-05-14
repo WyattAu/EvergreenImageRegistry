@@ -2,6 +2,7 @@
 name = "immich-server"
 version = "2.7.5"
 description = "immich-server container image"
+tier = "critical"
 upstream_version = "2.7.5"
 
 [build]
@@ -27,6 +28,5 @@ expose = [3001, 9101]
 "evergreen.constraint.hardened" = "true"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"
-"evergreen.image.tier" = "3"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"
-

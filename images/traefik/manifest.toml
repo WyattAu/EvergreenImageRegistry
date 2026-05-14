@@ -6,7 +6,7 @@ description = "Traefik - modern HTTP reverse proxy and load balancer"
 vendor = "Traefik Labs"
 source = "https://github.com/traefik/traefik"
 license = "MIT"
-tier = "1"
+tier = "critical"
 
 [build]
 base = "scratch"
@@ -43,5 +43,5 @@ expose = [80, 443, 8080, 9101]
 "evergreen.hft.startup-timeout" = "3000ms"
 "evergreen.hft.xdp-capable" = "false"
 "evergreen.hft.xdp-notes" = "Not supported; use envoy for XDP workloads"
-"evergreen.image.tier" = "1"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"

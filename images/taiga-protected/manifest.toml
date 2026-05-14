@@ -5,7 +5,7 @@ description = "Taiga Protected - file access protection proxy for Taiga"
 vendor = "Taiga"
 source = "https://github.com/taigaio/taiga-protected"
 license = "AGPL-3.0"
-tier = "3"
+tier = "critical"
 upstream_version = "6.9.0"
 
 [build]
@@ -38,5 +38,5 @@ expose = [8003, 9101]
 "evergreen.hft.startup-timeout" = "30000ms"
 "evergreen.image.category" = "project-management"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "3"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"

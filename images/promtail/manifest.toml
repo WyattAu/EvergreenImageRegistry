@@ -6,7 +6,7 @@ description = "Evergreen hardened Promtail - log collection agent for Grafana Lo
 vendor = "Grafana Labs"
 source = "https://github.com/grafana/loki"
 license = "AGPL-3.0"
-tier = "1"
+tier = "critical"
 
 [build]
 base = "scratch"
@@ -31,5 +31,5 @@ expose = [9080, 3100, 9101]
 "evergreen.base.image" = "scratch"
 "evergreen.health.type" = "exec"
 "evergreen.image.category" = "logging"
-"evergreen.image.tier" = "1"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"

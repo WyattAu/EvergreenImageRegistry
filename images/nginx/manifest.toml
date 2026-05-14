@@ -5,7 +5,7 @@ description = "Nginx - HTTP and reverse proxy server"
 vendor = "Nginx Inc"
 source = "https://github.com/nginx/nginx"
 license = "BSD-2-Clause"
-tier = "1"
+tier = "critical"
 upstream_version = "1.27.1"
 
 [build]
@@ -46,5 +46,5 @@ expose = [80, 443, 9101]
 "evergreen.hft.xdp-notes" = "Requires custom nginx module or eBPF loader"
 "evergreen.image.category" = "networking"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "1"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"

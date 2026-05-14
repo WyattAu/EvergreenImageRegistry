@@ -5,7 +5,7 @@ description = "ownCloud Infinite Scale - next-gen file sync and share platform"
 vendor = "ownCloud"
 source = "https://github.com/owncloud/ocis"
 license = "Apache-2.0"
-tier = "2"
+tier = "critical"
 upstream_version = "7.1.4"
 
 [build]
@@ -38,5 +38,5 @@ expose = [9200, 9101]
 "evergreen.hft.startup-timeout" = "30000ms"
 "evergreen.image.category" = "file-management"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "2"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"

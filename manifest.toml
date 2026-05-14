@@ -1,0 +1,101 @@
+# =============================================================================
+# EVERGREEN IMAGE REGISTRY - BUILD MANIFEST
+# =============================================================================
+# Top-level manifest defining build tiers, schedules, and global config.
+#
+# Tier semantics:
+#   critical  - Production images for internal infrastructure. Every push
+#               that touches these images triggers an immediate build.
+#               Nightly rebuild mandatory. Signed, multi-arch, SBOM.
+#   standard  - Community and multi-company images. Built on push if changed.
+#               Weekly rebuild. Multi-arch, SBOM.
+#   community - Contributed images. Built on push if changed. Monthly rebuild.
+#               amd64 only, SBOM.
+#   experimental - Unstable or WIP images. Manual/dispatch only. No signing.
+#
+# Image tier assignment:
+#   Each image's tier is declared in images/<name>/manifest.toml under
+#   [metadata] tier = "critical|standard|community|experimental".
+#   If absent, defaults to "standard".
+#
+# Legacy tier values ("1", "2", "3") are mapped as follows:
+#   "1" -> "critical", "2" -> "standard", "3" -> "community"
+# =============================================================================
+
+[registry]
+name = "ghcr.io/wyattau/evergreenimageregistry"
+default_platforms = ["linux/amd64", "linux/arm64"]
+
+[build]
+batch_size = 50
+per_image_timeout_seconds = 900
+batch_timeout_minutes = 360
+max_parallel_batches = 5
+builder_recreate_interval = 5
+push_retry_delay_seconds = 2
+builder_image = "moby/buildkit:v0.12.0"
+
+[build.cache]
+type = "gha"
+mode = "max"
+compression = "zstd"
+
+[build.size_limit]
+scratch_mb = 50
+distroless_mb = 50
+wolfi_mb = 200
+debian_slim_mb = 200
+
+[tier.critical]
+description = "Production images for internal HFT infrastructure"
+schedule = "weekly"
+sign = true
+sbom = true
+multiarch = true
+provenance = true
+push_on_pr = false
+
+[tier.standard]
+description = "Community and multi-company images"
+schedule = "weekly"
+sign = false
+sbom = true
+multiarch = true
+provenance = false
+push_on_pr = false
+
+[tier.community]
+description = "Contributed images, lower priority"
+schedule = "monthly"
+sign = false
+sbom = true
+multiarch = false
+provenance = false
+push_on_pr = false
+
+[tier.experimental]
+description = "Unstable or work-in-progress images"
+schedule = "manual"
+sign = false
+sbom = false
+multiarch = false
+provenance = false
+push_on_pr = false
+
+[nightly]
+cron = "0 3 * * *"  # 03:00 UTC daily
+# Tier build order: critical first, then standard, then community
+# Experimental only builds on manual dispatch
+retry_failed = true
+max_retries = 2
+
+[on_push]
+# Only build images whose files changed in the commit
+# Always include critical images if any of their deps changed
+path_filter = "images/"
+max_images_per_run = 200  # safety limit
+
+[legacy_tier_map]
+"1" = "critical"
+"2" = "standard"
+"3" = "community"

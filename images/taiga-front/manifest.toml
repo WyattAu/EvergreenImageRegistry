@@ -2,6 +2,7 @@
 name = "taiga-front"
 version = "6.8.2"
 description = "taiga-front container image"
+tier = "critical"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -32,6 +33,5 @@ expose = [80, 443, 9101]
 "evergreen.hft.startup-timeout" = "30000ms"
 "evergreen.image.category" = "project-management"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "2"
+"evergreen.image.tier" = "critical"
 "evergreen.metrics.native" = "ztunnel"
-

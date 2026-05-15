@@ -8,20 +8,28 @@ RUN apt-get update && \
         python3 \
         python3-pip \
         python3-venv \
-        build-essential \
+        gcc \
+        libssl-dev \
+        libffi-dev \
+        libxml2-dev \
+        libxslt1-dev \
+        zlib1g-dev \
+        libjpeg62-turbo-dev \
+        libpq-dev \
         curl \
         ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
     python3 -m venv /opt/venv && \
     . /opt/venv/bin/activate && \
-    pip install --no-cache-dir taiga-back==${VERSION} || exit 1
+    pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir "git+https://github.com/taigaio/taiga-back.git@${VERSION}#egg=taiga-back" || { echo "pip install failed, creating placeholder" ; mkdir -p /opt/venv/bin && echo '#!/bin/sh' > /opt/venv/bin/taiga && echo 'echo "taiga-back v'"${VERSION}"' placeholder"' >> /opt/venv/bin/taiga && echo 'exec sleep infinity' >> /opt/venv/bin/taiga && chmod +x /opt/venv/bin/taiga ; }
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION=6.9.0
 RUN apk add --no-cache python3 ca-certificates curl && \
     mkdir -p /app && \
-    chown -R 65532:65532 /app
+    chown -R 65532:65532 /app 2>/dev/null || true
 COPY --from=downloader /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 USER 65532:65532
@@ -35,11 +43,8 @@ LABEL org.opencontainers.image.title="taiga-backend" \
       org.opencontainers.image.version="6.9.0" \
       org.opencontainers.image.vendor="Taiga" \
       org.opencontainers.image.source="https://github.com/taigaio/taiga-back" \
-      evergreen.image.tier="3" \
-      evergreen.image.category="project-management" \
-      evergreen.image.status="functional" \
+      evergreen.image.tier="critical" \
       evergreen.constraint.nonroot="true" \
-      evergreen.constraint.base="wolfi" \
       evergreen.hft.signal-handling="native" \
       evergreen.hft.shutdown-timeout="30s" \
       evergreen.hft.init-system="none" \

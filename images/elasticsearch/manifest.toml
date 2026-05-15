@@ -5,7 +5,7 @@ description = "Elasticsearch - distributed search and analytics engine"
 vendor = "Elastic"
 source = "https://github.com/elastic/elasticsearch"
 license = "Elastic-2.0"
-tier = "1"
+tier = "critical"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -31,4 +31,3 @@ expose = [9200, 9101]
 "evergreen.health.type" = "http"
 "evergreen.image.tier" = "2"
 "evergreen.metrics.native" = "true"
-

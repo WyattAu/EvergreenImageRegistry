@@ -9,9 +9,7 @@ ARG VERSION=0.1.0
 ARG TARGETARCH
 ARG BUILD_DATE
 
-
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-ARG GITHUB_TOKEN
 RUN apk add --no-cache ca-certificates curl && \
     pip install --no-cache-dir --break-system-packages open-gpts 2>/dev/null || \
     pip install --no-cache-dir open-gpts || true && \

@@ -3,7 +3,6 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=RELEASE.2025-04-08T16-46-15Z
-ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://dl.min.io/client/mc/release/linux-${TARGETARCH}/mc" -o /mc && chmod +x /mc ; test -f /mc || { echo '#!/bin/sh' > /mc && echo 'echo "mc v${VERSION} ready"' >> /mc && echo 'exec sleep infinity' >> /mc && chmod +x /mc; } || true && \
     echo "01f866e9c5f9b87c2b09116fa5d7c06695b106242d829a8bb32990c00312e891  /mc" | sha256sum -c || true || true

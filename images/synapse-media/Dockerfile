@@ -7,9 +7,7 @@ ARG VERSION=1.98.0
 ARG TARGETARCH
 ARG BUILD_DATE
 
-
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-ARG GITHUB_TOKEN
 ARG VERSION=1.98.0
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -25,7 +23,6 @@ RUN apt-get update && \
     python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:${PATH}"
 RUN pip install --no-cache-dir "matrix-synapse[all]==${VERSION}" || true
-
 
 ENV PATH="/opt/venv/bin:${PATH}"
 RUN mkdir -p /data /var/log/synapse /var/cache/synapse && chown -R 65532:65532 /data /var/log/synapse /var/cache/synapse 2>/dev/null || true

@@ -9,13 +9,11 @@ ARG VERSION=5.8.3
 ARG TARGETARCH
 ARG BUILD_DATE
 FROM python@sha256:46cb7cc2877e60fbd5e21a9ae6115c30ace7a077b9f8772da879e4590c18c2e3 AS builder
-ARG GITHUB_TOKEN
 ARG VERSION=5.8.3
 RUN pip install --no-cache-dir --prefix=/install \
     elasticsearch-curator=="${VERSION}" || true && \
     find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
-
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 

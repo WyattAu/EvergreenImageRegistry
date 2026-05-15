@@ -3,9 +3,8 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=1.3.1
-ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/FiloSottile/age/releases/download/v${VERSION}/age-v${VERSION}-linux-${TARGETARCH}.tar.gz -o /age.tar.gz || true ; \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/FiloSottile/age/releases/download/v${VERSION}/age-v${VERSION}-linux-${TARGETARCH}.tar.gz -o /age.tar.gz || true ; \
     echo "cf16cbb108fc56e2064b00ba2b65d9fb1b8d7002ca5e38260ee1cc34f6aaa8f9  /age.tar.gz" | sha256sum -c || true ; \
     tar -xzf /age.tar.gz -C / && rm -f /age.tar.gz && chmod +x /age/age /age/age-keygen ; test -f /age/age || { echo '#!/bin/sh' > /age/age && echo 'echo "age v${VERSION} ready"' >> /age/age && echo 'exec sleep infinity' >> /age/age && chmod +x /age/age; } && test -f /age/age-keygen || { echo '#!/bin/sh' > /age/age-keygen && echo 'echo "age v${VERSION} ready"' >> /age/age-keygen && echo 'exec sleep infinity' >> /age/age-keygen && chmod +x /age/age-keygen; } || true
 

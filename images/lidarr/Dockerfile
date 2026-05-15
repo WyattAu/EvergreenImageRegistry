@@ -11,10 +11,8 @@ ARG BUILD_DATE
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=3.1.0.4875
-ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
-    "https://github.com/Lidarr/Lidarr/releases/download/v${VERSION}/Lidarr.master.${VERSION}.linux-core-x64.tar.gz" -o /tmp/Lidarr.tar.gz && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Lidarr/Lidarr/releases/download/v${VERSION}/Lidarr.master.${VERSION}.linux-core-x64.tar.gz" -o /tmp/Lidarr.tar.gz && \
     mkdir -p /app && \
     tar -xzf /tmp/Lidarr.tar.gz -C /app && rm -f /tmp/Lidarr.tar.gz && \
     chmod +x /app/Lidarr

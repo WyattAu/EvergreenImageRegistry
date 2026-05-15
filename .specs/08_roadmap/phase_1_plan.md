@@ -1,19 +1,35 @@
 # =============================================================================
+
 # PHASE 1: SUPPLY CHAIN INTEGRITY - Detailed Execution Plan
+
 # =============================================================================
+
 # Version: 1.0.0
+
 # Status: PENDING
+
 # Author: Nexus (Principal Systems Architect)
+
 # Date: 2026-04-19
+
 #
+
 # ABSTRACT: Supply chain security is the #1 risk for military contractors and
+
 # evergreen infrastructure operators. This phase implements cryptographic
+
 # verification of all downloaded artifacts (SHA256 checksums for ~107 images
+
 # using curl-based multi-stage builds), enforces Cosign keyless signing with
+
 # Fulcio/Rekor transparency logs, generates SLSA v3 provenance attestations,
+
 # produces signed SBOMs in SPDX format, creates a hermetic CI build
+
 # environment, and removes the dangerous `--ignore-unfixed` flag from Trivy
+
 # CVE scanning. Phase 0 must pass all quality gates before this phase begins.
+
 # =============================================================================
 
 ## Table of Contents
@@ -41,43 +57,44 @@ RUN curl -fsSL "https://example.com/release/v1.0/binary.tar.gz" -o /binary.tar.g
     tar -xzf /binary.tar.gz -C / && rm /binary.tar.gz && chmod +x /binary
 ```
 
-**Critical gap:** No checksum verification after download. An attacker who compromises the download URL, performs a MITM attack, or compromises the CDN can inject malicious binaries into every image.
+**Critical gap:** No checksum verification after download. An attacker who compromises the download URL, performs a MITM
+attack, or compromises the CDN can inject malicious binaries into every image.
 
 ### 1.2 Image Categories Requiring Checksum Verification
 
-| Category | Count | Download Method | Checksum Needed | Source of Truth |
-|----------|-------|----------------|-----------------|-----------------|
-| Scratch (curl download) | ~85 | `curl -fsSL` from GitHub releases / project sites | SHA256 | Upstream release page + GPG sig |
-| Distroless (curl download) | ~7 | `curl -fsSL` from GitHub releases | SHA256 | Upstream release page |
-| Debian-slim (apt install) | ~87 | `apt-get install` | N/A (apt verifies) | Debian package signing |
-| Wolfi | ~13 | `apk add` from Chainguard | N/A (apk verifies) | Chainguard signing |
-| Other/Official | ~12 | Mixed | Varies | Per-image |
-| **Total needing checksums** | **~107** | | | |
+| Category                    | Count    | Download Method                                   | Checksum Needed    | Source of Truth                 |
+| --------------------------- | -------- | ------------------------------------------------- | ------------------ | ------------------------------- |
+| Scratch (curl download)     | ~85      | `curl -fsSL` from GitHub releases / project sites | SHA256             | Upstream release page + GPG sig |
+| Distroless (curl download)  | ~7       | `curl -fsSL` from GitHub releases                 | SHA256             | Upstream release page           |
+| Debian-slim (apt install)   | ~87      | `apt-get install`                                 | N/A (apt verifies) | Debian package signing          |
+| Wolfi                       | ~13      | `apk add` from Chainguard                         | N/A (apk verifies) | Chainguard signing              |
+| Other/Official              | ~12      | Mixed                                             | Varies             | Per-image                       |
+| **Total needing checksums** | **~107** |                                                   |                    |                                 |
 
 ### 1.3 Current CI Pipeline Security Posture
 
-| Security Feature | Status | Location |
-|-----------------|--------|----------|
-| Trivy CVE scanning | PARTIAL | `build.yml:438` — uses `--ignore-unfixed=false` (good) but no `.trivyignore` management |
-| Grype CVE scanning | PARTIAL | `build.yml:448` — secondary scan, no unfixed filtering |
-| Cosign signing | PARTIAL | `build.yml:506-530` — key-based OR keyless, but no Fulcio/Rekor documented |
-| SBOM generation | PARTIAL | `build.yml:532-561` — syft generates SPDX, cosign attests |
-| SLSA provenance | PARTIAL | `build.yml:270` — `--attest "type=provenance,mode=max"` on push |
-| TruffleHog scanning | WEAK | `build.yml:184-189` — `continue-on-error: true`, scans full repo only |
-| Secret scanning | MISSING | No pre-commit hook, no per-Dockerfile scan |
-| Hermetic build | MISSING | CI runner uses ad-hoc tool installation |
-| Checksum verification | MISSING | Zero Dockerfiles verify downloaded artifacts |
-| `.trivyignore` | MISSING | No exception management for known CVEs |
+| Security Feature      | Status  | Location                                                                                |
+| --------------------- | ------- | --------------------------------------------------------------------------------------- |
+| Trivy CVE scanning    | PARTIAL | `build.yml:438` — uses `--ignore-unfixed=false` (good) but no `.trivyignore` management |
+| Grype CVE scanning    | PARTIAL | `build.yml:448` — secondary scan, no unfixed filtering                                  |
+| Cosign signing        | PARTIAL | `build.yml:506-530` — key-based OR keyless, but no Fulcio/Rekor documented              |
+| SBOM generation       | PARTIAL | `build.yml:532-561` — syft generates SPDX, cosign attests                               |
+| SLSA provenance       | PARTIAL | `build.yml:270` — `--attest "type=provenance,mode=max"` on push                         |
+| TruffleHog scanning   | WEAK    | `build.yml:184-189` — `continue-on-error: true`, scans full repo only                   |
+| Secret scanning       | MISSING | No pre-commit hook, no per-Dockerfile scan                                              |
+| Hermetic build        | MISSING | CI runner uses ad-hoc tool installation                                                 |
+| Checksum verification | MISSING | Zero Dockerfiles verify downloaded artifacts                                            |
+| `.trivyignore`        | MISSING | No exception management for known CVEs                                                  |
 
 ### 1.4 Key Vulnerabilities
 
-| ID | Vulnerability | Impact | Images Affected |
-|----|--------------|--------|-----------------|
-| SC-001 | No checksum verification on downloads | CRITICAL — arbitrary code execution | ~107 |
-| SC-002 | TruffleHog `continue-on-error: true` | HIGH — secrets may pass undetected | All |
-| SC-003 | No hermetic CI environment | MEDIUM — build reproducibility risk | All |
-| SC-004 | No SLSA provenance verification in consumers | MEDIUM — supply chain trust gap | All |
-| SC-005 | No `.trivyignore` governance | LOW — no documented exception process | All |
+| ID     | Vulnerability                                | Impact                                | Images Affected |
+| ------ | -------------------------------------------- | ------------------------------------- | --------------- |
+| SC-001 | No checksum verification on downloads        | CRITICAL — arbitrary code execution   | ~107            |
+| SC-002 | TruffleHog `continue-on-error: true`         | HIGH — secrets may pass undetected    | All             |
+| SC-003 | No hermetic CI environment                   | MEDIUM — build reproducibility risk   | All             |
+| SC-004 | No SLSA provenance verification in consumers | MEDIUM — supply chain trust gap       | All             |
+| SC-005 | No `.trivyignore` governance                 | LOW — no documented exception process | All             |
 
 ---
 
@@ -110,21 +127,22 @@ Stream D: Trivy Hardening (T1.4.1) — Independent
 Stream E: Hermetic CI (T1.4.2) — Independent
 ```
 
-Streams B, C, D, and E can all execute in parallel. Stream A depends on Phase 0 completion (specifically T0.3.1 multi-stage conversion).
+Streams B, C, D, and E can all execute in parallel. Stream A depends on Phase 0 completion (specifically T0.3.1
+multi-stage conversion).
 
 ### Effort Estimate Summary
 
-| Task | Estimated Hours | Parallel? |
-|------|----------------|-----------|
-| T1.1.1 | 16 | No (sequential per image) |
-| T1.1.2 | 8 | After T1.1.1 |
-| T1.2.1 | 4 | Yes |
-| T1.2.2 | 4 | After T1.2.1 |
-| T1.3.1 | 2 | Yes |
-| T1.3.2 | 2 | After T1.2.1 |
-| T1.4.1 | 2 | Yes |
-| T1.4.2 | 8 | Yes |
-| **Total** | **46** | **~30 hours wall-clock** |
+| Task      | Estimated Hours | Parallel?                 |
+| --------- | --------------- | ------------------------- |
+| T1.1.1    | 16              | No (sequential per image) |
+| T1.1.2    | 8               | After T1.1.1              |
+| T1.2.1    | 4               | Yes                       |
+| T1.2.2    | 4               | After T1.2.1              |
+| T1.3.1    | 2               | Yes                       |
+| T1.3.2    | 2               | After T1.2.1              |
+| T1.4.1    | 2               | Yes                       |
+| T1.4.2    | 8               | Yes                       |
+| **Total** | **46**          | **~30 hours wall-clock**  |
 
 ---
 
@@ -134,14 +152,16 @@ Streams B, C, D, and E can all execute in parallel. Stream A depends on Phase 0 
 
 #### Problem Analysis
 
-Currently, 107 images download binaries via `curl -fsSL` with zero integrity verification. The download pattern in every Dockerfile `downloader` stage is:
+Currently, 107 images download binaries via `curl -fsSL` with zero integrity verification. The download pattern in every
+Dockerfile `downloader` stage is:
 
 ```dockerfile
 RUN curl -fsSL "<URL>" -o /artifact.tar.gz && \
     tar -xzf /artifact.tar.gz -C / && rm /artifact.tar.gz && chmod +x /binary
 ```
 
-If the URL serves compromised content (MITM, CDN breach, GitHub release hijack), the binary is blindly extracted and copied into the final image. This is the highest-severity supply chain risk.
+If the URL serves compromised content (MITM, CDN breach, GitHub release hijack), the binary is blindly extracted and
+copied into the final image. This is the highest-severity supply chain risk.
 
 #### Solution: Per-Image CHECKSUMS File
 
@@ -169,38 +189,40 @@ e6a57c7b2e5e1b716b7e4e6781c5c2b8b7e6e5c5b4a3a2b1e0d9c8b7a6e5f4  nginx-1.27.1.tar
 
 #### Checksum Acquisition Strategy
 
-| Source Type | Acquisition Method | Trust Level |
-|-------------|-------------------|-------------|
-| GitHub Releases | Download SHA256SUMS file from release assets | HIGH (signed by GitHub) |
-| Project website | Scrape checksum from official download page | MEDIUM (verify with GPG if available) |
-| Upstream provides `.sha256` | Download companion hash file | HIGH |
-| No upstream checksum | Compute from verified binary, document risk | LOW (ADR required) |
+| Source Type                 | Acquisition Method                           | Trust Level                           |
+| --------------------------- | -------------------------------------------- | ------------------------------------- |
+| GitHub Releases             | Download SHA256SUMS file from release assets | HIGH (signed by GitHub)               |
+| Project website             | Scrape checksum from official download page  | MEDIUM (verify with GPG if available) |
+| Upstream provides `.sha256` | Download companion hash file                 | HIGH                                  |
+| No upstream checksum        | Compute from verified binary, document risk  | LOW (ADR required)                    |
 
 #### Implementation Steps
 
 1. **Inventory all images with curl downloads** (script):
+
    ```bash
    grep -rl 'curl -fsSL' images/*/Dockerfile | \
      sed 's|images/||' | sed 's|/Dockerfile||' | sort > /tmp/images-with-curl.txt
    ```
 
 2. **Create checksum extraction script** (`scripts/generate_checksums.sh`):
+
    ```bash
    #!/bin/bash
    # For each image, extract download URL from Dockerfile,
    # fetch upstream checksum, write CHECKSUMS file
    IMAGE="$1"
    DOCKERFILE="images/${IMAGE}/Dockerfile"
-   
+
    # Extract URL from curl command
    URL=$(grep -oP 'curl -fsSL "\K[^"]+' "$DOCKERFILE")
-   
+
    # Extract filename from URL
    FILENAME=$(basename "$URL")
-   
+
    # Try to fetch upstream checksum
    # ... (logic varies by source)
-   
+
    # Write CHECKSUMS file
    cat > "images/${IMAGE}/CHECKSUMS" << EOF
    # CHECKSUMS for ${IMAGE}
@@ -213,11 +235,13 @@ e6a57c7b2e5e1b716b7e4e6781c5c2b8b7e6e5c5b4a3a2b1e0d9c8b7a6e5f4  nginx-1.27.1.tar
    ```
 
 3. **Handle multi-binary downloads**: Some Dockerfiles have fallback patterns:
+
    ```dockerfile
    curl -fsSL "...tar.gz" -o /binary.tar.gz && \
        tar -xzf /binary.tar.gz ... || \
    curl -fsSL "...binary" -o /binary
    ```
+
    Each URL needs its own checksum entry.
 
 4. **Validate all checksums**: After generating, verify each checksum by downloading the artifact and comparing.
@@ -238,7 +262,8 @@ e6a57c7b2e5e1b716b7e4e6781c5c2b8b7e6e5c5b4a3a2b1e0d9c8b7a6e5f4  nginx-1.27.1.tar
 
 #### Problem Analysis
 
-Having CHECKSUMS files is useless if Dockerfiles don't use them. Every `curl` download must be followed by `sha256sum` verification that fails the build on mismatch.
+Having CHECKSUMS files is useless if Dockerfiles don't use them. Every `curl` download must be followed by `sha256sum`
+verification that fails the build on mismatch.
 
 #### Solution: Inline Checksum Verification
 
@@ -266,7 +291,8 @@ RUN curl -fsSL "...tar.gz" -o /binary.tar.gz && \
 # Fallback removed — build fails if primary download fails checksum
 ```
 
-**Decision:** Remove the fallback pattern entirely. If the primary download fails checksum verification, the build MUST fail. Silent fallback to a different URL is itself a security risk.
+**Decision:** Remove the fallback pattern entirely. If the primary download fails checksum verification, the build MUST
+fail. Silent fallback to a different URL is itself a security risk.
 
 #### Implementation Steps
 
@@ -277,7 +303,9 @@ RUN curl -fsSL "...tar.gz" -o /binary.tar.gz && \
    - Insert `sha256sum -c` after the `curl` line
    - Remove fallback `|| curl ...` patterns
 
-2. **Handle debian-slim apt images**: These use `apt-get install` which has its own GPG verification. Add a comment documenting this:
+2. **Handle debian-slim apt images**: These use `apt-get install` which has its own GPG verification. Add a comment
+   documenting this:
+
    ```dockerfile
    # NOTE: apt-get packages are verified by Debian GPG signing
    # No additional checksum verification needed for apt packages
@@ -311,7 +339,8 @@ RUN curl -fsSL "...tar.gz" -o /binary.tar.gz && \
 
 #### Problem Analysis
 
-Current `build.yml:506-530` has signing logic but it falls back to key-based signing when `COSIGN_PRIVATE_KEY` is not set. Keyless signing using OIDC tokens from GitHub Actions provides stronger security properties:
+Current `build.yml:506-530` has signing logic but it falls back to key-based signing when `COSIGN_PRIVATE_KEY` is not
+set. Keyless signing using OIDC tokens from GitHub Actions provides stronger security properties:
 
 - No long-lived private keys to manage or rotate
 - Signatures bound to GitHub identity (repository + ref)
@@ -321,6 +350,7 @@ Current `build.yml:506-530` has signing logic but it falls back to key-based sig
 #### Solution: Enforce Keyless Signing
 
 **Current state in `build.yml`:**
+
 ```yaml
 - name: Sign images with Cosign
   env:
@@ -335,6 +365,7 @@ Current `build.yml:506-530` has signing logic but it falls back to key-based sig
 ```
 
 **Target state:**
+
 ```yaml
 - name: Sign images with Cosign (keyless)
   run: |
@@ -344,13 +375,16 @@ Current `build.yml:506-530` has signing logic but it falls back to key-based sig
       "${ref}"
 ```
 
-Keyless signing uses the GitHub Actions OIDC token (already available via `id-token: write` permission) to get a certificate from Fulcio, and records the signature in Rekor's transparency log.
+Keyless signing uses the GitHub Actions OIDC token (already available via `id-token: write` permission) to get a
+certificate from Fulcio, and records the signature in Rekor's transparency log.
 
 #### Implementation Steps
 
-1. **Remove key-based signing path**: Delete the `COSIGN_PRIVATE_KEY` / `COSIGN_PASSWORD` environment variables and the conditional branch.
+1. **Remove key-based signing path**: Delete the `COSIGN_PRIVATE_KEY` / `COSIGN_PASSWORD` environment variables and the
+   conditional branch.
 
 2. **Add identity annotations**: Bind signatures to the repository identity:
+
    ```bash
    cosign sign --yes \
      --certificate-identity="${{ github.server_url }}/${{ github.repository }}" \
@@ -359,6 +393,7 @@ Keyless signing uses the GitHub Actions OIDC token (already available via `id-to
    ```
 
 3. **Update SBOM attestation** (T1.3.2 will also use keyless):
+
    ```bash
    cosign attest --yes \
      --certificate-identity="..." \
@@ -367,6 +402,7 @@ Keyless signing uses the GitHub Actions OIDC token (already available via `id-to
    ```
 
 4. **Create consumer verification documentation** (`docs/signing-verification.md`):
+
    ```bash
    # Verify image was signed by this repository
    cosign verify \
@@ -391,15 +427,16 @@ Keyless signing uses the GitHub Actions OIDC token (already available via `id-to
 
 #### Problem Analysis
 
-The current build.yml already includes `--attest "type=provenance,mode=max"` on the push step (`build.yml:270`). This uses Docker BuildKit's built-in provenance generation. However, this provenance:
+The current build.yml already includes `--attest "type=provenance,mode=max"` on the push step (`build.yml:270`). This
+uses Docker BuildKit's built-in provenance generation. However, this provenance:
 
 1. Is generated by Docker Buildx, not by `slsa-github-generator`
 2. May not meet SLSA v3 requirements (specifically, the builder identity may not be verifiable)
 3. Is attached during push but not independently verifiable
 
 SLSA v3 requires:
-- **Source**: Identified by URI and digest
--. **Builder**: Identified by trusted builder identity
+
+- **Source**: Identified by URI and digest -. **Builder**: Identified by trusted builder identity
 - **Config**: Build configuration is reproducible
 - **Parameters**: All build inputs are recorded
 
@@ -408,6 +445,7 @@ SLSA v3 requires:
 Replace the BuildKit provenance with `slsa-github-generator` for stricter SLSA v3 compliance.
 
 **Add to `build.yml` after the verify stage:**
+
 ```yaml
 provenance:
   name: Generate SLSA Provenance
@@ -423,7 +461,8 @@ provenance:
     packages: write
 ```
 
-**Alternatively** (simpler approach): Use `cosign attest` with provenance predicate generated by `slsa-github-generator`:
+**Alternatively** (simpler approach): Use `cosign attest` with provenance predicate generated by
+`slsa-github-generator`:
 
 ```yaml
 - name: Generate SLSA provenance
@@ -439,6 +478,7 @@ provenance:
 2. **Integrate slsa-github-generator**: Add provenance generation step to CI pipeline after build+verify stages.
 
 3. **Verify provenance** with `slsa-verifier`:
+
    ```bash
    slsa-verifier verify-image \
      --source-uri github.com/WyattAu/EvergreenImageRegistry \
@@ -463,15 +503,17 @@ provenance:
 #### Problem Analysis
 
 Current state (`build.yml:184-189`):
+
 ```yaml
 - name: TruffleHog secret scanning
   uses: trufflehog/trufflehog@main
-  continue-on-error: true    # DANGEROUS: secrets pass silently
+  continue-on-error: true # DANGEROUS: secrets pass silently
   with:
     extra_args: --only-verified
 ```
 
 Problems:
+
 1. `continue-on-error: true` means secrets can pass undetected
 2. `uses: trufflehog/trufflehog@main` is unpinned (could be compromised)
 3. Scans the entire repo, not specifically Dockerfiles and build context
@@ -480,15 +522,17 @@ Problems:
 #### Solution: Hardened TruffleHog Integration
 
 **Updated CI step:**
+
 ```yaml
 - name: TruffleHog secret scanning (Dockerfiles)
-  uses: trufflehog/trufflehog@v3.82.0    # PINNED VERSION
-  continue-on-error: false                # BLOCKING
+  uses: trufflehog/trufflehog@v3.82.0 # PINNED VERSION
+  continue-on-error: false # BLOCKING
   with:
     extra_args: --only-verified --no-update images/
 ```
 
 **Pre-commit hook** (`.pre-commit-config.yaml`):
+
 ```yaml
 repos:
   - repo: https://github.com/trufflesecurity/trufflehog
@@ -499,6 +543,7 @@ repos:
 ```
 
 **`.trufflehogignore`** (if needed):
+
 ```
 # Only add entries with ADR justification
 # Format: file or pattern
@@ -530,11 +575,14 @@ repos:
 
 #### Problem Analysis
 
-Current SBOM generation in `build.yml:532-561` uses `syft` to generate SPDX JSON and `cosign attest` to attach it. However, it still uses the key-based signing path. This task aligns the SBOM attestation with the keyless signing flow from T1.2.1.
+Current SBOM generation in `build.yml:532-561` uses `syft` to generate SPDX JSON and `cosign attest` to attach it.
+However, it still uses the key-based signing path. This task aligns the SBOM attestation with the keyless signing flow
+from T1.2.1.
 
 #### Solution: Keyless SBOM Attestation
 
 **Updated step:**
+
 ```yaml
 - name: Generate and attest SBOMs (keyless)
   run: |
@@ -582,15 +630,19 @@ Current SBOM generation in `build.yml:532-561` uses `syft` to generate SPDX JSON
 
 #### Problem Analysis
 
-The current `build.yml:438` already has `--ignore-unfixed=false`, which is correct. However, there is no `.trivyignore` file to manage legitimate exceptions. When a CRITICAL CVE has no fix, the build will fail with no way to document and manage the exception.
+The current `build.yml:438` already has `--ignore-unfixed=false`, which is correct. However, there is no `.trivyignore`
+file to manage legitimate exceptions. When a CRITICAL CVE has no fix, the build will fail with no way to document and
+manage the exception.
 
 This is a governance problem: without an exception process, the pipeline will either:
+
 - Fail permanently on unfixable CVEs (blocking all development)
 - Force developers to disable scanning entirely (worst outcome)
 
 #### Solution: Implement CVE Exception Governance
 
 1. **Create `.trivyignore` with documented exceptions**:
+
    ```
    # .trivyignore
    # Each entry must have a corresponding ADR justification
@@ -607,6 +659,7 @@ This is a governance problem: without an exception process, the pipeline will ei
    - Review date and owner
 
 3. **Add automated exception expiry**: Exceptions expire after 90 days, forcing re-evaluation:
+
    ```yaml
    - name: Check .trivyignore expiry
      run: |
@@ -652,6 +705,7 @@ This is a governance problem: without an exception process, the pipeline will ei
 #### Problem Analysis
 
 Current CI installs tools ad-hoc in each step:
+
 ```yaml
 - name: Install hadolint
   run: curl -sSfL ... -o /usr/local/bin/hadolint && chmod +x
@@ -662,6 +716,7 @@ Current CI installs tools ad-hoc in each step:
 ```
 
 Problems:
+
 1. Tool versions change between runs (non-reproducible)
 2. Download URLs could be compromised
 3. No isolation between CI steps
@@ -670,6 +725,7 @@ Problems:
 #### Solution: Pinned Hermetic CI Container
 
 Create `Dockerfile.ci` that:
+
 - Pins all tool versions
 - Contains no secrets
 - Has minimal attack surface
@@ -716,6 +772,7 @@ RUN curl -sSfL https://github.com/wagoodman/dive/releases/download/v${DIVE_VERSI
 #### CI Integration
 
 Update `build.yml` to use the hermetic container:
+
 ```yaml
 jobs:
   lint:
@@ -753,83 +810,87 @@ jobs:
 
 ### Gate QG-1.1: All Downloads Verified by SHA256
 
-| Criterion | Measurement | Threshold |
-|-----------|-------------|-----------|
-| Images with curl downloads having CHECKSUMS files | CHECKSUMS files / curl-download images | 100% |
-| Dockerfiles with sha256sum verification | Verified / curl-download images | 100% |
-| Build failure on checksum mismatch | Inject bad hash, verify build fails | Always fails |
-| Error message quality | Check for expected vs actual hash in output | Present |
+| Criterion                                         | Measurement                                 | Threshold    |
+| ------------------------------------------------- | ------------------------------------------- | ------------ |
+| Images with curl downloads having CHECKSUMS files | CHECKSUMS files / curl-download images      | 100%         |
+| Dockerfiles with sha256sum verification           | Verified / curl-download images             | 100%         |
+| Build failure on checksum mismatch                | Inject bad hash, verify build fails         | Always fails |
+| Error message quality                             | Check for expected vs actual hash in output | Present      |
 
 ### Gate QG-1.2: Images Signed with Keyless Cosign
 
-| Criterion | Measurement | Threshold |
-|-----------|-------------|-----------|
-| Signature present | `cosign verify` succeeds | 100% of pushed images |
-| Certificate identity matches | Identity check passes | 100% |
-| Rekor transparency log entry | `rekor-cli search` finds entry | 100% |
-| No key-based fallback | No `COSIGN_PRIVATE_KEY` references | 0 references |
+| Criterion                    | Measurement                        | Threshold             |
+| ---------------------------- | ---------------------------------- | --------------------- |
+| Signature present            | `cosign verify` succeeds           | 100% of pushed images |
+| Certificate identity matches | Identity check passes              | 100%                  |
+| Rekor transparency log entry | `rekor-cli search` finds entry     | 100%                  |
+| No key-based fallback        | No `COSIGN_PRIVATE_KEY` references | 0 references          |
 
 ### Gate QG-1.3: SLSA v3 Provenance Generated
 
-| Criterion | Measurement | Threshold |
-|-----------|-------------|-----------|
-| Provenance attestation present | `cosign verify-attestation` succeeds | 100% |
-| Source URI correct | Source matches `github.com/WyattAu/EvergreenImageRegistry` | 100% |
-| `slsa-verifier` validation | Verification passes | 100% |
+| Criterion                      | Measurement                                                | Threshold |
+| ------------------------------ | ---------------------------------------------------------- | --------- |
+| Provenance attestation present | `cosign verify-attestation` succeeds                       | 100%      |
+| Source URI correct             | Source matches `github.com/WyattAu/EvergreenImageRegistry` | 100%      |
+| `slsa-verifier` validation     | Verification passes                                        | 100%      |
 
 ### Gate QG-1.4: No Secrets in Any Dockerfile
 
-| Criterion | Measurement | Threshold |
-|-----------|-------------|-----------|
-| TruffleHog scan clean | Exit code 0 | Always |
-| TruffleHog blocking | `continue-on-error` is false | Always |
-| Pre-commit hook active | Hook runs on commit | Confirmed |
+| Criterion              | Measurement                  | Threshold |
+| ---------------------- | ---------------------------- | --------- |
+| TruffleHog scan clean  | Exit code 0                  | Always    |
+| TruffleHog blocking    | `continue-on-error` is false | Always    |
+| Pre-commit hook active | Hook runs on commit          | Confirmed |
 
 ### Gate QG-1.5: Trivy Scans All CVEs (No ignore-unfixed)
 
-| Criterion | Measurement | Threshold |
-|-----------|-------------|-----------|
-| `--ignore-unfixed=false` set | Grep check | Present |
-| `.trivyignore` governance | All entries have ADR references | 100% |
-| Exception expiry check | Script runs and reports | Active |
+| Criterion                    | Measurement                     | Threshold |
+| ---------------------------- | ------------------------------- | --------- |
+| `--ignore-unfixed=false` set | Grep check                      | Present   |
+| `.trivyignore` governance    | All entries have ADR references | 100%      |
+| Exception expiry check       | Script runs and reports         | Active    |
 
 ---
 
 ## 5. Risk Register
 
-| Risk | Probability | Impact | Mitigation | Owner | Related Task |
-|------|-------------|--------|------------|-------|-------------|
-| Upstream checksums unavailable for some binaries | MEDIUM | MEDIUM | Compute from verified source, document in ADR | Nexus | T1.1.1 |
-| Checksum verification breaks builds on legitimate updates | HIGH | MEDIUM | Automated checksum update script + clear documentation | Nexus | T1.1.2 |
-| Fulcio/Rekor OIDC token exchange fails | LOW | HIGH | Fallback to key-based signing with documented rotation procedure | Nexus | T1.2.1 |
-| TruffleHog false positives block legitimate builds | MEDIUM | MEDIUM | `.trufflehogignore` with justification, per-file exclusions | Nexus | T1.3.1 |
-| Trivy finds unfixable CRITICAL CVEs in base images | HIGH | HIGH | `.trivyignore` with ADR + compensating controls + base image refresh | Nexus | T1.4.1 |
-| Hermetic CI container becomes stale | MEDIUM | LOW | Dependabot for `Dockerfile.ci` ARGs, monthly review | Nexus | T1.4.2 |
-| GitHub OIDC issuer changes | LOW | CRITICAL | Monitor Sigstore announcements, version-pin all actions | Nexus | T1.2.1 |
+| Risk                                                      | Probability | Impact   | Mitigation                                                           | Owner | Related Task |
+| --------------------------------------------------------- | ----------- | -------- | -------------------------------------------------------------------- | ----- | ------------ |
+| Upstream checksums unavailable for some binaries          | MEDIUM      | MEDIUM   | Compute from verified source, document in ADR                        | Nexus | T1.1.1       |
+| Checksum verification breaks builds on legitimate updates | HIGH        | MEDIUM   | Automated checksum update script + clear documentation               | Nexus | T1.1.2       |
+| Fulcio/Rekor OIDC token exchange fails                    | LOW         | HIGH     | Fallback to key-based signing with documented rotation procedure     | Nexus | T1.2.1       |
+| TruffleHog false positives block legitimate builds        | MEDIUM      | MEDIUM   | `.trufflehogignore` with justification, per-file exclusions          | Nexus | T1.3.1       |
+| Trivy finds unfixable CRITICAL CVEs in base images        | HIGH        | HIGH     | `.trivyignore` with ADR + compensating controls + base image refresh | Nexus | T1.4.1       |
+| Hermetic CI container becomes stale                       | MEDIUM      | LOW      | Dependabot for `Dockerfile.ci` ARGs, monthly review                  | Nexus | T1.4.2       |
+| GitHub OIDC issuer changes                                | LOW         | CRITICAL | Monitor Sigstore announcements, version-pin all actions              | Nexus | T1.2.1       |
 
 ---
 
 ## 6. Rollback Procedures
 
 ### If T1.1.1/T1.1.2 (checksum verification) causes widespread build failures:
+
 1. Identify failing images and root cause (stale checksums, URL changes, etc.)
 2. If upstream URL changed: update CHECKSUMS file and Dockerfile ARG
 3. If upstream removed binary: file GitHub issue, temporarily revert to unchecked download with `# TODO: T1.1.2 pending`
 4. If too many failures (>20%): revert checksum enforcement to warning-only mode, fix in batches
 
 ### If T1.2.1 (keyless Cosign) fails:
+
 1. Revert to key-based signing with `COSIGN_PRIVATE_KEY` secret
 2. Generate a new key pair with `cosign generate-key-pair`
 3. Store public key as `cosign.pub` in repository root
 4. Document the key rotation in an ADR
 
 ### If T1.3.1 (TruffleHog blocking) has false positives:
+
 1. Add specific false positive to `.trufflehogignore`
 2. Document the false positive with justification
 3. Report upstream to TruffleHog if applicable
 4. Set `continue-on-error: true` ONLY for the specific step, not globally
 
 ### If T1.4.2 (hermetic CI) breaks the pipeline:
+
 1. Revert to ad-hoc tool installation
 2. Debug Dockerfile.ci in isolation
 3. Re-deploy after fixing
@@ -838,18 +899,18 @@ jobs:
 
 ## 7. Success Metrics
 
-| Metric | Current Value | Target Value | Measurement |
-|--------|--------------|--------------|-------------|
-| Images with checksum verification | 0 (0%) | 107 (100%) | Grep for `sha256sum -c` in Dockerfiles |
-| Images signed with keyless Cosign | 0 (0%) | 223 (100%) | `cosign verify` against registry |
-| SLSA v3 provenance | 0 (0%) | 223 (100%) | `slsa-verifier verify-image` |
-| SBOMs signed with keyless attestation | 0 (0%) | 223 (100%) | `cosign verify-attestation --type spdxjson` |
-| TruffleHog blocking | False (continue-on-error) | True | Check `build.yml` |
-| Trivy ignore-unfixed | Already false | Maintained | Grep check |
-| `.trivyignore` governance | Missing | All entries documented | Manual review |
-| Hermetic CI environment | Missing | Active | Check `build.yml` container directive |
-| CVE exception process | Missing | Documented | Check `docs/cve-exception-process.md` |
-| Supply chain attack surface | HIGH (no verification) | LOW (full verification) | Audit |
+| Metric                                | Current Value             | Target Value            | Measurement                                 |
+| ------------------------------------- | ------------------------- | ----------------------- | ------------------------------------------- |
+| Images with checksum verification     | 0 (0%)                    | 107 (100%)              | Grep for `sha256sum -c` in Dockerfiles      |
+| Images signed with keyless Cosign     | 0 (0%)                    | 223 (100%)              | `cosign verify` against registry            |
+| SLSA v3 provenance                    | 0 (0%)                    | 223 (100%)              | `slsa-verifier verify-image`                |
+| SBOMs signed with keyless attestation | 0 (0%)                    | 223 (100%)              | `cosign verify-attestation --type spdxjson` |
+| TruffleHog blocking                   | False (continue-on-error) | True                    | Check `build.yml`                           |
+| Trivy ignore-unfixed                  | Already false             | Maintained              | Grep check                                  |
+| `.trivyignore` governance             | Missing                   | All entries documented  | Manual review                               |
+| Hermetic CI environment               | Missing                   | Active                  | Check `build.yml` container directive       |
+| CVE exception process                 | Missing                   | Documented              | Check `docs/cve-exception-process.md`       |
+| Supply chain attack surface           | HIGH (no verification)    | LOW (full verification) | Audit                                       |
 
 ---
 

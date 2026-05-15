@@ -1,17 +1,31 @@
 # =============================================================================
+
 # PHASE 3: TEST COVERAGE & PROVABLE CORRECTNESS - Detailed Execution Plan
+
 # =============================================================================
+
 # Version: 1.0.0
+
 # Status: PENDING
+
 # Author: Nexus (Principal Systems Architect)
+
 # Date: 2026-04-19
+
 #
+
 # ABSTRACT: This phase dramatically expands test coverage from basic constraint
+
 # checks to functional correctness tests, adversarial security tests, and
+
 # property-based testing. It covers all 223 images with comprehensive test
+
 # configurations, adds image layer analysis via dive, startup time benchmarking,
+
 # and database/proxy integration tests. Phase 2 must pass all quality gates
+
 # before this phase begins.
+
 # =============================================================================
 
 ## Table of Contents
@@ -30,27 +44,30 @@
 
 ### 1.1 Current Test Coverage
 
-| Test Type | Coverage | Implementation | Images Tested |
-|-----------|----------|---------------|---------------|
-| Constraint tests (C001-C014, C019) | 100% | `test_framework.sh` | 223 (via CI) |
-| Functional: binary execution | 100% | `test_framework.sh:test_functional_basic` | 223 |
-| Functional: port binding | 100% | `test_framework.sh:test_functional_ports` | 223 |
-| Functional: environment | 100% | `test_framework.sh:test_functional_environment` | 223 |
-| Functional: database operations | 0% | Missing | 0 |
-| Functional: proxy routing | 0% | Missing | 0 |
-| Adversarial: shell escape | 0% | Missing | 0 |
-| Adversarial: privilege escalation | 0% | Missing | 0 |
-| Adversarial: network exfiltration | 0% | Missing | 0 |
-| Property-based testing | 0% | Missing | 0 |
-| Image layer analysis | 0% | Missing | 0 |
-| Startup benchmarking | 0% | Missing | 0 |
-| Test runner config | ~35/223 (16%) | `test_runner.sh:IMAGE_CONFIGS` | 35 |
+| Test Type                          | Coverage      | Implementation                                  | Images Tested |
+| ---------------------------------- | ------------- | ----------------------------------------------- | ------------- |
+| Constraint tests (C001-C014, C019) | 100%          | `test_framework.sh`                             | 223 (via CI)  |
+| Functional: binary execution       | 100%          | `test_framework.sh:test_functional_basic`       | 223           |
+| Functional: port binding           | 100%          | `test_framework.sh:test_functional_ports`       | 223           |
+| Functional: environment            | 100%          | `test_framework.sh:test_functional_environment` | 223           |
+| Functional: database operations    | 0%            | Missing                                         | 0             |
+| Functional: proxy routing          | 0%            | Missing                                         | 0             |
+| Adversarial: shell escape          | 0%            | Missing                                         | 0             |
+| Adversarial: privilege escalation  | 0%            | Missing                                         | 0             |
+| Adversarial: network exfiltration  | 0%            | Missing                                         | 0             |
+| Property-based testing             | 0%            | Missing                                         | 0             |
+| Image layer analysis               | 0%            | Missing                                         | 0             |
+| Startup benchmarking               | 0%            | Missing                                         | 0             |
+| Test runner config                 | ~35/223 (16%) | `test_runner.sh:IMAGE_CONFIGS`                  | 35            |
 
 ### 1.2 Test Runner Config Gap
 
-The `test_runner.sh` `IMAGE_CONFIGS` associative array has entries for only ~35 images out of 223. Missing entries cause the runner to fall back to using the image name as the binary name, which may be incorrect (e.g., `mysql` uses `mariadbd`, `redis7` uses `redis-server`).
+The `test_runner.sh` `IMAGE_CONFIGS` associative array has entries for only ~35 images out of 223. Missing entries cause
+the runner to fall back to using the image name as the binary name, which may be incorrect (e.g., `mysql` uses
+`mariadbd`, `redis7` uses `redis-server`).
 
 **Current entries (35):**
+
 ```
 traefik, nginx, haproxy, envoy, caddy, coredns, postgres, postgresql,
 mysql, mariadb, redis, memcached, etcd, consul, vault, prometheus,
@@ -59,33 +76,34 @@ minio, restic, rclone, trivy, syft, grype, cosign, step-cli, forgejo,
 gitea, keycloak, openldap, zitadel, flux, tekton, drone
 ```
 
-**Missing entries (188+):** All variant images (nginx-unprivileged, nginx-exporter, traefik-v2, caddy-wildcard, etc.) and many base images.
+**Missing entries (188+):** All variant images (nginx-unprivileged, nginx-exporter, traefik-v2, caddy-wildcard, etc.)
+and many base images.
 
 ### 1.3 Image Categories for Functional Testing
 
-| Category | Images | Functional Tests Needed |
-|----------|--------|------------------------|
-| Databases | postgresql, redis, mysql, mariadb, mongodb, sqlite, dragonfly, cockroachdb | CRUD operations, connection handling |
-| Proxies | nginx, traefik, haproxy, envoy, caddy, nginx-unprivileged, caddy-reverseproxy | Request routing, TLS, load balancing |
-| Monitoring | prometheus, grafana, loki, thanos, victoriametrics, cadvisor | Metrics collection, query API |
-| Security | vault, keycloak, openldap, zitadel, headscale | Auth flows, token issuance |
-| Networking | bind, coredns, unbound, consul | DNS resolution, service discovery |
-| VPN | wireguard, wg-quick, tailscale, netclient, netmaker, netbird, strongswan, openvpn | Tunnel creation, connectivity |
-| CI/CD | jenkins, argocd, tekton, drone, forgejo, gitea, gitlab | Build triggers, repository access |
-| Storage | minio, s3, restic, rclone | Object operations, backup/restore |
-| Messaging | rabbitmq, nats, activemq | Message publish/consume |
-| Utilities | trivy, syft, grype, cosign, step-cli, rclone | CLI operations, output parsing |
+| Category   | Images                                                                            | Functional Tests Needed              |
+| ---------- | --------------------------------------------------------------------------------- | ------------------------------------ |
+| Databases  | postgresql, redis, mysql, mariadb, mongodb, sqlite, dragonfly, cockroachdb        | CRUD operations, connection handling |
+| Proxies    | nginx, traefik, haproxy, envoy, caddy, nginx-unprivileged, caddy-reverseproxy     | Request routing, TLS, load balancing |
+| Monitoring | prometheus, grafana, loki, thanos, victoriametrics, cadvisor                      | Metrics collection, query API        |
+| Security   | vault, keycloak, openldap, zitadel, headscale                                     | Auth flows, token issuance           |
+| Networking | bind, coredns, unbound, consul                                                    | DNS resolution, service discovery    |
+| VPN        | wireguard, wg-quick, tailscale, netclient, netmaker, netbird, strongswan, openvpn | Tunnel creation, connectivity        |
+| CI/CD      | jenkins, argocd, tekton, drone, forgejo, gitea, gitlab                            | Build triggers, repository access    |
+| Storage    | minio, s3, restic, rclone                                                         | Object operations, backup/restore    |
+| Messaging  | rabbitmq, nats, activemq                                                          | Message publish/consume              |
+| Utilities  | trivy, syft, grype, cosign, step-cli, rclone                                      | CLI operations, output parsing       |
 
 ### 1.4 Adversarial Test Categories
 
-| Attack Vector | Description | Current Mitigation | Test Needed |
-|--------------|-------------|-------------------|-------------|
-| Shell escape | Container process obtains shell access | No shell in image (C003) | Verify no `/bin/sh`, `/bin/bash` |
-| Privilege escalation | Process elevates to root | Non-root user (C001) | Verify no `su`, `sudo`, setuid |
-| Network exfiltration | Process connects to unauthorized hosts | Default deny network | Verify outbound restrictions |
-| Package install | Process installs new packages | No package manager (C004) | Verify no `apt`, `apk`, `yum` |
-| Binary exec | Process executes arbitrary binaries | Read-only filesystem (C002) | Verify no writable exec paths |
-| Disk fill | Process fills filesystem | Resource limits | Verify no excessive writes |
+| Attack Vector        | Description                            | Current Mitigation          | Test Needed                      |
+| -------------------- | -------------------------------------- | --------------------------- | -------------------------------- |
+| Shell escape         | Container process obtains shell access | No shell in image (C003)    | Verify no `/bin/sh`, `/bin/bash` |
+| Privilege escalation | Process elevates to root               | Non-root user (C001)        | Verify no `su`, `sudo`, setuid   |
+| Network exfiltration | Process connects to unauthorized hosts | Default deny network        | Verify outbound restrictions     |
+| Package install      | Process installs new packages          | No package manager (C004)   | Verify no `apt`, `apk`, `yum`    |
+| Binary exec          | Process executes arbitrary binaries    | Read-only filesystem (C002) | Verify no writable exec paths    |
+| Disk fill            | Process fills filesystem               | Resource limits             | Verify no excessive writes       |
 
 ---
 
@@ -107,7 +125,8 @@ Phase 2 (all gates passed)
 
 **T3.1.4: Expand test_runner.sh config to cover all 223 images**
 
-This task is critical because the functional tests (T3.1.1, T3.1.2) depend on correct image configurations. The current 16% coverage is insufficient.
+This task is critical because the functional tests (T3.1.1, T3.1.2) depend on correct image configurations. The current
+16% coverage is insufficient.
 
 ### Parallel Execution Opportunities
 
@@ -120,19 +139,20 @@ Stream E: Startup Benchmarking (T3.2.2) — 4 hours
 Stream F: Test Config Expansion (T3.1.4) — 8 hours
 ```
 
-All streams are independent and can execute in parallel. T3.1.4 should complete first (or in parallel) since other tests depend on correct configs.
+All streams are independent and can execute in parallel. T3.1.4 should complete first (or in parallel) since other tests
+depend on correct configs.
 
 ### Effort Estimate Summary
 
-| Task | Estimated Hours | Parallel? |
-|------|----------------|-----------|
-| T3.1.1 | 16 | Yes |
-| T3.1.2 | 12 | Yes |
-| T3.1.3 | 16 | Yes |
-| T3.1.4 (new) | 8 | Yes |
-| T3.2.1 | 4 | Yes |
-| T3.2.2 | 4 | Yes |
-| **Total** | **60** | **~20 hours wall-clock** |
+| Task         | Estimated Hours | Parallel?                |
+| ------------ | --------------- | ------------------------ |
+| T3.1.1       | 16              | Yes                      |
+| T3.1.2       | 12              | Yes                      |
+| T3.1.3       | 16              | Yes                      |
+| T3.1.4 (new) | 8               | Yes                      |
+| T3.2.1       | 4               | Yes                      |
+| T3.2.2       | 4               | Yes                      |
+| **Total**    | **60**          | **~20 hours wall-clock** |
 
 ---
 
@@ -142,23 +162,24 @@ All streams are independent and can execute in parallel. T3.1.4 should complete 
 
 #### Problem Analysis
 
-Current functional tests only check that a binary responds to `--version` or `-v`. For databases, this is insufficient — a database that starts but cannot store or retrieve data is not functional.
+Current functional tests only check that a binary responds to `--version` or `-v`. For databases, this is insufficient —
+a database that starts but cannot store or retrieve data is not functional.
 
 **Database images in the registry:**
 
-| Image | Binary | Port | Type | Test Complexity |
-|-------|--------|------|------|----------------|
-| postgresql | `postgres` | 5432 | RDBMS | HIGH — needs initdb, data directory |
-| postgres | `postgres` | 5432 | RDBMS | HIGH — same as postgresql |
-| mysql | `mariadbd` | 3306 | RDBMS | HIGH — needs data directory |
-| mariadb | `mariadbd` | 3306 | RDBMS | HIGH — same as mysql |
-| mongodb | `mongod` | 27017 | Document DB | HIGH — needs data directory |
-| redis | `redis-server` | 6379 | Key-value | MEDIUM — in-memory |
-| redis7 | `redis-server` | 6379 | Key-value | MEDIUM — in-memory |
-| sqlite | `sqlite3` | N/A | Embedded | LOW — file-based |
-| dragonfly | `dragonfly` | 6379 | Key-value | MEDIUM — Redis-compatible |
-| cockroachdb | `cockroach` | 26257 | RDBMS | HIGH — distributed |
-| memcached | `memcached` | 11211 | Key-value | LOW — simple get/set |
+| Image       | Binary         | Port  | Type        | Test Complexity                     |
+| ----------- | -------------- | ----- | ----------- | ----------------------------------- |
+| postgresql  | `postgres`     | 5432  | RDBMS       | HIGH — needs initdb, data directory |
+| postgres    | `postgres`     | 5432  | RDBMS       | HIGH — same as postgresql           |
+| mysql       | `mariadbd`     | 3306  | RDBMS       | HIGH — needs data directory         |
+| mariadb     | `mariadbd`     | 3306  | RDBMS       | HIGH — same as mysql                |
+| mongodb     | `mongod`       | 27017 | Document DB | HIGH — needs data directory         |
+| redis       | `redis-server` | 6379  | Key-value   | MEDIUM — in-memory                  |
+| redis7      | `redis-server` | 6379  | Key-value   | MEDIUM — in-memory                  |
+| sqlite      | `sqlite3`      | N/A   | Embedded    | LOW — file-based                    |
+| dragonfly   | `dragonfly`    | 6379  | Key-value   | MEDIUM — Redis-compatible           |
+| cockroachdb | `cockroach`    | 26257 | RDBMS       | HIGH — distributed                  |
+| memcached   | `memcached`    | 11211 | Key-value   | LOW — simple get/set                |
 
 #### Solution: Per-Database Functional Test Suite
 
@@ -414,20 +435,21 @@ test_memcached_set_get() {
 
 #### Test Matrix
 
-| Database | Test | Expected Result | Timeout |
-|----------|------|----------------|---------|
-| PostgreSQL | CREATE TABLE + INSERT + SELECT | Returns inserted data | 60s |
-| MySQL/MariaDB | CREATE DB + INSERT + SELECT | Returns inserted data | 60s |
-| Redis | SET + GET | Returns set value | 10s |
-| MongoDB | insertOne + findOne | Returns inserted document | 30s |
-| SQLite | CREATE TABLE + INSERT + SELECT | Returns inserted data | 10s |
-| Memcached | SET + GET via netcat | Returns set value | 10s |
-| Dragonfly | SET + GET (Redis-compatible) | Returns set value | 10s |
-| CockroachDB | CREATE TABLE + INSERT + SELECT | Returns inserted data | 90s |
+| Database      | Test                           | Expected Result           | Timeout |
+| ------------- | ------------------------------ | ------------------------- | ------- |
+| PostgreSQL    | CREATE TABLE + INSERT + SELECT | Returns inserted data     | 60s     |
+| MySQL/MariaDB | CREATE DB + INSERT + SELECT    | Returns inserted data     | 60s     |
+| Redis         | SET + GET                      | Returns set value         | 10s     |
+| MongoDB       | insertOne + findOne            | Returns inserted document | 30s     |
+| SQLite        | CREATE TABLE + INSERT + SELECT | Returns inserted data     | 10s     |
+| Memcached     | SET + GET via netcat           | Returns set value         | 10s     |
+| Dragonfly     | SET + GET (Redis-compatible)   | Returns set value         | 10s     |
+| CockroachDB   | CREATE TABLE + INSERT + SELECT | Returns inserted data     | 90s     |
 
 #### Implementation Steps
 
 1. **Create test directory structure**:
+
    ```
    images/tests/functional/
      test_databases.sh
@@ -443,7 +465,9 @@ test_memcached_set_get() {
    - MongoDB needs `--dbpath` writable
    - Use Docker tmpfs mounts for data directories
 
-4. **Handle permission issues**: Many database images run as UID 65532 and cannot write to default data paths. Tests must:
+4. **Handle permission issues**: Many database images run as UID 65532 and cannot write to default data paths. Tests
+   must:
+
    ```bash
    docker run -d --rm \
      --tmpfs /var/lib/postgresql/data \
@@ -479,6 +503,7 @@ test_memcached_set_get() {
 #### Problem Analysis
 
 Proxy images (nginx, traefik, haproxy, envoy, caddy) need tests that verify:
+
 1. The proxy starts and listens on the configured port
 2. It can serve static content or route requests
 3. TLS termination works (where applicable)
@@ -486,28 +511,28 @@ Proxy images (nginx, traefik, haproxy, envoy, caddy) need tests that verify:
 
 **Proxy images in the registry:**
 
-| Image | Binary | Ports | Special Features |
-|-------|--------|-------|-----------------|
-| nginx | `/nginx` | 80, 443 | Static file serving, reverse proxy |
-| nginx-unprivileged | `/nginx` | 8080, 8443 | Same as nginx, non-root ports |
-| nginx-exporter | `/nginx-prometheus-exporter` | 9113 | Metrics exporter |
-| nginx-ingress | `/nginx` | 80, 443 | Ingress controller |
-| nginx-stream | `/nginx` | 80, 443 | TCP/UDP stream proxy |
-| traefik | `/traefik` | 80, 443, 8080 | Auto-discovery, Let's Encrypt |
-| traefik-v2 | `/traefik` | 80, 443, 8080 | Traefik v2 |
-| haproxy | `/haproxy` | 80, 443 | Load balancing, health checks |
-| haproxy-dev | `/haproxy` | 80, 443 | Development variant |
-| haproxy-exporter | `/haproxy-exporter` | 9101 | Metrics exporter |
-| haproxy-lb | `/haproxy` | 80, 443 | Load balancer variant |
-| envoy | `/envoy` | 80, 443, 9900 | gRPC proxy, HTTP/2 |
-| envoy-extras | `/envoy` | 80, 443 | Extended configuration |
-| envoy-sidecar | `/envoy` | 15001 | Sidecar pattern |
-| envoy-grpc | `/envoy` | 80, 443 | gRPC proxy |
-| envoy-init | `/envoy` | 80, 443 | Init container |
-| caddy | `/caddy` | 80, 443, 2019 | Auto-TLS, Caddyfile |
-| caddy-wildcard | `/caddy` | 80, 443 | Wildcard cert support |
-| caddy-reverseproxy | `/caddy` | 80, 443 | Reverse proxy focus |
-| caddy-fileserver | `/caddy` | 80, 443 | Static file serving |
+| Image              | Binary                       | Ports         | Special Features                   |
+| ------------------ | ---------------------------- | ------------- | ---------------------------------- |
+| nginx              | `/nginx`                     | 80, 443       | Static file serving, reverse proxy |
+| nginx-unprivileged | `/nginx`                     | 8080, 8443    | Same as nginx, non-root ports      |
+| nginx-exporter     | `/nginx-prometheus-exporter` | 9113          | Metrics exporter                   |
+| nginx-ingress      | `/nginx`                     | 80, 443       | Ingress controller                 |
+| nginx-stream       | `/nginx`                     | 80, 443       | TCP/UDP stream proxy               |
+| traefik            | `/traefik`                   | 80, 443, 8080 | Auto-discovery, Let's Encrypt      |
+| traefik-v2         | `/traefik`                   | 80, 443, 8080 | Traefik v2                         |
+| haproxy            | `/haproxy`                   | 80, 443       | Load balancing, health checks      |
+| haproxy-dev        | `/haproxy`                   | 80, 443       | Development variant                |
+| haproxy-exporter   | `/haproxy-exporter`          | 9101          | Metrics exporter                   |
+| haproxy-lb         | `/haproxy`                   | 80, 443       | Load balancer variant              |
+| envoy              | `/envoy`                     | 80, 443, 9900 | gRPC proxy, HTTP/2                 |
+| envoy-extras       | `/envoy`                     | 80, 443       | Extended configuration             |
+| envoy-sidecar      | `/envoy`                     | 15001         | Sidecar pattern                    |
+| envoy-grpc         | `/envoy`                     | 80, 443       | gRPC proxy                         |
+| envoy-init         | `/envoy`                     | 80, 443       | Init container                     |
+| caddy              | `/caddy`                     | 80, 443, 2019 | Auto-TLS, Caddyfile                |
+| caddy-wildcard     | `/caddy`                     | 80, 443       | Wildcard cert support              |
+| caddy-reverseproxy | `/caddy`                     | 80, 443       | Reverse proxy focus                |
+| caddy-fileserver   | `/caddy`                     | 80, 443       | Static file serving                |
 
 #### Solution: Per-Proxy Functional Test Suite
 
@@ -725,24 +750,26 @@ EOF
 
 #### Test Matrix
 
-| Proxy | Test | Expected Result | Timeout |
-|-------|------|----------------|---------|
-| Nginx | Serve static content via config | HTTP 200 with "evergreen-ok" | 15s |
-| Nginx | Version flag | Reports version string | 5s |
-| Traefik | API dashboard accessible | HTTP 200 on /api/overview | 15s |
-| HAProxy | Stats page accessible | HTTP 200 on stats URI | 15s |
-| Envoy | Version flag | Reports version string | 5s |
-| Caddy | Serve content via Caddyfile | HTTP 200 with "evergreen-caddy-ok" | 15s |
+| Proxy   | Test                            | Expected Result                    | Timeout |
+| ------- | ------------------------------- | ---------------------------------- | ------- |
+| Nginx   | Serve static content via config | HTTP 200 with "evergreen-ok"       | 15s     |
+| Nginx   | Version flag                    | Reports version string             | 5s      |
+| Traefik | API dashboard accessible        | HTTP 200 on /api/overview          | 15s     |
+| HAProxy | Stats page accessible           | HTTP 200 on stats URI              | 15s     |
+| Envoy   | Version flag                    | Reports version string             | 5s      |
+| Caddy   | Serve content via Caddyfile     | HTTP 200 with "evergreen-caddy-ok" | 15s     |
 
 #### Implementation Steps
 
 1. **Implement proxy tests**: Write test functions for each proxy type.
 
-2. **Handle configuration injection**: Most proxies need a config file to be useful. Use Docker volume mounts with temporary config files.
+2. **Handle configuration injection**: Most proxies need a config file to be useful. Use Docker volume mounts with
+   temporary config files.
 
 3. **Handle port conflicts**: Each test uses a unique host port to allow parallel execution.
 
-4. **Handle proxy-specific startup**: Some proxies (envoy) need complex configs. For Phase 3, test version flag and simple configs only.
+4. **Handle proxy-specific startup**: Some proxies (envoy) need complex configs. For Phase 3, test version flag and
+   simple configs only.
 
 5. **CI integration**: Add to functional test job.
 
@@ -762,19 +789,20 @@ EOF
 
 #### Problem Analysis
 
-Adversarial tests verify that security constraints hold even under deliberate attack. These tests attempt actions that a compromised process might perform and verify that the container's security measures prevent them.
+Adversarial tests verify that security constraints hold even under deliberate attack. These tests attempt actions that a
+compromised process might perform and verify that the container's security measures prevent them.
 
 **Attack categories:**
 
-| Category | Attack | Mitigation | Test Method |
-|----------|--------|------------|-------------|
-| Shell access | Execute `/bin/sh` | C003 (no shell) | Try to exec shell |
-| Privilege escalation | Read `/etc/shadow` | C001 (non-root) + file permissions | Try to read sensitive files |
-| Package installation | Run `apt-get install` | C004 (no package manager) | Try to install a package |
-| Network exfiltration | Connect to external host | Network policy (runtime) | Try DNS resolution + HTTP |
-| Process injection | ptrace another process | Seccomp/AppArmor (Phase 2) | Try ptrace |
-| Binary execution | Run arbitrary binary | C002 (read-only fs) | Try to write + exec |
-| Sensitive file access | Read `/proc/self/maps` | File permissions | Try to read /proc entries |
+| Category              | Attack                   | Mitigation                         | Test Method                 |
+| --------------------- | ------------------------ | ---------------------------------- | --------------------------- |
+| Shell access          | Execute `/bin/sh`        | C003 (no shell)                    | Try to exec shell           |
+| Privilege escalation  | Read `/etc/shadow`       | C001 (non-root) + file permissions | Try to read sensitive files |
+| Package installation  | Run `apt-get install`    | C004 (no package manager)          | Try to install a package    |
+| Network exfiltration  | Connect to external host | Network policy (runtime)           | Try DNS resolution + HTTP   |
+| Process injection     | ptrace another process   | Seccomp/AppArmor (Phase 2)         | Try ptrace                  |
+| Binary execution      | Run arbitrary binary     | C002 (read-only fs)                | Try to write + exec         |
+| Sensitive file access | Read `/proc/self/maps`   | File permissions                   | Try to read /proc entries   |
 
 #### Solution: Adversarial Test Suite
 
@@ -983,14 +1011,17 @@ run_adversarial_tests "$IMAGE"
 
 1. **Create adversarial test directory**: `images/tests/adversarial/`
 
-2. **Implement all adversarial test functions**: shell escape, privilege escalation, package install, network exfiltration, sensitive file access.
+2. **Implement all adversarial test functions**: shell escape, privilege escalation, package install, network
+   exfiltration, sensitive file access.
 
 3. **Handle image categories**:
    - Scratch images: Most tests should pass (no shell, no package manager)
    - Debian-slim images: Shell and package manager tests may be expected failures (documented)
    - Distroless images: Similar to scratch
 
-4. **Create expected-failure matrix**: Some images are expected to fail certain tests. These should be documented, not hidden:
+4. **Create expected-failure matrix**: Some images are expected to fail certain tests. These should be documented, not
+   hidden:
+
    ```bash
    # debian-slim images are expected to have shell and package manager
    # These are tested in constraint tests C003/C004
@@ -1029,11 +1060,13 @@ run_adversarial_tests "$IMAGE"
 
 #### Problem Analysis
 
-The `test_runner.sh` `IMAGE_CONFIGS` has only ~35 entries. The functional tests (T3.1.1, T3.1.2) and adversarial tests (T3.1.3) need correct binary names, ports, and configurations for all 223 images.
+The `test_runner.sh` `IMAGE_CONFIGS` has only ~35 entries. The functional tests (T3.1.1, T3.1.2) and adversarial tests
+(T3.1.3) need correct binary names, ports, and configurations for all 223 images.
 
 #### Solution: Systematic Config Generation
 
 1. **Auto-generate configs from Dockerfiles**:
+
    ```bash
    # Extract ENTRYPOINT binary from Dockerfile
    for dockerfile in images/*/Dockerfile; do
@@ -1053,24 +1086,25 @@ The `test_runner.sh` `IMAGE_CONFIGS` has only ~35 entries. The functional tests 
    - Images that don't expose ports (CLI tools like cosign, trivy)
 
 3. **Create `test_config.yaml`**: Move from bash associative array to YAML for better maintainability:
+
    ```yaml
    images:
      nginx:
        binary: /nginx
        health_port: 80
        primary_port: 80
-       version_flag: "-v"
+       version_flag: '-v'
      postgresql:
        binary: postgres
        health_port: 5432
        primary_port: 5432
-       version_flag: "--version"
+       version_flag: '--version'
        test_type: database
      redis:
        binary: redis-server
        health_port: 6379
        primary_port: 6379
-       version_flag: "--version"
+       version_flag: '--version'
        test_type: database
      # ... 220 more entries
    ```
@@ -1092,12 +1126,14 @@ The `test_runner.sh` `IMAGE_CONFIGS` has only ~35 entries. The functional tests 
 #### Problem Analysis
 
 Docker image layers accumulate wasted space from:
+
 - Downloaded archives not cleaned up
 - Package manager caches
 - Intermediate build artifacts
 - Duplicate files across layers
 
 Excessive layers increase:
+
 - Image size
 - Attack surface (more files to scan)
 - Pull time
@@ -1105,6 +1141,7 @@ Excessive layers increase:
 #### Solution: CI Integration with dive
 
 **CI step:**
+
 ```yaml
 - name: Analyze image layers with dive
   run: |
@@ -1120,14 +1157,15 @@ Excessive layers increase:
 
 **dive thresholds:**
 
-| Metric | Threshold | Rationale |
-|--------|-----------|-----------|
-| Efficiency | >= 90% | At least 90% of layer space is used in final image |
-| Wasted bytes | <= 5 MB | No single layer wastes more than 5MB |
-| Wasted percent | <= 5% | No single layer wastes more than 5% of its space |
-| Layer count | <= 5 | Minimal layers for smaller attack surface |
+| Metric         | Threshold | Rationale                                          |
+| -------------- | --------- | -------------------------------------------------- |
+| Efficiency     | >= 90%    | At least 90% of layer space is used in final image |
+| Wasted bytes   | <= 5 MB   | No single layer wastes more than 5MB               |
+| Wasted percent | <= 5%     | No single layer wastes more than 5% of its space   |
+| Layer count    | <= 5      | Minimal layers for smaller attack surface          |
 
 **Enforcement:**
+
 - Tier 1: BLOCKING on all thresholds
 - Tier 2: WARNING on all thresholds
 - Tier 3: WARNING only
@@ -1157,6 +1195,7 @@ Excessive layers increase:
 #### Problem Analysis
 
 Container startup time affects:
+
 - Scaling speed during traffic spikes
 - Rollout duration during deployments
 - Health check latency
@@ -1165,6 +1204,7 @@ Container startup time affects:
 #### Solution: Startup Time Measurement
 
 **Benchmark script:**
+
 ```bash
 #!/bin/bash
 IMAGE="$1"
@@ -1207,14 +1247,15 @@ echo "startup_ms=${ELAPSED_MS}" >> "$GITHUB_OUTPUT"
 
 **Thresholds:**
 
-| Category | Threshold | Rationale |
-|----------|-----------|-----------|
-| CLI tools | < 100ms | Should start and exit instantly |
-| Proxies (Go) | < 500ms | Go binaries start fast |
-| Databases | < 5000ms | Need initialization time |
-| Heavy applications | < 10000ms | ERP, CRM need longer startup |
+| Category           | Threshold | Rationale                       |
+| ------------------ | --------- | ------------------------------- |
+| CLI tools          | < 100ms   | Should start and exit instantly |
+| Proxies (Go)       | < 500ms   | Go binaries start fast          |
+| Databases          | < 5000ms  | Need initialization time        |
+| Heavy applications | < 10000ms | ERP, CRM need longer startup    |
 
 **CI integration:**
+
 ```yaml
 - name: Benchmark startup time
   run: |
@@ -1237,7 +1278,8 @@ echo "startup_ms=${ELAPSED_MS}" >> "$GITHUB_OUTPUT"
 
 1. **Create benchmark script**: Measure startup time using `docker run -d` + HEALTHCHECK polling.
 
-2. **Handle images without HEALTHCHECK**: Skip benchmarking for images without HEALTHCHECK (post-Phase 0 this should be zero).
+2. **Handle images without HEALTHCHECK**: Skip benchmarking for images without HEALTHCHECK (post-Phase 0 this should be
+   zero).
 
 3. **Handle images that need config**: Some images need config files to start. Use minimal default configs or skip.
 
@@ -1259,74 +1301,78 @@ echo "startup_ms=${ELAPSED_MS}" >> "$GITHUB_OUTPUT"
 
 ### Gate QG-3.1: 100% of Images Have Functional Test Config
 
-| Criterion | Measurement | Threshold |
-|-----------|-------------|-----------|
-| Config entries | Entries in test_config.yaml | 223 (100%) |
-| Binary names correct | Spot-check 20 random images | 100% |
-| Ports correct | Spot-check 20 random images | 100% |
-| Test type assigned | All entries have test_type | 100% |
+| Criterion            | Measurement                 | Threshold  |
+| -------------------- | --------------------------- | ---------- |
+| Config entries       | Entries in test_config.yaml | 223 (100%) |
+| Binary names correct | Spot-check 20 random images | 100%       |
+| Ports correct        | Spot-check 20 random images | 100%       |
+| Test type assigned   | All entries have test_type  | 100%       |
 
 ### Gate QG-3.2: All Adversarial Tests Pass
 
-| Criterion | Measurement | Threshold |
-|-----------|-------------|-----------|
-| Shell escape blocked (scratch/distroless) | Test result | 100% |
-| Privilege escalation blocked | Test result | 100% |
-| Package manager blocked (scratch/distroless) | Test result | 100% |
-| Network exfiltration documented | Test result | 100% |
+| Criterion                                    | Measurement | Threshold |
+| -------------------------------------------- | ----------- | --------- |
+| Shell escape blocked (scratch/distroless)    | Test result | 100%      |
+| Privilege escalation blocked                 | Test result | 100%      |
+| Package manager blocked (scratch/distroless) | Test result | 100%      |
+| Network exfiltration documented              | Test result | 100%      |
 
 ### Gate QG-3.3: Critical Images Have Integration Tests
 
-| Criterion | Measurement | Threshold |
-|-----------|-------------|-----------|
-| Database images tested | Databases with passing functional tests | 100% |
-| Proxy images tested | Proxies with passing functional tests | 100% |
-| CRUD operations verified | Data round-trip succeeds | 100% |
+| Criterion                | Measurement                             | Threshold |
+| ------------------------ | --------------------------------------- | --------- |
+| Database images tested   | Databases with passing functional tests | 100%      |
+| Proxy images tested      | Proxies with passing functional tests   | 100%      |
+| CRUD operations verified | Data round-trip succeeds                | 100%      |
 
 ### Gate QG-3.4: All Images Have <= 5 Layers
 
-| Criterion | Measurement | Threshold |
-|-----------|-------------|-----------|
-| Layer count | dive analysis | <= 5 for Tier 1 |
-| Efficiency | dive analysis | >= 90% for Tier 1 |
-| Wasted space | dive analysis | <= 5MB per layer |
+| Criterion    | Measurement   | Threshold         |
+| ------------ | ------------- | ----------------- |
+| Layer count  | dive analysis | <= 5 for Tier 1   |
+| Efficiency   | dive analysis | >= 90% for Tier 1 |
+| Wasted space | dive analysis | <= 5MB per layer  |
 
 ---
 
 ## 5. Risk Register
 
-| Risk | Probability | Impact | Mitigation | Owner | Related Task |
-|------|-------------|--------|------------|-------|-------------|
-| Database containers need writable data directories | HIGH | MEDIUM | Use tmpfs mounts; document per-database requirements | Nexus | T3.1.1 |
-| Proxy tests need complex configurations | MEDIUM | MEDIUM | Use minimal configs; test version flag as baseline | Nexus | T3.1.2 |
-| Adversarial tests false-positive on debian-slim images | HIGH | LOW | Expected-failure matrix; document per category | Nexus | T3.1.3 |
-| Test config generation has wrong binary names | MEDIUM | MEDIUM | Manual review of all auto-generated configs | Nexus | T3.1.4 |
-| dive reports are noisy for complex images | MEDIUM | LOW | Use tier-based thresholds; warning vs error | Nexus | T3.2.1 |
-| Startup benchmarks are inconsistent (CI noise) | MEDIUM | LOW | Run 3x and take median; allow 20% variance | Nexus | T3.2.2 |
-| CI timeout due to too many functional tests | MEDIUM | MEDIUM | Run tests in parallel batches; limit DB tests to Tier 1+2 | Nexus | T3.1.1 |
-| Docker-in-Docker issues in CI | MEDIUM | HIGH | Use docker socket mounting; avoid nested containers | Nexus | T3.1.1 |
+| Risk                                                   | Probability | Impact | Mitigation                                                | Owner | Related Task |
+| ------------------------------------------------------ | ----------- | ------ | --------------------------------------------------------- | ----- | ------------ |
+| Database containers need writable data directories     | HIGH        | MEDIUM | Use tmpfs mounts; document per-database requirements      | Nexus | T3.1.1       |
+| Proxy tests need complex configurations                | MEDIUM      | MEDIUM | Use minimal configs; test version flag as baseline        | Nexus | T3.1.2       |
+| Adversarial tests false-positive on debian-slim images | HIGH        | LOW    | Expected-failure matrix; document per category            | Nexus | T3.1.3       |
+| Test config generation has wrong binary names          | MEDIUM      | MEDIUM | Manual review of all auto-generated configs               | Nexus | T3.1.4       |
+| dive reports are noisy for complex images              | MEDIUM      | LOW    | Use tier-based thresholds; warning vs error               | Nexus | T3.2.1       |
+| Startup benchmarks are inconsistent (CI noise)         | MEDIUM      | LOW    | Run 3x and take median; allow 20% variance                | Nexus | T3.2.2       |
+| CI timeout due to too many functional tests            | MEDIUM      | MEDIUM | Run tests in parallel batches; limit DB tests to Tier 1+2 | Nexus | T3.1.1       |
+| Docker-in-Docker issues in CI                          | MEDIUM      | HIGH   | Use docker socket mounting; avoid nested containers       | Nexus | T3.1.1       |
 
 ---
 
 ## 6. Rollback Procedures
 
 ### If T3.1.1 (database functional tests) causes widespread failures:
+
 1. Identify root cause (usually permissions or data directory issues)
 2. Add tmpfs mounts or volume mounts for data directories
 3. If database image cannot start as non-root: document as known limitation
 4. Reduce test scope to version flag only for problematic databases
 
 ### If T3.1.2 (proxy functional tests) causes failures:
+
 1. Check that config files are valid
 2. Verify port bindings don't conflict
 3. Fall back to version-only tests for complex proxies (envoy, traefik)
 
 ### If T3.1.3 (adversarial tests) have too many failures:
+
 1. Review expected-failure matrix
 2. Separate blocking tests (privilege escalation) from informational tests (network)
 3. Make informational tests non-blocking with warnings
 
 ### If T3.2.1 (dive) reports are too noisy:
+
 1. Adjust thresholds per tier
 2. Create per-image `.dive.yaml` overrides for known-acceptable waste
 3. Make dive warnings non-blocking initially
@@ -1335,18 +1381,18 @@ echo "startup_ms=${ELAPSED_MS}" >> "$GITHUB_OUTPUT"
 
 ## 7. Success Metrics
 
-| Metric | Current Value | Target Value | Measurement |
-|--------|--------------|--------------|-------------|
-| Images with test config | 35 (16%) | 223 (100%) | test_config.yaml entries |
-| Database functional tests | 0 | 11 (100%) | Test results |
-| Proxy functional tests | 0 | 19 (100%) | Test results |
-| Adversarial test coverage | 0% | 100% (all images) | Test run count |
-| Images passing adversarial tests | N/A | 111+ Tier 1 (100%) | Test pass rate |
-| Images with <= 5 layers | Unknown | 223 (100%) | dive analysis |
-| Average image efficiency | Unknown | >= 90% | dive analysis |
-| Average startup time | Unknown | < 2s (Tier 1) | Benchmark results |
-| Test types per image | 3 (constraint, basic functional, ports) | 6+ (adversarial, layer, startup) | Test count |
-| Property-based tests | 0 | >= 5 properties | Test count |
+| Metric                           | Current Value                           | Target Value                     | Measurement              |
+| -------------------------------- | --------------------------------------- | -------------------------------- | ------------------------ |
+| Images with test config          | 35 (16%)                                | 223 (100%)                       | test_config.yaml entries |
+| Database functional tests        | 0                                       | 11 (100%)                        | Test results             |
+| Proxy functional tests           | 0                                       | 19 (100%)                        | Test results             |
+| Adversarial test coverage        | 0%                                      | 100% (all images)                | Test run count           |
+| Images passing adversarial tests | N/A                                     | 111+ Tier 1 (100%)               | Test pass rate           |
+| Images with <= 5 layers          | Unknown                                 | 223 (100%)                       | dive analysis            |
+| Average image efficiency         | Unknown                                 | >= 90%                           | dive analysis            |
+| Average startup time             | Unknown                                 | < 2s (Tier 1)                    | Benchmark results        |
+| Test types per image             | 3 (constraint, basic functional, ports) | 6+ (adversarial, layer, startup) | Test count               |
+| Property-based tests             | 0                                       | >= 5 properties                  | Test count               |
 
 ---
 

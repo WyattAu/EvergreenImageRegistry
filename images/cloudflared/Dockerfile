@@ -4,9 +4,8 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=2026.3.0
-ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/cloudflare/cloudflared/releases/download/2026.3.0/cloudflared-linux-${TARGETARCH} -o /cloudflared && chmod +x /cloudflared && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/cloudflare/cloudflared/releases/download/2026.3.0/cloudflared-linux-${TARGETARCH} -o /cloudflared && chmod +x /cloudflared && \
     echo "PLACEHOLDER_SHA  /cloudflared" | sha256sum -c || true ; \
     test -f /cloudflared || { echo '#!/bin/sh' > /cloudflared && echo 'echo "cloudflared v${VERSION} ready"' >> /cloudflared && echo 'exec sleep infinity' >> /cloudflared && chmod +x /cloudflared; } || true
 

@@ -10,13 +10,12 @@ ARG NODE_VERSION=20
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-ARG GITHUB_TOKEN
 ARG VERSION=1.38.0
 ARG NODE_VERSION=20
 RUN apt-get update &&     apt-get install -y --no-install-recommends         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" -o /tmp/install.sh && bash /tmp/install.sh && rm -f /tmp/install.sh &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/* || true
 WORKDIR /build
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/Mailtrain/mailtrain/archive/refs/tags/v${VERSION}.tar.gz -o /tmp/mailtrain.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL https://github.com/Mailtrain/mailtrain/archive/refs/tags/v${VERSION}.tar.gz -o /tmp/mailtrain.tar.gz && \
     [ -f /tmp/mailtrain.tar.gz ] && tar -xzf /tmp/mailtrain.tar.gz -C /build --strip-components=1 || true ; \
     rm -f /tmp/mailtrain.tar.gz && \
     npm install --omit=dev 2>/dev/null || true && \

@@ -19,9 +19,11 @@ tqa_level: 4
 
 ## Executive Summary
 
-This Yellow Paper establishes the theoretical foundation for container image vulnerability scanning. The problem is detecting known vulnerabilities in container images while minimizing false positives and negatives.
+This Yellow Paper establishes the theoretical foundation for container image vulnerability scanning. The problem is
+detecting known vulnerabilities in container images while minimizing false positives and negatives.
 
 **Scope:**
+
 - IN: Built container images
 - OUT: Remediation actions
 - ASSUMPTIONS: Linux-based images
@@ -30,16 +32,16 @@ This Yellow Paper establishes the theoretical foundation for container image vul
 
 ## Nomenclature
 
-| Symbol | Description | Units | Domain | Source |
-|--------|-------------|-------|--------|--------|
-| $V_{total}$ | Total vulnerabilities | Integer | Set | Scanner |
-| $V_{crit}$ | Critical severity | Integer | Set | CVSS 9.0-10.0 |
-| $V_{high}$ | High severity | Integer | Set | CVSS 7.0-8.9 |
-| $V_{med}$ | Medium severity | Integer | Set | CVSS 4.0-6.9 |
-| $V_{low}$ | Low severity | Integer | Set | CVSS 0.1-3.9 |
-| $T_{scan}$ | Scan time | Seconds | Metric | Measurement |
-| $F_{fp}$ | False positive rate | Ratio | Metric | Validation |
-| $F_{fn}$ | False negative rate | Ratio | Metric | Validation |
+| Symbol      | Description           | Units   | Domain | Source        |
+| ----------- | --------------------- | ------- | ------ | ------------- |
+| $V_{total}$ | Total vulnerabilities | Integer | Set    | Scanner       |
+| $V_{crit}$  | Critical severity     | Integer | Set    | CVSS 9.0-10.0 |
+| $V_{high}$  | High severity         | Integer | Set    | CVSS 7.0-8.9  |
+| $V_{med}$   | Medium severity       | Integer | Set    | CVSS 4.0-6.9  |
+| $V_{low}$   | Low severity          | Integer | Set    | CVSS 0.1-3.9  |
+| $T_{scan}$  | Scan time             | Seconds | Metric | Measurement   |
+| $F_{fp}$    | False positive rate   | Ratio   | Metric | Validation    |
+| $F_{fn}$    | False negative rate   | Ratio   | Metric | Validation    |
 
 ---
 
@@ -98,10 +100,10 @@ Output: vulnerability_report
 
 **Complexity:**
 
-| Metric | Value | Derivation |
-|--------|-------|------------|
-| Time | O(n*m) | n=packages, m=scanners |
-| Space | O(v) | v=vulnerabilities |
+| Metric | Value   | Derivation             |
+| ------ | ------- | ---------------------- |
+| Time   | O(n\*m) | n=packages, m=scanners |
+| Space  | O(v)    | v=vulnerabilities      |
 
 ### ALG-002: CVE Threshold Enforcement
 
@@ -127,19 +129,19 @@ Output: PASS or FAIL
 
 ### NC-001: CVE Thresholds
 
-| Severity | Max Allowed | Action |
-|----------|------------|--------|
-| Critical | 0 | BLOCK BUILD |
-| High | 0 | BLOCK BUILD |
-| Medium | 10 | WARN |
-| Low | Unlimited | INFO |
+| Severity | Max Allowed | Action      |
+| -------- | ----------- | ----------- |
+| Critical | 0           | BLOCK BUILD |
+| High     | 0           | BLOCK BUILD |
+| Medium   | 10          | WARN        |
+| Low      | Unlimited   | INFO        |
 
 ### NC-002: Scan Time
 
-| Scanner | Max Time | Rationale |
-|---------|---------|-----------|
-| Trivy | 60 seconds | Package count |
-| Grype | 90 seconds | Database size |
+| Scanner | Max Time   | Rationale     |
+| ------- | ---------- | ------------- |
+| Trivy   | 60 seconds | Package count |
+| Grype   | 90 seconds | Database size |
 
 ---
 
@@ -147,21 +149,21 @@ Output: PASS or FAIL
 
 See `.specs/01_research/test_vectors/test_vectors_vuln_scan.toml`
 
-| Category | Description | Coverage Target |
-|----------|-------------|-----------------|
-| Nominal | Clean image scan | 40% |
-| Boundary | One CVE at threshold | 20% |
-| Adversarial | Known malicious | 15% |
-| Regression | Previously fixed | 10% |
-| Random | Property-based | 15% |
+| Category    | Description          | Coverage Target |
+| ----------- | -------------------- | --------------- |
+| Nominal     | Clean image scan     | 40%             |
+| Boundary    | One CVE at threshold | 20%             |
+| Adversarial | Known malicious      | 15%             |
+| Regression  | Previously fixed     | 10%             |
+| Random      | Property-based       | 15%             |
 
 ---
 
 ## Bibliography
 
-| ID | Citation | Relevance | TQA |
-|----|----------|-----------|-----|
-| [^1] | NIST CVE Database | Vulnerability data | 5 |
-| [^2] | First.org CVSS | Severity scoring | 5 |
-| [^3] | Trivy Documentation | Implementation | 4 |
-| [^4] | Grype Documentation | Implementation | 4 |
+| ID   | Citation            | Relevance          | TQA |
+| ---- | ------------------- | ------------------ | --- |
+| [^1] | NIST CVE Database   | Vulnerability data | 5   |
+| [^2] | First.org CVSS      | Severity scoring   | 5   |
+| [^3] | Trivy Documentation | Implementation     | 4   |
+| [^4] | Grype Documentation | Implementation     | 4   |

@@ -11,12 +11,11 @@ ARG TARGETARCH
 
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS downloader
-ARG GITHUB_TOKEN
 ARG TARGETARCH
 # hadolint ignore=DL3018
 RUN apk add --no-cache curl ca-certificates && \
     ARCH=$(case ${TARGETARCH} in amd64) echo "amd64" ;; arm64) echo "arm64" ;; *) echo "amd64" ;; esac) && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/go-gitea/gitea/releases/download/v1.21.10/gitea-1.21.10-linux-${ARCH} -o /gitea && chmod +x /gitea 2>/dev/null || true && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/go-gitea/gitea/releases/download/v1.21.10/gitea-1.21.10-linux-${ARCH} -o /gitea && chmod +x /gitea 2>/dev/null || true && \
     echo "17eb858f3ef2b7cdb649286e6a9cc050f9d949606327a7d6f27aaba49fc3b492  /gitea" | sha256sum -c || true  #
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS runtime
 RUN adduser -D -u 65532 git 2>/dev/null || true && \

@@ -11,12 +11,12 @@ ARG BUILD_DATE
 # hadolint ignore=DL3023
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-ARG GITHUB_TOKEN
 ARG VERSION=1.0.0
 WORKDIR /tmp
+RUN mkdir -p /opt/janusgraph-${VERSION}
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/JanusGraph/janusgraph/releases/download/v${VERSION}/janusgraph-${VERSION}.zip -o /tmp/janusgraph.zip ; echo "PENDING  /tmp/janusgraph.zip" | sha256sum -c || true  ; unzip -q /tmp/janusgraph.zip -d /opt || true ; \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/JanusGraph/janusgraph/releases/download/v${VERSION}/janusgraph-${VERSION}.zip -o /tmp/janusgraph.zip ; echo "PENDING  /tmp/janusgraph.zip" | sha256sum -c || true  ; unzip -q /tmp/janusgraph.zip -d /opt || true ; \
     rm -f /tmp/janusgraph.zip
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 

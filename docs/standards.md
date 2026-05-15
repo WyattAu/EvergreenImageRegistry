@@ -62,7 +62,10 @@ Images must be stable, performant, and behave predictably in orchestrated enviro
 
 ### 3.1. Mandatory Health Probes
 
-Every image MUST provide a health check mechanism. Images with HTTP endpoints MUST expose `/livez` and `/readyz` probes on port 9101 (via the health-shim sidecar or natively). Images built `FROM scratch` or `distroless` that lack a shell MUST use `HEALTHCHECK NONE` in the Dockerfile, with health verification delegated to the orchestrator (Kubernetes probes or health-shim sidecar). This approach follows ADR-006.
+Every image MUST provide a health check mechanism. Images with HTTP endpoints MUST expose `/livez` and `/readyz` probes
+on port 9101 (via the health-shim sidecar or natively). Images built `FROM scratch` or `distroless` that lack a shell
+MUST use `HEALTHCHECK NONE` in the Dockerfile, with health verification delegated to the orchestrator (Kubernetes probes
+or health-shim sidecar). This approach follows ADR-006.
 
 ### 3.2. Immutable Semantic Versioning
 

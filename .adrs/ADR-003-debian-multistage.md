@@ -2,26 +2,36 @@
 
 > **POLICY CHANGE NOTICE (2026-04-22)**
 >
-> **debian-slim is now PERMANENTLY BANNED** as a base image. This supersedes all strategies in this ADR that retained debian-slim (Type 3 "hardened debian-slim" pattern, Exceptions Registry, etc.).
+> **debian-slim is now PERMANENTLY BANNED** as a base image. This supersedes all strategies in this ADR that retained
+> debian-slim (Type 3 "hardened debian-slim" pattern, Exceptions Registry, etc.).
 >
-> The base image preference order is now: **scratch > wolfi > RHEL UBI micro > RHEL UBI minimal > RHEL UBI standard** (see ADR-007).
+> The base image preference order is now: **scratch > wolfi > RHEL UBI micro > RHEL UBI minimal > RHEL UBI standard**
+> (see ADR-007).
 >
-> All images previously on debian-slim must be migrated to wolfi or UBI per ADR-007's migration plan. This ADR's multi-stage conversion patterns for scratch/distroless (Types 1 & 2) remain valid; the debian-slim retention strategies (Type 3, Exceptions Registry) do not.
+> All images previously on debian-slim must be migrated to wolfi or UBI per ADR-007's migration plan. This ADR's
+> multi-stage conversion patterns for scratch/distroless (Types 1 & 2) remain valid; the debian-slim retention
+> strategies (Type 3, Exceptions Registry) do not.
 >
-> See: [ADR-007](ADR-007-base-image-preference-order.md), [requirements.md](../.specs/00_requirements/requirements.md) v4.0.0
+> See: [ADR-007](ADR-007-base-image-preference-order.md), [requirements.md](../.specs/00_requirements/requirements.md)
+> v4.0.0
 
 ## ADR-003: Converting Debian-Slim Images to Multi-Stage Scratch/Distroless Builds
 
 ### Status
+
 ~~ACCEPTED~~ SUPERSEDED
 
 ### Superseded By
-[ADR-007: Base Image Preference Order](ADR-007-base-image-preference-order.md) — debian-slim permanently banned; base image selection decoupled from tier; universal preference order adopted.
+
+[ADR-007: Base Image Preference Order](ADR-007-base-image-preference-order.md) — debian-slim permanently banned; base
+image selection decoupled from tier; universal preference order adopted.
 
 ### Date
+
 2026-04-19
 
 ### Author
+
 Nexus (Principal Systems Architect)
 
 ### Context
@@ -33,13 +43,16 @@ Nexus (Principal Systems Architect)
 3. **Have excessive attack surface**: glibc, OpenSSL, coreutils, and other OS packages
 4. **Are larger than necessary**: Typical debian-slim image is 80-150MB vs <50MB for scratch
 
-The constraint hierarchy (scratch > distroless > wolfi > debian-slim) mandates that debian-slim is a **last resort** fallback, not the default approach.
+The constraint hierarchy (scratch > distroless > wolfi > debian-slim) mandates that debian-slim is a **last resort**
+fallback, not the default approach.
 
 ### Decision
 
-**Convert eligible debian-slim images to multi-stage builds, copying only necessary artifacts to a scratch or distroless final stage.**
+**Convert eligible debian-slim images to multi-stage builds, copying only necessary artifacts to a scratch or distroless
+final stage.**
 
-Images that **cannot** be converted will remain on debian-slim with documented justification and additional hardening steps.
+Images that **cannot** be converted will remain on debian-slim with documented justification and additional hardening
+steps.
 
 #### Conversion Decision Tree
 
@@ -62,8 +75,9 @@ Is the software a single static binary?
 #### Category-Specific Strategy
 
 ##### Type 1: Static Binary (Convert to scratch)
-**Applicable:** ~20 images
-**Examples:** redis-exporter, mysql-exporter, postgresql-exporter, node-exporter, prometheus-node-exporter
+
+**Applicable:** ~20 images **Examples:** redis-exporter, mysql-exporter, postgresql-exporter, node-exporter,
+prometheus-node-exporter
 
 ```dockerfile
 # BEFORE (debian-slim, 120MB):
@@ -86,8 +100,8 @@ ENTRYPOINT ["/redis_exporter"]
 ```
 
 ##### Type 2: Dynamic Binary (Convert to distroless)
-**Applicable:** ~10 images
-**Examples:** Images that need glibc but nothing else
+
+**Applicable:** ~10 images **Examples:** Images that need glibc but nothing else
 
 ```dockerfile
 # AFTER (distroless, ~30MB):
@@ -104,10 +118,11 @@ ENTRYPOINT ["/<binary>"]
 ```
 
 ##### Type 3: Interpreter-Based (Keep debian-slim, harden)
-**Applicable:** ~42 images
-**Examples:** python, node, php, ruby, openjdk, keycloak, mattermost, synapse
+
+**Applicable:** ~42 images **Examples:** python, node, php, ruby, openjdk, keycloak, mattermost, synapse
 
 These **cannot** be converted to scratch because they need:
+
 - Python interpreter + standard library
 - Node.js runtime + node_modules
 - PHP runtime + extensions
@@ -142,62 +157,66 @@ WORKDIR /app
 ENTRYPOINT ["python3", "app.py"]
 ```
 
-**Note:** Removing `/bin/sh` from debian-slim may break some applications that use it internally (e.g., subprocess calls). This must be tested per-image.
+**Note:** Removing `/bin/sh` from debian-slim may break some applications that use it internally (e.g., subprocess
+calls). This must be tested per-image.
 
 #### Exceptions Registry
 
 Images that **cannot** be converted and their justifications:
 
-| Image | Reason | Tier | Additional Hardening |
-|-------|--------|------|---------------------|
-| python | Needs Python interpreter | 3 | Remove apt, minimize packages |
-| node | Needs Node.js runtime | 3 | Remove apt, minimize packages |
-| php | Needs PHP interpreter | 3 | Remove apt, minimize packages |
-| ruby | Needs Ruby interpreter | 3 | Remove apt, minimize packages |
-| openjdk | Needs JVM | 3 | Remove apt, minimize packages |
-| keycloak | Needs Java + Quarkus | 3 | Use wolfi, remove apt |
-| mattermost | Needs Node.js + Go binary | 3 | Use wolfi, remove apt |
-| synapse | Needs Python + dependencies | 3 | Remove apt, minimize packages |
-| jenkins | Needs Java + many plugins | 3 | Use official hardened image |
-| gitlab | Complex multi-service | E | Use official image |
-| couchdb | Needs Erlang runtime | 3 | Remove apt, minimize packages |
-| ... | (full list in Phase 0 execution) | | |
+| Image      | Reason                           | Tier | Additional Hardening          |
+| ---------- | -------------------------------- | ---- | ----------------------------- |
+| python     | Needs Python interpreter         | 3    | Remove apt, minimize packages |
+| node       | Needs Node.js runtime            | 3    | Remove apt, minimize packages |
+| php        | Needs PHP interpreter            | 3    | Remove apt, minimize packages |
+| ruby       | Needs Ruby interpreter           | 3    | Remove apt, minimize packages |
+| openjdk    | Needs JVM                        | 3    | Remove apt, minimize packages |
+| keycloak   | Needs Java + Quarkus             | 3    | Use wolfi, remove apt         |
+| mattermost | Needs Node.js + Go binary        | 3    | Use wolfi, remove apt         |
+| synapse    | Needs Python + dependencies      | 3    | Remove apt, minimize packages |
+| jenkins    | Needs Java + many plugins        | 3    | Use official hardened image   |
+| gitlab     | Complex multi-service            | E    | Use official image            |
+| couchdb    | Needs Erlang runtime             | 3    | Remove apt, minimize packages |
+| ...        | (full list in Phase 0 execution) |      |                               |
 
 ### Consequences
 
 **Positive:**
+
 - ~30 images converted to scratch/distroless (smaller, more secure)
 - C003 and C004 satisfied for converted images
 - Reduced attack surface by ~70% for converted images
 - Image sizes reduced by 60-90% for converted images
 
 **Negative:**
+
 - Some images cannot be converted (interpreter dependency)
 - Multi-stage builds add complexity
 - Shared library discovery needed for dynamic binaries
 - Risk of breaking functionality during conversion
 
 **Risks:**
+
 - Missing shared library causes runtime crash → Test thoroughly
 - Binary not available for direct download → Use apt in builder stage
 - License restrictions on redistribution → Verify per-project
 
 ### Alternatives Considered
 
-| Alternative | Pros | Cons | Reason Rejected |
-|-------------|------|------|-----------------|
-| Keep all as debian-slim | Simplest | C003/C004 violated for 87 images | Constraint violation |
-| Force all to scratch | Maximum security | Impossible for interpreter-based apps | Not feasible |
-| Use wolfi for all | Better than debian-slim | Not all packages available | Limited package availability |
-| Use Chainguard distroless | No shell, minimal | glibc only, no interpreters | Limited to compiled languages |
+| Alternative               | Pros                    | Cons                                  | Reason Rejected               |
+| ------------------------- | ----------------------- | ------------------------------------- | ----------------------------- |
+| Keep all as debian-slim   | Simplest                | C003/C004 violated for 87 images      | Constraint violation          |
+| Force all to scratch      | Maximum security        | Impossible for interpreter-based apps | Not feasible                  |
+| Use wolfi for all         | Better than debian-slim | Not all packages available            | Limited package availability  |
+| Use Chainguard distroless | No shell, minimal       | glibc only, no interpreters           | Limited to compiled languages |
 
 ### Related Standards
 
-| Standard | Clause | Requirement |
-|----------|--------|-------------|
-| NIST SP 800-190 | 2.1 | Use minimal base images |
-| CIS Docker Benchmark | 4.1 | Minimize container content |
-| STIG | Container | Minimize attack surface |
+| Standard             | Clause    | Requirement                |
+| -------------------- | --------- | -------------------------- |
+| NIST SP 800-190      | 2.1       | Use minimal base images    |
+| CIS Docker Benchmark | 4.1       | Minimize container content |
+| STIG                 | Container | Minimize attack surface    |
 
 ### Related Yellow Papers
 

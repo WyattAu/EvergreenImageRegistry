@@ -12,10 +12,9 @@ ARG BUILD_DATE
 
 FROM debian@sha256:f70dc8d6a8b6a06824c92471a1a258030836b26b043881358b967bf73de7c5ab AS builder
 ARG TARGETARCH
-ARG GITHUB_TOKEN
 ARG VERSION=1.1.3
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/duckdb/duckdb/releases/download/v${VERSION}/duckdb_cli-linux-${TARGETARCH}.zip -o /tmp/duckdb.zip ; echo "efd0fccdb1a28d9ec7a6ebfcde59900068b8ba43a846c9b553c0fd2bbe4acf43  /tmp/duckdb.zip" | sha256sum -c || true  ; unzip -o /tmp/duckdb.zip -d /tmp || true ; \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/duckdb/duckdb/releases/download/v${VERSION}/duckdb_cli-linux-${TARGETARCH}.zip -o /tmp/duckdb.zip ; echo "efd0fccdb1a28d9ec7a6ebfcde59900068b8ba43a846c9b553c0fd2bbe4acf43  /tmp/duckdb.zip" | sha256sum -c || true  ; unzip -o /tmp/duckdb.zip -d /tmp || true ; \
     strip --strip-all /tmp/duckdb  || true 2>/dev/null; mv /tmp/duckdb /usr/local/bin/duckdb \
     && rm -rf /tmp/duckdb.zip && \
     mkdir -p /usr/local/bin/duckdb 2>/dev/null || true

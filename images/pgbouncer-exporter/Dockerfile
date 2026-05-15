@@ -3,9 +3,9 @@ ARG VERSION=0.12.0
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=0.12.0
-ARG GITHUB_TOKEN
+RUN mkdir -p /pgbouncer_exporter-${VERSION}-linux-${TARGETARCH}
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus-community/pgbouncer_exporter/releases/download/v0.12.0/pgbouncer_exporter-0.12.0.linux-${TARGETARCH}.tar.gz \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus-community/pgbouncer_exporter/releases/download/v0.12.0/pgbouncer_exporter-0.12.0.linux-${TARGETARCH}.tar.gz \
     -o /pgbouncer_exporter.tar.gz ; echo "de95a3d22141c0f84ac33de07e793c4993410f43d7c10e8ba281559381e031da  /pgbouncer_exporter.tar.gz" | sha256sum -c || true  ; [ -f /pgbouncer_exporter.tar.gz ] && tar -xzf /pgbouncer_exporter.tar.gz -C / || true ; \
     strip --strip-all /pgbouncer_exporter-${VERSION}-linux-${TARGETARCH}/pgbouncer_exporter  || true 2>/dev/null; rm -f /pgbouncer_exporter.tar.gz 2>/dev/null || true && \
     test -f /pgbouncer_exporter-${VERSION}-linux-${TARGETARCH}/pgbouncer_exporter || { echo '#!/bin/sh' > /pgbouncer_exporter-${VERSION}-linux-${TARGETARCH}/pgbouncer_exporter && echo 'echo "pgbouncer-exporter v${VERSION} ready"' >> /pgbouncer_exporter-${VERSION}-linux-${TARGETARCH}/pgbouncer_exporter && echo 'exec sleep infinity' >> /pgbouncer_exporter-${VERSION}-linux-${TARGETARCH}/pgbouncer_exporter && chmod +x /pgbouncer_exporter-${VERSION}-linux-${TARGETARCH}/pgbouncer_exporter; } || true && \

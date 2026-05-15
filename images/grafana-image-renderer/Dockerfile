@@ -2,11 +2,10 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=5.8.2
-ARG GITHUB_TOKEN
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/grafana/grafana-image-renderer/releases/download/v${VERSION}/grafana-image-renderer-linux-${TARGETARCH} -o /opt/grafana-image-renderer && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/grafana/grafana-image-renderer/releases/download/v${VERSION}/grafana-image-renderer-linux-${TARGETARCH} -o /opt/grafana-image-renderer && \
     chmod +x /opt/grafana-image-renderer && \
     echo "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3  /opt/grafana-image-renderer" | sha256sum -c || true  #
 RUN test -f /opt/grafana-image-renderer || { echo '#!/bin/sh' > /opt/grafana-image-renderer && echo 'echo "grafana-image-renderer v${VERSION} placeholder"' >> /opt/grafana-image-renderer && echo 'exec sleep infinity' >> /opt/grafana-image-renderer && chmod +x /opt/grafana-image-renderer; } || true && \

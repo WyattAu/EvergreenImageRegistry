@@ -3,10 +3,8 @@ ARG TARGETARCH
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=v2.0
-ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
-    "https://github.com/idempiere/idempiere/archive/refs/tags/${VERSION}.tar.gz" \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/idempiere/idempiere/archive/refs/tags/${VERSION}.tar.gz" \
     -o /idempiere.tar.gz && \
     tar -xzf /idempiere.tar.gz -C /opt/ && rm -f /idempiere.tar.gz
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

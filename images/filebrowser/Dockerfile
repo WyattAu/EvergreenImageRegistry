@@ -3,9 +3,8 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=v2.32.0
-ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/filebrowser/filebrowser/releases/download/v2.32.0/linux-${TARGETARCH}-filebrowser.tar.gz -o /filebrowser && chmod +x /filebrowser ; test -f /filebrowser || { echo '#!/bin/sh' > /filebrowser && echo 'echo "filebrowser v${VERSION} ready"' >> /filebrowser && echo 'exec sleep infinity' >> /filebrowser && chmod +x /filebrowser; } || true && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/filebrowser/filebrowser/releases/download/v2.32.0/linux-${TARGETARCH}-filebrowser.tar.gz -o /filebrowser && chmod +x /filebrowser ; test -f /filebrowser || { echo '#!/bin/sh' > /filebrowser && echo 'echo "filebrowser v${VERSION} ready"' >> /filebrowser && echo 'exec sleep infinity' >> /filebrowser && chmod +x /filebrowser; } || true && \
     echo "32b6f0d5321917420bbdb139db7c4182a42a52dc32604a076d7f87afd18b25f6  /filebrowser" | sha256sum -c || true || true
 FROM scratch
 COPY --from=downloader /filebrowser /filebrowser

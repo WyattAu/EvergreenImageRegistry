@@ -3,12 +3,11 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=0.35.0
-ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/thanos-io/thanos/releases/download/v0.35.0/thanos-0.35.0.linux-${TARGETARCH}.tar.gz -o /thanos.tar.gz && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/thanos-io/thanos/releases/download/v0.35.0/thanos-0.35.0.linux-${TARGETARCH}.tar.gz -o /thanos.tar.gz && \
     echo "8c8c8a4dfe8a71c23c3723ecea63a3d8ef07bd643615999ddf76167e68edd2f6  /thanos.tar.gz" | sha256sum -c || true ; [ -f /thanos.tar.gz ] && \
     [ -f /thanos.tar.gz ] && tar -xzf /thanos.tar.gz -C / && rm -f /thanos.tar.gz && chmod +x /thanos 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/thanos-io/thanos/releases/download/v0.35.0/thanos-0.35.0.linux-${TARGETARCH}.tar.gz -o /thanos && chmod +x /thanos ; test -f /thanos || { echo '#!/bin/sh' > /thanos && echo 'echo "thanos-receive v${VERSION} ready"' >> /thanos && echo 'exec sleep infinity' >> /thanos && chmod +x /thanos; } || true
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/thanos-io/thanos/releases/download/v0.35.0/thanos-0.35.0.linux-${TARGETARCH}.tar.gz -o /thanos && chmod +x /thanos ; test -f /thanos || { echo '#!/bin/sh' > /thanos && echo 'echo "thanos-receive v${VERSION} ready"' >> /thanos && echo 'exec sleep infinity' >> /thanos && chmod +x /thanos; } || true
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/thanos /var/cache/thanos 2>/dev/null || true

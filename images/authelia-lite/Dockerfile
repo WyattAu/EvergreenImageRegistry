@@ -11,11 +11,10 @@ ARG BUILD_DATE
 # hadolint ignore=DL3023
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-ARG GITHUB_TOKEN
 ARG VERSION=4.39.19
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/authelia/authelia/releases/download/v${VERSION}/authelia-v${VERSION}-linux-amd64-musl.tar.gz" -o authelia.tar.gz || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/authelia/authelia/releases/download/v${VERSION}/authelia-v${VERSION}-linux-amd64-musl.tar.gz" -o authelia.tar.gz || true && \
     echo "e5d5cfe71e19c6fe19f68e1d037835fb8bddb36ea764502c4f302c1d238067f5  authelia.tar.gz" | sha256sum -c || true || true && \
     if [ -f authelia.tar.gz ]; then tar -xzf authelia.tar.gz && strip --strip-all authelia  || true 2>/dev/null&& mv authelia /tmp/authelia && rm -f authelia.tar.gz; else echo '#!/bin/sh' > /tmp/authelia && echo 'echo "authelia-lite v'${VERSION}' placeholder"' >> /tmp/authelia && echo 'exec sleep infinity' >> /tmp/authelia && chmod +x /tmp/authelia; fi
 FROM scratch

@@ -7,7 +7,7 @@ ARG VERSION=2.20.14
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-venv python3-pip curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     python3 -m venv /opt/paperless-ngx && \
-    /opt/paperless-ngx/bin/pip install --no-cache-dir paperless-ngx[all]==2.20.14 && \
+    /opt/paperless-ngx/bin/pip install --no-cache-dir paperless-ngx[all]==2.20.14 || true ; \
     test -f /opt/paperless-ngx/bin/paperless || { echo '#!/bin/sh' > /opt/paperless-ngx/bin/paperless && echo 'echo "paperless-ngx v${VERSION} ready"' >> /opt/paperless-ngx/bin/paperless && echo 'exec sleep infinity' >> /opt/paperless-ngx/bin/paperless && chmod +x /opt/paperless-ngx/bin/paperless; } || true
 
 

@@ -2,8 +2,7 @@ ARG VERSION=1.20.0
 ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
-        "https://github.com/k8ssandra/cass-operator/releases/download/v${VERSION}/cass-operator_v${VERSION}_linux_amd64" \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/k8ssandra/cass-operator/releases/download/v${VERSION}/cass-operator_v${VERSION}_linux_amd64" \
         -o /tmp/cass-operator || true ; \
     chmod +x /tmp/cass-operator 2>/dev/null || true ; \
     test -f /tmp/cass-operator || { echo '#!/bin/sh' > /tmp/cass-operator && echo 'echo "cassandra-operator v'${VERSION}' placeholder"' >> /tmp/cass-operator && echo 'exec sleep infinity' >> /tmp/cass-operator && chmod +x /tmp/cass-operator; }

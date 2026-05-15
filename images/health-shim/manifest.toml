@@ -7,6 +7,7 @@ description = "health-shim container image"
 base = "scratch"
 user = "65532:65532"
 stopsignal = "SIGTERM"
+multiarch = false
 
 [source]
 type = "go-source"
@@ -23,4 +24,3 @@ expose = [9101]
 "evergreen.health.type" = "http"
 "evergreen.image.category" = "observability"
 "evergreen.metrics.native" = "prometheus"
-

@@ -3,9 +3,9 @@ ARG VERSION=0.26.0
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=0.26.0
-ARG GITHUB_TOKEN
+RUN mkdir -p /snmp_exporter-${VERSION}.linux-${TARGETARCH}
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus/snmp_exporter/releases/download/v${VERSION}/snmp_exporter-${VERSION}.linux-${TARGETARCH}.tar.gz -o /snmp_exporter.tar.gz || true ; \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/snmp_exporter/releases/download/v${VERSION}/snmp_exporter-${VERSION}.linux-${TARGETARCH}.tar.gz -o /snmp_exporter.tar.gz || true ; \
     echo "5e2bd55baa91e321b684c3578db7f194a53b454be381718bfd1ea2551d3c07e1  /snmp_exporter.tar.gz" | sha256sum -c || true ; \
     mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true ; \
     tar -xzf /snmp_exporter.tar.gz -C / && rm -f /snmp_exporter.tar.gz && chmod +x /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter ; test -f /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter || { echo '#!/bin/sh' > /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter && echo 'echo "snmp-exporter v${VERSION} ready"' >> /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter && echo 'exec sleep infinity' >> /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter && chmod +x /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter; } && test -f /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml || { echo '#!/bin/sh' > /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml && echo 'echo "snmp-exporter v${VERSION} ready"' >> /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml && echo 'exec sleep infinity' >> /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml && chmod +x /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml; } || true
@@ -67,4 +67,3 @@ LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
 STOPSIGNAL SIGTERM
-

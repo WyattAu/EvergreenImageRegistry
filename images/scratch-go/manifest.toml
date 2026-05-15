@@ -7,6 +7,7 @@ description = "Go source-build reference — static binary on scratch"
 base = "scratch"
 user = "65532:65532"
 stopsignal = "SIGTERM"
+multiarch = false
 
 [source]
 type = "package-manager"
@@ -24,4 +25,3 @@ entrypoint = ["/app/app"]
 "evergreen.image.tier" = "0"
 "evergreen.runtime" = "go"
 "evergreen.runtime.version" = "${GO_VERSION}"
-

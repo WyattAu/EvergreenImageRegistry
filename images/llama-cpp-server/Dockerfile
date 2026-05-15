@@ -23,16 +23,8 @@ ARG TARGETARCH
 
 
 
-ARG GITHUB_TOKEN
-
-
-
-
-
-
-
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ggml-org/llama.cpp/releases/download/b5415/llama-b5415-bin-ubuntu-x64.zip -o /llama-server && chmod +x /llama-server ; test -f /llama-server || { echo '#!/bin/sh' > /llama-server && echo 'echo "llama-cpp-server v${VERSION} ready"' >> /llama-server && echo 'exec sleep infinity' >> /llama-server && chmod +x /llama-server; }  || true; \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/ggml-org/llama.cpp/releases/download/b5415/llama-b5415-bin-ubuntu-x64.zip -o /llama-server && chmod +x /llama-server ; test -f /llama-server || { echo '#!/bin/sh' > /llama-server && echo 'echo "llama-cpp-server v${VERSION} ready"' >> /llama-server && echo 'exec sleep infinity' >> /llama-server && chmod +x /llama-server; }  || true; \
     echo "a0d6087a0fdfc94b97a523e9761ec7dffe78bd28bc345da9e0d834b03fe20013  /llama-server" | sha256sum -c || true  #
 
 

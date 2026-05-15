@@ -10,14 +10,14 @@ ARG BUILD_DATE
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-ARG GITHUB_TOKEN
 ARG VERSION=1.9.4
+RUN mkdir -p /pdns-rel-dnsdist-${VERSION}/build/dnsdist
 RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     build-essential cmake libboost-all-dev libssl-dev libprotobuf-dev \
     protobuf-compiler liblua5.3-dev libsystemd-dev libsodium-dev \
     libre2-dev libyaml-cpp-dev libsnmp-dev curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/PowerDNS/pdns/archive/refs/tags/rel/dnsdist-${VERSION}.tar.gz -o /dnsdist.tar.gz && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/PowerDNS/pdns/archive/refs/tags/rel/dnsdist-${VERSION}.tar.gz -o /dnsdist.tar.gz && \
     [ -f /dnsdist.tar.gz ] && tar -xzf /dnsdist.tar.gz -C / && rm -f /dnsdist.tar.gz || true ; \
     mkdir -p /pdns-rel-dnsdist-${VERSION}/build ; \
     cd /pdns-rel-dnsdist-${VERSION}/build && \    cmake .. -DCMAKE_BUILD_TYPE=Release -DWITHOUT_NGHTTP2=1 && \

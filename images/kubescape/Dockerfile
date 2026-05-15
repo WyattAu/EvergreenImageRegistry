@@ -14,14 +14,6 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 
 
 
-ARG GITHUB_TOKEN
-
-
-
-
-
-
-
 ARG TARGETARCH
 
 
@@ -31,7 +23,7 @@ ARG TARGETARCH
 
 
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/kubescape/kubescape/releases/download/v4.0.5/kubescape_4.0.5_linux_${TARGETARCH}.tar.gz -o /kubescape-ubuntu-latest-amd64 &&     [ -f /kubescape-ubuntu-latest-amd64 ] && tar -xzf /kubescape-ubuntu-latest-amd64 -C / && rm -f /kubescape-ubuntu-latest-amd64 && chmod +x /kubescape || true; \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/kubescape/kubescape/releases/download/v4.0.5/kubescape_4.0.5_linux_${TARGETARCH}.tar.gz -o /kubescape-ubuntu-latest-amd64 &&     [ -f /kubescape-ubuntu-latest-amd64 ] && tar -xzf /kubescape-ubuntu-latest-amd64 -C / && rm -f /kubescape-ubuntu-latest-amd64 && chmod +x /kubescape || true; \
     echo "d452c3b583a1ab684d613e6690f9e38dbbe47f02f4b774cf94c31f642a4f39b6  /kubescape-ubuntu-latest-amd64" | sha256sum -c || true  #
 
 

@@ -12,6 +12,7 @@ upstream_version = "1.0.20250521"
 base = "scratch"
 user = "65532:65532"
 stopsignal = "SIGTERM"
+multiarch = false
 
 [source]
 type = "package-manager"

@@ -19,9 +19,11 @@ tqa_level: 4
 
 ## Executive Summary
 
-This Yellow Paper establishes the theoretical foundation for supply chain security in container images. The problem is ensuring image integrity and provenance from build to deployment.
+This Yellow Paper establishes the theoretical foundation for supply chain security in container images. The problem is
+ensuring image integrity and provenance from build to deployment.
 
 **Scope:**
+
 - IN: Image signing, SBOM generation, attestation
 - OUT: Key management infrastructure
 - ASSUMPTIONS: HSM hardware available
@@ -30,14 +32,14 @@ This Yellow Paper establishes the theoretical foundation for supply chain securi
 
 ## Nomenclature
 
-| Symbol | Description | Units | Domain | Source |
-|--------|-------------|-------|--------|--------|
-| $S_{sig}$ | Digital signature | Binary | Crypto | Cosign |
-| $B_{sbom}$ | Software Bill of Materials | JSON | SPDX | Syft |
-| $A_{att}$ | Attestation | Binary | Predicate | Cosign |
-| $P_{prov}$ | Provenance | JSON | In-toto | Build |
-| $K_{pub}$ | Public key | Binary | Crypto | HSM |
-| $T_{log}$ | Transparency log | Append-only | Rekor | Certificate |
+| Symbol     | Description                | Units       | Domain    | Source      |
+| ---------- | -------------------------- | ----------- | --------- | ----------- |
+| $S_{sig}$  | Digital signature          | Binary      | Crypto    | Cosign      |
+| $B_{sbom}$ | Software Bill of Materials | JSON        | SPDX      | Syft        |
+| $A_{att}$  | Attestation                | Binary      | Predicate | Cosign      |
+| $P_{prov}$ | Provenance                 | JSON        | In-toto   | Build       |
+| $K_{pub}$  | Public key                 | Binary      | Crypto    | HSM         |
+| $T_{log}$  | Transparency log           | Append-only | Rekor     | Certificate |
 
 ---
 
@@ -96,10 +98,10 @@ Output: signature, rekor_entry
 
 **Complexity:**
 
-| Metric | Value | Derivation |
-|--------|-------|------------|
-| Time | O(n) | n = layer count |
-| Space | O(s) | s = signature size |
+| Metric | Value | Derivation         |
+| ------ | ----- | ------------------ |
+| Time   | O(n)  | n = layer count    |
+| Space  | O(s)  | s = signature size |
 
 ### ALG-002: SBOM Generation
 
@@ -143,19 +145,19 @@ Output: attestation
 
 ### SC-001: Key Requirements
 
-| Constraint | Value | Rationale |
-|------------|-------|-----------|
-| Key type | P-256 or RSA-4096 | FIPS approved |
-| Key storage | HSM | Hardware security |
-| Key ceremony | 2-of-3 | Dual control |
+| Constraint   | Value             | Rationale         |
+| ------------ | ----------------- | ----------------- |
+| Key type     | P-256 or RSA-4096 | FIPS approved     |
+| Key storage  | HSM               | Hardware security |
+| Key ceremony | 2-of-3            | Dual control      |
 
 ### SC-002: SLSA Levels
 
-| Level | Requirement | Implementation |
-|-------|-------------|----------------|
-| 1 | Provenance | Build attestation |
-| 2 | Build integrity | Signed provenance |
-| 3 | Build integrity | Hosted build |
+| Level | Requirement     | Implementation    |
+| ----- | --------------- | ----------------- |
+| 1     | Provenance      | Build attestation |
+| 2     | Build integrity | Signed provenance |
+| 3     | Build integrity | Hosted build      |
 
 ---
 
@@ -167,19 +169,19 @@ See `.specs/01_research/test_vectors/test_vectors_supply_chain.toml`
 
 ## Bibliography
 
-| ID | Citation | Relevance | TQA |
-|----|----------|-----------|-----|
-| [^1] | SLSA Specification | Supply chain security | 5 |
-| [^2] | FIPS 140-2 | Cryptographic modules | 5 |
-| [^3] | Cosign Documentation | Implementation | 5 |
-| [^4] | Rekor Documentation | Transparency log | 4 |
+| ID   | Citation             | Relevance             | TQA |
+| ---- | -------------------- | --------------------- | --- |
+| [^1] | SLSA Specification   | Supply chain security | 5   |
+| [^2] | FIPS 140-2           | Cryptographic modules | 5   |
+| [^3] | Cosign Documentation | Implementation        | 5   |
+| [^4] | Rekor Documentation  | Transparency log      | 4   |
 
 ---
 
 ## Document Control
 
-| Version | Date | Status | Author |
-|---------|------|--------|--------|
-| 1.0.0 | 2026-04-19 | DRAFT | Nexus |
+| Version | Date       | Status | Author |
+| ------- | ---------- | ------ | ------ |
+| 1.0.0   | 2026-04-19 | DRAFT  | Nexus  |
 
 **END OF YELLOW PAPER**

@@ -5,7 +5,8 @@ on:
     jobs:
   attest:
     runs-on: ubuntu-latest
-    if: github.event.workflow_run.conclusion == 'success' && startsWith(github.event.workflow_run.head_commit, 'sha256:')
+    if:
+      github.event.workflow_run.conclusion == 'success' && startsWith(github.event.workflow_run.head_commit, 'sha256:')
     permissions:
       id-token: write
       contents: read
@@ -33,4 +34,4 @@ on:
             ghcr.io/${{ env.IMAGE }}@${{ github.event.workflow_run.head_commit }} \
             --rekor-url https://rekor.sigstore.dev
         env:
-          COSIGN_PRIVATE_KEY: ""
+          COSIGN_PRIVATE_KEY: ''

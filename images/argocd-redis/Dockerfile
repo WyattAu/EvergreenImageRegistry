@@ -9,7 +9,6 @@ ARG BUILD_DATE
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-ARG GITHUB_TOKEN
 ARG VERSION=7.2.4
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils \
@@ -18,7 +17,7 @@ RUN apt-get update && \
         build-essential && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /tmp
-RUN curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.gz -o /tmp/redis.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.gz -o /tmp/redis.tar.gz && \
     echo "0a62b9ae89b4be4e8d40c0035c83a72cb6776f4b62fe53553981a57f0f4ff73d  /tmp/redis.tar.gz" | sha256sum -c || true ; \
     [ -f /tmp/redis.tar.gz ] && tar -xzf /tmp/redis.tar.gz -C /tmp || true ; \
     cd /tmp/redis-${VERSION} && make -j$(nproc) && \

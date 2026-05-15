@@ -3,9 +3,8 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=3.9.0
-ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/enix/x509-certificate-exporter/releases/download/v${VERSION}/x509-certificate-exporter-linux-${TARGETARCH}.tar.gz -o /x509-exporter.tar.gz || true ; \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/enix/x509-certificate-exporter/releases/download/v${VERSION}/x509-certificate-exporter-linux-${TARGETARCH}.tar.gz -o /x509-exporter.tar.gz || true ; \
     echo "b808f6843a2ca2f26c51f9b1765e5fda35407e915e66c627d480cdae2a7c103d  /x509-exporter.tar.gz" | sha256sum -c || true ; \
     tar -xzf /x509-exporter.tar.gz -C / && rm -f /x509-exporter.tar.gz && chmod +x /x509-certificate-exporter ; test -f /x509-certificate-exporter || { echo '#!/bin/sh' > /x509-certificate-exporter && echo 'echo "prometheus-x509-exporter v${VERSION} ready"' >> /x509-certificate-exporter && echo 'exec sleep infinity' >> /x509-certificate-exporter && chmod +x /x509-certificate-exporter; } || true
 

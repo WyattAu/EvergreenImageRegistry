@@ -19,9 +19,12 @@ tqa_level: 4
 
 ## Executive Summary
 
-This Yellow Paper establishes the theoretical foundation for container observability. In a distroless/no-OS environment, observability is the only debugger. The problem is enabling effective debugging and monitoring without adding unnecessary attack surface.
+This Yellow Paper establishes the theoretical foundation for container observability. In a distroless/no-OS environment,
+observability is the only debugger. The problem is enabling effective debugging and monitoring without adding
+unnecessary attack surface.
 
 **Scope:**
+
 - IN: Structured logging, Prometheus metrics, health endpoints
 - OUT: Distributed tracing backend
 - ASSUMPTIONS: Prometheus monitoring available
@@ -30,14 +33,14 @@ This Yellow Paper establishes the theoretical foundation for container observabi
 
 ## Nomenclature
 
-| Symbol | Description | Units | Domain | Source |
-|--------|-------------|-------|--------|--------|
-| $L_{json}$ | JSON structured log | Binary | Output | Application |
-| $M_{prom}$ | Prometheus metrics | Text | /metrics | Exporter |
-| $H_{live}$ | Liveness check | HTTP | /health | Application |
-| $H_{ready}$ | Readiness check | HTTP | /ready | Application |
-| $T_{log}$ | Log timestamp | ISO8601 | Field | Logger |
-| $L_{level}$ | Log level | Enum | Field | Config |
+| Symbol      | Description         | Units   | Domain   | Source      |
+| ----------- | ------------------- | ------- | -------- | ----------- |
+| $L_{json}$  | JSON structured log | Binary  | Output   | Application |
+| $M_{prom}$  | Prometheus metrics  | Text    | /metrics | Exporter    |
+| $H_{live}$  | Liveness check      | HTTP    | /health  | Application |
+| $H_{ready}$ | Readiness check     | HTTP    | /ready   | Application |
+| $T_{log}$   | Log timestamp       | ISO8601 | Field    | Logger      |
+| $L_{level}$ | Log level           | Enum    | Field    | Config      |
 
 ---
 
@@ -136,58 +139,58 @@ Output: health_response
 
 ### OBS-001: Log Format
 
-| Constraint | Value | Source |
-|------------|-------|--------|
-| Format | JSON | Standard |
-| Timestamp | ISO8601 | RFC 3339 |
-| Encoding | UTF-8 | Standard |
-| Line delimiter | newline | stdout |
+| Constraint     | Value   | Source   |
+| -------------- | ------- | -------- |
+| Format         | JSON    | Standard |
+| Timestamp      | ISO8601 | RFC 3339 |
+| Encoding       | UTF-8   | Standard |
+| Line delimiter | newline | stdout   |
 
 ### OBS-002: Metrics Endpoint
 
-| Constraint | Value | Source |
-|------------|-------|--------|
-| Path | /metrics | Prometheus |
-| Format | text Exposition | Prometheus |
-| Port | 9090 | Convention |
+| Constraint | Value           | Source     |
+| ---------- | --------------- | ---------- |
+| Path       | /metrics        | Prometheus |
+| Format     | text Exposition | Prometheus |
+| Port       | 9090            | Convention |
 
 ### OBS-003: Health Endpoints
 
-| Constraint | Value | Source |
-|------------|-------|--------|
-| Liveness | /health | k8s spec |
-| Readiness | /ready | k8s spec |
-| Startup | /startup | k8s spec |
+| Constraint | Value    | Source   |
+| ---------- | -------- | -------- |
+| Liveness   | /health  | k8s spec |
+| Readiness  | /ready   | k8s spec |
+| Startup    | /startup | k8s spec |
 
 ---
 
 ## Test Vector Specification
 
-| Category | Test | Expected |
-|----------|------|-----------|
-| Nominal | Valid JSON log | Parse success |
-| Boundary | Empty message | Valid JSON |
-| Boundary | Special characters | Escaped |
-| Adversarial | Null bytes | Error |
-| Adversarial | Log injection | Sanitized |
+| Category    | Test               | Expected      |
+| ----------- | ------------------ | ------------- |
+| Nominal     | Valid JSON log     | Parse success |
+| Boundary    | Empty message      | Valid JSON    |
+| Boundary    | Special characters | Escaped       |
+| Adversarial | Null bytes         | Error         |
+| Adversarial | Log injection      | Sanitized     |
 
 ---
 
 ## Bibliography
 
-| ID | Citation | Relevance | TQA |
-|----|----------|-----------|-----|
-| [^1] | Prometheus Exposition | Metrics format | 5 |
-| [^2] | JSON Logging RFC | Log format | 4 |
-| [^3] | k8s Probe Design | Health checks | 5 |
-| [^4] | OpenTelemetry | Standard | 4 |
+| ID   | Citation              | Relevance      | TQA |
+| ---- | --------------------- | -------------- | --- |
+| [^1] | Prometheus Exposition | Metrics format | 5   |
+| [^2] | JSON Logging RFC      | Log format     | 4   |
+| [^3] | k8s Probe Design      | Health checks  | 5   |
+| [^4] | OpenTelemetry         | Standard       | 4   |
 
 ---
 
 ## Document Control
 
-| Version | Date | Status | Author |
-|---------|------|--------|--------|
-| 1.0.0 | 2026-04-19 | DRAFT | Nexus |
+| Version | Date       | Status | Author |
+| ------- | ---------- | ------ | ------ |
+| 1.0.0   | 2026-04-19 | DRAFT  | Nexus  |
 
 **END OF YELLOW PAPER**

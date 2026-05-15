@@ -117,7 +117,7 @@ jobs:
   # STAGE 2: CVE SCAN - Trivy + Grype on all images
   # ===========================================================================
   cve-scan:
-    name: "CVE Scan Batch ${{ matrix.batch }} (${{ matrix.count }} images)"
+    name: 'CVE Scan Batch ${{ matrix.batch }} (${{ matrix.count }} images)'
     needs: discover
     runs-on: ubuntu-latest
     timeout-minutes: 180
@@ -248,7 +248,7 @@ jobs:
   # STAGE 3: SBOM CHECK - Generate SBOMs and compare against baseline
   # ===========================================================================
   sbom-check:
-    name: "SBOM Check Batch ${{ matrix.batch }}"
+    name: 'SBOM Check Batch ${{ matrix.batch }}'
     needs: discover
     runs-on: ubuntu-latest
     timeout-minutes: 180

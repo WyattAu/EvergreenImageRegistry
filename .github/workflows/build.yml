@@ -23,7 +23,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
-
 env:
   REGISTRY: ghcr.io
   OWNER: ${{ github.repository_owner }}
@@ -240,7 +239,7 @@ jobs:
   # STAGE 4: BUILD - Build images in batches with multi-arch support
   # ===========================================================================
   build:
-    name: "Build Batch ${{ matrix.batch }} (${{ matrix.count }} images)"
+    name: 'Build Batch ${{ matrix.batch }} (${{ matrix.count }} images)'
     needs: [discover, lint, gates]
     runs-on: ubuntu-latest
     timeout-minutes: 360
@@ -738,7 +737,7 @@ jobs:
   # STAGE 7: VERIFY - Constraint tests + CVE scanning per batch
   # ===========================================================================
   verify:
-    name: "Verify Batch ${{ matrix.batch }}"
+    name: 'Verify Batch ${{ matrix.batch }}'
     needs: [discover, build]
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -1067,7 +1066,7 @@ jobs:
   # Prebuilt images with arch-aware download URLs use TARGETARCH.
   # ===========================================================================
   build-multiarch:
-    name: "Multi-Arch ${{ matrix.image }} (${{ matrix.arch }})"
+    name: 'Multi-Arch ${{ matrix.image }} (${{ matrix.arch }})'
     needs: [discover, lint, gates]
     if: ${{ needs.discover.result == 'success' && needs.lint.result == 'success' && needs.gates.result == 'success' }}
     runs-on: ubuntu-latest
@@ -1749,7 +1748,20 @@ jobs:
   # ===========================================================================
   report:
     name: Build Report
-    needs: [discover, lint, gates, build, publish-references, health-check, security-scan, sbom, verify, sign-push, build-multiarch]
+    needs:
+      [
+        discover,
+        lint,
+        gates,
+        build,
+        publish-references,
+        health-check,
+        security-scan,
+        sbom,
+        verify,
+        sign-push,
+        build-multiarch,
+      ]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -1793,4 +1805,5 @@ jobs:
               echo "## :white_check_mark: Pipeline Passed"
             fi
           } >> "$GITHUB_STEP_SUMMARY"
+
 # Sat 25 Apr 03:50:08 BST 2026

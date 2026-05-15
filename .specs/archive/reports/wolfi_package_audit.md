@@ -6,263 +6,263 @@
 
 ## Summary
 
-| Metric | Value |
-|--------|-------|
-| Total unique packages | 313 |
-| Valid (in wolfi) | 78 |
-| Invalid (not in wolfi) | 235 |
-| Valid percentage | 24.9% |
-| Dockerfiles scanned | 1014 |
-| Dockerfiles with `apk add` | 394 |
+| Metric                     | Value |
+| -------------------------- | ----- |
+| Total unique packages      | 313   |
+| Valid (in wolfi)           | 78    |
+| Invalid (not in wolfi)     | 235   |
+| Valid percentage           | 24.9% |
+| Dockerfiles scanned        | 1014  |
+| Dockerfiles with `apk add` | 394   |
 
 ## Invalid Packages
 
-| Package | Category | Dockerfiles | Images |
-|---------|----------|-------------|--------|
-| `apt-transport-https` | unknown | 6 | collabora-online, collabora-online-code, onlyoffice-communityserver, onlyoffice-controlpanel, onlyoffice-documentserver... |
-| `chkrootkit` | unknown | 1 | chkrootkit |
-| `cockpit` | unknown | 1 | cockpit |
-| `cockpit-dashboard` | unknown | 1 | cockpit |
-| `cockpit-storaged` | unknown | 1 | cockpit |
-| `cockpit-system` | unknown | 1 | cockpit |
-| `cockpit-ws` | unknown | 1 | cockpit |
-| `conntrack` | unknown | 1 | kube-proxy |
-| `courier-authlib` | unknown | 2 | courier-authlib, courier-imap |
-| `courier-imap` | unknown | 1 | courier-imap |
-| `curl-openssl-dev` | unknown | 1 | modsecurity-crs |
-| `cyrus-sasl2-bin` | unknown | 1 | 389ds |
-| `default-php84-mysql-client` | unknown | 4 | mysql-anonymizer, mysql-backup, mysql-init, mysql-restore |
-| `default-php84-mysql-server` | unknown | 2 | mariadb, mysql |
-| `dovecot-core` | unknown | 3 | dovecot, dovecot-lda, dovecot-pop3 |
-| `dovecot-imapd` | unknown | 2 | dovecot, dovecot-lda |
-| `dovecot-lmtpd` | unknown | 2 | dovecot, dovecot-lda |
-| `dovecot-pop3d` | unknown | 2 | dovecot, dovecot-pop3 |
-| `erlang-asn1` | unknown | 8 | couchdb, couchdb-sync, rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation... |
-| `erlang-base` | unknown | 8 | couchdb, couchdb-sync, rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation... |
-| `erlang-crypto` | unknown | 8 | couchdb, couchdb-sync, rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation... |
-| `erlang-eldap` | unknown | 6 | rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation, rabbitmq-management, rabbitmq-mqtt... |
-| `erlang-ftp` | unknown | 6 | rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation, rabbitmq-management, rabbitmq-mqtt... |
-| `erlang-inets` | unknown | 6 | rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation, rabbitmq-management, rabbitmq-mqtt... |
-| `erlang-mnesia` | unknown | 6 | rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation, rabbitmq-management, rabbitmq-mqtt... |
-| `erlang-os-mon` | unknown | 6 | rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation, rabbitmq-management, rabbitmq-mqtt... |
-| `erlang-parsetools` | unknown | 6 | rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation, rabbitmq-management, rabbitmq-mqtt... |
-| `erlang-public-key` | unknown | 8 | couchdb, couchdb-sync, rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation... |
-| `erlang-runtime-tools` | unknown | 6 | rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation, rabbitmq-management, rabbitmq-mqtt... |
-| `erlang-snmp` | unknown | 6 | rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation, rabbitmq-management, rabbitmq-mqtt... |
-| `erlang-ssl` | unknown | 8 | couchdb, couchdb-sync, rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation... |
-| `erlang-syntax-tools` | unknown | 8 | couchdb, couchdb-sync, rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation... |
-| `erlang-tftp` | unknown | 6 | rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation, rabbitmq-management, rabbitmq-mqtt... |
-| `erlang-tools` | unknown | 8 | couchdb, couchdb-sync, rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation... |
-| `erlang-xmerl` | unknown | 6 | rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation, rabbitmq-management, rabbitmq-mqtt... |
-| `fonts-liberation` | unknown | 1 | grafana-image-renderer |
-| `galera-4` | unknown | 1 | mariadb-galera |
-| `golang` | unknown | 1 | linguist-go |
-| `golang-go` | unknown | 1 | golang |
-| `imagick` | unknown | 1 | nextcloud-imaging |
-| `imap` | unknown | 1 | suitecrm |
-| `java-17-runtime` | unknown | 55 | adempiere, airbyte, airbyte-server, airbyte-worker, airsonic... |
-| `krb5-user` | unknown | 1 | freeipa-client |
-| `ldap-utils` | unknown | 3 | 389ds, openldap-backup, openldap-lambda |
-| `libaio1` | debian-lib | 1 | oracledb-xe |
-| `libaio1t64` | debian-lib | 1 | mysql-8 |
-| `libapache-dbi-perl` | unknown | 1 | sql-ledger |
-| `libapache2-mod-perl2` | debian-lib | 1 | sql-ledger |
-| `libapache2-mod-security2` | debian-lib | 1 | modsecurity-crs |
-| `libasound2` | debian-lib | 1 | redis-insight |
-| `libasound2t64` | debian-lib | 1 | grafana-image-renderer |
-| `libass9` | debian-lib | 1 | jellyfin-ffmpeg |
-| `libatk-bridge2.0-0` | unknown | 1 | redis-insight |
-| `libatk-bridge2.0-0t64` | unknown | 1 | grafana-image-renderer |
-| `libatk1.0-0` | unknown | 1 | redis-insight |
-| `libatspi2.0-0` | unknown | 1 | redis-insight |
-| `libavahi-compat-libdnssd1` | unknown | 2 | homebridge, homebridge-camera |
-| `libboost-all1.74` | unknown | 1 | memgraph |
-| `libboost-all1.74-dev` | unknown | 1 | dnsdist |
-| `libboost-filesystem1.74.0` | unknown | 2 | powerdns-api, powerdns-recursor |
-| `libboost-iostreams1.74.0` | unknown | 1 | ledger |
-| `libboost-program-options1.74.0` | unknown | 2 | powerdns-api, powerdns-recursor |
-| `libboost-system1.74.0` | unknown | 2 | powerdns-api, powerdns-recursor |
-| `libboost-thread1.74.0` | unknown | 2 | powerdns-api, powerdns-recursor |
-| `libcairo2` | debian-lib | 1 | redis-insight |
-| `libcgi-pm-perl` | unknown | 1 | sql-ledger |
-| `libcjson4` | debian-lib | 1 | nheko |
-| `libcups2` | debian-lib | 1 | redis-insight |
-| `libdbd-pg-perl` | unknown | 1 | sql-ledger |
-| `libdbi-perl` | unknown | 1 | sql-ledger |
-| `libdbus-1-3` | unknown | 1 | redis-insight |
-| `libdrm2` | debian-lib | 1 | redis-insight |
-| `libedit2` | debian-lib | 1 | cubrid |
-| `libelf1` | debian-lib | 1 | vpn-controller |
-| `libevent-2.1-7` | versioned | 1 | couchbase |
-| `libfdk-acct2` | unknown | 1 | jellyfin-ffmpeg |
-| `libgbm1` | debian-lib | 2 | grafana-image-renderer, redis-insight |
-| `libgcc-s1` | unknown | 2 | zeromq, zerotier |
-| `libgeoip-dev` | unknown | 1 | modsecurity-crs |
-| `libgeoip1` | debian-lib | 1 | nginx-modsec |
-| `libgl1` | debian-lib | 1 | nheko |
-| `libgmp10` | debian-lib | 3 | ledger, ocserv, strongswan |
-| `libgnutls30` | debian-lib | 1 | ocserv |
-| `libgomp1` | debian-lib | 1 | splunk-forwarder |
-| `libgrpc++1` | unknown | 1 | memgraph |
-| `libgtk-3-0` | unknown | 2 | cyberduck, ldapbrowser |
-| `libgtk-3-0t64` | unknown | 1 | grafana-image-renderer |
-| `libhogweed6` | debian-lib | 1 | ocserv |
-| `libice6` | debian-lib | 2 | emby, emby-server |
-| `libicu72` | debian-lib | 4 | couchdb, couchdb-sync, mattermost, postgresql-17 |
-| `libidn2-0` | debian-lib | 1 | dnsmasq-full |
-| `libjpeg-turbo-turbo-dev` | unknown | 5 | authentik, authentik-worker, sentry, sentry-cron, sentry-worker |
-| `libjson-c5` | unknown | 1 | falco |
-| `libjson-perl` | unknown | 1 | sql-ledger |
-| `liblua5.3-0` | unknown | 1 | dnsdist |
-| `libluajit-5.1-2` | versioned | 2 | knot-resolver, powerdns-recursor |
-| `liblzma5` | debian-lib | 1 | nxlog |
-| `liblzo2-2` | debian-lib | 1 | openvpn-as |
-| `libmariadb3` | debian-lib | 3 | openproject, redmine, vaultwarden-mysql |
-| `libmecab2` | debian-lib | 1 | mysql-8 |
-| `libmilter1.0.1` | unknown | 1 | rmilter |
-| `libmnl0` | debian-lib | 1 | vpn-controller |
-| `libmodsecurity3` | debian-lib | 1 | modsecurity-crs |
-| `libmozjs-78-0` | unknown | 2 | couchdb, couchdb-sync |
-| `libmp3lame0` | debian-lib | 1 | jellyfin-ffmpeg |
-| `libmpfr6` | debian-lib | 1 | ledger |
-| `libncurses5` | debian-lib | 1 | cubrid |
-| `libncurses6` | debian-lib | 1 | tig |
-| `libnetfilter-conntrack3` | unknown | 1 | dnsmasq-full |
-| `libnettle8` | debian-lib | 1 | ocserv |
-| `libnspr4` | debian-lib | 1 | redis-insight |
-| `libnss3` | debian-lib | 4 | grafana-image-renderer, kibana, kibana-oss, redis-insight |
-| `libnss3-tools` | debian-lib | 1 | freeipa-client |
-| `libnuma1` | debian-lib | 1 | mysql-8 |
-| `libodbc1` | debian-lib | 2 | emqx, emqx-ee |
-| `libopenscap8` | debian-lib | 1 | openscap |
-| `libopus0` | debian-lib | 1 | jellyfin-ffmpeg |
-| `libpam-sss` | unknown | 1 | freeipa-client |
-| `libpam0g` | unknown | 1 | ocserv |
-| `libpango-1.0-0` | versioned | 1 | redis-insight |
-| `libpcre3` | debian-lib | 3 | nginx-alpine, nginx-cache, nginx-modsec |
-| `libpcre3-dev` | debian-lib | 1 | modsecurity-crs |
-| `libpkcs11-helper1` | debian-lib | 1 | openvpn-as |
-| `libprotobuf32` | debian-lib | 3 | dnsdist, memgraph, rethinkdb |
-| `libpython3.11` | unknown | 2 | dnsvalidator, surrealdb-python |
-| `libqscintilla2-qt5-15` | debian-lib | 1 | sqlite-browser |
-| `libqt5core5a` | unknown | 1 | eqonomize |
-| `libqt5core5t64` | debian-lib | 1 | sqlite-browser |
-| `libqt5gui5` | debian-lib | 1 | eqonomize |
-| `libqt5gui5t64` | debian-lib | 1 | sqlite-browser |
-| `libqt5network5t64` | debian-lib | 1 | sqlite-browser |
-| `libqt5svg5` | debian-lib | 1 | sqlite-browser |
-| `libqt5widgets5` | debian-lib | 1 | eqonomize |
-| `libqt5widgets5t64` | debian-lib | 1 | sqlite-browser |
-| `libqt6core6` | debian-lib | 1 | nheko |
-| `libqt6gui6` | debian-lib | 1 | nheko |
-| `libqt6multimedia6` | debian-lib | 1 | nheko |
-| `libqt6network6` | debian-lib | 1 | nheko |
-| `libqt6qml6` | debian-lib | 1 | nheko |
-| `libqt6quick6` | debian-lib | 1 | nheko |
-| `libqt6widgets6` | debian-lib | 1 | nheko |
-| `libre2-5` | debian-lib | 1 | dnsdist |
-| `libreadline8` | debian-lib | 1 | postgresql-17 |
-| `libsasl2-modules` | debian-lib | 2 | 389ds, openldap-lambda |
-| `libseccomp2` | debian-lib | 1 | ocserv |
-| `libsm6` | debian-lib | 2 | emby, emby-server |
-| `libsnappy1v5` | debian-lib | 1 | couchbase |
-| `libsodium23` | debian-lib | 2 | dnsdist, zeromq |
-| `libsqlcipher0` | debian-lib | 1 | sqlite-browser |
-| `libswt-gtk-4-java` | unknown | 2 | cyberduck, ldapbrowser |
-| `libtasn1-6` | debian-lib | 1 | ocserv |
-| `libtemplate-perl` | unknown | 1 | sql-ledger |
-| `libtheora0` | debian-lib | 1 | jellyfin-ffmpeg |
-| `libusb-1.0-0` | versioned | 1 | openhab3 |
-| `libuv1` | debian-lib | 1 | knot-resolver |
-| `libvorbis0a` | unknown | 1 | jellyfin-ffmpeg |
-| `libvpx7` | debian-lib | 1 | jellyfin-ffmpeg |
-| `libwebp7` | debian-lib | 1 | jellyfin-ffmpeg |
-| `libwrap0` | debian-lib | 2 | ocserv, pptpd |
-| `libx11-6` | debian-lib | 5 | emby, emby-server, plex, plex-media-server, redis-insight |
-| `libx264-164` | debian-lib | 1 | jellyfin-ffmpeg |
-| `libx265-199` | debian-lib | 1 | jellyfin-ffmpeg |
-| `libxcb1` | debian-lib | 2 | plex, plex-media-server |
-| `libxcomposite1` | debian-lib | 1 | redis-insight |
-| `libxdamage1` | debian-lib | 3 | plex, plex-media-server, redis-insight |
-| `libxext6` | debian-lib | 5 | emby, emby-server, plex, plex-media-server, redis-insight |
-| `libxfixes3` | debian-lib | 3 | plex, plex-media-server, redis-insight |
-| `libxi6` | debian-lib | 1 | redis-insight |
-| `libxkbcommon0` | debian-lib | 1 | redis-insight |
-| `libxrandr2` | debian-lib | 1 | redis-insight |
-| `libxrender1` | debian-lib | 5 | emby, emby-server, plex, plex-media-server, redis-insight |
-| `libxss1` | debian-lib | 3 | grafana-image-renderer, plex, plex-media-server |
-| `libxtst6` | debian-lib | 3 | plex, plex-media-server, redis-insight |
-| `libxvidcore4` | debian-lib | 1 | jellyfin-ffmpeg |
-| `libyajl-dev` | unknown | 1 | modsecurity-crs |
-| `libyajl2` | debian-lib | 1 | nginx-modsec |
-| `libyaml-0-2` | unknown | 1 | falco |
-| `libyaml-cpp0.7` | unknown | 1 | dnsdist |
-| `libyaml-dev` | unknown | 3 | sentry, sentry-cron, sentry-worker |
-| `libz1` | debian-lib | 3 | nginx-alpine, nginx-cache, nginx-modsec |
-| `lsb-release` | unknown | 2 | mysql-8, postgresql-17 |
-| `mailutils` | unknown | 1 | postfix |
-| `mariadb-server` | unknown | 3 | mariadb-10, mariadb-11, mariadb-galera |
-| `mongodb-org` | unknown | 2 | mongodb, mongodb-6 |
-| `mongodb-org-tools` | unknown | 1 | realm-server |
-| `musl-dev` | unknown | 2 | musl, x86_64-unknown-linux-musl |
-| `nginx-light` | unknown | 4 | cinny, element-web, element-x, hydrogen |
-| `oddjob-mkhomedir` | unknown | 1 | freeipa-client |
-| `openjdk-21-jre-headless` | unknown | 3 | keycloak, keycloak-init, keycloak-quarkus |
-| `openjdk-__VAR__-jre-headless` | unknown | 2 | activemq, rocketmq |
-| `openscap-utils` | unknown | 1 | openscap |
-| `openssl-libs` | unknown | 28 | arango, couchbase, dnsdist, emqx, emqx-ee... |
-| `php84` | unknown | 19 | akaunting, composer-audit, dolibarr, egroupware, espocrm... |
-| `php84-bcmath` | unknown | 1 | cachet |
-| `php84-curl` | unknown | 21 | akaunting, cachet, composer-audit, dolibarr, egroupware... |
-| `php84-fpm` | unknown | 21 | akaunting, cachet, dolibarr, egroupware, espocrm... |
-| `php84-gd` | unknown | 13 | dolibarr, egroupware, espocrm, invoice-ninja, invoice-ninja-api... |
-| `php84-intl` | unknown | 15 | akaunting, dolibarr, egroupware, espocrm, frontaccounting... |
-| `php84-mbstring` | unknown | 15 | akaunting, dolibarr, egroupware, espocrm, frontaccounting... |
-| `php84-mysql` | unknown | 15 | akaunting, dolibarr, egroupware, espocrm, frontaccounting... |
-| `php84-pdo` | unknown | 9 | akaunting, dolibarr, egroupware, espocrm, frontaccounting... |
-| `php84-pgsql` | unknown | 1 | cachet |
-| `php84-php84-gd` | unknown | 2 | cachet, privatebin-nginx |
-| `php84-php84-intl` | unknown | 2 | rainloop, roundcube |
-| `php84-php84-mbstring` | unknown | 6 | cachet, composer-audit, ldap-account-manager, privatebin-nginx, rainloop... |
-| `php84-php84-mysql` | unknown | 1 | cachet |
-| `php84-php84-xml` | unknown | 6 | cachet, composer-audit, ldap-account-manager, privatebin-nginx, rainloop... |
-| `php84-redis` | unknown | 1 | cachet |
-| `php84-sqlite-libs` | unknown | 2 | cachet, organizer |
-| `php84-xml` | unknown | 15 | akaunting, dolibarr, egroupware, espocrm, frontaccounting... |
-| `php84-zip` | unknown | 3 | cachet, rainloop, roundcube |
-| `postgresql-16-postgis-3` | unknown | 1 | postgis |
-| `postgresql-16-timescaledb` | unknown | 1 | timescaledb |
-| `postgresql-client-17` | unknown | 1 | postgresql-anonymizer |
-| `postgresql-client-__VAR__` | unknown | 3 | postgres-backup, postgres-restore, postgresql-init |
-| `postgresql-libs` | unknown | 15 | authentik, authentik-geoip, authentik-proxy, authentik-worker, erpnext-worker... |
-| `postgrey` | unknown | 1 | postgrey |
-| `ppp` | unknown | 1 | pptpd |
-| `python3-minimal` | unknown | 4 | awslogs, azurelogs, gcplogs, python |
-| `redis` | unknown | 3 | redis, redis-6, redis-7 |
-| `rkhunter` | unknown | 1 | rkhunter |
-| `ruby3.1` | unknown | 2 | openproject, redmine |
-| `scap-workbench` | unknown | 1 | scap-workbench |
-| `slapd` | unknown | 2 | 389ds, openldap-backup |
-| `soap` | unknown | 2 | dolibarr, vtigercrm |
-| `spamassassin` | unknown | 1 | spamassassin |
-| `spamc` | unknown | 1 | spamassassin |
-| `sssd` | unknown | 1 | freeipa-client |
-| `sssd-tools` | unknown | 1 | freeipa-client |
-| `syslog-ng-core` | unknown | 1 | syslog-ng |
-| `temurin-21-jre-headless` | unknown | 1 | openjdk-alpine |
-| `virtuoso-opensource` | unknown | 1 | virtuoso |
-| `virtuoso-opensource-7` | unknown | 1 | virtuoso |
-| `xz-utils` | unknown | 4 | mysql-backup, mysql-restore, postgres-backup, postgres-restore |
-| `zlib1g-dev` | unknown | 5 | authentik, authentik-worker, sentry, sentry-cron, sentry-worker |
+| Package                          | Category   | Dockerfiles | Images                                                                                                                     |
+| -------------------------------- | ---------- | ----------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `apt-transport-https`            | unknown    | 6           | collabora-online, collabora-online-code, onlyoffice-communityserver, onlyoffice-controlpanel, onlyoffice-documentserver... |
+| `chkrootkit`                     | unknown    | 1           | chkrootkit                                                                                                                 |
+| `cockpit`                        | unknown    | 1           | cockpit                                                                                                                    |
+| `cockpit-dashboard`              | unknown    | 1           | cockpit                                                                                                                    |
+| `cockpit-storaged`               | unknown    | 1           | cockpit                                                                                                                    |
+| `cockpit-system`                 | unknown    | 1           | cockpit                                                                                                                    |
+| `cockpit-ws`                     | unknown    | 1           | cockpit                                                                                                                    |
+| `conntrack`                      | unknown    | 1           | kube-proxy                                                                                                                 |
+| `courier-authlib`                | unknown    | 2           | courier-authlib, courier-imap                                                                                              |
+| `courier-imap`                   | unknown    | 1           | courier-imap                                                                                                               |
+| `curl-openssl-dev`               | unknown    | 1           | modsecurity-crs                                                                                                            |
+| `cyrus-sasl2-bin`                | unknown    | 1           | 389ds                                                                                                                      |
+| `default-php84-mysql-client`     | unknown    | 4           | mysql-anonymizer, mysql-backup, mysql-init, mysql-restore                                                                  |
+| `default-php84-mysql-server`     | unknown    | 2           | mariadb, mysql                                                                                                             |
+| `dovecot-core`                   | unknown    | 3           | dovecot, dovecot-lda, dovecot-pop3                                                                                         |
+| `dovecot-imapd`                  | unknown    | 2           | dovecot, dovecot-lda                                                                                                       |
+| `dovecot-lmtpd`                  | unknown    | 2           | dovecot, dovecot-lda                                                                                                       |
+| `dovecot-pop3d`                  | unknown    | 2           | dovecot, dovecot-pop3                                                                                                      |
+| `erlang-asn1`                    | unknown    | 8           | couchdb, couchdb-sync, rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation...                                             |
+| `erlang-base`                    | unknown    | 8           | couchdb, couchdb-sync, rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation...                                             |
+| `erlang-crypto`                  | unknown    | 8           | couchdb, couchdb-sync, rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation...                                             |
+| `erlang-eldap`                   | unknown    | 6           | rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation, rabbitmq-management, rabbitmq-mqtt...                                |
+| `erlang-ftp`                     | unknown    | 6           | rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation, rabbitmq-management, rabbitmq-mqtt...                                |
+| `erlang-inets`                   | unknown    | 6           | rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation, rabbitmq-management, rabbitmq-mqtt...                                |
+| `erlang-mnesia`                  | unknown    | 6           | rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation, rabbitmq-management, rabbitmq-mqtt...                                |
+| `erlang-os-mon`                  | unknown    | 6           | rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation, rabbitmq-management, rabbitmq-mqtt...                                |
+| `erlang-parsetools`              | unknown    | 6           | rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation, rabbitmq-management, rabbitmq-mqtt...                                |
+| `erlang-public-key`              | unknown    | 8           | couchdb, couchdb-sync, rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation...                                             |
+| `erlang-runtime-tools`           | unknown    | 6           | rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation, rabbitmq-management, rabbitmq-mqtt...                                |
+| `erlang-snmp`                    | unknown    | 6           | rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation, rabbitmq-management, rabbitmq-mqtt...                                |
+| `erlang-ssl`                     | unknown    | 8           | couchdb, couchdb-sync, rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation...                                             |
+| `erlang-syntax-tools`            | unknown    | 8           | couchdb, couchdb-sync, rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation...                                             |
+| `erlang-tftp`                    | unknown    | 6           | rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation, rabbitmq-management, rabbitmq-mqtt...                                |
+| `erlang-tools`                   | unknown    | 8           | couchdb, couchdb-sync, rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation...                                             |
+| `erlang-xmerl`                   | unknown    | 6           | rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation, rabbitmq-management, rabbitmq-mqtt...                                |
+| `fonts-liberation`               | unknown    | 1           | grafana-image-renderer                                                                                                     |
+| `galera-4`                       | unknown    | 1           | mariadb-galera                                                                                                             |
+| `golang`                         | unknown    | 1           | linguist-go                                                                                                                |
+| `golang-go`                      | unknown    | 1           | golang                                                                                                                     |
+| `imagick`                        | unknown    | 1           | nextcloud-imaging                                                                                                          |
+| `imap`                           | unknown    | 1           | suitecrm                                                                                                                   |
+| `java-17-runtime`                | unknown    | 55          | adempiere, airbyte, airbyte-server, airbyte-worker, airsonic...                                                            |
+| `krb5-user`                      | unknown    | 1           | freeipa-client                                                                                                             |
+| `ldap-utils`                     | unknown    | 3           | 389ds, openldap-backup, openldap-lambda                                                                                    |
+| `libaio1`                        | debian-lib | 1           | oracledb-xe                                                                                                                |
+| `libaio1t64`                     | debian-lib | 1           | mysql-8                                                                                                                    |
+| `libapache-dbi-perl`             | unknown    | 1           | sql-ledger                                                                                                                 |
+| `libapache2-mod-perl2`           | debian-lib | 1           | sql-ledger                                                                                                                 |
+| `libapache2-mod-security2`       | debian-lib | 1           | modsecurity-crs                                                                                                            |
+| `libasound2`                     | debian-lib | 1           | redis-insight                                                                                                              |
+| `libasound2t64`                  | debian-lib | 1           | grafana-image-renderer                                                                                                     |
+| `libass9`                        | debian-lib | 1           | jellyfin-ffmpeg                                                                                                            |
+| `libatk-bridge2.0-0`             | unknown    | 1           | redis-insight                                                                                                              |
+| `libatk-bridge2.0-0t64`          | unknown    | 1           | grafana-image-renderer                                                                                                     |
+| `libatk1.0-0`                    | unknown    | 1           | redis-insight                                                                                                              |
+| `libatspi2.0-0`                  | unknown    | 1           | redis-insight                                                                                                              |
+| `libavahi-compat-libdnssd1`      | unknown    | 2           | homebridge, homebridge-camera                                                                                              |
+| `libboost-all1.74`               | unknown    | 1           | memgraph                                                                                                                   |
+| `libboost-all1.74-dev`           | unknown    | 1           | dnsdist                                                                                                                    |
+| `libboost-filesystem1.74.0`      | unknown    | 2           | powerdns-api, powerdns-recursor                                                                                            |
+| `libboost-iostreams1.74.0`       | unknown    | 1           | ledger                                                                                                                     |
+| `libboost-program-options1.74.0` | unknown    | 2           | powerdns-api, powerdns-recursor                                                                                            |
+| `libboost-system1.74.0`          | unknown    | 2           | powerdns-api, powerdns-recursor                                                                                            |
+| `libboost-thread1.74.0`          | unknown    | 2           | powerdns-api, powerdns-recursor                                                                                            |
+| `libcairo2`                      | debian-lib | 1           | redis-insight                                                                                                              |
+| `libcgi-pm-perl`                 | unknown    | 1           | sql-ledger                                                                                                                 |
+| `libcjson4`                      | debian-lib | 1           | nheko                                                                                                                      |
+| `libcups2`                       | debian-lib | 1           | redis-insight                                                                                                              |
+| `libdbd-pg-perl`                 | unknown    | 1           | sql-ledger                                                                                                                 |
+| `libdbi-perl`                    | unknown    | 1           | sql-ledger                                                                                                                 |
+| `libdbus-1-3`                    | unknown    | 1           | redis-insight                                                                                                              |
+| `libdrm2`                        | debian-lib | 1           | redis-insight                                                                                                              |
+| `libedit2`                       | debian-lib | 1           | cubrid                                                                                                                     |
+| `libelf1`                        | debian-lib | 1           | vpn-controller                                                                                                             |
+| `libevent-2.1-7`                 | versioned  | 1           | couchbase                                                                                                                  |
+| `libfdk-acct2`                   | unknown    | 1           | jellyfin-ffmpeg                                                                                                            |
+| `libgbm1`                        | debian-lib | 2           | grafana-image-renderer, redis-insight                                                                                      |
+| `libgcc-s1`                      | unknown    | 2           | zeromq, zerotier                                                                                                           |
+| `libgeoip-dev`                   | unknown    | 1           | modsecurity-crs                                                                                                            |
+| `libgeoip1`                      | debian-lib | 1           | nginx-modsec                                                                                                               |
+| `libgl1`                         | debian-lib | 1           | nheko                                                                                                                      |
+| `libgmp10`                       | debian-lib | 3           | ledger, ocserv, strongswan                                                                                                 |
+| `libgnutls30`                    | debian-lib | 1           | ocserv                                                                                                                     |
+| `libgomp1`                       | debian-lib | 1           | splunk-forwarder                                                                                                           |
+| `libgrpc++1`                     | unknown    | 1           | memgraph                                                                                                                   |
+| `libgtk-3-0`                     | unknown    | 2           | cyberduck, ldapbrowser                                                                                                     |
+| `libgtk-3-0t64`                  | unknown    | 1           | grafana-image-renderer                                                                                                     |
+| `libhogweed6`                    | debian-lib | 1           | ocserv                                                                                                                     |
+| `libice6`                        | debian-lib | 2           | emby, emby-server                                                                                                          |
+| `libicu72`                       | debian-lib | 4           | couchdb, couchdb-sync, mattermost, postgresql-17                                                                           |
+| `libidn2-0`                      | debian-lib | 1           | dnsmasq-full                                                                                                               |
+| `libjpeg-turbo-turbo-dev`        | unknown    | 5           | authentik, authentik-worker, sentry, sentry-cron, sentry-worker                                                            |
+| `libjson-c5`                     | unknown    | 1           | falco                                                                                                                      |
+| `libjson-perl`                   | unknown    | 1           | sql-ledger                                                                                                                 |
+| `liblua5.3-0`                    | unknown    | 1           | dnsdist                                                                                                                    |
+| `libluajit-5.1-2`                | versioned  | 2           | knot-resolver, powerdns-recursor                                                                                           |
+| `liblzma5`                       | debian-lib | 1           | nxlog                                                                                                                      |
+| `liblzo2-2`                      | debian-lib | 1           | openvpn-as                                                                                                                 |
+| `libmariadb3`                    | debian-lib | 3           | openproject, redmine, vaultwarden-mysql                                                                                    |
+| `libmecab2`                      | debian-lib | 1           | mysql-8                                                                                                                    |
+| `libmilter1.0.1`                 | unknown    | 1           | rmilter                                                                                                                    |
+| `libmnl0`                        | debian-lib | 1           | vpn-controller                                                                                                             |
+| `libmodsecurity3`                | debian-lib | 1           | modsecurity-crs                                                                                                            |
+| `libmozjs-78-0`                  | unknown    | 2           | couchdb, couchdb-sync                                                                                                      |
+| `libmp3lame0`                    | debian-lib | 1           | jellyfin-ffmpeg                                                                                                            |
+| `libmpfr6`                       | debian-lib | 1           | ledger                                                                                                                     |
+| `libncurses5`                    | debian-lib | 1           | cubrid                                                                                                                     |
+| `libncurses6`                    | debian-lib | 1           | tig                                                                                                                        |
+| `libnetfilter-conntrack3`        | unknown    | 1           | dnsmasq-full                                                                                                               |
+| `libnettle8`                     | debian-lib | 1           | ocserv                                                                                                                     |
+| `libnspr4`                       | debian-lib | 1           | redis-insight                                                                                                              |
+| `libnss3`                        | debian-lib | 4           | grafana-image-renderer, kibana, kibana-oss, redis-insight                                                                  |
+| `libnss3-tools`                  | debian-lib | 1           | freeipa-client                                                                                                             |
+| `libnuma1`                       | debian-lib | 1           | mysql-8                                                                                                                    |
+| `libodbc1`                       | debian-lib | 2           | emqx, emqx-ee                                                                                                              |
+| `libopenscap8`                   | debian-lib | 1           | openscap                                                                                                                   |
+| `libopus0`                       | debian-lib | 1           | jellyfin-ffmpeg                                                                                                            |
+| `libpam-sss`                     | unknown    | 1           | freeipa-client                                                                                                             |
+| `libpam0g`                       | unknown    | 1           | ocserv                                                                                                                     |
+| `libpango-1.0-0`                 | versioned  | 1           | redis-insight                                                                                                              |
+| `libpcre3`                       | debian-lib | 3           | nginx-alpine, nginx-cache, nginx-modsec                                                                                    |
+| `libpcre3-dev`                   | debian-lib | 1           | modsecurity-crs                                                                                                            |
+| `libpkcs11-helper1`              | debian-lib | 1           | openvpn-as                                                                                                                 |
+| `libprotobuf32`                  | debian-lib | 3           | dnsdist, memgraph, rethinkdb                                                                                               |
+| `libpython3.11`                  | unknown    | 2           | dnsvalidator, surrealdb-python                                                                                             |
+| `libqscintilla2-qt5-15`          | debian-lib | 1           | sqlite-browser                                                                                                             |
+| `libqt5core5a`                   | unknown    | 1           | eqonomize                                                                                                                  |
+| `libqt5core5t64`                 | debian-lib | 1           | sqlite-browser                                                                                                             |
+| `libqt5gui5`                     | debian-lib | 1           | eqonomize                                                                                                                  |
+| `libqt5gui5t64`                  | debian-lib | 1           | sqlite-browser                                                                                                             |
+| `libqt5network5t64`              | debian-lib | 1           | sqlite-browser                                                                                                             |
+| `libqt5svg5`                     | debian-lib | 1           | sqlite-browser                                                                                                             |
+| `libqt5widgets5`                 | debian-lib | 1           | eqonomize                                                                                                                  |
+| `libqt5widgets5t64`              | debian-lib | 1           | sqlite-browser                                                                                                             |
+| `libqt6core6`                    | debian-lib | 1           | nheko                                                                                                                      |
+| `libqt6gui6`                     | debian-lib | 1           | nheko                                                                                                                      |
+| `libqt6multimedia6`              | debian-lib | 1           | nheko                                                                                                                      |
+| `libqt6network6`                 | debian-lib | 1           | nheko                                                                                                                      |
+| `libqt6qml6`                     | debian-lib | 1           | nheko                                                                                                                      |
+| `libqt6quick6`                   | debian-lib | 1           | nheko                                                                                                                      |
+| `libqt6widgets6`                 | debian-lib | 1           | nheko                                                                                                                      |
+| `libre2-5`                       | debian-lib | 1           | dnsdist                                                                                                                    |
+| `libreadline8`                   | debian-lib | 1           | postgresql-17                                                                                                              |
+| `libsasl2-modules`               | debian-lib | 2           | 389ds, openldap-lambda                                                                                                     |
+| `libseccomp2`                    | debian-lib | 1           | ocserv                                                                                                                     |
+| `libsm6`                         | debian-lib | 2           | emby, emby-server                                                                                                          |
+| `libsnappy1v5`                   | debian-lib | 1           | couchbase                                                                                                                  |
+| `libsodium23`                    | debian-lib | 2           | dnsdist, zeromq                                                                                                            |
+| `libsqlcipher0`                  | debian-lib | 1           | sqlite-browser                                                                                                             |
+| `libswt-gtk-4-java`              | unknown    | 2           | cyberduck, ldapbrowser                                                                                                     |
+| `libtasn1-6`                     | debian-lib | 1           | ocserv                                                                                                                     |
+| `libtemplate-perl`               | unknown    | 1           | sql-ledger                                                                                                                 |
+| `libtheora0`                     | debian-lib | 1           | jellyfin-ffmpeg                                                                                                            |
+| `libusb-1.0-0`                   | versioned  | 1           | openhab3                                                                                                                   |
+| `libuv1`                         | debian-lib | 1           | knot-resolver                                                                                                              |
+| `libvorbis0a`                    | unknown    | 1           | jellyfin-ffmpeg                                                                                                            |
+| `libvpx7`                        | debian-lib | 1           | jellyfin-ffmpeg                                                                                                            |
+| `libwebp7`                       | debian-lib | 1           | jellyfin-ffmpeg                                                                                                            |
+| `libwrap0`                       | debian-lib | 2           | ocserv, pptpd                                                                                                              |
+| `libx11-6`                       | debian-lib | 5           | emby, emby-server, plex, plex-media-server, redis-insight                                                                  |
+| `libx264-164`                    | debian-lib | 1           | jellyfin-ffmpeg                                                                                                            |
+| `libx265-199`                    | debian-lib | 1           | jellyfin-ffmpeg                                                                                                            |
+| `libxcb1`                        | debian-lib | 2           | plex, plex-media-server                                                                                                    |
+| `libxcomposite1`                 | debian-lib | 1           | redis-insight                                                                                                              |
+| `libxdamage1`                    | debian-lib | 3           | plex, plex-media-server, redis-insight                                                                                     |
+| `libxext6`                       | debian-lib | 5           | emby, emby-server, plex, plex-media-server, redis-insight                                                                  |
+| `libxfixes3`                     | debian-lib | 3           | plex, plex-media-server, redis-insight                                                                                     |
+| `libxi6`                         | debian-lib | 1           | redis-insight                                                                                                              |
+| `libxkbcommon0`                  | debian-lib | 1           | redis-insight                                                                                                              |
+| `libxrandr2`                     | debian-lib | 1           | redis-insight                                                                                                              |
+| `libxrender1`                    | debian-lib | 5           | emby, emby-server, plex, plex-media-server, redis-insight                                                                  |
+| `libxss1`                        | debian-lib | 3           | grafana-image-renderer, plex, plex-media-server                                                                            |
+| `libxtst6`                       | debian-lib | 3           | plex, plex-media-server, redis-insight                                                                                     |
+| `libxvidcore4`                   | debian-lib | 1           | jellyfin-ffmpeg                                                                                                            |
+| `libyajl-dev`                    | unknown    | 1           | modsecurity-crs                                                                                                            |
+| `libyajl2`                       | debian-lib | 1           | nginx-modsec                                                                                                               |
+| `libyaml-0-2`                    | unknown    | 1           | falco                                                                                                                      |
+| `libyaml-cpp0.7`                 | unknown    | 1           | dnsdist                                                                                                                    |
+| `libyaml-dev`                    | unknown    | 3           | sentry, sentry-cron, sentry-worker                                                                                         |
+| `libz1`                          | debian-lib | 3           | nginx-alpine, nginx-cache, nginx-modsec                                                                                    |
+| `lsb-release`                    | unknown    | 2           | mysql-8, postgresql-17                                                                                                     |
+| `mailutils`                      | unknown    | 1           | postfix                                                                                                                    |
+| `mariadb-server`                 | unknown    | 3           | mariadb-10, mariadb-11, mariadb-galera                                                                                     |
+| `mongodb-org`                    | unknown    | 2           | mongodb, mongodb-6                                                                                                         |
+| `mongodb-org-tools`              | unknown    | 1           | realm-server                                                                                                               |
+| `musl-dev`                       | unknown    | 2           | musl, x86_64-unknown-linux-musl                                                                                            |
+| `nginx-light`                    | unknown    | 4           | cinny, element-web, element-x, hydrogen                                                                                    |
+| `oddjob-mkhomedir`               | unknown    | 1           | freeipa-client                                                                                                             |
+| `openjdk-21-jre-headless`        | unknown    | 3           | keycloak, keycloak-init, keycloak-quarkus                                                                                  |
+| `openjdk-__VAR__-jre-headless`   | unknown    | 2           | activemq, rocketmq                                                                                                         |
+| `openscap-utils`                 | unknown    | 1           | openscap                                                                                                                   |
+| `openssl-libs`                   | unknown    | 28          | arango, couchbase, dnsdist, emqx, emqx-ee...                                                                               |
+| `php84`                          | unknown    | 19          | akaunting, composer-audit, dolibarr, egroupware, espocrm...                                                                |
+| `php84-bcmath`                   | unknown    | 1           | cachet                                                                                                                     |
+| `php84-curl`                     | unknown    | 21          | akaunting, cachet, composer-audit, dolibarr, egroupware...                                                                 |
+| `php84-fpm`                      | unknown    | 21          | akaunting, cachet, dolibarr, egroupware, espocrm...                                                                        |
+| `php84-gd`                       | unknown    | 13          | dolibarr, egroupware, espocrm, invoice-ninja, invoice-ninja-api...                                                         |
+| `php84-intl`                     | unknown    | 15          | akaunting, dolibarr, egroupware, espocrm, frontaccounting...                                                               |
+| `php84-mbstring`                 | unknown    | 15          | akaunting, dolibarr, egroupware, espocrm, frontaccounting...                                                               |
+| `php84-mysql`                    | unknown    | 15          | akaunting, dolibarr, egroupware, espocrm, frontaccounting...                                                               |
+| `php84-pdo`                      | unknown    | 9           | akaunting, dolibarr, egroupware, espocrm, frontaccounting...                                                               |
+| `php84-pgsql`                    | unknown    | 1           | cachet                                                                                                                     |
+| `php84-php84-gd`                 | unknown    | 2           | cachet, privatebin-nginx                                                                                                   |
+| `php84-php84-intl`               | unknown    | 2           | rainloop, roundcube                                                                                                        |
+| `php84-php84-mbstring`           | unknown    | 6           | cachet, composer-audit, ldap-account-manager, privatebin-nginx, rainloop...                                                |
+| `php84-php84-mysql`              | unknown    | 1           | cachet                                                                                                                     |
+| `php84-php84-xml`                | unknown    | 6           | cachet, composer-audit, ldap-account-manager, privatebin-nginx, rainloop...                                                |
+| `php84-redis`                    | unknown    | 1           | cachet                                                                                                                     |
+| `php84-sqlite-libs`              | unknown    | 2           | cachet, organizer                                                                                                          |
+| `php84-xml`                      | unknown    | 15          | akaunting, dolibarr, egroupware, espocrm, frontaccounting...                                                               |
+| `php84-zip`                      | unknown    | 3           | cachet, rainloop, roundcube                                                                                                |
+| `postgresql-16-postgis-3`        | unknown    | 1           | postgis                                                                                                                    |
+| `postgresql-16-timescaledb`      | unknown    | 1           | timescaledb                                                                                                                |
+| `postgresql-client-17`           | unknown    | 1           | postgresql-anonymizer                                                                                                      |
+| `postgresql-client-__VAR__`      | unknown    | 3           | postgres-backup, postgres-restore, postgresql-init                                                                         |
+| `postgresql-libs`                | unknown    | 15          | authentik, authentik-geoip, authentik-proxy, authentik-worker, erpnext-worker...                                           |
+| `postgrey`                       | unknown    | 1           | postgrey                                                                                                                   |
+| `ppp`                            | unknown    | 1           | pptpd                                                                                                                      |
+| `python3-minimal`                | unknown    | 4           | awslogs, azurelogs, gcplogs, python                                                                                        |
+| `redis`                          | unknown    | 3           | redis, redis-6, redis-7                                                                                                    |
+| `rkhunter`                       | unknown    | 1           | rkhunter                                                                                                                   |
+| `ruby3.1`                        | unknown    | 2           | openproject, redmine                                                                                                       |
+| `scap-workbench`                 | unknown    | 1           | scap-workbench                                                                                                             |
+| `slapd`                          | unknown    | 2           | 389ds, openldap-backup                                                                                                     |
+| `soap`                           | unknown    | 2           | dolibarr, vtigercrm                                                                                                        |
+| `spamassassin`                   | unknown    | 1           | spamassassin                                                                                                               |
+| `spamc`                          | unknown    | 1           | spamassassin                                                                                                               |
+| `sssd`                           | unknown    | 1           | freeipa-client                                                                                                             |
+| `sssd-tools`                     | unknown    | 1           | freeipa-client                                                                                                             |
+| `syslog-ng-core`                 | unknown    | 1           | syslog-ng                                                                                                                  |
+| `temurin-21-jre-headless`        | unknown    | 1           | openjdk-alpine                                                                                                             |
+| `virtuoso-opensource`            | unknown    | 1           | virtuoso                                                                                                                   |
+| `virtuoso-opensource-7`          | unknown    | 1           | virtuoso                                                                                                                   |
+| `xz-utils`                       | unknown    | 4           | mysql-backup, mysql-restore, postgres-backup, postgres-restore                                                             |
+| `zlib1g-dev`                     | unknown    | 5           | authentik, authentik-worker, sentry, sentry-cron, sentry-worker                                                            |
 
 ## Category Breakdown
 
-| Category | Count | Examples |
-|----------|-------|----------|
-| debian-lib | 91 | `libaio1`, `libaio1t64`, `libapache2-mod-perl2`, `libapache2-mod-security2`, `libasound2` |
-| debian-php | 0 | — |
-| versioned | 4 | `libevent-2.1-7`, `libluajit-5.1-2`, `libpango-1.0-0`, `libusb-1.0-0` |
-| unknown | 140 | `apt-transport-https`, `chkrootkit`, `cockpit`, `cockpit-dashboard`, `cockpit-storaged` |
+| Category   | Count | Examples                                                                                  |
+| ---------- | ----- | ----------------------------------------------------------------------------------------- |
+| debian-lib | 91    | `libaio1`, `libaio1t64`, `libapache2-mod-perl2`, `libapache2-mod-security2`, `libasound2` |
+| debian-php | 0     | —                                                                                         |
+| versioned  | 4     | `libevent-2.1-7`, `libluajit-5.1-2`, `libpango-1.0-0`, `libusb-1.0-0`                     |
+| unknown    | 140   | `apt-transport-https`, `chkrootkit`, `cockpit`, `cockpit-dashboard`, `cockpit-storaged`   |
 
 ## Per-Image Summary
 
@@ -318,7 +318,8 @@
 
 **Valid** (4): `ca-certificates`, `nginx`, `openssl`, `zip`
 
-**Invalid** (8): `php84`, `php84-curl`, `php84-fpm`, `php84-intl`, `php84-mbstring`, `php84-mysql`, `php84-pdo`, `php84-xml`
+**Invalid** (8): `php84`, `php84-curl`, `php84-fpm`, `php84-intl`, `php84-mbstring`, `php84-mysql`, `php84-pdo`,
+`php84-xml`
 
 ### `alpine`
 
@@ -388,7 +389,8 @@ All packages valid.
 
 ### `authentik`
 
-**Valid** (8): `build-base`, `ca-certificates`, `libffi-dev`, `libxml2-dev`, `libxslt-dev`, `openssl-dev`, `py3-pip`, `python3`
+**Valid** (8): `build-base`, `ca-certificates`, `libffi-dev`, `libxml2-dev`, `libxslt-dev`, `openssl-dev`, `py3-pip`,
+`python3`
 
 **Invalid** (3): `libjpeg-turbo-turbo-dev`, `postgresql-libs`, `zlib1g-dev`
 
@@ -406,7 +408,8 @@ All packages valid.
 
 ### `authentik-worker`
 
-**Valid** (8): `build-base`, `ca-certificates`, `libffi-dev`, `libxml2-dev`, `libxslt-dev`, `openssl-dev`, `py3-pip`, `python3`
+**Valid** (8): `build-base`, `ca-certificates`, `libffi-dev`, `libxml2-dev`, `libxslt-dev`, `openssl-dev`, `py3-pip`,
+`python3`
 
 **Invalid** (3): `libjpeg-turbo-turbo-dev`, `postgresql-libs`, `zlib1g-dev`
 
@@ -474,7 +477,8 @@ All packages valid.
 
 **Valid** (2): `ca-certificates`, `nginx`
 
-**Invalid** (11): `php84-bcmath`, `php84-curl`, `php84-fpm`, `php84-pgsql`, `php84-php84-gd`, `php84-php84-mbstring`, `php84-php84-mysql`, `php84-php84-xml`, `php84-redis`, `php84-sqlite-libs`, `php84-zip`
+**Invalid** (11): `php84-bcmath`, `php84-curl`, `php84-fpm`, `php84-pgsql`, `php84-php84-gd`, `php84-php84-mbstring`,
+`php84-php84-mysql`, `php84-php84-xml`, `php84-redis`, `php84-sqlite-libs`, `php84-zip`
 
 ### `caddy-alpine`
 
@@ -586,13 +590,15 @@ All packages valid.
 
 **Valid** (1): `procps`
 
-**Invalid** (9): `erlang-asn1`, `erlang-base`, `erlang-crypto`, `erlang-public-key`, `erlang-ssl`, `erlang-syntax-tools`, `erlang-tools`, `libicu72`, `libmozjs-78-0`
+**Invalid** (9): `erlang-asn1`, `erlang-base`, `erlang-crypto`, `erlang-public-key`, `erlang-ssl`,
+`erlang-syntax-tools`, `erlang-tools`, `libicu72`, `libmozjs-78-0`
 
 ### `couchdb-sync`
 
 **Valid** (1): `procps`
 
-**Invalid** (9): `erlang-asn1`, `erlang-base`, `erlang-crypto`, `erlang-public-key`, `erlang-ssl`, `erlang-syntax-tools`, `erlang-tools`, `libicu72`, `libmozjs-78-0`
+**Invalid** (9): `erlang-asn1`, `erlang-base`, `erlang-crypto`, `erlang-public-key`, `erlang-ssl`,
+`erlang-syntax-tools`, `erlang-tools`, `libicu72`, `libmozjs-78-0`
 
 ### `courier-authlib`
 
@@ -666,7 +672,8 @@ All packages valid.
 
 **Valid** (1): `ca-certificates`
 
-**Invalid** (7): `libboost-all1.74-dev`, `liblua5.3-0`, `libprotobuf32`, `libre2-5`, `libsodium23`, `libyaml-cpp0.7`, `openssl-libs`
+**Invalid** (7): `libboost-all1.74-dev`, `liblua5.3-0`, `libprotobuf32`, `libre2-5`, `libsodium23`, `libyaml-cpp0.7`,
+`openssl-libs`
 
 ### `dnsmasq-full`
 
@@ -708,7 +715,8 @@ All packages valid.
 
 **Valid** (5): `ca-certificates`, `json-c`, `nginx`, `openssl`, `zip`
 
-**Invalid** (10): `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`, `php84-pdo`, `php84-xml`, `soap`
+**Invalid** (10): `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`,
+`php84-pdo`, `php84-xml`, `soap`
 
 ### `dovecot`
 
@@ -742,7 +750,8 @@ All packages valid.
 
 **Valid** (5): `ca-certificates`, `json-c`, `nginx`, `openssl`, `zip`
 
-**Invalid** (9): `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`, `php84-pdo`, `php84-xml`
+**Invalid** (9): `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`,
+`php84-pdo`, `php84-xml`
 
 ### `ejdb`
 
@@ -832,7 +841,8 @@ All packages valid.
 
 **Valid** (5): `ca-certificates`, `json-c`, `nginx`, `openssl`, `zip`
 
-**Invalid** (9): `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`, `php84-pdo`, `php84-xml`
+**Invalid** (9): `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`,
+`php84-pdo`, `php84-xml`
 
 ### `espurna`
 
@@ -892,7 +902,8 @@ All packages valid.
 
 **Valid** (4): `ca-certificates`, `nginx`, `openssl`, `zip`
 
-**Invalid** (8): `php84`, `php84-curl`, `php84-fpm`, `php84-intl`, `php84-mbstring`, `php84-mysql`, `php84-pdo`, `php84-xml`
+**Invalid** (8): `php84`, `php84-curl`, `php84-fpm`, `php84-intl`, `php84-mbstring`, `php84-mysql`, `php84-pdo`,
+`php84-xml`
 
 ### `gcplogs`
 
@@ -988,7 +999,8 @@ All packages valid.
 
 **Valid** (1): `ca-certificates`
 
-**Invalid** (7): `fonts-liberation`, `libasound2t64`, `libatk-bridge2.0-0t64`, `libgbm1`, `libgtk-3-0t64`, `libnss3`, `libxss1`
+**Invalid** (7): `fonts-liberation`, `libasound2t64`, `libatk-bridge2.0-0t64`, `libgbm1`, `libgtk-3-0t64`, `libnss3`,
+`libxss1`
 
 ### `graphdb-enterpriser`
 
@@ -1150,13 +1162,15 @@ All packages valid.
 
 **Valid** (4): `ca-certificates`, `nginx`, `openssl`, `zip`
 
-**Invalid** (9): `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`, `php84-pdo`, `php84-xml`
+**Invalid** (9): `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`,
+`php84-pdo`, `php84-xml`
 
 ### `invoice-ninja-api`
 
 **Valid** (4): `ca-certificates`, `nginx`, `openssl`, `zip`
 
-**Invalid** (9): `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`, `php84-pdo`, `php84-xml`
+**Invalid** (9): `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`,
+`php84-pdo`, `php84-xml`
 
 ### `iobroker`
 
@@ -1180,7 +1194,8 @@ All packages valid.
 
 **Valid** (3): `ca-certificates`, `freetype`, `zlib`
 
-**Invalid** (11): `libass9`, `libfdk-acct2`, `libmp3lame0`, `libopus0`, `libtheora0`, `libvorbis0a`, `libvpx7`, `libwebp7`, `libx264-164`, `libx265-199`, `libxvidcore4`
+**Invalid** (11): `libass9`, `libfdk-acct2`, `libmp3lame0`, `libopus0`, `libtheora0`, `libvorbis0a`, `libvpx7`,
+`libwebp7`, `libx264-164`, `libx265-199`, `libxvidcore4`
 
 ### `jenkins-agent`
 
@@ -1414,7 +1429,8 @@ All packages valid.
 
 **Valid** (2): `ca-certificates`, `libxml2-dev`
 
-**Invalid** (6): `curl-openssl-dev`, `libapache2-mod-security2`, `libgeoip-dev`, `libmodsecurity3`, `libpcre3-dev`, `libyajl-dev`
+**Invalid** (6): `curl-openssl-dev`, `libapache2-mod-security2`, `libgeoip-dev`, `libmodsecurity3`, `libpcre3-dev`,
+`libyajl-dev`
 
 ### `mongodb`
 
@@ -1544,31 +1560,36 @@ All packages valid.
 
 **Valid** (4): `ca-certificates`, `nginx`, `sqlite-libs`, `zip`
 
-**Invalid** (8): `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`, `php84-xml`
+**Invalid** (8): `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`,
+`php84-xml`
 
 ### `nextcloud-alpine`
 
 **Valid** (4): `ca-certificates`, `nginx`, `sqlite-libs`, `zip`
 
-**Invalid** (8): `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`, `php84-xml`
+**Invalid** (8): `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`,
+`php84-xml`
 
 ### `nextcloud-external`
 
 **Valid** (4): `ca-certificates`, `nginx`, `sqlite-libs`, `zip`
 
-**Invalid** (8): `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`, `php84-xml`
+**Invalid** (8): `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`,
+`php84-xml`
 
 ### `nextcloud-imaging`
 
 **Valid** (4): `ca-certificates`, `nginx`, `sqlite-libs`, `zip`
 
-**Invalid** (9): `imagick`, `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`, `php84-xml`
+**Invalid** (9): `imagick`, `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`,
+`php84-mysql`, `php84-xml`
 
 ### `nextcloud-nginx`
 
 **Valid** (4): `ca-certificates`, `nginx`, `sqlite-libs`, `zip`
 
-**Invalid** (8): `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`, `php84-xml`
+**Invalid** (8): `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`,
+`php84-xml`
 
 ### `nginx-alpine`
 
@@ -1592,7 +1613,8 @@ All packages valid.
 
 **Valid** (2): `ca-certificates`, `glib`
 
-**Invalid** (10): `libcjson4`, `libgl1`, `libqt6core6`, `libqt6gui6`, `libqt6multimedia6`, `libqt6network6`, `libqt6qml6`, `libqt6quick6`, `libqt6widgets6`, `openssl-libs`
+**Invalid** (10): `libcjson4`, `libgl1`, `libqt6core6`, `libqt6gui6`, `libqt6multimedia6`, `libqt6network6`,
+`libqt6qml6`, `libqt6quick6`, `libqt6widgets6`, `openssl-libs`
 
 ### `nifi-registry`
 
@@ -1634,7 +1656,8 @@ All packages valid.
 
 **Valid** (1): `ca-certificates`
 
-**Invalid** (8): `libgmp10`, `libgnutls30`, `libhogweed6`, `libnettle8`, `libpam0g`, `libseccomp2`, `libtasn1-6`, `libwrap0`
+**Invalid** (8): `libgmp10`, `libgnutls30`, `libhogweed6`, `libnettle8`, `libpam0g`, `libseccomp2`, `libtasn1-6`,
+`libwrap0`
 
 ### `onlyoffice-communityserver`
 
@@ -1926,13 +1949,15 @@ All packages valid.
 
 **Valid** (2): `ca-certificates`, `sqlite-libs`
 
-**Invalid** (5): `libboost-filesystem1.74.0`, `libboost-program-options1.74.0`, `libboost-system1.74.0`, `libboost-thread1.74.0`, `openssl-libs`
+**Invalid** (5): `libboost-filesystem1.74.0`, `libboost-program-options1.74.0`, `libboost-system1.74.0`,
+`libboost-thread1.74.0`, `openssl-libs`
 
 ### `powerdns-recursor`
 
 **Valid** (1): `ca-certificates`
 
-**Invalid** (6): `libboost-filesystem1.74.0`, `libboost-program-options1.74.0`, `libboost-system1.74.0`, `libboost-thread1.74.0`, `libluajit-5.1-2`, `openssl-libs`
+**Invalid** (6): `libboost-filesystem1.74.0`, `libboost-program-options1.74.0`, `libboost-system1.74.0`,
+`libboost-thread1.74.0`, `libluajit-5.1-2`, `openssl-libs`
 
 ### `pptpd`
 
@@ -1968,7 +1993,8 @@ All packages valid.
 
 **Valid** (5): `ca-certificates`, `json-c`, `nginx`, `sqlite-libs`, `zip`
 
-**Invalid** (8): `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`, `php84-xml`
+**Invalid** (8): `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`,
+`php84-xml`
 
 ### `python`
 
@@ -1998,37 +2024,49 @@ All packages valid.
 
 **Valid** (1): `ca-certificates`
 
-**Invalid** (17): `erlang-asn1`, `erlang-base`, `erlang-crypto`, `erlang-eldap`, `erlang-ftp`, `erlang-inets`, `erlang-mnesia`, `erlang-os-mon`, `erlang-parsetools`, `erlang-public-key`, `erlang-runtime-tools`, `erlang-snmp`, `erlang-ssl`, `erlang-syntax-tools`, `erlang-tftp`, `erlang-tools`, `erlang-xmerl`
+**Invalid** (17): `erlang-asn1`, `erlang-base`, `erlang-crypto`, `erlang-eldap`, `erlang-ftp`, `erlang-inets`,
+`erlang-mnesia`, `erlang-os-mon`, `erlang-parsetools`, `erlang-public-key`, `erlang-runtime-tools`, `erlang-snmp`,
+`erlang-ssl`, `erlang-syntax-tools`, `erlang-tftp`, `erlang-tools`, `erlang-xmerl`
 
 ### `rabbitmq-delayed`
 
 **Valid** (1): `ca-certificates`
 
-**Invalid** (17): `erlang-asn1`, `erlang-base`, `erlang-crypto`, `erlang-eldap`, `erlang-ftp`, `erlang-inets`, `erlang-mnesia`, `erlang-os-mon`, `erlang-parsetools`, `erlang-public-key`, `erlang-runtime-tools`, `erlang-snmp`, `erlang-ssl`, `erlang-syntax-tools`, `erlang-tftp`, `erlang-tools`, `erlang-xmerl`
+**Invalid** (17): `erlang-asn1`, `erlang-base`, `erlang-crypto`, `erlang-eldap`, `erlang-ftp`, `erlang-inets`,
+`erlang-mnesia`, `erlang-os-mon`, `erlang-parsetools`, `erlang-public-key`, `erlang-runtime-tools`, `erlang-snmp`,
+`erlang-ssl`, `erlang-syntax-tools`, `erlang-tftp`, `erlang-tools`, `erlang-xmerl`
 
 ### `rabbitmq-federation`
 
 **Valid** (1): `ca-certificates`
 
-**Invalid** (17): `erlang-asn1`, `erlang-base`, `erlang-crypto`, `erlang-eldap`, `erlang-ftp`, `erlang-inets`, `erlang-mnesia`, `erlang-os-mon`, `erlang-parsetools`, `erlang-public-key`, `erlang-runtime-tools`, `erlang-snmp`, `erlang-ssl`, `erlang-syntax-tools`, `erlang-tftp`, `erlang-tools`, `erlang-xmerl`
+**Invalid** (17): `erlang-asn1`, `erlang-base`, `erlang-crypto`, `erlang-eldap`, `erlang-ftp`, `erlang-inets`,
+`erlang-mnesia`, `erlang-os-mon`, `erlang-parsetools`, `erlang-public-key`, `erlang-runtime-tools`, `erlang-snmp`,
+`erlang-ssl`, `erlang-syntax-tools`, `erlang-tftp`, `erlang-tools`, `erlang-xmerl`
 
 ### `rabbitmq-management`
 
 **Valid** (1): `ca-certificates`
 
-**Invalid** (17): `erlang-asn1`, `erlang-base`, `erlang-crypto`, `erlang-eldap`, `erlang-ftp`, `erlang-inets`, `erlang-mnesia`, `erlang-os-mon`, `erlang-parsetools`, `erlang-public-key`, `erlang-runtime-tools`, `erlang-snmp`, `erlang-ssl`, `erlang-syntax-tools`, `erlang-tftp`, `erlang-tools`, `erlang-xmerl`
+**Invalid** (17): `erlang-asn1`, `erlang-base`, `erlang-crypto`, `erlang-eldap`, `erlang-ftp`, `erlang-inets`,
+`erlang-mnesia`, `erlang-os-mon`, `erlang-parsetools`, `erlang-public-key`, `erlang-runtime-tools`, `erlang-snmp`,
+`erlang-ssl`, `erlang-syntax-tools`, `erlang-tftp`, `erlang-tools`, `erlang-xmerl`
 
 ### `rabbitmq-mqtt`
 
 **Valid** (1): `ca-certificates`
 
-**Invalid** (17): `erlang-asn1`, `erlang-base`, `erlang-crypto`, `erlang-eldap`, `erlang-ftp`, `erlang-inets`, `erlang-mnesia`, `erlang-os-mon`, `erlang-parsetools`, `erlang-public-key`, `erlang-runtime-tools`, `erlang-snmp`, `erlang-ssl`, `erlang-syntax-tools`, `erlang-tftp`, `erlang-tools`, `erlang-xmerl`
+**Invalid** (17): `erlang-asn1`, `erlang-base`, `erlang-crypto`, `erlang-eldap`, `erlang-ftp`, `erlang-inets`,
+`erlang-mnesia`, `erlang-os-mon`, `erlang-parsetools`, `erlang-public-key`, `erlang-runtime-tools`, `erlang-snmp`,
+`erlang-ssl`, `erlang-syntax-tools`, `erlang-tftp`, `erlang-tools`, `erlang-xmerl`
 
 ### `rabbitmq-stomp`
 
 **Valid** (1): `ca-certificates`
 
-**Invalid** (17): `erlang-asn1`, `erlang-base`, `erlang-crypto`, `erlang-eldap`, `erlang-ftp`, `erlang-inets`, `erlang-mnesia`, `erlang-os-mon`, `erlang-parsetools`, `erlang-public-key`, `erlang-runtime-tools`, `erlang-snmp`, `erlang-ssl`, `erlang-syntax-tools`, `erlang-tftp`, `erlang-tools`, `erlang-xmerl`
+**Invalid** (17): `erlang-asn1`, `erlang-base`, `erlang-crypto`, `erlang-eldap`, `erlang-ftp`, `erlang-inets`,
+`erlang-mnesia`, `erlang-os-mon`, `erlang-parsetools`, `erlang-public-key`, `erlang-runtime-tools`, `erlang-snmp`,
+`erlang-ssl`, `erlang-syntax-tools`, `erlang-tftp`, `erlang-tools`, `erlang-xmerl`
 
 ### `radarr-develop`
 
@@ -2040,7 +2078,8 @@ All packages valid.
 
 **Valid** (1): `ca-certificates`
 
-**Invalid** (7): `php84`, `php84-curl`, `php84-fpm`, `php84-php84-intl`, `php84-php84-mbstring`, `php84-php84-xml`, `php84-zip`
+**Invalid** (7): `php84`, `php84-curl`, `php84-fpm`, `php84-php84-intl`, `php84-php84-mbstring`, `php84-php84-xml`,
+`php84-zip`
 
 ### `rclone-browser`
 
@@ -2094,7 +2133,9 @@ All packages valid.
 
 **Valid** (4): `ca-certificates`, `fontconfig`, `freetype`, `glib`
 
-**Invalid** (22): `libasound2`, `libatk-bridge2.0-0`, `libatk1.0-0`, `libatspi2.0-0`, `libcairo2`, `libcups2`, `libdbus-1-3`, `libdrm2`, `libgbm1`, `libnspr4`, `libnss3`, `libpango-1.0-0`, `libx11-6`, `libxcomposite1`, `libxdamage1`, `libxext6`, `libxfixes3`, `libxi6`, `libxkbcommon0`, `libxrandr2`, `libxrender1`, `libxtst6`
+**Invalid** (22): `libasound2`, `libatk-bridge2.0-0`, `libatk1.0-0`, `libatspi2.0-0`, `libcairo2`, `libcups2`,
+`libdbus-1-3`, `libdrm2`, `libgbm1`, `libnspr4`, `libnss3`, `libpango-1.0-0`, `libx11-6`, `libxcomposite1`,
+`libxdamage1`, `libxext6`, `libxfixes3`, `libxi6`, `libxkbcommon0`, `libxrandr2`, `libxrender1`, `libxtst6`
 
 ### `redis-sentinel`
 
@@ -2148,7 +2189,8 @@ All packages valid.
 
 **Valid** (1): `ca-certificates`
 
-**Invalid** (7): `php84`, `php84-curl`, `php84-fpm`, `php84-php84-intl`, `php84-php84-mbstring`, `php84-php84-xml`, `php84-zip`
+**Invalid** (7): `php84`, `php84-curl`, `php84-fpm`, `php84-php84-intl`, `php84-php84-mbstring`, `php84-php84-xml`,
+`php84-zip`
 
 ### `rowy`
 
@@ -2224,19 +2266,22 @@ All packages valid.
 
 ### `sentry`
 
-**Valid** (8): `build-base`, `ca-certificates`, `libffi-dev`, `libxml2-dev`, `libxslt-dev`, `openssl-dev`, `py3-pip`, `python3`
+**Valid** (8): `build-base`, `ca-certificates`, `libffi-dev`, `libxml2-dev`, `libxslt-dev`, `openssl-dev`, `py3-pip`,
+`python3`
 
 **Invalid** (4): `libjpeg-turbo-turbo-dev`, `libyaml-dev`, `postgresql-libs`, `zlib1g-dev`
 
 ### `sentry-cron`
 
-**Valid** (8): `build-base`, `ca-certificates`, `libffi-dev`, `libxml2-dev`, `libxslt-dev`, `openssl-dev`, `py3-pip`, `python3`
+**Valid** (8): `build-base`, `ca-certificates`, `libffi-dev`, `libxml2-dev`, `libxslt-dev`, `openssl-dev`, `py3-pip`,
+`python3`
 
 **Invalid** (4): `libjpeg-turbo-turbo-dev`, `libyaml-dev`, `postgresql-libs`, `zlib1g-dev`
 
 ### `sentry-worker`
 
-**Valid** (8): `build-base`, `ca-certificates`, `libffi-dev`, `libxml2-dev`, `libxslt-dev`, `openssl-dev`, `py3-pip`, `python3`
+**Valid** (8): `build-base`, `ca-certificates`, `libffi-dev`, `libxml2-dev`, `libxslt-dev`, `openssl-dev`, `py3-pip`,
+`python3`
 
 **Invalid** (4): `libjpeg-turbo-turbo-dev`, `libyaml-dev`, `postgresql-libs`, `zlib1g-dev`
 
@@ -2278,7 +2323,8 @@ All packages valid.
 
 **Valid** (3): `apache2`, `ca-certificates`, `perl`
 
-**Invalid** (7): `libapache-dbi-perl`, `libapache2-mod-perl2`, `libcgi-pm-perl`, `libdbd-pg-perl`, `libdbi-perl`, `libjson-perl`, `libtemplate-perl`
+**Invalid** (7): `libapache-dbi-perl`, `libapache2-mod-perl2`, `libcgi-pm-perl`, `libdbd-pg-perl`, `libdbi-perl`,
+`libjson-perl`, `libtemplate-perl`
 
 ### `sqlcipher`
 
@@ -2290,7 +2336,8 @@ All packages valid.
 
 **Valid** (2): `ca-certificates`, `sqlite-libs`
 
-**Invalid** (8): `libqscintilla2-qt5-15`, `libqt5core5t64`, `libqt5gui5t64`, `libqt5network5t64`, `libqt5svg5`, `libqt5widgets5t64`, `libsqlcipher0`, `openssl-libs`
+**Invalid** (8): `libqscintilla2-qt5-15`, `libqt5core5t64`, `libqt5gui5t64`, `libqt5network5t64`, `libqt5svg5`,
+`libqt5widgets5t64`, `libsqlcipher0`, `openssl-libs`
 
 ### `sqlpad`
 
@@ -2332,7 +2379,8 @@ All packages valid.
 
 **Valid** (5): `ca-certificates`, `json-c`, `nginx`, `openssl`, `zip`
 
-**Invalid** (10): `imap`, `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`, `php84-pdo`, `php84-xml`
+**Invalid** (10): `imap`, `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`,
+`php84-pdo`, `php84-xml`
 
 ### `surrealdb-python`
 
@@ -2518,7 +2566,8 @@ All packages valid.
 
 **Valid** (5): `ca-certificates`, `json-c`, `nginx`, `openssl`, `zip`
 
-**Invalid** (10): `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`, `php84-pdo`, `php84-xml`, `soap`
+**Invalid** (10): `php84`, `php84-curl`, `php84-fpm`, `php84-gd`, `php84-intl`, `php84-mbstring`, `php84-mysql`,
+`php84-pdo`, `php84-xml`, `soap`
 
 ### `wekan`
 
@@ -2612,4 +2661,12 @@ All packages valid.
 
 ## Full Valid Package List
 
-`apache2`, `bc`, `build-base`, `ca-certificates`, `clamav`, `clamav-daemon`, `clamav-freshclam`, `containers-common`, `coreutils`, `dbus`, `expat`, `ffmpeg`, `fontconfig`, `freetype`, `freshclam`, `glib`, `gnupg`, `gosu`, `haproxy`, `imagemagick`, `inotify-tools`, `iproute2`, `iptables`, `jq`, `json-c`, `kmod`, `libcap`, `libffi-dev`, `libjpeg-turbo`, `liblz4-1`, `libnghttp2-14`, `libpcre2-8-0`, `libstdc++`, `libxml2`, `libxml2-dev`, `libxml2-utils`, `libxslt-dev`, `libzstd1`, `mariadb-backup`, `memcached`, `mosquitto`, `mosquitto-clients`, `net-tools`, `netcat-openbsd`, `nginx`, `nodejs`, `openldap`, `openssh-client`, `openssl`, `openssl-dev`, `openvpn`, `perl`, `php-ldap`, `postfix`, `postgresql-14`, `postgresql-15`, `postgresql-16`, `postgresql-17`, `postgresql-client`, `procps`, `psmisc`, `py3-pip`, `python3`, `rspamd`, `rsync`, `rsyslog`, `ruby`, `rust`, `scap-security-guide`, `socat`, `sqlite-libs`, `systemd`, `tzdata`, `unzip`, `valkey`, `wireguard-tools`, `zip`, `zlib`
+`apache2`, `bc`, `build-base`, `ca-certificates`, `clamav`, `clamav-daemon`, `clamav-freshclam`, `containers-common`,
+`coreutils`, `dbus`, `expat`, `ffmpeg`, `fontconfig`, `freetype`, `freshclam`, `glib`, `gnupg`, `gosu`, `haproxy`,
+`imagemagick`, `inotify-tools`, `iproute2`, `iptables`, `jq`, `json-c`, `kmod`, `libcap`, `libffi-dev`, `libjpeg-turbo`,
+`liblz4-1`, `libnghttp2-14`, `libpcre2-8-0`, `libstdc++`, `libxml2`, `libxml2-dev`, `libxml2-utils`, `libxslt-dev`,
+`libzstd1`, `mariadb-backup`, `memcached`, `mosquitto`, `mosquitto-clients`, `net-tools`, `netcat-openbsd`, `nginx`,
+`nodejs`, `openldap`, `openssh-client`, `openssl`, `openssl-dev`, `openvpn`, `perl`, `php-ldap`, `postfix`,
+`postgresql-14`, `postgresql-15`, `postgresql-16`, `postgresql-17`, `postgresql-client`, `procps`, `psmisc`, `py3-pip`,
+`python3`, `rspamd`, `rsync`, `rsyslog`, `ruby`, `rust`, `scap-security-guide`, `socat`, `sqlite-libs`, `systemd`,
+`tzdata`, `unzip`, `valkey`, `wireguard-tools`, `zip`, `zlib`

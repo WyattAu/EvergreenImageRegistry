@@ -8,6 +8,7 @@ description = "Distributed private networking mesh VPN"
 base = "scratch"
 user = "65532:65532"
 stopsignal = "SIGTERM"
+multiarch = false
 
 [source]
 type = "package-manager"
@@ -36,4 +37,3 @@ expose = [10500, 9101]
 "evergreen.image.status" = "functional"
 "evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "ztunnel"
-

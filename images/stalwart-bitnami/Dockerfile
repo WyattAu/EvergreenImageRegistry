@@ -1,10 +1,8 @@
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS builder
 ARG VERSION=0.16.2
 ARG TARGETARCH
-ARG GITHUB_TOKEN
 RUN apk add --no-cache curl ca-certificates || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
-    "https://github.com/stalwartlabs/stalwart/releases/download/v${VERSION}/stalwart-x86_64-unknown-linux-musl.tar.gz" \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/stalwartlabs/stalwart/releases/download/v${VERSION}/stalwart-x86_64-unknown-linux-musl.tar.gz" \
     -o /tmp/stalwart.tar.gz && \
     tar -xzf /tmp/stalwart.tar.gz -C /tmp && \
     mv /tmp/stalwart /usr/local/bin/stalwart && \

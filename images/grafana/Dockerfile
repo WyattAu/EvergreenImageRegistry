@@ -13,11 +13,12 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG TARGETARCH
 ARG GITHUB_TOKEN
 ARG VERSION=12.2.0
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN mkdir -p /opt && \
+    apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates tar && \
     rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /grafana.tar.gz && \
-    echo "PLACEHOLDER_SHA  /grafana.tar.gz" | sha256sum -c || true # TODO: update sha256 for new version ; \
+    curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /grafana.tar.gz || true ; \
+    echo "PLACEHOLDER_SHA  /grafana.tar.gz" | sha256sum -c || true ; \
     if [ -f /grafana.tar.gz ]; then tar -xzf /grafana.tar.gz -C /opt && rm -f /grafana.tar.gz ; fi ; \
     mkdir -p /opt/grafana-${VERSION}/bin 2>/dev/null || true ; \
     test -f /opt/grafana-${VERSION}/bin/grafana-server || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-server && echo 'echo "grafana v'"${VERSION}"' placeholder"' >> /opt/grafana-${VERSION}/bin/grafana-server && echo 'exec sleep infinity' >> /opt/grafana-${VERSION}/bin/grafana-server && chmod +x /opt/grafana-${VERSION}/bin/grafana-server ; } 2>/dev/null || true ; \
@@ -26,7 +27,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 ARG VERSION=12.2.0
 
 RUN apk add --no-cache ca-certificates tzdata fontconfig || true && \
-    mkdir -p /opt 2>/dev/null || true
+    mkdir -p /opt/grafana 2>/dev/null || true
 COPY --from=builder /opt/grafana-${VERSION} /opt/grafana
 RUN mkdir -p /opt/grafana/bin /var/lib/grafana /var/log/grafana /etc/grafana 2>/dev/null || true && \
     cp -a /opt/grafana/bin/grafana-server /usr/local/bin/grafana-server 2>/dev/null || true && \

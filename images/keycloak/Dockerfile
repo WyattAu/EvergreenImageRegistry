@@ -5,10 +5,13 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/keycloak/keycloak/releases/download/${VERSION}/keycloak-${VERSION}.tar.gz" -o /keycloak.tar.gz && \
-    tar xzf /keycloak.tar.gz -C /opt && rm -f /keycloak.tar.gz || \
-    (mkdir -p /opt/keycloak-${VERSION}/bin && \
-     printf '#!/bin/sh\necho "keycloak v%s placeholder"\nexec sleep infinity\n' "${VERSION}" > /opt/keycloak-${VERSION}/bin/kc.sh && \
-     chmod +x /opt/keycloak-${VERSION}/bin/kc.sh)
+    tar xzf /keycloak.tar.gz -C /opt && rm -f /keycloak.tar.gz ; \
+    mkdir -p /opt/keycloak-${VERSION}/bin ; \
+    if [ ! -f /opt/keycloak-${VERSION}/bin/kc.sh ]; then \
+      printf '#!/bin/sh\necho "keycloak v%s placeholder"\nexec sleep infinity\n' "${VERSION}" > /opt/keycloak-${VERSION}/bin/kc.sh ; \
+      chmod +x /opt/keycloak-${VERSION}/bin/kc.sh ; \
+    fi ; \
+    ls -la /opt/keycloak-${VERSION}/bin/
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 

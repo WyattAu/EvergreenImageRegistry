@@ -1,7 +1,7 @@
 [metadata]
 name = "promtail"
-version = "3.5"
-upstream_version = "3.5"
+version = "3.5.12"
+upstream_version = "3.5.12"
 description = "Evergreen hardened Promtail - log collection agent for Grafana Loki"
 vendor = "Grafana Labs"
 source = "https://github.com/grafana/loki"
@@ -15,7 +15,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "binary-release"
-url = "https://github.com/grafana/loki/releases/download/v3.5/promtail-3.5-linux-amd64.tar.gz"
+url = "https://github.com/grafana/loki/releases/download/v3.5.12/promtail-linux-amd64.zip"
 
 [runtime]
 entrypoint = ["/usr/bin/promtail"]
@@ -27,7 +27,7 @@ expose = [9080, 3100, 9101]
 "org.opencontainers.image.description" = "Evergreen hardened Promtail - log collection agent for Grafana Loki"
 "org.opencontainers.image.title" = "promtail"
 "org.opencontainers.image.vendor" = "Grafana Labs"
-"org.opencontainers.image.version" = "3.5"
+"org.opencontainers.image.version" = "3.5.12"
 "evergreen.base.image" = "scratch"
 "evergreen.health.type" = "exec"
 "evergreen.image.category" = "logging"

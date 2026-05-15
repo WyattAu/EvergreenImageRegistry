@@ -14,8 +14,8 @@ user = "65532:65532"
 stopsignal = "SIGTERM"
 
 [source]
-type = "binary-release"
-url = "https://github.com/tecnativa/docker-socket-proxy/releases/download/v0.4.2/docker-socket-proxy_0.4.2_linux_amd64.tar.gz"
+type = "docker-image"
+url = "docker.io/tecnativa/docker-socket-proxy:v0.4.2"
 
 [runtime]
 entrypoint = ["/docker-socket-proxy"]

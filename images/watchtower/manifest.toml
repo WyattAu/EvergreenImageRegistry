@@ -15,7 +15,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "binary-release"
-url = "https://github.com/containrrr/watchtower/releases/download/v1.7.1/watchtower_Linux_x86_64.tar.gz"
+url = "https://github.com/containrrr/watchtower/releases/download/v1.7.1/watchtower_linux_amd64.tar.gz"
 
 [runtime]
 entrypoint = ["/watchtower"]

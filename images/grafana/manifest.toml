@@ -1,12 +1,12 @@
 [metadata]
 name = "grafana"
-version = "12.2"
+version = "12.2.0"
 description = "Grafana - observability dashboard and visualization"
 vendor = "Grafana Labs"
 source = "https://github.com/grafana/grafana"
 license = "AGPL-3.0"
 tier = "critical"
-upstream_version = "12.2"
+upstream_version = "12.2.0"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -15,7 +15,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-url = "https://dl.grafana.com/oss/release/grafana-12.2.linux-amd64.tar.gz"
+url = "https://dl.grafana.com/oss/release/grafana-12.2.0.linux-amd64.tar.gz"
 
 [runtime]
 entrypoint = ["grafana-server"]
@@ -28,7 +28,7 @@ expose = [3000, 9101]
 "org.opencontainers.image.source" = "https://github.com/grafana/grafana"
 "org.opencontainers.image.title" = "grafana"
 "org.opencontainers.image.vendor" = "Grafana Labs"
-"org.opencontainers.image.version" = "12.2"
+"org.opencontainers.image.version" = "12.2.0"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"

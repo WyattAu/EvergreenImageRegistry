@@ -7,7 +7,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL \
-    "https://codeberg.org/forgejo/runner/releases/download/v${VERSION}/forgejo-runner-linux-${TARGETARCH}" \
+    "https://code.forgejo.org/forgejo/runner/releases/download/v${VERSION}/forgejo-runner-${VERSION}-linux-${TARGETARCH}" \
     -o /tmp/forgejo-runner && \
     chmod +x /tmp/forgejo-runner && \
     strip /tmp/forgejo-runner || true

@@ -169,6 +169,10 @@ jobs:
           done
           echo "Batch ${{ matrix.batch }}: ${BUILT} built, ${FAILED} failed, ${SKIPPED} skipped"
           echo "BUILDER_NAME=${CURRENT_BUILDER}" >> "$GITHUB_ENV"
+          if [ "${FAILED}" -gt 0 ]; then
+            echo "::error::${FAILED} image(s) failed to build in batch ${{ matrix.batch }}"
+            exit 1
+          fi
 
       - name: Enforce image size limit
         if: always()
@@ -240,6 +244,10 @@ jobs:
             echo "::endgroup::"
           done
           echo "Push: ${PUSHED} ok, ${FAILED} failed"
+          if [ "${FAILED}" -gt 0 ]; then
+            echo "::error::${FAILED} image(s) failed to push in batch ${{ matrix.batch }}"
+            exit 1
+          fi
 
   sign:
     name: Sign Images

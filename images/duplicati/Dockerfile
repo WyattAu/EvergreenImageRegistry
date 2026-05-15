@@ -17,8 +17,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL https://github.com/duplicati/duplicati/
     test -f /opt/duplicati || { echo '#!/bin/sh' > /opt/duplicati && echo 'echo "duplicati v${VERSION} placeholder"' >> /opt/duplicati && echo 'exec sleep infinity' >> /opt/duplicati && chmod +x /opt/duplicati ; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache curl ca-certificates && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://dot.net/v1/dotnet-install.sh" -o /dotnet-install.sh && \
+RUN apk add --no-cache wget ca-certificates && \
+    wget -t 3 -T 10 -qO /dotnet-install.sh "https://dot.net/v1/dotnet-install.sh" && \
     chmod +x /dotnet-install.sh && \
     /dotnet-install.sh --channel 8.0 --runtime dotnet --install-dir /usr/share/dotnet && \
     rm -f /dotnet-install.sh || true
@@ -31,7 +31,7 @@ ENV DOTNET_ROOT=/usr/share/dotnet
 ENV PATH="$PATH:/usr/share/dotnet"
 EXPOSE 8200
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8200/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8200/ || exit 1
 ENTRYPOINT ["dotnet", "/opt/duplicati/Duplicati.Server.exe"]
 LABEL org.opencontainers.image.title="duplicati" \
       org.opencontainers.image.description="duplicati container image" \

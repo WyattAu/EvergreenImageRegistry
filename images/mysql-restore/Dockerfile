@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache curl ca-certificates
+RUN apk add --no-cache wget ca-certificates
 COPY --from=builder --chown=65532:65532 /app /app
 COPY --from=builder --chown=65532:65532 /backups /backups
 COPY --from=builder --chown=65532:65532 /var/log/mysql-restore /var/log/mysql-restore
@@ -46,7 +46,7 @@ echo "Restore complete from: $BACKUP_FILE"
 SCRIPT
 RUN chmod +x /app/restore.sh 2>/dev/null || true && chown 65532:65532 /app/restore.sh 2>/dev/null || true
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["/app/restore.sh"]
 LABEL org.opencontainers.image.title="mysql-restore" \
       org.opencontainers.image.version="8.0" \

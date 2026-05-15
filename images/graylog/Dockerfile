@@ -30,7 +30,7 @@ ENV GRAYLOG_HTTP_BIND_ADDRESS="0.0.0.0:9000"
 ENV GRAYLOG_DATA_DIR="/opt/graylog/data"
 EXPOSE 9000 12201 5044
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5044/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:5044/ || exit 1
 ENTRYPOINT ["/opt/graylog/bin/graylogctl"]
 CMD ["run"]
 LABEL org.opencontainers.image.title="graylog" \

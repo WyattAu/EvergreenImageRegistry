@@ -23,7 +23,7 @@ USER 65532:65532
 WORKDIR /var/lib/dovecot
 EXPOSE 143 993
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:143/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:143/ || exit 1
 ENTRYPOINT ["dovecot", "-F"]
 LABEL org.opencontainers.image.title="dovecot-lda" \
       org.opencontainers.image.description="Dovecot LDA - Dovecot in local delivery agent mode" \

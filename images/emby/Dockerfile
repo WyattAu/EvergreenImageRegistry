@@ -13,7 +13,7 @@ USER 65532:65532
 WORKDIR /config
 EXPOSE 8096 8920
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8096/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8096/ || exit 1
 ENTRYPOINT ["/opt/emby-server/emby-server"]
 LABEL org.opencontainers.image.title="emby" \
       org.opencontainers.image.description="emby container image" \

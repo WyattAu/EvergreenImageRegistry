@@ -25,7 +25,7 @@ USER 65532:65532
 WORKDIR /fluentd
 EXPOSE 24224 5140
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5140/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:5140/ || exit 1
 ENTRYPOINT ["/usr/local/bin/fluentd", "-c", "/fluentd/etc/fluent.conf"]
 LABEL org.opencontainers.image.title="fluentd" \
       org.opencontainers.image.version="${VERSION}" \

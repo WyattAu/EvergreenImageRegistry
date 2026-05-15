@@ -20,7 +20,7 @@ WORKDIR /app
 EXPOSE 8787
 EXPOSE 9101
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8787/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8787/ || exit 1
 
 LABEL org.opencontainers.image.description="readarr container image" \
       org.opencontainers.image.source="https://github.com/Readarr/Readarr" \

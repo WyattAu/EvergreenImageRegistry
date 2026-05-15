@@ -18,7 +18,7 @@ RUN apk add --no-cache ca-certificates curl 2>/dev/null || true && \
 USER 65532:65532
 EXPOSE 9000
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9000/minio/health/live
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9000/minio/health/live
 ENTRYPOINT ["/usr/local/bin/minio"]
 LABEL org.opencontainers.image.title="milvus-minio" \
       org.opencontainers.image.version="2024.11.07" \

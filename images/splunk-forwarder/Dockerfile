@@ -31,7 +31,7 @@ USER 65532:65532
 WORKDIR /opt/splunkforwarder
 EXPOSE 8089 9997
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8089/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8089/ || exit 1
 ENTRYPOINT ["/opt/splunkforwarder/bin/splunk"]
 CMD ["start", "--accept-license", "--no-prompt"]
 LABEL org.opencontainers.image.title="splunk-forwarder" \

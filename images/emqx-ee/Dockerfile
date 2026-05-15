@@ -15,7 +15,7 @@ USER 65532:65532
 WORKDIR /opt/emqx
 EXPOSE 1883 8083 8084 8883 18083
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:1883/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:1883/ || exit 1
 ENTRYPOINT ["echo"]
 CMD ["emqx-ee: Enterprise edition requires license. Place emqx binary in /opt/emqx/bin/"]
 LABEL org.opencontainers.image.title="emqx-ee" \

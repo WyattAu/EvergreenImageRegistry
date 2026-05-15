@@ -23,7 +23,7 @@ USER 65532:65532
 WORKDIR /var/lib/dovecot
 EXPOSE 110 995
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:110/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:110/ || exit 1
 ENTRYPOINT ["dovecot", "-F"]
 LABEL org.opencontainers.image.title="dovecot-pop3" \
       org.opencontainers.image.description="Dovecot POP3 - Dovecot in POP3 mode" \

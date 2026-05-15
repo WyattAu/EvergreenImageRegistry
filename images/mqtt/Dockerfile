@@ -18,7 +18,7 @@ USER mosquitto
 WORKDIR /app
 EXPOSE 1883 9001
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:1883/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:1883/ || exit 1
 ENTRYPOINT ["mosquitto"]
 LABEL org.opencontainers.image.title="mqtt" \
       org.opencontainers.image.description="mqtt container image" \

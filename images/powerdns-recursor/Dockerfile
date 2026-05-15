@@ -28,7 +28,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 8082
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:53/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:53/ || exit 1
 ENTRYPOINT ["/usr/local/bin/pdns_recursor"]
 CMD ["--config-dir=/etc/pdns-recursor", "--daemon=no", "--webserver=yes", "--webserver-port=8082", "--webserver-address=0.0.0.0"]
 LABEL org.opencontainers.image.title="powerdns-recursor" \

@@ -21,7 +21,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 3000 22
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:22/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:22/ || exit 1
 ENTRYPOINT ["/usr/local/bin/gitea"]
 CMD ["web", "-c", "/etc/gitea/app.ini"]
 LABEL org.opencontainers.image.title="source-control" \

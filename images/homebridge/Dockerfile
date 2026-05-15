@@ -22,7 +22,7 @@ USER 65532:65532
 WORKDIR /homebridge
 EXPOSE 51826
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:51826/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:51826/ || exit 1
 ENTRYPOINT ["homebridge"]
 LABEL org.opencontainers.image.title="homebridge" \
       org.opencontainers.image.description="Homebridge - Bring Siri to your smart home" \

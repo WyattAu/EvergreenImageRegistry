@@ -28,7 +28,7 @@ RUN mkdir -p /openhab/conf /openhab/userdata /var/log/openhab /var/cache/openhab
 USER 65532:65532
 WORKDIR /openhab
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8080/ || exit 1
 ENTRYPOINT ["/openhab/start.sh"]
 EXPOSE 8080 8443
 

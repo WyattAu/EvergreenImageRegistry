@@ -26,7 +26,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8000
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8000/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8000/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="jitsu" \
       org.opencontainers.image.description="jitsu container image" \

@@ -26,7 +26,7 @@ RUN mkdir -p /config /cache /media /var/log/jellyfin /var/cache/jellyfin && \
 USER 65532:65532
 WORKDIR /config
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8096/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8096/ || exit 1
 ENTRYPOINT ["/app/jellyfin"]
 EXPOSE 8096
 

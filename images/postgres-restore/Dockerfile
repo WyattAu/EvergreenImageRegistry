@@ -58,7 +58,7 @@ SCRIPT
 RUN chmod +x /app/restore.sh && chown 65532:65532 /app/restore.sh
 USER 65532:65532
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["/app/restore.sh"]
 LABEL org.opencontainers.image.title="postgres-restore" \
       org.opencontainers.image.version="17" \

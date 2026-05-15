@@ -29,7 +29,7 @@ USER 65532:65532
 WORKDIR /data
 EXPOSE 26379
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:26379/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:26379/ || exit 1
 ENTRYPOINT ["/usr/local/bin/redis", "--sentinel"]
 LABEL evergreen.image.status="functional" \
       evergreen.image.tier="1" \

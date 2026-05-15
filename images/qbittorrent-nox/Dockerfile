@@ -33,7 +33,7 @@ USER 65532:65532
 WORKDIR /config
 EXPOSE 8080 6881 6881/udp
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:6881/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:6881/ || exit 1
 ENTRYPOINT ["/app/bin/qbittorrent-nox"]
 LABEL org.opencontainers.image.title="qbittorrent-nox" \
       org.opencontainers.image.description="qbittorrent-nox container image" \

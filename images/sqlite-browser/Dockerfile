@@ -22,7 +22,7 @@ RUN chown -R 65532:65532 /app /var/log/sqlite-browser
 USER 65532:65532
 WORKDIR /app
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["/usr/local/bin/sqlitebrowser"]
 LABEL org.opencontainers.image.title="sqlite-browser" \
       org.opencontainers.image.version="bookworm" \

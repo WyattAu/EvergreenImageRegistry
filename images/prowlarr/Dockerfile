@@ -25,7 +25,7 @@ RUN mkdir -p /config /var/log/prowlarr /var/cache/prowlarr && chown -R 65532:655
 USER 65532:65532
 WORKDIR /config
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9696/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9696/ || exit 1
 ENTRYPOINT ["/app/Prowlarr"]
 EXPOSE 9696
 

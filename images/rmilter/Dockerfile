@@ -38,7 +38,7 @@ USER 65532:65532
 WORKDIR /var/run/rmilter
 EXPOSE 6379
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:6379/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:6379/ || exit 1
 ENTRYPOINT ["/usr/local/bin/rmilter"]
 LABEL org.opencontainers.image.title="rmilter" \
       org.opencontainers.image.description="Rmilter - milter filter for mail servers" \

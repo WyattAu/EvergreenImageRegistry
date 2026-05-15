@@ -33,7 +33,7 @@ WORKDIR /data
 VOLUME /data
 EXPOSE 8008 8448
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8008/_matrix/client/versions || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8008/_matrix/client/versions || exit 1
 ENTRYPOINT ["python3", "-m", "synapse.app.homeserver"]
 LABEL org.opencontainers.image.title="synapse" \
       org.opencontainers.image.description="Synapse - Matrix homeserver for federated messaging" \

@@ -24,7 +24,7 @@ USER 65532:65532
 WORKDIR /var/spool/postfix
 EXPOSE 25
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:25/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:25/ || exit 1
 ENTRYPOINT ["postfix", "-c", "/etc/postfix", "start-fg"]
 LABEL org.opencontainers.image.title="postfix-constrained" \
       org.opencontainers.image.description="Postfix Constrained - mail transfer agent with resource limits" \

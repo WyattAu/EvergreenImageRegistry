@@ -18,7 +18,7 @@ USER transmission
 WORKDIR /app
 EXPOSE 9091
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9091/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9091/ || exit 1
 ENTRYPOINT ["transmission-daemon"]
 LABEL org.opencontainers.image.title="transmission" \
       org.opencontainers.image.description="transmission container image" \

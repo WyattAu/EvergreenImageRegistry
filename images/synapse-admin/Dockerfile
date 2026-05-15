@@ -42,7 +42,7 @@ COPY --from=builder /build/package.json-c /app/
 RUN chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8080/ || exit 1
 ENTRYPOINT ["node", "dist/index.js"]
 EXPOSE 8080
 LABEL org.opencontainers.image.title="synapse-admin"       org.opencontainers.image.description="Synapse Admin - web admin panel for Synapse Matrix homeserver"       org.opencontainers.image.version="0.10.3"       org.opencontainers.image.vendor="Community"       org.opencontainers.image.source="https://github.com/awesome-anton/synapse-admin"       evergreen.image.tier="2"       evergreen.constraint.nonroot="true"       evergreen.constraint.debian-slim="true"

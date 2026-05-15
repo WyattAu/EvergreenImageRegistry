@@ -31,7 +31,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 51820 51820/udp
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:51820/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:51820/ || exit 1
 ENTRYPOINT ["/app/vpn-controller"]
 LABEL org.opencontainers.image.title="vpn-controller" \
       org.opencontainers.image.version="${VERSION}" \

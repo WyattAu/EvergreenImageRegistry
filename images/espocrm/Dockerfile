@@ -21,7 +21,7 @@ USER 65532:65532
 WORKDIR /var/www/html
 EXPOSE 80 443
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:80/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:80/ || exit 1
 ENTRYPOINT ["php-fpm8.4"]
 LABEL org.opencontainers.image.title="espocrm" \
       org.opencontainers.image.description="espocrm container image" \

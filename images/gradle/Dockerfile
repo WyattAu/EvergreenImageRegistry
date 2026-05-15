@@ -24,7 +24,7 @@ WORKDIR /app
 ENV HOME=/app
 ENV GRADLE_HOME=/opt/gradle-8.10.2
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["gradle"]
 LABEL org.opencontainers.image.title="gradle" \
       org.opencontainers.image.version="8.10.2" \

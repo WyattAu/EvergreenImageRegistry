@@ -19,7 +19,7 @@ LABEL evergreen.image.tier="3"
 EXPOSE 9101
 STOPSIGNAL SIGTERM
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
 CMD ["/bin/sh"]
 LABEL org.opencontainers.image.description="athom container image" \
       org.opencontainers.image.title="Athom" \

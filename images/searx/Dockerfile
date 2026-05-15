@@ -21,7 +21,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 WORKDIR /app
 EXPOSE 8888
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8888/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8888/ || exit 1
 ENTRYPOINT ["searx-run"]
 LABEL org.opencontainers.image.title="searx" \
       org.opencontainers.image.description="Searx - Privacy-respecting metasearch engine" \

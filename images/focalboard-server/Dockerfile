@@ -18,7 +18,7 @@ USER 65532:65532
 WORKDIR /data
 EXPOSE 8000
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8000/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8000/ || exit 1
 ENTRYPOINT ["/opt/focalboard/bin/focalboard-server"]
 LABEL org.opencontainers.image.title="focalboard-server" \
       org.opencontainers.image.description="focalboard-server container image" \

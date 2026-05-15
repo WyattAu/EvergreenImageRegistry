@@ -25,7 +25,7 @@ RUN mkdir -p /config /var/log/lidarr /var/cache/lidarr && chown -R 65532:65532 /
 USER 65532:65532
 WORKDIR /config
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8686/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8686/ || exit 1
 ENTRYPOINT ["/app/Lidarr"]
 EXPOSE 8686
 

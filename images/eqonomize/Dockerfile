@@ -21,7 +21,7 @@ RUN mkdir -p /app /var/log/eqonomize /var/cache/eqonomize ; \
 USER 65532:65532
 WORKDIR /app
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["eqonomize"]
 LABEL org.opencontainers.image.title="eqonomize" \
       org.opencontainers.image.description="eqonomize container image" \

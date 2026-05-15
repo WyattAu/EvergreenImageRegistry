@@ -45,7 +45,7 @@ ENV RENDERING_MODE=chromium \
     LOG_LEVEL=info \
     ENABLE_METRICS=true
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8081/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8081/ || exit 1
 ENTRYPOINT ["/opt/grafana-image-renderer/build/grafana-image-renderer"]
 LABEL org.opencontainers.image.title="grafana-image-renderer" \
       org.opencontainers.image.version="5.8.2" \

@@ -19,7 +19,7 @@ USER 65532:65532
 WORKDIR /data
 EXPOSE 1880
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:1880/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:1880/ || exit 1
 ENTRYPOINT ["node", "/app/src/packages/node_modules/node-red/red.js"]
 CMD ["--userDir", "/data"]
 LABEL org.opencontainers.image.title="node-red" \

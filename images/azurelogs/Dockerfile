@@ -40,7 +40,7 @@ WORKDIR /app
 ENV AZURELOGS_VERSION=${VERSION} \
     AZURE_LOG_INGESTION_ENDPOINT=""
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["python3", "-m", "azure.monitor.ingestion"]
 LABEL org.opencontainers.image.title="azurelogs" \
       org.opencontainers.image.version="1.2.0" \

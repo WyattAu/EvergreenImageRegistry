@@ -18,7 +18,7 @@ WORKDIR /app
 
 EXPOSE 9980
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 CMD curl -sf http://localhost:9980/hosting/discovery || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 CMD wget -qO- http://localhost:9980/hosting/discovery || exit 1
 
 ENTRYPOINT ["/usr/bin/loolwsd"]
 LABEL org.opencontainers.image.title="collabora" \

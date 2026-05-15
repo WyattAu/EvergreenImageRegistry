@@ -36,7 +36,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 5199 8083
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:53/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:53/ || exit 1
 ENTRYPOINT ["/usr/local/bin/dnsdist"]
 LABEL org.opencontainers.image.title="dnsdist" \
       org.opencontainers.image.version="1.9.4" \

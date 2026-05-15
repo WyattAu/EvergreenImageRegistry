@@ -39,6 +39,6 @@ LABEL evergreen.security.seccomp="runtime-default"
 EXPOSE 9101
 STOPSIGNAL SIGTERM
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8080/ || exit 1
 ENTRYPOINT ["python", "-m", "mailu"]
 CMD ["--help"]

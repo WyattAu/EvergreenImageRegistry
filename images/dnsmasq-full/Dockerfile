@@ -29,7 +29,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 67 67/udp 69/udp 4011/udp
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:53/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:53/ || exit 1
 ENTRYPOINT ["/usr/sbin/dnsmasq"]
 CMD ["--keep-in-foreground", "--no-daemon"]
 LABEL org.opencontainers.image.title="dnsmasq-full" \

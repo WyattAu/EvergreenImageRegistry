@@ -13,9 +13,9 @@ RUN [ -f /opensearch.tar.gz ] && tar -xzf /opensearch.tar.gz -C /opt 2>/dev/null
     mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true && \
     [ -f /opt/opensearch-2.12.0 ] || { echo '#!/bin/sh' > /opt/opensearch-2.12.0 ; echo 'echo "opensearch v${VERSION} ready"' >> /opt/opensearch-2.12.0 ; echo 'exec sleep infinity' >> /opt/opensearch-2.12.0 ; chmod +x /opt/opensearch-2.12.0 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-ENV HEALTH_CMD="curl -sf http://localhost:9200" \
-    READY_CMD="curl -sf http://localhost:9200" \
-    STARTUP_CMD="curl -sf http://localhost:9200" \
+ENV HEALTH_CMD="wget -qO- http://localhost:9200" \
+    READY_CMD="wget -qO- http://localhost:9200" \
+    STARTUP_CMD="wget -qO- http://localhost:9200" \
     EVERGREEN_LOG_LEVEL=info
 
 RUN addgroup -S -g 65532 opensearch 2>/dev/null || true && \
@@ -41,7 +41,7 @@ ENV OPENSEARCH_HOME=/opt/opensearch \
     bootstrap.memory_lock=true \
     OPENSEARCH_INITIAL_ADMIN_PASSWORD=${OPENSEARCH_INITIAL_ADMIN_PASSWORD:-changeme}
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9200/_cluster/health
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9200/_cluster/health
 ENTRYPOINT ["sh", "-c", "/opt/opensearch/bin/opensearch"]
 LABEL org.opencontainers.image.title="opensearch" \
       org.opencontainers.image.version="2.12.0" \

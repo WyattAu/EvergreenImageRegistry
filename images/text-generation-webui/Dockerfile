@@ -22,7 +22,7 @@ USER user
 WORKDIR /app
 EXPOSE 7860
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:7860/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:7860/ || exit 1
 ENTRYPOINT ["python3", "/opt/text-generation-webui/server.py"]
 LABEL org.opencontainers.image.title="text-generation-webui" \
       org.opencontainers.image.description="text-generation-webui container image" \

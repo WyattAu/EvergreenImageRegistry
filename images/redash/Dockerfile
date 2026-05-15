@@ -44,7 +44,7 @@ EXPOSE 5000
 
 ENV REDASH_WEB_WORKERS="4"
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5000/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:5000/ || exit 1
 
 ENTRYPOINT ["redash", "server"]
 

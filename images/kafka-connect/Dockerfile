@@ -31,7 +31,7 @@ USER 65532:65532
 WORKDIR /opt/kafka
 EXPOSE 8083
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8083/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8083/ || exit 1
 ENTRYPOINT ["/opt/kafka/bin/connect-distributed.sh"]
 LABEL org.opencontainers.image.title="kafka-connect" \
       org.opencontainers.image.description="Evergreen hardened Kafka Connect - distributed data integration platform" \

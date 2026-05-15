@@ -22,7 +22,7 @@ ENV JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
 ENV ROCKETMQ_HOME="/opt/rocketmq"
 EXPOSE 9876 10911 10909
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9876/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9876/ || exit 1
 ENTRYPOINT ["/opt/rocketmq/bin/mqnamesrv"]
 LABEL org.opencontainers.image.title="rocketmq" \
       org.opencontainers.image.description="rocketmq container image" \

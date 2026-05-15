@@ -39,7 +39,7 @@ ENV GCPLOGS_VERSION=${VERSION} \
     GOOGLE_APPLICATION_CREDENTIALS="" \
     GOOGLE_CLOUD_PROJECT=""
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["python3", "-m", "google.cloud.logging"]
 LABEL org.opencontainers.image.title="gcplogs" \
       org.opencontainers.image.version="3.10.0" \

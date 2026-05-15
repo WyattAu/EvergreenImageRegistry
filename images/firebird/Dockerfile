@@ -19,7 +19,7 @@ USER 65532:65532
 WORKDIR /var/lib/firebird
 EXPOSE 3050
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:3050/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:3050/ || exit 1
 ENTRYPOINT ["firebird"]
 LABEL org.opencontainers.image.title="firebird" \
       org.opencontainers.image.version="${VERSION}" \

@@ -24,7 +24,7 @@ USER 65532:65532
 WORKDIR /var/lib/virtuoso
 EXPOSE 1111 8890
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:1111/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:1111/ || exit 1
 ENTRYPOINT ["virtuoso-t", "-f", "-c", "/etc/virtuoso/virtuoso.ini"]
 LABEL org.opencontainers.image.title="virtuoso" \
       org.opencontainers.image.version="${VERSION}" \

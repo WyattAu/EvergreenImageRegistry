@@ -18,7 +18,7 @@ USER appuser
 WORKDIR /app
 EXPOSE 443 992 1194 500 4500 5555
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:443/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:443/ || exit 1
 ENTRYPOINT ["vpnserver"]
 LABEL org.opencontainers.image.title="softether" \
       org.opencontainers.image.description="softether container image" \

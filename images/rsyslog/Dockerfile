@@ -46,7 +46,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 514 514/udp
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:514/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:514/ || exit 1
 ENTRYPOINT ["/usr/sbin/rsyslogd"]
 CMD ["-n", "-f", "/app/conf/rsyslog.conf"]
 LABEL org.opencontainers.image.title="rsyslog" \

@@ -26,7 +26,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 5679
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5679/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:5679/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="n8n-nodes" \
       org.opencontainers.image.description="n8n-nodes container image" \

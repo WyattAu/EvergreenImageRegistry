@@ -45,7 +45,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 5984
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5984/_up
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:5984/_up
 ENTRYPOINT ["/opt/couchdb/bin/couchdb", "--with-sync-design-doc"]
 LABEL org.opencontainers.image.title="couchdb-sync" \
       org.opencontainers.image.version="3.3.3" \

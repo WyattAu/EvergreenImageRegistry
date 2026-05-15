@@ -15,7 +15,7 @@ RUN apk add --no-cache ca-certificates curl && \
 USER 65532:65532
 WORKDIR /app
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["/usr/bin/sssctl"]
 LABEL org.opencontainers.image.title="freeipa-client" \
       org.opencontainers.image.description="FreeIPA client tools via SSSD (Debian sssd suite provides FreeIPA client functionality)" \

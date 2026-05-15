@@ -32,7 +32,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 1723
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:1723/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:1723/ || exit 1
 ENTRYPOINT ["/usr/sbin/pptpd"]
 CMD ["--fg"]
 LABEL org.opencontainers.image.title="pptpd" \

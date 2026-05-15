@@ -10,7 +10,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 9004
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9004/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9004/ || exit 1
 ENTRYPOINT ["/usr/local/bin/complement"]
 LABEL org.opencontainers.image.title="chat-relay" \
       org.opencontainers.image.description="Matrix chat relay (complement) - testing tool for Matrix homeservers" \

@@ -17,7 +17,7 @@ USER 65532:65532
 WORKDIR /opt/tigergraph
 EXPOSE 14240 9000 8123 8443
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8123/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8123/ || exit 1
 ENTRYPOINT ["/opt/tigergraph/bin/gadmin", "start", "all"]
 LABEL org.opencontainers.image.title="tigergraph" \
       org.opencontainers.image.version="${VERSION}" \

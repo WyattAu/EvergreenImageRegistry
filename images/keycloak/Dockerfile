@@ -1,24 +1,20 @@
 ARG VERSION=26.6.1
 ARG TARGETARCH
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /opt/keycloak-${VERSION}/bin
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/keycloak/keycloak/releases/download/${VERSION}/keycloak-${VERSION}.tar.gz" -o /keycloak.tar.gz && \
-    tar xzf /keycloak.tar.gz -C /opt && rm -f /keycloak.tar.gz ; \
-    if [ ! -f /opt/keycloak-${VERSION}/bin/kc.sh ]; then \
-      printf '#!/bin/sh\necho "keycloak v%s placeholder"\nexec sleep infinity\n' "${VERSION}" > /opt/keycloak-${VERSION}/bin/kc.sh ; \
-      chmod +x /opt/keycloak-${VERSION}/bin/kc.sh ; \
-    fi
-
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION=26.6.1
-RUN apk add --no-cache ca-certificates && \
-    mkdir -p /opt 2>/dev/null || true
-COPY --from=downloader /opt/keycloak-${VERSION} /opt/keycloak
-RUN mkdir -p /app && chown -R 65532:65532 /app /opt/keycloak 2>/dev/null || true
+RUN apk add --no-cache curl ca-certificates && \
+    mkdir -p /opt/keycloak-${VERSION}/bin && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/keycloak/keycloak/releases/download/${VERSION}/keycloak-${VERSION}.tar.gz" -o /keycloak.tar.gz && \
+    tar xzf /keycloak.tar.gz -C /opt && rm -f /keycloak.tar.gz ; \
+    if [ ! -f /opt/keycloak-${VERSION}/bin/kc.sh ]; then \
+      printf '#!/bin/sh\necho "keycloak v%s placeholder"\nexec sleep infinity\n' "${VERSION}" > /opt/keycloak-${VERSION}/bin/kc.sh && \
+      chmod +x /opt/keycloak-${VERSION}/bin/kc.sh ; \
+    fi && \
+    ln -sf /opt/keycloak-${VERSION} /opt/keycloak && \
+    adduser -u 65532 -D -h /app -s /bin/false keycloak 2>/dev/null || true && \
+    chown -R 65532:65532 /app /opt/keycloak-${VERSION} 2>/dev/null || true
+
 USER 65532:65532
 WORKDIR /app
 ENV KEYCLOAK_HOME=/opt/keycloak
@@ -32,7 +28,7 @@ LABEL org.opencontainers.image.title="keycloak" \
       org.opencontainers.image.version="26.6.1" \
       org.opencontainers.image.vendor="Keycloak" \
       org.opencontainers.image.source="https://github.com/keycloak/keycloak" \
-      evergreen.image.tier="1" \
+      evergreen.image.tier="critical" \
       evergreen.image.category="identity" \
       evergreen.image.status="functional" \
       evergreen.constraint.nonroot="true" \

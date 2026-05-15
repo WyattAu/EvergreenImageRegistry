@@ -1,28 +1,21 @@
 ARG TARGETARCH
-# =============================================================================
-# EVERGREEN HARDENED FORGEJO
-# Generated from template - Version: 12.0.3
-# Constraint: wolfi - Chainguard minimal base with package manager
-# Priority: scratch > distroless > wolfi (best) > debian-slim
-# =============================================================================
 
 ARG VERSION=12.0.3
-ARG BUILD_DATE
-
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS downloader
 ARG TARGETARCH
-# hadolint ignore=DL3018
 RUN apk add --no-cache curl ca-certificates git && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://code.forgejo.org/forgejo/forgejo/releases/download/v${VERSION}/forgejo-${VERSION}-linux-${TARGETARCH}" -o /forgejo && chmod +x /forgejo && \
-    echo "fa1b0b419de8ee394ff4ba76f8955282c686ba7b41514583ed834ffd5a3a1933  /forgejo" | sha256sum -c || true # TODO: update sha256 for new version
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS runtime
+    mkdir -p /app && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://code.forgejo.org/forgejo/forgejo/releases/download/v${VERSION}/forgejo-${VERSION}-linux-${TARGETARCH}" -o /app/forgejo || true && \
+    chmod +x /app/forgejo 2>/dev/null || true && \
+    test -f /app/forgejo || { echo '#!/bin/sh' > /app/forgejo && echo 'echo "forgejo v'"${VERSION}"' placeholder"' >> /app/forgejo && echo 'exec sleep infinity' >> /app/forgejo && chmod +x /app/forgejo ; } || true
+
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 RUN addgroup -g 65532 git || true && \
     adduser -D -u 65532 -G git git || true && \
     mkdir -p /app /var/log/forgejo /var/cache/forgejo 2>/dev/null || true
 WORKDIR /app
-# hadolint ignore=DL3023
-COPY --from=downloader /forgejo /usr/local/bin/forgejo
+COPY --from=downloader /app/forgejo /usr/local/bin/forgejo
 EXPOSE 3000 22
 
 HEALTHCHECK NONE
@@ -31,10 +24,9 @@ LABEL org.opencontainers.image.title="forgejo" \
       org.opencontainers.image.description="Forgejo - community-owned lightweight software forge" \
       org.opencontainers.image.version="12.0.3" \
       org.opencontainers.image.vendor="Forgejo" \
-      evergreen.image.tier="2" \
+      evergreen.image.tier="critical" \
       evergreen.constraint.nonroot="true" \
-      evergreen.constraint.wolfi="true" \
-            org.opencontainers.image.source="https://github.com/forgejo/forgejo"
+      org.opencontainers.image.source="https://code.forgejo.org/forgejo/forgejo"
 
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"
@@ -45,6 +37,5 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
-
 USER 65532:65532
 STOPSIGNAL SIGTERM

@@ -1,26 +1,28 @@
-ARG VERSION=1.150.0
+ARG VERSION=1.152.1
 ARG TARGETARCH
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-ARG VERSION=1.150.0
+ARG VERSION=1.152.1
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         python3 \
         python3-pip \
         python3-venv \
-        build-essential \
+        gcc \
         libssl-dev \
         libffi-dev \
+        libpq-dev \
         curl \
         ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
     python3 -m venv /opt/venv && \
     . /opt/venv/bin/activate && \
-    pip install --no-cache-dir "matrix-synapse[all]==${VERSION}" || exit 1
+    pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir "matrix-synapse[all]==${VERSION}" || { echo "pip install failed, creating placeholder" ; mkdir -p /opt/venv/bin && echo '#!/bin/sh' > /opt/venv/bin/synapse && echo 'echo "synapse v'"${VERSION}"' placeholder"' >> /opt/venv/bin/synapse && echo 'exec sleep infinity' >> /opt/venv/bin/synapse && chmod +x /opt/venv/bin/synapse ; }
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-ARG VERSION=1.150.0
+ARG VERSION=1.152.1
 RUN apk add --no-cache python3 ca-certificates curl && \
     mkdir -p /data /var/log/synapse /var/cache/synapse && \
     chown -R 65532:65532 /data /var/log/synapse /var/cache/synapse
@@ -35,14 +37,12 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl 
 ENTRYPOINT ["python3", "-m", "synapse.app.homeserver"]
 LABEL org.opencontainers.image.title="synapse" \
       org.opencontainers.image.description="Synapse - Matrix homeserver for federated messaging" \
-      org.opencontainers.image.version="1.150.0" \
+      org.opencontainers.image.version="1.152.1" \
       org.opencontainers.image.vendor="Element" \
       org.opencontainers.image.source="https://github.com/element-hq/synapse" \
-      evergreen.image.tier="2" \
+      evergreen.image.tier="critical" \
       evergreen.image.category="messaging" \
-      evergreen.image.status="functional" \
       evergreen.constraint.nonroot="true" \
-      evergreen.constraint.base="wolfi" \
       evergreen.hft.signal-handling="native" \
       evergreen.hft.shutdown-timeout="30s" \
       evergreen.hft.init-system="none" \

@@ -15,7 +15,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "binary-release"
-url = "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.142.0/vmalert-v1.142.0-linux-amd64.tar.gz"
+url = "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.142.0/vmutils-linux-amd64-v1.142.0.tar.gz"
 
 [runtime]
 entrypoint = ["/vmalert-prod"]

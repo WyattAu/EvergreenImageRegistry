@@ -1,12 +1,12 @@
 [metadata]
 name = "keycloak"
-version = "26.3"
+version = "26.6.1"
 description = "Keycloak - identity and access management"
 vendor = "Red Hat"
 source = "https://github.com/keycloak/keycloak"
 license = "Apache-2.0"
 tier = "critical"
-upstream_version = "26.3"
+upstream_version = "26.6.1"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -15,7 +15,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-url = "https://github.com/keycloak/keycloak/releases/download/v26.3/keycloak-26.3-linux-amd64.tar.gz"
+url = "https://github.com/keycloak/keycloak/releases/download/26.6.1/keycloak-26.6.1.tar.gz"
 
 [runtime]
 entrypoint = ["/opt/keycloak/bin/kc.sh"]
@@ -28,7 +28,7 @@ expose = [8080, 8443, 9101]
 "org.opencontainers.image.source" = "https://github.com/keycloak/keycloak"
 "org.opencontainers.image.title" = "keycloak"
 "org.opencontainers.image.vendor" = "Keycloak"
-"org.opencontainers.image.version" = "26.3"
+"org.opencontainers.image.version" = "26.6.1"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.base" = "wolfi"
 "evergreen.constraint.nonroot" = "true"

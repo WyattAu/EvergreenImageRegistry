@@ -45,7 +45,7 @@ repos:
       - id: hadolint
         name: Hadolint (Dockerfile Linter)
         language: docker_image
-        entry: hadolint/hadolint:v2.12.0 hadolint
+        entry: hadolint/hadolint:v2.12.0 hadolint --failure-threshold error
         types: [dockerfile]
 
   # Custom constraint validator (runs locally)

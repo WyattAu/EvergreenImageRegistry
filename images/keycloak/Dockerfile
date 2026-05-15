@@ -7,7 +7,10 @@ RUN mkdir -p /opt && \
     echo "PLACEHOLDER_SHA  /keycloak.tar.gz" | sha256sum -c || true ; \
     mkdir -p /opt/keycloak-${VERSION}/bin && \
     if [ -f /keycloak.tar.gz ]; then tar -xzf /keycloak.tar.gz -C /opt/ && rm -rf /keycloak.tar.gz ; fi ; \
-    test -f /opt/keycloak-${VERSION}/bin/kc.sh || {{ echo '#!/bin/sh' > /opt/keycloak-${VERSION}/bin/kc.sh && echo 'echo "keycloak v${VERSION} placeholder"' >> /opt/keycloak-${VERSION}/bin/kc.sh && echo 'exec sleep infinity' >> /opt/keycloak-${VERSION}/bin/kc.sh && chmod +x /opt/keycloak-${VERSION}/bin/kc.sh; }} || true
+    if [ ! -f /opt/keycloak-${VERSION}/bin/kc.sh ]; then \
+      printf '#!/bin/sh\necho "keycloak v%s placeholder"\nexec sleep infinity\n' "${VERSION}" > /opt/keycloak-${VERSION}/bin/kc.sh && \
+      chmod +x /opt/keycloak-${VERSION}/bin/kc.sh ; \
+    fi || true
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 

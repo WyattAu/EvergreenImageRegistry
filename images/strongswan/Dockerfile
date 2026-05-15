@@ -44,7 +44,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 500 500/udp 4500 4500/udp
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:500/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:500/ || exit 1
 ENTRYPOINT ["/usr/sbin/charon"]
 LABEL org.opencontainers.image.title="strongswan" \
       org.opencontainers.image.version="${VERSION}" \

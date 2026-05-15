@@ -11,7 +11,7 @@ USER 65532:65532
 WORKDIR /var/www/sql-ledger
 EXPOSE 80
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:80/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:80/ || exit 1
 ENTRYPOINT ["httpd", "-D", "FOREGROUND"]
 LABEL org.opencontainers.image.title="sql-ledger" \
       org.opencontainers.image.description="sql-ledger container image" \

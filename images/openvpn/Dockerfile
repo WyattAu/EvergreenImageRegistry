@@ -23,7 +23,7 @@ WORKDIR /app
 COPY --from=downloader /usr/sbin/openvpn /usr/local/bin/openvpn
 EXPOSE 1194
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:1194/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:1194/ || exit 1
 ENTRYPOINT ["/usr/local/bin/openvpn"]
 LABEL org.opencontainers.image.title="openvpn" \
       org.opencontainers.image.description="openvpn container image" \

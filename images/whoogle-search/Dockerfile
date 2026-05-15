@@ -21,7 +21,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 WORKDIR /app
 EXPOSE 5000
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5000/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:5000/ || exit 1
 ENTRYPOINT ["whoogle-search"]
 CMD ["--port", "5000"]
 LABEL org.opencontainers.image.title="whoogle-search" \

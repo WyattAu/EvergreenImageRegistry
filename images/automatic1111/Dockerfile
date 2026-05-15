@@ -21,7 +21,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 7860
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:7860/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:7860/ || exit 1
 ENTRYPOINT ["python3", "/opt/automatic1111/launch.py", "--listen", "--port", "7860"]
 LABEL org.opencontainers.image.title="automatic1111" \
       org.opencontainers.image.description="automatic1111 container image" \

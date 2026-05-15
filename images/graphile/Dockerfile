@@ -12,7 +12,7 @@ USER 65532:65532
 WORKDIR /opt/graphile
 EXPOSE 5000
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5000/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:5000/ || exit 1
 ENTRYPOINT ["node", "/opt/graphile/cli.js"]
 LABEL org.opencontainers.image.title="graphile" \
       org.opencontainers.image.version="${VERSION}" \

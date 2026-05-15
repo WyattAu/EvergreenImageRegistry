@@ -34,7 +34,7 @@ ENV LS_JAVA_OPTS="-Xms512m -Xmx512m"
 ENV PATH="/opt/logstash/bin:${PATH}"
 EXPOSE 5044 9600
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5044/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:5044/ || exit 1
 ENTRYPOINT ["/opt/logstash/bin/logstash"]
 LABEL org.opencontainers.image.title="logstash-oss" \
       org.opencontainers.image.description="Evergreen hardened Logstash OSS - open-source data processing pipeline" \

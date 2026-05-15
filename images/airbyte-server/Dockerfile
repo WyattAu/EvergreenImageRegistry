@@ -19,7 +19,7 @@ WORKDIR /app
 ENV HOME=/app
 EXPOSE 8000
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8000/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8000/ || exit 1
 ENTRYPOINT ["java", "-jar", "/app/server.jar"]
 LABEL org.opencontainers.image.title="airbyte-server" \
       org.opencontainers.image.version="0.65.22" \

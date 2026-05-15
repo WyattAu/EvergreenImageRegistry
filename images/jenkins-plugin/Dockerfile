@@ -23,7 +23,7 @@ WORKDIR /app
 ENV HOME=/app
 EXPOSE 8080
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8080/ || exit 1
 ENTRYPOINT ["java", "-jar", "/app/jenkins.war"]
 LABEL org.opencontainers.image.title="jenkins-plugin" \
       org.opencontainers.image.version="2.462.1" \

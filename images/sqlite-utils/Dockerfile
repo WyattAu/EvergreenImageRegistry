@@ -23,7 +23,7 @@ RUN apk add --no-cache ca-certificates tzdata python3 py3-pip && \
 USER 65532:65532
 WORKDIR /data
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["sqlite-utils"]
 LABEL org.opencontainers.image.title="sqlite-utils" \
       org.opencontainers.image.description="CLI tool for managing SQLite databases" \

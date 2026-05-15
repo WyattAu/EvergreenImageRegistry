@@ -15,7 +15,7 @@ USER 65532:65532
 WORKDIR /opt/vernemq
 EXPOSE 1883 4369 44053 8080
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:1883/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:1883/ || exit 1
 ENTRYPOINT ["echo"]
 CMD ["vernemq: Place VerneMQ binary in /opt/vernemq/bin/"]
 LABEL org.opencontainers.image.title="vernemq" \

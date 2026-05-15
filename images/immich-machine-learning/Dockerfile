@@ -19,7 +19,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 3003
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:3003/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:3003/ || exit 1
 ENTRYPOINT ["python3"]
 LABEL org.opencontainers.image.title="immich-machine-learning" \
       org.opencontainers.image.description="immich-machine-learning container image" \

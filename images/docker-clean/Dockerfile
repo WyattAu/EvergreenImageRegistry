@@ -14,7 +14,7 @@ RUN apk add --no-cache ca-certificates docker-cli bash || true && \
 USER 65532:65532
 WORKDIR /app
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["docker-clean"]
 LABEL org.opencontainers.image.title="docker-clean" \
       org.opencontainers.image.version="${VERSION}" \

@@ -34,7 +34,7 @@ USER 65532:65532
 WORKDIR /opt/questdb
 EXPOSE 9000 8812 9009
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8812/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8812/ || exit 1
 ENTRYPOINT ["/opt/questdb/bin/questdb.sh", "start", "-d"]
 LABEL org.opencontainers.image.title="questdb" \
       org.opencontainers.image.version="7.3.10" \

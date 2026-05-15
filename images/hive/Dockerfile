@@ -34,7 +34,7 @@ USER 65532:65532
 WORKDIR /opt/hive
 EXPOSE 10000 10002
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:10000/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:10000/ || exit 1
 ENTRYPOINT ["/opt/hive/bin/hive", "--service", "hiveserver2"]
 LABEL org.opencontainers.image.title="hive" \
       org.opencontainers.image.version="${VERSION}" \

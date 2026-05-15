@@ -18,7 +18,7 @@ USER node
 WORKDIR /app
 EXPOSE 5678
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5678/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:5678/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="n8n" \
       org.opencontainers.image.description="n8n - workflow automation platform" \

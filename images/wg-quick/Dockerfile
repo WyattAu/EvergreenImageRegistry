@@ -26,7 +26,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 51820/udp
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:51820/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:51820/ || exit 1
 ENTRYPOINT ["/usr/bin/wg-quick"]
 LABEL org.opencontainers.image.title="wg-quick" \
       org.opencontainers.image.version="1.0.20210914" \

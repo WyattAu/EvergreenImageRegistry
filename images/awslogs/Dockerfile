@@ -41,7 +41,7 @@ ENV AWSLOGS_VERSION=${VERSION} \
     AWS_ACCESS_KEY_ID="" \
     AWS_SECRET_ACCESS_KEY=""
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["awslogs"]
 LABEL org.opencontainers.image.title="awslogs" \
       org.opencontainers.image.version="0.15.0" \

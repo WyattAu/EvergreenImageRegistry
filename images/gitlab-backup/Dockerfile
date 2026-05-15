@@ -35,7 +35,7 @@ USER 65532:65532
 WORKDIR /app
 VOLUME /data
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["/usr/local/bin/backup"]
 LABEL org.opencontainers.image.title="gitlab-backup" \
       org.opencontainers.image.description="GitLab Backup - backup tooling for GitLab instances" \

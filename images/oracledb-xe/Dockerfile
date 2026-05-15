@@ -17,7 +17,7 @@ USER 65532:65532
 WORKDIR /opt/oracle
 EXPOSE 1521 5500
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:1521/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:1521/ || exit 1
 ENTRYPOINT ["/opt/oracle/opt/oracle/product/21c/dbhomeXE/bin/sqlplus"]
 LABEL org.opencontainers.image.title="oracledb-xe" \
       org.opencontainers.image.version="${VERSION}" \

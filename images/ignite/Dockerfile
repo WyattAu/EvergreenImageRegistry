@@ -34,7 +34,7 @@ USER 65532:65532
 WORKDIR /opt/ignite
 EXPOSE 10800 11211 47100 47500
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:10800/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:10800/ || exit 1
 ENTRYPOINT ["/opt/ignite/bin/ignite.sh"]
 LABEL org.opencontainers.image.title="ignite" \
       org.opencontainers.image.version="${VERSION}" \

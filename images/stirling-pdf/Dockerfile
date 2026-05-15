@@ -23,7 +23,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8080/ || exit 1
 ENTRYPOINT ["/opt/stirling-pdf/stirling-pdf"]
 LABEL org.opencontainers.image.title="stirling-pdf" \
       org.opencontainers.image.description="stirling-pdf container image" \

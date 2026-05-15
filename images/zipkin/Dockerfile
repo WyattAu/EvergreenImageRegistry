@@ -36,7 +36,7 @@ USER 65532:65532
 WORKDIR /opt/zipkin
 EXPOSE 9411
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9411/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9411/ || exit 1
 ENTRYPOINT ["java"]
 CMD ["-jar", "/opt/zipkin/zipkin.jar"]
 LABEL org.opencontainers.image.title="zipkin" \

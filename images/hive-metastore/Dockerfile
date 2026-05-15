@@ -34,7 +34,7 @@ USER 65532:65532
 WORKDIR /opt/hive
 EXPOSE 9083
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9083/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9083/ || exit 1
 ENTRYPOINT ["/opt/hive/bin/hive", "--service", "metastore"]
 LABEL org.opencontainers.image.title="hive-metastore" \
       org.opencontainers.image.version="${VERSION}" \

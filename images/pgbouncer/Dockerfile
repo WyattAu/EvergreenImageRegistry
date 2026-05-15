@@ -18,7 +18,7 @@ USER pgbouncer
 WORKDIR /app
 EXPOSE 6432
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:6432/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:6432/ || exit 1
 ENTRYPOINT ["pgbouncer"]
 LABEL org.opencontainers.image.title="pgbouncer" \
       org.opencontainers.image.description="pgbouncer container image" \

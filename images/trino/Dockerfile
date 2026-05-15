@@ -34,7 +34,7 @@ USER 65532:65532
 WORKDIR /opt/trino
 EXPOSE 8080
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8080/ || exit 1
 ENTRYPOINT ["/opt/trino/bin/launcher", "run"]
 LABEL org.opencontainers.image.title="trino" \
       org.opencontainers.image.version="435" \

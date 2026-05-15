@@ -19,7 +19,7 @@ RUN apk add --no-cache ruby ruby-dev ca-certificates curl build-base || true && 
 USER 65532:65532
 WORKDIR /app
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["bundle"]
 LABEL org.opencontainers.image.title="bundler" \
       org.opencontainers.image.description="bundler container image" \

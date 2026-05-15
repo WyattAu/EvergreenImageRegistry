@@ -22,7 +22,7 @@ USER 65532:65532
 WORKDIR /var/www/html
 EXPOSE 8888
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8888/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8888/ || exit 1
 ENTRYPOINT ["httpd"]
 CMD ["-f", "-p", "8888", "-h", "/var/www/html"]
 LABEL org.opencontainers.image.title="rainloop" \

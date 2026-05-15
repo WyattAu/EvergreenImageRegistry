@@ -95,9 +95,9 @@ ARG VERSION=8.14.0
 
 
 
-ENV HEALTH_CMD="curl -sf http://localhost:9200/_cluster/health" \
-    READY_CMD="curl -sf http://localhost:9200/_cluster/health" \
-    STARTUP_CMD="curl -sf http://localhost:9200/_cluster/health" \
+ENV HEALTH_CMD="wget -qO- http://localhost:9200/_cluster/health" \
+    READY_CMD="wget -qO- http://localhost:9200/_cluster/health" \
+    STARTUP_CMD="wget -qO- http://localhost:9200/_cluster/health" \
     EVERGREEN_LOG_LEVEL=info
 
 
@@ -162,7 +162,7 @@ EXPOSE 9200 9300
 
 
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9200/_cluster/health
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9200/_cluster/health
 
 
 

@@ -20,7 +20,7 @@ WORKDIR /app
 EXPOSE 9696
 EXPOSE 9101
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9696/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9696/ || exit 1
 
 LABEL org.opencontainers.image.description="prowlarr-develop container image" \
       org.opencontainers.image.source="https://github.com/Prowlarr/Prowlarr" \

@@ -21,7 +21,7 @@ ENV JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
 ENV ACTIVEMQ_HOME="/opt/activemq"
 EXPOSE 61616 8161 5672 61613
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5672/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:5672/ || exit 1
 ENTRYPOINT ["/opt/activemq/bin/activemq", "console"]
 LABEL org.opencontainers.image.title="activemq" \
       org.opencontainers.image.description="activemq container image" \

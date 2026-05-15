@@ -18,7 +18,7 @@ USER immich
 WORKDIR /app
 EXPOSE 2283
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:2283/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:2283/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="immich" \
       org.opencontainers.image.description="Immich - self-hosted photo and video backup solution" \

@@ -18,7 +18,7 @@ USER python
 WORKDIR /app
 EXPOSE 7700
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:7700/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:7700/ || exit 1
 ENTRYPOINT ["python"]
 LABEL org.opencontainers.image.title="meilisearch-python" \
       org.opencontainers.image.description="meilisearch-python container image" \

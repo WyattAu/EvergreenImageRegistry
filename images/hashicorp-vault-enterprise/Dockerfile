@@ -14,7 +14,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8200
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8200/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8200/ || exit 1
 ENTRYPOINT ["/usr/local/bin/vault"]
 CMD ["server", "-dev"]
 LABEL org.opencontainers.image.title="hashicorp-vault-enterprise" \

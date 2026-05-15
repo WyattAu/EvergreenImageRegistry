@@ -31,7 +31,7 @@ WORKDIR /opt/hazelcast
 EXPOSE 5701 5702 5703 8080
 ENV JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5701/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:5701/ || exit 1
 ENTRYPOINT ["/opt/hazelcast/bin/hazelcast"]
 LABEL org.opencontainers.image.title="hazelcast" \
       org.opencontainers.image.description="Evergreen hardened Hazelcast - distributed in-memory computing platform" \

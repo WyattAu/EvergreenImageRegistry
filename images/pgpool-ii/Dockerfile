@@ -18,7 +18,7 @@ USER pgpool
 WORKDIR /app
 EXPOSE 9999
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9999/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9999/ || exit 1
 ENTRYPOINT ["pgpool"]
 LABEL org.opencontainers.image.title="pgpool-II" \
       org.opencontainers.image.description="pgpool-ii container image" \

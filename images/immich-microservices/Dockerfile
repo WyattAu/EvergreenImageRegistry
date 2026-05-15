@@ -26,7 +26,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 3002
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:3002/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:3002/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="immich-microservices" \
       org.opencontainers.image.description="immich-microservices container image" \

@@ -32,7 +32,7 @@ USER 65532:65532
 WORKDIR /opt/nifi
 EXPOSE 8443
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8443/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8443/ || exit 1
 ENTRYPOINT ["/opt/nifi/bin/nifi.sh", "run"]
 LABEL org.opencontainers.image.title="apache-nifi" \
       org.opencontainers.image.version="1.26.0" \

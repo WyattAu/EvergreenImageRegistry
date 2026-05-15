@@ -35,7 +35,7 @@ USER 65532:65532
 WORKDIR /opt/crate
 EXPOSE 4200 5432
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:4200/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:4200/ || exit 1
 ENTRYPOINT ["/opt/crate/bin/crate"]
 LABEL org.opencontainers.image.title="crate" \
       org.opencontainers.image.version="${VERSION}" \

@@ -18,7 +18,7 @@ RUN addgroup -S -g 2 nogroup >/dev/null || true && \
 USER 65532:65532
 WORKDIR /app
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["git-secrets"]
 LABEL org.opencontainers.image.title="git-secrets" \
       org.opencontainers.image.description="AWS Git Secrets - prevent secret commits" \

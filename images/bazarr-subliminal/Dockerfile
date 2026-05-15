@@ -22,7 +22,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 6768
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:6768/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:6768/ || exit 1
 ENTRYPOINT ["python3", "/opt/bazarr-subliminal/bazarr.py"]
 LABEL org.opencontainers.image.title="bazarr-subliminal" \
       org.opencontainers.image.description="bazarr-subliminal container image" \

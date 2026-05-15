@@ -21,7 +21,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8188
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8188/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8188/ || exit 1
 ENTRYPOINT ["python3", "/opt/comfyui/main.py", "--listen", "--port", "8188"]
 LABEL org.opencontainers.image.title="comfyui" \
       org.opencontainers.image.description="comfyui container image" \

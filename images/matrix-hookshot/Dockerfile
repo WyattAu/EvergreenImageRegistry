@@ -25,7 +25,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 9993
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9993/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9993/ || exit 1
 ENTRYPOINT ["node"]
 CMD ["."]
 

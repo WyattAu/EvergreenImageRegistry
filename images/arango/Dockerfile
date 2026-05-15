@@ -36,7 +36,7 @@ USER 65532:65532
 WORKDIR /var/lib/arangodb
 EXPOSE 8529
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8529/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8529/ || exit 1
 ENTRYPOINT ["/opt/arangodb/usr/sbin/arangod", "--server.endpoint", "tcp://0.0.0.0:8529", "--database.directory", "/var/lib/arangodb", "--foxx.queues", "false", "--log.output", "-"]
 LABEL org.opencontainers.image.title="arango" \
       org.opencontainers.image.version="${VERSION}" \

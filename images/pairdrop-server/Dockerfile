@@ -19,7 +19,7 @@ USER 65532:65532
 WORKDIR /app/src
 EXPOSE 3000
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:3000/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:3000/ || exit 1
 ENTRYPOINT ["node", "server.js"]
 LABEL org.opencontainers.image.title="pairdrop-server" \
       org.opencontainers.image.description="PairDrop - Local file sharing in browser" \

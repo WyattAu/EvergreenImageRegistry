@@ -29,7 +29,7 @@ USER 65532:65532
 WORKDIR /opt/h2
 EXPOSE 8082 9092
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8082/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8082/ || exit 1
 ENTRYPOINT ["java", "-cp", "/opt/h2/h2.jar", "org.h2.tools.Server"]
 LABEL org.opencontainers.image.title="h2" \
       org.opencontainers.image.version="${VERSION}" \

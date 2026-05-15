@@ -18,7 +18,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 9090
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9090/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9090/ || exit 1
 ENTRYPOINT ["python3"]
 LABEL org.opencontainers.image.title="invokeai" \
       org.opencontainers.image.description="invokeai container image" \

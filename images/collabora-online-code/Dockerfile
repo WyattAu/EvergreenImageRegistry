@@ -10,7 +10,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 9980
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9980/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9980/ || exit 1
 ENTRYPOINT ["/usr/bin/loolwsd"]
 LABEL org.opencontainers.image.title="collabora-online-code" \
       org.opencontainers.image.description="collabora-online-code container image" \

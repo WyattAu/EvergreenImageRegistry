@@ -18,7 +18,7 @@ USER ldap
 WORKDIR /app
 EXPOSE 389 636
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:389/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:389/ || exit 1
 ENTRYPOINT ["slapd"]
 LABEL org.opencontainers.image.title="ldap" \
       org.opencontainers.image.description="ldap container image" \

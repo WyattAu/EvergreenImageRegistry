@@ -26,7 +26,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 7860
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:7860/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:7860/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="text-gen-ui" \
       org.opencontainers.image.description="text-gen-ui container image" \

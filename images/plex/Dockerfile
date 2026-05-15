@@ -14,7 +14,7 @@ USER 65532:65532
 WORKDIR /config
 EXPOSE 32400
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:32400/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:32400/ || exit 1
 ENTRYPOINT ["/usr/lib/plexmediaserver/Plex Media Server"]
 LABEL org.opencontainers.image.title="plex" \
       org.opencontainers.image.description="Plex - streaming media server and client" \

@@ -18,7 +18,7 @@ USER node
 WORKDIR /app
 EXPOSE 8108
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8108/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8108/ || exit 1
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="typesense-js" \
       org.opencontainers.image.description="typesense-js container image" \

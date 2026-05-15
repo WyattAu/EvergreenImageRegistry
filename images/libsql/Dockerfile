@@ -30,7 +30,7 @@ USER 65532:65532
 WORKDIR /var/lib/libsql
 EXPOSE 8080
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8080/ || exit 1
 ENTRYPOINT ["/opt/libsql/libsql-server"]
 LABEL org.opencontainers.image.title="libsql-server" \
       org.opencontainers.image.description="Turso libSQL server - open-source SQLite fork with networking" \

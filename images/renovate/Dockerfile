@@ -12,7 +12,7 @@ RUN mkdir -p /app && chown -R 65532:65532 /app /opt/renovate 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["renovate"]
 LABEL org.opencontainers.image.title="renovate"       org.opencontainers.image.version="43.160.6"       org.opencontainers.image.vendor="RenovateBot"       org.opencontainers.image.source="https://github.com/renovatebot/renovate"       evergreen.image.tier="2"       evergreen.image.category="automation"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.base="wolfi"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="30s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="30000ms" \
       org.opencontainers.image.description="renovate container image" \

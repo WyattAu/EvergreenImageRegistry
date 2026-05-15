@@ -12,7 +12,7 @@ WORKDIR /app
 EXPOSE 8008
 ENV SYNAPSE_CONFIG_PATH="/etc/synapse/homeserver.yaml"
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8008/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8008/ || exit 1
 ENTRYPOINT ["synapse"]
 CMD ["--config-path", "/etc/synapse/homeserver.yaml"]
 LABEL org.opencontainers.image.title="chat-server" \

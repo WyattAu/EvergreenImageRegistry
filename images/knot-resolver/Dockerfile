@@ -10,7 +10,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 8453
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:53/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:53/ || exit 1
 ENTRYPOINT ["kresd"]
 CMD ["-c", "/etc/knot-resolver/knot.conf"]
 LABEL org.opencontainers.image.title="knot-resolver" \

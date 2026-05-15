@@ -19,7 +19,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 2282
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:2282/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:2282/ || exit 1
 ENTRYPOINT ["/opt/photoprism"]
 LABEL org.opencontainers.image.title="photoprism"       org.opencontainers.image.version="260305-fad9d5395"       org.opencontainers.image.vendor="PhotoPrism"       evergreen.image.tier="2"       evergreen.constraint.nonroot="true"       evergreen.base.image="wolfi" \
       org.opencontainers.image.source="https://github.com/photoprism/photoprism" \

@@ -21,7 +21,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8065
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8065/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8065/ || exit 1
 ENTRYPOINT ["/app/plugin/server"]
 LABEL org.opencontainers.image.title="mattermost-bridge" \
       org.opencontainers.image.description="Mattermost GitHub Plugin - GitHub integration bridge for Mattermost" \

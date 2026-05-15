@@ -18,7 +18,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 6543
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:6543/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:6543/ || exit 1
 ENTRYPOINT ["mythbackend"]
 LABEL org.opencontainers.image.title="mythtv" \
       org.opencontainers.image.description="mythtv container image" \

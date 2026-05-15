@@ -11,6 +11,7 @@ tier = "critical"
 base = "scratch"
 user = "65532:65532"
 stopsignal = "SIGTERM"
+multiarch = false
 
 [source]
 type = "package-manager"

@@ -11,13 +11,13 @@ ARG BUILD_DATE
 
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-RUN apk add --no-cache curl git ca-certificates && \
+RUN apk add --no-cache wget git ca-certificates && \
     adduser -u 65532 -D runner 2>/dev/null || true && \
     mkdir -p /app /var/log/run.sh /var/cache/run.sh && chown -R runner:runner /app /var/log/run.sh /var/cache/run.sh 2>/dev/null || true
 USER runner
 WORKDIR /app
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["run.sh"]
 LABEL org.opencontainers.image.title="github-actions-runner" \
       org.opencontainers.image.description="github-actions-runner container image" \

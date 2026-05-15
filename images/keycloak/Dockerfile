@@ -3,9 +3,9 @@ ARG TARGETARCH
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION=26.6.1
-RUN apk add --no-cache curl ca-certificates && \
+RUN apk add --no-cache wget ca-certificates && \
     mkdir -p /opt/keycloak-${VERSION}/bin && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/keycloak/keycloak/releases/download/${VERSION}/keycloak-${VERSION}.tar.gz" -o /keycloak.tar.gz && \
+    wget -t 3 -T 10 -qO /keycloak.tar.gz "https://github.com/keycloak/keycloak/releases/download/${VERSION}/keycloak-${VERSION}.tar.gz" && \
     tar xzf /keycloak.tar.gz -C /opt && rm -f /keycloak.tar.gz ; \
     if [ ! -f /opt/keycloak-${VERSION}/bin/kc.sh ]; then \
       printf '#!/bin/sh\necho "keycloak v%s placeholder"\nexec sleep infinity\n' "${VERSION}" > /opt/keycloak-${VERSION}/bin/kc.sh && \
@@ -20,7 +20,7 @@ WORKDIR /app
 ENV KEYCLOAK_HOME=/opt/keycloak
 EXPOSE 8080 8443
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8080/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8080/ || exit 1
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
 CMD ["start-dev"]
 LABEL org.opencontainers.image.title="keycloak" \

@@ -27,7 +27,7 @@ test -d /opt/elasticsearch-${VERSION} || { mkdir -p /opt/elasticsearch-${VERSION
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=8.12.2
 
-RUN apk add --no-cache curl ca-certificates
+RUN apk add --no-cache wget ca-certificates
 COPY --from=builder /opt/elasticsearch-${VERSION} /opt/elasticsearch
 COPY --from=builder --chown=65532:65532 /app /app
 COPY --from=builder --chown=65532:65532 /var/log/elasticsearch /var/log/elasticsearch
@@ -43,7 +43,7 @@ ENV ES_PATH_CONF="/app" \
     discovery.type="single-node"
 EXPOSE 9200 9300
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9200/_cluster/health
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9200/_cluster/health
 ENTRYPOINT ["/opt/elasticsearch/bin/elasticsearch"]
 LABEL org.opencontainers.image.title="elasticsearch-8" \
       org.opencontainers.image.version="8.12.2" \

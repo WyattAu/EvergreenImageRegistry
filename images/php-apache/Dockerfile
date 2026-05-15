@@ -95,7 +95,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 
 
 
-RUN apk add --no-cache curl && \
+RUN apk add --no-cache wget && \
     apache2 php-8.4 php-8.4-curl php-8.4-mbstring php-8.4-xml php-8.4-pdo_mysql php-8.4-mysqli php-8.4-zip
 
 
@@ -145,7 +145,7 @@ EXPOSE 80
 
 
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:80/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:80/ || exit 1
 
 
 

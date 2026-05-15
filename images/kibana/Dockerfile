@@ -24,7 +24,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 
 ARG VERSION=8.12.2
 ARG TARGETARCH
-RUN apk add --no-cache curl ca-certificates && \
+RUN apk add --no-cache wget ca-certificates && \
     adduser -u 65532 -s /bin/false kibana || true && \
     mkdir -p /opt/kibana/data /opt/kibana/logs /var/log/kibana /var/cache/kibana
 COPY --from=builder /tmp/kibana-extracted /opt/kibana
@@ -33,7 +33,7 @@ WORKDIR /opt/kibana
 ENV PATH="/opt/kibana/bin:${PATH}"
 EXPOSE 5601
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:5601/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:5601/ || exit 1
 ENTRYPOINT ["/opt/kibana/bin/kibana"]
 LABEL org.opencontainers.image.title="kibana" \
       org.opencontainers.image.description="Evergreen hardened Kibana - Elastic visualization dashboard" \

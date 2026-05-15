@@ -13,7 +13,7 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION=1.9.0
 ARG TARGETARCH
 ARG GITHUB_TOKEN
-RUN mkdir -p /app
+RUN mkdir -p /app && touch /app/drone
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL \
     "https://github.com/harness/drone-cli/releases/download/v${VERSION}/drone_linux_${TARGETARCH}.tar.gz" -o /tmp/drone.tar.gz && \

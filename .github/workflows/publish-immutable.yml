@@ -48,7 +48,7 @@ jobs:
           cosign sign --yes --key env://COSIGN_PRIVATE_KEY \
             ghcr.io/${{ github.repository }}:${{ env.VERSION }}@${{ github.sha }}
         env:
-          COSIGN_PRIVATE_KEY: ""
+          COSIGN_PRIVATE_KEY: ''
 
   latest-ttl:
     runs-on: ubuntu-latest

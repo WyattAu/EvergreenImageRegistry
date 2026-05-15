@@ -3,10 +3,9 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=4.13.1
-ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/zitadel/zitadel/releases/download/v${VERSION}/zitadel-linux-${TARGETARCH}.tar.gz -o /zitadel.tar.gz && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/zitadel/zitadel/releases/download/v${VERSION}/checksums.txt -o /checksums.txt && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/zitadel/zitadel/releases/download/v${VERSION}/zitadel-linux-${TARGETARCH}.tar.gz -o /zitadel.tar.gz && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/zitadel/zitadel/releases/download/v${VERSION}/checksums.txt -o /checksums.txt && \
     grep "zitadel-linux-${TARGETARCH}.tar.gz" /checksums.txt | sha256sum -c || true ; [ -f /zitadel.tar.gz ] && \
     [ -f /zitadel.tar.gz ] && tar -xzf /zitadel.tar.gz -C /tmp/ || true ; \
     strip --strip-all /tmp/zitadel  || true 2>/dev/null&& \

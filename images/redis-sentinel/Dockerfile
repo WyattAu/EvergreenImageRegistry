@@ -12,11 +12,10 @@ ARG BUILD_DATE
 # hadolint ignore=DL3023
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-ARG GITHUB_TOKEN
 ARG VERSION=7.4.1
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.gz -o redis.tar.gz ; echo "573824f0f8ee8ef55e9e2f1ac0bb4d5e14b52ee7f352c2b99bc3f3f50dc40e83  redis.tar.gz" | sha256sum -c || true  ; [ -f redis.tar.gz ] && tar -xzf redis.tar.gz || true ; \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.gz -o redis.tar.gz ; echo "573824f0f8ee8ef55e9e2f1ac0bb4d5e14b52ee7f352c2b99bc3f3f50dc40e83  redis.tar.gz" | sha256sum -c || true  ; [ -f redis.tar.gz ] && tar -xzf redis.tar.gz || true ; \
     cd redis-${VERSION} && make -j"$(nproc)" redis && strip --strip-all src/redis  || true 2>/dev/null; cp src/redis /tmp/redis 2>/dev/null || true && \
     mkdir -p /tmp/redis
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

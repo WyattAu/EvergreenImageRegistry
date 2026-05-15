@@ -2,20 +2,18 @@
 
 ## Grafana Dashboard Specification
 
-**UID:** `evergreen-registry-health`
-**Title:** Evergreen Image Registry Health
-**Refresh:** 5m
-**Tags:** `evergreen`, `registry`, `policy`, `compliance`
+**UID:** `evergreen-registry-health` **Title:** Evergreen Image Registry Health **Refresh:** 5m **Tags:** `evergreen`,
+`registry`, `policy`, `compliance`
 
 ---
 
 ## Data Sources
 
-| Name | Type | Purpose |
-|------|------|---------|
-| Prometheus | prometheus | CI metrics, image sizes, layer counts |
-| JSON API | json-datasource | evergreenctl policy scan results |
-| GitHub Actions | github-datasource | Workflow run outcomes |
+| Name           | Type              | Purpose                               |
+| -------------- | ----------------- | ------------------------------------- |
+| Prometheus     | prometheus        | CI metrics, image sizes, layer counts |
+| JSON API       | json-datasource   | evergreenctl policy scan results      |
+| GitHub Actions | github-datasource | Workflow run outcomes                 |
 
 ---
 
@@ -24,27 +22,34 @@
 ### Row 1: Coverage Gauges
 
 #### Panel 1.1: Non-Root Compliance
+
 - **Type:** Gauge
 - **Title:** Non-Root User Coverage
-- **Query:** `count(evergreen_policy_check{check="user",status="pass"}) / count(evergreen_policy_check{check="user"}) * 100`
+- **Query:**
+  `count(evergreen_policy_check{check="user",status="pass"}) / count(evergreen_policy_check{check="user"}) * 100`
 - **Thresholds:** Green >= 95, Yellow >= 80, Red < 80
 - **Unit:** percent (0-100)
 
 #### Panel 1.2: SBOM Coverage
+
 - **Type:** Gauge
 - **Title:** SBOM Generation Coverage
-- **Query:** `count(evergreen_policy_check{check="sbom_file",status="pass"}) / count(evergreen_policy_check{check="sbom_file"}) * 100`
+- **Query:**
+  `count(evergreen_policy_check{check="sbom_file",status="pass"}) / count(evergreen_policy_check{check="sbom_file"}) * 100`
 - **Thresholds:** Green >= 90, Yellow >= 70, Red < 70
 - **Unit:** percent (0-100)
 
 #### Panel 1.3: Digest-Pinned FROM
+
 - **Type:** Gauge
 - **Title:** Digest-Pinned Base Images
-- **Query:** `count(evergreen_policy_check{check="from_digest",status="pass"}) / count(evergreen_policy_check{check="from_digest"}) * 100`
+- **Query:**
+  `count(evergreen_policy_check{check="from_digest",status="pass"}) / count(evergreen_policy_check{check="from_digest"}) * 100`
 - **Thresholds:** Green >= 95, Yellow >= 80, Red < 80
 - **Unit:** percent (0-100)
 
 #### Panel 1.4: Multi-Arch Build Coverage
+
 - **Type:** Gauge
 - **Title:** Multi-Arch Builds
 - **Query:** `count(evergreen_image_arch{arch=~"amd64|arm64"}) by (image) > 1` / total images
@@ -56,14 +61,17 @@
 ### Row 2: Trend Charts
 
 #### Panel 2.1: CI Pass Rate Over Time
+
 - **Type:** Time series
 - **Title:** CI Pipeline Pass Rate (30d)
-- **Query:** `sum(rate(github_workflow_run_total{conclusion="success"}[1d])) / sum(rate(github_workflow_run_total[1d])) * 100`
+- **Query:**
+  `sum(rate(github_workflow_run_total{conclusion="success"}[1d])) / sum(rate(github_workflow_run_total[1d])) * 100`
 - **Legend:** Pass rate %
 - **Y-axis:** 0-100%
 - **Tooltip:** Show per-workflow breakdown
 
 #### Panel 2.2: Vulnerability Count Over Time
+
 - **Type:** Time series
 - **Title:** Known Vulnerabilities (30d)
 - **Query A (Critical):** `sum(evergreen_vulnerability_total{severity="critical"})`
@@ -73,6 +81,7 @@
 - **Alert:** Critical > 0 triggers alert
 
 #### Panel 2.3: Policy Violations Over Time
+
 - **Type:** Time series
 - **Title:** Policy Violations Trend (30d)
 - **Query A (Block):** `sum(evergreen_policy_violations{severity="block"})`
@@ -84,6 +93,7 @@
 ### Row 3: Tables
 
 #### Panel 3.1: Upstream Version Drift
+
 - **Type:** Table
 - **Title:** Upstream Version Drift by Category
 - **Transformations:** Organize fields by category, sort by drift_days desc
@@ -97,6 +107,7 @@
 - **Color rows:** Red if drift > 90d, Yellow if > 30d, Green otherwise
 
 #### Panel 3.2: Recently Bumped Images
+
 - **Type:** Table
 - **Title:** Images Bumped in Last 7 Days
 - **Transformations:** Sort by bump_date desc
@@ -114,6 +125,7 @@
 ### Row 4: Alerts & Annotations
 
 #### Panel 4.1: Active Alerts
+
 - **Type:** Alert list
 - **Title:** Active Registry Alerts
 - **Alert Rules:**
@@ -126,11 +138,11 @@
 
 ## Variables
 
-| Name | Type | Values | Default |
-|------|------|--------|---------|
-| `category` | Custom | proxy, database, monitoring, security, devops, messaging, dns, vpn, search, app, runtime, official | All |
-| `tier` | Custom | 1, 2, 3 | All |
-| `severity` | Custom | critical, high, medium, low | All |
+| Name       | Type   | Values                                                                                             | Default |
+| ---------- | ------ | -------------------------------------------------------------------------------------------------- | ------- |
+| `category` | Custom | proxy, database, monitoring, security, devops, messaging, dns, vpn, search, app, runtime, official | All     |
+| `tier`     | Custom | 1, 2, 3                                                                                            | All     |
+| `severity` | Custom | critical, high, medium, low                                                                        | All     |
 
 ---
 
@@ -155,8 +167,18 @@
           "allValue": ".*",
           "current": { "selected": true, "text": "All", "value": "$__all" },
           "values": [
-            "proxy", "database", "monitoring", "security", "devops",
-            "messaging", "dns", "vpn", "search", "app", "runtime", "official"
+            "proxy",
+            "database",
+            "monitoring",
+            "security",
+            "devops",
+            "messaging",
+            "dns",
+            "vpn",
+            "search",
+            "app",
+            "runtime",
+            "official"
           ]
         },
         {
@@ -398,11 +420,17 @@
               "matcher": { "id": "byName", "options": "drift_days" },
               "properties": [
                 { "id": "unit", "value": "d" },
-                { "id": "thresholds", "value": { "mode": "absolute", "steps": [
-                  { "color": "green", "value": null },
-                  { "color": "yellow", "value": 30 },
-                  { "color": "red", "value": 90 }
-                ] } },
+                {
+                  "id": "thresholds",
+                  "value": {
+                    "mode": "absolute",
+                    "steps": [
+                      { "color": "green", "value": null },
+                      { "color": "yellow", "value": 30 },
+                      { "color": "red", "value": 90 }
+                    ]
+                  }
+                },
                 { "id": "cellOptions", "value": { "type": "color-background" } }
               ]
             }

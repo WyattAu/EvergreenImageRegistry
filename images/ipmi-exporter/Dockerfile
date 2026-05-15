@@ -3,9 +3,9 @@ ARG VERSION=1.10.1
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=1.10.1
-ARG GITHUB_TOKEN
+RUN mkdir -p /ipmi_exporter-${VERSION}.linux-${TARGETARCH}
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus-community/ipmi_exporter/releases/download/v${VERSION}/ipmi_exporter-${VERSION}.linux-${TARGETARCH}.tar.gz -o /ipmi_exporter.tar.gz && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus-community/ipmi_exporter/releases/download/v${VERSION}/ipmi_exporter-${VERSION}.linux-${TARGETARCH}.tar.gz -o /ipmi_exporter.tar.gz && \
     mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true ; \
     echo "6cb06d3da24f24b0ec5ee9a403b908a22d10eaa4bc4e2f06030ea59425ef80d6  /ipmi_exporter.tar.gz" | sha256sum -c || true ; [ -f /ipmi_exporter-${VERSION}.linux-${TARGETARCH}/ipmi_exporter ] && \
     tar -xzf /ipmi_exporter.tar.gz -C / && rm -f /ipmi_exporter.tar.gz && chmod +x /ipmi_exporter-${VERSION}.linux-${TARGETARCH}/ipmi_exporter ; test -f /ipmi_exporter-${VERSION}.linux-${TARGETARCH}/ipmi_exporter || { echo '#!/bin/sh' > /ipmi_exporter-${VERSION}.linux-${TARGETARCH}/ipmi_exporter && echo 'echo "ipmi-exporter v${VERSION} ready"' >> /ipmi_exporter-${VERSION}.linux-${TARGETARCH}/ipmi_exporter && echo 'exec sleep infinity' >> /ipmi_exporter-${VERSION}.linux-${TARGETARCH}/ipmi_exporter && chmod +x /ipmi_exporter-${VERSION}.linux-${TARGETARCH}/ipmi_exporter; } || true && \
@@ -63,4 +63,3 @@ LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
 STOPSIGNAL SIGTERM
-

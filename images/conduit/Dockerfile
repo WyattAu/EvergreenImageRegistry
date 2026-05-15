@@ -4,8 +4,7 @@ ARG TARGETARCH
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
-    "https://gitlab.famedly.com/famedly/conduit/-/releases/v${VERSION}/conduit-x86_64-unknown-linux-musl.tar.gz" \
+    curl --retry 3 --retry-delay 5 -fsSL "https://gitlab.famedly.com/famedly/conduit/-/releases/v${VERSION}/conduit-x86_64-unknown-linux-musl.tar.gz" \
     -o /tmp/conduit || true ; \
     chmod +x /tmp/conduit 2>/dev/null || true ; \
     strip /tmp/conduit 2>/dev/null || true ; \

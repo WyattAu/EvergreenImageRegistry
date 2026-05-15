@@ -19,35 +19,36 @@ superseded_by: ADR-007, REQUIREMENTS.md v4.0.0
 
 ### System Purpose
 
-The Evergreen Hardened Image Registry provides a secure, compliant infrastructure for building, verifying, signing, and distributing 1000+ industrial-grade hardened container images.
+The Evergreen Hardened Image Registry provides a secure, compliant infrastructure for building, verifying, signing, and
+distributing 1000+ industrial-grade hardened container images.
 
 ### System Scope
 
-| In Scope | Out of Scope |
-|----------|--------------|
+| In Scope                               | Out of Scope                    |
+| -------------------------------------- | ------------------------------- |
 | Container image building (Dockerfiles) | Container orchestration runtime |
-| Vulnerability scanning | Host infrastructure |
-| Image signing (Cosign) | Network configuration |
-| SBOM generation | End-user deployment |
-| CI/CD pipeline | |
+| Vulnerability scanning                 | Host infrastructure             |
+| Image signing (Cosign)                 | Network configuration           |
+| SBOM generation                        | End-user deployment             |
+| CI/CD pipeline                         |                                 |
 
 ### Stakeholder Identification
 
-| Stakeholder | Role | Concerns | Priority |
-|-------------|------|----------|----------|
-| Security Operations | Primary | Zero-trust, CVE-free | H |
-| DevOps Engineers | Secondary | Integration ease | H |
-| Compliance Officers | Secondary | Audit trail | M |
-| End Users | Tertiary | Documentation | L |
+| Stakeholder         | Role      | Concerns             | Priority |
+| ------------------- | --------- | -------------------- | -------- |
+| Security Operations | Primary   | Zero-trust, CVE-free | H        |
+| DevOps Engineers    | Secondary | Integration ease     | H        |
+| Compliance Officers | Secondary | Audit trail          | M        |
+| End Users           | Tertiary  | Documentation        | L        |
 
 ### Design Viewpoints
 
-| Viewpoint | Purpose | Stakeholders |
-|-----------|---------|--------------|
-| Context | System boundaries | All |
-| Construction | Build process | DevOps |
-| Security | Hardening constraints | SecOps |
-| Verification | Test pipeline | QA |
+| Viewpoint    | Purpose               | Stakeholders |
+| ------------ | --------------------- | ------------ |
+| Context      | System boundaries     | All          |
+| Construction | Build process         | DevOps       |
+| Security     | Hardening constraints | SecOps       |
+| Verification | Test pipeline         | QA           |
 
 ### System Context Diagram
 
@@ -96,59 +97,66 @@ graph TD
 
 ### Component Registry
 
-| ID | Name | Type | Responsibility |
-|----|------|------|-----------------|
-| COMP-BUILD-001 | Builder | Module | Container image construction |
-| COMP-BUILD-002 | Hardener | Module | Security constraint application |
-| COMP-SCAN-001 | TrivyScanner | Module | CVE detection |
-| COMP-SCAN-002 | GrypeScanner | Module | Alternative scanning |
-| COMP-SBOM-001 | SBOMGenerator | Module | Software bill of materials |
-| COMP-SIGN-001 | Signer | Module | Image signing |
-| COMP-SIGN-002 | Verifier | Module | Signature verification |
-| COMP-REG-001 | Registry | Service | Image distribution |
+| ID             | Name          | Type    | Responsibility                  |
+| -------------- | ------------- | ------- | ------------------------------- |
+| COMP-BUILD-001 | Builder       | Module  | Container image construction    |
+| COMP-BUILD-002 | Hardener      | Module  | Security constraint application |
+| COMP-SCAN-001  | TrivyScanner  | Module  | CVE detection                   |
+| COMP-SCAN-002  | GrypeScanner  | Module  | Alternative scanning            |
+| COMP-SBOM-001  | SBOMGenerator | Module  | Software bill of materials      |
+| COMP-SIGN-001  | Signer        | Module  | Image signing                   |
+| COMP-SIGN-002  | Verifier      | Module  | Signature verification          |
+| COMP-REG-001   | Registry      | Service | Image distribution              |
 
 ### Dependencies
 
-| Dependency | Type | Version | Purpose |
-|------------|------|---------|---------|
-| docker | External | 20.10+ | Building images |
-| trivy | External | 0.44+ | Vulnerability scanning |
-| grype | External | 0.60+ | Alternative scanning |
-| cosign | External | 1.11+ | Image signing |
-| syft | External | 0.68+ | SBOM generation |
-| hadolint | External | 2.10+ | Dockerfile linting |
+| Dependency | Type     | Version | Purpose                |
+| ---------- | -------- | ------- | ---------------------- |
+| docker     | External | 20.10+  | Building images        |
+| trivy      | External | 0.44+   | Vulnerability scanning |
+| grype      | External | 0.60+   | Alternative scanning   |
+| cosign     | External | 1.11+   | Image signing          |
+| syft       | External | 0.68+   | SBOM generation        |
+| hadolint   | External | 2.10+   | Dockerfile linting     |
 
 ### Coupling Metrics
 
-| Metric | Value | Threshold | Status |
-|--------|-------|-----------|--------|
-| Afferent Coupling (Ca) | 3 | <10 | PASS |
-| Efferent Coupling (Ce) | 2 | <5 | PASS |
-| Instability (Ce/(Ca+Ce)) | 0.4 | 0.3-0.7 | PASS |
+| Metric                   | Value | Threshold | Status |
+| ------------------------ | ----- | --------- | ------ |
+| Afferent Coupling (Ca)   | 3     | <10       | PASS   |
+| Efferent Coupling (Ce)   | 2     | <5        | PASS   |
+| Instability (Ce/(Ca+Ce)) | 0.4   | 0.3-0.7   | PASS   |
 
 ---
 
 ## BP-3: Design Rationale (IEEE 1016 Clause 5.3)
 
-> **DEPRECATION NOTICE (2026-04-22):** References to debian-slim and Alpine in this document are deprecated. Both are permanently banned per ADR-007. See [requirements.md](../00_requirements/requirements.md) v4.0.0 for the current approved base image list.
+> **DEPRECATION NOTICE (2026-04-22):** References to debian-slim and Alpine in this document are deprecated. Both are
+> permanently banned per ADR-007. See [requirements.md](../00_requirements/requirements.md) v4.0.0 for the current
+> approved base image list.
 
 ### Context
 
-The primary architectural challenge is balancing security hardening with operational functionality. Previous approaches either oversimplified security (using standard base images) or lacked maintainability (manually curated images).
+The primary architectural challenge is balancing security hardening with operational functionality. Previous approaches
+either oversimplified security (using standard base images) or lacked maintainability (manually curated images).
 
 ### Decision
 
-> **DEPRECATION NOTICE (2026-04-22):** The tier-based hardening approach described below has been partially superseded by ADR-007. Base image selection is no longer tied to operational tier. See REQUIREMENTS.md v4.0.0 and [ADR-007](../../.adrs/ADR-007-base-image-preference-order.md) for the current universal preference order (scratch > wolfi > RHEL UBI micro > RHEL UBI minimal > RHEL UBI standard). debian-slim and Alpine are permanently banned.
+> **DEPRECATION NOTICE (2026-04-22):** The tier-based hardening approach described below has been partially superseded
+> by ADR-007. Base image selection is no longer tied to operational tier. See REQUIREMENTS.md v4.0.0 and
+> [ADR-007](../../.adrs/ADR-007-base-image-preference-order.md) for the current universal preference order (scratch >
+> wolfi > RHEL UBI micro > RHEL UBI minimal > RHEL UBI standard). debian-slim and Alpine are permanently banned.
 
-Adopt a tiered approach with three security levels, automated scanning, and mandatory signing for Tier 1 and Tier 2 images.
+Adopt a tiered approach with three security levels, automated scanning, and mandatory signing for Tier 1 and Tier 2
+images.
 
 ### Alternatives Considered
 
-| Alternative | Pros | Cons | Reason Rejected |
-|-------------|------|------|-----------------|
-| Single-tier hardening | Simplicity | Overhead for non-critical | REJECTED |
-| Manual curation | Control | Unsustainable at scale | REJECTED |
-| Third-party images | Ready-made | Trust chain issues | REJECTED |
+| Alternative           | Pros       | Cons                      | Reason Rejected |
+| --------------------- | ---------- | ------------------------- | --------------- |
+| Single-tier hardening | Simplicity | Overhead for non-critical | REJECTED        |
+| Manual curation       | Control    | Unsustainable at scale    | REJECTED        |
+| Third-party images    | Ready-made | Trust chain issues        | REJECTED        |
 
 ### Consequences
 
@@ -160,7 +168,10 @@ Adopt a tiered approach with three security levels, automated scanning, and mand
 
 ADR-001: Tiered Image Strategy
 
-> **UPDATE (2026-04-22):** ADR-007 supersedes the tier-to-base-image mapping. See [ADR-007](../../.adrs/ADR-007-base-image-preference-order.md) and [requirements.md](../00_requirements/requirements.md) v4.0.0 for the current policy. debian-slim and Alpine references in this document are deprecated.
+> **UPDATE (2026-04-22):** ADR-007 supersedes the tier-to-base-image mapping. See
+> [ADR-007](../../.adrs/ADR-007-base-image-preference-order.md) and
+> [requirements.md](../00_requirements/requirements.md) v4.0.0 for the current policy. debian-slim and Alpine references
+> in this document are deprecated.
 
 ---
 
@@ -168,19 +179,19 @@ ADR-001: Tiered Image Strategy
 
 ### Requirements Traceability Matrix
 
-| Requirement | Component | Test Case | Yellow Paper Ref |
-|--------------|------------|-----------|-----------------|
-| REQ-SEC-001 | COMP-SCAN-001 | TC-VULN-001 | YP-VULN-SCAN-001 |
-| REQ-SEC-002 | COMP-SIGN-001 | TC-SIGN-001 | YP-SEC-HARDENING-001 |
+| Requirement  | Component      | Test Case   | Yellow Paper Ref     |
+| ------------ | -------------- | ----------- | -------------------- |
+| REQ-SEC-001  | COMP-SCAN-001  | TC-VULN-001 | YP-VULN-SCAN-001     |
+| REQ-SEC-002  | COMP-SIGN-001  | TC-SIGN-001 | YP-SEC-HARDENING-001 |
 | REQ-STAT-001 | COMP-BUILD-002 | TC-HARD-001 | YP-SEC-HARDENING-001 |
 
 ### Theory-to-Implementation Traceability
 
-| Yellow Paper Element | Blue Paper Element | Implementation |
-|-----------------------|--------------------|-----------------|
-| AX-001 | COMP-SCAN-001 | Trivy scanner |
-| DEF-001 | COMP-BUILD-002 | Distroless Dockerfile |
-| ALG-003 | COMP-SIGN-001 | Cosign integration |
+| Yellow Paper Element | Blue Paper Element | Implementation        |
+| -------------------- | ------------------ | --------------------- |
+| AX-001               | COMP-SCAN-001      | Trivy scanner         |
+| DEF-001              | COMP-BUILD-002     | Distroless Dockerfile |
+| ALG-003              | COMP-SIGN-001      | Cosign integration    |
 
 ---
 
@@ -188,8 +199,7 @@ ADR-001: Tiered Image Strategy
 
 ### IF-BUILD-001: Image Build Interface
 
-**Provider:** COMP-BUILD-001
-**Consumer:** CI/CD Pipeline
+**Provider:** COMP-BUILD-001 **Consumer:** CI/CD Pipeline
 
 **Operation Specification**
 
@@ -201,21 +211,20 @@ Output: Built image reference
 
 **Preconditions:**
 
-| ID | Condition | Enforcement |
-|----|-----------|-------------|
-| PRE-001 | Base image exists | Pull check |
-| PRE-002 | Dockerfile valid | Hadolint |
+| ID      | Condition         | Enforcement |
+| ------- | ----------------- | ----------- |
+| PRE-001 | Base image exists | Pull check  |
+| PRE-002 | Dockerfile valid  | Hadolint    |
 
 **Postconditions:**
 
-| ID | Condition | Verification |
-|----|-----------|--------------|
+| ID       | Condition    | Verification  |
+| -------- | ------------ | ------------- |
 | POST-001 | Image exists | Docker images |
 
 ### IF-SCAN-001: Vulnerability Scan Interface
 
-**Provider:** COMP-SCAN-001
-**Consumer:** Quality Gate
+**Provider:** COMP-SCAN-001 **Consumer:** Quality Gate
 
 **Operation Specification**
 
@@ -227,17 +236,16 @@ Output: vulnerability_report
 
 **Complexity:**
 
-| Metric | Value | Derivation |
-|--------|-------|------------|
-| Time | O(n) | Package count |
-| Space | O(v) | Vulnerability count |
+| Metric | Value | Derivation          |
+| ------ | ----- | ------------------- |
+| Time   | O(n)  | Package count       |
+| Space  | O(v)  | Vulnerability count |
 
 **Thread Safety:** Thread-safe (read-only)
 
 ### IF-SIGN-001: Image Sign Interface
 
-**Provider:** COMP-SIGN-001
-**Consumer:** Build Pipeline
+**Provider:** COMP-SIGN-001 **Consumer:** Build Pipeline
 
 **Operation Specification**
 
@@ -249,15 +257,15 @@ Output: signature
 
 **Preconditions:**
 
-| ID | Condition | Enforcement |
-|----|-----------|-------------|
-| PRE-001 | Image exists | Check |
-| PRE-002 | Key available | HSM check |
+| ID      | Condition     | Enforcement |
+| ------- | ------------- | ----------- |
+| PRE-001 | Image exists  | Check       |
+| PRE-002 | Key available | HSM check   |
 
 **Postconditions:**
 
-| ID | Condition | Verification |
-|----|-----------|--------------|
+| ID       | Condition          | Verification  |
+| -------- | ------------------ | ------------- |
 | POST-001 | Signature attached | Cosign verify |
 
 ---
@@ -276,12 +284,12 @@ erDiagram
 
 ### Data Dictionary
 
-| Element | Type | Size | Constraints |
-|---------|------|------|-------------|
-| image_ref | string | dynamic | OCI format |
-| vulnerability | struct | 1KB | CVSS valid |
-| signature | blob | 512B | Cosign format |
-| sbom | json | dynamic | SPDX format |
+| Element       | Type   | Size    | Constraints   |
+| ------------- | ------ | ------- | ------------- |
+| image_ref     | string | dynamic | OCI format    |
+| vulnerability | struct | 1KB     | CVSS valid    |
+| signature     | blob   | 512B    | Cosign format |
+| sbom          | json   | dynamic | SPDX format   |
 
 ---
 
@@ -307,11 +315,11 @@ Verification Pipeline:
 
 ### Algorithm Implementation Mapping
 
-| Yellow Paper Step | Implementation | File:Line |
-|-------------------|----------------|-----------|
-| ALG-001 | SelectBaseImage | builder.go:42 |
-| ALG-002 | ConfigureNonRoot | hardener.go:28 |
-| ALG-003 | SignImage | signer.go:15 |
+| Yellow Paper Step | Implementation   | File:Line      |
+| ----------------- | ---------------- | -------------- |
+| ALG-001           | SelectBaseImage  | builder.go:42  |
+| ALG-002           | ConfigureNonRoot | hardener.go:28 |
+| ALG-003           | SignImage        | signer.go:15   |
 
 ---
 
@@ -338,11 +346,11 @@ graph TD
 
 ### Resource Requirements
 
-| Resource | Minimum | Recommended | Peak |
-|----------|---------|-------------|------|
-| CPU | 4 cores | 8 cores | 16 cores |
-| RAM | 8 GB | 16 GB | 32 GB |
-| Storage | 500 GB | 1 TB | 10 TB |
+| Resource | Minimum | Recommended | Peak     |
+| -------- | ------- | ----------- | -------- |
+| CPU      | 4 cores | 8 cores     | 16 cores |
+| RAM      | 8 GB    | 16 GB       | 32 GB    |
+| Storage  | 500 GB  | 1 TB        | 10 TB    |
 
 ---
 
@@ -350,12 +358,12 @@ graph TD
 
 ### Properties to Prove
 
-| Property ID | Description | Method | Priority | Status |
-|-------------|-------------|--------|----------|--------|
-| PROP-001 | Zero critical CVEs | Automated scan | CRITICAL | VERIFIED |
-| PROP-002 | Non-root execution | UID verification | CRITICAL | VERIFIED |
-| PROP-003 | Image signed | Cosign verify | CRITICAL | VERIFIED |
-| PROP-004 | SBOM generated | File existence | HIGH | VERIFIED |
+| Property ID | Description        | Method           | Priority | Status   |
+| ----------- | ------------------ | ---------------- | -------- | -------- |
+| PROP-001    | Zero critical CVEs | Automated scan   | CRITICAL | VERIFIED |
+| PROP-002    | Non-root execution | UID verification | CRITICAL | VERIFIED |
+| PROP-003    | Image signed       | Cosign verify    | CRITICAL | VERIFIED |
+| PROP-004    | SBOM generated     | File existence   | HIGH     | VERIFIED |
 
 ---
 
@@ -377,12 +385,12 @@ Scan Interface:
 
 ## BP-11: Compliance Matrix
 
-| Standard | Requirement | Implementation | Evidence |
-|----------|-------------|----------------|----------|
-| NIST SP 800-190 | Image security | Dockerfile | Scan report |
-| CIS Docker | Hardening | Dockerfile | Hadolint |
-| OCI Image Spec | Format | OCI manifest | Registry |
-| FIPS 140-2 | Signing | Cosign | Signature |
+| Standard        | Requirement    | Implementation | Evidence    |
+| --------------- | -------------- | -------------- | ----------- |
+| NIST SP 800-190 | Image security | Dockerfile     | Scan report |
+| CIS Docker      | Hardening      | Dockerfile     | Hadolint    |
+| OCI Image Spec  | Format         | OCI manifest   | Registry    |
+| FIPS 140-2      | Signing        | Cosign         | Signature   |
 
 ---
 
@@ -399,7 +407,7 @@ Scan Interface:
 
 ## Document Control
 
-| Version | Date | Author | Status |
-|---------|------|--------|--------|
-| 1.1.0 | 2026-04-22 | Nexus | APPROVED (PARTIALLY SUPERSEDED — ADR-007) |
-| 1.0.0 | 2026-04-19 | Nexus | APPROVED |
+| Version | Date       | Author | Status                                    |
+| ------- | ---------- | ------ | ----------------------------------------- |
+| 1.1.0   | 2026-04-22 | Nexus  | APPROVED (PARTIALLY SUPERSEDED — ADR-007) |
+| 1.0.0   | 2026-04-19 | Nexus  | APPROVED                                  |

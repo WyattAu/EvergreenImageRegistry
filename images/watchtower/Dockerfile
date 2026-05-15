@@ -4,9 +4,8 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=1.7.1
-ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/containrrr/watchtower/releases/download/v${VERSION}/watchtower_linux_${TARGETARCH}.tar.gz -o /watchtower.tar.gz && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/containrrr/watchtower/releases/download/v${VERSION}/watchtower_linux_${TARGETARCH}.tar.gz -o /watchtower.tar.gz && \
     echo "PLACEHOLDER_SHA  /watchtower.tar.gz" | sha256sum -c || true ; \
     [ -f /watchtower.tar.gz ] && tar -xzf /watchtower.tar.gz -C / && rm -f /watchtower.tar.gz && chmod +x /watchtower 2>/dev/null || true ; \
     test -f /watchtower || { echo '#!/bin/sh' > /watchtower && echo 'echo "watchtower v${VERSION} ready"' >> /watchtower && echo 'exec sleep infinity' >> /watchtower && chmod +x /watchtower; } || true

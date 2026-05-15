@@ -1,13 +1,13 @@
 fips_image_matrix:
-  version: "2.0.0"
-  generated: "2026-05-03"
-  description: "FIPS 140-2/140-3 image variant matrix for Evergreen Image Registry - top 30 security-critical images"
-  fips_standard: "FIPS 140-2"
-  target_fips_standard: "FIPS 140-3"
+  version: '2.0.0'
+  generated: '2026-05-03'
+  description: 'FIPS 140-2/140-3 image variant matrix for Evergreen Image Registry - top 30 security-critical images'
+  fips_standard: 'FIPS 140-2'
+  target_fips_standard: 'FIPS 140-3'
 
   categories:
     databases:
-      description: "Database images storing sensitive or regulated data"
+      description: 'Database images storing sensitive or regulated data'
       images:
         - name: postgresql
           current_base: wolfi-base (multi-stage from debian:bookworm-slim)
@@ -19,10 +19,10 @@ fips_image_matrix:
           crypto_deps:
             - openssl
           required_changes:
-            - "Switch to Debian/Ubuntu base with libssl3 FIPS provider installed"
-            - "Configure postgresql.conf: ssl = on, ssl_cert_file, ssl_key_file"
-            - "Set OPENSSL_CONF=/etc/ssl/fipsmodule.cnf"
-            - "Verify with: openssl list -providers"
+            - 'Switch to Debian/Ubuntu base with libssl3 FIPS provider installed'
+            - 'Configure postgresql.conf: ssl = on, ssl_cert_file, ssl_key_file'
+            - 'Set OPENSSL_CONF=/etc/ssl/fipsmodule.cnf'
+            - 'Verify with: openssl list -providers'
           priority: Critical
           variant: postgresql-fips
           effort: Medium
@@ -38,10 +38,10 @@ fips_image_matrix:
             - openssl
             - yassl
           required_changes:
-            - "Build from source with -DWITH_SSL=system -DFIPS_MODE=ON cmake flags"
-            - "Link against OpenSSL 3.x with FIPS provider module loaded"
-            - "Set OPENSSL_CONF=/etc/ssl/fipsmodule.cnf in container entrypoint"
-            - "Add --fips-mode to mysqld startup"
+            - 'Build from source with -DWITH_SSL=system -DFIPS_MODE=ON cmake flags'
+            - 'Link against OpenSSL 3.x with FIPS provider module loaded'
+            - 'Set OPENSSL_CONF=/etc/ssl/fipsmodule.cnf in container entrypoint'
+            - 'Add --fips-mode to mysqld startup'
           priority: Critical
           variant: mysql-fips
           effort: High
@@ -56,10 +56,10 @@ fips_image_matrix:
           crypto_deps:
             - openssl
           required_changes:
-            - "Build from source: make BUILD_TLS=yes MALLOC=libc USE_OPENSSL=yes"
-            - "Link against OpenSSL 3.x FIPS provider"
-            - "Set OPENSSL_CONF=/etc/ssl/fipsmodule.cnf"
-            - "Enable tls-port in redis.conf"
+            - 'Build from source: make BUILD_TLS=yes MALLOC=libc USE_OPENSSL=yes'
+            - 'Link against OpenSSL 3.x FIPS provider'
+            - 'Set OPENSSL_CONF=/etc/ssl/fipsmodule.cnf'
+            - 'Enable tls-port in redis.conf'
           priority: Critical
           variant: redis-fips
           effort: Medium
@@ -75,9 +75,9 @@ fips_image_matrix:
           crypto_deps:
             - openssl
           required_changes:
-            - "Use MongoDB Enterprise binary or build from source with FIPS OpenSSL"
-            - "Set net.tls.mode=requireTLS and openssl.fipsMode=true in mongod.conf"
-            - "Set OPENSSL_CONF=/etc/ssl/fipsmodule.cnf"
+            - 'Use MongoDB Enterprise binary or build from source with FIPS OpenSSL'
+            - 'Set net.tls.mode=requireTLS and openssl.fipsMode=true in mongod.conf'
+            - 'Set OPENSSL_CONF=/etc/ssl/fipsmodule.cnf'
           priority: Critical
           variant: mongodb-fips
           effort: High
@@ -93,10 +93,10 @@ fips_image_matrix:
           crypto_deps:
             - golang.org/x/crypto (via boringcrypto)
           required_changes:
-            - "Build from source with GOEXPERIMENT=boringcrypto and CGO_ENABLED=1"
-            - "Cannot use CGO_ENABLED=0; BoringCrypto requires CGO"
-            - "Set GOLANG_FIPS=1 at runtime"
-            - "Lose scratch base - requires glibc for dynamic linking"
+            - 'Build from source with GOEXPERIMENT=boringcrypto and CGO_ENABLED=1'
+            - 'Cannot use CGO_ENABLED=0; BoringCrypto requires CGO'
+            - 'Set GOLANG_FIPS=1 at runtime'
+            - 'Lose scratch base - requires glibc for dynamic linking'
           priority: High
           variant: cockroachdb-fips
           effort: High
@@ -112,10 +112,10 @@ fips_image_matrix:
           crypto_deps:
             - openssl
           required_changes:
-            - "Requires upstream ScyllaDB to provide FIPS-enabled build"
-            - "Build from source with OpenSSL 3.x FIPS provider linked"
-            - "Complex: ScyllaDB uses dpdk, boost::asio with OpenSSL interop"
-            - "Track: https://github.com/scylladb/scylladb/issues for FIPS support"
+            - 'Requires upstream ScyllaDB to provide FIPS-enabled build'
+            - 'Build from source with OpenSSL 3.x FIPS provider linked'
+            - 'Complex: ScyllaDB uses dpdk, boost::asio with OpenSSL interop'
+            - 'Track: https://github.com/scylladb/scylladb/issues for FIPS support'
           priority: Medium
           variant: null
           effort: Very High
@@ -130,9 +130,9 @@ fips_image_matrix:
           crypto_deps:
             - golang.org/x/crypto (via boringcrypto)
           required_changes:
-            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
-            - "Requires glibc runtime (cannot be pure scratch)"
-            - "Set GOLANG_FIPS=1 at runtime"
+            - 'Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1'
+            - 'Requires glibc runtime (cannot be pure scratch)'
+            - 'Set GOLANG_FIPS=1 at runtime'
           priority: High
           variant: tidb-fips
           effort: High
@@ -148,15 +148,15 @@ fips_image_matrix:
           crypto_deps:
             - openssl
           required_changes:
-            - "Build from source with BUILD_TLS=yes and FIPS OpenSSL"
-            - "Or use Chainguard FIPS-enabled base with FIPS valkey package"
-            - "Set OPENSSL_CONF=/etc/ssl/fipsmodule.cnf"
+            - 'Build from source with BUILD_TLS=yes and FIPS OpenSSL'
+            - 'Or use Chainguard FIPS-enabled base with FIPS valkey package'
+            - 'Set OPENSSL_CONF=/etc/ssl/fipsmodule.cnf'
           priority: High
           variant: valkey-fips
           effort: Medium
 
     auth:
-      description: "Authentication and identity management images"
+      description: 'Authentication and identity management images'
       images:
         - name: keycloak
           current_base: wolfi-base (multi-stage from debian:bookworm-slim)
@@ -171,10 +171,10 @@ fips_image_matrix:
             - openssl
             - bouncycastle
           required_changes:
-            - "Add -Djava.security.properties=/etc/java/security.fips.properties to JAVA_OPTS"
-            - "Install OpenSSL 3.x FIPS provider on base image"
-            - "Configure Quarkus SSL FIPS: quarkus.ssl.native-fips=true"
-            - "Use Wolfi FIPS base or Debian with libssl3-fips"
+            - 'Add -Djava.security.properties=/etc/java/security.fips.properties to JAVA_OPTS'
+            - 'Install OpenSSL 3.x FIPS provider on base image'
+            - 'Configure Quarkus SSL FIPS: quarkus.ssl.native-fips=true'
+            - 'Use Wolfi FIPS base or Debian with libssl3-fips'
           priority: Critical
           variant: keycloak-fips
           effort: Medium
@@ -189,9 +189,9 @@ fips_image_matrix:
           crypto_deps:
             - golang.org/x/crypto (via boringcrypto)
           required_changes:
-            - "Change build: CGO_ENABLED=1 GOEXPERIMENT=boringcrypto go build"
-            - "Switch final image from scratch to debian:bookworm-slim (glibc needed)"
-            - "Set GOLANG_FIPS=1 at runtime"
+            - 'Change build: CGO_ENABLED=1 GOEXPERIMENT=boringcrypto go build'
+            - 'Switch final image from scratch to debian:bookworm-slim (glibc needed)'
+            - 'Set GOLANG_FIPS=1 at runtime'
           priority: High
           variant: dex-fips
           effort: Medium
@@ -208,15 +208,15 @@ fips_image_matrix:
             - openssl
             - rustls (optional)
           required_changes:
-            - "Build from source with OPENSSL_NO_VENDOR=1 and FIPS OpenSSL"
-            - "Or configure Kanidm to use system OpenSSL with FIPS provider"
-            - "Set OPENSSL_CONF=/etc/ssl/fipsmodule.cnf"
+            - 'Build from source with OPENSSL_NO_VENDOR=1 and FIPS OpenSSL'
+            - 'Or configure Kanidm to use system OpenSSL with FIPS provider'
+            - 'Set OPENSSL_CONF=/etc/ssl/fipsmodule.cnf'
           priority: High
           variant: kanidm-fips
           effort: High
 
     crypto:
-      description: "Cryptographic and certificate management images"
+      description: 'Cryptographic and certificate management images'
       images:
         - name: vault
           current_base: scratch (binary from HashiCorp releases)
@@ -230,10 +230,10 @@ fips_image_matrix:
             - golang.org/x/crypto
             - openssl
           required_changes:
-            - "Use Vault Enterprise FIPS binary (officially certified)"
-            - "Or build community from source: GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
-            - "Enterprise: set GOEXPERIMENT=boringcrypto, enable FIPS 140-2 in config"
-            - "Community FIPS is not certified - only Enterprise has validation"
+            - 'Use Vault Enterprise FIPS binary (officially certified)'
+            - 'Or build community from source: GOEXPERIMENT=boringcrypto CGO_ENABLED=1'
+            - 'Enterprise: set GOEXPERIMENT=boringcrypto, enable FIPS 140-2 in config'
+            - 'Community FIPS is not certified - only Enterprise has validation'
           priority: Critical
           variant: vault-fips
           effort: Medium
@@ -250,9 +250,9 @@ fips_image_matrix:
             - golang.org/x/crypto (via boringcrypto)
             - smallstep/crypto
           required_changes:
-            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
-            - "Switch final image from scratch to debian:bookworm-slim"
-            - "Set GOLANG_FIPS=1 at runtime"
+            - 'Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1'
+            - 'Switch final image from scratch to debian:bookworm-slim'
+            - 'Set GOLANG_FIPS=1 at runtime'
           priority: Critical
           variant: step-ca-fips
           effort: Medium
@@ -267,9 +267,9 @@ fips_image_matrix:
           crypto_deps:
             - golang.org/x/crypto (via boringcrypto)
           required_changes:
-            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
-            - "Switch final image from scratch to glibc-based image"
-            - "Set GOLANG_FIPS=1 at runtime"
+            - 'Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1'
+            - 'Switch final image from scratch to glibc-based image'
+            - 'Set GOLANG_FIPS=1 at runtime'
           priority: Critical
           variant: cosign-fips
           effort: Medium
@@ -284,9 +284,9 @@ fips_image_matrix:
           crypto_deps:
             - golang.org/x/crypto (via boringcrypto)
           required_changes:
-            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
-            - "Switch final image from scratch to glibc-based image"
-            - "Set GOLANG_FIPS=1 at runtime"
+            - 'Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1'
+            - 'Switch final image from scratch to glibc-based image'
+            - 'Set GOLANG_FIPS=1 at runtime'
           priority: High
           variant: fulcio-fips
           effort: Medium
@@ -301,15 +301,15 @@ fips_image_matrix:
           crypto_deps:
             - golang.org/x/crypto (via boringcrypto)
           required_changes:
-            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
-            - "Switch final image from scratch to glibc-based image"
-            - "Set GOLANG_FIPS=1 at runtime"
+            - 'Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1'
+            - 'Switch final image from scratch to glibc-based image'
+            - 'Set GOLANG_FIPS=1 at runtime'
           priority: High
           variant: rekor-fips
           effort: Medium
 
     monitoring:
-      description: "Observability and monitoring stack images"
+      description: 'Observability and monitoring stack images'
       images:
         - name: prometheus
           current_base: scratch (binary from GitHub releases)
@@ -322,9 +322,9 @@ fips_image_matrix:
           crypto_deps:
             - golang.org/x/crypto (via boringcrypto)
           required_changes:
-            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
-            - "Switch final image from scratch to glibc-based image"
-            - "Set GOLANG_FIPS=1 at runtime"
+            - 'Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1'
+            - 'Switch final image from scratch to glibc-based image'
+            - 'Set GOLANG_FIPS=1 at runtime'
           priority: High
           variant: prometheus-fips
           effort: Medium
@@ -340,9 +340,9 @@ fips_image_matrix:
           crypto_deps:
             - golang.org/x/crypto (via boringcrypto)
           required_changes:
-            - "Build from source: go build -tags=boringcrypto with CGO_ENABLED=1"
-            - "Set GOLANG_FIPS=1 at runtime"
-            - "Configure GF_SECURITY_FIPS=true (if supported by version)"
+            - 'Build from source: go build -tags=boringcrypto with CGO_ENABLED=1'
+            - 'Set GOLANG_FIPS=1 at runtime'
+            - 'Configure GF_SECURITY_FIPS=true (if supported by version)'
           priority: Medium
           variant: grafana-fips
           effort: Medium
@@ -357,9 +357,9 @@ fips_image_matrix:
           crypto_deps:
             - golang.org/x/crypto (via boringcrypto)
           required_changes:
-            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
-            - "Switch final image from scratch to glibc-based image"
-            - "Set GOLANG_FIPS=1 at runtime"
+            - 'Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1'
+            - 'Switch final image from scratch to glibc-based image'
+            - 'Set GOLANG_FIPS=1 at runtime'
           priority: Medium
           variant: alertmanager-fips
           effort: Medium
@@ -374,9 +374,9 @@ fips_image_matrix:
           crypto_deps:
             - golang.org/x/crypto (via boringcrypto)
           required_changes:
-            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
-            - "Switch final image from scratch to glibc-based image"
-            - "Set GOLANG_FIPS=1 at runtime"
+            - 'Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1'
+            - 'Switch final image from scratch to glibc-based image'
+            - 'Set GOLANG_FIPS=1 at runtime'
           priority: Medium
           variant: loki-fips
           effort: Medium
@@ -391,14 +391,14 @@ fips_image_matrix:
           crypto_deps:
             - golang.org/x/crypto (via boringcrypto)
           required_changes:
-            - "Add to registry first, then build with GOEXPERIMENT=boringcrypto"
-            - "Set GOLANG_FIPS=1 at runtime"
+            - 'Add to registry first, then build with GOEXPERIMENT=boringcrypto'
+            - 'Set GOLANG_FIPS=1 at runtime'
           priority: Medium
           variant: tempo-fips
           effort: Medium
 
     networking:
-      description: "Networking, proxy, and DNS images"
+      description: 'Networking, proxy, and DNS images'
       images:
         - name: envoy
           current_base: scratch (binary from GitHub releases)
@@ -412,10 +412,10 @@ fips_image_matrix:
           crypto_deps:
             - boringssl (with BoringCrypto FIPS module)
           required_changes:
-            - "Download FIPS-validated Envoy build from official releases"
-            - "Or build from source with: bazel build --config=fips"
-            - "Set --define=fips=true in bazel build flags"
-            - "BoringCrypto FIPS module self-tests on startup"
+            - 'Download FIPS-validated Envoy build from official releases'
+            - 'Or build from source with: bazel build --config=fips'
+            - 'Set --define=fips=true in bazel build flags'
+            - 'BoringCrypto FIPS module self-tests on startup'
           priority: Critical
           variant: envoy-fips
           effort: Low
@@ -430,9 +430,9 @@ fips_image_matrix:
           crypto_deps:
             - golang.org/x/crypto (via boringcrypto)
           required_changes:
-            - "Use Consul Enterprise FIPS binary (officially certified)"
-            - "Or build community from source: GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
-            - "Enterprise: FIPS mode enabled via configuration"
+            - 'Use Consul Enterprise FIPS binary (officially certified)'
+            - 'Or build community from source: GOEXPERIMENT=boringcrypto CGO_ENABLED=1'
+            - 'Enterprise: FIPS mode enabled via configuration'
           priority: High
           variant: consul-fips
           effort: Medium
@@ -447,9 +447,9 @@ fips_image_matrix:
           crypto_deps:
             - golang.org/x/crypto (via boringcrypto)
           required_changes:
-            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
-            - "Switch final image from scratch to glibc-based image"
-            - "Set GOLANG_FIPS=1 at runtime"
+            - 'Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1'
+            - 'Switch final image from scratch to glibc-based image'
+            - 'Set GOLANG_FIPS=1 at runtime'
           priority: High
           variant: traefik-fips
           effort: Medium
@@ -465,10 +465,10 @@ fips_image_matrix:
           crypto_deps:
             - openssl
           required_changes:
-            - "Build from source: ./configure --with-openssl=/path/to/openssl-fips"
-            - "Or use NGINX Plus FIPS build (commercial)"
-            - "Set OPENSSL_CONF=/etc/ssl/fipsmodule.cnf"
-            - "Configure ssl_conf_command in nginx.conf for FIPS provider"
+            - 'Build from source: ./configure --with-openssl=/path/to/openssl-fips'
+            - 'Or use NGINX Plus FIPS build (commercial)'
+            - 'Set OPENSSL_CONF=/etc/ssl/fipsmodule.cnf'
+            - 'Configure ssl_conf_command in nginx.conf for FIPS provider'
           priority: Critical
           variant: nginx-fips
           effort: Medium
@@ -483,15 +483,15 @@ fips_image_matrix:
           crypto_deps:
             - golang.org/x/crypto (via boringcrypto)
           required_changes:
-            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
-            - "Switch final image from scratch to glibc-based image"
-            - "Set GOLANG_FIPS=1 at runtime"
+            - 'Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1'
+            - 'Switch final image from scratch to glibc-based image'
+            - 'Set GOLANG_FIPS=1 at runtime'
           priority: High
           variant: coredns-fips
           effort: Medium
 
     security:
-      description: "Security scanning, policy enforcement, and runtime protection"
+      description: 'Security scanning, policy enforcement, and runtime protection'
       images:
         - name: trivy
           current_base: scratch (binary from GitHub releases)
@@ -503,9 +503,9 @@ fips_image_matrix:
           crypto_deps:
             - golang.org/x/crypto (via boringcrypto)
           required_changes:
-            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
-            - "Switch final image from scratch to glibc-based image"
-            - "Set GOLANG_FIPS=1 at runtime"
+            - 'Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1'
+            - 'Switch final image from scratch to glibc-based image'
+            - 'Set GOLANG_FIPS=1 at runtime'
           priority: High
           variant: trivy-fips
           effort: Medium
@@ -521,9 +521,9 @@ fips_image_matrix:
           crypto_deps:
             - openssl
           required_changes:
-            - "Requires upstream Cribl/Falco to provide FIPS-enabled build"
-            - "Build kernel module and userspace with FIPS OpenSSL linked"
-            - "Track: https://github.com/falcosecurity/falco/issues for FIPS support"
+            - 'Requires upstream Cribl/Falco to provide FIPS-enabled build'
+            - 'Build kernel module and userspace with FIPS OpenSSL linked'
+            - 'Track: https://github.com/falcosecurity/falco/issues for FIPS support'
           priority: Medium
           variant: null
           effort: Very High
@@ -538,9 +538,9 @@ fips_image_matrix:
           crypto_deps:
             - golang.org/x/crypto (via boringcrypto)
           required_changes:
-            - "Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
-            - "Switch final image from scratch to glibc-based image"
-            - "Set GOLANG_FIPS=1 at runtime"
+            - 'Build from source with GOEXPERIMENT=boringcrypto CGO_ENABLED=1'
+            - 'Switch final image from scratch to glibc-based image'
+            - 'Set GOLANG_FIPS=1 at runtime'
           priority: Medium
           variant: kubescape-fips
           effort: Medium
@@ -555,8 +555,8 @@ fips_image_matrix:
           crypto_deps:
             - golang.org/x/crypto (via boringcrypto)
           required_changes:
-            - "Add to registry, build with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
-            - "Set GOLANG_FIPS=1 at runtime"
+            - 'Add to registry, build with GOEXPERIMENT=boringcrypto CGO_ENABLED=1'
+            - 'Set GOLANG_FIPS=1 at runtime'
           priority: Medium
           variant: opa-fips
           effort: Medium
@@ -597,31 +597,30 @@ fips_image_matrix:
       not_applicable: 2
 
   build_notes:
-    openssl_fips_version: "3.0.x with FIPS provider module (openssl-fips-3.0.x)"
-    golang_boringcrypto: "Go 1.24+ with GOEXPERIMENT=boringcrypto CGO_ENABLED=1"
-    boringcrypto_note: "BoringCrypto requires CGO_ENABLED=1; cannot produce static scratch binaries"
-    boringcrypto_fips_cert: "FIPS 140-2 Certificate #4140 (BoringCrypto module in BoringSSL)"
-    debian_fips_base: "debian:bookworm-slim with libssl3 and openssl-fips-provider installed"
-    wolfi_fips_base: "cgr.dev/chainguard/wolfi-base-fips:latest (if available)"
+    openssl_fips_version: '3.0.x with FIPS provider module (openssl-fips-3.0.x)'
+    golang_boringcrypto: 'Go 1.24+ with GOEXPERIMENT=boringcrypto CGO_ENABLED=1'
+    boringcrypto_note: 'BoringCrypto requires CGO_ENABLED=1; cannot produce static scratch binaries'
+    boringcrypto_fips_cert: 'FIPS 140-2 Certificate #4140 (BoringCrypto module in BoringSSL)'
+    debian_fips_base: 'debian:bookworm-slim with libssl3 and openssl-fips-provider installed'
+    wolfi_fips_base: 'cgr.dev/chainguard/wolfi-base-fips:latest (if available)'
     fips_env_vars:
-      openssl: "OPENSSL_CONF=/etc/ssl/fipsmodule.cnf"
-      go: "GOLANG_FIPS=1"
-      java: "-Djava.security.properties=/etc/java/security.fips.properties"
-      vault: "VAULT_FIPS=1 (Enterprise only)"
+      openssl: 'OPENSSL_CONF=/etc/ssl/fipsmodule.cnf'
+      go: 'GOLANG_FIPS=1'
+      java: '-Djava.security.properties=/etc/java/security.fips.properties'
+      vault: 'VAULT_FIPS=1 (Enterprise only)'
     scratch_limitation: >
-      BoringCrypto requires dynamic linking with glibc.
-      Images currently using FROM scratch must switch to a minimal
-      glibc-based image (debian:bookworm-slim or wolfi) for FIPS variants.
-      This increases image size but is required for FIPS compliance.
+      BoringCrypto requires dynamic linking with glibc. Images currently using FROM scratch must switch to a minimal
+      glibc-based image (debian:bookworm-slim or wolfi) for FIPS variants. This increases image size but is required for
+      FIPS compliance.
 
   upstream_fips_status:
-    envoy: "Official FIPS build available via bazel --config=fips"
-    vault: "FIPS only via Enterprise edition"
-    consul: "FIPS only via Enterprise edition"
-    nginx: "FIPS via NGINX Plus (commercial) or source rebuild"
-    keycloak: "FIPS supported natively in Quarkus since Keycloak 26+"
-    mongodb: "FIPS via MongoDB Enterprise"
-    scylladb: "No FIPS support - requires upstream contribution"
-    falco: "No FIPS support - requires upstream contribution"
-    cockroachdb: "No official FIPS build - community source rebuild needed"
-    tidb: "No official FIPS build - community source rebuild needed"
+    envoy: 'Official FIPS build available via bazel --config=fips'
+    vault: 'FIPS only via Enterprise edition'
+    consul: 'FIPS only via Enterprise edition'
+    nginx: 'FIPS via NGINX Plus (commercial) or source rebuild'
+    keycloak: 'FIPS supported natively in Quarkus since Keycloak 26+'
+    mongodb: 'FIPS via MongoDB Enterprise'
+    scylladb: 'No FIPS support - requires upstream contribution'
+    falco: 'No FIPS support - requires upstream contribution'
+    cockroachdb: 'No official FIPS build - community source rebuild needed'
+    tidb: 'No official FIPS build - community source rebuild needed'

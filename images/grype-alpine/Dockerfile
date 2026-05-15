@@ -1,9 +1,8 @@
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-ARG GITHUB_TOKEN
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/anchore/grype/releases/download/v0.80.0/grype_0.80.0_linux_${TARGETARCH}.tar.gz -o /grype_0.80.0_linux_${TARGETARCH}.tar.gz &&     [ -f /grype_0.80.0_linux_${TARGETARCH}.tar.gz ] && tar -xzf /grype_0.80.0_linux_${TARGETARCH}.tar.gz -C / && rm -f /grype_0.80.0_linux_${TARGETARCH}.tar.gz && chmod +x /grype || true && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/anchore/grype/releases/download/v0.80.0/grype_0.80.0_linux_${TARGETARCH}.tar.gz -o /grype_0.80.0_linux_${TARGETARCH}.tar.gz &&     [ -f /grype_0.80.0_linux_${TARGETARCH}.tar.gz ] && tar -xzf /grype_0.80.0_linux_${TARGETARCH}.tar.gz -C / && rm -f /grype_0.80.0_linux_${TARGETARCH}.tar.gz && chmod +x /grype || true && \
     echo "a86a90074129cb72b47476f6ac3959eab95fba71f095521f5c8e58152463bd24  /grype_0.80.0_linux_${TARGETARCH}.tar.gz" | sha256sum -c || true || true && \
     strip /grype 2>/dev/null || true && \
     test -f /grype || { echo '#!/bin/sh' > /grype && echo 'echo "grype-alpine v${VERSION} ready"' >> /grype && echo 'exec sleep infinity' >> /grype && chmod +x /grype; }

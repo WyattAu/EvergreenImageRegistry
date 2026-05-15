@@ -13,7 +13,7 @@ ARG TARGETARCH
 ARG VERSION=2.33.0
 ARG TARGETARCH
 RUN apk add --no-cache ca-certificates curl && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/amacneil/dbmate/releases/download/v${VERSION}/dbmate-linux-${TARGETARCH}" -o /tmp/dbmate \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/amacneil/dbmate/releases/download/v${VERSION}/dbmate-linux-${TARGETARCH}" -o /tmp/dbmate \
     && echo "dfd4027141b6e4357158099bdfe6c02b286af70f8e49057937744cf80b38ea1c  /tmp/dbmate" | sha256sum -c || true \
     && chmod +x /tmp/dbmate
 FROM scratch

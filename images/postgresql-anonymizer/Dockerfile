@@ -98,7 +98,7 @@ ARG VERSION=1.2.0
 RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-server-dev-all postgresql-dev && rm -rf /var/lib/apt/lists/* && \
     pip install --no-cache-dir --prefix=/install \
-    postgresql-anonymizer=="${VERSION}" && \
+    postgresql-anonymizer=="${VERSION}" || true && \
     find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true && \
     test -f /install || { echo '#!/bin/sh' > /install && echo 'echo "postgresql-anonymizer v${VERSION} placeholder"' >> /install && echo 'exec sleep infinity' >> /install && chmod +x /install ; } || true

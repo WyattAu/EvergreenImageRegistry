@@ -2,7 +2,7 @@ name: Sign Images with Cosign
 
 on:
   workflow_run:
-    workflows: ["Build Hardened Images"]
+    workflows: ['Build Hardened Images']
     types: [completed]
     branches: [main]
 
@@ -39,7 +39,7 @@ jobs:
 
       - name: Sign images
         env:
-          COSIGN_EXPERIMENTAL: "1"
+          COSIGN_EXPERIMENTAL: '1'
         run: |
           if [ ! -f /tmp/references/images.txt ]; then
             echo "No image references found"

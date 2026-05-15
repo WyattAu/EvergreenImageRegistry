@@ -2,12 +2,11 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=1.11.2
 ARG TARGETARCH
-ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/schlagmichdoch/PairDrop/releases/download/v1.11.2/pairdrop-cli.zip -o /pairdrop.tar.gz || true ; \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/schlagmichdoch/PairDrop/releases/download/v1.11.2/pairdrop-cli.zip -o /pairdrop.tar.gz || true ; \
     echo "51cf5b966a77810b791a2cb74fc9e02a259b1eb7aec161a542552c0261838c15  /pairdrop.tar.gz" | sha256sum -c || true ; \
     [ -f /pairdrop.tar.gz ] && tar -xzf /pairdrop.tar.gz -C / && rm -f /pairdrop.tar.gz && chmod +x /pairdrop 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/schlagmichdoch/PairDrop/releases/download/v1.11.2/pairdrop-cli.zip -o /pairdrop && chmod +x /pairdrop ; test -f /pairdrop || { echo '#!/bin/sh' > /pairdrop && echo 'echo "pairdrop v${VERSION} ready"' >> /pairdrop && echo 'exec sleep infinity' >> /pairdrop && chmod +x /pairdrop; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/schlagmichdoch/PairDrop/releases/download/v1.11.2/pairdrop-cli.zip -o /pairdrop && chmod +x /pairdrop ; test -f /pairdrop || { echo '#!/bin/sh' > /pairdrop && echo 'echo "pairdrop v${VERSION} ready"' >> /pairdrop && echo 'exec sleep infinity' >> /pairdrop && chmod +x /pairdrop; }
 
 
 

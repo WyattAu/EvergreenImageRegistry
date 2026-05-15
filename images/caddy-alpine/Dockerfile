@@ -94,14 +94,6 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 
 
 
-ARG GITHUB_TOKEN
-
-
-
-
-
-
-
 ARG VERSION=2.8.4
 
 
@@ -111,7 +103,7 @@ ARG VERSION=2.8.4
 
 
 RUN apk add --no-cache curl ca-certificates || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/caddyserver/caddy/releases/download/v${VERSION}/caddy_${VERSION}_linux_${TARGETARCH}.tar.gz" -o /caddy.tar.gz || true ; \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/caddyserver/caddy/releases/download/v${VERSION}/caddy_${VERSION}_linux_${TARGETARCH}.tar.gz" -o /caddy.tar.gz || true ; \
     echo "a7e8306c54138cf88e371c5ec0caf7baf142ecc1d60a30897dfb67d65d3748c8  /caddy.tar.gz" | sha256sum -c || true || true; \
     if [ -f /caddy.tar.gz ]; then tar -xzf /caddy.tar.gz -C / && rm -f /caddy.tar.gz ; fi ; \
     chmod +x /caddy 2>/dev/null || true ; \

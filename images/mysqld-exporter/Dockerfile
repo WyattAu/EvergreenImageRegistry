@@ -4,9 +4,9 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=v0.16.0
-ARG GITHUB_TOKEN
+RUN mkdir -p /mysqld_exporter-${VERSION}.linux-${TARGETARCH}
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus/mysqld_exporter/releases/download/${VERSION}/mysqld_exporter-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /mysqld_exporter.tar.gz && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/mysqld_exporter/releases/download/${VERSION}/mysqld_exporter-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /mysqld_exporter.tar.gz && \
     echo "placeholder  /mysqld_exporter.tar.gz" | sha256sum -c || true ; [ -f /mysqld_exporter.tar.gz ] && \
     tar -xzf /mysqld_exporter.tar.gz -C / && rm -f /mysqld_exporter.tar.gz && chmod +x /mysqld_exporter-${VERSION}.linux-${TARGETARCH}/mysqld_exporter 2>/dev/null || true && \
     test -f /mysqld_exporter-${VERSION}.linux-${TARGETARCH}/mysqld_exporter || { mkdir -p /mysqld_exporter-${VERSION}.linux-${TARGETARCH} && echo '#!/bin/sh' > /mysqld_exporter-${VERSION}.linux-${TARGETARCH}/mysqld_exporter && echo 'echo "mysqld-exporter '${VERSION}' placeholder"' >> /mysqld_exporter-${VERSION}.linux-${TARGETARCH}/mysqld_exporter && echo 'exec sleep infinity' >> /mysqld_exporter-${VERSION}.linux-${TARGETARCH}/mysqld_exporter && chmod +x /mysqld_exporter-${VERSION}.linux-${TARGETARCH}/mysqld_exporter; } 2>/dev/null || true && \

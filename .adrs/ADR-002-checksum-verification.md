@@ -3,17 +3,21 @@
 ## ADR-002: SHA256 Checksum Verification for All Downloaded Binaries
 
 ### Status
+
 ACCEPTED
 
 ### Date
+
 2026-04-19
 
 ### Author
+
 Nexus (Principal Systems Architect)
 
 ### Context
 
-All 124 multi-stage images (Categories A, B, C) download their primary binary via `curl -fsSL` with **zero integrity verification**:
+All 124 multi-stage images (Categories A, B, C) download their primary binary via `curl -fsSL` with **zero integrity
+verification**:
 
 ```dockerfile
 RUN curl -fsSL "https://example.com/binary.tar.gz" -o /binary.tar.gz && \
@@ -21,12 +25,14 @@ RUN curl -fsSL "https://example.com/binary.tar.gz" -o /binary.tar.gz && \
 ```
 
 This creates a critical supply chain attack vector:
+
 1. **MITM attack**: An attacker intercepting the download could inject malicious code
 2. **Compromised CDN**: If the release server is compromised, malicious binaries are served
 3. **DNS hijacking**: Redirecting download URLs to attacker-controlled servers
 4. **Typosquatting**: Similar-looking URLs serving malicious packages
 
-For **military contractors**, this is a blocking security gap. NIST SP 800-53 SA-10 requires developer security and integrity verification. FIPS 140-2 requires validated cryptographic verification.
+For **military contractors**, this is a blocking security gap. NIST SP 800-53 SA-10 requires developer security and
+integrity verification. FIPS 140-2 requires validated cryptographic verification.
 
 ### Decision
 
@@ -85,18 +91,21 @@ CHECKSUM_URL=https://nginx.org/download/nginx-1.27.1.tar.gz.sha256
 ### Consequences
 
 **Positive:**
+
 - Supply chain integrity verified for all artifacts
 - Build fails immediately on tampered downloads
 - Audit trail for all binary versions
 - Meets NIST SP 800-53 SA-10, FIPS 140-2 requirements
 
 **Negative:**
+
 - Additional build step (marginal time increase)
 - CHECKSUMS files must be maintained manually
 - Some upstream projects don't provide checksum files
 - Need process for updating checksums when versions change
 
 **Risks:**
+
 - Checksum file itself could be tampered with if hosted on same server
 - Mitigation: Prefer checksums from separate server or GPG-signed checksums
 - Some projects only provide GPG signatures, not SHA256
@@ -104,30 +113,30 @@ CHECKSUM_URL=https://nginx.org/download/nginx-1.27.1.tar.gz.sha256
 
 ### Alternatives Considered
 
-| Alternative | Pros | Cons | Reason Rejected |
-|-------------|------|------|-----------------|
-| GPG signature verification | Cryptographically stronger | More complex, not all projects provide GPG | Use when available, fall back to SHA256 |
-| No verification (current) | Simplest | Supply chain attack vector | Security gap |
-| Verify only in CI, not in Dockerfile | No Dockerfile change | Doesn't protect local builds | Must be enforced at build time |
-| Use SLSA provenance instead | Strong supply chain guarantee | Not available for all upstream projects | Complementary, not replacement |
+| Alternative                          | Pros                          | Cons                                       | Reason Rejected                         |
+| ------------------------------------ | ----------------------------- | ------------------------------------------ | --------------------------------------- |
+| GPG signature verification           | Cryptographically stronger    | More complex, not all projects provide GPG | Use when available, fall back to SHA256 |
+| No verification (current)            | Simplest                      | Supply chain attack vector                 | Security gap                            |
+| Verify only in CI, not in Dockerfile | No Dockerfile change          | Doesn't protect local builds               | Must be enforced at build time          |
+| Use SLSA provenance instead          | Strong supply chain guarantee | Not available for all upstream projects    | Complementary, not replacement          |
 
 ### Multi-Level Verification Strategy
 
-| Level | Method | When Used | Tool |
-|-------|--------|-----------|------|
-| 1 | SHA256 from upstream | Upstream provides sha256 file | `sha256sum -c` |
-| 2 | SHA256 hardcoded | Upstream doesn't provide checksums | Manual computation + hardcoded |
-| 3 | GPG signature | Upstream provides .asc file | `gpg --verify` |
-| 4 | Cosign/SLSA | Upstream publishes provenance | `cosign verify` |
+| Level | Method               | When Used                          | Tool                           |
+| ----- | -------------------- | ---------------------------------- | ------------------------------ |
+| 1     | SHA256 from upstream | Upstream provides sha256 file      | `sha256sum -c`                 |
+| 2     | SHA256 hardcoded     | Upstream doesn't provide checksums | Manual computation + hardcoded |
+| 3     | GPG signature        | Upstream provides .asc file        | `gpg --verify`                 |
+| 4     | Cosign/SLSA          | Upstream publishes provenance      | `cosign verify`                |
 
 ### Related Standards
 
-| Standard | Clause | Requirement |
-|----------|--------|-------------|
-| NIST SP 800-53 | SA-10 | Developer security and integrity verification |
-| NIST SP 800-53 | CM-3 | Configuration change control |
-| FIPS 140-2 | Section 4 | Cryptographic module validation |
-| SLSA | Level 3 | Provenance requirements |
+| Standard       | Clause    | Requirement                                   |
+| -------------- | --------- | --------------------------------------------- |
+| NIST SP 800-53 | SA-10     | Developer security and integrity verification |
+| NIST SP 800-53 | CM-3      | Configuration change control                  |
+| FIPS 140-2     | Section 4 | Cryptographic module validation               |
+| SLSA           | Level 3   | Provenance requirements                       |
 
 ### Related Yellow Papers
 

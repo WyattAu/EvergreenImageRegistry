@@ -2,9 +2,9 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=0.28.0
-ARG GITHUB_TOKEN
+RUN mkdir -p /blackbox_exporter-0.28.0.linux-${TARGETARCH}
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" "https://github.com/prometheus/blackbox_exporter/releases/download/v${VERSION}/blackbox_exporter-0.28.0.linux-${TARGETARCH}.tar.gz" -o /exporter.tar.gz || true ; \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/blackbox_exporter/releases/download/v${VERSION}/blackbox_exporter-0.28.0.linux-${TARGETARCH}.tar.gz" -o /exporter.tar.gz || true ; \
     echo "a4bb36f68909bf7c28bb03148b3a06ce33f8686c7d5492bfa342b133a5827bed  /exporter.tar.gz" | sha256sum -c || true ; \
     mkdir -p /blackbox_exporter-0.28.0.linux-${TARGETARCH} && \
     if [ -f /exporter.tar.gz ]; then tar -xzf /exporter.tar.gz -C / && rm -f /exporter.tar.gz ; fi ; \

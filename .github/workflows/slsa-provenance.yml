@@ -2,7 +2,7 @@ name: SLSA v3 Provenance
 
 on:
   workflow_run:
-    workflows: ["Build Hardened Images"]
+    workflows: ['Build Hardened Images']
     types: [completed]
     branches: [main]
 
@@ -105,7 +105,7 @@ jobs:
           PYEOF
 
   generate-provenance:
-    name: "SLSA ${{ matrix.image }}"
+    name: 'SLSA ${{ matrix.image }}'
     needs: prepare
     if: ${{ needs.prepare.result == 'success' && needs.prepare.outputs.total != '0' }}
     timeout-minutes: 60

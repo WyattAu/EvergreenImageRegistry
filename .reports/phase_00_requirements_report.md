@@ -2,13 +2,13 @@
 
 ## Document Metadata
 
-| Attribute | Value |
-|-----------|-------|
-| Phase | 0 |
+| Attribute   | Value              |
+| ----------- | ------------------ |
+| Phase       | 0                  |
 | Document ID | PHASE-0-REPORT-001 |
-| Version | 1.0.0 |
-| Status | COMPLETED |
-| Completed | 2026-04-19 |
+| Version     | 1.0.0              |
+| Status      | COMPLETED          |
+| Completed   | 2026-04-19         |
 
 ---
 
@@ -22,34 +22,34 @@ This phase established the foundational requirements for the Evergreen Hardened 
 
 ### Requirements Specification
 
-| Deliverable | Location | Status |
-|------------|----------|--------|
-| newrequirements.md | /newrequirements.md | COMPLETED |
-| requiredimages.md | /requiredimages.md | COMPLETED (1010+ images) |
+| Deliverable        | Location            | Status                   |
+| ------------------ | ------------------- | ------------------------ |
+| newrequirements.md | /newrequirements.md | COMPLETED                |
+| requiredimages.md  | /requiredimages.md  | COMPLETED (1010+ images) |
 
 ### Verification
 
-| Requirement | Verification Method | Status |
-|-------------|---------------------|--------|
-| REQ-SEC-001 (Non-root) | USER directive | VERIFIED |
-| REQ-SEC-002 (Read-only) | --read-only flag | VERIFIED |
-| REQ-SEC-003 (No shell) | File existence check | VERIFIED |
+| Requirement              | Verification Method  | Status   |
+| ------------------------ | -------------------- | -------- |
+| REQ-SEC-001 (Non-root)   | USER directive       | VERIFIED |
+| REQ-SEC-002 (Read-only)  | --read-only flag     | VERIFIED |
+| REQ-SEC-003 (No shell)   | File existence check | VERIFIED |
 | REQ-SEC-004 (No pkg mgr) | File existence check | VERIFIED |
-| REQ-SEC-005 (Static) | ldd output | VERIFIED |
-| REQ-SEC-006 (Stripped) | nm output | VERIFIED |
-| REQ-SEC-007 (0 CVEs) | Trivy scan | BLOCKING |
-| REQ-SEC-008 (Cosign) | Cosign verify | BLOCKING |
-| REQ-SEC-009 (SBOM) | Syft output | REQUIRED |
+| REQ-SEC-005 (Static)     | ldd output           | VERIFIED |
+| REQ-SEC-006 (Stripped)   | nm output            | VERIFIED |
+| REQ-SEC-007 (0 CVEs)     | Trivy scan           | BLOCKING |
+| REQ-SEC-008 (Cosign)     | Cosign verify        | BLOCKING |
+| REQ-SEC-009 (SBOM)       | Syft output          | REQUIRED |
 
 ### Standards Compliance
 
-| Standard | Requirement | Implementation |
-|----------|-------------|----------------|
-| NIST SP 800-190 | Container security | All images |
-| CIS Docker | Configuration | Hardened |
-| OCI Image Spec | Format | All images |
-| FIPS 140-2 | Signing | HSM keys |
-| SLSA Level 3 | Supply chain | Attestations |
+| Standard        | Requirement        | Implementation |
+| --------------- | ------------------ | -------------- |
+| NIST SP 800-190 | Container security | All images     |
+| CIS Docker      | Configuration      | Hardened       |
+| OCI Image Spec  | Format             | All images     |
+| FIPS 140-2      | Signing            | HSM keys       |
+| SLSA Level 3    | Supply chain       | Attestations   |
 
 ---
 
@@ -66,8 +66,8 @@ This phase established the foundational requirements for the Evergreen Hardened 
 ## Outstanding Items
 
 | Item | Priority | Action |
-|------|----------|--------|
-| None | - | - |
+| ---- | -------- | ------ |
+| None | -        | -      |
 
 ---
 

@@ -11,6 +11,7 @@ ARG GO_VERSION=1.22
 
 # NOTE: Golang builder FROM cannot be easily digest-pinned (version varies)
 FROM golang:${GO_VERSION}-bookworm AS builder
+ENV GOTOOLCHAIN=auto
 ARG TARGETARCH
 ARG VERSION=1.0.20250521
 ARG GITHUB_TOKEN

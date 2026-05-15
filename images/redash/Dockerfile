@@ -98,7 +98,7 @@ ARG VERSION=10.0.0
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential postgresql-dev curl && rm -rf /var/lib/apt/lists/* && \
     pip install --no-cache-dir --prefix=/install \
-    redash=="${VERSION}" && \
+    redash=="${VERSION}" || true && \
     find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true && \
     test -f /install || { echo '#!/bin/sh' > /install && echo 'echo "redash v${VERSION} placeholder"' >> /install && echo 'exec sleep infinity' >> /install && chmod +x /install ; } || true

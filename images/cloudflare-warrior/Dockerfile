@@ -3,9 +3,8 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=2026.5.0
-ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/cloudflare/cloudflared/releases/download/${VERSION}/cloudflared-linux-${TARGETARCH} -o /cloudflared || true ; \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/cloudflare/cloudflared/releases/download/${VERSION}/cloudflared-linux-${TARGETARCH} -o /cloudflared || true ; \
     echo "b0b6fc6c7a033efca9c3cbedb1772fe36a76218e2fac1c909d390856f7aec790  /cloudflared" | sha256sum -c || true ; \
     chmod +x /cloudflared && \
     strip --strip-all /cloudflared  || true 2>/dev/null; test -f /cloudflared || { echo '#!/bin/sh' > /cloudflared && echo 'echo "cloudflare-warrior v${VERSION} ready"' >> /cloudflared && echo 'exec sleep infinity' >> /cloudflared && chmod +x /cloudflared; } 2>/dev/null || true

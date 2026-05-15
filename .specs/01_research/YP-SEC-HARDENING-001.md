@@ -19,9 +19,12 @@ tqa_level: 4
 
 ## Executive Summary
 
-This Yellow Paper establishes the theoretical foundation for evergreen container image hardening. The primary problem is building container images with zero-trust security principles that eliminate attack vectors while maintaining operational functionality.
+This Yellow Paper establishes the theoretical foundation for evergreen container image hardening. The primary problem is
+building container images with zero-trust security principles that eliminate attack vectors while maintaining
+operational functionality.
 
 **Scope:**
+
 - IN: Distroless and scratch base images
 - OUT: Runtime orchestration
 - ASSUMPTIONS: Linux x86_64/arm64 architecture
@@ -30,13 +33,13 @@ This Yellow Paper establishes the theoretical foundation for evergreen container
 
 ## Nomenclature
 
-| Symbol | Description | Units | Domain | Source |
-|--------|-------------|-------|--------|--------|
-| $U_{app}$ | Application user ID | UID | Integer | Config |
-| $U_{root}$ | Root user ID | UID | Integer | 0 |
-| $F_{ro}$ | Read-only filesystem | Boolean | Constraint | Requirement |
-| $S_{sig}$ | Signature verification | Boolean | Crypto | Cosign |
-| $C_{cve}$ | CVE count | Integer | Scan | Trivy/Grype |
+| Symbol     | Description            | Units   | Domain     | Source      |
+| ---------- | ---------------------- | ------- | ---------- | ----------- |
+| $U_{app}$  | Application user ID    | UID     | Integer    | Config      |
+| $U_{root}$ | Root user ID           | UID     | Integer    | 0           |
+| $F_{ro}$   | Read-only filesystem   | Boolean | Constraint | Requirement |
+| $S_{sig}$  | Signature verification | Boolean | Crypto     | Cosign      |
+| $C_{cve}$  | CVE count              | Integer | Scan       | Trivy/Grype |
 
 ---
 
@@ -46,7 +49,8 @@ This Yellow Paper establishes the theoretical foundation for evergreen container
 
 > All container images shall be treated as potentially compromised and designed with minimum necessary privileges.
 
-**Justification:** Traditional container security assumes a trusted base. Zero-trust inverts this assumption, requiring explicit verification at every layer.
+**Justification:** Traditional container security assumes a trusted base. Zero-trust inverts this assumption, requiring
+explicit verification at every layer.
 
 **Verification:** Security audit and penetration testing.
 
@@ -68,15 +72,18 @@ This Yellow Paper establishes the theoretical foundation for evergreen container
 
 ### DEF-001: Distroless Image
 
-> A container image containing only the application and its runtime dependencies, without an operating system package manager or shell.
+> A container image containing only the application and its runtime dependencies, without an operating system package
+> manager or shell.
 
 $$\text{Distroless} \implies (\nexists \text{/bin/sh} \land \nexists \text{/bin/bash} \land \nexists \text{/apk/apt/dnf})$$
 
 **Examples:**
+
 - `gcr.io/distroless/static:nonroot`
 - `scratch` with static binary
 
 **Counter-examples:**
+
 - `alpine:latest` (has apk)
 - `ubuntu:latest` (has bash)
 
@@ -110,10 +117,10 @@ Output: base_image (string)
 
 **Complexity:**
 
-| Metric | Value | Derivation |
-|--------|-------|------------|
-| Time | O(1) | Single conditional |
-| Space | O(1) | Constant |
+| Metric | Value | Derivation         |
+| ------ | ----- | ------------------ |
+| Time   | O(1)  | Single conditional |
+| Space  | O(1)  | Constant           |
 
 ### ALG-002: User Configuration
 
@@ -132,6 +139,7 @@ Output: USER directive and filesystem ownership
 ```
 
 **Correctness Argument:**
+
 - The filesystem remains owned by root, preventing the application from modifying its own binary
 - The application runs as non-root, limiting privilege escalation
 
@@ -152,10 +160,10 @@ Output: signature
 
 **Complexity:**
 
-| Metric | Value | Derivation |
-|--------|-------|------------|
-| Time | O(n) | Where n = layer count |
-| Space | O(k) | Where k = signature size |
+| Metric | Value | Derivation               |
+| ------ | ----- | ------------------------ |
+| Time   | O(n)  | Where n = layer count    |
+| Space  | O(k)  | Where k = signature size |
 
 ---
 
@@ -163,49 +171,49 @@ Output: signature
 
 ### NC-001: Non-Root User UID
 
-| Constraint | Value | Source |
-|------------|-------|--------|
-| UID_RANGE | 60000-65534 |nobody user range |
-| RECOMMENDED | 65532 | Explicit requirement |
+| Constraint  | Value       | Source               |
+| ----------- | ----------- | -------------------- |
+| UID_RANGE   | 60000-65534 | nobody user range    |
+| RECOMMENDED | 65532       | Explicit requirement |
 
 ### NC-002: Image Size Limits
 
-| Tier | Max Size | Rationale |
-|------|---------|-----------|
-| Tier 1 | 50MB | Minimal binaries |
-| Tier 2 | 200MB | Base dependencies |
-| Tier 3 | 500MB | Full dependencies |
+| Tier   | Max Size | Rationale         |
+| ------ | -------- | ----------------- |
+| Tier 1 | 50MB     | Minimal binaries  |
+| Tier 2 | 200MB    | Base dependencies |
+| Tier 3 | 500MB    | Full dependencies |
 
 ### NC-003: Startup Latency
 
-| Target | Maximum | Measurement |
-|--------|---------|-------------|
+| Target       | Maximum   | Measurement            |
+| ------------ | --------- | ---------------------- |
 | Startup Time | 2 seconds | docker run to HTTP 200 |
 
 ---
 
 ## Bibliography
 
-| ID | Citation | Relevance | TQA |
-|----|----------|-----------|-----|
-| [^1] | NIST SP 800-190 | Container security baseline | 5 |
-| [^2] | CIS Docker Benchmark | Hardening guidelines | 4 |
-| [^3] | gcr.io/distroless | Implementation reference | 5 |
-| [^4] | cosign.dev | Signing implementation | 5 |
-| [^5] | trivy.dev | CVE scanning | 5 |
-| [^6] | Wolfi Linux | Base image provenance | 4 |
+| ID   | Citation             | Relevance                   | TQA |
+| ---- | -------------------- | --------------------------- | --- |
+| [^1] | NIST SP 800-190      | Container security baseline | 5   |
+| [^2] | CIS Docker Benchmark | Hardening guidelines        | 4   |
+| [^3] | gcr.io/distroless    | Implementation reference    | 5   |
+| [^4] | cosign.dev           | Signing implementation      | 5   |
+| [^5] | trivy.dev            | CVE scanning                | 5   |
+| [^6] | Wolfi Linux          | Base image provenance       | 4   |
 
 ---
 
 ## Knowledge Graph Concepts
 
-| ID | Concept | Language | Source | Confidence |
-|----|---------|----------|--------|-------------|
-| CONCEPT-001 | Distroless | EN | Google | 1.0 |
-| CONCEPT-002 | Scratch | EN | Docker | 1.0 |
-| CONCEPT-003 | MUSL | EN | musl-libc | 1.0 |
-| CONCEPT-004 | Zero-Trust | EN | NIST | 1.0 |
-| CONCEPT-005 | OCI | EN | Open Container Initiative | 1.0 |
+| ID          | Concept    | Language | Source                    | Confidence |
+| ----------- | ---------- | -------- | ------------------------- | ---------- |
+| CONCEPT-001 | Distroless | EN       | Google                    | 1.0        |
+| CONCEPT-002 | Scratch    | EN       | Docker                    | 1.0        |
+| CONCEPT-003 | MUSL       | EN       | musl-libc                 | 1.0        |
+| CONCEPT-004 | Zero-Trust | EN       | NIST                      | 1.0        |
+| CONCEPT-005 | OCI        | EN       | Open Container Initiative | 1.0        |
 
 ---
 
@@ -225,6 +233,6 @@ Output: signature
 
 ## Document Control
 
-| Version | Date | Status | Author |
-|---------|------|--------|--------|
-| 1.0.0 | 2026-04-19 | APPROVED | Nexus |
+| Version | Date       | Status   | Author |
+| ------- | ---------- | -------- | ------ |
+| 1.0.0   | 2026-04-19 | APPROVED | Nexus  |

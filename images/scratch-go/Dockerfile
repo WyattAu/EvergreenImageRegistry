@@ -15,6 +15,7 @@
 ARG GO_VERSION=1.23
 
 FROM golang:${GO_VERSION}-bookworm AS builder
+ENV GOTOOLCHAIN=auto
 ARG VERSION
 ARG GITHUB_TOKEN
 RUN apt-get update && \

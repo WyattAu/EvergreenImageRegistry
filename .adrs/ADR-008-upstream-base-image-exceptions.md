@@ -3,38 +3,46 @@
 ## ADR-008: Upstream Base Image Exception Policy
 
 ### Status
+
 ACCEPTED
 
 ### Date
+
 2026-04-22
 
 ### Author
+
 Nexus (Principal Systems Architect)
 
 ### Context
 
-ADR-007 establishes a strict base image preference order (scratch → wolfi → RHEL UBI micro → RHEL UBI minimal → RHEL UBI standard) and bans Alpine, Debian Slim, Ubuntu, CentOS, and Amazon Linux.
+ADR-007 establishes a strict base image preference order (scratch → wolfi → RHEL UBI micro → RHEL UBI minimal → RHEL UBI
+standard) and bans Alpine, Debian Slim, Ubuntu, CentOS, and Amazon Linux.
 
-However, 16 images in the registry use upstream base images that violate this policy. These images fall outside our direct control because they provide pre-built binaries, are maintained by third parties, or embed complex dependency chains that cannot be trivially rebuilt on wolfi or scratch.
+However, 16 images in the registry use upstream base images that violate this policy. These images fall outside our
+direct control because they provide pre-built binaries, are maintained by third parties, or embed complex dependency
+chains that cannot be trivially rebuilt on wolfi or scratch.
 
 Attempting to force ADR-007 compliance on these 16 images would require:
+
 - Forking and maintaining upstream builds (high cost, low ROI)
 - Rebuilding complex dependency trees (e.g., GitLab CE embeds 200+ packages)
 - Duplicating work already done by well-maintained upstream projects
 - Risking functionality regressions in critical infrastructure
 
-A blanket ban is impractical. A structured exception framework with monitoring and documentation is the responsible approach.
+A blanket ban is impractical. A structured exception framework with monitoring and documentation is the responsible
+approach.
 
 ### Decision
 
 #### Exception Categories
 
-| Category | Count | Description | Example Images |
-|----------|-------|-------------|---------------|
-| A — LinuxServer.io | 6 | Third-party Alpine-based images with no alternative upstream | lidarr, prowlarr, radarr, sonarr |
-| B — Official upstream | 5 | Vendor-maintained images with opaque build systems | drone, gitlab-ce, jellyfin, openhab, pulsar |
-| C — Internal/custom | 2 | Custom images with unclear provenance requiring investigation | milvus-etcd, milvus-minio |
-| D — Migratable | 3 | Images that CAN be migrated to compliant base images | oxidized, python-alpine, python-slim |
+| Category              | Count | Description                                                   | Example Images                              |
+| --------------------- | ----- | ------------------------------------------------------------- | ------------------------------------------- |
+| A — LinuxServer.io    | 6     | Third-party Alpine-based images with no alternative upstream  | lidarr, prowlarr, radarr, sonarr            |
+| B — Official upstream | 5     | Vendor-maintained images with opaque build systems            | drone, gitlab-ce, jellyfin, openhab, pulsar |
+| C — Internal/custom   | 2     | Custom images with unclear provenance requiring investigation | milvus-etcd, milvus-minio                   |
+| D — Migratable        | 3     | Images that CAN be migrated to compliant base images          | oxidized, python-alpine, python-slim        |
 
 #### Per-Category Policy
 
@@ -87,17 +95,18 @@ LABEL evergreen.base.exception.approved-date="2026-04-22"
 
 #### Monitoring Requirements
 
-| Requirement | Frequency | Tool | Escalation |
-|-------------|-----------|------|-----------|
-| CVE scan of upstream image | Weekly | Trivy | 72h patch SLA |
-| Digest pin validation | Every build | cosign verify | Block build on mismatch |
-| Upstream version check | Weekly | GitHub Actions | PR to update digest |
-| Exception audit review | Quarterly | Manual | Remove exception if upstream migrates |
-| Base image size tracking | Monthly | docker manifest inspect | Flag if image grows >20% |
+| Requirement                | Frequency   | Tool                    | Escalation                            |
+| -------------------------- | ----------- | ----------------------- | ------------------------------------- |
+| CVE scan of upstream image | Weekly      | Trivy                   | 72h patch SLA                         |
+| Digest pin validation      | Every build | cosign verify           | Block build on mismatch               |
+| Upstream version check     | Weekly      | GitHub Actions          | PR to update digest                   |
+| Exception audit review     | Quarterly   | Manual                  | Remove exception if upstream migrates |
+| Base image size tracking   | Monthly     | docker manifest inspect | Flag if image grows >20%              |
 
 ### Consequences
 
 **Positive:**
+
 - Structured, auditable exception process replaces ad-hoc decisions
 - Category D eliminates 3 non-compliant images immediately
 - Category C investigation resolves provenance gaps
@@ -105,6 +114,7 @@ LABEL evergreen.base.exception.approved-date="2026-04-22"
 - Evergreen labels make exception status machine-readable
 
 **Negative:**
+
 - 13 images remain on non-compliant base images (Categories A, B, C pending)
 - Additional CI pipeline complexity for exception monitoring
 - Exception labels add Dockerfile verbosity
@@ -112,44 +122,44 @@ LABEL evergreen.base.exception.approved-date="2026-04-22"
 
 **Risks:**
 
-| Risk | Mitigation |
-|------|-----------|
-| Exceptions become permanent | Quarterly audit review with mandatory justification |
-| Upstream abandons image | Fallback plan: rebuild from source or find alternative |
-| CVE in upstream base not caught | Weekly Trivy scan + critical CVE 24h SLA |
-| Digest pin drift | cosign verify in CI blocks builds on mismatch |
-| Exception scope creep | Only Nexus can approve new exceptions; all exceptions require ADR update |
+| Risk                            | Mitigation                                                               |
+| ------------------------------- | ------------------------------------------------------------------------ |
+| Exceptions become permanent     | Quarterly audit review with mandatory justification                      |
+| Upstream abandons image         | Fallback plan: rebuild from source or find alternative                   |
+| CVE in upstream base not caught | Weekly Trivy scan + critical CVE 24h SLA                                 |
+| Digest pin drift                | cosign verify in CI blocks builds on mismatch                            |
+| Exception scope creep           | Only Nexus can approve new exceptions; all exceptions require ADR update |
 
 ### Alternatives Considered
 
-| Alternative | Rejected Because |
-|-------------|-----------------|
-| Ban all exceptions | Requires forking 13 upstream projects; unsustainable maintenance burden |
-| Migrate all to wolfi | Not possible for pre-built binaries (GitLab CE, Jellyfin, etc.) |
-| No documentation | Exception status would be invisible; no audit trail |
-| Self-built alternatives | Duplicates upstream work; introduces regression risk; no bandwidth |
+| Alternative             | Rejected Because                                                        |
+| ----------------------- | ----------------------------------------------------------------------- |
+| Ban all exceptions      | Requires forking 13 upstream projects; unsustainable maintenance burden |
+| Migrate all to wolfi    | Not possible for pre-built binaries (GitLab CE, Jellyfin, etc.)         |
+| No documentation        | Exception status would be invisible; no audit trail                     |
+| Self-built alternatives | Duplicates upstream work; introduces regression risk; no bandwidth      |
 
 ### Related Standards
 
-| Standard | Relevance |
-|----------|-----------|
-| NIST SP 800-190 §4.1 | Risk acceptance for non-minimal base images |
-| CIS Docker Benchmark 4.1 | Documented exception for base image selection |
-| DISA STIG | Risk acceptance documentation for non-compliant images |
+| Standard                 | Relevance                                              |
+| ------------------------ | ------------------------------------------------------ |
+| NIST SP 800-190 §4.1     | Risk acceptance for non-minimal base images            |
+| CIS Docker Benchmark 4.1 | Documented exception for base image selection          |
+| DISA STIG                | Risk acceptance documentation for non-compliant images |
 
 ### Related ADRs
 
-| ADR | Relationship |
-|-----|-------------|
+| ADR     | Relationship                                                         |
+| ------- | -------------------------------------------------------------------- |
 | ADR-007 | Base image preference order (this ADR defines exceptions to ADR-007) |
-| ADR-006 | Observability (exception images must still have health shim) |
-| ADR-004 | HFT label schema (exception labels extend the schema) |
-| ADR-005 | Military compliance (exceptions require documented risk acceptance) |
+| ADR-006 | Observability (exception images must still have health shim)         |
+| ADR-004 | HFT label schema (exception labels extend the schema)                |
+| ADR-005 | Military compliance (exceptions require documented risk acceptance)  |
 
 ### Related Requirements
 
-| REQ ID | Requirement |
-|--------|------------|
-| Part I §1.1 | Base image preference order (exceptions documented here) |
+| REQ ID      | Requirement                                                   |
+| ----------- | ------------------------------------------------------------- |
+| Part I §1.1 | Base image preference order (exceptions documented here)      |
 | Part I §1.2 | Banned base images (exceptions documented with justification) |
-| C025 | Base image label required (extended with exception labels) |
+| C025        | Base image label required (extended with exception labels)    |

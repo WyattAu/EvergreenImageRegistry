@@ -7,6 +7,7 @@ description = "Go vulnerability checker"
 base = "scratch"
 user = "65532:65532"
 stopsignal = "SIGTERM"
+multiarch = false
 
 [source]
 type = "docker-image"
@@ -30,4 +31,3 @@ expose = [9101]
 "evergreen.health.type" = "exec"
 "evergreen.image.tier" = "3"
 "evergreen.metrics.native" = "ztunnel"
-

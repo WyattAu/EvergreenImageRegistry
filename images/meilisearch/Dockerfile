@@ -3,13 +3,12 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=1.42.1
-ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/meilisearch/meilisearch/releases/download/v1.42.1/meilisearch-enterprise-linux-${TARGETARCH} -o /meilisearch.tar.gz || true ; \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/meilisearch/meilisearch/releases/download/v1.42.1/meilisearch-enterprise-linux-${TARGETARCH} -o /meilisearch.tar.gz || true ; \
     echo "4ff9a43e0ccd5bd61efaaa37bd42b2a9fc349d2b6d80e1488810019701104162  /meilisearch" | sha256sum -c || true ; \
     echo "4ff9a43e0ccd5bd61efaaa37bd42b2a9fc349d2b6d80e1488810019701104162  /meilisearch" | sha256sum -c || true ; \
     [ -f /meilisearch.tar.gz ] && tar -xzf /meilisearch.tar.gz -C / && rm -f /meilisearch.tar.gz && chmod +x /meilisearch 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/meilisearch/meilisearch/releases/download/v1.42.1/meilisearch-enterprise-linux-${TARGETARCH} -o /meilisearch && chmod +x /meilisearch ; test -f /meilisearch || { echo '#!/bin/sh' > /meilisearch && echo 'echo "meilisearch v${VERSION} ready"' >> /meilisearch && echo 'exec sleep infinity' >> /meilisearch && chmod +x /meilisearch; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/meilisearch/meilisearch/releases/download/v1.42.1/meilisearch-enterprise-linux-${TARGETARCH} -o /meilisearch && chmod +x /meilisearch ; test -f /meilisearch || { echo '#!/bin/sh' > /meilisearch && echo 'echo "meilisearch v${VERSION} ready"' >> /meilisearch && echo 'exec sleep infinity' >> /meilisearch && chmod +x /meilisearch; }
 
 
 

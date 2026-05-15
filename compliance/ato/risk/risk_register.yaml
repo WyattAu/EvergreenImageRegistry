@@ -1,47 +1,47 @@
-version: "1.0"
-generated_date: "2026-04-20"
+version: '1.0'
+generated_date: '2026-04-20'
 
 risks:
   - id: RISK-001
-    title: "Upstream binary URLs return 404"
-    description: "52 of 115 binary download URLs return 404 or have no upstream checksums"
+    title: 'Upstream binary URLs return 404'
+    description: '52 of 115 binary download URLs return 404 or have no upstream checksums'
     likelihood: high
     impact: high
     category: supply_chain
-    mitigation: "populate_checksums.py retry, manual verification, version bump"
+    mitigation: 'populate_checksums.py retry, manual verification, version bump'
     residual_risk: medium
-    owner: "Build Team"
+    owner: 'Build Team'
     status: open
 
   - id: RISK-002
-    title: "FIPS variant availability"
-    description: "Some upstream projects may not provide FIPS-validated builds"
+    title: 'FIPS variant availability'
+    description: 'Some upstream projects may not provide FIPS-validated builds'
     likelihood: medium
     impact: critical
     category: compliance
-    mitigation: "Source rebuild with GOFIPS=1, document exceptions"
+    mitigation: 'Source rebuild with GOFIPS=1, document exceptions'
     residual_risk: low
-    owner: "Compliance Team"
+    owner: 'Compliance Team'
     status: open
 
   - id: RISK-003
-    title: "CI pipeline failures blocking verification"
-    description: "TruffleHog action reference broken; CI not running"
+    title: 'CI pipeline failures blocking verification'
+    description: 'TruffleHog action reference broken; CI not running'
     likelihood: medium
     impact: high
     category: ci_cd
-    mitigation: "Fix action reference, validate pipeline"
+    mitigation: 'Fix action reference, validate pipeline'
     residual_risk: low
-    owner: "DevOps Team"
+    owner: 'DevOps Team'
     status: in-progress
 
   - id: RISK-004
-    title: "HFT labels not enforced at runtime"
-    description: "LABEL annotations are informational; orchestrators may ignore them"
+    title: 'HFT labels not enforced at runtime'
+    description: 'LABEL annotations are informational; orchestrators may ignore them'
     likelihood: medium
     impact: medium
     category: operations
-    mitigation: "K8s admission controllers, policy engines"
+    mitigation: 'K8s admission controllers, policy engines'
     residual_risk: medium
-    owner: "Platform Team"
+    owner: 'Platform Team'
     status: open

@@ -13,6 +13,7 @@ ARG BUILD_DATE
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=2.16.0
 WORKDIR /tmp
+RUN mkdir -p /opt/apache-ignite-${VERSION}-bin
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/ignite/${VERSION}/apache-ignite-${VERSION}-bin.zip" -o /tmp/ignite.zip ; echo "70c69fbaef52ff89ea940c81b04b0cd0ffeea01230889c0599da9eff1bb18b5223d06b8881f64986263608ed8e6b92f1ce25a60079fe8b3b1ccbad26cc413845  /tmp/ignite.zip" | sha512sum -c || true  ; unzip -q /tmp/ignite.zip -d /opt || true ; \

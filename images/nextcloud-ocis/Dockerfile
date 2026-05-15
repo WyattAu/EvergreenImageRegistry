@@ -4,10 +4,8 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=v8.0.1
-ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" \
-    "https://github.com/owncloud/ocis/releases/download/${VERSION}/ocis-${VERSION#v}-linux-${TARGETARCH}" \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/owncloud/ocis/releases/download/${VERSION}/ocis-${VERSION#v}-linux-${TARGETARCH}" \
     -o /nextcloud-ocis && chmod +x /nextcloud-ocis
 FROM scratch
 COPY --from=downloader /nextcloud-ocis /nextcloud-ocis

@@ -2,9 +2,8 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=${VERSION}
 ARG TARGETARCH
-ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/ggerganov/llama.cpp/releases/download/${VERSION}/llama-${VERSION}-bin-ubuntu-x64.zip -o /llama.zip || true ; \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/ggerganov/llama.cpp/releases/download/${VERSION}/llama-${VERSION}-bin-ubuntu-x64.zip -o /llama.zip || true ; \
     echo "31a34f35f7aa84d14a315f8129ce36c55617e31820b0e713621a303c3bad19a8  /llama.zip" | sha256sum -c || true ; \
     apt-get install -y --no-install-recommends unzip || true ; \
     unzip -o /llama.zip -d /tmp/llama || true ; \

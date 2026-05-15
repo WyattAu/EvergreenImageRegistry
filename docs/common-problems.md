@@ -7,7 +7,7 @@ must be fixed before scale builds.
 
 ## Problem 1: `GITHUB_TOKEN` Auth Header on Cross-Repo Downloads
 
-**Severity:** HIGH | **Affected:** 343+ images | **Status:** NEEDS FIX
+**Severity:** HIGH | **Affected:** 343 images | **Status:** FIXED
 
 ### Root Cause
 
@@ -103,7 +103,7 @@ fi || true
 
 ## Problem 3: BuildKit COPY Source Evaluation in Multi-Stage Builds
 
-**Severity:** CRITICAL | **Affected:** 48 images | **Status:** NEEDS FIX
+**Severity:** CRITICAL | **Affected:** 49 images | **Status:** FIXED
 
 ### Root Cause
 
@@ -144,16 +144,23 @@ This works because `/opt/` always exists in the base image.
 ### Automated Detection
 
 ```bash
-for f in $(grep -rln 'COPY --from=.*\${' images/*/Dockerfile); do
-  grep -q 'AS downloader\|AS builder' "$f" && echo "$f"
-done
+# Dynamic paths (already caught)
+grep -rln 'COPY --from=.*\${' images/*/Dockerfile
+# Static paths (also at risk - need manual review)
+grep -rln 'COPY --from' images/*/Dockerfile | xargs grep -l 'AS '
 ```
+
+### Lesson Learned
+
+The initial scan only caught dynamic paths (`COPY --from=.*\${VERSION}`). Static paths
+(`COPY --from=downloader /tmp/file`) are equally affected. Three additional files
+(drone, forgejo-runner, ocis) were caught during the full critical tier build push phase.
 
 ---
 
 ## Problem 4: Go `tool` Directive / Version Mismatch
 
-**Severity:** MEDIUM | **Affected:** 18 images | **Status:** NEEDS FIX
+**Severity:** MEDIUM | **Affected:** 18 images | **Status:** FIXED
 
 ### Root Cause
 
@@ -245,7 +252,7 @@ cors-proxy (599 lines), caddy-alpine (334), pinned-search (319), kube-apiserver 
 
 ## Problem 7: `pip install` Without Fallback
 
-**Severity:** MEDIUM | **Affected:** 7 images | **Status**: NEEDS FIX
+**Severity:** MEDIUM | **Affected:** 7 images | **Status:** FIXED
 
 ### Root Cause
 

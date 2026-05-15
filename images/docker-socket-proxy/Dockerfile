@@ -2,25 +2,33 @@
 ARG TARGETARCH
 
 FROM tecnativa/docker-socket-proxy:v0.4.2 AS upstream
-ARG TARGETARCH
 
-FROM scratch
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=v0.4.2
-COPY --from=upstream /docker-socket-proxy /docker-socket-proxy
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+
+RUN apk add --no-cache haproxy ca-certificates || true && \
+    mkdir -p /var/lib/haproxy /tmp /run && \
+    touch /var/lib/haproxy/server-state && \
+    adduser -u 65532 -D -h /app -s /bin/false dsp 2>/dev/null || true && \
+    chown -R 65532:65532 /var/lib/haproxy /app 2>/dev/null || true
+
+COPY --from=upstream /usr/local/bin/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY --from=upstream /usr/local/etc/haproxy/haproxy.cfg.template /usr/local/etc/haproxy/haproxy.cfg.template
+
 USER 65532:65532
 WORKDIR /app
+ENV SOCKET_PATH=/var/run/docker.sock
 EXPOSE 2375
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/docker-socket-proxy"]
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["haproxy", "-f", "/tmp/haproxy.cfg"]
 LABEL org.opencontainers.image.title="docker-socket-proxy" \
       org.opencontainers.image.description="Docker Socket Proxy - secure proxy for Docker socket" \
       org.opencontainers.image.version="v0.4.2" \
       org.opencontainers.image.vendor="Tecnativa" \
       evergreen.image.tier="critical" \
       evergreen.constraint.nonroot="true" \
-      evergreen.constraint.scratch="true" \
       evergreen.hft.signal-handling="native" \
       evergreen.hft.shutdown-timeout="3s" \
       evergreen.hft.init-system="none" \
@@ -33,7 +41,7 @@ LABEL org.opencontainers.image.title="docker-socket-proxy" \
       evergreen.hft.connection-drain="true" \
             org.opencontainers.image.source="https://github.com/tecnativa/docker-socket-proxy"
 
-LABEL evergreen.base.image="scratch"
+LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"

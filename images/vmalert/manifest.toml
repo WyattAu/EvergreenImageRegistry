@@ -1,7 +1,7 @@
 [metadata]
 name = "vmalert"
-version = "v1.142.0"
-upstream_version = "v1.142.0"
+version = "1.142.0"
+upstream_version = "1.142.0"
 description = "vmalert - alerting engine for VictoriaMetrics"
 vendor = "VictoriaMetrics"
 source = "https://github.com/VictoriaMetrics/VictoriaMetrics"

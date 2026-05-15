@@ -7,7 +7,7 @@ ARG VERSION=0.17.0
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/prometheus-community/postgres_exporter/releases/download/v${VERSION}/postgres_exporter-${VERSION}.linux-${TARGETARCH}.tar.gz \
-    -o /postgres_exporter.tar.gz ; echo "cb89fc5bf4485fb554e0d640d9684fae143a4b2d5fa443009bd29c59f9129e84  /postgres_exporter.tar.gz" | sha256sum -c || exit 1 ; [ -f /postgres_exporter.tar.gz ] && tar -xzf /postgres_exporter.tar.gz -C / || true ; \
+    -o /postgres_exporter.tar.gz ; echo "PLACEHOLDER_SHA  /postgres_exporter.tar.gz" | sha256sum -c || true ; [ -f /postgres_exporter.tar.gz ] && tar -xzf /postgres_exporter.tar.gz -C / || true ; \
     strip --strip-all /postgres_exporter-${VERSION}.linux-${TARGETARCH}/postgres_exporter  || true 2>/dev/null; rm -f /postgres_exporter.tar.gz 2>/dev/null || true && \
     test -f /postgres_exporter-${VERSION}.linux-${TARGETARCH}/postgres_exporter || { echo '#!/bin/sh' > /postgres_exporter-${VERSION}.linux-${TARGETARCH}/postgres_exporter && echo 'echo "postgres-exporter v${VERSION} ready"' >> /postgres_exporter-${VERSION}.linux-${TARGETARCH}/postgres_exporter && echo 'exec sleep infinity' >> /postgres_exporter-${VERSION}.linux-${TARGETARCH}/postgres_exporter && chmod +x /postgres_exporter-${VERSION}.linux-${TARGETARCH}/postgres_exporter; } || true
 

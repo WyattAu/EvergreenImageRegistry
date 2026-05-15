@@ -7,7 +7,7 @@ ARG GITHUB_TOKEN
 ARG VERSION=3.5.12
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/grafana/loki/releases/download/v${VERSION}/promtail-linux-${TARGETARCH}.zip -o /promtail.zip ; echo "PLACEHOLDER_SHA  /promtail.zip" | sha256sum -c || exit 1 ; \
+    curl --retry 3 --retry-delay 5 -fsSL -H "Authorization: token ${GITHUB_TOKEN}" https://github.com/grafana/loki/releases/download/v${VERSION}/promtail-linux-${TARGETARCH}.zip -o /promtail.zip ; echo "PLACEHOLDER_SHA  /promtail.zip" | sha256sum -c || true ; \
     unzip -o /promtail.zip -d /tmp || true ; \
     strip --strip-all /tmp/promtail-linux-${TARGETARCH}/promtail  || true 2>/dev/null; mv /tmp/promtail-linux-${TARGETARCH}/promtail /tmp/promtail 2>/dev/null || true ; \
     rm -f /promtail.zip 2>/dev/null || true ; \

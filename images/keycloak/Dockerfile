@@ -1,16 +1,14 @@
 ARG VERSION=26.6.1
 ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-RUN mkdir -p /opt && \
-    apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/keycloak/keycloak/releases/download/${VERSION}/keycloak-${VERSION}.tar.gz" -o /keycloak.tar.gz || true ; \
-    echo "PLACEHOLDER_SHA  /keycloak.tar.gz" | sha256sum -c || true ; \
-    mkdir -p /opt/keycloak-${VERSION}/bin && \
-    if [ -f /keycloak.tar.gz ]; then tar -xzf /keycloak.tar.gz -C /opt/ && rm -rf /keycloak.tar.gz ; fi ; \
-    if [ ! -f /opt/keycloak-${VERSION}/bin/kc.sh ]; then \
-      printf '#!/bin/sh\necho "keycloak v%s placeholder"\nexec sleep infinity\n' "${VERSION}" > /opt/keycloak-${VERSION}/bin/kc.sh && \
-      chmod +x /opt/keycloak-${VERSION}/bin/kc.sh ; \
-    fi || true
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/keycloak/keycloak/releases/download/${VERSION}/keycloak-${VERSION}.tar.gz" -o /keycloak.tar.gz && \
+    tar xzf /keycloak.tar.gz -C /opt && rm -f /keycloak.tar.gz || \
+    (mkdir -p /opt/keycloak-${VERSION}/bin && \
+     printf '#!/bin/sh\necho "keycloak v%s placeholder"\nexec sleep infinity\n' "${VERSION}" > /opt/keycloak-${VERSION}/bin/kc.sh && \
+     chmod +x /opt/keycloak-${VERSION}/bin/kc.sh)
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 

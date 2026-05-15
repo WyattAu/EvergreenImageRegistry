@@ -8,9 +8,7 @@ ARG VERSION=15
 ARG TARGETARCH
 ARG BUILD_DATE
 
-
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip python3-dev \
         git curl ca-certificates \
@@ -23,7 +21,6 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel || true && \
     pip install --no-cache-dir frappe-bench || true ; \
     mkdir -p /usr/local/bin ; \
     test -f /usr/local/bin/bench || { echo '#!/bin/sh' > /usr/local/bin/bench && echo 'echo "erpnext-worker v${VERSION} placeholder"' >> /usr/local/bin/bench && echo 'exec sleep infinity' >> /usr/local/bin/bench && chmod +x /usr/local/bin/bench ; } || true
-
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=15

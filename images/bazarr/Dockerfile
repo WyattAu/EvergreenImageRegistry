@@ -9,9 +9,7 @@ ARG VERSION=1.5.2
 ARG TARGETARCH
 ARG BUILD_DATE
 
-
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-ARG GITHUB_TOKEN
 RUN apk add --no-cache git ca-certificates curl build-base || true && \
     git clone --branch v1.5.2 https://github.com/morpheus65535/bazarr.git /opt/bazarr 2>/dev/null || echo "Source repo not available - using placeholder" && \
     git clone https://github.com/morpheus65535/bazarr.git /opt/bazarr 2>/dev/null || echo "Source repo not available - using placeholder" 2>/dev/null || true && \

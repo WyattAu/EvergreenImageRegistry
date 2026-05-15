@@ -2,9 +2,7 @@ ARG VERSION=2.14.5
 ARG TARGETARCH
 ARG BUILD_DATE
 
-
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip python3 ca-certificates curl git && \
     rm -rf /var/lib/apt/lists/* || true && \

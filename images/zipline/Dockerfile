@@ -1,5 +1,4 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     mkdir -p /app/data-src-src /var/log/zipline /var/cache/zipline 2>/dev/null || true && \
     test -f /app/data || { echo '#!/bin/sh' > /app/data && echo 'echo "zipline v${VERSION} placeholder"' >> /app/data && echo 'exec sleep infinity' >> /app/data && chmod +x /app/data; }

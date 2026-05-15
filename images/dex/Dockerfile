@@ -4,6 +4,7 @@ FROM golang:1.24-bookworm@sha256:98d673f18a1aac43da744209873cb79323e11706f909251
 ARG VERSION=2.45.1
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
+ENV GOTOOLCHAIN=auto
 RUN mkdir -p /app && \
     apt-get update && \
     apt-get install -y --no-install-recommends git ca-certificates && \

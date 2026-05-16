@@ -21,15 +21,15 @@ RUN apt-get update && \
         libicu-dev \
         curl \
         ca-certificates \
-        make || true ; \
+        make || true && \
         gcc \
         g++ && \
     rm -rf /var/lib/apt/lists/* || true && \
     [ -f /tmp/couchdb.tar.gz ] && tar -xzf /tmp/couchdb.tar.gz -C /tmp || true ; \
     cd /tmp/apache-couchdb-3.3.3 &&  \./configure --disable-docs --spidermonkey-version=78 && \
      make release || true ; \
-    strip --strip-all /tmp/apache-couchdb-3.3.3/rel/couchdb/bin/*  || true 2>/dev/null; true
-    mkdir -p /opt/couchdb ; \
+    strip --strip-all /tmp/apache-couchdb-3.3.3/rel/couchdb/bin/*  || true 2>/dev/null && \
+    mkdir -p /opt/couchdb && \
     cp -a /tmp/apache-couchdb-3.3.3/rel/couchdb/. /opt/couchdb/
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 

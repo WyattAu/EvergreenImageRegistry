@@ -7,7 +7,7 @@ FROM docker.io/tigergraph/tigergraph:4.2.2 AS upstream
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION=3.10.0
-RUN apk add --no-cache ca-certificates curl libstdc++ python3 || true && \
+RUN apk add --no-cache ca-certificates wget libstdc++ python3 || true && \
     adduser -D -u 65532 -s /bin/false tigergraph 2>/dev/null || true && \
     mkdir -p /var/lib/tigergraph /var/log/tigergraph /var/cache/tigergraph /opt/tigergraph 2>/dev/null || true
 COPY --from=upstream /opt/tigergraph /opt/tigergraph

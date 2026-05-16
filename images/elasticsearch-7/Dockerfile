@@ -103,8 +103,8 @@ ARG VERSION=7.17.21
 
 
 
-RUN apk add --no-cache curl ca-certificates \ || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-linux-x86_64.tar.gz" -o /tmp/es7.tar.gz && \
+RUN apk add --no-cache wget ca-certificates \ || true && \
+    wget -t 3 -T 10 -qO /tmp/es7.tar.gz "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-linux-x86_64.tar.gz" && \
     echo "ab3d9627dfff38d2c0367aef3ecf291dff0be399a1f30080aa00005305404ae3cbe3d8b5beb345c68f3a831b92d401091b18057b39dcc1562683fcd29d998a98  /tmp/es7.tar.gz" | sha256sum -c || true && \
     tar xzf /tmp/es7.tar.gz -C /opt && rm -f /tmp/es7.tar.gz && \
     ln -s /opt/elasticsearch-${VERSION} /opt/elasticsearch && \

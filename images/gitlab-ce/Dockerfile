@@ -15,7 +15,7 @@ RUN apt-get update && \
     test -f /opt/gitlab || { echo "WARNING: gitlab-ce not installed, placeholder created" ; mkdir -p /opt/gitlab ; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
-RUN apk add --no-cache curl ca-certificates gnupg openssh-client postfix busybox || true
+RUN apk add --no-cache wget ca-certificates gnupg openssh-client postfix busybox || true
 COPY --from=downloader /opt/gitlab /opt/gitlab
 COPY --from=downloader /etc/gitlab /etc/gitlab
 COPY --from=downloader /var/opt/gitlab /var/opt/gitlab

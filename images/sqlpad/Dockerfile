@@ -1,4 +1,4 @@
-ARG VERSION=7.5.7
+ARG VERSION=7.5.1
 ARG TARGETARCH
 
 FROM sqlpad/sqlpad:${VERSION} AS upstream

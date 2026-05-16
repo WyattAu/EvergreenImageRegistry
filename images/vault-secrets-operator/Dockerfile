@@ -1,4 +1,4 @@
-ARG VERSION=1.19.0
+ARG VERSION=v1.4.0
 ARG TARGETARCH
 
 FROM hashicorp/vault-secrets-operator:${VERSION} AS upstream

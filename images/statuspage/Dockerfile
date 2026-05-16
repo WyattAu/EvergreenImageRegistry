@@ -1,4 +1,4 @@
-ARG VERSION=5.7.0
+ARG VERSION=v6.0.0
 ARG TARGETARCH
 
 FROM ghcr.io/cstate/cstate:${VERSION} AS upstream
@@ -19,7 +19,7 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="statuspage" org.opencontainers.image.version="5.7.0" org.opencontainers.image.vendor="cstate" org.opencontainers.image.source="https://github.com/cstate/cstate" org.opencontainers.image.description="Static status page generator" evergreen.image.tier="1" evergreen.image.category="monitoring" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.constraint.base="scratch" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="3s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="2000ms"
+LABEL org.opencontainers.image.title="statuspage" org.opencontainers.image.version="v6.0.0" org.opencontainers.image.vendor="cstate" org.opencontainers.image.source="https://github.com/cstate/cstate" org.opencontainers.image.description="Static status page generator" evergreen.image.tier="1" evergreen.image.category="monitoring" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.constraint.base="scratch" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="3s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="2000ms"
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"

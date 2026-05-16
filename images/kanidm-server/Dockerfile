@@ -1,4 +1,4 @@
-ARG VERSION=v1.10.1
+ARG VERSION=v1.9.2
 ARG TARGETARCH
 
 FROM ghcr.io/kanidm/server:${VERSION} AS upstream

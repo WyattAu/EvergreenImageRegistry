@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=17
 
-RUN apk add --no-cache postgresql-${VERSION}-client curl ca-certificates || true
+RUN apk add --no-cache postgresql-${VERSION}-client wget ca-certificates || true
 COPY --from=builder --chown=65532:65532 /app /app
 COPY --from=builder --chown=65532:65532 /backups /backups
 COPY --from=builder --chown=65532:65532 /var/log/postgres-restore /var/log/postgres-restore

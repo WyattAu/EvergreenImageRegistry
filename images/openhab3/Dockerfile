@@ -12,7 +12,7 @@ RUN mkdir -p /app-src /opt/openhab/userdata /opt/openhab/conf /opt/openhab/log
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache ca-certificates curl libffi-dev || true
+RUN apk add --no-cache ca-certificates wget libffi-dev || true
 COPY --from=builder /opt/openhab /opt/openhab
 COPY --from=builder /app /app
 RUN addgroup -S -g 2 nogroup >/dev/null || true && \

@@ -83,7 +83,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 
 
 
-RUN apk add --no-cache ca-certificates curl
+RUN apk add --no-cache ca-certificates wget
 
 
 

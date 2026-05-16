@@ -12,8 +12,8 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 ARG TARGETARCH
 ARG VERSION=0.5.11
 ARG TARGETARCH
-RUN apk add --no-cache ca-certificates curl && \
-    curl --retry 3 --retry-delay 5 -fSL "https://github.com/benbjohnson/litestream/releases/download/v${VERSION}/litestream-vfs-v${VERSION}-linux-${TARGETARCH}.tar.gz" -o /tmp/litestream.tar.gz \
+RUN apk add --no-cache ca-certificates wget && \
+    wget -t 3 -T 10 -qO /tmp/litestream.tar.gz "https://github.com/benbjohnson/litestream/releases/download/v${VERSION}/litestream-vfs-v${VERSION}-linux-${TARGETARCH}.tar.gz" \
     && echo "880ccafc9514650c4a2a0cc78eb1e61aaad95dd3e86e877c8694f955c9095436  /tmp/litestream.tar.gz" | sha256sum -c || true
 FROM scratch
 ARG VERSION=0.5.11

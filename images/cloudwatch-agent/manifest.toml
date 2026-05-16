@@ -1,6 +1,6 @@
 [metadata]
 name = "cloudwatch-agent"
-version = "latest"
+version = "1.300066.1b1374"
 description = "AWS CloudWatch Agent for metrics and log collection"
 
 [build]

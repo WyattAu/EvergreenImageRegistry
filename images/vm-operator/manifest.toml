@@ -1,6 +1,6 @@
 [metadata]
 name = "vm-operator"
-version = "0.45.0"
+version = "0.69.0"
 description = "Evergreen hardened VictoriaMetrics Operator - Kubernetes operator for VictoriaMetrics"
 
 [build]

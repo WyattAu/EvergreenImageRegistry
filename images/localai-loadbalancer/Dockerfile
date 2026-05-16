@@ -3,7 +3,7 @@ ARG TARGETARCH
 
 
 
-FROM localai/localai@sha256:a6af99e17a73a92caa134e70ae84492cc47b67645c1676268a7522ad14f4c09d AS upstream
+FROM localai/localai:v4.1.3 AS upstream
 
 
 

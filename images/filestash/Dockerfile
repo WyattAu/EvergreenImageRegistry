@@ -1,7 +1,7 @@
 ARG VERSION=v0.4
 ARG TARGETARCH
 
-FROM mickaelkerjean/filestash@sha256:cf0edfe1ebcc164ebc7b8b88b9135018764800198a3606f2f9a62334f5d1f2c9 AS upstream
+FROM mickaelkerjean/filestash:latest AS upstream
 
 FROM scratch
 COPY --from=upstream /app/filestash /filestash

@@ -1,6 +1,6 @@
 [metadata]
 name = "flux-image-automation"
-version = "1.1.2"
+version = "1.1.3"
 description = "Flux Image Automation Controller - automated container image updates for GitOps"
 vendor = "fluxcd"
 
@@ -11,7 +11,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "docker-image"
-url = "ghcr.io/fluxcd/image-automation-controller:v1.1.2"
+url = "ghcr.io/fluxcd/image-automation-controller:v1.1.3"
 
 [runtime]
 entrypoint = ["/usr/local/bin/image-automation-controller"]

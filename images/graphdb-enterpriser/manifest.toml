@@ -1,6 +1,6 @@
 [metadata]
 name = "graphdb-enterpriser"
-version = "latest"
+version = "10.8.14"
 description = "Evergreen hardened GraphDB Enterprise - semantic graph database"
 
 [build]

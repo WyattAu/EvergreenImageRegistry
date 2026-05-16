@@ -1,6 +1,6 @@
 [metadata]
 name = "memgraph"
-version = "latest"
+version = "3.9.0"
 description = "Evergreen hardened Memgraph - in-memory graph database"
 
 [build]

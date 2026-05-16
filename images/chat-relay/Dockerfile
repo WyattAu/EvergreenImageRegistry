@@ -1,4 +1,4 @@
-FROM docker.io/matrixdotorg/complement@sha256:779cdbc9c92ae386ee19cb3c55eb3ae96b12be205117fe30caffbd4cf5b2a20f AS upstream
+FROM docker.io/matrixdotorg/complement:latest AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 RUN apk add --no-cache ca-certificates || true && \

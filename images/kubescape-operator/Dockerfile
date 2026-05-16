@@ -1,4 +1,4 @@
-ARG VERSION=v4.0.8
+ARG VERSION=v0.2.142
 ARG TARGETARCH
 
 FROM ghcr.io/kubescape/kubescape-operator:${VERSION} AS upstream

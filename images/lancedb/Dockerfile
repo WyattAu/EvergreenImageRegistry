@@ -1,7 +1,7 @@
-ARG VERSION=v0.21.0
+ARG VERSION=v0.29.0
 ARG TARGETARCH
 
-FROM ghcr.io/lancedb/lancedb:v0.21.0 AS upstream
+FROM ghcr.io/lancedb/lancedb:v0.29.0 AS upstream
 
 FROM scratch
 # package-manager-verified: integrity verified by upstream

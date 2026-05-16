@@ -1,7 +1,7 @@
 ARG VERSION=0.90.1
 ARG TARGETARCH
 
-FROM quay.io/prometheus-operator/prometheus-operator@sha256:52a6a92d915ea2fa94314748d99db7a94922e3fe63274f6182fc033b9126b573 AS upstream
+FROM quay.io/prometheus-operator/prometheus-operator:v0.91.0 AS upstream
 
 FROM scratch
 COPY --from=upstream /prometheus-operator /prometheus-config-reloader

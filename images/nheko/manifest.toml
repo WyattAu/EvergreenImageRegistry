@@ -1,6 +1,6 @@
 [metadata]
 name = "nheko"
-version = "latest"
+version = "v0.12.1"
 description = "Nheko - desktop Matrix client (Qt/C++)"
 
 [build]
@@ -10,7 +10,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "docker-image"
-url = "ghcr.io/nheko-reborn/nheko:${VERSION}"
+url = "ghcr.io/nheko-reborn/nheko:v0.12.1"
 
 [runtime]
 entrypoint = ["nheko"]

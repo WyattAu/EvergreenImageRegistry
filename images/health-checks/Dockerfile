@@ -30,24 +30,24 @@ import (
 )
 
 func main() {
-RUN if len(os.Args) < 2 { \
-    fmt.Println("Usage: health-checks <url> [timeout_seconds]")
+	if len(os.Args) < 2 {
+		fmt.Println("Usage: health-checks <url> [timeout_seconds]")
 		os.Exit(1)
 	}
 	url := os.Args[1]
 	timeout := 5
-RUN if len(os.Args) > 2 { \
-    fmt.Sscanf(os.Args[2], "%d", &timeout)
+	if len(os.Args) > 2 {
+		fmt.Sscanf(os.Args[2], "%d", &timeout)
 	}
 	client := &http.Client{Timeout: time.Duration(timeout) * time.Second}
 	resp, err := client.Get(url)
-RUN if err != nil { \
-    fmt.Fprintf(os.Stderr, "unhealthy: %v\n", err)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "unhealthy: %v\n", err)
 		os.Exit(1)
 	}
 	resp.Body.Close()
-RUN if resp.StatusCode >= 200 && resp.StatusCode < 400 { \
-    fmt.Printf("healthy: %s -> %d\n", url, resp.StatusCode)
+	if resp.StatusCode >= 200 && resp.StatusCode < 400 {
+		fmt.Printf("healthy: %s -> %d\n", url, resp.StatusCode)
 		os.Exit(0)
 	}
 	fmt.Fprintf(os.Stderr, "unhealthy: %s -> %d\n", url, resp.StatusCode)

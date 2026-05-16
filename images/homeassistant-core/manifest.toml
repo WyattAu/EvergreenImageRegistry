@@ -1,6 +1,6 @@
 [metadata]
 name = "homeassistant-core"
-version = "unknown"
+version = "2024.8.0"
 description = "homeassistant-core container image"
 
 [build]

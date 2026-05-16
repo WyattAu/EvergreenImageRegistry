@@ -5,7 +5,7 @@
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=1.1.1
+ARG VERSION=1.2.1
 ARG TARGETARCH
 ARG BUILD_DATE
 
@@ -23,7 +23,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget 
 ENTRYPOINT ["python3"]
 LABEL org.opencontainers.image.title="faster-whisper" \
       org.opencontainers.image.description="faster-whisper container image" \
-      org.opencontainers.image.version="1.1.1" \
+      org.opencontainers.image.version="1.2.1" \
       org.opencontainers.image.vendor="Guillaume" \
       org.opencontainers.image.source="https://github.com/SYSTRAN/faster-whisper" \
       evergreen.image.tier="3" \

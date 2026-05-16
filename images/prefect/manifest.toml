@@ -1,6 +1,6 @@
 [metadata]
 name = "prefect"
-version = "3.3.0"
+version = "3.7.1"
 description = "prefect container image"
 
 [build]
@@ -20,7 +20,7 @@ expose = [4200, 9101]
 [labels]
 "org.opencontainers.image.title" = "prefect"
 "org.opencontainers.image.vendor" = "Prefect"
-"org.opencontainers.image.version" = "3.3.0"
+"org.opencontainers.image.version" = "3.7.1"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"

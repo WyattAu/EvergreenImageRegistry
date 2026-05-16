@@ -2,6 +2,8 @@
 name = "fail2ban-exporter"
 version = "v0.10.0"
 description = "fail2ban-exporter container image"
+deprecated = true
+upstream_gone = "https://github.com/xperimental/fail2ban-exporter deleted; no forks found"
 
 [build]
 base = "scratch"
@@ -33,7 +35,7 @@ expose = [9191, 9101]
 "evergreen.hft.signal-handling" = "native"
 "evergreen.hft.startup-timeout" = "3000ms"
 "evergreen.image.category" = "monitoring"
-"evergreen.image.note" = "Original repo deleted; building from source"
+"evergreen.image.note" = "UPSTREAM GONE: xperimental/fail2ban-exporter repo deleted, no forks found. Cannot build from source."
 "evergreen.image.status" = "best-effort"
 "evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "ztunnel"

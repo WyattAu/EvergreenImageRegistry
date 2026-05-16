@@ -5,7 +5,7 @@
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=3.3.0
+ARG VERSION=3.7.1
 ARG TARGETARCH
 ARG BUILD_DATE
 
@@ -23,7 +23,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget 
 ENTRYPOINT ["prefect"]
 LABEL org.opencontainers.image.title="prefect-server" \
       org.opencontainers.image.description="prefect-server container image" \
-      org.opencontainers.image.version="3.3.0" \
+      org.opencontainers.image.version="3.7.1" \
       org.opencontainers.image.vendor="Prefect" \
       org.opencontainers.image.source="https://github.com/PrefectHQ/prefect" \
       evergreen.image.tier="3" \

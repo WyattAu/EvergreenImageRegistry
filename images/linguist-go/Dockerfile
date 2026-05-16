@@ -10,7 +10,7 @@ ARG GOARCH=${TARGETARCH}
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
-    git clone --branch "v${VERSION}" https://github.com/github/linguist /src 2>/dev/null || echo "Source repo not available" && \
+    git clone --branch "v${VERSION}" https://github.com/github-linguist/linguist /src 2>/dev/null || echo "Source repo not available" && \
     cd /src && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
@@ -32,7 +32,7 @@ ENTRYPOINT ["/linguist"]
 LABEL org.opencontainers.image.title="linguist-go" \
       org.opencontainers.image.description="Linguist - Go variant" \
       org.opencontainers.image.vendor="GitHub" \
-      org.opencontainers.image.source="https://github.com/github/linguist" \
+      org.opencontainers.image.source="https://github.com/github-linguist/linguist" \
       evergreen.image.tier="3" \
       evergreen.constraint.nonroot="true" \
       evergreen.base.image="scratch" \

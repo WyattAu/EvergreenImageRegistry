@@ -13,12 +13,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip python3-dev \
         git curl ca-certificates \
         build-essential libffi-dev libssl-dev \
-        postgresql-dev libjpeg-turbo-turbo-dev zlib1g-dev && \
+        postgresql-dev libpq-dev libjpeg-turbo-dev zlib1g-dev && \
     rm -rf /var/lib/apt/lists/* || true && \
     python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel || true && \
-    pip install --no-cache-dir frappe-bench || true ; \
+RUN     pip install --no-cache-dir --upgrade pip setuptools wheel || true && \
+    pip install --no-cache-dir frappe-bench==5.29.1 || true ; \
     mkdir -p /usr/local/bin ; \
     test -f /usr/local/bin/bench || { echo '#!/bin/sh' > /usr/local/bin/bench && echo 'echo "erpnext-worker v${VERSION} placeholder"' >> /usr/local/bin/bench && echo 'exec sleep infinity' >> /usr/local/bin/bench && chmod +x /usr/local/bin/bench ; } || true
 

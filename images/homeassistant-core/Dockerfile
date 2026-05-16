@@ -21,7 +21,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl 
 LABEL org.opencontainers.image.description="homeassistant-core container image" \
       org.opencontainers.image.title="Home Assistant Core" \
       org.opencontainers.image.source="https://github.com/home-assistant/core" \
-            org.opencontainers.image.version="unknown"
+            org.opencontainers.image.version="2024.8.0"
 
 ENTRYPOINT ["python", "-m", "homeassistant"]
 CMD ["--help"]

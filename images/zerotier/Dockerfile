@@ -1,4 +1,4 @@
-ARG VERSION=1.16.0
+ARG VERSION=1.12.2
 ARG TARGETARCH
 
 FROM zerotier/zerotier:${VERSION} AS upstream

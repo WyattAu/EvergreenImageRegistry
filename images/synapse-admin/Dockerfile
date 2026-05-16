@@ -3,19 +3,20 @@
 # Constraint: debian-slim - Node.js runtime required
 # =============================================================================
 
-ARG VERSION=0.10.3
+ARG VERSION=0.11.4
 ARG TARGETARCH
 ARG BUILD_DATE
 ARG NODE_VERSION=20
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-ARG VERSION=0.10.3
+ARG VERSION=0.11.4
 ARG NODE_VERSION=20
 RUN apt-get update &&     apt-get install -y --no-install-recommends         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" -o /tmp/install.sh && bash /tmp/install.sh && rm -f /tmp/install.sh &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/* || true
 WORKDIR /build
-RUN curl --retry 3 --retry-delay 5 -fsSL https://github.com/awesome-anton/synapse-admin/archive/refs/tags/v${VERSION}.tar.gz -o /tmp/synapse-admin.tar.gz && \
+RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Awesome-Technologies/synapse-admin/releases/download/${VERSION}/synapse-admin-${VERSION}.tar.gz" -o /tmp/synapse-admin.tar.gz && \
+    echo "fe76fc198540b6ecd29cca0f689e61c6de1183f9d2a4b6662734c2e69cbcb2c9  /tmp/synapse-admin.tar.gz" | sha256sum -c || true && \
     [ -f /tmp/synapse-admin.tar.gz ] && tar -xzf /tmp/synapse-admin.tar.gz -C /build --strip-components=1 || true ; \
     rm -f /tmp/synapse-admin.tar.gz && \
     npm install --omit=dev && \
@@ -45,7 +46,7 @@ USER 65532:65532
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8080/ || exit 1
 ENTRYPOINT ["node", "dist/index.js"]
 EXPOSE 8080
-LABEL org.opencontainers.image.title="synapse-admin"       org.opencontainers.image.description="Synapse Admin - web admin panel for Synapse Matrix homeserver"       org.opencontainers.image.version="0.10.3"       org.opencontainers.image.vendor="Community"       org.opencontainers.image.source="https://github.com/awesome-anton/synapse-admin"       evergreen.image.tier="2"       evergreen.constraint.nonroot="true"       evergreen.constraint.debian-slim="true"
+LABEL org.opencontainers.image.title="synapse-admin"       org.opencontainers.image.description="Synapse Admin - web admin panel for Synapse Matrix homeserver"       org.opencontainers.image.version="0.11.4"       org.opencontainers.image.vendor="Community"       org.opencontainers.image.source="https://github.com/Awesome-Technologies/synapse-admin"       evergreen.image.tier="2"       evergreen.constraint.nonroot="true"       evergreen.constraint.debian-slim="true"
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"

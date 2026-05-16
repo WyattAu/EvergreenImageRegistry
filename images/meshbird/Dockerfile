@@ -5,14 +5,14 @@
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
-ARG VERSION=0.4.0
+ARG VERSION=2.3
 ARG GO_VERSION=1.22.4
 ARG BUILD_DATE
 
 FROM golang:${GO_VERSION}-bookworm AS builder
 ENV GOTOOLCHAIN=auto
 ARG TARGETARCH
-ARG VERSION=0.4.0
+ARG VERSION=2.3
 ARG GO_VERSION
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
@@ -40,7 +40,7 @@ EXPOSE 10500 10500/udp
 HEALTHCHECK NONE
 ENTRYPOINT ["/meshbird"]
 LABEL org.opencontainers.image.title="meshbird" \
-      org.opencontainers.image.version="0.4.0" \
+      org.opencontainers.image.version="2.3" \
       org.opencontainers.image.vendor="Meshbird" \
       org.opencontainers.image.source="https://github.com/meshbird/meshbird" \
       org.opencontainers.image.description="Distributed private networking mesh VPN" \

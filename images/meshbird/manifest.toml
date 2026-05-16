@@ -1,8 +1,9 @@
 [metadata]
 name = "meshbird"
-version = "0.4.0"
+version = "2.3"
 deprecated = true
 description = "Distributed private networking mesh VPN"
+upstream_note = "Project abandoned since 2019. Latest release v2.3."
 
 [build]
 base = "scratch"
@@ -24,7 +25,7 @@ expose = [10500, 9101]
 "org.opencontainers.image.source" = "https://github.com/meshbird/meshbird"
 "org.opencontainers.image.title" = "meshbird"
 "org.opencontainers.image.vendor" = "Meshbird"
-"org.opencontainers.image.version" = "0.4.0"
+"org.opencontainers.image.version" = "2.3"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"

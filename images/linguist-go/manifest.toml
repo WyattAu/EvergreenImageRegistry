@@ -2,6 +2,8 @@
 name = "linguist-go"
 version = "latest"
 description = "Linguist - Go variant"
+deprecated = true
+upstream_note = "github-linguist/linguist is a Ruby project, not Go. Cannot build as Go binary."
 
 [build]
 base = "scratch"

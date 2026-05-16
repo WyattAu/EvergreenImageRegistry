@@ -2,6 +2,8 @@
 name = "homeassistant-supervisor"
 version = "unknown"
 description = "homeassistant-supervisor container image"
+deprecated = true
+upstream_note = "Home Assistant Supervisor is NOT pip-installable. Distributed only as a container image from home-assistant/supervisor."
 
 [build]
 base = "debian:bookworm-slim"

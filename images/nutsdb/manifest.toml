@@ -1,6 +1,6 @@
 [metadata]
 name = "nutsdb"
-version = "0.14.0"
+version = "1.1.0"
 description = "Evergreen hardened NutsDB - embedded key-value store"
 
 [build]
@@ -22,7 +22,7 @@ expose = [9900, 9101]
 "org.opencontainers.image.description" = "Evergreen hardened NutsDB - embedded key-value store"
 "org.opencontainers.image.title" = "nutsdb"
 "org.opencontainers.image.vendor" = "Xujiajun"
-"org.opencontainers.image.version" = "${VERSION}"
+"org.opencontainers.image.version" = "1.1.0"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"

@@ -4,13 +4,13 @@
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
-ARG VERSION=0.14.0
+ARG VERSION=1.1.0
 ARG BUILD_DATE
 
 FROM golang@sha256:167053a2bb901972bf2c1611f8f52c44d5fe7e762e5cab213708d82c421614db AS builder
 ENV GOTOOLCHAIN=auto
 ARG TARGETARCH
-ARG VERSION=0.14.0
+ARG VERSION=1.1.0
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 RUN apt-get update && \
@@ -33,7 +33,7 @@ EXPOSE 9900
 HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/nutsdb"]
 LABEL org.opencontainers.image.title="nutsdb" \
-      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.version="1.1.0" \
       org.opencontainers.image.description="Evergreen hardened NutsDB - embedded key-value store" \
       org.opencontainers.image.vendor="Xujiajun" \
       evergreen.image.tier="1" \

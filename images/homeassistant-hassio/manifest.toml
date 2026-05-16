@@ -2,6 +2,8 @@
 name = "homeassistant-hassio"
 version = "unknown"
 description = "homeassistant-hassio container image"
+deprecated = true
+upstream_note = "Hass.io is not a standalone pip package. It is part of the Home Assistant Supervisor container distribution."
 
 [build]
 base = "debian:bookworm-slim"

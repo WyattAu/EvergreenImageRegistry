@@ -13,8 +13,13 @@ ARG TARGETARCH
 ARG VERSION=0.5.11
 ARG TARGETARCH
 RUN apk add --no-cache ca-certificates wget && \
+    case ${TARGETARCH} in \
+        amd64) EXPECTED_SHA="996784c9d17b8054e4127d62ca7f0aad76b45be3d1fe1af619e8886a832be417" ;; \
+        arm64) EXPECTED_SHA="be8b6c250021ef58eed1d0687efbc08009b7e0401a2b7ebb5b8975d2de0b99a6" ;; \
+        *) EXPECTED_SHA="" ;; \
+    esac && \
     wget -t 3 -T 10 -qO /tmp/litestream.tar.gz "https://github.com/benbjohnson/litestream/releases/download/v${VERSION}/litestream-vfs-v${VERSION}-linux-${TARGETARCH}.tar.gz" \
-    && echo "880ccafc9514650c4a2a0cc78eb1e61aaad95dd3e86e877c8694f955c9095436  /tmp/litestream.tar.gz" | sha256sum -c || true
+    && echo "${EXPECTED_SHA}  /tmp/litestream.tar.gz" | sha256sum -c
 FROM scratch
 ARG VERSION=0.5.11
 ARG BUILD_DATE

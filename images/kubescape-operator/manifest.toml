@@ -1,6 +1,6 @@
 [metadata]
 name = "kubescape-operator"
-version = "latest"
+version = "v0.2.142"
 description = "kubescape-operator container image"
 
 [build]
@@ -10,7 +10,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "docker-image"
-url = "ghcr.io/kubescape/kubescape-operator:${VERSION}"
+url = "ghcr.io/kubescape/kubescape-operator:v0.2.142"
 
 [runtime]
 entrypoint = ["/kubescape"]

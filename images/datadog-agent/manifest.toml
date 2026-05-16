@@ -1,6 +1,6 @@
 [metadata]
 name = "datadog-agent"
-version = "7"
+version = "7.67.1"
 description = "Datadog Agent for infrastructure monitoring"
 
 [build]

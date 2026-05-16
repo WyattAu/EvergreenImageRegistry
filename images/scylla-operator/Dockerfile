@@ -1,7 +1,7 @@
-ARG VERSION=1.14.0
+ARG VERSION=1.14.2
 ARG TARGETARCH
 
-FROM docker.io/scylladb/scylla-operator:v${VERSION} AS upstream
+FROM docker.io/scylladb/scylla-operator:${VERSION} AS upstream
 
 FROM scratch
 COPY --from=upstream /usr/bin/scylla-operator /usr/local/bin/scylla-operator

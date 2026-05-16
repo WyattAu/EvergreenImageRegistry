@@ -1,6 +1,6 @@
 [metadata]
 name = "jellyseer"
-version = "2.7.3"
+version = "3.2.0"
 description = "jellyseer container image"
 
 [build]
@@ -10,7 +10,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "docker-image"
-url = "fallenbagel/jellyseerr:${VERSION}"
+url = "fallenbagel/jellyseerr:3.2.0"
 
 [runtime]
 entrypoint = ["/jellyseerr"]

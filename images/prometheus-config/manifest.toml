@@ -1,6 +1,6 @@
 [metadata]
 name = "prometheus-config"
-version = "0.90.1"
+version = "0.91.0"
 description = "Evergreen hardened prometheus-config - Prometheus config reloader"
 
 [build]
@@ -10,7 +10,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "docker-image"
-url = "quay.io/prometheus-operator/prometheus-operator:v0.90.1"
+url = "quay.io/prometheus-operator/prometheus-operator:v0.91.0"
 
 [runtime]
 entrypoint = ["/prometheus-config-reloader"]

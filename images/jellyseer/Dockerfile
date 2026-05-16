@@ -1,9 +1,9 @@
-ARG VERSION=2.7.3
+ARG VERSION=3.2.0
 ARG TARGETARCH
 
 
 
-FROM fallenbagel/jellyseerr:${VERSION} AS upstream
+FROM fallenbagel/jellyseerr:3.2.0 AS upstream
 
 
 

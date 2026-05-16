@@ -1,6 +1,6 @@
 [metadata]
 name = "photoview"
-version = "v2.4.0"
+version = "2.4.0"
 description = "photoview container image"
 
 [build]
@@ -10,7 +10,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "docker-image"
-url = "viktorstrate/photoview:v2.4.0"
+url = "viktorstrate/photoview:2.4.0"
 
 [runtime]
 entrypoint = ["/photoview"]

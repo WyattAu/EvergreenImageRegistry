@@ -1,6 +1,6 @@
 [metadata]
 name = "keycloak-operator"
-version = "24.0.2"
+version = "26.6.1"
 description = "keycloak-operator container image"
 
 [build]

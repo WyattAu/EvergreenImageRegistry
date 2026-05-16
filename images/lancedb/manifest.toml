@@ -1,6 +1,6 @@
 [metadata]
 name = "lancedb"
-version = "v0.21.0"
+version = "v0.29.0"
 description = "lancedb container image"
 
 [build]

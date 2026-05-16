@@ -1,6 +1,6 @@
 [metadata]
 name = "tigergraph"
-version = "3.10.0"
+version = "4.2.2"
 description = "Evergreen hardened TigerGraph - extracted from official Docker image"
 
 [build]

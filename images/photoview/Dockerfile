@@ -1,9 +1,9 @@
-ARG VERSION=v2.4.0
+ARG VERSION=2.4.0
 ARG TARGETARCH
 
 
 
-FROM viktorstrate/photoview:v2.4.0 AS upstream
+FROM viktorstrate/photoview:2.4.0 AS upstream
 
 
 

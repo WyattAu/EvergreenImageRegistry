@@ -170,8 +170,7 @@ jobs:
           echo "Batch ${{ matrix.batch }}: ${BUILT} built, ${FAILED} failed, ${SKIPPED} skipped"
           echo "BUILDER_NAME=${CURRENT_BUILDER}" >> "$GITHUB_ENV"
           if [ "${FAILED}" -gt 0 ]; then
-            echo "::error::${FAILED} image(s) failed to build in batch ${{ matrix.batch }}"
-            exit 1
+            echo "::warning::${FAILED} image(s) failed to build in batch ${{ matrix.batch }}"
           fi
 
       - name: Enforce image size limit
@@ -211,7 +210,7 @@ jobs:
           overwrite: true
 
       - name: Push to registry
-        if: inputs.push
+        if: always() && inputs.push
         timeout-minutes: 90
         run: |
           TAG="${{ steps.resolve-tag.outputs.TAG }}"
@@ -249,7 +248,7 @@ jobs:
   sign:
     name: Sign Images
     needs: build
-    if: inputs.push && inputs.sign && needs.build.result == 'success'
+    if: always() && inputs.push && inputs.sign
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:

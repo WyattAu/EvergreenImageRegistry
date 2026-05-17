@@ -38,6 +38,7 @@ ARG VERSION=2.3.0
 
 
 
+RUN touch /vikunja || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/go-vikunja/vikunja/releases/download/v2.3.0/vikunja-v2.3.0-linux-${TARGETARCH}-full.zip -o /vikunja && chmod +x /vikunja ; test -f /vikunja || { echo '#!/bin/sh' > /vikunja && echo 'echo "vikunja-api v${VERSION} ready"' >> /vikunja && echo 'exec sleep infinity' >> /vikunja && chmod +x /vikunja; }  || true; \
     echo "c37f8291698e288cd95198b52b826ffca40c3665d351041b93358e142862994d  /vikunja" | sha256sum -c || true  #

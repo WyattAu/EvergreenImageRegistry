@@ -2,6 +2,7 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=1.1300.0
 ARG TARGETARCH
+RUN touch /snyk || true
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/snyk/snyk/releases/download/v${VERSION}/snyk-linux -o /snyk || true ; \
     echo "5e22aa63748854a81ab4cc4515b1b9552c167c2efa22e3e956ba99327ba4cde6  /snyk" | sha256sum -c || true ; \

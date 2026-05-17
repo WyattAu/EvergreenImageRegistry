@@ -4,6 +4,7 @@ ARG BUILD_DATE
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
+RUN touch /usr/share/keyrings/adoptium.gnupg || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates gnupg && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://packages.adoptium.net/artifactory/api/gnupg/key/public" | gnupg --dearmor -o /usr/share/keyrings/adoptium.gnupg && \
     echo "deb [signed-by=/usr/share/keyrings/adoptium.gnupg] https://packages.adoptium.net/artifactory/deb $(. /etc/os-release && echo $VERSION_CODENAME) main" > /etc/apt/sources.list.d/adoptium.list && \

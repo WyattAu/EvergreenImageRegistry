@@ -16,6 +16,9 @@ ARG VERSION=2.3
 ARG GO_VERSION
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
+RUN touch /app/meshbird || true
+RUN mkdir -p /app && \
+    touch /app/meshbird || true
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \

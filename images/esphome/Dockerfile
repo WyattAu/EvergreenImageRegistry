@@ -14,6 +14,7 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 
 
 
+RUN mkdir -p /opt/venv || true
 RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip python3 git ca-certificates gcc g++ libc6-dev ; rm -rf /var/lib/apt/lists/* || true && \
     python3 -m venv /opt/venv || true

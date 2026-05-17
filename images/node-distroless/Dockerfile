@@ -1,6 +1,9 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=22.12.0
 ARG TARGETARCH
+RUN mkdir -p /opt/node/lib/node_modules || true
+RUN mkdir -p /opt/node/bin/node && \
+    mkdir -p /opt/node/lib/node_modules || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     case ${TARGETARCH} in \
         amd64) NODE_ARCH="x64"; NODE_SHA="22982235e1b71fa8850f82edd09cdae7e3f32df1764a9ec298c72d25ef2c164f" ;; \

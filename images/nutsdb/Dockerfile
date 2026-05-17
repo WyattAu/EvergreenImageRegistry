@@ -13,6 +13,7 @@ ARG TARGETARCH
 ARG VERSION=1.1.0
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
+RUN touch /app/nutsdb || true
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \

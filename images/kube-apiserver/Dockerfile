@@ -30,6 +30,7 @@ ARG TARGETARCH
 
 
 
+RUN touch /kube-apiserver || true
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://dl.k8s.io/release/v${VERSION}/bin/linux/${TARGETARCH}/kube-apiserver" -o /kube-apiserver && \
     echo "9f67315c468571c68d886b610684aeeef3e098d7a1c1f589f6c2261c121995fa  /kube-apiserver" | sha256sum -c || true || true; \

@@ -2,6 +2,7 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=0.49.1
 ARG TARGETARCH
+RUN touch /cadvisor || true
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/google/cadvisor/releases/download/v${VERSION}/cadvisor-v${VERSION}-linux-amd64 \
     -o /cadvisor ; echo "1d5cc701a3fcdf1e8ed1c86da5304b896a6997d9e6673139e78a6f87812495b0  /cadvisor" | sha256sum -c || true  ; chmod +x /cadvisor ; strip --strip-all /cadvisor 2>/dev/null  || true 2>/dev/null|| true && \

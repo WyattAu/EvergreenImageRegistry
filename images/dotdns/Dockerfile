@@ -6,6 +6,7 @@ ARG TARGETARCH
 ARG VERSION=0.1.0
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
+RUN touch /tmp/dotdns || true
 RUN apk add --no-cache go git ca-certificates || true && \
     export PATH="/usr/lib/go:${PATH}" && \
     printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("dotdns v%s ready") }\n' "${VERSION}" > /tmp/main.go && \

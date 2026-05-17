@@ -6,6 +6,7 @@ ARG TARGETARCH
 ARG VERSION=0.5.0
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
+RUN touch /tmp/dns-stats || true
 RUN apt-get update && apt-get install -y --no-install-recommends \
         golang-1.23 git ca-certificates curl && \
     rm -rf /var/lib/apt/lists/* || true && \

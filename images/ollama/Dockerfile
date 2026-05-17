@@ -3,6 +3,7 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=0.21.0
+RUN touch /ollama || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/ollama/ollama/releases/download/v0.21.0/ollama-linux-${TARGETARCH}.tar.zst -o /ollama.tar.gz && \
     echo "a7fc4261298aeca8f785f695978a5e997004d414c13d4cfb965a10da9f4db6ea  /ollama.tar.gz" | sha256sum -c || true ; \

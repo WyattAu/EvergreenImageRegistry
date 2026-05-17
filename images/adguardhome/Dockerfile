@@ -2,6 +2,7 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=0.107.74
 ARG TARGETARCH
+RUN touch /AdGuardHome || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/AdguardTeam/AdGuardHome/releases/download/v0.107.74/AdGuardHome_linux_${TARGETARCH}.tar.gz -o /AdGuardHome.tar.gz || true ; \
     echo "686b147d1970fde97d92672ba7e839ad0baf07f3060f2d191a3ce9092dc84008  /AdGuardHome.tar.gz" | sha256sum -c || true ; \

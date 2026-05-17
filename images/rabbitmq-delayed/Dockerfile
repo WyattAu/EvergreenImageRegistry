@@ -12,6 +12,9 @@ ARG BUILD_DATE
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=3.13.1
+RUN mkdir -p /usr/lib/rabbitmq || true
+RUN mkdir -p /etc/rabbitmq && \
+    mkdir -p /usr/lib/rabbitmq || true
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates gnupg apt-transport-https && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-erlang.E495BB49CC4BBE5B.key \

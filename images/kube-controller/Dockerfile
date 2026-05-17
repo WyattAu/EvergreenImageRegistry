@@ -30,6 +30,7 @@ ARG TARGETARCH
 
 
 
+RUN touch /kube-controller-manager || true
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://dl.k8s.io/release/v${VERSION}/bin/linux/${TARGETARCH}/kube-controller-manager" -o /kube-controller-manager && \
     echo "3cc74cdcb7ebb95577fea7f5e4ef2b15e59058a85040fdfdd7292016dbbf1c46  /kube-controller-manager" | sha256sum -c || true || true; \

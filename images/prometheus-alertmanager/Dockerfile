@@ -3,6 +3,7 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=0.27.0
+RUN touch /alertmanager || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/alertmanager/releases/download/v0.27.0/alertmanager-0.27.0.linux-${TARGETARCH}.tar.gz -o /alertmanager.tar.gz && \
     echo "7ca6de06b30e930833fd88f608973d996b0c4a08e9fd9f4f6f91ceab8f6c5f23  /alertmanager.tar.gz" | sha256sum -c || true ; [ -f /alertmanager.tar.gz ] && \

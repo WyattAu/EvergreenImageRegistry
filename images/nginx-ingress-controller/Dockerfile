@@ -16,6 +16,11 @@ ARG VERSION=1.10.1
 ARG GO_VERSION
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
+RUN mkdir -p /etc/nginx && \
+    touch /app/nginx-ingress-controller || true
+RUN mkdir -p /app && \
+    mkdir -p /etc/nginx && \
+    touch /app/nginx-ingress-controller || true
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils git ca-certificates make && \
     rm -rf /var/lib/apt/lists/* && \

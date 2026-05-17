@@ -11,6 +11,9 @@ ARG BUILD_DATE
 ARG TARGETARCH
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
+RUN mkdir -p /var/run/postgresql || true
+RUN mkdir -p /var/lib/postgresql && \
+    mkdir -p /var/run/postgresql || true
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg lsb-release curl ca-certificates && \
     echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > \

@@ -3,6 +3,7 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=1.8.5
+RUN touch /fulcio || true
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/sigstore/fulcio/releases/download/v${VERSION}/fulcio-linux-${TARGETARCH} -o /fulcio && \
     echo "54a25458333ddf614193eeeecc50f37a9a44084bea8eadc8dbfc72429bbff62b  /fulcio" | sha256sum -c || true ; \

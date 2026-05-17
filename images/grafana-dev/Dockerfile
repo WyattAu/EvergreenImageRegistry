@@ -3,6 +3,13 @@ ARG TARGETARCH
 ARG VERSION=10.4.1
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION
+RUN mkdir -p /opt/grafana-${VERSION}/bin/grafana-server && \
+    mkdir -p /opt/grafana-${VERSION}/conf && \
+    mkdir -p /opt/grafana-${VERSION}/public || true
+RUN mkdir -p /opt/grafana-${VERSION}/bin/grafana-cli && \
+    mkdir -p /opt/grafana-${VERSION}/bin/grafana-server && \
+    mkdir -p /opt/grafana-${VERSION}/conf && \
+    mkdir -p /opt/grafana-${VERSION}/public || true
 RUN mkdir -p /opt/grafana-${VERSION}/bin /opt/grafana-${VERSION}/public /opt/grafana-${VERSION}/conf
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils curl ca-certificates && \

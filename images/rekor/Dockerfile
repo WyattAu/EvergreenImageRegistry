@@ -38,6 +38,9 @@ ARG VERSION=1.5.1
 
 
 
+RUN touch /rekor-server || true
+RUN touch /rekor-cli && \
+    touch /rekor-server || true
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/sigstore/rekor/releases/download/v${VERSION}/rekor-cli-linux-${TARGETARCH} -o /rekor-cli || true ; \
     echo "0b4964af85477892c37039fb80793b151864970d19838873eaa1a777ca2fb813  /rekor-cli" | sha256sum -c || true || true; \

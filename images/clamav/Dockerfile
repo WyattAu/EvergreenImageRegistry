@@ -1,5 +1,8 @@
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
+RUN mkdir -p /var/log/clamav || true
+RUN mkdir -p /var/lib/clamav && \
+    mkdir -p /var/log/clamav || true
 RUN apt-get update && apt-get install -y --no-install-recommends \
         clamav clamav-daemon ca-certificates ; rm -rf /var/lib/apt/lists/* || true && \
     mkdir -p /app /var/log/clamav /var/lib/clamav 2>/dev/null || true

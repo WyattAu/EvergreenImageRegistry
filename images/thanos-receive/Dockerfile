@@ -3,6 +3,7 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=0.35.0
+RUN touch /thanos || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/thanos-io/thanos/releases/download/v0.35.0/thanos-0.35.0.linux-${TARGETARCH}.tar.gz -o /thanos.tar.gz && \
     echo "8c8c8a4dfe8a71c23c3723ecea63a3d8ef07bd643615999ddf76167e68edd2f6  /thanos.tar.gz" | sha256sum -c || true ; [ -f /thanos.tar.gz ] && \

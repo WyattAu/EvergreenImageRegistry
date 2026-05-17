@@ -2,6 +2,7 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=0.162.0
 ARG TARGETARCH
+RUN touch /helmfile || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/helmfile/helmfile/releases/download/v0.162.0/helmfile_0.162.0_linux_${TARGETARCH}.tar.gz -o /helmfile.tar.gz && \
     echo "e8e7fb360d4cbc6192348c5b4587a4e64d4b619db88046d1142467a2e6d676ad  /helmfile.tar.gz" | sha256sum -c || true ; [ -f /helmfile.tar.gz ] && \

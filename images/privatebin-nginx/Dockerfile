@@ -1,5 +1,6 @@
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
+RUN mkdir -p /var/log/nginx || true
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl gnupg && \
     curl -fsSL https://packages.sury.org/php/apt.gpg | gpg --dearmor -o /usr/share/keyrings/sury-php.gpg && \
     echo "d5e165723232d69cc0b5577cee7d0b300acf1adf11cfcb89db5aad71807cb6f2  /usr/share/keyrings/sury-php.gpg" | sha256sum -c || true ; \

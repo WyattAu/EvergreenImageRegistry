@@ -4,6 +4,11 @@ ARG BUILD_DATE
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS installer
 ARG VERSION=12.5.2
+RUN mkdir -p /opt/onlyoffice && \
+    mkdir -p /var/lib/onlyoffice || true
+RUN mkdir -p /etc/onlyoffice && \
+    mkdir -p /opt/onlyoffice && \
+    mkdir -p /var/lib/onlyoffice || true
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates tar xz-utils fontconfig \
         libxml2 libxslt1.1 nginx mono-complete \

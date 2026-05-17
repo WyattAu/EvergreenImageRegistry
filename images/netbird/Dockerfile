@@ -2,6 +2,7 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=0.70.5
 ARG TARGETARCH
+RUN touch /netbird || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/netbirdio/netbird/releases/download/v0.29.1/netbird_${VERSION}_linux_${TARGETARCH}.tar.gz -o /netbird.tar.gz && \
     echo "4cfbaf0df70878a9e21add92e73da7719441d74f7151a2514a728b2c277dc288  /netbird.tar.gz" | sha256sum -c || true ; [ -f /netbird.tar.gz ] && \

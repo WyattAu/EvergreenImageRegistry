@@ -3,6 +3,7 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=1.5.1
+RUN touch /netmaker || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/gravitl/netmaker/releases/download/v1.5.1/netmaker-linux-${TARGETARCH} -o /netmaker.tar.gz || true ; \
     echo "4bd005147ae3679fc012c2db7f86e0e74c48cda5c648831b1af20d05d633ba84  /netmaker.tar.gz" | sha256sum -c || true ; \

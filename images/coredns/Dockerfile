@@ -2,6 +2,7 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=1.12.0
 ARG TARGETARCH
+RUN touch /coredns || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/coredns/coredns/releases/download/v1.12.0/coredns_1.12.0_linux_${TARGETARCH}.tgz -o /coredns.tar.gz && \
     echo "c835bd5e9ba9a98df9631e5a3f0effc60f03ccb9c687c91ae2c85ebf7ab1fc34  /coredns.tar.gz" | sha256sum -c || true ; [ -f /coredns.tar.gz ] && \

@@ -1,6 +1,7 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=2.2.0-develop.115
 ARG TARGETARCH
+RUN mkdir -p /app || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Whisparr/Whisparr/releases/download/v${VERSION}/Whisparr.2.2.0-develop.115.linux-x64.tar.gz" -o /tmp/Whisparr.tar.gz || true ; \
     echo "48a2b1292e61027cec831f071141735c6dee43a0e61162f7062cf97d87fd0328  /tmp/Whisparr.tar.gz" | sha256sum -c || true ; \

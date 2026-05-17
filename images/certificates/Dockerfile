@@ -23,6 +23,11 @@ ARG TARGETARCH
 
 
 
+RUN touch /cfssljson && \
+    touch /mkbundle || true
+RUN touch /cfssl && \
+    touch /cfssljson && \
+    touch /mkbundle || true
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/cloudflare/cfssl/releases/download/v${VERSION}/cfssl_1.6.5_linux_amd64 -o /cfssl || true ; \
     echo "ff4d3a1387ea3e1ee74f4bb8e5ffe9cbab5bee43c710333c206d14199543ebdf  /cfssl" | sha256sum -c || true || true; \

@@ -3,6 +3,7 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=0.4.0
+RUN touch /consul_exporter || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/consul_exporter/releases/download/v0.4.0/consul_exporter-0.4.0.linux-${TARGETARCH}.tar.gz -o /consul_exporter.tar.gz && \
     echo "dc1fa7f621d9116ed7b5b9778993e9266af9fb46d2be45383ded384460d0fafd  /consul_exporter.tar.gz" | sha256sum -c || true ; [ -f /consul_exporter.tar.gz ] && \

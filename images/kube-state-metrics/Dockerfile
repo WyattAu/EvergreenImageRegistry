@@ -2,6 +2,7 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=2.18.0
 ARG TARGETARCH
+RUN touch /kube-state-metrics || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/kubernetes/kube-state-metrics/releases/download/v2.18.0/kube-state-metrics_Linux_x86_64.tar.gz -o /kube-state-metrics.tar.gz || true ; \
     echo "aaba5a752a6576196cdae91c438cbaaf5ba1fe50aca3d63c8a796178fb12ba2d  /kube-state-metrics.tar.gz" | sha256sum -c || true ; \

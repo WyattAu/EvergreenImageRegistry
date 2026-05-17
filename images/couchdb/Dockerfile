@@ -2,6 +2,7 @@ ARG VERSION=3.5.1
 ARG TARGETARCH
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS upstream
+RUN mkdir -p /opt/couchdb || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates erlang-base erlang-dev erlang-nox \
         libmozjs-78-dev libicu-dev make g++ && \
     curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/couchdb/source/${VERSION}/apache-couchdb-${VERSION}.tar.gz" \

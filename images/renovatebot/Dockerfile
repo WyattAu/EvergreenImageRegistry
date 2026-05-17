@@ -1,6 +1,7 @@
 FROM node@sha256:8ea2348b068a9544dae7317b4f3aafcdc032df1647bb7d768a05a5cad1a7683f AS builder
 ARG VERSION=43.150.0
 ARG TARGETARCH
+RUN mkdir -p /usr/local/lib/node_modules/renovate || true
 RUN npm install -g renovate@${VERSION}
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

@@ -2,6 +2,7 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=1.8.0
 ARG TARGETARCH
+RUN touch /syft || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/anchore/syft/releases/download/v1.8.0/syft_1.8.0_linux_${TARGETARCH}.tar.gz -o /syft.tar.gz || true ; \
     echo "b487ee715e715e960f0d327b49ed9f5926b82bfa2f7283942f9631c41e7c0545  /syft.tar.gz" | sha256sum -c || true ; \

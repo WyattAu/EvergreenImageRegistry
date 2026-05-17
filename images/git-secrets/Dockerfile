@@ -1,5 +1,6 @@
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
+RUN touch /usr/local/bin/git-secrets || true
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git curl ca-certificates ; rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL -o /usr/local/bin/git-secrets "https://raw.githubusercontent.com/awslabs/git-secrets/master/git-secrets" 2>/dev/null || true ; chmod +x /usr/local/bin/git-secrets 2>/dev/null || true && \

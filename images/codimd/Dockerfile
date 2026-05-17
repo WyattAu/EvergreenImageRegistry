@@ -1,6 +1,7 @@
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS builder
 ARG VERSION=2.6.1
 ARG TARGETARCH
+RUN mkdir -p /build || true
 RUN apk add --no-cache nodejs-20 npm git ca-certificates python3 make gcc || true
 WORKDIR /build
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/hackmdio/codimd/releases/download/${VERSION}/codimd-${VERSION}.tar.gz" \

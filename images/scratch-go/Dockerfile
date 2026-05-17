@@ -17,6 +17,7 @@ ARG GO_VERSION=1.23
 FROM golang:${GO_VERSION}-bookworm AS builder
 ENV GOTOOLCHAIN=auto
 ARG VERSION
+RUN touch /app/app || true
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/*

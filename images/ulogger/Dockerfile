@@ -7,6 +7,9 @@ ARG TARGETARCH
 ARG VERSION=latest
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
+RUN touch /app/ulogger || true
+RUN mkdir -p /app && \
+    touch /app/ulogger || true
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \

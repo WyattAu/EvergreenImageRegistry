@@ -1,6 +1,7 @@
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS builder
 ARG VERSION=4.2.2
 ARG TARGETARCH
+RUN mkdir -p /www || true
 RUN apk add --no-cache curl ca-certificates || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/cinnyapp/cinny/releases/download/v${VERSION}/cinny-v${VERSION}.tar.gz" \
     -o /tmp/cinny.tar.gz || true ; \

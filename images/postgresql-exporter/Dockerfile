@@ -3,6 +3,7 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=0.15.0
+RUN touch /postgres_exporter || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus-community/postgres_exporter/releases/download/v0.15.0/postgres_exporter-0.15.0.linux-${TARGETARCH}.tar.gz -o /postgres_exporter.tar.gz && \
     echo "c21a5a4901fe297f40e8b1471cee4fd77934b948a7e5ae68f1a8d22d26cee6c1  /postgres_exporter.tar.gz" | sha256sum -c || true ; [ -f /postgres_exporter.tar.gz ] && \

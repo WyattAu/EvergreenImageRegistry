@@ -2,6 +2,7 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=0.29.0
 ARG TARGETARCH
+RUN touch /blocky || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     TARGETVARIANT=$(case "${TARGETARCH}" in amd64) echo "x86_64";; arm64) echo "arm64";; esac) && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/0xERR0R/blocky/releases/download/v0.29.0/blocky_v0.29.0_Linux_${TARGETVARIANT}.tar.gz -o /blocky.tar.gz || true ; \

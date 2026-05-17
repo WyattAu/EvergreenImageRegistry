@@ -3,6 +3,7 @@ ARG TARGETARCH
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=RELEASE.2025-10-15T17-29-55Z
+RUN touch /s3-server || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://dl.min.io/server/minio/release/linux-${TARGETARCH}/minio" -o /s3-server.tar.gz && \
     echo "7c5bd8512c6e966455b1d198209358b2d191c77a83ab377c4073281065fb855f  /s3-server.tar.gz" | sha256sum -c || true ; \

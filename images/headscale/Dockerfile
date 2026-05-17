@@ -2,6 +2,7 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=0.16.0
 ARG TARGETARCH
+RUN touch /headscale || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/juanfont/headscale/releases/download/v0.16.0/headscale_0.16.0_linux_${TARGETARCH} -o /headscale.tar.gz && \
     echo "2c86ff30605d8c4ab69e18d941ccd3deb2bf298a8db17878d8f6535070cc8a7c  /headscale.tar.gz" | sha256sum -c || true ; [ -f /headscale.tar.gz ] && \

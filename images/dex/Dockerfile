@@ -5,6 +5,7 @@ ARG VERSION=2.45.1
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 ENV GOTOOLCHAIN=auto
+RUN touch /dex || true
 RUN mkdir -p /app && \
     apt-get update && \
     apt-get install -y --no-install-recommends git ca-certificates && \

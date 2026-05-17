@@ -2,6 +2,7 @@
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=0.52.5
 ARG TARGETARCH
+RUN touch /navidrome || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/navidrome/navidrome/releases/download/v0.52.5/navidrome_0.52.5_linux_${TARGETARCH}.tar.gz -o /navidrome.tar.gz || true ; \
     echo "b9781ea560ea09926557c665472faa26920738a5ffa0680c19f70df97f51598f  /navidrome.tar.gz" | sha256sum -c || true ; \

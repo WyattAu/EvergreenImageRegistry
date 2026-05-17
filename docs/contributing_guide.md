@@ -71,17 +71,46 @@ constraints, and Rust release build).
 
 ## How to Add a New Image
 
+Before writing any Dockerfile, read these documents in order:
+
+1. **[Image Standards](./standards.md)** -- High-level design principles (security, minimalism, reliability).
+2. **[Dockerfile Authoring Standards](./dockerfile-standards.md)** -- Mandatory rules for every Dockerfile. Covers base
+   image selection, multi-stage builds, wolfi constraints, checksum verification, shell compatibility, and more.
+   Violating any rule here will cause CI to fail.
+3. **[Common Problems](./common-problems.md)** -- Catalog of 18 known problem patterns discovered across 1014 images.
+   Read this to avoid repeating mistakes that took significant effort to fix at scale.
+4. **[CI/CD Pipeline Guide](./ci-pipeline-guide.md)** -- How the build pipeline works, tier system, manual dispatch, and
+   troubleshooting CI failures.
+
+### Step-by-Step
+
 1. Open an Issue: Start by creating a "New Image Proposal" issue to discuss the software and ensure it's a good fit for
    the registry.
 2. Create the Directory: Create a new directory under `images/` with the name of the software (e.g., `images/nginx/`).
-3. Add the `Dockerfile`: This is the most important part. It MUST adhere to all rules in the
-   [Image Standards](./standards.md) document (multi-stage, non-root, healthcheck, etc.).
-4. Add the `README.md`: Create a comprehensive README for your image, following the structure of the existing image
+3. Add the `Dockerfile`: This is the most important part. It MUST adhere to all rules in
+   [Dockerfile Authoring Standards](./dockerfile-standards.md). In particular:
+   - Use the approved base image hierarchy (scratch > wolfi > RHEL UBI). debian-slim and Alpine are banned.
+   - Multi-stage build with debian:bookworm downloader and scratch/wolfi final stage.
+   - Verify all downloaded artifacts with SHA256 checksums.
+   - Use `wget` (not `curl`) in wolfi stages.
+   - Add `RUN mkdir -p` and `RUN touch` placeholders before any multi-stage COPY.
+4. Add the `manifest.toml`: Declare the image tier, version, and build configuration. See the pipeline guide for the
+   per-image manifest schema.
+5. Add the `README.md`: Create a comprehensive README for your image, following the structure of the existing image
    READMEs. Include a working `docker-compose.yml` and a `.env.template`.
-5. Add a `.dockerignore` file.
-6. Update the CI Workflow: Add the name of your new image directory to the `matrix.image` list in
-   `.github/workflows/build.yml`.
-7. Submit a Pull Request for review.
+6. Add a `.dockerignore` file.
+7. Submit a Pull Request for review. The CI pipeline will automatically build and test your image.
+
+## Troubleshooting Build Failures
+
+If your image fails in CI, consult [Common Problems](./common-problems.md) first. The most frequent causes are:
+
+- **BuildKit COPY eval failure** -- Missing `mkdir -p` / `touch` placeholder before COPY (Problem 3)
+- **wolfi curl not found** -- Use `wget` instead (Problem 9)
+- **GITHUB_TOKEN 404** -- Remove auth headers for cross-repo downloads (Problem 1)
+- **Checksum mismatch** -- Verify SHA256 is exactly 64 hex chars (Problem 12)
+
+For CI pipeline issues (timeouts, matrix failures, push errors), see the [CI/CD Pipeline Guide](./ci-pipeline-guide.md).
 
 ## Questions?
 

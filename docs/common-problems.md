@@ -153,8 +153,8 @@ grep -rln 'COPY --from' images/*/Dockerfile | xargs grep -l 'AS '
 ### Lesson Learned
 
 The initial scan only caught dynamic paths (`COPY --from=.*\${VERSION}`). Static paths
-(`COPY --from=downloader /tmp/file`) are equally affected. Three additional files
-(drone, forgejo-runner, ocis) were caught during the full critical tier build push phase.
+(`COPY --from=downloader /tmp/file`) are equally affected. Three additional files (drone, forgejo-runner, ocis) were
+caught during the full critical tier build push phase.
 
 ---
 
@@ -296,13 +296,315 @@ This limits the build to amd64 only, avoiding QEMU entirely for that image.
 
 ---
 
+## Problem 9: wolfi Has No curl Package
+
+**Severity:** HIGH | **Affected:** 535 images (49 build-time + 486 HEALTHCHECK) | **Status:** FIXED
+
+### Root Cause
+
+wolfi does not ship curl. Its `locked_config.json` has no curl entry and `wolfi-dev/os` returns 404 for the curl
+package. wolfi-base includes busybox which provides `wget` only.
+
+Dockerfiles that used `curl -fsSL` in wolfi stages, or `apk add curl || true`, would either fail silently (the `|| true`
+swallows the error, curl never installed = runtime broken) or fail outright.
+
+### Symptom
+
+```
+ERROR: unable to select packages: curl (no such package)
+```
+
+Or silent: build succeeds but `curl` not available at runtime.
+
+### Fix
+
+Replace all `curl` usage with `wget` equivalents in wolfi stages:
+
+| curl pattern                                          | wget equivalent                                         |
+| ----------------------------------------------------- | ------------------------------------------------------- |
+| `curl -fsSL <url> -o /path`                           | `wget -qO /path <url>`                                  |
+| `curl -fsSL <url>` (stdout)                           | `wget -qO- <url>`                                       |
+| `curl -fsSL <url> \| tar ...`                         | `wget -qO- <url> \| tar ...`                            |
+| `HEALTHCHECK CMD curl -f http://localhost:8080/livez` | `HEALTHCHECK CMD wget -qO- http://localhost:8080/livez` |
+
+For HEALTHCHECK: `wget -qO-` exits 0 on HTTP 2xx, 1 on error (matches curl -f behavior).
+
+---
+
+## Problem 10: Orphaned ARG GITHUB_TOKEN
+
+**Severity:** LOW | **Affected:** 182 images | **Status:** FIXED
+
+### Root Cause
+
+After removing GITHUB_TOKEN auth headers (Problem 1), many Dockerfiles still declared `ARG GITHUB_TOKEN` but never used
+it. Orphaned ARGs waste build cache layers and create misleading diffs.
+
+### Fix
+
+Remove unused `ARG GITHUB_TOKEN` declarations entirely. Only declare it when actually referenced.
+
+---
+
+## Problem 11: External FROM Tags That Don't Exist
+
+**Severity:** HIGH | **Affected:** 32 images | **Status:** FIXED
+
+### Root Cause
+
+Dockerfiles referenced external base images by tags that were deleted, renamed, or never existed on the upstream
+registry. This causes `docker build` to fail with:
+
+```
+unauthorized: authentication required
+```
+
+or
+
+```
+manifest unknown
+```
+
+### Fix
+
+Verify the tag exists via `docker manifest inspect <image>:<tag>` or check the upstream registry. Update to the correct
+current tag. For images whose upstream has been deleted entirely, mark as deprecated.
+
+---
+
+## Problem 12: Corrupted SHA256 Checksums (96-Char Values)
+
+**Severity:** CRITICAL | **Affected:** 10 images | **Status:** FIXED
+
+### Root Cause
+
+10 Dockerfiles contained 96-character sha256 values instead of the correct 64 characters. Pattern: a correct sha256 was
+truncated and concatenated with a partial second sha256, producing `f9c6a2fd...d5c48edd17fb90f0ed9e3173c7a9`. This was
+likely caused by a copy-paste error from a multi-line checksum file.
+
+### Symptom
+
+```
+sha256sum: 'PLACEHOLDER_SHA': improperly formatted SHA256 checksum
+```
+
+or silent mismatch (build continues but wrong binary accepted).
+
+### Fix
+
+Verify all sha256 values are exactly 64 hex characters. Cross-reference with upstream checksum file.
+
+### Automated Detection
+
+```bash
+grep -rn 'sha256.*-[[:space:]]*[a-f0-9]\{65,\}' images/*/Dockerfile
+```
+
+---
+
+## Problem 13: Broken RUN Continuation Lines
+
+**Severity:** HIGH | **Affected:** 6 images | **Status:** FIXED
+
+### Root Cause
+
+Three distinct patterns break Dockerfile RUN continuation:
+
+**Pattern A: Semicolon before backslash**
+
+```dockerfile
+RUN apt-get update ; \
+    apt-get install -y foo
+```
+
+The `;` before `\` works. But:
+
+```dockerfile
+RUN apt-get update; true \
+    apt-get install -y foo
+```
+
+The `true \` makes the shell interpret `true` as the command (no backslash continuation), and the next line
+`apt-get install` is parsed as a Dockerfile instruction, failing with:
+
+```
+unknown instruction: APT-GET
+```
+
+**Pattern B: Redirect before backslash**
+
+```dockerfile
+RUN some-command 2>/dev/null \
+    next-command
+```
+
+Works fine. But:
+
+```dockerfile
+RUN some-command; true 2>/dev/null
+    next-command
+```
+
+Missing `\` causes `next-command` to be parsed as a Dockerfile instruction.
+
+**Pattern C: Comment eating continuation**
+
+```dockerfile
+RUN echo "extracting JDK" && \
+    # This is a comment && \
+    tar -xzf jdk.tar.gz
+```
+
+The `#` makes everything after it a comment, INCLUDING the trailing `\`. The next line `tar -xzf` is silently discarded.
+The JDK is never extracted.
+
+### Fix
+
+- Backslash `\` MUST be the last non-whitespace character on the line
+- NEVER put `; true` or `2>/dev/null` at the end of a line without `\`
+- NEVER use inline `# comments` in multi-line RUN blocks (put comments on their own lines or use `echo` statements)
+- Consider using heredoc (`<<'EOF'`) for complex multi-line scripts
+
+### Affected Images
+
+gitbucket, gitlab-runner, couchdb-sync, immudb, rqlite, openjdk
+
+---
+
+## Problem 14: Missing ca-certificates in wolfi
+
+**Severity:** MEDIUM | **Affected:** 3 images (HAProxy family) | **Status:** FIXED
+
+### Root Cause
+
+Some wolfi Dockerfiles assumed ca-certificates was included in wolfi-base. While wolfi-base does include
+ca-certificates, images that build FROM scratch or minimal wolfi variants may not have it, causing TLS connections to
+fail.
+
+### Fix
+
+Explicitly install: `RUN apk add --no-cache ca-certificates`
+
+---
+
+## Problem 15: Phantom Version Tags (Versions That Never Existed)
+
+**Severity:** HIGH | **Affected:** 3 images | **Status:** FIXED
+
+### Root Cause
+
+Dockerfiles pinned to version tags that do not exist in the upstream release history:
+
+| Image                  | Phantom Version | Correct Version | Why                                   |
+| ---------------------- | --------------- | --------------- | ------------------------------------- |
+| dragonflydb            | v1.18.0         | v1.38.1         | Versioning jumped from 1.x to 1.3x    |
+| vault-secrets-operator | 1.19.0          | v1.4.0          | Confused with HashiCorp Vault version |
+| cstate                 | 5.7.0           | v6.0.0          | Versioning jumped from 5.6.1 to 6.0.0 |
+
+### Fix
+
+Always verify the version exists in the upstream GitHub releases page or CHANGELOG before pinning. Cross-reference with
+release date to ensure version chronology makes sense.
+
+### Automated Detection
+
+```bash
+# Check if a version tag exists on GitHub
+git ls-remote --tags --exit-code https://github.com/<org>/<repo>.git "refs/tags/v<VERSION>" > /dev/null 2>&1
+echo $?  # 0 = exists, 2 = not found
+```
+
+---
+
+## Problem 16: Deprecated / Upstream-Gone Images
+
+**Severity:** LOW | **Affected:** 7 images | **Status:** FIXED
+
+### Root Cause
+
+Some upstream projects were archived, deleted, or no longer maintain releases. Their Dockerfiles reference releases that
+are no longer available.
+
+### Affected Images
+
+fail2ban-exporter, linguist-go, meshbird, homeassistant-hassio/supervisor, cubrid, cyberduck, crdb-operator
+
+### Fix
+
+Mark with `LABEL evergreen.status="deprecated"` and document the reason. Keep Dockerfile for reference but remove from
+active build matrix.
+
+---
+
+## Problem 17: CI Push Step Rebuilds Instead of Loading Tarball
+
+**Severity:** HIGH | **Affected:** All multi-stage images (~400) | **Status:** FIXED
+
+### Root Cause
+
+The CI push step originally used `docker buildx build --push` which rebuilds the image. This triggered ALL BuildKit COPY
+eval bugs again during push, causing ~320 images to fail push even though they built successfully.
+
+### Fix
+
+Changed push step to `docker load` the pre-built tarball from the build step:
+
+```yaml
+- name: Load and push
+  run: |
+    docker load -i "${{ steps.build.outputs.tarball }}"
+    docker tag <image> <registry>/<image>:<tag>
+    docker push <registry>/<image>:<tag>
+```
+
+Trade-off: loses multi-arch support (tarball is single-arch). Future multi-arch needs different strategy.
+
+---
+
+## Problem 18: CI Build Step Exits on First Failure
+
+**Severity:** MEDIUM | **Affected:** All batch builds | **Status:** FIXED
+
+### Root Cause
+
+The build step used `set -e` and `exit 1` on failure, causing the entire matrix to abort when any single image failed.
+With 861 standard images, even a 10% failure rate would stop 800+ successful builds from being pushed.
+
+### Fix
+
+Changed to `::warning::` annotation (non-blocking) and `if: always()` on push/sign steps:
+
+```yaml
+- name: Build
+  continue-on-error: true
+  # ... emits ::warning:: on failure instead of exit 1
+
+- name: Push
+  if: always() && inputs.push
+  # ... pushes all successfully built images
+```
+
+---
+
 ## Fix Priority Matrix
 
-| Priority | Problem                            | Effort    | Impact      | Action                            |
-| -------- | ---------------------------------- | --------- | ----------- | --------------------------------- |
-| P0       | Problem 3: BuildKit COPY eval      | Medium    | 48 images   | Fix multi-stage COPY patterns     |
-| P0       | Problem 1: GITHUB_TOKEN cross-repo | Low (sed) | 343 images  | Remove unconditional auth headers |
-| P1       | Problem 4: Go GOTOOLCHAIN          | Low       | 18 images   | Add ENV GOTOOLCHAIN=auto          |
-| P1       | Problem 7: pip without fallback    | Medium    | 7 images    | Add fallback logic                |
-| P2       | Problem 6: Blank line bloat        | Low       | 100+ images | Cosmetic cleanup                  |
-| P2       | Problem 8: QEMU timeouts           | Low       | Unknown     | Audit and disable multiarch       |
+| Priority | Problem                               | Severity | Effort    | Impact           | Status        | Action                                   |
+| -------- | ------------------------------------- | -------- | --------- | ---------------- | ------------- | ---------------------------------------- | --- | ------------------------------- |
+| P0       | Problem 12: Corrupted SHA256          | CRITICAL | Low       | 10 images        | FIXED         | Verify and correct checksums             |
+| P0       | Problem 3: BuildKit COPY eval         | CRITICAL | Medium    | 49 images        | FIXED         | Fix multi-stage COPY patterns            |
+| P0       | Problem 1: GITHUB_TOKEN cross-repo    | HIGH     | Low (sed) | 343 images       | FIXED         | Remove unconditional auth headers        |
+| P0       | Problem 9: wolfi no curl              | HIGH     | Medium    | 535 images       | FIXED         | Replace curl with wget in wolfi          |
+| P0       | Problem 11: External FROM tags        | HIGH     | Low       | 32 images        | FIXED         | Verify and update tags                   |
+| P0       | Problem 13: Broken RUN continuations  | HIGH     | Low       | 6 images         | FIXED         | Fix backslash/comment patterns           |
+| P0       | Problem 15: Phantom version tags      | HIGH     | Low       | 3 images         | FIXED         | Pin to correct upstream versions         |
+| P0       | Problem 17: CI push rebuilds          | HIGH     | Medium    | ~400 images      | FIXED         | Use docker load instead of buildx --push |
+| P1       | Problem 2: Bash brace expansion       | HIGH     | Low       | 5 images         | FIXED         | Replace {{ }} with POSIX syntax          |
+| P1       | Problem 4: Go GOTOOLCHAIN             | MEDIUM   | Low       | 18 images        | FIXED         | Add ENV GOTOOLCHAIN=auto                 |
+| P1       | Problem 5: PLACEHOLDER_SHA            | MEDIUM   | Low       | 7 images         | FIXED         | Use                                      |     | true with placeholder checksums |
+| P1       | Problem 7: pip without fallback       | MEDIUM   | Medium    | 7 images         | FIXED         | Add fallback logic                       |
+| P1       | Problem 14: Missing ca-certificates   | MEDIUM   | Low       | 3 images         | FIXED         | Explicitly install ca-certificates       |
+| P1       | Problem 18: CI exits on first fail    | MEDIUM   | Low       | All batch builds | FIXED         | Use continue-on-error + ::warning::      |
+| P2       | Problem 8: QEMU timeouts              | MEDIUM   | Low       | Unknown          | NEEDS AUDIT   | Audit and disable multiarch              |
+| P2       | Problem 6: Blank line bloat           | LOW      | Low       | 100+ images      | NEEDS CLEANUP | Cosmetic cleanup                         |
+| P2       | Problem 10: Orphaned ARG GITHUB_TOKEN | LOW      | Low (sed) | 182 images       | FIXED         | Remove unused ARG declarations           |
+| P3       | Problem 16: Deprecated images         | LOW      | Low       | 7 images         | FIXED         | Label as deprecated, remove from matrix  |

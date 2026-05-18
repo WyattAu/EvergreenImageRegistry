@@ -10,7 +10,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "docker-image"
-url = "docker.dragonflydb.io/dragonfly:${VERSION}"
+url = "ghcr.io/dragonflydb/dragonfly:${VERSION}"
 
 [runtime]
 entrypoint = ["/dragonfly"]

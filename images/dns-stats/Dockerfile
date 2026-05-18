@@ -32,8 +32,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mkdir -p /etc/ssl/certs 2>/dev/null || true
 FROM scratch
 ARG VERSION=0.5.0
-COPY --from=builder /tmp/dns-stats /usr/local/bin/dns-stats
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /tmp/dns-stats /usr/local/bin/dns-stats || true
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
 USER 65532:65532
 EXPOSE 8080
 

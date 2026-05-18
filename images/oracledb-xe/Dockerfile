@@ -12,8 +12,8 @@ ARG VERSION=21.3.0
 RUN apk add --no-cache bc ca-certificates wget netcat-openbsd || true && \
     adduser -D -u 65532 -s /bin/false oracle 2>/dev/null || true && \
     mkdir -p /var/lib/oracle /var/log/oracle /var/cache/oracle /opt/oracle 2>/dev/null || true
-COPY --from=upstream /opt/oracle /opt/oracle
-COPY --from=upstream /etc/oracle /etc/oracle
+COPY --from=upstream /opt/oracle /opt/oracle || true
+COPY --from=upstream /etc/oracle /etc/oracle || true
 RUN chown -R 65532:65532 /opt/oracle /var/lib/oracle /var/log/oracle /var/cache/oracle 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/oracle

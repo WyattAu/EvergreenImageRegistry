@@ -4,7 +4,7 @@ version = "unknown"
 description = "Evergreen Rust static build base for x86_64-unknown-linux-musl target"
 
 [build]
-base = "cgr.dev/chainguard/static:latest"
+base = "cgr.dev/chainguard/wolfi-base:latest"
 user = "65532:65532"
 stopsignal = "SIGTERM"
 

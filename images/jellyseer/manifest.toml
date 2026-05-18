@@ -1,6 +1,6 @@
 [metadata]
 name = "jellyseer"
-version = "3.2.0"
+version = "2.7.3"
 description = "jellyseer container image"
 
 [build]
@@ -10,7 +10,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "docker-image"
-url = "fallenbagel/jellyseerr:3.2.0"
+url = "fallenbagel/jellyseerr:2.7.3"
 
 [runtime]
 entrypoint = ["/jellyseerr"]
@@ -22,7 +22,7 @@ expose = [5055, 9101]
 "org.opencontainers.image.source" = "https://github.com/Fallenbagel/jellyseerr"
 "org.opencontainers.image.title" = "jellyseer"
 "org.opencontainers.image.vendor" = "Jellyseerr"
-"org.opencontainers.image.version" = "v3.2.0"
+"org.opencontainers.image.version" = "2.7.3"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.base" = "scratch"
 "evergreen.constraint.nonroot" = "true"

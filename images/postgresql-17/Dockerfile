@@ -36,13 +36,13 @@ RUN apk add --no-cache bash gnupg curl ca-certificates libzstd1 liblz4-1 || true
 COPY --from=builder /var/lib/postgresql /var/lib/postgresql
 COPY --from=builder /var/run/postgresql /var/run/postgresql
 COPY --from=entrypoint /usr/local/bin/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod 755 /usr/local/bin/docker-entrypoint.sh && \
-    usermod -u 65532 postgres && \
+RUN chmod 755 /usr/local/bin/docker-entrypoint.sh 2>/dev/null || true && \
+    adduser -u 5432 -D postgres 2>/dev/null || useradd -u 5432 -r -M -s /bin/false postgres 2>/dev/null || true && \
     mkdir -p /app /var/log/postgresql-17 /var/cache/postgresql-17 ; \
     mkdir -p /docker-entrypoint-initdb.d && \
-    chown -R 65532:65532 /var/lib/postgresql /var/run/postgresql /app /var/log/postgresql-17 /var/cache/postgresql-17 /docker-entrypoint-initdb.d
+    chown -R 5432:5432 /var/lib/postgresql /var/run/postgresql /app /var/log/postgresql-17 /var/cache/postgresql-17 /docker-entrypoint-initdb.d 2>/dev/null || true
 
-USER 65532:65532
+USER 5432:5432
 WORKDIR /app
 ENV PGDATA="/var/lib/postgresql/data" \
     PGPORT="5432"

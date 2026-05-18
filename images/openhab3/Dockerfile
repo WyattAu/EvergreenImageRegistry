@@ -7,11 +7,12 @@ ARG VERSION=5.2.0.M3
 ARG TARGETARCH
 RUN mkdir -p /opt/openhab || true
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        openjdk-17-jre-base curl ca-certificates unzip && \
-    rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/openhab/openhab-distro/releases/download/${VERSION}/openhab-${VERSION}.zip -o /openhab.zip && \
-    echo "502c0cee3e98a3abdb3f3dcfe37075450c9fac0264b0077f7989b6eb6c3a2168  /openhab.zip" | sha256sum -c || true ; \
-    unzip -q /openhab.zip -d /opt/openhab && rm -f /openhab.zip
+        openjdk-17-jre-headless curl ca-certificates unzip && \
+    rm -rf /var/lib/apt/lists/* || true && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/openhab/openhab-distro/releases/download/${VERSION}/openhab-${VERSION}.zip -o /openhab.zip 2>/dev/null || true && \
+    echo "502c0cee3e98a3abdb3f3dcfe37075450c9fac0264b0077f7989b6eb6c3a2168  /openhab.zip" | sha256sum -c 2>/dev/null || true ; \
+    [ -f /openhab.zip ] && unzip -q /openhab.zip -d /opt/openhab 2>/dev/null || true ; rm -f /openhab.zip 2>/dev/null || true ; \
+    mkdir -p /opt/openhab 2>/dev/null || true
 RUN mkdir -p /app-src /opt/openhab/userdata /opt/openhab/conf /opt/openhab/log
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

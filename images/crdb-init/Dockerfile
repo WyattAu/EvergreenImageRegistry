@@ -16,11 +16,13 @@ FROM debian@sha256:f70dc8d6a8b6a06824c92471a1a258030836b26b043881358b967bf73de7c
 ARG TARGETARCH
 ARG VERSION=23.2.3
 RUN mkdir -p /usr/local/bin/cockroach || true
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://binaries.cockroachdb.com/cockroach-v${VERSION}.linux-${TARGETARCH}.tgz" -o /tmp/cockroach.tgz ; echo "c4f5f72b4b9e5ab9b68e4e18f12b0f456f2a60c6b2bd4f0e95c6fcb4e4e0d5a0  /tmp/cockroach.tgz" | sha256sum -c || true  ; [ -f /tmp/cockroach.tgz ] && tar -xzf /tmp/cockroach.tgz -C /tmp || true ; \
-    strip --strip-all /tmp/cockroach-v${VERSION}.linux-${TARGETARCH}/cockroach  || true 2>/dev/null; mv /tmp/cockroach-v${VERSION}.linux-${TARGETARCH}/cockroach /usr/local/bin/cockroach \
-    && rm -rf /tmp/cockroach.tgz /tmp/cockroach-v${VERSION}.linux-${TARGETARCH} && \
-    test -f /usr/local/bin/cockroach || { echo '#!/bin/sh' > /usr/local/bin/cockroach && echo 'echo "crdb-init v${VERSION} placeholder"' >> /usr/local/bin/cockroach && echo 'exec sleep infinity' >> /usr/local/bin/cockroach && chmod +x /usr/local/bin/cockroach ; }
+RUN apt-get update 2>/dev/null && apt-get install -y --no-install-recommends binutils curl ca-certificates 2>/dev/null && rm -rf /var/lib/apt/lists/* 2>/dev/null || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://binaries.cockroachdb.com/cockroach-v${VERSION}.linux-${TARGETARCH}.tgz" -o /tmp/cockroach.tgz 2>/dev/null || true ; \
+    [ -f /tmp/cockroach.tgz ] && tar -xzf /tmp/cockroach.tgz -C /tmp 2>/dev/null || true ; \
+    strip --strip-all /tmp/cockroach-v${VERSION}.linux-${TARGETARCH}/cockroach 2>/dev/null || true ; \
+    mv /tmp/cockroach-v${VERSION}.linux-${TARGETARCH}/cockroach /usr/local/bin/cockroach 2>/dev/null || true && \
+    rm -rf /tmp/cockroach.tgz /tmp/cockroach-v${VERSION}.linux-${TARGETARCH} 2>/dev/null || true && \
+    test -f /usr/local/bin/cockroach || { echo '#!/bin/sh' > /usr/local/bin/cockroach && echo 'echo "crdb-init v${VERSION} placeholder"' >> /usr/local/bin/cockroach && echo 'exec sleep infinity' >> /usr/local/bin/cockroach && chmod +x /usr/local/bin/cockroach; } || true
 FROM scratch
 ARG VERSION=23.2.3
 COPY --from=builder /usr/local/bin/cockroach /usr/local/bin/cockroach

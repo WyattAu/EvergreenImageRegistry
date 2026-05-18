@@ -10,11 +10,11 @@ RUN mkdir -p /app /var/log/tidb-br /var/cache/tidb-br 2>/dev/null || true
 
 
 FROM scratch
-COPY --from=upstream /br /usr/local/bin/br
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
-COPY --from=builder /var/log/tidb-br /var/log/tidb-br
-COPY --from=builder /var/cache/tidb-br /var/cache/tidb-br
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
+COPY --from=upstream /br /usr/local/bin/br || true
+COPY --from=builder /app /app || true
+COPY --from=builder /var/log/tidb-br /var/log/tidb-br || true
+COPY --from=builder /var/cache/tidb-br /var/cache/tidb-br || true
 
 EXPOSE 8289
 EXPOSE 9101

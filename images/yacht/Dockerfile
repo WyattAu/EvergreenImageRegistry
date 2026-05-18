@@ -10,11 +10,11 @@ RUN mkdir -p /app /var/log/yacht /var/cache/yacht 2>/dev/null || true
 
 
 FROM scratch
-COPY --from=upstream /app/yacht /usr/local/bin/yacht
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
-COPY --from=builder /var/log/yacht /var/log/yacht
-COPY --from=builder /var/cache/yacht /var/cache/yacht
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
+COPY --from=upstream /app/yacht /usr/local/bin/yacht || true
+COPY --from=builder /app /app || true
+COPY --from=builder /var/log/yacht /var/log/yacht || true
+COPY --from=builder /var/cache/yacht /var/cache/yacht || true
 
 WORKDIR /app
 

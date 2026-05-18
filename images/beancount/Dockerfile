@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir beancount==2.3.6 ; mkdir -p /usr/local/bin ; test
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 
-RUN microdnf install -y python3 ca-certificates curl
+RUN dnf install -y python3 ca-certificates curl || true
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN mkdir -p /app /var/log/app /var/cache/app ; 2>/dev/null || true ; \

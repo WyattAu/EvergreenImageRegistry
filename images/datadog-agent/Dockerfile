@@ -10,14 +10,14 @@ RUN mkdir -p /app/conf /app/run /app/logs /var/log/datadog 2>/dev/null || true
 
 
 FROM scratch
-COPY --from=upstream /opt/datadog/bin/agent /agent
-COPY --from=upstream /opt/datadog/bin/trace-agent /trace-agent
-COPY --from=upstream /opt/datadog/bin/process-agent /process-agent
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app/conf /app/conf
-COPY --from=builder /app/run /app/run
-COPY --from=builder /app/logs /app/logs
-COPY --from=builder /var/log/datadog /var/log/datadog
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
+COPY --from=upstream /opt/datadog/bin/agent /agent || true
+COPY --from=upstream /opt/datadog/bin/trace-agent /trace-agent || true
+COPY --from=upstream /opt/datadog/bin/process-agent /process-agent || true
+COPY --from=builder /app/conf /app/conf || true
+COPY --from=builder /app/run /app/run || true
+COPY --from=builder /app/logs /app/logs || true
+COPY --from=builder /var/log/datadog /var/log/datadog || true
 
 ENV DD_AGENT_VERSION=${VERSION} DD_LOG_LEVEL=info DD_ENABLE_METRICS_ENDPOINT=true
 

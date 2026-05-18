@@ -8,7 +8,7 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-FROM cgr.dev/chainguard/static@sha256:77d8b8925dc27970ec2f48243f44c7a260d52c49cd778288e4ee97566e0cb75b
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache  gcc rust cargo 2>/dev/null || true
 

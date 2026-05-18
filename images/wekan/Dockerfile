@@ -1,4 +1,4 @@
-ARG VERSION=v9.01
+ARG VERSION=9.22
 ARG TARGETARCH
 
 
@@ -45,7 +45,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates gnupg unzip && \
     rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/wekan/wekan/releases/download/v${VERSION}/wekan-${VERSION}-amd64.zip -o /wekan.zip || true; \
-    echo "1026b8631b38eb6213eb72aaad867dc198e5ae1da819130a70bf46b50697a583  /wekan.zip" | sha256sum -c || true  #
+    echo "7b79f6b88554aee8a063c35e882feedefdc0639eee61f2b7fbb0ed6afa85d634  /wekan.zip" | sha256sum -c || true  #
 
 
 
@@ -160,7 +160,7 @@ ENTRYPOINT ["node", "/opt/wekan/main.js"]
 
 LABEL org.opencontainers.image.title="wekan" \
       org.opencontainers.image.description="wekan container image" \
-      org.opencontainers.image.version="9.01" \
+      org.opencontainers.image.version="9.22" \
       org.opencontainers.image.vendor="Wekan" \
       org.opencontainers.image.source="https://github.com/wekan/wekan" \
       evergreen.image.tier="2" \

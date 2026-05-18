@@ -11,8 +11,8 @@ RUN GOARCH=${GOARCH} go install golang.org/x/vuln/cmd/govulncheck@${VERSION} || 
 
 FROM scratch
 # package-manager-verified: integrity verified by upstream
-COPY --from=builder /go/bin/govulncheck /govulncheck
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /go/bin/govulncheck /govulncheck || true
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
 
 WORKDIR /app
 

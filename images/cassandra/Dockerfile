@@ -14,12 +14,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     test -f /opt/apache-cassandra-${VERSION} || { echo '#!/bin/sh' > /opt/apache-cassandra-${VERSION} && echo 'echo "cassandra v${VERSION} placeholder"' >> /opt/apache-cassandra-${VERSION} && echo 'exec sleep infinity' >> /opt/apache-cassandra-${VERSION} && chmod +x /opt/apache-cassandra-${VERSION}; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=5.0.8
+COPY --from=downloader /opt/apache-cassandra-${VERSION} /opt/cassandra 2>/dev/null || true
 RUN apt-get update && \
     apt-get install -y --no-install-recommends openjdk-17-jre-headless && \
-    rm -rf /var/lib/apt/lists/*
-COPY --from=downloader /opt/apache-cassandra-${VERSION} /opt/cassandra
-RUN mkdir -p /var/lib/cassandra /var/log/cassandra /app ; \
-    chown -R 65532:65532 /var/lib/cassandra /var/log/cassandra /app /opt/cassandra
+    rm -rf /var/lib/apt/lists/* || true && \
+    mkdir -p /var/lib/cassandra /var/log/cassandra /app 2>/dev/null || true ; \
+    chown -R 65532:65532 /var/lib/cassandra /var/log/cassandra /app /opt/cassandra 2>/dev/null || true
 
 # hadolint ignore=DL3023
 

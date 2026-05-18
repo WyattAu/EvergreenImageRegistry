@@ -1,6 +1,6 @@
 [metadata]
 name = "vm-operator"
-version = "0.69.0"
+version = "0.70.0"
 description = "Evergreen hardened VictoriaMetrics Operator - Kubernetes operator for VictoriaMetrics"
 
 [build]
@@ -10,7 +10,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "docker-image"
-url = "ghcr.io/victoriametrics/operator:v${VERSION}"
+url = "docker.io/victoriametrics/operator:v${VERSION}"
 
 [runtime]
 entrypoint = ["/usr/local/bin/vm-operator"]

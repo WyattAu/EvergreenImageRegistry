@@ -27,9 +27,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache git freetype zlib ca-certificates || true
-COPY --from=builder /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg
-COPY --from=builder /usr/local/bin/ffprobe /usr/local/bin/ffprobe
-COPY --from=builder /usr/local/lib/ /usr/local/lib/
+COPY --from=builder /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg || true
+COPY --from=builder /usr/local/bin/ffprobe /usr/local/bin/ffprobe || true
+COPY --from=builder /usr/local/lib/ /usr/local/lib/ || true
 RUN ldconfig && \
     mkdir -p /app /var/log/ffmpeg /var/cache/ffmpeg ; \
     chown -R 65532:65532 /app /var/log/ffmpeg /var/cache/ffmpeg

@@ -518,7 +518,139 @@ ENTRYPOINT ["/usr/local/bin/mybin"]
 
 ---
 
-## 11. Deprecated Image Handling
+## 11. No Stubs or Skeleton Images (C026)
+
+Every image MUST contain a functional application binary. Placeholder stubs are prohibited.
+
+### DO NOT
+
+```dockerfile
+FROM cgr.dev/chainguard/wolfi-base
+RUN apk add --no-cache ca-certificates curl
+ENTRYPOINT ["true"]
+# This is a stub. It does nothing. It MUST NOT be in the build matrix.
+```
+
+If an image cannot be completed (no upstream binary, proprietary, not containerizable), move it to `images/_wip/<name>/` with `LABEL evergreen.status="wip"`. Do not leave it in the active `images/` directory.
+
+---
+
+## 12. libc Consistency Across Stages (C027)
+
+Compiled artifacts MUST use the same libc as the final stage. Copying glibc-compiled artifacts (Python C extensions, Node native modules) into a wolfi/musl final stage will crash at runtime.
+
+### DO
+
+```dockerfile
+# Option A: Build Python venv inside wolfi (preferred)
+FROM cgr.dev/chainguard/wolfi-base AS builder
+RUN apk add --no-cache python3 py3-pip py3-gcc py3-dev
+RUN pip install --no-cache-dir psycopg2 Pillow cryptography
+
+FROM cgr.dev/chainguard/wolfi-base
+COPY --from=builder /usr/lib/python3 /usr/lib/python3
+# C extensions compiled against musl -- compatible with wolfi final stage
+```
+
+```dockerfile
+# Option B: If musl compilation fails, use glibc final stage
+FROM python:3.12-slim AS builder
+RUN pip install --no-cache-dir psycopg2 Pillow cryptography
+
+FROM registry.access.redhat.com/ubi9/ubi-minimal
+COPY --from=builder /usr/local/lib/python3.12 /usr/local/lib/python3.12
+COPY --from=builder /usr/local/bin/python3.12 /usr/local/bin/python3.12
+# C extensions compiled against glibc -- compatible with UBI final stage
+LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
+```
+
+### DO NOT
+
+```dockerfile
+FROM python:3.12-slim AS builder
+RUN pip install psycopg2 Pillow cryptography  # compiled against glibc
+
+FROM cgr.dev/chainguard/wolfi-base
+COPY --from=builder /usr/local/lib/python3.12 /usr/local/lib/python3.12
+# CRASH: import psycopg2 -> ImportError: libc.so.6: version GLIBC_2.34 not found
+```
+
+---
+
+## 13. Configurable Runtime UID (C028)
+
+Every image MUST support `APP_UID` and `APP_GID` environment variables for runtime UID override. Default: 65532:65532.
+
+### DO
+
+```dockerfile
+ARG APP_UID=65532
+ARG APP_GID=65532
+
+FROM cgr.dev/chainguard/wolfi-base AS builder
+# ... download application ...
+
+FROM scratch
+COPY --from=builder /usr/local/bin/mybin /usr/local/bin/mybin
+COPY --from=builder /usr/local/bin/su-exec /usr/local/bin/su-exec
+COPY --from=builder /usr/local/bin/entrypoint /usr/local/bin/entrypoint
+
+RUN mkdir -p /etc/passwd /etc/group
+# Build-time user creation
+RUN echo "appuser:x:${APP_UID}:${APP_GID}:appuser:/app:/sbin/nologin" >> /etc/passwd && \
+    echo "appgroup:x:${APP_GID}:" >> /etc/group
+
+USER 65532:65532
+ENTRYPOINT ["/usr/local/bin/entrypoint"]
+CMD ["/usr/local/bin/mybin"]
+```
+
+The entrypoint script handles runtime UID remapping:
+
+```sh
+#!/bin/sh
+TARGET_UID="${APP_UID:-65532}"
+TARGET_GID="${APP_GID:-65532}"
+
+if [ "$(id -u)" != "${TARGET_UID}" ]; then
+  # Running with overridden UID
+  echo "appuser:x:${TARGET_UID}:${TARGET_GID}:appuser:/app:/sbin/nologin" > /etc/passwd
+  echo "appgroup:x:${TARGET_GID}:" > /etc/group
+  chown -R "${TARGET_UID}:${TARGET_GID}" /data /var/lib/app 2>/dev/null || true
+fi
+
+exec su-exec appuser "$@"
+```
+
+### DO NOT
+
+```dockerfile
+USER 65532:65532
+# No APP_UID/APP_GID support -- consumers with existing volume permissions cannot use this image
+```
+
+---
+
+## 14. Data Service Initialization (C029)
+
+Images for databases, message queues, and key-value stores MUST include upstream initialization entrypoint scripts for self-contained operation. They MUST also support binary-only mode for orchestrator-managed initialization.
+
+### DO
+
+```dockerfile
+# Self-contained mode (default): upstream entrypoint handles init
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["postgres"]
+
+# Binary-only mode: override at runtime
+# docker run --entrypoint postgres myimage:tag -c config_file=/etc/postgresql/postgresql.conf
+```
+
+The upstream `docker-entrypoint.sh` script handles first-run detection, data store initialization, user/database creation from environment variables, and configuration rendering.
+
+---
+
+## 15. Deprecated Image Handling
 
 When an upstream project is archived, deleted, or no longer releases, the image MUST be marked as deprecated.
 

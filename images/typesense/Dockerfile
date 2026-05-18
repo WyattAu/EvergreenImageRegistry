@@ -1,5 +1,7 @@
 ARG VERSION=30.2
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM typesense/typesense:30.2 AS upstream
 

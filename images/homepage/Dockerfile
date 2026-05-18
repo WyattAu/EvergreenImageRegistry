@@ -1,5 +1,7 @@
 ARG VERSION=v1.5
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 # NOTE: Upstream image digest not pinned - update @sha256:... when stable digest is available
 FROM ghcr.io/gethomepage/homepage:v1.5 AS upstream

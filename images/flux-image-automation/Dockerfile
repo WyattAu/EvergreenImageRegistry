@@ -1,3 +1,6 @@
+ARG APP_UID=65532
+ARG APP_GID=65532
+
 FROM ghcr.io/fluxcd/image-automation-controller:v1.1.3 AS upstream
 
 FROM scratch

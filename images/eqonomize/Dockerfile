@@ -1,6 +1,8 @@
 ARG VERSION=0.10.1
 ARG TARGETARCH
 ARG BUILD_DATE
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends binutils \
@@ -14,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     make -j$(nproc) && make install && strip --strip-all /usr/local/bin/eqonomize 2>/dev/null  || true 2>/dev/null|| true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 COPY --from=builder /usr/local/bin/eqonomize /usr/local/bin/eqonomize
 RUN mkdir -p /app /var/log/eqonomize /var/cache/eqonomize ; \
     chown -R 65532:65532 /app /var/log/eqonomize /var/cache/eqonomize

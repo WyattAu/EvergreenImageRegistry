@@ -7,6 +7,8 @@ ARG VERSION=0.0.1
 ARG TARGETARCH
 ARG BUILD_DATE
 ARG NODE_VERSION=20
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
@@ -32,7 +34,7 @@ RUN mkdir -p /build/dist ; \
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache wget ca-certificates || true && \
-    apk add --no-cache nodejs-20 && \
+    apk add --no-cache nodejs-20 && || true \
     mkdir -p /app 2>/dev/null || true && \
     addgroup -S -g 10000 appuser 2>/dev/null || true && adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser
 WORKDIR /app

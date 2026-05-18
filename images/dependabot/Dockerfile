@@ -1,16 +1,18 @@
 ARG VERSION=0.275.1
 ARG TARGETARCH
 ARG BUILD_DATE
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM ghcr.io/github/dependabot-updater-internal:latest AS upstream
 RUN mkdir -p /app /usr/local/bin 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=0.275.1
-RUN apk add --no-cache ruby ruby-irb ruby-rdoc ca-certificates \
+RUN apk add --no-cache ruby-3.4 ca-certificates || true \
         git curl gnupg gmp mpdecimal libffi \
         readline ncurses yaml zlib nodejs npm || true && \
-    mkdir -p /usr/lib/ruby /usr/local/bundle /app /home/dependabot 2>/dev/null || true
+    mkdir -p /usr/lib/ruby-3.4 /usr/local/bundle /app /home/dependabot 2>/dev/null || true
 COPY --from=upstream /home/dependabot /home/dependabot
 COPY --from=upstream /usr/local/bundle /usr/local/bundle
 COPY --from=upstream /usr/local/bin /usr/local/bin

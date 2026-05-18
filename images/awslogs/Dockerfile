@@ -10,6 +10,8 @@ ARG VERSION=0.15.0
 ARG TARGETARCH
 ARG BUILD_DATE
 ARG PYTHON_VERSION=3.12.2
+ARG APP_UID=65532
+ARG APP_GID=65532
 FROM python@sha256:5dc6f84b5e97bfb0c90abfb7c55f3cacc2cb6687c8f920b64a833a2219875997 AS builder
 ARG VERSION=0.15.0
 RUN pip install --break-system-packages --no-cache-dir --prefix=/install awslogs==${VERSION} || true ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/awslogs || { echo '#!/bin/sh' > /usr/local/bin/awslogs && echo 'echo "awslogs v${VERSION} placeholder"' >> /usr/local/bin/awslogs && echo 'exec sleep infinity' >> /usr/local/bin/awslogs && chmod +x /usr/local/bin/awslogs ; } || true && \

@@ -1,5 +1,7 @@
 
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM tecnativa/docker-socket-proxy:v0.4.2 AS upstream
 

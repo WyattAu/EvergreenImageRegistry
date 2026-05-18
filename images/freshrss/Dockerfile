@@ -8,10 +8,12 @@
 ARG VERSION=1.28.1
 ARG TARGETARCH
 ARG BUILD_DATE
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache curl php php-fpm php-curl php-mbstring php-xml php-zip || true
+RUN apk add --no-cache curl php-8.4 php-8.4-fpm php-8.4-curl php-8.4-mbstring php-8.4-xml php-8.4-zip || true
 
 RUN adduser -u 65532 -D www-data 2>/dev/null || true && \
     mkdir -p /app /var/log/php /var/cache/php && chown -R www-data:www-data /app /var/log/php /var/cache/php 2>/dev/null || true

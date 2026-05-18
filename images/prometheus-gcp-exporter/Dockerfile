@@ -1,5 +1,7 @@
 ARG VERSION=v0.16.7
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM gcr.io/google-containers/prometheus-to-sd:${VERSION} AS upstream
 

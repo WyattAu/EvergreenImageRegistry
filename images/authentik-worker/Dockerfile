@@ -1,5 +1,7 @@
 ARG VERSION=version/2026.2.2
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM ghcr.io/goauthentik/authentik:${VERSION} AS upstream
 

@@ -1,11 +1,11 @@
 ARG VERSION=2.3.18
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS upstream
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates gnupg unzip && \
-    curl -fsSL https://packages.sury.org/php/apt.gpg | gpg --dearmor -o /usr/share/keyrings/sury-php.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/sury-php.gpg] https://packages.sury.org/php/ bookworm main" > /etc/apt/sources.list.d/sury-php.list && \
-    apt-get update && apt-get install -y --no-install-recommends \
-        php-cli php8.4 php-curl php-mbstring php-xml php-zip php-bcmath php-gd \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && \
+    apt-get install -y --no-install-recommends \
+        php-cli php-curl php-mbstring php-xml php-zip php-bcmath php-gd \
         php-mysql php-pgsql php-sqlite3 && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/CachetHQ/Cachet/archive/refs/tags/v${VERSION}.tar.gz" \
         -o /tmp/cachet.tar.gz || true ; \
@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 RUN addgroup -S -g 65532 cachet 2>/dev/null || true && \
     adduser -u 65532 -G cachet -D -s /bin/false cachet 2>/dev/null || true && \
-    apk add --no-cache php-fpm php-pdo_mysql php-mysqli php-pgsql php-pdo_sqlite php-gd php-curl php-mbstring php-xml php-zip php-bcmath php-valkey nginx ca-certificates curl || true && \
+     apk add --no-cache php-8.4-fpm php-8.4-pdo_mysql php-8.4-mysqli php-8.4-pgsql php-8.4-pdo_sqlite php-8.4-gd php-8.4-curl php-8.4-mbstring php-8.4-xml php-8.4-zip php-8.4-bcmath php-8.4-redis nginx ca-certificates curl || true && \
     mkdir -p /var/www 2>/dev/null || true
 COPY --from=upstream /var/www/cachet /var/www/cachet
 RUN mkdir -p /run/php /app/logs /app/data && \

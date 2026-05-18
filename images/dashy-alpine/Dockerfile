@@ -1,4 +1,7 @@
 
+ARG APP_UID=65532
+ARG APP_GID=65532
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm git ca-certificates python3 make g++ ; rm -rf /var/lib/apt/lists/* || true
@@ -9,7 +12,7 @@ RUN git clone https://github.com/lissy93/dashy.git /src || echo "Source repo not
     mkdir -p /app 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache nodejs-20 npm ca-certificates 
+RUN apk add --no-cache nodejs-20 npm ca-certificates || true
 COPY --from=builder /src /app/src
 COPY --from=builder /app /app
 RUN addgroup -S -g 2 nogroup >/dev/null || true && \

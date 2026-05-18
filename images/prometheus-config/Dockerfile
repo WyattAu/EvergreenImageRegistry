@@ -1,5 +1,7 @@
 ARG VERSION=0.90.1
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM quay.io/prometheus-operator/prometheus-operator:v0.91.0 AS upstream
 

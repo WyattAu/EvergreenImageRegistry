@@ -1,5 +1,7 @@
 ARG VERSION=v0.2.142
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM ghcr.io/kubescape/kubescape-operator:${VERSION} AS upstream
 

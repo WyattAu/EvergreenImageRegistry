@@ -1,12 +1,14 @@
 ARG VERSION=3.1.21-v
 ARG TARGETARCH
 ARG BUILD_DATE
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # wolfi uses php-* not php84-*
-RUN apk add --no-cache php-fpm php php-curl php-mbstring php-xml zip php-intl php-pdo_mysql php-mysqli openssl php-pdo nginx ca-certificates curl || true && \
-    mkdir -p /var/run/php /var/www/html /var/log/nginx /var/cache/nginx && \
-    chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php
+RUN apk add --no-cache php-8.4-fpm php-8.4 php-8.4-curl php-8.4-mbstring php-8.4-xml zip php-8.4-intl php-8.4-pdo_mysql php-8.4-mysqli openssl php-8.4-pdo nginx ca-certificates curl || true && \
+    mkdir -p /var/run/php-8.4 /var/www/html /var/log/nginx /var/cache/nginx && \
+    chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php-8.4
 USER 65532:65532
 WORKDIR /var/www/html
 EXPOSE 80 443

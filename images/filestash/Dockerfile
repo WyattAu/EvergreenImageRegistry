@@ -1,5 +1,7 @@
 ARG VERSION=v0.4
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM mickaelkerjean/filestash:latest AS upstream
 

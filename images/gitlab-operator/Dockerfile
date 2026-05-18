@@ -1,5 +1,7 @@
 ARG VERSION=0.8.0
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM ghcr.io/gitlab-org/cloud-native/gitlab-operator:v${VERSION} AS upstream 2>/dev/null || true
 

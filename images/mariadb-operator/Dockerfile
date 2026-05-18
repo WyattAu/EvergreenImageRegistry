@@ -1,5 +1,7 @@
 ARG VERSION=26.3.0
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM ghcr.io/mariadb-operator/mariadb-operator:v${VERSION} AS upstream
 

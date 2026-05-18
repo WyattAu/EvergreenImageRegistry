@@ -1,5 +1,7 @@
 ARG VERSION=0.5.0
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM ghcr.io/zitadel/zitadel-operator:v${VERSION} AS upstream
 

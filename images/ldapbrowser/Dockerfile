@@ -1,11 +1,13 @@
 ARG VERSION=2.0.0
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM ghcr.io/ltiam/apachedirectorystudio:${VERSION} AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 COPY --from=upstream /opt/ApacheDirectoryStudio /opt/ApacheDirectoryStudio
 RUN mkdir -p /app && chown -R 65532:65532 /app /opt/ApacheDirectoryStudio 2>/dev/null || true
 

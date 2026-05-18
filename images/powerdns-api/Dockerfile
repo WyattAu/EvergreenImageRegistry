@@ -1,6 +1,8 @@
 ARG VERSION=4.9.6
 ARG TARGETARCH
 ARG BUILD_DATE
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS installer
 ARG VERSION=4.9.6
@@ -16,10 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
 ARG VERSION=4.9.6
-RUN apk add --no-cache sqlite-libs ca-certificates boost \
-        libstdc++ libgcc lua5.4-libs libcurl openssl-libs \
-        protobuf libxml2 || true && \
-    mkdir -p /app /var/log/pdns /var/lib/pdns /etc/pdns 2>/dev/null || true
+RUN apk add --no-cache sqlite-libs ca-certificates boost libstdc++ libgcc lua5.4-libs libcurl protobuf libxml2 || true &&  mkdir -p /app /var/log/pdns /var/lib/pdns /etc/pdns 2>/dev/null || true
 COPY --from=installer /usr/sbin/pdns_server /usr/local/bin/pdns_server
 COPY --from=installer /usr/sbin/pdnsutil /usr/local/bin/pdnsutil
 COPY --from=installer /usr/sbin/pdns_control /usr/local/bin/pdns_control

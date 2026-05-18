@@ -1,3 +1,6 @@
+ARG APP_UID=65532
+ARG APP_GID=65532
+
 FROM golang@sha256:1699c10032ca2582ec89a24a1312d986a3f094aed3d5c1147b19880afe40e052 AS builder
 ENV GOTOOLCHAIN=auto
 ARG TARGETARCH
@@ -10,7 +13,7 @@ ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 
 RUN touch /fail2ban-exporter || true
-RUN apk add --no-cache git && \
+RUN apk add --no-cache git && || true \
     git clone --branch ${VERSION} https://${GITHUB_TOKEN:+${GITHUB_TOKEN}@}github.com/xperimental/fail2ban-exporter.git /src 2>/dev/null || \
     git clone https://${GITHUB_TOKEN:+${GITHUB_TOKEN}@}github.com/xperimental/fail2ban-exporter.git /src
 

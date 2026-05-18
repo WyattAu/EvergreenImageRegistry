@@ -8,6 +8,8 @@
 ARG VERSION=0.10.0
 ARG TARGETARCH
 ARG BUILD_DATE
+ARG APP_UID=65532
+ARG APP_GID=65532
 FROM python@sha256:46cb7cc2877e60fbd5e21a9ae6115c30ace7a077b9f8772da879e4590c18c2e3 AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         pkg-config libmariadb-dev && rm -rf /var/lib/apt/lists/* || true && \

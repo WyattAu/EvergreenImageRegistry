@@ -1,5 +1,7 @@
 ARG VERSION=v6.0.0
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM ghcr.io/cstate/cstate:${VERSION} AS upstream
 

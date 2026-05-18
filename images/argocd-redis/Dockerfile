@@ -6,6 +6,8 @@
 ARG VERSION=7.2.4
 ARG TARGETARCH
 ARG BUILD_DATE
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
@@ -29,8 +31,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL https://github.com/redis/redis/archive/
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache ca-certificates && \
-    addgroup -S -g 10000 redis 2>/dev/null || true && adduser -u 65532 -G redis -D -h /data -s /bin/false redis 2>/dev/null || true
+RUN apk add --no-cache ca-certificates && addgroup -S -g 10000 2>/dev/null || true && adduser -u 65532 -G redis -D -h /data -s /bin/false redis 2>/dev/null || true
+# NOTE: redis server not available in wolfi; uses pre-compiled binary
 COPY --from=builder /tmp/redis-7.2.4/src/redis /usr/local/bin/redis
 RUN mkdir -p /data && chown -R 65532:65532 /data 2>/dev/null || true
 USER 65532:65532

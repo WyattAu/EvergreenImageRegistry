@@ -1,30 +1,23 @@
 ARG VERSION=2.4.14
 ARG TARGETARCH
 ARG BUILD_DATE
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-RUN mkdir -p /etc/nginx/nginx.conf || true
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl gnupg && \
-    curl -fsSL https://packages.sury.org/php/apt.gpg | gpg --dearmor -o /usr/share/keyrings/sury-php.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/sury-php.gpg] https://packages.sury.org/php/ bookworm main" > /etc/apt/sources.list.d/sury-php.list && \
-    rm -rf /var/lib/apt/lists/* || true && \
-    apt-get update && apt-get install -y --no-install-recommends \
-        php-fpm php8.4 php-curl php-mbstring php-xml zip php-intl php-mysql openssl php-pdo \
-        nginx ca-certificates curl ; rm -rf /var/lib/apt/lists/* || true && \
-    mkdir -p /var/run/php /var/www/html /var/log/nginx /var/cache/nginx ; 2>/dev/null || true ; \
-    chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php 2>/dev/null || true
+RUN mkdir -p /etc/nginx && touch /etc/nginx/nginx.conf
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
-RUN apk add --no-cache php-fpm php php-curl php-mbstring php-xml zip php-intl php-pdo_mysql php-mysqli openssl php-pdo nginx ca-certificates || true && \
-    chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php 2>/dev/null || true
+RUN apk add --no-cache php-8.4-fpm php-8.4 php-8.4-curl php-8.4-mbstring php-8.4-xml zip php-8.4-intl php-8.4-pdo_mysql php-8.4-mysqli openssl php-8.4-pdo nginx ca-certificates || true && \
+    chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php-8.4 2>/dev/null || true
 COPY --from=builder /etc/nginx/nginx.conf /etc/nginx/nginx.conf
 USER 65532:65532
 WORKDIR /var/www/html
 EXPOSE 80 443
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:80/ || exit 1
-ENTRYPOINT ["php-fpm8.4"]
+ENTRYPOINT ["php-8.4-fpm"]
 LABEL org.opencontainers.image.title="frontaccounting" \
       org.opencontainers.image.description="frontaccounting container image" \
       org.opencontainers.image.version="2.4.14" \

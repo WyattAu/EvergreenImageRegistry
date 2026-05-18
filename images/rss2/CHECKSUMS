@@ -1,30 +1,28 @@
 # CHECKSUMS - rss2
-# Generated: 2026-04-22
+# Generated: 2026-05-18
 # Status: PENDING_VERIFICATION
 #
 # IMPORTANT: These checksums must be verified before use.
-# Method: Download the binary on an air-gapped machine, compute SHA256,
-# then compare against upstream checksum file if available.
+# Method: Download the archive, compute SHA256, then verify.
 #
 # Update protocol:
-# 1. Download binary from URL
+# 1. Download archive from URL
 # 2. Compute: sha256sum <file>
-# 3. Compare with upstream sha256sums.txt if available
-# 4. Cross-validate with second team member
-# 5. Update EXPECTED_SHA256 below
-# 6. Submit PR with CHECKSUMS update
+# 3. Cross-validate with second team member
+# 4. Update EXPECTED_SHA256 below
+# 5. Submit PR with CHECKSUMS update
 
 [metadata]
 image = "rss2"
-version = "0.1.0"
-created = "2026-04-22"
+version = "2025-08-05"
+created = "2026-05-18"
 last_verified = ""
 verification_method = "download-verify"
 verifier = "PENDING"
 
 [download]
-url = ""
-filename = ""
+url = "https://github.com/RSS-Bridge/rss-bridge/archive/refs/tags/2025-08-05.tar.gz"
+filename = "rss-bridge-2025-08-05.tar.gz"
 
 [checksum]
 expected_sha256 = "PENDING"

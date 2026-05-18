@@ -9,8 +9,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends python3 python3
     /venv/bin/pip install --no-cache-dir taiga-protected==${VERSION} 2>/dev/null || true && \
     mkdir -p /app /var/log/taiga-protected /etc/taiga-protected 2>/dev/null || true
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-RUN apk add --no-cache python3 ca-certificates libstdc++ 2>/dev/null || true
+FROM registry.access.redhat.com/ubi9/ubi-minimal
+LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
+RUN microdnf install -y python3 ca-certificates libstdc++ 2>/dev/null || true
 COPY --from=downloader /venv /venv
 COPY --from=downloader /var/log/taiga-protected /var/log/taiga-protected
 COPY --from=downloader /etc/taiga-protected /etc/taiga-protected

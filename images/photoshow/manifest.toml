@@ -1,7 +1,7 @@
 [metadata]
 name = "photoshow"
-version = "0.1.0"
-description = "Placeholder - no upstream binary available"
+version = "v2"
+description = "PhotoShow - PHP gallery for browsing and sharing photos"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -9,22 +9,24 @@ user = "65532:65532"
 stopsignal = "SIGTERM"
 
 [source]
-type = "package-manager"
+type = "github-release"
+url = "https://github.com/thibaud-rohmer/PhotoShow"
 
 [runtime]
-entrypoint = ["true"]
+entrypoint = ["php", "-S", "0.0.0.0:8080", "-t", "/app"]
 
 [ports]
-expose = [9101]
+expose = [8080, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Placeholder - no upstream binary available"
+"org.opencontainers.image.description" = "PhotoShow - PHP gallery for browsing and sharing photos"
 "org.opencontainers.image.title" = "photoshow"
-"org.opencontainers.image.vendor" = "Photoshow"
-"org.opencontainers.image.version" = "0.1.0"
+"org.opencontainers.image.vendor" = "thibaud-rohmer"
+"org.opencontainers.image.version" = "v2"
+"org.opencontainers.image.source" = "https://github.com/thibaud-rohmer/PhotoShow"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"
 "evergreen.image.tier" = "3"
+"evergreen.image.status" = "functional"
 "evergreen.metrics.native" = "ztunnel"
-

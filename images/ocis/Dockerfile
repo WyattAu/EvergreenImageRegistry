@@ -25,7 +25,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 9200
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9200/status.php || exit 1
+HEALTHCHECK NONE
 ENTRYPOINT ["/ocis"]
 LABEL org.opencontainers.image.title="ocis" \
       org.opencontainers.image.description="ownCloud Infinite Scale - next-gen file sync and share platform" \

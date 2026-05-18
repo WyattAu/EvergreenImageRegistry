@@ -1,7 +1,7 @@
 [metadata]
 name = "rss2"
-version = "0.1.0"
-description = "Placeholder - no upstream binary available"
+version = "2025-08-05"
+description = "RSS-Bridge - generate RSS/Atom feeds for websites that don't have them"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -9,22 +9,24 @@ user = "65532:65532"
 stopsignal = "SIGTERM"
 
 [source]
-type = "package-manager"
+type = "github-release"
+url = "https://github.com/RSS-Bridge/rss-bridge"
 
 [runtime]
-entrypoint = ["true"]
+entrypoint = ["php", "-S", "0.0.0.0:8080", "-t", "/app"]
 
 [ports]
-expose = [9101]
+expose = [8080, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Placeholder - no upstream binary available"
+"org.opencontainers.image.description" = "RSS-Bridge - generate RSS/Atom feeds for websites that don't have them"
 "org.opencontainers.image.title" = "rss2"
-"org.opencontainers.image.vendor" = "RSS2"
-"org.opencontainers.image.version" = "0.1.0"
+"org.opencontainers.image.vendor" = "RSS-Bridge"
+"org.opencontainers.image.version" = "2025-08-05"
+"org.opencontainers.image.source" = "https://github.com/RSS-Bridge/rss-bridge"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"
 "evergreen.image.tier" = "3"
+"evergreen.image.status" = "functional"
 "evergreen.metrics.native" = "ztunnel"
-

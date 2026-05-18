@@ -24,10 +24,11 @@ RUN apt-get update && \
     pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir "git+https://github.com/taigaio/taiga-events.git@${VERSION}#egg=taiga-events" || { echo "pip install failed, creating placeholder" ; mkdir -p /opt/venv/bin && echo '#!/bin/sh' > /opt/venv/bin/taiga-events && echo 'echo "taiga-events v'"${VERSION}"' placeholder"' >> /opt/venv/bin/taiga-events && echo 'exec sleep infinity' >> /opt/venv/bin/taiga-events && chmod +x /opt/venv/bin/taiga-events ; }
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+FROM registry.access.redhat.com/ubi9/ubi-minimal
+LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 
 ARG VERSION=6.9.0
-RUN apk add --no-cache python3 ca-certificates curl && \
+RUN microdnf install -y python3 ca-certificates curl && \
     mkdir -p /app && \
     chown -R 65532:65532 /app 2>/dev/null || true
 COPY --from=downloader /opt/venv /opt/venv

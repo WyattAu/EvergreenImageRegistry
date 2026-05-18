@@ -1,7 +1,7 @@
 [metadata]
 name = "maxbot"
-version = "0.1.0"
-description = "Placeholder - no upstream binary available"
+version = "0.3.0b2"
+description = "Maxbot - open source framework for creating conversational apps"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -10,21 +10,23 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
+url = "https://pypi.org/project/maxbot/"
 
 [runtime]
-entrypoint = ["true"]
+entrypoint = ["maxbot"]
 
 [ports]
 expose = [9101]
 
 [labels]
-"org.opencontainers.image.description" = "Placeholder - no upstream binary available"
+"org.opencontainers.image.description" = "Maxbot - open source framework for creating conversational apps"
 "org.opencontainers.image.title" = "maxbot"
-"org.opencontainers.image.vendor" = "MaxBot"
-"org.opencontainers.image.version" = "0.1.0"
+"org.opencontainers.image.vendor" = "Maxbot team"
+"org.opencontainers.image.version" = "0.3.0b2"
+"org.opencontainers.image.source" = "https://github.com/maxbot-ai/maxbot"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"
 "evergreen.image.tier" = "3"
+"evergreen.image.status" = "functional"
 "evergreen.metrics.native" = "ztunnel"
-

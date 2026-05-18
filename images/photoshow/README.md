@@ -1,10 +1,10 @@
 # Photoshow
 
-Placeholder - no upstream binary available
+PhotoShow - PHP gallery for browsing and sharing photos
 
 | Attribute | Value |
 |-----------|-------|
-| Version | 0.1.0 |
+| Version | v2 |
 | Tier | 3 |
 | Base Image | cgr.dev/chainguard/wolfi-base:latest |
 | Architecture | amd64 |
@@ -14,8 +14,15 @@ Placeholder - no upstream binary available
 ## Usage
 
 ```bash
-docker pull ghcr.io/wyattau/evergreenimageregistry/photoshow:0.1.0
+docker pull ghcr.io/wyattau/evergreenimageregistry/photoshow:v2
+docker run --rm -p 8080:8080 -v /path/to/photos:/app/photos ghcr.io/wyattau/evergreenimageregistry/photoshow:v2
 ```
+
+## Notes
+
+- Uses PHP built-in development server
+- Source: https://github.com/thibaud-rohmer/PhotoShow
+- For production use, place behind a reverse proxy (nginx/caddy)
 
 ## Security
 

@@ -1,0 +1,32 @@
+[metadata]
+name = "openmediar"
+version = "0.1.0"
+description = "Placeholder - OS image, not containerizable"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["true"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Placeholder - OS image, not containerizable"
+"org.opencontainers.image.title" = "openmediar"
+"org.opencontainers.image.vendor" = "OpenMediaVault"
+"org.opencontainers.image.version" = "0.1.0"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
+
+
+status = "wip"

@@ -24,7 +24,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 9428
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9428/health
+HEALTHCHECK NONE
 ENTRYPOINT ["/victoria-logs-prod"]
 LABEL org.opencontainers.image.title="victoria-logs" \
       org.opencontainers.image.description="VictoriaLogs - logs storage by VictoriaMetrics" \

@@ -1,0 +1,25 @@
+# CHECKSUMS - feedbin
+# Generated: 2026-05-18
+# Status: WIP - complex multi-container app
+
+[metadata]
+image = "feedbin"
+version = "0.1.0"
+created = "2026-04-22"
+last_verified = ""
+verification_method = "N/A"
+verifier = "N/A"
+
+[download]
+url = ""
+filename = ""
+
+[checksum]
+expected_sha256 = "N/A"
+
+[upstream_checksum]
+url = "https://github.com/feedbin/feedbin"
+format = ""
+
+[note]
+reason = "Ruby on Rails app with 12+ containers. Too complex for single Dockerfile."

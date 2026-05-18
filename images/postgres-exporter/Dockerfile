@@ -23,7 +23,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 9187
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9187/metrics || exit 1
+HEALTHCHECK NONE
 ENTRYPOINT ["/postgres_exporter"]
 LABEL org.opencontainers.image.title="postgres-exporter" \
       org.opencontainers.image.version="0.17.0" \

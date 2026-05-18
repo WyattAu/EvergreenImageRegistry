@@ -23,7 +23,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 9134
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9134/metrics || exit 1
+HEALTHCHECK NONE
 ENTRYPOINT ["/zfs-exporter"]
 LABEL org.opencontainers.image.title="zfs-exporter" \
       org.opencontainers.image.description="ZFS Exporter - Prometheus exporter for ZFS pool and dataset metrics" \

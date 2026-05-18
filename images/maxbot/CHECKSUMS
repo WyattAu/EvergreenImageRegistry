@@ -1,5 +1,5 @@
 # CHECKSUMS - maxbot
-# Generated: 2026-04-22
+# Generated: 2026-05-18
 # Status: PENDING_VERIFICATION
 #
 # IMPORTANT: These checksums must be verified before use.
@@ -16,19 +16,19 @@
 
 [metadata]
 image = "maxbot"
-version = "0.1.0"
-created = "2026-04-22"
+version = "0.3.0b2"
+created = "2026-05-18"
 last_verified = ""
 verification_method = "download-verify"
 verifier = "PENDING"
 
 [download]
-url = ""
-filename = ""
+url = "https://files.pythonhosted.org/packages/73/fc/ce42111fc14fe3cf36a5cfd5c014458cb0bfbb314b7b756c6355c1af1223/maxbot-0.3.0b2-py3-none-any.whl"
+filename = "maxbot-0.3.0b2-py3-none-any.whl"
 
 [checksum]
-expected_sha256 = "PENDING"
+expected_sha256 = "a78a7d9505591f04d9c9ec6117c91b1dfaa02e091dba0ea5b38e9f00ece25e1c"
 
 [upstream_checksum]
-url = ""
-format = ""
+url = "https://pypi.org/pypi/maxbot/0.3.0b2/json"
+format = "pypi-json"

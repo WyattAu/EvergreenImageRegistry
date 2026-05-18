@@ -8,9 +8,10 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip || true && \
     pip install --no-cache-dir ggshield ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/ggshield || { echo '#!/bin/sh' > /usr/local/bin/ggshield && echo 'echo "ggshield v${VERSION} placeholder"' >> /usr/local/bin/ggshield && echo 'exec sleep infinity' >> /usr/local/bin/ggshield && chmod +x /usr/local/bin/ggshield ; } 2>/dev/null || true && \
     mkdir -p /app 2>/dev/null || true
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+FROM registry.access.redhat.com/ubi9/ubi-minimal
+LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 
-RUN apk add --no-cache python3 ca-certificates git 
+RUN microdnf install -y python3 ca-certificates git 
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
 RUN addgroup -S -g 2 nogroup >/dev/null || true && \

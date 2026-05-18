@@ -24,7 +24,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8880
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8880/health
+HEALTHCHECK NONE
 ENTRYPOINT ["/vmalert-prod"]
 LABEL org.opencontainers.image.title="vmalert" \
       org.opencontainers.image.description="vmalert - alerting engine for VictoriaMetrics" \

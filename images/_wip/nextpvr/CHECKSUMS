@@ -1,0 +1,25 @@
+# CHECKSUMS - nextpvr
+# Generated: 2026-05-18
+# Status: WIP - proprietary binary
+
+[metadata]
+image = "nextpvr"
+version = "0.1.0"
+created = "2026-04-22"
+last_verified = ""
+verification_method = "proprietary"
+verifier = "N/A"
+
+[download]
+url = ""
+filename = ""
+
+[checksum]
+expected_sha256 = "N/A"
+
+[upstream_checksum]
+url = "https://nextpvr.com"
+format = ""
+
+[note]
+reason = "Proprietary binary. Cannot redistribute. Use nextpvr/nextpvr_amd64 on Docker Hub."

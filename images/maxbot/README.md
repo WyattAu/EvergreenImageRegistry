@@ -1,10 +1,10 @@
 # Maxbot
 
-Placeholder - no upstream binary available
+Maxbot - open source framework for creating conversational apps
 
 | Attribute | Value |
 |-----------|-------|
-| Version | 0.1.0 |
+| Version | 0.3.0b2 |
 | Tier | 3 |
 | Base Image | cgr.dev/chainguard/wolfi-base:latest |
 | Architecture | amd64 |
@@ -14,8 +14,15 @@ Placeholder - no upstream binary available
 ## Usage
 
 ```bash
-docker pull ghcr.io/wyattau/evergreenimageregistry/maxbot:0.1.0
+docker pull ghcr.io/wyattau/evergreenimageregistry/maxbot:0.3.0b2
+docker run --rm ghcr.io/wyattau/evergreenimageregistry/maxbot:0.3.0b2 --help
 ```
+
+## Notes
+
+- Installed via pip from PyPI
+- Requires Python >= 3.9, < 3.12
+- Source: https://github.com/maxbot-ai/maxbot
 
 ## Security
 

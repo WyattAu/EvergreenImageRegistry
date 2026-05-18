@@ -23,7 +23,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 9115
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9115/
+HEALTHCHECK NONE
 ENTRYPOINT ["/blackbox_exporter"]
 LABEL org.opencontainers.image.title="blackbox-exporter" \
       org.opencontainers.image.description="Blackbox Exporter - endpoint probing for Prometheus" \

@@ -9,9 +9,10 @@ RUN pip install --no-cache-dir --break-system-packages --upgrade pip && \
     pip install --no-cache-dir --break-system-packages detect-secrets || true && \
     mkdir -p /app-src 2>/dev/null || true && \
     test -f /app || { echo '#!/bin/sh' > /app/placeholder && echo 'echo "detect-secrets v${VERSION} placeholder"' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; } || true
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+FROM registry.access.redhat.com/ubi9/ubi-minimal
+LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 
-RUN apk add --no-cache python3 ca-certificates && \
+RUN microdnf install -y python3 ca-certificates && \
     mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app

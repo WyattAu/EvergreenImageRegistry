@@ -22,12 +22,13 @@ RUN apt-get update && \
 COPY --from=builder /install /install
 RUN find /install -type f -name "*.so" -exec strip --strip-unneeded {} \ || true && \
     mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+FROM registry.access.redhat.com/ubi9/ubi-minimal
+LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 ARG VERSION=3.10.0
 
 RUN addgroup -S -g 65532 gcplogs 2>/dev/null || true && \
     adduser -u 65532 -G gcplogs -D -s /bin/false gcplogs || true && \
-    apk add --no-cache ca-certificates && \
+    microdnf install -y ca-certificates && \
     mkdir -p /etc/ssl/certs /usr 2>/dev/null || true
 COPY --from=stripper /install /usr/local
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

@@ -23,10 +23,11 @@ RUN     pip install --no-cache-dir --upgrade pip setuptools wheel || true && \
     mkdir -p /usr/local/bin ; \
     test -f /usr/local/bin/bench || { echo '#!/bin/sh' > /usr/local/bin/bench && echo 'echo "erpnext-worker v${VERSION} placeholder"' >> /usr/local/bin/bench && echo 'exec sleep infinity' >> /usr/local/bin/bench && chmod +x /usr/local/bin/bench ; } || true
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+FROM registry.access.redhat.com/ubi9/ubi-minimal
+LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 ARG VERSION=15
 
-RUN apk add --no-cache python3 ca-certificates tzdata libpq libjpeg-turbo zlib || true
+RUN microdnf install -y python3 ca-certificates tzdata libpq libjpeg-turbo zlib || true
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 ENV FRAPPE_VERSION="${VERSION}"

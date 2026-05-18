@@ -1,0 +1,33 @@
+[metadata]
+name = "feedbin"
+version = "0.1.0"
+description = "WIP - Ruby on Rails app with 12+ containers"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "github"
+
+[runtime]
+entrypoint = ["true"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "WIP - Ruby on Rails app with 12+ containers. Too complex for single Dockerfile."
+"org.opencontainers.image.title" = "feedbin"
+"org.opencontainers.image.vendor" = "Feedbin"
+"org.opencontainers.image.version" = "0.1.0"
+"org.opencontainers.image.source" = "https://github.com/feedbin/feedbin"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
+
+
+status = "wip"

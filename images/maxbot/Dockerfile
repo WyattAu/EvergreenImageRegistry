@@ -1,31 +1,27 @@
-# =============================================================================
-# EVERGREEN HARDENED MAXBOT
-# Generated from template - Version: 0.1.0
-# Priority: scratch > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=0.1.0
 ARG TARGETARCH
-ARG BUILD_DATE
 
+ARG VERSION=0.3.0b2
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-RUN apk add --no-cache ca-certificates curl && \
-    adduser -u 65532 -D app 2>/dev/null || true && \
-    mkdir -p /app /var/log/app /var/cache/app && chown -R app:app /app /var/log/app /var/cache/app 2>/dev/null || true
-USER 65532:65532
+RUN apk add --no-cache ca-certificates python3 py3-pip && \
+    pip3 install --break-system-packages --no-cache-dir maxbot==${VERSION} && \
+    addgroup -g 65532 app 2>/dev/null || true && \
+    adduser -D -u 65532 -G app app 2>/dev/null || true && \
+    mkdir -p /app /var/log/maxbot /var/cache/maxbot 2>/dev/null || true && \
+    chown -R 65532:65532 /app /var/log/maxbot /var/cache/maxbot 2>/dev/null || true
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["true"]
+ENTRYPOINT ["maxbot"]
 LABEL org.opencontainers.image.title="maxbot" \
-      org.opencontainers.image.version="0.1.0" \
-      org.opencontainers.image.vendor="MaxBot" \
-      org.opencontainers.image.description="Placeholder - no upstream binary available" \
+      org.opencontainers.image.description="Maxbot - open source framework for creating conversational apps" \
+      org.opencontainers.image.version="0.3.0b2" \
+      org.opencontainers.image.vendor="Maxbot team" \
+      org.opencontainers.image.source="https://github.com/maxbot-ai/maxbot" \
       evergreen.image.tier="3" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.base.image="wolfi" \
-            org.opencontainers.image.source="https://github.com/maxbot/maxbot"
+      evergreen.constraint.nonroot="true"
+
+LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"
@@ -34,4 +30,5 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+USER 65532:65532
 STOPSIGNAL SIGTERM

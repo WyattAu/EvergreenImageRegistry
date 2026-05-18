@@ -229,6 +229,10 @@ jobs:
               docker tag "${REF}" "${REF}" 2>/dev/null || true
               if timeout 300 docker push "${REF}" 2>&1; then
                 PUSHED=$((PUSHED+1))
+                # Set package visibility to public (GHCR lowercases names)
+                SAFE_NAME=$(echo "${image}" | tr '[:upper:]' '[:lower:]')
+                gh api -X PATCH "/user/packages/container/${SAFE_NAME}/visibility" \
+                  -f visibility=public 2>/dev/null || true
               else
                 echo "::warning::${image}: push failed"
                 FAILED=$((FAILED+1))

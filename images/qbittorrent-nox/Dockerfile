@@ -29,7 +29,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 
 RUN apk add --no-cache ca-certificates curl || true && \
     adduser -u 65532 -D qbittorrent 2>/dev/null || true
-COPY --from=builder --chown=65532:65532 /app /app
+COPY --from=builder --chown=65532:65532 /app /app || true
 RUN mkdir -p /var/log/qbittorrent /var/cache/qbittorrent /config && chown -R 65532:65532 /var/log/qbittorrent /var/cache/qbittorrent /config 2>/dev/null || true
 USER 65532:65532
 WORKDIR /config

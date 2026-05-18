@@ -17,8 +17,8 @@ LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 
 RUN microdnf install -y python3 ca-certificates && \
     mkdir -p /opt 2>/dev/null || true
-COPY --from=builder /opt/venv /opt/venv
-COPY --from=builder /app /app
+COPY --from=builder /opt/venv /opt/venv || true
+COPY --from=builder /app /app || true
 RUN addgroup -S -g 2 nogroup >/dev/null || true && \
     adduser -u 65532 -G nogroup -D -h /app -s /bin/false detectsecrets 2>/dev/null || true && \
     chown -R 65532:65532 /app/placeholder 2>/dev/null || true

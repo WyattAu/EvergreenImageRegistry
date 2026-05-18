@@ -1,11 +1,11 @@
-ARG VERSION=3.2.0
+ARG VERSION=2.7.3
 ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
 
 
-FROM fallenbagel/jellyseerr:3.2.0 AS upstream
+FROM fallenbagel/jellyseerr:${VERSION} AS upstream
 
 
 
@@ -27,7 +27,7 @@ HEALTHCHECK NONE
 
 ENTRYPOINT ["/jellyseerr"]
 
-LABEL org.opencontainers.image.title="jellyseer"       org.opencontainers.image.version="v3.2.0"       org.opencontainers.image.vendor="Jellyseerr"       org.opencontainers.image.source="https://github.com/Fallenbagel/jellyseerr"       evergreen.image.tier="2"       evergreen.image.category="media-streaming"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.base="scratch"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="5s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="10000ms" \
+LABEL org.opencontainers.image.title="jellyseer"       org.opencontainers.image.version="2.7.3"       org.opencontainers.image.vendor="Jellyseerr"       org.opencontainers.image.source="https://github.com/Fallenbagel/jellyseerr"       evergreen.image.tier="2"       evergreen.image.category="media-streaming"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.base="scratch"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="5s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="10000ms" \
 org.opencontainers.image.description="jellyseer container image" \
 evergreen.base.image="scratch"
 

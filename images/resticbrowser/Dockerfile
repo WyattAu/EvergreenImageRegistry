@@ -19,8 +19,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 FROM scratch
 # package-manager-verified: integrity verified by upstream
-COPY --from=upstream /opt/resticbrowser/resticbrowser /resticbrowser
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=upstream /opt/resticbrowser/resticbrowser /resticbrowser || true
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 9876

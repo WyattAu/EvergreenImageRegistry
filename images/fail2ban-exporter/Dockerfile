@@ -13,7 +13,7 @@ ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 
 RUN touch /fail2ban-exporter || true
-RUN apk add --no-cache git && || true \
+RUN apk add --no-cache git || true \
     git clone --branch ${VERSION} https://${GITHUB_TOKEN:+${GITHUB_TOKEN}@}github.com/xperimental/fail2ban-exporter.git /src 2>/dev/null || \
     git clone https://${GITHUB_TOKEN:+${GITHUB_TOKEN}@}github.com/xperimental/fail2ban-exporter.git /src
 

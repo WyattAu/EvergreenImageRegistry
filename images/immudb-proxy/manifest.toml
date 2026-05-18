@@ -10,7 +10,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "docker-image"
-url = "ghcr.io/codenotary/immudb:${VERSION}"
+url = "docker.io/codenotary/immudb:${VERSION}"
 
 [runtime]
 entrypoint = ["/usr/local/bin/immudb-proxy"]

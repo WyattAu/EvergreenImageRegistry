@@ -18,10 +18,9 @@ RUN pip install --no-cache-dir pyopenssl certifi || true && \
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 
-RUN microdnf install -y python3 ca-certificates curl || true && \
-    mkdir -p /opt 2>/dev/null || true ; test -f /opt/venv 2>/dev/null || echo "#!/bin/sh" > /opt/venv 2>/dev/null || true
+RUN dnf install -y python3 ca-certificates curl || true && \
+    mkdir -p /opt/venv /opt/tautulli 2>/dev/null || true
 COPY --from=builder /opt/venv /opt/venv
-RUN mkdir -p /opt 2>/dev/null || true ; test -f /opt/tautulli 2>/dev/null || echo "#!/bin/sh" > /opt/tautulli 2>/dev/null || true
 COPY --from=builder /opt/tautulli /opt/tautulli
 ENV PATH="/opt/venv/bin:$PATH"
 RUN mkdir -p /app /var/log/tautulli /var/cache/tautulli ; \

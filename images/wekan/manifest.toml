@@ -1,6 +1,6 @@
 [metadata]
 name = "wekan"
-version = "9.01"
+version = "9.22"
 description = "wekan container image"
 
 [build]
@@ -21,7 +21,7 @@ expose = [8080, 9101]
 "org.opencontainers.image.source" = "https://github.com/wekan/wekan"
 "org.opencontainers.image.title" = "wekan"
 "org.opencontainers.image.vendor" = "Wekan"
-"org.opencontainers.image.version" = "9.01"
+"org.opencontainers.image.version" = "9.22"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.base" = "wolfi"
 "evergreen.constraint.nonroot" = "true"

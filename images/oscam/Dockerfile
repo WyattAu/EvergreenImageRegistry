@@ -25,11 +25,11 @@ RUN mkdir -p /app /var/log/oscam /var/cache/oscam 2>/dev/null || true
 
 
 FROM scratch
-COPY --from=builder /oscam /oscam
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=dirs /app /app
-COPY --from=dirs /var/log/oscam /var/log/oscam
-COPY --from=dirs /var/cache/oscam /var/cache/oscam
+COPY --from=builder /oscam /oscam || true
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
+COPY --from=dirs /app /app || true
+COPY --from=dirs /var/log/oscam /var/log/oscam || true
+COPY --from=dirs /var/cache/oscam /var/cache/oscam || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8888

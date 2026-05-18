@@ -1,9 +1,9 @@
-ARG VERSION=v1.11.0
+ARG VERSION=1.11.0
 ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-FROM ghcr.io/codenotary/immudb:${VERSION} AS upstream
+FROM docker.io/codenotary/immudb:${VERSION} AS upstream
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/immudb-proxy /var/cache/immudb-proxy 2>/dev/null || true

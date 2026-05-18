@@ -38,7 +38,7 @@ RUN apt-get update && \
     cp -a /tmp/apache-couchdb-3.3.3/rel/couchdb/. /opt/couchdb/
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache procps && || true \
+RUN apk add --no-cache procps || true \
     mkdir -p /opt 2>/dev/null || true
 COPY --from=builder /opt/couchdb /opt/couchdb
 RUN mkdir -p /var/lib/couchdb /var/log/couchdb /app  || true ; \

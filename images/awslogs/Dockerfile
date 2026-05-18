@@ -28,11 +28,10 @@ FROM registry.access.redhat.com/ubi9/ubi-minimal
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 ARG VERSION=0.15.0
 
-RUN addgroup -S -g 65532 awslogs 2>/dev/null || true && \
-    adduser -u 65532 -G awslogs -D -s /bin/false awslogs || true && \
-    microdnf install -y ca-certificates && \
-    mkdir -p /etc/ssl/certs /usr 2>/dev/null || true && \
-    mkdir -p /usr 2>/dev/null || true
+RUN groupadd -g 65532 awslogs 2>/dev/null || true && \
+    useradd -u 65532 -g awslogs -r -M -s /bin/false awslogs 2>/dev/null || true && \
+    dnf install -y ca-certificates || true && \
+    mkdir -p /etc/ssl/certs /usr 2>/dev/null || true
 COPY --from=stripper /install /usr/local
 COPY --from=stripper /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 RUN mkdir -p /app/conf /app/logs ; \

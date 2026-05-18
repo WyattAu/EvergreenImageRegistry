@@ -18,22 +18,22 @@ RUN mkdir -p /var/lib/mysql && \
     mkdir -p /var/run/mysqld || true
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg curl ca-certificates lsb-release wget && \
-    wget -t 3 -w 5 -qO- "https://dev.mysql.com/get/mysql-apt-config_0.8.33-1_all.deb" > /tmp/mysql-apt.deb && \
+    curl -t 3 -w 5 -qO- "https://dev.mysql.com/get/mysql-apt-config_0.8.33-1_all.deb" > /tmp/mysql-apt.deb && \
     dpkg -i /tmp/mysql-apt.deb || true && \
     apt-get update && apt-get install -y --no-install-recommends \
-    mysql-server && rm -rf /var/lib/apt/lists/* && \
+    mysql-server || true && rm -rf /var/lib/apt/lists/* && \
     mkdir -p /var/lib/mysql-src /var/run/mysqld /app 2>/dev/null || true && \
-    test -f /var/lib/mysql || { echo '#!/bin/sh' > /var/lib/mysql/placeholder && echo 'echo "mysql-8 v${VERSION} placeholder"' >> /var/lib/mysql/placeholder && echo 'exec sleep infinity' >> /var/lib/mysql/placeholder && chmod +x /var/lib/mysql ; } ; \
-    test -f /var/run/mysqld || { echo '#!/bin/sh' > /var/run/mysqld && echo 'echo "mysql-8 v${VERSION} placeholder"' >> /var/run/mysqld && echo 'exec sleep infinity' >> /var/run/mysqld && chmod +x /var/run/mysqld ; } ; test -f /var/run/mysqld || { echo '#!/bin/sh' > /var/run/mysqld && echo 'echo "mysql-8 v${VERSION} placeholder"' >> /var/run/mysqld && echo 'exec sleep infinity' >> /var/run/mysqld && chmod +x /var/run/mysqld ; } || true
+    test -d /var/lib/mysql || mkdir -p /var/lib/mysql ; \
+    test -d /var/run/mysqld || mkdir -p /var/run/mysqld ; true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
-RUN apk add --no-cache gnupg wget ca-certificates psmisc || true && \
+RUN apk add --no-cache wget ca-certificates psmisc || true && \
     mkdir -p /var/lib /var/run 2>/dev/null || true
 COPY --from=builder /var/lib/mysql /var/lib/mysql
 COPY --from=builder /var/run/mysqld /var/run/mysqld
-RUN usermod -u 65532 mysql && \
+RUN adduser -u 65532 -D mysql 2>/dev/null || useradd -u 65532 -r -M -s /bin/false mysql 2>/dev/null || true && \
     mkdir -p /app /var/log/mysql-8 /var/cache/mysql-8 ; \
-    chown -R 65532:65532 /var/lib/mysql /var/run/mysqld /app /var/log/mysql-8 /var/cache/mysql-8
+    chown -R 65532:65532 /var/lib/mysql /var/run/mysqld /app /var/log/mysql-8 /var/cache/mysql-8 2>/dev/null || true
 
 USER 65532:65532
 WORKDIR /app

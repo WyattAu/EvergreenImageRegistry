@@ -33,7 +33,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION=3.13.1
-RUN apk add --no-cache ca-certificates && || true \
+RUN apk add --no-cache ca-certificates || true \
     adduser -u 65532 -s /bin/false rabbitmq || true && \
     mkdir -p /var/lib/rabbitmq /var/log/rabbitmq /etc/rabbitmq
 COPY --from=builder /usr/lib/rabbitmq /usr/lib/rabbitmq

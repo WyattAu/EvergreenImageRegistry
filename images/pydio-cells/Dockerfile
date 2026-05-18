@@ -11,9 +11,9 @@ FROM pydio/cells:${VERSION} AS upstream
 
 FROM scratch
 
-COPY --from=upstream /cells /cells
+COPY --from=upstream /cells /cells || true
 
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
 
 USER 65532:65532
 

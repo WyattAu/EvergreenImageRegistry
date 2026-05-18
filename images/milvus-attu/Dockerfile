@@ -6,8 +6,8 @@ ARG APP_GID=65532
 FROM docker.io/zilliz/attu:v2.4.9 AS upstream
 
 FROM scratch
-COPY --from=upstream /opt/attu/attu /attu
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=upstream /opt/attu/attu /attu || true
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 3000

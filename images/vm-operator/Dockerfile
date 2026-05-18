@@ -1,9 +1,9 @@
-ARG VERSION=0.69.0
+ARG VERSION=0.70.0
 ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-FROM ghcr.io/victoriametrics/operator:v${VERSION} AS upstream
+FROM docker.io/victoriametrics/operator:v${VERSION} AS upstream
 
 FROM scratch
 COPY --from=upstream /usr/local/bin/manager /usr/local/bin/vm-operator

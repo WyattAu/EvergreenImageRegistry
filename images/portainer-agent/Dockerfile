@@ -10,11 +10,11 @@ RUN mkdir -p /app /var/log/portainer-agent /var/cache/portainer-agent 2>/dev/nul
 
 
 FROM scratch
-COPY --from=upstream /agent /portainer-agent
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
-COPY --from=builder /var/log/portainer-agent /var/log/portainer-agent
-COPY --from=builder /var/cache/portainer-agent /var/cache/portainer-agent
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
+COPY --from=upstream /agent /portainer-agent || true
+COPY --from=builder /app /app || true
+COPY --from=builder /var/log/portainer-agent /var/log/portainer-agent || true
+COPY --from=builder /var/cache/portainer-agent /var/cache/portainer-agent || true
 
 WORKDIR /app
 

@@ -7,7 +7,7 @@ FROM yacy/yacy_search_server:${VERSION} AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache ca-certificates && || true \
+RUN apk add --no-cache ca-certificates || true \
     mkdir -p /app /var/log/yacy /var/lib/yacy /opt 2>/dev/null || true
 COPY --from=upstream /opt/yacy /opt/yacy-server
 RUN chown -R 65532:65532 /app /opt/yacy-server /var/log/yacy /var/lib/yacy 2>/dev/null || true

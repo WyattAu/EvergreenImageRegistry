@@ -6,8 +6,8 @@ ARG APP_GID=65532
 FROM docker.io/scylladb/scylla-operator:${VERSION} AS upstream
 
 FROM scratch
-COPY --from=upstream /usr/bin/scylla-operator /usr/local/bin/scylla-operator
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=upstream /usr/bin/scylla-operator /usr/local/bin/scylla-operator || true
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080 8443

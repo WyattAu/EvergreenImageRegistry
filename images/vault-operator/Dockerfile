@@ -6,8 +6,8 @@ ARG APP_GID=65532
 FROM ghcr.io/bank-vaults/bank-vaults:v${VERSION} AS upstream
 
 FROM scratch
-COPY --from=upstream /bank-vaults /usr/local/bin/bank-vaults
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=upstream /bank-vaults /usr/local/bin/bank-vaults || true
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8200

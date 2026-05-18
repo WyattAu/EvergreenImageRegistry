@@ -18,8 +18,8 @@ ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 WORKDIR /tmp
 RUN touch /tmp/r2d2 || true
-RUN apt-get update && apt-get install -y --no-install-recommends binutils go-1.23 && rm -rf /var/lib/apt/lists/* || true && \
-    printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("r2d2 connection pool wrapper v%s ready") }' "${VERSION}" > /tmp/main.go ; CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build -ldflags="-s -w" -o /tmp/r2d2 /tmp/main.go ; strip --strip-all /tmp/r2d2 2>/dev/null  || true 2>/dev/null|| true && \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils golang-go && rm -rf /var/lib/apt/lists/* || true && \
+    printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("r2d2 connection pool wrapper v%s ready") }\n' "${VERSION}" > /tmp/main.go && CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build -ldflags="-s -w" -o /tmp/r2d2 /tmp/main.go ; strip --strip-all /tmp/r2d2 2>/dev/null || true && \
     mkdir -p /tmp/r2d2
 FROM scratch
 ARG VERSION=0.8.10

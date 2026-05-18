@@ -1,9 +1,9 @@
-ARG VERSION=2.12.0
+ARG VERSION=2.8.0
 ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-FROM ghcr.io/opensearch-project/opensearch-operator:v${VERSION} AS upstream
+FROM docker.io/opensearchproject/opensearch-operator:${VERSION} AS upstream
 
 FROM scratch
 COPY --from=upstream /manager /usr/local/bin/opensearch-operator

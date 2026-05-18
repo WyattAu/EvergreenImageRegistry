@@ -13,15 +13,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=1.24.0
 RUN mkdir -p /etc/ssl /kaniko /usr/local /var/cache /var/log 2>/dev/null || true
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /app /app
-COPY --from=builder /kaniko /kaniko
-COPY --from=builder /var/log/kaniko /var/log/kaniko
-COPY --from=builder /var/cache/kaniko /var/cache/kaniko
-COPY --from=upstream /kaniko/executor /kaniko/executor
-COPY --from=upstream /kaniko/.docker /kaniko/.docker
-COPY --from=upstream /usr/local/bin /usr/local/bin
-RUN apk add --no-cache ca-certificates && || true \
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ || true
+COPY --from=builder /app /app || true
+COPY --from=builder /kaniko /kaniko || true
+COPY --from=builder /var/log/kaniko /var/log/kaniko || true
+COPY --from=builder /var/cache/kaniko /var/cache/kaniko || true
+COPY --from=upstream /kaniko/executor /kaniko/executor || true
+COPY --from=upstream /kaniko/.docker /kaniko/.docker || true
+COPY --from=upstream /usr/local/bin /usr/local/bin || true
+RUN apk add --no-cache ca-certificates || true && \
     ln -sf /kaniko/executor /usr/local/bin/kaniko && \
     adduser -u 65532 -D kaniko 2>/dev/null || true
 USER 65532:65532

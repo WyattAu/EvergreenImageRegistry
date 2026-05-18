@@ -9,8 +9,7 @@ ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
     cmake g++ make git wget ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
-    git clone --branch v${VERSION} https://${GITHUB_TOKEN:+${GITHUB_TOKEN}@}github.com \
-    https://github.com/ggerganov/whisper.cpp.git /tmp/whisper.cpp
+    git clone --branch v${VERSION} https://github.com/ggerganov/whisper.cpp.git /tmp/whisper.cpp
 WORKDIR /tmp/whisper.cpp
 RUN cmake -B build -DGGML_CUDA=OFF -DWHISPER_NO_ACCELERATE=ON && \
     cmake --build build -j$(nproc) --target whisper-cli && \

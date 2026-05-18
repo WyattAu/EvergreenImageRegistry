@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     find /usr/lib -type f -name "lib*.so*" -exec strip --strip-unneeded {} \ || true; 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=5.9.16
-RUN apk add --no-cache ca-certificates iproute2 iptables kmod libcurl talloc gmp libcrypto1.1 zlib || true &&  mkdir -p /etc /usr/lib /usr/sbin /var/log /run/charon  /etc/strongswan.d /etc/ipsec.d /app 2>/dev/null || true
+RUN apk add --no-cache ca-certificates iproute2 iptables kmod libcurl talloc gmp openssl-libs zlib 2>/dev/null || true && mkdir -p /etc /usr/lib /usr/sbin /var/log /run/charon /etc/strongswan.d /etc/ipsec.d /app 2>/dev/null || true
 COPY --from=installer /usr/sbin/charon /usr/sbin/charon
 COPY --from=installer /usr/sbin/charon-systemd /usr/sbin/charon-systemd
 COPY --from=installer /usr/sbin/strongswan /usr/sbin/strongswan

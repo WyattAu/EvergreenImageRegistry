@@ -29,14 +29,14 @@ FROM registry.access.redhat.com/ubi9/ubi-minimal
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 ARG VERSION=15
 
-RUN microdnf install -y python3 ca-certificates tzdata libpq libjpeg-turbo zlib || true
+RUN dnf install -y python3 ca-certificates tzdata libpq libjpeg-turbo zlib || true
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 ENV FRAPPE_VERSION="${VERSION}"
-RUN addgroup -S -g 10000 erpnext && \
-    adduser -u 65532 -G erpnext -D -D -h /opt/erpnext -s /bin/false erpnext && \
+RUN groupadd -g 10000 erpnext 2>/dev/null || true && \
+    useradd -u 65532 -g erpnext -r -M -s /bin/false erpnext 2>/dev/null || true && \
     mkdir -p /opt/erpnext /var/log/erpnext ; \
-    chown -R 65532:65532 /opt/erpnext /var/log/erpnext
+    chown -R 65532:65532 /opt/erpnext /var/log/erpnext 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/erpnext
 EXPOSE 8000 9000

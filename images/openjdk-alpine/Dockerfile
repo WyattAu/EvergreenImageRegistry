@@ -1,6 +1,8 @@
 ARG VERSION=21-slim
 ARG TARGETARCH
 ARG BUILD_DATE
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
@@ -18,7 +20,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 RUN mkdir -p /etc/apt/sources.list.d /usr/share/keyrings /var/cache /var/log 2>/dev/null || true
 COPY --from=builder /usr/share/keyrings/adoptium.gnupg /usr/share/keyrings/adoptium.gnupg
 COPY --from=builder /etc/apt/sources.list.d/adoptium.list /etc/apt/sources.list.d/adoptium.list
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 COPY --from=builder /app /app
 COPY --from=builder /var/log/openjdk-alpine /var/log/openjdk-alpine
 COPY --from=builder /var/cache/openjdk-alpine /var/cache/openjdk-alpine

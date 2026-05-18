@@ -1,5 +1,7 @@
 ARG VERSION=26.6.1
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM quay.io/keycloak/keycloak-operator:${VERSION} AS upstream
 

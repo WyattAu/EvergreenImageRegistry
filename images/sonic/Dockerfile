@@ -1,5 +1,7 @@
 ARG VERSION=v1.4.9
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM valeriansaliou/sonic:${VERSION} AS upstream
 

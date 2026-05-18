@@ -1,7 +1,12 @@
 {
   "valid_packages": [
     "apache2",
+    "autoconf",
+    "automake",
     "bc",
+    "bind-tools",
+    "bison",
+    "boost",
     "build-base",
     "ca-certificates",
     "clamav",
@@ -9,718 +14,1565 @@
     "clamav-freshclam",
     "containers-common",
     "coreutils",
-    "dbus",
+    "couchdb",
+    "docker",
+    "docker-cli",
+    "dotnet",
+    "druid",
+    "dumb-init",
+    "etcd",
     "expat",
     "ffmpeg",
+    "flex",
     "fontconfig",
     "freetype",
     "freshclam",
     "glib",
+    "gmp",
     "gnupg",
+    "go",
     "gosu",
+    "graphite2",
     "haproxy",
-    "imagemagick",
+    "harfbuzz",
+    "icu-libs",
     "inotify-tools",
     "iproute2",
     "iptables",
-    "jq",
+    "jellyfin",
+    "jenkins",
     "json-c",
+    "kafka",
+    "kaniko",
+    "keycloak",
     "kmod",
+    "krb5-libs",
     "libcap",
+    "libffi",
     "libffi-dev",
+    "libgcc",
     "libjpeg-turbo",
     "liblz4-1",
-    "libnghttp2-14",
     "libpcre2-8-0",
+    "libpng",
+    "libpq",
     "libstdc++",
+    "libtool",
+    "libwebp",
     "libxml2",
     "libxml2-dev",
     "libxml2-utils",
+    "libxslt",
     "libxslt-dev",
     "libzstd1",
+    "logstash",
+    "lua5.4-libs",
     "mariadb-backup",
+    "mariadb-client",
     "memcached",
+    "mlflow",
     "mosquitto",
     "mosquitto-clients",
+    "mpdecimal",
+    "mysql",
+    "ncurses",
+    "net-snmp-libs",
     "net-tools",
     "netcat-openbsd",
     "nginx",
     "nodejs",
+    "nodejs-20",
+    "openjdk-17-jre-base",
     "openldap",
+    "openssh",
     "openssh-client",
     "openssl",
     "openssl-dev",
     "openvpn",
     "perl",
+    "pgbouncer",
+    "php",
+    "php-8.4",
+    "php-8.4-curl",
+    "php-8.4-mbstring",
+    "php-8.4-mysqli",
+    "php-8.4-pdo_mysql",
+    "php-8.4-xml",
+    "php-8.4-zip",
+    "php-bcmath",
+    "php-curl",
+    "php-dom",
+    "php-exif",
+    "php-fpm",
+    "php-gd",
+    "php-iconv",
+    "php-intl",
     "php-ldap",
+    "php-mbstring",
+    "php-mysqli",
+    "php-pdo",
+    "php-pdo_mysql",
+    "php-pdo_sqlite",
+    "php-pgsql",
+    "php-simplexml",
+    "php-soap",
+    "php-xml",
+    "php-zip",
     "postfix",
+    "postgis",
     "postgresql-14",
     "postgresql-15",
     "postgresql-16",
     "postgresql-17",
     "postgresql-client",
     "procps",
+    "protobuf",
     "psmisc",
+    "py3-lxml",
     "py3-pip",
     "python3",
+    "readline",
     "rspamd",
     "rsync",
     "rsyslog",
     "ruby",
+    "ruby-dev",
     "rust",
     "scap-security-guide",
     "socat",
+    "sqlite",
     "sqlite-libs",
     "systemd",
+    "talloc",
+    "trino",
     "tzdata",
     "unzip",
     "valkey",
     "wireguard-tools",
+    "xdg-utils",
+    "xz",
+    "yaml",
     "zip",
-    "zlib"
+    "zlib",
+    "zlib-dev"
   ],
   "invalid_packages": {
-    "apt-transport-https": [
+    "#": [
+      "gitea"
+    ],
+    "*)": [
+      "gitea",
+      "libsql",
+      "litestream"
+    ],
+    "+x": [
+      "caddy-alpine",
+      "dbmate",
+      "docker-clean",
+      "duplicati",
+      "forgejo",
+      "gitea",
+      "grafana-toolkit",
+      "graphile",
+      "keycloak",
+      "milvus-minio",
+      "neptune",
+      "objectrocket",
+      "redismodules",
+      "singlestore",
+      "source-control",
+      "stalwart-bitnami",
+      "weaviate"
+    ],
+    "-": [
+      "automatic1111",
+      "bazarr",
+      "bazarr-subliminal",
+      "comfyui",
+      "docker-clean",
+      "gallery3",
+      "neptune",
+      "objectrocket",
+      "singlestore",
+      "stable-diffusion-webui",
+      "text-generation-webui"
+    ],
+    "2.5.0": [
+      "bundler"
+    ],
+    "65532:65532": [
+      "389ds",
+      "akaunting",
+      "apache",
+      "athom",
+      "calibre-web",
+      "chat-server",
       "collabora-online",
       "collabora-online-code",
-      "onlyoffice-communityserver",
-      "onlyoffice-controlpanel",
-      "onlyoffice-documentserver",
-      "onlyoffice-documentserver-ee"
-    ],
-    "chkrootkit": ["chkrootkit"],
-    "cockpit": ["cockpit"],
-    "cockpit-dashboard": ["cockpit"],
-    "cockpit-storaged": ["cockpit"],
-    "cockpit-system": ["cockpit"],
-    "cockpit-ws": ["cockpit"],
-    "conntrack": ["kube-proxy"],
-    "courier-authlib": ["courier-authlib", "courier-imap"],
-    "courier-imap": ["courier-imap"],
-    "curl-openssl-dev": ["modsecurity-crs"],
-    "cyrus-sasl2-bin": ["389ds"],
-    "default-php84-mysql-client": ["mysql-anonymizer", "mysql-backup", "mysql-init", "mysql-restore"],
-    "default-php84-mysql-server": ["mariadb", "mysql"],
-    "dovecot-core": ["dovecot", "dovecot-lda", "dovecot-pop3"],
-    "dovecot-imapd": ["dovecot", "dovecot-lda"],
-    "dovecot-lmtpd": ["dovecot", "dovecot-lda"],
-    "dovecot-pop3d": ["dovecot", "dovecot-pop3"],
-    "erlang-asn1": [
-      "couchdb",
-      "couchdb-sync",
-      "rabbitmq-amqp",
-      "rabbitmq-delayed",
-      "rabbitmq-federation",
-      "rabbitmq-management",
-      "rabbitmq-mqtt",
-      "rabbitmq-stomp"
-    ],
-    "erlang-base": [
-      "couchdb",
-      "couchdb-sync",
-      "rabbitmq-amqp",
-      "rabbitmq-delayed",
-      "rabbitmq-federation",
-      "rabbitmq-management",
-      "rabbitmq-mqtt",
-      "rabbitmq-stomp"
-    ],
-    "erlang-crypto": [
-      "couchdb",
-      "couchdb-sync",
-      "rabbitmq-amqp",
-      "rabbitmq-delayed",
-      "rabbitmq-federation",
-      "rabbitmq-management",
-      "rabbitmq-mqtt",
-      "rabbitmq-stomp"
-    ],
-    "erlang-eldap": [
-      "rabbitmq-amqp",
-      "rabbitmq-delayed",
-      "rabbitmq-federation",
-      "rabbitmq-management",
-      "rabbitmq-mqtt",
-      "rabbitmq-stomp"
-    ],
-    "erlang-ftp": [
-      "rabbitmq-amqp",
-      "rabbitmq-delayed",
-      "rabbitmq-federation",
-      "rabbitmq-management",
-      "rabbitmq-mqtt",
-      "rabbitmq-stomp"
-    ],
-    "erlang-inets": [
-      "rabbitmq-amqp",
-      "rabbitmq-delayed",
-      "rabbitmq-federation",
-      "rabbitmq-management",
-      "rabbitmq-mqtt",
-      "rabbitmq-stomp"
-    ],
-    "erlang-mnesia": [
-      "rabbitmq-amqp",
-      "rabbitmq-delayed",
-      "rabbitmq-federation",
-      "rabbitmq-management",
-      "rabbitmq-mqtt",
-      "rabbitmq-stomp"
-    ],
-    "erlang-os-mon": [
-      "rabbitmq-amqp",
-      "rabbitmq-delayed",
-      "rabbitmq-federation",
-      "rabbitmq-management",
-      "rabbitmq-mqtt",
-      "rabbitmq-stomp"
-    ],
-    "erlang-parsetools": [
-      "rabbitmq-amqp",
-      "rabbitmq-delayed",
-      "rabbitmq-federation",
-      "rabbitmq-management",
-      "rabbitmq-mqtt",
-      "rabbitmq-stomp"
-    ],
-    "erlang-public-key": [
-      "couchdb",
-      "couchdb-sync",
-      "rabbitmq-amqp",
-      "rabbitmq-delayed",
-      "rabbitmq-federation",
-      "rabbitmq-management",
-      "rabbitmq-mqtt",
-      "rabbitmq-stomp"
-    ],
-    "erlang-runtime-tools": [
-      "rabbitmq-amqp",
-      "rabbitmq-delayed",
-      "rabbitmq-federation",
-      "rabbitmq-management",
-      "rabbitmq-mqtt",
-      "rabbitmq-stomp"
-    ],
-    "erlang-snmp": [
-      "rabbitmq-amqp",
-      "rabbitmq-delayed",
-      "rabbitmq-federation",
-      "rabbitmq-management",
-      "rabbitmq-mqtt",
-      "rabbitmq-stomp"
-    ],
-    "erlang-ssl": [
-      "couchdb",
-      "couchdb-sync",
-      "rabbitmq-amqp",
-      "rabbitmq-delayed",
-      "rabbitmq-federation",
-      "rabbitmq-management",
-      "rabbitmq-mqtt",
-      "rabbitmq-stomp"
-    ],
-    "erlang-syntax-tools": [
-      "couchdb",
-      "couchdb-sync",
-      "rabbitmq-amqp",
-      "rabbitmq-delayed",
-      "rabbitmq-federation",
-      "rabbitmq-management",
-      "rabbitmq-mqtt",
-      "rabbitmq-stomp"
-    ],
-    "erlang-tftp": [
-      "rabbitmq-amqp",
-      "rabbitmq-delayed",
-      "rabbitmq-federation",
-      "rabbitmq-management",
-      "rabbitmq-mqtt",
-      "rabbitmq-stomp"
-    ],
-    "erlang-tools": [
-      "couchdb",
-      "couchdb-sync",
-      "rabbitmq-amqp",
-      "rabbitmq-delayed",
-      "rabbitmq-federation",
-      "rabbitmq-management",
-      "rabbitmq-mqtt",
-      "rabbitmq-stomp"
-    ],
-    "erlang-xmerl": [
-      "rabbitmq-amqp",
-      "rabbitmq-delayed",
-      "rabbitmq-federation",
-      "rabbitmq-management",
-      "rabbitmq-mqtt",
-      "rabbitmq-stomp"
-    ],
-    "fonts-liberation": ["grafana-image-renderer"],
-    "galera-4": ["mariadb-galera"],
-    "golang": ["linguist-go"],
-    "golang-go": ["golang"],
-    "imagick": ["nextcloud-imaging"],
-    "imap": ["suitecrm"],
-    "java-17-runtime": [
-      "adempiere",
-      "airbyte",
-      "airbyte-server",
-      "airbyte-worker",
-      "airsonic",
-      "airsonic-advanced",
-      "apache-nifi",
-      "apache-ofbiz",
-      "cassandra",
-      "chartdb",
-      "crate",
-      "cyberduck",
-      "derby",
-      "druid",
-      "elasticsearch-8",
+      "convector",
+      "docker-clean",
+      "docker-socket-proxy",
+      "dolibarr",
+      "egroupware",
+      "espocrm",
+      "firebird",
+      "freeipa-client",
+      "frontaccounting",
       "gitbucket",
-      "gradle",
-      "graphdb-enterpriser",
-      "graphdb-free",
-      "graylog",
-      "h2",
+      "gitlab-backup",
+      "gnucash",
+      "grafana-toolkit",
+      "graphile",
+      "grisbi",
       "hazelcast",
-      "hive",
-      "hive-metastore",
-      "idempiere",
-      "ignite",
-      "janusgraph",
-      "jenkins-agent",
-      "jenkins-executor",
-      "jenkins-plugin",
-      "kafka",
-      "kafka-connect",
-      "kafka-manager",
-      "ldapbrowser",
-      "logstash",
-      "logstash-oss",
-      "maven",
-      "mongodb-opsmanager",
-      "neo4j-admin",
-      "neo4j-enterprise",
-      "neo4j-import",
-      "nifi-registry",
-      "openhab3",
-      "opensearch",
-      "orientdb",
-      "pulsar-functions",
-      "pulsar-proxy",
-      "questdb",
-      "realm-server",
-      "sbt",
-      "stirling-pdf",
-      "stirling-pdf-core",
-      "subsonic",
-      "trino",
-      "yacy"
-    ],
-    "krb5-user": ["freeipa-client"],
-    "ldap-utils": ["389ds", "openldap-backup", "openldap-lambda"],
-    "libaio1": ["oracledb-xe"],
-    "libaio1t64": ["mysql-8"],
-    "libapache-dbi-perl": ["sql-ledger"],
-    "libapache2-mod-perl2": ["sql-ledger"],
-    "libapache2-mod-security2": ["modsecurity-crs"],
-    "libasound2": ["redis-insight"],
-    "libasound2t64": ["grafana-image-renderer"],
-    "libass9": ["jellyfin-ffmpeg"],
-    "libatk-bridge2.0-0": ["redis-insight"],
-    "libatk-bridge2.0-0t64": ["grafana-image-renderer"],
-    "libatk1.0-0": ["redis-insight"],
-    "libatspi2.0-0": ["redis-insight"],
-    "libavahi-compat-libdnssd1": ["homebridge", "homebridge-camera"],
-    "libboost-all1.74": ["memgraph"],
-    "libboost-all1.74-dev": ["dnsdist"],
-    "libboost-filesystem1.74.0": ["powerdns-api", "powerdns-recursor"],
-    "libboost-iostreams1.74.0": ["ledger"],
-    "libboost-program-options1.74.0": ["powerdns-api", "powerdns-recursor"],
-    "libboost-system1.74.0": ["powerdns-api", "powerdns-recursor"],
-    "libboost-thread1.74.0": ["powerdns-api", "powerdns-recursor"],
-    "libcairo2": ["redis-insight"],
-    "libcgi-pm-perl": ["sql-ledger"],
-    "libcjson4": ["nheko"],
-    "libcups2": ["redis-insight"],
-    "libdbd-pg-perl": ["sql-ledger"],
-    "libdbi-perl": ["sql-ledger"],
-    "libdbus-1-3": ["redis-insight"],
-    "libdrm2": ["redis-insight"],
-    "libedit2": ["cubrid"],
-    "libelf1": ["vpn-controller"],
-    "libevent-2.1-7": ["couchbase"],
-    "libfdk-acct2": ["jellyfin-ffmpeg"],
-    "libgbm1": ["grafana-image-renderer", "redis-insight"],
-    "libgcc-s1": ["zeromq", "zerotier"],
-    "libgeoip-dev": ["modsecurity-crs"],
-    "libgeoip1": ["nginx-modsec"],
-    "libgl1": ["nheko"],
-    "libgmp10": ["ledger", "ocserv", "strongswan"],
-    "libgnutls30": ["ocserv"],
-    "libgomp1": ["splunk-forwarder"],
-    "libgrpc++1": ["memgraph"],
-    "libgtk-3-0": ["cyberduck", "ldapbrowser"],
-    "libgtk-3-0t64": ["grafana-image-renderer"],
-    "libhogweed6": ["ocserv"],
-    "libice6": ["emby", "emby-server"],
-    "libicu72": ["couchdb", "couchdb-sync", "mattermost", "postgresql-17"],
-    "libidn2-0": ["dnsmasq-full"],
-    "libjpeg-turbo-turbo-dev": ["authentik", "authentik-worker", "sentry", "sentry-cron", "sentry-worker"],
-    "libjson-c5": ["falco"],
-    "libjson-perl": ["sql-ledger"],
-    "liblua5.3-0": ["dnsdist"],
-    "libluajit-5.1-2": ["knot-resolver", "powerdns-recursor"],
-    "liblzma5": ["nxlog"],
-    "liblzo2-2": ["openvpn-as"],
-    "libmariadb3": ["openproject", "redmine", "vaultwarden-mysql"],
-    "libmecab2": ["mysql-8"],
-    "libmilter1.0.1": ["rmilter"],
-    "libmnl0": ["vpn-controller"],
-    "libmodsecurity3": ["modsecurity-crs"],
-    "libmozjs-78-0": ["couchdb", "couchdb-sync"],
-    "libmp3lame0": ["jellyfin-ffmpeg"],
-    "libmpfr6": ["ledger"],
-    "libncurses5": ["cubrid"],
-    "libncurses6": ["tig"],
-    "libnetfilter-conntrack3": ["dnsmasq-full"],
-    "libnettle8": ["ocserv"],
-    "libnspr4": ["redis-insight"],
-    "libnss3": ["grafana-image-renderer", "kibana", "kibana-oss", "redis-insight"],
-    "libnss3-tools": ["freeipa-client"],
-    "libnuma1": ["mysql-8"],
-    "libodbc1": ["emqx", "emqx-ee"],
-    "libopenscap8": ["openscap"],
-    "libopus0": ["jellyfin-ffmpeg"],
-    "libpam-sss": ["freeipa-client"],
-    "libpam0g": ["ocserv"],
-    "libpango-1.0-0": ["redis-insight"],
-    "libpcre3": ["nginx-alpine", "nginx-cache", "nginx-modsec"],
-    "libpcre3-dev": ["modsecurity-crs"],
-    "libpkcs11-helper1": ["openvpn-as"],
-    "libprotobuf32": ["dnsdist", "memgraph", "rethinkdb"],
-    "libpython3.11": ["dnsvalidator", "surrealdb-python"],
-    "libqscintilla2-qt5-15": ["sqlite-browser"],
-    "libqt5core5a": ["eqonomize"],
-    "libqt5core5t64": ["sqlite-browser"],
-    "libqt5gui5": ["eqonomize"],
-    "libqt5gui5t64": ["sqlite-browser"],
-    "libqt5network5t64": ["sqlite-browser"],
-    "libqt5svg5": ["sqlite-browser"],
-    "libqt5widgets5": ["eqonomize"],
-    "libqt5widgets5t64": ["sqlite-browser"],
-    "libqt6core6": ["nheko"],
-    "libqt6gui6": ["nheko"],
-    "libqt6multimedia6": ["nheko"],
-    "libqt6network6": ["nheko"],
-    "libqt6qml6": ["nheko"],
-    "libqt6quick6": ["nheko"],
-    "libqt6widgets6": ["nheko"],
-    "libre2-5": ["dnsdist"],
-    "libreadline8": ["postgresql-17"],
-    "libsasl2-modules": ["389ds", "openldap-lambda"],
-    "libseccomp2": ["ocserv"],
-    "libsm6": ["emby", "emby-server"],
-    "libsnappy1v5": ["couchbase"],
-    "libsodium23": ["dnsdist", "zeromq"],
-    "libsqlcipher0": ["sqlite-browser"],
-    "libswt-gtk-4-java": ["cyberduck", "ldapbrowser"],
-    "libtasn1-6": ["ocserv"],
-    "libtemplate-perl": ["sql-ledger"],
-    "libtheora0": ["jellyfin-ffmpeg"],
-    "libusb-1.0-0": ["openhab3"],
-    "libuv1": ["knot-resolver"],
-    "libvorbis0a": ["jellyfin-ffmpeg"],
-    "libvpx7": ["jellyfin-ffmpeg"],
-    "libwebp7": ["jellyfin-ffmpeg"],
-    "libwrap0": ["ocserv", "pptpd"],
-    "libx11-6": ["emby", "emby-server", "plex", "plex-media-server", "redis-insight"],
-    "libx264-164": ["jellyfin-ffmpeg"],
-    "libx265-199": ["jellyfin-ffmpeg"],
-    "libxcb1": ["plex", "plex-media-server"],
-    "libxcomposite1": ["redis-insight"],
-    "libxdamage1": ["plex", "plex-media-server", "redis-insight"],
-    "libxext6": ["emby", "emby-server", "plex", "plex-media-server", "redis-insight"],
-    "libxfixes3": ["plex", "plex-media-server", "redis-insight"],
-    "libxi6": ["redis-insight"],
-    "libxkbcommon0": ["redis-insight"],
-    "libxrandr2": ["redis-insight"],
-    "libxrender1": ["emby", "emby-server", "plex", "plex-media-server", "redis-insight"],
-    "libxss1": ["grafana-image-renderer", "plex", "plex-media-server"],
-    "libxtst6": ["plex", "plex-media-server", "redis-insight"],
-    "libxvidcore4": ["jellyfin-ffmpeg"],
-    "libyajl-dev": ["modsecurity-crs"],
-    "libyajl2": ["nginx-modsec"],
-    "libyaml-0-2": ["falco"],
-    "libyaml-cpp0.7": ["dnsdist"],
-    "libyaml-dev": ["sentry", "sentry-cron", "sentry-worker"],
-    "libz1": ["nginx-alpine", "nginx-cache", "nginx-modsec"],
-    "lsb-release": ["mysql-8", "postgresql-17"],
-    "mailutils": ["postfix"],
-    "mariadb-server": ["mariadb-10", "mariadb-11", "mariadb-galera"],
-    "mongodb-org": ["mongodb", "mongodb-6"],
-    "mongodb-org-tools": ["realm-server"],
-    "musl-dev": ["musl", "x86_64-unknown-linux-musl"],
-    "nginx-light": ["cinny", "element-web", "element-x", "hydrogen"],
-    "oddjob-mkhomedir": ["freeipa-client"],
-    "openjdk-21-jre-headless": ["keycloak", "keycloak-init", "keycloak-quarkus"],
-    "openjdk-__VAR__-jre-headless": ["activemq", "rocketmq"],
-    "openscap-utils": ["openscap"],
-    "openssl-libs": [
-      "arango",
-      "couchbase",
-      "dnsdist",
-      "emqx",
-      "emqx-ee",
+      "homekit",
+      "invoice-ninja",
+      "invoice-ninja-api",
+      "keycloak",
+      "kmymoney",
       "knot-resolver",
-      "memgraph",
+      "libreoffice",
+      "libreoffice-headless",
+      "mariadb-10",
+      "mariadb-11",
+      "mariadb-galera",
+      "maxbot",
       "mongodb-5",
       "mongodb-7",
       "mongodb-community",
-      "nginx-alpine",
-      "nginx-cache",
+      "neptune",
+      "nextcloud",
+      "nextcloud-alpine",
+      "nextcloud-external",
+      "nextcloud-imaging",
+      "nextcloud-nginx",
       "nginx-modsec",
-      "nheko",
-      "nxlog",
-      "openvpn-as",
-      "pi-hole",
+      "objectrocket",
+      "ol_fileshare",
+      "openldap-backup",
+      "openldap-lambda",
+      "openproject",
+      "organizer",
+      "photoshow",
+      "pydio",
+      "r2c-bench",
+      "rblake",
+      "redismodules",
+      "redmine",
+      "repo-security",
+      "repo-supervisor",
+      "rss2",
+      "secrets-scanner",
+      "secretz",
+      "shh",
+      "singlestore",
+      "skrooge",
+      "sql-ledger",
+      "sqlite-utils",
+      "suitecrm",
+      "tensor",
+      "transferhelper",
+      "unoconv",
+      "virtuoso",
+      "vtigercrm",
+      "zoe",
+      "zzh"
+    ],
+    "8.0": [
+      "duplicati"
+    ],
+    "?": [
+      "organizer"
+    ],
+    "@grafana/toolkit@__VAR__": [
+      "grafana-toolkit"
+    ],
+    "@worldsibu/convector-platform@__VAR__": [
+      "convector"
+    ],
+    "ARCH=$(case": [
+      "gitea",
+      "libsql"
+    ],
+    "AWS": [
+      "neptune"
+    ],
+    "Atlas": [
+      "objectrocket"
+    ],
+    "Based": [
+      "docker-clean"
+    ],
+    "CGO_ENABLED=0": [
+      "dotdns"
+    ],
+    "Docker": [
+      "docker-clean"
+    ],
+    "GOARCH=__VAR__": [
+      "dotdns"
+    ],
+    "GOOS=linux": [
+      "dotdns"
+    ],
+    "Gremlin/SPARQL": [
+      "neptune"
+    ],
+    "MongoDB": [
+      "objectrocket"
+    ],
+    "Neptune": [
+      "neptune"
+    ],
+    "Neptune-compatible": [
+      "neptune"
+    ],
+    "ObjectRocket-compatible": [
+      "objectrocket"
+    ],
+    "ObjectRocket/MongoDB": [
+      "objectrocket"
+    ],
+    "RediSearch,": [
+      "redismodules"
+    ],
+    "RedisJSON,": [
+      "redismodules"
+    ],
+    "RedisTimeSeries,": [
+      "redismodules"
+    ],
+    "SPARQLWrapper": [
+      "neptune"
+    ],
+    "SQL": [
+      "singlestore"
+    ],
+    "SingleStore-compatible": [
+      "singlestore"
+    ],
+    "TTS": [
+      "coqui-tts",
+      "tts"
+    ],
+    "a": [
+      "neptune",
+      "objectrocket",
+      "singlestore"
+    ],
+    "a2dismod": [
+      "apache"
+    ],
+    "accelerate": [
+      "stable-diffusion"
+    ],
+    "add": [
+      "faster-whisper",
+      "gitbucket",
+      "knot-resolver",
+      "mailtrain",
+      "mozilla-hubs",
+      "openhab",
+      "prefect",
+      "prefect-server",
+      "synapse-admin",
+      "wolfi-jdk"
+    ],
+    "amd64)": [
+      "gitea",
+      "libsql",
+      "litestream"
+    ],
+    "apk": [
+      "faster-whisper",
+      "gitbucket",
+      "knot-resolver",
+      "mailtrain",
+      "milvus-minio",
+      "mozilla-hubs",
+      "openhab",
+      "prefect",
+      "prefect-server",
+      "sqlite-utils",
+      "synapse-admin",
+      "wolfi-jdk"
+    ],
+    "app": [
+      "airsonic",
+      "airsonic-advanced",
+      "automatic1111",
+      "bazarr",
+      "bazarr-subliminal",
+      "bundler",
+      "calibre",
+      "calibre-eb",
+      "calibre-server",
+      "chroma-all-minimal",
+      "comfyui",
+      "coqui-tts",
+      "dagster",
+      "dagster-daemon",
+      "dagster-logs",
+      "deepspeed",
+      "diffusers",
+      "faster-whisper",
+      "gallery3",
+      "immich-machine-learning",
+      "immich-ml",
+      "invokeai",
+      "jupyter-all",
+      "jupyter-pytorch",
+      "jupyter-scikit",
+      "jupyter-tensorflow",
+      "langchain",
+      "langserve",
+      "lidarr",
+      "litellm",
+      "litellm-proxy",
+      "maxbot",
+      "meltano",
+      "mlflow",
+      "mlflow-server",
+      "mlflow-tracking",
+      "opengpts",
+      "photoshow",
+      "pinecone",
+      "prefect",
+      "prefect-server",
+      "prowlarr",
+      "prowlarr-develop",
+      "pytorch",
+      "qbitmanage",
+      "radarr",
+      "radarr-develop",
+      "readarr",
+      "rss2",
+      "rss2email",
+      "scrapyd",
+      "sigal",
+      "singer",
+      "sonarr",
+      "sonarr-develop",
+      "stable-diffusion",
+      "stable-diffusion-webui",
+      "subsonic",
+      "tensorboard",
+      "tensorflow",
+      "transformers",
+      "transformers-gpu",
+      "tts",
+      "vecs-db",
+      "vllm",
+      "wandb-server",
+      "weaviate-python",
+      "weights-biases",
+      "whisparr",
+      "whisper"
+    ],
+    "app:app": [
+      "automatic1111",
+      "bazarr",
+      "bazarr-subliminal",
+      "bundler",
+      "calibre",
+      "calibre-eb",
+      "calibre-server",
+      "chroma-all-minimal",
+      "comfyui",
+      "coqui-tts",
+      "dagster",
+      "dagster-daemon",
+      "dagster-logs",
+      "deepspeed",
+      "diffusers",
+      "faster-whisper",
+      "gallery3",
+      "immich-machine-learning",
+      "immich-ml",
+      "invokeai",
+      "jupyter-all",
+      "jupyter-pytorch",
+      "jupyter-scikit",
+      "jupyter-tensorflow",
+      "langchain",
+      "langserve",
+      "litellm",
+      "litellm-proxy",
+      "meltano",
+      "mlflow",
+      "mlflow-server",
+      "mlflow-tracking",
+      "opengpts",
+      "pinecone",
+      "prefect",
+      "prefect-server",
+      "pytorch",
+      "qbitmanage",
+      "rss2email",
+      "scrapyd",
+      "sigal",
+      "singer",
+      "stable-diffusion",
+      "stable-diffusion-webui",
+      "tensorboard",
+      "tensorflow",
+      "transformers",
+      "transformers-gpu",
+      "tts",
+      "vecs-db",
+      "vllm",
+      "wandb-server",
+      "weaviate-python",
+      "weights-biases",
+      "whisper"
+    ],
+    "appuser": [
+      "cinny",
+      "debian-slim",
+      "element-web",
+      "element-x",
+      "fail2ban",
+      "mailtrain",
+      "mattermost-bridge",
+      "modsecurity",
+      "mozilla-hubs",
+      "openvpn",
+      "powerdns",
+      "rainloop",
+      "softether",
+      "synapse-admin"
+    ],
+    "appuser:appuser": [
+      "fail2ban",
+      "modsecurity",
+      "powerdns",
+      "softether"
+    ],
+    "arango": [
+      "arango"
+    ],
+    "arm64)": [
+      "gitea",
+      "libsql",
+      "litestream"
+    ],
+    "as": [
+      "neptune",
+      "objectrocket",
+      "singlestore"
+    ],
+    "athom": [
+      "athom"
+    ],
+    "autoindex": [
+      "apache"
+    ],
+    "available": [
+      "automatic1111",
+      "bazarr",
+      "bazarr-subliminal",
+      "comfyui",
+      "gallery3",
+      "stable-diffusion-webui",
+      "text-generation-webui"
+    ],
+    "backup": [
+      "gitlab-backup"
+    ],
+    "base": [
+      "neptune",
+      "objectrocket",
+      "singlestore"
+    ],
+    "build": [
+      "dotdns"
+    ],
+    "bundled:": [
+      "redismodules"
+    ],
+    "bundler": [
+      "bundler"
+    ],
+    "bzip2-libs": [
+      "onlyoffice-documentserver",
+      "onlyoffice-documentserver-ee"
+    ],
+    "calibre": [
+      "calibre",
+      "calibre-eb",
+      "calibre-server",
+      "calibre-web"
+    ],
+    "case": [
+      "litestream"
+    ],
+    "chartdb": [
+      "chartdb"
+    ],
+    "chroma": [
+      "chroma"
+    ],
+    "chroma:chroma": [
+      "chroma"
+    ],
+    "chromadb": [
+      "chroma"
+    ],
+    "chromadb==0.5.23": [
+      "chroma-all-minimal"
+    ],
+    "chromadb==__VAR__": [
+      "chroma"
+    ],
+    "cid": [
+      "docker-clean"
+    ],
+    "cleanup": [
+      "docker-clean"
+    ],
+    "client": [
+      "objectrocket",
+      "singlestore"
+    ],
+    "clone": [
+      "automatic1111",
+      "bazarr",
+      "bazarr-subliminal",
+      "comfyui",
+      "fail2ban-exporter",
+      "gallery3",
+      "stable-diffusion-webui",
+      "text-generation-webui"
+    ],
+    "cloud": [
+      "objectrocket"
+    ],
+    "cmak": [
+      "kafka-manager"
+    ],
+    "codimd": [
+      "codimd"
+    ],
+    "commercial": [
+      "singlestore"
+    ],
+    "common": [
+      "docker-clean"
+    ],
+    "compatibility": [
+      "neptune",
+      "singlestore"
+    ],
+    "complement": [
+      "chat-relay"
+    ],
+    "conduit": [
+      "conduit-admin"
+    ],
+    "connect": [
+      "kafka-connect"
+    ],
+    "container:": [
+      "docker-clean"
+    ],
+    "convector": [
+      "convector"
+    ],
+    "crate": [
+      "crate"
+    ],
+    "created=$(docker": [
+      "docker-clean"
+    ],
+    "dagster": [
+      "dagster",
+      "dagster-daemon",
+      "dagster-logs"
+    ],
+    "dagster-webserver": [
+      "dagster"
+    ],
+    "dangling": [
+      "docker-clean"
+    ],
+    "database": [
+      "neptune",
+      "objectrocket"
+    ],
+    "deepspeed": [
+      "deepspeed"
+    ],
+    "del": [
+      "milvus-minio",
+      "sqlite-utils"
+    ],
+    "dendrite": [
+      "dendrite-pot"
+    ],
+    "derby": [
+      "derby"
+    ],
+    "development": [
+      "neptune",
+      "objectrocket",
+      "singlestore"
+    ],
+    "diffusers": [
+      "diffusers",
+      "stable-diffusion"
+    ],
+    "distributed": [
+      "singlestore"
+    ],
+    "do\\n": [
+      "docker-clean"
+    ],
+    "docker-clean": [
+      "docker-clean"
+    ],
+    "dockerclean": [
+      "docker-clean"
+    ],
+    "dsp": [
+      "docker-socket-proxy"
+    ],
+    "edition": [
+      "singlestore"
+    ],
+    "ejdb": [
+      "ejdb"
+    ],
+    "endpoint": [
+      "neptune",
+      "objectrocket"
+    ],
+    "erpnext": [
+      "erpnext"
+    ],
+    "erpnext:erpnext": [
+      "erpnext"
+    ],
+    "esac": [
+      "litestream"
+    ],
+    "esac)": [
+      "gitea",
+      "libsql"
+    ],
+    "exited": [
+      "docker-clean"
+    ],
+    "fastapi==0.115.0": [
+      "immich-machine-learning",
+      "immich-ml"
+    ],
+    "faster-whisper": [
+      "faster-whisper"
+    ],
+    "fi": [
+      "caddy-alpine",
+      "cinny",
+      "keycloak"
+    ],
+    "fi\\ndone\\n\\ndangling_images=$(docker": [
+      "docker-clean"
+    ],
+    "fileshare": [
+      "ol_fileshare"
+    ],
+    "firebird": [
+      "firebird"
+    ],
+    "fluentd": [
+      "fluentd"
+    ],
+    "for": [
+      "neptune",
+      "objectrocket",
+      "singlestore"
+    ],
+    "free": [
+      "singlestore"
+    ],
+    "from": [
+      "singlestore"
+    ],
+    "fstrm-libs": [
+      "powerdns-recursor"
+    ],
+    "fully": [
+      "neptune",
+      "objectrocket"
+    ],
+    "gitbucket": [
+      "gitbucket"
+    ],
+    "graph": [
+      "neptune"
+    ],
+    "graphdb": [
+      "graphdb-enterpriser"
+    ],
+    "graphile": [
+      "graphile"
+    ],
+    "graylog": [
+      "graylog"
+    ],
+    "gremlinpython": [
+      "neptune"
+    ],
+    "gremlinpython,": [
+      "neptune"
+    ],
+    "h2": [
+      "h2"
+    ],
+    "hazelcast": [
+      "hazelcast"
+    ],
+    "hive": [
+      "hive",
+      "hive-metastore"
+    ],
+    "homeassistant": [
+      "homeassistant"
+    ],
+    "homeassistant:homeassistant": [
+      "homeassistant"
+    ],
+    "homekit": [
+      "homekit"
+    ],
+    "hts": [
+      "tvheadend"
+    ],
+    "hts:hts": [
+      "tvheadend"
+    ],
+    "hydrogen": [
+      "hydrogen"
+    ],
+    "if": [
+      "caddy-alpine",
+      "cinny",
+      "docker-clean",
+      "keycloak"
+    ],
+    "ignite": [
+      "ignite"
+    ],
+    "image": [
+      "neptune",
+      "objectrocket",
+      "singlestore"
+    ],
+    "images": [
+      "docker-clean"
+    ],
+    "immich": [
+      "immich"
+    ],
+    "immich:immich": [
+      "immich"
+    ],
+    "import": [
+      "neptune",
+      "objectrocket",
+      "singlestore"
+    ],
+    "in": [
+      "docker-clean",
+      "gitea",
+      "libsql",
+      "litestream",
+      "neptune",
+      "objectrocket"
+    ],
+    "inspect": [
+      "docker-clean"
+    ],
+    "invokeai": [
+      "invokeai"
+    ],
+    "is": [
+      "neptune",
+      "objectrocket",
+      "singlestore"
+    ],
+    "janusgraph": [
+      "janusgraph"
+    ],
+    "java-21-default-jdk": [
+      "gitbucket",
+      "openhab",
+      "wolfi-jdk"
+    ],
+    "jenkins:jenkins": [
+      "jenkins"
+    ],
+    "jupyter": [
+      "jupyter-all"
+    ],
+    "jupyterlab": [
+      "jupyter-pytorch",
+      "jupyter-scikit",
+      "jupyter-tensorflow"
+    ],
+    "kibana": [
+      "kibana",
+      "kibana-oss"
+    ],
+    "knot": [
+      "knot-resolver"
+    ],
+    "knot-resolver": [
+      "knot-resolver"
+    ],
+    "knot-resolver-utils": [
+      "knot-resolver"
+    ],
+    "langchain": [
+      "langchain"
+    ],
+    "langserve": [
+      "langserve"
+    ],
+    "ldap": [
+      "ldap",
+      "openldap"
+    ],
+    "ldap:ldap": [
+      "ldap",
+      "openldap"
+    ],
+    "libcrypto1.1": [
+      "strongswan"
+    ],
+    "libcurl": [
+      "onlyoffice-communityserver",
+      "onlyoffice-controlpanel",
+      "onlyoffice-documentserver",
+      "onlyoffice-documentserver-ee",
       "powerdns-api",
       "powerdns-recursor",
-      "rethinkdb",
-      "smartdns",
-      "sqlcipher",
-      "sqlite-browser",
-      "strongswan",
-      "tigergraph",
-      "tigergraph-ecosystem",
-      "unbound-alpine",
-      "vernemq"
+      "strongswan"
     ],
-    "php84": [
-      "akaunting",
-      "composer-audit",
-      "dolibarr",
-      "egroupware",
-      "espocrm",
-      "frontaccounting",
-      "invoice-ninja",
-      "invoice-ninja-api",
-      "nextcloud",
-      "nextcloud-alpine",
-      "nextcloud-external",
-      "nextcloud-imaging",
-      "nextcloud-nginx",
-      "privatebin-nginx",
-      "pydio",
-      "rainloop",
+    "libraries": [
+      "singlestore"
+    ],
+    "library": [
+      "objectrocket"
+    ],
+    "libtiff": [
+      "onlyoffice-documentserver",
+      "onlyoffice-documentserver-ee"
+    ],
+    "litellm": [
+      "litellm"
+    ],
+    "litellm[proxy]": [
+      "litellm-proxy"
+    ],
+    "local": [
+      "neptune"
+    ],
+    "main()": [
+      "dotdns"
+    ],
+    "main\\nimport": [
+      "dotdns"
+    ],
+    "managed": [
+      "neptune",
+      "objectrocket"
+    ],
+    "mariadb-libs": [
+      "onlyoffice-communityserver"
+    ],
+    "matplotlib": [
+      "jupyter-scikit"
+    ],
+    "matrix-synapse==__VAR__": [
+      "chat-server"
+    ],
+    "maxbot==__VAR__": [
+      "maxbot"
+    ],
+    "meltano": [
+      "meltano"
+    ],
+    "memgraph": [
+      "memgraph"
+    ],
+    "modsec": [
+      "modsecurity-crs"
+    ],
+    "module": [
+      "redismodules"
+    ],
+    "modules": [
+      "redismodules"
+    ],
+    "mongodb": [
+      "mongodb-5",
+      "mongodb-7",
+      "mongodb-community"
+    ],
+    "mongosh": [
+      "mongodb-opsmanager"
+    ],
+    "mosquitto:mosquitto": [
+      "mqtt"
+    ],
+    "mythtv": [
+      "mythtv"
+    ],
+    "mythtv:mythtv": [
+      "mythtv"
+    ],
+    "neptune": [
+      "neptune"
+    ],
+    "newsboat": [
+      "newsboat"
+    ],
+    "newsboat:newsboat": [
+      "newsboat"
+    ],
+    "nheko": [
+      "nheko"
+    ],
+    "nifi": [
+      "apache-nifi",
+      "nifi-registry"
+    ],
+    "node": [
+      "logseq",
+      "n8n",
+      "typesense-js",
+      "uptime-kuma"
+    ],
+    "node:node": [
+      "logseq",
+      "n8n",
+      "typesense-js",
+      "uptime-kuma"
+    ],
+    "nogroup": [
+      "athom",
+      "docker-clean",
+      "homekit",
+      "r2c-bench",
+      "rblake",
+      "repo-security",
+      "repo-supervisor",
+      "secrets-scanner",
+      "secretz",
+      "shh",
+      "transferhelper",
+      "zoe",
+      "zzh"
+    ],
+    "not": [
+      "automatic1111",
+      "bazarr",
+      "bazarr-subliminal",
+      "comfyui",
+      "gallery3",
+      "stable-diffusion-webui",
+      "text-generation-webui"
+    ],
+    "numpy==2.1.0": [
+      "immich-machine-learning",
+      "jupyter-scikit"
+    ],
+    "objectrocket": [
+      "objectrocket"
+    ],
+    "on": [
+      "docker-clean"
+    ],
+    "onnxruntime": [
+      "immich-machine-learning",
+      "immich-ml"
+    ],
+    "open-gpts": [
+      "opengpts"
+    ],
+    "openai-whisper": [
+      "whisper"
+    ],
+    "openhab": [
+      "openhab"
+    ],
+    "openjdk-21-jdk-headless": [
+      "gitbucket",
+      "openhab",
+      "wolfi-jdk"
+    ],
+    "openssl-libs": [
+      "onlyoffice-communityserver",
+      "onlyoffice-controlpanel",
+      "onlyoffice-documentserver",
+      "onlyoffice-documentserver-ee",
+      "powerdns-api",
+      "powerdns-recursor",
+      "strongswan"
+    ],
+    "oracle": [
+      "oracledb-xe"
+    ],
+    "organizr": [
+      "organizer"
+    ],
+    "outline": [
+      "outline"
+    ],
+    "outline:outline": [
+      "outline"
+    ],
+    "oxidized": [
+      "oxidized"
+    ],
+    "pandas==2.2.0": [
+      "jupyter-scikit"
+    ],
+    "pgbouncer:pgbouncer": [
+      "pgbouncer"
+    ],
+    "pgpool": [
+      "pgpool-ii"
+    ],
+    "pgpool:pgpool": [
+      "pgpool-ii"
+    ],
+    "php-cli": [
+      "photoshow",
+      "rss2"
+    ],
+    "php-json": [
+      "photoshow",
       "roundcube",
-      "suitecrm",
-      "vtigercrm"
+      "rss2"
     ],
-    "php84-bcmath": ["cachet"],
-    "php84-curl": [
-      "akaunting",
-      "cachet",
-      "composer-audit",
-      "dolibarr",
-      "egroupware",
-      "espocrm",
-      "frontaccounting",
-      "invoice-ninja",
-      "invoice-ninja-api",
-      "ldap-account-manager",
-      "nextcloud",
-      "nextcloud-alpine",
-      "nextcloud-external",
-      "nextcloud-imaging",
-      "nextcloud-nginx",
-      "privatebin-nginx",
-      "pydio",
-      "rainloop",
-      "roundcube",
-      "suitecrm",
-      "vtigercrm"
-    ],
-    "php84-fpm": [
-      "akaunting",
-      "cachet",
-      "dolibarr",
-      "egroupware",
-      "espocrm",
-      "frontaccounting",
-      "invoice-ninja",
-      "invoice-ninja-api",
-      "ldap-account-manager",
-      "nextcloud",
-      "nextcloud-alpine",
-      "nextcloud-external",
-      "nextcloud-imaging",
-      "nextcloud-nginx",
-      "organizer",
-      "privatebin-nginx",
-      "pydio",
-      "rainloop",
-      "roundcube",
-      "suitecrm",
-      "vtigercrm"
-    ],
-    "php84-gd": [
-      "dolibarr",
-      "egroupware",
-      "espocrm",
-      "invoice-ninja",
-      "invoice-ninja-api",
-      "nextcloud",
-      "nextcloud-alpine",
-      "nextcloud-external",
-      "nextcloud-imaging",
-      "nextcloud-nginx",
-      "pydio",
-      "suitecrm",
-      "vtigercrm"
-    ],
-    "php84-intl": [
-      "akaunting",
-      "dolibarr",
-      "egroupware",
-      "espocrm",
-      "frontaccounting",
-      "invoice-ninja",
-      "invoice-ninja-api",
-      "nextcloud",
-      "nextcloud-alpine",
-      "nextcloud-external",
-      "nextcloud-imaging",
-      "nextcloud-nginx",
-      "pydio",
-      "suitecrm",
-      "vtigercrm"
-    ],
-    "php84-mbstring": [
-      "akaunting",
-      "dolibarr",
-      "egroupware",
-      "espocrm",
-      "frontaccounting",
-      "invoice-ninja",
-      "invoice-ninja-api",
-      "nextcloud",
-      "nextcloud-alpine",
-      "nextcloud-external",
-      "nextcloud-imaging",
-      "nextcloud-nginx",
-      "pydio",
-      "suitecrm",
-      "vtigercrm"
-    ],
-    "php84-mysql": [
-      "akaunting",
-      "dolibarr",
-      "egroupware",
-      "espocrm",
-      "frontaccounting",
-      "invoice-ninja",
-      "invoice-ninja-api",
-      "nextcloud",
-      "nextcloud-alpine",
-      "nextcloud-external",
-      "nextcloud-imaging",
-      "nextcloud-nginx",
-      "pydio",
-      "suitecrm",
-      "vtigercrm"
-    ],
-    "php84-pdo": [
-      "akaunting",
-      "dolibarr",
-      "egroupware",
-      "espocrm",
-      "frontaccounting",
-      "invoice-ninja",
-      "invoice-ninja-api",
-      "suitecrm",
-      "vtigercrm"
-    ],
-    "php84-pgsql": ["cachet"],
-    "php84-php84-gd": ["cachet", "privatebin-nginx"],
-    "php84-php84-intl": ["rainloop", "roundcube"],
-    "php84-php84-mbstring": [
-      "cachet",
-      "composer-audit",
-      "ldap-account-manager",
-      "privatebin-nginx",
-      "rainloop",
+    "php-session": [
+      "photoshow",
       "roundcube"
     ],
-    "php84-php84-mysql": ["cachet"],
-    "php84-php84-xml": [
-      "cachet",
-      "composer-audit",
-      "ldap-account-manager",
-      "privatebin-nginx",
-      "rainloop",
-      "roundcube"
+    "php-valkey": [
+      "cachet"
     ],
-    "php84-redis": ["cachet"],
-    "php84-sqlite-libs": ["cachet", "organizer"],
-    "php84-xml": [
-      "akaunting",
-      "dolibarr",
-      "egroupware",
-      "espocrm",
-      "frontaccounting",
-      "invoice-ninja",
-      "invoice-ninja-api",
-      "nextcloud",
-      "nextcloud-alpine",
-      "nextcloud-external",
-      "nextcloud-imaging",
-      "nextcloud-nginx",
-      "pydio",
-      "suitecrm",
-      "vtigercrm"
+    "pillow==10.4.0": [
+      "immich-machine-learning",
+      "immich-ml"
     ],
-    "php84-zip": ["cachet", "rainloop", "roundcube"],
-    "postgresql-16-postgis-3": ["postgis"],
-    "postgresql-16-timescaledb": ["timescaledb"],
-    "postgresql-client-17": ["postgresql-anonymizer"],
-    "postgresql-client-__VAR__": ["postgres-backup", "postgres-restore", "postgresql-init"],
+    "pinecone-client": [
+      "pinecone"
+    ],
+    "pip3": [
+      "maxbot",
+      "neptune",
+      "objectrocket",
+      "singlestore"
+    ],
+    "pipefail\\n#": [
+      "docker-clean"
+    ],
+    "placeholder": [
+      "organizer"
+    ],
+    "placeholder</h1": [
+      "cinny"
+    ],
+    "planka": [
+      "planka"
+    ],
+    "planka:planka": [
+      "planka"
+    ],
+    "postgraphile@__VAR__": [
+      "graphile"
+    ],
+    "postgresql-__VAR__-client": [
+      "postgres-backup",
+      "postgres-restore",
+      "postgresql-init"
+    ],
     "postgresql-libs": [
-      "authentik",
-      "authentik-geoip",
-      "authentik-proxy",
-      "authentik-worker",
-      "erpnext-worker",
-      "openproject",
-      "postgresql-anonymizer",
-      "postgresql-patroni",
-      "questdb-python",
-      "redash",
-      "redmine",
-      "sentry",
-      "sentry-cron",
-      "sentry-worker",
-      "vaultwarden-postgres"
+      "onlyoffice-communityserver",
+      "onlyoffice-documentserver",
+      "onlyoffice-documentserver-ee"
     ],
-    "postgrey": ["postgrey"],
-    "ppp": ["pptpd"],
-    "python3-minimal": ["awslogs", "azurelogs", "gcplogs", "python"],
-    "redis": ["redis", "redis-6", "redis-7"],
-    "rkhunter": ["rkhunter"],
-    "ruby3.1": ["openproject", "redmine"],
-    "scap-workbench": ["scap-workbench"],
-    "slapd": ["389ds", "openldap-backup"],
-    "soap": ["dolibarr", "vtigercrm"],
-    "spamassassin": ["spamassassin"],
-    "spamc": ["spamassassin"],
-    "sssd": ["freeipa-client"],
-    "sssd-tools": ["freeipa-client"],
-    "syslog-ng-core": ["syslog-ng"],
-    "temurin-21-jre-headless": ["openjdk-alpine"],
-    "virtuoso-opensource": ["virtuoso"],
-    "virtuoso-opensource-7": ["virtuoso"],
-    "xz-utils": ["mysql-backup", "mysql-restore", "postgres-backup", "postgres-restore"],
-    "zlib1g-dev": ["authentik", "authentik-worker", "sentry", "sentry-cron", "sentry-worker"]
+    "prefect": [
+      "prefect",
+      "prefect-server"
+    ],
+    "production": [
+      "singlestore"
+    ],
+    "provides": [
+      "neptune",
+      "objectrocket",
+      "singlestore"
+    ],
+    "ps": [
+      "docker-clean"
+    ],
+    "pulsar": [
+      "pulsar-functions",
+      "pulsar-proxy"
+    ],
+    "pymongo": [
+      "objectrocket"
+    ],
+    "pymysql": [
+      "singlestore"
+    ],
+    "pymysql,": [
+      "singlestore"
+    ],
+    "pymysql/sqlalchemy": [
+      "singlestore"
+    ],
+    "python": [
+      "meilisearch-python"
+    ],
+    "python:python": [
+      "meilisearch-python"
+    ],
+    "qbitmanage==4.2.0": [
+      "qbitmanage"
+    ],
+    "qbittorrent": [
+      "qbittorrent",
+      "qbittorrent-nox"
+    ],
+    "qbittorrent:qbittorrent": [
+      "qbittorrent"
+    ],
+    "questdb": [
+      "questdb"
+    ],
+    "r2c": [
+      "r2c-bench"
+    ],
+    "rabbitmq": [
+      "rabbitmq",
+      "rabbitmq-amqp",
+      "rabbitmq-delayed",
+      "rabbitmq-federation",
+      "rabbitmq-management",
+      "rabbitmq-mqtt",
+      "rabbitmq-stomp"
+    ],
+    "rabbitmq:rabbitmq": [
+      "rabbitmq"
+    ],
+    "rblake": [
+      "rblake"
+    ],
+    "redis": [
+      "argocd-redis",
+      "redis-cluster",
+      "redis-sentinel",
+      "redis-vert",
+      "redis7",
+      "redismodules"
+    ],
+    "redis:redis": [
+      "redis7"
+    ],
+    "redisinsight": [
+      "redis-insight"
+    ],
+    "repo": [
+      "automatic1111",
+      "bazarr",
+      "bazarr-subliminal",
+      "comfyui",
+      "gallery3",
+      "stable-diffusion-webui",
+      "text-generation-webui"
+    ],
+    "repo-security": [
+      "repo-security"
+    ],
+    "repo-supervisor": [
+      "repo-supervisor"
+    ],
+    "requirements.txt": [
+      "automatic1111",
+      "bazarr",
+      "bazarr-subliminal",
+      "comfyui",
+      "gallery3",
+      "stable-diffusion-webui",
+      "text-generation-webui"
+    ],
+    "rmi": [
+      "docker-clean"
+    ],
+    "rmilter": [
+      "rmilter"
+    ],
+    "root:root": [
+      "sssd"
+    ],
+    "roundcube": [
+      "roundcube"
+    ],
+    "rss2email==3.15.1": [
+      "rss2email"
+    ],
+    "ruby-irb": [
+      "dependabot"
+    ],
+    "ruby-rdoc": [
+      "dependabot"
+    ],
+    "runner": [
+      "github-actions-minimal",
+      "github-actions-runner"
+    ],
+    "runner:runner": [
+      "github-actions-runner"
+    ],
+    "scikit-learn": [
+      "immich-machine-learning",
+      "jupyter-scikit"
+    ],
+    "scrapyd==1.5.0": [
+      "scrapyd"
+    ],
+    "script\\n#": [
+      "docker-clean"
+    ],
+    "scylla": [
+      "scylladb"
+    ],
+    "searxng": [
+      "searxng"
+    ],
+    "searxng:searxng": [
+      "searxng"
+    ],
+    "secrets-scanner": [
+      "secrets-scanner"
+    ],
+    "secretz": [
+      "secretz"
+    ],
+    "shh": [
+      "shh"
+    ],
+    "sigal==2.3.0": [
+      "sigal"
+    ],
+    "singer-python": [
+      "singer"
+    ],
+    "singlestore": [
+      "singlestore"
+    ],
+    "sleep": [
+      "caddy-alpine",
+      "forgejo",
+      "grafana-toolkit",
+      "graphile",
+      "keycloak"
+    ],
+    "splunk": [
+      "splunk-forwarder"
+    ],
+    "sqlalchemy": [
+      "singlestore"
+    ],
+    "sqlalchemy,": [
+      "singlestore"
+    ],
+    "sqlite:sqlite": [
+      "sqlite"
+    ],
+    "stalwart": [
+      "stalwart-bitnami"
+    ],
+    "subliminal": [
+      "bazarr-subliminal"
+    ],
+    "synapse": [
+      "chat-server"
+    ],
+    "tensorboard": [
+      "tensor",
+      "tensorboard"
+    ],
+    "tensorboard==__VAR__": [
+      "tensor"
+    ],
+    "tensorflow": [
+      "jupyter-tensorflow",
+      "tensorflow"
+    ],
+    "the": [
+      "singlestore"
+    ],
+    "then": [
+      "caddy-alpine",
+      "cinny",
+      "keycloak"
+    ],
+    "then\\n": [
+      "docker-clean"
+    ],
+    "this": [
+      "neptune",
+      "objectrocket",
+      "singlestore"
+    ],
+    "tigergraph": [
+      "tigergraph",
+      "tigergraph-ecosystem"
+    ],
+    "to": [
+      "neptune",
+      "objectrocket"
+    ],
+    "toolkit": [
+      "grafana-toolkit"
+    ],
+    "tools:": [
+      "neptune"
+    ],
+    "torch": [
+      "jupyter-pytorch",
+      "pytorch",
+      "text-generation-webui",
+      "transformers-gpu"
+    ],
+    "torchaudio": [
+      "pytorch"
+    ],
+    "torchvision": [
+      "jupyter-pytorch",
+      "pytorch",
+      "text-generation-webui"
+    ],
+    "transfer": [
+      "transferhelper"
+    ],
+    "transformers": [
+      "stable-diffusion",
+      "transformers",
+      "transformers-gpu"
+    ],
+    "transmission": [
+      "transmission"
+    ],
+    "transmission:transmission": [
+      "transmission"
+    ],
+    "true)\\nfor": [
+      "docker-clean"
+    ],
+    "true)\\nif": [
+      "docker-clean"
+    ],
+    "true\\n": [
+      "docker-clean"
+    ],
+    "true\\nfi\\n\\necho": [
+      "docker-clean"
+    ],
+    "user": [
+      "text-generation-webui"
+    ],
+    "user:user": [
+      "text-generation-webui"
+    ],
+    "usermod": [
+      "apache"
+    ],
+    "using": [
+      "automatic1111",
+      "bazarr",
+      "bazarr-subliminal",
+      "comfyui",
+      "gallery3",
+      "stable-diffusion-webui",
+      "text-generation-webui"
+    ],
+    "uvicorn==0.30.0": [
+      "immich-machine-learning",
+      "immich-ml"
+    ],
+    "v%s": [
+      "docker-clean",
+      "dotdns",
+      "keycloak",
+      "neptune",
+      "objectrocket",
+      "singlestore"
+    ],
+    "v1.5.2": [
+      "bazarr",
+      "bazarr-subliminal"
+    ],
+    "v1.9.3": [
+      "automatic1111",
+      "stable-diffusion-webui"
+    ],
+    "v3.0.0": [
+      "gallery3"
+    ],
+    "v__VAR__": [
+      "text-generation-webui"
+    ],
+    "vecs": [
+      "vecs-db"
+    ],
+    "virtuoso": [
+      "virtuoso"
+    ],
+    "vlatest": [
+      "comfyui"
+    ],
+    "vllm": [
+      "vllm"
+    ],
+    "wandb": [
+      "wandb-server",
+      "weights-biases"
+    ],
+    "weaviate-client": [
+      "weaviate-python"
+    ],
+    "www-data": [
+      "apache"
+    ],
+    "xzf": [
+      "elasticsearch",
+      "elasticsearch-7",
+      "keycloak",
+      "neo4j",
+      "opensearch-dashboards"
+    ],
+    "your": [
+      "neptune",
+      "objectrocket",
+      "singlestore"
+    ],
+    "zigpy==0.60.0": [
+      "athom",
+      "homekit",
+      "zoe",
+      "zzh"
+    ],
+    "zoe": [
+      "zoe"
+    ],
+    "zzh": [
+      "zzh"
+    ]
   }
 }

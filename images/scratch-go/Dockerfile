@@ -13,6 +13,8 @@
 # =============================================================================
 
 ARG GO_VERSION=1.23
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM golang:${GO_VERSION}-bookworm AS builder
 ENV GOTOOLCHAIN=auto

@@ -4,6 +4,9 @@
 # =============================================================================
 
 
+ARG APP_UID=65532
+ARG APP_GID=65532
+
 FROM scratch
 USER 65532:65532
 LABEL org.opencontainers.image.title="grub" \

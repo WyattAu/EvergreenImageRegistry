@@ -1,6 +1,8 @@
 ARG VERSION=4.2.2
 ARG TARGETARCH
 ARG BUILD_DATE
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM docker.io/tigergraph/tigergraph:4.2.2 AS upstream
 

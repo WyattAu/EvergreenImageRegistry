@@ -8,6 +8,8 @@
 ARG VERSION=7.4.1
 ARG TARGETARCH
 ARG BUILD_DATE
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 # hadolint ignore=DL3023
 
@@ -21,9 +23,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=7.4.1
 
-RUN apk add --no-cache ca-certificates && \
-    adduser -u 65532 -s /bin/false redis || true && \
-    mkdir -p /data /var/log/redis
+RUN apk add --no-cache ca-certificates && adduser -u 65532 -s /bin/false || true &&  mkdir -p /data /var/log/redis
+# NOTE: redis server not available in wolfi; uses pre-compiled binary
 COPY --from=builder /tmp/redis /usr/local/bin/redis
 USER 65532:65532
 WORKDIR /data

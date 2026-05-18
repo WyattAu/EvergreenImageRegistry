@@ -2,6 +2,9 @@
 # This image is a placeholder. See: https://github.com/innernet-rs/innernet
 # Alternative: use Headscale (github.com/juanfont/headscale) for WireGuard overlay networks
 
+ARG APP_UID=65532
+ARG APP_GID=65532
+
 FROM scratch
 COPY --from=debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 

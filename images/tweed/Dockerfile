@@ -1,5 +1,7 @@
 ARG VERSION=latest
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM ghcr.io/vmware-tanzu/tweed:${VERSION} AS upstream
 

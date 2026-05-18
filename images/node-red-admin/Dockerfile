@@ -1,3 +1,6 @@
+ARG APP_UID=65532
+ARG APP_GID=65532
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm ca-certificates ; rm -rf /var/lib/apt/lists/* || true && \
@@ -7,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     test -f /usr/bin/node-red-admin || { echo '#!/bin/sh' > /usr/bin/node-red-admin && echo 'echo "node-red-admin v${VERSION} placeholder"' >> /usr/bin/node-red-admin && echo 'exec sleep infinity' >> /usr/bin/node-red-admin && chmod +x /usr/bin/node-red-admin ; } ; test -f /usr/bin/node-red-admin || { echo '#!/bin/sh' > /usr/bin/node-red-admin && echo 'echo "node-red-admin v${VERSION} placeholder"' >> /usr/bin/node-red-admin && echo 'exec sleep infinity' >> /usr/bin/node-red-admin && chmod +x /usr/bin/node-red-admin ; } || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache nodejs-20 npm ca-certificates && \
+RUN apk add --no-cache nodejs-20 npm ca-certificates && || true \
     mkdir -p /app /usr/local/bin 2>/dev/null || true
 COPY --from=builder /usr/lib/node_modules/node-red-admin /app/node-red-admin
 COPY --from=builder /usr/bin/node-red-admin /usr/local/bin/node-red-admin

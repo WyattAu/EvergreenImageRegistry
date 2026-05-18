@@ -1,5 +1,7 @@
 ARG VERSION=2.4.9
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM docker.io/zilliz/attu:v2.4.9 AS upstream
 

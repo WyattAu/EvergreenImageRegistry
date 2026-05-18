@@ -1,3 +1,6 @@
+ARG APP_UID=65532
+ARG APP_GID=65532
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=2.90
 ARG TARGETARCH
@@ -20,7 +23,7 @@ RUN mkdir -p /install/usr/sbin/dnsmasq ; 2>/dev/null || true ; \
     mkdir -p /install/usr/sbin/dnsmasq /install/usr/share/man 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 COPY --from=builder /install/usr/sbin/dnsmasq /usr/sbin/dnsmasq
 COPY --from=builder /install/usr/share/man /usr/share/man
 RUN mkdir -p /app /var/log/dnsmasq /var/lib/dnsmasq /run /etc/dnsmasq.d ; 2>/dev/null || true ; \

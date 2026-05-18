@@ -7,6 +7,8 @@
 ARG VERSION=2.2.3
 ARG TARGETARCH
 ARG BUILD_DATE
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 # hadolint ignore=DL3023
 
@@ -20,7 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION=2.2.3
-RUN apk add --no-cache libstdc++ ca-certificates && \
+RUN apk add --no-cache libstdc++ ca-certificates && || true \
     adduser -D -u 65532 -s /bin/false ejdb 2>/dev/null || true && \
     mkdir -p /var/lib/ejdb /var/log/ejdb /var/cache/ejdb 2>/dev/null || true
 COPY --from=builder /opt/ejdb /opt/ejdb

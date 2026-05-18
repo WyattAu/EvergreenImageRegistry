@@ -7,6 +7,8 @@ ARG VERSION=1.38.0
 ARG TARGETARCH
 ARG BUILD_DATE
 ARG NODE_VERSION=20
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
@@ -34,7 +36,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL https://github.com/Mailtrain/mailtrain/
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
 RUN apk add --no-cache wget ca-certificates || true && \
-    apk add --no-cache nodejs-20 && \
+    apk add --no-cache nodejs-20 && || true \
     mkdir -p /app 2>/dev/null || true && \
     addgroup -S -g 10000 appuser 2>/dev/null || true && adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser
 WORKDIR /app

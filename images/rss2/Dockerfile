@@ -1,6 +1,8 @@
 ARG TARGETARCH
 
 ARG VERSION=2025-08-05
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION
@@ -10,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     test -d /app || { echo "ERROR: failed to download rss-bridge" && exit 1; }
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-RUN apk add --no-cache ca-certificates php php-cli php-curl php-mbstring php-xml php-simplexml php-json php-iconv php-dom && \
+RUN apk add --no-cache ca-certificates php-8.4 php-8.4-cli php-8.4-curl php-8.4-mbstring php-8.4-xml php-8.4-simplexml php-8.4-json php-8.4-iconv php-8.4-dom && \
     addgroup -g 65532 app 2>/dev/null || true && \
     adduser -D -u 65532 -G app app 2>/dev/null || true && \
     mkdir -p /app /var/log/rssbridge /var/cache/rssbridge 2>/dev/null || true && \

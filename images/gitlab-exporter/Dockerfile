@@ -1,5 +1,7 @@
 ARG VERSION=0.8.0
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM ghcr.io/prometheus-community/gitlab-exporter:${VERSION} AS upstream
 

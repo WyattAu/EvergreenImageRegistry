@@ -1,5 +1,7 @@
 ARG VERSION=0.1.0
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM ghcr.io/david415/wg-cloud:${VERSION} AS upstream
 

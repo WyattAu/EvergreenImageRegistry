@@ -1,5 +1,7 @@
 ARG VERSION=1.7.1
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM hashicorp/vault-csi-provider:${VERSION} AS upstream
 

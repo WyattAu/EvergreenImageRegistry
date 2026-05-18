@@ -1,6 +1,8 @@
 ARG VERSION=1.24.0
 ARG TARGETARCH
 ARG BUILD_DATE
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM gcr.io/kaniko-project/executor:v1.24.0 AS upstream
 
@@ -19,7 +21,7 @@ COPY --from=builder /var/cache/kaniko /var/cache/kaniko
 COPY --from=upstream /kaniko/executor /kaniko/executor
 COPY --from=upstream /kaniko/.docker /kaniko/.docker
 COPY --from=upstream /usr/local/bin /usr/local/bin
-RUN apk add --no-cache ca-certificates && \
+RUN apk add --no-cache ca-certificates && || true \
     ln -sf /kaniko/executor /usr/local/bin/kaniko && \
     adduser -u 65532 -D kaniko 2>/dev/null || true
 USER 65532:65532

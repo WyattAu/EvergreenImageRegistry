@@ -5,6 +5,9 @@
 # =============================================================================
 
 
+ARG APP_UID=65532
+ARG APP_GID=65532
+
 FROM gcr.io/distroless/static-debian12@sha256:20bc6c0bc4d625a22a8fde3e55f6515709b32055ef8fb9cfbddaa06d1760f838
 LABEL org.opencontainers.image.title="distroless" \
       org.opencontainers.image.description="Evergreen reference to gcr.io/distroless/static-debian12 for static binary containers" \

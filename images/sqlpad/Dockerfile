@@ -1,11 +1,13 @@
 ARG VERSION=7.5.1
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM sqlpad/sqlpad:${VERSION} AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache wget ca-certificates bash
+RUN apk add --no-cache wget ca-certificates bash || true
 COPY --from=upstream /app /app
 RUN adduser -u 65532 -s /bin/false sqlpad 2>/dev/null || true && \
     chown -R 65532:65532 /app

@@ -1,3 +1,6 @@
+ARG APP_UID=65532
+ARG APP_GID=65532
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS builder
 ARG VERSION=1.6.9
 ARG TARGETARCH
@@ -13,10 +16,10 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/roundcube/roundcube
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=1.6.9
-RUN apk add --no-cache php php-fpm php-session php-mbstring php-xml php-iconv php-dom php-curl php-intl php-json ca-certificates || true && \
+RUN apk add --no-cache php-8.4 php-8.4-fpm php-8.4-session php-8.4-mbstring php-8.4-xml php-8.4-iconv php-8.4-dom php-8.4-curl php-8.4-intl ca-certificates || true && \
     addgroup -S -g 10000 roundcube 2>/dev/null || true && \
     adduser -u 65532 -G roundcube -D -h /usr/share/webapps/roundcube -s /bin/false roundcube 2>/dev/null || true && \
-    mkdir -p /usr/share/webapps/roundcube /var/lib/roundcube /var/log/roundcube /var/run/php 2>/dev/null || true
+    mkdir -p /usr/share/webapps/roundcube /var/lib/roundcube /var/log/roundcube /var/run/php-8.4 2>/dev/null || true
 COPY --from=builder /build /usr/share/webapps/roundcube
 RUN chown -R 65532:65532 /usr/share/webapps/roundcube /var/lib/roundcube /var/log/roundcube /var/run/php 2>/dev/null || true
 USER 65532:65532

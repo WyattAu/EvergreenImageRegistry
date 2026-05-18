@@ -65,6 +65,8 @@ ARG VERSION=8.3
 ARG BUILD_DATE
 
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 
 
@@ -96,7 +98,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 
 
 
-RUN apk add --no-cache curl php php-curl php-mbstring php-xml php-zip || true
+RUN apk add --no-cache curl php-8.4 php-8.4-curl php-8.4-mbstring php-8.4-xml php-8.4-zip || true
 
 
 

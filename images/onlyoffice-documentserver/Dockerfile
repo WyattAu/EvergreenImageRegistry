@@ -1,6 +1,8 @@
 ARG VERSION=8.3.3
 ARG TARGETARCH
 ARG BUILD_DATE
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS installer
 ARG VERSION=8.3.3
@@ -32,14 +34,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         /etc/onlyoffice /usr/lib/onlyoffice /opt/onlyoffice 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=8.3.3
-RUN apk add --no-cache ca-certificates tzdata fontconfig \
-        libxml2 libxslt libstdc++ libgcc libjpeg-turbo \
-        libpng libtiff libwebp libcurl openssl-libs \
-        freetype harfbuzz graphite2 bzip2-libs zlib \
-        postgresql-libs glib || true && \
-    mkdir -p /var/log/onlyoffice /var/lib/onlyoffice /var/www/onlyoffice \
-        /etc/onlyoffice /usr/lib/onlyoffice /opt/onlyoffice \
-        /var/run/onlyoffice 2>/dev/null || true
+RUN apk add --no-cache ca-certificates tzdata fontconfig libxml2 libxslt libstdc++ libgcc libjpeg-turbo libpng libtiff libwebp libcurl freetype harfbuzz graphite2 bzip2-libs zlib libpq glib || true &&  mkdir -p /var/log/onlyoffice /var/lib/onlyoffice /var/www/onlyoffice  /etc/onlyoffice /usr/lib/onlyoffice /opt/onlyoffice  /var/run/onlyoffice 2>/dev/null || true
 COPY --from=installer /var/log/onlyoffice /var/log/onlyoffice
 COPY --from=installer /var/lib/onlyoffice /var/lib/onlyoffice
 COPY --from=installer /var/www/onlyoffice /var/www/onlyoffice

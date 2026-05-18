@@ -1,5 +1,7 @@
 ARG VERSION=5.17.0
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM ghcr.io/hazelcast/hazelcast-platform-operator:v${VERSION} AS upstream
 

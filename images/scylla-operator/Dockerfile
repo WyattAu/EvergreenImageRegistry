@@ -1,5 +1,7 @@
 ARG VERSION=1.14.2
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM docker.io/scylladb/scylla-operator:${VERSION} AS upstream
 

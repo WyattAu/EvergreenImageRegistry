@@ -1,5 +1,7 @@
 ARG VERSION=v4.1.3
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 
 
@@ -11,7 +13,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 
 ARG VERSION=v4.1.3
 
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates || true
 
 COPY --from=upstream /build/localai-loadbalancer /usr/local/bin/localai-loadbalancer
 

@@ -1,5 +1,7 @@
 ARG VERSION=v1.38.1
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM docker.dragonflydb.io/dragonfly:${VERSION} AS upstream
 

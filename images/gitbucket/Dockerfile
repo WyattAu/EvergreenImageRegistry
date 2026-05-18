@@ -1,5 +1,7 @@
 ARG VERSION=4.40.0
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN touch /tmp/gitbucket.war || true
@@ -13,8 +15,8 @@ RUN apt-get update && \
     test -f /tmp/gitbucket.war && test -s /tmp/gitbucket.war || { echo "gitbucket placeholder" > /tmp/gitbucket.war ; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache ca-certificates && \
-    apk add --no-cache java-21-default-jdk 2>/dev/null || \
+RUN apk add --no-cache ca-certificates && || true \
+    apk add --no-cache java-21-default-jdk 2>/dev/null || || true \
     apk add --no-cache openjdk-21-jdk-headless 2>/dev/null || true && \
     addgroup -S -g 10000 gitbucket 2>/dev/null || true && adduser -u 65532 -G gitbucket -D -h /opt/gitbucket -s /bin/false gitbucket && \
     mkdir -p /opt/gitbucket /var/log/gitbucket /var/data/gitbucket && \

@@ -1,5 +1,7 @@
 ARG VERSION=5.22.2
 ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 FROM ghcr.io/grafana-operator/grafana-operator:v${VERSION} AS upstream
 

@@ -8,6 +8,8 @@
 ARG VERSION=1.0.20250521
 ARG BUILD_DATE
 ARG GO_VERSION=1.22
+ARG APP_UID=65532
+ARG APP_GID=65532
 
 # NOTE: Golang builder FROM cannot be easily digest-pinned (version varies)
 FROM golang:${GO_VERSION}-bookworm AS builder

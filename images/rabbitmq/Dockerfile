@@ -12,19 +12,25 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+FROM scratch AS entrypoint
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ENV HEALTH_CMD="rabbitmq-diagnostics -q ping" \
     READY_CMD="rabbitmq-diagnostics -q check_running" \
     STARTUP_CMD="rabbitmq-diagnostics -q ping" \
     EVERGREEN_LOG_LEVEL=info
-RUN apk add --no-cache ca-certificates && \
+RUN apk add --no-cache bash ca-certificates && \
     adduser -u 65532 -D rabbitmq 2>/dev/null || true && \
     mkdir -p /app /var/log/rabbitmq-server /var/cache/rabbitmq-server && chown -R rabbitmq:rabbitmq /app /var/log/rabbitmq-server /var/cache/rabbitmq-server 2>/dev/null || true
+COPY --from=entrypoint /usr/local/bin/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod 755 /usr/local/bin/docker-entrypoint.sh
 WORKDIR /app
 EXPOSE 5672 15672
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD rabbitmq-diagnostics check_running
-ENTRYPOINT ["sh", "-c", "rabbitmq-server"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+CMD ["rabbitmq-server"]
 LABEL org.opencontainers.image.title="rabbitmq" \
       org.opencontainers.image.description="RabbitMQ - message broker software" \
       org.opencontainers.image.version="3.13" \

@@ -10,7 +10,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "docker-image"
-url = "ghcr.io/kanidm/kanidm:${VERSION}"
+url = "docker.io/kanidm/tools:${VERSION}"
 
 [runtime]
 entrypoint = ["/kanidm"]
@@ -22,7 +22,7 @@ expose = [9101]
 "org.opencontainers.image.source" = "https://github.com/kanidm/kanidm"
 "org.opencontainers.image.title" = "kanidm"
 "org.opencontainers.image.vendor" = "Kanidm"
-"org.opencontainers.image.version" = "1.9.2"
+"org.opencontainers.image.version" = "1.9.4"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"

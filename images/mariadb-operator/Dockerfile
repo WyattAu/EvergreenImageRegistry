@@ -3,7 +3,7 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-FROM ghcr.io/mariadb-operator/mariadb-operator:v${VERSION} AS upstream
+FROM ghcr.io/mariadb-operator/mariadb-operator:${VERSION} AS upstream
 
 FROM scratch
 COPY --from=upstream /bin/mariadb-operator /usr/local/bin/mariadb-operator

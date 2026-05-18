@@ -15,6 +15,9 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN useradd -m -u 65532 -s /usr/bin/false redis 2>/dev/null || true && \
     mkdir -p /app /var/log/redis /var/cache/redis 2>/dev/null || true
+FROM scratch AS entrypoint
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache ca-certificates
@@ -24,12 +27,15 @@ COPY --from=builder /etc/group /etc/group
 COPY --from=builder --chown=65532:65532 /app /app
 COPY --from=builder --chown=65532:65532 /var/log/redis /var/log/redis
 COPY --from=builder --chown=65532:65532 /var/cache/redis /var/cache/redis
+COPY --from=entrypoint /usr/local/bin/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod 755 /usr/local/bin/docker-entrypoint.sh
 USER 65532:65532
 WORKDIR /app
 EXPOSE 6379
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD redis-cli ping
-ENTRYPOINT ["redis"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+CMD ["redis-server"]
 LABEL org.opencontainers.image.title="redis-7" \
       org.opencontainers.image.description="redis-7 container image" \
       org.opencontainers.image.version="7.4.1" \

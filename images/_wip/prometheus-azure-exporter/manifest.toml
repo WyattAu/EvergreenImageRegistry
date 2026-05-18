@@ -1,7 +1,7 @@
 [metadata]
-name = "prometheus-gcp-exporter"
+name = "prometheus-azure-exporter"
 version = "latest"
-description = "Stackdriver Prometheus sidecar for GCP metrics"
+description = "Prometheus exporter for Azure Monitor metrics"
 
 [build]
 base = "scratch"
@@ -10,19 +10,19 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "docker-image"
-url = "gcr.io/google-containers/prometheus-to-sd:${VERSION}"
+url = "ghcr.io/robustperception/azure_metrics_exporter:${VERSION}"
 
 [runtime]
-entrypoint = ["/stackdriver-prometheus-sidecar"]
+entrypoint = ["/azure_metrics_exporter"]
 
 [ports]
-expose = [9090, 9101]
+expose = [9276, 9101]
 
 [labels]
-"org.opencontainers.image.description" = "Stackdriver Prometheus sidecar for GCP metrics"
-"org.opencontainers.image.title" = "prometheus-gcp-exporter"
-"org.opencontainers.image.vendor" = "Google Cloud Platform"
-"org.opencontainers.image.version" = "0.10.0"
+"org.opencontainers.image.description" = "Prometheus exporter for Azure Monitor metrics"
+"org.opencontainers.image.title" = "prometheus-azure-exporter"
+"org.opencontainers.image.vendor" = "Robust Perception"
+"org.opencontainers.image.version" = "1.4.0"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"
@@ -41,3 +41,5 @@ expose = [9090, 9101]
 "evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "ztunnel"
 
+
+status = "wip"

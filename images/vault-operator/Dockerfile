@@ -1,9 +1,9 @@
-ARG VERSION=26.3.0
+ARG VERSION=1.32.1
 ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-FROM ghcr.io/banzaicloud/bank-vaults:v${VERSION} AS upstream
+FROM ghcr.io/bank-vaults/bank-vaults:v${VERSION} AS upstream
 
 FROM scratch
 COPY --from=upstream /bank-vaults /usr/local/bin/bank-vaults
@@ -18,7 +18,7 @@ LABEL org.opencontainers.image.title="vault-operator" \
       org.opencontainers.image.description="vault-operator container image" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Banzai Cloud" \
-      org.opencontainers.image.source="https://github.com/banzaicloud/bank-vaults" \
+      org.opencontainers.image.source="https://github.com/bank-vaults/bank-vaults" \
       evergreen.image.tier="1" \
       evergreen.image.category="security" \
       evergreen.image.status="functional" \

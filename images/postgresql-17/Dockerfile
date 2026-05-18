@@ -27,14 +27,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mkdir -p /var/lib/postgresql/data /var/run/postgresql /app || true && \
     test -f /var/lib/postgresql || { echo '#!/bin/sh' > /var/lib/postgresql && echo 'echo "postgresql-17 v${VERSION} placeholder"' >> /var/lib/postgresql && echo 'exec sleep infinity' >> /var/lib/postgresql && chmod +x /var/lib/postgresql ; } ; \
     test -f /var/run/postgresql || { echo '#!/bin/sh' > /var/run/postgresql && echo 'echo "postgresql-17 v${VERSION} placeholder"' >> /var/run/postgresql && echo 'exec sleep infinity' >> /var/run/postgresql && chmod +x /var/run/postgresql ; } ; test -f /var/run/postgresql || { echo '#!/bin/sh' > /var/run/postgresql && echo 'echo "postgresql-17 v${VERSION} placeholder"' >> /var/run/postgresql && echo 'exec sleep infinity' >> /var/run/postgresql && chmod +x /var/run/postgresql ; } || true
+FROM scratch AS entrypoint
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
-RUN apk add --no-cache gnupg curl ca-certificates libzstd1 liblz4-1 " || true
+RUN apk add --no-cache bash gnupg curl ca-certificates libzstd1 liblz4-1 || true
 COPY --from=builder /var/lib/postgresql /var/lib/postgresql
 COPY --from=builder /var/run/postgresql /var/run/postgresql
-RUN usermod -u 65532 postgres && \
+COPY --from=entrypoint /usr/local/bin/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod 755 /usr/local/bin/docker-entrypoint.sh && \
+    usermod -u 65532 postgres && \
     mkdir -p /app /var/log/postgresql-17 /var/cache/postgresql-17 ; \
-    chown -R 65532:65532 /var/lib/postgresql /var/run/postgresql /app /var/log/postgresql-17 /var/cache/postgresql-17
+    mkdir -p /docker-entrypoint-initdb.d && \
+    chown -R 65532:65532 /var/lib/postgresql /var/run/postgresql /app /var/log/postgresql-17 /var/cache/postgresql-17 /docker-entrypoint-initdb.d
 
 USER 65532:65532
 WORKDIR /app
@@ -43,7 +49,8 @@ ENV PGDATA="/var/lib/postgresql/data" \
 EXPOSE 5432
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD pg_isready -h localhost -p 5432
-ENTRYPOINT ["postgres"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+CMD ["postgres"]
 LABEL org.opencontainers.image.title="postgresql-17" \
       org.opencontainers.image.version="17.2" \
       org.opencontainers.image.description="PostgreSQL 17 Database Server" \

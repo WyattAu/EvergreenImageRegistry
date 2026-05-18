@@ -56,13 +56,20 @@ scratch → wolfi → RHEL UBI micro → RHEL UBI minimal → RHEL UBI standard
 ```
 Can the workload run as a static binary with zero deps?
   YES → scratch
-  NO  → Does it need glibc (not musl-compatible)?
-          YES → Does it need packages beyond microdnf?
-                  YES → Does it need packages beyond UBI minimal?
-                          YES → UBI standard
-                          NO  → UBI minimal
-                  NO  → UBI micro
-          NO  → wolfi
+  NO  → Does the build copy compiled artifacts between stages?
+          YES → Were those artifacts compiled against glibc?
+                  YES → Final stage MUST be glibc base (UBI minimal or UBI standard)
+                          Does it need packages beyond UBI minimal?
+                                  YES → UBI standard
+                                  NO  → UBI minimal
+                  NO  → wolfi (artifacts are musl-compatible)
+          NO  → Does it need glibc (not musl-compatible)?
+                  YES → Does it need packages beyond microdnf?
+                          YES → Does it need packages beyond UBI minimal?
+                                  YES → UBI standard
+                                  NO  → UBI minimal
+                          NO  → UBI micro
+                  NO  → wolfi
 ```
 
 #### Banned Base Images
@@ -83,6 +90,18 @@ When an image cannot use the highest-preference base image, the Dockerfile **mus
 LABEL evergreen.base.image="ubi-minimal"
 LABEL evergreen.base.fallback_reason="wolfi lacks required package: libpq-dev-16"
 ```
+
+#### libc Consistency (C027)
+
+Multi-stage builds that compile artifacts in a glibc-based builder stage (debian, python:slim, ubuntu) and copy them to a musl-based final stage (wolfi, scratch) will fail at runtime. This applies to:
+
+- Python packages with C extensions (psycopg2, Pillow, cryptography, lxml) built via `pip install` in debian and copied to wolfi
+- Node.js native modules compiled against glibc
+- Rust binaries built with `x86_64-unknown-linux-gnu` target (not `musl`)
+
+**For Python images specifically:** Build the virtual environment inside a wolfi builder stage so C extensions compile against musl. If musl wheels are not available on PyPI and source compilation fails, fall back to UBI minimal as the final stage.
+
+This constraint is tracked as C027 in the Image Standards document.
 
 #### wolfi First — Including FIPS
 

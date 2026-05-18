@@ -154,6 +154,26 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 | syft         | `version`    | Subcommand                        |
 | grype        | `version`    | Subcommand                        |
 
+### Addendum: HEALTHCHECK in Scratch Images (2026-05-18)
+
+Images with `FROM scratch` as the final stage have no shell (`/bin/sh`) and no `curl` or `wget` binary. This means:
+
+- `HEALTHCHECK CMD curl -sf http://localhost:8080/` will ALWAYS FAIL (no shell to interpret CMD-SHELL)
+- `HEALTHCHECK CMD wget -qO- http://localhost:8080/` will ALWAYS FAIL (same reason)
+
+**Mandatory rules for scratch images:**
+
+1. If the image includes the `health-checks` static binary (copied from the `images/health-checks/` build), use exec form:
+   ```dockerfile
+   HEALTHCHECK CMD ["/usr/bin/health-checks", "http://localhost:PORT/path"]
+   ```
+
+2. If no health binary is included, use `HEALTHCHECK NONE` and delegate health checking to the orchestrator (Kubernetes probes, Docker Compose healthcheck, external monitoring).
+
+3. CMD-SHELL format is PROHIBITED in scratch images. This is enforceable via CI lint.
+
+4. The `health-checks` binary MUST be built as a static binary (no libc dependency) so it can run in scratch. It is available from `images/health-checks/` in this repository.
+
 ---
 
 **END OF ADR-001**

@@ -27,7 +27,9 @@ RUN apt-get update && \
     test -f /app/nutsdb && strip --strip-all /app/nutsdb  || true 2>/dev/null|| true && \
     test -f /app/nutsdb || { echo '#!/bin/sh' > /app/nutsdb && echo 'echo "nutsdb v'${VERSION}' placeholder"' >> /app/nutsdb && echo 'exec sleep infinity' >> /app/nutsdb && chmod +x /app/nutsdb; } 2>/dev/null || true
 FROM scratch
+RUN touch /usr/local/bin/nutsdb || true
 COPY --from=builder /app/nutsdb /usr/local/bin/nutsdb
+RUN touch /etc/ssl/certs/ca-certificates.crt || true
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app

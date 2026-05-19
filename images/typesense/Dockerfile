@@ -6,8 +6,10 @@ ARG APP_GID=65532
 FROM typesense/typesense:30.2 AS upstream
 
 FROM scratch
-COPY --from=upstream /usr/bin/typesense-server /typesense-server || true
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
+RUN touch /typesense-server || true
+COPY --from=upstream /usr/bin/typesense-server /typesense-server
+RUN mkdir -p /etc/ssl/certs || true && touch /etc/ssl/certs/ca-certificates.crt || true
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8108

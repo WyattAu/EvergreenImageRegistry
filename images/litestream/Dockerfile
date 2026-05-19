@@ -25,8 +25,11 @@ RUN apk add --no-cache ca-certificates wget || true \
 FROM scratch
 ARG VERSION=0.5.11
 ARG BUILD_DATE
+RUN touch /etc/ssl/certs/ca-certificates.crt || true
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+RUN touch /tmp/litestream.tar.gz || true
 COPY --from=builder /tmp/litestream.tar.gz /tmp/litestream.tar.gz
+RUN touch /bin/sh || true
 COPY --from=builder /bin/sh /bin/sh
 RUN ["/bin/sh", "-c", "cd /tmp && tar xzf litestream.tar.gz && cp litestream /litestream && rm -f litestream.tar.gz"]
 

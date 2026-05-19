@@ -6,7 +6,9 @@ ARG APP_GID=65532
 FROM docker.io/victoriametrics/operator:v${VERSION} AS upstream
 
 FROM scratch
+RUN touch /usr/local/bin/vm-operator || true
 COPY --from=upstream /usr/local/bin/manager /usr/local/bin/vm-operator
+RUN touch /etc/ssl/certs/ca-certificates.crt || true
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app

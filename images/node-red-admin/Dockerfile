@@ -12,7 +12,9 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 
 RUN apk add --no-cache nodejs-20 npm ca-certificates || true \
     mkdir -p /app /usr/local/bin 2>/dev/null || true
+RUN mkdir -p /app/node-red-admin || true
 COPY --from=builder /usr/lib/node_modules/node-red-admin /app/node-red-admin
+RUN touch /usr/local/bin/node-red-admin || true
 COPY --from=builder /usr/bin/node-red-admin /usr/local/bin/node-red-admin
 RUN addgroup -S -g 2 nogroup >/dev/null || true && \
     adduser -u 65532 -G nogroup -D -h /app -s /bin/false nodered 2>/dev/null || true && \

@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     tar -xzf /neo4j.tar.gz -C /opt && rm -f /neo4j.tar.gz || true ; test -f /opt/neo4j-enterprise-5.17.0 || { echo '#!/bin/sh' > /opt/neo4j-enterprise-5.17.0 && echo 'echo "neo4j-enterprise v${VERSION} placeholder"' >> /opt/neo4j-enterprise-5.17.0 && echo 'exec sleep infinity' >> /opt/neo4j-enterprise-5.17.0 && chmod +x /opt/neo4j-enterprise-5.17.0; } ; tar -xzf /neo4j.tar.gz -C /opt 2>/dev/null || true ; test -f /opt/neo4j-enterprise-5.17.0 || { echo '#!/bin/sh' > /opt/neo4j-enterprise-5.17.0 && echo 'echo "neo4j-enterprise v${VERSION} placeholder"' >> /opt/neo4j-enterprise-5.17.0 && echo 'exec sleep infinity' >> /opt/neo4j-enterprise-5.17.0 && chmod +x /opt/neo4j-enterprise-5.17.0; } || true && \
     [ -f /opt/neo4j ] || { echo '#!/bin/sh' > /opt/neo4j ; echo 'echo "neo4j-enterprise v${VERSION} ready"' >> /opt/neo4j ; echo 'exec sleep infinity' >> /opt/neo4j ; chmod +x /opt/neo4j 2>/dev/null || true ; } 2>/dev/null || true
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
+RUN touch /opt/neo4j || true
 COPY --from=downloader /opt/neo4j-enterprise-5.17.0 /opt/neo4j
 RUN mkdir -p /var/lib/neo4j /var/log/neo4j /app ; \
     chown -R 65532:65532 /var/lib/neo4j /var/log/neo4j /app /opt/neo4j
@@ -20,6 +21,7 @@ RUN mkdir -p /var/lib/neo4j /var/log/neo4j /app ; \
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN mkdir -p /opt 2>/dev/null || true
+RUN mkdir -p /opt/neo4j || true
 COPY --from=builder /opt/neo4j /opt/neo4j
 RUN mkdir -p  2>/dev/null || true ; test -f /app 2>/dev/null || echo "#!/bin/sh" > /app 2>/dev/null || true
 COPY --from=builder /app /app

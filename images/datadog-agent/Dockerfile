@@ -10,14 +10,22 @@ RUN mkdir -p /app/conf /app/run /app/logs /var/log/datadog 2>/dev/null || true
 
 
 FROM scratch
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
-COPY --from=upstream /opt/datadog/bin/agent /agent || true
-COPY --from=upstream /opt/datadog/bin/trace-agent /trace-agent || true
-COPY --from=upstream /opt/datadog/bin/process-agent /process-agent || true
-COPY --from=builder /app/conf /app/conf || true
-COPY --from=builder /app/run /app/run || true
-COPY --from=builder /app/logs /app/logs || true
-COPY --from=builder /var/log/datadog /var/log/datadog || true
+RUN mkdir -p /etc/ssl/certs || true && touch /etc/ssl/certs/ca-certificates.crt || true
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+RUN touch /agent || true
+COPY --from=upstream /opt/datadog/bin/agent /agent
+RUN touch /trace-agent || true
+COPY --from=upstream /opt/datadog/bin/trace-agent /trace-agent
+RUN touch /process-agent || true
+COPY --from=upstream /opt/datadog/bin/process-agent /process-agent
+RUN mkdir -p /app/conf || true
+COPY --from=builder /app/conf /app/conf
+RUN mkdir -p /app/run || true
+COPY --from=builder /app/run /app/run
+RUN mkdir -p /app/logs || true
+COPY --from=builder /app/logs /app/logs
+RUN mkdir -p /var/log/datadog || true
+COPY --from=builder /var/log/datadog /var/log/datadog
 
 ENV DD_AGENT_VERSION=${VERSION} DD_LOG_LEVEL=info DD_ENABLE_METRICS_ENDPOINT=true
 

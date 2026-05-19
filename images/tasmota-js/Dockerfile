@@ -14,7 +14,9 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 
 RUN apk add --no-cache nodejs-20 npm ca-certificates || true \
     mkdir -p /usr/lib 2>/dev/null || true
+RUN mkdir -p /usr/lib/node_modules || true
 COPY --from=builder /usr/lib/node_modules /usr/lib/node_modules
+RUN mkdir -p /app || true
 COPY --from=builder /app /app
 RUN addgroup -S -g 2 nogroup >/dev/null || true && \
     adduser -u 65532 -G nogroup -D -h /app -s /bin/false tasmota 2>/dev/null || true && \

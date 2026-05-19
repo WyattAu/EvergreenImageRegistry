@@ -18,9 +18,13 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 # package-manager-verified: integrity verified by upstream
 ARG VERSION=5.3.0
 RUN apk add --no-cache ca-certificates boost libstdc++ libgcc lua5.4-libs libcurl protobuf net-snmp-libs fstrm-libs 2>/dev/null || true && mkdir -p /app /var/log/pdns-recursor /var/lib/pdns-recursor /etc/pdns-recursor 2>/dev/null || true
+RUN touch /usr/local/bin/pdns_recursor || true
 COPY --from=installer /usr/sbin/pdns_recursor /usr/local/bin/pdns_recursor
+RUN touch /usr/local/bin/rec_control || true
 COPY --from=installer /usr/sbin/rec_control /usr/local/bin/rec_control
+RUN mkdir -p /usr/lib/pdns-recursor || true
 COPY --from=installer /usr/lib/pdns-recursor /usr/lib/pdns-recursor
+RUN touch /etc/pdns-recursor/recursor.conf || true
 COPY --from=installer /etc/powerdns/recursor.conf /etc/pdns-recursor/recursor.conf
 RUN chown -R 65532:65532 /app /var/log/pdns-recursor /var/lib/pdns-recursor 2>/dev/null || true
 USER 65532:65532

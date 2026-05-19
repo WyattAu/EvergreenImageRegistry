@@ -7,8 +7,10 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 RUN apk add --no-cache ca-certificates || true && \
     adduser -D -u 65532 complement 2>/dev/null || true && \
     mkdir -p /app /var/log/complement 2>/dev/null || true
-COPY --from=upstream /complement /usr/local/bin/complement || true
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
+RUN touch /usr/local/bin/complement || true
+COPY --from=upstream /complement /usr/local/bin/complement
+RUN mkdir -p /etc/ssl/certs || true && touch /etc/ssl/certs/ca-certificates.crt || true
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 EXPOSE 9004

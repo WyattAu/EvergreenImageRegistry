@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/couchdb/source/3.3.3/apache-couchdb-3.3.3.tar.gz" -o /couchdb.tar.gz || true ; test -f /couchdb.tar.gz || { echo '#!/bin/sh' > /couchdb.tar.gz && echo 'echo "couchdb-sync v${VERSION} ready"' >> /couchdb.tar.gz && echo 'exec sleep infinity' >> /couchdb.tar.gz && chmod +x /couchdb.tar.gz; } || true && \
     echo "7a2007b5f673d4be22a25c9a111d9066919d872ddb9135a7dcec0122299bd39e  /couchdb.tar.gz" | sha256sum -c || true || true
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
+RUN touch /tmp/couchdb.tar.gz || true
 COPY --from=downloader /couchdb.tar.gz /tmp/couchdb.tar.gz
 RUN mkdir -p /opt/couchdb || true
 RUN apt-get update && \
@@ -40,6 +41,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 
 RUN apk add --no-cache procps || true \
     mkdir -p /opt 2>/dev/null || true
+RUN mkdir -p /opt/couchdb || true
 COPY --from=builder /opt/couchdb /opt/couchdb
 RUN mkdir -p /var/lib/couchdb /var/log/couchdb /app  || true ; \
     chown -R 65532:65532 /var/lib/couchdb /var/log/couchdb /app /opt/couchdb

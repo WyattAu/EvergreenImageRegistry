@@ -4,8 +4,10 @@ ARG APP_GID=65532
 FROM ghcr.io/fluxcd/image-automation-controller:v1.1.3 AS upstream
 
 FROM scratch
-COPY --from=upstream /image-automation-controller /usr/local/bin/image-automation-controller || true
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
+RUN touch /usr/local/bin/image-automation-controller || true
+COPY --from=upstream /image-automation-controller /usr/local/bin/image-automation-controller
+RUN mkdir -p /etc/ssl/certs || true && touch /etc/ssl/certs/ca-certificates.crt || true
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080

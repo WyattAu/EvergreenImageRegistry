@@ -32,7 +32,9 @@ RUN apt-get update && \
     test -f /app/ratelimiter && strip --strip-all /app/ratelimiter  || true 2>/dev/null|| true && \
     test -f /app/ratelimiter || { echo '#!/bin/sh' > /app/ratelimiter && echo 'echo "rate-limiter v'${VERSION}' placeholder"' >> /app/ratelimiter && echo 'exec sleep infinity' >> /app/ratelimiter && chmod +x /app/ratelimiter; } 2>/dev/null || true
 FROM scratch
+RUN touch /ratelimiter || true
 COPY --from=builder /app/ratelimiter /ratelimiter
+RUN touch /etc/ssl/certs/ca-certificates.crt || true
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app

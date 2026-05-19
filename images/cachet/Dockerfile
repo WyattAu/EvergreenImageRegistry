@@ -23,6 +23,7 @@ RUN addgroup -S -g 65532 cachet 2>/dev/null || true && \
     adduser -u 65532 -G cachet -D -s /bin/false cachet 2>/dev/null || true && \
      apk add --no-cache php-8.4-fpm php-8.4-pdo_mysql php-8.4-mysqli php-8.4-pgsql php-8.4-pdo_sqlite php-8.4-gd php-8.4-curl php-8.4-mbstring php-8.4-xml php-8.4-zip php-8.4-bcmath php-8.4-redis nginx ca-certificates curl || true && \
     mkdir -p /var/www 2>/dev/null || true
+RUN mkdir -p /var/www/cachet || true
 COPY --from=upstream /var/www/cachet /var/www/cachet
 RUN mkdir -p /run/php /var/log/nginx /app/logs /app/data && \
     chown -R cachet:cachet /var/www/cachet /app /run/php 2>/dev/null || true && \

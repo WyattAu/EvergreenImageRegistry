@@ -17,7 +17,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache ca-certificates || true
-COPY --from=builder /usr/local/bin/eqonomize /usr/local/bin/eqonomize || true
+RUN touch /usr/local/bin/eqonomize || true
+COPY --from=builder /usr/local/bin/eqonomize /usr/local/bin/eqonomize
 RUN mkdir -p /app /var/log/eqonomize /var/cache/eqonomize ; \
     chown -R 65532:65532 /app /var/log/eqonomize /var/cache/eqonomize
 USER 65532:65532

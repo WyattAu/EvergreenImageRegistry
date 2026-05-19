@@ -23,18 +23,31 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=5.9.16
 RUN apk add --no-cache ca-certificates iproute2 iptables kmod libcurl talloc gmp openssl-libs zlib 2>/dev/null || true && mkdir -p /etc /usr/lib /usr/sbin /var/log /run/charon /etc/strongswan.d /etc/ipsec.d /app 2>/dev/null || true
+RUN touch /usr/sbin/charon || true
 COPY --from=installer /usr/sbin/charon /usr/sbin/charon
+RUN touch /usr/sbin/charon-systemd || true
 COPY --from=installer /usr/sbin/charon-systemd /usr/sbin/charon-systemd
+RUN touch /usr/sbin/strongswan || true
 COPY --from=installer /usr/sbin/strongswan /usr/sbin/strongswan
+RUN touch /usr/sbin/pki || true
 COPY --from=installer /usr/sbin/pki /usr/sbin/pki
+RUN touch /usr/sbin/swanctl || true
 COPY --from=installer /usr/sbin/swanctl /usr/sbin/swanctl
+RUN touch /usr/sbin/ipsec || true
 COPY --from=installer /usr/sbin/ipsec /usr/sbin/ipsec
+RUN mkdir -p /usr/lib/ipsec || true
 COPY --from=installer /usr/lib/ipsec /usr/lib/ipsec
+RUN mkdir -p /usr/lib/strongswan || true
 COPY --from=installer /usr/lib/strongswan /usr/lib/strongswan
+RUN mkdir -p /usr/lib/strongswan-plugins || true
 COPY --from=installer /usr/lib/*/strongswan /usr/lib/strongswan-plugins
+RUN mkdir -p /etc/strongswan || true
 COPY --from=installer /etc/strongswan /etc/strongswan
+RUN touch /etc/ipsec.d || true
 COPY --from=installer /etc/ipsec.d /etc/ipsec.d
+RUN mkdir -p /app || true
 COPY --from=installer /app /app
+RUN mkdir -p /var/log/strongswan || true
 COPY --from=installer /var/log/strongswan /var/log/strongswan
 RUN mkdir -p /run/charon /etc/strongswan.d 2>/dev/null || true && \
     chown -R 65532:65532 /app /var/log/strongswan /run/charon 2>/dev/null || true

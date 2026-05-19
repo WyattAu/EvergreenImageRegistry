@@ -30,6 +30,7 @@ RUN apk add --no-cache ca-certificates curl || true && \
     adduser -D -u 65532 -s /bin/false ignite 2>/dev/null || true && \
     mkdir -p /var/lib/ignite /var/log/ignite /var/cache/ignite /opt/ignite/work 2>/dev/null || true && \
     mkdir -p /opt 2>/dev/null || true
+RUN mkdir -p /opt/ignite || true
 COPY --from=builder /opt/apache-ignite-${VERSION}-bin /opt/ignite
 RUN chown -R 65532:65532 /opt/ignite /var/lib/ignite /var/log/ignite /var/cache/ignite 2>/dev/null || true
 USER 65532:65532

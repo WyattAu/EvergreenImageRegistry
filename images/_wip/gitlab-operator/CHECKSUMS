@@ -1,0 +1,24 @@
+# CHECKSUMS - gitlab-operator
+# Generated: 2026-04-21T19:09:24Z
+# Status: PENDING_VERIFICATION
+#
+# IMPORTANT: These checksums need to be verified against upstream sources.
+# To verify:
+# 1. Download binary from URL below
+# 2. Compute: sha256sum <file>
+# 3. Compare with expected_sha256 below
+# 4. Cross-validate against upstream_checksum URL if available
+
+[metadata]
+image = "gitlab-operator"
+version = "0.8.0"
+created = "2026-04-21T19:09:24Z"
+last_verified = ""
+verification_method = "download-and-compute"
+
+[download]
+url = "https://gitlab.com/api/v4/projects/gitlab-org%2Fcloud-native%2Fgitlab-operator/packages/generic/gitlab-operator/0.8.0/gitlab-operator-linux-amd64"
+filename = "gitlab-operator-linux-amd64"
+
+[checksum]
+expected_sha256 = "PENDING"

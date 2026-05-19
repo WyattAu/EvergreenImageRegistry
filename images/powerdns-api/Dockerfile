@@ -19,10 +19,15 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 # package-manager-verified: integrity verified by upstream
 ARG VERSION=4.9.6
 RUN apk add --no-cache sqlite-libs ca-certificates boost libstdc++ libgcc lua5.4-libs libcurl protobuf libxml2 2>/dev/null || true && mkdir -p /app /var/log/pdns /var/lib/pdns /etc/pdns 2>/dev/null || true
+RUN touch /usr/local/bin/pdns_server || true
 COPY --from=installer /usr/sbin/pdns_server /usr/local/bin/pdns_server
+RUN touch /usr/local/bin/pdnsutil || true
 COPY --from=installer /usr/sbin/pdnsutil /usr/local/bin/pdnsutil
+RUN touch /usr/local/bin/pdns_control || true
 COPY --from=installer /usr/sbin/pdns_control /usr/local/bin/pdns_control
+RUN mkdir -p /usr/lib/pdns || true
 COPY --from=installer /usr/lib/pdns /usr/lib/pdns
+RUN mkdir -p /etc/pdns || true
 COPY --from=installer /etc/powerdns /etc/pdns
 RUN chown -R 65532:65532 /app /var/log/pdns /var/lib/pdns 2>/dev/null || true
 USER 65532:65532

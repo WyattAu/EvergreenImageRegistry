@@ -11,8 +11,10 @@ FROM fallenbagel/jellyseerr:${VERSION} AS upstream
 
 FROM scratch
 
+RUN touch /jellyseerr || true
 COPY --from=upstream /app/jellyseerr /jellyseerr
 
+RUN touch /etc/ssl/certs/ca-certificates.crt || true
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
 USER 65532:65532

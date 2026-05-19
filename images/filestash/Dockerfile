@@ -6,9 +6,12 @@ ARG APP_GID=65532
 FROM mickaelkerjean/filestash:latest AS upstream
 
 FROM scratch
-COPY --from=upstream /app/filestash /filestash || true
-COPY --from=upstream /app/dist /dist || true
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
+RUN touch /filestash || true
+COPY --from=upstream /app/filestash /filestash
+RUN touch /dist || true
+COPY --from=upstream /app/dist /dist
+RUN mkdir -p /etc/ssl/certs || true && touch /etc/ssl/certs/ca-certificates.crt || true
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8334

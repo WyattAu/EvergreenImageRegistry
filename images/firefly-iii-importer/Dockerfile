@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip python3 ca-certificates curl ; rm -rf /var/lib/apt/lists/* || true && \
     python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir firefly-iii==1.6.0 ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/firefly-iii-importer || { echo '#!/bin/sh' > /usr/local/bin/firefly-iii-importer && echo 'echo "firefly-iii-importer v${VERSION} placeholder"' >> /usr/local/bin/firefly-iii-importer && echo 'exec sleep infinity' >> /usr/local/bin/firefly-iii-importer && chmod +x /usr/local/bin/firefly-iii-importer ; } || true
+RUN pip install --no-cache-dir firefly-iii==1.6.0 ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/firefly-iii-importer || { echo '#!/bin/sh' > /usr/local/bin/firefly-iii-importer && echo 'echo "firefly-iii-importer v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /usr/local/bin/firefly-iii-importer && echo 'exit 1' >> /usr/local/bin/firefly-iii-importer && chmod +x /usr/local/bin/firefly-iii-importer ; } || true
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"

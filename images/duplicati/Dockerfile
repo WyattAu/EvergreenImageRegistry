@@ -16,7 +16,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -f /dotnet-install.sh || true
 RUN curl --retry 3 --retry-delay 5 -fsSL https://github.com/duplicati/duplicati/releases/download/v2.3.0.1_stable_2026-04-24/duplicati-2.3.0.1_stable_2026-04-24-linux-x64-gui.zip -o /duplicati.zip && \
     unzip -q /duplicati.zip -d /opt/duplicati && rm -f /duplicati.zip || true && \
-    test -f /opt/duplicati || { echo '#!/bin/sh' > /opt/duplicati && echo 'echo "duplicati v${VERSION} placeholder"' >> /opt/duplicati && echo 'exec sleep infinity' >> /opt/duplicati && chmod +x /opt/duplicati ; }
+    test -f /opt/duplicati || { echo '#!/bin/sh' > /opt/duplicati && echo 'echo "duplicati v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /opt/duplicati && echo 'exit 1' >> /opt/duplicati && chmod +x /opt/duplicati ; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache wget ca-certificates && \

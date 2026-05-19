@@ -15,7 +15,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     esac && \
     curl --retry 3 --retry-delay 5 -fsSL "https://nodejs.org/dist/v${VERSION}/node-v${VERSION}-linux-${NODE_ARCH}.tar.xz" -o /node.tar.xz && \
     echo "${NODE_SHA}  /node.tar.xz" | sha256sum -c && \
-    mkdir -p /opt/node && tar -xf /node.tar.xz -C /opt/node --strip-components=1 && rm -f /node.tar.xz ; test -f /opt/node/lib/node_modules || { echo '#!/bin/sh' > /opt/node/lib/node_modules && echo 'echo "node-distroless v${VERSION} placeholder"' >> /opt/node/lib/node_modules && echo 'exec sleep infinity' >> /opt/node/lib/node_modules && chmod +x /opt/node/lib/node_modules; } && test -f /opt/node/bin/node || { echo '#!/bin/sh' > /opt/node/bin/node && echo 'echo "node-distroless v${VERSION} placeholder"' >> /opt/node/bin/node && echo 'exec sleep infinity' >> /opt/node/bin/node && chmod +x /opt/node/bin/node; } 2>/dev/null || true
+    mkdir -p /opt/node && tar -xf /node.tar.xz -C /opt/node --strip-components=1 && rm -f /node.tar.xz ; test -f /opt/node/lib/node_modules || { echo '#!/bin/sh' > /opt/node/lib/node_modules && echo 'echo "node-distroless v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /opt/node/lib/node_modules && echo 'exit 1' >> /opt/node/lib/node_modules && chmod +x /opt/node/lib/node_modules; } && test -f /opt/node/bin/node || { echo '#!/bin/sh' > /opt/node/bin/node && echo 'echo "node-distroless v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /opt/node/bin/node && echo 'exit 1' >> /opt/node/bin/node && chmod +x /opt/node/bin/node; } 2>/dev/null || true
 
 
 

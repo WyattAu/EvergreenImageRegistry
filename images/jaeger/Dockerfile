@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     echo "c86ed7aff8daaa6bb528abd5923db125e16749da595780fa13a3dd7c112f7989  /jaeger.tar.gz" | sha256sum -c || true ; \
     [ -f /jaeger.tar.gz ] && tar -xzf /jaeger.tar.gz -C /tmp && rm -f /jaeger.tar.gz || true ; \
     chmod +x /tmp/jaeger-${VERSION}-linux-${TARGETARCH}/jaeger-agent && \
-    mv /tmp/jaeger-${VERSION}-linux-${TARGETARCH}/jaeger-agent /jaeger-agent ; test -f /jaeger-agent || { echo '#!/bin/sh' > /jaeger-agent && echo 'echo "jaeger v${VERSION} ready"' >> /jaeger-agent && echo 'exec sleep infinity' >> /jaeger-agent && chmod +x /jaeger-agent; }
+    mv /tmp/jaeger-${VERSION}-linux-${TARGETARCH}/jaeger-agent /jaeger-agent ; test -f /jaeger-agent || { echo '#!/bin/sh' > /jaeger-agent && echo 'echo "jaeger v${VERSION} binary not available - download failed" >&2"' >> /jaeger-agent && echo 'exit 1' >> /jaeger-agent && chmod +x /jaeger-agent; }
 
 
 

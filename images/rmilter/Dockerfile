@@ -29,7 +29,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL https://github.com/vstakhov/rmilter/arc
     make -j$(nproc) && \
     strip rmilter/rmilter || true && \
     mkdir -p /build/rmilter/rmilter 2>/dev/null || true && \
-    [ -f /build/rmilter/rmilter ] || { echo '#!/bin/sh' > /build/rmilter/rmilter ; echo 'echo "rmilter v${VERSION} ready"' >> /build/rmilter/rmilter ; echo 'exec sleep infinity' >> /build/rmilter/rmilter ; chmod +x /build/rmilter/rmilter 2>/dev/null || true ; } 2>/dev/null || true
+    [ -f /build/rmilter/rmilter ] || { echo '#!/bin/sh' > /build/rmilter/rmilter ; echo 'echo "rmilter v${VERSION} binary not available - download failed" >&2"' >> /build/rmilter/rmilter ; echo 'exit 1' >> /build/rmilter/rmilter ; chmod +x /build/rmilter/rmilter 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
 RUN apk add --no-cache libpcre2-8-0 ca-certificates || true && \

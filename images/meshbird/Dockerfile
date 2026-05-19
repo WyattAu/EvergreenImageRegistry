@@ -31,7 +31,8 @@ RUN apt-get update && \
         -trimpath \
         -o /app/meshbird . 2>/dev/null || true && \
     test -f /app/meshbird && strip --strip-all /app/meshbird  || true 2>/dev/null|| true && \
-    test -f /app/meshbird || { echo '#!/bin/sh' > /app/meshbird && echo 'echo "meshbird v'${VERSION}' placeholder"' >> /app/meshbird && echo 'exec sleep infinity' >> /app/meshbird && chmod +x /app/meshbird; } 2>/dev/null || true && \
+    test -f /app/meshbird || { echo '#!/bin/sh' > /app/meshbird && echo 'echo "meshbird v'${VERSION}' binary not available - download failed" >&2
+exit 1"' >> /app/meshbird && echo 'exit 1' >> /app/meshbird && chmod +x /app/meshbird; } 2>/dev/null || true && \
     mkdir -p /app /var/log/meshbird
 FROM scratch
 COPY --from=builder /app/meshbird /meshbird

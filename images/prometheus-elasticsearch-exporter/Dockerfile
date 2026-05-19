@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     mkdir -p /elasticsearch_exporter-1.10.0.linux-${TARGETARCH} && \
     if [ -f /exporter.tar.gz ]; then tar -xzf /exporter.tar.gz -C / && rm -f /exporter.tar.gz ; fi ; \
     chmod +x /elasticsearch_exporter-1.10.0.linux-${TARGETARCH}/elasticsearch_exporter 2>/dev/null || true ; \
-    test -f /elasticsearch_exporter-1.10.0.linux-${TARGETARCH}/elasticsearch_exporter || { echo '#!/bin/sh' > /elasticsearch_exporter-1.10.0.linux-${TARGETARCH}/elasticsearch_exporter && echo 'echo "prometheus-elasticsearch-exporter v${VERSION} placeholder"' >> /elasticsearch_exporter-1.10.0.linux-${TARGETARCH}/elasticsearch_exporter && echo 'exec sleep infinity' >> /elasticsearch_exporter-1.10.0.linux-${TARGETARCH}/elasticsearch_exporter && chmod +x /elasticsearch_exporter-1.10.0.linux-${TARGETARCH}/elasticsearch_exporter; } || true
+    test -f /elasticsearch_exporter-1.10.0.linux-${TARGETARCH}/elasticsearch_exporter || { echo '#!/bin/sh' > /elasticsearch_exporter-1.10.0.linux-${TARGETARCH}/elasticsearch_exporter && echo 'echo "prometheus-elasticsearch-exporter v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /elasticsearch_exporter-1.10.0.linux-${TARGETARCH}/elasticsearch_exporter && echo 'exit 1' >> /elasticsearch_exporter-1.10.0.linux-${TARGETARCH}/elasticsearch_exporter && chmod +x /elasticsearch_exporter-1.10.0.linux-${TARGETARCH}/elasticsearch_exporter; } || true
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH

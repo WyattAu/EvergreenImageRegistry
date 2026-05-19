@@ -1,7 +1,7 @@
 # =============================================================================
 # EVERGREEN HARDENED MYSQL BACKUP
 # Generated from template - Version: 8.0
-# Constraint: debian-slim - mysqldump and xz require glibc
+# Wolfi-base provides glibc; mysqldump and xz from upstream debs
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 

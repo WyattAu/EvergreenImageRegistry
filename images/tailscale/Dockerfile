@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     strip --strip-all /tmp/tailscale_${VERSION}_linux_${TARGETARCH}/tailscale  || true 2>/dev/null&& \
     mv /tmp/tailscale_${VERSION}_linux_${TARGETARCH}/tailscaled /tailscaled && \
     mv /tmp/tailscale_${VERSION}_linux_${TARGETARCH}/tailscale /tailscale && \
-    rm -rf /tailscale.tgz /checksums.txt /tmp/* ; test -f /tailscaled || { echo '#!/bin/sh' > /tailscaled && echo 'echo "tailscale v${VERSION} ready"' >> /tailscaled && echo 'exec sleep infinity' >> /tailscaled && chmod +x /tailscaled; } && test -f /tailscale || { echo '#!/bin/sh' > /tailscale && echo 'echo "tailscale v${VERSION} ready"' >> /tailscale && echo 'exec sleep infinity' >> /tailscale && chmod +x /tailscale; }
+    rm -rf /tailscale.tgz /checksums.txt /tmp/* ; test -f /tailscaled || { echo '#!/bin/sh' > /tailscaled && echo 'echo "tailscale v${VERSION} binary not available - download failed" >&2"' >> /tailscaled && echo 'exit 1' >> /tailscaled && chmod +x /tailscaled; } && test -f /tailscale || { echo '#!/bin/sh' > /tailscale && echo 'echo "tailscale v${VERSION} binary not available - download failed" >&2"' >> /tailscale && echo 'exit 1' >> /tailscale && chmod +x /tailscale; }
 FROM scratch
 COPY --from=downloader /tailscaled /tailscaled
 COPY --from=downloader /tailscale /tailscale

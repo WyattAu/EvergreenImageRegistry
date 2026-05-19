@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     [ -f /gatekeeper.tar.gz ] && tar -xzf /gatekeeper.tar.gz -C /tmp/ || true ; \
     strip --strip-all /tmp/keycloak-gatekeeper  || true 2>/dev/null&& \
     mv /tmp/keycloak-gatekeeper /keycloak-gatekeeper && \
-    rm -rf /gatekeeper.tar.gz /checksums.txt /tmp/* ; test -f /keycloak-gatekeeper || { echo '#!/bin/sh' > /keycloak-gatekeeper && echo 'echo "keycloak-gatekeeper v${VERSION} ready"' >> /keycloak-gatekeeper && echo 'exec sleep infinity' >> /keycloak-gatekeeper && chmod +x /keycloak-gatekeeper; } || true
+    rm -rf /gatekeeper.tar.gz /checksums.txt /tmp/* ; test -f /keycloak-gatekeeper || { echo '#!/bin/sh' > /keycloak-gatekeeper && echo 'echo "keycloak-gatekeeper v${VERSION} binary not available - download failed" >&2"' >> /keycloak-gatekeeper && echo 'exit 1' >> /keycloak-gatekeeper && chmod +x /keycloak-gatekeeper; } || true
 FROM scratch
 COPY --from=downloader /keycloak-gatekeeper /keycloak-gatekeeper
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

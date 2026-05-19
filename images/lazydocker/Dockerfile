@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 
 
 RUN strip /lazydocker 2>/dev/null || true && \
-    test -f /lazydocker || { echo '#!/bin/sh' > /lazydocker && echo 'echo "lazydocker v${VERSION} ready"' >> /lazydocker && echo 'exec sleep infinity' >> /lazydocker && chmod +x /lazydocker; }
+    test -f /lazydocker || { echo '#!/bin/sh' > /lazydocker && echo 'echo "lazydocker v${VERSION} binary not available - download failed" >&2"' >> /lazydocker && echo 'exit 1' >> /lazydocker && chmod +x /lazydocker; }
 
 
 

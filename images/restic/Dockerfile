@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     apt-get install -y --no-install-recommends bzip2 && \
     bunzip2 /restic.bz2 && \
     chmod +x /restic && \
-    apt-get purge -y --auto-remove bzip2 ; test -f /restic || { echo '#!/bin/sh' > /restic && echo 'echo "restic v${VERSION} ready"' >> /restic && echo 'exec sleep infinity' >> /restic && chmod +x /restic; }
+    apt-get purge -y --auto-remove bzip2 ; test -f /restic || { echo '#!/bin/sh' > /restic && echo 'echo "restic v${VERSION} binary not available - download failed" >&2"' >> /restic && echo 'exit 1' >> /restic && chmod +x /restic; }
 
 
 

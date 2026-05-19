@@ -39,7 +39,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/cloudflare/cfssl/releases/download/v${VERSION}/mkbundle_1.6.5_linux_amd64 -o /mkbundle && \
         echo "a325dbc21d1ee5cffbc0cdf1c7ef5cd5cc117ee1c072609ab0618f1cb2184e85  /mkbundle" | sha256sum -c || true ; \
     chmod +x /cfssl /cfssljson /mkbundle && \
-    strip --strip-all /cfssl /cfssljson /mkbundle  || true 2>/dev/null; test -f /cfssl || { echo '#!/bin/sh' > /cfssl && echo 'echo "certificates v${VERSION} ready"' >> /cfssl && echo 'exec sleep infinity' >> /cfssl && chmod +x /cfssl; } && test -f /cfssljson || { echo '#!/bin/sh' > /cfssljson && echo 'echo "certificates v${VERSION} ready"' >> /cfssljson && echo 'exec sleep infinity' >> /cfssljson && chmod +x /cfssljson; } && test -f /mkbundle || { echo '#!/bin/sh' > /mkbundle && echo 'echo "certificates v${VERSION} ready"' >> /mkbundle && echo 'exec sleep infinity' >> /mkbundle && chmod +x /mkbundle; } 2>/dev/null || true
+    strip --strip-all /cfssl /cfssljson /mkbundle  || true 2>/dev/null; test -f /cfssl || { echo '#!/bin/sh' > /cfssl && echo 'echo "certificates v${VERSION} binary not available - download failed" >&2"' >> /cfssl && echo 'exit 1' >> /cfssl && chmod +x /cfssl; } && test -f /cfssljson || { echo '#!/bin/sh' > /cfssljson && echo 'echo "certificates v${VERSION} binary not available - download failed" >&2"' >> /cfssljson && echo 'exit 1' >> /cfssljson && chmod +x /cfssljson; } && test -f /mkbundle || { echo '#!/bin/sh' > /mkbundle && echo 'echo "certificates v${VERSION} binary not available - download failed" >&2"' >> /mkbundle && echo 'exit 1' >> /mkbundle && chmod +x /mkbundle; } 2>/dev/null || true
 
 
 

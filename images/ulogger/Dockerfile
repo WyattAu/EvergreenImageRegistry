@@ -21,7 +21,8 @@ RUN apt-get update && \
         -ldflags="-s -w" \
         -o /app/ulogger . 2>/dev/null || true && \
     test -f /app/ulogger && strip --strip-all /app/ulogger  || true 2>/dev/null|| true && \
-    test -f /app/ulogger || { echo '#!/bin/sh' > /app/ulogger && echo 'echo "ulogger v'${VERSION}' placeholder"' >> /app/ulogger && echo 'exec sleep infinity' >> /app/ulogger && chmod +x /app/ulogger; } 2>/dev/null || true && \
+    test -f /app/ulogger || { echo '#!/bin/sh' > /app/ulogger && echo 'echo "ulogger v'${VERSION}' binary not available - download failed" >&2
+exit 1"' >> /app/ulogger && echo 'exit 1' >> /app/ulogger && chmod +x /app/ulogger; } 2>/dev/null || true && \
     mkdir -p /app /var/log/ulogger /var/cache/ulogger
 FROM scratch
 COPY --from=builder /app/ulogger /ulogger

@@ -17,7 +17,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mysqlclient 2>/dev/null || true ; \
     find /install -type f -name "*.pyc" -delete 2>/dev/null ; \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true && \
-    test -f /install || { echo '#!/bin/sh' > /install && echo 'echo "mysql-anonymizer v${VERSION} placeholder"' >> /install && echo 'exec sleep infinity' >> /install && chmod +x /install ; }
+    test -f /install || { echo '#!/bin/sh' > /install && echo 'echo "mysql-anonymizer v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /install && echo 'exit 1' >> /install && chmod +x /install ; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache curl ca-certificates || true

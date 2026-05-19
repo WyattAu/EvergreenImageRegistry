@@ -26,7 +26,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gnupg] http://nginx.org/packages/debian bookworm nginx" > /etc/apt/sources.list.d/nginx.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends nginx=${VERSION}-1~bookworm && \
-    rm -rf /var/lib/apt/lists/* ; test -f /usr/sbin/nginx || { echo '#!/bin/sh' > /usr/sbin/nginx && echo 'echo "nginx-cache v${VERSION} placeholder"' >> /usr/sbin/nginx && echo 'exec sleep infinity' >> /usr/sbin/nginx && chmod +x /usr/sbin/nginx; } && test -f /etc/nginx || { echo '#!/bin/sh' > /etc/nginx && echo 'echo "nginx-cache v${VERSION} placeholder"' >> /etc/nginx && echo 'exec sleep infinity' >> /etc/nginx && chmod +x /etc/nginx; }
+    rm -rf /var/lib/apt/lists/* ; test -f /usr/sbin/nginx || { echo '#!/bin/sh' > /usr/sbin/nginx && echo 'echo "nginx-cache v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /usr/sbin/nginx && echo 'exit 1' >> /usr/sbin/nginx && chmod +x /usr/sbin/nginx; } && test -f /etc/nginx || { echo '#!/bin/sh' > /etc/nginx && echo 'echo "nginx-cache v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /etc/nginx && echo 'exit 1' >> /etc/nginx && chmod +x /etc/nginx; }
 
 
 

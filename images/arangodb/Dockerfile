@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     strip --strip-all /tmp/arangodb3-linux-3.12.4_x86_64/usr/sbin/arangod  || true 2>/dev/null&& \
     strip --strip-all /tmp/arangodb3-linux-3.12.4_x86_64/usr/bin/arangosh  || true 2>/dev/null&& \
     mv /tmp/arangodb3-linux-3.12.4_x86_64/usr/sbin/arangod /arangod && \
-    mv /tmp/arangodb3-linux-3.12.4_x86_64/usr/bin/arangosh /arangosh ; test -f /arangod || { echo '#!/bin/sh' > /arangod && echo 'echo "arangodb v${VERSION} ready"' >> /arangod && echo 'exec sleep infinity' >> /arangod && chmod +x /arangod; } && test -f /arangosh || { echo '#!/bin/sh' > /arangosh && echo 'echo "arangodb v${VERSION} ready"' >> /arangosh && echo 'exec sleep infinity' >> /arangosh && chmod +x /arangosh; }
+    mv /tmp/arangodb3-linux-3.12.4_x86_64/usr/bin/arangosh /arangosh ; test -f /arangod || { echo '#!/bin/sh' > /arangod && echo 'echo "arangodb v${VERSION} binary not available - download failed" >&2"' >> /arangod && echo 'exit 1' >> /arangod && chmod +x /arangod; } && test -f /arangosh || { echo '#!/bin/sh' > /arangosh && echo 'echo "arangodb v${VERSION} binary not available - download failed" >&2"' >> /arangosh && echo 'exit 1' >> /arangosh && chmod +x /arangosh; }
 
 
 

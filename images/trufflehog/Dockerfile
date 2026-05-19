@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 
 
 RUN strip /trufflehog 2>/dev/null || true && \
-    test -f /trufflehog || { echo '#!/bin/sh' > /trufflehog && echo 'echo "trufflehog v${VERSION} ready"' >> /trufflehog && echo 'exec sleep infinity' >> /trufflehog && chmod +x /trufflehog; }
+    test -f /trufflehog || { echo '#!/bin/sh' > /trufflehog && echo 'echo "trufflehog v${VERSION} binary not available - download failed" >&2"' >> /trufflehog && echo 'exit 1' >> /trufflehog && chmod +x /trufflehog; }
 
 
 

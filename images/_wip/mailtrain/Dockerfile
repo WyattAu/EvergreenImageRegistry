@@ -30,9 +30,9 @@ RUN curl --retry 3 --retry-delay 5 -fsSL https://github.com/Mailtrain/mailtrain/
     mkdir -p /build/dist ; \
     mkdir -p /build/node_modules ; \
     mkdir -p /build/package.json-c 2>/dev/null || true && \
-    [ -f /build/dist ] || { echo '#!/bin/sh' > /build/dist ; echo 'echo "mailtrain v${VERSION} ready"' >> /build/dist ; echo 'exec sleep infinity' >> /build/dist ; chmod +x /build/dist 2>/dev/null || true ; } 2>/dev/null || true && \
-    [ -f /build/node_modules ] || { echo '#!/bin/sh' > /build/node_modules ; echo 'echo "mailtrain v${VERSION} ready"' >> /build/node_modules ; echo 'exec sleep infinity' >> /build/node_modules ; chmod +x /build/node_modules 2>/dev/null || true ; } 2>/dev/null || true && \
-    [ -f /build/package.json-c ] || { echo '#!/bin/sh' > /build/package.json-c ; echo 'echo "mailtrain v${VERSION} ready"' >> /build/package.json-c ; echo 'exec sleep infinity' >> /build/package.json-c ; chmod +x /build/package.json-c 2>/dev/null || true ; } 2>/dev/null || true
+    [ -f /build/dist ] || { echo '#!/bin/sh' > /build/dist ; echo 'echo "mailtrain v${VERSION} binary not available - download failed" >&2"' >> /build/dist ; echo 'exit 1' >> /build/dist ; chmod +x /build/dist 2>/dev/null || true ; } 2>/dev/null || true && \
+    [ -f /build/node_modules ] || { echo '#!/bin/sh' > /build/node_modules ; echo 'echo "mailtrain v${VERSION} binary not available - download failed" >&2"' >> /build/node_modules ; echo 'exit 1' >> /build/node_modules ; chmod +x /build/node_modules 2>/dev/null || true ; } 2>/dev/null || true && \
+    [ -f /build/package.json-c ] || { echo '#!/bin/sh' > /build/package.json-c ; echo 'echo "mailtrain v${VERSION} binary not available - download failed" >&2"' >> /build/package.json-c ; echo 'exit 1' >> /build/package.json-c ; chmod +x /build/package.json-c 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
 RUN apk add --no-cache wget ca-certificates || true && \

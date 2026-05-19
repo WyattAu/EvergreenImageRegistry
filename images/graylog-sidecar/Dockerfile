@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     mkdir -p /opt/sidecar-src /opt/sidecar || true ; \
     [ -f /sidecar.tar.gz ] && tar -xzf /sidecar.tar.gz -C /opt/sidecar-src --strip-components=1 2>/dev/null || true ; \
     rm -f /sidecar.tar.gz || true ; \
-    test -f /opt/sidecar/collector_sidecar || { echo '#!/bin/sh' > /opt/sidecar/collector_sidecar && echo 'echo "graylog-sidecar v${VERSION} placeholder"' >> /opt/sidecar/collector_sidecar && echo 'exec sleep infinity' >> /opt/sidecar/collector_sidecar && chmod +x /opt/sidecar/collector_sidecar ; } || true
+    test -f /opt/sidecar/collector_sidecar || { echo '#!/bin/sh' > /opt/sidecar/collector_sidecar && echo 'echo "graylog-sidecar v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /opt/sidecar/collector_sidecar && echo 'exit 1' >> /opt/sidecar/collector_sidecar && chmod +x /opt/sidecar/collector_sidecar ; } || true
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /var/log/sidecar /var/lib/sidecar /var/cache/sidecar 2>/dev/null || true

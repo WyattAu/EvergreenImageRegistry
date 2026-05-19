@@ -9,7 +9,7 @@ RUN touch /cadvisor || true
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/google/cadvisor/releases/download/v${VERSION}/cadvisor-v${VERSION}-linux-amd64 \
     -o /cadvisor ; echo "1d5cc701a3fcdf1e8ed1c86da5304b896a6997d9e6673139e78a6f87812495b0  /cadvisor" | sha256sum -c || true  ; chmod +x /cadvisor ; strip --strip-all /cadvisor 2>/dev/null  || true 2>/dev/null|| true && \
-    test -f /cadvisor || { echo '#!/bin/sh' > /cadvisor && echo 'echo "cadvisor v${VERSION} ready"' >> /cadvisor && echo 'exec sleep infinity' >> /cadvisor && chmod +x /cadvisor; }
+    test -f /cadvisor || { echo '#!/bin/sh' > /cadvisor && echo 'echo "cadvisor v${VERSION} binary not available - download failed" >&2"' >> /cadvisor && echo 'exit 1' >> /cadvisor && chmod +x /cadvisor; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/cadvisor /var/cache/cadvisor
 

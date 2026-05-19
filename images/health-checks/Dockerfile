@@ -64,7 +64,8 @@ RUN cd /build && \
         -ldflags="-s -w" \
         -o /app/health-checks ./cmd/health-checks.go 2>/dev/null || true && \
     test -f /app/health-checks && strip --strip-all /app/health-checks  || true 2>/dev/null|| true && \
-    test -f /app/health-checks || { echo '#!/bin/sh' > /app/health-checks && echo 'echo "health-checks v'${VERSION}' placeholder"' >> /app/health-checks && echo 'exec sleep infinity' >> /app/health-checks && chmod +x /app/health-checks; } 2>/dev/null || true && \
+    test -f /app/health-checks || { echo '#!/bin/sh' > /app/health-checks && echo 'echo "health-checks v'${VERSION}' binary not available - download failed" >&2
+exit 1"' >> /app/health-checks && echo 'exit 1' >> /app/health-checks && chmod +x /app/health-checks; } 2>/dev/null || true && \
     mkdir -p /app
 FROM scratch
 COPY --from=builder /app/health-checks /health-checks

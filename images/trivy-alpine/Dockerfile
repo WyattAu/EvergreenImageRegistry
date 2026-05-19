@@ -43,7 +43,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 
 
 RUN strip /trivy 2>/dev/null || true && \
-    test -f /trivy || { echo '#!/bin/sh' > /trivy && echo 'echo "trivy-alpine v${VERSION} ready"' >> /trivy && echo 'exec sleep infinity' >> /trivy && chmod +x /trivy; }
+    test -f /trivy || { echo '#!/bin/sh' > /trivy && echo 'echo "trivy-alpine v${VERSION} binary not available - download failed" >&2"' >> /trivy && echo 'exit 1' >> /trivy && chmod +x /trivy; }
 
 
 

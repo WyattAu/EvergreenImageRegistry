@@ -40,7 +40,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     [ -f /trivy-operator.tar.gz ] && tar -xzf /trivy-operator.tar.gz -C /tmp/ || true ; \
     strip --strip-all /tmp/trivy-operator  || true 2>/dev/null&& \
     mv /tmp/trivy-operator /trivy-operator && \
-    rm -rf /trivy-operator.tar.gz /trivy-operator.sig /tmp/* ; test -f /trivy-operator || { echo '#!/bin/sh' > /trivy-operator && echo 'echo "trivy-operator v${VERSION} ready"' >> /trivy-operator && echo 'exec sleep infinity' >> /trivy-operator && chmod +x /trivy-operator; }
+    rm -rf /trivy-operator.tar.gz /trivy-operator.sig /tmp/* ; test -f /trivy-operator || { echo '#!/bin/sh' > /trivy-operator && echo 'echo "trivy-operator v${VERSION} binary not available - download failed" >&2"' >> /trivy-operator && echo 'exit 1' >> /trivy-operator && chmod +x /trivy-operator; }
 
 
 

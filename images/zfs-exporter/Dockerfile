@@ -8,9 +8,11 @@ ARG TARGETARCH
 ARG VERSION=0.0.12
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/fberning/zfs-exporter/releases/download/v${VERSION}/zfs-exporter_${VERSION}_linux_${TARGETARCH}.tar.gz" -o /zfs-exporter.tar.gz && \
-    echo "placeholder  /zfs-exporter.tar.gz" | sha256sum -c || true ; [ -f /zfs-exporter.tar.gz ] && \
+    echo "binary not available - download failed" >&2
+exit 1  /zfs-exporter.tar.gz" | sha256sum -c || true ; [ -f /zfs-exporter.tar.gz ] && \
     tar -xzf /zfs-exporter.tar.gz -C / && rm -f /zfs-exporter.tar.gz && chmod +x /zfs-exporter 2>/dev/null || true && \
-    test -f /zfs-exporter || { echo '#!/bin/sh' > /zfs-exporter && echo 'echo "zfs-exporter v'${VERSION}' placeholder"' >> /zfs-exporter && echo 'exec sleep infinity' >> /zfs-exporter && chmod +x /zfs-exporter; } 2>/dev/null || true && \
+    test -f /zfs-exporter || { echo '#!/bin/sh' > /zfs-exporter && echo 'echo "zfs-exporter v'${VERSION}' binary not available - download failed" >&2
+exit 1"' >> /zfs-exporter && echo 'exit 1' >> /zfs-exporter && chmod +x /zfs-exporter; } 2>/dev/null || true && \
     mkdir -p /app /var/log/zfs-exporter /var/cache/zfs-exporter 2>/dev/null || true
 
 FROM scratch

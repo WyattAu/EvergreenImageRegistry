@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     else \
         echo '#!/bin/sh' > /opt/resticbrowser && \
         echo 'echo "resticbrowser v'"${VERSION}"' - upstream unavailable, stub mode"' >> /opt/resticbrowser && \
-        echo 'exec sleep infinity' >> /opt/resticbrowser && chmod +x /opt/resticbrowser; \
+        echo 'exit 1' >> /opt/resticbrowser && chmod +x /opt/resticbrowser; \
     fi && rm -rf /var/lib/apt/lists/*
 
 FROM scratch

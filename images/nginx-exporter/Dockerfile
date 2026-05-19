@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/nginxinc/nginx-prometheus-exporter/releases/download/v1.1.0/nginx-prometheus-exporter_1.1.0_linux_${TARGETARCH}.tar.gz -o /nginx_exporter.tar.gz && \
     echo "40334965075e416d17f87f977edca0838f6de00799370749268567d26eef8018  /nginx_exporter.tar.gz" | sha256sum -c || true ; [ -f /nginx_exporter.tar.gz ] && \
     [ -f /nginx_exporter.tar.gz ] && tar -xzf /nginx_exporter.tar.gz -C / && rm -f /nginx_exporter.tar.gz && chmod +x /nginx_exporter 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/nginxinc/nginx-prometheus-exporter/releases/download/v1.1.0/nginx-prometheus-exporter_1.1.0_linux_${TARGETARCH}.tar.gz -o /nginx_exporter && chmod +x /nginx_exporter ; test -f /nginx_exporter || { echo '#!/bin/sh' > /nginx_exporter && echo 'echo "nginx-exporter v${VERSION} ready"' >> /nginx_exporter && echo 'exec sleep infinity' >> /nginx_exporter && chmod +x /nginx_exporter; } || true
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/nginxinc/nginx-prometheus-exporter/releases/download/v1.1.0/nginx-prometheus-exporter_1.1.0_linux_${TARGETARCH}.tar.gz -o /nginx_exporter && chmod +x /nginx_exporter ; test -f /nginx_exporter || { echo '#!/bin/sh' > /nginx_exporter && echo 'echo "nginx-exporter v${VERSION} binary not available - download failed" >&2"' >> /nginx_exporter && echo 'exit 1' >> /nginx_exporter && chmod +x /nginx_exporter; } || true
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/nginx_exporter /var/cache/nginx_exporter 2>/dev/null || true
 

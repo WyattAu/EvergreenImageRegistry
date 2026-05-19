@@ -9,7 +9,7 @@ RUN touch /composer || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/composer/composer/releases/download/2.8.0/composer.phar -o /composer || true ; \
     echo "1b23f2a31cb05f0e8ae29b5723fc5edf37e565106d6fae2cf23f298efa9c8981  /composer" | sha256sum -c || true ; \
-    chmod +x /composer ; test -f /composer || { echo '#!/bin/sh' > /composer && echo 'echo "composer v${VERSION} ready"' >> /composer && echo 'exec sleep infinity' >> /composer && chmod +x /composer; }
+    chmod +x /composer ; test -f /composer || { echo '#!/bin/sh' > /composer && echo 'echo "composer v${VERSION} binary not available - download failed" >&2"' >> /composer && echo 'exit 1' >> /composer && chmod +x /composer; }
 
 
 

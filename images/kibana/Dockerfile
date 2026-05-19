@@ -21,7 +21,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/kibana/kibana-${VERSION}-linux-${ARCH}.tar.gz" -o kibana.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  kibana.tar.gz" | sha256sum -c || true  ; [ -f kibana.tar.gz ] && tar -xzf kibana.tar.gz && mv kibana-${VERSION}-linux-${ARCH} kibana-extracted || true ; \
     rm -f kibana.tar.gz ; rm -rf kibana-extracted/node_modules/.cache && \
     mkdir -p /tmp ; \
-    test -d /tmp/kibana-extracted || { mkdir -p /tmp/kibana-extracted/bin && echo '#!/bin/sh' > /tmp/kibana-extracted/bin/kibana && echo 'echo "kibana v${VERSION} placeholder"' >> /tmp/kibana-extracted/bin/kibana && echo 'exec sleep infinity' >> /tmp/kibana-extracted/bin/kibana && chmod +x /tmp/kibana-extracted/bin/kibana ; }
+    test -d /tmp/kibana-extracted || { mkdir -p /tmp/kibana-extracted/bin && echo '#!/bin/sh' > /tmp/kibana-extracted/bin/kibana && echo 'echo "kibana v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /tmp/kibana-extracted/bin/kibana && echo 'exit 1' >> /tmp/kibana-extracted/bin/kibana && chmod +x /tmp/kibana-extracted/bin/kibana ; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION=8.12.2

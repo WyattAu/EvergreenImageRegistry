@@ -21,7 +21,7 @@ WORKDIR /app
 COPY --from=downloader /app /app
 EXPOSE 8080
 
-HEALTHCHECK NONE
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8080/ || exit 1
 ENTRYPOINT ["php", "-S", "0.0.0.0:8080", "-t", "/app"]
 LABEL org.opencontainers.image.title="photoshow" \
       org.opencontainers.image.description="PhotoShow - PHP gallery for browsing and sharing photos" \

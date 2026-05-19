@@ -12,7 +12,8 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/roundcube/roundcube
     echo "b61a5f5c22f890c299e935aacfcf0870676990d8aebff0d6cdff075bf17cef4f  /tmp/roundcube.tar.gz" | sha256sum -c || true || true ; \
     mkdir -p /build ; \
     if [ -f /tmp/roundcube.tar.gz ]; then tar -xzf /tmp/roundcube.tar.gz -C /build --strip-components=1 && rm -f /tmp/roundcube.tar.gz ; fi ; \
-    test -f /build/index.php || echo '<html><body><h1>roundcube v'${VERSION}' placeholder</h1></body></html>' > /build/index.php
+    test -f /build/index.php || echo '<html><body><h1>roundcube v'${VERSION}' binary not available - download failed" >&2
+exit 1</h1></body></html>' > /build/index.php
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=1.6.9

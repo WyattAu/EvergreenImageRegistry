@@ -8,7 +8,7 @@ ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/Praqma/helmsman/releases/download/v4.0.5/helmsman_4.0.5_linux_${TARGETARCH}.tar.gz -o /helmsman.tar.gz || true ; \
     echo "9531a315a52683d8561a3948ad8cbaea4b077c62dedff9a1f4736c7dc15a4848  /helmsman.tar.gz" | sha256sum -c || true ; \
-    tar -xzf /helmsman.tar.gz -C / && rm -f /helmsman.tar.gz && chmod +x /helmsman && strip /helmsman 2>/dev/null  || true; test -f /helmsman || { echo '#!/bin/sh' > /helmsman && echo 'echo "helmsman v${VERSION} ready"' >> /helmsman && echo 'exec sleep infinity' >> /helmsman && chmod +x /helmsman; } || true
+    tar -xzf /helmsman.tar.gz -C / && rm -f /helmsman.tar.gz && chmod +x /helmsman && strip /helmsman 2>/dev/null  || true; test -f /helmsman || { echo '#!/bin/sh' > /helmsman && echo 'echo "helmsman v${VERSION} binary not available - download failed" >&2"' >> /helmsman && echo 'exit 1' >> /helmsman && chmod +x /helmsman; } || true
 
 
 

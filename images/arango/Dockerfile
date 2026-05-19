@@ -23,8 +23,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     mv /opt/arangodb3-linux-* /opt/arangodb-extracted || true ; \
     strip --strip-all /opt/arangodb-extracted/usr/sbin/arangod 2>/dev/null || true && \
     mkdir -p /opt ; \
-    mkdir -p /opt/arangodb-extracted/usr/sbin ; test -f /opt/arangodb-extracted/usr/sbin/arangod || { echo '#!/bin/sh' > /opt/arangodb-extracted/usr/sbin/arangod && echo 'echo "arango v${VERSION} placeholder"' >> /opt/arangodb-extracted/usr/sbin/arangod && echo 'exec sleep infinity' >> /opt/arangodb-extracted/usr/sbin/arangod && chmod +x /opt/arangodb-extracted/usr/sbin/arangod ; } && \
-    [ -f /opt/arangodb-extracted ] || { echo '#!/bin/sh' > /opt/arangodb-extracted ; echo 'echo "arango v${VERSION} ready"' >> /opt/arangodb-extracted ; echo 'exec sleep infinity' >> /opt/arangodb-extracted ; chmod +x /opt/arangodb-extracted 2>/dev/null || true ; } 2>/dev/null || true
+    mkdir -p /opt/arangodb-extracted/usr/sbin ; test -f /opt/arangodb-extracted/usr/sbin/arangod || { echo '#!/bin/sh' > /opt/arangodb-extracted/usr/sbin/arangod && echo 'echo "arango v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /opt/arangodb-extracted/usr/sbin/arangod && echo 'exit 1' >> /opt/arangodb-extracted/usr/sbin/arangod && chmod +x /opt/arangodb-extracted/usr/sbin/arangod ; } && \
+    [ -f /opt/arangodb-extracted ] || { echo '#!/bin/sh' > /opt/arangodb-extracted ; echo 'echo "arango v${VERSION} binary not available - download failed" >&2"' >> /opt/arangodb-extracted ; echo 'exit 1' >> /opt/arangodb-extracted ; chmod +x /opt/arangodb-extracted 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION=3.12.2

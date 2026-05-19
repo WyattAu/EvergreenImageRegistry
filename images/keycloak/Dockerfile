@@ -10,7 +10,7 @@ RUN apk add --no-cache wget ca-certificates && \
     wget -t 3 -T 10 -qO /keycloak.tar.gz "https://github.com/keycloak/keycloak/releases/download/${VERSION}/keycloak-${VERSION}.tar.gz" && \
     tar xzf /keycloak.tar.gz -C /opt && rm -f /keycloak.tar.gz ; \
     if [ ! -f /opt/keycloak-${VERSION}/bin/kc.sh ]; then \
-      printf '#!/bin/sh\necho "keycloak v%s placeholder"\nexec sleep infinity\n' "${VERSION}" > /opt/keycloak-${VERSION}/bin/kc.sh && \
+      printf '#!/bin/sh\necho "ERROR: keycloak v%%s binary not available - download failed" >&2\nexit 1\n' "${VERSION}" > /opt/keycloak-${VERSION}/bin/kc.sh && \
       chmod +x /opt/keycloak-${VERSION}/bin/kc.sh ; \
     fi && \
     ln -sf /opt/keycloak-${VERSION} /opt/keycloak && \

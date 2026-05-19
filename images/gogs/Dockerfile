@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     echo "75da1c026cacb187a7c1dcad8263873ec566ce30cc0df56dd1dc129b8292d34f  /tmp/gogs.tar.gz" | sha256sum -c || true ; \
     tar -xzf /tmp/gogs.tar.gz -C /tmp && \
     mv /tmp/gogs /tmp/gogs-bin && chmod +x /tmp/gogs-bin/gogs && strip /tmp/gogs-bin/gogs || true
-RUN test -f /tmp/gogs-bin/gogs && test -s /tmp/gogs-bin/gogs || { echo '#!/bin/sh' > /tmp/gogs-bin/gogs && echo 'echo "gogs v${VERSION} placeholder"' >> /tmp/gogs-bin/gogs && echo 'exec sleep infinity' >> /tmp/gogs-bin/gogs && chmod +x /tmp/gogs-bin/gogs; } || true
+RUN test -f /tmp/gogs-bin/gogs && test -s /tmp/gogs-bin/gogs || { echo '#!/bin/sh' > /tmp/gogs-bin/gogs && echo 'echo "gogs v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /tmp/gogs-bin/gogs && echo 'exit 1' >> /tmp/gogs-bin/gogs && chmod +x /tmp/gogs-bin/gogs; } || true
 
 FROM scratch
 COPY --from=downloader /tmp/gogs-bin/gogs /usr/local/bin/gogs

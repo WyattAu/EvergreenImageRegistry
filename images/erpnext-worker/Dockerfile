@@ -23,7 +23,8 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN     pip install --no-cache-dir --upgrade pip setuptools wheel || true && \
     pip install --no-cache-dir frappe-bench==5.29.1 || true ; \
     mkdir -p /usr/local/bin ; \
-    test -f /usr/local/bin/bench || { echo '#!/bin/sh' > /usr/local/bin/bench && echo 'echo "erpnext-worker v${VERSION} placeholder"' >> /usr/local/bin/bench && echo 'exec sleep infinity' >> /usr/local/bin/bench && chmod +x /usr/local/bin/bench ; } || true
+    test -f /usr/local/bin/bench || { echo '#!/bin/sh' > /usr/local/bin/bench && echo 'echo "erpnext-worker v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /usr/local/bin/bench && echo 'exit 1' >> /usr/local/bin/bench && chmod +x /usr/local/bin/bench ; } || true
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"

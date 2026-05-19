@@ -1,7 +1,7 @@
 # =============================================================================
 # EVERGREEN HARDENED POSTGRES RESTORE
 # Generated from template - Version: 17
-# Constraint: debian-slim - pg_restore and xz require glibc
+# Wolfi-base provides glibc; pg_restore and xz from upstream debs
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 

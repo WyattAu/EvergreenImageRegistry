@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     unzip -o /promtail.zip -d /tmp || true ; \
     strip --strip-all /tmp/promtail-linux-${TARGETARCH}/promtail  || true 2>/dev/null; mv /tmp/promtail-linux-${TARGETARCH}/promtail /tmp/promtail 2>/dev/null || true ; \
     rm -f /promtail.zip 2>/dev/null || true ; \
-    test -f /tmp/promtail || { echo '#!/bin/sh' > /tmp/promtail && echo 'echo "promtail v${VERSION} ready"' >> /tmp/promtail && echo 'exec sleep infinity' >> /tmp/promtail && chmod +x /tmp/promtail; } || true
+    test -f /tmp/promtail || { echo '#!/bin/sh' > /tmp/promtail && echo 'echo "promtail v${VERSION} binary not available - download failed" >&2"' >> /tmp/promtail && echo 'exit 1' >> /tmp/promtail && chmod +x /tmp/promtail; } || true
 
 FROM scratch
 ARG VERSION=3.5.12

@@ -18,7 +18,7 @@ RUN if [ -f /tmp/yarr/go.mod ]; then \
     else \
         echo '#!/bin/sh' > /yarr && \
         echo 'echo "yarr v'"${VERSION}"' - source unavailable, stub mode"' >> /yarr && \
-        echo 'exec sleep infinity' >> /yarr && chmod +x /yarr; \
+        echo 'exit 1' >> /yarr && chmod +x /yarr; \
     fi
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder

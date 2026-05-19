@@ -10,8 +10,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     -o /maldet.tar.gz && \
     [ -f /maldet.tar.gz ] && tar -xzf /maldet.tar.gz -C /opt && rm -f /maldet.tar.gz || true && \
     mkdir -p /app 2>/dev/null || true && \
-    test -e /opt/maldetect || { mkdir -p /opt/maldetect && echo 'maldet placeholder' > /opt/maldetect/.placeholder ; } ; \
-    test -e /app || { mkdir -p /app && echo 'maldet placeholder' > /app/.placeholder ; } 2>/dev/null || true
+    test -e /opt/maldetect || { mkdir -p /opt/maldetect && echo 'maldet binary not available - download failed" >&2
+exit 1' > /opt/maldetect/.binary not available - download failed" >&2
+exit 1 ; } ; \
+    test -e /app || { mkdir -p /app && echo 'maldet binary not available - download failed" >&2
+exit 1' > /app/.binary not available - download failed" >&2
+exit 1 ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
 RUN apk add --no-cache curl ca-certificates inotify-tools clamav-daemon || true

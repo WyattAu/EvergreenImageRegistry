@@ -14,7 +14,8 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 FROM python@sha256:5dc6f84b5e97bfb0c90abfb7c55f3cacc2cb6687c8f920b64a833a2219875997 AS builder
 ARG VERSION=3.10.0
-RUN pip install --break-system-packages --no-cache-dir --prefix=/install google-cloud-logging==${VERSION} ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/gcplogs || { echo '#!/bin/sh' > /usr/local/bin/gcplogs && echo 'echo "gcplogs v${VERSION} placeholder"' >> /usr/local/bin/gcplogs && echo 'exec sleep infinity' >> /usr/local/bin/gcplogs && chmod +x /usr/local/bin/gcplogs ; } || true && \
+RUN pip install --break-system-packages --no-cache-dir --prefix=/install google-cloud-logging==${VERSION} ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/gcplogs || { echo '#!/bin/sh' > /usr/local/bin/gcplogs && echo 'echo "gcplogs v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /usr/local/bin/gcplogs && echo 'exit 1' >> /usr/local/bin/gcplogs && chmod +x /usr/local/bin/gcplogs ; } || true && \
     find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS stripper

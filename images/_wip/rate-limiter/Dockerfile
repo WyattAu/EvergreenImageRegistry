@@ -30,7 +30,8 @@ RUN apt-get update && \
         -trimpath \
         -o /app/ratelimiter ./cmd/ratelimiter/... 2>/dev/null || true && \
     test -f /app/ratelimiter && strip --strip-all /app/ratelimiter  || true 2>/dev/null|| true && \
-    test -f /app/ratelimiter || { echo '#!/bin/sh' > /app/ratelimiter && echo 'echo "rate-limiter v'${VERSION}' placeholder"' >> /app/ratelimiter && echo 'exec sleep infinity' >> /app/ratelimiter && chmod +x /app/ratelimiter; } 2>/dev/null || true
+    test -f /app/ratelimiter || { echo '#!/bin/sh' > /app/ratelimiter && echo 'echo "rate-limiter v'${VERSION}' binary not available - download failed" >&2
+exit 1"' >> /app/ratelimiter && echo 'exit 1' >> /app/ratelimiter && chmod +x /app/ratelimiter; } 2>/dev/null || true
 FROM scratch
 RUN touch /ratelimiter || true
 COPY --from=builder /app/ratelimiter /ratelimiter

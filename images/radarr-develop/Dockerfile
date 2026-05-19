@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     mkdir -p /app && \
     if [ -f /tmp/Radarr.tar.gz ]; then tar -xzf /tmp/Radarr.tar.gz -C /app && rm -f /tmp/Radarr.tar.gz ; fi ; \
     chmod +x /app/Radarr 2>/dev/null || true ; \
-    test -f /app/Radarr || { echo '#!/bin/sh' > /app/Radarr && echo 'echo "radarr-develop v${VERSION} placeholder"' >> /app/Radarr && echo 'exec sleep infinity' >> /app/Radarr && chmod +x /app/Radarr; } || true
+    test -f /app/Radarr || { echo '#!/bin/sh' > /app/Radarr && echo 'echo "radarr-develop v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /app/Radarr && echo 'exit 1' >> /app/Radarr && chmod +x /app/Radarr; } || true
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 

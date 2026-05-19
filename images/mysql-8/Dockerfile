@@ -1,7 +1,7 @@
 # =============================================================================
 # EVERGREEN HARDENED MYSQL 8
 # Generated from template - Version: 8.0.39
-# Constraint: debian-slim - MySQL requires glibc + shared libs
+# Wolfi-base provides glibc; MySQL installed from upstream deb packages
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 

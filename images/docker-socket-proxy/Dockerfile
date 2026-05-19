@@ -22,7 +22,7 @@ WORKDIR /app
 ENV SOCKET_PATH=/var/run/docker.sock
 EXPOSE 2375
 
-HEALTHCHECK NONE
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:2375/version || exit 1
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["haproxy", "-f", "/tmp/haproxy.cfg"]
 LABEL org.opencontainers.image.title="docker-socket-proxy" \

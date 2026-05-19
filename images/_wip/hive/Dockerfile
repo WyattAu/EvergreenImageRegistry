@@ -23,7 +23,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     [ -f /tmp/hive.tar.gz ] && tar -xzf /tmp/hive.tar.gz -C /opt 2>/dev/null || true ; \
     rm -f /tmp/hive.tar.gz 2>/dev/null || true ; \
     mkdir -p /opt/apache-hive-${VERSION}-bin/bin 2>/dev/null || true ; \
-    test -f /opt/apache-hive-${VERSION}-bin/bin/hive || { echo '#!/bin/sh' > /opt/apache-hive-${VERSION}-bin/bin/hive && echo 'echo "hive v'"${VERSION}"' placeholder"' >> /opt/apache-hive-${VERSION}-bin/bin/hive && echo 'exec sleep infinity' >> /opt/apache-hive-${VERSION}-bin/bin/hive && chmod +x /opt/apache-hive-${VERSION}-bin/bin/hive ; } 2>/dev/null || true
+    test -f /opt/apache-hive-${VERSION}-bin/bin/hive || { echo '#!/bin/sh' > /opt/apache-hive-${VERSION}-bin/bin/hive && echo 'echo "hive v'"${VERSION}"' binary not available - download failed" >&2
+exit 1"' >> /opt/apache-hive-${VERSION}-bin/bin/hive && echo 'exit 1' >> /opt/apache-hive-${VERSION}-bin/bin/hive && chmod +x /opt/apache-hive-${VERSION}-bin/bin/hive ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION=4.0.0

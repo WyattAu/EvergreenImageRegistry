@@ -24,7 +24,9 @@ RUN apt-get update && \
     python3 -m venv /opt/venv && \
     . /opt/venv/bin/activate && \
     pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir "git+https://github.com/taigaio/taiga-events.git@${VERSION}#egg=taiga-events" || { echo "pip install failed, creating placeholder" ; mkdir -p /opt/venv/bin && echo '#!/bin/sh' > /opt/venv/bin/taiga-events && echo 'echo "taiga-events v'"${VERSION}"' placeholder"' >> /opt/venv/bin/taiga-events && echo 'exec sleep infinity' >> /opt/venv/bin/taiga-events && chmod +x /opt/venv/bin/taiga-events ; }
+    pip install --no-cache-dir "git+https://github.com/taigaio/taiga-events.git@${VERSION}#egg=taiga-events" || { echo "pip install failed, creating binary not available - download failed" >&2
+exit 1" ; mkdir -p /opt/venv/bin && echo '#!/bin/sh' > /opt/venv/bin/taiga-events && echo 'echo "taiga-events v'"${VERSION}"' binary not available - download failed" >&2
+exit 1"' >> /opt/venv/bin/taiga-events && echo 'exit 1' >> /opt/venv/bin/taiga-events && chmod +x /opt/venv/bin/taiga-events ; }
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"

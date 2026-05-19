@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     if [ -f /kafka-ui.tar.gz ]; then tar -xzf /kafka-ui.tar.gz -C /opt/kafka-ui --strip-components=1 && rm -f /kafka-ui.tar.gz && rm -rf /opt/kafka-ui/kibana /opt/kafka-ui/logs ; fi ; \
     strip /opt/kafka-ui/kafka-ui 2>/dev/null || true ; \
     chmod +x /opt/kafka-ui/kafka-ui 2>/dev/null || true ; \
-    test -f /opt/kafka-ui/kafka-ui || { echo '#!/bin/sh' > /opt/kafka-ui/kafka-ui && echo 'echo "kafka-ui v${VERSION} placeholder"' >> /opt/kafka-ui/kafka-ui && echo 'exec sleep infinity' >> /opt/kafka-ui/kafka-ui && chmod +x /opt/kafka-ui/kafka-ui; } || true
+    test -f /opt/kafka-ui/kafka-ui || { echo '#!/bin/sh' > /opt/kafka-ui/kafka-ui && echo 'echo "kafka-ui v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /opt/kafka-ui/kafka-ui && echo 'exit 1' >> /opt/kafka-ui/kafka-ui && chmod +x /opt/kafka-ui/kafka-ui; } || true
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /var/log/kafka-ui /var/cache/kafka-ui

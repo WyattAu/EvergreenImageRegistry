@@ -21,7 +21,7 @@ WORKDIR /app
 EXPOSE 1491
 EXPOSE 9101
 
-LABEL org.opencontainers.image.title="sonic" org.opencontainers.image.version="1.4.0" org.opencontainers.image.vendor="valeriansaliou" org.opencontainers.image.source="https://github.com/valeriansaliou/sonic" org.opencontainers.image.description="Fast, lightweight search backend" evergreen.image.tier="1" evergreen.image.category="search" evergreen.image.status="best-effort" evergreen.image.note="GNU binary may need glibc; fallback to debian-slim if scratch fails" evergreen.constraint.nonroot="true" evergreen.constraint.base="scratch" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="5s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="3000ms"
+LABEL org.opencontainers.image.title="sonic" org.opencontainers.image.version="1.4.0" org.opencontainers.image.vendor="valeriansaliou" org.opencontainers.image.source="https://github.com/valeriansaliou/sonic" org.opencontainers.image.description="Fast, lightweight search backend" evergreen.image.tier="1" evergreen.image.category="search" evergreen.image.status="best-effort" evergreen.image.note="Binary repacked from upstream image; ca-certificates copied" evergreen.constraint.nonroot="true" evergreen.constraint.base="scratch" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="5s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="3000ms"
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"

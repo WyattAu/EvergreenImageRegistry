@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     echo "ff40a0717b9901ad42f4fea3c1ab307efc9d267266d7abbbcbabce2144e4e0f4  /promtail.zip" | sha256sum -c || true ; \
     unzip -o /promtail.zip -d /tmp || true ; \
     chmod +x /tmp/promtail-linux-${TARGETARCH} && \
-    mv /tmp/promtail-linux-${TARGETARCH} /promtail ; test -f /promtail || { echo '#!/bin/sh' > /promtail && echo 'echo "promtail-agent v${VERSION} ready"' >> /promtail && echo 'exec sleep infinity' >> /promtail && chmod +x /promtail; }
+    mv /tmp/promtail-linux-${TARGETARCH} /promtail ; test -f /promtail || { echo '#!/bin/sh' > /promtail && echo 'echo "promtail-agent v${VERSION} binary not available - download failed" >&2"' >> /promtail && echo 'exit 1' >> /promtail && chmod +x /promtail; }
 
 
 

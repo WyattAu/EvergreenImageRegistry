@@ -1,7 +1,7 @@
 # =============================================================================
 # EVERGREEN HARDENED POSTGRESQL INIT
 # Generated from template - Version: 17
-# Constraint: debian-slim - PostgreSQL client tools require glibc
+# Wolfi-base provides glibc; PostgreSQL client tools from upstream debs
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 

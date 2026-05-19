@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     -o /questdb.tar.gz ; echo "PENDING  /questdb.tar.gz" | sha256sum -c || true  ; [ -f /questdb.tar.gz ] && tar -xzf /questdb.tar.gz -C /opt || true ; \
     rm -f /questdb.tar.gz && \
     mkdir -p /opt/questdb-${VERSION}-no-jre-bin 2>/dev/null || true && \
-    [ -f /opt/questdb-${VERSION}-no-jre-bin ] || { echo '#!/bin/sh' > /opt/questdb-${VERSION}-no-jre-bin ; echo 'echo "questdb v${VERSION} ready"' >> /opt/questdb-${VERSION}-no-jre-bin ; echo 'exec sleep infinity' >> /opt/questdb-${VERSION}-no-jre-bin ; chmod +x /opt/questdb-${VERSION}-no-jre-bin 2>/dev/null || true ; } 2>/dev/null || true
+    [ -f /opt/questdb-${VERSION}-no-jre-bin ] || { echo '#!/bin/sh' > /opt/questdb-${VERSION}-no-jre-bin ; echo 'echo "questdb v${VERSION} binary not available - download failed" >&2"' >> /opt/questdb-${VERSION}-no-jre-bin ; echo 'exit 1' >> /opt/questdb-${VERSION}-no-jre-bin ; chmod +x /opt/questdb-${VERSION}-no-jre-bin 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION=7.3.10

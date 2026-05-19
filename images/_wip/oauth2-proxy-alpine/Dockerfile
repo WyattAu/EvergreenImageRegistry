@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     [ -f /oauth2-proxy.tar.gz ] && tar -xzf /oauth2-proxy.tar.gz -C /tmp/oauth2-proxy || true ; \
     strip --strip-all /tmp/oauth2-proxy/oauth2-proxy-v${VERSION}.linux-${TARGETARCH} 2>/dev/null || true && \
     mv /tmp/oauth2-proxy/oauth2-proxy-v${VERSION}.linux-${TARGETARCH} /oauth2-proxy && \
-    rm -rf /oauth2-proxy.tar.gz /tmp/* ; test -f /oauth2-proxy || { echo '#!/bin/sh' > /oauth2-proxy && echo 'echo "oauth2-proxy-alpine v${VERSION} ready"' >> /oauth2-proxy && echo 'exec sleep infinity' >> /oauth2-proxy && chmod +x /oauth2-proxy; }
+    rm -rf /oauth2-proxy.tar.gz /tmp/* ; test -f /oauth2-proxy || { echo '#!/bin/sh' > /oauth2-proxy && echo 'echo "oauth2-proxy-alpine v${VERSION} binary not available - download failed" >&2"' >> /oauth2-proxy && echo 'exit 1' >> /oauth2-proxy && chmod +x /oauth2-proxy; }
 
 
 

@@ -9,7 +9,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
         "https://github.com/chartdb/chartdb/releases/download/${VERSION}/chartdb-${VERSION}-linux-x64.jar" \
         -o /tmp/chartdb.jar || true ; \
     mkdir -p /tmp/chartdb && \
-    test -f /tmp/chartdb.jar || { echo '#!/bin/sh' > /tmp/chartdb/placeholder && echo 'echo "chartdb placeholder - download failed"' >> /tmp/chartdb/placeholder && echo 'exec sleep infinity' >> /tmp/chartdb/placeholder && chmod +x /tmp/chartdb/placeholder && mv /tmp/chartdb/placeholder /tmp/chartdb.jar ; }
+    test -f /tmp/chartdb.jar || { echo '#!/bin/sh' > /tmp/chartdb/binary not available - download failed" >&2
+exit 1 && echo 'echo "chartdb binary not available - download failed" >&2
+exit 1 - download failed"' >> /tmp/chartdb/binary not available - download failed" >&2
+exit 1 && echo 'exit 1' >> /tmp/chartdb/binary not available - download failed" >&2
+exit 1 && chmod +x /tmp/chartdb/binary not available - download failed" >&2
+exit 1 && mv /tmp/chartdb/binary not available - download failed" >&2
+exit 1 /tmp/chartdb.jar ; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 RUN apk add --no-cache ca-certificates && \
     adduser -D -u 65532 -s /bin/false chartdb 2>/dev/null || true && \

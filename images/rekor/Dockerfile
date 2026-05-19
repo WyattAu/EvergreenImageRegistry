@@ -48,7 +48,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     echo "0b4964af85477892c37039fb80793b151864970d19838873eaa1a777ca2fb813  /rekor-cli" | sha256sum -c || true || true; \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/sigstore/rekor/releases/download/v${VERSION}/rekor-server-linux-${TARGETARCH} -o /rekor-server && \
     chmod +x /rekor-cli /rekor-server && \
-    strip --strip-all /rekor-cli /rekor-server  || true 2>/dev/null; test -f /rekor-cli || { echo '#!/bin/sh' > /rekor-cli && echo 'echo "rekor v${VERSION} ready"' >> /rekor-cli && echo 'exec sleep infinity' >> /rekor-cli && chmod +x /rekor-cli; } && test -f /rekor-server || { echo '#!/bin/sh' > /rekor-server && echo 'echo "rekor v${VERSION} ready"' >> /rekor-server && echo 'exec sleep infinity' >> /rekor-server && chmod +x /rekor-server; } 2>/dev/null || true
+    strip --strip-all /rekor-cli /rekor-server  || true 2>/dev/null; test -f /rekor-cli || { echo '#!/bin/sh' > /rekor-cli && echo 'echo "rekor v${VERSION} binary not available - download failed" >&2"' >> /rekor-cli && echo 'exit 1' >> /rekor-cli && chmod +x /rekor-cli; } && test -f /rekor-server || { echo '#!/bin/sh' > /rekor-server && echo 'echo "rekor v${VERSION} binary not available - download failed" >&2"' >> /rekor-server && echo 'exit 1' >> /rekor-server && chmod +x /rekor-server; } 2>/dev/null || true
 
 
 

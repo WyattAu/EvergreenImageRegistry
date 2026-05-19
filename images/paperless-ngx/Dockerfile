@@ -10,7 +10,7 @@ RUN mkdir -p /opt/paperless-ngx || true
 RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-venv python3-pip curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     python3 -m venv /opt/paperless-ngx && \
     /opt/paperless-ngx/bin/pip install --no-cache-dir paperless-ngx[all]==2.20.14 || true ; \
-    test -f /opt/paperless-ngx/bin/paperless || { echo '#!/bin/sh' > /opt/paperless-ngx/bin/paperless && echo 'echo "paperless-ngx v${VERSION} ready"' >> /opt/paperless-ngx/bin/paperless && echo 'exec sleep infinity' >> /opt/paperless-ngx/bin/paperless && chmod +x /opt/paperless-ngx/bin/paperless; } || true
+    test -f /opt/paperless-ngx/bin/paperless || { echo '#!/bin/sh' > /opt/paperless-ngx/bin/paperless && echo 'echo "paperless-ngx v${VERSION} binary not available - download failed" >&2"' >> /opt/paperless-ngx/bin/paperless && echo 'exit 1' >> /opt/paperless-ngx/bin/paperless && chmod +x /opt/paperless-ngx/bin/paperless; } || true
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"

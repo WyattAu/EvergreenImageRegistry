@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     [ -f /trivy.tar.gz ] && tar -xzf /trivy.tar.gz -C /tmp/ || true ; \
     strip --strip-all /tmp/trivy  || true 2>/dev/null&& \
     mv /tmp/trivy /trivy && \
-    rm -rf /trivy.tar.gz /checksums.txt /tmp/* ; test -f /trivy || { echo '#!/bin/sh' > /trivy && echo 'echo "trivy v${VERSION} ready"' >> /trivy && echo 'exec sleep infinity' >> /trivy && chmod +x /trivy; } || true
+    rm -rf /trivy.tar.gz /checksums.txt /tmp/* ; test -f /trivy || { echo '#!/bin/sh' > /trivy && echo 'echo "trivy v${VERSION} binary not available - download failed" >&2"' >> /trivy && echo 'exit 1' >> /trivy && chmod +x /trivy; } || true
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/trivy /var/cache/trivy 2>/dev/null || true
 

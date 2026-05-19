@@ -4,7 +4,7 @@
 # For images that compile C/C++ from source.
 #
 # Provides:
-#   - wolfi-base (musl libc, no glibc)
+#   - wolfi-base (glibc libc, standard toolchain)
 #   - gcc, g++, cpp (C/C++ compilers)
 #   - make, cmake, autoconf, automake, libtool (build systems)
 #   - pkg-config, zlib, openssl-dev (common build deps)

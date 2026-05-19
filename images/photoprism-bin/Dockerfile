@@ -16,7 +16,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     cp /tmp/photoprism-extract/photoprism /photoprism 2>/dev/null || find /tmp/photoprism-extract -name 'photoprism' -type f -exec cp {} /photoprism \; 2>/dev/null || true && \
     chmod +x /photoprism 2>/dev/null || true && \
     rm -rf /tmp/photoprism.tar.gz /tmp/photoprism-extract 2>/dev/null || true ; \
-    test -f /photoprism || { echo '#!/bin/sh' > /photoprism && echo 'echo "photoprism-bin v${VERSION} placeholder"' >> /photoprism && echo 'exec sleep infinity' >> /photoprism && chmod +x /photoprism; } || true
+    test -f /photoprism || { echo '#!/bin/sh' > /photoprism && echo 'echo "photoprism-bin v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /photoprism && echo 'exit 1' >> /photoprism && chmod +x /photoprism; } || true
 
 FROM scratch
 

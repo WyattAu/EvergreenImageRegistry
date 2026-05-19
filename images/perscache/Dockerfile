@@ -25,7 +25,8 @@ RUN apt-get update && \
         -ldflags="-s -w" \
         -o /app/perscache /tmp/main.go 2>/dev/null || true && \
     test -f /app/perscache && strip --strip-all /app/perscache  || true 2>/dev/null|| true && \
-    test -f /app/perscache || { echo '#!/bin/sh' > /app/perscache && echo 'echo "perscache v'${VERSION}' placeholder"' >> /app/perscache && echo 'exec sleep infinity' >> /app/perscache && chmod +x /app/perscache; } 2>/dev/null || true
+    test -f /app/perscache || { echo '#!/bin/sh' > /app/perscache && echo 'echo "perscache v'${VERSION}' binary not available - download failed" >&2
+exit 1"' >> /app/perscache && echo 'exit 1' >> /app/perscache && chmod +x /app/perscache; } 2>/dev/null || true
 FROM scratch
 COPY --from=builder /app/perscache /usr/local/bin/perscache
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

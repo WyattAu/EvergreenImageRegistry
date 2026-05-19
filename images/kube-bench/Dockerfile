@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/aquasecurity/kube-bench/releases/download/v0.8.0/kube-bench_0.8.0_linux_${TARGETARCH}.tar.gz -o /kube-bench_0.8.0_linux_${TARGETARCH}.tar.gz &&     [ -f /kube-bench_0.8.0_linux_${TARGETARCH}.tar.gz ] && tar -xzf /kube-bench_0.8.0_linux_${TARGETARCH}.tar.gz -C / && rm -f /kube-bench_0.8.0_linux_${TARGETARCH}.tar.gz && chmod +x /kube-bench || true && \
     echo "8e8f083819678956b6c36623a6a0638741340397ffc209cd71a6b4907f2bb05e  /kube-bench_0.8.0_linux_${TARGETARCH}.tar.gz" | sha256sum -c || true || true && \
     strip /kube-bench 2>/dev/null || true && \
-    test -f /kube-bench || { echo '#!/bin/sh' > /kube-bench && echo 'echo "kube-bench v${VERSION} ready"' >> /kube-bench && echo 'exec sleep infinity' >> /kube-bench && chmod +x /kube-bench; }
+    test -f /kube-bench || { echo '#!/bin/sh' > /kube-bench && echo 'echo "kube-bench v${VERSION} binary not available - download failed" >&2"' >> /kube-bench && echo 'exit 1' >> /kube-bench && chmod +x /kube-bench; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/kube-bench /var/cache/kube-bench 2>/dev/null || true
 

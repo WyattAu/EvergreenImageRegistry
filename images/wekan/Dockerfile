@@ -93,6 +93,7 @@ RUN apk add --no-cache ca-certificates wget || true
 
 
 
+RUN mkdir -p /opt/wekan || true
 COPY --from=builder /opt/bundle /opt/wekan
 
 

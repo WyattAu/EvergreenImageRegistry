@@ -12,8 +12,9 @@ ARG VERSION=4.2.2
 RUN apk add --no-cache ca-certificates wget libstdc++ python3 || true && \
     adduser -D -u 65532 -s /bin/false tigergraph 2>/dev/null || true && \
     mkdir -p /var/lib/tigergraph /var/log/tigergraph /var/cache/tigergraph /opt/tigergraph 2>/dev/null || true
-COPY --from=upstream /opt/tigergraph /opt/tigergraph || true
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
+COPY --from=upstream /opt/tigergraph /opt/tigergraph
+RUN mkdir -p /etc/ssl/certs || true && touch /etc/ssl/certs/ca-certificates.crt || true
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 RUN chown -R 65532:65532 /opt/tigergraph /var/lib/tigergraph /var/log/tigergraph /var/cache/tigergraph 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/tigergraph

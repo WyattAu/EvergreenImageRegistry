@@ -27,7 +27,9 @@ RUN apt-get update && \
     test -f /app/rdns-server && strip --strip-all /app/rdns-server  || true 2>/dev/null|| true && \
     test -f /app/rdns-server || { echo '#!/bin/sh' > /app/rdns-server && echo 'echo "rdns-server v'${VERSION}' placeholder"' >> /app/rdns-server && echo 'exec sleep infinity' >> /app/rdns-server && chmod +x /app/rdns-server; } 2>/dev/null || true
 FROM scratch
+RUN touch /usr/local/bin/rdns-server || true
 COPY --from=builder /app/rdns-server /usr/local/bin/rdns-server
+RUN touch /etc/ssl/certs/ca-certificates.crt || true
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app

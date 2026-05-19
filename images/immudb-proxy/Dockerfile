@@ -10,10 +10,15 @@ RUN mkdir -p /app /var/log/immudb-proxy /var/cache/immudb-proxy 2>/dev/null || t
 
 
 FROM scratch
+RUN touch /usr/local/bin/immudb-proxy || true
 COPY --from=upstream /usr/local/bin/immudb-proxy /usr/local/bin/immudb-proxy
+RUN touch /etc/ssl/certs/ca-certificates.crt || true
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+RUN mkdir -p /app || true
 COPY --from=builder /app /app
+RUN mkdir -p /var/log/immudb-proxy || true
 COPY --from=builder /var/log/immudb-proxy /var/log/immudb-proxy
+RUN mkdir -p /var/cache/immudb-proxy || true
 COPY --from=builder /var/cache/immudb-proxy /var/cache/immudb-proxy
 
 EXPOSE 3323

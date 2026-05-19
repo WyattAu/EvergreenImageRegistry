@@ -23,6 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils golang
     mkdir -p /tmp/r2d2
 FROM scratch
 ARG VERSION=0.8.10
+RUN touch /usr/local/bin/r2d2 || true
 COPY --from=builder /tmp/r2d2 /usr/local/bin/r2d2
 
 USER 65532:65532

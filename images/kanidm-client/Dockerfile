@@ -10,11 +10,16 @@ RUN mkdir -p /app /var/log/kanidm-client /var/cache/kanidm-client 2>/dev/null ||
 
 
 FROM scratch
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
-COPY --from=upstream /usr/local/bin/kanidm /kanidm || true
-COPY --from=builder /app /app || true
-COPY --from=builder /var/log/kanidm-client /var/log/kanidm-client || true
-COPY --from=builder /var/cache/kanidm-client /var/cache/kanidm-client || true
+RUN mkdir -p /etc/ssl/certs || true && touch /etc/ssl/certs/ca-certificates.crt || true
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+RUN touch /kanidm || true
+COPY --from=upstream /usr/local/bin/kanidm /kanidm
+RUN mkdir -p /app || true
+COPY --from=builder /app /app
+RUN mkdir -p /var/log/kanidm-client || true
+COPY --from=builder /var/log/kanidm-client /var/log/kanidm-client
+RUN mkdir -p /var/cache/kanidm-client || true
+COPY --from=builder /var/cache/kanidm-client /var/cache/kanidm-client
 
 WORKDIR /app
 

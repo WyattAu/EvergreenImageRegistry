@@ -15,7 +15,9 @@ RUN apt-get update && \
     strip /tmp/mattermost-push-proxy 2>/dev/null || true && \
     chmod +x /tmp/mattermost-push-proxy 2>/dev/null || true
 FROM scratch
+RUN touch /usr/local/bin/mattermost-push-proxy || true
 COPY --from=downloader /tmp/mattermost-push-proxy /usr/local/bin/mattermost-push-proxy
+RUN mkdir -p /etc/ssl/certs/ || true
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 USER 65532:65532

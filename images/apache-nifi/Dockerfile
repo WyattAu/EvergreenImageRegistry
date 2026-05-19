@@ -28,6 +28,7 @@ ARG VERSION=1.26.0
 RUN apk add --no-cache ca-certificates || true \
     adduser -u 65532 -s /bin/false nifi 2>/dev/null || true && \
     mkdir -p /var/lib/nifi /var/log/nifi /var/cache/nifi 2>/dev/null || true
+RUN mkdir -p /opt/nifi || true
 COPY --from=builder /opt/nifi-${VERSION} /opt/nifi
 RUN chown -R 65532:65532 /opt/nifi /var/lib/nifi /var/log/nifi /var/cache/nifi 2>/dev/null || true
 USER 65532:65532

@@ -6,8 +6,10 @@ ARG APP_GID=65532
 FROM quay.io/keycloak/keycloak-operator:${VERSION} AS upstream
 
 FROM scratch
-COPY --from=upstream /usr/local/bin/keycloak-operator /usr/local/bin/keycloak-operator || true
-COPY --from=upstream /etc/pki/tls/certs/ca-bundle.crt /etc/ssl/certs/ca-certificates.crt || true
+RUN touch /usr/local/bin/keycloak-operator || true
+COPY --from=upstream /usr/local/bin/keycloak-operator /usr/local/bin/keycloak-operator
+RUN mkdir -p /etc/ssl/certs || true && touch /etc/ssl/certs/ca-certificates.crt || true
+COPY --from=upstream /etc/pki/tls/certs/ca-bundle.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 

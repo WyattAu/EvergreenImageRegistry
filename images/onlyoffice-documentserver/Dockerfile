@@ -36,11 +36,17 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 ARG VERSION=8.3.3
 RUN apk add --no-cache ca-certificates tzdata fontconfig libxml2 libxslt libstdc++ libgcc libjpeg-turbo libpng libtiff libwebp libcurl freetype harfbuzz graphite2 bzip2-libs zlib libpq glib 2>/dev/null || true && mkdir -p /var/log/onlyoffice /var/lib/onlyoffice /var/www/onlyoffice /etc/onlyoffice /usr/lib/onlyoffice /opt/onlyoffice /var/run/onlyoffice 2>/dev/null || true
 COPY --from=installer /var/log/onlyoffice /var/log/onlyoffice
+RUN mkdir -p /var/lib/onlyoffice || true
 COPY --from=installer /var/lib/onlyoffice /var/lib/onlyoffice
+RUN mkdir -p /var/www/onlyoffice || true
 COPY --from=installer /var/www/onlyoffice /var/www/onlyoffice
+RUN mkdir -p /etc/onlyoffice || true
 COPY --from=installer /etc/onlyoffice /etc/onlyoffice
+RUN mkdir -p /usr/lib/onlyoffice || true
 COPY --from=installer /usr/lib/onlyoffice /usr/lib/onlyoffice
+RUN mkdir -p /opt/onlyoffice || true
 COPY --from=installer /opt/onlyoffice /opt/onlyoffice
+RUN touch /usr/bin/ds || true
 COPY --from=installer /usr/bin/ds /usr/bin/ds
 RUN adduser -u 65532 -D -h /var/lib/onlyoffice -s /bin/false onlyoffice 2>/dev/null || true && \
     chown -R 65532:65532 /var/log/onlyoffice /var/lib/onlyoffice \

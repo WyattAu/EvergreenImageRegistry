@@ -8,8 +8,10 @@ FROM plexinc/pms-docker:1.41.3.9292-bc7397402 AS upstream
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache ca-certificates wget expat fontconfig freetype glib || true
-COPY --from=upstream /usr/lib/plexmediaserver /usr/lib/plexmediaserver || true
-COPY --from=upstream "/usr/lib/plexmediaserver/Plex Media Server" "/usr/lib/plexmediaserver/Plex Media Server" || true
+RUN mkdir -p /usr/lib/plexmediaserver || true
+COPY --from=upstream /usr/lib/plexmediaserver /usr/lib/plexmediaserver
+RUN touch Media || true
+COPY --from=upstream "/usr/lib/plexmediaserver/Plex Media Server" "/usr/lib/plexmediaserver/Plex Media Server"
 RUN mkdir -p /var/log/plex /var/cache/plex /config /transcode 2>/dev/null || true; \
     chown -R 65532:65532 /var/log/plex /var/cache/plex /config /transcode /usr/lib/plexmediaserver 2>/dev/null || true
 USER 65532:65532

@@ -30,7 +30,9 @@ RUN apt-get update && \
 # RUN strip --strip-all /app/app 2>/dev/null  || true 2>/dev/null|| true
 
 FROM scratch
+RUN touch /etc/ssl/certs/ca-certificates.crt || true
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+RUN mkdir -p /app/app || true
 COPY --from=builder /app/app /app/app
 USER 65532:65532
 WORKDIR /app

@@ -10,11 +10,16 @@ RUN mkdir -p /app /var/log/flame-ui /var/cache/flame-ui 2>/dev/null || true
 
 
 FROM scratch
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
-COPY --from=upstream /flame /usr/local/bin/flame || true
-COPY --from=builder /app /app || true
-COPY --from=builder /var/log/flame-ui /var/log/flame-ui || true
-COPY --from=builder /var/cache/flame-ui /var/cache/flame-ui || true
+RUN mkdir -p /etc/ssl/certs || true && touch /etc/ssl/certs/ca-certificates.crt || true
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+RUN touch /usr/local/bin/flame || true
+COPY --from=upstream /flame /usr/local/bin/flame
+RUN mkdir -p /app || true
+COPY --from=builder /app /app
+RUN mkdir -p /var/log/flame-ui || true
+COPY --from=builder /var/log/flame-ui /var/log/flame-ui
+RUN mkdir -p /var/cache/flame-ui || true
+COPY --from=builder /var/cache/flame-ui /var/cache/flame-ui
 
 WORKDIR /app
 

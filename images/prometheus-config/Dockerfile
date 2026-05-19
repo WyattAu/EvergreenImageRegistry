@@ -6,8 +6,10 @@ ARG APP_GID=65532
 FROM quay.io/prometheus-operator/prometheus-operator:v0.91.0 AS upstream
 
 FROM scratch
-COPY --from=upstream /prometheus-operator /prometheus-config-reloader || true
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
+RUN touch /prometheus-config-reloader || true
+COPY --from=upstream /prometheus-operator /prometheus-config-reloader
+RUN mkdir -p /etc/ssl/certs || true && touch /etc/ssl/certs/ca-certificates.crt || true
+COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
 USER 65532:65532
 WORKDIR /app

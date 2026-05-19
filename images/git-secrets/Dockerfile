@@ -13,8 +13,9 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 
 RUN apk add --no-cache git ca-certificates || true && \
     mkdir -p /usr/local/bin /app 2>/dev/null || true
-COPY --from=builder /usr/local/bin/git-secrets /usr/local/bin/git-secrets 2>/dev/null || true
-COPY --from=builder /app /app 2>/dev/null || true
+RUN touch /usr/local/bin/git-secrets || true
+COPY --from=builder /usr/local/bin/git-secrets /usr/local/bin/git-secrets
+COPY --from=builder /app /app
 RUN addgroup -S -g 2 nogroup >/dev/null || true && \
     adduser -u 65532 -G nogroup -D -h /app -s /bin/false gitsecrets 2>/dev/null || true && \
     chown -R 65532:65532 /app 2>/dev/null || true

@@ -31,9 +31,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 FROM scratch
 ARG VERSION=2.8.13
 
-COPY --from=builder /tmp/redisearch-src/bin/redisearch.so /opt/redis/modules/redisearch.so || true
-COPY --from=redis /usr/bin/redis-server /usr/local/bin/redis-server || true
-COPY --from=redis /usr/lib/redis /usr/local/lib/redis || true
+RUN mkdir -p /opt/redis/modules/redisearch.so || true
+COPY --from=builder /tmp/redisearch-src/bin/redisearch.so /opt/redis/modules/redisearch.so
+RUN touch /usr/local/bin/redis-server || true
+COPY --from=redis /usr/bin/redis-server /usr/local/bin/redis-server
+RUN mkdir -p /usr/local/lib/redis || true
+COPY --from=redis /usr/lib/redis /usr/local/lib/redis
 USER 65532:65532
 WORKDIR /var/lib/redis
 EXPOSE 6379

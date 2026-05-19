@@ -10,11 +10,16 @@ RUN mkdir -p /app /var/log/prometheus-cloudwatch-exporter /var/cache/prometheus-
 
 
 FROM scratch
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
-COPY --from=upstream /bin/cloudwatch_exporter /cloudwatch_exporter || true
-COPY --from=builder /app /app || true
-COPY --from=builder /var/log/prometheus-cloudwatch-exporter /var/log/prometheus-cloudwatch-exporter || true
-COPY --from=builder /var/cache/prometheus-cloudwatch-exporter /var/cache/prometheus-cloudwatch-exporter || true
+RUN mkdir -p /etc/ssl/certs || true && touch /etc/ssl/certs/ca-certificates.crt || true
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+RUN touch /cloudwatch_exporter || true
+COPY --from=upstream /bin/cloudwatch_exporter /cloudwatch_exporter
+RUN mkdir -p /app || true
+COPY --from=builder /app /app
+RUN mkdir -p /var/log/prometheus-cloudwatch-exporter || true
+COPY --from=builder /var/log/prometheus-cloudwatch-exporter /var/log/prometheus-cloudwatch-exporter
+RUN mkdir -p /var/cache/prometheus-cloudwatch-exporter || true
+COPY --from=builder /var/cache/prometheus-cloudwatch-exporter /var/cache/prometheus-cloudwatch-exporter
 
 WORKDIR /app
 

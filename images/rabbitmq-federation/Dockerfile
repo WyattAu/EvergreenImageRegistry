@@ -36,9 +36,13 @@ ARG VERSION=3.13.1
 RUN apk add --no-cache ca-certificates || true && \
     adduser -u 65532 -s /bin/false rabbitmq 2>/dev/null || true && \
     mkdir -p /var/lib/rabbitmq /var/log/rabbitmq /etc/rabbitmq
+RUN mkdir -p /usr/lib/rabbitmq || true
 COPY --from=builder /usr/lib/rabbitmq /usr/lib/rabbitmq
+RUN mkdir -p /usr/sbin/ || true
 COPY --from=builder /usr/sbin/rabbitmq* /usr/sbin/
+RUN mkdir -p /usr/bin/ || true
 COPY --from=builder /usr/bin/rabbitmq* /usr/bin/
+RUN mkdir -p /etc/rabbitmq || true
 COPY --from=builder /etc/rabbitmq /etc/rabbitmq
 USER 65532:65532
 WORKDIR /var/lib/rabbitmq

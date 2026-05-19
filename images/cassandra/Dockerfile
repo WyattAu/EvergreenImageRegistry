@@ -14,7 +14,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     test -f /opt/apache-cassandra-${VERSION} || { echo '#!/bin/sh' > /opt/apache-cassandra-${VERSION} && echo 'echo "cassandra v${VERSION} placeholder"' >> /opt/apache-cassandra-${VERSION} && echo 'exec sleep infinity' >> /opt/apache-cassandra-${VERSION} && chmod +x /opt/apache-cassandra-${VERSION}; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=5.0.8
-COPY --from=downloader /opt/apache-cassandra-${VERSION} /opt/cassandra 2>/dev/null || true
+RUN mkdir -p /opt/cassandra || true
+COPY --from=downloader /opt/apache-cassandra-${VERSION} /opt/cassandra
 RUN apt-get update && \
     apt-get install -y --no-install-recommends openjdk-17-jre-headless && \
     rm -rf /var/lib/apt/lists/* || true && \
@@ -29,10 +30,15 @@ ENV HEALTH_CMD="nodetool status" \
     STARTUP_CMD="nodetool status" \
     EVERGREEN_LOG_LEVEL=info
 
+RUN mkdir -p /usr/lib/jvm || true
 COPY --from=builder /usr/lib/jvm /usr/lib/jvm
+RUN mkdir -p /opt/cassandra || true
 COPY --from=builder /opt/cassandra /opt/cassandra
+RUN mkdir -p /app || true
 COPY --from=builder /app /app
+RUN mkdir -p /var/lib/cassandra || true
 COPY --from=builder /var/lib/cassandra /var/lib/cassandra
+RUN mkdir -p /var/log/cassandra || true
 COPY --from=builder /var/log/cassandra /var/log/cassandra
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 ENV CASSANDRA_HOME=/opt/cassandra

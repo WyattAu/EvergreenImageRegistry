@@ -22,10 +22,15 @@ RUN mkdir -p /app /var/log/oauth2-proxy /var/cache/oauth2-proxy 2>/dev/null || t
 
 
 FROM scratch
+RUN touch /oauth2-proxy || true
 COPY --from=downloader /oauth2-proxy /oauth2-proxy
+RUN touch /etc/ssl/certs/ca-certificates.crt || true
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+RUN mkdir -p /app || true
 COPY --from=builder /app /app
+RUN mkdir -p /var/log/oauth2-proxy || true
 COPY --from=builder /var/log/oauth2-proxy /var/log/oauth2-proxy
+RUN mkdir -p /var/cache/oauth2-proxy || true
 COPY --from=builder /var/cache/oauth2-proxy /var/cache/oauth2-proxy
 USER 65532:65532
 WORKDIR /app

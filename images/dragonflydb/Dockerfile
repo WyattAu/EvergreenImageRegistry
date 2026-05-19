@@ -10,10 +10,15 @@ RUN mkdir -p /app /var/log/dragonflydb /var/cache/dragonflydb 2>/dev/null || tru
 
 
 FROM scratch
+RUN touch /dragonfly || true
 COPY --from=upstream /usr/local/bin/dfly /dragonfly
+RUN touch /etc/ssl/certs/ca-certificates.crt || true
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+RUN mkdir -p /app || true
 COPY --from=builder /app /app
+RUN mkdir -p /var/log/dragonflydb || true
 COPY --from=builder /var/log/dragonflydb /var/log/dragonflydb
+RUN mkdir -p /var/cache/dragonflydb || true
 COPY --from=builder /var/cache/dragonflydb /var/cache/dragonflydb
 
 WORKDIR /app

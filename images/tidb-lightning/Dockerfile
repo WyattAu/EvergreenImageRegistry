@@ -10,11 +10,16 @@ RUN mkdir -p /app /var/log/tidb-lightning /var/cache/tidb-lightning 2>/dev/null 
 
 
 FROM scratch
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt || true
-COPY --from=upstream /tidb-lightning /usr/local/bin/tidb-lightning || true
-COPY --from=builder /app /app || true
-COPY --from=builder /var/log/tidb-lightning /var/log/tidb-lightning || true
-COPY --from=builder /var/cache/tidb-lightning /var/cache/tidb-lightning || true
+RUN mkdir -p /etc/ssl/certs || true && touch /etc/ssl/certs/ca-certificates.crt || true
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+RUN touch /usr/local/bin/tidb-lightning || true
+COPY --from=upstream /tidb-lightning /usr/local/bin/tidb-lightning
+RUN mkdir -p /app || true
+COPY --from=builder /app /app
+RUN mkdir -p /var/log/tidb-lightning || true
+COPY --from=builder /var/log/tidb-lightning /var/log/tidb-lightning
+RUN mkdir -p /var/cache/tidb-lightning || true
+COPY --from=builder /var/cache/tidb-lightning /var/cache/tidb-lightning
 
 EXPOSE 8289
 EXPOSE 9101

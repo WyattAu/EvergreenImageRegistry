@@ -108,6 +108,7 @@ RUN apk add --no-cache ca-certificates || true
 
 
 
+RUN touch /usr/sbin/nginx || true
 COPY --from=downloader /usr/sbin/nginx /usr/sbin/nginx
 
 
@@ -116,6 +117,7 @@ COPY --from=downloader /usr/sbin/nginx /usr/sbin/nginx
 
 
 
+RUN mkdir -p /etc/nginx || true
 COPY --from=downloader /etc/nginx /etc/nginx
 
 
@@ -124,6 +126,7 @@ COPY --from=downloader /etc/nginx /etc/nginx
 
 
 
+RUN mkdir -p /app || true
 COPY --from=builder /app /app
 
 
@@ -132,6 +135,7 @@ COPY --from=builder /app /app
 
 
 
+RUN mkdir -p /var/log/nginx || true
 COPY --from=builder /var/log/nginx /var/log/nginx
 
 
@@ -140,6 +144,7 @@ COPY --from=builder /var/log/nginx /var/log/nginx
 
 
 
+RUN mkdir -p /var/cache/nginx || true
 COPY --from=builder /var/cache/nginx /var/cache/nginx
 
 

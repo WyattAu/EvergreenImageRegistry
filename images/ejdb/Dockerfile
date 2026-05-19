@@ -25,6 +25,7 @@ ARG VERSION=2.2.3
 RUN apk add --no-cache libstdc++ ca-certificates || true \
     adduser -D -u 65532 -s /bin/false ejdb 2>/dev/null || true && \
     mkdir -p /var/lib/ejdb /var/log/ejdb /var/cache/ejdb 2>/dev/null || true
+RUN mkdir -p /opt/ejdb || true
 COPY --from=builder /opt/ejdb /opt/ejdb
 RUN chown -R 65532:65532 /opt/ejdb /var/lib/ejdb /var/log/ejdb /var/cache/ejdb
 USER 65532:65532

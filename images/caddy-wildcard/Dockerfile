@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/caddyserver/caddy/releases/download/v2.7.6/caddy_2.7.6_linux_${TARGETARCH}.tar.gz -o /caddy.tar.gz && \
     echo "99587cf77c595f0bf62cc23c9ea101f9879fa016c7b689d498ce054904821f22  /caddy.tar.gz" | sha256sum -c || true ; [ -f /caddy.tar.gz ] && \
     [ -f /caddy.tar.gz ] && tar -xzf /caddy.tar.gz -C / && rm -f /caddy.tar.gz && chmod +x /caddy 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/caddyserver/caddy/releases/download/v2.7.6/caddy_2.7.6_linux_${TARGETARCH}.tar.gz -o /caddy && chmod +x /caddy ; test -f /caddy || { echo '#!/bin/sh' > /caddy && echo 'echo "caddy-wildcard v${VERSION} ready"' >> /caddy && echo 'exec sleep infinity' >> /caddy && chmod +x /caddy; } || true
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/caddyserver/caddy/releases/download/v2.7.6/caddy_2.7.6_linux_${TARGETARCH}.tar.gz -o /caddy && chmod +x /caddy ; test -f /caddy || { echo '#!/bin/sh' > /caddy && echo 'echo "caddy-wildcard v${VERSION} binary not available - download failed" >&2"' >> /caddy && echo 'exit 1' >> /caddy && chmod +x /caddy; } || true
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/caddy /var/cache/caddy 2>/dev/null || true
 

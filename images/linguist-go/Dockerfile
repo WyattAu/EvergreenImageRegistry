@@ -21,7 +21,8 @@ RUN apt-get update && \
         -ldflags="-s -w" \
         -o /app/linguist ./cmd/linguist 2>/dev/null || true && \
     test -f /app/linguist && strip --strip-all /app/linguist  || true 2>/dev/null|| true && \
-    test -f /app/linguist || { echo '#!/bin/sh' > /app/linguist && echo 'echo "linguist-go v'${VERSION}' placeholder"' >> /app/linguist && echo 'exec sleep infinity' >> /app/linguist && chmod +x /app/linguist; } 2>/dev/null || true && \
+    test -f /app/linguist || { echo '#!/bin/sh' > /app/linguist && echo 'echo "linguist-go v'${VERSION}' binary not available - download failed" >&2
+exit 1"' >> /app/linguist && echo 'exit 1' >> /app/linguist && chmod +x /app/linguist; } 2>/dev/null || true && \
     mkdir -p /app /var/log/linguist /var/cache/linguist
 FROM scratch
 COPY --from=builder /app/linguist /linguist

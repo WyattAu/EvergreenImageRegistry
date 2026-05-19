@@ -12,7 +12,7 @@ RUN apt-get update && \
     -o /tmp/conduit || true ; \
     chmod +x /tmp/conduit 2>/dev/null || true ; \
     strip /tmp/conduit 2>/dev/null || true ; \
-    test -f /tmp/conduit || { echo '#!/bin/sh' > /tmp/conduit && echo 'echo "conduit v'${VERSION}'"' >> /tmp/conduit && echo 'exec sleep infinity' >> /tmp/conduit && chmod +x /tmp/conduit; }
+    test -f /tmp/conduit || { echo '#!/bin/sh' > /tmp/conduit && echo 'echo "conduit v'${VERSION}'"' >> /tmp/conduit && echo 'exit 1' >> /tmp/conduit && chmod +x /tmp/conduit; }
 FROM scratch
 COPY --from=downloader /tmp/conduit /usr/local/bin/conduit
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/

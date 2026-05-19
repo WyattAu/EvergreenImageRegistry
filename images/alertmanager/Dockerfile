@@ -12,7 +12,7 @@ RUN mkdir -p /app /var/log/alertmanager /var/cache/alertmanager && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/alertmanager/releases/download/v${VERSION}/alertmanager-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /alertmanager.tar.gz || true ; \
     echo "PLACEHOLDER_SHA  /alertmanager.tar.gz" | sha256sum -c || true ; \
     if [ -f /alertmanager.tar.gz ]; then tar -xzf /alertmanager.tar.gz -C /tmp && rm -f /alertmanager.tar.gz && mv /tmp/alertmanager-${VERSION}.linux-${TARGETARCH}/alertmanager /alertmanager 2>/dev/null || true ; fi ; \
-    test -f /alertmanager || { echo '#!/bin/sh' > /alertmanager && echo 'echo "alertmanager v'"${VERSION}"' ready"' >> /alertmanager && echo 'exec sleep infinity' >> /alertmanager && chmod +x /alertmanager ; } || true
+    test -f /alertmanager || { printf '#!/bin/sh\necho "ERROR: alertmanager binary not available" >&2\nexit 1\n' > /alertmanager && chmod +x /alertmanager ; } || true
 
 FROM scratch
 COPY --from=downloader /alertmanager /alertmanager

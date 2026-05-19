@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 
 
 RUN strip /kubescape 2>/dev/null || true && \
-    test -f /kubescape || { echo '#!/bin/sh' > /kubescape && echo 'echo "kubescape v${VERSION} ready"' >> /kubescape && echo 'exec sleep infinity' >> /kubescape && chmod +x /kubescape; } && \
+    test -f /kubescape || { echo '#!/bin/sh' > /kubescape && echo 'echo "kubescape v${VERSION} binary not available - download failed" >&2"' >> /kubescape && echo 'exit 1' >> /kubescape && chmod +x /kubescape; } && \
     mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 
 

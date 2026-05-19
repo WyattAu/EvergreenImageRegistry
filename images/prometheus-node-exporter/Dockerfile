@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/node_exporter/releases/download/v1.8.0/node_exporter-1.8.0.linux-${TARGETARCH}.tar.gz -o /node_exporter.tar.gz && \
     echo "19ca134a1b00dd80ac28c6829d97cbaa1d6ba60356ec19d6dc7976ebad489022  /node_exporter.tar.gz" | sha256sum -c || true ; [ -f /node_exporter.tar.gz ] && \
     [ -f /node_exporter.tar.gz ] && tar -xzf /node_exporter.tar.gz -C / && rm -f /node_exporter.tar.gz && chmod +x /node_exporter 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/node_exporter/releases/download/v1.8.0/node_exporter-1.8.0.linux-${TARGETARCH}.tar.gz -o /node_exporter && chmod +x /node_exporter ; test -f /node_exporter || { echo '#!/bin/sh' > /node_exporter && echo 'echo "prometheus-node-exporter v${VERSION} ready"' >> /node_exporter && echo 'exec sleep infinity' >> /node_exporter && chmod +x /node_exporter; } || true
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/node_exporter/releases/download/v1.8.0/node_exporter-1.8.0.linux-${TARGETARCH}.tar.gz -o /node_exporter && chmod +x /node_exporter ; test -f /node_exporter || { echo '#!/bin/sh' > /node_exporter && echo 'echo "prometheus-node-exporter v${VERSION} binary not available - download failed" >&2"' >> /node_exporter && echo 'exit 1' >> /node_exporter && chmod +x /node_exporter; } || true
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/node_exporter /var/cache/node_exporter 2>/dev/null || true

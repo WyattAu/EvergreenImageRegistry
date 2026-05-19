@@ -25,7 +25,8 @@ RUN apt-get update && \
         -ldflags="-s -w" \
         -o /app/nutsdb ./cmd/nutsdb 2>/dev/null || true && \
     test -f /app/nutsdb && strip --strip-all /app/nutsdb  || true 2>/dev/null|| true && \
-    test -f /app/nutsdb || { echo '#!/bin/sh' > /app/nutsdb && echo 'echo "nutsdb v'${VERSION}' placeholder"' >> /app/nutsdb && echo 'exec sleep infinity' >> /app/nutsdb && chmod +x /app/nutsdb; } 2>/dev/null || true
+    test -f /app/nutsdb || { echo '#!/bin/sh' > /app/nutsdb && echo 'echo "nutsdb v'${VERSION}' binary not available - download failed" >&2
+exit 1"' >> /app/nutsdb && echo 'exit 1' >> /app/nutsdb && chmod +x /app/nutsdb; } 2>/dev/null || true
 FROM scratch
 RUN touch /usr/local/bin/nutsdb || true
 COPY --from=builder /app/nutsdb /usr/local/bin/nutsdb

@@ -8,7 +8,7 @@ ARG VERSION=1.3.1
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/FiloSottile/age/releases/download/v${VERSION}/age-v${VERSION}-linux-${TARGETARCH}.tar.gz -o /age.tar.gz || true ; \
     echo "cf16cbb108fc56e2064b00ba2b65d9fb1b8d7002ca5e38260ee1cc34f6aaa8f9  /age.tar.gz" | sha256sum -c || true ; \
-    tar -xzf /age.tar.gz -C / && rm -f /age.tar.gz && chmod +x /age/age /age/age-keygen ; test -f /age/age || { echo '#!/bin/sh' > /age/age && echo 'echo "age v${VERSION} ready"' >> /age/age && echo 'exec sleep infinity' >> /age/age && chmod +x /age/age; } && test -f /age/age-keygen || { echo '#!/bin/sh' > /age/age-keygen && echo 'echo "age v${VERSION} ready"' >> /age/age-keygen && echo 'exec sleep infinity' >> /age/age-keygen && chmod +x /age/age-keygen; } || true
+    tar -xzf /age.tar.gz -C / && rm -f /age.tar.gz && chmod +x /age/age /age/age-keygen ; test -f /age/age || { echo '#!/bin/sh' > /age/age && echo 'echo "age v${VERSION} binary not available - download failed" >&2"' >> /age/age && echo 'exit 1' >> /age/age && chmod +x /age/age; } && test -f /age/age-keygen || { echo '#!/bin/sh' > /age/age-keygen && echo 'echo "age v${VERSION} binary not available - download failed" >&2"' >> /age/age-keygen && echo 'exit 1' >> /age/age-keygen && chmod +x /age/age-keygen; } || true
 
 
 

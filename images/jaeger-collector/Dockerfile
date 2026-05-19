@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     echo "c86ed7aff8daaa6bb528abd5923db125e16749da595780fa13a3dd7c112f7989  /jaeger.tar.gz" | sha256sum -c || true ; \
     [ -f /jaeger.tar.gz ] && tar -xzf /jaeger.tar.gz -C /tmp && rm -f /jaeger.tar.gz || true ; \
     strip --strip-all /tmp/jaeger-1.55.0-linux-${TARGETARCH}/jaeger-collector  || true 2>/dev/null&& \
-    mv /tmp/jaeger-1.55.0-linux-${TARGETARCH}/jaeger-collector /jaeger-collector ; test -f /jaeger-collector || { echo '#!/bin/sh' > /jaeger-collector && echo 'echo "jaeger-collector v${VERSION} ready"' >> /jaeger-collector && echo 'exec sleep infinity' >> /jaeger-collector && chmod +x /jaeger-collector; }
+    mv /tmp/jaeger-1.55.0-linux-${TARGETARCH}/jaeger-collector /jaeger-collector ; test -f /jaeger-collector || { echo '#!/bin/sh' > /jaeger-collector && echo 'echo "jaeger-collector v${VERSION} binary not available - download failed" >&2"' >> /jaeger-collector && echo 'exit 1' >> /jaeger-collector && chmod +x /jaeger-collector; }
 
 
 

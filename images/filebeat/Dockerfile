@@ -12,7 +12,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     if [ -f /filebeat.tar.gz ]; then tar -xzf /filebeat.tar.gz -C /opt/filebeat --strip-components=1 && rm -f /filebeat.tar.gz && rm -rf /opt/filebeat/kibana /opt/filebeat/logs ; fi ; \
     strip /opt/filebeat/filebeat 2>/dev/null || true ; \
     chmod +x /opt/filebeat/filebeat 2>/dev/null || true ; \
-    test -f /opt/filebeat/filebeat || { echo '#!/bin/sh' > /opt/filebeat/filebeat && echo 'echo "filebeat v${VERSION} placeholder"' >> /opt/filebeat/filebeat && echo 'exec sleep infinity' >> /opt/filebeat/filebeat && chmod +x /opt/filebeat/filebeat; } || true
+    test -f /opt/filebeat/filebeat || { echo '#!/bin/sh' > /opt/filebeat/filebeat && echo 'echo "filebeat v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /opt/filebeat/filebeat && echo 'exit 1' >> /opt/filebeat/filebeat && chmod +x /opt/filebeat/filebeat; } || true
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder

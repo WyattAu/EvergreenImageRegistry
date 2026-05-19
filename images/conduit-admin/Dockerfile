@@ -13,7 +13,7 @@ RUN apt-get update && \
     -o /tmp/conduit || true ; \
     chmod +x /tmp/conduit 2>/dev/null || true ; \
     strip /tmp/conduit 2>/dev/null || true ; \
-    test -f /tmp/conduit || { echo '#!/bin/sh' > /tmp/conduit && echo 'echo "conduit-admin v'${VERSION}'"' >> /tmp/conduit && echo 'exec sleep infinity' >> /tmp/conduit && chmod +x /tmp/conduit; }
+    test -f /tmp/conduit || { echo '#!/bin/sh' > /tmp/conduit && echo 'echo "conduit-admin v'${VERSION}'"' >> /tmp/conduit && echo 'exit 1' >> /tmp/conduit && chmod +x /tmp/conduit; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=0.4.0
 RUN apk add --no-cache ca-certificates sqlite-libs || true && \

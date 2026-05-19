@@ -40,11 +40,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
 
 
 RUN mkdir -p /usr/sbin/unbound ; \
-    test -f /usr/sbin/unbound-anchor || { echo '#!/bin/sh' > /usr/sbin/unbound-anchor && echo 'echo "unbound-alpine v${VERSION} placeholder"' >> /usr/sbin/unbound-anchor && echo 'exec sleep infinity' >> /usr/sbin/unbound-anchor && chmod +x /usr/sbin/unbound-anchor ; } ; \
-    test -f /usr/sbin/unbound-checkconf || { echo '#!/bin/sh' > /usr/sbin/unbound-checkconf && echo 'echo "unbound-alpine v${VERSION} placeholder"' >> /usr/sbin/unbound-checkconf && echo 'exec sleep infinity' >> /usr/sbin/unbound-checkconf && chmod +x /usr/sbin/unbound-checkconf ; } ; \
-    test -f /usr/sbin/unbound-control || { echo '#!/bin/sh' > /usr/sbin/unbound-control && echo 'echo "unbound-alpine v${VERSION} placeholder"' >> /usr/sbin/unbound-control && echo 'exec sleep infinity' >> /usr/sbin/unbound-control && chmod +x /usr/sbin/unbound-control ; } ; \
+    test -f /usr/sbin/unbound-anchor || { echo '#!/bin/sh' > /usr/sbin/unbound-anchor && echo 'echo "unbound-alpine v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /usr/sbin/unbound-anchor && echo 'exit 1' >> /usr/sbin/unbound-anchor && chmod +x /usr/sbin/unbound-anchor ; } ; \
+    test -f /usr/sbin/unbound-checkconf || { echo '#!/bin/sh' > /usr/sbin/unbound-checkconf && echo 'echo "unbound-alpine v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /usr/sbin/unbound-checkconf && echo 'exit 1' >> /usr/sbin/unbound-checkconf && chmod +x /usr/sbin/unbound-checkconf ; } ; \
+    test -f /usr/sbin/unbound-control || { echo '#!/bin/sh' > /usr/sbin/unbound-control && echo 'echo "unbound-alpine v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /usr/sbin/unbound-control && echo 'exit 1' >> /usr/sbin/unbound-control && chmod +x /usr/sbin/unbound-control ; } ; \
     mkdir -p /usr/lib/libunbound.so* ; \
-    test -f /etc/unbound || { echo '#!/bin/sh' > /etc/unbound && echo 'echo "unbound-alpine v${VERSION} placeholder"' >> /etc/unbound && echo 'exec sleep infinity' >> /etc/unbound && chmod +x /etc/unbound ; }
+    test -f /etc/unbound || { echo '#!/bin/sh' > /etc/unbound && echo 'echo "unbound-alpine v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /etc/unbound && echo 'exit 1' >> /etc/unbound && chmod +x /etc/unbound ; }
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 

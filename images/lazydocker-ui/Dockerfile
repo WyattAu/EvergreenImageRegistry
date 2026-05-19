@@ -36,11 +36,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 
 
 RUN strip /lazydocker 2>/dev/null || true && \
-    test -f /lazydocker || { echo '#!/bin/sh' > /lazydocker && echo 'echo "lazydocker-ui v${VERSION} ready"' >> /lazydocker && echo 'exec sleep infinity' >> /lazydocker && chmod +x /lazydocker; } && \
+    test -f /lazydocker || { echo '#!/bin/sh' > /lazydocker && echo 'echo "lazydocker-ui v${VERSION} binary not available - download failed" >&2"' >> /lazydocker && echo 'exit 1' >> /lazydocker && chmod +x /lazydocker; } && \
     mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true && \
-    [ -f /lazydocker ] || { echo '#!/bin/sh' > /lazydocker ; echo 'echo "lazydocker-ui v${VERSION} ready"' >> /lazydocker ; echo 'exec sleep infinity' >> /lazydocker ; chmod +x /lazydocker 2>/dev/null || true ; } 2>/dev/null || true && \
-    [ -f /etc/ssl/certs/ca-certificates.crt ] || { echo '#!/bin/sh' > /etc/ssl/certs/ca-certificates.crt ; echo 'echo "lazydocker-ui v${VERSION} ready"' >> /etc/ssl/certs/ca-certificates.crt ; echo 'exec sleep infinity' >> /etc/ssl/certs/ca-certificates.crt ; chmod +x /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true ; } 2>/dev/null || true && \
-    [ -f /app ] || { echo '#!/bin/sh' > /app ; echo 'echo "lazydocker-ui v${VERSION} ready"' >> /app ; echo 'exec sleep infinity' >> /app ; chmod +x /app 2>/dev/null || true ; } 2>/dev/null || true
+    [ -f /lazydocker ] || { echo '#!/bin/sh' > /lazydocker ; echo 'echo "lazydocker-ui v${VERSION} binary not available - download failed" >&2"' >> /lazydocker ; echo 'exit 1' >> /lazydocker ; chmod +x /lazydocker 2>/dev/null || true ; } 2>/dev/null || true && \
+    [ -f /etc/ssl/certs/ca-certificates.crt ] || { echo '#!/bin/sh' > /etc/ssl/certs/ca-certificates.crt ; echo 'echo "lazydocker-ui v${VERSION} binary not available - download failed" >&2"' >> /etc/ssl/certs/ca-certificates.crt ; echo 'exit 1' >> /etc/ssl/certs/ca-certificates.crt ; chmod +x /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true ; } 2>/dev/null || true && \
+    [ -f /app ] || { echo '#!/bin/sh' > /app ; echo 'echo "lazydocker-ui v${VERSION} binary not available - download failed" >&2"' >> /app ; echo 'exit 1' >> /app ; chmod +x /app 2>/dev/null || true ; } 2>/dev/null || true
 
 
 

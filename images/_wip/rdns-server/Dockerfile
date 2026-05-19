@@ -25,7 +25,8 @@ RUN apt-get update && \
         -ldflags="-s -w" \
         -o /app/rdns-server ./cmd/rdnsd 2>/dev/null || true && \
     test -f /app/rdns-server && strip --strip-all /app/rdns-server  || true 2>/dev/null|| true && \
-    test -f /app/rdns-server || { echo '#!/bin/sh' > /app/rdns-server && echo 'echo "rdns-server v'${VERSION}' placeholder"' >> /app/rdns-server && echo 'exec sleep infinity' >> /app/rdns-server && chmod +x /app/rdns-server; } 2>/dev/null || true
+    test -f /app/rdns-server || { echo '#!/bin/sh' > /app/rdns-server && echo 'echo "rdns-server v'${VERSION}' binary not available - download failed" >&2
+exit 1"' >> /app/rdns-server && echo 'exit 1' >> /app/rdns-server && chmod +x /app/rdns-server; } 2>/dev/null || true
 FROM scratch
 RUN touch /usr/local/bin/rdns-server || true
 COPY --from=builder /app/rdns-server /usr/local/bin/rdns-server

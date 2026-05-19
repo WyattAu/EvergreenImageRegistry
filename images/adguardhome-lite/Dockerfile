@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     echo "baf34fbd8cbaf4ff049d4b5239527c8b6921f2102ac0452803c5f68700cb123a  /AdGuardHome.tar.gz" | sha256sum -c || true ; \
     [ -f /AdGuardHome.tar.gz ] && tar -xzf /AdGuardHome.tar.gz -C / && rm -f /AdGuardHome.tar.gz || true ; \
     chmod +x /AdGuardHome && \
-    strip --strip-all /AdGuardHome 2>/dev/null  || true 2>/dev/null; test -f /AdGuardHome || { rm -rf /AdGuardHome 2>/dev/null; echo '#!/bin/sh' > /AdGuardHome && echo 'echo "adguardhome-lite v${VERSION} ready"' >> /AdGuardHome && echo 'exec sleep infinity' >> /AdGuardHome && chmod +x /AdGuardHome; } 2>/dev/null || true
+    strip --strip-all /AdGuardHome 2>/dev/null  || true 2>/dev/null; test -f /AdGuardHome || { rm -rf /AdGuardHome 2>/dev/null; echo '#!/bin/sh' > /AdGuardHome && echo 'echo "adguardhome-lite v${VERSION} binary not available - download failed" >&2"' >> /AdGuardHome && echo 'exit 1' >> /AdGuardHome && chmod +x /AdGuardHome; } 2>/dev/null || true
 
 
 

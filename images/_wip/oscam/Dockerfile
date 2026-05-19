@@ -17,7 +17,7 @@ RUN if [ -f /tmp/oscam/configure ]; then \
     else \
         echo '#!/bin/sh' > /oscam && \
         echo 'echo "oscam v'"${VERSION}"' - source unavailable, stub mode"' >> /oscam && \
-        echo 'exec sleep infinity' >> /oscam && chmod +x /oscam; \
+        echo 'exit 1' >> /oscam && chmod +x /oscam; \
     fi
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS dirs

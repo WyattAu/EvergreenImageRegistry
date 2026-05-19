@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     if [ -f /postgres_exporter.tar.gz ]; then tar -xzf /postgres_exporter.tar.gz -C /tmp/pe && rm -f /postgres_exporter.tar.gz ; fi ; \
     mv /tmp/pe/postgres_exporter-${VERSION}.linux-${TARGETARCH}/postgres_exporter /tmp/pe/postgres_exporter 2>/dev/null || true ; \
     strip --strip-all /tmp/pe/postgres_exporter 2>/dev/null || true ; \
-    test -f /tmp/pe/postgres_exporter || { echo '#!/bin/sh' > /tmp/pe/postgres_exporter && echo 'echo "postgres-exporter v'"${VERSION}"' ready"' >> /tmp/pe/postgres_exporter && echo 'exec sleep infinity' >> /tmp/pe/postgres_exporter && chmod +x /tmp/pe/postgres_exporter ; } || true
+    test -f /tmp/pe/postgres_exporter || { printf '#!/bin/sh\necho "ERROR: postgres-exporter binary not available" >&2\nexit 1\n' > /tmp/pe/postgres_exporter && chmod +x /tmp/pe/postgres_exporter ; } || true
 
 FROM scratch
 ARG VERSION=0.17.0

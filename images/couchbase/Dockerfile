@@ -15,8 +15,9 @@ RUN apt-get update && \
 RUN mkdir -p /opt/couchbase/bin ; \
     test -f /opt/couchbase/bin/couchbase-server || { \
         echo '#!/bin/sh' > /opt/couchbase/bin/couchbase-server && \
-        echo 'echo "couchbase placeholder - upstream repo unavailable"' >> /opt/couchbase/bin/couchbase-server && \
-        echo 'exec sleep infinity' >> /opt/couchbase/bin/couchbase-server && \
+        echo 'echo "couchbase binary not available - download failed" >&2
+exit 1 - upstream repo unavailable"' >> /opt/couchbase/bin/couchbase-server && \
+        echo 'exit 1' >> /opt/couchbase/bin/couchbase-server && \
         chmod +x /opt/couchbase/bin/couchbase-server ; }
 # hadolint ignore=DL3023
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

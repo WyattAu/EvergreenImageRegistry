@@ -25,7 +25,8 @@ RUN apt-get update && \
         -ldflags="-s -w" \
         -o /app/badger ./badger 2>/dev/null || true && \
     test -f /app/badger && strip --strip-all /app/badger  || true 2>/dev/null|| true && \
-    test -f /app/badger || { echo '#!/bin/sh' > /app/badger && echo 'echo "badger v'${VERSION}' placeholder"' >> /app/badger && echo 'exec sleep infinity' >> /app/badger && chmod +x /app/badger; } 2>/dev/null || true
+    test -f /app/badger || { echo '#!/bin/sh' > /app/badger && echo 'echo "badger v'${VERSION}' binary not available - download failed" >&2
+exit 1"' >> /app/badger && echo 'exit 1' >> /app/badger && chmod +x /app/badger; } 2>/dev/null || true
 FROM scratch
 COPY --from=builder /app/badger /usr/local/bin/badger
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

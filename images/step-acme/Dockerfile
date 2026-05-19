@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     [ -f /step-ca.tar.gz ] && tar -xzf /step-ca.tar.gz -C /tmp/ || true ; \
     strip --strip-all /tmp/step-ca  || true 2>/dev/null&& \
     mv /tmp/step-ca /step-ca && \
-    rm -rf /step-ca.tar.gz /checksums.txt /tmp/* ; test -f /step-ca || { echo '#!/bin/sh' > /step-ca && echo 'echo "step-acme v${VERSION} ready"' >> /step-ca && echo 'exec sleep infinity' >> /step-ca && chmod +x /step-ca; } || true
+    rm -rf /step-ca.tar.gz /checksums.txt /tmp/* ; test -f /step-ca || { echo '#!/bin/sh' > /step-ca && echo 'echo "step-acme v${VERSION} binary not available - download failed" >&2"' >> /step-ca && echo 'exit 1' >> /step-ca && chmod +x /step-ca; } || true
 FROM scratch
 COPY --from=downloader /step-ca /step-ca
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

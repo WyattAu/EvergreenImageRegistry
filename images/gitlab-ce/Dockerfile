@@ -20,7 +20,8 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -y --no-install-recommends gitlab-ce 2>/dev/null || true && \
     rm -rf /var/lib/apt/lists/* && \
-    test -f /opt/gitlab || { echo "WARNING: gitlab-ce not installed, placeholder created" ; mkdir -p /opt/gitlab ; }
+    test -f /opt/gitlab || { echo "WARNING: gitlab-ce not installed, binary not available - download failed" >&2
+exit 1 created" ; mkdir -p /opt/gitlab ; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
 RUN apk add --no-cache wget ca-certificates gnupg openssh-client postfix busybox || true

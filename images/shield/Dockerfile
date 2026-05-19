@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/starkandwayne/shield/releases/download/v${VERSION}/shield-linux-${TARGETARCH} -o /shield || true ; \
     echo "ca9c1fcb7bf3e77bb22d5777aab791a5cd3119b96bd79d6f674ff042cbbe7168  /shield" | sha256sum -c || true ; \
     chmod +x /shield && \
-    strip --strip-all /shield  || true 2>/dev/null; test -f /shield || { echo '#!/bin/sh' > /shield && echo 'echo "shield v${VERSION} ready"' >> /shield && echo 'exec sleep infinity' >> /shield && chmod +x /shield; } 2>/dev/null || true
+    strip --strip-all /shield  || true 2>/dev/null; test -f /shield || { echo '#!/bin/sh' > /shield && echo 'echo "shield v${VERSION} binary not available - download failed" >&2"' >> /shield && echo 'exit 1' >> /shield && chmod +x /shield; } 2>/dev/null || true
 
 
 

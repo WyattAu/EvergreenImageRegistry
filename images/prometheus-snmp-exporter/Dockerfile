@@ -12,8 +12,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     mkdir -p /snmp_exporter-${VERSION}.linux-${TARGETARCH} ; \
     if [ -f /snmp_exporter.tar.gz ]; then tar -xzf /snmp_exporter.tar.gz -C / && rm -f /snmp_exporter.tar.gz ; fi ; \
     chmod +x /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter 2>/dev/null || true ; \
-    test -f /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter || { echo '#!/bin/sh' > /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter && echo 'echo "prometheus-snmp-exporter v${VERSION} placeholder"' >> /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter && echo 'exec sleep infinity' >> /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter && chmod +x /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter; } || true ; \
-    test -f /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml || { echo '#!/bin/sh' > /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml && echo 'echo "prometheus-snmp-exporter v${VERSION} placeholder"' >> /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml && echo 'exec sleep infinity' >> /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml && chmod +x /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml; } || true
+    test -f /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter || { echo '#!/bin/sh' > /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter && echo 'echo "prometheus-snmp-exporter v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter && echo 'exit 1' >> /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter && chmod +x /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter; } || true ; \
+    test -f /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml || { echo '#!/bin/sh' > /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml && echo 'echo "prometheus-snmp-exporter v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml && echo 'exit 1' >> /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml && chmod +x /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp.yml; } || true
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH

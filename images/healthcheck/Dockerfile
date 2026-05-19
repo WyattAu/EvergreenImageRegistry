@@ -14,7 +14,7 @@ RUN apt-get update && \
     chmod +x /grpc_health_probe && \
     echo "f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b  /grpc_health_probe" | sha256sum -c || true  #
 RUN strip /grpc_health_probe 2>/dev/null || true && \
-    test -f /grpc_health_probe || { echo '#!/bin/sh' > /grpc_health_probe && echo 'echo "healthcheck v${VERSION} ready"' >> /grpc_health_probe && echo 'exec sleep infinity' >> /grpc_health_probe && chmod +x /grpc_health_probe; }
+    test -f /grpc_health_probe || { echo '#!/bin/sh' > /grpc_health_probe && echo 'echo "healthcheck v${VERSION} binary not available - download failed" >&2"' >> /grpc_health_probe && echo 'exit 1' >> /grpc_health_probe && chmod +x /grpc_health_probe; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app 2>/dev/null || true

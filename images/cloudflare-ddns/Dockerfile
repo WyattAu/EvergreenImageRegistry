@@ -8,9 +8,11 @@ ARG TARGETARCH
 ARG VERSION=1.16.2
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/favonia/cloudflare-ddns/releases/download/v${VERSION}/cloudflare-ddns-${VERSION}-linux-${TARGETARCH}.tar.gz" -o /cloudflare-ddns.tar.gz && \
-    echo "placeholder  /cloudflare-ddns.tar.gz" | sha256sum -c || true ; [ -f /cloudflare-ddns.tar.gz ] && \
+    echo "binary not available - download failed" >&2
+exit 1  /cloudflare-ddns.tar.gz" | sha256sum -c || true ; [ -f /cloudflare-ddns.tar.gz ] && \
     tar -xzf /cloudflare-ddns.tar.gz -C / && rm -f /cloudflare-ddns.tar.gz && chmod +x /cloudflare-ddns 2>/dev/null || true && \
-    test -f /cloudflare-ddns || { echo '#!/bin/sh' > /cloudflare-ddns && echo 'echo "cloudflare-ddns v'${VERSION}' placeholder"' >> /cloudflare-ddns && echo 'exec sleep infinity' >> /cloudflare-ddns && chmod +x /cloudflare-ddns; } 2>/dev/null || true && \
+    test -f /cloudflare-ddns || { echo '#!/bin/sh' > /cloudflare-ddns && echo 'echo "cloudflare-ddns v'${VERSION}' binary not available - download failed" >&2
+exit 1"' >> /cloudflare-ddns && echo 'exit 1' >> /cloudflare-ddns && chmod +x /cloudflare-ddns; } 2>/dev/null || true && \
     mkdir -p /app /var/log/cloudflare-ddns /var/cache/cloudflare-ddns 2>/dev/null || true
 
 FROM scratch

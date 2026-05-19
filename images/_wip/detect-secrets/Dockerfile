@@ -11,7 +11,11 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --break-system-packages --upgrade pip && \
     pip install --no-cache-dir --break-system-packages detect-secrets || true && \
     mkdir -p /app-src 2>/dev/null || true && \
-    test -f /app || { echo '#!/bin/sh' > /app/placeholder && echo 'echo "detect-secrets v${VERSION} placeholder"' >> /app/placeholder && echo 'exec sleep infinity' >> /app/placeholder && chmod +x /app ; } || true
+    test -f /app || { echo '#!/bin/sh' > /app/binary not available - download failed" >&2
+exit 1 && echo 'echo "detect-secrets v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /app/binary not available - download failed" >&2
+exit 1 && echo 'exit 1' >> /app/binary not available - download failed" >&2
+exit 1 && chmod +x /app ; } || true
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 
@@ -23,7 +27,8 @@ RUN mkdir -p /app || true
 COPY --from=builder /app /app
 RUN addgroup -S -g 2 nogroup >/dev/null || true && \
     adduser -u 65532 -G nogroup -D -h /app -s /bin/false detectsecrets 2>/dev/null || true && \
-    chown -R 65532:65532 /app/placeholder 2>/dev/null || true
+    chown -R 65532:65532 /app/binary not available - download failed" >&2
+exit 1 2>/dev/null || true
 USER 65532:65532
 ENV PATH="/opt/venv/bin:$PATH"
 WORKDIR /app

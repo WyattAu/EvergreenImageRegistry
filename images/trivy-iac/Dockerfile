@@ -43,11 +43,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 
 
 RUN strip /trivy 2>/dev/null || true && \
-    test -f /trivy || { echo '#!/bin/sh' > /trivy && echo 'echo "trivy-iac v${VERSION} ready"' >> /trivy && echo 'exec sleep infinity' >> /trivy && chmod +x /trivy; } && \
+    test -f /trivy || { echo '#!/bin/sh' > /trivy && echo 'echo "trivy-iac v${VERSION} binary not available - download failed" >&2"' >> /trivy && echo 'exit 1' >> /trivy && chmod +x /trivy; } && \
     mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true && \
-    [ -f /trivy ] || { echo '#!/bin/sh' > /trivy ; echo 'echo "trivy-iac v${VERSION} ready"' >> /trivy ; echo 'exec sleep infinity' >> /trivy ; chmod +x /trivy 2>/dev/null || true ; } 2>/dev/null || true && \
-    [ -f /etc/ssl/certs/ca-certificates.crt ] || { echo '#!/bin/sh' > /etc/ssl/certs/ca-certificates.crt ; echo 'echo "trivy-iac v${VERSION} ready"' >> /etc/ssl/certs/ca-certificates.crt ; echo 'exec sleep infinity' >> /etc/ssl/certs/ca-certificates.crt ; chmod +x /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true ; } 2>/dev/null || true && \
-    [ -f /app ] || { echo '#!/bin/sh' > /app ; echo 'echo "trivy-iac v${VERSION} ready"' >> /app ; echo 'exec sleep infinity' >> /app ; chmod +x /app 2>/dev/null || true ; } 2>/dev/null || true
+    [ -f /trivy ] || { echo '#!/bin/sh' > /trivy ; echo 'echo "trivy-iac v${VERSION} binary not available - download failed" >&2"' >> /trivy ; echo 'exit 1' >> /trivy ; chmod +x /trivy 2>/dev/null || true ; } 2>/dev/null || true && \
+    [ -f /etc/ssl/certs/ca-certificates.crt ] || { echo '#!/bin/sh' > /etc/ssl/certs/ca-certificates.crt ; echo 'echo "trivy-iac v${VERSION} binary not available - download failed" >&2"' >> /etc/ssl/certs/ca-certificates.crt ; echo 'exit 1' >> /etc/ssl/certs/ca-certificates.crt ; chmod +x /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true ; } 2>/dev/null || true && \
+    [ -f /app ] || { echo '#!/bin/sh' > /app ; echo 'echo "trivy-iac v${VERSION} binary not available - download failed" >&2"' >> /app ; echo 'exit 1' >> /app ; chmod +x /app 2>/dev/null || true ; } 2>/dev/null || true
 
 
 

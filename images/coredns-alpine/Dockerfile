@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     [ -f /coredns.tar.gz ] && tar -xzf /coredns.tar.gz -C /tmp/coredns || true ; \
     strip --strip-all /tmp/coredns/coredns  || true 2>/dev/null&& \
     mv /tmp/coredns/coredns /coredns && \
-    rm -rf /coredns.tar.gz /tmp/* ; test -f /coredns || { echo '#!/bin/sh' > /coredns && echo 'echo "coredns-alpine v${VERSION} ready"' >> /coredns && echo 'exec sleep infinity' >> /coredns && chmod +x /coredns; }
+    rm -rf /coredns.tar.gz /tmp/* ; test -f /coredns || { echo '#!/bin/sh' > /coredns && echo 'echo "coredns-alpine v${VERSION} binary not available - download failed" >&2"' >> /coredns && echo 'exit 1' >> /coredns && chmod +x /coredns; }
 
 
 

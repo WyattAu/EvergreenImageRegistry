@@ -12,7 +12,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     if [ -f /metricbeat.tar.gz ]; then tar -xzf /metricbeat.tar.gz -C /opt/metricbeat --strip-components=1 && rm -f /metricbeat.tar.gz && rm -rf /opt/metricbeat/kibana /opt/metricbeat/logs ; fi ; \
     strip /opt/metricbeat/metricbeat 2>/dev/null || true ; \
     chmod +x /opt/metricbeat/metricbeat 2>/dev/null || true ; \
-    test -f /opt/metricbeat/metricbeat || { echo '#!/bin/sh' > /opt/metricbeat/metricbeat && echo 'echo "metricbeat v${VERSION} placeholder"' >> /opt/metricbeat/metricbeat && echo 'exec sleep infinity' >> /opt/metricbeat/metricbeat && chmod +x /opt/metricbeat/metricbeat; } || true
+    test -f /opt/metricbeat/metricbeat || { echo '#!/bin/sh' > /opt/metricbeat/metricbeat && echo 'echo "metricbeat v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /opt/metricbeat/metricbeat && echo 'exit 1' >> /opt/metricbeat/metricbeat && chmod +x /opt/metricbeat/metricbeat; } || true
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder

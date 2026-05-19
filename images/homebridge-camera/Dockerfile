@@ -6,9 +6,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm ca-certificates python3 make gcc libavahi-compat-libdnssd-dev ffmpeg ; rm -rf /var/lib/apt/lists/* || true && \
     npm install -g --unsafe-perm homebridge homebridge-camera-ffmpeg 2>/dev/null || true && \
     mkdir -p /usr/lib/node_modules/homebridge/bin /usr/lib/node_modules/homebridge-camera-ffmpeg /app /homebridge 2>/dev/null || true && \
-    test -f /usr/lib/node_modules/homebridge/bin/homebridge || { echo '#!/bin/sh' > /usr/lib/node_modules/homebridge/bin/homebridge && echo 'echo "homebridge-camera v0.0.1 placeholder"' >> /usr/lib/node_modules/homebridge/bin/homebridge && echo 'exec sleep infinity' >> /usr/lib/node_modules/homebridge/bin/homebridge && chmod +x /usr/lib/node_modules/homebridge/bin/homebridge ; } 2>/dev/null || true ; \
+    test -f /usr/lib/node_modules/homebridge/bin/homebridge || { echo '#!/bin/sh' > /usr/lib/node_modules/homebridge/bin/homebridge && echo 'echo "homebridge-camera v0.0.1 binary not available - download failed" >&2
+exit 1"' >> /usr/lib/node_modules/homebridge/bin/homebridge && echo 'exit 1' >> /usr/lib/node_modules/homebridge/bin/homebridge && chmod +x /usr/lib/node_modules/homebridge/bin/homebridge ; } 2>/dev/null || true ; \
     test -f /usr/lib/node_modules/homebridge-camera-ffmpeg/package.json || { echo '{"name":"homebridge-camera-ffmpeg","version":"0.0.1"}' > /usr/lib/node_modules/homebridge-camera-ffmpeg/package.json ; } 2>/dev/null || true ; \
-    test -f /app/start.sh || { echo '#!/bin/sh' > /app/start.sh && echo 'echo "homebridge-camera v0.0.1 placeholder"' >> /app/start.sh && echo 'exec sleep infinity' >> /app/start.sh && chmod +x /app/start.sh ; } 2>/dev/null || true
+    test -f /app/start.sh || { echo '#!/bin/sh' > /app/start.sh && echo 'echo "homebridge-camera v0.0.1 binary not available - download failed" >&2
+exit 1"' >> /app/start.sh && echo 'exit 1' >> /app/start.sh && chmod +x /app/start.sh ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache nodejs-20 npm ca-certificates ffmpeg || true && \

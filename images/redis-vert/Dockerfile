@@ -18,7 +18,7 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 6379
 
-HEALTHCHECK NONE
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD redis-cli ping || exit 1
 ENTRYPOINT ["redis-server"]
 LABEL org.opencontainers.image.title="redis-vert" \
       org.opencontainers.image.version="7.4.2" \

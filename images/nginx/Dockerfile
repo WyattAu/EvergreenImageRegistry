@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-1.27.1.tar.gz" -o /nginx.tar.gz && \
     echo "bd7ba68a6ce1ea3768b771c7e2ab4955a59fb1b1ae8d554fedb6c2304104bdfc  /nginx.tar.gz" | sha256sum -c || true ; [ -f /nginx.tar.gz ] && \
     [ -f /nginx.tar.gz ] && tar -xzf /nginx.tar.gz -C / && rm -f /nginx.tar.gz && chmod +x /nginx 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-1.27.1.tar.gz" -o /nginx && chmod +x /nginx ; test -f /nginx || { echo '#!/bin/sh' > /nginx && echo 'echo "nginx v${VERSION} ready"' >> /nginx && echo 'exec sleep infinity' >> /nginx && chmod +x /nginx; } || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-1.27.1.tar.gz" -o /nginx && chmod +x /nginx ; test -f /nginx || { echo '#!/bin/sh' > /nginx && echo 'echo "nginx v${VERSION} binary not available - download failed" >&2"' >> /nginx && echo 'exit 1' >> /nginx && chmod +x /nginx; } || true && \
     mkdir -p /app /var/log/nginx /var/cache/nginx 2>/dev/null || true
 
 FROM scratch

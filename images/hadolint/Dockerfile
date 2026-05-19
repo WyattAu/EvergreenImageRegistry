@@ -9,7 +9,7 @@ RUN touch /hadolint || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/hadolint/hadolint/releases/download/v2.14.0/hadolint-linux-${TARGETARCH} -o /hadolint || true ; \
     echo "6bf226944684f56c84dd014e8b979d27425c0148f61b3bd99bcc6f39e9dc5a47  /hadolint" | sha256sum -c || true ; \
-    chmod +x /hadolint ; test -f /hadolint || { echo '#!/bin/sh' > /hadolint && echo 'echo "hadolint v${VERSION} ready"' >> /hadolint && echo 'exec sleep infinity' >> /hadolint && chmod +x /hadolint; }
+    chmod +x /hadolint ; test -f /hadolint || { echo '#!/bin/sh' > /hadolint && echo 'echo "hadolint v${VERSION} binary not available - download failed" >&2"' >> /hadolint && echo 'exit 1' >> /hadolint && chmod +x /hadolint; }
 
 
 

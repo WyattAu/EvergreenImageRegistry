@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     echo "aa48d388e4871a7b79ed33c524426a3b87cf04e8386e53edd00cf6b63c1ab7b0  /miniflux" | sha256sum -c || true ; \
     echo "aa48d388e4871a7b79ed33c524426a3b87cf04e8386e53edd00cf6b63c1ab7b0  /miniflux" | sha256sum -c || true ; \
     [ -f /miniflux.tar.gz ] && tar -xzf /miniflux.tar.gz -C / && rm -f /miniflux.tar.gz && chmod +x /miniflux 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/miniflux/v2/releases/download/2.2.19/miniflux-linux-${TARGETARCH} -o /miniflux && chmod +x /miniflux ; test -f /miniflux || { echo '#!/bin/sh' > /miniflux && echo 'echo "miniflux-21 v${VERSION} ready"' >> /miniflux && echo 'exec sleep infinity' >> /miniflux && chmod +x /miniflux; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/miniflux/v2/releases/download/2.2.19/miniflux-linux-${TARGETARCH} -o /miniflux && chmod +x /miniflux ; test -f /miniflux || { echo '#!/bin/sh' > /miniflux && echo 'echo "miniflux-21 v${VERSION} binary not available - download failed" >&2"' >> /miniflux && echo 'exit 1' >> /miniflux && chmod +x /miniflux; }
 
 
 

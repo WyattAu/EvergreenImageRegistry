@@ -25,7 +25,8 @@ RUN apt-get update && \
         -ldflags="-s -w" \
         -o /app/cayley ./cmd/cayley 2>/dev/null || true && \
     test -f /app/cayley && strip --strip-all /app/cayley  || true 2>/dev/null|| true && \
-    test -f /app/cayley || { echo '#!/bin/sh' > /app/cayley && echo 'echo "cayley v'${VERSION}' placeholder"' >> /app/cayley && echo 'exec sleep infinity' >> /app/cayley && chmod +x /app/cayley; } 2>/dev/null || true
+    test -f /app/cayley || { echo '#!/bin/sh' > /app/cayley && echo 'echo "cayley v'${VERSION}' binary not available - download failed" >&2
+exit 1"' >> /app/cayley && echo 'exit 1' >> /app/cayley && chmod +x /app/cayley; } 2>/dev/null || true
 FROM scratch
 COPY --from=builder /app/cayley /usr/local/bin/cayley
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

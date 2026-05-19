@@ -1,7 +1,7 @@
 # =============================================================================
 # EVERGREEN HARDENED MYSQL INIT
 # Generated from template - Version: 8.0
-# Constraint: debian-slim - MySQL client tools require glibc
+# Wolfi-base provides glibc; MySQL client tools from upstream debs
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 

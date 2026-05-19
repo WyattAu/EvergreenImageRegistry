@@ -1,7 +1,7 @@
 # =============================================================================
 # EVERGREEN HARDENED POSTGRES BACKUP
 # Generated from template - Version: 17
-# Constraint: debian-slim - pg_dump and xz require glibc
+# Wolfi-base provides glibc; pg_dump and xz from upstream debs
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 

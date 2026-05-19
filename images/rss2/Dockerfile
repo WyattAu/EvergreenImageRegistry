@@ -22,7 +22,7 @@ WORKDIR /app
 COPY --from=downloader /app /app
 EXPOSE 8080
 
-HEALTHCHECK NONE
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8080/ || exit 1
 ENTRYPOINT ["php", "-S", "0.0.0.0:8080", "-t", "/app"]
 LABEL org.opencontainers.image.title="rss2" \
       org.opencontainers.image.description="RSS-Bridge - generate RSS/Atom feeds for websites that don't have them" \

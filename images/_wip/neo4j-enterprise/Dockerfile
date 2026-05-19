@@ -8,8 +8,10 @@ RUN mkdir -p /opt/neo4j-enterprise-5.17.0 || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://dist.neo4j.org/neo4j-enterprise-5.17.0-unix.tar.gz" -o /neo4j.tar.gz && \
     echo "a0acf804ff2f4bbb18f9ab8e2ee9e60f614056a361987be293f09acc2d3f0ff4  /neo4j.tar.gz" | sha256sum -c || true ; \
-    tar -xzf /neo4j.tar.gz -C /opt && rm -f /neo4j.tar.gz || true ; test -f /opt/neo4j-enterprise-5.17.0 || { echo '#!/bin/sh' > /opt/neo4j-enterprise-5.17.0 && echo 'echo "neo4j-enterprise v${VERSION} placeholder"' >> /opt/neo4j-enterprise-5.17.0 && echo 'exec sleep infinity' >> /opt/neo4j-enterprise-5.17.0 && chmod +x /opt/neo4j-enterprise-5.17.0; } ; tar -xzf /neo4j.tar.gz -C /opt 2>/dev/null || true ; test -f /opt/neo4j-enterprise-5.17.0 || { echo '#!/bin/sh' > /opt/neo4j-enterprise-5.17.0 && echo 'echo "neo4j-enterprise v${VERSION} placeholder"' >> /opt/neo4j-enterprise-5.17.0 && echo 'exec sleep infinity' >> /opt/neo4j-enterprise-5.17.0 && chmod +x /opt/neo4j-enterprise-5.17.0; } || true && \
-    [ -f /opt/neo4j ] || { echo '#!/bin/sh' > /opt/neo4j ; echo 'echo "neo4j-enterprise v${VERSION} ready"' >> /opt/neo4j ; echo 'exec sleep infinity' >> /opt/neo4j ; chmod +x /opt/neo4j 2>/dev/null || true ; } 2>/dev/null || true
+    tar -xzf /neo4j.tar.gz -C /opt && rm -f /neo4j.tar.gz || true ; test -f /opt/neo4j-enterprise-5.17.0 || { echo '#!/bin/sh' > /opt/neo4j-enterprise-5.17.0 && echo 'echo "neo4j-enterprise v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /opt/neo4j-enterprise-5.17.0 && echo 'exit 1' >> /opt/neo4j-enterprise-5.17.0 && chmod +x /opt/neo4j-enterprise-5.17.0; } ; tar -xzf /neo4j.tar.gz -C /opt 2>/dev/null || true ; test -f /opt/neo4j-enterprise-5.17.0 || { echo '#!/bin/sh' > /opt/neo4j-enterprise-5.17.0 && echo 'echo "neo4j-enterprise v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /opt/neo4j-enterprise-5.17.0 && echo 'exit 1' >> /opt/neo4j-enterprise-5.17.0 && chmod +x /opt/neo4j-enterprise-5.17.0; } || true && \
+    [ -f /opt/neo4j ] || { echo '#!/bin/sh' > /opt/neo4j ; echo 'echo "neo4j-enterprise v${VERSION} binary not available - download failed" >&2"' >> /opt/neo4j ; echo 'exit 1' >> /opt/neo4j ; chmod +x /opt/neo4j 2>/dev/null || true ; } 2>/dev/null || true
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN touch /opt/neo4j || true
 COPY --from=downloader /opt/neo4j-enterprise-5.17.0 /opt/neo4j

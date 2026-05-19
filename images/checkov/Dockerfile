@@ -9,7 +9,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip || true && \
-    pip install --no-cache-dir checkov==3.2.0 ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/checkov || { echo '#!/bin/sh' > /usr/local/bin/checkov && echo 'echo "checkov v${VERSION} placeholder"' >> /usr/local/bin/checkov && echo 'exec sleep infinity' >> /usr/local/bin/checkov && chmod +x /usr/local/bin/checkov ; } 2>/dev/null || true && \
+    pip install --no-cache-dir checkov==3.2.0 ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/checkov || { echo '#!/bin/sh' > /usr/local/bin/checkov && echo 'echo "checkov v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /usr/local/bin/checkov && echo 'exit 1' >> /usr/local/bin/checkov && chmod +x /usr/local/bin/checkov ; } 2>/dev/null || true && \
     mkdir -p /app 2>/dev/null || true
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"

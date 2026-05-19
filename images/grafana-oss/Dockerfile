@@ -17,8 +17,10 @@ RUN apt-get update && \
     curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /grafana.tar.gz 2>/dev/null || true && \
     [ -f /grafana.tar.gz ] && tar -xzf /grafana.tar.gz -C /opt 2>/dev/null || true && \
     rm -f /grafana.tar.gz 2>/dev/null || true && \
-    test -f /opt/grafana-${VERSION}/bin/grafana-server || { mkdir -p /opt/grafana-${VERSION}/bin && echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-server && echo 'echo "grafana-oss v${VERSION} placeholder"' >> /opt/grafana-${VERSION}/bin/grafana-server && echo 'exec sleep infinity' >> /opt/grafana-${VERSION}/bin/grafana-server && chmod +x /opt/grafana-${VERSION}/bin/grafana-server; } && \
-    test -f /opt/grafana-${VERSION}/bin/grafana-cli || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-cli && echo 'echo "grafana-oss v${VERSION} placeholder"' >> /opt/grafana-${VERSION}/bin/grafana-cli && echo 'exec sleep infinity' >> /opt/grafana-${VERSION}/bin/grafana-cli && chmod +x /opt/grafana-${VERSION}/bin/grafana-cli; } && \
+    test -f /opt/grafana-${VERSION}/bin/grafana-server || { mkdir -p /opt/grafana-${VERSION}/bin && echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-server && echo 'echo "grafana-oss v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /opt/grafana-${VERSION}/bin/grafana-server && echo 'exit 1' >> /opt/grafana-${VERSION}/bin/grafana-server && chmod +x /opt/grafana-${VERSION}/bin/grafana-server; } && \
+    test -f /opt/grafana-${VERSION}/bin/grafana-cli || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-cli && echo 'echo "grafana-oss v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /opt/grafana-${VERSION}/bin/grafana-cli && echo 'exit 1' >> /opt/grafana-${VERSION}/bin/grafana-cli && chmod +x /opt/grafana-${VERSION}/bin/grafana-cli; } && \
     test -d /opt/grafana-${VERSION}/public || mkdir -p /opt/grafana-${VERSION}/public && \
     test -d /opt/grafana-${VERSION}/conf || mkdir -p /opt/grafana-${VERSION}/conf && \
     strip /opt/grafana-${VERSION}/bin/grafana-server 2>/dev/null || true && \

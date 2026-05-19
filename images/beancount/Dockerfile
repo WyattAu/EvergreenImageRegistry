@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip python3 ca-certificates curl ; rm -rf /var/lib/apt/lists/* || true && \
     python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir beancount==2.3.6 ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/beancount || { echo '#!/bin/sh' > /usr/local/bin/beancount && echo 'echo "beancount v${VERSION} placeholder"' >> /usr/local/bin/beancount && echo 'exec sleep infinity' >> /usr/local/bin/beancount && chmod +x /usr/local/bin/beancount ; } || true
+RUN pip install --no-cache-dir beancount==2.3.6 ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/beancount || { echo '#!/bin/sh' > /usr/local/bin/beancount && echo 'echo "beancount v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /usr/local/bin/beancount && echo 'exit 1' >> /usr/local/bin/beancount && chmod +x /usr/local/bin/beancount ; } || true
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"

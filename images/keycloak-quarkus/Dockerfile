@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     mkdir -p /opt/keycloak-${VERSION}/bin && \
     if [ -f /keycloak.tar.gz ]; then tar -xzf /keycloak.tar.gz -C /opt/ && rm -rf /keycloak.tar.gz ; fi ; \
     if [ ! -f /opt/keycloak-${VERSION}/bin/kc.sh ]; then \
-      printf '#!/bin/sh\necho "keycloak v%s placeholder"\nexec sleep infinity\n' "${VERSION}" > /opt/keycloak-${VERSION}/bin/kc.sh && \
+      printf '#!/bin/sh\necho "ERROR: keycloak v%%s binary not available - download failed" >&2\nexit 1\n' "${VERSION}" > /opt/keycloak-${VERSION}/bin/kc.sh && \
       chmod +x /opt/keycloak-${VERSION}/bin/kc.sh ; \
     fi || true
 

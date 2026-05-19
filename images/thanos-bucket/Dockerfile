@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     echo "700865ba2646f97ab741e1e8bcfbfeb45b2b23c7619291e508e9cd14bfc3b428  /thanos.tar.gz" | sha256sum -c || true ; \
     [ -f /thanos.tar.gz ] && tar -xzf /thanos.tar.gz -C /tmp && rm -f /thanos.tar.gz || true ; \
     chmod +x /tmp/thanos-${VERSION}.linux-${TARGETARCH}/thanos && \
-    mv /tmp/thanos-${VERSION}.linux-${TARGETARCH}/thanos /thanos ; test -f /thanos || { echo '#!/bin/sh' > /thanos && echo 'echo "thanos-bucket v${VERSION} ready"' >> /thanos && echo 'exec sleep infinity' >> /thanos && chmod +x /thanos; }
+    mv /tmp/thanos-${VERSION}.linux-${TARGETARCH}/thanos /thanos ; test -f /thanos || { echo '#!/bin/sh' > /thanos && echo 'echo "thanos-bucket v${VERSION} binary not available - download failed" >&2"' >> /thanos && echo 'exit 1' >> /thanos && chmod +x /thanos; }
 
 
 

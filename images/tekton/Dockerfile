@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/tektoncd/pipeline/releases/download/${VERSION}/release.notags.tar.gz -o /tekton.tar.gz 2>/dev/null || true && \
     [ -f /tekton.tar.gz ] && tar -xzf /tekton.tar.gz -C /tmp 2>/dev/null; \ || true && \
     find /tmp -name "tekton-*" -type f -executable 2>/dev/null | head -1 | xargs -I{} cp {} /tekton 2>/dev/null || true && \
-    test -f /tekton || { echo '#!/bin/sh' > /tekton && echo 'echo "tekton v${VERSION} ready"' >> /tekton && echo 'exec sleep infinity' >> /tekton && chmod +x /tekton; }
+    test -f /tekton || { echo '#!/bin/sh' > /tekton && echo 'echo "tekton v${VERSION} binary not available - download failed" >&2"' >> /tekton && echo 'exit 1' >> /tekton && chmod +x /tekton; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/tekton 2>/dev/null || true

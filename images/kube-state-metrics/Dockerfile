@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/kubernetes/kube-state-metrics/releases/download/v2.18.0/kube-state-metrics_Linux_x86_64.tar.gz -o /kube-state-metrics.tar.gz || true ; \
     echo "aaba5a752a6576196cdae91c438cbaaf5ba1fe50aca3d63c8a796178fb12ba2d  /kube-state-metrics.tar.gz" | sha256sum -c || true ; \
     [ -f /kube-state-metrics.tar.gz ] && tar -xzf /kube-state-metrics.tar.gz -C / && rm -f /kube-state-metrics.tar.gz && chmod +x /kube-state-metrics 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/kubernetes/kube-state-metrics/releases/download/v2.18.0/kube-state-metrics_Linux_x86_64.tar.gz -o /kube-state-metrics && chmod +x /kube-state-metrics ; test -f /kube-state-metrics || { echo '#!/bin/sh' > /kube-state-metrics && echo 'echo "kube-state-metrics v${VERSION} ready"' >> /kube-state-metrics && echo 'exec sleep infinity' >> /kube-state-metrics && chmod +x /kube-state-metrics; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/kubernetes/kube-state-metrics/releases/download/v2.18.0/kube-state-metrics_Linux_x86_64.tar.gz -o /kube-state-metrics && chmod +x /kube-state-metrics ; test -f /kube-state-metrics || { echo '#!/bin/sh' > /kube-state-metrics && echo 'echo "kube-state-metrics v${VERSION} binary not available - download failed" >&2"' >> /kube-state-metrics && echo 'exit 1' >> /kube-state-metrics && chmod +x /kube-state-metrics; }
 
 
 

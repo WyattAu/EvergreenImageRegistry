@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     strip --strip-all /tmp/vmstorage-prod  || true 2>/dev/null&& \
     mv /tmp/vminsert-prod /vminsert && \
     mv /tmp/vmselect-prod /vmselect && \
-    mv /tmp/vmstorage-prod /vmstorage ; test -f /vminsert || { echo '#!/bin/sh' > /vminsert && echo 'echo "victoriametrics-cluster v${VERSION} ready"' >> /vminsert && echo 'exec sleep infinity' >> /vminsert && chmod +x /vminsert; } && test -f /vmselect || { echo '#!/bin/sh' > /vmselect && echo 'echo "victoriametrics-cluster v${VERSION} ready"' >> /vmselect && echo 'exec sleep infinity' >> /vmselect && chmod +x /vmselect; } && test -f /vmstorage || { echo '#!/bin/sh' > /vmstorage && echo 'echo "victoriametrics-cluster v${VERSION} ready"' >> /vmstorage && echo 'exec sleep infinity' >> /vmstorage && chmod +x /vmstorage; }
+    mv /tmp/vmstorage-prod /vmstorage ; test -f /vminsert || { echo '#!/bin/sh' > /vminsert && echo 'echo "victoriametrics-cluster v${VERSION} binary not available - download failed" >&2"' >> /vminsert && echo 'exit 1' >> /vminsert && chmod +x /vminsert; } && test -f /vmselect || { echo '#!/bin/sh' > /vmselect && echo 'echo "victoriametrics-cluster v${VERSION} binary not available - download failed" >&2"' >> /vmselect && echo 'exit 1' >> /vmselect && chmod +x /vmselect; } && test -f /vmstorage || { echo '#!/bin/sh' > /vmstorage && echo 'echo "victoriametrics-cluster v${VERSION} binary not available - download failed" >&2"' >> /vmstorage && echo 'exit 1' >> /vmstorage && chmod +x /vmstorage; }
 
 
 

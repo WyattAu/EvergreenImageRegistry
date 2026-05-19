@@ -1,7 +1,7 @@
 # =============================================================================
 # EVERGREEN HARDENED POSTGRESQL 17
 # Generated from template - Version: 17.2
-# Constraint: debian-slim - PostgreSQL requires glibc + shared libs
+# Wolfi-base provides glibc; PostgreSQL installed from upstream deb packages
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
@@ -25,8 +25,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get update && apt-get install -y --no-install-recommends \
     postgresql-${VERSION%.*} postgresql-contrib-${VERSION%.*} && rm -rf /var/lib/apt/lists/* && \
     mkdir -p /var/lib/postgresql/data /var/run/postgresql /app || true && \
-    test -f /var/lib/postgresql || { echo '#!/bin/sh' > /var/lib/postgresql && echo 'echo "postgresql-17 v${VERSION} placeholder"' >> /var/lib/postgresql && echo 'exec sleep infinity' >> /var/lib/postgresql && chmod +x /var/lib/postgresql ; } ; \
-    test -f /var/run/postgresql || { echo '#!/bin/sh' > /var/run/postgresql && echo 'echo "postgresql-17 v${VERSION} placeholder"' >> /var/run/postgresql && echo 'exec sleep infinity' >> /var/run/postgresql && chmod +x /var/run/postgresql ; } ; test -f /var/run/postgresql || { echo '#!/bin/sh' > /var/run/postgresql && echo 'echo "postgresql-17 v${VERSION} placeholder"' >> /var/run/postgresql && echo 'exec sleep infinity' >> /var/run/postgresql && chmod +x /var/run/postgresql ; } || true
+    test -f /var/lib/postgresql || { echo '#!/bin/sh' > /var/lib/postgresql && echo 'echo "postgresql-17 v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /var/lib/postgresql && echo 'exit 1' >> /var/lib/postgresql && chmod +x /var/lib/postgresql ; } ; \
+    test -f /var/run/postgresql || { echo '#!/bin/sh' > /var/run/postgresql && echo 'echo "postgresql-17 v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /var/run/postgresql && echo 'exit 1' >> /var/run/postgresql && chmod +x /var/run/postgresql ; } ; test -f /var/run/postgresql || { echo '#!/bin/sh' > /var/run/postgresql && echo 'echo "postgresql-17 v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /var/run/postgresql && echo 'exit 1' >> /var/run/postgresql && chmod +x /var/run/postgresql ; } || true
 FROM scratch AS entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 

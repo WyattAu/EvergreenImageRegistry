@@ -13,7 +13,8 @@ RUN mkdir -p /app || true
 COPY --from=builder /app /app
 RUN addgroup -S -g 2 nogroup >/dev/null || true && \
     adduser -u 65532 -G nogroup -D -h /app -s /bin/false openscap 2>/dev/null || true && \
-    chown -R 65532:65532 /app/placeholder 2>/dev/null || true
+    chown -R 65532:65532 /app/binary not available - download failed" >&2
+exit 1 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app
 

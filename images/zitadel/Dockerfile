@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     [ -f /zitadel.tar.gz ] && tar -xzf /zitadel.tar.gz -C /tmp/ || true ; \
     strip --strip-all /tmp/zitadel  || true 2>/dev/null&& \
     mv /tmp/zitadel /zitadel && \
-    rm -rf /zitadel.tar.gz /checksums.txt /tmp/* ; test -f /zitadel || { echo '#!/bin/sh' > /zitadel && echo 'echo "zitadel v${VERSION} ready"' >> /zitadel && echo 'exec sleep infinity' >> /zitadel && chmod +x /zitadel; } || true
+    rm -rf /zitadel.tar.gz /checksums.txt /tmp/* ; test -f /zitadel || { echo '#!/bin/sh' > /zitadel && echo 'echo "zitadel v${VERSION} binary not available - download failed" >&2"' >> /zitadel && echo 'exit 1' >> /zitadel && chmod +x /zitadel; } || true
 FROM scratch
 COPY --from=downloader /zitadel /zitadel
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

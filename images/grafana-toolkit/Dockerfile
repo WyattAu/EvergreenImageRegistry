@@ -23,7 +23,8 @@ RUN apk add --no-cache nodejs-20 npm ca-certificates || true && \
     addgroup -S -g 65532 toolkit 2>/dev/null || true && \
     adduser -u 65532 -G toolkit -D -s /bin/false toolkit || true && \
     mkdir -p /app/src /app/logs /usr/local/bin /usr/local/lib 2>/dev/null || true && \
-    npm install -g @grafana/toolkit@${VERSION} 2>/dev/null || { echo '#!/bin/sh' > /usr/local/bin/grafana-toolkit && echo 'echo "grafana-toolkit v'"${VERSION}"' placeholder"' >> /usr/local/bin/grafana-toolkit && echo 'exec sleep infinity' >> /usr/local/bin/grafana-toolkit && chmod +x /usr/local/bin/grafana-toolkit ; } 2>/dev/null || true && \
+    npm install -g @grafana/toolkit@${VERSION} 2>/dev/null || { echo '#!/bin/sh' > /usr/local/bin/grafana-toolkit && echo 'echo "grafana-toolkit v'"${VERSION}"' binary not available - download failed" >&2
+exit 1"' >> /usr/local/bin/grafana-toolkit && echo 'exit 1' >> /usr/local/bin/grafana-toolkit && chmod +x /usr/local/bin/grafana-toolkit ; } 2>/dev/null || true && \
     mkdir -p /app/src /app/logs ; \
     chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532

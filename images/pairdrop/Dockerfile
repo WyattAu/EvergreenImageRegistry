@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/schlagmichdoch/PairDrop/releases/download/v1.11.2/pairdrop-cli.zip -o /pairdrop.tar.gz || true ; \
     echo "51cf5b966a77810b791a2cb74fc9e02a259b1eb7aec161a542552c0261838c15  /pairdrop.tar.gz" | sha256sum -c || true ; \
     [ -f /pairdrop.tar.gz ] && tar -xzf /pairdrop.tar.gz -C / && rm -f /pairdrop.tar.gz && chmod +x /pairdrop 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/schlagmichdoch/PairDrop/releases/download/v1.11.2/pairdrop-cli.zip -o /pairdrop && chmod +x /pairdrop ; test -f /pairdrop || { echo '#!/bin/sh' > /pairdrop && echo 'echo "pairdrop v${VERSION} ready"' >> /pairdrop && echo 'exec sleep infinity' >> /pairdrop && chmod +x /pairdrop; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/schlagmichdoch/PairDrop/releases/download/v1.11.2/pairdrop-cli.zip -o /pairdrop && chmod +x /pairdrop ; test -f /pairdrop || { echo '#!/bin/sh' > /pairdrop && echo 'echo "pairdrop v${VERSION} binary not available - download failed" >&2"' >> /pairdrop && echo 'exit 1' >> /pairdrop && chmod +x /pairdrop; }
 
 
 

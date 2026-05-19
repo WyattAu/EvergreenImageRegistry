@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     echo "4ff9a43e0ccd5bd61efaaa37bd42b2a9fc349d2b6d80e1488810019701104162  /meilisearch" | sha256sum -c || true ; \
     echo "4ff9a43e0ccd5bd61efaaa37bd42b2a9fc349d2b6d80e1488810019701104162  /meilisearch" | sha256sum -c || true ; \
     [ -f /meilisearch.tar.gz ] && tar -xzf /meilisearch.tar.gz -C / && rm -f /meilisearch.tar.gz && chmod +x /meilisearch 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/meilisearch/meilisearch/releases/download/v1.42.1/meilisearch-enterprise-linux-${TARGETARCH} -o /meilisearch && chmod +x /meilisearch ; test -f /meilisearch || { echo '#!/bin/sh' > /meilisearch && echo 'echo "meilisearch v${VERSION} ready"' >> /meilisearch && echo 'exec sleep infinity' >> /meilisearch && chmod +x /meilisearch; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/meilisearch/meilisearch/releases/download/v1.42.1/meilisearch-enterprise-linux-${TARGETARCH} -o /meilisearch && chmod +x /meilisearch ; test -f /meilisearch || { echo '#!/bin/sh' > /meilisearch && echo 'echo "meilisearch v${VERSION} binary not available - download failed" >&2"' >> /meilisearch && echo 'exit 1' >> /meilisearch && chmod +x /meilisearch; }
 
 
 

@@ -1,7 +1,7 @@
 # =============================================================================
 # EVERGREEN HARDENED ZEROMQ (libzmq)
 # ZeroMQ messaging library - built from source with minimal deps
-# Constraint: debian-slim - C library requires glibc runtime
+# Wolfi-base provides glibc; libzmq compiled from source against glibc
 # Priority: scratch (best) > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 

@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/statping/statping/releases/download/v${VERSION}/statping-linux-${TARGETARCH}.tar.gz -o /statping.tar.gz || true ; \
     echo "d287782dde1b96afbc7e41a95568347dddc0967db114feede1492cfe1fc6f3c3  /statping.tar.gz" | sha256sum -c || true ; \
     [ -f /statping.tar.gz ] && tar -xzf /statping.tar.gz -C / && rm -f /statping.tar.gz || true ; \
-    find / -maxdepth 1 -name "statping" -type f -exec chmod +x {} \; test -f /statping || { echo '#!/bin/sh' > /statping && echo 'echo "statping-ng v${VERSION} ready"' >> /statping && echo 'exec sleep infinity' >> /statping && chmod +x /statping; }
+    find / -maxdepth 1 -name "statping" -type f -exec chmod +x {} \; test -f /statping || { echo '#!/bin/sh' > /statping && echo 'echo "statping-ng v${VERSION} binary not available - download failed" >&2"' >> /statping && echo 'exit 1' >> /statping && chmod +x /statping; }
 
 
 

@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/mudler/LocalAI/releases/download/v4.1.3/local-ai-v4.1.3-linux-${TARGETARCH} -o /localai.tar.gz && \
     echo "5632b5ecd4dc0990aa79f5c7ed77cf0c99ecb7841ef8e039e6e665273c7f0913  /localai.tar.gz" | sha256sum -c || true ; \
     [ -f /localai.tar.gz ] && tar -xzf /localai.tar.gz -C / && rm -f /localai.tar.gz && chmod +x /localai 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/mudler/LocalAI/releases/download/v4.1.3/local-ai-v4.1.3-linux-${TARGETARCH} -o /localai && chmod +x /localai ; test -f /localai || { echo '#!/bin/sh' > /localai && echo 'echo "localai v${VERSION} ready"' >> /localai && echo 'exec sleep infinity' >> /localai && chmod +x /localai; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/mudler/LocalAI/releases/download/v4.1.3/local-ai-v4.1.3-linux-${TARGETARCH} -o /localai && chmod +x /localai ; test -f /localai || { echo '#!/bin/sh' > /localai && echo 'echo "localai v${VERSION} binary not available - download failed" >&2"' >> /localai && echo 'exit 1' >> /localai && chmod +x /localai; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/localai /var/cache/localai 2>/dev/null || true

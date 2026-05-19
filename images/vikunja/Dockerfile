@@ -13,7 +13,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     unzip -o /vikunja.zip -d /tmp/vikunja 2>/dev/null || true && \
     cp /tmp/vikunja/vikunja /vikunja 2>/dev/null || find /tmp/vikunja -name 'vikunja' -type f -exec cp {} /vikunja \; 2>/dev/null || true && \
     chmod +x /vikunja 2>/dev/null || true ; \
-    test -f /vikunja || { echo '#!/bin/sh' > /vikunja && echo 'echo "vikunja v${VERSION} placeholder"' >> /vikunja && echo 'exec sleep infinity' >> /vikunja && chmod +x /vikunja; } || true
+    test -f /vikunja || { echo '#!/bin/sh' > /vikunja && echo 'echo "vikunja v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /vikunja && echo 'exit 1' >> /vikunja && chmod +x /vikunja; } || true
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/vikunja /var/cache/vikunja 2>/dev/null || true

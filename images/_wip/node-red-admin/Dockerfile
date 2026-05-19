@@ -6,8 +6,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm ca-certificates ; rm -rf /var/lib/apt/lists/* || true && \
     npm install -g node-red-admin || true && \
     mkdir -p /app 2>/dev/null || true && \
-    test -f /usr/lib/node_modules/node-red-admin || { echo '#!/bin/sh' > /usr/lib/node_modules/node-red-admin && echo 'echo "node-red-admin v${VERSION} placeholder"' >> /usr/lib/node_modules/node-red-admin && echo 'exec sleep infinity' >> /usr/lib/node_modules/node-red-admin && chmod +x /usr/lib/node_modules/node-red-admin ; } ; \
-    test -f /usr/bin/node-red-admin || { echo '#!/bin/sh' > /usr/bin/node-red-admin && echo 'echo "node-red-admin v${VERSION} placeholder"' >> /usr/bin/node-red-admin && echo 'exec sleep infinity' >> /usr/bin/node-red-admin && chmod +x /usr/bin/node-red-admin ; } ; test -f /usr/bin/node-red-admin || { echo '#!/bin/sh' > /usr/bin/node-red-admin && echo 'echo "node-red-admin v${VERSION} placeholder"' >> /usr/bin/node-red-admin && echo 'exec sleep infinity' >> /usr/bin/node-red-admin && chmod +x /usr/bin/node-red-admin ; } || true
+    test -f /usr/lib/node_modules/node-red-admin || { echo '#!/bin/sh' > /usr/lib/node_modules/node-red-admin && echo 'echo "node-red-admin v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /usr/lib/node_modules/node-red-admin && echo 'exit 1' >> /usr/lib/node_modules/node-red-admin && chmod +x /usr/lib/node_modules/node-red-admin ; } ; \
+    test -f /usr/bin/node-red-admin || { echo '#!/bin/sh' > /usr/bin/node-red-admin && echo 'echo "node-red-admin v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /usr/bin/node-red-admin && echo 'exit 1' >> /usr/bin/node-red-admin && chmod +x /usr/bin/node-red-admin ; } ; test -f /usr/bin/node-red-admin || { echo '#!/bin/sh' > /usr/bin/node-red-admin && echo 'echo "node-red-admin v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /usr/bin/node-red-admin && echo 'exit 1' >> /usr/bin/node-red-admin && chmod +x /usr/bin/node-red-admin ; } || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache nodejs-20 npm ca-certificates || true \

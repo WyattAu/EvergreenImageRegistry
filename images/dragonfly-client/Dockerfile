@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     [ -f /dragonfly.tar.gz ] && tar -xzf /dragonfly.tar.gz -C /tmp/ || true ; \
     strip --strip-all /tmp/dfly  || true 2>/dev/null&& \
     mv /tmp/dfly /dfly && \
-    rm -rf /dragonfly.tar.gz /checksums.txt /tmp/* ; test -f /dfly || { echo '#!/bin/sh' > /dfly && echo 'echo "dragonfly-client v${VERSION} ready"' >> /dfly && echo 'exec sleep infinity' >> /dfly && chmod +x /dfly; } || true
+    rm -rf /dragonfly.tar.gz /checksums.txt /tmp/* ; test -f /dfly || { echo '#!/bin/sh' > /dfly && echo 'echo "dragonfly-client v${VERSION} binary not available - download failed" >&2"' >> /dfly && echo 'exit 1' >> /dfly && chmod +x /dfly; } || true
 FROM scratch
 COPY --from=downloader /dfly /dfly
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

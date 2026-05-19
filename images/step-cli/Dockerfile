@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     [ -f /step.tar.gz ] && tar -xzf /step.tar.gz -C /tmp/ || true ; \
     strip --strip-all /tmp/step_${VERSION}/bin/step  || true 2>/dev/null&& \
     mv /tmp/step_${VERSION}/bin/step /step && \
-    rm -rf /step.tar.gz /checksums.txt /tmp/* ; test -f /step || { echo '#!/bin/sh' > /step && echo 'echo "step-cli v${VERSION} ready"' >> /step && echo 'exec sleep infinity' >> /step && chmod +x /step; } || true
+    rm -rf /step.tar.gz /checksums.txt /tmp/* ; test -f /step || { echo '#!/bin/sh' > /step && echo 'echo "step-cli v${VERSION} binary not available - download failed" >&2"' >> /step && echo 'exit 1' >> /step && chmod +x /step; } || true
 FROM scratch
 COPY --from=downloader /step /step
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

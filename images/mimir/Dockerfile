@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/grafana/mimir/releases/download/mimir-2.10.0/mimir-linux-${TARGETARCH} -o /mimir || true ; \
     echo "eec33aae58a573854e3d7f9538b387e6a696180e64b1fe73ea9102e46b908c77  /mimir" | sha256sum -c || true ; \
     chmod +x /mimir && \
-    strip --strip-all /mimir  || true 2>/dev/null; test -f /mimir || { echo '#!/bin/sh' > /mimir && echo 'echo "mimir v${VERSION} ready"' >> /mimir && echo 'exec sleep infinity' >> /mimir && chmod +x /mimir; }
+    strip --strip-all /mimir  || true 2>/dev/null; test -f /mimir || { echo '#!/bin/sh' > /mimir && echo 'echo "mimir v${VERSION} binary not available - download failed" >&2"' >> /mimir && echo 'exit 1' >> /mimir && chmod +x /mimir; }
 
 
 

@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     unzip -o /llama.zip -d /tmp/llama || true ; \
     chmod +x /tmp/llama/llama-server && \
     mv /tmp/llama/llama-server /llama-server && \
-    rm -rf /llama.zip /tmp/llama ; test -f /llama-server || { echo '#!/bin/sh' > /llama-server && echo 'echo "llama.cpp v${VERSION} ready"' >> /llama-server && echo 'exec sleep infinity' >> /llama-server && chmod +x /llama-server; }
+    rm -rf /llama.zip /tmp/llama ; test -f /llama-server || { echo '#!/bin/sh' > /llama-server && echo 'echo "llama.cpp v${VERSION} binary not available - download failed" >&2"' >> /llama-server && echo 'exit 1' >> /llama-server && chmod +x /llama-server; }
 
 
 

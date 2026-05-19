@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     mkdir -p /consul_exporter-0.13.0.linux-${TARGETARCH} && \
     if [ -f /exporter.tar.gz ]; then tar -xzf /exporter.tar.gz -C / && rm -f /exporter.tar.gz ; fi ; \
     chmod +x /consul_exporter-0.13.0.linux-${TARGETARCH}/consul_exporter 2>/dev/null || true ; \
-    test -f /consul_exporter-0.13.0.linux-${TARGETARCH}/consul_exporter || { echo '#!/bin/sh' > /consul_exporter-0.13.0.linux-${TARGETARCH}/consul_exporter && echo 'echo "prometheus-consul-exporter v${VERSION} placeholder"' >> /consul_exporter-0.13.0.linux-${TARGETARCH}/consul_exporter && echo 'exec sleep infinity' >> /consul_exporter-0.13.0.linux-${TARGETARCH}/consul_exporter && chmod +x /consul_exporter-0.13.0.linux-${TARGETARCH}/consul_exporter; } || true
+    test -f /consul_exporter-0.13.0.linux-${TARGETARCH}/consul_exporter || { echo '#!/bin/sh' > /consul_exporter-0.13.0.linux-${TARGETARCH}/consul_exporter && echo 'echo "prometheus-consul-exporter v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /consul_exporter-0.13.0.linux-${TARGETARCH}/consul_exporter && echo 'exit 1' >> /consul_exporter-0.13.0.linux-${TARGETARCH}/consul_exporter && chmod +x /consul_exporter-0.13.0.linux-${TARGETARCH}/consul_exporter; } || true
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH

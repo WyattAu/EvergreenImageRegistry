@@ -9,7 +9,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 -fsSL \
-    "https://github.com/element-hq/element-web/releases/download/v${VERSION}/element-v${VERSION}.tar.gz" \
+    "https://github.com/element-hq/element-web/releases/download/${VERSION}/element-${VERSION}.tar.gz" \
     -o /download.tar.gz && \
     mkdir -p /www-src && \
     tar -xzf /download.tar.gz -C /www-src --strip-components=1 && \

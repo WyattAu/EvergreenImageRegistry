@@ -222,6 +222,8 @@ jobs:
             SAFE="${image//\//-}"
             TAR="/tmp/images/${SAFE}.tar"
             REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
+            # Extract VERSION from Dockerfile for semantic version tag
+            VERSION_TAG=$(grep -oP '(?<=^ARG VERSION=).*' "./images/${image}/Dockerfile" 2>/dev/null | head -1)
             echo "::group::Push ${image}"
             if [ -f "$TAR" ]; then
               # Load the pre-built tarball and push (avoids rebuild COPY eval bugs)
@@ -229,6 +231,16 @@ jobs:
               docker tag "${REF}" "${REF}" 2>/dev/null || true
               if timeout 300 docker push "${REF}" 2>&1; then
                 PUSHED=$((PUSHED+1))
+                # Also push with version tag for deterministic pulls
+                if [ -n "${VERSION_TAG}" ]; then
+                  VERSION_REF="${REGISTRY}/${OWNER}/${image}:${VERSION_TAG}"
+                  docker tag "${REF}" "${VERSION_REF}" 2>/dev/null || true
+                  if timeout 300 docker push "${VERSION_REF}" 2>&1; then
+                    echo "Pushed version tag: ${VERSION_TAG}"
+                  else
+                    echo "::warning::${image}: version tag push failed (${VERSION_TAG})"
+                  fi
+                fi
                 # Set package visibility to public (GHCR lowercases names)
                 SAFE_NAME=$(echo "${image}" | tr '[:upper:]' '[:lower:]')
                 gh api -X PATCH "/user/packages/container/${SAFE_NAME}/visibility" \

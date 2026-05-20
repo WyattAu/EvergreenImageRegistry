@@ -190,11 +190,89 @@ Recommended order (low to high risk):
 
 ## Prerequisites Before Migration
 
-- [ ] Evergreen versions updated to match SIS
-- [ ] `immich-postgres` Evergreen image created and validated
-- [ ] PostgreSQL 18 beta addressed (pin to PG 17 in SIS or create PG18 Evergreen)
-- [ ] Crowdsec version updated in Evergreen to v1.7.8+
-- [ ] Grafana version updated in Evergreen to 12.x
-- [ ] Forgejo version updated in Evergreen to 15.x
-- [ ] ZFS exporter fork parity verified
+- [x] Evergreen versions updated to match SIS (commit `ea3c5a001`)
+- [x] PostgreSQL 18 added to Evergreen (18.4, commit `ea3c5a001`)
+- [ ] `immich-postgres` -- keeping upstream `ghcr.io/immich-app/postgres` (documented exception)
+- [ ] PostgreSQL 18 beta in SIS -- SIS should pin to PG 17 or 18 (Evergreen now provides both)
+- [x] Crowdsec version updated in Evergreen to v1.7.8
+- [x] Grafana version updated in Evergreen to 12.2.8-security-04
+- [x] Forgejo version updated in Evergreen to 15.0.2
+- [ ] ZFS exporter fork parity verified (frebib vs fberning)
 - [ ] All images rebuilt and CI-validated at 100%
+
+---
+
+## SIS Improvements from Evergreen Migration
+
+### Security Hardening (Automatic with Migration)
+
+| Improvement | Images Affected | Benefit |
+|-------------|---------------|---------|
+| **Non-root execution** (UID 65532) | 35+ services | Eliminates container escape risk from root processes |
+| **STOPSIGNAL SIGTERM** | All 50+ services | Clean shutdown instead of SIGKILL kill |
+| **Cap-drop ALL** | 15+ services | Removes CHOWN, DAC_OVERRIDE, SETUID, SETGID capabilities |
+| **No-new-privileges** | All services | Prevents privilege escalation via setuid binaries |
+| **Seccomp runtime-default** | All services | System call filtering |
+
+### Operational Improvements
+
+| Improvement | Action Required | Benefit |
+|-------------|----------------|---------|
+| **Add `stop_signal: SIGTERM`** to all SIS compose services | Add to every service block | Clean shutdown |
+| **Add healthchecks** to 8 services lacking them | redis-exporter, cloudflared, hookshot, etc. | Visibility into service health |
+| **Eliminate 8 busybox init containers** | Evergreen images self-initialize | Remove ~12MB overhead and simplify compose |
+| **Consolidate PostgreSQL versions** | Standardize on PG 17 across 6 stacks | Reduce complexity, unified upgrade path |
+| **Replace redis with valkey** in documents stack | Swap `redis:7.4.9-alpine` for Evergreen `valkey` | Redis-compatible, actively maintained fork |
+| **Remove unnecessary capabilities** | Drop CHOWN/DAC_OVERRIDE/FOWNER from 15+ services | Least-privilege principle |
+
+### Volume Ownership Changes
+
+All services with persistent data must chown volumes to UID 65532:
+
+| Service | Volume Path | Current Owner | Required Change |
+|---------|-----------|---------------|-----------------|
+| proxy/traefik | letsencrypt dir | PUID 1001 | chown to 65532 |
+| vaultwarden | /data | root | chown to 65532 |
+| monitoring/grafana | grafana data | 472 (init) | chown to 65532 |
+| operations/forgejo | forgejo data | PUID 1001 | chown to 65532 |
+| utility/homepage | config dir | PUID 1001 | chown to 65532 |
+
+### Config Path Differences
+
+| Service | SIS Path | Evergreen Path | Migration Action |
+|---------|----------|---------------|-----------------|
+| blackbox-exporter | `/etc/blackbox_exporter/config.yml` | `/etc/prometheus-blackbox-exporter/blackbox.yml` | Fix mount path |
+| grafana | `/var/lib/grafana` | `/opt/grafana` | Verify plugins/provisioning paths |
+| forgejo | SSH port 2522 | SSH port 22 | Fix port mapping |
+
+### Healthcheck Format Fixes (Scratch Images)
+
+15 services use `CMD-SHELL` healthchecks but Evergreen scratch images have no shell:
+
+| Service | Current | Fix |
+|---------|---------|-----|
+| monitoring/node-exporter | `CMD-SHELL wget -qO- ...` | `CMD ["wget", "--spider", "-q", "http://..."]` |
+| monitoring/cadvisor | `CMD-SHELL wget -qO- ...` | `CMD ["wget", "--spider", "-q", "http://..."]` |
+| vaultwarden | `CMD-SHELL curl -fsSL ...` | `CMD ["wget", "--spider", "-q", "http://..."]` |
+| operations/forgejo | `CMD-SHELL wget --no-verbose ...` | `CMD ["wget", "--spider", "-q", "http://..."]` |
+
+### Size Reductions
+
+| Image | Current Size | Estimated Evergreen Size | Savings |
+|-------|-------------|------------------------|---------|
+| crowdsec | ~200MB | ~20MB | ~180MB |
+| grafana | ~400MB | ~200MB | ~200MB |
+| keycloak | ~500MB | ~300MB | ~200MB |
+| victoriametrics | ~80MB | ~30MB | ~50MB |
+| vaultwarden | ~50MB | ~20MB | ~30MB |
+| redis-exporter | ~30MB | ~15MB | ~15MB |
+| oauth2-proxy | ~30MB | ~15MB | ~15MB |
+
+### Known Migration Blockers
+
+| Service | Blocker | Workaround |
+|---------|--------|-----------|
+| photos/immich-postgres | Custom PG14 with vectorchord/pgvectors extensions | Keep upstream `ghcr.io/immich-app/postgres` (documented exception) |
+| vpn/wireguard | LinuxServer kernel WireGuard vs Evergreen userspace wireguard-go | Not feasible -- keep linuxserver/wireguard |
+| iam/keycloak | Evergreen keycloak needs JRE added to wolfi base | Add `apk add openjdk-21-jre-headless` to Dockerfile |
+| security/crowdsec | Needs cscli, LAPI configuration, yaml parsing | Significant Dockerfile work required |

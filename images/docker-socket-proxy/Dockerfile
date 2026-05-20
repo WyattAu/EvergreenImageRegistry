@@ -12,7 +12,7 @@ RUN apk add --no-cache haproxy ca-certificates || true && \
     mkdir -p /var/lib/haproxy /tmp /run && \
     touch /var/lib/haproxy/server-state && \
     adduser -u 65532 -D -h /app -s /bin/false dsp 2>/dev/null || true && \
-    chown -R 65532:65532 /var/lib/haproxy /app 2>/dev/null || true
+    chown -R 65532:65532 /var/lib/haproxy /app /run /usr/local/etc/haproxy 2>/dev/null || true
 
 COPY --from=upstream /usr/local/bin/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY --from=upstream /usr/local/etc/haproxy/haproxy.cfg.template /usr/local/etc/haproxy/haproxy.cfg.template

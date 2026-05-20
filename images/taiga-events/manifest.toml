@@ -1,0 +1,19 @@
+[metadata]
+name = "taiga-events"
+version = "6.9.0"
+description = "Taiga Events - Python WebSocket server for realtime updates"
+vendor = "Taiga"
+source = "https://github.com/taigaio/taiga-events"
+license = "MPL-2.0"
+tier = "critical"
+
+[build]
+base = "ubi9-minimal"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[runtime]
+entrypoint = ["/venv/bin/python", "-m", "taiga_events"]
+
+[ports]
+expose = [8004, 9101]

@@ -9,7 +9,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
-No unreleased changes. See [ROADMAP_FORWARD.md](ROADMAP_FORWARD.md) for planned work.
+### Phase 36: Functional Audit and Placeholder Hardening
+
+- **Per-image functional audit** (commit `b8f298d98`): 424 files changed across 839 active images
+  - Full audit report: `docs/image-audit-report.md` (841 images, 9 categories)
+- **Audit findings -- all categories resolved:**
+
+| Category | Flagged | Real Issues | Resolution |
+|----------|---------|-------------|------------|
+| WRONG_BASE | 21 | 0 (all false positives) | Wolfi uses glibc, not musl. Fixed 14 stale comments. |
+| BLOATED | 18 | 0 (all false positives) | python3/npm/git are runtime deps, not build tools. |
+| HEALTHCHECK_NONE | 130 | 5 (audit script bug) | Fixed docker-socket-proxy, photoshow, redis-vert, rss2, forgejo. |
+| PLACEHOLDER | 337 | 334 (behavior change) | `sleep infinity` replaced with `exit 1` + stderr error. |
+| NO_EXPOSE | 200 | 0 (all CLI/batch tools) | EXPOSE is documentation-only for CLIs. |
+| NO_ENTRYPOINT | 40 | 0 (all base/toolchain) | Expected behavior. |
+
+- **Placeholder behavior change** (334 images):
+  - Before: container runs `sleep infinity` on missing binary (silent failure)
+  - After: container logs ERROR to stderr and exits code 1 (loud failure)
+  - Build resilience preserved: builds still succeed even if download fails
+  - Only triggers at runtime when binary download actually failed
+
+- **CI validation**: Run `26107620954` -- 14/14 batch jobs passed, 0 failures
+- **Musl clarification**: Chainguard wolfi = glibc-based, Chainguard static = musl-based
+- **Migration readiness**: 35/38 SIS images (92%) have Evergreen equivalents
+  - 3 missing: immich custom postgres (vector extensions), infra-webhook (custom), SIS custom Dockerfiles
+  - Version drift on: postgres (SIS ahead at 18.3-beta vs Evergreen 17.6), crowdsec (SIS 1.7.8 vs Evergreen 1.6.2)
 
 ---
 

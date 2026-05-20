@@ -14,8 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         nginx php8.4 php-fpm php-gd php-mbstring php-xml \
         php-curl ca-certificates git ; rm -rf /var/lib/apt/lists/* || true
 WORKDIR /src
-RUN git clone https://github.com/PrivateBin/PrivateBin.git /src 2>/dev/null || echo "Source repo not available - using binary not available - download failed" >&2
-exit 1" || true && \
+RUN git clone https://github.com/PrivateBin/PrivateBin.git /src 2>/dev/null || echo "Source repo not available - using binary not available - download failed" >&2 exit 1" || true && \
     mkdir -p /src && \
     mkdir -p /app/data /var/log/nginx /var/lib/php/sessions
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

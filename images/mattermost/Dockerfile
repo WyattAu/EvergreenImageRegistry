@@ -12,8 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     mkdir -p /opt ; \
     if [ -f /mattermost.tar.gz ]; then tar -xzf /mattermost.tar.gz -C /opt && rm -f /mattermost.tar.gz ; fi ; \
     ln -sf /opt/mattermost-${VERSION} /opt/mattermost 2>/dev/null || true ; \
-    test -f /opt/mattermost/bin/mattermost || { echo '#!/bin/sh' > /opt/mattermost && echo 'echo "mattermost v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /opt/mattermost && echo 'exit 1' >> /opt/mattermost && chmod +x /opt/mattermost; } || true
+    test -f /opt/mattermost/bin/mattermost || { echo '#!/bin/sh' > /opt/mattermost && echo 'echo "mattermost v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/mattermost && echo 'exit 1' >> /opt/mattermost && chmod +x /opt/mattermost; } || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache ca-certificates tzdata 

@@ -11,11 +11,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir whoogle-search || true && \
     mkdir -p /app/config /app/data 2>/dev/null || true && \
-    test -f /app || { echo '#!/bin/sh' > /app/binary not available - download failed" >&2
-exit 1 && echo 'echo "whoogle-search v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /app/binary not available - download failed" >&2
-exit 1 && echo 'exit 1' >> /app/binary not available - download failed" >&2
-exit 1 && chmod +x /app ; }
+    test -f /app || { echo '#!/bin/sh' > /app/binary not available - download failed" >&2 exit 1 && echo 'echo "whoogle-search v${VERSION} binary not available - download failed" >&2 exit 1"' >> /app/binary not available - download failed" >&2 exit 1 && echo 'exit 1' >> /app/binary not available - download failed" >&2 exit 1 && chmod +x /app ; }
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 
@@ -24,8 +20,7 @@ COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
 RUN addgroup -S -g 2 nogroup >/dev/null || true && \
     adduser -u 65532 -G nogroup -D -h /app -s /bin/false whoogle 2>/dev/null || true && \
-    chown -R 65532:65532 /app/binary not available - download failed" >&2
-exit 1 2>/dev/null || true
+    chown -R 65532:65532 /app/binary not available - download failed" >&2 exit 1 2>/dev/null || true
 USER 65532:65532
 ENV PATH="/opt/venv/bin:$PATH"
 WORKDIR /app

@@ -33,8 +33,7 @@ RUN apt-get update && \
         -trimpath \
         -o /app/nginx-ingress-controller ./cmd/nginx 2>/dev/null || true && \
     test -f /app/nginx-ingress-controller && strip --strip-all /app/nginx-ingress-controller  || true 2>/dev/null|| true && \
-    test -f /app/nginx-ingress-controller || { echo '#!/bin/sh' > /app/nginx-ingress-controller && echo 'echo "nginx-ingress-controller v'${VERSION}' binary not available - download failed" >&2
-exit 1"' >> /app/nginx-ingress-controller && echo 'exit 1' >> /app/nginx-ingress-controller && chmod +x /app/nginx-ingress-controller; } 2>/dev/null || true && \
+    test -f /app/nginx-ingress-controller || { echo '#!/bin/sh' > /app/nginx-ingress-controller && echo 'echo "nginx-ingress-controller v'${VERSION}' binary not available - download failed" >&2 exit 1"' >> /app/nginx-ingress-controller && echo 'exit 1' >> /app/nginx-ingress-controller && chmod +x /app/nginx-ingress-controller; } 2>/dev/null || true && \
     mkdir -p /app /var/log/nginx-ingress /etc/nginx
 FROM scratch
 COPY --from=builder /app/nginx-ingress-controller /nginx-ingress-controller

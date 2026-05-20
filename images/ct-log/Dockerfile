@@ -26,8 +26,7 @@ RUN apt-get update && \
         -ldflags="-s -w" \
         -o /app/ct-log ./trillian/ctfe/ct_server 2>/dev/null || true && \
     test -f /app/ct-log && strip --strip-all /app/ct-log  || true 2>/dev/null|| true && \
-    test -f /app/ct-log || { echo '#!/bin/sh' > /app/ct-log && echo 'echo "ct-log v'${VERSION}' binary not available - download failed" >&2
-exit 1"' >> /app/ct-log && echo 'exit 1' >> /app/ct-log && chmod +x /app/ct-log; } 2>/dev/null || true
+    test -f /app/ct-log || { echo '#!/bin/sh' > /app/ct-log && echo 'echo "ct-log v'${VERSION}' binary not available - download failed" >&2 exit 1"' >> /app/ct-log && echo 'exit 1' >> /app/ct-log && chmod +x /app/ct-log; } 2>/dev/null || true
 FROM scratch
 COPY --from=builder /app/ct-log /ct-log
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

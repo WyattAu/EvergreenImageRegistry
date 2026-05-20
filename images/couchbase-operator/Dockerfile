@@ -9,8 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
         "https://github.com/couchbase/couchbase-operator/releases/download/v${VERSION}/couchbase-operator_v${VERSION}_linux_amd64" \
         -o /tmp/couchbase-operator || true ; \
     chmod +x /tmp/couchbase-operator 2>/dev/null || true ; \
-    test -f /tmp/couchbase-operator || { echo '#!/bin/sh' > /tmp/couchbase-operator && echo 'echo "couchbase-operator v'${VERSION}' binary not available - download failed" >&2
-exit 1"' >> /tmp/couchbase-operator && echo 'exit 1' >> /tmp/couchbase-operator && chmod +x /tmp/couchbase-operator; }
+    test -f /tmp/couchbase-operator || { echo '#!/bin/sh' > /tmp/couchbase-operator && echo 'echo "couchbase-operator v'${VERSION}' binary not available - download failed" >&2 exit 1"' >> /tmp/couchbase-operator && echo 'exit 1' >> /tmp/couchbase-operator && chmod +x /tmp/couchbase-operator; }
 FROM scratch
 COPY --from=downloader /tmp/couchbase-operator /usr/local/bin/couchbase-operator
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

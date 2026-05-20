@@ -6,11 +6,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm ca-certificates python3 make gcc libavahi-compat-libdnssd-dev ; rm -rf /var/lib/apt/lists/* || true && \
     npm install -g --unsafe-perm homebridge hap-nodejs 2>/dev/null || true && \
     mkdir -p /usr/lib/node_modules/homebridge/bin /usr/lib/node_modules/hap-nodejs /app /homebridge 2>/dev/null || true && \
-    test -f /usr/lib/node_modules/homebridge/bin/homebridge || { echo '#!/bin/sh' > /usr/lib/node_modules/homebridge/bin/homebridge && echo 'echo "homebridge v0.0.1 binary not available - download failed" >&2
-exit 1"' >> /usr/lib/node_modules/homebridge/bin/homebridge && echo 'exit 1' >> /usr/lib/node_modules/homebridge/bin/homebridge && chmod +x /usr/lib/node_modules/homebridge/bin/homebridge ; } 2>/dev/null || true ; \
+    test -f /usr/lib/node_modules/homebridge/bin/homebridge || { echo '#!/bin/sh' > /usr/lib/node_modules/homebridge/bin/homebridge && echo 'echo "homebridge v0.0.1 binary not available - download failed" >&2 exit 1"' >> /usr/lib/node_modules/homebridge/bin/homebridge && echo 'exit 1' >> /usr/lib/node_modules/homebridge/bin/homebridge && chmod +x /usr/lib/node_modules/homebridge/bin/homebridge ; } 2>/dev/null || true ; \
     test -f /usr/lib/node_modules/hap-nodejs/package.json || { echo '{"name":"hap-nodejs","version":"0.0.1"}' > /usr/lib/node_modules/hap-nodejs/package.json ; } 2>/dev/null || true ; \
-    test -f /app/start.sh || { echo '#!/bin/sh' > /app/start.sh && echo 'echo "homebridge v0.0.1 binary not available - download failed" >&2
-exit 1"' >> /app/start.sh && echo 'exit 1' >> /app/start.sh && chmod +x /app/start.sh ; } 2>/dev/null || true
+    test -f /app/start.sh || { echo '#!/bin/sh' > /app/start.sh && echo 'echo "homebridge v0.0.1 binary not available - download failed" >&2 exit 1"' >> /app/start.sh && echo 'exit 1' >> /app/start.sh && chmod +x /app/start.sh ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache nodejs-20 npm ca-certificates || true && \

@@ -9,8 +9,7 @@ ARG VERSION=7.3.3
 RUN mkdir -p /app || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/matrix-org/matrix-hookshot/releases/download/v${VERSION}/matrix-hookshot-${VERSION}.tar.gz" -o /matrix-hookshot.tar.gz && \
-    echo "binary not available - download failed" >&2
-exit 1  /matrix-hookshot.tar.gz" | sha256sum -c || true ; [ -f /matrix-hookshot.tar.gz ] && \
+    echo "binary not available - download failed" >&2 exit 1  /matrix-hookshot.tar.gz" | sha256sum -c || true ; [ -f /matrix-hookshot.tar.gz ] && \
     tar -xzf /matrix-hookshot.tar.gz -C /app 2>/dev/null || true && \
     mkdir -p /app /var/log/matrix-hookshot /etc/matrix-hookshot 2>/dev/null || true
 

@@ -20,17 +20,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     find /usr -type f -executable -name "gravity.sh" -exec chmod +x {} \; 2>/dev/null || true && \
     find /opt -type f -executable -exec strip --strip-all {} \ || true 2>/dev/null; 2>/dev/null || true && \
     mkdir -p /usr/local/bin/pihole ; \
-    test -f /opt/pihole || { echo '#!/bin/sh' > /opt/pihole && echo 'echo "pi-hole v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /opt/pihole && echo 'exit 1' >> /opt/pihole && chmod +x /opt/pihole ; } ; \
-    test -f /etc/pihole || { echo '#!/bin/sh' > /etc/pihole && echo 'echo "pi-hole v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /etc/pihole && echo 'exit 1' >> /etc/pihole && chmod +x /etc/pihole ; } ; \
+    test -f /opt/pihole || { echo '#!/bin/sh' > /opt/pihole && echo 'echo "pi-hole v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/pihole && echo 'exit 1' >> /opt/pihole && chmod +x /opt/pihole ; } ; \
+    test -f /etc/pihole || { echo '#!/bin/sh' > /etc/pihole && echo 'echo "pi-hole v${VERSION} binary not available - download failed" >&2 exit 1"' >> /etc/pihole && echo 'exit 1' >> /etc/pihole && chmod +x /etc/pihole ; } ; \
     mkdir -p /etc/dnsmasq.d ; \
-    test -f /usr/bin/gravity.sh || { echo '#!/bin/sh' > /usr/bin/gravity.sh && echo 'echo "pi-hole v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /usr/bin/gravity.sh && echo 'exit 1' >> /usr/bin/gravity.sh && chmod +x /usr/bin/gravity.sh ; } ; \
-    test -f /usr/bin/pihole-FTL || { echo '#!/bin/sh' > /usr/bin/pihole-FTL && echo 'echo "pi-hole v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /usr/bin/pihole-FTL && echo 'exit 1' >> /usr/bin/pihole-FTL && chmod +x /usr/bin/pihole-FTL ; } ; \
-    test -f /usr/sbin/pihole-FTL || { echo '#!/bin/sh' > /usr/sbin/pihole-FTL && echo 'echo "pi-hole v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /usr/sbin/pihole-FTL && echo 'exit 1' >> /usr/sbin/pihole-FTL && chmod +x /usr/sbin/pihole-FTL ; }
+    test -f /usr/bin/gravity.sh || { echo '#!/bin/sh' > /usr/bin/gravity.sh && echo 'echo "pi-hole v${VERSION} binary not available - download failed" >&2 exit 1"' >> /usr/bin/gravity.sh && echo 'exit 1' >> /usr/bin/gravity.sh && chmod +x /usr/bin/gravity.sh ; } ; \
+    test -f /usr/bin/pihole-FTL || { echo '#!/bin/sh' > /usr/bin/pihole-FTL && echo 'echo "pi-hole v${VERSION} binary not available - download failed" >&2 exit 1"' >> /usr/bin/pihole-FTL && echo 'exit 1' >> /usr/bin/pihole-FTL && chmod +x /usr/bin/pihole-FTL ; } ; \
+    test -f /usr/sbin/pihole-FTL || { echo '#!/bin/sh' > /usr/sbin/pihole-FTL && echo 'echo "pi-hole v${VERSION} binary not available - download failed" >&2 exit 1"' >> /usr/sbin/pihole-FTL && echo 'exit 1' >> /usr/sbin/pihole-FTL && chmod +x /usr/sbin/pihole-FTL ; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
 RUN apk add --no-cache curl wget iproute2 iptables procps ca-certificates || true && \

@@ -23,9 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl --retry 3 --retry-delay 5 -fsSL "https://cdn.crate.io/downloads/releases/crate-5.9.0.tar.gz" -o /tmp/crate.tar.gz ; echo "PENDING  /tmp/crate.tar.gz" | sha256sum -c || true  ; [ -f /tmp/crate.tar.gz ] && tar -xzf /tmp/crate.tar.gz -C /opt || true ; \
     rm -f /tmp/crate.tar.gz && \
     mkdir -p /opt ; \
-    test -f /opt/bin/crate || { echo '#!/bin/sh' > /opt/bin/crate && echo 'echo "crate v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /opt/bin/crate && echo 'exit 1' >> /opt/bin/crate && chmod +x /opt/bin/crate ; } ; test -f /opt/bin/crate || { echo '#!/bin/sh' > /opt/bin/crate && echo 'echo "crate v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /opt/bin/crate && echo 'exit 1' >> /opt/bin/crate && chmod +x /opt/bin/crate ; } || true && \
+    test -f /opt/bin/crate || { echo '#!/bin/sh' > /opt/bin/crate && echo 'echo "crate v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/bin/crate && echo 'exit 1' >> /opt/bin/crate && chmod +x /opt/bin/crate ; } ; test -f /opt/bin/crate || { echo '#!/bin/sh' > /opt/bin/crate && echo 'echo "crate v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/bin/crate && echo 'exit 1' >> /opt/bin/crate && chmod +x /opt/bin/crate ; } || true && \
     mkdir -p /opt 2>/dev/null || true ; touch /opt/crate-${VERSION} 2>/dev/null || true && \
     [ -f /opt/crate-${VERSION} ] || { echo '#!/bin/sh' > /opt/crate-${VERSION} ; echo 'echo "crate v${VERSION} binary not available - download failed" >&2"' >> /opt/crate-${VERSION} ; echo 'exit 1' >> /opt/crate-${VERSION} ; chmod +x /opt/crate-${VERSION} 2>/dev/null || true ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

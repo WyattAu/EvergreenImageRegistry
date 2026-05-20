@@ -23,18 +23,10 @@ RUN mkdir -p /var/lib/clamav && \
 RUN apt-get update && apt-get install -y --no-install-recommends \
         clamav clamav-daemon freshclam ca-certificates ; rm -rf /var/lib/apt/lists/* || true && \
     mkdir -p /app /var/log/clamav /var/lib/clamav /run/clamav && \
-    test -e /app || { mkdir -p /app && echo 'clamav-daemon binary not available - download failed" >&2
-exit 1' > /app/.binary not available - download failed" >&2
-exit 1 ; } ; \
-    test -e /var/log/clamav || { mkdir -p /var/log/clamav && echo 'clamav-daemon binary not available - download failed" >&2
-exit 1' > /var/log/clamav/.binary not available - download failed" >&2
-exit 1 ; } ; \
-    test -e /var/lib/clamav || { mkdir -p /var/lib/clamav && echo 'clamav-daemon binary not available - download failed" >&2
-exit 1' > /var/lib/clamav/.binary not available - download failed" >&2
-exit 1 ; } ; \
-    test -e /run/clamav || { mkdir -p /run/clamav && echo 'clamav-daemon binary not available - download failed" >&2
-exit 1' > /run/clamav/.binary not available - download failed" >&2
-exit 1 ; }
+    test -e /app || { mkdir -p /app && echo 'clamav-daemon binary not available - download failed" >&2 exit 1' > /app/.binary not available - download failed" >&2 exit 1 ; } ; \
+    test -e /var/log/clamav || { mkdir -p /var/log/clamav && echo 'clamav-daemon binary not available - download failed" >&2 exit 1' > /var/log/clamav/.binary not available - download failed" >&2 exit 1 ; } ; \
+    test -e /var/lib/clamav || { mkdir -p /var/lib/clamav && echo 'clamav-daemon binary not available - download failed" >&2 exit 1' > /var/lib/clamav/.binary not available - download failed" >&2 exit 1 ; } ; \
+    test -e /run/clamav || { mkdir -p /run/clamav && echo 'clamav-daemon binary not available - download failed" >&2 exit 1' > /run/clamav/.binary not available - download failed" >&2 exit 1 ; }
 
 
 

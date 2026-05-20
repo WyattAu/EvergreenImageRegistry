@@ -9,8 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip || true && \
-    pip install --no-cache-dir kube-hunter ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/kube-hunter || { echo '#!/bin/sh' > /usr/local/bin/kube-hunter && echo 'echo "kube-hunter v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /usr/local/bin/kube-hunter && echo 'exit 1' >> /usr/local/bin/kube-hunter && chmod +x /usr/local/bin/kube-hunter ; } 2>/dev/null || true && \
+    pip install --no-cache-dir kube-hunter ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/kube-hunter || { echo '#!/bin/sh' > /usr/local/bin/kube-hunter && echo 'echo "kube-hunter v${VERSION} binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/kube-hunter && echo 'exit 1' >> /usr/local/bin/kube-hunter && chmod +x /usr/local/bin/kube-hunter ; } 2>/dev/null || true && \
     mkdir -p /app 2>/dev/null || true
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"

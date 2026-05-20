@@ -4,7 +4,7 @@ ARG APP_GID=65532
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
-ARG VERSION=1.142.0
+ARG VERSION=v1.143.0
 RUN touch /victoria-metrics || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.142.0/victoria-metrics-linux-${TARGETARCH}-v1.142.0-cluster.tar.gz -o /victoria-metrics.tar.gz || true ; \
@@ -28,7 +28,7 @@ HEALTHCHECK NONE
 ENTRYPOINT ["/victoria-metrics"]
 LABEL org.opencontainers.image.title="victoriametrics" \
       org.opencontainers.image.description="VictoriaMetrics - fast, cost-effective time series database" \
-      org.opencontainers.image.version="1.142.0" \
+      org.opencontainers.image.version="v1.143.0" \
       org.opencontainers.image.vendor="VictoriaMetrics" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \

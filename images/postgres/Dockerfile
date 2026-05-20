@@ -5,7 +5,7 @@
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=17.6
+ARG VERSION=17.10
 ARG BUILD_DATE
 
 ARG TARGETARCH

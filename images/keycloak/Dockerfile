@@ -1,10 +1,10 @@
-ARG VERSION=26.6.1
+ARG VERSION=26.6.2
 ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-ARG VERSION=26.6.1
+ARG VERSION=26.6.2
 RUN apk add --no-cache wget ca-certificates && \
     mkdir -p /opt/keycloak-${VERSION}/bin && \
     wget -t 3 -T 10 -qO /keycloak.tar.gz "https://github.com/keycloak/keycloak/releases/download/${VERSION}/keycloak-${VERSION}.tar.gz" && \
@@ -27,7 +27,7 @@ ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
 CMD ["start-dev"]
 LABEL org.opencontainers.image.title="keycloak" \
       org.opencontainers.image.description="Keycloak - identity and access management" \
-      org.opencontainers.image.version="26.6.1" \
+      org.opencontainers.image.version="26.6.2" \
       org.opencontainers.image.vendor="Keycloak" \
       org.opencontainers.image.source="https://github.com/keycloak/keycloak" \
       evergreen.image.tier="critical" \

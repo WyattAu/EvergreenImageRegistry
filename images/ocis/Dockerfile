@@ -1,11 +1,11 @@
-ARG VERSION=7.1.4
+ARG VERSION=8.0.3
 ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
-ARG VERSION=7.1.4
+ARG VERSION=8.0.3
 RUN mkdir -p /ocis /app /var/log/ocis /var/cache/ocis
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/owncloud/ocis/releases/download/v${VERSION}/ocis-${VERSION}-linux-${TARGETARCH}" -o /ocis && \
@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     mkdir -p /app /var/log/ocis /var/cache/ocis /etc/ocis 2>/dev/null || true
 
 FROM scratch
-ARG VERSION=7.1.4
+ARG VERSION=8.0.3
 ARG TARGETARCH
 COPY --from=downloader /ocis /ocis
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -31,7 +31,7 @@ HEALTHCHECK NONE
 ENTRYPOINT ["/ocis"]
 LABEL org.opencontainers.image.title="ocis" \
       org.opencontainers.image.description="ownCloud Infinite Scale - next-gen file sync and share platform" \
-      org.opencontainers.image.version="7.1.4" \
+      org.opencontainers.image.version="8.0.3" \
       org.opencontainers.image.vendor="ownCloud" \
       org.opencontainers.image.source="https://github.com/owncloud/ocis" \
       evergreen.image.tier="2" \

@@ -5,14 +5,14 @@ ARG TARGETARCH
 # Constraint: debian-slim hardened
 # =============================================================================
 
-ARG VERSION=12.2.0
+ARG VERSION=12.2.8-security-04
 ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
-ARG VERSION=12.2.0
+ARG VERSION=12.2.8-security-04
 RUN mkdir -p /opt/grafana-${VERSION} || true
 RUN mkdir -p /opt/grafana-${VERSION} || true
 RUN mkdir -p /opt/grafana-${VERSION}
@@ -28,7 +28,7 @@ RUN mkdir -p /opt && \
 exit 1"' >> /opt/grafana-${VERSION}/bin/grafana-server && echo 'exit 1' >> /opt/grafana-${VERSION}/bin/grafana-server && chmod +x /opt/grafana-${VERSION}/bin/grafana-server ; } 2>/dev/null || true ; \
     ln -sf /opt/grafana-${VERSION} /opt/grafana 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-ARG VERSION=12.2.0
+ARG VERSION=12.2.8-security-04
 
 RUN apk add --no-cache ca-certificates tzdata fontconfig || true && \
     mkdir -p /opt/grafana 2>/dev/null || true

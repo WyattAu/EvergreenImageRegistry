@@ -4,7 +4,7 @@ ARG APP_GID=65532
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
-ARG VERSION=7.12.0
+ARG VERSION=v7.15.2
 RUN mkdir -p /tmp/oauth2-proxy || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v${VERSION}/oauth2-proxy-v${VERSION}.linux-${TARGETARCH}.tar.gz -o /oauth2-proxy.tar.gz || true ; \
@@ -23,7 +23,7 @@ EXPOSE 80 443
 HEALTHCHECK NONE
 ENTRYPOINT ["/oauth2-proxy"]
 LABEL org.opencontainers.image.title="oauth2-proxy" \
-      org.opencontainers.image.version="7.12.0" \
+      org.opencontainers.image.version="v7.15.2" \
       org.opencontainers.image.vendor="OAuth2 Proxy" \
       org.opencontainers.image.description="OAuth2 Proxy - reverse proxy with authentication provider" \
       evergreen.image.tier="1" \

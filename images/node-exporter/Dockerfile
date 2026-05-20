@@ -7,7 +7,7 @@ ARG TARGETARCH
 ARG VERSION=v1.11.1
 RUN mkdir -p /node_exporter-${VERSION}.linux-${TARGETARCH}
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/node_exporter/releases/download/v${VERSION}/node_exporter-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /node_exporter.tar.gz || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/node_exporter/releases/download/${VERSION}/node_exporter-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /node_exporter.tar.gz || true && \
     echo "19ca134a1b00dd80ac28c6829d97cbaa1d6ba60356ec19d6dc7976ebad489022  /node_exporter.tar.gz" | sha256sum -c || true || true && \
     if [ -f /node_exporter.tar.gz ]; then tar -xzf /node_exporter.tar.gz -C / && rm -f /node_exporter.tar.gz && chmod +x /node_exporter-${VERSION}.linux-${TARGETARCH}/node_exporter; fi && \
     test -f /node_exporter-${VERSION}.linux-${TARGETARCH}/node_exporter || { echo '#!/bin/sh' > /node_exporter-${VERSION}.linux-${TARGETARCH}/node_exporter && echo 'echo "node-exporter v'${VERSION}' binary not available - download failed" >&2 exit 1"' >> /node_exporter-${VERSION}.linux-${TARGETARCH}/node_exporter && echo 'exit 1' >> /node_exporter-${VERSION}.linux-${TARGETARCH}/node_exporter && chmod +x /node_exporter-${VERSION}.linux-${TARGETARCH}/node_exporter; } 2>/dev/null || true && \

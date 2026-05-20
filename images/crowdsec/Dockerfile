@@ -7,13 +7,13 @@ ARG VERSION=v1.7.8
 ARG TARGETARCH
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates binutils && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/crowdsecurity/crowdsec/releases/download/v${VERSION}/crowdsec-release.tgz" \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/crowdsecurity/crowdsec/releases/download/${VERSION}/crowdsec-release.tgz" \
     -o /crowdsec-release.tgz && \
     tar -xzf /crowdsec-release.tgz -C /tmp/ && \
-    cp /tmp/crowdsec-v${VERSION}/cmd/crowdsec/crowdsec /crowdsec && \
+    cp /tmp/crowdsec-${VERSION}/cmd/crowdsec/crowdsec /crowdsec && \
     chmod +x /crowdsec && \
     strip --strip-all /crowdsec  || true 2>/dev/null&& \
-    rm -rf /crowdsec-release.tgz /tmp/crowdsec-v${VERSION}
+    rm -rf /crowdsec-release.tgz /tmp/crowdsec-${VERSION}
 
 FROM scratch
 

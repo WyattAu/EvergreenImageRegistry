@@ -15,8 +15,7 @@ RUN apt-get update && \
 RUN mkdir -p /opt/couchbase/bin ; \
     test -f /opt/couchbase/bin/couchbase-server || { \
         echo '#!/bin/sh' > /opt/couchbase/bin/couchbase-server && \
-        echo 'echo "couchbase binary not available - download failed" >&2
-exit 1 - upstream repo unavailable"' >> /opt/couchbase/bin/couchbase-server && \
+        echo 'echo "couchbase binary not available - download failed" >&2 exit 1 - upstream repo unavailable"' >> /opt/couchbase/bin/couchbase-server && \
         echo 'exit 1' >> /opt/couchbase/bin/couchbase-server && \
         chmod +x /opt/couchbase/bin/couchbase-server ; }
 # hadolint ignore=DL3023

@@ -22,8 +22,7 @@ RUN apt-get update 2>/dev/null && apt-get install -y --no-install-recommends bin
     strip --strip-all /tmp/cockroach-v${VERSION}.linux-${TARGETARCH}/cockroach 2>/dev/null || true ; \
     mv /tmp/cockroach-v${VERSION}.linux-${TARGETARCH}/cockroach /usr/local/bin/cockroach 2>/dev/null || true && \
     rm -rf /tmp/cockroach.tgz /tmp/cockroach-v${VERSION}.linux-${TARGETARCH} 2>/dev/null || true && \
-    test -f /usr/local/bin/cockroach || { echo '#!/bin/sh' > /usr/local/bin/cockroach && echo 'echo "crdb-init v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /usr/local/bin/cockroach && echo 'exit 1' >> /usr/local/bin/cockroach && chmod +x /usr/local/bin/cockroach; } || true
+    test -f /usr/local/bin/cockroach || { echo '#!/bin/sh' > /usr/local/bin/cockroach && echo 'echo "crdb-init v${VERSION} binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/cockroach && echo 'exit 1' >> /usr/local/bin/cockroach && chmod +x /usr/local/bin/cockroach; } || true
 FROM scratch
 ARG VERSION=23.2.3
 COPY --from=builder /usr/local/bin/cockroach /usr/local/bin/cockroach

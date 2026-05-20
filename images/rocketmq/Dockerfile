@@ -13,12 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     unzip -q /rocketmq.zip -d /opt/ || true ; \
     mv /opt/rocketmq-all-${ROCKETMQ_VERSION}-bin-release /opt/rocketmq || true ; \
     rm -rf /rocketmq.zip /checksums.txt || true ; \
-    test -d /opt/rocketmq || { mkdir -p /opt/rocketmq && echo '#!/bin/sh' > /opt/rocketmq/binary not available - download failed" >&2
-exit 1.sh && echo 'echo "rocketmq v'${VERSION}' download failed - binary not available - download failed" >&2
-exit 1"' >> /opt/rocketmq/binary not available - download failed" >&2
-exit 1.sh && echo 'exit 1' >> /opt/rocketmq/binary not available - download failed" >&2
-exit 1.sh && chmod +x /opt/rocketmq/binary not available - download failed" >&2
-exit 1.sh; }
+    test -d /opt/rocketmq || { mkdir -p /opt/rocketmq && echo '#!/bin/sh' > /opt/rocketmq/binary not available - download failed" >&2 exit 1.sh && echo 'echo "rocketmq v'${VERSION}' download failed - binary not available - download failed" >&2 exit 1"' >> /opt/rocketmq/binary not available - download failed" >&2 exit 1.sh && echo 'exit 1' >> /opt/rocketmq/binary not available - download failed" >&2 exit 1.sh && chmod +x /opt/rocketmq/binary not available - download failed" >&2 exit 1.sh; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache openjdk-17-jre-base ca-certificates || true && \

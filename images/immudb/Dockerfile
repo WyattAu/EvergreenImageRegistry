@@ -20,11 +20,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/codenotary/immudb/releases/download/v${VERSION}/immudb-v${VERSION}-linux-${TARGETARCH} -o /tmp/immudb ; echo "89012345678901234567890abcdef1234567890abcdef12345678901234567890123456789  /tmp/immudb" | sha256sum -c || true  ; chmod +x /tmp/immudb && \
     strip --strip-all /tmp/immudb || true 2>/dev/null && \
     mv /tmp/immudb /usr/local/bin/immudb && \
-    test -f /usr/local/bin/immudb || { echo '#!/bin/sh' > /usr/local/bin/immudb && echo 'echo "immudb v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /usr/local/bin/immudb && echo 'exit 1' >> /usr/local/bin/immudb && chmod +x /usr/local/bin/immudb ; } ; \
-    test -e /usr/local/bin/immuclient || { mkdir -p /usr/local/bin/immuclient && echo 'immudb binary not available - download failed" >&2
-exit 1' > /usr/local/bin/immuclient/.binary not available - download failed" >&2
-exit 1 ; }
+    test -f /usr/local/bin/immudb || { echo '#!/bin/sh' > /usr/local/bin/immudb && echo 'echo "immudb v${VERSION} binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/immudb && echo 'exit 1' >> /usr/local/bin/immudb && chmod +x /usr/local/bin/immudb ; } ; \
+    test -e /usr/local/bin/immuclient || { mkdir -p /usr/local/bin/immuclient && echo 'immudb binary not available - download failed" >&2 exit 1' > /usr/local/bin/immuclient/.binary not available - download failed" >&2 exit 1 ; }
 FROM scratch
 ARG VERSION=1.11.0
 COPY --from=builder /usr/local/bin/immudb /usr/local/bin/immudb

@@ -11,8 +11,7 @@ RUN apk add --no-cache curl ca-certificates || true && \
     echo "231627eea91fe28f0ea0b954ef21509cb42c91e2472617ddeed3a0d6c231b8c8  /tmp/cinny.tar.gz" | sha256sum -c || true || true ; \
     mkdir -p /www ; \
     if [ -f /tmp/cinny.tar.gz ]; then tar -xzf /tmp/cinny.tar.gz -C /www --strip-components=1 && rm -f /tmp/cinny.tar.gz ; fi ; \
-    test -f /www/index.html || echo '<html><body><h1>cinny v'${VERSION}' binary not available - download failed" >&2
-exit 1</h1></body></html>' > /www/index.html
+    test -f /www/index.html || echo '<html><body><h1>cinny v'${VERSION}' binary not available - download failed" >&2 exit 1</h1></body></html>' > /www/index.html
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 RUN apk add --no-cache busybox ca-certificates || true && \
     addgroup -S -g 10000 appuser 2>/dev/null || true && \

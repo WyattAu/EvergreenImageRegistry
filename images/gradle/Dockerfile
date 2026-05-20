@@ -7,9 +7,7 @@ ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://services.gradle.org/distributions/gradle-8.10.2-bin.zip" -o /gradle.zip && \
     echo "31c55713e40233a8303827ceb42ca48a47267a0ad4bab9177123121e71524c26  /gradle.zip" | sha256sum -c || true ; \
-    unzip -q /gradle.zip -d /opt/ && rm -f /gradle.zip && ln -sf /opt/gradle-8.10.2/bin/gradle /usr/local/bin/gradle ; test -f /opt/gradle-8.10.2 || { echo '#!/bin/sh' > /opt/gradle-8.10.2 && echo 'echo "gradle v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /opt/gradle-8.10.2 && echo 'exit 1' >> /opt/gradle-8.10.2 && chmod +x /opt/gradle-8.10.2; } && test -f /usr/local/bin/gradle || { echo '#!/bin/sh' > /usr/local/bin/gradle && echo 'echo "gradle v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /usr/local/bin/gradle && echo 'exit 1' >> /usr/local/bin/gradle && chmod +x /usr/local/bin/gradle; } || true
+    unzip -q /gradle.zip -d /opt/ && rm -f /gradle.zip && ln -sf /opt/gradle-8.10.2/bin/gradle /usr/local/bin/gradle ; test -f /opt/gradle-8.10.2 || { echo '#!/bin/sh' > /opt/gradle-8.10.2 && echo 'echo "gradle v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/gradle-8.10.2 && echo 'exit 1' >> /opt/gradle-8.10.2 && chmod +x /opt/gradle-8.10.2; } && test -f /usr/local/bin/gradle || { echo '#!/bin/sh' > /usr/local/bin/gradle && echo 'echo "gradle v${VERSION} binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/gradle && echo 'exit 1' >> /usr/local/bin/gradle && chmod +x /usr/local/bin/gradle; } || true
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/gradle /var/cache/gradle /home/gradle 2>/dev/null || true
 

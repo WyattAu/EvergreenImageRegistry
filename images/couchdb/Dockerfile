@@ -16,8 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     cp -a /tmp/apache-couchdb-${VERSION}/rel/couchdb /opt/couchdb 2>/dev/null || true ; \
     test -d /opt/couchdb/bin || { mkdir -p /opt/couchdb/bin && \
         echo '#!/bin/sh' > /opt/couchdb/bin/couchdb && \
-        echo 'echo "couchdb v'${VERSION}' binary not available - download failed" >&2
-exit 1"' >> /opt/couchdb/bin/couchdb && \
+        echo 'echo "couchdb v'${VERSION}' binary not available - download failed" >&2 exit 1"' >> /opt/couchdb/bin/couchdb && \
         echo 'exit 1' >> /opt/couchdb/bin/couchdb && \
         chmod +x /opt/couchdb/bin/couchdb ; } && \
     rm -rf /tmp/couchdb.tar.gz /tmp/apache-couchdb-${VERSION} /var/lib/apt/lists/* || true

@@ -10,8 +10,7 @@ RUN apk add --no-cache wget ca-certificates git && \
     mkdir -p /app && \
     wget -t 3 -T 10 -qO /app/forgejo "https://code.forgejo.org/forgejo/forgejo/releases/download/v${VERSION}/forgejo-${VERSION}-linux-${TARGETARCH}" || true && \
     chmod +x /app/forgejo 2>/dev/null || true && \
-    test -f /app/forgejo || { echo '#!/bin/sh' > /app/forgejo && echo 'echo "forgejo v'"${VERSION}"' binary not available - download failed" >&2
-exit 1"' >> /app/forgejo && echo 'exit 1' >> /app/forgejo && chmod +x /app/forgejo ; } || true
+    test -f /app/forgejo || { echo '#!/bin/sh' > /app/forgejo && echo 'echo "forgejo v'"${VERSION}"' binary not available - download failed" >&2 exit 1"' >> /app/forgejo && echo 'exit 1' >> /app/forgejo && chmod +x /app/forgejo ; } || true
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 RUN addgroup -g 65532 git || true && \

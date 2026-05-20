@@ -9,8 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip || true && \
-    pip install --no-cache-dir ggshield ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/ggshield || { echo '#!/bin/sh' > /usr/local/bin/ggshield && echo 'echo "ggshield v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /usr/local/bin/ggshield && echo 'exit 1' >> /usr/local/bin/ggshield && chmod +x /usr/local/bin/ggshield ; } 2>/dev/null || true && \
+    pip install --no-cache-dir ggshield ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/ggshield || { echo '#!/bin/sh' > /usr/local/bin/ggshield && echo 'echo "ggshield v${VERSION} binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/ggshield && echo 'exit 1' >> /usr/local/bin/ggshield && chmod +x /usr/local/bin/ggshield ; } 2>/dev/null || true && \
     mkdir -p /app 2>/dev/null || true
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"

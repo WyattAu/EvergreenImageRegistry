@@ -27,8 +27,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     redash=="${VERSION}" || true && \
     find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true && \
-    test -f /install || { echo '#!/bin/sh' > /install && echo 'echo "redash v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /install && echo 'exit 1' >> /install && chmod +x /install ; } || true
+    test -f /install || { echo '#!/bin/sh' > /install && echo 'echo "redash v${VERSION} binary not available - download failed" >&2 exit 1"' >> /install && echo 'exit 1' >> /install && chmod +x /install ; } || true
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 

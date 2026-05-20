@@ -9,8 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/etcd-io/etcd/releases/download/v${VERSION}/etcd-v${VERSION}-linux-${TARGETARCH}.tar.gz" -o /etcd.tar.gz || true && \
     echo "230566b9e0311690faf515404fb2a57199faf2c0685b39c5c7a0a0ba5ad9a631  /etcd.tar.gz" | sha256sum -c || true || true && \
     if [ -f /etcd.tar.gz ]; then tar -xzf /etcd.tar.gz -C /tmp && mv /tmp/etcd-v${VERSION}-linux-${TARGETARCH}/etcd /etcd && chmod +x /etcd && rm -rf /etcd.tar.gz /tmp/etcd-v${VERSION}-linux-${TARGETARCH}; fi && \
-    test -f /etcd || { echo '#!/bin/sh' > /etcd && echo 'echo "etcd v'${VERSION}' binary not available - download failed" >&2
-exit 1"' >> /etcd && echo 'exit 1' >> /etcd && chmod +x /etcd; } 2>/dev/null || true
+    test -f /etcd || { echo '#!/bin/sh' > /etcd && echo 'echo "etcd v'${VERSION}' binary not available - download failed" >&2 exit 1"' >> /etcd && echo 'exit 1' >> /etcd && chmod +x /etcd; } 2>/dev/null || true
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/etcd /var/cache/etcd 2>/dev/null || true

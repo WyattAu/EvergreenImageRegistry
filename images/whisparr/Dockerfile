@@ -11,8 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     mkdir -p /app && \
     if [ -f /tmp/Whisparr.tar.gz ]; then tar -xzf /tmp/Whisparr.tar.gz -C /app && rm -f /tmp/Whisparr.tar.gz ; fi ; \
     chmod +x /app/Whisparr 2>/dev/null || true ; \
-    test -f /app/Whisparr || { echo '#!/bin/sh' > /app/Whisparr && echo 'echo "whisparr v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /app/Whisparr && echo 'exit 1' >> /app/Whisparr && chmod +x /app/Whisparr; } || true
+    test -f /app/Whisparr || { echo '#!/bin/sh' > /app/Whisparr && echo 'echo "whisparr v${VERSION} binary not available - download failed" >&2 exit 1"' >> /app/Whisparr && echo 'exit 1' >> /app/Whisparr && chmod +x /app/Whisparr; } || true
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 

@@ -17,11 +17,8 @@ RUN rustup target add aarch64-unknown-linux-gnu || true && \
         cargo install cargo-audit || true; \
     fi && \
     mkdir -p /app 2>/dev/null || true && \
-    test -e /root/.cargo/bin/cargo-audit || { mkdir -p /root/.cargo/bin && echo '#!/bin/sh' > /root/.cargo/bin/cargo-audit && echo 'echo "cargo-audit v0.0.0 binary not available - download failed" >&2
-exit 1"' >> /root/.cargo/bin/cargo-audit && chmod +x /root/.cargo/bin/cargo-audit ; } ; \
-    test -e /app || { mkdir -p /app && echo 'cargo-audit binary not available - download failed" >&2
-exit 1' > /app/.binary not available - download failed" >&2
-exit 1 ; } 2>/dev/null || true
+    test -e /root/.cargo/bin/cargo-audit || { mkdir -p /root/.cargo/bin && echo '#!/bin/sh' > /root/.cargo/bin/cargo-audit && echo 'echo "cargo-audit v0.0.0 binary not available - download failed" >&2 exit 1"' >> /root/.cargo/bin/cargo-audit && chmod +x /root/.cargo/bin/cargo-audit ; } ; \
+    test -e /app || { mkdir -p /app && echo 'cargo-audit binary not available - download failed" >&2 exit 1' > /app/.binary not available - download failed" >&2 exit 1 ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
 RUN apk add --no-cache ca-certificates curl || true && \

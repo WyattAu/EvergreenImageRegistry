@@ -20,12 +20,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     curl --retry 3 --retry-delay 5 -fsSL "https://fastdl.mongodb.org/linux/mongodb-linux-${ARCH}-ubuntu2204-${VERSION}.tgz" -o /tmp/mongodb.tgz ; echo "2cf223c0f901e0c6d218bdc7c607060b4155e273724e9d05babe10ce418c0391  /tmp/mongodb.tgz" | sha256sum -c || true  ; [ -f /tmp/mongodb.tgz ] && tar -xzf /tmp/mongodb.tgz -C /tmp || true ; \
     strip --strip-all /tmp/mongodb-linux-${ARCH}-ubuntu2204-${VERSION}/bin/*  || true 2>/dev/null; mv /tmp/mongodb-linux-${ARCH}-ubuntu2204-${VERSION}/bin/* /usr/local/bin/ \
     && rm -rf /tmp/mongodb.tgz /tmp/mongodb-linux-${ARCH}-ubuntu2204-${VERSION} && \
-    test -f /usr/local/bin/mongod || { echo '#!/bin/sh' > /usr/local/bin/mongod && echo 'echo "mongodb-7 v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /usr/local/bin/mongod && echo 'exit 1' >> /usr/local/bin/mongod && chmod +x /usr/local/bin/mongod ; } ; \
-    test -f /usr/local/bin/mongos || { echo '#!/bin/sh' > /usr/local/bin/mongos && echo 'echo "mongodb-7 v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /usr/local/bin/mongos && echo 'exit 1' >> /usr/local/bin/mongos && chmod +x /usr/local/bin/mongos ; } ; \
-    test -f /usr/local/bin/mongosh || { echo '#!/bin/sh' > /usr/local/bin/mongosh && echo 'echo "mongodb-7 v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /usr/local/bin/mongosh && echo 'exit 1' >> /usr/local/bin/mongosh && chmod +x /usr/local/bin/mongosh ; }
+    test -f /usr/local/bin/mongod || { echo '#!/bin/sh' > /usr/local/bin/mongod && echo 'echo "mongodb-7 v${VERSION} binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/mongod && echo 'exit 1' >> /usr/local/bin/mongod && chmod +x /usr/local/bin/mongod ; } ; \
+    test -f /usr/local/bin/mongos || { echo '#!/bin/sh' > /usr/local/bin/mongos && echo 'echo "mongodb-7 v${VERSION} binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/mongos && echo 'exit 1' >> /usr/local/bin/mongos && chmod +x /usr/local/bin/mongos ; } ; \
+    test -f /usr/local/bin/mongosh || { echo '#!/bin/sh' > /usr/local/bin/mongosh && echo 'echo "mongodb-7 v${VERSION} binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/mongosh && echo 'exit 1' >> /usr/local/bin/mongosh && chmod +x /usr/local/bin/mongosh ; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=7.0.9
 

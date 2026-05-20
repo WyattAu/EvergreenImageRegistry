@@ -27,8 +27,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     rm -rf /opt/elasticsearch-${VERSION}/jdk && \
     mkdir -p /app /var/log/elasticsearch /var/cache/elasticsearch /var/lib/elasticsearch || true && \
     mkdir -p /opt ; \
-test -d /opt/elasticsearch-${VERSION} || { mkdir -p /opt/elasticsearch-${VERSION}/bin && echo '#!/bin/sh' > /opt/elasticsearch-${VERSION}/bin/elasticsearch && echo 'echo "elasticsearch-8 v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /opt/elasticsearch-${VERSION}/bin/elasticsearch && echo 'exit 1' >> /opt/elasticsearch-${VERSION}/bin/elasticsearch && chmod +x /opt/elasticsearch-${VERSION}/bin/elasticsearch ; } 2>/dev/null || true
+test -d /opt/elasticsearch-${VERSION} || { mkdir -p /opt/elasticsearch-${VERSION}/bin && echo '#!/bin/sh' > /opt/elasticsearch-${VERSION}/bin/elasticsearch && echo 'echo "elasticsearch-8 v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/elasticsearch-${VERSION}/bin/elasticsearch && echo 'exit 1' >> /opt/elasticsearch-${VERSION}/bin/elasticsearch && chmod +x /opt/elasticsearch-${VERSION}/bin/elasticsearch ; } 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=8.12.2
 

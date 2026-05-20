@@ -13,8 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir pyopenssl certifi || true && \
-    git clone --branch v${VERSION} "https://github.com/Tautulli/Tautulli.git" /opt/tautulli || echo "Source repo not available - using binary not available - download failed" >&2
-exit 1" 2>/dev/null
+    git clone --branch v${VERSION} "https://github.com/Tautulli/Tautulli.git" /opt/tautulli || echo "Source repo not available - using binary not available - download failed" >&2 exit 1" 2>/dev/null
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"

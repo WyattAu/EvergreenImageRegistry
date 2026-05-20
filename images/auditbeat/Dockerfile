@@ -12,8 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     [ -f /auditbeat.tar.gz ] && tar -xzf /auditbeat.tar.gz -C /opt/auditbeat --strip-components=1 || true ; \
     rm -f /auditbeat.tar.gz ; \
     rm -rf /opt/auditbeat/kibana /opt/auditbeat/logs ; \
-    test -f /opt/auditbeat/auditbeat && { strip /opt/auditbeat/auditbeat 2>/dev/null || true ; chmod +x /opt/auditbeat/auditbeat ; } || { echo '#!/bin/sh' > /opt/auditbeat/auditbeat && echo 'echo "auditbeat v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /opt/auditbeat/auditbeat && echo 'exit 1' >> /opt/auditbeat/auditbeat && chmod +x /opt/auditbeat/auditbeat; }
+    test -f /opt/auditbeat/auditbeat && { strip /opt/auditbeat/auditbeat 2>/dev/null || true ; chmod +x /opt/auditbeat/auditbeat ; } || { echo '#!/bin/sh' > /opt/auditbeat/auditbeat && echo 'echo "auditbeat v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/auditbeat/auditbeat && echo 'exit 1' >> /opt/auditbeat/auditbeat && chmod +x /opt/auditbeat/auditbeat; }
 FROM scratch
 USER 65532:65532
 COPY --from=downloader /opt/auditbeat /opt/auditbeat

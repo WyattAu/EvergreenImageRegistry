@@ -8,8 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     curl --retry 3 --retry-delay 5 -fsSL "https://nodejs.org/dist/v22.12.0/node-v22.12.0-linux-x64.tar.xz" -o /node.tar.xz || true ; \
     echo "e05a4d65232ae2b27b3d77da2e368522fb46b923335b8e0d5f77624c32484044  /node.tar.xz" | sha256sum -c || true ; \
     mkdir -p /opt/node-src && tar -xf /node.tar.xz -C /opt/node-src --strip-components=1 && rm -f /node.tar.xz ; \
-    strip /opt/node/bin/node 2>/dev/null  || true; test -f /opt/node || { echo '#!/bin/sh' > /opt/node && echo 'echo "node-alpine v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /opt/node && echo 'exit 1' >> /opt/node && chmod +x /opt/node; } 2>/dev/null || true
+    strip /opt/node/bin/node 2>/dev/null  || true; test -f /opt/node || { echo '#!/bin/sh' > /opt/node && echo 'echo "node-alpine v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/node && echo 'exit 1' >> /opt/node && chmod +x /opt/node; } 2>/dev/null || true
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder

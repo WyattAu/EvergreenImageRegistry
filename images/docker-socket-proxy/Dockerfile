@@ -16,6 +16,7 @@ RUN apk add --no-cache haproxy ca-certificates || true && \
 
 COPY --from=upstream /usr/local/bin/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY --from=upstream /usr/local/etc/haproxy/haproxy.cfg.template /usr/local/etc/haproxy/haproxy.cfg.template
+COPY --from=upstream /usr/local/etc/haproxy/errors /usr/local/etc/haproxy/errors
 
 USER 65532:65532
 WORKDIR /app

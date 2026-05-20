@@ -5,7 +5,7 @@
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=1.23.16
+ARG VERSION=2.3.2
 ARG BUILD_DATE
 
 ARG TARGETARCH
@@ -23,7 +23,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget 
 ENTRYPOINT ["node"]
 LABEL org.opencontainers.image.title="uptime-kuma" \
       org.opencontainers.image.description="uptime-kuma container image" \
-      org.opencontainers.image.version="1.23.16" \
+      org.opencontainers.image.version="2.3.2" \
       org.opencontainers.image.vendor="Uptime Kuma" \
       org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       evergreen.image.tier="2" \

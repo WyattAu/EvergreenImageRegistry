@@ -5,7 +5,7 @@
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=17.4
+ARG VERSION=17.10
 ARG TARGETARCH
 ARG BUILD_DATE
 ARG APP_UID=65532

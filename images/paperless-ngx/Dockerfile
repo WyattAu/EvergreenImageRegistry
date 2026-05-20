@@ -5,7 +5,7 @@ ARG APP_GID=65532
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
-ARG VERSION=2.20.14
+ARG VERSION=2.20.15
 RUN mkdir -p /opt/paperless-ngx || true
 RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-venv python3-pip curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     python3 -m venv /opt/paperless-ngx && \
@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends python3 python3
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
-ARG VERSION=2.20.14
+ARG VERSION=2.20.15
 
 RUN microdnf install -y ca-certificates tzdata python3 py3-pip curl libstdc++ zlib libjpeg-turbo tesseract-ocr poppler-utils || true && \
     mkdir -p /opt/paperless-ngx /usr/src/paperless /var/lib/paperless /var/log/paperless /etc/paperless 2>/dev/null || true
@@ -29,7 +29,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 CMD wget 
 ENTRYPOINT ["paperless"]
 LABEL org.opencontainers.image.title="paperless-ngx" \
       org.opencontainers.image.description="Paperless-ngx - document management system" \
-      org.opencontainers.image.version="2.20.14" \
+      org.opencontainers.image.version="2.20.15" \
       org.opencontainers.image.vendor="Paperless-ngx" \
       org.opencontainers.image.source="https://github.com/paperless-ngx/paperless-ngx" \
       evergreen.image.tier="2" \

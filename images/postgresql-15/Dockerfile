@@ -1,11 +1,11 @@
 # =============================================================================
 # EVERGREEN HARDENED POSTGRESQL-15
-# Generated from template - Version: 15.7
+# Generated from template - Version: 15.18
 # Constraint: debian-slim hardened multi-stage
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=15.7
+ARG VERSION=15.18
 ARG TARGETARCH
 ARG BUILD_DATE
 ARG APP_UID=65532
@@ -31,7 +31,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD pg_is
 ENTRYPOINT ["postgres"]
 LABEL org.opencontainers.image.title="postgresql-15" \
       org.opencontainers.image.description="postgresql-15 container image" \
-      org.opencontainers.image.version="15.7" \
+      org.opencontainers.image.version="15.18" \
       org.opencontainers.image.vendor="PostgreSQL" \
       evergreen.image.tier="2" \
       evergreen.constraint.nonroot="true" \

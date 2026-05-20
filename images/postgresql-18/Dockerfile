@@ -1,11 +1,11 @@
 # =============================================================================
 # EVERGREEN HARDENED POSTGRESQL 17
-# Generated from template - Version: 17.10
+# Generated from template - Version: 18.4
 # Wolfi-base provides glibc; PostgreSQL installed from upstream deb packages
 # Priority: scratch > distroless > wolfi > debian-slim (fallback)
 # =============================================================================
 
-ARG VERSION=17.10
+ARG VERSION=18.4
 ARG BUILD_DATE
 
 ARG TARGETARCH
@@ -25,10 +25,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get update && apt-get install -y --no-install-recommends \
     postgresql-${VERSION%.*} postgresql-contrib-${VERSION%.*} && rm -rf /var/lib/apt/lists/* && \
     mkdir -p /var/lib/postgresql/data /var/run/postgresql /app || true && \
-    test -f /var/lib/postgresql || { echo '#!/bin/sh' > /var/lib/postgresql && echo 'echo "postgresql-17 v${VERSION} binary not available - download failed" >&2
+    test -f /var/lib/postgresql || { echo '#!/bin/sh' > /var/lib/postgresql && echo 'echo "postgresql-18 v${VERSION} binary not available - download failed" >&2
 exit 1"' >> /var/lib/postgresql && echo 'exit 1' >> /var/lib/postgresql && chmod +x /var/lib/postgresql ; } ; \
-    test -f /var/run/postgresql || { echo '#!/bin/sh' > /var/run/postgresql && echo 'echo "postgresql-17 v${VERSION} binary not available - download failed" >&2
-exit 1"' >> /var/run/postgresql && echo 'exit 1' >> /var/run/postgresql && chmod +x /var/run/postgresql ; } ; test -f /var/run/postgresql || { echo '#!/bin/sh' > /var/run/postgresql && echo 'echo "postgresql-17 v${VERSION} binary not available - download failed" >&2
+    test -f /var/run/postgresql || { echo '#!/bin/sh' > /var/run/postgresql && echo 'echo "postgresql-18 v${VERSION} binary not available - download failed" >&2
+exit 1"' >> /var/run/postgresql && echo 'exit 1' >> /var/run/postgresql && chmod +x /var/run/postgresql ; } ; test -f /var/run/postgresql || { echo '#!/bin/sh' > /var/run/postgresql && echo 'echo "postgresql-18 v${VERSION} binary not available - download failed" >&2
 exit 1"' >> /var/run/postgresql && echo 'exit 1' >> /var/run/postgresql && chmod +x /var/run/postgresql ; } || true
 FROM scratch AS entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
@@ -41,9 +41,9 @@ COPY --from=builder /var/run/postgresql /var/run/postgresql
 COPY --from=entrypoint /usr/local/bin/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod 755 /usr/local/bin/docker-entrypoint.sh 2>/dev/null || true && \
     adduser -u 5432 -D postgres 2>/dev/null || useradd -u 5432 -r -M -s /bin/false postgres 2>/dev/null || true && \
-    mkdir -p /app /var/log/postgresql-17 /var/cache/postgresql-17 ; \
+    mkdir -p /app /var/log/postgresql-18 /var/cache/postgresql-18 ; \
     mkdir -p /docker-entrypoint-initdb.d && \
-    chown -R 5432:5432 /var/lib/postgresql /var/run/postgresql /app /var/log/postgresql-17 /var/cache/postgresql-17 /docker-entrypoint-initdb.d 2>/dev/null || true
+    chown -R 5432:5432 /var/lib/postgresql /var/run/postgresql /app /var/log/postgresql-18 /var/cache/postgresql-18 /docker-entrypoint-initdb.d 2>/dev/null || true
 
 USER 5432:5432
 WORKDIR /app
@@ -54,9 +54,9 @@ EXPOSE 5432
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD pg_isready -h localhost -p 5432
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["postgres"]
-LABEL org.opencontainers.image.title="postgresql-17" \
-      org.opencontainers.image.version="17.10" \
-      org.opencontainers.image.description="PostgreSQL 17 Database Server" \
+LABEL org.opencontainers.image.title="postgresql-18" \
+      org.opencontainers.image.version="18.4" \
+      org.opencontainers.image.description="PostgreSQL 18 Database Server" \
       org.opencontainers.image.vendor="PostgreSQL Global Development Group" \
       org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       org.opencontainers.image.source="https://www.postgresql.org/" \

@@ -5,7 +5,7 @@
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=7.4.8
+ARG VERSION=7.4.9
 ARG BUILD_DATE
 
 ARG TARGETARCH
@@ -36,7 +36,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD redis
 ENTRYPOINT ["sh", "-c", "redis"]
 LABEL org.opencontainers.image.title="redis" \
       org.opencontainers.image.description="Redis - in-memory data structure store and cache" \
-      org.opencontainers.image.version="7.4.8" \
+      org.opencontainers.image.version="7.4.9" \
       org.opencontainers.image.vendor="Redis" \
       org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       evergreen.image.tier="1" \

@@ -1,4 +1,4 @@
-ARG VERSION=9
+ARG VERSION=9.0.4
 ARG BUILD_DATE
 
 ARG TARGETARCH
@@ -21,7 +21,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD valke
 ENTRYPOINT ["sh", "-c", "valkey"]
 LABEL org.opencontainers.image.title="valkey" \
       org.opencontainers.image.description="Valkey - open source Redis-compatible in-memory data store" \
-      org.opencontainers.image.version="9" \
+      org.opencontainers.image.version="9.0.4" \
       org.opencontainers.image.vendor="Valkey" \
       org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       evergreen.image.tier="2" \

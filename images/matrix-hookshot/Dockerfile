@@ -1,11 +1,11 @@
-ARG VERSION=7.3.2
+ARG VERSION=7.3.3
 ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
-ARG VERSION=7.3.2
+ARG VERSION=7.3.3
 RUN mkdir -p /app || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/matrix-org/matrix-hookshot/releases/download/v${VERSION}/matrix-hookshot-${VERSION}.tar.gz" -o /matrix-hookshot.tar.gz && \
@@ -35,7 +35,7 @@ CMD ["."]
 
 LABEL org.opencontainers.image.title="matrix-hookshot" \
       org.opencontainers.image.description="Matrix Hookshot - multi-purpose Matrix bot bridge framework" \
-      org.opencontainers.image.version="7.3.2" \
+      org.opencontainers.image.version="7.3.3" \
       org.opencontainers.image.vendor="matrix.org" \
       org.opencontainers.image.source="https://github.com/matrix-org/matrix-hookshot" \
       evergreen.image.tier="2" \

@@ -4,7 +4,7 @@ ARG APP_GID=65532
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
-ARG VERSION=1.68.0
+ARG VERSION=v1.83.0
 RUN touch /redis_exporter || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/oliver006/redis_exporter/releases/download/v1.68.0/redis_exporter-v1.68.0.linux-${TARGETARCH}.tar.gz -o /redis_exporter.tar.gz && \
@@ -28,7 +28,7 @@ HEALTHCHECK NONE
 ENTRYPOINT ["/redis_exporter"]
 LABEL org.opencontainers.image.title="redis-exporter" \
       org.opencontainers.image.description="Redis Exporter - Prometheus exporter for Redis" \
-      org.opencontainers.image.version="1.68.0" \
+      org.opencontainers.image.version="v1.83.0" \
       org.opencontainers.image.vendor="Prometheus" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \

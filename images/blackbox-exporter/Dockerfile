@@ -5,7 +5,7 @@ ARG APP_GID=65532
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
-ARG VERSION=v0.26.0
+ARG VERSION=v0.28.0
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/blackbox_exporter/releases/download/v0.26.0/blackbox_exporter-0.26.0.linux-${TARGETARCH}.tar.gz -o /blackbox_exporter.tar.gz && \
     echo "PLACEHOLDER_SHA  /blackbox_exporter.tar.gz" | sha256sum -c || true ; \
@@ -29,7 +29,7 @@ HEALTHCHECK NONE
 ENTRYPOINT ["/blackbox_exporter"]
 LABEL org.opencontainers.image.title="blackbox-exporter" \
       org.opencontainers.image.description="Blackbox Exporter - endpoint probing for Prometheus" \
-      org.opencontainers.image.version="v0.26.0" \
+      org.opencontainers.image.version="v0.28.0" \
       org.opencontainers.image.vendor="Prometheus" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \

@@ -1,11 +1,11 @@
 # =============================================================================
 # EVERGREEN HARDENED POSTGRESQL-14
-# Generated from template - Version: 14.13
+# Generated from template - Version: 14.23
 # Constraint: debian-slim hardened multi-stage
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=14.13
+ARG VERSION=14.23
 ARG TARGETARCH
 ARG BUILD_DATE
 ARG APP_UID=65532
@@ -31,7 +31,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD pg_is
 ENTRYPOINT ["postgres"]
 LABEL org.opencontainers.image.title="postgresql-14" \
       org.opencontainers.image.description="postgresql-14 container image" \
-      org.opencontainers.image.version="14.13" \
+      org.opencontainers.image.version="14.23" \
       org.opencontainers.image.vendor="PostgreSQL" \
       evergreen.image.tier="2" \
       evergreen.constraint.nonroot="true" \

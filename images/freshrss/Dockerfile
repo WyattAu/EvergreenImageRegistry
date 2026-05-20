@@ -5,7 +5,7 @@
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=1.28.1
+ARG VERSION=1.29.0
 ARG TARGETARCH
 ARG BUILD_DATE
 ARG APP_UID=65532
@@ -28,7 +28,7 @@ ENTRYPOINT ["php"]
 
 LABEL org.opencontainers.image.title="freshrss" \
       org.opencontainers.image.description="freshrss container image" \
-      org.opencontainers.image.version="1.28.1" \
+      org.opencontainers.image.version="1.29.0" \
       org.opencontainers.image.vendor="FreshRSS" \
       evergreen.image.tier="2" \
       evergreen.constraint.nonroot="true" \

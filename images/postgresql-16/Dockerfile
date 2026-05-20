@@ -1,11 +1,11 @@
 # =============================================================================
 # EVERGREEN HARDENED POSTGRESQL-16
-# Generated from template - Version: 16.3
+# Generated from template - Version: 16.14
 # Constraint: debian-slim hardened multi-stage
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=16.3
+ARG VERSION=16.14
 ARG BUILD_DATE
 
 ARG TARGETARCH
@@ -31,7 +31,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD pg_is
 ENTRYPOINT ["postgres"]
 LABEL org.opencontainers.image.title="postgresql-16" \
       org.opencontainers.image.description="postgresql-16 container image" \
-      org.opencontainers.image.version="16.3" \
+      org.opencontainers.image.version="16.14" \
       org.opencontainers.image.vendor="PostgreSQL" \
       org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       evergreen.image.tier="2" \

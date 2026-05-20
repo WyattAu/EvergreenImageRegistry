@@ -1,4 +1,4 @@
-ARG VERSION=1.35.7
+ARG VERSION=1.36.0
 ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
@@ -29,7 +29,7 @@ ENTRYPOINT ["/vaultwarden"]
 
 
 
-LABEL org.opencontainers.image.title="vaultwarden"       org.opencontainers.image.version="1.35.7"       org.opencontainers.image.vendor="dani-garcia"       org.opencontainers.image.source="https://github.com/dani-garcia/vaultwarden"       evergreen.image.tier="2"       evergreen.image.category="secrets"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms" \
+LABEL org.opencontainers.image.title="vaultwarden"       org.opencontainers.image.version="1.36.0"       org.opencontainers.image.vendor="dani-garcia"       org.opencontainers.image.source="https://github.com/dani-garcia/vaultwarden"       evergreen.image.tier="2"       evergreen.image.category="secrets"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms" \
 org.opencontainers.image.description="Vaultwarden - lightweight Bitwarden-compatible password manager" \
 evergreen.base.image="scratch"
 

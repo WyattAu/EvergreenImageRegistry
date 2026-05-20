@@ -1,11 +1,11 @@
-ARG VERSION=v0.16.0
+ARG VERSION=v0.19.0
 ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
-ARG VERSION=v0.16.0
+ARG VERSION=v0.19.0
 RUN mkdir -p /mysqld_exporter-${VERSION}.linux-${TARGETARCH}
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/mysqld_exporter/releases/download/${VERSION}/mysqld_exporter-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /mysqld_exporter.tar.gz && \
@@ -17,7 +17,7 @@ exit 1"' >> /mysqld_exporter-${VERSION}.linux-${TARGETARCH}/mysqld_exporter && e
     mkdir -p /app /var/log/mysqld_exporter /var/cache/mysqld_exporter 2>/dev/null || true
 
 FROM scratch
-ARG VERSION=v0.16.0
+ARG VERSION=v0.19.0
 ARG TARGETARCH
 COPY --from=downloader /mysqld_exporter-${VERSION}.linux-${TARGETARCH}/mysqld_exporter /mysqld_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

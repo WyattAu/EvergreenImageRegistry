@@ -3,7 +3,7 @@ ARG APP_GID=65532
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 
-ARG VERSION=1.6.2
+ARG VERSION=v1.7.8
 ARG TARGETARCH
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates binutils && rm -rf /var/lib/apt/lists/* && \
@@ -35,7 +35,7 @@ ENTRYPOINT ["/crowdsec"]
 
 
 
-LABEL org.opencontainers.image.title="crowdsec"       org.opencontainers.image.version="1.6.2"       org.opencontainers.image.vendor="CrowdSecurity"       org.opencontainers.image.source="https://github.com/crowdsecurity/crowdsec"       evergreen.image.tier="1"       evergreen.image.category="security"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms" \
+LABEL org.opencontainers.image.title="crowdsec"       org.opencontainers.image.version="v1.7.8"       org.opencontainers.image.vendor="CrowdSecurity"       org.opencontainers.image.source="https://github.com/crowdsecurity/crowdsec"       evergreen.image.tier="1"       evergreen.image.category="security"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms" \
 org.opencontainers.image.description="crowdsec container image" \
 evergreen.base.image="scratch"
 

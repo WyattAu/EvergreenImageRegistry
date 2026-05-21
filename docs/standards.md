@@ -143,23 +143,30 @@ Images must be complete, self-consistent, and compatible with their runtime envi
 
 ### 6.1. Minimum Image Completeness (C026)
 
-Every image published to the registry MUST contain a functional application binary or runtime that provides the advertised service. Specifically:
+Every image published to the registry MUST contain a functional application binary or runtime that provides the
+advertised service. Specifically:
 
 1. The `ENTRYPOINT` or `CMD` MUST invoke the actual application (not `sleep`, `true`, `echo`, or a placeholder script).
-2. The image MUST be built from a verified upstream binary, a compiled source, or a package manager install -- not left as an empty stub.
-3. Images that cannot meet this bar MUST be placed under `images/_wip/<name>/` (underscore prefix, excluded from CI) with `LABEL evergreen.status="wip"`.
+2. The image MUST be built from a verified upstream binary, a compiled source, or a package manager install -- not left
+   as an empty stub.
+3. Images that cannot meet this bar MUST be placed under `images/_wip/<name>/` (underscore prefix, excluded from CI)
+   with `LABEL evergreen.status="wip"`.
 
-Placeholder stubs, skeleton Dockerfiles, and `ENTRYPOINT ["true"]` images MUST NOT appear in the active build matrix or be published to any registry.
+Placeholder stubs, skeleton Dockerfiles, and `ENTRYPOINT ["true"]` images MUST NOT appear in the active build matrix or
+be published to any registry.
 
 ### 6.2. libc Consistency (C027)
 
 All compiled artifacts copied between build stages MUST use the same libc family as the final stage.
 
-- If any artifact was compiled against glibc (e.g., Python C extensions built in a debian builder, Node.js native modules, Rust compiled with `gnu` target), the final stage MUST use a glibc base image (RHEL UBI minimal or UBI standard).
+- If any artifact was compiled against glibc (e.g., Python C extensions built in a debian builder, Node.js native
+  modules, Rust compiled with `gnu` target), the final stage MUST use a glibc base image (RHEL UBI minimal or UBI
+  standard).
 - If all artifacts are static binaries or compiled against musl, wolfi or scratch is preferred.
 - Wolfi MUST NOT be used as a final stage when it would receive glibc-compiled artifacts.
 
 **Decision tree for Python images:**
+
 ```
 Does the image pip install packages with C extensions (psycopg2, Pillow, cryptography, lxml, etc.)?
   YES -> Build the venv inside a wolfi builder stage (pip compiles against musl).
@@ -169,29 +176,41 @@ Does the image pip install packages with C extensions (psycopg2, Pillow, cryptog
 
 ### 6.3. Configurable Runtime UID (C028)
 
-Every image MUST support runtime UID/GID override via `APP_UID` and `APP_GID` environment variables. The default MUST be 65532:65532.
+Every image MUST support runtime UID/GID override via `APP_UID` and `APP_GID` environment variables. The default MUST be
+65532:65532.
 
 The Dockerfile MUST declare:
+
 ```dockerfile
 ARG APP_UID=65532
 ARG APP_GID=65532
 ```
 
-The user/group MUST be created at build time with the default UID. The image entrypoint MUST detect at runtime if `APP_UID` or `APP_GID` differ from the build-time defaults and, if so, re-create the user/group and perform `chown` on application data directories before dropping privileges with `su-exec`.
+The user/group MUST be created at build time with the default UID. The image entrypoint MUST detect at runtime if
+`APP_UID` or `APP_GID` differ from the build-time defaults and, if so, re-create the user/group and perform `chown` on
+application data directories before dropping privileges with `su-exec`.
 
-This ensures compatibility with orchestrators that require specific UIDs for volume mount permissions, while maintaining 65532 as the secure default.
+This ensures compatibility with orchestrators that require specific UIDs for volume mount permissions, while maintaining
+65532 as the secure default.
 
-For images built `FROM scratch` that cannot include `su-exec`, the entrypoint MUST log a clear warning if the configured UID does not match the build-time UID, and the orchestrator MUST handle UID mapping externally.
+For images built `FROM scratch` that cannot include `su-exec`, the entrypoint MUST log a clear warning if the configured
+UID does not match the build-time UID, and the orchestrator MUST handle UID mapping externally.
 
 ### 6.4. Initialization for Data Services (C029)
 
 Images for data services (databases, message queues, key-value stores, caches) MUST provide two operational modes:
 
-1. **Self-contained mode:** The image includes the upstream initialization entrypoint script that handles first-run detection, data store initialization (initdb, mysql_install_db, etc.), user/database creation from environment variables, and configuration rendering. This mode works with plain `docker run`.
+1. **Self-contained mode:** The image includes the upstream initialization entrypoint script that handles first-run
+   detection, data store initialization (initdb, mysql_install_db, etc.), user/database creation from environment
+   variables, and configuration rendering. This mode works with plain `docker run`.
 
-2. **Binary-only mode:** The image exposes the raw application binary without initialization logic, for use with orchestrators that provide their own init containers. This is achieved by overriding `CMD` or `ENTRYPOINT` at runtime.
+2. **Binary-only mode:** The image exposes the raw application binary without initialization logic, for use with
+   orchestrators that provide their own init containers. This is achieved by overriding `CMD` or `ENTRYPOINT` at
+   runtime.
 
-The default behavior MUST be self-contained mode (upstream entrypoint). Critical tier data service images MUST implement both modes. Standard and community tier data service images SHOULD implement self-contained mode but MAY omit it if documented.
+The default behavior MUST be self-contained mode (upstream entrypoint). Critical tier data service images MUST implement
+both modes. Standard and community tier data service images SHOULD implement self-contained mode but MAY omit it if
+documented.
 
 ## 7. Amending These Standards
 

@@ -1,6 +1,6 @@
 # Constraint Compliance Checklist - All Images
 
-**Mission:** Hardened container images for critical infrastructure  
+**Mission:** Hardened container images for critical infrastructure
 **Standard:** Evergreen Hardened Image Registry v18.0.0
 **Classification:** OPERATIONAL SECURITY - ZERO-TRUST
 **Last Updated:** 2026-05-03
@@ -78,7 +78,7 @@
 docker run --rm <image> id
 # Expected: uid=65534(nobody) or similar non-root
 
-# C002: Read-only root filesystem  
+# C002: Read-only root filesystem
 docker run --rm --read-only <image> touch /test
 # Expected: touch: /test: Read-only file system
 
@@ -122,7 +122,7 @@ sleep 5
 docker inspect test --format '{{.State.Running}}'
 # Expected: false (graceful exit)
 
-# C012: No embedded secrets  
+# C012: No embedded secrets
 trufflehog filesystem <image>
 # Expected: 0 secrets found
 
@@ -164,6 +164,7 @@ Before ANY Dockerfile is committed:
 - [ ] Labels applied: vendor, version, tier, constraint claims
 
 **Example correct user creation order:**
+
 ```dockerfile
 RUN useradd -m -u 65534 -g '' appuser
 RUN rm -f /bin/sh /bin/bash /usr/bin/sh /usr/bin/bash  # AFTER user creation
@@ -176,7 +177,7 @@ RUN rm -f /bin/sh /bin/bash /usr/bin/sh /usr/bin/bash  # AFTER user creation
 After successful build, CI MUST verify:
 
 - [ ] C001: Non-root (UID != 0) - BLOCK on failure
-- [ ] C002: Read-only filesystem works - BLOCK on failure  
+- [ ] C002: Read-only filesystem works - BLOCK on failure
 - [ ] C003: No shell present - BLOCK on failure
 - [ ] C004: No package manager - BLOCK on failure
 - [ ] C007: Zero Critical/High CVEs - BLOCK on failure

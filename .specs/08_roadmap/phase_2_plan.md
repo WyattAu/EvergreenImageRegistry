@@ -339,6 +339,7 @@ per-image profiles that whitelist only the syscalls each binary actually needs.
    ```
 
 5. **CI integration**: Test each image with its seccomp profile:
+
    ```yaml
    - name: Test with seccomp profile
      run: |
@@ -623,6 +624,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
    ```
 
 4. **Verify stripping** in CI:
+
    ```bash
    # Check that binary has no symbol table
    docker run --rm "$IMAGE" sh -c 'readelf -S /binary 2>/dev/null | grep -q ".symtab" && exit 1 || exit 0'
@@ -730,6 +732,7 @@ fi
    - Static build is significantly larger than dynamic
 
 4. **CI integration**: Add static linking check to verify stage:
+
    ```yaml
    - name: Check static linking
      run: |

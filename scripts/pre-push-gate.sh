@@ -252,7 +252,7 @@ fi
 echo ""
 echo "--- Gate 9: Cargo Audit ---"
 if command -v cargo-audit &>/dev/null; then
-    if cargo audit --manifest-path evergreenctl/Cargo.toml 2>/dev/null; then
+    if (cd evergreenctl && cargo audit 2>/dev/null); then
         pass_gate "cargo audit (evergreenctl)"
     else
         fail_gate "cargo audit (evergreenctl) - vulnerabilities found"

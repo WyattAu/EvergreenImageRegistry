@@ -163,16 +163,20 @@ Images with `FROM scratch` as the final stage have no shell (`/bin/sh`) and no `
 
 **Mandatory rules for scratch images:**
 
-1. If the image includes the `health-checks` static binary (copied from the `images/health-checks/` build), use exec form:
+1. If the image includes the `health-checks` static binary (copied from the `images/health-checks/` build), use exec
+   form:
+
    ```dockerfile
    HEALTHCHECK CMD ["/usr/bin/health-checks", "http://localhost:PORT/path"]
    ```
 
-2. If no health binary is included, use `HEALTHCHECK NONE` and delegate health checking to the orchestrator (Kubernetes probes, Docker Compose healthcheck, external monitoring).
+2. If no health binary is included, use `HEALTHCHECK NONE` and delegate health checking to the orchestrator (Kubernetes
+   probes, Docker Compose healthcheck, external monitoring).
 
 3. CMD-SHELL format is PROHIBITED in scratch images. This is enforceable via CI lint.
 
-4. The `health-checks` binary MUST be built as a static binary (no libc dependency) so it can run in scratch. It is available from `images/health-checks/` in this repository.
+4. The `health-checks` binary MUST be built as a static binary (no libc dependency) so it can run in scratch. It is
+   available from `images/health-checks/` in this repository.
 
 ---
 

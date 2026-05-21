@@ -476,6 +476,7 @@ test_memcached_set_get() {
    ```
 
 5. **CI integration**: Add functional test job to build.yml:
+
    ```yaml
    functional-tests:
      needs: [build, verify]
@@ -1029,6 +1030,7 @@ run_adversarial_tests "$IMAGE"
    ```
 
 5. **CI integration**: Add adversarial test job (may be slow — run in parallel):
+
    ```yaml
    adversarial-tests:
      needs: [build, verify]

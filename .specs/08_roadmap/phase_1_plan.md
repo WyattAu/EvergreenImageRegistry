@@ -316,6 +316,7 @@ fail. Silent fallback to a different URL is itself a security risk.
    - Incorrect checksum: build fails with clear error message
 
 4. **Error message format**:
+
    ```dockerfile
    RUN echo "${EXPECTED_SHA256}  /binary.tar.gz" | sha256sum -c - || \
        { echo "CHECKSUM VERIFICATION FAILED for binary.tar.gz"; \
@@ -609,6 +610,7 @@ from T1.2.1.
 2. **Add keyless identity parameters**: Same certificate-identity and OIDC issuer as T1.2.1.
 
 3. **Verify SBOM retrieval**:
+
    ```bash
    cosign verify-attestation \
      --certificate-identity="..." \
@@ -669,6 +671,7 @@ This is a governance problem: without an exception process, the pipeline will ei
    ```
 
 4. **Trivy configuration file** (`.trivy.yaml`):
+
    ```yaml
    severity:
      - CRITICAL

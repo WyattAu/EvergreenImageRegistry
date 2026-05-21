@@ -531,13 +531,15 @@ ENTRYPOINT ["true"]
 # This is a stub. It does nothing. It MUST NOT be in the build matrix.
 ```
 
-If an image cannot be completed (no upstream binary, proprietary, not containerizable), move it to `images/_wip/<name>/` with `LABEL evergreen.status="wip"`. Do not leave it in the active `images/` directory.
+If an image cannot be completed (no upstream binary, proprietary, not containerizable), move it to `images/_wip/<name>/`
+with `LABEL evergreen.status="wip"`. Do not leave it in the active `images/` directory.
 
 ---
 
 ## 12. libc Consistency Across Stages (C027)
 
-Compiled artifacts MUST use the same libc as the final stage. Copying glibc-compiled artifacts (Python C extensions, Node native modules) into a wolfi/musl final stage will crash at runtime.
+Compiled artifacts MUST use the same libc as the final stage. Copying glibc-compiled artifacts (Python C extensions,
+Node native modules) into a wolfi/musl final stage will crash at runtime.
 
 ### DO
 
@@ -633,7 +635,8 @@ USER 65532:65532
 
 ## 14. Data Service Initialization (C029)
 
-Images for databases, message queues, and key-value stores MUST include upstream initialization entrypoint scripts for self-contained operation. They MUST also support binary-only mode for orchestrator-managed initialization.
+Images for databases, message queues, and key-value stores MUST include upstream initialization entrypoint scripts for
+self-contained operation. They MUST also support binary-only mode for orchestrator-managed initialization.
 
 ### DO
 
@@ -646,7 +649,8 @@ CMD ["postgres"]
 # docker run --entrypoint postgres myimage:tag -c config_file=/etc/postgresql/postgresql.conf
 ```
 
-The upstream `docker-entrypoint.sh` script handles first-run detection, data store initialization, user/database creation from environment variables, and configuration rendering.
+The upstream `docker-entrypoint.sh` script handles first-run detection, data store initialization, user/database
+creation from environment variables, and configuration rendering.
 
 ---
 
@@ -680,3 +684,71 @@ LABEL evergreen.status="deprecated" \
 ### DO NOT
 
 Delete the Dockerfile or leave the image in the active build matrix without a deprecation label.
+
+---
+
+## 16. Metrics Endpoint Convention
+
+Images that are Prometheus exporters or monitoring agents MUST expose metrics in the Prometheus exposition format.
+Application images SHOULD expose metrics if the upstream binary supports it.
+
+### Port Convention
+
+| Image Type                      | Port             | Example                           |
+| ------------------------------- | ---------------- | --------------------------------- |
+| Standalone exporter             | `9100`           | node-exporter, zfs-exporter       |
+| Application with native metrics | Application port | Traefik on 8080, Keycloak on 9000 |
+| Proxy/middleware                | Application port | oauth2-proxy on 4180              |
+
+### Path Convention
+
+- **Path:** `/metrics` (Prometheus ecosystem standard)
+- **Exception:** Upstream applications with non-overridable paths (e.g., Synapse `/_synapse/metrics`). Document the
+  exception in a Dockerfile comment.
+
+### OCI Labels
+
+Images exposing a metrics endpoint MUST include these labels:
+
+```dockerfile
+LABEL org.opencontainers.image.metrics.port="9100" \
+      org.opencontainers.image.metrics.path="/metrics"
+```
+
+### Expose Directive
+
+The metrics port MUST be listed in `EXPOSE`. If the image also serves an application on a different port, both ports
+MUST be listed:
+
+```dockerfile
+EXPOSE 8080 9100
+```
+
+### DO
+
+```dockerfile
+FROM scratch AS final
+
+LABEL org.opencontainers.image.metrics.port="9100" \
+      org.opencontainers.image.metrics.path="/metrics"
+
+EXPOSE 9100
+
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 --start-period=10s \
+    CMD wget -qO- http://localhost:9100/metrics || exit 1
+
+USER 65532:65532
+ENTRYPOINT ["/usr/local/bin/exporter"]
+STOPSIGNAL SIGTERM
+```
+
+### DO NOT
+
+```dockerfile
+EXPOSE 8080
+# Missing metrics port in EXPOSE -- metrics port undocumented
+
+ENTRYPOINT ["/usr/local/bin/exporter"]
+# No HEALTHCHECK against the metrics endpoint -- upstream may change the path
+# silently and go undetected
+```

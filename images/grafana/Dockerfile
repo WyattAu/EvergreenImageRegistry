@@ -42,7 +42,7 @@ WORKDIR /opt/grafana
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:3000/api/health
-ENTRYPOINT ["grafana-server"]
+ENTRYPOINT ["/usr/sbin/grafana-server"]
 CMD ["--homepath=/opt/grafana", "--config=/etc/grafana/grafana.ini"]
 LABEL org.opencontainers.image.title="grafana" \
       org.opencontainers.image.description="Grafana - observability dashboard and visualization" \

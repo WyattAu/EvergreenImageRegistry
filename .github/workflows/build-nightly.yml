@@ -146,7 +146,7 @@ jobs:
   build-standard:
     name: Build Standard
     needs: [discover-standard, build-critical]
-    if: needs.discover-standard.result == 'success' && needs.discover-standard.outputs.total != '0'
+    if: needs.discover-standard.result == 'success' && needs.discover-standard.outputs.total != '0' && (needs.build-critical.result == 'success' || needs.build-critical.result == 'skipped')
     uses: ./.github/workflows/_build-reusable.yml
     with:
       matrix: ${{ needs.discover-standard.outputs.matrix }}
@@ -163,7 +163,7 @@ jobs:
   build-community:
     name: Build Community
     needs: [discover-community, build-standard]
-    if: needs.discover-community.result == 'success' && needs.discover-community.outputs.total != '0'
+    if: needs.discover-community.result == 'success' && needs.discover-community.outputs.total != '0' && (needs.build-standard.result == 'success' || needs.build-standard.result == 'skipped')
     uses: ./.github/workflows/_build-reusable.yml
     with:
       matrix: ${{ needs.discover-community.outputs.matrix }}

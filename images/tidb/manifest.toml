@@ -5,7 +5,7 @@ description = "TiDB - distributed NewSQL database compatible with MySQL"
 vendor = "PingCAP"
 source = "https://github.com/pingcap/tidb"
 license = "Apache-2.0"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "scratch"
@@ -35,4 +35,3 @@ expose = [4000, 9101]
 "evergreen.image.status" = "functional"
 "evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "ztunnel"
-

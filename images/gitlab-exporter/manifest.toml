@@ -5,7 +5,7 @@ description = "GitLab Exporter - Prometheus exporter for GitLab metrics"
 vendor = "Prometheus Community"
 source = "https://github.com/prometheus-community/gitlab-exporter"
 license = "Apache-2.0"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "scratch"
@@ -34,4 +34,3 @@ expose = [9171, 9101]
 "evergreen.health.type" = "exec"
 "evergreen.image.tier" = "2"
 "evergreen.metrics.native" = "ztunnel"
-

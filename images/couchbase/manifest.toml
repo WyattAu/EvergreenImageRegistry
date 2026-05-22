@@ -5,7 +5,7 @@ description = "Couchbase - distributed NoSQL cloud database"
 vendor = "Couchbase"
 source = "https://github.com/couchbase/couchbase-cli"
 license = "Apache-2.0"
-tier = "3"
+tier = "community"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

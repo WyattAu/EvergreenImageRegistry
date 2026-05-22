@@ -5,7 +5,7 @@ description = "Gitea Actions Runner - Git hosting with CI/CD actions support"
 vendor = "Gitea"
 source = "https://github.com/go-gitea/gitea"
 license = "MIT"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "scratch"

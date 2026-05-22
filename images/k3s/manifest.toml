@@ -5,7 +5,7 @@ description = "K3s - lightweight Kubernetes distribution"
 vendor = "SUSE"
 source = "https://github.com/k3s-io/k3s"
 license = "Apache-2.0"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "scratch"

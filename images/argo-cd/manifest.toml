@@ -5,7 +5,7 @@ description = "Argo CD - declarative GitOps continuous delivery for Kubernetes"
 vendor = "Argo Project"
 source = "https://github.com/argoproj/argo-cd"
 license = "Apache-2.0"
-tier = "1"
+tier = "critical"
 
 [build]
 base = "scratch"

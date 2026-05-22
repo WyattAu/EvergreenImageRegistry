@@ -5,7 +5,7 @@ description = "CoreDNS Alpine - lightweight DNS server based on Alpine"
 vendor = "CNCF"
 source = "https://github.com/coredns/coredns"
 license = "Apache-2.0"
-tier = "3"
+tier = "community"
 
 [build]
 base = "scratch"

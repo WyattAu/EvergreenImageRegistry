@@ -5,7 +5,7 @@ description = "MongoDB - document-oriented NoSQL database"
 vendor = "MongoDB"
 source = "https://github.com/mongodb/mongo"
 license = "SSPL"
-tier = "1"
+tier = "critical"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

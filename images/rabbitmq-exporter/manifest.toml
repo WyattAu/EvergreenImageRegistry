@@ -5,7 +5,7 @@ description = "RabbitMQ Exporter - Prometheus exporter for RabbitMQ"
 vendor = "Prometheus"
 source = "https://github.com/kbudde/rabbitmq_exporter"
 license = "Apache-2.0"
-tier = "3"
+tier = "community"
 
 [build]
 base = "scratch"

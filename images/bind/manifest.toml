@@ -5,7 +5,7 @@ description = "BIND - DNS server software"
 vendor = "ISC"
 source = "https://github.com/isc-projects/bind9"
 license = "Apache-2.0"
-tier = "3"
+tier = "community"
 
 [build]
 base = "scratch"

@@ -5,7 +5,7 @@ description = "Heimdall - application dashboard and launcher"
 vendor = "Heimdall"
 source = "https://github.com/linuxserver/heimdall"
 license = "Apache-2.0"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

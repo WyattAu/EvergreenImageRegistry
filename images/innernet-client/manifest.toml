@@ -1,5 +1,5 @@
 [metadata]
-tier = "standard"
+tier = "critical"
 name = "innernet-client"
 version = "latest"
 description = "innernet peer/client daemon (WireGuard-based)"
@@ -38,4 +38,3 @@ expose = ["51820/udp", 9101]
 "evergreen.image.status" = "functional"
 "evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "ztunnel"
-

@@ -5,7 +5,7 @@ description = "Falco Sidekick - event forwarder for Falco alerts"
 vendor = "Falco"
 source = "https://github.com/falcosecurity/falcosidekick"
 license = "Apache-2.0"
-tier = "3"
+tier = "community"
 
 [build]
 base = "scratch"

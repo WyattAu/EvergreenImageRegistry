@@ -1,0 +1,29 @@
+[metadata]
+tier = "standard"
+name = "scap-workbench"
+version = "unknown"
+description = "SCAP Workbench - GUI for OpenSCAP"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["scap-workbench"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "SCAP Workbench - GUI for OpenSCAP"
+"org.opencontainers.image.title" = "scap-workbench"
+"org.opencontainers.image.vendor" = "Red Hat"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"

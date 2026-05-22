@@ -5,7 +5,7 @@ description = "Prometheus Operator - manages Prometheus monitoring instances"
 vendor = "Prometheus"
 source = "https://github.com/prometheus-operator/prometheus-operator"
 license = "Apache-2.0"
-tier = "3"
+tier = "community"
 
 [build]
 base = "scratch"

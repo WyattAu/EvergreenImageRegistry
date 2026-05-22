@@ -5,7 +5,7 @@ description = "Gitea Web Editor - Git hosting with integrated web editor"
 vendor = "Gitea"
 source = "https://github.com/go-gitea/gitea"
 license = "MIT"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "scratch"

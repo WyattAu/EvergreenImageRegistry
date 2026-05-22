@@ -5,7 +5,7 @@ description = "Gogs - lightweight self-hosted Git service"
 vendor = "Gogs"
 source = "https://github.com/gogs/gogs"
 license = "MIT"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "scratch"

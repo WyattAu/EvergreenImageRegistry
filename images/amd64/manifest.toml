@@ -23,4 +23,3 @@ expose = [9101]
 "evergreen.image.note" = "Placeholder base image for AMD64 architecture. Extend with application binaries."
 "evergreen.image.tier" = "3"
 "evergreen.metrics.native" = "ztunnel"
-

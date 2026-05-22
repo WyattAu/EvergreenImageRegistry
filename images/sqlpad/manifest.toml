@@ -1,5 +1,5 @@
 [metadata]
-tier = "standard"
+tier = "critical"
 name = "sqlpad"
 version = "latest"
 description = "SQLPad - Web-based SQL Editor with Query Visualization"
@@ -30,4 +30,3 @@ expose = [3000, 9101]
 "evergreen.health.type" = "exec"
 "evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "ztunnel"
-

@@ -5,7 +5,7 @@ description = "MinIO Console - web-based administration UI for MinIO"
 vendor = "MinIO"
 source = "https://github.com/minio/console"
 license = "Apache-2.0"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "scratch"

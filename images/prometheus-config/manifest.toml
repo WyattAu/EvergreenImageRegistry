@@ -1,5 +1,5 @@
 [metadata]
-tier = "standard"
+tier = "critical"
 name = "prometheus-config"
 version = "0.91.0"
 description = "Evergreen hardened prometheus-config - Prometheus config reloader"
@@ -32,4 +32,3 @@ expose = [9101]
 "evergreen.hft.signal-handling" = "native"
 "evergreen.image.tier" = "3"
 "evergreen.metrics.native" = "ztunnel"
-

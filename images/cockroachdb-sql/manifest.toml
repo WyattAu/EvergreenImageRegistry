@@ -41,4 +41,3 @@ expose = [26257, 9101]
 "evergreen.image.category" = "database"
 "evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "ztunnel"
-

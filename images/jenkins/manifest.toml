@@ -5,7 +5,7 @@ description = "Jenkins - open source automation server for CI/CD"
 vendor = "Jenkins"
 source = "https://github.com/jenkinsci/jenkins"
 license = "MIT"
-tier = "1"
+tier = "critical"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

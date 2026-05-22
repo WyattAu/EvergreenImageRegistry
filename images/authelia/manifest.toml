@@ -5,7 +5,7 @@ description = "Authelia - single sign-on and two-factor authentication portal"
 vendor = "Authelia"
 source = "https://github.com/authelia/authelia"
 license = "Apache-2.0"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "scratch"

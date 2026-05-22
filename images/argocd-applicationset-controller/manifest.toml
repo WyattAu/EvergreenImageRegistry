@@ -5,7 +5,7 @@ description = "ArgoCD ApplicationSet Controller - generates ArgoCD applications 
 vendor = "Argo Project"
 source = "https://github.com/argoproj/argo-cd"
 license = "Apache-2.0"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "scratch"

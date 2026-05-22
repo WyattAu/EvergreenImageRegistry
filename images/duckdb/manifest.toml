@@ -5,7 +5,7 @@ description = "DuckDB - in-process SQL OLAP database management system"
 vendor = "DuckDB Labs"
 source = "https://github.com/duckdb/duckdb"
 license = "Apache-2.0"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "scratch"

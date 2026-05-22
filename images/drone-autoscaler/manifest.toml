@@ -4,7 +4,7 @@ version = "1.5.0"
 description = "Drone Autoscaler - automatic scaling for Drone runners"
 vendor = "Harness"
 source = "https://github.com/harness/drone"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "scratch"

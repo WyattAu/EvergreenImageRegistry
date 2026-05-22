@@ -4,7 +4,7 @@ version = "0.15.2"
 description = "Dendrite - second-generation Matrix homeserver"
 vendor = "Element"
 source = "https://github.com/element-hq/dendrite"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "scratch"

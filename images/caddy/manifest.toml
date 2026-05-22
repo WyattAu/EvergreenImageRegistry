@@ -5,7 +5,7 @@ description = "Caddy - powerful enterprise-ready open source web server"
 vendor = "Caddy"
 source = "https://github.com/caddyserver/caddy"
 license = "Apache-2.0"
-tier = "3"
+tier = "community"
 
 [build]
 base = "scratch"

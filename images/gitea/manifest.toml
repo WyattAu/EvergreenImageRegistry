@@ -5,7 +5,7 @@ description = "Gitea - lightweight self-hosted Git service"
 vendor = "Gitea"
 source = "https://github.com/go-gitea/gitea"
 license = "Apache-2.0"
-tier = "3"
+tier = "community"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

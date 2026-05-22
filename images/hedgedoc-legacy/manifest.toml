@@ -4,7 +4,7 @@ version = "1.9.9"
 description = "HedgeDoc Legacy - collaborative markdown notes v1.9.x"
 vendor = "HedgeDoc"
 source = "https://github.com/hedgedoc/hedgedoc"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

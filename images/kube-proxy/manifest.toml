@@ -5,7 +5,7 @@ description = "Kube-proxy - network proxy on every node"
 vendor = "Kubernetes"
 source = "https://github.com/kubernetes/kubernetes"
 license = "Apache-2.0"
-tier = "3"
+tier = "community"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

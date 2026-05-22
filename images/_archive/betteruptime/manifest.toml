@@ -1,0 +1,42 @@
+[metadata]
+tier = "standard"
+name = "betteruptime"
+version = "0.2.0"
+description = "BetterStack uptime monitoring probe"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/betteruptime"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "BetterStack uptime monitoring probe"
+"org.opencontainers.image.title" = "betteruptime"
+"org.opencontainers.image.vendor" = "BetterStack"
+"org.opencontainers.image.version" = "0.2.0"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.connection-drain" = "false"
+"evergreen.hft.cpu-pins" = "6-7"
+"evergreen.hft.cpu-pins-mode" = "shared"
+"evergreen.hft.deploy-strategy" = "standard-rolling"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.pre-stop-hook" = "false"
+"evergreen.hft.runtime" = "go"
+"evergreen.hft.sched-policy" = "SCHED_OTHER"
+"evergreen.hft.shutdown-timeout" = "2s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "1000ms"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"

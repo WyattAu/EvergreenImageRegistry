@@ -5,7 +5,7 @@ description = "MinIO Operator - Kubernetes operator for MinIO"
 vendor = "MinIO"
 source = "https://github.com/minio/operator"
 license = "Apache-2.0"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "scratch"

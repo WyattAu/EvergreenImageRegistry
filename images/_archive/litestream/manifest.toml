@@ -1,0 +1,31 @@
+[metadata]
+tier = "standard"
+name = "litestream"
+version = "0.5.11"
+description = "SQLite streaming replication for production"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/litestream"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "SQLite streaming replication for production"
+"org.opencontainers.image.source" = "https://github.com/benbjohnson/litestream"
+"org.opencontainers.image.title" = "litestream"
+"org.opencontainers.image.version" = "${VERSION}"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "database"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "prometheus"

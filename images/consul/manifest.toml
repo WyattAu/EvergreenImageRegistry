@@ -5,7 +5,7 @@ description = "Consul - service mesh, service discovery, and configuration"
 vendor = "HashiCorp"
 source = "https://github.com/hashicorp/consul"
 license = "MPL-2.0"
-tier = "1"
+tier = "critical"
 
 [build]
 base = "scratch"

@@ -40,4 +40,3 @@ expose = [9114, 9101]
 "evergreen.image.category" = "observability"
 "evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "ztunnel"
-

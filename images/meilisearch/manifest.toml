@@ -5,7 +5,7 @@ description = "Meilisearch - fast, relevant, and typo-tolerant search engine"
 vendor = "Meilisearch"
 source = "https://github.com/meilisearch/meilisearch"
 license = "Apache-2.0"
-tier = "3"
+tier = "community"
 
 [build]
 base = "scratch"

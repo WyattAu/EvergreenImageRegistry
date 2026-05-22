@@ -1,0 +1,43 @@
+[metadata]
+tier = "standard"
+name = "syslog-ng"
+version = "4.8.1"
+description = "syslog-ng - high-performance log management daemon"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/usr/sbin/syslog-ng"]
+cmd = ["-f", "/app/conf/syslog-ng.conf", "--foreground", "--no-caps"]
+
+[ports]
+expose = [514, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "syslog-ng - high-performance log management daemon"
+"org.opencontainers.image.title" = "syslog-ng"
+"org.opencontainers.image.vendor" = "OneIdentity"
+"org.opencontainers.image.version" = "4.8.1"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.connection-drain" = "true"
+"evergreen.hft.cpu-pins" = "4-5"
+"evergreen.hft.cpu-pins-mode" = "exclusive"
+"evergreen.hft.deploy-strategy" = "hft-rolling"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.pre-stop-delay" = "5s"
+"evergreen.hft.pre-stop-hook" = "true"
+"evergreen.hft.runtime" = "c"
+"evergreen.hft.sched-policy" = "SCHED_OTHER"
+"evergreen.hft.shutdown-timeout" = "5s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "5000ms"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"

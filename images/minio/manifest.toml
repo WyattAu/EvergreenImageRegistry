@@ -5,7 +5,7 @@ description = "MinIO - high-performance object storage compatible with S3"
 vendor = "MinIO"
 source = "https://github.com/minio/minio"
 license = "AGPL-3.0"
-tier = "1"
+tier = "critical"
 
 [build]
 base = "scratch"

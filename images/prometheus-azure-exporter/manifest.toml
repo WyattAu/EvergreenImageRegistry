@@ -1,5 +1,5 @@
 [metadata]
-tier = "standard"
+tier = "critical"
 name = "prometheus-azure-exporter"
 version = "latest"
 description = "Prometheus exporter for Azure Monitor metrics"

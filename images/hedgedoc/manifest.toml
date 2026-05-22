@@ -4,7 +4,7 @@ version = "1.10.0"
 description = "HedgeDoc - collaborative markdown notes (formerly CodiMD)"
 vendor = "HedgeDoc"
 source = "https://github.com/hedgedoc/hedgedoc"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

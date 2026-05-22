@@ -20,4 +20,3 @@ type = "package-manager"
 "evergreen.constraint.scratch" = "true"
 "evergreen.image.role" = "base"
 "evergreen.image.tier" = "0"
-

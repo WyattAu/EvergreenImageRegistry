@@ -5,7 +5,7 @@ description = "n8n - workflow automation platform"
 vendor = "n8n"
 source = "https://github.com/n8n-io/n8n"
 license = "Apache-2.0"
-tier = "3"
+tier = "community"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

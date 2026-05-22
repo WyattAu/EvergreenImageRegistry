@@ -4,7 +4,7 @@ version = "0.15.2"
 description = "Dendrite POT - Polylith OUTBOX Trusted worker for Dendrite"
 vendor = "Element"
 source = "https://github.com/element-hq/dendrite"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

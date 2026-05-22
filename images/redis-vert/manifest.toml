@@ -30,4 +30,3 @@ expose = [6379, 9101]
 "evergreen.image.status" = "functional"
 "evergreen.image.tier" = "3"
 "evergreen.metrics.native" = "ztunnel"
-

@@ -1,5 +1,5 @@
 [metadata]
-tier = "standard"
+tier = "critical"
 name = "scylla-operator"
 version = "1.14.2"
 description = "Evergreen hardened ScyllaDB Operator - Kubernetes operator for ScyllaDB"
@@ -32,4 +32,3 @@ expose = [8080, 9101]
 "evergreen.image.status" = "functional"
 "evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "ztunnel"
-

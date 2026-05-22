@@ -1,5 +1,5 @@
 [metadata]
-tier = "standard"
+tier = "critical"
 name = "prometheus-gcp-exporter"
 version = "latest"
 description = "Stackdriver Prometheus sidecar for GCP metrics"

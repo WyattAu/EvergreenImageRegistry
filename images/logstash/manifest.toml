@@ -5,7 +5,7 @@ description = "Logstash - server-side data processing pipeline"
 vendor = "Elastic"
 source = "https://github.com/elastic/logstash"
 license = "Apache-2.0"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

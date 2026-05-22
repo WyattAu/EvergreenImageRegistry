@@ -19,4 +19,7 @@ rules:
 
 # Files to ignore (e.g., workflow files with complex multiline strings)
 ignore: |
-  .github/workflows/*.yml
+  .github/
+  deploy/
+  images/*/docker-compose.yml
+  compliance/

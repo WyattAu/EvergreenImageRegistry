@@ -26,21 +26,21 @@ jobs:
       - name: Run Prettier Check
         run: prettier --check .
 
-   # Check Dockerfiles with hadolint (advisory only - many images use complex
-   # shell constructs that hadolint cannot parse but Docker builds successfully)
-   hadolint:
-     name: Hadolint (Dockerfile Linter)
-     runs-on: ubuntu-latest
-     timeout-minutes: 15
-     steps:
-       - uses: actions/checkout@v4
-       - name: Run hadolint
-         uses: hadolint/hadolint-action@v3.1.0
-         continue-on-error: true
-         with:
-           recursive: true
-           dockerfile: Dockerfile
-           failure-threshold: error
+  # Check Dockerfiles with hadolint (advisory only - many images use complex
+  # shell constructs that hadolint cannot parse but Docker builds successfully)
+  hadolint:
+    name: Hadolint (Dockerfile Linter)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        continue-on-error: true
+        with:
+          recursive: true
+          dockerfile: Dockerfile
+          failure-threshold: error
 
   # Check Markdown files for style issues
   markdownlint:

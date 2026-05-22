@@ -1,0 +1,46 @@
+[metadata]
+name = "cassandra"
+version = "5.0.8"
+description = "Apache Cassandra - distributed NoSQL database"
+vendor = "Apache"
+source = "https://github.com/apache/cassandra"
+license = "Apache-2.0"
+tier = "2"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://github.com/cassandra/cassandra/releases/download/v5.0.8/cassandra-5.0.8-linux-amd64.tar.gz"
+
+[runtime]
+entrypoint = ["sh", "-c", "/opt/cassandra/bin/cassandra -f"]
+
+[ports]
+expose = [9042, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "cassandra"
+"org.opencontainers.image.vendor" = "Apache"
+"org.opencontainers.image.version" = "5.0"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "http"
+"evergreen.hft.connection-drain" = "true"
+"evergreen.hft.cpu-pins" = "4-5"
+"evergreen.hft.cpu-pins-mode" = "exclusive"
+"evergreen.hft.deploy-strategy" = "hft-stateful"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.pre-stop-delay" = "5s"
+"evergreen.hft.pre-stop-hook" = "true"
+"evergreen.hft.sched-policy" = "SCHED_OTHER"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "3000ms"
+"evergreen.image.category" = "database"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "true"

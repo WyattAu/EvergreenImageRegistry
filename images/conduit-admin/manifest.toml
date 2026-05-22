@@ -4,7 +4,7 @@ version = "0.4.0"
 description = "Conduit Admin - Conduit Matrix homeserver with admin utilities"
 vendor = "Famedly"
 source = "https://gitlab.com/famedly/conduit"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

@@ -1,5 +1,5 @@
 [metadata]
-tier = "standard"
+tier = "critical"
 name = "typesense"
 version = "30.2"
 description = "Fast, typo-tolerant search engine"
@@ -37,4 +37,3 @@ expose = [8108, 9101]
 "evergreen.image.status" = "functional"
 "evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "ztunnel"
-

@@ -1,5 +1,5 @@
 [metadata]
-tier = "standard"
+tier = "critical"
 name = "keynuker"
 version = "latest"
 description = "KeyNuker - key detection"

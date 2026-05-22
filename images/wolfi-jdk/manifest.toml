@@ -11,4 +11,3 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-

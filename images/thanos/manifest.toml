@@ -5,7 +5,7 @@ description = "Thanos - highly available Prometheus with long-term storage"
 vendor = "Thanos"
 source = "https://github.com/thanos-io/thanos"
 license = "Apache-2.0"
-tier = "1"
+tier = "critical"
 
 [build]
 base = "scratch"

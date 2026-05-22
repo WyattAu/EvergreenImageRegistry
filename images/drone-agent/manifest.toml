@@ -4,7 +4,7 @@ version = "2.24.1"
 description = "Drone Agent - CI/CD build agent for Drone"
 vendor = "Harness"
 source = "https://github.com/harness/drone"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "scratch"

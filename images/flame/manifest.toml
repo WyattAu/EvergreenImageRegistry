@@ -1,5 +1,5 @@
 [metadata]
-tier = "standard"
+tier = "critical"
 name = "flame"
 version = "latest"
 description = "Flame - Self-hosted start page"
@@ -30,4 +30,3 @@ expose = [5005, 9101]
 "evergreen.health.type" = "exec"
 "evergreen.image.tier" = "3"
 "evergreen.metrics.native" = "ztunnel"
-

@@ -4,7 +4,7 @@ version = "1.0.0-beta.1"
 description = "Element X - next-generation Matrix client"
 vendor = "Element"
 source = "https://github.com/element-hq/element-x"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

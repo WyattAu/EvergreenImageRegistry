@@ -1,5 +1,5 @@
 [metadata]
-tier = "standard"
+tier = "critical"
 name = "prometheus-cloudwatch-exporter"
 version = "latest"
 description = "Prometheus exporter for AWS CloudWatch metrics"
@@ -41,4 +41,3 @@ expose = [9106, 9101]
 "evergreen.hft.startup-timeout" = "3000ms"
 "evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "ztunnel"
-

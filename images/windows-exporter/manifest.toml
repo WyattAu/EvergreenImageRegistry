@@ -1,5 +1,5 @@
 [metadata]
-tier = "standard"
+tier = "critical"
 name = "windows-exporter"
 version = "0.25.0"
 description = "Prometheus exporter for Windows metrics (Windows-only, stub on Linux)"

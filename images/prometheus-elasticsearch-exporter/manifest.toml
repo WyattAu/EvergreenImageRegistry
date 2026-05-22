@@ -5,7 +5,7 @@ description = "Elasticsearch Exporter - Prometheus exporter for Elasticsearch"
 vendor = "Prometheus"
 source = "https://github.com/prometheus-community/elasticsearch_exporter"
 license = "Apache-2.0"
-tier = "3"
+tier = "community"
 
 [build]
 base = "scratch"

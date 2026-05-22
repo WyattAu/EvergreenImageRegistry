@@ -4,7 +4,7 @@ version = "1.12.0"
 description = "Mattermost Kubernetes Operator - manages Mattermost deployments on Kubernetes"
 vendor = "Mattermost"
 source = "https://github.com/mattermost/mattermost-operator"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "scratch"

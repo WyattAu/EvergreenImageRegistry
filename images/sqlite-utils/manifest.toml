@@ -29,4 +29,3 @@ expose = [9101]
 "evergreen.image.category" = "tooling"
 "evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "none"
-

@@ -5,7 +5,7 @@ description = "Portainer - container management UI"
 vendor = "Portainer"
 source = "https://github.com/portainer/portainer"
 license = "Apache-2.0"
-tier = "3"
+tier = "community"
 
 [build]
 base = "scratch"

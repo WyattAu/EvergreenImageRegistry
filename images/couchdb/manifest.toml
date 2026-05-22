@@ -5,7 +5,7 @@ description = "CouchDB - document-oriented NoSQL database"
 vendor = "Apache"
 source = "https://github.com/apache/couchdb"
 license = "Apache-2.0"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

@@ -5,7 +5,7 @@ description = "GitLab Runner (scratch) - CI/CD runner for GitLab, minimal scratc
 vendor = "GitLab"
 source = "https://gitlab.com/gitlab-org/gitlab-runner"
 license = "MIT"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "scratch"

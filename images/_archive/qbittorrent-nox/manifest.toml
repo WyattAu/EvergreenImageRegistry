@@ -1,0 +1,30 @@
+[metadata]
+tier = "standard"
+name = "qbittorrent-nox"
+version = "5.0.3"
+description = "qbittorrent-nox container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/app/bin/qbittorrent-nox"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/qbittorrent/qBittorrent"
+"org.opencontainers.image.title" = "qbittorrent-nox"
+"org.opencontainers.image.vendor" = "qBittorrent"
+"org.opencontainers.image.version" = "5.0.3"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"

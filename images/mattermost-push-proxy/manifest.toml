@@ -4,7 +4,7 @@ version = "6.4.6"
 description = "Mattermost Push Proxy - push notification proxy for Mattermost mobile apps"
 vendor = "Mattermost"
 source = "https://github.com/mattermost/mattermost-push-proxy"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "scratch"
@@ -33,4 +33,3 @@ expose = [8066, 9101]
 "evergreen.health.type" = "exec"
 "evergreen.image.tier" = "2"
 "evergreen.metrics.native" = "ztunnel"
-

@@ -5,7 +5,7 @@ description = "CockroachDB - distributed SQL database"
 vendor = "Cockroach Labs"
 source = "https://github.com/cockroachdb/cockroach"
 license = "BSL-1.1"
-tier = "1"
+tier = "critical"
 
 [build]
 base = "scratch"

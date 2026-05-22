@@ -5,7 +5,7 @@ description = "TruffleHog - secrets scanner for Git repositories"
 vendor = "TruffleHog"
 source = "https://github.com/trufflesecurity/trufflehog"
 license = "Apache-2.0"
-tier = "3"
+tier = "community"
 
 [build]
 base = "scratch"

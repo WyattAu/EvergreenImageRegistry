@@ -5,7 +5,7 @@ description = "Kafka Exporter - Prometheus exporter for Apache Kafka"
 vendor = "Prometheus"
 source = "https://github.com/danielqsj/kafka_exporter"
 license = "Apache-2.0"
-tier = "3"
+tier = "community"
 
 [build]
 base = "scratch"

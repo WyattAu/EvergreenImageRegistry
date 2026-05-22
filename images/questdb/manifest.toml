@@ -5,7 +5,7 @@ description = "QuestDB - time-series SQL database"
 vendor = "QuestDB"
 source = "https://github.com/questdb/questdb"
 license = "Apache-2.0"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

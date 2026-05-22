@@ -5,7 +5,7 @@ description = "GitLab EE - self-hosted Git management platform (Enterprise Editi
 vendor = "GitLab"
 source = "https://gitlab.com/gitlab-org/gitlab-ee"
 license = "MIT"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

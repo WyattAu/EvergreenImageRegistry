@@ -4,7 +4,7 @@ version = "1.0.0"
 description = "Drone Runner Exec - shell command runner for Drone pipelines"
 vendor = "Harness"
 source = "https://github.com/harness/drone-runner-exec"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "scratch"

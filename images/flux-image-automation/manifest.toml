@@ -1,5 +1,5 @@
 [metadata]
-tier = "standard"
+tier = "critical"
 name = "flux-image-automation"
 version = "1.1.3"
 description = "Flux Image Automation Controller - automated container image updates for GitOps"
@@ -33,4 +33,3 @@ expose = [8080, 9101]
 "evergreen.image.category" = "gitops"
 "evergreen.image.tier" = "2"
 "evergreen.metrics.native" = "ztunnel"
-

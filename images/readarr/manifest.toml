@@ -22,4 +22,3 @@ expose = [8787, 9101]
 "org.opencontainers.image.title" = "readarr"
 "evergreen.health.type" = "exec"
 "evergreen.metrics.native" = "ztunnel"
-

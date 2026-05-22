@@ -5,7 +5,7 @@ description = "GitLab Geo - geo-replication node for GitLab"
 vendor = "GitLab"
 source = "https://gitlab.com/gitlab-org/gitlab-ce"
 license = "MIT"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

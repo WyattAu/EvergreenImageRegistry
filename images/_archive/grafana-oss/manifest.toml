@@ -1,0 +1,43 @@
+[metadata]
+tier = "standard"
+name = "grafana-oss"
+version = "10.4.1"
+description = "Grafana OSS - full open source edition"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/grafana-server"]
+
+[ports]
+expose = [3000, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Grafana OSS - full open source edition"
+"org.opencontainers.image.title" = "grafana-oss"
+"org.opencontainers.image.vendor" = "Grafana Labs"
+"org.opencontainers.image.version" = "10.4.1"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.connection-drain" = "false"
+"evergreen.hft.cpu-pins" = "2-3"
+"evergreen.hft.cpu-pins-mode" = "shared"
+"evergreen.hft.deploy-strategy" = "standard-rolling"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.pre-stop-hook" = "false"
+"evergreen.hft.runtime" = "go"
+"evergreen.hft.runtime-hints" = "GOMAXPROCS=<cores>"
+"evergreen.hft.sched-policy" = "SCHED_OTHER"
+"evergreen.hft.shutdown-timeout" = "5s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "10000ms"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"

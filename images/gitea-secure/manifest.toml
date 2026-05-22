@@ -5,7 +5,7 @@ description = "Gitea Secure - Hardened Git hosting with enhanced security defaul
 vendor = "Gitea"
 source = "https://github.com/go-gitea/gitea"
 license = "MIT"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "scratch"

@@ -5,7 +5,7 @@ description = "Nginx Prometheus Exporter - metrics exporter for Nginx"
 vendor = "Prometheus"
 source = "https://github.com/nginxinc/nginx-prometheus-exporter"
 license = "Apache-2.0"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "scratch"

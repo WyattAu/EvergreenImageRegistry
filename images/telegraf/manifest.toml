@@ -5,7 +5,7 @@ description = "Telegraf - metrics collection agent"
 vendor = "InfluxData"
 source = "https://github.com/influxdata/telegraf"
 license = "Apache-2.0"
-tier = "3"
+tier = "community"
 
 [build]
 base = "scratch"

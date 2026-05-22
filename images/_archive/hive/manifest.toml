@@ -1,0 +1,32 @@
+[metadata]
+tier = "standard"
+name = "hive"
+version = "4.0.0"
+description = "Evergreen hardened Apache Hive - data warehouse SQL on Hadoop"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/opt/hive/bin/hive", "--service", "hiveserver2"]
+
+[ports]
+expose = [10000, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Evergreen hardened Apache Hive - data warehouse SQL on Hadoop"
+"org.opencontainers.image.title" = "hive"
+"org.opencontainers.image.vendor" = "Apache Software Foundation"
+"org.opencontainers.image.version" = "${VERSION}"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "database"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"

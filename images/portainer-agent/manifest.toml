@@ -1,5 +1,5 @@
 [metadata]
-tier = "standard"
+tier = "critical"
 name = "portainer-agent"
 version = "latest"
 description = "Portainer Agent for Docker"
@@ -31,4 +31,3 @@ expose = [9101]
 "evergreen.health.type" = "exec"
 "evergreen.image.tier" = "3"
 "evergreen.metrics.native" = "ztunnel"
-

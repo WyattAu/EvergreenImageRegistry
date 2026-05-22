@@ -1,5 +1,5 @@
 [metadata]
-tier = "standard"
+tier = "critical"
 name = "wg-cloud"
 version = "latest"
 description = "WireGuard cloud management plane"
@@ -37,4 +37,3 @@ expose = ["51820/udp", 9101]
 "evergreen.image.status" = "functional"
 "evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "ztunnel"
-

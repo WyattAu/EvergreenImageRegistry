@@ -5,7 +5,7 @@ description = "Redis Cluster - distributed Redis implementation"
 vendor = "Redis"
 source = "https://github.com/redis/redis"
 license = "Apache-2.0"
-tier = "3"
+tier = "community"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

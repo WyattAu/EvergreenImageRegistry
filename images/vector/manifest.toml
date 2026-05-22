@@ -5,7 +5,7 @@ description = "Vector - high-performance observability data pipeline"
 vendor = "Datadog"
 source = "https://github.com/vectordotdev/vector"
 license = "Apache-2.0"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "scratch"

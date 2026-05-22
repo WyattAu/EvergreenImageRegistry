@@ -5,7 +5,7 @@ description = "Plex - streaming media server and client"
 vendor = "Plex"
 source = "https://github.com/plexinc/pms-docker"
 license = "Apache-2.0"
-tier = "3"
+tier = "community"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

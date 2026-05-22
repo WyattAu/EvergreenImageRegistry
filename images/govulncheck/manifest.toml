@@ -1,5 +1,5 @@
 [metadata]
-tier = "standard"
+tier = "critical"
 name = "govulncheck"
 version = "v1.1.4"
 description = "Go vulnerability checker"

@@ -22,4 +22,3 @@ expose = [8989, 9101]
 "org.opencontainers.image.title" = "sonarr-develop"
 "evergreen.health.type" = "exec"
 "evergreen.metrics.native" = "ztunnel"
-

@@ -4,7 +4,7 @@ version = "2.7.0"
 description = "Woodpecker CI Server - CI/CD server (woodpecker-ci is the server binary)"
 vendor = "Woodpecker CI"
 source = "https://github.com/woodpecker-ci/woodpecker"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "scratch"

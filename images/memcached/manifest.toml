@@ -5,7 +5,7 @@ description = "Memcached - high-performance distributed memory caching system"
 vendor = "Memcached"
 source = "https://github.com/memcached/memcached"
 license = "Apache-2.0"
-tier = "3"
+tier = "community"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

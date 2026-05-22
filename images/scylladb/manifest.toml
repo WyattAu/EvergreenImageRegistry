@@ -5,7 +5,7 @@ description = "ScyllaDB - high-performance NoSQL columnar database"
 vendor = "ScyllaDB"
 source = "https://github.com/scylladb/scylladb"
 license = "Apache-2.0"
-tier = "2"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

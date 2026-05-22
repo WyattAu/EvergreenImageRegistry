@@ -5,7 +5,7 @@ description = "Grafana Operator - manages Grafana instances on Kubernetes"
 vendor = "Grafana Labs"
 source = "https://github.com/grafana-operator/grafana-operator"
 license = "Apache-2.0"
-tier = "3"
+tier = "community"
 
 [build]
 base = "scratch"

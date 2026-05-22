@@ -1,0 +1,43 @@
+[metadata]
+tier = "standard"
+name = "cachet"
+version = "2.3.18"
+description = "Cachet - open source status page system"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "cachethq/docker:${VERSION}"
+
+[runtime]
+entrypoint = ["/usr/sbin/php-fpm8.4", "-F"]
+
+[ports]
+expose = [8000, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Cachet - open source status page system"
+"org.opencontainers.image.title" = "cachet"
+"org.opencontainers.image.vendor" = "CachetHQ"
+"org.opencontainers.image.version" = "2.5.1"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.connection-drain" = "true"
+"evergreen.hft.cpu-pins" = "2-3"
+"evergreen.hft.cpu-pins-mode" = "shared"
+"evergreen.hft.deploy-strategy" = "standard-rolling"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.pre-stop-delay" = "10s"
+"evergreen.hft.pre-stop-hook" = "true"
+"evergreen.hft.runtime" = "php"
+"evergreen.hft.sched-policy" = "SCHED_OTHER"
+"evergreen.hft.shutdown-timeout" = "5s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "30000ms"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"

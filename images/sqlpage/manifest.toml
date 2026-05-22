@@ -30,4 +30,3 @@ expose = [8080, 9101]
 "evergreen.image.category" = "web"
 "evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "prometheus"
-

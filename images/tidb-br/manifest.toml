@@ -1,0 +1,35 @@
+[metadata]
+tier = "standard"
+name = "tidb-br"
+version = "latest"
+description = "Evergreen hardened TiDB BR - backup and restore tool for TiDB"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "pingcap/tidb:${VERSION}"
+
+[runtime]
+entrypoint = ["/usr/local/bin/br"]
+
+[ports]
+expose = [8289, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Evergreen hardened TiDB BR - backup and restore tool for TiDB"
+"org.opencontainers.image.title" = "tidb-br"
+"org.opencontainers.image.vendor" = "PingCAP"
+"org.opencontainers.image.version" = "${VERSION}"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "database"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
+

@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "389ds"
 version = "unknown"
 description = "389 Directory Server (Debian slapd/OpenLDAP provides equivalent LDAP directory service)"

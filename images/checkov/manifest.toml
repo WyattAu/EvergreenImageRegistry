@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "checkov"
 version = "unknown"
 description = "Checkov - Infrastructure as Code scanner"

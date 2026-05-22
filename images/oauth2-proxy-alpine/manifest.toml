@@ -1,0 +1,39 @@
+[metadata]
+tier = "standard"
+name = "oauth2-proxy-alpine"
+version = "7.6.0"
+description = "OAuth2 reverse proxy (alpine variant, built without Alpine)"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/oauth2-proxy"]
+
+[ports]
+expose = [4180, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "OAuth2 reverse proxy (alpine variant, built without Alpine)"
+"org.opencontainers.image.source" = "https://github.com/oauth2-proxy/oauth2-proxy"
+"org.opencontainers.image.title" = "oauth2-proxy-alpine"
+"org.opencontainers.image.vendor" = "OAuth2 Proxy"
+"org.opencontainers.image.version" = "7.6.0"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "3000ms"
+"evergreen.image.category" = "security"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
+

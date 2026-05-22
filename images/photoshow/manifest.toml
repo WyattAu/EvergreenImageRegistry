@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "photoshow"
 version = "v2"
 description = "PhotoShow - PHP gallery for browsing and sharing photos"

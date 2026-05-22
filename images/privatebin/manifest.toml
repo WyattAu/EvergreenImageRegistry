@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "privatebin"
 version = "1.6.0"
 description = "privatebin container image"

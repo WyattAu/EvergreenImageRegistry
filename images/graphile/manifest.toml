@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "graphile"
 version = "4.14.0"
 description = "Evergreen hardened PostGraphile - instant GraphQL API for PostgreSQL"

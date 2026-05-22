@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "trivy-operator"
 version = "0.30.1"
 description = "trivy-operator container image"

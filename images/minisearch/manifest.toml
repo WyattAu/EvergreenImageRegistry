@@ -1,0 +1,42 @@
+[metadata]
+tier = "standard"
+name = "minisearch"
+version = "latest"
+description = "Lightweight full-text search engine"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "ghcr.io/nicbarker/minisearch:${VERSION}"
+
+[runtime]
+entrypoint = ["/minisearch"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Lightweight full-text search engine"
+"org.opencontainers.image.source" = "https://github.com/nicbarker/miniSearch"
+"org.opencontainers.image.title" = "minisearch"
+"org.opencontainers.image.vendor" = "nicbarker"
+"org.opencontainers.image.version" = "best-effort"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.base" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "3000ms"
+"evergreen.image.category" = "search"
+"evergreen.image.status" = "best-effort"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
+
+
+status = "wip"

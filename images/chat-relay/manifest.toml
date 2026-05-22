@@ -1,0 +1,35 @@
+[metadata]
+tier = "standard"
+name = "chat-relay"
+version = "0.5.0"
+description = "Matrix chat relay (complement) - testing tool for Matrix homeservers"
+vendor = "matrix-org"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "docker.io/matrixdotorg/complement:latest"
+
+[runtime]
+entrypoint = ["/usr/local/bin/complement"]
+
+[ports]
+expose = [9004, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Matrix chat relay (complement) - testing tool for Matrix homeservers"
+"org.opencontainers.image.source" = "https://github.com/matrix-org/complement"
+"org.opencontainers.image.title" = "chat-relay"
+"org.opencontainers.image.vendor" = "matrix-org"
+"org.opencontainers.image.version" = "0.5.0"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "tcp"
+"evergreen.image.category" = "chat"
+"evergreen.image.tier" = "2"
+"evergreen.metrics.native" = "ztunnel"
+

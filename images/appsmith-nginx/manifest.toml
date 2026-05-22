@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "appsmith-nginx"
 version = "1.46.0"
 description = "appsmith-nginx container image"

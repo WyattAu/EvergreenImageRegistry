@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "envoy-init"
 version = "1.38.0"
 description = "Evergreen hardened Envoy init - initialization mode for bootstrap configuration"

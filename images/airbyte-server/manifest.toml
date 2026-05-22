@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "airbyte-server"
 version = "0.65.22"
 description = "Evergreen hardened airbyte-server - Airbyte server process"

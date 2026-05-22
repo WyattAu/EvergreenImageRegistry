@@ -1,0 +1,30 @@
+[metadata]
+tier = "standard"
+name = "openscap"
+version = "unknown"
+description = "OpenSCAP - Security compliance scanning"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["oscap"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "OpenSCAP - Security compliance scanning"
+"org.opencontainers.image.title" = "openscap"
+"org.opencontainers.image.vendor" = "Red Hat"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
+

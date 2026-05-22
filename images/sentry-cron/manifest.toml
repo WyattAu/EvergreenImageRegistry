@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "sentry-cron"
 version = "nightly"
 description = "sentry-cron container image"

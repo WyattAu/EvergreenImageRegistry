@@ -1,0 +1,42 @@
+[metadata]
+tier = "standard"
+name = "powerdns-api"
+version = "4.9.6"
+description = "PowerDNS Authoritative Server with REST API"
+vendor = "PowerDNS"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://repo.powerdns.com/debian/pool/main/p/pdns/pdns-server_4.9.6-1+deb12u1_amd64.deb"
+
+[runtime]
+entrypoint = ["/usr/local/bin/pdns_server"]
+cmd = ["--config-dir=/etc/pdns", "--daemon=no", "--webserver=yes", "--webserver-port=8081", "--webserver-address=0.0.0.0", "--api=yes", "--api-key=changeme"]
+
+[ports]
+expose = [53, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "PowerDNS authoritative DNS server with REST API"
+"org.opencontainers.image.source" = "https://github.com/PowerDNS/pdns"
+"org.opencontainers.image.title" = "powerdns-api"
+"org.opencontainers.image.vendor" = "PowerDNS"
+"org.opencontainers.image.version" = "${VERSION}"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.base" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "5000ms"
+"evergreen.image.category" = "dns"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
+

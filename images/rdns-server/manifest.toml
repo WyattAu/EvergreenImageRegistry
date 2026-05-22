@@ -1,0 +1,36 @@
+[metadata]
+tier = "standard"
+name = "rdns-server"
+version = "0.12.0"
+description = "Evergreen hardened RDNS - recursive DNS server"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+multiarch = false
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/usr/local/bin/rdns-server"]
+
+[ports]
+expose = [53, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Evergreen hardened RDNS - recursive DNS server"
+"org.opencontainers.image.title" = "rdns-server"
+"org.opencontainers.image.vendor" = "folbricht"
+"org.opencontainers.image.version" = "${VERSION}"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.image.category" = "dns"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"

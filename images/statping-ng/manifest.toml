@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "statping-ng"
 version = "0.90.74"
 description = "Service monitoring and uptime tracking"

@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "kibana-oss"
 version = "8.12.2"
 description = "Evergreen hardened Kibana OSS - open-source visualization dashboard"

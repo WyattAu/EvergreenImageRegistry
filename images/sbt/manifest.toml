@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "sbt"
 version = "1.12.10"
 description = "Evergreen hardened sbt - Scala build tool"

@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "tensorflow"
 version = "2.18.0"
 description = "tensorflow container image"

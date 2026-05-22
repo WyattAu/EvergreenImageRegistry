@@ -1,0 +1,38 @@
+[metadata]
+tier = "standard"
+name = "emby-server"
+version = "4.9.3.0"
+description = "emby-server container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/opt/emby-server/emby-server"]
+
+[ports]
+expose = [8096, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/MediaBrowser/Emby.Releases"
+"org.opencontainers.image.title" = "emby-server"
+"org.opencontainers.image.vendor" = "Emby"
+"org.opencontainers.image.version" = "4.9.3.0"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.base" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "10s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "30000ms"
+"evergreen.image.category" = "media-streaming"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "2"
+"evergreen.metrics.native" = "ztunnel"
+

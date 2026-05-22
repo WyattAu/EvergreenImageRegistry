@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "postgres-backup"
 version = "17"
 description = "PostgreSQL Backup Container with pg_dump + xz compression"

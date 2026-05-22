@@ -1,0 +1,31 @@
+[metadata]
+tier = "standard"
+name = "detect-secrets"
+version = "unknown"
+description = "detect-secrets - Yelp secret detection"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["detect-secrets"]
+cmd = ["scan"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "detect-secrets - Yelp secret detection"
+"org.opencontainers.image.title" = "detect-secrets"
+"org.opencontainers.image.vendor" = "Yelp"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
+

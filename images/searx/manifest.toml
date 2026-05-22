@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "searx"
 version = "unknown"
 description = "Searx - Privacy-respecting metasearch engine"

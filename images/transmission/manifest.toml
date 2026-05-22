@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "transmission"
 version = "4.0.6"
 description = "transmission container image"

@@ -1,0 +1,39 @@
+[metadata]
+tier = "standard"
+name = "zincone"
+version = "latest"
+description = "Evergreen hardened ZincOne - ZincSearch observability edition"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "zincsearch/zincsearch:${VERSION}"
+
+[runtime]
+entrypoint = ["/usr/local/bin/zincone"]
+
+[ports]
+expose = [4080, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Evergreen hardened ZincOne - ZincSearch observability edition"
+"org.opencontainers.image.title" = "zincone"
+"org.opencontainers.image.vendor" = "ZincSearch"
+"org.opencontainers.image.version" = "${VERSION}"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.image.category" = "database"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
+
+
+status = "wip"

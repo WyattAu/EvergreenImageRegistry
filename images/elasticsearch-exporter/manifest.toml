@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "elasticsearch-exporter"
 version = "1.7.0"
 description = "Evergreen hardened Elasticsearch Exporter - Prometheus exporter for Elasticsearch"

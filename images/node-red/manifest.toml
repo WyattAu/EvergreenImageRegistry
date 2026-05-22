@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "node-red"
 version = "unknown"
 description = "Node-RED - Flow-based programming for IoT"

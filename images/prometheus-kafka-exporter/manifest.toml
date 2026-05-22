@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "prometheus-kafka-exporter"
 version = "1.9.0"
 description = "Prometheus exporter for Apache Kafka metrics"

@@ -1,0 +1,31 @@
+[metadata]
+tier = "standard"
+name = "openhab3"
+version = "5.2.0.M3"
+description = "openHAB 3 - Open source home automation"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/opt/openhab/start.sh"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "openHAB 3 - Open source home automation"
+"org.opencontainers.image.source" = "https://github.com/openhab/openhab-distro"
+"org.opencontainers.image.title" = "openhab3"
+"org.opencontainers.image.vendor" = "openHAB"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
+

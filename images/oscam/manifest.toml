@@ -1,0 +1,36 @@
+[metadata]
+tier = "standard"
+name = "oscam"
+version = "1.20"
+description = "oscam container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/oscam"]
+
+[ports]
+expose = [8888, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/oscam-git/oscam"
+"org.opencontainers.image.title" = "oscam"
+"org.opencontainers.image.vendor" = "Oscam"
+"org.opencontainers.image.version" = "${VERSION}"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "3000ms"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
+

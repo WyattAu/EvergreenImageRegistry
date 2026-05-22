@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "wolfi-gcc"
 version = "unknown"
 description = "wolfi-gcc container image"

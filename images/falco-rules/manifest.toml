@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "falco-rules"
 version = "unknown"
 description = "Falco - rules only"

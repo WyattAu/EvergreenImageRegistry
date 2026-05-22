@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "postfix-constrained"
 version = "3.7.6"
 description = "Postfix Constrained - mail transfer agent with resource limits"

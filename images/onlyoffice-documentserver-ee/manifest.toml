@@ -1,0 +1,41 @@
+[metadata]
+tier = "standard"
+name = "onlyoffice-documentserver-ee"
+version = "8.3.3"
+description = "ONLYOFFICE Document Server Enterprise Edition - online document editing with advanced features"
+vendor = "ONLYOFFICE"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://download.onlyoffice.com/documentserver/linux/onlyoffice-documentserver-ee-amd64.deb"
+
+[runtime]
+entrypoint = ["/usr/bin/ds", "--foreground"]
+
+[ports]
+expose = [80, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Evergreen hardened ONLYOFFICE Document Server Enterprise Edition"
+"org.opencontainers.image.source" = "https://github.com/ONLYOFFICE/DocumentServer"
+"org.opencontainers.image.title" = "onlyoffice-documentserver-ee"
+"org.opencontainers.image.vendor" = "ONLYOFFICE"
+"org.opencontainers.image.version" = "${VERSION}"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.base" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "30s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "60000ms"
+"evergreen.image.category" = "document-management"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "2"
+"evergreen.metrics.native" = "ztunnel"
+

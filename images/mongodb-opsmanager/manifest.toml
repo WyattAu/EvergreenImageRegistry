@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "mongodb-opsmanager"
 version = "2.5.0"
 description = "MongoDB Ops Manager - mongosh CLI tool for MongoDB administration"

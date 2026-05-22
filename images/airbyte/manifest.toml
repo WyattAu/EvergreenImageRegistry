@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "airbyte"
 version = "0.65.22"
 description = "Evergreen hardened airbyte - ELT platform"

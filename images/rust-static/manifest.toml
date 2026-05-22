@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "rust-static"
 version = "1.78.0"
 description = "Rust static compilation base image with Rust toolchain for x86_64"

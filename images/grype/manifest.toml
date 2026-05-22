@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "grype"
 version = "0.80.0"
 description = "grype container image"

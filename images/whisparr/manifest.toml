@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "whisparr"
 version = "2.2.0-develop.115"
 description = "whisparr container image"

@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "grub"
 version = "unknown"
 description = "Meta directory for GRUB bootloader configuration. Not a runnable container."

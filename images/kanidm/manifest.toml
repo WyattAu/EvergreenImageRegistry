@@ -1,0 +1,39 @@
+[metadata]
+tier = "standard"
+name = "kanidm"
+version = "latest"
+description = "kanidm container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "docker.io/kanidm/tools:${VERSION}"
+
+[runtime]
+entrypoint = ["/kanidm"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/kanidm/kanidm"
+"org.opencontainers.image.title" = "kanidm"
+"org.opencontainers.image.vendor" = "Kanidm"
+"org.opencontainers.image.version" = "1.9.4"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "3000ms"
+"evergreen.image.category" = "identity"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "2"
+"evergreen.metrics.native" = "ztunnel"
+

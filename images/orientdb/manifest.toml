@@ -1,0 +1,44 @@
+[metadata]
+tier = "standard"
+name = "orientdb"
+version = "latest"
+description = "orientdb container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "orientdb/orientdb:${VERSION}"
+
+[runtime]
+entrypoint = ["/opt/orientdb/bin/server.sh"]
+
+[ports]
+expose = [2480, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "orientdb"
+"org.opencontainers.image.vendor" = "Orientechnologies"
+"org.opencontainers.image.version" = "3.2.51"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.connection-drain" = "true"
+"evergreen.hft.cpu-pins" = "4-5"
+"evergreen.hft.cpu-pins-mode" = "exclusive"
+"evergreen.hft.deploy-strategy" = "hft-stateful"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.pre-stop-delay" = "5s"
+"evergreen.hft.pre-stop-hook" = "true"
+"evergreen.hft.sched-policy" = "SCHED_OTHER"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "3000ms"
+"evergreen.image.category" = "database"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
+

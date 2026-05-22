@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "rainloop"
 version = "1.17.0"
 description = "RainLoop - lightweight webmail client (archived)"

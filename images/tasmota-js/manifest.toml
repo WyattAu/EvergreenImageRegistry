@@ -1,0 +1,30 @@
+[metadata]
+tier = "standard"
+name = "tasmota-js"
+version = "unknown"
+description = "Tasmota JavaScript tools"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["node"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Tasmota JavaScript tools"
+"org.opencontainers.image.title" = "tasmota-js"
+"org.opencontainers.image.vendor" = "Tasmota"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
+

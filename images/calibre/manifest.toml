@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "calibre"
 version = "7.22.0"
 description = "calibre container image"

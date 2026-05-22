@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "traefik-mirror"
 version = "3.6.13"
 description = "traefik-mirror container image"

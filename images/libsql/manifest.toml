@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "libsql"
 version = "0.24.32"
 description = "Turso libSQL server - open-source SQLite fork with networking"

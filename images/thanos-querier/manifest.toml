@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "thanos-querier"
 version = "unknown"
 description = "thanos-querier container image"

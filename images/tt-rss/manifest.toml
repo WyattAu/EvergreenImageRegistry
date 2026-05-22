@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "tt-rss"
 version = "24.5"
 description = "tt-rss container image"

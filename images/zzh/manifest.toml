@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "zzh"
 version = "unknown"
 description = "zzh container image"

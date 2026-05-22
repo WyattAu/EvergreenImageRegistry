@@ -1,0 +1,33 @@
+[metadata]
+tier = "standard"
+name = "sqlpad"
+version = "latest"
+description = "SQLPad - Web-based SQL Editor with Query Visualization"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "sqlpad/sqlpad:${VERSION}"
+
+[runtime]
+entrypoint = ["node", "server.js"]
+
+[ports]
+expose = [3000, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "SQLPad - Web-based SQL Editor with Query Visualization"
+"org.opencontainers.image.source" = "https://github.com/sqlpad/sqlpad"
+"org.opencontainers.image.title" = "sqlpad"
+"org.opencontainers.image.vendor" = "SQLPad"
+"org.opencontainers.image.version" = "7.5.1"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
+

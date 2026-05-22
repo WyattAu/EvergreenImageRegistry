@@ -1,0 +1,31 @@
+[metadata]
+tier = "standard"
+name = "faster-whisper"
+version = "1.2.1"
+description = "faster-whisper container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["python3"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/SYSTRAN/faster-whisper"
+"org.opencontainers.image.title" = "faster-whisper"
+"org.opencontainers.image.vendor" = "Guillaume"
+"org.opencontainers.image.version" = "1.2.1"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
+

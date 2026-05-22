@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "k3d"
 version = "5.8.3"
 description = "Evergreen hardened k3d - K3s in Docker"

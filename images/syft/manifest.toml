@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "syft"
 version = "1.8.0"
 description = "syft container image"

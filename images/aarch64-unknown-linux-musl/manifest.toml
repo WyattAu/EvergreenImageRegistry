@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "aarch64-unknown-linux-musl"
 version = "unknown"
 description = "Evergreen hardened aarch64-unknown-linux-musl - ARM64 musl static base"

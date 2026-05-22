@@ -1,0 +1,41 @@
+[metadata]
+tier = "standard"
+name = "strongswan"
+version = "5.9.16"
+description = "strongSwan - IPsec-based VPN (IKEv1/IKEv2) with PKI and plugins"
+vendor = "strongSwan Project"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+url = "https://download.strongswan.org/strongswan-5.9.16.tar.bz2"
+
+[runtime]
+entrypoint = ["/usr/sbin/charon"]
+
+[ports]
+expose = [500, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "IPsec-based VPN (IKEv1/IKEv2) with PKI and plugins"
+"org.opencontainers.image.source" = "https://github.com/strongswan/strongswan"
+"org.opencontainers.image.title" = "strongswan"
+"org.opencontainers.image.vendor" = "strongSwan Project"
+"org.opencontainers.image.version" = "${VERSION}"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.base" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "5000ms"
+"evergreen.image.category" = "security"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
+

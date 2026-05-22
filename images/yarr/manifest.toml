@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "yarr"
 version = "2.4.0"
 description = "yarr container image"

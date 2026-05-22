@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "rclone-browser"
 version = "2.0.10"
 description = "rclone-browser container image"

@@ -1,0 +1,45 @@
+[metadata]
+tier = "standard"
+name = "nxlog"
+version = "latest"
+description = "NXLog Community Edition - log collection and forwarding"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "nxlog/nxlog:${VERSION}"
+
+[runtime]
+entrypoint = ["/opt/nxlog/bin/nxlog"]
+cmd = ["-c", "/app/conf/nxlog.conf"]
+
+[ports]
+expose = [514, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "NXLog Community Edition - log collection and forwarding"
+"org.opencontainers.image.title" = "nxlog"
+"org.opencontainers.image.vendor" = "nxlog"
+"org.opencontainers.image.version" = "3.1.2331"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.connection-drain" = "true"
+"evergreen.hft.cpu-pins" = "4-5"
+"evergreen.hft.cpu-pins-mode" = "shared"
+"evergreen.hft.deploy-strategy" = "standard-rolling"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.pre-stop-delay" = "5s"
+"evergreen.hft.pre-stop-hook" = "true"
+"evergreen.hft.runtime" = "c"
+"evergreen.hft.sched-policy" = "SCHED_OTHER"
+"evergreen.hft.shutdown-timeout" = "5s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "5000ms"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
+

@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "adempiere"
 version = "3.9.4"
 description = "adempiere container image"

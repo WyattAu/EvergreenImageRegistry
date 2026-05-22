@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "caddy-alpine"
 version = "2.8.4"
 description = "Caddy web server with automatic HTTPS"

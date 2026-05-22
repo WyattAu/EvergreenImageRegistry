@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "mlflow-tracking"
 version = "2.21.0"
 description = "mlflow-tracking container image"

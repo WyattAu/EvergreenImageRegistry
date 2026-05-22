@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "metricbeat"
 version = "9.4.0"
 description = "Evergreen hardened Metricbeat - Elastic infrastructure metrics collector"

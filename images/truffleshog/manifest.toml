@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "truffleshog"
 version = "3.82.2"
 description = "TruffleHog - secret scanner (alias)"

@@ -1,0 +1,40 @@
+[metadata]
+tier = "standard"
+name = "plex-media-server"
+version = "1.41.3.9292"
+description = "plex-media-server container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "plexinc/pms-docker:latest"
+
+[runtime]
+entrypoint = ["/usr/lib/plexmediaserver/Plex Media Server"]
+
+[ports]
+expose = [32400, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://www.plex.tv/"
+"org.opencontainers.image.title" = "plex-media-server"
+"org.opencontainers.image.vendor" = "Plex"
+"org.opencontainers.image.version" = "${VERSION}"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.base" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "10s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "30000ms"
+"evergreen.image.category" = "media-streaming"
+"evergreen.image.note" = "Extracted from plexinc/pms-docker official image. Requires Plex account for activation."
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "2"
+"evergreen.metrics.native" = "ztunnel"
+

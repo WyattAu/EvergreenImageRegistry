@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "mailu"
 version = "2.0.0"
 description = "Mailu - self-hosted email server suite"

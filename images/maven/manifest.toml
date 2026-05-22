@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "maven"
 version = "3.9.15"
 description = "Evergreen hardened maven - Java build tool"

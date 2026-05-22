@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "whoogle"
 version = "1.2.4"
 description = "whoogle container image"

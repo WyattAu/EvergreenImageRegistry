@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "zeromq"
 version = "4.3.5"
 description = "zeromq container image"

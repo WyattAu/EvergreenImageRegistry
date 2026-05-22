@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "rqlite"
 version = "8.10.0"
 description = "Evergreen hardened rqlite - distributed SQLite database"

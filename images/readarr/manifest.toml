@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "readarr"
 version = "0.4.18.2805"
 description = "readarr container image"

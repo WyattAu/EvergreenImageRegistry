@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "powerdns"
 version = "4.9.1"
 description = "powerdns container image"

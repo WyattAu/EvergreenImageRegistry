@@ -1,0 +1,35 @@
+[metadata]
+tier = "standard"
+name = "prometheus-config"
+version = "0.91.0"
+description = "Evergreen hardened prometheus-config - Prometheus config reloader"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "quay.io/prometheus-operator/prometheus-operator:v0.91.0"
+
+[runtime]
+entrypoint = ["/prometheus-config-reloader"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Evergreen hardened prometheus-config - Prometheus config reloader"
+"org.opencontainers.image.title" = "prometheus-config"
+"org.opencontainers.image.vendor" = "Prometheus"
+"org.opencontainers.image.version" = "0.90.1"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.shutdown-timeout" = "10s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
+

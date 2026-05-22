@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "prometheus-snmp-exporter"
 version = "0.30.1"
 description = "Prometheus SNMP exporter for network device monitoring"

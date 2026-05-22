@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "codimd"
 version = "2.6.1"
 description = "CodiMD - collaborative markdown editor (now HedgeDoc)"

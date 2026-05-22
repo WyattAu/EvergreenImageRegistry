@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "singer"
 version = "0.1.0"
 description = "singer container image"

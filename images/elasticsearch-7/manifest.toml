@@ -1,0 +1,30 @@
+[metadata]
+tier = "standard"
+name = "elasticsearch-7"
+version = "7.17.21"
+description = "elasticsearch-7 container image"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "elasticsearch"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["elasticsearch"]
+
+[ports]
+expose = [9200, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "elasticsearch-7"
+"org.opencontainers.image.vendor" = "Elastic"
+"org.opencontainers.image.version" = "7.17.21"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.tier" = "2"
+"evergreen.metrics.native" = "ztunnel"
+

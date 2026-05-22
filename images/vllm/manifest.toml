@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "vllm"
 version = "0.6.6"
 description = "vllm container image"

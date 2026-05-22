@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "trivy-iac"
 version = "0.70.0"
 description = "trivy-iac container image"

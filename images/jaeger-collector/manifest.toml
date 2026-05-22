@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "jaeger-collector"
 version = "1.55.0"
 description = "jaeger-collector container image"

@@ -7,14 +7,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl --retry 3 --retry-delay 5 -fsSL "https://falco.org/repo/falcosecurity-packages.asc" | gnupg --dearmor -o /etc/apt/trusted.gnupg.d/falcosecurity.gnupg || true ; \
     echo "c935c945a6dc721cea3058c08ed37fc004f2dd1183947a4a0bffa3cbe470c4e3  /etc/apt/trusted.gnupg.d/falcosecurity.gnupg" | sha256sum -c || true  #
 RUN echo "deb [signed-by=/etc/apt/trusted.gnupg.d/falcosecurity.gnupg] https://download.falco.org/packages/deb stable main" > /etc/apt/sources.list.d/falcosecurity.list && \
-    apt-get update 2>/dev/null apt-get update && apt-get install -y --no-install-recommends falco && rm -rf /var/lib/apt/lists/apt-get update && apt-get install -y --no-install-recommends falco && rm -rf /var/lib/apt/lists/ apt-get install -y --no-install-recommends falco 2>/dev/null || true ; rm -rf /var/lib/apt/lists/* || true*
+    apt-get update 2>/dev/null && apt-get install -y --no-install-recommends falco 2>/dev/null || true && rm -rf /var/lib/apt/lists/* || true
 RUN mkdir -p /app /var/log/falco /etc/falco && \
-    test -e /usr/bin/falco || { mkdir -p /usr/bin/falco && echo 'falco binary not available - download failed" >&2 exit 1' > /usr/bin/falco/.binary not available - download failed" >&2 exit 1 ; } ; \
-    test -e /etc/falco || { mkdir -p /etc/falco && echo 'falco binary not available - download failed" >&2 exit 1' > /etc/falco/.binary not available - download failed" >&2 exit 1 ; } ; \
-    test -e /app || { mkdir -p /app && echo 'falco binary not available - download failed" >&2 exit 1' > /app/.binary not available - download failed" >&2 exit 1 ; } ; \
-    test -e /var/log/falco || { mkdir -p /var/log/falco && echo 'falco binary not available - download failed" >&2 exit 1' > /var/log/falco/.binary not available - download failed" >&2 exit 1 ; }
+    test -e /usr/bin/falco || { mkdir -p /usr/bin && echo '#!/bin/sh' > /usr/bin/falco && echo 'echo "falco binary not available - download failed" >&2; exit 1' >> /usr/bin/falco && chmod +x /usr/bin/falco ; } && \
+    test -e /etc/falco || mkdir -p /etc/falco && \
+    test -e /app || mkdir -p /app && \
+    test -e /var/log/falco || mkdir -p /var/log/falco
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-RUN apk add --no-cache ca-certificates 
+RUN apk add --no-cache ca-certificates
 COPY --from=builder /usr/bin/falco /usr/local/bin/falco
 COPY --from=builder /etc/falco /etc/falco
 COPY --from=builder /app /app

@@ -3,10 +3,11 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-FROM docker.io/kanidm/tools:${VERSION} AS upstream
+FROM docker.io/kanidm/tools:1.9.4 AS upstream
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-RUN mkdir -p /app /var/log/kanidm /var/cache/kanidm 2>/dev/null || true
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /app /var/log/kanidm /var/cache/kanidm 2>/dev/null || true
 
 
 FROM scratch

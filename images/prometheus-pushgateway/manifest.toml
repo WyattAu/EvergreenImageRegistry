@@ -5,7 +5,7 @@ description = "Prometheus Pushgateway - intermediary service for metrics push"
 vendor = "Prometheus"
 source = "https://github.com/prometheus/pushgateway"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "scratch"

@@ -5,7 +5,7 @@ description = "InfluxDB - time series database for metrics and events"
 vendor = "InfluxData"
 source = "https://github.com/influxdata/influxdb"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "scratch"

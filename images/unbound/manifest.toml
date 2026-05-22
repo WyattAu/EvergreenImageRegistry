@@ -5,7 +5,7 @@ description = "Unbound - validating, recursive, and caching DNS resolver"
 vendor = "NLnet Labs"
 source = "https://github.com/NLnetLabs/unbound"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "scratch"

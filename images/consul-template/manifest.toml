@@ -5,7 +5,7 @@ description = "Consul Template - template rendering with Consul data"
 vendor = "HashiCorp"
 source = "https://github.com/hashicorp/consul-template"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "scratch"

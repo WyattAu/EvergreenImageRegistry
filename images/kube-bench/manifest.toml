@@ -5,7 +5,7 @@ description = "Kube-bench - checks whether Kubernetes is deployed securely"
 vendor = "Aqua Security"
 source = "https://github.com/aquasecurity/kube-bench"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "scratch"

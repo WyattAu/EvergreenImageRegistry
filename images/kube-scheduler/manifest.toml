@@ -5,7 +5,7 @@ description = "Kubernetes Scheduler - control plane component"
 vendor = "Kubernetes"
 source = "https://github.com/kubernetes/kubernetes"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

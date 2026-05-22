@@ -5,7 +5,7 @@ description = "Redis Sentinel - high availability for Redis"
 vendor = "Redis"
 source = "https://github.com/redis/redis"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

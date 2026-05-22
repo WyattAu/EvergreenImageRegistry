@@ -5,7 +5,7 @@ description = "Jellyfin - free software media system"
 vendor = "Jellyfin"
 source = "https://github.com/jellyfin/jellyfin"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

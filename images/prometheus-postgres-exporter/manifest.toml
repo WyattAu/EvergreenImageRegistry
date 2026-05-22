@@ -5,7 +5,7 @@ description = "Postgres Exporter - Prometheus exporter for PostgreSQL"
 vendor = "Prometheus"
 source = "https://github.com/prometheus-community/postgres_exporter"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "scratch"

@@ -5,7 +5,7 @@ description = "Node Exporter - hardware and OS metrics exporter for Prometheus"
 vendor = "Prometheus"
 source = "https://github.com/prometheus/node_exporter"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "scratch"

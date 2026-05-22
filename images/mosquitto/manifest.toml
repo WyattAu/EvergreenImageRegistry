@@ -5,7 +5,7 @@ description = "Mosquitto - lightweight MQTT message broker"
 vendor = "Eclipse"
 source = "https://github.com/eclipse-mosquitto/mosquitto"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

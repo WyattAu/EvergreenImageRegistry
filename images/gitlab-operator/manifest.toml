@@ -1,0 +1,39 @@
+[metadata]
+name = "gitlab-operator"
+version = "0.8.0"
+upstream_version = "0.8.0"
+description = "GitLab Operator - Kubernetes operator for GitLab"
+vendor = "GitLab"
+source = "https://gitlab.com/gitlab-org/cloud-native/gitlab-operator"
+license = "unknown"
+tier = "standard"
+
+[build]
+base = "wolfi"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[runtime]
+entrypoint = ["gitlab-operator"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.title" = "gitlab-operator"
+"org.opencontainers.image.vendor" = "GitLab"
+"org.opencontainers.image.version" = "0.8.0"
+"evergreen.image.tier" = "standard"
+"evergreen.image.category" = "infrastructure"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.base.image" = "wolfi"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.shutdown-timeout" = "10s"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.startup-timeout" = "30000ms"
+"evergreen.metrics.native" = "ztunnel"
+"evergreen.health.type" = "exec"
+"evergreen.security.cap-drop" = "ALL"
+"evergreen.security.no-new-privileges" = "true"
+"evergreen.security.read-only-rootfs" = "true"
+"evergreen.security.seccomp" = "runtime-default"

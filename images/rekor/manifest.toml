@@ -5,7 +5,7 @@ description = "Rekor - transparency log for supply chain security"
 vendor = "Sigstore"
 source = "https://github.com/sigstore/rekor"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "scratch"

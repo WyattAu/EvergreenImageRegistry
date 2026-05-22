@@ -5,7 +5,7 @@ description = "Miniflux - minimalist RSS/Atom feed reader"
 vendor = "Miniflux"
 source = "https://github.com/miniflux/v2"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "scratch"

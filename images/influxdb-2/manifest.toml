@@ -5,7 +5,7 @@ description = "InfluxDB 2 - time series database with Flux query engine"
 vendor = "InfluxData"
 source = "https://github.com/influxdata/influxdb"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "scratch"

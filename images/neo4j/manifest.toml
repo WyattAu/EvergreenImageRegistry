@@ -5,7 +5,7 @@ description = "Neo4j - native graph database"
 vendor = "Neo4j"
 source = "https://github.com/neo4j/neo4j"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

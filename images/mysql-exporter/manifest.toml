@@ -5,7 +5,7 @@ description = "MySQL Exporter - Prometheus exporter for MySQL server"
 vendor = "Prometheus"
 source = "https://github.com/prometheus/mysqld_exporter"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "scratch"

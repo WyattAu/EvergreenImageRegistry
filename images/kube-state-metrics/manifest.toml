@@ -5,7 +5,7 @@ description = "Kube-state-metrics - metrics about Kubernetes objects"
 vendor = "Kubernetes"
 source = "https://github.com/kubernetes/kube-state-metrics"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "scratch"

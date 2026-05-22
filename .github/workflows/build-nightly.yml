@@ -114,14 +114,14 @@ jobs:
             # Skip non-image directories
             [[ "$name" == _* ]] && continue
             [ "$name" = "tests" ] || [ "$name" = "health-shim" ] && continue
-            grep -q '^HEALTHCHECK' "$dockerfile" || { echo "FAIL: $name missing HEALTHCHECK"; FAIL=$((FAIL+1)); }
+            grep -q '^HEALTHCHECK' "$dockerfile" 2>/dev/null || { echo "FAIL: $name missing HEALTHCHECK"; FAIL=$((FAIL+1)); }
             for label in "evergreen.security.cap-drop" "evergreen.security.no-new-privileges" "evergreen.security.read-only-rootfs" "evergreen.security.seccomp"; do
-              grep -q "$label" "$dockerfile" || { echo "FAIL: $name missing $label"; FAIL=$((FAIL+1)); }
+              grep -q "$label" "$dockerfile" 2>/dev/null || { echo "FAIL: $name missing $label"; FAIL=$((FAIL+1)); }
             done
             PASS=$((PASS+1))
           done
           echo "Gates: ${PASS} checked, ${FAIL} failures"
-          [ "$FAIL" -gt 0 ] && exit 1
+          if [ "$FAIL" -gt 0 ]; then exit 1; fi
 
   # ---------------------------------------------------------------------------
   # BUILD CRITICAL - Highest priority, signed, multi-arch

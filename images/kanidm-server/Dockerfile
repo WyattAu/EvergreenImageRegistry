@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 
 FROM scratch
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=upstream /usr/local/bin/kanidmd /kanidmd
+COPY --from=upstream /sbin/kanidmd /kanidmd
 COPY --from=builder /app /app
 COPY --from=builder /var/log/kanidm-server /var/log/kanidm-server
 COPY --from=builder /var/cache/kanidm-server /var/cache/kanidm-server

@@ -4,9 +4,10 @@ ARG APP_GID=65532
 
 FROM golang:1.24 AS builder
 ENV GOTOOLCHAIN=auto
+ARG VERSION
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
-RUN GOARCH=${GOARCH} go install golang.org/x/vuln/cmd/govulncheck@${VERSION} || true
+RUN GOARCH=${GOARCH} go install golang.org/x/vuln/cmd/govulncheck@${VERSION}
 
 
 FROM scratch

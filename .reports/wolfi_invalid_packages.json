@@ -157,14 +157,8 @@
     "zlib-dev"
   ],
   "invalid_packages": {
-    "#": [
-      "gitea"
-    ],
-    "*)": [
-      "gitea",
-      "libsql",
-      "litestream"
-    ],
+    "#": ["gitea"],
+    "*)": ["gitea", "libsql", "litestream"],
     "+x": [
       "caddy-alpine",
       "dbmate",
@@ -197,9 +191,7 @@
       "stable-diffusion-webui",
       "text-generation-webui"
     ],
-    "2.5.0": [
-      "bundler"
-    ],
+    "2.5.0": ["bundler"],
     "65532:65532": [
       "389ds",
       "akaunting",
@@ -278,94 +270,34 @@
       "zoe",
       "zzh"
     ],
-    "8.0": [
-      "duplicati"
-    ],
-    "?": [
-      "organizer"
-    ],
-    "@grafana/toolkit@__VAR__": [
-      "grafana-toolkit"
-    ],
-    "@worldsibu/convector-platform@__VAR__": [
-      "convector"
-    ],
-    "ARCH=$(case": [
-      "gitea",
-      "libsql"
-    ],
-    "AWS": [
-      "neptune"
-    ],
-    "Atlas": [
-      "objectrocket"
-    ],
-    "Based": [
-      "docker-clean"
-    ],
-    "CGO_ENABLED=0": [
-      "dotdns"
-    ],
-    "Docker": [
-      "docker-clean"
-    ],
-    "GOARCH=__VAR__": [
-      "dotdns"
-    ],
-    "GOOS=linux": [
-      "dotdns"
-    ],
-    "Gremlin/SPARQL": [
-      "neptune"
-    ],
-    "MongoDB": [
-      "objectrocket"
-    ],
-    "Neptune": [
-      "neptune"
-    ],
-    "Neptune-compatible": [
-      "neptune"
-    ],
-    "ObjectRocket-compatible": [
-      "objectrocket"
-    ],
-    "ObjectRocket/MongoDB": [
-      "objectrocket"
-    ],
-    "RediSearch,": [
-      "redismodules"
-    ],
-    "RedisJSON,": [
-      "redismodules"
-    ],
-    "RedisTimeSeries,": [
-      "redismodules"
-    ],
-    "SPARQLWrapper": [
-      "neptune"
-    ],
-    "SQL": [
-      "singlestore"
-    ],
-    "SingleStore-compatible": [
-      "singlestore"
-    ],
-    "TTS": [
-      "coqui-tts",
-      "tts"
-    ],
-    "a": [
-      "neptune",
-      "objectrocket",
-      "singlestore"
-    ],
-    "a2dismod": [
-      "apache"
-    ],
-    "accelerate": [
-      "stable-diffusion"
-    ],
+    "8.0": ["duplicati"],
+    "?": ["organizer"],
+    "@grafana/toolkit@__VAR__": ["grafana-toolkit"],
+    "@worldsibu/convector-platform@__VAR__": ["convector"],
+    "ARCH=$(case": ["gitea", "libsql"],
+    "AWS": ["neptune"],
+    "Atlas": ["objectrocket"],
+    "Based": ["docker-clean"],
+    "CGO_ENABLED=0": ["dotdns"],
+    "Docker": ["docker-clean"],
+    "GOARCH=__VAR__": ["dotdns"],
+    "GOOS=linux": ["dotdns"],
+    "Gremlin/SPARQL": ["neptune"],
+    "MongoDB": ["objectrocket"],
+    "Neptune": ["neptune"],
+    "Neptune-compatible": ["neptune"],
+    "ObjectRocket-compatible": ["objectrocket"],
+    "ObjectRocket/MongoDB": ["objectrocket"],
+    "RediSearch,": ["redismodules"],
+    "RedisJSON,": ["redismodules"],
+    "RedisTimeSeries,": ["redismodules"],
+    "SPARQLWrapper": ["neptune"],
+    "SQL": ["singlestore"],
+    "SingleStore-compatible": ["singlestore"],
+    "TTS": ["coqui-tts", "tts"],
+    "a": ["neptune", "objectrocket", "singlestore"],
+    "a2dismod": ["apache"],
+    "accelerate": ["stable-diffusion"],
     "add": [
       "faster-whisper",
       "gitbucket",
@@ -378,11 +310,7 @@
       "synapse-admin",
       "wolfi-jdk"
     ],
-    "amd64)": [
-      "gitea",
-      "libsql",
-      "litestream"
-    ],
+    "amd64)": ["gitea", "libsql", "litestream"],
     "apk": [
       "faster-whisper",
       "gitbucket",
@@ -542,31 +470,12 @@
       "softether",
       "synapse-admin"
     ],
-    "appuser:appuser": [
-      "fail2ban",
-      "modsecurity",
-      "powerdns",
-      "softether"
-    ],
-    "arango": [
-      "arango"
-    ],
-    "arm64)": [
-      "gitea",
-      "libsql",
-      "litestream"
-    ],
-    "as": [
-      "neptune",
-      "objectrocket",
-      "singlestore"
-    ],
-    "athom": [
-      "athom"
-    ],
-    "autoindex": [
-      "apache"
-    ],
+    "appuser:appuser": ["fail2ban", "modsecurity", "powerdns", "softether"],
+    "arango": ["arango"],
+    "arm64)": ["gitea", "libsql", "litestream"],
+    "as": ["neptune", "objectrocket", "singlestore"],
+    "athom": ["athom"],
+    "autoindex": ["apache"],
     "available": [
       "automatic1111",
       "bazarr",
@@ -576,64 +485,23 @@
       "stable-diffusion-webui",
       "text-generation-webui"
     ],
-    "backup": [
-      "gitlab-backup"
-    ],
-    "base": [
-      "neptune",
-      "objectrocket",
-      "singlestore"
-    ],
-    "build": [
-      "dotdns"
-    ],
-    "bundled:": [
-      "redismodules"
-    ],
-    "bundler": [
-      "bundler"
-    ],
-    "bzip2-libs": [
-      "onlyoffice-documentserver",
-      "onlyoffice-documentserver-ee"
-    ],
-    "calibre": [
-      "calibre",
-      "calibre-eb",
-      "calibre-server",
-      "calibre-web"
-    ],
-    "case": [
-      "litestream"
-    ],
-    "chartdb": [
-      "chartdb"
-    ],
-    "chroma": [
-      "chroma"
-    ],
-    "chroma:chroma": [
-      "chroma"
-    ],
-    "chromadb": [
-      "chroma"
-    ],
-    "chromadb==0.5.23": [
-      "chroma-all-minimal"
-    ],
-    "chromadb==__VAR__": [
-      "chroma"
-    ],
-    "cid": [
-      "docker-clean"
-    ],
-    "cleanup": [
-      "docker-clean"
-    ],
-    "client": [
-      "objectrocket",
-      "singlestore"
-    ],
+    "backup": ["gitlab-backup"],
+    "base": ["neptune", "objectrocket", "singlestore"],
+    "build": ["dotdns"],
+    "bundled:": ["redismodules"],
+    "bundler": ["bundler"],
+    "bzip2-libs": ["onlyoffice-documentserver", "onlyoffice-documentserver-ee"],
+    "calibre": ["calibre", "calibre-eb", "calibre-server", "calibre-web"],
+    "case": ["litestream"],
+    "chartdb": ["chartdb"],
+    "chroma": ["chroma"],
+    "chroma:chroma": ["chroma"],
+    "chromadb": ["chroma"],
+    "chromadb==0.5.23": ["chroma-all-minimal"],
+    "chromadb==__VAR__": ["chroma"],
+    "cid": ["docker-clean"],
+    "cleanup": ["docker-clean"],
+    "client": ["objectrocket", "singlestore"],
     "clone": [
       "automatic1111",
       "bazarr",
@@ -644,311 +512,95 @@
       "stable-diffusion-webui",
       "text-generation-webui"
     ],
-    "cloud": [
-      "objectrocket"
-    ],
-    "cmak": [
-      "kafka-manager"
-    ],
-    "codimd": [
-      "codimd"
-    ],
-    "commercial": [
-      "singlestore"
-    ],
-    "common": [
-      "docker-clean"
-    ],
-    "compatibility": [
-      "neptune",
-      "singlestore"
-    ],
-    "complement": [
-      "chat-relay"
-    ],
-    "conduit": [
-      "conduit-admin"
-    ],
-    "connect": [
-      "kafka-connect"
-    ],
-    "container:": [
-      "docker-clean"
-    ],
-    "convector": [
-      "convector"
-    ],
-    "crate": [
-      "crate"
-    ],
-    "created=$(docker": [
-      "docker-clean"
-    ],
-    "dagster": [
-      "dagster",
-      "dagster-daemon",
-      "dagster-logs"
-    ],
-    "dagster-webserver": [
-      "dagster"
-    ],
-    "dangling": [
-      "docker-clean"
-    ],
-    "database": [
-      "neptune",
-      "objectrocket"
-    ],
-    "deepspeed": [
-      "deepspeed"
-    ],
-    "del": [
-      "milvus-minio",
-      "sqlite-utils"
-    ],
-    "dendrite": [
-      "dendrite-pot"
-    ],
-    "derby": [
-      "derby"
-    ],
-    "development": [
-      "neptune",
-      "objectrocket",
-      "singlestore"
-    ],
-    "diffusers": [
-      "diffusers",
-      "stable-diffusion"
-    ],
-    "distributed": [
-      "singlestore"
-    ],
-    "do\\n": [
-      "docker-clean"
-    ],
-    "docker-clean": [
-      "docker-clean"
-    ],
-    "dockerclean": [
-      "docker-clean"
-    ],
-    "dsp": [
-      "docker-socket-proxy"
-    ],
-    "edition": [
-      "singlestore"
-    ],
-    "ejdb": [
-      "ejdb"
-    ],
-    "endpoint": [
-      "neptune",
-      "objectrocket"
-    ],
-    "erpnext": [
-      "erpnext"
-    ],
-    "erpnext:erpnext": [
-      "erpnext"
-    ],
-    "esac": [
-      "litestream"
-    ],
-    "esac)": [
-      "gitea",
-      "libsql"
-    ],
-    "exited": [
-      "docker-clean"
-    ],
-    "fastapi==0.115.0": [
-      "immich-machine-learning",
-      "immich-ml"
-    ],
-    "faster-whisper": [
-      "faster-whisper"
-    ],
-    "fi": [
-      "caddy-alpine",
-      "cinny",
-      "keycloak"
-    ],
-    "fi\\ndone\\n\\ndangling_images=$(docker": [
-      "docker-clean"
-    ],
-    "fileshare": [
-      "ol_fileshare"
-    ],
-    "firebird": [
-      "firebird"
-    ],
-    "fluentd": [
-      "fluentd"
-    ],
-    "for": [
-      "neptune",
-      "objectrocket",
-      "singlestore"
-    ],
-    "free": [
-      "singlestore"
-    ],
-    "from": [
-      "singlestore"
-    ],
-    "fstrm-libs": [
-      "powerdns-recursor"
-    ],
-    "fully": [
-      "neptune",
-      "objectrocket"
-    ],
-    "gitbucket": [
-      "gitbucket"
-    ],
-    "graph": [
-      "neptune"
-    ],
-    "graphdb": [
-      "graphdb-enterpriser"
-    ],
-    "graphile": [
-      "graphile"
-    ],
-    "graylog": [
-      "graylog"
-    ],
-    "gremlinpython": [
-      "neptune"
-    ],
-    "gremlinpython,": [
-      "neptune"
-    ],
-    "h2": [
-      "h2"
-    ],
-    "hazelcast": [
-      "hazelcast"
-    ],
-    "hive": [
-      "hive",
-      "hive-metastore"
-    ],
-    "homeassistant": [
-      "homeassistant"
-    ],
-    "homeassistant:homeassistant": [
-      "homeassistant"
-    ],
-    "homekit": [
-      "homekit"
-    ],
-    "hts": [
-      "tvheadend"
-    ],
-    "hts:hts": [
-      "tvheadend"
-    ],
-    "hydrogen": [
-      "hydrogen"
-    ],
-    "if": [
-      "caddy-alpine",
-      "cinny",
-      "docker-clean",
-      "keycloak"
-    ],
-    "ignite": [
-      "ignite"
-    ],
-    "image": [
-      "neptune",
-      "objectrocket",
-      "singlestore"
-    ],
-    "images": [
-      "docker-clean"
-    ],
-    "immich": [
-      "immich"
-    ],
-    "immich:immich": [
-      "immich"
-    ],
-    "import": [
-      "neptune",
-      "objectrocket",
-      "singlestore"
-    ],
-    "in": [
-      "docker-clean",
-      "gitea",
-      "libsql",
-      "litestream",
-      "neptune",
-      "objectrocket"
-    ],
-    "inspect": [
-      "docker-clean"
-    ],
-    "invokeai": [
-      "invokeai"
-    ],
-    "is": [
-      "neptune",
-      "objectrocket",
-      "singlestore"
-    ],
-    "janusgraph": [
-      "janusgraph"
-    ],
-    "java-21-default-jdk": [
-      "gitbucket",
-      "openhab",
-      "wolfi-jdk"
-    ],
-    "jenkins:jenkins": [
-      "jenkins"
-    ],
-    "jupyter": [
-      "jupyter-all"
-    ],
-    "jupyterlab": [
-      "jupyter-pytorch",
-      "jupyter-scikit",
-      "jupyter-tensorflow"
-    ],
-    "kibana": [
-      "kibana",
-      "kibana-oss"
-    ],
-    "knot": [
-      "knot-resolver"
-    ],
-    "knot-resolver": [
-      "knot-resolver"
-    ],
-    "knot-resolver-utils": [
-      "knot-resolver"
-    ],
-    "langchain": [
-      "langchain"
-    ],
-    "langserve": [
-      "langserve"
-    ],
-    "ldap": [
-      "ldap",
-      "openldap"
-    ],
-    "ldap:ldap": [
-      "ldap",
-      "openldap"
-    ],
-    "libcrypto1.1": [
-      "strongswan"
-    ],
+    "cloud": ["objectrocket"],
+    "cmak": ["kafka-manager"],
+    "codimd": ["codimd"],
+    "commercial": ["singlestore"],
+    "common": ["docker-clean"],
+    "compatibility": ["neptune", "singlestore"],
+    "complement": ["chat-relay"],
+    "conduit": ["conduit-admin"],
+    "connect": ["kafka-connect"],
+    "container:": ["docker-clean"],
+    "convector": ["convector"],
+    "crate": ["crate"],
+    "created=$(docker": ["docker-clean"],
+    "dagster": ["dagster", "dagster-daemon", "dagster-logs"],
+    "dagster-webserver": ["dagster"],
+    "dangling": ["docker-clean"],
+    "database": ["neptune", "objectrocket"],
+    "deepspeed": ["deepspeed"],
+    "del": ["milvus-minio", "sqlite-utils"],
+    "dendrite": ["dendrite-pot"],
+    "derby": ["derby"],
+    "development": ["neptune", "objectrocket", "singlestore"],
+    "diffusers": ["diffusers", "stable-diffusion"],
+    "distributed": ["singlestore"],
+    "do\\n": ["docker-clean"],
+    "docker-clean": ["docker-clean"],
+    "dockerclean": ["docker-clean"],
+    "dsp": ["docker-socket-proxy"],
+    "edition": ["singlestore"],
+    "ejdb": ["ejdb"],
+    "endpoint": ["neptune", "objectrocket"],
+    "erpnext": ["erpnext"],
+    "erpnext:erpnext": ["erpnext"],
+    "esac": ["litestream"],
+    "esac)": ["gitea", "libsql"],
+    "exited": ["docker-clean"],
+    "fastapi==0.115.0": ["immich-machine-learning", "immich-ml"],
+    "faster-whisper": ["faster-whisper"],
+    "fi": ["caddy-alpine", "cinny", "keycloak"],
+    "fi\\ndone\\n\\ndangling_images=$(docker": ["docker-clean"],
+    "fileshare": ["ol_fileshare"],
+    "firebird": ["firebird"],
+    "fluentd": ["fluentd"],
+    "for": ["neptune", "objectrocket", "singlestore"],
+    "free": ["singlestore"],
+    "from": ["singlestore"],
+    "fstrm-libs": ["powerdns-recursor"],
+    "fully": ["neptune", "objectrocket"],
+    "gitbucket": ["gitbucket"],
+    "graph": ["neptune"],
+    "graphdb": ["graphdb-enterpriser"],
+    "graphile": ["graphile"],
+    "graylog": ["graylog"],
+    "gremlinpython": ["neptune"],
+    "gremlinpython,": ["neptune"],
+    "h2": ["h2"],
+    "hazelcast": ["hazelcast"],
+    "hive": ["hive", "hive-metastore"],
+    "homeassistant": ["homeassistant"],
+    "homeassistant:homeassistant": ["homeassistant"],
+    "homekit": ["homekit"],
+    "hts": ["tvheadend"],
+    "hts:hts": ["tvheadend"],
+    "hydrogen": ["hydrogen"],
+    "if": ["caddy-alpine", "cinny", "docker-clean", "keycloak"],
+    "ignite": ["ignite"],
+    "image": ["neptune", "objectrocket", "singlestore"],
+    "images": ["docker-clean"],
+    "immich": ["immich"],
+    "immich:immich": ["immich"],
+    "import": ["neptune", "objectrocket", "singlestore"],
+    "in": ["docker-clean", "gitea", "libsql", "litestream", "neptune", "objectrocket"],
+    "inspect": ["docker-clean"],
+    "invokeai": ["invokeai"],
+    "is": ["neptune", "objectrocket", "singlestore"],
+    "janusgraph": ["janusgraph"],
+    "java-21-default-jdk": ["gitbucket", "openhab", "wolfi-jdk"],
+    "jenkins:jenkins": ["jenkins"],
+    "jupyter": ["jupyter-all"],
+    "jupyterlab": ["jupyter-pytorch", "jupyter-scikit", "jupyter-tensorflow"],
+    "kibana": ["kibana", "kibana-oss"],
+    "knot": ["knot-resolver"],
+    "knot-resolver": ["knot-resolver"],
+    "knot-resolver-utils": ["knot-resolver"],
+    "langchain": ["langchain"],
+    "langserve": ["langserve"],
+    "ldap": ["ldap", "openldap"],
+    "ldap:ldap": ["ldap", "openldap"],
+    "libcrypto1.1": ["strongswan"],
     "libcurl": [
       "onlyoffice-communityserver",
       "onlyoffice-controlpanel",
@@ -958,107 +610,36 @@
       "powerdns-recursor",
       "strongswan"
     ],
-    "libraries": [
-      "singlestore"
-    ],
-    "library": [
-      "objectrocket"
-    ],
-    "libtiff": [
-      "onlyoffice-documentserver",
-      "onlyoffice-documentserver-ee"
-    ],
-    "litellm": [
-      "litellm"
-    ],
-    "litellm[proxy]": [
-      "litellm-proxy"
-    ],
-    "local": [
-      "neptune"
-    ],
-    "main()": [
-      "dotdns"
-    ],
-    "main\\nimport": [
-      "dotdns"
-    ],
-    "managed": [
-      "neptune",
-      "objectrocket"
-    ],
-    "mariadb-libs": [
-      "onlyoffice-communityserver"
-    ],
-    "matplotlib": [
-      "jupyter-scikit"
-    ],
-    "matrix-synapse==__VAR__": [
-      "chat-server"
-    ],
-    "maxbot==__VAR__": [
-      "maxbot"
-    ],
-    "meltano": [
-      "meltano"
-    ],
-    "memgraph": [
-      "memgraph"
-    ],
-    "modsec": [
-      "modsecurity-crs"
-    ],
-    "module": [
-      "redismodules"
-    ],
-    "modules": [
-      "redismodules"
-    ],
-    "mongodb": [
-      "mongodb-5",
-      "mongodb-7",
-      "mongodb-community"
-    ],
-    "mongosh": [
-      "mongodb-opsmanager"
-    ],
-    "mosquitto:mosquitto": [
-      "mqtt"
-    ],
-    "mythtv": [
-      "mythtv"
-    ],
-    "mythtv:mythtv": [
-      "mythtv"
-    ],
-    "neptune": [
-      "neptune"
-    ],
-    "newsboat": [
-      "newsboat"
-    ],
-    "newsboat:newsboat": [
-      "newsboat"
-    ],
-    "nheko": [
-      "nheko"
-    ],
-    "nifi": [
-      "apache-nifi",
-      "nifi-registry"
-    ],
-    "node": [
-      "logseq",
-      "n8n",
-      "typesense-js",
-      "uptime-kuma"
-    ],
-    "node:node": [
-      "logseq",
-      "n8n",
-      "typesense-js",
-      "uptime-kuma"
-    ],
+    "libraries": ["singlestore"],
+    "library": ["objectrocket"],
+    "libtiff": ["onlyoffice-documentserver", "onlyoffice-documentserver-ee"],
+    "litellm": ["litellm"],
+    "litellm[proxy]": ["litellm-proxy"],
+    "local": ["neptune"],
+    "main()": ["dotdns"],
+    "main\\nimport": ["dotdns"],
+    "managed": ["neptune", "objectrocket"],
+    "mariadb-libs": ["onlyoffice-communityserver"],
+    "matplotlib": ["jupyter-scikit"],
+    "matrix-synapse==__VAR__": ["chat-server"],
+    "maxbot==__VAR__": ["maxbot"],
+    "meltano": ["meltano"],
+    "memgraph": ["memgraph"],
+    "modsec": ["modsecurity-crs"],
+    "module": ["redismodules"],
+    "modules": ["redismodules"],
+    "mongodb": ["mongodb-5", "mongodb-7", "mongodb-community"],
+    "mongosh": ["mongodb-opsmanager"],
+    "mosquitto:mosquitto": ["mqtt"],
+    "mythtv": ["mythtv"],
+    "mythtv:mythtv": ["mythtv"],
+    "neptune": ["neptune"],
+    "newsboat": ["newsboat"],
+    "newsboat:newsboat": ["newsboat"],
+    "nheko": ["nheko"],
+    "nifi": ["apache-nifi", "nifi-registry"],
+    "node": ["logseq", "n8n", "typesense-js", "uptime-kuma"],
+    "node:node": ["logseq", "n8n", "typesense-js", "uptime-kuma"],
     "nogroup": [
       "athom",
       "docker-clean",
@@ -1083,34 +664,14 @@
       "stable-diffusion-webui",
       "text-generation-webui"
     ],
-    "numpy==2.1.0": [
-      "immich-machine-learning",
-      "jupyter-scikit"
-    ],
-    "objectrocket": [
-      "objectrocket"
-    ],
-    "on": [
-      "docker-clean"
-    ],
-    "onnxruntime": [
-      "immich-machine-learning",
-      "immich-ml"
-    ],
-    "open-gpts": [
-      "opengpts"
-    ],
-    "openai-whisper": [
-      "whisper"
-    ],
-    "openhab": [
-      "openhab"
-    ],
-    "openjdk-21-jdk-headless": [
-      "gitbucket",
-      "openhab",
-      "wolfi-jdk"
-    ],
+    "numpy==2.1.0": ["immich-machine-learning", "jupyter-scikit"],
+    "objectrocket": ["objectrocket"],
+    "on": ["docker-clean"],
+    "onnxruntime": ["immich-machine-learning", "immich-ml"],
+    "open-gpts": ["opengpts"],
+    "openai-whisper": ["whisper"],
+    "openhab": ["openhab"],
+    "openjdk-21-jdk-headless": ["gitbucket", "openhab", "wolfi-jdk"],
     "openssl-libs": [
       "onlyoffice-communityserver",
       "onlyoffice-controlpanel",
@@ -1120,143 +681,46 @@
       "powerdns-recursor",
       "strongswan"
     ],
-    "oracle": [
-      "oracledb-xe"
-    ],
-    "organizr": [
-      "organizer"
-    ],
-    "outline": [
-      "outline"
-    ],
-    "outline:outline": [
-      "outline"
-    ],
-    "oxidized": [
-      "oxidized"
-    ],
-    "pandas==2.2.0": [
-      "jupyter-scikit"
-    ],
-    "pgbouncer:pgbouncer": [
-      "pgbouncer"
-    ],
-    "pgpool": [
-      "pgpool-ii"
-    ],
-    "pgpool:pgpool": [
-      "pgpool-ii"
-    ],
-    "php-cli": [
-      "photoshow",
-      "rss2"
-    ],
-    "php-json": [
-      "photoshow",
-      "roundcube",
-      "rss2"
-    ],
-    "php-session": [
-      "photoshow",
-      "roundcube"
-    ],
-    "php-valkey": [
-      "cachet"
-    ],
-    "pillow==10.4.0": [
-      "immich-machine-learning",
-      "immich-ml"
-    ],
-    "pinecone-client": [
-      "pinecone"
-    ],
-    "pip3": [
-      "maxbot",
-      "neptune",
-      "objectrocket",
-      "singlestore"
-    ],
-    "pipefail\\n#": [
-      "docker-clean"
-    ],
-    "placeholder": [
-      "organizer"
-    ],
-    "placeholder</h1": [
-      "cinny"
-    ],
-    "planka": [
-      "planka"
-    ],
-    "planka:planka": [
-      "planka"
-    ],
-    "postgraphile@__VAR__": [
-      "graphile"
-    ],
-    "postgresql-__VAR__-client": [
-      "postgres-backup",
-      "postgres-restore",
-      "postgresql-init"
-    ],
-    "postgresql-libs": [
-      "onlyoffice-communityserver",
-      "onlyoffice-documentserver",
-      "onlyoffice-documentserver-ee"
-    ],
-    "prefect": [
-      "prefect",
-      "prefect-server"
-    ],
-    "production": [
-      "singlestore"
-    ],
-    "provides": [
-      "neptune",
-      "objectrocket",
-      "singlestore"
-    ],
-    "ps": [
-      "docker-clean"
-    ],
-    "pulsar": [
-      "pulsar-functions",
-      "pulsar-proxy"
-    ],
-    "pymongo": [
-      "objectrocket"
-    ],
-    "pymysql": [
-      "singlestore"
-    ],
-    "pymysql,": [
-      "singlestore"
-    ],
-    "pymysql/sqlalchemy": [
-      "singlestore"
-    ],
-    "python": [
-      "meilisearch-python"
-    ],
-    "python:python": [
-      "meilisearch-python"
-    ],
-    "qbitmanage==4.2.0": [
-      "qbitmanage"
-    ],
-    "qbittorrent": [
-      "qbittorrent",
-      "qbittorrent-nox"
-    ],
-    "qbittorrent:qbittorrent": [
-      "qbittorrent"
-    ],
-    "questdb": [
-      "questdb"
-    ],
-    "r2c": [
-      "r2c-bench"
-    ],
+    "oracle": ["oracledb-xe"],
+    "organizr": ["organizer"],
+    "outline": ["outline"],
+    "outline:outline": ["outline"],
+    "oxidized": ["oxidized"],
+    "pandas==2.2.0": ["jupyter-scikit"],
+    "pgbouncer:pgbouncer": ["pgbouncer"],
+    "pgpool": ["pgpool-ii"],
+    "pgpool:pgpool": ["pgpool-ii"],
+    "php-cli": ["photoshow", "rss2"],
+    "php-json": ["photoshow", "roundcube", "rss2"],
+    "php-session": ["photoshow", "roundcube"],
+    "php-valkey": ["cachet"],
+    "pillow==10.4.0": ["immich-machine-learning", "immich-ml"],
+    "pinecone-client": ["pinecone"],
+    "pip3": ["maxbot", "neptune", "objectrocket", "singlestore"],
+    "pipefail\\n#": ["docker-clean"],
+    "placeholder": ["organizer"],
+    "placeholder</h1": ["cinny"],
+    "planka": ["planka"],
+    "planka:planka": ["planka"],
+    "postgraphile@__VAR__": ["graphile"],
+    "postgresql-__VAR__-client": ["postgres-backup", "postgres-restore", "postgresql-init"],
+    "postgresql-libs": ["onlyoffice-communityserver", "onlyoffice-documentserver", "onlyoffice-documentserver-ee"],
+    "prefect": ["prefect", "prefect-server"],
+    "production": ["singlestore"],
+    "provides": ["neptune", "objectrocket", "singlestore"],
+    "ps": ["docker-clean"],
+    "pulsar": ["pulsar-functions", "pulsar-proxy"],
+    "pymongo": ["objectrocket"],
+    "pymysql": ["singlestore"],
+    "pymysql,": ["singlestore"],
+    "pymysql/sqlalchemy": ["singlestore"],
+    "python": ["meilisearch-python"],
+    "python:python": ["meilisearch-python"],
+    "qbitmanage==4.2.0": ["qbitmanage"],
+    "qbittorrent": ["qbittorrent", "qbittorrent-nox"],
+    "qbittorrent:qbittorrent": ["qbittorrent"],
+    "questdb": ["questdb"],
+    "r2c": ["r2c-bench"],
     "rabbitmq": [
       "rabbitmq",
       "rabbitmq-amqp",
@@ -1266,26 +730,11 @@
       "rabbitmq-mqtt",
       "rabbitmq-stomp"
     ],
-    "rabbitmq:rabbitmq": [
-      "rabbitmq"
-    ],
-    "rblake": [
-      "rblake"
-    ],
-    "redis": [
-      "argocd-redis",
-      "redis-cluster",
-      "redis-sentinel",
-      "redis-vert",
-      "redis7",
-      "redismodules"
-    ],
-    "redis:redis": [
-      "redis7"
-    ],
-    "redisinsight": [
-      "redis-insight"
-    ],
+    "rabbitmq:rabbitmq": ["rabbitmq"],
+    "rblake": ["rblake"],
+    "redis": ["argocd-redis", "redis-cluster", "redis-sentinel", "redis-vert", "redis7", "redismodules"],
+    "redis:redis": ["redis7"],
+    "redisinsight": ["redis-insight"],
     "repo": [
       "automatic1111",
       "bazarr",
@@ -1295,12 +744,8 @@
       "stable-diffusion-webui",
       "text-generation-webui"
     ],
-    "repo-security": [
-      "repo-security"
-    ],
-    "repo-supervisor": [
-      "repo-supervisor"
-    ],
+    "repo-security": ["repo-security"],
+    "repo-supervisor": ["repo-supervisor"],
     "requirements.txt": [
       "automatic1111",
       "bazarr",
@@ -1310,189 +755,60 @@
       "stable-diffusion-webui",
       "text-generation-webui"
     ],
-    "rmi": [
-      "docker-clean"
-    ],
-    "rmilter": [
-      "rmilter"
-    ],
-    "root:root": [
-      "sssd"
-    ],
-    "roundcube": [
-      "roundcube"
-    ],
-    "rss2email==3.15.1": [
-      "rss2email"
-    ],
-    "ruby-irb": [
-      "dependabot"
-    ],
-    "ruby-rdoc": [
-      "dependabot"
-    ],
-    "runner": [
-      "github-actions-minimal",
-      "github-actions-runner"
-    ],
-    "runner:runner": [
-      "github-actions-runner"
-    ],
-    "scikit-learn": [
-      "immich-machine-learning",
-      "jupyter-scikit"
-    ],
-    "scrapyd==1.5.0": [
-      "scrapyd"
-    ],
-    "script\\n#": [
-      "docker-clean"
-    ],
-    "scylla": [
-      "scylladb"
-    ],
-    "searxng": [
-      "searxng"
-    ],
-    "searxng:searxng": [
-      "searxng"
-    ],
-    "secrets-scanner": [
-      "secrets-scanner"
-    ],
-    "secretz": [
-      "secretz"
-    ],
-    "shh": [
-      "shh"
-    ],
-    "sigal==2.3.0": [
-      "sigal"
-    ],
-    "singer-python": [
-      "singer"
-    ],
-    "singlestore": [
-      "singlestore"
-    ],
-    "sleep": [
-      "caddy-alpine",
-      "forgejo",
-      "grafana-toolkit",
-      "graphile",
-      "keycloak"
-    ],
-    "splunk": [
-      "splunk-forwarder"
-    ],
-    "sqlalchemy": [
-      "singlestore"
-    ],
-    "sqlalchemy,": [
-      "singlestore"
-    ],
-    "sqlite:sqlite": [
-      "sqlite"
-    ],
-    "stalwart": [
-      "stalwart-bitnami"
-    ],
-    "subliminal": [
-      "bazarr-subliminal"
-    ],
-    "synapse": [
-      "chat-server"
-    ],
-    "tensorboard": [
-      "tensor",
-      "tensorboard"
-    ],
-    "tensorboard==__VAR__": [
-      "tensor"
-    ],
-    "tensorflow": [
-      "jupyter-tensorflow",
-      "tensorflow"
-    ],
-    "the": [
-      "singlestore"
-    ],
-    "then": [
-      "caddy-alpine",
-      "cinny",
-      "keycloak"
-    ],
-    "then\\n": [
-      "docker-clean"
-    ],
-    "this": [
-      "neptune",
-      "objectrocket",
-      "singlestore"
-    ],
-    "tigergraph": [
-      "tigergraph",
-      "tigergraph-ecosystem"
-    ],
-    "to": [
-      "neptune",
-      "objectrocket"
-    ],
-    "toolkit": [
-      "grafana-toolkit"
-    ],
-    "tools:": [
-      "neptune"
-    ],
-    "torch": [
-      "jupyter-pytorch",
-      "pytorch",
-      "text-generation-webui",
-      "transformers-gpu"
-    ],
-    "torchaudio": [
-      "pytorch"
-    ],
-    "torchvision": [
-      "jupyter-pytorch",
-      "pytorch",
-      "text-generation-webui"
-    ],
-    "transfer": [
-      "transferhelper"
-    ],
-    "transformers": [
-      "stable-diffusion",
-      "transformers",
-      "transformers-gpu"
-    ],
-    "transmission": [
-      "transmission"
-    ],
-    "transmission:transmission": [
-      "transmission"
-    ],
-    "true)\\nfor": [
-      "docker-clean"
-    ],
-    "true)\\nif": [
-      "docker-clean"
-    ],
-    "true\\n": [
-      "docker-clean"
-    ],
-    "true\\nfi\\n\\necho": [
-      "docker-clean"
-    ],
-    "user": [
-      "text-generation-webui"
-    ],
-    "user:user": [
-      "text-generation-webui"
-    ],
-    "usermod": [
-      "apache"
-    ],
+    "rmi": ["docker-clean"],
+    "rmilter": ["rmilter"],
+    "root:root": ["sssd"],
+    "roundcube": ["roundcube"],
+    "rss2email==3.15.1": ["rss2email"],
+    "ruby-irb": ["dependabot"],
+    "ruby-rdoc": ["dependabot"],
+    "runner": ["github-actions-minimal", "github-actions-runner"],
+    "runner:runner": ["github-actions-runner"],
+    "scikit-learn": ["immich-machine-learning", "jupyter-scikit"],
+    "scrapyd==1.5.0": ["scrapyd"],
+    "script\\n#": ["docker-clean"],
+    "scylla": ["scylladb"],
+    "searxng": ["searxng"],
+    "searxng:searxng": ["searxng"],
+    "secrets-scanner": ["secrets-scanner"],
+    "secretz": ["secretz"],
+    "shh": ["shh"],
+    "sigal==2.3.0": ["sigal"],
+    "singer-python": ["singer"],
+    "singlestore": ["singlestore"],
+    "sleep": ["caddy-alpine", "forgejo", "grafana-toolkit", "graphile", "keycloak"],
+    "splunk": ["splunk-forwarder"],
+    "sqlalchemy": ["singlestore"],
+    "sqlalchemy,": ["singlestore"],
+    "sqlite:sqlite": ["sqlite"],
+    "stalwart": ["stalwart-bitnami"],
+    "subliminal": ["bazarr-subliminal"],
+    "synapse": ["chat-server"],
+    "tensorboard": ["tensor", "tensorboard"],
+    "tensorboard==__VAR__": ["tensor"],
+    "tensorflow": ["jupyter-tensorflow", "tensorflow"],
+    "the": ["singlestore"],
+    "then": ["caddy-alpine", "cinny", "keycloak"],
+    "then\\n": ["docker-clean"],
+    "this": ["neptune", "objectrocket", "singlestore"],
+    "tigergraph": ["tigergraph", "tigergraph-ecosystem"],
+    "to": ["neptune", "objectrocket"],
+    "toolkit": ["grafana-toolkit"],
+    "tools:": ["neptune"],
+    "torch": ["jupyter-pytorch", "pytorch", "text-generation-webui", "transformers-gpu"],
+    "torchaudio": ["pytorch"],
+    "torchvision": ["jupyter-pytorch", "pytorch", "text-generation-webui"],
+    "transfer": ["transferhelper"],
+    "transformers": ["stable-diffusion", "transformers", "transformers-gpu"],
+    "transmission": ["transmission"],
+    "transmission:transmission": ["transmission"],
+    "true)\\nfor": ["docker-clean"],
+    "true)\\nif": ["docker-clean"],
+    "true\\n": ["docker-clean"],
+    "true\\nfi\\n\\necho": ["docker-clean"],
+    "user": ["text-generation-webui"],
+    "user:user": ["text-generation-webui"],
+    "usermod": ["apache"],
     "using": [
       "automatic1111",
       "bazarr",
@@ -1502,77 +818,23 @@
       "stable-diffusion-webui",
       "text-generation-webui"
     ],
-    "uvicorn==0.30.0": [
-      "immich-machine-learning",
-      "immich-ml"
-    ],
-    "v%s": [
-      "docker-clean",
-      "dotdns",
-      "keycloak",
-      "neptune",
-      "objectrocket",
-      "singlestore"
-    ],
-    "v1.5.2": [
-      "bazarr",
-      "bazarr-subliminal"
-    ],
-    "v1.9.3": [
-      "automatic1111",
-      "stable-diffusion-webui"
-    ],
-    "v3.0.0": [
-      "gallery3"
-    ],
-    "v__VAR__": [
-      "text-generation-webui"
-    ],
-    "vecs": [
-      "vecs-db"
-    ],
-    "virtuoso": [
-      "virtuoso"
-    ],
-    "vlatest": [
-      "comfyui"
-    ],
-    "vllm": [
-      "vllm"
-    ],
-    "wandb": [
-      "wandb-server",
-      "weights-biases"
-    ],
-    "weaviate-client": [
-      "weaviate-python"
-    ],
-    "www-data": [
-      "apache"
-    ],
-    "xzf": [
-      "elasticsearch",
-      "elasticsearch-7",
-      "keycloak",
-      "neo4j",
-      "opensearch-dashboards"
-    ],
-    "your": [
-      "neptune",
-      "objectrocket",
-      "singlestore"
-    ],
-    "zigpy==0.60.0": [
-      "athom",
-      "homekit",
-      "zoe",
-      "zzh"
-    ],
-    "zoe": [
-      "zoe"
-    ],
-    "zzh": [
-      "zzh"
-    ]
+    "uvicorn==0.30.0": ["immich-machine-learning", "immich-ml"],
+    "v%s": ["docker-clean", "dotdns", "keycloak", "neptune", "objectrocket", "singlestore"],
+    "v1.5.2": ["bazarr", "bazarr-subliminal"],
+    "v1.9.3": ["automatic1111", "stable-diffusion-webui"],
+    "v3.0.0": ["gallery3"],
+    "v__VAR__": ["text-generation-webui"],
+    "vecs": ["vecs-db"],
+    "virtuoso": ["virtuoso"],
+    "vlatest": ["comfyui"],
+    "vllm": ["vllm"],
+    "wandb": ["wandb-server", "weights-biases"],
+    "weaviate-client": ["weaviate-python"],
+    "www-data": ["apache"],
+    "xzf": ["elasticsearch", "elasticsearch-7", "keycloak", "neo4j", "opensearch-dashboards"],
+    "your": ["neptune", "objectrocket", "singlestore"],
+    "zigpy==0.60.0": ["athom", "homekit", "zoe", "zzh"],
+    "zoe": ["zoe"],
+    "zzh": ["zzh"]
   }
 }

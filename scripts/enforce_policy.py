@@ -195,9 +195,7 @@ def check_cve_freshness(sbom_info: dict, max_days: int) -> dict:
         return {"fresh": None, "age_days": None, "reason": "cannot stat SBOM"}
 
 
-def get_effective_policy(
-    policy_name: str, base_policy: dict, tier: str
-) -> dict:
+def get_effective_policy(policy_name: str, base_policy: dict, tier: str) -> dict:
     effective = dict(base_policy)
     tier_key = policy_name
     if tier in TIER_OVERRIDES and tier_key in TIER_OVERRIDES[tier]:
@@ -490,9 +488,7 @@ def main():
     if args.severity == "block":
         all_results = [r for r in all_results if r["severity"] in ("block",)]
     elif args.severity == "warn":
-        all_results = [
-            r for r in all_results if r["severity"] in ("block", "warn")
-        ]
+        all_results = [r for r in all_results if r["severity"] in ("block", "warn")]
 
     if args.json_output:
         output = build_json_output(all_results, images_checked, args.tier)

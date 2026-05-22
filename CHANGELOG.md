@@ -15,14 +15,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   - Full audit report: `docs/image-audit-report.md` (841 images, 9 categories)
 - **Audit findings -- all categories resolved:**
 
-| Category | Flagged | Real Issues | Resolution |
-|----------|---------|-------------|------------|
-| WRONG_BASE | 21 | 0 (all false positives) | Wolfi uses glibc, not musl. Fixed 14 stale comments. |
-| BLOATED | 18 | 0 (all false positives) | python3/npm/git are runtime deps, not build tools. |
-| HEALTHCHECK_NONE | 130 | 5 (audit script bug) | Fixed docker-socket-proxy, photoshow, redis-vert, rss2, forgejo. |
-| PLACEHOLDER | 337 | 334 (behavior change) | `sleep infinity` replaced with `exit 1` + stderr error. |
-| NO_EXPOSE | 200 | 0 (all CLI/batch tools) | EXPOSE is documentation-only for CLIs. |
-| NO_ENTRYPOINT | 40 | 0 (all base/toolchain) | Expected behavior. |
+| Category         | Flagged | Real Issues             | Resolution                                                       |
+| ---------------- | ------- | ----------------------- | ---------------------------------------------------------------- |
+| WRONG_BASE       | 21      | 0 (all false positives) | Wolfi uses glibc, not musl. Fixed 14 stale comments.             |
+| BLOATED          | 18      | 0 (all false positives) | python3/npm/git are runtime deps, not build tools.               |
+| HEALTHCHECK_NONE | 130     | 5 (audit script bug)    | Fixed docker-socket-proxy, photoshow, redis-vert, rss2, forgejo. |
+| PLACEHOLDER      | 337     | 334 (behavior change)   | `sleep infinity` replaced with `exit 1` + stderr error.          |
+| NO_EXPOSE        | 200     | 0 (all CLI/batch tools) | EXPOSE is documentation-only for CLIs.                           |
+| NO_ENTRYPOINT    | 40      | 0 (all base/toolchain)  | Expected behavior.                                               |
 
 - **Placeholder behavior change** (334 images):
   - Before: container runs `sleep infinity` on missing binary (silent failure)

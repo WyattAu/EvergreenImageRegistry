@@ -1,14 +1,20 @@
 #!/usr/bin/env python3
 """Add ARG TARGETARCH to Dockerfiles for multi-arch support."""
+
 import argparse
 import re
 import sys
 from pathlib import Path
 
 EXCLUDED_IMAGES = {
-    "nvidia-cuda", "nvidia", "cuda",
-    "ollama-cuda", "ollama-gpu", "ollama-rocm",
-    "pytorch-cuda", "pytorch-gpu",
+    "nvidia-cuda",
+    "nvidia",
+    "cuda",
+    "ollama-cuda",
+    "ollama-gpu",
+    "ollama-rocm",
+    "pytorch-cuda",
+    "pytorch-gpu",
     "deepspeed",
     "automatic1111",
     "comfyui",
@@ -18,35 +24,35 @@ EXCLUDED_IMAGES = {
 
 
 def has_targetarch(content):
-    return bool(re.search(r'ARG\s+TARGETARCH', content, re.IGNORECASE))
+    return bool(re.search(r"ARG\s+TARGETARCH", content, re.IGNORECASE))
 
 
 def is_scratch_only(content):
     for line in content.splitlines():
         stripped = line.strip()
-        if stripped.startswith('FROM '):
+        if stripped.startswith("FROM "):
             ref = stripped[5:].split()[0].lower()
-            if ref not in ('scratch',):
+            if ref not in ("scratch",):
                 return False
     return True
 
 
 def add_targetarch(content):
-    lines = content.split('\n')
+    lines = content.split("\n")
     new_lines = []
     added = False
 
     for line in lines:
         new_lines.append(line)
-        if not added and re.match(r'^ARG\s+VERSION=', line, re.IGNORECASE):
-            new_lines.append('ARG TARGETARCH')
+        if not added and re.match(r"^ARG\s+VERSION=", line, re.IGNORECASE):
+            new_lines.append("ARG TARGETARCH")
             added = True
 
-    return '\n'.join(new_lines), added
+    return "\n".join(new_lines), added
 
 
 def process_image(image_dir, dry_run):
-    dockerfile = image_dir / 'Dockerfile'
+    dockerfile = image_dir / "Dockerfile"
     if not dockerfile.exists():
         return None
 
@@ -77,10 +83,10 @@ def process_image(image_dir, dry_run):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Add ARG TARGETARCH to Dockerfiles')
-    parser.add_argument('--dry-run', action='store_true', help='Dry run')
-    parser.add_argument('--images', nargs='*', help='Specific images to process')
-    parser.add_argument('--images-dir', default='images', help='Images directory')
+    parser = argparse.ArgumentParser(description="Add ARG TARGETARCH to Dockerfiles")
+    parser.add_argument("--dry-run", action="store_true", help="Dry run")
+    parser.add_argument("--images", nargs="*", help="Specific images to process")
+    parser.add_argument("--images-dir", default="images", help="Images directory")
     args = parser.parse_args()
 
     images_dir = Path(args.images_dir)
@@ -117,5 +123,5 @@ def main():
     return 0 if errors == 0 else 1
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

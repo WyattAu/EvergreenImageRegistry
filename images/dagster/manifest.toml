@@ -5,7 +5,7 @@ description = "Dagster - data orchestration platform"
 vendor = "Dagster"
 source = "https://github.com/dagster-io/dagster"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

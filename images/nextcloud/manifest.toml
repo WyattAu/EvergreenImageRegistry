@@ -5,7 +5,7 @@ description = "Nextcloud - self-hosted productivity platform"
 vendor = "Nextcloud"
 source = "https://github.com/nextcloud/server"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

@@ -5,7 +5,7 @@ description = "Step CA - private certificate authority for automated PKI"
 vendor = "Smallstep"
 source = "https://github.com/smallstep/certificates"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "scratch"

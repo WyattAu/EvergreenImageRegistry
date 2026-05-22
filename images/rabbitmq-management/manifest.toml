@@ -5,7 +5,7 @@ description = "RabbitMQ Management - web-based management plugin for RabbitMQ"
 vendor = "VMware"
 source = "https://github.com/rabbitmq/rabbitmq-server"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

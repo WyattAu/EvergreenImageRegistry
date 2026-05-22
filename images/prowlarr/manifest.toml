@@ -5,7 +5,7 @@ description = "Prowlarr - indexer manager and proxy for PVR software"
 vendor = "Prowlarr"
 source = "https://github.com/Prowlarr/Prowlarr"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

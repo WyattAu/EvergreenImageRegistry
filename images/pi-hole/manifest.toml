@@ -5,7 +5,7 @@ description = "Pi-hole - network-level ad blocking via your own Linux hardware"
 vendor = "Pi-hole"
 source = "https://github.com/pi-hole/pi-hole"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

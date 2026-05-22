@@ -5,7 +5,7 @@ description = "PostgreSQL - advanced open source relational database"
 vendor = "PostgreSQL"
 source = "https://github.com/postgres/postgres"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

@@ -5,7 +5,7 @@ description = "Kubescape - Kubernetes security platform"
 vendor = "Kubescape"
 source = "https://github.com/kubescape/kubescape"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "scratch"

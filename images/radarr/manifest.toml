@@ -5,7 +5,7 @@ description = "Radarr - movie collection manager for Usenet and BitTorrent"
 vendor = "Radarr"
 source = "https://github.com/Radarr/Radarr"
 license = "Apache-2.0"
-tier = "community"
+tier = "standard"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"

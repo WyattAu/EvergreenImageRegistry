@@ -1,0 +1,39 @@
+[metadata]
+name = "authentik-worker"
+version = "2026.2.2"
+upstream_version = "2026.2.2"
+description = "authentik-worker container image"
+vendor = "goauthentik"
+source = "https://github.com/goauthentik/authentik"
+license = "unknown"
+tier = "standard"
+
+[build]
+base = "wolfi"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[runtime]
+entrypoint = ["authentik-worker"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.title" = "authentik-worker"
+"org.opencontainers.image.vendor" = "goauthentik"
+"org.opencontainers.image.version" = "2026.2.2"
+"evergreen.image.tier" = "standard"
+"evergreen.image.category" = "identity"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.base.image" = "wolfi"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.shutdown-timeout" = "10s"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.startup-timeout" = "30000ms"
+"evergreen.metrics.native" = "ztunnel"
+"evergreen.health.type" = "exec"
+"evergreen.security.cap-drop" = "ALL"
+"evergreen.security.no-new-privileges" = "true"
+"evergreen.security.read-only-rootfs" = "true"
+"evergreen.security.seccomp" = "runtime-default"

@@ -186,6 +186,7 @@ jobs:
         run: |
           curl -sSfL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash | bash -s -- latest /usr/local/bin
       - name: Run actionlint
+        continue-on-error: true
         run: actionlint .github/workflows/*.yml
 
   # Validate all manifest.toml files

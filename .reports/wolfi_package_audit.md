@@ -6,347 +6,347 @@
 
 ## Summary
 
-| Metric | Value |
-|--------|-------|
-| Total unique packages | 474 |
-| Valid (in wolfi) | 155 |
-| Invalid (not in wolfi) | 319 |
-| Valid percentage | 32.7% |
-| Dockerfiles scanned | 979 |
-| Dockerfiles with `apk add` | 519 |
+| Metric                     | Value |
+| -------------------------- | ----- |
+| Total unique packages      | 474   |
+| Valid (in wolfi)           | 155   |
+| Invalid (not in wolfi)     | 319   |
+| Valid percentage           | 32.7% |
+| Dockerfiles scanned        | 979   |
+| Dockerfiles with `apk add` | 519   |
 
 ## Invalid Packages
 
-| Package | Category | Dockerfiles | Images |
-|---------|----------|-------------|--------|
-| `#` | unknown | 1 | gitea |
-| `*)` | unknown | 3 | gitea, libsql, litestream |
-| `+x` | unknown | 17 | caddy-alpine, dbmate, docker-clean, duplicati, forgejo... |
-| `-` | unknown | 11 | automatic1111, bazarr, bazarr-subliminal, comfyui, docker-clean... |
-| `2.5.0` | unknown | 1 | bundler |
-| `65532:65532` | unknown | 76 | 389ds, akaunting, apache, athom, calibre-web... |
-| `8.0` | unknown | 1 | duplicati |
-| `?` | unknown | 1 | organizer |
-| `@grafana/toolkit@__VAR__` | unknown | 1 | grafana-toolkit |
-| `@worldsibu/convector-platform@__VAR__` | unknown | 1 | convector |
-| `ARCH=$(case` | unknown | 2 | gitea, libsql |
-| `AWS` | unknown | 1 | neptune |
-| `Atlas` | unknown | 1 | objectrocket |
-| `Based` | unknown | 1 | docker-clean |
-| `CGO_ENABLED=0` | unknown | 1 | dotdns |
-| `Docker` | unknown | 1 | docker-clean |
-| `GOARCH=__VAR__` | unknown | 1 | dotdns |
-| `GOOS=linux` | unknown | 1 | dotdns |
-| `Gremlin/SPARQL` | unknown | 1 | neptune |
-| `MongoDB` | unknown | 1 | objectrocket |
-| `Neptune` | unknown | 1 | neptune |
-| `Neptune-compatible` | unknown | 1 | neptune |
-| `ObjectRocket-compatible` | unknown | 1 | objectrocket |
-| `ObjectRocket/MongoDB` | unknown | 1 | objectrocket |
-| `RediSearch,` | unknown | 1 | redismodules |
-| `RedisJSON,` | unknown | 1 | redismodules |
-| `RedisTimeSeries,` | unknown | 1 | redismodules |
-| `SPARQLWrapper` | unknown | 1 | neptune |
-| `SQL` | unknown | 1 | singlestore |
-| `SingleStore-compatible` | unknown | 1 | singlestore |
-| `TTS` | unknown | 2 | coqui-tts, tts |
-| `a` | unknown | 3 | neptune, objectrocket, singlestore |
-| `a2dismod` | unknown | 1 | apache |
-| `accelerate` | unknown | 1 | stable-diffusion |
-| `add` | unknown | 10 | faster-whisper, gitbucket, knot-resolver, mailtrain, mozilla-hubs... |
-| `amd64)` | unknown | 3 | gitea, libsql, litestream |
-| `apk` | unknown | 12 | faster-whisper, gitbucket, knot-resolver, mailtrain, milvus-minio... |
-| `app` | unknown | 70 | airsonic, airsonic-advanced, automatic1111, bazarr, bazarr-subliminal... |
-| `app:app` | unknown | 55 | automatic1111, bazarr, bazarr-subliminal, bundler, calibre... |
-| `appuser` | unknown | 14 | cinny, debian-slim, element-web, element-x, fail2ban... |
-| `appuser:appuser` | unknown | 4 | fail2ban, modsecurity, powerdns, softether |
-| `arango` | unknown | 1 | arango |
-| `arm64)` | unknown | 3 | gitea, libsql, litestream |
-| `as` | unknown | 3 | neptune, objectrocket, singlestore |
-| `athom` | unknown | 1 | athom |
-| `autoindex` | unknown | 1 | apache |
-| `available` | unknown | 7 | automatic1111, bazarr, bazarr-subliminal, comfyui, gallery3... |
-| `backup` | unknown | 1 | gitlab-backup |
-| `base` | unknown | 3 | neptune, objectrocket, singlestore |
-| `build` | unknown | 1 | dotdns |
-| `bundled:` | unknown | 1 | redismodules |
-| `bundler` | unknown | 1 | bundler |
-| `bzip2-libs` | unknown | 2 | onlyoffice-documentserver, onlyoffice-documentserver-ee |
-| `calibre` | unknown | 4 | calibre, calibre-eb, calibre-server, calibre-web |
-| `case` | unknown | 1 | litestream |
-| `chartdb` | unknown | 1 | chartdb |
-| `chroma` | unknown | 1 | chroma |
-| `chroma:chroma` | unknown | 1 | chroma |
-| `chromadb` | unknown | 1 | chroma |
-| `chromadb==0.5.23` | unknown | 1 | chroma-all-minimal |
-| `chromadb==__VAR__` | unknown | 1 | chroma |
-| `cid` | unknown | 1 | docker-clean |
-| `cleanup` | unknown | 1 | docker-clean |
-| `client` | unknown | 2 | objectrocket, singlestore |
-| `clone` | unknown | 8 | automatic1111, bazarr, bazarr-subliminal, comfyui, fail2ban-exporter... |
-| `cloud` | unknown | 1 | objectrocket |
-| `cmak` | unknown | 1 | kafka-manager |
-| `codimd` | unknown | 1 | codimd |
-| `commercial` | unknown | 1 | singlestore |
-| `common` | unknown | 1 | docker-clean |
-| `compatibility` | unknown | 2 | neptune, singlestore |
-| `complement` | unknown | 1 | chat-relay |
-| `conduit` | unknown | 1 | conduit-admin |
-| `connect` | unknown | 1 | kafka-connect |
-| `container:` | unknown | 1 | docker-clean |
-| `convector` | unknown | 1 | convector |
-| `crate` | unknown | 1 | crate |
-| `created=$(docker` | unknown | 1 | docker-clean |
-| `dagster` | unknown | 3 | dagster, dagster-daemon, dagster-logs |
-| `dagster-webserver` | unknown | 1 | dagster |
-| `dangling` | unknown | 1 | docker-clean |
-| `database` | unknown | 2 | neptune, objectrocket |
-| `deepspeed` | unknown | 1 | deepspeed |
-| `del` | unknown | 2 | milvus-minio, sqlite-utils |
-| `dendrite` | unknown | 1 | dendrite-pot |
-| `derby` | unknown | 1 | derby |
-| `development` | unknown | 3 | neptune, objectrocket, singlestore |
-| `diffusers` | unknown | 2 | diffusers, stable-diffusion |
-| `distributed` | unknown | 1 | singlestore |
-| `do\n` | unknown | 1 | docker-clean |
-| `docker-clean` | unknown | 1 | docker-clean |
-| `dockerclean` | unknown | 1 | docker-clean |
-| `dsp` | unknown | 1 | docker-socket-proxy |
-| `edition` | unknown | 1 | singlestore |
-| `ejdb` | unknown | 1 | ejdb |
-| `endpoint` | unknown | 2 | neptune, objectrocket |
-| `erpnext` | unknown | 1 | erpnext |
-| `erpnext:erpnext` | unknown | 1 | erpnext |
-| `esac` | unknown | 1 | litestream |
-| `esac)` | unknown | 2 | gitea, libsql |
-| `exited` | unknown | 1 | docker-clean |
-| `fastapi==0.115.0` | unknown | 2 | immich-machine-learning, immich-ml |
-| `faster-whisper` | unknown | 1 | faster-whisper |
-| `fi` | unknown | 3 | caddy-alpine, cinny, keycloak |
-| `fi\ndone\n\ndangling_images=$(docker` | unknown | 1 | docker-clean |
-| `fileshare` | unknown | 1 | ol_fileshare |
-| `firebird` | unknown | 1 | firebird |
-| `fluentd` | unknown | 1 | fluentd |
-| `for` | unknown | 3 | neptune, objectrocket, singlestore |
-| `free` | unknown | 1 | singlestore |
-| `from` | unknown | 1 | singlestore |
-| `fstrm-libs` | unknown | 1 | powerdns-recursor |
-| `fully` | unknown | 2 | neptune, objectrocket |
-| `gitbucket` | unknown | 1 | gitbucket |
-| `graph` | unknown | 1 | neptune |
-| `graphdb` | unknown | 1 | graphdb-enterpriser |
-| `graphile` | unknown | 1 | graphile |
-| `graylog` | unknown | 1 | graylog |
-| `gremlinpython` | unknown | 1 | neptune |
-| `gremlinpython,` | unknown | 1 | neptune |
-| `h2` | unknown | 1 | h2 |
-| `hazelcast` | unknown | 1 | hazelcast |
-| `hive` | unknown | 2 | hive, hive-metastore |
-| `homeassistant` | unknown | 1 | homeassistant |
-| `homeassistant:homeassistant` | unknown | 1 | homeassistant |
-| `homekit` | unknown | 1 | homekit |
-| `hts` | unknown | 1 | tvheadend |
-| `hts:hts` | unknown | 1 | tvheadend |
-| `hydrogen` | unknown | 1 | hydrogen |
-| `if` | unknown | 4 | caddy-alpine, cinny, docker-clean, keycloak |
-| `ignite` | unknown | 1 | ignite |
-| `image` | unknown | 3 | neptune, objectrocket, singlestore |
-| `images` | unknown | 1 | docker-clean |
-| `immich` | unknown | 1 | immich |
-| `immich:immich` | unknown | 1 | immich |
-| `import` | unknown | 3 | neptune, objectrocket, singlestore |
-| `in` | unknown | 6 | docker-clean, gitea, libsql, litestream, neptune... |
-| `inspect` | unknown | 1 | docker-clean |
-| `invokeai` | unknown | 1 | invokeai |
-| `is` | unknown | 3 | neptune, objectrocket, singlestore |
-| `janusgraph` | unknown | 1 | janusgraph |
-| `java-21-default-jdk` | unknown | 3 | gitbucket, openhab, wolfi-jdk |
-| `jenkins:jenkins` | unknown | 1 | jenkins |
-| `jupyter` | unknown | 1 | jupyter-all |
-| `jupyterlab` | unknown | 3 | jupyter-pytorch, jupyter-scikit, jupyter-tensorflow |
-| `kibana` | unknown | 2 | kibana, kibana-oss |
-| `knot` | unknown | 1 | knot-resolver |
-| `knot-resolver` | unknown | 1 | knot-resolver |
-| `knot-resolver-utils` | unknown | 1 | knot-resolver |
-| `langchain` | unknown | 1 | langchain |
-| `langserve` | unknown | 1 | langserve |
-| `ldap` | unknown | 2 | ldap, openldap |
-| `ldap:ldap` | unknown | 2 | ldap, openldap |
-| `libcrypto1.1` | unknown | 1 | strongswan |
-| `libcurl` | unknown | 7 | onlyoffice-communityserver, onlyoffice-controlpanel, onlyoffice-documentserver, onlyoffice-documentserver-ee, powerdns-api... |
-| `libraries` | unknown | 1 | singlestore |
-| `library` | unknown | 1 | objectrocket |
-| `libtiff` | unknown | 2 | onlyoffice-documentserver, onlyoffice-documentserver-ee |
-| `litellm` | unknown | 1 | litellm |
-| `litellm[proxy]` | unknown | 1 | litellm-proxy |
-| `local` | unknown | 1 | neptune |
-| `main()` | unknown | 1 | dotdns |
-| `main\nimport` | unknown | 1 | dotdns |
-| `managed` | unknown | 2 | neptune, objectrocket |
-| `mariadb-libs` | unknown | 1 | onlyoffice-communityserver |
-| `matplotlib` | unknown | 1 | jupyter-scikit |
-| `matrix-synapse==__VAR__` | unknown | 1 | chat-server |
-| `maxbot==__VAR__` | unknown | 1 | maxbot |
-| `meltano` | unknown | 1 | meltano |
-| `memgraph` | unknown | 1 | memgraph |
-| `modsec` | unknown | 1 | modsecurity-crs |
-| `module` | unknown | 1 | redismodules |
-| `modules` | unknown | 1 | redismodules |
-| `mongodb` | unknown | 3 | mongodb-5, mongodb-7, mongodb-community |
-| `mongosh` | unknown | 1 | mongodb-opsmanager |
-| `mosquitto:mosquitto` | unknown | 1 | mqtt |
-| `mythtv` | unknown | 1 | mythtv |
-| `mythtv:mythtv` | unknown | 1 | mythtv |
-| `neptune` | unknown | 1 | neptune |
-| `newsboat` | unknown | 1 | newsboat |
-| `newsboat:newsboat` | unknown | 1 | newsboat |
-| `nheko` | unknown | 1 | nheko |
-| `nifi` | unknown | 2 | apache-nifi, nifi-registry |
-| `node` | unknown | 4 | logseq, n8n, typesense-js, uptime-kuma |
-| `node:node` | unknown | 4 | logseq, n8n, typesense-js, uptime-kuma |
-| `nogroup` | unknown | 13 | athom, docker-clean, homekit, r2c-bench, rblake... |
-| `not` | unknown | 7 | automatic1111, bazarr, bazarr-subliminal, comfyui, gallery3... |
-| `numpy==2.1.0` | unknown | 2 | immich-machine-learning, jupyter-scikit |
-| `objectrocket` | unknown | 1 | objectrocket |
-| `on` | unknown | 1 | docker-clean |
-| `onnxruntime` | unknown | 2 | immich-machine-learning, immich-ml |
-| `open-gpts` | unknown | 1 | opengpts |
-| `openai-whisper` | unknown | 1 | whisper |
-| `openhab` | unknown | 1 | openhab |
-| `openjdk-21-jdk-headless` | unknown | 3 | gitbucket, openhab, wolfi-jdk |
-| `openssl-libs` | unknown | 7 | onlyoffice-communityserver, onlyoffice-controlpanel, onlyoffice-documentserver, onlyoffice-documentserver-ee, powerdns-api... |
-| `oracle` | unknown | 1 | oracledb-xe |
-| `organizr` | unknown | 1 | organizer |
-| `outline` | unknown | 1 | outline |
-| `outline:outline` | unknown | 1 | outline |
-| `oxidized` | unknown | 1 | oxidized |
-| `pandas==2.2.0` | unknown | 1 | jupyter-scikit |
-| `pgbouncer:pgbouncer` | unknown | 1 | pgbouncer |
-| `pgpool` | unknown | 1 | pgpool-ii |
-| `pgpool:pgpool` | unknown | 1 | pgpool-ii |
-| `php-cli` | unknown | 2 | photoshow, rss2 |
-| `php-json` | unknown | 3 | photoshow, roundcube, rss2 |
-| `php-session` | unknown | 2 | photoshow, roundcube |
-| `php-valkey` | unknown | 1 | cachet |
-| `pillow==10.4.0` | unknown | 2 | immich-machine-learning, immich-ml |
-| `pinecone-client` | unknown | 1 | pinecone |
-| `pip3` | unknown | 4 | maxbot, neptune, objectrocket, singlestore |
-| `pipefail\n#` | unknown | 1 | docker-clean |
-| `placeholder` | unknown | 1 | organizer |
-| `placeholder</h1` | unknown | 1 | cinny |
-| `planka` | unknown | 1 | planka |
-| `planka:planka` | unknown | 1 | planka |
-| `postgraphile@__VAR__` | unknown | 1 | graphile |
-| `postgresql-__VAR__-client` | unknown | 3 | postgres-backup, postgres-restore, postgresql-init |
-| `postgresql-libs` | unknown | 3 | onlyoffice-communityserver, onlyoffice-documentserver, onlyoffice-documentserver-ee |
-| `prefect` | unknown | 2 | prefect, prefect-server |
-| `production` | unknown | 1 | singlestore |
-| `provides` | unknown | 3 | neptune, objectrocket, singlestore |
-| `ps` | unknown | 1 | docker-clean |
-| `pulsar` | unknown | 2 | pulsar-functions, pulsar-proxy |
-| `pymongo` | unknown | 1 | objectrocket |
-| `pymysql` | unknown | 1 | singlestore |
-| `pymysql,` | unknown | 1 | singlestore |
-| `pymysql/sqlalchemy` | unknown | 1 | singlestore |
-| `python` | unknown | 1 | meilisearch-python |
-| `python:python` | unknown | 1 | meilisearch-python |
-| `qbitmanage==4.2.0` | unknown | 1 | qbitmanage |
-| `qbittorrent` | unknown | 2 | qbittorrent, qbittorrent-nox |
-| `qbittorrent:qbittorrent` | unknown | 1 | qbittorrent |
-| `questdb` | unknown | 1 | questdb |
-| `r2c` | unknown | 1 | r2c-bench |
-| `rabbitmq` | unknown | 7 | rabbitmq, rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation, rabbitmq-management... |
-| `rabbitmq:rabbitmq` | unknown | 1 | rabbitmq |
-| `rblake` | unknown | 1 | rblake |
-| `redis` | unknown | 6 | argocd-redis, redis-cluster, redis-sentinel, redis-vert, redis7... |
-| `redis:redis` | unknown | 1 | redis7 |
-| `redisinsight` | unknown | 1 | redis-insight |
-| `repo` | unknown | 7 | automatic1111, bazarr, bazarr-subliminal, comfyui, gallery3... |
-| `repo-security` | unknown | 1 | repo-security |
-| `repo-supervisor` | unknown | 1 | repo-supervisor |
-| `requirements.txt` | unknown | 7 | automatic1111, bazarr, bazarr-subliminal, comfyui, gallery3... |
-| `rmi` | unknown | 1 | docker-clean |
-| `rmilter` | unknown | 1 | rmilter |
-| `root:root` | unknown | 1 | sssd |
-| `roundcube` | unknown | 1 | roundcube |
-| `rss2email==3.15.1` | unknown | 1 | rss2email |
-| `ruby-irb` | unknown | 1 | dependabot |
-| `ruby-rdoc` | unknown | 1 | dependabot |
-| `runner` | unknown | 2 | github-actions-minimal, github-actions-runner |
-| `runner:runner` | unknown | 1 | github-actions-runner |
-| `scikit-learn` | unknown | 2 | immich-machine-learning, jupyter-scikit |
-| `scrapyd==1.5.0` | unknown | 1 | scrapyd |
-| `script\n#` | unknown | 1 | docker-clean |
-| `scylla` | unknown | 1 | scylladb |
-| `searxng` | unknown | 1 | searxng |
-| `searxng:searxng` | unknown | 1 | searxng |
-| `secrets-scanner` | unknown | 1 | secrets-scanner |
-| `secretz` | unknown | 1 | secretz |
-| `shh` | unknown | 1 | shh |
-| `sigal==2.3.0` | unknown | 1 | sigal |
-| `singer-python` | unknown | 1 | singer |
-| `singlestore` | unknown | 1 | singlestore |
-| `sleep` | unknown | 5 | caddy-alpine, forgejo, grafana-toolkit, graphile, keycloak |
-| `splunk` | unknown | 1 | splunk-forwarder |
-| `sqlalchemy` | unknown | 1 | singlestore |
-| `sqlalchemy,` | unknown | 1 | singlestore |
-| `sqlite:sqlite` | unknown | 1 | sqlite |
-| `stalwart` | unknown | 1 | stalwart-bitnami |
-| `subliminal` | unknown | 1 | bazarr-subliminal |
-| `synapse` | unknown | 1 | chat-server |
-| `tensorboard` | unknown | 2 | tensor, tensorboard |
-| `tensorboard==__VAR__` | unknown | 1 | tensor |
-| `tensorflow` | unknown | 2 | jupyter-tensorflow, tensorflow |
-| `the` | unknown | 1 | singlestore |
-| `then` | unknown | 3 | caddy-alpine, cinny, keycloak |
-| `then\n` | unknown | 1 | docker-clean |
-| `this` | unknown | 3 | neptune, objectrocket, singlestore |
-| `tigergraph` | unknown | 2 | tigergraph, tigergraph-ecosystem |
-| `to` | unknown | 2 | neptune, objectrocket |
-| `toolkit` | unknown | 1 | grafana-toolkit |
-| `tools:` | unknown | 1 | neptune |
-| `torch` | unknown | 4 | jupyter-pytorch, pytorch, text-generation-webui, transformers-gpu |
-| `torchaudio` | unknown | 1 | pytorch |
-| `torchvision` | unknown | 3 | jupyter-pytorch, pytorch, text-generation-webui |
-| `transfer` | unknown | 1 | transferhelper |
-| `transformers` | unknown | 3 | stable-diffusion, transformers, transformers-gpu |
-| `transmission` | unknown | 1 | transmission |
-| `transmission:transmission` | unknown | 1 | transmission |
-| `true)\nfor` | unknown | 1 | docker-clean |
-| `true)\nif` | unknown | 1 | docker-clean |
-| `true\n` | unknown | 1 | docker-clean |
-| `true\nfi\n\necho` | unknown | 1 | docker-clean |
-| `user` | unknown | 1 | text-generation-webui |
-| `user:user` | unknown | 1 | text-generation-webui |
-| `usermod` | unknown | 1 | apache |
-| `using` | unknown | 7 | automatic1111, bazarr, bazarr-subliminal, comfyui, gallery3... |
-| `uvicorn==0.30.0` | unknown | 2 | immich-machine-learning, immich-ml |
-| `v%s` | unknown | 6 | docker-clean, dotdns, keycloak, neptune, objectrocket... |
-| `v1.5.2` | unknown | 2 | bazarr, bazarr-subliminal |
-| `v1.9.3` | unknown | 2 | automatic1111, stable-diffusion-webui |
-| `v3.0.0` | unknown | 1 | gallery3 |
-| `v__VAR__` | unknown | 1 | text-generation-webui |
-| `vecs` | unknown | 1 | vecs-db |
-| `virtuoso` | unknown | 1 | virtuoso |
-| `vlatest` | unknown | 1 | comfyui |
-| `vllm` | unknown | 1 | vllm |
-| `wandb` | unknown | 2 | wandb-server, weights-biases |
-| `weaviate-client` | unknown | 1 | weaviate-python |
-| `www-data` | unknown | 1 | apache |
-| `xzf` | unknown | 5 | elasticsearch, elasticsearch-7, keycloak, neo4j, opensearch-dashboards |
-| `your` | unknown | 3 | neptune, objectrocket, singlestore |
-| `zigpy==0.60.0` | unknown | 4 | athom, homekit, zoe, zzh |
-| `zoe` | unknown | 1 | zoe |
-| `zzh` | unknown | 1 | zzh |
+| Package                                 | Category | Dockerfiles | Images                                                                                                                        |
+| --------------------------------------- | -------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `#`                                     | unknown  | 1           | gitea                                                                                                                         |
+| `*)`                                    | unknown  | 3           | gitea, libsql, litestream                                                                                                     |
+| `+x`                                    | unknown  | 17          | caddy-alpine, dbmate, docker-clean, duplicati, forgejo...                                                                     |
+| `-`                                     | unknown  | 11          | automatic1111, bazarr, bazarr-subliminal, comfyui, docker-clean...                                                            |
+| `2.5.0`                                 | unknown  | 1           | bundler                                                                                                                       |
+| `65532:65532`                           | unknown  | 76          | 389ds, akaunting, apache, athom, calibre-web...                                                                               |
+| `8.0`                                   | unknown  | 1           | duplicati                                                                                                                     |
+| `?`                                     | unknown  | 1           | organizer                                                                                                                     |
+| `@grafana/toolkit@__VAR__`              | unknown  | 1           | grafana-toolkit                                                                                                               |
+| `@worldsibu/convector-platform@__VAR__` | unknown  | 1           | convector                                                                                                                     |
+| `ARCH=$(case`                           | unknown  | 2           | gitea, libsql                                                                                                                 |
+| `AWS`                                   | unknown  | 1           | neptune                                                                                                                       |
+| `Atlas`                                 | unknown  | 1           | objectrocket                                                                                                                  |
+| `Based`                                 | unknown  | 1           | docker-clean                                                                                                                  |
+| `CGO_ENABLED=0`                         | unknown  | 1           | dotdns                                                                                                                        |
+| `Docker`                                | unknown  | 1           | docker-clean                                                                                                                  |
+| `GOARCH=__VAR__`                        | unknown  | 1           | dotdns                                                                                                                        |
+| `GOOS=linux`                            | unknown  | 1           | dotdns                                                                                                                        |
+| `Gremlin/SPARQL`                        | unknown  | 1           | neptune                                                                                                                       |
+| `MongoDB`                               | unknown  | 1           | objectrocket                                                                                                                  |
+| `Neptune`                               | unknown  | 1           | neptune                                                                                                                       |
+| `Neptune-compatible`                    | unknown  | 1           | neptune                                                                                                                       |
+| `ObjectRocket-compatible`               | unknown  | 1           | objectrocket                                                                                                                  |
+| `ObjectRocket/MongoDB`                  | unknown  | 1           | objectrocket                                                                                                                  |
+| `RediSearch,`                           | unknown  | 1           | redismodules                                                                                                                  |
+| `RedisJSON,`                            | unknown  | 1           | redismodules                                                                                                                  |
+| `RedisTimeSeries,`                      | unknown  | 1           | redismodules                                                                                                                  |
+| `SPARQLWrapper`                         | unknown  | 1           | neptune                                                                                                                       |
+| `SQL`                                   | unknown  | 1           | singlestore                                                                                                                   |
+| `SingleStore-compatible`                | unknown  | 1           | singlestore                                                                                                                   |
+| `TTS`                                   | unknown  | 2           | coqui-tts, tts                                                                                                                |
+| `a`                                     | unknown  | 3           | neptune, objectrocket, singlestore                                                                                            |
+| `a2dismod`                              | unknown  | 1           | apache                                                                                                                        |
+| `accelerate`                            | unknown  | 1           | stable-diffusion                                                                                                              |
+| `add`                                   | unknown  | 10          | faster-whisper, gitbucket, knot-resolver, mailtrain, mozilla-hubs...                                                          |
+| `amd64)`                                | unknown  | 3           | gitea, libsql, litestream                                                                                                     |
+| `apk`                                   | unknown  | 12          | faster-whisper, gitbucket, knot-resolver, mailtrain, milvus-minio...                                                          |
+| `app`                                   | unknown  | 70          | airsonic, airsonic-advanced, automatic1111, bazarr, bazarr-subliminal...                                                      |
+| `app:app`                               | unknown  | 55          | automatic1111, bazarr, bazarr-subliminal, bundler, calibre...                                                                 |
+| `appuser`                               | unknown  | 14          | cinny, debian-slim, element-web, element-x, fail2ban...                                                                       |
+| `appuser:appuser`                       | unknown  | 4           | fail2ban, modsecurity, powerdns, softether                                                                                    |
+| `arango`                                | unknown  | 1           | arango                                                                                                                        |
+| `arm64)`                                | unknown  | 3           | gitea, libsql, litestream                                                                                                     |
+| `as`                                    | unknown  | 3           | neptune, objectrocket, singlestore                                                                                            |
+| `athom`                                 | unknown  | 1           | athom                                                                                                                         |
+| `autoindex`                             | unknown  | 1           | apache                                                                                                                        |
+| `available`                             | unknown  | 7           | automatic1111, bazarr, bazarr-subliminal, comfyui, gallery3...                                                                |
+| `backup`                                | unknown  | 1           | gitlab-backup                                                                                                                 |
+| `base`                                  | unknown  | 3           | neptune, objectrocket, singlestore                                                                                            |
+| `build`                                 | unknown  | 1           | dotdns                                                                                                                        |
+| `bundled:`                              | unknown  | 1           | redismodules                                                                                                                  |
+| `bundler`                               | unknown  | 1           | bundler                                                                                                                       |
+| `bzip2-libs`                            | unknown  | 2           | onlyoffice-documentserver, onlyoffice-documentserver-ee                                                                       |
+| `calibre`                               | unknown  | 4           | calibre, calibre-eb, calibre-server, calibre-web                                                                              |
+| `case`                                  | unknown  | 1           | litestream                                                                                                                    |
+| `chartdb`                               | unknown  | 1           | chartdb                                                                                                                       |
+| `chroma`                                | unknown  | 1           | chroma                                                                                                                        |
+| `chroma:chroma`                         | unknown  | 1           | chroma                                                                                                                        |
+| `chromadb`                              | unknown  | 1           | chroma                                                                                                                        |
+| `chromadb==0.5.23`                      | unknown  | 1           | chroma-all-minimal                                                                                                            |
+| `chromadb==__VAR__`                     | unknown  | 1           | chroma                                                                                                                        |
+| `cid`                                   | unknown  | 1           | docker-clean                                                                                                                  |
+| `cleanup`                               | unknown  | 1           | docker-clean                                                                                                                  |
+| `client`                                | unknown  | 2           | objectrocket, singlestore                                                                                                     |
+| `clone`                                 | unknown  | 8           | automatic1111, bazarr, bazarr-subliminal, comfyui, fail2ban-exporter...                                                       |
+| `cloud`                                 | unknown  | 1           | objectrocket                                                                                                                  |
+| `cmak`                                  | unknown  | 1           | kafka-manager                                                                                                                 |
+| `codimd`                                | unknown  | 1           | codimd                                                                                                                        |
+| `commercial`                            | unknown  | 1           | singlestore                                                                                                                   |
+| `common`                                | unknown  | 1           | docker-clean                                                                                                                  |
+| `compatibility`                         | unknown  | 2           | neptune, singlestore                                                                                                          |
+| `complement`                            | unknown  | 1           | chat-relay                                                                                                                    |
+| `conduit`                               | unknown  | 1           | conduit-admin                                                                                                                 |
+| `connect`                               | unknown  | 1           | kafka-connect                                                                                                                 |
+| `container:`                            | unknown  | 1           | docker-clean                                                                                                                  |
+| `convector`                             | unknown  | 1           | convector                                                                                                                     |
+| `crate`                                 | unknown  | 1           | crate                                                                                                                         |
+| `created=$(docker`                      | unknown  | 1           | docker-clean                                                                                                                  |
+| `dagster`                               | unknown  | 3           | dagster, dagster-daemon, dagster-logs                                                                                         |
+| `dagster-webserver`                     | unknown  | 1           | dagster                                                                                                                       |
+| `dangling`                              | unknown  | 1           | docker-clean                                                                                                                  |
+| `database`                              | unknown  | 2           | neptune, objectrocket                                                                                                         |
+| `deepspeed`                             | unknown  | 1           | deepspeed                                                                                                                     |
+| `del`                                   | unknown  | 2           | milvus-minio, sqlite-utils                                                                                                    |
+| `dendrite`                              | unknown  | 1           | dendrite-pot                                                                                                                  |
+| `derby`                                 | unknown  | 1           | derby                                                                                                                         |
+| `development`                           | unknown  | 3           | neptune, objectrocket, singlestore                                                                                            |
+| `diffusers`                             | unknown  | 2           | diffusers, stable-diffusion                                                                                                   |
+| `distributed`                           | unknown  | 1           | singlestore                                                                                                                   |
+| `do\n`                                  | unknown  | 1           | docker-clean                                                                                                                  |
+| `docker-clean`                          | unknown  | 1           | docker-clean                                                                                                                  |
+| `dockerclean`                           | unknown  | 1           | docker-clean                                                                                                                  |
+| `dsp`                                   | unknown  | 1           | docker-socket-proxy                                                                                                           |
+| `edition`                               | unknown  | 1           | singlestore                                                                                                                   |
+| `ejdb`                                  | unknown  | 1           | ejdb                                                                                                                          |
+| `endpoint`                              | unknown  | 2           | neptune, objectrocket                                                                                                         |
+| `erpnext`                               | unknown  | 1           | erpnext                                                                                                                       |
+| `erpnext:erpnext`                       | unknown  | 1           | erpnext                                                                                                                       |
+| `esac`                                  | unknown  | 1           | litestream                                                                                                                    |
+| `esac)`                                 | unknown  | 2           | gitea, libsql                                                                                                                 |
+| `exited`                                | unknown  | 1           | docker-clean                                                                                                                  |
+| `fastapi==0.115.0`                      | unknown  | 2           | immich-machine-learning, immich-ml                                                                                            |
+| `faster-whisper`                        | unknown  | 1           | faster-whisper                                                                                                                |
+| `fi`                                    | unknown  | 3           | caddy-alpine, cinny, keycloak                                                                                                 |
+| `fi\ndone\n\ndangling_images=$(docker`  | unknown  | 1           | docker-clean                                                                                                                  |
+| `fileshare`                             | unknown  | 1           | ol_fileshare                                                                                                                  |
+| `firebird`                              | unknown  | 1           | firebird                                                                                                                      |
+| `fluentd`                               | unknown  | 1           | fluentd                                                                                                                       |
+| `for`                                   | unknown  | 3           | neptune, objectrocket, singlestore                                                                                            |
+| `free`                                  | unknown  | 1           | singlestore                                                                                                                   |
+| `from`                                  | unknown  | 1           | singlestore                                                                                                                   |
+| `fstrm-libs`                            | unknown  | 1           | powerdns-recursor                                                                                                             |
+| `fully`                                 | unknown  | 2           | neptune, objectrocket                                                                                                         |
+| `gitbucket`                             | unknown  | 1           | gitbucket                                                                                                                     |
+| `graph`                                 | unknown  | 1           | neptune                                                                                                                       |
+| `graphdb`                               | unknown  | 1           | graphdb-enterpriser                                                                                                           |
+| `graphile`                              | unknown  | 1           | graphile                                                                                                                      |
+| `graylog`                               | unknown  | 1           | graylog                                                                                                                       |
+| `gremlinpython`                         | unknown  | 1           | neptune                                                                                                                       |
+| `gremlinpython,`                        | unknown  | 1           | neptune                                                                                                                       |
+| `h2`                                    | unknown  | 1           | h2                                                                                                                            |
+| `hazelcast`                             | unknown  | 1           | hazelcast                                                                                                                     |
+| `hive`                                  | unknown  | 2           | hive, hive-metastore                                                                                                          |
+| `homeassistant`                         | unknown  | 1           | homeassistant                                                                                                                 |
+| `homeassistant:homeassistant`           | unknown  | 1           | homeassistant                                                                                                                 |
+| `homekit`                               | unknown  | 1           | homekit                                                                                                                       |
+| `hts`                                   | unknown  | 1           | tvheadend                                                                                                                     |
+| `hts:hts`                               | unknown  | 1           | tvheadend                                                                                                                     |
+| `hydrogen`                              | unknown  | 1           | hydrogen                                                                                                                      |
+| `if`                                    | unknown  | 4           | caddy-alpine, cinny, docker-clean, keycloak                                                                                   |
+| `ignite`                                | unknown  | 1           | ignite                                                                                                                        |
+| `image`                                 | unknown  | 3           | neptune, objectrocket, singlestore                                                                                            |
+| `images`                                | unknown  | 1           | docker-clean                                                                                                                  |
+| `immich`                                | unknown  | 1           | immich                                                                                                                        |
+| `immich:immich`                         | unknown  | 1           | immich                                                                                                                        |
+| `import`                                | unknown  | 3           | neptune, objectrocket, singlestore                                                                                            |
+| `in`                                    | unknown  | 6           | docker-clean, gitea, libsql, litestream, neptune...                                                                           |
+| `inspect`                               | unknown  | 1           | docker-clean                                                                                                                  |
+| `invokeai`                              | unknown  | 1           | invokeai                                                                                                                      |
+| `is`                                    | unknown  | 3           | neptune, objectrocket, singlestore                                                                                            |
+| `janusgraph`                            | unknown  | 1           | janusgraph                                                                                                                    |
+| `java-21-default-jdk`                   | unknown  | 3           | gitbucket, openhab, wolfi-jdk                                                                                                 |
+| `jenkins:jenkins`                       | unknown  | 1           | jenkins                                                                                                                       |
+| `jupyter`                               | unknown  | 1           | jupyter-all                                                                                                                   |
+| `jupyterlab`                            | unknown  | 3           | jupyter-pytorch, jupyter-scikit, jupyter-tensorflow                                                                           |
+| `kibana`                                | unknown  | 2           | kibana, kibana-oss                                                                                                            |
+| `knot`                                  | unknown  | 1           | knot-resolver                                                                                                                 |
+| `knot-resolver`                         | unknown  | 1           | knot-resolver                                                                                                                 |
+| `knot-resolver-utils`                   | unknown  | 1           | knot-resolver                                                                                                                 |
+| `langchain`                             | unknown  | 1           | langchain                                                                                                                     |
+| `langserve`                             | unknown  | 1           | langserve                                                                                                                     |
+| `ldap`                                  | unknown  | 2           | ldap, openldap                                                                                                                |
+| `ldap:ldap`                             | unknown  | 2           | ldap, openldap                                                                                                                |
+| `libcrypto1.1`                          | unknown  | 1           | strongswan                                                                                                                    |
+| `libcurl`                               | unknown  | 7           | onlyoffice-communityserver, onlyoffice-controlpanel, onlyoffice-documentserver, onlyoffice-documentserver-ee, powerdns-api... |
+| `libraries`                             | unknown  | 1           | singlestore                                                                                                                   |
+| `library`                               | unknown  | 1           | objectrocket                                                                                                                  |
+| `libtiff`                               | unknown  | 2           | onlyoffice-documentserver, onlyoffice-documentserver-ee                                                                       |
+| `litellm`                               | unknown  | 1           | litellm                                                                                                                       |
+| `litellm[proxy]`                        | unknown  | 1           | litellm-proxy                                                                                                                 |
+| `local`                                 | unknown  | 1           | neptune                                                                                                                       |
+| `main()`                                | unknown  | 1           | dotdns                                                                                                                        |
+| `main\nimport`                          | unknown  | 1           | dotdns                                                                                                                        |
+| `managed`                               | unknown  | 2           | neptune, objectrocket                                                                                                         |
+| `mariadb-libs`                          | unknown  | 1           | onlyoffice-communityserver                                                                                                    |
+| `matplotlib`                            | unknown  | 1           | jupyter-scikit                                                                                                                |
+| `matrix-synapse==__VAR__`               | unknown  | 1           | chat-server                                                                                                                   |
+| `maxbot==__VAR__`                       | unknown  | 1           | maxbot                                                                                                                        |
+| `meltano`                               | unknown  | 1           | meltano                                                                                                                       |
+| `memgraph`                              | unknown  | 1           | memgraph                                                                                                                      |
+| `modsec`                                | unknown  | 1           | modsecurity-crs                                                                                                               |
+| `module`                                | unknown  | 1           | redismodules                                                                                                                  |
+| `modules`                               | unknown  | 1           | redismodules                                                                                                                  |
+| `mongodb`                               | unknown  | 3           | mongodb-5, mongodb-7, mongodb-community                                                                                       |
+| `mongosh`                               | unknown  | 1           | mongodb-opsmanager                                                                                                            |
+| `mosquitto:mosquitto`                   | unknown  | 1           | mqtt                                                                                                                          |
+| `mythtv`                                | unknown  | 1           | mythtv                                                                                                                        |
+| `mythtv:mythtv`                         | unknown  | 1           | mythtv                                                                                                                        |
+| `neptune`                               | unknown  | 1           | neptune                                                                                                                       |
+| `newsboat`                              | unknown  | 1           | newsboat                                                                                                                      |
+| `newsboat:newsboat`                     | unknown  | 1           | newsboat                                                                                                                      |
+| `nheko`                                 | unknown  | 1           | nheko                                                                                                                         |
+| `nifi`                                  | unknown  | 2           | apache-nifi, nifi-registry                                                                                                    |
+| `node`                                  | unknown  | 4           | logseq, n8n, typesense-js, uptime-kuma                                                                                        |
+| `node:node`                             | unknown  | 4           | logseq, n8n, typesense-js, uptime-kuma                                                                                        |
+| `nogroup`                               | unknown  | 13          | athom, docker-clean, homekit, r2c-bench, rblake...                                                                            |
+| `not`                                   | unknown  | 7           | automatic1111, bazarr, bazarr-subliminal, comfyui, gallery3...                                                                |
+| `numpy==2.1.0`                          | unknown  | 2           | immich-machine-learning, jupyter-scikit                                                                                       |
+| `objectrocket`                          | unknown  | 1           | objectrocket                                                                                                                  |
+| `on`                                    | unknown  | 1           | docker-clean                                                                                                                  |
+| `onnxruntime`                           | unknown  | 2           | immich-machine-learning, immich-ml                                                                                            |
+| `open-gpts`                             | unknown  | 1           | opengpts                                                                                                                      |
+| `openai-whisper`                        | unknown  | 1           | whisper                                                                                                                       |
+| `openhab`                               | unknown  | 1           | openhab                                                                                                                       |
+| `openjdk-21-jdk-headless`               | unknown  | 3           | gitbucket, openhab, wolfi-jdk                                                                                                 |
+| `openssl-libs`                          | unknown  | 7           | onlyoffice-communityserver, onlyoffice-controlpanel, onlyoffice-documentserver, onlyoffice-documentserver-ee, powerdns-api... |
+| `oracle`                                | unknown  | 1           | oracledb-xe                                                                                                                   |
+| `organizr`                              | unknown  | 1           | organizer                                                                                                                     |
+| `outline`                               | unknown  | 1           | outline                                                                                                                       |
+| `outline:outline`                       | unknown  | 1           | outline                                                                                                                       |
+| `oxidized`                              | unknown  | 1           | oxidized                                                                                                                      |
+| `pandas==2.2.0`                         | unknown  | 1           | jupyter-scikit                                                                                                                |
+| `pgbouncer:pgbouncer`                   | unknown  | 1           | pgbouncer                                                                                                                     |
+| `pgpool`                                | unknown  | 1           | pgpool-ii                                                                                                                     |
+| `pgpool:pgpool`                         | unknown  | 1           | pgpool-ii                                                                                                                     |
+| `php-cli`                               | unknown  | 2           | photoshow, rss2                                                                                                               |
+| `php-json`                              | unknown  | 3           | photoshow, roundcube, rss2                                                                                                    |
+| `php-session`                           | unknown  | 2           | photoshow, roundcube                                                                                                          |
+| `php-valkey`                            | unknown  | 1           | cachet                                                                                                                        |
+| `pillow==10.4.0`                        | unknown  | 2           | immich-machine-learning, immich-ml                                                                                            |
+| `pinecone-client`                       | unknown  | 1           | pinecone                                                                                                                      |
+| `pip3`                                  | unknown  | 4           | maxbot, neptune, objectrocket, singlestore                                                                                    |
+| `pipefail\n#`                           | unknown  | 1           | docker-clean                                                                                                                  |
+| `placeholder`                           | unknown  | 1           | organizer                                                                                                                     |
+| `placeholder</h1`                       | unknown  | 1           | cinny                                                                                                                         |
+| `planka`                                | unknown  | 1           | planka                                                                                                                        |
+| `planka:planka`                         | unknown  | 1           | planka                                                                                                                        |
+| `postgraphile@__VAR__`                  | unknown  | 1           | graphile                                                                                                                      |
+| `postgresql-__VAR__-client`             | unknown  | 3           | postgres-backup, postgres-restore, postgresql-init                                                                            |
+| `postgresql-libs`                       | unknown  | 3           | onlyoffice-communityserver, onlyoffice-documentserver, onlyoffice-documentserver-ee                                           |
+| `prefect`                               | unknown  | 2           | prefect, prefect-server                                                                                                       |
+| `production`                            | unknown  | 1           | singlestore                                                                                                                   |
+| `provides`                              | unknown  | 3           | neptune, objectrocket, singlestore                                                                                            |
+| `ps`                                    | unknown  | 1           | docker-clean                                                                                                                  |
+| `pulsar`                                | unknown  | 2           | pulsar-functions, pulsar-proxy                                                                                                |
+| `pymongo`                               | unknown  | 1           | objectrocket                                                                                                                  |
+| `pymysql`                               | unknown  | 1           | singlestore                                                                                                                   |
+| `pymysql,`                              | unknown  | 1           | singlestore                                                                                                                   |
+| `pymysql/sqlalchemy`                    | unknown  | 1           | singlestore                                                                                                                   |
+| `python`                                | unknown  | 1           | meilisearch-python                                                                                                            |
+| `python:python`                         | unknown  | 1           | meilisearch-python                                                                                                            |
+| `qbitmanage==4.2.0`                     | unknown  | 1           | qbitmanage                                                                                                                    |
+| `qbittorrent`                           | unknown  | 2           | qbittorrent, qbittorrent-nox                                                                                                  |
+| `qbittorrent:qbittorrent`               | unknown  | 1           | qbittorrent                                                                                                                   |
+| `questdb`                               | unknown  | 1           | questdb                                                                                                                       |
+| `r2c`                                   | unknown  | 1           | r2c-bench                                                                                                                     |
+| `rabbitmq`                              | unknown  | 7           | rabbitmq, rabbitmq-amqp, rabbitmq-delayed, rabbitmq-federation, rabbitmq-management...                                        |
+| `rabbitmq:rabbitmq`                     | unknown  | 1           | rabbitmq                                                                                                                      |
+| `rblake`                                | unknown  | 1           | rblake                                                                                                                        |
+| `redis`                                 | unknown  | 6           | argocd-redis, redis-cluster, redis-sentinel, redis-vert, redis7...                                                            |
+| `redis:redis`                           | unknown  | 1           | redis7                                                                                                                        |
+| `redisinsight`                          | unknown  | 1           | redis-insight                                                                                                                 |
+| `repo`                                  | unknown  | 7           | automatic1111, bazarr, bazarr-subliminal, comfyui, gallery3...                                                                |
+| `repo-security`                         | unknown  | 1           | repo-security                                                                                                                 |
+| `repo-supervisor`                       | unknown  | 1           | repo-supervisor                                                                                                               |
+| `requirements.txt`                      | unknown  | 7           | automatic1111, bazarr, bazarr-subliminal, comfyui, gallery3...                                                                |
+| `rmi`                                   | unknown  | 1           | docker-clean                                                                                                                  |
+| `rmilter`                               | unknown  | 1           | rmilter                                                                                                                       |
+| `root:root`                             | unknown  | 1           | sssd                                                                                                                          |
+| `roundcube`                             | unknown  | 1           | roundcube                                                                                                                     |
+| `rss2email==3.15.1`                     | unknown  | 1           | rss2email                                                                                                                     |
+| `ruby-irb`                              | unknown  | 1           | dependabot                                                                                                                    |
+| `ruby-rdoc`                             | unknown  | 1           | dependabot                                                                                                                    |
+| `runner`                                | unknown  | 2           | github-actions-minimal, github-actions-runner                                                                                 |
+| `runner:runner`                         | unknown  | 1           | github-actions-runner                                                                                                         |
+| `scikit-learn`                          | unknown  | 2           | immich-machine-learning, jupyter-scikit                                                                                       |
+| `scrapyd==1.5.0`                        | unknown  | 1           | scrapyd                                                                                                                       |
+| `script\n#`                             | unknown  | 1           | docker-clean                                                                                                                  |
+| `scylla`                                | unknown  | 1           | scylladb                                                                                                                      |
+| `searxng`                               | unknown  | 1           | searxng                                                                                                                       |
+| `searxng:searxng`                       | unknown  | 1           | searxng                                                                                                                       |
+| `secrets-scanner`                       | unknown  | 1           | secrets-scanner                                                                                                               |
+| `secretz`                               | unknown  | 1           | secretz                                                                                                                       |
+| `shh`                                   | unknown  | 1           | shh                                                                                                                           |
+| `sigal==2.3.0`                          | unknown  | 1           | sigal                                                                                                                         |
+| `singer-python`                         | unknown  | 1           | singer                                                                                                                        |
+| `singlestore`                           | unknown  | 1           | singlestore                                                                                                                   |
+| `sleep`                                 | unknown  | 5           | caddy-alpine, forgejo, grafana-toolkit, graphile, keycloak                                                                    |
+| `splunk`                                | unknown  | 1           | splunk-forwarder                                                                                                              |
+| `sqlalchemy`                            | unknown  | 1           | singlestore                                                                                                                   |
+| `sqlalchemy,`                           | unknown  | 1           | singlestore                                                                                                                   |
+| `sqlite:sqlite`                         | unknown  | 1           | sqlite                                                                                                                        |
+| `stalwart`                              | unknown  | 1           | stalwart-bitnami                                                                                                              |
+| `subliminal`                            | unknown  | 1           | bazarr-subliminal                                                                                                             |
+| `synapse`                               | unknown  | 1           | chat-server                                                                                                                   |
+| `tensorboard`                           | unknown  | 2           | tensor, tensorboard                                                                                                           |
+| `tensorboard==__VAR__`                  | unknown  | 1           | tensor                                                                                                                        |
+| `tensorflow`                            | unknown  | 2           | jupyter-tensorflow, tensorflow                                                                                                |
+| `the`                                   | unknown  | 1           | singlestore                                                                                                                   |
+| `then`                                  | unknown  | 3           | caddy-alpine, cinny, keycloak                                                                                                 |
+| `then\n`                                | unknown  | 1           | docker-clean                                                                                                                  |
+| `this`                                  | unknown  | 3           | neptune, objectrocket, singlestore                                                                                            |
+| `tigergraph`                            | unknown  | 2           | tigergraph, tigergraph-ecosystem                                                                                              |
+| `to`                                    | unknown  | 2           | neptune, objectrocket                                                                                                         |
+| `toolkit`                               | unknown  | 1           | grafana-toolkit                                                                                                               |
+| `tools:`                                | unknown  | 1           | neptune                                                                                                                       |
+| `torch`                                 | unknown  | 4           | jupyter-pytorch, pytorch, text-generation-webui, transformers-gpu                                                             |
+| `torchaudio`                            | unknown  | 1           | pytorch                                                                                                                       |
+| `torchvision`                           | unknown  | 3           | jupyter-pytorch, pytorch, text-generation-webui                                                                               |
+| `transfer`                              | unknown  | 1           | transferhelper                                                                                                                |
+| `transformers`                          | unknown  | 3           | stable-diffusion, transformers, transformers-gpu                                                                              |
+| `transmission`                          | unknown  | 1           | transmission                                                                                                                  |
+| `transmission:transmission`             | unknown  | 1           | transmission                                                                                                                  |
+| `true)\nfor`                            | unknown  | 1           | docker-clean                                                                                                                  |
+| `true)\nif`                             | unknown  | 1           | docker-clean                                                                                                                  |
+| `true\n`                                | unknown  | 1           | docker-clean                                                                                                                  |
+| `true\nfi\n\necho`                      | unknown  | 1           | docker-clean                                                                                                                  |
+| `user`                                  | unknown  | 1           | text-generation-webui                                                                                                         |
+| `user:user`                             | unknown  | 1           | text-generation-webui                                                                                                         |
+| `usermod`                               | unknown  | 1           | apache                                                                                                                        |
+| `using`                                 | unknown  | 7           | automatic1111, bazarr, bazarr-subliminal, comfyui, gallery3...                                                                |
+| `uvicorn==0.30.0`                       | unknown  | 2           | immich-machine-learning, immich-ml                                                                                            |
+| `v%s`                                   | unknown  | 6           | docker-clean, dotdns, keycloak, neptune, objectrocket...                                                                      |
+| `v1.5.2`                                | unknown  | 2           | bazarr, bazarr-subliminal                                                                                                     |
+| `v1.9.3`                                | unknown  | 2           | automatic1111, stable-diffusion-webui                                                                                         |
+| `v3.0.0`                                | unknown  | 1           | gallery3                                                                                                                      |
+| `v__VAR__`                              | unknown  | 1           | text-generation-webui                                                                                                         |
+| `vecs`                                  | unknown  | 1           | vecs-db                                                                                                                       |
+| `virtuoso`                              | unknown  | 1           | virtuoso                                                                                                                      |
+| `vlatest`                               | unknown  | 1           | comfyui                                                                                                                       |
+| `vllm`                                  | unknown  | 1           | vllm                                                                                                                          |
+| `wandb`                                 | unknown  | 2           | wandb-server, weights-biases                                                                                                  |
+| `weaviate-client`                       | unknown  | 1           | weaviate-python                                                                                                               |
+| `www-data`                              | unknown  | 1           | apache                                                                                                                        |
+| `xzf`                                   | unknown  | 5           | elasticsearch, elasticsearch-7, keycloak, neo4j, opensearch-dashboards                                                        |
+| `your`                                  | unknown  | 3           | neptune, objectrocket, singlestore                                                                                            |
+| `zigpy==0.60.0`                         | unknown  | 4           | athom, homekit, zoe, zzh                                                                                                      |
+| `zoe`                                   | unknown  | 1           | zoe                                                                                                                           |
+| `zzh`                                   | unknown  | 1           | zzh                                                                                                                           |
 
 ## Category Breakdown
 
-| Category | Count | Examples |
-|----------|-------|----------|
-| debian-lib | 0 | — |
-| debian-php | 0 | — |
-| versioned | 0 | — |
-| unknown | 319 | `#`, `*)`, `+x`, `-`, `2.5.0` |
+| Category   | Count | Examples                      |
+| ---------- | ----- | ----------------------------- |
+| debian-lib | 0     | —                             |
+| debian-php | 0     | —                             |
+| versioned  | 0     | —                             |
+| unknown    | 319   | `#`, `*)`, `+x`, `-`, `2.5.0` |
 
 ## Per-Image Summary
 
@@ -400,7 +400,8 @@ All packages valid.
 
 ### `akaunting`
 
-**Valid** (13): `ca-certificates`, `nginx`, `openssl`, `php`, `php-curl`, `php-fpm`, `php-intl`, `php-mbstring`, `php-mysqli`, `php-pdo`, `php-pdo_mysql`, `php-xml`, `zip`
+**Valid** (13): `ca-certificates`, `nginx`, `openssl`, `php`, `php-curl`, `php-fpm`, `php-intl`, `php-mbstring`,
+`php-mysqli`, `php-pdo`, `php-pdo_mysql`, `php-xml`, `zip`
 
 **Invalid** (1): `65532:65532`
 
@@ -528,7 +529,8 @@ All packages valid.
 
 **Valid** (2): `build-base`, `ca-certificates`
 
-**Invalid** (11): `-`, `app`, `app:app`, `available`, `clone`, `not`, `repo`, `requirements.txt`, `subliminal`, `using`, `v1.5.2`
+**Invalid** (11): `-`, `app`, `app:app`, `available`, `clone`, `not`, `repo`, `requirements.txt`, `subliminal`, `using`,
+`v1.5.2`
 
 ### `browserless`
 
@@ -580,7 +582,8 @@ All packages valid.
 
 ### `cachet`
 
-**Valid** (13): `ca-certificates`, `nginx`, `php-bcmath`, `php-curl`, `php-fpm`, `php-gd`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`, `php-pdo_sqlite`, `php-pgsql`, `php-xml`, `php-zip`
+**Valid** (13): `ca-certificates`, `nginx`, `php-bcmath`, `php-curl`, `php-fpm`, `php-gd`, `php-mbstring`, `php-mysqli`,
+`php-pdo_mysql`, `php-pdo_sqlite`, `php-pgsql`, `php-xml`, `php-zip`
 
 **Invalid** (1): `php-valkey`
 
@@ -640,7 +643,8 @@ All packages valid.
 
 ### `chevereto`
 
-**Valid** (10): `php`, `php-curl`, `php-fpm`, `php-gd`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`, `php-pdo_sqlite`, `php-xml`, `php-zip`
+**Valid** (10): `php`, `php-curl`, `php-fpm`, `php-gd`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`, `php-pdo_sqlite`,
+`php-xml`, `php-zip`
 
 All packages valid.
 
@@ -844,7 +848,8 @@ All packages valid.
 
 ### `dependabot`
 
-**Valid** (11): `ca-certificates`, `gmp`, `gnupg`, `libffi`, `mpdecimal`, `ncurses`, `nodejs`, `readline`, `ruby`, `yaml`, `zlib`
+**Valid** (11): `ca-certificates`, `gmp`, `gnupg`, `libffi`, `mpdecimal`, `ncurses`, `nodejs`, `readline`, `ruby`,
+`yaml`, `zlib`
 
 **Invalid** (2): `ruby-irb`, `ruby-rdoc`
 
@@ -882,7 +887,10 @@ All packages valid.
 
 **Valid** (3): `ca-certificates`, `docker`, `docker-cli`
 
-**Invalid** (32): `+x`, `-`, `65532:65532`, `Based`, `Docker`, `cid`, `cleanup`, `common`, `container:`, `created=$(docker`, `dangling`, `do\n`, `docker-clean`, `dockerclean`, `exited`, `fi\ndone\n\ndangling_images=$(docker`, `if`, `images`, `in`, `inspect`, `nogroup`, `on`, `pipefail\n#`, `ps`, `rmi`, `script\n#`, `then\n`, `true)\nfor`, `true)\nif`, `true\n`, `true\nfi\n\necho`, `v%s`
+**Invalid** (32): `+x`, `-`, `65532:65532`, `Based`, `Docker`, `cid`, `cleanup`, `common`, `container:`,
+`created=$(docker`, `dangling`, `do\n`, `docker-clean`, `dockerclean`, `exited`, `fi\ndone\n\ndangling_images=$(docker`,
+`if`, `images`, `in`, `inspect`, `nogroup`, `on`, `pipefail\n#`, `ps`, `rmi`, `script\n#`, `then\n`, `true)\nfor`,
+`true)\nif`, `true\n`, `true\nfi\n\necho`, `v%s`
 
 ### `docker-gc`
 
@@ -904,7 +912,8 @@ All packages valid.
 
 ### `dolibarr`
 
-**Valid** (15): `ca-certificates`, `json-c`, `nginx`, `openssl`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`, `php-mbstring`, `php-mysqli`, `php-pdo`, `php-pdo_mysql`, `php-xml`, `zip`
+**Valid** (15): `ca-certificates`, `json-c`, `nginx`, `openssl`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`,
+`php-mbstring`, `php-mysqli`, `php-pdo`, `php-pdo_mysql`, `php-xml`, `zip`
 
 **Invalid** (1): `65532:65532`
 
@@ -946,7 +955,8 @@ All packages valid.
 
 ### `egroupware`
 
-**Valid** (15): `ca-certificates`, `json-c`, `nginx`, `openssl`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`, `php-mbstring`, `php-mysqli`, `php-pdo`, `php-pdo_mysql`, `php-xml`, `zip`
+**Valid** (15): `ca-certificates`, `json-c`, `nginx`, `openssl`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`,
+`php-mbstring`, `php-mysqli`, `php-pdo`, `php-pdo_mysql`, `php-xml`, `zip`
 
 **Invalid** (1): `65532:65532`
 
@@ -1030,7 +1040,8 @@ All packages valid.
 
 ### `espocrm`
 
-**Valid** (15): `ca-certificates`, `json-c`, `nginx`, `openssl`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`, `php-mbstring`, `php-mysqli`, `php-pdo`, `php-pdo_mysql`, `php-xml`, `zip`
+**Valid** (15): `ca-certificates`, `json-c`, `nginx`, `openssl`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`,
+`php-mbstring`, `php-mysqli`, `php-pdo`, `php-pdo_mysql`, `php-xml`, `zip`
 
 **Invalid** (1): `65532:65532`
 
@@ -1118,13 +1129,15 @@ All packages valid.
 
 ### `freshrss-minimal`
 
-**Valid** (10): `php`, `php-curl`, `php-fpm`, `php-intl`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`, `php-pdo_sqlite`, `php-xml`, `php-zip`
+**Valid** (10): `php`, `php-curl`, `php-fpm`, `php-intl`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`,
+`php-pdo_sqlite`, `php-xml`, `php-zip`
 
 All packages valid.
 
 ### `frontaccounting`
 
-**Valid** (13): `ca-certificates`, `nginx`, `openssl`, `php`, `php-curl`, `php-fpm`, `php-intl`, `php-mbstring`, `php-mysqli`, `php-pdo`, `php-pdo_mysql`, `php-xml`, `zip`
+**Valid** (13): `ca-certificates`, `nginx`, `openssl`, `php`, `php-curl`, `php-fpm`, `php-intl`, `php-mbstring`,
+`php-mysqli`, `php-pdo`, `php-pdo_mysql`, `php-xml`, `zip`
 
 **Invalid** (1): `65532:65532`
 
@@ -1378,7 +1391,8 @@ All packages valid.
 
 **Valid** (1): `ca-certificates`
 
-**Invalid** (8): `app`, `app:app`, `fastapi==0.115.0`, `numpy==2.1.0`, `onnxruntime`, `pillow==10.4.0`, `scikit-learn`, `uvicorn==0.30.0`
+**Invalid** (8): `app`, `app:app`, `fastapi==0.115.0`, `numpy==2.1.0`, `onnxruntime`, `pillow==10.4.0`, `scikit-learn`,
+`uvicorn==0.30.0`
 
 ### `immich-microservices`
 
@@ -1400,13 +1414,15 @@ All packages valid.
 
 ### `invoice-ninja`
 
-**Valid** (14): `ca-certificates`, `nginx`, `openssl`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`, `php-mbstring`, `php-mysqli`, `php-pdo`, `php-pdo_mysql`, `php-xml`, `zip`
+**Valid** (14): `ca-certificates`, `nginx`, `openssl`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`,
+`php-mbstring`, `php-mysqli`, `php-pdo`, `php-pdo_mysql`, `php-xml`, `zip`
 
 **Invalid** (1): `65532:65532`
 
 ### `invoice-ninja-api`
 
-**Valid** (14): `ca-certificates`, `nginx`, `openssl`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`, `php-mbstring`, `php-mysqli`, `php-pdo`, `php-pdo_mysql`, `php-xml`, `zip`
+**Valid** (14): `ca-certificates`, `nginx`, `openssl`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`,
+`php-mbstring`, `php-mysqli`, `php-pdo`, `php-pdo_mysql`, `php-xml`, `zip`
 
 **Invalid** (1): `65532:65532`
 
@@ -1574,25 +1590,29 @@ All packages valid.
 
 ### `koel`
 
-**Valid** (11): `php`, `php-bcmath`, `php-curl`, `php-fpm`, `php-gd`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`, `php-pdo_sqlite`, `php-xml`, `php-zip`
+**Valid** (11): `php`, `php-bcmath`, `php-curl`, `php-fpm`, `php-gd`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`,
+`php-pdo_sqlite`, `php-xml`, `php-zip`
 
 All packages valid.
 
 ### `koel-next`
 
-**Valid** (11): `php`, `php-bcmath`, `php-curl`, `php-fpm`, `php-gd`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`, `php-pdo_sqlite`, `php-xml`, `php-zip`
+**Valid** (11): `php`, `php-bcmath`, `php-curl`, `php-fpm`, `php-gd`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`,
+`php-pdo_sqlite`, `php-xml`, `php-zip`
 
 All packages valid.
 
 ### `koken`
 
-**Valid** (9): `php`, `php-curl`, `php-fpm`, `php-gd`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`, `php-xml`, `php-zip`
+**Valid** (9): `php`, `php-curl`, `php-fpm`, `php-gd`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`, `php-xml`,
+`php-zip`
 
 All packages valid.
 
 ### `kopano`
 
-**Valid** (10): `php`, `php-curl`, `php-fpm`, `php-gd`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`, `php-soap`, `php-xml`, `php-zip`
+**Valid** (10): `php`, `php-curl`, `php-fpm`, `php-gd`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`, `php-soap`,
+`php-xml`, `php-zip`
 
 All packages valid.
 
@@ -1730,7 +1750,8 @@ All packages valid.
 
 ### `lychee`
 
-**Valid** (11): `php`, `php-curl`, `php-exif`, `php-fpm`, `php-gd`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`, `php-pdo_sqlite`, `php-xml`, `php-zip`
+**Valid** (11): `php`, `php-curl`, `php-exif`, `php-fpm`, `php-gd`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`,
+`php-pdo_sqlite`, `php-xml`, `php-zip`
 
 All packages valid.
 
@@ -2014,7 +2035,10 @@ All packages valid.
 
 **Valid** (3): `ca-certificates`, `py3-pip`, `python3`
 
-**Invalid** (34): `+x`, `-`, `65532:65532`, `AWS`, `Gremlin/SPARQL`, `Neptune`, `Neptune-compatible`, `SPARQLWrapper`, `a`, `as`, `base`, `compatibility`, `database`, `development`, `endpoint`, `for`, `fully`, `graph`, `gremlinpython`, `gremlinpython,`, `image`, `import`, `in`, `is`, `local`, `managed`, `neptune`, `pip3`, `provides`, `this`, `to`, `tools:`, `v%s`, `your`
+**Invalid** (34): `+x`, `-`, `65532:65532`, `AWS`, `Gremlin/SPARQL`, `Neptune`, `Neptune-compatible`, `SPARQLWrapper`,
+`a`, `as`, `base`, `compatibility`, `database`, `development`, `endpoint`, `for`, `fully`, `graph`, `gremlinpython`,
+`gremlinpython,`, `image`, `import`, `in`, `is`, `local`, `managed`, `neptune`, `pip3`, `provides`, `this`, `to`,
+`tools:`, `v%s`, `your`
 
 ### `newsboat`
 
@@ -2024,31 +2048,36 @@ All packages valid.
 
 ### `nextcloud`
 
-**Valid** (13): `ca-certificates`, `nginx`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`, `php-xml`, `sqlite-libs`, `zip`
+**Valid** (13): `ca-certificates`, `nginx`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`, `php-mbstring`,
+`php-mysqli`, `php-pdo_mysql`, `php-xml`, `sqlite-libs`, `zip`
 
 **Invalid** (1): `65532:65532`
 
 ### `nextcloud-alpine`
 
-**Valid** (13): `ca-certificates`, `nginx`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`, `php-xml`, `sqlite-libs`, `zip`
+**Valid** (13): `ca-certificates`, `nginx`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`, `php-mbstring`,
+`php-mysqli`, `php-pdo_mysql`, `php-xml`, `sqlite-libs`, `zip`
 
 **Invalid** (1): `65532:65532`
 
 ### `nextcloud-external`
 
-**Valid** (13): `ca-certificates`, `nginx`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`, `php-xml`, `sqlite-libs`, `zip`
+**Valid** (13): `ca-certificates`, `nginx`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`, `php-mbstring`,
+`php-mysqli`, `php-pdo_mysql`, `php-xml`, `sqlite-libs`, `zip`
 
 **Invalid** (1): `65532:65532`
 
 ### `nextcloud-imaging`
 
-**Valid** (13): `ca-certificates`, `nginx`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`, `php-xml`, `sqlite-libs`, `zip`
+**Valid** (13): `ca-certificates`, `nginx`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`, `php-mbstring`,
+`php-mysqli`, `php-pdo_mysql`, `php-xml`, `sqlite-libs`, `zip`
 
 **Invalid** (1): `65532:65532`
 
 ### `nextcloud-nginx`
 
-**Valid** (13): `ca-certificates`, `nginx`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`, `php-xml`, `sqlite-libs`, `zip`
+**Valid** (13): `ca-certificates`, `nginx`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`, `php-mbstring`,
+`php-mysqli`, `php-pdo_mysql`, `php-xml`, `sqlite-libs`, `zip`
 
 **Invalid** (1): `65532:65532`
 
@@ -2110,7 +2139,9 @@ All packages valid.
 
 **Valid** (3): `ca-certificates`, `py3-pip`, `python3`
 
-**Invalid** (31): `+x`, `-`, `65532:65532`, `Atlas`, `MongoDB`, `ObjectRocket-compatible`, `ObjectRocket/MongoDB`, `a`, `as`, `base`, `client`, `cloud`, `database`, `development`, `endpoint`, `for`, `fully`, `image`, `import`, `in`, `is`, `library`, `managed`, `objectrocket`, `pip3`, `provides`, `pymongo`, `this`, `to`, `v%s`, `your`
+**Invalid** (31): `+x`, `-`, `65532:65532`, `Atlas`, `MongoDB`, `ObjectRocket-compatible`, `ObjectRocket/MongoDB`, `a`,
+`as`, `base`, `client`, `cloud`, `database`, `development`, `endpoint`, `for`, `fully`, `image`, `import`, `in`, `is`,
+`library`, `managed`, `objectrocket`, `pip3`, `provides`, `pymongo`, `this`, `to`, `v%s`, `your`
 
 ### `ocserv`
 
@@ -2126,25 +2157,29 @@ All packages valid.
 
 ### `onlyoffice-communityserver`
 
-**Valid** (10): `ca-certificates`, `fontconfig`, `freetype`, `libgcc`, `libjpeg-turbo`, `libpng`, `libstdc++`, `libxml2`, `libxslt`, `tzdata`
+**Valid** (10): `ca-certificates`, `fontconfig`, `freetype`, `libgcc`, `libjpeg-turbo`, `libpng`, `libstdc++`,
+`libxml2`, `libxslt`, `tzdata`
 
 **Invalid** (4): `libcurl`, `mariadb-libs`, `openssl-libs`, `postgresql-libs`
 
 ### `onlyoffice-controlpanel`
 
-**Valid** (10): `ca-certificates`, `fontconfig`, `freetype`, `libgcc`, `libjpeg-turbo`, `libpng`, `libstdc++`, `libxml2`, `libxslt`, `tzdata`
+**Valid** (10): `ca-certificates`, `fontconfig`, `freetype`, `libgcc`, `libjpeg-turbo`, `libpng`, `libstdc++`,
+`libxml2`, `libxslt`, `tzdata`
 
 **Invalid** (2): `libcurl`, `openssl-libs`
 
 ### `onlyoffice-documentserver`
 
-**Valid** (15): `ca-certificates`, `fontconfig`, `freetype`, `glib`, `graphite2`, `harfbuzz`, `libgcc`, `libjpeg-turbo`, `libpng`, `libstdc++`, `libwebp`, `libxml2`, `libxslt`, `tzdata`, `zlib`
+**Valid** (15): `ca-certificates`, `fontconfig`, `freetype`, `glib`, `graphite2`, `harfbuzz`, `libgcc`, `libjpeg-turbo`,
+`libpng`, `libstdc++`, `libwebp`, `libxml2`, `libxslt`, `tzdata`, `zlib`
 
 **Invalid** (5): `bzip2-libs`, `libcurl`, `libtiff`, `openssl-libs`, `postgresql-libs`
 
 ### `onlyoffice-documentserver-ee`
 
-**Valid** (15): `ca-certificates`, `fontconfig`, `freetype`, `glib`, `graphite2`, `harfbuzz`, `libgcc`, `libjpeg-turbo`, `libpng`, `libstdc++`, `libwebp`, `libxml2`, `libxslt`, `tzdata`, `zlib`
+**Valid** (15): `ca-certificates`, `fontconfig`, `freetype`, `glib`, `graphite2`, `harfbuzz`, `libgcc`, `libjpeg-turbo`,
+`libpng`, `libstdc++`, `libwebp`, `libxml2`, `libxslt`, `tzdata`, `zlib`
 
 **Invalid** (5): `bzip2-libs`, `libcurl`, `libtiff`, `openssl-libs`, `postgresql-libs`
 
@@ -2318,7 +2353,8 @@ All packages valid.
 
 ### `php-apache`
 
-**Valid** (8): `apache2`, `php-8.4`, `php-8.4-curl`, `php-8.4-mbstring`, `php-8.4-mysqli`, `php-8.4-pdo_mysql`, `php-8.4-xml`, `php-8.4-zip`
+**Valid** (8): `apache2`, `php-8.4`, `php-8.4-curl`, `php-8.4-mbstring`, `php-8.4-mysqli`, `php-8.4-pdo_mysql`,
+`php-8.4-xml`, `php-8.4-zip`
 
 All packages valid.
 
@@ -2534,7 +2570,8 @@ All packages valid.
 
 ### `pydio`
 
-**Valid** (14): `ca-certificates`, `json-c`, `nginx`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`, `php-xml`, `sqlite-libs`, `zip`
+**Valid** (14): `ca-certificates`, `json-c`, `nginx`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`,
+`php-mbstring`, `php-mysqli`, `php-pdo_mysql`, `php-xml`, `sqlite-libs`, `zip`
 
 **Invalid** (1): `65532:65532`
 
@@ -2728,7 +2765,8 @@ All packages valid.
 
 **Valid** (2): `ca-certificates`, `valkey`
 
-**Invalid** (9): `+x`, `65532:65532`, `RediSearch,`, `RedisJSON,`, `RedisTimeSeries,`, `bundled:`, `module`, `modules`, `redis`
+**Invalid** (9): `+x`, `65532:65532`, `RediSearch,`, `RedisJSON,`, `RedisTimeSeries,`, `bundled:`, `module`, `modules`,
+`redis`
 
 ### `redmine`
 
@@ -2780,7 +2818,8 @@ All packages valid.
 
 ### `roundcube`
 
-**Valid** (9): `ca-certificates`, `php`, `php-curl`, `php-dom`, `php-fpm`, `php-iconv`, `php-intl`, `php-mbstring`, `php-xml`
+**Valid** (9): `ca-certificates`, `php`, `php-curl`, `php-dom`, `php-fpm`, `php-iconv`, `php-intl`, `php-mbstring`,
+`php-xml`
 
 **Invalid** (3): `php-json`, `php-session`, `roundcube`
 
@@ -2914,7 +2953,10 @@ All packages valid.
 
 **Valid** (4): `ca-certificates`, `mariadb-client`, `py3-pip`, `python3`
 
-**Invalid** (34): `+x`, `-`, `65532:65532`, `SQL`, `SingleStore-compatible`, `a`, `as`, `base`, `client`, `commercial`, `compatibility`, `development`, `distributed`, `edition`, `for`, `free`, `from`, `image`, `import`, `is`, `libraries`, `pip3`, `production`, `provides`, `pymysql`, `pymysql,`, `pymysql/sqlalchemy`, `singlestore`, `sqlalchemy`, `sqlalchemy,`, `the`, `this`, `v%s`, `your`
+**Invalid** (34): `+x`, `-`, `65532:65532`, `SQL`, `SingleStore-compatible`, `a`, `as`, `base`, `client`, `commercial`,
+`compatibility`, `development`, `distributed`, `edition`, `for`, `free`, `from`, `image`, `import`, `is`, `libraries`,
+`pip3`, `production`, `provides`, `pymysql`, `pymysql,`, `pymysql/sqlalchemy`, `singlestore`, `sqlalchemy`,
+`sqlalchemy,`, `the`, `this`, `v%s`, `your`
 
 ### `skrooge`
 
@@ -3074,7 +3116,8 @@ All packages valid.
 
 ### `suitecrm`
 
-**Valid** (15): `ca-certificates`, `json-c`, `nginx`, `openssl`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`, `php-mbstring`, `php-mysqli`, `php-pdo`, `php-pdo_mysql`, `php-xml`, `zip`
+**Valid** (15): `ca-certificates`, `json-c`, `nginx`, `openssl`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`,
+`php-mbstring`, `php-mysqli`, `php-pdo`, `php-pdo_mysql`, `php-xml`, `zip`
 
 **Invalid** (1): `65532:65532`
 
@@ -3130,7 +3173,8 @@ All packages valid.
 
 **Valid** (2): `build-base`, `ca-certificates`
 
-**Invalid** (12): `-`, `available`, `clone`, `not`, `repo`, `requirements.txt`, `torch`, `torchvision`, `user`, `user:user`, `using`, `v__VAR__`
+**Invalid** (12): `-`, `available`, `clone`, `not`, `repo`, `requirements.txt`, `torch`, `torchvision`, `user`,
+`user:user`, `using`, `v__VAR__`
 
 ### `tig`
 
@@ -3158,7 +3202,8 @@ All packages valid.
 
 ### `tinytinyrss`
 
-**Valid** (11): `php`, `php-curl`, `php-dom`, `php-fpm`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`, `php-pdo_sqlite`, `php-pgsql`, `php-xml`, `php-zip`
+**Valid** (11): `php`, `php-curl`, `php-dom`, `php-fpm`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`,
+`php-pdo_sqlite`, `php-pgsql`, `php-xml`, `php-zip`
 
 All packages valid.
 
@@ -3212,7 +3257,8 @@ All packages valid.
 
 ### `tt-rss`
 
-**Valid** (11): `php`, `php-curl`, `php-dom`, `php-fpm`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`, `php-pdo_sqlite`, `php-pgsql`, `php-xml`, `php-zip`
+**Valid** (11): `php`, `php-curl`, `php-dom`, `php-fpm`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`,
+`php-pdo_sqlite`, `php-pgsql`, `php-xml`, `php-zip`
 
 All packages valid.
 
@@ -3314,7 +3360,8 @@ All packages valid.
 
 ### `vtigercrm`
 
-**Valid** (15): `ca-certificates`, `json-c`, `nginx`, `openssl`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`, `php-mbstring`, `php-mysqli`, `php-pdo`, `php-pdo_mysql`, `php-xml`, `zip`
+**Valid** (15): `ca-certificates`, `json-c`, `nginx`, `openssl`, `php`, `php-curl`, `php-fpm`, `php-gd`, `php-intl`,
+`php-mbstring`, `php-mysqli`, `php-pdo`, `php-pdo_mysql`, `php-xml`, `zip`
 
 **Invalid** (1): `65532:65532`
 
@@ -3416,7 +3463,8 @@ All packages valid.
 
 ### `zenphoto`
 
-**Valid** (10): `php`, `php-curl`, `php-fpm`, `php-gd`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`, `php-pdo_sqlite`, `php-xml`, `php-zip`
+**Valid** (10): `php`, `php-curl`, `php-fpm`, `php-gd`, `php-mbstring`, `php-mysqli`, `php-pdo_mysql`, `php-pdo_sqlite`,
+`php-xml`, `php-zip`
 
 All packages valid.
 
@@ -3464,4 +3512,20 @@ All packages valid.
 
 ## Full Valid Package List
 
-`apache2`, `autoconf`, `automake`, `bc`, `bind-tools`, `bison`, `boost`, `build-base`, `ca-certificates`, `clamav`, `clamav-daemon`, `clamav-freshclam`, `containers-common`, `coreutils`, `couchdb`, `docker`, `docker-cli`, `dotnet`, `druid`, `dumb-init`, `etcd`, `expat`, `ffmpeg`, `flex`, `fontconfig`, `freetype`, `freshclam`, `glib`, `gmp`, `gnupg`, `go`, `gosu`, `graphite2`, `haproxy`, `harfbuzz`, `icu-libs`, `inotify-tools`, `iproute2`, `iptables`, `jellyfin`, `jenkins`, `json-c`, `kafka`, `kaniko`, `keycloak`, `kmod`, `krb5-libs`, `libcap`, `libffi`, `libffi-dev`, `libgcc`, `libjpeg-turbo`, `liblz4-1`, `libpcre2-8-0`, `libpng`, `libpq`, `libstdc++`, `libtool`, `libwebp`, `libxml2`, `libxml2-dev`, `libxml2-utils`, `libxslt`, `libxslt-dev`, `libzstd1`, `logstash`, `lua5.4-libs`, `mariadb-backup`, `mariadb-client`, `memcached`, `mlflow`, `mosquitto`, `mosquitto-clients`, `mpdecimal`, `mysql`, `ncurses`, `net-snmp-libs`, `net-tools`, `netcat-openbsd`, `nginx`, `nodejs`, `nodejs-20`, `openjdk-17-jre-base`, `openldap`, `openssh`, `openssh-client`, `openssl`, `openssl-dev`, `openvpn`, `perl`, `pgbouncer`, `php`, `php-8.4`, `php-8.4-curl`, `php-8.4-mbstring`, `php-8.4-mysqli`, `php-8.4-pdo_mysql`, `php-8.4-xml`, `php-8.4-zip`, `php-bcmath`, `php-curl`, `php-dom`, `php-exif`, `php-fpm`, `php-gd`, `php-iconv`, `php-intl`, `php-ldap`, `php-mbstring`, `php-mysqli`, `php-pdo`, `php-pdo_mysql`, `php-pdo_sqlite`, `php-pgsql`, `php-simplexml`, `php-soap`, `php-xml`, `php-zip`, `postfix`, `postgis`, `postgresql-14`, `postgresql-15`, `postgresql-16`, `postgresql-17`, `postgresql-client`, `procps`, `protobuf`, `psmisc`, `py3-lxml`, `py3-pip`, `python3`, `readline`, `rspamd`, `rsync`, `rsyslog`, `ruby`, `ruby-dev`, `rust`, `scap-security-guide`, `socat`, `sqlite`, `sqlite-libs`, `systemd`, `talloc`, `trino`, `tzdata`, `unzip`, `valkey`, `wireguard-tools`, `xdg-utils`, `xz`, `yaml`, `zip`, `zlib`, `zlib-dev`
+`apache2`, `autoconf`, `automake`, `bc`, `bind-tools`, `bison`, `boost`, `build-base`, `ca-certificates`, `clamav`,
+`clamav-daemon`, `clamav-freshclam`, `containers-common`, `coreutils`, `couchdb`, `docker`, `docker-cli`, `dotnet`,
+`druid`, `dumb-init`, `etcd`, `expat`, `ffmpeg`, `flex`, `fontconfig`, `freetype`, `freshclam`, `glib`, `gmp`, `gnupg`,
+`go`, `gosu`, `graphite2`, `haproxy`, `harfbuzz`, `icu-libs`, `inotify-tools`, `iproute2`, `iptables`, `jellyfin`,
+`jenkins`, `json-c`, `kafka`, `kaniko`, `keycloak`, `kmod`, `krb5-libs`, `libcap`, `libffi`, `libffi-dev`, `libgcc`,
+`libjpeg-turbo`, `liblz4-1`, `libpcre2-8-0`, `libpng`, `libpq`, `libstdc++`, `libtool`, `libwebp`, `libxml2`,
+`libxml2-dev`, `libxml2-utils`, `libxslt`, `libxslt-dev`, `libzstd1`, `logstash`, `lua5.4-libs`, `mariadb-backup`,
+`mariadb-client`, `memcached`, `mlflow`, `mosquitto`, `mosquitto-clients`, `mpdecimal`, `mysql`, `ncurses`,
+`net-snmp-libs`, `net-tools`, `netcat-openbsd`, `nginx`, `nodejs`, `nodejs-20`, `openjdk-17-jre-base`, `openldap`,
+`openssh`, `openssh-client`, `openssl`, `openssl-dev`, `openvpn`, `perl`, `pgbouncer`, `php`, `php-8.4`, `php-8.4-curl`,
+`php-8.4-mbstring`, `php-8.4-mysqli`, `php-8.4-pdo_mysql`, `php-8.4-xml`, `php-8.4-zip`, `php-bcmath`, `php-curl`,
+`php-dom`, `php-exif`, `php-fpm`, `php-gd`, `php-iconv`, `php-intl`, `php-ldap`, `php-mbstring`, `php-mysqli`,
+`php-pdo`, `php-pdo_mysql`, `php-pdo_sqlite`, `php-pgsql`, `php-simplexml`, `php-soap`, `php-xml`, `php-zip`, `postfix`,
+`postgis`, `postgresql-14`, `postgresql-15`, `postgresql-16`, `postgresql-17`, `postgresql-client`, `procps`,
+`protobuf`, `psmisc`, `py3-lxml`, `py3-pip`, `python3`, `readline`, `rspamd`, `rsync`, `rsyslog`, `ruby`, `ruby-dev`,
+`rust`, `scap-security-guide`, `socat`, `sqlite`, `sqlite-libs`, `systemd`, `talloc`, `trino`, `tzdata`, `unzip`,
+`valkey`, `wireguard-tools`, `xdg-utils`, `xz`, `yaml`, `zip`, `zlib`, `zlib-dev`

@@ -93,13 +93,17 @@ LABEL evergreen.base.fallback_reason="wolfi lacks required package: libpq-dev-16
 
 #### libc Consistency (C027)
 
-Multi-stage builds that compile artifacts in a glibc-based builder stage (debian, python:slim, ubuntu) and copy them to a musl-based final stage (wolfi, scratch) will fail at runtime. This applies to:
+Multi-stage builds that compile artifacts in a glibc-based builder stage (debian, python:slim, ubuntu) and copy them to
+a musl-based final stage (wolfi, scratch) will fail at runtime. This applies to:
 
-- Python packages with C extensions (psycopg2, Pillow, cryptography, lxml) built via `pip install` in debian and copied to wolfi
+- Python packages with C extensions (psycopg2, Pillow, cryptography, lxml) built via `pip install` in debian and copied
+  to wolfi
 - Node.js native modules compiled against glibc
 - Rust binaries built with `x86_64-unknown-linux-gnu` target (not `musl`)
 
-**For Python images specifically:** Build the virtual environment inside a wolfi builder stage so C extensions compile against musl. If musl wheels are not available on PyPI and source compilation fails, fall back to UBI minimal as the final stage.
+**For Python images specifically:** Build the virtual environment inside a wolfi builder stage so C extensions compile
+against musl. If musl wheels are not available on PyPI and source compilation fails, fall back to UBI minimal as the
+final stage.
 
 This constraint is tracked as C027 in the Image Standards document.
 

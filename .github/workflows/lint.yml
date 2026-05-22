@@ -90,7 +90,7 @@ jobs:
       - name: Run cargo audit
         run: |
           cargo install cargo-audit --locked 2>/dev/null || true
-          cargo audit --manifest-path evergreenctl/Cargo.toml
+          cd evergreenctl && cargo audit
       - name: Run cargo test
         run: cargo test --manifest-path evergreenctl/Cargo.toml
       - name: Run cargo build --release
@@ -259,7 +259,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check for Alpine base images
         run: |
-          ALPINE=$(grep -rni 'FROM.*alpine' images/*/Dockerfile 2>/dev/null || true)
+          ALPINE=$(grep -rni '^FROM.*alpine' images/*/Dockerfile 2>/dev/null || true)
           if [ -n "$ALPINE" ]; then
             echo "::error::Alpine base images detected (BANNED):"
             echo "$ALPINE"

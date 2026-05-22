@@ -3,19 +3,11 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-ARG TARGETARCH
-ARG VERSION=7.3.3
-RUN mkdir -p /app || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/matrix-org/matrix-hookshot/releases/download/v${VERSION}/matrix-hookshot-${VERSION}.tar.gz" -o /matrix-hookshot.tar.gz && \
-    echo "binary not available - download failed" >&2 exit 1  /matrix-hookshot.tar.gz" | sha256sum -c || true ; [ -f /matrix-hookshot.tar.gz ] && \
-    tar -xzf /matrix-hookshot.tar.gz -C /app 2>/dev/null || true && \
-    mkdir -p /app /var/log/matrix-hookshot /etc/matrix-hookshot 2>/dev/null || true
+FROM ghcr.io/matrix-org/matrix-hookshot:${VERSION} AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS builder
 RUN apk add --no-cache nodejs npm 2>/dev/null || true
-COPY --from=downloader /app /app
+COPY --from=upstream /app /app
 RUN cd /app && npm install --omit=dev 2>/dev/null || true && \
     mkdir -p /var/log/matrix-hookshot /etc/matrix-hookshot 2>/dev/null || true
 

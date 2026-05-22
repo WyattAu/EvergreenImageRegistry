@@ -6,7 +6,7 @@ ARG APP_GID=65532
 FROM bitpoke/mysql-operator:v${VERSION} AS upstream
 
 FROM scratch
-COPY --from=upstream /manager /usr/local/bin/mysql-operator
+COPY --from=upstream /mysql-operator /usr/local/bin/mysql-operator
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app

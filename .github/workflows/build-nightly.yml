@@ -110,7 +110,9 @@ jobs:
       - run: |
           PASS=0; FAIL=0
           for dockerfile in images/*/Dockerfile; do
-            name=$(basename $(dirname $dockerfile))
+            name=$(basename $(dirname "$dockerfile"))
+            # Skip non-image directories
+            [[ "$name" == _* ]] && continue
             [ "$name" = "tests" ] || [ "$name" = "health-shim" ] && continue
             grep -q '^HEALTHCHECK' "$dockerfile" || { echo "FAIL: $name missing HEALTHCHECK"; FAIL=$((FAIL+1)); }
             for label in "evergreen.security.cap-drop" "evergreen.security.no-new-privileges" "evergreen.security.read-only-rootfs" "evergreen.security.seccomp"; do

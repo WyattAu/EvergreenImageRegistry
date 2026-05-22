@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "node-alpine"
 version = "22.12.0"
 description = "Evergreen hardened node-alpine - Node.js runtime (no Alpine, scratch)"

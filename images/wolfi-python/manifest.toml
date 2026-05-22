@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "wolfi-python"
 version = "unknown"
 description = "wolfi-python container image"

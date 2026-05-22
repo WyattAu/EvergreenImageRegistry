@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "crate"
 version = "5.9.0"
 description = "Evergreen hardened CrateDB - distributed SQL database"

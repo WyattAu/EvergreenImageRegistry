@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "tig"
 version = "2.5.8"
 description = "Text-mode interface for Git"

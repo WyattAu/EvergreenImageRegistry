@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "golang"
 version = "1.22.3"
 description = "golang container image"

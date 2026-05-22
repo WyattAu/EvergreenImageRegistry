@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "vpn-controller"
 version = "1.0.20210914"
 description = "WireGuard-based VPN management controller"

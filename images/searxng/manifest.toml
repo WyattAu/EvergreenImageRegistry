@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "searxng"
 version = "2024.4.10"
 description = "searxng container image"

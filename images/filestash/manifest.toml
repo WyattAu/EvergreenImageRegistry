@@ -1,0 +1,39 @@
+[metadata]
+tier = "standard"
+name = "filestash"
+version = "v0.4"
+description = "filestash container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "mickaelkerjean/filestash:latest"
+
+[runtime]
+entrypoint = ["/filestash"]
+
+[ports]
+expose = [8334, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/mickael-kerjean/filestash"
+"org.opencontainers.image.title" = "filestash"
+"org.opencontainers.image.vendor" = "Filestash"
+"org.opencontainers.image.version" = "${VERSION}"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.base" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "5s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "10000ms"
+"evergreen.image.category" = "cloud-storage"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "2"
+"evergreen.metrics.native" = "ztunnel"
+

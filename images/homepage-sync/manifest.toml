@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "homepage-sync"
 version = "latest"
 description = "Homepage - sync mode"

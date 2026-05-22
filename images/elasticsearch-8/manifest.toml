@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "elasticsearch-8"
 version = "8.12.2"
 description = "Elasticsearch 8 - Distributed Search and Analytics Engine"

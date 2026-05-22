@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "docker-gc"
 version = "0.3.0"
 description = "Docker garbage collection - automatic cleanup of unused containers and images"

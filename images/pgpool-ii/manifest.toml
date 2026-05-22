@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "pgpool-ii"
 version = "4.5.1"
 description = "pgpool-ii container image"

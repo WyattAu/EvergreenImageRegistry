@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "skrooge"
 version = "2.31.0"
 description = "skrooge container image"

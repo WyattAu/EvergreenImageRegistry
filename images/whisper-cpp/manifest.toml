@@ -1,0 +1,36 @@
+[metadata]
+tier = "standard"
+name = "whisper-cpp"
+version = "1.8.4"
+description = "whisper-cpp container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/whisper-cli"]
+
+[ports]
+expose = [8080, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/ggerganov/whisper.cpp"
+"org.opencontainers.image.title" = "whisper-cpp"
+"org.opencontainers.image.vendor" = "ggerganov/whisper.cpp"
+"org.opencontainers.image.version" = "${VERSION}"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "3000ms"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
+

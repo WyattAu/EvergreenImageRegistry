@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "newsboat"
 version = "2.30"
 description = "newsboat container image"

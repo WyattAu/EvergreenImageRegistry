@@ -1,0 +1,39 @@
+[metadata]
+tier = "standard"
+name = "pagerduty-agent"
+version = "latest"
+description = "pagerduty-agent container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "pagerduty/pdagent:${VERSION}"
+
+[runtime]
+entrypoint = ["/pdagent"]
+
+[ports]
+expose = [4550, 9101]
+
+[labels]
+"org.opencontainers.image.source" = "https://github.com/PagerDuty/pdagent"
+"org.opencontainers.image.title" = "pagerduty-agent"
+"org.opencontainers.image.vendor" = "PagerDuty"
+"org.opencontainers.image.version" = "1.7.4"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "3000ms"
+"evergreen.image.category" = "monitoring"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "2"
+"evergreen.metrics.native" = "ztunnel"
+

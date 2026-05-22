@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "docui"
 version = "0.25.2"
 description = "Docker UI - lazydocker terminal UI"

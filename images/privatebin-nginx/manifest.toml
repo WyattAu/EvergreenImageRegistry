@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "privatebin-nginx"
 version = "unknown"
 description = "PrivateBin - encrypted pastebin with nginx"

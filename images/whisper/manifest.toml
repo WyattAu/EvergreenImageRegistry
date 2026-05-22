@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "whisper"
 version = "20240930"
 description = "whisper container image"

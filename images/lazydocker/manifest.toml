@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "lazydocker"
 version = "0.25.2"
 description = "Lazydocker - Terminal UI for Docker"

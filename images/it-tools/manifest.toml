@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "it-tools"
 version = "2024.10.22-7ca5933"
 description = "it-tools container image"

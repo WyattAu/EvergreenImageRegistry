@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "llama-cpp-server"
 version = "b5415"
 description = "llama-cpp-server container image"

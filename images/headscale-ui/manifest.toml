@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "headscale-ui"
 version = "2026.03.17"
 description = "headscale-ui container image"

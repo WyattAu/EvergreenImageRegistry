@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "dovecot-lda"
 version = "2.3.21"
 description = "Dovecot LDA - Dovecot in local delivery agent mode"

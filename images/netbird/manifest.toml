@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "netbird"
 version = "0.70.5"
 description = "netbird container image"

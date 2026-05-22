@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "iobroker"
 version = "unknown"
 description = "ioBroker - IoT automation platform"

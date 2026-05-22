@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "azurelogs"
 version = "1.2.0"
 description = "Azure Monitor Log Ingestion client"

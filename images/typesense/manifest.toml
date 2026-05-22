@@ -1,0 +1,40 @@
+[metadata]
+tier = "standard"
+name = "typesense"
+version = "30.2"
+description = "Fast, typo-tolerant search engine"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "typesense/typesense:30.2"
+
+[runtime]
+entrypoint = ["/typesense-server"]
+
+[ports]
+expose = [8108, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Fast, typo-tolerant search engine"
+"org.opencontainers.image.source" = "https://github.com/typesense/typesense"
+"org.opencontainers.image.title" = "typesense"
+"org.opencontainers.image.vendor" = "Typesense"
+"org.opencontainers.image.version" = "30.2"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.base" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "5s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "5000ms"
+"evergreen.image.category" = "search"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
+

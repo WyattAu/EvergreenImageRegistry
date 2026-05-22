@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "golang-alpine"
 version = "1.22.10"
 description = "Evergreen hardened go-1.23-alpine - Go build base (no Alpine, scratch)"

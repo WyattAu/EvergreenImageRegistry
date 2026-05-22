@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "libreoffice-headless"
 version = "24.8.2"
 description = "libreoffice-headless container image"

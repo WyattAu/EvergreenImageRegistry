@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "nginx-stream"
 version = "1.27.1"
 description = "nginx-stream container image"

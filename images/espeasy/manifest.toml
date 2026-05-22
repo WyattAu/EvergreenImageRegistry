@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "espeasy"
 version = "unknown"
 description = "espeasy container image"

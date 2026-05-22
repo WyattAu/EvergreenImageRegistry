@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "gitserver"
 version = "1.26.1"
 description = "GitServer - lightweight git HTTP server"

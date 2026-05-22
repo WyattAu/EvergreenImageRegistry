@@ -1,0 +1,37 @@
+[metadata]
+tier = "standard"
+name = "kaniko"
+version = "1.24.0"
+description = "Kaniko - build container images in Kubernetes without privileged access"
+vendor = "Google"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "gcr.io/kaniko-project/executor:v1.24.0"
+
+[runtime]
+entrypoint = ["/kaniko/executor"]
+cmd = ["--help"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Evergreen hardened kaniko - container image builder"
+"org.opencontainers.image.source" = "https://github.com/GoogleContainerTools/kaniko"
+"org.opencontainers.image.title" = "kaniko"
+"org.opencontainers.image.vendor" = "Google"
+"org.opencontainers.image.version" = "${VERSION}"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "devops"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
+

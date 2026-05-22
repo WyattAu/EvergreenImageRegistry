@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "jenkins-plugin"
 version = "2.462.1"
 description = "Evergreen hardened jenkins-plugin - Jenkins plugin manager"

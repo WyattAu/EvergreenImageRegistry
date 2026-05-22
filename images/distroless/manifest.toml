@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "distroless"
 version = "unknown"
 description = "Evergreen reference to gcr.io/distroless/static-debian12 for static binary containers"

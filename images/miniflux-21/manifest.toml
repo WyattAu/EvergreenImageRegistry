@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "miniflux-21"
 version = "2.2.19"
 description = "miniflux-21 container image"

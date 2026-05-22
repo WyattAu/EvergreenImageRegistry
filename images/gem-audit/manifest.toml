@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "gem-audit"
 version = "unknown"
 description = "Gem/Bundler audit - Ruby dependency security scanner"

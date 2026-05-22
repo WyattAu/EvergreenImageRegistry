@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "clamav-daemon"
 version = "unknown"
 description = "ClamAV - daemon mode"

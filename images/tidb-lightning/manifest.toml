@@ -1,0 +1,35 @@
+[metadata]
+tier = "standard"
+name = "tidb-lightning"
+version = "latest"
+description = "Evergreen hardened TiDB Lightning - high-speed TiDB data import tool"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "pingcap/tidb:${VERSION}"
+
+[runtime]
+entrypoint = ["/usr/local/bin/tidb-lightning"]
+
+[ports]
+expose = [8289, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Evergreen hardened TiDB Lightning - high-speed TiDB data import tool"
+"org.opencontainers.image.title" = "tidb-lightning"
+"org.opencontainers.image.vendor" = "PingCAP"
+"org.opencontainers.image.version" = "${VERSION}"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.category" = "database"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"
+

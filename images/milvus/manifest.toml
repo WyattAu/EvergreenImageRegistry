@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "milvus"
 version = "2.4.0"
 description = "milvus container image"

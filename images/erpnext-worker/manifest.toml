@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "erpnext-worker"
 version = "15"
 description = "erpnext-worker container image"

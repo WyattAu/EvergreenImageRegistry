@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "splunk-forwarder"
 version = "9.2.1"
 description = "Evergreen hardened Splunk Universal Forwarder - log data shipper"

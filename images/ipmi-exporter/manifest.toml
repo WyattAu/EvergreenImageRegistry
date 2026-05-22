@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "ipmi-exporter"
 version = "1.10.1"
 description = "Prometheus exporter for IPMI sensor metrics"

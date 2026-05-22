@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "ferretdb"
 version = "2.7.0"
 description = "Evergreen hardened FerretDB - MongoDB-compatible database"

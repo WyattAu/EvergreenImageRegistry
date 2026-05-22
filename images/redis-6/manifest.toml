@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "redis-6"
 version = "6.2.16"
 description = "redis-6 container image"

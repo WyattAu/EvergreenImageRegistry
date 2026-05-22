@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "haproxy-lb"
 version = "2.8.5"
 description = "Evergreen hardened HAProxy LB - dedicated load balancer configuration variant"

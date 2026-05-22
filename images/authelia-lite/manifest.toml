@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "authelia-lite"
 version = "4.39.19"
 description = "Evergreen hardened Authelia-lite - lightweight SSO/2FA authentication portal"

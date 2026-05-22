@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "grafana-oss"
 version = "10.4.1"
 description = "Grafana OSS - full open source edition"

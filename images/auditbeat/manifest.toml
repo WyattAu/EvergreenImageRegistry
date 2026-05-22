@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "auditbeat"
 version = "9.4.0"
 description = "Evergreen hardened Auditbeat - Elastic audit event shipper"

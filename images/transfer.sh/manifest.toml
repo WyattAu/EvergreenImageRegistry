@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "transfer.sh"
 version = "1.6.1"
 description = "transfer.sh - Easy file sharing from CLI"

@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "dnsmasq"
 version = "2.90"
 description = "dnsmasq container image"

@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "esphome"
 version = "unknown"
 description = "ESPHome - ESP8266/ESP32 firmware builder"

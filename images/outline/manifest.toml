@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "outline"
 version = "0.77.0"
 description = "outline container image"

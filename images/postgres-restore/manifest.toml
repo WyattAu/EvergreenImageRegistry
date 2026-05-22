@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "postgres-restore"
 version = "17"
 description = "PostgreSQL Restore Container with pg_restore + xz support"

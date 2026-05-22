@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "grafana-toolkit"
 version = "10.4.1"
 description = "Grafana plugin toolkit CLI for building and testing plugins"

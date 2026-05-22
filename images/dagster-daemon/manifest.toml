@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "dagster-daemon"
 version = "1.10.0"
 description = "dagster-daemon container image"

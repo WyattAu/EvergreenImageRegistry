@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "oxidized"
 version = "0.30.1"
 description = "oxidized container image"

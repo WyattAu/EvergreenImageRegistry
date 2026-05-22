@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "pptpd"
 version = "1.10.0"
 description = "Point-to-Point Tunneling Protocol server"

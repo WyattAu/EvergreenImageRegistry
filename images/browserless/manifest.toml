@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "browserless"
 version = "1.63.0"
 description = "browserless container image"

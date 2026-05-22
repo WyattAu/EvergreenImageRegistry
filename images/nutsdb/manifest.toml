@@ -1,0 +1,36 @@
+[metadata]
+tier = "standard"
+name = "nutsdb"
+version = "1.1.0"
+description = "Evergreen hardened NutsDB - embedded key-value store"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+multiarch = false
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["/usr/local/bin/nutsdb"]
+
+[ports]
+expose = [9900, 9101]
+
+[labels]
+"org.opencontainers.image.description" = "Evergreen hardened NutsDB - embedded key-value store"
+"org.opencontainers.image.title" = "nutsdb"
+"org.opencontainers.image.vendor" = "Xujiajun"
+"org.opencontainers.image.version" = "1.1.0"
+"evergreen.base.image" = "scratch"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.scratch" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.hft.shutdown-timeout" = "3s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.image.category" = "database"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "1"
+"evergreen.metrics.native" = "ztunnel"

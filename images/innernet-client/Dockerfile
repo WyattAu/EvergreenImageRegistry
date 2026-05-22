@@ -1,0 +1,26 @@
+# innernet is ARCHIVED and upstream removed all releases/binaries
+# This image is a placeholder. See: https://github.com/innernet-rs/innernet
+# Alternative: use Headscale (github.com/juanfont/headscale) for WireGuard overlay networks
+
+ARG APP_UID=65532
+ARG APP_GID=65532
+
+FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS certs
+FROM scratch
+COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
+USER 65532:65532
+WORKDIR /app
+
+HEALTHCHECK NONE
+STOPSIGNAL SIGTERM
+ENTRYPOINT ["/bin/sh", "-c", "echo 'innernet is archived - see https://github.com/innernet-rs/innernet' && sleep 3600"]
+
+LABEL org.opencontainers.image.title="innernet" \
+      org.opencontainers.image.description="DEPRECATED: innernet project archived. Alternative: headscale." \
+      evergreen.image.status="deprecated" \
+      evergreen.constraint.scratch="true" \
+      evergreen.security.cap-drop="ALL" \
+      evergreen.security.no-new-privileges="true" \
+      evergreen.security.read-only-rootfs="true" \
+      evergreen.security.seccomp="runtime-default"

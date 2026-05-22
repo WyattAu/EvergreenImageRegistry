@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "ggshield"
 version = "unknown"
 description = "ggshield - GitGuardian CLI"

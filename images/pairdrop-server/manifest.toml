@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "pairdrop-server"
 version = "unknown"
 description = "PairDrop - Local file sharing in browser"

@@ -1,0 +1,27 @@
+[metadata]
+tier = "standard"
+name = "kubescape-operator"
+version = "v0.2.142"
+description = "kubescape-operator container image"
+
+[build]
+base = "scratch"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "ghcr.io/kubescape/kubescape-operator:v0.2.142"
+
+[runtime]
+entrypoint = ["/kubescape"]
+cmd = ["--help"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"evergreen.base.image" = "scratch"
+"evergreen.health.type" = "exec"
+"evergreen.metrics.native" = "ztunnel"
+

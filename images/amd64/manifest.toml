@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "amd64"
 version = "unknown"
 description = "Evergreen hardened amd64 - AMD64 architecture base image"

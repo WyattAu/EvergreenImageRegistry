@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "it-tools-legacy"
 version = "unknown"
 description = "IT Tools - legacy version (debian-slim, no Alpine)"

@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "meilisearch-python"
 version = "3.12"
 description = "meilisearch-python container image"

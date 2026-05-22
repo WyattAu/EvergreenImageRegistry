@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "ollama"
 version = "0.21.0"
 description = "ollama container image"

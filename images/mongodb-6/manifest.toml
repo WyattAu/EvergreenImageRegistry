@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "mongodb-6"
 version = "6.0.14"
 description = "mongodb-6 container image"

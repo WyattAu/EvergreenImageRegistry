@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "whoogle-search"
 version = "unknown"
 description = "Whoogle - Privacy-friendly search proxy"

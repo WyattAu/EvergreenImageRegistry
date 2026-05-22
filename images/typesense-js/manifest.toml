@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "typesense-js"
 version = "20"
 description = "typesense-js container image"

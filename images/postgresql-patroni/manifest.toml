@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "postgresql-patroni"
 version = "4.0.3"
 description = "Patroni - PostgreSQL High Availability with etcd/Consul/ZooKeeper"

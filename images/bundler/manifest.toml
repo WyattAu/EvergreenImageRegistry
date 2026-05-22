@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "bundler"
 version = "2.5.0"
 description = "bundler container image"

@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "janusgraph"
 version = "1.0.0"
 description = "Evergreen hardened JanusGraph - distributed graph database"

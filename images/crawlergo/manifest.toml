@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "crawlergo"
 version = "0.4.4"
 description = "crawlergo container image"

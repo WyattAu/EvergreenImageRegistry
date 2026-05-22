@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "openvpn-as"
 version = "2.12.1"
 description = "OpenVPN Access Server with web UI"

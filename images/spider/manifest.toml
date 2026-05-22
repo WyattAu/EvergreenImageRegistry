@@ -1,0 +1,33 @@
+[metadata]
+tier = "standard"
+name = "spider"
+version = "0.1.0"
+description = "Placeholder - no upstream binary available"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "package-manager"
+
+[runtime]
+entrypoint = ["true"]
+
+[ports]
+expose = [9101]
+
+[labels]
+"org.opencontainers.image.description" = "Placeholder - no upstream binary available"
+"org.opencontainers.image.title" = "spider"
+"org.opencontainers.image.vendor" = "Spider"
+"org.opencontainers.image.version" = "0.1.0"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "exec"
+"evergreen.image.tier" = "3"
+"evergreen.metrics.native" = "ztunnel"
+
+
+status = "wip"

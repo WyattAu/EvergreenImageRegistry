@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "nginx-unprivileged"
 version = "1.27.1"
 description = "nginx-unprivileged container image"

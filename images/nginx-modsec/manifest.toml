@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "nginx-modsec"
 version = "1.27.1"
 description = "NGINX with ModSecurity WAF module"

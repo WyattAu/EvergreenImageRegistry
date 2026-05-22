@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "awslogs"
 version = "0.16.0"
 description = "AWS CloudWatch Logs CLI client"

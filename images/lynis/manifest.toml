@@ -1,4 +1,5 @@
 [metadata]
+tier = "standard"
 name = "lynis"
 version = "unknown"
 description = "Lynis - Security auditing tool"

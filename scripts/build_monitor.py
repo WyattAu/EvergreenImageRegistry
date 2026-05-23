@@ -26,7 +26,9 @@ def run_cmd(cmd):
 
 def get_failed_builds():
     """Get list of currently failing image builds."""
-    stdout, _, _ = run_cmd(["gh", "run", "list", "--repo", REPO, "--status", "failure", "--limit", "1"])
+    stdout, _, _ = run_cmd(
+        ["gh", "run", "list", "--repo", REPO, "--status", "failure", "--limit", "1"]
+    )
 
     failed = []
     for line in stdout.split("\n"):

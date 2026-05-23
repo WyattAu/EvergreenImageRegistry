@@ -40,13 +40,13 @@
 # Basic run
 docker run -d -p 80:80 -p 443:443 \
   --read-only --tmpfs /var/cache \
-  ghcr.io/evergreen/nginx:latest
+  ghcr.io/wyattau/evergreenimageregistry/nginx:latest
 
 # With config
 docker run -d -p 80:80 \
   -v nginx.conf:/etc/nginx/nginx.conf:ro \
   --read-only \
-  ghcr.io/evergreen/nginx:latest
+  ghcr.io/wyattau/evergreenimageregistry/nginx:latest
 ```
 
 ## Health Check

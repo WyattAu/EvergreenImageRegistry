@@ -41,7 +41,7 @@ docker run -d \
   --name blackbox-exporter \
   -p 9115:9115 \
   -v /etc/blackbox.yml:/etc/blackbox_exporter/config.yml:ro \
-  ghcr.io/evergreen/blackbox-exporter:latest
+  ghcr.io/wyattau/evergreenimageregistry/blackbox-exporter:latest
 ```
 
 ---

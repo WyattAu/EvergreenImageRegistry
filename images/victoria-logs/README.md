@@ -41,7 +41,7 @@ docker run -d \
   --name victoria-logs \
   -p 9428:9428 \
   -v /var/lib/victoria-logs:/var/lib/victoria-logs \
-  ghcr.io/evergreen/victoria-logs:latest
+  ghcr.io/wyattau/evergreenimageregistry/victoria-logs:latest
 ```
 
 ---

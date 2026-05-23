@@ -38,7 +38,7 @@ Paperless-ngx is a document management system that transforms physical documents
 ```yaml
 services:
   paperless:
-    image: ghcr.io/evergreen/paperless-ngx:latest
+    image: ghcr.io/wyattau/evergreenimageregistry/paperless-ngx:latest
     ports:
       - "8000:8000"
     volumes:

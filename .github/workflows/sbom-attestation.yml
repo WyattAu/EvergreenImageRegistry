@@ -1,16 +1,21 @@
 name: SBOM Attestation
 on:
   workflow_run:
+    workflows: ['Build Hardened Images']
     types: [completed]
-    jobs:
+    branches: [main]
+
+permissions:
+  id-token: write
+  contents: read
+  attestations: write
+  packages: write
+
+jobs:
   attest:
     runs-on: ubuntu-latest
-    if:
-      github.event.workflow_run.conclusion == 'success' && startsWith(github.event.workflow_run.head_commit, 'sha256:')
-    permissions:
-      id-token: write
-      contents: read
-      attestations: write
+    timeout-minutes: 30
+    if: github.event.workflow_run.conclusion == 'success'
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
@@ -22,16 +27,26 @@ on:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Extract image name
-        id: image
-        run: echo "IMAGE=${GITHUB_REPOSITORY#*/}" >> $GITHUB_ENV
-      - name: Attest SBOM
+      - name: Download image references
+        uses: actions/download-artifact@v4
+        with:
+          name: built-image-references
+          path: /tmp/references/
+          run-id: ${{ github.event.workflow_run.id }}
+        continue-on-error: true
+      - name: Attest SBOMs
         run: |
-          cosign attest --yes --key env://COSIGN_PRIVATE_KEY \
-            --predicate-type https://slsa.dev/provenance/v1 \
-            --output-certificate attest.crt \
-            --output-signature attest.sig \
-            ghcr.io/${{ env.IMAGE }}@${{ github.event.workflow_run.head_commit }} \
-            --rekor-url https://rekor.sigstore.dev
+          if [ ! -f /tmp/references/images.txt ]; then
+            echo "No image references found, skipping attestation"
+            exit 0
+          fi
+          while IFS= read -r ref; do
+            [ -z "$ref" ] && continue
+            echo "Attesting SBOM for ${ref}..."
+            cosign attest --yes \
+              --predicate sbom.spdx.json \
+              --type spdxjson \
+              "${ref}" 2>&1 || echo "WARN: SBOM attestation failed for ${ref}"
+          done < /tmp/references/images.txt
         env:
-          COSIGN_PRIVATE_KEY: ''
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}

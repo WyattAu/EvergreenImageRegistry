@@ -54,7 +54,7 @@ Traefik is a modern HTTP reverse proxy and load balancer designed for microservi
 
 ```bash
 # Pull the image
-docker pull ghcr.io/evergreen/traefik:latest
+docker pull ghcr.io/wyattau/evergreenimageregistry/traefik:latest
 
 # Run with configuration file
 docker run -d \
@@ -67,7 +67,7 @@ docker run -d \
   --tmpfs /tmp \
   --tmpfs /var/cache \
   --tmpfs /var/log \
-  ghcr.io/evergreen/traefik:latest
+  ghcr.io/wyattau/evergreenimageregistry/traefik:latest
 ```
 
 ### With Docker Compose
@@ -75,7 +75,7 @@ docker run -d \
 ```yaml
 services:
   traefik:
-    image: ghcr.io/evergreen/traefik:latest
+    image: ghcr.io/wyattau/evergreenimageregistry/traefik:latest
     ports:
       - "80:80"
       - "443:443"
@@ -118,7 +118,7 @@ docker run \
   --user 65532 \            # Non-root
   --cap-drop ALL \          # Drop all capabilities
   --security-opt no-new-privileges \
-  ghcr.io/evergreen/traefik:latest
+  ghcr.io/wyattau/evergreenimageregistry/traefik:latest
 ```
 
 ---
@@ -165,7 +165,7 @@ curl http://localhost:8080/ping
 ## Known Limitations
 
 1. **C007 (Zero CVEs)**: Requires external CVE scanning in CI/CD pipeline
-2. **C008 (Signing)**: Requires Cosign setup in CI/CD  
+2. **C008 (Signing)**: Requires Cosign setup in CI/CD
 3. **C009 (SBOM)**: Requires Syft in CI/CD
 
 These will be addressed in the automated pipeline.

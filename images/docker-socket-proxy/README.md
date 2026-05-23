@@ -43,7 +43,7 @@ docker run -d \
   -p 2375:2375 \
   -e CONTAINERS=1 \
   -e IMAGES=1 \
-  ghcr.io/evergreen/docker-socket-proxy:latest
+  ghcr.io/wyattau/evergreenimageregistry/docker-socket-proxy:latest
 ```
 
 ---

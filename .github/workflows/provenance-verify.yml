@@ -27,11 +27,12 @@ jobs:
       - name: Verify SLSA provenance for sample images
         run: |
           SAMPLE_IMAGES="redis nginx postgres vault grafana prometheus"
+          CERT_IDENTITY="${{ github.repository_owner }}"
           for img in $SAMPLE_IMAGES; do
             FULL_REF="ghcr.io/${{ github.repository }}/$img:latest"
             echo "Verifying provenance for $FULL_REF..."
-            cosign verify --certificate-identity https://github.com/ \
+            cosign verify \
+              --certificate-identity "${CERT_IDENTITY}" \
               --certificate-oidc-issuer https://token.actions.githubusercontent.com \
-              --rekor-url https://rekor.sigstore.dev \
-              "$FULL_REF" || echo "WARNING: Could not verify $img" >&2
+              "$FULL_REF" 2>&1 || echo "WARNING: Could not verify $img (image may not be published yet)" >&2
           done

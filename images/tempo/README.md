@@ -41,7 +41,7 @@ docker run -d \
   --name tempo \
   -p 3200:3200 \
   -v /etc/tempo.yaml:/etc/tempo.yaml:ro \
-  ghcr.io/evergreen/tempo:latest
+  ghcr.io/wyattau/evergreenimageregistry/tempo:latest
 ```
 
 ---

@@ -122,6 +122,7 @@ jobs:
           chmod +x scripts/bump_versions.sh scripts/bump_all_outdated.sh
 
           BATCH_SIZE="${{ inputs.batch_size || '50' }}"
+          [[ "$BATCH_SIZE" =~ ^[0-9]+$ ]] || { echo "::error::batch_size must be numeric, got: $BATCH_SIZE"; exit 1; }
           ./scripts/bump_all_outdated.sh /tmp/outdated.txt || true
 
           if [ -z "$(git status --porcelain)" ]; then

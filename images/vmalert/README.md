@@ -40,7 +40,7 @@ vmalert is the alerting engine for VictoriaMetrics, evaluating alerting and reco
 docker run -d \
   --name vmalert \
   -p 8880:8880 \
-  ghcr.io/evergreen/vmalert:latest \
+  ghcr.io/wyattau/evergreenimageregistry/vmalert:latest \
   -prometheus.url=http://victoriametrics:8428 \
   -rule.file=/etc/alerts/*.yaml
 ```

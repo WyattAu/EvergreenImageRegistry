@@ -55,8 +55,7 @@ pub static RE_FROM_IMAGE: LazyLock<Regex> =
 
 /// Extract USER directive (last match wins).
 /// Captures group 1: user[:group].
-pub static RE_USER: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"USER\s+(\S+)").unwrap());
+pub static RE_USER: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"USER\s+(\S+)").unwrap());
 
 /// Extract STOPSIGNAL directive.
 /// Captures group 1: signal name.

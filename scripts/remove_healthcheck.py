@@ -85,11 +85,14 @@ def main():
         for df in dockerfiles
         if "HEALTHCHECK" in df.read_text().split("\n")
         and any(
-            line.strip().startswith("HEALTHCHECK") for line in df.read_text().split("\n")
+            line.strip().startswith("HEALTHCHECK")
+            for line in df.read_text().split("\n")
         )
     )
     if remaining:
-        print(f"\nWARNING: {remaining} Dockerfiles still contain HEALTHCHECK instructions!")
+        print(
+            f"\nWARNING: {remaining} Dockerfiles still contain HEALTHCHECK instructions!"
+        )
     else:
         print("\nVerification: No HEALTHCHECK instructions remain in any Dockerfile.")
 

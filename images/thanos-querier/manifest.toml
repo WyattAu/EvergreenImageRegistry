@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "thanos-querier"
-version = "unknown"
+version = "0.38.0"
 description = "thanos-querier container image"
 
 [build]

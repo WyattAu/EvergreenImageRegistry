@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "promtail-agent"
-version = "unknown"
+version = "3.6.11"
 description = "promtail-agent container image"
 
 [build]

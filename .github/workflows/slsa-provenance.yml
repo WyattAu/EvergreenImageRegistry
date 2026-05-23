@@ -27,10 +27,10 @@ jobs:
       total: ${{ steps.set-matrix.outputs.total }}
       skipped: ${{ steps.set-matrix.outputs.skipped }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
       - name: Download image references
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           pattern: built-list-*-batch-*
           path: /tmp/batches/
@@ -55,7 +55,7 @@ jobs:
           crane version
 
       - name: Login to GHCR
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -121,6 +121,7 @@ jobs:
     if: ${{ needs.prepare.result == 'success' && needs.prepare.outputs.total != '0' }}
     timeout-minutes: 60
     continue-on-error: true
+    # pin:slsa-framework/slsa-github-generator@f7dd8c54c2067bafc12ca7a55595d5ee9b75204a
     uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
     strategy:
       fail-fast: false

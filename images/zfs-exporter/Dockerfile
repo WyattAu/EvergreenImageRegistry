@@ -9,7 +9,7 @@
 # zfs-exporter is dynamically linked to libzfs, ld-musl, and 16 other .so files.
 # Must copy all shared libraries from the upstream Alpine image into scratch.
 
-ARG VERSION=latest
+ARG VERSION=0.0.12
 ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532

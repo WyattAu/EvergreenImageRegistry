@@ -1,0 +1,10 @@
+# CODEOWNERS - Evergreen Image Registry
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# CI/CD workflows require review before modification
+.github/workflows/          @WyattAu
+
+# Build pipeline core
+evergreenctl/               @WyattAu
+scripts/                    @WyattAu
+manifest.toml               @WyattAu

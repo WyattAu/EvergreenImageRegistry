@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "thanos-rule"
-version = "unknown"
+version = "0.38.0"
 description = "thanos-rule container image"
 
 [build]

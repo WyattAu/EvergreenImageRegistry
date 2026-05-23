@@ -1,6 +1,6 @@
 [metadata]
 name = "vaultwarden"
-version = "1.35.7"
+version = "1.36.0"
 description = "Vaultwarden - lightweight Bitwarden-compatible password manager"
 vendor = "dani-garcia"
 source = "https://github.com/dani-garcia/vaultwarden"

@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "homepage-config"
-version = "latest"
+version = "v1.13.0"
 description = "Homepage - config mode"
 
 [build]

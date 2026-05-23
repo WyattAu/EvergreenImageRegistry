@@ -1,7 +1,7 @@
 [metadata]
 tier = "critical"
 name = "portainer-edge"
-version = "latest"
+version = "2.39.2"
 description = "Portainer Edge Agent"
 
 [build]

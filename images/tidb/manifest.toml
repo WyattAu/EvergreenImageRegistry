@@ -1,6 +1,6 @@
 [metadata]
 name = "tidb"
-version = "8.5.6"
+version = "v8.5.6"
 description = "TiDB - distributed NewSQL database compatible with MySQL"
 vendor = "PingCAP"
 source = "https://github.com/pingcap/tidb"

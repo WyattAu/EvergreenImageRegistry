@@ -1,7 +1,7 @@
 [metadata]
 tier = "critical"
 name = "portainer-agent"
-version = "latest"
+version = "2.39.2"
 description = "Portainer Agent for Docker"
 
 [build]

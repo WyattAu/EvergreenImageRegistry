@@ -1,6 +1,6 @@
 [metadata]
 name = "node-exporter"
-version = "1.8.0"
+version = "v1.11.1"
 description = "Node Exporter - hardware and OS metrics exporter for Prometheus"
 vendor = "Prometheus"
 source = "https://github.com/prometheus/node_exporter"

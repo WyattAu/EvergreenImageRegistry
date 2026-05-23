@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "zincone"
-version = "latest"
+version = "v0.4.10"
 description = "Evergreen hardened ZincOne - ZincSearch observability edition"
 
 [build]

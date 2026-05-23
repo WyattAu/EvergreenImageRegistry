@@ -1,6 +1,6 @@
 [metadata]
 name = "valkey"
-version = "9"
+version = "9.0.4"
 upstream_version = "9"
 description = "Valkey - open source Redis-compatible in-memory data store"
 vendor = "Valkey"

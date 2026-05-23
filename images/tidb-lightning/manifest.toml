@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "tidb-lightning"
-version = "latest"
+version = "v8.5.6"
 description = "Evergreen hardened TiDB Lightning - high-speed TiDB data import tool"
 
 [build]

@@ -63,47 +63,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
-## [19.0.0] - 2026-05-03
-
-### Sovereign-to-Evergreen Full Rebrand (Phase 28) <!-- Sovereign was the original project name -->
-
-Complete rebrand of all project identity from "Sovereign" (original name) to "Evergreen":
-
-- **Dockerfile labels**: `sovereign.*` → `evergreen.*` across 998 images (~4,000 label lines)
-- **Tool rename**: `sovereignctl/` → `evergreenctl/`, binary renamed
-- **Rust source**: 47 occurrences rebranded in evergreenctl/src/
-- **health-shim**: 13 occurrences rebranded in Go source
-- **All 998 manifest.toml files** rebranded
-- **All 998 SBOM JSON files** rebranded
-- **22 doc files, 22 script files, 2 CI workflows, 5 root files** rebranded
-- **Cargo.lock regenerated** from updated Cargo.toml
-- **Script renamed**: `sovereign-entrypoint.sh` (now `evergreen-entrypoint.sh`)
-- **Final result**: 0 files with any case variant of "sovereign/Sovereign/SOVEREIGN"
-
-### Security Hardening (Phase 29)
-
-- **HEALTHCHECK**: 0% → 100% coverage (997/997 images)
-  - 557 active health checks (HTTP curl, DB-specific commands, metrics endpoint)
-  - 440 HEALTHCHECK NONE (scratch/base images with no shell)
-  - DB-specific checks: pg_isready, redis-cli, mysqladmin, nodetool, mongosh, etcdctl, rabbitmq-diagnostics, cockroach
-    version
-- **CAP_DROP label**: 0% → 100% (997/997 images) — `evergreen.security.cap-drop="ALL"`
-- **no-new-privileges label**: 0% → 100% (997/997 images) — `evergreen.security.no-new-privileges="true"`
-- **TOML fixes**: 7 broken manifests fixed (WireGuard ecosystem — unquoted port strings in TOML arrays)
-- **Version mismatches**: 2 fixed (golang-cache ARG→1.0.0, minio-operator 6.0.4→v6.0.4)
-- **ADR-004 banned bases**: All 29 images already multi-stage, 0 conversions needed
-
-### Reproducibility (Phase 30)
-
-- **Digest pinning**: 0.3% → 73.6% (1485/2019 FROM lines pinned with @sha256:)
-- **Effective immutability**: 92.9% (pinned + scratch + build-time variable resolution)
-- **Top bases pinned**: debian:bookworm-slim (861 refs), wolfi-base:latest (602 refs)
-- **Final-stage FROM**: 100% digest-pinned or scratch (397/397)
-- **Remaining**: 5 auth-gated/huge :latest tags (dependabot, lancedb, scylladb, tigergraph ×2), 100 ${VERSION}
-  build-time vars, 39 specific upstream versions
-
----
-
 ## [20.0.0] - 2026-05-03
 
 ### CI Build Fix Campaign -- 100% Pass Rate Achieved
@@ -201,6 +160,47 @@ Verified safe updates via GitHub API with asset naming validation:
 - **RUN-as-LABEL:** `RUN org.opencontainers.image.version="..."` executes as shell command, not as label
 - **Gem native extensions:** github-linguist requires cmake, pkg-config, libgit2-dev, AND libicu-dev (discovered
   iteratively across 3 CI rounds)
+
+---
+
+## [19.0.0] - 2026-05-03
+
+### Sovereign-to-Evergreen Full Rebrand (Phase 28) <!-- Sovereign was the original project name -->
+
+Complete rebrand of all project identity from "Sovereign" (original name) to "Evergreen":
+
+- **Dockerfile labels**: `sovereign.*` → `evergreen.*` across 998 images (~4,000 label lines)
+- **Tool rename**: `sovereignctl/` → `evergreenctl/`, binary renamed
+- **Rust source**: 47 occurrences rebranded in evergreenctl/src/
+- **health-shim**: 13 occurrences rebranded in Go source
+- **All 998 manifest.toml files** rebranded
+- **All 998 SBOM JSON files** rebranded
+- **22 doc files, 22 script files, 2 CI workflows, 5 root files** rebranded
+- **Cargo.lock regenerated** from updated Cargo.toml
+- **Script renamed**: `sovereign-entrypoint.sh` (now `evergreen-entrypoint.sh`)
+- **Final result**: 0 files with any case variant of "sovereign/Sovereign/SOVEREIGN"
+
+### Security Hardening (Phase 29)
+
+- **HEALTHCHECK**: 0% → 100% coverage (997/997 images)
+  - 557 active health checks (HTTP curl, DB-specific commands, metrics endpoint)
+  - 440 HEALTHCHECK NONE (scratch/base images with no shell)
+  - DB-specific checks: pg_isready, redis-cli, mysqladmin, nodetool, mongosh, etcdctl, rabbitmq-diagnostics, cockroach
+    version
+- **CAP_DROP label**: 0% → 100% (997/997 images) — `evergreen.security.cap-drop="ALL"`
+- **no-new-privileges label**: 0% → 100% (997/997 images) — `evergreen.security.no-new-privileges="true"`
+- **TOML fixes**: 7 broken manifests fixed (WireGuard ecosystem — unquoted port strings in TOML arrays)
+- **Version mismatches**: 2 fixed (golang-cache ARG→1.0.0, minio-operator 6.0.4→v6.0.4)
+- **ADR-004 banned bases**: All 29 images already multi-stage, 0 conversions needed
+
+### Reproducibility (Phase 30)
+
+- **Digest pinning**: 0.3% → 73.6% (1485/2019 FROM lines pinned with @sha256:)
+- **Effective immutability**: 92.9% (pinned + scratch + build-time variable resolution)
+- **Top bases pinned**: debian:bookworm-slim (861 refs), wolfi-base:latest (602 refs)
+- **Final-stage FROM**: 100% digest-pinned or scratch (397/397)
+- **Remaining**: 5 auth-gated/huge :latest tags (dependabot, lancedb, scylladb, tigergraph ×2), 100 ${VERSION}
+  build-time vars, 39 specific upstream versions
 
 ---
 
@@ -323,6 +323,128 @@ Verified safe updates via GitHub API with asset naming validation:
 | EXPOSE 9101 images          | 0                  | 404                        |
 | STOPSIGNAL images           | 0                  | 402                        |
 | evergreen.base.image labels | 0                  | 402                        |
+
+---
+
+## [5.0.0] - 2026-04-22
+
+### Phase 9: Stub Enhancement & Depth-First Hardening
+
+### Added
+
+- **576 stub images converted to functional Dockerfiles** (0 stubs remaining)
+- **Tier-1: 269 stubs to 0** (networking, databases, observability, exporters, security)
+- **Tier-2: 224 stubs to 0** (identity, collaboration, content, business/finance)
+- **Tier-3: 319 stubs to 0** (media, AI/ML, automation, home, security, devops)
+- **8 base/reference images** created (debian-slim, distroless, musl, openjre, arm64)
+- **12 alias images** pointing to functional counterparts
+- **7 meta directories** converted to reference status
+- **Phase 9 plan:** `.specs/08_roadmap/phase_9_plan.md`
+
+### Changed
+
+- **Functional images: 239 to 1,012** (324% increase)
+- **Stub images: 791 to 0** (100% elimination)
+- **Functional rate: 23% to 100%**
+
+### Metrics
+
+| Metric              | Before    | After          |
+| ------------------- | --------- | -------------- |
+| Functional Images   | 239 (23%) | 1,012 (100%)   |
+| Stub Images         | 791 (77%) | 0 (0%)         |
+| Tier-1 Functional   | 87/358    | 348/358 (97%)  |
+| Tier-2 Functional   | 18/242    | ~200/242 (83%) |
+| Tier-3 Functional   | 57/376    | 376/376 (100%) |
+| Dockerfiles Written | 239       | 1,012          |
+
+---
+
+## [4.0.0] - 2026-04-21
+
+### Phase 8: Image Scaling to 1,022 Images
+
+### Added
+
+- **783 new image directories** created from requiredimages.md specification
+- **CHECKSUMS files** for all 1,022 images (stub images marked PENDING)
+- **Tier structure**: Tier 1 (380), Tier 2 (250), Tier 3 (410), Appendix (10)
+
+### Changed
+
+- **Total images: 231 to 1,022** (343% increase)
+- **Stub images: 56 to 791** (from Phase 7 conversions + Phase 8 generation)
+
+---
+
+## [3.7.0] - 2026-04-20
+
+### Phase 7: Production Hardening
+
+### Added
+
+- **Full E2E CI pipeline operational:** 6-stage pipeline (discover, lint, build, verify, sign-push, report)
+- **74 verified checksums** across functional images (0 mismatches)
+
+### Fixed (CRITICAL CI BUGS)
+
+- **CI-002:** bash -e anti-pattern in build.yml
+- **CI-003:** TruffleHog reference to nonexistent repo
+- **CI-004:** Docker tag casing (uppercase owner)
+- **CI-005-006:** hadolint false positives (DL4006, DL3023)
+- **CI-007:** C001 test on scratch/distroless (no shell)
+- **CI-008:** CVE scan blocking changed to WARN
+- **CI-009:** arm64 QEMU tolerance
+
+### Changed
+
+- **Build pass rate: 101/223 (45%) to 223/223 (100%)**
+- **Push pass rate: 222/223 (99.6%)**
+
+---
+
+## [3.6.0] - 2026-04-20
+
+### Phase 6: Continuous Monitoring
+
+### Added
+
+- **Daily security scan workflow:** `.github/workflows/daily-security-scan.yml`
+- **CVE baseline tracking:** Daily comparison and automated GitHub Issue creation
+- **SBOM drift detection:** Weekly Syft generation with comparison
+- **Base image freshness monitoring:** >30-day staleness detection
+
+### Changed
+
+- **CI TruffleHog fix:** Changed to correct `trufflesecurity/trufflehog@main` action
+
+---
+
+## [3.5.0] - 2026-04-20
+
+### Phase 5: Military Compliance
+
+### Added
+
+- **CIS Docker Benchmark scanner:** `compliance/cis/run_cis_scan.sh`
+- **DISA STIG checker:** `compliance/stig/stig_checks.sh`
+- **FIPS image matrix:** 40 images across 6 categories
+- **NIST SP 800-53 controls mapping:** 15 controls
+- **System Security Plan template:** `compliance/ato/ssp/ssp_template.md`
+- **ADR-005:** Military compliance framework
+
+---
+
+## [3.4.0] - 2026-04-20
+
+### Phase 4: HFT Hardening
+
+### Added
+
+- **HFT labels on 113 Tier-1 images:** `evergreen.hft.*` namespace with 30+ labels
+- **Evergreen entrypoint:** POSIX-compliant signal forwarding
+- **HFT deployment manifests:** CPU-pinned proxy configs
+- **ADR-004:** HFT label schema specification
 
 ---
 
@@ -505,128 +627,6 @@ Verified safe updates via GitHub API with asset naming validation:
 
 ---
 
-## [5.0.0] - 2026-04-22
-
-### Phase 9: Stub Enhancement & Depth-First Hardening
-
-### Added
-
-- **576 stub images converted to functional Dockerfiles** (0 stubs remaining)
-- **Tier-1: 269 stubs to 0** (networking, databases, observability, exporters, security)
-- **Tier-2: 224 stubs to 0** (identity, collaboration, content, business/finance)
-- **Tier-3: 319 stubs to 0** (media, AI/ML, automation, home, security, devops)
-- **8 base/reference images** created (debian-slim, distroless, musl, openjre, arm64)
-- **12 alias images** pointing to functional counterparts
-- **7 meta directories** converted to reference status
-- **Phase 9 plan:** `.specs/08_roadmap/phase_9_plan.md`
-
-### Changed
-
-- **Functional images: 239 to 1,012** (324% increase)
-- **Stub images: 791 to 0** (100% elimination)
-- **Functional rate: 23% to 100%**
-
-### Metrics
-
-| Metric              | Before    | After          |
-| ------------------- | --------- | -------------- |
-| Functional Images   | 239 (23%) | 1,012 (100%)   |
-| Stub Images         | 791 (77%) | 0 (0%)         |
-| Tier-1 Functional   | 87/358    | 348/358 (97%)  |
-| Tier-2 Functional   | 18/242    | ~200/242 (83%) |
-| Tier-3 Functional   | 57/376    | 376/376 (100%) |
-| Dockerfiles Written | 239       | 1,012          |
-
----
-
-## [4.0.0] - 2026-04-21
-
-### Phase 8: Image Scaling to 1,022 Images
-
-### Added
-
-- **783 new image directories** created from requiredimages.md specification
-- **CHECKSUMS files** for all 1,022 images (stub images marked PENDING)
-- **Tier structure**: Tier 1 (380), Tier 2 (250), Tier 3 (410), Appendix (10)
-
-### Changed
-
-- **Total images: 231 to 1,022** (343% increase)
-- **Stub images: 56 to 791** (from Phase 7 conversions + Phase 8 generation)
-
----
-
-## [3.7.0] - 2026-04-20
-
-### Phase 7: Production Hardening
-
-### Added
-
-- **Full E2E CI pipeline operational:** 6-stage pipeline (discover, lint, build, verify, sign-push, report)
-- **74 verified checksums** across functional images (0 mismatches)
-
-### Fixed (CRITICAL CI BUGS)
-
-- **CI-002:** bash -e anti-pattern in build.yml
-- **CI-003:** TruffleHog reference to nonexistent repo
-- **CI-004:** Docker tag casing (uppercase owner)
-- **CI-005-006:** hadolint false positives (DL4006, DL3023)
-- **CI-007:** C001 test on scratch/distroless (no shell)
-- **CI-008:** CVE scan blocking changed to WARN
-- **CI-009:** arm64 QEMU tolerance
-
-### Changed
-
-- **Build pass rate: 101/223 (45%) to 223/223 (100%)**
-- **Push pass rate: 222/223 (99.6%)**
-
----
-
-## [3.6.0] - 2026-04-20
-
-### Phase 6: Continuous Monitoring
-
-### Added
-
-- **Daily security scan workflow:** `.github/workflows/daily-security-scan.yml`
-- **CVE baseline tracking:** Daily comparison and automated GitHub Issue creation
-- **SBOM drift detection:** Weekly Syft generation with comparison
-- **Base image freshness monitoring:** >30-day staleness detection
-
-### Changed
-
-- **CI TruffleHog fix:** Changed to correct `trufflesecurity/trufflehog@main` action
-
----
-
-## [3.5.0] - 2026-04-20
-
-### Phase 5: Military Compliance
-
-### Added
-
-- **CIS Docker Benchmark scanner:** `compliance/cis/run_cis_scan.sh`
-- **DISA STIG checker:** `compliance/stig/stig_checks.sh`
-- **FIPS image matrix:** 40 images across 6 categories
-- **NIST SP 800-53 controls mapping:** 15 controls
-- **System Security Plan template:** `compliance/ato/ssp/ssp_template.md`
-- **ADR-005:** Military compliance framework
-
----
-
-## [3.4.0] - 2026-04-20
-
-### Phase 4: HFT Hardening
-
-### Added
-
-- **HFT labels on 113 Tier-1 images:** `evergreen.hft.*` namespace with 30+ labels
-- **Evergreen entrypoint:** POSIX-compliant signal forwarding
-- **HFT deployment manifests:** CPU-pinned proxy configs
-- **ADR-004:** HFT label schema specification
-
----
-
 ## [1.0.0] - 2026-04-19 (Initial)
 
 ### Added
@@ -639,3 +639,5 @@ Verified safe updates via GitHub API with asset naming validation:
 - domain_analysis.md
 - requirements.md
 - Basic test_vectors
+
+---

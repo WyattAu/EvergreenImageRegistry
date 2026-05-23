@@ -1,6 +1,6 @@
 [metadata]
 name = "promtail"
-version = "3.5.12"
+version = "3.6.11"
 upstream_version = "3.5.12"
 description = "Evergreen hardened Promtail - log collection agent for Grafana Loki"
 vendor = "Grafana Labs"

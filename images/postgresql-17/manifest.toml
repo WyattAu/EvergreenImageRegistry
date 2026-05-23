@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "postgresql-17"
-version = "17.2"
+version = "17.10"
 description = "PostgreSQL 17 Database Server"
 
 [build]

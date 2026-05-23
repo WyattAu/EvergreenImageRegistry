@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "postgresql-16"
-version = "16.3"
+version = "16.14"
 description = "postgresql-16 container image"
 
 [build]

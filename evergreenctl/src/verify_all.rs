@@ -1,6 +1,7 @@
 use anyhow::{Context, Result};
-use regex::Regex;
 use std::path::Path;
+
+use crate::patterns::*;
 
 #[derive(Debug, Clone, PartialEq)]
 enum Category {
@@ -127,8 +128,7 @@ pub fn cmd_verify_all(images_dir: &str) -> Result<i32> {
 }
 
 fn classify(content: &str) -> Category {
-    let copy_re = Regex::new(r"COPY\s+--from=\S+").unwrap();
-    if copy_re.is_match(content) && !has_build_runs(content) {
+    if RE_COPY_FROM.is_match(content) && !has_build_runs(content) {
         return Category::CopyFrom;
     }
 
@@ -160,8 +160,7 @@ fn has_build_runs(content: &str) -> bool {
 }
 
 fn has_direct_download(content: &str) -> bool {
-    let re = Regex::new(r"(?:curl|wget)\s+.*https?://").unwrap();
-    re.is_match(content)
+    RE_DOWNLOAD_CMD.is_match(content)
 }
 
 fn has_checksum(content: &str, manifest_path: &Path) -> bool {

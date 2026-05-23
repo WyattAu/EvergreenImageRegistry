@@ -1,6 +1,6 @@
 [metadata]
 name = "forgejo-runner"
-version = "12.8.2"
+version = "12.10.1"
 description = "Forgejo Act Runner - CI/CD runner for Forgejo"
 vendor = "Forgejo"
 license = "MIT"

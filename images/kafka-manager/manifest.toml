@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "kafka-manager"
-version = "latest"
+version = "3.0.0.5"
 description = "Evergreen hardened CMAK (Kafka Manager) - Apache Kafka management tool"
 
 [build]

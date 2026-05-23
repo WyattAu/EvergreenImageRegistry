@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "dragonflydb"
-version = "latest"
+version = "v1.38.1"
 description = "dragonflydb container image"
 
 [build]

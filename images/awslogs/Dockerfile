@@ -6,7 +6,7 @@
 # Multi-stage Python build with frozen binary extraction
 # =============================================================================
 
-ARG VERSION=0.15.0
+ARG VERSION=0.16.0
 ARG TARGETARCH
 ARG BUILD_DATE
 ARG PYTHON_VERSION=3.12.2

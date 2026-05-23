@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "zinc"
-version = "latest"
+version = "v0.4.10"
 description = "Evergreen hardened ZincSearch - lightweight alternative to Elasticsearch"
 
 [build]

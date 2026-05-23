@@ -1,7 +1,7 @@
 [metadata]
 tier = "critical"
 name = "prometheus-cloudwatch-exporter"
-version = "latest"
+version = "v0.16.0"
 description = "Prometheus exporter for AWS CloudWatch metrics"
 
 [build]

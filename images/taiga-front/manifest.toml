@@ -1,6 +1,6 @@
 [metadata]
 name = "taiga-front"
-version = "6.8.2"
+version = "6.9.0"
 description = "taiga-front container image"
 tier = "critical"
 

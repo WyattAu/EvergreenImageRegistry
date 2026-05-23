@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "synapse-admin"
-version = "0.10.3"
+version = "0.11.4"
 description = "Synapse Admin - web admin panel for Synapse Matrix homeserver"
 
 [build]

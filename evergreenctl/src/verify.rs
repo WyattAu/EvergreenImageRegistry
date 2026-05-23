@@ -89,7 +89,7 @@ pub async fn download_and_verify(
 
     let resp = client
         .get(url)
-        .header("User-Agent", "evergreenctl/0.1.0")
+        .header("User-Agent", crate::USER_AGENT)
         .send()
         .await
         .context("Download failed")?;

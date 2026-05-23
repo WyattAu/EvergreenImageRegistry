@@ -1,7 +1,7 @@
 [metadata]
 tier = "critical"
 name = "kanidm-client"
-version = "latest"
+version = "1.9.4"
 description = "kanidm-client container image"
 
 [build]

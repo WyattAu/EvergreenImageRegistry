@@ -1,6 +1,6 @@
 [metadata]
 name = "postgres-exporter"
-version = "0.17.0"
+version = "0.19.1"
 upstream_version = "0.17.0"
 description = "Postgres Exporter - Prometheus exporter for PostgreSQL"
 vendor = "Prometheus Community"

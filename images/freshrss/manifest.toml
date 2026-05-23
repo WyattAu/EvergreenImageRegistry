@@ -1,6 +1,6 @@
 [metadata]
 name = "freshrss"
-version = "1.28.1"
+version = "1.29.0"
 description = "freshrss container image"
 tier = "critical"
 upstream_version = "1.28.1"

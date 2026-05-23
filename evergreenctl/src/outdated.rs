@@ -66,7 +66,7 @@ pub async fn cmd_outdated(images_dir: &str, check_all: bool) -> Result<()> {
     }
 
     let client = reqwest::Client::builder()
-        .user_agent("evergreenctl/1.0.0")
+        .user_agent(crate::USER_AGENT)
         .default_headers(headers)
         .build()?;
 

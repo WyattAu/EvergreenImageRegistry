@@ -1,6 +1,6 @@
 [metadata]
 name = "forgejo"
-version = "12.0.3"
+version = "15.0.2"
 description = "Forgejo - community-owned lightweight software forge"
 vendor = "Forgejo"
 source = "https://github.com/forgejo/forgejo"

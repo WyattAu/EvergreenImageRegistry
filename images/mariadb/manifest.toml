@@ -1,6 +1,6 @@
 [metadata]
 name = "mariadb"
-version = "11.4"
+version = "11.8"
 description = "MariaDB - community-developed fork of MySQL"
 vendor = "MariaDB Foundation"
 source = "https://github.com/MariaDB/server"

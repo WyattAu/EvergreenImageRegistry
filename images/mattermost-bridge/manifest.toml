@@ -1,6 +1,6 @@
 [metadata]
 name = "mattermost-bridge"
-version = "1.2.0"
+version = "2.7.1"
 description = "Mattermost GitHub Plugin - GitHub integration bridge for Mattermost"
 vendor = "Mattermost"
 source = "https://github.com/mattermost/mattermost-plugin-github"

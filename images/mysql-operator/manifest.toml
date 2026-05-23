@@ -1,7 +1,7 @@
 [metadata]
 tier = "critical"
 name = "mysql-operator"
-version = "0.5.0"
+version = "0.6.3"
 description = "Presslabs MySQL Operator for Kubernetes"
 
 [build]

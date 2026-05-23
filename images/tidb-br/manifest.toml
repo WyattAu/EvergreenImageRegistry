@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "tidb-br"
-version = "latest"
+version = "v8.5.6"
 description = "Evergreen hardened TiDB BR - backup and restore tool for TiDB"
 
 [build]

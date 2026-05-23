@@ -1,6 +1,6 @@
 [metadata]
 name = "blackbox-exporter"
-version = "v0.26.0"
+version = "v0.28.0"
 upstream_version = "v0.26.0"
 description = "Blackbox Exporter - endpoint probing for Prometheus"
 vendor = "Prometheus"

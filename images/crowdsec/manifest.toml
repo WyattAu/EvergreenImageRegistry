@@ -1,6 +1,6 @@
 [metadata]
 name = "crowdsec"
-version = "1.6.2"
+version = "v1.7.8"
 description = "CrowdSec - collaborative intrusion detection system"
 vendor = "CrowdSec"
 license = "MIT"

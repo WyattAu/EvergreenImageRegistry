@@ -1,6 +1,6 @@
 [metadata]
 name = "postgresql"
-version = "17.4"
+version = "17.10"
 description = "PostgreSQL - advanced open source relational database"
 vendor = "PostgreSQL"
 source = "https://github.com/postgres/postgres"

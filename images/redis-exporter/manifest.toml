@@ -1,6 +1,6 @@
 [metadata]
 name = "redis-exporter"
-version = "1.68.0"
+version = "v1.83.0"
 description = "Redis Exporter - Prometheus exporter for Redis"
 vendor = "Prometheus"
 source = "https://github.com/oliver006/redis_exporter"

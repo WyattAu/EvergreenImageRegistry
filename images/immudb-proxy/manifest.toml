@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "immudb-proxy"
-version = "latest"
+version = "1.11.0"
 description = "Evergreen hardened immudb-proxy - proxy mode for immudb"
 
 [build]

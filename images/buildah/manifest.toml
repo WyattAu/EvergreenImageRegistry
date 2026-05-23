@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "buildah"
-version = "latest"
+version = "v1.43.1"
 description = "Evergreen hardened buildah - OCI image builder"
 
 [build]

@@ -1,6 +1,6 @@
 [metadata]
 name = "ocis"
-version = "7.1.4"
+version = "8.0.3"
 description = "ownCloud Infinite Scale - next-gen file sync and share platform"
 vendor = "ownCloud"
 source = "https://github.com/owncloud/ocis"

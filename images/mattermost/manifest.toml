@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "mattermost"
-version = "unknown"
+version = "11.6.2"
 description = "mattermost container image"
 
 [build]

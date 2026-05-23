@@ -1,6 +1,6 @@
 [metadata]
 name = "restic"
-version = "0.17.3"
+version = "0.18.1"
 description = "Restic - fast, secure, efficient backup program"
 vendor = "restic"
 license = "BSD-2-Clause"

@@ -1,6 +1,6 @@
 [metadata]
 name = "victoriametrics"
-version = "1.142.0"
+version = "v1.143.0"
 description = "VictoriaMetrics - fast, cost-effective time series database"
 vendor = "VictoriaMetrics"
 license = "Apache-2.0"

@@ -115,62 +115,70 @@ REMOVE_PATTERNS = [
 count = 0
 modified = 0
 
-for df in sorted(glob.glob("images/*/Dockerfile")):
-    with open(df) as f:
-        content = f.read()
 
-    # Only process wolfi-based images
-    froms = re.findall(r"^FROM\s+(.+?)(?:\s+AS\s+\w+)?\s*$", content, re.MULTILINE)
-    if not froms or "wolfi" not in froms[-1]:
-        continue
+def main():
+    global count, modified
 
-    original = content
+    for df in sorted(glob.glob("images/*/Dockerfile")):
+        with open(df) as f:
+            content = f.read()
 
-    # Get final stage
-    if len(froms) > 1:
-        stages = re.split(r"(^FROM\s+.+$)", content, flags=re.MULTILINE)
-        final = stages[-1]
-        prefix = "".join(stages[:-1])
-    else:
-        prefix = ""
-        final = content
+        # Only process wolfi-based images
+        froms = re.findall(r"^FROM\s+(.+?)(?:\s+AS\s+\w+)?\s*$", content, re.MULTILINE)
+        if not froms or "wolfi" not in froms[-1]:
+            continue
 
-    # Apply package name fixes
-    for pattern, replacement in PACKAGE_FIXES.items():
-        final = re.sub(pattern, replacement, final)
+        original = content
 
-    # Remove lines that contain only non-package tokens
-    lines = final.split("\n")
-    cleaned = []
-    for line in lines:
-        # Skip lines that are RUN commands with only non-package content
-        if re.match(r"^\s*RUN\s+", line):
-            # Check if line has any actual package after cleaning
-            stripped = line
-            for rp in REMOVE_PATTERNS:
-                stripped = re.sub(rp, "", stripped)
-            # Check if anything resembling a package name remains
-            remaining = re.sub(
-                r"(RUN|apk\s+add|--no-cache|&&|\\|\|\|true|;|rm|-rf|/var|/tmp|/etc|/usr|update-ca-certificates)",
-                "",
-                stripped,
-            ).strip()
-            if not remaining or remaining.startswith("#"):
-                continue  # Skip this RUN line entirely
-        cleaned.append(line)
-    final = "\n".join(cleaned)
+        # Get final stage
+        if len(froms) > 1:
+            stages = re.split(r"(^FROM\s+.+$)", content, flags=re.MULTILINE)
+            final = stages[-1]
+            prefix = "".join(stages[:-1])
+        else:
+            prefix = ""
+            final = content
 
-    # Clean up multiple blank lines
-    final = re.sub(r"\n{3,}", "\n\n", final)
+        # Apply package name fixes
+        for pattern, replacement in PACKAGE_FIXES.items():
+            final = re.sub(pattern, replacement, final)
 
-    content = prefix + final
+        # Remove lines that contain only non-package tokens
+        lines = final.split("\n")
+        cleaned = []
+        for line in lines:
+            # Skip lines that are RUN commands with only non-package content
+            if re.match(r"^\s*RUN\s+", line):
+                # Check if line has any actual package after cleaning
+                stripped = line
+                for rp in REMOVE_PATTERNS:
+                    stripped = re.sub(rp, "", stripped)
+                # Check if anything resembling a package name remains
+                remaining = re.sub(
+                    r"(RUN|apk\s+add|--no-cache|&&|\\|\|\|true|;|rm|-rf|/var|/tmp|/etc|/usr|update-ca-certificates)",
+                    "",
+                    stripped,
+                ).strip()
+                if not remaining or remaining.startswith("#"):
+                    continue  # Skip this RUN line entirely
+            cleaned.append(line)
+        final = "\n".join(cleaned)
 
-    if content != original:
-        with open(df, "w") as f:
-            f.write(content)
-        modified += 1
+        # Clean up multiple blank lines
+        final = re.sub(r"\n{3,}", "\n\n", final)
 
-    count += 1
+        content = prefix + final
 
-print(f"Scanned: {count} wolfi-based Dockerfiles")
-print(f"Modified: {modified}")
+        if content != original:
+            with open(df, "w") as f:
+                f.write(content)
+            modified += 1
+
+        count += 1
+
+    print(f"Scanned: {count} wolfi-based Dockerfiles")
+    print(f"Modified: {modified}")
+
+
+if __name__ == "__main__":
+    main()

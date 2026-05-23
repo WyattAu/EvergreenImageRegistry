@@ -1,6 +1,6 @@
 [metadata]
 name = "element-web"
-version = "1.12.13"
+version = "v1.12.18"
 description = "Element Web - web client for Matrix"
 vendor = "Element"
 source = "https://github.com/element-hq/element-web"

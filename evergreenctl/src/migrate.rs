@@ -1,22 +1,21 @@
 use anyhow::{Context, Result};
-use regex::Regex;
 use std::collections::HashMap;
 use std::path::Path;
 use tracing::{info, warn};
 
 use crate::manifest::*;
+use crate::patterns::*;
 
 fn extract_download_url(content: &str) -> Option<String> {
-    let re = Regex::new("(?:curl|wget)\\s+[^\"]*\"?(https?://[^\"'\\s]+)\"?").unwrap();
-    re.captures(content)
+    RE_DOWNLOAD_URL
+        .captures(content)
         .and_then(|c| c.get(1))
         .map(|m| m.as_str().to_string())
 }
 
 fn extract_ports(content: &str) -> Vec<u16> {
-    let re = Regex::new(r"EXPOSE\s+([\d\s/]+)").unwrap();
     let mut ports = Vec::new();
-    for cap in re.captures_iter(content) {
+    for cap in RE_EXPOSE_PORTS.captures_iter(content) {
         for part in cap[1].split_whitespace() {
             if let Some(port_str) = part.split('/').next() {
                 if let Ok(port) = port_str.parse::<u16>() {
@@ -31,8 +30,8 @@ fn extract_ports(content: &str) -> Vec<u16> {
 }
 
 fn extract_entrypoint(content: &str) -> Vec<String> {
-    let re = Regex::new(r"ENTRYPOINT\s+\[([^\]]+)\]").unwrap();
-    re.captures(content)
+    RE_ENTRYPOINT
+        .captures(content)
         .and_then(|c| c.get(1))
         .map(|m| {
             m.as_str()
@@ -45,8 +44,8 @@ fn extract_entrypoint(content: &str) -> Vec<String> {
 }
 
 fn extract_description(content: &str) -> String {
-    let re = Regex::new(r#"org\.opencontainers\.image\.description="([^"]+)""#).unwrap();
-    re.captures(content)
+    RE_DESCRIPTION_LABEL
+        .captures(content)
         .and_then(|c| c.get(1))
         .map(|m| m.as_str().to_string())
         .unwrap_or_else(|| "Evergreen hardened container image".to_string())
@@ -123,39 +122,39 @@ pub fn dockerfile_to_manifest(dockerfile_path: &Path, image_name: &str) -> Resul
 }
 
 fn extract_version(content: &str) -> String {
-    let re = Regex::new(r#"ARG\s+VERSION="?([^"\s]+)"?"#).unwrap();
-    re.captures(content)
+    RE_ARG_VERSION
+        .captures(content)
         .and_then(|c| c.get(1))
         .map(|m| m.as_str().to_string())
         .unwrap_or_else(|| "0.0.0".to_string())
 }
 
 fn extract_vendor(content: &str) -> String {
-    let re = Regex::new(r#"org\.opencontainers\.image\.vendor="([^"]+)""#).unwrap();
-    re.captures(content)
+    RE_VENDOR_LABEL
+        .captures(content)
         .and_then(|c| c.get(1))
         .map(|m| m.as_str().to_string())
         .unwrap_or_else(|| "Unknown".to_string())
 }
 
 fn extract_tier(content: &str) -> u8 {
-    let re = Regex::new(r#"evergreen\.image\.tier="(\d+)""#).unwrap();
-    re.captures(content)
+    RE_TIER_LABEL
+        .captures(content)
         .and_then(|c| c.get(1))
         .and_then(|m| m.as_str().parse::<u8>().ok())
         .unwrap_or(3)
 }
 
 fn extract_github_source(content: &str) -> Option<String> {
-    let re = Regex::new(r#"https?://github\.com/([^/""\s]+/[^/""\s]+)"#).unwrap();
-    re.captures(content)
+    RE_GITHUB_SOURCE
+        .captures(content)
         .and_then(|c| c.get(0))
         .map(|m| m.as_str().trim_end_matches('/').to_string())
 }
 
 fn extract_base_image(content: &str) -> String {
-    let re = Regex::new(r"FROM\s+([\S]+)").unwrap();
-    re.captures_iter(content)
+    RE_FROM_IMAGE
+        .captures_iter(content)
         .last()
         .and_then(|c| c.get(1))
         .map(|m| m.as_str().to_string())
@@ -163,8 +162,8 @@ fn extract_base_image(content: &str) -> String {
 }
 
 fn extract_user(content: &str) -> String {
-    let re = Regex::new(r"USER\s+(\S+)").unwrap();
-    re.captures_iter(content)
+    RE_USER
+        .captures_iter(content)
         .last()
         .and_then(|c| c.get(1))
         .map(|m| m.as_str().to_string())
@@ -172,8 +171,8 @@ fn extract_user(content: &str) -> String {
 }
 
 fn extract_stop_signal(content: &str) -> String {
-    let re = Regex::new(r"STOPSIGNAL\s+(\S+)").unwrap();
-    re.captures(content)
+    RE_STOPSIGNAL
+        .captures(content)
         .and_then(|c| c.get(1))
         .map(|m| m.as_str().to_string())
         .unwrap_or_else(|| "SIGTERM".to_string())
@@ -181,8 +180,7 @@ fn extract_stop_signal(content: &str) -> String {
 
 fn extract_all_labels(content: &str) -> HashMap<String, String> {
     let mut labels = HashMap::new();
-    let re = Regex::new(r#"([a-zA-Z0-9_.-]+)="([^"]+)""#).unwrap();
-    for cap in re.captures_iter(content) {
+    for cap in RE_KEY_VALUE_LABEL.captures_iter(content) {
         let key = cap[1].to_string();
         let val = cap[2].to_string();
         // Only include meaningful labels (skip build-time instructions)

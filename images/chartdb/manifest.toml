@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "chartdb"
-version = "latest"
+version = "v1.20.1"
 description = "Evergreen hardened ChartDB - database schema visualization tool"
 
 [build]

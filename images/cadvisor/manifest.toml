@@ -1,6 +1,6 @@
 [metadata]
 name = "cadvisor"
-version = "0.49.1"
+version = "v0.57.0"
 description = "cAdvisor - container resource usage and performance analysis"
 vendor = "Google"
 source = "https://github.com/google/cadvisor"

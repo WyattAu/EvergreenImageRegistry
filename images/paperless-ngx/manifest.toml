@@ -1,6 +1,6 @@
 [metadata]
 name = "paperless-ngx"
-version = "2.20.14"
+version = "2.20.15"
 upstream_version = "2.20.14"
 description = "Paperless-ngx - document management system"
 vendor = "Paperless-ngx"

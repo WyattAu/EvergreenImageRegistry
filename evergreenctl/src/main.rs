@@ -170,7 +170,7 @@ async fn main() -> anyhow::Result<()> {
             version,
         } => {
             let client = reqwest::Client::builder()
-                .user_agent("evergreenctl/0.1.0")
+                .user_agent(evergreenctl::USER_AGENT)
                 .build()?;
 
             if let Some(repo_str) = repo {

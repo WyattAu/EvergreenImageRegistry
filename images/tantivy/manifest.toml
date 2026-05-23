@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "tantivy"
-version = "latest"
+version = "0.25.0"
 description = "Full-text search engine CLI"
 
 [build]

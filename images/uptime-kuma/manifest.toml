@@ -1,6 +1,6 @@
 [metadata]
 name = "uptime-kuma"
-version = "1.23.16"
+version = "2.3.2"
 description = "uptime-kuma container image"
 tier = "critical"
 upstream_version = "1.23.16"

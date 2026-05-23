@@ -13,13 +13,13 @@ fn extract_download_url(content: &str) -> Option<String> {
         .map(|m| m.as_str().to_string())
 }
 
-fn extract_ports(content: &str) -> Vec<u16> {
+fn extract_ports(content: &str) -> Vec<String> {
     let mut ports = Vec::new();
     for cap in RE_EXPOSE_PORTS.captures_iter(content) {
         for part in cap[1].split_whitespace() {
             if let Some(port_str) = part.split('/').next() {
                 if let Ok(port) = port_str.parse::<u16>() {
-                    ports.push(port);
+                    ports.push(port.to_string());
                 }
             }
         }
@@ -109,6 +109,7 @@ pub fn dockerfile_to_manifest(dockerfile_path: &Path, image_name: &str) -> Resul
             base: build_base,
             user: build_user,
             stopsignal: stop_signal,
+            multiarch: false,
         },
         source: SourceSection {
             source_type,
@@ -237,19 +238,19 @@ mod tests {
 
     #[test]
     fn test_extract_ports_single() {
-        assert_eq!(extract_ports("EXPOSE 8080"), vec![8080]);
+        assert_eq!(extract_ports("EXPOSE 8080"), vec!["8080".to_string()]);
     }
 
     #[test]
     fn test_extract_ports_multiple() {
         let ports = extract_ports("EXPOSE 8080 9090");
-        assert!(ports.contains(&8080));
-        assert!(ports.contains(&9090));
+        assert!(ports.contains(&"8080".to_string()));
+        assert!(ports.contains(&"9090".to_string()));
     }
 
     #[test]
     fn test_extract_ports_with_protocol() {
-        assert_eq!(extract_ports("EXPOSE 8080/tcp"), vec![8080]);
+        assert_eq!(extract_ports("EXPOSE 8080/tcp"), vec!["8080".to_string()]);
     }
 
     #[test]
@@ -336,7 +337,7 @@ LABEL evergreen.health.type="http"
         assert_eq!(manifest.user(), "65532:65532");
         assert_eq!(manifest.stop_signal(), "SIGTERM");
         assert_eq!(&manifest.entrypoint(), &["/app".to_string()]);
-        assert_eq!(manifest.exposed_ports(), &[8080]);
+        assert_eq!(manifest.exposed_ports(), &["8080".to_string()]);
         assert_eq!(manifest.source.source_type, "binary-download");
         assert_eq!(manifest.metadata.tier, "1");
     }

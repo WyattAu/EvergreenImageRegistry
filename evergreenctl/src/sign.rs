@@ -75,7 +75,7 @@ pub fn cmd_sign(image_dir: &str) -> Result<()> {
     println!(
         "  --annotation \"org.opencontainers.image.source={}\" \\",
         if manifest_source.is_empty() {
-            "TODO"
+            "https://github.com/WyattAu/EvergreenImageRegistry"
         } else {
             &manifest_source
         }

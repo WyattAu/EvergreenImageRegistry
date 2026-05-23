@@ -78,6 +78,8 @@ pub struct Build {
     pub user: String,
     #[serde(default)]
     pub stopsignal: String,
+    #[serde(default)]
+    pub multiarch: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
@@ -96,8 +98,29 @@ pub struct RuntimeSection {
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct PortsSection {
-    #[serde(default)]
-    pub expose: Vec<u16>,
+    #[serde(default, deserialize_with = "deserialize_port_specs")]
+    pub expose: Vec<String>,
+}
+
+fn deserialize_port_specs<'de, D>(de: D) -> std::result::Result<Vec<String>, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    #[derive(Deserialize)]
+    #[serde(untagged)]
+    enum PortSpec {
+        Num(u16),
+        Str(String),
+    }
+
+    let specs: Vec<PortSpec> = Vec::deserialize(de)?;
+    Ok(specs
+        .into_iter()
+        .map(|p| match p {
+            PortSpec::Num(n) => n.to_string(),
+            PortSpec::Str(s) => s,
+        })
+        .collect())
 }
 
 impl Manifest {
@@ -180,7 +203,7 @@ impl Manifest {
     }
 
     /// Get the exposed ports.
-    pub fn exposed_ports(&self) -> &[u16] {
+    pub fn exposed_ports(&self) -> &[String] {
         &self.ports.expose
     }
 
@@ -272,7 +295,7 @@ expose = [6379, 9101]
         assert_eq!(m.tier_num(), 1);
         assert_eq!(m.user(), "65532:65532");
         assert_eq!(m.stop_signal(), "SIGTERM");
-        assert_eq!(m.exposed_ports(), &[6379, 9101]);
+        assert_eq!(m.exposed_ports(), &["6379".to_string(), "9101".to_string()]);
         assert_eq!(m.label("org.opencontainers.image.title"), Some("redis"));
         assert_eq!(m.label("nonexistent"), None);
     }

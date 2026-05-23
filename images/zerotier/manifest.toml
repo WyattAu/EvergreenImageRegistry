@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "zerotier"
-version = "latest"
+version = "1.12.2"
 description = "zerotier container image"
 
 [build]

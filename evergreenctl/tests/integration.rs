@@ -86,7 +86,7 @@ STOPSIGNAL SIGTERM
     // Verify exposed ports
     let ports = parsed.exposed_ports();
     assert!(
-        ports.contains(&8080),
+        ports.contains(&"8080".to_string()),
         "should expose port 8080, got: {:?}",
         ports
     );
@@ -533,7 +533,7 @@ expose = [8080]
         manifest.entrypoint(),
         &["/snap".to_string(), "run".to_string()]
     );
-    assert_eq!(manifest.exposed_ports(), &[8080]);
+    assert_eq!(manifest.exposed_ports(), &["8080".to_string()]);
     assert_eq!(manifest.github_repo(), Some("test/snap-test".to_string()));
     assert_eq!(manifest.metadata.tier, "1");
 }

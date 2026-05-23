@@ -49,8 +49,38 @@ pub fn cmd_sign(image_dir: &str) -> Result<()> {
         "  --annotation \"org.opencontainers.image.version={}\" \\",
         version
     );
-    println!("  --annotation \"org.opencontainers.image.source=\" \\");
-    println!("  --annotation \"evergreen.image.tier=\"");
+    let manifest_source = if manifest_path.exists() {
+        let manifest = Manifest::from_file(&manifest_path).ok();
+        manifest
+            .map(|m| m.source_url().to_string())
+            .unwrap_or_default()
+    } else {
+        String::new()
+    };
+    let manifest_tier = if manifest_path.exists() {
+        let manifest = Manifest::from_file(&manifest_path).ok();
+        manifest
+            .map(|m| {
+                if m.metadata.tier.is_empty() {
+                    "standard".to_string()
+                } else {
+                    m.metadata.tier.clone()
+                }
+            })
+            .unwrap_or_else(|| "standard".to_string())
+    } else {
+        "standard".to_string()
+    };
+
+    println!(
+        "  --annotation \"org.opencontainers.image.source={}\" \\",
+        if manifest_source.is_empty() {
+            "TODO"
+        } else {
+            &manifest_source
+        }
+    );
+    println!("  --annotation \"evergreen.image.tier={}\"", manifest_tier);
     println!();
 
     println!("# 2. Attach SBOM (SPDX format)");

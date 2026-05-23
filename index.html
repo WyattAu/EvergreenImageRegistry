@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Evergreen Image Registry</title>
+    <style>
+      :root {
+        --bg: #0d1117;
+        --surface: #161b22;
+        --border: #30363d;
+        --text: #e6edf3;
+        --text-muted: #8b949e;
+        --accent: #58a6ff;
+        --green: #3fb950;
+        --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+      }
+      .hero {
+        max-width: 820px;
+        margin: 0 auto;
+        padding: 80px 24px 60px;
+        text-align: center;
+      }
+      .hero h1 {
+        font-size: 2.8rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin-bottom: 16px;
+      }
+      .hero h1 span {
+        color: var(--green);
+      }
+      .hero p {
+        font-size: 1.15rem;
+        color: var(--text-muted);
+        max-width: 600px;
+        margin: 0 auto 40px;
+      }
+      .badges {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 48px;
+      }
+      .badges a {
+        display: inline-block;
+        padding: 6px 14px;
+        border-radius: 6px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--text);
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-family: var(--mono);
+        transition: border-color 0.15s;
+      }
+      .badges a:hover {
+        border-color: var(--accent);
+      }
+      .badges a .label {
+        color: var(--text-muted);
+      }
+      .badges a .value {
+        color: var(--green);
+        font-weight: 600;
+      }
+      .nav-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+        max-width: 820px;
+        margin: 0 auto;
+        padding: 0 24px 80px;
+      }
+      .nav-card {
+        display: block;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 28px 24px;
+        text-decoration: none;
+        color: var(--text);
+        transition:
+          border-color 0.2s,
+          transform 0.15s;
+      }
+      .nav-card:hover {
+        border-color: var(--accent);
+        transform: translateY(-2px);
+      }
+      .nav-card h2 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+      .nav-card p {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        line-height: 1.5;
+      }
+      .nav-card .icon {
+        font-size: 1.6rem;
+        margin-bottom: 12px;
+        display: block;
+      }
+      .footer {
+        text-align: center;
+        padding: 40px 24px;
+        border-top: 1px solid var(--border);
+        color: var(--text-muted);
+        font-size: 0.85rem;
+      }
+      .footer a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      .footer a:hover {
+        text-decoration: underline;
+      }
+      .quickstart {
+        max-width: 820px;
+        margin: 0 auto;
+        padding: 0 24px 60px;
+      }
+      .quickstart h2 {
+        font-size: 1.3rem;
+        margin-bottom: 16px;
+        font-weight: 600;
+      }
+      .quickstart pre {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 20px;
+        font-family: var(--mono);
+        font-size: 0.88rem;
+        overflow-x: auto;
+        line-height: 1.8;
+      }
+      .quickstart pre .comment {
+        color: var(--text-muted);
+      }
+      .quickstart pre .cmd {
+        color: var(--green);
+      }
+      @media (max-width: 600px) {
+        .hero h1 {
+          font-size: 2rem;
+        }
+        .hero {
+          padding: 48px 16px 40px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hero">
+      <h1>Evergreen <span>Image Registry</span></h1>
+      <p>
+        Hardened, continuously rebuilt container images for production infrastructure. 1000+ images across four tiers,
+        built on Wolfi Linux with zero Alpine dependencies.
+      </p>
+      <div class="badges">
+        <a href="https://github.com/WyattAu/EvergreenImageRegistry/actions/workflows/build.yml">
+          <span class="label">build</span> <span class="value">passing</span>
+        </a>
+        <a href="https://github.com/WyattAu/EvergreenImageRegistry/actions/workflows/lint.yml">
+          <span class="label">lint</span> <span class="value">passing</span>
+        </a>
+        <a href="https://github.com/WyattAu/EvergreenImageRegistry/actions/workflows/nightly-scan.yml">
+          <span class="label">security</span> <span class="value">scanned</span>
+        </a>
+        <a href="https://github.com/WyattAu/EvergreenImageRegistry/blob/main/LICENSE">
+          <span class="label">license</span> <span class="value">Apache-2.0</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="nav-grid">
+      <a class="nav-card" href="docs/catalog/index.html">
+        <span class="icon">&#128269;</span>
+        <h2>Image Catalog</h2>
+        <p>Browse all 1000+ hardened container images with search, tier filtering, and version tracking.</p>
+      </a>
+      <a class="nav-card" href="docs/dockerfile-standards.html">
+        <span class="icon">&#128220;</span>
+        <h2>Dockerfile Standards</h2>
+        <p>Security constraints (C001-C030), base image rules, HEALTHCHECK requirements, and libc policies.</p>
+      </a>
+      <a class="nav-card" href="docs/ci-pipeline-guide.html">
+        <span class="icon">&#9881;</span>
+        <h2>CI/CD Pipeline</h2>
+        <p>Tier-aware build pipeline, nightly rebuilds, SBOM generation, Cosign signing, and multi-arch support.</p>
+      </a>
+      <a class="nav-card" href="docs/observability.html">
+        <span class="icon">&#128200;</span>
+        <h2>Observability</h2>
+        <p>Health check strategies, Prometheus metrics, health-shim integration, and Grafana dashboards.</p>
+      </a>
+      <a class="nav-card" href="docs/contributing_guide.html">
+        <span class="icon">&#129309;</span>
+        <h2>Contributing</h2>
+        <p>Add new images, follow the 11-gate quality check, pre-commit hooks, and manifest standards.</p>
+      </a>
+      <a class="nav-card" href="docs/standards.html">
+        <span class="icon">&#128274;</span>
+        <h2>Security Standards</h2>
+        <p>Supply chain hardening, SBOM/SPDX compliance, digest pinning, and vulnerability management.</p>
+      </a>
+      <a class="nav-card" href="docs/common-problems.html">
+        <span class="icon">&#128295;</span>
+        <h2>Troubleshooting</h2>
+        <p>Common build failures, version mismatch resolution, and Dockerfile debugging guide.</p>
+      </a>
+      <a class="nav-card" href="https://github.com/WyattAu/EvergreenImageRegistry">
+        <span class="icon">&#128187;</span>
+        <h2>GitHub Repository</h2>
+        <p>Source code, issues, pull requests, workflows, and the full image build matrix.</p>
+      </a>
+    </div>
+
+    <div class="quickstart">
+      <h2>Quick Start</h2>
+      <pre><span class="comment"># Pull a hardened image</span>
+<span class="cmd">docker pull</span> ghcr.io/wyattau/evergreenimageregistry/redis:latest
+
+<span class="comment"># Run with security constraints</span>
+<span class="cmd">docker run</span> --rm --read-only --cap-drop ALL \
+  --security-opt no-new-privileges \
+  -p 6379:6379 \
+  ghcr.io/wyattau/evergreenimageregistry/redis:latest
+
+<span class="comment"># Browse the full catalog</span>
+<span class="cmd">open</span> https://wyattau.github.io/EvergreenImageRegistry/docs/catalog/</pre>
+    </div>
+
+    <div class="footer">
+      <p>
+        Evergreen Image Registry &middot;
+        <a href="https://github.com/WyattAu/EvergreenImageRegistry">GitHub</a> &middot;
+        <a href="https://github.com/WyattAu/EvergreenImageRegistry/blob/main/LICENSE">Apache-2.0 License</a> &middot;
+        <a href="docs/catalog/index.html">Catalog</a> &middot;
+        <a href="docs/contributing_guide.html">Contributing</a>
+      </p>
+    </div>
+  </body>
+</html>

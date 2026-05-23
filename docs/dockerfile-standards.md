@@ -195,10 +195,11 @@ HEALTHCHECK CMD curl -fsSL http://localhost:8080/healthz || exit 1
 # curl does not exist in wolfi
 ```
 
-### musl libc
+### libc
 
-wolfi uses musl libc, NOT glibc. Dynamic binaries linked against glibc will fail to load at runtime with a linker error.
-When downloading prebuilt binaries, prefer statically linked binaries or build from source on wolfi.
+Chainguard wolfi uses glibc, NOT musl. (Chainguard static uses musl.) Dynamic binaries linked against musl will fail to
+load in a wolfi final stage at runtime. When downloading prebuilt binaries, prefer statically linked binaries or build
+from source on wolfi.
 
 ### ca-certificates
 

@@ -54,7 +54,13 @@ pub fn cmd_validate_strict(images_dir: &str) -> Result<()> {
             continue;
         }
 
-        let df_content = std::fs::read_to_string(&dockerfile_path).unwrap_or_default();
+        let df_content = match std::fs::read_to_string(&dockerfile_path) {
+            Ok(c) => c,
+            Err(e) => {
+                errors.push(format!("{}: failed to read Dockerfile: {}", name, e));
+                continue;
+            }
+        };
         for line in df_content.lines() {
             if let Some(ver) = line.strip_prefix("ARG VERSION=") {
                 let df_ver = ver.split_whitespace().next().unwrap_or("");

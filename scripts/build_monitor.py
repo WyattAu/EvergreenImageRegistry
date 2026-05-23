@@ -20,13 +20,13 @@ AUTO_FIX = True  # Automatically try to fix failures
 
 def run_cmd(cmd):
     """Run shell command and return output."""
-    result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    result = subprocess.run(cmd, capture_output=True, text=True, shell=False)
     return result.stdout, result.stderr, result.returncode
 
 
 def get_failed_builds():
     """Get list of currently failing image builds."""
-    stdout, _, _ = run_cmd(f"gh run list --repo {REPO} --status failure --limit 1")
+    stdout, _, _ = run_cmd(["gh", "run", "list", "--repo", REPO, "--status", "failure", "--limit", "1"])
 
     failed = []
     for line in stdout.split("\n"):

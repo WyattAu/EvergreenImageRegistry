@@ -49,11 +49,11 @@ Images in the registry use one of two health-check strategies (see ADR-006):
 
 ### HTTP Application Images
 
-Images serving HTTP traffic use `curl` to check their application port:
+Images serving HTTP traffic use `wget` (available in wolfi-base) to check their application port:
 
 ```dockerfile
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD curl -f http://localhost:8080/ || exit 1
+  CMD wget -qO- http://localhost:8080/ || exit 1
 ```
 
 ### Database Images
@@ -83,11 +83,11 @@ HEALTHCHECK NONE
 
 ### Metrics-Only Images
 
-Images that exist solely to export Prometheus metrics curl their own metrics endpoint:
+Images that exist solely to export Prometheus metrics check their own metrics endpoint:
 
 ```dockerfile
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:9101/metrics || exit 1
+  CMD wget -qO- http://localhost:9101/metrics || exit 1
 ```
 
 ### Images with Native Metrics

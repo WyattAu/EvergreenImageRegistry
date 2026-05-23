@@ -36,7 +36,7 @@ PROBLEMATIC_PACKAGES = {
 BINARY_URL_PATTERNS = {
     "vault": "https://releases.hashicorp.com/vault/",
     "terraform": "https://releases.hashicorp.com/terraform/",
-    "consul": "https://releases.hashologcorp.com/consul/",
+    "consul": "https://releases.hashicorp.com/consul/",
     "nomad": "https://releases.hashicorp.com/nomad/",
     "boundary": "https://releases.hashicorp.com/boundary/",
 }

@@ -63,7 +63,7 @@ def classify_base_image(from_line: str) -> tuple[str, bool]:
 
 
 def has_label(content: str, label_key: str) -> bool:
-    return "evergreen.base.image=" in content
+    return label_key in content
 
 
 def remove_stale_labels(content: str) -> tuple[str, list[str]]:

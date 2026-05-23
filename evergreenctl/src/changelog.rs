@@ -19,7 +19,7 @@ pub fn cmd_changelog(images_dir: &str, since_days: u64) -> Result<()> {
         .args([
             "log",
             &format!("--since={since_str}"),
-            "--oneline",
+            r#"--format=%h|%s|%an"#,
             "--",
             &format!("{}/*/", images_dir),
         ])
@@ -30,18 +30,16 @@ pub fn cmd_changelog(images_dir: &str, since_days: u64) -> Result<()> {
 
     for line in log.lines() {
         let parts: Vec<&str> = line.splitn(3, '|').collect();
-        if parts.len() >= 3 {
+        if parts.len() >= 2 {
             entries.push(parts);
         }
     }
 
     for entry in entries.iter().take(50) {
-        println!(
-            "| {} | {} | {} |",
-            entry[0].trim(),
-            entry[1].trim(),
-            entry[2].trim()
-        );
+        let hash = entry.first().map(|s| s.trim()).unwrap_or("");
+        let subject = entry.get(1).map(|s| s.trim()).unwrap_or("");
+        let author = entry.get(2).map(|s| s.trim()).unwrap_or("-");
+        println!("| {hash} | {subject} | {author} |");
     }
 
     if entries.len() > 50 {

@@ -5,8 +5,9 @@ import json
 import os
 import re
 from datetime import UTC, datetime
+from pathlib import Path
 
-IMAGES_DIR = "/home/wyatt/dev/src/github.com/WyattAu/EvergreenImageRegistry/images"
+IMAGES_DIR = str(Path(__file__).resolve().parent.parent / "images")
 
 
 def is_valid_package_name(name):

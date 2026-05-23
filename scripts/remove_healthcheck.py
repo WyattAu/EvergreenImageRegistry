@@ -56,8 +56,8 @@ for df in dockerfiles:
     original = content
     lines = content.split("\n")
     cleaned, removed = remove_healthcheck_lines(lines)
+    new_content = "\n".join(cleaned) if removed > 0 else original
     if removed > 0:
-        new_content = "\n".join(cleaned)
         if new_content != original:
             df.write_text(new_content)
             total_modified += 1

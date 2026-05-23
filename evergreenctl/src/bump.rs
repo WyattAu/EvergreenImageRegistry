@@ -185,16 +185,18 @@ fn bump_checksums_file(
 }
 
 fn print_diff(old: &str, new: &str) {
-    let old_file = "/tmp/evergreenctl_old";
-    let new_file = "/tmp/evergreenctl_new";
+    let tmp_dir = std::env::temp_dir();
+    let pid = std::process::id();
+    let old_file = tmp_dir.join(format!("evergreenctl_old_{pid}"));
+    let new_file = tmp_dir.join(format!("evergreenctl_new_{pid}"));
 
-    let _ = std::fs::write(old_file, old);
-    let _ = std::fs::write(new_file, new);
+    let _ = std::fs::write(&old_file, old);
+    let _ = std::fs::write(&new_file, new);
 
     let output = Command::new("diff")
         .arg("-u")
-        .arg(old_file)
-        .arg(new_file)
+        .arg(&old_file)
+        .arg(&new_file)
         .output();
 
     match output {
@@ -218,10 +220,26 @@ fn print_diff(old: &str, new: &str) {
             }
         }
         Err(e) => {
-            println!("  (diff not available: {})", e);
+            // Fallback: inline diff when external tool unavailable
+            for (i, (old_line, new_line)) in old.lines().zip(new.lines()).enumerate() {
+                if old_line != new_line {
+                    println!("  L{}: -{}", i + 1, old_line);
+                    println!("       +{}", new_line);
+                }
+            }
+            if old.lines().count() != new.lines().count() {
+                println!(
+                    "  (line count differs: {} vs {})",
+                    old.lines().count(),
+                    new.lines().count()
+                );
+            }
+            if e.kind() != std::io::ErrorKind::NotFound {
+                println!("  (diff error: {})", e);
+            }
         }
     }
 
-    let _ = std::fs::remove_file(old_file);
-    let _ = std::fs::remove_file(new_file);
+    let _ = std::fs::remove_file(&old_file);
+    let _ = std::fs::remove_file(&new_file);
 }

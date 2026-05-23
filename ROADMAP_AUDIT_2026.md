@@ -28,7 +28,8 @@
 ### CI/CD (20 workflows)
 
 - 5 CRITICAL, 12 HIGH, 18 MEDIUM, 11 LOW findings
-- Key issues: actions pinned to mutable tags, GITHUB_TOKEN passed as build-arg, broken sbom-attestation workflow, 1200+ matrix jobs in deprecated build.yml
+- Key issues: actions pinned to mutable tags, GITHUB_TOKEN passed as build-arg, broken sbom-attestation workflow, 1200+
+  matrix jobs in deprecated build.yml
 
 ### Documentation (26+ files)
 
@@ -210,10 +211,13 @@
 
 ## Known Risks
 
-1. **GitHub Actions minute consumption**: Full rebuild of 1000+ images costs ~3000 minutes/night. Mitigation: tier-prioritized builds, caching.
-2. **Upstream breaking changes**: Wolfi base image updates may break Dockerfiles. Mitigation: nightly canary builds, automated rollback.
+1. **GitHub Actions minute consumption**: Full rebuild of 1000+ images costs ~3000 minutes/night. Mitigation:
+   tier-prioritized builds, caching.
+2. **Upstream breaking changes**: Wolfi base image updates may break Dockerfiles. Mitigation: nightly canary builds,
+   automated rollback.
 3. **Supply chain attacks**: Mutable action tags are the primary vector. Mitigation: SHA pinning (Phase 1 P0).
-4. **Rate limiting**: GitHub API rate limits (60/hour unauthenticated) for version checking. Mitigation: authenticated requests, caching.
+4. **Rate limiting**: GitHub API rate limits (60/hour unauthenticated) for version checking. Mitigation: authenticated
+   requests, caching.
 5. **Image bloat**: Some images exceed 200MB limit. Mitigation: size enforcement in CI, scratch/distroless migration.
 
 ---

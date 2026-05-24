@@ -3,7 +3,7 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-FROM plexinc/pms-docker:1.41.3.9292-bc7397402 AS upstream
+FROM plexinc/pms-docker:1.41.3.9292-bc7397402@sha256:a6060a5d0745806155190bfcf6f2fb4c4d7ac7e26984bca203e8ccaa857436ae AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 

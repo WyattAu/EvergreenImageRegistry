@@ -3,7 +3,7 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-FROM quay.io/prometheus-operator/prometheus-operator:v0.90.1 AS upstream
+FROM quay.io/prometheus-operator/prometheus-operator:v0.90.1@sha256:c8aed26b2a0858b4beed8d6bc2215f7f6bdc6c96dd4de8e6e246c0a5b7a7876b AS upstream
 
 FROM scratch
 COPY --from=upstream /prometheus-operator /prometheus-config-reloader

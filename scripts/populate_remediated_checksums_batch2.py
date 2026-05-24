@@ -15,12 +15,15 @@ Strategy:
 
 import hashlib
 import json
+import logging
 import re
 import subprocess
 import sys
 import urllib.error
 import urllib.request
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = REPO_ROOT / "images"
@@ -521,7 +524,7 @@ def process_image(image_name, config, dry_run=False):
         download_url = url_template.replace("{VERSION}", version)
         target_filename = target_filename.replace("{VERSION}", version)
 
-    print(f"    checking {target_filename} ...", end=" ", flush=True)
+    logger.info("checking %s ...", target_filename)
 
     sha256 = None
     method = None
@@ -544,7 +547,7 @@ def process_image(image_name, config, dry_run=False):
             method = "upstream"
 
     if not sha256:
-        print("no upstream checksum, trying download ...", end=" ", flush=True)
+        logger.info("no upstream checksum, trying download ...")
         if check_url_reachable(download_url):
             sha256 = compute_sha256_by_download(download_url)
             if sha256:
@@ -553,10 +556,10 @@ def process_image(image_name, config, dry_run=False):
             return "fail", f"download URL 404: {download_url}"
 
     if not sha256:
-        print("download failed")
+        logger.error("download failed")
         return "fail", f"no checksum found and download failed for {download_url}"
 
-    print(f"{method} sha256={sha256[:16]}...")
+    logger.info("%s sha256=%s...", method, sha256[:16])
 
     if dry_run:
         return "dryrun", f"would insert sha256={sha256[:16]}..."
@@ -577,7 +580,7 @@ def main():
     dry_run = "--dry-run" in sys.argv
 
     if dry_run:
-        print("DRY RUN MODE - no files will be modified\n")
+        logger.info("DRY RUN MODE - no files will be modified")
 
     success = 0
     failed = 0

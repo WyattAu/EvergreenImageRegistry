@@ -11,9 +11,12 @@ Reads manifest.toml and Dockerfile for each image to determine:
 Outputs YAML entries for images that have enough information.
 """
 
+import logging
 import re
 import tomllib
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 IMAGES_DIR = Path("images")
 TEST_CONFIG = IMAGES_DIR / "tests" / "test_config.yaml"
@@ -203,7 +206,7 @@ def main():
             generate_config(img_dir.name, binary, port, version_flag, category)
         )
 
-    print(f"Scanned {scanned} images, found {len(configs)} with real binaries")
+    logger.info("Scanned %d images, found %d with real binaries", scanned, len(configs))
     print("\n# === GENERATED TEST CONFIGS ===")
     for config in sorted(configs):
         print(config)

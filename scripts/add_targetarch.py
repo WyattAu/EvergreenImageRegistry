@@ -2,9 +2,12 @@
 """Add ARG TARGETARCH to Dockerfiles for multi-arch support."""
 
 import argparse
+import logging
 import re
 import sys
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 EXCLUDED_IMAGES = {
     "nvidia-cuda",
@@ -74,11 +77,11 @@ def process_image(image_dir, dry_run):
         return None
 
     if dry_run:
-        print(f"  [DRY-RUN] Would add ARG TARGETARCH to {name}")
+        logger.info(f"[DRY-RUN] Would add ARG TARGETARCH to {name}")
         return None
 
     dockerfile.write_text(new_content)
-    print(f"  Added ARG TARGETARCH to {name}")
+    logger.info(f"Added ARG TARGETARCH to {name}")
     return name
 
 
@@ -109,16 +112,16 @@ def main():
                 skipped += 1
         except Exception as e:
             errors += 1
-            print(f"  ERROR: {target.name}: {e}")
+            logger.error(f"{target.name}: {e}")
 
-    print(f"\nSummary: {added} modified, {skipped} unchanged, {errors} errors")
+    logger.info(f"Summary: {added} modified, {skipped} unchanged, {errors} errors")
 
     if args.dry_run:
-        print("(Dry run - no files were modified)")
+        logger.info("Dry run - no files were modified")
         return 0
 
     if added == 0:
-        print("No changes needed - all eligible images already have ARG TARGETARCH")
+        logger.info("No changes needed - all eligible images already have ARG TARGETARCH")
 
     return 0 if errors == 0 else 1
 

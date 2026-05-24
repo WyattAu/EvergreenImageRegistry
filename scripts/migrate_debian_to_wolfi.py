@@ -16,8 +16,11 @@ Patterns handled:
 
 import argparse
 import glob
+import logging
 import os
 import re
+
+logger = logging.getLogger(__name__)
 
 # Package mapping: Debian → wolfi (apk)
 # Only packages commonly available in wolfi are mapped
@@ -192,7 +195,7 @@ class DockerfileMigrator:
             except Exception as e:
                 self.stats["errors"].append((df_path, str(e)))
                 if self.verbose:
-                    print(f"  ERROR: {df_path}: {e}")
+                    logger.error(f"{df_path}: {e}")
 
         self.print_stats()
 
@@ -243,12 +246,12 @@ class DockerfileMigrator:
                 self.stats["migrated_to_wolfi"] += 1
 
             if self.dry_run:
-                print(f"  WOULD MIGRATE: {df_path} → {target}")
+                logger.info(f"WOULD MIGRATE: {df_path} → {target}")
             else:
                 with open(df_path, "w") as f:
                     f.write(new_content)
                 rel = os.path.relpath(df_path)
-                print(f"  MIGRATED: {rel} → {target}")
+                logger.info(f"MIGRATED: {rel} → {target}")
 
     def determine_target(self, content, from_lines):
         """Determine the best target base image."""

@@ -2,8 +2,11 @@
 """Backfill evergreen labels, EXPOSE 9101, and STOPSIGNAL SIGTERM into Dockerfiles missing them."""
 
 import glob
+import logging
 import os
 import re
+
+logger = logging.getLogger(__name__)
 
 IMAGES_DIR = os.path.join(os.path.dirname(__file__), "..", "images")
 DOCKERFILE_PATTERN = os.path.join(IMAGES_DIR, "*", "Dockerfile")
@@ -81,8 +84,8 @@ def process_dockerfile(filepath):
             added_items.append("evergreen.base.image")
             additions.append(f'LABEL evergreen.base.image="{base}"')
         else:
-            print(
-                f"  SKIP evergreen.base.image for {os.path.basename(os.path.dirname(filepath))} (base: {last_from})"
+            logger.warning(
+                f"SKIP evergreen.base.image for {os.path.basename(os.path.dirname(filepath))} (base: {last_from})"
             )
 
     if "evergreen.metrics.native" in missing:
@@ -107,7 +110,7 @@ def process_dockerfile(filepath):
         return None
 
     name = os.path.basename(os.path.dirname(filepath))
-    print(f"  {name}: added {', '.join(added_items)}")
+    logger.info(f"{name}: added {', '.join(added_items)}")
 
     new_content = content.rstrip("\n") + "\n\n" + "\n".join(additions) + "\n"
     with open(filepath, "w") as f:
@@ -119,7 +122,7 @@ def process_dockerfile(filepath):
 def main():
     dockerfiles = sorted(glob.glob(DOCKERFILE_PATTERN))
     if not dockerfiles:
-        print("No Dockerfiles found.")
+        logger.warning("No Dockerfiles found.")
         return
 
     counts = {
@@ -131,7 +134,7 @@ def main():
     }
     modified_files = 0
 
-    print(f"Scanning {len(dockerfiles)} Dockerfiles...\n")
+    logger.info(f"Scanning {len(dockerfiles)} Dockerfiles...")
     for df in dockerfiles:
         result = process_dockerfile(df)
         if result:

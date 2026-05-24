@@ -2,10 +2,13 @@
 """Generate SPDX 2.3 SBOM for all images missing sbom.spdx.json."""
 
 import json
+import logging
 import os
 import re
 from datetime import UTC, datetime
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 IMAGES_DIR = str(Path(__file__).resolve().parent.parent / "images")
 
@@ -288,12 +291,13 @@ def main():
                 f.write(content)
             count += 1
             if count % 200 == 0:
-                print(f"Generated {count} SBOMs...")
+                logger.info("Generated %d SBOMs...", count)
         except Exception as e:
             errors += 1
-            print(f"ERROR processing {d}: {e}")
-    print(
-        f"Generated: {count}, Skipped (existing): {skipped}, Errors: {errors}, Total: {count + skipped + errors}"
+            logger.error("Processing %s: %s", d, e)
+    logger.info(
+        "Generated: %d, Skipped (existing): %d, Errors: %d, Total: %d",
+        count, skipped, errors, count + skipped + errors,
     )
 
 

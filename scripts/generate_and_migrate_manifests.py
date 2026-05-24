@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """Generate manifest.toml for images without one, and migrate existing ones to new format."""
 
+import logging
 import os
 import re
+
+logger = logging.getLogger(__name__)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 IMAGES_DIR = os.path.join(BASE_DIR, "images")
@@ -351,9 +354,9 @@ def main():
                     f.write(content)
                 generated += 1
                 if generated % 100 == 0:
-                    print(f"  generated {generated} so far...")
+                    logger.info(f"generated {generated} so far...")
             except Exception as e:
-                errors.append(f"  ERROR generating {d}: {e}")
+                errors.append(f"generating {d}: {e}")
         else:
             try:
                 new_content = migrate_existing_manifest(manifest_path, dockerfile_path)
@@ -361,15 +364,15 @@ def main():
                     f.write(new_content)
                 migrated += 1
                 if migrated % 100 == 0:
-                    print(f"  migrated {migrated} so far...")
+                    logger.info(f"migrated {migrated} so far...")
             except Exception as e:
-                errors.append(f"  ERROR migrating {d}: {e}")
+                errors.append(f"migrating {d}: {e}")
 
-    print(f"\nDone: {generated} generated, {migrated} migrated")
+    logger.info(f"Done: {generated} generated, {migrated} migrated")
     if errors:
-        print(f"\nErrors ({len(errors)}):")
+        logger.error(f"Errors ({len(errors)}):")
         for e in errors:
-            print(e)
+            logger.error(e)
 
 
 if __name__ == "__main__":

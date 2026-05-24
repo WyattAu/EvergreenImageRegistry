@@ -4,7 +4,7 @@ ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-FROM docker.io/tigergraph/tigergraph:4.2.2 AS upstream
+FROM docker.io/tigergraph/tigergraph:4.2.2@sha256:c4e7ef2d653b2fa57e2df9408719d78521defe38fe3ae5ef5b8d15134a61fae8 AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 

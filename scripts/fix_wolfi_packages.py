@@ -2,7 +2,10 @@
 """Fixup unmapped wolfi package names in migrated Dockerfiles."""
 
 import glob
+import logging
 import re
+
+logger = logging.getLogger(__name__)
 
 # Package name corrections for wolfi
 PACKAGE_FIXES = {
@@ -176,8 +179,8 @@ def main():
 
         count += 1
 
-    print(f"Scanned: {count} wolfi-based Dockerfiles")
-    print(f"Modified: {modified}")
+    logger.info("Scanned: %d wolfi-based Dockerfiles", count)
+    logger.info("Modified: %d", modified)
 
 
 if __name__ == "__main__":

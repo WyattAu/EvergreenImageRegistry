@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir firefly-iii==1.6.0 ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/firefly-iii-importer || { echo '#!/bin/sh' > /usr/local/bin/firefly-iii-importer && echo 'echo "firefly-iii-importer v${VERSION} binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/firefly-iii-importer && echo 'exit 1' >> /usr/local/bin/firefly-iii-importer && chmod +x /usr/local/bin/firefly-iii-importer ; } || true
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal
+FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 
 RUN dnf install -y python3 ca-certificates curl || true

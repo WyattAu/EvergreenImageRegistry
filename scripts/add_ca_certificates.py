@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """Add ca-certificates to wolfi-based Dockerfiles that are missing it."""
 
+import logging
 import os
 import re
+
+logger = logging.getLogger(__name__)
 
 IMAGES_DIR = os.path.join(os.path.dirname(__file__), "..", "images")
 
@@ -78,7 +81,7 @@ def add_ca_certs_to_apk_line(lines, apk_idx):
 def process_image(image_name):
     dockerfile_path = os.path.join(IMAGES_DIR, image_name, "Dockerfile")
     if not os.path.exists(dockerfile_path):
-        print(f"  SKIP (no Dockerfile): {image_name}")
+        logger.info(f"SKIP (no Dockerfile): {image_name}")
         return
 
     with open(dockerfile_path) as f:
@@ -86,39 +89,39 @@ def process_image(image_name):
 
     final_start = find_final_stage_start(lines)
     if final_start is None:
-        print(f"  SKIP (no final FROM): {image_name}")
+        logger.info(f"SKIP (no final FROM): {image_name}")
         return
 
     if not is_wolfi_base(lines, final_start):
-        print(f"  SKIP (not wolfi/chainguard base): {image_name}")
+        logger.info(f"SKIP (not wolfi/chainguard base): {image_name}")
         return
 
     if has_ca_certificates(lines, final_start):
-        print(f"  SKIP (already has ca-certificates): {image_name}")
+        logger.info(f"SKIP (already has ca-certificates): {image_name}")
         return
 
     if image_name in STATIC_IMAGES:
-        print(f"  SKIP (static image): {image_name}")
+        logger.info(f"SKIP (static image): {image_name}")
         return
 
     apk_idx = find_apk_add_in_final_stage(lines, final_start)
 
     if apk_idx is not None:
         lines = add_ca_certs_to_apk_line(lines, apk_idx)
-        print(f"  MODIFIED (added to existing apk add): {image_name}")
+        logger.info(f"MODIFIED (added to existing apk add): {image_name}")
     else:
         lines = insert_apk_add_after_from(lines, final_start)
-        print(f"  MODIFIED (inserted new apk add line): {image_name}")
+        logger.info(f"MODIFIED (inserted new apk add line): {image_name}")
 
     with open(dockerfile_path, "w") as f:
         f.writelines(lines)
 
 
 def main():
-    print("=== Adding ca-certificates to wolfi Dockerfiles ===\n")
+    logger.info("=== Adding ca-certificates to wolfi Dockerfiles ===")
     for image_name in IMAGES_TO_CHECK:
         process_image(image_name)
-    print("\n=== Done ===")
+    logger.info("=== Done ===")
 
 
 if __name__ == "__main__":

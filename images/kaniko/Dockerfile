@@ -4,7 +4,7 @@ ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-FROM gcr.io/kaniko-project/executor:v1.24.0 AS upstream
+FROM gcr.io/kaniko-project/executor:v1.24.0@sha256:7cf94e02d5648080da34bec09de3a73326acde033cb2ca4f6fcd9ebefd6c1a6d AS upstream
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && \

@@ -8,7 +8,10 @@ affected Dockerfiles if not already present.
 """
 
 import json
+import logging
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 IMAGES_DIR = Path("images")
 DEPRECATED_LABEL = 'LABEL org.opencontainers.image.status="deprecated"'
@@ -100,13 +103,14 @@ def main():
             already += 1
             continue
         if mark_deprecated(dockerfile):
-            print(f"  DEPRECATED: {image_name}")
+            logger.info("DEPRECATED: %s", image_name)
             marked += 1
 
-    print(
-        f"\nSummary: {marked} marked, {already} already deprecated, {missing} missing Dockerfiles"
+    logger.info(
+        "Summary: %d marked, %d already deprecated, %d missing Dockerfiles",
+        marked, already, missing,
     )
-    print(f"Total affected: {len(PERMANENTLY_BROKEN)}")
+    logger.info("Total affected: %d", len(PERMANENTLY_BROKEN))
 
 
 if __name__ == "__main__":

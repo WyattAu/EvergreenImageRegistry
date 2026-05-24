@@ -5,7 +5,7 @@ ARG APP_GID=65532
 
 
 
-FROM localai/localai:v4.1.3 AS upstream
+FROM localai/localai:v4.1.3@sha256:e10d6545b51bae2ab03fdb37183fd921850afd51b06285ede9b0e326fa562156 AS upstream
 
 
 

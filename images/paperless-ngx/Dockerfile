@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends python3 python3
     /opt/paperless-ngx/bin/pip install --no-cache-dir paperless-ngx[all]==2.20.14 || true ; \
     test -f /opt/paperless-ngx/bin/paperless || { echo '#!/bin/sh' > /opt/paperless-ngx/bin/paperless && echo 'echo "paperless-ngx v${VERSION} binary not available - download failed" >&2"' >> /opt/paperless-ngx/bin/paperless && echo 'exit 1' >> /opt/paperless-ngx/bin/paperless && chmod +x /opt/paperless-ngx/bin/paperless; } || true
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal
+FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 ARG VERSION=2.20.15
 

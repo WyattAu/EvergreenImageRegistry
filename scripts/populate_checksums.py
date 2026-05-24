@@ -22,6 +22,7 @@ Exit codes:
 import argparse
 import contextlib
 import hashlib
+import logging
 import os
 import re
 import shutil
@@ -32,6 +33,8 @@ import urllib.error
 import urllib.request
 from datetime import UTC, datetime
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 # Configuration
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -55,12 +58,12 @@ CONFIDENCE_SCORES = {
 
 
 def log(msg: str, level: str = "INFO"):
-    """Print a log message."""
-    ts = datetime.now(UTC).strftime("%H:%M:%S")
-    prefix = {"INFO": "  ✓", "WARN": "  ⚠", "ERROR": "  ✗", "SKIP": "  →"}.get(
-        level, "  "
-    )
-    print(f"[{ts}] {prefix} {msg}")
+    if level == "ERROR":
+        logger.error(msg)
+    elif level == "WARN":
+        logger.warning(msg)
+    else:
+        logger.info(msg)
 
 
 def http_get(url: str, timeout: int = HTTP_TIMEOUT) -> str | None:
@@ -990,7 +993,7 @@ def main():
     if args.gpg_keys_dir:
         gpg_keys_dir = Path(args.gpg_keys_dir)
         if not gpg_keys_dir.is_dir():
-            print(f"ERROR: --gpg-keys-dir not found: {gpg_keys_dir}", file=sys.stderr)
+            logger.error(f"--gpg-keys-dir not found: {gpg_keys_dir}")
             sys.exit(2)
 
     if args.verification_level > 1 and not _gpg_available():
@@ -1008,7 +1011,7 @@ def main():
     if args.image:
         image_dirs = [IMAGES_DIR / args.image]
         if not image_dirs[0].is_dir():
-            print(f"ERROR: Image directory not found: {image_dirs[0]}", file=sys.stderr)
+            logger.error(f"Image directory not found: {image_dirs[0]}")
             sys.exit(2)
     else:
         image_dirs = sorted([d for d in IMAGES_DIR.iterdir() if d.is_dir()])

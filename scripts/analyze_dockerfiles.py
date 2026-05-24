@@ -8,8 +8,11 @@ This addresses issues like:
 - Missing dependencies
 """
 
+import logging
 import re
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 # Common problematic packages (not available in Debian)
 PROBLEMATIC_PACKAGES = {
@@ -83,7 +86,7 @@ def analyze_dockerfile(dockerfile_path):
 def main():
     """Main function to scan all Dockerfiles."""
     dockerfiles = get_all_dockerfiles()
-    print(f"Found {len(dockerfiles)} Dockerfiles to analyze")
+    logger.info(f"Found {len(dockerfiles)} Dockerfiles to analyze")
 
     issue_counts = {}
     for df in dockerfiles:
@@ -91,7 +94,7 @@ def main():
         for issue in issues:
             issue_counts[issue] = issue_counts.get(issue, 0) + 1
             if issue.startswith("package_not_in_debian"):
-                print(f"  {df.parent.name}: {issue}")
+                logger.info(f"{df.parent.name}: {issue}")
 
     print("\n=== Issue Summary ===")
     for issue, count in sorted(issue_counts.items(), key=lambda x: -x[1]):

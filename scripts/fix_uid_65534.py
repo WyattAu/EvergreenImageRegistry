@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 
 import glob
+import logging
 import os
 import re
+
+logger = logging.getLogger(__name__)
 
 IMAGES_DIR = os.path.join(os.path.dirname(__file__), "..", "images")
 
@@ -72,10 +75,10 @@ def main():
                 f.write(new_content)
             files_modified += 1
             total_replacements += replacements
-            print(f"  {filepath}: {replacements} replacement(s)")
+            logger.info("%s: %d replacement(s)", filepath, replacements)
 
-    print(f"\nFiles modified: {files_modified}")
-    print(f"Total replacements: {total_replacements}")
+    logger.info("Files modified: %d", files_modified)
+    logger.info("Total replacements: %d", total_replacements)
 
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-FROM scylladb/scylla:5.4.1 AS upstream
+FROM scylladb/scylla:5.4.1@sha256:9893eef02ea707cbb21e70bb55f505526c7f3ea3be3b3990d4c550f214306aaa AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 

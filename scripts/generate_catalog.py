@@ -2,10 +2,13 @@
 """Generate a static HTML catalog of all Docker images in the repository."""
 
 import json
+import logging
 import os
 import re
 from collections import defaultdict
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = REPO_ROOT / "images"
@@ -1481,12 +1484,12 @@ def main():
     images = scan_images()
     html_content = generate_html(images)
     OUTPUT_FILE.write_text(html_content, encoding="utf-8")
-    print(f"Generated catalog with {len(images)} images -> {OUTPUT_FILE}")
+    logger.info("Generated catalog with %d images -> %s", len(images), OUTPUT_FILE)
     categories = defaultdict(int)
     for img in images:
         categories[img["category"]] += 1
     for cat, count in sorted(categories.items(), key=lambda x: -x[1]):
-        print(f"  {cat}: {count}")
+        logger.info("  %s: %d", cat, count)
 
 
 if __name__ == "__main__":

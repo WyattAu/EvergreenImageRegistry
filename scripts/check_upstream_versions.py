@@ -2,6 +2,7 @@
 """Check upstream GitHub releases for version updates against local manifest.toml files."""
 
 import json
+import logging
 import os
 import re
 import sys
@@ -10,6 +11,7 @@ import urllib.request
 from pathlib import Path
 
 GITHUB_API = "https://api.github.com/repos"
+logger = logging.getLogger(__name__)
 
 
 def parse_toml_simple(filepath):
@@ -57,10 +59,10 @@ def get_latest_github_release(repo):
     except urllib.error.HTTPError as e:
         if e.code == 404:
             return None, None
-        print(f"  WARN: API error {e.code} for {repo}")
+        logger.warning("API error %d for %s", e.code, repo)
         return None, None
     except Exception as e:
-        print(f"  WARN: Failed to query {repo}: {e}")
+        logger.warning("Failed to query %s: %s", repo, e)
         return None, None
 
 

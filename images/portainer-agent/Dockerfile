@@ -3,7 +3,7 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-FROM portainer/agent:2.39.2 AS upstream
+FROM portainer/agent:2.39.2@sha256:6c1b28b6dc1f785b055fa00e3f3d5fb43ff93910091384cecfb11bcda36e9f39 AS upstream
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/* && \

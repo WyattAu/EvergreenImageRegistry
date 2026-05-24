@@ -6,7 +6,7 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN apt-get update && apt-get install -y --no-install-recommends         python3-pip git ca-certificates gcc g++ make     && rm -rf /var/lib/apt/lists/* || true && \
     pip install --break-system-packages --no-cache-dir platformio 2>/dev/null || true && \
     mkdir -p /app /firmware 2>/dev/null || true
-FROM registry.access.redhat.com/ubi9/ubi-minimal
+FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 
 RUN microdnf install -y python3 ca-certificates

@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """Replace stub entries in test_config.yaml with real configs from Dockerfile analysis."""
 
+import logging
 import re
 import tomllib
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 IMAGES_DIR = Path("images")
 TEST_CONFIG = IMAGES_DIR / "tests" / "test_config.yaml"
@@ -227,9 +230,9 @@ def main():
     with open(TEST_CONFIG, "w") as f:
         f.writelines(out)
 
-    print(f"Real configs available: {len(real)}")
-    print(f"Stubs replaced: {replaced}, Real kept: {kept}")
-    print("test_config.yaml updated")
+    logger.info("Real configs available: %d", len(real))
+    logger.info("Stubs replaced: %d, Real kept: %d", replaced, kept)
+    logger.info("test_config.yaml updated")
 
 
 if __name__ == "__main__":

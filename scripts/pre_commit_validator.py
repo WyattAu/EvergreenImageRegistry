@@ -14,9 +14,12 @@ Checks:
 - Required labels
 """
 
+import logging
 import os
 import sys
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 # ANSI colors
 RED = "\033[0;31m"
@@ -31,16 +34,16 @@ WARNINGS = []
 
 def print_error(msg):
     ERRORS.append(msg)
-    print(f"{RED}ERROR:{NC} {msg}")
+    logger.error(f"{RED}ERROR:{NC} {msg}")
 
 
 def print_warning(msg):
     WARNINGS.append(msg)
-    print(f"{YELLOW}WARN:{NC} {msg}")
+    logger.warning(f"{YELLOW}WARN:{NC} {msg}")
 
 
 def print_success(msg):
-    print(f"{GREEN}OK:{NC} {msg}")
+    logger.info(f"{GREEN}OK:{NC} {msg}")
 
 
 def validate_dockerfile(filepath):

@@ -19,7 +19,7 @@ RUN pip install --no-cache-dir --prefix=/install patroni[postgresql]=="${VERSION
     find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal
+FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 
 RUN microdnf install -y libpq curl ca-certificates || true

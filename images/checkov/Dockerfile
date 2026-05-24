@@ -11,7 +11,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip || true && \
     pip install --no-cache-dir checkov==3.2.0 ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/checkov || { echo '#!/bin/sh' > /usr/local/bin/checkov && echo 'echo "checkov v${VERSION} binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/checkov && echo 'exit 1' >> /usr/local/bin/checkov && chmod +x /usr/local/bin/checkov ; } 2>/dev/null || true && \
     mkdir -p /app 2>/dev/null || true
-FROM registry.access.redhat.com/ubi9/ubi-minimal
+FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 
 RUN microdnf install -y python3 ca-certificates git

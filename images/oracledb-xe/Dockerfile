@@ -4,7 +4,7 @@ ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-FROM gvenzl/oracle-xe:21-slim AS upstream
+FROM gvenzl/oracle-xe:21-slim@sha256:523f7afc7a05b1ddd4420d4de72f96024c58545d5946202b42d6d616c3c4b475 AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 

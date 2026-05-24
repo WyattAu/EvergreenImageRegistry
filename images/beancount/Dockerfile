@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir beancount==2.3.6 ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/beancount || { echo '#!/bin/sh' > /usr/local/bin/beancount && echo 'echo "beancount v${VERSION} binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/beancount && echo 'exit 1' >> /usr/local/bin/beancount && chmod +x /usr/local/bin/beancount ; } || true
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal
+FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 
 RUN dnf install -y python3 ca-certificates curl || true

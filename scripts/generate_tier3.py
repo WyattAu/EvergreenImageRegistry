@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Generate Tier-3 Dockerfiles and CHECKSUMS for all listed stub images."""
 
+import logging
 import os
+
+logger = logging.getLogger(__name__)
 
 BASE = os.path.join(os.path.dirname(__file__), "..", "images")
 BASE = os.path.abspath(BASE)
@@ -2483,4 +2486,4 @@ for d in sorted(os.listdir(BASE)):
             first = f.readline().strip()
         if first.startswith("# ====="):
             count += 1
-print(f"Generated {count} real Tier-3 Dockerfiles with CHECKSUMS")
+logger.info("Generated %d real Tier-3 Dockerfiles with CHECKSUMS", count)

@@ -3,7 +3,7 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-FROM tecnativa/docker-socket-proxy:v0.4.2 AS upstream
+FROM tecnativa/docker-socket-proxy:v0.4.2@sha256:5571c19d8e5c1a58a4edb5781beedb3065d6995985e5ca2f1003c016e266517c AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=v0.4.2

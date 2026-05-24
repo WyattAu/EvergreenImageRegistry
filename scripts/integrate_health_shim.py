@@ -2,9 +2,12 @@
 """Integrate health-shim binary into 12 database Dockerfiles."""
 
 import json
+import logging
 import os
 import re
 import sys
+
+logger = logging.getLogger(__name__)
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 IMAGES_DIR = os.path.join(REPO_ROOT, "images")
@@ -100,14 +103,14 @@ def process_dockerfile(db):
     path = os.path.join(IMAGES_DIR, name, "Dockerfile")
 
     if not os.path.exists(path):
-        print(f"  SKIP: {path} does not exist")
+        logger.info("SKIP: %s does not exist", path)
         return False
 
     with open(path) as f:
         content = f.read()
 
     if "health-shim-builder" in content:
-        print("  SKIP: already integrated")
+        logger.info("SKIP: already integrated")
         return False
 
     lines = content.split("\n")
@@ -122,7 +125,7 @@ def process_dockerfile(db):
             last_from_idx = i
 
     if last_from_idx is None:
-        print("  ERROR: no FROM found")
+        logger.error("no FROM found")
         return False
 
     insert_pos = last_from_idx
@@ -172,7 +175,7 @@ def process_dockerfile(db):
                 lines[i] = new_ep
                 changes.append(f"Wrapped ENTRYPOINT -> {new_ep}")
             except json.JSONDecodeError:
-                print(f"  WARNING: cannot parse ENTRYPOINT JSON: {stripped}")
+                logger.warning("cannot parse ENTRYPOINT JSON: %s", stripped)
             break
 
         shell_match = re.match(r"^ENTRYPOINT\s+(.+)$", stripped)
@@ -205,7 +208,7 @@ def process_dockerfile(db):
         f.write("\n".join(lines) + "\n")
 
     for change in changes:
-        print(f"  {change}")
+        logger.info(change)
     return True
 
 
@@ -219,7 +222,7 @@ def main():
     skipped = 0
 
     for db in DATABASES:
-        print(f"[{db['name']}]")
+        logger.info("[%s]", db['name'])
         if process_dockerfile(db):
             success += 1
         else:

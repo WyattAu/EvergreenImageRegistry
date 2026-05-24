@@ -9,11 +9,14 @@ Categories:
 """
 
 import glob
+import logging
 import os
 import re
 import sys
 from collections import defaultdict
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = PROJECT_ROOT / "images"
@@ -444,10 +447,10 @@ def main():
     dockerfiles = sorted(glob.glob(str(IMAGES_DIR / "*/Dockerfile")))
 
     if not dockerfiles:
-        print("No Dockerfiles found!")
+        logger.error("No Dockerfiles found!")
         sys.exit(1)
 
-    print(f"Found {len(dockerfiles)} Dockerfiles to process")
+    logger.info(f"Found {len(dockerfiles)} Dockerfiles to process")
 
     total_modified = 0
     total_removed = 0
@@ -466,7 +469,7 @@ def main():
                 all_remapped_details[old].append(rel)
             if comments:
                 for c in comments:
-                    print(f"  {rel}: {c}")
+                    logger.info(f"{rel}: {c}")
             if emptied:
                 for _s, _e, full in emptied:
                     all_emptied.append((rel, full.strip()[:120]))

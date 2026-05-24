@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Fix missing evergreen.base.image labels and remove stale labels from Dockerfiles."""
 
+import logging
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = PROJECT_ROOT / "images"
@@ -95,7 +98,7 @@ def add_base_image_label(content: str, base_value: str, needs_migration: bool) -
             break
 
     if insert_idx is None:
-        print("  WARNING: Could not find metrics label insertion point")
+        logger.warning("Could not find metrics label insertion point")
         return content
 
     label_line = f'LABEL evergreen.base.image="{base_value}"'

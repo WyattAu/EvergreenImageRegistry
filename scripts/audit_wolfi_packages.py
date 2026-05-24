@@ -3,6 +3,7 @@
 
 import io
 import json
+import logging
 import os
 import re
 import sys
@@ -10,6 +11,8 @@ import tarfile
 import urllib.request
 from collections import defaultdict
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 REPORTS_DIR = PROJECT_ROOT / ".reports"
@@ -99,7 +102,7 @@ VERSIONED_PACKAGE_PATTERN = re.compile(r"^(.*?)[-_]\d+\.\d+")
 
 
 def download_apkindex():
-    print(f"Downloading wolfi APKINDEX from {APKINDEX_URL} ...")
+    logger.info(f"Downloading wolfi APKINDEX from {APKINDEX_URL} ...")
     req = urllib.request.Request(APKINDEX_URL)
     with urllib.request.urlopen(req, timeout=120) as resp:
         data = resp.read()
@@ -107,7 +110,7 @@ def download_apkindex():
 
 
 def parse_apkindex(data):
-    print("Parsing APKINDEX ...")
+    logger.info("Parsing APKINDEX ...")
     packages = set()
     provides = set()
     with tarfile.open(fileobj=io.BytesIO(data), mode="r:gz") as tf:
@@ -130,7 +133,7 @@ def parse_apkindex(data):
                                 name = name.split("/")[-1]
                                 if name and not name.startswith("cmd:"):
                                     provides.add(name)
-    print(f"  {len(packages)} real packages, {len(provides)} virtual provides")
+    logger.info(f"  {len(packages)} real packages, {len(provides)} virtual provides")
     return packages | provides
 
 
@@ -248,10 +251,10 @@ def main():
 
     index_data = download_apkindex()
     wolfi_packages = parse_apkindex(index_data)
-    print(f"Loaded {len(wolfi_packages)} packages from wolfi index\n")
+    logger.info(f"Loaded {len(wolfi_packages)} packages from wolfi index")
 
     dockerfiles = sorted(IMAGES_DIR.glob("*/Dockerfile"))
-    print(f"Found {len(dockerfiles)} Dockerfiles to scan\n")
+    logger.info(f"Found {len(dockerfiles)} Dockerfiles to scan")
 
     all_pkg_to_images = defaultdict(set)
     image_pkgs = {}
@@ -264,8 +267,8 @@ def main():
             for pkg in pkgs:
                 all_pkg_to_images[pkg].add(image_name)
 
-    print(f"Extracted packages from {len(image_pkgs)} Dockerfiles")
-    print(f"Found {len(all_pkg_to_images)} unique package names\n")
+    logger.info(f"Extracted packages from {len(image_pkgs)} Dockerfiles")
+    logger.info(f"Found {len(all_pkg_to_images)} unique package names")
 
     valid_packages = sorted(pkg for pkg in all_pkg_to_images if pkg in wolfi_packages)
     invalid_packages = {
@@ -306,7 +309,7 @@ def main():
     }
     json_path = REPORTS_DIR / "wolfi_invalid_packages.json"
     json_path.write_text(json.dumps(json_output, indent=2) + "\n", encoding="utf-8")
-    print(f"JSON report written to {json_path}")
+    logger.info(f"JSON report written to {json_path}")
 
     md_lines = []
     md_lines.append("# Wolfi Package Audit Report\n")
@@ -365,7 +368,7 @@ def main():
 
     md_path = REPORTS_DIR / "wolfi_package_audit.md"
     md_path.write_text("\n".join(md_lines), encoding="utf-8")
-    print(f"Markdown report written to {md_path}")
+    logger.info(f"Markdown report written to {md_path}")
 
     if invalid_count > 0:
         print(f"\n{'!' * 70}")

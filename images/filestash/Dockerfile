@@ -3,7 +3,7 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-FROM mickaelkerjean/filestash AS upstream
+FROM mickaelkerjean/filestash@sha256:e42dcbec35e76a474214284752f2962348387b5a4a75c923f01f695d6790dcde AS upstream
 
 FROM scratch
 COPY --from=upstream /app/filestash /filestash

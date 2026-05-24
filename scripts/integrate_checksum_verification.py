@@ -16,26 +16,24 @@ Exit codes:
 """
 
 import argparse
+import logging
 import re
 import sys
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = REPO_ROOT / "images"
 
 
 def log(msg: str, level: str = "INFO"):
-    ts = ""
-    try:
-        from datetime import datetime as _dt
-
-        ts = _dt.now().strftime("%H:%M:%S")
-    except ImportError:
-        pass
-    prefix = {"INFO": "  ✓", "WARN": "  ⚠", "ERROR": "  ✗", "SKIP": "  →"}.get(
-        level, "  "
-    )
-    print(f"[{ts}] {prefix} {msg}")
+    if level == "ERROR":
+        logger.error(msg)
+    elif level == "WARN":
+        logger.warning(msg)
+    else:
+        logger.info(msg)
 
 
 def parse_checksums(checksums_path: Path) -> dict | None:
@@ -240,7 +238,7 @@ def main():
     if args.image:
         image_dirs = [IMAGES_DIR / args.image]
         if not image_dirs[0].is_dir():
-            print(f"ERROR: Image directory not found: {image_dirs[0]}", file=sys.stderr)
+            logger.error(f"Image directory not found: {image_dirs[0]}")
             sys.exit(2)
     else:
         image_dirs = sorted([d for d in IMAGES_DIR.iterdir() if d.is_dir()])

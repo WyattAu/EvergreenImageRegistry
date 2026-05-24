@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Clean up stale labels from Dockerfiles in the EvergreenImageRegistry project."""
 
+import logging
 import re
 import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+logger = logging.getLogger(__name__)
 
 
 def find_dockerfiles():

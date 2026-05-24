@@ -29,12 +29,15 @@ Usage:
 import argparse
 import hashlib
 import json
+import logging
 import re
 import sys
 import time
 import urllib.error
 import urllib.request
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = REPO_ROOT / "images"
@@ -47,10 +50,8 @@ GITHUB_API_LIMIT = 58
 
 
 def log(msg: str, level: str = "INFO"):
-    prefix = {"INFO": "  OK", "WARN": "  !!", "ERROR": "FAIL", "SKIP": "  >>"}.get(
-        level, "   "
-    )
-    print(f"{prefix} {msg}")
+    level_map = {"INFO": "info", "WARN": "warning", "ERROR": "error", "SKIP": "info"}
+    getattr(logger, level_map.get(level, "info"))(msg)
 
 
 def http_get(url: str, timeout: int = HTTP_TIMEOUT) -> str | None:
@@ -844,7 +845,7 @@ def main():
     if args.image:
         image_dirs = [IMAGES_DIR / args.image]
         if not image_dirs[0].is_dir():
-            print(f"ERROR: {image_dirs[0]} not found", file=sys.stderr)
+            logger.error("%s not found", image_dirs[0])
             sys.exit(2)
     else:
         image_dirs = sorted([d for d in IMAGES_DIR.iterdir() if d.is_dir()])
@@ -862,11 +863,18 @@ def main():
     total = len(image_dirs)
     for i, d in enumerate(image_dirs, 1):
         if i % 50 == 0:
-            print(
-                f"\n--- Progress: {i}/{total} (added: {stats['added']}, "
-                f"skipped: {stats['skip_has_checksum'] + stats['skip_pkg_manager'] + stats['skip_no_downloads']}, "
-                f"failed: {stats['failed']}, "
-                f"GitHub API calls: {github_api_calls}/{GITHUB_API_LIMIT}) ---\n"
+            logger.info(
+                "--- Progress: %d/%d (added: %d, "
+                "skipped: %d, "
+                "failed: %d, "
+                "GitHub API calls: %d/%d) ---",
+                i,
+                total,
+                stats["added"],
+                stats["skip_has_checksum"] + stats["skip_pkg_manager"] + stats["skip_no_downloads"],
+                stats["failed"],
+                github_api_calls,
+                GITHUB_API_LIMIT,
             )
 
         result = process_image(d, dry_run=args.dry_run)

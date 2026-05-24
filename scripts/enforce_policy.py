@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import logging
 import re
 import sys
 import tomllib
@@ -9,6 +10,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import yaml
+
+logger = logging.getLogger(__name__)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = REPO_ROOT / "images"
@@ -427,7 +430,7 @@ def main():
     args = parser.parse_args()
 
     if not args.policy.exists():
-        print(f"ERROR: Policy file not found: {args.policy}", file=sys.stderr)
+        logger.error("Policy file not found: %s", args.policy)
         sys.exit(1)
 
     policy_data = load_policy(args.policy)
@@ -459,7 +462,7 @@ def main():
 
     for image_dir in image_dirs:
         if not image_dir.is_dir():
-            print(f"WARN: {image_dir} is not a directory, skipping", file=sys.stderr)
+            logger.warning("%s is not a directory, skipping", image_dir)
             continue
 
         image_name = image_dir.name
@@ -501,10 +504,10 @@ def main():
     )
 
     if has_block_failure:
-        print("BLOCK violations found. Exiting with code 1.")
+        logger.error("BLOCK violations found. Exiting with code 1.")
         sys.exit(1)
     else:
-        print("No BLOCK violations.")
+        logger.info("No BLOCK violations.")
         sys.exit(0)
 
 

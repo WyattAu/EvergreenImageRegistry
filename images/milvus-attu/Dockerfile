@@ -3,7 +3,7 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-FROM docker.io/zilliz/attu:v2.4.9 AS upstream
+FROM docker.io/zilliz/attu:v2.4.9@sha256:1deeea51731507862d3a0f083834c117c54d0ce43d58ce672c6aa0138bb0ee7c AS upstream
 
 FROM scratch
 COPY --from=upstream /opt/attu/attu /attu

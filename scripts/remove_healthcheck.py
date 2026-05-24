@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
+import logging
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 IMAGES_DIR = Path(__file__).resolve().parent.parent / "images"
 
@@ -71,14 +74,14 @@ def main():
         if "\n\n\n" in new_content:
             needs_review.append(f"{df}: contains triple newlines after cleanup")
 
-    print(f"Total Dockerfiles modified: {total_modified}")
-    print(f"Total HEALTHCHECK blocks removed: {total_blocks_removed}")
+    logger.info(f"Total Dockerfiles modified: {total_modified}")
+    logger.info(f"Total HEALTHCHECK blocks removed: {total_blocks_removed}")
     if needs_review:
-        print(f"\nFiles needing manual review ({len(needs_review)}):")
+        logger.info(f"Files needing manual review ({len(needs_review)}):")
         for f in needs_review:
-            print(f"  - {f}")
+            logger.info(f"- {f}")
     else:
-        print("\nNo files need manual review.")
+        logger.info("No files need manual review.")
 
     remaining = sum(
         1
@@ -90,11 +93,11 @@ def main():
         )
     )
     if remaining:
-        print(
-            f"\nWARNING: {remaining} Dockerfiles still contain HEALTHCHECK instructions!"
+        logger.warning(
+            f"{remaining} Dockerfiles still contain HEALTHCHECK instructions!"
         )
     else:
-        print("\nVerification: No HEALTHCHECK instructions remain in any Dockerfile.")
+        logger.info("Verification: No HEALTHCHECK instructions remain in any Dockerfile.")
 
 
 if __name__ == "__main__":

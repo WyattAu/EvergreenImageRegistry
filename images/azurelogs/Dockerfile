@@ -25,7 +25,7 @@ RUN apt-get update && \
 COPY --from=builder /install /install
 RUN find /install -type f -name "*.so" -exec strip --strip-unneeded {} \ || true && \
     mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
-FROM registry.access.redhat.com/ubi9/ubi-minimal
+FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 ARG VERSION=1.2.0
 

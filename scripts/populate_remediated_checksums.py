@@ -16,12 +16,15 @@ Usage:
 """
 
 import json
+import logging
 import re
 import sys
 import time
 import urllib.error
 import urllib.request
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = REPO_ROOT / "images"
@@ -189,10 +192,8 @@ IMAGES = {
 
 
 def log(msg: str, level: str = "INFO"):
-    prefix = {"INFO": "  OK", "WARN": "  !!", "ERROR": "FAIL", "SKIP": "SKIP"}.get(
-        level, "    "
-    )
-    print(f"{prefix} {msg}")
+    level_map = {"INFO": "info", "WARN": "warning", "ERROR": "error", "SKIP": "info"}
+    getattr(logger, level_map.get(level, "info"))(msg)
 
 
 def http_get(url: str, timeout: int = HTTP_TIMEOUT) -> str | None:
@@ -472,13 +473,13 @@ def process_image(image_name: str, config: dict, dry_run: bool = False) -> str:
     if has_sha256_verification(content):
         return "SKIP: already has sha256sum verification"
 
-    print(f"  {image_name}: looking up checksum for {target_filename} (v{version})...")
+    logger.info("%s: looking up checksum for %s (v%s)...", image_name, target_filename, version)
 
     sha256 = find_checksum_for_image(image_name, download_url, target_filename)
     if not sha256:
         return f"FAIL: no checksum found for {download_url}"
 
-    print(f"  {image_name}: found sha256={sha256[:16]}...")
+    logger.info("%s: found sha256=%s...", image_name, sha256[:16])
 
     if dry_run:
         return "DRY-RUN: would insert checksum"
@@ -503,7 +504,7 @@ def main():
     args = parser.parse_args()
 
     if args.dry_run:
-        print("DRY RUN MODE - no files will be modified\n")
+        logger.info("DRY RUN MODE - no files will be modified")
 
     success = 0
     failed = 0

@@ -8,10 +8,13 @@ pip install). Reports orphaned SBOM entries and missing SBOM entries.
 
 import argparse
 import json
+import logging
 import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 IMAGES_DIR = REPO_ROOT / "images"
@@ -70,7 +73,7 @@ def get_image_dirs(single_image: str | None = None) -> list[Path]:
     if single_image:
         target = IMAGES_DIR / single_image
         if not target.is_dir():
-            print(f"Error: image directory not found: {target}", file=sys.stderr)
+            logger.error(f"image directory not found: {target}")
             sys.exit(2)
         return [target]
     dirs = []
@@ -235,7 +238,7 @@ def main() -> None:
         print(format_json(all_results))
     else:
         if not results:
-            print("All images clean. No SBOM drift detected.")
+            logger.info("All images clean. No SBOM drift detected.")
             sys.exit(0)
         print(format_table(results))
 

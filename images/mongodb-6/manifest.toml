@@ -2,7 +2,7 @@
 tier = "standard"
 name = "mongodb-6"
 version = "6.0.14"
-description = "mongodb-6 container image"
+description = "MongoDB 6 - document-oriented NoSQL database"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -10,7 +10,8 @@ user = "65532:65532"
 stopsignal = "SIGTERM"
 
 [source]
-type = "package-manager"
+type = "docker-image"
+url = "mongo:${version}"
 
 [runtime]
 entrypoint = ["mongod"]

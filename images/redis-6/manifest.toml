@@ -2,7 +2,7 @@
 tier = "standard"
 name = "redis-6"
 version = "6.2.16"
-description = "redis-6 container image"
+description = "Redis 6 - in-memory data structure store and cache"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -10,7 +10,8 @@ user = "65532:65532"
 stopsignal = "SIGTERM"
 
 [source]
-type = "package-manager"
+type = "docker-image"
+url = "redis:${version}"
 
 [runtime]
 entrypoint = ["redis"]

@@ -1,20 +1,13 @@
 # =============================================================================
 # EVERGREEN HARDENED REDIS
-# Generated from template - Version: 7.4.8
-# Constraint: debian-slim hardened multi-stage
-# Priority: scratch > distroless > wolfi > debian-slim (last resort)
+# Uses official redis image as upstream binary source on Wolfi base
 # =============================================================================
 
 ARG VERSION=7.4.9
-ARG BUILD_DATE
-
 ARG TARGETARCH
-ARG APP_UID=65532
-ARG APP_GID=65532
 
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-RUN useradd -m -u 65532 -s /usr/bin/false redis 2>/dev/null || true && \
-    mkdir -p /app /var/log/redis /var/cache/redis 2>/dev/null || true
+FROM redis:${VERSION} AS upstream
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ENV HEALTH_CMD="redis-cli ping" \
     READY_CMD="redis-cli ping" \
@@ -22,18 +15,21 @@ ENV HEALTH_CMD="redis-cli ping" \
     EVERGREEN_LOG_LEVEL=info
 
 RUN apk add --no-cache ca-certificates
-# NOTE: redis server not available in wolfi; uses pre-compiled binary
-COPY --from=builder /etc/passwd /etc/passwd
-COPY --from=builder /etc/group /etc/group
-COPY --from=builder --chown=65532:65532 /app /app
-COPY --from=builder --chown=65532:65532 /var/log/redis /var/log/redis
-COPY --from=builder --chown=65532:65532 /var/cache/redis /var/cache/redis
+
+COPY --from=upstream /usr/local/bin/redis-server /usr/local/bin/redis-server
+COPY --from=upstream /usr/local/bin/redis-cli /usr/local/bin/redis-cli
+
+RUN adduser -D -u 65532 -s /bin/false redis 2>/dev/null || true && \
+    mkdir -p /app /var/log/redis /var/cache/redis && \
+    chown -R 65532:65532 /app /var/log/redis /var/cache/redis
+
 USER 65532:65532
 WORKDIR /app
 EXPOSE 6379
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD redis-cli ping
-ENTRYPOINT ["sh", "-c", "redis"]
+ENTRYPOINT ["redis-server"]
+CMD ["--bind", "0.0.0.0", "--protected-mode", "no"]
 LABEL org.opencontainers.image.title="redis" \
       org.opencontainers.image.description="Redis - in-memory data structure store and cache" \
       org.opencontainers.image.version="7.4.9" \
@@ -42,7 +38,7 @@ LABEL org.opencontainers.image.title="redis" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \
       evergreen.constraint.hardened="true" \
-            org.opencontainers.image.source="https://github.com/redis/redis"
+      org.opencontainers.image.source="https://github.com/redis/redis"
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="true"
 LABEL evergreen.health.type="http"

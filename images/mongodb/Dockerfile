@@ -1,38 +1,36 @@
 # =============================================================================
 # EVERGREEN HARDENED MONGODB
-# Generated from template - Version: 7.0.11
-# Constraint: debian-slim hardened multi-stage
-# Priority: scratch > distroless > wolfi > debian-slim (last resort)
+# Uses official mongo image as upstream binary source on Wolfi base
 # =============================================================================
 
 ARG VERSION=7.0.11
 ARG TARGETARCH
-ARG BUILD_DATE
-ARG APP_UID=65532
-ARG APP_GID=65532
 
+FROM mongo:${VERSION} AS upstream
 
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-RUN useradd -m -u 65532 -s /usr/bin/false mongodb 2>/dev/null || true && \
-    mkdir -p /app /var/log/mongod /var/cache/mongod 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-ENV HEALTH_CMD="echo \"db.adminCommand('ping')\" | mongosh --quiet" \
-    READY_CMD="echo \"db.adminCommand('ping')\" | mongosh --quiet" \
-    STARTUP_CMD="echo \"db.adminCommand('ping')\" | mongosh --quiet" \
+ENV HEALTH_CMD="echo 'db.adminCommand(\\\"ping\\\")' | mongosh --quiet" \
+    READY_CMD="echo 'db.adminCommand(\\\"ping\\\")' | mongosh --quiet" \
+    STARTUP_CMD="echo 'db.adminCommand(\\\"ping\\\")' | mongosh --quiet" \
     EVERGREEN_LOG_LEVEL=info
 
 RUN apk add --no-cache ca-certificates
-COPY --from=builder /etc/passwd /etc/passwd
-COPY --from=builder /etc/group /etc/group
-COPY --from=builder --chown=65532:65532 /app /app
-COPY --from=builder --chown=65532:65532 /var/log/mongod /var/log/mongod
-COPY --from=builder --chown=65532:65532 /var/cache/mongod /var/cache/mongod
+
+COPY --from=upstream /usr/bin/mongod /usr/bin/mongod
+COPY --from=upstream /usr/bin/mongos /usr/bin/mongos
+COPY --from=upstream /usr/bin/mongosh /usr/bin/mongosh
+
+RUN adduser -D -u 65532 -s /bin/false mongodb 2>/dev/null || true && \
+    mkdir -p /app /var/log/mongod /var/cache/mongod /data/db && \
+    chown -R 65532:65532 /app /var/log/mongod /var/cache/mongod /data/db
+
 USER 65532:65532
 WORKDIR /app
 EXPOSE 27017
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD echo "db.runCommand({ping:1})" | mongosh --quiet
-ENTRYPOINT ["sh", "-c", "mongod"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 CMD echo "db.runCommand({ping:1})" | mongosh --quiet
+ENTRYPOINT ["mongod"]
+CMD ["--bind_ip", "0.0.0.0", "--dbpath", "/data/db"]
 LABEL org.opencontainers.image.title="mongodb" \
       org.opencontainers.image.description="MongoDB - document-oriented NoSQL database" \
       org.opencontainers.image.version="7.0.11" \
@@ -40,7 +38,7 @@ LABEL org.opencontainers.image.title="mongodb" \
       evergreen.image.tier="2" \
       evergreen.constraint.nonroot="true" \
       evergreen.constraint.hardened="true" \
-            org.opencontainers.image.source="https://github.com/mongodb/mongo"
+      org.opencontainers.image.source="https://github.com/mongodb/mongo"
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="true"
 LABEL evergreen.health.type="http"

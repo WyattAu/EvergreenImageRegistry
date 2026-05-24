@@ -21,7 +21,7 @@ ENV HEALTH_CMD="redis-cli ping" \
     STARTUP_CMD="redis-cli ping" \
     EVERGREEN_LOG_LEVEL=info
 
-RUN apk add --no-cache ca-certificates 
+RUN apk add --no-cache ca-certificates
 # NOTE: redis server not available in wolfi; uses pre-compiled binary
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group

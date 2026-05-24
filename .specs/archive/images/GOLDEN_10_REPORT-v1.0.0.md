@@ -1,7 +1,7 @@
 # Golden 10 - Constraint Verification Report
 
-**Date**: 2026-04-19  
-**Status**: Stage 1 - Build Complete  
+**Date**: 2026-04-19
+**Status**: Stage 1 - Build Complete
 **Pipeline**: .github/workflows/build.yml
 
 ---
@@ -34,7 +34,7 @@
 - **Notes**: Excellent candidate, static binary available
 
 ### ✅ nginx
-- **Base**: scratch  
+- **Base**: scratch
 - **Binary**: Official static
 - **C001-C006**: ✅ All met
 - **C007-C009**: ⚠️ CI/CD required
@@ -107,7 +107,7 @@ The following constraints require external CI/CD:
 
 # Manual verification
 docker run --rm <image> id              # C001
-docker run --rm --read-only <image> ...  # C002  
+docker run --rm --read-only <image> ...  # C002
 docker run --rm <image> ls /bin/sh      # C003
 docker run --rm <image> which apt apk dnf # C004
 trivy image --severity CRITICAL,HIGH <image> # C007

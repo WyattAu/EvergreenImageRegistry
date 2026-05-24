@@ -14,7 +14,7 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-FROM ghcr.io/frebib/zfs-exporter:latest AS upstream
+FROM ghcr.io/frebib/zfs-exporter:0.0.12 AS upstream
 
 FROM scratch
 COPY --from=upstream /usr/bin/zfs-exporter /zfs-exporter
@@ -47,7 +47,7 @@ HEALTHCHECK NONE
 ENTRYPOINT ["/zfs-exporter"]
 LABEL org.opencontainers.image.title="zfs-exporter" \
       org.opencontainers.image.description="ZFS Exporter - Prometheus exporter for ZFS pool and dataset metrics" \
-      org.opencontainers.image.version="latest" \
+      org.opencontainers.image.version="0.0.12" \
       org.opencontainers.image.vendor="frebib" \
       org.opencontainers.image.source="https://github.com/frebib/zfs-exporter" \
       evergreen.image.tier="3" \

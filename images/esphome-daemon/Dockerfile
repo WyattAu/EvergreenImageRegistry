@@ -62,7 +62,7 @@ LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 
 
 
-RUN microdnf install -y python3 ca-certificates tzdata 
+RUN microdnf install -y python3 ca-certificates tzdata
 
 
 

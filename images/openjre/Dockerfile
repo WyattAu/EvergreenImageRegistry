@@ -9,7 +9,7 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-RUN apk add --no-cache ca-certificates tzdata curl dumb-init 
+RUN apk add --no-cache ca-certificates tzdata curl dumb-init
 
 ARG JRE_VERSION=21.0.5+11
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jre/hotspot/normal/eclipse" -o /tmp/jre.tar.gz && \

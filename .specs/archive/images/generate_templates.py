@@ -12,7 +12,7 @@ import sys
 IMAGES = {
     # Category 1: Gateways (Static binaries) - prefer scratch
     "gateways": [
-        {"name": "traefik", "base": "scratch", "binary": "traefik", "version": "3.6.13", 
+        {"name": "traefik", "base": "scratch", "binary": "traefik", "version": "3.6.13",
          "url": "https://github.com/traefik/traefik/releases/download/v{VERSION}/traefik_v{VERSION}_linux_amd64.tar.gz",
          "health": "--version", "ports": "80 443 8080", "vendor": "Traefik Labs"},
         {"name": "nginx", "base": "scratch", "binary": "nginx", "version": "1.27.1",
@@ -25,7 +25,7 @@ IMAGES = {
          "url": "https://www.haproxy.org/download/{VERSION}/src/haproxy-{VERSION}.tar.gz",
          "health": "-v", "ports": "80 443", "vendor": "HAProxy"},
         {"name": "envoy", "base": "distroless", "binary": "envoy", "version": "1.31.0",
-         "url": "https://envoy.io/",  
+         "url": "https://envoy.io/",
          "health": "--version", "ports": "80 443 9900", "vendor": "Envoy"},
         {"name": "coredns", "base": "scratch", "binary": "coredns", "version": "1.12.0",
          "url": "https://github.com/coredns/coredns/releases/download/v{VERSION}/coredns_{VERSION}_linux_amd64.tgz",
@@ -36,10 +36,10 @@ IMAGES = {
         {"name": "postgres", "base": "debian", "binary": "postgres", "version": "17.4",
          "packages": "postgresql-17", "health": "pg_isready", "ports": "5432", "user": "postgres", "vendor": "PostgreSQL"},
         {"name": "mysql", "base": "debian", "binary": "mariadbd", "version": "11.4",
-         "packages": "default-mysql-server default-mysql-client", 
+         "packages": "default-mysql-server default-mysql-client",
          "health": "mariadb-admin ping", "ports": "3306", "user": "mysql", "vendor": "MariaDB"},
         {"name": "mariadb", "base": "debian", "binary": "mariadbd", "version": "11.4",
-         "packages": "default-mysql-server default-mysql-client", 
+         "packages": "default-mysql-server default-mysql-client",
          "health": "mariadb-admin ping", "ports": "3306", "user": "mysql", "vendor": "MariaDB"},
         {"name": "cockroachdb", "base": "debian", "binary": "cockroach", "version": "23.2.0",
          "packages": "cockroachdb", "health": "cockroach sql", "ports": "26257 8080", "user": "cockroach", "vendor": "CockroachDB"},
@@ -270,15 +270,15 @@ def generate_scratch_image(img_def, output_dir):
     name = img_def["name"]
     version = img_def.get("version", "latest")
     binary = img_def["binary"]
-    
+
     url = img_def.get("url", "")
     if url and "{VERSION}" in url:
         url = url.replace("{VERSION}", version)
-    
+
     vendor = img_def.get("vendor", "Official")
     health = img_def.get("health", f"{binary} --version")
     health_command = f"{binary} {health} 2>/dev/null || exit 1"
-    
+
     content = SCRATCH_TEMPLATE.format(
         name_upper=name.upper(),
         name=name,
@@ -290,7 +290,7 @@ def generate_scratch_image(img_def, output_dir):
         health=health,
         health_command=health_command,
     )
-    
+
     filepath = os.path.join(output_dir, f"{name}/Dockerfile")
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
     with open(filepath, 'w') as f:
@@ -302,15 +302,15 @@ def generate_distroless_image(img_def, output_dir):
     name = img_def["name"]
     version = img_def.get("version", "latest")
     binary = img_def["binary"]
-    
+
     url = img_def.get("url", "")
     if url and "{VERSION}" in url:
         url = url.replace("{VERSION}", version)
-    
+
     vendor = img_def.get("vendor", "Official")
     health = img_def.get("health", f"{binary} --version")
     health_command = f"{binary} {health} 2>/dev/null || exit 1"
-    
+
     content = DISTROLESS_TEMPLATE.format(
         name_upper=name.upper(),
         name=name,
@@ -322,7 +322,7 @@ def generate_distroless_image(img_def, output_dir):
         health=health,
         health_command=health_command,
     )
-    
+
     filepath = os.path.join(output_dir, f"{name}/Dockerfile")
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
     with open(filepath, 'w') as f:
@@ -338,7 +338,7 @@ def generate_wolfi_image(img_def, output_dir):
     binary = img_def.get("binary", name)
     user = img_def.get("user", name)
     health = img_def.get("health", f"{binary} --version")
-    
+
     content = WOLFI_TEMPLATE.format(
         name_upper=name.upper(),
         name=name,
@@ -350,7 +350,7 @@ def generate_wolfi_image(img_def, output_dir):
         health=health,
         user=user,
     )
-    
+
     filepath = os.path.join(output_dir, f"{name}/Dockerfile")
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
     with open(filepath, 'w') as f:
@@ -366,7 +366,7 @@ def generate_debian_image(img_def, output_dir):
     binary = img_def.get("binary", name)
     user = img_def.get("user", name)
     health = img_def.get("health", f"{binary} --version")
-    
+
     content = DEBIAN_TEMPLATE.format(
         name_upper=name.upper(),
         name=name,
@@ -378,7 +378,7 @@ def generate_debian_image(img_def, output_dir):
         health=health,
         user=user,
     )
-    
+
     filepath = os.path.join(output_dir, f"{name}/Dockerfile")
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
     with open(filepath, 'w') as f:
@@ -388,18 +388,18 @@ def generate_debian_image(img_def, output_dir):
 def generate_all(category=None):
     """Generate all Dockerfiles with priority: scratch > distroless > wolfi > debian"""
     output_dir = "images"
-    
+
     categories = IMAGES.keys() if category is None or category == "all" else [category]
-    
+
     total = 0
     for cat in categories:
         if cat not in IMAGES:
             print(f"Unknown category: {cat}")
             continue
-            
+
         for img_def in IMAGES[cat]:
             base = img_def.get("base", "debian")
-            
+
             # Priority: scratch > distroless > wolfi > debian
             if base == "scratch":
                 generate_scratch_image(img_def, output_dir)
@@ -411,7 +411,7 @@ def generate_all(category=None):
                 # Default to debian (last resort)
                 generate_debian_image(img_def, output_dir)
             total += 1
-    
+
     print(f"\nGenerated {total} Dockerfiles")
 
 if __name__ == "__main__":

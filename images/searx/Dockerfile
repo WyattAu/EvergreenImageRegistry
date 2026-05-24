@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 
-RUN microdnf install -y python3 ca-certificates tzdata 
+RUN microdnf install -y python3 ca-certificates tzdata
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
 RUN addgroup -S -g 2 nogroup >/dev/null || true && \

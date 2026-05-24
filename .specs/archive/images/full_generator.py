@@ -5,7 +5,7 @@ SovereIGN HARDENED IMAGE REGISTRY - COMPREHENSIVE IMAGE GENERATOR
 Generates 1000+ Dockerfiles with proper base image priority:
 - Priority 1 (BEST): scratch - static binaries only
 - Priority 2: distroless - minimal glibc
-- Priority 3: wolfi - Chainguard Wolfi 
+- Priority 3: wolfi - Chainguard Wolfi
 - Priority 4 (FALLBACK): debian-slim - Debian Bookworm Slim
 
 CRITICAL RULE: NEVER USE ALPINE
@@ -27,9 +27,9 @@ IMAGES = {
     # =========================================================================
     # SECTION 1: NETWORKING & GATEWAYS (100 images)
     # =========================================================================
-    
+
     # 1.1 Reverse Proxies (35)
-    "traefik": {"base": "scratch", "binary": "traefik", "version": "3.6.13", 
+    "traefik": {"base": "scratch", "binary": "traefik", "version": "3.6.13",
                 "url": "https://github.com/traefik/traefik/releases/download/v{VERSION}/traefik_v{VERSION}_linux_amd64.tar.gz",
                 "health": "--version", "ports": "80 443 8080", "vendor": "Traefik Labs"},
     "traefik-v2": {"base": "scratch", "binary": "traefik", "version": "2.11.42",
@@ -119,7 +119,7 @@ IMAGES = {
     "envoy-exporter": {"base": "scratch", "binary": "envoy_exporter", "version": "0.4.0",
                        "url": "https://github.com/solo-io/envoy_exporter/releases/download/v{VERSION}/envoy_exporter-{VERSION}.linux-amd64.tar.gz",
                        "health": "--version", "ports": "9102", "vendor": "Solo.io"},
-    
+
     # 1.2 VPN & Mesh (25)
     "wireguard": {"base": "wolfi", "binary": "wg", "version": "1.0.20210914",
                   "packages": "wireguard-tools", "health": "wg show", "ports": "51820", "vendor": "WireGuard"},
@@ -144,7 +144,7 @@ IMAGES = {
                    "packages": "strongswan", "health": "ipsec status", "ports": "500 4500", "vendor": "StrongSwan"},
     "softether": {"base": "debian-slim", "binary": "vpnserver", "version": "4.38-9770",
                   "packages": "build-essential", "health": "vpnserver --version", "port": "443 992", "vendor": "SoftEther"},
-    
+
     # 1.3 DNS Services (25)
     "coredns": {"base": "scratch", "binary": "coredns", "version": "1.12.0",
                 "url": "https://github.com/coredns/coredns/releases/download/v{VERSION}/coredns_{VERSION}_linux_amd64.tgz",
@@ -178,7 +178,7 @@ IMAGES = {
     "knot-resolver": {"base": "scratch", "binary": "kresd", "version": "5.8.1",
                       "url": "https://knot-resolver.org/download/knot-resolver-{VERSION}.tar.gz",
                       "health": "--version", "ports": "53", "vendor": "Knot DNS"},
-    
+
     # 1.4 Security & Auth Proxy (15)
     "oauth2-proxy": {"base": "scratch", "binary": "oauth2-proxy", "version": "7.6.0",
                     "url": "https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v{VERSION}/oauth2-proxy_{VERSION}_linux_amd64.tar.gz",
@@ -193,11 +193,11 @@ IMAGES = {
                  "packages": "fail2ban", "health": "fail2ban-client status", "ports": "", "vendor": "Fail2Ban"},
     "modsecurity": {"base": "debian-slim", "binary": "apache2", "version": "2.4.59",
                     "packages": "apache2 libapache2-mod-security2", "health": "--version", "ports": "80", "vendor": "OWASP"},
-    
+
     # =========================================================================
     # SECTION 2: DATABASES & STORAGE (200 images)
     # =========================================================================
-    
+
     # 2.1 Relational Databases (50)
     "postgresql": {"base": "debian-slim", "binary": "postgres", "version": "17.4",
                    "packages": "postgresql-17", "health": "pg_isready", "ports": "5432", "user": "postgres", "vendor": "PostgreSQL"},
@@ -233,7 +233,7 @@ IMAGES = {
                     "packages": "postgresql-16-timescaledb", "health": "pg_isready", "ports": "5432", "user": "postgres", "vendor": "Timescale"},
     "postgis": {"base": "debian-slim", "binary": "postgres", "version": "3.4.2",
                 "packages": "postgresql-16-postgis-3", "health": "pg_isready", "ports": "5432", "user": "postgres", "vendor": "PostGIS"},
-    
+
     # 2.2 Key-Value & Cache (30)
     "redis": {"base": "debian-slim", "binary": "redis-server", "version": "7.4.1",
               "packages": "redis-server", "health": "redis-cli ping", "ports": "6379", "user": "redis", "vendor": "Redis"},
@@ -265,7 +265,7 @@ IMAGES = {
                    "packages": "dragonfly", "health": "ADMIN ping", "ports": "6379 8000", "user": "dragonfly", "vendor": "DragonflyDB"},
     "valkey": {"base": "debian-slim", "binary": "valkey-server", "version": "7.2.4",
                "packages": "valkey", "health": "valkey-cli ping", "ports": "6379", "user": "valkey", "vendor": "Valkey"},
-    
+
     # 2.3 Time-Series (25)
     "prometheus": {"base": "scratch", "binary": "prometheus", "version": "2.53.0",
                    "url": "https://github.com/prometheus/prometheus/releases/download/v{VERSION}/prometheus-{VERSION}.linux-amd64.tar.gz",
@@ -304,7 +304,7 @@ IMAGES = {
     "fluent-bit": {"base": "scratch", "binary": "fluent-bit", "version": "3.1.0",
                    "url": "https://github.com/fluent/fluent-bit/releases/download/v{VERSION}/fluent-bit-{VERSION}-linux-amd64.tar.gz",
                    "health": "--version", "ports": "2020", "vendor": "Fluent"},
-    
+
     # 2.4 Search & NoSQL (50)
     "elasticsearch": {"base": "debian-slim", "binary": "elasticsearch", "version": "8.14.0",
                       "packages": "elasticsearch", "health": "curl -s localhost:9200", "ports": "9200 9300", "user": "elasticsearch", "vendor": "Elastic"},
@@ -339,11 +339,11 @@ IMAGES = {
                   "packages": "cassandra", "health": "nodetool status", "ports": "7000 7001 9042", "user": "cassandra", "vendor": "Apache"},
     "scylladb": {"base": "debian-slim", "binary": "scylla", "version": "5.4.6",
                  "packages": "scylla", "health": "nodetool status", "ports": "7000 9042", "user": "scylla", "vendor": "ScyllaDB"},
-    
+
     # =========================================================================
     # SECTION 3: SECURITY & IDENTITY (80 images)
     # =========================================================================
-    
+
     # 3.1 Secrets & Vault
     "vault": {"base": "scratch", "binary": "vault", "version": "1.18.1",
               "url": "https://releases.hashicorp.com/vault/{VERSION}/vault_{VERSION}_linux_amd64.zip",
@@ -359,7 +359,7 @@ IMAGES = {
     "step-cli": {"base": "scratch", "binary": "step", "version": "0.25.2",
                 "url": "https://github.com/smallstep/cli/releases/download/v{VERSION}/step_{VERSION}_linux_amd64.tar.gz",
                 "health": "step version", "ports": "", "vendor": "Smallstep"},
-    
+
     # 3.2 Security Tools
     "trivy": {"base": "scratch", "binary": "trivy", "version": "0.53.0",
               "url": "https://github.com/aquasecurity/trivy/releases/download/v{VERSION}/trivy_{VERSION}_linux_amd64.tar.gz",
@@ -373,7 +373,7 @@ IMAGES = {
     "cosign": {"base": "scratch", "binary": "cosign", "version": "2.4.0",
                "url": "https://github.com/sigstore/cosign/releases/download/v{VERSION}/cosign_{VERSION}_linux_amd64.tar.gz",
                "health": "cosign --version", "ports": "", "vendor": "Sigstore"},
-    
+
     # 3.3 Identity & Auth
     "keycloak": {"base": "debian-slim", "binary": "keycloak", "version": "26.0.5",
                  "packages": "openjdk17 curl", "health": "curl -s localhost:8080/health/ready", "ports": "8080 8443", "user": "keycloak", "vendor": "Keycloak"},
@@ -385,11 +385,11 @@ IMAGES = {
                 "packages": "freeipa-server", "health": "ipa --version", "ports": "80 443 389 636", "user": "root", "vendor": "FreeIPA"},
     "ldap": {"base": "debian-slim", "binary": "slapd", "version": "2.6.8",
              "packages": "slapd ldap-utils", "health": "ldapsearch -x -H ldap://localhost", "ports": "389 636", "user": "ldap", "vendor": "OpenLDAP"},
-    
+
     # =========================================================================
     # SECTION 4: DEVOPS & CI/CD (100 images)
     # =========================================================================
-    
+
     # 4.1 CI/CD
     "jenkins": {"base": "debian-slim", "binary": "jenkins", "version": "2.462.1",
                 "packages": "default-jdk-headless", "health": "curl -s localhost:8080/api/json", "ports": "8080", "user": "jenkins", "vendor": "Jenkins"},
@@ -412,7 +412,7 @@ IMAGES = {
     "forgejo": {"base": "wolfi", "binary": "forgejo", "version": "1.21.11",
                "url": "https://codeberg.org/forgejo/forgejo/releases/download/{VERSION}/forgejo-{VERSION}-linux-amd64",
                "health": "--version", "ports": "3000 22", "user": "git", "vendor": "Forgejo"},
-    
+
     # 4.2 Build Tools
     "kaniko": {"base": "scratch", "binary": "kaniko", "version": "1.23.0",
                "url": "https://github.com/GoogleContainerTools/kaniko/releases/download/v{VERSION}/kaniko-{VERSION}-linux-amd64.tar.gz",
@@ -434,11 +434,11 @@ IMAGES = {
     "kustomize": {"base": "scratch", "binary": "kustomize", "version": "5.4.1",
                   "url": "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv{VERSION}/kustomize_v{VERSION}_linux_amd64.tar.gz",
                   "health": "kustomize version", "ports": "", "vendor": "Kubernetes"},
-    
+
     # =========================================================================
     # SECTION 5: MESSAGING (50 images)
     # =========================================================================
-    
+
     "rabbitmq": {"base": "debian-slim", "binary": "rabbitmq-server", "version": "3.13.1",
                  "packages": "rabbitmq-server", "health": "rabbitmq-diagnostics ping", "ports": "5672 15672", "user": "rabbitmq", "vendor": "RabbitMQ"},
     "nats": {"base": "scratch", "binary": "nats-server", "version": "2.10.7",
@@ -457,11 +457,11 @@ IMAGES = {
                       "health": "--version", "ports": "9308", "vendor": "Prometheus"},
     "emqx": {"base": "debian-slim", "binary": "emqx", "version": "5.8.0",
              "packages": "emqx", "health": "curl -s localhost:18083/api/v4/status", "ports": "1883 8083", "user": "emqx", "vendor": "EMQ"},
-    
+
     # =========================================================================
     # SECTION 6: STORAGE (40 images)
     # =========================================================================
-    
+
     "minio": {"base": "scratch", "binary": "minio", "version": "2024.5.28",
               "url": "https://github.com/minio/minio/releases/download/{VERSION}/minio-{VERSION}-linux-amd64",
               "health": "--version", "ports": "9000 9001", "vendor": "MinIO"},
@@ -474,11 +474,11 @@ IMAGES = {
     "s3": {"base": "scratch", "binary": "s3-server", "version": "2024.5.28",
            "url": "https://github.com/minio/minio/releases/download/{VERSION}/minio-{VERSION}-linux-amd64",
            "health": "--version", "ports": "9000 9001", "vendor": "MinIO"},
-    
+
     # =========================================================================
     # SECTION 7: OBSERVABILITY (80 images)
     # =========================================================================
-    
+
     "thanos-receive": {"base": "scratch", "binary": "thanos", "version": "0.35.0",
                        "url": "https://github.com/thanos-io/thanos/releases/download/v{VERSION}/thanos-{VERSION}.linux-amd64.tar.gz",
                        "health": "--version", "ports": "10902", "vendor": "Thanos"},
@@ -497,11 +497,11 @@ IMAGES = {
     "influxdb-client": {"base": "scratch", "binary": "influx", "version": "2.7.7",
                         "url": "https://github.com/influxdata/influx-cli/releases/download/v{VERSION}/influx2_{VERSION}_linux_amd64.tar.gz",
                         "health": "--version", "ports": "", "vendor": "InfluxData"},
-    
+
     # =========================================================================
     # SECTION 8: RUNTIMES (15 images)
     # =========================================================================
-    
+
     "node": {"base": "debian-slim", "binary": "node", "version": "20.12.2",
              "packages": "nodejs", "health": "node --version", "ports": "", "user": "node", "vendor": "Node.js"},
     "python": {"base": "debian-slim", "binary": "python", "version": "3.12.3",
@@ -516,11 +516,11 @@ IMAGES = {
              "packages": "ruby ruby-bundler", "health": "ruby --version", "ports": "", "user": "ruby", "vendor": "Ruby"},
     "php": {"base": "debian-slim", "binary": "php", "version": "8.3.8",
             "packages": "php83 php83-fpm", "health": "php --version", "ports": "", "user": "php", "vendor": "PHP"},
-    
+
     # =========================================================================
     # SECTION 9: HOMELAB & UTILITY (70 images)
     # =========================================================================
-    
+
     "homeassistant": {"base": "debian-slim", "binary": "python", "version": "2024.4.2",
                       "packages": "python3 python3-pip", "health": "curl -s localhost:8123/api/", "ports": "8123", "user": "homeassistant", "vendor": "Home Assistant"},
     "zigbee2mqtt": {"base": "debian-slim", "binary": "node", "version": "1.37.1",
@@ -550,11 +550,11 @@ IMAGES = {
                    "packages": "php83 php83-fpm php83-curl php83-mbstring", "health": "curl -s localhost:80", "ports": "80", "user": "www-data", "vendor": "PrivateBin"},
     "hedgedoc": {"base": "debian-slim", "binary": "hedgedoc", "version": "1.9.10",
                  "packages": "hedgedoc npm curl", "health": "curl -s localhost:3000/api/status", "ports": "3000", "user": "hedgedoc", "vendor": "HedgeDoc"},
-    
+
     # =========================================================================
     # SECTION 10: MEDIA (40 images)
     # =========================================================================
-    
+
     "jellyfin": {"base": "debian-slim", "binary": "jellyfin", "version": "10.9.7",
                  "packages": "jellyfin", "health": "curl -s localhost:8096/health", "ports": "8096", "user": "jellyfin", "vendor": "Jellyfin"},
     "sonarr": {"base": "debian-slim", "binary": "sonarr", "version": "4.0.2",
@@ -583,11 +583,11 @@ IMAGES = {
                 "packages": "python3 python3-pip python3-lxml", "health": "curl -s localhost:8080/healthz", "ports": "8080", "user": "searxng", "vendor": "SearXNG"},
     "n8n": {"base": "debian-slim", "binary": "node", "version": "1.41.0",
             "packages": "nodejs npm", "health": "curl -s localhost:5678/rest/health", "ports": "5678", "user": "node", "vendor": "n8n"},
-    
+
     # =========================================================================
     # SECTION 11: NOTE TAKING & COLLABORATION (20 images)
     # =========================================================================
-    
+
     "logseq": {"base": "debian-slim", "binary": "node", "version": "0.10.18",
                "packages": "nodejs npm", "health": "curl -s localhost:3000/health", "ports": "3000", "user": "node", "vendor": "Logseq"},
     "outline": {"base": "debian-slim", "binary": "node", "version": "0.77.0",
@@ -596,11 +596,11 @@ IMAGES = {
                    "packages": "mattermost", "health": "curl -s localhost:8065/api/v4/system/ping", "ports": "8065", "user": "mattermost", "vendor": "Mattermost"},
     "synapse": {"base": "debian-slim", "binary": "synapse", "version": "1.105.0",
                 "packages": "synapse python3", "health": "curl -s localhost:8008/_matrix/client/versions", "ports": "8008", "user": "synapse", "vendor": "Matrix"},
-    
+
     # =========================================================================
     # SECTION 12: AI/ML (25 images)
     # =========================================================================
-    
+
     "ollama": {"base": "scratch", "binary": "ollama", "version": "0.3.1",
                "url": "https://github.com/ollama/ollama/releases/download/v{VERSION}/ollama-{VERSION}.linux-amd64.tar.gz",
                "health": "--version", "ports": "11434", "vendor": "Ollama"},
@@ -609,11 +609,11 @@ IMAGES = {
                 "health": "--version", "ports": "8080", "vendor": "LocalAI"},
     "text-generation-webui": {"base": "debian-slim", "binary": "python", "version": "1.8",
                                "packages": "python3 py3-pip", "health": "curl -s localhost:7860/v1/models", "ports": "7860", "user": "user", "vendor": "Oobabooga"},
-    
+
     # =========================================================================
     # SECTION 13: VECTOR DB (15 images)
     # =========================================================================
-    
+
     "qdrant": {"base": "scratch", "binary": "qdrant", "version": "1.11.4",
                "url": "https://github.com/qdrant/qdrant/releases/download/v{VERSION}/qdrant-{VERSION}-x86_64-unknown-linux-musl.tar.gz",
                "health": "--version", "ports": "6333 6334", "vendor": "Qdrant"},
@@ -626,11 +626,11 @@ IMAGES = {
     "lancedb": {"base": "scratch", "binary": "lancedb", "version": "0.6.0",
                 "url": "https://github.com/lancedb/lancedb/releases/download/v{VERSION}/lancedb-{VERSION}-x86_64-unknown-linux-gnu.tar.gz",
                 "health": "--version", "ports": "8080", "vendor": "LanceDB"},
-    
+
     # =========================================================================
     # SECTION 14: PHOTO (20 images)
     # =========================================================================
-    
+
     "immich": {"base": "debian-slim", "binary": "node", "version": "1.106.0",
                "packages": "nodejs ffmpeg", "health": "curl -s localhost:2283/api/server-info/ping", "ports": "2283", "user": "immich", "vendor": "Immich"},
     "photoprism": {"base": "debian-slim", "binary": "photoprism", "version": "240427",
@@ -639,11 +639,11 @@ IMAGES = {
                "packages": "lychee", "health": "curl -s localhost:8089/health", "ports": "8089", "user": "lychee", "vendor": "Lychee"},
     "piwigo": {"base": "debian-slim", "binary": "php", "version": "14.5.0",
                "packages": "php83 php83-fpm php83-mysqlnd php83-curl", "health": "curl -s localhost:80", "ports": "80", "user": "www-data", "vendor": "Piwigo"},
-    
+
     # =========================================================================
     # SECTION 15: BUSINESS & ERP (20 images)
     # =========================================================================
-    
+
     "erpnext": {"base": "debian-slim", "binary": "python", "version": "15.11.0",
                 "packages": "python3 py3-pip redis", "health": "curl localhost:8000", "ports": "8000", "user": "erpnext", "vendor": "ERPNext"},
     "dolibarr": {"base": "debian-slim", "binary": "php", "version": "19.0.2",
@@ -662,11 +662,11 @@ IMAGES = {
     "focalboard": {"base": "scratch", "binary": "focalboard-server", "version": "7.8.0",
                    "url": "https://github.com/mattermost/focalboard/releases/download/v{VERSION}/focalboard-server-linux-amd64.tar.gz",
                    "health": "--version", "ports": "8000", "vendor": "Focalboard"},
-    
+
     # =========================================================================
     # SECTION 16: ADDITIONAL UTILITIES (various)
     # =========================================================================
-    
+
     "uptime-kuma": {"base": "debian-slim", "binary": "node", "version": "1.23.1",
                     "packages": "nodejs npm", "health": "curl -s localhost:3001/api/status", "ports": "3001", "user": "node", "vendor": "Uptime Kuma"},
     "statping": {"base": "scratch", "binary": "statping", "version": "0.90.75",
@@ -821,7 +821,7 @@ LABEL org.opencontainers.image.title="{name}" \\
 def get_template(img_data):
     """Get appropriate template based on base type."""
     base = img_data.get('base', 'debian-slim').lower()
-    
+
     if base == 'scratch':
         return SCRATCH_TEMPLATE
     elif base == 'distroless':
@@ -835,36 +835,36 @@ def get_template(img_data):
 def generate_dockerfile(img_name, img_data):
     """Generate Dockerfile for an image."""
     template = get_template(img_data)
-    
+
     # Build URL if not direct
     version = img_data.get('version', 'latest')
     url_template = img_data.get('url', '')
-    
+
     if '{VERSION}' in url_template:
         url = url_template.replace('{VERSION}', version)
     else:
         url = url_template
-    
+
     # Get health command
     health = img_data.get('health', '--version')
     if health == '--version' and 'binary' in img_data:
         health = f"{img_data['binary']} --version"
-    
+
     # Get ports
     ports = img_data.get('ports', '')
-    
+
     # Get user
     user = img_data.get('user', 'appuser')
-    
+
     # Get packages
     packages = img_data.get('packages', '')
-    
+
     # Get binary name
     binary = img_data.get('binary', img_name)
-    
+
     # Get vendor
     vendor = img_data.get('vendor', 'Evergreen')
-    
+
     # Generate Dockerfile content
     content = template.format(
         name=img_name,
@@ -878,52 +878,52 @@ def generate_dockerfile(img_name, img_data):
         packages=packages,
         vendor=vendor
     )
-    
+
     return content
 
 
 def main():
     """Main entry point - generate all Dockerfiles."""
-    
+
     base_path = Path(__file__).parent
     images_dir = base_path
-    
+
     print(f"Generating Dockerfiles for {len(IMAGES)} images...")
     print(f"Base path: {images_dir}")
     print("=" * 60)
-    
+
     generated = 0
     errors = []
-    
+
     for img_name, img_data in IMAGES.items():
         try:
             # Create directory
             img_dir = images_dir / img_name
             img_dir.mkdir(exist_ok=True)
-            
+
             # Generate Dockerfile
             dockerfile_content = generate_dockerfile(img_name, img_data)
-            
+
             # Write Dockerfile
             dockerfile_path = img_dir / "Dockerfile"
             with open(dockerfile_path, 'w') as f:
                 f.write(dockerfile_content)
-            
+
             generated += 1
             print(f"✓ {img_name}: {img_data.get('base', 'debian-slim')} base")
-            
+
         except Exception as e:
             errors.append((img_name, str(e)))
             print(f"✗ {img_name}: ERROR - {e}")
-    
+
     print("=" * 60)
     print(f"Generated: {generated} Dockerfiles")
-    
+
     if errors:
         print(f"Errors: {len(errors)}")
         for name, err in errors:
             print(f"  - {name}: {err}")
-    
+
     return generated
 
 

@@ -17,7 +17,7 @@ IMAGES = {
     "haproxy-lb": {"base": "scratch", "binary": "haproxy", "version": "3.0.1", "url": "https://www.haproxy.org/download/3.0.1/src/haproxy-3.0.1.tar.gz", "health": "stat", "ports": "80 443", "vendor": "HAProxy"},
     "envoy": {"base": "scratch", "binary": "envoy", "version": "1.31.0", "url": "https://github.com/envoyproxy/envoy/releases/download/v{VERSION}/envoy-{VERSION}.tar.gz", "health": "/ready", "ports": "80 443 9900", "vendor": "Envoy"},
     "caddy": {"base": "scratch", "binary": "caddy", "version": "2.7.6", "url": "https://github.com/caddyserver/caddy/releases/download/v{VERSION}/caddy_{VERSION}_linux_amd64.tar.gz", "health": "/health", "ports": "80 443 2019", "vendor": "Caddy"},
-    
+
     # === DATABASES (50) ===
     "postgresql": {"base": "alpine", "binary": "postgres", "version": "17.4", "packages": "postgresql17 postgresql17-client openssl ca-certificates", "health": "pg_isready -U postgres", "ports": "5432", "user": "postgres", "vendor": "PostgreSQL"},
     "postgresql-14": {"base": "alpine", "binary": "postgres", "version": "14.13", "packages": "postgresql14 postgresql14-client openssl", "health": "pg_isready -U postgres", "ports": "5432", "user": "postgres", "vendor": "PostgreSQL"},
@@ -30,7 +30,7 @@ IMAGES = {
     "mongodb": {"base": "alpine", "binary": "mongod", "version": "7.0.11", "packages": "mongodb70", "health": "mongosh --eval db.adminCommand('ping')", "ports": "27017", "user": "mongodb", "vendor": "MongoDB"},
     "mongodb-6": {"base": "alpine", "binary": "mongod", "version": "6.0.14", "packages": "mongodb60", "health": "mongosh --eval db.adminCommand('ping')", "ports": "27017", "user": "mongodb", "vendor": "MongoDB"},
     "sqlite": {"base": "alpine", "binary": "sqlite3", "version": "3.45.1", "packages": "sqlite", "health": "sqlite3 --version", "ports": "", "user": "sqlite", "vendor": "SQLite"},
-    
+
     # === KEY-VALUE / CACHE (30) ===
     "redis": {"base": "alpine", "binary": "redis-server", "version": "7.4.1", "packages": "redis", "health": "redis-cli ping", "ports": "6379", "user": "redis", "vendor": "Redis"},
     "redis-6": {"base": "alpine", "binary": "redis-server", "version": "6.2.16", "packages": "redis6", "health": "redis-cli ping", "ports": "6379", "user": "redis", "vendor": "Redis"},
@@ -40,7 +40,7 @@ IMAGES = {
     "consul": {"base": "alpine", "binary": "consul", "version": "1.18.1", "packages": "consul", "health": "consul members", "ports": "8500", "user": "consul", "vendor": "HashiCorp"},
     "dragonfly": {"base": "alpine", "binary": "dragonfly", "version": "1.21.0", "packages": "dragonfly", "health": "ADMIN ping", "ports": "6379 8000", "user": "dragonfly", "vendor": "DragonflyDB"},
     "valkey": {"base": "alpine", "binary": "valkey-server", "version": "7.2.4", "packages": "valkey", "health": "valkey-cli ping", "ports": "6379", "user": "valkey", "vendor": "Valkey"},
-    
+
     # === SECURITY / VAULT (30) ===
     "vault": {"base": "scratch", "binary": "vault", "version": "1.18.1", "url": "https://releases.hashicorp.com/vault/{VERSION}/vault_{VERSION}_linux_amd64.zip", "health": "/v1/sys/health", "ports": "8200 8201", "vendor": "HashiCorp"},
     "vaultwarden": {"base": "alpine", "binary": "vaultwarden", "version": "2026.4.1", "packages": "vaultwarden", "health": "/alive", "ports": "80", "user": "vaultwarden", "vendor": "Vaultwarden"},
@@ -52,7 +52,7 @@ IMAGES = {
     "grype": {"base": "scratch", "binary": "grype", "version": "0.80.0", "url": "https://github.com/anchore/grype/releases/download/v{VERSION}/grype_{VERSION}_linux_amd64.tar.gz", "health": "grype version", "ports": "", "vendor": "Anchore"},
     "oauth2-proxy": {"base": "scratch", "binary": "oauth2-proxy", "version": "7.6.0", "url": "https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v{VERSION}/oauth2-proxy_{VERSION}_linux_amd64.tar.gz", "health": "/ping", "ports": "80 443", "vendor": "OAuth2"},
     "authelia": {"base": "scratch", "binary": "authelia", "version": "4.38.0", "url": "https://github.com/authelia/authelia/releases/download/v{VERSION}/authelia_{VERSION}_linux_amd64.tar.gz", "health": "/health", "ports": "80 443", "vendor": "Authelia"},
-    
+
     # === OBSERVABILITY (40) ===
     "prometheus": {"base": "scratch", "binary": "prometheus", "version": "2.53.0", "url": "https://github.com/prometheus/prometheus/releases/download/v{VERSION}/prometheus-{VERSION}.linux-amd64.tar.gz", "health": "/-/healthy", "ports": "9090", "vendor": "Prometheus"},
     "prometheus-alertmanager": {"base": "scratch", "binary": "alertmanager", "version": "0.27.0", "url": "https://github.com/prometheus/alertmanager/releases/download/v{VERSION}/alertmanager-{VERSION}.linux-amd64.tar.gz", "health": "/-/healthy", "ports": "9093", "vendor": "Prometheus"},
@@ -66,13 +66,13 @@ IMAGES = {
     "vector": {"base": "scratch", "binary": "vector", "version": "0.39.0", "url": "https://github.com/vectordotdev/vector/releases/download/v{VERSION}/vector-{VERSION}-x86_64-unknown-linux-musl.tar.gz", "health": "/health", "ports": "9001", "vendor": "Vector"},
     "fluent-bit": {"base": "scratch", "binary": "fluent-bit", "version": "3.1.0", "url": "https://github.com/fluent/fluent-bit/releases/download/v{VERSION}/fluent-bit-{VERSION}-linux-amd64.tar.gz", "health": "/api/v1/status", "ports": "2020", "vendor": "Fluent"},
     "node-exporter": {"base": "scratch", "binary": "node_exporter", "version": "1.8.0", "url": "https://github.com/prometheus/node_exporter/releases/download/v{VERSION}/node_exporter-{VERSION}.linux-amd64.tar.gz", "health": "/metrics", "ports": "9100", "vendor": "Prometheus"},
-    
+
     # === IDENTITY / AUTH (30) ===
     "keycloak": {"base": "alpine", "binary": "keycloak", "version": "26.0.5", "packages": "openjdk17 curl", "health": "/health/ready", "ports": "8080 8443", "user": "keycloak", "vendor": "Keycloak"},
     "openldap": {"base": "alpine", "binary": "slapd", "version": "2.6.8", "packages": "openldap ldap-utils", "health": "ldapsearch -x -H ldap://localhost", "ports": "389 636", "user": "ldap", "vendor": "OpenLDAP"},
     "zitadel": {"base": "alpine", "binary": "zitadel", "version": "2.45.0", "packages": "zitadel", "health": "/health", "ports": "8080", "user": "zitadel", "vendor": "Zitadel"},
     "dex": {"base": "scratch", "binary": "dex", "version": "2.40.0", "url": "https://github.com/dexidp/dex/releases/download/v{VERSION}/dex-{VERSION}-linux-amd64.tar.gz", "health": "/healthz", "ports": "5556", "vendor": "Dex"},
-    
+
     # === DEVOPS / CI/CD (20) ===
     "jenkins": {"base": "alpine", "binary": "jenkins", "version": "2.462.1", "packages": "jenkins openjdk17", "health": "/api/json", "ports": "8080", "user": "jenkins", "vendor": "Jenkins"},
     "drone": {"base": "alpine", "binary": "drone", "version": "2.16.0", "packages": "drone", "health": "/healthz", "ports": "80", "user": "drone", "vendor": "Drone"},
@@ -83,7 +83,7 @@ IMAGES = {
     "buildkit": {"base": "alpine", "binary": "buildkitd", "version": "0.14.1", "packages": "buildkit", "health": "/debug/info", "ports": "1234", "user": "buildkit", "vendor": "BuildKit"},
     "helm": {"base": "scratch", "binary": "helm", "version": "3.15.1", "url": "https://get.helm.sh/helm-{VERSION}-linux-amd64.tar.gz", "health": "helm version", "ports": "", "vendor": "Helm"},
     "kube-state-metrics": {"base": "scratch", "binary": "kube-state-metrics", "version": "2.12.0", "url": "https://github.com/kubernetes/kube-state-metrics/releases/download/v{VERSION}/kube-state-metrics-{VERSION}.linux-amd64.tar.gz", "health": "/metrics", "ports": "8080", "vendor": "Kubernetes"},
-    
+
     # === MESSAGING (20) ===
     "rabbitmq": {"base": "alpine", "binary": "rabbitmq-server", "version": "3.13.1", "packages": "rabbitmq", "health": "rabbitmq-diagnostics ping", "ports": "5672 15672", "user": "rabbitmq", "vendor": "RabbitMQ"},
     "nats": {"base": "scratch", "binary": "nats-server", "version": "2.10.7", "url": "https://github.com/nats-io/nats-server/releases/download/v{VERSION}/nats-server-{VERSION}-linux-amd64.tar.gz", "health": "/healthz", "ports": "4222 8222", "vendor": "NATS"},
@@ -91,12 +91,12 @@ IMAGES = {
     "mqtt": {"base": "alpine", "binary": "mosquitto", "version": "2.0.18", "packages": "mosquitto", "health": "mosquitto_sub -C 1 -t $SYS/#", "ports": "1883 9001", "user": "mosquitto", "vendor": "Eclipse"},
     "pulsar": {"base": "alpine", "binary": "pulsar", "version": "3.3.0", "packages": "pulsar", "health": "/admin/v2/persistent/public/sample/ready", "ports": "6650 8080", "user": "pulsar", "vendor": "Apache"},
     "kafka": {"base": "alpine", "binary": "kafka", "version": "3.7.0", "packages": "openjdk17 kafka", "health": "kafka-broker-api-versions --version", "ports": "9092", "user": "kafka", "vendor": "Apache"},
-    
+
     # === STORAGE (10) ===
     "minio": {"base": "scratch", "binary": "minio", "version": "2024.5.28", "url": "https://github.com/minio/minio/releases/download/{VERSION}/minio-{VERSION}-linux-amd64", "health": "/minio/health/live", "ports": "9000 9001", "vendor": "MinIO"},
     "restic": {"base": "scratch", "binary": "restic", "version": "0.17.0", "url": "https://github.com/restic/restic/releases/download/v{VERSION}/restic_{VERSION}_linux_amd64.tar.gz", "health": "restic version", "ports": "", "vendor": "Restic"},
     "rclone": {"base": "scratch", "binary": "rclone", "version": "1.67.0", "url": "https://github.com/rclone/rclone/releases/download/v{VERSION}/rclone_{VERSION}_linux_amd64.zip", "health": "rclone version", "ports": "", "vendor": "Rclone"},
-    
+
     # === GIT / COLLABORATION (35) ===
     "forgejo": {"base": "alpine", "binary": "forgejo", "version": "1.0.0", "packages": "forgejo git mysql-client", "health": "/api/health", "ports": "3000 22", "user": "git", "vendor": "Forgejo"},
     "gitea": {"base": "alpine", "binary": "gitea", "version": "1.21.10", "packages": "gitea git mysql-client", "health": "/api/health", "ports": "3000 22", "user": "git", "vendor": "Gitea"},
@@ -104,12 +104,12 @@ IMAGES = {
     "github-actions-runner": {"base": "alpine", "binary": "run.sh", "version": "2.316.1", "packages": "curl git", "health": "./run.sh --version", "ports": "", "user": "runner", "vendor": "GitHub"},
     "woodpecker-ci": {"base": "alpine", "binary": "woodpecker-server", "version": "2.0.0", "packages": "woodpecker-server", "health": "/healthz", "ports": "8000", "user": "woodpecker", "vendor": "Woodpecker"},
     "drone-runner": {"base": "alpine", "binary": "drone-runner", "version": "1.16.0", "packages": "drone-runner", "health": "/healthz", "ports": "3000", "user": "drone", "vendor": "Drone"},
-    
+
     # === MONITORING / HEALTH (10) ===
     "uptime-kuma": {"base": "alpine", "binary": "node", "version": "1.23.1", "packages": "nodejs npm", "health": "/api/status", "ports": "3001", "user": "node", "vendor": "Uptime Kuma"},
     "statping": {"base": "scratch", "binary": "statping", "version": "0.90.75", "url": "https://github.com/statping/statping/releases/download/v{VERSION}/statping-linux-amd64.tar.gz", "health": "/health", "ports": "8080", "vendor": "Statping"},
     "cachet": {"base": "alpine", "binary": "php", "version": "2.5.5", "packages": "php80 php80-fpm php80-curl php80-mbstring php80-redis", "health": "/api/v1/health", "ports": "8000", "user": "www-data", "vendor": "Cachet"},
-    
+
     # === DNS (25) ===
     "coredns": {"base": "scratch", "binary": "coredns", "version": "1.11.1", "url": "https://github.com/coredns/coredns/releases/download/v{VERSION}/coredns_{VERSION}_linux_amd64.tgz", "health": "/health", "ports": "53", "vendor": "Coredns"},
     "unbound": {"base": "scratch", "binary": "unbound", "version": "1.20.0", "url": "https://unbound.net/downloads/unbound-{VERSION}.tar.gz", "health": "unbound-control status", "ports": "53", "vendor": "NLnet Labs"},
@@ -118,7 +118,7 @@ IMAGES = {
     "adguardhome": {"base": "scratch", "binary": "AdGuardHome", "version": "0.107.48", "url": "https://github.com/AdguardTeam/AdGuardHome/releases/download/v{VERSION}/AdGuardHome_{VERSION}_linux_amd64.tar.gz", "health": "/api/status", "ports": "53 3000", "vendor": "AdGuard"},
     "blocky": {"base": "scratch", "binary": "blocky", "version": "0.22", "url": "https://github.com/0xERR0R/blocky/releases/download/v{VERSION}/blocky_{VERSION}_linux_amd64.tar.gz", "health": "/healthz", "ports": "53 4000", "vendor": "Blocky"},
     "dnsmasq": {"base": "scratch", "binary": "dnsmasq", "version": "2.90", "url": "http://www.thekelleys.org.uk/dnsmasq/dnsmasq-{VERSION}.tar.gz", "health": "killall -0 dnsmasq", "ports": "53", "vendor": "Dnsmasq"},
-    
+
     # === VPN / NETWORK (25) ===
     "wireguard": {"base": "alpine", "binary": "wg", "version": "1.0.20210914", "packages": "wireguard-tools", "health": "wg show", "ports": "51820", "user": "wg", "vendor": "WireGuard"},
     "headscale": {"base": "scratch", "binary": "headscale", "version": "0.16.0", "url": "https://github.com/juanfont/headscale/releases/download/v{VERSION}/headscale_{VERSION}_linux_amd64", "health": "/health", "ports": "8080 443", "vendor": "Headscale"},
@@ -126,7 +126,7 @@ IMAGES = {
     "netbird": {"base": "scratch", "binary": "netbird", "version": "0.29.1", "url": "https://github.com/netbirdio/netbird/releases/download/v{VERSION}/netbird_{VERSION}_linux_amd64.tar.gz", "health": "/api/healthz", "ports": "443 80", "vendor": "NetBird"},
     "openvpn": {"base": "alpine", "binary": "openvpn", "version": "2.6.10", "packages": "openvpn easy-rsa", "health": "openvpn --version", "ports": "1194", "user": "openvpn", "vendor": "OpenVPN"},
     "strongswan": {"base": "alpine", "binary": "charon", "version": "6.0.1", "packages": "strongswan", "health": "ipsec status", "ports": "500 4500", "user": "strongswan", "vendor": "StrongSwan"},
-    
+
     # === MAIL (20) ===
     "postfix": {"base": "alpine", "binary": "postfix", "version": "3.8.6", "packages": "postfix cyrus-sasl", "health": "postconf", "ports": "25 587", "user": "postfix", "vendor": "Postfix"},
     "dovecot": {"base": "alpine", "binary": "dovecot", "version": "2.3.21", "packages": "dovecot", "health": "dovecot --version", "ports": "143 993", "user": "dovecot", "vendor": "Dovecot"},
@@ -134,20 +134,20 @@ IMAGES = {
     "spamassassin": {"base": "alpine", "binary": "spamassassin", "version": "4.0.1", "packages": "spamassassin perl", "health": "spamassassin -V", "ports": "783", "user": "spamd", "vendor": "Apache"},
     "roundcube": {"base": "alpine", "binary": "php", "version": "1.6.1", "packages": "php82 php82-fpm php82-mysqlnd php82-ldap php82-gd roundcubemail", "health": "/", "ports": "80", "user": "www-data", "vendor": "Roundcube"},
     "stalwart": {"base": "scratch", "binary": "stalwart-mail", "version": "0.8.0", "url": "https://github.com/stalwartlabs/mail-server/releases/download/v{VERSION}/stalwart-mail-{VERSION}-linux-amd64.tar.gz", "health": "/health", "ports": "25 143 465 587 993 943", "vendor": "Stalwart"},
-    
+
     # === AI / ML (25) ===
     "ollama": {"base": "scratch", "binary": "ollama", "version": "0.3.1", "url": "https://github.com/ollama/ollama/releases/download/v{VERSION}/ollama-{VERSION}.linux-amd64.tar.gz", "health": "/api/tags", "ports": "11434", "vendor": "Ollama"},
     "llama.cpp": {"base": "scratch", "binary": "llama-server", "version": "b3190", "url": "https://github.com/ggerganov/llama.cpp/releases/download/b{VERSION}/llama-b{VERSION}-linux-x86_64.tar.gz", "health": "/health", "ports": "8080", "vendor": "LLama"},
     "localai": {"base": "scratch", "binary": "localai", "version": "2.0.0", "url": "https://github.com/mudler/LocalAI/releases/download/v{VERSION}/localai-{VERSION}-linux-amd64.tar.gz", "health": "/ready", "ports": "8080", "vendor": "LocalAI"},
     "text-generation-webui": {"base": "alpine", "binary": "python", "version": "1.8", "packages": "python3 py3-pip", "health": "/v1/models", "ports": "7860", "user": "user", "vendor": "Oobabooga"},
-    
+
     # === VECTOR DB (15) ===
     "qdrant": {"base": "scratch", "binary": "qdrant", "version": "1.11.4", "url": "https://github.com/qdrant/qdrant/releases/download/v{VERSION}/qdrant-{VERSION}-x86_64-unknown-linux-musl.tar.gz", "health": "/qdrant/health", "ports": "6333 6334", "vendor": "Qdrant"},
     "weaviate": {"base": "alpine", "binary": "weaviate", "version": "1.25.4", "packages": "weaviate", "health": "/v1/.well-known/ready", "ports": "8080", "user": "weaviate", "vendor": "Weaviate"},
     "milvus": {"base": "alpine", "binary": "milvus", "version": "2.4.0", "packages": "milvus", "health": "/healthz", "ports": "19530", "user": "milvus", "vendor": "Milvus"},
     "chroma": {"base": "alpine", "binary": "chroma", "version": "0.5.0", "packages": "python3 py3-pip", "health": "/api/v1/heartbeat", "ports": "8000", "user": "chroma", "vendor": "Chroma"},
     "lancedb": {"base": "scratch", "binary": "lancedb", "version": "0.6.0", "url": "https://github.com/lancedb/lancedb/releases/download/v{VERSION}/lancedb-{VERSION}-x86_64-unknown-linux-gnu.tar.gz", "health": "/health", "ports": "8080", "vendor": "LanceDB"},
-    
+
     # === HOMELAB / UTILITY (70) ===
     "homeassistant": {"base": "alpine", "binary": "python", "version": "2024.4.2", "packages": "python3 py3-pip", "health": "/api/", "ports": "8123", "user": "homeassistant", "vendor": "Home Assistant"},
     "zigbee2mqtt": {"base": "alpine", "binary": "node", "version": "1.37.1", "packages": "nodejs npm", "health": "/api/info", "ports": "8080", "user": "node", "vendor": "Zigbee2MQTT"},
@@ -163,7 +163,7 @@ IMAGES = {
     "hedgedoc": {"base": "alpine", "binary": "hedgedoc", "version": "1.9.10", "packages": "hedgedoc npm curl", "health": "/api/status", "ports": "3000", "user": "hedgedoc", "vendor": "HedgeDoc"},
     "privatebin": {"base": "alpine", "binary": "php", "version": "1.6.0", "packages": "php82 php82-fpm php82-curl php82-mbstring", "health": "/", "ports": "80", "user": "www-data", "vendor": "PrivateBin"},
     "pairdrop": {"base": "scratch", "binary": "pairdrop", "version": "1.6.0", "url": "https://github.com/schmich/pairdrop/releases/download/v{VERSION}/pairdrop-{VERSION}-linux-amd64.tar.gz", "health": "/api/status", "ports": "80", "vendor": "PairDrop"},
-    
+
     # === MEDIA (40) ===
     "jellyfin": {"base": "alpine", "binary": "jellyfin", "version": "10.9.7", "packages": "jellyfin", "health": "/health", "ports": "8096", "user": "jellyfin", "vendor": "Jellyfin"},
     "emby": {"base": "alpine", "binary": "emby-server", "version": "4.8.6", "packages": "emby-server", "health": "/health", "ports": "8096", "user": "emby", "vendor": "Emby"},
@@ -183,7 +183,7 @@ IMAGES = {
     "miniflux": {"base": "scratch", "binary": "miniflux", "version": "2.2.0", "url": "https://github.com/miniflux/miniflux/releases/download/v{VERSION}/miniflux-{VERSION}-linux-amd64.tar.gz", "health": "/health", "port": "8080", "vendor": "Miniflux"},
     "searxng": {"base": "alpine", "binary": "python", "version": "2024.4.10", "packages": "python3 py3-pip py3-lxml", "health": "/healthz", "port": "8080", "user": "searxng", "vendor": "SearXNG"},
     "n8n": {"base": "alpine", "binary": "node", "version": "1.41.0", "packages": "nodejs npm", "health": "/rest/health", "port": "5678", "user": "node", "vendor": "n8n"},
-    
+
     # === BUSINESS / ERP (20) ===
     "erpnext": {"base": "alpine", "binary": "python", "version": "15.11.0", "packages": "python3 py3-pip redis", "health": "curl localhost", "port": "8000", "user": "erpnext", "vendor": "ERPNext"},
     "dolibarr": {"base": "alpine", "binary": "php", "version": "19.0.2", "packages": "php82 php82-fpm php82-mysqlnd php82-curl php82-mbstring", "health": "/", "port": "80", "user": "www-data", "vendor": "Dolibarr"},
@@ -195,20 +195,20 @@ IMAGES = {
     "vikunja": {"base": "scratch", "binary": "vikunja", "version": "0.23.1", "url": "https://github.com/go-vikunja/vikunja/releases/download/v{VERSION}/vikunja-{VERSION}-linux-amd64.tar.gz", "health": "/health", "port": "3456", "vendor": "Vikunja"},
     "planka": {"base": "alpine", "binary": "node", "version": "1.17.0", "packages": "nodejs npm", "health": "/api/health", "port": "3000", "user": "planka", "vendor": "Planka"},
     "focalboard": {"base": "scratch", "binary": "focalboard-server", "version": "7.8.0", "url": "https://github.com/mattermost/focalboard/releases/download/v{VERSION}/focalboard-server-linux-amd64.tar.gz", "health": "/api/v1/health", "port": "8000", "vendor": "Focalboard"},
-    
+
     # === PHOTO (20) ===
     "immich": {"base": "alpine", "binary": "node", "version": "1.106.0", "packages": "nodejs ffmpeg", "health": "/api/server-info/ping", "port": "2283", "user": "immich", "vendor": "Immich"},
     "photoprism": {"base": "alpine", "binary": "photoprism", "version": "240427", "packages": "photoprism", "health": "/api/v1/status", "port": "2282", "user": "photoprism", "vendor": "PhotoPrism"},
     "lychee": {"base": "alpine", "binary": "lychee", "version": "0.15.1", "packages": "lychee", "health": "/health", "port": "8089", "user": "lychee", "vendor": "Lychee"},
     "piwigo": {"base": "alpine", "binary": "php", "version": "14.5.0", "packages": "php82 php82-fpm php82-mysqlnd php82-curl", "health": "/", "port": "80", "user": "www-data", "vendor": "Piwigo"},
-    
+
     # === NOTE TAKING / WIKI (15) ===
     "hedgedoc": {"base": "alpine", "binary": "hedgedoc", "version": "1.9.10", "packages": "hedgedoc npm", "health": "/api/status", "port": "3000", "user": "hedgedoc", "vendor": "HedgeDoc"},
     "logseq": {"base": "alpine", "binary": "node", "version": "0.10.18", "packages": "nodejs npm", "health": "/health", "port": "3000", "user": "logseq", "vendor": "Logseq"},
     "outline": {"base": "alpine", "binary": "node", "version": "0.77.0", "packages": "nodejs npm postgresql-client", "health": "/api/status", "port": "3000", "user": "outline", "vendor": "Outline"},
     "mattermost": {"base": "alpine", "binary": "mattermost", "version": "10.1.0", "packages": "mattermost", "health": "/api/v4/system/ping", "port": "8065", "user": "mattermost", "vendor": "Mattermost"},
     "synapse": {"base": "alpine", "binary": "synapse", "version": "1.105.0", "packages": "synapse python3", "health": "/_matrix/client/versions", "port": "8008", "user": "synapse", "vendor": "Matrix"},
-    
+
     # === RUNTIMES / COMPILERS (15) ===
     "node": {"base": "alpine", "binary": "node", "version": "20.12.2", "packages": "nodejs npm", "health": "node --version", "ports": "", "user": "node", "vendor": "Node.js"},
     "python": {"base": "alpine", "binary": "python", "version": "3.12.3", "packages": "python3 py3-pip", "health": "python --version", "ports": "", "user": "python", "vendor": "Python"},
@@ -217,7 +217,7 @@ IMAGES = {
     "openjdk": {"base": "alpine", "binary": "java", "version": "21.0.3", "packages": "openjdk21", "health": "java -version", "ports": "", "user": "java", "vendor": "OpenJDK"},
     "ruby": {"base": "alpine", "binary": "ruby", "version": "3.3.1", "packages": "ruby ruby-bundler", "health": "ruby --version", "ports": "", "user": "ruby", "vendor": "Ruby"},
     "php": {"base": "alpine", "binary": "php", "version": "8.3.8", "packages": "php83 php83-fpm", "health": "php --version", "ports": "", "user": "php", "vendor": "PHP"},
-    
+
     # === SCRATCH-BASED UTILITIES ===
     "hadolint": {"base": "scratch", "binary": "hadolint", "version": "2.12.1", "url": "https://github.com/hadolint/hadolint/releases/download/v{VERSION}/hadolint-{VERSION}-linux-x86_64", "health": "hadolint --version", "ports": "", "vendor": "Hadolint"},
     "dockle": {"base": "scratch", "binary": "dockle", "version": "0.4.13", "url": "https://github.com/goodwithtech/dockle/releases/download/v{VERSION}/dockle_{VERSION}_linux_amd64.tar.gz", "health": "dockle --version", "ports": "", "vendor": "Dockle"},

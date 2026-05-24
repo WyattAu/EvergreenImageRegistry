@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends         python3
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 
-RUN microdnf install -y python3 ca-certificates 
+RUN microdnf install -y python3 ca-certificates
 COPY --from=builder /app /app
 COPY --from=builder /firmware /firmware
 RUN addgroup -S -g 2 nogroup >/dev/null || true && \

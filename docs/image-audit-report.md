@@ -1,8 +1,6 @@
 # Evergreen Image Registry - Comprehensive Dockerfile Audit Report
 
-**Generated:** 2026-05-19  
-**Scope:** All Dockerfiles in `images/` (excluding `_wip/`)  
-**Total Images Audited:** 841
+**Generated:** 2026-05-19 **Scope:** All Dockerfiles in `images/` (excluding `_wip/`) **Total Images Audited:** 841
 
 ---
 

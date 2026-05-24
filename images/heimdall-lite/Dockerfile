@@ -13,7 +13,7 @@ RUN git clone https://github.com/linuxserver/Heimdall.git /src 2>/dev/null || tr
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache nodejs-20 npm ca-certificates 
+RUN apk add --no-cache nodejs-20 npm ca-certificates
 COPY --from=builder /src /app/src
 COPY --from=builder /app /app
 RUN addgroup -S -g 2 nogroup >/dev/null || true && \

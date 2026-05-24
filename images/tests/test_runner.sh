@@ -91,23 +91,23 @@ run_image_tests() {
     local img="$1"
     local config
     config=$(get_image_config "$img")
-    
+
     IFS=',' read -r binary health_port primary_port <<< "$config"
-    
+
     export BINARY="$binary"
     export HEALTH_PORT="$health_port"
     export PRIMARY_PORT="$primary_port"
-    
+
     echo "=========================================="
     echo "Testing Image: $img"
     echo "Binary: $binary"
     echo "Health Port: $health_port"
     echo "Primary Port: $primary_port"
     echo "=========================================="
-    
+
     # Ensure image exists locally (pull if needed)
     local full_image="ghcr.io/wyattau/evergreenimageregistry/$img:latest"
-    
+
     if ! docker image inspect "$full_image" &>/dev/null; then
         echo "Pulling image: $full_image"
         docker pull "$full_image" || {
@@ -115,9 +115,9 @@ run_image_tests() {
             return 1
         }
     fi
-    
+
     export IMAGE="$full_image"
-    
+
     # Run requested tests
     case "$TEST_TYPE" in
         all)

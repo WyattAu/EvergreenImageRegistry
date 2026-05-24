@@ -45,4 +45,3 @@ expose = [9200, 9101]
 "evergreen.hft.startup-timeout" = "60000ms"
 "evergreen.image.tier" = "1"
 "evergreen.metrics.native" = "true"
-

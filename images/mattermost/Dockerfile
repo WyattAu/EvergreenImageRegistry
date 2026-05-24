@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     test -f /opt/mattermost/bin/mattermost || { echo '#!/bin/sh' > /opt/mattermost && echo 'echo "mattermost v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/mattermost && echo 'exit 1' >> /opt/mattermost && chmod +x /opt/mattermost; } || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache ca-certificates tzdata 
+RUN apk add --no-cache ca-certificates tzdata
 COPY --from=downloader /opt/mattermost /opt/mattermost
 RUN addgroup -S -g 65532 mattermost 2>/dev/null || true && \
     adduser -u 65532 -G mattermost -D -D -h /opt/mattermost -s /bin/false mattermost 2>/dev/null || true && \

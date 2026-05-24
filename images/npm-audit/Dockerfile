@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mkdir -p /app 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache nodejs-20 npm ca-certificates 
+RUN apk add --no-cache nodejs-20 npm ca-certificates
 COPY --from=builder /app /app
 RUN addgroup -S -g 2 nogroup >/dev/null || true && \
     adduser -u 65532 -G nogroup -D -h /app -s /bin/false npmaudit 2>/dev/null || true && \

@@ -113,8 +113,12 @@ pub fn dockerfile_to_manifest(dockerfile_path: &Path, image_name: &str) -> Resul
         },
         source: SourceSection {
             source_type,
-            url: download_url
-                .unwrap_or_else(|| format!("https://example.com/{}/latest.tar.gz", image_name)),
+            url: download_url.unwrap_or_else(|| {
+                format!(
+                    "https://github.com/PLACEHOLDER/{}/releases/download/v0.0.0/{}-v0.0.0.tar.gz",
+                    image_name, image_name
+                )
+            }),
         },
         runtime: RuntimeSection { entrypoint },
         ports: PortsSection { expose: ports },

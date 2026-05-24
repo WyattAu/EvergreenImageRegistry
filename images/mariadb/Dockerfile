@@ -21,7 +21,7 @@ ENV HEALTH_CMD="mariadb-admin ping -h 127.0.0.1 --silent" \
     STARTUP_CMD="mariadb-admin ping -h 127.0.0.1 --silent" \
     EVERGREEN_LOG_LEVEL=info
 
-RUN apk add --no-cache ca-certificates 
+RUN apk add --no-cache ca-certificates
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder --chown=65532:65532 /app /app

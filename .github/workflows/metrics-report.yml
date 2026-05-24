@@ -3,6 +3,8 @@ on:
   schedule:
     - cron: '0 0 * * 0' # Daily at midnight UTC
   workflow_dispatch:
+permissions:
+  contents: read
 jobs:
   report:
     runs-on: ubuntu-latest

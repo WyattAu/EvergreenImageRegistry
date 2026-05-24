@@ -36,10 +36,8 @@ env:
 
 permissions:
   contents: read
-  id-token: write
   security-events: write
   issues: write
-  actions: write
 
 jobs:
   # ===========================================================================
@@ -812,6 +810,8 @@ jobs:
     if: needs.report.outputs.has_critical_cves == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 180
+    permissions:
+      actions: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd

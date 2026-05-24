@@ -34,8 +34,6 @@ concurrency:
 
 permissions:
   contents: read
-  id-token: write
-  packages: write
 
 jobs:
   # ---------------------------------------------------------------------------
@@ -112,6 +110,10 @@ jobs:
     name: Build Changed Images
     needs: [discover, lint]
     if: needs.discover.result == 'success' && needs.discover.outputs.total != '0'
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
     uses: ./.github/workflows/_build-reusable.yml
     with:
       matrix: ${{ needs.discover.outputs.matrix }}

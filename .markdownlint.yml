@@ -16,6 +16,7 @@ MD038: false # spaces in code span
 MD012: false # multiple blank lines
 MD047: false # trailing newline
 MD051: false # link fragments
+MD060: false # table column style (new in markdownlint v0.40, too noisy for historical docs)
 
 # Rules to configure
 MD003:

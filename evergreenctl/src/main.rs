@@ -143,6 +143,9 @@ enum Commands {
         /// Number of days to look back
         #[arg(long, default_value = "30")]
         since: u64,
+        /// Maximum number of entries to display
+        #[arg(long, default_value = "50")]
+        limit: usize,
     },
     /// Strict validation (manifest + Dockerfile + SBOM cross-reference)
     ValidateStrict {
@@ -463,8 +466,12 @@ async fn main() -> anyhow::Result<()> {
             }
         }
 
-        Commands::Changelog { images_dir, since } => {
-            evergreenctl::changelog::cmd_changelog(&images_dir, since)?;
+        Commands::Changelog {
+            images_dir,
+            since,
+            limit,
+        } => {
+            evergreenctl::changelog::cmd_changelog(&images_dir, since, limit)?;
         }
 
         Commands::ValidateStrict { images_dir } => {

@@ -2,7 +2,7 @@ use anyhow::Result;
 use std::path::Path;
 use std::process::Command;
 
-pub fn cmd_changelog(images_dir: &str, since_days: u64) -> Result<()> {
+pub fn cmd_changelog(images_dir: &str, since_days: u64, limit: usize) -> Result<()> {
     let dir = Path::new(images_dir);
     if !dir.exists() {
         anyhow::bail!("Images directory not found: {}", images_dir);
@@ -35,15 +35,15 @@ pub fn cmd_changelog(images_dir: &str, since_days: u64) -> Result<()> {
         }
     }
 
-    for entry in entries.iter().take(50) {
+    for entry in entries.iter().take(limit) {
         let hash = entry.first().map(|s| s.trim()).unwrap_or("");
         let subject = entry.get(1).map(|s| s.trim()).unwrap_or("");
         let author = entry.get(2).map(|s| s.trim()).unwrap_or("-");
         println!("| {hash} | {subject} | {author} |");
     }
 
-    if entries.len() > 50 {
-        println!("\n... and {} more entries", entries.len() - 50);
+    if entries.len() > limit {
+        println!("\n... and {} more entries", entries.len() - limit);
     }
 
     println!("\nTotal changes: {}", entries.len());
@@ -54,7 +54,7 @@ pub fn cmd_changelog(images_dir: &str, since_days: u64) -> Result<()> {
 mod tests {
     #[test]
     fn test_cmd_changelog_invalid_dir() {
-        let result = super::cmd_changelog("/nonexistent", 7);
+        let result = super::cmd_changelog("/nonexistent", 7, 50);
         assert!(result.is_err());
     }
 }

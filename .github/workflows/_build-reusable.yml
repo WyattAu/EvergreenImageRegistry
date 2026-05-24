@@ -114,6 +114,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Write GITHUB_TOKEN secret file
+        run: printf '%s' "${{ secrets.GITHUB_TOKEN }}" > /tmp/github-token
+
       - name: Build images (amd64 tarballs for verification)
         run: |
           TAG="${{ steps.resolve-tag.outputs.TAG }}"
@@ -143,6 +146,7 @@ jobs:
                 --output "type=docker,dest=/tmp/images/${SAFE}.tar" \
                 --cache-from "type=local,src=/tmp/.buildkit-cache" \
                 --cache-to "type=local,dest=/tmp/.buildkit-cache-new,mode=max" \
+                --secret id=github-token,src=/tmp/github-token \
                 --build-arg "BUILD_DATE=${TAG}" \
                 --build-arg "VCS_REF=${TAG}" \
                 --build-arg "TARGETARCH=amd64" \
@@ -181,6 +185,10 @@ jobs:
           if [ "${FAILED}" -gt 0 ]; then
             echo "::warning::${FAILED} image(s) failed to build in batch ${{ matrix.batch }}"
           fi
+
+      - name: Cleanup secret file
+        if: always()
+        run: rm -f /tmp/github-token
 
       - name: Update BuildKit cache
         if: always()

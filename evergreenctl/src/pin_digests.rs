@@ -148,6 +148,36 @@ fn pin_dockerfile_digests(dockerfile_path: &Path, dry_run: bool) -> Result<usize
     Ok(pinned_count)
 }
 
+/// Extract the first SHA256 digest from a `docker manifest inspect` JSON payload.
+///
+/// Manifest lists contain a top-level `manifests` array; single manifests may
+/// have a top-level `config.digest`.  We prefer the first platform entry for
+/// lists, then fall back to `config.digest`.
+fn parse_manifest_digest(json: &str) -> Option<String> {
+    // Quick regex-free approach: look for "digest": "sha256:..." patterns
+    for line in json.lines() {
+        let trimmed = line.trim();
+        // Strip trailing comma if present
+        let trimmed = trimmed.strip_suffix(',').unwrap_or(trimmed);
+        if let Some(rest) = trimmed.strip_prefix("\"digest\": \"") {
+            if let Some(digest) = rest.strip_suffix("\"") {
+                if digest.starts_with("sha256:") && digest.len() == 71 {
+                    return Some(digest.to_string());
+                }
+            }
+        }
+        // Also handles "digest":"sha256:..." (no space)
+        if let Some(rest) = trimmed.strip_prefix("\"digest\":\"") {
+            if let Some(digest) = rest.strip_suffix("\"") {
+                if digest.starts_with("sha256:") && digest.len() == 71 {
+                    return Some(digest.to_string());
+                }
+            }
+        }
+    }
+    None
+}
+
 /// Resolve a container image reference to its SHA256 digest.
 /// Uses `crane digest` if available, otherwise tries `skopeo`, then `docker`.
 fn resolve_digest(image_ref: &str) -> Result<String> {
@@ -182,20 +212,14 @@ fn resolve_digest(image_ref: &str) -> Result<String> {
         }
     }
 
-    // Try docker manifest inspect
+    // Try docker manifest inspect (parse JSON output, --format not supported)
     if let Ok(output) = std::process::Command::new("docker")
-        .args([
-            "manifest",
-            "inspect",
-            image_ref,
-            "--format",
-            "{{.Descriptor.Digest}}",
-        ])
+        .args(["manifest", "inspect", image_ref])
         .output()
     {
         if output.status.success() {
-            let digest = String::from_utf8_lossy(&output.stdout).trim().to_string();
-            if digest.starts_with("sha256:") {
+            let stdout = String::from_utf8_lossy(&output.stdout);
+            if let Some(digest) = parse_manifest_digest(&stdout) {
                 return Ok(digest);
             }
         }

@@ -2,11 +2,5 @@
   // markdownlint-cli2 configuration
   // Extends .markdownlint.yml for rules, adds CLI2-specific ignores
   "config": ".markdownlint.yml",
-  "ignores": [
-    ".github/ISSUE_TEMPLATE/**",
-    ".specs/**",
-    "images/**/README.md",
-    "node_modules/**",
-    "CHANGELOG.md"
-  ]
+  "ignores": [".github/ISSUE_TEMPLATE/**", ".specs/**", "images/**/README.md", "node_modules/**", "CHANGELOG.md"],
 }

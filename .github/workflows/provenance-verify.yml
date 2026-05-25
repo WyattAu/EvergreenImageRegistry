@@ -21,18 +21,20 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8
       - name: Run evergreenctl verify-all
         run: |
           cd evergreenctl && cargo build --release && \
           ./target/release/evergreenctl verify-all images/
       - name: Verify SLSA provenance for sample images
         run: |
-          SAMPLE_IMAGES="redis nginx postgres vault grafana prometheus"
+          SAMPLE_IMAGES=$(ls images/ | head -5 | tr '\n' ' ')
           CERT_IDENTITY="${{ github.repository_owner }}"
           for img in $SAMPLE_IMAGES; do
             FULL_REF="ghcr.io/${{ github.repository }}/$img:latest"
             echo "Verifying provenance for $FULL_REF..."
-            cosign verify \
+            cosign verify-attestation --type slsaprovenance \
               --certificate-identity "${CERT_IDENTITY}" \
               --certificate-oidc-issuer https://token.actions.githubusercontent.com \
               "$FULL_REF" 2>&1 || echo "WARNING: Could not verify $img (image may not be published yet)" >&2

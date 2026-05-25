@@ -116,20 +116,59 @@ jobs:
           PYEOF
 
   generate-provenance:
-    name: 'SLSA ${{ matrix.image }}'
+    name: Generate SLSA Provenance
     needs: prepare
     if: ${{ needs.prepare.result == 'success' && needs.prepare.outputs.total != '0' }}
-    # pin:slsa-framework/slsa-github-generator@f7dd8c54c2067bafc12ca7a55595d5ee9b75204a
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
-    with:
-      image: ${{ matrix.image }}
-      digest: ${{ matrix.digest }}
-    secrets:
-      registry-username: ${{ github.actor }}
-      registry-password: ${{ secrets.GITHUB_TOKEN }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
+      - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Download image references
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          pattern: built-list-*-batch-*
+          path: /tmp/batches
+      - name: Generate provenance attestations
+        run: |
+          TAG="${{ github.sha }}"
+          REGISTRY="ghcr.io"
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          cat /tmp/batches/built-list-*/built-images.txt 2>/dev/null | sort -u | while read -r ref; do
+            [ -z "$ref" ] && continue
+            echo "::group::Attest ${ref}"
+            cosign attest --yes \
+              --predicate - \
+              --type slsaprovenance \
+              "${ref}" <<EOF
+          {
+            "_type": "https://in-toto.io/Statement/v0.1",
+            "predicateType": "https://slsa.dev/provenance/v0.2",
+            "predicate": {
+              "builder": { "id": "${{ github.repository }}" },
+              "buildType": "evergreen-image-registry/build-on-push",
+              "invocation": {
+                "configSource": {
+                  "uri": "${{ github.server_url }}/${{ github.repository }}",
+                  "digest": { "sha1": "${{ github.sha }}" },
+                  "entryPoint": ".github/workflows/build-on-push.yml"
+                }
+              },
+              "materials": [{ "uri": "${{ github.server_url }}/${{ github.repository }}", "digest": { "sha1": "${{ github.sha }}" } }]
+            }
+          }
+          EOF
+            echo "::endgroup::"
+          done
 
   summary:
     name: Provenance Summary

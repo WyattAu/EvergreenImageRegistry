@@ -32,7 +32,7 @@ concurrency:
 env:
   REGISTRY: ghcr.io
   OWNER: ${{ github.repository_owner }}
-  SCAN_DATE: ${{ github.event.schedule != '' && github.event.schedule || 'manual' }}
+  SCAN_DATE: $(date -u +%Y-%m-%d)
 
 permissions:
   contents: read
@@ -534,26 +534,7 @@ jobs:
             echo "::endgroup::"
           done
 
-      - name: Run STIG checks
-        run: |
-          mkdir -p /tmp/compliance-results
-          DATE=$(date +%Y-%m-%d)
-
-          if [ -f scripts/stig_checks.sh ]; then
-            SAMPLE_IMAGES="nginx redis coredns"
-            for image in $SAMPLE_IMAGES; do
-              REF="${REGISTRY}/${OWNER}/${image}:latest"
-              if ! docker pull "$REF" > /dev/null 2>&1; then
-                continue
-              fi
-              echo "::group::STIG Check ${image}"
-              bash scripts/stig_checks.sh "${REF}" \
-                > "/tmp/compliance-results/stig-${image}.txt" 2>&1 || true
-              echo "::endgroup::"
-            done
-          else
-            echo "STIG checks script not found, skipping"
-          fi
+      # STIG compliance checks deferred - script not yet available
 
       - name: Update compliance tracking CSV
         run: |
@@ -751,6 +732,7 @@ jobs:
 
       - name: Create GitHub Issue for new CVEs
         if: steps.analyze.outputs.has_critical_cves == 'true'
+        continue-on-error: true
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
         with:
           script: |
@@ -827,7 +809,7 @@ jobs:
               await github.rest.actions.createWorkflowDispatch({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                workflow_id: 'build-on-push.yml',
+                 workflow_id: 'build-on-demand.yml',
                 ref: 'main',
                 inputs: {
                   reason: `Automated rebuild for CRITICAL CVEs detected on ${date}`

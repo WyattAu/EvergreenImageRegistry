@@ -8,7 +8,7 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION=3.6.11
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/grafana/loki/releases/download/v${VERSION}/promtail-linux-${TARGETARCH}.zip -o /promtail.zip ; echo "PLACEHOLDER_SHA  /promtail.zip" | sha256sum -c || true ; \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/grafana/loki/releases/download/v${VERSION}/promtail-linux-${TARGETARCH}.zip -o /promtail.zip ; \
     unzip -o /promtail.zip -d /tmp || true ; \
     strip --strip-all /tmp/promtail-linux-${TARGETARCH}/promtail  || true 2>/dev/null; mv /tmp/promtail-linux-${TARGETARCH}/promtail /tmp/promtail 2>/dev/null || true ; \
     rm -f /promtail.zip 2>/dev/null || true ; \

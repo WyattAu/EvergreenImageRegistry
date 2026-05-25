@@ -8,7 +8,6 @@ ARG TARGETARCH
 ARG VERSION=1.7.1
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/containrrr/watchtower/releases/download/v${VERSION}/watchtower_linux_${TARGETARCH}.tar.gz -o /watchtower.tar.gz && \
-    echo "PLACEHOLDER_SHA  /watchtower.tar.gz" | sha256sum -c || true ; \
     [ -f /watchtower.tar.gz ] && tar -xzf /watchtower.tar.gz -C / && rm -f /watchtower.tar.gz && chmod +x /watchtower 2>/dev/null || true ; \
     test -f /watchtower || { echo '#!/bin/sh' > /watchtower && echo 'echo "watchtower v${VERSION} binary not available - download failed" >&2"' >> /watchtower && echo 'exit 1' >> /watchtower && chmod +x /watchtower; } || true
 

@@ -7,7 +7,6 @@ ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates dpkg && rm -rf /var/lib/apt/lists/* && \
     ARCH=$(case ${TARGETARCH} in amd64) echo "x86_64" ;; arm64) echo "arm64" ;; *) echo "x86_64" ;; esac) && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Stirling-Tools/Stirling-PDF/releases/download/v${VERSION}/Stirling-PDF-linux-${ARCH}.deb" -o /stirling-pdf.deb || true ; \
-    echo "PLACEHOLDER_SHA  /stirling-pdf.deb" | sha256sum -c || true ; \
     if [ -f /stirling-pdf.deb ]; then dpkg -i /stirling-pdf.deb && rm -f /stirling-pdf.deb ; fi ; \
     mkdir -p /opt/stirling-pdf && \
     if [ ! -f /opt/stirling-pdf/stirling-pdf ]; then \

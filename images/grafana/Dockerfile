@@ -21,7 +21,6 @@ RUN mkdir -p /opt && \
         curl ca-certificates tar && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /grafana.tar.gz || true ; \
-    echo "PLACEHOLDER_SHA  /grafana.tar.gz" | sha256sum -c || true ; \
     if [ -f /grafana.tar.gz ]; then tar -xzf /grafana.tar.gz -C /opt && rm -f /grafana.tar.gz ; fi ; \
     mkdir -p /opt/grafana-${VERSION}/bin 2>/dev/null || true ; \
     test -f /opt/grafana-${VERSION}/bin/grafana-server || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-server && echo 'echo "grafana v'"${VERSION}"' binary not available - download failed" >&2 exit 1"' >> /opt/grafana-${VERSION}/bin/grafana-server && echo 'exit 1' >> /opt/grafana-${VERSION}/bin/grafana-server && chmod +x /opt/grafana-${VERSION}/bin/grafana-server ; } 2>/dev/null || true ; \

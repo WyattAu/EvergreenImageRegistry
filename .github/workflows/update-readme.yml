@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'images/'
+      - 'images/**'
       - 'scripts/generate_catalog.py'
 
 permissions:

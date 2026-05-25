@@ -827,7 +827,7 @@ jobs:
               await github.rest.actions.createWorkflowDispatch({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                workflow_id: 'build.yml',
+                workflow_id: 'build-on-push.yml',
                 ref: 'main',
                 inputs: {
                   reason: `Automated rebuild for CRITICAL CVEs detected on ${date}`

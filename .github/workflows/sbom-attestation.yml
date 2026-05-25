@@ -88,6 +88,6 @@ jobs:
           done <<< "$REFS"
 
           echo "SBOM Attestation: ${OK}/${TOTAL} succeeded, ${FAIL} failed"
-          if [ "$FAIL" -gt "$TOTAL" ]; then
+          if [ "$FAIL" -gt 0 ]; then
             exit 1
           fi

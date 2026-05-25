@@ -85,6 +85,9 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
+      - name: Install skopeo
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq skopeo
+
       - name: Check wolfi base image digest
         run: |
           echo "Checking current wolfi base image digest..."

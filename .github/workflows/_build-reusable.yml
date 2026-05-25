@@ -150,7 +150,6 @@ jobs:
                 --build-arg "BUILD_DATE=${TAG}" \
                 --build-arg "VCS_REF=${TAG}" \
                 --build-arg "TARGETARCH=amd64" \
-                --build-arg "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" \
                 --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
                 --label "org.opencontainers.image.revision=${{ github.sha }}" \
                 "./images/${image}"; then

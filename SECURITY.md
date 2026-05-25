@@ -6,10 +6,10 @@ Evergreen Image Registry images are continuously rebuilt nightly. Only the lates
 
 | Tag                        | Supported |
 | -------------------------- | --------- |
-| `latest`                   | ✅        |
-| SHA-pinned (`@sha256:...`) | ✅        |
-| Version tags (`vX.Y.Z`)    | ✅        |
-| Older version tags         | ❌        |
+| `latest`                   | Yes       |
+| SHA-pinned (`@sha256:...`) | Yes       |
+| Version tags (`vX.Y.Z`)    | Yes       |
+| Older version tags         | No        |
 
 ## Reporting a Vulnerability
 

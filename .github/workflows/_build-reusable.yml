@@ -40,6 +40,16 @@ on:
         required: false
         type: string
         default: 'standard'
+    secrets:
+      GITHUB_TOKEN:
+        description: 'GitHub token for registry push'
+        required: true
+      DOCKERHUB_USERNAME:
+        description: 'Docker Hub username'
+        required: false
+      DOCKERHUB_TOKEN:
+        description: 'Docker Hub token'
+        required: false
 
 env:
   REGISTRY: ghcr.io

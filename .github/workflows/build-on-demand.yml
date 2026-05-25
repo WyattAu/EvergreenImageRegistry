@@ -136,10 +136,7 @@ jobs:
       sign: ${{ inputs.sign }}
       multiarch: ${{ inputs.multiarch }}
       tier: demand-${{ inputs.mode }}
-    secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    secrets: inherit
 
   error:
     name: Input Error

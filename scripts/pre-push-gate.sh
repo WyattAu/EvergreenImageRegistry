@@ -274,6 +274,32 @@ else
     skip_gate "Rust release build (cargo not found)"
 fi
 
+# ---- Gate 10: Go vet + test (health-shim) ----
+echo ""
+echo "--- Gate 10: Go Vet + Test (health-shim) ---"
+if command -v go &>/dev/null; then
+    GO_FAIL=0
+    if [ -d "images/health-shim" ]; then
+        if ! (cd images/health-shim && go vet ./... 2>&1); then
+            echo -e "  ${RED}[FAIL]${NC} go vet (health-shim)"
+            GO_FAIL=1
+        fi
+        if ! (cd images/health-shim && go test ./... 2>&1); then
+            echo -e "  ${RED}[FAIL]${NC} go test (health-shim)"
+            GO_FAIL=1
+        fi
+        if [ "$GO_FAIL" -eq 0 ]; then
+            pass_gate "Go vet + test (health-shim)"
+        else
+            fail_gate "Go vet + test (health-shim)"
+        fi
+    else
+        skip_gate "Go vet + test (images/health-shim not found)"
+    fi
+else
+    skip_gate "Go vet + test (go not found)"
+fi
+
 # ---- Summary ----
 echo ""
 echo "=========================================="

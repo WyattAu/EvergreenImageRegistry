@@ -1926,3 +1926,541 @@ ENTRYPOINT ["/bin/sh"]
         "Base images should not require checksum (exit code 0)"
     );
 }
+
+// =============================================================================
+// Test 46: Validate all valid manifests
+// =============================================================================
+
+#[test]
+fn test_validate_all_valid() {
+    use evergreenctl::manifest::Manifest;
+
+    let dir = TempDir::new().unwrap();
+
+    let toml_a = r#"
+[metadata]
+name = "valid-a"
+version = "1.0.0"
+
+[build]
+base = "scratch"
+
+[source]
+url = "https://example.com/valid-a.tar.gz"
+
+[runtime]
+entrypoint = ["/valid-a"]
+"#;
+
+    let toml_b = r#"
+[metadata]
+name = "valid-b"
+version = "2.0.0"
+
+[build]
+base = "scratch"
+
+[source]
+url = "https://example.com/valid-b.tar.gz"
+
+[runtime]
+entrypoint = ["/valid-b"]
+"#;
+
+    for (name, toml) in &[("valid-a", toml_a), ("valid-b", toml_b)] {
+        let img_dir = dir.path().join(name);
+        fs::create_dir_all(&img_dir).unwrap();
+        fs::write(img_dir.join("manifest.toml"), toml).unwrap();
+    }
+
+    let mut valid = 0;
+    let mut invalid = 0;
+    let mut missing = 0;
+
+    for entry in fs::read_dir(dir.path()).unwrap() {
+        let entry = entry.unwrap();
+        let manifest_path = entry.path().join("manifest.toml");
+
+        if !manifest_path.exists() {
+            missing += 1;
+            continue;
+        }
+
+        match Manifest::from_file(&manifest_path) {
+            Ok(m) => {
+                let name_ok = !m.name().is_empty();
+                let version_ok = !m.version().is_empty();
+                let source_ok = !m.source_url().is_empty();
+                let base_ok = !m.base_image().is_empty();
+
+                if name_ok && version_ok && source_ok && base_ok {
+                    valid += 1;
+                } else {
+                    invalid += 1;
+                }
+            }
+            Err(_) => {
+                invalid += 1;
+            }
+        }
+    }
+
+    assert_eq!(valid, 2, "Should have 2 valid images");
+    assert_eq!(invalid, 0, "Should have 0 invalid images");
+    assert_eq!(missing, 0, "Should have 0 missing manifests");
+}
+
+// =============================================================================
+// Test 47: Validate detects incomplete manifests
+// =============================================================================
+
+#[test]
+fn test_validate_missing_fields() {
+    use evergreenctl::manifest::Manifest;
+
+    let dir = TempDir::new().unwrap();
+
+    let incomplete_toml = r#"
+[metadata]
+name = "incomplete"
+version = "1.0.0"
+
+[build]
+base = "scratch"
+"#;
+
+    let img_dir = dir.path().join("incomplete-image");
+    fs::create_dir_all(&img_dir).unwrap();
+    fs::write(img_dir.join("manifest.toml"), incomplete_toml).unwrap();
+
+    let mut invalid_count = 0;
+    let mut invalid_details: Vec<String> = Vec::new();
+
+    for entry in fs::read_dir(dir.path()).unwrap() {
+        let entry = entry.unwrap();
+        let manifest_path = entry.path().join("manifest.toml");
+
+        if !manifest_path.exists() {
+            continue;
+        }
+
+        if let Ok(m) = Manifest::from_file(&manifest_path) {
+            let name_ok = !m.name().is_empty();
+            let version_ok = !m.version().is_empty();
+            let source_ok = !m.source_url().is_empty();
+            let base_ok = !m.base_image().is_empty();
+
+            if !(name_ok && version_ok && source_ok && base_ok) {
+                let issues = vec![
+                    (!name_ok).then_some("name"),
+                    (!version_ok).then_some("version"),
+                    (!source_ok).then_some("source_url"),
+                    (!base_ok).then_some("base"),
+                ]
+                .into_iter()
+                .flatten()
+                .collect::<Vec<_>>()
+                .join(", ");
+                invalid_details.push(format!("INVALID: {} - missing: {}", m.name(), issues));
+                invalid_count += 1;
+            }
+        }
+    }
+
+    assert_eq!(invalid_count, 1, "Should have 1 invalid image");
+    let msg = &invalid_details[0];
+    assert!(
+        msg.contains("INVALID"),
+        "Output should contain INVALID: {}",
+        msg
+    );
+}
+
+// =============================================================================
+// Test 48: Validate detects missing manifests
+// =============================================================================
+
+#[test]
+fn test_validate_missing_manifest() {
+    use evergreenctl::manifest::Manifest;
+
+    let dir = TempDir::new().unwrap();
+
+    let img_dir = dir.path().join("no-manifest-image");
+    fs::create_dir_all(&img_dir).unwrap();
+    fs::write(img_dir.join("Dockerfile"), "FROM scratch\n").unwrap();
+
+    let mut missing = 0;
+
+    for entry in fs::read_dir(dir.path()).unwrap() {
+        let entry = entry.unwrap();
+        let manifest_path = entry.path().join("manifest.toml");
+
+        if !manifest_path.exists() {
+            missing += 1;
+            continue;
+        }
+
+        let _ = Manifest::from_file(&manifest_path);
+    }
+
+    assert_eq!(missing, 1, "Should have 1 missing manifest");
+}
+
+// =============================================================================
+// Test 49: Report JSON format
+// =============================================================================
+
+#[test]
+fn test_report_json_format() {
+    use evergreenctl::report::generate_report;
+
+    let dir = TempDir::new().unwrap();
+
+    let toml_a = r#"
+[metadata]
+name = "report-a"
+version = "1.0.0"
+tier = "1"
+
+[build]
+base = "scratch"
+
+[source]
+url = "https://example.com/report-a.tar.gz"
+
+[runtime]
+entrypoint = ["/report-a"]
+"#;
+
+    let toml_b = r#"
+[metadata]
+name = "report-b"
+version = "2.0.0"
+tier = "2"
+
+[build]
+base = "scratch"
+
+[source]
+url = "https://example.com/report-b.tar.gz"
+
+[runtime]
+entrypoint = ["/report-b"]
+"#;
+
+    for (name, toml) in &[("report-a", toml_a), ("report-b", toml_b)] {
+        let img_dir = dir.path().join(name);
+        fs::create_dir_all(&img_dir).unwrap();
+        fs::write(img_dir.join("manifest.toml"), toml).unwrap();
+        fs::write(
+            img_dir.join("Dockerfile"),
+            "FROM scratch@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n",
+        )
+        .unwrap();
+    }
+
+    let report = generate_report(dir.path()).unwrap();
+    assert_eq!(report.total_images, 2, "Should report 2 total images");
+    assert_eq!(report.digest_pinned_from, 2, "Both should be digest-pinned");
+
+    let json = serde_json::to_string_pretty(&report).unwrap();
+    let parsed: serde_json::Value = serde_json::from_str(&json).unwrap();
+    assert_eq!(parsed["total_images"], 2, "JSON total_images should be 2");
+    assert!(
+        parsed.get("health_score").is_some(),
+        "JSON should contain health_score"
+    );
+    assert!(
+        parsed.get("by_tier").is_some(),
+        "JSON should contain by_tier"
+    );
+}
+
+// =============================================================================
+// Test 50: Report text format
+// =============================================================================
+
+#[test]
+fn test_report_text_format() {
+    use evergreenctl::report::{format_text, generate_report};
+
+    let dir = TempDir::new().unwrap();
+
+    let toml = r#"
+[metadata]
+name = "text-report"
+version = "1.0.0"
+tier = "1"
+
+[build]
+base = "scratch"
+
+[source]
+url = "https://example.com/text-report.tar.gz"
+
+[runtime]
+entrypoint = ["/text-report"]
+"#;
+
+    let img_dir = dir.path().join("text-report");
+    fs::create_dir_all(&img_dir).unwrap();
+    fs::write(img_dir.join("manifest.toml"), toml).unwrap();
+    fs::write(img_dir.join("Dockerfile"), "FROM scratch@sha256:deadbeef\n").unwrap();
+
+    let report = generate_report(dir.path()).unwrap();
+    let text = format_text(&report);
+
+    assert!(
+        text.contains("Registry Health Report"),
+        "Text report should contain header, got: {}",
+        text
+    );
+    assert!(
+        text.contains("Total images: 1"),
+        "Text report should contain total images"
+    );
+    assert!(
+        text.contains("Health Score:"),
+        "Text report should contain health score"
+    );
+}
+
+// =============================================================================
+// Test 51: Deprecated mark/unmark roundtrip
+// =============================================================================
+
+#[test]
+fn test_deprecated_mark_unmark_roundtrip() {
+    use evergreenctl::deprecated::{list_deprecated, mark_deprecated, unmark_deprecated};
+
+    let dir = TempDir::new().unwrap();
+
+    let toml = r#"
+[metadata]
+name = "deprecate-test"
+version = "1.0.0"
+
+[build]
+base = "scratch"
+
+[source]
+url = "https://example.com/deprecate.tar.gz"
+
+[runtime]
+entrypoint = ["/deprecate"]
+"#;
+
+    let img_dir = dir.path().join("deprecate-test");
+    fs::create_dir_all(&img_dir).unwrap();
+    fs::write(img_dir.join("manifest.toml"), toml).unwrap();
+
+    let before = list_deprecated(dir.path()).unwrap();
+    assert!(before.is_empty(), "Should start with no deprecated images");
+
+    mark_deprecated(dir.path(), "deprecate-test").unwrap();
+
+    let after_mark = list_deprecated(dir.path()).unwrap();
+    assert_eq!(after_mark.len(), 1, "Should have 1 deprecated image");
+    assert_eq!(after_mark[0].name, "deprecate-test");
+
+    unmark_deprecated(dir.path(), "deprecate-test").unwrap();
+
+    let after_unmark = list_deprecated(dir.path()).unwrap();
+    assert!(
+        after_unmark.is_empty(),
+        "Should have no deprecated images after unmark"
+    );
+}
+
+// =============================================================================
+// Test 52: Deprecated list empty
+// =============================================================================
+
+#[test]
+fn test_deprecated_list_empty() {
+    use evergreenctl::deprecated::list_deprecated;
+
+    let dir = TempDir::new().unwrap();
+
+    let toml = r#"
+[metadata]
+name = "active-image"
+version = "1.0.0"
+
+[build]
+base = "scratch"
+
+[source]
+url = "https://example.com/active.tar.gz"
+
+[runtime]
+entrypoint = ["/active"]
+"#;
+
+    let img_dir = dir.path().join("active-image");
+    fs::create_dir_all(&img_dir).unwrap();
+    fs::write(img_dir.join("manifest.toml"), toml).unwrap();
+
+    let result = list_deprecated(dir.path()).unwrap();
+    assert!(result.is_empty(), "Should have no deprecated images");
+}
+
+// =============================================================================
+// Test 53: Changelog with empty directory
+// =============================================================================
+
+#[test]
+fn test_changelog_empty_dir() {
+    use evergreenctl::changelog::cmd_changelog;
+
+    let dir = TempDir::new().unwrap();
+    fs::create_dir_all(dir.path().join("images")).unwrap();
+
+    let result = cmd_changelog(dir.path().to_str().unwrap(), 30, 50);
+    assert!(
+        result.is_ok(),
+        "cmd_changelog should succeed on empty directory"
+    );
+}
+
+// =============================================================================
+// Test 54: Changelog with custom --since flag
+// =============================================================================
+
+#[test]
+fn test_changelog_custom_since() {
+    use evergreenctl::changelog::cmd_changelog;
+
+    let dir = TempDir::new().unwrap();
+    fs::create_dir_all(dir.path().join("images")).unwrap();
+
+    let result = cmd_changelog(dir.path().to_str().unwrap(), 7, 10);
+    assert!(
+        result.is_ok(),
+        "cmd_changelog should accept custom --since value"
+    );
+}
+
+// =============================================================================
+// Test 55: Validate-strict fully compliant image
+// =============================================================================
+
+#[test]
+fn test_validate_strict_fully_compliant() {
+    use evergreenctl::validate_strict::cmd_validate_strict;
+
+    let dir = TempDir::new().unwrap();
+
+    let img_dir = dir.path().join("compliant-image");
+    fs::create_dir_all(&img_dir).unwrap();
+
+    let toml = r#"
+[metadata]
+name = "compliant"
+version = "1.0.0"
+
+[build]
+base = "scratch"
+
+[source]
+url = "https://example.com/compliant.tar.gz"
+
+[runtime]
+entrypoint = ["/compliant"]
+"#;
+    fs::write(img_dir.join("manifest.toml"), toml).unwrap();
+
+    fs::write(
+        img_dir.join("Dockerfile"),
+        r#"FROM scratch
+ARG VERSION=1.0.0
+COPY --from=builder /app /app
+USER 65532:65532
+ENTRYPOINT ["/app"]
+"#,
+    )
+    .unwrap();
+
+    let sbom = serde_json::json!({
+        "spdxVersion": "SPDX-2.3",
+        "dataLicense": "CC0-1.0",
+        "SPDXID": "SPDXRef-DOCUMENT",
+        "name": "compliant",
+        "documentNamespace": "https://example.com/compliant"
+    });
+    fs::write(
+        img_dir.join("sbom.spdx.json"),
+        serde_json::to_string_pretty(&sbom).unwrap(),
+    )
+    .unwrap();
+
+    let result = cmd_validate_strict(dir.path().to_str().unwrap());
+    assert!(
+        result.is_ok(),
+        "Fully compliant image should pass strict validation: {:?}",
+        result
+    );
+}
+
+// =============================================================================
+// Test 56: Validate-strict missing Dockerfile
+// =============================================================================
+
+#[test]
+fn test_validate_strict_missing_dockerfile() {
+    use evergreenctl::validate_strict::cmd_validate_strict;
+
+    let dir = TempDir::new().unwrap();
+
+    let img_dir = dir.path().join("no-dockerfile-image");
+    fs::create_dir_all(&img_dir).unwrap();
+
+    let toml = r#"
+[metadata]
+name = "no-dockerfile"
+version = "1.0.0"
+
+[build]
+base = "scratch"
+
+[source]
+url = "https://example.com/no-dockerfile.tar.gz"
+
+[runtime]
+entrypoint = ["/no-dockerfile"]
+"#;
+    fs::write(img_dir.join("manifest.toml"), toml).unwrap();
+
+    let result = cmd_validate_strict(dir.path().to_str().unwrap());
+    assert!(
+        result.is_err(),
+        "Image without Dockerfile should fail strict validation"
+    );
+}
+
+// =============================================================================
+// Test 57: Completion generates bash output
+// =============================================================================
+
+#[test]
+fn test_completion_bash() {
+    use clap::Command;
+    use clap_complete::{generate, Shell};
+
+    let mut cmd = Command::new("evergreenctl")
+        .about("Evergreen image registry management toolchain")
+        .subcommand(Command::new("validate"))
+        .subcommand(Command::new("audit"))
+        .subcommand(Command::new("report"))
+        .subcommand(Command::new("completion"));
+
+    let mut buf = Vec::new();
+    generate(Shell::Bash, &mut cmd, "evergreenctl", &mut buf);
+
+    let output = String::from_utf8(buf).unwrap();
+    assert!(
+        output.contains("evergreenctl"),
+        "Bash completion should contain 'evergreenctl'"
+    );
+}

@@ -44,11 +44,16 @@ jobs:
             .
       - name: Sign immutable tag
         if: ${{ !inputs.dry_run }}
+        uses: sigstore/cosign-installer@6f9f17788090dfa1f26f669e9d70d6ae9567deba6
+      - name: Sign with keyless OIDC
+        if: ${{ !inputs.dry_run }}
         run: |
-          cosign sign --yes --key env://COSIGN_PRIVATE_KEY \
-            ghcr.io/${{ github.repository }}:${{ env.VERSION }}@${{ github.sha }}
+          cosign sign --yes \
+            --certificate-identity="${{ github.repository_owner }}" \
+            --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+            ghcr.io/${{ github.repository }}:${{ env.VERSION }}
         env:
-          COSIGN_PRIVATE_KEY: ''
+          COSIGN_EXPERIMENTAL: '1'
 
   latest-ttl:
     runs-on: ubuntu-latest
@@ -61,5 +66,5 @@ jobs:
         run: |
           echo "WARNING: This removes the :latest tag to ensure it gets rebuilt"
           curl -s -X DELETE \
-            "https://api.github.com/orgs/${{ github.repository }}/packages/container/${{ github.repository }}/versions/latest" \
+            "https://api.github.com/user/packages/container/${{ github.repository }}/versions/latest" \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" || echo "Could not delete :latest"

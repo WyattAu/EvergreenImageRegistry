@@ -2,7 +2,7 @@ name: SLSA v3 Provenance
 
 on:
   workflow_run:
-    workflows: ['Build Hardened Images']
+    workflows: ['Build on Push', 'Nightly Full Rebuild']
     types: [completed]
     branches: [main]
 

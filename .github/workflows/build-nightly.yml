@@ -138,7 +138,10 @@ jobs:
       sign: ${{ inputs.sign }}
       multiarch: true
       tier: critical
-    secrets: inherit
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   # ---------------------------------------------------------------------------
   # BUILD STANDARD - Multi-arch, unsigned
@@ -155,7 +158,10 @@ jobs:
       sign: false
       multiarch: true
       tier: standard
-    secrets: inherit
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   # ---------------------------------------------------------------------------
   # BUILD COMMUNITY - amd64 only, unsigned
@@ -172,7 +178,10 @@ jobs:
       sign: false
       multiarch: false
       tier: community
-    secrets: inherit
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   # ---------------------------------------------------------------------------
   # REPORT - Aggregate results

@@ -18,3 +18,52 @@ updates:
       docker-images:
         patterns:
           - '*'
+
+  - package-ecosystem: 'cargo'
+    directory: '/evergreenctl'
+    schedule:
+      interval: 'weekly'
+      timezone: 'Etc/UTC'
+    labels:
+      - 'dependencies'
+      - 'rust'
+      - 'automated'
+    commit-message:
+      prefix: 'chore(deps)'
+      include: 'scope'
+    reviewers:
+      - 'WyattAu'
+
+  - package-ecosystem: 'gomod'
+    directory: '/images/health-shim'
+    schedule:
+      interval: 'weekly'
+      timezone: 'Etc/UTC'
+    labels:
+      - 'dependencies'
+      - 'go'
+      - 'automated'
+    commit-message:
+      prefix: 'chore(deps)'
+      include: 'scope'
+    reviewers:
+      - 'WyattAu'
+
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      timezone: 'Etc/UTC'
+    labels:
+      - 'dependencies'
+      - 'ci'
+      - 'automated'
+    commit-message:
+      prefix: 'ci(deps)'
+      include: 'scope'
+    reviewers:
+      - 'WyattAu'
+    groups:
+      github-actions:
+        patterns:
+          - '*'

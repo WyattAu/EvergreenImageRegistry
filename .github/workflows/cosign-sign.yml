@@ -2,7 +2,7 @@ name: Sign Images with Cosign
 
 on:
   workflow_run:
-    workflows: ['Build Hardened Images']
+    workflows: ['Build on Push', 'Nightly Full Rebuild']
     types: [completed]
     branches: [main]
 

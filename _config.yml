@@ -1,0 +1,29 @@
+theme: jekyll-theme-primer
+title: Evergreen Image Registry
+description: Hardened container images for production -- 998 images, non-root, distroless, fully auditable.
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+plugins:
+  - jekyll-readme-index
+  - jekyll-default-layout
+defaults:
+  - scope:
+      path: 'docs'
+      type: 'pages'
+    values:
+      layout: 'default'
+exclude:
+  - 'images/'
+  - 'scripts/'
+  - 'evergreenctl/'
+  - 'tests/'
+  - 'compliance/'
+  - 'deploy/'
+  - 'infra/'
+  - '.github/'
+  - '*.toml'
+  - 'Dockerfile*'
+  - 'ruff.toml'
+  - 'pyproject.toml'

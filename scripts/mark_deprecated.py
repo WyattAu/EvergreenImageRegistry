@@ -108,7 +108,9 @@ def main():
 
     logger.info(
         "Summary: %d marked, %d already deprecated, %d missing Dockerfiles",
-        marked, already, missing,
+        marked,
+        already,
+        missing,
     )
     logger.info("Total affected: %d", len(PERMANENTLY_BROKEN))
 

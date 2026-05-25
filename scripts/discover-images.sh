@@ -39,9 +39,9 @@ resolve_tier() {
     raw="${raw#\"}"
     raw="${raw%\"}"
     case "$raw" in
-        1|"1") echo "critical" ;;
-        2|"2") echo "standard" ;;
-        3|"3") echo "community" ;;
+        1) echo "critical" ;;
+        2) echo "standard" ;;
+        3) echo "community" ;;
         critical|standard|community|experimental) echo "$raw" ;;
         *) echo "standard" ;;  # default
     esac
@@ -191,7 +191,6 @@ PYEOF
 # Count images per tier (for reporting)
 # ---------------------------------------------------------------------------
 count_tiers() {
-    local critical=0 standard=0 community=0 experimental=0
     list_all_images | while read -r img; do
         tier=$(get_image_tier "${IMAGES_DIR}/${img}/manifest.toml")
         echo "$tier"
@@ -253,10 +252,12 @@ echo "$MATRIX"
 
 # Write to GITHUB_OUTPUT for downstream steps
 if [ "$GITHUB_OUTPUT" != "/dev/null" ]; then
-    echo "matrix=${MATRIX}" >> "$GITHUB_OUTPUT"
-    echo "total=${TOTAL}" >> "$GITHUB_OUTPUT"
-    echo "mode=${MODE}" >> "$GITHUB_OUTPUT"
-    echo "filter=${FILTER}" >> "$GITHUB_OUTPUT"
+    {
+        echo "matrix=${MATRIX}"
+        echo "total=${TOTAL}"
+        echo "mode=${MODE}"
+        echo "filter=${FILTER}"
+    } >> "$GITHUB_OUTPUT"
 
     # Tier counts
     {

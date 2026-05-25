@@ -222,7 +222,7 @@ def main():
     skipped = 0
 
     for db in DATABASES:
-        logger.info("[%s]", db['name'])
+        logger.info("[%s]", db["name"])
         if process_dockerfile(db):
             success += 1
         else:

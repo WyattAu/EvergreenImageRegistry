@@ -121,7 +121,9 @@ def main():
         return 0
 
     if added == 0:
-        logger.info("No changes needed - all eligible images already have ARG TARGETARCH")
+        logger.info(
+            "No changes needed - all eligible images already have ARG TARGETARCH"
+        )
 
     return 0 if errors == 0 else 1
 

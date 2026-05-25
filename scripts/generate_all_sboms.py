@@ -297,7 +297,10 @@ def main():
             logger.error("Processing %s: %s", d, e)
     logger.info(
         "Generated: %d, Skipped (existing): %d, Errors: %d, Total: %d",
-        count, skipped, errors, count + skipped + errors,
+        count,
+        skipped,
+        errors,
+        count + skipped + errors,
     )
 
 

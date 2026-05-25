@@ -97,7 +97,9 @@ def main():
             f"{remaining} Dockerfiles still contain HEALTHCHECK instructions!"
         )
     else:
-        logger.info("Verification: No HEALTHCHECK instructions remain in any Dockerfile.")
+        logger.info(
+            "Verification: No HEALTHCHECK instructions remain in any Dockerfile."
+        )
 
 
 if __name__ == "__main__":

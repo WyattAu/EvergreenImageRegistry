@@ -473,7 +473,9 @@ def process_image(image_name: str, config: dict, dry_run: bool = False) -> str:
     if has_sha256_verification(content):
         return "SKIP: already has sha256sum verification"
 
-    logger.info("%s: looking up checksum for %s (v%s)...", image_name, target_filename, version)
+    logger.info(
+        "%s: looking up checksum for %s (v%s)...", image_name, target_filename, version
+    )
 
     sha256 = find_checksum_for_image(image_name, download_url, target_filename)
     if not sha256:

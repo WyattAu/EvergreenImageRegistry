@@ -871,7 +871,9 @@ def main():
                 i,
                 total,
                 stats["added"],
-                stats["skip_has_checksum"] + stats["skip_pkg_manager"] + stats["skip_no_downloads"],
+                stats["skip_has_checksum"]
+                + stats["skip_pkg_manager"]
+                + stats["skip_no_downloads"],
                 stats["failed"],
                 github_api_calls,
                 GITHUB_API_LIMIT,

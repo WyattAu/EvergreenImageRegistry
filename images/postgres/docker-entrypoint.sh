@@ -4,6 +4,10 @@ set -e
 if [ ! -f "$PGDATA/PG_VERSION" ]; then
     echo "Initializing database..."
     initdb -D "$PGDATA" --auth=trust --encoding=UTF8 --locale=C.UTF-8
+
+    # Allow network connections from Docker containers
+    echo "host all all 0.0.0.0/0 trust" >> "$PGDATA/pg_hba.conf"
+    echo "host all all ::/0 trust" >> "$PGDATA/pg_hba.conf"
 fi
 
 # Create database and user via postgres --single if env vars are set

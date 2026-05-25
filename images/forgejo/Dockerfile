@@ -13,10 +13,14 @@ RUN apk add --no-cache wget ca-certificates git && \
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION
-RUN addgroup -g 1000 git && \
+RUN apk add --no-cache bash git openssh-keygen ca-certificates && \
+    addgroup -g 1000 git && \
     adduser -D -u 1000 -G git -h /data git && \
-    mkdir -p /data /etc/forgejo /var/log/forgejo /var/cache/forgejo
+    mkdir -p /data /etc/forgejo /var/log/forgejo /var/cache/forgejo /data/git/repositories /data/lfs /data/log && \
+    chown -R git:git /data
 WORKDIR /app
+ENV FORGEJO_WORK_DIR=/data
+ENV GITEA_WORK_DIR=/data
 COPY --from=downloader /app/forgejo /usr/local/bin/forgejo
 EXPOSE 3000 22
 

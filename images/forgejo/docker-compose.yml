@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   forgejo:
     image: ghcr.io/wyattau/evergreenimageregistry/forgejo:latest
@@ -24,7 +22,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
     ports:
       - '3000:3000'
-      - '2222:22' # Map host port 2222 to container SSH port 22
+      - '2222:22'
     networks:
       - forgejo-net
     depends_on:
@@ -44,10 +42,11 @@ services:
     networks:
       - forgejo-net
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      test: ['CMD-SHELL', 'pg_ctl status -D /var/lib/postgresql/data']
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 30s
 
 volumes:
   postgres_data:

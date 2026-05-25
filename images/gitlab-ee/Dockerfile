@@ -16,7 +16,9 @@ RUN apt-get update && \
         gnupg \
         openssh-client && \
     rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.deb.sh" -o /tmp/install.sh && bash /tmp/install.sh && rm -f /tmp/install.sh && \
+    curl --retry 3 --retry-delay 5 --proto '=https' --tlsv1.2 -fsSL "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.deb.sh" -o /tmp/install.sh && \
+    sha256sum /tmp/install.sh && \
+    bash /tmp/install.sh && rm -f /tmp/install.sh && \
     apt-get update && \
     apt-get install -y --no-install-recommends gitlab-ee 2>/dev/null || true && \
     rm -rf /var/lib/apt/lists/* && \

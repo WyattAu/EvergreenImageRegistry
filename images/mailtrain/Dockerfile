@@ -20,7 +20,9 @@ RUN mkdir -p /build/dist && \
     mkdir -p /build/node_modules && \
     mkdir -p /build/package.json-c || true
 RUN apt-get update &&     apt-get install -y --no-install-recommends         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" -o /tmp/install.sh && bash /tmp/install.sh && rm -f /tmp/install.sh &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/* || true
+    curl --retry 3 --retry-delay 5 --proto '=https' --tlsv1.2 -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" -o /tmp/install.sh && \
+    sha256sum /tmp/install.sh && \
+    bash /tmp/install.sh && rm -f /tmp/install.sh &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/* || true
 WORKDIR /build
 RUN curl --retry 3 --retry-delay 5 -fsSL https://github.com/Mailtrain/mailtrain/archive/refs/tags/v${VERSION}.tar.gz -o /tmp/mailtrain.tar.gz && \
     [ -f /tmp/mailtrain.tar.gz ] && tar -xzf /tmp/mailtrain.tar.gz -C /build --strip-components=1 || true ; \

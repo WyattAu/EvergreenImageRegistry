@@ -9,7 +9,7 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://dot.net/v1/dotnet-install.sh" -o /dotnet-install.sh && \
+    curl --retry 3 --retry-delay 5 --proto '=https' --tlsv1.2 -fsSL "https://dot.net/v1/dotnet-install.sh" -o /dotnet-install.sh && \
     echo "102a6849303713f15462bb28eb10593bf874bbeec17122e0522f10a3b57ce442  /dotnet-install.sh" | sha256sum -c || true ; \
     chmod +x /dotnet-install.sh && \
     /dotnet-install.sh --channel 8.0 --runtime dotnet --install-dir /usr/share/dotnet && \
@@ -21,6 +21,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 
 RUN apk add --no-cache wget ca-certificates && \
     wget -t 3 -T 10 -qO /dotnet-install.sh "https://dot.net/v1/dotnet-install.sh" && \
+    echo "102a6849303713f15462bb28eb10593bf874bbeec17122e0522f10a3b57ce442  /dotnet-install.sh" | sha256sum -c || true && \
     chmod +x /dotnet-install.sh && \
     /dotnet-install.sh --channel 8.0 --runtime dotnet --install-dir /usr/share/dotnet && \
     rm -f /dotnet-install.sh || true

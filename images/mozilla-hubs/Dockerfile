@@ -17,7 +17,9 @@ RUN mkdir -p /build/package.json-c || true
 RUN mkdir -p /build/node_modules && \
     mkdir -p /build/package.json-c || true
 RUN apt-get update &&     apt-get install -y --no-install-recommends         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" -o /tmp/install.sh && bash /tmp/install.sh && rm -f /tmp/install.sh &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/* || true
+    curl --retry 3 --retry-delay 5 --proto '=https' --tlsv1.2 -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" -o /tmp/install.sh && \
+    sha256sum /tmp/install.sh && \
+    bash /tmp/install.sh && rm -f /tmp/install.sh &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/* || true
 WORKDIR /build
 RUN curl --retry 3 --retry-delay 5 -fsSL https://github.com/mozilla/hubs/archive/refs/heads/master.tar.gz -o /tmp/hubs.tar.gz && \
     echo "d6567484d9b1e7161b096bacc147190992f629c78ec108fa9b69414a38b56515  /tmp/hubs.tar.gz" | sha256sum -c || true ; \

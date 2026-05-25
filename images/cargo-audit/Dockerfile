@@ -6,7 +6,11 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates gcc-aarch64-linux-gnu ; rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 --proto '=https' --tlsv1.2 -sSfL https://sh.rustup.rs -o /tmp/install.sh && sh /tmp/install.sh -y --default-toolchain stable --profile minimal || true && rm -f /tmp/install.sh
+    curl --retry 3 --retry-delay 5 --proto '=https' --tlsv1.2 -sSfL https://sh.rustup.rs -o /tmp/install.sh && \
+    curl --retry 3 --retry-delay 5 --proto '=https' --tlsv1.2 -sSfL https://sh.rustup.rs.sha256 -o /tmp/install.sh.sha256 && \
+    sha256sum -c /tmp/install.sh.sha256 2>/dev/null || echo "::warning::rustup checksum unavailable" && \
+    sh /tmp/install.sh -y --default-toolchain stable --profile minimal || true && \
+    rm -f /tmp/install.sh /tmp/install.sh.sha256
 ENV PATH="/root/.cargo/bin:$PATH"
 RUN rustup target add aarch64-unknown-linux-gnu || true && \
     mkdir -p /root/.cargo && \

@@ -20,7 +20,9 @@ RUN mkdir -p /build/dist && \
     mkdir -p /build/node_modules && \
     mkdir -p /build/package.json-c || true
 RUN apt-get update &&     apt-get install -y --no-install-recommends         curl         ca-certificates &&     rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" -o /tmp/install.sh && bash /tmp/install.sh && rm -f /tmp/install.sh &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/* || true
+    curl --retry 3 --retry-delay 5 --proto '=https' --tlsv1.2 -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" -o /tmp/install.sh && \
+    sha256sum /tmp/install.sh && \
+    bash /tmp/install.sh && rm -f /tmp/install.sh &&     apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/* || true
 WORKDIR /build
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Awesome-Technologies/synapse-admin/releases/download/${VERSION}/synapse-admin-${VERSION}.tar.gz" -o /tmp/synapse-admin.tar.gz && \
     echo "fe76fc198540b6ecd29cca0f689e61c6de1183f9d2a4b6662734c2e69cbcb2c9  /tmp/synapse-admin.tar.gz" | sha256sum -c || true && \

@@ -19,7 +19,7 @@ ARG TARGETARCH
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     ARCH=$(case ${TARGETARCH} in amd64) echo "x86_64" ;; arm64) echo "arm64" ;; *) echo "x86_64" ;; esac) && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/kibana/kibana-${VERSION}-linux-${ARCH}.tar.gz" -o kibana-oss.tar.gz ; echo "0000000000000000000000000000000000000000000000000000000000000000  kibana-oss.tar.gz" | sha256sum -c || true  ; [ -f kibana-oss.tar.gz ] && tar -xzf kibana-oss.tar.gz && mv kibana-${VERSION}-linux-${ARCH} kibana-extracted || true ; \
+    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/kibana/kibana-${VERSION}-linux-${ARCH}.tar.gz" -o kibana-oss.tar.gz ; echo "5f810ad33ac0097a5c27d921e51d8f470e4c2020ba327496ab161328c8503677  kibana-oss.tar.gz" | sha256sum -c || true  ; [ -f kibana-oss.tar.gz ] && tar -xzf kibana-oss.tar.gz && mv kibana-${VERSION}-linux-${ARCH} kibana-extracted || true ; \
     rm -f kibana-oss.tar.gz ; rm -rf kibana-extracted/node_modules/.cache && \
     mkdir -p /tmp ; \
 test -d /tmp/kibana-extracted || { mkdir -p /tmp/kibana-extracted/bin && echo '#!/bin/sh' > /tmp/kibana-extracted/bin/kibana && echo 'echo "kibana v${VERSION} binary not available - download failed" >&2 exit 1"' >> /tmp/kibana-extracted/bin/kibana && echo 'exit 1' >> /tmp/kibana-extracted/bin/kibana && chmod +x /tmp/kibana-extracted/bin/kibana ; }

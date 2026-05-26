@@ -2,6 +2,8 @@
 # EVERGREEN PLACEHOLDER - KDB+
 # KDB+ Plus edition (proprietary, requires KX Systems license).
 # Enhanced version with additional features over base KDB.
+# NOTE: Checksums cannot be verified for proprietary KX Systems binaries.
+#       Users must supply their own licensed q binary to /opt/kdb/q.
 # =============================================================================
 
 

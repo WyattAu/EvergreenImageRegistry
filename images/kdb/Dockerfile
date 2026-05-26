@@ -2,6 +2,8 @@
 # EVERGREEN PLACEHOLDER - KDB
 # KDB+ is a proprietary in-memory columnar database by KX Systems.
 # No public binaries or container images are available.
+# NOTE: Checksums cannot be verified for proprietary KX Systems binaries.
+#       Users must supply their own licensed q binary to /opt/kdb/q.
 # =============================================================================
 
 

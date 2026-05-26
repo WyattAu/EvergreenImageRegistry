@@ -7,7 +7,7 @@ ARG TARGETARCH
 RUN mkdir -p /opt/auditbeat || true
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/auditbeat/auditbeat-${VERSION}-linux-x86_64.tar.gz" -o /auditbeat.tar.gz || true ; \
-    echo "0000000000000000000000000000000000000000000000000000000000000000  /auditbeat.tar.gz" | sha256sum -c 2>/dev/null || true ; \
+    echo "2dd15d296c88636ed300da2f0ec97b8ec2d842887d3eb817d9a9472d3565b461  /auditbeat.tar.gz" | sha256sum -c 2>/dev/null || true ; \
     mkdir -p /opt/auditbeat ; \
     [ -f /auditbeat.tar.gz ] && tar -xzf /auditbeat.tar.gz -C /opt/auditbeat --strip-components=1 || true ; \
     rm -f /auditbeat.tar.gz ; \

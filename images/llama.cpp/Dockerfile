@@ -5,14 +5,14 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=5888
 ARG TARGETARCH
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/ggerganov/llama.cpp/releases/download/${VERSION}/llama-${VERSION}-bin-ubuntu-x64.zip -o /llama.zip || true ; \
-    echo "31a34f35f7aa84d14a315f8129ce36c55617e31820b0e713621a303c3bad19a8  /llama.zip" | sha256sum -c || true ; \
-    apt-get install -y --no-install-recommends unzip || true ; \
-    unzip -o /llama.zip -d /tmp/llama || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/ggerganov/llama.cpp/releases/download/${VERSION}/llama-${VERSION}-bin-ubuntu-x64.zip -o /llama.zip ; \
+    echo "31a34f35f7aa84d14a315f8129ce36c55617e31820b0e713621a303c3bad19a8  /llama.zip" | sha256sum -c ; \
+    apt-get install -y --no-install-recommends unzip ; \
+    unzip -o /llama.zip -d /tmp/llama ; \
     chmod +x /tmp/llama/llama-server && \
     mv /tmp/llama/llama-server /llama-server && \
-    rm -rf /llama.zip /tmp/llama ; test -f /llama-server || { echo '#!/bin/sh' > /llama-server && echo 'echo "llama.cpp v${VERSION} binary not available - download failed" >&2"' >> /llama-server && echo 'exit 1' >> /llama-server && chmod +x /llama-server; }
+    rm -rf /llama.zip /tmp/llamabinary not available - download failed" >&2"' >> /llama-server && echo 'exit 1' >> /llama-server && chmod +x /llama-server; }
 
 
 

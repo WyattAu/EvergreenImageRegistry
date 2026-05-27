@@ -5,14 +5,13 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION=9.4.0
 ARG TARGETARCH
 RUN mkdir -p /opt/metricbeat || true
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-${VERSION}-linux-x86_64.tar.gz" -o /metricbeat.tar.gz || true ; \
-    echo "ced529e586ee32a9622e963097fbfcdb79615da6f4e02b8200029fd1f11b9d76  /metricbeat.tar.gz" | sha256sum -c || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-${VERSION}-linux-x86_64.tar.gz" -o /metricbeat.tar.gz ; \
+    echo "ced529e586ee32a9622e963097fbfcdb79615da6f4e02b8200029fd1f11b9d76  /metricbeat.tar.gz" | sha256sum -c ; \
     mkdir -p /opt/metricbeat ; \
     if [ -f /metricbeat.tar.gz ]; then tar -xzf /metricbeat.tar.gz -C /opt/metricbeat --strip-components=1 && rm -f /metricbeat.tar.gz && rm -rf /opt/metricbeat/kibana /opt/metricbeat/logs ; fi ; \
-    strip /opt/metricbeat/metricbeat 2>/dev/null || true ; \
-    chmod +x /opt/metricbeat/metricbeat 2>/dev/null || true ; \
-    test -f /opt/metricbeat/metricbeat || { echo '#!/bin/sh' > /opt/metricbeat/metricbeat && echo 'echo "metricbeat v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/metricbeat/metricbeat && echo 'exit 1' >> /opt/metricbeat/metricbeat && chmod +x /opt/metricbeat/metricbeat; } || true
+    strip /opt/metricbeat/metricbeat 2>/dev/null ; \
+    chmod +x /opt/metricbeat/metricbeat 2>/dev/null ; \binary not available - download failed" >&2 exit 1"' >> /opt/metricbeat/metricbeat && echo 'exit 1' >> /opt/metricbeat/metricbeat && chmod +x /opt/metricbeat/metricbeat; }
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder

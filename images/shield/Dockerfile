@@ -7,12 +7,11 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG TARGETARCH
 ARG VERSION=8.6.0
 ARG TARGETARCH
-RUN touch /shield || true
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/starkandwayne/shield/releases/download/v${VERSION}/shield-linux-${TARGETARCH} -o /shield || true ; \
-    echo "ca9c1fcb7bf3e77bb22d5777aab791a5cd3119b96bd79d6f674ff042cbbe7168  /shield" | sha256sum -c || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/starkandwayne/shield/releases/download/v${VERSION}/shield-linux-${TARGETARCH} -o /shield ; \
+    echo "ca9c1fcb7bf3e77bb22d5777aab791a5cd3119b96bd79d6f674ff042cbbe7168  /shield" | sha256sum -c ; \
     chmod +x /shield && \
-    strip --strip-all /shield  || true 2>/dev/null; test -f /shield || { echo '#!/bin/sh' > /shield && echo 'echo "shield v${VERSION} binary not available - download failed" >&2"' >> /shield && echo 'exit 1' >> /shield && chmod +x /shield; } 2>/dev/null || true
+    strip --strip-all /shield 2>/dev/nullbinary not available - download failed" >&2"' >> /shield && echo 'exit 1' >> /shield && chmod +x /shield; } 2>/dev/null
 
 
 

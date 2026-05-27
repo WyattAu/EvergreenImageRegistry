@@ -20,14 +20,14 @@ ARG TARGETARCH
 
 RUN mkdir -p /etc/nginx || true
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates gnupg lsb-release && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/keys/nginx_signing.key" | gpg --dearmor -o /usr/share/keyrings/nginx-archive-keyring.gnupg 2>/dev/null || true ; \
-    echo "55385da31d198fa6a5012d40ae98ecb272a6c4e8fffffba94719ffd3e87de37a  /usr/share/keyrings/nginx-archive-keyring.gnupg" | sha256sum -c || true || true; \
+    curl ca-certificates gnupg lsb-release && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/keys/nginx_signing.key" | gpg --dearmor -o /usr/share/keyrings/nginx-archive-keyring.gnupg 2>/dev/null ; \
+    echo "55385da31d198fa6a5012d40ae98ecb272a6c4e8fffffba94719ffd3e87de37a  /usr/share/keyrings/nginx-archive-keyring.gnupg" | sha256sum -c; \
     echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gnupg] http://nginx.org/packages/debian bookworm nginx" > /etc/apt/sources.list.d/nginx.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends nginx=${VERSION}-1~bookworm && \
-    rm -rf /var/lib/apt/lists/* ; test -f /usr/sbin/nginx || { echo '#!/bin/sh' > /usr/sbin/nginx && echo 'echo "nginx-cache v${VERSION} binary not available - download failed" >&2 \
-    exit 1"' >> /usr/sbin/nginx && echo 'exit 1' >> /usr/sbin/nginx && chmod +x /usr/sbin/nginx; } && test -f /etc/nginx || { echo '#!/bin/sh' > /etc/nginx && echo 'echo "nginx-cache v${VERSION} binary not available - download failed" >&2 \
+    rm -rf /var/lib/apt/lists/*binary not available - download failed" >&2 \
+    exit 1"' >> /usr/sbin/nginx && echo 'exit 1' >> /usr/sbin/nginx && chmod +x /usr/sbin/nginx; } &&binary not available - download failed" >&2 \
     exit 1"' >> /etc/nginx && echo 'exit 1' >> /etc/nginx && chmod +x /etc/nginx; }
 
 
@@ -101,7 +101,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 
 
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates
 
 
 
@@ -109,7 +109,7 @@ RUN apk add --no-cache ca-certificates || true
 
 
 
-RUN touch /usr/sbin/nginx || true
+
 COPY --from=downloader /usr/sbin/nginx /usr/sbin/nginx
 
 

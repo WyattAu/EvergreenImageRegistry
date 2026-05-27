@@ -18,10 +18,8 @@ ARG VERSION=2.3
 ARG GO_VERSION
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
-RUN touch /app/meshbird || true
-RUN mkdir -p /app && \
-    touch /app/meshbird || true
-RUN apt-get update && \
+
+RUN mkdir -p /app && \ RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
     git clone --branch "v${VERSION}" https://github.com/meshbird/meshbird /src 2>/dev/null || echo "Source repo not available" && \
@@ -30,8 +28,7 @@ RUN apt-get update && \
         -ldflags="-s -w -X main.version=${VERSION}" \
         -trimpath \
         -o /app/meshbird . 2>/dev/null || true && \
-    test -f /app/meshbird && strip --strip-all /app/meshbird  || true 2>/dev/null|| true && \
-    test -f /app/meshbird || { echo '#!/bin/sh' > /app/meshbird && echo 'echo "meshbird v'${VERSION}' binary not available - download failed" >&2 exit 1"' >> /app/meshbird && echo 'exit 1' >> /app/meshbird && chmod +x /app/meshbird; } 2>/dev/null || true && \
+    test -s /app/meshbird && strip --strip-all /app/meshbird 2>/dev/null && \' binary not available - download failed" >&2 exit 1"' >> /app/meshbird && echo 'exit 1' >> /app/meshbird && chmod +x /app/meshbird; } 2>/dev/null && \
     mkdir -p /app /var/log/meshbird
 FROM scratch
 COPY --from=builder /app/meshbird /meshbird

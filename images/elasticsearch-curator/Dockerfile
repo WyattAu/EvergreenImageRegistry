@@ -15,7 +15,7 @@ ARG VERSION=5.8.3
 RUN pip install --no-cache-dir --prefix=/install \
     elasticsearch-curator=="${VERSION}" || true && \
     find /install -type f -name "*.pyc" -delete && \
-    find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+    find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 

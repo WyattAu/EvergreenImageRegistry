@@ -7,15 +7,12 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG TARGETARCH
 ARG VERSION=0.19.1
 RUN mkdir -p /tmp/pe/postgres_exporter || true
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus-community/postgres_exporter/releases/download/v${VERSION}/postgres_exporter-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /postgres_exporter.tar.gz || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* ; \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus-community/postgres_exporter/releases/download/v${VERSION}/postgres_exporter-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /postgres_exporter.tar.gz ; \
     mkdir -p /tmp/pe && \
     if [ -f /postgres_exporter.tar.gz ]; then tar -xzf /postgres_exporter.tar.gz -C /tmp/pe && rm -f /postgres_exporter.tar.gz ; fi ; \
-    mv /tmp/pe/postgres_exporter-${VERSION}.linux-${TARGETARCH}/postgres_exporter /tmp/pe/postgres_exporter 2>/dev/null || true ; \
-    strip --strip-all /tmp/pe/postgres_exporter 2>/dev/null || true ; \
-    test -f /tmp/pe/postgres_exporter || { printf '#!/bin/sh\necho "ERROR: postgres-exporter binary not available" >&2\nexit 1\n' > /tmp/pe/postgres_exporter && chmod +x /tmp/pe/postgres_exporter ; } || true
-
-FROM scratch
+    mv /tmp/pe/postgres_exporter-${VERSION}.linux-${TARGETARCH}/postgres_exporter /tmp/pe/postgres_exporter 2>/dev/null ; \
+    strip --strip-all /tmp/pe/postgres_exporter 2>/dev/null ; \FROM scratch
 ARG VERSION=0.19.1
 ARG TARGETARCH
 COPY --from=downloader /tmp/pe/postgres_exporter /postgres_exporter

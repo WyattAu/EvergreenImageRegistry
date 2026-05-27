@@ -5,13 +5,12 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=0.29.0
 ARG TARGETARCH
-RUN touch /blocky || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     TARGETVARIANT=$(case "${TARGETARCH}" in amd64) echo "x86_64";; arm64) echo "arm64";; esac) && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/0xERR0R/blocky/releases/download/v0.29.0/blocky_v0.29.0_Linux_${TARGETVARIANT}.tar.gz -o /blocky.tar.gz || true ; \
-    echo "ce70e5ef992a8eb980cf05e2902a63f9ee27296e1c69114d6dd6506549388428  /blocky.tar.gz" | sha256sum -c || true ; \
-    [ -f /blocky.tar.gz ] && tar -xzf /blocky.tar.gz -C / && rm -f /blocky.tar.gz && chmod +x /blocky 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/0xERR0R/blocky/releases/download/v0.29.0/blocky_v0.29.0_Linux_${TARGETVARIANT}.tar.gz -o /blocky && chmod +x /blocky ; test -f /blocky || { echo '#!/bin/sh' > /blocky && echo 'echo "blocky v${VERSION} binary not available - download failed" >&2"' >> /blocky && echo 'exit 1' >> /blocky && chmod +x /blocky; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/0xERR0R/blocky/releases/download/v0.29.0/blocky_v0.29.0_Linux_${TARGETVARIANT}.tar.gz -o /blocky.tar.gz ; \
+    echo "ce70e5ef992a8eb980cf05e2902a63f9ee27296e1c69114d6dd6506549388428  /blocky.tar.gz" | sha256sum -c ; \
+    [ -f /blocky.tar.gz ] && tar -xzf /blocky.tar.gz -C / && rm -f /blocky.tar.gz && chmod +x /blocky 2>/dev/null ; \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/0xERR0R/blocky/releases/download/v0.29.0/blocky_v0.29.0_Linux_${TARGETVARIANT}.tar.gz -o /blocky && chmod +x /blockybinary not available - download failed" >&2"' >> /blocky && echo 'exit 1' >> /blocky && chmod +x /blocky; }
 
 
 

@@ -14,11 +14,11 @@ ARG APP_GID=65532
 
 FROM debian@sha256:f70dc8d6a8b6a06824c92471a1a258030836b26b043881358b967bf73de7c5ab AS builder
 ARG VERSION=2.7.0
-RUN touch /usr/local/bin/ferretdb || true
+
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/FerretDB/FerretDB/releases/download/v${VERSION}/ferretdb-amd64-linux -o /usr/local/bin/ferretdb && \
-    echo "f81ecae6adf33e0c5e949acf85f94a40b0790c07b8f87d480b91518225da26b4  /usr/local/bin/ferretdb" | sha256sum -c || true ;  \
-    chmod +x /usr/local/bin/ferretdb && strip --strip-all /usr/local/bin/ferretdb || true 2>/dev/null
+    echo "f81ecae6adf33e0c5e949acf85f94a40b0790c07b8f87d480b91518225da26b4  /usr/local/bin/ferretdb" | sha256sum -c ;  \
+    chmod +x /usr/local/bin/ferretdb && strip --strip-all /usr/local/bin/ferretdb 2>/dev/null
 
 FROM scratch
 ARG VERSION=2.7.0

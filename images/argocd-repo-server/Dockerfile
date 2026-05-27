@@ -4,13 +4,12 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=2.12.6
-RUN touch /tmp/argocd || true
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/argoproj/argo-cd/releases/download/v${VERSION}/argocd-linux-${TARGETARCH}" -o /tmp/argocd && \
-    echo "efecedeb09f07b09ad4457467ceb103e1269004f34f7420a531372b13122fd2b  /tmp/argocd" | sha256sum -c || true && \
-    chmod +x /tmp/argocd && strip /tmp/argocd || true && \
-    test -f /tmp/argocd && test -s /tmp/argocd || { echo "ERROR: argocd binary not downloaded" >&2; exit 1; }
-FROM scratch
+    echo "efecedeb09f07b09ad4457467ceb103e1269004f34f7420a531372b13122fd2b  /tmp/argocd" | sha256sum -c && \
+    chmod +x /tmp/argocd && strip /tmp/argocd && \
+    test -f /tmp/argocd &&FROM scratch
 COPY --from=downloader /tmp/argocd /usr/local/bin/argocd-repo-server
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 

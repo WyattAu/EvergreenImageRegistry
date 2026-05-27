@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 10 --connect-timeout 30 --max-time 600 \
         -fsSL "https://github.com/ONLYOFFICE/CommunityServer/releases/download/v${VERSION}/onlyoffice-communityserver-linux-x64.tar.gz" \
-        -o /tmp/communityserver.tar.gz || true && \
+        -o /tmp/communityserver.tar.gz && \
     if [ -f /tmp/communityserver.tar.gz ]; then \
         mkdir -p /opt/onlyoffice && \
         tar -xzf /tmp/communityserver.tar.gz -C /opt/onlyoffice && \
@@ -29,7 +29,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         /opt/onlyoffice/PostgreSQL 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=12.5.2
-RUN apk add --no-cache ca-certificates tzdata fontconfig libxml2 libxslt libstdc++ libgcc libjpeg-turbo libpng libcurl freetype libpq mariadb-libs || true &&  mkdir -p /var/log/onlyoffice /var/lib/onlyoffice /etc/onlyoffice  /opt/onlyoffice/Data /opt/onlyoffice/MySQL  /opt/onlyoffice/PostgreSQL /var/run/onlyoffice 2>/dev/null || true
+RUN apk add --no-cache ca-certificates tzdata fontconfig libxml2 libxslt libstdc++ libgcc libjpeg-turbo libpng libcurl freetype libpq mariadb-libs &&  mkdir -p /var/log/onlyoffice /var/lib/onlyoffice /etc/onlyoffice  /opt/onlyoffice/Data /opt/onlyoffice/MySQL  /opt/onlyoffice/PostgreSQL /var/run/onlyoffice 2>/dev/null
 COPY --from=installer /opt/onlyoffice /opt/onlyoffice
 COPY --from=installer /var/log/onlyoffice /var/log/onlyoffice
 COPY --from=installer /var/lib/onlyoffice /var/lib/onlyoffice

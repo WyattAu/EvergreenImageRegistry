@@ -5,11 +5,10 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=1.33.6+k3s1
 ARG TARGETARCH
-RUN touch /k3s || true
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/k3s-io/k3s/releases/download/v1.33.6+k3s1/k3s -o /k3s || true ; \
-    echo "86945269160fdd1bbd06283ea5b3bafd6c0ec0d1df3ac68ad3686656632081a5  /k3s" | sha256sum -c || true ; \
-    chmod +x /k3s && strip /k3s  || true; test -f /k3s || { echo '#!/bin/sh' > /k3s && echo 'echo "k3s v${VERSION} binary not available - download failed" >&2"' >> /k3s && echo 'exit 1' >> /k3s && chmod +x /k3s; } 2>/dev/null || true
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/k3s-io/k3s/releases/download/v1.33.6+k3s1/k3s -o /k3s ; \
+    echo "86945269160fdd1bbd06283ea5b3bafd6c0ec0d1df3ac68ad3686656632081a5  /k3s" | sha256sum -c ; \
+    chmod +x /k3s && strip /k3sbinary not available - download failed" >&2"' >> /k3s && echo 'exit 1' >> /k3s && chmod +x /k3s; } 2>/dev/null
 
 
 

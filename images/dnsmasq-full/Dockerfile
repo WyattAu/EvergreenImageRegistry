@@ -9,23 +9,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     libdbus-1-dev libgmp-dev && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://thekelleys.org.uk/dnsmasq/dnsmasq-${VERSION}.tar.xz" -o /dnsmasq.tar.gz && \
-    echo "8e50309bd837bfec9649a812e066c09b6988b73d749b7d293c06c57d46a109e4  /dnsmasq.tar.gz" | sha256sum -c || true ; \
-    [ -f /dnsmasq.tar.gz ] && tar -xJf /dnsmasq.tar.gz -C / && rm -f /dnsmasq.tar.gz || true ; \
-    cd /dnsmasq-${VERSION} && \    make -j"$(nproc)" || true ; \
+    echo "8e50309bd837bfec9649a812e066c09b6988b73d749b7d293c06c57d46a109e4  /dnsmasq.tar.gz" | sha256sum -c ; \
+    [ -f /dnsmasq.tar.gz ] && tar -xJf /dnsmasq.tar.gz -C / && rm -f /dnsmasq.tar.gz ; \
+    cd /dnsmasq-${VERSION} && \    make -j"$(nproc)" ; \
     CFLAGS="-DHAVE_DNSSEC -DHAVE_DBUS -DHAVE_CONNTRACK -DHAVE_IDN -DHAVE_LUASCRIPT" \
     LDFLAGS="-static" && \
-    make install PREFIX=/usr DESTDIR=/install || true ; \ \
-    strip --strip-all /install/usr/sbin/dnsmasq  || true 2>/dev/null|| true
+    make install PREFIX=/usr DESTDIR=/install ; \ \
+    strip --strip-all /install/usr/sbin/dnsmasq 2>/dev/null
 
 
-RUN mkdir -p /install/usr/sbin/dnsmasq ; 2>/dev/null || true ; \
-    test -f /install/usr/share/man || { echo '#!/bin/sh' > /install/usr/share/man && echo 'echo "dnsmasq-full v${VERSION} binary not available - download failed" >&2 \
+RUN mkdir -p /install/usr/sbin/dnsmasq ; 2>/dev/null || true ; \binary not available - download failed" >&2 \
     exit 1"' >> /install/usr/share/man && echo 'exit 1' >> /install/usr/share/man && chmod +x /install/usr/share/man ; } && \
     mkdir -p /install/usr/sbin/dnsmasq /install/usr/share/man 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache ca-certificates || true
-RUN touch /usr/sbin/dnsmasq || true
+RUN apk add --no-cache ca-certificates
+
 COPY --from=builder /install/usr/sbin/dnsmasq /usr/sbin/dnsmasq
 RUN mkdir -p /usr/share/man || true
 COPY --from=builder /install/usr/share/man /usr/share/man

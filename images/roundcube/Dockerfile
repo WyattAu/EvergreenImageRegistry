@@ -5,18 +5,18 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 ARG VERSION=1.6.9
 ARG TARGETARCH
 RUN mkdir -p /build || true
-RUN apk add --no-cache curl ca-certificates || true
+RUN apk add --no-cache curl ca-certificates
 WORKDIR /build
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/roundcube/roundcubemail/releases/download/${VERSION}/roundcubemail-${VERSION}-complete.tar.gz" \
-    -o /tmp/roundcube.tar.gz || true ; \
-    echo "b61a5f5c22f890c299e935aacfcf0870676990d8aebff0d6cdff075bf17cef4f  /tmp/roundcube.tar.gz" | sha256sum -c || true || true ; \
+    -o /tmp/roundcube.tar.gz ; \
+    echo "b61a5f5c22f890c299e935aacfcf0870676990d8aebff0d6cdff075bf17cef4f  /tmp/roundcube.tar.gz" | sha256sum -c ; \
     mkdir -p /build ; \
     if [ -f /tmp/roundcube.tar.gz ]; then tar -xzf /tmp/roundcube.tar.gz -C /build --strip-components=1 && rm -f /tmp/roundcube.tar.gz ; fi ; \
-    test -f /build/index.php || echo '<html><body><h1>roundcube v'${VERSION}' binary not available - download failed" >&2 exit 1</h1></body></html>' > /build/index.php
+    test -s /build/index.php || echo '<html><body><h1>roundcube v'${VERSION}' binary not available - download failed" >&2 exit 1</h1></body></html>' > /build/index.php
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=1.6.9
-RUN apk add --no-cache php-8.4 php-8.4-fpm php-8.4-session php-8.4-mbstring php-8.4-xml php-8.4-iconv php-8.4-dom php-8.4-curl php-8.4-intl ca-certificates || true && \
+RUN apk add --no-cache php-8.4 php-8.4-fpm php-8.4-session php-8.4-mbstring php-8.4-xml php-8.4-iconv php-8.4-dom php-8.4-curl php-8.4-intl ca-certificates && \
     addgroup -S -g 10000 roundcube 2>/dev/null || true && \
     adduser -u 65532 -G roundcube -D -h /usr/share/webapps/roundcube -s /bin/false roundcube 2>/dev/null || true && \
     mkdir -p /usr/share/webapps/roundcube /var/lib/roundcube /var/log/roundcube /var/run/php-8.4 2>/dev/null || true

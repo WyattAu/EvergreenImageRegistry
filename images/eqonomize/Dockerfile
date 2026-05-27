@@ -10,14 +10,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
         libqt5widgets5 libqt5core5a qtbase5-dev \
         ca-certificates curl git && \
     rm -rf /var/lib/apt/lists/* || true && \
-    git clone --branch "v${VERSION}" https://github.com/Eqonomize/Eqonomize.git /tmp/eqonomize || true ; \
+    git clone --branch "v${VERSION}" https://github.com/Eqonomize/Eqonomize.git /tmp/eqonomize ; \
     cd /tmp/eqonomize && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release . && \
-    make -j$(nproc) && make install && strip --strip-all /usr/local/bin/eqonomize 2>/dev/null  || true 2>/dev/null|| true
+    make -j$(nproc) && make install && strip --strip-all /usr/local/bin/eqonomize 2>/dev/null 2>/dev/null
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache ca-certificates || true
-RUN touch /usr/local/bin/eqonomize || true
+RUN apk add --no-cache ca-certificates
+
 COPY --from=builder /usr/local/bin/eqonomize /usr/local/bin/eqonomize
 RUN mkdir -p /app /var/log/eqonomize /var/cache/eqonomize ; \
     chown -R 65532:65532 /app /var/log/eqonomize /var/cache/eqonomize

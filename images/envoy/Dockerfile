@@ -16,12 +16,12 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=1.38.0
 WORKDIR /tmp
-RUN touch /tmp/envoy || true
+
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     ARCH="$(echo ${TARGETARCH:-amd64} | sed 's/amd64/x86_64/;s/arm64/aarch_64/')" && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/envoyproxy/envoy/releases/download/v${VERSION}/envoy-${VERSION}-linux-${ARCH}" -o /tmp/envoy && \
-    echo "cca312a7c3f91852f2849995c895130c59842e21ba787dc90bafa4026d6c5ecc  /tmp/envoy" | sha256sum -c || true ; \
-    chmod +x /tmp/envoy && strip --strip-all /tmp/envoy || true 2>/dev/null
+    echo "cca312a7c3f91852f2849995c895130c59842e21ba787dc90bafa4026d6c5ecc  /tmp/envoy" | sha256sum -c ; \
+    chmod +x /tmp/envoy && strip --strip-all /tmp/envoy 2>/dev/null
 FROM scratch
 ARG VERSION=1.38.0
 COPY --from=builder /tmp/envoy /usr/local/bin/envoy

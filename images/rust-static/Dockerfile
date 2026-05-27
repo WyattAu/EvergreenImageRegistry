@@ -23,7 +23,7 @@ RUN apt-get update && \
     /tmp/rust/install.sh --prefix=/opt/rust \
         --components=rust-std,cargo,rustc,rust-std-${RUST_ARCH/-gnu/-musl} \
         --without=rust-docs --without=rustfmt --without=clippy && \
-    strip /opt/rust/bin/rustc /opt/rust/bin/cargo 2>/dev/null || true
+    strip /opt/rust/bin/rustc /opt/rust/bin/cargo 2>/dev/null
 FROM scratch
 COPY --from=builder /opt/rust /opt/rust
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

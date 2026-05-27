@@ -5,10 +5,9 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=2.462.1
 ARG TARGETARCH
-RUN touch /jenkins.war || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-headless && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/2.462.1/jenkins-war-2.462.1.war" -o /jenkins.war ; test -f /jenkins.war || { echo '#!/bin/sh' > /jenkins.war && echo 'echo "jenkins-plugin v${VERSION} binary not available - download failed" >&2"' >> /jenkins.war && echo 'exit 1' >> /jenkins.war && chmod +x /jenkins.war; } || true && \
-    echo "0f21c25fd6fafb435f1b54d3953ba20a8425e9959a35a7a8403e8a01192c0dfc  /jenkins.war" | sha256sum -c || true
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-headless && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/2.462.1/jenkins-war-2.462.1.war" -o /jenkins.warbinary not available - download failed" >&2"' >> /jenkins.war && echo 'exit 1' >> /jenkins.war && chmod +x /jenkins.war; } && \
+    echo "0f21c25fd6fafb435f1b54d3953ba20a8425e9959a35a7a8403e8a01192c0dfc  /jenkins.war" | sha256sum -c
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/jenkins-plugin /var/cache/jenkins-plugin /home/jenkins 2>/dev/null || true
 

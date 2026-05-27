@@ -25,9 +25,9 @@ ARG TARGETARCH
 
 
 
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/trufflesecurity/trufflehog/releases/download/v3.82.2/trufflehog_3.82.2_linux_${TARGETARCH}.tar.gz -o /trufflehog_3.82.2_linux_${TARGETARCH}.tar.gz &&     [ -f /trufflehog_3.82.2_linux_${TARGETARCH}.tar.gz ] && tar -xzf /trufflehog_3.82.2_linux_${TARGETARCH}.tar.gz -C / && rm -f /trufflehog_3.82.2_linux_${TARGETARCH}.tar.gz && chmod +x /trufflehog || true; \
-    echo "b4360a24078d17be78353d3eaf78329f67f10d15a3eef4c5cbf775bd79e0b0a4  /trufflehog_3.82.2_linux_${TARGETARCH}.tar.gz" | sha256sum -c || true  #
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/trufflesecurity/trufflehog/releases/download/v3.82.2/trufflehog_3.82.2_linux_${TARGETARCH}.tar.gz -o /trufflehog_3.82.2_linux_${TARGETARCH}.tar.gz &&     [ -f /trufflehog_3.82.2_linux_${TARGETARCH}.tar.gz ] && tar -xzf /trufflehog_3.82.2_linux_${TARGETARCH}.tar.gz -C / && rm -f /trufflehog_3.82.2_linux_${TARGETARCH}.tar.gz && chmod +x /trufflehog; \
+    echo "b4360a24078d17be78353d3eaf78329f67f10d15a3eef4c5cbf775bd79e0b0a4  /trufflehog_3.82.2_linux_${TARGETARCH}.tar.gz" | sha256sum -c  #
 
 
 
@@ -35,8 +35,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 
 
 
-RUN strip /trufflehog 2>/dev/null || true && \
-    test -f /trufflehog || { echo '#!/bin/sh' > /trufflehog && echo 'echo "truffelsh v${VERSION} binary not available - download failed" >&2"' >> /trufflehog && echo 'exit 1' >> /trufflehog && chmod +x /trufflehog; }
+RUN strip /trufflehog 2>/dev/null && \binary not available - download failed" >&2"' >> /trufflehog && echo 'exit 1' >> /trufflehog && chmod +x /trufflehog; }
 
 
 

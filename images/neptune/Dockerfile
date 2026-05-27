@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mkdir -p /app-src 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=1.2.0
-RUN apk add --no-cache ca-certificates python3 py3-pip || true && \
+RUN apk add --no-cache ca-certificates python3 py3-pip && \
     pip3 install --break-system-packages --no-cache-dir \
         gremlinpython SPARQLWrapper 2>/dev/null || true && \
     adduser -u 65532 -s /bin/false neptune 2>/dev/null || true && \

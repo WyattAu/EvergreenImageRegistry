@@ -8,7 +8,7 @@ FROM tecnativa/docker-socket-proxy:v0.4.2@sha256:5571c19d8e5c1a58a4edb5781beedb3
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=v0.4.2
 
-RUN apk add --no-cache haproxy ca-certificates || true && \
+RUN apk add --no-cache haproxy ca-certificates && \
     mkdir -p /var/lib/haproxy /tmp /run && \
     touch /var/lib/haproxy/server-state && \
     adduser -u 65532 -D -h /app -s /bin/false dsp 2>/dev/null || true && \

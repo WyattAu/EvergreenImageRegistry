@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     "https://github.com/photoprism/photoprism/releases/download/${VERSION}/photoprism_${VERSION}-linux-${TARGETARCH}.tar.gz" \
     -o /tmp/photoprism.tar.gz && \
     tar -xzf /tmp/photoprism.tar.gz -C /opt && rm -f /tmp/photoprism.tar.gz && \
-    chmod +x /opt/photoprism 2>/dev/null || true
+    chmod +x /opt/photoprism 2>/dev/null
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=260305-fad9d5395
 RUN apk add --no-cache ca-certificates

@@ -16,15 +16,15 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils rsyslog && rm -rf /var/lib/apt/lists/* && \
-    strip /usr/sbin/rsyslogd  || true&& \
-    find /usr/lib/rsyslog -type f -name "*.so" -exec strip --strip-unneeded {} \ || true && \
-    mkdir -p /usr/sbin/rsyslogd 2>/dev/null || true
+    strip /usr/sbin/rsyslogd&& \
+    find /usr/lib/rsyslog -type f -name "*.so" -exec strip --strip-unneeded {} \ && \
+    mkdir -p /usr/sbin/rsyslogd 2>/dev/null
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN addgroup -S -g 65532 rsyslog 2>/dev/null || true && \
     adduser -u 65532 -G rsyslog -D -s /bin/false rsyslog || true && \
-    apk add --no-cache rsyslog ca-certificates || true && \
-    mkdir -p /usr/sbin 2>/dev/null || true ; test -f /usr/sbin/rsyslogd 2>/dev/null || echo "#!/bin/sh" > /usr/sbin/rsyslogd 2>/dev/null || true
+    apk add --no-cache rsyslog ca-certificates && \
+    mkdir -p /usr/sbin 2>/dev/null || true ; test -s /usr/sbin/rsyslogd 2>/dev/null || echo "#!/bin/sh" > /usr/sbin/rsyslogd 2>/dev/null || true
 COPY --from=builder /usr/sbin/rsyslogd /usr/sbin/rsyslogd
 RUN mkdir -p /app/conf /app/logs /app/run /app/spool /var/lib/rsyslog ; \
 addgroup -S -g 2 rsyslog >/dev/null 2>&1 || true && adduser -u 65532 -G rsyslog -D -s /bin/false rsyslog 2>/dev/null || true && \

@@ -14,15 +14,15 @@ ARG APP_GID=65532
 FROM python:${PYTHON_VERSION} AS builder
 ARG VERSION=4.0.3
 ARG PYTHON_VERSION=3.12-slim
-RUN pip install --no-cache-dir --prefix=/install patroni[postgresql]=="${VERSION}" || true && \
-    pip install --no-cache-dir --prefix=/install psycopg2-binary==2.9.9 || true && \
+RUN pip install --no-cache-dir --prefix=/install patroni[postgresql]=="${VERSION}" && \
+    pip install --no-cache-dir --prefix=/install psycopg2-binary==2.9.9 && \
     find /install -type f -name "*.pyc" -delete && \
-    find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+    find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 
-RUN microdnf install -y libpq curl ca-certificates || true
+RUN microdnf install -y libpq curl ca-certificates
 COPY --from=builder /install /usr/local
 RUN adduser -u 65532 -s /bin/false patroni 2>/dev/null || true && \
     mkdir -p /app /var/log/patroni /var/cache/patroni ; \

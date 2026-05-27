@@ -8,8 +8,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip python3 ca-certificates ; rm -rf /var/lib/apt/lists/* || true && \
     python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir --upgrade pip || true && \
-    pip install --no-cache-dir conan ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/conan || { echo '#!/bin/sh' > /usr/local/bin/conan && echo 'echo "conan-audit v${VERSION} binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/conan && echo 'exit 1' >> /usr/local/bin/conan && chmod +x /usr/local/bin/conan ; } 2>/dev/null || true && \
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir conan ; mkdir -p /usr/local/binbinary not available - download failed" >&2 exit 1"' >> /usr/local/bin/conan && echo 'exit 1' >> /usr/local/bin/conan && chmod +x /usr/local/bin/conan ; } 2>/dev/null && \
     mkdir -p /app 2>/dev/null || true
 FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"

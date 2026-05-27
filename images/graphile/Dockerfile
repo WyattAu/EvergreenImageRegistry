@@ -5,11 +5,11 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 ARG VERSION=4.14.0
 ARG TARGETARCH
 
-RUN apk add --no-cache nodejs-20 npm ca-certificates git || true && \
+RUN apk add --no-cache nodejs-20 npm ca-certificates git && \
     addgroup -S -g 10000 graphile 2>/dev/null || true && \
     adduser -u 65532 -G graphile -D -h /opt/graphile -s /bin/false graphile 2>/dev/null || true && \
     mkdir -p /opt/graphile /var/lib/graphile /var/log/graphile /var/cache/graphile 2>/dev/null || true && \
-    npm install -g postgraphile@${VERSION} 2>/dev/null || { mkdir -p /opt/graphile && echo '#!/bin/sh' > /opt/graphile/cli.js && echo 'echo "graphile v'"${VERSION}"' binary not available - download failed" >&2 exit 1"' >> /opt/graphile/cli.js && echo 'exit 1' >> /opt/graphile/cli.js && chmod +x /opt/graphile/cli.js ; } 2>/dev/null || true && \
+    npm install -g postgraphile@${VERSION} 2>/dev/null || { mkdir -p /opt/graphile && echo '#!/bin/sh' > /opt/graphile/cli.js && echo 'echo "graphile v'"${VERSION}"' binary not available - download failed" >&2 exit 1"' >> /opt/graphile/cli.js && echo 'exit 1' >> /opt/graphile/cli.js && chmod +x /opt/graphile/cli.js ; } 2>/dev/null && \
     chown -R 65532:65532 /opt/graphile /var/lib/graphile /var/log/graphile /var/cache/graphile 2>/dev/null || true
 USER 65532:65532
 WORKDIR /opt/graphile

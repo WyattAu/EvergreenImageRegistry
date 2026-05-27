@@ -14,7 +14,7 @@ ARG APP_GID=65532
 # hadolint ignore=DL3023
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS builder
-RUN apk add --no-cache haproxy ca-certificates || true && \
+RUN apk add --no-cache haproxy ca-certificates && \
     mkdir -p /tmp/haproxy 2>/dev/null || true && \
     cp "$(which haproxy)" /tmp/haproxy/haproxy && \
     mkdir -p /tmp/haproxy/haproxy 2>/dev/null || true

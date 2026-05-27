@@ -5,14 +5,14 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=1.11.1
 ARG TARGETARCH
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/coredns/coredns/releases/download/v${VERSION}/coredns_${VERSION}_linux_${TARGETARCH}.tgz -o /coredns.tar.gz || true ; \
-    echo "f96cdee0934c5c12a28bb0fb080bed688fdd7bfdeae2f64984f02bdec2d65498  /coredns.tar.gz" | sha256sum -c || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/coredns/coredns/releases/download/v${VERSION}/coredns_${VERSION}_linux_${TARGETARCH}.tgz -o /coredns.tar.gz ; \
+    echo "f96cdee0934c5c12a28bb0fb080bed688fdd7bfdeae2f64984f02bdec2d65498  /coredns.tar.gz" | sha256sum -c ; \
     mkdir -p /tmp/coredns ; \
-    [ -f /coredns.tar.gz ] && tar -xzf /coredns.tar.gz -C /tmp/coredns || true ; \
-    strip --strip-all /tmp/coredns/coredns  || true 2>/dev/null&& \
+    [ -f /coredns.tar.gz ] && tar -xzf /coredns.tar.gz -C /tmp/coredns ; \
+    strip --strip-all /tmp/coredns/coredns 2>/dev/null&& \
     mv /tmp/coredns/coredns /coredns && \
-    rm -rf /coredns.tar.gz /tmp/* ; test -f /coredns || { echo '#!/bin/sh' > /coredns && echo 'echo "coredns-alpine v${VERSION} binary not available - download failed" >&2"' >> /coredns && echo 'exit 1' >> /coredns && chmod +x /coredns; }
+    rm -rf /coredns.tar.gz /tmp/*binary not available - download failed" >&2"' >> /coredns && echo 'exit 1' >> /coredns && chmod +x /coredns; }
 
 
 

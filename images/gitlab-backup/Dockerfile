@@ -22,12 +22,12 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* || true && \
     gem install --no-document backup:5.0.0beta7 || true
 WORKDIR /build
-RUN git clone --branch v${VERSION} https://github.com/satoru-tsuji/gitlab-backup-cli.git /build 2>/dev/null || true 2>/dev/null || echo "Source repo not available - using binary not available - download failed" >&2 exit 1" && \
+RUN git clone --branch v${VERSION} https://github.com/satoru-tsuji/gitlab-backup-cli.git /build 2>/dev/null 2>/dev/null || echo "Source repo not available - using binary not available - download failed" >&2 exit 1" && \
     mkdir -p /usr/local 2>/dev/null || true ; touch /usr/local/bundle 2>/dev/null || true && \
     mkdir -p /usr/bin 2>/dev/null || true ; touch /usr/bin/backup 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache ruby openssh-client ca-certificates || true && \
+RUN apk add --no-cache ruby openssh-client ca-certificates && \
     addgroup -S -g 10000 backup 2>/dev/null || true && adduser -u 65532 -G backup -D -h /app -s /bin/false backup && \
     mkdir -p /app /data /var/log/gitlab-backup && chown -R 65532:65532 /app /data /var/log/gitlab-backup 2>/dev/null || true && \
     mkdir -p /usr/local /usr/local/bin 2>/dev/null || true

@@ -11,9 +11,9 @@ RUN apt-get update && \
     curl --retry 3 --retry-delay 5 -fsSL \
     "https://github.com/woodpecker-ci/woodpecker/releases/download/v${VERSION}/woodpecker-agent_linux_${TARGETARCH}.tar.gz" \
     -o /tmp/archive.tar.gz && \
-    echo "db482c44a83999753d87db7a6334bcf5d98c83816b63a04868eca0ba24983ae6  /tmp/archive.tar.gz" | sha256sum -c || true ; \
+    echo "db482c44a83999753d87db7a6334bcf5d98c83816b63a04868eca0ba24983ae6  /tmp/archive.tar.gz" | sha256sum -c ; \
     tar -xzf /tmp/archive.tar.gz -C /tmp && \
-    strip /tmp/woodpecker-agent  || true&& \
+    strip /tmp/woodpecker-agent&& \
     chmod +x /tmp/woodpecker-agent
 FROM scratch
 COPY --from=downloader /tmp/woodpecker-agent /usr/local/bin/woodpecker-agent

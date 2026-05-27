@@ -24,15 +24,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg --dearmor -o /usr/share/keyrings/postgresql-keyring.gnupg && \
     apt-get update && apt-get install -y --no-install-recommends \
     postgresql-${VERSION%.*} postgresql-contrib-${VERSION%.*} && rm -rf /var/lib/apt/lists/* && \
-    mkdir -p /var/lib/postgresql/data /var/run/postgresql /app || true && \
-    test -f /var/lib/postgresql || { echo '#!/bin/sh' > /var/lib/postgresql && echo 'echo "postgresql-17 v${VERSION} binary not available - download failed" >&2 exit 1"' >> /var/lib/postgresql && echo 'exit 1' >> /var/lib/postgresql && chmod +x /var/lib/postgresql ; } ; \
-    test -f /var/run/postgresql || { echo '#!/bin/sh' > /var/run/postgresql && echo 'echo "postgresql-17 v${VERSION} binary not available - download failed" >&2 exit 1"' >> /var/run/postgresql && echo 'exit 1' >> /var/run/postgresql && chmod +x /var/run/postgresql ; } ; test -f /var/run/postgresql || { echo '#!/bin/sh' > /var/run/postgresql && echo 'echo "postgresql-17 v${VERSION} binary not available - download failed" >&2 exit 1"' >> /var/run/postgresql && echo 'exit 1' >> /var/run/postgresql && chmod +x /var/run/postgresql ; } || true
+    mkdir -p /var/lib/postgresql/data /var/run/postgresql /app || true && \binary not available - download failed" >&2 exit 1"' >> /var/lib/postgresql && echo 'exit 1' >> /var/lib/postgresql && chmod +x /var/lib/postgresql ; } ; \binary not available - download failed" >&2 exit 1"' >> /var/run/postgresql && echo 'exit 1' >> /var/run/postgresql && chmod +x /var/run/postgresql ; }binary not available - download failed" >&2 exit 1"' >> /var/run/postgresql && echo 'exit 1' >> /var/run/postgresql && chmod +x /var/run/postgresql ; }
 FROM scratch AS entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
-RUN apk add --no-cache bash gnupg curl ca-certificates libzstd1 liblz4-1 || true
+RUN apk add --no-cache bash gnupg curl ca-certificates libzstd1 liblz4-1
 COPY --from=builder /var/lib/postgresql /var/lib/postgresql
 COPY --from=builder /var/run/postgresql /var/run/postgresql
 COPY --from=entrypoint /usr/local/bin/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh

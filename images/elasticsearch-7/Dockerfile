@@ -105,7 +105,7 @@ ARG VERSION=7.17.21
 
 
 
-RUN apk add --no-cache wget ca-certificates || true && \
+RUN apk add --no-cache wget ca-certificates && \
     wget -t 3 -T 10 -qO /tmp/es7.tar.gz "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-linux-x86_64.tar.gz" && \
     echo "e38938059bac6020de17be3a8804a25e55f40a5adc2edf2eda3e23897a2545e2  /tmp/es7.tar.gz" | sha256sum -c && \
     tar xzf /tmp/es7.tar.gz -C /opt && rm -f /tmp/es7.tar.gz && \

@@ -18,12 +18,12 @@ RUN mkdir -p /opt/trino-server-${VERSION} || true
 RUN mkdir -p /opt/trino-server-${VERSION} || true
 RUN mkdir -p /opt/trino-server-${VERSION}
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+    curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://repo1.maven.org/maven2/io/trino/trino-server/${VERSION}/trino-server-${VERSION}.tar.gz" \
-    -o /trino.tar.gz ; echo "PENDING  /trino.tar.gz" | sha256sum -c || true  ; [ -f /trino.tar.gz ] && tar -xzf /trino.tar.gz -C /opt || true ; \
+    -o /trino.tar.gz ; echo "PENDING  /trino.tar.gz" | sha256sum -c  ; [ -f /trino.tar.gz ] && tar -xzf /trino.tar.gz -C /opt ; \
     rm -f /trino.tar.gz && \
     mkdir -p /opt/trino-server-${VERSION} 2>/dev/null || true && \
-    [ -f /opt/trino-server-${VERSION} ] || { echo '#!/bin/sh' > /opt/trino-server-${VERSION} ; echo 'echo "trino v${VERSION} binary not available - download failed" >&2"' >> /opt/trino-server-${VERSION} ; echo 'exit 1' >> /opt/trino-server-${VERSION} ; chmod +x /opt/trino-server-${VERSION} 2>/dev/null || true ; } 2>/dev/null || true
+    [ -f /opt/trino-server-${VERSION} ] || { echo '#!/bin/sh' > /opt/trino-server-${VERSION} ; echo 'echo "trino v${VERSION} binary not available - download failed" >&2"' >> /opt/trino-server-${VERSION} ; echo 'exit 1' >> /opt/trino-server-${VERSION} ; chmod +x /opt/trino-server-${VERSION} 2>/dev/null ; } 2>/dev/null
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION=435

@@ -16,11 +16,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     pip install --no-cache-dir --prefix=/install \
     mysqlclient 2>/dev/null || true ; \
     find /install -type f -name "*.pyc" -delete 2>/dev/null ; \
-    find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true && \
-    test -f /install || { echo '#!/bin/sh' > /install && echo 'echo "mysql-anonymizer v${VERSION} binary not available - download failed" >&2 exit 1"' >> /install && echo 'exit 1' >> /install && chmod +x /install ; }
+    find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null  && \binary not available - download failed" >&2 exit 1"' >> /install && echo 'exit 1' >> /install && chmod +x /install ; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache curl ca-certificates || true
+RUN apk add --no-cache curl ca-certificates
 COPY --from=builder /install /usr/local
 COPY <<'SCRIPT' /app/anonymize.py
 #!/usr/bin/env python3
@@ -53,7 +52,7 @@ SCRIPT
 RUN adduser -u 65532 -s /bin/false anon 2>/dev/null || true ; \
     mkdir -p /app /var/log/mysql-anonymizer /var/cache/mysql-anonymizer 2>/dev/null || true ; \
     chown -R 65532:65532 /app /var/log/mysql-anonymizer /var/cache/mysql-anonymizer 2>/dev/null || true ; \
-    chmod +x /app/anonymize.py 2>/dev/null || true
+    chmod +x /app/anonymize.py 2>/dev/null
 USER 65532:65532
 WORKDIR /app
 

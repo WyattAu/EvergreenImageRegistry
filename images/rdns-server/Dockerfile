@@ -15,7 +15,7 @@ ARG TARGETARCH
 ARG VERSION=0.12.0
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
-RUN touch /app/rdns-server || true
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
@@ -24,9 +24,8 @@ RUN apt-get update && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
         -o /app/rdns-server ./cmd/rdnsd 2>/dev/null || true && \
-    test -f /app/rdns-server && strip --strip-all /app/rdns-server  || true 2>/dev/null|| true && \
-    test -f /app/rdns-server || { echo '#!/bin/sh' > /app/rdns-server && echo 'echo "rdns-server v'${VERSION}' binary not available - download failed" >&2 \
-    exit 1"' >> /app/rdns-server && echo 'exit 1' >> /app/rdns-server && chmod +x /app/rdns-server; } 2>/dev/null || true
+    test -s /app/rdns-server && strip --strip-all /app/rdns-server 2>/dev/null && \' binary not available - download failed" >&2 \
+    exit 1"' >> /app/rdns-server && echo 'exit 1' >> /app/rdns-server && chmod +x /app/rdns-server; } 2>/dev/null
 FROM scratch
 COPY --from=builder /app/rdns-server /usr/local/bin/rdns-server
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

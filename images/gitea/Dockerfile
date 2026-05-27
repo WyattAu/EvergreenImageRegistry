@@ -17,8 +17,8 @@ ARG TARGETARCH
 # hadolint ignore=DL3018
 RUN apk add --no-cache wget ca-certificates && \
     ARCH=$(case ${TARGETARCH} in amd64) echo "amd64" ;; arm64) echo "arm64" ;; *) echo "amd64" ;; esac) && \
-    wget -t 3 -T 10 -qO /gitea "https://github.com/go-gitea/gitea/releases/download/v1.21.10/gitea-1.21.10-linux-${ARCH}" && chmod +x /gitea 2>/dev/null || true && \
-    echo "17eb858f3ef2b7cdb649286e6a9cc050f9d949606327a7d6f27aaba49fc3b492  /gitea" | sha256sum -c || true  #
+    wget -t 3 -T 10 -qO /gitea "https://github.com/go-gitea/gitea/releases/download/v1.21.10/gitea-1.21.10-linux-${ARCH}" && chmod +x /gitea 2>/dev/null && \
+    echo "17eb858f3ef2b7cdb649286e6a9cc050f9d949606327a7d6f27aaba49fc3b492  /gitea" | sha256sum -c  #
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS runtime
 RUN adduser -D -u 65532 git 2>/dev/null || true && \
     mkdir -p /app /var/log/gitea /var/cache/gitea 2>/dev/null || true

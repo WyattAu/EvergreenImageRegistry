@@ -18,11 +18,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     build-essential cmake libssl-dev && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/pymumu/smartdns/archive/refs/tags/${VERSION}.tar.gz -o /smartdns.tar.gz && \
-    [ -f /smartdns.tar.gz ] && tar -xzf /smartdns.tar.gz -C / && rm -f /smartdns.tar.gz || true ; \
+    [ -f /smartdns.tar.gz ] && tar -xzf /smartdns.tar.gz -C / && rm -f /smartdns.tar.gz ; \
     mkdir -p /smartdns-${VERSION}/build ; \
     cd /smartdns-${VERSION}/build && \    cmake .. -DPREFIX=/usr -DENABLE_SYSTEMD=OFF && \
     make -j"$(nproc)" && \
-    strip --strip-all /smartdns-${VERSION}/src/smartdns  || true 2>/dev/null|| true && \
+    strip --strip-all /smartdns-${VERSION}/src/smartdns 2>/dev/null && \
     mkdir -p /smartdns-${VERSION}/src/smartdns
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream

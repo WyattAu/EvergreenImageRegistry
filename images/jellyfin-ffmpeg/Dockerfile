@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
         libtheora-dev libvorbis-dev libwebp-dev libxvidcore-dev \
         zlib1g-dev git ca-certificates curl && \
     rm -rf /var/lib/apt/lists/* || true && \
-    git clone --branch "n${VERSION}" https://github.com/jellyfin/jellyfin-ffmpeg.git /tmp/jellyfin-ffmpeg 2>/dev/null || true && \
+    git clone --branch "n${VERSION}" https://github.com/jellyfin/jellyfin-ffmpeg.git /tmp/jellyfin-ffmpeg 2>/dev/null && \
     cd /tmp/jellyfin-ffmpeg && \
     ./configure --prefix=/usr/local \
         --enable-gpl --enable-nonfree \
@@ -22,14 +22,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
         --enable-libfreetype --enable-libmp3lame --enable-libvorbis \
         --enable-libwebp --enable-libxvid --enable-libtheora \
         --extra-cflags="-I/usr/include" --extra-ldflags="-L/usr/lib" && \
-    make -j$(nproc) && make install && strip /usr/local/bin/ffmpeg /usr/local/bin/ffprobe || true && \
+    make -j$(nproc) && make install && strip /usr/local/bin/ffmpeg /usr/local/bin/ffprobe && \
     mkdir -p /usr/local/lib 2>/dev/null || true ; touch /usr/local/lib/ 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache git freetype zlib ca-certificates || true
-RUN touch /usr/local/bin/ffmpeg || true
+RUN apk add --no-cache git freetype zlib ca-certificates
+
 COPY --from=builder /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg
-RUN touch /usr/local/bin/ffprobe || true
+
 COPY --from=builder /usr/local/bin/ffprobe /usr/local/bin/ffprobe
 RUN mkdir -p /usr/local/lib || true
 COPY --from=builder /usr/local/lib/ /usr/local/lib/

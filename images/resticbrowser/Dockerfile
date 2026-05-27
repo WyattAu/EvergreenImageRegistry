@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         -O /tmp/resticbrowser.zip 2>/dev/null || true && \
     if [ -f /tmp/resticbrowser.zip ]; then \
         unzip -o /tmp/resticbrowser.zip -d /opt/resticbrowser && \
-        chmod +x /opt/resticbrowser/resticbrowser 2>/dev/null || true; \
+        chmod +x /opt/resticbrowser/resticbrowser 2>/dev/null; \
     else \
         echo '#!/bin/sh' > /opt/resticbrowser && \
         echo 'echo "resticbrowser v'"${VERSION}"' - upstream unavailable, stub mode"' >> /opt/resticbrowser && \

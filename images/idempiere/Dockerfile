@@ -7,7 +7,7 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION=v2.0
 RUN mkdir -p /opt/ || true
 RUN mkdir -p /opt/ || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/idempiere/idempiere/archive/refs/tags/${VERSION}.tar.gz" \
     -o /idempiere.tar.gz && \
     tar -xzf /idempiere.tar.gz -C /opt/ && rm -f /idempiere.tar.gz

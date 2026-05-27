@@ -12,7 +12,7 @@ RUN apt-get update && \
     "https://code.forgejo.org/forgejo/runner/releases/download/v${VERSION}/forgejo-runner-${VERSION}-linux-${TARGETARCH}" \
     -o /tmp/forgejo-runner && \
     chmod +x /tmp/forgejo-runner && \
-    strip /tmp/forgejo-runner || true
+    strip /tmp/forgejo-runner
 FROM scratch
 COPY --from=downloader /tmp/forgejo-runner /usr/local/bin/forgejo-runner
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

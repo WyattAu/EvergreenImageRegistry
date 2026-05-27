@@ -19,7 +19,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 RUN apk add --no-cache \
     ca-certificates && \
     apk add --no-cache java-21-default-jdk 2>/dev/null || \
-    apk add --no-cache openjdk-21-jdk-headless 2>/dev/null || true
+    apk add --no-cache openjdk-21-jdk-headless 2>/dev/null
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"

@@ -5,12 +5,11 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=0.15.0
-RUN touch /postgres_exporter || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus-community/postgres_exporter/releases/download/v0.15.0/postgres_exporter-0.15.0.linux-${TARGETARCH}.tar.gz -o /postgres_exporter.tar.gz && \
-    echo "c21a5a4901fe297f40e8b1471cee4fd77934b948a7e5ae68f1a8d22d26cee6c1  /postgres_exporter.tar.gz" | sha256sum -c || true ; [ -f /postgres_exporter.tar.gz ] && \
-    [ -f /postgres_exporter.tar.gz ] && tar -xzf /postgres_exporter.tar.gz -C / && rm -f /postgres_exporter.tar.gz && chmod +x /postgres_exporter 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus-community/postgres_exporter/releases/download/v0.15.0/postgres_exporter-0.15.0.linux-${TARGETARCH}.tar.gz -o /postgres_exporter && chmod +x /postgres_exporter ; test -f /postgres_exporter || { echo '#!/bin/sh' > /postgres_exporter && echo 'echo "postgresql-exporter v${VERSION} binary not available - download failed" >&2"' >> /postgres_exporter && echo 'exit 1' >> /postgres_exporter && chmod +x /postgres_exporter; } || true
+    echo "c21a5a4901fe297f40e8b1471cee4fd77934b948a7e5ae68f1a8d22d26cee6c1  /postgres_exporter.tar.gz" | sha256sum -c ; [ -f /postgres_exporter.tar.gz ] && \
+    [ -f /postgres_exporter.tar.gz ] && tar -xzf /postgres_exporter.tar.gz -C / && rm -f /postgres_exporter.tar.gz && chmod +x /postgres_exporter 2>/dev/null ; \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus-community/postgres_exporter/releases/download/v0.15.0/postgres_exporter-0.15.0.linux-${TARGETARCH}.tar.gz -o /postgres_exporter && chmod +x /postgres_exporterbinary not available - download failed" >&2"' >> /postgres_exporter && echo 'exit 1' >> /postgres_exporter && chmod +x /postgres_exporter; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/postgres_exporter /var/cache/postgres_exporter 2>/dev/null || true

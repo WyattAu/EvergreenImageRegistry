@@ -6,10 +6,10 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=2026.5.0
-RUN touch /cloudflared || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/cloudflare/cloudflared/releases/download/2026.3.0/cloudflared-linux-${TARGETARCH} -o /cloudflared && chmod +x /cloudflared && \
-    test -f /cloudflared || { echo '#!/bin/sh' > /cloudflared && echo 'echo "cloudflared v${VERSION} binary not available - download failed" >&2"' >> /cloudflared && echo 'exit 1' >> /cloudflared && chmod +x /cloudflared; } || true
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/cloudflare/cloudflared/releases/download/${VERSION}/cloudflared-linux-${TARGETARCH}" -o /cloudflared && \
+    chmod +x /cloudflared && \
+    test -s /cloudflared
 
 
 FROM scratch

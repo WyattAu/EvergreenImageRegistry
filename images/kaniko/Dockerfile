@@ -22,13 +22,13 @@ RUN mkdir -p /var/log/kaniko || true
 COPY --from=builder /var/log/kaniko /var/log/kaniko
 RUN mkdir -p /var/cache/kaniko || true
 COPY --from=builder /var/cache/kaniko /var/cache/kaniko
-RUN touch /kaniko/executor || true
+
 COPY --from=upstream /kaniko/executor /kaniko/executor
-RUN touch /kaniko/.docker || true
+
 COPY --from=upstream /kaniko/.docker /kaniko/.docker
-RUN touch /usr/local/bin || true
+
 COPY --from=upstream /usr/local/bin /usr/local/bin
-RUN apk add --no-cache ca-certificates || true && \
+RUN apk add --no-cache ca-certificates && \
     ln -sf /kaniko/executor /usr/local/bin/kaniko && \
     adduser -u 65532 -D kaniko 2>/dev/null || true
 USER 65532:65532

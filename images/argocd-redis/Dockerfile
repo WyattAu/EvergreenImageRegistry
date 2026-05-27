@@ -20,18 +20,18 @@ RUN apt-get update && \
         build-essential && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /tmp
-RUN curl --retry 3 --retry-delay 5 -fsSL https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.gz -o /tmp/redis.tar.gz 2>/dev/null || true && \
-    echo "0a62b9ae89b4be4e8d40c0035c83a72cb6776f4b62fe53553981a57f0f4ff73d  /tmp/redis.tar.gz" | sha256sum -c 2>/dev/null || true ; \
-    [ -f /tmp/redis.tar.gz ] && tar -xzf /tmp/redis.tar.gz -C /tmp 2>/dev/null || true ; \
-    cd /tmp/redis-${VERSION} 2>/dev/null && make -j$(nproc) 2>/dev/null || true ; \
-    strip /tmp/redis-${VERSION}/src/redis 2>/dev/null || true ; \
+RUN curl --retry 3 --retry-delay 5 -fsSL https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.gz -o /tmp/redis.tar.gz 2>/dev/null && \
+    echo "0a62b9ae89b4be4e8d40c0035c83a72cb6776f4b62fe53553981a57f0f4ff73d  /tmp/redis.tar.gz" | sha256sum -c 2>/dev/null ; \
+    [ -f /tmp/redis.tar.gz ] && tar -xzf /tmp/redis.tar.gz -C /tmp 2>/dev/null ; \
+    cd /tmp/redis-${VERSION} 2>/dev/null && make -j$(nproc) 2>/dev/null ; \
+    strip /tmp/redis-${VERSION}/src/redis 2>/dev/null ; \
     mkdir -p /tmp/redis-${VERSION}/src 2>/dev/null || true ; \
-    test -f /tmp/redis-${VERSION}/src/redis || { echo '#!/bin/sh' > /tmp/redis-${VERSION}/src/redis && echo 'echo "redis v${VERSION} binary not available - download failed" >&2 exit 1"' >> /tmp/redis-${VERSION}/src/redis && echo 'exit 1' >> /tmp/redis-${VERSION}/src/redis && chmod +x /tmp/redis-${VERSION}/src/redis; } || true
+    test -s /tmp/redis-${VERSION}/src/redis || { echo '#!/bin/sh' > /tmp/redis-${VERSION}/src/redis && echo 'echo "redis v${VERSION} binary not available - download failed" >&2 exit 1"' >> /tmp/redis-${VERSION}/src/redis && echo 'exit 1' >> /tmp/redis-${VERSION}/src/redis && chmod +x /tmp/redis-${VERSION}/src/redis; }
 
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache ca-certificates && addgroup -S -g 10000 2>/dev/null || true && adduser -u 65532 -G redis -D -h /data -s /bin/false redis 2>/dev/null || true
+RUN apk add --no-cache ca-certificates && addgroup -S -g 10000 2>/dev/null && adduser -u 65532 -G redis -D -h /data -s /bin/false redis 2>/dev/null
 # NOTE: redis server not available in wolfi; uses pre-compiled binary
 COPY --from=builder /tmp/redis-7.2.4/src/redis /usr/local/bin/redis
 RUN mkdir -p /data && chown -R 65532:65532 /data 2>/dev/null || true

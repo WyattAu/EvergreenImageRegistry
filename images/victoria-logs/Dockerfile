@@ -6,10 +6,9 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=v1.50.0
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/VictoriaMetrics/VictoriaLogs/releases/download/v1.50.0/victoria-logs-linux-amd64-v1.50.0.tar.gz -o /victoria-logs.tar.gz && \
-    [ -f /victoria-logs.tar.gz ] && tar -xzf /victoria-logs.tar.gz -C / && rm -f /victoria-logs.tar.gz && chmod +x /victoria-logs-prod 2>/dev/null || true ; \
-    test -f /victoria-logs-prod || { echo '#!/bin/sh' > /victoria-logs-prod && echo 'echo "victoria-logs v${VERSION} binary not available - download failed" >&2"' >> /victoria-logs-prod && echo 'exit 1' >> /victoria-logs-prod && chmod +x /victoria-logs-prod; } || true
+    [ -f /victoria-logs.tar.gz ] && tar -xzf /victoria-logs.tar.gz -C / && rm -f /victoria-logs.tar.gz && chmod +x /victoria-logs-prod 2>/dev/null ; \binary not available - download failed" >&2"' >> /victoria-logs-prod && echo 'exit 1' >> /victoria-logs-prod && chmod +x /victoria-logs-prod; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/victoria-logs /var/cache/victoria-logs 2>/dev/null || true

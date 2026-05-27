@@ -8,8 +8,8 @@ ARG TARGETARCH
 ARG VERSION=0.1.0
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
-RUN touch /tmp/dotdns || true
-RUN apk add --no-cache go git ca-certificates || true && \
+
+RUN apk add --no-cache go git ca-certificates && \
     export PATH="/usr/lib/go:${PATH}" && \
     printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("dotdns v%s ready") }\n' "${VERSION}" > /tmp/main.go && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build -ldflags="-s -w" -o /tmp/dotdns /tmp/main.go 2>/dev/null || true && \

@@ -14,7 +14,7 @@ RUN apt-get update && \
     tar -xzf /tmp/stalwart.tar.gz -C /tmp && \
     mv /tmp/stalwart /usr/local/bin/stalwart && \
     chmod +x /usr/local/bin/stalwart && \
-    strip /usr/local/bin/stalwart || true
+    strip /usr/local/bin/stalwart
 FROM scratch
 COPY --from=downloader /usr/local/bin/stalwart /usr/local/bin/stalwart
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

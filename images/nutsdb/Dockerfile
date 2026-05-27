@@ -15,7 +15,7 @@ ARG TARGETARCH
 ARG VERSION=1.1.0
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
-RUN touch /app/nutsdb || true
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
@@ -24,9 +24,8 @@ RUN apt-get update && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
         -o /app/nutsdb ./cmd/nutsdb 2>/dev/null || true && \
-    test -f /app/nutsdb && strip --strip-all /app/nutsdb  || true 2>/dev/null|| true && \
-    test -f /app/nutsdb || { echo '#!/bin/sh' > /app/nutsdb && echo 'echo "nutsdb v'${VERSION}' binary not available - download failed" >&2 \
-    exit 1"' >> /app/nutsdb && echo 'exit 1' >> /app/nutsdb && chmod +x /app/nutsdb; } 2>/dev/null || true
+    test -s /app/nutsdb && strip --strip-all /app/nutsdb 2>/dev/null && \' binary not available - download failed" >&2 \
+    exit 1"' >> /app/nutsdb && echo 'exit 1' >> /app/nutsdb && chmod +x /app/nutsdb; } 2>/dev/null
 FROM scratch
 COPY --from=builder /app/nutsdb /usr/local/bin/nutsdb
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

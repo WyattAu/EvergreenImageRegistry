@@ -13,13 +13,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     rm -rf /var/lib/apt/lists/* || true && \
     apt-get update && apt-get install -y --no-install-recommends \
         php-fpm php8.4 php-curl php-gd php-mbstring php-xml zip php-intl php-mysql sqlite-libs \
-        nginx ca-certificates curl ; rm -rf /var/lib/apt/lists/* || true && \
+        nginx ca-certificates curl ; rm -rf /var/lib/apt/lists/* && \
     mkdir -p /var/run/php /var/www/html /var/log/nginx /var/cache/nginx  || true ; \
     chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php && \
     mkdir -p /etc/nginx 2>/dev/null || true ; touch /etc/nginx/nginx.conf 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
-RUN apk add --no-cache php-8.4-fpm php-8.4 php-8.4-curl php-8.4-gd php-8.4-mbstring php-8.4-xml zip php-8.4-intl php-8.4-pdo_mysql php-8.4-mysqli sqlite-libs nginx ca-certificates || true && \
+RUN apk add --no-cache php-8.4-fpm php-8.4 php-8.4-curl php-8.4-gd php-8.4-mbstring php-8.4-xml zip php-8.4-intl php-8.4-pdo_mysql php-8.4-mysqli sqlite-libs nginx ca-certificates && \
     chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php-8.4 2>/dev/null || true && \
     mkdir -p /etc/nginx 2>/dev/null || true
 COPY --from=builder /etc/nginx/nginx.conf /etc/nginx/nginx.conf

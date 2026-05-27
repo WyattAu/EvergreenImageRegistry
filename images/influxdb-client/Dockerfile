@@ -5,12 +5,12 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=2.7.5
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://dl.influxdata.com/influxdb/releases/influxdb2-client-2.7.5-linux-${TARGETARCH}.tar.gz" -o /influxdb-client.tar.gz || true ; \
-    echo "496dffcd70bed2bb3dc3d614e3d9c97e312e092dfe0577d332027566bbb7d8cd  /influxdb-client.tar.gz" | sha256sum -c || true ; \
-    [ -f /influxdb-client.tar.gz ] && tar -xzf /influxdb-client.tar.gz -C /tmp && rm -f /influxdb-client.tar.gz || true ; \
-    strip --strip-all /tmp/influxdb2-client-2.7.5/usr/bin/influx  || true 2>/dev/null&& \
-    mv /tmp/influxdb2-client-2.7.5/usr/bin/influx /influx ; test -f /influx || { echo '#!/bin/sh' > /influx && echo 'echo "influxdb-client v${VERSION} binary not available - download failed" >&2"' >> /influx && echo 'exit 1' >> /influx && chmod +x /influx; }
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://dl.influxdata.com/influxdb/releases/influxdb2-client-2.7.5-linux-${TARGETARCH}.tar.gz" -o /influxdb-client.tar.gz ; \
+    echo "496dffcd70bed2bb3dc3d614e3d9c97e312e092dfe0577d332027566bbb7d8cd  /influxdb-client.tar.gz" | sha256sum -c ; \
+    [ -f /influxdb-client.tar.gz ] && tar -xzf /influxdb-client.tar.gz -C /tmp && rm -f /influxdb-client.tar.gz ; \
+    strip --strip-all /tmp/influxdb2-client-2.7.5/usr/bin/influx 2>/dev/null&& \
+    mv /tmp/influxdb2-client-2.7.5/usr/bin/influx /influxbinary not available - download failed" >&2"' >> /influx && echo 'exit 1' >> /influx && chmod +x /influx; }
 
 
 

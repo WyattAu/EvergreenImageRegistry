@@ -9,7 +9,7 @@ FROM gvenzl/oracle-xe:21-slim@sha256:523f7afc7a05b1ddd4420d4de72f96024c58545d594
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION=21.3.0
-RUN apk add --no-cache bc ca-certificates wget netcat-openbsd || true && \
+RUN apk add --no-cache bc ca-certificates wget netcat-openbsd && \
     adduser -D -u 65532 -s /bin/false oracle 2>/dev/null || true && \
     mkdir -p /var/lib/oracle /var/log/oracle /var/cache/oracle /opt/oracle 2>/dev/null || true
 COPY --from=upstream /opt/oracle /opt/oracle

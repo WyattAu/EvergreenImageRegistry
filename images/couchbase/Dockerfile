@@ -9,16 +9,10 @@ RUN apt-get update && \
         | gnupg --dearmor -o /usr/share/keyrings/couchbase-archive-keyring.gnupg 2>/dev/null || true ; \
     echo "deb [signed-by=/usr/share/keyrings/couchbase-archive-keyring.gnupg] https://packages.couchbase.com/ubuntu jammy main" \
         > /etc/apt/sources.list.d/couchbase.list 2>/dev/null || true ; \
-    apt-get update 2>/dev/null || true ; \
-    apt-get install -y --no-install-recommends couchbase-server-community 2>/dev/null || true ; \
+    apt-get update 2>/dev/null ; \
+    apt-get install -y --no-install-recommends couchbase-server-community 2>/dev/null ; \
     rm -rf /var/lib/apt/lists/* || true
-RUN mkdir -p /opt/couchbase/bin ; \
-    test -f /opt/couchbase/bin/couchbase-server || { \
-        echo '#!/bin/sh' > /opt/couchbase/bin/couchbase-server && \
-        echo 'echo "couchbase binary not available - download failed" >&2 exit 1 - upstream repo unavailable"' >> /opt/couchbase/bin/couchbase-server && \
-        echo 'exit 1' >> /opt/couchbase/bin/couchbase-server && \
-        chmod +x /opt/couchbase/bin/couchbase-server ; }
-# hadolint ignore=DL3023
+RUN mkdir -p /opt/couchbase/bin ; \# hadolint ignore=DL3023
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 RUN apk add --no-cache libstdc++ curl zlib procps
 COPY --from=builder /opt/couchbase /opt/couchbase

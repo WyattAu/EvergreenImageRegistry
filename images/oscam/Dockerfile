@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc g++ make libpcsclite-dev libusb-dev openssl-dev && \
     rm -rf /var/lib/apt/lists/* && \
     git clone --branch ${VERSION} https://github.com/oscam-git/oscam.git /tmp/oscam 2>/dev/null || \
-    git clone https://github.com/oscam-git/oscam.git /tmp/oscam 2>/dev/null || true
+    git clone https://github.com/oscam-git/oscam.git /tmp/oscam 2>/dev/null
 WORKDIR /tmp/oscam
 RUN if [ -f /tmp/oscam/configure ]; then \
         ./configure --disable-pcsc --enable-cccshare && \

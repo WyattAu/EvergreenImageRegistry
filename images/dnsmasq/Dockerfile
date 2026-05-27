@@ -5,12 +5,11 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=2.90
 ARG TARGETARCH
-RUN touch /dnsmasq || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "http://www.thekelleys.org.uk/dnsmasq/dnsmasq-2.90.tar.xz" -o /dnsmasq.tar.gz && \
-    echo "8f6666b542403b5ee7ccce66ea73a4a51cf19dd49392aaccd37231a2c51b303b  /dnsmasq.tar.gz" | sha256sum -c || true ; [ -f /dnsmasq.tar.gz ] && \
-    [ -f /dnsmasq.tar.gz ] && tar -xJf /dnsmasq.tar.gz -C / && rm -f /dnsmasq.tar.gz && chmod +x /dnsmasq 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL "http://www.thekelleys.org.uk/dnsmasq/dnsmasq-2.90.tar.xz" -o /dnsmasq && chmod +x /dnsmasq ; test -f /dnsmasq || { echo '#!/bin/sh' > /dnsmasq && echo 'echo "dnsmasq v${VERSION} binary not available - download failed" >&2"' >> /dnsmasq && echo 'exit 1' >> /dnsmasq && chmod +x /dnsmasq; } || true
+    echo "8f6666b542403b5ee7ccce66ea73a4a51cf19dd49392aaccd37231a2c51b303b  /dnsmasq.tar.gz" | sha256sum -c ; [ -f /dnsmasq.tar.gz ] && \
+    [ -f /dnsmasq.tar.gz ] && tar -xJf /dnsmasq.tar.gz -C / && rm -f /dnsmasq.tar.gz && chmod +x /dnsmasq 2>/dev/null ; \
+    curl --retry 3 --retry-delay 5 -fsSL "http://www.thekelleys.org.uk/dnsmasq/dnsmasq-2.90.tar.xz" -o /dnsmasq && chmod +x /dnsmasqbinary not available - download failed" >&2"' >> /dnsmasq && echo 'exit 1' >> /dnsmasq && chmod +x /dnsmasq; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/dnsmasq /var/cache/dnsmasq 2>/dev/null || true
 

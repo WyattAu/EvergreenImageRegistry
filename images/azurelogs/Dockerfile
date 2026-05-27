@@ -15,16 +15,16 @@ ARG APP_GID=65532
 FROM python@sha256:5dc6f84b5e97bfb0c90abfb7c55f3cacc2cb6687c8f920b64a833a2219875997 AS builder
 ARG VERSION=1.2.0
 RUN mkdir -p /install && \
-    pip install --break-system-packages --no-cache-dir --prefix=/install azure-monitor-log-ingestion==${VERSION} || true ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/azurelogs || { echo '#!/bin/sh' > /usr/local/bin/azurelogs && echo 'echo "azurelogs v${VERSION} binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/azurelogs && echo 'exit 1' >> /usr/local/bin/azurelogs && chmod +x /usr/local/bin/azurelogs ; } || true && \
-    find /install -type f -name "*.pyc" -delete 2>/dev/null || true && \
-    find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+    pip install --break-system-packages --no-cache-dir --prefix=/install azure-monitor-log-ingestion==${VERSION} ; mkdir -p /usr/local/binbinary not available - download failed" >&2 exit 1"' >> /usr/local/bin/azurelogs && echo 'exit 1' >> /usr/local/bin/azurelogs && chmod +x /usr/local/bin/azurelogs ; } && \
+    find /install -type f -name "*.pyc" -delete 2>/dev/null  && \
+    find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS stripper
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils python3-minimal && \
     rm -rf /var/lib/apt/lists/*
 COPY --from=builder /install /install
-RUN find /install -type f -name "*.so" -exec strip --strip-unneeded {} \ || true && \
-    mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
+RUN find /install -type f -name "*.so" -exec strip --strip-unneeded {} \ && \
+    mkdir -p /etc/ssl/certs 2>/dev/null  ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 ARG VERSION=1.2.0

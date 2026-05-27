@@ -5,13 +5,12 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=v1.83.0
-RUN touch /redis_exporter || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/oliver006/redis_exporter/releases/download/v1.68.0/redis_exporter-v1.68.0.linux-${TARGETARCH}.tar.gz -o /redis_exporter.tar.gz && \
     # TODO: update sha256 for new version
-    echo "870ca02b568e4df6bbf24555611d6ca98c673071668334f230abeb2fb52c59e3  /redis_exporter.tar.gz" | sha256sum -c || true ; [ -f /redis_exporter.tar.gz ] && \
-    [ -f /redis_exporter.tar.gz ] && tar -xzf /redis_exporter.tar.gz -C / && rm -f /redis_exporter.tar.gz && chmod +x /redis_exporter 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/oliver006/redis_exporter/releases/download/v1.68.0/redis_exporter-v1.68.0.linux-${TARGETARCH}.tar.gz -o /redis_exporter && chmod +x /redis_exporter ; test -f /redis_exporter || { echo '#!/bin/sh' > /redis_exporter && echo 'echo "redis-exporter v${VERSION} binary not available - download failed" >&2"' >> /redis_exporter && echo 'exit 1' >> /redis_exporter && chmod +x /redis_exporter; } || true && \
+    echo "870ca02b568e4df6bbf24555611d6ca98c673071668334f230abeb2fb52c59e3  /redis_exporter.tar.gz" | sha256sum -c ; [ -f /redis_exporter.tar.gz ] && \
+    [ -f /redis_exporter.tar.gz ] && tar -xzf /redis_exporter.tar.gz -C / && rm -f /redis_exporter.tar.gz && chmod +x /redis_exporter 2>/dev/null ; \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/oliver006/redis_exporter/releases/download/v1.68.0/redis_exporter-v1.68.0.linux-${TARGETARCH}.tar.gz -o /redis_exporter && chmod +x /redis_exporterbinary not available - download failed" >&2"' >> /redis_exporter && echo 'exit 1' >> /redis_exporter && chmod +x /redis_exporter; } && \
     mkdir -p /app /var/log/redis_exporter /var/cache/redis_exporter 2>/dev/null || true
 
 FROM scratch

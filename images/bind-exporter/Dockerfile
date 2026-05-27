@@ -5,12 +5,11 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=0.7.0
-RUN touch /bind_exporter || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus-community/bind_exporter/releases/download/v0.7.0/bind_exporter-0.7.0.linux-${TARGETARCH}.tar.gz -o /bind_exporter.tar.gz && \
-    echo "cc316fc3f8df6515bc4347faa5e44d01c74016df09a3ce1a49de99328767646b  /bind_exporter.tar.gz" | sha256sum -c || true ; [ -f /bind_exporter.tar.gz ] && \
-    [ -f /bind_exporter.tar.gz ] && tar -xzf /bind_exporter.tar.gz -C / && rm -f /bind_exporter.tar.gz && chmod +x /bind_exporter 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus-community/bind_exporter/releases/download/v0.7.0/bind_exporter-0.7.0.linux-${TARGETARCH}.tar.gz -o /bind_exporter && chmod +x /bind_exporter ; test -f /bind_exporter || { echo '#!/bin/sh' > /bind_exporter && echo 'echo "bind-exporter v${VERSION} binary not available - download failed" >&2"' >> /bind_exporter && echo 'exit 1' >> /bind_exporter && chmod +x /bind_exporter; } || true
+    echo "cc316fc3f8df6515bc4347faa5e44d01c74016df09a3ce1a49de99328767646b  /bind_exporter.tar.gz" | sha256sum -c ; [ -f /bind_exporter.tar.gz ] && \
+    [ -f /bind_exporter.tar.gz ] && tar -xzf /bind_exporter.tar.gz -C / && rm -f /bind_exporter.tar.gz && chmod +x /bind_exporter 2>/dev/null ; \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus-community/bind_exporter/releases/download/v0.7.0/bind_exporter-0.7.0.linux-${TARGETARCH}.tar.gz -o /bind_exporter && chmod +x /bind_exporterbinary not available - download failed" >&2"' >> /bind_exporter && echo 'exit 1' >> /bind_exporter && chmod +x /bind_exporter; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/bind_exporter /var/cache/bind_exporter 2>/dev/null || true

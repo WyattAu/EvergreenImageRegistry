@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir questdb psycopg2-binary==2.9.9 || true && \
+    pip install --no-cache-dir questdb psycopg2-binary==2.9.9 && \
     mkdir -p /app 2>/dev/null || true && \
     mkdir -p /opt/venv ; \
     mkdir -p /app 2>/dev/null || true

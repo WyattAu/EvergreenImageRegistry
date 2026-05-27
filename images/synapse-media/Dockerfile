@@ -24,7 +24,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:${PATH}"
-RUN pip install --no-cache-dir "matrix-synapse[all]==${VERSION}" || true
+RUN pip install --no-cache-dir "matrix-synapse[all]==${VERSION}"
 
 ENV PATH="/opt/venv/bin:${PATH}"
 RUN mkdir -p /data /var/log/synapse /var/cache/synapse && chown -R 65532:65532 /data /var/log/synapse /var/cache/synapse 2>/dev/null || true

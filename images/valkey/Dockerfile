@@ -11,7 +11,7 @@ ENV HEALTH_CMD="valkey-cli ping" \
     STARTUP_CMD="valkey-cli ping" \
     EVERGREEN_LOG_LEVEL=info
 
-RUN apk add --no-cache valkey ca-certificates || true
+RUN apk add --no-cache valkey ca-certificates
 RUN mkdir -p /app /var/log/valkey /var/cache/valkey 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app

@@ -23,16 +23,16 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* || true
 WORKDIR /build
 RUN curl --retry 3 --retry-delay 5 -fsSL https://github.com/vstakhov/rmilter/archive/refs/tags/${VERSION}.tar.gz -o /tmp/rmilter.tar.gz && \
-    [ -f /tmp/rmilter.tar.gz ] && tar -xzf /tmp/rmilter.tar.gz -C /build --strip-components=1 || true ; \
+    [ -f /tmp/rmilter.tar.gz ] && tar -xzf /tmp/rmilter.tar.gz -C /build --strip-components=1 ; \
     rm -f /tmp/rmilter.tar.gz && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release . && \
     make -j$(nproc) && \
-    strip rmilter/rmilter || true && \
+    strip rmilter/rmilter && \
     mkdir -p /build/rmilter/rmilter 2>/dev/null || true && \
-    [ -f /build/rmilter/rmilter ] || { echo '#!/bin/sh' > /build/rmilter/rmilter ; echo 'echo "rmilter v${VERSION} binary not available - download failed" >&2"' >> /build/rmilter/rmilter ; echo 'exit 1' >> /build/rmilter/rmilter ; chmod +x /build/rmilter/rmilter 2>/dev/null || true ; } 2>/dev/null || true
+    [ -f /build/rmilter/rmilter ] || { echo '#!/bin/sh' > /build/rmilter/rmilter ; echo 'echo "rmilter v${VERSION} binary not available - download failed" >&2"' >> /build/rmilter/rmilter ; echo 'exit 1' >> /build/rmilter/rmilter ; chmod +x /build/rmilter/rmilter 2>/dev/null ; } 2>/dev/null
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
-RUN apk add --no-cache libpcre2-8-0 ca-certificates || true && \
+RUN apk add --no-cache libpcre2-8-0 ca-certificates && \
     addgroup -S -g 10000 rmilter 2>/dev/null || true && adduser -u 65532 -G rmilter -D -h /var/run/rmilter -s /bin/false rmilter && \
     mkdir -p /usr/local/bin 2>/dev/null || true
 COPY --from=builder /build/rmilter/rmilter /usr/local/bin/rmilter

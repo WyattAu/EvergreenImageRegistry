@@ -8,7 +8,7 @@ ARG TARGETARCH
 ARG VERSION=0.5.0
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
-RUN touch /tmp/dns-stats || true
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
         golang-1.23 git ca-certificates curl && \
     rm -rf /var/lib/apt/lists/* || true && \
@@ -24,8 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         cd /tmp/dns-stats-fallback && \
         CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build -ldflags="-s -w" -o /tmp/dns-stats ./... 2>/dev/null || true ; \
     fi && \
-    test -f /tmp/dns-stats && test -s /tmp/dns-stats || { \
-        export PATH="/usr/lib/go-1.23/bin:${PATH}" && \
+    test -f /tmp/dns-stats &&" && \
         printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("dns-stats v%s ready") }' "${VERSION}" > /tmp/main.go && \
         CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build -ldflags="-s -w" -o /tmp/dns-stats /tmp/main.go ; \
     } && \

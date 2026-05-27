@@ -15,14 +15,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         fluent-plugin-prometheus --no-document 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=1.17.1
-RUN apk add --no-cache ca-certificates libffi-dev tzdata yaml || true && \
+RUN apk add --no-cache ca-certificates libffi-dev tzdata yaml && \
     adduser -u 65532 -s /bin/false fluentd || true && \
     mkdir -p /fluentd/etc /fluentd/log /fluentd/plugins /fluentd/buffer
 RUN mkdir -p /usr/local/bundle || true
 COPY --from=builder /usr/local/bundle /usr/local/bundle
-RUN touch /usr/local/bin/fluentd || true
+
 COPY --from=builder /usr/local/bin/fluentd /usr/local/bin/fluentd
-RUN touch /usr/local/bin || true
+
 COPY --from=builder /usr/local/lib/ruby/gems/3.2.0/gems/fluentd-*/bin/fluent* /usr/local/bin/
 RUN printf '[SERVICE]\nflush_interval 5s\nlog_level info\ndaemonize off\n' > /fluentd/etc/fluent.conf && \
     chown -R 65532:65532 /fluentd 2>/dev/null || true

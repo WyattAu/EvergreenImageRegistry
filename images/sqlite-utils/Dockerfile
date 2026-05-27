@@ -14,7 +14,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 ARG VERSION=3.39
 ARG BUILD_DATE
 RUN apk add --no-cache ca-certificates tzdata python3 py3-pip && \
-    pip install --no-cache-dir --break-system-packages "sqlite-utils==${VERSION}" || true ; \
+    pip install --no-cache-dir --break-system-packages "sqlite-utils==${VERSION}" ; \
     addgroup -S -g 65532 sqlite 2>/dev/null || true && \
     adduser -u 65532 -G sqlite -D -h /data -s /bin/false sqlite 2>/dev/null || true && \
     mkdir -p /data && \

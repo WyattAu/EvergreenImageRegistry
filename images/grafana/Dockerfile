@@ -20,19 +20,19 @@ RUN mkdir -p /opt && \
     apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates tar && \
     rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /grafana.tar.gz || true ; \
+    curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /grafana.tar.gz ; \
     if [ -f /grafana.tar.gz ]; then tar -xzf /grafana.tar.gz -C /opt && rm -f /grafana.tar.gz ; fi ; \
     mkdir -p /opt/grafana-${VERSION}/bin 2>/dev/null || true ; \
-    test -f /opt/grafana-${VERSION}/bin/grafana-server || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-server && echo 'echo "grafana v'"${VERSION}"' binary not available - download failed" >&2 exit 1"' >> /opt/grafana-${VERSION}/bin/grafana-server && echo 'exit 1' >> /opt/grafana-${VERSION}/bin/grafana-server && chmod +x /opt/grafana-${VERSION}/bin/grafana-server ; } 2>/dev/null || true ; \
+    test -s /opt/grafana-${VERSION}/bin/grafana-server || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-server && echo 'echo "grafana v'"${VERSION}"' binary not available - download failed" >&2 exit 1"' >> /opt/grafana-${VERSION}/bin/grafana-server && echo 'exit 1' >> /opt/grafana-${VERSION}/bin/grafana-server && chmod +x /opt/grafana-${VERSION}/bin/grafana-server ; } 2>/dev/null ; \
     ln -sf /opt/grafana-${VERSION} /opt/grafana 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=12.2.8-security-04
 
-RUN apk add --no-cache ca-certificates tzdata fontconfig || true && \
+RUN apk add --no-cache ca-certificates tzdata fontconfig && \
     mkdir -p /opt/grafana 2>/dev/null || true
 COPY --from=builder /opt/grafana-${VERSION} /opt/grafana
 RUN mkdir -p /opt/grafana/bin /var/lib/grafana /var/log/grafana /etc/grafana 2>/dev/null || true && \
-    cp -a /opt/grafana/bin/grafana-server /usr/local/bin/grafana-server 2>/dev/null || true && \
+    cp -a /opt/grafana/bin/grafana-server /usr/local/bin/grafana-server 2>/dev/null && \
     addgroup -S -g 10000 grafana 2>/dev/null || true && \
     adduser -u 65532 -G grafana -D -h /opt/grafana -s /bin/false grafana 2>/dev/null || true && \
     chown -R 65532:65532 /var/lib/grafana /var/log/grafana /etc/grafana 2>/dev/null || true

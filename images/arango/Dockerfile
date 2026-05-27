@@ -17,18 +17,18 @@ ARG VERSION=3.12.2
 ARG TARGETARCH
 WORKDIR /tmp
 RUN mkdir -p /opt/arangodb-extracted || true
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     ARCH=$(case ${TARGETARCH} in amd64) echo "x86_64" ;; arm64) echo "aarch64" ;; *) echo "x86_64" ;; esac) && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://download.arangodb.com/arangodb312/Community/Linux/arangodb3-linux-${VERSION}_${ARCH}.tar.gz" -o /tmp/arango.tar.gz ; echo "PENDING  /tmp/arango.tar.gz" | sha256sum -c || true  ; [ -f /tmp/arango.tar.gz ] && tar -xzf /tmp/arango.tar.gz -C /opt || true ; \
-    mv /opt/arangodb3-linux-* /opt/arangodb-extracted || true ; \
-    strip --strip-all /opt/arangodb-extracted/usr/sbin/arangod 2>/dev/null || true && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://download.arangodb.com/arangodb312/Community/Linux/arangodb3-linux-${VERSION}_${ARCH}.tar.gz" -o /tmp/arango.tar.gz ; echo "PENDING  /tmp/arango.tar.gz" | sha256sum -c  ; [ -f /tmp/arango.tar.gz ] && tar -xzf /tmp/arango.tar.gz -C /opt ; \
+    mv /opt/arangodb3-linux-* /opt/arangodb-extracted ; \
+    strip --strip-all /opt/arangodb-extracted/usr/sbin/arangod 2>/dev/null && \
     mkdir -p /opt ; \
-    mkdir -p /opt/arangodb-extracted/usr/sbin ; test -f /opt/arangodb-extracted/usr/sbin/arangod || { echo '#!/bin/sh' > /opt/arangodb-extracted/usr/sbin/arangod && echo 'echo "arango v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/arangodb-extracted/usr/sbin/arangod && echo 'exit 1' >> /opt/arangodb-extracted/usr/sbin/arangod && chmod +x /opt/arangodb-extracted/usr/sbin/arangod ; } && \
-    [ -f /opt/arangodb-extracted ] || { echo '#!/bin/sh' > /opt/arangodb-extracted ; echo 'echo "arango v${VERSION} binary not available - download failed" >&2"' >> /opt/arangodb-extracted ; echo 'exit 1' >> /opt/arangodb-extracted ; chmod +x /opt/arangodb-extracted 2>/dev/null || true ; } 2>/dev/null || true
+    mkdir -p /opt/arangodb-extracted/usr/sbinbinary not available - download failed" >&2 exit 1"' >> /opt/arangodb-extracted/usr/sbin/arangod && echo 'exit 1' >> /opt/arangodb-extracted/usr/sbin/arangod && chmod +x /opt/arangodb-extracted/usr/sbin/arangod ; } && \
+    [ -f /opt/arangodb-extracted ] || { echo '#!/bin/sh' > /opt/arangodb-extracted ; echo 'echo "arango v${VERSION} binary not available - download failed" >&2"' >> /opt/arangodb-extracted ; echo 'exit 1' >> /opt/arangodb-extracted ; chmod +x /opt/arangodb-extracted 2>/dev/null ; } 2>/dev/null
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION=3.12.2
-RUN apk add --no-cache libstdc++ ca-certificates || true && \
+RUN apk add --no-cache libstdc++ ca-certificates && \
     adduser -D -u 65532 -s /bin/false arango || true && \
     mkdir -p /var/lib/arangodb /var/log/arangodb /var/cache/arangodb /var/lib/arangodb3-apps && \
     mkdir -p /opt 2>/dev/null || true

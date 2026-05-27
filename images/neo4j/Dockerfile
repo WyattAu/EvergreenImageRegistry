@@ -105,9 +105,9 @@ ARG VERSION=5.20.0
 
 
 
-RUN apk add --no-cache curl ca-certificates \ || true && \
+RUN apk add --no-cache curl ca-certificates \ && \
     curl --retry 3 --retry-delay 5 -fsSL "https://dist.neo4j.org/neo4j-community-${VERSION}-unix.tar.gz" -o /tmp/neo4j.tar.gz && \
-    echo "203215748402702871e511c6dfff3c62f72587c4e80df703bf854085c436d066  /tmp/neo4j.tar.gz" | sha256sum -c || true && \
+    echo "203215748402702871e511c6dfff3c62f72587c4e80df703bf854085c436d066  /tmp/neo4j.tar.gz" | sha256sum -c && \
     tar xzf /tmp/neo4j.tar.gz -C /opt && rm -f /tmp/neo4j.tar.gz && \
     ln -s /opt/neo4j-community-${VERSION} /opt/neo4j && \
     ln -s /opt/neo4j/bin/neo4j /usr/local/bin/neo4j || true

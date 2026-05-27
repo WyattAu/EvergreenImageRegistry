@@ -33,12 +33,11 @@ ARG TARGETARCH
 
 
 
-RUN touch /kube-proxy || true
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://dl.k8s.io/release/v${VERSION}/bin/linux/${TARGETARCH}/kube-proxy" -o /kube-proxy && \
-    echo "9f0a22a03ce2415b154174687fc2b143268731e8b98e136dff7fd5d3ecf3aa02  /kube-proxy" | sha256sum -c || true || true; \
-    echo "VERIFY_FROM_K8S_SHA256  /kube-proxy" | sha256sum -c || true ; \
-    chmod +x /kube-proxy && strip /kube-proxy  || true; test -f /kube-proxy || { echo '#!/bin/sh' > /kube-proxy && echo 'echo "kube-proxy v${VERSION} binary not available - download failed" >&2"' >> /kube-proxy && echo 'exit 1' >> /kube-proxy && chmod +x /kube-proxy; } 2>/dev/null || true
+    echo "9f0a22a03ce2415b154174687fc2b143268731e8b98e136dff7fd5d3ecf3aa02  /kube-proxy" | sha256sum -c; \
+    echo "VERIFY_FROM_K8S_SHA256  /kube-proxy" | sha256sum -c ; \
+    chmod +x /kube-proxy && strip /kube-proxybinary not available - download failed" >&2"' >> /kube-proxy && echo 'exit 1' >> /kube-proxy && chmod +x /kube-proxy; } 2>/dev/null
 
 
 
@@ -118,7 +117,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 
 
 
-RUN apk add --no-cache ca-certificates iptables || true
+RUN apk add --no-cache ca-certificates iptables
 
 
 

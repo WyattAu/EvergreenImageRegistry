@@ -15,15 +15,15 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /opt/jdk || true
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates tar && rm -rf /var/lib/apt/lists/* || true && \
+    curl ca-certificates tar && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://api.adoptium.net/v3/binary/latest/21/ga/linux/${TARGETARCH}/jdk/hotspot/normal/eclipse?project=jdk" -o /tmp/jdk.tar.gz && \
-    echo "4b2220e232a97997b436ca6ab15cbf70171ecff52958a46159dfa5a8c44ca4de  /tmp/jdk.tar.gz" | sha256sum -c || true && \
-    mkdir -p /opt/jdk && [ -f /tmp/jdk.tar.gz ] && tar -xzf /tmp/jdk.tar.gz -C /opt/jdk --strip-components=1 && rm -f /tmp/jdk.tar.gz || true && \
+    echo "4b2220e232a97997b436ca6ab15cbf70171ecff52958a46159dfa5a8c44ca4de  /tmp/jdk.tar.gz" | sha256sum -c && \
+    mkdir -p /opt/jdk && [ -f /tmp/jdk.tar.gz ] && tar -xzf /tmp/jdk.tar.gz -C /opt/jdk --strip-components=1 && rm -f /tmp/jdk.tar.gz && \
     useradd -m -u 65532 -s /usr/bin/false java 2>/dev/null || true && \
     mkdir -p /app /var/log/java /var/cache/java 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache wget ca-certificates freetype fontconfig || true
+RUN apk add --no-cache wget ca-certificates freetype fontconfig
 COPY --from=builder /opt/jdk /opt/jdk
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group

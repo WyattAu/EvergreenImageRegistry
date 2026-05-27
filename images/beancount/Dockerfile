@@ -7,15 +7,15 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /opt/venv || true
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        python3-pip python3 ca-certificates curl ; rm -rf /var/lib/apt/lists/* || true && \
+        python3-pip python3 ca-certificates curl ; rm -rf /var/lib/apt/lists/* && \
     python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir beancount==2.3.6 ; mkdir -p /usr/local/bin ; test -f /usr/local/bin/beancount || { echo '#!/bin/sh' > /usr/local/bin/beancount && echo 'echo "beancount v${VERSION} binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/beancount && echo 'exit 1' >> /usr/local/bin/beancount && chmod +x /usr/local/bin/beancount ; } || true
+RUN pip install --no-cache-dir beancount==2.3.6 ; mkdir -p /usr/local/binbinary not available - download failed" >&2 exit 1"' >> /usr/local/bin/beancount && echo 'exit 1' >> /usr/local/bin/beancount && chmod +x /usr/local/bin/beancount ; }
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 
-RUN dnf install -y python3 ca-certificates curl || true
+RUN dnf install -y python3 ca-certificates curl
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN mkdir -p /app /var/log/app /var/cache/app ; 2>/dev/null || true ; \

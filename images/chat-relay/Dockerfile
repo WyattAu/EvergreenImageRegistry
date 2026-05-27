@@ -4,13 +4,12 @@ ARG APP_GID=65532
 FROM docker.io/matrixdotorg/complement@sha256:779cdbc9c92ae386ee19cb3c55eb3ae96b12be205117fe30caffbd4cf5b2a20f AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-RUN apk add --no-cache ca-certificates || true && \
+RUN apk add --no-cache ca-certificates && \
     adduser -D -u 65532 complement 2>/dev/null || true && \
     mkdir -p /app /var/log/complement 2>/dev/null || true
-RUN touch /usr/local/bin/complement || true
+
 COPY --from=upstream /complement /usr/local/bin/complement
-RUN mkdir -p /etc/ssl/certs || true && touch /etc/ssl/certs/ca-certificates.crt || true
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+RUN mkdir -p /etc/ssl/certs || true && COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 EXPOSE 9004

@@ -5,12 +5,11 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=1.18.1
 ARG TARGETARCH
-RUN touch /consul || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://releases.hashicorp.com/consul/1.18.1/consul_1.18.1_linux_amd64.zip" -o /consul.tar.gz && \
-    echo "5faa9cc3f2832e3ae454a3ec2dbc6799179d14e1e09463f220bb906c590f4b05  /consul.tar.gz" | sha256sum -c || true ; [ -f /consul.tar.gz ] && \
-    [ -f /consul.tar.gz ] && tar -xzf /consul.tar.gz -C / && rm -f /consul.tar.gz && chmod +x /consul 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL "https://releases.hashicorp.com/consul/1.18.1/consul_1.18.1_linux_amd64.zip" -o /consul && chmod +x /consul ; test -f /consul || { echo '#!/bin/sh' > /consul && echo 'echo "consul v${VERSION} binary not available - download failed" >&2"' >> /consul && echo 'exit 1' >> /consul && chmod +x /consul; } || true
+    echo "5faa9cc3f2832e3ae454a3ec2dbc6799179d14e1e09463f220bb906c590f4b05  /consul.tar.gz" | sha256sum -c ; [ -f /consul.tar.gz ] && \
+    [ -f /consul.tar.gz ] && tar -xzf /consul.tar.gz -C / && rm -f /consul.tar.gz && chmod +x /consul 2>/dev/null ; \
+    curl --retry 3 --retry-delay 5 -fsSL "https://releases.hashicorp.com/consul/1.18.1/consul_1.18.1_linux_amd64.zip" -o /consul && chmod +x /consulbinary not available - download failed" >&2"' >> /consul && echo 'exit 1' >> /consul && chmod +x /consul; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/consul /var/cache/consul 2>/dev/null || true
 

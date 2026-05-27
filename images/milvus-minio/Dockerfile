@@ -12,10 +12,10 @@ ARG APP_GID=65532
 
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-RUN apk add --no-cache ca-certificates curl 2>/dev/null || true && \
+RUN apk add --no-cache ca-certificates curl 2>/dev/null && \
     curl --retry 3 --retry-delay 5 -fsSL "https://dl.min.io/server/minio/release/linux-${TARGETARCH}/minio" -o /usr/local/bin/minio && \
-    echo "7c5bd8512c6e966455b1d198209358b2d191c77a83ab377c4073281065fb855f  /usr/local/bin/minio" | sha256sum -c || true ; \
-    chmod +x /usr/local/bin/minio 2>/dev/null || true && \
+    echo "7c5bd8512c6e966455b1d198209358b2d191c77a83ab377c4073281065fb855f  /usr/local/bin/minio" | sha256sum -c ; \
+    chmod +x /usr/local/bin/minio 2>/dev/null && \
     apk del curl
 USER 65532:65532
 EXPOSE 9000

@@ -12,7 +12,7 @@ RUN apt-get update && \
     "https://github.com/harness/drone/releases/download/v${VERSION}/drone_agent_linux_amd64.tar.gz" \
     -o /tmp/archive.tar.gz && \
     tar -xzf /tmp/archive.tar.gz -C /tmp && \
-    strip /tmp/drone-agent  || true&& \
+    strip /tmp/drone-agent&& \
     chmod +x /tmp/drone-agent
 FROM scratch
 COPY --from=downloader /tmp/drone-agent /usr/local/bin/drone-agent

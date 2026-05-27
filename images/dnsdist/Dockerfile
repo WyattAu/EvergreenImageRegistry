@@ -20,11 +20,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     libre2-dev libyaml-cpp-dev libsnmp-dev curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/PowerDNS/pdns/archive/refs/tags/rel/dnsdist-${VERSION}.tar.gz -o /dnsdist.tar.gz && \
-    [ -f /dnsdist.tar.gz ] && tar -xzf /dnsdist.tar.gz -C / && rm -f /dnsdist.tar.gz || true ; \
+    [ -f /dnsdist.tar.gz ] && tar -xzf /dnsdist.tar.gz -C / && rm -f /dnsdist.tar.gz ; \
     mkdir -p /pdns-rel-dnsdist-${VERSION}/build ; \
     cd /pdns-rel-dnsdist-${VERSION}/build && \    cmake .. -DCMAKE_BUILD_TYPE=Release -DWITHOUT_NGHTTP2=1 && \
     make -j"$(nproc)" dnsdist && \
-    strip --strip-all /pdns-rel-dnsdist-${VERSION}/build/dnsdist/dnsdist  || true 2>/dev/null|| true && \
+    strip --strip-all /pdns-rel-dnsdist-${VERSION}/build/dnsdist/dnsdist 2>/dev/null && \
     mkdir -p /pdns-rel-dnsdist-${VERSION}/build/dnsdist/dnsdist
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream

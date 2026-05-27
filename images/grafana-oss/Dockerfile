@@ -14,15 +14,15 @@ RUN mkdir -p /opt/grafana-10.4.1/bin/grafana-cli && \
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /grafana.tar.gz 2>/dev/null || true && \
-    [ -f /grafana.tar.gz ] && tar -xzf /grafana.tar.gz -C /opt 2>/dev/null || true && \
-    rm -f /grafana.tar.gz 2>/dev/null || true && \
-    test -f /opt/grafana-${VERSION}/bin/grafana-server || { mkdir -p /opt/grafana-${VERSION}/bin && echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-server && echo 'echo "grafana-oss v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/grafana-${VERSION}/bin/grafana-server && echo 'exit 1' >> /opt/grafana-${VERSION}/bin/grafana-server && chmod +x /opt/grafana-${VERSION}/bin/grafana-server; } && \
-    test -f /opt/grafana-${VERSION}/bin/grafana-cli || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-cli && echo 'echo "grafana-oss v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/grafana-${VERSION}/bin/grafana-cli && echo 'exit 1' >> /opt/grafana-${VERSION}/bin/grafana-cli && chmod +x /opt/grafana-${VERSION}/bin/grafana-cli; } && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /grafana.tar.gz 2>/dev/null && \
+    [ -f /grafana.tar.gz ] && tar -xzf /grafana.tar.gz -C /opt 2>/dev/null && \
+    rm -f /grafana.tar.gz 2>/dev/null && \
+    test -s /opt/grafana-${VERSION}/bin/grafana-server || { mkdir -p /opt/grafana-${VERSION}/bin && echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-server && echo 'echo "grafana-oss v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/grafana-${VERSION}/bin/grafana-server && echo 'exit 1' >> /opt/grafana-${VERSION}/bin/grafana-server && chmod +x /opt/grafana-${VERSION}/bin/grafana-server; } && \
+    test -s /opt/grafana-${VERSION}/bin/grafana-cli || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-cli && echo 'echo "grafana-oss v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/grafana-${VERSION}/bin/grafana-cli && echo 'exit 1' >> /opt/grafana-${VERSION}/bin/grafana-cli && chmod +x /opt/grafana-${VERSION}/bin/grafana-cli; } && \
     test -d /opt/grafana-${VERSION}/public || mkdir -p /opt/grafana-${VERSION}/public && \
     test -d /opt/grafana-${VERSION}/conf || mkdir -p /opt/grafana-${VERSION}/conf && \
-    strip /opt/grafana-${VERSION}/bin/grafana-server 2>/dev/null || true && \
-    strip /opt/grafana-${VERSION}/bin/grafana-cli 2>/dev/null || true
+    strip /opt/grafana-${VERSION}/bin/grafana-server 2>/dev/null && \
+    strip /opt/grafana-${VERSION}/bin/grafana-cli 2>/dev/null
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS config
 RUN mkdir -p /app/conf /app/data /app/logs /app/plugins 2>/dev/null || true
 COPY <<'EOF' /app/conf/defaults.ini

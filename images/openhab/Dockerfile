@@ -14,16 +14,16 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=5.2.0.M3
 RUN mkdir -p /app || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/openhab/openhab-distro/releases/download/${VERSION}/openhab-${VERSION}.tar.gz" -o /tmp/openhab.tar.gz && \
     mkdir -p /app && \
     tar -xzf /tmp/openhab.tar.gz -C /app && rm -f /tmp/openhab.tar.gz && \
     chmod +x /app/start.sh
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache ca-certificates curl 2>/dev/null || true && \
+RUN apk add --no-cache ca-certificates curl 2>/dev/null && \
     apk add --no-cache java-21-default-jdk 2>/dev/null || \
-    apk add --no-cache openjdk-21-jdk-headless 2>/dev/null || true && \
+    apk add --no-cache openjdk-21-jdk-headless 2>/dev/null && \
     adduser -u 65532 -D openhab 2>/dev/null || true
 COPY --from=downloader --chown=65532:65532 /app /openhab
 RUN mkdir -p /openhab/conf /openhab/userdata /var/log/openhab /var/cache/openhab && \

@@ -13,29 +13,29 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     rm -rf /var/lib/apt/lists/* || true && \
     mkdir -p /app-src /var/log/strongswan /var/run/charon \
         /etc/strongswan.d /etc/ipsec.d 2>/dev/null || true && \
-    strip --strip-all /usr/sbin/charon 2>/dev/null  || true 2>/dev/null|| true && \
-    strip --strip-all /usr/sbin/charon-systemd 2>/dev/null  || true 2>/dev/null|| true && \
-    strip --strip-all /usr/sbin/strongswan 2>/dev/null  || true 2>/dev/null|| true && \
-    strip --strip-all /usr/sbin/pki 2>/dev/null  || true 2>/dev/null|| true && \
-    strip --strip-all /usr/sbin/swanctl 2>/dev/null  || true 2>/dev/null|| true && \
-    strip --strip-all /usr/sbin/ipsec 2>/dev/null  || true 2>/dev/null|| true && \
-    find /usr/lib -type f -name "lib*.so*" -exec strip --strip-unneeded {} \ || true; 2>/dev/null || true
+    strip --strip-all /usr/sbin/charon 2>/dev/null 2>/dev/null && \
+    strip --strip-all /usr/sbin/charon-systemd 2>/dev/null 2>/dev/null && \
+    strip --strip-all /usr/sbin/strongswan 2>/dev/null 2>/dev/null && \
+    strip --strip-all /usr/sbin/pki 2>/dev/null 2>/dev/null && \
+    strip --strip-all /usr/sbin/swanctl 2>/dev/null 2>/dev/null && \
+    strip --strip-all /usr/sbin/ipsec 2>/dev/null 2>/dev/null && \
+    find /usr/lib -type f -name "lib*.so*" -exec strip --strip-unneeded {} \; 2>/dev/null
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=5.9.16
-RUN apk add --no-cache ca-certificates iproute2 iptables kmod libcurl talloc gmp openssl-libs zlib 2>/dev/null || true && mkdir -p /etc /usr/lib /usr/sbin /var/log /run/charon /etc/strongswan.d /etc/ipsec.d /app 2>/dev/null || true
-RUN touch /usr/sbin/charon || true
+RUN apk add --no-cache ca-certificates iproute2 iptables kmod libcurl talloc gmp openssl-libs zlib 2>/dev/null && mkdir -p /etc /usr/lib /usr/sbin /var/log /run/charon /etc/strongswan.d /etc/ipsec.d /app 2>/dev/null
+
 COPY --from=installer /usr/sbin/charon /usr/sbin/charon
-RUN touch /usr/sbin/charon-systemd || true
+
 COPY --from=installer /usr/sbin/charon-systemd /usr/sbin/charon-systemd
-RUN touch /usr/sbin/strongswan || true
+
 COPY --from=installer /usr/sbin/strongswan /usr/sbin/strongswan
-RUN touch /usr/sbin/pki || true
+
 COPY --from=installer /usr/sbin/pki /usr/sbin/pki
-RUN touch /usr/sbin/swanctl || true
+
 COPY --from=installer /usr/sbin/swanctl /usr/sbin/swanctl
-RUN touch /usr/sbin/ipsec || true
+
 COPY --from=installer /usr/sbin/ipsec /usr/sbin/ipsec
-RUN mkdir -p /usr/lib/ipsec || true
+RUN mkdir -p /usr/lib/ipsec
 COPY --from=installer /usr/lib/ipsec /usr/lib/ipsec
 RUN mkdir -p /usr/lib/strongswan || true
 COPY --from=installer /usr/lib/strongswan /usr/lib/strongswan
@@ -43,7 +43,7 @@ RUN mkdir -p /usr/lib/strongswan-plugins || true
 COPY --from=installer /usr/lib/*/strongswan /usr/lib/strongswan-plugins
 RUN mkdir -p /etc/strongswan || true
 COPY --from=installer /etc/strongswan /etc/strongswan
-RUN touch /etc/ipsec.d || true
+
 COPY --from=installer /etc/ipsec.d /etc/ipsec.d
 RUN mkdir -p /app || true
 COPY --from=installer /app /app

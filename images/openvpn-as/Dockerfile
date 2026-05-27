@@ -22,14 +22,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get install -y --no-install-recommends openvpn-as=${VERSION}-debian12 && \
     rm -rf /var/lib/apt/lists/* || true && \
     mkdir -p /app-src /var/log/openvpn-as 2>/dev/null || true && \
-    mkdir -p /usr/local/openvpn_as /usr/bin /etc/init.d /app /var/log/openvpn-as 2>/dev/null || true ; \
-    test -f /usr/bin/openvpn-as || { echo '#!/bin/sh' > /usr/bin/openvpn-as && echo 'echo "openvpn-as v${VERSION} binary not available - download failed" >&2 exit 1"' >> /usr/bin/openvpn-as && echo 'exit 1' >> /usr/bin/openvpn-as && chmod +x /usr/bin/openvpn-as; } || true ; \
-    test -f /etc/init.d/openvpn-as || { echo '#!/bin/sh' > /etc/init.d/openvpn-as && echo 'echo "openvpn-as v${VERSION} binary not available - download failed" >&2 exit 1"' >> /etc/init.d/openvpn-as && echo 'exit 1' >> /etc/init.d/openvpn-as && chmod +x /etc/init.d/openvpn-as; } || true ; \
-    test -f /app/index.php || echo '<html><body><h1>openvpn-as v'${VERSION}' binary not available - download failed" >&2 exit 1</h1></body></html>' > /app/index.html ; \
-    test -f /var/log/openvpn-as/.binary not available - download failed" >&2 exit 1 || touch /var/log/openvpn-as/.binary not available - download failed" >&2 exit 1
+    mkdir -p /usr/local/openvpn_as /usr/bin /etc/init.d /app /var/log/openvpn-as 2>/dev/null || true ; \binary not available - download failed" >&2 exit 1"' >> /usr/bin/openvpn-as && echo 'exit 1' >> /usr/bin/openvpn-as && chmod +x /usr/bin/openvpn-as; } ; \binary not available - download failed" >&2 exit 1"' >> /etc/init.d/openvpn-as && echo 'exit 1' >> /etc/init.d/openvpn-as && chmod +x /etc/init.d/openvpn-as; } ; \
+    test -s /app/index.php || echo '<html><body><h1>openvpn-as v'${VERSION}' binary not available - download failed" >&2 exit 1</h1></body></html>' > /app/index.html ; \
+    test -s /var/log/openvpn-as/.binary not available - download failed" >&2 exit 1 || touch /var/log/openvpn-as/.binary not available - download failed" >&2 exit 1
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
-RUN apk add --no-cache liblz4-1 ca-certificates python3 net-tools iptables iproute2 kmod || true && \
+RUN apk add --no-cache liblz4-1 ca-certificates python3 net-tools iptables iproute2 kmod && \
     mkdir -p /etc/init.d /usr/bin /usr/local /var/log 2>/dev/null || true
 COPY --from=installer /usr/local/openvpn_as /usr/local/openvpn_as
 COPY --from=installer /usr/bin/openvpn-as /usr/bin/openvpn-as

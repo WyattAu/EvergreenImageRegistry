@@ -7,7 +7,7 @@ ARG TARGETARCH
 RUN mkdir -p /opt/node/lib/node_modules || true
 RUN mkdir -p /opt/node/bin/node && \
     mkdir -p /opt/node/lib/node_modules || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     case ${TARGETARCH} in \
         amd64) NODE_ARCH="x64"; NODE_SHA="22982235e1b71fa8850f82edd09cdae7e3f32df1764a9ec298c72d25ef2c164f" ;; \
         arm64) NODE_ARCH="arm64"; NODE_SHA="8cfd5a8b9afae5a2e0bd86b0148ca31d2589c0ea669c2d0b11c132e35d90ed68" ;; \
@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     esac && \
     curl --retry 3 --retry-delay 5 -fsSL "https://nodejs.org/dist/v${VERSION}/node-v${VERSION}-linux-${NODE_ARCH}.tar.xz" -o /node.tar.xz && \
     echo "${NODE_SHA}  /node.tar.xz" | sha256sum -c && \
-    mkdir -p /opt/node && tar -xf /node.tar.xz -C /opt/node --strip-components=1 && rm -f /node.tar.xz ; test -f /opt/node/lib/node_modules || { echo '#!/bin/sh' > /opt/node/lib/node_modules && echo 'echo "node-distroless v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/node/lib/node_modules && echo 'exit 1' >> /opt/node/lib/node_modules && chmod +x /opt/node/lib/node_modules; } && test -f /opt/node/bin/node || { echo '#!/bin/sh' > /opt/node/bin/node && echo 'echo "node-distroless v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/node/bin/node && echo 'exit 1' >> /opt/node/bin/node && chmod +x /opt/node/bin/node; } 2>/dev/null || true
+    mkdir -p /opt/node && tar -xf /node.tar.xz -C /opt/node --strip-components=1 && rm -f /node.tar.xzbinary not available - download failed" >&2 exit 1"' >> /opt/node/lib/node_modules && echo 'exit 1' >> /opt/node/lib/node_modules && chmod +x /opt/node/lib/node_modules; } &&binary not available - download failed" >&2 exit 1"' >> /opt/node/bin/node && echo 'exit 1' >> /opt/node/bin/node && chmod +x /opt/node/bin/node; } 2>/dev/null
 
 
 

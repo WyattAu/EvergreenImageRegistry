@@ -16,10 +16,10 @@ RUN mkdir -p /opt/jre || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jre/hotspot/normal/eclipse" -o /tmp/jre.tar.gz && \
-    echo "e5038aae3ca9ff670bc696496b0728dbd23d280026bad30291cb919221ecfdcb  /tmp/jre.tar.gz" | sha256sum -c || true ; \
+    echo "e5038aae3ca9ff670bc696496b0728dbd23d280026bad30291cb919221ecfdcb  /tmp/jre.tar.gz" | sha256sum -c ; \
     mkdir -p /opt/jre ; \
-    [ -f /tmp/jre.tar.gz ] && tar -xzf /tmp/jre.tar.gz -C /opt/jre --strip-components=1 || true ; \
-    rm -f /tmp/jre.tar.gz || true
+    [ -f /tmp/jre.tar.gz ] && tar -xzf /tmp/jre.tar.gz -C /opt/jre --strip-components=1 ; \
+    rm -f /tmp/jre.tar.gz
 
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
@@ -30,7 +30,7 @@ COPY --from=jre-builder /opt/jre /opt/jre
 ENV JAVA_HOME="/opt/jre"
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://search.maven.org/remotecontent?filepath=io/zipkin/zipkin-server/${VERSION}/zipkin-server-${VERSION}-exec.jar" -o /opt/zipkin/zipkin.jar || \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/openzipkin/zipkin/releases/download/${VERSION}/zipkin.jar -o /opt/zipkin.jar || true && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/openzipkin/zipkin/releases/download/${VERSION}/zipkin.jar -o /opt/zipkin.jar && \
     mkdir -p /opt/zipkin /var/log/zipkin ; \
     addgroup -S -g 65532 zipkin 2>/dev/null || true && \
     adduser -u 65532 -G zipkin -D -D -h /opt/zipkin -s /bin/false zipkin 2>/dev/null || true && \

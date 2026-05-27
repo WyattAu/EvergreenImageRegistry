@@ -4,14 +4,14 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=2.9.1
-RUN touch /tmp/gotify || true
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/gotify/server/releases/download/v${VERSION}/gotify-linux-${TARGETARCH}" \
     -o /tmp/gotify && \
     chmod +x /tmp/gotify && \
-    strip /tmp/gotify || true
+    strip /tmp/gotify
 FROM scratch
 COPY --from=downloader /tmp/gotify /usr/local/bin/gotify
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

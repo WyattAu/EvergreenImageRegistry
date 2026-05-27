@@ -16,16 +16,16 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils syslog-ng-core && rm -rf /var/lib/apt/lists/* && \
-    strip /usr/sbin/syslog-ng  || true&& \
-    find /usr/lib/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \ || true && \
-    find /usr/lib/*/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \ || true && \
-    mkdir -p /usr/sbin/syslog-ng 2>/dev/null || true
+    strip /usr/sbin/syslog-ng&& \
+    find /usr/lib/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \ && \
+    find /usr/lib/*/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \ && \
+    mkdir -p /usr/sbin/syslog-ng 2>/dev/null
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN addgroup -S -g 65532 syslogng 2>/dev/null || true && \
     adduser -u 65532 -G syslogng -D -s /bin/false syslogng || true && \
-    apk add --no-cache ca-certificates || true && \
-    mkdir -p /usr/sbin 2>/dev/null || true ; test -f /usr/sbin/syslog-ng 2>/dev/null || echo "#!/bin/sh" > /usr/sbin/syslog-ng 2>/dev/null || true
+    apk add --no-cache ca-certificates && \
+    mkdir -p /usr/sbin 2>/dev/null || true ; test -s /usr/sbin/syslog-ng 2>/dev/null || echo "#!/bin/sh" > /usr/sbin/syslog-ng 2>/dev/null || true
 COPY --from=builder /usr/sbin/syslog-ng /usr/sbin/syslog-ng
 RUN mkdir -p /app/conf /app/logs /app/run /var/lib/syslog-ng ; \
 addgroup -S -g 2 syslogng >/dev/null 2>&1 || true && adduser -u 65532 -G syslogng -D -s /bin/false syslogng 2>/dev/null || true && \

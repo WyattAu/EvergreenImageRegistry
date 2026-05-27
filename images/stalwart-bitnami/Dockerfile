@@ -5,15 +5,15 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 ARG VERSION=0.16.2
 ARG TARGETARCH
 RUN mkdir -p /usr/local/bin/stalwart || true
-RUN apk add --no-cache wget ca-certificates || true && \
+RUN apk add --no-cache wget ca-certificates && \
     wget -t 3 -T 10 -qO /tmp/stalwart.tar.gz "https://github.com/stalwartlabs/stalwart/releases/download/v${VERSION}/stalwart-x86_64-unknown-linux-musl.tar.gz" && \
     tar -xzf /tmp/stalwart.tar.gz -C /tmp && \
     mv /tmp/stalwart /usr/local/bin/stalwart && \
     chmod +x /usr/local/bin/stalwart && \
-    strip /usr/local/bin/stalwart || true
+    strip /usr/local/bin/stalwart
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=0.16.2
-RUN apk add --no-cache ca-certificates || true && \
+RUN apk add --no-cache ca-certificates && \
     addgroup -S -g 10000 stalwart 2>/dev/null || true && \
     adduser -u 65532 -G stalwart -D -h /app -s /bin/false stalwart 2>/dev/null || true && \
     mkdir -p /app /var/lib/stalwart /etc/stalwart /var/log/stalwart 2>/dev/null || true

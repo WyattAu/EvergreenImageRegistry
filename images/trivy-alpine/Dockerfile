@@ -32,9 +32,9 @@ ARG TARGETARCH
 
 
 
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/aquasecurity/trivy/releases/download/v0.70.0/trivy_0.70.0_Linux-64bit.tar.gz -o /trivy_0.58.2_linux-${TARGETARCH}.tar.gz &&     [ -f /trivy_0.58.2_linux-${TARGETARCH}.tar.gz ] && tar -xzf /trivy_0.58.2_linux-${TARGETARCH}.tar.gz -C / && rm -f /trivy_0.58.2_linux-${TARGETARCH}.tar.gz && chmod +x /trivy || true; \
-    echo "8b4376d5d6befe5c24d503f10ff136d9e0c49f9127a4279fd110b727929a5aa9  /trivy_0.58.2_linux-${TARGETARCH}.tar.gz" | sha256sum -c || true  #
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/aquasecurity/trivy/releases/download/v0.70.0/trivy_0.70.0_Linux-64bit.tar.gz -o /trivy_0.58.2_linux-${TARGETARCH}.tar.gz &&     [ -f /trivy_0.58.2_linux-${TARGETARCH}.tar.gz ] && tar -xzf /trivy_0.58.2_linux-${TARGETARCH}.tar.gz -C / && rm -f /trivy_0.58.2_linux-${TARGETARCH}.tar.gz && chmod +x /trivy; \
+    echo "8b4376d5d6befe5c24d503f10ff136d9e0c49f9127a4279fd110b727929a5aa9  /trivy_0.58.2_linux-${TARGETARCH}.tar.gz" | sha256sum -c  #
 
 
 
@@ -42,8 +42,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 
 
 
-RUN strip /trivy 2>/dev/null || true && \
-    test -f /trivy || { echo '#!/bin/sh' > /trivy && echo 'echo "trivy-alpine v${VERSION} binary not available - download failed" >&2"' >> /trivy && echo 'exit 1' >> /trivy && chmod +x /trivy; }
+RUN strip /trivy 2>/dev/null && \binary not available - download failed" >&2"' >> /trivy && echo 'exit 1' >> /trivy && chmod +x /trivy; }
 
 
 

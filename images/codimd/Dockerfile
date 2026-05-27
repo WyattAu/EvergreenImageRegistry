@@ -5,17 +5,17 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 ARG VERSION=2.6.1
 ARG TARGETARCH
 RUN mkdir -p /build || true
-RUN apk add --no-cache nodejs-20 npm git ca-certificates python3 make gcc || true
+RUN apk add --no-cache nodejs-20 npm git ca-certificates python3 make gcc
 WORKDIR /build
 RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/hackmdio/codimd/releases/download/${VERSION}/codimd-${VERSION}.tar.gz" \
-    -o /tmp/codimd.tar.gz || true ; \
+    -o /tmp/codimd.tar.gz ; \
     mkdir -p /build ; \
     if [ -f /tmp/codimd.tar.gz ]; then tar -xzf /tmp/codimd.tar.gz -C /build --strip-components=1 && rm -f /tmp/codimd.tar.gz ; fi && \
-    cd /build && npm ci 2>/dev/null || npm install --legacy-peer-deps 2>/dev/null || true && \
-    npm run build 2>/dev/null || true
+    cd /build && npm ci 2>/dev/null || npm install --legacy-peer-deps 2>/dev/null && \
+    npm run build 2>/dev/null
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=2.6.1
-RUN apk add --no-cache nodejs-20 npm ca-certificates || true && \
+RUN apk add --no-cache nodejs-20 npm ca-certificates && \
     addgroup -S -g 10000 codimd 2>/dev/null || true && \
     adduser -u 65532 -G codimd -D -h /app -s /bin/false codimd 2>/dev/null || true && \
     mkdir -p /app/codimd /var/log/codimd /app/codimd/data 2>/dev/null || true

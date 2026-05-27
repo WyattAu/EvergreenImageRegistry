@@ -5,12 +5,11 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=0.21.0
-RUN touch /ollama || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/ollama/ollama/releases/download/v0.21.0/ollama-linux-${TARGETARCH}.tar.zst -o /ollama.tar.gz && \
-    echo "a7fc4261298aeca8f785f695978a5e997004d414c13d4cfb965a10da9f4db6ea  /ollama.tar.gz" | sha256sum -c || true ; \
-    [ -f /ollama.tar.gz ] && tar -xzf /ollama.tar.gz -C / && rm -f /ollama.tar.gz && chmod +x /ollama 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/ollama/ollama/releases/download/v0.21.0/ollama-linux-${TARGETARCH}.tar.zst -o /ollama && chmod +x /ollama ; test -f /ollama || { echo '#!/bin/sh' > /ollama && echo 'echo "ollama v${VERSION} binary not available - download failed" >&2"' >> /ollama && echo 'exit 1' >> /ollama && chmod +x /ollama; }
+    echo "a7fc4261298aeca8f785f695978a5e997004d414c13d4cfb965a10da9f4db6ea  /ollama.tar.gz" | sha256sum -c ; \
+    [ -f /ollama.tar.gz ] && tar -xzf /ollama.tar.gz -C / && rm -f /ollama.tar.gz && chmod +x /ollama 2>/dev/null ; \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/ollama/ollama/releases/download/v0.21.0/ollama-linux-${TARGETARCH}.tar.zst -o /ollama && chmod +x /ollamabinary not available - download failed" >&2"' >> /ollama && echo 'exit 1' >> /ollama && chmod +x /ollama; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/ollama /var/cache/ollama 2>/dev/null || true

@@ -19,15 +19,15 @@ ARG APP_GID=65532
 FROM golang:${GO_VERSION}-bookworm AS builder
 ENV GOTOOLCHAIN=auto
 ARG VERSION
-RUN touch /app/app || true
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
 # This image is a reference implementation. Real images customize these lines:
-# RUN git clone --branch v${VERSION} https://github.com/OWNER/REPO /src || true
+# RUN git clone --branch v${VERSION} https://github.com/OWNER/REPO /src
 # RUN cd /src && CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build -ldflags="-s -w" -o /app/app ./cmd/app
-# RUN strip --strip-all /app/app 2>/dev/null  || true 2>/dev/null|| true
+# RUN strip --strip-all /app/app 2>/dev/null 2>/dev/null
 
 FROM scratch
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

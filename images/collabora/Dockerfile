@@ -8,10 +8,10 @@ FROM collabora/code:${VERSION} AS upstream
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN mkdir -p /opt/collaboraoffice /usr/local/bin /etc/loolwsd /tmp/collabora-libs 2>/dev/null || true && \
-    cp -a /upstream/usr/bin/loolwsd /usr/local/bin/loolwsd 2>/dev/null || true && \
-    cp -a /upstream/etc/loolwsd/* /etc/loolwsd/ 2>/dev/null || true && \
-    cp -a /upstream/usr/lib/* /tmp/collabora-libs/ 2>/dev/null || true && \
-    cp -a /upstream/lib/* /tmp/collabora-libs/ 2>/dev/null || true && \
+    cp -a /upstream/usr/bin/loolwsd /usr/local/bin/loolwsd 2>/dev/null && \
+    cp -a /upstream/etc/loolwsd/* /etc/loolwsd/ 2>/dev/null && \
+    cp -a /upstream/usr/lib/* /tmp/collabora-libs/ 2>/dev/null && \
+    cp -a /upstream/lib/* /tmp/collabora-libs/ 2>/dev/null && \
     mkdir -p /opt/collaboraoffice 2>/dev/null || true
 COPY --from=upstream /opt/collaboraoffice/ /opt/collaboraoffice/
 

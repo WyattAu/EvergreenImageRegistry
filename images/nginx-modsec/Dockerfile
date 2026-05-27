@@ -5,7 +5,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 ARG NGINX_VERSION=1.27.1
 ARG MODSEC_VERSION=3.0.12
 
-RUN apk add --no-cache nginx ca-certificates libxml2 curl || true && \
+RUN apk add --no-cache nginx ca-certificates libxml2 curl && \
     addgroup -S -g 10000 nginx 2>/dev/null || true && \
     adduser -u 65532 -G nginx -D -h /app -s /bin/false nginx 2>/dev/null || true && \
     mkdir -p /app /var/log/nginx /var/cache/nginx /etc/nginx/modsec /run 2>/dev/null || true && \

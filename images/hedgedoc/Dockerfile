@@ -4,7 +4,7 @@ ARG APP_GID=65532
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=1.10.0
 ARG TARGETARCH
-RUN apk add --no-cache nodejs-20 npm ca-certificates git python3 make gcc || true && \
+RUN apk add --no-cache nodejs-20 npm ca-certificates git python3 make gcc && \
     mkdir -p /app-src 2>/dev/null || true
 WORKDIR /tmp
 RUN curl --retry 3 -fsSL \
@@ -13,7 +13,7 @@ RUN curl --retry 3 -fsSL \
     tar -xzf /app.tar.gz -C /app-src --strip-components=1 && \
     rm -f /app.tar.gz && \
     cd /app-src && \
-    npm install --omit=dev --legacy-peer-deps 2>/dev/null || npm install --legacy-peer-deps 2>/dev/null || true && \
+    npm install --omit=dev --legacy-peer-deps 2>/dev/null || npm install --legacy-peer-deps 2>/dev/null && \
     addgroup -S -g 10000 appuser 2>/dev/null || true && \
     adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser 2>/dev/null || true && \
     mkdir -p /app/data /app/uploads 2>/dev/null || true && \

@@ -8,12 +8,12 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm git ca-certificates curl && \
     rm -rf /var/lib/apt/lists/* || true && \
-    git clone --branch "v${VERSION}" https://github.com/taigaio/taiga-front-dist.git /tmp/taiga-front 2>/dev/null || true && \
-    cd /tmp/taiga-front && npm install && npm run build 2>/dev/null || true && \
+    git clone --branch "v${VERSION}" https://github.com/taigaio/taiga-front-dist.git /tmp/taiga-front 2>/dev/null && \
+    cd /tmp/taiga-front && npm install && npm run build 2>/dev/null && \
     mkdir -p /tmp/taiga-front/dist 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache git ca-certificates curl nginx || true
+RUN apk add --no-cache git ca-certificates curl nginx
 COPY --from=builder /tmp/taiga-front/dist /var/www/taiga-front
 RUN mkdir -p /var/log/nginx /var/cache/nginx /var/www/taiga-front ; \
     chown -R 65532:65532 /var/www/taiga-front /var/log/nginx /var/cache/nginx

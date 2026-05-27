@@ -5,12 +5,11 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=3.3.3
 ARG TARGETARCH
-RUN touch /couchdb.tar.gz || true
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/couchdb/source/3.3.3/apache-couchdb-3.3.3.tar.gz" -o /couchdb.tar.gz || true ; test -f /couchdb.tar.gz || { echo '#!/bin/sh' > /couchdb.tar.gz && echo 'echo "couchdb-sync v${VERSION} binary not available - download failed" >&2"' >> /couchdb.tar.gz && echo 'exit 1' >> /couchdb.tar.gz && chmod +x /couchdb.tar.gz; } || true && \
-    echo "7a2007b5f673d4be22a25c9a111d9066919d872ddb9135a7dcec0122299bd39e  /couchdb.tar.gz" | sha256sum -c || true || true
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/couchdb/source/3.3.3/apache-couchdb-3.3.3.tar.gz" -o /couchdb.tar.gzbinary not available - download failed" >&2"' >> /couchdb.tar.gz && echo 'exit 1' >> /couchdb.tar.gz && chmod +x /couchdb.tar.gz; } && \
+    echo "7a2007b5f673d4be22a25c9a111d9066919d872ddb9135a7dcec0122299bd39e  /couchdb.tar.gz" | sha256sum -c
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-RUN touch /tmp/couchdb.tar.gz || true
+RUN touch /tmp/couchdb.tar.gz
 COPY --from=downloader /couchdb.tar.gz /tmp/couchdb.tar.gz
 RUN mkdir -p /opt/couchdb || true
 RUN apt-get update && \
@@ -27,19 +26,19 @@ RUN apt-get update && \
         libicu-dev \
         curl \
         ca-certificates \
-        make || true && \
+        make && \
         gcc \
         g++ && \
     rm -rf /var/lib/apt/lists/* || true && \
-    [ -f /tmp/couchdb.tar.gz ] && tar -xzf /tmp/couchdb.tar.gz -C /tmp || true ; \
+    [ -f /tmp/couchdb.tar.gz ] && tar -xzf /tmp/couchdb.tar.gz -C /tmp ; \
     cd /tmp/apache-couchdb-3.3.3 &&  \./configure --disable-docs --spidermonkey-version=78 && \
-     make release || true ; \
-    strip --strip-all /tmp/apache-couchdb-3.3.3/rel/couchdb/bin/*  || true 2>/dev/null && \
+     make release ; \
+    strip --strip-all /tmp/apache-couchdb-3.3.3/rel/couchdb/bin/* 2>/dev/null && \
     mkdir -p /opt/couchdb && \
     cp -a /tmp/apache-couchdb-3.3.3/rel/couchdb/. /opt/couchdb/
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache procps || true \
+RUN apk add --no-cache procps \
     mkdir -p /opt 2>/dev/null || true
 RUN mkdir -p /opt/couchdb || true
 COPY --from=builder /opt/couchdb /opt/couchdb

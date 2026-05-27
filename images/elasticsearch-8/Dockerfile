@@ -21,13 +21,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     curl ca-certificates openjdk-17-jre-base && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-linux-x86_64.tar.gz" \
     -o /elasticsearch.tar.gz && \
-    echo "PENDING_CHECKSUM  /elasticsearch.tar.gz" | sha256sum -c || true ; [ -f /elasticsearch.tar.gz ] && \
-    [ -f /elasticsearch.tar.gz ] && tar -xzf /elasticsearch.tar.gz -C /opt && rm -f /elasticsearch.tar.gz || true ; \
-    find /opt/elasticsearch-${VERSION} -name "*.so" -exec strip --strip-unneeded {} + 2>/dev/null || true && \
+    echo "PENDING_CHECKSUM  /elasticsearch.tar.gz" | sha256sum -c ; [ -f /elasticsearch.tar.gz ] && \
+    [ -f /elasticsearch.tar.gz ] && tar -xzf /elasticsearch.tar.gz -C /opt && rm -f /elasticsearch.tar.gz ; \
+    find /opt/elasticsearch-${VERSION} -name "*.so" -exec strip --strip-unneeded {} + 2>/dev/null && \
     rm -rf /opt/elasticsearch-${VERSION}/jdk && \
-    mkdir -p /app /var/log/elasticsearch /var/cache/elasticsearch /var/lib/elasticsearch || true && \
+    mkdir -p /app /var/log/elasticsearch /var/cache/elasticsearch /var/lib/elasticsearch  && \
     mkdir -p /opt ; \
-test -d /opt/elasticsearch-${VERSION} || { mkdir -p /opt/elasticsearch-${VERSION}/bin && echo '#!/bin/sh' > /opt/elasticsearch-${VERSION}/bin/elasticsearch && echo 'echo "elasticsearch-8 v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/elasticsearch-${VERSION}/bin/elasticsearch && echo 'exit 1' >> /opt/elasticsearch-${VERSION}/bin/elasticsearch && chmod +x /opt/elasticsearch-${VERSION}/bin/elasticsearch ; } 2>/dev/null || true
+test -d /opt/elasticsearch-${VERSION} || { mkdir -p /opt/elasticsearch-${VERSION}/bin && echo '#!/bin/sh' > /opt/elasticsearch-${VERSION}/bin/elasticsearch && echo 'echo "elasticsearch-8 v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/elasticsearch-${VERSION}/bin/elasticsearch && echo 'exit 1' >> /opt/elasticsearch-${VERSION}/bin/elasticsearch && chmod +x /opt/elasticsearch-${VERSION}/bin/elasticsearch ; } 2>/dev/null
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=8.12.2
 

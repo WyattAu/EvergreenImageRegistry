@@ -6,12 +6,11 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=2.10.0
-RUN touch /mimir || true
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/grafana/mimir/releases/download/mimir-2.10.0/mimir-linux-${TARGETARCH} -o /mimir || true ; \
-    echo "eec33aae58a573854e3d7f9538b387e6a696180e64b1fe73ea9102e46b908c77  /mimir" | sha256sum -c || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/grafana/mimir/releases/download/mimir-2.10.0/mimir-linux-${TARGETARCH} -o /mimir ; \
+    echo "eec33aae58a573854e3d7f9538b387e6a696180e64b1fe73ea9102e46b908c77  /mimir" | sha256sum -c ; \
     chmod +x /mimir && \
-    strip --strip-all /mimir  || true 2>/dev/null; test -f /mimir || { echo '#!/bin/sh' > /mimir && echo 'echo "mimir v${VERSION} binary not available - download failed" >&2"' >> /mimir && echo 'exit 1' >> /mimir && chmod +x /mimir; }
+    strip --strip-all /mimir 2>/dev/nullbinary not available - download failed" >&2"' >> /mimir && echo 'exit 1' >> /mimir && chmod +x /mimir; }
 
 
 

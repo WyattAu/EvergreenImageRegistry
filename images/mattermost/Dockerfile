@@ -7,12 +7,11 @@ ARG VERSION=11.6.2
 RUN mkdir -p /opt/mattermost || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates tar && \
     rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://releases.mattermost.com/${VERSION}/mattermost-${VERSION}-linux-${TARGETARCH}.tar.gz" -o /mattermost.tar.gz || true ; \
-    echo "61e0a677faf07dbc0513b7e419227611eb97d5f278323d6741b1b17c615076d6  /mattermost.tar.gz" | sha256sum -c || true ; \
+    curl --retry 3 --retry-delay 5 -fsSL "https://releases.mattermost.com/${VERSION}/mattermost-${VERSION}-linux-${TARGETARCH}.tar.gz" -o /mattermost.tar.gz ; \
+    echo "61e0a677faf07dbc0513b7e419227611eb97d5f278323d6741b1b17c615076d6  /mattermost.tar.gz" | sha256sum -c ; \
     mkdir -p /opt ; \
     if [ -f /mattermost.tar.gz ]; then tar -xzf /mattermost.tar.gz -C /opt && rm -f /mattermost.tar.gz ; fi ; \
-    ln -sf /opt/mattermost-${VERSION} /opt/mattermost 2>/dev/null || true ; \
-    test -f /opt/mattermost/bin/mattermost || { echo '#!/bin/sh' > /opt/mattermost && echo 'echo "mattermost v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/mattermost && echo 'exit 1' >> /opt/mattermost && chmod +x /opt/mattermost; } || true
+    ln -sf /opt/mattermost-${VERSION} /opt/mattermost 2>/dev/null || true ; \binary not available - download failed" >&2 exit 1"' >> /opt/mattermost && echo 'exit 1' >> /opt/mattermost && chmod +x /opt/mattermost; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache ca-certificates tzdata

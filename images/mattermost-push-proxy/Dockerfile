@@ -10,10 +10,10 @@ RUN apt-get update && \
     curl --retry 3 --retry-delay 5 -fsSL \
     "https://github.com/mattermost/mattermost-push-proxy/releases/download/v${VERSION}/mattermost-push-proxy-linux-amd64.tar.gz" \
     -o /tmp/archive.tar.gz && \
-    echo "ed227a7590649e03d9b978decb1a2ae5b9ddb80595e56346f4f56723588f4592  /tmp/archive.tar.gz" | sha256sum -c || true && \
-    tar -xzf /tmp/archive.tar.gz -C /tmp/ 2>/dev/null || true && \
-    strip /tmp/mattermost-push-proxy 2>/dev/null || true && \
-    chmod +x /tmp/mattermost-push-proxy 2>/dev/null || true
+    echo "ed227a7590649e03d9b978decb1a2ae5b9ddb80595e56346f4f56723588f4592  /tmp/archive.tar.gz" | sha256sum -c && \
+    tar -xzf /tmp/archive.tar.gz -C /tmp/ 2>/dev/null && \
+    strip /tmp/mattermost-push-proxy 2>/dev/null && \
+    chmod +x /tmp/mattermost-push-proxy 2>/dev/null
 FROM scratch
 COPY --from=downloader /tmp/mattermost-push-proxy /usr/local/bin/mattermost-push-proxy
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/

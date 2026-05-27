@@ -3,17 +3,17 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-RUN touch /usr/local/bin/git-secrets || true
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        git curl ca-certificates ; rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL -o /usr/local/bin/git-secrets "https://raw.githubusercontent.com/awslabs/git-secrets/master/git-secrets" 2>/dev/null || true ; chmod +x /usr/local/bin/git-secrets 2>/dev/null || true && \
-    echo "775e3f0d2f2f8e4b5922115f1235f7369805de76f4efc69cb674bcba5590d0fa  /usr/local/bin/git-secrets" | sha256sum -c || true && \
+        git curl ca-certificates ; rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL -o /usr/local/bin/git-secrets "https://raw.githubusercontent.com/awslabs/git-secrets/master/git-secrets" 2>/dev/null ; chmod +x /usr/local/bin/git-secrets 2>/dev/null && \
+    echo "775e3f0d2f2f8e4b5922115f1235f7369805de76f4efc69cb674bcba5590d0fa  /usr/local/bin/git-secrets" | sha256sum -c && \
     mkdir -p /app 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache git ca-certificates || true && \
+RUN apk add --no-cache git ca-certificates && \
     mkdir -p /usr/local/bin /app 2>/dev/null || true
-RUN touch /usr/local/bin/git-secrets || true
+
 COPY --from=builder /usr/local/bin/git-secrets /usr/local/bin/git-secrets
 COPY --from=builder /app /app
 RUN addgroup -S -g 2 nogroup >/dev/null || true && \

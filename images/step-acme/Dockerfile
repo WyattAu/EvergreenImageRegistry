@@ -5,14 +5,14 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=0.30.2
 ARG TARGETARCH
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/smallstep/certificates/releases/download/v${VERSION}/step-ca_linux_${VERSION}_${TARGETARCH}.tar.gz -o /step-ca.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/smallstep/certificates/releases/download/v${VERSION}/step_checksums.txt -o /checksums.txt && \
-    grep "step-ca_linux_${VERSION}_${TARGETARCH}.tar.gz" /checksums.txt | sha256sum -c || true ; [ -f /step-ca.tar.gz ] && \
-    [ -f /step-ca.tar.gz ] && tar -xzf /step-ca.tar.gz -C /tmp/ || true ; \
-    strip --strip-all /tmp/step-ca  || true 2>/dev/null&& \
+    grep "step-ca_linux_${VERSION}_${TARGETARCH}.tar.gz" /checksums.txt | sha256sum -c ; [ -f /step-ca.tar.gz ] && \
+    [ -f /step-ca.tar.gz ] && tar -xzf /step-ca.tar.gz -C /tmp/ ; \
+    strip --strip-all /tmp/step-ca 2>/dev/null&& \
     mv /tmp/step-ca /step-ca && \
-    rm -rf /step-ca.tar.gz /checksums.txt /tmp/* ; test -f /step-ca || { echo '#!/bin/sh' > /step-ca && echo 'echo "step-acme v${VERSION} binary not available - download failed" >&2"' >> /step-ca && echo 'exit 1' >> /step-ca && chmod +x /step-ca; } || true
+    rm -rf /step-ca.tar.gz /checksums.txt /tmp/*binary not available - download failed" >&2"' >> /step-ca && echo 'exit 1' >> /step-ca && chmod +x /step-ca; }
 FROM scratch
 COPY --from=downloader /step-ca /step-ca
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

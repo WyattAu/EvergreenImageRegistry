@@ -16,7 +16,7 @@ ARG VERSION=2.33.0
 ARG TARGETARCH
 RUN apk add --no-cache ca-certificates wget && \
     wget -t 3 -T 10 -qO /tmp/dbmate "https://github.com/amacneil/dbmate/releases/download/v${VERSION}/dbmate-linux-${TARGETARCH}" \
-    && echo "dfd4027141b6e4357158099bdfe6c02b286af70f8e49057937744cf80b38ea1c  /tmp/dbmate" | sha256sum -c || true \
+    && echo "dfd4027141b6e4357158099bdfe6c02b286af70f8e49057937744cf80b38ea1c  /tmp/dbmate" | sha256sum -c \
     && chmod +x /tmp/dbmate
 FROM scratch
 ARG VERSION=2.33.0

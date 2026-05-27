@@ -5,14 +5,13 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION=9.4.0
 ARG TARGETARCH
 RUN mkdir -p /opt/heartbeat || true
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/heartbeat/heartbeat-${VERSION}-linux-x86_64.tar.gz" -o /heartbeat.tar.gz || true ; \
-    echo "711083ec654168da15f3e4e8b924be00bf82b44c7427896ee59fe29431fe13ed  /heartbeat.tar.gz" | sha256sum -c || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/heartbeat/heartbeat-${VERSION}-linux-x86_64.tar.gz" -o /heartbeat.tar.gz ; \
+    echo "711083ec654168da15f3e4e8b924be00bf82b44c7427896ee59fe29431fe13ed  /heartbeat.tar.gz" | sha256sum -c ; \
     mkdir -p /opt/heartbeat ; \
     if [ -f /heartbeat.tar.gz ]; then tar -xzf /heartbeat.tar.gz -C /opt/heartbeat --strip-components=1 && rm -f /heartbeat.tar.gz && rm -rf /opt/heartbeat/kibana /opt/heartbeat/logs ; fi ; \
-    strip /opt/heartbeat/heartbeat 2>/dev/null || true ; \
-    chmod +x /opt/heartbeat/heartbeat 2>/dev/null || true ; \
-    test -f /opt/heartbeat/heartbeat || { echo '#!/bin/sh' > /opt/heartbeat/heartbeat && echo 'echo "heartbeat v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/heartbeat/heartbeat && echo 'exit 1' >> /opt/heartbeat/heartbeat && chmod +x /opt/heartbeat/heartbeat; } || true
+    strip /opt/heartbeat/heartbeat 2>/dev/null ; \
+    chmod +x /opt/heartbeat/heartbeat 2>/dev/null ; \binary not available - download failed" >&2 exit 1"' >> /opt/heartbeat/heartbeat && echo 'exit 1' >> /opt/heartbeat/heartbeat && chmod +x /opt/heartbeat/heartbeat; }
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder

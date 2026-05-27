@@ -7,16 +7,15 @@ ARG VERSION=260305-fad9d5395
 
 ARG TARGETARCH
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL \
     "https://github.com/photoprism/photoprism/releases/download/${VERSION}/photoprism_${VERSION}-linux-${TARGETARCH}.tar.gz" \
-    -o /tmp/photoprism.tar.gz 2>/dev/null || true && \
+    -o /tmp/photoprism.tar.gz 2>/dev/null && \
     mkdir -p /tmp/photoprism-extract && \
-    tar -xzf /tmp/photoprism.tar.gz -C /tmp/photoprism-extract 2>/dev/null || true && \
-    cp /tmp/photoprism-extract/photoprism /photoprism 2>/dev/null || find /tmp/photoprism-extract -name 'photoprism' -type f -exec cp {} /photoprism \; 2>/dev/null || true && \
-    chmod +x /photoprism 2>/dev/null || true && \
-    rm -rf /tmp/photoprism.tar.gz /tmp/photoprism-extract 2>/dev/null || true ; \
-    test -f /photoprism || { echo '#!/bin/sh' > /photoprism && echo 'echo "photoprism-bin v${VERSION} binary not available - download failed" >&2 exit 1"' >> /photoprism && echo 'exit 1' >> /photoprism && chmod +x /photoprism; } || true
+    tar -xzf /tmp/photoprism.tar.gz -C /tmp/photoprism-extract 2>/dev/null && \
+    cp /tmp/photoprism-extract/photoprism /photoprism 2>/dev/null || find /tmp/photoprism-extract -name 'photoprism' -type f -exec cp {} /photoprism \; 2>/dev/null && \
+    chmod +x /photoprism 2>/dev/null && \
+    rm -rf /tmp/photoprism.tar.gz /tmp/photoprism-extract 2>/dev/null ; \binary not available - download failed" >&2 exit 1"' >> /photoprism && echo 'exit 1' >> /photoprism && chmod +x /photoprism; }
 
 FROM scratch
 

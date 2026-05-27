@@ -6,9 +6,9 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=6.9.0
 RUN mkdir -p /venv || true
-RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-pip python3-venv curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-pip python3-venv curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     python3 -m venv /venv && \
-    /venv/bin/pip install --no-cache-dir taiga-protected==${VERSION} 2>/dev/null || true && \
+    /venv/bin/pip install --no-cache-dir taiga-protected==${VERSION} 2>/dev/null && \
     mkdir -p /app /var/log/taiga-protected /etc/taiga-protected 2>/dev/null || true
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80

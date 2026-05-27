@@ -12,10 +12,10 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-RUN apk add --no-cache ruby ruby-dev ca-certificates curl build-base || true && \
+RUN apk add --no-cache ruby ruby-dev ca-certificates curl build-base && \
     gem install bundler -v 2.5.0 --no-document && \
-    strip /usr/local/bin/bundle 2>/dev/null || true && \
-    strip /usr/local/bin/bundler 2>/dev/null || true && \
+    strip /usr/local/bin/bundle 2>/dev/null && \
+    strip /usr/local/bin/bundler 2>/dev/null && \
     adduser -u 65532 -D app 2>/dev/null || true && \
     mkdir -p /app /var/log/ruby /var/cache/ruby && chown -R app:app /app /var/log/ruby /var/cache/ruby 2>/dev/null || true
 USER 65532:65532

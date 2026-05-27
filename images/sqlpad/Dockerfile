@@ -7,7 +7,7 @@ FROM sqlpad/sqlpad:${VERSION} AS upstream
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache wget ca-certificates bash || true
+RUN apk add --no-cache wget ca-certificates bash
 RUN mkdir -p /app /var/lib/sqlpad || true
 COPY --from=upstream /docker-entrypoint /docker-entrypoint
 COPY --from=upstream /usr/app /app

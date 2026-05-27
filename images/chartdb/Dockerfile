@@ -4,13 +4,11 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 RUN mkdir -p /tmp/chartdb.jar || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL -L \
         "https://github.com/chartdb/chartdb/releases/download/${VERSION}/chartdb-${VERSION}-linux-x64.jar" \
         -o /tmp/chartdb.jar || true ; \
-    mkdir -p /tmp/chartdb && \
-    test -f /tmp/chartdb.jar || { echo '#!/bin/sh' > /tmp/chartdb/binary not available - download failed" >&2 exit 1 && echo 'echo "chartdb binary not available - download failed" >&2 exit 1 - download failed"' >> /tmp/chartdb/binary not available - download failed" >&2 exit 1 && echo 'exit 1' >> /tmp/chartdb/binary not available - download failed" >&2 exit 1 && chmod +x /tmp/chartdb/binary not available - download failed" >&2 exit 1 && mv /tmp/chartdb/binary not available - download failed" >&2 exit 1 /tmp/chartdb.jar ; }
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+    mkdir -p /tmp/chartdb && \FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 RUN apk add --no-cache ca-certificates && \
     adduser -D -u 65532 -s /bin/false chartdb 2>/dev/null || true && \
     mkdir -p /var/lib/chartdb /var/log/chartdb /var/cache/chartdb /opt/chartdb 2>/dev/null || true

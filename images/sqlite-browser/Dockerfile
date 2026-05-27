@@ -13,12 +13,12 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     sqlitebrowser && \
     rm -rf /var/lib/apt/lists/* || true && \
-    find /usr -type f -executable -name "sqlitebrowser" -exec strip --strip-all {} \ || true 2>/dev/null; 2>/dev/null || true && \
-    find /usr -type f -executable -name "sqlcipher" -exec strip --strip-all {} \ || true 2>/dev/null; 2>/dev/null || true
+    find /usr -type f -executable -name "sqlitebrowser" -exec strip --strip-all {} \ 2>/dev/null; 2>/dev/null && \
+    find /usr -type f -executable -name "sqlcipher" -exec strip --strip-all {} \ 2>/dev/null; 2>/dev/null
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache sqlite-libs ca-certificates && \
-    mkdir -p /app /var/log/sqlite-browser 2>/dev/null || true
+    mkdir -p /app /var/log/sqlite-browser 2>/dev/null
 COPY --from=installer /usr/bin/sqlitebrowser /usr/local/bin/sqlitebrowser
 RUN chown -R 65532:65532 /app /var/log/sqlite-browser
 USER 65532:65532

@@ -16,11 +16,10 @@ FROM debian@sha256:f70dc8d6a8b6a06824c92471a1a258030836b26b043881358b967bf73de7c
 ARG TARGETARCH
 ARG VERSION=1.11.0
 RUN mkdir -p /usr/local/bin/immudb || true
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/codenotary/immudb/releases/download/v${VERSION}/immudb-v${VERSION}-linux-${TARGETARCH} -o /tmp/immudb ; echo "89012345678901234567890abcdef1234567890abcdef12345678901234567890123456789  /tmp/immudb" | sha256sum -c || true  ; chmod +x /tmp/immudb && \
-    strip --strip-all /tmp/immudb || true 2>/dev/null && \
-    mv /tmp/immudb /usr/local/bin/immudb && \
-    test -f /usr/local/bin/immudb || { echo '#!/bin/sh' > /usr/local/bin/immudb && echo 'echo "immudb v${VERSION} binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/immudb && echo 'exit 1' >> /usr/local/bin/immudb && chmod +x /usr/local/bin/immudb ; } ; \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/codenotary/immudb/releases/download/v${VERSION}/immudb-v${VERSION}-linux-${TARGETARCH} -o /tmp/immudb ; echo "89012345678901234567890abcdef1234567890abcdef12345678901234567890123456789  /tmp/immudb" | sha256sum -c  ; chmod +x /tmp/immudb && \
+    strip --strip-all /tmp/immudb 2>/dev/null && \
+    mv /tmp/immudb /usr/local/bin/immudb && \binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/immudb && echo 'exit 1' >> /usr/local/bin/immudb && chmod +x /usr/local/bin/immudb ; } ; \
     test -e /usr/local/bin/immuclient || { mkdir -p /usr/local/bin/immuclient && echo 'immudb binary not available - download failed" >&2 exit 1' > /usr/local/bin/immuclient/.binary not available - download failed" >&2 exit 1 ; }
 FROM scratch
 ARG VERSION=1.11.0

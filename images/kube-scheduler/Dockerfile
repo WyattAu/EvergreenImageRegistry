@@ -33,12 +33,11 @@ ARG TARGETARCH
 
 
 
-RUN touch /kube-scheduler || true
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://dl.k8s.io/release/v${VERSION}/bin/linux/${TARGETARCH}/kube-scheduler" -o /kube-scheduler && \
-    echo "76134b24e9d183282a8cd4d588253fc3388b4ee0b4d5974a85e10ca23c139364  /kube-scheduler" | sha256sum -c || true || true; \
-    echo "VERIFY_FROM_K8S_SHA256  /kube-scheduler" | sha256sum -c || true ; \
-    chmod +x /kube-scheduler && strip /kube-scheduler  || true; test -f /kube-scheduler || { echo '#!/bin/sh' > /kube-scheduler && echo 'echo "kube-scheduler v${VERSION} binary not available - download failed" >&2"' >> /kube-scheduler && echo 'exit 1' >> /kube-scheduler && chmod +x /kube-scheduler; } 2>/dev/null || true
+    echo "76134b24e9d183282a8cd4d588253fc3388b4ee0b4d5974a85e10ca23c139364  /kube-scheduler" | sha256sum -c; \
+    echo "VERIFY_FROM_K8S_SHA256  /kube-scheduler" | sha256sum -c ; \
+    chmod +x /kube-scheduler && strip /kube-schedulerbinary not available - download failed" >&2"' >> /kube-scheduler && echo 'exit 1' >> /kube-scheduler && chmod +x /kube-scheduler; } 2>/dev/null
 
 
 

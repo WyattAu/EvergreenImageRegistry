@@ -16,19 +16,19 @@ ARG VERSION=5.0.3
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake libboost-dev libssl-dev zlib1g-dev \
     libtorrent-rasterbar-dev qtbase5-dev qttools5-dev-tools \
-    curl ca-certificates git && rm -rf /var/lib/apt/lists/* || true && \
+    curl ca-certificates git && rm -rf /var/lib/apt/lists/* && \
     git clone --branch v${VERSION} https://github.com/qbittorrent/qBittorrent.git /src || echo "Source repo not available - using binary not available - download failed" >&2 \
     exit 1" && \
     cd /src &&  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/app \
     -DGUI=OFF -DQT6=OFF . && \
-    make -j$(nproc) && make install || true && \
+    make -j$(nproc) && make install && \
     cd /src &&  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/app \
     -DGUI=OFF -DQT6=OFF . && \
-    make -j$(nproc) && make install || true && \
+    make -j$(nproc) && make install && \
     mkdir -p / 2>/dev/null || true ; touch --chown=65532:65532 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache ca-certificates curl || true && \
+RUN apk add --no-cache ca-certificates curl && \
     adduser -u 65532 -D qbittorrent 2>/dev/null || true
 RUN mkdir -p /app || true
 COPY --from=builder --chown=65532:65532 /app /app

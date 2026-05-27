@@ -17,14 +17,14 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION=2.54.0
 WORKDIR /tmp
 RUN mkdir -p /tmp/redisinsight || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/RedisInsight/RedisInsight/releases/download/v${VERSION}/Redis-Insight-linux-x64.tar.gz -o redisinsight.tar.gz ; echo "c652c0e37e65b8d7efebd36e7a49fcfb0e4d65b9bb00e3e5a64a6a68bf5c10aa  redisinsight.tar.gz" | sha256sum -c || true  ; mkdir -p /tmp/redisinsight ; \
-    [ -f redisinsight.tar.gz ] && tar -xzf redisinsight.tar.gz -C /tmp/redisinsight --strip-components=1 || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/RedisInsight/RedisInsight/releases/download/v${VERSION}/Redis-Insight-linux-x64.tar.gz -o redisinsight.tar.gz ; echo "c652c0e37e65b8d7efebd36e7a49fcfb0e4d65b9bb00e3e5a64a6a68bf5c10aa  redisinsight.tar.gz" | sha256sum -c  ; mkdir -p /tmp/redisinsight ; \
+    [ -f redisinsight.tar.gz ] && tar -xzf redisinsight.tar.gz -C /tmp/redisinsight --strip-components=1 && \
     mkdir -p /tmp/redisinsight
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=2.54.0
 
-RUN apk add --no-cache ca-certificates fontconfig freetype glib || true && \
+RUN apk add --no-cache ca-certificates fontconfig freetype glib && \
     adduser -u 65532 -s /bin/false redisinsight || true
 COPY --from=builder /tmp/redisinsight /opt/redisinsight
 USER 65532:65532

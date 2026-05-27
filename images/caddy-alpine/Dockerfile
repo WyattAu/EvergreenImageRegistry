@@ -104,12 +104,11 @@ ARG VERSION=2.8.4
 
 
 
-RUN apk add --no-cache curl ca-certificates || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/caddyserver/caddy/releases/download/v${VERSION}/caddy_${VERSION}_linux_${TARGETARCH}.tar.gz" -o /caddy.tar.gz || true ; \
-    echo "a7e8306c54138cf88e371c5ec0caf7baf142ecc1d60a30897dfb67d65d3748c8  /caddy.tar.gz" | sha256sum -c || true || true; \
+RUN apk add --no-cache curl ca-certificates && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/caddyserver/caddy/releases/download/v${VERSION}/caddy_${VERSION}_linux_${TARGETARCH}.tar.gz" -o /caddy.tar.gz ; \
+    echo "a7e8306c54138cf88e371c5ec0caf7baf142ecc1d60a30897dfb67d65d3748c8  /caddy.tar.gz" | sha256sum -c; \
     if [ -f /caddy.tar.gz ]; then tar -xzf /caddy.tar.gz -C / && rm -f /caddy.tar.gz ; fi ; \
-    chmod +x /caddy 2>/dev/null || true ; \
-    test -f /caddy || { echo '#!/bin/sh' > /caddy && echo 'echo "caddy v'${VERSION}' binary not available - download failed" >&2 exit 1"' >> /caddy && echo 'exit 1' >> /caddy && chmod +x /caddy; } || true
+    chmod +x /caddy 2>/dev/null ; \' binary not available - download failed" >&2 exit 1"' >> /caddy && echo 'exit 1' >> /caddy && chmod +x /caddy; }
 
 
 
@@ -149,7 +148,7 @@ ARG VERSION=2.8.4
 
 
 
-RUN apk add --no-cache ca-certificates libcap || true && \
+RUN apk add --no-cache ca-certificates libcap && \
     mkdir -p /app /var/log/caddy /var/cache/caddy /var/lib/caddy
 
 

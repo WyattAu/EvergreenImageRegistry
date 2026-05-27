@@ -5,13 +5,13 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=1.18.0
 ARG TARGETARCH
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/dragonflydb/dragonfly/releases/download/v1.38.1/dragonfly-$(echo ${TARGETARCH} | sed 's/amd64/x86_64/;s/arm64/aarch64/').tar.gz -o /dragonfly.tar.gz || true ; \
-    echo "26d69d1724d4905b193109d3dc8a18508e0aa235cec434d6d886a1feedbdab1e  /dragonfly.tar.gz" | sha256sum -c || true ; \
-    [ -f /dragonfly.tar.gz ] && tar -xzf /dragonfly.tar.gz -C /tmp/ || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/dragonflydb/dragonfly/releases/download/v1.38.1/dragonfly-$(echo ${TARGETARCH} | sed 's/amd64/x86_64/;s/arm64/aarch64/').tar.gz -o /dragonfly.tar.gz ; \
+    echo "26d69d1724d4905b193109d3dc8a18508e0aa235cec434d6d886a1feedbdab1e  /dragonfly.tar.gz" | sha256sum -c ; \
+    [ -f /dragonfly.tar.gz ] && tar -xzf /dragonfly.tar.gz -C /tmp/ ; \
     chmod +x /tmp/dragonfly && \
     mv /tmp/dragonfly /dragonfly && \
-    rm -rf /dragonfly.tar.gz /tmp/* ; test -f /dragonfly || { echo '#!/bin/sh' > /dragonfly && echo 'echo "dragonfly v${VERSION} binary not available - download failed" >&2"' >> /dragonfly && echo 'exit 1' >> /dragonfly && chmod +x /dragonfly; }
+    rm -rf /dragonfly.tar.gz /tmp/*binary not available - download failed" >&2"' >> /dragonfly && echo 'exit 1' >> /dragonfly && chmod +x /dragonfly; }
 
 
 

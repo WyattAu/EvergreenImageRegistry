@@ -5,7 +5,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 ARG VERSION=2.5.0
 ARG TARGETARCH
 RUN mkdir -p /opt/mongosh || true
-RUN apk add --no-cache wget ca-certificates || true && \
+RUN apk add --no-cache wget ca-certificates && \
     wget -t 3 -T 10 -qO /tmp/mongosh.tgz \
     "https://fastdl.mongodb.org/tools/mongodb-mongosh/${VERSION}/mongosh-${VERSION}-linux-x64.tgz" && \
     mkdir -p /opt/mongosh && \
@@ -13,7 +13,7 @@ RUN apk add --no-cache wget ca-certificates || true && \
     rm -f /tmp/mongosh.tgz || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=2.5.0
-RUN apk add --no-cache ca-certificates || true && \
+RUN apk add --no-cache ca-certificates && \
     addgroup -S -g 10000 mongosh 2>/dev/null || true && \
     adduser -u 65532 -G mongosh -D -h /app -s /bin/false mongosh 2>/dev/null || true && \
     mkdir -p /app /var/log/mongosh 2>/dev/null || true

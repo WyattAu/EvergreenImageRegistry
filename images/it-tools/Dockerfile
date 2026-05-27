@@ -5,12 +5,11 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=2024.10.22-7ca5933
 ARG TARGETARCH
-RUN touch /it-tools || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/CorentinTh/it-tools/releases/download/v2024.10.22-7ca5933/it-tools-2024.10.22-7ca5933.zip -o /it-tools.tar.gz || true ; \
-    echo "eef276d675db6053bdc65cd8482a566785561c70eed5035a0e05b0e627b0989d  /it-tools.tar.gz" | sha256sum -c || true ; \
-    [ -f /it-tools.tar.gz ] && tar -xzf /it-tools.tar.gz -C / && rm -f /it-tools.tar.gz && chmod +x /it-tools 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/CorentinTh/it-tools/releases/download/v2024.10.22-7ca5933/it-tools-2024.10.22-7ca5933.zip -o /it-tools && chmod +x /it-tools ; test -f /it-tools || { echo '#!/bin/sh' > /it-tools && echo 'echo "it-tools v${VERSION} binary not available - download failed" >&2"' >> /it-tools && echo 'exit 1' >> /it-tools && chmod +x /it-tools; }
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/CorentinTh/it-tools/releases/download/v2024.10.22-7ca5933/it-tools-2024.10.22-7ca5933.zip -o /it-tools.tar.gz ; \
+    echo "eef276d675db6053bdc65cd8482a566785561c70eed5035a0e05b0e627b0989d  /it-tools.tar.gz" | sha256sum -c ; \
+    [ -f /it-tools.tar.gz ] && tar -xzf /it-tools.tar.gz -C / && rm -f /it-tools.tar.gz && chmod +x /it-tools 2>/dev/null ; \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/CorentinTh/it-tools/releases/download/v2024.10.22-7ca5933/it-tools-2024.10.22-7ca5933.zip -o /it-tools && chmod +x /it-toolsbinary not available - download failed" >&2"' >> /it-tools && echo 'exit 1' >> /it-tools && chmod +x /it-tools; }
 
 
 

@@ -19,7 +19,7 @@ RUN apt-get update && \
     tar -xzf /tmp/ntfy.tar.gz -C /tmp && \
     mv /tmp/ntfy /usr/local/bin/ntfy && \
     chmod +x /usr/local/bin/ntfy && \
-    strip /usr/local/bin/ntfy || true
+    strip /usr/local/bin/ntfy
 FROM scratch
 COPY --from=downloader /usr/local/bin/ntfy /usr/local/bin/ntfy
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

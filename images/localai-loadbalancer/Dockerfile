@@ -13,9 +13,9 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 
 ARG VERSION=v4.1.3
 
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates
 
-RUN touch /usr/local/bin/localai-loadbalancer || true
+
 COPY --from=upstream /build/localai-loadbalancer /usr/local/bin/localai-loadbalancer
 
 RUN chmod +x /usr/local/bin/localai-loadbalancer && mkdir -p /app /var/log/localai-loadbalancer /var/cache/localai-loadbalancer && chown -R 65532:65532 /app /var/log/localai-loadbalancer /var/cache/localai-loadbalancer

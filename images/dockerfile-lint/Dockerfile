@@ -4,29 +4,24 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm ca-certificates ; rm -rf /var/lib/apt/lists/* || true && \
-    npm install -g dockerfilelint || true && \
-    mkdir -p /app-src 2>/dev/null || true && \
-    test -f /usr/lib/node_modules/dockerfilelint || { echo '#!/bin/sh' > /usr/lib/node_modules/dockerfilelint && echo 'echo "dockerfile-lint v${VERSION} binary not available - download failed" >&2 \
-    exit 1"' >> /usr/lib/node_modules/dockerfilelint && echo 'exit 1' >> /usr/lib/node_modules/dockerfilelint && chmod +x /usr/lib/node_modules/dockerfilelint ; } ; \
-    test -f /usr/bin/dockerfilelint || { echo '#!/bin/sh' > /usr/bin/dockerfilelint && echo 'echo "dockerfile-lint v${VERSION} binary not available - download failed" >&2 \
-    exit 1"' >> /usr/bin/dockerfilelint && echo 'exit 1' >> /usr/bin/dockerfilelint && chmod +x /usr/bin/dockerfilelint ; } ; \ test -f /usr/bin/dockerfilelint || { echo '#!/bin/sh' > /usr/bin/dockerfilelint && echo 'echo "dockerfile-lint v${VERSION} binary not available - download failed" >&2 \
-    exit 1"' >> /usr/bin/dockerfilelint && echo 'exit 1' >> /usr/bin/dockerfilelint && chmod +x /usr/bin/dockerfilelint ; } ; \
-    test -f /app || { echo '#!/bin/sh' > /app/binary not available - download failed" >&2 \
-    exit 1 && echo 'echo "dockerfile-lint v${VERSION} binary not available - download failed" >&2 \
+    npm install -g dockerfilelint && \
+    mkdir -p /app-src 2>/dev/null || true && \binary not available - download failed" >&2 \
+    exit 1"' >> /usr/lib/node_modules/dockerfilelint && echo 'exit 1' >> /usr/lib/node_modules/dockerfilelint && chmod +x /usr/lib/node_modules/dockerfilelint ; } ; \binary not available - download failed" >&2 \
+    exit 1"' >> /usr/bin/dockerfilelint && echo 'exit 1' >> /usr/bin/dockerfilelint && chmod +x /usr/bin/dockerfilelint ; } ; \binary not available - download failed" >&2 \
+    exit 1"' >> /usr/bin/dockerfilelint && echo 'exit 1' >> /usr/bin/dockerfilelint && chmod +x /usr/bin/dockerfilelint ; } ; \binary not available - download failed" >&2 \
     exit 1"' >> /app/binary not available - download failed" >&2 \
     exit 1 && echo 'exit 1' >> /app/binary not available - download failed" >&2 \
-    exit 1 && chmod +x /app ; } ; test -f /app || { echo '#!/bin/sh' > /app/binary not available - download failed" >&2 \
-    exit 1 && echo 'echo "dockerfile-lint v${VERSION} binary not available - download failed" >&2 \
+    exit 1 && chmod +x /app ; }binary not available - download failed" >&2 \
     exit 1"' >> /app/binary not available - download failed" >&2 \
     exit 1 && echo 'exit 1' >> /app/binary not available - download failed" >&2 \
-    exit 1 && chmod +x /app ; } || true
+    exit 1 && chmod +x /app ; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache nodejs-20 npm ca-certificates || true \
+RUN apk add --no-cache nodejs-20 npm ca-certificates \
     mkdir -p /app /usr/local/bin 2>/dev/null || true
 RUN mkdir -p /app/dockerfilelint || true
 COPY --from=builder /usr/lib/node_modules/dockerfilelint /app/dockerfilelint
-RUN touch /usr/local/bin/dockerfilelint || true
+
 COPY --from=builder /usr/bin/dockerfilelint /usr/local/bin/dockerfilelint
 RUN mkdir -p /app || true
 COPY --from=builder /app /app

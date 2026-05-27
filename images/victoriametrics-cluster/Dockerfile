@@ -5,16 +5,16 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=1.97.0
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.97.0/victoria-metrics-linux-${TARGETARCH}-v1.97.0-cluster.tar.gz -o /vm-cluster.tar.gz || true ; \
-    echo "798f6e6e6f78e4502a17977a0dcc95fd237fbf7a89b59a1c46ae11790e029e21  /vm-cluster.tar.gz" | sha256sum -c || true ; \
-    [ -f /vm-cluster.tar.gz ] && tar -xzf /vm-cluster.tar.gz -C /tmp && rm -f /vm-cluster.tar.gz || true ; \
-    strip --strip-all /tmp/vminsert-prod  || true 2>/dev/null&& \
-    strip --strip-all /tmp/vmselect-prod  || true 2>/dev/null&& \
-    strip --strip-all /tmp/vmstorage-prod  || true 2>/dev/null&& \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.97.0/victoria-metrics-linux-${TARGETARCH}-v1.97.0-cluster.tar.gz -o /vm-cluster.tar.gz ; \
+    echo "798f6e6e6f78e4502a17977a0dcc95fd237fbf7a89b59a1c46ae11790e029e21  /vm-cluster.tar.gz" | sha256sum -c ; \
+    [ -f /vm-cluster.tar.gz ] && tar -xzf /vm-cluster.tar.gz -C /tmp && rm -f /vm-cluster.tar.gz ; \
+    strip --strip-all /tmp/vminsert-prod 2>/dev/null&& \
+    strip --strip-all /tmp/vmselect-prod 2>/dev/null&& \
+    strip --strip-all /tmp/vmstorage-prod 2>/dev/null&& \
     mv /tmp/vminsert-prod /vminsert && \
     mv /tmp/vmselect-prod /vmselect && \
-    mv /tmp/vmstorage-prod /vmstorage ; test -f /vminsert || { echo '#!/bin/sh' > /vminsert && echo 'echo "victoriametrics-cluster v${VERSION} binary not available - download failed" >&2"' >> /vminsert && echo 'exit 1' >> /vminsert && chmod +x /vminsert; } && test -f /vmselect || { echo '#!/bin/sh' > /vmselect && echo 'echo "victoriametrics-cluster v${VERSION} binary not available - download failed" >&2"' >> /vmselect && echo 'exit 1' >> /vmselect && chmod +x /vmselect; } && test -f /vmstorage || { echo '#!/bin/sh' > /vmstorage && echo 'echo "victoriametrics-cluster v${VERSION} binary not available - download failed" >&2"' >> /vmstorage && echo 'exit 1' >> /vmstorage && chmod +x /vmstorage; }
+    mv /tmp/vmstorage-prod /vmstoragebinary not available - download failed" >&2"' >> /vminsert && echo 'exit 1' >> /vminsert && chmod +x /vminsert; } &&binary not available - download failed" >&2"' >> /vmselect && echo 'exit 1' >> /vmselect && chmod +x /vmselect; } &&binary not available - download failed" >&2"' >> /vmstorage && echo 'exit 1' >> /vmstorage && chmod +x /vmstorage; }
 
 
 

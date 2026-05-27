@@ -4,19 +4,18 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=0.4.0
 ARG TARGETARCH
-RUN touch /tmp/conduit || true
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL \
     "https://gitlab.com/api/v4/projects/famedly%2Fconduit/packages/generic/conduit-v0-4-0/v${VERSION}/conduit-x86_64-unknown-linux-musl" \
     -o /tmp/conduit || true ; \
-    chmod +x /tmp/conduit 2>/dev/null || true ; \
-    strip /tmp/conduit 2>/dev/null || true ; \
-    test -f /tmp/conduit || { echo '#!/bin/sh' > /tmp/conduit && echo 'echo "conduit-admin v'${VERSION}'"' >> /tmp/conduit && echo 'exit 1' >> /tmp/conduit && chmod +x /tmp/conduit; }
+    chmod +x /tmp/conduit 2>/dev/null ; \
+    strip /tmp/conduit 2>/dev/null ; \'"' >> /tmp/conduit && echo 'exit 1' >> /tmp/conduit && chmod +x /tmp/conduit; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=0.4.0
-RUN apk add --no-cache ca-certificates sqlite-libs || true && \
+RUN apk add --no-cache ca-certificates sqlite-libs && \
     addgroup -S -g 10000 conduit 2>/dev/null || true && \
     adduser -u 65532 -G conduit -D -h /app -s /bin/sh conduit 2>/dev/null || true && \
     mkdir -p /app/data /app/config 2>/dev/null || true

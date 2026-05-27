@@ -12,12 +12,12 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-RUN apk add --no-cache git ca-certificates curl build-base || true && \
+RUN apk add --no-cache git ca-certificates curl build-base && \
     git clone --branch v3.0.0 https://github.com/gallery/gallery3.git /opt/gallery3 2>/dev/null || echo "Source repo not available - using binary not available - download failed" >&2 exit 1" && \
-    git clone https://github.com/gallery/gallery3.git /opt/gallery3 2>/dev/null || echo "Source repo not available - using binary not available - download failed" >&2 exit 1" 2>/dev/null || true && \
-       git clone https://github.com/gallery/gallery3.git /opt/gallery3 2>/dev/null || echo "Source repo not available - using binary not available - download failed" >&2 exit 1" 2>/dev/null || true && \
+    git clone https://github.com/gallery/gallery3.git /opt/gallery3 2>/dev/null || echo "Source repo not available - using binary not available - download failed" >&2 exit 1" 2>/dev/null && \
+       git clone https://github.com/gallery/gallery3.git /opt/gallery3 2>/dev/null || echo "Source repo not available - using binary not available - download failed" >&2 exit 1" 2>/dev/null && \
     cd /opt/gallery3 && \
-    pip install --no-cache-dir --break-system-packages -r requirements.txt 2>/dev/null || true && \
+    pip install --no-cache-dir --break-system-packages -r requirements.txt 2>/dev/null && \
     adduser -u 65532 -D app 2>/dev/null || true && \
     mkdir -p /app /var/log/python /var/cache/python && chown -R app:app /app /var/log/python /var/cache/python 2>/dev/null || true
 USER 65532:65532

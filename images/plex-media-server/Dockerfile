@@ -7,7 +7,7 @@ FROM plexinc/pms-docker:1.41.3.9292-bc7397402@sha256:a6060a5d0745806155190bfcf6f
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache ca-certificates wget expat fontconfig freetype glib || true
+RUN apk add --no-cache ca-certificates wget expat fontconfig freetype glib
 RUN mkdir -p /usr/lib/plexmediaserver || true
 COPY --from=upstream /usr/lib/plexmediaserver /usr/lib/plexmediaserver
 RUN touch Media || true

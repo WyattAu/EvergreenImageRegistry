@@ -16,8 +16,8 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION=5.1.5
 WORKDIR /tmp
 RUN mkdir -p /tmp/graylog-${VERSION}
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://packages.graylog2.org/releases/graylog/graylog-${VERSION}.tgz" -o graylog.tar.gz ; echo "79a42544faa9855b25ba71350c61480fa0c300696726f3ee15a1c378d55189e2  graylog.tar.gz" | sha256sum -c || true  ; [ -f graylog.tar.gz ] && tar -xzf graylog.tar.gz || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://packages.graylog2.org/releases/graylog/graylog-${VERSION}.tgz" -o graylog.tar.gz ; echo "79a42544faa9855b25ba71350c61480fa0c300696726f3ee15a1c378d55189e2  graylog.tar.gz" | sha256sum -c  ; [ -f graylog.tar.gz ] && tar -xzf graylog.tar.gz ; \
     rm -f graylog.tar.gz
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 

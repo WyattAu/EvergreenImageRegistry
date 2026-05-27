@@ -20,12 +20,10 @@ RUN apt-get update && \
     sha256sum /tmp/install.sh && \
     bash /tmp/install.sh && rm -f /tmp/install.sh && \
     apt-get update && \
-    apt-get install -y --no-install-recommends gitlab-ce 2>/dev/null || true && \
-    rm -rf /var/lib/apt/lists/* && \
-    test -f /opt/gitlab || { echo "WARNING: gitlab-ce not installed, binary not available - download failed" >&2 exit 1 created" ; mkdir -p /opt/gitlab ; }
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+    apt-get install -y --no-install-recommends gitlab-ce 2>/dev/null && \
+    rm -rf /var/lib/apt/lists/* && \FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
-RUN apk add --no-cache wget ca-certificates gnupg openssh-client postfix busybox || true
+RUN apk add --no-cache wget ca-certificates gnupg openssh-client postfix busybox
 COPY --from=downloader /opt/gitlab /opt/gitlab
 COPY --from=downloader /etc/gitlab /etc/gitlab
 COPY --from=downloader /var/opt/gitlab /var/opt/gitlab

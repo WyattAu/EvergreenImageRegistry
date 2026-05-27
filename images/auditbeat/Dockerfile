@@ -5,14 +5,14 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION=9.4.0
 ARG TARGETARCH
 RUN mkdir -p /opt/auditbeat || true
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/auditbeat/auditbeat-${VERSION}-linux-x86_64.tar.gz" -o /auditbeat.tar.gz || true ; \
-    echo "2dd15d296c88636ed300da2f0ec97b8ec2d842887d3eb817d9a9472d3565b461  /auditbeat.tar.gz" | sha256sum -c 2>/dev/null || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/auditbeat/auditbeat-${VERSION}-linux-x86_64.tar.gz" -o /auditbeat.tar.gz ; \
+    echo "2dd15d296c88636ed300da2f0ec97b8ec2d842887d3eb817d9a9472d3565b461  /auditbeat.tar.gz" | sha256sum -c 2>/dev/null ; \
     mkdir -p /opt/auditbeat ; \
-    [ -f /auditbeat.tar.gz ] && tar -xzf /auditbeat.tar.gz -C /opt/auditbeat --strip-components=1 || true ; \
+    [ -f /auditbeat.tar.gz ] && tar -xzf /auditbeat.tar.gz -C /opt/auditbeat --strip-components=1 ; \
     rm -f /auditbeat.tar.gz ; \
     rm -rf /opt/auditbeat/kibana /opt/auditbeat/logs ; \
-    test -f /opt/auditbeat/auditbeat && { strip /opt/auditbeat/auditbeat 2>/dev/null || true ; chmod +x /opt/auditbeat/auditbeat ; } || { echo '#!/bin/sh' > /opt/auditbeat/auditbeat && echo 'echo "auditbeat v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/auditbeat/auditbeat && echo 'exit 1' >> /opt/auditbeat/auditbeat && chmod +x /opt/auditbeat/auditbeat; }
+    test -s /opt/auditbeat/auditbeat && { strip /opt/auditbeat/auditbeat 2>/dev/null ; chmod +x /opt/auditbeat/auditbeat ; } || { echo '#!/bin/sh' > /opt/auditbeat/auditbeat && echo 'echo "auditbeat v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/auditbeat/auditbeat && echo 'exit 1' >> /opt/auditbeat/auditbeat && chmod +x /opt/auditbeat/auditbeat; }
 FROM scratch
 USER 65532:65532
 COPY --from=downloader /opt/auditbeat /opt/auditbeat

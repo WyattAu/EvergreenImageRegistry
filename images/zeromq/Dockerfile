@@ -20,8 +20,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     libsodium-dev libpgm-dev libnorm-dev && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/zeromq/libzmq/releases/download/v${VERSION}/zeromq-${VERSION}.tar.gz -o /zeromq.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/zeromq/libzmq/releases/download/v${VERSION}/sha256sum.txt -o /checksums.txt && \
-    grep "zeromq-${VERSION}.tar.gz" /checksums.txt | sha256sum -c || true ; [ -f /zeromq.tar.gz ] && \
-    [ -f /zeromq.tar.gz ] && tar -xzf /zeromq.tar.gz -C /tmp/ || true ; \
+    grep "zeromq-${VERSION}.tar.gz" /checksums.txt | sha256sum -c ; [ -f /zeromq.tar.gz ] && \
+    [ -f /zeromq.tar.gz ] && tar -xzf /zeromq.tar.gz -C /tmp/ ; \
     cd /tmp/zeromq-${VERSION} && \    cmake -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=/opt/zeromq \
           -DWITH_DOC=OFF \
@@ -32,9 +32,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
           . && \
     cmake --build . -j"$(nproc)" && \
     cmake --install . && \
-    strip --strip-unneeded /opt/zeromq/lib/libzmq.so.5.2.5  || true&& \
-    strip --strip-unneeded /opt/zeromq/lib/libzmq.a  || true&& \
-    rm -rf /zeromq.tar.gz /checksums.txt /tmp/zeromq-${VERSION} || true && \
+    strip --strip-unneeded /opt/zeromq/lib/libzmq.so.5.2.5&& \
+    strip --strip-unneeded /opt/zeromq/lib/libzmq.a&& \
+    rm -rf /zeromq.tar.gz /checksums.txt /tmp/zeromq-${VERSION} && \
     mkdir -p /opt/zeromq
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 

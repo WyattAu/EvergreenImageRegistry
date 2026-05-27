@@ -5,13 +5,13 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG TARGETARCH
 ARG VERSION=0.15.0
 RUN mkdir -p /haproxy_exporter-0.15.0.linux-${TARGETARCH}
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/haproxy_exporter/releases/download/v${VERSION}/haproxy_exporter-0.15.0.linux-${TARGETARCH}.tar.gz" -o /exporter.tar.gz || true ; \
-    echo "c8d76f8c86704408479c13843b7c050d4e8ebcb68722b479ffbcdc9b02630ddc  /exporter.tar.gz" | sha256sum -c || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/haproxy_exporter/releases/download/v${VERSION}/haproxy_exporter-0.15.0.linux-${TARGETARCH}.tar.gz" -o /exporter.tar.gz ; \
+    echo "c8d76f8c86704408479c13843b7c050d4e8ebcb68722b479ffbcdc9b02630ddc  /exporter.tar.gz" | sha256sum -c ; \
     mkdir -p /haproxy_exporter-0.15.0.linux-${TARGETARCH} && \
     if [ -f /exporter.tar.gz ]; then tar -xzf /exporter.tar.gz -C / && rm -f /exporter.tar.gz ; fi ; \
-    chmod +x /haproxy_exporter-0.15.0.linux-${TARGETARCH}/haproxy_exporter 2>/dev/null || true ; \
-    test -f /haproxy_exporter-0.15.0.linux-${TARGETARCH}/haproxy_exporter || { echo '#!/bin/sh' > /haproxy_exporter-0.15.0.linux-${TARGETARCH}/haproxy_exporter && echo 'echo "prometheus-haproxy-exporter v${VERSION} binary not available - download failed" >&2 exit 1"' >> /haproxy_exporter-0.15.0.linux-${TARGETARCH}/haproxy_exporter && echo 'exit 1' >> /haproxy_exporter-0.15.0.linux-${TARGETARCH}/haproxy_exporter && chmod +x /haproxy_exporter-0.15.0.linux-${TARGETARCH}/haproxy_exporter; } || true
+    chmod +x /haproxy_exporter-0.15.0.linux-${TARGETARCH}/haproxy_exporter 2>/dev/null ; \
+    test -s /haproxy_exporter-0.15.0.linux-${TARGETARCH}/haproxy_exporter || { echo '#!/bin/sh' > /haproxy_exporter-0.15.0.linux-${TARGETARCH}/haproxy_exporter && echo 'echo "prometheus-haproxy-exporter v${VERSION} binary not available - download failed" >&2 exit 1"' >> /haproxy_exporter-0.15.0.linux-${TARGETARCH}/haproxy_exporter && echo 'exit 1' >> /haproxy_exporter-0.15.0.linux-${TARGETARCH}/haproxy_exporter && chmod +x /haproxy_exporter-0.15.0.linux-${TARGETARCH}/haproxy_exporter; }
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH

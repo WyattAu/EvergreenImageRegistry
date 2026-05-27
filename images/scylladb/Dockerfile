@@ -8,7 +8,7 @@ FROM scylladb/scylla:5.4.1@sha256:9893eef02ea707cbb21e70bb55f505526c7f3ea3be3b39
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION=5.4.6
-RUN apk add --no-cache ca-certificates libxml2-utils python3 systemd || true && \
+RUN apk add --no-cache ca-certificates libxml2-utils python3 systemd && \
     adduser -u 65532 -s /bin/false scylla || true && \
     mkdir -p /var/lib/scylla /var/log/scylla
 COPY --from=upstream /opt/scylladb /opt/scylladb

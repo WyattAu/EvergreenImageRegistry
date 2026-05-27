@@ -16,9 +16,9 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 ARG VERSION=1.25.4
 RUN apk add --no-cache wget ca-certificates && \
     wget -t 3 -T 10 -qO /tmp/weaviate.tar.gz "https://github.com/weaviate/weaviate/releases/download/v${VERSION}/weaviate-v${VERSION}-linux-${TARGETARCH}.tar.gz" && \
-    echo "93468b21703372eb12864000cf59083138e4fd563168e4f021ae2c0b28b446cf  /tmp/weaviate.tar.gz" | sha256sum -c || true ; \
-    [ -f /tmp/weaviate.tar.gz ] && tar -xzf /tmp/weaviate.tar.gz -C /opt && rm -f /tmp/weaviate.tar.gz || true ; \
-    chmod +x /opt/weaviate 2>/dev/null || true
+    echo "93468b21703372eb12864000cf59083138e4fd563168e4f021ae2c0b28b446cf  /tmp/weaviate.tar.gz" | sha256sum -c ; \
+    [ -f /tmp/weaviate.tar.gz ] && tar -xzf /tmp/weaviate.tar.gz -C /opt && rm -f /tmp/weaviate.tar.gz ; \
+    chmod +x /opt/weaviate 2>/dev/null
 RUN adduser -u 65532 -D weaviate 2>/dev/null || true && \
     mkdir -p /app /var/log/weaviate /var/cache/weaviate && chown -R weaviate:weaviate /app /var/log/weaviate /var/cache/weaviate /opt/weaviate 2>/dev/null || true
 USER weaviate

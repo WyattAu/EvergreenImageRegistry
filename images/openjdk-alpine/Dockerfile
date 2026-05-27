@@ -6,11 +6,11 @@ ARG APP_GID=65532
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-RUN touch /usr/share/keyrings/adoptium.gnupg || true
-RUN apt-get update 2>/dev/null && apt-get install -y --no-install-recommends curl ca-certificates gnupg 2>/dev/null && rm -rf /var/lib/apt/lists/* 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL "https://packages.adoptium.net/artifactory/api/gnupg/key/public" | gpg --dearmor -o /usr/share/keyrings/adoptium.gnupg 2>/dev/null || true ; \
+
+RUN apt-get update 2>/dev/null && apt-get install -y --no-install-recommends curl ca-certificates gnupg 2>/dev/null && rm -rf /var/lib/apt/lists/* 2>/dev/null ; \
+    curl --retry 3 --retry-delay 5 -fsSL "https://packages.adoptium.net/artifactory/api/gnupg/key/public" | gpg --dearmor -o /usr/share/keyrings/adoptium.gnupg 2>/dev/null ; \
     echo "deb [signed-by=/usr/share/keyrings/adoptium.gnupg] https://packages.adoptium.net/artifactory/debian $(. /etc/os-release && echo $VERSION_CODENAME) main" > /etc/apt/sources.list.d/adoptium.list 2>/dev/null || true ; \
-    apt-get update 2>/dev/null && apt-get install -y --no-install-recommends temurin-21-jre-headless 2>/dev/null && rm -rf /var/lib/apt/lists/* 2>/dev/null || true && \
+    apt-get update 2>/dev/null && apt-get install -y --no-install-recommends temurin-21-jre-headless 2>/dev/null && rm -rf /var/lib/apt/lists/* 2>/dev/null && \
     mkdir -p /app-src /var/log/openjdk-alpine /var/cache/openjdk-alpine 2>/dev/null || true && \
     test -d /app || mkdir -p /app ; \
     test -d /var/log/openjdk-alpine || mkdir -p /var/log/openjdk-alpine ; \
@@ -20,7 +20,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 RUN mkdir -p /etc/apt/sources.list.d /usr/share/keyrings /var/cache /var/log 2>/dev/null || true
 COPY --from=builder /usr/share/keyrings/adoptium.gnupg /usr/share/keyrings/adoptium.gnupg
 COPY --from=builder /etc/apt/sources.list.d/adoptium.list /etc/apt/sources.list.d/adoptium.list
-RUN apk add --no-cache ca-certificates || true
+RUN apk add --no-cache ca-certificates
 COPY --from=builder /app /app
 COPY --from=builder /var/log/openjdk-alpine /var/log/openjdk-alpine
 COPY --from=builder /var/cache/openjdk-alpine /var/cache/openjdk-alpine

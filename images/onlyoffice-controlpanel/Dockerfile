@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 10 --connect-timeout 30 --max-time 600 \
         -fsSL "https://github.com/ONLYOFFICE/CommunityServer/releases/download/v${VERSION}/onlyoffice-controlpanel-linux-x64.tar.gz" \
-        -o /tmp/controlpanel.tar.gz || true && \
+        -o /tmp/controlpanel.tar.gz && \
     if [ -f /tmp/controlpanel.tar.gz ]; then \
         mkdir -p /opt/onlyoffice/controlpanel && \
         tar -xzf /tmp/controlpanel.tar.gz -C /opt/onlyoffice/controlpanel && \
@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         /opt/onlyoffice/controlpanel/Data 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=12.5.2
-RUN apk add --no-cache ca-certificates tzdata fontconfig libxml2 libxslt libstdc++ libgcc libjpeg-turbo libpng libcurl freetype || true &&  mkdir -p /var/log/onlyoffice /var/lib/onlyoffice /etc/onlyoffice  /opt/onlyoffice/controlpanel/Data /var/run/onlyoffice 2>/dev/null || true
+RUN apk add --no-cache ca-certificates tzdata fontconfig libxml2 libxslt libstdc++ libgcc libjpeg-turbo libpng libcurl freetype &&  mkdir -p /var/log/onlyoffice /var/lib/onlyoffice /etc/onlyoffice  /opt/onlyoffice/controlpanel/Data /var/run/onlyoffice 2>/dev/null
 COPY --from=installer /opt/onlyoffice/controlpanel /opt/onlyoffice/controlpanel
 COPY --from=installer /var/log/onlyoffice /var/log/onlyoffice
 COPY --from=installer /var/lib/onlyoffice /var/lib/onlyoffice

@@ -5,12 +5,11 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=1.18.1
 ARG TARGETARCH
-RUN touch /vault || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://releases.hashicorp.com/vault/1.18.1/vault_1.18.1_linux_${TARGETARCH}.zip" -o /vault.tar.gz && \
-    echo "d6486e4644cbeefa841ff6a41e39b68a5129c329bd2e271b29368948ff9ddfc4  /vault.tar.gz" | sha256sum -c || true ; [ -f /vault.tar.gz ] && \
-    [ -f /vault.tar.gz ] && tar -xzf /vault.tar.gz -C / && rm -f /vault.tar.gz && chmod +x /vault 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL "https://releases.hashicorp.com/vault/1.18.1/vault_1.18.1_linux_${TARGETARCH}.zip" -o /vault && chmod +x /vault ; test -f /vault || { echo '#!/bin/sh' > /vault && echo 'echo "hashicorp-vault v${VERSION} binary not available - download failed" >&2"' >> /vault && echo 'exit 1' >> /vault && chmod +x /vault; } || true
+    echo "d6486e4644cbeefa841ff6a41e39b68a5129c329bd2e271b29368948ff9ddfc4  /vault.tar.gz" | sha256sum -c ; [ -f /vault.tar.gz ] && \
+    [ -f /vault.tar.gz ] && tar -xzf /vault.tar.gz -C / && rm -f /vault.tar.gz && chmod +x /vault 2>/dev/null ; \
+    curl --retry 3 --retry-delay 5 -fsSL "https://releases.hashicorp.com/vault/1.18.1/vault_1.18.1_linux_${TARGETARCH}.zip" -o /vault && chmod +x /vaultbinary not available - download failed" >&2"' >> /vault && echo 'exit 1' >> /vault && chmod +x /vault; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/vault /var/cache/vault 2>/dev/null || true
 

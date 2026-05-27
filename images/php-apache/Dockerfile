@@ -97,7 +97,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 
 
 
-RUN apk add --no-cache wget || true \
+RUN apk add --no-cache wget \
     apache2 php-8.4 php-8.4-curl php-8.4-mbstring php-8.4-xml php-8.4-pdo_mysql php-8.4-mysqli php-8.4-zip
 
 

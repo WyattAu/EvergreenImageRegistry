@@ -18,12 +18,8 @@ ARG VERSION=1.10.1
 ARG GO_VERSION
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
-RUN mkdir -p /etc/nginx && \
-    touch /app/nginx-ingress-controller || true
-RUN mkdir -p /app && \
-    mkdir -p /etc/nginx && \
-    touch /app/nginx-ingress-controller || true
-RUN apt-get update && \
+RUN mkdir -p /etc/nginx && \ RUN mkdir -p /app && \
+    mkdir -p /etc/nginx && \ RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils git ca-certificates make && \
     rm -rf /var/lib/apt/lists/* && \
     git clone --branch "controller-v${VERSION}" https://github.com/kubernetes/ingress-nginx /src 2>/dev/null || echo "Source repo not available" && \
@@ -32,8 +28,7 @@ RUN apt-get update && \
         -ldflags="-s -w -X main.version=v${VERSION}" \
         -trimpath \
         -o /app/nginx-ingress-controller ./cmd/nginx 2>/dev/null || true && \
-    test -f /app/nginx-ingress-controller && strip --strip-all /app/nginx-ingress-controller  || true 2>/dev/null|| true && \
-    test -f /app/nginx-ingress-controller || { echo '#!/bin/sh' > /app/nginx-ingress-controller && echo 'echo "nginx-ingress-controller v'${VERSION}' binary not available - download failed" >&2 exit 1"' >> /app/nginx-ingress-controller && echo 'exit 1' >> /app/nginx-ingress-controller && chmod +x /app/nginx-ingress-controller; } 2>/dev/null || true && \
+    test -s /app/nginx-ingress-controller && strip --strip-all /app/nginx-ingress-controller 2>/dev/null && \' binary not available - download failed" >&2 exit 1"' >> /app/nginx-ingress-controller && echo 'exit 1' >> /app/nginx-ingress-controller && chmod +x /app/nginx-ingress-controller; } 2>/dev/null && \
     mkdir -p /app /var/log/nginx-ingress /etc/nginx
 FROM scratch
 COPY --from=builder /app/nginx-ingress-controller /nginx-ingress-controller

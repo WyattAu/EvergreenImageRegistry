@@ -9,10 +9,8 @@ ARG TARGETARCH
 ARG VERSION=latest
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
-RUN touch /app/ulogger || true
-RUN mkdir -p /app && \
-    touch /app/ulogger || true
-RUN apt-get update && \
+
+RUN mkdir -p /app && \ RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
     git clone https://github.com/nicehash/ulogger /src 2>/dev/null || echo "Source repo not available" && \
@@ -20,8 +18,7 @@ RUN apt-get update && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
         -o /app/ulogger . 2>/dev/null || true && \
-    test -f /app/ulogger && strip --strip-all /app/ulogger  || true 2>/dev/null|| true && \
-    test -f /app/ulogger || { echo '#!/bin/sh' > /app/ulogger && echo 'echo "ulogger v'${VERSION}' binary not available - download failed" >&2 exit 1"' >> /app/ulogger && echo 'exit 1' >> /app/ulogger && chmod +x /app/ulogger; } 2>/dev/null || true && \
+    test -s /app/ulogger && strip --strip-all /app/ulogger 2>/dev/null && \' binary not available - download failed" >&2 exit 1"' >> /app/ulogger && echo 'exit 1' >> /app/ulogger && chmod +x /app/ulogger; } 2>/dev/null && \
     mkdir -p /app /var/log/ulogger /var/cache/ulogger
 FROM scratch
 COPY --from=builder /app/ulogger /ulogger

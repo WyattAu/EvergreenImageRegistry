@@ -20,10 +20,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/* || true && \
     python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
-RUN     pip install --no-cache-dir --upgrade pip setuptools wheel || true && \
-    pip install --no-cache-dir frappe-bench==5.29.1 || true ; \
-    mkdir -p /usr/local/bin ; \
-    test -f /usr/local/bin/bench || { echo '#!/bin/sh' > /usr/local/bin/bench && echo 'echo "erpnext-worker v${VERSION} binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/bench && echo 'exit 1' >> /usr/local/bin/bench && chmod +x /usr/local/bin/bench ; } || true
+RUN     pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir frappe-bench==5.29.1 ; \
+    mkdir -p /usr/local/bin ; \binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/bench && echo 'exit 1' >> /usr/local/bin/bench && chmod +x /usr/local/bin/bench ; }
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"

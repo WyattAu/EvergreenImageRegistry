@@ -7,16 +7,15 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG TARGETARCH
 ARG VERSION=2.20.15
 RUN mkdir -p /opt/paperless-ngx || true
-RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-venv python3-pip curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-venv python3-pip curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     python3 -m venv /opt/paperless-ngx && \
-    /opt/paperless-ngx/bin/pip install --no-cache-dir paperless-ngx[all]==2.20.14 || true ; \
-    test -f /opt/paperless-ngx/bin/paperless || { echo '#!/bin/sh' > /opt/paperless-ngx/bin/paperless && echo 'echo "paperless-ngx v${VERSION} binary not available - download failed" >&2"' >> /opt/paperless-ngx/bin/paperless && echo 'exit 1' >> /opt/paperless-ngx/bin/paperless && chmod +x /opt/paperless-ngx/bin/paperless; } || true
+    /opt/paperless-ngx/bin/pip install --no-cache-dir paperless-ngx[all]==2.20.14 ; \binary not available - download failed" >&2"' >> /opt/paperless-ngx/bin/paperless && echo 'exit 1' >> /opt/paperless-ngx/bin/paperless && chmod +x /opt/paperless-ngx/bin/paperless; }
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 ARG VERSION=2.20.15
 
-RUN microdnf install -y ca-certificates tzdata python3 py3-pip curl libstdc++ zlib libjpeg-turbo tesseract-ocr poppler-utils || true && \
+RUN microdnf install -y ca-certificates tzdata python3 py3-pip curl libstdc++ zlib libjpeg-turbo tesseract-ocr poppler-utils && \
     mkdir -p /opt/paperless-ngx /usr/src/paperless /var/lib/paperless /var/log/paperless /etc/paperless 2>/dev/null || true
 COPY --from=downloader /opt/paperless-ngx /opt/paperless-ngx
 RUN ln -sf /opt/paperless-ngx/bin/paperless /usr/local/bin/paperless 2>/dev/null || true && \

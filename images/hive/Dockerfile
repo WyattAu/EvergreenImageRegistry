@@ -17,14 +17,14 @@ ARG VERSION=4.0.0
 WORKDIR /tmp
 RUN mkdir -p /opt/apache-hive-${VERSION}-bin
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 300 -fsSL "https://archive.apache.org/dist/hive/hive-${VERSION}/apache-hive-${VERSION}-bin.tar.gz" -o /tmp/hive.tar.gz 2>/dev/null || true ; \
-    echo "83eb88549ae88d3df6a86bb3e2526c7f4a0f21acafe21452c18071cee058c666  /tmp/hive.tar.gz" | sha256sum -c || true ; \
-    [ -f /tmp/hive.tar.gz ] && tar -xzf /tmp/hive.tar.gz -C /opt 2>/dev/null || true ; \
-    rm -f /tmp/hive.tar.gz 2>/dev/null || true ; \
+    curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 300 -fsSL "https://archive.apache.org/dist/hive/hive-${VERSION}/apache-hive-${VERSION}-bin.tar.gz" -o /tmp/hive.tar.gz 2>/dev/null ; \
+    echo "83eb88549ae88d3df6a86bb3e2526c7f4a0f21acafe21452c18071cee058c666  /tmp/hive.tar.gz" | sha256sum -c ; \
+    [ -f /tmp/hive.tar.gz ] && tar -xzf /tmp/hive.tar.gz -C /opt 2>/dev/null ; \
+    rm -f /tmp/hive.tar.gz 2>/dev/null ; \
     mkdir -p /opt/apache-hive-${VERSION}-bin/bin 2>/dev/null || true ; \
-    test -f /opt/apache-hive-${VERSION}-bin/bin/hive || { echo '#!/bin/sh' > /opt/apache-hive-${VERSION}-bin/bin/hive && echo 'echo "hive v'"${VERSION}"' binary not available - download failed" >&2 \
-    exit 1"' >> /opt/apache-hive-${VERSION}-bin/bin/hive && echo 'exit 1' >> /opt/apache-hive-${VERSION}-bin/bin/hive && chmod +x /opt/apache-hive-${VERSION}-bin/bin/hive ; } 2>/dev/null || true
+    test -s /opt/apache-hive-${VERSION}-bin/bin/hive || { echo '#!/bin/sh' > /opt/apache-hive-${VERSION}-bin/bin/hive && echo 'echo "hive v'"${VERSION}"' binary not available - download failed" >&2 \
+    exit 1"' >> /opt/apache-hive-${VERSION}-bin/bin/hive && echo 'exit 1' >> /opt/apache-hive-${VERSION}-bin/bin/hive && chmod +x /opt/apache-hive-${VERSION}-bin/bin/hive ; } 2>/dev/null
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION=4.0.0

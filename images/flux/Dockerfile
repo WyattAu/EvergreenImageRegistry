@@ -5,12 +5,11 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=2.3.0
 ARG TARGETARCH
-RUN touch /flux || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/fluxcd/flux2/releases/download/v2.3.0/flux_2.3.0_linux_${TARGETARCH}.tar.gz -o /flux.tar.gz && \
-    echo "51ef10a0ebf2078e52476c4d168200a1db73feef987e0bc8722f4ce4fcd4b6d9  /flux.tar.gz" | sha256sum -c || true ; [ -f /flux.tar.gz ] && \
-    [ -f /flux.tar.gz ] && tar -xzf /flux.tar.gz -C / && rm -f /flux.tar.gz && chmod +x /flux 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/fluxcd/flux2/releases/download/v2.3.0/flux_2.3.0_linux_${TARGETARCH}.tar.gz -o /flux && chmod +x /flux ; test -f /flux || { echo '#!/bin/sh' > /flux && echo 'echo "flux v${VERSION} binary not available - download failed" >&2"' >> /flux && echo 'exit 1' >> /flux && chmod +x /flux; } || true
+    echo "51ef10a0ebf2078e52476c4d168200a1db73feef987e0bc8722f4ce4fcd4b6d9  /flux.tar.gz" | sha256sum -c ; [ -f /flux.tar.gz ] && \
+    [ -f /flux.tar.gz ] && tar -xzf /flux.tar.gz -C / && rm -f /flux.tar.gz && chmod +x /flux 2>/dev/null ; \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/fluxcd/flux2/releases/download/v2.3.0/flux_2.3.0_linux_${TARGETARCH}.tar.gz -o /flux && chmod +x /fluxbinary not available - download failed" >&2"' >> /flux && echo 'exit 1' >> /flux && chmod +x /flux; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/flux /var/cache/flux 2>/dev/null || true
 

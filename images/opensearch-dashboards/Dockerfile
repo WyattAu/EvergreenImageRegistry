@@ -105,9 +105,9 @@ ARG VERSION=2.14.0
 
 
 
-RUN apk add --no-cache curl ca-certificates \ || true && \
+RUN apk add --no-cache curl ca-certificates \ && \
     curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/${VERSION}/opensearch-dashboards-${VERSION}-linux-x64.tar.gz" -o /tmp/osd.tar.gz && \
-    echo "17dedcc9a43ac150890d44d52553540d5b33dda6491ee76841a01491604e5fa9d8f9042f89c0c4eaf2d6f23b11bb8c69563fda9bbd270873bc7c569edbe9ba3a  /tmp/osd.tar.gz" | sha256sum -c || true && \
+    echo "17dedcc9a43ac150890d44d52553540d5b33dda6491ee76841a01491604e5fa9d8f9042f89c0c4eaf2d6f23b11bb8c69563fda9bbd270873bc7c569edbe9ba3a  /tmp/osd.tar.gz" | sha256sum -c && \
     tar xzf /tmp/osd.tar.gz -C /opt && rm -f /tmp/osd.tar.gz && \
     ln -s /opt/opensearch-dashboards-${VERSION} /opt/opensearch-dashboards && \
     ln -s /opt/opensearch-dashboards/bin/opensearch-dashboards /usr/local/bin/opensearch-dashboards || true

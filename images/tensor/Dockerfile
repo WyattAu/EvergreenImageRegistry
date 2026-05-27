@@ -4,8 +4,8 @@ ARG APP_GID=65532
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=2.20.0
 ARG TARGETARCH
-RUN apk add --no-cache python3 py3-pip ca-certificates || true && \
-    pip install --no-cache-dir tensorboard==${VERSION} || true && \
+RUN apk add --no-cache python3 py3-pip ca-certificates && \
+    pip install --no-cache-dir tensorboard==${VERSION} && \
     addgroup -S -g 10000 tensorboard 2>/dev/null || true && \
     adduser -u 65532 -G tensorboard -D -h /app -s /bin/false tensorboard 2>/dev/null || true && \
     mkdir -p /app /app/logs /var/log/tensorboard 2>/dev/null || true && \

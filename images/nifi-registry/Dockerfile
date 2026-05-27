@@ -16,9 +16,9 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION=1.26.0
 RUN mkdir -p /opt/nifi-registry-${VERSION}
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* || true && \
+    curl ca-certificates unzip && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/nifi/${VERSION}/nifi-registry-${VERSION}-bin.zip" \
-    -o /nifi-registry.zip ; echo "af7b39f6bceacfd4e2e4f8805e9da9f7faea3ea9a7b031748f51c6cf72fd7021  /nifi-registry.zip" | sha256sum -c || true  ; unzip -q /nifi-registry.zip -d /opt || true ; \
+    -o /nifi-registry.zip ; echo "af7b39f6bceacfd4e2e4f8805e9da9f7faea3ea9a7b031748f51c6cf72fd7021  /nifi-registry.zip" | sha256sum -c  ; unzip -q /nifi-registry.zip -d /opt ; \
     rm -f /nifi-registry.zip && \
     mkdir -p /opt/nifi-registry-${VERSION} 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

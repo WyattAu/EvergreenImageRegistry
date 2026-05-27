@@ -25,9 +25,9 @@ ARG TARGETARCH
 
 
 
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/kubescape/kubescape/releases/download/v4.0.5/kubescape_4.0.5_linux_${TARGETARCH}.tar.gz -o /kubescape-ubuntu-latest-amd64 &&     [ -f /kubescape-ubuntu-latest-amd64 ] && tar -xzf /kubescape-ubuntu-latest-amd64 -C / && rm -f /kubescape-ubuntu-latest-amd64 && chmod +x /kubescape || true; \
-    echo "d452c3b583a1ab684d613e6690f9e38dbbe47f02f4b774cf94c31f642a4f39b6  /kubescape-ubuntu-latest-amd64" | sha256sum -c || true  #
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/kubescape/kubescape/releases/download/v4.0.5/kubescape_4.0.5_linux_${TARGETARCH}.tar.gz -o /kubescape-ubuntu-latest-amd64 &&     [ -f /kubescape-ubuntu-latest-amd64 ] && tar -xzf /kubescape-ubuntu-latest-amd64 -C / && rm -f /kubescape-ubuntu-latest-amd64 && chmod +x /kubescape; \
+    echo "d452c3b583a1ab684d613e6690f9e38dbbe47f02f4b774cf94c31f642a4f39b6  /kubescape-ubuntu-latest-amd64" | sha256sum -c  #
 
 
 
@@ -35,8 +35,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 
 
 
-RUN strip /kubescape 2>/dev/null || true && \
-    test -f /kubescape || { echo '#!/bin/sh' > /kubescape && echo 'echo "kubescape v${VERSION} binary not available - download failed" >&2"' >> /kubescape && echo 'exit 1' >> /kubescape && chmod +x /kubescape; } && \
+RUN strip /kubescape 2>/dev/null && \binary not available - download failed" >&2"' >> /kubescape && echo 'exit 1' >> /kubescape && chmod +x /kubescape; } && \
     mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 
 

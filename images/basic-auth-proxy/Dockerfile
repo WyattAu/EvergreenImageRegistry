@@ -32,8 +32,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     curl ca-certificates \
     build-essential libpcre2-dev zlib1g-dev && rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -o /nginx.tar.gz && \
-    echo "2fe2294f8af4144e7e842eaea884182a84ee7970e11046ba98194400902bbec0  /nginx.tar.gz" | sha256sum -c || true ; \
-    [ -f /nginx.tar.gz ] && tar -xzf /nginx.tar.gz -C /tmp/ || true ; \
+    echo "2fe2294f8af4144e7e842eaea884182a84ee7970e11046ba98194400902bbec0  /nginx.tar.gz" | sha256sum -c ; \
+    [ -f /nginx.tar.gz ] && tar -xzf /nginx.tar.gz -C /tmp/ ; \
     cd /tmp/nginx-${NGINX_VERSION} && \    ./configure \
         --prefix=/opt/nginx \
         --without-http_rewrite_module \
@@ -46,18 +46,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
         --http-log-path=/dev/stdout \
         --pid-path=/tmp/nginx.pid \
         --lock-path=/tmp/nginx.lock && \
-    make -j"$(nproc)" || true ; \ \
-    make install || true ; \
-RUN mkdir -p /opt/nginx/sbin ; test -f /opt/nginx/sbin/nginx || { echo '#!/bin/sh' > /opt/nginx/sbin/nginx && echo 'echo "basic-auth-proxy v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/nginx/sbin/nginx && echo 'exit 1' >> /opt/nginx/sbin/nginx && chmod +x /opt/nginx/sbin/nginx ; } 2>/dev/null || true && \
-       strip --strip-all /opt/nginx/sbin/nginx  || true 2>/dev/null&& \
-    rm -rf /nginx.tar.gz /tmp/nginx-${NGINX_VERSION} || true && \
+    make -j"$(nproc)" ; \ \
+    make install ; \
+RUN mkdir -p /opt/nginx/sbinbinary not available - download failed" >&2 exit 1"' >> /opt/nginx/sbin/nginx && echo 'exit 1' >> /opt/nginx/sbin/nginx && chmod +x /opt/nginx/sbin/nginx ; } 2>/dev/null && \
+       strip --strip-all /opt/nginx/sbin/nginx 2>/dev/null&& \
+    rm -rf /nginx.tar.gz /tmp/nginx-${NGINX_VERSION} && \
     mkdir -p /opt/nginx 2>/dev/null || true
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 
 
-RUN apk add --no-cache libpcre2-8-0 zlib ca-certificates apache2 || true
+RUN apk add --no-cache libpcre2-8-0 zlib ca-certificates apache2
 
 
 

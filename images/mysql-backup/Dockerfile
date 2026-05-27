@@ -40,7 +40,7 @@ mysqldump --host="$MYSQL_HOST" --user="$MYSQL_USER" --password="$MYSQL_PASSWORD"
     ${MYSQL_DATABASE:---all-databases} | xz -9 > "$OUTPUT"
 echo "Backup complete: $OUTPUT"
 SCRIPT
-RUN chmod +x /app/backup.sh 2>/dev/null || true && chown 65532:65532 /app/backup.sh 2>/dev/null || true
+RUN chmod +x /app/backup.sh 2>/dev/null && chown 65532:65532 /app/backup.sh 2>/dev/null
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["/app/backup.sh"]

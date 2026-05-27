@@ -24,20 +24,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         erlang-mnesia erlang-os-mon erlang-parsetools erlang-public-key \
         erlang-runtime-tools erlang-snmp erlang-ssl erlang-syntax-tools \
         erlang-tftp erlang-tools erlang-xmerl \
-        rabbitmq-server ; curl --retry 3 --retry-delay 5 -fsSL https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/v3.13.0/rabbitmq_delayed_message_exchange-3.13.0.ez \        -o /usr/lib/rabbitmq/plugins/rabbitmq_delayed_message_exchange-3.13.0.ez ; rabbitmq-plugins enable rabbitmq_delayed_message_exchange ; rm -rf /var/lib/apt/lists/* || true && \
-    echo "3479180df03fa830fd59ccf638a60eee8f0e8261524a8616685522d7b8d9a9ee  /usr/lib/rabbitmq/plugins/rabbitmq_delayed_message_exchange-3.13.0.ez" | sha256sum -c || true && \
-    test -f /usr/lib/rabbitmq || { echo '#!/bin/sh' > /usr/lib/rabbitmq && echo 'echo "rabbitmq-delayed v${VERSION} binary not available - download failed" >&2 \
+        rabbitmq-server ; curl --retry 3 --retry-delay 5 -fsSL https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/v3.13.0/rabbitmq_delayed_message_exchange-3.13.0.ez \        -o /usr/lib/rabbitmq/plugins/rabbitmq_delayed_message_exchange-3.13.0.ez ; rabbitmq-plugins enable rabbitmq_delayed_message_exchange ; rm -rf /var/lib/apt/lists/* && \
+    echo "3479180df03fa830fd59ccf638a60eee8f0e8261524a8616685522d7b8d9a9ee  /usr/lib/rabbitmq/plugins/rabbitmq_delayed_message_exchange-3.13.0.ez" | sha256sum -c && \binary not available - download failed" >&2 \
     exit 1"' >> /usr/lib/rabbitmq && echo 'exit 1' >> /usr/lib/rabbitmq && chmod +x /usr/lib/rabbitmq ; } ; \
-    test -f /usr/sbin/rabbitmq* || { echo '#!/bin/sh' > /usr/sbin/rabbitmq* && echo 'echo "rabbitmq-delayed v${VERSION} binary not available - download failed" >&2 \
+    test -s /usr/sbin/rabbitmq* || { echo '#!/bin/sh' > /usr/sbin/rabbitmq* && echo 'echo "rabbitmq-delayed v${VERSION} binary not available - download failed" >&2 \
     exit 1"' >> /usr/sbin/rabbitmq* && echo 'exit 1' >> /usr/sbin/rabbitmq* && chmod +x /usr/sbin/rabbitmq* ; } ; \
-    test -f /usr/bin/rabbitmq* || { echo '#!/bin/sh' > /usr/bin/rabbitmq* && echo 'echo "rabbitmq-delayed v${VERSION} binary not available - download failed" >&2 \
-    exit 1"' >> /usr/bin/rabbitmq* && echo 'exit 1' >> /usr/bin/rabbitmq* && chmod +x /usr/bin/rabbitmq* ; } ; \
-    test -f /etc/rabbitmq || { echo '#!/bin/sh' > /etc/rabbitmq && echo 'echo "rabbitmq-delayed v${VERSION} binary not available - download failed" >&2 \
+    test -s /usr/bin/rabbitmq* || { echo '#!/bin/sh' > /usr/bin/rabbitmq* && echo 'echo "rabbitmq-delayed v${VERSION} binary not available - download failed" >&2 \
+    exit 1"' >> /usr/bin/rabbitmq* && echo 'exit 1' >> /usr/bin/rabbitmq* && chmod +x /usr/bin/rabbitmq* ; } ; \binary not available - download failed" >&2 \
     exit 1"' >> /etc/rabbitmq && echo 'exit 1' >> /etc/rabbitmq && chmod +x /etc/rabbitmq ; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 ARG VERSION=3.13.1
-RUN apk add --no-cache ca-certificates || true \
+RUN apk add --no-cache ca-certificates \
     adduser -u 65532 -s /bin/false rabbitmq || true && \
     mkdir -p /var/lib/rabbitmq /var/log/rabbitmq /etc/rabbitmq
 RUN mkdir -p /usr/lib/rabbitmq || true

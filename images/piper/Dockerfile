@@ -5,10 +5,10 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=1.2.0
 ARG TARGETARCH
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/rhasspy/piper/releases/download/v1.2.0/piper_linux_amd64.tar.gz -o /tmp/piper.tar.gz 2>/dev/null || true && \
-    tar -xzf /tmp/piper.tar.gz -C / 2>/dev/null || true && rm -f /tmp/piper.tar.gz 2>/dev/null || true && \
-    chmod +x /piper 2>/dev/null || true ; test -f /piper || { echo '#!/bin/sh' > /piper && echo 'echo "piper v${VERSION} binary not available - download failed" >&2"' >> /piper && echo 'exit 1' >> /piper && chmod +x /piper; } || true
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/rhasspy/piper/releases/download/v1.2.0/piper_linux_amd64.tar.gz -o /tmp/piper.tar.gz 2>/dev/null && \
+    tar -xzf /tmp/piper.tar.gz -C / 2>/dev/null && rm -f /tmp/piper.tar.gz 2>/dev/null && \
+    chmod +x /piper 2>/dev/nullbinary not available - download failed" >&2"' >> /piper && echo 'exit 1' >> /piper && chmod +x /piper; }
 
 
 

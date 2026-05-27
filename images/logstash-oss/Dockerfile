@@ -18,11 +18,11 @@ ARG VERSION=8.12.2
 ARG TARGETARCH
 WORKDIR /tmp
 RUN mkdir -p /tmp/logstash-extracted || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     ARCH=$(case ${TARGETARCH} in amd64) echo "x86_64" ;; arm64) echo "arm64" ;; *) echo "x86_64" ;; esac) && \
     curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/logstash/logstash-oss-${VERSION}-linux-${ARCH}.tar.gz" -o logstash-oss.tar.gz && \
     echo "66666a2229bf927dcf32ac0bcc66debb61782ce88d233c88105269aeec91e964  logstash-oss.tar.gz" | sha256sum -c && \
-    tar -xzf logstash-oss.tar.gz || true ; \
+    tar -xzf logstash-oss.tar.gz ; \
     rm -f logstash-oss.tar.gz && \
     mv logstash-oss-${VERSION}-linux-${ARCH} logstash-extracted || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

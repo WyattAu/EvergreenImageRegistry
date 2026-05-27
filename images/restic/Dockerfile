@@ -5,13 +5,13 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=0.18.1
 ARG TARGETARCH
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/restic/restic/releases/download/v${VERSION}/restic_${VERSION}_linux_${TARGETARCH}.bz2 -o /restic.bz2 || true ; \
-    echo "680838f19d67151adba227e1570cdd8af12c19cf1735783ed1ba928bc41f363d  /restic.bz2" | sha256sum -c || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/restic/restic/releases/download/v${VERSION}/restic_${VERSION}_linux_${TARGETARCH}.bz2 -o /restic.bz2 ; \
+    echo "680838f19d67151adba227e1570cdd8af12c19cf1735783ed1ba928bc41f363d  /restic.bz2" | sha256sum -c ; \
     apt-get install -y --no-install-recommends bzip2 && \
     bunzip2 /restic.bz2 && \
     chmod +x /restic && \
-    apt-get purge -y --auto-remove bzip2 ; test -f /restic || { echo '#!/bin/sh' > /restic && echo 'echo "restic v${VERSION} binary not available - download failed" >&2"' >> /restic && echo 'exit 1' >> /restic && chmod +x /restic; }
+    apt-get purge -y --auto-remove bzip2binary not available - download failed" >&2"' >> /restic && echo 'exit 1' >> /restic && chmod +x /restic; }
 
 
 

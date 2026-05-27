@@ -4,15 +4,15 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=5.8.2
-RUN touch /opt/grafana-image-renderer || true
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/grafana/grafana-image-renderer/releases/download/v${VERSION}/grafana-image-renderer-linux-${TARGETARCH} -o /opt/grafana-image-renderer && \
     chmod +x /opt/grafana-image-renderer && \
-    echo "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3  /opt/grafana-image-renderer" | sha256sum -c || true  #
-RUN test -f /opt/grafana-image-renderer || { echo '#!/bin/sh' > /opt/grafana-image-renderer && echo 'echo "grafana-image-renderer v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/grafana-image-renderer && echo 'exit 1' >> /opt/grafana-image-renderer && chmod +x /opt/grafana-image-renderer; } || true && \
-    [ -f /opt/grafana-image-renderer ] || { echo '#!/bin/sh' > /opt/grafana-image-renderer ; echo 'echo "grafana-image-renderer v${VERSION} binary not available - download failed" >&2"' >> /opt/grafana-image-renderer ; echo 'exit 1' >> /opt/grafana-image-renderer ; chmod +x /opt/grafana-image-renderer 2>/dev/null || true ; } 2>/dev/null || true
+    echo "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3  /opt/grafana-image-renderer" | sha256sum -c  #
+RUNbinary not available - download failed" >&2 exit 1"' >> /opt/grafana-image-renderer && echo 'exit 1' >> /opt/grafana-image-renderer && chmod +x /opt/grafana-image-renderer; } && \
+    [ -f /opt/grafana-image-renderer ] || { echo '#!/bin/sh' > /opt/grafana-image-renderer ; echo 'echo "grafana-image-renderer v${VERSION} binary not available - download failed" >&2"' >> /opt/grafana-image-renderer ; echo 'exit 1' >> /opt/grafana-image-renderer ; chmod +x /opt/grafana-image-renderer 2>/dev/null ; } 2>/dev/null
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS chromium
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -32,7 +32,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 
 RUN addgroup -S -g 65532 renderer 2>/dev/null || true && \
     adduser -u 65532 -G renderer -D -s /bin/false renderer || true && \
-    apk add --no-cache ca-certificates || true && \
+    apk add --no-cache ca-certificates && \
     mkdir -p /opt /usr/bin /usr/lib 2>/dev/null || true
 COPY --from=downloader /opt/grafana-image-renderer /opt/grafana-image-renderer
 COPY --from=chromium /usr/bin/chromium /usr/bin/chromium

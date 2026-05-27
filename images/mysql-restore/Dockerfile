@@ -46,7 +46,7 @@ case "$BACKUP_FILE" in
     esac | mysql --host="$MYSQL_HOST" --user="$MYSQL_USER" --password="$MYSQL_PASSWORD" \
     echo "Restore complete from: $BACKUP_FILE" \
     SCRIPT
-RUN chmod +x /app/restore.sh 2>/dev/null || true && chown 65532:65532 /app/restore.sh 2>/dev/null || true
+RUN chmod +x /app/restore.sh 2>/dev/null && chown 65532:65532 /app/restore.sh 2>/dev/null
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["/app/restore.sh"]

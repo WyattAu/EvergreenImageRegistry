@@ -5,17 +5,16 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION=2.2.0-develop.115
 ARG TARGETARCH
 RUN mkdir -p /app || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Whisparr/Whisparr/releases/download/v${VERSION}/Whisparr.2.2.0-develop.115.linux-x64.tar.gz" -o /tmp/Whisparr.tar.gz || true ; \
-    echo "48a2b1292e61027cec831f071141735c6dee43a0e61162f7062cf97d87fd0328  /tmp/Whisparr.tar.gz" | sha256sum -c || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/Whisparr/Whisparr/releases/download/v${VERSION}/Whisparr.2.2.0-develop.115.linux-x64.tar.gz" -o /tmp/Whisparr.tar.gz ; \
+    echo "48a2b1292e61027cec831f071141735c6dee43a0e61162f7062cf97d87fd0328  /tmp/Whisparr.tar.gz" | sha256sum -c ; \
     mkdir -p /app && \
     if [ -f /tmp/Whisparr.tar.gz ]; then tar -xzf /tmp/Whisparr.tar.gz -C /app && rm -f /tmp/Whisparr.tar.gz ; fi ; \
-    chmod +x /app/Whisparr 2>/dev/null || true ; \
-    test -f /app/Whisparr || { echo '#!/bin/sh' > /app/Whisparr && echo 'echo "whisparr v${VERSION} binary not available - download failed" >&2 exit 1"' >> /app/Whisparr && echo 'exit 1' >> /app/Whisparr && chmod +x /app/Whisparr; } || true
+    chmod +x /app/Whisparr 2>/dev/null ; \binary not available - download failed" >&2 exit 1"' >> /app/Whisparr && echo 'exit 1' >> /app/Whisparr && chmod +x /app/Whisparr; }
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache ca-certificates curl 2>/dev/null || true && \
+RUN apk add --no-cache ca-certificates curl 2>/dev/null && \
     adduser -u 65532 -D app 2>/dev/null || true
 COPY --from=downloader --chown=65532:65532 /app /app
 RUN mkdir -p /var/log/whisparr /var/cache/whisparr && chown -R 65532:65532 /var/log/whisparr /var/cache/whisparr 2>/dev/null || true

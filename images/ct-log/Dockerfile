@@ -16,7 +16,7 @@ ARG TARGETARCH
 ARG VERSION=1.3.3
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
-RUN touch /app/ct-log || true
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
@@ -25,8 +25,7 @@ RUN apt-get update && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
         -o /app/ct-log ./trillian/ctfe/ct_server 2>/dev/null || true && \
-    test -f /app/ct-log && strip --strip-all /app/ct-log  || true 2>/dev/null|| true && \
-    test -f /app/ct-log || { echo '#!/bin/sh' > /app/ct-log && echo 'echo "ct-log v'${VERSION}' binary not available - download failed" >&2 exit 1"' >> /app/ct-log && echo 'exit 1' >> /app/ct-log && chmod +x /app/ct-log; } 2>/dev/null || true
+    test -s /app/ct-log && strip --strip-all /app/ct-log 2>/dev/null && \' binary not available - download failed" >&2 exit 1"' >> /app/ct-log && echo 'exit 1' >> /app/ct-log && chmod +x /app/ct-log; } 2>/dev/null
 FROM scratch
 COPY --from=builder /app/ct-log /ct-log
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

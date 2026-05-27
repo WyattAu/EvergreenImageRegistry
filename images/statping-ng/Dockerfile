@@ -5,17 +5,17 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=0.90.74
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/statping/statping/releases/download/v${VERSION}/statping-linux-${TARGETARCH}.tar.gz -o /statping.tar.gz || true ; \
-    echo "d287782dde1b96afbc7e41a95568347dddc0967db114feede1492cfe1fc6f3c3  /statping.tar.gz" | sha256sum -c || true ; \
-    [ -f /statping.tar.gz ] && tar -xzf /statping.tar.gz -C / && rm -f /statping.tar.gz || true ; \
-    find / -maxdepth 1 -name "statping" -type f -exec chmod +x {} \; test -f /statping || { echo '#!/bin/sh' > /statping && echo 'echo "statping-ng v${VERSION} binary not available - download failed" >&2"' >> /statping && echo 'exit 1' >> /statping && chmod +x /statping; }
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/statping/statping/releases/download/v${VERSION}/statping-linux-${TARGETARCH}.tar.gz -o /statping.tar.gz ; \
+    echo "d287782dde1b96afbc7e41a95568347dddc0967db114feede1492cfe1fc6f3c3  /statping.tar.gz" | sha256sum -c ; \
+    [ -f /statping.tar.gz ] && tar -xzf /statping.tar.gz -C / && rm -f /statping.tar.gz ; \
+    find / -maxdepth 1 -name "statping" -type f -exec chmod +x {} \binary not available - download failed" >&2"' >> /statping && echo 'exit 1' >> /statping && chmod +x /statping; }
 
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
-RUN mkdir -p /app /var/log/statping 2>/dev/null || true
+RUN mkdir -p /app /var/log/statping 2>/dev/null
 
 
 FROM scratch

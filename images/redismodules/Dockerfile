@@ -5,14 +5,14 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 ARG VERSION=2.0.0
 ARG TARGETARCH
 
-RUN apk add --no-cache valkey ca-certificates || true && \
+RUN apk add --no-cache valkey ca-certificates && \
     addgroup -S -g 10000 redis 2>/dev/null || true && \
     adduser -u 65532 -G redis -D -h /var/lib/redis -s /bin/false redis 2>/dev/null || true && \
     mkdir -p /var/lib/redis /var/log/redis /opt/redis/modules /run/redis 2>/dev/null || true && \
     echo '#!/bin/sh' > /opt/redis/modules/redisearch.so.placeholder && \
     echo 'echo "redisearch module v'"${VERSION}"' placeholder"' >> /opt/redis/modules/redisearch.so.placeholder && \
     echo 'echo "Redis modules bundled: RediSearch, RedisJSON, RedisTimeSeries, RedisBloom"' >> /opt/redis/modules/redisearch.so.placeholder && \
-    chmod +x /opt/redis/modules/redisearch.so.placeholder 2>/dev/null || true && \
+    chmod +x /opt/redis/modules/redisearch.so.placeholder 2>/dev/null && \
     chown -R 65532:65532 /var/lib/redis /var/log/redis /opt/redis /run/redis 2>/dev/null || true
 USER 65532:65532
 WORKDIR /var/lib/redis

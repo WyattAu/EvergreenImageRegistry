@@ -6,16 +6,16 @@ ARG VERSION=5.18.3
 ARG TARGETARCH
 ARG ACTIVEMQ_VERSION=5.18.3
 RUN mkdir -p /opt/activemq || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/activemq/${ACTIVEMQ_VERSION}/apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz" -o /activemq.tar.gz && \
     curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/activemq/${ACTIVEMQ_VERSION}/apache-activemq-${ACTIVEMQ_VERSION}-bin.tar.gz.sha512" -o /checksums.txt && \
     sha512sum -c /checksums.txt && \
-    [ -f /activemq.tar.gz ] && tar -xzf /activemq.tar.gz -C /opt/ || true ; \
+    [ -f /activemq.tar.gz ] && tar -xzf /activemq.tar.gz -C /opt/ ; \
     mv /opt/apache-activemq-${ACTIVEMQ_VERSION} /opt/activemq && \
-    rm -rf /activemq.tar.gz /checksums.txt || true ; test -d /opt/activemq || { mkdir -p /opt/activemq/bin && echo '#!/bin/sh' > /opt/activemq/bin/activemq && echo 'echo "activemq v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/activemq/bin/activemq && echo 'exit 1' >> /opt/activemq/bin/activemq && chmod +x /opt/activemq/bin/activemq; }
+    rm -rf /activemq.tar.gz /checksums.txt ; test -d /opt/activemq || { mkdir -p /opt/activemq/bin && echo '#!/bin/sh' > /opt/activemq/bin/activemq && echo 'echo "activemq v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/activemq/bin/activemq && echo 'exit 1' >> /opt/activemq/bin/activemq && chmod +x /opt/activemq/bin/activemq; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache openjdk-17-jre-base ca-certificates || true
+RUN apk add --no-cache openjdk-17-jre-base ca-certificates
 
 COPY --from=downloader /opt/activemq /opt/activemq
 RUN chown -R 65532:65532 /opt/activemq 2>/dev/null || true

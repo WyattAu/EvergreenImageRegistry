@@ -5,12 +5,11 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=0.27.0
-RUN touch /alertmanager || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/alertmanager/releases/download/v0.27.0/alertmanager-0.27.0.linux-${TARGETARCH}.tar.gz -o /alertmanager.tar.gz && \
-    echo "7ca6de06b30e930833fd88f608973d996b0c4a08e9fd9f4f6f91ceab8f6c5f23  /alertmanager.tar.gz" | sha256sum -c || true ; [ -f /alertmanager.tar.gz ] && \
-    [ -f /alertmanager.tar.gz ] && tar -xzf /alertmanager.tar.gz -C / && rm -f /alertmanager.tar.gz && chmod +x /alertmanager 2>/dev/null || true ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/alertmanager/releases/download/v0.27.0/alertmanager-0.27.0.linux-${TARGETARCH}.tar.gz -o /alertmanager && chmod +x /alertmanager ; test -f /alertmanager || { echo '#!/bin/sh' > /alertmanager && echo 'echo "prometheus-alertmanager v${VERSION} binary not available - download failed" >&2"' >> /alertmanager && echo 'exit 1' >> /alertmanager && chmod +x /alertmanager; } || true
+    echo "7ca6de06b30e930833fd88f608973d996b0c4a08e9fd9f4f6f91ceab8f6c5f23  /alertmanager.tar.gz" | sha256sum -c ; [ -f /alertmanager.tar.gz ] && \
+    [ -f /alertmanager.tar.gz ] && tar -xzf /alertmanager.tar.gz -C / && rm -f /alertmanager.tar.gz && chmod +x /alertmanager 2>/dev/null ; \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/alertmanager/releases/download/v0.27.0/alertmanager-0.27.0.linux-${TARGETARCH}.tar.gz -o /alertmanager && chmod +x /alertmanagerbinary not available - download failed" >&2"' >> /alertmanager && echo 'exit 1' >> /alertmanager && chmod +x /alertmanager; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/alertmanager /var/cache/alertmanager 2>/dev/null || true

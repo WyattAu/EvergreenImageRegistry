@@ -16,14 +16,14 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=7.4.1
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.gz -o redis.tar.gz ; echo "573824f0f8ee8ef55e9e2f1ac0bb4d5e14b52ee7f352c2b99bc3f3f50dc40e83  redis.tar.gz" | sha256sum -c || true  ; [ -f redis.tar.gz ] && tar -xzf redis.tar.gz || true ; \
-    cd redis-${VERSION} && make -j"$(nproc)" redis && strip --strip-all src/redis  || true 2>/dev/null; cp src/redis /tmp/redis 2>/dev/null || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.gz -o redis.tar.gz ; echo "573824f0f8ee8ef55e9e2f1ac0bb4d5e14b52ee7f352c2b99bc3f3f50dc40e83  redis.tar.gz" | sha256sum -c  ; [ -f redis.tar.gz ] && tar -xzf redis.tar.gz ; \
+    cd redis-${VERSION} && make -j"$(nproc)" redis && strip --strip-all src/redis 2>/dev/null; cp src/redis /tmp/redis 2>/dev/null && \
     mkdir -p /tmp/redis
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=7.4.1
 
-RUN apk add --no-cache ca-certificates && adduser -u 65532 -s /bin/false || true &&  mkdir -p /data /var/log/redis
+RUN apk add --no-cache ca-certificates && adduser -u 65532 -s /bin/false &&  mkdir -p /data /var/log/redis
 # NOTE: redis server not available in wolfi; uses pre-compiled binary
 COPY --from=builder /tmp/redis /usr/local/bin/redis
 USER 65532:65532

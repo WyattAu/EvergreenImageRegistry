@@ -13,7 +13,7 @@ RUN apt-get update && \
     tar -xzf /tmp/maddy.tar.gz -C /tmp && \
     mv /tmp/maddy /usr/local/bin/maddy && \
     chmod +x /usr/local/bin/maddy && \
-    strip /usr/local/bin/maddy || true
+    strip /usr/local/bin/maddy
 FROM scratch
 COPY --from=downloader /usr/local/bin/maddy /usr/local/bin/maddy
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

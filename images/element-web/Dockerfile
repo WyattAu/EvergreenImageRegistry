@@ -14,10 +14,10 @@ RUN apt-get update && \
     mkdir -p /www-src && \
     tar -xzf /download.tar.gz -C /www-src --strip-components=1 && \
     rm -f /download.tar.gz && \
-    test -f /www-src/index.html
+    test -s /www-src/index.html
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=v1.12.18
-RUN apk add --no-cache ca-certificates busybox || true && \
+RUN apk add --no-cache ca-certificates busybox && \
     addgroup -S -g 10000 appuser 2>/dev/null || true && \
     adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser 2>/dev/null || true && \
     mkdir -p /app 2>/dev/null || true

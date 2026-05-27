@@ -5,13 +5,12 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS upstream
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
-RUN touch /yarr || true
 RUN apt-get update && apt-get install -y --no-install-recommends \
     golang-go ca-certificates git && \
     rm -rf /var/lib/apt/lists/* && \
     git clone --branch v${VERSION} \
     https://github.com/nickvdyck/yarr.git /tmp/yarr 2>/dev/null || \
-    git clone https://github.com/nickvdyck/yarr.git /tmp/yarr 2>/dev/null || true
+    git clone https://github.com/nickvdyck/yarr.git /tmp/yarr 2>/dev/null
 WORKDIR /tmp/yarr
 RUN if [ -f /tmp/yarr/go.mod ]; then \
         CGO_ENABLED=0 GOARCH=${GOARCH} go build -o /yarr ./cmd/yarr 2>/dev/null && chmod +x /yarr; \

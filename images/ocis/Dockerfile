@@ -7,11 +7,11 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG TARGETARCH
 ARG VERSION=8.0.3
 RUN mkdir -p /ocis /app /var/log/ocis /var/cache/ocis
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/owncloud/ocis/releases/download/v${VERSION}/ocis-${VERSION}-linux-${TARGETARCH}" -o /ocis && \
     chmod +x /ocis && \
-    sha256sum /ocis || true && \
-    test -f /ocis || true && \
+    sha256sum /ocis && \
+    test -s /ocis && \
     mkdir -p /app /var/log/ocis /var/cache/ocis /etc/ocis 2>/dev/null || true
 
 FROM scratch

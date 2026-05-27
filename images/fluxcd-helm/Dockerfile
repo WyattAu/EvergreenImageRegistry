@@ -5,10 +5,10 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=2.8.6
 ARG TARGETARCH
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/fluxcd/flux2/releases/download/v2.8.6/flux_2.8.6_linux_${TARGETARCH}.tar.gz -o /flux.tar.gz && \
-    echo "c53cc990ae266f7840f64c81515d701d8821d558a9062aa4211d71b38cf044be  /flux.tar.gz" | sha256sum -c || true ; [ -f /flux ] && \
-    tar -xzf /flux.tar.gz -C / && rm -f /flux.tar.gz && chmod +x /flux && strip /flux  || true; test -f /flux || { echo '#!/bin/sh' > /flux && echo 'echo "fluxcd-helm v${VERSION} binary not available - download failed" >&2"' >> /flux && echo 'exit 1' >> /flux && chmod +x /flux; } || true
+    echo "c53cc990ae266f7840f64c81515d701d8821d558a9062aa4211d71b38cf044be  /flux.tar.gz" | sha256sum -c ; [ -f /flux ] && \
+    tar -xzf /flux.tar.gz -C / && rm -f /flux.tar.gz && chmod +x /flux && strip /fluxbinary not available - download failed" >&2"' >> /flux && echo 'exit 1' >> /flux && chmod +x /flux; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/fluxcd-helm /var/cache/fluxcd-helm 2>/dev/null || true
 

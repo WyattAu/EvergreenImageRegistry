@@ -16,9 +16,9 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION=8.12.2
 ARG TARGETARCH
 WORKDIR /tmp
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     ARCH=$(case ${TARGETARCH} in amd64) echo "x86_64" ;; arm64) echo "arm64" ;; *) echo "x86_64" ;; esac) && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/kibana/kibana-${VERSION}-linux-${ARCH}.tar.gz" -o kibana.tar.gz ; echo "5f810ad33ac0097a5c27d921e51d8f470e4c2020ba327496ab161328c8503677  kibana.tar.gz" | sha256sum -c || true  ; [ -f kibana.tar.gz ] && tar -xzf kibana.tar.gz && mv kibana-${VERSION}-linux-${ARCH} kibana-extracted || true ; \
+    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/kibana/kibana-${VERSION}-linux-${ARCH}.tar.gz" -o kibana.tar.gz ; echo "5f810ad33ac0097a5c27d921e51d8f470e4c2020ba327496ab161328c8503677  kibana.tar.gz" | sha256sum -c  ; [ -f kibana.tar.gz ] && tar -xzf kibana.tar.gz && mv kibana-${VERSION}-linux-${ARCH} kibana-extracted ; \
     rm -f kibana.tar.gz ; rm -rf kibana-extracted/node_modules/.cache && \
     mkdir -p /tmp ; \
     test -d /tmp/kibana-extracted || { mkdir -p /tmp/kibana-extracted/bin && echo '#!/bin/sh' > /tmp/kibana-extracted/bin/kibana && echo 'echo "kibana v${VERSION} binary not available - download failed" >&2 exit 1"' >> /tmp/kibana-extracted/bin/kibana && echo 'exit 1' >> /tmp/kibana-extracted/bin/kibana && chmod +x /tmp/kibana-extracted/bin/kibana ; }

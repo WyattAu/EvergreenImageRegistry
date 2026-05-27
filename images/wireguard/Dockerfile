@@ -18,7 +18,6 @@ ARG TARGETARCH
 ARG VERSION=1.0.20250521
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
-RUN touch /wireguard-go || true
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
@@ -27,8 +26,7 @@ RUN apt-get update && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w -X main.version=${VERSION}" \
         -trimpath -o /wireguard-go 2>/dev/null || true && \
-    test -f /wireguard-go && strip --strip-all /wireguard-go  || true 2>/dev/null|| true && \
-    test -f /wireguard-go || { echo '#!/bin/sh' > /wireguard-go && echo 'echo "wireguard-go v'${VERSION}' binary not available - download failed" >&2 exit 1"' >> /wireguard-go && echo 'exit 1' >> /wireguard-go && chmod +x /wireguard-go; } 2>/dev/null || true
+    test -s /wireguard-go && strip --strip-all /wireguard-go 2>/dev/null && \' binary not available - download failed" >&2 exit 1"' >> /wireguard-go && echo 'exit 1' >> /wireguard-go && chmod +x /wireguard-go; } 2>/dev/null
 FROM scratch
 COPY --from=builder /wireguard-go /wireguard-go
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

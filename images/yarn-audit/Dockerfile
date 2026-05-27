@@ -4,18 +4,17 @@ ARG APP_GID=65532
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        nodejs npm ca-certificates curl ; rm -rf /var/lib/apt/lists/* || true && \
-    npm install -g yarn || true && \
-    mkdir -p /app-src 2>/dev/null || true && \
-    test -f /usr/bin/yarn || { echo '#!/bin/sh' > /usr/bin/yarn && echo 'echo "yarn-audit v${VERSION} binary not available - download failed" >&2 \
-    exit 1"' >> /usr/bin/yarn && echo 'exit 1' >> /usr/bin/yarn && chmod +x /usr/bin/yarn ; } || true
+        nodejs npm ca-certificates curl ; rm -rf /var/lib/apt/lists/* && \
+    npm install -g yarn && \
+    mkdir -p /app-src 2>/dev/null || true && \binary not available - download failed" >&2 \
+    exit 1"' >> /usr/bin/yarn && echo 'exit 1' >> /usr/bin/yarn && chmod +x /usr/bin/yarn ; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
-RUN apk add --no-cache nodejs-20 npm ca-certificates curl || true \
+RUN apk add --no-cache nodejs-20 npm ca-certificates curl \
     mkdir -p /usr/lib /usr/local/bin 2>/dev/null || true
 RUN mkdir -p /usr/lib/node_modules || true
 COPY --from=builder /usr/lib/node_modules /usr/lib/node_modules
-RUN touch /usr/local/bin/yarn || true
+
 COPY --from=builder /usr/bin/yarn /usr/local/bin/yarn
 RUN mkdir -p /app || true
 COPY --from=builder /app /app

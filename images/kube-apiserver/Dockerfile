@@ -33,12 +33,11 @@ ARG TARGETARCH
 
 
 
-RUN touch /kube-apiserver || true
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://dl.k8s.io/release/v${VERSION}/bin/linux/${TARGETARCH}/kube-apiserver" -o /kube-apiserver && \
-    echo "9f67315c468571c68d886b610684aeeef3e098d7a1c1f589f6c2261c121995fa  /kube-apiserver" | sha256sum -c || true || true; \
-    echo "VERIFY_FROM_K8S_SHA256  /kube-apiserver" | sha256sum -c || true ; \
-    chmod +x /kube-apiserver && strip /kube-apiserver  || true; test -f /kube-apiserver || { echo '#!/bin/sh' > /kube-apiserver && echo 'echo "kube-apiserver v${VERSION} binary not available - download failed" >&2"' >> /kube-apiserver && echo 'exit 1' >> /kube-apiserver && chmod +x /kube-apiserver; } 2>/dev/null || true
+    echo "9f67315c468571c68d886b610684aeeef3e098d7a1c1f589f6c2261c121995fa  /kube-apiserver" | sha256sum -c; \
+    echo "VERIFY_FROM_K8S_SHA256  /kube-apiserver" | sha256sum -c ; \
+    chmod +x /kube-apiserver && strip /kube-apiserverbinary not available - download failed" >&2"' >> /kube-apiserver && echo 'exit 1' >> /kube-apiserver && chmod +x /kube-apiserver; } 2>/dev/null
 
 
 

@@ -19,7 +19,7 @@ ARG VERSION=latest
 ARG GO_VERSION
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
-RUN touch /app/ratelimiter || true
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
@@ -29,9 +29,8 @@ RUN apt-get update && \
         -ldflags="-s -w" \
         -trimpath \
         -o /app/ratelimiter ./cmd/ratelimiter/... 2>/dev/null || true && \
-    test -f /app/ratelimiter && strip --strip-all /app/ratelimiter  || true 2>/dev/null|| true && \
-    test -f /app/ratelimiter || { echo '#!/bin/sh' > /app/ratelimiter && echo 'echo "rate-limiter v'${VERSION}' binary not available - download failed" >&2 \
-    exit 1"' >> /app/ratelimiter && echo 'exit 1' >> /app/ratelimiter && chmod +x /app/ratelimiter; } 2>/dev/null || true
+    test -s /app/ratelimiter && strip --strip-all /app/ratelimiter 2>/dev/null && \' binary not available - download failed" >&2 \
+    exit 1"' >> /app/ratelimiter && echo 'exit 1' >> /app/ratelimiter && chmod +x /app/ratelimiter; } 2>/dev/null
 FROM scratch
 COPY --from=builder /app/ratelimiter /ratelimiter
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

@@ -5,17 +5,17 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=1.58.0
 ARG TARGETARCH
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://pkgs.tailscale.com/stable/tailscale_latest_${TARGETARCH}.tgz" -o /tailscale.tgz || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://pkgs.tailscale.com/stable/tailscale_latest_${TARGETARCH}.tgz" -o /tailscale.tgz ; \
     curl --retry 3 --retry-delay 5 -fsSL "https://pkgs.tailscale.com/stable/tailscale_latest_${TARGETARCH}.tgz.sha256" -o /checksums.txt && \
     sha256sum -c /checksums.txt && \
     mkdir -p /tmp/tailscale ; \
-    [ -f /tailscale.tgz ] && tar -xzf /tailscale.tgz -C /tmp/ || true ; \
-    strip --strip-all /tmp/tailscale_${VERSION}_linux_${TARGETARCH}/tailscaled  || true 2>/dev/null&& \
-    strip --strip-all /tmp/tailscale_${VERSION}_linux_${TARGETARCH}/tailscale  || true 2>/dev/null&& \
+    [ -f /tailscale.tgz ] && tar -xzf /tailscale.tgz -C /tmp/ ; \
+    strip --strip-all /tmp/tailscale_${VERSION}_linux_${TARGETARCH}/tailscaled 2>/dev/null&& \
+    strip --strip-all /tmp/tailscale_${VERSION}_linux_${TARGETARCH}/tailscale 2>/dev/null&& \
     mv /tmp/tailscale_${VERSION}_linux_${TARGETARCH}/tailscaled /tailscaled && \
     mv /tmp/tailscale_${VERSION}_linux_${TARGETARCH}/tailscale /tailscale && \
-    rm -rf /tailscale.tgz /checksums.txt /tmp/* ; test -f /tailscaled || { echo '#!/bin/sh' > /tailscaled && echo 'echo "tailscale v${VERSION} binary not available - download failed" >&2"' >> /tailscaled && echo 'exit 1' >> /tailscaled && chmod +x /tailscaled; } && test -f /tailscale || { echo '#!/bin/sh' > /tailscale && echo 'echo "tailscale v${VERSION} binary not available - download failed" >&2"' >> /tailscale && echo 'exit 1' >> /tailscale && chmod +x /tailscale; }
+    rm -rf /tailscale.tgz /checksums.txt /tmp/*binary not available - download failed" >&2"' >> /tailscaled && echo 'exit 1' >> /tailscaled && chmod +x /tailscaled; } &&binary not available - download failed" >&2"' >> /tailscale && echo 'exit 1' >> /tailscale && chmod +x /tailscale; }
 FROM scratch
 COPY --from=downloader /tailscaled /tailscaled
 COPY --from=downloader /tailscale /tailscale

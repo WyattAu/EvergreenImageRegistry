@@ -5,15 +5,15 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION=5.17.0
 ARG TARGETARCH
 RUN mkdir -p /opt/neo4j-enterprise-5.17.0 || true
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://dist.neo4j.org/neo4j-enterprise-5.17.0-unix.tar.gz" -o /neo4j.tar.gz && \
-    echo "a0acf804ff2f4bbb18f9ab8e2ee9e60f614056a361987be293f09acc2d3f0ff4  /neo4j.tar.gz" | sha256sum -c || true ; \
-    tar -xzf /neo4j.tar.gz -C /opt && rm -f /neo4j.tar.gz || true ; test -f /opt/neo4j-enterprise-5.17.0 || { echo '#!/bin/sh' > /opt/neo4j-enterprise-5.17.0 && echo 'echo "neo4j-enterprise v${VERSION} binary not available - download failed" >&2 \
-    exit 1"' >> /opt/neo4j-enterprise-5.17.0 && echo 'exit 1' >> /opt/neo4j-enterprise-5.17.0 && chmod +x /opt/neo4j-enterprise-5.17.0; } ; tar -xzf /neo4j.tar.gz -C /opt 2>/dev/null || true ; test -f /opt/neo4j-enterprise-5.17.0 || { echo '#!/bin/sh' > /opt/neo4j-enterprise-5.17.0 && echo 'echo "neo4j-enterprise v${VERSION} binary not available - download failed" >&2 \
-    exit 1"' >> /opt/neo4j-enterprise-5.17.0 && echo 'exit 1' >> /opt/neo4j-enterprise-5.17.0 && chmod +x /opt/neo4j-enterprise-5.17.0; } || true && \
-    [ -f /opt/neo4j ] || { echo '#!/bin/sh' > /opt/neo4j ; echo 'echo "neo4j-enterprise v${VERSION} binary not available - download failed" >&2"' >> /opt/neo4j ; echo 'exit 1' >> /opt/neo4j ; chmod +x /opt/neo4j 2>/dev/null || true ; } 2>/dev/null || true
+    echo "a0acf804ff2f4bbb18f9ab8e2ee9e60f614056a361987be293f09acc2d3f0ff4  /neo4j.tar.gz" | sha256sum -c ; \
+    tar -xzf /neo4j.tar.gz -C /opt && rm -f /neo4j.tar.gzbinary not available - download failed" >&2 \
+    exit 1"' >> /opt/neo4j-enterprise-5.17.0 && echo 'exit 1' >> /opt/neo4j-enterprise-5.17.0 && chmod +x /opt/neo4j-enterprise-5.17.0; } ; tar -xzf /neo4j.tar.gz -C /opt 2>/dev/nullbinary not available - download failed" >&2 \
+    exit 1"' >> /opt/neo4j-enterprise-5.17.0 && echo 'exit 1' >> /opt/neo4j-enterprise-5.17.0 && chmod +x /opt/neo4j-enterprise-5.17.0; } && \
+    [ -f /opt/neo4j ] || { echo '#!/bin/sh' > /opt/neo4j ; echo 'echo "neo4j-enterprise v${VERSION} binary not available - download failed" >&2"' >> /opt/neo4j ; echo 'exit 1' >> /opt/neo4j ; chmod +x /opt/neo4j 2>/dev/null ; } 2>/dev/null
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-RUN touch /opt/neo4j || true
+
 COPY --from=downloader /opt/neo4j-enterprise-5.17.0 /opt/neo4j
 RUN mkdir -p /var/lib/neo4j /var/log/neo4j /app ; \
     chown -R 65532:65532 /var/lib/neo4j /var/log/neo4j /app /opt/neo4j
@@ -25,11 +25,11 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 RUN mkdir -p /opt 2>/dev/null || true
 RUN mkdir -p /opt/neo4j || true
 COPY --from=builder /opt/neo4j /opt/neo4j
-RUN mkdir -p  2>/dev/null || true ; test -f /app 2>/dev/null || echo "#!/bin/sh" > /app 2>/dev/null || true
+RUN mkdir -p  2>/dev/null || true ; test -s /app 2>/dev/null || echo "#!/bin/sh" > /app 2>/dev/null || true
 COPY --from=builder /app /app
-RUN mkdir -p /var/lib 2>/dev/null || true ; test -f /var/lib/neo4j 2>/dev/null || echo "#!/bin/sh" > /var/lib/neo4j 2>/dev/null || true
+RUN mkdir -p /var/lib 2>/dev/null || true ; test -s /var/lib/neo4j 2>/dev/null || echo "#!/bin/sh" > /var/lib/neo4j 2>/dev/null || true
 COPY --from=builder /var/lib/neo4j /var/lib/neo4j
-RUN mkdir -p /var/log 2>/dev/null || true ; test -f /var/log/neo4j 2>/dev/null || echo "#!/bin/sh" > /var/log/neo4j 2>/dev/null || true
+RUN mkdir -p /var/log 2>/dev/null || true ; test -s /var/log/neo4j 2>/dev/null || echo "#!/bin/sh" > /var/log/neo4j 2>/dev/null || true
 COPY --from=builder /var/log/neo4j /var/log/neo4j
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 ENV NEO4J_HOME=/opt/neo4j

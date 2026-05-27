@@ -19,11 +19,11 @@ RUN apt-get update && \
     mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
-RUN apk add --no-cache nodejs-20 npm ca-certificates || true && \
+RUN apk add --no-cache nodejs-20 npm ca-certificates && \
     addgroup -S -g 65532 toolkit 2>/dev/null || true && \
     adduser -u 65532 -G toolkit -D -s /bin/false toolkit || true && \
     mkdir -p /app/src /app/logs /usr/local/bin /usr/local/lib 2>/dev/null || true && \
-    npm install -g @grafana/toolkit@${VERSION} 2>/dev/null || { echo '#!/bin/sh' > /usr/local/bin/grafana-toolkit && echo 'echo "grafana-toolkit v'"${VERSION}"' binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/grafana-toolkit && echo 'exit 1' >> /usr/local/bin/grafana-toolkit && chmod +x /usr/local/bin/grafana-toolkit ; } 2>/dev/null || true && \
+    npm install -g @grafana/toolkit@${VERSION} 2>/dev/null || { echo '#!/bin/sh' > /usr/local/bin/grafana-toolkit && echo 'echo "grafana-toolkit v'"${VERSION}"' binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/grafana-toolkit && echo 'exit 1' >> /usr/local/bin/grafana-toolkit && chmod +x /usr/local/bin/grafana-toolkit ; } 2>/dev/null && \
     mkdir -p /app/src /app/logs ; \
     chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532

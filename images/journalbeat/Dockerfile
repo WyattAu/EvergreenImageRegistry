@@ -5,13 +5,12 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION=9.4.0
 ARG TARGETARCH
 RUN mkdir -p /opt/journalbeat || true
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/journalbeat/journalbeat-${VERSION}-linux-x86_64.tar.gz" -o /journalbeat.tar.gz || true ; \
+RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/journalbeat/journalbeat-${VERSION}-linux-x86_64.tar.gz" -o /journalbeat.tar.gz ; \
     mkdir -p /opt/journalbeat ; \
     if [ -f /journalbeat.tar.gz ]; then tar -xzf /journalbeat.tar.gz -C /opt/journalbeat --strip-components=1 && rm -f /journalbeat.tar.gz && rm -rf /opt/journalbeat/kibana /opt/journalbeat/logs ; fi ; \
-    strip /opt/journalbeat/journalbeat 2>/dev/null || true ; \
-    chmod +x /opt/journalbeat/journalbeat 2>/dev/null || true ; \
-    test -f /opt/journalbeat/journalbeat || { echo '#!/bin/sh' > /opt/journalbeat/journalbeat && echo 'echo "journalbeat v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/journalbeat/journalbeat && echo 'exit 1' >> /opt/journalbeat/journalbeat && chmod +x /opt/journalbeat/journalbeat; } || true
+    strip /opt/journalbeat/journalbeat 2>/dev/null ; \
+    chmod +x /opt/journalbeat/journalbeat 2>/dev/null ; \binary not available - download failed" >&2 exit 1"' >> /opt/journalbeat/journalbeat && echo 'exit 1' >> /opt/journalbeat/journalbeat && chmod +x /opt/journalbeat/journalbeat; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /var/log/journalbeat /var/lib/journalbeat /var/cache/journalbeat
 

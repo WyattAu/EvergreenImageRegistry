@@ -1,0 +1,126 @@
+---
+# Custom Forgejo Actions runner image
+# Built with apko (wolfi-based, glibc, reproducible)
+#
+# Replaces catthehacker/ubuntu:act-latest with a minimal wolfi image
+# containing exactly the tools needed for CI workflows.
+#
+# Package selection rationale:
+#   Core:      wolfi-base, bash, coreutils (POSIX environment)
+#   VCS:       git, git-lfs (actions/checkout, runner action cloning)
+#   Node.js:   nodejs-22, npm (JS/TS workflows, setup-node)
+#   Python:    python-3.13, pip (Python workflows, setup-python)
+#   Docker:    docker-29 (Docker CLI for DinD, image build workflows)
+#   Crypto:    ca-certificates-bundle, openssl, gnupg (TLS, signing)
+#   SSH:       openssh-client, openssh-keygen (git over SSH, deploy keys)
+#   Data:      jq, yq (JSON/YAML processing in workflows)
+#   HTTP:      curl, wget (downloading artifacts, health checks)
+#   Archive:   tar, zip, unzip, zstd (actions/cache, upload/download-artifact)
+#   Build:     make, gcc, glibc-dev (native modules, node-gyp, python ext)
+#   Shell:     bash, su-exec (runner needs bash; su-exec for priv drop)
+#   System:    shadow, findutils, diffutils, patch, file, tree (utilities)
+#   Security:  gpg, gnupg (cosign, artifact signing)
+#
+# Size target: <400MB uncompressed (vs ~850MB for catthehacker/ubuntu)
+# Attack surface: minimal wolfi packages, no apt/dpkg, no systemd
+
+contents:
+  keyring:
+    - https://packages.wolfi.dev/os/wolfi-signing.rsa.pub
+  repositories:
+    - https://packages.wolfi.dev/os
+  packages:
+    # --- Core system ---
+    - wolfi-base
+    - ca-certificates-bundle
+    - bash
+
+    # --- Version control (runner requirement + actions/checkout) ---
+    - git
+    - git-lfs
+
+    # --- Languages ---
+    - nodejs-22
+    - npm
+    - python-3.13
+    - pip
+
+    # --- Docker CLI (DinD, image build workflows) ---
+    - docker-29
+
+    # --- Data processing ---
+    - jq
+    - yq
+
+    # --- HTTP clients ---
+    - curl
+    - wget
+
+    # --- SSH (git over SSH, deploy keys) ---
+    - openssh-client
+    - openssh-keygen
+
+    # --- Archive/compression (actions/cache, artifacts) ---
+    - tar
+    - zip
+    - unzip
+    - zstd
+
+    # --- Build tools (native modules, node-gyp, python extensions) ---
+    - make
+    - gcc
+    - glibc-dev
+
+    # --- Crypto/signing (cosign, artifact verification) ---
+    - openssl
+    - gnupg
+    - gpg
+
+    # --- System utilities ---
+    - su-exec
+    - shadow
+    - findutils
+    - diffutils
+    - patch
+    - file
+    - tree
+
+    # --- Internationalization (Node.js ICU support) ---
+    - icu-libs
+
+entrypoint:
+  command: /bin/bash
+cmd: []
+
+accounts:
+  groups:
+    - groupname: runner
+      gid: 1000
+  users:
+    - username: runner
+      uid: 1000
+      gid: 1000
+      shell: /bin/bash
+      home: /home/runner
+  run-as: runner
+
+environment:
+  HOME: /home/runner
+  PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  LANG: C.UTF-8
+  NODE_PATH: /usr/lib/node_modules
+
+archs:
+  - x86_64
+  - aarch64
+
+annotations:
+  org.opencontainers.image.title: forgejo-runner-image
+  org.opencontainers.image.description: >
+    Custom Forgejo Actions runner job image based on wolfi.
+    Includes git, nodejs-22, python-3.13, docker CLI, jq, yq,
+    and common CI/CD tools. Replaces catthehacker/ubuntu:act-latest.
+  org.opencontainers.image.source: https://github.com/WyattAu/EvergreenImageRegistry
+  org.opencontainers.image.vendor: wyattau
+
+stop-signal: SIGTERM

@@ -1,0 +1,44 @@
+---
+package:
+  name: traefik
+  version: 3.7.1
+  epoch: 0
+  description: "Modern HTTP reverse proxy and load balancer"
+  copyright:
+    - attestation: |
+        Copyright 2026 Traefik Labs
+      license: MIT
+  dependencies:
+    runtime:
+      - ca-certificates-bundle
+
+environment:
+  contents:
+    keyring:
+      - https://packages.wolfi.dev/os/wolfi-signing.rsa.pub
+    repositories:
+      - https://packages.wolfi.dev/os
+    packages:
+      - busybox
+      - ca-certificates-bundle
+      - go
+      - binutils
+
+pipeline:
+  - uses: fetch
+    with:
+      uri: >-
+        https://github.com/traefik/traefik/releases/download/
+        v${{package.version}}/traefik_v${{package.version}}_linux_${{package.target.arch}}.tar.gz
+      expected-sha256: 0  # arch-specific, set per arch
+
+  - runs: |
+      tar xzf traefik_v${{package.version}}_linux_${{package.target.arch}}.tar.gz
+      mv traefik /usr/local/bin/traefik
+
+  - uses: strip
+
+test:
+  pipeline:
+    - runs: |
+        traefik version

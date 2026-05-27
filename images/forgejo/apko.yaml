@@ -1,0 +1,45 @@
+---
+contents:
+  keyring:
+    - https://packages.wolfi.dev/os/wolfi-signing.rsa.pub
+  repositories:
+    - https://packages.wolfi.dev/os
+  packages:
+    - wolfi-base
+    - ca-certificates-bundle
+    - forgejo
+    - git
+    - openssh
+    - gnupg
+
+entrypoint:
+  command: /usr/bin/forgejo
+cmd:
+  - web
+  - --config
+  - /data/gitea/conf/app.ini
+
+accounts:
+  groups:
+    - groupname: git
+      gid: 1000
+  users:
+    - username: git
+      uid: 1000
+      gid: 1000
+      shell: /usr/bin/bash
+  run-as: git
+
+environment:
+  HOME: /data/git
+
+archs:
+  - x86_64
+  - aarch64
+
+annotations:
+  org.opencontainers.image.source: https://code.forgejo.org/forgejo/forgejo
+  org.opencontainers.image.title: forgejo
+  org.opencontainers.image.description: Self-hosted lightweight software forge
+
+stop-signal: SIGTERM

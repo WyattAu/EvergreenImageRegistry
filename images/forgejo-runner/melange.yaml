@@ -1,0 +1,40 @@
+---
+package:
+  name: forgejo-runner
+  version: 12.10.1
+  epoch: 0
+  description: "Forgejo Actions runner agent"
+  copyright:
+    - attestation: |
+        Copyright 2026 Forgejo
+      license: MIT
+  dependencies:
+    runtime:
+      - ca-certificates-bundle
+
+environment:
+  contents:
+    keyring:
+      - https://packages.wolfi.dev/os/wolfi-signing.rsa.pub
+    repositories:
+      - https://packages.wolfi.dev/os
+    packages:
+      - busybox
+      - ca-certificates-bundle
+      - go
+      - binutils
+
+pipeline:
+  - uses: fetch
+    with:
+      uri: >-
+        https://code.forgejo.org/forgejo/runner/releases/download/
+        v${{package.version}}/forgejo-runner-${{package.version}}-linux-${{package.target.arch}}
+      expected-sha256: 0  # Must be filled before build
+
+  - uses: strip
+
+test:
+  pipeline:
+    - runs: |
+        forgejo-runner --version

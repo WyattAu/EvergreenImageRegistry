@@ -422,3 +422,4 @@ FodyWeavers.xsd
 *.msm
 *.msp
 images/forgejo/forgejo/
+*.tar

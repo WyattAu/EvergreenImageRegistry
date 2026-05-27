@@ -11,7 +11,8 @@ package:
   dependencies:
     runtime:
       - ca-certificates-bundle
-      - forgejo
+      - git
+      - openssh
 
 environment:
   contents:
@@ -30,7 +31,21 @@ pipeline:
       uri: >-
         https://code.forgejo.org/forgejo/forgejo/releases/download/
         v${{package.version}}/forgejo-${package.version}-linux-${{package.target.arch}}
-      expected-sha256: 0  # Must be filled before build
+
+  - runs: |
+      # Verify checksum (amd64: d0e6f83e... arm64: ba8184bf...)
+      ARCH=${{package.target.arch}}
+      case $ARCH in
+        x86_64) EXPECTED=d0e6f83ec24bc84eba90fdab48ad08b16f61e6b1e5095bf8483be849d860fdc8 ;;
+        aarch64) EXPECTED=ba8184bf8bd7aa25357fe4315000a4cea33d28e29ecb852823e9dbfeb38562f7 ;;
+      esac
+      ACTUAL=$(sha256sum forgejo-${{package.version}}-linux-${ARCH} | cut -d' ' -f1)
+      if [ "$ACTUAL" != "$EXPECTED" ]; then
+        echo "SHA256 mismatch: expected $EXPECTED got $ACTUAL"
+        exit 1
+      fi
+      chmod +x forgejo-${{package.version}}-linux-${ARCH}
+      mv forgejo-${{package.version}}-linux-${ARCH} /usr/bin/forgejo
 
   - uses: strip
 

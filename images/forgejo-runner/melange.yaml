@@ -30,7 +30,21 @@ pipeline:
       uri: >-
         https://code.forgejo.org/forgejo/runner/releases/download/
         v${{package.version}}/forgejo-runner-${{package.version}}-linux-${{package.target.arch}}
-      expected-sha256: 0  # Must be filled before build
+
+  - runs: |
+      # Verify checksum (amd64: 9e0378b4... arm64: 7b87e6e3...)
+      ARCH=${{package.target.arch}}
+      case $ARCH in
+        x86_64) EXPECTED=9e0378b4a22b95da98b350cfcb1b3844c1929a354a961f1ca7b49122b42abcc1 ;;
+        aarch64) EXPECTED=7b87e6e3014c49b7f99daab795689d975ab3c19729674e1aae5525cd3558aa00 ;;
+      esac
+      ACTUAL=$(sha256sum forgejo-runner-${{package.version}}-linux-${ARCH} | cut -d' ' -f1)
+      if [ "$ACTUAL" != "$EXPECTED" ]; then
+        echo "SHA256 mismatch: expected $EXPECTED got $ACTUAL"
+        exit 1
+      fi
+      chmod +x forgejo-runner-${{package.version}}-linux-${ARCH}
+      mv forgejo-runner-${{package.version}}-linux-${ARCH} /usr/bin/forgejo-runner
 
   - uses: strip
 

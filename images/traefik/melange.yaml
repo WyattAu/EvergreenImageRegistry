@@ -30,11 +30,21 @@ pipeline:
       uri: >-
         https://github.com/traefik/traefik/releases/download/
         v${{package.version}}/traefik_v${{package.version}}_linux_${{package.target.arch}}.tar.gz
-      expected-sha256: 0  # arch-specific, set per arch
 
   - runs: |
-      tar xzf traefik_v${{package.version}}_linux_${{package.target.arch}}.tar.gz
-      mv traefik /usr/local/bin/traefik
+      # Verify checksum (amd64: e92bcfb0... arm64: 911ad9f4...)
+      ARCH=${{package.target.arch}}
+      case $ARCH in
+        x86_64) EXPECTED=e92bcfb03fa1e6a70c4e7ad4eb4f1604967e6fa3c21d8e7605aca5407a40162c ;;
+        aarch64) EXPECTED=911ad9f4c21a58fdcbf09c75d967a280c9eec22b3d056fc7f4950cd3294c22b8 ;;
+      esac
+      ACTUAL=$(sha256sum traefik_v${{package.version}}_linux_${ARCH}.tar.gz | cut -d' ' -f1)
+      if [ "$ACTUAL" != "$EXPECTED" ]; then
+        echo "SHA256 mismatch: expected $EXPECTED got $ACTUAL"
+        exit 1
+      fi
+      tar xzf traefik_v${{package.version}}_linux_${ARCH}.tar.gz
+      mv traefik /usr/bin/traefik
 
   - uses: strip
 

@@ -1,3 +1,11 @@
+# NOTE: This Dockerfile is the legacy build path.
+# A melange/apko pipeline is available at:
+#   melange.yaml - Package build recipe
+#   apko.yaml - Image composition config
+#   .github/workflows/build-cloudflared.yml - CI workflow
+#
+# To use the melange/apko path instead, push to main and the
+# GitHub Actions workflow will build a Wolfi-based image automatically.
 
 ARG TARGETARCH
 ARG APP_UID=65532

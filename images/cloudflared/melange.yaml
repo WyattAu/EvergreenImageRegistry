@@ -1,0 +1,39 @@
+package:
+  name: cloudflared
+  version: 2026.5.0
+  epoch: 0
+  description: "Cloudflare Tunnel client for secure connections to Cloudflare"
+  copyright:
+    - attestation: |
+        Copyright 2026 Cloudflare
+      license: Apache-2.0
+  dependencies:
+    runtime:
+      - ca-certificates-bundle
+
+environment:
+  contents:
+    keyring:
+      - https://packages.wolfi.dev/os/wolfi-signing.rsa.pub
+    repositories:
+      - https://packages.wolfi.dev/os
+    packages:
+      - busybox
+      - ca-certificates-bundle
+      - go
+
+pipeline:
+  - uses: go/install
+    with:
+      package: github.com/cloudflare/cloudflared/cmd/cloudflared
+      version: v${{package.version}}
+      ldflags:
+        - -s -w
+        - -X github.com/cloudflare/cloudflared/cmd/cloudflared/internal.Version=${{package.version}}
+
+  - uses: strip
+
+test:
+  pipeline:
+    - runs: |
+        cloudflared --version

@@ -1,0 +1,40 @@
+contents:
+  keyring:
+    - https://packages.wolfi.dev/os/wolfi-signing.rsa.pub
+  repositories:
+    - https://packages.wolfi.dev/os
+  packages:
+    - wolfi-base
+    - ca-certificates-bundle
+    - cloudflared
+
+entrypoint:
+  command: /usr/bin/cloudflared
+cmd:
+  - tunnel
+  - run
+
+accounts:
+  groups:
+    - groupname: cloudflared
+      gid: 65532
+  users:
+    - username: cloudflared
+      uid: 65532
+      gid: 65532
+      shell: /usr/sbin/nologin
+  run-as: cloudflared
+
+environment:
+  HOME: /home/cloudflared
+
+archs:
+  - x86_64
+  - aarch64
+
+annotations:
+  org.opencontainers.image.source: https://github.com/cloudflare/cloudflared
+  org.opencontainers.image.title: cloudflared
+  org.opencontainers.image.description: Cloudflare Tunnel client
+
+stop-signal: SIGTERM

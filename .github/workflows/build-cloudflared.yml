@@ -1,0 +1,78 @@
+name: Build cloudflared (melange/apko)
+on:
+  push:
+    paths:
+      - images/cloudflared/**
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "cloudflared version (e.g. 2026.5.0)"
+        required: false
+
+permissions:
+  id-token: write
+  contents: read
+  packages: write
+
+env:
+  IMAGE_NAME: cloudflared
+  REGISTRY: ghcr.io
+  IMAGE: ghcr.io/${{ github.repository_owner }}/cloudflared
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: version
+        run: |
+          VERSION="${{ github.event.inputs.version || $(grep 'ARG VERSION' images/cloudflared/Dockerfile | head -1 | sed 's/.*VERSION=//' | sed 's/ .*//') }}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Build APK package with melange
+        run: |
+          docker run --rm --privileged \
+            -v "${{ github.workspace }}:/work" \
+            -w /work \
+            cgr.dev/chainguard/melange build \
+            images/cloudflared/melange.yaml \
+            --arch x86_64 --arch aarch64 \
+            --out-dir /work/packages
+
+      - name: Build OCI image with apko
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:/work" \
+            -w /work \
+            cgr.dev/chainguard/apko build \
+            images/cloudflared/apko.yaml \
+            "${{ env.IMAGE }}:${{ steps.version.outputs.version }}" \
+            cloudflared-image.tar \
+            --repository-append /work/packages
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Load and push image
+        run: |
+          docker load -i cloudflared-image.tar
+          FULL_TAG="${{ env.IMAGE }}:${{ steps.version.outputs.version }}"
+          docker tag "${{ env.IMAGE }}:${{ steps.version.outputs.version }}" "$FULL_TAG"
+          docker push "$FULL_TAG"
+
+          # Also push latest
+          docker tag "$FULL_TAG" "${{ env.IMAGE }}:latest"
+          docker push "${{ env.IMAGE }}:latest"
+
+          # Output digest
+          DIGEST=$(docker inspect --format '{{index .RepoDigests 0}}' "$FULL_TAG")
+          echo "DIGEST=${DIGEST}" >> "$GITHUB_ENV"
+          echo "Pushed: $FULL_TAG ($DIGEST)"
+
+      - name: Sign image with cosign (keyless)
+        uses: sigstore/cosign-installer@v4
+      - run: cosign sign --yes "${{ env.IMAGE }}:${{ steps.version.outputs.version }}"
+      - run: cosign sign --yes "${{ env.IMAGE }}:latest"

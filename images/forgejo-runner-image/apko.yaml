@@ -43,7 +43,6 @@ contents:
     - nodejs-22
     - npm
     - python-3.13
-    - pip
 
     # --- Docker CLI (DinD, image build workflows) ---
     - docker-29
@@ -61,7 +60,6 @@ contents:
     - openssh-keygen
 
     # --- Archive/compression (actions/cache, artifacts) ---
-    - tar
     - zip
     - unzip
     - zstd
@@ -90,7 +88,6 @@ contents:
 
 entrypoint:
   command: /bin/bash
-cmd: []
 
 accounts:
   groups:
@@ -101,7 +98,6 @@ accounts:
       uid: 1000
       gid: 1000
       shell: /bin/bash
-      home: /home/runner
   run-as: runner
 
 environment:

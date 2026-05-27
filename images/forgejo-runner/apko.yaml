@@ -11,7 +11,6 @@ contents:
 
 entrypoint:
   command: /usr/bin/forgejo-runner
-cmd: []
 
 accounts:
   groups:

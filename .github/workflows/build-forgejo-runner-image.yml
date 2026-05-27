@@ -33,7 +33,7 @@ jobs:
             images/forgejo-runner-image/apko.yaml \
             "${{ env.IMAGE }}:latest" \
             forgejo-runner-image.tar \
-            --sbom-dir /work/sbom
+            --sbom-path /work/sbom
 
       - name: Log in to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
@@ -52,10 +52,11 @@ jobs:
       - name: Verify tools in image
         run: |
           FAILED=0
-          for cmd in git git-lfs node npm python3 pip docker jq yq \
-            curl wget ssh ssh-keygen tar zip unzip zstd make gcc \
-            openssl gpg su-exec file tree patch diff find; do
-            if docker run --rm "${{ env.IMAGE }}:latest" which $cmd > /dev/null 2>&1; then
+          for cmd in git git-lfs node npm python3 docker jq yq \
+            curl wget ssh ssh-keygen zip unzip zstd make gcc \
+            openssl gpg su-exec file tree patch diff find bash tar; do
+            if docker run --rm --entrypoint /bin/bash "${{ env.IMAGE }}:latest-amd64" \
+              -c "which $cmd > /dev/null 2>&1"; then
               echo "[PASS] $cmd"
             else
               echo "[FAIL] $cmd"

@@ -44,7 +44,7 @@ jobs:
             images/forgejo/melange.yaml \
             --arch x86_64 --arch aarch64 \
             --out-dir /work/packages \
-            --sbom-dir /work/sbom
+            --sbom-path /work/sbom
 
       - name: Build OCI image with apko
         run: |
@@ -56,7 +56,7 @@ jobs:
             "${{ env.IMAGE }}:${{ steps.version.outputs.version }}" \
             forgejo-image.tar \
             --repository-append /work/packages \
-            --sbom-dir /work/sbom
+            --sbom-path /work/sbom
 
       - name: Log in to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin

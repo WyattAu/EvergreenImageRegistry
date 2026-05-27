@@ -14,6 +14,7 @@ permissions:
   id-token: write
   contents: read
   packages: write
+  security-events: write
 
 env:
   IMAGE_NAME: forgejo-runner
@@ -23,6 +24,8 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      digest: ${{ steps.push.outputs.digest }}
     steps:
       - uses: actions/checkout@v4
 
@@ -40,7 +43,8 @@ jobs:
             cgr.dev/chainguard/melange build \
             images/forgejo-runner/melange.yaml \
             --arch x86_64 --arch aarch64 \
-            --out-dir /work/packages
+            --out-dir /work/packages \
+            --sbom-dir /work/sbom
 
       - name: Build OCI image with apko
         run: |
@@ -51,28 +55,50 @@ jobs:
             images/forgejo-runner/apko.yaml \
             "${{ env.IMAGE }}:${{ steps.version.outputs.version }}" \
             forgejo-runner-image.tar \
-            --repository-append /work/packages
+            --repository-append /work/packages \
+            --sbom-dir /work/sbom
 
       - name: Log in to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
       - name: Load and push image
+        id: push
         run: |
           docker load -i forgejo-runner-image.tar
           FULL_TAG="${{ env.IMAGE }}:${{ steps.version.outputs.version }}"
           docker tag "${{ env.IMAGE }}:${{ steps.version.outputs.version }}" "$FULL_TAG"
           docker push "$FULL_TAG"
 
-          # Also push latest
           docker tag "$FULL_TAG" "${{ env.IMAGE }}:latest"
           docker push "${{ env.IMAGE }}:latest"
 
-          # Output digest
           DIGEST=$(docker inspect --format '{{index .RepoDigests 0}}' "$FULL_TAG")
-          echo "DIGEST=${DIGEST}" >> "$GITHUB_ENV"
+          echo "digest=${DIGEST}" >> "$GITHUB_OUTPUT"
           echo "Pushed: $FULL_TAG ($DIGEST)"
 
-      - name: Sign image with cosign (keyless)
+      - name: Install cosign
         uses: sigstore/cosign-installer@v4
-      - run: cosign sign --yes "${{ env.IMAGE }}:${{ steps.version.outputs.version }}"
-      - run: cosign sign --yes "${{ env.IMAGE }}:latest"
+
+      - name: Sign version tag
+        run: cosign sign --yes "${{ env.IMAGE }}:${{ steps.version.outputs.version }}"
+
+      - name: Sign latest tag
+        run: cosign sign --yes "${{ env.IMAGE }}:latest"
+
+      - name: Upload melange SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-forgejo-runner
+          path: sbom/
+          retention-days: 90
+
+  provenance:
+    needs: build
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v1.10.0
+    with:
+      image: ${{ env.IMAGE }}
+      digest: ${{ needs.build.outputs.digest }}
+    permissions:
+      id-token: write
+      contents: read
+      packages: write

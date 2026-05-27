@@ -4,7 +4,9 @@ repos:
     rev: v6.0.0
     hooks:
       - id: trailing-whitespace
+        exclude: ^images/
       - id: end-of-file-fixer
+        exclude: ^images/
       - id: check-yaml
         exclude: ^deploy/helm/
       - id: check-json

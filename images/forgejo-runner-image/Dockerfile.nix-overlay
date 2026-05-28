@@ -1,0 +1,21 @@
+# Extend the apko-built runner image for rootless Nix installation.
+# cachix/install-nix-action@v30 needs /nix and /etc/nix to exist and be writable
+# by the runner user (UID 1000). It also calls `sudo mkdir` which fails in
+# distroless (no sudo binary). We provide a sudo wrapper that just execs the
+# command as-is, since the runner already runs as the owning user.
+
+FROM ghcr.io/wyattau/forgejo-runner-image:latest
+
+USER root
+RUN mkdir -p /nix /etc/nix && \
+    chown 1000:1000 /nix /etc/nix && \
+    chmod 0755 /nix /etc/nix
+
+# Create a sudo wrapper that execs commands directly (no privilege escalation).
+# install-nix-action calls "sudo mkdir -p /nix" etc. Since directories are
+# pre-created and owned by UID 1000, sudo just needs to pass through.
+RUN echo '#!/bin/sh' > /usr/local/bin/sudo && \
+    echo 'exec "$@"' >> /usr/local/bin/sudo && \
+    chmod 0755 /usr/local/bin/sudo
+
+USER runner

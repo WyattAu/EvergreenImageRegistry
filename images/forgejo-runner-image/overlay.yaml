@@ -1,0 +1,10 @@
+# Overlay for forgejo-runner-image
+# Pre-creates /nix directory owned by runner (UID 1000) for rootless Nix installation.
+# cachix/install-nix-action needs /nix to exist and be writable; without sudo
+# in the distroless image, it cannot create /nix itself.
+
+dirs:
+  - path: /nix
+    uid: 1000
+    gid: 1000
+    permissions: 0755

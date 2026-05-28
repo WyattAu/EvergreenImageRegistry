@@ -9,7 +9,9 @@ FROM ghcr.io/wyattau/forgejo-runner-image:latest
 USER root
 RUN mkdir -p /nix /etc/nix && \
     chown 1000:1000 /nix /etc/nix && \
-    chmod 0755 /nix /etc/nix
+    chmod 0755 /nix /etc/nix && \
+    echo 'experimental-features = nix-command flakes' > /etc/nix/nix.conf && \
+    chown 1000:1000 /etc/nix/nix.conf
 
 # Create a sudo wrapper that execs commands directly (no privilege escalation).
 # install-nix-action calls "sudo mkdir -p /nix" etc. Since directories are

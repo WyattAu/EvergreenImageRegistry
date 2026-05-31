@@ -153,3 +153,11 @@ Forgejo admin token: `31ef3188a9c279a4ce672a44cca0fe924226decf` Runner registrat
 - **Binary**: `forgejo-k8s-runner-final` (37MB static, Go 1.24) at `/mnt/pool_HDD_x2/infra/act-runner/bin/`.
 - **Source**: `github.com/WyattAu/forgejo-k8s-runner` (Connect RPC client, YAML parser, K8s executor).
 - **False positives**: Earlier green runs used `|| echo` fallbacks. Current code uses `set -e` for real failure reporting.
+
+### Current Status (May 31 08:40 BST)
+- **K8s runner**: 4 runners active. CI dispatching works when Forgejo IP matches `.runner` files.
+- **Auto-IP-fix**: Script at `/mnt/pool_HDD_x2/infra/scripts/fix-forgejo-runner-ips.sh` + systemd oneshot service `fix-forgejo-runner-ips.service`. Runs before all runners, auto-updates `.runner` address to current Forgejo container IP.
+- **Real CI**: Pods execute: `apk add coreutils` → `git clone` → `curl nix install` → `nix develop --command cargo`. Verified end-to-end in manual pod (e2e test) — nix 2.34.7 installs, cargo fmt exits 0.
+- **Passing jobs**: Fuzz Build Check passes (nix-independent cargo check). Other jobs need nix install time (5-10min per pod).
+- **Forgejo v15**: Scheduler cancels runs when runner disconnects briefly. Workaround: restart runner right before push.
+- **Remaining**: Build custom image with nix pre-installed, upgrade Forgejo to v16.

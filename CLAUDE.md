@@ -117,3 +117,15 @@ Forgejo admin token: `31ef3188a9c279a4ce672a44cca0fe924226decf` Runner registrat
 - **Binary**: `forgejo-k8s-runner-final` (37MB static, Go 1.24) at `/mnt/pool_HDD_x2/infra/act-runner/bin/`.
 - **Source**: `github.com/WyattAu/forgejo-k8s-runner` (Connect RPC client, YAML parser, K8s executor).
 - **False positives**: Earlier green runs used `|| echo` fallbacks. Current code uses `set -e` for real failure reporting.
+
+### Current Status (May 31 04:40 BST)
+- **K8s runner**: Architecture proven. 4 runners deployed (questhive, peptide-web, general, k8s-docker).
+- **Full pipeline verified**: Connect RPC → YAML parse → shell generate → K8s pod → log stream → status report.
+- **Git auth**: Token from `task.Context.Fields["token"]` (40 chars, confirmed present) embedded via `url.UserPassword`.
+- **Pod security**: Manual `kubectl apply` with `securityContext.runAsUser: 0` works as root. Go `k8s.io/client-go` PodSpec with `SecurityContext` doesn't apply — pods run as `runner` (uid 1000) and fail on `rm -rf`/`git clone` with "Permission denied" on workspace dir created by k8s `workingDir`.
+  - **Fix**: Either debug Go client SecurityContext, or remove `workingDir` from pod spec and let script handle all directory creation.
+- **Real CI**: Pods execute generated shell scripts with `set -e` and correct command structure. Git clone works with auth (manually verified). Actual CI commands (`cargo build`, `nix develop`) fail because image lacks Rust/nix.
+  - **Fix**: Build custom image with nix store mounted via hostPath PV, or pre-install nix in base image.
+- **Binary**: `forgejo-k8s-runner-final` (37MB static, Go 1.24) at `/mnt/pool_HDD_x2/infra/act-runner/bin/`.
+- **Source**: `github.com/WyattAu/forgejo-k8s-runner` (Connect RPC client, YAML parser, K8s executor).
+- **False positives**: Earlier green runs used `|| echo` fallbacks. Current code uses `set -e` for real failure reporting.

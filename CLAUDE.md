@@ -104,3 +104,13 @@ Forgejo admin token: `31ef3188a9c279a4ce672a44cca0fe924226decf` Runner registrat
 
 - `act-runner-questhive`, `act-runner-peptide-web`, `act-runner-general`
 - All replaced by K8s equivalents above
+
+### Current Status (May 31 03:25 BST)
+- **K8s runner**: Architecture proven. 4 runners active (questhive, peptide-web, general, k8s-docker).
+- **Real CI execution**: Pods run generated shell scripts with correct workspace paths and `set -e`.
+  - Git clone auth: token from `task.Context.Fields["token"]` embedded in URL via `url.UserPassword`.
+  - Remaining: verify token is present in context (add log), ensure clone succeeds with auth.
+- **Image**: `ghcr.io/wyattau/forgejo-runner-image:latest` (474MB Wolfi devcontainer — has bash/git/curl/node, lacks nix/rust/cargo).
+  - QuestHive's "Ensure nix" step installs nix via curl → needs image with `curl` and writeable `/nix`.
+- **False positives**: Earlier "17/17 passed" runs used `|| echo` fallbacks. Current code uses `set -e` for real failure reporting.
+- **Next steps**: Deploy image with nix+rust, verify git clone auth works, re-enable `set -e` without fallbacks.

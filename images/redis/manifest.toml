@@ -1,6 +1,6 @@
 [metadata]
 name = "redis"
-version = "7.4.9"
+version = "8.6"
 description = "Redis - in-memory data structure store and cache"
 vendor = "Redis"
 source = "https://github.com/redis/redis"

@@ -1,11 +1,11 @@
 # =============================================================================
 # EVERGREEN HARDENED ERPNEXT
-# Generated from template - Version: 15.11.0
+# Generated from template - Version: 16.0.0
 # Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
 # Priority: scratch > distroless > wolfi > debian-slim (last resort)
 # =============================================================================
 
-ARG VERSION=15.11.0
+ARG VERSION=16.0.0
 ARG TARGETARCH
 ARG BUILD_DATE
 ARG APP_UID=65532

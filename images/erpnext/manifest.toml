@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "erpnext"
-version = "15.11.0"
+version = "16.0.0"
 description = "erpnext container image"
 
 [build]

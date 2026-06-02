@@ -3,7 +3,7 @@
 # Uses official redis image as upstream binary source on Wolfi base
 # =============================================================================
 
-ARG VERSION=7.4.9
+ARG VERSION=8.6
 ARG TARGETARCH
 
 FROM redis:${VERSION} AS upstream

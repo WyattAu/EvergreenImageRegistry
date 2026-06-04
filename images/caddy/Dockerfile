@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/caddy /var/cache/caddy 2>/dev/null || true
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:v0.1.0 AS shim
 
 FROM scratch
 COPY --from=downloader /caddy /caddy
@@ -20,12 +21,16 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/caddy /var/log/caddy
 COPY --from=builder /var/cache/caddy /var/cache/caddy
+COPY --from=shim /shim /shim
 USER 65532:65532
 WORKDIR /app
-EXPOSE 80 443 2019
+EXPOSE 80 443 2019 9101
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/caddy"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:2019"]
+
+ENTRYPOINT ["/shim", "run"]
+CMD ["-c", "/caddy", "--"]
 LABEL org.opencontainers.image.title="caddy" \
       org.opencontainers.image.description="Caddy - powerful enterprise-ready open source web server" \
       org.opencontainers.image.version="2.11.3" \
@@ -49,11 +54,12 @@ LABEL org.opencontainers.image.title="caddy" \
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+LABEL evergreen.health.type="http"
+LABEL evergreen.health.endpoint="/livez"
+LABEL evergreen.health.listen="0.0.0.0:9101"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 9101
 STOPSIGNAL SIGTERM

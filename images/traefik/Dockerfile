@@ -11,16 +11,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     [ -f /traefik.tar.gz ] && tar -xzf /traefik.tar.gz -C / && rm -f /traefik.tar.gz && chmod +x /traefik 2>/dev/null ; \binary not available - download failed" >&2"' >> /traefik && echo 'exit 1' >> /traefik && chmod +x /traefik; }
 
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:v0.1.0 AS shim
+
 FROM scratch
 ARG VERSION=v3.7.1
 COPY --from=downloader /traefik /traefik
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=shim /shim /shim
 USER 65532:65532
 WORKDIR /app
-EXPOSE 80 443 8080
+EXPOSE 80 443 8080 9101
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/traefik"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+
+ENTRYPOINT ["/shim", "run"]
+CMD ["-c", "/traefik", "--"]
 LABEL org.opencontainers.image.title="traefik" \
       org.opencontainers.image.description="Traefik - modern HTTP reverse proxy and load balancer" \
       org.opencontainers.image.version="v3.7.1" \
@@ -44,11 +50,12 @@ LABEL org.opencontainers.image.title="traefik" \
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+LABEL evergreen.health.type="http"
+LABEL evergreen.health.endpoint="/livez"
+LABEL evergreen.health.listen="0.0.0.0:9101"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 9101
 STOPSIGNAL SIGTERM

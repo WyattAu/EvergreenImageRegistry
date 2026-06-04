@@ -7,7 +7,7 @@
 | Image | `traefik` |
 | Base | `scratch` |
 | Binary Source | Official static (Traefik Labs) |
-| Version | 3.1.4 |
+| Version | v3.7.1 |
 | Architecture | amd64 (expandable to arm64) |
 | Size | ~40MB |
 | Classification | CRITICAL - Gateway/Reverse Proxy |
@@ -147,7 +147,7 @@ curl http://localhost:8080/ping
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `TRAEFIK_VERSION` | Traefik version | 3.1.4 |
+| `TRAEFIK_VERSION` | Traefik version | v3.7.1 |
 | `TRAEFIK_LOG_LEVEL` | Logging level | INFO, DEBUG |
 | `TRAEFIK_API_DASHBOARD` | Enable dashboard | true |
 
@@ -176,7 +176,7 @@ These will be addressed in the automated pipeline.
 
 | Version | Build Date | Constraints Met |
 |---------|-----------|------------------|
-| 3.1.4 | 2026-04-19 | 11/13 |
+| v3.7.1 | 2026-06-04 | 11/13 |
 
 ---
 

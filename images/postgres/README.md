@@ -4,8 +4,8 @@ PostgreSQL - advanced open source relational database
 
 | Attribute | Value |
 |-----------|-------|
-| Version | 17.4 |
-| Tier | 1 |
+| Version | 17.10 |
+| Tier | critical |
 | Base Image | cgr.dev/chainguard/wolfi-base:latest |
 | Architecture | amd64 |
 | Health Check | exec |
@@ -14,7 +14,7 @@ PostgreSQL - advanced open source relational database
 ## Usage
 
 ```bash
-docker pull ghcr.io/wyattau/evergreenimageregistry/postgres:17.4
+docker pull ghcr.io/wyattau/evergreenimageregistry/postgres:17.10
 ```
 
 ## Security

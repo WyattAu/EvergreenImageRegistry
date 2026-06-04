@@ -1,42 +1,42 @@
 # Evergreen Image Registry - Roadmap
 
-| Attribute | Value         |
-| --------- | ------------- |
-| Version   | 27.0.0        |
-| Updated   | 2026-05-13    |
-| Status    | STABLE        |
-| Phases    | 0-88 complete |
+| Attribute | Value          |
+| --------- | -------------- |
+| Version   | 29.0.0         |
+| Updated   | 2026-06-04     |
+| Status    | STABLE         |
+| Phases    | 0-102 complete |
 
 ---
 
-## Current State (v27.0.0)
+## Current State (v29.0.0)
 
-| Metric                      | Value                      | Status                      |
-| --------------------------- | -------------------------- | --------------------------- |
-| Total images                | 998                        | —                           |
-| HEALTHCHECK (real)          | 559/998 (56.0%)            | DONE                        |
-| HEALTHCHECK NONE            | 438/998 (43.9%)            | Expected (scratch/no-shell) |
-| Security labels (4)         | 100%                       | DONE                        |
-| OCI labels (title)          | 100% (998/998)             | DONE                        |
-| OCI labels (description)    | 99.9% (997/998)            | DONE                        |
-| OCI labels (source)         | 99.7% (995/998)            | DONE                        |
-| OCI labels (version)        | 99.8% (996/998)            | DONE                        |
-| Digest-pinned FROM          | 75.3% (1522/2020)          | DONE                        |
-| Non-root USER               | 99.5% (993/998)            | DONE                        |
-| ENTRYPOINT                  | 95.8% (956/998)            | DONE                        |
-| STOPSIGNAL                  | 99.6% (994/998)            | DONE                        |
-| Multi-arch (ARG TARGETARCH) | 283 declared + 398 scratch | DONE                        |
-| Per-image README            | 100% (998/998)             | DONE                        |
-| SBOM                        | 100% (998/998)             | DONE                        |
-| .dockerignore               | 99.9% (997/998)            | DONE                        |
-| CI gates                    | Active (C001-C010 + size)  | DONE                        |
-| TOML validity               | 100% (998/998)             | DONE                        |
-| Anti-patterns               | 0 real (1 false positive)  | DONE                        |
-| Dockerfile syntax errors    | 0                          | DONE                        |
-| Determinism                 | Zstd + SOURCE_DATE_EPOCH   | DONE                        |
-| Workflows                   | 10 files                   | DONE                        |
-| Layers (avg RUN/image)      | 1.0 (953 total)            | DONE                        |
-| Rigor (real binary)         | 99.8% (996/998)            | DONE                        |
+| Metric                      | Value                     | Status                      |
+| --------------------------- | ------------------------- | --------------------------- |
+| Total images                | 986                       | —                           |
+| HEALTHCHECK (real)          | 558/986 (56.6%)           | DONE                        |
+| HEALTHCHECK NONE            | 426/986 (43.2%)           | Expected (scratch/no-shell) |
+| Security labels (4)         | 100%                      | DONE                        |
+| OCI labels (title)          | 99.8% (984/986)           | DONE                        |
+| OCI labels (description)    | 99.7% (983/986)           | DONE                        |
+| OCI labels (source)         | 99.5% (981/986)           | DONE                        |
+| OCI labels (version)        | 99.6% (982/986)           | DONE                        |
+| Digest-pinned FROM          | 76.4% (1512/1979)         | DONE                        |
+| Non-root USER               | 98.9% (975/986)           | DONE                        |
+| ENTRYPOINT                  | 95.7% (944/986)           | DONE                        |
+| STOPSIGNAL                  | 99.6% (982/986)           | DONE                        |
+| Multi-arch (ARG TARGETARCH) | 849 declared              | DONE                        |
+| Per-image README            | 99.7% (983/986)           | DONE                        |
+| SBOM                        | 98.4% (970/986)           | DONE                        |
+| .dockerignore               | 99.7% (983/986)           | DONE                        |
+| CI gates                    | Active (C001-C010 + size) | DONE                        |
+| TOML validity               | 100% (998/998)            | DONE                        |
+| Anti-patterns               | 0 real (1 false positive) | DONE                        |
+| Dockerfile syntax errors    | 0                         | DONE                        |
+| Determinism                 | Zstd + SOURCE_DATE_EPOCH  | DONE                        |
+| Workflows                   | 10 files                  | DONE                        |
+| Layers (avg RUN/image)      | 1.0 (953 total)           | DONE                        |
+| Rigor (real binary)         | 99.8% (984/986)           | DONE                        |
 
 ---
 
@@ -45,7 +45,7 @@
 | Phase | What                                         | Key Metric                                                                                                                                                                                                                      |
 | ----- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 0     | Foundation                                   | Project structure, base images                                                                                                                                                                                                  |
-| 1-27  | Iterative build                              | 998 images, labels, healthchecks                                                                                                                                                                                                |
+| 1-27  | Iterative build                              | 986 images, labels, healthchecks                                                                                                                                                                                                |
 | 28    | Rebrand                                      | 0 sovereign refs                                                                                                                                                                                                                |
 | 29    | Security Hardening                           | HEALTHCHECK 100%, CAP_DROP 100%                                                                                                                                                                                                 |
 | 30    | Reproducibility                              | 75.3% digest-pinned                                                                                                                                                                                                             |
@@ -53,9 +53,9 @@
 | 32    | Compliance                                   | C003 retuned                                                                                                                                                                                                                    |
 | 33    | Advanced labels                              | read-only-rootfs, seccomp                                                                                                                                                                                                       |
 | 34    | README redesign                              | Professional 128-line README                                                                                                                                                                                                    |
-| 35    | CI gates                                     | 998/998 pass                                                                                                                                                                                                                    |
+| 35    | CI gates                                     | 986/986 pass                                                                                                                                                                                                                    |
 | 36    | Digest pinning                               | 17 more upstreams pinned                                                                                                                                                                                                        |
-| 37    | Per-image READMEs                            | 998/998                                                                                                                                                                                                                         |
+| 37    | Per-image READMEs                            | 983/986                                                                                                                                                                                                                         |
 | 38    | SBOM at build time                           | syft integration                                                                                                                                                                                                                |
 | 39    | C/C++ multi-arch                             | 21 images                                                                                                                                                                                                                       |
 | 40    | Python multi-arch                            | 115 safe images                                                                                                                                                                                                                 |
@@ -111,7 +111,7 @@
 | ------------------------------------------------------ | ---------------------------------------------------- |
 | LICENSE per image                                      | SBOMs already capture license info                   |
 | Migrate 15 debian images to wolfi                      | High regression risk                                 |
-| Per-image docker-compose files                         | Unmaintainable at 998 scale                          |
+| Per-image docker-compose files                         | Unmaintainable at 986 scale                          |
 | Builder image multi-arch (golang, rust, maven, gradle) | Digest-pinned Debian needs per-arch digests, low ROI |
 
 ---

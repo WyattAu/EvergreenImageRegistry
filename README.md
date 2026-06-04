@@ -1,12 +1,12 @@
 # Evergreen Image Registry
 
-Hardened container images for production: 998 images built non-root, distroless, and fully auditable.
+Hardened container images for production: 986 images built non-root, distroless, and fully auditable.
 
 [![Build](https://img.shields.io/github/actions/workflow/status/WyattAu/EvergreenImageRegistry/build.yml?branch=main&style=flat-square&label=CI)](https://github.com/WyattAu/EvergreenImageRegistry/actions/workflows/build.yml)
 [![Nightly Scan](https://img.shields.io/github/actions/workflow/status/WyattAu/EvergreenImageRegistry/nightly-scan.yml?branch=main&style=flat-square&label=Nightly%20Scan)](https://github.com/WyattAu/EvergreenImageRegistry/actions/workflows/nightly-scan.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square)](LICENSE)
-[![Images: 998](https://img.shields.io/badge/images-998-green.svg?style=flat-square)](docs/catalog/index.html)
-[![SBOM Coverage: 100%](https://img.shields.io/badge/SBOM-998%2F998%20SPDX%202.3-brightgreen.svg?style=flat-square)](docs/standards.md)
+[![Images: 986](https://img.shields.io/badge/images-986-green.svg?style=flat-square)](docs/catalog/index.html)
+[![SBOM Coverage](https://img.shields.io/badge/SBOM-970%2F986%20SPDX%202.3-brightgreen.svg?style=flat-square)](docs/standards.md)
 
 Evergreen provides a long-term home for open-source container images that vendors have abandoned or moved behind
 paywalls. Every image adheres to a strict set of [Image Standards](docs/standards.md) -- non-root execution, distroless
@@ -35,11 +35,11 @@ docker pull ghcr.io/wyattau/evergreenimageregistry/redis@sha256:<digest>
 
 | Hardening Control             | Coverage          | Standard Reference       |
 | ----------------------------- | ----------------- | ------------------------ |
-| Non-root execution            | 99.5% (993/998)   | CIS 4.5.1                |
-| HEALTHCHECK instruction       | 99.9% (997/998)   | Docker best practice     |
-| SBOM (SPDX 2.3)               | 100% (998/998)    | NIST SP 800-218          |
-| Digest-pinned final stages    | 100% (998/998)    | Supply chain integrity   |
-| All-stage FROM digest pinning | 75.3% (1522/2020) | Supply chain integrity   |
+| Non-root execution            | 98.9% (975/986)   | CIS 4.5.1                |
+| HEALTHCHECK instruction       | 99.8% (984/986)   | Docker best practice     |
+| SBOM (SPDX 2.3)               | 98.4% (970/986)   | NIST SP 800-218          |
+| Digest-pinned final stages    | 76.4% (1512/1979) | Supply chain integrity   |
+| All-stage FROM digest pinning | 76.4% (1512/1979) | Supply chain integrity   |
 | CAP_DROP ALL documented       | 100%              | CIS 4.5.3                |
 | no-new-privileges documented  | 100%              | CIS 4.5.1                |
 | Multi-stage builds            | 100%              | Attack surface reduction |
@@ -51,7 +51,7 @@ the runtime image.
 
 ## Image Catalog
 
-Browse the full catalog at [docs/catalog/index.html](docs/catalog/index.html) -- 998 images across 16 categories:
+Browse the full catalog at [docs/catalog/index.html](docs/catalog/index.html) -- 986 images across 16 categories:
 
 | Category   | Count | Category          | Count |
 | ---------- | ----- | ----------------- | ----- |
@@ -69,8 +69,8 @@ Browse the full catalog at [docs/catalog/index.html](docs/catalog/index.html) --
 
 ## Multi-Arch Support
 
-322 images publish multi-architecture manifests (`linux/amd64`, `linux/arm64`). To pull the correct image for your
-platform:
+849 images declare multi-architecture support via `ARG TARGETARCH` (`linux/amd64`, `linux/arm64`). To pull the correct
+image for your platform:
 
 ```bash
 docker pull ghcr.io/wyattau/evergreenimageregistry/nginx:1.27

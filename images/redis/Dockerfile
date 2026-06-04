@@ -32,10 +32,10 @@ ENTRYPOINT ["redis-server"]
 CMD ["--bind", "0.0.0.0", "--protected-mode", "no"]
 LABEL org.opencontainers.image.title="redis" \
       org.opencontainers.image.description="Redis - in-memory data structure store and cache" \
-      org.opencontainers.image.version="7.4.9" \
+      org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Redis" \
       org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
-      evergreen.image.tier="1" \
+      evergreen.image.tier="critical" \
       evergreen.constraint.nonroot="true" \
       evergreen.constraint.hardened="true" \
       org.opencontainers.image.source="https://github.com/redis/redis"

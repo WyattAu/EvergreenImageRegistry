@@ -26,7 +26,7 @@ expose = [6379, 9101]
 [labels]
 "org.opencontainers.image.title" = "redis"
 "org.opencontainers.image.vendor" = "Redis"
-"org.opencontainers.image.version" = "7.4.8"
+"org.opencontainers.image.version" = "8.6"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.hardened" = "true"
 "evergreen.constraint.nonroot" = "true"

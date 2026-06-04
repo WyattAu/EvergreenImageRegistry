@@ -6,7 +6,7 @@ vendor = "PostgreSQL"
 source = "https://github.com/postgres/postgres"
 license = "PostgreSQL"
 tier = "critical"
-upstream_version = "17.6"
+upstream_version = "17.10"
 
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
@@ -15,7 +15,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-url = "https://github.com/postgres/postgres/releases/download/v17.6/postgres-17.6-linux-amd64.tar.gz"
+url = "https://github.com/postgres/postgres/releases/download/v17.10/postgres-17.10-linux-amd64.tar.gz"
 
 [runtime]
 entrypoint = ["postgres"]
@@ -26,7 +26,7 @@ expose = [5432, 9101]
 [labels]
 "org.opencontainers.image.title" = "postgres"
 "org.opencontainers.image.vendor" = "PostgreSQL"
-"org.opencontainers.image.version" = "17.6"
+"org.opencontainers.image.version" = "17.10"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.hardened" = "true"
 "evergreen.constraint.nonroot" = "true"

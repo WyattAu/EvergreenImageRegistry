@@ -4,8 +4,8 @@ Redis - in-memory data structure store and cache
 
 | Attribute | Value |
 |-----------|-------|
-| Version | 7.4.1 |
-| Tier | 2 |
+| Version | 8.6 |
+| Tier | critical |
 | Base Image | cgr.dev/chainguard/wolfi-base:latest |
 | Architecture | amd64 |
 | Health Check | http |
@@ -14,7 +14,7 @@ Redis - in-memory data structure store and cache
 ## Usage
 
 ```bash
-docker pull ghcr.io/wyattau/evergreenimageregistry/redis:7.4.1
+docker pull ghcr.io/wyattau/evergreenimageregistry/redis:8.6
 ```
 
 ## Security

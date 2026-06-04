@@ -4,8 +4,8 @@ Grafana - observability dashboard and visualization
 
 | Attribute | Value |
 |-----------|-------|
-| Version | 11.0.0 |
-| Tier | 1 |
+| Version | 12.2.8-security-04 |
+| Tier | critical |
 | Base Image | cgr.dev/chainguard/wolfi-base:latest |
 | Architecture | multi-arch |
 | Health Check | exec |
@@ -14,7 +14,7 @@ Grafana - observability dashboard and visualization
 ## Usage
 
 ```bash
-docker pull ghcr.io/wyattau/evergreenimageregistry/grafana:11.0.0
+docker pull ghcr.io/wyattau/evergreenimageregistry/grafana:12.2.8-security-04
 ```
 
 ## Security

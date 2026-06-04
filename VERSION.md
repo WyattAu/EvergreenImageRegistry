@@ -11,30 +11,30 @@
 
 | Metric                | Value                               | Status             |
 | --------------------- | ----------------------------------- | ------------------ |
-| Total Images          | 998                                 | COMPLETE           |
-| TOML Validation       | 998/998 (0 errors)                  | PASS               |
-| JSON SBOM             | 998/998 (0 errors)                  | PASS               |
-| .dockerignore         | 998/998 (100%)                      | PASS               |
-| README.md             | 998/998 (100%)                      | PASS               |
-| manifest.toml         | 998/998 (100%)                      | PASS               |
-| sbom.spdx.json        | 998/998 (100%)                      | PASS               |
+| Total Images          | 986                                 | COMPLETE           |
+| TOML Validation       | 984/986 (0 errors)                  | PASS               |
+| JSON SBOM             | 970/986 (0 errors)                  | PASS               |
+| .dockerignore         | 983/986 (99.7%)                     | PASS               |
+| README.md             | 983/986 (99.7%)                     | PASS               |
+| manifest.toml         | 984/986 (99.8%)                     | PASS               |
+| sbom.spdx.json        | 970/986 (98.4%)                     | PASS               |
 | Anti-patterns         | 0 real (1 false positive)           | PASS               |
-| OCI title             | 998/998 (100%)                      | PASS               |
-| OCI description       | 997/998 (99.9%)                     | PASS               |
-| OCI source            | 995/998 (99.7%)                     | PASS               |
-| OCI version           | 996/998 (99.8%)                     | PASS               |
-| Non-root USER         | 993/998 (99.5%)                     | PASS               |
-| ENTRYPOINT            | 956/998 (95.8%)                     | PASS               |
-| STOPSIGNAL            | 994/998 (99.6%)                     | PASS               |
-| HEALTHCHECK NONE      | 438/998 (43.9%)                     | EXPECTED (scratch) |
-| HEALTHCHECK real      | 559/998 (56.0%)                     | PASS               |
-| HEALTHCHECK shim      | 1/998 (health-shim)                 | PASS               |
-| FROM digest pin       | 1511/2001 (75.5%)                   | PASS               |
-| Multi-arch TARGETARCH | 283 declared + 398 scratch          | PASS               |
+| OCI title             | 984/986 (99.8%)                     | PASS               |
+| OCI description       | 983/986 (99.7%)                     | PASS               |
+| OCI source            | 981/986 (99.5%)                     | PASS               |
+| OCI version           | 982/986 (99.6%)                     | PASS               |
+| Non-root USER         | 975/986 (98.9%)                     | PASS               |
+| ENTRYPOINT            | 944/986 (95.7%)                     | PASS               |
+| STOPSIGNAL            | 982/986 (99.6%)                     | PASS               |
+| HEALTHCHECK NONE      | 426/986 (43.2%)                     | EXPECTED (scratch) |
+| HEALTHCHECK real      | 558/986 (56.6%)                     | PASS               |
+| HEALTHCHECK shim      | 2/986 (health-shim)                 | PASS               |
+| FROM digest pin       | 1512/1979 (76.4%)                   | PASS               |
+| Multi-arch TARGETARCH | 849 declared                        | PASS               |
 | Dockerfile syntax     | 0 errors                            | PASS               |
 | Orphaned commands     | 0                                   | PASS               |
 | Determinism           | Zstd + SOURCE_DATE_EPOCH            | PASS               |
-| Rigor (real binary)   | 99.8% (996/998)                     | PASS               |
+| Rigor (real binary)   | 99.8% (984/986)                     | PASS               |
 | Deprecated images     | 3 marked (cayley, meshbird, immudb) | TRACKED            |
 | Policy enforcement    | 9 policies defined                  | PASS               |
 
@@ -50,8 +50,8 @@
 | Python ruff format   | 0 errors (32 scripts)                 | PASS   |
 | Python syntax        | 32/32 scripts                         | PASS   |
 | Shell syntax         | 25/25 scripts (shellcheck 0 warnings) | PASS   |
-| Manifest TOML        | 998/998                               | PASS   |
-| SBOM JSON            | 998/998                               | PASS   |
+| Manifest TOML        | 984/986                               | PASS   |
+| SBOM JSON            | 970/986                               | PASS   |
 | Documentation emojis | 0                                     | PASS   |
 | Pre-push gate        | 11-gate (all PASS)                    | PASS   |
 
@@ -90,7 +90,7 @@
 | 90    | Test framework expansion                  | 1013 test configs (912 real + 67 stubs + 34 CLI-only)                       |
 | 91    | Supply chain hardening                    | Blocked: requires crane/Docker for digest resolution                        |
 | 92    | CI hardening                              | actionlint.yml, go-test.yml, cargo audit gate, prettier fix                 |
-| 93    | Multi-arch expansion                      | 853/998 images with ARG TARGETARCH (570 modified, 0 errors)                 |
+| 93    | Multi-arch expansion                      | 849/986 images with ARG TARGETARCH                                          |
 | 94    | SBOM attestation chain                    | sbom-attestation.yml (cosign + Rekor transparency log)                      |
 | 95    | evergreenctl v2.0                         | changelog + validate_strict subcommands (114 total tests)                   |
 | 96    | Health-shim expansion                     | Blocked: Go-based, requires manual per-image wiring                         |

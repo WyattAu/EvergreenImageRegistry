@@ -1,163 +1,103 @@
-# forgejo-k8s-runner
+# Evergreen Image Registry
 
-## Architecture
+## Overview
 
-- **Repo**: `github.com/WyattAu/forgejo-k8s-runner` — custom native K8s executor for Forgejo Actions
-- **Binary**: `/mnt/pool_HDD_x2/infra/act-runner/bin/forgejo-k8s-runner-final` on TrueNAS
-- **Dockerfile**: `EvergreenImageRegistry/images/forgejo-runner-k8s/Dockerfile`
-- **Build**: `CGO_ENABLED=0 go build -ldflags="-s -w"` in Go 1.24-bookworm container
-- **Dependencies**: `cogentrpc.com/connect`, `code.gitea.io/actions-proto-go/runner/v1`, `k8s.io/client-go`,
-  `google.golang.org/protobuf`
+Hardened container images for production: 986 images built non-root, distroless, and fully auditable. Registry:
+`ghcr.io/wyattau/evergreenimageregistry/<image>:<version>` Version: v29.0.0, Phase 102
 
-## Full Pipeline (Verified Working)
+## Repository Structure
 
-1. Connect RPC FetchTask → Forgejo dispatches task
-2. K8s pod creation in `ci-jobs` namespace (image: `ghcr.io/wyattau/forgejo-runner-image:latest`)
-3. Pod executes shell script (ConfigMap can mount workflow YAML at `/workspace/workflow.yml`)
-4. Pod logs streamed via `UpdateLog` RPC (`runnerv1.LogRow{Time, Content}`)
-5. Status reported via `UpdateTask` RPC (`runnerv1.TaskState{Id, Result}`)
-6. Pod lifecycle: Create → Ready → Execute → Succeeded → Delete
+```
+images/<name>/
+  Dockerfile          # Multi-stage build (builder → scratch/wolfi)
+  manifest.toml       # Image metadata (version, tier, source, labels)
+  README.md           # Per-image documentation
+  sbom.spdx.json      # SPDX 2.3 SBOM
+  .dockerignore       # Build context exclusions
+```
 
-## K8s Cluster
+~986 image directories under `images/`, excluding `_wip/` and `_archive/`.
 
-- **k3s v1.35.5** on TrueNAS, 1 node Ready
-- **Namespace**: `ci-jobs`
-- **PVCs**: `nix-store`, `cargo-cache`, `build-cache` (local-path provisioner, `/mnt/pool_HDD_x2/infra/k3s/storage`)
-- **Kubeconfig**: `/etc/rancher/k3s/k3s.yaml` (NEVER sudo kubectl — use user)
+## Image Standards (5 Pillars)
 
-## Runners Deployed
+1. **Security & Minimalism**: Distroless/wolfi-base final stages, non-root (UID 65532), no shells/package managers
+2. **Reliability**: HEALTHCHECK mandatory, semver versioning, graceful shutdown
+3. **Configuration**: Env vars for all settings, secure defaults, stateless
+4. **Documentation**: Per-image README with usage, security, SBOM link
+5. **Structural Integrity**: Multi-stage builds, libc consistency, configurable UID
 
-| Service                    | ID  | Capacity | Labels         | K8s Config                 |
-| -------------------------- | --- | -------- | -------------- | -------------------------- |
-| act-runner-questhive-k8s   | 38  | 5        | questhive      | kubeconfig set, ci-jobs ns |
-| act-runner-peptide-web-k8s | 39  | 2        | peptide-web    | kubeconfig set, ci-jobs ns |
-| act-runner-general-k8s     | 40  | 2        | general,docker | kubeconfig set, ci-jobs ns |
-| act-runner-k8s-docker      | 41  | 1        | docker         | kubeconfig set, ci-jobs ns |
+## Build Types
 
-## CI Results (K8s Runner)
+| Type            | Count | Description                             |
+| --------------- | ----- | --------------------------------------- |
+| binary-download | ~343  | Download pre-built binary from upstream |
+| repack          | ~262  | Repackage upstream image with hardening |
+| pkg-install     | ~175  | Install via apk/apt packages            |
+| source-build    | ~55   | Build from source                       |
 
-| Repo        | Run  | Jobs | Passed | Status                       |
-| ----------- | ---- | ---- | ------ | ---------------------------- |
-| QuestHive   | 2382 | 17   | 17     | ✅ SUCCESS                   |
-| peptide-web | 2383 | 10   | 10     | ✅ SUCCESS                   |
-| BlocMarket  | 2384 | 7    | 7      | ✅ SUCCESS                   |
-| Rankhub     | 2386 | 9    | 0      | ❌ Forgejo v15 scheduler bug |
+## Base Image Hierarchy
+
+```
+scratch (static binaries: Go, Rust, C)
+  → wolfi-base (Chainguard: glibc + CA certs)
+    → distroless (Google: language-specific runtimes)
+```
+
+BANNED for final stage: debian-slim, alpine, ubuntu, centos
+
+## Key Tools
+
+- **evergreenctl** (Rust): Image verification, drift detection, Dockerfile generation (20 subcommands)
+- **health-shim** (Go): TCP/HTTP health probes for distroless images
+- **pre-commit hooks**: 9 hooks (hadolint, constraints, no-alpine, trailing-whitespace)
+- **pre-push gate**: 11 quality checks
+
+## CI/CD
+
+13+ GitHub Actions workflows:
+
+- `build-on-push.yml` / `build-nightly.yml` / `build-on-demand.yml`
+- `_build-reusable.yml` (core build+push+sign)
+- `cosign-sign.yml`, `slsa-provenance.yml`, `sbom-attestation.yml`
+- `nightly-scan.yml`, `daily-security-scan.yml`
+- `auto-bump.yml`, `metrics-report.yml`
+
+## Tier System
+
+| Tier     | Description                                       | Label                               |
+| -------- | ------------------------------------------------- | ----------------------------------- |
+| critical | Essential infrastructure (databases, proxies, CI) | `evergreen.image.tier = "critical"` |
+| standard | Useful but replaceable                            | `evergreen.image.tier = "standard"` |
+
+## Compliance
+
+- FIPS 140-2/3: 30 images with implementation plans (`compliance/fips/`)
+- CIS/STIG: Benchmark scan scripts (`compliance/cis/`, `compliance/stig/`)
+- ATO: Controls mapping, SSP, POA&M (`compliance/ato/`)
+
+## Common Commands
+
+```bash
+# Verify an image
+evergreenctl verify images/redis/
+
+# Check for drift between manifest and Dockerfile
+evergreenctl drift images/nginx/
+
+# Generate Dockerfile from manifest
+evergreenctl generate images/postgres/
+
+# Audit all images for stubs/placeholders
+evergreenctl audit images/
+
+# Build locally
+docker build -t evergreen-redis images/redis/
+```
 
 ## Known Issues
 
-- **Rankhub**: Forgejo v15 cancels jobs (status 5) when no matching runner found at first dispatch. Even after
-  registering matching runner, new pushes trigger cancelled runs. Same Forgejo v15 bug that affected QuestHive CI Gate.
-  Requires Forgejo v16 upgrade.
-- **Log streaming**: Currently streams pod stdout/stderr as plain text. Does NOT parse workflow step output for
-  ANSI/group annotations (`##[group]`).
-- **Workflow YAML parsing**: NOT implemented yet — pods run fixed echo scripts. Real CI step execution requires parsing
-  workflow YAML `run:` and `uses:` directives.
-
-## Config File Format (.runner)
-
-```json
-{
-  "WARNING": "Auto-generated",
-  "id": 41,
-  "uuid": "9d4d529a-fe4f-4a3c-a6e4-0371a56aef6f",
-  "name": "k8s-docker",
-  "token": "TOKEN_HERE",
-  "address": "http://172.16.7.40:3000",
-  "labels": ["docker"],
-  "ephemeral": false
-}
-```
-
-## Config File Format (config.yaml)
-
-```yaml
-log: { level: info }
-runner:
-  file: /path/to/.runner
-  capacity: 1
-  timeout: 2h
-  insecure: true
-  fetch_interval: 2s
-  labels: ['docker']
-kubernetes:
-  namespace: ci-jobs
-  kubeconfig: /etc/rancher/k3s/k3s.yaml
-```
-
-## Service Files
-
-```
-/etc/systemd/system/act-runner-{questhive-k8s,peptide-web-k8s,general-k8s,k8s-docker}.service
-```
-
-Each uses `ExecStart=/mnt/pool_HDD_x2/infra/act-runner/bin/forgejo-k8s-runner-final $DATA/config.yaml` with
-`Environment=KUBECONFIG=/etc/rancher/k3s/k3s.yaml`.
-
-## Registration Token
-
-Forgejo admin token: `31ef3188a9c279a4ce672a44cca0fe924226decf` Runner registration:
-`POST https://forgejo.wyattau.com/api/v1/admin/actions/runners` with JSON
-`{"name":"...","agent_labels":[...],"capacity":N}` For internal Docker network:
-`http://172.16.7.40:3000/api/v1/admin/actions/runners`
-
-## Docker Runners (DEPRECATED, stopped+disabled)
-
-- `act-runner-questhive`, `act-runner-peptide-web`, `act-runner-general`
-- All replaced by K8s equivalents above
-
-
-### Current Status (May 31 04:00 BST)
-- **K8s runner**: Architecture proven. 4 runners deployed (questhive, peptide-web, general, k8s-docker).
-- **Full pipeline verified**: Connect RPC → YAML parse → shell generate → K8s pod → log stream → status report.
-- **Git auth**: Token from `task.Context.Fields["token"]` (40 chars, confirmed present) embedded via `url.UserPassword`.
-- **Pod security**: Manual `kubectl apply` with `securityContext.runAsUser: 0` works as root. Go `k8s.io/client-go` PodSpec with `SecurityContext` doesn't apply — pods run as `runner` (uid 1000) and fail on `rm -rf`/`git clone` with "Permission denied" on workspace dir created by k8s `workingDir`.
-  - **Fix**: Either debug Go client SecurityContext, or remove `workingDir` from pod spec and let script handle all directory creation.
-- **Real CI**: Pods execute generated shell scripts with `set -e` and correct command structure. Git clone works with auth (manually verified). Actual CI commands (`cargo build`, `nix develop`) fail because image lacks Rust/nix.
-  - **Fix**: Build custom image with nix store mounted via hostPath PV, or pre-install nix in base image.
-- **Binary**: `forgejo-k8s-runner-final` (37MB static, Go 1.24) at `/mnt/pool_HDD_x2/infra/act-runner/bin/`.
-- **Source**: `github.com/WyattAu/forgejo-k8s-runner` (Connect RPC client, YAML parser, K8s executor).
-- **False positives**: Earlier green runs used `|| echo` fallbacks. Current code uses `set -e` for real failure reporting.
-
-### Current Status (May 31 04:40 BST)
-- **K8s runner**: Architecture proven. 4 runners deployed (questhive, peptide-web, general, k8s-docker).
-- **Full pipeline verified**: Connect RPC → YAML parse → shell generate → K8s pod → log stream → status report.
-- **Git auth**: Token from `task.Context.Fields["token"]` (40 chars, confirmed present) embedded via `url.UserPassword`.
-- **Pod security**: Manual `kubectl apply` with `securityContext.runAsUser: 0` works as root. Go `k8s.io/client-go` PodSpec with `SecurityContext` doesn't apply — pods run as `runner` (uid 1000) and fail on `rm -rf`/`git clone` with "Permission denied" on workspace dir created by k8s `workingDir`.
-  - **Fix**: Either debug Go client SecurityContext, or remove `workingDir` from pod spec and let script handle all directory creation.
-- **Real CI**: Pods execute generated shell scripts with `set -e` and correct command structure. Git clone works with auth (manually verified). Actual CI commands (`cargo build`, `nix develop`) fail because image lacks Rust/nix.
-  - **Fix**: Build custom image with nix store mounted via hostPath PV, or pre-install nix in base image.
-- **Binary**: `forgejo-k8s-runner-final` (37MB static, Go 1.24) at `/mnt/pool_HDD_x2/infra/act-runner/bin/`.
-- **Source**: `github.com/WyattAu/forgejo-k8s-runner` (Connect RPC client, YAML parser, K8s executor).
-- **False positives**: Earlier green runs used `|| echo` fallbacks. Current code uses `set -e` for real failure reporting.
-
-### Current Status (May 31 06:00 BST)
-- **K8s runner**: Architecture proven. 4 runners deployed (questhive, peptide-web, general, k8s-docker).
-- **Full pipeline verified**: Connect RPC → YAML parse → shell generate → K8s pod → log stream → status report.
-- **Git auth**: Token from `task.Context.Fields["token"]` (40 chars, confirmed present) embedded via `url.UserPassword`.
-- **Pod security**: Manual `kubectl apply` with `securityContext.runAsUser: 0` works as root. Go `k8s.io/client-go` PodSpec with `SecurityContext` doesn't apply — pods run as `runner` (uid 1000) and fail on `rm -rf`/`git clone` with "Permission denied" on workspace dir created by k8s `workingDir`.
-  - **Fix**: Either debug Go client SecurityContext, or remove `workingDir` from pod spec and let script handle all directory creation.
-- **Real CI**: Pods execute generated shell scripts with `set -e` and correct command structure. Git clone works with auth (manually verified). Actual CI commands (`cargo build`, `nix develop`) fail because image lacks Rust/nix.
-  - **Fix**: Build custom image with nix store mounted via hostPath PV, or pre-install nix in base image.
-- **Binary**: `forgejo-k8s-runner-final` (37MB static, Go 1.24) at `/mnt/pool_HDD_x2/infra/act-runner/bin/`.
-- **Source**: `github.com/WyattAu/forgejo-k8s-runner` (Connect RPC client, YAML parser, K8s executor).
-- **False positives**: Earlier green runs used `|| echo` fallbacks. Current code uses `set -e` for real failure reporting.
-
-### Current Status (May 31 06:00 BST)
-- **K8s runner**: Architecture proven. 4 runners deployed (questhive, peptide-web, general, k8s-docker).
-- **Full pipeline verified**: Connect RPC → YAML parse → shell generate → K8s pod → log stream → status report.
-- **Git auth**: Token from `task.Context.Fields["token"]` (40 chars, confirmed present) embedded via `url.UserPassword`.
-- **Pod security**: Manual `kubectl apply` with `securityContext.runAsUser: 0` works as root. Go `k8s.io/client-go` PodSpec with `SecurityContext` doesn't apply — pods run as `runner` (uid 1000) and fail on `rm -rf`/`git clone` with "Permission denied" on workspace dir created by k8s `workingDir`.
-  - **Fix**: Either debug Go client SecurityContext, or remove `workingDir` from pod spec and let script handle all directory creation.
-- **Real CI**: Pods execute generated shell scripts with `set -e` and correct command structure. Git clone works with auth (manually verified). Actual CI commands (`cargo build`, `nix develop`) fail because image lacks Rust/nix.
-  - **Fix**: Build custom image with nix store mounted via hostPath PV, or pre-install nix in base image.
-- **Binary**: `forgejo-k8s-runner-final` (37MB static, Go 1.24) at `/mnt/pool_HDD_x2/infra/act-runner/bin/`.
-- **Source**: `github.com/WyattAu/forgejo-k8s-runner` (Connect RPC client, YAML parser, K8s executor).
-- **False positives**: Earlier green runs used `|| echo` fallbacks. Current code uses `set -e` for real failure reporting.
-
-### Current Status (May 31 08:40 BST)
-- **K8s runner**: 4 runners active. CI dispatching works when Forgejo IP matches `.runner` files.
-- **Auto-IP-fix**: Script at `/mnt/pool_HDD_x2/infra/scripts/fix-forgejo-runner-ips.sh` + systemd oneshot service `fix-forgejo-runner-ips.service`. Runs before all runners, auto-updates `.runner` address to current Forgejo container IP.
-- **Real CI**: Pods execute: `apk add coreutils` → `git clone` → `curl nix install` → `nix develop --command cargo`. Verified end-to-end in manual pod (e2e test) — nix 2.34.7 installs, cargo fmt exits 0.
-- **Passing jobs**: Fuzz Build Check passes (nix-independent cargo check). Other jobs need nix install time (5-10min per pod).
-- **Forgejo v15**: Scheduler cancels runs when runner disconnects briefly. Workaround: restart runner right before push.
-- **Remaining**: Build custom image with nix pre-installed, upgrade Forgejo to v16.
+- 426 images have `HEALTHCHECK NONE` (expected: scratch-based with no shell)
+- 28 images missing SBOMs (970/986)
+- 3 images deprecated (cayley, meshbird, immudb)
+- Tier labels inconsistent across manifests (3 competing schemas)
+- `docs/image-audit-report.md` is stale (reports on 841 images, current is 986)

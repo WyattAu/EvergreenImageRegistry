@@ -98,31 +98,33 @@ All images with HTTP capability serve observability on **port 9101** with these 
 **Vector DaemonSet** handles transformation of native-format logs (Redis, PostgreSQL, Nginx, Java) to JSON downstream.
 This is an infrastructure concern, not an image concern.
 
-#### 4. Health Shim for Database Images
+#### 4. Health Shim for Scratch Images
 
-Database images without native HTTP servers (PostgreSQL, Redis, MariaDB, MongoDB, Valkey, Kafka, ZooKeeper) include a
-compiled Go binary (`health-shim`) that:
+Database and proxy images without native HTTP servers include a compiled Rust binary (`health-shim-rs`) that serves as
+the container entry point (PID 1):
 
-1. Wraps native CLI health checks (`pg_isready`, `redis-cli ping`, etc.)
-2. Exposes `/livez`, `/readyz`, `/startupz` on :9101
-3. Runs as PID > 1 alongside the database (PID 1)
-4. Container uses runtime `--init` flag for proper signal handling
+1. Parses config from env vars (HEALTH_CMD, READY_CMD, LISTEN)
+2. Forks the main binary as a child process
+3. Exposes `/livez`, `/readyz`, `/startupz`, `/metrics` on :9101
+4. Forwards signals (SIGTERM, SIGINT) to the child
+5. Monitors child process; exits with non-zero code on crash (K8s restarts pod)
 
-**Implementation:**
+**Layered health check strategy:**
 
-```go
-// health-shim serves /livez, /readyz, /startupz on :9101
-// by wrapping native health check commands
-package main
+| Layer | Check          | Speed     | Use Case                                   |
+| ----- | -------------- | --------- | ------------------------------------------ |
+| L1    | PID monitoring | <1ms      | All images (always active)                 |
+| L2    | TCP socket     | ~1ms      | Quick port check                           |
+| L3    | CLI exec       | ~10-100ms | Database readiness (pg_isready, redis-cli) |
+| L4    | HTTP probe     | ~50-200ms | Application health (if /metrics exists)    |
 
-import (
-    "net/http"
-    "os/exec"
-    "log/slog"
-)
-```
+**Most robust for databases: L1 + L3 (PID + CLI exec)**
 
-The shim binary is ~2MB statically compiled, included in the Dockerfile's final stage.
+The Rust shim binary is ~200-300KB statically compiled (musl + LTO + strip), included in the Dockerfile's final stage.
+Per-arch builds for x86_64 and aarch64.
+
+**Scope:** health-shim handles health and metrics only. Logs go to stdout (Vector DaemonSet handles collection). Traces
+use eBPF (OBI/Beyla) at kernel level. See ADR-009 for full architecture.
 
 ### Consequences
 
@@ -138,14 +140,16 @@ The shim binary is ~2MB statically compiled, included in the Dockerfile's final 
 **Negative:**
 
 - ~400 scratch Go binaries need `slog` instrumentation added to source
-- ~150 database images need health-shim binary
+- ~150 database/proxy images need health-shim-rs binary wired in
 - ~470 package-based images need entrypoint modifications for log format
 - Total effort: ~1,012 Dockerfile modifications
+- CLI exec health checks add ~10-100ms latency per probe (acceptable for 30s intervals)
 
 **Risks:**
 
 - Some upstream Go projects may not easily support slog (CGO, custom loggers)
-- Health shim adds a secondary process to database containers (mitigated by --init flag)
+- Rust cross-compilation for musl targets requires Docker buildx (mitigated)
+- CLI exec requires database CLI binary in image (adds ~1-5MB per image)
 - Port 9101 must be allowed in network policies for vmagent
 
 ### Alternatives Considered
@@ -156,6 +160,8 @@ The shim binary is ~2MB statically compiled, included in the Dockerfile's final 
 | Port 9090                           | Conflicts with Prometheus server default                         |
 | Per-language log agents             | Adds container complexity, Vector DaemonSet covers this          |
 | Docker HEALTHCHECK instruction only | Not K8s-native, shell-form blocks scratch, exec-form limited     |
+| Go health-shim (current)            | 2MB binary, requires --init, multi-process model (see ADR-009)   |
+| tini as PID1 + health-shim sidecar  | Adds container complexity; tini doesn't solve health checks      |
 | Unified /health endpoint            | K8s convention is /livez, /readyz, /startupz (separate concerns) |
 
 ### Related Standards
@@ -174,6 +180,7 @@ The shim binary is ~2MB statically compiled, included in the Dockerfile's final 
 | ADR-001 | HEALTHCHECK strategy (superseded by this ADR for /livez /readyz /startupz) |
 | ADR-005 | Military compliance (observability supports audit requirements)            |
 | ADR-007 | Base image order (affects which images can embed health endpoints)         |
+| ADR-009 | Rust health-shim entrypoint (extends health-shim section of this ADR)      |
 
 ### Related Requirements
 

@@ -1,8 +1,7 @@
 ARG TARGETARCH
 # =============================================================================
 # EVERGREEN HARDENED GRAFANA
-# Grafana observability dashboard (builds from source)
-# Constraint: debian-slim hardened
+# Grafana observability dashboard with health-shim as PID 1
 # =============================================================================
 
 ARG VERSION=12.2.8-security-04
@@ -25,6 +24,7 @@ RUN mkdir -p /opt && \
     mkdir -p /opt/grafana-${VERSION}/bin 2>/dev/null || true ; \
     test -s /opt/grafana-${VERSION}/bin/grafana-server || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-server && echo 'echo "grafana v'"${VERSION}"' binary not available - download failed" >&2 exit 1"' >> /opt/grafana-${VERSION}/bin/grafana-server && echo 'exit 1' >> /opt/grafana-${VERSION}/bin/grafana-server && chmod +x /opt/grafana-${VERSION}/bin/grafana-server ; } 2>/dev/null ; \
     ln -sf /opt/grafana-${VERSION} /opt/grafana 2>/dev/null || true
+FROM ghcr.io/wyattau/evergreenshim/health-shim:v0.1.0 AS shim
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=12.2.8-security-04
 
@@ -36,13 +36,17 @@ RUN mkdir -p /opt/grafana/bin /var/lib/grafana /var/log/grafana /etc/grafana 2>/
     addgroup -S -g 10000 grafana 2>/dev/null || true && \
     adduser -u 65532 -G grafana -D -h /opt/grafana -s /bin/false grafana 2>/dev/null || true && \
     chown -R 65532:65532 /var/lib/grafana /var/log/grafana /etc/grafana 2>/dev/null || true
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
 USER 65532:65532
 WORKDIR /opt/grafana
-EXPOSE 3000
+EXPOSE 3000 9101
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:3000/api/health
-ENTRYPOINT ["/usr/sbin/grafana-server"]
-CMD ["--homepath=/opt/grafana", "--config=/etc/grafana/grafana.ini"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
+CMD ["-c", "/usr/local/bin/grafana-server", "--", "--homepath=/opt/grafana", "--config=/etc/grafana/grafana.ini"]
 LABEL org.opencontainers.image.title="grafana" \
       org.opencontainers.image.description="Grafana - observability dashboard and visualization" \
       org.opencontainers.image.version="${VERSION}" \
@@ -54,11 +58,12 @@ LABEL org.opencontainers.image.title="grafana" \
       evergreen.constraint.nonroot="true" \
       evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+LABEL evergreen.health.type="http"
+LABEL evergreen.health.endpoint="/livez"
+LABEL evergreen.health.listen="0.0.0.0:9101"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 9101
 STOPSIGNAL SIGTERM

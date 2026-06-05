@@ -5,13 +5,12 @@ ARG APP_GID=65532
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=1.27.1
 ARG TARGETARCH
-RUN mkdir -p /var/log/nginx && \ RUN mkdir -p /var/cache/nginx && \
-    mkdir -p /var/log/nginx && \ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-1.27.1.tar.gz" -o /nginx.tar.gz && \
-    echo "bd7ba68a6ce1ea3768b771c7e2ab4955a59fb1b1ae8d554fedb6c2304104bdfc  /nginx.tar.gz" | sha256sum -c ; [ -f /nginx.tar.gz ] && \
-    [ -f /nginx.tar.gz ] && tar -xzf /nginx.tar.gz -C / && rm -f /nginx.tar.gz && chmod +x /nginx 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-1.27.1.tar.gz" -o /nginx && chmod +x /nginxbinary not available - download failed" >&2"' >> /nginx && echo 'exit 1' >> /nginx && chmod +x /nginx; } && \
-    mkdir -p /app /var/log/nginx /var/cache/nginx 2>/dev/null || true
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-${VERSION}.tar.gz" -o /nginx.tar.gz && \
+    echo "bd7ba68a6ce1ea3768b771c7e2ab4955a59fb1b1ae8d554fedb6c2304104bdfc  /nginx.tar.gz" | sha256sum -c && \
+    tar -xzf /nginx.tar.gz -C / && rm -f /nginx.tar.gz && chmod +x /nginx 2>/dev/null && \
+    mkdir -p /app /var/log/nginx /var/cache/nginx || \
+    { echo "ERROR: nginx binary not available - download failed" >&2; exit 1; }
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:v0.1.0 AS shim
 

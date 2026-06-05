@@ -6,10 +6,10 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG TARGETARCH
 ARG VERSION=2.53.0
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/prometheus/releases/download/v2.53.0/prometheus-2.53.0.linux-${TARGETARCH}.tar.gz -o /prometheus.tar.gz && \
-    echo "bf4ef82fc332dbb1a254c8ed7919363415126c1ed4e2ede536f8a049649976f5  /prometheus.tar.gz" | sha256sum -c ; [ -f /prometheus.tar.gz ] && \
-    [ -f /prometheus.tar.gz ] && tar -xzf /prometheus.tar.gz -C / && rm -f /prometheus.tar.gz && chmod +x /prometheus 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/prometheus/releases/download/v2.53.0/prometheus-2.53.0.linux-${TARGETARCH}.tar.gz -o /prometheus && chmod +x /prometheusbinary not available - download failed" >&2"' >> /prometheus && echo 'exit 1' >> /prometheus && chmod +x /prometheus; }
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/prometheus/releases/download/v${VERSION}/prometheus-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /prometheus.tar.gz && \
+    echo "bf4ef82fc332dbb1a254c8ed7919363415126c1ed4e2ede536f8a049649976f5  /prometheus.tar.gz" | sha256sum -c && \
+    tar -xzf /prometheus.tar.gz -C / && rm -f /prometheus.tar.gz && chmod +x /prometheus 2>/dev/null || \
+    { echo "ERROR: prometheus binary not available - download failed" >&2; exit 1; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/prometheus /var/cache/prometheus 2>/dev/null || true

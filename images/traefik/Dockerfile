@@ -7,8 +7,9 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG TARGETARCH
 ARG VERSION=v3.7.1
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/traefik/traefik/releases/download/${VERSION}/traefik_${VERSION}_linux_${TARGETARCH}.tar.gz -o /traefik.tar.gz ; \
-    [ -f /traefik.tar.gz ] && tar -xzf /traefik.tar.gz -C / && rm -f /traefik.tar.gz && chmod +x /traefik 2>/dev/null ; \binary not available - download failed" >&2"' >> /traefik && echo 'exit 1' >> /traefik && chmod +x /traefik; }
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/traefik/traefik/releases/download/${VERSION}/traefik_${VERSION}_linux_${TARGETARCH}.tar.gz" -o /traefik.tar.gz && \
+    tar -xzf /traefik.tar.gz -C / && rm -f /traefik.tar.gz && chmod +x /traefik 2>/dev/null || \
+    { echo "ERROR: traefik binary not available - download failed" >&2; exit 1; }
 
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:v0.1.0 AS shim

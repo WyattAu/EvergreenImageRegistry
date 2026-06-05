@@ -32,7 +32,8 @@ expose = [4080, 9101]
 "evergreen.hft.signal-handling" = "native"
 "evergreen.image.category" = "database"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard"
+"evergreen.metrics.native" = "ztunnel"
 
 
 status = "wip"

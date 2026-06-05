@@ -36,4 +36,5 @@ expose = [1491, 9101]
 "evergreen.image.category" = "search"
 "evergreen.image.note" = "GNU binary may need glibc; fallback to debian-slim if scratch fails"
 "evergreen.image.status" = "best-effort"
-"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard"
+"evergreen.metrics.native" = "ztunnel"

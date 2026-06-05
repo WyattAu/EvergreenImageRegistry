@@ -23,4 +23,5 @@ expose = [445, 9101]
 "evergreen.health.type" = "none"
 "evergreen.image.category" = "storage"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard"
+"evergreen.metrics.native" = "ztunnel"

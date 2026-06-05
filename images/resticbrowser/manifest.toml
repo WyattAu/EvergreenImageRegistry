@@ -34,4 +34,5 @@ expose = [9876, 9101]
 "evergreen.hft.startup-timeout" = "10000ms"
 "evergreen.image.category" = "cloud-storage"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard"
+"evergreen.metrics.native" = "ztunnel"

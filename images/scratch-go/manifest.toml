@@ -23,5 +23,6 @@ entrypoint = ["/app/app"]
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"
 "evergreen.image.role" = "base"
-"evergreen.image.tier" = "standard""evergreen.runtime" = "go"
+"evergreen.image.tier" = "standard"
+"evergreen.runtime" = "go"
 "evergreen.runtime.version" = "${GO_VERSION}"

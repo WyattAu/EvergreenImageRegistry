@@ -42,4 +42,5 @@ expose = [80, 9101]
 "evergreen.hft.startup-timeout" = "3000ms"
 "evergreen.hft.xdp-capable" = "false"
 "evergreen.hft.xdp-notes" = "Not supported"
-"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard"
+"evergreen.metrics.native" = "ztunnel"

@@ -27,5 +27,6 @@ expose = [8008, 9101]
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"
-"evergreen.image.tier" = "standard""evergreen.image.variant" = "media-worker"
+"evergreen.image.tier" = "standard"
+"evergreen.image.variant" = "media-worker"
 "evergreen.metrics.native" = "ztunnel"

@@ -28,5 +28,6 @@ expose = [25, 9101]
 "evergreen.constraint.debian-slim" = "true"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"
-"evergreen.image.tier" = "standard""evergreen.image.variant" = "constrained"
+"evergreen.image.tier" = "standard"
+"evergreen.image.variant" = "constrained"
 "evergreen.metrics.native" = "ztunnel"

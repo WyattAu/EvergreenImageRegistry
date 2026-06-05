@@ -38,4 +38,5 @@ expose = [32400, 9101]
 "evergreen.image.category" = "media-streaming"
 "evergreen.image.note" = "Extracted from plexinc/pms-docker official image. Requires Plex account for activation."
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard"
+"evergreen.metrics.native" = "ztunnel"

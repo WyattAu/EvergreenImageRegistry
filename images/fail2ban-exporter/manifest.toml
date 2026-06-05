@@ -38,4 +38,5 @@ expose = [9191, 9101]
 "evergreen.image.category" = "monitoring"
 "evergreen.image.note" = "UPSTREAM GONE: xperimental/fail2ban-exporter repo deleted, no forks found. Cannot build from source."
 "evergreen.image.status" = "best-effort"
-"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard"
+"evergreen.metrics.native" = "ztunnel"

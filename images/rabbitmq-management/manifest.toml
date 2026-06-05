@@ -30,4 +30,5 @@ expose = [5672, 9101]
 "evergreen.health.type" = "exec"
 "evergreen.image.category" = "messaging"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard"
+"evergreen.metrics.native" = "ztunnel"

@@ -32,4 +32,5 @@ expose = [9042, 9101]
 "evergreen.image.category" = "database"
 "evergreen.image.note" = "Extracted from scylladb/scylla:latest. downloads.scylladb.com GPG key URL was wrong (404)."
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard"
+"evergreen.metrics.native" = "ztunnel"

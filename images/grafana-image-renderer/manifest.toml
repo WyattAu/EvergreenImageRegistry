@@ -42,4 +42,5 @@ expose = [8081, 9101]
 "evergreen.hft.shutdown-timeout" = "5s"
 "evergreen.hft.signal-handling" = "native"
 "evergreen.hft.startup-timeout" = "20000ms"
-"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard"
+"evergreen.metrics.native" = "ztunnel"

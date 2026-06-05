@@ -30,4 +30,5 @@ expose = [1521, 9101]
 "evergreen.image.category" = "database"
 "evergreen.image.note" = "Extracted from gvenzl/oracle-xe:21-slim community image. Oracle license applies."
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard"
+"evergreen.metrics.native" = "ztunnel"

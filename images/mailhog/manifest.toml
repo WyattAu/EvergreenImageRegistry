@@ -31,4 +31,5 @@ expose = [8025, 9101]
 "evergreen.constraint.scratch" = "true"
 "evergreen.health.type" = "http"
 "evergreen.image.category" = "email"
-"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard"
+"evergreen.metrics.native" = "ztunnel"

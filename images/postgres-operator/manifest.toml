@@ -32,4 +32,5 @@ expose = [8080, 9101]
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"
 "evergreen.health.type" = "exec"
-"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard"
+"evergreen.metrics.native" = "ztunnel"

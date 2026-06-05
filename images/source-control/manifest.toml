@@ -32,4 +32,5 @@ expose = [3000, 9101]
 "evergreen.constraint.wolfi" = "true"
 "evergreen.health.type" = "http"
 "evergreen.image.category" = "scm"
-"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard"
+"evergreen.metrics.native" = "ztunnel"

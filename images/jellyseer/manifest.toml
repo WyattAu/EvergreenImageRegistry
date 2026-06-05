@@ -34,4 +34,5 @@ expose = [5055, 9101]
 "evergreen.hft.startup-timeout" = "10000ms"
 "evergreen.image.category" = "media-streaming"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard"
+"evergreen.metrics.native" = "ztunnel"

@@ -29,4 +29,5 @@ expose = [8096, 9101]
 "evergreen.health.type" = "none"
 "evergreen.image.category" = "media"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard"
+"evergreen.metrics.native" = "ztunnel"

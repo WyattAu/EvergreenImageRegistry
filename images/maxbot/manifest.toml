@@ -28,5 +28,6 @@ expose = [9101]
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"
-"evergreen.image.tier" = "standard""evergreen.image.status" = "functional"
+"evergreen.image.tier" = "standard"
+"evergreen.image.status" = "functional"
 "evergreen.metrics.native" = "ztunnel"

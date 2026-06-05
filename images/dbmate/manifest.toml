@@ -27,4 +27,5 @@ expose = [9101]
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "none"
 "evergreen.image.category" = "tooling"
-"evergreen.image.tier" = "standard""evergreen.metrics.native" = "none"
+"evergreen.image.tier" = "standard"
+"evergreen.metrics.native" = "none"

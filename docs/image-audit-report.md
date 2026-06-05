@@ -1,6 +1,11 @@
 # Evergreen Image Registry - Comprehensive Dockerfile Audit Report
 
-**Generated:** 2026-05-19 **Scope:** All Dockerfiles in `images/` (excluding `_wip/`) **Total Images Audited:** 841
+**Generated:** 2026-06-05 **Scope:** All Dockerfiles in `images/` (excluding `_wip/` and `_archive/`) **Total Images
+Audited:** 841 **Current Registry Size:** 984
+
+> **Note:** This audit was originally generated on 2026-05-19 against 841 images. The registry has since grown to 984
+> images (4 deprecated images — cayley, meshbird, immudb, immudb-proxy — have been removed). The detailed counts below
+> reflect the original 841-image audit snapshot.
 
 ---
 

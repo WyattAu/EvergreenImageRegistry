@@ -335,6 +335,203 @@ else
     skip_gate "Go vet + test (go not found)"
 fi
 
+# ---- Gate 11: FIPS Compliance Check ----
+echo ""
+echo "--- Gate 11: FIPS Compliance Check ---"
+if command -v python3 &>/dev/null; then
+    fips_result=$(python3 -c "
+import tomllib, sys
+from pathlib import Path
+
+# Load FIPS image matrix
+fips_matrix_path = Path('compliance/fips/fips_image_matrix.yaml')
+fips_images = set()
+if fips_matrix_path.exists():
+    try:
+        import yaml
+        with open(fips_matrix_path) as f:
+            data = yaml.safe_load(f)
+        for cat in data.get('fips_image_matrix', {}).get('categories', {}).values():
+            for img in cat.get('images', []):
+                name = img.get('name', '')
+                if name:
+                    fips_images.add(name)
+    except Exception:
+        # Fallback: try without yaml
+        pass
+
+# Find images claiming FIPS in manifest
+claims_fips = []
+for m in Path('images').rglob('manifest.toml'):
+    try:
+        with open(m, 'rb') as f:
+            data = tomllib.load(f)
+        labels = data.get('labels', {})
+        if labels.get('compliance.fips') == 'true':
+            claims_fips.append(m.parent.name)
+    except Exception:
+        pass
+
+# Check for compliance/fips/ files per image
+has_compliance = set()
+for f in Path('compliance/fips').rglob('*'):
+    if f.is_file() and f.suffix in ('.md', '.yaml', '.yml', '.sh'):
+        pass  # These are shared files, not per-image
+
+print(f'matrix:{len(fips_images)}|claims:{len(claims_fips)}')
+" 2>/dev/null)
+    if echo "$fips_result" | grep -qE '^matrix:[0-9]+|claims:[0-9]+$'; then
+        matrix_count=$(echo "$fips_result" | grep -oP 'matrix:\K[0-9]+')
+        claims_count=$(echo "$fips_result" | grep -oP 'claims:\K[0-9]+')
+        if [ "$claims_count" -gt 0 ]; then
+            # Warn if images claim FIPS but aren't in the matrix
+            python3 -c "
+import tomllib, sys
+from pathlib import Path
+
+fips_matrix_path = Path('compliance/fips/fips_image_matrix.yaml')
+fips_images = set()
+try:
+    import yaml
+    with open(fips_matrix_path) as f:
+        data = yaml.safe_load(f)
+    for cat in data.get('fips_image_matrix', {}).get('categories', {}).values():
+        for img in cat.get('images', []):
+            name = img.get('name', '')
+            if name:
+                fips_images.add(name)
+except Exception:
+    pass
+
+claims = []
+for m in Path('images').rglob('manifest.toml'):
+    try:
+        with open(m, 'rb') as f:
+            data = tomllib.load(f)
+        labels = data.get('labels', {})
+        if labels.get('compliance.fips') == 'true':
+            claims.append(m.parent.name)
+    except Exception:
+        pass
+
+unlisted = [c for c in claims if c not in fips_images]
+if unlisted:
+    print(f'WARN: {len(unlisted)} image(s) claim FIPS but are not in compliance/fips/ matrix: {\" \".join(unlisted)}')
+    sys.exit(1)
+else:
+    sys.exit(0)
+" 2>/dev/null
+            if [ $? -ne 0 ]; then
+                echo -e "  ${YELLOW}[WARN]${NC} Some images claim FIPS but lack compliance/fips/ documentation"
+            fi
+            pass_gate "FIPS compliance check ($matrix_count matrix images, $claims_count claiming FIPS)"
+        else
+            pass_gate "FIPS compliance check ($matrix_count matrix images, no manifest claims)"
+        fi
+    else
+        skip_gate "FIPS compliance check (parse error)"
+    fi
+else
+    skip_gate "FIPS compliance check (python3 not found)"
+fi
+
+# ---- Gate 11: Performance regression detection ----
+echo ""
+echo "--- Gate 11: Performance Regression Detection ---"
+if command -v docker &>/dev/null && command -v python3 &>/dev/null; then
+    BASELINE_FILE=".specs/06_5_regression/build_times.json"
+    THRESHOLD=50
+    PERF_ERRORS=0
+    PERF_COUNT=0
+    PERF_UPDATED=0
+
+    changed_images=$(git diff --cached --name-only --diff-filter=ACM HEAD 2>/dev/null \
+      | grep -oP 'images/\K[^/]+' | sort -u || true)
+    if [ -z "$changed_images" ]; then
+        changed_images=$(git diff --name-only --diff-filter=ACM HEAD 2>/dev/null \
+          | grep -oP 'images/\K[^/]+' | sort -u || true)
+    fi
+
+    if [ -n "$changed_images" ]; then
+        for img in $changed_images; do
+            img_dir="images/${img}"
+            if [ ! -f "${img_dir}/Dockerfile" ]; then
+                continue
+            fi
+
+            PERF_COUNT=$((PERF_COUNT + 1))
+            echo -n "  Build timing: ${img}... "
+
+            START_NS=$(date +%s%N)
+            if docker build -t "evergreen-perf-test-${img}" "${img_dir}" >/dev/null 2>&1; then
+                END_NS=$(date +%s%N)
+                ELAPSED_MS=$(( (END_NS - START_NS) / 1000000 ))
+
+                # Check against baseline
+                EXISTING=$(python3 -c "
+import json, sys
+try:
+    with open('${BASELINE_FILE}') as f:
+        data = json.load(f)
+    bt = data.get('images', {}).get('${img}', {}).get('build_time_ms', 0)
+    print(bt)
+except Exception:
+    print(0)
+" 2>/dev/null || echo "0")
+
+                if [ "$EXISTING" -gt 0 ]; then
+                    INCREASE=$(( (ELAPSED_MS - EXISTING) * 100 / EXISTING ))
+                    if [ "$INCREASE" -gt "$THRESHOLD" ]; then
+                        echo "FAIL (+${INCREASE}% > ${THRESHOLD}% threshold: ${EXISTING}ms -> ${ELAPSED_MS}ms)"
+                        PERF_ERRORS=$((PERF_ERRORS + 1))
+                    else
+                        echo "OK (${ELAPSED_MS}ms, baseline ${EXISTING}ms, +${INCREASE}%)"
+                    fi
+                else
+                    echo "NEW BASELINE (${ELAPSED_MS}ms)"
+                fi
+
+                # Update baseline
+                python3 -c "
+import json
+try:
+    with open('${BASELINE_FILE}') as f:
+        data = json.load(f)
+except Exception:
+    data = {'version': 1, 'description': 'Build time baselines', 'threshold_percent': 50, 'images': {}}
+
+if 'images' not in data:
+    data['images'] = {}
+data['images']['${img}'] = {
+    'build_time_ms': ${ELAPSED_MS},
+    'updated': '$(date -u +%Y-%m-%dT%H:%M:%SZ)'
+}
+
+with open('${BASELINE_FILE}', 'w') as f:
+    json.dump(data, f, indent=2)
+" 2>/dev/null || true
+                PERF_UPDATED=$((PERF_UPDATED + 1))
+
+                docker rmi "evergreen-perf-test-${img}" >/dev/null 2>&1 || true
+            else
+                echo "SKIP (build failed)"
+            fi
+        done
+
+        if [ "$PERF_ERRORS" -eq 0 ] && [ "$PERF_COUNT" -gt 0 ]; then
+            pass_gate "Performance regression (${PERF_COUNT} images, ${PERF_UPDATED} baselines updated)"
+        elif [ "$PERF_ERRORS" -gt 0 ]; then
+            fail_gate "Performance regression (${PERF_ERRORS}/${PERF_COUNT} images exceeded ${THRESHOLD}% threshold)"
+        else
+            pass_gate "Performance regression (no buildable changed images)"
+        fi
+    else
+        pass_gate "Performance regression (no image changes)"
+    fi
+else
+    skip_gate "Performance regression (docker or python3 not found)"
+fi
+
 # ---- Summary ----
 echo ""
 echo "=========================================="

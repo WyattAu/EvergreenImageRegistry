@@ -31,4 +31,5 @@ expose = [8080, 9101]
 "evergreen.constraint.scratch" = "true"
 "evergreen.health.type" = "http"
 "evergreen.image.category" = "gitops"
-"evergreen.image.tier" = "critical""evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "critical"
+"evergreen.metrics.native" = "ztunnel"

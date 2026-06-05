@@ -6,7 +6,6 @@ ARG SHIM_VERSION=v0.3.0
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-COPY --from=shim /shim /shim
 
 ARG VERSION=1.26.1
 ARG TARGETARCH
@@ -15,7 +14,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/go-gitea/gitea/releases/download/v${VERSION}/gitea-${VERSION}-linux-amd64" -o /tmp/gitea && \
     echo "324ffd2cc85d567ecd821ad3e19de4abe1c7f94a082b382c1453d4ca7bcf2a7b  /tmp/gitea" | sha256sum -c ; \
     chmod +x /tmp/gitea && strip /tmp/gitea && \
-    test -f /tmp/gitea &&FROM scratch
+    test -f /tmp/gitea
+
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /shim
+RUN chmod +x /shim
 COPY --from=downloader /tmp/gitea /usr/local/bin/gitea
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
@@ -30,8 +33,8 @@ LABEL org.opencontainers.image.title="gitea-actions" \
       org.opencontainers.image.source="https://github.com/go-gitea/gitea" \
       evergreen.image.tier="2" \
       evergreen.constraint.nonroot="true" \
-      evergreen.constraint.scratch="true"
-LABEL evergreen.base.image="scratch"
+      evergreen.constraint.wolfi="true"
+LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
 LABEL evergreen.security.cap-drop="ALL"

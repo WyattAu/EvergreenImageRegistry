@@ -2,6 +2,8 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=4.13.1
@@ -13,15 +15,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     strip --strip-all /tmp/zitadel 2>/dev/null&& \
     mv /tmp/zitadel /zitadel && \
     rm -rf /zitadel.tar.gz /checksums.txt /tmp/*binary not available - download failed" >&2"' >> /zitadel && echo 'exit 1' >> /zitadel && chmod +x /zitadel; }
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=downloader /zitadel /zitadel
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/zitadel"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="zitadel" \
       org.opencontainers.image.description="zitadel container image" \
       org.opencontainers.image.version="4.13.1" \

@@ -11,6 +11,8 @@ ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=10.11.8
 RUN mkdir -p /app || true
@@ -19,7 +21,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     mkdir -p /app && \
     tar -xzf /tmp/jellyfin.tar.gz -C /app && rm -f /tmp/jellyfin.tar.gz && \
     chmod +x /app/jellyfin
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 
 RUN apk add --no-cache ca-certificates curl icu-libs krb5-libs libgcc libstdc++ zlib 2>/dev/null && \
     adduser -u 65532 -D jellyfin 2>/dev/null || true
@@ -29,8 +36,10 @@ RUN mkdir -p /config /cache /media /var/log/jellyfin /var/cache/jellyfin && \
 USER 65532:65532
 WORKDIR /config
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8096/ || exit 1
-ENTRYPOINT ["/app/jellyfin"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8096"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 EXPOSE 8096
 
 LABEL org.opencontainers.image.title="jellyfin" \

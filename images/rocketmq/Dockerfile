@@ -1,6 +1,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=5.1.4
 ARG TARGETARCH
@@ -14,7 +16,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     mv /opt/rocketmq-all-${ROCKETMQ_VERSION}-bin-release /opt/rocketmq ; \
     rm -rf /rocketmq.zip /checksums.txt || true ; \
     test -d /opt/rocketmq || { mkdir -p /opt/rocketmq && echo '#!/bin/sh' > /opt/rocketmq/binary not available - download failed" >&2 exit 1.sh && echo 'echo "rocketmq v'${VERSION}' download failed - binary not available - download failed" >&2 exit 1"' >> /opt/rocketmq/binary not available - download failed" >&2 exit 1.sh && echo 'exit 1' >> /opt/rocketmq/binary not available - download failed" >&2 exit 1.sh && chmod +x /opt/rocketmq/binary not available - download failed" >&2 exit 1.sh; }
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 
 RUN apk add --no-cache openjdk-17-jre-base ca-certificates && \
     mkdir -p /opt 2>/dev/null || true
@@ -26,8 +33,10 @@ ENV JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
 ENV ROCKETMQ_HOME="/opt/rocketmq"
 EXPOSE 9876 10911 10909
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9876/ || exit 1
-ENTRYPOINT ["/opt/rocketmq/bin/mqnamesrv"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9876"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="rocketmq" \
       org.opencontainers.image.description="rocketmq container image" \
       org.opencontainers.image.version="5.1.4" \

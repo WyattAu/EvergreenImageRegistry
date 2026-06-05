@@ -2,21 +2,29 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=3.8.3
 ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/cloudreve/Cloudreve/releases/download/3.8.3/cloudreve_3.8.3_linux_${TARGETARCH}.tar.gz -o /tmp/cloudreve.tar.gz && tar -xzf /tmp/cloudreve.tar.gz -C / && rm -f /tmp/cloudreve.tar.gz && chmod +x /cloudreve 2>/dev/nullbinary not available - download failed" >&2"' >> /cloudreve && echo 'exit 1' >> /cloudreve && chmod +x /cloudreve; } && \
     echo "157fe01d54d6fffd0fe3c50383f05df209e8c98d9171ecdc7565fe1647d61f7a  /tmp/cloudreve.tar.gz" | sha256sum -c
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=downloader /cloudreve /cloudreve
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 EXPOSE 5212
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/cloudreve"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:5212"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="cloudreve" \
       org.opencontainers.image.description="cloudreve container image" \
       org.opencontainers.image.version="3.8.3" \

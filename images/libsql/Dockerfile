@@ -10,6 +10,8 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS builder
 ARG VERSION=0.24.32
 ARG TARGETARCH
@@ -18,7 +20,12 @@ RUN apk add --no-cache ca-certificates curl xz && \
     ARCH=$(case ${TARGETARCH} in amd64) echo "x86_64" ;; arm64) echo "aarch64" ;; *) echo "x86_64" ;; esac) && \
     curl --retry 3 --retry-delay 5 -fSL "https://github.com/tursodatabase/libsql/releases/download/libsql-server-v${VERSION}/libsql-server-${ARCH}-unknown-linux-gnu.tar.xz" -o /tmp/libsql-server.tar.xz \
     && echo "71720fc8648c19efef416efebd47145ef59b62e198770533530a858e1336879f  /tmp/libsql-server.tar.xz" | sha256sum -c
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 ARG VERSION=0.24.32
 ARG BUILD_DATE
 RUN apk add --no-cache ca-certificates tzdata libgcc
@@ -33,8 +40,10 @@ USER 65532:65532
 WORKDIR /var/lib/libsql
 EXPOSE 8080
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8080/ || exit 1
-ENTRYPOINT ["/opt/libsql/libsql-server"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="libsql-server" \
       org.opencontainers.image.description="Turso libSQL server - open-source SQLite fork with networking" \
       org.opencontainers.image.version="${VERSION}" \

@@ -2,6 +2,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=0.37.0
 ARG TARGETARCH
@@ -14,7 +16,11 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN mkdir -p /app /var/log/consul-template /var/cache/consul-template 2>/dev/null || true
 
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=downloader /consul-template /consul-template
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -24,8 +30,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8500
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/consul-template"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8500"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="consul-template" \
       org.opencontainers.image.description="Consul Template - template rendering with Consul data" \
       org.opencontainers.image.version="0.37.0" \

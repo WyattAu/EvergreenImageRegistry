@@ -14,9 +14,15 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM ghcr.io/frebib/zfs-exporter:0.0.12 AS upstream
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=upstream /usr/bin/zfs-exporter /zfs-exporter
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=upstream /lib/ld-musl-x86_64.so.1 /lib/ld-musl-x86_64.so.1
@@ -43,8 +49,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 9254
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/zfs-exporter"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9254"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="zfs-exporter" \
       org.opencontainers.image.description="ZFS Exporter - Prometheus exporter for ZFS pool and dataset metrics" \
       org.opencontainers.image.version="0.0.12" \

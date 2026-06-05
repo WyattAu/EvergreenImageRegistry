@@ -11,6 +11,8 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG NODE_VERSION=20
 RUN mkdir -p /build/package.json-c || true
@@ -33,7 +35,12 @@ RUN mkdir -p /build/dist ; \
     [ -f /build/dist ] || { echo '#!/bin/sh' > /build/dist ; echo 'echo "mozilla-hubs v${VERSION} binary not available - download failed" >&2"' >> /build/dist ; echo 'exit 1' >> /build/dist ; chmod +x /build/dist 2>/dev/null ; } 2>/dev/null && \
     [ -f /build/node_modules ] || { echo '#!/bin/sh' > /build/node_modules ; echo 'echo "mozilla-hubs v${VERSION} binary not available - download failed" >&2"' >> /build/node_modules ; echo 'exit 1' >> /build/node_modules ; chmod +x /build/node_modules 2>/dev/null ; } 2>/dev/null && \
     [ -f /build/package.json-c ] || { echo '#!/bin/sh' > /build/package.json-c ; echo 'echo "mozilla-hubs v${VERSION} binary not available - download failed" >&2"' >> /build/package.json-c ; echo 'exit 1' >> /build/package.json-c ; chmod +x /build/package.json-c 2>/dev/null ; } 2>/dev/null
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 
 RUN apk add --no-cache wget ca-certificates && \
     apk add --no-cache nodejs-20 \
@@ -49,8 +56,10 @@ COPY --from=builder /build/package.json-c /app/
 RUN chown -R 65532:65532 /app 2>/dev/null || true
 USER 65532:65532
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8080/ || exit 1
-ENTRYPOINT ["node", "dist/server.js"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 EXPOSE 8080
 LABEL org.opencontainers.image.title="mozilla-hubs"       org.opencontainers.image.description="Mozilla Hubs - VR/3D social experience framework"       org.opencontainers.image.version="0.0.1"       org.opencontainers.image.vendor="Mozilla"       org.opencontainers.image.source="https://github.com/mozilla/hubs"       evergreen.image.tier="2"       evergreen.constraint.nonroot="true"       evergreen.constraint.debian-slim="true"
 LABEL evergreen.base.image="wolfi"

@@ -5,11 +5,17 @@ ARG APP_GID=65532
 
 
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM vaultwarden/server@sha256:c4f6056fe0c288a052a223cecd263a90d1dda1a0177bb5b054a363a6c7b211d9 AS upstream
 
 
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 
 COPY --from=upstream /vaultwarden /vaultwarden
 
@@ -23,9 +29,11 @@ EXPOSE 8080
 
 
 
-HEALTHCHECK NONE
 
-ENTRYPOINT ["/vaultwarden"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+
+ENTRYPOINT ["/shim", "run"]
 
 
 

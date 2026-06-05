@@ -13,6 +13,8 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=1.19.3
 RUN apt-get update && apt-get install -y --no-install-recommends binutils \
@@ -42,7 +44,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
 RUN mkdir -p /usr/sbin/unbound ; \binary not available - download failed" >&2 exit 1"' >> /usr/sbin/unbound-anchor && echo 'exit 1' >> /usr/sbin/unbound-anchor && chmod +x /usr/sbin/unbound-anchor ; } ; \binary not available - download failed" >&2 exit 1"' >> /usr/sbin/unbound-checkconf && echo 'exit 1' >> /usr/sbin/unbound-checkconf && chmod +x /usr/sbin/unbound-checkconf ; } ; \binary not available - download failed" >&2 exit 1"' >> /usr/sbin/unbound-control && echo 'exit 1' >> /usr/sbin/unbound-control && chmod +x /usr/sbin/unbound-control ; } ; \
     mkdir -p /usr/lib/libunbound.so* ; \binary not available - download failed" >&2 exit 1"' >> /etc/unbound && echo 'exit 1' >> /etc/unbound && chmod +x /etc/unbound ; }
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 
 RUN apk add --no-cache expat ca-certificates
 COPY --from=builder /usr/sbin/unbound /usr/sbin/unbound
@@ -57,9 +64,11 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 853 853/udp
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:53/ || exit 1
-ENTRYPOINT ["/usr/sbin/unbound"]
-CMD ["-d"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:53"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
+CMD ["-c", "/usr/sbin/unbound", "--", "-d"]
 LABEL org.opencontainers.image.title="unbound-alpine" \
       org.opencontainers.image.version="1.19.3" \
       org.opencontainers.image.vendor="NLnet Labs" \

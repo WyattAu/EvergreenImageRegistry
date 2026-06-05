@@ -6,9 +6,16 @@
 ARG VERSION=8.4.1
 ARG TARGETARCH
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM mysql:${VERSION} AS upstream
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 ENV HEALTH_CMD="mysqladmin ping -h 127.0.0.1 --silent" \
     READY_CMD="mysqladmin ping -h 127.0.0.1 --silent" \
     STARTUP_CMD="mysqladmin ping -h 127.0.0.1 --silent" \
@@ -31,9 +38,11 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 3306
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 CMD mysqladmin ping -h localhost --silent
-ENTRYPOINT ["mysqld"]
-CMD ["--user=mysql", "--datadir=/var/lib/mysql"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3306"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
+CMD ["-c", "mysqld", "--", "--user=mysql", "--datadir=/var/lib/mysql"]
 LABEL org.opencontainers.image.title="mysql" \
       org.opencontainers.image.description="MySQL - open source relational database management system" \
       org.opencontainers.image.version="8.4.1" \

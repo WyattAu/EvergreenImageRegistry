@@ -6,9 +6,16 @@
 ARG VERSION=6.2.16
 ARG TARGETARCH
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM redis:${VERSION} AS upstream
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 ENV HEALTH_CMD="redis-cli ping" \
     READY_CMD="redis-cli ping" \
     STARTUP_CMD="redis-cli ping" \
@@ -27,9 +34,11 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 6379
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD redis-cli ping
-ENTRYPOINT ["redis-server"]
-CMD ["--bind", "0.0.0.0", "--protected-mode", "no"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
+CMD ["-c", "redis-server", "--", "--bind", "0.0.0.0", "--protected-mode", "no"]
 LABEL org.opencontainers.image.title="redis-6" \
       org.opencontainers.image.description="Redis 6 - in-memory data structure store and cache" \
       org.opencontainers.image.version="6.2.16" \

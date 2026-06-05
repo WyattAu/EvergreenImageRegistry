@@ -12,6 +12,8 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=8.12.2
 RUN mkdir -p /opt/elasticsearch-${VERSION} || true
@@ -28,7 +30,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     mkdir -p /app /var/log/elasticsearch /var/cache/elasticsearch /var/lib/elasticsearch  && \
     mkdir -p /opt ; \
 test -d /opt/elasticsearch-${VERSION} || { mkdir -p /opt/elasticsearch-${VERSION}/bin && echo '#!/bin/sh' > /opt/elasticsearch-${VERSION}/bin/elasticsearch && echo 'echo "elasticsearch-8 v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/elasticsearch-${VERSION}/bin/elasticsearch && echo 'exit 1' >> /opt/elasticsearch-${VERSION}/bin/elasticsearch && chmod +x /opt/elasticsearch-${VERSION}/bin/elasticsearch ; } 2>/dev/null
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 ARG VERSION=8.12.2
 
 RUN apk add --no-cache wget ca-certificates
@@ -47,8 +54,10 @@ ENV ES_PATH_CONF="/app" \
     discovery.type="single-node"
 EXPOSE 9200 9300
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9200/_cluster/health
-ENTRYPOINT ["/opt/elasticsearch/bin/elasticsearch"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9200"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="elasticsearch-8" \
       org.opencontainers.image.version="8.12.2" \
       org.opencontainers.image.description="Elasticsearch 8 - Distributed Search and Analytics Engine" \

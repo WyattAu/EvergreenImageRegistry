@@ -9,7 +9,13 @@ ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
+COPY --from=shim /shim /shim
+
 ARG VERSION=1.98.0
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -33,8 +39,10 @@ WORKDIR /data
 VOLUME /data
 EXPOSE 8008
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:8008/ || exit 1
-ENTRYPOINT ["python3", "-m", "synapse.app.media_repository"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8008"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="synapse-media" \
       org.opencontainers.image.description="Synapse Media Worker - dedicated media repository for Synapse" \
       org.opencontainers.image.version="1.98.0" \

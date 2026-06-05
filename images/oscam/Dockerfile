@@ -3,6 +3,8 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc g++ make libpcsclite-dev libusb-dev openssl-dev && \
@@ -24,7 +26,11 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN mkdir -p /app /var/log/oscam /var/cache/oscam 2>/dev/null || true
 
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=builder /oscam /oscam
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=dirs /app /app
@@ -34,8 +40,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8888
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/oscam"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8888"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="oscam" \
       org.opencontainers.image.description="oscam container image" \
       org.opencontainers.image.version="${VERSION}" \

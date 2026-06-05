@@ -11,6 +11,8 @@ ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM golang:${GO_VERSION}-bookworm AS builder
 ENV GOTOOLCHAIN=auto
 ARG TARGETARCH
@@ -30,7 +32,11 @@ RUN mkdir -p /etc/nginx && \ RUN mkdir -p /app && \
         -o /app/nginx-ingress-controller ./cmd/nginx 2>/dev/null || true && \
     test -s /app/nginx-ingress-controller && strip --strip-all /app/nginx-ingress-controller 2>/dev/null && \' binary not available - download failed" >&2 exit 1"' >> /app/nginx-ingress-controller && echo 'exit 1' >> /app/nginx-ingress-controller && chmod +x /app/nginx-ingress-controller; } 2>/dev/null && \
     mkdir -p /app /var/log/nginx-ingress /etc/nginx
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=builder /app/nginx-ingress-controller /nginx-ingress-controller
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -40,8 +46,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 80 443 8443
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/nginx-ingress-controller"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="nginx-ingress-controller" \
       org.opencontainers.image.description="nginx-ingress-controller container image" \
       org.opencontainers.image.version="1.10.1" \

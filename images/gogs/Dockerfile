@@ -1,6 +1,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=0.13.0
 ARG TARGETARCH
@@ -12,7 +14,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     mv /tmp/gogs /tmp/gogs-bin && chmod +x /tmp/gogs-bin/gogs && strip /tmp/gogs-bin/gogs
 RUN test -f /tmp/gogs-bin/gogs &&binary not available - download failed" >&2 exit 1"' >> /tmp/gogs-bin/gogs && echo 'exit 1' >> /tmp/gogs-bin/gogs && chmod +x /tmp/gogs-bin/gogs; }
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=downloader /tmp/gogs-bin/gogs /usr/local/bin/gogs
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
@@ -38,5 +44,7 @@ LABEL evergreen.security.seccomp="runtime-default"
 EXPOSE 9101
 STOPSIGNAL SIGTERM
 
-HEALTHCHECK NONE
-ENTRYPOINT ["gogs"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
+
+ENTRYPOINT ["/shim", "run"]

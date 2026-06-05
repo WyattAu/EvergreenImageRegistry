@@ -3,6 +3,8 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=v0.19.0
@@ -14,7 +16,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     test -s /mysqld_exporter-${VERSION}.linux-${TARGETARCH}/mysqld_exporter || { mkdir -p /mysqld_exporter-${VERSION}.linux-${TARGETARCH} && echo '#!/bin/sh' > /mysqld_exporter-${VERSION}.linux-${TARGETARCH}/mysqld_exporter && echo 'echo "mysqld-exporter '${VERSION}' binary not available - download failed" >&2; exit 1' >> /mysqld_exporter-${VERSION}.linux-${TARGETARCH}/mysqld_exporter && chmod +x /mysqld_exporter-${VERSION}.linux-${TARGETARCH}/mysqld_exporter; } 2>/dev/null && \
     mkdir -p /app /var/log/mysqld_exporter /var/cache/mysqld_exporter 2>/dev/null || true
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 ARG VERSION=v0.19.0
 ARG TARGETARCH
 COPY --from=downloader /mysqld_exporter-${VERSION}.linux-${TARGETARCH}/mysqld_exporter /mysqld_exporter
@@ -26,8 +32,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 9104
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/mysqld_exporter"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9104"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="mysqld-exporter" \
       org.opencontainers.image.description="MySQL Server Exporter - Prometheus exporter for MySQL server metrics" \
       org.opencontainers.image.version="0.16.0" \

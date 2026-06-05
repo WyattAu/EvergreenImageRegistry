@@ -12,6 +12,8 @@ ARG APP_GID=65532
 
 # hadolint ignore=DL3023
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=3.12.2
 ARG TARGETARCH
@@ -25,7 +27,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     mkdir -p /opt ; \
     mkdir -p /opt/arangodb-extracted/usr/sbinbinary not available - download failed" >&2 exit 1"' >> /opt/arangodb-extracted/usr/sbin/arangod && echo 'exit 1' >> /opt/arangodb-extracted/usr/sbin/arangod && chmod +x /opt/arangodb-extracted/usr/sbin/arangod ; } && \
     [ -f /opt/arangodb-extracted ] || { echo '#!/bin/sh' > /opt/arangodb-extracted ; echo 'echo "arango v${VERSION} binary not available - download failed" >&2"' >> /opt/arangodb-extracted ; echo 'exit 1' >> /opt/arangodb-extracted ; chmod +x /opt/arangodb-extracted 2>/dev/null ; } 2>/dev/null
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 
 ARG VERSION=3.12.2
 RUN apk add --no-cache libstdc++ ca-certificates && \
@@ -39,8 +46,10 @@ USER 65532:65532
 WORKDIR /var/lib/arangodb
 EXPOSE 8529
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8529/ || exit 1
-ENTRYPOINT ["/opt/arangodb/usr/sbin/arangod", "--server.endpoint", "tcp://0.0.0.0:8529", "--database.directory", "/var/lib/arangodb", "--foxx.queues", "false", "--log.output", "-"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8529"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="arango" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Evergreen hardened ArangoDB - multi-model NoSQL database (arango alias)" \

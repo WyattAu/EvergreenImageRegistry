@@ -1,6 +1,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=2.2.0-develop.115
 ARG TARGETARCH
@@ -12,7 +14,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     if [ -f /tmp/Whisparr.tar.gz ]; then tar -xzf /tmp/Whisparr.tar.gz -C /app && rm -f /tmp/Whisparr.tar.gz ; fi ; \
     chmod +x /app/Whisparr 2>/dev/null ; \binary not available - download failed" >&2 exit 1"' >> /app/Whisparr && echo 'exit 1' >> /app/Whisparr && chmod +x /app/Whisparr; }
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 
 RUN apk add --no-cache ca-certificates curl 2>/dev/null && \
     adduser -u 65532 -D app 2>/dev/null || true
@@ -23,13 +30,15 @@ WORKDIR /app
 EXPOSE 6969
 EXPOSE 9101
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:6969/ || exit 1
 
 LABEL org.opencontainers.image.description="whisparr container image" \
       org.opencontainers.image.source="https://github.com/Whisparr/Whisparr" \
             org.opencontainers.image.version="2.2.0-develop.115"
 
-ENTRYPOINT ["/app/Whisparr"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6969"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 
 STOPSIGNAL SIGTERM
 LABEL org.opencontainers.image.title="whisparr" \

@@ -16,6 +16,8 @@ ARG APP_GID=65532
 
 
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 
 
@@ -77,7 +79,11 @@ RUN touch /rekor-cli && \ RUN apt-get update && apt-get install -y --no-install-
 
 
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 
 
 
@@ -141,7 +147,6 @@ EXPOSE 3000
 
 
 
-HEALTHCHECK NONE
 
 
 
@@ -149,7 +154,10 @@ HEALTHCHECK NONE
 
 
 
-ENTRYPOINT ["/rekor-server"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
+
+ENTRYPOINT ["/shim", "run"]
 
 
 

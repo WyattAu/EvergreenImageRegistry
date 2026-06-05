@@ -1,6 +1,8 @@
 ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=0.19.0
@@ -18,7 +20,11 @@ ARG TARGETARCH
 RUN mkdir -p /app /var/log/prometheus-mysqld-exporter /var/cache/prometheus-mysqld-exporter /etc/prometheus-mysqld-exporter
 
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 ARG VERSION=0.19.0
 ARG TARGETARCH
 COPY --from=downloader /mysqld_exporter-0.19.0.linux-${TARGETARCH}/mysqld_exporter /mysqld_exporter
@@ -31,8 +37,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 9104
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/mysqld_exporter"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9104"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="Prometheus MySQL Exporter" \
       org.opencontainers.image.version="0.19.0" \
       org.opencontainers.image.vendor="Prometheus" \

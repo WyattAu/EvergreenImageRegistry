@@ -3,6 +3,8 @@ ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM golang@sha256:167053a2bb901972bf2c1611f8f52c44d5fe7e762e5cab213708d82c421614db AS builder
 ENV GOTOOLCHAIN=auto
 ARG TARGETARCH
@@ -20,7 +22,11 @@ RUN mkdir -p /app && \ RUN apt-get update && \
         -o /app/ulogger . 2>/dev/null || true && \
     test -s /app/ulogger && strip --strip-all /app/ulogger 2>/dev/null && \' binary not available - download failed" >&2 exit 1"' >> /app/ulogger && echo 'exit 1' >> /app/ulogger && chmod +x /app/ulogger; } 2>/dev/null && \
     mkdir -p /app /var/log/ulogger /var/cache/ulogger
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=builder /app/ulogger /ulogger
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -30,8 +36,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
 
-HEALTHCHECK NONE
-ENTRYPOINT ["ulogger"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="ulogger" \
       org.opencontainers.image.description="ulogger - log collection tool" \
       org.opencontainers.image.vendor="nicehash" \

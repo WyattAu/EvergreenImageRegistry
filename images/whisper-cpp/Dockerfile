@@ -4,6 +4,8 @@ ARG GITHUB_TOKEN
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG GITHUB_TOKEN
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -18,7 +20,11 @@ RUN cmake -B build -DGGML_CUDA=OFF -DWHISPER_NO_ACCELERATE=ON && \
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS dirs
 RUN mkdir -p /app /var/log/whisper-cpp /var/cache/whisper-cpp 2>/dev/null || true
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=builder /whisper-cli /whisper-cli
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=dirs /app /app
@@ -28,8 +34,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/whisper-cli"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="whisper-cpp" \
       org.opencontainers.image.description="whisper-cpp container image" \
       org.opencontainers.image.version="${VERSION}" \

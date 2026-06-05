@@ -1,7 +1,14 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 ARG NGINX_VERSION=1.27.1
 ARG MODSEC_VERSION=3.0.12
 
@@ -14,9 +21,11 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 80 443
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:80/ || exit 1
-ENTRYPOINT ["nginx"]
-CMD ["-g", "daemon off;"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
+CMD ["-c", "nginx", "--", "-g", "daemon off;"]
 LABEL org.opencontainers.image.title="nginx-modsec" \
       org.opencontainers.image.version="1.27.1" \
       org.opencontainers.image.vendor="NGINX Inc / SpiderLabs" \

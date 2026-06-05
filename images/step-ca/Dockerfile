@@ -2,6 +2,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=0.30.2
 ARG TARGETARCH
@@ -13,15 +15,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     strip --strip-all /tmp/step-ca 2>/dev/null&& \
     mv /tmp/step-ca /step-ca && \
     rm -rf /step-ca.tar.gz /checksums.txt /tmp/*binary not available - download failed" >&2"' >> /step-ca && echo 'exit 1' >> /step-ca && chmod +x /step-ca; }
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=downloader /step-ca /step-ca
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 EXPOSE 9000
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/step-ca"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9000"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="step-ca" \
       org.opencontainers.image.description="Step CA - private certificate authority for automated PKI" \
       org.opencontainers.image.version="0.30.2" \

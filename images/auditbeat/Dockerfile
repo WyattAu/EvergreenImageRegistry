@@ -1,6 +1,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=9.4.0
 ARG TARGETARCH
@@ -13,14 +15,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     rm -f /auditbeat.tar.gz ; \
     rm -rf /opt/auditbeat/kibana /opt/auditbeat/logs ; \
     test -s /opt/auditbeat/auditbeat && { strip /opt/auditbeat/auditbeat 2>/dev/null ; chmod +x /opt/auditbeat/auditbeat ; } || { echo '#!/bin/sh' > /opt/auditbeat/auditbeat && echo 'echo "auditbeat v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/auditbeat/auditbeat && echo 'exit 1' >> /opt/auditbeat/auditbeat && chmod +x /opt/auditbeat/auditbeat; }
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 USER 65532:65532
 COPY --from=downloader /opt/auditbeat /opt/auditbeat
 WORKDIR /opt/auditbeat
 EXPOSE 5066
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/opt/auditbeat/auditbeat"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:5066"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="auditbeat" \
       org.opencontainers.image.description="Evergreen hardened Auditbeat - Elastic audit event shipper" \
       org.opencontainers.image.version="${VERSION}" \

@@ -3,9 +3,16 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM tecnativa/docker-socket-proxy:v0.4.2@sha256:5571c19d8e5c1a58a4edb5781beedb3065d6995985e5ca2f1003c016e266517c AS upstream
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 ARG VERSION=v0.4.2
 
 RUN apk add --no-cache haproxy ca-certificates && \
@@ -23,9 +30,11 @@ WORKDIR /app
 ENV SOCKET_PATH=/var/run/docker.sock
 EXPOSE 2375
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:2375/version || exit 1
-ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["haproxy", "-f", "/tmp/haproxy.cfg"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:2375"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
+CMD ["-c", "docker-entrypoint.sh", "--", "haproxy", "-f", "/tmp/haproxy.cfg"]
 LABEL org.opencontainers.image.title="docker-socket-proxy" \
       org.opencontainers.image.description="Docker Socket Proxy - secure proxy for Docker socket" \
       org.opencontainers.image.version="v0.4.2" \

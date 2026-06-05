@@ -2,6 +2,8 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=0.29.0
@@ -14,7 +16,11 @@ ARG TARGETARCH
 RUN mkdir -p /app /var/log/buildkit /var/cache/buildkit /var/lib/buildkit 2>/dev/null || true
 
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 
 COPY --from=downloader /usr/local/bin/buildkitd /usr/local/bin/buildkitd
 COPY --from=downloader /usr/local/bin/buildctl /usr/local/bin/buildctl
@@ -26,8 +32,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 1234
 
-HEALTHCHECK NONE
-ENTRYPOINT ["buildkitd"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:1234"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="buildkit" \
       org.opencontainers.image.version="0.29.0" \
       org.opencontainers.image.vendor="Moby" \

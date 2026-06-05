@@ -12,6 +12,8 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f70dc8d6a8b6a06824c92471a1a258030836b26b043881358b967bf73de7c5ab AS builder
 ARG TARGETARCH
 ARG VERSION=23.2.3
@@ -22,15 +24,21 @@ RUN apt-get update 2>/dev/null && apt-get install -y --no-install-recommends bin
     strip --strip-all /tmp/cockroach-v${VERSION}.linux-${TARGETARCH}/cockroach 2>/dev/null ; \
     mv /tmp/cockroach-v${VERSION}.linux-${TARGETARCH}/cockroach /usr/local/bin/cockroach 2>/dev/null && \
     rm -rf /tmp/cockroach.tgz /tmp/cockroach-v${VERSION}.linux-${TARGETARCH} 2>/dev/null || true && \binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/cockroach && echo 'exit 1' >> /usr/local/bin/cockroach && chmod +x /usr/local/bin/cockroach; }
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 ARG VERSION=23.2.3
 COPY --from=builder /usr/local/bin/cockroach /usr/local/bin/cockroach
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 EXPOSE 26257
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/cockroach", "init"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:26257"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="crdb-init" \
       org.opencontainers.image.description="Evergreen hardened CockroachDB init entrypoint" \
       org.opencontainers.image.version="${VERSION}" \

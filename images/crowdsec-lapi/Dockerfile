@@ -1,6 +1,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 
 ARG VERSION=1.7.7
@@ -15,7 +17,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     strip --strip-all /crowdsec 2>/dev/null&& \
     rm -rf /crowdsec-release.tgz /tmp/crowdsec-v${VERSION}
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 
 COPY --from=downloader /crowdsec /crowdsec
 
@@ -29,11 +35,13 @@ EXPOSE 8080 6060
 
 
 
-HEALTHCHECK NONE
 
-ENTRYPOINT ["/crowdsec"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-CMD ["-c /app/config.yaml -lapi"]
+ENTRYPOINT ["/shim", "run"]
+
+CMD ["-c", "/crowdsec", "--", "-c /app/config.yaml -lapi"]
 
 LABEL org.opencontainers.image.title="crowdsec-lapi"       org.opencontainers.image.version="1.7.7"       org.opencontainers.image.vendor="CrowdSecurity"       org.opencontainers.image.source="https://github.com/crowdsecurity/crowdsec"       evergreen.image.tier="1"       evergreen.image.category="security"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms" \
 org.opencontainers.image.description="crowdsec-lapi container image" \

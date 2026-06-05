@@ -1,6 +1,8 @@
 ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 ARG VERSION=1.26.1
@@ -10,15 +12,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     echo "92090a3f74bfc537a30d598ba45180c5b7da3064b4d17e3cd95f388da85cf4d3  /gitea.xz" | sha256sum -c ; \
     mkdir -p /opt/gitserver && if [ -f /gitea.xz ]; then tar -xJf /gitea.xz -C /opt/gitserver --strip-components=1 2>/dev/null ; rm -f /gitea.xz 2>/dev/null ; fi ; \/gitea-${VERSION}-linux-${TARGETARCH}" -o /opt/gitserver/gitea 2>/dev/null ; chmod +x /opt/gitserver/gitea 2>/dev/null ; } && \
         echo "324ffd2cc85d567ecd821ad3e19de4abe1c7f94a082b382c1453d4ca7bcf2a7b  /opt/gitserver/gitea" | sha256sum -c
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=builder /opt/gitserver /opt/gitserver
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 USER 65532:65532
 WORKDIR /app
 EXPOSE 80 22
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/opt/gitserver/gitea"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="gitserver" \
       org.opencontainers.image.version="1.26.1" \
       org.opencontainers.image.vendor="Gitea" \

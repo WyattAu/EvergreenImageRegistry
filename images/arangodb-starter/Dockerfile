@@ -3,9 +3,15 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM arangodb/arangodb:${VERSION} AS upstream
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=upstream /usr/sbin/arangod /arangod
 COPY --from=upstream /usr/bin/arangosh /arangosh
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -13,8 +19,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8529
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/arangod", "--serverstarter"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8529"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="arangodb-starter" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="ArangoDB" \

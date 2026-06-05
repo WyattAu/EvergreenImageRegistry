@@ -11,6 +11,8 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS jre-builder
 RUN mkdir -p /opt/jre || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && \
@@ -22,7 +24,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     rm -f /tmp/jre.tar.gz
 
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 ARG VERSION=3.4.2
 
 RUN apk add --no-cache ca-certificates tzdata curl
@@ -39,9 +46,11 @@ USER 65532:65532
 WORKDIR /opt/zipkin
 EXPOSE 9411
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9411/ || exit 1
-ENTRYPOINT ["java"]
-CMD ["-jar", "/opt/zipkin/zipkin.jar"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9411"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
+CMD ["-c", "java", "--", "-jar", "/opt/zipkin/zipkin.jar"]
 LABEL org.opencontainers.image.title="zipkin" \
       org.opencontainers.image.description="Zipkin - distributed tracing system" \
       org.opencontainers.image.version="${VERSION}" \

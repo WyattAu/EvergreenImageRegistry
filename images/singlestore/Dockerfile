@@ -4,6 +4,8 @@ ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=8.5.0
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -12,7 +14,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     pip3 install --break-system-packages --no-cache-dir \
         pymysql sqlalchemy 2>/dev/null || true && \
     mkdir -p /app-src 2>/dev/null || true
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 ARG VERSION=8.5.0
 RUN apk add --no-cache ca-certificates python3 py3-pip mariadb-client && \
     pip3 install --break-system-packages --no-cache-dir \
@@ -26,8 +33,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 3306 8080
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:3306/ || exit 1
-ENTRYPOINT ["/app/singlestore"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3306"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="singlestore" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="SingleStore local development compatibility - commercial distributed SQL database" \

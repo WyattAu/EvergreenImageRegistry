@@ -2,6 +2,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=1.58.0
 ARG TARGETARCH
@@ -16,7 +18,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     mv /tmp/tailscale_${VERSION}_linux_${TARGETARCH}/tailscaled /tailscaled && \
     mv /tmp/tailscale_${VERSION}_linux_${TARGETARCH}/tailscale /tailscale && \
     rm -rf /tailscale.tgz /checksums.txt /tmp/*binary not available - download failed" >&2"' >> /tailscaled && echo 'exit 1' >> /tailscaled && chmod +x /tailscaled; } &&binary not available - download failed" >&2"' >> /tailscale && echo 'exit 1' >> /tailscale && chmod +x /tailscale; }
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=downloader /tailscaled /tailscaled
 COPY --from=downloader /tailscale /tailscale
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -24,8 +30,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 41641/udp
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/tailscaled"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:41641"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="tailscale" \
       org.opencontainers.image.description="tailscale container image" \
       org.opencontainers.image.version="1.58.0" \

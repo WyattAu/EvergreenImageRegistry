@@ -13,13 +13,20 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils rsyslog && rm -rf /var/lib/apt/lists/* && \
     strip /usr/sbin/rsyslogd&& \
     find /usr/lib/rsyslog -type f -name "*.so" -exec strip --strip-unneeded {} \ && \
     mkdir -p /usr/sbin/rsyslogd 2>/dev/null
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 
 RUN addgroup -S -g 65532 rsyslog 2>/dev/null || true && \
     adduser -u 65532 -G rsyslog -D -s /bin/false rsyslog || true && \
@@ -48,9 +55,11 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 514 514/udp
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:514/ || exit 1
-ENTRYPOINT ["/usr/sbin/rsyslogd"]
-CMD ["-n", "-f", "/app/conf/rsyslog.conf"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:514"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
+CMD ["-c", "/usr/sbin/rsyslogd", "--", "-n", "-f", "/app/conf/rsyslog.conf"]
 LABEL org.opencontainers.image.title="rsyslog" \
       org.opencontainers.image.version="8.2312.0" \
       org.opencontainers.image.vendor="rsyslog" \

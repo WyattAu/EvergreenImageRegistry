@@ -12,6 +12,8 @@ ARG APP_GID=65532
 
 # hadolint ignore=DL3023
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=2.8.13
 WORKDIR /tmp
@@ -28,7 +30,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mkdir -p /var/lib/redis /var/log/redis /var/cache/redis 2>/dev/null || true && \
     mkdir -p /usr/bin 2>/dev/null || true ; touch /usr/bin/redis-server 2>/dev/null || true && \
     mkdir -p /usr/lib 2>/dev/null || true ; touch /usr/lib/redis 2>/dev/null || true
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 ARG VERSION=2.8.13
 
 COPY --from=builder /tmp/redisearch-src/bin/redisearch.so /opt/redis/modules/redisearch.so
@@ -38,8 +44,10 @@ USER 65532:65532
 WORKDIR /var/lib/redis
 EXPOSE 6379
 
-HEALTHCHECK NONE
-ENTRYPOINT ["redis-server", "--loadmodule", "/opt/redis/modules/redisearch.so"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="redisearch" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Evergreen hardened RediSearch - full-text search module for Redis" \

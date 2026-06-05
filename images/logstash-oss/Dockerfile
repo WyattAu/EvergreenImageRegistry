@@ -13,6 +13,8 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=8.12.2
 ARG TARGETARCH
@@ -25,7 +27,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     tar -xzf logstash-oss.tar.gz ; \
     rm -f logstash-oss.tar.gz && \
     mv logstash-oss-${VERSION}-linux-${ARCH} logstash-extracted || true
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 
 ARG VERSION=8.12.2
 ARG TARGETARCH
@@ -39,8 +46,10 @@ ENV LS_JAVA_OPTS="-Xms512m -Xmx512m"
 ENV PATH="/opt/logstash/bin:${PATH}"
 EXPOSE 5044 9600
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:5044/ || exit 1
-ENTRYPOINT ["/opt/logstash/bin/logstash"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5044"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="logstash-oss" \
       org.opencontainers.image.description="Evergreen hardened Logstash OSS - open-source data processing pipeline" \
       org.opencontainers.image.version="${VERSION}" \

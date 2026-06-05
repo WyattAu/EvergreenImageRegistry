@@ -2,6 +2,8 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=v1.143.0
@@ -13,7 +15,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.142.0/victoria-metrics-linux-${TARGETARCH}-v1.142.0-cluster.tar.gz -o /victoria-metrics && chmod +x /victoria-metricsbinary not available - download failed" >&2"' >> /victoria-metrics && echo 'exit 1' >> /victoria-metrics && chmod +x /victoria-metrics; } && \
     mkdir -p /app /var/log/victoria-metrics /var/cache/victoria-metrics 2>/dev/null || true
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=downloader /victoria-metrics /victoria-metrics
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=downloader /app /app
@@ -23,8 +29,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8428
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/victoria-metrics"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8428"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="victoriametrics" \
       org.opencontainers.image.description="VictoriaMetrics - fast, cost-effective time series database" \
       org.opencontainers.image.version="v1.143.0" \

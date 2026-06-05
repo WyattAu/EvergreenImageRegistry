@@ -2,6 +2,8 @@ ARG TARGETARCH
 
 ARG VERSION=15.0.2
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS downloader
 ARG TARGETARCH
 ARG VERSION
@@ -11,7 +13,12 @@ RUN apk add --no-cache wget ca-certificates git && \
     chmod +x /app/forgejo && \
     test -s /app/forgejo
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 ARG VERSION
 RUN apk add --no-cache bash git openssh-keygen ca-certificates && \
     addgroup -g 1000 git && \
@@ -24,11 +31,13 @@ ENV GITEA_WORK_DIR=/data
 COPY --from=downloader /app/forgejo /usr/local/bin/forgejo
 EXPOSE 3000 22
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget -qO- http://localhost:3000/ || exit 1
+CMD ["-c", "/usr/local/bin/forgejo", "--", "wget -qO- http://localhost:3000/ || exit 1"]
 
 USER 1000:1000
-ENTRYPOINT ["/usr/local/bin/forgejo"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="forgejo" \
       org.opencontainers.image.description="Forgejo - community-owned lightweight software forge" \
       org.opencontainers.image.version="${VERSION}" \

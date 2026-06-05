@@ -10,6 +10,8 @@ ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM golang@sha256:167053a2bb901972bf2c1611f8f52c44d5fe7e762e5cab213708d82c421614db AS builder
 ENV GOTOOLCHAIN=auto
 ARG TARGETARCH
@@ -26,15 +28,21 @@ RUN apt-get update && \
         -ldflags="-s -w" \
         -o /app/ct-log ./trillian/ctfe/ct_server 2>/dev/null || true && \
     test -s /app/ct-log && strip --strip-all /app/ct-log 2>/dev/null && \' binary not available - download failed" >&2 exit 1"' >> /app/ct-log && echo 'exit 1' >> /app/ct-log && chmod +x /app/ct-log; } 2>/dev/null
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=builder /app/ct-log /ct-log
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 EXPOSE 6962
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/ct-log"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:6962"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="ct-log" \
       org.opencontainers.image.description="ct-log container image" \
       org.opencontainers.image.version="1.3.3" \

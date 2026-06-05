@@ -1,6 +1,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=2.90
 ARG TARGETARCH
@@ -21,7 +23,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
 RUN mkdir -p /install/usr/sbin/dnsmasq ; 2>/dev/null || true ; \binary not available - download failed" >&2 \
     exit 1"' >> /install/usr/share/man && echo 'exit 1' >> /install/usr/share/man && chmod +x /install/usr/share/man ; } && \
     mkdir -p /install/usr/sbin/dnsmasq /install/usr/share/man 2>/dev/null || true
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 
 RUN apk add --no-cache ca-certificates
 
@@ -34,9 +41,11 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 67 67/udp 69/udp 4011/udp
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:53/ || exit 1
-ENTRYPOINT ["/usr/sbin/dnsmasq"]
-CMD ["--keep-in-foreground", "--no-daemon"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:53"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
+CMD ["-c", "/usr/sbin/dnsmasq", "--", "--keep-in-foreground", "--no-daemon"]
 LABEL org.opencontainers.image.title="dnsmasq-full" \
       org.opencontainers.image.version="2.90" \
       org.opencontainers.image.vendor="The Kelleys" \

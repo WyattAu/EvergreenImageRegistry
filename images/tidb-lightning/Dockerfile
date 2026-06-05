@@ -3,13 +3,19 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM pingcap/tidb:${VERSION} AS upstream
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/tidb-lightning /var/cache/tidb-lightning 2>/dev/null || true
 
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=upstream /tidb-lightning /usr/local/bin/tidb-lightning
 COPY --from=builder /app /app
@@ -33,5 +39,7 @@ USER 65532:65532
 
 STOPSIGNAL SIGTERM
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/tidb-lightning"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8289"]
+
+ENTRYPOINT ["/shim", "run"]

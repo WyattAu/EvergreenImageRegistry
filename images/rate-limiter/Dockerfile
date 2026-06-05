@@ -12,6 +12,8 @@ ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM golang:${GO_VERSION}-bookworm AS builder
 ENV GOTOOLCHAIN=auto
 ARG TARGETARCH
@@ -31,15 +33,21 @@ RUN apt-get update && \
         -o /app/ratelimiter ./cmd/ratelimiter/... 2>/dev/null || true && \
     test -s /app/ratelimiter && strip --strip-all /app/ratelimiter 2>/dev/null && \' binary not available - download failed" >&2 \
     exit 1"' >> /app/ratelimiter && echo 'exit 1' >> /app/ratelimiter && chmod +x /app/ratelimiter; } 2>/dev/null
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=builder /app/ratelimiter /ratelimiter
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 EXPOSE 9090
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/ratelimiter"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9090"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="rate-limiter" \
       org.opencontainers.image.description="rate-limiter container image" \
       org.opencontainers.image.version="latest" \

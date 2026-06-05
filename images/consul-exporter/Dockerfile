@@ -2,6 +2,8 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=0.4.0
@@ -15,7 +17,11 @@ ARG TARGETARCH
 RUN mkdir -p /app /var/log/consul_exporter /var/cache/consul_exporter 2>/dev/null || true
 
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=downloader /consul_exporter /consul_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -25,8 +31,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 9107
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/consul_exporter"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9107"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="consul-exporter" \
       org.opencontainers.image.description="Consul Exporter - Prometheus exporter for Consul" \
       org.opencontainers.image.version="0.4.0" \

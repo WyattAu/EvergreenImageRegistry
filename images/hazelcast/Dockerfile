@@ -12,6 +12,8 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f70dc8d6a8b6a06824c92471a1a258030836b26b043881358b967bf73de7c5ab AS builder
 ARG VERSION=5.3.6
 RUN mkdir -p /opt/hazelcast || true
@@ -21,7 +23,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     && mkdir -p /opt/hazelcast \
     && tar -xzf /tmp/hazelcast.tgz -C /opt/hazelcast --strip-components=1 \
     && rm -rf /tmp/hazelcast.tgz
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 ARG VERSION=5.3.6
 
 RUN apk add --no-cache ca-certificates && \
@@ -34,8 +41,10 @@ WORKDIR /opt/hazelcast
 EXPOSE 5701 5702 5703 8080
 ENV JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:5701/ || exit 1
-ENTRYPOINT ["/opt/hazelcast/bin/hazelcast"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5701"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="hazelcast" \
       org.opencontainers.image.description="Evergreen hardened Hazelcast - distributed in-memory computing platform" \
       org.opencontainers.image.version="${VERSION}" \

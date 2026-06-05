@@ -1,6 +1,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=9.4.0
 ARG TARGETARCH
@@ -18,7 +20,11 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN mkdir -p /var/log/packetbeat /var/lib/packetbeat /var/cache/packetbeat
 
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=downloader /opt/packetbeat /opt/packetbeat
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /var/log/packetbeat /var/log/packetbeat
@@ -28,8 +34,10 @@ USER 65532:65532
 WORKDIR /opt/packetbeat
 EXPOSE 5066
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/opt/packetbeat/packetbeat"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:5066"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="packetbeat" \
       org.opencontainers.image.description="Evergreen hardened Packetbeat - Elastic network packet analyzer" \
       org.opencontainers.image.version="${VERSION}" \

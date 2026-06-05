@@ -4,6 +4,8 @@ ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /opt/venv || true
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -12,7 +14,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir firefly-iii==1.6.0 ; mkdir -p /usr/local/binbinary not available - download failed" >&2 exit 1"' >> /usr/local/bin/firefly-iii-importer && echo 'exit 1' >> /usr/local/bin/firefly-iii-importer && chmod +x /usr/local/bin/firefly-iii-importer ; }
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
+COPY --from=shim /shim /shim
+
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 
 RUN dnf install -y python3 ca-certificates curl
@@ -24,8 +30,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8080/ || exit 1
-ENTRYPOINT ["python3", "-m", "firefly_iii"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="firefly-iii-importer" \
       org.opencontainers.image.description="firefly-iii-importer container image" \
       org.opencontainers.image.version="1.6.0" \

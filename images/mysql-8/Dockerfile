@@ -12,6 +12,8 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /var/run/mysqld || true
 RUN mkdir -p /var/lib/mysql && \
@@ -25,7 +27,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mkdir -p /var/lib/mysql-src /var/run/mysqld /app 2>/dev/null || true && \
     test -d /var/lib/mysql || mkdir -p /var/lib/mysql ; \
     test -d /var/run/mysqld || mkdir -p /var/run/mysqld ; true
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 # package-manager-verified: integrity verified by upstream
 RUN apk add --no-cache wget ca-certificates psmisc && \
     mkdir -p /var/lib /var/run 2>/dev/null || true
@@ -41,8 +48,10 @@ ENV MYSQL_DATA_DIR="/var/lib/mysql" \
     MYSQL_UNIX_PORT="/var/run/mysqld/mysqld.sock"
 EXPOSE 3306 33060
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD mysqladmin ping -h localhost --silent
-ENTRYPOINT ["mysqld"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3306"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="mysql-8" \
       org.opencontainers.image.version="8.0.39" \
       org.opencontainers.image.description="MySQL 8.0 Database Server" \

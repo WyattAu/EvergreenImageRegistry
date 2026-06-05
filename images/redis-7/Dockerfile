@@ -12,13 +12,20 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN useradd -m -u 65532 -s /usr/bin/false redis 2>/dev/null || true && \
     mkdir -p /app /var/log/redis /var/cache/redis 2>/dev/null || true
 FROM scratch AS entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 
 RUN apk add --no-cache ca-certificates
 # NOTE: redis server not available in wolfi; uses pre-compiled binary
@@ -33,9 +40,11 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 6379
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD redis-cli ping
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
-CMD ["redis-server"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
+CMD ["-c", "/usr/local/bin/docker-entrypoint.sh", "--", "redis-server"]
 LABEL org.opencontainers.image.title="redis-7" \
       org.opencontainers.image.description="redis-7 container image" \
       org.opencontainers.image.version="7.4.1" \

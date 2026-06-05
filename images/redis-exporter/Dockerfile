@@ -2,6 +2,8 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=v1.83.0
@@ -13,7 +15,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/oliver006/redis_exporter/releases/download/v1.68.0/redis_exporter-v1.68.0.linux-${TARGETARCH}.tar.gz -o /redis_exporter && chmod +x /redis_exporterbinary not available - download failed" >&2"' >> /redis_exporter && echo 'exit 1' >> /redis_exporter && chmod +x /redis_exporter; } && \
     mkdir -p /app /var/log/redis_exporter /var/cache/redis_exporter 2>/dev/null || true
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=downloader /redis_exporter /redis_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=downloader /app /app
@@ -23,8 +29,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 9121
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/redis_exporter"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9121"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="redis-exporter" \
       org.opencontainers.image.description="Redis Exporter - Prometheus exporter for Redis" \
       org.opencontainers.image.version="v1.83.0" \

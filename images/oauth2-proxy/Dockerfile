@@ -2,6 +2,8 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:0104b334637a5f19aa9c983a91b54c89887c0984081f2068983107a6f6c21eeb AS downloader
 ARG TARGETARCH
 ARG VERSION=v7.15.2
@@ -11,15 +13,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     mv /tmp/extract/oauth2-proxy-*/oauth2-proxy /tmp/oauth2-proxy && chmod +x /tmp/oauth2-proxy 2>/dev/null ; \binary not available - download failed" >&2"' >> /tmp/oauth2-proxy && echo 'exit 1' >> /tmp/oauth2-proxy && chmod +x /tmp/oauth2-proxy; }
 
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=downloader /tmp/oauth2-proxy /oauth2-proxy
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 EXPOSE 80 443
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/oauth2-proxy"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="oauth2-proxy" \
       org.opencontainers.image.version="v7.15.2" \
       org.opencontainers.image.vendor="OAuth2 Proxy" \

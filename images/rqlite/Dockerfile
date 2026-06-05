@@ -12,6 +12,8 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f70dc8d6a8b6a06824c92471a1a258030836b26b043881358b967bf73de7c5ab AS builder
 ARG TARGETARCH
 ARG VERSION=8.10.0
@@ -23,7 +25,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     strip --strip-all /tmp/rqlite-v${VERSION}-linux-${TARGETARCH}/rqlite 2>/dev/null && strip --strip-all /tmp/rqlite-v${VERSION}-linux-${TARGETARCH}/rqlited 2>/dev/null && \
     mv /tmp/rqlite-v${VERSION}-linux-${TARGETARCH}/rqlite /usr/local/bin/rqlite && mv /tmp/rqlite-v${VERSION}-linux-${TARGETARCH}/rqlited /usr/local/bin/rqlited && rm -rf /tmp/rqlite.tgz /tmp/rqlite-v${VERSION}-linux-${TARGETARCH} && \
     mkdir -p /usr/local/bin/rqlite /usr/local/bin/rqlited || true
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 ARG VERSION=8.10.0
 COPY --from=builder /usr/local/bin/rqlite /usr/local/bin/rqlite
 COPY --from=builder /usr/local/bin/rqlited /usr/local/bin/rqlited
@@ -31,8 +37,10 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifi
 USER 65532:65532
 EXPOSE 4001 4002
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/rqlited"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:4001"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="rqlite" \
       org.opencontainers.image.description="Evergreen hardened rqlite - distributed SQLite database" \
       org.opencontainers.image.version="${VERSION}" \

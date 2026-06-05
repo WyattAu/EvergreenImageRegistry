@@ -4,6 +4,8 @@ ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS installer
 ARG VERSION=5.9.16
 RUN apt-get update && apt-get install -y --no-install-recommends binutils \
@@ -20,7 +22,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     strip --strip-all /usr/sbin/swanctl 2>/dev/null 2>/dev/null && \
     strip --strip-all /usr/sbin/ipsec 2>/dev/null 2>/dev/null && \
     find /usr/lib -type f -name "lib*.so*" -exec strip --strip-unneeded {} \; 2>/dev/null
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 ARG VERSION=5.9.16
 RUN apk add --no-cache ca-certificates iproute2 iptables kmod libcurl talloc gmp openssl-libs zlib 2>/dev/null && mkdir -p /etc /usr/lib /usr/sbin /var/log /run/charon /etc/strongswan.d /etc/ipsec.d /app 2>/dev/null
 
@@ -55,8 +62,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 500 500/udp 4500 4500/udp
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:500/ || exit 1
-ENTRYPOINT ["/usr/sbin/charon"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:500"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="strongswan" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="strongSwan Project" \

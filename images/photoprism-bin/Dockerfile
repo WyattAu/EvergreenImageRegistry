@@ -1,6 +1,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 
 ARG VERSION=260305-fad9d5395
@@ -17,7 +19,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     chmod +x /photoprism 2>/dev/null && \
     rm -rf /tmp/photoprism.tar.gz /tmp/photoprism-extract 2>/dev/null ; \binary not available - download failed" >&2 exit 1"' >> /photoprism && echo 'exit 1' >> /photoprism && chmod +x /photoprism; }
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 
 COPY --from=downloader /photoprism /photoprism
 
@@ -31,9 +37,11 @@ EXPOSE 2282
 
 
 
-HEALTHCHECK NONE
 
-ENTRYPOINT ["/photoprism"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:2282"]
+
+ENTRYPOINT ["/shim", "run"]
 
 LABEL org.opencontainers.image.title="photoprism-bin"       org.opencontainers.image.version="260305-fad9d5395"       org.opencontainers.image.vendor="PhotoPrism"       org.opencontainers.image.source="https://github.com/photoprism/photoprism"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms" \
 org.opencontainers.image.description="photoprism-bin container image" \

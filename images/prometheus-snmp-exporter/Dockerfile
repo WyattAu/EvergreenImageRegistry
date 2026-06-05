@@ -2,6 +2,8 @@ ARG TARGETARCH
 ARG VERSION=0.30.1
 ARG APP_UID=65532
 ARG APP_GID=65532
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=0.30.1
@@ -20,7 +22,11 @@ ARG TARGETARCH
 RUN mkdir -p /app /var/log/snmp_exporter /var/cache/snmp_exporter /etc/snmp_exporter
 
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 ARG VERSION=0.30.1
 ARG TARGETARCH
 COPY --from=downloader /snmp_exporter-${VERSION}.linux-${TARGETARCH}/snmp_exporter /snmp_exporter
@@ -34,8 +40,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 9116
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/snmp_exporter"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9116"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="prometheus-snmp-exporter" \
       org.opencontainers.image.version="0.30.1" \
       org.opencontainers.image.vendor="Prometheus" \

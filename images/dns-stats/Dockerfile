@@ -3,6 +3,8 @@ ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 ARG VERSION=0.5.0
@@ -29,15 +31,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build -ldflags="-s -w" -o /tmp/dns-stats /tmp/main.go ; \
     } && \
     mkdir -p /etc/ssl/certs 2>/dev/null || true
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 ARG VERSION=0.5.0
 COPY --from=builder /tmp/dns-stats /usr/local/bin/dns-stats
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 EXPOSE 8080
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/dns-stats"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="dns-stats" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Evergreen hardened DNS Stats - DNS monitoring and statistics tool" \

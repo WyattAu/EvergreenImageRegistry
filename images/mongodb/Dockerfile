@@ -6,9 +6,16 @@
 ARG VERSION=7.0.11
 ARG TARGETARCH
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM mongo:${VERSION} AS upstream
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 ENV HEALTH_CMD="echo 'db.adminCommand(\\\"ping\\\")' | mongosh --quiet" \
     READY_CMD="echo 'db.adminCommand(\\\"ping\\\")' | mongosh --quiet" \
     STARTUP_CMD="echo 'db.adminCommand(\\\"ping\\\")' | mongosh --quiet" \
@@ -28,9 +35,11 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 27017
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 CMD echo "db.runCommand({ping:1})" | mongosh --quiet
-ENTRYPOINT ["mongod"]
-CMD ["--bind_ip", "0.0.0.0", "--dbpath", "/data/db"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:27017"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
+CMD ["-c", "mongod", "--", "--bind_ip", "0.0.0.0", "--dbpath", "/data/db"]
 LABEL org.opencontainers.image.title="mongodb" \
       org.opencontainers.image.description="MongoDB - document-oriented NoSQL database" \
       org.opencontainers.image.version="7.0.11" \

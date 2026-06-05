@@ -5,6 +5,8 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates && \
@@ -16,7 +18,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -f /dotnet-install.sh || true
 RUN curl --retry 3 --retry-delay 5 -fsSL https://github.com/duplicati/duplicati/releases/download/v2.3.0.1_stable_2026-04-24/duplicati-2.3.0.1_stable_2026-04-24-linux-x64-gui.zip -o /duplicati.zip && \
     unzip -q /duplicati.zip -d /opt/duplicati && rm -f /duplicati.zip && \binary not available - download failed" >&2 exit 1"' >> /opt/duplicati && echo 'exit 1' >> /opt/duplicati && chmod +x /opt/duplicati ; }
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 
 RUN apk add --no-cache wget ca-certificates && \
     wget -t 3 -T 10 -qO /dotnet-install.sh "https://dot.net/v1/dotnet-install.sh" && \
@@ -33,8 +40,10 @@ ENV DOTNET_ROOT=/usr/share/dotnet
 ENV PATH="$PATH:/usr/share/dotnet"
 EXPOSE 8200
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8200/ || exit 1
-ENTRYPOINT ["dotnet", "/opt/duplicati/Duplicati.Server.exe"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8200"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="duplicati" \
       org.opencontainers.image.description="duplicati container image" \
       org.opencontainers.image.version="2.1.0.1" \

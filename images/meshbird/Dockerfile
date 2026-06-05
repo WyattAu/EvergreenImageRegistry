@@ -11,6 +11,8 @@ ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM golang:${GO_VERSION}-bookworm AS builder
 ENV GOTOOLCHAIN=auto
 ARG TARGETARCH
@@ -30,7 +32,11 @@ RUN mkdir -p /app && \ RUN apt-get update && \
         -o /app/meshbird . 2>/dev/null || true && \
     test -s /app/meshbird && strip --strip-all /app/meshbird 2>/dev/null && \' binary not available - download failed" >&2 exit 1"' >> /app/meshbird && echo 'exit 1' >> /app/meshbird && chmod +x /app/meshbird; } 2>/dev/null && \
     mkdir -p /app /var/log/meshbird
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=builder /app/meshbird /meshbird
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -39,8 +45,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 10500 10500/udp
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/meshbird"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:10500"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="meshbird" \
       org.opencontainers.image.version="2.3" \
       org.opencontainers.image.vendor="Meshbird" \

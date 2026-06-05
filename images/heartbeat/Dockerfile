@@ -1,6 +1,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=9.4.0
 ARG TARGETARCH
@@ -18,7 +20,11 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN mkdir -p /var/log/heartbeat /var/lib/heartbeat /var/cache/heartbeat
 
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=downloader /opt/heartbeat /opt/heartbeat
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /var/log/heartbeat /var/log/heartbeat
@@ -28,8 +34,10 @@ USER 65532:65532
 WORKDIR /opt/heartbeat
 EXPOSE 5066
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/opt/heartbeat/heartbeat"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:5066"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="heartbeat" \
       org.opencontainers.image.description="Evergreen hardened Heartbeat - Elastic uptime monitor" \
       org.opencontainers.image.version="${VERSION}" \

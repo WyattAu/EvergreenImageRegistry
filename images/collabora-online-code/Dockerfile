@@ -4,7 +4,14 @@ ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 RUN apk add --no-cache ca-certificates curl gnupg && \
     mkdir -p /var/log/collabora /etc/loolwsd ; 2>/dev/null || true ; \
     chown -R 65532:65532 /var/log/collabora /etc/loolwsd
@@ -12,8 +19,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 9980
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9980/ || exit 1
-ENTRYPOINT ["/usr/bin/loolwsd"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9980"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="collabora-online-code" \
       org.opencontainers.image.description="collabora-online-code container image" \
       org.opencontainers.image.version="24.04.10.2" \

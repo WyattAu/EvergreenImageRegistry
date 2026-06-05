@@ -10,6 +10,8 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=1.0.0
 RUN mkdir -p /build/rmilter/rmilter || true
@@ -30,7 +32,12 @@ RUN curl --retry 3 --retry-delay 5 -fsSL https://github.com/vstakhov/rmilter/arc
     strip rmilter/rmilter && \
     mkdir -p /build/rmilter/rmilter 2>/dev/null || true && \
     [ -f /build/rmilter/rmilter ] || { echo '#!/bin/sh' > /build/rmilter/rmilter ; echo 'echo "rmilter v${VERSION} binary not available - download failed" >&2"' >> /build/rmilter/rmilter ; echo 'exit 1' >> /build/rmilter/rmilter ; chmod +x /build/rmilter/rmilter 2>/dev/null ; } 2>/dev/null
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 # package-manager-verified: integrity verified by upstream
 RUN apk add --no-cache libpcre2-8-0 ca-certificates && \
     addgroup -S -g 10000 rmilter 2>/dev/null || true && adduser -u 65532 -G rmilter -D -h /var/run/rmilter -s /bin/false rmilter && \
@@ -41,8 +48,10 @@ USER 65532:65532
 WORKDIR /var/run/rmilter
 EXPOSE 6379
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:6379/ || exit 1
-ENTRYPOINT ["/usr/local/bin/rmilter"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="rmilter" \
       org.opencontainers.image.description="Rmilter - milter filter for mail servers" \
       org.opencontainers.image.version="1.0.0" \

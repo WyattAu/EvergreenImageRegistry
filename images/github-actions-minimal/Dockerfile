@@ -1,6 +1,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=2.334.0
 ARG TARGETARCH
@@ -9,7 +11,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 600 -fsSL "https://github.com/actions/runner/releases/download/v${VERSION}/actions-runner-linux-x64-${VERSION}.tar.gz" -o /runner.tar.gz 2>/dev/null ; \
     echo "ba46ba7ce3a4d7236b16fbe44419fb453bc08f866b24f04d549ec89f1722a29e  /runner.tar.gz" | sha256sum -c ; \
     mkdir -p /runner && if [ -f /runner.tar.gz ]; then tar -xzf /runner.tar.gz -C /runner 2>/dev/null ; rm -f /runner.tar.gz 2>/dev/null ; fi
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 ARG VERSION=2.334.0
 RUN apk add --no-cache nodejs-20 npm ca-certificates git && \
     addgroup -S -g 10000 runner 2>/dev/null || true && adduser -u 65532 -G runner -D -h /app -s /bin/false runner 2>/dev/null || true && \
@@ -21,9 +28,11 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8080/ || exit 1
-ENTRYPOINT ["/app/runner/bin/Runner.Worker"]
-CMD ["--disableupdate"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
+CMD ["-c", "/app/runner/bin/Runner.Worker", "--", "--disableupdate"]
 LABEL org.opencontainers.image.title="github-actions-minimal" \
       org.opencontainers.image.version="2.334.0" \
       org.opencontainers.image.vendor="GitHub" \

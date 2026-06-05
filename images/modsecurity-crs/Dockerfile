@@ -10,6 +10,8 @@ ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=3.3.5
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -17,7 +19,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git clone --branch v${VERSION}  || echo "Source repo not available - using binary not available - download failed" >&2 exit 1" && \
     git clone https://github.com/coreruleset/coreruleset.git /tmp/crs ; cp /tmp/crs/crs-setup.conf.example /tmp/crs/crs-setup.conf && \
     https://github.com/coreruleset/coreruleset.git /tmp/crs ; cp /tmp/crs/crs-setup.conf.example /tmp/crs/crs-setup.conf
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 
 ARG VERSION=3.3.5
 RUN apk add --no-cache ca-certificates libxml2-dev && \
@@ -29,8 +36,10 @@ USER 65532:65532
 WORKDIR /etc/modsecurity
 EXPOSE 80 443
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:80/ || exit 1
-ENTRYPOINT ["/usr/sbin/apache2", "-D", "FOREGROUND"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="modsecurity-crs" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Evergreen hardened ModSecurity CRS - OWASP Core Rule Set" \

@@ -1,6 +1,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=2.7.0
 ARG TARGETARCH
@@ -15,7 +17,11 @@ RUN apt-get update && \
     tar -xzf /tmp/archive.tar.gz -C /tmp && \
     strip /tmp/woodpecker-agent&& \
     chmod +x /tmp/woodpecker-agent
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=downloader /tmp/woodpecker-agent /usr/local/bin/woodpecker-agent
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
@@ -23,8 +29,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 3000
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/woodpecker-agent"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="woodpecker-agent" \
       org.opencontainers.image.description="Woodpecker Agent - CI/CD build agent for Woodpecker CI" \
       org.opencontainers.image.version="2.7.0" \

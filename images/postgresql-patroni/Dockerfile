@@ -11,6 +11,8 @@ ARG BUILD_DATE
 ARG PYTHON_VERSION=3.12-slim
 ARG APP_UID=65532
 ARG APP_GID=65532
+ARG SHIM_VERSION=v0.2.0
+
 FROM python:${PYTHON_VERSION} AS builder
 ARG VERSION=4.0.3
 ARG PYTHON_VERSION=3.12-slim
@@ -19,7 +21,11 @@ RUN pip install --no-cache-dir --prefix=/install patroni[postgresql]=="${VERSION
     find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
+COPY --from=shim /shim /shim
+
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 
 RUN microdnf install -y libpq curl ca-certificates
@@ -32,8 +38,10 @@ WORKDIR /app
 EXPOSE 8008 5432
 ENV PATRONI_RESTAPI_LISTEN="0.0.0.0:8008"
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD pg_isready -h localhost -p 5432
-ENTRYPOINT ["python3", "-m", "patroni"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8008"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="postgresql-patroni" \
       org.opencontainers.image.version="4.0.3" \
       org.opencontainers.image.description="Patroni - PostgreSQL High Availability with etcd/Consul/ZooKeeper" \

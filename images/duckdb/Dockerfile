@@ -12,6 +12,8 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f70dc8d6a8b6a06824c92471a1a258030836b26b043881358b967bf73de7c5ab AS builder
 ARG TARGETARCH
 ARG VERSION=1.1.3
@@ -21,14 +23,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     strip --strip-all /tmp/duckdb 2>/dev/null; mv /tmp/duckdb /usr/local/bin/duckdb \
     && rm -rf /tmp/duckdb.zip && \
     mkdir -p /usr/local/bin/duckdb 2>/dev/null || true
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 ARG VERSION=1.1.3
 COPY --from=builder /usr/local/bin/duckdb /usr/local/bin/duckdb
 USER 65532:65532
 EXPOSE 5432
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/duckdb"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:5432"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="duckdb" \
       org.opencontainers.image.description="Evergreen hardened DuckDB - in-process analytical database" \
       org.opencontainers.image.version="${VERSION}" \

@@ -8,6 +8,8 @@ ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS installer
 ENV PIHOLE_INSTALL=noninteractive
 ENV FTLCONF_webserver_port=8080
@@ -23,7 +25,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     find /opt -type f -executable -exec strip --strip-all {} \ 2>/dev/null; 2>/dev/null && \
     mkdir -p /usr/local/bin/pihole ; \binary not available - download failed" >&2 exit 1"' >> /opt/pihole && echo 'exit 1' >> /opt/pihole && chmod +x /opt/pihole ; } ; \binary not available - download failed" >&2 exit 1"' >> /etc/pihole && echo 'exit 1' >> /etc/pihole && chmod +x /etc/pihole ; } ; \
     mkdir -p /etc/dnsmasq.d ; \binary not available - download failed" >&2 exit 1"' >> /usr/bin/gravity.sh && echo 'exit 1' >> /usr/bin/gravity.sh && chmod +x /usr/bin/gravity.sh ; } ; \binary not available - download failed" >&2 exit 1"' >> /usr/bin/pihole-FTL && echo 'exit 1' >> /usr/bin/pihole-FTL && chmod +x /usr/bin/pihole-FTL ; } ; \binary not available - download failed" >&2 exit 1"' >> /usr/sbin/pihole-FTL && echo 'exit 1' >> /usr/sbin/pihole-FTL && chmod +x /usr/sbin/pihole-FTL ; }
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 # package-manager-verified: integrity verified by upstream
 RUN apk add --no-cache curl wget iproute2 iptables procps ca-certificates && \
     mkdir -p /app /var/log/pihole /var/lib/pihole /etc/pihole /etc/dnsmasq.d
@@ -39,8 +46,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 8080 443
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:53/ || exit 1
-ENTRYPOINT ["/usr/local/bin/pihole"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:53"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="pi-hole" \
       org.opencontainers.image.version="bookworm" \
       org.opencontainers.image.vendor="Pi-hole" \

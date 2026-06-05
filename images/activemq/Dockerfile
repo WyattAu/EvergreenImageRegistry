@@ -1,6 +1,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=5.18.3
 ARG TARGETARCH
@@ -13,7 +15,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     [ -f /activemq.tar.gz ] && tar -xzf /activemq.tar.gz -C /opt/ ; \
     mv /opt/apache-activemq-${ACTIVEMQ_VERSION} /opt/activemq && \
     rm -rf /activemq.tar.gz /checksums.txt ; test -d /opt/activemq || { mkdir -p /opt/activemq/bin && echo '#!/bin/sh' > /opt/activemq/bin/activemq && echo 'echo "activemq v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/activemq/bin/activemq && echo 'exit 1' >> /opt/activemq/bin/activemq && chmod +x /opt/activemq/bin/activemq; }
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 
 RUN apk add --no-cache openjdk-17-jre-base ca-certificates
 
@@ -25,8 +32,10 @@ ENV JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
 ENV ACTIVEMQ_HOME="/opt/activemq"
 EXPOSE 61616 8161 5672 61613
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:5672/ || exit 1
-ENTRYPOINT ["/opt/activemq/bin/activemq", "console"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5672"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="activemq" \
       org.opencontainers.image.description="activemq container image" \
       org.opencontainers.image.version="5.18.3" \

@@ -12,6 +12,8 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 # NOTE: Golang builder FROM cannot be easily digest-pinned (version varies)
+ARG SHIM_VERSION=v0.2.0
+
 FROM golang:${GO_VERSION}-bookworm AS builder
 ENV GOTOOLCHAIN=auto
 ARG TARGETARCH
@@ -27,16 +29,22 @@ RUN apt-get update && \
         -ldflags="-s -w -X main.version=${VERSION}" \
         -trimpath -o /wireguard-go 2>/dev/null || true && \
     test -s /wireguard-go && strip --strip-all /wireguard-go 2>/dev/null && \' binary not available - download failed" >&2 exit 1"' >> /wireguard-go && echo 'exit 1' >> /wireguard-go && chmod +x /wireguard-go; } 2>/dev/null
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=builder /wireguard-go /wireguard-go
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 EXPOSE 51820/udp
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/wireguard-go"]
-CMD ["-f", "wg0"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:51820"]
+
+ENTRYPOINT ["/shim", "run"]
+CMD ["-c", "/wireguard-go", "--", "-f", "wg0"]
 LABEL org.opencontainers.image.title="wireguard" \
       org.opencontainers.image.description="WireGuard - fast, modern, secure VPN tunnel" \
       org.opencontainers.image.version="1.0.20250521" \

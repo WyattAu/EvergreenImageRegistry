@@ -3,9 +3,16 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM collabora/code:${VERSION} AS upstream
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 
 RUN mkdir -p /opt/collaboraoffice /usr/local/bin /etc/loolwsd /tmp/collabora-libs 2>/dev/null || true && \
     cp -a /upstream/usr/bin/loolwsd /usr/local/bin/loolwsd 2>/dev/null && \
@@ -20,9 +27,11 @@ WORKDIR /app
 
 EXPOSE 9980
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 CMD wget -qO- http://localhost:9980/hosting/discovery || exit 1
 
-ENTRYPOINT ["/usr/bin/loolwsd"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9980"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="collabora" \
       org.opencontainers.image.description="Collabora Online - LibreOffice-based online office suite" \
       org.opencontainers.image.version="25.04.9.4.1" \

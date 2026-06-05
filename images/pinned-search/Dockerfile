@@ -17,6 +17,8 @@ ARG APP_GID=65532
 
 # hadolint ignore=DL3023
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 
 ARG VERSION=0.1.0
@@ -34,7 +36,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     if [ -f /tmp/pinned-src/target/x86_64-unknown-linux-musl/release/pinned-search ]; then cp /tmp/pinned-src/target/x86_64-unknown-linux-musl/release/pinned-search /tmp/pinned-search; else printf 'fn main() { println!("pinned-search binary not available - download failed" >&2"); }\n' > /tmp/pinned-search.rs && rustc -C target-feature=+crt-static -C opt-level=s -o /tmp/pinned-search /tmp/pinned-search.rs 2>/dev/null || echo '#!/bin/sh' > /tmp/pinned-search && echo 'echo "pinned-search binary not available - download failed" >&2"' >> /tmp/pinned-search && echo 'exit 1' >> /tmp/pinned-search && chmod +x /tmp/pinned-search; fi && \
     strip --strip-all /tmp/pinned-search 2>/dev/null
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 
 ARG VERSION=0.1.0
 
@@ -46,9 +52,11 @@ USER 65532:65532
 
 EXPOSE 8080
 
-HEALTHCHECK NONE
 
-ENTRYPOINT ["/usr/local/bin/pinned-search"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+
+ENTRYPOINT ["/shim", "run"]
 
 LABEL org.opencontainers.image.title="pinned-search" \
       org.opencontainers.image.version="${VERSION}" \

@@ -5,11 +5,17 @@ ARG APP_GID=65532
 
 
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM minio/minio:RELEASE.2025-09-07T16-13-09Z@sha256:9966a92a734f9411e32f4f41d7d9d826fcdc0f68c4e20b70295bd4e7c11f8a2f AS upstream
 
 
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 
 COPY --from=upstream /usr/bin/minio /minio
 
@@ -23,11 +29,13 @@ EXPOSE 9000 9090
 
 
 
-HEALTHCHECK NONE
 
-ENTRYPOINT ["/minio"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9000"]
 
-CMD ["console", "server"]
+ENTRYPOINT ["/shim", "run"]
+
+CMD ["-c", "/minio", "--", "console", "server"]
 
 LABEL org.opencontainers.image.title="minio-console"       org.opencontainers.image.version="RELEASE.2025-09-07T16-13-09Z"       org.opencontainers.image.vendor="MinIO"       org.opencontainers.image.source="https://github.com/minio/minio"       evergreen.image.tier="2"       evergreen.image.category="cloud-storage"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.base="scratch"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="5s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="10000ms" \
 org.opencontainers.image.description="MinIO Console - web-based administration UI for MinIO" \

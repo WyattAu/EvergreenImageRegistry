@@ -1,7 +1,13 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
+COPY --from=shim /shim /shim
+
 ARG VERSION=16.11.0
 ARG TARGETARCH
 RUN mkdir -p /opt/gitlab && \
@@ -50,5 +56,7 @@ LABEL evergreen.security.seccomp="runtime-default"
 EXPOSE 9101
 STOPSIGNAL SIGTERM
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:22/ || exit 1
-ENTRYPOINT ["/opt/gitlab/bin/gitlab"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:22"]
+
+ENTRYPOINT ["/shim", "run"]

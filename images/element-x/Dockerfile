@@ -1,6 +1,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=1.0.0-beta.1
 ARG TARGETARCH
@@ -15,7 +17,12 @@ RUN apt-get update && \
     tar -xzf /download.tar.gz -C /www-src --strip-components=1 && \
     rm -f /download.tar.gz && \
     test -s /www-src/index.html || test -s /www-src/index.htm
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 ARG VERSION=1.0.0-beta.1
 RUN apk add --no-cache ca-certificates busybox && \
     addgroup -S -g 10000 appuser 2>/dev/null || true && \
@@ -27,8 +34,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 80
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:80/ || exit 1
-ENTRYPOINT ["busybox", "httpd", "-f", "-p", "80", "-h", "/app"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="element-x" \
       org.opencontainers.image.description="Element X - next-generation Matrix client" \
       org.opencontainers.image.version="1.0.0-beta.1" \

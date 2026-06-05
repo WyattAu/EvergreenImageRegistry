@@ -12,6 +12,8 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /var/run/postgresql || true
 RUN mkdir -p /var/lib/postgresql && \
@@ -28,7 +30,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 FROM scratch AS entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 # package-manager-verified: integrity verified by upstream
 RUN apk add --no-cache bash gnupg curl ca-certificates libzstd1 liblz4-1
 COPY --from=builder /var/lib/postgresql /var/lib/postgresql
@@ -46,9 +53,11 @@ ENV PGDATA="/var/lib/postgresql/data" \
     PGPORT="5432"
 EXPOSE 5432
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD pg_isready -h localhost -p 5432
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
-CMD ["postgres"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5432"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
+CMD ["-c", "/usr/local/bin/docker-entrypoint.sh", "--", "postgres"]
 LABEL org.opencontainers.image.title="postgresql-17" \
       org.opencontainers.image.version="17.10" \
       org.opencontainers.image.description="PostgreSQL 17 Database Server" \

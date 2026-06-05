@@ -1,6 +1,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=0.4.0
 ARG TARGETARCH
@@ -12,7 +14,11 @@ RUN apt-get update && \
     -o /tmp/conduit || true ; \
     chmod +x /tmp/conduit 2>/dev/null ; \
     strip /tmp/conduit 2>/dev/null ; \'"' >> /tmp/conduit && echo 'exit 1' >> /tmp/conduit && chmod +x /tmp/conduit; }
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=downloader /tmp/conduit /usr/local/bin/conduit
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
@@ -20,8 +26,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 6167
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/conduit"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:6167"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="conduit" \
       org.opencontainers.image.description="Conduit - lightweight Matrix homeserver written in Rust" \
       org.opencontainers.image.version="0.9.5" \

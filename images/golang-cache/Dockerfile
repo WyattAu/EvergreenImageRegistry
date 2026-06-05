@@ -1,6 +1,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 ARG VERSION=1.0.0
@@ -11,14 +13,20 @@ WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends binutils go-1.23 && rm -rf /var/lib/apt/lists/* && \
     printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("go-1.23-cache v%s ready") }' "${VERSION}" > /tmp/main.go ; CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build -ldflags="-s -w" -o /tmp/go-1.23-cache /tmp/main.go ; strip --strip-all /tmp/go-1.23-cache 2>/dev/null 2>/dev/null && \
     mkdir -p /usr/local/binbinary not available - download failed" >&2 exit 1"' >> /usr/local/bin/go-1.23-cache && echo 'exit 1' >> /usr/local/bin/go-1.23-cache && chmod +x /usr/local/bin/go-1.23-cache ; } 2>/dev/null ; mkdir -p /tmp 2>/dev/null ; touch /tmp/go-1.23-cache 2>/dev/null
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 ARG VERSION=1.0.0
 COPY --from=builder /tmp/go-1.23-cache /usr/local/bin/go-1.23-cache
 USER 65532:65532
 EXPOSE 6379
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/go-1.23-cache"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="go-1.23-cache" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Evergreen hardened Golang-Cache - in-memory cache service" \

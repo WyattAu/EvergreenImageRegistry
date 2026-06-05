@@ -9,6 +9,8 @@ ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM golang@sha256:167053a2bb901972bf2c1611f8f52c44d5fe7e762e5cab213708d82c421614db AS builder
 ENV GOTOOLCHAIN=auto
 ARG TARGETARCH
@@ -25,15 +27,21 @@ RUN apt-get update && \
         -ldflags="-s -w" \
         -o /app/cayley ./cmd/cayley 2>/dev/null || true && \
     test -s /app/cayley && strip --strip-all /app/cayley 2>/dev/null && \' binary not available - download failed" >&2 exit 1"' >> /app/cayley && echo 'exit 1' >> /app/cayley && chmod +x /app/cayley; } 2>/dev/null
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=builder /app/cayley /usr/local/bin/cayley
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 EXPOSE 64210
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/cayley"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:64210"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="cayley" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Evergreen hardened Cayley - graph database with query language" \

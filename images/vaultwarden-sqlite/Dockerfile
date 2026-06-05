@@ -5,11 +5,17 @@ ARG APP_GID=65532
 
 
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM vaultwarden/server@sha256:c4f6056fe0c288a052a223cecd263a90d1dda1a0177bb5b054a363a6c7b211d9 AS upstream
 
 
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 
 COPY --from=upstream /vaultwarden /vaultwarden
 
@@ -23,11 +29,13 @@ EXPOSE 8080
 
 
 
-HEALTHCHECK NONE
 
-ENTRYPOINT ["/vaultwarden"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-CMD ["--database-url", "sqlite:///data/db.sqlite3"]
+ENTRYPOINT ["/shim", "run"]
+
+CMD ["-c", "/vaultwarden", "--", "--database-url", "sqlite:///data/db.sqlite3"]
 
 LABEL org.opencontainers.image.title="vaultwarden-sqlite"       org.opencontainers.image.version="1.35.8"       org.opencontainers.image.vendor="dani-garcia"       org.opencontainers.image.source="https://github.com/dani-garcia/vaultwarden"       evergreen.image.tier="2"       evergreen.image.category="secrets"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms" \
 org.opencontainers.image.description="vaultwarden-sqlite container image" \

@@ -9,6 +9,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 
 
@@ -45,7 +47,11 @@ RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir espho
 
 
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
+COPY --from=shim /shim /shim
+
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 
 
@@ -144,7 +150,6 @@ EXPOSE 6052
 
 
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:6052/ || exit 1
 
 
 
@@ -152,7 +157,10 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget 
 
 
 
-ENTRYPOINT ["esphome"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:6052"]
+
+ENTRYPOINT ["/shim", "run"]
 
 
 
@@ -160,7 +168,7 @@ ENTRYPOINT ["esphome"]
 
 
 
-CMD ["config", "/config", "dashboard"]
+CMD ["-c", "esphome", "--", "config", "/config", "dashboard"]
 
 
 

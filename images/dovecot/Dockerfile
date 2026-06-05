@@ -10,11 +10,18 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN groupadd -r -g 65532 appuser && useradd -r -u 65532 -g appuser -d /app -s /usr/bin/false appuser
 
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 
 RUN apk add --no-cache ca-certificates
 COPY --from=builder /etc/group /etc/group
@@ -35,12 +42,14 @@ LABEL evergreen.image.tier="2"
 EXPOSE 9101
 STOPSIGNAL SIGTERM
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:24/ || exit 1
 
 LABEL org.opencontainers.image.description="dovecot container image" \
       org.opencontainers.image.title="Dovecot" \
       org.opencontainers.image.source="https://github.com/dovecot/core" \
             org.opencontainers.image.version="2.3.21"
 
-ENTRYPOINT ["dovecot"]
-CMD ["-F"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:24"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
+CMD ["-c", "dovecot", "--", "-F"]

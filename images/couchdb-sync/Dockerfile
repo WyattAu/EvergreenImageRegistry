@@ -2,6 +2,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=3.3.3
 ARG TARGETARCH
@@ -36,7 +38,12 @@ RUN apt-get update && \
     strip --strip-all /tmp/apache-couchdb-3.3.3/rel/couchdb/bin/* 2>/dev/null && \
     mkdir -p /opt/couchdb && \
     cp -a /tmp/apache-couchdb-3.3.3/rel/couchdb/. /opt/couchdb/
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 
 RUN apk add --no-cache procps \
     mkdir -p /opt 2>/dev/null || true
@@ -51,8 +58,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 5984
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:5984/_up
-ENTRYPOINT ["/opt/couchdb/bin/couchdb", "--with-sync-design-doc"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5984"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="couchdb-sync" \
       org.opencontainers.image.version="3.3.3" \
       org.opencontainers.image.vendor="Apache" \

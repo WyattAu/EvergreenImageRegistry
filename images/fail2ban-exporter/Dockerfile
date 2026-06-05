@@ -1,6 +1,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM golang@sha256:1699c10032ca2582ec89a24a1312d986a3f094aed3d5c1147b19880afe40e052 AS builder
 ENV GOTOOLCHAIN=auto
 ARG TARGETARCH
@@ -22,7 +24,11 @@ RUN CGO_ENABLED=0 GOARCH=${GOARCH} go build -o /fail2ban-exporter . || true
 
 
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 
 COPY --from=builder /fail2ban-exporter /fail2ban-exporter
 
@@ -36,11 +42,13 @@ EXPOSE 9191
 
 
 
-HEALTHCHECK NONE
 
-ENTRYPOINT ["/fail2ban-exporter"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9191"]
 
-CMD ["--web.listen-address=:9191", "--web.telemetry-path=/metrics", "--fail2ban.socket=/tmp/fail2ban.sock"]
+ENTRYPOINT ["/shim", "run"]
+
+CMD ["-c", "/fail2ban-exporter", "--", "--web.listen-address=:9191", "--web.telemetry-path=/metrics", "--fail2ban.socket=/tmp/fail2ban.sock"]
 
 LABEL org.opencontainers.image.title="fail2ban-exporter"       org.opencontainers.image.version="v0.10.0"       org.opencontainers.image.vendor="xperimental"       org.opencontainers.image.source="https://github.com/xperimental/fail2ban-exporter"       evergreen.image.tier="1"       evergreen.image.category="monitoring"       evergreen.image.status="best-effort"       evergreen.image.note="Original repo deleted; building from source"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms" \
 org.opencontainers.image.description="fail2ban-exporter container image" \

@@ -3,6 +3,8 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=6.9.0
 RUN mkdir -p /venv || true
@@ -11,7 +13,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends python3 python3
     /venv/bin/pip install --no-cache-dir taiga-protected==${VERSION} 2>/dev/null && \
     mkdir -p /app /var/log/taiga-protected /etc/taiga-protected 2>/dev/null || true
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
+COPY --from=shim /shim /shim
+
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 RUN microdnf install -y python3 ca-certificates libstdc++ 2>/dev/null || true
 COPY --from=downloader /venv /venv
@@ -21,8 +27,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8003
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8003/ || exit 1
-ENTRYPOINT ["/venv/bin/python", "-m", "taiga_protected"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8003"]
+
+ENTRYPOINT ["/shim", "run"]
 
 LABEL org.opencontainers.image.title="taiga-protected" \
       org.opencontainers.image.description="Taiga Protected - file access protection proxy for Taiga" \

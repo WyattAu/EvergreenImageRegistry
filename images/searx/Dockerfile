@@ -2,6 +2,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /opt/venv || true
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -11,7 +13,11 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir searx && \
     mkdir -p /app/config /app/data 2>/dev/null || true && \binary not available - download failed" >&2 exit 1"' >> /app/binary not available - download failed" >&2 exit 1 && echo 'exit 1' >> /app/binary not available - download failed" >&2 exit 1 && chmod +x /app ; }
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
+COPY --from=shim /shim /shim
+
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 
 RUN microdnf install -y python3 ca-certificates tzdata
@@ -25,8 +31,10 @@ ENV PATH="/opt/venv/bin:$PATH"
 WORKDIR /app
 EXPOSE 8888
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8888/ || exit 1
-ENTRYPOINT ["searx-run"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8888"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="searx" \
       org.opencontainers.image.description="Searx - Privacy-respecting metasearch engine" \
       org.opencontainers.image.vendor="searx" \

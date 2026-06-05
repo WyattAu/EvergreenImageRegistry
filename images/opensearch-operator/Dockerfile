@@ -3,17 +3,25 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM docker.io/opensearchproject/opensearch-operator:${VERSION} AS upstream
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=upstream /manager /usr/local/bin/opensearch-operator
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8080 8443
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/opensearch-operator"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="opensearch-operator" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="OpenSearch" \

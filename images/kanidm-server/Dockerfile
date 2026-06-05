@@ -3,6 +3,8 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM docker.io/kanidm/server:1.9.4@sha256:7eecd3b5b179649abc2581d8d3119a9bb7602ef7f266c0b991593048f728e6e5 AS upstream
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
@@ -10,7 +12,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     mkdir -p /app /var/log/kanidm-server /var/cache/kanidm-server 2>/dev/null || true
 
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=upstream /sbin/kanidmd /kanidmd
 COPY --from=builder /app /app
@@ -36,5 +42,7 @@ USER 65532:65532
 
 STOPSIGNAL SIGTERM
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/kanidmd"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8443"]
+
+ENTRYPOINT ["/shim", "run"]

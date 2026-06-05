@@ -2,6 +2,8 @@ ARG TARGETARCH
 ARG VERSION=1.1.0
 ARG APP_UID=65532
 ARG APP_GID=65532
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
 ARG VERSION=1.1.0
@@ -22,7 +24,11 @@ ARG TARGETARCH
 RUN mkdir -p /app /var/log/rabbitmq_exporter /var/cache/rabbitmq_exporter 2>/dev/null || true
 
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 ARG VERSION=1.1.0
 ARG TARGETARCH
 COPY --from=downloader /rabbitmq_exporter-${VERSION}-linux-${TARGETARCH}/rabbitmq_exporter /rabbitmq_exporter
@@ -34,8 +40,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 9090
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/rabbitmq_exporter"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9090"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="rabbitmq-exporter" \
       org.opencontainers.image.version="1.1.0" \
       org.opencontainers.image.vendor="kbudde" \

@@ -1,6 +1,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=1.12.0
 ARG TARGETARCH
@@ -13,7 +15,11 @@ RUN apt-get update && \
     -o /tmp/binary && \
     strip /tmp/binary&& \
     chmod +x /tmp/binary
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=downloader /tmp/binary /usr/local/bin/mattermost-kubernetes-operator
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
@@ -21,8 +27,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 8080
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/mattermost-kubernetes-operator"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="mattermost-operator" \
       org.opencontainers.image.description="Mattermost Kubernetes Operator - manages Mattermost deployments on Kubernetes" \
       org.opencontainers.image.version="1.12.0" \

@@ -1,6 +1,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS builder
 ARG VERSION=1.6.9
 ARG TARGETARCH
@@ -14,7 +16,12 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/roundcube/roundcube
     if [ -f /tmp/roundcube.tar.gz ]; then tar -xzf /tmp/roundcube.tar.gz -C /build --strip-components=1 && rm -f /tmp/roundcube.tar.gz ; fi ; \
     test -s /build/index.php || echo '<html><body><h1>roundcube v'${VERSION}' binary not available - download failed" >&2 exit 1</h1></body></html>' > /build/index.php
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 ARG VERSION=1.6.9
 RUN apk add --no-cache php-8.4 php-8.4-fpm php-8.4-session php-8.4-mbstring php-8.4-xml php-8.4-iconv php-8.4-dom php-8.4-curl php-8.4-intl ca-certificates && \
     addgroup -S -g 10000 roundcube 2>/dev/null || true && \
@@ -26,9 +33,11 @@ USER 65532:65532
 WORKDIR /usr/share/webapps/roundcube
 EXPOSE 8888
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8888/ || exit 1
-ENTRYPOINT ["php-fpm83"]
-CMD ["-F"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8888"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
+CMD ["-c", "php-fpm83", "--", "-F"]
 LABEL org.opencontainers.image.title="roundcube" \
       org.opencontainers.image.description="Roundcube - feature-rich webmail client" \
       org.opencontainers.image.version="${VERSION}" \

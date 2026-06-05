@@ -13,6 +13,8 @@ ARG APP_GID=65532
 
 # hadolint ignore=DL3023
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=7.4.1
 WORKDIR /tmp
@@ -20,7 +22,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.gz -o redis.tar.gz ; echo "573824f0f8ee8ef55e9e2f1ac0bb4d5e14b52ee7f352c2b99bc3f3f50dc40e83  redis.tar.gz" | sha256sum -c  ; [ -f redis.tar.gz ] && tar -xzf redis.tar.gz ; \
     cd redis-${VERSION} && make -j"$(nproc)" redis && strip --strip-all src/redis 2>/dev/null; cp src/redis /tmp/redis 2>/dev/null && \
     mkdir -p /tmp/redis
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 ARG VERSION=7.4.1
 
 RUN apk add --no-cache ca-certificates && adduser -u 65532 -s /bin/false &&  mkdir -p /data /var/log/redis
@@ -30,8 +37,10 @@ USER 65532:65532
 WORKDIR /data
 EXPOSE 6379 16379
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD redis-cli ping
-ENTRYPOINT ["/usr/local/bin/redis", "--cluster-enabled", "yes", "--cluster-config-file", "/data/nodes.conf"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL evergreen.image.status="functional" \
       evergreen.image.tier="1" \
       evergreen.image.category="database" \

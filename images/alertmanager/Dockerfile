@@ -4,13 +4,21 @@ ARG VERSION=v0.32.1
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
+COPY --from=shim /shim /shim
+
 ARG TARGETARCH
 ARG VERSION=v0.32.1
 RUN mkdir -p /app /var/log/alertmanager /var/cache/alertmanager && \
     apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* ; \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/alertmanager/releases/download/${VERSION}/alertmanager-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /alertmanager.tar.gz ; \
-    if [ -f /alertmanager.tar.gz ]; then tar -xzf /alertmanager.tar.gz -C /tmp && rm -f /alertmanager.tar.gz && mv /tmp/alertmanager-${VERSION}.linux-${TARGETARCH}/alertmanager /alertmanager 2>/dev/null ; fi ; \FROM scratch
+    if [ -f /alertmanager.tar.gz ]; then tar -xzf /alertmanager.tar.gz -C /tmp && rm -f /alertmanager.tar.gz && mv /tmp/alertmanager-${VERSION}.linux-${TARGETARCH}/alertmanager /alertmanager 2>/dev/null ; fi
+
+FROM scratch
 COPY --from=downloader /alertmanager /alertmanager
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=downloader /app /app
@@ -20,8 +28,10 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 9093
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/alertmanager"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9093"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="alertmanager" \
       org.opencontainers.image.description="Alertmanager - handles alerts sent by Prometheus" \
       org.opencontainers.image.version="${VERSION}" \

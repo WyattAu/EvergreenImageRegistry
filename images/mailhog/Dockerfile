@@ -1,6 +1,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION=1.0.1
 ARG TARGETARCH
@@ -13,7 +15,11 @@ RUN apt-get update && \
     echo "e2ed634ded49929f089b20045581955ed217672078fd86082dd7a6c67c5d09c7  /tmp/MailHog" | sha256sum -c && \
     chmod +x /tmp/MailHog && \
     strip /tmp/MailHog
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 COPY --from=downloader /tmp/MailHog /usr/local/bin/MailHog
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
@@ -23,8 +29,10 @@ ENV MH_API_BIND_ADDR="0.0.0.0:8025"
 ENV MH_UI_BIND_ADDR="0.0.0.0:8025"
 EXPOSE 8025 1025
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/MailHog"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8025"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="mailhog" \
       org.opencontainers.image.description="MailHog - email testing tool" \
       org.opencontainers.image.version="${VERSION}" \

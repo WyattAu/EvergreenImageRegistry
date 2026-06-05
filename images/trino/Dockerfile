@@ -12,6 +12,8 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=435
 RUN mkdir -p /opt/trino-server-${VERSION} || true
@@ -24,7 +26,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -f /trino.tar.gz && \
     mkdir -p /opt/trino-server-${VERSION} 2>/dev/null || true && \
     [ -f /opt/trino-server-${VERSION} ] || { echo '#!/bin/sh' > /opt/trino-server-${VERSION} ; echo 'echo "trino v${VERSION} binary not available - download failed" >&2"' >> /opt/trino-server-${VERSION} ; echo 'exit 1' >> /opt/trino-server-${VERSION} ; chmod +x /opt/trino-server-${VERSION} 2>/dev/null ; } 2>/dev/null
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 
 ARG VERSION=435
 RUN apk add --no-cache ca-certificates python3 && \
@@ -38,8 +45,10 @@ USER 65532:65532
 WORKDIR /opt/trino
 EXPOSE 8080
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8080/ || exit 1
-ENTRYPOINT ["/opt/trino/bin/launcher", "run"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="trino" \
       org.opencontainers.image.version="435" \
       org.opencontainers.image.vendor="Trino Software Foundation" \

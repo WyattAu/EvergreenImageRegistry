@@ -10,6 +10,8 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=7.2.4
 RUN mkdir -p /tmp/redis-7.2.4/src/redis || true
@@ -29,7 +31,12 @@ RUN curl --retry 3 --retry-delay 5 -fsSL https://github.com/redis/redis/archive/
     test -s /tmp/redis-${VERSION}/src/redis || { echo '#!/bin/sh' > /tmp/redis-${VERSION}/src/redis && echo 'echo "redis v${VERSION} binary not available - download failed" >&2 exit 1"' >> /tmp/redis-${VERSION}/src/redis && echo 'exit 1' >> /tmp/redis-${VERSION}/src/redis && chmod +x /tmp/redis-${VERSION}/src/redis; }
 
 
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 
 RUN apk add --no-cache ca-certificates && addgroup -S -g 10000 2>/dev/null && adduser -u 65532 -G redis -D -h /data -s /bin/false redis 2>/dev/null
 # NOTE: redis server not available in wolfi; uses pre-compiled binary
@@ -39,9 +46,11 @@ USER 65532:65532
 WORKDIR /data
 EXPOSE 6379
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD redis-cli ping
-ENTRYPOINT ["/usr/local/bin/redis"]
-CMD ["--protected-mode", "no", "--bind", "0.0.0.0"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
+CMD ["-c", "/usr/local/bin/redis", "--", "--protected-mode", "no", "--bind", "0.0.0.0"]
 LABEL org.opencontainers.image.title="argocd-redis" \
       org.opencontainers.image.description="ArgoCD Redis - Redis sidecar for ArgoCD caching" \
       org.opencontainers.image.version="7.2.4" \

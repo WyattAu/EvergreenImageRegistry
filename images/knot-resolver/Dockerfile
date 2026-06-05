@@ -1,7 +1,14 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 ARG VERSION=5.7.6
 ARG TARGETARCH
 RUN apk add --no-cache knot-resolver 2>/dev/null || apk add --no-cache bind-tools 2>/dev/null knot-resolver-utils ca-certificates && \
@@ -13,9 +20,11 @@ USER 65532:65532
 WORKDIR /app
 EXPOSE 53 53/udp 8453
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:53/ || exit 1
-ENTRYPOINT ["kresd"]
-CMD ["-c", "/etc/knot-resolver/knot.conf"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:53"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
+CMD ["-c", "kresd", "--", "-c", "/etc/knot-resolver/knot.conf"]
 LABEL org.opencontainers.image.title="knot-resolver" \
       org.opencontainers.image.version="5.7.6" \
       org.opencontainers.image.vendor="CZ.NIC" \

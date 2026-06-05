@@ -3,6 +3,8 @@ ARG TARGETARCH
 ARG VERSION=10.4.1
 ARG APP_UID=65532
 ARG APP_GID=65532
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION
 RUN mkdir -p /opt/grafana-${VERSION}/bin/grafana-server && \
@@ -26,7 +28,11 @@ RUN apt-get update && \
     chmod +x /opt/grafana-${VERSION}/bin/grafana-cli 2>/dev/null ; \
     test -s /opt/grafana-${VERSION}/bin/grafana-server || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-server && echo 'echo "grafana-dev v'"${VERSION}"' binary not available - download failed" >&2 exit 1"' >> /opt/grafana-${VERSION}/bin/grafana-server && echo 'exit 1' >> /opt/grafana-${VERSION}/bin/grafana-server && chmod +x /opt/grafana-${VERSION}/bin/grafana-server ; } 2>/dev/null ; \
     test -s /opt/grafana-${VERSION}/bin/grafana-cli || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-cli && echo 'echo "grafana-dev v'"${VERSION}"' binary not available - download failed" >&2 exit 1"' >> /opt/grafana-${VERSION}/bin/grafana-cli && echo 'exit 1' >> /opt/grafana-${VERSION}/bin/grafana-cli && chmod +x /opt/grafana-${VERSION}/bin/grafana-cli ; } 2>/dev/null
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /shim
+
 ARG VERSION=10.4.1
 COPY --from=downloader /opt/grafana-${VERSION}/bin/grafana-server /usr/local/bin/grafana-server
 COPY --from=downloader /opt/grafana-${VERSION}/bin/grafana-cli /usr/local/bin/grafana-cli
@@ -46,8 +52,10 @@ ENV GF_PATHS_DATA=/app/data \
     GF_SERVER_ROUTER_LOGGING=true \
     GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION=true
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/grafana-server"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
+
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="grafana-dev" \
       org.opencontainers.image.version="10.4.1" \
       org.opencontainers.image.vendor="Grafana Labs" \

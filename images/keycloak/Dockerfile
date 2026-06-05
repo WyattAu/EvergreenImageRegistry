@@ -2,7 +2,14 @@ ARG VERSION=26.6.2
 ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
+ARG SHIM_VERSION=v0.2.0
+
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 
 ARG VERSION=26.6.2
 RUN apk add --no-cache wget ca-certificates && \
@@ -22,9 +29,11 @@ WORKDIR /app
 ENV KEYCLOAK_HOME=/opt/keycloak
 EXPOSE 8080 8443
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8080/ || exit 1
-ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
-CMD ["start-dev"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
+CMD ["-c", "/opt/keycloak/bin/kc.sh", "--", "start-dev"]
 LABEL org.opencontainers.image.title="keycloak" \
       org.opencontainers.image.description="Keycloak - identity and access management" \
       org.opencontainers.image.version="26.6.2" \

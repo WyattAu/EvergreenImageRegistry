@@ -2,11 +2,18 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates gnupg procps ; rm -rf /var/lib/apt/lists/* && \
     mkdir -p /app /opt/vernemq/data /opt/vernemq/log 2>/dev/null || true
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 
 RUN apk add --no-cache ca-certificates curl procps
 COPY --from=builder /app /app
@@ -18,9 +25,11 @@ USER 65532:65532
 WORKDIR /opt/vernemq
 EXPOSE 1883 4369 44053 8080
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:1883/ || exit 1
-ENTRYPOINT ["echo"]
-CMD ["vernemq: Place VerneMQ binary in /opt/vernemq/bin/"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:1883"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
+CMD ["-c", "echo", "--", "vernemq: Place VerneMQ binary in /opt/vernemq/bin/"]
 LABEL org.opencontainers.image.title="vernemq" \
       org.opencontainers.image.description="VerneMQ - High-performance MQTT broker" \
       org.opencontainers.image.vendor="VerneMQ" \

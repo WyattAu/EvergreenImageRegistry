@@ -1,6 +1,8 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v0.2.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates gnupg && \
@@ -13,7 +15,12 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends couchbase-server-community 2>/dev/null ; \
     rm -rf /var/lib/apt/lists/* || true
 RUN mkdir -p /opt/couchbase/bin ; \# hadolint ignore=DL3023
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 RUN apk add --no-cache libstdc++ curl zlib procps
 COPY --from=builder /opt/couchbase /opt/couchbase
 RUN mkdir -p /var/lib/couchbase /var/log/couchbase /app && \
@@ -23,8 +30,10 @@ ENV PATH="${COUCHBASE_HOME}/bin:${PATH}"
 USER 65532:65532
 WORKDIR /app
 EXPOSE 8091
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:8091/ || exit 1
-ENTRYPOINT ["/opt/couchbase/bin/couchbase-server"]
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8091"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="couchbase" \
       org.opencontainers.image.description="Couchbase - distributed NoSQL cloud database" \
       org.opencontainers.image.version="7.6.1" \

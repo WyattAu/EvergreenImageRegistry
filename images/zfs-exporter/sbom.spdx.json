@@ -1,0 +1,38 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT-zfs-exporter",
+  "name": "evergreen-zfs-exporter",
+  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/zfs-exporter",
+  "creationInfo": {
+    "created": "2026-06-05T12:41:51Z",
+    "creators": [
+      "Tool: evergreen-sbom-generator"
+    ]
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-scratch-",
+      "name": "scratch",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-zfs-exporter-ghcr.io-frebib-zfs-exporter-0.0.12-",
+      "name": "ghcr.io/frebib/zfs-exporter:0.0.12",
+      "downloadLocation": "https://github.com/frebib/zfs-exporter",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION",
+      "originator": "frebib"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT-zfs-exporter",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-zfs-exporter"
+    }
+  ]
+}

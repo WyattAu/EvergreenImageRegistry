@@ -3,7 +3,7 @@ ARG VERSION=12.2.8-security-04
 ARG APP_UID=65532
 ARG APP_GID=65532
 ARG SHIM_VERSION=v0.3.0
-FROM golang:1.24-bookworm AS builder
+FROM golang:1.26-bookworm AS builder
 ARG TARGETARCH
 ARG VERSION=12.2.8-security-04
 RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*

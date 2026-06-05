@@ -1,6 +1,6 @@
 # =============================================================================
 # EVERGREEN HARDENED SYNAPSE-MEDIA
-# Constraint: debian-slim - Python runtime required for Matrix media worker
+# Constraint: wolfi-base - Python runtime required for Matrix media worker
 # =============================================================================
 
 ARG VERSION=1.98.0
@@ -32,6 +32,9 @@ RUN apt-get update && \
 ENV PATH="/opt/venv/bin:${PATH}"
 RUN pip install --no-cache-dir "matrix-synapse[all]==${VERSION}"
 
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+RUN apk add --no-cache python-3.12 ca-certificates libffi libssl3
+COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 RUN mkdir -p /data /var/log/synapse /var/cache/synapse && chown -R 65532:65532 /data /var/log/synapse /var/cache/synapse 2>/dev/null || true
 USER 65532:65532
@@ -51,7 +54,6 @@ LABEL org.opencontainers.image.title="synapse-media" \
       org.opencontainers.image.source="https://github.com/element-hq/synapse" \
       evergreen.image.tier="2" \
       evergreen.constraint.nonroot="true" \
-      evergreen.constraint.debian-slim="true" \
       evergreen.image.variant="media-worker"
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"

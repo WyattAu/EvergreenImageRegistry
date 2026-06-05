@@ -27,7 +27,9 @@ RUN apt-get update && \
     bash /tmp/install.sh && rm -f /tmp/install.sh && \
     apt-get update && \
     apt-get install -y --no-install-recommends gitlab-ce 2>/dev/null && \
-    rm -rf /var/lib/apt/lists/* && \FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+    rm -rf /var/lib/apt/lists/*
+
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
 RUN apk add --no-cache wget ca-certificates gnupg openssh-client postfix busybox
 COPY --from=downloader /opt/gitlab /opt/gitlab
@@ -44,8 +46,7 @@ LABEL org.opencontainers.image.title="gitlab-ce" \
       org.opencontainers.image.vendor="GitLab" \
       org.opencontainers.image.source="https://gitlab.com/gitlab-org/gitlab-ce" \
       evergreen.image.tier="2" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.constraint.debian-slim="true"
+      evergreen.constraint.nonroot="true"
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"

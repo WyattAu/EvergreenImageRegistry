@@ -29,7 +29,6 @@ expose = [80, 9101]
 "org.opencontainers.image.vendor" = "GitLab"
 "org.opencontainers.image.version" = "16.11.0"
 "evergreen.base.image" = "wolfi"
-"evergreen.constraint.debian-slim" = "true"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"
 "evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"

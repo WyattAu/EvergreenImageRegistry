@@ -5,7 +5,7 @@ version = "1.98.0"
 description = "Synapse Media Worker - dedicated media repository for Synapse"
 
 [build]
-base = "debian:bookworm-slim"
+base = "cgr.dev/chainguard/wolfi-base:latest"
 user = "65532:65532"
 stopsignal = "SIGTERM"
 
@@ -25,7 +25,6 @@ expose = [8008, 9101]
 "org.opencontainers.image.vendor" = "Element"
 "org.opencontainers.image.version" = "1.98.0"
 "evergreen.base.image" = "wolfi"
-"evergreen.constraint.debian-slim" = "true"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"
 "evergreen.image.tier" = "standard""evergreen.image.variant" = "media-worker"

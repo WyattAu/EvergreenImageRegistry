@@ -48,7 +48,7 @@ jobs:
       updates: ${{ steps.check.outputs.updates }}
       update_count: ${{ steps.check.outputs.update_count }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Check upstream versions for critical images
         id: check
@@ -184,7 +184,7 @@ jobs:
       has_changes: ${{ steps.bump.outputs.has_changes }}
       changed_images: ${{ steps.bump.outputs.changed_images }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -248,7 +248,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -348,7 +348,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Wait for checks and auto-merge
         env:

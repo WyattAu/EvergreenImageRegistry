@@ -31,8 +31,8 @@ on:
       sign:
         description: 'Sign images with Cosign'
         required: false
-        type: boolean
-        default: true
+        type: string
+        default: 'true'
 
 concurrency:
   group: nightly-rebuild
@@ -136,7 +136,7 @@ jobs:
       matrix: ${{ needs.discover-critical.outputs.matrix }}
       tag: ${{ github.sha }}
       push: true
-      sign: ${{ inputs.sign }}
+      sign: ${{ inputs.sign == 'true' }}
       multiarch: true
       tier: critical
     secrets: inherit

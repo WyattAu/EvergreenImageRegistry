@@ -47,6 +47,7 @@ COPY --from=builder --chown=65532:65532 /var/lib/elasticsearch /var/lib/elastics
 RUN adduser -u 65532 -s /bin/false elasticsearch 2>/dev/null || true && \
     chown -R 65532:65532 /opt/elasticsearch /app /var/log/elasticsearch /var/cache/elasticsearch /var/lib/elasticsearch
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 ENV ES_PATH_CONF="/app" \
     ES_JAVA_OPTS="-Xms512m -Xmx512m" \
@@ -74,4 +75,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

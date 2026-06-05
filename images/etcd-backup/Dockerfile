@@ -33,6 +33,7 @@ ARG VERSION=3.6.10
 COPY --from=builder /tmp/etcdctl /usr/local/bin/etcdctl
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /tmp
 EXPOSE 2379
 
@@ -57,4 +58,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

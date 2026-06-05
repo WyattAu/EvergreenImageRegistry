@@ -38,6 +38,7 @@ COPY --from=builder /install/usr/share/man /usr/share/man
 RUN mkdir -p /app /var/log/dnsmasq /var/lib/dnsmasq /run /etc/dnsmasq.d ; 2>/dev/null || true ; \
     chown -R 65532:65532 /app /var/log/dnsmasq /var/lib/dnsmasq /run /etc/dnsmasq.d
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 53 53/udp 67 67/udp 69/udp 4011/udp
 
@@ -69,4 +70,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

@@ -23,5 +23,4 @@ expose = [9101]
 "evergreen.image.category" = "base"
 "evergreen.image.note" = "Alpine is banned for application images. Use chainguard/static for static builds."
 "evergreen.image.status" = "reference"
-"evergreen.image.tier" = "3"
-"evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"

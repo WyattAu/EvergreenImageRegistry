@@ -25,6 +25,7 @@ COPY --from=builder /var/cache/airbyte-server /var/cache/airbyte-server
 COPY --from=builder /var/lib/airbyte /var/lib/airbyte
 RUN adduser -u 65532 -D airbyte 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 ENV HOME=/app
 EXPOSE 8000
@@ -51,4 +52,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

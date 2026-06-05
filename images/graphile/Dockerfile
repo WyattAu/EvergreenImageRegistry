@@ -19,6 +19,7 @@ RUN apk add --no-cache nodejs-20 npm ca-certificates git && \
     npm install -g postgraphile@${VERSION} 2>/dev/null || { mkdir -p /opt/graphile && echo '#!/bin/sh' > /opt/graphile/cli.js && echo 'echo "graphile v'"${VERSION}"' binary not available - download failed" >&2 exit 1"' >> /opt/graphile/cli.js { echo "Binary not available - download failed" >&2; exit 1; } 2>/dev/null && \
     chown -R 65532:65532 /opt/graphile /var/lib/graphile /var/log/graphile /var/cache/graphile 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/graphile
 EXPOSE 5000
 
@@ -44,4 +45,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

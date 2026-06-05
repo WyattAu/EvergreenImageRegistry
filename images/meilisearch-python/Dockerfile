@@ -24,6 +24,7 @@ RUN apk add --no-cache ca-certificates && \
     adduser -u 65532 -D python 2>/dev/null || true && \
     mkdir -p /app /var/log/python /var/cache/python && chown -R python:python /app /var/log/python /var/cache/python 2>/dev/null || true
 USER python
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 7700
 
@@ -49,4 +50,7 @@ LABEL evergreen.security.seccomp="runtime-default"
 EXPOSE 9101
 
 USER 65532:65532
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

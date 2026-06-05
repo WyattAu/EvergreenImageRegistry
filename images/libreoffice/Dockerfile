@@ -17,6 +17,7 @@ RUN apk add --no-cache ca-certificates curl && \
     mkdir -p /app /var/log/app /var/cache/app ; 2>/dev/null || true ; \
     chown -R 65532:65532 /app /var/log/app /var/cache/app
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 8080
 
@@ -48,4 +49,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

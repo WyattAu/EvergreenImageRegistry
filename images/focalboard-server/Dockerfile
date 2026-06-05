@@ -24,6 +24,7 @@ COPY --from=downloader /opt/focalboard /opt/focalboard
 RUN mkdir -p /app /var/log/focalboard /var/cache/focalboard /data ; 2>/dev/null || true ; \
     chown -R 65532:65532 /app /var/log/focalboard /var/cache/focalboard /data /opt/focalboard
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /data
 EXPOSE 8000
 
@@ -54,4 +55,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

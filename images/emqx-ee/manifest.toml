@@ -28,5 +28,4 @@ expose = [1883, 9101]
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"
 "evergreen.image.status" = "license-required"
-"evergreen.image.tier" = "3"
-"evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"

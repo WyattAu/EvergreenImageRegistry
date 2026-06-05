@@ -40,6 +40,7 @@ COPY --from=builder /opt/nifi-registry-${VERSION} /opt/nifi-registry
 RUN addgroup -S -g 2 nifi>/dev/null || true && adduser -u 65532 -G nifi -D -s /bin/false nifi 2>/dev/null || true && \
     chown -R nifi:nifi /opt/nifi-registry /var/lib/nifi-registry /var/log/nifi-registry /var/cache/nifi-registry 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/nifi-registry
 EXPOSE 18080
 
@@ -65,4 +66,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

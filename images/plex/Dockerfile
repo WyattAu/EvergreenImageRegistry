@@ -20,6 +20,7 @@ COPY --from=upstream /usr/lib/plexmediaserver/Plex\ Media\ Server /usr/lib/plexm
 RUN mkdir -p /var/log/plex /var/cache/plex /config /transcode 2>/dev/null || true; \
     chown -R 65532:65532 /var/log/plex /var/cache/plex /config /transcode /usr/lib/plexmediaserver 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /config
 EXPOSE 32400
 
@@ -51,4 +52,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

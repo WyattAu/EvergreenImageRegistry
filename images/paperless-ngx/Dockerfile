@@ -27,6 +27,7 @@ COPY --from=downloader /opt/paperless-ngx /opt/paperless-ngx
 RUN ln -sf /opt/paperless-ngx/bin/paperless /usr/local/bin/paperless 2>/dev/null || true && \
     chown -R 65532:65532 /opt/paperless-ngx /var/lib/paperless /var/log/paperless /etc/paperless 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /usr/src/paperless
 EXPOSE 8000
 
@@ -52,4 +53,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

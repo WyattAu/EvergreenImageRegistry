@@ -17,6 +17,7 @@ RUN apk add --no-cache perl apache2 ca-certificates curl && \
     mkdir -p /var/www/sql-ledger /var/log/sql-ledger ; 2>/dev/null || true ; \
     chown -R 65532:65532 /var/www/sql-ledger /var/log/sql-ledger
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /var/www/sql-ledger
 EXPOSE 80
 
@@ -47,4 +48,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

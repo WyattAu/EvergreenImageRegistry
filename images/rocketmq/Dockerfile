@@ -28,6 +28,7 @@ RUN apk add --no-cache openjdk-17-jre-base ca-certificates && \
 COPY --from=downloader /opt/rocketmq /opt/rocketmq
 RUN chown -R 65532:65532 /opt/rocketmq 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/rocketmq
 ENV JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
 ENV ROCKETMQ_HOME="/opt/rocketmq"
@@ -60,4 +61,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

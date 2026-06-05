@@ -34,6 +34,7 @@ RUN apk add --no-cache ca-certificates curl && \
     mkdir -p /opt/graylog/data /opt/graylog/logs /var/log/graylog /var/cache/graylog 2>/dev/null || true
 COPY --from=builder /tmp/graylog-${VERSION} /opt/graylog
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/graylog
 ENV GRAYLOG_HTTP_BIND_ADDRESS="0.0.0.0:9000"
 ENV GRAYLOG_DATA_DIR="/opt/graylog/data"
@@ -67,4 +68,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

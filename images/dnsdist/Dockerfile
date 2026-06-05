@@ -42,6 +42,7 @@ RUN apk add --no-cache ca-certificates && \
 COPY --from=builder /pdns-rel-dnsdist-${VERSION}/build/dnsdist/dnsdist /usr/local/bin/dnsdist
 RUN chown -R 65532:65532 /app /var/log/dnsdist
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 53 53/udp 5199 8083
 
@@ -72,4 +73,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

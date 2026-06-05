@@ -30,6 +30,7 @@ RUN mkdir -p /var/spool/postfix /var/log/postfix /etc/postfix ; \
     chown -R 65532:65532 /var/spool/postfix /var/log/postfix && \
     printf 'inet_interfaces = all\nrelay_domains = $mydestination\nsmtpd_relay_restrictions = permit_mynetworks, reject_unauth_destination\n' > /etc/postfix/main.cf.relay
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /var/spool/postfix
 EXPOSE 25 587
 
@@ -55,4 +56,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

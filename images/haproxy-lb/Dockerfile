@@ -29,6 +29,7 @@ ARG VERSION=2.8.5
 COPY --from=builder /tmp/haproxy/haproxy /usr/local/sbin/haproxy
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /tmp
 EXPOSE 80 443
 
@@ -53,4 +54,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

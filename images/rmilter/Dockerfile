@@ -45,6 +45,7 @@ RUN apk add --no-cache libpcre2-8-0 ca-certificates && \
 COPY --from=builder /build/rmilter/rmilter /usr/local/bin/rmilter
 RUN mkdir -p /var/run/rmilter /var/log/rmilter && chown -R 65532:65532 /var/run/rmilter /var/log/rmilter 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /var/run/rmilter
 EXPOSE 6379
 
@@ -69,4 +70,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

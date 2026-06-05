@@ -32,5 +32,4 @@ expose = [3306, 9101]
 "evergreen.image.category" = "database"
 "evergreen.image.note" = "SingleStore requires a license. Download from https://www.singlestore.com/ for production."
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "1"
-"evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"

@@ -31,5 +31,4 @@ expose = [8888, 9101]
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "http"
 "evergreen.image.category" = "email"
-"evergreen.image.tier" = "2"
-"evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"

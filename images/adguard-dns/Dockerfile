@@ -32,6 +32,7 @@ COPY --from=builder /var/log/AdGuardHome /var/log/AdGuardHome
 COPY --from=builder /var/cache/AdGuardHome /var/cache/AdGuardHome
 COPY --from=builder /opt/AdGuardHome/data /opt/AdGuardHome/data
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 53 53/udp 3000 443 853
 
@@ -63,4 +64,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

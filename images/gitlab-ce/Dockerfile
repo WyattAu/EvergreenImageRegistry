@@ -36,6 +36,7 @@ COPY --from=downloader /var/opt/gitlab /var/opt/gitlab
 RUN addgroup -S -g 10000 gitlab 2>/dev/null || true && \
     adduser -u 65532 -G gitlab -D -h /var/opt/gitlab -s /bin/false gitlab 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 EXPOSE 80 443 22
 LABEL org.opencontainers.image.title="gitlab-ce" \
       org.opencontainers.image.description="GitLab CE - self-hosted Git management platform" \
@@ -54,6 +55,9 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \

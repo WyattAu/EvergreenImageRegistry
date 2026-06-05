@@ -33,6 +33,7 @@ RUN apk add --no-cache ca-certificates curl icu-libs krb5-libs libgcc libstdc++ 
 COPY --from=downloader --chown=65532:65532 /app /app
 RUN mkdir -p /config /var/log/radarr /var/cache/radarr && chown -R 65532:65532 /config /var/log/radarr /var/cache/radarr 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /config
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
@@ -59,4 +60,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

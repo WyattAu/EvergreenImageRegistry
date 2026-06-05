@@ -5,8 +5,7 @@ description = "Apache Cassandra - distributed NoSQL database"
 vendor = "Apache"
 source = "https://github.com/apache/cassandra"
 license = "Apache-2.0"
-tier = "2"
-
+tier = "standard"
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
 user = "65532:65532"
@@ -42,5 +41,4 @@ expose = [9042, 9101]
 "evergreen.hft.startup-timeout" = "3000ms"
 "evergreen.image.category" = "database"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "1"
-"evergreen.metrics.native" = "true"
+"evergreen.image.tier" = "standard""evergreen.metrics.native" = "true"

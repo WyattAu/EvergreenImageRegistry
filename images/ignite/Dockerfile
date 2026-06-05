@@ -40,6 +40,7 @@ RUN mkdir -p /opt/ignite || true
 COPY --from=builder /opt/apache-ignite-${VERSION}-bin /opt/ignite
 RUN chown -R 65532:65532 /opt/ignite /var/lib/ignite /var/log/ignite /var/cache/ignite 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/ignite
 EXPOSE 10800 11211 47100 47500
 
@@ -65,4 +66,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

@@ -18,6 +18,7 @@ RUN chmod +x /usr/local/bin/shim
 
 RUN apk add --no-cache ca-certificates curl unzip RUN mkdir -p /app && chown 65532:65532 /app 2>/dev/null
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 8200
 
@@ -49,4 +50,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

@@ -28,6 +28,7 @@ COPY --from=downloader /app /app
 COPY --from=downloader /var/log/node_exporter /var/log/node_exporter
 COPY --from=downloader /var/cache/node_exporter /var/cache/node_exporter
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 9100
 
@@ -63,4 +64,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

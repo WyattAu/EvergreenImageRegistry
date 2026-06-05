@@ -17,6 +17,7 @@ RUN apk add --no-cache php-8.4-fpm php-8.4 php-8.4-curl php-8.4-mbstring php-8.4
     mkdir -p /var/run/php-8.4 /var/www/html /var/log/nginx /var/cache/nginx && \
     chown -R 65532:65532 /var/www/html /var/log/nginx /var/cache/nginx /var/run/php-8.4
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /var/www/html
 EXPOSE 80 443
 
@@ -47,4 +48,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

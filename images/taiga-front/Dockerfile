@@ -25,6 +25,7 @@ COPY --from=builder /tmp/taiga-front/dist /var/www/taiga-front
 RUN mkdir -p /var/log/nginx /var/cache/nginx /var/www/taiga-front ; \
     chown -R 65532:65532 /var/www/taiga-front /var/log/nginx /var/cache/nginx
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /var/www/taiga-front
 EXPOSE 80 443
 
@@ -55,4 +56,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

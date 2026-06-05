@@ -23,6 +23,7 @@ COPY --from=shim /shim /shim
 COPY --from=downloader /tmp/MailHog /usr/local/bin/MailHog
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 ENV MH_SMTP_BIND_ADDR="0.0.0.0:1025"
 ENV MH_API_BIND_ADDR="0.0.0.0:8025"
@@ -51,4 +52,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

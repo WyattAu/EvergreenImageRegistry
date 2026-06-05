@@ -32,6 +32,7 @@ ARG VERSION=0.8.10
 COPY --from=builder /tmp/r2d2 /usr/local/bin/r2d2
 
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 EXPOSE 6379
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
@@ -59,4 +60,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

@@ -37,6 +37,7 @@ RUN addgroup -S -g 65532 libsql 2>/dev/null || true && \
     chown -R 65532:65532 /opt/libsql /var/lib/libsql
 
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /var/lib/libsql
 EXPOSE 8080
 
@@ -61,4 +62,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

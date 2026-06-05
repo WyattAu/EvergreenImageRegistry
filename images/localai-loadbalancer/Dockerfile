@@ -28,6 +28,7 @@ COPY --from=upstream /build/localai-loadbalancer /usr/local/bin/localai-loadbala
 RUN chmod +x /usr/local/bin/localai-loadbalancer && mkdir -p /app /var/log/localai-loadbalancer /var/cache/localai-loadbalancer && chown -R 65532:65532 /app /var/log/localai-loadbalancer /var/cache/localai-loadbalancer
 
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 
 WORKDIR /app
 
@@ -61,4 +62,7 @@ LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
 
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

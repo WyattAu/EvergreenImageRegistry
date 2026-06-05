@@ -37,5 +37,4 @@ expose = [2379, 9101]
 "evergreen.image.category" = "database"
 "evergreen.image.note" = "Empty etcd for bootstrapping new clusters. Mount persistent volume at /etcd-data."
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "1"
-"evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"

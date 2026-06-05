@@ -45,6 +45,7 @@ RUN adduser -u 65532 -D -h /opt/onlyoffice -s /bin/false onlyoffice 2>/dev/null 
     chown -R 65532:65532 /var/log/onlyoffice /var/lib/onlyoffice \
         /opt/onlyoffice /var/run/onlyoffice 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/onlyoffice
 EXPOSE 80 443
 
@@ -75,4 +76,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

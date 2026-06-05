@@ -35,6 +35,7 @@ COPY --from=builder /opt/duplicati /opt/duplicati
 RUN mkdir -p /app /var/log/duplicati /var/cache/duplicati /root/.config/Duplicati ; 2>/dev/null || true ; \
     chown -R 65532:65532 /app /var/log/duplicati /var/cache/duplicati
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 ENV DOTNET_ROOT=/usr/share/dotnet
 ENV PATH="$PATH:/usr/share/dotnet"
@@ -67,4 +68,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

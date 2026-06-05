@@ -24,6 +24,7 @@ COPY --from=builder /var/log/prometheus /var/log/prometheus
 COPY --from=builder /var/cache/prometheus /var/cache/prometheus
 COPY --from=shim /shim /shim
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 9090 9101
 
@@ -62,4 +63,7 @@ LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

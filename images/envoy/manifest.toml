@@ -30,5 +30,4 @@ expose = [9901, 9101]
 "evergreen.health.type" = "exec"
 "evergreen.image.category" = "proxy"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "1"
-"evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "critical""evergreen.metrics.native" = "ztunnel"

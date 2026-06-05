@@ -43,6 +43,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://search.maven.org/remotecontent
     adduser -u 65532 -G zipkin -D -D -h /opt/zipkin -s /bin/false zipkin 2>/dev/null || true && \
     chown -R 65532:65532 /opt/zipkin /var/log/zipkin
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/zipkin
 EXPOSE 9411
 
@@ -69,4 +70,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

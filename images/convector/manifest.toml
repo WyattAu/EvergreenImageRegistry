@@ -30,5 +30,4 @@ expose = [8008, 9101]
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "tcp"
 "evergreen.image.category" = "blockchain"
-"evergreen.image.tier" = "3"
-"evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"

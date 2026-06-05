@@ -26,6 +26,7 @@ COPY --from=downloader /opt/photoprism /opt/photoprism
 RUN adduser -u 65532 -D photoprism 2>/dev/null || true && \
     mkdir -p /app /var/log/photoprism /var/cache/photoprism && chown -R 65532:65532 /app /var/log/photoprism /var/cache/photoprism /opt/photoprism
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 2282
 
@@ -44,4 +45,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

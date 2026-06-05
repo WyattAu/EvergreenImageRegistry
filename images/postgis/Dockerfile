@@ -31,6 +31,7 @@ COPY --from=builder --chown=65532:65532 /app /app
 COPY --from=builder --chown=65532:65532 /var/log/postgres /var/log/postgres
 COPY --from=builder --chown=65532:65532 /var/cache/postgres /var/cache/postgres
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 5432
 
@@ -55,4 +56,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

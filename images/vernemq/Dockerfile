@@ -22,6 +22,7 @@ RUN addgroup -S -g 2 nogroup >/dev/null || true && \
     adduser -u 65532 -G nogroup -D -h /opt/vernemq -s /bin/false vernemq 2>/dev/null || true && \
     chown -R 65532:65532 /opt/vernemq /app 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/vernemq
 EXPOSE 1883 4369 44053 8080
 
@@ -46,4 +47,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

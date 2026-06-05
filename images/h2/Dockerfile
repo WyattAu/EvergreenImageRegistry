@@ -36,6 +36,7 @@ COPY --from=builder /tmp/h2.jar /opt/h2/h2.jar
 RUN chown -R 65532:65532 /opt/h2 /var/lib/h2 /var/log/h2
 
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/h2
 EXPOSE 8082 9092
 
@@ -61,4 +62,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

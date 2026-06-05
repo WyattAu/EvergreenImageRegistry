@@ -31,6 +31,7 @@ COPY --from=builder /var/log/heartbeat /var/log/heartbeat
 COPY --from=builder /var/lib/heartbeat /var/lib/heartbeat
 COPY --from=builder /var/cache/heartbeat /var/cache/heartbeat
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/heartbeat
 EXPOSE 5066
 
@@ -62,4 +63,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

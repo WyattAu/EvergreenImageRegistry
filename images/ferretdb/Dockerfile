@@ -31,6 +31,7 @@ ARG VERSION=2.7.0
 COPY --from=builder /usr/local/bin/ferretdb /usr/local/bin/ferretdb
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 EXPOSE 27017 8080
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
@@ -57,4 +58,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

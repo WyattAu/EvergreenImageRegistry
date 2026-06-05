@@ -29,6 +29,7 @@ RUN apk add --no-cache nodejs-20 npm ca-certificates && \
 COPY --from=builder /build /app/codimd
 RUN chown -R 65532:65532 /app/codimd /var/log/codimd 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app/codimd
 ENV NODE_ENV="production"
 EXPOSE 3000
@@ -55,4 +56,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

@@ -30,6 +30,7 @@ COPY --from=builder /var/log/k3s-server /var/log/k3s-server
 COPY --from=builder /var/cache/k3s-server /var/cache/k3s-server
 COPY --from=builder /var/lib/rancher/k3s/server /var/lib/rancher/k3s/server
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 6443
 
@@ -57,4 +58,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

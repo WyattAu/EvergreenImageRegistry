@@ -40,6 +40,7 @@ COPY --from=builder /opt/questdb-${VERSION}-no-jre-bin /opt/questdb
 RUN addgroup -S -g 2 questdb>/dev/null || true && adduser -u 65532 -G questdb -D -s /bin/false questdb 2>/dev/null || true && \
     chown -R questdb:questdb /opt/questdb /var/lib/questdb /var/log/questdb /var/cache/questdb 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/questdb
 EXPOSE 9000 8812 9009
 
@@ -65,4 +66,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

@@ -30,6 +30,7 @@ RUN mkdir -p /var/spool/postfix /var/log/postfix /etc/postfix ; \
     chown -R 65532:65532 /var/spool/postfix /var/log/postfix && \
     printf 'inet_interfaces = all\ndefault_process_limit = 10\nsmtpd_client_connection_rate_limit = 10\nqueue_run_delay = 300s\nminimal_backoff_time = 300s\nmaximal_backoff_time = 3600s\n' > /etc/postfix/main.cf.constrained
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /var/spool/postfix
 EXPOSE 25
 
@@ -55,4 +56,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

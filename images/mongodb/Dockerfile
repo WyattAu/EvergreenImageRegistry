@@ -32,6 +32,7 @@ RUN adduser -D -u 65532 -s /bin/false mongodb 2>/dev/null || true && \
     chown -R 65532:65532 /app /var/log/mongod /var/cache/mongod /data/db
 
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 27017
 
@@ -57,4 +58,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

@@ -43,6 +43,7 @@ ENV NEO4J_HOME=/opt/neo4j
 ENV PATH="${NEO4J_HOME}/bin:${JAVA_HOME}/bin:${PATH}"
 
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 7474
 
@@ -79,4 +80,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

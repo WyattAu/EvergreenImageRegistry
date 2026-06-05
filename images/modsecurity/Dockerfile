@@ -24,6 +24,7 @@ RUN apk add --no-cache apache2 ca-certificates && \
     adduser -u 65532 -D appuser 2>/dev/null || true && \
     mkdir -p /app /var/log/apache2 /var/cache/apache2 && chown -R appuser:appuser /app /var/log/apache2 /var/cache/apache2 2>/dev/null || true
 USER appuser
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 80
 
@@ -49,4 +50,7 @@ LABEL evergreen.security.seccomp="runtime-default"
 EXPOSE 9101
 
 USER 65532:65532
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

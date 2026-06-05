@@ -41,6 +41,7 @@ RUN apk add --no-cache ca-certificates curl && \
 COPY --from=builder /opt/apache-hive-${VERSION}-bin /opt/hive
 RUN chown -R 65532:65532 /opt/hive /var/lib/hive /var/log/hive /var/cache/hive
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/hive
 EXPOSE 9083
 
@@ -66,4 +67,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

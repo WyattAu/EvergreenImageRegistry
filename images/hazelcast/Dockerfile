@@ -37,6 +37,7 @@ RUN apk add --no-cache ca-certificates && \
     chown -R 65532:65532 /opt/hazelcast /var/log/hazelcast /var/lib/hazelcast
 COPY --from=builder /opt/hazelcast /opt/hazelcast
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/hazelcast
 EXPOSE 5701 5702 5703 8080
 ENV JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
@@ -63,4 +64,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

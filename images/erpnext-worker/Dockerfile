@@ -43,6 +43,7 @@ RUN groupadd -g 10000 erpnext 2>/dev/null || true && \
     mkdir -p /opt/erpnext /var/log/erpnext ; \
     chown -R 65532:65532 /opt/erpnext /var/log/erpnext 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/erpnext
 EXPOSE 8000 9000
 
@@ -69,4 +70,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

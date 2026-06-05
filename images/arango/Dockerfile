@@ -43,6 +43,7 @@ RUN mkdir -p /opt/arangodb 2>/dev/null || true
 COPY --from=builder /opt/arangodb-extracted /opt/arangodb
 RUN chown -R 65532:65532 /opt/arangodb /var/lib/arangodb /var/log/arangodb /var/cache/arangodb /var/lib/arangodb3-apps 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /var/lib/arangodb
 EXPOSE 8529
 
@@ -68,4 +69,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

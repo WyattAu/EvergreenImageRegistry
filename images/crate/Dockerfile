@@ -42,6 +42,7 @@ RUN apk add --no-cache ca-certificates python3 && \
 COPY --from=builder /opt/crate-${VERSION} /opt/crate
 RUN chown -R 65532:65532 /opt/crate /var/lib/crate /var/log/crate /var/cache/crate 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/crate
 EXPOSE 4200 5432
 
@@ -67,4 +68,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

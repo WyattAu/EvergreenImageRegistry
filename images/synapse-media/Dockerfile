@@ -35,6 +35,7 @@ RUN pip install --no-cache-dir "matrix-synapse[all]==${VERSION}"
 ENV PATH="/opt/venv/bin:${PATH}"
 RUN mkdir -p /data /var/log/synapse /var/cache/synapse && chown -R 65532:65532 /data /var/log/synapse /var/cache/synapse 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /data
 VOLUME /data
 EXPOSE 8008
@@ -61,4 +62,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

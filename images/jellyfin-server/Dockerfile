@@ -33,6 +33,7 @@ COPY --from=downloader --chown=65532:65532 /app /app
 RUN mkdir -p /config /cache /media /var/log/jellyfin-server /var/cache/jellyfin-server && \
     chown -R 65532:65532 /config /cache /media /var/log/jellyfin-server /var/cache/jellyfin-server 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /config
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
@@ -61,4 +62,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

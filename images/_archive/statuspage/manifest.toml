@@ -35,5 +35,4 @@ expose = [8080, 9101]
 "evergreen.hft.startup-timeout" = "2000ms"
 "evergreen.image.category" = "monitoring"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "1"
-"evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "critical""evergreen.metrics.native" = "ztunnel"

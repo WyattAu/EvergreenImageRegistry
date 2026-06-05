@@ -30,6 +30,7 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/qdrant /var/log/qdrant
 COPY --from=builder /var/cache/qdrant /var/cache/qdrant
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 6333 6334
 
@@ -59,4 +60,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

@@ -30,6 +30,7 @@ RUN apk add --no-cache php-8.4 php-8.4-fpm php-8.4-session php-8.4-mbstring php-
 COPY --from=builder /build /usr/share/webapps/roundcube
 RUN chown -R 65532:65532 /usr/share/webapps/roundcube /var/lib/roundcube /var/log/roundcube /var/run/php 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /usr/share/webapps/roundcube
 EXPOSE 8888
 
@@ -55,4 +56,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

@@ -26,6 +26,7 @@ RUN addgroup -S -g 2 nogroup >/dev/null || true && \
     adduser -u 65532 -G nogroup -D -h /data -s /bin/false nodered 2>/dev/null || true && \
     chown -R 65532:65532 /app /data 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /data
 EXPOSE 1880
 
@@ -50,4 +51,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

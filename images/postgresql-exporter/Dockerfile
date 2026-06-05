@@ -34,7 +34,10 @@ ENV SHIM_BACKUP_ENABLED="false" \
     SHIM_REPLICATION_ENABLED="false" \
     SHIM_MIGRATION_ENABLED="false" \
     SHIM_VAULT_ENABLED="false" \
-    SHIM_AUDIT_ENABLED="true"
+    SHIM_AUDIT_ENABLED="true" \
+    SHIM_METRICS_ENABLED="true" \
+    SHIM_ALERTING_ENABLED="false" \
+    SHIM_ALERTING_WEBHOOK_URL=""
 WORKDIR /app
 EXPOSE 9187
 
@@ -64,4 +67,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

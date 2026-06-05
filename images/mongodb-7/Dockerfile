@@ -37,6 +37,7 @@ COPY --from=builder /usr/local/bin/mongod /usr/local/bin/mongod
 COPY --from=builder /usr/local/bin/mongos /usr/local/bin/mongos
 COPY --from=builder /usr/local/bin/mongosh /usr/local/bin/mongosh
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /data/db
 EXPOSE 27017
 
@@ -62,4 +63,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

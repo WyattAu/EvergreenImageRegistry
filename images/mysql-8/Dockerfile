@@ -49,7 +49,12 @@ ENV SHIM_BACKUP_ENABLED="false" \
     SHIM_REPLICATION_ENABLED="false" \
     SHIM_MIGRATION_ENABLED="false" \
     SHIM_VAULT_ENABLED="false" \
-    SHIM_AUDIT_ENABLED="true"
+    SHIM_AUDIT_ENABLED="true" \
+    SHIM_METRICS_ENABLED="true" \
+    SHIM_ALERTING_ENABLED="false" \
+    SHIM_ALERTING_WEBHOOK_URL="" \
+    SHIM_SCHEDULER_ENABLED="true" \
+    SHIM_SCHEDULER_BACKUP_CRON="0 2 * * *"
 WORKDIR /app
 ENV MYSQL_DATA_DIR="/var/lib/mysql" \
     MYSQL_UNIX_PORT="/var/run/mysqld/mysqld.sock"
@@ -75,4 +80,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

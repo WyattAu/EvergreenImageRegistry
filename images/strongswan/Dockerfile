@@ -59,6 +59,7 @@ COPY --from=installer /var/log/strongswan /var/log/strongswan
 RUN mkdir -p /run/charon /etc/strongswan.d 2>/dev/null || true && \
     chown -R 65532:65532 /app /var/log/strongswan /run/charon 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 500 500/udp 4500 4500/udp
 
@@ -89,4 +90,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

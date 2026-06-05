@@ -68,6 +68,7 @@ COPY --from=config /app/data /app/data
 COPY --from=config /app/logs /app/logs
 COPY --from=config /app/plugins /app/plugins
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 3000
 ENV GF_PATHS_DATA=/app/data \
@@ -111,4 +112,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

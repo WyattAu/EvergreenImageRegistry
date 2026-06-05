@@ -42,5 +42,4 @@ expose = [5984, 9101]
 "evergreen.hft.startup-timeout" = "3000ms"
 "evergreen.image.category" = "database"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "1"
-"evergreen.metrics.native" = "true"
+"evergreen.image.tier" = "standard""evergreen.metrics.native" = "true"

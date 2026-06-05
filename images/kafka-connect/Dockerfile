@@ -37,6 +37,7 @@ RUN apk add --no-cache ca-certificates curl && \
     mkdir -p /opt/kafka/data /opt/kafka/logs /var/log/kafka /var/cache/kafka 2>/dev/null || true
 COPY --from=builder /tmp/kafka_${SCALA_VERSION}-${VERSION} /opt/kafka
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/kafka
 EXPOSE 8083
 
@@ -67,4 +68,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

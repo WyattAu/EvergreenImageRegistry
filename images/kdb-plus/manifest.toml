@@ -24,8 +24,7 @@ expose = [5000, 9101]
 "evergreen.health.type" = "none"
 "evergreen.image.category" = "database"
 "evergreen.image.note" = "KDB+ Plus is proprietary. Copy licensed q binary to /opt/kdb/q before use."
-"evergreen.image.tier" = "2"
-"evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"
 
 
 status = "wip"

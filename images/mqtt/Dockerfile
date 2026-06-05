@@ -24,6 +24,7 @@ RUN apk add --no-cache ca-certificates && \
     adduser -u 65532 -D mosquitto 2>/dev/null || true && \
     mkdir -p /app /var/log/mosquitto /var/cache/mosquitto && chown -R mosquitto:mosquitto /app /var/log/mosquitto /var/cache/mosquitto 2>/dev/null || true
 USER mosquitto
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 1883 9001
 
@@ -49,4 +50,7 @@ LABEL evergreen.security.seccomp="runtime-default"
 EXPOSE 9101
 
 USER 65532:65532
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

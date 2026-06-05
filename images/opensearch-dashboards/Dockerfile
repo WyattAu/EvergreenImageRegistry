@@ -135,6 +135,7 @@ RUN adduser -u 65532 -D opensearch-dashboards 2>/dev/null || true && \
 
 
 USER opensearch-dashboards
+ENV SHIM_METRICS_ENABLED="true"
 
 
 
@@ -279,4 +280,7 @@ USER 65532:65532
 
 
 
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

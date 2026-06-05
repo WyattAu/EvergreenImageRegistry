@@ -28,5 +28,4 @@ expose = [8080, 9101]
 "evergreen.health.path" = "/health"
 "evergreen.health.type" = "http"
 "evergreen.image.category" = "database"
-"evergreen.image.tier" = "1"
-"evergreen.metrics.native" = "prometheus"
+"evergreen.image.tier" = "standard""evergreen.metrics.native" = "prometheus"

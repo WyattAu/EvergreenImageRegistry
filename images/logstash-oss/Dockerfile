@@ -41,6 +41,7 @@ RUN apk add --no-cache ca-certificates wget && \
     mkdir -p /opt/logstash/data /opt/logstash/logs /var/log/logstash /var/cache/logstash 2>/dev/null || true
 COPY --from=builder /tmp/logstash-extracted /opt/logstash
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/logstash
 ENV LS_JAVA_OPTS="-Xms512m -Xmx512m"
 ENV PATH="/opt/logstash/bin:${PATH}"
@@ -73,4 +74,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

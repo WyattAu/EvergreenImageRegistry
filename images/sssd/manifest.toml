@@ -23,5 +23,4 @@ expose = [0, 9101]
 "evergreen.image.category" = "auth"
 "evergreen.image.note" = "SSSD requires privileged mode for PAM/NSS integration. Runs as root for PAM module access."
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "2"
-"evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"

@@ -29,15 +29,13 @@ DB_IMAGE_MAP = {
     "redis", "redis-6", "redis-7", "redis7", "redis-cluster", "redis-sentinel",
 }
 
-# Postgres/MariaDB/MySQL images for scheduler-shim (subset of DB_IMAGE_MAP)
+# Postgres/MariaDB/MySQL images for scheduler-shim
 SCHEDULER_IMAGES = {
     "postgres", "postgres-backup", "postgres-restore", "postgresql-patroni",
     "postgresql-14", "postgresql-15", "postgresql-16", "postgresql-17",
     "postgresql-18", "timescaledb",
     "mariadb", "mariadb-10", "mariadb-11", "mariadb-galera",
     "mysql", "mysql-8",
-    # Also include redis variants for scheduler
-    "redis", "redis-6", "redis-7", "redis7", "redis-cluster", "redis-sentinel",
 }
 
 PROMETHEUS_LABELS = (
@@ -46,21 +44,8 @@ PROMETHEUS_LABELS = (
     '      prometheus.io/path="/metrics"'
 )
 
-ALERTING_ENV = (
-    'SHIM_ALERTING_ENABLED="false" \\\n'
-    'SHIM_ALERTING_WEBHOOK_URL=""'
-)
-
-SCHEDULER_ENV = (
-    'SHIM_SCHEDULER_ENABLED="true" \\\n'
-    'SHIM_SCHEDULER_BACKUP_CRON="0 2 * * *"'
-)
-
-METRICS_ENV = 'SHIM_METRICS_ENABLED="true"'
-
 
 def detect_shim_type(content: str) -> str | None:
-    """Detect which shim type is wired in this Dockerfile."""
     lower = content.lower()
     if "evergreenshim/db-shim" in lower:
         return "db"
@@ -72,218 +57,149 @@ def detect_shim_type(content: str) -> str | None:
 
 
 def has_shim_wiring(content: str) -> bool:
-    """Check if Dockerfile has any shim COPY/ENTRYPOINT."""
     return ("COPY --from=shim" in content and
             ("/shim" in content or "/usr/local/bin/shim" in content))
 
 
-def has_env_block(content: str) -> bool:
-    """Check if final stage has an ENV block."""
-    lines = content.split("\n")
-    in_final = False
-    for line in lines:
-        stripped = line.strip()
-        if stripped.upper().startswith("FROM ") and " AS " not in stripped.upper():
-            in_final = True
-        if in_final and stripped.upper().startswith("ENV "):
-            return True
-    return False
-
-
-def find_user_line_index(lines: list) -> int | None:
-    """Find the index of the USER line in the final stage."""
-    final_from = -1
-    from_count = 0
+def find_last_from_line(lines: list) -> int:
+    """Find the last FROM line index (start of final stage)."""
+    last = 0
     for i, line in enumerate(lines):
-        stripped = line.strip()
-        if stripped.upper().startswith("FROM "):
-            from_count += 1
-            final_from = i
-    # USER line is typically after the last FROM
-    for i in range(final_from, len(lines)):
+        if line.strip().upper().startswith("FROM "):
+            last = i
+    return last
+
+
+def find_user_line(lines: list) -> int | None:
+    """Find the USER line in the final stage."""
+    final_start = find_last_from_line(lines)
+    for i in range(final_start, len(lines)):
         if lines[i].strip().upper().startswith("USER "):
             return i
     return None
 
 
-def find_env_end_index(lines: list) -> int | None:
-    """Find the end of the last ENV block in the final stage."""
-    final_from = -1
-    from_count = 0
-    for i, line in enumerate(lines):
-        stripped = line.strip()
-        if stripped.upper().startswith("FROM "):
-            from_count += 1
-            final_from = i
+def find_shim_env_block(lines: list) -> tuple[int, int] | None:
+    """Find the last ENV block that contains SHIM_ variables.
+    Returns (start_line_idx, end_line_idx) or None."""
+    final_start = find_last_from_line(lines)
+    result = None
 
-    env_start = None
-    for i in range(final_from, len(lines)):
+    i = final_start
+    while i < len(lines):
+        stripped = lines[i].strip()
+        # Detect start of ENV block
+        if stripped.upper().startswith("ENV "):
+            # Check if this ENV block contains SHIM_ vars
+            block_start = i
+            block_end = i
+            j = i + 1
+            while j < len(lines):
+                s = lines[j].strip()
+                if s.startswith('"') or s.startswith("SHIM_") or s.startswith("EVERGREEN") or s.startswith("PGDATA"):
+                    block_end = j
+                    j += 1
+                elif s == "":
+                    break
+                else:
+                    break
+            # Check if block has SHIM_ vars
+            block_text = "\n".join(lines[block_start:block_end + 1])
+            if "SHIM_" in block_text:
+                result = (block_start, block_end)
+            i = block_end + 1
+        else:
+            i += 1
+
+    return result
+
+
+def find_any_env_block(lines: list) -> tuple[int, int] | None:
+    """Find the last ENV block in the final stage."""
+    final_start = find_last_from_line(lines)
+    result = None
+
+    i = final_start
+    while i < len(lines):
         stripped = lines[i].strip()
         if stripped.upper().startswith("ENV "):
-            env_start = i
-        elif env_start is not None and (stripped.startswith('"') or stripped.startswith("SHIM_")):
-            continue
-        elif env_start is not None:
-            return i - 1
-    if env_start is not None:
-        return len(lines) - 1
-    return None
+            block_start = i
+            block_end = i
+            j = i + 1
+            while j < len(lines):
+                s = lines[j].strip()
+                if s.startswith('"') or s.startswith("SHIM_") or s.startswith("EVERGREEN") or s.startswith("PGDATA"):
+                    block_end = j
+                    j += 1
+                elif s == "":
+                    break
+                else:
+                    break
+            result = (block_start, block_end)
+            i = block_end + 1
+        else:
+            i += 1
+
+    return result
 
 
-def find_insert_point(lines: list) -> int:
-    """Find where to insert ENV block: after existing ENV or after USER line."""
-    # Check for existing ENV block
-    env_end = find_env_end_index(lines)
-    if env_end is not None:
-        return env_end + 1
+def add_var_to_env_block(content: str, var_name: str, var_value: str) -> str:
+    """Add a variable to the SHIM_ ENV block, or create new ENV block after USER."""
+    lines = content.split("\n")
+    var_line = f'{var_name}="{var_value}"'
 
-    # Find USER line
-    user_idx = find_user_line_index(lines)
+    # Find SHIM_ ENV block first
+    env_range = find_shim_env_block(lines)
+
+    if env_range is not None:
+        env_start, env_end = env_range
+        last_line = lines[env_end]
+        if last_line.rstrip().endswith("\\"):
+            lines[env_end] = last_line.rstrip().rstrip("\\").rstrip()
+            lines.insert(env_end + 1, f'    {var_line}')
+        else:
+            lines[env_end] = last_line + " \\"
+            lines.insert(env_end + 1, f'    {var_line}')
+        return "\n".join(lines)
+
+    # Find USER line and add new ENV block after it
+    user_idx = find_user_line(lines)
     if user_idx is not None:
-        return user_idx + 1
+        lines.insert(user_idx + 1, f"ENV {var_line}")
+        return "\n".join(lines)
 
-    return len(lines)
+    # Fallback: add at end
+    lines.append(f"ENV {var_line}")
+    return "\n".join(lines)
 
 
 def add_metrics_env(content: str) -> str:
-    """Add SHIM_METRICS_ENABLED=true to ENV block."""
     if "SHIM_METRICS_ENABLED" in content:
         return content
-
-    lines = content.split("\n")
-    insert_idx = find_insert_point(lines)
-
-    # Check if there's an existing ENV block at or near insert_idx
-    # Look backward for ENV
-    env_start = None
-    for i in range(insert_idx - 1, -1, -1):
-        stripped = lines[i].strip()
-        if stripped.upper().startswith("ENV "):
-            env_start = i
-            break
-        elif stripped == "":
-            continue
-        else:
-            break
-
-    if env_start is not None:
-        # Find end of this ENV block
-        env_end = env_start
-        for i in range(env_start + 1, len(lines)):
-            stripped = lines[i].strip()
-            if stripped.startswith('"') or stripped.startswith("SHIM_") or stripped.startswith("EVERGREEN"):
-                env_end = i
-            else:
-                break
-        # Add to existing ENV block
-        last_env_line = lines[env_end]
-        if last_env_line.rstrip().endswith("\\"):
-            lines[env_end] = last_env_line.rstrip().rstrip("\\").rstrip()
-            lines.insert(env_end + 1, f'    {METRICS_ENV}')
-        else:
-            lines[env_end] = last_env_line + " \\"
-            lines.insert(env_end + 1, f'    {METRICS_ENV}')
-        return "\n".join(lines)
-    else:
-        # Add new ENV block
-        lines.insert(insert_idx, f"ENV {METRICS_ENV}")
-        return "\n".join(lines)
+    return add_var_to_env_block(content, "SHIM_METRICS_ENABLED", "true")
 
 
 def add_alerting_env(content: str) -> str:
-    """Add alerting-shim webhook env vars to DB images."""
     if "SHIM_ALERTING_ENABLED" in content:
         return content
-
-    lines = content.split("\n")
-    insert_idx = find_insert_point(lines)
-
-    # Check for existing ENV block
-    env_start = None
-    for i in range(insert_idx - 1, -1, -1):
-        stripped = lines[i].strip()
-        if stripped.upper().startswith("ENV "):
-            env_start = i
-            break
-        elif stripped == "":
-            continue
-        else:
-            break
-
-    if env_start is not None:
-        env_end = env_start
-        for i in range(env_start + 1, len(lines)):
-            stripped = lines[i].strip()
-            if stripped.startswith('"') or stripped.startswith("SHIM_") or stripped.startswith("EVERGREEN"):
-                env_end = i
-            else:
-                break
-        last_env_line = lines[env_end]
-        if last_env_line.rstrip().endswith("\\"):
-            lines[env_end] = last_env_line.rstrip().rstrip("\\").rstrip()
-            for j, var_line in enumerate(ALERTING_ENV.split("\n")):
-                lines.insert(env_end + 1 + j, f'    {var_line}')
-        else:
-            lines[env_end] = last_env_line + " \\"
-            for j, var_line in enumerate(ALERTING_ENV.split("\n")):
-                lines.insert(env_end + 1 + j, f'    {var_line}')
-        return "\n".join(lines)
-    else:
-        lines.insert(insert_idx, f"ENV {ALERTING_ENV}")
-        return "\n".join(lines)
+    content = add_var_to_env_block(content, "SHIM_ALERTING_ENABLED", "false")
+    content = add_var_to_env_block(content, "SHIM_ALERTING_WEBHOOK_URL", "")
+    return content
 
 
 def add_scheduler_env(content: str) -> str:
-    """Add scheduler-shim env vars to DB images."""
     if "SHIM_SCHEDULER_ENABLED" in content:
         return content
-
-    lines = content.split("\n")
-    insert_idx = find_insert_point(lines)
-
-    # Check for existing ENV block
-    env_start = None
-    for i in range(insert_idx - 1, -1, -1):
-        stripped = lines[i].strip()
-        if stripped.upper().startswith("ENV "):
-            env_start = i
-            break
-        elif stripped == "":
-            continue
-        else:
-            break
-
-    if env_start is not None:
-        env_end = env_start
-        for i in range(env_start + 1, len(lines)):
-            stripped = lines[i].strip()
-            if stripped.startswith('"') or stripped.startswith("SHIM_") or stripped.startswith("EVERGREEN"):
-                env_end = i
-            else:
-                break
-        last_env_line = lines[env_end]
-        if last_env_line.rstrip().endswith("\\"):
-            lines[env_end] = last_env_line.rstrip().rstrip("\\").rstrip()
-            for j, var_line in enumerate(SCHEDULER_ENV.split("\n")):
-                lines.insert(env_end + 1 + j, f'    {var_line}')
-        else:
-            lines[env_end] = last_env_line + " \\"
-            for j, var_line in enumerate(SCHEDULER_ENV.split("\n")):
-                lines.insert(env_end + 1 + j, f'    {var_line}')
-        return "\n".join(lines)
-    else:
-        lines.insert(insert_idx, f"ENV {SCHEDULER_ENV}")
-        return "\n".join(lines)
+    content = add_var_to_env_block(content, "SHIM_SCHEDULER_ENABLED", "true")
+    content = add_var_to_env_block(content, "SHIM_SCHEDULER_BACKUP_CRON", "0 2 * * *")
+    return content
 
 
 def add_prometheus_labels(content: str) -> str:
-    """Add Prometheus scrape labels before STOPSIGNAL or at end."""
     if 'prometheus.io/scrape' in content:
         return content
-
     lines = content.split("\n")
 
-    # Insert before STOPSIGNAL or at end
     insert_idx = len(lines)
     for i in range(len(lines) - 1, -1, -1):
         if lines[i].strip().upper().startswith("STOPSIGNAL"):
@@ -297,13 +213,11 @@ def add_prometheus_labels(content: str) -> str:
 
 
 def process_image(image_dir: Path, dry_run: bool = False) -> tuple[str, str]:
-    """Process a single image directory. Returns (status, message)."""
     dockerfile = image_dir / "Dockerfile"
     if not dockerfile.exists():
         return "skip", "no Dockerfile"
 
     content = dockerfile.read_text()
-
     if not has_shim_wiring(content):
         return "skip", "no shim wiring"
 
@@ -364,7 +278,6 @@ def main():
         print(f"ERROR: {IMAGES_DIR} does not exist", file=sys.stderr)
         sys.exit(1)
 
-    # Collect image dirs
     image_dirs = sorted([
         d for d in IMAGES_DIR.iterdir()
         if d.is_dir() and not d.name.startswith("_")
@@ -397,7 +310,7 @@ def main():
             print(f"  UPDATE {image_dir.name}: {msg}")
         elif status == "would-update":
             print(f"  WOULD  {image_dir.name}: {msg}")
-        elif status == "skip" and msg != "already up to date" and msg != "no shim wiring":
+        elif status == "skip" and msg not in ("already up to date", "no shim wiring"):
             print(f"  SKIP   {image_dir.name}: {msg}")
 
     print()

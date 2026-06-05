@@ -35,6 +35,7 @@ COPY --from=builder /var/log/prometheus-blackbox-exporter /var/log/prometheus-bl
 COPY --from=builder /var/cache/prometheus-blackbox-exporter /var/cache/prometheus-blackbox-exporter
 COPY --from=builder /etc/prometheus-blackbox-exporter /etc/prometheus-blackbox-exporter
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 9115
 
@@ -70,4 +71,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

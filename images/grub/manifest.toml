@@ -23,5 +23,4 @@ expose = [9101]
 "evergreen.image.category" = "meta"
 "evergreen.image.note" = "Bootloader config directory, not a container image."
 "evergreen.image.status" = "reference"
-"evergreen.image.tier" = "3"
-"evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"

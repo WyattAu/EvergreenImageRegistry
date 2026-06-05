@@ -29,6 +29,7 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /var/log/kafka-ui /var/log/kafka-ui
 COPY --from=builder /var/cache/kafka-ui /var/cache/kafka-ui
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/kafka-ui
 EXPOSE 8080
 
@@ -60,4 +61,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

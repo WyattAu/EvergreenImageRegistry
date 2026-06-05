@@ -23,6 +23,7 @@ COPY --from=downloader /tmp/gogs-bin/gogs /usr/local/bin/gogs
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 3000
 LABEL org.opencontainers.image.title="gogs" \
@@ -42,6 +43,9 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \

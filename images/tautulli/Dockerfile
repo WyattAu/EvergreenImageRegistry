@@ -32,6 +32,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN mkdir -p /app /var/log/tautulli /var/cache/tautulli ; \
     chown -R 65532:65532 /app /var/log/tautulli /var/cache/tautulli /opt/tautulli
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 8181
 
@@ -62,4 +63,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

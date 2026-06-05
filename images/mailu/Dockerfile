@@ -34,6 +34,7 @@ COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 RUN mkdir -p /app /var/log/mailu /var/cache/mailu /data && chown -R 65532:65532 /app /var/log/mailu /var/cache/mailu /data 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 8080
 LABEL org.opencontainers.image.title="mailu"       org.opencontainers.image.description="Mailu - self-hosted email server suite"       org.opencontainers.image.version="2.0.0"       org.opencontainers.image.vendor="Mailu"       org.opencontainers.image.source="https://github.com/Mailu/Mailu"       evergreen.image.tier="2"       evergreen.constraint.nonroot="true"       evergreen.constraint.debian-slim="true"
@@ -46,6 +47,9 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \

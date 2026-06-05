@@ -18,6 +18,7 @@ COPY --from=shim /shim /shim
 COPY --from=downloader /tmp/cass-operator /usr/local/bin/cass-operator
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 8080 8443
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
@@ -42,4 +43,7 @@ LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

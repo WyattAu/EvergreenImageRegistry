@@ -35,6 +35,7 @@ COPY --from=builder /var/lib/arangodb3 /var/lib/arangodb3
 COPY --from=builder /var/log/arangodb3 /var/log/arangodb3
 
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 8529
 
@@ -73,4 +74,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

@@ -24,6 +24,7 @@ RUN apk add --no-cache ca-certificates && \
     adduser -u 65532 -D qbittorrent 2>/dev/null || true && \
     mkdir -p /app /var/log/qbittorrent-nox /var/cache/qbittorrent-nox && chown -R qbittorrent:qbittorrent /app /var/log/qbittorrent-nox /var/cache/qbittorrent-nox 2>/dev/null || true
 USER qbittorrent
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 8080
 
@@ -49,4 +50,7 @@ LABEL evergreen.security.seccomp="runtime-default"
 EXPOSE 9101
 
 USER 65532:65532
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

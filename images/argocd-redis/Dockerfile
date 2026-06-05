@@ -43,6 +43,7 @@ RUN apk add --no-cache ca-certificates && addgroup -S -g 10000 2>/dev/null && ad
 COPY --from=builder /tmp/redis-7.2.4/src/redis /usr/local/bin/redis
 RUN mkdir -p /data && chown -R 65532:65532 /data 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /data
 EXPOSE 6379
 
@@ -68,4 +69,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

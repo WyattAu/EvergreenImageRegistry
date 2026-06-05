@@ -34,6 +34,7 @@ EXPOSE 3000 22
 CMD ["-c", "/usr/local/bin/forgejo", "--", "wget -qO- http://localhost:3000/ || exit 1"]
 
 USER 1000:1000
+ENV SHIM_METRICS_ENABLED="true"
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
 
@@ -51,4 +52,7 @@ LABEL evergreen.health.type="http"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

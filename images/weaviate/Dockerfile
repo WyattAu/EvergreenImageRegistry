@@ -29,6 +29,7 @@ RUN apk add --no-cache wget ca-certificates && \
 RUN adduser -u 65532 -D weaviate 2>/dev/null || true && \
     mkdir -p /app /var/log/weaviate /var/cache/weaviate && chown -R weaviate:weaviate /app /var/log/weaviate /var/cache/weaviate /opt/weaviate 2>/dev/null || true
 USER weaviate
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 8080
 
@@ -54,4 +55,7 @@ LABEL evergreen.security.seccomp="runtime-default"
 EXPOSE 9101
 
 USER 65532:65532
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

@@ -26,6 +26,7 @@ RUN ln -sf /usr/lib/node_modules/homebridge/bin/homebridge /usr/local/bin/homebr
     adduser -u 65532 -G appuser -D -h /homebridge -s /bin/false homebridge 2>/dev/null || true && \
     chown -R 65532:65532 /homebridge /app /usr/lib/node_modules 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /homebridge
 EXPOSE 51826
 
@@ -49,4 +50,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

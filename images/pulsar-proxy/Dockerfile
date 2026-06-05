@@ -34,6 +34,7 @@ RUN apk add --no-cache ca-certificates curl && \
     mkdir -p /opt/pulsar/data /opt/pulsar/logs /var/log/pulsar /var/cache/pulsar 2>/dev/null || true
 COPY --from=builder /tmp/apache-pulsar-${VERSION} /opt/pulsar
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/pulsar
 EXPOSE 6650 8080
 
@@ -65,4 +66,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

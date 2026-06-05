@@ -24,6 +24,7 @@ COPY --from=upstream /usr/lib/scylla /usr/lib/scylla
 COPY --from=upstream /etc/scylla /etc/scylla
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /var/lib/scylla
 EXPOSE 9042 9160 10000
 
@@ -48,4 +49,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

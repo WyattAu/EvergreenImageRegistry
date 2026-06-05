@@ -28,6 +28,7 @@ RUN apk add --no-cache ca-certificates && \
     adduser -D -u 65532 appuser 2>/dev/null || true && \
     mkdir -p /app /var/log/openvpn /var/cache/openvpn 2>/dev/null || true
 USER appuser
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 COPY --from=downloader /usr/sbin/openvpn /usr/local/bin/openvpn
 EXPOSE 1194
@@ -56,4 +57,7 @@ LABEL evergreen.security.seccomp="runtime-default"
 EXPOSE 9101
 
 USER 65532:65532
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

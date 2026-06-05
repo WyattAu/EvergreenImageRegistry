@@ -22,5 +22,4 @@ expose = [9101]
 "evergreen.health.type" = "none"
 "evergreen.image.note" = "Stub image. Update with apk add or binary COPY instructions."
 "evergreen.image.status" = "stub"
-"evergreen.image.tier" = "3"
-"evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"

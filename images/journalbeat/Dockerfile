@@ -29,6 +29,7 @@ COPY --from=builder /var/log/journalbeat /var/log/journalbeat
 COPY --from=builder /var/lib/journalbeat /var/lib/journalbeat
 COPY --from=builder /var/cache/journalbeat /var/cache/journalbeat
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/journalbeat
 EXPOSE 5066
 
@@ -60,4 +61,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

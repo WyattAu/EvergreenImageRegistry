@@ -35,6 +35,7 @@ RUN microdnf install -y python3 ca-certificates && \
 COPY --from=builder /opt/venv /opt/venv
 RUN chown -R 65532:65532 /opt/venv /var/lib/dnsvalidator /var/log/dnsvalidator
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /var/lib/dnsvalidator
 EXPOSE 8080
 
@@ -59,4 +60,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

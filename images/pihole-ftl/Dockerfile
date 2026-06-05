@@ -29,6 +29,7 @@ COPY --from=builder /var/log/pihole-FTL /var/log/pihole-FTL
 COPY --from=builder /var/lib/pihole-FTL /var/lib/pihole-FTL
 
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 53 53/udp 4711
 
@@ -61,4 +62,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

@@ -23,5 +23,4 @@ expose = [9101]
 "evergreen.image.category" = "base"
 "evergreen.image.note" = "Musl libc base for static binary builds. Use for Rust/C++ static targets."
 "evergreen.image.status" = "reference"
-"evergreen.image.tier" = "3"
-"evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"

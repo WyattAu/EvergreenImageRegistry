@@ -37,6 +37,7 @@ COPY --from=builder /var/log/snmp_exporter /var/log/snmp_exporter
 COPY --from=builder /var/cache/snmp_exporter /var/cache/snmp_exporter
 COPY --from=builder /etc/snmp_exporter /etc/snmp_exporter
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 9116
 
@@ -73,4 +74,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

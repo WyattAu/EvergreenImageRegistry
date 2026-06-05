@@ -38,6 +38,7 @@ RUN apk add --no-cache ca-certificates curl && \
     mkdir -p /opt/splunkforwarder/var/log/splunk /opt/splunkforwarder/var/run/splunk 2>/dev/null || true
 COPY --from=builder /tmp/splunkforwarder /opt/splunkforwarder
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/splunkforwarder
 EXPOSE 8089 9997
 
@@ -69,4 +70,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

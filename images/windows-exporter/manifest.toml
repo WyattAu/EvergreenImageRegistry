@@ -35,8 +35,7 @@ expose = [9182, 9101]
 "evergreen.image.category" = "monitoring"
 "evergreen.image.note" = "This is a stub - windows-exporter only runs on Windows. Use prometheus-node-exporter for Linux."
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "1"
-"evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "critical""evergreen.metrics.native" = "ztunnel"
 
 
 status = "wip"

@@ -41,6 +41,7 @@ COPY --from=builder /tmp/redisearch-src/bin/redisearch.so /opt/redis/modules/red
 COPY --from=redis /usr/bin/redis-server /usr/local/bin/redis-server
 COPY --from=redis /usr/lib/redis /usr/local/lib/redis
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /var/lib/redis
 EXPOSE 6379
 
@@ -66,4 +67,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

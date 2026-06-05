@@ -5,8 +5,7 @@ description = "MySQL Backup - automated backup solution for MySQL"
 vendor = "Community"
 source = "https://github.com/databack/mysql-backup4sh"
 license = "Apache-2.0"
-tier = "3"
-
+tier = "standard"
 [build]
 base = "cgr.dev/chainguard/wolfi-base:latest"
 user = "65532:65532"
@@ -30,5 +29,4 @@ expose = [9101]
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"
-"evergreen.image.tier" = "1"
-"evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"

@@ -37,7 +37,8 @@ USER 65532:65532
 ENV SHIM_CACHE_ENABLED="true" \
     SHIM_CACHE_MAX_ENTRIES="10000" \
     SHIM_CACHE_DEFAULT_TTL="300" \
-    SHIM_CACHE_EVICTION="lru"
+    SHIM_CACHE_EVICTION="lru" \
+    SHIM_METRICS_ENABLED="true"
 WORKDIR /data
 EXPOSE 6379 16379
 
@@ -61,4 +62,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

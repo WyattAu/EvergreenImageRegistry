@@ -61,6 +61,7 @@ COPY --from=builder /etc/unbound /etc/unbound
 RUN mkdir -p /app /var/log/unbound /var/cache/unbound /run/unbound ; \
     chown -R 65532:65532 /app /var/log/unbound /var/cache/unbound /run/unbound
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 53 53/udp 853 853/udp
 
@@ -92,4 +93,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

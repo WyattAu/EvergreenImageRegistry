@@ -5,8 +5,7 @@ description = "Grafana Lite - lightweight Grafana dashboard"
 vendor = "Grafana Labs"
 source = "https://github.com/grafana/grafana"
 license = "Apache-2.0"
-tier = "3"
-
+tier = "standard"
 [build]
 base = "scratch"
 user = "65532:65532"
@@ -43,5 +42,4 @@ expose = [3000, 9101]
 "evergreen.hft.shutdown-timeout" = "5s"
 "evergreen.hft.signal-handling" = "native"
 "evergreen.hft.startup-timeout" = "10000ms"
-"evergreen.image.tier" = "1"
-"evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"

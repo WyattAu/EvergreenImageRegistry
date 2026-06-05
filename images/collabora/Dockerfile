@@ -23,6 +23,7 @@ RUN mkdir -p /opt/collaboraoffice /usr/local/bin /etc/loolwsd /tmp/collabora-lib
 COPY --from=upstream /opt/collaboraoffice/ /opt/collaboraoffice/
 
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 
 EXPOSE 9980
@@ -54,4 +55,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

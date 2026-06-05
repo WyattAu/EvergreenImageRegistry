@@ -30,5 +30,4 @@ expose = [9092, 9101]
 "evergreen.health.type" = "http"
 "evergreen.image.category" = "messaging"
 "evergreen.image.status" = "functional"
-"evergreen.image.tier" = "1"
-"evergreen.metrics.native" = "true"
+"evergreen.image.tier" = "critical""evergreen.metrics.native" = "true"

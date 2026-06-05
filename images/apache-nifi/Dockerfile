@@ -40,6 +40,7 @@ RUN mkdir -p /opt/nifi || true
 COPY --from=builder /opt/nifi-${VERSION} /opt/nifi
 RUN chown -R 65532:65532 /opt/nifi /var/lib/nifi /var/log/nifi /var/cache/nifi 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/nifi
 EXPOSE 8443
 
@@ -65,4 +66,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

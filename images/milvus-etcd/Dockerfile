@@ -21,6 +21,7 @@ RUN chmod +x /usr/local/bin/shim
 
 RUN apk add --no-cache etcd ca-certificates
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 EXPOSE 2379 2380
 LABEL org.opencontainers.image.title="milvus-etcd" \
       org.opencontainers.image.version="3.5.17" \
@@ -44,6 +45,9 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \

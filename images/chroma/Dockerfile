@@ -27,6 +27,7 @@ RUN apk add --no-cache ca-certificates git build-base && \
     adduser -u 65532 -D chroma 2>/dev/null || true && \
     mkdir -p /app /var/log/chroma /var/cache/chroma && chown -R chroma:chroma /app /var/log/chroma /var/cache/chroma 2>/dev/null || true
 USER chroma
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 8000
 
@@ -52,4 +53,7 @@ LABEL evergreen.security.seccomp="runtime-default"
 EXPOSE 9101
 
 USER 65532:65532
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

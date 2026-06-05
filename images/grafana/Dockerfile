@@ -39,6 +39,7 @@ RUN mkdir -p /opt/grafana/bin /var/lib/grafana /var/log/grafana /etc/grafana 2>/
 COPY --from=shim /shim /usr/local/bin/shim
 RUN chmod +x /usr/local/bin/shim
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /opt/grafana
 EXPOSE 3000 9101
 
@@ -66,4 +67,7 @@ LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

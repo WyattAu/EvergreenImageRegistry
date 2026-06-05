@@ -34,6 +34,7 @@ RUN apk add --no-cache ca-certificates curl && \
 COPY --from=downloader --chown=65532:65532 /app /app
 RUN mkdir -p /var/log/airsonic-advanced /var/cache/airsonic-advanced && chown -R 65532:65532 /var/log/airsonic-advanced /var/cache/airsonic-advanced 2>/dev/null || true
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 4040
 
@@ -57,4 +58,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

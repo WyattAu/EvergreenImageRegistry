@@ -34,6 +34,7 @@ COPY --from=builder /var/log/prometheus-kafka-exporter /var/log/prometheus-kafka
 COPY --from=builder /var/cache/prometheus-kafka-exporter /var/cache/prometheus-kafka-exporter
 COPY --from=builder /etc/prometheus-kafka-exporter /etc/prometheus-kafka-exporter
 USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 9308
 
@@ -69,4 +70,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

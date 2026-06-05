@@ -44,7 +44,7 @@ jobs:
             .
       - name: Sign immutable tag
         if: ${{ !inputs.dry_run }}
-        uses: sigstore/cosign-installer@v4
+        uses: sigstore/cosign-installer@v4.1.2
       - name: Sign with keyless OIDC
         if: ${{ !inputs.dry_run }}
         run: |

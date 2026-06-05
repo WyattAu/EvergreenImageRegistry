@@ -51,7 +51,7 @@ jobs:
     name: Discover Critical
     runs-on: ubuntu-latest
     timeout-minutes: 2
-    if: inputs.tier == '' || inputs.tier == 'critical'
+    if: ${{ !inputs.tier || inputs.tier == 'critical' || inputs.tier == 'all' }}
     outputs:
       matrix: ${{ steps.discover.outputs.matrix }}
       total: ${{ steps.discover.outputs.total }}
@@ -68,7 +68,7 @@ jobs:
     name: Discover Standard
     runs-on: ubuntu-latest
     timeout-minutes: 2
-    if: inputs.tier == '' || inputs.tier == 'standard'
+    if: ${{ !inputs.tier || inputs.tier == 'standard' || inputs.tier == 'all' }}
     outputs:
       matrix: ${{ steps.discover.outputs.matrix }}
       total: ${{ steps.discover.outputs.total }}
@@ -85,7 +85,7 @@ jobs:
     name: Discover Community
     runs-on: ubuntu-latest
     timeout-minutes: 2
-    if: inputs.tier == '' || inputs.tier == 'community'
+    if: ${{ !inputs.tier || inputs.tier == 'community' || inputs.tier == 'all' }}
     outputs:
       matrix: ${{ steps.discover.outputs.matrix }}
       total: ${{ steps.discover.outputs.total }}

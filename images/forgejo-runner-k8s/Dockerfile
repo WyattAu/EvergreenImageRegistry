@@ -36,12 +36,8 @@ RUN CGO_ENABLED=1 go build \
     .
 
 # ── Stage 2: Runtime ────────────────────────────────────────
-# NOTE: Alpine is used here intentionally because CGO-linked K8s
-# client libraries require glibc. Wolfi/wasi cannot support CGO.
-# This image is a CI tool, not a production service.
-# When act_runner adds native K8s executor without CGO,
-# we will migrate to the wolfi-based distroless image.
-FROM alpine:3.21
+# Wolfi-base provides glibc (required by CGO-linked K8s client libs).
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 # Runtime deps: git (checkout), bash (workflows), nodejs (checkout action),
 # curl (cache/download actions), ca-certificates (HTTPS)
@@ -56,5 +52,6 @@ RUN apk add --no-cache \
 
 COPY --from=builder /act_runner /usr/local/bin/act_runner
 
+USER 65532:65532
 ENTRYPOINT ["/usr/local/bin/act_runner"]
 CMD ["daemon"]

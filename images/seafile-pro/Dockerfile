@@ -4,7 +4,7 @@ ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS builder
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 RUN apk add --no-cache python3 py3-pip ca-certificates curl && \
     python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"

@@ -27,7 +27,7 @@ jobs:
     outputs:
       digest: ${{ steps.push.outputs.digest }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Resolve version
         id: version
@@ -86,7 +86,7 @@ jobs:
         run: cosign sign --yes "${{ env.IMAGE }}:latest"
 
       - name: Upload melange SBOM
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: sbom-forgejo-runner
           path: sbom/
@@ -94,7 +94,7 @@ jobs:
 
   provenance:
     needs: build
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v1.10.0
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
     with:
       image: ${{ env.IMAGE }}
       digest: ${{ needs.build.outputs.digest }}

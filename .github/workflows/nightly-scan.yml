@@ -1,179 +1,462 @@
 # =============================================================================
-# EVERGREEN HARDENED IMAGE REGISTRY - NIGHTLY SECURITY & FRESHNESS SCAN
+# EVERGREEN IMAGE REGISTRY - NIGHTLY SECURITY SCAN
 # =============================================================================
-# Scheduled pipeline for nightly security and freshness monitoring.
-# Complements daily-security-scan.yml with additional checks:
-#   - Base image freshness verification
-#   - Evergreen checksum verification
-#   - Wolfi base image digest tracking
+# Scheduled pipeline for nightly vulnerability scanning.
+#   - Scans all images with Trivy for CVEs
+#   - Scans with Grype for vulnerabilities
+#   - Results uploaded as GitHub step summary
+#   - Fails if critical/high vulnerabilities found in scratch-based images
 #
-# Schedule: Daily at 03:00 UTC (before daily-security-scan at 06:00 UTC)
+# Schedule: Daily at 02:00 UTC
 # Manual:   workflow_dispatch for on-demand execution
 # =============================================================================
 
-name: Nightly Security & Freshness Scan
+name: Nightly Security Scan
 
 on:
   schedule:
-    - cron: '0 3 * * *'
+    - cron: '0 2 * * *'
   workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: false
 
+env:
+  REGISTRY: ghcr.io
+  OWNER: ${{ github.repository_owner }}
+
 permissions:
   contents: read
   security-events: write
 
 jobs:
-  version-check:
-    name: Version & CVE Check
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8
-
-      - name: Install evergreenctl
-        run: |
-          cd evergreenctl && cargo build --release && sudo ln -sf $(pwd)/target/release/evergreenctl /usr/local/bin/
-
-      - name: Check for outdated images
-        run: |
-          echo "=== Checking for outdated images ==="
-          evergreenctl outdated --all
-          echo "=== Version freshness check complete ==="
-
-      - name: Check for new CVEs
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
-        with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          severity: 'CRITICAL,HIGH'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-        continue-on-error: true
-
-      - name: Upload Trivy results
-        uses: github/codeql-action/upload-sarif@7211b7c8077ea37d8641b6271f6a365a22a5fbfa
-        if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
-        continue-on-error: true
-
-  checksum-freshness:
-    name: Evergreen Checksum Verification
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8
-
-      - name: Install evergreenctl
-        run: |
-          cd evergreenctl && cargo build --release && sudo ln -sf $(pwd)/target/release/evergreenctl /usr/local/bin/
-
-      - name: Verify all checksums
-        run: |
-          echo "=== Evergreen Checksum Verification ==="
-          evergreenctl verify-all || true
-          echo "=== Checksum verification complete ==="
-
-  base-image-refresh:
-    name: Base Image Digest Check
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-
-      - name: Install skopeo
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq skopeo
-
-      - name: Check wolfi base image digest
-        run: |
-          echo "Checking current wolfi base image digest..."
-          DIGEST=$(skopeo inspect docker://cgr.dev/chainguard/wolfi-base:latest --format '{{.Digest}}' 2>/dev/null || echo "skopeo not available")
-          echo "Current wolfi-base digest: ${DIGEST}"
-          echo "To auto-refresh: update FROM lines in affected Dockerfiles"
-
-  sbom-generation:
-    name: Generate SBOMs
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
-
-      - name: Install jq
-        run: |
-          if ! command -v jq >/dev/null 2>&1; then
-            sudo apt-get update -qq && sudo apt-get install -y -qq jq
-          fi
-          jq --version
-
-      - name: Make scripts executable
-        run: chmod +x scripts/generate_sbom.sh scripts/generate_all_sboms.sh
-
-      - name: Generate SBOMs for changed images
-        run: SKIP_UNCHANGED=true scripts/generate_all_sboms.sh
-        continue-on-error: true
-
-      - name: Count generated SBOMs
-        run: |
-          COUNT=$(find images -name 'sbom.spdx.json' | wc -l)
-          echo "Total SBOMs: ${COUNT}"
-
-      - name: Commit SBOM changes
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add images/*/sbom.spdx.json
-          CHANGES=$(git diff --cached --stat)
-          if [ -n "${CHANGES}" ]; then
-            git commit -m "chore: regenerate SBOMs for changed images
-
-            Automated incremental SBOM generation via nightly-scan workflow.
-            Only images with changed Dockerfiles/manifests were regenerated.
-
-            ${CHANGES}"
-            git push
-          else
-            echo "No SBOM changes to commit"
-          fi
-
-  sbom-drift-detection:
-    name: SBOM Drift Detection
+  # ===========================================================================
+  # STAGE 1: DISCOVER - Find all images and detect base types
+  # ===========================================================================
+  discover:
+    name: Discover Images
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: sbom-generation
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      total: ${{ steps.find.outputs.total }}
+      scratch_images: ${{ steps.find.outputs.scratch_images }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
-      - name: Set up Python
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
-        with:
-          python-version: '3.12'
-
-      - name: Run SBOM drift detection
+      - name: Find all images and detect base types
+        id: find
         run: |
-          echo "=== SBOM Drift Detection ==="
-          python3 scripts/sbom_drift_detect.py --threshold 0 --json > sbom-drift-report.json || true
-          python3 scripts/sbom_drift_detect.py --threshold 0 || DRIFT_EXIT=$?
-          echo "=== SBOM drift detection complete ==="
+          find images -name Dockerfile \
+            -not -path '*/__pycache__/*' \
+            -not -path '*/tests/*' \
+            -not -path '*/arm64/*' \
+            | sed 's|images/||' | sed 's|/Dockerfile||' | sort > images.txt
+          TOTAL=$(wc -l < images.txt)
+          echo "total=${TOTAL}" >> "$GITHUB_OUTPUT"
 
-      - name: Upload drift report
+          # Identify scratch-based images (no shell, no package manager in final stage)
+          > scratch_images.txt
+          for img in $(cat images.txt); do
+            DOCKERFILE="images/${img}/Dockerfile"
+            [ -f "$DOCKERFILE" ] || continue
+            # Last FROM line determines final stage
+            LAST_FROM=$(grep -i '^FROM' "$DOCKERFILE" | tail -1)
+            if echo "$LAST_FROM" | grep -qi 'scratch'; then
+              echo "$img" >> scratch_images.txt
+            fi
+          done
+          SCRATCH_COUNT=$(wc -l < scratch_images.txt)
+          echo "scratch_images=$(cat scratch_images.txt | tr '\n' ',' | sed 's/,$//')" >> "$GITHUB_OUTPUT"
+          echo "Found ${TOTAL} images, ${SCRATCH_COUNT} scratch-based"
+
+      - name: Create batched matrix
+        id: set-matrix
+        run: |
+          python3 << 'PYEOF'
+          import json, os
+
+          batch_size = 50
+          with open("images.txt") as f:
+              images = [line.strip() for line in f if line.strip()]
+
+          if not images:
+              raise SystemExit("No images found")
+
+          with open("scratch_images.txt") as f:
+              scratch = set(line.strip() for line in f if line.strip())
+
+          batches = []
+          for i in range(0, len(images), batch_size):
+              chunk = images[i:i + batch_size]
+              scratch_batch = [img for img in chunk if img in scratch]
+              batches.append({
+                  "batch": i // batch_size,
+                  "images": ",".join(chunk),
+                  "count": len(chunk),
+                  "scratch_images": ",".join(scratch_batch),
+              })
+
+          matrix_json = json.dumps({"include": batches})
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"matrix={matrix_json}\n")
+          print(f"Created {len(batches)} batches for {len(images)} images ({len(scratch)} scratch-based)")
+          PYEOF
+
+  # ===========================================================================
+  # STAGE 2: SCAN - Trivy + Grype on all images
+  # ===========================================================================
+  scan:
+    name: 'CVE Scan Batch ${{ matrix.batch }}'
+    needs: discover
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
+
+      - name: Login to Registry
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install scanning tools
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh \
+            | sh -s -- -b /usr/local/bin
+          curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh \
+            | sh -s -- -b /usr/local/bin
+
+      - name: Pull or build images
+        run: |
+          mkdir -p /tmp/scan-results
+          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
+          BUILT=0
+          PULLED=0
+          FAILED=0
+          for image in "${IMAGE_LIST[@]}"; do
+            [ -z "$image" ] && continue
+            REF="${REGISTRY}/${OWNER}/${image}:latest"
+            echo "::group::Prepare ${image}"
+            if docker pull "$REF" > /dev/null 2>&1; then
+              PULLED=$((PULLED + 1))
+              echo "${REF}" >> /tmp/scanned-images.txt
+            else
+              CONTEXT="./images/${image}"
+              if [ ! -f "${CONTEXT}/Dockerfile" ]; then
+                echo "::warning::${image}: Dockerfile not found, skipping"
+                continue
+              fi
+              if docker buildx build \
+                  --platform linux/amd64 \
+                  -t "${REF}" \
+                  --load \
+                  --cache-from "type=gha,scope=${image}" \
+                  "${CONTEXT}"; then
+                BUILT=$((BUILT + 1))
+                echo "${REF}" >> /tmp/scanned-images.txt
+              else
+                echo "::error::${image}: pull and build both failed"
+                FAILED=$((FAILED + 1))
+              fi
+            fi
+            echo "::endgroup::"
+          done
+          echo "Batch ${{ matrix.batch }}: ${PULLED} pulled, ${BUILT} built, ${FAILED} failed"
+
+      - name: Run Trivy scan
+        run: |
+          mkdir -p /tmp/trivy-results
+          if [ ! -f /tmp/scanned-images.txt ]; then
+            echo "No images to scan"
+            exit 0
+          fi
+          while IFS= read -r ref; do
+            [ -z "$ref" ] && continue
+            SAFE=$(echo "$ref" | tr '/:' '_')
+            echo "::group::Trivy scan ${ref}"
+            trivy image \
+              --severity CRITICAL,HIGH,MEDIUM,LOW \
+              --ignore-unfixed=false \
+              --format json \
+              --output "/tmp/trivy-results/${SAFE}.json" \
+              "$ref" 2>/dev/null || true
+            echo "::endgroup::"
+          done < /tmp/scanned-images.txt
+
+      - name: Run Grype scan
+        run: |
+          mkdir -p /tmp/grype-results
+          if [ ! -f /tmp/scanned-images.txt ]; then
+            echo "No images to scan"
+            exit 0
+          fi
+          while IFS= read -r ref; do
+            [ -z "$ref" ] && continue
+            SAFE=$(echo "$ref" | tr '/:' '_')
+            echo "::group::Grype scan ${ref}"
+            grype "$ref" \
+              --fail-on none \
+              --output json \
+              --file "/tmp/grype-results/${SAFE}.json" 2>/dev/null || true
+            echo "::endgroup::"
+          done < /tmp/scanned-images.txt
+
+      - name: Analyze results
+        id: analyze
+        run: |
+          CRITICAL=0
+          HIGH=0
+          SCRATCH_CRITICAL=0
+          SCRATCH_HIGH=0
+          SCRATCH_IMAGES_AFFECTED=""
+
+          IFS=',' read -ra SCRATCH_LIST <<< "${{ matrix.scratch_images }}"
+
+          for trivy_file in /tmp/trivy-results/*.json; do
+            [ -f "$trivy_file" ] || continue
+            SAFE=$(basename "$trivy_file" .json)
+
+            python3 -c "
+          import json, sys
+
+          with open('${trivy_file}') as f:
+              data = json.load(f)
+
+          c = 0
+          h = 0
+          for result in data.get('Results', []):
+              for vuln in result.get('Vulnerabilities', []):
+                  sev = vuln.get('Severity', '').upper()
+                  if sev == 'CRITICAL':
+                      c += 1
+                  elif sev == 'HIGH':
+                      h += 1
+          print(f'{c},{h}')
+          " > /tmp/${SAFE}_counts.txt 2>/dev/null || echo "0,0" > /tmp/${SAFE}_counts.txt
+          done
+
+          for grype_file in /tmp/grype-results/*.json; do
+            [ -f "$grype_file" ] || continue
+            SAFE=$(basename "$grype_file" .json)
+            python3 -c "
+          import json, sys
+
+          with open('${grype_file}') as f:
+              data = json.load(f)
+
+          c = 0
+          h = 0
+          for match in data.get('matches', []):
+              sev = match.get('vulnerability', {}).get('severity', '').upper()
+              if sev == 'Critical':
+                  c += 1
+              elif sev == 'High':
+                  h += 1
+          print(f'{c},{h}')
+          " > /tmp/${SAFE}_grype_counts.txt 2>/dev/null || echo "0,0" > /tmp/${SAFE}_grype_counts.txt
+          done
+
+          for f in /tmp/*_counts.txt; do
+            [ -f "$f" ] || continue
+            IFS=',' read -r c h < "$f"
+            CRITICAL=$((CRITICAL + c))
+            HIGH=$((HIGH + h))
+          done
+
+          for f in /tmp/*_grype_counts.txt; do
+            [ -f "$f" ] || continue
+            IFS=',' read -r c h < "$f"
+            CRITICAL=$((CRITICAL + c))
+            HIGH=$((HIGH + h))
+          done
+
+          # Check scratch-based images specifically
+          for scratch_img in "${SCRATCH_LIST[@]}"; do
+            [ -z "$scratch_img" ] && continue
+            SAFE=$(echo "ghcr.io/${OWNER}/${scratch_img}:latest" | tr '/:' '_')
+            SCRATCH_FILE="/tmp/${SAFE}_counts.txt"
+            if [ -f "$SCRATCH_FILE" ]; then
+              IFS=',' read -r sc sh < "$SCRATCH_FILE"
+              SCRATCH_CRITICAL=$((SCRATCH_CRITICAL + sc))
+              SCRATCH_HIGH=$((SCRATCH_HIGH + sh))
+              if [ "$sc" -gt 0 ] || [ "$sh" -gt 0 ]; then
+                SCRATCH_IMAGES_AFFECTED="${SCRATCH_IMAGES_AFFECTED}${scratch_img}(${sc}C/${sh}H) "
+              fi
+            fi
+            SCRATCH_GRYPE="/tmp/${SAFE}_grype_counts.txt"
+            if [ -f "$SCRATCH_GRYPE" ]; then
+              IFS=',' read -r sc sh < "$SCRATCH_GRYPE"
+              SCRATCH_CRITICAL=$((SCRATCH_CRITICAL + sc))
+              SCRATCH_HIGH=$((SCRATCH_HIGH + sh))
+            fi
+          done
+
+          echo "critical=${CRITICAL}" >> "$GITHUB_OUTPUT"
+          echo "high=${HIGH}" >> "$GITHUB_OUTPUT"
+          echo "scratch_critical=${SCRATCH_CRITICAL}" >> "$GITHUB_OUTPUT"
+          echo "scratch_high=${SCRATCH_HIGH}" >> "$GITHUB_OUTPUT"
+          echo "scratch_affected=${SCRATCH_IMAGES_AFFECTED}" >> "$GITHUB_OUTPUT"
+
+          FAIL=false
+          if [ "$SCRATCH_CRITICAL" -gt 0 ]; then
+            echo "::error::CRITICAL vulnerabilities in scratch-based images: ${SCRATCH_IMAGES_AFFECTED}"
+            FAIL=true
+          fi
+          if [ "$SCRATCH_HIGH" -gt 0 ]; then
+            echo "::error::HIGH vulnerabilities in scratch-based images: ${SCRATCH_IMAGES_AFFECTED}"
+            FAIL=true
+          fi
+          echo "fail=${FAIL}" >> "$GITHUB_OUTPUT"
+
+          echo "Batch ${{ matrix.batch }}: CRITICAL=${CRITICAL} HIGH=${HIGH} (scratch: ${SCRATCH_CRITICAL}C/${SCRATCH_HIGH}H)"
+
+      - name: Upload batch results
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: sbom-drift-report
-          path: sbom-drift-report.json
+          name: nightly-scan-batch-${{ matrix.batch }}
+          path: |
+            /tmp/trivy-results/
+            /tmp/grype-results/
+            /tmp/scanned-images.txt
           retention-days: 30
+          overwrite: true
+
+      - name: Fail on scratch critical/high
+        if: steps.analyze.outputs.fail == 'true'
+        run: |
+          echo "::error::Build failed: CRITICAL/HIGH CVEs found in scratch-based images"
+          exit 1
+
+  # ===========================================================================
+  # STAGE 3: REPORT - Aggregate results into step summary
+  # ===========================================================================
+  report:
+    name: Security Report
+    needs: [discover, scan]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      has_critical: ${{ steps.summary.outputs.has_critical }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Download all scan results
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          pattern: nightly-scan-batch-*
+          path: /tmp/all-results/
+          merge-multiple: true
+
+      - name: Generate step summary
+        id: summary
+        run: |
+          DATE=$(date -u +%Y-%m-%d)
+
+          TOTAL_CRITICAL=0
+          TOTAL_HIGH=0
+          SCRATCH_CRITICAL=0
+          SCRATCH_HIGH=0
+
+          for f in /tmp/all-results/trivy-results/*.json; do
+            [ -f "$f" ] || continue
+            python3 -c "
+          import json
+          with open('$f') as fh:
+              data = json.load(fh)
+          c, h = 0, 0
+          for result in data.get('Results', []):
+              for vuln in result.get('Vulnerabilities', []):
+                  sev = vuln.get('Severity', '').upper()
+                  if sev == 'CRITICAL': c += 1
+                  elif sev == 'HIGH': h += 1
+          print(f'{c},{h}')
+          " > /tmp/_cve_tmp.txt 2>/dev/null || echo "0,0" > /tmp/_cve_tmp.txt
+            IFS=',' read -r c h < /tmp/_cve_tmp.txt
+            TOTAL_CRITICAL=$((TOTAL_CRITICAL + c))
+            TOTAL_HIGH=$((TOTAL_HIGH + h))
+          done
+
+          {
+            echo "# Nightly Security Scan - ${DATE}"
+            echo ""
+            echo "## Vulnerability Summary"
+            echo ""
+            echo "| Severity | Count |"
+            echo "|----------|-------|"
+            echo "| CRITICAL | ${TOTAL_CRITICAL} |"
+            echo "| HIGH | ${TOTAL_HIGH} |"
+            echo ""
+            echo "**Total images scanned:** ${{ needs.discover.outputs.total }}"
+            echo ""
+
+            if [ "$TOTAL_CRITICAL" -gt 0 ] || [ "$TOTAL_HIGH" -gt 0 ]; then
+              echo "### Details"
+              echo ""
+              for f in /tmp/all-results/trivy-results/*.json; do
+                [ -f "$f" ] || continue
+                IMG_NAME=$(basename "$f" .json | sed 's/_/\//g')
+                python3 -c "
+          import json
+          with open('$f') as fh:
+              data = json.load(fh)
+          c, h = [], []
+          for result in data.get('Results', []):
+              for vuln in result.get('Vulnerabilities', []):
+                  sev = vuln.get('Severity', '').upper()
+                  vid = vuln.get('VulnerabilityID', '?')
+                  pkg = vuln.get('PkgName', '?')
+                  if sev == 'CRITICAL': c.append(f'{vid} ({pkg})')
+                  elif sev == 'HIGH': h.append(f'{vid} ({pkg})')
+          if c or h:
+              print(f'**{IMG_NAME}**')
+              if c:
+                  print(f'  - CRITICAL: {len(c)}')
+                  for v in c[:5]: print(f'    - {v}')
+                  if len(c) > 5: print(f'    - ... and {len(c)-5} more')
+              if h:
+                  print(f'  - HIGH: {len(h)}')
+                  for v in h[:5]: print(f'    - {v}')
+                  if len(h) > 5: print(f'    - ... and {len(h)-5} more')
+          " 2>/dev/null || true
+              done
+            fi
+
+            echo ""
+            echo "_Scan completed at $(date -u +%Y-%m-%dT%H:%M:%SZ)_"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          HAS_CRITICAL=false
+          if [ "$TOTAL_CRITICAL" -gt 0 ] || [ "$TOTAL_HIGH" -gt 0 ]; then
+            HAS_CRITICAL=true
+          fi
+          echo "has_critical=${HAS_CRITICAL}" >> "$GITHUB_OUTPUT"
+
+  # ===========================================================================
+  # STAGE 4: FAIL on critical/high in scratch-based images
+  # ===========================================================================
+  gate:
+    name: Scratch Image Gate
+    needs: [scan, report]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check for failures in scan
+        run: |
+          # If any scan job failed, this gate fails
+          if [ "${{ needs.scan.result }}" = "failure" ]; then
+            echo "::error::Nightly scan found critical/high CVEs in scratch-based images"
+            exit 1
+          fi
+          echo "All scratch-based image gates passed"

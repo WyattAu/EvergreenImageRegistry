@@ -435,9 +435,9 @@ else
     skip_gate "FIPS compliance check (python3 not found)"
 fi
 
-# ---- Gate 11: Performance regression detection ----
+# ---- Gate 12: Performance regression detection ----
 echo ""
-echo "--- Gate 11: Performance Regression Detection ---"
+echo "--- Gate 12: Performance Regression Detection ---"
 if command -v docker &>/dev/null && command -v python3 &>/dev/null; then
     BASELINE_FILE=".specs/06_5_regression/build_times.json"
     THRESHOLD=50

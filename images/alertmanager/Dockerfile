@@ -4,7 +4,7 @@ ARG VERSION=v0.32.1
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-ARG SHIM_VERSION=v0.2.0
+ARG SHIM_VERSION=v0.3.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

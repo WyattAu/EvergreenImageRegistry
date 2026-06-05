@@ -12,7 +12,7 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 # NOTE: Golang builder FROM cannot be easily digest-pinned (version varies)
-ARG SHIM_VERSION=v0.2.0
+ARG SHIM_VERSION=v0.3.0
 
 FROM golang:${GO_VERSION}-bookworm AS builder
 ENV GOTOOLCHAIN=auto

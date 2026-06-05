@@ -31,7 +31,7 @@ jobs:
       - name: Verify SLSA provenance for sample images
         run: |
           SAMPLE_IMAGES=$(ls images/ | head -5 | tr '\n' ' ')
-          CERT_IDENTITY="${{ github.repository_owner }}"
+          CERT_IDENTITY="https://github.com/${{ github.repository }}"
           for img in $SAMPLE_IMAGES; do
             FULL_REF="ghcr.io/${{ github.repository }}/$img:latest"
             echo "Verifying provenance for $FULL_REF..."

@@ -53,7 +53,7 @@ jobs:
             -w /work \
             cgr.dev/chainguard/apko build \
             images/traefik/apko.yaml \
-            "${{ env.IMAGE }}:${{ steps.version.outputs.version }}" \
+            "ghcr.io/${{ github.repository_owner }}/traefik:${{ steps.version.outputs.version }}" \
             traefik-image.tar \
             --repository-append /work/packages \
             --sbom-path /work/sbom
@@ -65,12 +65,12 @@ jobs:
         id: push
         run: |
           docker load -i traefik-image.tar
-          FULL_TAG="${{ env.IMAGE }}:${{ steps.version.outputs.version }}"
-          docker tag "${{ env.IMAGE }}:${{ steps.version.outputs.version }}" "$FULL_TAG"
+          FULL_TAG="ghcr.io/${{ github.repository_owner }}/traefik:${{ steps.version.outputs.version }}"
+          docker tag "ghcr.io/${{ github.repository_owner }}/traefik:${{ steps.version.outputs.version }}" "$FULL_TAG"
           docker push "$FULL_TAG"
 
-          docker tag "$FULL_TAG" "${{ env.IMAGE }}:latest"
-          docker push "${{ env.IMAGE }}:latest"
+          docker tag "$FULL_TAG" "ghcr.io/${{ github.repository_owner }}/traefik:latest"
+          docker push "ghcr.io/${{ github.repository_owner }}/traefik:latest"
 
           DIGEST=$(docker inspect --format '{{index .RepoDigests 0}}' "$FULL_TAG")
           echo "digest=${DIGEST}" >> "$GITHUB_OUTPUT"
@@ -80,10 +80,10 @@ jobs:
         uses: sigstore/cosign-installer@v4
 
       - name: Sign version tag
-        run: cosign sign --yes "${{ env.IMAGE }}:${{ steps.version.outputs.version }}"
+        run: cosign sign --yes "ghcr.io/${{ github.repository_owner }}/traefik:${{ steps.version.outputs.version }}"
 
       - name: Sign latest tag
-        run: cosign sign --yes "${{ env.IMAGE }}:latest"
+        run: cosign sign --yes "ghcr.io/${{ github.repository_owner }}/traefik:latest"
 
       - name: Upload melange SBOM
         uses: actions/upload-artifact@v4
@@ -96,7 +96,7 @@ jobs:
     needs: build
     uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
     with:
-      image: ${{ env.IMAGE }}
+      image: ghcr.io/${{ github.repository_owner }}/traefik
       digest: ${{ needs.build.outputs.digest }}
     permissions:
       id-token: write

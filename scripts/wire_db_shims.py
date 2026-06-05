@@ -158,12 +158,18 @@ def wire_image(image_dir, db_type, dry_run=False, force=False):
 
 def main():
     parser = argparse.ArgumentParser(description="Wire DB shims into database images")
-    parser.add_argument("--dry-run", action="store_true", help="Preview changes without modifying files")
-    parser.add_argument("--force", action="store_true", help="Re-wire already wired images")
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Preview changes without modifying files"
+    )
+    parser.add_argument(
+        "--force", action="store_true", help="Re-wire already wired images"
+    )
     parser.add_argument("--image", type=str, help="Wire a specific image only")
     args = parser.parse_args()
 
-    images_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "images")
+    images_dir = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "images"
+    )
 
     wired = 0
     skipped = 0
@@ -179,7 +185,9 @@ def main():
             skipped += 1
             continue
 
-        result, reason = wire_image(image_dir, db_type, dry_run=args.dry_run, force=args.force)
+        result, reason = wire_image(
+            image_dir, db_type, dry_run=args.dry_run, force=args.force
+        )
 
         if reason in ("wired", "would-wire"):
             wired += 1

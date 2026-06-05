@@ -21,21 +21,50 @@ IMAGES_DIR = REPO_ROOT / "images"
 
 # All images from wire_db_shims.py DB_IMAGE_MAP
 DB_IMAGE_MAP = {
-    "postgresql-14", "postgresql-15", "postgresql-16", "postgresql-17",
-    "postgresql-18", "postgres", "postgres-backup", "postgres-restore",
-    "postgresql-patroni", "timescaledb", "postgresql-exporter",
-    "postgres-exporter", "mariadb", "mariadb-10", "mariadb-11",
-    "mariadb-galera", "mysql", "mysql-8",
-    "redis", "redis-6", "redis-7", "redis7", "redis-cluster", "redis-sentinel",
+    "postgresql-14",
+    "postgresql-15",
+    "postgresql-16",
+    "postgresql-17",
+    "postgresql-18",
+    "postgres",
+    "postgres-backup",
+    "postgres-restore",
+    "postgresql-patroni",
+    "timescaledb",
+    "postgresql-exporter",
+    "postgres-exporter",
+    "mariadb",
+    "mariadb-10",
+    "mariadb-11",
+    "mariadb-galera",
+    "mysql",
+    "mysql-8",
+    "redis",
+    "redis-6",
+    "redis-7",
+    "redis7",
+    "redis-cluster",
+    "redis-sentinel",
 }
 
 # Postgres/MariaDB/MySQL images for scheduler-shim
 SCHEDULER_IMAGES = {
-    "postgres", "postgres-backup", "postgres-restore", "postgresql-patroni",
-    "postgresql-14", "postgresql-15", "postgresql-16", "postgresql-17",
-    "postgresql-18", "timescaledb",
-    "mariadb", "mariadb-10", "mariadb-11", "mariadb-galera",
-    "mysql", "mysql-8",
+    "postgres",
+    "postgres-backup",
+    "postgres-restore",
+    "postgresql-patroni",
+    "postgresql-14",
+    "postgresql-15",
+    "postgresql-16",
+    "postgresql-17",
+    "postgresql-18",
+    "timescaledb",
+    "mariadb",
+    "mariadb-10",
+    "mariadb-11",
+    "mariadb-galera",
+    "mysql",
+    "mysql-8",
 }
 
 PROMETHEUS_LABELS = (
@@ -57,8 +86,9 @@ def detect_shim_type(content: str) -> str | None:
 
 
 def has_shim_wiring(content: str) -> bool:
-    return ("COPY --from=shim" in content and
-            ("/shim" in content or "/usr/local/bin/shim" in content))
+    return "COPY --from=shim" in content and (
+        "/shim" in content or "/usr/local/bin/shim" in content
+    )
 
 
 def find_last_from_line(lines: list) -> int:
@@ -96,7 +126,12 @@ def find_shim_env_block(lines: list) -> tuple[int, int] | None:
             j = i + 1
             while j < len(lines):
                 s = lines[j].strip()
-                if s.startswith('"') or s.startswith("SHIM_") or s.startswith("EVERGREEN") or s.startswith("PGDATA"):
+                if (
+                    s.startswith('"')
+                    or s.startswith("SHIM_")
+                    or s.startswith("EVERGREEN")
+                    or s.startswith("PGDATA")
+                ):
                     block_end = j
                     j += 1
                 elif s == "":
@@ -104,7 +139,7 @@ def find_shim_env_block(lines: list) -> tuple[int, int] | None:
                 else:
                     break
             # Check if block has SHIM_ vars
-            block_text = "\n".join(lines[block_start:block_end + 1])
+            block_text = "\n".join(lines[block_start : block_end + 1])
             if "SHIM_" in block_text:
                 result = (block_start, block_end)
             i = block_end + 1
@@ -128,7 +163,12 @@ def find_any_env_block(lines: list) -> tuple[int, int] | None:
             j = i + 1
             while j < len(lines):
                 s = lines[j].strip()
-                if s.startswith('"') or s.startswith("SHIM_") or s.startswith("EVERGREEN") or s.startswith("PGDATA"):
+                if (
+                    s.startswith('"')
+                    or s.startswith("SHIM_")
+                    or s.startswith("EVERGREEN")
+                    or s.startswith("PGDATA")
+                ):
                     block_end = j
                     j += 1
                 elif s == "":
@@ -156,10 +196,10 @@ def add_var_to_env_block(content: str, var_name: str, var_value: str) -> str:
         last_line = lines[env_end]
         if last_line.rstrip().endswith("\\"):
             lines[env_end] = last_line.rstrip().rstrip("\\").rstrip()
-            lines.insert(env_end + 1, f'    {var_line}')
+            lines.insert(env_end + 1, f"    {var_line}")
         else:
             lines[env_end] = last_line + " \\"
-            lines.insert(env_end + 1, f'    {var_line}')
+            lines.insert(env_end + 1, f"    {var_line}")
         return "\n".join(lines)
 
     # Find USER line and add new ENV block after it
@@ -196,7 +236,7 @@ def add_scheduler_env(content: str) -> str:
 
 
 def add_prometheus_labels(content: str) -> str:
-    if 'prometheus.io/scrape' in content:
+    if "prometheus.io/scrape" in content:
         return content
     lines = content.split("\n")
 
@@ -265,10 +305,10 @@ def main():
     parser = argparse.ArgumentParser(
         description="Add observability config to all wired images"
     )
-    parser.add_argument("--dry-run", action="store_true",
-                        help="Don't write files, just report")
-    parser.add_argument("--image", type=str,
-                        help="Process only this image")
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Don't write files, just report"
+    )
+    parser.add_argument("--image", type=str, help="Process only this image")
     args = parser.parse_args()
 
     print(f"Images directory: {IMAGES_DIR}")
@@ -278,10 +318,9 @@ def main():
         print(f"ERROR: {IMAGES_DIR} does not exist", file=sys.stderr)
         sys.exit(1)
 
-    image_dirs = sorted([
-        d for d in IMAGES_DIR.iterdir()
-        if d.is_dir() and not d.name.startswith("_")
-    ])
+    image_dirs = sorted(
+        [d for d in IMAGES_DIR.iterdir() if d.is_dir() and not d.name.startswith("_")]
+    )
 
     if args.image:
         image_dirs = [d for d in image_dirs if d.name == args.image]
@@ -314,9 +353,11 @@ def main():
             print(f"  SKIP   {image_dir.name}: {msg}")
 
     print()
-    print(f"Summary: {stats.get('updated', 0)} updated, "
-          f"{stats.get('would-update', 0)} would-update, "
-          f"{stats.get('skip', 0)} skipped")
+    print(
+        f"Summary: {stats.get('updated', 0)} updated, "
+        f"{stats.get('would-update', 0)} would-update, "
+        f"{stats.get('skip', 0)} skipped"
+    )
 
     if errors:
         print(f"\nErrors ({len(errors)}):")

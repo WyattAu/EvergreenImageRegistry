@@ -20,20 +20,35 @@ VERSION_FILE = REPO_ROOT / ".shim-version"
 
 # Images to skip (CLI tools, no service, already handled specially)
 SKIP_IMAGES = {
-    "health-shim",          # IS the shim
-    "forgejo-runner-k8s",   # No HEALTHCHECK
-    "scratch-base",         # Reference image
-    "distroless",           # Reference image
-    "distroless-cassandra", # Reference image
-    "_wip",                 # WIP directory
-    "_archive",             # Archived
+    "health-shim",  # IS the shim
+    "forgejo-runner-k8s",  # No HEALTHCHECK
+    "scratch-base",  # Reference image
+    "distroless",  # Reference image
+    "distroless-cassandra",  # Reference image
+    "_wip",  # WIP directory
+    "_archive",  # Archived
 }
 
 # CLI-only images (no EXPOSE, no service port)
 CLI_ONLY = {
-    "cosign", "step-cli", "age", "crane", "helm", "kubectl", "buildx",
-    "scratch-go", "restic", "rclone", "syft", "grype", "trivy",
-    "sops", "jq", "yq", "kubeseal", "flux",
+    "cosign",
+    "step-cli",
+    "age",
+    "crane",
+    "helm",
+    "kubectl",
+    "buildx",
+    "scratch-go",
+    "restic",
+    "rclone",
+    "syft",
+    "grype",
+    "trivy",
+    "sops",
+    "jq",
+    "yq",
+    "kubeseal",
+    "flux",
 }
 
 
@@ -124,6 +139,7 @@ def detect_entrypoint_args(content: str) -> list:
             if match:
                 try:
                     import json
+
                     return json.loads("[" + match.group(1) + "]")
                 except (json.JSONDecodeError, IndexError):
                     pass
@@ -155,6 +171,7 @@ def detect_cmd_args(content: str) -> list:
             if match:
                 try:
                     import json
+
                     return json.loads("[" + match.group(1) + "]")
                 except (json.JSONDecodeError, IndexError):
                     pass
@@ -170,8 +187,9 @@ def has_shim_stage(content: str) -> bool:
 
 def has_shim_wiring(content: str) -> bool:
     """Check if the Dockerfile already has shim COPY/ENTRYPOINT."""
-    return ("COPY --from=shim" in content and
-            ("/shim" in content or "/usr/local/bin/shim" in content))
+    return "COPY --from=shim" in content and (
+        "/shim" in content or "/usr/local/bin/shim" in content
+    )
 
 
 def detect_healthcheck_type(content: str) -> str:
@@ -234,8 +252,12 @@ def build_wired_dockerfile(
         stripped = line.strip()
 
         # Add ARG SHIM_VERSION before first FROM
-        if not arg_added and stripped.upper().startswith("FROM ") and not already_has_shim_stage:
-            if i > 0 and "ARG SHIM_VERSION" in lines[i-1]:
+        if (
+            not arg_added
+            and stripped.upper().startswith("FROM ")
+            and not already_has_shim_stage
+        ):
+            if i > 0 and "ARG SHIM_VERSION" in lines[i - 1]:
                 arg_added = True  # Already has ARG
             else:
                 result.append(f"ARG SHIM_VERSION={shim_version}")
@@ -254,7 +276,14 @@ def build_wired_dockerfile(
             shim_copy_added = True
 
             # Add shim COPY based on base type
-            if base_type in ("scratch", "distroless", "debian", "alpine", "other", "unknown"):
+            if base_type in (
+                "scratch",
+                "distroless",
+                "debian",
+                "alpine",
+                "other",
+                "unknown",
+            ):
                 result.append("COPY --from=shim /shim /shim")
             elif base_type == "wolfi":
                 result.append("COPY --from=shim /shim /usr/local/bin/shim")
@@ -288,7 +317,7 @@ def build_wired_dockerfile(
                 for arg in cmd_args:
                     if arg != entrypoint:  # Don't duplicate the entrypoint
                         cmd_parts.append(arg)
-            result.append(f'CMD {json.dumps(cmd_parts)}')
+            result.append(f"CMD {json.dumps(cmd_parts)}")
             continue
 
         result.append(line)
@@ -368,14 +397,22 @@ def process_image(
     # Build wired version
     try:
         wired = build_wired_dockerfile(
-            content, shim_version, base_type, health_port,
-            entrypoint, cmd_args, image_name,
+            content,
+            shim_version,
+            base_type,
+            health_port,
+            entrypoint,
+            cmd_args,
+            image_name,
         )
     except Exception as e:
         return "error", f"build failed: {e}"
 
     if dry_run:
-        return "would-wire", f"base={base_type}, port={health_port}, entrypoint={entrypoint}"
+        return (
+            "would-wire",
+            f"base={base_type}, port={health_port}, entrypoint={entrypoint}",
+        )
 
     # Write the wired Dockerfile
     dockerfile.write_text(wired)
@@ -383,9 +420,15 @@ def process_image(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Wire health-shim into EvergreenImageRegistry images")
-    parser.add_argument("--dry-run", action="store_true", help="Don't write files, just report")
-    parser.add_argument("--force", action="store_true", help="Re-wire already wired images")
+    parser = argparse.ArgumentParser(
+        description="Wire health-shim into EvergreenImageRegistry images"
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Don't write files, just report"
+    )
+    parser.add_argument(
+        "--force", action="store_true", help="Re-wire already wired images"
+    )
     parser.add_argument("--image", type=str, help="Process only this image")
     args = parser.parse_args()
 
@@ -399,10 +442,9 @@ def main():
         sys.exit(1)
 
     # Collect image dirs
-    image_dirs = sorted([
-        d for d in IMAGES_DIR.iterdir()
-        if d.is_dir() and not d.name.startswith("_")
-    ])
+    image_dirs = sorted(
+        [d for d in IMAGES_DIR.iterdir() if d.is_dir() and not d.name.startswith("_")]
+    )
 
     if args.image:
         image_dirs = [d for d in image_dirs if d.name == args.image]
@@ -425,12 +467,18 @@ def main():
             print(f"  WIRE   {image_dir.name}: {msg}")
         elif status == "would-wire":
             print(f"  WOULD  {image_dir.name}: {msg}")
-        elif status == "skip" and msg != "CLI tool or reference image" and msg != "already wired":
+        elif (
+            status == "skip"
+            and msg != "CLI tool or reference image"
+            and msg != "already wired"
+        ):
             print(f"  SKIP   {image_dir.name}: {msg}")
 
     print()
-    print(f"Summary: {stats.get('wired', 0)} wired, {stats.get('would-wire', 0)} would-wire, "
-          f"{stats.get('skip', 0)} skipped, {stats.get('error', 0)} errors")
+    print(
+        f"Summary: {stats.get('wired', 0)} wired, {stats.get('would-wire', 0)} would-wire, "
+        f"{stats.get('skip', 0)} skipped, {stats.get('error', 0)} errors"
+    )
 
     if errors:
         print(f"\nErrors ({len(errors)}):")

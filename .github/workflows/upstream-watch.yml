@@ -1,0 +1,431 @@
+# =============================================================================
+# EVERGREEN IMAGE REGISTRY - UPSTREAM VERSION WATCH
+# =============================================================================
+# Daily check of the top 20 critical images for upstream version updates.
+# If a new version is found, automatically creates a PR with the bump.
+# Patch versions are auto-merged when all checks pass; major/minor require
+# manual review.
+#
+# This is faster than the weekly auto-bump (which checks ALL ~986 images)
+# and targets only the highest-value infrastructure images.
+# =============================================================================
+
+name: Upstream Version Watch
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (no PR created)'
+        required: false
+        default: 'false'
+        type: boolean
+
+concurrency:
+  group: upstream-watch
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  CRITICAL_IMAGES: >-
+    nginx,postgresql-17,redis-7,grafana,prometheus, vault,traefik,minio,etcd,consul,
+    elasticsearch,kafka,opensearch,valkey,alertmanager, node-exporter,caddy,cloudflared,wireguard,headscale
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # STAGE 1: CHECK - Query GitHub API for latest releases of critical images
+  # ---------------------------------------------------------------------------
+  check:
+    name: Check Upstream Versions
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      updates: ${{ steps.check.outputs.updates }}
+      update_count: ${{ steps.check.outputs.update_count }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check upstream versions for critical images
+        id: check
+        run: |
+          python3 << 'PYEOF'
+          import json, os, re, sys
+          import urllib.request, urllib.error
+
+          GITHUB_API = "https://api.github.com"
+          token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
+
+          images_str = os.environ.get("CRITICAL_IMAGES", "")
+          image_names = [i.strip() for i in images_str.split(",") if i.strip()]
+
+          results = []
+
+          for image_name in image_names:
+              manifest_path = f"images/{image_name}/manifest.toml"
+              if not os.path.exists(manifest_path):
+                  print(f"  SKIP {image_name}: no manifest.toml")
+                  continue
+
+              # Parse manifest.toml (simple key-value parser)
+              current_version = ""
+              source_url = ""
+              with open(manifest_path) as f:
+                  for line in f:
+                      line = line.strip()
+                      if line.startswith("version") and "=" in line:
+                          val = line.split("=", 1)[1].strip().strip('"')
+                          if val:
+                              current_version = val
+                      if line.startswith("source") and "=" in line:
+                          val = line.split("=", 1)[1].strip().strip('"')
+                          if val:
+                              source_url = val
+
+              if not current_version:
+                  print(f"  SKIP {image_name}: no version in manifest")
+                  continue
+
+              # Extract GitHub owner/repo from source URL
+              m = re.search(r"github\.com/([^/]+/[^/\s]+)", source_url)
+              if not m:
+                  print(f"  SKIP {image_name}: not a GitHub source ({source_url})")
+                  continue
+              repo = m.group(1).rstrip("/")
+              if repo.endswith(".git"):
+                  repo = repo[:-4]
+
+              # Query latest release
+              url = f"{GITHUB_API}/repos/{repo}/releases/latest"
+              headers = {
+                  "Accept": "application/vnd.github+json",
+                  "User-Agent": "evergreen-upstream-watch",
+              }
+              if token:
+                  headers["Authorization"] = f"Bearer {token}"
+
+              req = urllib.request.Request(url, headers=headers)
+              try:
+                  with urllib.request.urlopen(req, timeout=15) as resp:
+                      release = json.loads(resp.read().decode())
+                      latest_tag = release.get("tag_name", "")
+              except (urllib.error.HTTPError, Exception) as e:
+                  print(f"  ERROR {image_name}: {e}")
+                  continue
+
+              # Normalize version (strip leading 'v', extract semver prefix)
+              def normalize(v):
+                  v = v.strip()
+                  if v.lower().startswith("v"):
+                      v = v[1:]
+                  match = re.match(r"^(\d+(?:\.\d+)*)", v)
+                  return match.group(1) if match else v
+
+              current_norm = normalize(current_version)
+              latest_norm = normalize(latest_tag)
+
+              if current_norm == latest_norm:
+                  print(f"  OK   {image_name}: {current_version} (up to date)")
+                  continue
+
+              # Determine bump type (major/minor/patch)
+              parts_cur = [int(x) for x in current_norm.split(".")]
+              parts_new = [int(x) for x in latest_norm.split(".")]
+              # Pad to 3 parts
+              while len(parts_cur) < 3:
+                  parts_cur.append(0)
+              while len(parts_new) < 3:
+                  parts_new.append(0)
+
+              if parts_new[0] > parts_cur[0]:
+                  bump_type = "major"
+              elif parts_new[1] > parts_cur[1]:
+                  bump_type = "minor"
+              else:
+                  bump_type = "patch"
+
+              print(f"  BUMP {image_name}: {current_version} -> {latest_tag} ({bump_type})")
+              results.append({
+                  "image": image_name,
+                  "current": current_version,
+                  "latest": latest_tag,
+                  "repo": repo,
+                  "bump_type": bump_type,
+              })
+
+          print(f"\nFound {len(results)} updates out of {len(image_names)} critical images")
+          if results:
+              for r in results:
+                  print(f"  {r['image']}: {r['current']} -> {r['latest']} ({r['bump_type']})")
+
+          # Write output as JSON
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"updates={json.dumps(results)}\n")
+              f.write(f"update_count={len(results)}\n")
+          PYEOF
+        env:
+          CRITICAL_IMAGES: ${{ env.CRITICAL_IMAGES }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ---------------------------------------------------------------------------
+  # STAGE 2: BUMP - Update Dockerfiles, manifests, checksums
+  # ---------------------------------------------------------------------------
+  bump:
+    name: Bump Versions
+    needs: check
+    if: needs.check.outputs.update_count != '0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      has_changes: ${{ steps.bump.outputs.has_changes }}
+      changed_images: ${{ steps.bump.outputs.changed_images }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8
+
+      - name: Cache evergreenctl build
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
+        with:
+          path: evergreenctl/target
+          key: evergreenctl-${{ runner.os }}-${{ hashFiles('evergreenctl/Cargo.lock') }}
+          restore-keys: |
+            evergreenctl-${{ runner.os }}-
+
+      - name: Build evergreenctl
+        run: cd evergreenctl && cargo build --release
+
+      - name: Bump outdated versions
+        id: bump
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          UPDATES: ${{ needs.check.outputs.updates }}
+        run: |
+          python3 << 'PYEOF'
+          import json, os, subprocess, sys
+
+          updates = json.loads(os.environ["UPDATES"])
+          bumped = []
+
+          for update in updates:
+              image = update["image"]
+              new_version = update["latest"]
+
+              # Use bump_versions.sh (already handles Dockerfile, manifest, CHECKSUMS)
+              result = subprocess.run(
+                  ["bash", "scripts/bump_versions.sh", image, new_version],
+                  capture_output=True, text=True
+              )
+              if result.returncode == 0:
+                  bumped.append(image)
+                  print(f"Bumped: {image} -> {new_version}")
+              else:
+                  print(f"Failed: {image}: {result.stderr}")
+
+          # Write output
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              if bumped:
+                  f.write("has_changes=true\n")
+                  f.write(f"changed_images={','.join(bumped)}\n")
+              else:
+                  f.write("has_changes=false\n")
+          PYEOF
+
+  # ---------------------------------------------------------------------------
+  # STAGE 3: PR - Create pull request with version bumps
+  # ---------------------------------------------------------------------------
+  pr:
+    name: Create Pull Request
+    needs: [check, bump]
+    if: needs.bump.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate changelog
+        run: |
+          UPDATES='${{ needs.check.outputs.updates }}'
+          python3 << 'PYEOF'
+          import json, os
+
+          updates = json.loads(os.environ["UPDATES"])
+          lines = [
+              "## Automated Upstream Version Bumps",
+              "",
+              "Daily watch for upstream releases of critical infrastructure images.",
+              "",
+              "### Version Changes",
+              "",
+              "| Image | Current | Latest | Bump |",
+              "|-------|---------|--------|------|",
+          ]
+          for u in updates:
+              lines.append(f"| {u['image']} | {u['current']} | {u['latest']} | {u['bump_type']} |")
+
+          lines.extend([
+              "",
+              "### Changes",
+              "",
+              "```",
+          ])
+
+          import subprocess
+          result = subprocess.run(["git", "diff", "--stat"], capture_output=True, text=True)
+          lines.append(result.stdout.strip())
+          lines.extend([
+              "```",
+              "",
+              "---",
+              "",
+              "_Patch bumps will be auto-merged if all checks pass. Minor/major bumps require manual review._",
+          ])
+
+          with open("/tmp/changelog.md", "w") as f:
+              f.write("\n".join(lines))
+          PYEOF
+        env:
+          UPDATES: ${{ needs.check.outputs.updates }}
+
+      - name: Determine PR labels
+        id: labels
+        run: |
+          UPDATES='${{ needs.check.outputs.updates }}'
+          python3 -c "
+          import json
+          updates = json.loads('''$UPDATES''')
+          bump_types = set(u['bump_type'] for u in updates)
+          labels = ['automated', 'dependencies', 'upstream-watch']
+          if 'major' in bump_types or 'minor' in bump_types:
+              labels.append('requires-manual-review')
+          if all(bt == 'patch' for bt in bump_types):
+              labels.append('auto-merge')
+          print(','.join(labels))
+          " > /tmp/labels.txt
+
+      - name: Create Pull Request
+        if: inputs.dry_run != 'true'
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1
+        with:
+          title: 'chore: upstream-watch critical image version bumps'
+          body-path: /tmp/changelog.md
+          branch: upstream-watch/bump
+          delete-branch: true
+          labels: ${{ runner.os == 'Linux' && '' || '' }} # labels set below
+          reviewers: ${{ github.repository_owner }}
+          commit-message: 'chore(upstream-watch): bump critical image versions'
+
+      - name: Apply labels
+        if: inputs.dry_run != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUM=$(gh pr list --head "upstream-watch/bump" --json number --jq '.[0].number')
+          if [ -n "$PR_NUM" ]; then
+            LABELS=$(cat /tmp/labels.txt)
+            gh pr edit "$PR_NUM" --add-label "$LABELS"
+          fi
+
+  # ---------------------------------------------------------------------------
+  # STAGE 4: AUTO-MERGE - Auto-merge patch-only PRs when all checks pass
+  # ---------------------------------------------------------------------------
+  auto-merge:
+    name: Auto-merge Patch Bumps
+    needs: [check, pr]
+    if: |
+      always() &&
+      needs.pr.result == 'success' &&
+      inputs.dry_run != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Wait for checks and auto-merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          UPDATES: ${{ needs.check.outputs.updates }}
+        run: |
+          # Only auto-merge if ALL bumps are patch versions
+          python3 -c "
+          import json, sys
+          updates = json.loads('''$UPDATES''')
+          all_patch = all(u['bump_type'] == 'patch' for u in updates)
+          sys.exit(0 if all_patch else 1)
+          " || {
+            echo "Non-patch bump detected, skipping auto-merge"
+            exit 0
+          }
+
+          echo "All bumps are patch versions, attempting auto-merge"
+
+          PRS=$(gh pr list --head "upstream-watch/bump" --json number --jq '.[]')
+          if [ -z "$PRS" ]; then
+            echo "No PR found for upstream-watch/bump"
+            exit 0
+          fi
+
+          PR_NUM=$(echo "$PRS" | jq -r '.number' | head -1)
+          echo "Checking PR #${PR_NUM}"
+
+          # Wait up to 30 minutes for checks to complete
+          MAX_WAIT=1800
+          ELAPSED=0
+          while [ "$ELAPSED" -lt "$MAX_WAIT" ]; do
+            CHECKS=$(gh pr view "$PR_NUM" --json statusCheckRollup --jq '.statusCheckRollup[] | {status: .status, conclusion: .conclusion}')
+
+            FAILING=$(echo "$CHECKS" | jq -r '[.[] | select(.status == "COMPLETED" and .conclusion != "SUCCESS" and .conclusion != "NEUTRAL" and .conclusion != "SKIPPED")] | length')
+            PENDING=$(echo "$CHECKS" | jq -r '[.[] | select(.status == "IN_PROGRESS" or .status == "QUEUED")] | length')
+
+            if [ "$FAILING" -gt 0 ]; then
+              echo "Checks failing, aborting auto-merge"
+              gh pr edit "$PR_NUM" --add-label "requires-manual-review"
+              exit 1
+            fi
+
+            if [ "$PENDING" -eq 0 ]; then
+              echo "All checks passed, merging PR #${PR_NUM}"
+              gh pr merge "$PR_NUM" --merge --auto
+              exit 0
+            fi
+
+            echo "Waiting for checks (${PENDING} pending, ${ELAPSED}s elapsed)..."
+            sleep 30
+            ELAPSED=$((ELAPSED + 30))
+          done
+
+          echo "Timed out waiting for checks after ${MAX_WAIT}s"
+          gh pr edit "$PR_NUM" --add-label "requires-manual-review"
+
+  # ---------------------------------------------------------------------------
+  # REPORT - Summary in step output
+  # ---------------------------------------------------------------------------
+  report:
+    name: Report
+    needs: [check, bump, pr, auto-merge]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - run: |
+          echo "# Upstream Version Watch Report" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Stage | Result |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|-------|--------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Check | ${{ needs.check.result }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Bump | ${{ needs.bump.result }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| PR | ${{ needs.pr.result }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Auto-merge | ${{ needs.auto-merge.result }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Updates found:** ${{ needs.check.outputs.update_count }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "_Run completed at $(date -u +%Y-%m-%dT%H:%M:%SZ)_" >> "$GITHUB_STEP_SUMMARY"

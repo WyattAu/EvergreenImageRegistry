@@ -17,10 +17,10 @@ RUN mkdir -p /opt/venv || true
 RUN apt-get update && apt-get install -y --no-install-recommends python3-pip python3 && rm -rf /var/lib/apt/lists/* && \
     python3 -m venv /opt/venv ; /opt/venv/bin/pip install --no-cache-dir --upgrade pip ; /opt/venv/bin/pip install --no-cache-dir surrealdb==${VERSION} 2>/dev/null || /opt/venv/bin/pip install --no-cache-dir surrealdb && \
     mkdir -p /app /usr/local/lib/python3.11/site-packages || true ; touch /app/ && { echo "Binary not available - download failed" >&2; exit 1; }
-FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
-LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+LABEL evergreen.base.fallback_reason="wolfi-base for musl compatibility"
 ARG VERSION=1.0.0
-RUN microdnf install -y python3 || true
+RUN apk add --no-cache python3 || true
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
 RUN addgroup -S -g 2 nogroup >/dev/null || true ; adduser -u 65532 -G nogroup -D -h /app -s /bin/false surrealdb-python 2>/dev/null || true

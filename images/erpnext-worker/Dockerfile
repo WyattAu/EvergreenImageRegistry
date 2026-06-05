@@ -17,8 +17,8 @@ RUN mkdir -p /opt/venv || true
 RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip python3-dev \
         git curl ca-certificates \
-        build-essential libffi-dev libssl-dev \
-        postgresql-dev libpq-dev libjpeg-turbo-dev zlib1g-dev && \
+        build-base libffi-dev libssl-dev \
+        postgresql-dev postgresql-dev libjpeg-turbo-dev zlib-dev && \
     rm -rf /var/lib/apt/lists/* || true && \
     python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
@@ -28,13 +28,13 @@ RUN     pip install --no-cache-dir --upgrade pip setuptools wheel && \
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 COPY --from=shim /shim /shim
 
-LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
+LABEL evergreen.base.fallback_reason="wolfi-base for musl compatibility"
 ARG VERSION=15
 
-RUN dnf install -y python3 ca-certificates tzdata libpq libjpeg-turbo zlib || true
+RUN apk add --no-cache python3 ca-certificates tzdata postgresql-libs libjpeg-turbo zlib || true
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 ENV FRAPPE_VERSION="${VERSION}"

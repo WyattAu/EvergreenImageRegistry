@@ -19,18 +19,18 @@ RUN pip install --break-system-packages --no-cache-dir --prefix=/install google-
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS stripper
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends binutils python3-minimal && \
+    apt-get install -y --no-install-recommends binutils python3 && \
     rm -rf /var/lib/apt/lists/*
 COPY --from=builder /install /install
 RUN find /install -type f -name "*.so" -exec strip --strip-unneeded {} \ && \
     mkdir -p /etc/ssl/certs 2>/dev/null  ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
-FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
-LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+LABEL evergreen.base.fallback_reason="wolfi-base for musl compatibility"
 ARG VERSION=3.10.0
 
 RUN addgroup -S -g 65532 gcplogs 2>/dev/null || true && \
     adduser -u 65532 -G gcplogs -D -s /bin/false gcplogs || true && \
-    microdnf install -y ca-certificates && \
+    apk add --no-cache ca-certificates && \
     mkdir -p /etc/ssl/certs /usr 2>/dev/null || true
 COPY --from=stripper /install /usr/local
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

@@ -20,6 +20,7 @@ LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 LABEL evergreen.image.tier="3"
+LABEL evergreen.base.image="wolfi"
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD curl -sf http://localhost:9101/metrics || exit 1
 
 LABEL org.opencontainers.image.description="seafile container image" \

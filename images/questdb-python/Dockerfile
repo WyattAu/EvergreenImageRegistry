@@ -21,10 +21,10 @@ RUN pip install --no-cache-dir --upgrade pip && \
     mkdir -p /opt/venv ; \
     mkdir -p /app 2>/dev/null || true
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
-LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+LABEL evergreen.base.fallback_reason="wolfi-base for musl compatibility"
 
-RUN microdnf install -y python3 ca-certificates tzdata libpq || true
+RUN apk add --no-cache python3 ca-certificates tzdata postgresql-libs || true
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
 ENV PATH="/opt/venv/bin:${PATH}"

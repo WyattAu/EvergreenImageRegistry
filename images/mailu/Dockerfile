@@ -22,12 +22,12 @@ RUN pip install --no-cache-dir mailu==2.0.0 && \
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 COPY --from=shim /shim /shim
 
-LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
+LABEL evergreen.base.fallback_reason="wolfi-base for musl compatibility"
 
-RUN dnf install -y python3 ca-certificates || true && \
+RUN apk add --no-cache python3 ca-certificates || true && \
     mkdir -p /app /opt 2>/dev/null || true && \
     groupadd -g 10000 appuser 2>/dev/null || true && useradd -u 65532 -g appuser -r -M -s /bin/false appuser 2>/dev/null || true
 COPY --from=builder /opt/venv /opt/venv

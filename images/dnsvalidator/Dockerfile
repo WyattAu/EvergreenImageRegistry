@@ -23,13 +23,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mkdir -p /opt/venv
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
+FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 COPY --from=shim /shim /shim
 
-LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
+LABEL evergreen.base.fallback_reason="wolfi-base for musl compatibility"
 
 ARG VERSION=1.0.0
-RUN microdnf install -y python3 ca-certificates && \
+RUN apk add --no-cache python3 ca-certificates && \
     adduser -u 65532 -s /bin/false dnsval || true && \
     mkdir -p /var/lib/dnsvalidator /var/log/dnsvalidator
 COPY --from=builder /opt/venv /opt/venv

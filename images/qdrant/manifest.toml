@@ -2,7 +2,7 @@
 tier = "standard"
 name = "qdrant"
 version = "1.17.1"
-description = "qdrant container image"
+description = "qdrant - vector similarity search engine"
 
 [build]
 base = "scratch"
@@ -10,18 +10,22 @@ user = "65532:65532"
 stopsignal = "SIGTERM"
 
 [source]
-type = "package-manager"
+type = "source-build"
+url = "https://github.com/qdrant/qdrant"
+language = "rust"
+target = "x86_64-unknown-linux-musl"
 
 [runtime]
 entrypoint = ["/qdrant"]
 
 [ports]
-expose = [6333, 9101]
+expose = [6333, 6334, 9101]
 
 [labels]
 "org.opencontainers.image.title" = "qdrant"
 "org.opencontainers.image.vendor" = "Qdrant"
 "org.opencontainers.image.version" = "1.17.1"
+"org.opencontainers.image.source" = "https://github.com/qdrant/qdrant"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"
@@ -30,4 +34,5 @@ expose = [6333, 9101]
 "evergreen.hft.shutdown-timeout" = "3s"
 "evergreen.hft.signal-handling" = "native"
 "evergreen.hft.startup-timeout" = "3000ms"
-"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard"
+"evergreen.metrics.native" = "ztunnel"

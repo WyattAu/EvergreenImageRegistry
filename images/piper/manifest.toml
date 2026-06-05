@@ -2,7 +2,7 @@
 tier = "standard"
 name = "piper"
 version = "1.2.0"
-description = "piper container image"
+description = "piper - fast local neural text to speech"
 
 [build]
 base = "scratch"
@@ -10,7 +10,10 @@ user = "65532:65532"
 stopsignal = "SIGTERM"
 
 [source]
-type = "package-manager"
+type = "source-build"
+url = "https://github.com/rhasspy/piper"
+language = "rust"
+target = "x86_64-unknown-linux-musl"
 
 [runtime]
 entrypoint = ["/piper"]
@@ -19,10 +22,10 @@ entrypoint = ["/piper"]
 expose = [6666, 9101]
 
 [labels]
-"org.opencontainers.image.source" = "https://github.com/rhasspy/piper/releases"
 "org.opencontainers.image.title" = "piper"
 "org.opencontainers.image.vendor" = "rhasspy/piper"
 "org.opencontainers.image.version" = "1.2.0"
+"org.opencontainers.image.source" = "https://github.com/rhasspy/piper"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"
@@ -31,4 +34,5 @@ expose = [6666, 9101]
 "evergreen.hft.shutdown-timeout" = "3s"
 "evergreen.hft.signal-handling" = "native"
 "evergreen.hft.startup-timeout" = "3000ms"
-"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard"
+"evergreen.metrics.native" = "ztunnel"

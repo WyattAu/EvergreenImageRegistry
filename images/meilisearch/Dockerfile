@@ -1,36 +1,18 @@
-ARG TARGETARCH
-ARG APP_UID=65532
-ARG APP_GID=65532
-
 ARG SHIM_VERSION=v0.3.0
 
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-ARG TARGETARCH
-ARG VERSION=1.42.1
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/meilisearch/meilisearch/releases/download/v1.42.1/meilisearch-enterprise-linux-${TARGETARCH} -o /meilisearch.tar.gz ; \
-    echo "4ff9a43e0ccd5bd61efaaa37bd42b2a9fc349d2b6d80e1488810019701104162  /meilisearch" | sha256sum -c ; \
-    echo "4ff9a43e0ccd5bd61efaaa37bd42b2a9fc349d2b6d80e1488810019701104162  /meilisearch" | sha256sum -c ; \
-    [ -f /meilisearch.tar.gz ] && tar -xzf /meilisearch.tar.gz -C / && rm -f /meilisearch.tar.gz && chmod +x /meilisearch 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/meilisearch/meilisearch/releases/download/v1.42.1/meilisearch-enterprise-linux-${TARGETARCH} -o /meilisearch && { echo "Binary not available - download failed" >&2; exit 1; }
-
-
-
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-ARG TARGETARCH
-RUN mkdir -p /app /var/log/meilisearch /var/cache/meilisearch 2>/dev/null || true
-
+FROM rust:1-slim AS builder
+ARG VERSION=1.12.3
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc musl-tools && rm -rf /var/lib/apt/lists/* && \
+    rustup target add x86_64-unknown-linux-musl && \
+    RUSTFLAGS="-C target-feature=+crt-static" \
+    cargo install --target x86_64-unknown-linux-musl --version ${VERSION} meilisearch
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
 COPY --from=shim /shim /shim
-
-COPY --from=downloader /meilisearch /meilisearch
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
-COPY --from=builder /var/log/meilisearch /var/log/meilisearch
-COPY --from=builder /var/cache/meilisearch /var/cache/meilisearch
+COPY --from=builder /root/.cargo/bin/meilisearch /meilisearch
 USER 65532:65532
 ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
@@ -42,17 +24,16 @@ HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
 ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="meilisearch" \
       org.opencontainers.image.description="Meilisearch - fast, relevant, and typo-tolerant search engine" \
-      org.opencontainers.image.version="1.42.1" \
+      org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Meilisearch" \
-      evergreen.image.tier="1" \
+      org.opencontainers.image.source="https://github.com/meilisearch/meilisearch" \
+      evergreen.image.tier="standard" \
       evergreen.constraint.nonroot="true" \
       evergreen.constraint.scratch="true" \
       evergreen.hft.signal-handling="native" \
       evergreen.hft.shutdown-timeout="3s" \
       evergreen.hft.init-system="none" \
-      evergreen.hft.startup-timeout="3000ms" \
-            org.opencontainers.image.source="https://github.com/meilisearch/meilisearch"
-
+      evergreen.hft.startup-timeout="3000ms"
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"

@@ -1,11 +1,10 @@
 [metadata]
+tier = "standard"
 name = "meilisearch"
-version = "1.42.1"
+version = "1.12.3"
 description = "Meilisearch - fast, relevant, and typo-tolerant search engine"
 vendor = "Meilisearch"
 source = "https://github.com/meilisearch/meilisearch"
-license = "Apache-2.0"
-tier = "standard"
 
 [build]
 base = "scratch"
@@ -13,8 +12,10 @@ user = "65532:65532"
 stopsignal = "SIGTERM"
 
 [source]
-type = "package-manager"
-url = "https://github.com/meilisearch/meilisearch/releases/download/v1.42.1/meilisearch-1.42.1-linux-amd64.tar.gz"
+type = "source-build"
+url = "https://github.com/meilisearch/meilisearch"
+language = "rust"
+target = "x86_64-unknown-linux-musl"
 
 [runtime]
 entrypoint = ["/meilisearch"]
@@ -25,7 +26,7 @@ expose = [7700, 9101]
 [labels]
 "org.opencontainers.image.title" = "meilisearch"
 "org.opencontainers.image.vendor" = "Meilisearch"
-"org.opencontainers.image.version" = "1.42.1"
+"org.opencontainers.image.version" = "1.12.3"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"
@@ -34,4 +35,5 @@ expose = [7700, 9101]
 "evergreen.hft.shutdown-timeout" = "3s"
 "evergreen.hft.signal-handling" = "native"
 "evergreen.hft.startup-timeout" = "3000ms"
-"evergreen.image.tier" = "standard""evergreen.metrics.native" = "ztunnel"
+"evergreen.image.tier" = "standard"
+"evergreen.metrics.native" = "ztunnel"

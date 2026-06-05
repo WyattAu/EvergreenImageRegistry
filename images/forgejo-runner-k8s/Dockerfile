@@ -56,3 +56,7 @@ USER 65532:65532
 HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/act_runner"]
 CMD ["daemon"]
+LABEL evergreen.security.cap-drop="ALL" \
+      evergreen.security.no-new-privileges="true" \
+      evergreen.security.read-only-rootfs="true" \
+      evergreen.security.seccomp="runtime-default"

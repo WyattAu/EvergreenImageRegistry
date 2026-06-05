@@ -109,6 +109,7 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - run: |
           set +e  # Don't exit on grep failures in the gate check loop
+          set +e  # Don't exit on grep failures
           PASS=0; FAIL=0
           for dockerfile in images/*/Dockerfile; do
             name=$(basename $(dirname "$dockerfile"))
@@ -127,3 +128,73 @@ jobs:
   # ---------------------------------------------------------------------------
   # BUILD CRITICAL - Highest priority, signed, multi-arch
   # ---------------------------------------------------------------------------
+  build-critical:
+    name: Build Critical
+    needs: [discover-critical, gates]
+    if: needs.discover-critical.result == 'success' && needs.discover-critical.outputs.total != '0'
+    uses: ./.github/workflows/_build-reusable.yml
+    with:
+      matrix: ${{ needs.discover-critical.outputs.matrix }}
+      tag: ${{ github.sha }}
+      push: true
+      sign: ${{ inputs.sign == 'true' }}
+      multiarch: true
+      tier: critical
+    secrets: inherit
+
+  # ---------------------------------------------------------------------------
+  # BUILD STANDARD - Multi-arch, unsigned
+  # ---------------------------------------------------------------------------
+  build-standard:
+    name: Build Standard
+    needs: [discover-standard, gates]
+    if: needs.discover-standard.result == 'success' && needs.discover-standard.outputs.total != '0'
+    uses: ./.github/workflows/_build-reusable.yml
+    with:
+      matrix: ${{ needs.discover-standard.outputs.matrix }}
+      tag: ${{ github.sha }}
+      push: true
+      sign: false
+      multiarch: true
+      tier: standard
+    secrets: inherit
+
+  # ---------------------------------------------------------------------------
+  # BUILD COMMUNITY - amd64 only, unsigned
+  # ---------------------------------------------------------------------------
+  build-community:
+    name: Build Community
+    needs: [discover-community, gates]
+    if: needs.discover-community.result == 'success' && needs.discover-community.outputs.total != '0'
+    uses: ./.github/workflows/_build-reusable.yml
+    with:
+      matrix: ${{ needs.discover-community.outputs.matrix }}
+      tag: ${{ github.sha }}
+      push: true
+      sign: false
+      multiarch: false
+      tier: community
+    secrets: inherit
+
+  # ---------------------------------------------------------------------------
+  # REPORT - Aggregate results
+  # ---------------------------------------------------------------------------
+  report:
+    name: Nightly Report
+    needs:
+      [discover-critical, discover-standard, discover-community, build-critical, build-standard, build-community, gates]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: |
+          echo "# Nightly Build Report" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Tier | Images | Build |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|------|--------|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Gates** | - | ${{ needs.gates.result }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Critical** | ${{ needs.discover-critical.outputs.total || 0 }} | ${{ needs.build-critical.result || 'skipped' }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Standard** | ${{ needs.discover-standard.outputs.total || 0 }} | ${{ needs.build-standard.result || 'skipped' }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Community** | ${{ needs.discover-community.outputs.total || 0 }} | ${{ needs.build-community.result || 'skipped' }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Commit:** \`${{ github.sha }}\`" >> "$GITHUB_STEP_SUMMARY"

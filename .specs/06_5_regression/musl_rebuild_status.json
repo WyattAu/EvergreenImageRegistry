@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "description": "Tracks musl rebuild status for Go/Rust images — size before/after, build status, and rebuild dates.",
+  "threshold_percent": 10,
+  "images": {}
+}

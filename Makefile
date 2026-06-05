@@ -103,6 +103,67 @@ audit: ## Run evergreenctl audit on all images
 	@echo "=== Auditing all images ==="
 	@evergreenctl audit images/ 2>&1 || echo "evergreenctl audit completed (or not installed)"
 
+# ---- musl-check ----
+.PHONY: musl-check
+musl-check: ## Run musl rebuild check locally for a single image (IMG=name)
+	@if [ -z "$(IMG)" ]; then \
+		echo "Usage: make musl-check IMG=<image-name>"; \
+		echo "Example: make musl-check IMG=vector"; \
+		exit 1; \
+	fi
+	@if [ ! -f "images/$(IMG)/Dockerfile" ]; then \
+		echo "Error: images/$(IMG)/Dockerfile not found"; \
+		exit 1; \
+	fi
+	@echo "=== Musl Rebuild Check: $(IMG) ==="
+	@IMAGE="$(IMG)"; \
+	BUILD_TYPE="unknown"; \
+	if grep -qE 'golang\.org/dl/|github\.com/.*releases/download.*linux.*amd64' "images/$$IMAGE/Dockerfile" 2>/dev/null; then \
+		BUILD_TYPE="go"; \
+	elif grep -qE 'rust-lang\.org/dist' "images/$$IMAGE/Dockerfile" 2>/dev/null; then \
+		BUILD_TYPE="rust"; \
+	fi; \
+	echo "  Build type: $$BUILD_TYPE"; \
+	if [ "$$BUILD_TYPE" = "unknown" ]; then \
+		echo "  Skipping: not a Go/Rust binary-download image"; \
+		exit 0; \
+	fi; \
+	if [ ! -f "images/$$IMAGE/Dockerfile.musl-src" ]; then \
+		echo "  Generating musl Dockerfile..."; \
+		if [ "$$BUILD_TYPE" = "go" ]; then \
+			bash scripts/rebuild_go_musl.sh "$$IMAGE"; \
+		else \
+			bash scripts/rebuild_rust_musl.sh "$$IMAGE"; \
+		fi; \
+	fi; \
+	if [ ! -f "images/$$IMAGE/Dockerfile.musl-src" ]; then \
+		echo "  ERROR: Failed to generate musl Dockerfile"; \
+		exit 1; \
+	fi; \
+	echo "  Building original image..."; \
+	docker build -t "evergreen-$$IMAGE-glibc" "images/$$IMAGE/" || exit 1; \
+	echo "  Building musl image..."; \
+	docker build -t "evergreen-$$IMAGE-musl" -f "images/$$IMAGE/Dockerfile.musl-src" "images/$$IMAGE/" || exit 1; \
+	ORIG_SIZE=$$(docker image inspect "evergreen-$$IMAGE-glibc" --format='{{.Size}}' 2>/dev/null); \
+	MUSL_SIZE=$$(docker image inspect "evergreen-$$IMAGE-musl" --format='{{.Size}}' 2>/dev/null); \
+	ORIG_MB=$$((ORIG_SIZE / 1024 / 1024)); \
+	MUSL_MB=$$((MUSL_SIZE / 1024 / 1024)); \
+	SAVED=$$((ORIG_SIZE - MUSL_SIZE)); \
+	SAVINGS_PCT=$$(( (SAVED * 100) / ORIG_SIZE )); \
+	echo ""; \
+	echo "  Results:"; \
+	echo "    Original: $${ORIG_MB} MB"; \
+	echo "    Musl:     $${MUSL_MB} MB"; \
+	echo "    Savings:  $${SAVINGS_PCT}%"; \
+	if [ "$$SAVINGS_PCT" -ge 10 ]; then \
+		echo "  -> Exceeds 10% threshold! PR candidate."; \
+	else \
+		echo "  -> Below 10% threshold."; \
+	fi; \
+	echo ""; \
+	echo "  Verifying musl image..."; \
+	docker run --rm "evergreen-$$IMAGE-musl" --version 2>&1 || true
+
 # ---- help ----
 .PHONY: help
 help: ## List all targets

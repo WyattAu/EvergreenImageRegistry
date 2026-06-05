@@ -24,7 +24,7 @@ RUN mkdir -p /app /var/log/mysqld_exporter /var/cache/mysqld_exporter 2>/dev/nul
 
 
 
-FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
 COPY --from=shim /shim /shim
@@ -37,7 +37,14 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/mysqld_exporter /var/log/mysqld_exporter
 COPY --from=builder /var/cache/mysqld_exporter /var/cache/mysqld_exporter
 USER 65532:65532
-ENV SHIM_METRICS_ENABLED="true"
+ENV SHIM_BACKUP_ENABLED="false" \
+    SHIM_BACKUP_DB_HOST="localhost" \
+    SHIM_BACKUP_DB_PORT="5432" \
+    SHIM_REPLICATION_ENABLED="false" \
+    SHIM_MIGRATION_ENABLED="false" \
+    SHIM_VAULT_ENABLED="false" \
+    SHIM_AUDIT_ENABLED="true" \
+    SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 9104
 

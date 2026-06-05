@@ -7,7 +7,7 @@ ARG SHIM_VERSION=v0.3.0
 
 FROM bitpoke/mysql-operator:v${VERSION} AS upstream
 
-FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
 COPY --from=shim /shim /shim
@@ -15,7 +15,14 @@ COPY --from=shim /shim /shim
 COPY --from=upstream /mysql-operator /usr/local/bin/mysql-operator
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
-ENV SHIM_METRICS_ENABLED="true"
+ENV SHIM_BACKUP_ENABLED="false" \
+    SHIM_BACKUP_DB_HOST="localhost" \
+    SHIM_BACKUP_DB_PORT="5432" \
+    SHIM_REPLICATION_ENABLED="false" \
+    SHIM_MIGRATION_ENABLED="false" \
+    SHIM_VAULT_ENABLED="false" \
+    SHIM_AUDIT_ENABLED="true" \
+    SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 8080 8443
 

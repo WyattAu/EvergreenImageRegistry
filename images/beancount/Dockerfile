@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip python3 ca-certificates curl ; rm -rf /var/lib/apt/lists/* && \
     python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir beancount==2.3.6 ; { echo "Binary not available - download failed" >&2; exit 1; }
+RUN pip install --no-cache-dir beancount==2.3.6 
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

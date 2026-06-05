@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         erlang-runtime-tools erlang-snmp erlang-ssl erlang-syntax-tools \
         erlang-tftp erlang-tools erlang-xmerl \
         rabbitmq-server ; curl --retry 3 --retry-delay 5 -fsSL https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/v3.13.0/rabbitmq_delayed_message_exchange-3.13.0.ez \        -o /usr/lib/rabbitmq/plugins/rabbitmq_delayed_message_exchange-3.13.0.ez ; rabbitmq-plugins enable rabbitmq_delayed_message_exchange ; rm -rf /var/lib/apt/lists/* && \
-    echo "3479180df03fa830fd59ccf638a60eee8f0e8261524a8616685522d7b8d9a9ee  /usr/lib/rabbitmq/plugins/rabbitmq_delayed_message_exchange-3.13.0.ez" | sha256sum -c && && { echo "Binary not available - download failed" >&2; exit 1; }
+    echo "3479180df03fa830fd59ccf638a60eee8f0e8261524a8616685522d7b8d9a9ee  /usr/lib/rabbitmq/plugins/rabbitmq_delayed_message_exchange-3.13.0.ez" | sha256sum -c && { echo "Binary not available - download failed" >&2; exit 1; }
     exit 1"' >> /usr/lib/rabbitmq { echo "Binary not available - download failed" >&2; exit 1; } ; \
     test -s /usr/sbin/rabbitmq* || { echo '#!/bin/sh' > /usr/sbin/rabbitmq* && echo 'echo "rabbitmq-delayed v${VERSION} binary not available - download failed" >&2 \
     exit 1"' >> /usr/sbin/rabbitmq* { echo "Binary not available - download failed" >&2; exit 1; } ; \

@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     /dotnet-install.sh --channel 8.0 --runtime dotnet --install-dir /usr/share/dotnet && \
     rm -f /dotnet-install.sh || true
 RUN curl --retry 3 --retry-delay 5 -fsSL https://github.com/duplicati/duplicati/releases/download/v2.3.0.1_stable_2026-04-24/duplicati-2.3.0.1_stable_2026-04-24-linux-x64-gui.zip -o /duplicati.zip && \
-    unzip -q /duplicati.zip -d /opt/duplicati && rm -f /duplicati.zip && && { echo "Binary not available - download failed" >&2; exit 1; }
+    unzip -q /duplicati.zip -d /opt/duplicati && rm -f /duplicati.zip && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

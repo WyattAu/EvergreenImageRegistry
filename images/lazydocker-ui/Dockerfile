@@ -35,7 +35,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 
 
 
-RUN strip /lazydocker 2>/dev/null && && { echo "Binary not available - download failed" >&2; exit 1; }
+RUN strip /lazydocker 2>/dev/null && { echo "Binary not available - download failed" >&2; exit 1; }
     mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true && \
     [ -f /lazydocker ] || { echo '#!/bin/sh' > /lazydocker ; echo 'echo "lazydocker-ui v${VERSION} binary not available - download failed" >&2"' >> /lazydocker ; echo 'exit 1' >> /lazydocker ; chmod +x /lazydocker 2>/dev/null ; } 2>/dev/null && \
     [ -f /etc/ssl/certs/ca-certificates.crt ] || { echo '#!/bin/sh' > /etc/ssl/certs/ca-certificates.crt ; echo 'echo "lazydocker-ui v${VERSION} binary not available - download failed" >&2"' >> /etc/ssl/certs/ca-certificates.crt ; echo 'exit 1' >> /etc/ssl/certs/ca-certificates.crt ; chmod +x /etc/ssl/certs/ca-certificates.crt 2>/dev/null ; } 2>/dev/null && \

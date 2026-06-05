@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg --dearmor -o /usr/share/keyrings/postgresql-keyring.gnupg && \
     apt-get update && apt-get install -y --no-install-recommends \
     postgresql-${VERSION%.*} postgresql-contrib-${VERSION%.*} && rm -rf /var/lib/apt/lists/* && \
-    mkdir -p /var/lib/postgresql/data /var/run/postgresql /app || true && && { echo "Binary not available - download failed" >&2; exit 1; }
+    mkdir -p /var/lib/postgresql/data /var/run/postgresql /app || true && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM scratch AS entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 

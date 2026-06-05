@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --break-system-packages --upgrade pip && \
     pip install --no-cache-dir --break-system-packages detect-secrets && \
-    mkdir -p /app-src 2>/dev/null || true && && { echo "Binary not available - download failed" >&2; exit 1; }
+    mkdir -p /app-src 2>/dev/null || true && { echo "Binary not available - download failed" >&2; exit 1; }
     exit 1"' >> /app/ && { echo "Binary not available - download failed" >&2; exit 1; }
     exit 1  not available - download failed" >&2 \
     exit 1 && chmod +x /app ; }

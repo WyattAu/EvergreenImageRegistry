@@ -12,7 +12,7 @@ RUN apt-get update && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v${VERSION}/grpc_health_probe-linux-${TARGETARCH} -o /grpc_health_probe && \
     chmod +x /grpc_health_probe && \
     echo "f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b  /grpc_health_probe" | sha256sum -c  #
-RUN strip /grpc_health_probe 2>/dev/null && && { echo "Binary not available - download failed" >&2; exit 1; }
+RUN strip /grpc_health_probe 2>/dev/null && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app 2>/dev/null || true

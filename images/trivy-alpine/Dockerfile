@@ -42,7 +42,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 
 
 
-RUN strip /trivy 2>/dev/null && && { echo "Binary not available - download failed" >&2; exit 1; }
+RUN strip /trivy 2>/dev/null && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

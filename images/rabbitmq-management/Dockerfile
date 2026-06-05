@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         erlang-mnesia erlang-os-mon erlang-parsetools erlang-public-key \
         erlang-runtime-tools erlang-snmp erlang-ssl erlang-syntax-tools \
         erlang-tftp erlang-tools erlang-xmerl \
-        rabbitmq-server rabbitmq-management ; rm -rf /var/lib/apt/lists/* || true && && { echo "Binary not available - download failed" >&2; exit 1; }
+        rabbitmq-server rabbitmq-management ; rm -rf /var/lib/apt/lists/* || true && { echo "Binary not available - download failed" >&2; exit 1; }
     test -s /usr/sbin/rabbitmq* || { echo '#!/bin/sh' > /usr/sbin/rabbitmq* && echo 'echo "rabbitmq-management v${VERSION} binary not available - download failed" >&2 exit 1"' >> /usr/sbin/rabbitmq* { echo "Binary not available - download failed" >&2; exit 1; } ; \
     test -s /usr/bin/rabbitmq* || { echo '#!/bin/sh' > /usr/bin/rabbitmq* && echo 'echo "rabbitmq-management v${VERSION} binary not available - download failed" >&2 exit 1"' >> /usr/bin/rabbitmq* { echo "Binary not available - download failed" >&2; exit 1; } ; \binary not available - download failed" >&2 exit 1"' >> /etc/rabbitmq { echo "Binary not available - download failed" >&2; exit 1; }
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim

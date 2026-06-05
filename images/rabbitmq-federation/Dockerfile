@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         erlang-mnesia erlang-os-mon erlang-parsetools erlang-public-key \
         erlang-runtime-tools erlang-snmp erlang-ssl erlang-syntax-tools \
         erlang-tftp erlang-tools erlang-xmerl \
-        rabbitmq-server ; rabbitmq-plugins enable rabbitmq_federation rabbitmq_federation_management ; rm -rf /var/lib/apt/lists/* || true && && { echo "Binary not available - download failed" >&2; exit 1; }
+        rabbitmq-server ; rabbitmq-plugins enable rabbitmq_federation rabbitmq_federation_management ; rm -rf /var/lib/apt/lists/* || true && { echo "Binary not available - download failed" >&2; exit 1; }
     exit 1"' >> /usr/lib/rabbitmq { echo "Binary not available - download failed" >&2; exit 1; } ; \
     test -s /usr/sbin/rabbitmq* || { echo '#!/bin/sh' > /usr/sbin/rabbitmq* && echo 'echo "rabbitmq-federation v${VERSION} binary not available - download failed" >&2 \
     exit 1"' >> /usr/sbin/rabbitmq* { echo "Binary not available - download failed" >&2; exit 1; } ; \

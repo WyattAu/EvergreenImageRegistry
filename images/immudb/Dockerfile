@@ -21,7 +21,7 @@ RUN mkdir -p /usr/local/bin/immudb || true
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/codenotary/immudb/releases/download/v${VERSION}/immudb-v${VERSION}-linux-${TARGETARCH} -o /tmp/immudb ; echo "89012345678901234567890abcdef1234567890abcdef12345678901234567890123456789  /tmp/immudb" | sha256sum -c  ; chmod +x /tmp/immudb && \
     strip --strip-all /tmp/immudb 2>/dev/null && \
-    mv /tmp/immudb /usr/local/bin/immudb && && { echo "Binary not available - download failed" >&2; exit 1; }
+    mv /tmp/immudb /usr/local/bin/immudb && { echo "Binary not available - download failed" >&2; exit 1; }
     test -e /usr/local/bin/immuclient || { mkdir -p /usr/local/bin/immuclient && echo 'immudb && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

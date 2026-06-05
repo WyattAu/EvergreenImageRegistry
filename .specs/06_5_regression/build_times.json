@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "description": "Build time baselines for performance regression detection",
+  "threshold_percent": 50,
+  "images": {}
+}

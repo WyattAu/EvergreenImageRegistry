@@ -1,0 +1,14 @@
+[health]
+type = "tcp"
+host = "127.0.0.1"
+port = 8080
+interval_secs = 10
+timeout_secs = 5
+
+[metrics]
+enabled = true
+port = 9101
+path = "/metrics"
+
+[process]
+graceful_shutdown_secs = 30

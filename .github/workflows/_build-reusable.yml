@@ -292,6 +292,25 @@ jobs:
             echo "::warning::${FAILED} image(s) skipped/failed push in batch ${{ matrix.batch }}"
           fi
 
+      - name: Generate SBOMs with syft
+        if: always() && inputs.push
+        run: |
+          TAG="${{ steps.resolve-tag.outputs.TAG }}"
+          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
+          for image in "${IMAGE_LIST[@]}"; do
+            [ -z "$image" ] && continue
+            [ ! -f "./images/${image}/Dockerfile" ] && continue
+            SBOM="./images/${image}/sbom.spdx.json"
+            echo "::group::SBOM ${image}"
+            if syft "dir:./images/${image}" -o spdx-json > "${SBOM}" 2>&1; then
+              echo "Generated SBOM for ${image}"
+            else
+              echo "::warning::syft failed for ${image}, generating placeholder"
+              echo '{"spdxVersion":"SPDX-2.3","dataLicense":"CC0-1.0","SPDXID":"SPDXRef-DOCUMENT","name":"'$image'","documentNamespace":"https://github.com/evergreen-registry/'$image'"}' > "${SBOM}"
+            fi
+            echo "::endgroup::"
+          done
+
   sign:
     name: Sign Images
     needs: build

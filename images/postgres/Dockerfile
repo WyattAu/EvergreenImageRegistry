@@ -23,6 +23,7 @@ COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 COPY --from=shim /shim /usr/local/bin/shim
+COPY shim.toml /etc/evergreen/shim.toml
 RUN chmod +x /usr/local/bin/shim
 
 USER postgres

@@ -22,6 +22,7 @@ RUN apk add --no-cache ca-certificates
 COPY --from=upstream /usr/local/bin/redis-server /usr/local/bin/redis-server
 COPY --from=upstream /usr/local/bin/redis-cli /usr/local/bin/redis-cli
 COPY --from=shim /shim /usr/local/bin/shim
+COPY shim.toml /etc/evergreen/shim.toml
 RUN chmod +x /usr/local/bin/shim
 
 RUN adduser -D -u 65532 -s /bin/false redis 2>/dev/null || true && \

@@ -9,34 +9,34 @@
 
 ## Quality Scorecard
 
-| Metric                | Value                               | Status             |
-| --------------------- | ----------------------------------- | ------------------ |
-| Total Images          | 986                                 | COMPLETE           |
-| TOML Validation       | 984/986 (0 errors)                  | PASS               |
-| JSON SBOM             | 970/986 (0 errors)                  | PASS               |
-| .dockerignore         | 983/986 (99.7%)                     | PASS               |
-| README.md             | 983/986 (99.7%)                     | PASS               |
-| manifest.toml         | 984/986 (99.8%)                     | PASS               |
-| sbom.spdx.json        | 970/986 (98.4%)                     | PASS               |
-| Anti-patterns         | 0 real (1 false positive)           | PASS               |
-| OCI title             | 984/986 (99.8%)                     | PASS               |
-| OCI description       | 983/986 (99.7%)                     | PASS               |
-| OCI source            | 981/986 (99.5%)                     | PASS               |
-| OCI version           | 982/986 (99.6%)                     | PASS               |
-| Non-root USER         | 975/986 (98.9%)                     | PASS               |
-| ENTRYPOINT            | 944/986 (95.7%)                     | PASS               |
-| STOPSIGNAL            | 982/986 (99.6%)                     | PASS               |
-| HEALTHCHECK NONE      | 426/986 (43.2%)                     | EXPECTED (scratch) |
-| HEALTHCHECK real      | 558/986 (56.6%)                     | PASS               |
-| HEALTHCHECK shim      | 2/986 (health-shim)                 | PASS               |
-| FROM digest pin       | 1512/1979 (76.4%)                   | PASS               |
-| Multi-arch TARGETARCH | 849 declared                        | PASS               |
-| Dockerfile syntax     | 0 errors                            | PASS               |
-| Orphaned commands     | 0                                   | PASS               |
-| Determinism           | Zstd + SOURCE_DATE_EPOCH            | PASS               |
-| Rigor (real binary)   | 99.8% (984/986)                     | PASS               |
-| Deprecated images     | 3 marked (cayley, meshbird, immudb) | TRACKED            |
-| Policy enforcement    | 9 policies defined                  | PASS               |
+| Metric                | Value                                              | Status             |
+| --------------------- | -------------------------------------------------- | ------------------ |
+| Total Images          | 986                                                | COMPLETE           |
+| TOML Validation       | 984/986 (0 errors)                                 | PASS               |
+| JSON SBOM             | 970/986 (0 errors)                                 | PASS               |
+| .dockerignore         | 983/986 (99.7%)                                    | PASS               |
+| README.md             | 983/986 (99.7%)                                    | PASS               |
+| manifest.toml         | 984/986 (99.8%)                                    | PASS               |
+| sbom.spdx.json        | 970/986 (98.4%)                                    | PASS               |
+| Anti-patterns         | 0 real (1 false positive)                          | PASS               |
+| OCI title             | 984/986 (99.8%)                                    | PASS               |
+| OCI description       | 983/986 (99.7%)                                    | PASS               |
+| OCI source            | 981/986 (99.5%)                                    | PASS               |
+| OCI version           | 982/986 (99.6%)                                    | PASS               |
+| Non-root USER         | 975/986 (98.9%)                                    | PASS               |
+| ENTRYPOINT            | 944/986 (95.7%)                                    | PASS               |
+| STOPSIGNAL            | 982/986 (99.6%)                                    | PASS               |
+| HEALTHCHECK NONE      | 426/986 (43.2%)                                    | EXPECTED (scratch) |
+| HEALTHCHECK real      | 558/986 (56.6%)                                    | PASS               |
+| HEALTHCHECK shim      | 2/986 (health-shim)                                | PASS               |
+| FROM digest pin       | 1512/1979 (76.4%)                                  | PASS               |
+| Multi-arch TARGETARCH | 849 declared                                       | PASS               |
+| Dockerfile syntax     | 0 errors                                           | PASS               |
+| Orphaned commands     | 0                                                  | PASS               |
+| Determinism           | Zstd + SOURCE_DATE_EPOCH                           | PASS               |
+| Rigor (real binary)   | 99.8% (984/986)                                    | PASS               |
+| Deprecated images     | 4 removed (cayley, meshbird, immudb, immudb-proxy) | DONE               |
+| Policy enforcement    | 9 policies defined                                 | PASS               |
 
 ## Code Quality Audit (2026-05-14)
 

@@ -95,7 +95,6 @@ version doesn't exist, or the download fails.
 | 31  | cadvisor                          | 0.49.1                       | repack          |
 | 32  | cargo-audit                       | ?                            | source-build    |
 | 33  | cassandra-operator                | 1.20.0                       | repack          |
-| 34  | cayley                            | 0.7.7                        | source-build    |
 | 35  | certificates                      | 1.6.5                        | binary-download |
 | 36  | chartdb                           | v1.20.1                      | repack          |
 | 37  | checkov                           | ?                            | repack          |
@@ -187,7 +186,6 @@ version doesn't exist, or the download fails.
 | 123 | homebridge                        | ?                            | repack          |
 | 124 | homebridge-camera                 | ?                            | repack          |
 | 125 | ignite                            | 2.16.0                       | binary-download |
-| 126 | immudb                            | 1.11.0                       | binary-download |
 | 127 | influxdb-client                   | 2.7.5                        | binary-download |
 | 128 | ipmi-exporter                     | 1.10.1                       | binary-download |
 | 129 | it-tools                          | 2024.10.22-7ca5933           | binary-download |
@@ -236,7 +234,6 @@ version doesn't exist, or the download fails.
 | 172 | mc                                | RELEASE.2025-04-08T16-46-15Z | binary-download |
 | 173 | meilisearch                       | 1.42.1                       | binary-download |
 | 174 | memcached-exporter                | 0.13.0                       | binary-download |
-| 175 | meshbird                          | 2.3                          | source-build    |
 | 176 | metricbeat                        | 9.4.0                        | binary-download |
 | 177 | mimir                             | 2.10.0                       | binary-download |
 | 178 | miniflux-21                       | 2.2.19                       | binary-download |
@@ -673,7 +670,6 @@ glibc indicators found on musl-based base images:
 | calibre                           | pkg-install     |     | python3                              | 8080                       | http/tcp | cgr.dev/chainguard | 65532:65532           |                                     |
 | cargo-audit                       | source-build    |  Y  | cargo-audit                          | -                          | http/tcp | cgr.dev/chainguard | 65532:65532           | PLACEHOLDER_FALLBACK,NO_EXPOSE      |
 | cassandra-operator                | repack          |  Y  | /usr/local/bin/cass-operator         | 8080,8443                  | NONE     | scratch            | 65532:65532           | PLACEHOLDER_FALLBACK                |
-| cayley                            | source-build    |  Y  | /usr/local/bin/cayley                | 64210                      | NONE     | scratch            | 65532:65532           | PLACEHOLDER_FALLBACK                |
 | certificates                      | binary-download |  Y  | /cfssl                               | -                          | NONE     | scratch            | 65532:65532           | PLACEHOLDER_FALLBACK,NO_EXPOSE      |
 | chartdb                           | repack          |  Y  | java", "-jar", "/opt/chartdb/chartd  | 8080                       | http/tcp | cgr.dev/chainguard | 65532:65532           | PLACEHOLDER_FALLBACK                |
 | chat-server                       | pkg-install     |     | synapse                              | 8008                       | http/tcp | cgr.dev/chainguard | 65532:65532           |                                     |
@@ -906,7 +902,6 @@ glibc indicators found on musl-based base images:
 | immich-ml                         | pkg-install     |     | python3                              | 3003                       | http/tcp | cgr.dev/chainguard | 65532:65532           |                                     |
 | immich-server                     | repack          |     | node                                 | 3001                       | http/tcp | cgr.dev/chainguard | 65532:65532           |                                     |
 | immich                            | pkg-install     |     | node                                 | 2283                       | http/tcp | cgr.dev/chainguard | immich                |                                     |
-| immudb                            | binary-download |  Y  | /usr/local/bin/immudb                | 3322,9497                  | NONE     | scratch            | 65532:65532           | PLACEHOLDER_FALLBACK                |
 | influxdb-2                        | repack          |     | /influxd                             | 8086                       | NONE     | scratch            | 65532:65532           |                                     |
 | influxdb-client                   | binary-download |  Y  | /influx                              | 8086                       | NONE     | scratch            | 65532:65532           | PLACEHOLDER_FALLBACK                |
 | influxdb                          | repack          |     | /influxd                             | 8086                       | NONE     | scratch            | 65532:65532           |                                     |
@@ -1012,7 +1007,6 @@ glibc indicators found on musl-based base images:
 | memcached-exporter                | binary-download |  Y  | /memcached_exporter                  | 9150                       | NONE     | scratch            | 65532:65532           | PLACEHOLDER_FALLBACK                |
 | memcached                         | repack          |     | memcached                            | 11211                      | native   | cgr.dev/chainguard | 65532:65532           |                                     |
 | memgraph                          | repack          |     | /opt/memgraph/bin/memgraph", "--dat  | 7687,7444                  | http/tcp | cgr.dev/chainguard | 65532:65532           | BLOATED                             |
-| meshbird                          | source-build    |  Y  | /meshbird                            | 10500,10500                | NONE     | scratch            | 65532:65532           | PLACEHOLDER_FALLBACK                |
 | metricbeat                        | binary-download |  Y  | /opt/metricbeat/metricbeat           | 5066                       | NONE     | scratch            | 65532:65532           | PLACEHOLDER_FALLBACK                |
 | milvus-etcd                       | pkg-install     |     | etcd                                 | 2379,2380                  | generic  | cgr.dev/chainguard | 65532:65532           |                                     |
 | milvus-minio                      | binary-download |     | /usr/local/bin/minio                 | 9000                       | NONE     | cgr.dev/chainguard | 65532:65532           | HEALTHCHECK_NONE_NON_SCRATCH        |
@@ -1544,9 +1538,6 @@ glibc indicators found on musl-based base images:
 - **cassandra-operator** (v1.20.0)
   - Has fallback pattern: creates placeholder script with `sleep infinity` on download failure
   - Fix: Remove the `|| true` / fallback pattern; let the build fail explicitly if download fails
-- **cayley** (v0.7.7)
-  - Has fallback pattern: creates placeholder script with `sleep infinity` on download failure
-  - Fix: Remove the `|| true` / fallback pattern; let the build fail explicitly if download fails
 - **certificates** (v1.6.5)
   - Has fallback pattern: creates placeholder script with `sleep infinity` on download failure
   - Fix: Remove the `|| true` / fallback pattern; let the build fail explicitly if download fails
@@ -1820,9 +1811,6 @@ glibc indicators found on musl-based base images:
 - **ignite** (v2.16.0)
   - Has fallback pattern: creates placeholder script with `sleep infinity` on download failure
   - Fix: Remove the `|| true` / fallback pattern; let the build fail explicitly if download fails
-- **immudb** (v1.11.0)
-  - Has fallback pattern: creates placeholder script with `sleep infinity` on download failure
-  - Fix: Remove the `|| true` / fallback pattern; let the build fail explicitly if download fails
 - **influxdb-client** (v2.7.5)
   - Has fallback pattern: creates placeholder script with `sleep infinity` on download failure
   - Fix: Remove the `|| true` / fallback pattern; let the build fail explicitly if download fails
@@ -1965,9 +1953,6 @@ glibc indicators found on musl-based base images:
   - Has fallback pattern: creates placeholder script with `sleep infinity` on download failure
   - Fix: Remove the `|| true` / fallback pattern; let the build fail explicitly if download fails
 - **memcached-exporter** (v0.13.0)
-  - Has fallback pattern: creates placeholder script with `sleep infinity` on download failure
-  - Fix: Remove the `|| true` / fallback pattern; let the build fail explicitly if download fails
-- **meshbird** (v2.3)
   - Has fallback pattern: creates placeholder script with `sleep infinity` on download failure
   - Fix: Remove the `|| true` / fallback pattern; let the build fail explicitly if download fails
 - **metricbeat** (v9.4.0)

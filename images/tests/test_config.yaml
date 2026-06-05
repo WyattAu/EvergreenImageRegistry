@@ -2781,15 +2781,6 @@ images:
     adversarial_test: false
     startup_timeout: 0
     stub: true
-  cayley:
-    binary: /usr/local/bin/cayley
-    health_port: 64210
-    health_cmd: 'curl -sf http://localhost:64210/health || curl -sf http://localhost:64210/ || true'
-    version_flag: '--version'
-    category: app
-    functional_test: app
-    adversarial_test: true
-    startup_timeout: 15
   certificates:
     binary: /cfssl
     health_port: 8080
@@ -4767,24 +4758,6 @@ images:
     functional_test: app
     adversarial_test: true
     startup_timeout: 15
-  immudb:
-    binary: /usr/local/bin/immudb
-    health_port: 3322
-    health_cmd: 'curl -sf http://localhost:3322/health || curl -sf http://localhost:3322/ || true'
-    version_flag: '--version'
-    category: database
-    functional_test: database
-    adversarial_test: true
-    startup_timeout: 15
-  immudb-proxy:
-    binary: /usr/local/bin/immudb-proxy
-    health_port: 3323
-    health_cmd: 'curl -sf http://localhost:3323/health || curl -sf http://localhost:3323/ || true'
-    version_flag: '--version'
-    category: database
-    functional_test: database
-    adversarial_test: true
-    startup_timeout: 15
   influxdb-2:
     binary: /influxd
     health_port: 8086
@@ -5676,15 +5649,6 @@ images:
     binary: /opt/memgraph/bin/memgraph
     health_port: 7687
     health_cmd: 'curl -sf http://localhost:7687/health || curl -sf http://localhost:7687/ || true'
-    version_flag: '--version'
-    category: app
-    functional_test: app
-    adversarial_test: true
-    startup_timeout: 15
-  meshbird:
-    binary: /meshbird
-    health_port: 10500
-    health_cmd: 'curl -sf http://localhost:10500/health || curl -sf http://localhost:10500/ || true'
     version_flag: '--version'
     category: app
     functional_test: app

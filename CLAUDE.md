@@ -98,6 +98,6 @@ docker build -t evergreen-redis images/redis/
 
 - 426 images have `HEALTHCHECK NONE` (expected: scratch-based with no shell)
 - 28 images missing SBOMs (970/986)
-- 3 images deprecated (cayley, meshbird, immudb)
+- 4 images removed (cayley, meshbird, immudb, immudb-proxy)
 - Tier labels inconsistent across manifests (3 competing schemas)
 - `docs/image-audit-report.md` is stale (reports on 841 images, current is 986)

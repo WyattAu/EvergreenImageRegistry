@@ -199,9 +199,9 @@ timeout. Consider setting `multiarch = false` in `manifest.toml` for Go source b
 
 ### Affected Images
 
-18 images with `FROM golang` but no `GOTOOLCHAIN`: badger, cayley, ct-log, dex, fail2ban-exporter, govulncheck,
-health-checks, health-shim, linguist-go, meshbird, nginx-ingress-controller, nutsdb, perscache, rate-limiter,
-rdns-server, scratch-go, ulogger, wireguard
+16 images with `FROM golang` but no `GOTOOLCHAIN`: badger, ct-log, dex, fail2ban-exporter, govulncheck, health-checks,
+health-shim, linguist-go, nginx-ingress-controller, nutsdb, perscache, rate-limiter, rdns-server, scratch-go, ulogger,
+wireguard
 
 ---
 
@@ -467,7 +467,7 @@ The JDK is never extracted.
 
 ### Affected Images
 
-gitbucket, gitlab-runner, couchdb-sync, immudb, rqlite, openjdk
+gitbucket, gitlab-runner, couchdb-sync, rqlite, openjdk
 
 ---
 
@@ -527,7 +527,7 @@ are no longer available.
 
 ### Affected Images
 
-fail2ban-exporter, linguist-go, meshbird, homeassistant-hassio/supervisor, cubrid, cyberduck, crdb-operator
+fail2ban-exporter, linguist-go, homeassistant-hassio/supervisor, cubrid, cyberduck, crdb-operator
 
 ### Fix
 

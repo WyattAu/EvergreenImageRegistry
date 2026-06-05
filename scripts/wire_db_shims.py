@@ -11,10 +11,9 @@ Usage:
     python3 scripts/wire_db_shims.py --image postgresql-17  # Wire specific image
 """
 
+import argparse
 import os
 import re
-import argparse
-import sys
 
 # Image → shim type mapping
 DB_IMAGE_MAP = {
@@ -115,14 +114,13 @@ def wire_image(image_dir, db_type, dry_run=False, force=False):
     if not os.path.exists(dockerfile):
         return None, "no Dockerfile"
 
-    with open(dockerfile, "r") as f:
+    with open(dockerfile) as f:
         content = f.read()
 
     if is_already_wired(db_type, content) and not force:
         return None, "already wired"
 
     base_type = detect_base_type(content)
-    shim_path = get_shim_path(base_type)
     shim_image = SHIM_IMAGES[db_type]
 
     # Step 1: Replace health-shim FROM with target shim (handle both ${SHIM_VERSION} and hardcoded)
@@ -142,14 +140,12 @@ def wire_image(image_dir, db_type, dry_run=False, force=False):
                 f"\\1ENV {env_block}\n",
                 content,
             )
-    elif db_type == "cache":
-        # For cache images, add after USER line
-        if "USER " in content and env_block not in content:
-            content = re.sub(
-                r"(USER\s+\S+\n)",
-                f"\\1ENV {env_block}\n",
-                content,
-            )
+    elif db_type == "cache" and "USER " in content and env_block not in content:
+        content = re.sub(
+            r"(USER\s+\S+\n)",
+            f"\\1ENV {env_block}\n",
+            content,
+        )
 
     if dry_run:
         return content, "would-wire"

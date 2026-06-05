@@ -1,9 +1,0 @@
-*.md
-*.txt
-.git
-.gitignore
-.gitattributes
-tests/
-*.test
-Dockerfile
-docker-compose*.yml

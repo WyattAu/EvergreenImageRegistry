@@ -104,7 +104,6 @@ Gateway and reverse proxy solutions for traffic management.
 | T1-VPN-018 | netbird            | scratch      | amd64/arm64  | CRITICAL | HIGH       |
 | T1-VPN-019 | netbird-ui         | wolfi        | amd64/arm64  | HIGH     | MEDIUM     |
 | T1-VPN-020 | tweed              | scratch      | amd64        | HIGH     | HIGH       |
-| T1-VPN-021 | meshbird           | scratch      | amd64        | MEDIUM   | HIGH       |
 | T1-VPN-022 | vpn-controller     | scratch      | amd64        | HIGH     | HIGH       |
 | T1-VPN-023 | wg-cloud           | wolfi        | amd64        | HIGH     | MEDIUM     |
 | T1-VPN-024 | ocserv             | wolfi        | amd64        | MEDIUM   | MEDIUM     |
@@ -350,7 +349,6 @@ Gateway and reverse proxy solutions for traffic management.
 | T1-GR-007 | graphdb-free         | wolfi        | amd64/arm64  | HIGH     | HIGH       |
 | T1-GR-008 | graphdb-enterpriser  | wolfi        | amd64/arm64  | HIGH     | HIGH       |
 | T1-GR-009 | janusgraph           | wolfi        | amd64        | HIGH     | HIGH       |
-| T1-GR-010 | cayley               | scratch      | amd64/arm64  | HIGH     | HIGH       |
 | T1-GR-011 | virtuoso             | wolfi        | amd64        | MEDIUM   | HIGH       |
 | T1-GR-012 | blazebase            | scratch      | amd64        | HIGH     | HIGH       |
 | T1-GR-013 | age                  | wolfi        | amd64        | HIGH     | HIGH       |
@@ -366,8 +364,6 @@ Gateway and reverse proxy solutions for traffic management.
 | T1-OB-003 | perkunadb    | wolfi        | amd64        | MEDIUM   | HIGH       |
 | T1-OB-004 | ejdb         | wolfi        | amd64        | MEDIUM   | MEDIUM     |
 | T1-OB-005 | bsondb       | wolfi        | amd64        | MEDIUM   | MEDIUM     |
-| T1-OB-006 | immudb       | scratch      | amd64/arm64  | CRITICAL | HIGH       |
-| T1-OB-007 | immudb-proxy | scratch      | amd64        | HIGH     | MEDIUM     |
 | T1-OB-008 | vulcan       | scratch      | amd64        | HIGH     | HIGH       |
 | T1-OB-009 | dodb         | scratch      | amd64/arm64  | HIGH     | HIGH       |
 | T1-OB-010 | tig          | scratch      | amd64/arm64  | HIGH     | HIGH       |

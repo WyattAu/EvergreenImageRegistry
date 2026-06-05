@@ -5,7 +5,7 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 ARG SHIM_VERSION=v0.2.0
 
-FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 COPY --from=shim /shim /shim
@@ -24,6 +24,13 @@ ARG TARGETARCH
 COPY --from=downloader /tmp/pe/postgres_exporter /postgres_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
+ENV SHIM_BACKUP_ENABLED="false" \
+    SHIM_BACKUP_DB_HOST="localhost" \
+    SHIM_BACKUP_DB_PORT="5432" \
+    SHIM_REPLICATION_ENABLED="false" \
+    SHIM_MIGRATION_ENABLED="false" \
+    SHIM_VAULT_ENABLED="false" \
+    SHIM_AUDIT_ENABLED="true"
 WORKDIR /app
 EXPOSE 9187
 

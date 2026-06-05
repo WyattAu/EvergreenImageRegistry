@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 FROM scratch AS entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
-FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 COPY --from=shim /shim /usr/local/bin/shim
@@ -31,6 +31,13 @@ RUN chmod 755 /usr/local/bin/docker-entrypoint.sh && \
     mkdir -p /docker-entrypoint-initdb.d && \
     chown 65532:65532 /docker-entrypoint-initdb.d
 USER 65532:65532
+ENV SHIM_BACKUP_ENABLED="false" \
+    SHIM_BACKUP_DB_HOST="localhost" \
+    SHIM_BACKUP_DB_PORT="5432" \
+    SHIM_REPLICATION_ENABLED="false" \
+    SHIM_MIGRATION_ENABLED="false" \
+    SHIM_VAULT_ENABLED="false" \
+    SHIM_AUDIT_ENABLED="true"
 WORKDIR /var/lib/mysql
 EXPOSE 3306
 

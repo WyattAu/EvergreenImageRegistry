@@ -8,7 +8,7 @@ ARG TARGETARCH
 
 FROM redis:${VERSION} AS upstream
 
-FROM ghcr.io/wyattau/evergreenshim/health-shim:v0.1.0 AS shim
+FROM ghcr.io/wyattau/evergreenshim/cache-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ENV HEALTH_CMD="redis-cli ping" \
@@ -28,6 +28,10 @@ RUN adduser -D -u 65532 -s /bin/false redis 2>/dev/null || true && \
     chown -R 65532:65532 /app /var/log/redis /var/cache/redis
 
 USER 65532:65532
+ENV SHIM_CACHE_ENABLED="true" \
+    SHIM_CACHE_MAX_ENTRIES="10000" \
+    SHIM_CACHE_DEFAULT_TTL="300" \
+    SHIM_CACHE_EVICTION="lru"
 WORKDIR /app
 EXPOSE 6379 9101
 

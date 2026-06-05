@@ -17,7 +17,7 @@ ARG SHIM_VERSION=v0.2.0
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN useradd -m -u 65532 -s /usr/bin/false postgres 2>/dev/null || true && \
     mkdir -p /app /var/log/postgres /var/cache/postgres 2>/dev/null || true
-FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 COPY --from=shim /shim /usr/local/bin/shim
@@ -31,6 +31,13 @@ COPY --from=builder --chown=65532:65532 /app /app
 COPY --from=builder --chown=65532:65532 /var/log/postgres /var/log/postgres
 COPY --from=builder --chown=65532:65532 /var/cache/postgres /var/cache/postgres
 USER 65532:65532
+ENV SHIM_BACKUP_ENABLED="false" \
+    SHIM_BACKUP_DB_HOST="localhost" \
+    SHIM_BACKUP_DB_PORT="5432" \
+    SHIM_REPLICATION_ENABLED="false" \
+    SHIM_MIGRATION_ENABLED="false" \
+    SHIM_VAULT_ENABLED="false" \
+    SHIM_AUDIT_ENABLED="true"
 WORKDIR /app
 EXPOSE 5432
 

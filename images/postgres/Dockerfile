@@ -6,7 +6,7 @@
 ARG VERSION=17.10
 ARG TARGETARCH
 
-FROM ghcr.io/wyattau/evergreenshim/health-shim:v0.1.0 AS shim
+FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 RUN apk add --no-cache postgresql-17 postgresql-17-contrib ca-certificates
@@ -25,6 +25,13 @@ COPY --from=shim /shim /usr/local/bin/shim
 RUN chmod +x /usr/local/bin/shim
 
 USER postgres
+ENV SHIM_BACKUP_ENABLED="false" \
+    SHIM_BACKUP_DB_HOST="localhost" \
+    SHIM_BACKUP_DB_PORT="5432" \
+    SHIM_REPLICATION_ENABLED="false" \
+    SHIM_MIGRATION_ENABLED="false" \
+    SHIM_VAULT_ENABLED="false" \
+    SHIM_AUDIT_ENABLED="true"
 EXPOSE 5432 9101
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=5 \

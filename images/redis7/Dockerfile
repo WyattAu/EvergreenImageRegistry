@@ -13,7 +13,7 @@ ARG APP_GID=65532
 
 ARG SHIM_VERSION=v0.2.0
 
-FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/cache-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 COPY --from=shim /shim /usr/local/bin/shim
@@ -22,6 +22,10 @@ RUN chmod +x /usr/local/bin/shim
 RUN apk add --no-cache ca-certificates && adduser -u 65532 -D 2>/dev/null &&  mkdir -p /app /var/log/redis7 /var/cache/redis7 && chown -R redis:redis /app /var/log/redis7 /var/cache/redis7 2>/dev/null
 # NOTE: redis server not available in wolfi; uses pre-compiled binary
 USER redis:redis
+ENV SHIM_CACHE_ENABLED="true" \
+    SHIM_CACHE_MAX_ENTRIES="10000" \
+    SHIM_CACHE_DEFAULT_TTL="300" \
+    SHIM_CACHE_EVICTION="lru"
 WORKDIR /app
 EXPOSE 6379
 
@@ -52,4 +56,8 @@ LABEL evergreen.security.seccomp="runtime-default"
 EXPOSE 9101
 
 USER 65532:65532
+ENV SHIM_CACHE_ENABLED="true" \
+    SHIM_CACHE_MAX_ENTRIES="10000" \
+    SHIM_CACHE_DEFAULT_TTL="300" \
+    SHIM_CACHE_EVICTION="lru"
 STOPSIGNAL SIGTERM

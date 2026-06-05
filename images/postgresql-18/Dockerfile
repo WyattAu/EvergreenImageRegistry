@@ -30,7 +30,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 FROM scratch AS entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
-FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 COPY --from=shim /shim /usr/local/bin/shim
@@ -48,6 +48,13 @@ RUN chmod 755 /usr/local/bin/docker-entrypoint.sh 2>/dev/null || true && \
     chown -R 5432:5432 /var/lib/postgresql /var/run/postgresql /app /var/log/postgresql-18 /var/cache/postgresql-18 /docker-entrypoint-initdb.d 2>/dev/null || true
 
 USER 5432:5432
+ENV SHIM_BACKUP_ENABLED="false" \
+    SHIM_BACKUP_DB_HOST="localhost" \
+    SHIM_BACKUP_DB_PORT="5432" \
+    SHIM_REPLICATION_ENABLED="false" \
+    SHIM_MIGRATION_ENABLED="false" \
+    SHIM_VAULT_ENABLED="false" \
+    SHIM_AUDIT_ENABLED="true"
 WORKDIR /app
 ENV PGDATA="/var/lib/postgresql/data" \
     PGPORT="5432"

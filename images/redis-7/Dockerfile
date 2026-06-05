@@ -20,7 +20,7 @@ RUN useradd -m -u 65532 -s /usr/bin/false redis 2>/dev/null || true && \
 FROM scratch AS entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
-FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/cache-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 COPY --from=shim /shim /usr/local/bin/shim
@@ -37,6 +37,10 @@ COPY --from=builder --chown=65532:65532 /var/cache/redis /var/cache/redis
 COPY --from=entrypoint /usr/local/bin/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod 755 /usr/local/bin/docker-entrypoint.sh
 USER 65532:65532
+ENV SHIM_CACHE_ENABLED="true" \
+    SHIM_CACHE_MAX_ENTRIES="10000" \
+    SHIM_CACHE_DEFAULT_TTL="300" \
+    SHIM_CACHE_EVICTION="lru"
 WORKDIR /app
 EXPOSE 6379
 

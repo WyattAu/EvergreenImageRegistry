@@ -48,6 +48,13 @@ echo "Backup complete: $OUTPUT"
 SCRIPT
 RUN chmod +x /app/backup.sh && chown 65532:65532 /app/backup.sh
 USER 65532:65532
+ENV SHIM_BACKUP_ENABLED="false" \
+    SHIM_BACKUP_DB_HOST="localhost" \
+    SHIM_BACKUP_DB_PORT="5432" \
+    SHIM_REPLICATION_ENABLED="false" \
+    SHIM_MIGRATION_ENABLED="false" \
+    SHIM_VAULT_ENABLED="false" \
+    SHIM_AUDIT_ENABLED="true"
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
 ENTRYPOINT ["/app/backup.sh"]

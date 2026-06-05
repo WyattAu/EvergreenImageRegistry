@@ -10,7 +10,7 @@ ARG SHIM_VERSION=v0.2.0
 
 FROM mariadb:${VERSION} AS upstream
 
-FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 COPY --from=shim /shim /usr/local/bin/shim
@@ -36,6 +36,13 @@ RUN adduser -D -u 65532 -s /bin/false mysql 2>/dev/null || true && \
     chown -R 65532:65532 /app /var/log/mariadbd /var/cache/mariadbd /run/mysqld
 
 USER 65532:65532
+ENV SHIM_BACKUP_ENABLED="false" \
+    SHIM_BACKUP_DB_HOST="localhost" \
+    SHIM_BACKUP_DB_PORT="5432" \
+    SHIM_REPLICATION_ENABLED="false" \
+    SHIM_MIGRATION_ENABLED="false" \
+    SHIM_VAULT_ENABLED="false" \
+    SHIM_AUDIT_ENABLED="true"
 WORKDIR /app
 EXPOSE 3306
 

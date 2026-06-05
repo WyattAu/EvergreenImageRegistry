@@ -114,6 +114,7 @@ jobs:
       contents: read
       id-token: write
       packages: write
+      actions: read
     uses: ./.github/workflows/_build-reusable.yml
     with:
       matrix: ${{ needs.discover.outputs.matrix }}

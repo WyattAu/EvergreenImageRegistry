@@ -209,6 +209,41 @@ else
     skip_gate "SBOM validation (python3 not found)"
 fi
 
+# ---- Gate 6b: Drift detection (manifest vs Dockerfile) ----
+echo ""
+echo "--- Gate 6b: Drift Detection ---"
+if command -v evergreenctl &>/dev/null; then
+    changed_images=$(git diff --cached --name-only --diff-filter=ACM HEAD 2>/dev/null \
+      | grep -oP 'images/\K[^/]+' | sort -u || true)
+    if [ -z "$changed_images" ]; then
+        changed_images=$(git diff --name-only --diff-filter=ACM HEAD 2>/dev/null \
+          | grep -oP 'images/\K[^/]+' | sort -u || true)
+    fi
+    if [ -n "$changed_images" ]; then
+        drift_errors=0
+        drift_count=0
+        for img in $changed_images; do
+            img_dir="images/${img}"
+            if [ -f "${img_dir}/Dockerfile" ] && [ -f "${img_dir}/manifest.toml" ]; then
+                drift_count=$((drift_count + 1))
+                if ! evergreenctl drift "$img_dir" 2>&1; then
+                    echo -e "  ${RED}[FAIL]${NC} drift detected in ${img}"
+                    drift_errors=$((drift_errors + 1))
+                fi
+            fi
+        done
+        if [ "$drift_errors" -eq 0 ]; then
+            pass_gate "Drift detection ($drift_count images checked)"
+        else
+            fail_gate "Drift detection ($drift_errors image(s) have drift)"
+        fi
+    else
+        pass_gate "Drift detection (no image changes)"
+    fi
+else
+    skip_gate "Drift detection (evergreenctl not found)"
+fi
+
 # ---- Gate 7: Dockerfile constraint check (sample) ----
 echo ""
 echo "--- Gate 7: Dockerfile Constraints ---"

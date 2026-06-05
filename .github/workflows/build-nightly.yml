@@ -111,7 +111,6 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - run: |
           set +e  # Don't exit on grep failures in the gate check loop
-          set +e  # Don't exit on grep failures
           PASS=0; FAIL=0
           for dockerfile in images/*/Dockerfile; do
             name=$(basename $(dirname "$dockerfile"))

@@ -53,5 +53,6 @@ RUN apk add --no-cache \
 COPY --from=builder /act_runner /usr/local/bin/act_runner
 
 USER 65532:65532
+HEALTHCHECK NONE
 ENTRYPOINT ["/usr/local/bin/act_runner"]
 CMD ["daemon"]

@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     echo "d5142372067d727979421ca7b1d60601ceecd9758af3a7dafacc6ebba831777a  /tmp/Sonarr.tar.gz" | sha256sum -c ; \
     mkdir -p /app && \
     if [ -f /tmp/Sonarr.tar.gz ]; then tar -xzf /tmp/Sonarr.tar.gz -C /app && rm -f /tmp/Sonarr.tar.gz ; fi ; \
-    chmod +x /app/Sonarr 2>/dev/null ; \binary not available - download failed" >&2 exit 1"' >> /app/Sonarr && echo 'exit 1' >> /app/Sonarr && chmod +x /app/Sonarr; }
+    chmod +x /app/Sonarr 2>/dev/null ; && { echo "Binary not available - download failed" >&2; exit 1; }
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

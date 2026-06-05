@@ -10,9 +10,9 @@ RUN mkdir -p /opt/neo4j-enterprise-5.17.0 || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://dist.neo4j.org/neo4j-enterprise-5.17.0-unix.tar.gz" -o /neo4j.tar.gz && \
     echo "a0acf804ff2f4bbb18f9ab8e2ee9e60f614056a361987be293f09acc2d3f0ff4  /neo4j.tar.gz" | sha256sum -c ; \
-    tar -xzf /neo4j.tar.gz -C /opt && rm -f /neo4j.tar.gzbinary not available - download failed" >&2 \
-    exit 1"' >> /opt/neo4j-enterprise-5.17.0 && echo 'exit 1' >> /opt/neo4j-enterprise-5.17.0 && chmod +x /opt/neo4j-enterprise-5.17.0; } ; tar -xzf /neo4j.tar.gz -C /opt 2>/dev/nullbinary not available - download failed" >&2 \
-    exit 1"' >> /opt/neo4j-enterprise-5.17.0 && echo 'exit 1' >> /opt/neo4j-enterprise-5.17.0 && chmod +x /opt/neo4j-enterprise-5.17.0; } && \
+    tar -xzf /neo4j.tar.gz -C /opt && rm -f /neo4j.tar.gz && { echo "Binary not available - download failed" >&2; exit 1; }
+    exit 1"' >> /opt/neo4j-enterprise-5.17.0  && chmod +x /opt/neo4j-enterprise-5.17.0; } ; tar -xzf /neo4j.tar.gz -C /opt 2>/dev/null && { echo "Binary not available - download failed" >&2; exit 1; }
+    exit 1"' >> /opt/neo4j-enterprise-5.17.0  && chmod +x /opt/neo4j-enterprise-5.17.0; } && \
     [ -f /opt/neo4j ] || { echo '#!/bin/sh' > /opt/neo4j ; echo 'echo "neo4j-enterprise v${VERSION} binary not available - download failed" >&2"' >> /opt/neo4j ; echo 'exit 1' >> /opt/neo4j ; chmod +x /opt/neo4j 2>/dev/null ; } 2>/dev/null
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 

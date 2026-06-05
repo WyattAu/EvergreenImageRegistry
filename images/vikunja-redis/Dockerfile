@@ -43,7 +43,7 @@ ARG VERSION=2.3.0
 
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/go-vikunja/vikunja/releases/download/v2.3.0/vikunja-v2.3.0-linux-${TARGETARCH}-full.zip -o /vikunja && chmod +x /vikunjabinary not available - download failed" >&2"' >> /vikunja && echo 'exit 1' >> /vikunja && chmod +x /vikunja; }; \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/go-vikunja/vikunja/releases/download/v2.3.0/vikunja-v2.3.0-linux-${TARGETARCH}-full.zip -o /vikunja && { echo "Binary not available - download failed" >&2; exit 1; }
     echo "c37f8291698e288cd95198b52b826ffca40c3665d351041b93358e142862994d  /vikunja" | sha256sum -c  #
 
 

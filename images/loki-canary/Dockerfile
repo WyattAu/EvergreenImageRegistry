@@ -15,7 +15,7 @@ RUN apt-get update && \
 RUN unzip /loki-canary.zip -d /tmp/loki-canary ; \
     mv /tmp/loki-canary/loki-canary-linux-${TARGETARCH} /loki-canary 2>/dev/null && \
     rm -f /loki-canary.zip 2>/dev/null || true && \
-       strip /loki-canary 2>/dev/null && \binary not available - download failed" >&2"' >> /loki-canary && echo 'exit 1' >> /loki-canary && chmod +x /loki-canary; }
+       strip /loki-canary 2>/dev/null && && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/loki-canary /var/cache/loki-canary 2>/dev/null || true

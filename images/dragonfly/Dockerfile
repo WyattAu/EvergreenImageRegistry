@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     [ -f /dragonfly.tar.gz ] && tar -xzf /dragonfly.tar.gz -C /tmp/ ; \
     chmod +x /tmp/dragonfly && \
     mv /tmp/dragonfly /dragonfly && \
-    rm -rf /dragonfly.tar.gz /tmp/*binary not available - download failed" >&2"' >> /dragonfly && echo 'exit 1' >> /dragonfly && chmod +x /dragonfly; }
+    rm -rf /dragonfly.tar.gz /tmp/* && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

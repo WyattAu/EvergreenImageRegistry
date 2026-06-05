@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/surrealdb/surrealdb/releases/download/v3.0.5/surreal-v3.0.5.linux-${TARGETARCH}.tgz -o /surreal.tar.gz ; \
     echo "48dbeba4896765f33e07acc25224073f0850c190872052b917ebda1f7b4375cb  /surreal.tar.gz" | sha256sum -c ; \
     [ -f /surreal.tar.gz ] && tar -xzf /surreal.tar.gz -C / && rm -f /surreal.tar.gz && chmod +x /surreal 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/surrealdb/surrealdb/releases/download/v3.0.5/surreal-v3.0.5.linux-${TARGETARCH}.tgz -o /surreal && chmod +x /surrealbinary not available - download failed" >&2"' >> /surreal && echo 'exit 1' >> /surreal && chmod +x /surreal; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/surrealdb/surrealdb/releases/download/v3.0.5/surreal-v3.0.5.linux-${TARGETARCH}.tgz -o /surreal && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     sha512sum -c /checksums.txt && \
     [ -f /activemq.tar.gz ] && tar -xzf /activemq.tar.gz -C /opt/ ; \
     mv /opt/apache-activemq-${ACTIVEMQ_VERSION} /opt/activemq && \
-    rm -rf /activemq.tar.gz /checksums.txt ; test -d /opt/activemq || { mkdir -p /opt/activemq/bin && echo '#!/bin/sh' > /opt/activemq/bin/activemq && echo 'echo "activemq v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/activemq/bin/activemq && echo 'exit 1' >> /opt/activemq/bin/activemq && chmod +x /opt/activemq/bin/activemq; }
+    rm -rf /activemq.tar.gz /checksums.txt ; test -d /opt/activemq || { mkdir -p /opt/activemq/bin && echo '#!/bin/sh' > /opt/activemq/bin/activemq && echo 'echo "activemq v${VERSION} binary not available - download failed" >&2 exit 1"' >> /opt/activemq/bin/activemq  && chmod +x /opt/activemq/bin/activemq; }
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

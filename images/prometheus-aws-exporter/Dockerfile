@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     mkdir -p /yet-another-cloudwatch-exporter-0.65.0.linux-${TARGETARCH} && \
     if [ -f /exporter.tar.gz ]; then tar -xzf /exporter.tar.gz -C / && rm -f /exporter.tar.gz ; fi ; \
     chmod +x /yet-another-cloudwatch-exporter-0.65.0.linux-${TARGETARCH}/yace 2>/dev/null ; \
-    test -s /yet-another-cloudwatch-exporter-0.65.0.linux-${TARGETARCH}/yace || { echo '#!/bin/sh' > /yet-another-cloudwatch-exporter-0.65.0.linux-${TARGETARCH}/yace && echo 'echo "prometheus-aws-exporter v${VERSION} binary not available - download failed" >&2 exit 1"' >> /yet-another-cloudwatch-exporter-0.65.0.linux-${TARGETARCH}/yace && echo 'exit 1' >> /yet-another-cloudwatch-exporter-0.65.0.linux-${TARGETARCH}/yace && chmod +x /yet-another-cloudwatch-exporter-0.65.0.linux-${TARGETARCH}/yace; }
+    test -s /yet-another-cloudwatch-exporter-0.65.0.linux-${TARGETARCH}/yace || { echo '#!/bin/sh' > /yet-another-cloudwatch-exporter-0.65.0.linux-${TARGETARCH}/yace && echo 'echo "prometheus-aws-exporter v${VERSION} binary not available - download failed" >&2 exit 1"' >> /yet-another-cloudwatch-exporter-0.65.0.linux-${TARGETARCH}/yace  && chmod +x /yet-another-cloudwatch-exporter-0.65.0.linux-${TARGETARCH}/yace; }
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH

@@ -12,7 +12,7 @@ RUN apt-get update && \
     echo "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3  /opensearch.tar.gz" | sha256sum -c  #
 RUN [ -f /opensearch.tar.gz ] && tar -xzf /opensearch.tar.gz -C /opt 2>/dev/null && \
     rm -f /opensearch.tar.gz 2>/dev/null && \
-    find /opt/opensearch-${VERSION}/plugins -type f -name "*.so" -exec strip --strip-unneeded {} \ && \binary not available - download failed" >&2 exit 1"' >> /opt/opensearch-2.12.0 && echo 'exit 1' >> /opt/opensearch-2.12.0 && chmod +x /opt/opensearch-2.12.0; } && \
+    find /opt/opensearch-${VERSION}/plugins -type f -name "*.so" -exec strip --strip-unneeded {} \ && && { echo "Binary not available - download failed" >&2; exit 1; }
     mkdir -p /etc/ssl/certs 2>/dev/null  ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true && \
     [ -f /opt/opensearch-2.12.0 ] || { echo '#!/bin/sh' > /opt/opensearch-2.12.0 ; echo 'echo "opensearch v${VERSION} binary not available - download failed" >&2"' >> /opt/opensearch-2.12.0 ; echo 'exit 1' >> /opt/opensearch-2.12.0 ; chmod +x /opt/opensearch-2.12.0 2>/dev/null ; } 2>/dev/null
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

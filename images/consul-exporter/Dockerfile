@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/consul_exporter/releases/download/v0.4.0/consul_exporter-0.4.0.linux-${TARGETARCH}.tar.gz -o /consul_exporter.tar.gz && \
     echo "dc1fa7f621d9116ed7b5b9778993e9266af9fb46d2be45383ded384460d0fafd  /consul_exporter.tar.gz" | sha256sum -c ; [ -f /consul_exporter.tar.gz ] && \
     [ -f /consul_exporter.tar.gz ] && tar -xzf /consul_exporter.tar.gz -C / && rm -f /consul_exporter.tar.gz && chmod +x /consul_exporter 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/consul_exporter/releases/download/v0.4.0/consul_exporter-0.4.0.linux-${TARGETARCH}.tar.gz -o /consul_exporter && chmod +x /consul_exporterbinary not available - download failed" >&2"' >> /consul_exporter && echo 'exit 1' >> /consul_exporter && chmod +x /consul_exporter; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/consul_exporter/releases/download/v0.4.0/consul_exporter-0.4.0.linux-${TARGETARCH}.tar.gz -o /consul_exporter && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/consul_exporter /var/cache/consul_exporter 2>/dev/null || true

@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/filebrowser/filebrowser/releases/download/v2.32.0/linux-${TARGETARCH}-filebrowser.tar.gz -o /filebrowser.tar.gz ; \
     echo "32b6f0d5321917420bbdb139db7c4182a42a52dc32604a076d7f87afd18b25f6  /filebrowser.tar.gz" | sha256sum -c ; \
     [ -f /filebrowser.tar.gz ] && tar -xzf /filebrowser.tar.gz -C /usr/local/bin/ && rm -f /filebrowser.tar.gz ; \
-    strip /usr/local/bin/filebrowser&& chmod +x /usr/local/bin/filebrowserbinary not available - download failed" >&2 exit 1"' >> /usr/local/bin/filebrowser && echo 'exit 1' >> /usr/local/bin/filebrowser && chmod +x /usr/local/bin/filebrowser; } 2>/dev/null
+    strip /usr/local/bin/filebrowser&& { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim

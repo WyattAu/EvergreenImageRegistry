@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     [ -f /step-ca.tar.gz ] && tar -xzf /step-ca.tar.gz -C /tmp/ ; \
     strip --strip-all /tmp/step-ca 2>/dev/null&& \
     mv /tmp/step-ca /step-ca && \
-    rm -rf /step-ca.tar.gz /checksums.txt /tmp/*binary not available - download failed" >&2"' >> /step-ca && echo 'exit 1' >> /step-ca && chmod +x /step-ca; }
+    rm -rf /step-ca.tar.gz /checksums.txt /tmp/* && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch

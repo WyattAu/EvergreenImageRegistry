@@ -39,7 +39,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     curl --retry 3 --retry-delay 5 -fsSL "https://dl.k8s.io/release/v${VERSION}/bin/linux/${TARGETARCH}/kube-apiserver" -o /kube-apiserver && \
     echo "9f67315c468571c68d886b610684aeeef3e098d7a1c1f589f6c2261c121995fa  /kube-apiserver" | sha256sum -c; \
     echo "VERIFY_FROM_K8S_SHA256  /kube-apiserver" | sha256sum -c ; \
-    chmod +x /kube-apiserver && strip /kube-apiserverbinary not available - download failed" >&2"' >> /kube-apiserver && echo 'exit 1' >> /kube-apiserver && chmod +x /kube-apiserver; } 2>/dev/null
+    chmod +x /kube-apiserver && strip /kube-apiserver && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

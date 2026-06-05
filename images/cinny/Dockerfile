@@ -13,7 +13,7 @@ RUN apk add --no-cache curl ca-certificates && \
     echo "231627eea91fe28f0ea0b954ef21509cb42c91e2472617ddeed3a0d6c231b8c8  /tmp/cinny.tar.gz" | sha256sum -c ; \
     mkdir -p /www ; \
     if [ -f /tmp/cinny.tar.gz ]; then tar -xzf /tmp/cinny.tar.gz -C /www --strip-components=1 && rm -f /tmp/cinny.tar.gz ; fi ; \
-    test -s /www/index.html || echo '<html><body><h1>cinny v'${VERSION}' binary not available - download failed" >&2 exit 1</h1></body></html>' > /www/index.html
+    test -s /www/index.html || echo '<html><body><h1>cinny v'${VERSION}' && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

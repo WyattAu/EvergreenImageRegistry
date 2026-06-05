@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://cdn.crate.io/downloads/releases/crate-5.9.0.tar.gz" -o /tmp/crate.tar.gz ; echo "PENDING  /tmp/crate.tar.gz" | sha256sum -c  ; [ -f /tmp/crate.tar.gz ] && tar -xzf /tmp/crate.tar.gz -C /opt ; \
     rm -f /tmp/crate.tar.gz && \
-    mkdir -p /opt ; \binary not available - download failed" >&2 exit 1"' >> /opt/bin/crate && echo 'exit 1' >> /opt/bin/crate && chmod +x /opt/bin/crate ; }binary not available - download failed" >&2 exit 1"' >> /opt/bin/crate && echo 'exit 1' >> /opt/bin/crate && chmod +x /opt/bin/crate ; } && \
+    mkdir -p /opt ; && { echo "Binary not available - download failed" >&2; exit 1; }
     mkdir -p /opt 2>/dev/null || true ; touch /opt/crate-${VERSION} 2>/dev/null || true && \
     [ -f /opt/crate-${VERSION} ] || { echo '#!/bin/sh' > /opt/crate-${VERSION} ; echo 'echo "crate v${VERSION} binary not available - download failed" >&2"' >> /opt/crate-${VERSION} ; echo 'exit 1' >> /opt/crate-${VERSION} ; chmod +x /opt/crate-${VERSION} 2>/dev/null ; } 2>/dev/null
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim

@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     echo "ff40a0717b9901ad42f4fea3c1ab307efc9d267266d7abbbcbabce2144e4e0f4  /promtail.zip" | sha256sum -c ; \
     unzip -o /promtail.zip -d /tmp ; \
     chmod +x /tmp/promtail-linux-${TARGETARCH} && \
-    mv /tmp/promtail-linux-${TARGETARCH} /promtailbinary not available - download failed" >&2"' >> /promtail && echo 'exit 1' >> /promtail && chmod +x /promtail; }
+    mv /tmp/promtail-linux-${TARGETARCH} /promtail && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

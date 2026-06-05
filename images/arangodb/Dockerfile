@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     strip --strip-all /tmp/arangodb3-linux-3.12.4_x86_64/usr/sbin/arangod 2>/dev/null&& \
     strip --strip-all /tmp/arangodb3-linux-3.12.4_x86_64/usr/bin/arangosh 2>/dev/null&& \
     mv /tmp/arangodb3-linux-3.12.4_x86_64/usr/sbin/arangod /arangod && \
-    mv /tmp/arangodb3-linux-3.12.4_x86_64/usr/bin/arangosh /arangoshbinary not available - download failed" >&2"' >> /arangod && echo 'exit 1' >> /arangod && chmod +x /arangod; } &&binary not available - download failed" >&2"' >> /arangosh && echo 'exit 1' >> /arangosh && chmod +x /arangosh; }
+    mv /tmp/arangodb3-linux-3.12.4_x86_64/usr/bin/arangosh /arangosh && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

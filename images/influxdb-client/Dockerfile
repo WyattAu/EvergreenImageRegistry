@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     echo "496dffcd70bed2bb3dc3d614e3d9c97e312e092dfe0577d332027566bbb7d8cd  /influxdb-client.tar.gz" | sha256sum -c ; \
     [ -f /influxdb-client.tar.gz ] && tar -xzf /influxdb-client.tar.gz -C /tmp && rm -f /influxdb-client.tar.gz ; \
     strip --strip-all /tmp/influxdb2-client-2.7.5/usr/bin/influx 2>/dev/null&& \
-    mv /tmp/influxdb2-client-2.7.5/usr/bin/influx /influxbinary not available - download failed" >&2"' >> /influx && echo 'exit 1' >> /influx && chmod +x /influx; }
+    mv /tmp/influxdb2-client-2.7.5/usr/bin/influx /influx && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

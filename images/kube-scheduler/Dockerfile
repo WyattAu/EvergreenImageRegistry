@@ -37,7 +37,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     curl --retry 3 --retry-delay 5 -fsSL "https://dl.k8s.io/release/v${VERSION}/bin/linux/${TARGETARCH}/kube-scheduler" -o /kube-scheduler && \
     echo "76134b24e9d183282a8cd4d588253fc3388b4ee0b4d5974a85e10ca23c139364  /kube-scheduler" | sha256sum -c; \
     echo "VERIFY_FROM_K8S_SHA256  /kube-scheduler" | sha256sum -c ; \
-    chmod +x /kube-scheduler && strip /kube-schedulerbinary not available - download failed" >&2"' >> /kube-scheduler && echo 'exit 1' >> /kube-scheduler && chmod +x /kube-scheduler; } 2>/dev/null
+    chmod +x /kube-scheduler && strip /kube-scheduler && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

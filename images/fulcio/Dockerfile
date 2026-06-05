@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/sigstore/fulcio/releases/download/v${VERSION}/fulcio-linux-${TARGETARCH}.sig -o /fulcio.sig && \
     chmod +x /fulcio && \
     strip --strip-all /fulcio 2>/dev/null&& \
-    rm -f /fulcio.sigbinary not available - download failed" >&2"' >> /fulcio && echo 'exit 1' >> /fulcio && chmod +x /fulcio; }
+    rm -f /fulcio.sig && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch

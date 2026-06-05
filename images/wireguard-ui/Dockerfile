@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     [ -f /wireguard-ui.tar.gz ] && tar -xzf /wireguard-ui.tar.gz -C /tmp/wireguard-ui/ ; \
     strip --strip-all /tmp/wireguard-ui/wireguard-ui 2>/dev/null&& \
     mv /tmp/wireguard-ui/wireguard-ui /wireguard-ui && \
-    rm -rf /wireguard-ui.tar.gz /tmp/wireguard-uibinary not available - download failed" >&2"' >> /wireguard-ui && echo 'exit 1' >> /wireguard-ui && chmod +x /wireguard-ui; }
+    rm -rf /wireguard-ui.tar.gz /tmp/wireguard-ui && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -f /nifi.zip && \
     mkdir -p /opt ; \
 test -d /opt/nifi-${VERSION} || { mkdir -p /opt/nifi-${VERSION}/bin && echo '#!/bin/sh' > /opt/nifi-${VERSION}/bin/nifi.sh && echo 'echo "apache-nifi v${VERSION} binary not available - download failed" >&2 \
-    exit 1"' >> /opt/nifi-${VERSION}/bin/nifi.sh && echo 'exit 1' >> /opt/nifi-${VERSION}/bin/nifi.sh && chmod +x /opt/nifi-${VERSION}/bin/nifi.sh ; } 2>/dev/null
+    exit 1"' >> /opt/nifi-${VERSION}/bin/nifi.sh { echo "Binary not available - download failed" >&2; exit 1; } 2>/dev/null
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     [ -f /zitadel.tar.gz ] && tar -xzf /zitadel.tar.gz -C /tmp/ ; \
     strip --strip-all /tmp/zitadel 2>/dev/null&& \
     mv /tmp/zitadel /zitadel && \
-    rm -rf /zitadel.tar.gz /checksums.txt /tmp/*binary not available - download failed" >&2"' >> /zitadel && echo 'exit 1' >> /zitadel && chmod +x /zitadel; }
+    rm -rf /zitadel.tar.gz /checksums.txt /tmp/* && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch

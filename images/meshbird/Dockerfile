@@ -30,7 +30,7 @@ RUN mkdir -p /app && \ RUN apt-get update && \
         -ldflags="-s -w -X main.version=${VERSION}" \
         -trimpath \
         -o /app/meshbird . 2>/dev/null || true && \
-    test -s /app/meshbird && strip --strip-all /app/meshbird 2>/dev/null && \' binary not available - download failed" >&2 exit 1"' >> /app/meshbird && echo 'exit 1' >> /app/meshbird && chmod +x /app/meshbird; } 2>/dev/null && \
+    test -s /app/meshbird && strip --strip-all /app/meshbird 2>/dev/null && \' && { echo "Binary not available - download failed" >&2; exit 1; }
     mkdir -p /app /var/log/meshbird
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

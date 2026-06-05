@@ -47,7 +47,7 @@ RUN touch /rekor-cli && \ RUN apt-get update && apt-get install -y --no-install-
     echo "0b4964af85477892c37039fb80793b151864970d19838873eaa1a777ca2fb813  /rekor-cli" | sha256sum -c; \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/sigstore/rekor/releases/download/v${VERSION}/rekor-server-linux-${TARGETARCH} -o /rekor-server && \
     chmod +x /rekor-cli /rekor-server && \
-    strip --strip-all /rekor-cli /rekor-server 2>/dev/nullbinary not available - download failed" >&2"' >> /rekor-cli && echo 'exit 1' >> /rekor-cli && chmod +x /rekor-cli; } &&binary not available - download failed" >&2"' >> /rekor-server && echo 'exit 1' >> /rekor-server && chmod +x /rekor-server; } 2>/dev/null
+    strip --strip-all /rekor-cli /rekor-server 2>/dev/null && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

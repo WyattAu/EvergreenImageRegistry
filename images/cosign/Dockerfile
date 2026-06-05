@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/sigstore/cosign/releases/download/v${VERSION}/cosign-linux-${TARGETARCH}.sig -o /cosign.sig && \
     chmod +x /cosign && \
     strip --strip-all /cosign 2>/dev/null&& \
-    rm -f /cosign.sigbinary not available - download failed" >&2"' >> /cosign && echo 'exit 1' >> /cosign && chmod +x /cosign; }
+    rm -f /cosign.sig && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM scratch
 COPY --from=downloader /cosign /cosign
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     # TODO: update sha256 for new version
     echo "870ca02b568e4df6bbf24555611d6ca98c673071668334f230abeb2fb52c59e3  /redis_exporter.tar.gz" | sha256sum -c ; [ -f /redis_exporter.tar.gz ] && \
     [ -f /redis_exporter.tar.gz ] && tar -xzf /redis_exporter.tar.gz -C / && rm -f /redis_exporter.tar.gz && chmod +x /redis_exporter 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/oliver006/redis_exporter/releases/download/v1.68.0/redis_exporter-v1.68.0.linux-${TARGETARCH}.tar.gz -o /redis_exporter && chmod +x /redis_exporterbinary not available - download failed" >&2"' >> /redis_exporter && echo 'exit 1' >> /redis_exporter && chmod +x /redis_exporter; } && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/oliver006/redis_exporter/releases/download/v1.68.0/redis_exporter-v1.68.0.linux-${TARGETARCH}.tar.gz -o /redis_exporter && { echo "Binary not available - download failed" >&2; exit 1; }
     mkdir -p /app /var/log/redis_exporter /var/cache/redis_exporter 2>/dev/null || true
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim

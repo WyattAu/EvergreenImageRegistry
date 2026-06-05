@@ -10,7 +10,7 @@ ARG VERSION=3.9.0
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/enix/x509-certificate-exporter/releases/download/v${VERSION}/x509-certificate-exporter-linux-${TARGETARCH}.tar.gz -o /x509-exporter.tar.gz ; \
     echo "b808f6843a2ca2f26c51f9b1765e5fda35407e915e66c627d480cdae2a7c103d  /x509-exporter.tar.gz" | sha256sum -c ; \
-    tar -xzf /x509-exporter.tar.gz -C / && rm -f /x509-exporter.tar.gz && chmod +x /x509-certificate-exporterbinary not available - download failed" >&2"' >> /x509-certificate-exporter && echo 'exit 1' >> /x509-certificate-exporter && chmod +x /x509-certificate-exporter; }
+    tar -xzf /x509-exporter.tar.gz -C / && rm -f /x509-exporter.tar.gz && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

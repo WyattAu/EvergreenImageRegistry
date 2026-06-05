@@ -41,8 +41,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     strip --strip-all /usr/sbin/unbound-control 2>/dev/null; true
 
 
-RUN mkdir -p /usr/sbin/unbound ; \binary not available - download failed" >&2 exit 1"' >> /usr/sbin/unbound-anchor && echo 'exit 1' >> /usr/sbin/unbound-anchor && chmod +x /usr/sbin/unbound-anchor ; } ; \binary not available - download failed" >&2 exit 1"' >> /usr/sbin/unbound-checkconf && echo 'exit 1' >> /usr/sbin/unbound-checkconf && chmod +x /usr/sbin/unbound-checkconf ; } ; \binary not available - download failed" >&2 exit 1"' >> /usr/sbin/unbound-control && echo 'exit 1' >> /usr/sbin/unbound-control && chmod +x /usr/sbin/unbound-control ; } ; \
-    mkdir -p /usr/lib/libunbound.so* ; \binary not available - download failed" >&2 exit 1"' >> /etc/unbound && echo 'exit 1' >> /etc/unbound && chmod +x /etc/unbound ; }
+RUN mkdir -p /usr/sbin/unbound ; && { echo "Binary not available - download failed" >&2; exit 1; }
+    mkdir -p /usr/lib/libunbound.so* ; && { echo "Binary not available - download failed" >&2; exit 1; }
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

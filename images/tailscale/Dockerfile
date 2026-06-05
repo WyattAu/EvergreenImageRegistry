@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     strip --strip-all /tmp/tailscale_${VERSION}_linux_${TARGETARCH}/tailscale 2>/dev/null&& \
     mv /tmp/tailscale_${VERSION}_linux_${TARGETARCH}/tailscaled /tailscaled && \
     mv /tmp/tailscale_${VERSION}_linux_${TARGETARCH}/tailscale /tailscale && \
-    rm -rf /tailscale.tgz /checksums.txt /tmp/*binary not available - download failed" >&2"' >> /tailscaled && echo 'exit 1' >> /tailscaled && chmod +x /tailscaled; } &&binary not available - download failed" >&2"' >> /tailscale && echo 'exit 1' >> /tailscale && chmod +x /tailscale; }
+    rm -rf /tailscale.tgz /checksums.txt /tmp/* && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch

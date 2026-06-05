@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/thanos-io/thanos/releases/download/v0.35.0/thanos-0.35.0.linux-${TARGETARCH}.tar.gz -o /thanos.tar.gz && \
     echo "8c8c8a4dfe8a71c23c3723ecea63a3d8ef07bd643615999ddf76167e68edd2f6  /thanos.tar.gz" | sha256sum -c ; [ -f /thanos.tar.gz ] && \
     [ -f /thanos.tar.gz ] && tar -xzf /thanos.tar.gz -C / && rm -f /thanos.tar.gz && chmod +x /thanos 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/thanos-io/thanos/releases/download/v0.35.0/thanos-0.35.0.linux-${TARGETARCH}.tar.gz -o /thanos && chmod +x /thanosbinary not available - download failed" >&2"' >> /thanos && echo 'exit 1' >> /thanos && chmod +x /thanos; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/thanos-io/thanos/releases/download/v0.35.0/thanos-0.35.0.linux-${TARGETARCH}.tar.gz -o /thanos && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/thanos /var/cache/thanos 2>/dev/null || true

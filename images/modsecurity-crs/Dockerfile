@@ -16,7 +16,7 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG VERSION=3.3.5
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates git && rm -rf /var/lib/apt/lists/* && \
-    git clone --branch v${VERSION}  || echo "Source repo not available - using binary not available - download failed" >&2 exit 1" && \
+    git clone --branch v${VERSION}  || { echo "Binary not available - download failed" >&2; exit 1; } && \
     git clone https://github.com/coreruleset/coreruleset.git /tmp/crs ; cp /tmp/crs/crs-setup.conf.example /tmp/crs/crs-setup.conf && \
     https://github.com/coreruleset/coreruleset.git /tmp/crs ; cp /tmp/crs/crs-setup.conf.example /tmp/crs/crs-setup.conf
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim

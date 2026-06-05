@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/0xERR0R/blocky/releases/download/v0.29.0/blocky_v0.29.0_Linux_${TARGETVARIANT}.tar.gz -o /blocky.tar.gz ; \
     echo "ce70e5ef992a8eb980cf05e2902a63f9ee27296e1c69114d6dd6506549388428  /blocky.tar.gz" | sha256sum -c ; \
     [ -f /blocky.tar.gz ] && tar -xzf /blocky.tar.gz -C / && rm -f /blocky.tar.gz && chmod +x /blocky 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/0xERR0R/blocky/releases/download/v0.29.0/blocky_v0.29.0_Linux_${TARGETVARIANT}.tar.gz -o /blocky && chmod +x /blockybinary not available - download failed" >&2"' >> /blocky && echo 'exit 1' >> /blocky && chmod +x /blocky; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/0xERR0R/blocky/releases/download/v0.29.0/blocky_v0.29.0_Linux_${TARGETVARIANT}.tar.gz -o /blocky && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

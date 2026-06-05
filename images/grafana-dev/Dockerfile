@@ -26,8 +26,8 @@ RUN apt-get update && \
     strip /opt/grafana-${VERSION}/bin/grafana-cli 2>/dev/null ; \
     chmod +x /opt/grafana-${VERSION}/bin/grafana-server 2>/dev/null ; \
     chmod +x /opt/grafana-${VERSION}/bin/grafana-cli 2>/dev/null ; \
-    test -s /opt/grafana-${VERSION}/bin/grafana-server || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-server && echo 'echo "grafana-dev v'"${VERSION}"' binary not available - download failed" >&2 exit 1"' >> /opt/grafana-${VERSION}/bin/grafana-server && echo 'exit 1' >> /opt/grafana-${VERSION}/bin/grafana-server && chmod +x /opt/grafana-${VERSION}/bin/grafana-server ; } 2>/dev/null ; \
-    test -s /opt/grafana-${VERSION}/bin/grafana-cli || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-cli && echo 'echo "grafana-dev v'"${VERSION}"' binary not available - download failed" >&2 exit 1"' >> /opt/grafana-${VERSION}/bin/grafana-cli && echo 'exit 1' >> /opt/grafana-${VERSION}/bin/grafana-cli && chmod +x /opt/grafana-${VERSION}/bin/grafana-cli ; } 2>/dev/null
+    test -s /opt/grafana-${VERSION}/bin/grafana-server || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-server && echo 'echo "grafana-dev v'"${VERSION}"' binary not available - download failed" >&2 exit 1"' >> /opt/grafana-${VERSION}/bin/grafana-server { echo "Binary not available - download failed" >&2; exit 1; } 2>/dev/null ; \
+    test -s /opt/grafana-${VERSION}/bin/grafana-cli || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-cli && echo 'echo "grafana-dev v'"${VERSION}"' binary not available - download failed" >&2 exit 1"' >> /opt/grafana-${VERSION}/bin/grafana-cli { echo "Binary not available - download failed" >&2; exit 1; } 2>/dev/null
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch

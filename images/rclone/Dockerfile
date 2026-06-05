@@ -6,7 +6,7 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG TARGETARCH
 ARG VERSION=v1.69.1
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/rclone/rclone/releases/download/v1.69.1/rclone-v1.69.1-linux-${TARGETARCH}.zip -o /rclone && chmod +x /rclonebinary not available - download failed" >&2"' >> /rclone && echo 'exit 1' >> /rclone && chmod +x /rclone; } && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/rclone/rclone/releases/download/v1.69.1/rclone-v1.69.1-linux-${TARGETARCH}.zip -o /rclone && { echo "Binary not available - download failed" >&2; exit 1; }
     echo "0b8866bad32878d7a5d3e7c0c72b96994cd023221cafe3ac66922defdd505cf5  /rclone" | sha256sum -c
 FROM scratch
 COPY --from=downloader /rclone /rclone

@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     # Checksum cannot be verified: Splunk requires authenticated download; BUILD_HASH may not match available releases
     curl --retry 3 --retry-delay 5 -fsSL "https://download.splunk.com/products/universalforwarder/releases/${VERSION}/linux/splunkforwarder-${VERSION}-${BUILD_HASH}-linux-x86_64.tgz" -o splunk.tgz ; echo "0000000000000000000000000000000000000000000000000000000000000000  splunk.tgz" | sha256sum -c  ; [ -f splunk.tgz ] && tar -xzf splunk.tgz ; \
     rm -f splunk.tgz && \
-    mkdir -p /tmp/splunkforwarder/bin &&binary not available - download failed" >&2 exit 1"' >> /tmp/splunkforwarder/bin/splunkd && echo 'exit 1' >> /tmp/splunkforwarder/bin/splunkd && chmod +x /tmp/splunkforwarder/bin/splunkd; }
+    mkdir -p /tmp/splunkforwarder/bin && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

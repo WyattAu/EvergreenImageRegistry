@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     [ -f /step.tar.gz ] && tar -xzf /step.tar.gz -C /tmp/ ; \
     strip --strip-all /tmp/step_${VERSION}/bin/step 2>/dev/null&& \
     mv /tmp/step_${VERSION}/bin/step /step && \
-    rm -rf /step.tar.gz /checksums.txt /tmp/*binary not available - download failed" >&2"' >> /step && echo 'exit 1' >> /step && chmod +x /step; }
+    rm -rf /step.tar.gz /checksums.txt /tmp/* && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM scratch
 COPY --from=downloader /step /step
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

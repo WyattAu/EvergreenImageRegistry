@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/snyk/snyk/releases/download/v${VERSION}/snyk-linux -o /snyk ; \
     echo "5e22aa63748854a81ab4cc4515b1b9552c167c2efa22e3e956ba99327ba4cde6  /snyk" | sha256sum -c ; \
     chmod +x /snyk && \
-    strip --strip-all /snyk 2>/dev/nullbinary not available - download failed" >&2"' >> /snyk && echo 'exit 1' >> /snyk && chmod +x /snyk; } 2>/dev/null
+    strip --strip-all /snyk 2>/dev/null && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

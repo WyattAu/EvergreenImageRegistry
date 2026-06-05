@@ -28,7 +28,7 @@ RUN apt-get update && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w -X main.version=${VERSION}" \
         -trimpath -o /wireguard-go 2>/dev/null || true && \
-    test -s /wireguard-go && strip --strip-all /wireguard-go 2>/dev/null && \' binary not available - download failed" >&2 exit 1"' >> /wireguard-go && echo 'exit 1' >> /wireguard-go && chmod +x /wireguard-go; } 2>/dev/null
+    test -s /wireguard-go && strip --strip-all /wireguard-go 2>/dev/null && \' && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch

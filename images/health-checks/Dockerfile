@@ -61,7 +61,7 @@ RUN cd /build && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
         -o /app/health-checks ./cmd/health-checks.go 2>/dev/null || true && \
-    test -s /app/health-checks && strip --strip-all /app/health-checks 2>/dev/null && \' binary not available - download failed" >&2 exit 1"' >> /app/health-checks && echo 'exit 1' >> /app/health-checks && chmod +x /app/health-checks; } 2>/dev/null && \
+    test -s /app/health-checks && strip --strip-all /app/health-checks 2>/dev/null && \' && { echo "Binary not available - download failed" >&2; exit 1; }
     mkdir -p /app
 FROM scratch
 COPY --from=builder /app/health-checks /health-checks

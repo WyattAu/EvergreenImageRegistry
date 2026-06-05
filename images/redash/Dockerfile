@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     pip install --no-cache-dir --prefix=/install \
     redash=="${VERSION}" || true && \
     find /install -type f -name "*.pyc" -delete && \
-    find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null  && \binary not available - download failed" >&2 exit 1"' >> /install && echo 'exit 1' >> /install && chmod +x /install ; }
+    find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null  && && { echo "Binary not available - download failed" >&2; exit 1; }
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

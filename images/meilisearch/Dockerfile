@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     echo "4ff9a43e0ccd5bd61efaaa37bd42b2a9fc349d2b6d80e1488810019701104162  /meilisearch" | sha256sum -c ; \
     echo "4ff9a43e0ccd5bd61efaaa37bd42b2a9fc349d2b6d80e1488810019701104162  /meilisearch" | sha256sum -c ; \
     [ -f /meilisearch.tar.gz ] && tar -xzf /meilisearch.tar.gz -C / && rm -f /meilisearch.tar.gz && chmod +x /meilisearch 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/meilisearch/meilisearch/releases/download/v1.42.1/meilisearch-enterprise-linux-${TARGETARCH} -o /meilisearch && chmod +x /meilisearchbinary not available - download failed" >&2"' >> /meilisearch && echo 'exit 1' >> /meilisearch && chmod +x /meilisearch; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/meilisearch/meilisearch/releases/download/v1.42.1/meilisearch-enterprise-linux-${TARGETARCH} -o /meilisearch && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

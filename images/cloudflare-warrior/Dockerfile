@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/cloudflare/cloudflared/releases/download/${VERSION}/cloudflared-linux-${TARGETARCH} -o /cloudflared ; \
     echo "b0b6fc6c7a033efca9c3cbedb1772fe36a76218e2fac1c909d390856f7aec790  /cloudflared" | sha256sum -c ; \
     chmod +x /cloudflared && \
-    strip --strip-all /cloudflared 2>/dev/nullbinary not available - download failed" >&2"' >> /cloudflared && echo 'exit 1' >> /cloudflared && chmod +x /cloudflared; } 2>/dev/null
+    strip --strip-all /cloudflared 2>/dev/null && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

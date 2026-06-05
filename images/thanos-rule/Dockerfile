@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     echo "700865ba2646f97ab741e1e8bcfbfeb45b2b23c7619291e508e9cd14bfc3b428  /thanos.tar.gz" | sha256sum -c ; \
     [ -f /thanos.tar.gz ] && tar -xzf /thanos.tar.gz -C /tmp && rm -f /thanos.tar.gz ; \
     chmod +x /tmp/thanos-${VERSION}.linux-${TARGETARCH}/thanos && \
-    mv /tmp/thanos-${VERSION}.linux-${TARGETARCH}/thanos /thanosbinary not available - download failed" >&2"' >> /thanos && echo 'exit 1' >> /thanos && chmod +x /thanos; }
+    mv /tmp/thanos-${VERSION}.linux-${TARGETARCH}/thanos /thanos && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

@@ -22,7 +22,7 @@ RUN [ -f /grafana.tar.gz ] && tar -xzf /grafana.tar.gz -C /opt ; \
     rm -f /grafana.tar.gz 2>/dev/null && \
        strip /opt/grafana-${VERSION}/bin/grafana-server 2>/dev/null && \
     strip /opt/grafana-${VERSION}/bin/grafana-cli 2>/dev/null && \
-    mkdir -p /opt/grafana-10.4.1/bin 2>/dev/nullbinary not available - download failed" >&2 exit 1"' >> /opt/grafana-10.4.1/bin/grafana-server && echo 'exit 1' >> /opt/grafana-10.4.1/bin/grafana-server && chmod +x /opt/grafana-10.4.1/bin/grafana-server; } &&binary not available - download failed" >&2 exit 1"' >> /opt/grafana-10.4.1/bin/grafana-cli && echo 'exit 1' >> /opt/grafana-10.4.1/bin/grafana-cli && chmod +x /opt/grafana-10.4.1/bin/grafana-cli; } &&binary not available - download failed" >&2 exit 1"' >> /opt/grafana-10.4.1/public && echo 'exit 1' >> /opt/grafana-10.4.1/public && chmod +x /opt/grafana-10.4.1/public; } &&binary not available - download failed" >&2 exit 1"' >> /opt/grafana-10.4.1/conf && echo 'exit 1' >> /opt/grafana-10.4.1/conf && chmod +x /opt/grafana-10.4.1/conf; }
+    mkdir -p /opt/grafana-10.4.1/bin 2>/dev/null && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS config
 RUN mkdir -p /app/conf /app/data /app/logs /app/plugins 2>/dev/null || true
 COPY <<'EOF' /app/conf/defaults.ini

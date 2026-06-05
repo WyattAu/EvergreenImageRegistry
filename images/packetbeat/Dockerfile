@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     mkdir -p /opt/packetbeat ; \
     if [ -f /packetbeat.tar.gz ]; then tar -xzf /packetbeat.tar.gz -C /opt/packetbeat --strip-components=1 && rm -f /packetbeat.tar.gz && rm -rf /opt/packetbeat/kibana /opt/packetbeat/logs ; fi ; \
     strip /opt/packetbeat/packetbeat 2>/dev/null ; \
-    chmod +x /opt/packetbeat/packetbeat 2>/dev/null ; \binary not available - download failed" >&2 exit 1"' >> /opt/packetbeat/packetbeat && echo 'exit 1' >> /opt/packetbeat/packetbeat && chmod +x /opt/packetbeat/packetbeat; }
+    chmod +x /opt/packetbeat/packetbeat 2>/dev/null ; && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder

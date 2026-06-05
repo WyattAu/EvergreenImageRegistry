@@ -16,7 +16,7 @@ WORKDIR /tmp
 RUN mkdir -p /opt/venv || true
 RUN apt-get update && apt-get install -y --no-install-recommends python3-pip python3 && rm -rf /var/lib/apt/lists/* && \
     python3 -m venv /opt/venv ; /opt/venv/bin/pip install --no-cache-dir --upgrade pip ; /opt/venv/bin/pip install --no-cache-dir surrealdb==${VERSION} 2>/dev/null || /opt/venv/bin/pip install --no-cache-dir surrealdb && \
-    mkdir -p /app /usr/local/lib/python3.11/site-packages || true ; touch /app/binary not available - download failed" >&2 exit 1 || true
+    mkdir -p /app /usr/local/lib/python3.11/site-packages || true ; touch /app/ && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
 LABEL evergreen.base.fallback_reason="Python C extensions require glibc"
 ARG VERSION=1.0.0

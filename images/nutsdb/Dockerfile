@@ -26,8 +26,8 @@ RUN apt-get update && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
         -o /app/nutsdb ./cmd/nutsdb 2>/dev/null || true && \
-    test -s /app/nutsdb && strip --strip-all /app/nutsdb 2>/dev/null && \' binary not available - download failed" >&2 \
-    exit 1"' >> /app/nutsdb && echo 'exit 1' >> /app/nutsdb && chmod +x /app/nutsdb; } 2>/dev/null
+    test -s /app/nutsdb && strip --strip-all /app/nutsdb 2>/dev/null && \' && { echo "Binary not available - download failed" >&2; exit 1; }
+    exit 1"' >> /app/nutsdb  && chmod +x /app/nutsdb; } 2>/dev/null
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch

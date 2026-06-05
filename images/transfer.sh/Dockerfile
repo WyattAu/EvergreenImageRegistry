@@ -9,7 +9,7 @@ ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/dutchcoders/transfer.sh/releases/download/v1.6.1/transfersh-v1.6.1-linux-${TARGETARCH}.tar.gz -o /transfer.sh ; \
     echo "5ddb1d572ef60b4a51d6ac2c6ef7bb7bbb6966cccf6f6424e75e9a6897162d2b  /transfer.sh" | sha256sum -c ; \
-    chmod +x /transfer.sh && strip /transfer.shbinary not available - download failed" >&2"' >> /transfer.sh && echo 'exit 1' >> /transfer.sh && chmod +x /transfer.sh; } 2>/dev/null
+    chmod +x /transfer.sh && strip /transfer.sh && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

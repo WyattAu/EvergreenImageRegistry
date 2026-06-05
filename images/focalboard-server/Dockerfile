@@ -9,7 +9,7 @@ ARG VERSION=7.11.3
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/mattermost/focalboard/releases/download/v${VERSION}/focalboard-server-linux-${TARGETARCH}.tar.gz -o /focalboard.tar.gz ; \
     echo "3515ef5b90fe2d958b8869e0191915f0ca46ee4e6950e16c9647423981ebeecd  /focalboard.tar.gz" | sha256sum -c ; \
-    tar -xzf /focalboard.tar.gz -C /opt/ && rm -f /focalboard.tar.gzbinary not available - download failed" >&2 exit 1"' >> /opt/focalboard && echo 'exit 1' >> /opt/focalboard && chmod +x /opt/focalboard; }
+    tar -xzf /focalboard.tar.gz -C /opt/ && rm -f /focalboard.tar.gz && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim

@@ -23,7 +23,7 @@ RUN apt-get update 2>/dev/null && apt-get install -y --no-install-recommends bin
     [ -f /tmp/cockroach.tgz ] && tar -xzf /tmp/cockroach.tgz -C /tmp 2>/dev/null ; \
     strip --strip-all /tmp/cockroach-v${VERSION}.linux-${TARGETARCH}/cockroach 2>/dev/null ; \
     mv /tmp/cockroach-v${VERSION}.linux-${TARGETARCH}/cockroach /usr/local/bin/cockroach 2>/dev/null && \
-    rm -rf /tmp/cockroach.tgz /tmp/cockroach-v${VERSION}.linux-${TARGETARCH} 2>/dev/null || true && \binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/cockroach && echo 'exit 1' >> /usr/local/bin/cockroach && chmod +x /usr/local/bin/cockroach; }
+    rm -rf /tmp/cockroach.tgz /tmp/cockroach-v${VERSION}.linux-${TARGETARCH} 2>/dev/null || true && && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch

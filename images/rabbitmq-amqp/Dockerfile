@@ -26,13 +26,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         erlang-mnesia erlang-os-mon erlang-parsetools erlang-public-key \
         erlang-runtime-tools erlang-snmp erlang-ssl erlang-syntax-tools \
         erlang-tftp erlang-tools erlang-xmerl \
-        rabbitmq-server ; rabbitmq-plugins enable rabbitmq_amqp1_0 ; rm -rf /var/lib/apt/lists/* || true && \binary not available - download failed" >&2 \
-    exit 1"' >> /usr/lib/rabbitmq && echo 'exit 1' >> /usr/lib/rabbitmq && chmod +x /usr/lib/rabbitmq ; } ; \
+        rabbitmq-server ; rabbitmq-plugins enable rabbitmq_amqp1_0 ; rm -rf /var/lib/apt/lists/* || true && && { echo "Binary not available - download failed" >&2; exit 1; }
+    exit 1"' >> /usr/lib/rabbitmq { echo "Binary not available - download failed" >&2; exit 1; } ; \
     test -s /usr/sbin/rabbitmq* || { echo '#!/bin/sh' > /usr/sbin/rabbitmq* && echo 'echo "rabbitmq-amqp v${VERSION} binary not available - download failed" >&2 \
-    exit 1"' >> /usr/sbin/rabbitmq* && echo 'exit 1' >> /usr/sbin/rabbitmq* && chmod +x /usr/sbin/rabbitmq* ; } ; \
+    exit 1"' >> /usr/sbin/rabbitmq* { echo "Binary not available - download failed" >&2; exit 1; } ; \
     test -s /usr/bin/rabbitmq* || { echo '#!/bin/sh' > /usr/bin/rabbitmq* && echo 'echo "rabbitmq-amqp v${VERSION} binary not available - download failed" >&2 \
-    exit 1"' >> /usr/bin/rabbitmq* && echo 'exit 1' >> /usr/bin/rabbitmq* && chmod +x /usr/bin/rabbitmq* ; } ; \binary not available - download failed" >&2 \
-    exit 1"' >> /etc/rabbitmq && echo 'exit 1' >> /etc/rabbitmq && chmod +x /etc/rabbitmq ; }
+    exit 1"' >> /usr/bin/rabbitmq* { echo "Binary not available - download failed" >&2; exit 1; } ; && { echo "Binary not available - download failed" >&2; exit 1; }
+    exit 1"' >> /etc/rabbitmq { echo "Binary not available - download failed" >&2; exit 1; }
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/letsencrypt/unbound_exporter/releases/download/v${VERSION}/unbound_exporter-v${VERSION}.x86_64.deb -o /unbound_exporter.deb && \
     echo "4f61876a292b49f918baf6b6b57d17dcf94f97513787282b0dadb88b95084890  /unbound_exporter.deb" | sha256sum -c ; \
     cd /tmp && ar -x /unbound_exporter.deb && tar -xzf data.tar.gz -C / && rm -f /unbound_exporter.deb data.tar.gz control.tar.gz debian-binary && \
-    chmod +x /usr/bin/unbound_exporter ; \binary not available - download failed" >&2"' >> /usr/bin/unbound_exporter && echo 'exit 1' >> /usr/bin/unbound_exporter && chmod +x /usr/bin/unbound_exporter; }
+    chmod +x /usr/bin/unbound_exporter ; && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/unbound_exporter /var/cache/unbound_exporter 2>/dev/null || true
 

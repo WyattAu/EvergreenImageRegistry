@@ -19,7 +19,7 @@ ARG VERSION=2.2.3
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     build-essential cmake curl ca-certificates git && rm -rf /var/lib/apt/lists/* && \
-    git clone --branch v${VERSION} https://github.com/Softmotions/ejdb.git /tmp/ejdb-src  || echo "Source repo not available - using binary not available - download failed" >&2 \
+    git clone --branch v${VERSION} https://github.com/Softmotions/ejdb.git /tmp/ejdb-src  || echo "Source repo not available - using && { echo "Binary not available - download failed" >&2; exit 1; }
     exit 1" ; cd /tmp/ejdb-src ; mkdir build && cd build ; cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/ejdb ; make -j"$(nproc)" ; make install ; strip --strip-all /opt/ejdb/bin/ejdb 2>/dev/null 2>/dev/null ; \
     cd /tmp/ejdb-src ; mkdir build && cd build ; cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/ejdb ; make -j"$(nproc)" ; make install ; strip --strip-all /opt/ejdb/bin/ejdb 2>/dev/null 2>/dev/null
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim

@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/traefik/traefik/releases/download/v3.6.13/traefik_v3.6.13_linux_${TARGETARCH}.tar.gz -o /traefik.tar.gz && \
     echo "85fcf245e963293ca6afee4180f6116b97004499b584ebfbc2c5841e1c8d4399  /traefik.tar.gz" | sha256sum -c ; [ -f /traefik.tar.gz ] && \
     [ -f /traefik.tar.gz ] && tar -xzf /traefik.tar.gz -C / && rm -f /traefik.tar.gz && chmod +x /traefik 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/traefik/traefik/releases/download/v3.6.13/traefik_v3.6.13_linux_${TARGETARCH}.tar.gz -o /traefik && chmod +x /traefikbinary not available - download failed" >&2"' >> /traefik && echo 'exit 1' >> /traefik && chmod +x /traefik; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/traefik/traefik/releases/download/v3.6.13/traefik_v3.6.13_linux_${TARGETARCH}.tar.gz -o /traefik && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/traefik /var/cache/traefik 2>/dev/null || true
 

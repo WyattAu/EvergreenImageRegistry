@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/cortexproject/cortex/releases/download/v1.17.0/cortex-linux-${TARGETARCH} -o /cortex ; \
     echo "8f9c2c74bab842a5aa2f3d6e108a4762a04155ca3013ca4a496a5d01196f8c4a  /cortex" | sha256sum -c ; \
     chmod +x /cortex && \
-    strip --strip-all /cortex 2>/dev/nullbinary not available - download failed" >&2"' >> /cortex && echo 'exit 1' >> /cortex && chmod +x /cortex; }
+    strip --strip-all /cortex 2>/dev/null && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     unzip -o /llama.zip -d /tmp/llama ; \
     chmod +x /tmp/llama/llama-server && \
     mv /tmp/llama/llama-server /llama-server && \
-    rm -rf /llama.zip /tmp/llamabinary not available - download failed" >&2"' >> /llama-server && echo 'exit 1' >> /llama-server && chmod +x /llama-server; }
+    rm -rf /llama.zip /tmp/llama && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

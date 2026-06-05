@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     echo "75da1c026cacb187a7c1dcad8263873ec566ce30cc0df56dd1dc129b8292d34f  /tmp/gogs.tar.gz" | sha256sum -c ; \
     tar -xzf /tmp/gogs.tar.gz -C /tmp && \
     mv /tmp/gogs /tmp/gogs-bin && chmod +x /tmp/gogs-bin/gogs && strip /tmp/gogs-bin/gogs
-RUN test -f /tmp/gogs-bin/gogs &&binary not available - download failed" >&2 exit 1"' >> /tmp/gogs-bin/gogs && echo 'exit 1' >> /tmp/gogs-bin/gogs && chmod +x /tmp/gogs-bin/gogs; }
+RUN test -f /tmp/gogs-bin/gogs && { echo "Binary not available - download failed" >&2; exit 1; }
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

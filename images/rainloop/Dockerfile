@@ -14,7 +14,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL \
     -o /tmp/rainloop.tar.gz ; \
     mkdir -p /build ; \
     if [ -f /tmp/rainloop.tar.gz ]; then tar -xzf /tmp/rainloop.tar.gz -C /build --strip-components=1 && rm -f /tmp/rainloop.tar.gz ; fi ; \
-    test -s /build/index.php || echo '<html><body><h1>rainloop v'${VERSION}' binary not available - download failed" >&2 exit 1</h1></body></html>' > /build/index.php
+    test -s /build/index.php || echo '<html><body><h1>rainloop v'${VERSION}' && { echo "Binary not available - download failed" >&2; exit 1; }
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

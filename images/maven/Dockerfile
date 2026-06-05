@@ -7,7 +7,7 @@ ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://dlcdn.apache.org/maven/maven-3/3.9.15/binaries/apache-maven-3.9.15-bin.tar.gz" -o /maven.tar.gz ; \
     echo "36182f85e91128cd5c4608462ac92194e7a30638f65034de66f4e1b00600a6fc  /maven.tar.gz" | sha256sum -c ; \
-    tar -xzf /maven.tar.gz -C /opt/ && rm -f /maven.tar.gz && ln -sf /opt/apache-maven-3.9.15/bin/mvn /usr/local/bin/mvnbinary not available - download failed" >&2 exit 1"' >> /opt/apache-maven-3.9.15 && echo 'exit 1' >> /opt/apache-maven-3.9.15 && chmod +x /opt/apache-maven-3.9.15; } &&binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/mvn && echo 'exit 1' >> /usr/local/bin/mvn && chmod +x /usr/local/bin/mvn; }
+    tar -xzf /maven.tar.gz -C /opt/ && rm -f /maven.tar.gz && ln -sf /opt/apache-maven-3.9.15/bin/mvn /usr/local/bin/mvn && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder

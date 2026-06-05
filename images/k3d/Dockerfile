@@ -8,7 +8,7 @@ ARG VERSION=5.8.3
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/k3d-io/k3d/releases/download/v5.8.3/k3d-linux-${TARGETARCH} -o /k3d ; \
     echo "fd0f8e9e8ea4d8bc3674572ca6ed0833b639bf57c43c708616d937377324cfea  /k3d" | sha256sum -c ; \
-    chmod +x /k3d && strip /k3dbinary not available - download failed" >&2"' >> /k3d && echo 'exit 1' >> /k3d && chmod +x /k3d; } 2>/dev/null
+    chmod +x /k3d && strip /k3d && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

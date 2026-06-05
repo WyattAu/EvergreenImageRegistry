@@ -23,7 +23,7 @@ RUN mkdir -p /tmp/etcdctl || true
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/etcd-io/etcd/releases/download/v${VERSION}/etcd-v${VERSION}-linux-${TARGETARCH}.tar.gz" -o etcd.tar.gz && \
     echo "230566b9e0311690faf515404fb2a57199faf2c0685b39c5c7a0a0ba5ad9a631  etcd.tar.gz" | sha256sum -c && \
-    if [ -f etcd.tar.gz ]; then tar -xzf etcd.tar.gz && strip --strip-all etcd-v${VERSION}-linux-${TARGETARCH}/etcdctl 2>/dev/null&& mv etcd-v${VERSION}-linux-${TARGETARCH}/etcdctl /tmp/etcdctl && rm -rf etcd.tar.gz etcd-v${VERSION}-linux-${TARGETARCH}; fi && \' binary not available - download failed" >&2 exit 1"' >> /tmp/etcdctl && echo 'exit 1' >> /tmp/etcdctl && chmod +x /tmp/etcdctl; } 2>/dev/null
+    if [ -f etcd.tar.gz ]; then tar -xzf etcd.tar.gz && strip --strip-all etcd-v${VERSION}-linux-${TARGETARCH}/etcdctl 2>/dev/null&& mv etcd-v${VERSION}-linux-${TARGETARCH}/etcdctl /tmp/etcdctl && rm -rf etcd.tar.gz etcd-v${VERSION}-linux-${TARGETARCH}; fi && \' && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch

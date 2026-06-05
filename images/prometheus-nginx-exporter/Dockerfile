@@ -10,7 +10,7 @@ ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/nginx/nginx-prometheus-exporter/releases/download/v${VERSION}/nginx-prometheus-exporter_${VERSION}_linux_${TARGETARCH}.tar.gz -o /nginx-prometheus-exporter.tar.gz ; \
     echo "40334965075e416d17f87f977edca0838f6de00799370749268567d26eef8018  /nginx-prometheus-exporter.tar.gz" | sha256sum -c ; \
-    tar -xzf /nginx-prometheus-exporter.tar.gz -C / && rm -f /nginx-prometheus-exporter.tar.gz && chmod +x /nginx-prometheus-exporterbinary not available - download failed" >&2"' >> /nginx-prometheus-exporter && echo 'exit 1' >> /nginx-prometheus-exporter && chmod +x /nginx-prometheus-exporter; }
+    tar -xzf /nginx-prometheus-exporter.tar.gz -C / && rm -f /nginx-prometheus-exporter.tar.gz && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

@@ -20,7 +20,7 @@ RUN mkdir -p /app || true
 COPY --from=builder /app /app
 RUN addgroup -S -g 2 nogroup >/dev/null || true && \
     adduser -u 65532 -G nogroup -D -h /app -s /bin/false tasmota 2>/dev/null || true && \
-    chown -R 65532:65532 /app/binary not available - download failed" >&2 \
+    chown -R 65532:65532 /app/ && { echo "Binary not available - download failed" >&2; exit 1; }
     exit 1 /usr/lib/node_modules 2>/dev/null || true
 USER 65532:65532
 WORKDIR /app

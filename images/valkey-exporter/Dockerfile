@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/oliver006/redis_exporter/releases/download/v1.58.0/redis_exporter-v1.58.0.linux-${TARGETARCH}.tar.gz -o /valkey-exporter.tar.gz && \
     echo "c982d4a083ba31b13adc7256792968438b995117b362f7c0cf895b6c577d2899  /valkey-exporter.tar.gz" | sha256sum -c ; [ -f /valkey-exporter.tar.gz ] && \
     [ -f /valkey-exporter.tar.gz ] && tar -xzf /valkey-exporter.tar.gz -C / && rm -f /valkey-exporter.tar.gz && chmod +x /redis_exporter 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/oliver006/redis_exporter/releases/download/v1.58.0/redis_exporter-v1.58.0.linux-${TARGETARCH}.tar.gz -o /valkey-exporter && chmod +x /valkey-exporterbinary not available - download failed" >&2"' >> /redis_exporter && echo 'exit 1' >> /redis_exporter && chmod +x /redis_exporter; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/oliver006/redis_exporter/releases/download/v1.58.0/redis_exporter-v1.58.0.linux-${TARGETARCH}.tar.gz -o /valkey-exporter && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/valkey-exporter /var/cache/valkey-exporter 2>/dev/null || true

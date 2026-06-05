@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL "https://releases.hashicorp.com/consul-template/0.37.0/consul-template_0.37.0_linux_amd64.zip" -o /consul-template.tar.gz && \
     echo "4695bf2c316d771f4574a1347bcdbe230f3c30f3b0c16faad2eaaa7797b73ae9  /consul-template.tar.gz" | sha256sum -c ; [ -f /consul-template.tar.gz ] && \
     [ -f /consul-template.tar.gz ] && tar -xzf /consul-template.tar.gz -C / && rm -f /consul-template.tar.gz && chmod +x /consul-template 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL "https://releases.hashicorp.com/consul-template/0.37.0/consul-template_0.37.0_linux_amd64.zip" -o /consul-template && chmod +x /consul-templatebinary not available - download failed" >&2"' >> /consul-template && echo 'exit 1' >> /consul-template && chmod +x /consul-template; }
+    curl --retry 3 --retry-delay 5 -fsSL "https://releases.hashicorp.com/consul-template/0.37.0/consul-template_0.37.0_linux_amd64.zip" -o /consul-template && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/consul-template /var/cache/consul-template 2>/dev/null || true
 

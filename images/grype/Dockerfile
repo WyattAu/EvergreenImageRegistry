@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/anchore/grype/releases/download/v0.80.0/grype_0.80.0_linux_${TARGETARCH}.tar.gz -o /grype.tar.gz && \
     echo "a86a90074129cb72b47476f6ac3959eab95fba71f095521f5c8e58152463bd24  /grype.tar.gz" | sha256sum -c ; [ -f /grype.tar.gz ] && \
     [ -f /grype.tar.gz ] && tar -xzf /grype.tar.gz -C / && rm -f /grype.tar.gz && chmod +x /grype 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/anchore/grype/releases/download/v0.80.0/grype_0.80.0_linux_${TARGETARCH}.tar.gz -o /grype && chmod +x /grypebinary not available - download failed" >&2"' >> /grype && echo 'exit 1' >> /grype && chmod +x /grype; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/anchore/grype/releases/download/v0.80.0/grype_0.80.0_linux_${TARGETARCH}.tar.gz -o /grype && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/grype /var/cache/grype 2>/dev/null || true
 

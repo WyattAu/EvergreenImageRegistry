@@ -37,7 +37,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     curl --retry 3 --retry-delay 5 -fsSL "https://dl.k8s.io/release/v${VERSION}/bin/linux/${TARGETARCH}/kube-proxy" -o /kube-proxy && \
     echo "9f0a22a03ce2415b154174687fc2b143268731e8b98e136dff7fd5d3ecf3aa02  /kube-proxy" | sha256sum -c; \
     echo "VERIFY_FROM_K8S_SHA256  /kube-proxy" | sha256sum -c ; \
-    chmod +x /kube-proxy && strip /kube-proxybinary not available - download failed" >&2"' >> /kube-proxy && echo 'exit 1' >> /kube-proxy && chmod +x /kube-proxy; } 2>/dev/null
+    chmod +x /kube-proxy && strip /kube-proxy && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

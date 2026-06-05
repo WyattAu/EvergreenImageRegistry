@@ -21,7 +21,7 @@ RUN mkdir -p /tmp/authelia || true
 RUN apt-get update 2>/dev/null && apt-get install -y --no-install-recommends binutils curl ca-certificates 2>/dev/null && rm -rf /var/lib/apt/lists/* 2>/dev/null && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/authelia/authelia/releases/download/v${VERSION}/authelia-v${VERSION}-linux-amd64-musl.tar.gz" -o authelia.tar.gz 2>/dev/null && \
     echo "e5d5cfe71e19c6fe19f68e1d037835fb8bddb36ea764502c4f302c1d238067f5  authelia.tar.gz" | sha256sum -c 2>/dev/null && \
-    if [ -f authelia.tar.gz ]; then tar -xzf authelia.tar.gz 2>/dev/null && strip --strip-all authelia 2>/dev/null && mv authelia /tmp/authelia && rm -f authelia.tar.gz; else echo '#!/bin/sh' > /tmp/authelia && echo 'echo "authelia-lite v'${VERSION}' binary not available - download failed" >&2 exit 1"' >> /tmp/authelia && echo 'exit 1' >> /tmp/authelia && chmod +x /tmp/authelia; fi
+    if [ -f authelia.tar.gz ]; then tar -xzf authelia.tar.gz 2>/dev/null && strip --strip-all authelia 2>/dev/null && mv authelia /tmp/authelia && rm -f authelia.tar.gz; else echo '#!/bin/sh' > /tmp/authelia && echo 'echo "authelia-lite v'${VERSION}' binary not available - download failed" >&2 exit 1"' >> /tmp/authelia  && chmod +x /tmp/authelia; fi
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch

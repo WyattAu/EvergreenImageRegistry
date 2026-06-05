@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/gravitl/netmaker/releases/download/v1.5.1/netmaker-linux-${TARGETARCH} -o /netmaker.tar.gz ; \
     echo "4bd005147ae3679fc012c2db7f86e0e74c48cda5c648831b1af20d05d633ba84  /netmaker.tar.gz" | sha256sum -c ; \
     [ -f /netmaker.tar.gz ] && tar -xzf /netmaker.tar.gz -C / && rm -f /netmaker.tar.gz && chmod +x /netmaker 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/gravitl/netmaker/releases/download/v1.5.1/netmaker-linux-${TARGETARCH} -o /netmaker && chmod +x /netmakerbinary not available - download failed" >&2"' >> /netmaker && echo 'exit 1' >> /netmaker && chmod +x /netmaker; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/gravitl/netmaker/releases/download/v1.5.1/netmaker-linux-${TARGETARCH} -o /netmaker && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

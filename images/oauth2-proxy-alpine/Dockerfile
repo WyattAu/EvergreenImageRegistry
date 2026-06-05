@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     [ -f /oauth2-proxy.tar.gz ] && tar -xzf /oauth2-proxy.tar.gz -C /tmp/oauth2-proxy ; \
     strip --strip-all /tmp/oauth2-proxy/oauth2-proxy-v${VERSION}.linux-${TARGETARCH} 2>/dev/null && \
     mv /tmp/oauth2-proxy/oauth2-proxy-v${VERSION}.linux-${TARGETARCH} /oauth2-proxy && \
-    rm -rf /oauth2-proxy.tar.gz /tmp/*binary not available - download failed" >&2"' >> /oauth2-proxy && echo 'exit 1' >> /oauth2-proxy && chmod +x /oauth2-proxy; }
+    rm -rf /oauth2-proxy.tar.gz /tmp/* && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

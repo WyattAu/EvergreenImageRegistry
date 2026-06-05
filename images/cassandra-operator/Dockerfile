@@ -9,7 +9,7 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/k8ssandra/cass-operator/releases/download/v${VERSION}/cass-operator_v${VERSION}_linux_amd64" \
         -o /tmp/cass-operator || true ; \
-    chmod +x /tmp/cass-operator 2>/dev/null ; \' binary not available - download failed" >&2 exit 1"' >> /tmp/cass-operator && echo 'exit 1' >> /tmp/cass-operator && chmod +x /tmp/cass-operator; }
+    chmod +x /tmp/cass-operator 2>/dev/null ; \' && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch

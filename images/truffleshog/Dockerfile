@@ -35,7 +35,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 
 
 
-RUN strip /trufflehog 2>/dev/null && \binary not available - download failed" >&2"' >> /trufflehog && echo 'exit 1' >> /trufflehog && chmod +x /trufflehog; }
+RUN strip /trufflehog 2>/dev/null && && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

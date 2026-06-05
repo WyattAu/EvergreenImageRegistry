@@ -13,8 +13,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://getcomposer.org/installer" | php -- --install-dir=/usr/local/bin --filename=composer && \
     mkdir -p /app && \
-    test -e /usr/local/bin/composer || { mkdir -p /usr/local/bin/composer && echo 'composer-audit binary not available - download failed" >&2 exit 1' > /usr/local/bin/composer/.binary not available - download failed" >&2 exit 1 ; } ; \
-    test -e /app || { mkdir -p /app && echo 'composer-audit binary not available - download failed" >&2 exit 1' > /app/.binary not available - download failed" >&2 exit 1 ; }
+    test -e /usr/local/bin/composer || { mkdir -p /usr/local/bin/composer && echo 'composer-audit && { echo "Binary not available - download failed" >&2; exit 1; }
+    test -e /app || { mkdir -p /app && echo 'composer-audit && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
 RUN apk add --no-cache php-8.4 php-8.4-mbstring php-8.4-xml php-8.4-curl ca-certificates curl unzip && \

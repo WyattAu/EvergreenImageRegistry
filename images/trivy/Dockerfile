@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     [ -f /trivy.tar.gz ] && tar -xzf /trivy.tar.gz -C /tmp/ ; \
     strip --strip-all /tmp/trivy 2>/dev/null&& \
     mv /tmp/trivy /trivy && \
-    rm -rf /trivy.tar.gz /checksums.txt /tmp/*binary not available - download failed" >&2"' >> /trivy && echo 'exit 1' >> /trivy && chmod +x /trivy; }
+    rm -rf /trivy.tar.gz /checksums.txt /tmp/* && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/trivy /var/cache/trivy 2>/dev/null || true
 

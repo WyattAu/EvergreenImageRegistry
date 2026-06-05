@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     make -j$(nproc) ; \
     make install DESTDIR=/opt/unbound ; \
     cp /opt/unbound/usr/sbin/unbound /unbound 2>/dev/null && chmod +x /unbound ; \
-    test -s /unbound && strip --strip-all /unbound 2>/dev/null ; \' build failed - binary not available - download failed" >&2 exit 1"' >> /unbound && echo 'exit 1' >> /unbound && chmod +x /unbound; }
+    test -s /unbound && strip --strip-all /unbound 2>/dev/null ; \' build failed - && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS dirs
 RUN mkdir -p /app /var/log/unbound /var/cache/unbound 2>/dev/null || true
 

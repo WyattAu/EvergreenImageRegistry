@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/anchore/syft/releases/download/v1.8.0/syft_1.8.0_linux_${TARGETARCH}.tar.gz -o /syft.tar.gz ; \
     echo "b487ee715e715e960f0d327b49ed9f5926b82bfa2f7283942f9631c41e7c0545  /syft.tar.gz" | sha256sum -c ; \
     [ -f /syft.tar.gz ] && tar -xzf /syft.tar.gz -C / && rm -f /syft.tar.gz && chmod +x /syft 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/anchore/syft/releases/download/v1.8.0/syft_1.8.0_linux_${TARGETARCH}.tar.gz -o /syft && chmod +x /syftbinary not available - download failed" >&2"' >> /syft && echo 'exit 1' >> /syft && chmod +x /syft; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/anchore/syft/releases/download/v1.8.0/syft_1.8.0_linux_${TARGETARCH}.tar.gz -o /syft && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

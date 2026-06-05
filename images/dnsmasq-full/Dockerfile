@@ -20,8 +20,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     strip --strip-all /install/usr/sbin/dnsmasq 2>/dev/null
 
 
-RUN mkdir -p /install/usr/sbin/dnsmasq ; 2>/dev/null || true ; \binary not available - download failed" >&2 \
-    exit 1"' >> /install/usr/share/man && echo 'exit 1' >> /install/usr/share/man && chmod +x /install/usr/share/man ; } && \
+RUN mkdir -p /install/usr/sbin/dnsmasq ; 2>/dev/null || true ; && { echo "Binary not available - download failed" >&2; exit 1; }
+    exit 1"' >> /install/usr/share/man { echo "Binary not available - download failed" >&2; exit 1; } && \
     mkdir -p /install/usr/sbin/dnsmasq /install/usr/share/man 2>/dev/null || true
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

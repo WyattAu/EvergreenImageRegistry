@@ -20,9 +20,9 @@ COPY --from=shim /shim /usr/local/bin/shim
 RUN chmod +x /usr/local/bin/shim
 
 RUN apk add --no-cache git ca-certificates curl build-base && \
-    git clone --branch v3.0.0 https://github.com/gallery/gallery3.git /opt/gallery3 2>/dev/null || echo "Source repo not available - using binary not available - download failed" >&2 exit 1" && \
-    git clone https://github.com/gallery/gallery3.git /opt/gallery3 2>/dev/null || echo "Source repo not available - using binary not available - download failed" >&2 exit 1" 2>/dev/null && \
-       git clone https://github.com/gallery/gallery3.git /opt/gallery3 2>/dev/null || echo "Source repo not available - using binary not available - download failed" >&2 exit 1" 2>/dev/null && \
+    git clone --branch v3.0.0 https://github.com/gallery/gallery3.git /opt/gallery3 2>/dev/null || { echo "Binary not available - download failed" >&2; exit 1; } && \
+    git clone https://github.com/gallery/gallery3.git /opt/gallery3 2>/dev/null || { echo "Binary not available - download failed" >&2; exit 1; } 2>/dev/null && \
+       git clone https://github.com/gallery/gallery3.git /opt/gallery3 2>/dev/null || { echo "Binary not available - download failed" >&2; exit 1; } 2>/dev/null && \
     cd /opt/gallery3 && \
     pip install --no-cache-dir --break-system-packages -r requirements.txt 2>/dev/null && \
     adduser -u 65532 -D app 2>/dev/null || true && \

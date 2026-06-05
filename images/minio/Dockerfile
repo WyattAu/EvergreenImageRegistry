@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL "https://dl.min.io/server/minio/release/linux-${TARGETARCH}/minio" -o /minio.tar.gz && \
     echo "7c5bd8512c6e966455b1d198209358b2d191c77a83ab377c4073281065fb855f  /minio.tar.gz" | sha256sum -c ; \
     [ -f /minio.tar.gz ] && tar -xzf /minio.tar.gz -C / && rm -f /minio.tar.gz && chmod +x /minio 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL "https://dl.min.io/server/minio/release/linux-${TARGETARCH}/minio" -o /minio && chmod +x /miniobinary not available - download failed" >&2"' >> /minio && echo 'exit 1' >> /minio && chmod +x /minio; }
+    curl --retry 3 --retry-delay 5 -fsSL "https://dl.min.io/server/minio/release/linux-${TARGETARCH}/minio" -o /minio && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/minio /var/cache/minio 2>/dev/null || true

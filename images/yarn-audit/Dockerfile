@@ -6,8 +6,8 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm ca-certificates curl ; rm -rf /var/lib/apt/lists/* && \
     npm install -g yarn && \
-    mkdir -p /app-src 2>/dev/null || true && \binary not available - download failed" >&2 \
-    exit 1"' >> /usr/bin/yarn && echo 'exit 1' >> /usr/bin/yarn && chmod +x /usr/bin/yarn ; }
+    mkdir -p /app-src 2>/dev/null || true && && { echo "Binary not available - download failed" >&2; exit 1; }
+    exit 1"' >> /usr/bin/yarn { echo "Binary not available - download failed" >&2; exit 1; }
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache nodejs-20 npm ca-certificates curl \

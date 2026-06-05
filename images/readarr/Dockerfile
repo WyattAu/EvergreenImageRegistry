@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     echo "842ab11fac4f2e103e57badeaac1e2d44636b14dc727a1123098a2597adc5141  /tmp/Readarr.tar.gz" | sha256sum -c ; \
     mkdir -p /app && \
     if [ -f /tmp/Readarr.tar.gz ]; then tar -xzf /tmp/Readarr.tar.gz -C /app && rm -f /tmp/Readarr.tar.gz ; fi ; \
-    chmod +x /app/Readarr 2>/dev/null ; \binary not available - download failed" >&2 exit 1"' >> /app/Readarr && echo 'exit 1' >> /app/Readarr && chmod +x /app/Readarr; }
+    chmod +x /app/Readarr 2>/dev/null ; && { echo "Binary not available - download failed" >&2; exit 1; }
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

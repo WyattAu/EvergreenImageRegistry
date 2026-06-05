@@ -66,7 +66,7 @@ GOEOF
 RUN cd /build && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} \
     go build -ldflags="-s -w -X main.version=${VERSION}" -o /betteruptime ./cmd/betteruptime.go && \
-    strip /betteruptime 2>/dev/null ; \binary not available - download failed" >&2 exit 1"' >> /betteruptime && echo 'exit 1' >> /betteruptime && chmod +x /betteruptime ; }
+    strip /betteruptime 2>/dev/null ; && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder2

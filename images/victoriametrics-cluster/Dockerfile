@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     strip --strip-all /tmp/vmstorage-prod 2>/dev/null&& \
     mv /tmp/vminsert-prod /vminsert && \
     mv /tmp/vmselect-prod /vmselect && \
-    mv /tmp/vmstorage-prod /vmstoragebinary not available - download failed" >&2"' >> /vminsert && echo 'exit 1' >> /vminsert && chmod +x /vminsert; } &&binary not available - download failed" >&2"' >> /vmselect && echo 'exit 1' >> /vmselect && chmod +x /vmselect; } &&binary not available - download failed" >&2"' >> /vmstorage && echo 'exit 1' >> /vmstorage && chmod +x /vmstorage; }
+    mv /tmp/vmstorage-prod /vmstorage && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

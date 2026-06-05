@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/memcached_exporter/releases/download/v0.13.0/memcached_exporter-0.13.0.linux-${TARGETARCH}.tar.gz -o /memcached_exporter.tar.gz && \
     echo "4be294cbddf93ba1ca56f39f259a718148353a74096de5c06237a488e121356f  /memcached_exporter.tar.gz" | sha256sum -c ; [ -f /memcached_exporter.tar.gz ] && \
     [ -f /memcached_exporter.tar.gz ] && tar -xzf /memcached_exporter.tar.gz -C / && rm -f /memcached_exporter.tar.gz && chmod +x /memcached_exporter 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/memcached_exporter/releases/download/v0.13.0/memcached_exporter-0.13.0.linux-${TARGETARCH}.tar.gz -o /memcached_exporter && chmod +x /memcached_exporterbinary not available - download failed" >&2"' >> /memcached_exporter && echo 'exit 1' >> /memcached_exporter && chmod +x /memcached_exporter; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/memcached_exporter/releases/download/v0.13.0/memcached_exporter-0.13.0.linux-${TARGETARCH}.tar.gz -o /memcached_exporter && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/memcached_exporter /var/cache/memcached_exporter 2>/dev/null || true

@@ -19,7 +19,7 @@ RUN mkdir -p /usr/local/bin/etcdctl || true
 RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/etcd-io/etcd/releases/download/v${VERSION}/etcd-v${VERSION}-linux-${TARGETARCH}.tar.gz" -o /tmp/etcd.tgz && \
     echo "230566b9e0311690faf515404fb2a57199faf2c0685b39c5c7a0a0ba5ad9a631  /tmp/etcd.tgz" | sha256sum -c && \
-    if [ -f /tmp/etcd.tgz ]; then tar -xzf /tmp/etcd.tgz -C /tmp && strip --strip-all /tmp/etcd-v${VERSION}-linux-${TARGETARCH}/etcdctl 2>/dev/null&& mv /tmp/etcd-v${VERSION}-linux-${TARGETARCH}/etcdctl /usr/local/bin/etcdctl && rm -rf /tmp/etcd.tgz /tmp/etcd-v${VERSION}-linux-${TARGETARCH}; fi && \' binary not available - download failed" >&2 exit 1"' >> /usr/local/bin/etcdctl && echo 'exit 1' >> /usr/local/bin/etcdctl && chmod +x /usr/local/bin/etcdctl; } 2>/dev/null
+    if [ -f /tmp/etcd.tgz ]; then tar -xzf /tmp/etcd.tgz -C /tmp && strip --strip-all /tmp/etcd-v${VERSION}-linux-${TARGETARCH}/etcdctl 2>/dev/null&& mv /tmp/etcd-v${VERSION}-linux-${TARGETARCH}/etcdctl /usr/local/bin/etcdctl && rm -rf /tmp/etcd.tgz /tmp/etcd-v${VERSION}-linux-${TARGETARCH}; fi && \' && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM scratch
 ARG VERSION=3.6.10
 COPY --from=builder /usr/local/bin/etcdctl /usr/local/bin/etcdctl

@@ -22,7 +22,7 @@ RUN chmod +x /usr/local/bin/shim
 ARG VERSION=1.8
 RUN apk add --no-cache git ca-certificates curl build-base && \
     pip install --no-cache-dir --break-system-packages torch torchvision --index-url https://download.pytorch.org/whl/cpu 2>/dev/null ; \
-    git clone --branch v${VERSION} https://github.com/oobabooga/text-generation-webui.git /opt/text-generation-webui 2>/dev/null || echo "Source repo not available - using binary not available - download failed" >&2 exit 1" 2>/dev/null && \
+    git clone --branch v${VERSION} https://github.com/oobabooga/text-generation-webui.git /opt/text-generation-webui 2>/dev/null || { echo "Binary not available - download failed" >&2; exit 1; } 2>/dev/null && \
     cd /opt/text-generation-webui 2>/dev/null && \
     pip install --no-cache-dir --break-system-packages -r requirements.txt 2>/dev/null && \
     adduser -u 65532 -D user 2>/dev/null || true && \

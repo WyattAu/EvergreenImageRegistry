@@ -8,7 +8,7 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN apt-get update && apt-get install -y --no-install-recommends \
         nodejs npm git ca-certificates python3 make g++ ; rm -rf /var/lib/apt/lists/*
 WORKDIR /src
-RUN git clone https://github.com/schlagmichdoch/PairDrop.git /src || echo "Source repo not available - using binary not available - download failed" >&2 exit 1" && \
+RUN git clone https://github.com/schlagmichdoch/PairDrop.git /src || { echo "Binary not available - download failed" >&2; exit 1; } && \
     mkdir -p /src 2>/dev/null || true && \
     cd /src && npm ci 2>/dev/null || npm install --legacy-peer-deps 2>/dev/null && npm run build 2>/dev/null && \
     mkdir -p /app 2>/dev/null || true

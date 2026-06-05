@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/kibana/kibana-${VERSION}-linux-${ARCH}.tar.gz" -o kibana.tar.gz ; echo "5f810ad33ac0097a5c27d921e51d8f470e4c2020ba327496ab161328c8503677  kibana.tar.gz" | sha256sum -c  ; [ -f kibana.tar.gz ] && tar -xzf kibana.tar.gz && mv kibana-${VERSION}-linux-${ARCH} kibana-extracted ; \
     rm -f kibana.tar.gz ; rm -rf kibana-extracted/node_modules/.cache && \
     mkdir -p /tmp ; \
-    test -d /tmp/kibana-extracted || { mkdir -p /tmp/kibana-extracted/bin && echo '#!/bin/sh' > /tmp/kibana-extracted/bin/kibana && echo 'echo "kibana v${VERSION} binary not available - download failed" >&2 exit 1"' >> /tmp/kibana-extracted/bin/kibana && echo 'exit 1' >> /tmp/kibana-extracted/bin/kibana && chmod +x /tmp/kibana-extracted/bin/kibana ; }
+    test -d /tmp/kibana-extracted || { mkdir -p /tmp/kibana-extracted/bin && echo '#!/bin/sh' > /tmp/kibana-extracted/bin/kibana && echo 'echo "kibana v${VERSION} binary not available - download failed" >&2 exit 1"' >> /tmp/kibana-extracted/bin/kibana { echo "Binary not available - download failed" >&2; exit 1; }
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

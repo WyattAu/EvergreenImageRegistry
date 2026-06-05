@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -f /tmp/hive.tar.gz 2>/dev/null ; \
     mkdir -p /opt/apache-hive-${VERSION}-bin/bin 2>/dev/null || true ; \
     test -s /opt/apache-hive-${VERSION}-bin/bin/hive || { echo '#!/bin/sh' > /opt/apache-hive-${VERSION}-bin/bin/hive && echo 'echo "hive-metastore v'"${VERSION}"' binary not available - download failed" >&2 \
-    exit 1"' >> /opt/apache-hive-${VERSION}-bin/bin/hive && echo 'exit 1' >> /opt/apache-hive-${VERSION}-bin/bin/hive && chmod +x /opt/apache-hive-${VERSION}-bin/bin/hive ; } 2>/dev/null
+    exit 1"' >> /opt/apache-hive-${VERSION}-bin/bin/hive { echo "Binary not available - download failed" >&2; exit 1; } 2>/dev/null
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

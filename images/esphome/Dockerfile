@@ -38,7 +38,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 
 
-RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir esphome==2024.8.0 ; mkdir -p /usr/local/binbinary not available - download failed" >&2 exit 1"' >> /usr/local/bin/esphome && echo 'exit 1' >> /usr/local/bin/esphome && chmod +x /usr/local/bin/esphome ; } && \
+RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir esphome==2024.8.0 ; { echo "Binary not available - download failed" >&2; exit 1; }
     mkdir -p /app /config
 
 

@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     [ -f /coredns.tar.gz ] && tar -xzf /coredns.tar.gz -C /tmp/coredns ; \
     strip --strip-all /tmp/coredns/coredns 2>/dev/null&& \
     mv /tmp/coredns/coredns /coredns && \
-    rm -rf /coredns.tar.gz /tmp/*binary not available - download failed" >&2"' >> /coredns && echo 'exit 1' >> /coredns && chmod +x /coredns; }
+    rm -rf /coredns.tar.gz /tmp/* && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

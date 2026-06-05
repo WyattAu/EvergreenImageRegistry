@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/fluxcd/flux2/releases/download/v2.3.0/flux_2.3.0_linux_${TARGETARCH}.tar.gz -o /flux.tar.gz && \
     echo "51ef10a0ebf2078e52476c4d168200a1db73feef987e0bc8722f4ce4fcd4b6d9  /flux.tar.gz" | sha256sum -c ; [ -f /flux.tar.gz ] && \
     [ -f /flux.tar.gz ] && tar -xzf /flux.tar.gz -C / && rm -f /flux.tar.gz && chmod +x /flux 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/fluxcd/flux2/releases/download/v2.3.0/flux_2.3.0_linux_${TARGETARCH}.tar.gz -o /flux && chmod +x /fluxbinary not available - download failed" >&2"' >> /flux && echo 'exit 1' >> /flux && chmod +x /flux; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/fluxcd/flux2/releases/download/v2.3.0/flux_2.3.0_linux_${TARGETARCH}.tar.gz -o /flux && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/flux /var/cache/flux 2>/dev/null || true
 

@@ -20,7 +20,7 @@ RUN mkdir -p /app && \ RUN apt-get update && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
         -o /app/ulogger . 2>/dev/null || true && \
-    test -s /app/ulogger && strip --strip-all /app/ulogger 2>/dev/null && \' binary not available - download failed" >&2 exit 1"' >> /app/ulogger && echo 'exit 1' >> /app/ulogger && chmod +x /app/ulogger; } 2>/dev/null && \
+    test -s /app/ulogger && strip --strip-all /app/ulogger 2>/dev/null && \' && { echo "Binary not available - download failed" >&2; exit 1; }
     mkdir -p /app /var/log/ulogger /var/cache/ulogger
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

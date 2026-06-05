@@ -8,7 +8,7 @@ ARG VERSION=1.3.1
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/FiloSottile/age/releases/download/v${VERSION}/age-v${VERSION}-linux-${TARGETARCH}.tar.gz -o /age.tar.gz ; \
     echo "cf16cbb108fc56e2064b00ba2b65d9fb1b8d7002ca5e38260ee1cc34f6aaa8f9  /age.tar.gz" | sha256sum -c ; \
-    tar -xzf /age.tar.gz -C / && rm -f /age.tar.gz && chmod +x /age/age /age/age-keygenbinary not available - download failed" >&2"' >> /age/age && echo 'exit 1' >> /age/age && chmod +x /age/age; } &&binary not available - download failed" >&2"' >> /age/age-keygen && echo 'exit 1' >> /age/age-keygen && chmod +x /age/age-keygen; }
+    tar -xzf /age.tar.gz -C / && rm -f /age.tar.gz && chmod +x /age/age /age/age-keygen && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

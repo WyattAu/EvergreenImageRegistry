@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/mysqld_exporter/releases/download/v0.15.0/mysqld_exporter-0.15.0.linux-${TARGETARCH}.tar.gz -o /mysqld_exporter.tar.gz && \
     echo "5696925771e22def5838bc538df29befdb07faca2adfbecb512cc7938661bd78  /mysqld_exporter.tar.gz" | sha256sum -c ; [ -f /mysqld_exporter.tar.gz ] && \
     [ -f /mysqld_exporter.tar.gz ] && tar -xzf /mysqld_exporter.tar.gz -C / && rm -f /mysqld_exporter.tar.gz && chmod +x /mysqld_exporter 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/mysqld_exporter/releases/download/v0.15.0/mysqld_exporter-0.15.0.linux-${TARGETARCH}.tar.gz -o /mysqld_exporter && chmod +x /mysqld_exporterbinary not available - download failed" >&2"' >> /mysqld_exporter && echo 'exit 1' >> /mysqld_exporter && chmod +x /mysqld_exporter; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/mysqld_exporter/releases/download/v0.15.0/mysqld_exporter-0.15.0.linux-${TARGETARCH}.tar.gz -o /mysqld_exporter && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/mysqld_exporter /var/cache/mysqld_exporter 2>/dev/null || true

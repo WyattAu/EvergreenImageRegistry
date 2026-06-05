@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/navidrome/navidrome/releases/download/v0.52.5/navidrome_0.52.5_linux_${TARGETARCH}.tar.gz -o /navidrome.tar.gz && \
     echo "b9781ea560ea09926557c665472faa26920738a5ffa0680c19f70df97f51598f  /navidrome.tar.gz" | sha256sum -c ; [ -f /navidrome.tar.gz ] && \
     [ -f /navidrome.tar.gz ] && tar -xzf /navidrome.tar.gz -C / && rm -f /navidrome.tar.gz && chmod +x /navidrome 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/navidrome/navidrome/releases/download/v0.52.5/navidrome_0.52.5_linux_${TARGETARCH}.tar.gz -o /navidrome && chmod +x /navidromebinary not available - download failed" >&2"' >> /navidrome && echo 'exit 1' >> /navidrome && chmod +x /navidrome; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/navidrome/navidrome/releases/download/v0.52.5/navidrome_0.52.5_linux_${TARGETARCH}.tar.gz -o /navidrome && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/navidrome /var/cache/navidrome 2>/dev/null || true
 

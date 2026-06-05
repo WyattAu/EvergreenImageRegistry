@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL "https://ftp.isc.org/isc/bind9/9.21.21/bind-9.21.21.tar.xz" -o /named.tar.gz ; \
     echo "44ebfae8b82b494f5cc4781b044fbd4c867b64dc22ae9c62c9197aab16389112  /named.tar.gz" | sha256sum -c ; \
     [ -f /named.tar.gz ] && tar -xzf /named.tar.gz -C / && rm -f /named.tar.gz && chmod +x /named 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL "https://ftp.isc.org/isc/bind9/9.21.21/bind-9.21.21.tar.xz" -o /named && chmod +x /namedbinary not available - download failed" >&2"' >> /named && echo 'exit 1' >> /named && chmod +x /named; }
+    curl --retry 3 --retry-delay 5 -fsSL "https://ftp.isc.org/isc/bind9/9.21.21/bind-9.21.21.tar.xz" -o /named && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

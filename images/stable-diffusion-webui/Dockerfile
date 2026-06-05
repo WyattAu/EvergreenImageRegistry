@@ -20,9 +20,9 @@ COPY --from=shim /shim /usr/local/bin/shim
 RUN chmod +x /usr/local/bin/shim
 
 RUN apk add --no-cache git ca-certificates curl build-base && \
-    git clone --branch v1.9.3 https://github.com/AUTOMATIC1111/stable-diffusion-webui.git /opt/stable-diffusion-webui 2>/dev/null || echo "Source repo not available - using binary not available - download failed" >&2 exit 1" && \
-    git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git /opt/stable-diffusion-webui 2>/dev/null || echo "Source repo not available - using binary not available - download failed" >&2 exit 1" 2>/dev/null && \
-       git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git /opt/stable-diffusion-webui 2>/dev/null || echo "Source repo not available - using binary not available - download failed" >&2 exit 1" 2>/dev/null && \
+    git clone --branch v1.9.3 https://github.com/AUTOMATIC1111/stable-diffusion-webui.git /opt/stable-diffusion-webui 2>/dev/null || { echo "Binary not available - download failed" >&2; exit 1; } && \
+    git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git /opt/stable-diffusion-webui 2>/dev/null || { echo "Binary not available - download failed" >&2; exit 1; } 2>/dev/null && \
+       git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git /opt/stable-diffusion-webui 2>/dev/null || { echo "Binary not available - download failed" >&2; exit 1; } 2>/dev/null && \
     cd /opt/stable-diffusion-webui && \
     pip install --no-cache-dir --break-system-packages -r requirements.txt 2>/dev/null && \
     adduser -u 65532 -D app 2>/dev/null || true && \

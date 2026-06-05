@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/haproxy_exporter/releases/download/v0.15.0/haproxy_exporter-0.15.0.linux-${TARGETARCH}.tar.gz -o /haproxy_exporter.tar.gz && \
     echo "c8d76f8c86704408479c13843b7c050d4e8ebcb68722b479ffbcdc9b02630ddc  /haproxy_exporter.tar.gz" | sha256sum -c ; [ -f /haproxy_exporter.tar.gz ] && \
     [ -f /haproxy_exporter.tar.gz ] && tar -xzf /haproxy_exporter.tar.gz -C / && rm -f /haproxy_exporter.tar.gz && chmod +x /haproxy_exporter 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/haproxy_exporter/releases/download/v0.15.0/haproxy_exporter-0.15.0.linux-${TARGETARCH}.tar.gz -o /haproxy_exporter && chmod +x /haproxy_exporterbinary not available - download failed" >&2"' >> /haproxy_exporter && echo 'exit 1' >> /haproxy_exporter && chmod +x /haproxy_exporter; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/haproxy_exporter/releases/download/v0.15.0/haproxy_exporter-0.15.0.linux-${TARGETARCH}.tar.gz -o /haproxy_exporter && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/haproxy_exporter /var/cache/haproxy_exporter 2>/dev/null || true

@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     [ -f /gatekeeper.tar.gz ] && tar -xzf /gatekeeper.tar.gz -C /tmp/ ; \
     strip --strip-all /tmp/keycloak-gatekeeper 2>/dev/null&& \
     mv /tmp/keycloak-gatekeeper /keycloak-gatekeeper && \
-    rm -rf /gatekeeper.tar.gz /checksums.txt /tmp/*binary not available - download failed" >&2"' >> /keycloak-gatekeeper && echo 'exit 1' >> /keycloak-gatekeeper && chmod +x /keycloak-gatekeeper; }
+    rm -rf /gatekeeper.tar.gz /checksums.txt /tmp/* && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch

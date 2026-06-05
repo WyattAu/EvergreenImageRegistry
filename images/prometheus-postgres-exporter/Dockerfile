@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     mkdir -p /postgres_exporter-${VERSION}.linux-${TARGETARCH} ; \
     if [ -f /postgres_exporter.tar.gz ]; then tar -xzf /postgres_exporter.tar.gz -C / && rm -f /postgres_exporter.tar.gz ; fi ; \
     chmod +x /postgres_exporter-${VERSION}.linux-${TARGETARCH}/postgres_exporter 2>/dev/null ; \
-    test -s /postgres_exporter-${VERSION}.linux-${TARGETARCH}/postgres_exporter || { echo '#!/bin/sh' > /postgres_exporter-${VERSION}.linux-${TARGETARCH}/postgres_exporter && echo 'echo "prometheus-postgres-exporter v${VERSION} binary not available - download failed" >&2 exit 1"' >> /postgres_exporter-${VERSION}.linux-${TARGETARCH}/postgres_exporter && echo 'exit 1' >> /postgres_exporter-${VERSION}.linux-${TARGETARCH}/postgres_exporter && chmod +x /postgres_exporter-${VERSION}.linux-${TARGETARCH}/postgres_exporter; }
+    test -s /postgres_exporter-${VERSION}.linux-${TARGETARCH}/postgres_exporter || { echo '#!/bin/sh' > /postgres_exporter-${VERSION}.linux-${TARGETARCH}/postgres_exporter && echo 'echo "prometheus-postgres-exporter v${VERSION} binary not available - download failed" >&2 exit 1"' >> /postgres_exporter-${VERSION}.linux-${TARGETARCH}/postgres_exporter  && chmod +x /postgres_exporter-${VERSION}.linux-${TARGETARCH}/postgres_exporter; }
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH

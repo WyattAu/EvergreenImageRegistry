@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/pushgateway/releases/download/v1.8.0/pushgateway-1.8.0.linux-${TARGETARCH}.tar.gz -o /pushgateway.tar.gz && \
     echo "ee962b451e533c392d9bfd07f5e4195d64a65b87b55d4abbcedc5f9ce13dfc58  /pushgateway.tar.gz" | sha256sum -c ; [ -f /pushgateway.tar.gz ] && \
     [ -f /pushgateway.tar.gz ] && tar -xzf /pushgateway.tar.gz -C / && rm -f /pushgateway.tar.gz && chmod +x /pushgateway 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/pushgateway/releases/download/v1.8.0/pushgateway-1.8.0.linux-${TARGETARCH}.tar.gz -o /pushgateway && chmod +x /pushgatewaybinary not available - download failed" >&2"' >> /pushgateway && echo 'exit 1' >> /pushgateway && chmod +x /pushgateway; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/prometheus/pushgateway/releases/download/v1.8.0/pushgateway-1.8.0.linux-${TARGETARCH}.tar.gz -o /pushgateway && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
 RUN mkdir -p /app /var/log/pushgateway /var/cache/pushgateway 2>/dev/null || true

@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     mkdir -p /kafka_exporter-1.9.0.linux-${TARGETARCH} && \
     if [ -f /exporter.tar.gz ]; then tar -xzf /exporter.tar.gz -C / && rm -f /exporter.tar.gz ; fi ; \
     chmod +x /kafka_exporter-1.9.0.linux-${TARGETARCH}/kafka_exporter 2>/dev/null ; \
-    test -s /kafka_exporter-1.9.0.linux-${TARGETARCH}/kafka_exporter || { echo '#!/bin/sh' > /kafka_exporter-1.9.0.linux-${TARGETARCH}/kafka_exporter && echo 'echo "prometheus-kafka-exporter v${VERSION} binary not available - download failed" >&2 exit 1"' >> /kafka_exporter-1.9.0.linux-${TARGETARCH}/kafka_exporter && echo 'exit 1' >> /kafka_exporter-1.9.0.linux-${TARGETARCH}/kafka_exporter && chmod +x /kafka_exporter-1.9.0.linux-${TARGETARCH}/kafka_exporter; }
+    test -s /kafka_exporter-1.9.0.linux-${TARGETARCH}/kafka_exporter || { echo '#!/bin/sh' > /kafka_exporter-1.9.0.linux-${TARGETARCH}/kafka_exporter && echo 'echo "prometheus-kafka-exporter v${VERSION} binary not available - download failed" >&2 exit 1"' >> /kafka_exporter-1.9.0.linux-${TARGETARCH}/kafka_exporter  && chmod +x /kafka_exporter-1.9.0.linux-${TARGETARCH}/kafka_exporter; }
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH

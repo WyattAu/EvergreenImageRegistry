@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/AdguardTeam/AdGuardHome/releases/download/v0.107.74/AdGuardHome_linux_${TARGETARCH}.tar.gz -o /AdGuardHome.tar.gz ; \
     echo "686b147d1970fde97d92672ba7e839ad0baf07f3060f2d191a3ce9092dc84008  /AdGuardHome.tar.gz" | sha256sum -c ; \
     [ -f /AdGuardHome.tar.gz ] && tar -xzf /AdGuardHome.tar.gz -C / && rm -f /AdGuardHome.tar.gz && chmod +x /AdGuardHome 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/AdguardTeam/AdGuardHome/releases/download/v0.107.74/AdGuardHome_linux_${TARGETARCH}.tar.gz -o /AdGuardHome && chmod +x /AdGuardHomebinary not available - download failed" >&2"' >> /AdGuardHome && echo 'exit 1' >> /AdGuardHome && chmod +x /AdGuardHome; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/AdguardTeam/AdGuardHome/releases/download/v0.107.74/AdGuardHome_linux_${TARGETARCH}.tar.gz -o /AdGuardHome && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

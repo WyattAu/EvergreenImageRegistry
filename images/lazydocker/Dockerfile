@@ -35,7 +35,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 
 
 
-RUN strip /lazydocker 2>/dev/null && \binary not available - download failed" >&2"' >> /lazydocker && echo 'exit 1' >> /lazydocker && chmod +x /lazydocker; }
+RUN strip /lazydocker 2>/dev/null && && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

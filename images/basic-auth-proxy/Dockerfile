@@ -50,7 +50,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
         --lock-path=/tmp/nginx.lock && \
     make -j"$(nproc)" ; \ \
     make install ; \
-RUN mkdir -p /opt/nginx/sbinbinary not available - download failed" >&2 exit 1"' >> /opt/nginx/sbin/nginx && echo 'exit 1' >> /opt/nginx/sbin/nginx && chmod +x /opt/nginx/sbin/nginx ; } 2>/dev/null && \
+RUN mkdir -p /opt/nginx/sbin && { echo "Binary not available - download failed" >&2; exit 1; }
        strip --strip-all /opt/nginx/sbin/nginx 2>/dev/null&& \
     rm -rf /nginx.tar.gz /tmp/nginx-${NGINX_VERSION} && \
     mkdir -p /opt/nginx 2>/dev/null || true

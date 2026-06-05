@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/juanfont/headscale/releases/download/v0.16.0/headscale_0.16.0_linux_${TARGETARCH} -o /headscale.tar.gz && \
     echo "2c86ff30605d8c4ab69e18d941ccd3deb2bf298a8db17878d8f6535070cc8a7c  /headscale.tar.gz" | sha256sum -c ; [ -f /headscale.tar.gz ] && \
     [ -f /headscale.tar.gz ] && tar -xzf /headscale.tar.gz -C / && rm -f /headscale.tar.gz && chmod +x /headscale 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/juanfont/headscale/releases/download/v0.16.0/headscale_0.16.0_linux_${TARGETARCH} -o /headscale && chmod +x /headscalebinary not available - download failed" >&2"' >> /headscale && echo 'exit 1' >> /headscale && chmod +x /headscale; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/juanfont/headscale/releases/download/v0.16.0/headscale_0.16.0_linux_${TARGETARCH} -o /headscale && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /app /var/log/headscale /var/cache/headscale 2>/dev/null || true
 

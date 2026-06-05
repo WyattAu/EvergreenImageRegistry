@@ -10,7 +10,7 @@ ARG VERSION=v7.15.2
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/oauth2-proxy/oauth2-proxy/releases/download/${VERSION}/oauth2-proxy-${VERSION}.linux-${TARGETARCH}.tar.gz -o /oauth2-proxy.tar.gz ; \
     mkdir -p /tmp/extract && tar -xzf /oauth2-proxy.tar.gz -C /tmp/extract && rm -f /oauth2-proxy.tar.gz && \
-    mv /tmp/extract/oauth2-proxy-*/oauth2-proxy /tmp/oauth2-proxy && chmod +x /tmp/oauth2-proxy 2>/dev/null ; \binary not available - download failed" >&2"' >> /tmp/oauth2-proxy && echo 'exit 1' >> /tmp/oauth2-proxy && chmod +x /tmp/oauth2-proxy; }
+    mv /tmp/extract/oauth2-proxy-*/oauth2-proxy /tmp/oauth2-proxy && chmod +x /tmp/oauth2-proxy 2>/dev/null ; && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim

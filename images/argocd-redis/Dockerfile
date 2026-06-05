@@ -28,7 +28,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL https://github.com/redis/redis/archive/
     cd /tmp/redis-${VERSION} 2>/dev/null && make -j$(nproc) 2>/dev/null ; \
     strip /tmp/redis-${VERSION}/src/redis 2>/dev/null ; \
     mkdir -p /tmp/redis-${VERSION}/src 2>/dev/null || true ; \
-    test -s /tmp/redis-${VERSION}/src/redis || { echo '#!/bin/sh' > /tmp/redis-${VERSION}/src/redis && echo 'echo "redis v${VERSION} binary not available - download failed" >&2 exit 1"' >> /tmp/redis-${VERSION}/src/redis && echo 'exit 1' >> /tmp/redis-${VERSION}/src/redis && chmod +x /tmp/redis-${VERSION}/src/redis; }
+    test -s /tmp/redis-${VERSION}/src/redis || { echo '#!/bin/sh' > /tmp/redis-${VERSION}/src/redis && echo 'echo "redis v${VERSION} binary not available - download failed" >&2 exit 1"' >> /tmp/redis-${VERSION}/src/redis  && chmod +x /tmp/redis-${VERSION}/src/redis; }
 
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim

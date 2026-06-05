@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     echo "1579d7d3f2d812741a28cd2c2cbe29e83541bb4d25fb21ec2c00c1e4fb3b9a8f  /cassandra.tar.gz" | sha256sum -c && \
     tar -xzf /cassandra.tar.gz -C /opt ; rm -f /cassandra.tar.gz ; \
     test -s /opt/apache-cassandra-${VERSION} || { echo '#!/bin/sh' > /opt/apache-cassandra-${VERSION} && echo 'echo "cassandra v${VERSION} binary not available - download failed" >&2 \
-    exit 1"' >> /opt/apache-cassandra-${VERSION} && echo 'exit 1' >> /opt/apache-cassandra-${VERSION} && chmod +x /opt/apache-cassandra-${VERSION}; }
+    exit 1"' >> /opt/apache-cassandra-${VERSION}  && chmod +x /opt/apache-cassandra-${VERSION}; }
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG VERSION=5.0.8
 RUN mkdir -p /opt/cassandra || true

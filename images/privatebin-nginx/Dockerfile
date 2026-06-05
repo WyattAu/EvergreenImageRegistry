@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         nginx php8.4 php-fpm php-gd php-mbstring php-xml \
         php-curl ca-certificates git ; rm -rf /var/lib/apt/lists/*
 WORKDIR /src
-RUN git clone https://github.com/PrivateBin/PrivateBin.git /src 2>/dev/null || echo "Source repo not available - using binary not available - download failed" >&2 exit 1" && \
+RUN git clone https://github.com/PrivateBin/PrivateBin.git /src 2>/dev/null || { echo "Binary not available - download failed" >&2; exit 1; } && \
     mkdir -p /src && \
     mkdir -p /app/data /var/log/nginx /var/lib/php/sessions
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim

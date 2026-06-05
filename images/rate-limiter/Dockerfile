@@ -31,8 +31,8 @@ RUN apt-get update && \
         -ldflags="-s -w" \
         -trimpath \
         -o /app/ratelimiter ./cmd/ratelimiter/... 2>/dev/null || true && \
-    test -s /app/ratelimiter && strip --strip-all /app/ratelimiter 2>/dev/null && \' binary not available - download failed" >&2 \
-    exit 1"' >> /app/ratelimiter && echo 'exit 1' >> /app/ratelimiter && chmod +x /app/ratelimiter; } 2>/dev/null
+    test -s /app/ratelimiter && strip --strip-all /app/ratelimiter 2>/dev/null && \' && { echo "Binary not available - download failed" >&2; exit 1; }
+    exit 1"' >> /app/ratelimiter  && chmod +x /app/ratelimiter; } 2>/dev/null
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch

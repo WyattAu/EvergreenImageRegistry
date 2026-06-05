@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     [ -f /dragonfly.tar.gz ] && tar -xzf /dragonfly.tar.gz -C /tmp/ ; \
     strip --strip-all /tmp/dfly 2>/dev/null&& \
     mv /tmp/dfly /dfly && \
-    rm -rf /dragonfly.tar.gz /checksums.txt /tmp/*binary not available - download failed" >&2"' >> /dfly && echo 'exit 1' >> /dfly && chmod +x /dfly; }
+    rm -rf /dragonfly.tar.gz /checksums.txt /tmp/* && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM scratch
 COPY --from=downloader /dfly /dfly
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

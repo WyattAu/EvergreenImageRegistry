@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir searx && \
-    mkdir -p /app/config /app/data 2>/dev/null || true && \binary not available - download failed" >&2 exit 1"' >> /app/binary not available - download failed" >&2 exit 1 && echo 'exit 1' >> /app/binary not available - download failed" >&2 exit 1 && chmod +x /app ; }
+    mkdir -p /app/config /app/data 2>/dev/null || true && && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:10c773dc96763e3201275bae7865d278ca4b91db586117adec79079a2d7cdb80
@@ -25,7 +25,7 @@ COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app /app
 RUN addgroup -S -g 2 nogroup >/dev/null || true && \
     adduser -u 65532 -G nogroup -D -h /app -s /bin/false searx 2>/dev/null || true && \
-    chown -R 65532:65532 /app/binary not available - download failed" >&2 exit 1 2>/dev/null || true
+    chown -R 65532:65532 /app/ && { echo "Binary not available - download failed" >&2; exit 1; }
 USER 65532:65532
 ENV PATH="/opt/venv/bin:$PATH"
 WORKDIR /app

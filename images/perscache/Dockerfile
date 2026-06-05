@@ -26,7 +26,7 @@ RUN apt-get update && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
         -o /app/perscache /tmp/main.go 2>/dev/null || true && \
-    test -s /app/perscache && strip --strip-all /app/perscache 2>/dev/null && \' binary not available - download failed" >&2 exit 1"' >> /app/perscache && echo 'exit 1' >> /app/perscache && chmod +x /app/perscache; } 2>/dev/null
+    test -s /app/perscache && strip --strip-all /app/perscache 2>/dev/null && \' && { echo "Binary not available - download failed" >&2; exit 1; }
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch

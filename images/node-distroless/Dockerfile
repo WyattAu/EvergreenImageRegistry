@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     esac && \
     curl --retry 3 --retry-delay 5 -fsSL "https://nodejs.org/dist/v${VERSION}/node-v${VERSION}-linux-${NODE_ARCH}.tar.xz" -o /node.tar.xz && \
     echo "${NODE_SHA}  /node.tar.xz" | sha256sum -c && \
-    mkdir -p /opt/node && tar -xf /node.tar.xz -C /opt/node --strip-components=1 && rm -f /node.tar.xzbinary not available - download failed" >&2 exit 1"' >> /opt/node/lib/node_modules && echo 'exit 1' >> /opt/node/lib/node_modules && chmod +x /opt/node/lib/node_modules; } &&binary not available - download failed" >&2 exit 1"' >> /opt/node/bin/node && echo 'exit 1' >> /opt/node/bin/node && chmod +x /opt/node/bin/node; } 2>/dev/null
+    mkdir -p /opt/node && tar -xf /node.tar.xz -C /opt/node --strip-components=1 && rm -f /node.tar.xz && { echo "Binary not available - download failed" >&2; exit 1; }
 
 
 

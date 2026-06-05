@@ -1,22 +1,29 @@
 ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
-
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
+ARG SHIM_VERSION=v0.3.0
+FROM golang:1.24-bookworm AS builder
 ARG TARGETARCH
 ARG VERSION=v1.69.1
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/rclone/rclone/releases/download/v1.69.1/rclone-v1.69.1-linux-${TARGETARCH}.zip -o /rclone && { echo "Binary not available - download failed" >&2; exit 1; }
-    echo "0b8866bad32878d7a5d3e7c0c72b96994cd023221cafe3ac66922defdd505cf5  /rclone" | sha256sum -c
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
+WORKDIR /src
+RUN git clone --depth 1 --branch "${VERSION}" https://github.com/rclone/rclone.git . || \
+    git clone --depth 1 https://github.com/rclone/rclone.git .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
+    go build -ldflags='-s -w -X main.version=${VERSION}' \
+    -o /binary
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 FROM scratch
-COPY --from=downloader /rclone /rclone
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65532:65532
-WORKDIR /app
-EXPOSE 5572
-
-HEALTHCHECK NONE
-ENTRYPOINT ["/rclone"]
+COPY --from=shim /shim /shim
+COPY --from=builder /binary /rclone
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER ${APP_UID}:${APP_GID}
+ENV SHIM_METRICS_ENABLED="true"
+WORKDIR /
+EXPOSE 5572 9101
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:5572"]
+ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="rclone" \
       org.opencontainers.image.description="rclone container image" \
       org.opencontainers.image.version="v1.69.1" \
@@ -26,19 +33,16 @@ LABEL org.opencontainers.image.title="rclone" \
       evergreen.image.category="cloud-storage" \
       evergreen.image.status="functional" \
       evergreen.constraint.nonroot="true" \
-      evergreen.constraint.base="scratch" \
-      evergreen.hft.signal-handling="native" \
-      evergreen.hft.shutdown-timeout="5s" \
-      evergreen.hft.init-system="none" \
-      evergreen.hft.startup-timeout="10000ms"
-
-LABEL evergreen.base.image="scratch"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
-LABEL evergreen.security.cap-drop="ALL"
-LABEL evergreen.security.no-new-privileges="true"
-LABEL evergreen.security.read-only-rootfs="true"
-LABEL evergreen.security.seccomp="runtime-default"
-
-EXPOSE 9101
+      evergreen.constraint.base="scratch"
+LABEL evergreen.base.image="scratch" \
+      evergreen.build.type="musl-source" \
+      evergreen.metrics.native="ztunnel" \
+      evergreen.health.type="exec" \
+      evergreen.security.cap-drop="ALL" \
+      evergreen.security.no-new-privileges="true" \
+      evergreen.security.read-only-rootfs="true" \
+      evergreen.security.seccomp="runtime-default"
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

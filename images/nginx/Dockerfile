@@ -1,41 +1,51 @@
-
 ARG APP_UID=65532
 ARG APP_GID=65532
 ARG SHIM_VERSION=v0.3.0
 
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
+FROM debian:bookworm-slim AS builder
+
 ARG VERSION=1.27.1
 ARG TARGETARCH
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://nginx.org/download/nginx-${VERSION}.tar.gz" -o /nginx.tar.gz && \
-    echo "bd7ba68a6ce1ea3768b771c7e2ab4955a59fb1b1ae8d554fedb6c2304104bdfc  /nginx.tar.gz" | sha256sum -c && \
-    tar -xzf /nginx.tar.gz -C / && rm -f /nginx.tar.gz && chmod +x /nginx 2>/dev/null && \
-    mkdir -p /app /var/log/nginx /var/cache/nginx || \
-    { echo "ERROR: nginx binary not available - download failed" >&2; exit 1; }
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc make libpcre2-dev zlib1g-dev linux-headers ca-certificates wget && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /src
+RUN wget -q "https://nginx.org/download/nginx-${VERSION}.tar.gz" -O nginx.tar.gz && \
+    tar -xzf nginx.tar.gz && rm nginx.tar.gz
+
+RUN cd nginx-${VERSION} && \
+    ./configure \
+        --prefix=/etc/nginx \
+        --sbin-path=/nginx \
+        --without-http_rewrite_module \
+        --without-http_gzip_module \
+        --with-cc-opt="-static" \
+        --with-ld-opt="-static" && \
+    make -j$(nproc) && \
+    make install
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=downloader /nginx /nginx
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=downloader /app /app
-COPY --from=downloader /var/log/nginx /var/log/nginx
-COPY --from=downloader /var/cache/nginx /var/cache/nginx
 COPY --from=shim /shim /shim
-USER 65532:65532
+COPY --from=builder /nginx /nginx
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER ${APP_UID}:${APP_GID}
 ENV SHIM_METRICS_ENABLED="true"
-WORKDIR /app
+WORKDIR /
 EXPOSE 80 443 9101
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
 ENTRYPOINT ["/shim", "run"]
-CMD ["-c", "/nginx", "--"]
 LABEL org.opencontainers.image.title="nginx" \
       org.opencontainers.image.description="Nginx - HTTP and reverse proxy server" \
       org.opencontainers.image.version="1.27.1" \
       org.opencontainers.image.vendor="Nginx Inc" \
+      org.opencontainers.image.source="https://github.com/nginx/nginx" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \
       evergreen.constraint.scratch="true" \
@@ -51,18 +61,18 @@ LABEL org.opencontainers.image.title="nginx" \
       evergreen.hft.connection-drain="true" \
       evergreen.hft.xdp-capable="true" \
       evergreen.hft.xdp-mode="generic" \
-      evergreen.hft.xdp-notes="Requires custom nginx module or eBPF loader" \
-            org.opencontainers.image.source="https://github.com/nginx/nginx"
+      evergreen.hft.xdp-notes="Requires custom nginx module or eBPF loader"
 
-LABEL evergreen.base.image="scratch"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="http"
-LABEL evergreen.health.endpoint="/livez"
-LABEL evergreen.health.listen="0.0.0.0:9101"
-LABEL evergreen.security.cap-drop="ALL"
-LABEL evergreen.security.no-new-privileges="true"
-LABEL evergreen.security.read-only-rootfs="true"
-LABEL evergreen.security.seccomp="runtime-default"
+LABEL evergreen.base.image="scratch" \
+      evergreen.build.type="musl-source" \
+      evergreen.metrics.native="ztunnel" \
+      evergreen.health.type="http" \
+      evergreen.health.endpoint="/livez" \
+      evergreen.health.listen="0.0.0.0:9101" \
+      evergreen.security.cap-drop="ALL" \
+      evergreen.security.no-new-privileges="true" \
+      evergreen.security.read-only-rootfs="true" \
+      evergreen.security.seccomp="runtime-default"
 
 LABEL prometheus.io/scrape="true" \
       prometheus.io/port="9101" \

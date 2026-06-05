@@ -1,66 +1,48 @@
-
 ARG TARGETARCH
-ARG VERSION=v3.7.1
 ARG APP_UID=65532
 ARG APP_GID=65532
 ARG SHIM_VERSION=v0.3.0
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
+
+FROM golang:1.24-bookworm AS builder
 ARG TARGETARCH
 ARG VERSION=v3.7.1
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/traefik/traefik/releases/download/${VERSION}/traefik_${VERSION}_linux_${TARGETARCH}.tar.gz" -o /traefik.tar.gz && \
-    tar -xzf /traefik.tar.gz -C / && rm -f /traefik.tar.gz && chmod +x /traefik 2>/dev/null || \
-    { echo "ERROR: traefik binary not available - download failed" >&2; exit 1; }
-
-
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
+WORKDIR /src
+RUN git clone --depth 1 --branch "${VERSION}" https://github.com/traefik/traefik.git . || \
+    git clone --depth 1 https://github.com/traefik/traefik.git .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
+    go build -ldflags='-s -w -X main.version=${VERSION}' \
+    -o /binary ./cmd/traefik
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
-
 FROM scratch
-ARG VERSION=v3.7.1
-COPY --from=downloader /traefik /traefik
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=shim /shim /shim
-USER 65532:65532
+COPY --from=builder /binary /traefik
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER ${APP_UID}:${APP_GID}
 ENV SHIM_METRICS_ENABLED="true"
-WORKDIR /app
+WORKDIR /
 EXPOSE 80 443 8080 9101
-
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
-
 ENTRYPOINT ["/shim", "run"]
-CMD ["-c", "/traefik", "--"]
 LABEL org.opencontainers.image.title="traefik" \
       org.opencontainers.image.description="Traefik - modern HTTP reverse proxy and load balancer" \
       org.opencontainers.image.version="v3.7.1" \
       org.opencontainers.image.vendor="Traefik Labs" \
+      org.opencontainers.image.source="https://github.com/traefik/traefik" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \
-      evergreen.constraint.scratch="true" \
-      evergreen.hft.signal-handling="native" \
-      evergreen.hft.shutdown-timeout="3s" \
-      evergreen.hft.init-system="none" \
-      evergreen.hft.startup-timeout="3000ms" \
-      evergreen.hft.cpu-pins="0-1" \
-      evergreen.hft.cpu-pins-mode="exclusive" \
-      evergreen.hft.deploy-strategy="hft-rolling" \
-      evergreen.hft.pre-stop-hook="true" \
-      evergreen.hft.pre-stop-delay="5s" \
-      evergreen.hft.connection-drain="true" \
-      evergreen.hft.xdp-capable="false" \
-      evergreen.hft.xdp-notes="Not supported; use envoy for XDP workloads" \
-            org.opencontainers.image.source="https://github.com/traefik/traefik"
-
-LABEL evergreen.base.image="scratch"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="http"
-LABEL evergreen.health.endpoint="/livez"
-LABEL evergreen.health.listen="0.0.0.0:9101"
-LABEL evergreen.security.cap-drop="ALL"
-LABEL evergreen.security.no-new-privileges="true"
-LABEL evergreen.security.read-only-rootfs="true"
-LABEL evergreen.security.seccomp="runtime-default"
-
+      evergreen.constraint.scratch="true"
+LABEL evergreen.base.image="scratch" \
+      evergreen.build.type="musl-source" \
+      evergreen.metrics.native="ztunnel" \
+      evergreen.health.type="http" \
+      evergreen.health.endpoint="/livez" \
+      evergreen.health.listen="0.0.0.0:9101" \
+      evergreen.security.cap-drop="ALL" \
+      evergreen.security.no-new-privileges="true" \
+      evergreen.security.read-only-rootfs="true" \
+      evergreen.security.seccomp="runtime-default"
 LABEL prometheus.io/scrape="true" \
       prometheus.io/port="9101" \
       prometheus.io/path="/metrics"

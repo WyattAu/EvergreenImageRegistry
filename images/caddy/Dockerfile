@@ -1,41 +1,43 @@
-
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-ARG VERSION=2.11.3
-ARG TARGETARCH
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/caddyserver/caddy/releases/download/v${VERSION}/caddy_${VERSION}_linux_${TARGETARCH}.tar.gz" -o /caddy.tar.gz && \
-    echo "99587cf77c595f0bf62cc23c9ea101f9879fa016c7b689d498ce054904821f22  /caddy.tar.gz" | sha256sum -c && \
-    tar -xzf /caddy.tar.gz -C / && rm -f /caddy.tar.gz && chmod +x /caddy 2>/dev/null || \
-    { echo "ERROR: caddy binary not available - download failed" >&2; exit 1; }
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-RUN mkdir -p /app /var/log/caddy /var/cache/caddy 2>/dev/null || true
+ARG SHIM_VERSION=v0.3.0
 
-FROM ghcr.io/wyattau/evergreenshim/health-shim:v0.1.0 AS shim
+FROM golang:1.24-bookworm AS builder
+
+ARG TARGETARCH
+ARG VERSION=2.11.3
+
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /src
+RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/caddyserver/caddy.git . || \
+    git clone --depth 1 https://github.com/caddyserver/caddy.git .
+
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
+    go build -ldflags='-s -w -X main.version=${VERSION}' \
+    -o /binary ./cmd/caddy
+
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=downloader /caddy /caddy
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
-COPY --from=builder /var/log/caddy /var/log/caddy
-COPY --from=builder /var/cache/caddy /var/cache/caddy
 COPY --from=shim /shim /shim
-USER 65532:65532
+COPY --from=builder /binary /caddy
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER ${APP_UID}:${APP_GID}
 ENV SHIM_METRICS_ENABLED="true"
-WORKDIR /app
+WORKDIR /
 EXPOSE 80 443 2019 9101
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:2019"]
 
 ENTRYPOINT ["/shim", "run"]
-CMD ["-c", "/caddy", "--"]
 LABEL org.opencontainers.image.title="caddy" \
       org.opencontainers.image.description="Caddy - powerful enterprise-ready open source web server" \
       org.opencontainers.image.version="2.11.3" \
       org.opencontainers.image.vendor="Caddy" \
+      org.opencontainers.image.source="https://github.com/caddyserver/caddy" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \
       evergreen.constraint.scratch="true" \
@@ -50,18 +52,18 @@ LABEL org.opencontainers.image.title="caddy" \
       evergreen.hft.pre-stop-delay="5s" \
       evergreen.hft.connection-drain="true" \
       evergreen.hft.xdp-capable="false" \
-      evergreen.hft.xdp-notes="Not supported" \
-            org.opencontainers.image.source="https://github.com/caddyserver/caddy"
+      evergreen.hft.xdp-notes="Not supported"
 
-LABEL evergreen.base.image="scratch"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="http"
-LABEL evergreen.health.endpoint="/livez"
-LABEL evergreen.health.listen="0.0.0.0:9101"
-LABEL evergreen.security.cap-drop="ALL"
-LABEL evergreen.security.no-new-privileges="true"
-LABEL evergreen.security.read-only-rootfs="true"
-LABEL evergreen.security.seccomp="runtime-default"
+LABEL evergreen.base.image="scratch" \
+      evergreen.build.type="musl-source" \
+      evergreen.metrics.native="ztunnel" \
+      evergreen.health.type="http" \
+      evergreen.health.endpoint="/livez" \
+      evergreen.health.listen="0.0.0.0:9101" \
+      evergreen.security.cap-drop="ALL" \
+      evergreen.security.no-new-privileges="true" \
+      evergreen.security.read-only-rootfs="true" \
+      evergreen.security.seccomp="runtime-default"
 
 LABEL prometheus.io/scrape="true" \
       prometheus.io/port="9101" \

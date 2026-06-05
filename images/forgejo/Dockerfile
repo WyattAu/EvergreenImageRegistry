@@ -29,7 +29,7 @@ WORKDIR /app
 ENV FORGEJO_WORK_DIR=/data
 ENV GITEA_WORK_DIR=/data
 COPY --from=downloader /app/forgejo /usr/local/bin/forgejo
-EXPOSE 3000 22
+EXPOSE 3000 22 9101
 
 CMD ["-c", "/usr/local/bin/forgejo", "--", "wget -qO- http://localhost:3000/ || exit 1"]
 

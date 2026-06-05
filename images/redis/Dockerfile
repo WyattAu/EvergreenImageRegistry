@@ -2,11 +2,12 @@
 # EVERGREEN HARDENED REDIS
 # Wolfi-based with health-shim as PID 1
 # =============================================================================
-
 ARG VERSION=8.6
 ARG TARGETARCH
+ARG SHIM_VERSION=v0.3.0
 
 FROM redis:${VERSION} AS upstream
+
 
 FROM ghcr.io/wyattau/evergreenshim/cache-shim:${SHIM_VERSION} AS shim
 

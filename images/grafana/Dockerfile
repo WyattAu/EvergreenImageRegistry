@@ -8,6 +8,7 @@ ARG VERSION=12.2.8-security-04
 ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
+ARG SHIM_VERSION=v0.3.0
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH
@@ -24,7 +25,7 @@ RUN mkdir -p /opt && \
     mkdir -p /opt/grafana-${VERSION}/bin 2>/dev/null || true ; \
     test -s /opt/grafana-${VERSION}/bin/grafana-server || { echo '#!/bin/sh' > /opt/grafana-${VERSION}/bin/grafana-server && echo 'echo "grafana v'"${VERSION}"' binary not available - download failed" >&2 exit 1"' >> /opt/grafana-${VERSION}/bin/grafana-server { echo "Binary not available - download failed" >&2; exit 1; } 2>/dev/null ; \
     ln -sf /opt/grafana-${VERSION} /opt/grafana 2>/dev/null || true
-FROM ghcr.io/wyattau/evergreenshim/health-shim:v0.1.0 AS shim
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 ARG VERSION=12.2.8-security-04
 

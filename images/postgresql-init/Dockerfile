@@ -26,21 +26,19 @@ COPY --from=builder --chown=65532:65532 /app /app
 COPY --from=builder --chown=65532:65532 /var/log/postgresql-init /var/log/postgresql-init
 COPY --from=builder --chown=65532:65532 /var/cache/postgresql-init /var/cache/postgresql-init
 WORKDIR /app
-COPY <<'SCRIPT' /app/init.sh
-#!/bin/sh
-set -eu
-: "${PGHOST:?PGHOST is required}"
-: "${PGDATABASE:?PGDATABASE is required}"
-if [ -d "/docker-entrypoint-initdb.d" ]; then
-    for f in /docker-entrypoint-initdb.d/*; do
-        case "$f" in
-            *.sql)    echo "Running $f"; psql -v ON_ERROR_STOP=1 --username "$PGUSER" -f "$f" ;
-            *.sh)     echo "Running $f"; . "$f" ;
-            *)        echo "Ignoring $f" ;
-        esac
-    done
-fi
-SCRIPT
+RUN echo '#!/bin/sh' > /app/init.sh && \
+    echo 'set -eu' >> /app/init.sh && \
+    echo ': "${PGHOST:?PGHOST is required}"' >> /app/init.sh && \
+    echo ': "${PGDATABASE:?PGDATABASE is required}"' >> /app/init.sh && \
+    echo 'if [ -d "/docker-entrypoint-initdb.d" ]; then' >> /app/init.sh && \
+    echo '    for f in /docker-entrypoint-initdb.d/*; do' >> /app/init.sh && \
+    echo '        case "$f" in' >> /app/init.sh && \
+    echo '            *.sql)    echo "Running $f"; psql -v ON_ERROR_STOP=1 --username "$PGUSER" -f "$f" ;;' >> /app/init.sh && \
+    echo '            *.sh)     echo "Running $f"; . "$f" ;;' >> /app/init.sh && \
+    echo '            *)        echo "Ignoring $f" ;;' >> /app/init.sh && \
+    echo '        esac' >> /app/init.sh && \
+    echo '    done' >> /app/init.sh && \
+    echo 'fi' >> /app/init.sh
 RUN chmod +x /app/init.sh && chown 65532:65532 /app/init.sh
 USER 65532:65532
 

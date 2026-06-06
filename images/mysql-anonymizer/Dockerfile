@@ -14,41 +14,36 @@ FROM python@sha256:46cb7cc2877e60fbd5e21a9ae6115c30ace7a077b9f8772da879e4590c18c
 RUN apt-get update && apt-get install -y --no-install-recommends \
         pkg-config libmariadb-dev && rm -rf /var/lib/apt/lists/* || true && \
     pip install --no-cache-dir --prefix=/install \
-    mysqlclient 2>/dev/null || true ; \
-    find /install -type f -name "*.pyc" -delete 2>/dev/null ; \
-    find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null  && { echo "Binary not available - download failed" >&2; exit 1; }
+    mysqlclient 2>/dev/null || true && \
+    find /install -type f -name "*.pyc" -delete 2>/dev/null && \
+    find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache curl ca-certificates
 COPY --from=builder /install /usr/local
-COPY <<'SCRIPT' /app/anonymize.py
-#!/usr/bin/env python3
-import argparse
-import os
-import subprocess
-import sys
-
-def anonymize_dump(input_file, output_file, rules_file=None):
-    cmd = ["sed"]
-RUN if rules_file and os.path.exists(rules_file): \
-    with open(rules_file) as f:
-            for line in f:
-                line = line.strip()
-RUN if line and not line.startswith("#"): \
-    cmd.extend(["-e", line])
-    cmd.extend(["-e", "s/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}/anonymized@example.com/g"])
-    with open(input_file) as inp, open(output_file, "w") as out:
-        subprocess.run(cmd, stdin=inp, stdout=out, check=True)
-    print(f"Anonymized: {input_file} -> {output_file}")
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="MySQL Data Anonymizer")
-    parser.add_argument("--input", required=True, help="Input SQL dump file")
-    parser.add_argument("--output", required=True, help="Output anonymized file")
-    parser.add_argument("--rules", help="Custom sed rules file")
-    args = parser.parse_args()
-    anonymize_dump(args.input, args.output, args.rules)
-SCRIPT
+RUN echo '#!/usr/bin/env python3' > /app/anonymize.py && \
+    echo 'import argparse, os, subprocess, sys' >> /app/anonymize.py && \
+    echo '' >> /app/anonymize.py && \
+    echo 'def anonymize_dump(input_file, output_file, rules_file=None):' >> /app/anonymize.py && \
+    echo '    cmd = ["sed"]' >> /app/anonymize.py && \
+    echo '    if rules_file and os.path.exists(rules_file):' >> /app/anonymize.py && \
+    echo '        with open(rules_file) as f:' >> /app/anonymize.py && \
+    echo '            for line in f:' >> /app/anonymize.py && \
+    echo '                line = line.strip()' >> /app/anonymize.py && \
+    echo '                if line and not line.startswith("#"):' >> /app/anonymize.py && \
+    echo '                    cmd.extend(["-e", line])' >> /app/anonymize.py && \
+    echo '    cmd.extend(["-e", "s/[a-zA-Z0-9._%%+-]+@[a-zA-Z0-9.-]+\\\\.[a-zA-Z]{2,}/anonymized@example.com/g"])' >> /app/anonymize.py && \
+    echo '    with open(input_file) as inp, open(output_file, "w") as out:' >> /app/anonymize.py && \
+    echo '        subprocess.run(cmd, stdin=inp, stdout=out, check=True)' >> /app/anonymize.py && \
+    echo '    print(f"Anonymized: {input_file} -> {output_file}")' >> /app/anonymize.py && \
+    echo '' >> /app/anonymize.py && \
+    echo 'if __name__ == "__main__":' >> /app/anonymize.py && \
+    echo '    parser = argparse.ArgumentParser(description="MySQL Data Anonymizer")' >> /app/anonymize.py && \
+    echo '    parser.add_argument("--input", required=True, help="Input SQL dump file")' >> /app/anonymize.py && \
+    echo '    parser.add_argument("--output", required=True, help="Output anonymized file")' >> /app/anonymize.py && \
+    echo '    parser.add_argument("--rules", help="Custom sed rules file")' >> /app/anonymize.py && \
+    echo '    args = parser.parse_args()' >> /app/anonymize.py && \
+    echo '    anonymize_dump(args.input, args.output, args.rules)' >> /app/anonymize.py
 RUN adduser -u 65532 -s /bin/false anon 2>/dev/null || true ; \
     mkdir -p /app /var/log/mysql-anonymizer /var/cache/mysql-anonymizer 2>/dev/null || true ; \
     chown -R 65532:65532 /app /var/log/mysql-anonymizer /var/cache/mysql-anonymizer 2>/dev/null || true ; \

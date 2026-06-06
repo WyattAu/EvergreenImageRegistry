@@ -27,19 +27,17 @@ COPY --from=builder --chown=65532:65532 /var/log/mysql-backup /var/log/mysql-bac
 COPY --from=builder --chown=65532:65532 /var/cache/mysql-backup /var/cache/mysql-backup
 USER 65532:65532
 WORKDIR /app
-COPY <<'SCRIPT' /app/backup.sh
-#!/bin/sh
-set -eu
-: "${MYSQL_HOST:?MYSQL_HOST is required}"
-: "${MYSQL_USER:?MYSQL_USER is required}"
-: "${MYSQL_PASSWORD:?MYSQL_PASSWORD is required}"
-TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
-OUTPUT="/backups/${MYSQL_DATABASE:-all}_${TIMESTAMP}.sql.xz"
-mysqldump --host="$MYSQL_HOST" --user="$MYSQL_USER" --password="$MYSQL_PASSWORD" \
-    --single-transaction --routines --triggers ${MYSQL_DATABASE:+"$MYSQL_DATABASE"} \
-    ${MYSQL_DATABASE:---all-databases} | xz -9 > "$OUTPUT"
-echo "Backup complete: $OUTPUT"
-SCRIPT
+RUN echo '#!/bin/sh' > /app/backup.sh && \
+    echo 'set -eu' >> /app/backup.sh && \
+    echo ': "${MYSQL_HOST:?MYSQL_HOST is required}"' >> /app/backup.sh && \
+    echo ': "${MYSQL_USER:?MYSQL_USER is required}"' >> /app/backup.sh && \
+    echo ': "${MYSQL_PASSWORD:?MYSQL_PASSWORD is required}"' >> /app/backup.sh && \
+    echo 'TIMESTAMP="$(date +%Y%m%d_%H%M%S)"' >> /app/backup.sh && \
+    echo 'OUTPUT="/backups/${MYSQL_DATABASE:-all}_${TIMESTAMP}.sql.xz"' >> /app/backup.sh && \
+    echo 'mysqldump --host="$MYSQL_HOST" --user="$MYSQL_USER" --password="$MYSQL_PASSWORD" \' >> /app/backup.sh && \
+    echo '    --single-transaction --routines --triggers ${MYSQL_DATABASE:+"$MYSQL_DATABASE"} \' >> /app/backup.sh && \
+    echo '    ${MYSQL_DATABASE:---all-databases} | xz -9 > "$OUTPUT"' >> /app/backup.sh && \
+    echo 'echo "Backup complete: $OUTPUT"' >> /app/backup.sh
 RUN chmod +x /app/backup.sh 2>/dev/null && chown 65532:65532 /app/backup.sh 2>/dev/null
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1

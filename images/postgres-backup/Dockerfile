@@ -29,23 +29,21 @@ COPY --from=builder --chown=65532:65532 /backups /backups
 COPY --from=builder --chown=65532:65532 /var/log/postgres-backup /var/log/postgres-backup
 COPY --from=builder --chown=65532:65532 /var/cache/postgres-backup /var/cache/postgres-backup
 WORKDIR /app
-COPY <<'SCRIPT' /app/backup.sh
-#!/bin/sh
-set -eu
-: "${PGHOST:?PGHOST is required}"
-: "${PGUSER:?PGUSER is required}"
-TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
-DB="${PGDATABASE:-all}"
-OUTPUT="/backups/${DB}_${TIMESTAMP}.dump.xz"
-if [ "$DB" = "all" ]; then
-    pg_dumpall --host="$PGHOST" --user="$PGUSER" | xz -9 > "$OUTPUT"
-else
-    pg_dump --host="$PGHOST" --user="$PGUSER" --format=directory --jobs=4 --file="/backups/${DB}_${TIMESTAMP}" "$DB" && \
-    tar -cf - "/backups/${DB}_${TIMESTAMP}" | xz -9 > "$OUTPUT" && \
-    rm -rf "/backups/${DB}_${TIMESTAMP}"
-fi
-echo "Backup complete: $OUTPUT"
-SCRIPT
+RUN echo '#!/bin/sh' > /app/backup.sh && \
+    echo 'set -eu' >> /app/backup.sh && \
+    echo ': "${PGHOST:?PGHOST is required}"' >> /app/backup.sh && \
+    echo ': "${PGUSER:?PGUSER is required}"' >> /app/backup.sh && \
+    echo 'TIMESTAMP="$(date +%Y%m%d_%H%M%S)"' >> /app/backup.sh && \
+    echo 'DB="${PGDATABASE:-all}"' >> /app/backup.sh && \
+    echo 'OUTPUT="/backups/${DB}_${TIMESTAMP}.dump.xz"' >> /app/backup.sh && \
+    echo 'if [ "$DB" = "all" ]; then' >> /app/backup.sh && \
+    echo '    pg_dumpall --host="$PGHOST" --user="$PGUSER" | xz -9 > "$OUTPUT"' >> /app/backup.sh && \
+    echo 'else' >> /app/backup.sh && \
+    echo '    pg_dump --host="$PGHOST" --user="$PGUSER" --format=directory --jobs=4 --file="/backups/${DB}_${TIMESTAMP}" "$DB" && \' >> /app/backup.sh && \
+    echo '    tar -cf - "/backups/${DB}_${TIMESTAMP}" | xz -9 > "$OUTPUT" && \' >> /app/backup.sh && \
+    echo '    rm -rf "/backups/${DB}_${TIMESTAMP}"' >> /app/backup.sh && \
+    echo 'fi' >> /app/backup.sh && \
+    echo 'echo "Backup complete: $OUTPUT"' >> /app/backup.sh
 RUN chmod +x /app/backup.sh && chown 65532:65532 /app/backup.sh
 USER 65532:65532
 ENV SHIM_BACKUP_ENABLED="false" \

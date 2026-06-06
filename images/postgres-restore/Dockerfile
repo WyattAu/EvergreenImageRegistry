@@ -29,35 +29,34 @@ COPY --from=builder --chown=65532:65532 /backups /backups
 COPY --from=builder --chown=65532:65532 /var/log/postgres-restore /var/log/postgres-restore
 COPY --from=builder --chown=65532:65532 /var/cache/postgres-restore /var/cache/postgres-restore
 WORKDIR /app
-COPY <<'SCRIPT' /app/restore.sh
-#!/bin/sh
-set -eu
-: "${PGHOST:?PGHOST is required}"
-: "${PGUSER:?PGUSER is required}"
-: "${PGDATABASE:?PGDATABASE is required}"
-: "${BACKUP_FILE:?BACKUP_FILE is required}"
-if [ ! -f "$BACKUP_FILE" ]; then
-RUN echo "Backup file not found: $BACKUP_FILE" \
-    exit 1
-fi
-case "$BACKUP_FILE" in
-    *.dump.xz)
-        TEMP_DIR="$(mktemp -d)"
-        xzcat "$BACKUP_FILE" | tar -xf - -C "$TEMP_DIR"
-        pg_restore --host="$PGHOST" --user="$PGUSER" --dbname="$PGDATABASE" --clean --if-exists --jobs=4 "$TEMP_DIR"/*
-RUN rm -rf "$TEMP_DIR" \
-
-    *.xz)
-        xzcat "$BACKUP_FILE" | psql --host="$PGHOST" --user="$PGUSER" --dbname="$PGDATABASE"
-
-    *.sql)
-        psql --host="$PGHOST" --user="$PGUSER" --dbname="$PGDATABASE" < "$BACKUP_FILE"
-
-    *)
-RUN echo "Unsupported format"; exit 1 ; \
-    esac
-echo "Restore complete from: $BACKUP_FILE" \
-    SCRIPT
+RUN echo '#!/bin/sh' > /app/restore.sh && \
+    echo 'set -eu' >> /app/restore.sh && \
+    echo ': "${PGHOST:?PGHOST is required}"' >> /app/restore.sh && \
+    echo ': "${PGUSER:?PGUSER is required}"' >> /app/restore.sh && \
+    echo ': "${PGDATABASE:?PGDATABASE is required}"' >> /app/restore.sh && \
+    echo ': "${BACKUP_FILE:?BACKUP_FILE is required}"' >> /app/restore.sh && \
+    echo 'if [ ! -f "$BACKUP_FILE" ]; then' >> /app/restore.sh && \
+    echo '    echo "Backup file not found: $BACKUP_FILE"' >> /app/restore.sh && \
+    echo '    exit 1' >> /app/restore.sh && \
+    echo 'fi' >> /app/restore.sh && \
+    echo 'case "$BACKUP_FILE" in' >> /app/restore.sh && \
+    echo '    *.dump.xz)' >> /app/restore.sh && \
+    echo '        TEMP_DIR="$(mktemp -d)"' >> /app/restore.sh && \
+    echo '        xzcat "$BACKUP_FILE" | tar -xf - -C "$TEMP_DIR"' >> /app/restore.sh && \
+    echo '        pg_restore --host="$PGHOST" --user="$PGUSER" --dbname="$PGDATABASE" --clean --if-exists --jobs=4 "$TEMP_DIR"/*' >> /app/restore.sh && \
+    echo '        rm -rf "$TEMP_DIR"' >> /app/restore.sh && \
+    echo '        ;;' >> /app/restore.sh && \
+    echo '    *.xz)' >> /app/restore.sh && \
+    echo '        xzcat "$BACKUP_FILE" | psql --host="$PGHOST" --user="$PGUSER" --dbname="$PGDATABASE"' >> /app/restore.sh && \
+    echo '        ;;' >> /app/restore.sh && \
+    echo '    *.sql)' >> /app/restore.sh && \
+    echo '        psql --host="$PGHOST" --user="$PGUSER" --dbname="$PGDATABASE" < "$BACKUP_FILE"' >> /app/restore.sh && \
+    echo '        ;;' >> /app/restore.sh && \
+    echo '    *)' >> /app/restore.sh && \
+    echo '        echo "Unsupported format"; exit 1' >> /app/restore.sh && \
+    echo '        ;;' >> /app/restore.sh && \
+    echo 'esac' >> /app/restore.sh && \
+    echo 'echo "Restore complete from: $BACKUP_FILE"' >> /app/restore.sh
 RUN chmod +x /app/restore.sh && chown 65532:65532 /app/restore.sh
 USER 65532:65532
 ENV SHIM_BACKUP_ENABLED="false" \

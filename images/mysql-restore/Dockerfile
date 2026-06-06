@@ -27,25 +27,23 @@ COPY --from=builder --chown=65532:65532 /var/log/mysql-restore /var/log/mysql-re
 COPY --from=builder --chown=65532:65532 /var/cache/mysql-restore /var/cache/mysql-restore
 USER 65532:65532
 WORKDIR /app
-COPY <<'SCRIPT' /app/restore.sh
-#!/bin/sh
-set -eu
-: "${MYSQL_HOST:?MYSQL_HOST is required}"
-: "${MYSQL_USER:?MYSQL_USER is required}"
-: "${MYSQL_PASSWORD:?MYSQL_PASSWORD is required}"
-: "${BACKUP_FILE:?BACKUP_FILE is required}"
-if [ ! -f "$BACKUP_FILE" ]; then
-RUN echo "Backup file not found: $BACKUP_FILE" \
-    exit 1
-fi
-case "$BACKUP_FILE" in
-    *.xz) xzcat "$BACKUP_FILE" ;
-    *.gz) zcat "$BACKUP_FILE" ;
-    *.sql) cat "$BACKUP_FILE" ;
-    *)     echo "Unsupported format"; exit 1 ; \
-    esac | mysql --host="$MYSQL_HOST" --user="$MYSQL_USER" --password="$MYSQL_PASSWORD" \
-    echo "Restore complete from: $BACKUP_FILE" \
-    SCRIPT
+RUN echo '#!/bin/sh' > /app/restore.sh && \
+    echo 'set -eu' >> /app/restore.sh && \
+    echo ': "${MYSQL_HOST:?MYSQL_HOST is required}"' >> /app/restore.sh && \
+    echo ': "${MYSQL_USER:?MYSQL_USER is required}"' >> /app/restore.sh && \
+    echo ': "${MYSQL_PASSWORD:?MYSQL_PASSWORD is required}"' >> /app/restore.sh && \
+    echo ': "${BACKUP_FILE:?BACKUP_FILE is required}"' >> /app/restore.sh && \
+    echo 'if [ ! -f "$BACKUP_FILE" ]; then' >> /app/restore.sh && \
+    echo '    echo "Backup file not found: $BACKUP_FILE"' >> /app/restore.sh && \
+    echo '    exit 1' >> /app/restore.sh && \
+    echo 'fi' >> /app/restore.sh && \
+    echo 'case "$BACKUP_FILE" in' >> /app/restore.sh && \
+    echo '    *.xz) xzcat "$BACKUP_FILE" ;;' >> /app/restore.sh && \
+    echo '    *.gz) zcat "$BACKUP_FILE" ;;' >> /app/restore.sh && \
+    echo '    *.sql) cat "$BACKUP_FILE" ;;' >> /app/restore.sh && \
+    echo '    *)     echo "Unsupported format"; exit 1 ;;' >> /app/restore.sh && \
+    echo 'esac | mysql --host="$MYSQL_HOST" --user="$MYSQL_USER" --password="$MYSQL_PASSWORD"' >> /app/restore.sh && \
+    echo 'echo "Restore complete from: $BACKUP_FILE"' >> /app/restore.sh
 RUN chmod +x /app/restore.sh 2>/dev/null && chown 65532:65532 /app/restore.sh 2>/dev/null
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1

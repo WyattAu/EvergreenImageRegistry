@@ -15,7 +15,7 @@ RUN chmod +x /usr/local/bin/shim
 
 
 ARG VERSION=3.0.0.5
-RUN apk add --no-cache ca-certificates wget \
+RUN apk add --no-cache ca-certificates wget && \
     adduser -u 65532 -s /bin/false cmak 2>/dev/null || true && \
     mkdir -p /opt/cmak/logs /var/log/cmak /var/cache/cmak 2>/dev/null || true
 COPY --from=upstream /opt/cmak /opt/cmak

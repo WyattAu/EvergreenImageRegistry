@@ -6,7 +6,6 @@ ARG SHIM_VERSION=v0.3.0
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-COPY --from=shim /shim /shim
 
 ARG TARGETARCH
 ARG VERSION=2.12.6
@@ -18,6 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     test -f /tmp/argocd
 
 FROM scratch
+COPY --from=shim /shim /shim
 COPY --from=downloader /tmp/argocd /usr/local/bin/argocd
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 

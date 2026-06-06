@@ -1,6 +1,6 @@
 # =============================================================================
 # EVERGREEN HARDENED MEMCACHED
-# Musl static build from source - scratch final stage
+# Static build from source - scratch final stage
 # =============================================================================
 ARG VERSION=1.6.32
 ARG TARGETARCH
@@ -8,10 +8,12 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 ARG SHIM_VERSION=v0.3.0
 
-FROM alpine:3.20 AS builder
+FROM debian:bookworm-slim AS builder
 ARG VERSION
 ARG TARGETARCH
-RUN apk add --no-cache build-base linux-headers ca-certificates wget
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential linux-headers ca-certificates wget && \
+    rm -rf /var/lib/apt/lists/*
 WORKDIR /src
 RUN wget -q "https://memcached.org/files/memcached-${VERSION}.tar.gz" -O memcached.tar.gz && \
     tar -xzf memcached.tar.gz && rm memcached.tar.gz
@@ -43,7 +45,7 @@ HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
 
 ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="memcached" \
-      org.opencontainers.image.description="Memcached - high-performance distributed memory caching system (musl static build)" \
+      org.opencontainers.image.description="Memcached - high-performance distributed memory caching system (static build)" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Memcached" \
       org.opencontainers.image.source="https://github.com/memcached/memcached" \

@@ -1,15 +1,17 @@
 # =============================================================================
 # EVERGREEN HARDENED REDIS
-# Musl static build from source - scratch final stage
+# Static build from source - scratch final stage
 # =============================================================================
 ARG VERSION=8.0.2
 ARG TARGETARCH
 ARG SHIM_VERSION=v0.3.0
 
-FROM alpine:3.20 AS builder
+FROM debian:bookworm-slim AS builder
 ARG VERSION
 ARG TARGETARCH
-RUN apk add --no-cache build-base linux-headers ca-certificates wget
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential linux-headers ca-certificates wget && \
+    rm -rf /var/lib/apt/lists/*
 WORKDIR /src
 RUN wget -q "https://download.redis.io/releases/redis-${VERSION}.tar.gz" -O redis.tar.gz && \
     tar -xzf redis.tar.gz && rm redis.tar.gz
@@ -46,7 +48,7 @@ HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
 ENTRYPOINT ["/shim", "run"]
 CMD ["-c", "redis-server", "--", "--bind", "0.0.0.0", "--protected-mode", "no"]
 LABEL org.opencontainers.image.title="redis" \
-      org.opencontainers.image.description="Redis - in-memory data structure store and cache (musl static build)" \
+      org.opencontainers.image.description="Redis - in-memory data structure store and cache (static build)" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Redis" \
       org.opencontainers.image.source="https://github.com/redis/redis" \

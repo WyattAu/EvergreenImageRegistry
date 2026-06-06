@@ -19,9 +19,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     ocserv gnutls-bin && \
     rm -rf /var/lib/apt/lists/* || true && \
     mkdir -p /app /var/log/ocserv /run/ocserv ; \
-    strip --strip-all /usr/sbin/ocserv 2>/dev/null 2>/dev/null && \
-    strip --strip-all /usr/bin/occtl 2>/dev/null 2>/dev/null && \
-    strip --strip-all /usr/bin/ocpasswd 2>/dev/null 2>/dev/null
+    strip --strip-all /usr/sbin/ocserv 2>/dev/null && \
+    strip --strip-all /usr/bin/occtl 2>/dev/null && \
+    strip --strip-all /usr/bin/ocpasswd 2>/dev/null
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

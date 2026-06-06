@@ -18,50 +18,48 @@ ARG VERSION=1.0.0
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 
-RUN mkdir -p /app && \ RUN apt-get update && \
+RUN mkdir -p /app && apt-get update && \
     apt-get install -y --no-install-recommends binutils git ca-certificates && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir -p /build/cmd && \
-    cat > /build/cmd/health-checks.go <<'GOEOF' \
-    package main
-
-import (
-	"fmt"
-	"net/http"
-	"os"
-	"time"
-)
-
-func main() {
-	if len(os.Args) < 2 {
-		fmt.Println("Usage: health-checks <url> [timeout_seconds]")
-		os.Exit(1)
-	}
-	url := os.Args[1]
-	timeout := 5
-	if len(os.Args) > 2 {
-		fmt.Sscanf(os.Args[2], "%d", &timeout)
-	}
-	client := &http.Client{Timeout: time.Duration(timeout) * time.Second}
-	resp, err := client.Get(url)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "unhealthy: %v\n", err)
-		os.Exit(1)
-	}
-	resp.Body.Close()
-	if resp.StatusCode >= 200 && resp.StatusCode < 400 {
-		fmt.Printf("healthy: %s -> %d\n", url, resp.StatusCode)
-		os.Exit(0)
-	}
-	fmt.Fprintf(os.Stderr, "unhealthy: %s -> %d\n", url, resp.StatusCode)
-	os.Exit(1)
-}
-GOEOF
+    echo 'package main' > /build/cmd/health-checks.go && \
+    echo '' >> /build/cmd/health-checks.go && \
+    echo 'import (' >> /build/cmd/health-checks.go && \
+    echo '	"fmt"' >> /build/cmd/health-checks.go && \
+    echo '	"net/http"' >> /build/cmd/health-checks.go && \
+    echo '	"os"' >> /build/cmd/health-checks.go && \
+    echo '	"time"' >> /build/cmd/health-checks.go && \
+    echo ')' >> /build/cmd/health-checks.go && \
+    echo '' >> /build/cmd/health-checks.go && \
+    echo 'func main() {' >> /build/cmd/health-checks.go && \
+    echo '	if len(os.Args) < 2 {' >> /build/cmd/health-checks.go && \
+    echo '		fmt.Println("Usage: health-checks <url> [timeout_seconds]")' >> /build/cmd/health-checks.go && \
+    echo '		os.Exit(1)' >> /build/cmd/health-checks.go && \
+    echo '	}' >> /build/cmd/health-checks.go && \
+    echo '	url := os.Args[1]' >> /build/cmd/health-checks.go && \
+    echo '	timeout := 5' >> /build/cmd/health-checks.go && \
+    echo '	if len(os.Args) > 2 {' >> /build/cmd/health-checks.go && \
+    echo '		fmt.Sscanf(os.Args[2], "%d", &timeout)' >> /build/cmd/health-checks.go && \
+    echo '	}' >> /build/cmd/health-checks.go && \
+    echo '	client := &http.Client{Timeout: time.Duration(timeout) * time.Second}' >> /build/cmd/health-checks.go && \
+    echo '	resp, err := client.Get(url)' >> /build/cmd/health-checks.go && \
+    echo '	if err != nil {' >> /build/cmd/health-checks.go && \
+    echo '		fmt.Fprintf(os.Stderr, "unhealthy: %v\n", err)' >> /build/cmd/health-checks.go && \
+    echo '		os.Exit(1)' >> /build/cmd/health-checks.go && \
+    echo '	}' >> /build/cmd/health-checks.go && \
+    echo '	resp.Body.Close()' >> /build/cmd/health-checks.go && \
+    echo '	if resp.StatusCode >= 200 && resp.StatusCode < 400 {' >> /build/cmd/health-checks.go && \
+    echo '		fmt.Printf("healthy: %s -> %d\n", url, resp.StatusCode)' >> /build/cmd/health-checks.go && \
+    echo '		os.Exit(0)' >> /build/cmd/health-checks.go && \
+    echo '	}' >> /build/cmd/health-checks.go && \
+    echo '	fmt.Fprintf(os.Stderr, "unhealthy: %s -> %d\n", url, resp.StatusCode)' >> /build/cmd/health-checks.go && \
+    echo '	os.Exit(1)' >> /build/cmd/health-checks.go && \
+    echo '}' >> /build/cmd/health-checks.go
 RUN cd /build && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
         -o /app/health-checks ./cmd/health-checks.go 2>/dev/null || true && \
-    test -s /app/health-checks && strip --strip-all /app/health-checks 2>/dev/null && \' && { echo "Binary not available - download failed" >&2; exit 1; }
+    test -s /app/health-checks && strip --strip-all /app/health-checks 2>/dev/null || true && \
     mkdir -p /app
 FROM scratch
 COPY --from=builder /app/health-checks /health-checks

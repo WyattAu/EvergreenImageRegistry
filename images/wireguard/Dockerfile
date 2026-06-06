@@ -38,6 +38,7 @@ LABEL org.opencontainers.image.title="wireguard" \
       org.opencontainers.image.description="WireGuard - fast, modern, secure VPN tunnel" \
       org.opencontainers.image.version="1.0.20250521" \
       org.opencontainers.image.vendor="WireGuard" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       org.opencontainers.image.source="https://git.zx2c4.com/wireguard-go" \
       evergreen.image.tier="1" \
       evergreen.image.category="networking" \

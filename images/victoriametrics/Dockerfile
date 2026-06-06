@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     # TODO: update sha256 for new version
     echo "a9415aa4d6f666f1715ffd8b564128b3e3b468139b43b6ff1194ad3f5242ede3  /victoria-metrics.tar.gz" | sha256sum -c ; \
     [ -f /victoria-metrics.tar.gz ] && tar -xzf /victoria-metrics.tar.gz -C / && rm -f /victoria-metrics.tar.gz && chmod +x /victoria-metrics 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.142.0/victoria-metrics-linux-${TARGETARCH}-v1.142.0-cluster.tar.gz -o /victoria-metrics && { echo "Binary not available - download failed" >&2; exit 1; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.142.0/victoria-metrics-linux-${TARGETARCH}-v1.142.0-cluster.tar.gz -o /victoria-metrics \
     mkdir -p /app /var/log/victoria-metrics /var/cache/victoria-metrics 2>/dev/null || true
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim

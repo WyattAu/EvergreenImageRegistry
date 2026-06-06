@@ -29,6 +29,7 @@ LABEL org.opencontainers.image.title="traefik" \
       org.opencontainers.image.description="Traefik - modern HTTP reverse proxy and load balancer" \
       org.opencontainers.image.version="v3.7.1" \
       org.opencontainers.image.vendor="Traefik Labs" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       org.opencontainers.image.source="https://github.com/traefik/traefik" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \

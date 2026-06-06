@@ -54,6 +54,7 @@ LABEL evergreen.image.status="functional" \
       org.opencontainers.image.title="kafka" \
       org.opencontainers.image.description="Evergreen hardened Apache Kafka - distributed event streaming platform" \
       org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       org.opencontainers.image.source="https://github.com/apache/kafka"
 LABEL evergreen.base.image="wolfi"
 LABEL evergreen.metrics.native="true"

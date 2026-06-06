@@ -31,9 +31,13 @@ COPY --from=builder --chown=65532:65532 /app /app
 COPY --from=builder --chown=65532:65532 /var/log/postgres /var/log/postgres
 COPY --from=builder --chown=65532:65532 /var/cache/postgres /var/cache/postgres
 USER 65532:65532
-ENV SHIM_BACKUP_ENABLED="false" \
+ENV SHIM_BACKUP_ENABLED="true" \
     SHIM_BACKUP_DB_HOST="localhost" \
     SHIM_BACKUP_DB_PORT="5432" \
+    SHIM_BACKUP_ENABLED="true" \
+    SHIM_BACKUP_SCHEDULE="0 2 * * *" \
+    SHIM_BACKUP_RETENTION_DAYS="7" \
+    SHIM_BACKUP_OUTPUT_DIR="/backups" \
     SHIM_REPLICATION_ENABLED="false" \
     SHIM_MIGRATION_ENABLED="false" \
     SHIM_VAULT_ENABLED="false" \

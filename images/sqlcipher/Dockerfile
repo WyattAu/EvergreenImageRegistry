@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     cd /sqlcipher-${VERSION} && \    ./configure --enable-tempstore=yes CFLAGS="-DSQLITE_HAS_CODEC -DSQLCIPHER_CRYPTO_OPENSSL" \
     LDFLAGS="-lcrypto -lssl" && \
     make -j"$(nproc)" && \
-    strip --strip-all .libs/sqlcipher 2>/dev/null 2>/dev/null
+    strip --strip-all .libs/sqlcipher 2>/dev/null
 
 
 RUN mkdir -p /sqlcipher-${VERSION}/.libs/sqlcipher

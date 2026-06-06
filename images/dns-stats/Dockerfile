@@ -26,10 +26,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         cd /tmp/dns-stats-fallback && \
         CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build -ldflags="-s -w" -o /tmp/dns-stats ./... 2>/dev/null || true ; \
     fi && \
-    test -f /tmp/dns-stats &&" && \
-        printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("dns-stats v%s ready") }' "${VERSION}" > /tmp/main.go && \
-        CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build -ldflags="-s -w" -o /tmp/dns-stats /tmp/main.go ; \
-    } && \
     mkdir -p /etc/ssl/certs 2>/dev/null || true
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

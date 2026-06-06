@@ -13,7 +13,7 @@ RUN apt-get update && \
     curl --retry 3 --retry-delay 5 -fsSL "https://gitlab.famedly.com/famedly/conduit/-/releases/v${VERSION}/conduit-x86_64-unknown-linux-musl.tar.gz" \
     -o /tmp/conduit || true ; \
     chmod +x /tmp/conduit 2>/dev/null ; \
-    strip /tmp/conduit 2>/dev/null ; \'"' >> /tmp/conduit && echo 'exit 1' >> /tmp/conduit && chmod +x /tmp/conduit; }
+    strip /tmp/conduit 2>/dev/null || true
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch

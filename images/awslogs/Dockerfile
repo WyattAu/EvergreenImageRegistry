@@ -14,15 +14,15 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 FROM python@sha256:5dc6f84b5e97bfb0c90abfb7c55f3cacc2cb6687c8f920b64a833a2219875997 AS builder
 ARG VERSION=0.15.0
-RUN pip install --break-system-packages --no-cache-dir --prefix=/install awslogs==${VERSION} 
-    find /install -type f -name "*.pyc" -delete && \
+RUN pip install --break-system-packages --no-cache-dir --prefix=/install awslogs==${VERSION}  \
+    find /install -type f -name "*.pyc" -delete &&  \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS stripper
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils python3 && \
     rm -rf /var/lib/apt/lists/*
 COPY --from=builder /install /install
-RUN find /install -type f -name "*.so" -exec strip --strip-unneeded {} \ && \
+RUN find /install -type f -name "*.so" -exec strip --strip-unneeded {} \; && \
     mkdir -p /etc/ssl/certs 2>/dev/null  ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 LABEL evergreen.base.fallback_reason="wolfi-base for musl compatibility"

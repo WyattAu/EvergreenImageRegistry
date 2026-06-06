@@ -28,6 +28,7 @@ LABEL org.opencontainers.image.title="etcd" \
       org.opencontainers.image.description="etcd - distributed reliable key-value store" \
       org.opencontainers.image.version="3.6.10" \
       org.opencontainers.image.vendor="etcd" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       org.opencontainers.image.source="https://github.com/etcd-io/etcd" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \

@@ -36,7 +36,7 @@ ARG TARGETARCH
 
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/minio/operator/releases/download/v6.0.4/minio-operator_6.0.4_linux_${TARGETARCH} -o /minio-operator && { echo "Binary not available - download failed" >&2; exit 1; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/minio/operator/releases/download/v6.0.4/minio-operator_6.0.4_linux_${TARGETARCH} -o /minio-operator \
     echo "2c72711b965ac3ead1b118551768df53b73e8bab1bc40f16076475fea41311a3  /minio-operator" | sha256sum -c  #
 
 

@@ -29,7 +29,7 @@ ARG TARGETARCH
 
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/ggml-org/llama.cpp/releases/download/b5415/llama-b5415-bin-ubuntu-x64.zip -o /llama-server && { echo "Binary not available - download failed" >&2; exit 1; }
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/ggml-org/llama.cpp/releases/download/b5415/llama-b5415-bin-ubuntu-x64.zip -o /llama-server \
     echo "a0d6087a0fdfc94b97a523e9761ec7dffe78bd28bc345da9e0d834b03fe20013  /llama-server" | sha256sum -c  #
 
 

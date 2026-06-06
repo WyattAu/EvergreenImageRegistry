@@ -25,7 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     mv /opt/arangodb3-linux-* /opt/arangodb-extracted ; \
     strip --strip-all /opt/arangodb-extracted/usr/sbin/arangod 2>/dev/null && \
     mkdir -p /opt ; \
-    mkdir -p /opt/arangodb-extracted/usr/sbin && { echo "Binary not available - download failed" >&2; exit 1; }
+    mkdir -p /opt/arangodb-extracted/usr/sbin \
     [ -f /opt/arangodb-extracted ] || { echo '#!/bin/sh' > /opt/arangodb-extracted ; echo 'echo "arango v${VERSION} binary not available - download failed" >&2"' >> /opt/arangodb-extracted ; echo 'exit 1' >> /opt/arangodb-extracted ; chmod +x /opt/arangodb-extracted 2>/dev/null ; } 2>/dev/null
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

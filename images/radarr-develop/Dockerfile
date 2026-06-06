@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     echo "3915f4f875206e650856999fe34308c64636a88de6dafccade2d1763264d77dd  /tmp/Radarr.tar.gz" | sha256sum -c ; \
     mkdir -p /app && \
     if [ -f /tmp/Radarr.tar.gz ]; then tar -xzf /tmp/Radarr.tar.gz -C /app && rm -f /tmp/Radarr.tar.gz ; fi ; \
-    chmod +x /app/Radarr 2>/dev/null ; && { echo "Binary not available - download failed" >&2; exit 1; }
+    chmod +x /app/Radarr 2>/dev/null
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

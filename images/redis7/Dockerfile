@@ -22,6 +22,10 @@ RUN chmod +x /usr/local/bin/shim
 RUN apk add --no-cache ca-certificates && adduser -u 65532 -D 2>/dev/null &&  mkdir -p /app /var/log/redis7 /var/cache/redis7 && chown -R redis:redis /app /var/log/redis7 /var/cache/redis7 2>/dev/null
 # NOTE: redis server not available in wolfi; uses pre-compiled binary
 USER redis:redis
+ENV SHIM_BACKUP_ENABLED="true" \
+    SHIM_BACKUP_SCHEDULE="0 2 * * *" \
+    SHIM_BACKUP_RETENTION_DAYS="7" \
+    SHIM_BACKUP_OUTPUT_DIR="/backups"
 ENV SHIM_CACHE_ENABLED="true" \
     SHIM_CACHE_MAX_ENTRIES="10000" \
     SHIM_CACHE_DEFAULT_TTL="300" \
@@ -37,6 +41,7 @@ LABEL org.opencontainers.image.title="redis7" \
       org.opencontainers.image.description="redis7 container image" \
       org.opencontainers.image.version="7.4.1" \
       org.opencontainers.image.vendor="Redis" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \
       evergreen.hft.signal-handling="native" \

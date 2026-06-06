@@ -14,7 +14,7 @@ RUN apk add --no-cache ca-certificates curl nginx php-8.4-fpm php-8.4-pdo_sqlite
     addgroup -S -g 10000 organizr 2>/dev/null || true && \
     adduser -u 65532 -G organizr -D -h /app -s /bin/false organizr 2>/dev/null || true && \
     mkdir -p /app /app/src /config /var/log/nginx /var/lib/nginx 2>/dev/null || true && \
-    echo '<?php-8.4 echo "Organizr && { echo "Binary not available - download failed" >&2; exit 1; }
+    echo '<?php-8.4 echo "Organizr' \
     chown -R 65532:65532 /app /config /var/log/nginx /var/lib/nginx 2>/dev/null || true
 USER 65532:65532
 ENV SHIM_METRICS_ENABLED="true"

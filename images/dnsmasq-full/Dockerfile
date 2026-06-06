@@ -20,9 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     strip --strip-all /install/usr/sbin/dnsmasq 2>/dev/null
 
 
-RUN mkdir -p /install/usr/sbin/dnsmasq ; 2>/dev/null || true ; && { echo "Binary not available - download failed" >&2; exit 1; }
-    exit 1"' >> /install/usr/share/man { echo "Binary not available - download failed" >&2; exit 1; } && \
-    mkdir -p /install/usr/sbin/dnsmasq /install/usr/share/man 2>/dev/null || true
+RUN mkdir -p /install/usr/sbin/dnsmasq /install/usr/share/man 2>/dev/null || true
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

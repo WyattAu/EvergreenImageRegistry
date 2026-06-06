@@ -17,8 +17,12 @@ ARG TARGETARCH
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils curl ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.opensearch.org/releases/bundle/opensearch/${VERSION}/opensearch-${VERSION}-linux-x64.tar.gz" -o /opensearch.tar.gz && \
-    echo "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3  /opensearch.tar.gz" | sha256sum -c && \
+    case "${TARGETARCH}" in \
+      amd64)  OS_ARCH="linux-x64" ;; \
+      arm64)  OS_ARCH="linux-arm64" ;; \
+      *)      echo "Unsupported arch: ${TARGETARCH}" && exit 1 ;; \
+    esac && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.opensearch.org/releases/bundle/opensearch/${VERSION}/opensearch-${VERSION}-${OS_ARCH}.tar.gz" -o /opensearch.tar.gz && \
     tar -xzf /opensearch.tar.gz -C /opt && rm -f /opensearch.tar.gz
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
@@ -60,6 +64,7 @@ CMD ["-c", "gosu opensearch /opt/opensearch/bin/opensearch"]
 LABEL org.opencontainers.image.title="opensearch" \
       org.opencontainers.image.version="2.12.0" \
       org.opencontainers.image.vendor="OpenSearch" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       org.opencontainers.image.description="OpenSearch - distributed search and analytics engine" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \

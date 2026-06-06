@@ -8,7 +8,7 @@ ARG VERSION=1.0.0
 ARG TARGETARCH
 ARG GOARCH=${TARGETARCH}
 WORKDIR /src
-COPY go.mod health-shim.go .
+COPY go.mod health-shim.go ./
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build -trimpath -ldflags="-s -w" -o /health-shim health-shim.go || true
 
 FROM scratch

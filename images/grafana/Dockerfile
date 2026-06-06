@@ -29,6 +29,7 @@ LABEL org.opencontainers.image.title="grafana" \
       org.opencontainers.image.description="Grafana - observability dashboard and visualization" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Grafana Labs" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       org.opencontainers.image.source="https://github.com/grafana/grafana" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \

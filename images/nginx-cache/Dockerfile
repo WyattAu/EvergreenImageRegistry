@@ -28,9 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gnupg] http://nginx.org/packages/debian bookworm nginx" > /etc/apt/sources.list.d/nginx.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends nginx=${VERSION}-1~bookworm && \
-    rm -rf /var/lib/apt/lists/* && { echo "Binary not available - download failed" >&2; exit 1; }
-    exit 1"' >> /usr/sbin/nginx  && chmod +x /usr/sbin/nginx; } && { echo "Binary not available - download failed" >&2; exit 1; }
-    exit 1"' >> /etc/nginx  && chmod +x /etc/nginx; }
+    rm -rf /var/lib/apt/lists/*
 
 
 

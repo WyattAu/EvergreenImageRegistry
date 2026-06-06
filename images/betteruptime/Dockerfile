@@ -20,53 +20,51 @@ ARG GOARCH=${TARGETARCH}
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils go-1.23-go git ca-certificates && \
     rm -rf /var/lib/apt/lists/* || true && \
-    mkdir -p /build/cmd ; \
-    cat > /build/cmd/betteruptime.go <<'GOEOF' \
-    package main
-
-import (
-	"crypto/tls"
-	"fmt"
-	"net/http"
-	"os"
-	"time"
-)
-
-func main() {
-RUN if len(os.Args) < 2 { \
-    fmt.Println("Usage: betteruptime <url> [timeout_seconds]")
-		fmt.Println("Performs HTTPS/TCP health checks against the target URL")
-		os.Exit(1)
-	}
-	url := os.Args[1]
-	timeout := 10
-RUN if len(os.Args) > 2 { \
-    fmt.Sscanf(os.Args[2], "%d", &timeout)
-	}
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: false},
-	}
-	client := &http.Client{
-		Timeout:   time.Duration(timeout) * time.Second,
-		Transport: tr,
-		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-			return http.ErrUseLastResponse
-		},
-	}
-	resp, err := client.Get(url)
-RUN if err != nil { \
-    fmt.Fprintf(os.Stderr, "down: %s - %v\n", url, err)
-		os.Exit(2)
-	}
-	resp.Body.Close()
-	fmt.Printf("up: %s -> %d (latency: %s)\n", url, resp.StatusCode, "ok")
-	os.Exit(0)
-}
-GOEOF
+    mkdir -p /build/cmd && \
+    echo 'package main' > /build/cmd/betteruptime.go && \
+    echo '' >> /build/cmd/betteruptime.go && \
+    echo 'import (' >> /build/cmd/betteruptime.go && \
+    echo '	"crypto/tls"' >> /build/cmd/betteruptime.go && \
+    echo '	"fmt"' >> /build/cmd/betteruptime.go && \
+    echo '	"net/http"' >> /build/cmd/betteruptime.go && \
+    echo '	"os"' >> /build/cmd/betteruptime.go && \
+    echo '	"time"' >> /build/cmd/betteruptime.go && \
+    echo ')' >> /build/cmd/betteruptime.go && \
+    echo '' >> /build/cmd/betteruptime.go && \
+    echo 'func main() {' >> /build/cmd/betteruptime.go && \
+    echo '    if len(os.Args) < 2 {' >> /build/cmd/betteruptime.go && \
+    echo '        fmt.Println("Usage: betteruptime <url> [timeout_seconds]")' >> /build/cmd/betteruptime.go && \
+    echo '		fmt.Println("Performs HTTPS/TCP health checks against the target URL")' >> /build/cmd/betteruptime.go && \
+    echo '		os.Exit(1)' >> /build/cmd/betteruptime.go && \
+    echo '	}' >> /build/cmd/betteruptime.go && \
+    echo '	url := os.Args[1]' >> /build/cmd/betteruptime.go && \
+    echo '	timeout := 10' >> /build/cmd/betteruptime.go && \
+    echo '    if len(os.Args) > 2 {' >> /build/cmd/betteruptime.go && \
+    echo '        fmt.Sscanf(os.Args[2], "%d", &timeout)' >> /build/cmd/betteruptime.go && \
+    echo '	}' >> /build/cmd/betteruptime.go && \
+    echo '	tr := &http.Transport{' >> /build/cmd/betteruptime.go && \
+    echo '		TLSClientConfig: &tls.Config{InsecureSkipVerify: false},' >> /build/cmd/betteruptime.go && \
+    echo '	}' >> /build/cmd/betteruptime.go && \
+    echo '	client := &http.Client{' >> /build/cmd/betteruptime.go && \
+    echo '		Timeout:   time.Duration(timeout) * time.Second,' >> /build/cmd/betteruptime.go && \
+    echo '		Transport: tr,' >> /build/cmd/betteruptime.go && \
+    echo '		CheckRedirect: func(req *http.Request, via []*http.Request) error {' >> /build/cmd/betteruptime.go && \
+    echo '			return http.ErrUseLastResponse' >> /build/cmd/betteruptime.go && \
+    echo '		},' >> /build/cmd/betteruptime.go && \
+    echo '	}' >> /build/cmd/betteruptime.go && \
+    echo '	resp, err := client.Get(url)' >> /build/cmd/betteruptime.go && \
+    echo '    if err != nil {' >> /build/cmd/betteruptime.go && \
+    echo '        fmt.Fprintf(os.Stderr, "down: %s - %v\n", url, err)' >> /build/cmd/betteruptime.go && \
+    echo '		os.Exit(2)' >> /build/cmd/betteruptime.go && \
+    echo '	}' >> /build/cmd/betteruptime.go && \
+    echo '	resp.Body.Close()' >> /build/cmd/betteruptime.go && \
+    echo '	fmt.Printf("up: %s -> %d (latency: %s)\n", url, resp.StatusCode, "ok")' >> /build/cmd/betteruptime.go && \
+    echo '	os.Exit(0)' >> /build/cmd/betteruptime.go && \
+    echo '}' >> /build/cmd/betteruptime.go
 RUN cd /build && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} \
     go build -ldflags="-s -w -X main.version=${VERSION}" -o /betteruptime ./cmd/betteruptime.go && \
-    strip /betteruptime 2>/dev/null ; && { echo "Binary not available - download failed" >&2; exit 1; }
+    strip /betteruptime 2>/dev/null
 
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder2

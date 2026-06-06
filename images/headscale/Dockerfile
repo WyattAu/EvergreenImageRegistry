@@ -27,6 +27,7 @@ LABEL org.opencontainers.image.title="headscale" \
       org.opencontainers.image.description="Headscale - open source implementation of the Tailscale control server" \
       org.opencontainers.image.version="0.16.0" \
       org.opencontainers.image.vendor="Headscale" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       org.opencontainers.image.source="https://github.com/juanfont/headscale" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \

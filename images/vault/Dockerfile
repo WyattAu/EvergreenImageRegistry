@@ -27,6 +27,7 @@ LABEL org.opencontainers.image.title="vault" \
       org.opencontainers.image.description="Vault - secrets management and data protection by HashiCorp" \
       org.opencontainers.image.version="1.18.1" \
       org.opencontainers.image.vendor="HashiCorp" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       org.opencontainers.image.source="https://github.com/hashicorp/vault" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \

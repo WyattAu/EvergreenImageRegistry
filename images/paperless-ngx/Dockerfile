@@ -11,7 +11,7 @@ ARG VERSION=2.20.15
 RUN mkdir -p /opt/paperless-ngx || true
 RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-venv python3-pip curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     python3 -m venv /opt/paperless-ngx && \
-    /opt/paperless-ngx/bin/pip install --no-cache-dir paperless-ngx[all]==2.20.14 ; && { echo "Binary not available - download failed" >&2; exit 1; }
+    /opt/paperless-ngx/bin/pip install --no-cache-dir paperless-ngx[all]==2.20.14
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

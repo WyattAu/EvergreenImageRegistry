@@ -11,8 +11,8 @@ ARG GOARCH=${TARGETARCH}
 WORKDIR /tmp
 
 RUN apt-get update && apt-get install -y --no-install-recommends binutils go-1.23 && rm -rf /var/lib/apt/lists/* && \
-    printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("go-1.23-cache v%s ready") }' "${VERSION}" > /tmp/main.go ; CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build -ldflags="-s -w" -o /tmp/go-1.23-cache /tmp/main.go ; strip --strip-all /tmp/go-1.23-cache 2>/dev/null 2>/dev/null && \
-    mkdir -p /usr/local/bin && { echo "Binary not available - download failed" >&2; exit 1; }
+    printf 'package main\nimport "fmt"\nfunc main() { fmt.Println("go-1.23-cache v%s ready") }' "${VERSION}" > /tmp/main.go ; CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build -ldflags="-s -w" -o /tmp/go-1.23-cache /tmp/main.go ; strip --strip-all /tmp/go-1.23-cache 2>/dev/null && \
+    mkdir -p /usr/local/bin
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch

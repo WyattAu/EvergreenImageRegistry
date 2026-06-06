@@ -29,6 +29,7 @@ LABEL org.opencontainers.image.title="node-exporter" \
       org.opencontainers.image.description="Node Exporter - hardware and OS metrics exporter for Prometheus" \
       org.opencontainers.image.version="v1.11.1" \
       org.opencontainers.image.vendor="Prometheus" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       org.opencontainers.image.source="https://github.com/prometheus/node_exporter" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \

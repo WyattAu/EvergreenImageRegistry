@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     echo "bb8ea480268551864d246e31b3e5cc50e941e71b7ad236092a9b2ccb96b5eb0f  /sidecar.tar.gz" | sha256sum -c ; \
     mkdir -p /opt/sidecar-src /opt/sidecar || true ; \
     [ -f /sidecar.tar.gz ] && tar -xzf /sidecar.tar.gz -C /opt/sidecar-src --strip-components=1 2>/dev/null ; \
-    rm -f /sidecar.tar.gz ; && { echo "Binary not available - download failed" >&2; exit 1; }
+    rm -f /sidecar.tar.gz
 RUN mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN mkdir -p /var/log/sidecar /var/lib/sidecar /var/cache/sidecar 2>/dev/null || true

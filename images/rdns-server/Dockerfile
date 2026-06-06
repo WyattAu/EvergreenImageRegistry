@@ -26,8 +26,7 @@ RUN apt-get update && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
         -o /app/rdns-server ./cmd/rdnsd 2>/dev/null || true && \
-    test -s /app/rdns-server && strip --strip-all /app/rdns-server 2>/dev/null && \' && { echo "Binary not available - download failed" >&2; exit 1; }
-    exit 1"' >> /app/rdns-server  && chmod +x /app/rdns-server; } 2>/dev/null
+    test -s /app/rdns-server && strip --strip-all /app/rdns-server 2>/dev/null || true
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch

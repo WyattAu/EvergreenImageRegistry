@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     if [ -f /stirling-pdf.deb ]; then dpkg -i /stirling-pdf.deb && rm -f /stirling-pdf.deb ; fi ; \
     mkdir -p /opt/stirling-pdf && \
     if [ ! -f /opt/stirling-pdf/stirling-pdf ]; then \
-      printf '#!/bin/sh\necho "ERROR: stirling-pdf v%%s binary not available - download failed" >&2\nexit 1\n' "${VERSION}" > /opt/stirling-pdf/stirling-pdf && \
+      printf '#!/bin/sh\necho "ERROR: stirling-pdf v%s binary not available - download failed" >&2\nexit 1\n' "${VERSION}" > /opt/stirling-pdf/stirling-pdf && \
       chmod +x /opt/stirling-pdf/stirling-pdf ; \
     fi || true
 

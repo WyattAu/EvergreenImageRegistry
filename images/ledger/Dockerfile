@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     git clone --branch "v${VERSION}" https://github.com/ledger/ledger.git /tmp/ledger 2>/dev/null && \
     cd /tmp/ledger && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_DOCS=OFF -DUSE_PYTHON=OFF . && \
-    make -j$(nproc) && make install && strip --strip-all /usr/local/bin/ledger 2>/dev/null 2>/dev/null
+    make -j$(nproc) && make install && strip --strip-all /usr/local/bin/ledger 2>/dev/null
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 
 RUN apk add --no-cache git ca-certificates

@@ -10,7 +10,7 @@ ARG TARGETARCH
 ARG VERSION=1.7.1
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/containrrr/watchtower/releases/download/v${VERSION}/watchtower_linux_${TARGETARCH}.tar.gz -o /watchtower.tar.gz && \
-    [ -f /watchtower.tar.gz ] && tar -xzf /watchtower.tar.gz -C / && rm -f /watchtower.tar.gz && chmod +x /watchtower 2>/dev/null ; && { echo "Binary not available - download failed" >&2; exit 1; }
+    [ -f /watchtower.tar.gz ] && tar -xzf /watchtower.tar.gz -C / && rm -f /watchtower.tar.gz && chmod +x /watchtower 2>/dev/null
 
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim

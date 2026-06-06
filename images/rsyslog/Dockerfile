@@ -18,8 +18,8 @@ ARG SHIM_VERSION=v0.3.0
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils rsyslog && rm -rf /var/lib/apt/lists/* && \
-    strip /usr/sbin/rsyslogd&& \
-    find /usr/lib/rsyslog -type f -name "*.so" -exec strip --strip-unneeded {} \ && \
+    strip /usr/sbin/rsyslogd && \
+    find /usr/lib/rsyslog -type f -name "*.so" -exec strip --strip-unneeded {} \; && \
     mkdir -p /usr/sbin/rsyslogd 2>/dev/null
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
@@ -36,20 +36,19 @@ COPY --from=builder /usr/sbin/rsyslogd /usr/sbin/rsyslogd
 RUN mkdir -p /app/conf /app/logs /app/run /app/spool /var/lib/rsyslog ; \
 addgroup -S -g 2 rsyslog >/dev/null 2>&1 || true && adduser -u 65532 -G rsyslog -D -s /bin/false rsyslog 2>/dev/null || true && \
     chown -R rsyslog:rsyslog /app /var/lib/rsyslog 2>/dev/null || true
-COPY <<'EOF' /app/conf/rsyslog.conf
-module(load="imudp")
-input(type="imudp" port="514")
-module(load="imtcp")
-input(type="imtcp" port="514")
-
-$ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat
-$FileOwner rsyslog
-$FileGroup rsyslog
-$FileCreateMode 0644
-$DirCreateMode 0755
-
-*.info;mail.none;authpriv.none;busybox-suid.none /app/logs/messages
-EOF
+RUN printf '%s\n' \
+    'module(load="imudp")' \
+    'input(type="imudp" port="514")' \
+    'module(load="imtcp")' \
+    'input(type="imtcp" port="514")' \
+    '' \
+    '$ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat' \
+    '$FileOwner rsyslog' \
+    '$FileGroup rsyslog' \
+    '$FileCreateMode 0644' \
+    '$DirCreateMode 0755' \
+    '' \
+    '*.info;mail.none;authpriv.none;busybox-suid.none /app/logs/messages' > /app/conf/rsyslog.conf
 RUN chown rsyslog:rsyslog /app/conf/rsyslog.conf 2>/dev/null || true
 USER 65532:65532
 ENV SHIM_METRICS_ENABLED="true"

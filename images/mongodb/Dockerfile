@@ -16,9 +16,9 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 COPY --from=shim /shim /usr/local/bin/shim
 RUN chmod +x /usr/local/bin/shim
 
-ENV HEALTH_CMD="echo 'db.adminCommand(\\\"ping\\\")' | mongosh --quiet" \
-    READY_CMD="echo 'db.adminCommand(\\\"ping\\\")' | mongosh --quiet" \
-    STARTUP_CMD="echo 'db.adminCommand(\\\"ping\\\")' | mongosh --quiet" \
+ENV HEALTH_CMD="echo 'db.adminCommand(\"ping\")' | mongosh --quiet" \
+    READY_CMD="echo 'db.adminCommand(\"ping\")' | mongosh --quiet" \
+    STARTUP_CMD="echo 'db.adminCommand(\"ping\")' | mongosh --quiet" \
     EVERGREEN_LOG_LEVEL=info
 
 RUN apk add --no-cache ca-certificates

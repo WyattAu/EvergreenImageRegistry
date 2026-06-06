@@ -16,7 +16,7 @@ RUN chmod +x /usr/local/bin/shim
 
 RUN apk add --no-cache ca-certificates curl expat fontconfig freetype glib
 COPY --from=upstream /usr/lib/plexmediaserver /usr/lib/plexmediaserver
-COPY --from=upstream /usr/lib/plexmediaserver/Plex\ Media\ Server /usr/lib/plexmediaserver/Plex\ Media\ Server
+COPY --from=upstream /usr/lib/plexmediaserver/Plex\ Media\ Server/ /usr/lib/plexmediaserver/Plex\ Media\ Server/
 RUN mkdir -p /var/log/plex /var/cache/plex /config /transcode 2>/dev/null || true; \
     chown -R 65532:65532 /var/log/plex /var/cache/plex /config /transcode /usr/lib/plexmediaserver 2>/dev/null || true
 USER 65532:65532

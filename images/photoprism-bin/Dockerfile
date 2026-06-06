@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     tar -xzf /tmp/photoprism.tar.gz -C /tmp/photoprism-extract 2>/dev/null && \
     cp /tmp/photoprism-extract/photoprism /photoprism 2>/dev/null || find /tmp/photoprism-extract -name 'photoprism' -type f -exec cp {} /photoprism \; 2>/dev/null && \
     chmod +x /photoprism 2>/dev/null && \
-    rm -rf /tmp/photoprism.tar.gz /tmp/photoprism-extract 2>/dev/null ; && { echo "Binary not available - download failed" >&2; exit 1; }
+    rm -rf /tmp/photoprism.tar.gz /tmp/photoprism-extract 2>/dev/null
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

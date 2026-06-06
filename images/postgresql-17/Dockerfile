@@ -48,9 +48,13 @@ RUN chmod 755 /usr/local/bin/docker-entrypoint.sh 2>/dev/null || true && \
     chown -R 5432:5432 /var/lib/postgresql /var/run/postgresql /app /var/log/postgresql-17 /var/cache/postgresql-17 /docker-entrypoint-initdb.d 2>/dev/null || true
 
 USER 5432:5432
-ENV SHIM_BACKUP_ENABLED="false" \
+ENV SHIM_BACKUP_ENABLED="true" \
     SHIM_BACKUP_DB_HOST="localhost" \
     SHIM_BACKUP_DB_PORT="5432" \
+    SHIM_BACKUP_ENABLED="true" \
+    SHIM_BACKUP_SCHEDULE="0 2 * * *" \
+    SHIM_BACKUP_RETENTION_DAYS="7" \
+    SHIM_BACKUP_OUTPUT_DIR="/backups" \
     SHIM_REPLICATION_ENABLED="false" \
     SHIM_MIGRATION_ENABLED="false" \
     SHIM_VAULT_ENABLED="false" \

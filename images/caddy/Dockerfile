@@ -37,6 +37,7 @@ LABEL org.opencontainers.image.title="caddy" \
       org.opencontainers.image.description="Caddy - powerful enterprise-ready open source web server" \
       org.opencontainers.image.version="2.11.3" \
       org.opencontainers.image.vendor="Caddy" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       org.opencontainers.image.source="https://github.com/caddyserver/caddy" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \

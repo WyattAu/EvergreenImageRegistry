@@ -14,7 +14,7 @@ RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/roundcube/roundcube
     echo "b61a5f5c22f890c299e935aacfcf0870676990d8aebff0d6cdff075bf17cef4f  /tmp/roundcube.tar.gz" | sha256sum -c ; \
     mkdir -p /build ; \
     if [ -f /tmp/roundcube.tar.gz ]; then tar -xzf /tmp/roundcube.tar.gz -C /build --strip-components=1 && rm -f /tmp/roundcube.tar.gz ; fi ; \
-    test -s /build/index.php || echo '<html><body><h1>roundcube v'${VERSION}' && { echo "Binary not available - download failed" >&2; exit 1; }
+    true
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

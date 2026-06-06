@@ -37,6 +37,10 @@ COPY --from=builder --chown=65532:65532 /var/cache/redis /var/cache/redis
 COPY --from=entrypoint /usr/local/bin/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod 755 /usr/local/bin/docker-entrypoint.sh
 USER 65532:65532
+ENV SHIM_BACKUP_ENABLED="true" \
+    SHIM_BACKUP_SCHEDULE="0 2 * * *" \
+    SHIM_BACKUP_RETENTION_DAYS="7" \
+    SHIM_BACKUP_OUTPUT_DIR="/backups"
 ENV SHIM_CACHE_ENABLED="true" \
     SHIM_CACHE_MAX_ENTRIES="10000" \
     SHIM_CACHE_DEFAULT_TTL="300" \

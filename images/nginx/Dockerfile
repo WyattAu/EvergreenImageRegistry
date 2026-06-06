@@ -45,6 +45,7 @@ LABEL org.opencontainers.image.title="nginx" \
       org.opencontainers.image.description="Nginx - HTTP and reverse proxy server" \
       org.opencontainers.image.version="1.27.1" \
       org.opencontainers.image.vendor="Nginx Inc" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       org.opencontainers.image.source="https://github.com/nginx/nginx" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \

@@ -26,6 +26,7 @@ LABEL org.opencontainers.image.title="minio" \
       org.opencontainers.image.description="MinIO - high-performance object storage compatible with S3" \
       org.opencontainers.image.version="latest" \
       org.opencontainers.image.vendor="MinIO" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       org.opencontainers.image.source="https://github.com/minio/minio" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \

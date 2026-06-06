@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     echo "70c2a200f90b5e60239b0ca0cba2ed879ce31f3be68cf1bfe676e6b30292a9d0  /tmp/Prowlarr.tar.gz" | sha256sum -c ; \
     mkdir -p /app && \
     if [ -f /tmp/Prowlarr.tar.gz ]; then tar -xzf /tmp/Prowlarr.tar.gz -C /app && rm -f /tmp/Prowlarr.tar.gz ; fi ; \
-    chmod +x /app/Prowlarr 2>/dev/null ; && { echo "Binary not available - download failed" >&2; exit 1; }
+    chmod +x /app/Prowlarr 2>/dev/null
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

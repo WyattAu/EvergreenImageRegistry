@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/grafana/loki/releases/download/v${VERSION}/promtail-linux-${TARGETARCH}.zip -o /promtail.zip ; \
     unzip -o /promtail.zip -d /tmp ; \
     strip --strip-all /tmp/promtail-linux-${TARGETARCH}/promtail 2>/dev/null; mv /tmp/promtail-linux-${TARGETARCH}/promtail /tmp/promtail 2>/dev/null ; \
-    rm -f /promtail.zip 2>/dev/null || true ; && { echo "Binary not available - download failed" >&2; exit 1; }
+    rm -f /promtail.zip 2>/dev/null || true
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

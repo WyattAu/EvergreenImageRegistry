@@ -18,9 +18,9 @@ ARG SHIM_VERSION=v0.3.0
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 RUN apt-get update && \
     apt-get install -y --no-install-recommends binutils syslog-ng-core && rm -rf /var/lib/apt/lists/* && \
-    strip /usr/sbin/syslog-ng&& \
-    find /usr/lib/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \ && \
-    find /usr/lib/*/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \ && \
+    strip /usr/sbin/syslog-ng && \
+    find /usr/lib/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \; && \
+    find /usr/lib/*/syslog-ng -type f -name "*.so" -exec strip --strip-unneeded {} \; && \
     mkdir -p /usr/sbin/syslog-ng 2>/dev/null
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
@@ -37,20 +37,19 @@ COPY --from=builder /usr/sbin/syslog-ng /usr/sbin/syslog-ng
 RUN mkdir -p /app/conf /app/logs /app/run /var/lib/syslog-ng ; \
 addgroup -S -g 2 syslogng >/dev/null 2>&1 || true && adduser -u 65532 -G syslogng -D -s /bin/false syslogng 2>/dev/null || true && \
     chown -R syslogng:syslogng /app /var/lib/syslog-ng 2>/dev/null || true
-COPY <<'EOF' /app/conf/syslog-ng.conf
-@version: 4.8
-source s_network {
-    tcp(port(514) max-connections(1024));
-    udp(port(514));
-};
-destination d_file {
-    file("/app/logs/messages" perm(0644));
-};
-log {
-    source(s_network);
-    destination(d_file);
-};
-EOF
+RUN printf '%s\n' \
+    '@version: 4.8' \
+    'source s_network {' \
+    '    tcp(port(514) max-connections(1024));' \
+    '    udp(port(514));' \
+    '};' \
+    'destination d_file {' \
+    '    file("/app/logs/messages" perm(0644));' \
+    '};' \
+    'log {' \
+    '    source(s_network);' \
+    '    destination(d_file);' \
+    '};' > /app/conf/syslog-ng.conf
 RUN chown syslogng:syslogng /app/conf/syslog-ng.conf 2>/dev/null || true
 USER 65532:65532
 ENV SHIM_METRICS_ENABLED="true"

@@ -24,9 +24,13 @@ RUN apk add --no-cache ca-certificates && \
     mkdir -p /var/lib/mysql /var/log/mysql /var/cache/mysql /run/mysqld 2>/dev/null || true && \
     chown -R 65532:65532 /var/lib/mysql /var/log/mysql /var/cache/mysql /run/mysqld
 USER 65532:65532
-ENV SHIM_BACKUP_ENABLED="false" \
+ENV SHIM_BACKUP_ENABLED="true" \
     SHIM_BACKUP_DB_HOST="localhost" \
     SHIM_BACKUP_DB_PORT="5432" \
+    SHIM_BACKUP_ENABLED="true" \
+    SHIM_BACKUP_SCHEDULE="0 2 * * *" \
+    SHIM_BACKUP_RETENTION_DAYS="7" \
+    SHIM_BACKUP_OUTPUT_DIR="/backups" \
     SHIM_REPLICATION_ENABLED="false" \
     SHIM_MIGRATION_ENABLED="false" \
     SHIM_VAULT_ENABLED="false" \

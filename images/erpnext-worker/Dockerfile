@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV PATH="/opt/venv/bin:$PATH"
 RUN     pip install --no-cache-dir --upgrade pip setuptools wheel && \
     pip install --no-cache-dir frappe-bench==5.29.1 ; \
-    mkdir -p /usr/local/bin ; && { echo "Binary not available - download failed" >&2; exit 1; }
+    mkdir -p /usr/local/bin
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

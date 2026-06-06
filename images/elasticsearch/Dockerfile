@@ -16,8 +16,12 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 ARG VERSION=8.14.0
 ARG TARGETARCH
 RUN apk add --no-cache curl ca-certificates && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-linux-x86_64.tar.gz" -o /tmp/es.tar.gz && \
-    echo "fafb16fa5e42bcb6816422383b4a69b9c3a2ddc3b36e4594e1631caa2d9a965c5d3ce42c25e5ac1b27a18e72121eeaabfd158ccc6300bdce531d4d3abd098a9e  /tmp/es.tar.gz" | sha256sum -c && \
+    case "${TARGETARCH}" in \
+      amd64)  ES_ARCH="linux-x86_64" ;; \
+      arm64)  ES_ARCH="linux-aarch64" ;; \
+      *)      echo "Unsupported arch: ${TARGETARCH}" && exit 1 ;; \
+    esac && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${VERSION}-${ES_ARCH}.tar.gz" -o /tmp/es.tar.gz && \
     tar xzf /tmp/es.tar.gz -C /opt && rm -f /tmp/es.tar.gz && \
     cd /opt && rm -f elasticsearch && \
     cp -rL elasticsearch-${VERSION} elasticsearch && \
@@ -55,6 +59,7 @@ LABEL org.opencontainers.image.title="elasticsearch" \
       org.opencontainers.image.description="Elasticsearch - distributed search and analytics engine" \
       org.opencontainers.image.version="8.14.0" \
       org.opencontainers.image.vendor="Elastic" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \
       evergreen.base.image="wolfi" \

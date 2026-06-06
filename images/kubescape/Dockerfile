@@ -35,7 +35,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 
 
 
-RUN strip /kubescape 2>/dev/null && { echo "Binary not available - download failed" >&2; exit 1; }
+RUN strip /kubescape 2>/dev/null && \
     mkdir -p /etc/ssl/certs 2>/dev/null || true ; touch /etc/ssl/certs/ca-certificates.crt 2>/dev/null || true
 
 

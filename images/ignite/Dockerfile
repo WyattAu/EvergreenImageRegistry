@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://archive.apache.org/dist/ignite/${VERSION}/apache-ignite-${VERSION}-bin.zip" -o /tmp/ignite.zip ; echo "70c69fbaef52ff89ea940c81b04b0cd0ffeea01230889c0599da9eff1bb18b5223d06b8881f64986263608ed8e6b92f1ce25a60079fe8b3b1ccbad26cc413845  /tmp/ignite.zip" | sha512sum -c  ; unzip -q /tmp/ignite.zip -d /opt ; \
     rm -f /tmp/ignite.zip && \
-    mkdir -p /opt ; && { echo "Binary not available - download failed" >&2; exit 1; }
+    mkdir -p /opt \
     mkdir -p /opt 2>/dev/null || true ; touch /opt/apache-ignite-${VERSION}-bin 2>/dev/null || true
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

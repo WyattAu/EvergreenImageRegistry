@@ -34,6 +34,10 @@ RUN apk add --no-cache ca-certificates && adduser -u 65532 -s /bin/false &&  mkd
 # NOTE: redis server not available in wolfi; uses pre-compiled binary
 COPY --from=builder /tmp/redis /usr/local/bin/redis
 USER 65532:65532
+ENV SHIM_BACKUP_ENABLED="true" \
+    SHIM_BACKUP_SCHEDULE="0 2 * * *" \
+    SHIM_BACKUP_RETENTION_DAYS="7" \
+    SHIM_BACKUP_OUTPUT_DIR="/backups"
 ENV SHIM_CACHE_ENABLED="true" \
     SHIM_CACHE_MAX_ENTRIES="10000" \
     SHIM_CACHE_DEFAULT_TTL="300" \

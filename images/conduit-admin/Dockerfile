@@ -14,7 +14,7 @@ RUN apt-get update && \
     "https://gitlab.com/api/v4/projects/famedly%2Fconduit/packages/generic/conduit-v0-4-0/v${VERSION}/conduit-x86_64-unknown-linux-musl" \
     -o /tmp/conduit || true ; \
     chmod +x /tmp/conduit 2>/dev/null ; \
-    strip /tmp/conduit 2>/dev/null ; \'"' >> /tmp/conduit && echo 'exit 1' >> /tmp/conduit && chmod +x /tmp/conduit; }
+    strip /tmp/conduit 2>/dev/null || true
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

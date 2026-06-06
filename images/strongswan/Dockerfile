@@ -15,12 +15,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     rm -rf /var/lib/apt/lists/* || true && \
     mkdir -p /app-src /var/log/strongswan /var/run/charon \
         /etc/strongswan.d /etc/ipsec.d 2>/dev/null || true && \
-    strip --strip-all /usr/sbin/charon 2>/dev/null 2>/dev/null && \
-    strip --strip-all /usr/sbin/charon-systemd 2>/dev/null 2>/dev/null && \
-    strip --strip-all /usr/sbin/strongswan 2>/dev/null 2>/dev/null && \
-    strip --strip-all /usr/sbin/pki 2>/dev/null 2>/dev/null && \
-    strip --strip-all /usr/sbin/swanctl 2>/dev/null 2>/dev/null && \
-    strip --strip-all /usr/sbin/ipsec 2>/dev/null 2>/dev/null && \
+    strip --strip-all /usr/sbin/charon 2>/dev/null && \
+    strip --strip-all /usr/sbin/charon-systemd 2>/dev/null && \
+    strip --strip-all /usr/sbin/strongswan 2>/dev/null && \
+    strip --strip-all /usr/sbin/pki 2>/dev/null && \
+    strip --strip-all /usr/sbin/swanctl 2>/dev/null && \
+    strip --strip-all /usr/sbin/ipsec 2>/dev/null && \
     find /usr/lib -type f -name "lib*.so*" -exec strip --strip-unneeded {} \; 2>/dev/null
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

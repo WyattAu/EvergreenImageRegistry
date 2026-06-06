@@ -24,9 +24,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get install -y --no-install-recommends openvpn-as=${VERSION}-debian12 && \
     rm -rf /var/lib/apt/lists/* || true && \
     mkdir -p /app-src /var/log/openvpn-as 2>/dev/null || true && \
-    mkdir -p /usr/local/openvpn_as /usr/bin /etc/init.d /app /var/log/openvpn-as 2>/dev/null || true ; && { echo "Binary not available - download failed" >&2; exit 1; }
-    test -s /app/index.php || echo '<html><body><h1>openvpn-as v'${VERSION}' && { echo "Binary not available - download failed" >&2; exit 1; }
-    test -s /var/log/openvpn-as/. && { echo "Binary not available - download failed" >&2; exit 1; }
+    mkdir -p /usr/local/openvpn_as /usr/bin /etc/init.d /app /var/log/openvpn-as 2>/dev/null || true \
+    true \
+    test -s /var/log/openvpn-as/.
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

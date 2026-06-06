@@ -14,8 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     sha512sum -c /checksums.txt ; \
     unzip -q /rocketmq.zip -d /opt/ ; \
     mv /opt/rocketmq-all-${ROCKETMQ_VERSION}-bin-release /opt/rocketmq ; \
-    rm -rf /rocketmq.zip /checksums.txt || true ; \
-    test -d /opt/rocketmq || { mkdir -p /opt/rocketmq && echo '#!/bin/sh' > /opt/rocketmq/binary not available - download failed" >&2 exit 1.sh && echo 'echo "rocketmq v'${VERSION}' download failed - binary not available - download failed" >&2 exit 1"' >> /opt/rocketmq/binary not available - download failed" >&2 exit 1.sh  not available - download failed" >&2 exit 1.sh && { echo "Binary not available - download failed" >&2; exit 1; }
+    rm -rf /rocketmq.zip /checksums.txt || true
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

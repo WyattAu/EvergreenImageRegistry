@@ -37,22 +37,21 @@ RUN mkdir -p /run/php /var/log/nginx /app/logs /app/data && \
     find /var/www/cachet -type d -exec chmod 755 {} \; && \
     find /var/www/cachet -type f -exec chmod 644 {} \; && \
     chmod +x /var/www/cachet/artisan 2>/dev/null
-COPY <<'EOF' /etc/nginx/sites-available/cachet
-server {
-    listen 8000;
-    root /var/www/cachet/public;
-    index index.php;
-    server_name _;
-    location / {
-        try_files $uri /index.php$is_args$args;
-    }
-    location ~ \.php$ {
-        fastcgi_pass unix:/run/php/php-fpm.sock;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        include fastcgi_params;
-    }
-}
-EOF
+RUN printf '%s\n' \
+    'server {' \
+    '    listen 8000;' \
+    '    root /var/www/cachet/public;' \
+    '    index index.php;' \
+    '    server_name _;' \
+    '    location / {' \
+    '        try_files $uri /index.php$is_args$args;' \
+    '    }' \
+    '    location ~ \\.php$ {' \
+    '        fastcgi_pass unix:/run/php/php-fpm.sock;' \
+    '        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;' \
+    '        include fastcgi_params;' \
+    '    }' \
+    '}' > /etc/nginx/sites-available/cachet
 RUN ln -sf /etc/nginx/sites-available/cachet /etc/nginx/sites-enabled/cachet && \
     rm -f /etc/nginx/sites-enabled/default
 ENV APP_ENV=production APP_DEBUG=false DB_DRIVER=sqlite CACHE_DRIVER=file SESSION_DRIVER=file

@@ -27,6 +27,7 @@ LABEL org.opencontainers.image.title="consul" \
       org.opencontainers.image.description="Consul - service mesh, service discovery, and configuration" \
       org.opencontainers.image.version="1.18.1" \
       org.opencontainers.image.vendor="HashiCorp" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       org.opencontainers.image.source="https://github.com/hashicorp/consul" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \

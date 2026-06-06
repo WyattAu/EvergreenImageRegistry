@@ -14,7 +14,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 ARG TARGETARCH
 ARG VERSION=0.5.11
 ARG TARGETARCH
-RUN apk add --no-cache ca-certificates wget \
+RUN apk add --no-cache ca-certificates wget && \
     case ${TARGETARCH} in \
         amd64) EXPECTED_SHA="996784c9d17b8054e4127d62ca7f0aad76b45be3d1fe1af619e8886a832be417" ;; \
         arm64) EXPECTED_SHA="be8b6c250021ef58eed1d0687efbc08009b7e0401a2b7ebb5b8975d2de0b99a6" ;; \

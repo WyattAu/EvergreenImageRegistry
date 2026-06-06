@@ -10,10 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --break-system-packages --upgrade pip && \
     pip install --no-cache-dir --break-system-packages detect-secrets && \
-    mkdir -p /app-src 2>/dev/null || true && { echo "Binary not available - download failed" >&2; exit 1; }
-    exit 1"' >> /app/ && { echo "Binary not available - download failed" >&2; exit 1; }
-    exit 1  not available - download failed" >&2 \
-    exit 1 && chmod +x /app ; }
+    mkdir -p /app-src 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 LABEL evergreen.base.fallback_reason="wolfi-base for musl compatibility"
 
@@ -25,8 +22,7 @@ RUN mkdir -p /app || true
 COPY --from=builder /app /app
 RUN addgroup -S -g 2 nogroup >/dev/null || true && \
     adduser -u 65532 -G nogroup -D -h /app -s /bin/false detectsecrets 2>/dev/null || true && \
-    chown -R 65532:65532 /app/ && { echo "Binary not available - download failed" >&2; exit 1; }
-    exit 1 2>/dev/null || true
+    chown -R 65532:65532 /app/ 2>/dev/null || true
 USER 65532:65532
 ENV PATH="/opt/venv/bin:$PATH"
 WORKDIR /app

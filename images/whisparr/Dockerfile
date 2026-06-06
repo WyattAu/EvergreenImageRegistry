@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     echo "48a2b1292e61027cec831f071141735c6dee43a0e61162f7062cf97d87fd0328  /tmp/Whisparr.tar.gz" | sha256sum -c ; \
     mkdir -p /app && \
     if [ -f /tmp/Whisparr.tar.gz ]; then tar -xzf /tmp/Whisparr.tar.gz -C /app && rm -f /tmp/Whisparr.tar.gz ; fi ; \
-    chmod +x /app/Whisparr 2>/dev/null ; && { echo "Binary not available - download failed" >&2; exit 1; }
+    chmod +x /app/Whisparr 2>/dev/null
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

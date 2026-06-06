@@ -38,7 +38,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 
 
-RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir esphome==2024.8.0 
+RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir esphome==2024.8.0  \
     mkdir -p /app /config
 
 

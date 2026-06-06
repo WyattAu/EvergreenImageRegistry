@@ -30,7 +30,7 @@ RUN mkdir -p /etc/nginx && \ RUN mkdir -p /app && \
         -ldflags="-s -w -X main.version=v${VERSION}" \
         -trimpath \
         -o /app/nginx-ingress-controller ./cmd/nginx 2>/dev/null || true && \
-    test -s /app/nginx-ingress-controller && strip --strip-all /app/nginx-ingress-controller 2>/dev/null && \' && { echo "Binary not available - download failed" >&2; exit 1; }
+    test -s /app/nginx-ingress-controller && strip --strip-all /app/nginx-ingress-controller 2>/dev/null && \' \
     mkdir -p /app /var/log/nginx-ingress /etc/nginx
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 

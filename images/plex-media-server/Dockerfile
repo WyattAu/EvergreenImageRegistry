@@ -18,7 +18,7 @@ RUN apk add --no-cache ca-certificates wget expat fontconfig freetype glib
 RUN mkdir -p /usr/lib/plexmediaserver || true
 COPY --from=upstream /usr/lib/plexmediaserver /usr/lib/plexmediaserver
 RUN touch Media || true
-COPY --from=upstream "/usr/lib/plexmediaserver/Plex Media Server" "/usr/lib/plexmediaserver/Plex Media Server"
+COPY --from=upstream /usr/lib/plexmediaserver/Plex\ Media\ Server/ /usr/lib/plexmediaserver/Plex\ Media\ Server/
 RUN mkdir -p /var/log/plex /var/cache/plex /config /transcode 2>/dev/null || true; \
     chown -R 65532:65532 /var/log/plex /var/cache/plex /config /transcode /usr/lib/plexmediaserver 2>/dev/null || true
 USER 65532:65532

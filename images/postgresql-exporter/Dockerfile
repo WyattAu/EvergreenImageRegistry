@@ -21,6 +21,10 @@ COPY --from=shim /shim /shim
 COPY --from=builder /binary /postgres_exporter
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER ${APP_UID}:${APP_GID}
+ENV SHIM_BACKUP_ENABLED="true" \
+    SHIM_BACKUP_SCHEDULE="0 2 * * *" \
+    SHIM_BACKUP_RETENTION_DAYS="7" \
+    SHIM_BACKUP_OUTPUT_DIR="/backups"
 ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /
 EXPOSE 9187 9101

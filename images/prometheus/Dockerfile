@@ -28,6 +28,7 @@ LABEL org.opencontainers.image.title="prometheus" \
       org.opencontainers.image.description="Prometheus - monitoring and alerting toolkit" \
       org.opencontainers.image.version="2.53.0" \
       org.opencontainers.image.vendor="Prometheus" \
+      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       org.opencontainers.image.source="https://github.com/prometheus/prometheus" \
       evergreen.image.tier="1" \
       evergreen.constraint.nonroot="true" \

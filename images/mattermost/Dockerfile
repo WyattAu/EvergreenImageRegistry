@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     echo "61e0a677faf07dbc0513b7e419227611eb97d5f278323d6741b1b17c615076d6  /mattermost.tar.gz" | sha256sum -c ; \
     mkdir -p /opt ; \
     if [ -f /mattermost.tar.gz ]; then tar -xzf /mattermost.tar.gz -C /opt && rm -f /mattermost.tar.gz ; fi ; \
-    ln -sf /opt/mattermost-${VERSION} /opt/mattermost 2>/dev/null || true ; && { echo "Binary not available - download failed" >&2; exit 1; }
+    ln -sf /opt/mattermost-${VERSION} /opt/mattermost 2>/dev/null || true
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9

@@ -6,12 +6,10 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN mkdir -p /opt/maldetect || true
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates inotify-tools ; rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://www.rfxn.com/downloads/maldetect-current.tar.gz" ; \
+    curl --retry 3 --retry-delay 5 -fsSL "https://www.rfxn.com/downloads/maldetect-current.tar.gz" \
     -o /maldet.tar.gz && \
     [ -f /maldet.tar.gz ] && tar -xzf /maldet.tar.gz -C /opt && rm -f /maldet.tar.gz && \
-    mkdir -p /app 2>/dev/null || true && \
-    test -e /opt/maldetect || { mkdir -p /opt/maldetect && echo 'maldet && { echo "Binary not available - download failed" >&2; exit 1; }
-    test -e /app || { mkdir -p /app && echo 'maldet && { echo "Binary not available - download failed" >&2; exit 1; }
+    mkdir -p /app /opt/maldetect 2>/dev/null || true
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 # package-manager-verified: integrity verified by upstream
 RUN apk add --no-cache curl ca-certificates inotify-tools clamav-daemon

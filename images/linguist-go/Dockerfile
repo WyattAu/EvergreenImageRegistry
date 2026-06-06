@@ -18,7 +18,7 @@ RUN mkdir -p /app && \ RUN apt-get update && \
     CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build \
         -ldflags="-s -w" \
         -o /app/linguist ./cmd/linguist 2>/dev/null || true && \
-    test -s /app/linguist && strip --strip-all /app/linguist 2>/dev/null && \' && { echo "Binary not available - download failed" >&2; exit 1; }
+    test -s /app/linguist && strip --strip-all /app/linguist 2>/dev/null && \' \
     mkdir -p /app /var/log/linguist /var/cache/linguist
 FROM scratch
 COPY --from=builder /app/linguist /linguist

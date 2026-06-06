@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     echo "baf34fbd8cbaf4ff049d4b5239527c8b6921f2102ac0452803c5f68700cb123a  /AdGuardHome.tar.gz" | sha256sum -c ; \
     [ -f /AdGuardHome.tar.gz ] && tar -xzf /AdGuardHome.tar.gz -C / && rm -f /AdGuardHome.tar.gz ; \
     chmod +x /AdGuardHome && \
-    strip --strip-all /AdGuardHome 2>/dev/null 2>/dev/null && { echo "Binary not available - download failed" >&2; exit 1; }
+    strip --strip-all /AdGuardHome 2>/dev/null
 
 
 

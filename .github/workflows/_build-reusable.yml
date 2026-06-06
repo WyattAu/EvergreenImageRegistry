@@ -353,12 +353,24 @@ jobs:
               echo "::warning::Image not found in registry, skipping sign: ${ref}"
               continue
             fi
-            echo "::group::Sign ${ref}"
-            cosign sign --yes \
-              --certificate-identity="https://github.com/${{ github.repository }}/.github/workflows/_build-reusable.yml@refs/heads/main" \
-              --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-              "${ref}" 2>&1 || echo "::warning::Sign failed for ${ref}"
-            echo "::endgroup::"
+            # Retry signing up to 3 times (registry propagation delay)
+            for attempt in 1 2 3; do
+              echo "::group::Sign ${ref} (attempt ${attempt})"
+              if cosign sign --yes \
+                --certificate-identity="https://github.com/${{ github.repository }}/.github/workflows/_build-reusable.yml@refs/heads/main" \
+                --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+                "${ref}" 2>&1; then
+                echo "::endgroup::"
+                break
+              fi
+              echo "::endgroup::"
+              if [ "$attempt" -lt 3 ]; then
+                echo "::warning::Sign attempt ${attempt} failed for ${ref}, retrying in 10s..."
+                sleep 10
+              else
+                echo "::warning::Sign failed for ${ref} after 3 attempts"
+              fi
+            done
           done
 
       - name: Generate SLSA provenance attestations

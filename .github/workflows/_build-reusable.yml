@@ -330,7 +330,12 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: sigstore/cosign-installer@v4.1.2  # v3.8.0 — installs cosign v2.x
+      - name: Install cosign v2.4.1
+        run: |
+          curl -sLO "https://github.com/sigstore/cosign/releases/download/v2.4.1/cosign-linux-amd64"
+          chmod +x cosign-linux-amd64
+          sudo mv cosign-linux-amd64 /usr/local/bin/cosign
+          cosign version
       - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
         with:
           registry: ghcr.io

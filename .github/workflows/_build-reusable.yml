@@ -124,7 +124,7 @@ jobs:
       - name: Write GITHUB_TOKEN secret file
         run: printf '%s' "${{ secrets.GITHUB_TOKEN }}" > /tmp/github-token
 
-      - name: Build images (amd64 tarballs for verification)
+      - name: Build images (multi-arch or amd64 tarballs)
         run: |
           TAG="${{ steps.resolve-tag.outputs.TAG }}"
           mkdir -p /tmp/images
@@ -146,17 +146,22 @@ jobs:
             local REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
             local SAFE="${image//\//-}"
             echo "::group::Build ${image}"
+            local PLATFORM_FLAG="--platform linux/amd64"
+            local OUTPUT_FLAG="--output type=docker,dest=/tmp/images/${SAFE}.tar"
+            if [ "${{ inputs.multiarch }}" = "true" ]; then
+              PLATFORM_FLAG="--platform linux/amd64,linux/arm64"
+              OUTPUT_FLAG="--push"
+            fi
             if timeout 900 docker buildx build \
                 --builder "$CURRENT_BUILDER" \
-                --platform linux/amd64 \
+                ${PLATFORM_FLAG} \
                 -t "${REF}" \
-                --output "type=docker,dest=/tmp/images/${SAFE}.tar" \
+                ${OUTPUT_FLAG} \
                 --cache-from "type=local,src=/tmp/.buildkit-cache" \
                 --cache-to "type=local,dest=/tmp/.buildkit-cache-new,mode=max" \
                 --secret id=github-token,src=/tmp/github-token \
                 --build-arg "BUILD_DATE=${TAG}" \
                 --build-arg "VCS_REF=${TAG}" \
-                --build-arg "TARGETARCH=amd64" \
                 --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
                 --label "org.opencontainers.image.revision=${{ github.sha }}" \
                 "./images/${image}"; then
@@ -240,8 +245,8 @@ jobs:
           if-no-files-found: ignore
           overwrite: true
 
-      - name: Push to registry
-        if: always() && inputs.push
+      - name: Push to registry (single-arch fallback)
+        if: always() && inputs.push && !inputs.multiarch
         timeout-minutes: 90
         run: |
           TAG="${{ steps.resolve-tag.outputs.TAG }}"
@@ -294,6 +299,7 @@ jobs:
 
       - name: Generate SBOMs with syft
         if: always() && inputs.push
+        continue-on-error: true
         run: |
           TAG="${{ steps.resolve-tag.outputs.TAG }}"
           IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
@@ -342,6 +348,11 @@ jobs:
           TAG="${{ inputs.tag || github.sha }}"
           cat /tmp/batches/built-list-*/built-images.txt 2>/dev/null | sort -u | while read -r ref; do
             [ -z "$ref" ] && continue
+            # Verify image exists in registry before signing
+            if ! docker manifest inspect "${ref}" >/dev/null 2>&1; then
+              echo "::warning::Image not found in registry, skipping sign: ${ref}"
+              continue
+            fi
             echo "::group::Sign ${ref}"
             cosign sign --yes \
               --certificate-identity="https://github.com/${{ github.repository }}/.github/workflows/_build-reusable.yml@refs/heads/main" \
@@ -354,6 +365,11 @@ jobs:
         run: |
           cat /tmp/batches/built-list-*/built-images.txt 2>/dev/null | sort -u | while read -r ref; do
             [ -z "$ref" ] && continue
+            # Verify image exists in registry before attesting
+            if ! docker manifest inspect "${ref}" >/dev/null 2>&1; then
+              echo "::warning::Image not found in registry, skipping attestation: ${ref}"
+              continue
+            fi
             echo "::group::SLSA Provenance ${ref}"
             cosign attest --yes \
               --certificate-identity="https://github.com/${{ github.repository }}/.github/workflows/_build-reusable.yml@refs/heads/main" \

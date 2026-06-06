@@ -28,3 +28,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         erlang-tftp erlang-tools erlang-xmerl \
         rabbitmq-server ; rabbitmq-plugins enable rabbitmq_mqtt ; rm -rf /var/lib/apt/lists/* || true \
     rm -rf /var/lib/apt/lists/* || true
+HEALTHCHECK NONE
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"

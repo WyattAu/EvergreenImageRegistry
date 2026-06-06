@@ -29,3 +29,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         rabbitmq-server ; curl --retry 3 --retry-delay 5 -fsSL https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/v3.13.0/rabbitmq_delayed_message_exchange-3.13.0.ez \        -o /usr/lib/rabbitmq/plugins/rabbitmq_delayed_message_exchange-3.13.0.ez ; rabbitmq-plugins enable rabbitmq_delayed_message_exchange ; rm -rf /var/lib/apt/lists/* && \
     echo "3479180df03fa830fd59ccf638a60eee8f0e8261524a8616685522d7b8d9a9ee  /usr/lib/rabbitmq/plugins/rabbitmq_delayed_message_exchange-3.13.0.ez" | sha256sum -c \
     rm -rf /var/lib/apt/lists/* || true
+HEALTHCHECK NONE
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"

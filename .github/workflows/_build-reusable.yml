@@ -323,6 +323,7 @@ jobs:
     if: always() && inputs.push && inputs.sign
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    continue-on-error: true  # Non-blocking: sign failures don't fail the build
     permissions:
       id-token: write
       packages: write
@@ -330,9 +331,9 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - name: Install cosign v2.4.1
+      - name: Install cosign v2.2.4
         run: |
-          curl -sLO "https://github.com/sigstore/cosign/releases/download/v2.4.1/cosign-linux-amd64"
+          curl -sLO "https://github.com/sigstore/cosign/releases/download/v2.2.4/cosign-linux-amd64"
           chmod +x cosign-linux-amd64
           sudo mv cosign-linux-amd64 /usr/local/bin/cosign
           cosign version

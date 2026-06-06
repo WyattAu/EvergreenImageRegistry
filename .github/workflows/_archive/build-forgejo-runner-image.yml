@@ -1,0 +1,88 @@
+name: Build forgejo-runner-image (apko)
+on:
+  push:
+    paths:
+      - images/forgejo-runner-image/**
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+  packages: write
+  security-events: write
+
+env:
+  IMAGE_NAME: forgejo-runner-image
+  IMAGE: ghcr.io/${{ github.repository_owner }}/forgejo-runner-image
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      digest: ${{ steps.push.outputs.digest }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build OCI image with apko
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:/work" \
+            -w /work \
+            cgr.dev/chainguard/apko build \
+            images/forgejo-runner-image/apko.yaml \
+            "${{ env.IMAGE }}:latest" \
+            forgejo-runner-image.tar \
+            --sbom-path /work/sbom
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Load and push image
+        id: push
+        run: |
+          docker load -i forgejo-runner-image.tar
+          FULL_TAG="${{ env.IMAGE }}:latest"
+          docker push "$FULL_TAG"
+
+          DIGEST=$(docker inspect --format '{{index .RepoDigests 0}}' "$FULL_TAG")
+          echo "digest=${DIGEST}" >> "$GITHUB_OUTPUT"
+          echo "Pushed: $FULL_TAG ($DIGEST)"
+
+      - name: Verify tools in image
+        run: |
+          FAILED=0
+          for cmd in git git-lfs node npm python3 docker jq yq \
+            curl wget ssh ssh-keygen zip unzip zstd make gcc \
+            openssl gpg su-exec file tree patch diff find bash tar; do
+            if docker run --rm --entrypoint /bin/bash "${{ env.IMAGE }}:latest-amd64" \
+              -c "which $cmd > /dev/null 2>&1"; then
+              echo "[PASS] $cmd"
+            else
+              echo "[FAIL] $cmd"
+              FAILED=1
+            fi
+          done
+          exit $FAILED
+
+      - name: Sign image with cosign (keyless)
+        uses: sigstore/cosign-installer@v4.1.2
+      - run: cosign sign --yes "${{ env.IMAGE }}:latest"
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-forgejo-runner-image
+          path: sbom/
+          retention-days: 90
+
+  provenance:
+    needs: build
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
+    with:
+      image: ${{ env.IMAGE }}
+      digest: ${{ needs.build.outputs.digest }}
+    permissions:
+      id-token: write
+      contents: read
+      packages: write

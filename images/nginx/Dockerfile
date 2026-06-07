@@ -1,6 +1,6 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
-ARG SHIM_VERSION=v0.3.0
+ARG SHIM_VERSION=v1.0.0
 
 FROM debian:bookworm-slim AS builder
 
@@ -32,10 +32,11 @@ FROM scratch
 COPY --from=shim /shim /shim
 COPY --from=builder /nginx /nginx
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY shim.toml /etc/evergreen/shim.toml
 USER ${APP_UID}:${APP_GID}
 ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /
-EXPOSE 80 443 9101
+EXPOSE 80 443 9101 9102
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:80"]

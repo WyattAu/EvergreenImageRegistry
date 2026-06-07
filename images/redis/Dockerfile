@@ -4,7 +4,7 @@
 # =============================================================================
 ARG VERSION=8.0.2
 ARG TARGETARCH
-ARG SHIM_VERSION=v0.3.0
+ARG SHIM_VERSION=v1.0.0
 
 FROM debian:bookworm-slim AS builder
 ARG VERSION
@@ -32,6 +32,7 @@ COPY --from=builder /usr/local/bin/redis-cli /usr/local/bin/redis-cli
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
 RUN ["/bin/sh", "-c", "mkdir -p /app /var/log/redis /var/cache/redis"]
+COPY shim.toml /etc/evergreen/shim.toml
 
 USER 65532:65532
 ENV SHIM_CACHE_ENABLED="true" \
@@ -40,7 +41,7 @@ ENV SHIM_CACHE_ENABLED="true" \
     SHIM_CACHE_EVICTION="lru" \
     SHIM_METRICS_ENABLED="true"
 WORKDIR /app
-EXPOSE 6379 9101
+EXPOSE 6379 9101 9102
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]

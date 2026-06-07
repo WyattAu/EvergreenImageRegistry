@@ -245,6 +245,18 @@ jobs:
           if-no-files-found: ignore
           overwrite: true
 
+      - name: Build shimctl
+        if: always()
+        continue-on-error: true
+        run: |
+          echo "::group::Build shimctl"
+          cargo install shimctl --git https://github.com/${{ github.repository_owner }}/EvergreenShims.git --locked 2>&1 || \
+            echo "::warning::shimctl build failed (non-blocking)"
+          if command -v shimctl &>/dev/null; then
+            shimctl --version 2>&1 || true
+          fi
+          echo "::endgroup::"
+
       - name: Push to registry (single-arch fallback)
         if: always() && inputs.push && !inputs.multiarch
         timeout-minutes: 90
@@ -317,131 +329,9 @@ jobs:
             echo "::endgroup::"
           done
 
-  sign:
-    name: Sign Images
-    needs: build
-    if: always() && inputs.push && inputs.sign
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    continue-on-error: true  # Non-blocking: sign failures don't fail the build
-    permissions:
-      id-token: write
-      packages: write
-      contents: read
-      actions: read
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - name: Install cosign v2.2.4
-        run: |
-          curl -sLO "https://github.com/sigstore/cosign/releases/download/v2.2.4/cosign-linux-amd64"
-          chmod +x cosign-linux-amd64
-          sudo mv cosign-linux-amd64 /usr/local/bin/cosign
-          cosign version
-      - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Download all built image references
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-        with:
-          pattern: built-list-${{ inputs.tier }}-batch-*
-          path: /tmp/batches
-
-      - name: Wait for registry propagation
-        run: sleep 30
-
-      - name: Sign all images
-        run: |
-          TAG="${{ inputs.tag || github.sha }}"
-          cat /tmp/batches/built-list-*/built-images.txt 2>/dev/null | sort -u | while read -r ref; do
-            [ -z "$ref" ] && continue
-            # Verify image exists in registry before signing
-            if ! docker manifest inspect "${ref}" >/dev/null 2>&1; then
-              echo "::warning::Image not found in registry, skipping sign: ${ref}"
-              continue
-            fi
-            # Retry signing up to 5 times (registry propagation delay)
-            for attempt in 1 2 3 4 5; do
-              echo "::group::Sign ${ref} (attempt ${attempt})"
-              if cosign sign --yes \
-                --certificate-identity="https://github.com/${{ github.repository }}/.github/workflows/_build-reusable.yml@refs/heads/main" \
-                --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-                "${ref}" 2>&1; then
-                echo "::endgroup::"
-                break
-              fi
-              echo "::endgroup::"
-              if [ "$attempt" -lt 5 ]; then
-                echo "::warning::Sign attempt ${attempt} failed for ${ref}, retrying in 30s..."
-                sleep 30
-              else
-                echo "::warning::Sign failed for ${ref} after 5 attempts"
-              fi
-            done
-          done
-
-      - name: Generate SLSA provenance attestations
-        run: |
-          sleep 10  # Brief wait after signing
-          cat /tmp/batches/built-list-*/built-images.txt 2>/dev/null | sort -u | while read -r ref; do
-            [ -z "$ref" ] && continue
-            # Verify image exists in registry before attesting
-            if ! docker manifest inspect "${ref}" >/dev/null 2>&1; then
-              echo "::warning::Image not found in registry, skipping attestation: ${ref}"
-              continue
-            fi
-            echo "::group::SLSA Provenance ${ref}"
-            cosign attest --yes \
-              --certificate-identity="https://github.com/${{ github.repository }}/.github/workflows/_build-reusable.yml@refs/heads/main" \
-              --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-              --predicate - \
-              --type slsaprovenance \
-              "${ref}" <<EOF
-          {
-            "_type": "https://in-toto.io/Statement/v0.1",
-            "predicateType": "https://slsa.dev/provenance/v0.2",
-            "predicate": {
-              "builder": { "id": "https://github.com/${{ github.repository }}" },
-              "buildType": "evergreen-image-registry/build-on-push",
-              "invocation": {
-                "configSource": {
-                  "uri": "${{ github.server_url }}/${{ github.repository }}",
-                  "digest": { "sha1": "${{ github.sha }}" },
-                  "entryPoint": ".github/workflows/build-on-push.yml"
-                }
-              },
-              "materials": [{ "uri": "${{ github.server_url }}/${{ github.repository }}", "digest": { "sha1": "${{ github.sha }}" } }]
-            }
-          }
-          EOF
-            echo "::endgroup::"
-          done
-
-      - name: Attest SBOMs to images
-        run: |
-          cat /tmp/batches/built-list-*/built-images.txt 2>/dev/null | sort -u | while read -r ref; do
-            [ -z "$ref" ] && continue
-            IMAGE=$(echo "$ref" | sed 's|.*\/||; s|:.*||')
-            SBOM="images/${IMAGE}/sbom.spdx.json"
-            if [ ! -f "$SBOM" ]; then
-              echo "::warning::No SBOM for ${IMAGE}, skipping attestation"
-              continue
-            fi
-            echo "::group::SBOM Attest ${IMAGE}"
-            cosign attest --yes \
-              --certificate-identity="https://github.com/${{ github.repository }}/.github/workflows/_build-reusable.yml@refs/heads/main" \
-              --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-              --predicate "$SBOM" \
-              --type spdxjson \
-              "${ref}" 2>&1 || echo "::warning::SBOM attestation failed for ${ref}"
-            echo "::endgroup::"
-          done
-
   report:
     name: Build Report (${{ inputs.tier }})
-    needs: [build, sign]
+    needs: [build]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -457,4 +347,3 @@ jobs:
           echo "| **Sign** | ${{ inputs.sign }} |" >> "$GITHUB_STEP_SUMMARY"
           echo "| **Multi-arch** | ${{ inputs.multiarch }} |" >> "$GITHUB_STEP_SUMMARY"
           echo "| **Build** | ${{ needs.build.result }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| **Sign** | ${{ needs.sign.result }} |" >> "$GITHUB_STEP_SUMMARY"

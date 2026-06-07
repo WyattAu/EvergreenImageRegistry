@@ -1,3 +1,8 @@
+[management]
+enabled = true
+host = "0.0.0.0"
+port = 9102
+
 [health]
 type = "tcp"
 host = "127.0.0.1"

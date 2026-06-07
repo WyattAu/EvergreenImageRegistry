@@ -81,6 +81,17 @@ jobs:
         run: |
           curl -sSfL https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64 \
             -o /usr/local/bin/hadolint && chmod +x /usr/local/bin/hadolint
+      - name: Install shimctl
+        run: |
+          cargo install shimctl --git https://github.com/${{ github.repository_owner }}/EvergreenShims.git --locked 2>&1 || \
+            echo "::warning::shimctl install failed (non-blocking)"
+      - name: Verify shimctl version
+        run: |
+          if command -v shimctl &>/dev/null; then
+            shimctl --version 2>&1 || echo "shimctl installed but version check failed"
+          else
+            echo "::warning::shimctl not available"
+          fi
       - name: Get changed image list
         id: images
         run: |
@@ -120,7 +131,7 @@ jobs:
       matrix: ${{ needs.discover.outputs.matrix }}
       tag: ${{ github.sha }}
       push: ${{ github.event_name != 'pull_request' }}
-      sign: true
+      sign: false
       multiarch: true
       tier: changed
     secrets: inherit

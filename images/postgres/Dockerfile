@@ -5,7 +5,7 @@
 
 ARG VERSION=17.10
 ARG TARGETARCH
-ARG SHIM_VERSION=v0.3.0
+ARG SHIM_VERSION=v1.0.0
 
 FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
@@ -43,7 +43,7 @@ ENV SHIM_BACKUP_ENABLED="true" \
     SHIM_ALERTING_WEBHOOK_URL="" \
     SHIM_SCHEDULER_ENABLED="true" \
     SHIM_SCHEDULER_BACKUP_CRON="0 2 * * *"
-EXPOSE 5432 9101
+EXPOSE 5432 9101 9102
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=5 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5432"]

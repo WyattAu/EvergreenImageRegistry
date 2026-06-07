@@ -1,6 +1,6 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
-ARG SHIM_VERSION=v0.3.0
+ARG SHIM_VERSION=v1.0.0
 FROM golang:1.24-bookworm AS builder
 ARG TARGETARCH
 ARG VERSION=1.18.1
@@ -16,10 +16,11 @@ FROM scratch
 COPY --from=shim /shim /shim
 COPY --from=builder /binary /vault
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY shim.toml /etc/evergreen/shim.toml
 USER ${APP_UID}:${APP_GID}
 ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /
-EXPOSE 8200 8201 9101
+EXPOSE 8200 8201 9101 9102
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8200"]
 ENTRYPOINT ["/shim", "run"]

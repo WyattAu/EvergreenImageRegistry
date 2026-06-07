@@ -14,6 +14,3 @@ timeout_secs = 5
 enabled = true
 port = 9101
 path = "/metrics"
-
-[process]
-graceful_shutdown_secs = 30

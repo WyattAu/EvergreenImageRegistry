@@ -2,6 +2,8 @@ ARG VERSION=5.0.8
 ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
+ARG SHIM_VERSION=v1.0.0
+
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG VERSION
 RUN mkdir -p /opt/apache-cassandra-${VERSION} || true
@@ -25,7 +27,12 @@ RUN apt-get update && \
 
 # hadolint ignore=DL3023
 
+FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
 ENV HEALTH_CMD="nodetool status" \
     READY_CMD="nodetool netstats" \
     STARTUP_CMD="nodetool status" \
@@ -46,11 +53,29 @@ ENV CASSANDRA_HOME=/opt/cassandra
 ENV PATH="${CASSANDRA_HOME}/bin:${JAVA_HOME}/bin:${PATH}"
 
 USER 65532:65532
+ENV SHIM_BACKUP_ENABLED="true" \
+    SHIM_BACKUP_DB_HOST="localhost" \
+    SHIM_BACKUP_DB_PORT="9042" \
+    SHIM_BACKUP_SCHEDULE="0 2 * * *" \
+    SHIM_BACKUP_RETENTION_DAYS="7" \
+    SHIM_BACKUP_OUTPUT_DIR="/backups" \
+    SHIM_REPLICATION_ENABLED="false" \
+    SHIM_MIGRATION_ENABLED="false" \
+    SHIM_VAULT_ENABLED="false" \
+    SHIM_AUDIT_ENABLED="true" \
+    SHIM_METRICS_ENABLED="true" \
+    SHIM_ALERTING_ENABLED="false" \
+    SHIM_ALERTING_WEBHOOK_URL="" \
+    SHIM_SCHEDULER_ENABLED="true" \
+    SHIM_SCHEDULER_BACKUP_CRON="0 2 * * *"
 WORKDIR /app
 EXPOSE 9042
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD nodetool status
-ENTRYPOINT ["sh", "-c", "/opt/cassandra/bin/cassandra -f"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9042"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
+CMD ["-c", "nodetool", "--", "/opt/cassandra/bin/cassandra", "-f"]
 LABEL org.opencontainers.image.title="cassandra" \
       org.opencontainers.image.description="Apache Cassandra - distributed NoSQL database" \
       org.opencontainers.image.version="5.0" \

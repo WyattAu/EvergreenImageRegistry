@@ -5,7 +5,7 @@ ARG APP_GID=65532
 
 
 
-ARG SHIM_VERSION=v0.3.0
+ARG SHIM_VERSION=v1.0.0
 
 FROM vaultwarden/server@sha256:c4f6056fe0c288a052a223cecd263a90d1dda1a0177bb5b054a363a6c7b211d9 AS upstream
 

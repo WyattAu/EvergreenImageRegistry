@@ -2,7 +2,7 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-ARG SHIM_VERSION=v0.3.0
+ARG SHIM_VERSION=v1.0.0
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
 ARG TARGETARCH
@@ -17,7 +17,7 @@ ARG TARGETARCH
 RUN mkdir -p /app /var/log/cockroachdb-sql /var/cache/cockroachdb-sql 2>/dev/null || true
 
 
-FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
 COPY --from=shim /shim /shim
@@ -28,7 +28,21 @@ COPY --from=builder /app /app
 COPY --from=builder /var/log/cockroachdb-sql /var/log/cockroachdb-sql
 COPY --from=builder /var/cache/cockroachdb-sql /var/cache/cockroachdb-sql
 USER 65532:65532
-ENV SHIM_METRICS_ENABLED="true"
+ENV SHIM_BACKUP_ENABLED="true" \
+    SHIM_BACKUP_DB_HOST="localhost" \
+    SHIM_BACKUP_DB_PORT="26257" \
+    SHIM_BACKUP_SCHEDULE="0 2 * * *" \
+    SHIM_BACKUP_RETENTION_DAYS="7" \
+    SHIM_BACKUP_OUTPUT_DIR="/backups" \
+    SHIM_REPLICATION_ENABLED="false" \
+    SHIM_MIGRATION_ENABLED="false" \
+    SHIM_VAULT_ENABLED="false" \
+    SHIM_AUDIT_ENABLED="true" \
+    SHIM_METRICS_ENABLED="true" \
+    SHIM_ALERTING_ENABLED="false" \
+    SHIM_ALERTING_WEBHOOK_URL="" \
+    SHIM_SCHEDULER_ENABLED="true" \
+    SHIM_SCHEDULER_BACKUP_CRON="0 2 * * *"
 WORKDIR /app
 EXPOSE 26257
 

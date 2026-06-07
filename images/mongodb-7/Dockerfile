@@ -12,7 +12,7 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 
-ARG SHIM_VERSION=v0.3.0
+ARG SHIM_VERSION=v1.0.0
 
 FROM debian@sha256:f70dc8d6a8b6a06824c92471a1a258030836b26b043881358b967bf73de7c5ab AS builder
 ARG VERSION=7.0.9
@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     curl --retry 3 --retry-delay 5 -fsSL "https://fastdl.mongodb.org/linux/mongodb-linux-${ARCH}-ubuntu2204-${VERSION}.tgz" -o /tmp/mongodb.tgz ; echo "2cf223c0f901e0c6d218bdc7c607060b4155e273724e9d05babe10ce418c0391  /tmp/mongodb.tgz" | sha256sum -c  ; [ -f /tmp/mongodb.tgz ] && tar -xzf /tmp/mongodb.tgz -C /tmp ; \
     strip --strip-all /tmp/mongodb-linux-${ARCH}-ubuntu2204-${VERSION}/bin/* 2>/dev/null; mv /tmp/mongodb-linux-${ARCH}-ubuntu2204-${VERSION}/bin/* /usr/local/bin/ \
     && rm -rf /tmp/mongodb.tgz /tmp/mongodb-linux-${ARCH}-ubuntu2204-${VERSION} && { echo "Binary not available - download failed" >&2; exit 1; }
-FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 COPY --from=shim /shim /usr/local/bin/shim
@@ -37,7 +37,21 @@ COPY --from=builder /usr/local/bin/mongod /usr/local/bin/mongod
 COPY --from=builder /usr/local/bin/mongos /usr/local/bin/mongos
 COPY --from=builder /usr/local/bin/mongosh /usr/local/bin/mongosh
 USER 65532:65532
-ENV SHIM_METRICS_ENABLED="true"
+ENV SHIM_BACKUP_ENABLED="true" \
+    SHIM_BACKUP_DB_HOST="localhost" \
+    SHIM_BACKUP_DB_PORT="27017" \
+    SHIM_BACKUP_SCHEDULE="0 2 * * *" \
+    SHIM_BACKUP_RETENTION_DAYS="7" \
+    SHIM_BACKUP_OUTPUT_DIR="/backups" \
+    SHIM_REPLICATION_ENABLED="false" \
+    SHIM_MIGRATION_ENABLED="false" \
+    SHIM_VAULT_ENABLED="false" \
+    SHIM_AUDIT_ENABLED="true" \
+    SHIM_METRICS_ENABLED="true" \
+    SHIM_ALERTING_ENABLED="false" \
+    SHIM_ALERTING_WEBHOOK_URL="" \
+    SHIM_SCHEDULER_ENABLED="true" \
+    SHIM_SCHEDULER_BACKUP_CRON="0 2 * * *"
 WORKDIR /data/db
 EXPOSE 27017
 

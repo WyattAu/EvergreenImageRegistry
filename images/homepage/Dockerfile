@@ -4,7 +4,7 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 # NOTE: Upstream image digest not pinned - update @sha256:... when stable digest is available
-ARG SHIM_VERSION=v0.3.0
+ARG SHIM_VERSION=v1.0.0
 
 FROM ghcr.io/gethomepage/homepage:v1.5 AS upstream
 

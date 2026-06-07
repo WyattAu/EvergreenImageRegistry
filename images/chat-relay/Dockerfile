@@ -1,7 +1,7 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-ARG SHIM_VERSION=v0.3.0
+ARG SHIM_VERSION=v1.0.0
 
 FROM docker.io/matrixdotorg/complement@sha256:779cdbc9c92ae386ee19cb3c55eb3ae96b12be205117fe30caffbd4cf5b2a20f AS upstream
 

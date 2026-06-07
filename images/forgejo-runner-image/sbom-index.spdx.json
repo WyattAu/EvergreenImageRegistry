@@ -1,0 +1,73 @@
+{
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "sbom-sha256:7854e403e1a9066bfd4d75db6867d2ba01d8e5837acc0ecc938eeae0a6ec0143",
+  "spdxVersion": "SPDX-2.3",
+  "creationInfo": {
+    "created": "2026-06-05T08:25:00Z",
+    "creators": [
+      "Tool: apko (v1.2.15+dirty)",
+      "Organization: Chainguard, Inc"
+    ],
+    "licenseListVersion": "3.27"
+  },
+  "dataLicense": "CC0-1.0",
+  "documentNamespace": "https://spdx.org/spdxdocs/apko/",
+  "documentDescribes": [
+    "SPDXRef-Package-sha256-7854e403e1a9066bfd4d75db6867d2ba01d8e5837acc0ecc938eeae0a6ec0143"
+  ],
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-sha256-7854e403e1a9066bfd4d75db6867d2ba01d8e5837acc0ecc938eeae0a6ec0143",
+      "name": "sha256:7854e403e1a9066bfd4d75db6867d2ba01d8e5837acc0ecc938eeae0a6ec0143",
+      "versionInfo": "sha256:7854e403e1a9066bfd4d75db6867d2ba01d8e5837acc0ecc938eeae0a6ec0143",
+      "filesAnalyzed": false,
+      "description": "Multi-arch image index",
+      "downloadLocation": "NOASSERTION",
+      "supplier": "Organization: Chainguard, Inc.",
+      "sourceInfo": "Generated at image build time by apko",
+      "primaryPackagePurpose": "CONTAINER",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7854e403e1a9066bfd4d75db6867d2ba01d8e5837acc0ecc938eeae0a6ec0143"
+        }
+      ],
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:oci/forgejo-runner-image@sha256:7854e403e1a9066bfd4d75db6867d2ba01d8e5837acc0ecc938eeae0a6ec0143?mediaType=application%2Fvnd.oci.image.index.v1%2Bjson",
+          "referenceType": "purl"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-sha256-08de025fae549f4f6d80b3f1f597d6c41b48b812ded56642cf905dc746d49986",
+      "name": "sha256:08de025fae549f4f6d80b3f1f597d6c41b48b812ded56642cf905dc746d49986",
+      "versionInfo": "sha256:08de025fae549f4f6d80b3f1f597d6c41b48b812ded56642cf905dc746d49986",
+      "filesAnalyzed": false,
+      "downloadLocation": "NOASSERTION",
+      "supplier": "Organization: Chainguard, Inc.",
+      "primaryPackagePurpose": "CONTAINER",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "08de025fae549f4f6d80b3f1f597d6c41b48b812ded56642cf905dc746d49986"
+        }
+      ],
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:oci/forgejo-runner-image@sha256:08de025fae549f4f6d80b3f1f597d6c41b48b812ded56642cf905dc746d49986?arch=amd64\u0026mediaType=application%2Fvnd.oci.image.manifest.v1%2Bjson\u0026os=linux",
+          "referenceType": "purl"
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-Package-sha256-7854e403e1a9066bfd4d75db6867d2ba01d8e5837acc0ecc938eeae0a6ec0143",
+      "relationshipType": "VARIANT_OF",
+      "relatedSpdxElement": "SPDXRef-Package-sha256-08de025fae549f4f6d80b3f1f597d6c41b48b812ded56642cf905dc746d49986"
+    }
+  ]
+}

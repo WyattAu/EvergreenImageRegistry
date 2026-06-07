@@ -349,6 +349,9 @@ jobs:
           pattern: built-list-${{ inputs.tier }}-batch-*
           path: /tmp/batches
 
+      - name: Wait for registry propagation
+        run: sleep 30
+
       - name: Sign all images
         run: |
           TAG="${{ inputs.tag || github.sha }}"
@@ -359,8 +362,8 @@ jobs:
               echo "::warning::Image not found in registry, skipping sign: ${ref}"
               continue
             fi
-            # Retry signing up to 3 times (registry propagation delay)
-            for attempt in 1 2 3; do
+            # Retry signing up to 5 times (registry propagation delay)
+            for attempt in 1 2 3 4 5; do
               echo "::group::Sign ${ref} (attempt ${attempt})"
               if cosign sign --yes \
                 --certificate-identity="https://github.com/${{ github.repository }}/.github/workflows/_build-reusable.yml@refs/heads/main" \
@@ -370,17 +373,18 @@ jobs:
                 break
               fi
               echo "::endgroup::"
-              if [ "$attempt" -lt 3 ]; then
-                echo "::warning::Sign attempt ${attempt} failed for ${ref}, retrying in 10s..."
-                sleep 10
+              if [ "$attempt" -lt 5 ]; then
+                echo "::warning::Sign attempt ${attempt} failed for ${ref}, retrying in 30s..."
+                sleep 30
               else
-                echo "::warning::Sign failed for ${ref} after 3 attempts"
+                echo "::warning::Sign failed for ${ref} after 5 attempts"
               fi
             done
           done
 
       - name: Generate SLSA provenance attestations
         run: |
+          sleep 10  # Brief wait after signing
           cat /tmp/batches/built-list-*/built-images.txt 2>/dev/null | sort -u | while read -r ref; do
             [ -z "$ref" ] && continue
             # Verify image exists in registry before attesting

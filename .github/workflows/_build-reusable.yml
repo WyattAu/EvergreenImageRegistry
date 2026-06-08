@@ -342,7 +342,11 @@ jobs:
             REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
             echo "::group::Attest SBOM ${image}"
             if [ -f "$SBOM" ]; then
-              if cosign attest --yes --predicate "$SBOM" --type spdxjson "$REF" 2>&1; then
+              if cosign attest --yes \
+                --certificate-identity="https://github.com/${{ github.repository }}/.github/workflows/sign-images.yml@refs/heads/main" \
+                --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+                --predicate "$SBOM" \
+                --type spdxjson "$REF" 2>&1; then
                 echo "Attested SBOM for ${image}"
               else
                 echo "::warning::cosign attest failed for ${image}"

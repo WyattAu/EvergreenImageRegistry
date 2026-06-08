@@ -1,0 +1,42 @@
+[metadata]
+name = "taiga-back"
+version = "latest"
+description = "Taiga Backend - project management web application backend"
+vendor = "Taiga"
+source = "https://github.com/taigaio/taiga-back"
+license = "MPL-2.0"
+tier = "standard"
+upstream_version = "latest"
+
+[build]
+base = "wolfi-base"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "docker-image"
+url = "docker.io/taigaio/taiga-back:latest"
+
+[runtime]
+entrypoint = ["/usr/local/bin/shim", "run"]
+
+[ports]
+expose = [8000, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "taiga-back"
+"org.opencontainers.image.vendor" = "Taiga"
+"org.opencontainers.image.version" = "latest"
+"org.opencontainers.image.source" = "https://github.com/taigaio/taiga-back"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.constraint.base" = "wolfi"
+"evergreen.health.type" = "exec"
+"evergreen.hft.init-system" = "none"
+"evergreen.hft.shutdown-timeout" = "30s"
+"evergreen.hft.signal-handling" = "native"
+"evergreen.hft.startup-timeout" = "30000ms"
+"evergreen.image.category" = "project-management"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "standard"
+"evergreen.metrics.native" = "ztunnel"

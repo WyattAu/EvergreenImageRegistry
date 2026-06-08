@@ -19,7 +19,7 @@ RUN mkdir -p /var/lib/neo4j /var/log/neo4j /app ; \
 
 # hadolint ignore=DL3023
 
-FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 COPY --from=shim /shim /usr/local/bin/shim
@@ -40,7 +40,24 @@ ENV NEO4J_HOME=/opt/neo4j
 ENV PATH="${NEO4J_HOME}/bin:${JAVA_HOME}/bin:${PATH}"
 
 USER 65532:65532
-ENV SHIM_METRICS_ENABLED="true"
+ENV SHIM_BACKUP_ENABLED="true" \
+    SHIM_BACKUP_DB_HOST="localhost" \
+    SHIM_BACKUP_DB_PORT="7474" \
+    SHIM_BACKUP_SCHEDULE="0 2 * * *" \
+    SHIM_BACKUP_RETENTION_DAYS="7" \
+    SHIM_BACKUP_OUTPUT_DIR="/backups" \
+    SHIM_REPLICATION_ENABLED="false" \
+    SHIM_MIGRATION_ENABLED="false" \
+    SHIM_VAULT_ENABLED="false" \
+    SHIM_AUDIT_ENABLED="true" \
+    SHIM_METRICS_ENABLED="true" \
+    SHIM_ALERTING_ENABLED="false" \
+    SHIM_ALERTING_WEBHOOK_URL="" \
+    SHIM_SCHEDULER_ENABLED="true" \
+    SHIM_SCHEDULER_BACKUP_CRON="0 2 * * *" \
+    SHIM_MANAGEMENT_ENABLED="true" \
+    SHIM_MANAGEMENT_HOST="0.0.0.0" \
+    SHIM_MANAGEMENT_PORT="9102"
 WORKDIR /app
 EXPOSE 7474
 

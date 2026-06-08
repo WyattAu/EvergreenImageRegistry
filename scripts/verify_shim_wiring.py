@@ -66,10 +66,13 @@ def detect_base_type(content: str) -> str:
 
 
 def get_shim_path(base_type: str, content: str = "") -> str:
-    """Return the shim binary path based on actual usage in Dockerfile."""
-    # Detect the actual path used in the image
-    if "/usr/local/bin/shim" in content:
-        return "/usr/local/bin/shim"
+    """Return the shim binary path based on actual usage in ENTRYPOINT."""
+    # Detect the actual path used in ENTRYPOINT
+    entrypoint_match = re.search(r'ENTRYPOINT\s+\[([^\]]+)\]', content)
+    if entrypoint_match:
+        entrypoint = entrypoint_match.group(1)
+        if "/usr/local/bin/shim" in entrypoint:
+            return "/usr/local/bin/shim"
     return "/shim"
 
 
@@ -112,7 +115,7 @@ def check_dockerfile(dockerfile: Path) -> dict:
         checks["has_healthcheck_shim"] = True
 
     # 5. ENTRYPOINT using shim
-    if re.search(r'ENTRYPOINT\s+\["?' + re.escape(shim_path) + r'"?,\s*"run"\]', content):
+    if re.search(r'ENTRYPOINT\s+\["?' + re.escape(shim_path) + r'"?\s*,\s*"run"(?:\s*,\s*"-c"\s*,\s*"[^"]+")?\]', content):
         checks["has_entrypoint_shim"] = True
 
     # 6. EXPOSE 9101

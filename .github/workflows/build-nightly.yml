@@ -123,6 +123,75 @@ jobs:
           if [ "$FAIL" -gt 0 ]; then exit 1; fi
 
   # ---------------------------------------------------------------------------
+  # PERF REGRESSION - Non-blocking performance regression gate
+  # ---------------------------------------------------------------------------
+  perf-regression:
+    name: Performance Regression Check
+    needs: [gates]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
+      - name: Benchmark critical image builds
+        run: |
+          mkdir -p .specs/06_5_regression
+          REGISTRY="ghcr.io/${{ github.repository_owner }}"
+          CRITICAL_IMAGES="nginx redis grafana"
+          BUILD_TIMES="{}"
+          for image in $CRITICAL_IMAGES; do
+            echo "::group::Benchmark ${image}"
+            START=$(date +%s%N)
+            docker buildx build \
+              --builder "$(docker buildx inspect --format '{{.Name}}' 2>/dev/null | head -1)" \
+              --platform linux/amd64 \
+              --load \
+              -t "bench-${image}:latest" \
+              "./images/${image}" 2>&1 || true
+            END=$(date +%s%N)
+            ELAPSED=$(( (END - START) / 1000000 ))
+            echo "${image}: ${ELAPSED}ms"
+            BUILD_TIMES=$(echo "$BUILD_TIMES" | jq --arg img "$image" --arg t "$ELAPSED" '. + {($img): ($t | tonumber)}')
+            echo "::endgroup::"
+          done
+          echo "$BUILD_TIMES" | tee .specs/06_5_regression/build_times.json
+      - name: Compare against baseline
+        run: |
+          BASELINE=".specs/06_5_regression/baseline.json"
+          CURRENT=".specs/06_5_regression/build_times.json"
+          if [ ! -f "$BASELINE" ]; then
+            echo "::notice::No baseline found, saving current as baseline"
+            cp "$CURRENT" "$BASELINE"
+            exit 0
+          fi
+          echo "## Performance Regression Check" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Image | Baseline (ms) | Current (ms) | Change |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|-------|--------------|--------------|--------|" >> "$GITHUB_STEP_SUMMARY"
+          REGRESSED=0
+          for key in $(jq -r 'keys[]' "$CURRENT"); do
+            BASE=$(jq -r --arg k "$key" '.[$k] // 0' "$BASELINE")
+            CUR=$(jq -r --arg k "$key" '.[$k] // 0' "$CURRENT")
+            if [ "$BASE" -gt 0 ]; then
+              CHANGE=$(echo "scale=1; (($CUR - $BASE) / $BASE) * 100" | bc)
+              echo "| $key | $BASE | $CUR | ${CHANGE}% |" >> "$GITHUB_STEP_SUMMARY"
+              OVER=$(echo "$CHANGE > 50" | bc -l)
+              if [ "$OVER" = "1" ]; then
+                echo "::warning::${key} regressed by ${CHANGE}% (threshold: 50%)"
+                REGRESSED=$((REGRESSED+1))
+              fi
+            else
+              echo "| $key | $BASE | $CUR | N/A |" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          done
+          cp "$CURRENT" "$BASELINE"
+          if [ "$REGRESSED" -gt 0 ]; then
+            echo "::warning::${REGRESSED} image(s) exceeded 50% regression threshold (non-blocking)"
+          fi
+
+  # ---------------------------------------------------------------------------
   # BUILD CRITICAL - Highest priority, signed, multi-arch
   # ---------------------------------------------------------------------------
   build-critical:

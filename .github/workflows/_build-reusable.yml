@@ -329,6 +329,30 @@ jobs:
             echo "::endgroup::"
           done
 
+      - name: Attest SBOMs with cosign
+        if: always() && inputs.push
+        continue-on-error: true
+        run: |
+          TAG="${{ steps.resolve-tag.outputs.TAG }}"
+          IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
+          for image in "${IMAGE_LIST[@]}"; do
+            [ -z "$image" ] && continue
+            [ ! -f "./images/${image}/Dockerfile" ] && continue
+            SBOM="./images/${image}/sbom.spdx.json"
+            REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
+            echo "::group::Attest SBOM ${image}"
+            if [ -f "$SBOM" ]; then
+              if cosign attest --yes --predicate "$SBOM" --type spdxjson "$REF" 2>&1; then
+                echo "Attested SBOM for ${image}"
+              else
+                echo "::warning::cosign attest failed for ${image}"
+              fi
+            else
+              echo "::warning::no SBOM file for ${image}, skipping attestation"
+            fi
+            echo "::endgroup::"
+          done
+
   report:
     name: Build Report (${{ inputs.tier }})
     needs: [build]

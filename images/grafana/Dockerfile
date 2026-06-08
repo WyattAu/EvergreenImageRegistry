@@ -20,7 +20,10 @@ COPY --from=builder /grafana-server /grafana-server
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY shim.toml /etc/evergreen/shim.toml
 USER ${APP_UID}:${APP_GID}
-ENV SHIM_METRICS_ENABLED="true"
+ENV SHIM_METRICS_ENABLED="true" \
+    SHIM_MANAGEMENT_ENABLED="true" \
+    SHIM_MANAGEMENT_HOST="0.0.0.0" \
+    SHIM_MANAGEMENT_PORT="9102"
 WORKDIR /
 EXPOSE 3000 9101 9102
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \

@@ -23,7 +23,7 @@ WORKDIR /
 EXPOSE 9090 9101
 HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9090"]
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "prometheus"]
 LABEL org.opencontainers.image.title="prometheus" \
       org.opencontainers.image.description="Prometheus - monitoring and alerting toolkit" \
       org.opencontainers.image.version="2.53.0" \

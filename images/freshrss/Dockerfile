@@ -33,7 +33,7 @@ EXPOSE 80
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "s6-svscan /etc/s6-overlay"]
 
 LABEL org.opencontainers.image.title="freshrss" \
       org.opencontainers.image.description="freshrss container image" \

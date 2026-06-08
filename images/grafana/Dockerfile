@@ -28,7 +28,7 @@ WORKDIR /
 EXPOSE 3000 9101 9102
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "grafana-server"]
 LABEL org.opencontainers.image.title="grafana" \
       org.opencontainers.image.description="Grafana - observability dashboard and visualization" \
       org.opencontainers.image.version="${VERSION}" \

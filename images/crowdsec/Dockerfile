@@ -40,7 +40,7 @@ EXPOSE 8080 6060
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "/usr/local/bin/crowdsec"]
 
 
 

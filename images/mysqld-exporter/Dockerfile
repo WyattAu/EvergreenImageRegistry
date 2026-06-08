@@ -36,7 +36,7 @@ EXPOSE 9104
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9104"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "/bin/mysqld_exporter"]
 LABEL org.opencontainers.image.title="mysqld-exporter" \
       org.opencontainers.image.description="MySQL Server Exporter - Prometheus exporter for MySQL server metrics" \
       org.opencontainers.image.version="0.16.0" \

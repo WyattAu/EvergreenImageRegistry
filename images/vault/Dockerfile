@@ -26,7 +26,7 @@ WORKDIR /
 EXPOSE 8200 8201 9101 9102
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8200"]
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "vault server"]
 LABEL org.opencontainers.image.title="vault" \
       org.opencontainers.image.description="Vault - secrets management and data protection by HashiCorp" \
       org.opencontainers.image.version="1.18.1" \

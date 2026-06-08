@@ -36,7 +36,7 @@ EXPOSE 9090
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9090"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "tekton"]
 LABEL org.opencontainers.image.title="tekton" \
       org.opencontainers.image.description="Tekton - cloud-native CI/CD solution for Kubernetes" \
       org.opencontainers.image.version="${VERSION}" \

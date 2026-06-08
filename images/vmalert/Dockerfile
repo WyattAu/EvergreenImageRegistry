@@ -34,7 +34,7 @@ EXPOSE 8880
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8880"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "/vmalert"]
 LABEL org.opencontainers.image.title="vmalert" \
       org.opencontainers.image.description="vmalert - alerting engine for VictoriaMetrics" \
       org.opencontainers.image.version="1.143.0" \

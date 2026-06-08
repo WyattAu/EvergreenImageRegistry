@@ -28,7 +28,7 @@ EXPOSE 8080 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "/usr/bin/cadvisor"]
 LABEL org.opencontainers.image.title="cadvisor" \
       org.opencontainers.image.description="Evergreen hardened cAdvisor - container resource usage analysis and metrics" \
       org.opencontainers.image.version="v0.57.0" \

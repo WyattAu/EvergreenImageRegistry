@@ -37,7 +37,7 @@ EXPOSE 9200
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9200"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "ocis server"]
 LABEL org.opencontainers.image.title="ocis" \
       org.opencontainers.image.description="ownCloud Infinite Scale - next-gen file sync and share platform" \
       org.opencontainers.image.version="8.0.3" \

@@ -31,7 +31,7 @@ EXPOSE 8003
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8003"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "nginx -g "daemon off;""]
 
 LABEL org.opencontainers.image.title="taiga-protected" \
       org.opencontainers.image.description="Taiga Protected - file access protection proxy for Taiga" \

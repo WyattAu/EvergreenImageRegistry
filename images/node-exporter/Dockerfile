@@ -24,7 +24,7 @@ WORKDIR /
 EXPOSE 9100 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9100"]
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "/bin/node_exporter"]
 LABEL org.opencontainers.image.title="node-exporter" \
       org.opencontainers.image.description="Node Exporter - hardware and OS metrics exporter for Prometheus" \
       org.opencontainers.image.version="v1.11.1" \

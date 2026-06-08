@@ -46,7 +46,7 @@ EXPOSE 9187
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9187"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "/bin/postgres_exporter"]
 LABEL org.opencontainers.image.title="postgres-exporter" \
       org.opencontainers.image.version="0.19.1" \
       org.opencontainers.image.vendor="Prometheus Community" \

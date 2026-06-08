@@ -53,7 +53,7 @@ EXPOSE 9254
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9254"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "/zfs_exporter"]
 LABEL org.opencontainers.image.title="zfs-exporter" \
       org.opencontainers.image.description="ZFS Exporter - Prometheus exporter for ZFS pool and dataset metrics" \
       org.opencontainers.image.version="0.0.12" \

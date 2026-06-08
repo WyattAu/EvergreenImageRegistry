@@ -28,7 +28,7 @@ EXPOSE 10902 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:10902"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "/usr/bin/thanos"]
 LABEL org.opencontainers.image.title="thanos" \
       org.opencontainers.image.description="Thanos - highly available Prometheus with long-term storage" \
       org.opencontainers.image.version="v0.35.0" \

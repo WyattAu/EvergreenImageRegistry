@@ -34,7 +34,7 @@ EXPOSE 3200
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:3200"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "/usr/bin/tempo"]
 LABEL org.opencontainers.image.title="tempo" \
       org.opencontainers.image.description="Tempo - distributed tracing backend by Grafana" \
       org.opencontainers.image.version="2.10.5" \

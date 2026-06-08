@@ -30,7 +30,7 @@ EXPOSE 9080 3100
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9080"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "/usr/bin/promtail"]
 LABEL org.opencontainers.image.title="promtail" \
       org.opencontainers.image.version="3.6.11" \
       org.opencontainers.image.vendor="Grafana Labs" \

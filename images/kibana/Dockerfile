@@ -46,7 +46,7 @@ EXPOSE 5601
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5601"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "/usr/share/kibana/bin/kibana"]
 LABEL org.opencontainers.image.title="kibana" \
       org.opencontainers.image.description="Evergreen hardened Kibana - Elastic visualization dashboard" \
       org.opencontainers.image.version="${VERSION}" \

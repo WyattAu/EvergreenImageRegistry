@@ -23,7 +23,7 @@ WORKDIR /
 EXPOSE 7844 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:7844"]
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "/cloudflared"]
 LABEL org.opencontainers.image.title="cloudflared" \
       org.opencontainers.image.description="Cloudflared - Cloudflare Tunnel daemon" \
       org.opencontainers.image.version="2026.5.0" \

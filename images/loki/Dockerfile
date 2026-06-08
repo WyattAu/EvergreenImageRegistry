@@ -35,7 +35,7 @@ EXPOSE 3100
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:3100"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "/usr/bin/loki"]
 LABEL org.opencontainers.image.title="loki" \
       org.opencontainers.image.description="Loki - horizontally-scalable log aggregation system" \
       org.opencontainers.image.version="3.1.0" \

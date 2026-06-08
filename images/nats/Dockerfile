@@ -35,7 +35,7 @@ EXPOSE 4222 8222
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:4222"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "nats-server"]
 LABEL org.opencontainers.image.title="nats" \
       org.opencontainers.image.description="NATS - high-performance messaging system" \
       org.opencontainers.image.version="2.12.7" \

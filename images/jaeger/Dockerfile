@@ -39,7 +39,7 @@ EXPOSE 5775 6831 6832
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:5775"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "jaeger-all-in-one"]
 LABEL org.opencontainers.image.title="jaeger" \
       org.opencontainers.image.description="Jaeger - end-to-end distributed tracing" \
       org.opencontainers.image.version="${VERSION}" \

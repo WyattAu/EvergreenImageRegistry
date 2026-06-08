@@ -33,7 +33,7 @@ EXPOSE 51820/udp 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:51820"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "wireguard-go"]
 LABEL org.opencontainers.image.title="wireguard" \
       org.opencontainers.image.description="WireGuard - fast, modern, secure VPN tunnel" \
       org.opencontainers.image.version="1.0.20250521" \

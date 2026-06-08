@@ -34,7 +34,7 @@ EXPOSE 9428
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9428"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "/victoria-logs"]
 LABEL org.opencontainers.image.title="victoria-logs" \
       org.opencontainers.image.description="VictoriaLogs - logs storage by VictoriaMetrics" \
       org.opencontainers.image.version="v1.50.0" \

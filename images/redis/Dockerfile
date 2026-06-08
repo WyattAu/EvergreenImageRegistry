@@ -51,7 +51,7 @@ EXPOSE 6379 9101 9102
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "redis-server"]
 CMD ["-c", "redis-server", "--", "--bind", "0.0.0.0", "--protected-mode", "no"]
 LABEL org.opencontainers.image.title="redis" \
       org.opencontainers.image.description="Redis - in-memory data structure store and cache (static build)" \

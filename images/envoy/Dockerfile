@@ -39,7 +39,7 @@ EXPOSE 9901
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9901"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "envoy -c /etc/envoy/envoy.yaml"]
 LABEL evergreen.image.status="functional" \
       evergreen.image.tier="1" \
       evergreen.image.category="proxy" \

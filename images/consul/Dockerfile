@@ -22,7 +22,7 @@ WORKDIR /
 EXPOSE 8500 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8500"]
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "consul agent"]
 LABEL org.opencontainers.image.title="consul" \
       org.opencontainers.image.description="Consul - service mesh, service discovery, and configuration" \
       org.opencontainers.image.version="1.18.1" \

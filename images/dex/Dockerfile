@@ -33,7 +33,7 @@ EXPOSE 5556
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:5556"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "dex serve /etc/dex/config.yaml"]
 LABEL org.opencontainers.image.title="dex" \
       org.opencontainers.image.description="Dex - federated OpenID Connect provider" \
       org.opencontainers.image.version="2.45.1" \

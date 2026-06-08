@@ -34,7 +34,7 @@ EXPOSE 8000
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8000"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "s6-svscan /etc/s6"]
 LABEL org.opencontainers.image.title="paperless-ngx" \
       org.opencontainers.image.description="Paperless-ngx - document management system" \
       org.opencontainers.image.version="2.20.15" \

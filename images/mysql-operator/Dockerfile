@@ -29,7 +29,7 @@ EXPOSE 8080 8443
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "mysql-operator"]
 LABEL org.opencontainers.image.title="mysql-operator" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Presslabs MySQL Operator for Kubernetes" \

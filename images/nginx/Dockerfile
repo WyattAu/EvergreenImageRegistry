@@ -44,7 +44,7 @@ EXPOSE 80 443 9101 9102
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "/nginx"]
 LABEL org.opencontainers.image.title="nginx" \
       org.opencontainers.image.description="Nginx - HTTP and reverse proxy server" \
       org.opencontainers.image.version="1.27.1" \

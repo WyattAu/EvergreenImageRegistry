@@ -50,7 +50,7 @@ EXPOSE 8428
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8428"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "/victoria-metrics"]
 LABEL org.opencontainers.image.title="victoriametrics" \
       org.opencontainers.image.description="VictoriaMetrics - fast, cost-effective time series database" \
       org.opencontainers.image.version="v1.143.0" \

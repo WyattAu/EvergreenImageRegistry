@@ -21,7 +21,7 @@ WORKDIR /
 EXPOSE 9000 9001 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9000"]
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "minio server"]
 LABEL org.opencontainers.image.title="minio" \
       org.opencontainers.image.description="MinIO - high-performance object storage compatible with S3" \
       org.opencontainers.image.version="latest" \

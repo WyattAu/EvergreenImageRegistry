@@ -35,7 +35,7 @@ EXPOSE 9000 9001
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9000"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "minio server /data"]
 LABEL org.opencontainers.image.title="s3" \
       org.opencontainers.image.description="S3 - AWS S3 compatible object storage client" \
       org.opencontainers.image.version="RELEASE.2025-10-15T17-29-55Z" \

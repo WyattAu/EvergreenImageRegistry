@@ -31,7 +31,7 @@ EXPOSE 2283
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:2283"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "node /usr/src/app/dist/main.js"]
 LABEL org.opencontainers.image.title="immich" \
       org.opencontainers.image.description="Immich - self-hosted photo and video backup solution" \
       org.opencontainers.image.version="1.106.0" \

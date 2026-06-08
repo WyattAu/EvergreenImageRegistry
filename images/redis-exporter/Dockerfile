@@ -42,7 +42,7 @@ EXPOSE 9121 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9121"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "/bin/redis_exporter"]
 LABEL org.opencontainers.image.title="redis-exporter" \
       org.opencontainers.image.description="Redis Exporter - Prometheus exporter for Redis" \
       org.opencontainers.image.version="v1.68.0" \

@@ -22,7 +22,7 @@ WORKDIR /
 EXPOSE 8000 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8000"]
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "restic server"]
 LABEL org.opencontainers.image.title="restic" \
       org.opencontainers.image.description="restic container image" \
       org.opencontainers.image.version="0.18.1" \

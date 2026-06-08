@@ -21,7 +21,8 @@ RUN cd redis-${VERSION} && \
         LDFLAGS="-static" \
         MALLOC=jemalloc \
         BUILD_TLS=yes \
-        install
+        install && \
+    mkdir -p /app /var/log/redis /var/cache/redis
 
 FROM ghcr.io/wyattau/evergreenshim/cache-shim:${SHIM_VERSION} AS shim
 
@@ -30,8 +31,9 @@ COPY --from=shim /shim /shim
 COPY --from=builder /usr/local/bin/redis-server /usr/local/bin/redis-server
 COPY --from=builder /usr/local/bin/redis-cli /usr/local/bin/redis-cli
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-
-RUN ["/bin/sh", "-c", "mkdir -p /app /var/log/redis /var/cache/redis"]
+COPY --from=builder /app /app
+COPY --from=builder /var/log/redis /var/log/redis
+COPY --from=builder /var/cache/redis /var/cache/redis
 COPY shim.toml /etc/evergreen/shim.toml
 
 USER 65532:65532

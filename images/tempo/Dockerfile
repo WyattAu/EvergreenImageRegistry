@@ -9,7 +9,7 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 ARG TARGETARCH
 ARG VERSION=2.10.5
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL https://github.com/grafana/tempo/releases/download/v2.8.0/tempo_2.8.0_linux_${TARGETARCH}.tar.gz -o /tempo.tar.gz && \
+    curl --retry 3 --retry-delay 5 -fsSL https://github.com/grafana/tempo/releases/download/v${VERSION}/tempo_${VERSION}_linux_${TARGETARCH}.tar.gz -o /tempo.tar.gz && \
     [ -f /tempo.tar.gz ] && tar -xzf /tempo.tar.gz -C / && rm -f /tempo.tar.gz && chmod +x /tempo 2>/dev/null
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
 ARG TARGETARCH

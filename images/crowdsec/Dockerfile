@@ -44,9 +44,21 @@ ENTRYPOINT ["/shim", "run"]
 
 
 
-LABEL org.opencontainers.image.title="crowdsec"       org.opencontainers.image.version="v1.7.8"       org.opencontainers.image.vendor="CrowdSecurity"       org.opencontainers.image.source="https://github.com/crowdsecurity/crowdsec"       evergreen.image.tier="1"       evergreen.image.category="security"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms" \
-org.opencontainers.image.description="crowdsec container image" \
-evergreen.base.image="scratch"
+LABEL org.opencontainers.image.title="crowdsec" \
+      org.opencontainers.image.version="v1.7.8" \
+      org.opencontainers.image.vendor="CrowdSecurity" \
+      org.opencontainers.image.source="https://github.com/crowdsecurity/crowdsec" \
+      org.opencontainers.image.description="crowdsec container image" \
+      evergreen.image.tier="1" \
+      evergreen.image.category="security" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="true" \
+      evergreen.hft.signal-handling="native" \
+      evergreen.hft.shutdown-timeout="3s" \
+      evergreen.hft.init-system="none" \
+      evergreen.hft.startup-timeout="3000ms" \
+      evergreen.base.image="scratch"
 
 LABEL evergreen.metrics.native="ztunnel"
 

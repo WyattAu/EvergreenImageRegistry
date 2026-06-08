@@ -1,0 +1,17 @@
+[metadata]
+name = "matrix-hookshot"
+version = "7.3.3"
+description = "Matrix Hookshot - multi-purpose Matrix bot bridge framework"
+vendor = "matrix.org"
+source = "https://github.com/matrix-org/matrix-hookshot"
+license = "Apache-2.0"
+tier = "standard"
+
+[build]
+base = "wolfi"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "binary-release"
+url = "https://github.com/matrix-org/matrix-hookshot"

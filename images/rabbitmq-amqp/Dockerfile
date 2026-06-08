@@ -15,6 +15,8 @@ ARG APP_GID=65532
 ARG SHIM_VERSION=v1.0.0
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
+
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 ARG VERSION=3.13.1
 RUN mkdir -p /usr/lib/rabbitmq || true
 RUN mkdir -p /etc/rabbitmq && \
@@ -28,8 +30,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         erlang-tftp erlang-tools erlang-xmerl \
         rabbitmq-server ; rabbitmq-plugins enable rabbitmq_amqp1_0 ; rm -rf /var/lib/apt/lists/* || true \
     rm -rf /var/lib/apt/lists/* || true
-HEALTHCHECK NONE
+EXPOSE 9101
 LABEL evergreen.security.cap-drop="ALL"
+EXPOSE 9101
 LABEL evergreen.security.no-new-privileges="true"
+EXPOSE 9101
 LABEL evergreen.security.read-only-rootfs="true"
+EXPOSE 9101
 LABEL evergreen.security.seccomp="runtime-default"
+
+COPY --from=shim /shim /shim
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 CMD /shim healthcheck --tcp 127.0.0.1:5672
+ENTRYPOINT ["/usr/local/bin/shim", "run"]

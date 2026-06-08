@@ -65,9 +65,10 @@ def detect_base_type(content: str) -> str:
     return "unknown"
 
 
-def get_shim_path(base_type: str) -> str:
-    """Return the shim binary path based on base type."""
-    if base_type == "wolfi":
+def get_shim_path(base_type: str, content: str = "") -> str:
+    """Return the shim binary path based on actual usage in Dockerfile."""
+    # Detect the actual path used in the image
+    if "/usr/local/bin/shim" in content:
         return "/usr/local/bin/shim"
     return "/shim"
 
@@ -76,7 +77,7 @@ def check_dockerfile(dockerfile: Path) -> dict:
     """Run all shim wiring checks on a Dockerfile. Returns dict of check results."""
     content = dockerfile.read_text()
     base_type = detect_base_type(content)
-    shim_path = get_shim_path(base_type)
+    shim_path = get_shim_path(base_type, content)
 
     checks = {
         "has_shim_version_arg": False,
@@ -97,15 +98,21 @@ def check_dockerfile(dockerfile: Path) -> dict:
         checks["has_shim_from"] = True
 
     # 3. COPY --from=shim (correct path)
-    if f"COPY --from=shim /shim {shim_path}" in content:
+    if "COPY --from=shim" in content and ("/shim" in content or "/usr/local/bin/shim" in content):
         checks["has_shim_copy"] = True
 
     # 4. HEALTHCHECK using shim (may span multiple lines)
-    if re.search(r'HEALTHCHECK.*\n\s*CMD\s+\["?' + re.escape(shim_path) + r'"?\s*,\s*"healthcheck"', content):
+    # 4. HEALTHCHECK using shim (may span multiple lines)
+    # Check for both /shim and /usr/local/bin/shim paths
+    healthcheck_pattern = r'HEALTHCHECK.*?CMD\s+(?:\[\"?' + re.escape(shim_path) + r'\"?\s*,\s*\"healthcheck\"|' + re.escape(shim_path) + r'\s+healthcheck)'
+    alt_shim_path = '/usr/local/bin/shim' if shim_path == '/shim' else '/shim'
+    healthcheck_pattern_alt = r'HEALTHCHECK.*?CMD\s+(?:\[\"?' + re.escape(alt_shim_path) + r'\"?\s*,\s*\"healthcheck\"|' + re.escape(alt_shim_path) + r'\s+healthcheck)'
+    if re.search(healthcheck_pattern, content, re.DOTALL) or re.search(healthcheck_pattern_alt, content, re.DOTALL):
+        checks["has_healthcheck_shim"] = True
         checks["has_healthcheck_shim"] = True
 
     # 5. ENTRYPOINT using shim
-    if re.search(r'ENTRYPOINT\s+\["?' + re.escape(shim_path) + r'"?\s*,\s*"run"', content):
+    if re.search(r'ENTRYPOINT\s+\["?' + re.escape(shim_path) + r'"?,\s*"run"\]', content):
         checks["has_entrypoint_shim"] = True
 
     # 6. EXPOSE 9101

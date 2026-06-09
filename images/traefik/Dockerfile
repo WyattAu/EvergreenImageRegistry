@@ -7,7 +7,7 @@ FROM debian:bookworm-slim AS downloader
 ARG TARGETARCH
 ARG VERSION=v3.7.1
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/traefik/traefik/releases/download/${VERSION}/traefik_${VERSION#v}_linux_${TARGETARCH}.tar.gz" -o /traefik.tar.gz && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/traefik/traefik/releases/download/${VERSION}/traefik_${VERSION}_linux_${TARGETARCH}.tar.gz" -o /traefik.tar.gz && \
     tar -xzf /traefik.tar.gz -C /tmp && \
     cp /tmp/traefik /traefik && \
     chmod +x /traefik

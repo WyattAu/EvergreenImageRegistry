@@ -8,9 +8,9 @@ FROM debian:bookworm-slim AS downloader
 ARG TARGETARCH
 ARG VERSION=v0.32.1
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/alertmanager/releases/download/${VERSION}/alertmanager-${VERSION#v}.linux-${TARGETARCH}.tar.gz" -o /alertmanager.tar.gz && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/alertmanager/releases/download/${VERSION}/alertmanager-${VERSION}.linux-${TARGETARCH}.tar.gz" -o /alertmanager.tar.gz && \
     tar -xzf /alertmanager.tar.gz -C /tmp && \
-    cp /tmp/alertmanager-${VERSION#v}.linux-${TARGETARCH}/alertmanager /alertmanager && \
+    cp /tmp/alertmanager-${VERSION}.linux-${TARGETARCH}/alertmanager /alertmanager && \
     chmod +x /alertmanager
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim

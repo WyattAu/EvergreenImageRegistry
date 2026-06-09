@@ -5,12 +5,11 @@ ARG APP_GID=65532
 ARG SHIM_VERSION=v1.0.0
 
 FROM debian:bookworm-slim AS downloader
-RUN echo "TARGETARCH=$(echo $TARGETPLATFORM | sed "s|linux/||")" > /tmp/arch
 ARG VERSION=v0.32.1
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/alertmanager/releases/download/${VERSION}/alertmanager-0.32.1.linux-$(cat /tmp/arch).tar.gz" -o /alertmanager.tar.gz && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/alertmanager/releases/download/${VERSION}/alertmanager-0.32.1.linux-$(echo $TARGETPLATFORM | sed "s|linux/||").tar.gz" -o /alertmanager.tar.gz && \
     tar -xzf /alertmanager.tar.gz -C /tmp && \
-    cp /tmp/alertmanager-0.32.1.linux-$(cat /tmp/arch)/alertmanager /alertmanager && \
+    cp /tmp/alertmanager-0.32.1.linux-$(echo $TARGETPLATFORM | sed "s|linux/||")/alertmanager /alertmanager && \
     chmod +x /alertmanager
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim

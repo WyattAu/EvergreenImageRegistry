@@ -4,10 +4,9 @@ ARG APP_GID=65532
 ARG SHIM_VERSION=v1.0.0
 
 FROM debian:bookworm-slim AS downloader
-RUN echo "TARGETARCH=$(echo $TARGETPLATFORM | sed "s|linux/||")" > /tmp/arch
 ARG VERSION=v3.7.1
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/traefik/traefik/releases/download/${VERSION}/traefik_${VERSION}_linux_$(cat /tmp/arch).tar.gz" -o /traefik.tar.gz && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/traefik/traefik/releases/download/${VERSION}/traefik_${VERSION}_linux_$(echo $TARGETPLATFORM | sed "s|linux/||").tar.gz" -o /traefik.tar.gz && \
     tar -xzf /traefik.tar.gz -C /tmp && \
     cp /tmp/traefik /traefik && \
     chmod +x /traefik

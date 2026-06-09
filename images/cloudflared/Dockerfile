@@ -45,3 +45,4 @@ LABEL prometheus.io/scrape="true" \
       prometheus.io/port="9101" \
       prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM
+# cache bust 1781029740

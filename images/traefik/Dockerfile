@@ -48,3 +48,4 @@ LABEL prometheus.io/scrape="true" \
       prometheus.io/port="9101" \
       prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM
+# Phase 1 verification

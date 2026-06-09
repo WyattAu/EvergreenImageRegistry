@@ -85,7 +85,7 @@ list_all_images() {
         -not -path '*/__pycache__/*' \
         -not -path '*/tests/*' \
         -not -path '*/health-shim/*' \
-        | sed "s|${IMAGES_DIR}/||" \
+        | sed "s|images/||" \
         | sed 's|/Dockerfile||' \
         | sort
 }
@@ -96,9 +96,9 @@ list_all_images() {
 get_changed_images() {
     local base="${1:-HEAD~1}"
     local changed
-    changed=$(git diff --name-only "${base}" HEAD -- "${IMAGES_DIR}/" 2>/dev/null \
-        | grep "^${IMAGES_DIR}/" \
-        | sed "s|${IMAGES_DIR}/||" \
+    changed=$(git diff --name-only "${base}" HEAD -- "images/" 2>/dev/null \
+        | grep "^images/" \
+        | sed "s|images/||" \
         | sed 's|/.*||' \
         | sort -u)
 

@@ -3,28 +3,28 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 ARG SHIM_VERSION=v1.0.0
 
-FROM golang:1.25-bookworm AS builder
+FROM debian:bookworm-slim AS downloader
 ARG TARGETARCH
 ARG VERSION=v3.7.1
-RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
-WORKDIR /src
-RUN git clone --depth 1 --branch "${VERSION}" https://github.com/traefik/traefik.git . || \
-    git clone --depth 1 https://github.com/traefik/traefik.git .
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
-    go build -ldflags='-s -w -X main.version=${VERSION}' \
-    -o /binary ./cmd/traefik
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/traefik/traefik/releases/download/${VERSION}/traefik_${VERSION#v}_linux_${TARGETARCH}.tar.gz" -o /traefik.tar.gz && \
+    tar -xzf /traefik.tar.gz -C /tmp && \
+    cp /tmp/traefik /traefik && \
+    chmod +x /traefik
+
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
 COPY --from=shim /shim /shim
-COPY --from=builder /binary /traefik
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=downloader /traefik /traefik
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER ${APP_UID}:${APP_GID}
 ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /
 EXPOSE 80 443 8080 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
-ENTRYPOINT ["/shim", "run", "-c", "traefik"]
+ENTRYPOINT ["/shim", "run", "-c", "/traefik"]
 LABEL org.opencontainers.image.title="traefik" \
       org.opencontainers.image.description="Traefik - modern HTTP reverse proxy and load balancer" \
       org.opencontainers.image.version="v3.7.1" \
@@ -35,7 +35,7 @@ LABEL org.opencontainers.image.title="traefik" \
       evergreen.constraint.nonroot="true" \
       evergreen.constraint.scratch="true"
 LABEL evergreen.base.image="scratch" \
-      evergreen.build.type="musl-source" \
+      evergreen.build.type="binary-download" \
       evergreen.metrics.native="ztunnel" \
       evergreen.health.type="http" \
       evergreen.health.endpoint="/livez" \
@@ -48,4 +48,3 @@ LABEL prometheus.io/scrape="true" \
       prometheus.io/port="9101" \
       prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM
-# Phase 1 verification

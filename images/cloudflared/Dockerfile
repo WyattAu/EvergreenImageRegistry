@@ -7,7 +7,7 @@ ARG TARGETARCH
 ARG VERSION=2026.5.0
 RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
-RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/cloudflare/cloudflared.git . || \
+RUN git clone --depth 1 --branch "${VERSION}" https://github.com/cloudflare/cloudflared.git . || \
     git clone --depth 1 https://github.com/cloudflare/cloudflared.git .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
     go build -ldflags='-s -w -X main.version=${VERSION}' \

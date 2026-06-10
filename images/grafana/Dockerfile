@@ -12,8 +12,8 @@ ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends wget ca-certificates && rm -rf /var/lib/apt/lists/* && \
     wget -q "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-amd64.tar.gz" -O /grafana.tar.gz && \
     tar -xzf /grafana.tar.gz -C /tmp && \
-    cp /tmp/grafana-${VERSION}/bin/grafana-server /grafana-server && \
-    chmod +x /grafana-server && \
+    cp -r /tmp/grafana-${VERSION}/bin /grafana-bin && \
+    ln -sf /grafana-server /grafana-bin/grafana 2>/dev/null || true && \
     mkdir -p /etc/grafana /var/lib/grafana /var/log/grafana && \
     cp -r /tmp/grafana-${VERSION}/conf/* /etc/grafana/ && \
     rm -rf /grafana.tar.gz /tmp/grafana-${VERSION}
@@ -22,7 +22,7 @@ FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
 COPY --from=shim /shim /shim
-COPY --from=downloader /grafana-server /grafana-server
+COPY --from=downloader /grafana-bin /grafana-bin
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=downloader /etc/grafana /etc/grafana
 USER ${APP_UID}:${APP_GID}
@@ -33,7 +33,7 @@ EXPOSE 3000 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
 
-ENTRYPOINT ["/shim", "run", "-c", "/grafana-server"]
+ENTRYPOINT ["/shim", "run", "-c", "/grafana-bin/grafana-server"]
 CMD ["--homepath=/usr/share/grafana", "--config=/etc/grafana/grafana.ini"]
 LABEL org.opencontainers.image.title="grafana" \
       org.opencontainers.image.description="Grafana - analytics and interactive visualization platform" \

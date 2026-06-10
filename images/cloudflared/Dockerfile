@@ -19,8 +19,7 @@ USER ${APP_UID}:${APP_GID}
 ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /
 EXPOSE 7844 9101
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:7844"]
+HEALTHCHECK NONE
 ENTRYPOINT ["/shim", "run", "-c", "/cloudflared"]
 LABEL org.opencontainers.image.title="cloudflared" \
       org.opencontainers.image.description="Cloudflare Tunnel client" \

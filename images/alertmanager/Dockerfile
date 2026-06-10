@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/prometheus/alertmanager/releases/download/${VERSION}/alertmanager-0.32.1.linux-amd64.tar.gz" -o /alertmanager.tar.gz && \
     tar -xzf /alertmanager.tar.gz -C /tmp && \
     cp /tmp/alertmanager-0.32.1.linux-amd64/alertmanager /alertmanager && \
-    chmod +x /alertmanager
+    chmod +x /alertmanager && \
+    mkdir -p /alertmanager-data && chown -R 65532:65532 /alertmanager-data
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
@@ -18,6 +19,7 @@ FROM scratch
 COPY --from=shim /shim /shim
 COPY --from=downloader /alertmanager /alertmanager
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=downloader /alertmanager-data /alertmanager-data
 USER ${APP_UID}:${APP_GID}
 ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /

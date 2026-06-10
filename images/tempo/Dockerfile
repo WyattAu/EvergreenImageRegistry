@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/grafana/tempo/releases/download/v${VERSION}/tempo_${VERSION}_linux_amd64.tar.gz -o /tempo.tar.gz && \
     [ -f /tempo.tar.gz ] && tar -xzf /tempo.tar.gz -C / && rm -f /tempo.tar.gz && chmod +x /tempo 2>/dev/null
 FROM debian:bookworm-slim AS builder
-RUN mkdir -p /app /var/log/tempo /var/cache/tempo 2>/dev/null || true
+RUN mkdir -p /app /var/log/tempo /var/cache/tempo /var/tempo/wal 2>/dev/null || true
 
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
@@ -24,6 +24,7 @@ COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-cert
 COPY --from=builder /app /app
 COPY --from=builder /var/log/tempo /var/log/tempo
 COPY --from=builder /var/cache/tempo /var/cache/tempo
+COPY --from=builder /var/tempo /var/tempo
 USER 65532:65532
 ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app

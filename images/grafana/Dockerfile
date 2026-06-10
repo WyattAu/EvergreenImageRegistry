@@ -26,7 +26,8 @@ COPY --from=downloader /grafana-bin /grafana-bin
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=downloader /etc/grafana /etc/grafana
 USER ${APP_UID}:${APP_GID}
-ENV SHIM_METRICS_ENABLED="true"
+ENV SHIM_METRICS_ENABLED="true" \
+    PATH="/grafana-bin:$PATH"
 WORKDIR /
 EXPOSE 3000 9101
 

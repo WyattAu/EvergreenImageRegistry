@@ -3,14 +3,11 @@
 # Static build from source - scratch final stage
 # =============================================================================
 ARG VERSION=8.0.2
-ARG TARGETARCH
 ARG SHIM_VERSION=v1.0.0
 
-FROM debian:bookworm AS builder
+FROM cgr.dev/chainguard/wolfi-base AS builder
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential linux-headers ca-certificates wget && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache build-base linux-headers ca-certificates wget
 WORKDIR /src
 RUN wget -q "https://download.redis.io/releases/redis-${VERSION}.tar.gz" -O redis.tar.gz && \
     tar -xzf redis.tar.gz && rm redis.tar.gz

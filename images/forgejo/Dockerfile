@@ -5,11 +5,10 @@ ARG VERSION=15.0.2
 ARG SHIM_VERSION=v1.0.0
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS downloader
-ARG TARGETARCH
 ARG VERSION
 RUN apk add --no-cache wget ca-certificates git && \
     mkdir -p /app && \
-    wget -t 3 -T 30 -qO /app/forgejo "https://code.forgejo.org/forgejo/forgejo/releases/download/v${VERSION}/forgejo-${VERSION}-linux-${TARGETARCH}" && \
+    wget -t 3 -T 30 -qO /app/forgejo "https://code.forgejo.org/forgejo/forgejo/releases/download/v${VERSION}/forgejo-${VERSION}-linux-amd64" && \
     chmod +x /app/forgejo && \
     test -s /app/forgejo
 

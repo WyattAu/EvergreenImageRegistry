@@ -4,13 +4,12 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 ARG SHIM_VERSION=v1.0.0
 FROM golang:1.26-bookworm AS builder
-ARG TARGETARCH
 ARG VERSION=12.2.8-security-04
 RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
 RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/grafana/grafana.git . || \
     git clone --depth 1 https://github.com/grafana/grafana.git .
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
     go build -ldflags='-s -w -X main.version=${VERSION}' \
     -o /grafana-server ./cmd/grafana-server
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim

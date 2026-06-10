@@ -155,7 +155,7 @@ jobs:
             if timeout 900 docker buildx build \
                 --builder "$CURRENT_BUILDER" \
                 ${PLATFORM_FLAG} \
-                -t "${REF}" \
+                -t "${REF}" -t "${REGISTRY}/${OWNER}/${image}:latest" \
                 ${OUTPUT_FLAG} \
                 --cache-from "type=local,src=/tmp/.buildkit-cache" \
                 --cache-to "type=local,dest=/tmp/.buildkit-cache-new,mode=max" \

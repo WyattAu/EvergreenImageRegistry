@@ -1,10 +1,10 @@
 ARG TARGETARCH
-ARG VERSION=12.2.8-security-04
+ARG VERSION=12.2.8+security-04
 ARG APP_UID=65532
 ARG APP_GID=65532
 ARG SHIM_VERSION=v1.0.0
 FROM golang:1.26-bookworm AS builder
-ARG VERSION=12.2.8-security-04
+ARG VERSION=12.2.8+security-04
 RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
 RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/grafana/grafana.git . || \

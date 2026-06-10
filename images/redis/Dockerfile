@@ -6,9 +6,8 @@ ARG VERSION=8.0.2
 ARG TARGETARCH
 ARG SHIM_VERSION=v1.0.0
 
-FROM debian:bookworm-slim AS builder
+FROM debian:bookworm AS builder
 ARG VERSION
-ARG TARGETARCH
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential linux-headers ca-certificates wget && \
     rm -rf /var/lib/apt/lists/*

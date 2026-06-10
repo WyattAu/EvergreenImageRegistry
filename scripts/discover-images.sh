@@ -106,7 +106,7 @@ get_changed_images() {
     # If these changed, we should still only build affected images (not all)
     local shared_changed
     shared_changed=$(git diff --name-only "${base}" HEAD \
-        -- scripts/ manifest.toml .github/workflows/build-on-push.yml \
+        -- scripts/ manifest.toml .github/workflows/build-on-push.yml .github/workflows/_build-reusable.yml \
         2>/dev/null || true)
 
     if [ -n "$changed" ]; then

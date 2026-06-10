@@ -34,7 +34,7 @@ HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
 
 ENTRYPOINT ["/shim", "run", "-c", "/grafana-server"]
-CMD ["-c", "/grafana-server", "--", "--homepath=/usr/share/grafana", "--config=/etc/grafana/grafana.ini"]
+CMD ["--homepath=/usr/share/grafana", "--config=/etc/grafana/grafana.ini"]
 LABEL org.opencontainers.image.title="grafana" \
       org.opencontainers.image.description="Grafana - analytics and interactive visualization platform" \
       org.opencontainers.image.version="${VERSION}" \

@@ -106,19 +106,19 @@ get_changed_images() {
     # If these changed, we should still only build affected images (not all)
     local shared_changed
     shared_changed=$(git diff --name-only "${base}" HEAD \
-        -- scripts/ manifest.toml .github/workflows/build-on-push.yml .github/workflows/_build-reusable.yml \
+        -- scripts/ manifest.toml \
+           .github/workflows/build-on-push.yml \
+           .github/workflows/_build-reusable.yml \
+           .github/workflows/build-nightly.yml \
+           .github/workflows/build-on-demand.yml \
+           .github/workflows/lint.yml \
         2>/dev/null || true)
 
     if [ -n "$changed" ]; then
         echo "$changed"
     elif [ -n "$shared_changed" ]; then
-        # Shared infra changed but no specific images -- build critical tier
-        list_all_images | while read -r img; do
-            tier=$(get_image_tier "${IMAGES_DIR}/${img}/manifest.toml")
-            if [ "$tier" = "critical" ]; then
-                echo "$img"
-            fi
-        done
+        # Shared infra changed — build all images
+        list_all_images
     fi
 }
 

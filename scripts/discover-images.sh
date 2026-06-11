@@ -81,11 +81,11 @@ get_batch_size() {
 # List all image directories that have a Dockerfile
 # ---------------------------------------------------------------------------
 list_all_images() {
-    find "${IMAGES_DIR}" -maxdepth 2 -name Dockerfile \
+    cd "${REPO_ROOT}" && find images -maxdepth 2 -name Dockerfile \
         -not -path '*/__pycache__/*' \
         -not -path '*/tests/*' \
         -not -path '*/health-shim/*' \
-        | sed "s|images/||" \
+        | sed 's|images/||' \
         | sed 's|/Dockerfile||' \
         | sort
 }

@@ -18,6 +18,7 @@ COPY --from=shim /shim /shim
 
 
 COPY --from=upstream /vaultwarden /vaultwarden
+COPY --from=upstream /web-vault /web-vault
 
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 

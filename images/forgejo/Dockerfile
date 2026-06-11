@@ -28,6 +28,7 @@ WORKDIR /app
 ENV FORGEJO_WORK_DIR=/data
 ENV GITEA_WORK_DIR=/data
 COPY --from=downloader /app/forgejo /usr/local/bin/forgejo
+COPY app.ini /etc/forgejo/app.ini
 EXPOSE 3000 22 9101
 
 CMD ["--", "web", "--config", "/etc/forgejo/app.ini"]

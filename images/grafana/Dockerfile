@@ -7,9 +7,9 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 ARG SHIM_VERSION=v1.0.0
 
-FROM debian:bookworm-slim AS downloader
+FROM cgr.dev/chainguard/wolfi-base AS downloader
 ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends wget ca-certificates && rm -rf /var/lib/apt/lists/* && \
+RUN apk add --no-cache wget ca-certificates && \
     wget -q "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-amd64.tar.gz" -O /grafana.tar.gz && \
     tar -xzf /grafana.tar.gz -C /tmp && \
     cp -r /tmp/grafana-${VERSION}/bin/* /grafana-bin/ && \

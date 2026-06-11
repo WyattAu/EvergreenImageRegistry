@@ -12,8 +12,7 @@ ARG VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends wget ca-certificates && rm -rf /var/lib/apt/lists/* && \
     wget -q "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-amd64.tar.gz" -O /grafana.tar.gz && \
     tar -xzf /grafana.tar.gz -C /tmp && \
-    cp -r /tmp/grafana-${VERSION}/bin /grafana-bin && \
-    ln -sf /grafana-server /grafana-bin/grafana 2>/dev/null || true && \
+    cp -r /tmp/grafana-${VERSION}/bin/* /grafana-bin/ && \
     mkdir -p /etc/grafana /var/lib/grafana /var/log/grafana && \
     cp -r /tmp/grafana-${VERSION}/conf/* /etc/grafana/ && \
     rm -rf /grafana.tar.gz /tmp/grafana-${VERSION}

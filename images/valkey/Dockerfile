@@ -20,7 +20,7 @@ COPY shim.toml /etc/evergreen/shim.toml
 RUN chmod +x /usr/local/bin/shim
 
 RUN apk add --no-cache valkey ca-certificates
-RUN mkdir -p /app /var/log/valkey /var/cache/valkey 2>/dev/null || true
+RUN mkdir -p /app /var/log/valkey /var/cache/valkey && chown -R 65532:65532 /app /var/log/valkey /var/cache/valkey
 USER 65532:65532
 WORKDIR /app
 ENV SHIM_METRICS_ENABLED="true" \

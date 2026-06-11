@@ -29,7 +29,7 @@ ENV FORGEJO_WORK_DIR=/data/gitea
 ENV GITEA_WORK_DIR=/data/gitea
 COPY --from=downloader /app/forgejo /usr/local/bin/forgejo
 COPY app.ini /etc/forgejo/app.ini
-RUN chmod 660 /etc/forgejo/app.ini && chown 1000:1000 /etc/forgejo/app.ini
+RUN chmod 660 /etc/forgejo/app.ini && chown 1000:1000 /etc/forgejo/app.ini && chown -R 1000:1000 /app
 EXPOSE 3000 22 9101
 
 CMD ["--", "web", "--config", "/etc/forgejo/app.ini"]

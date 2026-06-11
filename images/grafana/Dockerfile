@@ -12,6 +12,7 @@ ARG VERSION
 RUN apk add --no-cache wget ca-certificates && \
     wget -q "https://dl.grafana.com/oss/release/grafana-${VERSION}.linux-amd64.tar.gz" -O /grafana.tar.gz && \
     tar -xzf /grafana.tar.gz -C /tmp && \
+    mkdir -p /grafana-bin && \
     cp -r /tmp/grafana-${VERSION}/bin/* /grafana-bin/ && \
     mkdir -p /etc/grafana /var/lib/grafana /var/log/grafana && \
     cp -r /tmp/grafana-${VERSION}/conf/* /etc/grafana/ && \

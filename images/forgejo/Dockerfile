@@ -30,7 +30,7 @@ ENV GITEA_WORK_DIR=/data
 COPY --from=downloader /app/forgejo /usr/local/bin/forgejo
 EXPOSE 3000 22 9101
 
-CMD ["-c", "/usr/local/bin/forgejo", "--", "wget -qO- http://localhost:3000/ || exit 1"]
+CMD ["--", "web", "--config", "/etc/forgejo/app.ini"]
 
 USER 1000:1000
 ENV SHIM_METRICS_ENABLED="true"

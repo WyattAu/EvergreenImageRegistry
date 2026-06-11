@@ -1,23 +1,18 @@
 # =============================================================================
 # EVERGREEN HARDENED REDIS
-# Static build from source - scratch final stage
+# Source build - scratch final stage
 # =============================================================================
-ARG VERSION=8.0.2
+ARG VERSION=7.4.1
 ARG SHIM_VERSION=v1.0.0
 
 FROM cgr.dev/chainguard/wolfi-base AS builder
 ARG VERSION
-RUN apk add --no-cache build-base linux-headers ca-certificates wget
+RUN apk add --no-cache gcc make musl-dev linux-headers ca-certificates wget
 WORKDIR /src
 RUN wget -q "https://download.redis.io/releases/redis-${VERSION}.tar.gz" -O redis.tar.gz && \
     tar -xzf redis.tar.gz && rm redis.tar.gz
 RUN cd redis-${VERSION} && \
-    make -j$(nproc) \
-        CFLAGS="-static -O2 -fstack-protector-strong" \
-        LDFLAGS="-static" \
-        MALLOC=jemalloc \
-        BUILD_TLS=yes \
-        install && \
+    make -j$(nproc) install && \
     mkdir -p /app /var/log/redis /var/cache/redis
 
 FROM ghcr.io/wyattau/evergreenshim/cache-shim:${SHIM_VERSION} AS shim
@@ -48,7 +43,7 @@ HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
 
 ENTRYPOINT ["/shim", "run", "-c", "redis-server"]
-CMD ["-c", "redis-server", "--", "--bind", "0.0.0.0", "--protected-mode", "no"]
+CMD ["--", "--bind", "0.0.0.0", "--protected-mode", "no"]
 LABEL org.opencontainers.image.title="redis" \
       org.opencontainers.image.description="Redis - in-memory data structure store and cache (static build)" \
       org.opencontainers.image.version="${VERSION}" \

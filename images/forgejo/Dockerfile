@@ -25,8 +25,8 @@ RUN apk add --no-cache bash git openssh-keygen ca-certificates && \
     mkdir -p /data /etc/forgejo /var/log/forgejo /var/cache/forgejo /data/git/repositories /data/lfs /data/log && \
     chown -R git:git /data
 WORKDIR /app
-ENV FORGEJO_WORK_DIR=/data
-ENV GITEA_WORK_DIR=/data
+ENV FORGEJO_WORK_DIR=/data/gitea
+ENV GITEA_WORK_DIR=/data/gitea
 COPY --from=downloader /app/forgejo /usr/local/bin/forgejo
 COPY app.ini /etc/forgejo/app.ini
 EXPOSE 3000 22 9101

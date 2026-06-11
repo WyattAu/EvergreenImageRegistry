@@ -16,7 +16,8 @@ RUN apk add --no-cache wget ca-certificates && \
     cp -r /tmp/grafana-${VERSION}/bin/* /grafana-bin/ && \
     mkdir -p /usr/share/grafana && \
     cp -r /tmp/grafana-${VERSION}/conf /usr/share/grafana/ && \
-    mkdir -p /etc/grafana /var/lib/grafana /var/log/grafana && \
+    cp -r /tmp/grafana-${VERSION}/public /usr/share/grafana/ && \
+    mkdir -p /etc/grafana /var/lib/grafana /var/log/grafana /tmp && \
     rm -rf /grafana.tar.gz /tmp/grafana-${VERSION}
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
@@ -26,6 +27,7 @@ COPY --from=shim /shim /shim
 COPY --from=downloader /grafana-bin /grafana-bin
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=downloader /usr/share/grafana /usr/share/grafana
+COPY --from=downloader /tmp /tmp
 USER ${APP_UID}:${APP_GID}
 ENV SHIM_METRICS_ENABLED="true" \
     PATH="/grafana-bin:$PATH"

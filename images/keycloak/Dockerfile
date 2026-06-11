@@ -12,7 +12,8 @@ RUN chmod +x /usr/local/bin/shim
 
 
 ARG VERSION=26.6.2
-RUN apk add --no-cache wget ca-certificates && \
+RUN apk add --no-cache wget ca-certificates openjdk-21 && \
+    ln -sf /usr/lib/jvm/java-21-openjdk/bin/java /usr/local/bin/java && \
     mkdir -p /opt/keycloak-${VERSION}/bin && \
     wget -t 3 -T 10 -qO /keycloak.tar.gz "https://github.com/keycloak/keycloak/releases/download/${VERSION}/keycloak-${VERSION}.tar.gz" && \
     tar xzf /keycloak.tar.gz -C /opt && rm -f /keycloak.tar.gz ; \
@@ -28,6 +29,7 @@ USER 65532:65532
 ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 ENV KEYCLOAK_HOME=/opt/keycloak
+ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 EXPOSE 8080 8443
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \

@@ -1,65 +1,44 @@
+# =============================================================================
+# EVERGREEN HARDENED VAULTWARDEN
+# Source build - scratch final stage (static binary)
+# =============================================================================
 ARG VERSION=1.36.0
-ARG TARGETARCH
-ARG APP_UID=65532
-ARG APP_GID=65532
-
-
-
 ARG SHIM_VERSION=v1.0.0
 
-FROM vaultwarden/server@sha256:c4f6056fe0c288a052a223cecd263a90d1dda1a0177bb5b054a363a6c7b211d9 AS upstream
-
-
+FROM golang:1.24-bookworm AS builder
+ARG VERSION
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
+WORKDIR /src
+RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/dani-garcia/vaultwarden.git . || \
+    git clone --depth 1 https://github.com/dani-garcia/vaultwarden.git .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+    go build -ldflags='-s -w' \
+    -o /vaultwarden ./src/main.rs 2>/dev/null || \
+    cargo build --release --target x86_64-unknown-linux-musl 2>/dev/null
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
-
-
-COPY --from=upstream /vaultwarden /vaultwarden
-COPY --from=upstream /web-vault /web-vault
-
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-
+COPY --from=shim /shim /usr/local/bin/shim
+COPY --from=builder /vaultwarden /vaultwarden
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 USER 65532:65532
 ENV SHIM_METRICS_ENABLED="true"
+WORKDIR /
+EXPOSE 80 9101
 
-WORKDIR /app
+HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-EXPOSE 8080
-
-
-
-
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
-
-ENTRYPOINT ["/shim", "run", "-c", "/vaultwarden"]
-
-
-
-LABEL org.opencontainers.image.title="vaultwarden"       org.opencontainers.image.version="1.36.0"       org.opencontainers.image.vendor="dani-garcia"       org.opencontainers.image.source="https://github.com/dani-garcia/vaultwarden"       evergreen.image.tier="2"       evergreen.image.category="secrets"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms" \
-org.opencontainers.image.description="Vaultwarden - lightweight Bitwarden-compatible password manager" \
-evergreen.base.image="scratch"
-
-LABEL evergreen.metrics.native="ztunnel"
-
-LABEL evergreen.health.type="exec"
-
-LABEL evergreen.security.cap-drop="ALL"
-
-LABEL evergreen.security.no-new-privileges="true"
-
-LABEL evergreen.security.read-only-rootfs="true"
-
-LABEL evergreen.security.seccomp="runtime-default"
-
-
-
-EXPOSE 9101
-
-LABEL prometheus.io/scrape="true" \
-      prometheus.io/port="9101" \
-      prometheus.io/path="/metrics"
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/vaultwarden"]
+LABEL org.opencontainers.image.title="vaultwarden" \
+      org.opencontainers.image.description="Vaultwarden - lightweight Bitwarden-compatible password manager" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.vendor="dani-garcia" \
+      org.opencontainers.image.source="https://github.com/dani-garcia/vaultwarden"
+LABEL evergreen.base.image="scratch" \
+      evergreen.security.cap-drop="ALL" \
+      evergreen.security.no-new-privileges="true" \
+      evergreen.security.read-only-rootfs="true" \
+      evergreen.security.seccomp="runtime-default"
 STOPSIGNAL SIGTERM

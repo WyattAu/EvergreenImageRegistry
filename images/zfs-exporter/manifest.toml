@@ -1,42 +1,36 @@
 [metadata]
 name = "zfs-exporter"
-version = "0.0.12"
-description = "ZFS Exporter - Prometheus exporter for ZFS pool and dataset metrics"
-vendor = "fberning"
-source = "https://github.com/fberning/zfs-exporter"
+version = "0.5.3"
+description = "ZFS statistics exporter for Prometheus"
+vendor = "frebib"
+source = "https://github.com/frebib/zfs-exporter"
 license = "MIT"
 tier = "critical"
-upstream_version = "0.0.12"
+upstream_version = "0.5.3"
 
 [build]
-base = "scratch"
+base = "cgr.dev/chainguard/wolfi-base:latest"
 user = "65532:65532"
 stopsignal = "SIGTERM"
 
 [source]
-type = "package-manager"
-url = "https://github.com/fberning/zfs-exporter/releases/download/v0.0.12/zfs-exporter_0.0.12_linux_amd64.tar.gz"
+type = "source-build"
+url = "https://github.com/frebib/zfs-exporter"
 
 [runtime]
-entrypoint = ["/zfs-exporter"]
+entrypoint = ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/zfs-exporter"]
 
 [ports]
 expose = [9134, 9101]
 
 [labels]
-"org.opencontainers.image.source" = "https://github.com/fberning/zfs-exporter"
+"org.opencontainers.image.source" = "https://github.com/frebib/zfs-exporter"
 "org.opencontainers.image.title" = "zfs-exporter"
-"org.opencontainers.image.vendor" = "fberning"
-"org.opencontainers.image.version" = "0.0.12"
-"evergreen.base.image" = "scratch"
+"org.opencontainers.image.vendor" = "frebib"
+"org.opencontainers.image.version" = "0.5.3"
+"evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
-"evergreen.constraint.scratch" = "true"
-"evergreen.health.type" = "exec"
-"evergreen.hft.init-system" = "none"
-"evergreen.hft.shutdown-timeout" = "3s"
-"evergreen.hft.signal-handling" = "native"
-"evergreen.hft.startup-timeout" = "3000ms"
+"evergreen.health.type" = "http"
 "evergreen.image.category" = "monitoring"
 "evergreen.image.status" = "functional"
 "evergreen.image.tier" = "critical"
-"evergreen.metrics.native" = "ztunnel"

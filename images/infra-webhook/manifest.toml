@@ -1,0 +1,35 @@
+[metadata]
+name = "infra-webhook"
+version = "1.0.0"
+description = "Infrastructure deployment webhook (ansible, docker, sops, age)"
+vendor = "wyattau"
+source = "https://github.com/WyattAu/EvergreenImageRegistry"
+license = "MIT"
+tier = "critical"
+
+[build]
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+
+[source]
+type = "binary-download"
+url = "https://github.com/adnanh/webhook/releases"
+
+[runtime]
+entrypoint = ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/webhook"]
+cmd = ["-hooks", "/opt/webhook/hooks.yaml", "-verbose", "-http-methods", "POST"]
+
+[ports]
+expose = [9000, 9101]
+
+[labels]
+"org.opencontainers.image.title" = "infra-webhook"
+"org.opencontainers.image.description" = "Infrastructure deployment webhook (ansible, docker, sops, age)"
+"org.opencontainers.image.vendor" = "wyattau"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.health.type" = "http"
+"evergreen.image.category" = "deployment"
+"evergreen.image.status" = "functional"
+"evergreen.image.tier" = "critical"

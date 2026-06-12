@@ -1,29 +1,34 @@
 # =============================================================================
 # EVERGREEN HARDENED VAULTWARDEN
-# Source build - scratch final stage (static binary)
+# Extract from upstream + wolfi-base (dynamically linked binary)
+# Upstream binary needs: libssl, libcrypto, libmariadb, libpq, libc, libz, etc.
 # =============================================================================
 ARG VERSION=1.36.0
 ARG SHIM_VERSION=v1.0.0
 
-FROM golang:1.24-bookworm AS builder
-ARG VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
-WORKDIR /src
-RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/dani-garcia/vaultwarden.git . || \
-    git clone --depth 1 https://github.com/dani-garcia/vaultwarden.git .
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-    go build -ldflags='-s -w' \
-    -o /vaultwarden ./src/main.rs 2>/dev/null || \
-    cargo build --release --target x86_64-unknown-linux-musl 2>/dev/null
+FROM vaultwarden/server:${VERSION} AS upstream
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM scratch
+FROM --platform=linux/amd64 cgr.dev/chainguard/wolfi-base@sha256:0b5fd36c9f36ecc95bf6dbe049fe0a211410e1ba8a9801db0fbe25c7561d81c1
 COPY --from=shim /shim /usr/local/bin/shim
-COPY --from=builder /vaultwarden /vaultwarden
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+RUN chmod +x /usr/local/bin/shim
+
+RUN apk add --no-cache \
+    openssl \
+    mariadb-connector-c \
+    postgresql-client \
+    zlib \
+    zstd \
+    krb5-libs \
+    openldap \
+    ca-certificates
+
+COPY --from=upstream /vaultwarden /vaultwarden
+COPY --from=upstream /web-vault /web-vault
+
 USER 65532:65532
-ENV SHIM_METRICS_ENABLED="true"
+ENV SHIM_METRICS_ENABLED="true" ROCKET_PORT=80
 WORKDIR /
 EXPOSE 80 9101
 
@@ -36,7 +41,7 @@ LABEL org.opencontainers.image.title="vaultwarden" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="dani-garcia" \
       org.opencontainers.image.source="https://github.com/dani-garcia/vaultwarden"
-LABEL evergreen.base.image="scratch" \
+LABEL evergreen.base.image="wolfi" \
       evergreen.security.cap-drop="ALL" \
       evergreen.security.no-new-privileges="true" \
       evergreen.security.read-only-rootfs="true" \

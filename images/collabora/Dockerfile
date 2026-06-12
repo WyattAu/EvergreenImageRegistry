@@ -14,10 +14,10 @@ COPY --from=shim /shim /usr/local/bin/shim
 RUN chmod +x /usr/local/bin/shim
 
 
-RUN mkdir -p /opt/collaboraoffice /usr/local/bin /etc/loolwsd /tmp/collabora-libs 2>/dev/null || true
+RUN mkdir -p /opt/collaboraoffice /usr/local/bin /etc/coolwsd /tmp/collabora-libs 2>/dev/null || true
 COPY --from=upstream /opt/collaboraoffice/ /opt/collaboraoffice/
-COPY --from=upstream /usr/bin/loolwsd /usr/local/bin/loolwsd
-COPY --from=upstream /etc/loolwsd/ /etc/loolwsd/
+COPY --from=upstream /usr/bin/coolwsd /usr/local/bin/coolwsd
+COPY --from=upstream /etc/coolwsd/ /etc/coolwsd/
 COPY --from=upstream /usr/lib/ /usr/lib/
 COPY --from=upstream /lib/ /lib/
 
@@ -31,7 +31,7 @@ EXPOSE 9980
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9980"]
 
-ENTRYPOINT ["/shim", "run", "-c", "loolwsd"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "coolwsd"]
 LABEL org.opencontainers.image.title="collabora" \
       org.opencontainers.image.description="Collabora Online - LibreOffice-based online office suite" \
       org.opencontainers.image.version="25.04.9.4.1" \

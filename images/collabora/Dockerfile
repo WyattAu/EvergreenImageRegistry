@@ -29,5 +29,7 @@ LABEL org.opencontainers.image.title="collabora" \
       org.opencontainers.image.source="https://github.com/CollaboraOnline/online"
 LABEL evergreen.base.image="debian-bookworm-slim" \
       evergreen.security.cap-drop="ALL" \
-      evergreen.security.no-new-privileges="true"
+      evergreen.security.no-new-privileges="true" \
+      evergreen.security.read-only-rootfs="true" \
+      evergreen.security.seccomp="runtime-default"
 STOPSIGNAL SIGTERM

@@ -51,7 +51,7 @@ EXPOSE 5432 9101 9102
 HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=5 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5432"]
 
-ENTRYPOINT ["/shim", "run", "-c", "postgres"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "postgres"]
 CMD ["-c", "docker-entrypoint.sh", "--", "postgres"]
 LABEL org.opencontainers.image.title="postgres" \
       org.opencontainers.image.description="PostgreSQL - advanced open source relational database" \

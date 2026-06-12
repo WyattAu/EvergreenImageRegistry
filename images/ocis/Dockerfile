@@ -24,11 +24,11 @@ COPY --from=downloader /ocis /usr/local/bin/ocis
 RUN chmod +x /usr/local/bin/ocis
 
 # Create init wrapper script
-RUN printf '#!/bin/sh\nif [ ! -f /etc/ocis/ocis.yaml ]; then\n  /usr/local/bin/ocis init\nfi\nexec /usr/local/bin/ocis "$@"\n' > /usr/local/bin/ocis-wrapper.sh && \
+RUN printf '#!/bin/sh\nexport OCIS_CONFIG_DIR=/etc/ocis\nif [ ! -f /etc/ocis/ocis.yaml ]; then\n  /usr/local/bin/ocis init\nfi\nexec /usr/local/bin/ocis "$@"\n' > /usr/local/bin/ocis-wrapper.sh && \
     chmod +x /usr/local/bin/ocis-wrapper.sh
 
 USER 65532:65532
-ENV SHIM_METRICS_ENABLED="true"
+ENV SHIM_METRICS_ENABLED="true" OCIS_CONFIG_DIR=/etc/ocis
 WORKDIR /
 EXPOSE 9200 9101
 

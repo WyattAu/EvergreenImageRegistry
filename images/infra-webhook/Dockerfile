@@ -73,5 +73,6 @@ LABEL org.opencontainers.image.title="infra-webhook" \
 LABEL evergreen.base.image="wolfi" \
       evergreen.security.cap-drop="ALL" \
       evergreen.security.no-new-privileges="true" \
+      evergreen.security.read-only-rootfs="true" \
       evergreen.security.seccomp="runtime-default"
 STOPSIGNAL SIGTERM

@@ -144,18 +144,24 @@ jobs:
           build_image() {
             local image="$1"
             local REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
+            local DOCKERHUB_REF="docker.io/kingstonpeptidesdevops/evergreenimageregistry/${image}"
             local SAFE="${image//\//-}"
             echo "::group::Build ${image}"
             local PLATFORM_FLAG="--platform linux/amd64"
             local OUTPUT_FLAG="--output type=docker,dest=/tmp/images/${SAFE}.tar"
+            local TAG_FLAGS="-t ${REF} -t ${REGISTRY}/${OWNER}/${image}:latest"
             if [ "${{ inputs.multiarch }}" = "true" ]; then
               PLATFORM_FLAG="--platform linux/amd64,linux/arm64"
               OUTPUT_FLAG="--push"
+              # Also push to Docker Hub when multiarch
+              if [ -n "${{ secrets.DOCKERHUB_TOKEN }}" ]; then
+                TAG_FLAGS="${TAG_FLAGS} -t ${DOCKERHUB_REF}:${TAG} -t ${DOCKERHUB_REF}:latest"
+              fi
             fi
             if timeout 900 docker buildx build \
                 --builder "$CURRENT_BUILDER" \
                 ${PLATFORM_FLAG} \
-                -t "${REF}" -t "${REGISTRY}/${OWNER}/${image}:latest" \
+                ${TAG_FLAGS} \
                 ${OUTPUT_FLAG} \
                 --cache-from "type=local,src=/tmp/.buildkit-cache" \
                 --cache-to "type=local,dest=/tmp/.buildkit-cache-new,mode=max" \

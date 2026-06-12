@@ -28,7 +28,7 @@ EXPOSE 80 443
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/shim", "run", "-c", "/oauth2-proxy"]
 LABEL org.opencontainers.image.title="oauth2-proxy" \
       org.opencontainers.image.version="v7.15.2" \
       org.opencontainers.image.vendor="OAuth2 Proxy" \

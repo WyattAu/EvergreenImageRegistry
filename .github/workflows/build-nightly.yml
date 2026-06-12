@@ -192,6 +192,24 @@ jobs:
           fi
 
   # ---------------------------------------------------------------------------
+  # BINARY TYPE CHECK - Non-blocking: verify scratch images are statically linked
+  # ---------------------------------------------------------------------------
+  binary-type-check:
+    name: Binary Type Check
+    needs: [gates]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
+      - name: Check binary types in scratch images
+        run: |
+          chmod +x scripts/check_binary_type.sh
+          scripts/check_binary_type.sh
+
+  # ---------------------------------------------------------------------------
   # BUILD CRITICAL - Highest priority, signed, multi-arch
   # ---------------------------------------------------------------------------
   build-critical:

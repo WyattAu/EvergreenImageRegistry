@@ -22,9 +22,7 @@ FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 FROM scratch
 COPY --from=shim /shim /shim
 
-
-COPY --from=downloader /crowdsec /crowdsec
-
+COPY --from=downloader /crowdsec /usr/local/bin/crowdsec
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
 USER 65532:65532

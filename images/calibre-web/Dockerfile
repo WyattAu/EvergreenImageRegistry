@@ -1,35 +1,33 @@
-# =============================================================================
-# EVERGREEN HARDENED CALIBRE-WEB
-# Generated from template - Version: 0.6.26
-# Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
-# Priority: scratch > distroless > wolfi > debian-slim (last resort)
-# =============================================================================
-
 ARG VERSION=0.6.26
 ARG TARGETARCH
-ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-
 ARG SHIM_VERSION=v1.0.0
+
+FROM debian@sha256:0104b334637a5f19aa9c983a91b54c89887c0984081f2068983107a6f6c21eeb AS downloader
+ARG TARGETARCH
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
+    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/janeczku/calibre-web/releases/download/${VERSION}/calibreweb-${VERSION}-linux-${TARGETARCH}.tar.gz" -o /calibre-web.tar.gz && \
+    mkdir -p /tmp/extract && tar -xzf /calibre-web.tar.gz -C /tmp/extract && rm -f /calibre-web.tar.gz && \
+    mv /tmp/extract/calibreweb-* /tmp/calibre-web && chmod +x /tmp/calibre-web 2>/dev/null
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-COPY --from=shim /shim /usr/local/bin/shim
-RUN chmod +x /usr/local/bin/shim
+FROM scratch
+COPY --from=shim /shim /shim
 
-RUN apk add --no-cache ca-certificates && \
-    adduser -u 65532 -D calibre 2>/dev/null || true && \
-    mkdir -p /app /var/log/python /var/cache/python && chown -R 65532:65532 /app /var/log/python /var/cache/python 2>/dev/null || true
+COPY --from=downloader /tmp/calibre-web /calibre-web
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER 65532:65532
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 8083
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8083"]
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8083"]
 
-ENTRYPOINT ["/shim", "run", "-c", "s6-svscan /etc/s6-overlay"]
+ENTRYPOINT ["/shim", "run", "-c", "/calibre-web"]
 LABEL org.opencontainers.image.title="calibre-web" \
       org.opencontainers.image.description="calibre-web container image" \
       org.opencontainers.image.version="0.6.26" \

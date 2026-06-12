@@ -2,8 +2,8 @@
 """Validate EIR images follow the standard ENTRYPOINT/CMD pattern.
 
 Standard patterns:
-  ENTRYPOINT ["/shim", "run", "-c", "/path/to/binary"]  # with wrapper
-  ENTRYPOINT ["/shim", "run", "/path/to/binary"]         # without wrapper
+  ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/path/to/binary"]  # with wrapper
+  ENTRYPOINT ["/usr/local/bin/shim", "run", "/path/to/binary"]         # without wrapper
   CMD ["<arg1>", "<arg2>"]  # Only args, no binary name, no -c flag
 
 Usage:
@@ -18,16 +18,22 @@ from typing import NamedTuple
 
 IMAGES_DIR = Path(__file__).resolve().parent.parent / "images"
 
-# Known shim paths
-SHIM_PATHS = ("/shim", "/usr/local/bin/shim")
+# Canonical shim path
+SHIM_PATH_CANONICAL = "/usr/local/bin/shim"
+# Deprecated shim path (scratch images should use canonical)
+SHIM_PATH_DEPRECATED = "/shim"
+# All known shim paths for backwards compatibility in parsing
+SHIM_PATHS = (SHIM_PATH_CANONICAL, SHIM_PATH_DEPRECATED)
 
 
 class PatternResult(NamedTuple):
     image: str
     has_shim_copy: bool
     shim_path: str | None
+    shim_path_correct: bool
     entrypoint_correct: bool
     entrypoint_raw: str
+    entrypoint_has_c_flag: bool
     cmd_correct: bool
     cmd_raw: str
     issues: list[str]
@@ -58,15 +64,28 @@ def parse_dockerfile(path: Path) -> dict[str, list[str]]:
     return stages
 
 
+def is_scratch_image(dockerfile_text: str) -> bool:
+    """Check if the final stage uses scratch as the base image."""
+    for line in dockerfile_text.splitlines():
+        stripped = line.strip()
+        if stripped.upper().startswith("FROM "):
+            parts = stripped.split()
+            image = parts[1] if len(parts) >= 2 else ""
+            if image == "scratch":
+                return True
+    return False
+
+
 def find_shim_copy(dockerfile_text: str) -> tuple[bool, str | None]:
-    """Check for COPY --from=shim instruction."""
+    """Check for COPY --from=shim instruction. Returns (found, destination_path)."""
     for line in dockerfile_text.splitlines():
         stripped = line.strip()
         if stripped.upper().startswith("COPY") and "--FROM=SHIM" in stripped.upper():
             parts = stripped.split()
             for i, part in enumerate(parts):
                 if part.upper() == "--FROM=SHIM":
-                    dest = parts[i + 1] if i + 1 < len(parts) else None
+                    # COPY --from=shim SOURCE DEST — dest is two positions after --from=shim
+                    dest = parts[i + 2] if i + 2 < len(parts) else None
                     return True, dest
     return False, None
 
@@ -107,8 +126,10 @@ def validate_image(image_name: str) -> PatternResult:
             image=image_name,
             has_shim_copy=False,
             shim_path=None,
+            shim_path_correct=False,
             entrypoint_correct=False,
             entrypoint_raw="",
+            entrypoint_has_c_flag=False,
             cmd_correct=False,
             cmd_raw="",
             issues=["Dockerfile not found"],
@@ -121,30 +142,43 @@ def validate_image(image_name: str) -> PatternResult:
     if not has_copy:
         issues.append("Missing COPY --from=shim instruction")
 
+    # Check shim path: scratch-based images must use /usr/local/bin/shim
+    scratch = is_scratch_image(text)
+    shim_path_correct = True
+    if scratch and shim_path and shim_path != SHIM_PATH_CANONICAL:
+        shim_path_correct = False
+        issues.append(
+            f"Scratch image uses deprecated shim path '{shim_path}', "
+            f"expected '{SHIM_PATH_CANONICAL}'"
+        )
+
     ep_raw, ep_args = find_entrypoint(text)
     cmd_raw, cmd_args = find_cmd(text)
 
     entrypoint_correct = False
+    entrypoint_has_c_flag = False
     if ep_args:
-        # Pattern 1: ["/shim", "run", "-c", "<binary>"]
-        # Pattern 2: ["/shim", "run", "<binary>"]
-        # Pattern 3: ["/usr/local/bin/shim", "run", "-c", "<binary>"]
-        # Pattern 4: ["/usr/local/bin/shim", "run", "<binary>"]
+        # Must follow: ["/usr/local/bin/shim", "run", "-c", "<binary>"]
+        # or:          ["/usr/local/bin/shim", "run", "<binary>"]
         if (
             len(ep_args) >= 3
-            and ep_args[0] in SHIM_PATHS
+            and ep_args[0] == SHIM_PATH_CANONICAL
             and ep_args[1] == "run"
         ):
             entrypoint_correct = True
+            entrypoint_has_c_flag = len(ep_args) >= 4 and ep_args[2] == "-c"
         else:
             issues.append(f"ENTRYPOINT does not follow standard: {ep_raw}")
     else:
         issues.append("No ENTRYPOINT found")
 
+    # For scratch images, ENTRYPOINT must have -c flag
+    if scratch and not entrypoint_has_c_flag and entrypoint_correct:
+        issues.append("Scratch image ENTRYPOINT missing -c flag")
+
     cmd_correct = False
     if cmd_args:
         # Standard: only args, no binary name, no -c flag
-        # Extract binary name from ENTRYPOINT
         binary_name = ""
         if len(ep_args) >= 3:
             binary_path = ep_args[2] if ep_args[2] != "-c" and len(ep_args) >= 4 else ep_args[-1] if len(ep_args) >= 3 else ""
@@ -158,15 +192,16 @@ def validate_image(image_name: str) -> PatternResult:
         else:
             issues.append(f"CMD contains binary name or -c flag: {cmd_raw}")
     elif not cmd_args:
-        # CMD is acceptable if ENTRYPOINT provides all arguments
         cmd_correct = True
 
     return PatternResult(
         image=image_name,
         has_shim_copy=has_copy,
         shim_path=shim_path,
+        shim_path_correct=shim_path_correct,
         entrypoint_correct=entrypoint_correct,
         entrypoint_raw=ep_raw or "",
+        entrypoint_has_c_flag=entrypoint_has_c_flag,
         cmd_correct=cmd_correct,
         cmd_raw=cmd_raw or "",
         issues=issues,
@@ -182,6 +217,26 @@ def fix_dockerfile(image_name: str, dry_run: bool = True) -> list[str]:
     text = dockerfile.read_text()
     original = text
     changes = []
+
+    # Fix: Standardize shim path for scratch images
+    if is_scratch_image(text):
+        # Fix COPY --from=shim destination
+        if f"COPY --from=shim /shim {SHIM_PATH_DEPRECATED}" in text:
+            text = text.replace(
+                f"COPY --from=shim /shim {SHIM_PATH_DEPRECATED}",
+                f"COPY --from=shim /shim {SHIM_PATH_CANONICAL}",
+            )
+            changes.append(f"Standardized COPY destination to {SHIM_PATH_CANONICAL}")
+
+        # Fix ENTRYPOINT shim path
+        for old_path in SHIM_PATHS:
+            if old_path != SHIM_PATH_CANONICAL:
+                text = text.replace(f'"{old_path}", "run"', f'"{SHIM_PATH_CANONICAL}", "run"')
+
+        # Fix HEALTHCHECK shim path
+        for old_path in SHIM_PATHS:
+            if old_path != SHIM_PATH_CANONICAL:
+                text = text.replace(f'"{old_path}", "healthcheck"', f'"{SHIM_PATH_CANONICAL}", "healthcheck"')
 
     # Fix: Remove -c flag from CMD if ENTRYPOINT already has it
     lines = text.splitlines()
@@ -239,6 +294,7 @@ def main():
     total = 0
     passing = 0
     failing = 0
+    shim_issues = 0
 
     for img in images:
         result = validate_image(img)
@@ -247,6 +303,8 @@ def main():
 
         if result.issues:
             failing += 1
+            if not result.shim_path_correct:
+                shim_issues += 1
         else:
             passing += 1
 
@@ -261,12 +319,13 @@ def main():
             "total": total,
             "passing": passing,
             "failing": failing,
+            "shim_path_issues": shim_issues,
             "results": [r._asdict() for r in results],
         }
         print(json.dumps(output, indent=2))
     else:
         print("\n=== EIR Entrypoint Pattern Validation ===")
-        print(f"Total: {total} | Passing: {passing} | Failing: {failing}\n")
+        print(f"Total: {total} | Passing: {passing} | Failing: {failing} | Shim path issues: {shim_issues}\n")
 
         if failing > 0:
             print("FAILURES:")

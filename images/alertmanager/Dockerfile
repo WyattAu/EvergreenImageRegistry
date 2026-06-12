@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /alertmanager /alertmanager
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=downloader /alertmanager-data /alertmanager-data
@@ -25,8 +25,8 @@ ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /
 EXPOSE 9093 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9093"]
-ENTRYPOINT ["/shim", "run", "-c", "/alertmanager"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9093"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/alertmanager"]
 LABEL org.opencontainers.image.title="alertmanager" \
       org.opencontainers.image.description="Prometheus Alertmanager" \
       org.opencontainers.image.version="v0.32.1" \

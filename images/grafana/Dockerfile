@@ -23,7 +23,7 @@ RUN apk add --no-cache wget ca-certificates && \
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /grafana-bin /grafana-bin
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=downloader /usr/share/grafana /usr/share/grafana
@@ -35,9 +35,9 @@ WORKDIR /
 EXPOSE 3000 9101
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
 
-ENTRYPOINT ["/shim", "run", "-c", "/grafana-bin/grafana-server"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/grafana-bin/grafana-server"]
 CMD ["--homepath=/usr/share/grafana", "--config=/etc/grafana/grafana.ini"]
 LABEL org.opencontainers.image.title="grafana" \
       org.opencontainers.image.description="Grafana - analytics and interactive visualization platform" \

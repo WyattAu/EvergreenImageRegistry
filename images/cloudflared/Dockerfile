@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /cloudflared /cloudflared
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER ${APP_UID}:${APP_GID}
@@ -20,7 +20,7 @@ ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /
 EXPOSE 7844 9101
 HEALTHCHECK NONE
-ENTRYPOINT ["/shim", "run", "-c", "/cloudflared"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/cloudflared"]
 LABEL org.opencontainers.image.title="cloudflared" \
       org.opencontainers.image.description="Cloudflare Tunnel client" \
       org.opencontainers.image.version="2026.5.0" \

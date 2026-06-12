@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /traefik /traefik
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER ${APP_UID}:${APP_GID}
@@ -22,8 +22,8 @@ ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /
 EXPOSE 80 443 8080 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
-ENTRYPOINT ["/shim", "run", "-c", "/traefik"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/traefik"]
 LABEL org.opencontainers.image.title="traefik" \
       org.opencontainers.image.description="Traefik - modern HTTP reverse proxy and load balancer" \
       org.opencontainers.image.version="v3.7.1" \

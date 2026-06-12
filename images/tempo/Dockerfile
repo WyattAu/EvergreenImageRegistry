@@ -17,7 +17,7 @@ RUN mkdir -p /app /var/log/tempo /var/cache/tempo /var/tempo/wal 2>/dev/null || 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /tempo /tempo
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -31,9 +31,9 @@ WORKDIR /app
 EXPOSE 3200
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:3200"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3200"]
 
-ENTRYPOINT ["/shim", "run", "-c", "/tempo"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/tempo"]
 LABEL org.opencontainers.image.title="tempo" \
       org.opencontainers.image.description="Tempo - distributed tracing backend by Grafana" \
       org.opencontainers.image.version="2.10.5" \

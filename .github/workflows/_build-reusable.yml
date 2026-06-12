@@ -144,7 +144,7 @@ jobs:
           build_image() {
             local image="$1"
             local REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
-            local DOCKERHUB_REF="docker.io/kingstonpeptidesdevops/evergreenimageregistry/${image}"
+            local DOCKERHUB_REF="docker.io/wyattau/evergreenimageregistry/${image}"
             local SAFE="${image//\//-}"
             echo "::group::Build ${image}"
             local PLATFORM_FLAG="--platform linux/amd64"

@@ -1,0 +1,57 @@
+[metadata]
+name = "clawdius"
+version = "1.0.0"
+description = "AI coding assistant with formal verification, multi-provider LLM, and 9 messaging adapters"
+source = "https://github.com/WyattAu/clawdius"
+license = "Apache-2.0"
+tier = "critical"
+vendor = "WyattAu"
+categories = ["CI/CD", "Developer Tools", "AI/ML"]
+keywords = ["ai", "coding", "assistant", "llm", "rust", "formal-verification"]
+maintainer = "WyattAu"
+
+[build]
+type = "source-build"
+runtime_deps = ["ca-certificates"]
+build_deps = ["rust", "pkg-config", "openssl-dev", "protobuf-dev", "cmake"]
+languages = ["rust"]
+
+[security]
+non_root = true
+uid = 65532
+read_only_rootfs = false
+cap_drop_all = true
+no_new_privileges = true
+seccomp = "runtime-default"
+
+[health]
+type = "exec"
+port = 8080
+interval = "30s"
+timeout = "10s"
+start_period = "10s"
+retries = 3
+
+[resources]
+min_memory = "256Mi"
+rec_memory = "1Gi"
+min_cpu = "500m"
+rec_cpu = "2000m"
+
+[ports]
+api = 8080
+
+[env]
+CLAWDIUS_CONFIG = { default = "/app/config/config.toml", description = "Config file path" }
+CLAWDIUS_DATA_DIR = { default = "/app/data", description = "Data directory" }
+CLAWDIUS_LOG_DIR = { default = "/app/logs", description = "Log directory" }
+RUST_LOG = { default = "info", description = "Log level" }
+
+[label]
+"org.opencontainers.image.title" = "clawdius"
+"org.opencontainers.image.description" = "AI coding assistant with formal verification and multi-provider LLM"
+"org.opencontainers.image.version" = "1.0.0"
+"org.opencontainers.image.vendor" = "WyattAu"
+"org.opencontainers.image.source" = "https://github.com/WyattAu/clawdius"
+"evergreen.image.tier" = "critical"
+"evergreen.constraint.nonroot" = "true"

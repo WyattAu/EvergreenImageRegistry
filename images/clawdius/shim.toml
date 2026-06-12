@@ -1,0 +1,13 @@
+[shim]
+name = "clawdius"
+type = "tcp"
+endpoint = "127.0.0.1:8080"
+
+[shim.healthcheck]
+interval = "30s"
+timeout = "10s"
+start_period = "10s"
+
+[shim.metrics]
+enabled = true
+port = 9101

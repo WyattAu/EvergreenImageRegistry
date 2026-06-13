@@ -4,7 +4,7 @@ ARG APP_GID=65532
 ARG SHIM_VERSION=v1.0.0
 
 FROM debian:bookworm-slim AS downloader
-ARG VERSION=v3.7.1
+ARG VERSION=v3.7.3
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/traefik/traefik/releases/download/${VERSION}/traefik_${VERSION}_linux_amd64.tar.gz" -o /traefik.tar.gz && \
     tar -xzf /traefik.tar.gz -C /tmp && \
@@ -26,7 +26,7 @@ HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
 ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/traefik"]
 LABEL org.opencontainers.image.title="traefik" \
       org.opencontainers.image.description="Traefik - modern HTTP reverse proxy and load balancer" \
-      org.opencontainers.image.version="v3.7.1" \
+      org.opencontainers.image.version="v3.7.3" \
       org.opencontainers.image.vendor="Traefik Labs" \
       org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
       org.opencontainers.image.source="https://github.com/traefik/traefik" \

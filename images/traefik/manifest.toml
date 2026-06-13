@@ -1,7 +1,7 @@
 [metadata]
 name = "traefik"
-version = "v3.7.1"
-upstream_version = "3.7.1"
+version = "v3.7.3"
+upstream_version = "3.7.3"
 description = "Traefik - modern HTTP reverse proxy and load balancer"
 vendor = "Traefik Labs"
 source = "https://github.com/traefik/traefik"
@@ -15,7 +15,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "binary-release"
-url = "https://github.com/traefik/traefik/releases/download/v3.7.1/traefik_v3.7.1_linux_amd64.tar.gz"
+url = "https://github.com/traefik/traefik/releases/download/v3.7.3/traefik_v3.7.3_linux_amd64.tar.gz"
 
 [runtime]
 entrypoint = ["/traefik"]
@@ -26,7 +26,7 @@ expose = [80, 443, 8080, 9101]
 [labels]
 "org.opencontainers.image.title" = "traefik"
 "org.opencontainers.image.vendor" = "Traefik Labs"
-"org.opencontainers.image.version" = "v3.7.1"
+"org.opencontainers.image.version" = "v3.7.3"
 "evergreen.base.image" = "scratch"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.constraint.scratch" = "true"

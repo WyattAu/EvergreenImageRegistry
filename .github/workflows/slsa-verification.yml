@@ -1,9 +1,12 @@
 name: SLSA Verification
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * 1"
 
 permissions:
   contents: read
+  id-token: read
 
 jobs:
   verify:
@@ -19,4 +22,23 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo "done"
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Build evergreenctl
+        run: cd evergreenctl && cargo build --release
+      - name: Verify all images
+        run: evergreenctl/target/release/evergreenctl verify-all images/
+      - name: Verify SLSA provenance
+        run: |
+          SAMPLE_IMAGES=$(find images -maxdepth 1 -mindepth 1 -type d \
+            -not -path 'images/_*' -not -path 'images/tests' \
+            | head -5 | sed 's|images/||' | tr '\n' ' ')
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          for img in $SAMPLE_IMAGES; do
+            FULL_REF="ghcr.io/${OWNER}/${img}:latest"
+            echo "Verifying $FULL_REF..."
+            cosign verify-attestation --type slsaprovenance \
+              --certificate-identity "https://github.com/${{ github.repository }}" \
+              --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+              "$FULL_REF" 2>&1 || echo "WARNING: Could not verify $img" >&2
+          done

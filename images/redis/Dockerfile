@@ -12,7 +12,7 @@ WORKDIR /src
 RUN wget -q "https://download.redis.io/releases/redis-${VERSION}.tar.gz" -O redis.tar.gz && \
     tar -xzf redis.tar.gz && rm redis.tar.gz
 RUN cd redis-${VERSION} && \
-    make -j$(nproc) install && \
+    make -j$(nproc) MALLOC=libc BUILD_TLS=no LDFLAGS="-static" install && \
     mkdir -p /app /var/log/redis /var/cache/redis
 
 FROM ghcr.io/wyattau/evergreenshim/cache-shim:${SHIM_VERSION} AS shim

@@ -21,7 +21,7 @@ EXPOSE 9980 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9980"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "coolwsd", "--o:security.capabilities=false", "--o:security.seccomp=false", "--o:child_root_path=/tmp/jails", "--o:ssl.enable=false", "--o:ssl.termination=true"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "coolwsd", "--o:security.capabilities=false", "--o:security.seccomp=false", "--o:child_root_path=/tmp/jails", "--o:ssl.enable=false", "--o:ssl.termination=true", "--o:file_server_root_path=/usr/share/coolwsd"]
 LABEL org.opencontainers.image.title="collabora" \
       org.opencontainers.image.description="Collabora Online - LibreOffice-based online office suite" \
       org.opencontainers.image.version="25.04.9.4.1" \

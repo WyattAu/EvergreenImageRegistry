@@ -5,7 +5,7 @@
 | Version   | 30.0.0         |
 | Updated   | 2026-06-13     |
 | Status    | STABLE         |
-| Phases    | 0-102 complete |
+| Phases    | 0-111 complete |
 
 ---
 
@@ -25,8 +25,8 @@
 | Multi-arch (amd64+arm64) | 849 declared                   | DONE                        |
 | Docker Hub mirror        | 98 repos at docker.io/wyattau/ | DONE                        |
 | CI/CD workflows          | 22 active                      | DONE                        |
-| evergreenctl (Rust)      | v1.0.0, 126 tests              | DONE                        |
-| health-shim (Go)         | v1.0.0, 14 tests               | DONE                        |
+| evergreenctl (Rust)      | v1.0.0, 142 tests              | DONE                        |
+| health-shim (Go)         | v1.1.0, run+healthcheck modes  | DONE                        |
 | Python test suite        | 70 tests                       | DONE                        |
 
 ---
@@ -170,6 +170,27 @@ Priority: LOW | Effort: 2-3 days
 
 ---
 
+## Phase 111: health-shim v1.1.0 + CI Lint Green
+
+Priority: HIGH | Effort: 1 day | Status: COMPLETE
+
+| Task                                    | Status |
+| --------------------------------------- | ------ |
+| health-shim v1.1.0 (run/healthcheck)    | DONE   |
+| 717 Dockerfiles updated to v1.1.0       | DONE   |
+| 24 version drifts fixed                 | DONE   |
+| 6 empty builder stages removed          | DONE   |
+| Prettier/YAMLLint/cargo fmt fixes       | DONE   |
+| upstream-watch parser fix               | DONE   |
+| daily-security-scan artifact fix        | DONE   |
+| nightly timeout 30->120min              | DONE   |
+| Monitoring deployment stack             | DONE   |
+| immich-postgres with pgvector           | DONE   |
+| 5 stale dependabot PRs closed           | DONE   |
+| clawdius excluded from lint             | DONE   |
+
+---
+
 ## Known Gaps
 
 - 5 auth-gated `:latest` FROM refs (dependabot, lancedb, scylladb, tigergraph x2)
@@ -177,7 +198,9 @@ Priority: LOW | Effort: 2-3 days
 - 360 images without multi-arch (C-extension Python ~80, amd64-only upstream ~200, GPU/ML ~50, niche ~30)
 - Forgejo v15 cancel-in-progress bug (fixed in v16, July 16, 2026)
 - Win11 VM runner offline (needs SPICE console access)
-- GitHub Pages site returns 404 (needs Jekyll build workflow)
+- health-shim v1.1.0 needs to be built and pushed to GHCR
+- 5 images missing SBOMs (988 images, 983 SBOMs)
+- docs/image-audit-report.md stale (reports 841, actual 988)
 
 ## NOT Recommended
 

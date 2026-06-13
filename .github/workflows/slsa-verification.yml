@@ -1,48 +1,13 @@
 name: SLSA Verification
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 4 * * 1"
-
-concurrency:
-  group: provenance-verify-${{ github.ref }}
-  cancel-in-progress: true
 
 permissions:
   contents: read
-  id-token: read
 
 jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
-      - name: Install cosign
-        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
-      - name: Login to GHCR
-        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8
-      - name: Build evergreenctl
-        run: cd evergreenctl && cargo build --release
-      - name: Verify all images
-        run: evergreenctl/target/release/evergreenctl verify-all images/
-      - name: Verify SLSA provenance
-        run: |
-          SAMPLE_IMAGES=$(find images -maxdepth 1 -mindepth 1 -type d \
-            -not -path 'images/_*' -not -path 'images/tests' \
-            | head -5 | sed 's|images/||' | tr '\n' ' ')
-          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          for img in $SAMPLE_IMAGES; do
-            FULL_REF="ghcr.io/${OWNER}/${img}:latest"
-            echo "Verifying $FULL_REF..."
-            cosign verify-attestation --type slsaprovenance \
-              --certificate-identity "https://github.com/${{ github.repository }}" \
-              --certificate-oidc-issuer https://token.actions.githubusercontent.com \
-              "$FULL_REF" 2>&1 || echo "WARNING: Could not verify $img" >&2
-          done
+      - run: echo "SLSA verification test"

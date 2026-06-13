@@ -1,0 +1,126 @@
+ARG APP_UID=65532
+ARG APP_GID=65532
+ARG SHIM_VERSION=v1.0.0
+ARG OPENSSL_VERSION=3.0.16
+ARG VERSION=17.10
+
+FROM cgr.dev/chainguard/wolfi-base AS openssl-builder
+ARG OPENSSL_VERSION
+
+RUN apk add --no-cache gcc make glibc-dev glibc-static linux-headers ca-certificates perl-core wget
+
+WORKDIR /src
+RUN wget -q "https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz" -O openssl.tar.gz && \
+    tar -xzf openssl.tar.gz
+
+WORKDIR /src/openssl-${OPENSSL_VERSION}
+RUN ./config \
+        --prefix=/usr/local/ssl-fips \
+        --openssldir=/etc/ssl/fips \
+        enable-fips && \
+    make -j$(nproc) && \
+    make install_sw && \
+    make install_fips && \
+    make install
+
+FROM cgr.dev/chainguard/wolfi-base AS pg-builder
+ARG VERSION
+ARG OPENSSL_VERSION
+
+RUN apk add --no-cache gcc make glibc-dev glibc-static linux-headers ca-certificates perl-core wget \
+    readline-dev zlib-dev bison flex icu-dev
+
+COPY --from=openssl-builder /usr/local/ssl-fips /usr/local/ssl-fips
+COPY --from=openssl-builder /etc/ssl/fips /etc/ssl/fips
+
+WORKDIR /src
+RUN wget -q "https://ftp.postgresql.org/pub/source/v${VERSION}/postgresql-${VERSION}.tar.gz" -O postgres.tar.gz && \
+    tar -xzf postgres.tar.gz
+
+WORKDIR /src/postgresql-${VERSION}
+RUN ./configure \
+        --prefix=/usr/local/pgsql \
+        --with-openssl \
+        --with-includes=/usr/local/ssl-fips/include \
+        --with-libraries=/usr/local/ssl-fips/lib64 && \
+    make -j$(nproc) && \
+    make install
+
+FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
+
+FROM cgr.dev/chainguard/wolfi-base
+COPY --from=shim /shim /usr/local/bin/shim
+COPY --from=pg-builder /usr/local/pgsql /usr/local/pgsql
+COPY --from=openssl-builder /usr/local/ssl-fips /usr/local/ssl-fips
+COPY --from=openssl-builder /etc/ssl/fips /etc/ssl/fips
+COPY --from=openssl-builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY shim.toml /etc/evergreen/shim.toml
+
+RUN ln -sf /usr/local/ssl-fips/lib64/libssl.so.3 /usr/lib/libssl.so.3 && \
+    ln -sf /usr/local/ssl-fips/lib64/libcrypto.so.3 /usr/lib/libcrypto.so.3 && \
+    echo "config_diagnostics = 1" >> /etc/ssl/fipsmodule.cnf && \
+    printf 'openssl_conf = openssl_init\n.include /etc/ssl/fipsmodule.cnf\n[openssl_init]\nproviders = provider_sect\n[provider_sect]\nfips = fips_sect\nbase = base_sect\n[base_sect]\nactivate = 1\n' > /etc/ssl/fips.cnf && \
+    addgroup -g 70 postgres && \
+    adduser -D -u 70 -G postgres -h /var/lib/postgresql postgres && \
+    mkdir -p /var/lib/postgresql/data /var/run/postgresql && \
+    chown -R postgres:postgres /var/lib/postgresql /var/run/postgresql && \
+    chmod +x /usr/local/bin/shim
+
+ENV PGDATA=/var/lib/postgresql/data \
+    OPENSSL_CONF=/etc/ssl/fipsmodule.cnf \
+    PATH="/usr/local/pgsql/bin:${PATH}"
+
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+USER postgres
+ENV SHIM_BACKUP_ENABLED="true" \
+    SHIM_BACKUP_DB_HOST="localhost" \
+    SHIM_BACKUP_DB_PORT="5432" \
+    SHIM_BACKUP_SCHEDULE="0 2 * * *" \
+    SHIM_BACKUP_RETENTION_DAYS="7" \
+    SHIM_BACKUP_OUTPUT_DIR="/backups" \
+    SHIM_REPLICATION_ENABLED="false" \
+    SHIM_MIGRATION_ENABLED="false" \
+    SHIM_VAULT_ENABLED="false" \
+    SHIM_AUDIT_ENABLED="true" \
+    SHIM_METRICS_ENABLED="true" \
+    SHIM_ALERTING_ENABLED="false" \
+    SHIM_ALERTING_WEBHOOK_URL="" \
+    SHIM_SCHEDULER_ENABLED="true" \
+    SHIM_SCHEDULER_BACKUP_CRON="0 2 * * *" \
+    SHIM_MANAGEMENT_ENABLED="true" \
+    SHIM_MANAGEMENT_HOST="0.0.0.0" \
+    SHIM_MANAGEMENT_PORT="9102"
+EXPOSE 5432 9101 9102
+
+HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=5 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5432"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "postgres"]
+CMD ["-c", "docker-entrypoint.sh", "--", "postgres"]
+LABEL org.opencontainers.image.title="postgres" \
+      org.opencontainers.image.description="PostgreSQL - advanced open source relational database (FIPS variant)" \
+      org.opencontainers.image.version="17.10" \
+      org.opencontainers.image.vendor="PostgreSQL" \
+      evergreen.image.tier="critical" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.fips="true" \
+      evergreen.fips.module="openssl-3.0" \
+      evergreen.fips.certificate="openssl-fips-3.0" \
+      org.opencontainers.image.source="https://github.com/postgres/postgres"
+
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.build.type="source-fips"
+LABEL evergreen.health.type="http"
+LABEL evergreen.health.endpoint="/livez"
+LABEL evergreen.health.listen="0.0.0.0:9101"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"
+
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
+STOPSIGNAL SIGTERM

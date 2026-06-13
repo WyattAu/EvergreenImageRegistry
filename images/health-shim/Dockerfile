@@ -9,7 +9,7 @@ ARG VERSION
 WORKDIR /src
 COPY go.mod main.go ./
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} go build -trimpath \
-    -ldflags="-s -w -X main.version=${VERSION}" -o /health-shim .
+    -ldflags="-s -w -X main.version=${VERSION}" -o /shim .
 
 FROM scratch
 ARG APP_UID
@@ -20,8 +20,8 @@ LABEL org.opencontainers.image.title="health-shim" \
       evergreen.image.category="observability" \
       evergreen.health.type="http" \
       evergreen.metrics.native="prometheus"
-COPY --from=builder /health-shim /health-shim
+COPY --from=builder /shim /shim
 USER ${APP_UID}:${APP_GID}
 EXPOSE 9101
-ENTRYPOINT ["/health-shim"]
+ENTRYPOINT ["/shim"]
 STOPSIGNAL SIGTERM

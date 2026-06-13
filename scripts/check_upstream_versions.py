@@ -86,7 +86,9 @@ def main() -> int:
     # Filter out non-image directories
     skip_dirs = {"tests", "profiles", "adversarial", "functional", "_wip", "_archive"}
     manifest_files = [
-        mf for mf in manifest_files if mf.parent.name not in skip_dirs and not mf.parent.name.startswith(".")
+        mf
+        for mf in manifest_files
+        if mf.parent.name not in skip_dirs and not mf.parent.name.startswith(".")
     ]
 
     print(f"Checking {len(manifest_files)} manifests for upstream updates...\n")
@@ -144,7 +146,9 @@ def main() -> int:
         else:
             status = "up to date"
 
-        print(f"  {image_name:40s} {current_version:20s} -> {latest_tag:20s}  [{status}]")
+        print(
+            f"  {image_name:40s} {current_version:20s} -> {latest_tag:20s}  [{status}]"
+        )
 
     print("\n=== Summary ===")
     print(f"Checked: {checked}, Skipped: {skipped}, Updates available: {len(updates)}")

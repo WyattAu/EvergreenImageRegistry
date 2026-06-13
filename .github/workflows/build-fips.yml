@@ -1,0 +1,243 @@
+name: Build FIPS Variants
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+    inputs:
+      image:
+        description: 'Image to build (or "all")'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - postgres
+          - mysql
+          - redis
+          - nginx
+          - envoy
+          - vault
+          - keycloak
+          - consul
+          - cosign
+
+concurrency:
+  group: fips-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  id-token: write
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ${{ github.repository_owner }}
+
+jobs:
+  build-go-fips:
+    if: |
+      github.event_name == 'schedule' ||
+      inputs.image == 'all' ||
+      contains('vault consul cosign traefik coredns step-ca prometheus grafana loki alertmanager trivy kubescape dex cockroachdb tidb', inputs.image)
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - vault
+          - consul
+          - cosign
+          - traefik
+          - coredns
+          - step-ca
+          - prometheus
+          - grafana
+          - loki
+          - alertmanager
+          - trivy
+          - kubescape
+          - dex
+          - cockroachdb
+          - tidb
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
+
+      - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
+
+      - name: Read version from manifest
+        id: meta
+        run: |
+          VERSION=$(grep '^version' images/${{ matrix.image }}/manifest.toml | head -1 | sed 's/.*= *"\(.*\)".*/\1/')
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Build Go FIPS variant
+        run: |
+          IMAGE_TAG="${REGISTRY}/${IMAGE_PREFIX}/${{ matrix.image }}:${{ steps.meta.outputs.version }}-fips"
+          docker buildx build \
+            --build-arg VERSION=${{ steps.meta.outputs.version }} \
+            --build-arg CGO_ENABLED=1 \
+            --build-arg GOEXPERIMENT=boringcrypto \
+            --build-arg BUILDER_IMAGE=golang:1.24-bookworm \
+            --build-arg FINAL_BASE=cgr.dev/chainguard/wolfi-base \
+            -t "${IMAGE_TAG}" \
+            --push \
+            images/${{ matrix.image }}/
+
+      - name: Sign FIPS image
+        run: |
+          IMAGE_TAG="${REGISTRY}/${IMAGE_PREFIX}/${{ matrix.image }}:${{ steps.meta.outputs.version }}-fips"
+          cosign sign --yes "${IMAGE_TAG}"
+
+  build-openssl-fips:
+    if: |
+      github.event_name == 'schedule' ||
+      inputs.image == 'all' ||
+      contains('postgres mysql redis nginx valkey mongodb', inputs.image)
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - postgres
+          - mysql
+          - redis
+          - nginx
+          - valkey
+          - mongodb
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
+
+      - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
+
+      - name: Read version from manifest
+        id: meta
+        run: |
+          VERSION=$(grep '^version' images/${{ matrix.image }}/manifest.toml | head -1 | sed 's/.*= *"\(.*\)".*/\1/')
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Build OpenSSL FIPS variant
+        run: |
+          IMAGE_TAG="${REGISTRY}/${IMAGE_PREFIX}/${{ matrix.image }}:${{ steps.meta.outputs.version }}-fips"
+          docker buildx build \
+            --build-arg VERSION=${{ steps.meta.outputs.version }} \
+            --build-arg OPENSSL_VERSION=3.0.16 \
+            --build-arg ENABLE_FIPS=1 \
+            --build-arg FINAL_BASE=cgr.dev/chainguard/wolfi-base \
+            --build-arg OPENSSL_CONF=/etc/ssl/fipsmodule.cnf \
+            -f images/${{ matrix.image }}/Dockerfile.fips \
+            -t "${IMAGE_TAG}" \
+            --push \
+            images/${{ matrix.image }}/
+
+      - name: Sign FIPS image
+        run: |
+          IMAGE_TAG="${REGISTRY}/${IMAGE_PREFIX}/${{ matrix.image }}:${{ steps.meta.outputs.version }}-fips"
+          cosign sign --yes "${IMAGE_TAG}"
+
+  build-envoy-fips:
+    if: |
+      github.event_name == 'schedule' ||
+      inputs.image == 'all' ||
+      inputs.image == 'envoy'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
+
+      - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
+
+      - name: Read version from manifest
+        id: meta
+        run: |
+          VERSION=$(grep '^version' images/envoy/manifest.toml | head -1 | sed 's/.*= *"\(.*\)".*/\1/')
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Build Envoy FIPS variant
+        run: |
+          IMAGE_TAG="${REGISTRY}/${IMAGE_PREFIX}/envoy:${{ steps.meta.outputs.version }}-fips"
+          docker buildx build \
+            --build-arg VERSION=${{ steps.meta.outputs.version }} \
+            -f images/envoy/Dockerfile.fips \
+            -t "${IMAGE_TAG}" \
+            --push \
+            images/envoy/
+
+      - name: Sign FIPS image
+        run: |
+          IMAGE_TAG="${REGISTRY}/${IMAGE_PREFIX}/envoy:${{ steps.meta.outputs.version }}-fips"
+          cosign sign --yes "${IMAGE_TAG}"
+
+  build-keycloak-fips:
+    if: |
+      github.event_name == 'schedule' ||
+      inputs.image == 'all' ||
+      inputs.image == 'keycloak'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
+
+      - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
+
+      - name: Read version from manifest
+        id: meta
+        run: |
+          VERSION=$(grep '^version' images/keycloak/manifest.toml | head -1 | sed 's/.*= *"\(.*\)".*/\1/')
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Build Keycloak FIPS variant
+        run: |
+          IMAGE_TAG="${REGISTRY}/${IMAGE_PREFIX}/keycloak:${{ steps.meta.outputs.version }}-fips"
+          docker buildx build \
+            --build-arg VERSION=${{ steps.meta.outputs.version }} \
+            --build-arg FINAL_BASE=cgr.dev/chainguard/wolfi-base \
+            --build-arg JAVA_OPTS="-Djava.security.properties=/etc/java/fips/security.properties -Dorg.bouncycastle.fips.approved_only=true" \
+            -f images/keycloak/Dockerfile.fips \
+            -t "${IMAGE_TAG}" \
+            --push \
+            images/keycloak/
+
+      - name: Sign FIPS image
+        run: |
+          IMAGE_TAG="${REGISTRY}/${IMAGE_PREFIX}/keycloak:${{ steps.meta.outputs.version }}-fips"
+          cosign sign --yes "${IMAGE_TAG}"
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: fips-build-logs-keycloak
+          path: |
+            /tmp/docker-buildx-*.log
+          retention-days: 7

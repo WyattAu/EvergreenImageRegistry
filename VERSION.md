@@ -9,37 +9,37 @@
 
 ## Quality Scorecard
 
-| Metric                | Value                                              | Status             |
-| --------------------- | -------------------------------------------------- | ------------------ |
-| Total Images          | 982                                                | COMPLETE           |
-| Shim-enabled          | 706 (72%)                                          | PASS               |
-| Critical shim-enabled | 88/88 (100%)                                       | PASS               |
-| TOML Validation       | 1010/1010 (0 errors)                               | PASS               |
-| Dockerfile syntax     | 0 errors                                           | PASS               |
-| HEALTHCHECK           | 982/982 (100%)                                     | PASS               |
-| Security labels       | 982/982 (100%)                                     | PASS               |
-| Nightly build         | 28/29 jobs pass (sign non-blocking)                | PASS               |
-| Build batches         | 20/20 success                                      | PASS               |
+| Metric                | Value                               | Status   |
+| --------------------- | ----------------------------------- | -------- |
+| Total Images          | 982                                 | COMPLETE |
+| Shim-enabled          | 706 (72%)                           | PASS     |
+| Critical shim-enabled | 88/88 (100%)                        | PASS     |
+| TOML Validation       | 1010/1010 (0 errors)                | PASS     |
+| Dockerfile syntax     | 0 errors                            | PASS     |
+| HEALTHCHECK           | 982/982 (100%)                      | PASS     |
+| Security labels       | 982/982 (100%)                      | PASS     |
+| Nightly build         | 28/29 jobs pass (sign non-blocking) | PASS     |
+| Build batches         | 20/20 success                       | PASS     |
 
 ## Base Image Distribution
 
-| Base       | Count | Percentage |
-| ---------- | ----- | ---------- |
-| wolfi      | 587   | 59.8%      |
-| scratch    | 384   | 39.1%      |
-| debian     | 9     | 0.9%       |
-| static     | 2     | 0.2%       |
-| **Total**  | **982** | **100%** |
+| Base      | Count   | Percentage |
+| --------- | ------- | ---------- |
+| wolfi     | 587     | 59.8%      |
+| scratch   | 384     | 39.1%      |
+| debian    | 9       | 0.9%       |
+| static    | 2       | 0.2%       |
+| **Total** | **982** | **100%**   |
 
 ## Musl Rebuild Status
 
-| Category        | Before | After  | Remaining |
-| --------------- | ------ | ------ | --------- |
-| Go binaries     | 0      | 56     | ~150      |
-| Rust binaries   | 0      | 9      | ~5        |
-| C/C++ binaries  | 0      | 2      | ~35       |
-| UBI → wolfi     | 33     | 0      | 0         |
-| Debian → wolfi  | 32     | 0      | 0         |
+| Category       | Before | After | Remaining |
+| -------------- | ------ | ----- | --------- |
+| Go binaries    | 0      | 56    | ~150      |
+| Rust binaries  | 0      | 9     | ~5        |
+| C/C++ binaries | 0      | 2     | ~35       |
+| UBI → wolfi    | 33     | 0     | 0         |
+| Debian → wolfi | 32     | 0     | 0         |
 
 ## CI Pipeline
 

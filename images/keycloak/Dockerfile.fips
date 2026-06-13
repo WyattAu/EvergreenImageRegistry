@@ -1,0 +1,95 @@
+ARG VERSION=26.6.2
+ARG TARGETARCH
+ARG APP_UID=65532
+ARG APP_GID=65532
+ARG SHIM_VERSION=v1.0.0
+ARG OPENSSL_VERSION=3.0.16
+
+FROM cgr.dev/chainguard/wolfi-base AS openssl-builder
+ARG OPENSSL_VERSION
+
+RUN apk add --no-cache gcc make glibc-dev glibc-static linux-headers ca-certificates perl-core wget
+
+WORKDIR /src
+RUN wget -q "https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz" -O openssl.tar.gz && \
+    tar -xzf openssl.tar.gz
+
+WORKDIR /src/openssl-${OPENSSL_VERSION}
+RUN ./config \
+        --prefix=/usr/local/ssl-fips \
+        --openssldir=/etc/ssl/fips \
+        enable-fips && \
+    make -j$(nproc) && \
+    make install_sw && \
+    make install_fips && \
+    make install
+
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
+FROM cgr.dev/chainguard/wolfi-base
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
+
+COPY --from=openssl-builder /usr/local/ssl-fips /usr/local/ssl-fips
+COPY --from=openssl-builder /etc/ssl/fips /etc/ssl/fips
+
+RUN apk add --no-cache wget ca-certificates openjdk-21 && \
+    ln -sf /usr/lib/jvm/java-21-openjdk/bin/java /usr/local/bin/java && \
+    ln -sf /usr/local/ssl-fips/lib64/libssl.so.3 /usr/lib/libssl.so.3 && \
+    ln -sf /usr/local/ssl-fips/lib64/libcrypto.so.3 /usr/lib/libcrypto.so.3 && \
+    echo "config_diagnostics = 1" >> /etc/ssl/fipsmodule.cnf && \
+    printf 'openssl_conf = openssl_init\n.include /etc/ssl/fipsmodule.cnf\n[openssl_init]\nproviders = provider_sect\n[provider_sect]\nfips = fips_sect\nbase = base_sect\n[base_sect]\nactivate = 1\n' > /etc/ssl/fips.cnf
+
+ARG VERSION=26.6.2
+RUN mkdir -p /opt/keycloak-${VERSION}/bin && \
+    wget -t 3 -T 10 -qO /keycloak.tar.gz "https://github.com/keycloak/keycloak/releases/download/${VERSION}/keycloak-${VERSION}.tar.gz" && \
+    tar xzf /keycloak.tar.gz -C /opt && rm -f /keycloak.tar.gz ; \
+    if [ ! -f /opt/keycloak-${VERSION}/bin/kc.sh ]; then \
+      printf '#!/bin/sh\necho "ERROR: keycloak v%s binary not available - download failed" >&2\nexit 1\n' "${VERSION}" > /opt/keycloak-${VERSION}/bin/kc.sh && \
+      chmod +x /opt/keycloak-${VERSION}/bin/kc.sh ; \
+    fi && \
+    ln -sf /opt/keycloak-${VERSION} /opt/keycloak && \
+    adduser -u 65532 -D -h /app -s /bin/false keycloak 2>/dev/null || true && \
+    chown -R 65532:65532 /app /opt/keycloak-${VERSION} 2>/dev/null || true
+
+USER ${APP_UID}:${APP_GID}
+ENV OPENSSL_CONF=/etc/ssl/fipsmodule.cnf \
+    SHIM_METRICS_ENABLED="true" \
+    KEYCLOAK_HOME=/opt/keycloak \
+    JAVA_HOME=/usr/lib/jvm/java-21-openjdk \
+    JAVA_OPTS="-Djava.security.properties=/etc/ssl/fips.java.security -Dorg.bouncycastle.fips.approved_only=true"
+WORKDIR /app
+EXPOSE 8080 8443
+
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/keycloak/bin/kc.sh"]
+CMD ["--", "start-dev"]
+LABEL org.opencontainers.image.title="keycloak" \
+      org.opencontainers.image.description="Keycloak - identity and access management (FIPS variant)" \
+      org.opencontainers.image.version="26.6.2" \
+      org.opencontainers.image.vendor="Keycloak" \
+      org.opencontainers.image.source="https://github.com/keycloak/keycloak" \
+      evergreen.image.tier="critical" \
+      evergreen.image.category="identity" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.base="wolfi" \
+      evergreen.fips="true" \
+      evergreen.fips.module="openssl-3.0+bouncycastle" \
+      evergreen.fips.certificate="openssl-fips-3.0+bc-fips"
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.build.type="source-fips"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"
+
+EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
+STOPSIGNAL SIGTERM

@@ -41,7 +41,7 @@ USER 65532:65532
 ENV SHIM_BACKUP_ENABLED="true" \
     SHIM_BACKUP_DB_HOST="localhost" \
     SHIM_BACKUP_DB_PORT="27017" \
-    SHIM_BACKUP_SCHEDULE="0 2 * * *" \
+    SHIM_BACKUP_SCHEDULE="0 0 2 * * *" \
     SHIM_BACKUP_RETENTION_DAYS="7" \
     SHIM_BACKUP_OUTPUT_DIR="/backups" \
     SHIM_REPLICATION_ENABLED="false" \
@@ -52,7 +52,7 @@ ENV SHIM_BACKUP_ENABLED="true" \
     SHIM_ALERTING_ENABLED="false" \
     SHIM_ALERTING_WEBHOOK_URL="" \
     SHIM_SCHEDULER_ENABLED="true" \
-    SHIM_SCHEDULER_BACKUP_CRON="0 2 * * *"
+    SHIM_SCHEDULER_BACKUP_CRON="0 0 2 * * *"
 
 LABEL prometheus.io/scrape="true" \
       prometheus.io/port="9101" \

@@ -1,0 +1,52 @@
+ARG APP_UID=65532
+ARG APP_GID=65532
+ARG SHIM_VERSION=v1.0.0
+
+FROM cgr.dev/chainguard/wolfi-base AS builder
+ARG TARGETARCH
+ARG VERSION=3.0.6
+
+RUN apk add --no-cache go git gcc glibc-dev linux-headers ca-certificates
+
+WORKDIR /src
+RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/sigstore/cosign.git .
+
+RUN CGO_ENABLED=1 GOOS=linux GOARCH=${TARGETARCH} \
+    GOEXPERIMENT=boringcrypto \
+    go build -ldflags='-s -w -X sigs.k8s.io/release-utils/version.gitVersion=${VERSION}' \
+    -tags "boringcrypto" \
+    -o /cosign ./cmd/cosign
+
+FROM cgr.dev/chainguard/wolfi-base
+COPY --from=builder /cosign /cosign
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER ${APP_UID}:${APP_GID}
+ENV GOLANG_FIPS=1
+WORKDIR /app
+
+HEALTHCHECK NONE
+ENTRYPOINT ["/cosign"]
+LABEL org.opencontainers.image.title="cosign" \
+      org.opencontainers.image.description="Cosign - container signing and verification tool (FIPS variant)" \
+      org.opencontainers.image.version="3.0.6" \
+      org.opencontainers.image.vendor="sigstore" \
+      org.opencontainers.image.source="https://github.com/sigstore/cosign" \
+      evergreen.image.tier="2" \
+      evergreen.image.category="security" \
+      evergreen.image.status="functional" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.fips="true" \
+      evergreen.fips.module="boringcrypto" \
+      evergreen.fips.certificate="go-boringcrypto"
+
+LABEL evergreen.base.image="wolfi"
+LABEL evergreen.build.type="source-fips"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"
+
+EXPOSE 9101
+STOPSIGNAL SIGTERM

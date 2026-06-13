@@ -1,6 +1,6 @@
 name: Image Bug Report
 description: Report a bug in an EIR image
-labels: ["bug", "triage"]
+labels: ['bug', 'triage']
 body:
   - type: input
     id: image

@@ -20,8 +20,8 @@ and exposes K8s-native HTTP probes on port 9101.
 ## Build
 
 ```bash
-CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o health-shim-amd64 .
-CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o health-shim-arm64 .
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o shim-amd64 .
+CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o shim-arm64 .
 ```
 
 Binary size: ~2MB statically compiled.
@@ -36,11 +36,11 @@ ENV HEALTH_TIMEOUT="5"
 ENV STARTUP_WINDOW="30"
 ENV EVERGREEN_LOG_LEVEL="info"
 
-COPY --from=build /build/health-shim /usr/local/bin/health-shim
+COPY --from=build /build/shim /usr/local/bin/shim
 
 # Entrypoint runs both health-shim and the database
 # Runtime --init flag handles PID 1 signal handling
-ENTRYPOINT ["sh", "-c", "health-shim & exec docker-entrypoint.sh postgres"]
+ENTRYPOINT ["sh", "-c", "shim & exec docker-entrypoint.sh postgres"]
 ```
 
 ## Environment Variables

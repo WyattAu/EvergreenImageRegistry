@@ -3,6 +3,7 @@
 ## Overview
 
 Hardened container images for production: 987 images built non-root, distroless, and fully auditable. Registries:
+
 - GHCR: `ghcr.io/wyattau/evergreenimageregistry/<image>:<version>` (primary)
 - Docker Hub: `docker.io/wyattau/<image>:latest` (mirror)
 

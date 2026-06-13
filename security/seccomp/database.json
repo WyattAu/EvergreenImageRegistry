@@ -5,10 +5,26 @@
   "syscalls": [
     {
       "names": [
-        "accept", "accept4", "bind", "connect", "getpeername",
-        "getsockname", "getsockopt", "listen", "recv", "recvfrom",
-        "recvmmsg", "recvmsg", "send", "sendfile", "sendmmsg",
-        "sendmsg", "sendto", "setsockopt", "shutdown", "socket",
+        "accept",
+        "accept4",
+        "bind",
+        "connect",
+        "getpeername",
+        "getsockname",
+        "getsockopt",
+        "listen",
+        "recv",
+        "recvfrom",
+        "recvmmsg",
+        "recvmsg",
+        "send",
+        "sendfile",
+        "sendmmsg",
+        "sendmsg",
+        "sendto",
+        "setsockopt",
+        "shutdown",
+        "socket",
         "socketpair"
       ],
       "action": "SCMP_ACT_ALLOW",
@@ -17,42 +33,113 @@
     },
     {
       "names": [
-        "close", "dup", "dup2", "dup3", "epoll_create", "epoll_create1",
-        "epoll_ctl", "epoll_pwait", "epoll_wait", "eventfd2",
-        "exit", "exit_group", "fcntl", "fstat", "fstatfs", "fsync",
-        "ftruncate", "futimesat", "getcwd", "getdents", "getdents64",
-        "getpid", "getppid", "gettid", "getuid", "getgid",
-        "geteuid", "getegid", "ioctl", "kill", "lseek",
-        "madvise", "mmap", "mprotect", "mremap", "munmap",
-        "nanosleep", "newfstatat", "openat", "pipe", "pipe2",
-        "poll", "prctl", "pread64", "preadv", "pselect6",
-        "pwrite64", "pwritev", "read", "readahead", "readlink",
-        "readlinkat", "readv", "rename", "renameat", "restart_syscall",
-        "rmdir", "rt_sigaction", "rt_sigpending", "rt_sigprocmask",
-        "rt_sigreturn", "rt_sigsuspend", "sched_yield", "select",
-        "set_robust_list", "set_tid_address", "stat", "statfs", "statx",
-        "sync", "sync_file_range", "sysinfo", "tgkill",
-        "umask", "uname", "unlink", "unlinkat", "utimensat",
-        "write", "writev"
+        "close",
+        "dup",
+        "dup2",
+        "dup3",
+        "epoll_create",
+        "epoll_create1",
+        "epoll_ctl",
+        "epoll_pwait",
+        "epoll_wait",
+        "eventfd2",
+        "exit",
+        "exit_group",
+        "fcntl",
+        "flock",
+        "fstat",
+        "fstatfs",
+        "fsync",
+        "fdatasync",
+        "ftruncate",
+        "futimesat",
+        "getcwd",
+        "getdents",
+        "getdents64",
+        "getpid",
+        "getppid",
+        "gettid",
+        "getuid",
+        "getgid",
+        "geteuid",
+        "getegid",
+        "getgroups",
+        "getresgid",
+        "getresuid",
+        "ioctl",
+        "kill",
+        "lseek",
+        "madvise",
+        "memfd_create",
+        "mincore",
+        "mmap",
+        "mprotect",
+        "mremap",
+        "munmap",
+        "nanosleep",
+        "newfstatat",
+        "openat",
+        "pipe",
+        "pipe2",
+        "poll",
+        "prctl",
+        "pread64",
+        "preadv",
+        "preadv2",
+        "pselect6",
+        "pwrite64",
+        "pwritev",
+        "pwritev2",
+        "read",
+        "readahead",
+        "readlink",
+        "readlinkat",
+        "readv",
+        "rename",
+        "renameat",
+        "renameat2",
+        "restart_syscall",
+        "rmdir",
+        "rt_sigaction",
+        "rt_sigpending",
+        "rt_sigprocmask",
+        "rt_sigreturn",
+        "rt_sigsuspend",
+        "rt_tgsigqueueinfo",
+        "sched_yield",
+        "select",
+        "set_robust_list",
+        "set_tid_address",
+        "sigaltstack",
+        "stat",
+        "statfs",
+        "statx",
+        "sync",
+        "sync_file_range",
+        "sysinfo",
+        "tgkill",
+        "umask",
+        "uname",
+        "unlink",
+        "unlinkat",
+        "utimensat",
+        "write",
+        "writev"
       ],
       "action": "SCMP_ACT_ALLOW",
       "args": [],
-      "comment": "File I/O, memory management, process lifecycle. Includes sync/sync_file_range for data durability (critical for databases). Includes mremap for memory-mapped storage."
+      "comment": "File I/O, memory management, process lifecycle. flock for lock files (PostgreSQL postmaster.pid, Redis RDB). fdatasync for WAL durability without metadata sync. sync_file_range for async data flush. mremap for memory-mapped storage engines. preadv2/pwritev2 for async I/O. Includes getgroups/getresgid/getresuid for privilege-dropping databases."
     },
     {
       "names": ["clone", "clone3"],
       "action": "SCMP_ACT_ALLOW",
-      "args": [
-        { "index": 0, "value": 2114060288, "op": "SCMP_CMP_MASKED_EQ", "valueTwo": 0 }
-      ],
+      "args": [{ "index": 0, "value": 2114060288, "op": "SCMP_CMP_MASKED_EQ", "valueTwo": 0 }],
       "comment": "Thread creation for connection pooling and background workers."
     },
     {
       "names": ["personality"],
       "action": "SCMP_ACT_ALLOW",
-      "args": [
-        { "index": 0, "value": 0, "op": "SCMP_CMP_EQ" }
-      ],
+      "args": [{ "index": 0, "value": 0, "op": "SCMP_CMP_EQ" }],
       "comment": "Allow only PER_LINUX personality."
     },
     {
@@ -62,28 +149,64 @@
       "comment": "Runtime support: random for query IDs and nonces, rseq for Go/C runtimes, arch_prctl for x86_64 setup."
     },
     {
-      "names": ["memfd_create", "shmget", "shmat", "shmdt"],
+      "names": ["shmget", "shmat", "shmdt", "shmctl"],
       "action": "SCMP_ACT_ALLOW",
       "args": [],
-      "comment": "Shared memory for inter-process communication and caching layers."
+      "comment": "Full System V shared memory: PostgreSQL shared_buffers, MongoDB WiredTiger cache, MySQL InnoDB buffer pool. shmctl added for shared memory control operations (IPC_STAT, IPC_RMID)."
     },
     {
-      "names": ["clock_gettime", "gettimeofday", "time", "clock_getres"],
+      "names": ["clock_gettime", "gettimeofday", "time", "clock_getres", "clock_nanosleep"],
       "action": "SCMP_ACT_ALLOW",
       "args": [],
-      "comment": "Time syscalls for query timing, WAL timestamps, and connection timeouts."
+      "comment": "Time syscalls for query timing, WAL timestamps, connection timeouts, and replication lag measurement. clock_nanosleep added for high-resolution sleep in background workers."
     },
     {
-      "names": ["fallocate", "posix_fadvise"],
+      "names": ["fallocate", "fadvise64"],
       "action": "SCMP_ACT_ALLOW",
       "args": [],
-      "comment": "File pre-allocation and access patterns for database storage optimization."
+      "comment": "File pre-allocation for WAL files (PostgreSQL pg_wal, MySQL redo log), temporary sort files, and data files. fadvise64 for sequential/random access pattern hints to the kernel."
     },
     {
-      "names": ["mincore"],
+      "names": ["chdir", "fchdir", "chmod", "fchmod", "fchmodat"],
       "action": "SCMP_ACT_ALLOW",
       "args": [],
-      "comment": "Check if pages are in memory. Used for memory-mapped file I/O in database engines."
+      "comment": "Directory and permission management. chdir/fchdir for data directory context (PostgreSQL requires chdir to data dir). chmod/fchmod for Unix socket permissions (PostgreSQL .s.PGSQL.port, MongoDB mongod.sock)."
+    },
+    {
+      "names": ["setgid", "setuid", "setgroups", "setregid", "setresgid", "setresuid", "setreuid"],
+      "action": "SCMP_ACT_ALLOW",
+      "args": [],
+      "comment": "Privilege dropping. PostgreSQL starts as root to bind port 5432 then drops to postgres user. Redis switches to redis user. All databases that support running as non-root need these for UID/GID switching at startup."
+    },
+    {
+      "names": ["prlimit64", "getrlimit", "setrlimit"],
+      "action": "SCMP_ACT_ALLOW",
+      "args": [],
+      "comment": "Resource limit management. Databases raise RLIMIT_NOFILE for connection limits and lower RLIMIT_CORE to prevent core dumps containing sensitive data."
+    },
+    {
+      "names": ["membarrier"],
+      "action": "SCMP_ACT_ALLOW",
+      "args": [],
+      "comment": "Memory barrier for multi-core synchronization in concurrent database engines. Used by PostgreSQL for buffer manager coordination and MongoDB for journaling."
+    },
+    {
+      "names": ["copy_file_range"],
+      "action": "SCMP_ACT_ALLOW",
+      "args": [],
+      "comment": "Zero-copy file range duplication. Used by PostgreSQL for base backups and COPY operations, reducing CPU overhead for large data transfers."
+    },
+    {
+      "names": ["timerfd_create", "timerfd_settime", "timerfd_gettime"],
+      "action": "SCMP_ACT_ALLOW",
+      "args": [],
+      "comment": "Timer file descriptors for connection keepalive, replication heartbeat, WAL flush intervals, and statement timeout enforcement."
+    },
+    {
+      "names": ["process_vm_readv"],
+      "action": "SCMP_ACT_ALLOW",
+      "args": [],
+      "comment": "Cross-process memory read for PostgreSQL parallel query workers sharing buffer state."
     }
   ]
 }

@@ -5,10 +5,24 @@
   "syscalls": [
     {
       "names": [
-        "close", "exit", "exit_group", "fstat", "futex",
-        "getpid", "gettid", "ioctl", "mmap", "mprotect",
-        "munmap", "nanosleep", "read", "readlink", "rt_sigaction",
-        "rt_sigprocmask", "rt_sigreturn", "write"
+        "close",
+        "exit",
+        "exit_group",
+        "fstat",
+        "futex",
+        "getpid",
+        "gettid",
+        "ioctl",
+        "mmap",
+        "mprotect",
+        "munmap",
+        "nanosleep",
+        "read",
+        "readlink",
+        "rt_sigaction",
+        "rt_sigprocmask",
+        "rt_sigreturn",
+        "write"
       ],
       "action": "SCMP_ACT_ALLOW",
       "args": [],

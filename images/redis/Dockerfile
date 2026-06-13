@@ -7,7 +7,7 @@ ARG SHIM_VERSION=v1.0.0
 
 FROM cgr.dev/chainguard/wolfi-base AS builder
 ARG VERSION
-RUN apk add --no-cache gcc make musl-dev linux-headers ca-certificates wget
+RUN apk add --no-cache gcc make glibc-dev linux-headers ca-certificates wget
 WORKDIR /src
 RUN wget -q "https://download.redis.io/releases/redis-${VERSION}.tar.gz" -O redis.tar.gz && \
     tar -xzf redis.tar.gz && rm redis.tar.gz

@@ -14,7 +14,7 @@ multiarch = false
 type = "go-source"
 
 [runtime]
-entrypoint = ["/health-shim"]
+entrypoint = ["/shim"]
 
 [ports]
 expose = [9101]

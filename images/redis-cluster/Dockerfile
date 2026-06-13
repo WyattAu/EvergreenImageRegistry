@@ -35,7 +35,7 @@ RUN apk add --no-cache ca-certificates && adduser -u 65532 -s /bin/false &&  mkd
 COPY --from=builder /tmp/redis /usr/local/bin/redis
 USER 65532:65532
 ENV SHIM_BACKUP_ENABLED="true" \
-    SHIM_BACKUP_SCHEDULE="0 2 * * *" \
+    SHIM_BACKUP_SCHEDULE="0 0 2 * * *" \
     SHIM_BACKUP_RETENTION_DAYS="7" \
     SHIM_BACKUP_OUTPUT_DIR="/backups"
 ENV SHIM_CACHE_ENABLED="true" \

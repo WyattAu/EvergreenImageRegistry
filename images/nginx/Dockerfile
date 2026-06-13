@@ -2,14 +2,12 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 ARG SHIM_VERSION=v1.0.0
 
-FROM debian:bookworm-slim AS builder
+FROM cgr.dev/chainguard/wolfi-base AS builder
 
 ARG VERSION=1.27.1
 ARG TARGETARCH
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc make libpcre2-dev zlib1g-dev linux-headers ca-certificates wget && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache gcc make pcre2-dev zlib-dev linux-headers ca-certificates wget
 
 WORKDIR /src
 RUN wget -q "https://nginx.org/download/nginx-${VERSION}.tar.gz" -O nginx.tar.gz && \

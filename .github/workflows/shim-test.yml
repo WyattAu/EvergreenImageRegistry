@@ -56,6 +56,15 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
 
+      - name: Build shim images locally
+        run: |
+          # Build health-shim and tag as the remote reference consumers expect
+          docker build -t ghcr.io/wyattau/evergreenshim/health-shim:v1.0.0 \
+            images/health-shim/
+          # Also tag as cache-shim for redis (same binary, different config)
+          docker tag ghcr.io/wyattau/evergreenshim/health-shim:v1.0.0 \
+            ghcr.io/wyattau/evergreenshim/cache-shim:v1.0.0
+
       - name: Build image
         run: |
           docker build -t ${{ env.REGISTRY }}/${{ matrix.image }}:test \

@@ -1,0 +1,29 @@
+ARG VERSION=1.33.3
+ARG APP_UID=65532
+ARG APP_GID=65532
+
+FROM cgr.dev/chainguard/wolfi-base AS downloader
+ARG VERSION
+ARG TARGETARCH
+RUN apk add --no-cache wget ca-certificates
+# Download official FIPS-validated Envoy binary
+RUN ARCH=${TARGETARCH:-amd64} && \
+    wget -q "https://github.com/envoyproxy/envoy/releases/download/v${VERSION}/envoy-${VERSION}-linux-${ARCH}" \
+    -O /usr/local/bin/envoy && \
+    chmod +x /usr/local/bin/envoy
+
+FROM cgr.dev/chainguard/wolfi-base
+ARG APP_UID
+ARG APP_GID
+ARG VERSION
+COPY --from=downloader /usr/local/bin/envoy /usr/local/bin/envoy
+COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER ${APP_UID}:${APP_GID}
+EXPOSE 9901 10000
+ENTRYPOINT ["/usr/local/bin/envoy"]
+CMD ["-c", "/etc/envoy/envoy.yaml"]
+LABEL org.opencontainers.image.title="envoy-fips" \
+      org.opencontainers.image.version="${VERSION}" \
+      evergreen.fips="true" \
+      evergreen.fips.module="boringssl-boringcrypto" \
+      evergreen.fips.certificate="FIPS-140-2-Cert-4140"

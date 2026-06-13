@@ -1,14 +1,14 @@
 ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
-ARG SHIM_VERSION=v1.0.0
+ARG SHIM_VERSION=v1.1.0
 
 FROM golang:1.24-bookworm AS builder
 ARG TARGETARCH
-ARG VERSION=v0.15.0
+ARG VERSION=0.15.0
 RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
-RUN git clone --depth 1 --branch "${VERSION}" https://github.com/prometheus/mysqld_exporter.git . || \
+RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/prometheus/mysqld_exporter.git . || \
     git clone --depth 1 https://github.com/prometheus/mysqld_exporter.git .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
     go build -ldflags='-s -w -X main.version=${VERSION}' \
@@ -38,7 +38,7 @@ HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
 ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="mysql-exporter" \
       org.opencontainers.image.description="MySQL Exporter - Prometheus exporter for MySQL server" \
-      org.opencontainers.image.version="v0.15.0" \
+      org.opencontainers.image.version="0.15.0" \
       org.opencontainers.image.vendor="Prometheus" \
       org.opencontainers.image.source="https://github.com/prometheus/mysqld_exporter" \
       evergreen.image.tier="1" \

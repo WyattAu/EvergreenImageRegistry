@@ -2,10 +2,10 @@
 # EVERGREEN HARDENED GRAFANA
 # Pre-built binary download - scratch final stage
 # =============================================================================
-ARG VERSION=12.2.9
+ARG VERSION=12.2.8-security-04
 ARG APP_UID=65532
 ARG APP_GID=65532
-ARG SHIM_VERSION=v1.0.0
+ARG SHIM_VERSION=v1.1.0
 
 FROM cgr.dev/chainguard/wolfi-base AS downloader
 ARG VERSION

@@ -1,14 +1,14 @@
 ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
-ARG SHIM_VERSION=v1.0.0
+ARG SHIM_VERSION=v1.1.0
 
 FROM golang:1.24-bookworm AS builder
 ARG TARGETARCH
-ARG VERSION=v0.35.0
+ARG VERSION=0.35.0
 RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
-RUN git clone --depth 1 --branch "${VERSION}" https://github.com/thanos-io/thanos.git . || \
+RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/thanos-io/thanos.git . || \
     git clone --depth 1 https://github.com/thanos-io/thanos.git .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
     go build -ldflags='-s -w -X main.version=${VERSION}' \
@@ -31,7 +31,7 @@ HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
 ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="thanos-store" \
       org.opencontainers.image.description="thanos-store container image" \
-      org.opencontainers.image.version="v0.35.0" \
+      org.opencontainers.image.version="0.35.0" \
       org.opencontainers.image.vendor="Thanos" \
       org.opencontainers.image.source="https://github.com/thanos-io/thanos" \
       evergreen.image.tier="1" \

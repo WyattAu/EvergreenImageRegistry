@@ -63,10 +63,7 @@ impl DockerfileGenerator {
             "RUN curl --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 300 -fsSL \"{}\" -o /{}",
             url, filename
         ));
-        lines.push(format!(
-            "    && mkdir -p /opt/{}",
-            m.name()
-        ));
+        lines.push(format!("    && mkdir -p /opt/{}", m.name()));
         lines.push(format!(
             "    && (tar -xzf /{} -C /opt/{} 2>/dev/null || cp /{} /opt/{}/{} 2>/dev/null || {{ echo 'ERROR: Failed to extract or copy binary' >&2 ; exit 1 ; }}) && rm -f /{}",
             filename, m.name(), filename, m.name(), binary_name, filename
@@ -210,7 +207,10 @@ mod tests {
             gen.extract_filename("https://example.com/file.tar.gz?query=1"),
             "file.tar.gz"
         );
-        assert_eq!(gen.extract_filename("https://example.com/path/"), "download");
+        assert_eq!(
+            gen.extract_filename("https://example.com/path/"),
+            "download"
+        );
         assert_eq!(gen.extract_filename("https://example.com/file"), "file");
     }
 

@@ -3,7 +3,7 @@
 # wolfi-base (needs /dev/zfs kernel device - can't use scratch)
 # =============================================================================
 ARG VERSION=0.5.3
-ARG SHIM_VERSION=v1.0.0
+ARG SHIM_VERSION=v1.1.0
 
 FROM golang:1.24-bookworm AS builder
 ARG VERSION

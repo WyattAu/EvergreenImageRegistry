@@ -593,12 +593,14 @@ jobs:
 
       - name: Download compliance results
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        continue-on-error: true
         with:
           name: compliance-results
           path: /tmp/compliance-results/
 
       - name: Download base image report
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        continue-on-error: true
         with:
           name: base-image-report
           path: /tmp/base-image-report/

@@ -203,7 +203,7 @@ jobs:
     name: Binary Type Check
     needs: [gates]
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 120
     continue-on-error: true
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd

@@ -1,14 +1,14 @@
 ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
-ARG SHIM_VERSION=v1.0.0
+ARG SHIM_VERSION=v1.1.0
 
 FROM golang:1.24-bookworm AS builder
 ARG TARGETARCH
-ARG VERSION=v2.18.0
+ARG VERSION=2.18.0
 RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
-RUN git clone --depth 1 --branch "${VERSION}" https://github.com/kubernetes/kube-state-metrics.git . || \
+RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/kubernetes/kube-state-metrics.git . || \
     git clone --depth 1 https://github.com/kubernetes/kube-state-metrics.git .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
     go build -ldflags='-s -w -X main.version=${VERSION}' \
@@ -31,7 +31,7 @@ HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
 ENTRYPOINT ["/shim", "run"]
 LABEL org.opencontainers.image.title="kube-state-metrics" \
       org.opencontainers.image.description="Kube-state-metrics - metrics about Kubernetes objects" \
-      org.opencontainers.image.version="v2.18.0" \
+      org.opencontainers.image.version="2.18.0" \
       org.opencontainers.image.vendor="Kubernetes" \
       org.opencontainers.image.source="https://github.com/kubernetes/kube-state-metrics" \
       evergreen.image.tier="1" \

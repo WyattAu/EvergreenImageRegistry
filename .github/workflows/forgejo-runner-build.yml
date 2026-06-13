@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["images/forgejo-runner-image/**"]
+    paths: ['images/forgejo-runner-image/**']
 
 concurrency:
   group: forgejo-runner-${{ github.ref }}

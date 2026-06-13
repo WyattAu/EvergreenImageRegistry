@@ -1,12 +1,12 @@
 [metadata]
 name = "taiga-events"
-version = "latest"
+version = "6.9.0"
 description = "Taiga Events - real-time events service for Taiga"
 vendor = "Taiga"
 source = "https://github.com/taigaio/taiga-events"
 license = "MPL-2.0"
 tier = "standard"
-upstream_version = "latest"
+upstream_version = "6.9.0"
 
 [build]
 base = "wolfi-base"
@@ -26,7 +26,7 @@ expose = [8000, 9101]
 [labels]
 "org.opencontainers.image.title" = "taiga-events"
 "org.opencontainers.image.vendor" = "Taiga"
-"org.opencontainers.image.version" = "latest"
+"org.opencontainers.image.version" = "6.9.0"
 "org.opencontainers.image.source" = "https://github.com/taigaio/taiga-events"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"

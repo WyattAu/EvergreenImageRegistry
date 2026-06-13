@@ -4,7 +4,7 @@
 # Upstream binary needs: libssl, libcrypto, libmariadb, libpq, libc, libz, etc.
 # =============================================================================
 ARG VERSION=1.36.0
-ARG SHIM_VERSION=v1.0.0
+ARG SHIM_VERSION=v1.1.0
 
 FROM vaultwarden/server:${VERSION} AS upstream
 

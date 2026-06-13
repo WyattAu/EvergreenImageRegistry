@@ -4,7 +4,7 @@ ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-ARG SHIM_VERSION=v1.0.0
+ARG SHIM_VERSION=v1.1.0
 
 FROM docker.io/tigergraph/tigergraph:4.2.2@sha256:c4e7ef2d653b2fa57e2df9408719d78521defe38fe3ae5ef5b8d15134a61fae8 AS upstream
 

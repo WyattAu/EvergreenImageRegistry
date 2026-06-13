@@ -133,8 +133,12 @@ jobs:
                   continue
 
               # Determine bump type (major/minor/patch)
-              parts_cur = [int(x) for x in current_norm.split(".")]
-              parts_new = [int(x) for x in latest_norm.split(".")]
+              try:
+                  parts_cur = [int(x) for x in current_norm.split(".")]
+                  parts_new = [int(x) for x in latest_norm.split(".")]
+              except ValueError:
+                  print(f"  SKIP {image_name}: non-numeric version ({latest_tag})")
+                  continue
               # Pad to 3 parts
               while len(parts_cur) < 3:
                   parts_cur.append(0)

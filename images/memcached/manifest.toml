@@ -1,6 +1,6 @@
 [metadata]
 name = "memcached"
-version = "1.6.26"
+version = "1.6.32"
 description = "Memcached - high-performance distributed memory caching system"
 vendor = "Memcached"
 source = "https://github.com/memcached/memcached"
@@ -14,7 +14,7 @@ stopsignal = "SIGTERM"
 
 [source]
 type = "package-manager"
-url = "https://github.com/memcached/memcached/releases/download/v1.6.26/memcached-1.6.26-linux-amd64.tar.gz"
+url = "https://github.com/memcached/memcached/releases/download/v1.6.32/memcached-1.6.32-linux-amd64.tar.gz"
 
 [runtime]
 entrypoint = ["memcached"]
@@ -25,7 +25,7 @@ expose = [11211, 9101]
 [labels]
 "org.opencontainers.image.title" = "memcached"
 "org.opencontainers.image.vendor" = "Memcached"
-"org.opencontainers.image.version" = "1.6.26"
+"org.opencontainers.image.version" = "1.6.32"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.hardened" = "true"
 "evergreen.constraint.nonroot" = "true"

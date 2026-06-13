@@ -1,13 +1,23 @@
-// health-shim — Tiny HTTP health probe server for database images
+// health-shim — Tiny HTTP health probe server and process supervisor
 //
 // Serves /livez, /readyz, /startupz on port 9101 by wrapping
 // native CLI health check commands (pg_isready, redis-cli ping, etc.)
 //
-// Build: CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /dev/null .
-// Usage: HEALTH_CMD="pg_isready -h localhost" LISTEN=:9101 ./health-shim
+// Three modes of operation:
 //
-// Environment Variables:
-//   HEALTH_CMD     — CLI command to execute for liveness check (required)
+//  1. Supervisor mode:    /shim run -c "/nginx"
+//     Starts the child process, an HTTP health server, and forwards signals.
+//
+//  2. One-shot healthcheck: /shim healthcheck --tcp 127.0.0.1:80
+//     Performs a single TCP/HTTP/command probe and exits 0 or 1.
+//
+//  3. Standalone server:  HEALTH_CMD="pg_isready" ./shim
+//     Legacy mode — serves HTTP health endpoints wrapping CLI checks.
+//
+// Build: CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /shim .
+//
+// Environment Variables (all modes):
+//   HEALTH_CMD     — CLI command to execute for liveness check
 //   READY_CMD      — CLI command for readiness check (defaults to HEALTH_CMD)
 //   STARTUP_CMD    — CLI command for startup check (defaults to HEALTH_CMD)
 //   LISTEN         — Listen address (default :9101)
@@ -20,6 +30,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"log/slog"
 	"net"
@@ -49,6 +60,10 @@ var (
 	probeDuration     = map[string]*float64{}
 	metricsMu         sync.RWMutex
 
+	// Supervisor-mode state
+	supervisorMode bool          // true when running via the "run" subcommand
+	childAlive     atomic.Bool   // tracks child process liveness
+
 	// version is set via -ldflags at build time
 	version = "dev"
 )
@@ -71,13 +86,29 @@ func runCheck(ctx context.Context, cmd string) (bool, string) {
 	}
 
 	c := exec.CommandContext(ctx, parts[0], parts[1:]...)
-	c.Env = os.Environ() // inherit container env for auth vars etc.
+	c.Env = os.Environ() // inherit container env for auth variables etc.
 
 	output, err := c.CombinedOutput()
 	if err != nil {
 		return false, strings.TrimSpace(string(output))
 	}
 	return true, strings.TrimSpace(string(output))
+}
+
+// performCheck dispatches the appropriate health check. In supervisor mode
+// without an explicit command configured, it checks whether the child process
+// is still running. Otherwise it executes the given CLI command.
+func performCheck(ctx context.Context, cmd string) (bool, string) {
+	if cmd == "" {
+		if supervisorMode {
+			if childAlive.Load() {
+				return true, "child process running"
+			}
+			return false, "child process not running"
+		}
+		return false, "no health check configured"
+	}
+	return runCheck(ctx, cmd)
 }
 
 func writeJSON(w http.ResponseWriter, status int, resp healthResponse) {
@@ -95,30 +126,19 @@ func handleLivez(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cmd := healthCmd
-
-	if cmd == "" {
-		writeJSON(w, http.StatusServiceUnavailable, healthResponse{
-			Status:    "error",
-			Timestamp: time.Now().UTC().Format(time.RFC3339),
-			Error:     "HEALTH_CMD not configured",
-		})
-		return
-	}
-
-	ok, output := runCheck(r.Context(), cmd)
+	ok, output := performCheck(r.Context(), healthCmd)
 	if ok {
 		writeJSON(w, http.StatusOK, healthResponse{
 			Status:    "ok",
 			Timestamp: time.Now().UTC().Format(time.RFC3339),
-			Check:     cmd,
+			Check:     healthCmd,
 			Output:    output,
 		})
 	} else {
 		writeJSON(w, http.StatusServiceUnavailable, healthResponse{
 			Status:    "error",
 			Timestamp: time.Now().UTC().Format(time.RFC3339),
-			Check:     cmd,
+			Check:     healthCmd,
 			Output:    output,
 		})
 	}
@@ -136,16 +156,7 @@ func handleReadyz(w http.ResponseWriter, r *http.Request) {
 		cmd = healthCmd
 	}
 
-	if cmd == "" {
-		writeJSON(w, http.StatusServiceUnavailable, healthResponse{
-			Status:    "error",
-			Timestamp: time.Now().UTC().Format(time.RFC3339),
-			Error:     "no readiness check configured",
-		})
-		return
-	}
-
-	ok, output := runCheck(r.Context(), cmd)
+	ok, output := performCheck(r.Context(), cmd)
 	if ok {
 		writeJSON(w, http.StatusOK, healthResponse{
 			Status:    "ok",
@@ -175,15 +186,6 @@ func handleStartupz(w http.ResponseWriter, r *http.Request) {
 		cmd = healthCmd
 	}
 
-	if cmd == "" {
-		writeJSON(w, http.StatusServiceUnavailable, healthResponse{
-			Status:    "error",
-			Timestamp: time.Now().UTC().Format(time.RFC3339),
-			Error:     "no startup check configured",
-		})
-		return
-	}
-
 	// Once startup succeeds once, always return OK (lock-free via atomic)
 	if startupDone.Load() {
 		writeJSON(w, http.StatusOK, healthResponse{
@@ -209,7 +211,7 @@ func handleStartupz(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ok, output := runCheck(r.Context(), cmd)
+	ok, output := performCheck(r.Context(), cmd)
 	if ok {
 		startupDone.Store(true)
 		writeJSON(w, http.StatusOK, healthResponse{
@@ -474,8 +476,13 @@ func newRouter() *http.ServeMux {
 	return mux
 }
 
-func main() {
-	// Configure structured logging
+// ---------------------------------------------------------------------------
+// Configuration helpers
+// ---------------------------------------------------------------------------
+
+// initLogging configures structured JSON logging from the EVERGREEN_LOG_LEVEL
+// or LOG_LEVEL environment variable.
+func initLogging() {
 	logLevel := os.Getenv("EVERGREEN_LOG_LEVEL")
 	if logLevel == "" {
 		logLevel = os.Getenv("LOG_LEVEL")
@@ -498,18 +505,14 @@ func main() {
 
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: level}))
 	slog.SetDefault(logger)
+}
 
-	startTime = time.Now()
-
-	// Read configuration
+// loadEnvConfig reads configuration from environment variables into package
+// globals. It is safe to call in any mode.
+func loadEnvConfig() {
 	healthCmd = os.Getenv("HEALTH_CMD")
 	readyCmd = os.Getenv("READY_CMD")
 	startupCmd = os.Getenv("STARTUP_CMD")
-
-	listen := os.Getenv("LISTEN")
-	if listen == "" {
-		listen = ":9101"
-	}
 
 	timeoutStr := os.Getenv("HEALTH_TIMEOUT")
 	if timeoutStr == "" {
@@ -531,13 +534,278 @@ func main() {
 		slog.Error("invalid STARTUP_WINDOW", "value", windowStr, "error", err)
 		os.Exit(1)
 	}
+}
+
+// listenAddr returns the configured listen address.
+func listenAddr() string {
+	listen := os.Getenv("LISTEN")
+	if listen == "" {
+		return ":9101"
+	}
+	return listen
+}
+
+// newHealthServer creates an *http.Server with standard timeouts.
+func newHealthServer(listen string) *http.Server {
+	return &http.Server{
+		Addr:         listen,
+		Handler:      newRouter(),
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+}
+
+// ---------------------------------------------------------------------------
+// Subcommand: run (process supervisor)
+// ---------------------------------------------------------------------------
+
+// runSupervisor starts a child process alongside the HTTP health server,
+// forwards signals, and exits with the child's exit code.
+func runSupervisor(args []string) {
+	fs := flag.NewFlagSet("run", flag.ExitOnError)
+	fs.Usage = func() {
+		fmt.Fprintf(fs.Output(), "usage: shim run [-c command] [args...]\n\n")
+		fmt.Fprintf(fs.Output(), "Start a child process with an HTTP health server on port 9101.\n\n")
+		fmt.Fprintf(fs.Output(), "Options:\n")
+		fs.PrintDefaults()
+		fmt.Fprintf(fs.Output(), "\nIf -c is omitted, positional args are used as the command.\n")
+		fmt.Fprintf(fs.Output(), "If no command is given, only the HTTP server runs.\n\n")
+		fmt.Fprintf(fs.Output(), "Examples:\n")
+		fmt.Fprintf(fs.Output(), "  shim run -c /nginx\n")
+		fmt.Fprintf(fs.Output(), "  shim run -c \"redis-server --appendonly yes\"\n")
+		fmt.Fprintf(fs.Output(), "  shim run redis-server   # positional form\n")
+	}
+	var cmdStr string
+	fs.StringVar(&cmdStr, "c", "", "command to run as a supervised child process")
+	fs.Parse(args)
+
+	// If no -c flag, treat remaining positional args as the command.
+	if cmdStr == "" && fs.NArg() > 0 {
+		cmdStr = strings.Join(fs.Args(), " ")
+	}
+
+	loadEnvConfig()
+	supervisorMode = true
+
+	// In supervisor mode without an explicit HEALTH_CMD, liveness is derived
+	// from whether the child process is running (see performCheck).
+	healthCmdExplicit := os.Getenv("HEALTH_CMD") != ""
+	if healthCmdExplicit {
+		slog.Info("supervisor mode: using explicit HEALTH_CMD", "health_cmd", healthCmd)
+	}
+
+	listen := listenAddr()
+
+	slog.Info("health-shim starting (supervisor mode)",
+		"listen", listen,
+		"command", cmdStr,
+		"health_cmd", healthCmd,
+		"ready_cmd", readyCmd,
+		"startup_cmd", startupCmd,
+		"timeout", healthTimeout,
+		"startup_window", startupWindow,
+	)
+
+	// Start the HTTP health server in the background.
+	server := newHealthServer(listen)
+	go func() {
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			slog.Error("health server failed", "error", err)
+			os.Exit(1)
+		}
+	}()
+	slog.Info("health server listening", "listen", listen)
+
+	// If no child command was provided, just serve until signalled.
+	if cmdStr == "" {
+		slog.Info("no child command specified; running as standalone health server")
+		sigCh := make(chan os.Signal, 1)
+		signal.Notify(sigCh, syscall.SIGTERM, syscall.SIGINT)
+		sig := <-sigCh
+		slog.Info("received signal, shutting down", "signal", sig)
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		server.Shutdown(shutdownCtx)
+		return
+	}
+
+	// Start the child process in its own process group so we can forward
+	// signals to the entire group (covers grandchild processes).
+	parts := strings.Fields(cmdStr)
+	if len(parts) == 0 {
+		slog.Error("invalid command", "command", cmdStr)
+		os.Exit(1)
+	}
+
+	child := exec.Command(parts[0], parts[1:]...)
+	child.Stdin = os.Stdin
+	child.Stdout = os.Stdout
+	child.Stderr = os.Stderr
+	child.Env = os.Environ()
+	child.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
+
+	if err := child.Start(); err != nil {
+		slog.Error("failed to start child process", "command", cmdStr, "error", err)
+		os.Exit(1)
+	}
+
+	childAlive.Store(true)
+	startupDone.Store(true)
+	slog.Info("child process started", "command", cmdStr, "pid", child.Process.Pid)
+
+	// Forward SIGTERM and SIGINT to the child's process group.
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, syscall.SIGTERM, syscall.SIGINT)
+	go func() {
+		for sig := range sigCh {
+			slog.Info("forwarding signal to child", "signal", sig.String())
+			if child.Process != nil {
+				// Negative PID targets the entire process group.
+				if err := syscall.Kill(-child.Process.Pid, sig.(syscall.Signal)); err != nil {
+					slog.Warn("failed to forward signal", "signal", sig.String(), "error", err)
+				}
+			}
+		}
+	}()
+
+	// Block until the child exits.
+	waitErr := child.Wait()
+	childAlive.Store(false)
+
+	slog.Info("child process exited", "error", waitErr)
+
+	// Stop accepting signals before shutting down the server.
+	signal.Stop(sigCh)
+
+	// Gracefully shut down the HTTP server.
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := server.Shutdown(shutdownCtx); err != nil {
+		slog.Error("server shutdown error", "error", err)
+	}
+
+	// Propagate the child's exit code.
+	if waitErr != nil {
+		if exitErr, ok := waitErr.(*exec.ExitError); ok {
+			code := exitErr.ExitCode()
+			if code < 0 {
+				code = 1
+			}
+			os.Exit(code)
+		}
+		slog.Error("child process wait error", "error", waitErr)
+		os.Exit(1)
+	}
+	os.Exit(0)
+}
+
+// ---------------------------------------------------------------------------
+// Subcommand: healthcheck (one-shot probe)
+// ---------------------------------------------------------------------------
+
+// runHealthcheck performs a single health probe and exits 0 (healthy) or 1
+// (unhealthy). Exactly one of --tcp, --http, or --cmd must be specified.
+func runHealthcheck(args []string) {
+	fs := flag.NewFlagSet("healthcheck", flag.ExitOnError)
+	fs.Usage = func() {
+		fmt.Fprintf(fs.Output(), "usage: shim healthcheck [options]\n\n")
+		fmt.Fprintf(fs.Output(), "Perform a one-shot health probe and exit 0 (healthy) or 1 (unhealthy).\n\n")
+		fmt.Fprintf(fs.Output(), "Options:\n")
+		fs.PrintDefaults()
+		fmt.Fprintf(fs.Output(), "\nExamples:\n")
+		fmt.Fprintf(fs.Output(), "  shim healthcheck --tcp 127.0.0.1:80\n")
+		fmt.Fprintf(fs.Output(), "  shim healthcheck --http 127.0.0.1:9000/healthz\n")
+		fmt.Fprintf(fs.Output(), "  shim healthcheck --cmd \"redis-cli ping\"\n")
+	}
+	var tcpTarget string
+	var httpTarget string
+	var cmdTarget string
+	var timeoutSec int
+	fs.StringVar(&tcpTarget, "tcp", "", "TCP target in host:port format")
+	fs.StringVar(&httpTarget, "http", "", "HTTP target URL")
+	fs.StringVar(&cmdTarget, "cmd", "", "command to execute")
+	fs.IntVar(&timeoutSec, "timeout", 5, "probe timeout in seconds")
+	fs.Parse(args)
+
+	if fs.NFlag() == 0 {
+		fs.Usage()
+		os.Exit(1)
+	}
+
+	timeout := time.Duration(timeoutSec) * time.Second
+
+	// --- TCP probe ---
+	if tcpTarget != "" {
+		conn, err := net.DialTimeout("tcp", tcpTarget, timeout)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "TCP healthcheck failed: %s — %v\n", tcpTarget, err)
+			os.Exit(1)
+		}
+		conn.Close()
+		os.Exit(0)
+	}
+
+	// --- HTTP probe ---
+	if httpTarget != "" {
+		if !strings.HasPrefix(httpTarget, "http://") && !strings.HasPrefix(httpTarget, "https://") {
+			httpTarget = "http://" + httpTarget
+		}
+		client := &http.Client{Timeout: timeout}
+		resp, err := client.Get(httpTarget)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "HTTP healthcheck failed: %s — %v\n", httpTarget, err)
+			os.Exit(1)
+		}
+		resp.Body.Close()
+		if resp.StatusCode >= 200 && resp.StatusCode < 400 {
+			os.Exit(0)
+		}
+		fmt.Fprintf(os.Stderr, "HTTP healthcheck failed: %s — status %d\n", httpTarget, resp.StatusCode)
+		os.Exit(1)
+	}
+
+	// --- Command probe ---
+	if cmdTarget != "" {
+		ctx, cancel := context.WithTimeout(context.Background(), timeout)
+		defer cancel()
+		parts := strings.Fields(cmdTarget)
+		if len(parts) == 0 {
+			fmt.Fprintln(os.Stderr, "healthcheck: --cmd value is empty")
+			os.Exit(1)
+		}
+		c := exec.CommandContext(ctx, parts[0], parts[1:]...)
+		c.Env = os.Environ()
+		output, err := c.CombinedOutput()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "command healthcheck failed: %s\n", strings.TrimSpace(string(output)))
+			os.Exit(1)
+		}
+		os.Exit(0)
+	}
+
+	// Should not reach here if fs.NFlag() == 0 check passed, but guard anyway.
+	fmt.Fprintln(os.Stderr, "healthcheck: specify one of --tcp, --http, or --cmd")
+	os.Exit(1)
+}
+
+// ---------------------------------------------------------------------------
+// Subcommand: none (legacy standalone HTTP server)
+// ---------------------------------------------------------------------------
+
+// runStandalone runs the original HTTP-only health server. This preserves
+// backward compatibility when the binary is invoked without a subcommand.
+func runStandalone() {
+	loadEnvConfig()
 
 	if healthCmd == "" {
 		slog.Error("HEALTH_CMD environment variable is required")
 		os.Exit(1)
 	}
 
-	slog.Info("health-shim starting",
+	listen := listenAddr()
+
+	slog.Info("health-shim starting (standalone mode)",
 		"listen", listen,
 		"health_cmd", healthCmd,
 		"ready_cmd", readyCmd,
@@ -546,22 +814,9 @@ func main() {
 		"startup_window", startupWindow,
 	)
 
-	mux := newRouter()
+	server := newHealthServer(listen)
 
-	const (
-		readTimeout  = 5 * time.Second
-		writeTimeout = 10 * time.Second
-		idleTimeout  = 60 * time.Second
-		shutdownTimeout = 5 * time.Second
-	)
-
-	server := &http.Server{
-		Addr:         listen,
-		Handler:      mux,
-		ReadTimeout:  readTimeout,
-		WriteTimeout: writeTimeout,
-		IdleTimeout:  idleTimeout,
-	}
+	const shutdownTimeout = 5 * time.Second
 
 	// Graceful shutdown on SIGTERM/SIGINT
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT)
@@ -582,4 +837,61 @@ func main() {
 		os.Exit(1)
 	}
 	slog.Info("health-shim stopped")
+}
+
+// ---------------------------------------------------------------------------
+// Entry point
+// ---------------------------------------------------------------------------
+
+func main() {
+	initLogging()
+	startTime = time.Now()
+
+	// Subcommand dispatch.
+	if len(os.Args) >= 2 {
+		switch os.Args[1] {
+		case "run":
+			runSupervisor(os.Args[2:])
+			return
+		case "healthcheck":
+			runHealthcheck(os.Args[2:])
+			return
+		case "help", "-h", "--help":
+			printUsage()
+			return
+		}
+	}
+
+	// No subcommand — backward-compatible standalone HTTP server.
+	runStandalone()
+}
+
+func printUsage() {
+	fmt.Fprintf(os.Stderr, `evergreen health-shim %s
+
+Usage:
+  shim <subcommand> [options]
+  shim                           Run as standalone HTTP health server (legacy)
+
+Subcommands:
+  run          Start a child process with HTTP health server (supervisor mode)
+  healthcheck  Perform a one-shot TCP/HTTP/command probe
+
+Examples:
+  shim run -c /nginx                              Supervise nginx
+  shim run -c "redis-server --appendonly yes"     Supervise redis
+  shim healthcheck --tcp 127.0.0.1:80             One-shot TCP probe
+  shim healthcheck --http localhost:9000/healthz  One-shot HTTP probe
+  HEALTH_CMD="pg_isready" shim                    Legacy standalone server
+
+Environment:
+  HEALTH_CMD      CLI command for liveness check
+  READY_CMD       CLI command for readiness (defaults to HEALTH_CMD)
+  STARTUP_CMD     CLI command for startup (defaults to HEALTH_CMD)
+  LISTEN          Listen address (default :9101)
+  HEALTH_TIMEOUT  Timeout per check in seconds (default 5)
+  STARTUP_WINDOW  Startup probe window in seconds (default 30)
+  LOG_LEVEL       Log level: debug, info, warn, error (default info)
+
+`, version)
 }

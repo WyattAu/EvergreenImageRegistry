@@ -25,13 +25,13 @@ Defense-in-depth requires multiple layers: seccomp, AppArmor, Dockerfile hardeni
 
 Seccomp restricts available syscalls at the kernel level. Our profiles in `security/seccomp/` provide the foundation:
 
-| Profile          | Use Case                                      | File                       |
-| ---------------- | --------------------------------------------- | -------------------------- |
-| `minimal.json`   | Static binaries on scratch (no networking)    | `seccomp/minimal.json`     |
-| `default.json`   | General container workloads                   | `seccomp/default.json`     |
-| `networking.json`| Network-facing services                       | `seccomp/networking.json`  |
-| `database.json`  | Database engines                              | `seccomp/database.json`    |
-| `go-runtime.json`| Go-based services                             | `seccomp/go-runtime.json`  |
+| Profile           | Use Case                                   | File                      |
+| ----------------- | ------------------------------------------ | ------------------------- |
+| `minimal.json`    | Static binaries on scratch (no networking) | `seccomp/minimal.json`    |
+| `default.json`    | General container workloads                | `seccomp/default.json`    |
+| `networking.json` | Network-facing services                    | `seccomp/networking.json` |
+| `database.json`   | Database engines                           | `seccomp/database.json`   |
+| `go-runtime.json` | Go-based services                          | `seccomp/go-runtime.json` |
 
 ### Key Restrictions
 
@@ -60,13 +60,13 @@ podSpec:
 
 AppArmor provides path-based mandatory access control:
 
-| Profile                    | Use Case                              | File                                  |
-| -------------------------- | ------------------------------------- | ------------------------------------- |
-| `minimal.profile`          | Read-only scratch images              | `apparmor/minimal.profile`            |
-| `default.profile`          | General container workloads           | `apparmor/default.profile`            |
-| `docker-socket-proxy.profile` | Docker API proxying              | `apparmor/docker-socket-proxy.profile`|
-| `go-runtime.profile`       | Go-based services                     | `apparmor/go-runtime.profile`         |
-| `database.profile`         | Database engines                      | `apparmor/database.profile`           |
+| Profile                       | Use Case                    | File                                   |
+| ----------------------------- | --------------------------- | -------------------------------------- |
+| `minimal.profile`             | Read-only scratch images    | `apparmor/minimal.profile`             |
+| `default.profile`             | General container workloads | `apparmor/default.profile`             |
+| `docker-socket-proxy.profile` | Docker API proxying         | `apparmor/docker-socket-proxy.profile` |
+| `go-runtime.profile`          | Go-based services           | `apparmor/go-runtime.profile`          |
+| `database.profile`            | Database engines            | `apparmor/database.profile`            |
 
 ### Key Restrictions
 

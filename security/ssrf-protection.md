@@ -2,7 +2,8 @@
 
 ## Overview
 
-Server-Side Request Forgery (SSRF) allows an attacker to make outbound HTTP requests from a container to unintended destinations. In the context of hardened container images, SSRF can be used to:
+Server-Side Request Forgery (SSRF) allows an attacker to make outbound HTTP requests from a container to unintended
+destinations. In the context of hardened container images, SSRF can be used to:
 
 - Access cloud metadata endpoints (169.254.169.254 on AWS/GCP/Azure)
 - Scan internal networks and services
@@ -14,14 +15,14 @@ Server-Side Request Forgery (SSRF) allows an attacker to make outbound HTTP requ
 
 Evergreen images that make outbound HTTP requests are particularly susceptible:
 
-| Image       | Attack Vector                              | Risk                                 |
-| ----------- | ------------------------------------------ | ------------------------------------ |
-| prometheus  | Malicious scrape targets in config         | Internal network enumeration         |
-| grafana     | User-configured data source URLs           | Metadata endpoint access             |
-| trivy       | Malicious registry URLs in CI              | Credential exfiltration              |
-| keycloak    | OIDC endpoint configuration                | Token theft via redirect             |
-| alertmanager| Webhook receiver URLs                      | Internal service abuse               |
-| webhook     | Outgoing HTTP hook URLs                    | Full SSRF chain                      |
+| Image        | Attack Vector                      | Risk                         |
+| ------------ | ---------------------------------- | ---------------------------- |
+| prometheus   | Malicious scrape targets in config | Internal network enumeration |
+| grafana      | User-configured data source URLs   | Metadata endpoint access     |
+| trivy        | Malicious registry URLs in CI      | Credential exfiltration      |
+| keycloak     | OIDC endpoint configuration        | Token theft via redirect     |
+| alertmanager | Webhook receiver URLs              | Internal service abuse       |
+| webhook      | Outgoing HTTP hook URLs            | Full SSRF chain              |
 
 ## Network Namespace Isolation
 
@@ -194,18 +195,18 @@ table inet ssrf-protection {
 
 All Evergreen images that make outbound requests should support these environment variables:
 
-| Variable                          | Description                                      | Example                         |
-| --------------------------------- | ------------------------------------------------ | ------------------------------- |
-| `EVERGREEN_ALLOWED_HOSTS`         | Comma-separated list of allowed hostnames         | `api.github.com,ghcr.io`        |
-| `EVERGREEN_ALLOWED_CIDRS`         | Comma-separated list of allowed destination CIDRs | `10.0.0.0/8,172.16.0.0/12`     |
-| `EVERGREEN_BLOCK_METADATA`        | Block cloud metadata endpoints (default: `true`)  | `true`                          |
-| `EVERGREEN_DNS_SERVERS`           | Approved DNS resolvers                            | `1.1.1.1,8.8.8.8`              |
-| `EVERGREEN_OUTBOUND_PORTS`        | Allowed destination ports                         | `443,9090,9100`                 |
-| `EVERGREEN_PROXY`                 | Outbound HTTP proxy for all requests              | `http://proxy.internal:3128`    |
-| `EVERGREEN_NO_PROXY`              | Destinations that bypass the proxy                | `localhost,127.0.0.1,10.0.0.0/8`|
-| `EVERGREEN_REQUEST_TIMEOUT`       | Maximum outbound request duration                 | `30s`                           |
-| `EVERGREEN_MAX_REDIRECTS`         | Maximum HTTP redirects allowed                    | `0`                             |
-| `EVERGREEN_DISABLE_IPV6`          | Disable IPv6 for outbound connections             | `true`                          |
+| Variable                    | Description                                       | Example                          |
+| --------------------------- | ------------------------------------------------- | -------------------------------- |
+| `EVERGREEN_ALLOWED_HOSTS`   | Comma-separated list of allowed hostnames         | `api.github.com,ghcr.io`         |
+| `EVERGREEN_ALLOWED_CIDRS`   | Comma-separated list of allowed destination CIDRs | `10.0.0.0/8,172.16.0.0/12`       |
+| `EVERGREEN_BLOCK_METADATA`  | Block cloud metadata endpoints (default: `true`)  | `true`                           |
+| `EVERGREEN_DNS_SERVERS`     | Approved DNS resolvers                            | `1.1.1.1,8.8.8.8`                |
+| `EVERGREEN_OUTBOUND_PORTS`  | Allowed destination ports                         | `443,9090,9100`                  |
+| `EVERGREEN_PROXY`           | Outbound HTTP proxy for all requests              | `http://proxy.internal:3128`     |
+| `EVERGREEN_NO_PROXY`        | Destinations that bypass the proxy                | `localhost,127.0.0.1,10.0.0.0/8` |
+| `EVERGREEN_REQUEST_TIMEOUT` | Maximum outbound request duration                 | `30s`                            |
+| `EVERGREEN_MAX_REDIRECTS`   | Maximum HTTP redirects allowed                    | `0`                              |
+| `EVERGREEN_DISABLE_IPV6`    | Disable IPv6 for outbound connections             | `true`                           |
 
 ### Implementation Pattern
 

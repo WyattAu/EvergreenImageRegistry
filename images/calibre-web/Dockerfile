@@ -3,10 +3,8 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-ARG SHIM_VERSION=v1.0.0
+ARG SHIM_VERSION=v1.1.0
 
-FROM collabora/code:${VERSION} AS upstream
-# Placeholder — calibre-web uses the linuxserver image
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 # Calibre-web is a Python Flask app — needs python3 runtime

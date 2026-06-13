@@ -12,9 +12,7 @@ ARG APP_UID=65532
 ARG APP_GID=65532
 
 
-ARG SHIM_VERSION=v1.0.0
-
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
+ARG SHIM_VERSION=v1.1.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 ARG VERSION=3.13.1

@@ -384,6 +384,9 @@ COPY --from=builder /app /app";
         let content = "LABEL org.opencontainers.image.title=\"myimage\"";
         let df = parse_dockerfile(content);
         let label_map: std::collections::HashMap<_, _> = df.labels.iter().cloned().collect();
-        assert_eq!(label_map.get("org.opencontainers.image.title"), Some(&"myimage".to_string()));
+        assert_eq!(
+            label_map.get("org.opencontainers.image.title"),
+            Some(&"myimage".to_string())
+        );
     }
 }

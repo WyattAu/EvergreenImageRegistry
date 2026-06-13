@@ -42,7 +42,9 @@ groups:
           component: health-shim
         annotations:
           summary: "Health-shim check failure threshold exceeded"
-          description: "Health-shim for {{ $labels.image }} has failed {{ $value }} checks in the last 5 minutes (threshold: 3)."
+          description: >-
+            Health-shim for {{ $labels.image }} has failed {{ $value }} checks
+            in the last 5 minutes (threshold: 3).
           runbook_url: "https://github.com/WyattAu/EvergreenImageRegistry/wiki/runbook#shim-failing"
 
       - alert: EvergreenRegistryPullErrors
@@ -53,7 +55,9 @@ groups:
           component: registry
         annotations:
           summary: "Registry pull error threshold exceeded"
-          description: "Registry {{ $labels.registry }} has experienced {{ $value }} pull errors in the last 10 minutes (threshold: 5)."
+          description: >-
+            Registry {{ $labels.registry }} has experienced {{ $value }} pull
+            errors in the last 10 minutes (threshold: 5).
           runbook_url: "https://github.com/WyattAu/EvergreenImageRegistry/wiki/runbook#registry-errors"
 
       - alert: EvergreenImageDriftDetected
@@ -64,7 +68,9 @@ groups:
           component: drift-detection
         annotations:
           summary: "Manifest/Dockerfile version drift detected"
-          description: "Image {{ $labels.image }} has a version mismatch between manifest.toml and Dockerfile. Run `evergreenctl drift images/{{ $labels.image }}/` for details."
+          description: >-
+            Image {{ $labels.image }} has a version mismatch between manifest.toml
+            and Dockerfile. Run `evergreenctl drift images/{{ $labels.image }}/`.
           runbook_url: "https://github.com/WyattAu/EvergreenImageRegistry/wiki/runbook#drift-detected"
 
       - alert: EvergreenFIPSBuildFailed
@@ -75,7 +81,9 @@ groups:
           component: compliance
         annotations:
           summary: "FIPS variant build failed"
-          description: "FIPS 140-2/3 build for {{ $labels.image }} has failed. Check compliance/fips/ for implementation details."
+          description: >-
+            FIPS 140-2/3 build for {{ $labels.image }} has failed.
+            Check compliance/fips/ for implementation details.
           runbook_url: "https://github.com/WyattAu/EvergreenImageRegistry/wiki/runbook#fips-build-failed"
 
       - alert: EvergreenComplianceGap
@@ -86,5 +94,7 @@ groups:
           component: compliance
         annotations:
           summary: "Compliance check failed"
-          description: "Image {{ $labels.image }} failed {{ $labels.framework }} {{ $labels.control }} compliance check."
+          description: >-
+            Image {{ $labels.image }} failed {{ $labels.framework }}
+            {{ $labels.control }} compliance check.
           runbook_url: "https://github.com/WyattAu/EvergreenImageRegistry/wiki/runbook#compliance-gap"

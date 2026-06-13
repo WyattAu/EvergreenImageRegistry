@@ -6,6 +6,10 @@ on:
     branches: [main]
   workflow_dispatch:
 
+concurrency:
+  group: forgejo-runner-image-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   id-token: write
   contents: read
@@ -65,12 +69,13 @@ jobs:
           done
           exit $FAILED
 
+      - name: Install cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
       - name: Sign image with cosign (keyless)
-        uses: sigstore/cosign-installer@v4.1.2
-      - run: cosign sign --yes "${{ env.IMAGE }}:latest"
+        run: cosign sign --yes "${{ env.IMAGE }}:latest"
 
       - name: Upload SBOM
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: sbom-forgejo-runner-image
           path: sbom/
@@ -78,7 +83,7 @@ jobs:
 
   provenance:
     needs: build
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@f7dd8c54c2067bafc12ca7a55595d5ee9b75204a
     with:
       image: ${{ env.IMAGE }}
       digest: ${{ needs.build.outputs.digest }}

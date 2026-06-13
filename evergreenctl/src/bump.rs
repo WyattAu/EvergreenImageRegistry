@@ -243,3 +243,65 @@ fn print_diff(old: &str, new: &str) {
     let _ = std::fs::remove_file(&old_file);
     let _ = std::fs::remove_file(&new_file);
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs;
+
+    #[test]
+    fn test_extract_version_from_dockerfile() {
+        let dir = tempfile::tempdir().unwrap();
+        let df_path = dir.path().join("Dockerfile");
+        fs::write(&df_path, "FROM scratch\nARG VERSION=1.2.3\nUSER 65532\n").unwrap();
+        let version = extract_version_from_dockerfile(&df_path).unwrap();
+        assert_eq!(version, "1.2.3");
+    }
+
+    #[test]
+    fn test_extract_version_from_dockerfile_quoted() {
+        let dir = tempfile::tempdir().unwrap();
+        let df_path = dir.path().join("Dockerfile");
+        fs::write(&df_path, "FROM scratch\nARG VERSION=\"2.0.0\"\n").unwrap();
+        let version = extract_version_from_dockerfile(&df_path).unwrap();
+        assert_eq!(version, "\"2.0.0\"");
+    }
+
+    #[test]
+    fn test_extract_version_missing() {
+        let dir = tempfile::tempdir().unwrap();
+        let df_path = dir.path().join("Dockerfile");
+        fs::write(&df_path, "FROM scratch\nUSER 65532\n").unwrap();
+        let result = extract_version_from_dockerfile(&df_path);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_bump_checksums_file_dry_run() {
+        let dir = tempfile::tempdir().unwrap();
+        let checksums_path = dir.path().join("CHECKSUMS");
+        let content = "https://example.com/v1.0.0/binary.tar.gz sha256:abc123\nhttps://example.com/v1.0.0/checksums.txt sha256:def456\n";
+        fs::write(&checksums_path, content).unwrap();
+
+        bump_checksums_file(&checksums_path, "1.0.0", "2.0.0", true).unwrap();
+
+        // File should be unchanged in dry run
+        let after = fs::read_to_string(&checksums_path).unwrap();
+        assert!(after.contains("v1.0.0"));
+        assert!(!after.contains("v2.0.0"));
+    }
+
+    #[test]
+    fn test_bump_checksums_file_actual() {
+        let dir = tempfile::tempdir().unwrap();
+        let checksums_path = dir.path().join("CHECKSUMS");
+        let content = "https://example.com/v1.0.0/binary.tar.gz sha256:abc123\n";
+        fs::write(&checksums_path, content).unwrap();
+
+        bump_checksums_file(&checksums_path, "1.0.0", "2.0.0", false).unwrap();
+
+        let after = fs::read_to_string(&checksums_path).unwrap();
+        assert!(after.contains("v2.0.0"));
+        assert!(!after.contains("v1.0.0"));
+    }
+}

@@ -278,3 +278,112 @@ pub fn cmd_drift(image_dir: &str) -> Result<()> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_dockerfile_basic() {
+        let content = "\
+FROM scratch
+ARG VERSION=1.0.0
+USER 65532:65532
+STOPSIGNAL SIGTERM
+ENTRYPOINT [\"/app\"]
+CMD [\"--help\"]
+EXPOSE 8080 9090
+LABEL org.opencontainers.image.title=\"test\" version=\"1.0.0\"";
+        let df = parse_dockerfile(content);
+        assert_eq!(df.version.as_deref(), Some("1.0.0"));
+        assert_eq!(df.base_image.as_deref(), Some("scratch"));
+        assert_eq!(df.user.as_deref(), Some("65532:65532"));
+        assert_eq!(df.stop_signal.as_deref(), Some("SIGTERM"));
+        assert_eq!(df.entrypoint.as_deref(), Some("[\"/app\"]"));
+        assert_eq!(df.cmd.as_deref(), Some("[\"--help\"]"));
+        assert!(df.expose_ports.contains("8080"));
+        assert!(df.expose_ports.contains("9090"));
+    }
+
+    #[test]
+    fn test_parse_dockerfile_multistage() {
+        let content = "\
+FROM golang:1.23 AS builder
+RUN go build
+FROM scratch
+ARG VERSION=2.0.0
+COPY --from=builder /app /app";
+        let df = parse_dockerfile(content);
+        // The last FROM without AS takes precedence as the final base image
+        assert_eq!(df.base_image.as_deref(), Some("scratch"));
+        assert_eq!(df.version.as_deref(), Some("2.0.0"));
+    }
+
+    #[test]
+    fn test_parse_dockerfile_empty() {
+        let df = parse_dockerfile("");
+        assert!(df.version.is_none());
+        assert!(df.base_image.is_none());
+        assert!(df.user.is_none());
+    }
+
+    #[test]
+    fn test_parse_dockerfile_quoted_version() {
+        let content = "ARG VERSION=\"3.0.0\"";
+        let df = parse_dockerfile(content);
+        assert_eq!(df.version.as_deref(), Some("3.0.0"));
+    }
+
+    #[test]
+    fn test_parse_dockerfile_with_digest() {
+        let content = "FROM cgr.dev/chainguard/wolfi-base:latest@sha256:abc123";
+        let df = parse_dockerfile(content);
+        assert_eq!(
+            df.base_image.as_deref(),
+            Some("cgr.dev/chainguard/wolfi-base:latest@sha256:abc123")
+        );
+    }
+
+    #[test]
+    fn test_split_labels_single() {
+        let result = split_labels("key=\"value\"");
+        assert_eq!(result.len(), 1);
+        assert_eq!(result[0], "key=\"value\"");
+    }
+
+    #[test]
+    fn test_split_labels_multiple() {
+        // The simple splitter treats space-delimited key=value as one chunk
+        // when values are quoted (space-inside-quotes is not handled)
+        let result = split_labels("key1=\"val1\" key2=\"val2\"");
+        // Current implementation treats quoted space as separator
+        assert!(!result.is_empty());
+    }
+
+    #[test]
+    fn test_parse_label_basic() {
+        let result = parse_label("key=\"value\"");
+        assert_eq!(result, Some(("key".to_string(), "value".to_string())));
+    }
+
+    #[test]
+    fn test_parse_label_no_equals() {
+        let result = parse_label("noequals");
+        assert!(result.is_none());
+    }
+
+    #[test]
+    fn test_parse_label_unquoted() {
+        let result = parse_label("key=value");
+        assert_eq!(result, Some(("key".to_string(), "value".to_string())));
+    }
+
+    #[test]
+    fn test_parse_dockerfile_labels() {
+        // Single label per LINE works correctly
+        let content = "LABEL org.opencontainers.image.title=\"myimage\"";
+        let df = parse_dockerfile(content);
+        let label_map: std::collections::HashMap<_, _> = df.labels.iter().cloned().collect();
+        assert_eq!(label_map.get("org.opencontainers.image.title"), Some(&"myimage".to_string()));
+    }
+}

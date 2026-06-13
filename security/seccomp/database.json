@@ -1,0 +1,89 @@
+{
+  "defaultAction": "SCMP_ACT_ERRNO",
+  "defaultErrnoRet": 1,
+  "architectures": ["SCMP_ARCH_X86_64", "SCMP_ARCH_X86", "SCMP_ARCH_AARCH64"],
+  "syscalls": [
+    {
+      "names": [
+        "accept", "accept4", "bind", "connect", "getpeername",
+        "getsockname", "getsockopt", "listen", "recv", "recvfrom",
+        "recvmmsg", "recvmsg", "send", "sendfile", "sendmmsg",
+        "sendmsg", "sendto", "setsockopt", "shutdown", "socket",
+        "socketpair"
+      ],
+      "action": "SCMP_ACT_ALLOW",
+      "args": [],
+      "comment": "Networking for database connections. Includes client accept/connect for incoming queries and replication."
+    },
+    {
+      "names": [
+        "close", "dup", "dup2", "dup3", "epoll_create", "epoll_create1",
+        "epoll_ctl", "epoll_pwait", "epoll_wait", "eventfd2",
+        "exit", "exit_group", "fcntl", "fstat", "fstatfs", "fsync",
+        "ftruncate", "futimesat", "getcwd", "getdents", "getdents64",
+        "getpid", "getppid", "gettid", "getuid", "getgid",
+        "geteuid", "getegid", "ioctl", "kill", "lseek",
+        "madvise", "mmap", "mprotect", "mremap", "munmap",
+        "nanosleep", "newfstatat", "openat", "pipe", "pipe2",
+        "poll", "prctl", "pread64", "preadv", "pselect6",
+        "pwrite64", "pwritev", "read", "readahead", "readlink",
+        "readlinkat", "readv", "rename", "renameat", "restart_syscall",
+        "rmdir", "rt_sigaction", "rt_sigpending", "rt_sigprocmask",
+        "rt_sigreturn", "rt_sigsuspend", "sched_yield", "select",
+        "set_robust_list", "set_tid_address", "stat", "statfs", "statx",
+        "sync", "sync_file_range", "sysinfo", "tgkill",
+        "umask", "uname", "unlink", "unlinkat", "utimensat",
+        "write", "writev"
+      ],
+      "action": "SCMP_ACT_ALLOW",
+      "args": [],
+      "comment": "File I/O, memory management, process lifecycle. Includes sync/sync_file_range for data durability (critical for databases). Includes mremap for memory-mapped storage."
+    },
+    {
+      "names": ["clone", "clone3"],
+      "action": "SCMP_ACT_ALLOW",
+      "args": [
+        { "index": 0, "value": 2114060288, "op": "SCMP_CMP_MASKED_EQ", "valueTwo": 0 }
+      ],
+      "comment": "Thread creation for connection pooling and background workers."
+    },
+    {
+      "names": ["personality"],
+      "action": "SCMP_ACT_ALLOW",
+      "args": [
+        { "index": 0, "value": 0, "op": "SCMP_CMP_EQ" }
+      ],
+      "comment": "Allow only PER_LINUX personality."
+    },
+    {
+      "names": ["getrandom", "rseq", "arch_prctl"],
+      "action": "SCMP_ACT_ALLOW",
+      "args": [],
+      "comment": "Runtime support: random for query IDs and nonces, rseq for Go/C runtimes, arch_prctl for x86_64 setup."
+    },
+    {
+      "names": ["memfd_create", "shmget", "shmat", "shmdt"],
+      "action": "SCMP_ACT_ALLOW",
+      "args": [],
+      "comment": "Shared memory for inter-process communication and caching layers."
+    },
+    {
+      "names": ["clock_gettime", "gettimeofday", "time", "clock_getres"],
+      "action": "SCMP_ACT_ALLOW",
+      "args": [],
+      "comment": "Time syscalls for query timing, WAL timestamps, and connection timeouts."
+    },
+    {
+      "names": ["fallocate", "posix_fadvise"],
+      "action": "SCMP_ACT_ALLOW",
+      "args": [],
+      "comment": "File pre-allocation and access patterns for database storage optimization."
+    },
+    {
+      "names": ["mincore"],
+      "action": "SCMP_ACT_ALLOW",
+      "args": [],
+      "comment": "Check if pages are in memory. Used for memory-mapped file I/O in database engines."
+    }
+  ]
+}

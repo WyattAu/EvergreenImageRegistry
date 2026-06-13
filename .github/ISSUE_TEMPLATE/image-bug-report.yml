@@ -1,0 +1,37 @@
+name: Image Bug Report
+description: Report a bug in an EIR image
+labels: ["bug", "triage"]
+body:
+  - type: input
+    id: image
+    attributes:
+      label: Image Name
+      description: Which EIR image has the bug?
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Image Version
+      description: What version/tag?
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Container Logs
+      description: Paste relevant container logs
+    validations:
+      required: false

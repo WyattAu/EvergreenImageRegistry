@@ -1,0 +1,42 @@
+{
+  "defaultAction": "SCMP_ACT_ERRNO",
+  "defaultErrnoRet": 1,
+  "architectures": ["SCMP_ARCH_X86_64", "SCMP_ARCH_AARCH64"],
+  "syscalls": [
+    {
+      "names": [
+        "close", "exit", "exit_group", "fstat", "futex",
+        "getpid", "gettid", "ioctl", "mmap", "mprotect",
+        "munmap", "nanosleep", "read", "readlink", "rt_sigaction",
+        "rt_sigprocmask", "rt_sigreturn", "write"
+      ],
+      "action": "SCMP_ACT_ALLOW",
+      "args": [],
+      "comment": "Absolute minimum syscalls for static binaries (scratch images). Covers: file I/O (read/write/close), memory management (mmap/mprotect/munmap), signals, threading (futex), and process lifecycle (exit). No networking, no process creation beyond exit."
+    },
+    {
+      "names": ["clock_gettime", "gettimeofday", "time"],
+      "action": "SCMP_ACT_ALLOW",
+      "args": [],
+      "comment": "Time-related syscalls needed by most applications for logging, timeouts, and scheduling."
+    },
+    {
+      "names": ["brk", "madvise"],
+      "action": "SCMP_ACT_ALLOW",
+      "args": [],
+      "comment": "Heap management. brk for initial heap allocation, madvise for memory hints."
+    },
+    {
+      "names": ["arch_prctl"],
+      "action": "SCMP_ACT_ALLOW",
+      "args": [],
+      "comment": "x86_64 architecture setup needed for Go runtime initialization."
+    },
+    {
+      "names": ["getrandom", "rseq"],
+      "action": "SCMP_ACT_ALLOW",
+      "args": [],
+      "comment": "getrandom for cryptographic randomness, rseq for restartable sequences (Go runtime)."
+    }
+  ]
+}

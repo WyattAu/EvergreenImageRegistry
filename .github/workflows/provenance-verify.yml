@@ -1,8 +1,8 @@
-name: Provenance Verification
-on:
+name: "Provenance Verification"
+"on":
   schedule:
-    - cron: '0 4 * * 1'
-  workflow_dispatch:
+    - cron: "0 4 * * 1"
+  workflow_dispatch: {}
 
 concurrency:
   group: provenance-verify-${{ github.ref }}

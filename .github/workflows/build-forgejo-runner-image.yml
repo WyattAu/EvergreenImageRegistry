@@ -1,10 +1,11 @@
-name: Build forgejo-runner-image (apko)
-on:
+name: "Build forgejo-runner-image (apko)"
+"on":
+  workflow_dispatch: {}
   push:
+    branches:
+      - main
     paths:
-      - images/forgejo-runner-image/**
-    branches: [main]
-  workflow_dispatch:
+      - "images/forgejo-runner-image/**"
 
 concurrency:
   group: forgejo-runner-image-${{ github.ref }}

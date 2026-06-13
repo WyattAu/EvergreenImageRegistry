@@ -315,18 +315,15 @@ jobs:
           from pathlib import Path
           errors = []
           for df in sorted(Path('images').rglob('Dockerfile')):
-               if '_wip' in str(df) or '_archive' in str(df) or 'clawdius' in str(df):
+              if '_wip' in str(df) or '_archive' in str(df) or 'clawdius' in str(df):
                   continue
               content = df.read_text()
-              # Find named stages: FROM <image> AS <name> (only from FROM lines)
               stages = re.findall(r'^FROM\s+\S+\s+AS\s+([a-zA-Z][a-zA-Z0-9_-]*)', content, re.MULTILINE | re.IGNORECASE)
               if not stages:
                   continue
               for stage in stages:
                   stage_lower = stage.lower()
-                  # Check for COPY --from=<stage> (case-insensitive)
                   copy_re = re.compile(r'(?i)COPY\s+--from=' + re.escape(stage_lower) + r'\b')
-                  # Check for FROM <stage> (multi-stage reference)
                   from_re = re.compile(r'(?i)^FROM\s+' + re.escape(stage_lower) + r'\b', re.MULTILINE)
                   if not copy_re.search(content) and not from_re.search(content):
                       errors.append(f'{df}: stage \"{stage}\" declared but never consumed')

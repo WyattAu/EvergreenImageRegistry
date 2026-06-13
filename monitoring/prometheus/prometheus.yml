@@ -1,0 +1,88 @@
+# Evergreen Monitoring - Prometheus configuration
+# ----------------------------------------------------------------------------
+# Scrapes the monitoring stack components and Evergreen Image Registry (EIR)
+# services. EIR service endpoints are configured via file_sd targets so they
+# can be added/removed WITHOUT a restart (hot-reload: `curl -X POST
+# localhost:9090/-/reload` thanks to --web.enable-lifecycle).
+#
+# Edit EIR targets in:  prometheus/targets/eir-services.yml
+# ----------------------------------------------------------------------------
+
+global:
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: evergreen
+    monitor: evergreen-monitoring-stack
+
+# ----------------------------------------------------------------------------
+# Alerting: forward firing alerts to AlertManager
+# ----------------------------------------------------------------------------
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
+      timeout: 10s
+      api_version: v2
+
+# ----------------------------------------------------------------------------
+# Alert rule files (mounted read-only from prometheus/alerts/)
+# ----------------------------------------------------------------------------
+rule_files:
+  - /etc/prometheus/rules/*.yml
+
+# ----------------------------------------------------------------------------
+# Scrape configurations
+# ----------------------------------------------------------------------------
+scrape_configs:
+  # --- Self-monitoring ------------------------------------------------------
+  - job_name: prometheus
+    static_configs:
+      - targets:
+          - localhost:9090
+        labels:
+          component: monitoring
+          service: prometheus
+
+  # --- AlertManager ---------------------------------------------------------
+  - job_name: alertmanager
+    static_configs:
+      - targets:
+          - alertmanager:9093
+        labels:
+          component: monitoring
+          service: alertmanager
+
+  # --- Node Exporter (TrueNAS host metrics) ---------------------------------
+  - job_name: node-exporter
+    static_configs:
+      - targets:
+          - node-exporter:9100
+        labels:
+          component: infrastructure
+          service: node-exporter
+
+  # --- Evergreen Image Registry services ------------------------------------
+  # Configurable via file_sd. Each target file is a YAML list:
+  #   - targets: ["host:port", "host2:port2"]
+  #     labels:
+  #       service: <name>
+  # Prometheus reloads these files automatically every refresh_interval.
+  - job_name: evergreen-eir-services
+    file_sd_configs:
+      - files:
+          - /etc/prometheus/targets/*.yml
+        refresh_interval: 30s
+    relabel_configs:
+      # Promote the address to a human-readable instance label.
+      - source_labels: [__address__]
+        target_label: instance
+      # Carry through any "service" label defined in the target files.
+      - source_labels: [service]
+        target_label: eir_service
+    metric_relabel_configs:
+      # Stamp every EIR metric with the registry origin.
+      - target_label: registry
+        replacement: evergreen

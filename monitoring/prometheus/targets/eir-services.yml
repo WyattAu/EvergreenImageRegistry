@@ -1,0 +1,17 @@
+# Evergreen Image Registry - Prometheus file_sd targets
+# ----------------------------------------------------------------------------
+# List the metrics endpoints for EIR services here. Prometheus hot-reloads this
+# file (no restart needed) every 30s. After editing, you can force a reload:
+#   curl -X POST http://localhost:9090/-/reload
+#
+# Example entry (uncomment & edit host:port to match your deployment):
+#
+# - targets:
+#     - "192.168.1.10:8080"      # evergreenctl metrics exporter
+#     - "192.168.1.11:9091"      # build CI metrics bridge
+#   labels:
+#     service: evergreen-ci
+#     tier: critical
+#
+# Leave the list empty if no EIR services expose metrics yet.
+[]

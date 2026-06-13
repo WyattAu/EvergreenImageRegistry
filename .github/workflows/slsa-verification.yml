@@ -8,9 +8,6 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: read
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3

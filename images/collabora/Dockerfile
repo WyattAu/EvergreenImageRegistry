@@ -12,7 +12,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 COPY collabora-rootfs.tar /tmp/
 RUN tar xf /tmp/collabora-rootfs.tar -C / 2>/dev/null || true && rm /tmp/collabora-rootfs.tar
 
-USER 65532:65532
+# Collabora requires a 'cool' user (UID 1001) for coolforkit-ns process.
+# The forkit binary validates username == 'cool' at startup.
+RUN echo "cool:x:1001:1001::/opt/cool:/usr/sbin/nologin" >> /etc/passwd && \
+    echo "cool:x:1001:" >> /etc/group && \
+    mkdir -p /opt/cool /tmp/jails && \
+    chown 1001:1001 /opt/cool /tmp/jails
+
+USER 1001:1001
 ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 

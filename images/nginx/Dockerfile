@@ -30,8 +30,8 @@ FROM scratch
 COPY --from=shim /shim /shim
 COPY --from=builder /nginx /nginx
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /etc/nginx/conf/mime.types /etc/nginx/mime.types
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY --from=builder /etc/nginx/conf/mime.types /etc/nginx/conf/mime.types
+COPY nginx.conf /etc/nginx/conf/nginx.conf
 COPY shim.toml /etc/evergreen/shim.toml
 USER ${APP_UID}:${APP_GID}
 ENV SHIM_METRICS_ENABLED="true" \

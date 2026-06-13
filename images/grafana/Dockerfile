@@ -37,7 +37,7 @@ ENV SHIM_METRICS_ENABLED="true" \
     GF_PATHS_LOGS="/var/log/grafana" \
     GF_PATHS_PLUGINS="/var/lib/grafana/plugins" \
     GF_PATHS_PROVISIONING="/usr/share/grafana/conf/provisioning"
-WORKDIR /
+WORKDIR /usr/share/grafana
 EXPOSE 3000 9101
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \

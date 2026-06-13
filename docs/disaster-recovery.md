@@ -2,7 +2,8 @@
 
 ## Overview
 
-This document covers disaster recovery procedures for the Evergreen Image Registry, including rollback, backup restoration, full rebuilds, and emergency contacts.
+This document covers disaster recovery procedures for the Evergreen Image Registry, including rollback, backup
+restoration, full rebuilds, and emergency contacts.
 
 ## 1. Rollback Procedures for Bad Image Pushes
 
@@ -58,14 +59,14 @@ gh workflow run build-on-demand.yml \
 
 The evergreen shim provides backup capabilities for stateful images (databases, caches). Key environment variables:
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `SHIM_BACKUP_ENABLED` | Enable/disable backups | `false` |
-| `SHIM_BACKUP_SCHEDULE` | Cron schedule for backups | `0 2 * * *` |
-| `SHIM_BACKUP_RETENTION_DAYS` | Days to keep backups | `7` |
-| `SHIM_BACKUP_OUTPUT_DIR` | Backup output directory | `/backups` |
-| `SHIM_BACKUP_DB_HOST` | Database host | `localhost` |
-| `SHIM_BACKUP_DB_PORT` | Database port | `5432` |
+| Variable                     | Description               | Default     |
+| ---------------------------- | ------------------------- | ----------- |
+| `SHIM_BACKUP_ENABLED`        | Enable/disable backups    | `false`     |
+| `SHIM_BACKUP_SCHEDULE`       | Cron schedule for backups | `0 2 * * *` |
+| `SHIM_BACKUP_RETENTION_DAYS` | Days to keep backups      | `7`         |
+| `SHIM_BACKUP_OUTPUT_DIR`     | Backup output directory   | `/backups`  |
+| `SHIM_BACKUP_DB_HOST`        | Database host             | `localhost` |
+| `SHIM_BACKUP_DB_PORT`        | Database port             | `5432`      |
 
 ### 2.2 Restoring PostgreSQL from Backup
 
@@ -163,12 +164,12 @@ docker build -t ghcr.io/wyattau/evergreenimageregistry/nginx:local images/nginx/
 
 ### 4.1 Severity Levels
 
-| Level | Description | Response Time | Example |
-|-------|-------------|---------------|---------|
-| **P0 - Critical** | Registry down, all images unavailable | Immediate | GHCR outage, compromised image |
-| **P1 - High** | Single critical image broken | < 1 hour | PostgreSQL build failure |
-| **P2 - Medium** | Non-critical image broken | < 4 hours | Monitoring image build failure |
-| **P3 - Low** | Cosmetic or documentation issue | Next business day | Label inconsistency |
+| Level             | Description                           | Response Time     | Example                        |
+| ----------------- | ------------------------------------- | ----------------- | ------------------------------ |
+| **P0 - Critical** | Registry down, all images unavailable | Immediate         | GHCR outage, compromised image |
+| **P1 - High**     | Single critical image broken          | < 1 hour          | PostgreSQL build failure       |
+| **P2 - Medium**   | Non-critical image broken             | < 4 hours         | Monitoring image build failure |
+| **P3 - Low**      | Cosmetic or documentation issue       | Next business day | Label inconsistency            |
 
 ### 4.2 Contact Chain
 
@@ -196,21 +197,21 @@ docker build -t ghcr.io/wyattau/evergreenimageregistry/nginx:local images/nginx/
 
 ### 5.1 RTO (Recovery Time Objective)
 
-| Scenario | Target RTO | Method |
-|----------|------------|--------|
-| Single image failure | < 5 minutes | Rebuild with `build-on-demand` |
-| Tier failure (critical) | < 30 minutes | Rebuild tier with `build-nightly` |
-| Full registry failure | < 2 hours | Full rebuild with `build-nightly` |
-| GHCR outage | < 1 hour | Wait for GHCR recovery, then rebuild |
+| Scenario                | Target RTO   | Method                               |
+| ----------------------- | ------------ | ------------------------------------ |
+| Single image failure    | < 5 minutes  | Rebuild with `build-on-demand`       |
+| Tier failure (critical) | < 30 minutes | Rebuild tier with `build-nightly`    |
+| Full registry failure   | < 2 hours    | Full rebuild with `build-nightly`    |
+| GHCR outage             | < 1 hour     | Wait for GHCR recovery, then rebuild |
 
 ### 5.2 RPO (Recovery Point Objective)
 
-| Scenario | Target RPO | Backup Method |
-|----------|------------|---------------|
-| PostgreSQL data | < 24 hours | SHIM_BACKUP_SCHEDULE (daily) |
-| Redis/Valkey data | < 1 hour | RDB snapshots + AOF |
-| Kafka data | < 1 hour | Topic replication + snapshots |
-| Image configurations | 0 (Git) | Git history is the source of truth |
+| Scenario             | Target RPO | Backup Method                      |
+| -------------------- | ---------- | ---------------------------------- |
+| PostgreSQL data      | < 24 hours | SHIM_BACKUP_SCHEDULE (daily)       |
+| Redis/Valkey data    | < 1 hour   | RDB snapshots + AOF                |
+| Kafka data           | < 1 hour   | Topic replication + snapshots      |
+| Image configurations | 0 (Git)    | Git history is the source of truth |
 
 ### 5.3 Verification After Recovery
 

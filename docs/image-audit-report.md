@@ -4038,11 +4038,11 @@ glibc indicators found on musl-based base images:
 
 All Evergreen images are published to both GHCR and Docker Hub:
 
-| Registry | Format | Purpose |
-| -------- | ------ | ------- |
-| `ghcr.io/wyattau/evergreenimageregistry/<image>:<version>` | Semver tags | Production, pinned versions |
-| `ghcr.io/wyattau/evergreenimageregistry/<image>:latest` | Latest tag | Development, CI convenience |
-| `docker.io/wyattau/<image>:latest` | Docker Hub mirror | Broader ecosystem access |
+| Registry                                                   | Format            | Purpose                     |
+| ---------------------------------------------------------- | ----------------- | --------------------------- |
+| `ghcr.io/wyattau/evergreenimageregistry/<image>:<version>` | Semver tags       | Production, pinned versions |
+| `ghcr.io/wyattau/evergreenimageregistry/<image>:latest`    | Latest tag        | Development, CI convenience |
+| `docker.io/wyattau/<image>:latest`                         | Docker Hub mirror | Broader ecosystem access    |
 
 ### Publishing Workflow
 
@@ -4062,7 +4062,8 @@ All Evergreen images are published to both GHCR and Docker Hub:
 
 ## 11. Docker Socket Proxy Pattern
 
-The `docker-socket-proxy` image implements the **Docker Socket Proxy pattern** — a security-critical architecture for exposing Docker API access to untrusted or semi-trusted containers without granting direct socket access.
+The `docker-socket-proxy` image implements the **Docker Socket Proxy pattern** — a security-critical architecture for
+exposing Docker API access to untrusted or semi-trusted containers without granting direct socket access.
 
 ### Architecture
 
@@ -4108,13 +4109,13 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
-      - "2375:2375"
+      - '2375:2375'
     environment:
-      CONTAINERS: 1    # Allow container list/inspect
-      IMAGES: 1        # Allow image list
-      NETWORKS: 0      # Block network operations
-      VOLUMES: 0       # Block volume operations
-      EXEC: 0          # Block exec into containers
+      CONTAINERS: 1 # Allow container list/inspect
+      IMAGES: 1 # Allow image list
+      NETWORKS: 0 # Block network operations
+      VOLUMES: 0 # Block volume operations
+      EXEC: 0 # Block exec into containers
     cap_drop:
       - ALL
     security_opt:
@@ -4131,24 +4132,27 @@ services:
 
 ### Security Benefits
 
-| Benefit | Description |
-| ------- | ----------- |
+| Benefit                        | Description                                            |
+| ------------------------------ | ------------------------------------------------------ |
 | **Least-privilege API access** | ACLs restrict which Docker API endpoints are reachable |
-| **No direct socket mount** | Consumer containers never see `/var/run/docker.sock` |
-| **Audit trail** | HAProxy logs all API requests for forensic analysis |
-| **Non-root execution** | Proxy runs as UID 65532, not root |
-| **Read-only filesystem** | Immutable proxy container |
-| **Capability dropping** | `cap_drop: ALL` — no elevated Linux capabilities |
+| **No direct socket mount**     | Consumer containers never see `/var/run/docker.sock`   |
+| **Audit trail**                | HAProxy logs all API requests for forensic analysis    |
+| **Non-root execution**         | Proxy runs as UID 65532, not root                      |
+| **Read-only filesystem**       | Immutable proxy container                              |
+| **Capability dropping**        | `cap_drop: ALL` — no elevated Linux capabilities       |
 
 ### Real-World Example: SIS (SimpleInfrastructureStack)
 
 In SIS, the docker-socket-proxy pattern is used by:
 
-1. **Watchtower** — automatically updates containers when new images are published. Watchtower needs `CONTAINERS` and `IMAGES` access but not `EXEC`, `VOLUMES`, or `NETWORKS`.
+1. **Watchtower** — automatically updates containers when new images are published. Watchtower needs `CONTAINERS` and
+   `IMAGES` access but not `EXEC`, `VOLUMES`, or `NETWORKS`.
 
-2. **Forgejo Runners** — CI runners that build Docker images. They need `CONTAINERS`, `IMAGES`, `NETWORKS`, and `VOLUMES` access for build operations, but not `EXEC` on running containers.
+2. **Forgejo Runners** — CI runners that build Docker images. They need `CONTAINERS`, `IMAGES`, `NETWORKS`, and
+   `VOLUMES` access for build operations, but not `EXEC` on running containers.
 
 The proxy enforces that even if a consumer container is compromised, the attacker cannot:
+
 - Execute commands in other containers (`EXEC: 0`)
 - Create/destroy volumes (`VOLUMES: 0`)
 - Modify network configuration (`NETWORKS: 0`)

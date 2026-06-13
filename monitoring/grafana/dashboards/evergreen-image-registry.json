@@ -87,9 +87,7 @@
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
-            "steps": [
-              { "color": "green", "value": null }
-            ]
+            "steps": [{ "color": "green", "value": null }]
           }
         },
         "overrides": [
@@ -315,7 +313,13 @@
             "thresholdsStyle": { "mode": "off" }
           },
           "mappings": [],
-          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 20 }] },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 20 }
+            ]
+          },
           "unit": "short"
         },
         "overrides": []
@@ -652,7 +656,14 @@
         "defaults": {
           "color": { "mode": "thresholds" },
           "mappings": [
-            { "type": "value", "options": { "1": { "text": "PASS", "color": "green" }, "0": { "text": "FAIL", "color": "red" }, "2": { "text": "PENDING", "color": "yellow" } } }
+            {
+              "type": "value",
+              "options": {
+                "1": { "text": "PASS", "color": "green" },
+                "0": { "text": "FAIL", "color": "red" },
+                "2": { "text": "PENDING", "color": "yellow" }
+              }
+            }
           ],
           "thresholds": {
             "mode": "absolute",

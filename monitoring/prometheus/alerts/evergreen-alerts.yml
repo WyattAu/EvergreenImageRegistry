@@ -8,9 +8,9 @@ groups:
           severity: critical
           component: image-build
         annotations:
-          summary: "Image build failure threshold exceeded"
-          description: "Image {{ $labels.image }} has failed {{ $value }} builds in the last hour (threshold: 2)."
-          runbook_url: "https://github.com/WyattAu/EvergreenImageRegistry/wiki/runbook#build-failed"
+          summary: 'Image build failure threshold exceeded'
+          description: 'Image {{ $labels.image }} has failed {{ $value }} builds in the last hour (threshold: 2).'
+          runbook_url: 'https://github.com/WyattAu/EvergreenImageRegistry/wiki/runbook#build-failed'
 
       - alert: EvergreenHighCVEDetected
         expr: evergreen_vulnerability_critical_count > 0
@@ -19,9 +19,9 @@ groups:
           severity: critical
           component: security
         annotations:
-          summary: "Critical CVE detected in image"
-          description: "Image {{ $labels.image }} has {{ $value }} critical CVE(s) detected."
-          runbook_url: "https://github.com/WyattAu/EvergreenImageRegistry/wiki/runbook#high-cve"
+          summary: 'Critical CVE detected in image'
+          description: 'Image {{ $labels.image }} has {{ $value }} critical CVE(s) detected.'
+          runbook_url: 'https://github.com/WyattAu/EvergreenImageRegistry/wiki/runbook#high-cve'
 
       - alert: EvergreenSBOMMissing
         expr: evergreen_image_sbom_generated == 0
@@ -30,9 +30,9 @@ groups:
           severity: warning
           component: compliance
         annotations:
-          summary: "SBOM not generated for image"
-          description: "Image {{ $labels.image }} is missing an SBOM. Current coverage: 970/987 images."
-          runbook_url: "https://github.com/WyattAu/EvergreenImageRegistry/wiki/runbook#sbom-missing"
+          summary: 'SBOM not generated for image'
+          description: 'Image {{ $labels.image }} is missing an SBOM. Current coverage: 970/987 images.'
+          runbook_url: 'https://github.com/WyattAu/EvergreenImageRegistry/wiki/runbook#sbom-missing'
 
       - alert: EvergreenShimHealthCheckFailing
         expr: sum(increase(health_shim_check_total{result="failure"}[5m])) by (image) > 3
@@ -41,11 +41,10 @@ groups:
           severity: critical
           component: health-shim
         annotations:
-          summary: "Health-shim check failure threshold exceeded"
+          summary: 'Health-shim check failure threshold exceeded'
           description: >-
-            Health-shim for {{ $labels.image }} has failed {{ $value }} checks
-            in the last 5 minutes (threshold: 3).
-          runbook_url: "https://github.com/WyattAu/EvergreenImageRegistry/wiki/runbook#shim-failing"
+            Health-shim for {{ $labels.image }} has failed {{ $value }} checks in the last 5 minutes (threshold: 3).
+          runbook_url: 'https://github.com/WyattAu/EvergreenImageRegistry/wiki/runbook#shim-failing'
 
       - alert: EvergreenRegistryPullErrors
         expr: sum(increase(evergreen_registry_pull_errors_total[10m])) by (registry) > 5
@@ -54,11 +53,11 @@ groups:
           severity: warning
           component: registry
         annotations:
-          summary: "Registry pull error threshold exceeded"
+          summary: 'Registry pull error threshold exceeded'
           description: >-
-            Registry {{ $labels.registry }} has experienced {{ $value }} pull
-            errors in the last 10 minutes (threshold: 5).
-          runbook_url: "https://github.com/WyattAu/EvergreenImageRegistry/wiki/runbook#registry-errors"
+            Registry {{ $labels.registry }} has experienced {{ $value }} pull errors in the last 10 minutes (threshold:
+            5).
+          runbook_url: 'https://github.com/WyattAu/EvergreenImageRegistry/wiki/runbook#registry-errors'
 
       - alert: EvergreenImageDriftDetected
         expr: evergreen_manifest_drift == 1
@@ -67,11 +66,11 @@ groups:
           severity: warning
           component: drift-detection
         annotations:
-          summary: "Manifest/Dockerfile version drift detected"
+          summary: 'Manifest/Dockerfile version drift detected'
           description: >-
-            Image {{ $labels.image }} has a version mismatch between manifest.toml
-            and Dockerfile. Run `evergreenctl drift images/{{ $labels.image }}/`.
-          runbook_url: "https://github.com/WyattAu/EvergreenImageRegistry/wiki/runbook#drift-detected"
+            Image {{ $labels.image }} has a version mismatch between manifest.toml and Dockerfile. Run `evergreenctl
+            drift images/{{ $labels.image }}/`.
+          runbook_url: 'https://github.com/WyattAu/EvergreenImageRegistry/wiki/runbook#drift-detected'
 
       - alert: EvergreenFIPSBuildFailed
         expr: evergreen_fips_build_success == 0
@@ -80,11 +79,10 @@ groups:
           severity: critical
           component: compliance
         annotations:
-          summary: "FIPS variant build failed"
+          summary: 'FIPS variant build failed'
           description: >-
-            FIPS 140-2/3 build for {{ $labels.image }} has failed.
-            Check compliance/fips/ for implementation details.
-          runbook_url: "https://github.com/WyattAu/EvergreenImageRegistry/wiki/runbook#fips-build-failed"
+            FIPS 140-2/3 build for {{ $labels.image }} has failed. Check compliance/fips/ for implementation details.
+          runbook_url: 'https://github.com/WyattAu/EvergreenImageRegistry/wiki/runbook#fips-build-failed'
 
       - alert: EvergreenComplianceGap
         expr: evergreen_compliance_status{status="fail"} == 1
@@ -93,8 +91,7 @@ groups:
           severity: warning
           component: compliance
         annotations:
-          summary: "Compliance check failed"
+          summary: 'Compliance check failed'
           description: >-
-            Image {{ $labels.image }} failed {{ $labels.framework }}
-            {{ $labels.control }} compliance check.
-          runbook_url: "https://github.com/WyattAu/EvergreenImageRegistry/wiki/runbook#compliance-gap"
+            Image {{ $labels.image }} failed {{ $labels.framework }} {{ $labels.control }} compliance check.
+          runbook_url: 'https://github.com/WyattAu/EvergreenImageRegistry/wiki/runbook#compliance-gap'

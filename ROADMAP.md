@@ -174,20 +174,20 @@ Priority: LOW | Effort: 2-3 days
 
 Priority: HIGH | Effort: 1 day | Status: COMPLETE
 
-| Task                                    | Status |
-| --------------------------------------- | ------ |
-| health-shim v1.1.0 (run/healthcheck)    | DONE   |
-| 717 Dockerfiles updated to v1.1.0       | DONE   |
-| 24 version drifts fixed                 | DONE   |
-| 6 empty builder stages removed          | DONE   |
-| Prettier/YAMLLint/cargo fmt fixes       | DONE   |
-| upstream-watch parser fix               | DONE   |
-| daily-security-scan artifact fix        | DONE   |
-| nightly timeout 30->120min              | DONE   |
-| Monitoring deployment stack             | DONE   |
-| immich-postgres with pgvector           | DONE   |
-| 5 stale dependabot PRs closed           | DONE   |
-| clawdius excluded from lint             | DONE   |
+| Task                                 | Status |
+| ------------------------------------ | ------ |
+| health-shim v1.1.0 (run/healthcheck) | DONE   |
+| 717 Dockerfiles updated to v1.1.0    | DONE   |
+| 24 version drifts fixed              | DONE   |
+| 6 empty builder stages removed       | DONE   |
+| Prettier/YAMLLint/cargo fmt fixes    | DONE   |
+| upstream-watch parser fix            | DONE   |
+| daily-security-scan artifact fix     | DONE   |
+| nightly timeout 30->120min           | DONE   |
+| Monitoring deployment stack          | DONE   |
+| immich-postgres with pgvector        | DONE   |
+| 5 stale dependabot PRs closed        | DONE   |
+| clawdius excluded from lint          | DONE   |
 
 ---
 

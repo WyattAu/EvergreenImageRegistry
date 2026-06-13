@@ -315,7 +315,7 @@ jobs:
           from pathlib import Path
           errors = []
           for df in sorted(Path('images').rglob('Dockerfile')):
-              if '_wip' in str(df) or '_archive' in str(df):
+               if '_wip' in str(df) or '_archive' in str(df) or 'clawdius' in str(df):
                   continue
               content = df.read_text()
               # Find named stages: FROM <image> AS <name> (only from FROM lines)

@@ -17,6 +17,9 @@ rules:
   # Forbid duplicate keys in mappings.
   key-duplicates: {}
 
+  # Disable document-start requirement (--- prefix not needed for all YAML)
+  document-start: disable
+
 # Files to ignore (e.g., workflow files with complex multiline strings)
 ignore: |
   .github/

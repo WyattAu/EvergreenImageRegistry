@@ -23,6 +23,7 @@ rules:
 # Files to ignore (e.g., workflow files with complex multiline strings)
 ignore: |
   .github/
+  .forgejo/
   deploy/
   images/*/docker-compose.yml
   compliance/

@@ -48,58 +48,58 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          
+
           # Source detection maps: image -> (source_type, repo_or_url, current_version_field)
           # We read upstream_version from manifest.toml as the current version
-          
+
           declare -A SOURCE_TYPE
           declare -A SOURCE_REPO
-          
+
           # GitHub releases
           SOURCE_TYPE[traefik]="github"
           SOURCE_REPO[traefik]="traefik/traefik"
-          
+
           SOURCE_TYPE[keycloak]="github"
           SOURCE_REPO[keycloak]="keycloak/keycloak"
-          
+
           SOURCE_TYPE[oauth2-proxy]="github"
           SOURCE_REPO[oauth2-proxy]="oauth2-proxy/oauth2-proxy"
-          
+
           SOURCE_TYPE[ocis]="github"
           SOURCE_REPO[ocis]="owncloud/ocis"
-          
+
           SOURCE_TYPE[grafana]="github"
           SOURCE_REPO[grafana]="grafana/grafana"
-          
+
           SOURCE_TYPE[vaultwarden]="github"
           SOURCE_REPO[vaultwarden]="dani-garcia/vaultwarden"
-          
+
           # Codeberg (Forgejo)
           SOURCE_TYPE[forgejo]="codeberg"
           SOURCE_REPO[forgejo]="forgejo/forgejo"
-          
+
           UPDATES=""
           COUNT=0
-          
+
           for img in ${{ env.CRITICAL_IMAGES }}; do
             MANIFEST="images/${img}/manifest.toml"
             if [ ! -f "$MANIFEST" ]; then
               echo "::warning::${img}: no manifest.toml found"
               continue
             fi
-            
+
             # Get current upstream_version from manifest
             CURRENT=$(grep '^upstream_version' "$MANIFEST" | head -1 | sed 's/.*= *"\([^"]*\)".*/\1/')
             if [ -z "$CURRENT" ]; then
               echo "::warning::${img}: no upstream_version in manifest"
               continue
             fi
-            
+
             TYPE="${SOURCE_TYPE[$img]:-github}"
             REPO="${SOURCE_REPO[$img]:-}"
-            
+
             echo "--- Checking ${img} (current: ${CURRENT}, source: ${TYPE}) ---"
-            
+
             case "$TYPE" in
               github)
                 # Query GitHub releases API
@@ -122,12 +122,12 @@ jobs:
                 continue
                 ;;
             esac
-            
+
             if [ -z "$LATEST_CLEAN" ]; then
               echo "::warning::${img}: could not fetch latest version from ${TYPE}"
               continue
             fi
-            
+
             if [ "$CURRENT_CLEAN" != "$LATEST_CLEAN" ]; then
               echo "::notice::${img}: ${CURRENT} -> ${LATEST_CLEAN}"
               if [ -n "$UPDATES" ]; then
@@ -139,13 +139,13 @@ jobs:
               echo "${img}: up to date (${CURRENT})"
             fi
           done
-          
+
           # Output for next step
           echo "updates<<EOF" >> $GITHUB_OUTPUT
           echo -e "$UPDATES" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
           echo "count=${COUNT}" >> $GITHUB_OUTPUT
-          
+
           echo "Found ${COUNT} updates"
 
       - name: Create issue for updates
@@ -156,7 +156,7 @@ jobs:
             const updates = `${{ steps.detect.outputs.updates }}`;
             const count = `${{ steps.detect.outputs.count }}`;
             const lines = updates.trim().split('\n').filter(l => l);
-            
+
             let body = '## Outdated Critical Images\n\n';
             body += '| Image | Current | Latest |\n';
             body += '|-------|---------|--------|\n';
@@ -165,7 +165,7 @@ jobs:
               body += `| ${img} | ${current} | ${latest} |\n`;
             }
             body += '\nTo rebuild, run the workflow with `rebuild: true`.\n';
-            
+
             // Check for existing open issue
             const issues = await github.rest.issues.listForRepo({
               ...context.repo,
@@ -173,7 +173,7 @@ jobs:
               labels: 'outdated-images',
               per_page: 1
             });
-            
+
             if (issues.data.length > 0) {
               // Update existing issue
               await github.rest.issues.update({
@@ -210,15 +210,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          
+
           UPDATES='${{ needs.check.outputs.updates }}'
-          
+
           # Read Dockerfile ARG VERSION for each image to get the v-prefix style
           echo "$UPDATES" | while IFS='|' read -r img current latest; do
             if [ -z "$img" ]; then continue; fi
-            
+
             echo "=== Bumping ${img}: ${current} -> ${latest} ==="
-            
+
             # Determine version prefix style from Dockerfile
             DOCKERFILE="images/${img}/Dockerfile"
             if grep -q 'ARG VERSION=v' "$DOCKERFILE" 2>/dev/null; then
@@ -226,23 +226,23 @@ jobs:
             else
               NEW_VERSION="${latest}"
             fi
-            
+
             # Update manifest.toml
             sed -i "s/^version = .*/version = \"${NEW_VERSION}\"/" "images/${img}/manifest.toml"
             sed -i "s/^upstream_version = .*/upstream_version = \"${latest}\"/" "images/${img}/manifest.toml"
-            
+
             # Update Dockerfile ARG VERSION
             sed -i "s/^ARG VERSION=.*/ARG VERSION=${NEW_VERSION}/" "$DOCKERFILE"
-            
+
             # Update Dockerfile label
             sed -i "s/org.opencontainers.image.version=\"[^\"]*\"/org.opencontainers.image.version=\"${NEW_VERSION}\"/" "$DOCKERFILE"
-            
+
             # Skip collabora (rootfs tar, needs manual extraction)
             if [ "$img" = "collabora" ]; then
               echo "  SKIP: collabora needs manual rootfs extraction"
               continue
             fi
-            
+
             # Build
             echo "  Building..."
             DOCKER_BUILDKIT=0 docker build \
@@ -253,15 +253,15 @@ jobs:
                 echo "  BUILD FAILED for ${img}"
                 continue
               }
-            
+
             # Push
             echo "  Pushing..."
             docker push "ghcr.io/wyattau/evergreenimageregistry/${img}:latest" || true
             docker push "ghcr.io/wyattau/evergreenimageregistry/${img}:${NEW_VERSION}" || true
-            
+
             echo "  Done: ${img} ${NEW_VERSION}"
           done
-          
+
           echo "=== Rebuild complete ==="
 
       - name: Commit changes
@@ -273,7 +273,7 @@ jobs:
             git commit -m "auto: bump critical image versions
 
             Detected by upstream-watch workflow.
-            
+
             Co-authored-by: ${{ github.actor }}"
             git push
           }

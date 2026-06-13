@@ -1,6 +1,8 @@
 name: SLSA Verification
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * 1"
 
 permissions:
   contents: read

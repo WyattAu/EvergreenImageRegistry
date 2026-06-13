@@ -58,12 +58,19 @@ jobs:
 
       - name: Build shim images locally
         run: |
+          # Read shim version from .shim-version
+          SHIM_VERSION=$(cat .shim-version | tr -d '[:space:]')
+          echo "Building shim version: ${SHIM_VERSION}"
+
           # Build health-shim and tag as the remote reference consumers expect
-          docker build -t ghcr.io/wyattau/evergreenshim/health-shim:v1.0.0 \
+          docker build -t ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} \
             images/health-shim/
           # Also tag as cache-shim for redis (same binary, different config)
-          docker tag ghcr.io/wyattau/evergreenshim/health-shim:v1.0.0 \
-            ghcr.io/wyattau/evergreenshim/cache-shim:v1.0.0
+          docker tag ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} \
+            ghcr.io/wyattau/evergreenshim/cache-shim:${SHIM_VERSION}
+          # Also tag as latest for backward compat
+          docker tag ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} \
+            ghcr.io/wyattau/evergreenshim/health-shim:latest
 
       - name: Build image
         run: |

@@ -17,9 +17,7 @@ func resetState() {
 	healthTimeout = 5 * time.Second
 	startupWindow = 30 * time.Second
 	startTime = time.Now()
-	mu.Lock()
-	startupSuccess = false
-	mu.Unlock()
+	startupDone.Store(false)
 	metricsMu.Lock()
 	for k := range probeSuccessTotal {
 		delete(probeSuccessTotal, k)

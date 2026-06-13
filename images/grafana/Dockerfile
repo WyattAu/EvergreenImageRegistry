@@ -31,7 +31,12 @@ RUN mkdir -p /etc/grafana /var/lib/grafana /var/log/grafana /tmp && \
     cp -r /usr/share/grafana/conf/sample.ini /etc/grafana/grafana.ini 2>/dev/null || true
 USER ${APP_UID}:${APP_GID}
 ENV SHIM_METRICS_ENABLED="true" \
-    PATH="/grafana-bin:$PATH"
+    PATH="/grafana-bin:$PATH" \
+    GF_PATHS_HOME="/usr/share/grafana" \
+    GF_PATHS_DATA="/var/lib/grafana" \
+    GF_PATHS_LOGS="/var/log/grafana" \
+    GF_PATHS_PLUGINS="/var/lib/grafana/plugins" \
+    GF_PATHS_PROVISIONING="/usr/share/grafana/conf/provisioning"
 WORKDIR /
 EXPOSE 3000 9101
 
@@ -39,7 +44,6 @@ HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
 
 ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/grafana-bin/grafana-server"]
-CMD ["--homepath=/usr/share/grafana"]
 LABEL org.opencontainers.image.title="grafana" \
       org.opencontainers.image.description="Grafana - analytics and interactive visualization platform" \
       org.opencontainers.image.version="${VERSION}" \

@@ -22,7 +22,7 @@ jobs:
     outputs:
       digest: ${{ steps.push.outputs.digest }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
 
       - name: Build OCI image with apko
         run: |
@@ -70,7 +70,7 @@ jobs:
       - run: cosign sign --yes "${{ env.IMAGE }}:latest"
 
       - name: Upload SBOM
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: sbom-forgejo-runner-image
           path: sbom/

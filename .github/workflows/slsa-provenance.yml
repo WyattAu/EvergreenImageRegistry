@@ -27,7 +27,7 @@ jobs:
       total: ${{ steps.set-matrix.outputs.total }}
       skipped: ${{ steps.set-matrix.outputs.skipped }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
 
       - name: Download image references
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
@@ -126,7 +126,7 @@ jobs:
       packages: write
       contents: read
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
       - uses: sigstore/cosign-installer@v4.1.2
       - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
         with:

@@ -454,6 +454,15 @@ func newRouter() *http.ServeMux {
 	mux.HandleFunc("/cmd/", handleCmdProbe)
 	mux.HandleFunc("/metrics", handleMetrics)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		// Only match exact "/" — ServeMux sends all unmatched paths here
+		if r.URL.Path != "/" {
+			writeJSON(w, http.StatusNotFound, healthResponse{
+				Status:    "error",
+				Timestamp: time.Now().UTC().Format(time.RFC3339),
+				Error:     "not found",
+			})
+			return
+		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(map[string]string{

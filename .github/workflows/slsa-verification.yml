@@ -1,12 +1,6 @@
 name: SLSA Verification
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 4 * * 1"
-
-concurrency:
-  group: provenance-verify-${{ github.ref }}
-  cancel-in-progress: true
 
 permissions:
   contents: read

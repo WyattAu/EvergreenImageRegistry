@@ -22,7 +22,7 @@ jobs:
     outputs:
       digest: ${{ steps.push.outputs.digest }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
       - name: Build OCI image with apko
         run: |
@@ -55,7 +55,7 @@ jobs:
           for cmd in git git-lfs node npm python3 docker jq yq \
             curl wget ssh ssh-keygen zip unzip zstd make gcc \
             openssl gpg su-exec file tree patch diff find bash tar; do
-            if docker run --rm --entrypoint /bin/bash "${{ env.IMAGE }}:latest-amd64" \
+            if docker run --rm --entrypoint /bin/bash "${{ env.IMAGE }}:latest" \
               -c "which $cmd > /dev/null 2>&1"; then
               echo "[PASS] $cmd"
             else

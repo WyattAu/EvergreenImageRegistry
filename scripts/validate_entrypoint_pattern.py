@@ -95,10 +95,12 @@ def find_entrypoint(dockerfile_text: str) -> tuple[str | None, list[str]]:
     for line in dockerfile_text.splitlines():
         stripped = line.strip()
         if stripped.upper().startswith("ENTRYPOINT"):
-            content = stripped[len("ENTRYPOINT"):].strip()
-            match = re.match(r'\[(.*)\]', content)
+            content = stripped[len("ENTRYPOINT") :].strip()
+            match = re.match(r"\[(.*)\]", content)
             if match:
-                args = [a.strip().strip('"').strip("'") for a in match.group(1).split(",")]
+                args = [
+                    a.strip().strip('"').strip("'") for a in match.group(1).split(",")
+                ]
                 return content, args
             return content, content.split()
     return None, []
@@ -109,10 +111,12 @@ def find_cmd(dockerfile_text: str) -> tuple[str | None, list[str]]:
     for line in dockerfile_text.splitlines():
         stripped = line.strip()
         if stripped.upper().startswith("CMD"):
-            content = stripped[len("CMD"):].strip()
-            match = re.match(r'\[(.*)\]', content)
+            content = stripped[len("CMD") :].strip()
+            match = re.match(r"\[(.*)\]", content)
             if match:
-                args = [a.strip().strip('"').strip("'") for a in match.group(1).split(",")]
+                args = [
+                    a.strip().strip('"').strip("'") for a in match.group(1).split(",")
+                ]
                 return content, args
             return content, content.split()
     return None, []
@@ -181,11 +185,19 @@ def validate_image(image_name: str) -> PatternResult:
         # Standard: only args, no binary name, no -c flag
         binary_name = ""
         if len(ep_args) >= 3:
-            binary_path = ep_args[2] if ep_args[2] != "-c" and len(ep_args) >= 4 else ep_args[-1] if len(ep_args) >= 3 else ""
+            binary_path = (
+                ep_args[2]
+                if ep_args[2] != "-c" and len(ep_args) >= 4
+                else ep_args[-1]
+                if len(ep_args) >= 3
+                else ""
+            )
             binary_name = binary_path.split("/")[-1] if binary_path else ""
 
         has_c_flag = cmd_args[0] == "-c" if cmd_args else False
-        has_binary = any(binary_name in arg for arg in cmd_args) if binary_name else False
+        has_binary = (
+            any(binary_name in arg for arg in cmd_args) if binary_name else False
+        )
 
         if not has_c_flag and not has_binary:
             cmd_correct = True
@@ -231,12 +243,17 @@ def fix_dockerfile(image_name: str, dry_run: bool = True) -> list[str]:
         # Fix ENTRYPOINT shim path
         for old_path in SHIM_PATHS:
             if old_path != SHIM_PATH_CANONICAL:
-                text = text.replace(f'"{old_path}", "run"', f'"{SHIM_PATH_CANONICAL}", "run"')
+                text = text.replace(
+                    f'"{old_path}", "run"', f'"{SHIM_PATH_CANONICAL}", "run"'
+                )
 
         # Fix HEALTHCHECK shim path
         for old_path in SHIM_PATHS:
             if old_path != SHIM_PATH_CANONICAL:
-                text = text.replace(f'"{old_path}", "healthcheck"', f'"{SHIM_PATH_CANONICAL}", "healthcheck"')
+                text = text.replace(
+                    f'"{old_path}", "healthcheck"',
+                    f'"{SHIM_PATH_CANONICAL}", "healthcheck"',
+                )
 
     # Fix: Remove -c flag from CMD if ENTRYPOINT already has it
     lines = text.splitlines()
@@ -245,9 +262,11 @@ def fix_dockerfile(image_name: str, dry_run: bool = True) -> list[str]:
     for line in lines:
         stripped = line.strip()
         if stripped.upper().startswith("CMD") and stripped.upper() != "CMD-SHELL":
-            match = re.match(r'CMD\s+\[(.*)\]', stripped)
+            match = re.match(r"CMD\s+\[(.*)\]", stripped)
             if match:
-                args = [a.strip().strip('"').strip("'") for a in match.group(1).split(",")]
+                args = [
+                    a.strip().strip('"').strip("'") for a in match.group(1).split(",")
+                ]
                 if args and args[0] == "-c":
                     args = args[1:]
                     if args and "/" in args[0]:
@@ -283,7 +302,8 @@ def main():
         images = [args.image]
     else:
         images = sorted(
-            d.name for d in IMAGES_DIR.iterdir()
+            d.name
+            for d in IMAGES_DIR.iterdir()
             if d.is_dir()
             and not d.name.startswith("_")
             and not d.name.startswith(".")
@@ -315,6 +335,7 @@ def main():
 
     if args.json:
         import json
+
         output = {
             "total": total,
             "passing": passing,
@@ -325,7 +346,9 @@ def main():
         print(json.dumps(output, indent=2))
     else:
         print("\n=== EIR Entrypoint Pattern Validation ===")
-        print(f"Total: {total} | Passing: {passing} | Failing: {failing} | Shim path issues: {shim_issues}\n")
+        print(
+            f"Total: {total} | Passing: {passing} | Failing: {failing} | Shim path issues: {shim_issues}\n"
+        )
 
         if failing > 0:
             print("FAILURES:")

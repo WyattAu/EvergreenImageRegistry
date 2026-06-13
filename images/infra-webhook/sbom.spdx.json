@@ -1,0 +1,145 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT-infra-webhook",
+  "name": "evergreen-infra-webhook",
+  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/infra-webhook",
+  "creationInfo": {
+    "created": "2026-06-13T12:00:00Z",
+    "creators": [
+      "Tool: evergreen-sbom-generator"
+    ]
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-cgr.dev-chainguard-wolfi-base-latest-",
+      "name": "cgr.dev/chainguard/wolfi-base:latest",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-infra-webhook-bash-",
+      "name": "bash",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/bash"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-infra-webhook-python3-",
+      "name": "python3",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/python3"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-infra-webhook-git-",
+      "name": "git",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/git"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-infra-webhook-curl-",
+      "name": "curl",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/curl"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-infra-webhook-ca-certificates-",
+      "name": "ca-certificates",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/ca-certificates"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-infra-webhook-ansible-core-2.20.4-",
+      "name": "ansible-core-2.20.4",
+      "downloadLocation": "https://pypi.org/project/ansible-core/2.20.4/",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION",
+      "originator": "Red Hat"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-infra-webhook-sops-3.12.2-",
+      "name": "sops-3.12.2",
+      "downloadLocation": "https://github.com/getsops/sops/releases/download/v3.12.2/sops-v3.12.2.linux.amd64",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION",
+      "originator": "Mozilla"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-infra-webhook-age-1.2.0-",
+      "name": "age-1.2.0",
+      "downloadLocation": "https://github.com/FiloSottile/age/releases/download/v1.2.0/age-v1.2.0-linux-amd64.tar.gz",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION",
+      "originator": "Filippo Valsorda"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-infra-webhook-webhook-2.8.3-",
+      "name": "webhook-2.8.3",
+      "downloadLocation": "https://github.com/adnanh/webhook/releases/download/2.8.3/webhook-linux-amd64.tar.gz",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION",
+      "originator": "adnanh"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-infra-webhook-docker-compose-2.32.3-",
+      "name": "docker-compose-2.32.3",
+      "downloadLocation": "https://github.com/docker/compose/releases/download/v2.32.3/docker-compose-linux-amd64",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION",
+      "originator": "Docker"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT-infra-webhook",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-infra-webhook-webhook-2.8.3"
+    }
+  ]
+}

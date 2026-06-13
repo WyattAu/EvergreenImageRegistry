@@ -1,0 +1,42 @@
+[metadata]
+name = "forgejo-runner-k8s"
+version = "0.2.13"
+description = "Forgejo Actions Runner with Kubernetes executor support"
+vendor = "wyattau"
+source = "https://gitea.com/gitea/act_runner"
+license = "MIT"
+tier = "critical"
+upstream_version = "v0.2.13"
+
+[build]
+type = "source-build"
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "65532:65532"
+stopsignal = "SIGTERM"
+build_deps = ["golang:1.24"]
+languages = ["go"]
+
+[source]
+type = "git"
+url = "https://gitea.com/gitea/act_runner.git"
+tag = "v0.2.13"
+
+[runtime]
+entrypoint = ["/usr/local/bin/act_runner"]
+cmd = ["daemon"]
+
+[ports]
+expose = []
+
+[labels]
+"org.opencontainers.image.title" = "forgejo-runner-k8s"
+"org.opencontainers.image.description" = "Forgejo Actions Runner with Kubernetes executor support"
+"org.opencontainers.image.vendor" = "wyattau"
+"org.opencontainers.image.source" = "https://gitea.com/gitea/act_runner"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.image.tier" = "critical"
+"evergreen.security.cap-drop" = "ALL"
+"evergreen.security.no-new-privileges" = "true"
+"evergreen.security.read-only-rootfs" = "true"
+"evergreen.security.seccomp" = "runtime-default"

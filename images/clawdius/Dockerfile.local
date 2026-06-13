@@ -1,0 +1,73 @@
+# =============================================================================
+# EVERGREEN HARDENED CLAWDIUS -- LOCAL BUILD VARIANT
+# Builds from local source code instead of git clone.
+# For CI/CD, use the canonical Dockerfile in this directory.
+# =============================================================================
+FROM rust:1.95-bookworm AS builder
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    pkg-config \
+    libssl-dev \
+    protobuf-compiler \
+    cmake \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /src
+COPY Cargo.toml Cargo.lock ./
+COPY .cargo-vendor/ .cargo-vendor/
+COPY crates/clawdius-core ./crates/clawdius-core
+COPY crates/clawdius ./crates/clawdius
+COPY crates/clawdius-gateway ./crates/clawdius-gateway
+COPY crates/clawdius-mcp ./crates/clawdius-mcp
+COPY crates/clawdius-code ./crates/clawdius-code
+COPY crates/clawdius-plugin-sdk ./crates/clawdius-plugin-sdk
+COPY crates/clawdius-lsp ./crates/clawdius-lsp
+
+RUN cargo build --release --bin clawdius && \
+    strip --strip-all /src/target/release/clawdius 2>/dev/null; \
+    mkdir -p /app/data /app/config /app/logs
+
+# ---------------------------------------------------------------------------
+# Runtime: wolfi-base (glibc + OpenSSL for dynamic binary)
+# ---------------------------------------------------------------------------
+FROM cgr.dev/chainguard/wolfi-base AS runtime
+
+RUN apk add --no-cache ca-certificates libssl3 curl
+
+COPY --from=builder /src/target/release/clawdius /usr/bin/clawdius
+
+RUN mkdir -p /app/config /app/data /app/logs && \
+    printf '[project]\nname = "clawdius"\n\n[llm]\ndefault_provider = "anthropic"\n\n[output]\nformat = "json"\n' \
+    > /app/config/config.toml && \
+    chown -R 65532:65532 /app
+
+USER 65532:65532
+ENV CLAWDIUS_CONFIG="/app/config/config.toml" \
+    CLAWDIUS_DATA_DIR="/app/data" \
+    CLAWDIUS_LOG_DIR="/app/logs" \
+    RUST_LOG="info"
+WORKDIR /app
+EXPOSE 8080
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:8080/api/v1/health || exit 1
+
+ENTRYPOINT ["clawdius"]
+CMD ["server", "--host", "0.0.0.0", "--port", "8080"]
+
+LABEL org.opencontainers.image.title="clawdius" \
+      org.opencontainers.image.description="AI coding assistant with formal verification and multi-provider LLM" \
+      org.opencontainers.image.version="1.0.0" \
+      org.opencontainers.image.vendor="WyattAu" \
+      org.opencontainers.image.source="https://github.com/WyattAu/clawdius" \
+      evergreen.image.tier="critical" \
+      evergreen.constraint.nonroot="true" \
+      evergreen.constraint.scratch="false"
+LABEL evergreen.base.image="wolfi" \
+      evergreen.build.type="source-build" \
+      evergreen.health.type="http" \
+      evergreen.security.cap-drop="ALL" \
+      evergreen.security.no-new-privileges="true" \
+      evergreen.security.read-only-rootfs="false" \
+      evergreen.security.seccomp="runtime-default"
+STOPSIGNAL SIGTERM

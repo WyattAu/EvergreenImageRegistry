@@ -68,7 +68,7 @@ def detect_base_type(content: str) -> str:
 def get_shim_path(base_type: str, content: str = "") -> str:
     """Return the shim binary path based on actual usage in ENTRYPOINT."""
     # Detect the actual path used in ENTRYPOINT
-    entrypoint_match = re.search(r'ENTRYPOINT\s+\[([^\]]+)\]', content)
+    entrypoint_match = re.search(r"ENTRYPOINT\s+\[([^\]]+)\]", content)
     if entrypoint_match:
         entrypoint = entrypoint_match.group(1)
         if "/usr/local/bin/shim" in entrypoint:
@@ -101,21 +101,42 @@ def check_dockerfile(dockerfile: Path) -> dict:
         checks["has_shim_from"] = True
 
     # 3. COPY --from=shim (correct path)
-    if "COPY --from=shim" in content and ("/shim" in content or "/usr/local/bin/shim" in content):
+    if "COPY --from=shim" in content and (
+        "/shim" in content or "/usr/local/bin/shim" in content
+    ):
         checks["has_shim_copy"] = True
 
     # 4. HEALTHCHECK using shim (may span multiple lines)
     # 4. HEALTHCHECK using shim (may span multiple lines)
     # Check for both /shim and /usr/local/bin/shim paths
-    healthcheck_pattern = r'HEALTHCHECK.*?CMD\s+(?:\[\"?' + re.escape(shim_path) + r'\"?\s*,\s*\"healthcheck\"|' + re.escape(shim_path) + r'\s+healthcheck)'
-    alt_shim_path = '/usr/local/bin/shim' if shim_path == '/shim' else '/shim'
-    healthcheck_pattern_alt = r'HEALTHCHECK.*?CMD\s+(?:\[\"?' + re.escape(alt_shim_path) + r'\"?\s*,\s*\"healthcheck\"|' + re.escape(alt_shim_path) + r'\s+healthcheck)'
-    if re.search(healthcheck_pattern, content, re.DOTALL) or re.search(healthcheck_pattern_alt, content, re.DOTALL):
+    healthcheck_pattern = (
+        r"HEALTHCHECK.*?CMD\s+(?:\[\"?"
+        + re.escape(shim_path)
+        + r"\"?\s*,\s*\"healthcheck\"|"
+        + re.escape(shim_path)
+        + r"\s+healthcheck)"
+    )
+    alt_shim_path = "/usr/local/bin/shim" if shim_path == "/shim" else "/shim"
+    healthcheck_pattern_alt = (
+        r"HEALTHCHECK.*?CMD\s+(?:\[\"?"
+        + re.escape(alt_shim_path)
+        + r"\"?\s*,\s*\"healthcheck\"|"
+        + re.escape(alt_shim_path)
+        + r"\s+healthcheck)"
+    )
+    if re.search(healthcheck_pattern, content, re.DOTALL) or re.search(
+        healthcheck_pattern_alt, content, re.DOTALL
+    ):
         checks["has_healthcheck_shim"] = True
         checks["has_healthcheck_shim"] = True
 
     # 5. ENTRYPOINT using shim
-    if re.search(r'ENTRYPOINT\s+\["?' + re.escape(shim_path) + r'"?\s*,\s*"run"(?:\s*,\s*"-c"\s*,\s*"[^"]+")?\]', content):
+    if re.search(
+        r'ENTRYPOINT\s+\["?'
+        + re.escape(shim_path)
+        + r'"?\s*,\s*"run"(?:\s*,\s*"-c"\s*,\s*"[^"]+")?\]',
+        content,
+    ):
         checks["has_entrypoint_shim"] = True
 
     # 6. EXPOSE 9101
@@ -199,8 +220,12 @@ def main():
         description="Verify shim wiring for EvergreenImageRegistry images"
     )
     parser.add_argument("--image", type=str, help="Check only this image")
-    parser.add_argument("--list", action="store_true", help="List all migratable images")
-    parser.add_argument("--verbose", action="store_true", help="Show all results, not just failures")
+    parser.add_argument(
+        "--list", action="store_true", help="List all migratable images"
+    )
+    parser.add_argument(
+        "--verbose", action="store_true", help="Show all results, not just failures"
+    )
     parser.add_argument("--json", action="store_true", help="Output as JSON")
     args = parser.parse_args()
 
@@ -214,7 +239,10 @@ def main():
     if args.image:
         image_dir = IMAGES_DIR / args.image
         if not image_dir.exists():
-            print(f"ERROR: Image '{args.image}' not found in {IMAGES_DIR}", file=sys.stderr)
+            print(
+                f"ERROR: Image '{args.image}' not found in {IMAGES_DIR}",
+                file=sys.stderr,
+            )
             sys.exit(1)
         dockerfile = image_dir / "Dockerfile"
         if not dockerfile.exists():
@@ -223,6 +251,7 @@ def main():
         result = check_dockerfile(dockerfile)
         if args.json:
             import json
+
             print(json.dumps({args.image: result}, indent=2))
         else:
             results = {args.image: result}
@@ -242,6 +271,7 @@ def main():
 
     if args.json:
         import json
+
         print(json.dumps(results, indent=2))
     else:
         print(format_report(results, verbose=args.verbose))

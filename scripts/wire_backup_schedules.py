@@ -104,7 +104,7 @@ def wire_image(image_dir: str, dry_run: bool = False, force: bool = False) -> tu
         if "SHIM_BACKUP_SCHEDULE" not in content:
             content = re.sub(
                 r'(SHIM_BACKUP_DB_PORT="[^"]*"[\s\\]*\n)',
-                f'\\1    {env_block}\n',
+                f"\\1    {env_block}\n",
                 content,
                 count=1,
             )
@@ -158,9 +158,7 @@ def main():
             skipped += 1
             continue
 
-        result, reason = wire_image(
-            image_dir, dry_run=args.dry_run, force=args.force
-        )
+        result, reason = wire_image(image_dir, dry_run=args.dry_run, force=args.force)
 
         if reason in ("wired", "would-wire"):
             wired += 1

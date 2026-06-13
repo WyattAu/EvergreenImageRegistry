@@ -27,13 +27,17 @@ jobs:
       - name: Run evergreenctl verify-all
         run: |
           cd evergreenctl && cargo build --release && \
-          ./target/release/evergreenctl verify-all images/
+          ./target/release/evergreenctl verify-all ../images/
       - name: Verify SLSA provenance for sample images
         run: |
-          SAMPLE_IMAGES=$(ls images/ | head -5 | tr '\n' ' ')
+          SAMPLE_IMAGES=$(find images -maxdepth 1 -mindepth 1 -type d \
+            -not -path 'images/_*' -not -path 'images/tests' \
+            -not -path 'images/health-shim' \
+            | head -5 | sed 's|images/||' | tr '\n' ' ')
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           CERT_IDENTITY="https://github.com/${{ github.repository }}"
           for img in $SAMPLE_IMAGES; do
-            FULL_REF="ghcr.io/${{ github.repository }}/$img:latest"
+            FULL_REF="ghcr.io/${OWNER}/${img}:latest"
             echo "Verifying provenance for $FULL_REF..."
             cosign verify-attestation --type slsaprovenance \
               --certificate-identity "${CERT_IDENTITY}" \

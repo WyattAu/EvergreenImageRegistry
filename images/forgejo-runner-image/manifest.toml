@@ -1,0 +1,34 @@
+[metadata]
+name = "forgejo-runner-image"
+version = "latest"
+description = "Custom Forgejo Actions runner job image based on wolfi with git, nodejs, python, docker CLI"
+vendor = "wyattau"
+source = "https://github.com/WyattAu/EvergreenImageRegistry"
+license = "MIT"
+tier = "critical"
+upstream_version = "latest"
+
+[build]
+type = "apko"
+base = "cgr.dev/chainguard/wolfi-base:latest"
+user = "1000:1000"
+stopsignal = "SIGTERM"
+
+[source]
+type = "apko"
+url = "apko.yaml"
+
+[runtime]
+entrypoint = ["/bin/bash"]
+
+[ports]
+expose = []
+
+[labels]
+"org.opencontainers.image.title" = "forgejo-runner-image"
+"org.opencontainers.image.description" = "Custom Forgejo Actions runner job image based on wolfi"
+"org.opencontainers.image.vendor" = "wyattau"
+"org.opencontainers.image.source" = "https://github.com/WyattAu/EvergreenImageRegistry"
+"evergreen.base.image" = "wolfi"
+"evergreen.constraint.nonroot" = "true"
+"evergreen.image.tier" = "critical"

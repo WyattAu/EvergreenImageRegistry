@@ -2,8 +2,11 @@
 
 ## Overview
 
-Hardened container images for production: 986 images built non-root, distroless, and fully auditable. Registry:
-`ghcr.io/wyattau/evergreenimageregistry/<image>:<version>` Version: v29.0.0, Phase 102
+Hardened container images for production: 987 images built non-root, distroless, and fully auditable. Registries:
+- GHCR: `ghcr.io/wyattau/evergreenimageregistry/<image>:<version>` (primary)
+- Docker Hub: `docker.io/wyattau/<image>:latest` (mirror)
+
+Version: v29.0.0, Phase 102
 
 ## Repository Structure
 
@@ -16,7 +19,7 @@ images/<name>/
   .dockerignore       # Build context exclusions
 ```
 
-~986 image directories under `images/`, excluding `_wip/` and `_archive/`.
+~987 image directories under `images/`, excluding `_wip/` and `_archive/`.
 
 ## Image Standards (5 Pillars)
 
@@ -97,7 +100,14 @@ docker build -t evergreen-redis images/redis/
 ## Known Issues
 
 - 426 images have `HEALTHCHECK NONE` (expected: scratch-based with no shell)
-- 28 images missing SBOMs (970/986)
+- 28 images missing SBOMs (970/987)
 - 4 images removed (cayley, meshbird, immudb, immudb-proxy)
 - Tier labels inconsistent across manifests (3 competing schemas)
-- `docs/image-audit-report.md` is stale (reports on 841 images, current is 986)
+- `docs/image-audit-report.md` is stale (reports on 841 images, current is 987)
+
+## SIS Migration Status
+
+- **68/70 EIR images** available for SimpleInfrastructureStack migration
+- 35/38 SIS images (92%) have direct Evergreen equivalents
+- Blocking: immich custom postgres (vector extensions), infra-webhook (custom build)
+- Docker Hub mirror: `docker.io/wyattau/<image>:latest` for broader ecosystem access

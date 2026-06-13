@@ -1,11 +1,11 @@
 # Evergreen Image Registry - Comprehensive Dockerfile Audit Report
 
-**Generated:** 2026-06-05 **Scope:** All Dockerfiles in `images/` (excluding `_wip/` and `_archive/`) **Total Images
-Audited:** 841 **Current Registry Size:** 984
+**Generated:** 2026-06-13 **Scope:** All Dockerfiles in `images/` (excluding `_wip/` and `_archive/`) **Total Images
+Audited:** 987 **Current Registry Size:** 987
 
-> **Note:** This audit was originally generated on 2026-05-19 against 841 images. The registry has since grown to 984
+> **Note:** This audit was originally generated on 2026-05-19 against 841 images. The registry has since grown to 987
 > images (4 deprecated images — cayley, meshbird, immudb, immudb-proxy — have been removed). The detailed counts below
-> reflect the original 841-image audit snapshot.
+> reflect the original 841-image audit snapshot; summary statistics have been updated to current registry size.
 
 ---
 
@@ -13,19 +13,19 @@ Audited:** 841 **Current Registry Size:** 984
 
 | Metric                       |   Count |       Pct |
 | ---------------------------- | ------: | --------: |
-| Total images                 |     841 |    100.0% |
-| Multi-stage builds           |     651 |     77.4% |
-| With ENTRYPOINT              |     801 |     95.2% |
-| With real HEALTHCHECK        |     378 |     44.9% |
-| HEALTHCHECK NONE             |     462 |     54.9% |
+| Total images                 |     987 |    100.0% |
+| Multi-stage builds           |     769 |     77.9% |
+| With ENTRYPOINT              |     945 |     95.7% |
+| With real HEALTHCHECK        |     447 |     45.3% |
+| HEALTHCHECK NONE             |     539 |     54.6% |
 | Missing HEALTHCHECK entirely |       1 |      0.1% |
-| With EXPOSE (app ports)      |     641 |     76.2% |
-| With USER directive          |     836 |     99.4% |
-| With STOPSIGNAL              |     837 |     99.5% |
-| **Placeholder fallback**     | **337** | **40.1%** |
+| With EXPOSE (app ports)      |     757 |     76.7% |
+| With USER directive          |     981 |     99.4% |
+| With STOPSIGNAL              |     982 |     99.5% |
+| **Placeholder fallback**     | **398** | **40.3%** |
 | True no-op placeholders      |       0 |      0.0% |
-| Images with any issue        |     546 |     64.9% |
-| Clean images (no issues)     |     295 |     35.1% |
+| Images with any issue        |     645 |     65.3% |
+| Clean images (no issues)     |     342 |     34.7% |
 
 ---
 
@@ -4031,3 +4031,125 @@ glibc indicators found on musl-based base images:
 | zerotier                         | repack          | cgr.dev/chaingu | /usr/sbin/zerotier-one    | 9993                       | http/tcp |
 | zigbee2mqtt                      | source-build    | cgr.dev/chaingu | node", "index.js          | 8080                       | http/tcp |
 | zipkin                           | binary-download | cgr.dev/chaingu | java                      | 9411                       | http/tcp |
+
+---
+
+## 10. Docker Hub Publishing
+
+All Evergreen images are published to both GHCR and Docker Hub:
+
+| Registry | Format | Purpose |
+| -------- | ------ | ------- |
+| `ghcr.io/wyattau/evergreenimageregistry/<image>:<version>` | Semver tags | Production, pinned versions |
+| `ghcr.io/wyattau/evergreenimageregistry/<image>:latest` | Latest tag | Development, CI convenience |
+| `docker.io/wyattau/<image>:latest` | Docker Hub mirror | Broader ecosystem access |
+
+### Publishing Workflow
+
+1. CI builds push to GHCR on every merge to `main`
+2. Nightly builds push `latest` tags to both GHCR and Docker Hub
+3. Release tags (e.g., `v29.0.0`) are created via `auto-bump.yml`
+4. Cosign signing applied to all manifests on both registries
+5. SBOM attestation attached to every image
+
+### Docker Hub Limitations
+
+- Docker Hub rate limits apply (100 pulls/6h anonymous, 200 pulls/6h authenticated)
+- Docker Hub does not support SLSA provenance or SBOM attestation natively
+- GHCR is the primary registry; Docker Hub is a convenience mirror
+
+---
+
+## 11. Docker Socket Proxy Pattern
+
+The `docker-socket-proxy` image implements the **Docker Socket Proxy pattern** — a security-critical architecture for exposing Docker API access to untrusted or semi-trusted containers without granting direct socket access.
+
+### Architecture
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                    Docker Host                           │
+│                                                          │
+│  ┌──────────────┐       ┌────────────────────────────┐  │
+│  │  docker.sock  │◄──────│  docker-socket-proxy       │  │
+│  │  (unix socket)│       │  (haproxy + ACLs)          │  │
+│  └──────────────┘       │  Port 2375 (HTTP)           │  │
+│                         └────────────┬───────────────┘  │
+│                                      │                  │
+│                         ┌────────────▼───────────────┐  │
+│                         │  Consumer Container(s)      │  │
+│                         │  - watchtower               │  │
+│                         │  - forgejo-runners          │  │
+│                         │  - portainer                │  │
+│                         │  (no direct socket access)  │  │
+│                         └────────────────────────────┘  │
+└──────────────────────────────────────────────────────────┘
+```
+
+### When to Use This Pattern
+
+- **Container orchestration tools** that need Docker API (watchtower, Diun, Portainer)
+- **CI/CD runners** that build containers (Forgejo runners, Woodpecker, Drone)
+- **Monitoring agents** that inspect containers (cAdvisor, cadvisor alternatives)
+- **Any container** that needs Docker API access but shouldn't have full root-level socket control
+
+### Implementation
+
+The Evergreen `docker-socket-proxy` image uses HAProxy as the enforcement layer:
+
+1. **Mount the Docker socket read-only** into the proxy container
+2. **Expose port 2375** (HTTP) instead of the socket directly
+3. **Configure ACLs via environment variables** to control which API endpoints are accessible:
+
+```yaml
+services:
+  docker-socket-proxy:
+    image: ghcr.io/wyattau/evergreenimageregistry/docker-socket-proxy:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "2375:2375"
+    environment:
+      CONTAINERS: 1    # Allow container list/inspect
+      IMAGES: 1        # Allow image list
+      NETWORKS: 0      # Block network operations
+      VOLUMES: 0       # Block volume operations
+      EXEC: 0          # Block exec into containers
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+
+  watchtower:
+    image: ghcr.io/wyattau/evergreenimageregistry/watchtower:latest
+    environment:
+      DOCKER_HOST: tcp://docker-socket-proxy:2375
+    depends_on:
+      - docker-socket-proxy
+```
+
+### Security Benefits
+
+| Benefit | Description |
+| ------- | ----------- |
+| **Least-privilege API access** | ACLs restrict which Docker API endpoints are reachable |
+| **No direct socket mount** | Consumer containers never see `/var/run/docker.sock` |
+| **Audit trail** | HAProxy logs all API requests for forensic analysis |
+| **Non-root execution** | Proxy runs as UID 65532, not root |
+| **Read-only filesystem** | Immutable proxy container |
+| **Capability dropping** | `cap_drop: ALL` — no elevated Linux capabilities |
+
+### Real-World Example: SIS (SimpleInfrastructureStack)
+
+In SIS, the docker-socket-proxy pattern is used by:
+
+1. **Watchtower** — automatically updates containers when new images are published. Watchtower needs `CONTAINERS` and `IMAGES` access but not `EXEC`, `VOLUMES`, or `NETWORKS`.
+
+2. **Forgejo Runners** — CI runners that build Docker images. They need `CONTAINERS`, `IMAGES`, `NETWORKS`, and `VOLUMES` access for build operations, but not `EXEC` on running containers.
+
+The proxy enforces that even if a consumer container is compromised, the attacker cannot:
+- Execute commands in other containers (`EXEC: 0`)
+- Create/destroy volumes (`VOLUMES: 0`)
+- Modify network configuration (`NETWORKS: 0`)
+- Access the host filesystem through the Docker API

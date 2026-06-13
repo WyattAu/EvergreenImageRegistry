@@ -1,0 +1,68 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT-clawdius",
+  "name": "evergreen-clawdius",
+  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/clawdius",
+  "creationInfo": {
+    "created": "2026-06-13T12:00:00Z",
+    "creators": [
+      "Tool: evergreen-sbom-generator"
+    ]
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-cgr.dev-chainguard-wolfi-base-latest-",
+      "name": "cgr.dev/chainguard/wolfi-base:latest",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-clawdius-ca-certificates-",
+      "name": "ca-certificates",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/ca-certificates"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-clawdius-libssl3-",
+      "name": "libssl3",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/libssl3"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-clawdius-1.0.0-",
+      "name": "clawdius-1.0.0",
+      "downloadLocation": "https://github.com/WyattAu/clawdius/archive/refs/tags/v1.0.0.tar.gz",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION",
+      "originator": "WyattAu"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT-clawdius",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-clawdius-1.0.0"
+    }
+  ]
+}

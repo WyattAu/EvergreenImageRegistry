@@ -49,7 +49,7 @@ check_image() {
 
   # Find the shim binary path from ENTRYPOINT or COPY --from=shim
   local shim_dest
-  shim_dest=$(grep -oP 'COPY\s+--from=shim\s+\S+\s+(\S+)' "$dockerfile" | tail -1 | awk '{print $NF}')
+  shim_dest=$(grep -oP 'COPY\s+--from=shim\s+\S+\s+(\S+)' "$dockerfile" | tail -1 | awk '{print $NF}' || true)
   if [[ -z "$shim_dest" ]]; then
     echo "SKIP: ${name} — no COPY --from=shim found"
     SKIP=$((SKIP + 1))

@@ -299,10 +299,9 @@ jobs:
       - name: Determine PR labels
         id: labels
         run: |
-          UPDATES='${{ needs.check.outputs.updates }}'
           python3 -c "
-          import json
-          updates = json.loads('''$UPDATES''')
+          import json, os
+          updates = json.loads(os.environ['UPDATES'])
           bump_types = set(u['bump_type'] for u in updates)
           labels = ['automated', 'dependencies', 'upstream-watch']
           if 'major' in bump_types or 'minor' in bump_types:
@@ -311,6 +310,8 @@ jobs:
               labels.append('auto-merge')
           print(','.join(labels))
           " > /tmp/labels.txt
+        env:
+          UPDATES: ${{ needs.check.outputs.updates }}
 
       - name: Create Pull Request
         if: inputs.dry_run != 'true'
@@ -320,7 +321,7 @@ jobs:
           body-path: /tmp/changelog.md
           branch: upstream-watch/bump
           delete-branch: true
-          labels: ${{ runner.os == 'Linux' && '' || '' }} # labels set below
+          labels: automated,dependencies,upstream-watch
           reviewers: ${{ github.repository_owner }}
           commit-message: 'chore(upstream-watch): bump critical image versions'
 
@@ -357,8 +358,8 @@ jobs:
         run: |
           # Only auto-merge if ALL bumps are patch versions
           python3 -c "
-          import json, sys
-          updates = json.loads('''$UPDATES''')
+          import json, os, sys
+          updates = json.loads(os.environ['UPDATES'])
           all_patch = all(u['bump_type'] == 'patch' for u in updates)
           sys.exit(0 if all_patch else 1)
           " || {

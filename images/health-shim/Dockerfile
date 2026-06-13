@@ -1,25 +1,27 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
+ARG VERSION=1.0.0
 
 FROM golang:1.23-bookworm@sha256:e87b2a5f6df2dff71ea330d55d54f4979eb380ae58a7e3aabc9d53121243e689 AS builder
 ENV GOTOOLCHAIN=auto
 ARG TARGETARCH
-ARG VERSION=1.0.0
-ARG TARGETARCH
-ARG GOARCH=${TARGETARCH}
+ARG VERSION
 WORKDIR /src
-COPY go.mod health-shim.go ./
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build -trimpath -ldflags="-s -w" -o /health-shim health-shim.go || true
+COPY go.mod main.go ./
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} go build -trimpath \
+    -ldflags="-s -w -X main.version=${VERSION}" -o /health-shim .
 
 FROM scratch
-# package-manager-verified: integrity verified by upstream
-COPY --from=builder /health-shim /health-shim
-USER 65532:65532
-EXPOSE 9101
-ENTRYPOINT ["/health-shim"]
-STOPSIGNAL SIGTERM
+ARG APP_UID
+ARG APP_GID
+ARG VERSION
 LABEL org.opencontainers.image.title="health-shim" \
       org.opencontainers.image.version="${VERSION}" \
       evergreen.image.category="observability" \
       evergreen.health.type="http" \
       evergreen.metrics.native="prometheus"
+COPY --from=builder /health-shim /health-shim
+USER ${APP_UID}:${APP_GID}
+EXPOSE 9101
+ENTRYPOINT ["/health-shim"]
+STOPSIGNAL SIGTERM

@@ -2,6 +2,9 @@ use crate::manifest::*;
 use anyhow::{Context, Result};
 use std::path::Path;
 
+const DEFAULT_BUILDER_BASE: &str = "cgr.dev/chainguard/wolfi-base:latest";
+const DEFAULT_GID: &str = "10000";
+
 pub fn cmd_generate(image_dir: &str) -> Result<()> {
     let dir = Path::new(image_dir);
     let manifest_path = dir.join("manifest.toml");
@@ -57,30 +60,22 @@ impl DockerfileGenerator {
         let binary_name = self.binary_name();
 
         lines.push(format!(
-            "RUN curl --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 300 -fsSL \"{}\" -o /{} 2>/dev/null || true ; \\",
+            "RUN curl --retry 3 --retry-delay 5 --connect-timeout 30 --max-time 300 -fsSL \"{}\" -o /{}",
             url, filename
         ));
         lines.push(format!(
-            "    mkdir -p /opt/{} 2>/dev/null || true ; \\",
+            "    && mkdir -p /opt/{}",
             m.name()
         ));
         lines.push(format!(
-            "    if [ -f /{} ]; then tar -xzf /{} -C /opt/{} 2>/dev/null || cp /{} /opt/{}/{} 2>/dev/null || true ; rm -f /{} 2>/dev/null || true ; fi",
-            filename, filename, m.name(), filename, m.name(), binary_name, filename
+            "    && (tar -xzf /{} -C /opt/{} 2>/dev/null || cp /{} /opt/{}/{} 2>/dev/null || {{ echo 'ERROR: Failed to extract or copy binary' >&2 ; exit 1 ; }}) && rm -f /{}",
+            filename, m.name(), filename, m.name(), binary_name, filename
         ));
 
+        // Verify the binary exists after extraction
         lines.push(format!(
-            "RUN mkdir -p /opt/{}/bin 2>/dev/null || true ; \\",
-            m.name()
-        ));
-        lines.push(format!(
-            "    test -f /opt/{}/{} || {{ echo '#!/bin/sh' > /opt/{}/{} && echo 'echo \"{} v${{VERSION}} ready\"' >> /opt/{}/{} && echo 'exec sleep infinity' >> /opt/{}/{} && chmod +x /opt/{}/{} ; }} 2>/dev/null || true",
-            m.name(), binary_name,
-            m.name(), binary_name,
-            m.name(), binary_name,
-            m.name(), binary_name,
-            m.name(), binary_name,
-            m.name()
+            "RUN test -f /opt/{}/{} || {{ echo 'ERROR: Binary not found after extraction' >&2 ; exit 1 ; }}",
+            m.name(), binary_name
         ));
 
         lines.join("\n")
@@ -93,7 +88,7 @@ impl DockerfileGenerator {
         lines.push(format!("FROM {}", m.base_image()));
         lines.push(format!("ARG VERSION={}", m.version()));
 
-        let gid = "10000";
+        let gid = DEFAULT_GID;
         lines.push(format!(
             "RUN addgroup -S -g {} {} 2>/dev/null || true",
             gid,
@@ -177,6 +172,7 @@ impl DockerfileGenerator {
     fn extract_filename(&self, url: &str) -> String {
         url.rsplit('/')
             .next()
+            .filter(|s| !s.is_empty())
             .unwrap_or("download")
             .split('?')
             .next()
@@ -189,7 +185,7 @@ impl DockerfileGenerator {
     }
 
     fn builder_base(&self) -> &'static str {
-        "cgr.dev/chainguard/wolfi-base:latest"
+        DEFAULT_BUILDER_BASE
     }
 }
 
@@ -214,7 +210,7 @@ mod tests {
             gen.extract_filename("https://example.com/file.tar.gz?query=1"),
             "file.tar.gz"
         );
-        assert_eq!(gen.extract_filename("https://example.com/path/"), "");
+        assert_eq!(gen.extract_filename("https://example.com/path/"), "download");
         assert_eq!(gen.extract_filename("https://example.com/file"), "file");
     }
 

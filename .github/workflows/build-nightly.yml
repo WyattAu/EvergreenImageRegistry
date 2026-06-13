@@ -163,7 +163,12 @@ jobs:
           CURRENT=".specs/06_5_regression/build_times.json"
           if [ ! -f "$BASELINE" ]; then
             echo "::notice::No baseline found, saving current as baseline"
+          # Only update baseline if no regression detected
+          if [ "$REGRESSED" -eq 0 ]; then
             cp "$CURRENT" "$BASELINE"
+          else
+            echo "::notice::Baseline NOT updated due to ${REGRESSED} regression(s)"
+          fi
             exit 0
           fi
           echo "## Performance Regression Check" >> "$GITHUB_STEP_SUMMARY"

@@ -46,6 +46,11 @@ pub fn list_deprecated(images_dir: &Path) -> Result<Vec<DeprecatedImage>> {
 }
 
 pub fn mark_deprecated(images_dir: &Path, image: &str) -> Result<()> {
+    // Validate image name to prevent path traversal
+    if image.contains('/') || image.contains('\\') || image.contains("..") {
+        anyhow::bail!("Invalid image name (path traversal detected): {}", image);
+    }
+
     let manifest_path = images_dir.join(image).join("manifest.toml");
 
     if !manifest_path.exists() {
@@ -69,6 +74,11 @@ pub fn mark_deprecated(images_dir: &Path, image: &str) -> Result<()> {
 }
 
 pub fn unmark_deprecated(images_dir: &Path, image: &str) -> Result<()> {
+    // Validate image name to prevent path traversal
+    if image.contains('/') || image.contains('\\') || image.contains("..") {
+        anyhow::bail!("Invalid image name (path traversal detected): {}", image);
+    }
+
     let manifest_path = images_dir.join(image).join("manifest.toml");
 
     if !manifest_path.exists() {

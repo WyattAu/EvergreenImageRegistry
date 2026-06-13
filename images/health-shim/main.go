@@ -24,29 +24,33 @@ import (
 	"log/slog"
 	"net"
 	"net/http"
-	"net/http/httptest"
 	"net/url"
 	"os"
 	"os/exec"
+	"os/signal"
 	"strings"
 	"sync"
 	"sync/atomic"
+	"syscall"
 	"time"
 )
 
 var (
-	startTime      time.Time
-	startupWindow  time.Duration
-	healthTimeout  time.Duration
-	healthCmd      string
-	readyCmd       string
-	startupCmd     string
-	mu             sync.Mutex
-	startupSuccess bool
+	startTime     time.Time
+	startupWindow time.Duration
+	healthTimeout time.Duration
+	healthCmd     string
+	readyCmd      string
+	startupCmd    string
+
+	startupDone atomic.Bool
 
 	probeSuccessTotal = map[string]*uint64{}
 	probeDuration     = map[string]*float64{}
 	metricsMu         sync.RWMutex
+
+	// version is set via -ldflags at build time
+	version = "dev"
 )
 
 type healthResponse struct {
@@ -79,13 +83,19 @@ func runCheck(ctx context.Context, cmd string) (bool, string) {
 func writeJSON(w http.ResponseWriter, status int, resp healthResponse) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(resp)
+	if err := json.NewEncoder(w).Encode(resp); err != nil {
+		slog.Error("failed to encode JSON response", "error", err)
+	}
 }
 
 func handleLivez(w http.ResponseWriter, r *http.Request) {
-	mu.Lock()
+	if r.Method != http.MethodGet && r.Method != http.MethodHead {
+		w.Header().Set("Allow", "GET, HEAD")
+		writeJSON(w, http.StatusMethodNotAllowed, healthResponse{Status: "error", Error: "method not allowed"})
+		return
+	}
+
 	cmd := healthCmd
-	mu.Unlock()
 
 	if cmd == "" {
 		writeJSON(w, http.StatusServiceUnavailable, healthResponse{
@@ -115,12 +125,16 @@ func handleLivez(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleReadyz(w http.ResponseWriter, r *http.Request) {
-	mu.Lock()
+	if r.Method != http.MethodGet && r.Method != http.MethodHead {
+		w.Header().Set("Allow", "GET, HEAD")
+		writeJSON(w, http.StatusMethodNotAllowed, healthResponse{Status: "error", Error: "method not allowed"})
+		return
+	}
+
 	cmd := readyCmd
 	if cmd == "" {
 		cmd = healthCmd
 	}
-	mu.Unlock()
 
 	if cmd == "" {
 		writeJSON(w, http.StatusServiceUnavailable, healthResponse{
@@ -150,12 +164,16 @@ func handleReadyz(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleStartupz(w http.ResponseWriter, r *http.Request) {
-	mu.Lock()
+	if r.Method != http.MethodGet && r.Method != http.MethodHead {
+		w.Header().Set("Allow", "GET, HEAD")
+		writeJSON(w, http.StatusMethodNotAllowed, healthResponse{Status: "error", Error: "method not allowed"})
+		return
+	}
+
 	cmd := startupCmd
 	if cmd == "" {
 		cmd = healthCmd
 	}
-	mu.Unlock()
 
 	if cmd == "" {
 		writeJSON(w, http.StatusServiceUnavailable, healthResponse{
@@ -166,10 +184,8 @@ func handleStartupz(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Once startup succeeds once, always return OK
-	mu.Lock()
-	if startupSuccess {
-		mu.Unlock()
+	// Once startup succeeds once, always return OK (lock-free via atomic)
+	if startupDone.Load() {
 		writeJSON(w, http.StatusOK, healthResponse{
 			Status:    "ok",
 			Timestamp: time.Now().UTC().Format(time.RFC3339),
@@ -178,15 +194,12 @@ func handleStartupz(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	mu.Unlock()
 
 	// During startup window, run the check
 	elapsed := time.Since(startTime)
 	if elapsed > startupWindow {
 		// After startup window, assume started (fail-open to avoid infinite startup loops)
-		mu.Lock()
-		startupSuccess = true
-		mu.Unlock()
+		startupDone.Store(true)
 		writeJSON(w, http.StatusOK, healthResponse{
 			Status:    "ok",
 			Timestamp: time.Now().UTC().Format(time.RFC3339),
@@ -198,9 +211,7 @@ func handleStartupz(w http.ResponseWriter, r *http.Request) {
 
 	ok, output := runCheck(r.Context(), cmd)
 	if ok {
-		mu.Lock()
-		startupSuccess = true
-		mu.Unlock()
+		startupDone.Store(true)
 		writeJSON(w, http.StatusOK, healthResponse{
 			Status:    "ok",
 			Timestamp: time.Now().UTC().Format(time.RFC3339),
@@ -291,7 +302,7 @@ func handleHTTPProbe(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusServiceUnavailable, healthResponse{
 			Status:    "error",
 			Timestamp: time.Now().UTC().Format(time.RFC3339),
-			Check:     "http://" + target,
+			Check:     target,
 			Error:     err.Error(),
 		})
 		return
@@ -364,16 +375,12 @@ func handleCmdProbe(w http.ResponseWriter, r *http.Request) {
 
 func handleMetrics(w http.ResponseWriter, r *http.Request) {
 	elapsed := time.Since(startTime).Seconds()
-	up := 1
-
-	mu.Lock()
-	startupOK := startupSuccess
-	mu.Unlock()
+	startupOK := startupDone.Load()
 
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf(`# HELP health_shim_up Whether the health shim is running
+	fmt.Fprintf(&sb, `# HELP health_shim_up Whether the health shim is running
 # TYPE health_shim_up gauge
-health_shim_up %d
+health_shim_up 1
 # HELP health_shim_uptime_seconds Seconds since health shim started
 # TYPE health_shim_uptime_seconds gauge
 health_shim_uptime_seconds %.0f
@@ -382,25 +389,29 @@ health_shim_uptime_seconds %.0f
 health_shim_startup_completed %d
 # HELP health_shim_info Information about the health shim
 # TYPE health_shim_info gauge
-health_shim_info{health_cmd="%s",ready_cmd="%s",startup_cmd="%s"} 1
-`, up, elapsed, boolToInt(startupOK), healthCmd, readyCmd, startupCmd))
+health_shim_info{health_cmd=%q,ready_cmd=%q,startup_cmd=%q} 1
+`, elapsed, boolToInt(startupOK), healthCmd, readyCmd, startupCmd)
 
 	metricsMu.RLock()
-	for name, total := range probeSuccessTotal {
-		dur := probeDuration[name]
-		sb.WriteString(fmt.Sprintf(`# HELP health_shim_probe_success_total Total number of successful probes
-# TYPE health_shim_probe_success_total counter
-health_shim_probe_success_total{probe="%s"} %d
-# HELP health_shim_probe_duration_seconds Duration of last probe
-# TYPE health_shim_probe_duration_seconds gauge
-health_shim_probe_duration_seconds{probe="%s"} %.6f
-`, name, atomic.LoadUint64(total), name, *dur))
+	if len(probeSuccessTotal) > 0 {
+		sb.WriteString("# HELP health_shim_probe_success_total Total number of successful probes\n")
+		sb.WriteString("# TYPE health_shim_probe_success_total counter\n")
+		for name, total := range probeSuccessTotal {
+			fmt.Fprintf(&sb, "health_shim_probe_success_total{probe=%q} %d\n", name, atomic.LoadUint64(total))
+		}
+		sb.WriteString("# HELP health_shim_probe_duration_seconds Duration of last probe\n")
+		sb.WriteString("# TYPE health_shim_probe_duration_seconds gauge\n")
+		for name, dur := range probeDuration {
+			fmt.Fprintf(&sb, "health_shim_probe_duration_seconds{probe=%q} %.6f\n", name, *dur)
+		}
 	}
 	metricsMu.RUnlock()
 
 	w.Header().Set("Content-Type", "text/plain; version=0.0.4; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(sb.String()))
+	if _, err := w.Write([]byte(sb.String())); err != nil {
+		slog.Error("failed to write metrics response", "error", err)
+	}
 }
 
 func boolToInt(b bool) int {
@@ -410,23 +421,27 @@ func boolToInt(b bool) int {
 	return 0
 }
 
-// newRouter creates and returns the HTTP mux with all routes registered.
+// wrapProbe records metrics for probe endpoints without buffering the response.
 func wrapProbe(name string, next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
-		rec := httptest.NewRecorder()
+		rec := &statusRecorder{ResponseWriter: w, statusCode: http.StatusOK}
 		next(rec, r)
-
 		duration := time.Since(start)
-		success := rec.Code == http.StatusOK
+		success := rec.statusCode >= 200 && rec.statusCode < 400
 		recordProbe(name, success, duration)
-
-		for k, vv := range rec.Header() {
-			w.Header()[k] = vv
-		}
-		w.WriteHeader(rec.Code)
-		w.Write(rec.Body.Bytes())
 	}
+}
+
+// statusRecorder wraps http.ResponseWriter to capture the status code.
+type statusRecorder struct {
+	http.ResponseWriter
+	statusCode int
+}
+
+func (r *statusRecorder) WriteHeader(code int) {
+	r.statusCode = code
+	r.ResponseWriter.WriteHeader(code)
 }
 
 func newRouter() *http.ServeMux {
@@ -443,7 +458,7 @@ func newRouter() *http.ServeMux {
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(map[string]string{
 			"service":   "evergreen-health-shim",
-			"version":   "1.0.0",
+			"version":   version,
 			"endpoints": "/livez, /readyz, /startupz, /tcp/<host>:<port>, /http/<url>, /cmd/<command>, /metrics",
 		})
 	})
@@ -524,16 +539,38 @@ func main() {
 
 	mux := newRouter()
 
+	const (
+		readTimeout  = 5 * time.Second
+		writeTimeout = 10 * time.Second
+		idleTimeout  = 60 * time.Second
+		shutdownTimeout = 5 * time.Second
+	)
+
 	server := &http.Server{
 		Addr:         listen,
 		Handler:      mux,
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
-		IdleTimeout:  60 * time.Second,
+		ReadTimeout:  readTimeout,
+		WriteTimeout: writeTimeout,
+		IdleTimeout:  idleTimeout,
 	}
 
-	if err := server.ListenAndServe(); err != nil {
+	// Graceful shutdown on SIGTERM/SIGINT
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT)
+	defer stop()
+
+	go func() {
+		<-ctx.Done()
+		slog.Info("shutting down gracefully", "timeout", shutdownTimeout)
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
+		defer cancel()
+		if err := server.Shutdown(shutdownCtx); err != nil {
+			slog.Error("server shutdown error", "error", err)
+		}
+	}()
+
+	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		slog.Error("health-shim server failed", "error", err)
 		os.Exit(1)
 	}
+	slog.Info("health-shim stopped")
 }

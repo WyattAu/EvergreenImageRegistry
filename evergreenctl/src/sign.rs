@@ -34,7 +34,8 @@ pub fn cmd_sign(image_dir: &str) -> Result<()> {
         anyhow::bail!("No manifest.toml or Dockerfile found in {}", dir.display());
     };
 
-    let registry = "ghcr.io/evergreen";
+    let registry = std::env::var("EVERGREEN_REGISTRY")
+        .unwrap_or_else(|_| "ghcr.io/wyattau/evergreenimageregistry".to_string());
     let full_ref = format!("{}/{}:{}", registry, name, version);
 
     println!("# Cosign signing commands for {}:{}", name, version);
@@ -49,27 +50,21 @@ pub fn cmd_sign(image_dir: &str) -> Result<()> {
         "  --annotation \"org.opencontainers.image.version={}\" \\",
         version
     );
-    let manifest_source = if manifest_path.exists() {
-        let manifest = Manifest::from_file(&manifest_path).ok();
-        manifest
-            .map(|m| m.source_url().to_string())
-            .unwrap_or_default()
-    } else {
-        String::new()
-    };
-    let manifest_tier = if manifest_path.exists() {
-        let manifest = Manifest::from_file(&manifest_path).ok();
-        manifest
-            .map(|m| {
+    // Parse manifest once for annotations (avoid double-parse)
+    let (manifest_source, manifest_tier) = if manifest_path.exists() {
+        match Manifest::from_file(&manifest_path) {
+            Ok(m) => (
+                m.source_url().to_string(),
                 if m.metadata.tier.is_empty() {
                     "standard".to_string()
                 } else {
                     m.metadata.tier.clone()
-                }
-            })
-            .unwrap_or_else(|| "standard".to_string())
+                },
+            ),
+            Err(_) => (String::new(), "standard".to_string()),
+        }
     } else {
-        "standard".to_string()
+        (String::new(), "standard".to_string())
     };
 
     println!(

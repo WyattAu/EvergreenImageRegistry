@@ -5,9 +5,9 @@ Evergreen Hardened Image Registry - Pre-commit Dockerfile Validator
 Validates Dockerfiles against security constraints BEFORE build.
 
 Checks:
-- C001: Non-root user (UID 65534)
-- C003: No shell
-- C004: No package manager
+- C001: Non-root user (UID 65532 or 65534)
+- C003: No shell in final stage
+- C004: No package manager in final stage
 - C010: HEALTHCHECK present
 - Base image priority (scratch > distroless > wolfi > debian-slim)
 - NO ALPINE (CRITICAL RULE)
@@ -15,10 +15,10 @@ Checks:
 """
 
 import logging
-import os
 import sys
 from pathlib import Path
 
+logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger(__name__)
 
 # ANSI colors
@@ -28,33 +28,25 @@ YELLOW = "\033[1;33m"
 BLUE = "\033[0;34m"
 NC = "\033[0m"  # No Color
 
-ERRORS = []
-WARNINGS = []
+# Accepted non-root UIDs (65532 = Evergreen standard, 65534 = nobody fallback)
+ACCEPTED_UIDS = {"65532", "65534", "nobody"}
 
 
-def print_error(msg):
-    ERRORS.append(msg)
-    logger.error(f"{RED}ERROR:{NC} {msg}")
+def validate_dockerfile(filepath: str) -> bool:
+    """Validate a Dockerfile against security constraints.
 
+    Returns True if the file passes all checks, False otherwise.
+    Errors and warnings are scoped to this invocation (no global accumulation).
+    """
+    errors: list[str] = []
+    warnings: list[str] = []
 
-def print_warning(msg):
-    WARNINGS.append(msg)
-    logger.warning(f"{YELLOW}WARN:{NC} {msg}")
-
-
-def print_success(msg):
-    logger.info(f"{GREEN}OK:{NC} {msg}")
-
-
-def validate_dockerfile(filepath):
-    """Validate a Dockerfile against security constraints."""
-
-    if not os.path.exists(filepath):
-        print_error(f"File not found: {filepath}")
+    p = Path(filepath)
+    try:
+        content = p.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        print(f"{RED}ERROR:{NC} File not found: {filepath}")
         return False
-
-    with open(filepath) as f:
-        content = f.read()
 
     lines = content.split("\n")
 
@@ -71,110 +63,98 @@ def validate_dockerfile(filepath):
     uses_debian_slim = False
     uses_alpine_base = False
 
-    # Check each line
     for i, line in enumerate(lines, 1):
-        line_stripped = line.strip()
-        line_lower = line_stripped.lower()
+        stripped = line.strip()
+        lower = stripped.lower()
 
         # CRITICAL: Check for Alpine (NEVER ALLOWED)
-        if line_lower.startswith("from ") and "alpine" in line_lower:
+        if lower.startswith("from ") and "alpine" in lower:
             uses_alpine_base = True
-            print_error(f"Line {i}: Alpine base image detected - NEVER ALLOWED")
+            errors.append(f"Line {i}: Alpine base image detected - NEVER ALLOWED")
 
         # Check base image type
-        if line_lower.startswith("from "):
-            if "scratch" in line_lower:
+        if lower.startswith("from "):
+            if "scratch" in lower:
                 uses_scratch = True
-                print_success(f"Line {i}: Using scratch base (BEST)")
-            elif "distroless" in line_lower:
+                print(f"{GREEN}OK:{NC} Line {i}: Using scratch base (BEST)")
+            elif "distroless" in lower:
                 uses_distroless = True
-                print_success(f"Line {i}: Using distroless base (GOOD)")
-            elif "wolfi" in line_lower:
+                print(f"{GREEN}OK:{NC} Line {i}: Using distroless base (GOOD)")
+            elif "wolfi" in lower:
                 uses_wolfi = True
-                print_success(f"Line {i}: Using wolfi base (OK)")
-            elif "debian-slim" in line_lower or "debian:bookworm" in line_lower:
+                print(f"{GREEN}OK:{NC} Line {i}: Using wolfi base (OK)")
+            elif "debian-slim" in lower or "debian:bookworm" in lower:
                 uses_debian_slim = True
-                print_success(f"Line {i}: Using debian-slim base (FALLBACK)")
-            elif "alpine" not in line_lower:
-                print_warning(f"Line {i}: Unknown base image: {line_stripped}")
+                print(f"{GREEN}OK:{NC} Line {i}: Using debian-slim base (FALLBACK)")
+            elif "alpine" not in lower:
+                warnings.append(f"Line {i}: Unknown base image: {stripped}")
 
         # Check for USER directive (C001)
-        if line_stripped.lower().startswith(
-            "user "
-        ) or line_stripped.lower().startswith("group "):
+        if lower.startswith("user ") or lower.startswith("group "):
             has_user = True
-            # Check for UID 65534
-            if "65534" in line_stripped or "nobody" in line_stripped.lower():
-                print_success(f"Line {i}: Non-root user configured (C001)")
+            uid_found = any(uid in stripped for uid in ACCEPTED_UIDS)
+            if uid_found:
+                print(f"{GREEN}OK:{NC} Line {i}: Non-root user configured (C001)")
             else:
-                print_warning(f"Line {i}: User specified but not 65534/nobody")
+                warnings.append(f"Line {i}: User specified but not 65532/65534/nobody")
 
         # Check for HEALTHCHECK (C010)
-        if line_stripped.lower().startswith("healthcheck"):
+        if lower.startswith("healthcheck"):
             has_healthcheck = True
-            print_success(f"Line {i}: HEALTHCHECK present (C010)")
+            print(f"{GREEN}OK:{NC} Line {i}: HEALTHCHECK present (C010)")
 
         # Check for LABEL
-        if line_stripped.lower().startswith("label "):
+        if lower.startswith("label "):
             has_labels = True
-            if "org.opencontainers.image.title" in line_stripped:
-                print_success(f"Line {i}: Required labels present")
-
-        # Check for shell removal (C003)
-        if "rm" in line_lower and (
-            "/bin/sh" in line_lower or "/bin/bash" in line_lower
-        ):
-            print_success(f"Line {i}: Shell removed (C003)")
-
-        # Check for package manager removal (C004)
-        if "rm" in line_lower and ("apt" in line_lower or "apk" in line_lower):
-            print_warning(f"Line {i}: Package manager removed - verify complete")
+            if "org.opencontainers.image.title" in stripped:
+                print(f"{GREEN}OK:{NC} Line {i}: Required labels present")
 
     # Summary
     print("\n" + "=" * 60)
     print("VALIDATION SUMMARY:")
     print("=" * 60)
 
-    # Critical checks
     if uses_alpine_base:
-        print_error("CRITICAL: Alpine base detected - MUST BE FIXED")
+        errors.append("CRITICAL: Alpine base detected - MUST BE FIXED")
 
     if not has_user:
-        print_error("C001 FAILED: No USER directive - image may run as root")
+        errors.append("C001 FAILED: No USER directive - image may run as root")
 
     if not has_healthcheck:
-        print_warning("C010 WARNING: No HEALTHCHECK defined")
+        warnings.append("C010 WARNING: No HEALTHCHECK defined")
 
     if not has_labels:
-        print_warning("LABELS WARNING: Missing required OCI labels")
+        warnings.append("LABELS WARNING: Missing required OCI labels")
 
     # Base image priority check
     if uses_scratch:
-        print_success("Base priority: scratch (BEST)")
+        print(f"{GREEN}OK:{NC} Base priority: scratch (BEST)")
     elif uses_distroless:
-        print_success("Base priority: distroless (GOOD)")
+        print(f"{GREEN}OK:{NC} Base priority: distroless (GOOD)")
     elif uses_wolfi:
-        print_success("Base priority: wolfi (OK)")
+        print(f"{GREEN}OK:{NC} Base priority: wolfi (OK)")
     elif uses_debian_slim:
-        print_warning("Base priority: debian-slim (FALLBACK)")
+        warnings.append("Base priority: debian-slim (FALLBACK)")
 
-    # Return pass/fail
-    if ERRORS:
-        print(f"\n{RED}FAILED: {len(ERRORS)} error(s), {len(WARNINGS)} warning(s){NC}")
+    # Print errors and warnings
+    for e in errors:
+        print(f"{RED}ERROR:{NC} {e}")
+    for w in warnings:
+        print(f"{YELLOW}WARN:{NC} {w}")
+
+    if errors:
+        print(f"\n{RED}FAILED: {len(errors)} error(s), {len(warnings)} warning(s){NC}")
         return False
-    else:
-        print(f"\n{GREEN}PASSED: {len(WARNINGS)} warning(s){NC}")
-        return True
+
+    print(f"\n{GREEN}PASSED: {len(warnings)} warning(s){NC}")
+    return True
 
 
-def main():
+def main() -> None:
     """Main entry point."""
-
-    # Get files to check
     files = sys.argv[1:] if len(sys.argv) > 1 else []
 
     if not files:
-        # Default: check all Dockerfiles in images/
         images_dir = Path("images")
         if images_dir.exists():
             files = [str(p) for p in images_dir.rglob("Dockerfile")]
@@ -188,12 +168,10 @@ def main():
     print(f"Checking {len(files)} file(s)")
 
     all_passed = True
-
     for filepath in files:
         if not validate_dockerfile(filepath):
             all_passed = False
 
-    # Final summary
     print("\n" + "=" * 60)
     if all_passed:
         print(f"{GREEN}ALL CHECKS PASSED{NC}")

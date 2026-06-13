@@ -6,39 +6,26 @@ import logging
 import os
 import re
 import sys
+import time
+import tomllib
 import urllib.error
 import urllib.request
 from pathlib import Path
 
-GITHUB_API = "https://api.github.com/repos"
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
-
-def parse_toml_simple(filepath):
-    """Minimal TOML parser that extracts metadata.name, metadata.version, metadata.source."""
-    data = {}
-    current_section = None
-    with open(filepath) as f:
-        for line in f:
-            line = line.strip()
-            if not line or line.startswith("#"):
-                continue
-            if line.startswith("["):
-                current_section = line.strip("[]").strip()
-                if current_section not in data:
-                    data[current_section] = {}
-                continue
-            if "=" not in line:
-                continue
-            key, _, value = line.partition("=")
-            key = key.strip()
-            value = value.strip().strip('"')
-            if current_section:
-                data[current_section][key] = value
-    return data
+GITHUB_API = "https://api.github.com/repos"
+RATE_LIMIT_SLEEP = 0.5  # seconds between API calls
 
 
-def get_latest_github_release(repo):
+def parse_manifest(filepath: str) -> dict:
+    """Parse a manifest.toml file using the standard library TOML parser."""
+    with open(filepath, "rb") as f:
+        return tomllib.load(f)
+
+
+def get_latest_github_release(repo: str) -> tuple[str | None, str | None]:
     """Query GitHub API for the latest release tag of a repo. Returns (tag, url) or (None, None)."""
     url = f"{GITHUB_API}/{repo}/releases/latest"
     headers = {
@@ -61,12 +48,12 @@ def get_latest_github_release(repo):
             return None, None
         logger.warning("API error %d for %s", e.code, repo)
         return None, None
-    except Exception as e:
+    except (urllib.error.URLError, TimeoutError, OSError) as e:
         logger.warning("Failed to query %s: %s", repo, e)
         return None, None
 
 
-def normalize_version(version_str):
+def normalize_version(version_str: str) -> str:
     """Strip leading 'v' and extract semantic version."""
     v = version_str.strip()
     if v.lower().startswith("v"):
@@ -75,7 +62,7 @@ def normalize_version(version_str):
     return match.group(1) if match else v
 
 
-def extract_github_repo(source_url):
+def extract_github_repo(source_url: str) -> str | None:
     """Extract owner/repo from a GitHub source URL."""
     if not source_url:
         return None
@@ -88,7 +75,7 @@ def extract_github_repo(source_url):
     return None
 
 
-def main():
+def main() -> int:
     root = Path(os.environ.get("GITHUB_WORKSPACE", "."))
     manifest_files = sorted(root.glob("images/*/manifest.toml"))
 
@@ -96,15 +83,27 @@ def main():
         print("No manifest.toml files found.")
         return 0
 
+    # Filter out non-image directories
+    skip_dirs = {"tests", "profiles", "adversarial", "functional", "_wip", "_archive"}
+    manifest_files = [
+        mf for mf in manifest_files if mf.parent.name not in skip_dirs and not mf.parent.name.startswith(".")
+    ]
+
     print(f"Checking {len(manifest_files)} manifests for upstream updates...\n")
 
-    updates = []
+    updates: list[dict] = []
     checked = 0
     skipped = 0
 
     for mf in manifest_files:
         image_name = mf.parent.name
-        data = parse_toml_simple(mf)
+
+        try:
+            data = parse_manifest(str(mf))
+        except Exception as e:
+            logger.warning("Failed to parse %s: %s", mf, e)
+            skipped += 1
+            continue
 
         metadata = data.get("metadata", {})
         current_version = metadata.get("version", "")
@@ -121,6 +120,9 @@ def main():
 
         checked += 1
         latest_tag, latest_url = get_latest_github_release(repo)
+
+        # Rate limit between API calls
+        time.sleep(RATE_LIMIT_SLEEP)
 
         if not latest_tag:
             continue
@@ -142,9 +144,7 @@ def main():
         else:
             status = "up to date"
 
-        print(
-            f"  {image_name:40s} {current_version:20s} -> {latest_tag:20s}  [{status}]"
-        )
+        print(f"  {image_name:40s} {current_version:20s} -> {latest_tag:20s}  [{status}]")
 
     print("\n=== Summary ===")
     print(f"Checked: {checked}, Skipped: {skipped}, Updates available: {len(updates)}")
@@ -157,9 +157,8 @@ def main():
             print(f"    Release: {u['url']}")
             print()
         return 1
-    else:
-        print("\nAll checked images are up to date.")
 
+    print("\nAll checked images are up to date.")
     return 0
 
 

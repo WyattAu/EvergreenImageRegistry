@@ -121,10 +121,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Write GITHUB_TOKEN secret file
-        run: printf '%s' "${{ secrets.GITHUB_TOKEN }}" > /tmp/github-token
-
       - name: Build images (multi-arch or amd64 tarballs)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${{ steps.resolve-tag.outputs.TAG }}"
           mkdir -p /tmp/images
@@ -165,7 +164,7 @@ jobs:
                 ${OUTPUT_FLAG} \
                 --cache-from "type=local,src=/tmp/.buildkit-cache" \
                 --cache-to "type=local,dest=/tmp/.buildkit-cache-new,mode=max" \
-                --secret id=github-token,src=/tmp/github-token \
+                --secret id=github-token,env=GITHUB_TOKEN \
                 --build-arg "BUILD_DATE=${TAG}" \
                 --build-arg "VCS_REF=${TAG}" \
                 --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
@@ -330,7 +329,7 @@ jobs:
               echo "Generated SBOM for ${image}"
             else
               echo "::warning::syft failed for ${image}, generating placeholder"
-              echo '{"spdxVersion":"SPDX-2.3","dataLicense":"CC0-1.0","SPDXID":"SPDXRef-DOCUMENT","name":"'$image'","documentNamespace":"https://github.com/evergreen-registry/'$image'"}' > "${SBOM}"
+              python3 -c "import json,sys; json.dump({'spdxVersion':'SPDX-2.3','dataLicense':'CC0-1.0','SPDXID':'SPDXRef-DOCUMENT','name':sys.argv[1],'documentNamespace':'https://github.com/evergreen-registry/'+sys.argv[1]}, open(sys.argv[2],'w'), indent=2)" "${image}" "${SBOM}"
             fi
             echo "::endgroup::"
           done
@@ -349,7 +348,7 @@ jobs:
             echo "::group::Attest SBOM ${image}"
             if [ -f "$SBOM" ]; then
               if cosign attest --yes \
-                --certificate-identity="https://github.com/${{ github.repository }}/.github/workflows/sign-images.yml@refs/heads/main" \
+                --certificate-identity="https://github.com/${{ github.repository }}/.github/workflows/_build-reusable.yml@refs/heads/main" \
                 --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
                 --predicate "$SBOM" \
                 --type spdxjson "$REF" 2>&1; then

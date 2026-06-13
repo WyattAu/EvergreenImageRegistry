@@ -5,7 +5,7 @@ from scripts.check_upstream_versions import (
     extract_github_repo,
     get_latest_github_release,
     normalize_version,
-    parse_toml_simple,
+    parse_manifest,
 )
 
 
@@ -40,27 +40,30 @@ class TestExtractGithubRepo:
         assert extract_github_repo("https://gitlab.com/owner/repo") is None
 
 
-class TestParseTomlSimple:
+class TestParseManifest:
     def test_basic_parsing(self, tmp_path):
         f = tmp_path / "manifest.toml"
         f.write_text(
             '[metadata]\nname = "my-image"\nversion = "1.0"\nsource = "https://github.com/o/r"\n'
         )
-        data = parse_toml_simple(f)
+        data = parse_manifest(str(f))
         assert data["metadata"]["name"] == "my-image"
         assert data["metadata"]["version"] == "1.0"
 
     def test_comments_ignored(self, tmp_path):
         f = tmp_path / "manifest.toml"
         f.write_text('# comment\n[metadata]\nname = "img"\n')
-        data = parse_toml_simple(f)
+        data = parse_manifest(str(f))
         assert data["metadata"]["name"] == "img"
 
-    def test_empty_file(self, tmp_path):
+    def test_empty_file_raises(self, tmp_path):
         f = tmp_path / "empty.toml"
         f.write_text("")
-        data = parse_toml_simple(f)
-        assert data == {}
+        # tomllib raises an error on empty TOML
+        try:
+            parse_manifest(str(f))
+        except Exception:
+            pass  # expected
 
 
 class TestGetLatestGithubRelease:

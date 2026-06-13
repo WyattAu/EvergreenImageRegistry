@@ -32,7 +32,6 @@ concurrency:
 env:
   REGISTRY: ghcr.io
   OWNER: ${{ github.repository_owner }}
-  SCAN_DATE: $(date -u +%Y-%m-%d)
 
 permissions:
   contents: read
@@ -812,7 +811,10 @@ jobs:
                  workflow_id: 'build-on-demand.yml',
                 ref: 'main',
                 inputs: {
-                  reason: `Automated rebuild for CRITICAL CVEs detected on ${date}`
+                  mode: 'tier',
+                  filter: 'critical',
+                  sign: 'true',
+                  push: 'true'
                 }
               });
               console.log('Rebuild workflow dispatched successfully');

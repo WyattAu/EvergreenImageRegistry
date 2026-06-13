@@ -11,13 +11,13 @@ on:
   push:
     branches: [main]
     paths:
-      - 'images/**'
-      - '../EvergreenShims/crates/**'
+      - 'images/health-shim/**'
+      - 'images/tests/**'
   pull_request:
     branches: [main]
     paths:
-      - 'images/**'
-      - '../EvergreenShims/crates/**'
+      - 'images/health-shim/**'
+      - 'images/tests/**'
   workflow_dispatch:
 
 permissions:

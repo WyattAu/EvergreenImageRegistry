@@ -2,7 +2,7 @@
 # EVERGREEN HARDENED GRAFANA
 # Pre-built binary download - scratch final stage
 # =============================================================================
-ARG VERSION=12.2.8-security-04
+ARG VERSION=12.2.9
 ARG APP_UID=65532
 ARG APP_GID=65532
 ARG SHIM_VERSION=v1.1.0

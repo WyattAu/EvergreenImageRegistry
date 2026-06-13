@@ -30,6 +30,8 @@ FROM scratch
 COPY --from=shim /shim /shim
 COPY --from=builder /nginx /nginx
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /etc/nginx/mime.types /etc/nginx/mime.types
+COPY nginx.conf /etc/nginx/nginx.conf
 COPY shim.toml /etc/evergreen/shim.toml
 USER ${APP_UID}:${APP_GID}
 ENV SHIM_METRICS_ENABLED="true" \
@@ -43,6 +45,7 @@ HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
 ENTRYPOINT ["/shim", "run", "-c", "/nginx"]
+CMD ["-g", "daemon off;"]
 LABEL org.opencontainers.image.title="nginx" \
       org.opencontainers.image.description="Nginx - HTTP and reverse proxy server" \
       org.opencontainers.image.version="1.27.1" \

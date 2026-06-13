@@ -2,7 +2,7 @@
 # EVERGREEN HARDENED REDIS
 # Source build - scratch final stage
 # =============================================================================
-ARG VERSION=8.6
+ARG VERSION=7.4.8
 ARG SHIM_VERSION=v1.1.0
 
 FROM cgr.dev/chainguard/wolfi-base AS builder

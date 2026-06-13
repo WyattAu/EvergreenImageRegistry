@@ -1,6 +1,6 @@
 [metadata]
 name = "grafana"
-version = "12.2.8-security-04"
+version = "12.2.9"
 description = "Grafana - observability dashboard and visualization"
 vendor = "Grafana Labs"
 source = "https://github.com/grafana/grafana"
@@ -28,7 +28,7 @@ expose = [3000, 9101]
 "org.opencontainers.image.source" = "https://github.com/grafana/grafana"
 "org.opencontainers.image.title" = "grafana"
 "org.opencontainers.image.vendor" = "Grafana Labs"
-"org.opencontainers.image.version" = "12.2.8-security-04"
+"org.opencontainers.image.version" = "12.2.9"
 "evergreen.base.image" = "wolfi"
 "evergreen.constraint.nonroot" = "true"
 "evergreen.health.type" = "exec"

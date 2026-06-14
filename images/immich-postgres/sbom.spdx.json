@@ -1,0 +1,69 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT-immich-postgres",
+  "name": "evergreen-immich-postgres",
+  "documentNamespace": "https://github.com/WyattAu/EvergreenImageRegistry/images/immich-postgres",
+  "creationInfo": {
+    "created": "2026-06-14T04:00:00Z",
+    "creators": [
+      "Tool: evergreen-sbom-generator"
+    ]
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-cgr.dev-chainguard-wolfi-base-",
+      "name": "cgr.dev/chainguard/wolfi-base",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "CONTAINER",
+      "originator": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-immich-postgres-postgresql-16-",
+      "name": "postgresql-16",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "INSTALLATION",
+      "originator": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:alpine/postgresql-16"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-immich-postgres-pgvector-0.8.0-",
+      "name": "pgvector-0.8.0",
+      "downloadLocation": "https://github.com/pgvector/pgvector/archive/refs/tags/v0.8.0.tar.gz",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION",
+      "originator": "pgvector",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:github/pgvector/pgvector@v0.8.0"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-immich-postgres-health-shim-",
+      "name": "health-shim",
+      "downloadLocation": "https://github.com/WyattAu/EvergreenImageRegistry/images/health-shim",
+      "filesAnalyzed": false,
+      "primaryPackagePurpose": "APPLICATION",
+      "originator": "Evergreen",
+      "versionInfo": "v1.2.0"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT-immich-postgres",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-immich-postgres"
+    }
+  ]
+}

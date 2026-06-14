@@ -11,10 +11,9 @@
 # Usage:
 #   sudo docker compose -f docker-compose.yml up -d
 #
-# Images use Evergreen hardened builds. Entrypoints are overridden because
-# monitoring services have their own built-in health endpoints and don't
-# need the shim supervisor. With health-shim v1.2.0 the flag-parsing fix
-# means these overrides are optional but kept for clarity.
+# Images use Evergreen hardened builds with health-shim v1.2.0.
+# Native ENTRYPOINTs use the shim supervisor — CLI flags in command: pass
+# through correctly (fixed in v1.2.0). No entrypoint overrides needed.
 # ----------------------------------------------------------------------------
 
 name: evergreen-monitoring
@@ -29,7 +28,6 @@ services:
     container_name: evergreen-prometheus
     user: "65532:65532"
     restart: unless-stopped
-    entrypoint: ["/prometheus"]
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.path=/data"
@@ -52,7 +50,6 @@ services:
     container_name: evergreen-alertmanager
     user: "65532:65532"
     restart: unless-stopped
-    entrypoint: ["/alertmanager"]
     command:
       - "--config.file=/etc/alertmanager/alertmanager.yml"
       - "--storage.path=/data"
@@ -71,7 +68,6 @@ services:
     restart: unless-stopped
     depends_on:
       - prometheus
-    entrypoint: ["/grafana-bin/grafana-server"]
     environment:
       GF_SECURITY_ADMIN_USER: ${GF_ADMIN_USER:-admin}
       GF_SECURITY_ADMIN_PASSWORD: ${GF_ADMIN_PASSWORD:-evergreen}

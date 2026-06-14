@@ -2,10 +2,10 @@
 
 | Attribute | Value          |
 | --------- | -------------- |
-| Version   | 30.0.0         |
-| Updated   | 2026-06-13     |
+| Version   | 30.1.0         |
+| Updated   | 2026-06-14     |
 | Status    | STABLE         |
-| Phases    | 0-111 complete |
+| Phases    | 0-112 complete |
 
 ---
 
@@ -26,7 +26,7 @@
 | Docker Hub mirror        | 98 repos at docker.io/wyattau/ | DONE                        |
 | CI/CD workflows          | 22 active                      | DONE                        |
 | evergreenctl (Rust)      | v1.0.0, 142 tests              | DONE                        |
-| health-shim (Go)         | v1.1.0, run+healthcheck modes  | DONE                        |
+| health-shim (Go)         | v1.2.0, run+healthcheck+flag fix| DONE                        |
 | Python test suite        | 70 tests                       | DONE                        |
 
 ---
@@ -191,6 +191,24 @@ Priority: HIGH | Effort: 1 day | Status: COMPLETE
 
 ---
 
+## Phase 112: health-shim v1.2.0 + Monitoring Deployed
+
+Priority: HIGH | Effort: 1 day | Status: COMPLETE
+
+| Task                                 | Status |
+| ------------------------------------ | ------ |
+| health-shim v1.2.0 (flag parsing fix)| DONE   |
+| --help passthrough fix               | DONE   |
+| 718 Dockerfiles updated to v1.2.0    | DONE   |
+| Prometheus ENTRYPOINT path fix       | DONE   |
+| Monitoring deployed to TrueNAS       | DONE   |
+| Native entrypoints (no overrides)    | DONE   |
+| Grafana datasources + dashboards     | DONE   |
+| oauth2-proxy verified (flags pass)   | DONE   |
+| Keycloak verified (JVM boots)        | DONE   |
+
+---
+
 ## Known Gaps
 
 - 5 auth-gated `:latest` FROM refs (dependabot, lancedb, scylladb, tigergraph x2)
@@ -198,9 +216,8 @@ Priority: HIGH | Effort: 1 day | Status: COMPLETE
 - 360 images without multi-arch (C-extension Python ~80, amd64-only upstream ~200, GPU/ML ~50, niche ~30)
 - Forgejo v15 cancel-in-progress bug (fixed in v16, July 16, 2026)
 - Win11 VM runner offline (needs SPICE console access)
-- health-shim v1.1.0 needs to be built and pushed to GHCR
 - 5 images missing SBOMs (988 images, 983 SBOMs)
-- docs/image-audit-report.md stale (reports 841, actual 988)
+- Evergreen node-exporter not published to GHCR (using official prom/node-exporter)
 
 ## NOT Recommended
 

@@ -2,10 +2,10 @@
 
 ## Status
 
-- **Phase:** 111
-- **Version:** v30.0.0
-- **Status:** Stable - All phases complete, CI green
-- **Last Updated:** 2026-06-13
+- **Phase:** 112
+- **Version:** v30.1.0
+- **Status:** Stable - All phases complete, CI green, monitoring deployed
+- **Last Updated:** 2026-06-14
 
 ## Quality Scorecard
 
@@ -27,7 +27,7 @@
 | ------------------- | ------- | --------------------------------------- |
 | Lint & Format Check | PASSING | 10 jobs: prettier, hadolint, yamllint   |
 | Go Tests            | PASSING | health-shim vet + build                 |
-| Shim Functionality  | PENDING | Needs health-shim v1.1.0 pushed to GHCR |
+| Shim Functionality  | PASSING | health-shim v1.2.0, redis/nginx/grafana tests |
 | Build on Push       | PASSING | Discover, Lint, Build, Sign             |
 | Nightly Build       | PASSING | All jobs pass                           |
 | Fuzz Testing        | PASSING |                                         |
@@ -49,9 +49,9 @@
 | Component           | Version | Tests | Status |
 | ------------------- | ------- | ----- | ------ |
 | evergreenctl (Rust) | v1.0.0  | 142   | PASS   |
-| health-shim (Go)    | v1.1.0  | CI    | PASS   |
+| health-shim (Go)    | v1.2.0  | CI    | PASS   |
 | Python test suite   | --      | 70    | PASS   |
-| .shim-version       | v1.1.0  | --    | SYNC   |
+| .shim-version       | v1.2.0  | --    | SYNC   |
 
 ## Key Changes (Phases 103-111)
 
@@ -65,6 +65,8 @@
 8. **Phase 110**: Monitoring - Grafana dashboards, AlertManager, Prometheus
 9. **Phase 111**: health-shim v1.1.0 (run/healthcheck subcommands), 24 version drifts fixed, 6 empty builders removed,
    CI lint green
+10. **Phase 112**: health-shim v1.2.0 (flag parsing fix), monitoring deployed to TrueNAS with native entrypoints,
+    Grafana dashboards provisioned, oauth2-proxy + keycloak verified
 
 ## Security
 
@@ -79,7 +81,7 @@
 
 ## Monitoring
 
-- Grafana: 14-panel EIR dashboard + 6-panel shim metrics
+- Grafana: 14-panel EIR dashboard + 6-panel shim metrics (auto-provisioned)
 - AlertManager: 3 receivers, severity routing
 - Prometheus: 8 alert rules
-- docker-compose deployment ready for TrueNAS
+- Deployed on TrueNAS: all 4 services healthy with native shim entrypoints

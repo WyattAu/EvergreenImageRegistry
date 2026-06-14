@@ -18,7 +18,7 @@ RUN apt-get update && \
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /tmp/forgejo-runner /usr/local/bin/forgejo-runner
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -28,9 +28,9 @@ WORKDIR /app
 EXPOSE 8088
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8088"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8088"]
 
-ENTRYPOINT ["/shim", "run", "-c", "forgejo-runner"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "forgejo-runner"]
 CMD ["-c", "/usr/local/bin/forgejo-runner", "--", "daemon"]
 LABEL org.opencontainers.image.title="forgejo-runner" \
       org.opencontainers.image.description="Forgejo Act Runner - CI/CD runner for Forgejo" \

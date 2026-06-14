@@ -19,7 +19,7 @@ RUN mkdir -p /app /var/log/traefik /var/cache/traefik 2>/dev/null || true
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /traefik /traefik
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -32,9 +32,9 @@ WORKDIR /app
 EXPOSE 80
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="traefik-plugin-auth" \
       org.opencontainers.image.description="traefik-plugin-auth container image" \
       org.opencontainers.image.version="3.6.13" \

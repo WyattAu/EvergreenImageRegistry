@@ -10,7 +10,7 @@ FROM ghcr.io/lancedb/lancedb:v0.29.0 AS upstream
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 # package-manager-verified: integrity verified by upstream
 COPY --from=upstream /lancedb /lancedb
@@ -22,9 +22,9 @@ WORKDIR /app
 EXPOSE 6333
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:6333"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6333"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="lancedb" \
       org.opencontainers.image.description="lancedb container image" \
       org.opencontainers.image.version="${VERSION}" \

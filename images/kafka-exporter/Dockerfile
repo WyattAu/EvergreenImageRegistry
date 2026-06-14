@@ -23,7 +23,7 @@ RUN mkdir -p /app /var/log/kafka_exporter /var/cache/kafka_exporter 2>/dev/null 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 ARG VERSION=1.9.0
 ARG TARGETARCH
@@ -38,9 +38,9 @@ WORKDIR /app
 EXPOSE 9308
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9308"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9308"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="kafka-exporter" \
       org.opencontainers.image.description="Evergreen hardened Kafka Exporter - Prometheus metrics for Apache Kafka" \
       org.opencontainers.image.version="${VERSION}" \

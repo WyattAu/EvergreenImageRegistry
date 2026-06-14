@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils go-1.2
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 ARG VERSION=1.0.0
 COPY --from=builder /tmp/go-1.23-cache /usr/local/bin/go-1.23-cache
@@ -25,9 +25,9 @@ ENV SHIM_METRICS_ENABLED="true"
 EXPOSE 6379
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="go-1.23-cache" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Evergreen hardened Golang-Cache - in-memory cache service" \

@@ -23,5 +23,5 @@ LABEL org.opencontainers.image.title="health-shim" \
 COPY --from=builder /shim /shim
 USER ${APP_UID}:${APP_GID}
 EXPOSE 9101
-ENTRYPOINT ["/shim"]
+ENTRYPOINT ["/usr/local/bin/shim"]
 STOPSIGNAL SIGTERM

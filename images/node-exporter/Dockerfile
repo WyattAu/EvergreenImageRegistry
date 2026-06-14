@@ -15,7 +15,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
     -o /binary ./cmd/node_exporter
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /binary /node_exporter
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER ${APP_UID}:${APP_GID}
@@ -23,8 +23,8 @@ ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /
 EXPOSE 9100 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9100"]
-ENTRYPOINT ["/shim", "run", "-c", "/bin/node_exporter"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9100"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/bin/node_exporter"]
 LABEL org.opencontainers.image.title="node-exporter" \
       org.opencontainers.image.description="Node Exporter - hardware and OS metrics exporter for Prometheus" \
       org.opencontainers.image.version="v1.11.1" \

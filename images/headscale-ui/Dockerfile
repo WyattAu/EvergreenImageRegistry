@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM gcr.io/distroless/static-debian12@sha256:20bc6c0bc4d625a22a8fde3e55f6515709b32055ef8fb9cfbddaa06d1760f838
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /www /www
 USER 65532:65532
@@ -24,9 +24,9 @@ WORKDIR /www
 EXPOSE 8080
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="headscale-ui" \
       org.opencontainers.image.description="headscale-ui container image" \
       org.opencontainers.image.version="2026.03.17" \

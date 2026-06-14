@@ -19,7 +19,7 @@ RUN mkdir -p /app /var/log/loki-simple /var/cache/loki-simple /etc/loki 2>/dev/n
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /loki /loki
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -33,9 +33,9 @@ WORKDIR /app
 EXPOSE 3100
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:3100"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3100"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="loki-simple" \
       org.opencontainers.image.version="3.1.0" \
       org.opencontainers.image.vendor="Grafana" \

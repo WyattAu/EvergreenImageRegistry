@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 ARG VERSION=8.10.0
 COPY --from=builder /usr/local/bin/rqlite /usr/local/bin/rqlite
@@ -39,9 +39,9 @@ ENV SHIM_METRICS_ENABLED="true"
 EXPOSE 4001 4002
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:4001"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:4001"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="rqlite" \
       org.opencontainers.image.description="Evergreen hardened rqlite - distributed SQLite database" \
       org.opencontainers.image.version="${VERSION}" \

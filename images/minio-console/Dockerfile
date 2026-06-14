@@ -14,7 +14,7 @@ FROM minio/minio:RELEASE.2025-09-07T16-13-09Z@sha256:9966a92a734f9411e32f4f41d7d
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 
 COPY --from=upstream /usr/bin/minio /minio
@@ -32,9 +32,9 @@ EXPOSE 9000 9090
 
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9000"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9000"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 
 CMD ["-c", "/minio", "--", "console", "server"]
 

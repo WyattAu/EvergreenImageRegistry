@@ -20,7 +20,7 @@ RUN mkdir -p /app /var/log/nats-server /var/cache/nats-server 2>/dev/null || tru
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /nats-server /nats-server
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -33,9 +33,9 @@ WORKDIR /app
 EXPOSE 4222 8222
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:4222"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:4222"]
 
-ENTRYPOINT ["/shim", "run", "-c", "nats-server"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "nats-server"]
 LABEL org.opencontainers.image.title="nats" \
       org.opencontainers.image.description="NATS - high-performance messaging system" \
       org.opencontainers.image.version="2.12.7" \

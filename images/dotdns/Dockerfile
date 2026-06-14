@@ -19,7 +19,7 @@ RUN apk add --no-cache go git ca-certificates && \
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 ARG VERSION=0.1.0
 COPY --from=builder /tmp/dotdns /usr/local/bin/dotdns
@@ -29,9 +29,9 @@ ENV SHIM_METRICS_ENABLED="true"
 EXPOSE 53 8053
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:53"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:53"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="dotdns" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Evergreen hardened DotDNS - DNS-over-TLS proxy server" \

@@ -14,7 +14,7 @@ RUN mkdir -p /app /var/log/flame-ui /var/cache/flame-ui 2>/dev/null || true
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=upstream /flame /usr/local/bin/flame
@@ -45,8 +45,8 @@ LABEL prometheus.io/scrape="true" \
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:5005"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5005"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 
 CMD ["-c", "flame", "--", "--ui-only"]

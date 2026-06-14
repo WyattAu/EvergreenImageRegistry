@@ -32,7 +32,7 @@ EXPOSE 80 443
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/shim", "run", "-c", "nginx"]]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "nginx"]]
 LABEL org.opencontainers.image.title="taiga-front" \
       org.opencontainers.image.description="taiga-front container image" \
       org.opencontainers.image.version="6.9.0" \

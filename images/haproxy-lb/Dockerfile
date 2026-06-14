@@ -23,7 +23,7 @@ RUN apk add --no-cache haproxy ca-certificates && \
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 ARG VERSION=2.8.5
 COPY --from=builder /tmp/haproxy/haproxy /usr/local/sbin/haproxy
@@ -34,9 +34,9 @@ WORKDIR /tmp
 EXPOSE 80 443
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL evergreen.image.status="functional" \
       evergreen.image.tier="1" \
       evergreen.image.category="load-balancer" \

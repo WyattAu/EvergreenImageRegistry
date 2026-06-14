@@ -24,7 +24,7 @@ RUN mkdir -p /app /var/log/loki-canary /var/cache/loki-canary 2>/dev/null || tru
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /loki-canary /loki-canary
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -37,9 +37,9 @@ WORKDIR /app
 EXPOSE 3500
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:3500"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3500"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="loki-canary" \
       org.opencontainers.image.version="2.9.4" \
       org.opencontainers.image.vendor="Grafana Labs" \

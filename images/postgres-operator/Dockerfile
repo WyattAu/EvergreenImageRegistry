@@ -10,7 +10,7 @@ FROM ghcr.io/zalando/postgres-operator:v${VERSION} AS upstream
 FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=upstream /postgres-operator /usr/local/bin/postgres-operator
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -34,9 +34,9 @@ WORKDIR /app
 EXPOSE 8080 8443
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="postgres-operator" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Zalando PostgreSQL Operator for Kubernetes" \

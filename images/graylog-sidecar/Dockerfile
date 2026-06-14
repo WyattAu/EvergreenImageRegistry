@@ -20,7 +20,7 @@ RUN mkdir -p /var/log/sidecar /var/lib/sidecar /var/cache/sidecar 2>/dev/null ||
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /opt/sidecar /opt/sidecar
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
@@ -33,9 +33,9 @@ WORKDIR /opt/sidecar
 EXPOSE 8989
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8989"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8989"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="graylog-sidecar" \
       org.opencontainers.image.description="Evergreen hardened Graylog Sidecar - log collector management agent" \
       org.opencontainers.image.version="${VERSION}" \

@@ -20,7 +20,7 @@ RUN apt-get update && \
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /usr/local/bin/stalwart /usr/local/bin/stalwart
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -30,9 +30,9 @@ WORKDIR /app
 EXPOSE 25 143 465 587 993
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:25"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:25"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 CMD ["-c", "/usr/local/bin/stalwart", "--", "mail"]
 LABEL org.opencontainers.image.title="stalwart" \
       org.opencontainers.image.description="Stalwart Mail Server - all-in-one mail server written in Rust" \

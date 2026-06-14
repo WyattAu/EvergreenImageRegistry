@@ -21,8 +21,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     test -f /tmp/pe/postgres_exporter
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-COPY --from=shim /shim /shim
-RUN chmod +x /shim
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
 COPY --from=downloader /tmp/pe/postgres_exporter /postgres_exporter
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
@@ -44,9 +44,9 @@ WORKDIR /app
 EXPOSE 9187
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9187"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9187"]
 
-ENTRYPOINT ["/shim", "run", "-c", "/bin/postgres_exporter"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/bin/postgres_exporter"]
 LABEL org.opencontainers.image.title="postgres-exporter" \
       org.opencontainers.image.version="0.19.1" \
       org.opencontainers.image.vendor="Prometheus Community" \

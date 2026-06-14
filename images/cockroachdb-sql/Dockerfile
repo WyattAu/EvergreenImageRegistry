@@ -20,7 +20,7 @@ RUN mkdir -p /app /var/log/cockroachdb-sql /var/cache/cockroachdb-sql 2>/dev/nul
 FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /tmp/cockroach /usr/local/bin/cockroach
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -47,9 +47,9 @@ WORKDIR /app
 EXPOSE 26257
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:26257"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:26257"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 CMD ["-c", "/usr/local/bin/cockroach", "--", "sql", "--insecure"]
 LABEL org.opencontainers.image.title="cockroachdb-sql" \
       org.opencontainers.image.version="23.2.3" \

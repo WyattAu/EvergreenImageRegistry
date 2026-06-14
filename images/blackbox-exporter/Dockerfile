@@ -14,7 +14,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
     -o /binary
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /binary /blackbox_exporter
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER ${APP_UID}:${APP_GID}
@@ -22,8 +22,8 @@ ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /
 EXPOSE 9115 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9115"]
-ENTRYPOINT ["/shim", "run", "-c", "/bin/blackbox_exporter"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9115"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/bin/blackbox_exporter"]
 LABEL org.opencontainers.image.title="blackbox-exporter" \
       org.opencontainers.image.description="Blackbox Exporter - endpoint probing for Prometheus" \
       org.opencontainers.image.version="v0.28.0" \

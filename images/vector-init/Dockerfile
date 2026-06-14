@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 ARG VERSION=0.38.0
 COPY --from=builder /tmp/vector /usr/bin/vector
@@ -36,9 +36,9 @@ ENV SHIM_METRICS_ENABLED="true"
 EXPOSE 8686
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8686"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8686"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL evergreen.image.status="functional" \
       evergreen.image.tier="1" \
       evergreen.image.category="observability" \

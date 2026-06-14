@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils golang
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 ARG VERSION=0.8.10
 COPY --from=builder /tmp/r2d2 /usr/local/bin/r2d2
@@ -36,9 +36,9 @@ ENV SHIM_METRICS_ENABLED="true"
 EXPOSE 6379
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="r2d2" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Evergreen hardened R2D2 - generic connection pool wrapper" \

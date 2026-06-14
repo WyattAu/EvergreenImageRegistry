@@ -18,7 +18,7 @@ RUN apt-get update && \
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /tmp/dendrite /usr/local/bin/dendrite
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
@@ -29,9 +29,9 @@ WORKDIR /app
 EXPOSE 8008
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8008"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8008"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="dendrite-monolith" \
       org.opencontainers.image.description="Dendrite Monolith - Dendrite Matrix homeserver in monolith mode" \
       org.opencontainers.image.version="0.13.1" \

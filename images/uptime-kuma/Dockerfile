@@ -29,7 +29,7 @@ EXPOSE 3001
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3001"]
 
-ENTRYPOINT ["/shim", "run", "-c", "node /app/server.js"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "node /app/server.js"]
 LABEL org.opencontainers.image.title="uptime-kuma" \
       org.opencontainers.image.description="uptime-kuma container image" \
       org.opencontainers.image.version="2.3.2" \

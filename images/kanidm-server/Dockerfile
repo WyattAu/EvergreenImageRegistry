@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=upstream /sbin/kanidmd /kanidmd
@@ -47,6 +47,6 @@ LABEL prometheus.io/scrape="true" \
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8443"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8443"]
 
-ENTRYPOINT ["/shim", "run", "-c", "kanidm"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "kanidm"]

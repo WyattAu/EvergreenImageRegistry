@@ -19,7 +19,7 @@ RUN mkdir -p /app /var/log/victoria-logs /var/cache/victoria-logs 2>/dev/null ||
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /victoria-logs-prod /victoria-logs-prod
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -32,9 +32,9 @@ WORKDIR /app
 EXPOSE 9428
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9428"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9428"]
 
-ENTRYPOINT ["/shim", "run", "-c", "/victoria-logs"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/victoria-logs"]
 LABEL org.opencontainers.image.title="victoria-logs" \
       org.opencontainers.image.description="VictoriaLogs - logs storage by VictoriaMetrics" \
       org.opencontainers.image.version="v1.50.0" \

@@ -13,7 +13,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
     -o /binary
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /binary /vault
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY shim.toml /etc/evergreen/shim.toml
@@ -25,8 +25,8 @@ ENV SHIM_METRICS_ENABLED="true" \
 WORKDIR /
 EXPOSE 8200 8201 9101 9102
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8200"]
-ENTRYPOINT ["/shim", "run", "-c", "vault server"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8200"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "vault server"]
 LABEL org.opencontainers.image.title="vault" \
       org.opencontainers.image.description="Vault - secrets management and data protection by HashiCorp" \
       org.opencontainers.image.version="1.18.1" \

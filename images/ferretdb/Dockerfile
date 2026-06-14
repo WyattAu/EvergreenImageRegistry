@@ -25,7 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 ARG VERSION=2.7.0
 COPY --from=builder /usr/local/bin/ferretdb /usr/local/bin/ferretdb
@@ -35,9 +35,9 @@ ENV SHIM_METRICS_ENABLED="true"
 EXPOSE 27017 8080
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:27017"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:27017"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="ferretdb" \
       org.opencontainers.image.description="Evergreen hardened FerretDB - MongoDB-compatible database" \
       org.opencontainers.image.version="${VERSION}" \

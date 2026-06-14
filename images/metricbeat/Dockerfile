@@ -23,7 +23,7 @@ RUN mkdir -p /var/log/metricbeat /var/lib/metricbeat /var/cache/metricbeat
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /opt/metricbeat /opt/metricbeat
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
@@ -36,9 +36,9 @@ WORKDIR /opt/metricbeat
 EXPOSE 5066
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:5066"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5066"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="metricbeat" \
       org.opencontainers.image.description="Evergreen hardened Metricbeat - Elastic infrastructure metrics collector" \
       org.opencontainers.image.version="${VERSION}" \

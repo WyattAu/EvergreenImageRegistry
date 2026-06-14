@@ -17,7 +17,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
 FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /binary /redis_exporter
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER ${APP_UID}:${APP_GID}
@@ -40,9 +40,9 @@ WORKDIR /
 EXPOSE 9121 9101
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9121"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9121"]
 
-ENTRYPOINT ["/shim", "run", "-c", "/bin/redis_exporter"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/bin/redis_exporter"]
 LABEL org.opencontainers.image.title="redis-exporter" \
       org.opencontainers.image.description="Redis Exporter - Prometheus exporter for Redis" \
       org.opencontainers.image.version="v1.83.0" \

@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 ARG VERSION=v0.19.0
 ARG TARGETARCH
@@ -34,9 +34,9 @@ WORKDIR /app
 EXPOSE 9104
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9104"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9104"]
 
-ENTRYPOINT ["/shim", "run", "-c", "/bin/mysqld_exporter"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/bin/mysqld_exporter"]
 LABEL org.opencontainers.image.title="mysqld-exporter" \
       org.opencontainers.image.description="MySQL Server Exporter - Prometheus exporter for MySQL server metrics" \
       org.opencontainers.image.version="0.16.0" \

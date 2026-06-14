@@ -25,7 +25,7 @@ RUN mkdir -p /app /var/log/promtail 2>/dev/null || true
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /promtail /usr/bin/promtail
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -36,9 +36,9 @@ ENV SHIM_METRICS_ENABLED="true"
 EXPOSE 9080 3100
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9080"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9080"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="promtail-agent" \
       org.opencontainers.image.description="promtail-agent container image" \
       org.opencontainers.image.version="${VERSION}" \

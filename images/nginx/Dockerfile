@@ -27,7 +27,7 @@ RUN cd nginx-${VERSION} && \
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /nginx /nginx
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /etc/nginx/conf/mime.types /etc/nginx/conf/mime.types
@@ -44,9 +44,9 @@ WORKDIR /
 EXPOSE 80 443 9101 9102
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/shim", "run", "-c", "/nginx"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/nginx"]
 LABEL org.opencontainers.image.title="nginx" \
       org.opencontainers.image.description="Nginx - HTTP and reverse proxy server" \
       org.opencontainers.image.version="1.27.1" \

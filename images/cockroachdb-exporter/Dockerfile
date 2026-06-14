@@ -18,7 +18,7 @@ RUN mkdir -p /var/log/cockroach /var/lib/cockroach /var/cache/cockroach 2>/dev/n
 FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /opt/cockroach/cockroach /cockroach
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
@@ -45,9 +45,9 @@ WORKDIR /
 EXPOSE 8080
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 CMD ["-c", "/cockroach", "--", "start", "--insecure", "--http-port=8080", "--prometheus-port=8080"]
 LABEL org.opencontainers.image.title="cockroachdb-exporter" \
       org.opencontainers.image.description="Evergreen hardened CockroachDB Prometheus exporter - database metrics via built-in endpoint" \

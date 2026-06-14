@@ -79,7 +79,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 
 
@@ -145,9 +145,9 @@ EXPOSE 3456
 
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:3456"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3456"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 
 
 

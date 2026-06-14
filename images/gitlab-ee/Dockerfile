@@ -6,7 +6,7 @@ ARG SHIM_VERSION=v1.2.0
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 ARG VERSION=16.11.0
 ARG TARGETARCH
@@ -62,6 +62,6 @@ LABEL prometheus.io/scrape="true" \
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:22"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:22"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]

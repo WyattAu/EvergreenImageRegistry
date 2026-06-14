@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /victoria-metrics /victoria-metrics
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -48,9 +48,9 @@ WORKDIR /app
 EXPOSE 8428
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8428"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8428"]
 
-ENTRYPOINT ["/shim", "run", "-c", "/victoria-metrics"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/victoria-metrics"]
 LABEL org.opencontainers.image.title="victoriametrics" \
       org.opencontainers.image.description="VictoriaMetrics - fast, cost-effective time series database" \
       org.opencontainers.image.version="v1.143.0" \

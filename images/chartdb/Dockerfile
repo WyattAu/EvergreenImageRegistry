@@ -13,8 +13,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
         -o /tmp/chartdb.jar
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-COPY --from=shim /shim /shim
-RUN chmod +x /shim
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
 RUN apk add --no-cache ca-certificates java-21-default-jdk && \
     adduser -D -u 65532 -s /bin/false chartdb 2>/dev/null || true && \
     mkdir -p /var/lib/chartdb /var/log/chartdb /var/cache/chartdb /opt/chartdb 2>/dev/null || true
@@ -45,5 +45,5 @@ LABEL prometheus.io/scrape="true" \
       prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
-ENTRYPOINT ["/shim", "run"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]

@@ -10,7 +10,7 @@ FROM arangodb/arangodb:${VERSION} AS upstream
 FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=upstream /usr/sbin/arangod /arangod
 COPY --from=upstream /usr/bin/arangosh /arangosh
@@ -38,9 +38,9 @@ WORKDIR /app
 EXPOSE 8529
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8529"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8529"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="arangodb-starter" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="ArangoDB" \

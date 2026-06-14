@@ -29,7 +29,7 @@ RUN cd memcached-${VERSION} && \
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /usr/local/bin/memcached /usr/local/bin/memcached
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
@@ -41,9 +41,9 @@ WORKDIR /app
 EXPOSE 11211 9101
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:11211"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:11211"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="memcached" \
       org.opencontainers.image.description="Memcached - high-performance distributed memory caching system (static build)" \
       org.opencontainers.image.version="${VERSION}" \

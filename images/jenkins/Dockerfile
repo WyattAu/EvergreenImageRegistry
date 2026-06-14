@@ -31,7 +31,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/shim", "run", "-c", "java -jar /usr/share/jenkins/jenkins.war"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "java -jar /usr/share/jenkins/jenkins.war"]
 LABEL org.opencontainers.image.title="jenkins" \
       org.opencontainers.image.description="Jenkins - open source automation server for CI/CD" \
       org.opencontainers.image.version="2.462.1" \

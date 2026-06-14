@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /app/drone /drone
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -36,9 +36,9 @@ ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /data
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/shim", "run", "-c", "drone server"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "drone server"]
 EXPOSE 80
 
 LABEL org.opencontainers.image.title="drone" \

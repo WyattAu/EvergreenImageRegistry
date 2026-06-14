@@ -21,7 +21,7 @@ RUN mkdir -p /app /var/log/elasticsearch_exporter /var/cache/elasticsearch_expor
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 ARG VERSION=1.7.0
 ARG TARGETARCH
@@ -36,9 +36,9 @@ WORKDIR /app
 EXPOSE 9114
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9114"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9114"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="elasticsearch-exporter" \
       org.opencontainers.image.version="1.7.0" \
       org.opencontainers.image.vendor="Prometheus Community" \

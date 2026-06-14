@@ -19,7 +19,7 @@ RUN mkdir -p /app /var/log/vmalert /var/cache/vmalert 2>/dev/null || true
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /vmalert-prod /vmalert-prod
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -32,9 +32,9 @@ WORKDIR /app
 EXPOSE 8880
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8880"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8880"]
 
-ENTRYPOINT ["/shim", "run", "-c", "/vmalert"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/vmalert"]
 LABEL org.opencontainers.image.title="vmalert" \
       org.opencontainers.image.description="vmalert - alerting engine for VictoriaMetrics" \
       org.opencontainers.image.version="1.143.0" \

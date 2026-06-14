@@ -275,19 +275,10 @@ def build_wired_dockerfile(
             result.append(line)
             shim_copy_added = True
 
-            # Add shim COPY based on base type
-            if base_type in (
-                "scratch",
-                "distroless",
-                "debian",
-                "alpine",
-                "other",
-                "unknown",
-            ):
-                result.append("COPY --from=shim /shim /shim")
-            elif base_type == "wolfi":
-                result.append("COPY --from=shim /shim /usr/local/bin/shim")
-                result.append("RUN chmod +x /usr/local/bin/shim")
+            # Always copy shim to canonical path /usr/local/bin/shim
+            # Docker COPY creates parent dirs, so this works for scratch too.
+            result.append("COPY --from=shim /shim /usr/local/bin/shim")
+            result.append("RUN chmod +x /usr/local/bin/shim || true")
 
             result.append("")
             continue
@@ -301,14 +292,12 @@ def build_wired_dockerfile(
         # Replace ENTRYPOINT
         if stripped.upper().startswith("ENTRYPOINT ") and not entrypoint_replaced:
             entrypoint_replaced = True
-            shim_path = "/usr/local/bin/shim" if base_type == "wolfi" else "/shim"
-            result.append(f'ENTRYPOINT ["{shim_path}", "run"]')
+            result.append('ENTRYPOINT ["/usr/local/bin/shim", "run"]')
             continue
 
         # Replace CMD
         if stripped.upper().startswith("CMD ") and not cmd_replaced:
             cmd_replaced = True
-            shim_path = "/usr/local/bin/shim" if base_type == "wolfi" else "/shim"
             # Build new CMD: -c <original_entrypoint> -- <original_args>
             # We need to construct: ["-c", "/path/to/binary", "--", "arg1", "arg2"]
             cmd_parts = ["-c", entrypoint, "--"]
@@ -324,14 +313,12 @@ def build_wired_dockerfile(
 
     # If we haven't added shim COPY yet (edge case), add at end
     if not shim_copy_added:
-        shim_path = "/usr/local/bin/shim" if base_type == "wolfi" else "/shim"
-        result.append(f"COPY --from=shim /shim {shim_path}")
+        result.append("COPY --from=shim /shim /usr/local/bin/shim")
 
     # Add HEALTHCHECK before ENTRYPOINT (or at end)
-    shim_path = "/usr/local/bin/shim" if base_type == "wolfi" else "/shim"
     healthcheck_line = (
         f"HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \\\n"
-        f'  CMD ["{shim_path}", "healthcheck", "--tcp", "127.0.0.1:{health_port}"]'
+        f'  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:{health_port}"]'
     )
 
     # Insert HEALTHCHECK before ENTRYPOINT

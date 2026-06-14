@@ -21,7 +21,7 @@ RUN mkdir -p /app && \
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=builder /dex /dex
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -31,9 +31,9 @@ WORKDIR /app
 EXPOSE 5556
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:5556"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5556"]
 
-ENTRYPOINT ["/shim", "run", "-c", "dex serve /etc/dex/config.yaml"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "dex serve /etc/dex/config.yaml"]
 LABEL org.opencontainers.image.title="dex" \
       org.opencontainers.image.description="Dex - federated OpenID Connect provider" \
       org.opencontainers.image.version="2.45.1" \

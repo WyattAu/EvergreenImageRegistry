@@ -32,7 +32,7 @@ EXPOSE 3003
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3003"]
 
-ENTRYPOINT ["/shim", "run", "-c", "python3 -m gunicorn.main"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "python3 -m gunicorn.main"]
 LABEL org.opencontainers.image.title="immich-machine-learning" \
       org.opencontainers.image.description="immich-machine-learning container image" \
       org.opencontainers.image.version="2.7.5" \

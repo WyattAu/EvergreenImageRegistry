@@ -38,6 +38,6 @@ LABEL evergreen.security.read-only-rootfs="true"
 EXPOSE 9101
 LABEL evergreen.security.seccomp="runtime-default"
 
-COPY --from=shim /shim /shim
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 CMD /shim healthcheck --tcp 127.0.0.1:5672
+COPY --from=shim /shim /usr/local/bin/shim
+HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 CMD /usr/local/bin/shim healthcheck --tcp 127.0.0.1:5672
 ENTRYPOINT ["/usr/local/bin/shim", "run"]

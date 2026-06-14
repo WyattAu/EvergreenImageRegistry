@@ -38,7 +38,7 @@ EXPOSE 80
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/shim", "run", "-c", "nginx"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "nginx"]
 LABEL org.opencontainers.image.title="element-web" \
       org.opencontainers.image.description="Element Web - web client for Matrix" \
       org.opencontainers.image.version="v1.12.18" \

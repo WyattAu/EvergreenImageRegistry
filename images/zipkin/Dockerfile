@@ -50,7 +50,7 @@ EXPOSE 9411
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9411"]
 
-ENTRYPOINT ["/shim", "run", "-c", "java -jar /zipkin-server/zipkin-server.jar"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "java -jar /zipkin-server/zipkin-server.jar"]
 CMD ["-c", "java", "--", "-jar", "/opt/zipkin/zipkin.jar"]
 LABEL org.opencontainers.image.title="zipkin" \
       org.opencontainers.image.description="Zipkin - distributed tracing system" \

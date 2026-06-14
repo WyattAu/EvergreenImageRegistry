@@ -27,7 +27,7 @@ RUN apt-get update 2>/dev/null && apt-get install -y --no-install-recommends bin
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 ARG VERSION=23.2.3
 COPY --from=builder /usr/local/bin/cockroach /usr/local/bin/cockroach
@@ -37,9 +37,9 @@ ENV SHIM_METRICS_ENABLED="true"
 EXPOSE 26257
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:26257"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:26257"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="crdb-init" \
       org.opencontainers.image.description="Evergreen hardened CockroachDB init entrypoint" \
       org.opencontainers.image.version="${VERSION}" \

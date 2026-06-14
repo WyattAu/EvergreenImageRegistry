@@ -24,7 +24,7 @@ RUN mkdir -p /app /var/log/jaeger 2>/dev/null || true
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /jaeger-agent /jaeger-agent
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -36,9 +36,9 @@ WORKDIR /app
 EXPOSE 5775
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:5775"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5775"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="jaeger-agent" \
       org.opencontainers.image.description="jaeger-agent container image" \
       org.opencontainers.image.version="1.55.0" \

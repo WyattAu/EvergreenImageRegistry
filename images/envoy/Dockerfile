@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 ARG VERSION=1.38.0
 COPY --from=builder /tmp/envoy /usr/local/bin/envoy
@@ -37,9 +37,9 @@ ENV SHIM_METRICS_ENABLED="true"
 EXPOSE 9901
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9901"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9901"]
 
-ENTRYPOINT ["/shim", "run", "-c", "envoy -c /etc/envoy/envoy.yaml"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "envoy -c /etc/envoy/envoy.yaml"]
 LABEL evergreen.image.status="functional" \
       evergreen.image.tier="1" \
       evergreen.image.category="proxy" \

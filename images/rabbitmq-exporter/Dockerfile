@@ -27,7 +27,7 @@ RUN mkdir -p /app /var/log/rabbitmq_exporter /var/cache/rabbitmq_exporter 2>/dev
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 ARG VERSION=1.1.0
 ARG TARGETARCH
@@ -42,9 +42,9 @@ WORKDIR /app
 EXPOSE 9090
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9090"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9090"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="rabbitmq-exporter" \
       org.opencontainers.image.version="1.1.0" \
       org.opencontainers.image.vendor="kbudde" \

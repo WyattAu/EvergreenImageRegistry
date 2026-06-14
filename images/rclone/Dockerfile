@@ -14,7 +14,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
     -o /binary
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /binary /rclone
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER ${APP_UID}:${APP_GID}
@@ -22,8 +22,8 @@ ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /
 EXPOSE 5572 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:5572"]
-ENTRYPOINT ["/shim", "run"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5572"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="rclone" \
       org.opencontainers.image.description="rclone container image" \
       org.opencontainers.image.version="v1.69.1" \

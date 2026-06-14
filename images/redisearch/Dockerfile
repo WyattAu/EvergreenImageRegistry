@@ -33,7 +33,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 ARG VERSION=2.8.13
 
@@ -46,9 +46,9 @@ WORKDIR /var/lib/redis
 EXPOSE 6379
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="redisearch" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Evergreen hardened RediSearch - full-text search module for Redis" \

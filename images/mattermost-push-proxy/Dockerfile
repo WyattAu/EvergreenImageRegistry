@@ -19,7 +19,7 @@ RUN apt-get update && \
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /tmp/mattermost-push-proxy /usr/local/bin/mattermost-push-proxy
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
@@ -30,9 +30,9 @@ WORKDIR /app
 EXPOSE 8066
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8066"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8066"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="mattermost-push-proxy" \
       org.opencontainers.image.description="Mattermost Push Proxy - push notification proxy for Mattermost mobile apps" \
       org.opencontainers.image.version="1.1.0" \

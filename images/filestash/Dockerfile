@@ -10,7 +10,7 @@ FROM mickaelkerjean/filestash@sha256:e42dcbec35e76a474214284752f2962348387b5a4a7
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=upstream /app/filestash /filestash
 COPY --from=upstream /app/dist /dist
@@ -21,9 +21,9 @@ WORKDIR /app
 EXPOSE 8334
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8334"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8334"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="filestash" \
       org.opencontainers.image.description="filestash container image" \
       org.opencontainers.image.version="${VERSION}" \

@@ -58,7 +58,7 @@ EXPOSE 3306
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3306"]
 
-ENTRYPOINT ["/shim", "run", "-c", "mariadbd"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "mariadbd"]
 CMD ["-c", "mariadbd", "--", "--user=mysql", "--datadir=/var/lib/mysql"]
 LABEL org.opencontainers.image.title="mariadb" \
       org.opencontainers.image.description="MariaDB - community-developed fork of MySQL" \

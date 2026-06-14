@@ -24,7 +24,7 @@ RUN pip install --no-cache-dir --prefix=/install patroni[postgresql]=="${VERSION
 FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 LABEL evergreen.base.fallback_reason="wolfi-base for musl compatibility"
 
@@ -55,9 +55,9 @@ EXPOSE 8008 5432
 ENV PATRONI_RESTAPI_LISTEN="0.0.0.0:8008"
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8008"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8008"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="postgresql-patroni" \
       org.opencontainers.image.version="4.0.3" \
       org.opencontainers.image.description="Patroni - PostgreSQL High Availability with etcd/Consul/ZooKeeper" \

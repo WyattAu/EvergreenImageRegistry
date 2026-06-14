@@ -13,7 +13,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
     -o /binary
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /binary /consul
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER ${APP_UID}:${APP_GID}
@@ -21,8 +21,8 @@ ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /
 EXPOSE 8500 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8500"]
-ENTRYPOINT ["/shim", "run", "-c", "consul agent"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8500"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "consul agent"]
 LABEL org.opencontainers.image.title="consul" \
       org.opencontainers.image.description="Consul - service mesh, service discovery, and configuration" \
       org.opencontainers.image.version="1.18.1" \

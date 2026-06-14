@@ -14,7 +14,7 @@ RUN apk add --no-cache nodejs npm ca-certificates
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 RUN apk add --no-cache nodejs npm ca-certificates
 
 COPY --from=upstream /app /app
@@ -46,6 +46,6 @@ LABEL prometheus.io/scrape="true" \
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
 
-ENTRYPOINT ["/shim", "run", "-c", "node /app/server.js"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "node /app/server.js"]

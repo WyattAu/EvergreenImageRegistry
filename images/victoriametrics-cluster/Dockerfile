@@ -28,7 +28,7 @@ RUN mkdir -p /app /var/lib/victoriametrics /var/log/victoriametrics 2>/dev/null 
 FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /vminsert /vminsert
 COPY --from=downloader /vmselect /vmselect
@@ -60,9 +60,9 @@ WORKDIR /app
 EXPOSE 8480
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8480"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8480"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="victoriametrics-cluster" \
       org.opencontainers.image.description="victoriametrics-cluster container image" \
       org.opencontainers.image.version="1.97.0" \

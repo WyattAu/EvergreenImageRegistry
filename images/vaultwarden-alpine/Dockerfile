@@ -14,7 +14,7 @@ FROM vaultwarden/server@sha256:c4f6056fe0c288a052a223cecd263a90d1dda1a0177bb5b05
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 
 COPY --from=upstream /vaultwarden /vaultwarden
@@ -32,9 +32,9 @@ EXPOSE 8080
 
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 
 
 

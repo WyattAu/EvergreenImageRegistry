@@ -10,7 +10,7 @@ FROM influxdb@sha256:587b7878881812cf6e5481f8889f53f210180fd6790e6c3ddaa0b456dcf
 FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=upstream /usr/bin/influxd /influxd
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -35,9 +35,9 @@ WORKDIR /app
 EXPOSE 8086
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8086"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8086"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="influxdb" \
       org.opencontainers.image.description="InfluxDB - time series database for metrics and events" \
       org.opencontainers.image.version="2.7" \

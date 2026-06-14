@@ -56,7 +56,7 @@ EOF
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /opt/grafana-10.4.1/bin/grafana-server /grafana-server
 COPY --from=downloader /opt/grafana-10.4.1/bin/grafana-cli /grafana-cli
@@ -79,9 +79,9 @@ ENV GF_PATHS_DATA=/app/data \
     GF_ANALYTICS_REPORTING_ENABLED=false
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="grafana-oss" \
       org.opencontainers.image.version="10.4.1" \
       org.opencontainers.image.vendor="Grafana Labs" \

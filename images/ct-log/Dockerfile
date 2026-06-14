@@ -31,7 +31,7 @@ RUN apt-get update && \
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=builder /app/ct-log /ct-log
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -41,9 +41,9 @@ WORKDIR /app
 EXPOSE 6962
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:6962"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6962"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="ct-log" \
       org.opencontainers.image.description="ct-log container image" \
       org.opencontainers.image.version="1.3.3" \

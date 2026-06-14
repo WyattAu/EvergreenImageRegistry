@@ -14,8 +14,8 @@ RUN apt-get update && \
     echo "7e124543a48f3d349b2e93dddbaace1a7122a18b1a11b0e6ab403f0645d646d5  /tmp/gitbucket.war" | sha256sum -c
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-COPY --from=shim /shim /shim
-RUN chmod +x /shim
+COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
 RUN apk add --no-cache ca-certificates openjdk-21-jdk-headless && \
     addgroup -S -g 10000 gitbucket 2>/dev/null || true && \
     adduser -u 65532 -G gitbucket -D -h /opt/gitbucket -s /bin/false gitbucket && \
@@ -47,5 +47,5 @@ LABEL prometheus.io/scrape="true" \
       prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
-ENTRYPOINT ["/shim", "run"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]

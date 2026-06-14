@@ -29,7 +29,7 @@ RUN mkdir -p /app /var/log/snmp_exporter /var/cache/snmp_exporter /etc/snmp_expo
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 ARG VERSION=0.26.0
 ARG TARGETARCH
@@ -46,9 +46,9 @@ WORKDIR /app
 EXPOSE 9116
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9116"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9116"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="snmp-exporter" \
       org.opencontainers.image.version="0.26.0" \
       org.opencontainers.image.vendor="Prometheus" \

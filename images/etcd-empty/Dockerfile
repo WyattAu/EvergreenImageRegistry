@@ -18,7 +18,7 @@ RUN mkdir -p /app /var/log/etcd /var/cache/etcd /etcd-data 2>/dev/null || true
 FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 ARG VERSION=3.6.10
 COPY --from=downloader /etcd /etcd
@@ -50,9 +50,9 @@ WORKDIR /app
 EXPOSE 2379 2380
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:2379"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:2379"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 CMD ["-c", "/etcd", "--", "--data-dir", "/etcd-data", "--listen-client-urls", "http://0.0.0.0:2379", "--advertise-client-urls", "http://localhost:2379"]
 LABEL org.opencontainers.image.title="etcd-empty" \
       org.opencontainers.image.description="etcd-empty container image" \

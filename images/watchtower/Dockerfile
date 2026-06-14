@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 ARG VERSION=1.7.1
 COPY --from=downloader /watchtower /watchtower
@@ -27,9 +27,9 @@ WORKDIR /app
 EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9101"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9101"]
 
-ENTRYPOINT ["/shim", "run", "-c", "/watchtower"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/watchtower"]
 LABEL org.opencontainers.image.title="watchtower" \
       org.opencontainers.image.description="Watchtower - automatic Docker container updates" \
       org.opencontainers.image.version="1.7.1" \

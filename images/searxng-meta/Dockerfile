@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 LABEL evergreen.base.fallback_reason="wolfi-base for musl compatibility"
 
@@ -33,9 +33,9 @@ WORKDIR /app
 EXPOSE 8888
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8888"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8888"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="searxng-meta" \
       org.opencontainers.image.description="SearXNG - meta variant" \
       org.opencontainers.image.vendor="searxng" \

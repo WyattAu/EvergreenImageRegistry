@@ -14,7 +14,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
     -o /binary ./cmd/prometheus
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /binary /prometheus
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER ${APP_UID}:${APP_GID}
@@ -22,8 +22,8 @@ ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /
 EXPOSE 9090 9101
 HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9090"]
-ENTRYPOINT ["/shim", "run", "-c", "/prometheus"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9090"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/prometheus"]
 LABEL org.opencontainers.image.title="prometheus" \
       org.opencontainers.image.description="Prometheus - monitoring and alerting toolkit" \
       org.opencontainers.image.version="2.53.0" \

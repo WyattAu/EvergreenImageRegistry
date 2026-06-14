@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /tmp/oauth2-proxy /oauth2-proxy
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -26,9 +26,9 @@ WORKDIR /app
 EXPOSE 80 443
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/shim", "run", "-c", "/oauth2-proxy"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/oauth2-proxy"]
 LABEL org.opencontainers.image.title="oauth2-proxy" \
       org.opencontainers.image.version="v7.15.2" \
       org.opencontainers.image.vendor="OAuth2 Proxy" \

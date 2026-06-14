@@ -27,7 +27,7 @@ RUN CGO_ENABLED=0 GOARCH=${GOARCH} go build -o /fail2ban-exporter . || true
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 
 COPY --from=builder /fail2ban-exporter /fail2ban-exporter
@@ -45,9 +45,9 @@ EXPOSE 9191
 
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9191"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9191"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 
 CMD ["-c", "/fail2ban-exporter", "--", "--web.listen-address=:9191", "--web.telemetry-path=/metrics", "--fail2ban.socket=/tmp/fail2ban.sock"]
 

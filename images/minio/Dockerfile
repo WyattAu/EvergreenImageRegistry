@@ -12,7 +12,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
     -o /binary ./cmd/minio
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /binary /minio
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER ${APP_UID}:${APP_GID}
@@ -20,8 +20,8 @@ ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /
 EXPOSE 9000 9001 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9000"]
-ENTRYPOINT ["/shim", "run", "-c", "minio server"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9000"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "minio server"]
 LABEL org.opencontainers.image.title="minio" \
       org.opencontainers.image.description="MinIO - high-performance object storage compatible with S3" \
       org.opencontainers.image.version="latest" \

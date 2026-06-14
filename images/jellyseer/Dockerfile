@@ -14,7 +14,7 @@ FROM fallenbagel/jellyseerr:${VERSION} AS upstream
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 
 COPY --from=upstream /app/jellyseerr /jellyseerr
@@ -32,9 +32,9 @@ EXPOSE 5055
 
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:5055"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5055"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 
 LABEL org.opencontainers.image.title="jellyseer"       org.opencontainers.image.version="2.7.3"       org.opencontainers.image.vendor="Jellyseerr"       org.opencontainers.image.source="https://github.com/Fallenbagel/jellyseerr"       evergreen.image.tier="2"       evergreen.image.category="media-streaming"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.base="scratch"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="5s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="10000ms" \
 org.opencontainers.image.description="jellyseer container image" \

@@ -59,7 +59,7 @@ EXPOSE 9200 9300
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--http", "http://127.0.0.1:9200/_cluster/health"]
 
-ENTRYPOINT ["/shim", "run", "-c", "/opt/opensearch/bin/opensearch"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/opensearch/bin/opensearch"]
 CMD ["-c", "gosu opensearch /opt/opensearch/bin/opensearch"]
 LABEL org.opencontainers.image.title="opensearch" \
       org.opencontainers.image.version="2.12.0" \

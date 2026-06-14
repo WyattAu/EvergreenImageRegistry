@@ -13,7 +13,7 @@ RUN RUSTFLAGS="-C target-feature=+crt-static" \
 FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /src/target/x86_64-unknown-linux-musl/release/libsql-server /libsql-server
 USER 65532:65532
 ENV SHIM_BACKUP_ENABLED="true" \
@@ -38,9 +38,9 @@ WORKDIR /var/lib/libsql
 EXPOSE 8080
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="libsql-server" \
       org.opencontainers.image.description="Turso libSQL server - open-source SQLite fork with networking" \
       org.opencontainers.image.version="${VERSION}" \

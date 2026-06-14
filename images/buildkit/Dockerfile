@@ -19,7 +19,7 @@ RUN mkdir -p /app /var/log/buildkit /var/cache/buildkit /var/lib/buildkit 2>/dev
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 
 COPY --from=downloader /usr/local/bin/buildkitd /usr/local/bin/buildkitd
@@ -34,9 +34,9 @@ WORKDIR /app
 EXPOSE 1234
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:1234"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:1234"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="buildkit" \
       org.opencontainers.image.version="0.29.0" \
       org.opencontainers.image.vendor="Moby" \

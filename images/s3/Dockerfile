@@ -20,7 +20,7 @@ RUN mkdir -p /app /var/log/s3-server /var/cache/s3-server 2>/dev/null || true
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /s3-server /s3-server
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -33,9 +33,9 @@ WORKDIR /app
 EXPOSE 9000 9001
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9000"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9000"]
 
-ENTRYPOINT ["/shim", "run", "-c", "minio server /data"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "minio server /data"]
 LABEL org.opencontainers.image.title="s3" \
       org.opencontainers.image.description="S3 - AWS S3 compatible object storage client" \
       org.opencontainers.image.version="RELEASE.2025-10-15T17-29-55Z" \

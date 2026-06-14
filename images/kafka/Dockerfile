@@ -46,7 +46,7 @@ EXPOSE 9092
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--http", "http://127.0.0.1:8082/health"]
 
-ENTRYPOINT ["/shim", "run", "-c", "kafka-server-start.sh"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "kafka-server-start.sh"]
 CMD ["-c", "/opt/kafka/bin/kafka-server-start.sh"]
 LABEL evergreen.image.status="functional" \
       evergreen.image.tier="1" \

@@ -19,7 +19,7 @@ RUN mkdir -p /app /var/log/dnsmasq /var/cache/dnsmasq 2>/dev/null || true
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /dnsmasq /dnsmasq
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -32,9 +32,9 @@ WORKDIR /app
 EXPOSE 53
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:53"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:53"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="dnsmasq" \
       org.opencontainers.image.description="dnsmasq container image" \
       org.opencontainers.image.version="2.90" \

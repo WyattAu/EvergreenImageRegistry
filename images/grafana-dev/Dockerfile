@@ -31,7 +31,7 @@ RUN apt-get update && \
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 ARG VERSION=10.4.1
 COPY --from=downloader /opt/grafana-${VERSION}/bin/grafana-server /usr/local/bin/grafana-server
@@ -54,9 +54,9 @@ ENV GF_PATHS_DATA=/app/data \
     GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION=true
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="grafana-dev" \
       org.opencontainers.image.version="10.4.1" \
       org.opencontainers.image.vendor="Grafana Labs" \

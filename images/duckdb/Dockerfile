@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 ARG VERSION=1.1.3
 COPY --from=builder /usr/local/bin/duckdb /usr/local/bin/duckdb
@@ -35,9 +35,9 @@ ENV SHIM_METRICS_ENABLED="true"
 EXPOSE 5432
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:5432"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5432"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="duckdb" \
       org.opencontainers.image.description="Evergreen hardened DuckDB - in-process analytical database" \
       org.opencontainers.image.version="${VERSION}" \

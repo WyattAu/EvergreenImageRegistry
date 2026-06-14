@@ -25,7 +25,7 @@ RUN mkdir -p /app /models 2>/dev/null || true
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /llama-server /llama-server
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -37,9 +37,9 @@ WORKDIR /app
 EXPOSE 8080
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 CMD ["-c", "/llama-server", "--", "--host", "0.0.0.0", "--port", "8080", "--model", "/models/model.gguf"]
 LABEL org.opencontainers.image.title="llama.cpp" \
       org.opencontainers.image.description="llama.cpp container image" \

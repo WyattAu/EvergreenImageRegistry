@@ -14,7 +14,7 @@ FROM viktorstrate/photoview:2.4.0@sha256:6b3777400d6a6ed3c30d0963326d176f688cd02
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 
 COPY --from=upstream /app/photoview /photoview
@@ -32,9 +32,9 @@ EXPOSE 80
 
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 
 LABEL org.opencontainers.image.title="photoview"       org.opencontainers.image.version="v2.4.0"       org.opencontainers.image.vendor="photoview/photoview"       org.opencontainers.image.source="https://github.com/photoview/photoview"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.base="scratch"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms" \
 org.opencontainers.image.description="photoview container image" \

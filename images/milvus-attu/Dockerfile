@@ -10,7 +10,7 @@ FROM docker.io/zilliz/attu:v2.4.9@sha256:1deeea51731507862d3a0f083834c117c54d0ce
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=upstream /opt/attu/attu /attu
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -20,9 +20,9 @@ WORKDIR /app
 EXPOSE 3000
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
 
-ENTRYPOINT ["/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="milvus-attu" \
       org.opencontainers.image.description="milvus-attu container image" \
       org.opencontainers.image.version="2.4.9" \

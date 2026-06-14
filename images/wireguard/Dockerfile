@@ -22,7 +22,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /wireguard-go /wireguard-go
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER ${APP_UID}:${APP_GID}
@@ -31,9 +31,9 @@ WORKDIR /
 EXPOSE 51820/udp 9101
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:51820"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:51820"]
 
-ENTRYPOINT ["/shim", "run", "-c", "wireguard-go"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "wireguard-go"]
 LABEL org.opencontainers.image.title="wireguard" \
       org.opencontainers.image.description="WireGuard - fast, modern, secure VPN tunnel" \
       org.opencontainers.image.version="1.0.20250521" \

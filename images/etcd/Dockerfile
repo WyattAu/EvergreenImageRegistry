@@ -14,7 +14,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
     -o /binary ./etcd
 FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 FROM scratch
-COPY --from=shim /shim /shim
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /binary /etcd
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER ${APP_UID}:${APP_GID}
@@ -39,8 +39,8 @@ ENV SHIM_BACKUP_ENABLED="true" \
 WORKDIR /
 EXPOSE 2379 2380 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:2379"]
-ENTRYPOINT ["/shim", "run"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:2379"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
 LABEL org.opencontainers.image.title="etcd" \
       org.opencontainers.image.description="etcd - distributed reliable key-value store" \
       org.opencontainers.image.version="3.6.10" \

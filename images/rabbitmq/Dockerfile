@@ -12,7 +12,7 @@ ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
-ARG SHIM_VERSION=v1.1.0
+ARG SHIM_VERSION=v1.2.0
 
 FROM scratch AS entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh

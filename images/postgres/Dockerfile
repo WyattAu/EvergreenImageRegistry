@@ -5,7 +5,7 @@
 
 ARG VERSION=17.10
 ARG TARGETARCH
-ARG SHIM_VERSION=v1.1.0
+ARG SHIM_VERSION=v1.2.0
 
 FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
 

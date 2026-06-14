@@ -88,7 +88,7 @@ ARG APP_GID=65532
 
 
 
-ARG SHIM_VERSION=v1.1.0
+ARG SHIM_VERSION=v1.2.0
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS downloader
 

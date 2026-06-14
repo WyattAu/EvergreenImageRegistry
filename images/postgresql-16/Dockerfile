@@ -1,78 +1,31 @@
-# =============================================================================
-# EVERGREEN HARDENED POSTGRESQL-16
-# Generated from template - Version: 16.14
-# Constraint: debian-slim hardened multi-stage
-# Priority: scratch > distroless > wolfi > debian-slim (last resort)
-# =============================================================================
-
-ARG VERSION=16.14
-ARG BUILD_DATE
-
-ARG TARGETARCH
-ARG APP_UID=65532
-ARG APP_GID=65532
-
+ARG VERSION=16
 ARG SHIM_VERSION=v1.2.0
 
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-RUN useradd -m -u 65532 -s /usr/bin/false postgres 2>/dev/null || true && \
-    mkdir -p /app /var/log/postgres /var/cache/postgres 2>/dev/null || true
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+FROM postgres:${VERSION}
 COPY --from=shim /shim /usr/local/bin/shim
-RUN chmod +x /usr/local/bin/shim
 
-
-RUN apk add --no-cache postgresql-16 ca-certificates
-COPY --from=builder /etc/passwd /etc/passwd
-COPY --from=builder /etc/group /etc/group
-COPY --from=builder --chown=65532:65532 /app /app
-COPY --from=builder --chown=65532:65532 /var/log/postgres /var/log/postgres
-COPY --from=builder --chown=65532:65532 /var/cache/postgres /var/cache/postgres
-USER 65532:65532
-ENV SHIM_BACKUP_ENABLED="true" \
-    SHIM_BACKUP_DB_HOST="localhost" \
-    SHIM_BACKUP_DB_PORT="5432" \
-    SHIM_BACKUP_ENABLED="true" \
-    SHIM_BACKUP_SCHEDULE="0 0 2 * * *" \
-    SHIM_BACKUP_RETENTION_DAYS="7" \
-    SHIM_BACKUP_OUTPUT_DIR="/backups" \
-    SHIM_REPLICATION_ENABLED="false" \
-    SHIM_MIGRATION_ENABLED="false" \
-    SHIM_VAULT_ENABLED="false" \
-    SHIM_AUDIT_ENABLED="true" \
-    SHIM_METRICS_ENABLED="true" \
-    SHIM_ALERTING_ENABLED="false" \
-    SHIM_ALERTING_WEBHOOK_URL="" \
-    SHIM_SCHEDULER_ENABLED="true" \
-    SHIM_SCHEDULER_BACKUP_CRON="0 0 2 * * *"
-WORKDIR /app
-EXPOSE 5432
-
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+# Override healthcheck to use shim TCP probe
+HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5432"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-LABEL org.opencontainers.image.title="postgresql-16" \
-      org.opencontainers.image.description="postgresql-16 container image" \
-      org.opencontainers.image.version="16.14" \
-      org.opencontainers.image.vendor="PostgreSQL" \
-      org.opencontainers.image.platforms="linux/amd64,linux/arm64" \
-      evergreen.image.tier="2" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.constraint.hardened="true" \
-            org.opencontainers.image.source="https://github.com/postgres/postgres"
-LABEL evergreen.base.image="wolfi"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
-LABEL evergreen.security.cap-drop="ALL"
-LABEL evergreen.security.no-new-privileges="true"
-LABEL evergreen.security.read-only-rootfs="true"
-LABEL evergreen.security.seccomp="runtime-default"
+# Keep upstream's docker-entrypoint.sh for initdb, user creation, etc.
+# Shim wraps it for health monitoring + graceful shutdown
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "docker-entrypoint.sh"]
+CMD ["postgres"]
+
+ENV SHIM_METRICS_ENABLED="true"
 
 EXPOSE 9101
 LABEL prometheus.io/scrape="true" \
       prometheus.io/port="9101" \
       prometheus.io/path="/metrics"
-STOPSIGNAL SIGTERM
+LABEL org.opencontainers.image.title="postgresql-16" \
+      org.opencontainers.image.description="PostgreSQL 16 - hardened with Evergreen health-shim" \
+      evergreen.image.tier="critical" \
+      evergreen.constraint.hardened="true"
+LABEL evergreen.base.image="upstream"
+LABEL evergreen.metrics.native="ztunnel"
+LABEL evergreen.health.type="exec"
+STOPSIGNAL SIGINT

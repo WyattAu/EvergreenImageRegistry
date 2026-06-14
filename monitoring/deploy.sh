@@ -20,7 +20,7 @@ set -euo pipefail
 # ---------------------------------------------------------------------------
 # Configuration (overridable via environment)
 # ---------------------------------------------------------------------------
-REMOTE_USER="${REMOTE_USER:-wyatt}"
+REMOTE_USER="${REMOTE_USER:-truenas_admin}"
 REMOTE_HOST="${REMOTE_HOST:-192.168.1.3}"
 REMOTE_DIR="${REMOTE_DIR:-/mnt/pool_HDD_x2/infra/monitoring}"
 DATA_UID="${DATA_UID:-65532}"   # Evergreen non-root UID
@@ -43,9 +43,9 @@ die()  { printf '\033[1;31m FAIL\033[0m %s\n' "$*" >&2; exit 1; }
 # Resolve which docker compose command the remote host supports.
 remote_compose_cmd() {
   ssh "${SSH_OPTS[@]}" "${REMOTE}" \
-    'command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1 && echo "docker compose" && exit 0;
-     command -v docker-compose >/dev/null 2>&1 && echo "docker-compose" && exit 0;
-     exit 1'
+    "${SSH_DOCKER} compose version >/dev/null 2>&1 && echo '${SSH_DOCKER} compose' && exit 0;
+     command -v docker-compose >/dev/null 2>&1 && echo 'sudo docker-compose' && exit 0;
+     exit 1"
 }
 
 # ---------------------------------------------------------------------------
@@ -67,17 +67,25 @@ ssh "${SSH_OPTS[@]}" "${REMOTE}" 'echo ok' >/dev/null 2>&1 \
 ok "SSH to ${REMOTE} works"
 ok "Required local files present"
 
+# Detect whether docker needs sudo on the remote host
+SSH_DOCKER="docker"
+if ! ssh "${SSH_OPTS[@]}" "${REMOTE}" 'docker ps >/dev/null 2>&1'; then
+  SSH_DOCKER="sudo docker"
+  ok "Using 'sudo docker' on remote host"
+fi
+
 # ---------------------------------------------------------------------------
 # 1. Sync monitoring configs to TrueNAS
 # ---------------------------------------------------------------------------
 log "Syncing monitoring configs -> ${REMOTE}:${REMOTE_DIR}/"
 
-ssh "${SSH_OPTS[@]}" "${REMOTE}" "mkdir -p '${REMOTE_DIR}/prometheus/targets' \
-                                             '${REMOTE_DIR}/prometheus/alerts' \
-                                             '${REMOTE_DIR}/alertmanager' \
-                                             '${REMOTE_DIR}/grafana/dashboards' \
-                                             '${REMOTE_DIR}/grafana/provisioning/datasources' \
-                                             '${REMOTE_DIR}/grafana/provisioning/dashboards'"
+ssh "${SSH_OPTS[@]}" "${REMOTE}" "sudo mkdir -p '${REMOTE_DIR}/prometheus/targets' \
+                                              '${REMOTE_DIR}/prometheus/alerts' \
+                                              '${REMOTE_DIR}/alertmanager' \
+                                              '${REMOTE_DIR}/grafana/dashboards' \
+                                              '${REMOTE_DIR}/grafana/provisioning/datasources' \
+                                              '${REMOTE_DIR}/grafana/provisioning/dashboards' && \
+                           sudo chown -R \$(id -u):\$(id -g) '${REMOTE_DIR}'"
 
 # rsync the whole tree (config only; exclude any local data/runtime artefacts).
 rsync -avz --delete \
@@ -99,9 +107,7 @@ set -euo pipefail
 mkdir -p "${REMOTE_DIR}/data/prometheus" \
          "${REMOTE_DIR}/data/grafana" \
          "${REMOTE_DIR}/data/alertmanager"
-# Evergreen images run as non-root UID ${DATA_UID}; grant write access.
-sudo chown -R ${DATA_UID}:${DATA_UID} "${REMOTE_DIR}/data" 2>/dev/null \
-  || chown -R ${DATA_UID}:${DATA_UID} "${REMOTE_DIR}/data"
+sudo chown -R ${DATA_UID}:${DATA_UID} "${REMOTE_DIR}/data"
 echo "data-dirs-ready"
 REMOTE_PREP
 
@@ -153,7 +159,7 @@ check_endpoint() {
 # Grafana     -> /api/health returns JSON with "database":"ok"
 check_endpoint "prometheus"    "http://localhost:9090/-/healthy" "Healthy"
 check_endpoint "alertmanager"  "http://localhost:9093/-/healthy" "OK"      || true
-check_endpoint "grafana"       "http://localhost:3000/api/health" '"ok"'   || true
+check_endpoint "grafana"       "http://localhost:3030/api/health" '"ok"'   || true
 
 # Node exporter has no dedicated health path; verify the metrics endpoint serves.
 if ssh "${SSH_OPTS[@]}" "${REMOTE}" \
@@ -175,5 +181,5 @@ ok "Deployment complete."
 printf '\n\033[1;36mAccess points:\033[0m\n'
 printf '  Prometheus : http://%s:9090\n' "${REMOTE_HOST}"
 printf '  AlertManager: http://%s:9093\n' "${REMOTE_HOST}"
-printf '  Grafana    : http://%s:3000  (admin / ${GF_ADMIN_PASSWORD:-evergreen})\n' "${REMOTE_HOST}"
+printf '  Grafana    : http://%s:3030  (admin / ${GF_ADMIN_PASSWORD:-evergreen})\n' "${REMOTE_HOST}"
 printf '  Node Exporter: http://%s:9100/metrics\n' "${REMOTE_HOST}"

@@ -11,10 +11,10 @@
 # Usage:
 #   sudo docker compose -f docker-compose.yml up -d
 #
-# Images use Evergreen hardened builds. Entrypoints are overridden to bypass
-# the health-shim (monitoring services have their own built-in health endpoints).
-# The shim flag parser (v1.1.0) intercepts child-process flags; v1.2.0 will fix
-# this so the override can be removed.
+# Images use Evergreen hardened builds. Entrypoints are overridden because
+# monitoring services have their own built-in health endpoints and don't
+# need the shim supervisor. With health-shim v1.2.0 the flag-parsing fix
+# means these overrides are optional but kept for clarity.
 # ----------------------------------------------------------------------------
 
 name: evergreen-monitoring
@@ -77,7 +77,7 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: ${GF_ADMIN_PASSWORD:-evergreen}
       GF_USERS_ALLOW_SIGN_UP: "false"
       GF_AUTH_ANONYMOUS_ENABLED: "false"
-      GF_SERVER_HTTP_PORT: "3030"
+      GF_SERVER_HTTP_PORT: "3000"
       GF_PATHS_PROVISIONING: /etc/grafana/provisioning
       GF_PATHS_DATA: /var/lib/grafana
       GF_PATHS_HOME: /usr/share/grafana
@@ -88,7 +88,7 @@ services:
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
       - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
     ports:
-      - "3030:3030"
+      - "3030:3000"
     networks: [monitoring]
 
   node-exporter:

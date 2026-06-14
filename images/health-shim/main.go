@@ -573,6 +573,8 @@ func runSupervisor(args []string) {
 	var cmdStr string
 	var remaining []string
 
+	// Show help only if -c hasn't been seen yet. Once -c is set, --help
+	// and -h belong to the child process and must pass through untouched.
 	for i := 0; i < len(args); i++ {
 		switch {
 		case args[i] == "-c" || args[i] == "--c":
@@ -586,7 +588,7 @@ func runSupervisor(args []string) {
 			cmdStr = strings.TrimPrefix(args[i], "-c=")
 		case strings.HasPrefix(args[i], "--c="):
 			cmdStr = strings.TrimPrefix(args[i], "--c=")
-		case args[i] == "-h" || args[i] == "--help" || args[i] == "help":
+		case (args[i] == "-h" || args[i] == "--help" || args[i] == "help") && cmdStr == "":
 			fmt.Fprintf(os.Stderr, `usage: shim run [-c command] [args...]
 
 Start a child process with an HTTP health server on port 9101.

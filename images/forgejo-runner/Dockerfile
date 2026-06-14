@@ -30,8 +30,8 @@ EXPOSE 8088
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8088"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "forgejo-runner"]
-CMD ["-c", "/usr/local/bin/forgejo-runner", "--", "daemon"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/forgejo-runner"]
+CMD ["daemon"]
 LABEL org.opencontainers.image.title="forgejo-runner" \
       org.opencontainers.image.description="Forgejo Act Runner - CI/CD runner for Forgejo" \
       org.opencontainers.image.version="${VERSION}" \

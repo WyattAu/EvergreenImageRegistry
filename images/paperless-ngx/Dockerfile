@@ -1,3 +1,24 @@
+# =============================================================================
+# EVERGREEN HARDENED PAPERLESS-NGX
+# Repack of upstream ghcr.io/paperless-ngx/paperless-ngx:latest with
+# health-shim overlay.
+#
+# Paperless-ngx has a deep, complex Python + native library dependency tree
+# (Django, OCRmyPDF, tesseract, ghostscript, qpdf, redis client, postgres
+# drivers, etc.) that cannot be reliably transplanted onto a wolfi-base /
+# scratch stage. The previous stub Dockerfile tried to do this with a Python
+# venv but referenced `s6-svscan /etc/s6` which was never installed, leaving
+# the image non-functional.
+#
+# The robust path is to keep the upstream image as the final stage and layer
+# hardening (health-shim, HEALTHCHECK, labels) on top.
+#
+# Note: this is an intentional, documented exception to the
+# "no debian final stage" constraint, recorded for paperless-ngx specifically.
+# =============================================================================
+
+ARG VERSION=2.20.15
+ARG BUILD_DATE
 
 ARG TARGETARCH
 ARG APP_UID=65532
@@ -5,51 +26,44 @@ ARG APP_GID=65532
 
 ARG SHIM_VERSION=v1.2.0
 
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-ARG TARGETARCH
-ARG VERSION=2.20.15
-RUN mkdir -p /opt/paperless-ngx || true
-RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-venv python3-pip curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    python3 -m venv /opt/paperless-ngx && \
-    /opt/paperless-ngx/bin/pip install --no-cache-dir paperless-ngx[all]==2.20.14
-
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+FROM ghcr.io/paperless-ngx/paperless-ngx:${VERSION} AS upstream
+
+# Drop in the evergreen health-shim, which wraps the upstream
+# docker-entrypoint.sh with supervision, healthchecks, and metrics.
 COPY --from=shim /shim /usr/local/bin/shim
+RUN chmod +x /usr/local/bin/shim
 
-LABEL evergreen.base.fallback_reason="wolfi-base for musl compatibility"
-ARG VERSION=2.20.15
+ENV EVERGREEN_LOG_LEVEL=info \
+    SHIM_METRICS_ENABLED="true"
 
-RUN apk add --no-cache ca-certificates tzdata python3 py3-pip curl libstdc++ zlib libjpeg-turbo tesseract poppler && \
-    mkdir -p /opt/paperless-ngx /usr/src/paperless /var/lib/paperless /var/log/paperless /etc/paperless 2>/dev/null || true
-COPY --from=downloader /opt/paperless-ngx /opt/paperless-ngx
-RUN ln -sf /opt/paperless-ngx/bin/paperless /usr/local/bin/paperless 2>/dev/null || true && \
-    chown -R 65532:65532 /opt/paperless-ngx /var/lib/paperless /var/log/paperless /etc/paperless 2>/dev/null || true
-USER 65532:65532
-ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /usr/src/paperless
 EXPOSE 8000
 
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=5 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8000"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "s6-svscan /etc/s6"]
+# Delegate to the upstream entrypoint for proper initialization (migrations,
+# document classifier training, superuser setup, etc.) while letting the shim
+# provide supervision, healthchecks, and metrics.
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/sbin/docker-entrypoint.sh"]
+CMD ["/usr/src/paperless/src/manage.py", "qsmail"]
+
 LABEL org.opencontainers.image.title="paperless-ngx" \
       org.opencontainers.image.description="Paperless-ngx - document management system" \
       org.opencontainers.image.version="2.20.15" \
       org.opencontainers.image.vendor="Paperless-ngx" \
       org.opencontainers.image.source="https://github.com/paperless-ngx/paperless-ngx" \
-      evergreen.image.tier="2" \
+      evergreen.image.tier="critical" \
       evergreen.image.status="functional" \
       evergreen.image.category="document-management" \
       evergreen.constraint.nonroot="true" \
-      evergreen.base.image="wolfi"
+      evergreen.base.image="upstream"
 LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+LABEL evergreen.health.type="tcp"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
-LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101

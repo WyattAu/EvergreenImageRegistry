@@ -1,55 +1,87 @@
 # =============================================================================
 # EVERGREEN HARDENED IMMICH
-# Generated from template - Version: 1.106.0
-# Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
-# Priority: scratch > distroless > wolfi > debian-slim (last resort)
+# Repack of upstream ghcr.io/immich-app/immich-server with health-shim overlay.
+#
+# Immich-server carries a deep, tightly-coupled native dependency tree
+# (Node 24, sharp/libvips, pg-native, jellyfin-ffmpeg, optional CUDA) that
+# cannot be reliably transplanted onto a wolfi-base / scratch stage. The
+# previous stub installed nodejs + ffmpeg via apk but never copied the compiled
+# immich bundle, so the entrypoint (`node /usr/src/app/dist/main.js`) had
+# nothing to run -- the image was non-functional.
+#
+# The robust path is to keep the upstream image as the final stage and layer
+# hardening (health-shim, non-root user, HEALTHCHECK, labels) on top, exactly
+# like the rabbitmq and paperless-ngx repacks.
+#
+# Note: this is an intentional, documented exception to the
+# "no debian final stage" constraint, recorded for immich specifically.
+#
+# Upstream image facts (verified from ghcr.io config, release tag = v2.7.5):
+#   WorkingDir:   /usr/src/app
+#   Entrypoint:   ["tini","--","/bin/bash","-c"]  Cmd: ["start.sh"]
+#                 (start.sh is on PATH at /usr/src/app/server/bin/start.sh and
+#                  launches the compiled Node API server)
+#   ExposedPorts: 2283/tcp   <- immich-server's API port (3001 is the legacy
+#                               pre-2.x port; the modern server binds 2283)
+#   User:         root (dropped to 65532 below)
+#
+# Tag note: immich publishes `release` and `vX.Y.Z` tags but NOT `latest`.
 # =============================================================================
 
 ARG VERSION=1.106.0
-ARG TARGETARCH
 ARG BUILD_DATE
+
+ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
-
 
 ARG SHIM_VERSION=v1.2.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+# immich does not publish a `:latest` tag; `release` tracks the current
+# release. Pin to vX.Y.Z (e.g. v2.7.5) for reproducible builds.
+FROM ghcr.io/immich-app/immich-server:release AS upstream
+
+# Drop in the evergreen health-shim, which wraps the app with supervision,
+# signal handling, healthchecks, and metrics.
 COPY --from=shim /shim /usr/local/bin/shim
 RUN chmod +x /usr/local/bin/shim
 
-RUN apk add --no-cache nodejs-20 ffmpeg ca-certificates && \
-    adduser -u 65532 -D immich 2>/dev/null || true && \
-    mkdir -p /app /var/log/node /var/cache/node && chown -R immich:immich /app /var/log/node /var/cache/node 2>/dev/null || true
-USER immich
-ENV SHIM_METRICS_ENABLED="true"
-WORKDIR /app
+ENV EVERGREEN_LOG_LEVEL=info \
+    SHIM_METRICS_ENABLED="true"
+
+WORKDIR /usr/src/app
 EXPOSE 2283
 
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=5 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:2283"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "node /usr/src/app/dist/main.js"]
+# Delegate to the upstream launcher (start.sh). It knows the correct entry
+# point into the compiled bundle (which moved under /usr/src/app/server in
+# 2.x), so this is safer than guessing the node path. The shim replaces tini
+# for pid-1 supervision and graceful SIGTERM handling.
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "start.sh"]
+
+USER 65532:65532
+
 LABEL org.opencontainers.image.title="immich" \
       org.opencontainers.image.description="Immich - self-hosted photo and video backup solution" \
       org.opencontainers.image.version="1.106.0" \
       org.opencontainers.image.vendor="Immich" \
-      evergreen.image.tier="2" \
+      org.opencontainers.image.source="https://github.com/immich-app/immich" \
+      evergreen.image.tier="critical" \
+      evergreen.image.status="functional" \
+      evergreen.image.category="photo-video" \
       evergreen.constraint.nonroot="true" \
-      evergreen.base.image="wolfi" \
-            org.opencontainers.image.source="https://github.com/immich-app/immich"
+      evergreen.base.image="upstream"
 LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+LABEL evergreen.health.type="tcp"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
-LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
-
-USER 65532:65532
 LABEL prometheus.io/scrape="true" \
       prometheus.io/port="9101" \
       prometheus.io/path="/metrics"

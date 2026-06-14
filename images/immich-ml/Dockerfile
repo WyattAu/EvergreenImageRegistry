@@ -1,13 +1,37 @@
 # =============================================================================
 # EVERGREEN HARDENED IMMICH-ML
-# Generated from template - Version: 1.106.0
-# Constraint: debian-slim - fallback when scratch/distroless/wolfi unavailable
-# Priority: scratch > distroless > wolfi > debian-slim (last resort)
+# Repack of upstream ghcr.io/immich-app/immich-machine-learning with
+# health-shim overlay.
+#
+# Immich machine-learning carries a heavy native dependency stack (Python 3.11,
+# ONNX Runtime, OpenCV, sharp, optional CUDA) that cannot be reliably
+# transplanted onto a wolfi-base / scratch stage. The previous stub pip-
+# installed onnxruntime/fastapi/uvicorn/pillow onto wolfi but never copied the
+# app code and had no real CMD, so the image was non-functional.
+#
+# The robust path is to keep the upstream image as the final stage and layer
+# hardening (health-shim, non-root user, writable model cache, HEALTHCHECK,
+# labels) on top, delegating startup to the upstream entrypoint so model
+# download and uvicorn bootstrap run unchanged.
+#
+# Note: this is an intentional, documented exception to the
+# "no debian final stage" constraint, recorded for immich-ml specifically.
+#
+# Upstream image facts (verified from ghcr.io config, release tag = v2.7.5):
+#   WorkingDir:   /usr/src      (PYTHONPATH=/usr/src)
+#   Entrypoint:   ["tini","--"] Cmd: ["python","-m","immich_ml"]
+#   Venv:         /opt/venv     (on PATH)
+#   Cache:        MACHINE_LEARNING_CACHE_FOLDER=/cache, TRANSFORMERS_CACHE=/cache
+#   Port:         3003          (default uvicorn bind)
+#   User:         root (dropped to 65532 below; /cache chowned for model writes)
+#
+# Tag note: immich publishes `release` and `vX.Y.Z` tags but NOT `latest`.
 # =============================================================================
 
 ARG VERSION=1.106.0
-ARG TARGETARCH
 ARG BUILD_DATE
+
+ARG TARGETARCH
 ARG APP_UID=65532
 ARG APP_GID=65532
 
@@ -15,37 +39,50 @@ ARG SHIM_VERSION=v1.2.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+# immich does not publish a `:latest` tag; `release` tracks the current
+# release. Pin to vX.Y.Z (e.g. v2.7.5) for reproducible builds.
+FROM ghcr.io/immich-app/immich-machine-learning:release AS upstream
+
+# Drop in the evergreen health-shim, which wraps the app with supervision,
+# signal handling, healthchecks, and metrics.
 COPY --from=shim /shim /usr/local/bin/shim
 RUN chmod +x /usr/local/bin/shim
 
-RUN apk add --no-cache ca-certificates curl && \
-    pip install --no-cache-dir --break-system-packages onnxruntime fastapi==0.115.0 uvicorn==0.30.0 pillow==10.4.0 2>/dev/null || \
-    pip install --no-cache-dir onnxruntime fastapi==0.115.0 uvicorn==0.30.0 pillow==10.4.0 && \
-    adduser -u 65532 -D app 2>/dev/null || true && \
-    mkdir -p /app /var/log/python /var/cache/python && chown -R app:app /app /var/log/python /var/cache/python 2>/dev/null || true
-USER 65532:65532
-ENV SHIM_METRICS_ENABLED="true"
-WORKDIR /app
+# ONNX/transformer models are downloaded at runtime into /cache (set by the
+# upstream MACHINE_LEARNING_CACHE_FOLDER / TRANSFORMERS_CACHE envs). Make it
+# writable by the non-root user so model downloads succeed under UID 65532.
+RUN mkdir -p /cache && chown -R 65532:65532 /cache
+
+ENV EVERGREEN_LOG_LEVEL=info \
+    SHIM_METRICS_ENABLED="true"
+
+WORKDIR /usr/src
 EXPOSE 3003
 
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=10s --timeout=5s --start-period=60s --retries=5 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3003"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+# Delegate to the upstream launcher (tini -- python -m immich_ml). tini is kept
+# so ONNX/subprocess zombies are reaped; the shim provides pid-1 supervision
+# and graceful SIGTERM handling on top.
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "tini -- python -m immich_ml"]
+
+USER 65532:65532
+
 LABEL org.opencontainers.image.title="immich-ml" \
-      org.opencontainers.image.description="immich-ml container image" \
+      org.opencontainers.image.description="Immich machine-learning - face recognition, smart search, and image classification" \
       org.opencontainers.image.version="1.106.0" \
       org.opencontainers.image.vendor="Immich" \
-      org.opencontainers.image.source="https://github.com/immich-app/immich/releases" \
-      evergreen.image.tier="3" \
+      org.opencontainers.image.source="https://github.com/immich-app/immich" \
+      evergreen.image.tier="standard" \
+      evergreen.image.status="functional" \
+      evergreen.image.category="machine-learning" \
       evergreen.constraint.nonroot="true" \
-      evergreen.base.image="wolfi"
+      evergreen.base.image="upstream"
 LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+LABEL evergreen.health.type="tcp"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
-LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101

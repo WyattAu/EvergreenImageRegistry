@@ -24,21 +24,25 @@ COPY --from=shim /shim /usr/local/bin/shim
 RUN chmod +x /usr/local/bin/shim
 
 ARG VERSION=v1.12.18
-RUN apk add --no-cache ca-certificates busybox && \
+RUN apk add --no-cache ca-certificates nginx && \
     addgroup -S -g 10000 appuser 2>/dev/null || true && \
     adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser 2>/dev/null || true && \
-    mkdir -p /app 2>/dev/null || true
+    mkdir -p /app /var/log/nginx /var/cache/nginx /run 2>/dev/null || true
 COPY --from=builder /www-src /app
-RUN chown -R 65532:65532 /app 2>/dev/null || true
+RUN chown -R 65532:65532 /app /var/log/nginx /var/cache/nginx /run 2>/dev/null || true
+
+# Minimal nginx config: serve static files from /app on port 8080 (non-root)
+RUN printf 'events {}\nhttp {\n  server {\n    listen 8080;\n    root /app;\n    index index.html;\n    location / { try_files $uri $uri/ =404; }\n  }\n}\n' > /etc/nginx/nginx.conf
+
 USER 65532:65532
 ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
-EXPOSE 80
+EXPOSE 8080
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "nginx"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "nginx -g 'daemon off;'"]
 LABEL org.opencontainers.image.title="element-web" \
       org.opencontainers.image.description="Element Web - web client for Matrix" \
       org.opencontainers.image.version="v1.12.18" \

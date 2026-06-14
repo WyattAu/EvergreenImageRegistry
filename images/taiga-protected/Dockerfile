@@ -10,8 +10,8 @@ ARG VERSION=6.9.0
 RUN mkdir -p /venv || true
 RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-pip python3-venv curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     python3 -m venv /venv && \
-    /venv/bin/pip install --no-cache-dir taiga-protected==${VERSION} 2>/dev/null && \
-    mkdir -p /app /var/log/taiga-protected /etc/taiga-protected 2>/dev/null || true
+    /venv/bin/pip install --no-cache-dir taiga-protected==${VERSION} && \
+    mkdir -p /app /var/log/taiga-protected /etc/taiga-protected || true
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
@@ -31,7 +31,7 @@ EXPOSE 8003
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8003"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "nginx"]]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/venv/bin/uvicorn taiga_protected.main:app --host 0.0.0.0 --port 8003"]
 
 LABEL org.opencontainers.image.title="taiga-protected" \
       org.opencontainers.image.description="Taiga Protected - file access protection proxy for Taiga" \

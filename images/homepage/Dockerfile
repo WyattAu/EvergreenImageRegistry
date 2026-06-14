@@ -37,6 +37,8 @@ LABEL evergreen.security.seccomp="runtime-default"
 
 USER 65532:65532
 ENV SHIM_METRICS_ENABLED="true"
+ENV HOSTNAME="0.0.0.0"
+ENV PORT="3000"
 
 LABEL prometheus.io/scrape="true" \
       prometheus.io/port="9101" \

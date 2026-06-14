@@ -57,13 +57,10 @@ EXPOSE 2283
 HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=5 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:2283"]
 
-# Delegate to the upstream launcher (start.sh). It knows the correct entry
-# point into the compiled bundle (which moved under /usr/src/app/server in
-# 2.x), so this is safer than guessing the node path. The shim replaces tini
-# for pid-1 supervision and graceful SIGTERM handling.
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "start.sh"]
-
-USER 65532:65532
+# Keep upstream entrypoint (tini must be PID 1 for signal handling)
+# Shim is only used for HEALTHCHECK
+ENTRYPOINT ["tini", "--", "/bin/bash", "-c"]
+CMD ["start.sh"]
 
 LABEL org.opencontainers.image.title="immich" \
       org.opencontainers.image.description="Immich - self-hosted photo and video backup solution" \

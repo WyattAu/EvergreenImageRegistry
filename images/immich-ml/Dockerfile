@@ -62,12 +62,10 @@ EXPOSE 3003
 HEALTHCHECK --interval=10s --timeout=5s --start-period=60s --retries=5 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3003"]
 
-# Delegate to the upstream launcher (tini -- python -m immich_ml). tini is kept
-# so ONNX/subprocess zombies are reaped; the shim provides pid-1 supervision
-# and graceful SIGTERM handling on top.
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "tini -- python -m immich_ml"]
-
-USER 65532:65532
+# Keep upstream entrypoint (tini must be PID 1 for signal handling)
+# Shim is only used for HEALTHCHECK
+ENTRYPOINT ["tini", "--"]
+CMD ["python", "-m", "immich_ml"]
 
 LABEL org.opencontainers.image.title="immich-ml" \
       org.opencontainers.image.description="Immich machine-learning - face recognition, smart search, and image classification" \

@@ -44,11 +44,9 @@ EXPOSE 8000
 HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=5 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8000"]
 
-# Delegate to the upstream entrypoint for proper initialization (migrations,
-# document classifier training, superuser setup, etc.) while letting the shim
-# provide supervision, healthchecks, and metrics.
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/sbin/docker-entrypoint.sh"]
-CMD ["/usr/src/paperless/src/manage.py", "qsmail"]
+# Keep upstream /init as entrypoint (s6-overlay must be PID 1)
+# Shim is only used for HEALTHCHECK
+ENTRYPOINT ["/init"]
 
 LABEL org.opencontainers.image.title="paperless-ngx" \
       org.opencontainers.image.description="Paperless-ngx - document management system" \

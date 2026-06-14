@@ -15,7 +15,7 @@ RUN cd redis-${VERSION} && \
     make -j$(nproc) MALLOC=libc BUILD_TLS=no LDFLAGS="-static" install && \
     mkdir -p /app /var/log/redis /var/cache/redis
 
-FROM ghcr.io/wyattau/evergreenshim/cache-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
 COPY --from=shim /shim /usr/local/bin/shim
@@ -28,16 +28,9 @@ COPY --from=builder /var/cache/redis /var/cache/redis
 COPY shim.toml /etc/evergreen/shim.toml
 
 USER 65532:65532
-ENV SHIM_CACHE_ENABLED="true" \
-    SHIM_CACHE_MAX_ENTRIES="10000" \
-    SHIM_CACHE_DEFAULT_TTL="300" \
-    SHIM_CACHE_EVICTION="lru" \
-    SHIM_METRICS_ENABLED="true" \
-    SHIM_MANAGEMENT_ENABLED="true" \
-    SHIM_MANAGEMENT_HOST="0.0.0.0" \
-    SHIM_MANAGEMENT_PORT="9102"
+ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
-EXPOSE 6379 9101 9102
+EXPOSE 6379 9101
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]

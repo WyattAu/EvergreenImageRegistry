@@ -114,6 +114,26 @@ jobs:
               2>&1 && echo "PASS: ${img}" || echo "WARN: ${img} has lint issues"
           done
 
+      - name: Validate entrypoint patterns (BLOCKING)
+        run: |
+          IFS=',' read -ra IMAGE_LIST <<< "${{ steps.images.outputs.images }}"
+          FAILURES=0
+          for img in "${IMAGE_LIST[@]}"; do
+            [ -z "$img" ] && continue
+            echo "::group::Validate ${img}"
+            if python3 scripts/validate_entrypoint_pattern.py --image "$img"; then
+              echo "PASS: ${img}"
+            else
+              echo "::error::${img}: entrypoint validation FAILED"
+              FAILURES=$((FAILURES+1))
+            fi
+            echo "::endgroup::"
+          done
+          if [ "$FAILURES" -gt 0 ]; then
+            echo "::error::${FAILURES} image(s) failed entrypoint validation"
+            exit 1
+          fi
+
   # ---------------------------------------------------------------------------
   # STAGE 3: BUILD - Build only changed images
   # ---------------------------------------------------------------------------

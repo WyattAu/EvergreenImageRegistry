@@ -184,6 +184,25 @@ jobs:
             fi
             if build_image "${image}"; then
               BUILT=$((BUILT+1)); sleep 1
+              # Smoke test: verify shim binary exists in the built image
+              SAFE="${image//\//-}"
+              TAR="/tmp/images/${SAFE}.tar"
+              if [ "${{ inputs.multiarch }}" != "true" ] && [ -f "$TAR" ]; then
+                echo "::group::Smoke test ${image}"
+                docker load -i "$TAR" 2>/dev/null || true
+                CONTAINER_ID=$(docker create "${REGISTRY}/${OWNER}/${image}:${TAG}" 2>/dev/null || echo "")
+                if [ -n "$CONTAINER_ID" ]; then
+                  if docker cp "${CONTAINER_ID}:/usr/local/bin/shim" /dev/null 2>/dev/null; then
+                    echo "Smoke: PASS — /usr/local/bin/shim exists"
+                  else
+                    echo "::error::${image}: smoke test FAILED — /usr/local/bin/shim not found in image"
+                    FAILED=$((FAILED+1))
+                    BUILT=$((BUILT-1))
+                  fi
+                  docker rm "$CONTAINER_ID" 2>/dev/null || true
+                fi
+                echo "::endgroup::"
+              fi
             else
               echo "::warning::${image}: build failed, retrying..."
               sleep 5

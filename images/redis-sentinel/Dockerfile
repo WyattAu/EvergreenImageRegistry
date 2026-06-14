@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/redis/redis/archive/refs/tags/${VERSION}.tar.gz -o redis.tar.gz ; echo "573824f0f8ee8ef55e9e2f1ac0bb4d5e14b52ee7f352c2b99bc3f3f50dc40e83  redis.tar.gz" | sha256sum -c  ; [ -f redis.tar.gz ] && tar -xzf redis.tar.gz ; \
     cd redis-${VERSION} && make -j"$(nproc)" redis && strip --strip-all src/redis 2>/dev/null; cp src/redis /tmp/redis 2>/dev/null && \
     mkdir -p /tmp/redis
-FROM ghcr.io/wyattau/evergreenshim/cache-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 COPY --from=shim /shim /usr/local/bin/shim

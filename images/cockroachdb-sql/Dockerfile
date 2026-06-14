@@ -17,7 +17,7 @@ ARG TARGETARCH
 RUN mkdir -p /app /var/log/cockroachdb-sql /var/cache/cockroachdb-sql 2>/dev/null || true
 
 
-FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
 COPY --from=shim /shim /usr/local/bin/shim

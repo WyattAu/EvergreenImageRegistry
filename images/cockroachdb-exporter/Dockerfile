@@ -15,7 +15,7 @@ ARG TARGETARCH
 RUN mkdir -p /var/log/cockroach /var/lib/cockroach /var/cache/cockroach 2>/dev/null || true
 
 
-FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
 COPY --from=shim /shim /usr/local/bin/shim

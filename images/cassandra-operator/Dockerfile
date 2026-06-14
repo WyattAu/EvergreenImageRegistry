@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL "https://github.com/k8ssandra/cass-operator/releases/download/v${VERSION}/cass-operator_v${VERSION}_linux_amd64" \
         -o /tmp/cass-operator || true ; \
     chmod +x /tmp/cass-operator 2>/dev/null ; \' && { echo "Binary not available - download failed" >&2; exit 1; }
-FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
 COPY --from=shim /shim /usr/local/bin/shim

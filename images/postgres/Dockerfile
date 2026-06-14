@@ -7,7 +7,7 @@ ARG VERSION=17.10
 ARG TARGETARCH
 ARG SHIM_VERSION=v1.2.0
 
-FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 RUN apk add --no-cache postgresql-17 postgresql-17-contrib ca-certificates

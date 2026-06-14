@@ -24,7 +24,7 @@ ARG TARGETARCH
 RUN mkdir -p /app /var/log/mongodb_exporter /var/cache/mongodb_exporter 2>/dev/null || true
 
 
-FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
 COPY --from=shim /shim /usr/local/bin/shim

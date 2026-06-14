@@ -12,7 +12,7 @@ RUN git clone --depth 1 --branch "v${VERSION}" https://github.com/etcd-io/etcd.g
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} \
     go build -ldflags='-s -w -X main.version=${VERSION}' \
     -o /binary ./etcd
-FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 FROM scratch
 COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /binary /etcd

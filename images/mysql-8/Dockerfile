@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mkdir -p /var/lib/mysql-src /var/run/mysqld /app 2>/dev/null || true && \
     test -d /var/lib/mysql || mkdir -p /var/lib/mysql ; \
     test -d /var/run/mysqld || mkdir -p /var/run/mysqld ; true
-FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 COPY --from=shim /shim /usr/local/bin/shim

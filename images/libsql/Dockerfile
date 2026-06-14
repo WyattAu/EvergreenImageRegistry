@@ -10,7 +10,7 @@ WORKDIR /src
 RUN RUSTFLAGS="-C target-feature=+crt-static" \
     cargo build --release --target x86_64-unknown-linux-musl --bin libsql-server
 
-FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
 COPY --from=shim /shim /usr/local/bin/shim

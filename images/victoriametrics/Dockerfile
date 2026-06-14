@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
     curl --retry 3 --retry-delay 5 -fsSL https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v1.142.0/victoria-metrics-linux-${TARGETARCH}-v1.142.0-cluster.tar.gz -o /victoria-metrics \
     mkdir -p /app /var/log/victoria-metrics /var/cache/victoria-metrics 2>/dev/null || true
 
-FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
 COPY --from=shim /shim /usr/local/bin/shim

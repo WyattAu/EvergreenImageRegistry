@@ -21,7 +21,7 @@ RUN pip install --no-cache-dir --prefix=/install patroni[postgresql]=="${VERSION
     find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null
 
-FROM ghcr.io/wyattau/evergreenshim/db-shim:${SHIM_VERSION} AS shim
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
 COPY --from=shim /shim /usr/local/bin/shim

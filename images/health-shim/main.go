@@ -7,6 +7,8 @@
 //
 //  1. Supervisor mode:    /shim run -c "/nginx"
 //     Starts the child process, an HTTP health server, and forwards signals.
+//     Child args with dashes (e.g. --appendonly, -g) are passed through
+//     untouched since v1.2.0 (custom flag parser replaces flag.Parse).
 //
 //  2. One-shot healthcheck: /shim healthcheck --tcp 127.0.0.1:80
 //     Performs a single TCP/HTTP/command probe and exits 0 or 1.
@@ -563,26 +565,62 @@ func newHealthServer(listen string) *http.Server {
 // runSupervisor starts a child process alongside the HTTP health server,
 // forwards signals, and exits with the child's exit code.
 func runSupervisor(args []string) {
-	fs := flag.NewFlagSet("run", flag.ExitOnError)
-	fs.Usage = func() {
-		fmt.Fprintf(fs.Output(), "usage: shim run [-c command] [args...]\n\n")
-		fmt.Fprintf(fs.Output(), "Start a child process with an HTTP health server on port 9101.\n\n")
-		fmt.Fprintf(fs.Output(), "Options:\n")
-		fs.PrintDefaults()
-		fmt.Fprintf(fs.Output(), "\nIf -c is omitted, positional args are used as the command.\n")
-		fmt.Fprintf(fs.Output(), "If no command is given, only the HTTP server runs.\n\n")
-		fmt.Fprintf(fs.Output(), "Examples:\n")
-		fmt.Fprintf(fs.Output(), "  shim run -c /nginx\n")
-		fmt.Fprintf(fs.Output(), "  shim run -c \"redis-server --appendonly yes\"\n")
-		fmt.Fprintf(fs.Output(), "  shim run redis-server   # positional form\n")
-	}
+	// We manually parse -c instead of using flag.Parse() because Go's flag
+	// package would intercept any dash-prefixed args (e.g. --appendonly, -g,
+	// --homepath) that are actually meant for the child process.  This custom
+	// parser extracts ONLY the -c flag and treats everything else as the
+	// command to supervise.
 	var cmdStr string
-	fs.StringVar(&cmdStr, "c", "", "command to run as a supervised child process")
-	fs.Parse(args)
+	var remaining []string
+
+	for i := 0; i < len(args); i++ {
+		switch {
+		case args[i] == "-c" || args[i] == "--c":
+			if i+1 >= len(args) {
+				fmt.Fprintln(os.Stderr, "flag needs an argument: -c")
+				os.Exit(2)
+			}
+			cmdStr = args[i+1]
+			i++ // skip the value
+		case strings.HasPrefix(args[i], "-c="):
+			cmdStr = strings.TrimPrefix(args[i], "-c=")
+		case strings.HasPrefix(args[i], "--c="):
+			cmdStr = strings.TrimPrefix(args[i], "--c=")
+		case args[i] == "-h" || args[i] == "--help" || args[i] == "help":
+			fmt.Fprintf(os.Stderr, `usage: shim run [-c command] [args...]
+
+Start a child process with an HTTP health server on port 9101.
+
+Options:
+  -c string   command to run as a supervised child process
+
+If -c is omitted, positional args are used as the command.
+If no command is given, only the HTTP server runs.
+
+Examples:
+  shim run -c /nginx
+  shim run -c "redis-server --appendonly yes"
+  shim run redis-server   # positional form
+`)
+			return
+		case args[i] == "--":
+			// Everything after -- is the child command verbatim.
+			remaining = append(remaining, args[i+1:]...)
+			i = len(args) // stop scanning
+		default:
+			// First non-flag arg: this and ALL remaining args are the command.
+			// We stop parsing here so child flags like -g / --port are preserved.
+			remaining = append(remaining, args[i:]...)
+			i = len(args) // stop scanning
+		}
+	}
 
 	// If no -c flag, treat remaining positional args as the command.
-	if cmdStr == "" && fs.NArg() > 0 {
-		cmdStr = strings.Join(fs.Args(), " ")
+	if cmdStr == "" && len(remaining) > 0 {
+		cmdStr = strings.Join(remaining, " ")
+	} else if cmdStr != "" && len(remaining) > 0 {
+		// -c provided a base command, append extra positional args.
+		cmdStr = cmdStr + " " + strings.Join(remaining, " ")
 	}
 
 	loadEnvConfig()

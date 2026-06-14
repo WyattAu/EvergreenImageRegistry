@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "health-shim"
-version = "1.1.0"
+version = "1.2.0"
 description = "health-shim container image"
 
 [build]

@@ -26,8 +26,8 @@ ENV SHIM_METRICS_ENABLED="true"
 WORKDIR /app
 EXPOSE 8080
 
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD ["/shim", "healthcheck", "--tcp", "127.0.0.1:9101"]
 
 ENTRYPOINT ["/shim", "run", "-c", "/watchtower"]
 LABEL org.opencontainers.image.title="watchtower" \

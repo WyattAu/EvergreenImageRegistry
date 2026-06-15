@@ -32,7 +32,8 @@ COPY --from=builder /www-src /app
 RUN chown -R 65532:65532 /app /var/log/nginx /var/cache/nginx /run 2>/dev/null || true
 
 # Minimal nginx config: serve static files from /app on port 8080 (non-root)
-RUN printf 'events {}\nhttp {\n  server {\n    listen 8080;\n    root /app;\n    index index.html;\n    location / { try_files $uri $uri/ =404; }\n  }\n}\n' > /etc/nginx/nginx.conf
+# daemon off is set in config to avoid shell quoting issues with shim
+RUN printf 'daemon off;\nevents {}\nhttp {\n  server {\n    listen 8080;\n    root /app;\n    index index.html;\n    location / { try_files $uri $uri/ =404; }\n  }\n}\n' > /etc/nginx/nginx.conf
 
 USER 65532:65532
 ENV SHIM_METRICS_ENABLED="true"
@@ -42,7 +43,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "nginx -g 'daemon off;'"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "nginx"]
 LABEL org.opencontainers.image.title="element-web" \
       org.opencontainers.image.description="Element Web - web client for Matrix" \
       org.opencontainers.image.version="v1.12.18" \

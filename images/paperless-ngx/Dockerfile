@@ -28,7 +28,7 @@ ARG SHIM_VERSION=v1.2.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM ghcr.io/paperless-ngx/paperless-ngx:${VERSION} AS upstream
+FROM ghcr.io/paperless-ngx/paperless-ngx:${VERSION}
 
 # Drop in the evergreen health-shim, which wraps the upstream
 # docker-entrypoint.sh with supervision, healthchecks, and metrics.

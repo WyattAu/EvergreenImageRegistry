@@ -68,8 +68,7 @@ jobs:
           TABLE_CONTENT: ${{ steps.generate_list.outputs.table_content }}
         run: |
           printf '%b\n' "$TABLE_CONTENT" > /tmp/table_content.txt
-
-          cat > /tmp/update_readme.py << 'PYEOF'
+          python3 /dev/stdin << 'PYEOF'
           import sys
           START = "<!-- AUTO_IMAGE_LIST_START -->"
           END = "<!-- AUTO_IMAGE_LIST_END -->"
@@ -86,10 +85,6 @@ jobs:
               f.write(new_readme)
           print("README updated")
           PYEOF
-
-          # Strip leading whitespace from heredoc (YAML block indent)
-          sed -i 's/^          //' /tmp/update_readme.py
-          python3 /tmp/update_readme.py
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9

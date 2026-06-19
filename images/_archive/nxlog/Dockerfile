@@ -1,25 +1,25 @@
-ARG VERSION=2.4.4-bookworm-slim
+ARG VERSION=3.1.2331
 ARG SHIM_VERSION=v1.2.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM rethinkdb:${VERSION}
+FROM nxlog/nxlog:${VERSION}
 ARG VERSION
 
 COPY --from=shim /shim /usr/local/bin/shim
 
 ENV SHIM_METRICS_ENABLED="true"
 
-HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \
-  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:28015"]
+HEALTHCHECK --interval=15s --timeout=5s --start-period=30s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:514"]
 
-EXPOSE 28015 9101
+EXPOSE 514 9101
 
-LABEL org.opencontainers.image.title="rethinkdb" \
-      org.opencontainers.image.description="RethinkDB - real-time NoSQL database (hardened with health-shim)" \
+LABEL org.opencontainers.image.title="nxlog" \
+      org.opencontainers.image.description="NXLog Community Edition - log collection and forwarding (hardened with health-shim)" \
       org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.vendor="RethinkDB" \
-      org.opencontainers.image.source="https://github.com/rethinkdb/rethinkdb" \
+      org.opencontainers.image.vendor="nxlog" \
+      org.opencontainers.image.source="https://github.com/nxlogcommunity/nxlog" \
       evergreen.image.tier="standard"
 LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.base.image="upstream"

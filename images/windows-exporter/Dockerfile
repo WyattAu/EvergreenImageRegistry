@@ -1,29 +1,31 @@
 # STUB: windows-exporter is Windows-only, no Linux binary exists.
-# This image is a no-op on Linux; it exists for registry completeness.
+# This image exists for registry completeness only.
+# Uses shim to keep container alive (health server) on Linux.
 ARG VERSION=0.25.0
+ARG SHIM_VERSION=v1.2.0
+
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
+
+ARG VERSION=0.25.0
 USER 65532:65532
 WORKDIR /tmp
-EXPOSE 9182
+EXPOSE 9182 9101
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/bin/sh", "-c", "echo 'windows-exporter v${VERSION} is Windows-only. Use prometheus-node-exporter for Linux metrics.'; sleep infinity"]
+ENTRYPOINT ["/usr/local/bin/shim", "run"]
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL org.opencontainers.image.title="windows-exporter" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="prometheus-community" \
       org.opencontainers.image.source="https://github.com/prometheus-community/windows_exporter" \
-      org.opencontainers.image.description="Prometheus exporter for Windows metrics (Windows-only, stub on Linux)" \
-      evergreen.image.tier="1" \
+      org.opencontainers.image.description="Prometheus exporter for Windows metrics (Windows-only, stub on Linux — use prometheus-node-exporter)" \
+      evergreen.image.tier="standard" \
       evergreen.image.category="monitoring" \
-      evergreen.image.status="functional" \
-      evergreen.image.note="This is a stub - windows-exporter only runs on Windows. Use prometheus-node-exporter for Linux." \
-      evergreen.constraint.nonroot="true" \
-      evergreen.constraint.base="scratch" \
-      evergreen.hft.signal-handling="native" \
-      evergreen.hft.shutdown-timeout="3s" \
-      evergreen.hft.init-system="none" \
-      evergreen.hft.startup-timeout="3000ms"
+      evergreen.image.status="stub" \
+      evergreen.constraint.nonroot="true"
 
 LABEL evergreen.base.image="scratch"
 LABEL evergreen.metrics.native="ztunnel"
@@ -33,5 +35,7 @@ LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 9101
+LABEL prometheus.io/scrape="true" \
+      prometheus.io/port="9101" \
+      prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

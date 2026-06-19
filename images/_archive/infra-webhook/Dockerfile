@@ -13,6 +13,12 @@ ARG COMPOSE_VERSION=v2.32.3
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
 FROM cgr.dev/chainguard/wolfi-base
+ARG SOPS_VERSION=3.12.2
+ARG AGE_VERSION=1.2.0
+ARG WEBHOOK_VERSION=2.8.3
+ARG ANSIBLE_VERSION=2.20.4
+ARG COMPOSE_VERSION=v5.1.4
+ARG TARGETARCH
 COPY --from=shim /shim /usr/local/bin/shim
 
 RUN apk add --no-cache \
@@ -26,7 +32,8 @@ RUN apk add --no-cache \
     gettext \
     util-linux \
     docker-cli \
-    ca-certificates
+    ca-certificates \
+    wget
 
 RUN pip3 install --break-system-packages ansible-core==${ANSIBLE_VERSION} && \
     ansible-galaxy collection install community.docker && \
@@ -34,6 +41,7 @@ RUN pip3 install --break-system-packages ansible-core==${ANSIBLE_VERSION} && \
 
 ARG TARGETARCH
 RUN ARCH="${TARGETARCH:-amd64}" && \
+    mkdir -p /usr/local/lib/docker/cli-plugins && \
     wget -qO /usr/local/lib/docker/cli-plugins/docker-compose \
         "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-linux-${ARCH}" && \
     chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
@@ -49,12 +57,12 @@ RUN ARCH="${TARGETARCH:-amd64}" && \
     wget -qO /tmp/webhook.tar.gz \
         "https://github.com/adnanh/webhook/releases/download/${WEBHOOK_VERSION}/webhook-linux-${ARCH}.tar.gz" && \
     tar xzf /tmp/webhook.tar.gz -C /usr/local/bin --strip-components=1 && \
-    rm /tmp/age.tar.gz
+    rm -f /tmp/webhook.tar.gz
 
-RUN git config --global user.email "infra-deploy@wyattau.com" && \
+RUN mkdir -p /opt/webhook /home/webhook/.ssh && \
+    git config --global user.email "infra-deploy@wyattau.com" && \
     git config --global user.name "Infra Deploy"
-
-RUN mkdir -p /opt/webhook /root/.ssh
+ENV HOME=/home/webhook
 WORKDIR /opt/webhook
 
 USER 65532:65532

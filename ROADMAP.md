@@ -11,23 +11,23 @@
 
 ## Current State (v30.0.0)
 
-| Metric                   | Value                          | Status                      |
-| ------------------------ | ------------------------------ | --------------------------- |
-| Total images             | 987                            | --                          |
-| HEALTHCHECK (real)       | 558/987 (56.5%)                | DONE                        |
-| HEALTHCHECK NONE         | 426/987 (43.2%)                | Expected (scratch/no-shell) |
-| Security labels (4)      | 100%                           | DONE                        |
-| OCI labels (title)       | 99.8% (985/987)                | DONE                        |
-| SBOM                     | 99.6% (983/987)                | DONE                        |
-| Non-root USER            | 98.9% (975/987)                | DONE                        |
-| ENTRYPOINT               | 95.7% (944/987)                | DONE                        |
-| STOPSIGNAL               | 99.6% (981/987)                | DONE                        |
-| Multi-arch (amd64+arm64) | 849 declared                   | DONE                        |
-| Docker Hub mirror        | 98 repos at docker.io/wyattau/ | DONE                        |
-| CI/CD workflows          | 22 active                      | DONE                        |
-| evergreenctl (Rust)      | v1.0.0, 142 tests              | DONE                        |
-| health-shim (Go)         | v1.2.0, run+healthcheck+flag fix| DONE                        |
-| Python test suite        | 70 tests                       | DONE                        |
+| Metric                   | Value                            | Status                      |
+| ------------------------ | -------------------------------- | --------------------------- |
+| Total images             | 987                              | --                          |
+| HEALTHCHECK (real)       | 558/987 (56.5%)                  | DONE                        |
+| HEALTHCHECK NONE         | 426/987 (43.2%)                  | Expected (scratch/no-shell) |
+| Security labels (4)      | 100%                             | DONE                        |
+| OCI labels (title)       | 99.8% (985/987)                  | DONE                        |
+| SBOM                     | 99.6% (983/987)                  | DONE                        |
+| Non-root USER            | 98.9% (975/987)                  | DONE                        |
+| ENTRYPOINT               | 95.7% (944/987)                  | DONE                        |
+| STOPSIGNAL               | 99.6% (981/987)                  | DONE                        |
+| Multi-arch (amd64+arm64) | 849 declared                     | DONE                        |
+| Docker Hub mirror        | 98 repos at docker.io/wyattau/   | DONE                        |
+| CI/CD workflows          | 22 active                        | DONE                        |
+| evergreenctl (Rust)      | v1.0.0, 142 tests                | DONE                        |
+| health-shim (Go)         | v1.2.0, run+healthcheck+flag fix | DONE                        |
+| Python test suite        | 70 tests                         | DONE                        |
 
 ---
 
@@ -195,17 +195,17 @@ Priority: HIGH | Effort: 1 day | Status: COMPLETE
 
 Priority: HIGH | Effort: 1 day | Status: COMPLETE
 
-| Task                                 | Status |
-| ------------------------------------ | ------ |
-| health-shim v1.2.0 (flag parsing fix)| DONE   |
-| --help passthrough fix               | DONE   |
-| 718 Dockerfiles updated to v1.2.0    | DONE   |
-| Prometheus ENTRYPOINT path fix       | DONE   |
-| Monitoring deployed to TrueNAS       | DONE   |
-| Native entrypoints (no overrides)    | DONE   |
-| Grafana datasources + dashboards     | DONE   |
-| oauth2-proxy verified (flags pass)   | DONE   |
-| Keycloak verified (JVM boots)        | DONE   |
+| Task                                  | Status |
+| ------------------------------------- | ------ |
+| health-shim v1.2.0 (flag parsing fix) | DONE   |
+| --help passthrough fix                | DONE   |
+| 718 Dockerfiles updated to v1.2.0     | DONE   |
+| Prometheus ENTRYPOINT path fix        | DONE   |
+| Monitoring deployed to TrueNAS        | DONE   |
+| Native entrypoints (no overrides)     | DONE   |
+| Grafana datasources + dashboards      | DONE   |
+| oauth2-proxy verified (flags pass)    | DONE   |
+| Keycloak verified (JVM boots)         | DONE   |
 
 ---
 

@@ -23,16 +23,16 @@
 
 ## CI Pipeline
 
-| Workflow            | Status  | Notes                                   |
-| ------------------- | ------- | --------------------------------------- |
-| Lint & Format Check | PASSING | 10 jobs: prettier, hadolint, yamllint   |
-| Go Tests            | PASSING | health-shim vet + build                 |
+| Workflow            | Status  | Notes                                         |
+| ------------------- | ------- | --------------------------------------------- |
+| Lint & Format Check | PASSING | 10 jobs: prettier, hadolint, yamllint         |
+| Go Tests            | PASSING | health-shim vet + build                       |
 | Shim Functionality  | PASSING | health-shim v1.2.0, redis/nginx/grafana tests |
-| Build on Push       | PASSING | Discover, Lint, Build, Sign             |
-| Nightly Build       | PASSING | All jobs pass                           |
-| Fuzz Testing        | PASSING |                                         |
-| FIPS Builds         | READY   | 4-job workflow, 9 FIPS Dockerfiles      |
-| Daily Security Scan | PASSING | CVE rebuild dispatch                    |
+| Build on Push       | PASSING | Discover, Lint, Build, Sign                   |
+| Nightly Build       | PASSING | All jobs pass                                 |
+| Fuzz Testing        | PASSING |                                               |
+| FIPS Builds         | READY   | 4-job workflow, 9 FIPS Dockerfiles            |
+| Daily Security Scan | PASSING | CVE rebuild dispatch                          |
 
 ## Base Image Distribution
 

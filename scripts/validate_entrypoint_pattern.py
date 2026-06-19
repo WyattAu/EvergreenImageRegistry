@@ -146,9 +146,11 @@ def validate_image(image_name: str) -> PatternResult:
     # Images with upstream init systems (s6, tini) keep upstream ENTRYPOINT
     # and use shim only for HEALTHCHECK. Marked with:
     #   LABEL evergreen.entrypoint.pattern="repack-upstream-init"
-    is_repack_init = 'evergreen.entrypoint.pattern="repack-upstream-init"' in text or \
-                     "evergreen.entrypoint.pattern='repack-upstream-init'" in text or \
-                     'evergreen.entrypoint.pattern = "repack-upstream-init"' in text
+    is_repack_init = (
+        'evergreen.entrypoint.pattern="repack-upstream-init"' in text
+        or "evergreen.entrypoint.pattern='repack-upstream-init'" in text
+        or 'evergreen.entrypoint.pattern = "repack-upstream-init"' in text
+    )
 
     has_copy, shim_path = find_shim_copy(text)
     if not has_copy:

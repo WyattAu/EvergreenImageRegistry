@@ -15,6 +15,9 @@ option: trading floors, air-gapped networks, and regulated infrastructure.
 
 ## Quick Start
 
+<!-- AUTO_IMAGE_LIST_START -->
+<!-- AUTO_IMAGE_LIST_END -->
+
 ```bash
 docker pull ghcr.io/wyattau/evergreenimageregistry/redis:7.2
 

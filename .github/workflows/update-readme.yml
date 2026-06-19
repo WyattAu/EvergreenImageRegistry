@@ -67,36 +67,29 @@ jobs:
         env:
           TABLE_CONTENT: ${{ steps.generate_list.outputs.table_content }}
         run: |
-          START_MARKER="<!-- AUTO_IMAGE_LIST_START -->"
-          END_MARKER="<!-- AUTO_IMAGE_LIST_END -->"
-          README_FILE="README.md"
-
-          # Write table content to temp file via env var (avoids interpolation issues)
           printf '%b\n' "$TABLE_CONTENT" > /tmp/table_content.txt
 
-          python3 << 'PYEOF'
+          cat > /tmp/update_readme.py << 'PYEOF'
           import sys
-
           START = "<!-- AUTO_IMAGE_LIST_START -->"
           END = "<!-- AUTO_IMAGE_LIST_END -->"
-          README_FILE = "README.md"
-
-          with open(README_FILE) as f:
+          with open("README.md") as f:
               readme = f.read()
           with open("/tmp/table_content.txt") as f:
               content = f.read().rstrip()
-
           si = readme.find(START)
           ei = readme.find(END)
           if si == -1 or ei == -1:
-              print("ERROR: Markers not found", file=sys.stderr)
-              sys.exit(1)
-
-          new_readme = readme[: si + len(START)] + "\n" + content + "\n" + readme[ei:]
-          with open(README_FILE, "w") as f:
+              sys.exit("ERROR: Markers not found")
+          new_readme = readme[:si + len(START)] + "\n" + content + "\n" + readme[ei:]
+          with open("README.md", "w") as f:
               f.write(new_readme)
-          print("README updated successfully")
+          print("README updated")
           PYEOF
+
+          # Strip leading whitespace from heredoc (YAML block indent)
+          sed -i 's/^          //' /tmp/update_readme.py
+          python3 /tmp/update_readme.py
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9

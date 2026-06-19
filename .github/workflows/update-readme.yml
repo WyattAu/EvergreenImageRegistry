@@ -75,22 +75,29 @@ jobs:
           # Read the new table content from the step output
           table_content="${{ steps.generate_list.outputs.table_content }}"
 
-          # Use awk for robust, multiline replacement
-          awk -v start="$START_MARKER" \
-              -v end="$END_MARKER" \
-              -v content="$table_content" '
-              $0 == start {
-                  print;
-                  print content;
-                  p = 1;
-              }
-              $0 == end {
-                  p = 0;
-              }
-              !p {
-                  print;
-              }
-          ' "$README_FILE" > "README.md.tmp" && mv "README.md.tmp" "$README_FILE"
+          # Write table content to a temp file to avoid awk argument limits
+          echo -e "$table_content" > /tmp/table_content.txt
+
+          # Use Python for robust, multiline replacement (handles special chars)
+          python3 -c "
+          import sys
+          start = '$START_MARKER'
+          end = '$END_MARKER'
+          with open('$README_FILE') as f:
+              readme = f.read()
+          with open('/tmp/table_content.txt') as f:
+              content = f.read().rstrip()
+          # Find and replace between markers
+          si = readme.find(start)
+          ei = readme.find(end)
+          if si == -1 or ei == -1:
+              print('ERROR: Markers not found in README', file=sys.stderr)
+              sys.exit(1)
+          new_readme = readme[:si+len(start)] + '\n' + content + '\n' + readme[ei:]
+          with open('$README_FILE', 'w') as f:
+              f.write(new_readme)
+          print('README updated successfully')
+          "
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9

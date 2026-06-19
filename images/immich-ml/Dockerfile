@@ -87,4 +87,5 @@ EXPOSE 9101
 LABEL prometheus.io/scrape="true" \
       prometheus.io/port="9101" \
       prometheus.io/path="/metrics"
+LABEL evergreen.security.read-only-rootfs="true"
 STOPSIGNAL SIGTERM

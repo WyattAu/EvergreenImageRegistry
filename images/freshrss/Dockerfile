@@ -24,4 +24,8 @@ LABEL org.opencontainers.image.title="freshrss" \
 LABEL evergreen.base.image="upstream"
 LABEL evergreen.metrics.native="ztunnel"
 LABEL evergreen.health.type="exec"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"
 STOPSIGNAL SIGTERM

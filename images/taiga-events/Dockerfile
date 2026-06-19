@@ -20,4 +20,8 @@ LABEL org.opencontainers.image.title="taiga-events" \
       evergreen.image.tier="2" \
       evergreen.constraint.hardened="true"
 LABEL evergreen.base.image="upstream"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"
 STOPSIGNAL SIGTERM

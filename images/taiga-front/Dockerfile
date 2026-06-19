@@ -32,4 +32,8 @@ EXPOSE 9101
 LABEL prometheus.io/scrape="true" \
       prometheus.io/port="9101" \
       prometheus.io/path="/metrics"
+LABEL evergreen.security.cap-drop="ALL"
+LABEL evergreen.security.no-new-privileges="true"
+LABEL evergreen.security.read-only-rootfs="true"
+LABEL evergreen.security.seccomp="runtime-default"
 STOPSIGNAL SIGTERM

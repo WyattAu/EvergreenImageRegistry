@@ -6,6 +6,7 @@ on:
     paths:
       - 'images/**'
       - 'scripts/generate_catalog.py'
+  workflow_dispatch:
 
 permissions:
   contents: write

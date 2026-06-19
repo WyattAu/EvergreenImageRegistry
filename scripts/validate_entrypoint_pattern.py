@@ -142,6 +142,14 @@ def validate_image(image_name: str) -> PatternResult:
     text = dockerfile.read_text()
     issues = []
 
+    # Check for repack-upstream-init exemption label
+    # Images with upstream init systems (s6, tini) keep upstream ENTRYPOINT
+    # and use shim only for HEALTHCHECK. Marked with:
+    #   LABEL evergreen.entrypoint.pattern="repack-upstream-init"
+    is_repack_init = 'evergreen.entrypoint.pattern="repack-upstream-init"' in text or \
+                     "evergreen.entrypoint.pattern='repack-upstream-init'" in text or \
+                     'evergreen.entrypoint.pattern = "repack-upstream-init"' in text
+
     has_copy, shim_path = find_shim_copy(text)
     if not has_copy:
         issues.append("Missing COPY --from=shim instruction")
@@ -162,9 +170,12 @@ def validate_image(image_name: str) -> PatternResult:
     entrypoint_correct = False
     entrypoint_has_c_flag = False
     if ep_args:
-        # Must follow: ["/usr/local/bin/shim", "run", "-c", "<binary>"]
-        # or:          ["/usr/local/bin/shim", "run", "<binary>"]
-        if (
+        if is_repack_init:
+            # Repack images with upstream init (s6, tini) keep upstream ENTRYPOINT
+            # Shim is only used for HEALTHCHECK, not as process supervisor
+            entrypoint_correct = True
+            entrypoint_has_c_flag = True  # Exempt from -c requirement
+        elif (
             len(ep_args) >= 3
             and ep_args[0] == SHIM_PATH_CANONICAL
             and ep_args[1] == "run"
@@ -173,6 +184,10 @@ def validate_image(image_name: str) -> PatternResult:
             entrypoint_has_c_flag = len(ep_args) >= 4 and ep_args[2] == "-c"
         else:
             issues.append(f"ENTRYPOINT does not follow standard: {ep_raw}")
+    elif is_repack_init:
+        # Repack image that inherits ENTRYPOINT from upstream (no explicit ENTRYPOINT)
+        entrypoint_correct = True
+        entrypoint_has_c_flag = True
     else:
         issues.append("No ENTRYPOINT found")
 
@@ -181,7 +196,10 @@ def validate_image(image_name: str) -> PatternResult:
         issues.append("Scratch image ENTRYPOINT missing -c flag")
 
     cmd_correct = False
-    if cmd_args:
+    if is_repack_init:
+        # Repack images may have any CMD format (delegating to upstream init)
+        cmd_correct = True
+    elif cmd_args:
         # Standard: only args, no binary name, no -c flag
         binary_name = ""
         if len(ep_args) >= 3:

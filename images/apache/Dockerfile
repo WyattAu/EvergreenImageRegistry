@@ -33,8 +33,8 @@ EXPOSE 80 443
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "apache2ctl", "--", "-D", "FOREGROUND"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "apache2ctl"]
+CMD ["--", "-D", "FOREGROUND"]
 LABEL org.opencontainers.image.title="apache" \
       org.opencontainers.image.description="apache container image" \
       org.opencontainers.image.version="${VERSION}" \

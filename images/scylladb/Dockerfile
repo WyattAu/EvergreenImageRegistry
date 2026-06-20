@@ -45,7 +45,7 @@ EXPOSE 9042 9160 10000
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9042"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/bin/scylla"]
 LABEL org.opencontainers.image.title="scylladb" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Evergreen hardened ScyllaDB - extracted from official Docker image" \

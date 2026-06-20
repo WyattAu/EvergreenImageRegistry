@@ -31,7 +31,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "qbittorrent-nox"]
 LABEL org.opencontainers.image.title="qbittorrent" \
       org.opencontainers.image.description="qbittorrent container image" \
       org.opencontainers.image.version="4.6.5" \

@@ -44,7 +44,7 @@ EXPOSE 8200
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8200"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "dotnet /opt/duplicati/Duplicati.Server.exe"]
 LABEL org.opencontainers.image.title="duplicati" \
       org.opencontainers.image.description="duplicati container image" \
       org.opencontainers.image.version="2.1.0.1" \

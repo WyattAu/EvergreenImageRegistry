@@ -25,8 +25,8 @@ EXPOSE 9000
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9000"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "sentry", "--", "web"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "sentry"]
+CMD ["--", "web"]
 LABEL org.opencontainers.image.title="sentry"       org.opencontainers.image.version="26.4.1"       org.opencontainers.image.vendor="Sentry"       org.opencontainers.image.source="https://github.com/getsentry/self-hosted"       evergreen.image.tier="2"       evergreen.image.category="monitoring"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.base="wolfi"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="30s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="60000ms" \
       org.opencontainers.image.description="sentry container image" \
 evergreen.base.image="wolfi"

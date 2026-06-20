@@ -31,7 +31,7 @@ EXPOSE 9091
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9091"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "transmission-daemon"]
 LABEL org.opencontainers.image.title="transmission" \
       org.opencontainers.image.description="transmission container image" \
       org.opencontainers.image.version="4.0.6" \

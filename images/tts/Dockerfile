@@ -32,7 +32,7 @@ EXPOSE 5002
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5002"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "python3"]
 LABEL org.opencontainers.image.title="tts" \
       org.opencontainers.image.description="tts container image" \
       org.opencontainers.image.version="0.22.0" \

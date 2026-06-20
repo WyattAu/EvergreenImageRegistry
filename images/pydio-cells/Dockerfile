@@ -34,7 +34,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/cells"]
 
 LABEL org.opencontainers.image.title="pydio-cells"       org.opencontainers.image.version="v4.4.17"       org.opencontainers.image.vendor="Pydio"       org.opencontainers.image.source="https://github.com/pydio/cells"       evergreen.image.tier="2"       evergreen.image.category="cloud-storage"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.base="scratch"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="5s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="10000ms" \
 org.opencontainers.image.description="pydio-cells container image" \

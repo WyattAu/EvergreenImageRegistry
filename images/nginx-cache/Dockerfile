@@ -211,7 +211,7 @@ EXPOSE 80 443
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/sbin/nginx"]
 
 
 
@@ -219,7 +219,7 @@ ENTRYPOINT ["/usr/local/bin/shim", "run"]
 
 
 
-CMD ["-c", "/usr/sbin/nginx", "--", "-g", "daemon off;"]
+CMD ["--", "-g", "daemon off;"]
 
 
 

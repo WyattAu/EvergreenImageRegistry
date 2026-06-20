@@ -26,8 +26,8 @@ EXPOSE 8008
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8008"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "node", "--", "[]"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "node"]
+CMD ["--", "[]"]
 LABEL org.opencontainers.image.title="convector" \
       org.opencontainers.image.description="Convector - smart contract framework tools" \
       org.opencontainers.image.version="${VERSION}" \

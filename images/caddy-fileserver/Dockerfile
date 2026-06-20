@@ -34,7 +34,7 @@ EXPOSE 80 2019
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/caddy"]
 LABEL org.opencontainers.image.title="caddy-fileserver" \
       org.opencontainers.image.description="caddy-fileserver container image" \
       org.opencontainers.image.version="2.7.6" \

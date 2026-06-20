@@ -41,7 +41,7 @@ EXPOSE 4001 4002
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:4001"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/rqlited"]
 LABEL org.opencontainers.image.title="rqlite" \
       org.opencontainers.image.description="Evergreen hardened rqlite - distributed SQLite database" \
       org.opencontainers.image.version="${VERSION}" \

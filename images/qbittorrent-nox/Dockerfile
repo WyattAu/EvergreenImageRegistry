@@ -48,7 +48,7 @@ EXPOSE 8080 6881 6881/udp
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6881"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/app/bin/qbittorrent-nox"]
 LABEL org.opencontainers.image.title="qbittorrent-nox" \
       org.opencontainers.image.description="qbittorrent-nox container image" \
       org.opencontainers.image.version="5.0.3" \

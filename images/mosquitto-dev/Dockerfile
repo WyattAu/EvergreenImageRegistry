@@ -34,8 +34,8 @@ EXPOSE 1883 9001
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:1883"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "mosquitto", "--", "-c", "/app/mosquitto.conf", "-v"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "mosquitto"]
+CMD ["--", "-c", "/app/mosquitto.conf", "-v"]
 LABEL org.opencontainers.image.title="mosquitto-dev" \
       org.opencontainers.image.description="Eclipse Mosquitto MQTT broker - development mode" \
       org.opencontainers.image.vendor="Eclipse" \

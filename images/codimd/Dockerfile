@@ -37,8 +37,8 @@ EXPOSE 3000
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "node", "--", "./app.js"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "node"]
+CMD ["--", "./app.js"]
 LABEL org.opencontainers.image.title="codimd" \
       org.opencontainers.image.description="CodiMD - collaborative markdown editor" \
       org.opencontainers.image.version="${VERSION}" \

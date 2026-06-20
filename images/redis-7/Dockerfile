@@ -52,8 +52,8 @@ EXPOSE 6379
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/usr/local/bin/docker-entrypoint.sh", "--", "redis-server"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/docker-entrypoint.sh"]
+CMD ["--", "redis-server"]
 LABEL org.opencontainers.image.title="redis-7" \
       org.opencontainers.image.description="redis-7 container image" \
       org.opencontainers.image.version="7.4.1" \

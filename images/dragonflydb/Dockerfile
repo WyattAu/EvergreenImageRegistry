@@ -48,6 +48,6 @@ STOPSIGNAL SIGTERM
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/dragonfly"]
 
-CMD ["-c", "/dragonfly", "--", "--bind", "0.0.0.0:6379"]
+CMD ["--", "--bind", "0.0.0.0:6379"]

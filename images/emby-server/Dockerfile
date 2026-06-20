@@ -31,7 +31,7 @@ EXPOSE 8096 8920
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8096"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/emby-server/emby-server"]
 LABEL org.opencontainers.image.title="emby-server" \
       org.opencontainers.image.description="emby-server container image" \
       org.opencontainers.image.version="4.9.3.0" \

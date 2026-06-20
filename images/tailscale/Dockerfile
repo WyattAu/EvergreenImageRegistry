@@ -26,7 +26,7 @@ WORKDIR /
 EXPOSE 41641/udp 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:41641"]
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/tailscaled"]
 LABEL org.opencontainers.image.title="tailscale" \
       org.opencontainers.image.description="tailscale container image" \
       org.opencontainers.image.version="1.58.0" \

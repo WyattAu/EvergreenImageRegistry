@@ -26,8 +26,8 @@ ENV SYNAPSE_CONFIG_PATH="/etc/synapse/homeserver.yaml"
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8008"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "synapse", "--", "--config-path", "/etc/synapse/homeserver.yaml"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "synapse"]
+CMD ["--", "--config-path", "/etc/synapse/homeserver.yaml"]
 LABEL org.opencontainers.image.title="chat-server" \
       org.opencontainers.image.description="Matrix homeserver (Synapse) - Python-based Matrix server" \
       org.opencontainers.image.version="${VERSION}" \

@@ -39,7 +39,7 @@ EXPOSE 3000 22
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/gitea"]
 LABEL org.opencontainers.image.title="gitea" \
       org.opencontainers.image.description="Gitea - lightweight self-hosted Git service" \
       org.opencontainers.image.version="1.21.10" \

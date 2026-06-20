@@ -27,7 +27,7 @@ EXPOSE 80 443
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "php-fpm8.4"]
 LABEL org.opencontainers.image.title="suitecrm" \
       org.opencontainers.image.description="suitecrm container image" \
       org.opencontainers.image.version="8.9.3" \

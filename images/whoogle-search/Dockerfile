@@ -35,8 +35,8 @@ EXPOSE 5000
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5000"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "whoogle-search", "--", "--port", "5000"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "whoogle-search"]
+CMD ["--", "--port", "5000"]
 LABEL org.opencontainers.image.title="whoogle-search" \
       org.opencontainers.image.description="Whoogle - Privacy-friendly search proxy" \
       org.opencontainers.image.vendor="benbusby" \

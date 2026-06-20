@@ -36,7 +36,7 @@ EXPOSE 110 995
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:110"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "dovecot -F"]
 LABEL org.opencontainers.image.title="dovecot-pop3" \
       org.opencontainers.image.description="Dovecot POP3 - Dovecot in POP3 mode" \
       org.opencontainers.image.version="2.3.21" \

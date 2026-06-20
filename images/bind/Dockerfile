@@ -37,7 +37,7 @@ EXPOSE 53 953
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:53"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/named"]
 LABEL org.opencontainers.image.title="bind" \
       org.opencontainers.image.description="BIND - DNS server software" \
       org.opencontainers.image.version="9.21.21" \

@@ -34,7 +34,7 @@ EXPOSE 9167
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9167"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/unbound_exporter"]
 LABEL org.opencontainers.image.title="unbound-exporter" \
       org.opencontainers.image.description="unbound-exporter container image" \
       org.opencontainers.image.version="0.6.0" \

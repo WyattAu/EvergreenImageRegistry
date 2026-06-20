@@ -64,7 +64,7 @@ EXPOSE 7474
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:7474"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/neo4j/bin/neo4j-admin"]
 LABEL org.opencontainers.image.title="neo4j-admin" \
       org.opencontainers.image.description="neo4j-admin container image" \
       org.opencontainers.image.version="5.17.0" \

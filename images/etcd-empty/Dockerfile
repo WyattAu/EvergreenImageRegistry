@@ -52,8 +52,8 @@ EXPOSE 2379 2380
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:2379"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/etcd", "--", "--data-dir", "/etcd-data", "--listen-client-urls", "http://0.0.0.0:2379", "--advertise-client-urls", "http://localhost:2379"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/etcd"]
+CMD ["--", "--data-dir", "/etcd-data", "--listen-client-urls", "http://0.0.0.0:2379", "--advertise-client-urls", "http://localhost:2379"]
 LABEL org.opencontainers.image.title="etcd-empty" \
       org.opencontainers.image.description="etcd-empty container image" \
       org.opencontainers.image.version="${VERSION}" \

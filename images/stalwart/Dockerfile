@@ -32,8 +32,8 @@ EXPOSE 25 143 465 587 993
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:25"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/usr/local/bin/stalwart", "--", "mail"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/stalwart"]
+CMD ["--", "mail"]
 LABEL org.opencontainers.image.title="stalwart" \
       org.opencontainers.image.description="Stalwart Mail Server - all-in-one mail server written in Rust" \
       org.opencontainers.image.version="${VERSION}" \

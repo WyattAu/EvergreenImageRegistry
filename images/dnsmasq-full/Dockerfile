@@ -43,8 +43,8 @@ EXPOSE 53 53/udp 67 67/udp 69/udp 4011/udp
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:53"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/usr/sbin/dnsmasq", "--", "--keep-in-foreground", "--no-daemon"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/sbin/dnsmasq"]
+CMD ["--", "--keep-in-foreground", "--no-daemon"]
 LABEL org.opencontainers.image.title="dnsmasq-full" \
       org.opencontainers.image.version="2.90" \
       org.opencontainers.image.vendor="The Kelleys" \

@@ -28,8 +28,8 @@ EXPOSE 10902 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:10902"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/thanos", "--", "query"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/thanos"]
+CMD ["--", "query"]
 LABEL org.opencontainers.image.title="thanos-querier" \
       org.opencontainers.image.description="Thanos query frontend for distributed Prometheus" \
       org.opencontainers.image.version="0.38.0" \

@@ -47,8 +47,8 @@ EXPOSE 8080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/cockroach", "--", "start", "--insecure", "--http-port=8080", "--prometheus-port=8080"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/cockroach"]
+CMD ["--", "start", "--insecure", "--http-port=8080", "--prometheus-port=8080"]
 LABEL org.opencontainers.image.title="cockroachdb-exporter" \
       org.opencontainers.image.description="Evergreen hardened CockroachDB Prometheus exporter - database metrics via built-in endpoint" \
       org.opencontainers.image.version="${VERSION}" \

@@ -33,7 +33,7 @@ EXPOSE 6006
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6006"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "tensorboard"]
 LABEL org.opencontainers.image.title="tensorboard" \
       org.opencontainers.image.description="tensorboard container image" \
       org.opencontainers.image.version="2.18.0" \

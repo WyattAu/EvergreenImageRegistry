@@ -53,7 +53,7 @@ EXPOSE 5432
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5432"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "postgres"]
 LABEL org.opencontainers.image.title="postgresql-15" \
       org.opencontainers.image.description="postgresql-15 container image" \
       org.opencontainers.image.version="15.18" \

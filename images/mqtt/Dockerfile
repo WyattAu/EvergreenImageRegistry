@@ -31,7 +31,7 @@ EXPOSE 1883 9001
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:1883"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "mosquitto"]
 LABEL org.opencontainers.image.title="mqtt" \
       org.opencontainers.image.description="mqtt container image" \
       org.opencontainers.image.version="2.0.18" \

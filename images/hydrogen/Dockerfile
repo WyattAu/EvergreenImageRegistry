@@ -31,7 +31,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "busybox httpd -f -p 8080 -h /app"]
 LABEL org.opencontainers.image.title="hydrogen" \
       org.opencontainers.image.version="0.5.1" \
       org.opencontainers.image.vendor="Element" \

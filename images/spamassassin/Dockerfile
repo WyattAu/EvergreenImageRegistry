@@ -55,5 +55,5 @@ LABEL org.opencontainers.image.description="spamassassin container image" \
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:783"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "spamassassin", "--", "-d"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "spamassassin"]
+CMD ["--", "-d"]

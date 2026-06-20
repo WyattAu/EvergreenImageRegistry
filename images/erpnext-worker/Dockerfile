@@ -50,8 +50,8 @@ EXPOSE 8000 9000
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8000"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "bench", "--", "worker", "--queue", "default"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "bench"]
+CMD ["--", "worker", "--queue", "default"]
 LABEL org.opencontainers.image.title="erpnext-worker" \
       org.opencontainers.image.description="erpnext-worker container image" \
       org.opencontainers.image.version="${VERSION}" \

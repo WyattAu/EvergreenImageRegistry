@@ -41,7 +41,7 @@ EXPOSE 4040
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:4040"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "java -jar /app/airsonic-advanced-11.1.5.war"]
 LABEL org.opencontainers.image.title="airsonic-advanced" \
       org.opencontainers.image.description="airsonic-advanced container image" \
       org.opencontainers.image.version="11.1.5" \

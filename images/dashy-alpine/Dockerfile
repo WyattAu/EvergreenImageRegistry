@@ -33,7 +33,7 @@ EXPOSE 80 443
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "node server.js"]
 LABEL org.opencontainers.image.title="dashy-alpine" \
       org.opencontainers.image.description="Dashy - Dashboard (debian-slim, no Alpine)" \
       org.opencontainers.image.vendor="lissy93" \

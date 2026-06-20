@@ -45,7 +45,7 @@ ENV JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5701"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/hazelcast/bin/hazelcast"]
 LABEL org.opencontainers.image.title="hazelcast" \
       org.opencontainers.image.description="Evergreen hardened Hazelcast - distributed in-memory computing platform" \
       org.opencontainers.image.version="${VERSION}" \

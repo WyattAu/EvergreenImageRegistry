@@ -59,8 +59,8 @@ EXPOSE 514 514/udp 6514
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:514"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/usr/sbin/syslog-ng", "--", "-f", "/app/conf/syslog-ng.conf", "--foreground", "--no-caps"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/sbin/syslog-ng"]
+CMD ["--", "-f", "/app/conf/syslog-ng.conf", "--foreground", "--no-caps"]
 LABEL org.opencontainers.image.title="syslog-ng" \
       org.opencontainers.image.version="4.8.1" \
       org.opencontainers.image.vendor="OneIdentity" \

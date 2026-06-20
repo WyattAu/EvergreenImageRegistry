@@ -38,7 +38,7 @@ EXPOSE 443 8080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:443"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/netmaker"]
 LABEL org.opencontainers.image.title="netmaker" \
       org.opencontainers.image.description="netmaker container image" \
       org.opencontainers.image.version="1.5.1" \

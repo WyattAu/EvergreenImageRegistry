@@ -31,7 +31,7 @@ EXPOSE 22
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:22"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "fail2ban"]
 LABEL org.opencontainers.image.title="fail2ban" \
       org.opencontainers.image.description="fail2ban container image" \
       org.opencontainers.image.version="1.0.2" \

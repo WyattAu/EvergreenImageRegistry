@@ -33,7 +33,7 @@ EXPOSE 51826 8554
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8554"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "homebridge"]
 LABEL org.opencontainers.image.title="homebridge-camera" \
       org.opencontainers.image.description="Homebridge with camera-ffmpeg plugin" \
       org.opencontainers.image.vendor="nfarina" \

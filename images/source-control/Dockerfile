@@ -34,8 +34,8 @@ EXPOSE 3000 22
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:22"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/usr/local/bin/gitea", "--", "web", "-c", "/etc/gitea/app.ini"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/gitea"]
+CMD ["--", "web", "-c", "/etc/gitea/app.ini"]
 LABEL org.opencontainers.image.title="source-control" \
       org.opencontainers.image.description="Source control management - Gitea lightweight Git server" \
       org.opencontainers.image.version="${VERSION}" \

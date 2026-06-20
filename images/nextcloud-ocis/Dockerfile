@@ -26,7 +26,7 @@ EXPOSE 9200
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9200"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/nextcloud-ocis"]
 LABEL org.opencontainers.image.title="nextcloud-ocis" \
       org.opencontainers.image.description="nextcloud-ocis container image" \
       org.opencontainers.image.version="${VERSION}" \

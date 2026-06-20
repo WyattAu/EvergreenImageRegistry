@@ -37,7 +37,7 @@ EXPOSE 8086
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8086"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/influxd"]
 LABEL org.opencontainers.image.title="influxdb-2" \
       org.opencontainers.image.version="2.7" \
       org.opencontainers.image.vendor="InfluxData" \

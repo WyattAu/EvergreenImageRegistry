@@ -38,7 +38,7 @@ EXPOSE 5066
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5066"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/metricbeat/metricbeat"]
 LABEL org.opencontainers.image.title="metricbeat" \
       org.opencontainers.image.description="Evergreen hardened Metricbeat - Elastic infrastructure metrics collector" \
       org.opencontainers.image.version="${VERSION}" \

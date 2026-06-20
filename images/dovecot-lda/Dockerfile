@@ -36,7 +36,7 @@ EXPOSE 143 993
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:143"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "dovecot -F"]
 LABEL org.opencontainers.image.title="dovecot-lda" \
       org.opencontainers.image.description="Dovecot LDA - Dovecot in local delivery agent mode" \
       org.opencontainers.image.version="2.3.21" \

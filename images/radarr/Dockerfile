@@ -39,7 +39,7 @@ WORKDIR /config
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:7878"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/app/Radarr"]
 EXPOSE 7878
 
 LABEL org.opencontainers.image.title="radarr" \

@@ -35,7 +35,7 @@ EXPOSE 6767
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6767"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "python3 /opt/bazarr/bazarr.py"]
 LABEL org.opencontainers.image.title="bazarr" \
       org.opencontainers.image.description="bazarr container image" \
       org.opencontainers.image.version="1.5.2" \

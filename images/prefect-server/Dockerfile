@@ -32,7 +32,7 @@ EXPOSE 4200
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:4200"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "prefect"]
 LABEL org.opencontainers.image.title="prefect-server" \
       org.opencontainers.image.description="prefect-server container image" \
       org.opencontainers.image.version="3.7.1" \

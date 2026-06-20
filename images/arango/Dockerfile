@@ -50,7 +50,7 @@ EXPOSE 8529
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8529"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/arangodb/usr/sbin/arangod --server.endpoint tcp://0.0.0.0:8529 --database.directory /var/lib/arangodb --foxx.queues false --log.output -"]
 LABEL org.opencontainers.image.title="arango" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Evergreen hardened ArangoDB - multi-model NoSQL database (arango alias)" \

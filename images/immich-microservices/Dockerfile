@@ -39,7 +39,7 @@ EXPOSE 3002
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3002"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "node"]
 LABEL org.opencontainers.image.title="immich-microservices" \
       org.opencontainers.image.description="immich-microservices container image" \
       org.opencontainers.image.version="1.106.0" \

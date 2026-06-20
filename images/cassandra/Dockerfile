@@ -74,8 +74,8 @@ EXPOSE 9042
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9042"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "nodetool", "--", "/opt/cassandra/bin/cassandra", "-f"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "nodetool"]
+CMD ["--", "/opt/cassandra/bin/cassandra", "-f"]
 LABEL org.opencontainers.image.title="cassandra" \
       org.opencontainers.image.description="Apache Cassandra - distributed NoSQL database" \
       org.opencontainers.image.version="5.0" \

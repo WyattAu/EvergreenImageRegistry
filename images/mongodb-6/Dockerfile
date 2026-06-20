@@ -50,8 +50,8 @@ EXPOSE 27017
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:27017"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "mongod", "--", "--bind_ip", "0.0.0.0", "--dbpath", "/data/db"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "mongod"]
+CMD ["--", "--bind_ip", "0.0.0.0", "--dbpath", "/data/db"]
 LABEL org.opencontainers.image.title="mongodb-6" \
       org.opencontainers.image.description="MongoDB 6 - document-oriented NoSQL database" \
       org.opencontainers.image.version="6.0.14" \

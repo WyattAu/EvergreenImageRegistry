@@ -39,8 +39,8 @@ EXPOSE 53 53/udp 3000
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:53"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/AdGuardHome", "--", "-c", "/opt/AdGuardHome/data/AdGuardHome.yaml", "--no-check-update"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/AdGuardHome"]
+CMD ["--", "-c", "/opt/AdGuardHome/data/AdGuardHome.yaml", "--no-check-update"]
 LABEL org.opencontainers.image.title="adguardhome-lite" \
       org.opencontainers.image.version="0.107.50" \
       org.opencontainers.image.vendor="AdGuard" \

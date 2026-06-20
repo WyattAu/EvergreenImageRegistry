@@ -42,7 +42,7 @@ EXPOSE 9900
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9900"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/nutsdb"]
 LABEL org.opencontainers.image.title="nutsdb" \
       org.opencontainers.image.version="1.1.0" \
       org.opencontainers.image.description="Evergreen hardened NutsDB - embedded key-value store" \

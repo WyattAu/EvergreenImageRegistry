@@ -72,7 +72,7 @@ EXPOSE 9200 9300
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9200"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/elasticsearch/bin/elasticsearch"]
 LABEL org.opencontainers.image.title="elasticsearch-8" \
       org.opencontainers.image.version="8.12.2" \
       org.opencontainers.image.description="Elasticsearch 8 - Distributed Search and Analytics Engine" \

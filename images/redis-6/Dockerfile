@@ -46,8 +46,8 @@ EXPOSE 6379
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "redis-server", "--", "--bind", "0.0.0.0", "--protected-mode", "no"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "redis-server"]
+CMD ["--", "--bind", "0.0.0.0", "--protected-mode", "no"]
 LABEL org.opencontainers.image.title="redis-6" \
       org.opencontainers.image.description="Redis 6 - in-memory data structure store and cache" \
       org.opencontainers.image.version="6.2.16" \

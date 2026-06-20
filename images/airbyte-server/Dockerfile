@@ -33,7 +33,7 @@ EXPOSE 8000
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8000"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "java -jar /app/server.jar"]
 LABEL org.opencontainers.image.title="airbyte-server" \
       org.opencontainers.image.version="0.65.22" \
       org.opencontainers.image.vendor="Airbyte" \

@@ -24,7 +24,7 @@ EXPOSE 3000
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "bundle exec rails server -b 0.0.0.0 -p 3000"]
 LABEL org.opencontainers.image.title="openproject" \
       org.opencontainers.image.description="openproject container image" \
       org.opencontainers.image.version="14.0.5" \

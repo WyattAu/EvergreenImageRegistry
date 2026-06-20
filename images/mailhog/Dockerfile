@@ -33,7 +33,7 @@ EXPOSE 8025 1025
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8025"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/MailHog"]
 LABEL org.opencontainers.image.title="mailhog" \
       org.opencontainers.image.description="MailHog - email testing tool" \
       org.opencontainers.image.version="${VERSION}" \

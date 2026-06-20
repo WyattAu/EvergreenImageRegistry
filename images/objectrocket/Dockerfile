@@ -29,7 +29,7 @@ EXPOSE 27017
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:27017"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/app/objectrocket"]
 LABEL org.opencontainers.image.title="objectrocket" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="ObjectRocket local development compatibility - MongoDB cloud service for dev environments" \

@@ -21,7 +21,7 @@ EXPOSE 6666
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6666"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/piper"]
 LABEL org.opencontainers.image.title="piper" \
       org.opencontainers.image.description="piper - fast local neural text to speech" \
       org.opencontainers.image.version="${VERSION}" \

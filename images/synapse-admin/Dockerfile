@@ -63,7 +63,7 @@ ENV SHIM_METRICS_ENABLED="true"
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "node dist/index.js"]
 EXPOSE 8080
 LABEL org.opencontainers.image.title="synapse-admin"       org.opencontainers.image.description="Synapse Admin - web admin panel for Synapse Matrix homeserver"       org.opencontainers.image.version="0.11.4"       org.opencontainers.image.vendor="Community"       org.opencontainers.image.source="https://github.com/Awesome-Technologies/synapse-admin"       evergreen.image.tier="2"       evergreen.constraint.nonroot="true"       evergreen.constraint.debian-slim="true"
 LABEL evergreen.base.image="wolfi"

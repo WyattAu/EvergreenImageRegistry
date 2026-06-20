@@ -35,8 +35,8 @@ EXPOSE 80 443
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "node", "--", "/app/src/server.js"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "node"]
+CMD ["--", "/app/src/server.js"]
 LABEL org.opencontainers.image.title="heimdall" \
       org.opencontainers.image.description="Heimdall - Application dashboard" \
       org.opencontainers.image.vendor="LinuxServer.io" \

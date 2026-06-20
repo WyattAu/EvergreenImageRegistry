@@ -21,7 +21,7 @@ EXPOSE 6333 6334
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6333"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/qdrant"]
 LABEL org.opencontainers.image.title="qdrant" \
       org.opencontainers.image.description="qdrant - vector similarity search engine" \
       org.opencontainers.image.version="${VERSION}" \

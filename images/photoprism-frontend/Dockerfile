@@ -39,7 +39,7 @@ EXPOSE 2283
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:2283"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "node"]
 LABEL org.opencontainers.image.title="photoprism-frontend" \
       org.opencontainers.image.description="photoprism-frontend container image" \
       org.opencontainers.image.version="240427" \

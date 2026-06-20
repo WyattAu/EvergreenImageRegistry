@@ -52,7 +52,7 @@ EXPOSE 6379
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/rmilter"]
 LABEL org.opencontainers.image.title="rmilter" \
       org.opencontainers.image.description="Rmilter - milter filter for mail servers" \
       org.opencontainers.image.version="1.0.0" \

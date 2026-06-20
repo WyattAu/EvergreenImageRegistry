@@ -49,7 +49,7 @@ EXPOSE 53 53/udp 5199 8083
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:53"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/dnsdist"]
 LABEL org.opencontainers.image.title="dnsdist" \
       org.opencontainers.image.version="1.9.4" \
       org.opencontainers.image.vendor="PowerDNS" \

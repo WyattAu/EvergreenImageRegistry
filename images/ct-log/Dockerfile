@@ -43,7 +43,7 @@ EXPOSE 6962
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6962"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/ct-log"]
 LABEL org.opencontainers.image.title="ct-log" \
       org.opencontainers.image.description="ct-log container image" \
       org.opencontainers.image.version="1.3.3" \

@@ -23,7 +23,7 @@ WORKDIR /
 EXPOSE 5572 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5572"]
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/rclone"]
 LABEL org.opencontainers.image.title="rclone" \
       org.opencontainers.image.description="rclone container image" \
       org.opencontainers.image.version="v1.69.1" \

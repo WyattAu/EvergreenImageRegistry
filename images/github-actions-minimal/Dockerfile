@@ -32,8 +32,8 @@ EXPOSE 8080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/app/runner/bin/Runner.Worker", "--", "--disableupdate"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/app/runner/bin/Runner.Worker"]
+CMD ["--", "--disableupdate"]
 LABEL org.opencontainers.image.title="github-actions-minimal" \
       org.opencontainers.image.version="2.334.0" \
       org.opencontainers.image.vendor="GitHub" \

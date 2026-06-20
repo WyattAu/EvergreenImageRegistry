@@ -68,8 +68,8 @@ EXPOSE 53 53/udp 853 853/udp
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:53"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/usr/sbin/unbound", "--", "-d"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/sbin/unbound"]
+CMD ["--", "-d"]
 LABEL org.opencontainers.image.title="unbound-alpine" \
       org.opencontainers.image.version="1.19.3" \
       org.opencontainers.image.vendor="NLnet Labs" \

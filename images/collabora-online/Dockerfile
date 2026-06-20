@@ -23,7 +23,7 @@ EXPOSE 9980
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9980"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/bin/loolwsd"]
 LABEL org.opencontainers.image.title="collabora-online" \
       org.opencontainers.image.description="collabora-online container image" \
       org.opencontainers.image.version="24.04.10.2" \

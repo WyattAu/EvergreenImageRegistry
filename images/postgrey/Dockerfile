@@ -55,5 +55,5 @@ LABEL org.opencontainers.image.description="postgrey container image" \
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:10023"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "postgrey", "--", "--inet", "--listen=0.0.0.0:10023"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "postgrey"]
+CMD ["--", "--inet", "--listen=0.0.0.0:10023"]

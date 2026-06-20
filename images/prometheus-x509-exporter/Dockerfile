@@ -28,7 +28,7 @@ EXPOSE 9793 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9793"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/x509-certificate-exporter"]
 LABEL org.opencontainers.image.title="prometheus-x509-exporter" \
       org.opencontainers.image.description="Prometheus exporter for X.509 certificate expiry metrics" \
       org.opencontainers.image.version="3.9.0" \

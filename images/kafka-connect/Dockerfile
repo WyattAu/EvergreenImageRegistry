@@ -44,7 +44,7 @@ EXPOSE 8083
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8083"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/kafka/bin/connect-distributed.sh"]
 LABEL org.opencontainers.image.title="kafka-connect" \
       org.opencontainers.image.description="Evergreen hardened Kafka Connect - distributed data integration platform" \
       org.opencontainers.image.version="${VERSION}" \

@@ -57,7 +57,7 @@ ENV PATRONI_RESTAPI_LISTEN="0.0.0.0:8008"
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8008"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "python3 -m patroni"]
 LABEL org.opencontainers.image.title="postgresql-patroni" \
       org.opencontainers.image.version="4.0.3" \
       org.opencontainers.image.description="Patroni - PostgreSQL High Availability with etcd/Consul/ZooKeeper" \

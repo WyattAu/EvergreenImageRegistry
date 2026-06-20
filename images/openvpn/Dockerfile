@@ -36,7 +36,7 @@ EXPOSE 1194
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:1194"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/openvpn"]
 LABEL org.opencontainers.image.title="openvpn" \
       org.opencontainers.image.description="openvpn container image" \
       org.opencontainers.image.version="2.6.10" \

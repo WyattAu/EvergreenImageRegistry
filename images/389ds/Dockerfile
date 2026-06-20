@@ -30,8 +30,8 @@ EXPOSE 389 636
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:389"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/usr/sbin/slapd", "--", "-h", "ldap://0.0.0.0:389", "-d", "0"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/sbin/slapd"]
+CMD ["--", "-h", "ldap://0.0.0.0:389", "-d", "0"]
 LABEL org.opencontainers.image.title="389ds" \
       org.opencontainers.image.description="389 Directory Server (Debian slapd/OpenLDAP provides equivalent LDAP directory service)" \
       org.opencontainers.image.vendor="389DS Project" \

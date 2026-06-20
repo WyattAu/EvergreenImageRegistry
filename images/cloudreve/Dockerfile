@@ -25,7 +25,7 @@ EXPOSE 5212
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5212"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/cloudreve"]
 LABEL org.opencontainers.image.title="cloudreve" \
       org.opencontainers.image.description="cloudreve container image" \
       org.opencontainers.image.version="3.8.3" \

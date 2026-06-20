@@ -66,7 +66,7 @@ EXPOSE 500 500/udp 4500 4500/udp
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:500"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/sbin/charon"]
 LABEL org.opencontainers.image.title="strongswan" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="strongSwan Project" \

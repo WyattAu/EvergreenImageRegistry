@@ -39,7 +39,7 @@ EXPOSE 3500
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3500"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/loki-canary"]
 LABEL org.opencontainers.image.title="loki-canary" \
       org.opencontainers.image.version="2.9.4" \
       org.opencontainers.image.vendor="Grafana Labs" \

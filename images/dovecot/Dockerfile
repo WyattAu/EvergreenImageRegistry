@@ -55,5 +55,5 @@ LABEL org.opencontainers.image.description="dovecot container image" \
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:24"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "dovecot", "--", "-F"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "dovecot"]
+CMD ["--", "-F"]

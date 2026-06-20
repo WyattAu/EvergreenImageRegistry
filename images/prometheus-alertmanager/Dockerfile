@@ -28,7 +28,7 @@ EXPOSE 9093 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9093"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/alertmanager"]
 LABEL org.opencontainers.image.title="prometheus-alertmanager" \
       org.opencontainers.image.description="prometheus-alertmanager container image" \
       org.opencontainers.image.version="0.27.0" \

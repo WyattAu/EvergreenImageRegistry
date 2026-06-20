@@ -36,8 +36,8 @@ EXPOSE 8008
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8008"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/usr/local/bin/dendrite", "--", "--config=/app/dendrite.yaml"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/dendrite"]
+CMD ["--", "--config=/app/dendrite.yaml"]
 LABEL org.opencontainers.image.title="dendrite-pot" \
       org.opencontainers.image.description="Dendrite POT - Polylith OUTBOX Trusted worker for Dendrite" \
       org.opencontainers.image.version="0.13.1" \

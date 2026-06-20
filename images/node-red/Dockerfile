@@ -33,8 +33,8 @@ EXPOSE 1880
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:1880"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "node", "--", "--userDir", "/data"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "node"]
+CMD ["--", "--userDir", "/data"]
 LABEL org.opencontainers.image.title="node-red" \
       org.opencontainers.image.description="Node-RED - Flow-based programming for IoT" \
       org.opencontainers.image.vendor="Node-RED" \

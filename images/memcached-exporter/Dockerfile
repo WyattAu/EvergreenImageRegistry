@@ -42,7 +42,7 @@ EXPOSE 9150 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9150"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/memcached_exporter"]
 LABEL org.opencontainers.image.title="memcached-exporter" \
       org.opencontainers.image.description="memcached-exporter container image" \
       org.opencontainers.image.version="0.13.0" \

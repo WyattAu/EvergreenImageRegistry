@@ -37,8 +37,8 @@ EXPOSE 8888
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8888"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "php-fpm83", "--", "-F"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "php-fpm83"]
+CMD ["--", "-F"]
 LABEL org.opencontainers.image.title="roundcube" \
       org.opencontainers.image.description="Roundcube - feature-rich webmail client" \
       org.opencontainers.image.version="${VERSION}" \

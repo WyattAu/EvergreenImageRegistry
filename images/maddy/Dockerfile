@@ -31,8 +31,8 @@ EXPOSE 25 143 465 587 993 995
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:25"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/usr/local/bin/maddy", "--", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/maddy"]
+CMD ["--", "run"]
 LABEL org.opencontainers.image.title="maddy" \
       org.opencontainers.image.description="Maddy - composable all-in-one mail server written in Go" \
       org.opencontainers.image.version="${VERSION}" \

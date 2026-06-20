@@ -34,9 +34,9 @@ EXPOSE 9000 9090
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9000"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/minio"]
 
-CMD ["-c", "/minio", "--", "console", "server"]
+CMD ["--", "console", "server"]
 
 LABEL org.opencontainers.image.title="minio-console"       org.opencontainers.image.version="RELEASE.2025-09-07T16-13-09Z"       org.opencontainers.image.vendor="MinIO"       org.opencontainers.image.source="https://github.com/minio/minio"       evergreen.image.tier="2"       evergreen.image.category="cloud-storage"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.base="scratch"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="5s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="10000ms" \
 org.opencontainers.image.description="MinIO Console - web-based administration UI for MinIO" \

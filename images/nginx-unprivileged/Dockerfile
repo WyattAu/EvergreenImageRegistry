@@ -34,7 +34,7 @@ EXPOSE 8080 8443
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/nginx"]
 LABEL org.opencontainers.image.title="nginx-unprivileged" \
       org.opencontainers.image.description="nginx-unprivileged container image" \
       org.opencontainers.image.version="1.27.1" \

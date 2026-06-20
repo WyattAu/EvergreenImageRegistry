@@ -50,7 +50,7 @@ EXPOSE 53 53/udp 8080 443
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:53"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/pihole"]
 LABEL org.opencontainers.image.title="pi-hole" \
       org.opencontainers.image.version="bookworm" \
       org.opencontainers.image.vendor="Pi-hole" \

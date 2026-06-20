@@ -39,7 +39,7 @@ EXPOSE 9009
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9009"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/cortex"]
 LABEL org.opencontainers.image.title="cortex" \
       org.opencontainers.image.description="cortex container image" \
       org.opencontainers.image.version="1.17.0" \

@@ -29,7 +29,7 @@ EXPOSE 9115 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9115"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/blackbox_exporter"]
 LABEL org.opencontainers.image.title="prometheus-blackbox-exporter" \
       org.opencontainers.image.description="Prometheus exporter for endpoint probing" \
       org.opencontainers.image.version="0.28.0" \

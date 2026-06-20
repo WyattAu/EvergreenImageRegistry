@@ -32,7 +32,7 @@ EXPOSE 8066
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8066"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/mattermost-push-proxy"]
 LABEL org.opencontainers.image.title="mattermost-push-proxy" \
       org.opencontainers.image.description="Mattermost Push Proxy - push notification proxy for Mattermost mobile apps" \
       org.opencontainers.image.version="1.1.0" \

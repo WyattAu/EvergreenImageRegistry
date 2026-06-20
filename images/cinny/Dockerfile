@@ -34,8 +34,8 @@ EXPOSE 80
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "httpd", "--", "-f", "-p", "80", "-h", "/var/www/html"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "httpd"]
+CMD ["--", "-f", "-p", "80", "-h", "/var/www/html"]
 LABEL org.opencontainers.image.title="cinny" \
       org.opencontainers.image.description="Cinny - lightweight Matrix web client" \
       org.opencontainers.image.version="4.2.2" \

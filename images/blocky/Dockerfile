@@ -38,7 +38,7 @@ EXPOSE 53 4000
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:53"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/blocky"]
 LABEL org.opencontainers.image.title="blocky" \
       org.opencontainers.image.description="blocky container image" \
       org.opencontainers.image.version="0.29.0" \

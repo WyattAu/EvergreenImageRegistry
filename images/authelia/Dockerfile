@@ -37,7 +37,7 @@ EXPOSE 80 443
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/authelia"]
 LABEL org.opencontainers.image.title="authelia" \
       org.opencontainers.image.description="Authelia - single sign-on and two-factor authentication portal" \
       org.opencontainers.image.version="4.39.19" \

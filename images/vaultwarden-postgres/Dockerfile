@@ -25,8 +25,8 @@ EXPOSE 8080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/usr/local/bin/vaultwarden", "--", "--database-url", "postgresql://user:pass@host/db"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/vaultwarden"]
+CMD ["--", "--database-url", "postgresql://user:pass@host/db"]
 LABEL org.opencontainers.image.title="vaultwarden-postgres"       org.opencontainers.image.version="1.35.8"       org.opencontainers.image.vendor="dani-garcia"       org.opencontainers.image.source="https://github.com/dani-garcia/vaultwarden"       evergreen.image.tier="2"       evergreen.image.category="secrets"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.base="wolfi"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms" \
       org.opencontainers.image.description="vaultwarden-postgres container image" \
 evergreen.base.image="wolfi"

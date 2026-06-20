@@ -147,7 +147,7 @@ EXPOSE 3456
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3456"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/vikunja"]
 
 
 
@@ -155,7 +155,7 @@ ENTRYPOINT ["/usr/local/bin/shim", "run"]
 
 
 
-CMD ["-c", "/vikunja", "--", "--config", "/app/config.yml"]
+CMD ["--", "--config", "/app/config.yml"]
 
 
 

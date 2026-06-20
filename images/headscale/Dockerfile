@@ -22,7 +22,7 @@ WORKDIR /
 EXPOSE 8080 443 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/headscale"]
 LABEL org.opencontainers.image.title="headscale" \
       org.opencontainers.image.description="Headscale - open source implementation of the Tailscale control server" \
       org.opencontainers.image.version="0.16.0" \

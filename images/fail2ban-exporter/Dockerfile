@@ -47,9 +47,9 @@ EXPOSE 9191
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9191"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/fail2ban-exporter"]
 
-CMD ["-c", "/fail2ban-exporter", "--", "--web.listen-address=:9191", "--web.telemetry-path=/metrics", "--fail2ban.socket=/tmp/fail2ban.sock"]
+CMD ["--", "--web.listen-address=:9191", "--web.telemetry-path=/metrics", "--fail2ban.socket=/tmp/fail2ban.sock"]
 
 LABEL org.opencontainers.image.title="fail2ban-exporter"       org.opencontainers.image.version="v0.10.0"       org.opencontainers.image.vendor="xperimental"       org.opencontainers.image.source="https://github.com/xperimental/fail2ban-exporter"       evergreen.image.tier="1"       evergreen.image.category="monitoring"       evergreen.image.status="best-effort"       evergreen.image.note="Original repo deleted; building from source"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms" \
 org.opencontainers.image.description="fail2ban-exporter container image" \

@@ -50,8 +50,8 @@ EXPOSE 6379
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/usr/local/bin/redis", "--", "--protected-mode", "no", "--bind", "0.0.0.0"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/redis"]
+CMD ["--", "--protected-mode", "no", "--bind", "0.0.0.0"]
 LABEL org.opencontainers.image.title="argocd-redis" \
       org.opencontainers.image.description="ArgoCD Redis - Redis sidecar for ArgoCD caching" \
       org.opencontainers.image.version="7.2.4" \

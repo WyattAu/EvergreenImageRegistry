@@ -35,7 +35,7 @@ EXPOSE 8429
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8429"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/vmagent"]
 LABEL org.opencontainers.image.title="vm-agent" \
       org.opencontainers.image.description="vm-agent container image" \
       org.opencontainers.image.version="1.140.0" \

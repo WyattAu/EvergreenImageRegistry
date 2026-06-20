@@ -33,7 +33,7 @@ EXPOSE 3000
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "node app.js"]
 LABEL org.opencontainers.image.title="hedgedoc-legacy" \
       org.opencontainers.image.description="HedgeDoc Legacy - collaborative markdown notes v1.9.x" \
       org.opencontainers.image.version="1.9.9" \

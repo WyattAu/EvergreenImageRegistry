@@ -28,7 +28,7 @@ EXPOSE 9091 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9091"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/pushgateway"]
 LABEL org.opencontainers.image.title="prometheus-pushgateway" \
       org.opencontainers.image.description="Prometheus Pushgateway - intermediary service for metrics push" \
       org.opencontainers.image.version="1.8.0" \

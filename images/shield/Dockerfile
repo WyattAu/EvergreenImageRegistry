@@ -32,8 +32,8 @@ EXPOSE 8443
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8443"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/shield", "--", "server", "-c", "/app/shield.yml"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/shield"]
+CMD ["--", "server", "-c", "/app/shield.yml"]
 LABEL org.opencontainers.image.title="shield" \
       org.opencontainers.image.description="shield container image" \
       org.opencontainers.image.version="8.6.0" \

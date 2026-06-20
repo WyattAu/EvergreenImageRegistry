@@ -37,8 +37,8 @@ EXPOSE 8080 8443
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/opt/keycloak/bin/kc.sh", "--", "start-dev"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/keycloak/bin/kc.sh"]
+CMD ["--", "start-dev"]
 LABEL org.opencontainers.image.title="keycloak-quarkus" \
       org.opencontainers.image.description="keycloak-quarkus container image" \
       org.opencontainers.image.version="26.6.1" \

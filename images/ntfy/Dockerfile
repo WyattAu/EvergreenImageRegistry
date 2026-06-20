@@ -37,8 +37,8 @@ EXPOSE 80
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/usr/local/bin/ntfy", "--", "serve"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/ntfy"]
+CMD ["--", "serve"]
 LABEL org.opencontainers.image.title="ntfy" \
       org.opencontainers.image.description="ntfy - push notification service" \
       org.opencontainers.image.version="${VERSION}" \

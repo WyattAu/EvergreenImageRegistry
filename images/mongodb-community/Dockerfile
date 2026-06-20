@@ -58,7 +58,7 @@ EXPOSE 27017
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:27017"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "mongod"]
 LABEL org.opencontainers.image.title="mongodb-community" \
       org.opencontainers.image.description="Evergreen hardened MongoDB Community Edition 7.0 - document database" \
       org.opencontainers.image.version="${VERSION}" \

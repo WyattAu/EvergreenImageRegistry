@@ -35,7 +35,7 @@ EXPOSE 8888
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8888"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "searx-run"]
 LABEL org.opencontainers.image.title="searx" \
       org.opencontainers.image.description="Searx - Privacy-respecting metasearch engine" \
       org.opencontainers.image.vendor="searx" \

@@ -30,7 +30,7 @@ EXPOSE 6167
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6167"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/conduit"]
 LABEL org.opencontainers.image.title="conduit" \
       org.opencontainers.image.description="Conduit - lightweight Matrix homeserver written in Rust" \
       org.opencontainers.image.version="0.9.5" \

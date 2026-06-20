@@ -36,7 +36,7 @@ EXPOSE 6167
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6167"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/conduit"]
 LABEL org.opencontainers.image.title="conduit-admin" \
       org.opencontainers.image.description="Conduit Admin - Conduit Matrix homeserver with admin utilities" \
       org.opencontainers.image.version="0.9.5" \

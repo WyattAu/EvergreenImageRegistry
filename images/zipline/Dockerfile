@@ -31,7 +31,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "node server.js"]
 LABEL org.opencontainers.image.title="zipline" \
       org.opencontainers.image.description="Zipline - File sharing platform" \
       org.opencontainers.image.vendor="diced" \

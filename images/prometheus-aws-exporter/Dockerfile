@@ -28,7 +28,7 @@ EXPOSE 9101 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9101"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/yace"]
 LABEL org.opencontainers.image.title="prometheus-aws-exporter" \
       org.opencontainers.image.description="Prometheus exporter for AWS CloudWatch metrics" \
       org.opencontainers.image.version="0.65.0" \

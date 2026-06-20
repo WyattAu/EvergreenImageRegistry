@@ -35,7 +35,7 @@ EXPOSE 9876
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9876"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/resticbrowser"]
 LABEL org.opencontainers.image.title="resticbrowser" \
       org.opencontainers.image.description="resticbrowser container image" \
       org.opencontainers.image.version="${VERSION}" \

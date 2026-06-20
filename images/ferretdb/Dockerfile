@@ -37,7 +37,7 @@ EXPOSE 27017 8080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:27017"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/ferretdb"]
 LABEL org.opencontainers.image.title="ferretdb" \
       org.opencontainers.image.description="Evergreen hardened FerretDB - MongoDB-compatible database" \
       org.opencontainers.image.version="${VERSION}" \

@@ -34,7 +34,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/miniflux"]
 LABEL org.opencontainers.image.title="miniflux-2" \
       org.opencontainers.image.description="miniflux-2 container image" \
       org.opencontainers.image.version="${VERSION}" \

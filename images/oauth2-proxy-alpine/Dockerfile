@@ -41,7 +41,7 @@ EXPOSE 4180 80 443
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:4180"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/oauth2-proxy"]
 LABEL org.opencontainers.image.title="oauth2-proxy-alpine" \
       org.opencontainers.image.version="7.6.0" \
       org.opencontainers.image.vendor="OAuth2 Proxy" \

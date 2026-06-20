@@ -48,7 +48,7 @@ EXPOSE 10000 10002
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:10000"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/hive/bin/hive --service hiveserver2"]
 LABEL org.opencontainers.image.title="hive" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Evergreen hardened Apache Hive - data warehouse SQL on Hadoop" \

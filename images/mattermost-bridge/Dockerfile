@@ -37,7 +37,7 @@ EXPOSE 8065
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8065"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/app/plugin/server"]
 LABEL org.opencontainers.image.title="mattermost-bridge" \
       org.opencontainers.image.description="Mattermost GitHub Plugin - GitHub integration bridge for Mattermost" \
       org.opencontainers.image.version="2.7.1" \

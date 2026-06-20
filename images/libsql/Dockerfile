@@ -40,7 +40,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/libsql-server"]
 LABEL org.opencontainers.image.title="libsql-server" \
       org.opencontainers.image.description="Turso libSQL server - open-source SQLite fork with networking" \
       org.opencontainers.image.version="${VERSION}" \

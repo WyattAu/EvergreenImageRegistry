@@ -31,7 +31,7 @@ EXPOSE 3000
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "node"]
 LABEL org.opencontainers.image.title="planka" \
       org.opencontainers.image.description="planka container image" \
       org.opencontainers.image.version="1.17.0" \

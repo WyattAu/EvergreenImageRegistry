@@ -28,7 +28,7 @@ EXPOSE 9113 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9113"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/nginx-prometheus-exporter"]
 LABEL org.opencontainers.image.title="prometheus-nginx-exporter" \
       org.opencontainers.image.description="Prometheus exporter for NGINX stub_status metrics" \
       org.opencontainers.image.version="1.1.0" \

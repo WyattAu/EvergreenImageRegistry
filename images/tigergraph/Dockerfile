@@ -30,7 +30,7 @@ EXPOSE 14240 9000 8123 8443
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8123"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/tigergraph/bin/gadmin start all"]
 LABEL org.opencontainers.image.title="tigergraph" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Evergreen hardened TigerGraph - extracted from official Docker image" \

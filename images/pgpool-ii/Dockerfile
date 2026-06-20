@@ -31,7 +31,7 @@ EXPOSE 9999
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9999"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "pgpool"]
 LABEL org.opencontainers.image.title="pgpool-II" \
       org.opencontainers.image.description="pgpool-ii container image" \
       org.opencontainers.image.version="4.5.1" \

@@ -25,8 +25,8 @@ EXPOSE 80 443
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "nginx", "--", "-g", "daemon off;"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "nginx"]
+CMD ["--", "-g", "daemon off;"]
 LABEL org.opencontainers.image.title="nginx-modsec" \
       org.opencontainers.image.version="1.27.1" \
       org.opencontainers.image.vendor="NGINX Inc / SpiderLabs" \

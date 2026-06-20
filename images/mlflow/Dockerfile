@@ -33,7 +33,7 @@ EXPOSE 5000
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5000"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "mlflow"]
 LABEL org.opencontainers.image.title="mlflow" \
       org.opencontainers.image.description="mlflow container image" \
       org.opencontainers.image.version="2.21.0" \

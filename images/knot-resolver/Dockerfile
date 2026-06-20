@@ -24,8 +24,8 @@ EXPOSE 53 53/udp 8453
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:53"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "kresd", "--", "-c", "/etc/knot-resolver/knot.conf"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "kresd"]
+CMD ["--", "-c", "/etc/knot-resolver/knot.conf"]
 LABEL org.opencontainers.image.title="knot-resolver" \
       org.opencontainers.image.version="5.7.6" \
       org.opencontainers.image.vendor="CZ.NIC" \

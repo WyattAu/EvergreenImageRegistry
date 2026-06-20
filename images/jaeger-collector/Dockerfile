@@ -38,7 +38,7 @@ EXPOSE 14267
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:14267"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/jaeger-collector"]
 LABEL org.opencontainers.image.title="jaeger-collector" \
       org.opencontainers.image.description="jaeger-collector container image" \
       org.opencontainers.image.version="1.55.0" \

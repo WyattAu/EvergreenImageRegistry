@@ -36,7 +36,7 @@ EXPOSE 9876 10911 10909
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9876"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/rocketmq/bin/mqnamesrv"]
 LABEL org.opencontainers.image.title="rocketmq" \
       org.opencontainers.image.description="rocketmq container image" \
       org.opencontainers.image.version="5.1.4" \

@@ -25,8 +25,8 @@ EXPOSE 6006
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6006"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "tensorboard", "--", "--logdir=/app/logs", "--bind_all", "--port=6006"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "tensorboard"]
+CMD ["--", "--logdir=/app/logs", "--bind_all", "--port=6006"]
 LABEL org.opencontainers.image.title="tensor" \
       org.opencontainers.image.description="TensorBoard - ML experiment visualization and monitoring tool" \
       org.opencontainers.image.version="${VERSION}" \

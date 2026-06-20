@@ -37,7 +37,7 @@ EXPOSE 80
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/it-tools"]
 LABEL org.opencontainers.image.title="it-tools" \
       org.opencontainers.image.description="it-tools container image" \
       org.opencontainers.image.version="2024.10.22-7ca5933" \

@@ -43,7 +43,7 @@ EXPOSE 1527
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:1527"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "java -jar /opt/derby/lib/derbyrun.jar server"]
 LABEL org.opencontainers.image.title="derby" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Evergreen hardened Apache Derby - embedded Java database" \

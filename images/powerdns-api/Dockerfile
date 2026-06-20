@@ -45,8 +45,8 @@ EXPOSE 53 53/udp 8081
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:53"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/usr/local/bin/pdns_server", "--", "--config-dir=/etc/pdns", "--daemon=no", "--webserver=yes", "--webserver-port=8081", "--webserver-address=0.0.0.0", "--api=yes", "--api-key=changeme"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/pdns_server"]
+CMD ["--", "--config-dir=/etc/pdns", "--daemon=no", "--webserver=yes", "--webserver-port=8081", "--webserver-address=0.0.0.0", "--api=yes", "--api-key=changeme"]
 LABEL org.opencontainers.image.title="powerdns-api" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="PowerDNS" \

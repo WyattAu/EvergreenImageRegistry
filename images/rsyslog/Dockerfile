@@ -58,8 +58,8 @@ EXPOSE 514 514/udp
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:514"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/usr/sbin/rsyslogd", "--", "-n", "-f", "/app/conf/rsyslog.conf"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/sbin/rsyslogd"]
+CMD ["--", "-n", "-f", "/app/conf/rsyslog.conf"]
 LABEL org.opencontainers.image.title="rsyslog" \
       org.opencontainers.image.version="8.2312.0" \
       org.opencontainers.image.vendor="rsyslog" \

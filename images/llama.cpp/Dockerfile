@@ -39,8 +39,8 @@ EXPOSE 8080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/llama-server", "--", "--host", "0.0.0.0", "--port", "8080", "--model", "/models/model.gguf"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/llama-server"]
+CMD ["--", "--host", "0.0.0.0", "--port", "8080", "--model", "/models/model.gguf"]
 LABEL org.opencontainers.image.title="llama.cpp" \
       org.opencontainers.image.description="llama.cpp container image" \
       org.opencontainers.image.version="${VERSION}" \

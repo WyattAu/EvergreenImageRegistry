@@ -30,7 +30,7 @@ EXPOSE 9000
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9000"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/step-ca"]
 LABEL org.opencontainers.image.title="step-certificates" \
       org.opencontainers.image.description="step-certificates container image" \
       org.opencontainers.image.version="0.30.2" \

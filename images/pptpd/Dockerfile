@@ -45,8 +45,8 @@ EXPOSE 1723
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:1723"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/usr/sbin/pptpd", "--", "--fg"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/sbin/pptpd"]
+CMD ["--", "--fg"]
 LABEL org.opencontainers.image.title="pptpd" \
       org.opencontainers.image.version="1.10.0" \
       org.opencontainers.image.vendor="PPTP Project" \

@@ -38,7 +38,7 @@ EXPOSE 16686
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:16686"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/jaeger-query"]
 LABEL org.opencontainers.image.title="jaeger-query" \
       org.opencontainers.image.description="jaeger-query container image" \
       org.opencontainers.image.version="1.55.0" \

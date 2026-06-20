@@ -38,7 +38,7 @@ EXPOSE 5066
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5066"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/packetbeat/packetbeat"]
 LABEL org.opencontainers.image.title="packetbeat" \
       org.opencontainers.image.description="Evergreen hardened Packetbeat - Elastic network packet analyzer" \
       org.opencontainers.image.version="${VERSION}" \

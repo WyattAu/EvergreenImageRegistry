@@ -67,7 +67,7 @@ EXPOSE 3306 33060
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3306"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "mysqld"]
 LABEL org.opencontainers.image.title="mysql-8" \
       org.opencontainers.image.version="8.0.39" \
       org.opencontainers.image.description="MySQL 8.0 Database Server" \

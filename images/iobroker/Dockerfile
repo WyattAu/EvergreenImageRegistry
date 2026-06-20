@@ -31,8 +31,8 @@ EXPOSE 8081 3000
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:3000"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "iobroker", "--", "start"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "iobroker"]
+CMD ["--", "start"]
 LABEL org.opencontainers.image.title="iobroker" \
       org.opencontainers.image.description="ioBroker - IoT automation platform" \
       org.opencontainers.image.vendor="ioBroker" \

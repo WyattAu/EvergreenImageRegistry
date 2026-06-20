@@ -31,7 +31,7 @@ EXPOSE 8008
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8008"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/dendrite"]
 LABEL org.opencontainers.image.title="dendrite-monolith" \
       org.opencontainers.image.description="Dendrite Monolith - Dendrite Matrix homeserver in monolith mode" \
       org.opencontainers.image.version="0.13.1" \

@@ -43,8 +43,8 @@ EXPOSE 9000 12201 5044
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5044"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/opt/graylog/bin/graylogctl", "--", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/graylog/bin/graylogctl"]
+CMD ["--", "run"]
 LABEL org.opencontainers.image.title="graylog" \
       org.opencontainers.image.description="Evergreen hardened Graylog - centralized log management platform" \
       org.opencontainers.image.version="${VERSION}" \

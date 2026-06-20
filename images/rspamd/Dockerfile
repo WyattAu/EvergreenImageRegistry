@@ -55,5 +55,5 @@ LABEL org.opencontainers.image.description="rspamd container image" \
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:11333"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "rspamd", "--", "-F", "--no-daemon"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "rspamd"]
+CMD ["--", "-F", "--no-daemon"]

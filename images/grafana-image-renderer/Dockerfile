@@ -59,7 +59,7 @@ ENV RENDERING_MODE=chromium \
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8081"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/grafana-image-renderer/build/grafana-image-renderer"]
 LABEL org.opencontainers.image.title="grafana-image-renderer" \
       org.opencontainers.image.version="5.8.2" \
       org.opencontainers.image.vendor="Grafana Labs" \

@@ -46,8 +46,8 @@ EXPOSE 443 443/udp
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:443"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/usr/sbin/ocserv", "--", "-f"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/sbin/ocserv"]
+CMD ["--", "-f"]
 LABEL org.opencontainers.image.title="ocserv" \
       org.opencontainers.image.version="1.3.0" \
       org.opencontainers.image.vendor="OpenConnect" \

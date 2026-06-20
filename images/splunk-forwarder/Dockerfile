@@ -45,8 +45,8 @@ EXPOSE 8089 9997
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8089"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/opt/splunkforwarder/bin/splunk", "--", "start", "--accept-license", "--no-prompt"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/splunkforwarder/bin/splunk"]
+CMD ["--", "start", "--accept-license", "--no-prompt"]
 LABEL org.opencontainers.image.title="splunk-forwarder" \
       org.opencontainers.image.description="Evergreen hardened Splunk Universal Forwarder - log data shipper" \
       org.opencontainers.image.version="${VERSION}" \

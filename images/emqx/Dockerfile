@@ -36,8 +36,8 @@ EXPOSE 1883 8083 8084 8883 18083
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:1883"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/opt/emqx/bin/emqx", "--", "foreground"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/emqx/bin/emqx"]
+CMD ["--", "foreground"]
 LABEL org.opencontainers.image.title="emqx" \
       org.opencontainers.image.description="EMQX - High-performance MQTT broker" \
       org.opencontainers.image.vendor="EMQ" \

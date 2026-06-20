@@ -28,7 +28,7 @@ EXPOSE 8125 8092 8094 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8125"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/bin/telegraf"]
 LABEL org.opencontainers.image.title="telegraf" \
       org.opencontainers.image.description="Evergreen hardened Telegraf - metrics collection agent by InfluxData" \
       org.opencontainers.image.version="1.30.3" \

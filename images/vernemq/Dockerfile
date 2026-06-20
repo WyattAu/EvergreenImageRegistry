@@ -29,8 +29,8 @@ EXPOSE 1883 4369 44053 8080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:1883"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "echo", "--", "vernemq: Place VerneMQ binary in /opt/vernemq/bin/"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "echo"]
+CMD ["--", "vernemq: Place VerneMQ binary in /opt/vernemq/bin/"]
 LABEL org.opencontainers.image.title="vernemq" \
       org.opencontainers.image.description="VerneMQ - High-performance MQTT broker" \
       org.opencontainers.image.vendor="VerneMQ" \

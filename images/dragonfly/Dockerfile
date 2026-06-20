@@ -32,8 +32,8 @@ EXPOSE 6379
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/dragonfly", "--", "--bind", "0.0.0.0:6379"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/dragonfly"]
+CMD ["--", "--bind", "0.0.0.0:6379"]
 LABEL org.opencontainers.image.title="dragonfly" \
       org.opencontainers.image.description="Dragonfly - in-memory data store compatible with Redis and Memcached" \
       org.opencontainers.image.version="1.18.0" \

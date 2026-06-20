@@ -43,7 +43,7 @@ EXPOSE 8082 9092
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8082"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "java -cp /opt/h2/h2.jar org.h2.tools.Server"]
 LABEL org.opencontainers.image.title="h2" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Evergreen hardened H2 Database - embedded Java SQL database" \

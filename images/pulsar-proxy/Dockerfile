@@ -41,8 +41,8 @@ EXPOSE 6650 8080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6650"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "/opt/pulsar/bin/pulsar", "--", "proxy"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/pulsar/bin/pulsar"]
+CMD ["--", "proxy"]
 LABEL org.opencontainers.image.title="pulsar-proxy" \
       org.opencontainers.image.description="Evergreen hardened Pulsar Proxy - multi-tenant message routing proxy" \
       org.opencontainers.image.version="${VERSION}" \

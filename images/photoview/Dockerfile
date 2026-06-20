@@ -34,7 +34,7 @@ EXPOSE 80
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/photoview"]
 
 LABEL org.opencontainers.image.title="photoview"       org.opencontainers.image.version="v2.4.0"       org.opencontainers.image.vendor="photoview/photoview"       org.opencontainers.image.source="https://github.com/photoview/photoview"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.base="scratch"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms" \
 org.opencontainers.image.description="photoview container image" \

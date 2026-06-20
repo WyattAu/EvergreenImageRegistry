@@ -28,7 +28,7 @@ EXPOSE 9102 9125 9101
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9102"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/statsd_exporter"]
 LABEL org.opencontainers.image.title="prometheus-statsd-exporter" \
       org.opencontainers.image.description="Prometheus exporter for StatsD metrics with mapping" \
       org.opencontainers.image.version="0.29.0" \

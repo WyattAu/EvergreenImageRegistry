@@ -40,7 +40,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/localai-loadbalancer"]
 
 LABEL org.opencontainers.image.title="localai-loadbalancer"       org.opencontainers.image.version="v4.1.3"       org.opencontainers.image.vendor="mudler/LocalAI"       org.opencontainers.image.source="https://github.com/mudler/LocalAI"       evergreen.image.tier="3"       evergreen.constraint.nonroot="true"       evergreen.constraint.base="wolfi"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms" \
 org.opencontainers.image.description="localai-loadbalancer container image" \

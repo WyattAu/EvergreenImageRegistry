@@ -32,7 +32,7 @@ EXPOSE 8000
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8000"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "python3"]
 LABEL org.opencontainers.image.title="transformers-gpu" \
       org.opencontainers.image.description="transformers-gpu container image" \
       org.opencontainers.image.version="4.46.0" \

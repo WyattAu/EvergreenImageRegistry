@@ -25,7 +25,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/filebrowser"]
 LABEL org.opencontainers.image.title="filebrowser" \
       org.opencontainers.image.description="filebrowser container image" \
       org.opencontainers.image.version="v2.32.0" \

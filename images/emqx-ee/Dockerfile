@@ -30,8 +30,8 @@ EXPOSE 1883 8083 8084 8883 18083
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:1883"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
-CMD ["-c", "echo", "--", "emqx-ee: Enterprise edition requires license. Place emqx binary in /opt/emqx/bin/"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "echo"]
+CMD ["--", "emqx-ee: Enterprise edition requires license. Place emqx binary in /opt/emqx/bin/"]
 LABEL org.opencontainers.image.title="emqx-ee" \
       org.opencontainers.image.description="EMQX Enterprise - requires license" \
       org.opencontainers.image.vendor="EMQ" \

@@ -47,7 +47,7 @@ EXPOSE 18080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:18080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/nifi-registry/bin/nifi-registry.sh run"]
 LABEL org.opencontainers.image.title="nifi-registry" \
       org.opencontainers.image.version="1.26.0" \
       org.opencontainers.image.vendor="Apache" \

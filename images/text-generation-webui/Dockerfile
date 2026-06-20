@@ -35,7 +35,7 @@ EXPOSE 7860
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:7860"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "python3 /opt/text-generation-webui/server.py"]
 LABEL org.opencontainers.image.title="text-generation-webui" \
       org.opencontainers.image.description="text-generation-webui container image" \
       org.opencontainers.image.version="1.8" \

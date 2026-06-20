@@ -34,7 +34,7 @@ EXPOSE 8188
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8188"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "python3 /opt/comfyui/main.py --listen --port 8188"]
 LABEL org.opencontainers.image.title="comfyui" \
       org.opencontainers.image.description="comfyui container image" \
       org.opencontainers.image.version="latest" \

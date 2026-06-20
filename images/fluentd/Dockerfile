@@ -41,7 +41,7 @@ EXPOSE 24224 5140
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5140"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/fluentd -c /fluentd/etc/fluent.conf"]
 LABEL org.opencontainers.image.title="fluentd" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Evergreen hardened Fluentd - unified logging layer with Ruby runtime" \

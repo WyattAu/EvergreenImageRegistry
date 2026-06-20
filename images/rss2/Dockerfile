@@ -32,7 +32,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "php -S 0.0.0.0:8080 -t /app"]
 LABEL org.opencontainers.image.title="rss2" \
       org.opencontainers.image.description="RSS-Bridge - generate RSS/Atom feeds for websites that don't have them" \
       org.opencontainers.image.version="2025-08-05" \

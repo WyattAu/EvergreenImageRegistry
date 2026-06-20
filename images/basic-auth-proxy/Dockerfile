@@ -153,9 +153,9 @@ EXPOSE 8080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/nginx/sbin/nginx"]
 
-CMD ["-c", "/opt/nginx/sbin/nginx", "--", "-c", "/app/conf/nginx.conf", "-g", "daemon off;"]
+CMD ["--", "-c", "/app/conf/nginx.conf", "-g", "daemon off;"]
 
 LABEL org.opencontainers.image.title="basic-auth-proxy" \
       org.opencontainers.image.description="basic-auth-proxy container image" \

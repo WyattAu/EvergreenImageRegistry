@@ -31,7 +31,7 @@ EXPOSE 53 8081
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:53"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "pdns"]
 LABEL org.opencontainers.image.title="powerdns" \
       org.opencontainers.image.description="powerdns container image" \
       org.opencontainers.image.version="4.9.1" \

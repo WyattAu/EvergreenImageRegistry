@@ -149,9 +149,7 @@ def validate_image(image_name: str) -> PatternResult:
     #   LABEL evergreen.entrypoint.pattern="base-image"
     #   LABEL evergreen.entrypoint.pattern="no-op"
     #   LABEL evergreen.entrypoint.pattern="idle-container"
-    is_exempt = (
-        'evergreen.entrypoint.pattern=' in text
-    )
+    is_exempt = "evergreen.entrypoint.pattern=" in text
 
     has_copy, shim_path = find_shim_copy(text)
     if not has_copy and not is_exempt:

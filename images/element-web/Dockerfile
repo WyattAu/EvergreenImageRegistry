@@ -27,9 +27,9 @@ ARG VERSION=v1.12.18
 RUN apk add --no-cache ca-certificates nginx && \
     addgroup -S -g 10000 appuser 2>/dev/null || true && \
     adduser -u 65532 -G appuser -D -h /app -s /bin/false appuser 2>/dev/null || true && \
-    mkdir -p /app /var/log/nginx /var/cache/nginx /run 2>/dev/null || true
+    mkdir -p /app /var/log/nginx /var/cache/nginx /var/lib/nginx/tmp /var/lib/nginx/logs /run 2>/dev/null || true
 COPY --from=builder /www-src /app
-RUN chown -R 65532:65532 /app /var/log/nginx /var/cache/nginx /run 2>/dev/null || true
+RUN chown -R 65532:65532 /app /var/log/nginx /var/cache/nginx /var/lib/nginx /run 2>/dev/null || true
 
 # Minimal nginx config: serve static files from /app on port 8080 (non-root)
 # daemon off is set in config to avoid shell quoting issues with shim

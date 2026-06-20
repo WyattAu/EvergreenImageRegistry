@@ -14,7 +14,11 @@ ARG TARGETARCH
 RUN mkdir -p /app /var/log/argocd /var/cache/argocd /home/argocd 2>/dev/null || true
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /argocd /argocd
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -26,7 +30,7 @@ WORKDIR /app
 ENV HOME=/app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/argocd"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/argocd"]
 LABEL org.opencontainers.image.title="argo-cd" \
       org.opencontainers.image.version="3.4.2" \
       org.opencontainers.image.vendor="Argo Project" \

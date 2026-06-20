@@ -4,7 +4,11 @@ ARG BUILD_DATE
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 RUN apk add --no-cache python3 py3-pip ca-certificates curl && \
     python3 -m venv /opt/venv || true
 ENV PATH="/opt/venv/bin:$PATH"
@@ -27,5 +31,5 @@ LABEL org.opencontainers.image.description="paperless-ngx-gotenberg container im
       org.opencontainers.image.source="https://github.com/paperless-ngx/paperless-ngx" \
             org.opencontainers.image.version="2.14.4"
 
-ENTRYPOINT ["python", "-m", "paperless-ngx"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "python -m paperless-ngx"]
 CMD ["--help"]

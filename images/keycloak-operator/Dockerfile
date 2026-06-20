@@ -5,14 +5,18 @@ ARG APP_GID=65532
 
 FROM quay.io/keycloak/keycloak-operator:${VERSION} AS upstream
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=upstream /usr/local/bin/keycloak-operator /usr/local/bin/keycloak-operator
 COPY --from=upstream /etc/pki/tls/certs/ca-bundle.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/keycloak-operator"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/keycloak-operator"]
 LABEL org.opencontainers.image.title="keycloak-operator" \
       org.opencontainers.image.description="keycloak-operator container image" \
       org.opencontainers.image.version="${VERSION}" \

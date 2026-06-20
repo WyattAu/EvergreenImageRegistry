@@ -79,7 +79,11 @@ RUN mkdir -p /app /var/log/lazydocker-ui /var/cache/lazydocker-ui 2>/dev/null ||
 
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 
 
 
@@ -266,7 +270,7 @@ LABEL org.opencontainers.image.description="lazydocker-ui container image" \
 
 
 
-ENTRYPOINT ["/lazydocker"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/lazydocker"]
 
 
 

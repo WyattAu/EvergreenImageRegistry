@@ -7,7 +7,11 @@ ARG TARGETARCH
 RUN mkdir -p /usr/local/lib/node_modules/renovate || true
 RUN npm install -g renovate@${VERSION}
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 ARG VERSION=43.150.0
 RUN apk add --no-cache ca-certificates git
 COPY --from=builder /usr/local/lib/node_modules/renovate /opt/renovate
@@ -17,7 +21,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["renovate"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "renovate"]
 LABEL org.opencontainers.image.title="renovatebot"       org.opencontainers.image.version="43.150.0"       org.opencontainers.image.vendor="RenovateBot"       org.opencontainers.image.source="https://github.com/renovatebot/renovate"       evergreen.image.tier="2"       evergreen.image.category="automation"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.base="wolfi"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="30s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="30000ms" \
       org.opencontainers.image.description="renovatebot container image" \
 evergreen.base.image="wolfi"

@@ -14,7 +14,11 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN mkdir -p /app /var/log/flux /var/cache/flux 2>/dev/null || true
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /flux /flux
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -25,7 +29,7 @@ WORKDIR /app
 EXPOSE 3030
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/flux"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/flux"]
 LABEL org.opencontainers.image.title="flux" \
       org.opencontainers.image.description="flux container image" \
       org.opencontainers.image.version="2.3.0" \

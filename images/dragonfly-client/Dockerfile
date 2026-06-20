@@ -13,14 +13,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     strip --strip-all /tmp/dfly 2>/dev/null&& \
     mv /tmp/dfly /dfly && \
     rm -rf /dragonfly.tar.gz /checksums.txt /tmp/* && { echo "Binary not available - download failed" >&2; exit 1; }
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /dfly /dfly
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/dfly"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/dfly"]
 LABEL org.opencontainers.image.title="dragonfly-client" \
       org.opencontainers.image.description="dragonfly-client container image" \
       org.opencontainers.image.version="1.18.0" \

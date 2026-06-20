@@ -14,7 +14,11 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN mkdir -p /app /var/log/crane /var/cache/crane 2>/dev/null || true
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /crane /crane
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -24,7 +28,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/crane"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/crane"]
 LABEL org.opencontainers.image.title="crane" \
       org.opencontainers.image.version="0.21.5" \
       org.opencontainers.image.vendor="Google" \

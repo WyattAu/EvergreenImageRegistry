@@ -75,7 +75,11 @@ RUN mkdir -p /app /var/log/truffleshog /var/cache/truffleshog 2>/dev/null || tru
 
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 
 
 
@@ -252,7 +256,7 @@ HEALTHCHECK NONE
 
 
 
-ENTRYPOINT ["/trufflehog"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/trufflehog"]
 
 
 

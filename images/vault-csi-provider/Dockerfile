@@ -5,14 +5,18 @@ ARG APP_GID=65532
 
 FROM hashicorp/vault-csi-provider:${VERSION} AS upstream
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=upstream /bin/vault-csi-provider /usr/local/bin/vault-csi-provider
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/vault-csi-provider"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/vault-csi-provider"]
 LABEL org.opencontainers.image.title="vault-csi-provider" \
       org.opencontainers.image.description="vault-csi-provider container image" \
       org.opencontainers.image.version="${VERSION}" \

@@ -13,7 +13,11 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN mkdir -p /app /var/log/fluxcd-helm /var/cache/fluxcd-helm 2>/dev/null || true
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /flux /flux
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -23,7 +27,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/flux", "bootstrap", "helm-release"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/flux bootstrap helm-release"]
 LABEL org.opencontainers.image.title="fluxcd-helm" \
       org.opencontainers.image.version="2.8.6" \
       org.opencontainers.image.vendor="Flux CD" \

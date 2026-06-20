@@ -5,14 +5,18 @@ ARG APP_GID=65532
 
 FROM quay.io/prometheus-operator/prometheus-operator:v${VERSION} AS upstream
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=upstream /bin/operator /usr/local/bin/prometheus-operator
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/prometheus-operator"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/prometheus-operator"]
 LABEL org.opencontainers.image.title="prometheus-operator" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Prometheus" \

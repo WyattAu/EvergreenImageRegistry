@@ -18,7 +18,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mkdir -p /app /backups /var/log/mysql-restore /var/cache/mysql-restore || true
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 
 RUN apk add --no-cache wget ca-certificates
 COPY --from=builder --chown=65532:65532 /app /app
@@ -47,7 +51,7 @@ RUN echo '#!/bin/sh' > /app/restore.sh && \
 RUN chmod +x /app/restore.sh 2>/dev/null && chown 65532:65532 /app/restore.sh 2>/dev/null
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["/app/restore.sh"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/app/restore.sh"]
 LABEL org.opencontainers.image.title="mysql-restore" \
       org.opencontainers.image.version="8.0" \
       org.opencontainers.image.description="MySQL Restore Container with xz/gz/sql support" \

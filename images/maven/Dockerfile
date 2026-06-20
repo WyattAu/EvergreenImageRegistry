@@ -14,7 +14,11 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN mkdir -p /app /var/log/maven /var/cache/maven /home/maven 2>/dev/null || true
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 
 RUN apk add --no-cache ca-certificates
 COPY --from=downloader /opt/apache-maven-3.9.15 /opt/apache-maven-3.9.15
@@ -30,7 +34,7 @@ ENV HOME=/app
 ENV MAVEN_HOME=/opt/apache-maven-3.9.15
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["mvn"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "mvn"]
 LABEL org.opencontainers.image.title="maven" \
       org.opencontainers.image.version="3.9.15" \
       org.opencontainers.image.vendor="Apache" \

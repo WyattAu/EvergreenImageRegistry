@@ -8,7 +8,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git clone https://github.com/CISOfy/Lynis.git /src 2>/dev/null || { echo "Binary not available - download failed" >&2; exit 1; } && \
     mkdir -p /src 2>/dev/null || true && \
     mkdir -p /app 2>/dev/null || true
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 
 RUN apk add --no-cache ca-certificates curl
 COPY --from=builder /src /app/src
@@ -20,7 +24,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["/app/src/lynis"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/app/src/lynis"]
 CMD ["audit", "system"]
 LABEL org.opencontainers.image.title="lynis" \
       org.opencontainers.image.description="Lynis - Security auditing tool" \

@@ -12,14 +12,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     chmod +x /cosign && \
     strip --strip-all /cosign 2>/dev/null&& \
     rm -f /cosign.sig && { echo "Binary not available - download failed" >&2; exit 1; }
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /cosign /cosign
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/cosign"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/cosign"]
 CMD ["verify"]
 LABEL org.opencontainers.image.title="cosign-verify" \
       org.opencontainers.image.description="cosign-verify container image" \

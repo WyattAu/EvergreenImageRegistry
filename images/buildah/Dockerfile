@@ -10,7 +10,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     buildah \
     ca-certificates ; rm -rf /var/lib/apt/lists/* || true && \
     mkdir -p /app /var/log/buildah /var/cache/buildah /var/lib/containers 2>/dev/null || true
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 
 RUN apk add --no-cache ca-certificates containers-common
 COPY --from=builder /usr/bin/buildah /usr/local/bin/buildah
@@ -24,7 +28,7 @@ WORKDIR /app
 ENV HOME=/app
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["buildah"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "buildah"]
 LABEL org.opencontainers.image.title="buildah" \
       org.opencontainers.image.description="Evergreen hardened buildah - OCI image builder" \
       evergreen.image.tier="3" \

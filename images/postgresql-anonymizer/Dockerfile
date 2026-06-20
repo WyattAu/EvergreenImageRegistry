@@ -28,7 +28,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 
 RUN apk add --no-cache postgresql-client libpq curl ca-certificates
 
@@ -43,7 +47,7 @@ WORKDIR /app
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
 
-ENTRYPOINT ["python3", "-m", "postgresql_anonymizer"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "python3 -m postgresql_anonymizer"]
 
 LABEL org.opencontainers.image.title="postgresql-anonymizer" \
       org.opencontainers.image.version="1.2.0" \

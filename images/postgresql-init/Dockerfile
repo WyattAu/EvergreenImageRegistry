@@ -18,7 +18,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mkdir -p /app /var/log/postgresql-init /var/cache/postgresql-init || true
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 ARG VERSION=17
 
 RUN apk add --no-cache postgresql-${VERSION}-client curl ca-certificates
@@ -43,7 +47,7 @@ RUN chmod +x /app/init.sh && chown 65532:65532 /app/init.sh
 USER 65532:65532
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["/app/init.sh"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/app/init.sh"]
 LABEL org.opencontainers.image.title="postgresql-init" \
       org.opencontainers.image.version="17" \
       org.opencontainers.image.description="PostgreSQL Initialization Container" \

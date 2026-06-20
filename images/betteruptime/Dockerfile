@@ -73,7 +73,11 @@ RUN mkdir -p /app 2>/dev/null || true
 
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 ARG VERSION=0.2.0
 COPY --from=builder /betteruptime /betteruptime
 COPY --from=builder2 /app /app
@@ -82,7 +86,7 @@ WORKDIR /app
 ENV BETTERUPTIME_VERSION=${VERSION}
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/betteruptime"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/betteruptime"]
 LABEL org.opencontainers.image.title="betteruptime" \
       org.opencontainers.image.version="0.2.0" \
       org.opencontainers.image.vendor="BetterStack" \

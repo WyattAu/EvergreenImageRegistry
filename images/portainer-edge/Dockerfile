@@ -10,7 +10,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     mkdir -p /app /var/log/portainer-edge /var/cache/portainer-edge 2>/dev/null || true
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=upstream /agent_edge /portainer-edge-agent
 COPY --from=builder /app /app
@@ -36,6 +40,6 @@ USER 65532:65532
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/portainer-edge-agent"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/portainer-edge-agent"]
 
 CMD ["--help"]

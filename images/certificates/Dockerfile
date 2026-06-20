@@ -67,7 +67,11 @@ RUN touch /cfssljson && \ RUN touch /cfssl && \
 
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 
 
 
@@ -139,7 +143,7 @@ HEALTHCHECK NONE
 
 
 
-ENTRYPOINT ["/cfssl"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/cfssl"]
 
 
 

@@ -17,7 +17,11 @@ RUN pip install --no-cache-dir --prefix=/install \
     find /install -type f -name "*.pyc" -delete && \
     find /install -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 
 RUN apk add --no-cache wget ca-certificates
 COPY --from=builder /install /usr/local
@@ -28,7 +32,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["curator"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "curator"]
 LABEL org.opencontainers.image.title="elasticsearch-curator" \
       org.opencontainers.image.version="5.8.3" \
       org.opencontainers.image.description="Elasticsearch Curator - Index Management Tool" \

@@ -9,13 +9,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
         "https://github.com/couchbase/couchbase-operator/releases/download/v${VERSION}/couchbase-operator_v${VERSION}_linux_amd64" \
         -o /tmp/couchbase-operator || true ; \
     chmod +x /tmp/couchbase-operator 2>/dev/null ; \' && { echo "Binary not available - download failed" >&2; exit 1; }
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /tmp/couchbase-operator /usr/local/bin/couchbase-operator
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/couchbase-operator"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/couchbase-operator"]
 LABEL org.opencontainers.image.title="couchbase-operator" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.description="Evergreen hardened Couchbase Operator - Kubernetes operator for Couchbase" \

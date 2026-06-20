@@ -7,7 +7,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         git curl ca-certificates ; rm -rf /var/lib/apt/lists/* && \
     git clone https://github.com/falcosecurity/rules.git /rules 2>/dev/null || { echo "Binary not available - download failed" >&2; exit 1; } && \
     mkdir -p /app/rules 2>/dev/null || true
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 
 RUN apk add --no-cache ca-certificates
 COPY --from=builder /rules /app/rules
@@ -18,7 +22,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["cat"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "cat"]
 CMD ["/app/rules/rules.yaml"]
 LABEL org.opencontainers.image.title="falco-rules" \
       org.opencontainers.image.description="Falco - rules only" \

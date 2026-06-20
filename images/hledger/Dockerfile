@@ -11,14 +11,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     strip /usr/local/bin/hledger&& chmod +x /usr/local/bin/hledger
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /usr/local/bin/hledger /hledger
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/hledger"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/hledger"]
 LABEL org.opencontainers.image.title="hledger" \
       org.opencontainers.image.description="hledger container image" \
       org.opencontainers.image.version="1.52" \

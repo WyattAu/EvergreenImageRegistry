@@ -14,7 +14,11 @@ ARG TARGETARCH
 RUN mkdir -p /app /var/log/buildx /var/cache/buildx 2>/dev/null || true
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /buildx /buildx
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -24,7 +28,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/buildx"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/buildx"]
 LABEL org.opencontainers.image.title="buildx" \
       org.opencontainers.image.version="0.33.0" \
       org.opencontainers.image.vendor="Docker" \

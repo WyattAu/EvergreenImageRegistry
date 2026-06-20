@@ -14,7 +14,11 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN mkdir -p /app /var/log/kustomize /var/cache/kustomize 2>/dev/null || true
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /kustomize /kustomize
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -24,7 +28,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/kustomize"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/kustomize"]
 LABEL org.opencontainers.image.title="kustomize" \
       org.opencontainers.image.description="Kustomize - template-free configuration customization for Kubernetes" \
       org.opencontainers.image.version="5.4.1" \

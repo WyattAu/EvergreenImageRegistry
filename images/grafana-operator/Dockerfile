@@ -5,14 +5,18 @@ ARG APP_GID=65532
 
 FROM ghcr.io/grafana-operator/grafana-operator:v${VERSION} AS upstream
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=upstream /manager /usr/local/bin/grafana-operator
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/grafana-operator"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/grafana-operator"]
 LABEL org.opencontainers.image.title="grafana-operator" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Grafana" \

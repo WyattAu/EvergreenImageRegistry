@@ -10,7 +10,11 @@ ARG GOARCH=${TARGETARCH}
 RUN GOARCH=${GOARCH} go install golang.org/x/vuln/cmd/govulncheck@${VERSION}
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 # package-manager-verified: integrity verified by upstream
 COPY --from=builder /go/bin/govulncheck /govulncheck
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -34,6 +38,6 @@ USER 65532:65532
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/govulncheck"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/govulncheck"]
 
 CMD ["--help"]

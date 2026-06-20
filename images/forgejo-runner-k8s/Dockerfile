@@ -37,7 +37,11 @@ RUN CGO_ENABLED=1 go build \
 
 # ── Stage 2: Runtime ────────────────────────────────────────
 # Wolfi-base provides glibc (required by CGO-linked K8s client libs).
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 
 # Runtime deps: git (checkout), bash (workflows), nodejs (checkout action),
 # curl (cache/download actions), ca-certificates (HTTPS)
@@ -54,7 +58,7 @@ COPY --from=builder /act_runner /usr/local/bin/act_runner
 
 USER 65532:65532
 HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/act_runner"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/act_runner"]
 CMD ["daemon"]
 LABEL evergreen.security.cap-drop="ALL" \
       evergreen.security.no-new-privileges="true" \

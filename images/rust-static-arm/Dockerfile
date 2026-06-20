@@ -19,7 +19,11 @@ RUN apt-get update && \
         --components=rust-std,cargo,rustc,rust-std-aarch64-unknown-linux-musl \
         --without=rust-docs --without=rustfmt --without=clippy && \
     strip /opt/rust/bin/rustc /opt/rust/bin/cargo 2>/dev/null
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /opt/rust /opt/rust
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 ENV PATH="/opt/rust/bin:${PATH}" \
@@ -29,7 +33,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/opt/rust/bin/rustc"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/rust/bin/rustc"]
 CMD ["--version"]
 LABEL org.opencontainers.image.title="rust-static-arm" \
       org.opencontainers.image.version="${VERSION}" \

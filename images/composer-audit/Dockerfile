@@ -13,7 +13,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     rm -rf /var/lib/apt/lists/* || true && \
     curl --retry 3 --retry-delay 5 -fsSL "https://getcomposer.org/installer" | php -- --install-dir=/usr/local/bin --filename=composer && \
     mkdir -p /app
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 # package-manager-verified: integrity verified by upstream
 RUN apk add --no-cache php-8.4 php-8.4-mbstring php-8.4-xml php-8.4-curl ca-certificates curl unzip && \
     mkdir -p /usr/local/bin 2>/dev/null || true
@@ -27,7 +31,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["composer"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "composer"]
 CMD ["audit"]
 LABEL org.opencontainers.image.title="composer-audit" \
       org.opencontainers.image.description="Composer audit - PHP dependency security scanner" \

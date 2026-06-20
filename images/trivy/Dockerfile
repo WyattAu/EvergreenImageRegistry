@@ -17,7 +17,11 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN mkdir -p /app /var/log/trivy /var/cache/trivy 2>/dev/null || true
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /trivy /trivy
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -27,7 +31,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/trivy"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/trivy"]
 LABEL org.opencontainers.image.title="trivy" \
       org.opencontainers.image.description="Trivy - security scanner for containers and dependencies" \
       org.opencontainers.image.version="0.70.0" \

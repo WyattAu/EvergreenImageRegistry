@@ -12,7 +12,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /age/age /usr/local/bin/age
 COPY --from=downloader /age/age-keygen /usr/local/bin/age-keygen
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -20,7 +24,7 @@ USER 65532:65532
 WORKDIR /tmp
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/age"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/age"]
 LABEL org.opencontainers.image.title="age" \
       org.opencontainers.image.version="1.3.1" \
       org.opencontainers.image.vendor="FiloSottile" \

@@ -27,7 +27,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
 
 RUN mkdir -p /tig-${VERSION}/src/tig
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 ARG VERSION=2.5.8
 
 RUN apk add --no-cache zlib ca-certificates git && \
@@ -38,7 +42,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["/usr/local/bin/tig"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/tig"]
 LABEL org.opencontainers.image.title="tig" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Jonas Fonseca" \

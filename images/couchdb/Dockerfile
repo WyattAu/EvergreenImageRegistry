@@ -21,7 +21,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
         chmod +x /opt/couchdb/bin/couchdb ; } && \
     rm -rf /tmp/couchdb.tar.gz /tmp/apache-couchdb-${VERSION} /var/lib/apt/lists/*
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 ARG VERSION=3.5.1
 
 RUN apk add --no-cache wget procps && \
@@ -41,7 +45,7 @@ WORKDIR /app
 EXPOSE 5984
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:5984/_up
-ENTRYPOINT ["sh", "-c", "/opt/couchdb/bin/couchdb"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "sh -c /opt/couchdb/bin/couchdb"]
 LABEL org.opencontainers.image.title="couchdb" \
       org.opencontainers.image.description="CouchDB - document-oriented NoSQL database" \
       org.opencontainers.image.version="${VERSION}" \

@@ -1,7 +1,11 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 # package-manager-verified: integrity verified by upstream
 RUN apk add --no-cache nodejs-20 npm ca-certificates && \
     addgroup -S -g 65532 toolkit 2>/dev/null || true && \
@@ -16,7 +20,7 @@ ENV GRAFANA_TOOLKIT_VERSION=${VERSION} \
     NODE_ENV=production
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["npx", "grafana-toolkit"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "npx grafana-toolkit"]
 LABEL org.opencontainers.image.title="grafana-toolkit" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.vendor="Grafana Labs" \

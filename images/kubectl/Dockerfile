@@ -14,7 +14,11 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN mkdir -p /app /var/log/kubectl /var/cache/kubectl 2>/dev/null || true
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /kubectl /kubectl
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -24,7 +28,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/kubectl"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/kubectl"]
 LABEL org.opencontainers.image.title="kubectl" \
       org.opencontainers.image.description="kubectl - command line tool for controlling Kubernetes clusters" \
       org.opencontainers.image.version="1.30.1" \

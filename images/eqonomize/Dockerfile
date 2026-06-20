@@ -14,7 +14,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     cd /tmp/eqonomize && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release . && \
     make -j$(nproc) && make install && strip --strip-all /usr/local/bin/eqonomize 2>/dev/null
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 
 RUN apk add --no-cache ca-certificates
 
@@ -25,7 +29,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["eqonomize"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "eqonomize"]
 LABEL org.opencontainers.image.title="eqonomize" \
       org.opencontainers.image.description="eqonomize container image" \
       org.opencontainers.image.version="0.10.1" \

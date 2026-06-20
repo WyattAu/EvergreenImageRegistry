@@ -92,7 +92,11 @@ RUN mkdir -p /app /var/log/jenkins-executor /var/cache/jenkins-executor /home/je
 
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 
 
 
@@ -204,7 +208,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget 
 
 
 
-ENTRYPOINT ["java", "-jar", "/app/agent.jar", "-jnlpUrl", "${JENKINS_URL}/computer/${AGENT_NAME}/slave-agent.jnlp"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "java -jar /app/agent.jar -jnlpUrl ${JENKINS_URL}/computer/${AGENT_NAME}/slave-agent.jnlp"]
 
 
 

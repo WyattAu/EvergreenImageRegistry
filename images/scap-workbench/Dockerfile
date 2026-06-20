@@ -6,7 +6,11 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN apt-get update && apt-get install -y --no-install-recommends \
         scap-workbench ca-certificates ; rm -rf /var/lib/apt/lists/* || true && \
     mkdir -p /app-src 2>/dev/null || true
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 
 RUN apk add --no-cache ca-certificates
 RUN mkdir -p /app || true
@@ -19,7 +23,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["scap-workbench"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "scap-workbench"]
 LABEL org.opencontainers.image.title="scap-workbench" \
       org.opencontainers.image.description="SCAP Workbench - GUI for OpenSCAP" \
       org.opencontainers.image.vendor="Red Hat" \

@@ -4,7 +4,11 @@ ARG VERSION=0.3.0b2
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 RUN apk add --no-cache ca-certificates python3 py3-pip && \
     pip3 install --break-system-packages --no-cache-dir maxbot==${VERSION} && \
     addgroup -g 65532 app 2>/dev/null || true && \
@@ -14,7 +18,7 @@ RUN apk add --no-cache ca-certificates python3 py3-pip && \
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["maxbot"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "maxbot"]
 LABEL org.opencontainers.image.title="maxbot" \
       org.opencontainers.image.description="Maxbot - open source framework for creating conversational apps" \
       org.opencontainers.image.version="0.3.0b2" \

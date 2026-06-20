@@ -7,7 +7,11 @@ ARG APP_GID=65532
 FROM ghcr.io/github/dependabot-updater-internal AS upstream
 RUN mkdir -p /app /usr/local/bin 2>/dev/null || true
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 ARG VERSION=0.275.1
 RUN apk add --no-cache ruby-3.4 ca-certificates \
         git curl gnupg gmp mpdecimal libffi \
@@ -24,7 +28,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["dependabot"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "dependabot"]
 CMD ["scan"]
 LABEL org.opencontainers.image.title="dependabot" \
       org.opencontainers.image.version="${VERSION}" \

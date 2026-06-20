@@ -13,7 +13,11 @@ ARG TARGETARCH
 RUN mkdir -p /app /var/log/go-static /var/cache/go-static 2>/dev/null || true
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /opt/go /opt/go
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -27,7 +31,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["go"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "go"]
 LABEL org.opencontainers.image.title="go-static" \
       org.opencontainers.image.version="1.22.10" \
       org.opencontainers.image.vendor="Go" \

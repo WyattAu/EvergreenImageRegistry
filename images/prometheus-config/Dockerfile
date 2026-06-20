@@ -5,7 +5,11 @@ ARG APP_GID=65532
 
 FROM quay.io/prometheus-operator/prometheus-operator:v0.90.1@sha256:c8aed26b2a0858b4beed8d6bc2215f7f6bdc6c96dd4de8e6e246c0a5b7a7876b AS upstream
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=upstream /prometheus-operator /prometheus-config-reloader
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
@@ -13,7 +17,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/prometheus-config-reloader"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/prometheus-config-reloader"]
 LABEL org.opencontainers.image.title="prometheus-config" \
       org.opencontainers.image.version="0.90.1" \
       org.opencontainers.image.vendor="Prometheus" \

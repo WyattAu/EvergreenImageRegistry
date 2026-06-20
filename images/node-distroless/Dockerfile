@@ -19,14 +19,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM gcr.io/distroless/nodejs22-debian12@sha256:8a3e96fe3345b5d83ecec2066e7c498139a02a6d1214e4f6c39f9ce359f3f5bc
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /opt/node/lib/node_modules /usr/local/lib/node_modules
 COPY --from=downloader /opt/node/bin/node /usr/local/bin/node
 USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["node"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "node"]
 LABEL org.opencontainers.image.title="node-distroless" \
       org.opencontainers.image.version="22.12.0" \
       org.opencontainers.image.vendor="Node.js" \

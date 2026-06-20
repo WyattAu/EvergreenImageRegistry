@@ -12,14 +12,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
 
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /hadolint /hadolint
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/hadolint"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/hadolint"]
 LABEL org.opencontainers.image.title="hadolint" \
       org.opencontainers.image.description="hadolint container image" \
       org.opencontainers.image.version="${VERSION}" \

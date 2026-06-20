@@ -29,14 +29,18 @@ RUN apt-get update && \
 # RUN cd /src && CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build -ldflags="-s -w" -o /app/app ./cmd/app
 # RUN strip --strip-all /app/app 2>/dev/null 2>/dev/null
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app/app /app/app
 USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/app/app"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/app/app"]
 
 LABEL org.opencontainers.image.title="scratch-go" \
       org.opencontainers.image.description="Go source-build reference — static binary on scratch" \

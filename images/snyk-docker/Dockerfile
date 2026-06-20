@@ -11,7 +11,11 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN mkdir -p /app /var/log/snyk-docker /var/cache/snyk-docker 2>/dev/null || true
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 
 COPY --from=downloader /snyk-docker /usr/local/bin/snyk-docker
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -37,5 +41,5 @@ LABEL org.opencontainers.image.description="snyk-docker container image" \
       org.opencontainers.image.source="https://github.com/snyk/snyk" \
             org.opencontainers.image.version="1.1295.0"
 
-ENTRYPOINT ["/snyk-docker"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/snyk-docker"]
 CMD ["--help"]

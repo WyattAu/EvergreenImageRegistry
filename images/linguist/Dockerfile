@@ -7,7 +7,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         ruby ruby-dev build-essential git ca-certificates cmake pkg-config libgit2-dev libicu-dev ; rm -rf /var/lib/apt/lists/* || true && \
     gem install github-linguist --no-document || true && \
     mkdir -p /app /usr/lib/ruby/gems /usr/local/bundle 2>/dev/null || true
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 
 RUN apk add --no-cache ruby ca-certificates
 COPY --from=builder /usr/lib/ruby/gems /usr/lib/ruby/gems
@@ -20,7 +24,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["linguist"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "linguist"]
 LABEL org.opencontainers.image.title="linguist" \
       org.opencontainers.image.description="GitHub Linguist - language detection" \
       org.opencontainers.image.vendor="GitHub" \

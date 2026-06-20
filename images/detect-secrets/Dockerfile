@@ -11,7 +11,11 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --break-system-packages --upgrade pip && \
     pip install --no-cache-dir --break-system-packages detect-secrets && \
     mkdir -p /app-src 2>/dev/null || true
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 LABEL evergreen.base.fallback_reason="wolfi-base for musl compatibility"
 
 RUN apk add --no-cache python3 ca-certificates && \
@@ -28,7 +32,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 WORKDIR /app
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["detect-secrets"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "detect-secrets"]
 CMD ["scan"]
 LABEL org.opencontainers.image.title="detect-secrets" \
       org.opencontainers.image.description="detect-secrets - Yelp secret detection" \

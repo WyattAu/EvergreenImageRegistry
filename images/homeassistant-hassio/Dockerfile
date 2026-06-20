@@ -2,7 +2,11 @@
 ARG APP_UID=65532
 ARG APP_GID=65532
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 RUN apk add --no-cache python3 py3-pip git ca-certificates curl && \
     python3 -m venv /opt/venv && \
     . /opt/venv/bin/activate 2>/dev/null || true && \
@@ -26,5 +30,5 @@ LABEL org.opencontainers.image.description="homeassistant-hassio container image
       org.opencontainers.image.source="https://github.com/home-assistant/supervised-installer" \
             org.opencontainers.image.version="unknown"
 
-ENTRYPOINT ["python", "-m", "homeassistant"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "python -m homeassistant"]
 CMD ["--help"]

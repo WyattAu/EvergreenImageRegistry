@@ -94,7 +94,11 @@ RUN mkdir -p /app /var/log/trivy-k8s /var/cache/trivy-k8s 2>/dev/null || true
 
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 
 
 
@@ -281,7 +285,7 @@ LABEL org.opencontainers.image.description="trivy-k8s container image" \
 
 
 
-ENTRYPOINT ["/trivy"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/trivy"]
 
 
 

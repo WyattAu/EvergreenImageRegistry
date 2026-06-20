@@ -18,7 +18,11 @@ RUN apk add --no-cache ca-certificates wget && \
     wget -t 3 -T 10 -qO /tmp/dbmate "https://github.com/amacneil/dbmate/releases/download/v${VERSION}/dbmate-linux-${TARGETARCH}" \
     && echo "dfd4027141b6e4357158099bdfe6c02b286af70f8e49057937744cf80b38ea1c  /tmp/dbmate" | sha256sum -c \
     && chmod +x /tmp/dbmate
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 ARG VERSION=2.33.0
 ARG BUILD_DATE
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -28,7 +32,7 @@ USER 65532:65532
 WORKDIR /migrations
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/dbmate"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/dbmate"]
 LABEL org.opencontainers.image.title="dbmate" \
       org.opencontainers.image.description="Database migration tool for PostgreSQL, MySQL, SQLite, CockroachDB" \
       org.opencontainers.image.version="${VERSION}" \

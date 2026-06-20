@@ -20,7 +20,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mkdir -p /app /backups /var/log/postgres-restore /var/cache/postgres-restore || true
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 ARG VERSION=17
 
 RUN apk add --no-cache postgresql-${VERSION}-client wget ca-certificates
@@ -68,7 +72,7 @@ ENV SHIM_BACKUP_ENABLED="false" \
     SHIM_AUDIT_ENABLED="true"
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["/app/restore.sh"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/app/restore.sh"]
 LABEL org.opencontainers.image.title="postgres-restore" \
       org.opencontainers.image.version="17" \
       org.opencontainers.image.description="PostgreSQL Restore Container with pg_restore + xz support" \

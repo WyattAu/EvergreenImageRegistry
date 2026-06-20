@@ -18,7 +18,11 @@ ARG TARGETARCH
 RUN mkdir -p /app 2>/dev/null || true
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /grpc_health_probe /grpc_health_probe
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -26,7 +30,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/grpc_health_probe"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/grpc_health_probe"]
 LABEL org.opencontainers.image.title="healthcheck" \
       org.opencontainers.image.version="0.4.36" \
       org.opencontainers.image.vendor="grpc-ecosystem" \

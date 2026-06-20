@@ -8,7 +8,11 @@ ARG VERSION=RELEASE.2025-04-08T16-46-15Z
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
     curl --retry 3 --retry-delay 5 -fsSL "https://dl.min.io/client/mc/release/linux-${TARGETARCH}/mc" -o /mc \
     echo "01f866e9c5f9b87c2b09116fa5d7c06695b106242d829a8bb32990c00312e891  /mc" | sha256sum -c
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /mc /mc
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
@@ -16,7 +20,7 @@ WORKDIR /app
 EXPOSE 0
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/mc"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/mc"]
 LABEL org.opencontainers.image.title="mc" \
       org.opencontainers.image.description="mc container image" \
       org.opencontainers.image.version="RELEASE.2025-04-08T16-46-15Z" \

@@ -13,14 +13,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
     strip --strip-all /tmp/step-ca 2>/dev/null&& \
     mv /tmp/step-ca /step-ca && \
     rm -rf /step-ca.tar.gz /checksums.txt /tmp/* && { echo "Binary not available - download failed" >&2; exit 1; }
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /step-ca /step-ca
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/step-ca"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/step-ca"]
 CMD ["--acme"]
 LABEL org.opencontainers.image.title="step-acme" \
       org.opencontainers.image.description="step-acme container image" \

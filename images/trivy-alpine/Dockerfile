@@ -90,7 +90,11 @@ RUN mkdir -p /app /var/log/trivy-alpine /var/cache/trivy-alpine 2>/dev/null || t
 
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 
 
 
@@ -267,7 +271,7 @@ HEALTHCHECK NONE
 
 
 
-ENTRYPOINT ["/trivy"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/trivy"]
 
 
 

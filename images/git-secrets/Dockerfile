@@ -9,7 +9,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl --retry 3 --retry-delay 5 -fsSL -o /usr/local/bin/git-secrets "https://raw.githubusercontent.com/awslabs/git-secrets/master/git-secrets" 2>/dev/null ; chmod +x /usr/local/bin/git-secrets 2>/dev/null && \
     echo "775e3f0d2f2f8e4b5922115f1235f7369805de76f4efc69cb674bcba5590d0fa  /usr/local/bin/git-secrets" | sha256sum -c && \
     mkdir -p /app 2>/dev/null || true
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 
 RUN apk add --no-cache git ca-certificates && \
     mkdir -p /usr/local/bin /app 2>/dev/null || true
@@ -23,7 +27,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["git-secrets"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "git-secrets"]
 LABEL org.opencontainers.image.title="git-secrets" \
       org.opencontainers.image.description="AWS Git Secrets - prevent secret commits" \
       org.opencontainers.image.vendor="AWS Labs" \

@@ -13,7 +13,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
     cd /tmp/ledger && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_DOCS=OFF -DUSE_PYTHON=OFF . && \
     make -j$(nproc) && make install && strip --strip-all /usr/local/bin/ledger 2>/dev/null
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 
 RUN apk add --no-cache git ca-certificates
 
@@ -24,7 +28,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["ledger"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "ledger"]
 LABEL org.opencontainers.image.title="ledger" \
       org.opencontainers.image.description="ledger container image" \
       org.opencontainers.image.version="3.3.2" \

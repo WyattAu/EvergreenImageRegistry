@@ -24,7 +24,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils \
         --extra-cflags="-I/usr/include" --extra-ldflags="-L/usr/lib" && \
     make -j$(nproc) && make install && strip /usr/local/bin/ffmpeg /usr/local/bin/ffprobe && \
     mkdir -p /usr/local/lib 2>/dev/null || true ; touch /usr/local/lib/ 2>/dev/null || true
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 
 RUN apk add --no-cache git freetype zlib ca-certificates
 
@@ -40,7 +44,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["/usr/local/bin/ffmpeg"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/ffmpeg"]
 LABEL org.opencontainers.image.title="jellyfin-ffmpeg" \
       org.opencontainers.image.description="jellyfin-ffmpeg container image" \
       org.opencontainers.image.version="7.1" \

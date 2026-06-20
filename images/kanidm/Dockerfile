@@ -10,7 +10,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     mkdir -p /app /var/log/kanidm /var/cache/kanidm 2>/dev/null || true
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=upstream /sbin/kanidm /kanidm
 COPY --from=builder /app /app
@@ -36,4 +40,4 @@ USER 65532:65532
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/kanidm"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/kanidm"]

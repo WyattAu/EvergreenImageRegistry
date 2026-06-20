@@ -12,7 +12,11 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN mkdir -p /app /var/log/gradle /var/cache/gradle /home/gradle 2>/dev/null || true
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 
 RUN apk add --no-cache ca-certificates
 COPY --from=downloader /opt/gradle-8.10.2 /opt/gradle-8.10.2
@@ -28,7 +32,7 @@ ENV HOME=/app
 ENV GRADLE_HOME=/opt/gradle-8.10.2
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["gradle"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "gradle"]
 LABEL org.opencontainers.image.title="gradle" \
       org.opencontainers.image.version="8.10.2" \
       org.opencontainers.image.vendor="Gradle" \

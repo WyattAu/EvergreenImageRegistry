@@ -13,7 +13,11 @@ RUN mkdir -p /app /var/log/falco /etc/falco && \
     test -e /etc/falco || mkdir -p /etc/falco && \
     test -e /app || mkdir -p /app && \
     test -e /var/log/falco || mkdir -p /var/log/falco
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 RUN apk add --no-cache ca-certificates
 COPY --from=builder /usr/bin/falco /usr/local/bin/falco
 COPY --from=builder /etc/falco /etc/falco
@@ -25,7 +29,7 @@ RUN addgroup -S nogroup || true && \
 USER 65532:65532
 WORKDIR /app
 HEALTHCHECK NONE
-ENTRYPOINT ["falco"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "falco"]
 LABEL org.opencontainers.image.title="falco" \
       org.opencontainers.image.description="Falco - Cloud native runtime security" \
       org.opencontainers.image.vendor="Sysdig" \

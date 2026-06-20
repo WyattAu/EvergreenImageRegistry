@@ -5,14 +5,18 @@ ARG APP_GID=65532
 
 FROM ghcr.io/dexidp/dex-operator:v${VERSION} AS upstream
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=upstream /manager /usr/local/bin/dex-operator
 COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/dex-operator"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/dex-operator"]
 LABEL org.opencontainers.image.title="dex-operator" \
       org.opencontainers.image.description="dex-operator container image" \
       org.opencontainers.image.version="${VERSION}" \

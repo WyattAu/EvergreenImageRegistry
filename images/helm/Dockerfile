@@ -15,7 +15,11 @@ ARG TARGETARCH
 RUN mkdir -p /app /var/log/helm /var/cache/helm 2>/dev/null || true
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /helm /helm
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -25,7 +29,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/helm"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/helm"]
 LABEL org.opencontainers.image.title="helm" \
       org.opencontainers.image.description="Helm - package manager for Kubernetes" \
       org.opencontainers.image.version="3.15.1" \

@@ -15,7 +15,11 @@ RUN apt-get update 2>/dev/null && apt-get install -y --no-install-recommends cur
     test -d /app || mkdir -p /app ; \
     test -d /var/log/openjdk-alpine || mkdir -p /var/log/openjdk-alpine ; \
     test -d /var/cache/openjdk-alpine || mkdir -p /var/cache/openjdk-alpine ; true
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 # package-manager-verified: integrity verified by upstream
 RUN mkdir -p /etc/apt/sources.list.d /usr/share/keyrings /var/cache /var/log 2>/dev/null || true
 COPY --from=builder /usr/share/keyrings/adoptium.gnupg /usr/share/keyrings/adoptium.gnupg
@@ -29,7 +33,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["java"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "java"]
 LABEL org.opencontainers.image.title="openjdk-alpine" \
       org.opencontainers.image.version="21" \
       org.opencontainers.image.vendor="Eclipse Adoptium" \

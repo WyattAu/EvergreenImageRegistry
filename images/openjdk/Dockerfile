@@ -21,7 +21,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     mkdir -p /opt/jdk && [ -f /tmp/jdk.tar.gz ] && tar -xzf /tmp/jdk.tar.gz -C /opt/jdk --strip-components=1 && rm -f /tmp/jdk.tar.gz && \
     useradd -m -u 65532 -s /usr/bin/false java 2>/dev/null || true && \
     mkdir -p /app /var/log/java /var/cache/java 2>/dev/null || true
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 
 RUN apk add --no-cache wget ca-certificates freetype fontconfig
 COPY --from=builder /opt/jdk /opt/jdk
@@ -37,7 +41,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["java"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "java"]
 LABEL org.opencontainers.image.title="openjdk" \
       org.opencontainers.image.description="openjdk container image" \
       org.opencontainers.image.version="21.0.3" \

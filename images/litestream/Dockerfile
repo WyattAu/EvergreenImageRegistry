@@ -22,7 +22,11 @@ RUN apk add --no-cache ca-certificates wget && \
     esac && \
     wget -t 3 -T 10 -qO /tmp/litestream.tar.gz "https://github.com/benbjohnson/litestream/releases/download/v${VERSION}/litestream-vfs-v${VERSION}-linux-${TARGETARCH}.tar.gz" \
     && echo "${EXPECTED_SHA}  /tmp/litestream.tar.gz" | sha256sum -c
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 ARG VERSION=0.5.11
 ARG BUILD_DATE
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
@@ -34,7 +38,7 @@ USER 65532:65532
 WORKDIR /data
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/litestream"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/litestream"]
 LABEL org.opencontainers.image.title="litestream" \
       org.opencontainers.image.description="SQLite streaming replication for production" \
       org.opencontainers.image.version="${VERSION}" \

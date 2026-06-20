@@ -20,7 +20,11 @@ RUN mkdir -p /app && \ RUN apt-get update && \
         -o /app/linguist ./cmd/linguist 2>/dev/null || true && \
     test -s /app/linguist && strip --strip-all /app/linguist 2>/dev/null && \' \
     mkdir -p /app /var/log/linguist /var/cache/linguist
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=builder /app/linguist /linguist
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -30,7 +34,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/linguist"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/linguist"]
 LABEL org.opencontainers.image.title="linguist-go" \
       org.opencontainers.image.description="Linguist - Go variant" \
       org.opencontainers.image.vendor="GitHub" \

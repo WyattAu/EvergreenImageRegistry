@@ -17,7 +17,11 @@ ARG TARGETARCH
 RUN mkdir -p /app /var/log/k3d-proxy /var/cache/k3d-proxy 2>/dev/null || true
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /k3d /k3d
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -27,7 +31,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/k3d", "proxy"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/k3d proxy"]
 LABEL org.opencontainers.image.title="k3d-proxy" \
       org.opencontainers.image.version="5.8.3" \
       org.opencontainers.image.vendor="k3d" \

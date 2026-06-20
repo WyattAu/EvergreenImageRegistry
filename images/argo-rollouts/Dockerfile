@@ -14,7 +14,11 @@ ARG TARGETARCH
 RUN mkdir -p /app /var/log/argo-rollouts /var/cache/argo-rollouts 2>/dev/null || true
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 COPY --from=downloader /kubectl-argo-rollouts /kubectl-argo-rollouts
 COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /app /app
@@ -24,7 +28,7 @@ USER 65532:65532
 WORKDIR /app
 
 HEALTHCHECK NONE
-ENTRYPOINT ["/kubectl-argo-rollouts"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/kubectl-argo-rollouts"]
 LABEL org.opencontainers.image.title="argo-rollouts" \
       org.opencontainers.image.version="1.9.0" \
       org.opencontainers.image.vendor="Argo Project" \

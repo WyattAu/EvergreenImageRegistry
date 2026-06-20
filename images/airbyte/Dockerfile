@@ -9,7 +9,11 @@ FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c
 RUN mkdir -p /var/lib/airbyte || true
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates openjdk-17-jre-headless && rm -rf /var/lib/apt/lists/* && \
     mkdir -p /app /var/log/airbyte /var/cache/airbyte /var/lib/airbyte 2>/dev/null || true
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+COPY --from=shim /shim /usr/local/bin/shim
 
 RUN apk add --no-cache ca-certificates
 COPY --from=builder /app /app
@@ -22,7 +26,7 @@ WORKDIR /app
 ENV HOME=/app
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["java", "-jar", "/app/airbyte.jar"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "java -jar /app/airbyte.jar"]
 LABEL org.opencontainers.image.title="airbyte" \
       org.opencontainers.image.version="0.65.22" \
       org.opencontainers.image.vendor="Airbyte" \

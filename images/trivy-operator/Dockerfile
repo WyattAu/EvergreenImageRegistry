@@ -72,7 +72,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends binutils curl c
 
 
 
+ARG SHIM_VERSION=v1.2.0
+FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
+
 FROM scratch
+COPY --from=shim /shim /usr/local/bin/shim
 
 
 
@@ -128,7 +132,7 @@ HEALTHCHECK NONE
 
 
 
-ENTRYPOINT ["/trivy-operator"]
+ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/trivy-operator"]
 
 
 

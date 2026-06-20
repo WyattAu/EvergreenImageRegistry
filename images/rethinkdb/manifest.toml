@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "rethinkdb"
-version = "latest"
+version = "2.4.4-bookworm-slim"
 description = "Evergreen hardened RethinkDB - real-time NoSQL database"
 
 [build]

@@ -1,7 +1,7 @@
 [metadata]
 tier = "standard"
 name = "orientdb"
-version = "latest"
+version = "3.2.51"
 description = "orientdb container image"
 
 [build]

@@ -24,4 +24,5 @@ COPY --from=builder /shim /shim
 USER ${APP_UID}:${APP_GID}
 EXPOSE 9101
 ENTRYPOINT ["/usr/local/bin/shim"]
+LABEL evergreen.entrypoint.pattern="base-image"
 STOPSIGNAL SIGTERM

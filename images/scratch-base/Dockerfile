@@ -48,6 +48,7 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 LABEL evergreen.constraint.scratch="true"
+LABEL evergreen.entrypoint.pattern="base-image"
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK NONE

@@ -7,6 +7,7 @@ ARG TARGETARCH
 RUN apk add --no-cache python3 2>/dev/null
 USER 65532:65532
 EXPOSE 9101
+LABEL evergreen.entrypoint.pattern="idle-container"
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1

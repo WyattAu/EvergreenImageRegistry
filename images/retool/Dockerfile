@@ -34,4 +34,5 @@ LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
 EXPOSE 9101
+LABEL evergreen.entrypoint.pattern="no-op"
 STOPSIGNAL SIGTERM

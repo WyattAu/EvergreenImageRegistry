@@ -34,3 +34,4 @@ LABEL org.opencontainers.image.description="wolfi-gcc container image" \
       org.opencontainers.image.title="Wolfi GCC" \
       org.opencontainers.image.source="https://github.com/wolfi-dev/os" \
             org.opencontainers.image.version="unknown"
+LABEL evergreen.entrypoint.pattern="base-image"

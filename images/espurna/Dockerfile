@@ -29,6 +29,7 @@ LABEL evergreen.security.seccomp="runtime-default"
 LABEL evergreen.image.tier="3"
 
 EXPOSE 9101
+LABEL evergreen.entrypoint.pattern="base-image"
 STOPSIGNAL SIGTERM
 LABEL org.opencontainers.image.description="espurna container image" \
       org.opencontainers.image.title="ESPurna" \

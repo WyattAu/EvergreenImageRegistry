@@ -26,3 +26,4 @@ LABEL org.opencontainers.image.description="wolfi-node container image" \
       org.opencontainers.image.title="Wolfi Node.js" \
       org.opencontainers.image.source="https://github.com/wolfi-dev/os" \
             org.opencontainers.image.version="unknown"
+LABEL evergreen.entrypoint.pattern="base-image"

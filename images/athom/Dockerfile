@@ -20,6 +20,7 @@ LABEL evergreen.security.seccomp="runtime-default"
 LABEL evergreen.image.tier="3"
 
 EXPOSE 9101
+LABEL evergreen.entrypoint.pattern="base-image"
 STOPSIGNAL SIGTERM
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1

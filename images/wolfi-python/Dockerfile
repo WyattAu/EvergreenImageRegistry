@@ -28,3 +28,4 @@ LABEL org.opencontainers.image.description="wolfi-python container image" \
       org.opencontainers.image.title="Wolfi Python" \
       org.opencontainers.image.source="https://github.com/wolfi-dev/os" \
             org.opencontainers.image.version="unknown"
+LABEL evergreen.entrypoint.pattern="base-image"

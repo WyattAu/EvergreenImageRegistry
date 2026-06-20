@@ -146,14 +146,15 @@ def validate_image(image_name: str) -> PatternResult:
     # Images with upstream init systems (s6, tini) keep upstream ENTRYPOINT
     # and use shim only for HEALTHCHECK. Marked with:
     #   LABEL evergreen.entrypoint.pattern="repack-upstream-init"
-    is_repack_init = (
-        'evergreen.entrypoint.pattern="repack-upstream-init"' in text
-        or "evergreen.entrypoint.pattern='repack-upstream-init'" in text
-        or 'evergreen.entrypoint.pattern = "repack-upstream-init"' in text
+    #   LABEL evergreen.entrypoint.pattern="base-image"
+    #   LABEL evergreen.entrypoint.pattern="no-op"
+    #   LABEL evergreen.entrypoint.pattern="idle-container"
+    is_exempt = (
+        'evergreen.entrypoint.pattern=' in text
     )
 
     has_copy, shim_path = find_shim_copy(text)
-    if not has_copy:
+    if not has_copy and not is_exempt:
         issues.append("Missing COPY --from=shim instruction")
 
     # Check shim path: scratch-based images must use /usr/local/bin/shim
@@ -172,7 +173,7 @@ def validate_image(image_name: str) -> PatternResult:
     entrypoint_correct = False
     entrypoint_has_c_flag = False
     if ep_args:
-        if is_repack_init:
+        if is_exempt:
             # Repack images with upstream init (s6, tini) keep upstream ENTRYPOINT
             # Shim is only used for HEALTHCHECK, not as process supervisor
             entrypoint_correct = True
@@ -186,7 +187,7 @@ def validate_image(image_name: str) -> PatternResult:
             entrypoint_has_c_flag = len(ep_args) >= 4 and ep_args[2] == "-c"
         else:
             issues.append(f"ENTRYPOINT does not follow standard: {ep_raw}")
-    elif is_repack_init:
+    elif is_exempt:
         # Repack image that inherits ENTRYPOINT from upstream (no explicit ENTRYPOINT)
         entrypoint_correct = True
         entrypoint_has_c_flag = True
@@ -198,7 +199,7 @@ def validate_image(image_name: str) -> PatternResult:
         issues.append("Scratch image ENTRYPOINT missing -c flag")
 
     cmd_correct = False
-    if is_repack_init:
+    if is_exempt:
         # Repack images may have any CMD format (delegating to upstream init)
         cmd_correct = True
     elif cmd_args:

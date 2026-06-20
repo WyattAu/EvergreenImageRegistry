@@ -60,7 +60,7 @@ class TestParseManifest:
         f = tmp_path / "empty.toml"
         f.write_text("")
         # tomllib raises an error on empty TOML
-        try:
+        with __import__("contextlib").suppress(Exception):
             parse_manifest(str(f))
         except Exception:
             pass  # expected

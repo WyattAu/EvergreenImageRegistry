@@ -13,8 +13,6 @@ CRITICAL RULE: NEVER USE ALPINE
 This generator creates all images from requiredimages.md
 """
 
-import os
-import sys
 from pathlib import Path
 
 # =============================================================================

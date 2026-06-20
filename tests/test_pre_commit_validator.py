@@ -18,7 +18,7 @@ class TestValidateDockerfileAlpine:
             "HEALTHCHECK CMD true\n"
             "LABEL org.opencontainers.image.title=test\n"
         )
-        result = validate_dockerfile(str(df))
+        _ = validate_dockerfile(str(df))
         captured = capsys.readouterr()
         assert "Alpine" not in captured.out
 
@@ -34,14 +34,14 @@ class TestValidateDockerfileUser:
     def test_user_65532_passes(self, tmp_path, capsys):
         df = tmp_path / "Dockerfile"
         df.write_text("FROM scratch\nUSER 65532\n")
-        result = validate_dockerfile(str(df))
+        _ = validate_dockerfile(str(df))
         captured = capsys.readouterr()
         assert "C001 FAILED" not in captured.out
 
     def test_user_65534_passes(self, tmp_path, capsys):
         df = tmp_path / "Dockerfile"
         df.write_text("FROM scratch\nUSER 65534\n")
-        result = validate_dockerfile(str(df))
+        _ = validate_dockerfile(str(df))
         captured = capsys.readouterr()
         assert "C001 FAILED" not in captured.out
 
@@ -64,7 +64,7 @@ class TestValidateDockerfileHealthcheck:
 
 class TestValidateDockerfileFileNotFound:
     def test_missing_file_fails(self, tmp_path):
-        result = validate_dockerfile(str(tmp_path / "nonexistent"))
+        _ = validate_dockerfile(str(tmp_path / "nonexistent"))
         assert result is False
 
 

@@ -1,3 +1,4 @@
+from contextlib import suppress
 import json
 from unittest.mock import patch
 
@@ -62,8 +63,7 @@ class TestParseManifest:
         # tomllib raises an error on empty TOML
         with __import__("contextlib").suppress(Exception):
             parse_manifest(str(f))
-        except Exception:
-            pass  # expected
+  # expected
 
 
 class TestGetLatestGithubRelease:

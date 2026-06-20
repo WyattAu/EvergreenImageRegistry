@@ -6,7 +6,6 @@ to find the correct binary path and injects it.
 """
 
 import re
-import sys
 from pathlib import Path
 
 IMAGES_DIR = Path(__file__).resolve().parent.parent / "images"
@@ -93,7 +92,6 @@ def fix_entrypoint(dockerfile_path: Path, binary: str) -> bool:
 
 def main():
     fixed = 0
-    skipped = 0
     no_manifest = 0
     already_ok = 0
     errors = []
@@ -149,14 +147,14 @@ def main():
                 no_manifest += 1
                 errors.append(f"{img}: no entrypoint in manifest.toml and no CMD")
 
-    print(f"\n=== ENTRYPOINT Fix Results ===")
+    print("\n=== ENTRYPOINT Fix Results ===")
     print(f"✅ Fixed:            {fixed}")
     print(f"✅ Already OK:       {already_ok}")
     print(f"❌ No entrypoint:    {no_manifest}")
     print(f"Errors:              {len(errors)}")
 
     if errors:
-        print(f"\nNeed manual fix:")
+        print("\nNeed manual fix:")
         for e in errors[:20]:
             print(f"  {e}")
         if len(errors) > 20:

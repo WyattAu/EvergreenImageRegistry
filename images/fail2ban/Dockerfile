@@ -20,7 +20,7 @@ FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5
 COPY --from=shim /shim /usr/local/bin/shim
 RUN chmod +x /usr/local/bin/shim
 
-RUN apk add --no-cache ca-certificates && \
+RUN apk add --no-cache ca-certificates fail2ban && \
     adduser -u 65532 -D appuser 2>/dev/null || true && \
     mkdir -p /app /var/log/fail2ban /var/cache/fail2ban && chown -R appuser:appuser /app /var/log/fail2ban /var/cache/fail2ban 2>/dev/null || true
 USER appuser

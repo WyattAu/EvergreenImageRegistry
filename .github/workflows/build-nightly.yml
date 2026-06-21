@@ -227,7 +227,7 @@ jobs:
       tag: ${{ github.sha }}
       push: true
       sign: ${{ inputs.sign == 'true' }}
-      multiarch: true
+      multiarch: false
       tier: critical
     secrets: inherit
 
@@ -244,7 +244,7 @@ jobs:
       tag: ${{ github.sha }}
       push: true
       sign: false
-      multiarch: true
+      multiarch: false
       tier: standard
     secrets: inherit
 

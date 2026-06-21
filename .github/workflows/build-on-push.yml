@@ -152,6 +152,6 @@ jobs:
       tag: ${{ github.sha }}
       push: ${{ github.event_name != 'pull_request' }}
       sign: false
-      multiarch: true
+      multiarch: false
       tier: changed
     secrets: inherit

@@ -301,14 +301,28 @@ jobs:
               # Load the pre-built tarball and push (avoids rebuild COPY eval bugs)
               docker load -i "$TAR" 2>/dev/null || true
               docker tag "${REF}" "${REF}" 2>/dev/null || true
-              if timeout 900 docker push "${REF}" 2>&1; then
+              # Push with retry (3 attempts, 15s between)
+              PUSH_OK=0
+              for attempt in 1 2 3; do
+                if timeout 600 docker push "${REF}" 2>&1; then
+                  PUSH_OK=1; break
+                fi
+                echo "Push attempt $attempt failed for ${image}, retrying in 15s..."
+                sleep 15
+              done
+              if [ "$PUSH_OK" = "1" ]; then
                 PUSHED=$((PUSHED+1))
                 # Also push with version tag for deterministic pulls
                 if [ -n "${VERSION_TAG}" ]; then
                   VERSION_REF="${REGISTRY}/${OWNER}/${image}:${VERSION_TAG}"
                   docker tag "${REF}" "${VERSION_REF}" 2>/dev/null || true
-                  if timeout 900 docker push "${VERSION_REF}" 2>&1; then
-                    echo "Pushed version tag: ${VERSION_TAG}"
+                  for attempt in 1 2 3; do
+                    if timeout 300 docker push "${VERSION_REF}" 2>&1; then
+                      echo "Pushed version tag: ${VERSION_TAG}"
+                      break
+                    fi
+                    sleep 10
+                  done
                   else
                     echo "::warning::${image}: version tag push failed (${VERSION_TAG})"
                   fi

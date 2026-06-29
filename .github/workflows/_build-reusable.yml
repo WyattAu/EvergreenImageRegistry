@@ -327,6 +327,16 @@ jobs:
                     echo "::warning::${image}: version tag push failed (${VERSION_TAG})"
                   fi
                 fi
+                # Push :latest tag
+                LATEST_REF="${REGISTRY}/${OWNER}/${image}:latest"
+                docker tag "${REF}" "${LATEST_REF}" 2>/dev/null || true
+                for attempt in 1 2 3; do
+                  if timeout 600 docker push "${LATEST_REF}" 2>&1; then
+                    echo "Pushed latest tag"
+                    break
+                  fi
+                  sleep 10
+                done
                 # Set package visibility to public (GHCR lowercases names)
                 SAFE_NAME=$(echo "${image}" | tr '[:upper:]' '[:lower:]')
                 gh api -X PATCH "/user/packages/container/${SAFE_NAME}/visibility" \

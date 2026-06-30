@@ -16,3 +16,5 @@ Cargo.lock
 package-lock.json
 # Ignore vendored deps
 .dep_spec/
+.specs/
+docs/common-problems.md

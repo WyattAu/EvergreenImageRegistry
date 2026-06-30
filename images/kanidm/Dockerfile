@@ -1,43 +1,24 @@
-ARG VERSION=1.9.4
-ARG TARGETARCH
-ARG APP_UID=65532
-ARG APP_GID=65532
-
-FROM docker.io/kanidm/tools:1.9.4@sha256:579489bf9f77c97f358b036e04dbf2e5c7971414141fb7055fe2b1361327f7b0 AS upstream
-
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    mkdir -p /app /var/log/kanidm /var/cache/kanidm 2>/dev/null || true
-
-
 ARG SHIM_VERSION=v1.2.0
+
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM scratch
+FROM kanidm/server:latest
 COPY --from=shim /shim /usr/local/bin/shim
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=upstream /sbin/kanidm /kanidm
-COPY --from=builder /app /app
-COPY --from=builder /var/log/kanidm /var/log/kanidm
-COPY --from=builder /var/cache/kanidm /var/cache/kanidm
 
-WORKDIR /app
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9101"]
 
-EXPOSE 9101
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
 
-LABEL org.opencontainers.image.title="kanidm" org.opencontainers.image.version="1.9.4" org.opencontainers.image.vendor="Kanidm" org.opencontainers.image.source="https://github.com/kanidm/kanidm" evergreen.image.tier="2" evergreen.image.category="identity" evergreen.image.status="functional" evergreen.constraint.nonroot="true" evergreen.constraint.scratch="true" evergreen.hft.signal-handling="native" evergreen.hft.shutdown-timeout="3s" evergreen.hft.init-system="none" evergreen.hft.startup-timeout="3000ms" \
-      org.opencontainers.image.description="kanidm container image" \
-evergreen.base.image="scratch"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+ENV SHIM_METRICS_ENABLED="true"
+
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-USER 65532:65532
-
+EXPOSE 9101 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM
-
-HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/kanidm"]

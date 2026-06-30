@@ -1,54 +1,24 @@
-ARG TARGETARCH
-ARG APP_UID=65532
-ARG APP_GID=65532
 ARG SHIM_VERSION=v1.2.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-
-ARG TARGETARCH
-ARG VERSION=2.12.6
-
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/argoproj/argo-cd/releases/download/v${VERSION}/argocd-linux-${TARGETARCH}" -o /tmp/argocd && \
-    echo "efecedeb09f07b09ad4457467ceb103e1269004f34f7420a531372b13122fd2b  /tmp/argocd" | sha256sum -c && \
-    chmod +x /tmp/argocd && strip /tmp/argocd && \
-    test -f /tmp/argocd
-
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+FROM argocd-repo-server:latest
 COPY --from=shim /shim /usr/local/bin/shim
-RUN chmod +x /usr/local/bin/shim
-COPY --from=downloader /tmp/argocd /usr/local/bin/argocd-repo-server
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
-USER 65532:65532
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8081"]
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
+
 ENV SHIM_METRICS_ENABLED="true"
-WORKDIR /app
-EXPOSE 8081
-LABEL org.opencontainers.image.title="argocd-repo-server" \
-      org.opencontainers.image.description="ArgoCD Repo Server - manages Git repository operations" \
-      org.opencontainers.image.version="2.12.6" \
-      org.opencontainers.image.vendor="Argo Project" \
-      org.opencontainers.image.source="https://github.com/argoproj/argo-cd" \
-      evergreen.image.tier="2" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.constraint.wolfi="true"
-LABEL evergreen.base.image="wolfi"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 9101
-LABEL prometheus.io/scrape="true" \
-      prometheus.io/port="9101" \
-      prometheus.io/path="/metrics"
+EXPOSE 8081 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM
-
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8081"]
-
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "argocd-repo-server"]

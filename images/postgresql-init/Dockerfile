@@ -1,67 +1,24 @@
-# =============================================================================
-# EVERGREEN HARDENED POSTGRESQL INIT
-# Generated from template - Version: 17
-# Wolfi-base provides glibc; PostgreSQL client tools from upstream debs
-# Priority: scratch > distroless > wolfi > debian-slim (fallback)
-# =============================================================================
-
-ARG VERSION=17
-ARG TARGETARCH
-ARG BUILD_DATE
-ARG APP_UID=65532
-ARG APP_GID=65532
-
-
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    postgresql-client && rm -rf /var/lib/apt/lists/* && \
-    mkdir -p /app /var/log/postgresql-init /var/cache/postgresql-init || true
-
-
 ARG SHIM_VERSION=v1.2.0
+
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+FROM postgresql-init:latest
 COPY --from=shim /shim /usr/local/bin/shim
-ARG VERSION=17
 
-RUN apk add --no-cache postgresql-${VERSION}-client curl ca-certificates
-COPY --from=builder --chown=65532:65532 /app /app
-COPY --from=builder --chown=65532:65532 /var/log/postgresql-init /var/log/postgresql-init
-COPY --from=builder --chown=65532:65532 /var/cache/postgresql-init /var/cache/postgresql-init
-WORKDIR /app
-RUN echo '#!/bin/sh' > /app/init.sh && \
-    echo 'set -eu' >> /app/init.sh && \
-    echo ': "${PGHOST:?PGHOST is required}"' >> /app/init.sh && \
-    echo ': "${PGDATABASE:?PGDATABASE is required}"' >> /app/init.sh && \
-    echo 'if [ -d "/docker-entrypoint-initdb.d" ]; then' >> /app/init.sh && \
-    echo '    for f in /docker-entrypoint-initdb.d/*; do' >> /app/init.sh && \
-    echo '        case "$f" in' >> /app/init.sh && \
-    echo '            *.sql)    echo "Running $f"; psql -v ON_ERROR_STOP=1 --username "$PGUSER" -f "$f" ;;' >> /app/init.sh && \
-    echo '            *.sh)     echo "Running $f"; . "$f" ;;' >> /app/init.sh && \
-    echo '            *)        echo "Ignoring $f" ;;' >> /app/init.sh && \
-    echo '        esac' >> /app/init.sh && \
-    echo '    done' >> /app/init.sh && \
-    echo 'fi' >> /app/init.sh
-RUN chmod +x /app/init.sh && chown 65532:65532 /app/init.sh
-USER 65532:65532
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9101"]
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/app/init.sh"]
-LABEL org.opencontainers.image.title="postgresql-init" \
-      org.opencontainers.image.version="17" \
-      org.opencontainers.image.description="PostgreSQL Initialization Container" \
-      org.opencontainers.image.vendor="PostgreSQL" \
-      evergreen.image.tier="1" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.base.image="wolfi" \
-            org.opencontainers.image.source="https://github.com/postgres/postgres"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
+
+ENV SHIM_METRICS_ENABLED="true"
+
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 9101
+EXPOSE 9101 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

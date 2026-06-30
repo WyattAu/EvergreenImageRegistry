@@ -1,52 +1,24 @@
-ARG VERSION=latest
-ARG TARGETARCH
-ARG APP_UID=65532
-ARG APP_GID=65532
-
 ARG SHIM_VERSION=v1.2.0
-
-FROM pawelmalak/flame:${VERSION} AS upstream
-
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-RUN mkdir -p /app /var/log/flame-ui /var/cache/flame-ui 2>/dev/null || true
-
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM scratch
+FROM flame-ui:latest
 COPY --from=shim /shim /usr/local/bin/shim
 
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=upstream /flame /usr/local/bin/flame
-COPY --from=builder /app /app
-COPY --from=builder /var/log/flame-ui /var/log/flame-ui
-COPY --from=builder /var/cache/flame-ui /var/cache/flame-ui
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5005"]
 
-WORKDIR /app
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
 
-EXPOSE 5005
-EXPOSE 9101
+ENV SHIM_METRICS_ENABLED="true"
 
-LABEL org.opencontainers.image.title="flame-ui" org.opencontainers.image.description="Flame - UI variant" org.opencontainers.image.vendor="pawelmalak" org.opencontainers.image.source="https://github.com/pawelmalak/flame" evergreen.image.tier="3" evergreen.constraint.nonroot="true" evergreen.base.image="scratch" \
-      org.opencontainers.image.version="latest"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-USER 65532:65532
-ENV SHIM_METRICS_ENABLED="true"
-
-LABEL prometheus.io/scrape="true" \
-      prometheus.io/port="9101" \
-      prometheus.io/path="/metrics"
+EXPOSE 5005 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM
-
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5005"]
-
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "flame"]
-
-CMD ["--", "--ui-only"]

@@ -1,55 +1,24 @@
-ARG TARGETARCH
-ARG APP_UID=65532
-ARG APP_GID=65532
-
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-ARG TARGETARCH
-ARG VERSION=3.15.1
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://get.helm.sh/helm-v3.15.1-linux-${TARGETARCH}.tar.gz" -o /helm.tar.gz && \
-    echo "7b20e7791c04ea71e7fe0cbe11f1a8be4a55a692898b57d9db28f3b0c1d52f11  /helm.tar.gz" | sha256sum -c ; [ -f /helm.tar.gz ] && \
-    [ -f /helm.tar.gz ] && tar -xzf /helm.tar.gz -C / && rm -f /helm.tar.gz && chmod +x /helm 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL "https://get.helm.sh/helm-v3.15.1-linux-${TARGETARCH}.tar.gz" -o /helm && { echo "Binary not available - download failed" >&2; exit 1; }
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-ARG TARGETARCH
-RUN mkdir -p /app /var/log/helm /var/cache/helm 2>/dev/null || true
-
-
 ARG SHIM_VERSION=v1.2.0
+
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM scratch
+FROM helm:latest
 COPY --from=shim /shim /usr/local/bin/shim
-COPY --from=downloader /helm /helm
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
-COPY --from=builder /var/log/helm /var/log/helm
-COPY --from=builder /var/cache/helm /var/cache/helm
-USER 65532:65532
-WORKDIR /app
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/helm"]
-LABEL org.opencontainers.image.title="helm" \
-      org.opencontainers.image.description="Helm - package manager for Kubernetes" \
-      org.opencontainers.image.version="3.15.1" \
-      org.opencontainers.image.vendor="Helm" \
-      evergreen.image.tier="1" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.constraint.scratch="true" \
-      evergreen.hft.signal-handling="native" \
-      evergreen.hft.shutdown-timeout="3s" \
-      evergreen.hft.init-system="none" \
-      evergreen.hft.startup-timeout="3000ms" \
-            org.opencontainers.image.source="https://github.com/helm/helm"
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9101"]
 
-LABEL evergreen.base.image="scratch"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
+
+ENV SHIM_METRICS_ENABLED="true"
+
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 9101
+EXPOSE 9101 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

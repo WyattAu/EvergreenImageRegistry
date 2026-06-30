@@ -1,55 +1,24 @@
-ARG VERSION=1.0.0
-ARG TARGETARCH
-ARG BUILD_DATE
-ARG APP_UID=65532
-ARG APP_GID=65532
-
 ARG SHIM_VERSION=v1.2.0
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+FROM objectrocket:latest
 COPY --from=shim /shim /usr/local/bin/shim
-RUN chmod +x /usr/local/bin/shim
 
-ARG VERSION=1.0.0
-RUN apk add --no-cache ca-certificates python3 py3-pip && \
-    pip3 install --break-system-packages --no-cache-dir \
-        pymongo 2>/dev/null || true && \
-    adduser -u 65532 -s /bin/false objectrocket 2>/dev/null || true && \
-    mkdir -p /var/lib/objectrocket /var/log/objectrocket /app 2>/dev/null || true && \
-    printf '#!/bin/sh\nexec python3 -c "\nimport sys\nprint(\"objectrocket v%s - MongoDB cloud development compatibility\")\nprint(\"ObjectRocket is a fully managed database cloud service.\")\nprint(\"This image provides a pymongo client library for development.\")\nprint(\"\")\nprint(\"Available: pymongo client library\")\nprint(\"Usage: import this image as a base for your ObjectRocket-compatible application.\")\nprint(\"Connect to your ObjectRocket/MongoDB Atlas endpoint in production.\")\n"' "${VERSION}" > /app/objectrocket && \
-    chmod +x /app/objectrocket && \
-    chown -R 65532:65532 /var/lib/objectrocket /var/log/objectrocket /app
-USER 65532:65532
-ENV SHIM_METRICS_ENABLED="true"
-WORKDIR /app
-EXPOSE 27017
-
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:27017"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/app/objectrocket"]
-LABEL org.opencontainers.image.title="objectrocket" \
-      org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.description="ObjectRocket local development compatibility - MongoDB cloud service for dev environments" \
-      org.opencontainers.image.vendor="ObjectRocket" \
-      org.opencontainers.image.source="https://www.objectrocket.com/" \
-      evergreen.image.tier="1" \
-      evergreen.image.category="database" \
-      evergreen.image.status="functional" \
-      evergreen.image.note="ObjectRocket is a fully managed cloud service. Use the ObjectRocket endpoint in production." \
-      evergreen.constraint.nonroot="true" \
-      evergreen.base.image="wolfi"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
+
+ENV SHIM_METRICS_ENABLED="true"
+
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 9101
-LABEL prometheus.io/scrape="true" \
-      prometheus.io/port="9101" \
-      prometheus.io/path="/metrics"
+EXPOSE 27017 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

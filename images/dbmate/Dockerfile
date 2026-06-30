@@ -1,52 +1,24 @@
-# =============================================================================
-# EVERGREEN HARDENED DBMATE
-# Database migration tool for PostgreSQL, MySQL, SQLite, CockroachDB
-# https://github.com/amacneil/dbmate
-# =============================================================================
-
-ARG VERSION=2.33.0
-ARG BUILD_DATE
-ARG TARGETARCH
-ARG APP_UID=65532
-ARG APP_GID=65532
-
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS builder
-ARG TARGETARCH
-ARG VERSION=2.33.0
-ARG TARGETARCH
-RUN apk add --no-cache ca-certificates wget && \
-    wget -t 3 -T 10 -qO /tmp/dbmate "https://github.com/amacneil/dbmate/releases/download/v${VERSION}/dbmate-linux-${TARGETARCH}" \
-    && echo "dfd4027141b6e4357158099bdfe6c02b286af70f8e49057937744cf80b38ea1c  /tmp/dbmate" | sha256sum -c \
-    && chmod +x /tmp/dbmate
 ARG SHIM_VERSION=v1.2.0
+
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM scratch
+FROM dbmate:latest
 COPY --from=shim /shim /usr/local/bin/shim
-ARG VERSION=2.33.0
-ARG BUILD_DATE
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /tmp/dbmate /dbmate
 
-USER 65532:65532
-WORKDIR /migrations
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9101"]
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/dbmate"]
-LABEL org.opencontainers.image.title="dbmate" \
-      org.opencontainers.image.description="Database migration tool for PostgreSQL, MySQL, SQLite, CockroachDB" \
-      org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.source="https://github.com/amacneil/dbmate" \
-      evergreen.image.tier="1" \
-      evergreen.image.category="tooling" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.base.image="scratch"
-LABEL evergreen.metrics.native="none"
-LABEL evergreen.health.type="none"
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
+
+ENV SHIM_METRICS_ENABLED="true"
+
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 9101
+EXPOSE 9101 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

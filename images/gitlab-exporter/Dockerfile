@@ -1,50 +1,24 @@
-ARG VERSION=0.8.0
-ARG TARGETARCH
-ARG APP_UID=65532
-ARG APP_GID=65532
-
 ARG SHIM_VERSION=v1.2.0
-
-FROM ghcr.io/prometheus-community/gitlab-exporter:${VERSION} AS upstream
-
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-RUN mkdir -p /app /var/log/gitlab-exporter /var/cache/gitlab-exporter 2>/dev/null || true
-
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM scratch
+FROM gitlab-exporter:latest
 COPY --from=shim /shim /usr/local/bin/shim
 
-COPY --from=upstream /gitlab-exporter /usr/local/bin/gitlab-exporter
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
-COPY --from=builder /var/log/gitlab-exporter /var/log/gitlab-exporter
-COPY --from=builder /var/cache/gitlab-exporter /var/cache/gitlab-exporter
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9171"]
 
-WORKDIR /app
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
 
-EXPOSE 9171
-EXPOSE 9101
+ENV SHIM_METRICS_ENABLED="true"
 
-LABEL org.opencontainers.image.title="gitlab-exporter" org.opencontainers.image.description="GitLab Exporter - Prometheus exporter for GitLab metrics" org.opencontainers.image.version="0.8.0" org.opencontainers.image.vendor="Prometheus Community" org.opencontainers.image.source="https://github.com/prometheus-community/gitlab-exporter" evergreen.image.tier="2" evergreen.constraint.nonroot="true" evergreen.constraint.scratch="true"
-LABEL evergreen.base.image="scratch"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-USER 65532:65532
-ENV SHIM_METRICS_ENABLED="true"
-
-LABEL prometheus.io/scrape="true" \
-      prometheus.io/port="9101" \
-      prometheus.io/path="/metrics"
+EXPOSE 9171 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM
-
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9171"]
-
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "gitlab-exporter"]

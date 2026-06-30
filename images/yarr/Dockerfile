@@ -1,73 +1,24 @@
-ARG VERSION=2.4.0
-ARG APP_UID=65532
-ARG APP_GID=65532
-
 ARG SHIM_VERSION=v1.2.0
-
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS upstream
-ARG TARGETARCH
-ARG GOARCH=${TARGETARCH}
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    golang-go ca-certificates git && \
-    rm -rf /var/lib/apt/lists/* && \
-    git clone --branch v${VERSION} \
-    https://github.com/nickvdyck/yarr.git /tmp/yarr 2>/dev/null || \
-    git clone https://github.com/nickvdyck/yarr.git /tmp/yarr 2>/dev/null
-WORKDIR /tmp/yarr
-RUN if [ -f /tmp/yarr/go.mod ]; then \
-        CGO_ENABLED=0 GOARCH=${GOARCH} go build -o /yarr ./cmd/yarr 2>/dev/null && chmod +x /yarr; \
-    else \
-        echo '#!/bin/sh' > /yarr && \
-        echo 'echo "yarr v'"${VERSION}"' - source unavailable, stub mode"' >> /yarr && \
-        echo 'exit 1' >> /yarr && chmod +x /yarr; \
-    fi
-
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-ARG TARGETARCH
-RUN mkdir -p /app /var/log/yarr /var/cache/yarr 2>/dev/null || true
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM scratch
+FROM yarr:latest
 COPY --from=shim /shim /usr/local/bin/shim
 
-COPY --from=upstream /yarr /yarr
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
-COPY --from=builder /var/log/yarr /var/log/yarr
-COPY --from=builder /var/cache/yarr /var/cache/yarr
-USER 65532:65532
-ENV SHIM_METRICS_ENABLED="true"
-WORKDIR /app
-EXPOSE 7070
-
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:7070"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/yarr"]
-LABEL org.opencontainers.image.title="yarr" \
-      org.opencontainers.image.description="yarr container image" \
-      org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.vendor="yarr" \
-      org.opencontainers.image.source="https://github.com/nickvdyck/yarr" \
-      evergreen.image.tier="3" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.constraint.scratch="true" \
-      evergreen.hft.signal-handling="native" \
-      evergreen.hft.shutdown-timeout="3s" \
-      evergreen.hft.init-system="none" \
-      evergreen.hft.startup-timeout="3000ms"
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
 
-LABEL evergreen.base.image="scratch"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+ENV SHIM_METRICS_ENABLED="true"
+
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 9101
-LABEL prometheus.io/scrape="true" \
-      prometheus.io/port="9101" \
-      prometheus.io/path="/metrics"
+EXPOSE 7070 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

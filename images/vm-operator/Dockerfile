@@ -1,49 +1,24 @@
-ARG VERSION=0.70.0
-ARG TARGETARCH
-ARG APP_UID=65532
-ARG APP_GID=65532
-
 ARG SHIM_VERSION=v1.2.0
-
-FROM docker.io/victoriametrics/operator:v${VERSION} AS upstream
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM scratch
+FROM vm-operator:latest
 COPY --from=shim /shim /usr/local/bin/shim
 
-COPY --from=upstream /usr/local/bin/manager /usr/local/bin/vm-operator
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65532:65532
-ENV SHIM_METRICS_ENABLED="true"
-WORKDIR /app
-EXPOSE 8080 8443
-
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "vm-operator"]
-LABEL org.opencontainers.image.title="vm-operator" \
-      org.opencontainers.image.description="Evergreen hardened VictoriaMetrics Operator - Kubernetes operator for VictoriaMetrics" \
-      org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.vendor="VictoriaMetrics" \
-      evergreen.image.status="functional" \
-      evergreen.image.tier="1" \
-      evergreen.image.category="monitoring" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.constraint.scratch="true" \
-            org.opencontainers.image.source="https://github.com/vmware-tanzu/vm-operator"
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
 
-LABEL evergreen.base.image="scratch"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+ENV SHIM_METRICS_ENABLED="true"
+
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 9101
-LABEL prometheus.io/scrape="true" \
-      prometheus.io/port="9101" \
-      prometheus.io/path="/metrics"
+EXPOSE 8080 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

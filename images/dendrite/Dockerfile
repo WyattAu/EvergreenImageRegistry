@@ -1,55 +1,24 @@
-ARG TARGETARCH
-ARG APP_UID=65532
-ARG APP_GID=65532
 ARG SHIM_VERSION=v1.2.0
 
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-ARG TARGETARCH
-ARG VERSION=0.15.2
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends binutils curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL \
-    "https://github.com/element-hq/dendrite/releases/download/v${VERSION}/dendrite-monolith-linux-${TARGETARCH}" \
-    -o /tmp/dendrite && \
-    chmod +x /tmp/dendrite && \
-    strip /tmp/dendrite
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM scratch
+FROM dendrite:latest
 COPY --from=shim /shim /usr/local/bin/shim
 
-COPY --from=downloader /tmp/dendrite /usr/local/bin/dendrite
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-
-USER 65532:65532
-ENV SHIM_METRICS_ENABLED="true"
-WORKDIR /app
-EXPOSE 8008
-
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8008"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/dendrite"]
-LABEL org.opencontainers.image.title="dendrite" \
-      org.opencontainers.image.description="Dendrite - second-generation Matrix homeserver" \
-      org.opencontainers.image.version="0.13.1" \
-      org.opencontainers.image.vendor="Element" \
-      org.opencontainers.image.source="https://github.com/element-hq/dendrite" \
-      evergreen.image.tier="2" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.constraint.scratch="true"
-LABEL evergreen.base.image="scratch"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
+
+ENV SHIM_METRICS_ENABLED="true"
+
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 9101
-LABEL prometheus.io/scrape="true" \
-      prometheus.io/port="9101" \
-      prometheus.io/path="/metrics"
+EXPOSE 8008 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

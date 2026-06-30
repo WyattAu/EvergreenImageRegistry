@@ -1,65 +1,24 @@
-ARG VERSION=5.0.18
-ARG TARGETARCH
-ARG APP_UID=65532
-ARG APP_GID=65532
-
 ARG SHIM_VERSION=v1.2.0
-
-FROM mongo:${VERSION} AS upstream
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+FROM mongodb-5:latest
 COPY --from=shim /shim /usr/local/bin/shim
-RUN chmod +x /usr/local/bin/shim
 
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:27017"]
 
-ARG VERSION=5.0.18
-RUN apk add --no-cache ca-certificates && \
-    addgroup -S -g 65532 mongodb && adduser -u 65532 -G mongodb -D -s /bin/false mongodb || true && \
-    mkdir -p /data/db /var/log/mongodb /var/cache/mongodb && chown -R 65532:65532 /data/db /var/log/mongodb /var/cache/mongodb 2>/dev/null || true && \
-    mkdir -p /usr/local/bin 2>/dev/null || true
-COPY --from=upstream /usr/bin/mongod /usr/local/bin/mongod
-COPY --from=upstream /usr/bin/mongo /usr/local/bin/mongo
-COPY --from=upstream /usr/bin/mongos /usr/local/bin/mongos
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
 
-WORKDIR /data/db
+ENV SHIM_METRICS_ENABLED="true"
 
-EXPOSE 27017
-EXPOSE 9101
-
-LABEL org.opencontainers.image.title="mongodb-5" org.opencontainers.image.description="Evergreen hardened MongoDB 5.0 - document database" org.opencontainers.image.version="${VERSION}" org.opencontainers.image.vendor="MongoDB" evergreen.image.status="functional" evergreen.image.tier="1" evergreen.image.category="database" evergreen.constraint.nonroot="true" evergreen.base.image="wolfi" \
-      org.opencontainers.image.source="https://github.com/mongodb/mongo"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-USER 65532:65532
-ENV SHIM_BACKUP_ENABLED="true" \
-    SHIM_BACKUP_DB_HOST="localhost" \
-    SHIM_BACKUP_DB_PORT="27017" \
-    SHIM_BACKUP_SCHEDULE="0 0 2 * * *" \
-    SHIM_BACKUP_RETENTION_DAYS="7" \
-    SHIM_BACKUP_OUTPUT_DIR="/backups" \
-    SHIM_REPLICATION_ENABLED="false" \
-    SHIM_MIGRATION_ENABLED="false" \
-    SHIM_VAULT_ENABLED="false" \
-    SHIM_AUDIT_ENABLED="true" \
-    SHIM_METRICS_ENABLED="true" \
-    SHIM_ALERTING_ENABLED="false" \
-    SHIM_ALERTING_WEBHOOK_URL="" \
-    SHIM_SCHEDULER_ENABLED="true" \
-    SHIM_SCHEDULER_BACKUP_CRON="0 0 2 * * *"
-
-LABEL prometheus.io/scrape="true" \
-      prometheus.io/port="9101" \
-      prometheus.io/path="/metrics"
+EXPOSE 27017 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM
-
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:27017"]
-
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "mongod"]

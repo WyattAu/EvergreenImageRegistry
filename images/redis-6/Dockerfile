@@ -1,71 +1,24 @@
-# =============================================================================
-# EVERGREEN HARDENED REDIS-6
-# Uses official redis image as upstream binary source on Wolfi base
-# =============================================================================
-
-ARG VERSION=6.2.16
-ARG TARGETARCH
-
 ARG SHIM_VERSION=v1.2.0
-
-FROM redis:${VERSION} AS upstream
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+FROM redis-6:latest
 COPY --from=shim /shim /usr/local/bin/shim
-RUN chmod +x /usr/local/bin/shim
 
-ENV HEALTH_CMD="redis-cli ping" \
-    READY_CMD="redis-cli ping" \
-    STARTUP_CMD="redis-cli ping" \
-    EVERGREEN_LOG_LEVEL=info
-
-RUN apk add --no-cache ca-certificates
-
-COPY --from=upstream /usr/local/bin/redis-server /usr/local/bin/redis-server
-COPY --from=upstream /usr/local/bin/redis-cli /usr/local/bin/redis-cli
-
-RUN adduser -D -u 65532 -s /bin/false redis 2>/dev/null || true && \
-    mkdir -p /app /var/log/redis /var/cache/redis && \
-    chown -R 65532:65532 /app /var/log/redis /var/cache/redis
-
-USER 65532:65532
-ENV SHIM_BACKUP_ENABLED="true" \
-    SHIM_BACKUP_SCHEDULE="0 0 2 * * *" \
-    SHIM_BACKUP_RETENTION_DAYS="7" \
-    SHIM_BACKUP_OUTPUT_DIR="/backups"
-ENV SHIM_CACHE_ENABLED="true" \
-    SHIM_CACHE_MAX_ENTRIES="10000" \
-    SHIM_CACHE_DEFAULT_TTL="300" \
-    SHIM_CACHE_EVICTION="lru" \
-    SHIM_METRICS_ENABLED="true"
-WORKDIR /app
-EXPOSE 6379
-
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:6379"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "redis-server"]
-CMD ["--", "--bind", "0.0.0.0", "--protected-mode", "no"]
-LABEL org.opencontainers.image.title="redis-6" \
-      org.opencontainers.image.description="Redis 6 - in-memory data structure store and cache" \
-      org.opencontainers.image.version="6.2.16" \
-      org.opencontainers.image.vendor="Redis" \
-      evergreen.image.tier="2" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.constraint.hardened="true" \
-      org.opencontainers.image.source="https://github.com/redis/redis"
-LABEL evergreen.base.image="wolfi"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
+
+ENV SHIM_METRICS_ENABLED="true"
+
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 9101
-LABEL prometheus.io/scrape="true" \
-      prometheus.io/port="9101" \
-      prometheus.io/path="/metrics"
+EXPOSE 6379 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

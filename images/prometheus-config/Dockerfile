@@ -1,41 +1,24 @@
-ARG VERSION=0.91.0
-ARG TARGETARCH
-ARG APP_UID=65532
-ARG APP_GID=65532
-
-FROM quay.io/prometheus-operator/prometheus-operator:v0.90.1@sha256:c8aed26b2a0858b4beed8d6bc2215f7f6bdc6c96dd4de8e6e246c0a5b7a7876b AS upstream
-
 ARG SHIM_VERSION=v1.2.0
+
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM scratch
+FROM prometheus-config:latest
 COPY --from=shim /shim /usr/local/bin/shim
-COPY --from=upstream /prometheus-operator /prometheus-config-reloader
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
-USER 65532:65532
-WORKDIR /app
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9101"]
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/prometheus-config-reloader"]
-LABEL org.opencontainers.image.title="prometheus-config" \
-      org.opencontainers.image.version="0.90.1" \
-      org.opencontainers.image.vendor="Prometheus" \
-      org.opencontainers.image.description="Evergreen hardened prometheus-config - Prometheus config reloader" \
-      evergreen.image.tier="3" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.constraint.scratch="true" \
-      evergreen.hft.signal-handling="native" \
-      evergreen.hft.shutdown-timeout="10s" \
-            org.opencontainers.image.source="https://github.com/prometheus-operator/prometheus-operator"
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
 
-LABEL evergreen.base.image="scratch"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+ENV SHIM_METRICS_ENABLED="true"
+
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 9101
+EXPOSE 9101 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

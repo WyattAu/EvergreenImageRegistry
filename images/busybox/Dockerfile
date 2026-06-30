@@ -1,44 +1,24 @@
-ARG VERSION=1.37.0
-ARG APP_UID=65532
-ARG APP_GID=65532
-
 ARG SHIM_VERSION=v1.2.0
+
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+FROM busybox:latest
 COPY --from=shim /shim /usr/local/bin/shim
-RUN apk add --no-cache busybox ca-certificates 2>/dev/null && \
-    mkdir -p /app /var/log/busybox 2>/dev/null || true
 
-USER 65532:65532
-WORKDIR /app
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9101"]
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/bin/busybox"]
-CMD ["sh"]
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
 
-LABEL org.opencontainers.image.title="busybox" \
-      org.opencontainers.image.description="BusyBox - Swiss army knife of embedded Linux utilities" \
-      org.opencontainers.image.version="1.37.0" \
-      org.opencontainers.image.vendor="busybox.net" \
-      org.opencontainers.image.source="https://www.busybox.net/" \
-      evergreen.image.tier="3" \
-      evergreen.image.category="utilities" \
-      evergreen.image.status="functional" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.constraint.base="wolfi" \
-      evergreen.hft.signal-handling="native" \
-      evergreen.hft.shutdown-timeout="3s" \
-      evergreen.hft.init-system="none" \
-      evergreen.hft.startup-timeout="1000ms"
+ENV SHIM_METRICS_ENABLED="true"
 
-LABEL evergreen.base.image="wolfi"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="none"
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 9101
+EXPOSE 9101 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

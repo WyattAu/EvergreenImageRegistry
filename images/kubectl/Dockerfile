@@ -1,54 +1,24 @@
-
-ARG APP_UID=65532
-ARG APP_GID=65532
-
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-ARG VERSION=1.30.1
-ARG TARGETARCH
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://dl.k8s.io/release/v${VERSION}/bin/linux/${TARGETARCH}/kubectl" -o /kubectl.tar.gz && \
-    echo "5b86f0b06e1a5ba6f8f00e2b01e8ed39407729c4990aeda961f83a586f975e8a  /kubectl.tar.gz" | sha256sum -c ; [ -f /kubectl.tar.gz ] && \
-    [ -f /kubectl.tar.gz ] && tar -xzf /kubectl.tar.gz -C / && rm -f /kubectl.tar.gz && chmod +x /kubectl 2>/dev/null ; \
-    curl --retry 3 --retry-delay 5 -fsSL "https://dl.k8s.io/release/v${VERSION}/bin/linux/${TARGETARCH}/kubectl" -o /kubectl && { echo "Binary not available - download failed" >&2; exit 1; }
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-RUN mkdir -p /app /var/log/kubectl /var/cache/kubectl 2>/dev/null || true
-
-
 ARG SHIM_VERSION=v1.2.0
+
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM scratch
+FROM kubectl:latest
 COPY --from=shim /shim /usr/local/bin/shim
-COPY --from=downloader /kubectl /kubectl
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app /app
-COPY --from=builder /var/log/kubectl /var/log/kubectl
-COPY --from=builder /var/cache/kubectl /var/cache/kubectl
-USER 65532:65532
-WORKDIR /app
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/kubectl"]
-LABEL org.opencontainers.image.title="kubectl" \
-      org.opencontainers.image.description="kubectl - command line tool for controlling Kubernetes clusters" \
-      org.opencontainers.image.version="1.30.1" \
-      org.opencontainers.image.vendor="Kubernetes" \
-      evergreen.image.tier="1" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.constraint.scratch="true" \
-      evergreen.hft.signal-handling="native" \
-      evergreen.hft.shutdown-timeout="3s" \
-      evergreen.hft.init-system="none" \
-      evergreen.hft.startup-timeout="3000ms" \
-            org.opencontainers.image.source="https://github.com/kubernetes/kubernetes"
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9101"]
 
-LABEL evergreen.base.image="scratch"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
+
+ENV SHIM_METRICS_ENABLED="true"
+
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 9101
+EXPOSE 9101 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

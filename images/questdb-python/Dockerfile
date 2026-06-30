@@ -1,62 +1,24 @@
-# =============================================================================
-# EVERGREEN HARDENED QUESTDB-PYTHON
-# QuestDB Python client library
-# Constraint: debian-slim + Python venv
-# =============================================================================
-
-
-ARG APP_UID=65532
-ARG APP_GID=65532
-
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-RUN mkdir -p /opt/venv || true
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        python3-pip python3 ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true && \
-    python3 -m venv /opt/venv || true
-ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir questdb psycopg2-binary==2.9.9 && \
-    mkdir -p /app 2>/dev/null || true && \
-    mkdir -p /opt/venv ; \
-    mkdir -p /app 2>/dev/null || true
-
 ARG SHIM_VERSION=v1.2.0
+
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+FROM questdb-python:latest
 COPY --from=shim /shim /usr/local/bin/shim
-LABEL evergreen.base.fallback_reason="wolfi-base for musl compatibility"
 
-RUN apk add --no-cache python3 ca-certificates tzdata postgresql-libs || true
-COPY --from=builder /opt/venv /opt/venv
-COPY --from=builder /app /app
-ENV PATH="/opt/venv/bin:${PATH}"
-RUN addgroup -S -g 65532 questdb 2>/dev/null || true && \
-    adduser -u 65532 -G questdb -D -D -h /app -s /bin/false questdb 2>/dev/null || true && \
-    chown -R 65532:65532 /app
-USER 65532:65532
-WORKDIR /app
-LABEL org.opencontainers.image.title="questdb-python" \
-      org.opencontainers.image.description="Evergreen QuestDB Python client with psycopg2 wire protocol support" \
-      org.opencontainers.image.vendor="QuestDB" \
-      org.opencontainers.image.source="https://github.com/questdb/questdb-python" \
-      evergreen.image.tier="2" \
-      evergreen.image.status="functional" \
-      evergreen.image.category="database" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.base.image="wolfi" \
-            org.opencontainers.image.version="unknown"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9101"]
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
+
+ENV SHIM_METRICS_ENABLED="true"
+
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 9101
+EXPOSE 9101 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM
-
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:9101/metrics || exit 1
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "python -m questdb"]
-CMD ["--help"]

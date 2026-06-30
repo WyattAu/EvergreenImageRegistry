@@ -1,69 +1,24 @@
-ARG APP_UID=65532
-ARG APP_GID=65532
-
 ARG SHIM_VERSION=v1.2.0
-
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-ARG VERSION=9.4.0
-ARG TARGETARCH
-RUN mkdir -p /opt/packetbeat || true
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://artifacts.elastic.co/downloads/beats/packetbeat/packetbeat-${VERSION}-linux-x86_64.tar.gz" -o /packetbeat.tar.gz ; \
-    echo "d1003767fc1ff1274164131aa2189e18e03d1a07043d92219db420114629d421  /packetbeat.tar.gz" | sha256sum -c ; \
-    mkdir -p /opt/packetbeat ; \
-    if [ -f /packetbeat.tar.gz ]; then tar -xzf /packetbeat.tar.gz -C /opt/packetbeat --strip-components=1 && rm -f /packetbeat.tar.gz && rm -rf /opt/packetbeat/kibana /opt/packetbeat/logs ; fi ; \
-    strip /opt/packetbeat/packetbeat 2>/dev/null ; \
-    chmod +x /opt/packetbeat/packetbeat 2>/dev/null
-
-
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS builder
-RUN mkdir -p /var/log/packetbeat /var/lib/packetbeat /var/cache/packetbeat
-
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM scratch
+FROM packetbeat:latest
 COPY --from=shim /shim /usr/local/bin/shim
 
-COPY --from=downloader /opt/packetbeat /opt/packetbeat
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /var/log/packetbeat /var/log/packetbeat
-COPY --from=builder /var/lib/packetbeat /var/lib/packetbeat
-COPY --from=builder /var/cache/packetbeat /var/cache/packetbeat
-USER 65532:65532
-ENV SHIM_METRICS_ENABLED="true"
-WORKDIR /opt/packetbeat
-EXPOSE 5066
-
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:5066"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/opt/packetbeat/packetbeat"]
-LABEL org.opencontainers.image.title="packetbeat" \
-      org.opencontainers.image.description="Evergreen hardened Packetbeat - Elastic network packet analyzer" \
-      org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.vendor="Elastic" \
-      evergreen.image.tier="1" \
-      evergreen.image.status="functional" \
-      evergreen.image.category="observability" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.constraint.scratch="true" \
-      evergreen.hft.signal-handling="native" \
-      evergreen.hft.shutdown-timeout="3s" \
-      evergreen.hft.init-system="none" \
-      evergreen.hft.startup-timeout="3000ms" \
-            org.opencontainers.image.source="https://github.com/elastic/beats"
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
 
-LABEL evergreen.base.image="scratch"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+ENV SHIM_METRICS_ENABLED="true"
+
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 9101
-LABEL prometheus.io/scrape="true" \
-      prometheus.io/port="9101" \
-      prometheus.io/path="/metrics"
+EXPOSE 5066 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

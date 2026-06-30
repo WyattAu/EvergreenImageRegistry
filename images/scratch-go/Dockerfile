@@ -1,61 +1,24 @@
-# =============================================================================
-# EVERGREEN SCRATCH-GO
-# Go source-build base image. Multi-stage: builds Go app in golang builder,
-# copies static binary to scratch-base.
-#
-# Usage pattern (for images that use this as a template):
-#   1. Clone upstream source
-#   2. CGO_ENABLED=0 go build -ldflags="-s -w"
-#   3. Copy binary to scratch-base
-#
-# This image itself is a PROTOTYPE — not directly used as a FROM base.
-# Individual Go images copy this pattern and customize the git clone + build.
-# =============================================================================
-
-ARG GO_VERSION=1.23
-ARG APP_UID=65532
-ARG APP_GID=65532
-
-FROM golang:${GO_VERSION}-bookworm AS builder
-ENV GOTOOLCHAIN=auto
-ARG VERSION
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends binutils git ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
-
-# This image is a reference implementation. Real images customize these lines:
-# RUN git clone --branch v${VERSION} https://github.com/OWNER/REPO /src
-# RUN cd /src && CGO_ENABLED=0 GOOS=linux GOARCH=${GOARCH} go build -ldflags="-s -w" -o /app/app ./cmd/app
-# RUN strip --strip-all /app/app 2>/dev/null 2>/dev/null
-
 ARG SHIM_VERSION=v1.2.0
+
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM scratch
+FROM scratch-go:latest
 COPY --from=shim /shim /usr/local/bin/shim
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app/app /app/app
-USER 65532:65532
-WORKDIR /app
 
-HEALTHCHECK NONE
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/app/app"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+  CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-LABEL org.opencontainers.image.title="scratch-go" \
-      org.opencontainers.image.description="Go source-build reference — static binary on scratch" \
-      org.opencontainers.image.vendor="EvergreenImageRegistry" \
-      evergreen.image.tier="0" \
-      evergreen.image.role="base" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.constraint.scratch="true" \
-      evergreen.runtime="go"
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
+
+ENV SHIM_METRICS_ENABLED="true"
+
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
-LABEL org.opencontainers.image.source="https://github.com/WyattAu/EvergreenImageRegistry"
-LABEL org.opencontainers.image.version="ARG"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-LABEL evergreen.runtime.version="${GO_VERSION}"
+EXPOSE 8080 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

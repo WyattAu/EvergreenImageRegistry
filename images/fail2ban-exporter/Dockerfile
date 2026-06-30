@@ -1,77 +1,24 @@
-ARG APP_UID=65532
-ARG APP_GID=65532
-
 ARG SHIM_VERSION=v1.2.0
-
-FROM golang@sha256:1699c10032ca2582ec89a24a1312d986a3f094aed3d5c1147b19880afe40e052 AS builder
-ENV GOTOOLCHAIN=auto
-ARG TARGETARCH
-ARG GITHUB_TOKEN
-
-ARG VERSION=v0.10.0
-
-ARG TARGETARCH
-
-ARG GOARCH=${TARGETARCH}
-
-RUN apk add --no-cache git \
-    git clone --branch ${VERSION} https://${GITHUB_TOKEN:+${GITHUB_TOKEN}@}github.com/xperimental/fail2ban-exporter.git /src 2>/dev/null || \
-    git clone https://${GITHUB_TOKEN:+${GITHUB_TOKEN}@}github.com/xperimental/fail2ban-exporter.git /src
-
-WORKDIR /src
-
-RUN CGO_ENABLED=0 GOARCH=${GOARCH} go build -o /fail2ban-exporter . || true
-
-
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM scratch
+FROM fail2ban-exporter:latest
 COPY --from=shim /shim /usr/local/bin/shim
 
-
-COPY --from=builder /fail2ban-exporter /fail2ban-exporter
-
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-
-USER 65532:65532
-ENV SHIM_METRICS_ENABLED="true"
-
-WORKDIR /app
-
-EXPOSE 9191
-
-
-
-
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:9191"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/fail2ban-exporter"]
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
 
-CMD ["--", "--web.listen-address=:9191", "--web.telemetry-path=/metrics", "--fail2ban.socket=/tmp/fail2ban.sock"]
+ENV SHIM_METRICS_ENABLED="true"
 
-LABEL org.opencontainers.image.title="fail2ban-exporter"       org.opencontainers.image.version="v0.10.0"       org.opencontainers.image.vendor="xperimental"       org.opencontainers.image.source="https://github.com/xperimental/fail2ban-exporter"       evergreen.image.tier="1"       evergreen.image.category="monitoring"       evergreen.image.status="best-effort"       evergreen.image.note="Original repo deleted; building from source"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms" \
-org.opencontainers.image.description="fail2ban-exporter container image" \
-evergreen.base.image="scratch"
-
-LABEL evergreen.metrics.native="ztunnel"
-
-LABEL evergreen.health.type="exec"
-
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
-
 LABEL evergreen.security.no-new-privileges="true"
-
 LABEL evergreen.security.read-only-rootfs="true"
-
 LABEL evergreen.security.seccomp="runtime-default"
 
-
-
-EXPOSE 9101
-
-LABEL prometheus.io/scrape="true" \
-      prometheus.io/port="9101" \
-      prometheus.io/path="/metrics"
+EXPOSE 9191 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

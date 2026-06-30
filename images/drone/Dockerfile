@@ -1,65 +1,24 @@
-# =============================================================================
-# EVERGREEN HARDENED DRONE
-# Generated from template - Version: 1.9.0
-# Downloads Drone CLI binary from harness/drone-cli releases.
-# Drone is a Go static binary.
-# =============================================================================
-
-ARG VERSION=1.9.0
-ARG TARGETARCH
-ARG BUILD_DATE
-ARG APP_UID=65532
-ARG APP_GID=65532
-
 ARG SHIM_VERSION=v1.2.0
 
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-ARG VERSION=1.9.0
-ARG TARGETARCH
-RUN mkdir -p /app && touch /app/drone
-RUN apt-get update && apt-get install -y --no-install-recommends binutils curl ca-certificates && rm -rf /var/lib/apt/lists/* && \
-    curl --retry 3 --retry-delay 5 -fsSL \
-    "https://github.com/harness/drone-cli/releases/download/v${VERSION}/drone_linux_${TARGETARCH}.tar.gz" -o /tmp/drone.tar.gz && \
-    mkdir -p /app && \
-    tar -xzf /tmp/drone.tar.gz -C /app && rm -f /tmp/drone.tar.gz && \
-    strip --strip-all /app/drone 2>/dev/null && \
-    chmod +x /app/drone
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM scratch
+FROM drone:latest
 COPY --from=shim /shim /usr/local/bin/shim
 
-COPY --from=downloader /app/drone /drone
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65532:65532
-ENV SHIM_METRICS_ENABLED="true"
-WORKDIR /data
-
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:80"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "drone server"]
-EXPOSE 80
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
 
-LABEL org.opencontainers.image.title="drone" \
-      org.opencontainers.image.description="Drone - cloud-native continuous integration and delivery platform" \
-       org.opencontainers.image.version="1.9.0" \
-       org.opencontainers.image.vendor="Harness" \
-       org.opencontainers.image.source="https://github.com/harness/drone-cli" \
-      evergreen.image.tier="2" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.constraint.scratch="true"
+ENV SHIM_METRICS_ENABLED="true"
 
-LABEL evergreen.base.image="scratch"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="exec"
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 9101
-LABEL prometheus.io/scrape="true" \
-      prometheus.io/port="9101" \
-      prometheus.io/path="/metrics"
+EXPOSE 80 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

@@ -1,54 +1,24 @@
-ARG TARGETARCH
-ARG APP_UID=65532
-ARG APP_GID=65532
 ARG SHIM_VERSION=v1.2.0
 
-FROM debian@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS downloader
-ARG TARGETARCH
-ARG VERSION=2.9.1
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends binutils curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/* || true && \
-    curl --retry 3 --retry-delay 5 -fsSL "https://github.com/gotify/server/releases/download/v${VERSION}/gotify-linux-${TARGETARCH}" \
-    -o /tmp/gotify && \
-    chmod +x /tmp/gotify && \
-    strip /tmp/gotify
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM scratch
+FROM gotify:latest
 COPY --from=shim /shim /usr/local/bin/shim
 
-COPY --from=downloader /tmp/gotify /usr/local/bin/gotify
-COPY --from=downloader /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 65532:65532
-ENV SHIM_METRICS_ENABLED="true"
-WORKDIR /app
-EXPOSE 8080
-
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/usr/local/bin/gotify"]
-LABEL org.opencontainers.image.title="gotify" \
-      org.opencontainers.image.description="Gotify - simple push notification server" \
-      org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.vendor="Gotify" \
-      org.opencontainers.image.source="https://github.com/gotify/server" \
-      evergreen.image.tier="2" \
-      evergreen.image.category="notifications" \
-      evergreen.constraint.nonroot="true" \
-      evergreen.constraint.scratch="true"
-LABEL evergreen.base.image="scratch"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="http"
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
+
+ENV SHIM_METRICS_ENABLED="true"
+
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 9101
-LABEL prometheus.io/scrape="true" \
-      prometheus.io/port="9101" \
-      prometheus.io/path="/metrics"
+EXPOSE 8080 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

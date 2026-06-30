@@ -423,3 +423,4 @@ FodyWeavers.xsd
 *.msp
 images/forgejo/forgejo/
 *.tar
+.pytest_cache/

@@ -1,64 +1,24 @@
-ARG VERSION=1.35.8
-ARG TARGETARCH
-ARG APP_UID=65532
-ARG APP_GID=65532
-
-
-
 ARG SHIM_VERSION=v1.2.0
-
-FROM vaultwarden/server@sha256:c4f6056fe0c288a052a223cecd263a90d1dda1a0177bb5b054a363a6c7b211d9 AS upstream
-
-
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM scratch
+FROM vaultwarden/server:latest
 COPY --from=shim /shim /usr/local/bin/shim
 
-
-COPY --from=upstream /vaultwarden /vaultwarden
-
-COPY --from=upstream /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-
-USER 65532:65532
-ENV SHIM_METRICS_ENABLED="true"
-
-WORKDIR /app
-
-EXPOSE 8080
-
-
-
-
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8080"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "/vaultwarden"]
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
 
-CMD ["--", "--database-url", "sqlite:///data/db.sqlite3"]
+ENV SHIM_METRICS_ENABLED="true"
 
-LABEL org.opencontainers.image.title="vaultwarden-sqlite"       org.opencontainers.image.version="1.35.8"       org.opencontainers.image.vendor="dani-garcia"       org.opencontainers.image.source="https://github.com/dani-garcia/vaultwarden"       evergreen.image.tier="2"       evergreen.image.category="secrets"       evergreen.image.status="functional"       evergreen.constraint.nonroot="true"       evergreen.constraint.scratch="true"       evergreen.hft.signal-handling="native"       evergreen.hft.shutdown-timeout="3s"       evergreen.hft.init-system="none"       evergreen.hft.startup-timeout="3000ms" \
-org.opencontainers.image.description="vaultwarden-sqlite container image" \
-evergreen.base.image="scratch"
-
-LABEL evergreen.metrics.native="ztunnel"
-
-LABEL evergreen.health.type="exec"
-
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
-
 LABEL evergreen.security.no-new-privileges="true"
-
 LABEL evergreen.security.read-only-rootfs="true"
-
 LABEL evergreen.security.seccomp="runtime-default"
 
-
-
-EXPOSE 9101
-
-LABEL prometheus.io/scrape="true" \
-      prometheus.io/port="9101" \
-      prometheus.io/path="/metrics"
+EXPOSE 8080 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

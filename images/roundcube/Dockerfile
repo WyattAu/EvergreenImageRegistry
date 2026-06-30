@@ -1,62 +1,24 @@
-ARG APP_UID=65532
-ARG APP_GID=65532
-
 ARG SHIM_VERSION=v1.2.0
-
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9 AS builder
-ARG VERSION=1.6.9
-ARG TARGETARCH
-RUN mkdir -p /build || true
-RUN apk add --no-cache curl ca-certificates
-WORKDIR /build
-RUN curl --retry 3 --retry-delay 5 -fsSL "https://github.com/roundcube/roundcubemail/releases/download/${VERSION}/roundcubemail-${VERSION}-complete.tar.gz" \
-    -o /tmp/roundcube.tar.gz ; \
-    echo "b61a5f5c22f890c299e935aacfcf0870676990d8aebff0d6cdff075bf17cef4f  /tmp/roundcube.tar.gz" | sha256sum -c ; \
-    mkdir -p /build ; \
-    if [ -f /tmp/roundcube.tar.gz ]; then tar -xzf /tmp/roundcube.tar.gz -C /build --strip-components=1 && rm -f /tmp/roundcube.tar.gz ; fi ; \
-    true
 
 FROM ghcr.io/wyattau/evergreenshim/health-shim:${SHIM_VERSION} AS shim
 
-FROM cgr.dev/chainguard/wolfi-base@sha256:31da6565f35af6401031c1d7aa91dc84ac76c5c48edd17fb90f0ed9e3173c7a9
+FROM roundcube/roundcubemail:latest
 COPY --from=shim /shim /usr/local/bin/shim
-RUN chmod +x /usr/local/bin/shim
 
-ARG VERSION=1.6.9
-RUN apk add --no-cache php-8.4 php-8.4-fpm php-8.4-session php-8.4-mbstring php-8.4-xml php-8.4-iconv php-8.4-dom php-8.4-curl php-8.4-intl ca-certificates && \
-    addgroup -S -g 10000 roundcube 2>/dev/null || true && \
-    adduser -u 65532 -G roundcube -D -h /usr/share/webapps/roundcube -s /bin/false roundcube 2>/dev/null || true && \
-    mkdir -p /usr/share/webapps/roundcube /var/lib/roundcube /var/log/roundcube /var/run/php-8.4 2>/dev/null || true
-COPY --from=builder /build /usr/share/webapps/roundcube
-RUN chown -R 65532:65532 /usr/share/webapps/roundcube /var/lib/roundcube /var/log/roundcube /var/run/php 2>/dev/null || true
-USER 65532:65532
-ENV SHIM_METRICS_ENABLED="true"
-WORKDIR /usr/share/webapps/roundcube
-EXPOSE 8888
-
-HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
   CMD ["/usr/local/bin/shim", "healthcheck", "--tcp", "127.0.0.1:8888"]
 
-ENTRYPOINT ["/usr/local/bin/shim", "run", "-c", "php-fpm83"]
-CMD ["--", "-F"]
-LABEL org.opencontainers.image.title="roundcube" \
-      org.opencontainers.image.description="Roundcube - feature-rich webmail client" \
-      org.opencontainers.image.version="${VERSION}" \
-      org.opencontainers.image.vendor="Roundcube" \
-      org.opencontainers.image.source="https://github.com/roundcube/roundcubemail" \
-      evergreen.image.tier="2" \
-      evergreen.image.category="email" \
-      evergreen.constraint.nonroot="true"
-LABEL evergreen.base.image="wolfi"
-LABEL evergreen.metrics.native="ztunnel"
-LABEL evergreen.health.type="tcp"
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []
+
+ENV SHIM_METRICS_ENABLED="true"
+
+LABEL evergreen.entrypoint.pattern="repack-upstream-init"
 LABEL evergreen.security.cap-drop="ALL"
 LABEL evergreen.security.no-new-privileges="true"
 LABEL evergreen.security.read-only-rootfs="true"
 LABEL evergreen.security.seccomp="runtime-default"
 
-EXPOSE 9101
-LABEL prometheus.io/scrape="true" \
-      prometheus.io/port="9101" \
-      prometheus.io/path="/metrics"
+EXPOSE 8888 9101
+LABEL prometheus.io/scrape="true" prometheus.io/port="9101" prometheus.io/path="/metrics"
 STOPSIGNAL SIGTERM

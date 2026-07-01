@@ -202,6 +202,11 @@ jobs:
           if [ "${FAILED}" -gt 0 ]; then
             echo "::warning::${FAILED} image(s) failed to build in batch ${{ matrix.batch }}"
           fi
+          # Fail the step if NO images were built (all failed)
+          if [ "${BUILT}" -eq 0 ] && [ "${FAILED}" -gt 0 ]; then
+            echo "::error::All ${FAILED} images failed to build in batch ${{ matrix.batch }}"
+            exit 1
+          fi
 
       - name: Cleanup secret file
         if: always()
@@ -280,7 +285,14 @@ jobs:
             VERSION_TAG=$(grep -oP '(?<=^ARG VERSION=).*' "./images/${image}/Dockerfile" 2>/dev/null | head -1)
             echo "::group::Push ${image}"
             REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
-            # Image is already in Docker daemon from docker build — push directly
+            # Check if image was actually built
+            if ! docker image inspect "${REF}" >/dev/null 2>&1; then
+              echo "::warning::${image}: image not in daemon (build failed), skipping push"
+              FAILED=$((FAILED+1))
+              echo "::endgroup::"
+              continue
+            fi
+            # Image is in Docker daemon — push directly
             PUSH_OK=0
             for attempt in 1 2 3; do
               if timeout 600 docker push "${REF}" 2>&1; then

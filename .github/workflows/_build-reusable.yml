@@ -130,7 +130,7 @@ jobs:
           IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
           BUILT=0; FAILED=0; SKIPPED=0
           CURRENT_BUILDER=$(docker buildx inspect --format '{{.Name}}' 2>/dev/null | head -1)
-          recreate_builder() {
+          echo "Using default Docker builder"() {
             echo "::notice::Using default Docker builder (inherits host credentials)..."
             docker buildx create --name "evergreen-default" --driver docker --use 2>/dev/null || true
             CURRENT_BUILDER="evergreen-default"
@@ -141,27 +141,19 @@ jobs:
             local DOCKERHUB_REF="docker.io/wyattau/${image}"
             local SAFE="${image//\//-}"
             echo "::group::Build ${image}"
-            local PLATFORM_FLAG="--platform linux/amd64"
-            local OUTPUT_FLAG="--output type=docker,dest=/tmp/images/${SAFE}.tar"
-            local TAG_FLAGS="-t ${REF} -t ${REGISTRY}/${OWNER}/${image}:latest"
-            if [ "${{ inputs.multiarch }}" = "true" ]; then
-              PLATFORM_FLAG="--platform linux/amd64,linux/arm64"
-              OUTPUT_FLAG="--push"
-              # Also push to Docker Hub when multiarch
-              if [ -n "${{ secrets.DOCKERHUB_TOKEN }}" ]; then
-                TAG_FLAGS="${TAG_FLAGS} -t ${DOCKERHUB_REF}:${TAG} -t ${DOCKERHUB_REF}:latest"
-              fi
+            local REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
+            local LATEST_REF="${REGISTRY}/${OWNER}/${image}:latest"
+            local DOCKERHUB_REF="docker.io/wyattau/${image}"
+            local TAG_FLAGS="-t ${REF} -t ${LATEST_REF}"
+            if [ -n "${{ secrets.DOCKERHUB_TOKEN }}" ]; then
+              TAG_FLAGS="${TAG_FLAGS} -t ${DOCKERHUB_REF}:${TAG} -t ${DOCKERHUB_REF}:latest"
             fi
-            if timeout 900 docker buildx build \
-                --builder "$CURRENT_BUILDER" \
-                ${PLATFORM_FLAG} \
+            # Use plain docker build (inherits host credentials, no buildx driver issues)
+            if timeout 900 docker build \
                 ${TAG_FLAGS} \
-                ${OUTPUT_FLAG} \
-                --cache-from "type=local,src=/tmp/.buildkit-cache" \
-                --cache-to "type=local,dest=/tmp/.buildkit-cache-new,mode=max" \
-                --secret id=github-token,env=GITHUB_TOKEN \
                 --build-arg "BUILD_DATE=${TAG}" \
                 --build-arg "VCS_REF=${TAG}" \
+                --build-arg "SHIM_VERSION=v1.2.0" \
                 --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
                 --label "org.opencontainers.image.revision=${{ github.sha }}" \
                 "./images/${image}"; then
@@ -175,7 +167,7 @@ jobs:
             [ -z "$image" ] && continue
             [ ! -f "./images/${image}/Dockerfile" ] && { echo "::warning::${image}: no Dockerfile"; SKIPPED=$((SKIPPED+1)); continue; }
             if [ $((BUILT + FAILED)) -gt 0 ] && [ $(( (BUILT + FAILED) % 5 )) -eq 0 ]; then
-              recreate_builder
+              echo "Using default Docker builder"
             fi
             if build_image "${image}"; then
               BUILT=$((BUILT+1)); sleep 1
@@ -292,20 +284,17 @@ jobs:
             # Extract VERSION from Dockerfile for semantic version tag
             VERSION_TAG=$(grep -oP '(?<=^ARG VERSION=).*' "./images/${image}/Dockerfile" 2>/dev/null | head -1)
             echo "::group::Push ${image}"
-            if [ -f "$TAR" ]; then
-              # Load the pre-built tarball and push (avoids rebuild COPY eval bugs)
-              docker load -i "$TAR" 2>/dev/null || true
-              docker tag "${REF}" "${REF}" 2>/dev/null || true
-              # Push with retry (3 attempts, 15s between)
-              PUSH_OK=0
-              for attempt in 1 2 3; do
-                if timeout 600 docker push "${REF}" 2>&1; then
-                  PUSH_OK=1; break
-                fi
-                echo "Push attempt $attempt failed for ${image}, retrying in 15s..."
-                sleep 15
-              done
-              if [ "$PUSH_OK" = "1" ]; then
+            REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
+            # Image is already in Docker daemon from docker build — push directly
+            PUSH_OK=0
+            for attempt in 1 2 3; do
+              if timeout 600 docker push "${REF}" 2>&1; then
+                PUSH_OK=1; break
+              fi
+              echo "Push attempt $attempt failed for ${image}, retrying in 15s..."
+              sleep 15
+            done
+            if [ "$PUSH_OK" = "1" ]; then
                 PUSHED=$((PUSHED+1))
                 # Also push with version tag for deterministic pulls
                 if [ -n "${VERSION_TAG}" ]; then
@@ -341,7 +330,7 @@ jobs:
                 FAILED=$((FAILED+1))
               fi
             else
-              echo "::warning::${image}: no tarball (build failed), skipping push"
+              echo "::warning::${image}: not built, skipping push"
               FAILED=$((FAILED+1))
             fi
             sleep 2

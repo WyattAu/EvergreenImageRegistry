@@ -129,12 +129,7 @@ jobs:
           mkdir -p /tmp/images
           IFS=',' read -ra IMAGE_LIST <<< "${{ matrix.images }}"
           BUILT=0; FAILED=0; SKIPPED=0
-          CURRENT_BUILDER=$(docker buildx inspect --format '{{.Name}}' 2>/dev/null | head -1)
-          echo "Using default Docker builder"() {
-            echo "::notice::Using default Docker builder (inherits host credentials)..."
-            docker buildx create --name "evergreen-default" --driver docker --use 2>/dev/null || true
-            CURRENT_BUILDER="evergreen-default"
-          }
+          # No buildx needed — using plain docker build
           build_image() {
             local image="$1"
             local REF="${REGISTRY}/${OWNER}/${image}:${TAG}"
@@ -167,7 +162,7 @@ jobs:
             [ -z "$image" ] && continue
             [ ! -f "./images/${image}/Dockerfile" ] && { echo "::warning::${image}: no Dockerfile"; SKIPPED=$((SKIPPED+1)); continue; }
             if [ $((BUILT + FAILED)) -gt 0 ] && [ $(( (BUILT + FAILED) % 5 )) -eq 0 ]; then
-              echo "Using default Docker builder"
+              docker image prune -f 2>/dev/null || true
             fi
             if build_image "${image}"; then
               BUILT=$((BUILT+1)); sleep 1
